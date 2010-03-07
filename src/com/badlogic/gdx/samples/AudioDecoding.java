@@ -2,13 +2,13 @@ package com.badlogic.gdx.samples;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.AudioDevice;
-import com.badlogic.gdx.GraphicListener;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Mesh;
 import com.badlogic.gdx.Mesh.PrimitiveType;
 import com.badlogic.gdx.audio.io.NativeMP3Decoder;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 
-public class AudioDecoding implements GraphicListener 
+public class AudioDecoding implements RenderListener 
 {
 	float[] samples = new float[1024];
 	Mesh amplitude;
@@ -18,7 +18,7 @@ public class AudioDecoding implements GraphicListener
 	public static void main( String[] argv )
 	{
 		JoglApplication app = new JoglApplication( "Audio Decoding", 480, 320 );
-		app.addGraphicListener( new AudioDecoding() );
+		app.addRenderListener( new AudioDecoding() );
 	}
 	
 	@Override

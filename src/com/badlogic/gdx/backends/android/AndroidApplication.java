@@ -44,7 +44,7 @@ import android.widget.EditText;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.AudioDevice;
 import com.badlogic.gdx.Font;
-import com.badlogic.gdx.GraphicListener;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.Mesh;
 import com.badlogic.gdx.Pixmap;
@@ -55,6 +55,11 @@ import com.badlogic.gdx.math.WindowedMean;
 
 public class AndroidApplication extends Activity implements GLSurfaceView.Renderer, OnTouchListener, SensorEventListener, OnKeyListener, Application
 {
+	static
+	{
+		System.loadLibrary( "libgdx" );
+	}
+	
 	public GLSurfaceView glView;
 	private long lastFrameTime = System.nanoTime();
 	private int viewportWidth;
@@ -89,8 +94,8 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 
 	private GL10 gl;	
 
-	private final ArrayList<GraphicListener> setupListeners = new ArrayList<GraphicListener>( );
-	private final ArrayList<GraphicListener> listeners = new ArrayList<GraphicListener>( );
+	private final ArrayList<RenderListener> setupListeners = new ArrayList<RenderListener>( );
+	private final ArrayList<RenderListener> listeners = new ArrayList<RenderListener>( );
 	private final ArrayList<InputListener> inputListeners = new ArrayList<InputListener>( );
 	private final ArrayList<CloseListener> closeListeners = new ArrayList<CloseListener>();
 
@@ -290,7 +295,7 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		{
 			for( int i = 0; i < setupListeners.size(); i++ )
 			{
-				GraphicListener listener = setupListeners.get(i);
+				RenderListener listener = setupListeners.get(i);
 				listener.setup(this);
 				listeners.add(listener);
 			}				
@@ -607,7 +612,7 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	}
 
 	@Override
-	public void addGraphicListener(GraphicListener listener) 
+	public void addRenderListener(RenderListener listener) 
 	{
 		synchronized( setupListeners )
 		{
@@ -698,7 +703,7 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	}
 
 	@Override
-	public void removeGraphicListener(GraphicListener listener) 
+	public void removeRenderListener(RenderListener listener) 
 	{	
 		listener.dispose(this);
 		listeners.remove( listener );

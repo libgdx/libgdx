@@ -1,5 +1,6 @@
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.Application.MatrixMode;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Ray;
@@ -151,6 +152,23 @@ public class PerspectiveCamera
 		model.setToLookat( direction, up );		
 		model.mul( tmp.setToTranslation( position.tmp().mul(-1) ) );
 		comb.set( proj ).mul( model );		
+	}
+	
+	/**
+	 * Sets the projection and model view matrix of the {@link Application} to
+	 * this camera's projection and model view matrix. Any previously set 
+	 * matrices of the Application are overwritten. Upon returning from this
+	 * method the matrix mode of the Application is set to model view.
+	 * 
+	 * @param app The Application.
+	 */
+	public void setMatrices( Application app )
+	{
+		setViewport(app.getViewportWidth(), app.getViewportHeight());
+		app.setMatrixMode( MatrixMode.Projection );
+		app.loadMatrix( getCombinedMatrix().val );
+		app.setMatrixMode( MatrixMode.ModelView );
+		app.loadIdentity();	
 	}
 	
 	/**

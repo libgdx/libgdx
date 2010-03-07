@@ -24,11 +24,11 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
  * 
  * <p>
  * A basic application starts by instantiating either a JoglApplication or an
- * AndroidApplication. After the instantiation a {@link GraphicListener} has to
- * be registered with the Application. A GraphicListener is called on three
- * events: when it is created {@link GraphicListener.setup()} is called, during
- * rendering {@link GraphicListener.render()} is called repeatedly and when the
- * GraphicListener is unregistered or the application is destroyed {@link GraphicListener.dispose()}
+ * AndroidApplication. After the instantiation a {@link RenderListener} has to
+ * be registered with the Application. A RenderListener is called on three
+ * events: when it is created {@link RenderListener.setup()} is called, during
+ * rendering {@link RenderListener.render()} is called repeatedly and when the
+ * RenderListener is unregistered or the application is destroyed {@link RenderListener.dispose()}
  * is called.
  * </p>
  * 
@@ -97,8 +97,8 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
  * <p>
  * When registering an {@link InputListener} the application will relay input events to this InputListener in a synchronous 
  * way. This means that the methods of the registered InputListener will be called in the rendering thread of the application
- * which also calls the GraphicListener. Internally events are queued and processed upon each rendering of a frame. This
- * allows you to forget about thread synchronization issues between the UI and your GraphicListener which operates in a seperate
+ * which also calls the RenderListener. Internally events are queued and processed upon each rendering of a frame. This
+ * allows you to forget about thread synchronization issues between the UI and your RenderListener which operates in a seperate
  * rendering thread. 
  * </p>
  * 
@@ -283,7 +283,7 @@ public interface Application
 	}
 	
 	/**
-	 * Adds a {@link GraphicListener} to this application. The listener's
+	 * Adds a {@link RenderListener} to this application. The listener's
 	 * setup method is called once before the render method is invoked. 
 	 * The render method is called as long as the listener is registered
 	 * with the application. Upon application shutdown the dispose method
@@ -291,15 +291,15 @@ public interface Application
 	 *
 	 * @param listener The listener to add.
 	 */
-	public void addGraphicListener( GraphicListener listener );
+	public void addRenderListener( RenderListener listener );
 	
 	/**
-	 *	Removes the {@link GraphicListener} from this application. The listener's
+	 *	Removes the {@link RenderListener} from this application. The listener's
 	 *  dispose method is called.
 	 * 
 	 * @param listener The listener to remove.
 	 */
-	public void removeGraphicListener( GraphicListener listener );
+	public void removeRenderListener( RenderListener listener );
 	
 	/**
 	 * Adds an {@link InputListener} to this application. The order input listeners

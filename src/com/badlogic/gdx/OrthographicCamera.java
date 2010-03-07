@@ -1,5 +1,6 @@
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.Application.MatrixMode;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Ray;
 import com.badlogic.gdx.math.Vector;
@@ -7,7 +8,9 @@ import com.badlogic.gdx.math.Vector;
 /**
  * An orthographic camera having a position and a scale value for zooming. Looks
  * at one of the sides given in the {@link Side} enums, default is front, looking
- * along the z-Axis. 
+ * along the z-Axis. Generally you will want to alter the camera's scale and position
+ * and then set its matrices via a call to {@link OrthographicCamera.setMatrices()} which 
+ * takes an {@link Application} instance.
  * 
  * @author mzechner
  *
@@ -143,6 +146,24 @@ public class OrthographicCamera
 		combined.set( proj );
 		combined.mul( model );
 		combined.mul( rotationMatrix );
+	}
+	
+	/**
+	 * Sets the projection matrix that also incorporates the camera's scale
+	 * and position and loads an identity to the model view matrix of the
+	 * {@link Application}. The current matrices get overwritten.
+	 * The matrix mode will be left in the model view state after
+	 * a call to this.
+	 * 
+	 * @param app The application to set the matrices for.
+	 */
+	public void setMatrices( Application app )
+	{
+		setViewport(app.getViewportWidth(), app.getViewportHeight());
+		app.setMatrixMode( MatrixMode.Projection );
+		app.loadMatrix( getCombinedMatrix().val );
+		app.setMatrixMode( MatrixMode.ModelView );
+		app.loadIdentity();	
 	}
 	
 	private Matrix calculateRotationMatrix( )

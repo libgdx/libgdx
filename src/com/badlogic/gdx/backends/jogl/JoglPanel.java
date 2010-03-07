@@ -24,7 +24,7 @@ import javax.media.opengl.GLEventListener;
 import javax.swing.JPanel;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.GraphicListener;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.math.WindowedMean;
 import com.sun.opengl.impl.NativeLibLoader;
 import com.sun.opengl.util.Animator;
@@ -77,10 +77,10 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 	private final HashSet<Integer> keys = new HashSet<Integer>( );
 	
 	/** listeners **/
-	private final ArrayList<GraphicListener> listeners = new ArrayList<GraphicListener>( );
+	private final ArrayList<RenderListener> listeners = new ArrayList<RenderListener>( );
 	
 	/** listeners **/
-	private final ArrayList<GraphicListener> setupListeners = new ArrayList<GraphicListener>( );	
+	private final ArrayList<RenderListener> setupListeners = new ArrayList<RenderListener>( );	
 	
 	/** start time of last frame **/
 	private long frameStart = System.nanoTime();
@@ -233,7 +233,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 	public void dispose( )
 	{
 		canvas.getContext().makeCurrent();
-		for( GraphicListener listener: listeners )
+		for( RenderListener listener: listeners )
 			listener.dispose( application );
 		remove(canvas);
 		if( animator != null )
@@ -379,7 +379,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 	 * adds a new graphic listener 
 	 * @param listener the listener
 	 */
-	public void addGraphicListener( GraphicListener listener )
+	public void addGraphicListener( RenderListener listener )
 	{
 		setupListeners.add( listener );
 	}
@@ -388,7 +388,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 	 * removes a graphic listener 
 	 * @param listener the listener
 	 */
-	public void removeGraphicListener( GraphicListener listener )
+	public void removeGraphicListener( RenderListener listener )
 	{
 		setupListeners.remove(listener);
 		listeners.remove( listener );
@@ -404,12 +404,12 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 		frameStart = System.nanoTime();
 		mean.addValue( deltaTime );
 		
-		for( GraphicListener listener: setupListeners )
+		for( RenderListener listener: setupListeners )
 			listener.setup( application );
 		listeners.addAll(setupListeners);
 		setupListeners.clear();
 		
-		for( GraphicListener listener: listeners )
+		for( RenderListener listener: listeners )
 			listener.render( application );	
 		meassureFPS();				
 	}
@@ -420,7 +420,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 		deltaTime = (System.nanoTime() - frameStart ) / 1000000000.0f;
 		frameStart = System.nanoTime();
 		
-		for( GraphicListener listener: listeners )
+		for( RenderListener listener: listeners )
 			listener.render( application );	
 		meassureFPS();
 	}
@@ -428,7 +428,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 	@Override
 	public void init(GLAutoDrawable arg0) 
 	{			
-		for( GraphicListener listener: listeners )
+		for( RenderListener listener: listeners )
 			listener.setup( application );		
 	}
 
@@ -438,7 +438,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 		deltaTime = (System.nanoTime() - frameStart ) / 1000000000.0f;
 		frameStart = System.nanoTime();
 		
-		for( GraphicListener listener: listeners )
+		for( RenderListener listener: listeners )
 			listener.render( application );	
 		meassureFPS();
 	}

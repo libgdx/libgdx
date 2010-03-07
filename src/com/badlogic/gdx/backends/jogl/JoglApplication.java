@@ -26,7 +26,7 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.AudioDevice;
 import com.badlogic.gdx.Font;
-import com.badlogic.gdx.GraphicListener;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.Mesh;
 import com.badlogic.gdx.Pixmap;
@@ -34,7 +34,7 @@ import com.badlogic.gdx.Sound;
 import com.badlogic.gdx.Texture;
 import com.badlogic.gdx.Pixmap.Format;
 
-public class JoglApplication implements Application, GraphicListener
+public class JoglApplication implements Application, RenderListener
 {
 	static 
 	{
@@ -78,7 +78,7 @@ public class JoglApplication implements Application, GraphicListener
 	}
 	
 	@Override
-	public void addGraphicListener(GraphicListener listener) 
+	public void addRenderListener(RenderListener listener) 
 	{
 		graphicPanel.addGraphicListener( listener );
 	}
@@ -169,7 +169,7 @@ public class JoglApplication implements Application, GraphicListener
 	}
 
 	@Override
-	public void removeGraphicListener(GraphicListener listener) 
+	public void removeRenderListener(RenderListener listener) 
 	{
 		graphicPanel.removeGraphicListener( listener );
 		
