@@ -38,7 +38,7 @@ public class JoglApplication implements Application, GraphicListener
 {
 	static 
 	{
-		System.loadLibrary( "libgdx" );
+		System.loadLibrary( "gdx" );
 	}
 	
 	JFrame frame;
