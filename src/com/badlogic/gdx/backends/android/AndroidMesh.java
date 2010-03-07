@@ -29,10 +29,9 @@ public final class AndroidMesh implements Mesh
 	private FloatBuffer colorsBuffer;
 	private FloatBuffer uvBuffer;
 	private ShortBuffer indicesBuffer;				
-	private boolean isVBO = false;
+	private boolean isVBO = false;	
 	/** disable/enable vbos globally **/
 	public static boolean globalVBO = true;
-	public Bounds bounds = new Bounds( );
 
 	private int vertexHandle = -1;
 	private int colorHandle = -1;
@@ -250,16 +249,13 @@ public final class AndroidMesh implements Mesh
 	}
 
 	public void vertex( float x, float y, float z )
-	{
-		if( dirty == false )
-			bounds.inf();
+	{		
 		dirty = true;
 		int offset = currentVertex * 3;
 		vertices[offset] = x;
 		vertices[offset+1] = y;
 		vertices[offset+2] = z;
-		currentVertex++;
-		bounds.ext( x, y, z );		
+		currentVertex++;		
 	}
 
 	public void color( float r, float g, float b, float a )

@@ -274,12 +274,22 @@ public final class Bounds implements Serializable
 	{	
 		crn_dirty = true;
         return this.set(
-                        min.set(Math.min(min.getX(),x),
-                                Math.min(min.getY(),y),
-                                Math.min(min.getZ(),z)),
-                        max.set(Math.max(max.getX(),x),
-                                Math.max(max.getY(),y),
-                                Math.max(max.getZ(),z))
+                        min.set(min(min.getX(),x),
+                                min(min.getY(),y),
+                                min(min.getZ(),z)),
+                        max.set(max(max.getX(),x),
+                                max(max.getY(),y),
+                                max(max.getZ(),z))
                 );
+	}
+	
+	public static float min( float a, float b )
+	{
+		return a > b? b: a;
+	}
+	
+	public static float max( float a, float b )
+	{
+		return a > b? a: b;
 	}
 }

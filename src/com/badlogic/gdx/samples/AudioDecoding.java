@@ -28,7 +28,6 @@ public class AudioDecoding implements RenderListener
 		try {
 			thread.join( );
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -52,9 +51,11 @@ public class AudioDecoding implements RenderListener
 			@Override
 			public void run() {
 				AudioDevice device = application.getAudioDevice();
-				NativeMP3Decoder decoder = new NativeMP3Decoder( "D:/music/Audioslave/Audioslave/Cochise.mp3");	
+				NativeMP3Decoder decoder = new NativeMP3Decoder( "/sdcard/audio/cloudconnected.mp3");				
 				while( decoder.readSamples( samples ) > 0 && ! finished )
-					device.writeSamples( samples );
+				{
+					device.writeSamples( samples );					
+				}
 			}					
 		});
 		thread.start();

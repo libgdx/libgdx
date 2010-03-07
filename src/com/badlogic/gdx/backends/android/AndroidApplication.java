@@ -57,7 +57,7 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 {
 	static
 	{
-		System.loadLibrary( "libgdx" );
+		System.loadLibrary( "gdx" );
 	}
 	
 	public GLSurfaceView glView;
@@ -410,8 +410,6 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		}
 //		else
 //			multiTouch( event );
-		
-//		event.recycle();
 		
 		return true;
 	}	
