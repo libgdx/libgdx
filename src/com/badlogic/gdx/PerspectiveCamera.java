@@ -165,6 +165,7 @@ public class PerspectiveCamera
 	public void setMatrices( Application app )
 	{
 		setViewport(app.getViewportWidth(), app.getViewportHeight());
+		update();
 		app.setMatrixMode( MatrixMode.Projection );
 		app.loadMatrix( getCombinedMatrix().val );
 		app.setMatrixMode( MatrixMode.ModelView );
