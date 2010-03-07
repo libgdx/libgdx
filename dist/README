@@ -159,4 +159,6 @@ It is the native code for Android of libgdx.
 You never have to change the android project again unless you add assets. The rest is done in the Java project.
 Just verify that it works on the device every now and then starting the Activity of the android project.
 
+You can download both demo projects from completely setup (minus the run configurations) at http://libgdx.googlecode.com/files/gdx-helloworld.zip
+
 Have fun!
