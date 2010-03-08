@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.android;
 
 import android.content.res.AssetManager;
@@ -11,16 +27,23 @@ import android.graphics.Paint.Style;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Font;
+import com.badlogic.gdx.Pixmap;
 import com.badlogic.gdx.Application.FontStyle;
 import com.badlogic.gdx.math.Rectangle;
 
-public class AndroidFont extends Font
+/**
+ * An implementation of {@link Font} for Android. 
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidFont extends Font
 {
 	Typeface font;
 	Paint paint;
 	FontMetrics metrics;
 
-	public AndroidFont(Application app, String fontName, int size, FontStyle style) 
+	AndroidFont(Application app, String fontName, int size, FontStyle style) 
 	{
 		super( app );
 		font = Typeface.create( fontName, getFontStyle( style ) );
@@ -31,7 +54,7 @@ public class AndroidFont extends Font
 		metrics = paint.getFontMetrics();		
 	}
 
-	public AndroidFont(Application app, AssetManager assets, String file, int size,	FontStyle style) 
+	AndroidFont(Application app, AssetManager assets, String file, int size,	FontStyle style) 
 	{	
 		super( app );
 		font = Typeface.createFromAsset( assets, file );
@@ -56,6 +79,9 @@ public class AndroidFont extends Font
 		return Typeface.NORMAL;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getGlyphAdvance(char character) {
 		float[] width = new float[1];
@@ -63,8 +89,11 @@ public class AndroidFont extends Font
 		return (int)(Math.ceil(width[0]));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object getGlyphBitmap(char character) {
+	public Pixmap getGlyphBitmap(char character) {
 		Rect rect = new Rect();		
 		paint.getTextBounds( "" + character, 0, 1, rect );
 		Bitmap bitmap = Bitmap.createBitmap( rect.width()==0?1:rect.width() + 5, getLineHeight(), Bitmap.Config.ARGB_8888 );
@@ -74,19 +103,28 @@ public class AndroidFont extends Font
 		g.drawRect( new Rect( 0, 0, rect.width() + 5, getLineHeight()), paint);
 		paint.setColor(0xFFFFFFFF);		
 		g.drawText( "" + character, 0, -metrics.ascent, paint );		
-		return bitmap;
+		return new AndroidPixmap( bitmap );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getLineGap() {	
 		return (int)(Math.ceil(metrics.leading));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getLineHeight() {	
 		return (int)Math.ceil(Math.abs(metrics.ascent) + Math.abs(metrics.descent));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getStringWidth(String text) 
 	{		
@@ -96,6 +134,9 @@ public class AndroidFont extends Font
 	}
 
 	Rect tmpRect = new Rect();
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void getGlyphBounds(char character, Rectangle rect) {		
 		paint.getTextBounds( "" + character, 0, 1, tmpRect );

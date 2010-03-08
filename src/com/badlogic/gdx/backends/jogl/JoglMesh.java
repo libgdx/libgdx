@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.jogl;
 
 import java.nio.ByteBuffer;
@@ -9,9 +25,15 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLContext;
 
 import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.math.Bounds;
+import com.badlogic.gdx.math.BoundingBox;
 
-public class JoglMesh implements Mesh 
+/**
+ * An implementation of {@link Mesh} based on Jogl.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglMesh implements Mesh 
 {		
 	private boolean dirty = true;
 	private int currentVertex = 0;
@@ -50,7 +72,7 @@ public class JoglMesh implements Mesh
 	 * @param hasUV wheter a vertex has uv coordinates
 	 * @param numIndices the number of indices given.
 	 */
-	protected JoglMesh( GL gl, int numVertices, boolean hasColors, boolean hasNormals, boolean hasUV, boolean hasIndices, int numIndices, boolean useVBO )
+	JoglMesh( GL gl, int numVertices, boolean hasColors, boolean hasNormals, boolean hasUV, boolean hasIndices, int numIndices, boolean useVBO )
 	{		
 		useVBO = false;
 		if( useVBO )
@@ -248,6 +270,9 @@ public class JoglMesh implements Mesh
 		currentIndex = 0;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void vertex( float x, float y, float z )
 	{		
 		dirty = true;
@@ -258,6 +283,9 @@ public class JoglMesh implements Mesh
 		currentVertex++;		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void color( float r, float g, float b, float a )
 	{
 		dirty = true;
@@ -268,6 +296,9 @@ public class JoglMesh implements Mesh
 		colors[offset+3] = a;		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void normal( float x, float y, float z )
 	{
 		dirty = true;
@@ -277,6 +308,9 @@ public class JoglMesh implements Mesh
 		normals[offset+2] = z;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void texCoord( float u, float v )
 	{
 		dirty = true;
@@ -285,6 +319,9 @@ public class JoglMesh implements Mesh
 		uv[offset+1] = v;		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void index( int ... index )
 	{
 		for( int i = 0; i < index.length; i++ )		
@@ -386,8 +423,10 @@ public class JoglMesh implements Mesh
 		gl.glDisableClientState(GL.GL_TEXTURE_COORD_ARRAY );
 		gl.glDisableClientState(GL.GL_NORMAL_ARRAY );
 	}	
-	
-	
+		
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void dispose() {
 		GL gl = GLContext.getCurrent().getGL();
@@ -421,6 +460,9 @@ public class JoglMesh implements Mesh
 		meshes--;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void render(PrimitiveType type, int numVertices, int offset) {
 		GL gl = GLContext.getCurrent().getGL();
@@ -435,7 +477,7 @@ public class JoglMesh implements Mesh
 		lastMesh = this;
 		
 	}
-	
+		
 	private int getPrimitiveType( PrimitiveType type )
 	{
 		if( type == PrimitiveType.Lines )
@@ -456,6 +498,9 @@ public class JoglMesh implements Mesh
 			return GL.GL_TRIANGLE_FAN;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void render(PrimitiveType type) 
 	{
@@ -466,6 +511,9 @@ public class JoglMesh implements Mesh
 			render( type, numVertices, 0 );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reset() {
 		dirty = true;
@@ -475,37 +523,57 @@ public class JoglMesh implements Mesh
 		numVertices = 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getMaximumVertices() {
 		return vertices.length / 3;
 	}
 	
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getColors() {
 		return colors;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public short[] getIndices() {
 		return indices;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getNormals() {
 		return normals;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getUV() {
 		return uv;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getVertices() {
 		return vertices;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDirty() {
 		dirty = true;		

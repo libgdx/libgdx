@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.jogl;
 
 import javax.sound.sampled.AudioFormat;
@@ -7,7 +23,14 @@ import javax.sound.sampled.AudioFormat.Encoding;
 
 import com.badlogic.gdx.AudioDevice;
 
-public class JoglAudioDevice implements AudioDevice 
+/**
+ * An implementation of {@link AudioDevice} for desktop Java based on
+ * java sound.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglAudioDevice implements AudioDevice 
 {
 	/** the buffer size in samples **/
 	private final static int BUFFER_SIZE = 1024;
@@ -24,7 +47,7 @@ public class JoglAudioDevice implements AudioDevice
 	 * 
 	 * @throws Exception in case the audio system could not be initialized
 	 */
-	public JoglAudioDevice( )
+	JoglAudioDevice( )
 	{
 		try
 		{
@@ -40,11 +63,7 @@ public class JoglAudioDevice implements AudioDevice
 	}
 	
 	/**
-	 * Writes the given samples to the audio device. The samples
-	 * have to be sampled at 44100Hz, mono and have to be in 
-	 * the range [-1,1].
-	 * 
-	 * @param samples The samples.
+	 * {@inheritDoc}
 	 */
 	public void writeSamples( float[] samples )
 	{
@@ -55,6 +74,9 @@ public class JoglAudioDevice implements AudioDevice
 		out.write( buffer, 0, buffer.length );
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void writeSamples(short[] samples) 
 	{	

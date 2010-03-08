@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.BorderLayout;
@@ -13,7 +29,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -26,15 +41,34 @@ import javax.swing.SwingUtilities;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.AudioDevice;
 import com.badlogic.gdx.Font;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.Mesh;
 import com.badlogic.gdx.Pixmap;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Sound;
 import com.badlogic.gdx.Texture;
 import com.badlogic.gdx.Pixmap.Format;
 
-public class JoglApplication implements Application, RenderListener
+/**
+ * An implementation of {@link Application} for desktop Java. Creates
+ * a new JFrame and puts a Jogl Canvas into it. To instantiate it do
+ * the following:
+ * 
+ * <code>
+ * public static void main( String[] argv )
+ * {
+ *    JoglApplication app = new JoglApplication( "My title", 480, 320 );
+ *    app.addRenderListener( new MyRenderer() );
+ * }
+ * </code>
+ * 
+ * This creates a new JoglApplication and registers a RenderListener implementation
+ * called "MyRenderer" with it.
+ * 
+ * @author mzechner
+ *
+ */
+public final class JoglApplication implements Application, RenderListener
 {
 	static 
 	{
@@ -53,6 +87,12 @@ public class JoglApplication implements Application, RenderListener
 	
 	ArrayList<CloseListener> closeListeners = new ArrayList<CloseListener>();	
 	
+	/**
+	 * Constructor, sets the title and dimension of the {@link Application}.
+	 * @param title The title
+	 * @param width The width in pixels
+	 * @param height The height in pixels
+	 */
 	public JoglApplication( String title, int width, int height )
 	{
 		frame = new JFrame( title );
@@ -77,12 +117,18 @@ public class JoglApplication implements Application, RenderListener
         graphicPanel.addGraphicListener( this );
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addRenderListener(RenderListener listener) 
 	{
 		graphicPanel.addGraphicListener( listener );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clear(boolean color, boolean depth, boolean stencil) 
 	{
@@ -95,6 +141,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glClear( flags );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clearColor(float r, float g, float b, float a) 
 	{
@@ -102,6 +151,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glClearColor( r, g, b, a );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void color(float r, float g, float b, float a) 
 	{
@@ -109,18 +161,27 @@ public class JoglApplication implements Application, RenderListener
 		gl.glColor4f( r, g, b, a );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream getResourceInputStream(String file) throws IOException 
 	{		
 		return new FileInputStream( file );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] listResourceFiles(String directory) 
 	{
 		return new File(directory).list();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void loadIdentity() 
 	{
@@ -128,6 +189,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glLoadIdentity();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void loadMatrix(float[] matrix) 
 	{
@@ -135,6 +199,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glLoadMatrixf( matrix, 0);		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void multMatrix(float[] matrix) 
 	{
@@ -142,25 +209,36 @@ public class JoglApplication implements Application, RenderListener
 		gl.glMultMatrixf( matrix, 0);		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Mesh newMesh(int maxVertices, boolean hasColors, boolean hasNormals, boolean hasUV, boolean hasIndices, int maxIndices, boolean isStatic) 
 	{	
 		return new JoglMesh( GLContext.getCurrent().getGL(), maxVertices, hasColors, hasNormals, hasUV, hasIndices, maxIndices, isStatic );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap) 
 	{
 		return new JoglTexture( in, minFilter, maxFilter, uWrap, vWrap);
 	}
 	
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
 	{	
 		return new JoglTexture( width, height, minFilter, maxFilter, uWrap, vWrap);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void normal(float x, float y, float z) 
 	{
@@ -168,6 +246,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glNormal3f(x, y, z);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeRenderListener(RenderListener listener) 
 	{
@@ -175,6 +256,9 @@ public class JoglApplication implements Application, RenderListener
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void rotate(float angle, float x, float y, float z) 
 	{
@@ -182,6 +266,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glRotatef( angle, x, y, z );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void scale(float x, float y, float z) 
 	{
@@ -189,6 +276,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glScalef( x, y, z );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setMatrixMode(MatrixMode mode) 
 	{
@@ -201,6 +291,9 @@ public class JoglApplication implements Application, RenderListener
 			gl.glMatrixMode( GL.GL_TEXTURE );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void translate(float x, float y, float z) 
 	{
@@ -208,45 +301,69 @@ public class JoglApplication implements Application, RenderListener
 		gl.glTranslatef( x, y, z );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addInputListener(InputListener listener) 
 	{
 		inputMultiplexer.addListener(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeInputListener(InputListener listener) 
 	{	
 		inputMultiplexer.removeListener(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getViewportHeight() 
 	{		
 		return graphicPanel.getHeight();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getViewportWidth() 
 	{	
 		return graphicPanel.getWidth();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isAccelerometerAvailable() {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getX() {		
 		return graphicPanel.getMouseX();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getY() {
 		return graphicPanel.getMouseY( );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isPressed() {
 		return graphicPanel.isButtonDown(MouseEvent.BUTTON1) ||
@@ -254,12 +371,18 @@ public class JoglApplication implements Application, RenderListener
 				graphicPanel.isButtonDown(MouseEvent.BUTTON3);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getDeltaTime() {
 		// TODO Auto-generated method stub
 		return graphicPanel.getDeltaTime();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void disable(RenderState state) {
 		GL gl = GLContext.getCurrent().getGL();
@@ -280,6 +403,9 @@ public class JoglApplication implements Application, RenderListener
 			gl.glDisable( GL.GL_ALPHA_TEST );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void enable(RenderState state) {
 		GL gl = GLContext.getCurrent().getGL();
@@ -308,6 +434,9 @@ public class JoglApplication implements Application, RenderListener
 			gl.glEnable( GL.GL_CULL_FACE );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String tag, String message) {
 		System.out.println( tag + ": " + message );
@@ -315,6 +444,9 @@ public class JoglApplication implements Application, RenderListener
 
 	float[] position = new float[4];
 	float[] color = new float[4];
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override	
 	public void setAmbientLight(float r, float g, float b, float a) {
 		GL gl = GLContext.getCurrent().getGL();		
@@ -325,6 +457,9 @@ public class JoglApplication implements Application, RenderListener
 		gl.glLightModelfv( GL.GL_LIGHT_MODEL_AMBIENT, color, 0 );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void disableLight(int light) 
 	{	
@@ -332,12 +467,18 @@ public class JoglApplication implements Application, RenderListener
 		gl.glDisable( GL.GL_LIGHT0 + light );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void enableLight(int light) {
 		GL gl = GLContext.getCurrent().getGL();	
 		gl.glEnable( GL.GL_LIGHT0 + light );			
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDirectionalLight(int light, float x, float y, float z,
 			float r, float g, float b, float a) {
@@ -360,32 +501,41 @@ public class JoglApplication implements Application, RenderListener
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void flush() {
 		GLContext.getCurrent().getGL().glFinish();
 	}
-	
-	
-	public boolean error( )
-	{
-		return false; // GLContext.getCurrent().getGL().glGetError() != GL.GL_NO_ERROR;
-	}
-
+		
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void popMatrix() {
 		GLContext.getCurrent().getGL().glPopMatrix();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void pushMatrix() {
 		GLContext.getCurrent().getGL().glPushMatrix();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Font newFont(String fontName, int size, FontStyle style) {
 		return new JoglFont( this, fontName, size, style );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Font newFontFromFile(String file, int size, FontStyle style) {
 		try {
@@ -395,11 +545,14 @@ public class JoglApplication implements Application, RenderListener
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void blendFunc(BlendFunc arg1, BlendFunc arg2) {
 		GLContext.getCurrent().getGL().glBlendFunc( getBlendFuncValue( arg1 ), getBlendFuncValue( arg2 ) );
 	}
-	
+		
 	private int getBlendFuncValue( BlendFunc func )
 	{
 		if( func == BlendFunc.DestAlpha )
@@ -426,6 +579,9 @@ public class JoglApplication implements Application, RenderListener
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(String file, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
@@ -442,6 +598,9 @@ public class JoglApplication implements Application, RenderListener
 		}		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void getTextInput( final TextInputListener listener, final String title, final String text )
 	{
@@ -455,6 +614,7 @@ public class JoglApplication implements Application, RenderListener
 		});
 	}
 
+	
 	@Override
 	public void dispose(Application application) {
 		// TODO Auto-generated method stub
@@ -476,6 +636,9 @@ public class JoglApplication implements Application, RenderListener
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Sound newSound(String file) {
 		try
@@ -489,31 +652,49 @@ public class JoglApplication implements Application, RenderListener
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public OutputStream getOutputStream(String file) throws IOException {
 		return new FileOutputStream( System.getProperty("user.home") + "/" + file );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream getInputStream(String file) throws IOException {
 		return new FileInputStream( System.getProperty("user.home") + "/" + file );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mkdir(String directory) {
 		new File( System.getProperty("user.home") + "/" + directory ).mkdirs();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addCloseListener(CloseListener listener) {
 		closeListeners.add(listener);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeCloseListener(CloseListener listener) {	
 		closeListeners.remove(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void depthFunc(DepthFunc func) {
 		GL gl = GLContext.getCurrent().getGL();
@@ -535,6 +716,9 @@ public class JoglApplication implements Application, RenderListener
 			gl.glDepthFunc( GL.GL_NOTEQUAL );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isKeyPressed(Keys key) 
 	{ 
@@ -559,30 +743,45 @@ public class JoglApplication implements Application, RenderListener
 		return graphicPanel.isKeyDown( k ); 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getAccelerometerX() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getAccelerometerY() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getAccelerometerZ() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void enableMultiTouch(boolean enable) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getX(int pointer) {
 		if( pointer == 0 )
@@ -591,6 +790,9 @@ public class JoglApplication implements Application, RenderListener
 			return 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getY(int pointer) {
 		if( pointer == 0 )
@@ -599,6 +801,9 @@ public class JoglApplication implements Application, RenderListener
 			return 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isPressed(int pointer) {
 		if( pointer == 0 )
@@ -609,24 +814,36 @@ public class JoglApplication implements Application, RenderListener
 			return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isAndroid() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(int width, int height, Format format) 
 	{		
 		return new JoglPixmap(width, height, format);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vwrap) 
 	{	
 		return new JoglTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, maxFilter, uWrap, vwrap );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(String file, Pixmap.Format format) 
 	{
@@ -641,6 +858,9 @@ public class JoglApplication implements Application, RenderListener
 		}		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(InputStream in, Pixmap.Format format) 
 	{
@@ -653,12 +873,18 @@ public class JoglApplication implements Application, RenderListener
 		}		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setPointSize(int width) {
 		GL gl = GLContext.getCurrent().getGL();
 		gl.glPointSize( width );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setCullMode(CullMode order) 
 	{	
@@ -668,13 +894,18 @@ public class JoglApplication implements Application, RenderListener
 		else
 			gl.glCullFace( GL.GL_CCW );
 	}
-
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(Object nativeImage) {
 		return new JoglPixmap( (BufferedImage)nativeImage );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AudioDevice getAudioDevice() 
 	{	

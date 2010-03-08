@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.android;
 
 import java.nio.ByteBuffer;
@@ -9,10 +25,14 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
 
 import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.Mesh.PrimitiveType;
-import com.badlogic.gdx.math.Bounds;
 
-public final class AndroidMesh implements Mesh
+/**
+ * An implementation of {@link Mesh} for Android.
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidMesh implements Mesh
 {
 	private boolean dirty = true;
 	private int numVertices = 0;
@@ -57,7 +77,7 @@ public final class AndroidMesh implements Mesh
 	 * @param hasUV wheter a vertex has uv coordinates
 	 * @param numIndices the number of indices given.
 	 */
-	public AndroidMesh( GL10 gl, int numVertices, boolean hasColors, boolean hasNormals, boolean hasUV, boolean hasIndices, int numIndices, boolean isStatic  )
+	AndroidMesh( GL10 gl, int numVertices, boolean hasColors, boolean hasNormals, boolean hasUV, boolean hasIndices, int numIndices, boolean isStatic  )
 	{			
 		this.gl = gl;
 		this.isStatic = isStatic;
@@ -248,6 +268,9 @@ public final class AndroidMesh implements Mesh
 		currentIndex = 0;		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void vertex( float x, float y, float z )
 	{		
 		dirty = true;
@@ -258,6 +281,9 @@ public final class AndroidMesh implements Mesh
 		currentVertex++;		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void color( float r, float g, float b, float a )
 	{
 		dirty = true;
@@ -268,6 +294,9 @@ public final class AndroidMesh implements Mesh
 		colors[offset+3] = a;		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void normal( float x, float y, float z )
 	{
 		dirty = true;
@@ -277,6 +306,9 @@ public final class AndroidMesh implements Mesh
 		normals[offset+2] = z;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void texCoord( float u, float v )
 	{
 		dirty = true;
@@ -285,6 +317,9 @@ public final class AndroidMesh implements Mesh
 		uv[offset+1] = v;		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void index( int ... index )
 	{
 		for( int i = 0; i < index.length; i++ )		
@@ -395,6 +430,9 @@ public final class AndroidMesh implements Mesh
 		gl.glDisableClientState(GL10.GL_NORMAL_ARRAY );
 	}	
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void dispose( )
 	{
 		if( isVBO )
@@ -425,6 +463,9 @@ public final class AndroidMesh implements Mesh
 		meshes--;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void render(PrimitiveType type, int numVertices, int offset) {		
 		update( gl );		       
@@ -460,6 +501,9 @@ public final class AndroidMesh implements Mesh
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void render(PrimitiveType type) 
 	{
@@ -470,6 +514,9 @@ public final class AndroidMesh implements Mesh
 			render( type, numVertices, 0 );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void reset() {
 		dirty = true;
@@ -479,36 +526,57 @@ public final class AndroidMesh implements Mesh
 		numVertices = 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getMaximumVertices() {
 		return vertices.length / 3;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getColors() {
 		return colors;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public short[] getIndices() {
 		return indices;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getNormals() {
 		return normals;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getUV() {
 		return uv;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float[] getVertices() {
 		return vertices;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDirty() {
 		dirty = true;		

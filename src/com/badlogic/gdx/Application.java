@@ -1,8 +1,26 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import javax.media.opengl.GL;
 
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 
@@ -34,7 +52,7 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
  * 
  * <p>
  * The Application interface offers a couple of methods in order to keep things plattform independant.
- * These methods are grouped into several topics: graphics, sound, input and file i/o.
+ * These methods are grouped into several areas: graphics, sound, input and file i/o.
  * </p>
  * 
  * <p>
@@ -80,6 +98,13 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
  * </p>
  * 
  * <p>
+ * Apart from being a resource factory an Application also wraps OpenGL functionality. This includes
+ * matrix stack manipulation, state changes and so on. Refer to the method documentations of this class 
+ * for more information. Not all of OpenGLs functionality is wrapped of course. Feel free to extend this
+ * but make sure that your additions work on the PC as well as on Android!
+ * </p>
+ * 
+ * <p>
  * Obtaining user input can be done in two ways, either via polling or by registering an {@link InputListener}
  * which follows the event based paradigm.
  * </p>
@@ -109,7 +134,7 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
  * </p>
  * 
  * <p>
- * Audio is not supported 100% at the moment. You can play small sound effects you have loaded via the {@link Application.newSound()}
+ * Audio is not supported 100% at the moment. FIXME You can play small sound effects you have loaded via the {@link Application.newSound()}
  * method easily or do your own sound mixing with a call to {@link Application.getAudioDevice()} which lets you feed PCM data
  * to the audio device directly. Currently this only supports output of 44.1khz mono PCM data. This will change in the near future.
  * Another method called {@link Application.newMusic()} will be introduced that allows streaming and playback of normal audio files.
@@ -529,14 +554,16 @@ public interface Application
 	public Font newFontFromFile( String file, int size, FontStyle style );
 	
 	/**
-	 * Sets the matrix mode.
+	 * Sets the matrix mode. This equivalent to the OpenGL function glSetMatrixMode.
 	 * 
 	 * @param mode The matrix mode
 	 */
 	public void setMatrixMode( MatrixMode mode );
 	
 	/**
-	 * Multiplies the current matrix on the current matrix stack with a translation matrix constructed from the arguments
+	 * Multiplies the current matrix on the current matrix stack with a translation matrix constructed from the arguments.
+	 * This equivalent to the OpenGL function glTranslatef.
+	 * 
 	 * @param x Translation in x
 	 * @param y Translation in y
 	 * @param z Translation in z
@@ -545,6 +572,8 @@ public interface Application
 	
 	/**
 	 * Multiplies the current matrix on the current matrix stack with the scale matrix constructed from the arguments
+	 * This equivalent to the OpenGL function glScalef.
+	 * 
 	 * @param x Scale in x
 	 * @param y Scale in y
 	 * @param z Scale in z
@@ -553,6 +582,8 @@ public interface Application
 	
 	/**
 	 * Multiplies the current matrix on the current matrix stack with the rotation matrix constructed from the arguments
+	 * This equivalent to the OpenGL function glRotatef.
+	 * 
 	 * @param angle the angle in degrees
 	 * @param x The rotation axis x component
 	 * @param y The rotation axis y component
@@ -561,31 +592,33 @@ public interface Application
 	public void rotate( float angle, float x, float y, float z );
 	
 	/**
-	 * Loads an identity matrix
+	 * Loads an identity matrix. This equivalent to the OpenGL function glLoadIdentity.
 	 */
 	public void loadIdentity( );
 	
 	/**
 	 * Loads a 4x4 matrix in column major order to the current matrix on the current matrix stack.
+	 * This equivalent to the OpenGL function glLoadMatrix.
+	 * 
 	 * @param matrix The matrix
 	 */
 	public void loadMatrix( float[] matrix );
 	
 	/**
 	 * Multiplies the current Matrix on the current matrix stack with the given matrix. The
-	 * given matrix must be given in column major order.
+	 * given matrix must be given in column major order. This equivalent to the OpenGL function glMultMatrix.
 	 * 
 	 * @param matrix The matrix
 	 */
 	public void multMatrix( float[] matrix );
 	
 	/**
-	 * pushes the current matrix
+	 * Pushes the current matrix. This equivalent to the OpenGL function glPushMatrix.
 	 */
 	public void pushMatrix();
 
 	/** 
-	 * pops the current matrix
+	 * Pops the current matrix. This equivalent to the OpenGL function glPopMatrix.
 	 */
 	public void popMatrix();
 	
@@ -600,12 +633,21 @@ public interface Application
 	public int getViewportHeight( );
 	
 	/**
-	 * Clears the buffers for which the flag is set to true
+	 * Clears the buffers for which the flag is set to true. Uses the
+	 * current clear color set by {@link Application.clearColor()} and
+	 * the OpenGL default values for the depth buffer and stencil buffer.
+	 * 
+	 * FIXME should also be able to specify depth and stencil clear value
+	 * 
+	 * @param color clear the color (frame) buffer
+	 * @param depth clear the depth buffer
+	 * @param stencil clear the stencil buffer (not supported yet)
 	 */
 	public void clear( boolean color, boolean depth, boolean stencil );
 	
 	/**
 	 * Sets the clear color.
+	 * 
 	 * @param r Red component
 	 * @param g Green component
 	 * @param b Blue component
@@ -615,6 +657,7 @@ public interface Application
 	
 	/**
 	 * Sets the current color.
+	 * 
 	 * @param r Red component
 	 * @param g Green component
 	 * @param b Blue component
@@ -624,6 +667,7 @@ public interface Application
 	
 	/**
 	 * Sets the current normal
+	 * 
 	 * @param x X component
 	 * @param y Y component
 	 * @param z Z component
@@ -631,44 +675,63 @@ public interface Application
 	public void normal( float x, float y, float z );	
 	
 	/**
-	 * Enables the given {@link RenderState}
-	 * @param state The render state
+	 * Enables the given {@link RenderState}. This is equivalent to
+	 * glEnable. A couple of convenience settings are performed for
+	 * a vew RenderStates:
+	 * 
+	 * <ul>
+	 * 	<li>{@link RenderState.Lighting} will also enable GL_COLOR_MATERIAL</li>
+	 *  <li>{@link RenderState.DepthTest} will also call glDepthMask( true )</li>
+	 *  <li>{@link RenderState.AlphaTest} will also call gl.glAlphaFunc( GL.GL_GREATER, 0.9f )</li>  
+	 * </ul> 
+	 * 
+	 * @param state The render state to enable
 	 */
 	public void enable( RenderState state );
 	
 	/**
-	 * Disables the given {@link RenderState}
+	 * Disables the given {@link RenderState}. 
+	 * 
+	 * <ul>
+	 * 	<li>{@link RenderState.DepthTest} will also call glDepthMask( false )</li>
+	 * </ul>
+	 * 
 	 * @param state The render state
 	 */
 	public void disable( RenderState state );
 	
 	/**
 	 * Sets the point size
+	 * 
 	 * @param width in pixels
 	 */
 	public void setPointSize( int width );
 	
 	/**
-	 * Sets the blend function
-	 * @param arg1
-	 * @param arg2
+	 * Sets the blend function. This is equal to glBlendFunc.
+	 * 
+	 * @param srcArg The source argument
+	 * @param dstArg The target argument
 	 */
-	public void blendFunc( BlendFunc arg1, BlendFunc arg2 );
+	public void blendFunc( BlendFunc srcArg, BlendFunc dstArg );
 
 	/**
-	 * Sets the depth func
-	 * @param func
+	 * Sets the depth function. This is equal to glDepthFunc.
+	 * @param func The depth function
 	 */
 	public void depthFunc( DepthFunc func );
 	
 	/**
-	 * Sets the culling winding order.
-	 * @param counterclockwise
+	 * Sets the culling winding order. This is equal to glCullFace.
+	 * 
+	 * @param order The culling winding order.
 	 */
 	public void setCullMode(CullMode order);
 
 	/**
-	 * Sets the ambient light color
+	 * Sets the ambient light color. This is equal to calling
+	 * gl.glLightModelfv( GL.GL_LIGHT_MODEL_AMBIENT, color, 0 ).
+	 * 
 	 * @param r The red component
 	 * @param g The green component
 	 * @param b The blue component
@@ -678,8 +741,13 @@ public interface Application
 	
 	/**
 	 * Sets the light to the given direction and color. It has to be
-	 * enabled via enableLight. The direction has to be normalized.
+	 * enabled via enableLight. The direction has to be normalized. Sets
+	 * the ambient and diffuse color of the directional light to the 
+	 * given color components. As oposed to the standard notion of OpenGL
+	 * the light direction is really given as a direction and not as a
+	 * negative direction as usual!
 	 * 
+	 * @param light The number of the light source
 	 * @param x The direction x component
 	 * @param y The direction y component
 	 * @param z The direction z component
@@ -691,25 +759,26 @@ public interface Application
 	public void setDirectionalLight( int light, float x, float y, float z, float r, float g, float b, float a );
 	
 	/**
-	 * Enables the light
+	 * Enables the given light. This is equal to glEnable( light ).
+	 * 
 	 * @param light the light number
 	 */
 	public void disableLight( int light );
 	
 	/**
-	 * Disables the light
+	 * Disables the light. This is equal to glDisable( light ).
 	 * @param light The light number
 	 */
 	public void enableLight( int light );
 	
 	/**
-	 * makes sure that any rendering commands are executed
+	 * makes sure that any rendering commands are executed. This
+	 * is equal to calling glFinish.
 	 */
 	public void flush();
 	
-	/**
-	 * wheter an accelerometer is available
-	 * @return
+	/** 
+	 * @return wheter an accelerometer is available
 	 */
 	public boolean isAccelerometerAvailable( );	
 	

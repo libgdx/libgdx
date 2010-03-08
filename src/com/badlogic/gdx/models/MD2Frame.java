@@ -14,33 +14,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.models;
 
-public class Rectangle
+import java.nio.FloatBuffer;
+
+public class MD2Frame 
 {
-	public float x, y;
-	public float width, height;
-	
-	public Rectangle( )
-	{
-		
-	}
-	
-	public Rectangle( float x, float y, float width, float height )
-	{
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-	
-	public Rectangle( Rectangle rect )
-	{
-		x = rect.x;
-		y = rect.y;
-		width = rect.width;
-		height = rect.height;
-	}
-	
-		
+	public float[] vertices;
+	public FloatBuffer verticesBuffer;
+	public String name;
 }

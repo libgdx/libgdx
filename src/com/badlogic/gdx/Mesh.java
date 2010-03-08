@@ -1,13 +1,44 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx;
 
 /**
+ * <p>
  * A Mesh, either indexed or non-indexed. A mesh contains
  * vertices composed of positions, normals, colors and texture 
  * coordinates. Additionally it can have indices which refer to
  * those vertices for optimization. To define a mesh various
- * methods are provided which operate much like their opengl 
+ * methods are provided which operate much like their OpenGL
  * immediate mode counter parts. Use normal, color and texture coordinate
- * methods before you define a vertex. 
+ * methods before you define a vertex.
+ * </p> 
+ * 
+ * <p>
+ * For more fine grained control you can directly acces the 
+ * arrays holding the vertex data. If you do so you have to 
+ * set the Mesh dirty manually by calling {@link Mesh.setDirty()}
+ * after you are done manipulating the vertices. Additionally you
+ * have to use the {@link Mesh.render()} method that demands the
+ * number of vertices to use to be given.
+ * </p>
+ * 
+ * <p>
+ * A Mesh has to be disposed after it is no longer used.
+ * </p>
  * 
  * @author mzechner
  *

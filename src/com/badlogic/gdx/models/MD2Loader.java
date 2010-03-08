@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.models;
 
 import java.io.ByteArrayInputStream;
@@ -10,14 +26,11 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.models.md2.LittleEndianDataInputStream;
-import com.badlogic.gdx.models.md2.MD2Frame;
-import com.badlogic.gdx.models.md2.MD2Header;
-import com.badlogic.gdx.models.md2.MD2Mesh;
-import com.badlogic.gdx.models.md2.MD2Triangle;
 
 /**
- * Loads Quake 2 model files without normals.
+ * Loads Quake 2 model files without normals. Use the resulting
+ * {@link MD2Mesh} with a {@link MD2Instance} for easier control
+ * over animation.
  * 
  * @author mzechner
  *

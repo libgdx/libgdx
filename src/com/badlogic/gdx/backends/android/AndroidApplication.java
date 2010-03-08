@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.android;
 
 import java.io.File;
@@ -6,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -30,6 +45,7 @@ import android.media.SoundPool;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,21 +60,47 @@ import android.widget.EditText;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.AudioDevice;
 import com.badlogic.gdx.Font;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.Mesh;
 import com.badlogic.gdx.Pixmap;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Sound;
 import com.badlogic.gdx.Texture;
 import com.badlogic.gdx.Pixmap.Format;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.math.WindowedMean;
 
+/**
+ * An implementation of the {@link Application} interface for Android. This basically wraps
+ * a {@link GLSurfaceView} and derives from {@link Activity}. To instantiate this class create a 
+ * new class that derives from it and create an appropriate {@link Activity.onCreate()} method.
+ * 
+ * Here's an example:
+ * 
+ * <code>
+ * public class MyAndroidApp extends AndroidApplication { 
+ *   @Override
+ *   public void onCreate(Bundle savedInstanceState) {
+ *       super.onCreate(savedInstanceState);        
+ *       addRenderListener( new MyRenderer() );
+ *   }
+ * }
+ * </code>
+ * 
+ * MyRender in this example of course implements the {@link RenderListener} interface. You
+ * can use the same RenderListener with an instance of {@link JoglApplication}!
+ * 
+ * @author mzechner
+ *
+ */
 public class AndroidApplication extends Activity implements GLSurfaceView.Renderer, OnTouchListener, SensorEventListener, OnKeyListener, Application
 {
 	static
 	{
 		System.loadLibrary( "gdx" );
 	}
+
+	private final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 	
 	public GLSurfaceView glView;
 	private long lastFrameTime = System.nanoTime();
@@ -76,10 +118,7 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	
 	public boolean accelerometerAvailable = false;	
 	private SensorManager manager;
-	private final float[] accelerometerValues = new float[3];
-
-	private float tiltOffsetX = 0.0f;
-	private float tiltOffsetY = 6.0f;	
+	private final float[] accelerometerValues = new float[3];	
 
 	private int frames;
 	private long framesStartTime = System.nanoTime();
@@ -115,7 +154,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		public int x, y;
 		public int button;
 		public int pointer;
+		@SuppressWarnings("unused")
 		public int keycode;
+		@SuppressWarnings("unused")
 		public char keychar;
 		public EventType type;
 
@@ -192,17 +233,20 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		
 	}	
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public void enableMultiTouch( boolean enable )
 	{
 		this.multitouchEnabled = enable;
 	}
-	
+		
 	private void setupSoundManager(AndroidApplication openGLESApplication) {		
 		soundPool = new SoundPool( 5, AudioManager.STREAM_MUSIC, 100); 		
 	}
 
 	/**
-	 * @return the viewport width
+	 * {@inheritDoc}
 	 */
 	public int getViewportWidth( )
 	{
@@ -210,76 +254,32 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	}
 
 	/**
-	 * 
-	 * @return the viewport height
+	 * {@inheritDoc}
 	 */
 	public int getViewportHeight( )
 	{
 		return viewportHeight;
-	}
-
-
-	/**
-	 * Uses the accelerometer values to calculate
-	 * an x coordinate based on the tilt around the
-	 * z axis of the phone from [-1, 1]
-	 * 
-	 * @return the tilt x coordinate 
-	 */
-	public float getTiltX( )
-	{
-		float x = (accelerometerValues[1] - tiltOffsetX) / 2f;
-		if( x > 1 )
-			x = 1;
-		if( x < -1 )
-			x = -1;
-		return x;
 	}	
 
 	/**
-	 * Uses the accelerometer values to calculate
-	 * an y coordinate based on the tilt around the
-	 * x axis of the phone from [-1, 1]
-	 * 
-	 * @return the tilt x coordinate 
-	 */
-	public float getTiltY( )
-	{
-		float y = (tiltOffsetY - accelerometerValues[0]) / 2f;
-		if( y > 1 )
-			y = 1;
-		if( y < - 1 )
-			y = -1;
-		return y;
-	}
-
-
-	/**
-	 * zeros the accelerometer at the current location.
-	 * This is used as the reference for determining
-	 * the tilt x/y coordinates
-	 */
-	public void calibrateAccelerometer( )
-	{
-		tiltOffsetX = accelerometerValues[1];
-		tiltOffsetY = accelerometerValues[0];
-	}	
-
-	/**
-	 * @return wheter the accelerometer is available
+	 * {@inheritDoc}
 	 */
 	public boolean isAccelerometerAvailable( )
 	{
 		return accelerometerAvailable;
 	}
 
+	/**
+	 * Vibrates for ms milliseconds
+	 * @param ms The number of milliseconds to vibrate
+	 */
 	public void vibrate( int ms )
 	{
 		vibrator.vibrate( ms );
 	}
 
 	/**
-	 * @return the delta time in seconds to the last frame
+	 * {@inheritDoc}
 	 */
 	public float getDeltaTime( )
 	{
@@ -316,7 +316,7 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		for( int i = 0; i < listeners.size(); i++ )		
 			listeners.get(i).render( this );		
 		//		gl.glFinish();
-		float frameTime = (System.nanoTime()-lastFrameTime) / 1000000000.0f;
+		
 		if( System.nanoTime() - framesStartTime > 1000000000l )
 		{
 			fps = frames / ((System.nanoTime()-framesStartTime) / 1000000000.0f );
@@ -609,6 +609,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		//        Debug.startMethodTracing("androllz");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addRenderListener(RenderListener listener) 
 	{
@@ -618,12 +621,18 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addInputListener(InputListener listener) 
 	{		
 		inputListeners.add( listener );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clear(boolean color, boolean depth, boolean stencil) 
 	{	
@@ -635,41 +644,65 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		gl.glClear( flags );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void clearColor(float r, float g, float b, float a) {
 		gl.glClearColor( r, g, b, a );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void color(float r, float g, float b, float a) {
 		gl.glColor4f( r, g, b, a );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream getResourceInputStream(String file) throws IOException {
 		return getAssets().open( file );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String[] listResourceFiles(String directory) throws IOException {
 		return getAssets().list( directory );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void loadIdentity() {
 		gl.glLoadIdentity();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void loadMatrix(float[] matrix) {
 		gl.glLoadMatrixf( matrix, 0 );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void multMatrix(float[] matrix) {	
 		gl.glMultMatrixf( matrix, 0 );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Mesh newMesh(int maxVertices, boolean hasColors, boolean hasNormals,
 			boolean hasUV, boolean hasIndices, int maxIndices, boolean isStatic) 
@@ -677,6 +710,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		return new AndroidMesh(gl, maxVertices, hasColors, hasNormals, hasUV, hasIndices, maxIndices, isStatic );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(InputStream in, TextureFilter minFilter,
 			TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap) 
@@ -685,6 +721,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		return new AndroidTexture(gl, image, minFilter, maxFilter, uWrap, vWrap);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(int width, int height, TextureFilter minFilter,
 			TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
@@ -693,13 +732,19 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		Bitmap image = Bitmap.createBitmap(width, height, config);
 		return new AndroidTexture(gl, image, minFilter, maxFilter, uWrap, vWrap);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void normal(float x, float y, float z) 
 	{	
 		gl.glNormal3f(x, y, z );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeRenderListener(RenderListener listener) 
 	{	
@@ -707,22 +752,34 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		listeners.remove( listener );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeInputListener(InputListener listener) 
 	{	
 		inputListeners.remove(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void rotate(float angle, float x, float y, float z) {
 		gl.glRotatef( angle, x, y, z );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void scale(float x, float y, float z) {
 		gl.glScalef( x, y, z );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setMatrixMode(MatrixMode mode) 
 	{
@@ -734,21 +791,33 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			gl.glMatrixMode( GL10.GL_TEXTURE );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void translate(float x, float y, float z) {
 		gl.glTranslatef( x, y, z );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getX() {
 		return touchX[0];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getY() {		
 		return touchY[0];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isPressed() 
 	{	
@@ -756,6 +825,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	}
 		
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void disable(RenderState state) {
 		if( state == RenderState.Blending )
@@ -775,6 +847,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			gl.glDisable( GL10.GL_ALPHA_TEST );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void enable(RenderState state) {
 		if( state == RenderState.Blending )
@@ -803,6 +878,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			gl.glEnable( GL10.GL_CULL_FACE );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String tag, String message) {
 		Log.d(tag, message );
@@ -810,6 +888,10 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 
 	float[] position = new float[4];
 	float[] color = new float[4];
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setAmbientLight(float r, float g, float b, float a) {
 		color[0] = r;
@@ -819,17 +901,26 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		gl.glLightModelfv( GL10.GL_LIGHT_MODEL_AMBIENT, color, 0 );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void disableLight(int light) 
 	{	
 		gl.glDisable( GL10.GL_LIGHT0 + light );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void enableLight(int light) {
 		gl.glEnable( GL10.GL_LIGHT0 + light );			
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDirectionalLight(int light, float x, float y, float z,
 			float r, float g, float b, float a) {
@@ -851,42 +942,56 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void flush() {
 		gl.glFinish();
 	}
 
 	GLU glu = new GLU();
-	public boolean error( )
-	{
-		return gl.glGetError() != GL10.GL_NO_ERROR;
-	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void popMatrix() {
 		gl.glPopMatrix();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void pushMatrix() {
 		gl.glPushMatrix();		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Font newFont(String fontName, int size, FontStyle style) {
 		return new AndroidFont( this, fontName, size, style );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Font newFontFromFile(String file, int size, FontStyle style) {
 		return new AndroidFont( this, getAssets(), file, size, style );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void blendFunc(BlendFunc arg1, BlendFunc arg2) {
 		gl.glBlendFunc( getBlendFuncValue( arg1 ), getBlendFuncValue( arg2 ) );
 	}
-
+	
 	private int getBlendFuncValue( BlendFunc func )
 	{
 		if( func == BlendFunc.DestAlpha )
@@ -913,6 +1018,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(String file, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
@@ -929,6 +1037,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		}		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void getTextInput(final TextInputListener listener, final String title, final String text ) {
 		handle.post( new Runnable() 
@@ -958,6 +1069,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		} );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Sound newSound(String file) {
 		try {
@@ -969,37 +1083,55 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public OutputStream getOutputStream(String file) throws IOException 
-	{
-		if( !new File( "/sdcard/" + file ).exists() )
-			new File( "/sdcard/" + file ).createNewFile();
-		return new FileOutputStream( "/sdcard/" + file );
+	{			
+		if( !new File( sdcard + file ).exists() )
+			new File( sdcard + file ).createNewFile();
+		return new FileOutputStream( sdcard + file );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream getInputStream(String file) throws IOException 
 	{
-		if( !new File( "/sdcard/" + file ).exists() )
-			new File( "/sdcard/" + file ).createNewFile();
-		return new FileInputStream( "/sdcard/" + file );
+		if( !new File( sdcard + file ).exists() )
+			new File( sdcard + file ).createNewFile();
+		return new FileInputStream( sdcard + file );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void mkdir(String directory) {	
-		new File( "/sdcard/" + directory ).mkdirs();
+		new File( sdcard + directory ).mkdirs();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addCloseListener(CloseListener listener) {
 		closeListeners.add(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removeCloseListener(CloseListener listener) {	
 		closeListeners.remove(listener);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void depthFunc(DepthFunc func) {		
 		if( func == DepthFunc.Always )
@@ -1020,6 +1152,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			gl.glDepthFunc( GL10.GL_NOTEQUAL );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isKeyPressed(Keys key) {
 		if( key == Keys.Any )
@@ -1028,57 +1163,85 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getAccelerometerX() {
 		return accelerometerValues[0];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getAccelerometerY() {
 		return accelerometerValues[1];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public float getAccelerometerZ() {
 		return accelerometerValues[2];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getX(int pointer) {
-		// TODO Auto-generated method stub
 		return touchX[pointer];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public int getY(int pointer) {
-		// TODO Auto-generated method stub
+	public int getY(int pointer) {	
 		return touchY[pointer];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isPressed(int pointer) 
 	{	
 		return touched[pointer];
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isAndroid() 
 	{	
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(int width, int height, Format format) 
 	{	
 		return new AndroidPixmap(width, height, format);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vwrap) 
 	{	
 		return new AndroidTexture(gl, (Bitmap)pixmap.getNativePixmap(), minFilter, maxFilter, uWrap, vwrap);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(String file, Pixmap.Format format) 
 	{
@@ -1093,6 +1256,9 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		}		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(InputStream in, Pixmap.Format format ) 
 	{
@@ -1102,11 +1268,17 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		return new AndroidPixmap( bitmap );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setPointSize(int width) {
 		gl.glPointSize( width );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setCullMode(CullMode order) {
 		if( order == CullMode.Clockwise )
@@ -1115,11 +1287,17 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			gl.glCullFace( GL10.GL_CCW );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Pixmap newPixmap(Object nativeImage) {
 		return new AndroidPixmap( (Bitmap)nativeImage );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public AudioDevice getAudioDevice()
 	{	

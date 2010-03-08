@@ -1,25 +1,40 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.math;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A simple implementation of the ear cutting algorithm to triangulate
+ * simple polygons without holes. For more information see http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html
+ * @author mzechner
+ *
+ */
 public class EarCutTriangulator 
 {
-	public static void main( String[] argv )
-	{
-		List<Vector> poly = new ArrayList<Vector>();
-		poly.add( new Vector( -10, -10, 0 ) );
-		poly.add( new Vector( 10, -10, 0 ) );
-		poly.add( new Vector( 10, 10, 0 ) );
-		poly.add( new Vector( -10, 10, 0 ) );
-		
-		List<Vector> triangles = new EarCutTriangulator().triangulate(poly);
-		for( Vector v: triangles )
-			System.out.println( v );
-	}
-	
+	/**
+	 * Triangulates the list of points and returns an array
+	 * of {@link Vector} triples that each form a single triangle.
+	 * 
+	 * @param polygon The polygon to triangulate
+	 * @return The list of triangle vertices.
+	 */
 	public List<Vector> triangulate( List<Vector> polygon )
 	{
 		List<Vector> triangles = new ArrayList<Vector>( );

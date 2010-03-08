@@ -1,17 +1,33 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.math;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
-public class CatmullRomSpline implements Serializable
+/**
+ * Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this
+ * type of spline see http://www.mvps.org/directx/articles/catmull/.
+ * 
+ * @author mzechner
+ *
+ */
+public final class CatmullRomSpline implements Serializable
 {
 	/**
 	 * 
@@ -220,33 +236,5 @@ public class CatmullRomSpline implements Serializable
 			normals.add( new Vector( tangent ).crs( up.get(i++) ).nor() );
 		
 		return normals;			
-	}
-	
-	public static void main( String[] argv ) throws IOException
-	{
-		CatmullRomSpline spline = new CatmullRomSpline();
-		spline.add( new Vector() );
-		spline.add( new Vector( 30, 10, 0 ) );
-		spline.add( new Vector( 60, 40, 0 ) );
-		spline.add( new Vector( 80, 40, 0 ) );
-		spline.add( new Vector( 60, 80, 0 ) );
-		spline.add( new Vector( 30, 70, 0 ) );
-		spline.add( new Vector( 10, 70, 0 ) );
-		
-		List<Vector> path = spline.getPath(5);			
-		
-		BufferedImage image = new BufferedImage( 100, 100, BufferedImage.TYPE_4BYTE_ABGR );
-		Graphics g = image.getGraphics();
-		g.setColor( Color.red );
-		g.fillRect( 0, 0, 100, 100 );
-		g.setColor( Color.blue );
-		for( int i = 0; i < path.size() - 2; i++ )
-		{
-			g.drawLine( (int)path.get(i).getX(), (int)path.get(i).getY(), (int)path.get(i+1).getX(), (int)path.get(i+1).getY() );
-		}
-		g.dispose();
-		
-		
-		ImageIO.write( image, "png", new File( "spline.png" ) );		
 	}
 }

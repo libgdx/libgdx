@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.FontMetrics;
@@ -8,16 +24,23 @@ import java.io.InputStream;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Font;
+import com.badlogic.gdx.Pixmap;
 import com.badlogic.gdx.Application.FontStyle;
 import com.badlogic.gdx.math.Rectangle;
 
-public class JoglFont extends Font 
+/**
+ * An implementation of {@link Font} based on the java graphics framework.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglFont extends Font 
 {
 	private final BufferedImage tmpBitmap = new BufferedImage( 1, 1, BufferedImage.TYPE_4BYTE_ABGR );
 	private java.awt.Font font; 
 	private FontMetrics metrics;
 	
-	public JoglFont( Application app, String fontName, int size, FontStyle style )
+	JoglFont( Application app, String fontName, int size, FontStyle style )
 	{	
 		super( app );
 		font = new java.awt.Font( fontName, getJavaFontStyle(style), size );
@@ -27,7 +50,7 @@ public class JoglFont extends Font
 		g.dispose();
 	}
 	
-	public JoglFont( Application app, InputStream in, int size, FontStyle style )
+	JoglFont( Application app, InputStream in, int size, FontStyle style )
 	{
 		super( app );
 		int fontStyle = getJavaFontStyle( style );
@@ -60,14 +83,20 @@ public class JoglFont extends Font
 		return java.awt.Font.PLAIN;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getGlyphAdvance(char character) 
 	{	
 		return metrics.charWidth(character);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public Object getGlyphBitmap(char character) {
+	public Pixmap getGlyphBitmap(char character) {
 		Graphics g = tmpBitmap.getGraphics();
 		g.setFont( font );
 		Rectangle2D bounds = metrics.getStringBounds( "" + character, g);
@@ -82,19 +111,28 @@ public class JoglFont extends Font
 		g.drawString( "" + character, 0, metrics.getAscent());
 		g.dispose();
 		
-		return bitmap;
+		return new JoglPixmap( bitmap );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getLineGap() {
 		return metrics.getLeading();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getLineHeight() {
 		return metrics.getAscent() + metrics.getDescent();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getStringWidth(String text) {					
 		Graphics g = tmpBitmap.getGraphics();
@@ -104,6 +142,9 @@ public class JoglFont extends Font
 		return width;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void getGlyphBounds(char character, Rectangle rect) {
 		Graphics g = tmpBitmap.getGraphics();

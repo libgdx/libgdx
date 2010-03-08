@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.Application.MatrixMode;
@@ -10,7 +26,8 @@ import com.badlogic.gdx.math.Vector;
  * at one of the sides given in the {@link Side} enums, default is front, looking
  * along the z-Axis. Generally you will want to alter the camera's scale and position
  * and then set its matrices via a call to {@link OrthographicCamera.setMatrices()} which 
- * takes an {@link Application} instance.
+ * takes an {@link Application} instance. You can get a picking ray via a call to
+ * {@link OrthographicCamera.getPickRay()}. 
  * 
  * @author mzechner
  *
@@ -259,11 +276,13 @@ public class OrthographicCamera
 	
 	/**
 	 * Returns a ray in world space form the given screen coordinates.
-	 * This can be used for picking.
+	 * This can be used for picking. The returned Ray is an internal
+	 * member of this class to reduce memory allocations. Do not reuse
+	 * it outside of this class.
 	 * 
 	 * @param screenX The screen x-coordinate
 	 * @param mouse_y The screen y-coordinate
-	 * @return The picking ray
+	 * @return The picking ray.
 	 */
 	public Ray getPickRay( int screenX, int screenY )
 	{

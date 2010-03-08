@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.image.BufferedImage;
@@ -7,13 +23,20 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLContext;
 
+import com.badlogic.gdx.Pixmap;
 import com.badlogic.gdx.Texture;
 import com.badlogic.gdx.Application.TextureFilter;
 import com.badlogic.gdx.Application.TextureWrap;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
 
-public class JoglTexture implements Texture
+/**
+ * An implementation of {@link Texture} based on Jogl
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglTexture implements Texture
 {				   
 	/** height of original image in pixels **/
 	private int height;    
@@ -34,7 +57,7 @@ public class JoglTexture implements Texture
 	 *
 	 * @param textureID The GL texture ID
 	 */
-	protected JoglTexture(InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
+	JoglTexture(InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
 	{        
 		try
 		{
@@ -59,7 +82,7 @@ public class JoglTexture implements Texture
 		textures++;
 	}	    	
 	
-	protected JoglTexture(BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
+	JoglTexture(BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
 	{        
 				
 		this.width = image.getWidth();
@@ -82,7 +105,7 @@ public class JoglTexture implements Texture
 	 *
 	 * @param textureID The GL texture ID
 	 */
-	protected JoglTexture(int width, int height, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
+	JoglTexture(int width, int height, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
 	{        		
 		BufferedImage image = new BufferedImage( width, height, BufferedImage.TYPE_4BYTE_ABGR );			
 		this.width = image.getWidth();
@@ -120,47 +143,62 @@ public class JoglTexture implements Texture
 			return GL.GL_REPEAT;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void bind() 
 	{				
 		texture.bind();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void dispose() {
 		texture.dispose();		    
 		textures--;		    
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getHeight() {
 		return texHeight;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getImageHeight() {
 		return height;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getImageWidth() {
 		return width;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getWidth() {
 		return texWidth;
 	}
 
 	/**
-	 * Draws the given bitmap to the texture at position x, y
-	 * @param bitmap The bitmap
-	 * @param x The x coordinate in pixels
-	 * @param y The y coordinate in pixels
+	 * {@inheritDoc}
 	 */
-	public void draw( Object bitmap, int x, int y )
+	public void draw( Pixmap pixmap, int x, int y )
 	{
-		TextureData data = TextureIO.newTextureData((BufferedImage)bitmap, true);
+		TextureData data = TextureIO.newTextureData((BufferedImage)pixmap.getNativePixmap(), true);
 		texture.bind();
 		texture.updateSubImage( data, 0, x, y );		
 	}

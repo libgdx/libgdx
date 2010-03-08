@@ -1,13 +1,19 @@
-//
-// Copyright (c) 2009 Mario Zechner.
-// All rights reserved. This program and the accompanying materials
-// are made available under the terms of the GNU Lesser Public License v2.1
-// which accompanies this distribution, and is available at
-// http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-// 
-// Contributors:
-//     Mario Zechner - initial API and implementation
-//
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
@@ -439,15 +445,20 @@ public final class Vector implements Serializable
         return a + b + c;
 	}
 
-	public float dst2(float x, float y, int i) {
+	public float dst2(float x, float y, float z) {
 		float a = x-val[0];
     	float b = y-val[1];
-    	float c = i-val[2];
+    	float c = z-val[2];
     	
         a *= a;
         b *= b;
         c *= c;
         
         return a + b + c;
+	}
+
+	public float dst(float x, float y, float z) 
+	{	
+		return (float)Math.sqrt( dst2( x, y, z ));
 	}	 
 }

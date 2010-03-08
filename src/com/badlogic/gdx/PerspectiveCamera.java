@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.Application.MatrixMode;
@@ -13,7 +29,7 @@ import com.badlogic.gdx.math.Vector;
  * call {@link PerspectiveCamera.update()} to update all the camera matrices as well as the
  * {@link Frustum}. The combined matrix (projection, modelview) can be retrieved via a call 
  * to {@link PerspectiveCamera.getCombinedMatrix()} and directly passed to {@link 
- * Application.loadMatrix()}.
+ * Application.loadMatrix()}. You can also get a picking ray via {@link PerspectiveCamera.getPickRay()}.
  * 
  * @author mzechner
  *
@@ -202,7 +218,9 @@ public class PerspectiveCamera
 	
 	/**
 	 * Returns a ray in world space form the given screen coordinates.
-	 * This can be used for picking.
+	 * This can be used for picking.  The returned Ray is an internal
+	 * member of this class to reduce memory allocations. Do not reuse
+	 * it outside of this class.
 	 * 
 	 * @param screenX The screen x-coordinate
 	 * @param mouse_y The screen y-coordinate

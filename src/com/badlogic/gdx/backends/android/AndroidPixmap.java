@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.android;
 
 import android.graphics.Bitmap;
@@ -11,14 +27,20 @@ import android.graphics.PorterDuff.Mode;
 
 import com.badlogic.gdx.Pixmap;
 
-public class AndroidPixmap implements Pixmap
+/**
+ * And implementation of {@link Pixmap}
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidPixmap implements Pixmap
 {
 	Canvas canvas;
 	Bitmap pixmap;
 	Paint paint;
 	int r, g, b, a;
 
-	public AndroidPixmap( int width, int height, Pixmap.Format format )
+	AndroidPixmap( int width, int height, Pixmap.Format format )
 	{
 		Bitmap.Config config = getInternalFormat( format );
 		pixmap = Bitmap.createBitmap( width, height, config );
@@ -30,6 +52,9 @@ public class AndroidPixmap implements Pixmap
 		paint.setXfermode( new PorterDuffXfermode( Mode.SRC ) );
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public AndroidPixmap(Bitmap bitmap) 
 	{
 		pixmap = bitmap;
@@ -51,6 +76,9 @@ public class AndroidPixmap implements Pixmap
 		return Bitmap.Config.ARGB_8888;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void drawCircle(int x, int y, int radius) 
 	{
@@ -61,6 +89,9 @@ public class AndroidPixmap implements Pixmap
 		paint.setStyle(Style.FILL);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void drawLine(int x, int y, int x2, int y2) 
 	{	
@@ -69,6 +100,9 @@ public class AndroidPixmap implements Pixmap
 		canvas.drawLine( x, y, x2, y2, paint );	
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void drawRectangle(int x, int y, int width, int height) 
 	{
@@ -79,6 +113,9 @@ public class AndroidPixmap implements Pixmap
 		paint.setStyle(Style.FILL);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fill() 
 	{	
@@ -87,6 +124,9 @@ public class AndroidPixmap implements Pixmap
 		fillRectangle(0, 0, pixmap.getWidth(), pixmap.getHeight());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fillCircle(int x, int y, int radius) 
 	{
@@ -95,6 +135,9 @@ public class AndroidPixmap implements Pixmap
 		canvas.drawCircle( x + radius, y + radius, radius, paint );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void fillRectangle(int x, int y, int width, int height) 
 	{
@@ -103,12 +146,18 @@ public class AndroidPixmap implements Pixmap
 		canvas.drawRect( x, y, x + width, y + height, paint );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Object getNativePixmap() 
 	{	
 		return pixmap;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setColor(float r, float g, float b, float a) 
 	{
@@ -120,12 +169,18 @@ public class AndroidPixmap implements Pixmap
 		paint.setColor( this.a << 24 | this.r << 16 | this.g << 8 | this.b );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setStrokeWidth(int width) 
 	{
 		paint.setStrokeWidth( width );		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getPixel(int x, int y) 
 	{	
@@ -136,12 +191,18 @@ public class AndroidPixmap implements Pixmap
 		return pixmap.getPixel(x, y);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getHeight() 
 	{
 		return pixmap.getHeight();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getWidth() {
 		return pixmap.getWidth();
@@ -149,6 +210,9 @@ public class AndroidPixmap implements Pixmap
 
 	Rect src = new Rect( );
 	RectF dst = new RectF( );
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy,
 			int width, int height) 
@@ -163,12 +227,18 @@ public class AndroidPixmap implements Pixmap
 		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void dispose() {
 		pixmap.recycle();
 		pixmap = null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void getPixelRow(int[] pixels, int y) 
 	{	

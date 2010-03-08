@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.BorderLayout;
@@ -39,7 +55,7 @@ import com.sun.opengl.util.Animator;
  * @author mzechner@know-center.at
  *
  */
-public class JoglPanel extends JPanel implements GLEventListener, MouseMotionListener, MouseListener, KeyListener
+final class JoglPanel extends JPanel implements GLEventListener, MouseMotionListener, MouseListener, KeyListener
 {	
 	private static final long serialVersionUID = -3638194405409146221L;
 
@@ -188,7 +204,7 @@ public class JoglPanel extends JPanel implements GLEventListener, MouseMotionLis
 	 * Keyboard and Mouse events are processed by the panel so that a client
 	 * can poll for specific states.
 	 */
-	protected JoglPanel( Application application )
+	JoglPanel( Application application )
 	{
 		super();
 		loadLibraries();		      

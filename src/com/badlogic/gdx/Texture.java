@@ -1,10 +1,27 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx;
 
 /**
  * A Texture represents a bitmap to be applied to a {@link Mesh}. 
- * It is constructed from a platform dependent bitmap with various
- * parameters. It might get resized to better fit the architectures
- * needs, e.g. to a power of two.
+ * It is constructed by an {@link Application} via one of the
+ * {@link Application.newTexture()} methods. It might get resized 
+ * to better fit the architectures needs, e.g. to a power of two.
+ * To play it save only use power of two textures!
  * 
  * @author mzechner
  *
@@ -12,17 +29,20 @@ package com.badlogic.gdx;
 public interface Texture 
 {
 	/**
-	 * Binds this texture
+	 * Binds this texture. You have to enable texturing via
+	 * {@link Application.enable( RenderState.Texturing )} in 
+	 * order for the texture to actually be applied to geometry.
 	 */
 	public void bind( );
 
 	/**
-	 * Draws the given bitmap to the texture at position x, y
-	 * @param bitmap The bitmap
+	 * Draws the given {@link Pixmap} to the texture at position x, y.
+	 * 
+	 * @param pixmap The Pixmap
 	 * @param x The x coordinate in pixels
 	 * @param y The y coordinate in pixels
 	 */
-	public void draw( Object bitmap, int x, int y );
+	public void draw( Pixmap pixmap, int x, int y );
 	
 	/**
 	 * 

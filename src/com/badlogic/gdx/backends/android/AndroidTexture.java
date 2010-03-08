@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.backends.android;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -6,11 +22,18 @@ import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 import android.util.Log;
 
+import com.badlogic.gdx.Pixmap;
 import com.badlogic.gdx.Texture;
 import com.badlogic.gdx.Application.TextureFilter;
 import com.badlogic.gdx.Application.TextureWrap;
 
-public class AndroidTexture implements Texture
+/**
+ * An implementation of {@link Texture} for Android
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidTexture implements Texture
 {
 	/** the texture handle **/
 	private int textureHandle;
@@ -34,7 +57,7 @@ public class AndroidTexture implements Texture
 	 * @param gl
 	 * @param bitmap
 	 */
-	protected AndroidTexture( GL10 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap )
+	AndroidTexture( GL10 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap )
 	{
 		this.gl = gl;
 	
@@ -58,7 +81,7 @@ public class AndroidTexture implements Texture
         
 		buildMipmap( gl, image);
 
-		this.textures++;
+		AndroidTexture.textures++;
 		
 		if( minFilter == TextureFilter.MipMap )
 			isMipMap = true;
@@ -112,18 +135,13 @@ public class AndroidTexture implements Texture
 	}
 
 
-
 	/**
-	 * Draws the given image to the texture
-	 * @param gl
-	 * @param bitmap
-	 * @param x
-	 * @param y
+	 * {@inheritDoc}
 	 */
-	public void draw( Object bmp, int x, int y )
+	public void draw( Pixmap bmp, int x, int y )
 	{
 		gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );		
-		Bitmap bitmap = (Bitmap)bmp;
+		Bitmap bitmap = (Bitmap)bmp.getNativePixmap();
 		int level = 0;
 		int height = bitmap.getHeight();
 		int width = bitmap.getWidth();	      	       		
@@ -148,12 +166,12 @@ public class AndroidTexture implements Texture
 			bitmap = bitmap2;
 		}	
 	}
-
-	/**
-	 * Binds the texture
-	 * @param gl
-	 */
+	
 	static Texture lastTexture = null;
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public void bind(  )
 	{				
 		if( lastTexture != this )
@@ -164,32 +182,44 @@ public class AndroidTexture implements Texture
 	}
 
 	/**
-	 * Disposes the texture and frees the associated resourcess
-	 * @param gl
+	 * {@inheritDoc}
 	 */
+	@Override
 	public void dispose( )
 	{
 		int[] textures = { textureHandle };
 		gl.glDeleteTextures( 1, textures, 0 );
 		textureHandle = 0;
-		this.textures--;
+		AndroidTexture.textures--;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getHeight() {
 		return texHeight;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getImageHeight() {
 		return height;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getImageWidth() {
 		return width;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getWidth() {
 		return texWidth;

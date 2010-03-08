@@ -14,33 +14,25 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.models;
 
-public class Rectangle
+public class MD2Header 
 {
-	public float x, y;
-	public float width, height;
-	
-	public Rectangle( )
-	{
-		
-	}
-	
-	public Rectangle( float x, float y, float width, float height )
-	{
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-	
-	public Rectangle( Rectangle rect )
-	{
-		x = rect.x;
-		y = rect.y;
-		width = rect.width;
-		height = rect.height;
-	}
-	
-		
+	public int ident;
+	public int version;
+	public int skinWidth;
+	public int skinHeight;
+	public int frameSize;
+	public int numSkins;
+	public int numVertices;
+	public int numTexCoords;
+	public int numTriangles;
+	public int numGLCommands;
+	public int numFrames;
+	public int offsetSkin;
+	public int offsetTexCoords;
+	public int offsetTriangles;
+	public int offsetFrames;
+	public int offsetGLCommands;
+	public int offsetEnd;
 }

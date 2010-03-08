@@ -1,3 +1,19 @@
+/**
+ *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
+ *
+ *  Libgdx is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Libgdx is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
@@ -6,22 +22,44 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Plane.Intersection;
 
+/**
+ * Encapsulates a view frustum based on clipping planes. Offers
+ * methods to perform culling of simple geometric objects like points,
+ * spheres and {@link BoundingBox}es.
+ * @author mzechner
+ *
+ */
 public class Frustum implements Serializable
 {
 	private static final long serialVersionUID = -7082961504074610513L;
 	protected List<Plane> planes = new ArrayList<Plane>(6);
 	protected float near, far, fov, aspect, near_width, near_height, far_width, far_height, tang;	
 	
+	/**
+	 * @return The list of {@link Plane}s that make up this frustum.
+	 */
 	public List<Plane> getPlanes( )
 	{
 		return planes;
 	}
 	
+	/**
+	 * Adds a new {@link Plane} to the frustum
+	 * @param plane The plane to add
+	 */
 	public void addPlane( Plane plane )
 	{
 		planes.add( plane );
 	}
 	
+	/**
+	 * Sets the camera parameters.
+	 * 
+	 * @param fov The field of view in degrees
+	 * @param aspect The aspect ratio
+	 * @param near The near plane
+	 * @param far The far plane
+	 */
 	public void setCameraParameters( float fov, float aspect, float near, float far )
 	{
 		this.near = near;
@@ -56,6 +94,16 @@ public class Frustum implements Serializable
 	static Vector near_center = new Vector( );
 	static Vector far_center = new Vector( );
 	
+	/**
+	 * Sets the camera orientation. This will add 6 planes
+	 * for near, far, left, right, top and bottom of the
+	 * frustum. Call {@link Frustum.setCameraParameters} before
+	 * calling this function.
+	 * 
+	 * @param pos The camera position
+	 * @param dir The camera direction with unit length
+	 * @param up The camera up vector with unit length
+	 */
 	public void setCameraOrientation( Vector pos, Vector dir, Vector up )
 	{				
 		X.set(0,0,0);
@@ -114,11 +162,17 @@ public class Frustum implements Serializable
 		return builder.toString();
 	}
 	
-	public boolean pointInFrustum( Vector p )
+	/**
+	 * Returns wheter the point is in the frustum.
+	 * 
+	 * @param point The point
+	 * @return Wheter the point is in the frustum.
+	 */
+	public boolean pointInFrustum( Vector point )
 	{
 		for( int i = 0; i < planes.size(); i++ )		
 		{
-			Intersection result = planes.get(i).testPoint( p );
+			Intersection result = planes.get(i).testPoint( point );
 			if( result == Intersection.Back )
 				return false;
 		}
@@ -126,6 +180,13 @@ public class Frustum implements Serializable
 		return true;
 	}
 	
+	/**
+	 * Returns wheter the given sphere is in the frustum.
+	 * 
+	 * @param center The center of the sphere
+	 * @param radius The radius of the sphere
+	 * @return Wheter the sphere is in the frustum
+	 */
 	public boolean sphereInFrustum( Vector center, float radius )
 	{
 		for( int i = 0; i < planes.size(); i++ )		
@@ -135,7 +196,14 @@ public class Frustum implements Serializable
 		return true;
 	}
 	
-	
+	/**
+	 * Returns wheter the given sphere is in the frustum not checking
+	 * wheter it is behind the near and far clipping plane.
+	 * 
+	 * @param center The center of the sphere
+	 * @param radius The radius of the sphere
+	 * @return Wheter the sphere is in the frustum
+	 */
 	public boolean sphereInFrustumWithoutNearFar( Vector center, float radius )
 	{
 		for( int i = 0; i < planes.size(); i++ )		
@@ -145,7 +213,13 @@ public class Frustum implements Serializable
 		return true;
 	}
 	
-	public boolean boundsInFrustum( Bounds bounds )
+	/**
+	 * Returns wheter the given {@link BoundingBox} is in the frustum.
+	 * 
+	 * @param bounds The bounding box
+	 * @return Wheter the bounding box is in the frustum
+	 */
+	public boolean boundsInFrustum( BoundingBox bounds )
 	{
 		for( int i = 0; i < planes.size(); i++ )
 		{
@@ -162,14 +236,19 @@ public class Frustum implements Serializable
 	}
 	
 	/**
-	 * calculates the pick ray for the given window coordinates. assumes
-	 * the window coordinate system has it's y downwards. returns the pick
-	 * ray in the provided start and dir parameters. 
+	 * Calculates the pick ray for the given window coordinates. Assumes
+	 * the window coordinate system has it's y downwards. The returned
+	 * Ray is a member of this instance so don't reuse it outside this 
+	 * class. 
 	 * 
-	 * @param mouse_x
-	 * @param mouse_y
-	 * @param start
-	 * @param dir
+	 * @param screen_width The window width in pixels
+	 * @param screen_height The window height in pixels
+	 * @param mouse_x The window x-coordinate
+	 * @param mouse_y The window y-coordinate
+	 * @param pos The camera position
+	 * @param dir The camera direction, having unit length
+	 * @param up The camera up vector, having unit length
+	 * @return the picking ray.
 	 */		
 	Ray ray = new Ray( new Vector(), new Vector() );
 	public Ray calculatePickRay( float screen_width, float screen_height, float mouse_x, float mouse_y, 
@@ -189,21 +268,4 @@ public class Frustum implements Serializable
 		
 		return ray.set( near_point.tmp(), near_point.sub( pos ).nor() );
 	}
-	
-	public static void main( String[] argv )
-	{
-		Frustum f = new Frustum( );
-		f.setCameraParameters(60, 1, 1, 100 );
-		f.setCameraOrientation( new Vector( 0, 0, 0 ), new Vector( 0, 0, -1 ), new Vector( 0, 1, 0 ) );
-		System.out.println( f );
-		System.out.println( f.pointInFrustum( new Vector( -10, 0, 0 ) ) );
-		System.out.println( f.pointInFrustum( new Vector( -10, 0, -100 ) ) );
-		System.out.println( f.sphereInFrustum( new Vector( 0, 0, 0), 0.5f));
-		System.out.println( f.sphereInFrustum( new Vector( 0, 0, 0), 1f));
-		System.out.println( f.sphereInFrustum( new Vector( 0, 0, -100.5f), 0.5f));
-		System.out.println( f.sphereInFrustum( new Vector( 0, 0, -50), 0.5f));
-		System.out.println( f.boundsInFrustum( new Bounds( new Vector(0, 0, -100), new Vector(-1, -1, 0) )));
-		System.out.println( f.boundsInFrustum( new Bounds( new Vector(-1000, -1000, -1000), new Vector(1000, 1000, 1000) )));		
-	}
-	
 }
