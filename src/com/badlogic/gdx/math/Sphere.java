@@ -16,9 +16,6 @@
  */
 package com.badlogic.gdx.math;
 
-import java.util.HashSet;
-
-import javax.print.attribute.HashAttributeSet;
 
 public class Sphere 
 {

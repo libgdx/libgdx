@@ -134,40 +134,6 @@ public class MD2Loader
 		
 		return new MD2Mesh( app, frames, indices, uvs, null );
 	}
-	
-	private static float[] buildTexCoords(MD2Header header, MD2Triangle[] triangles, float[] texCoords) 
-	{
-		float[] uvs = new float[header.numVertices*2];
-		
-		for( int i = 0; i < triangles.length; i++ )
-		{
-			MD2Triangle triangle = triangles[i];
-			for( int j = 0; j < 3; j++ )
-			{
-				int vertIdx = triangle.vertices[j];
-				int uvIdx = vertIdx * 2;
-				uvs[uvIdx] = texCoords[triangle.texCoords[j] * 2];
-				uvs[uvIdx+1] = texCoords[triangle.texCoords[j] * 2+1];
-			}
-		}
-		
-		return uvs;
-	}
-
-	private static short[] buildIndices(MD2Triangle[] triangles) 
-	{
-		short[] indices = new short[triangles.length*3];
-		
-		int idx = 0;
-		for( int i = 0; i < triangles.length; i++ )
-		{
-			MD2Triangle triangle = triangles[i];
-			indices[idx++] = triangle.vertices[0];
-			indices[idx++] = triangle.vertices[1];
-			indices[idx++] = triangle.vertices[2];
-		}
-		return indices;
-	}
 
 	private static MD2Frame[] loadFrames(MD2Header header, byte[] bytes) throws IOException {
 		LittleEndianDataInputStream in = new LittleEndianDataInputStream( new ByteArrayInputStream( bytes ) );

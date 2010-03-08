@@ -104,7 +104,8 @@ public class LittleEndianDataInputStream extends FilterInputStream implements Da
     return Double.longBitsToDouble(readLong());
   }
 
-  public final String readLine() throws IOException {
+  @SuppressWarnings("deprecation")
+public final String readLine() throws IOException {
     return din.readLine();
   }
 

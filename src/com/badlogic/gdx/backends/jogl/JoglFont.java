@@ -53,7 +53,7 @@ final class JoglFont extends Font
 	JoglFont( Application app, InputStream in, int size, FontStyle style )
 	{
 		super( app );
-		int fontStyle = getJavaFontStyle( style );
+		
 		try
 		{
 			java.awt.Font baseFont = java.awt.Font.createFont( java.awt.Font.PLAIN, in);

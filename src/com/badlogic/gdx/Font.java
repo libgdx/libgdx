@@ -39,6 +39,7 @@ public abstract class Font
 	{
 		public int advance;
 		public int width;
+		@SuppressWarnings("unused")
 		public int height;
 		public float u;
 		public float v;
@@ -74,7 +75,7 @@ public abstract class Font
 		private int height;
 		private HorizontalAlign hAlign;
 		private VerticalAlign vAlign;
-		private boolean wordWrap = false;
+//		private boolean wordWrap = false;
 		private String[] lines;
 		private int[] widths;
 		private float posX, posY;

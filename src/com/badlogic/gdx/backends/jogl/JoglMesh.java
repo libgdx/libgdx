@@ -25,7 +25,6 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GLContext;
 
 import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.math.BoundingBox;
 
 /**
  * An implementation of {@link Mesh} based on Jogl.

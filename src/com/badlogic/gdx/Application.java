@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.media.opengl.GL;
-
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 /**
