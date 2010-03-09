@@ -22,6 +22,11 @@ import android.media.AudioTrack;
 
 import com.badlogic.gdx.audio.AudioDevice;
 
+/**
+ * An {@link AudioDevice} implementation for Android using {@link AudioTrack}
+ * @author badlogicgames@gmail.com
+ *
+ */
 final class AndroidAudioDevice implements AudioDevice 
 {
 	AudioTrack track;

@@ -50,22 +50,28 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
+ * <p>
  * An implementation of {@link Application} for desktop Java. Creates
  * a new JFrame and puts a Jogl Canvas into it. To instantiate it do
  * the following:
+ * </p>
  * 
+ * <p>
  * <code>
- * public static void main( String[] argv )
- * {
- *    JoglApplication app = new JoglApplication( "My title", 480, 320 );
- *    app.addRenderListener( new MyRenderer() );
- * }
+ * public static void main( String[] argv )</br>
+ * {</br>
+ *    JoglApplication app = new JoglApplication( "My title", 480, 320 );</br>
+ *    app.addRenderListener( new MyRenderer() );</br>
+ * }</br>
  * </code>
+ * </p>
  * 
+ * <p>
  * This creates a new JoglApplication and registers a RenderListener implementation
  * called "MyRenderer" with it.
+ * </p>
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class JoglApplication implements Application, RenderListener

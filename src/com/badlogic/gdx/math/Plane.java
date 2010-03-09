@@ -21,7 +21,7 @@ package com.badlogic.gdx.math;
  * A plane defined via a unit length normal and the distance from the
  * origin, as you learned in your math class.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Plane 

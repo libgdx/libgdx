@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.Texture;
 /**
  * An implementation of {@link Texture} for Android
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class AndroidTexture implements Texture

@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Class offering various static methods for intersection testing between
  * different geometric objects.
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Intersector 

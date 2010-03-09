@@ -23,7 +23,7 @@ package com.badlogic.gdx.math;
  * member. Like the {@link Vector} class it allows to chain methods by
  * returning a reference to itself.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Matrix

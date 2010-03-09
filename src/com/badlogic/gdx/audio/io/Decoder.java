@@ -21,7 +21,7 @@ package com.badlogic.gdx.audio.io;
  * amplitude frames. When a decoder is no longer used
  * it has to be disposed.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface Decoder

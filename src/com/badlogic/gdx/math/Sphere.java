@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /**
  * Encapsulates a 3D sphere with a center and a radius
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Sphere 

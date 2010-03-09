@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.Mesh;
 /**
  * An implementation of {@link Mesh} based on Jogl.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglMesh implements Mesh 

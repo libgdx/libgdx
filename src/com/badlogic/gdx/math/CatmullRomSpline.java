@@ -23,7 +23,7 @@ import java.util.List;
  * Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this
  * type of spline see http://www.mvps.org/directx/articles/catmull/.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class CatmullRomSpline

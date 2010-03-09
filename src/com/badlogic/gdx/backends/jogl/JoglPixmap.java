@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 /**
  * An implementation of Pixmap based on the java graphics framework.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglPixmap implements Pixmap

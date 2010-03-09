@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 /**
  * And implementation of {@link Pixmap}
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class AndroidPixmap implements Pixmap

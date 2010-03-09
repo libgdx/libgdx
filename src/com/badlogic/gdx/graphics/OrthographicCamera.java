@@ -30,7 +30,7 @@ import com.badlogic.gdx.math.Vector;
  * takes an {@link Application} instance. You can get a picking ray via a call to
  * {@link OrthographicCamera.getPickRay()}. 
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public class OrthographicCamera 

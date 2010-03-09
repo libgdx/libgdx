@@ -31,7 +31,7 @@ import com.badlogic.gdx.audio.Sound;
 
 /**
  * An implementation of {@link Sound} based on java sound.
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglSound implements Sound

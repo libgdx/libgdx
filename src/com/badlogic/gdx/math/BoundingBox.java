@@ -23,7 +23,7 @@ import java.util.List;
  * minimum and a maximum Vector. Additionally you can query for
  * the bounding box's center, dimensions and corner points.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class BoundingBox

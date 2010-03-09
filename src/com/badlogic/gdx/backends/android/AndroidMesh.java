@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.Mesh;
 /**
  * An implementation of {@link Mesh} for Android.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class AndroidMesh implements Mesh

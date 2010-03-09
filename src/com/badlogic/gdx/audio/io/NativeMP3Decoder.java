@@ -24,7 +24,8 @@ import java.nio.ShortBuffer;
 /**
  * A native MP3 {@link Decoder} based on libmad. Decodes
  * stereo input to mono. 
- * @author mzechner
+ * 
+ * @author badlogicgames@gmail.com
  *
  */
 public class NativeMP3Decoder implements Decoder 

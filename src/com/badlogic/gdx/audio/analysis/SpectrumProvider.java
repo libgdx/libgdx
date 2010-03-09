@@ -23,7 +23,7 @@ import com.badlogic.gdx.audio.io.Decoder;
  * FFT from a Decoder. The frames might overlapp by n samples also called
  * the hop size. Using a hop size smaller than the spectrum size is beneficial
  * in most cases as it smears out the spectra of successive frames somewhat. 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public class SpectrumProvider 

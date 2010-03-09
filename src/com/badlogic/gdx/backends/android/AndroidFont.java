@@ -34,7 +34,7 @@ import com.badlogic.gdx.math.Rectangle;
 /**
  * An implementation of {@link Font} for Android. 
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class AndroidFont extends Font

@@ -21,7 +21,7 @@ package com.badlogic.gdx.audio;
  * it's completely loaded into memory. Call the {@link Sound.dispose()}
  * method when you're done using the Sound.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface Sound 

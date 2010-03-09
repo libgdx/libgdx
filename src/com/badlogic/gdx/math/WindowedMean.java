@@ -26,7 +26,7 @@ package com.badlogic.gdx.math;
  * will be replaced by the newest in case
  * a new sample is added.
  * 
- * @author marzec
+ * @author badlogicgames@gmail.com
  *
  */
 public final class WindowedMean 

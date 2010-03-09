@@ -23,7 +23,7 @@ package com.badlogic.gdx.graphics;
  * the common bitmap coordinate system with the origin being in the
  * top left corner and the y-axis pointing downwards. 
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface Pixmap 

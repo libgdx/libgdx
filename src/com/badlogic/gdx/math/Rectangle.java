@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /**
  * Encapsulates a 2D rectangle defined by it's bottom corner point
  * and its extends in x (width) and y (height).
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Rectangle

@@ -28,7 +28,7 @@ import com.badlogic.gdx.Application;
  * InputListeners can register with an Application). Note that
  * mouse and touch screen are equivalent here.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface InputListener 

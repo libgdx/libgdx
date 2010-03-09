@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Plane.PlaneSide;
  * Encapsulates a view frustum based on clipping planes. Offers
  * methods to perform culling of simple geometric objects like points,
  * spheres and {@link BoundingBox}es.
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Frustum

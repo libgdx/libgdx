@@ -22,8 +22,9 @@ import android.media.SoundPool;
 import com.badlogic.gdx.audio.Sound;
 
 /**
- * An implementation of {@link Sound} for Android
- * @author mzechner
+ * An implementation of {@link Sound} for Android using {@link SoundPool}
+ * 
+ * @author badlogicgames@gmail.com
  *
  */
 final class AndroidSound implements Sound 

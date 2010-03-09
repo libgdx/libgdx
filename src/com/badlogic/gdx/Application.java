@@ -152,7 +152,7 @@ import com.badlogic.gdx.graphics.Texture;
  * to and form an SD card on the desktop the current users home directory is used. See the respective methods of this interface for
  * more information. 
  * </p>
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface Application 
@@ -160,7 +160,7 @@ public interface Application
 	/**
 	 * Callback interface for {@link Application.getTextInput()}
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public interface TextInputListener
@@ -171,7 +171,7 @@ public interface Application
 	/**
 	 * Called when application is exiting.
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public interface CloseListener
@@ -181,7 +181,7 @@ public interface Application
 	
 	/**
 	 * Texture filter enum featuring the 3 most used filters.
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum TextureFilter
@@ -194,7 +194,7 @@ public interface Application
 	/**
 	 * Texture wrap enum
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum TextureWrap
@@ -206,7 +206,7 @@ public interface Application
 	/**
 	 * Matrix mode enum
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum MatrixMode
@@ -219,7 +219,7 @@ public interface Application
 	/**
 	 * Renderstates that can be enabled/disabled
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum RenderState
@@ -235,7 +235,7 @@ public interface Application
 	/**
 	 * Culling modes
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum CullMode
@@ -246,7 +246,7 @@ public interface Application
 	
 	/**
 	 * Different styles used by a {@link Font}
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum FontStyle
@@ -260,7 +260,7 @@ public interface Application
 	/**
 	 * Blend functions
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum BlendFunc
@@ -280,7 +280,7 @@ public interface Application
 	/**
 	 * Depth test functions.
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum DepthFunc
@@ -298,7 +298,7 @@ public interface Application
 	/**
 	 * Keys. 
 	 * 
-	 * @author mzechner
+	 * @author badlogicgames@gmail.com
 	 *
 	 */
 	public enum Keys

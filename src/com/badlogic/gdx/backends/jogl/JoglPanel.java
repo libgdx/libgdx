@@ -52,7 +52,7 @@ import com.sun.opengl.util.Animator;
  * to dispose the panel before it is being removed from another
  * gui component such as a JFrame.
  * 
- * @author mzechner@know-center.at
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglPanel extends JPanel implements GLEventListener, MouseMotionListener, MouseListener, KeyListener

@@ -24,7 +24,7 @@ package com.badlogic.gdx.audio;
  * 
  * FIXME add stereo output.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface AudioDevice 

@@ -40,7 +40,7 @@ package com.badlogic.gdx.graphics;
  * A Mesh has to be disposed after it is no longer used.
  * </p>
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface Mesh 

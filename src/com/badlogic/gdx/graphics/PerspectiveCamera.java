@@ -32,7 +32,7 @@ import com.badlogic.gdx.math.Vector;
  * to {@link PerspectiveCamera.getCombinedMatrix()} and directly passed to {@link 
  * Application.loadMatrix()}. You can also get a picking ray via {@link PerspectiveCamera.getPickRay()}.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public class PerspectiveCamera 

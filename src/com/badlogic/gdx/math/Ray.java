@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /**
  * Encapsulates a ray having a starting position and a unit length direction.
  * 
- * @author mzechner@know-center.at
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Ray 

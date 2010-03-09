@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Rectangle;
  * as some metrics. Does only work for left to right
  * languages without surrogates.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public abstract class Font 

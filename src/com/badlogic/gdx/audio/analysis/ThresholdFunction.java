@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Calculates a threshold function based on the spectral flux.  
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public class ThresholdFunction 

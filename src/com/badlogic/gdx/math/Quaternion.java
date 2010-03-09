@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * A simple quaternion class. See http://en.wikipedia.org/wiki/Quaternion for more information.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Quaternion implements Serializable

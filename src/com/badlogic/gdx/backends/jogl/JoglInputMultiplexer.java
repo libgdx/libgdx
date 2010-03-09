@@ -36,7 +36,7 @@ import com.badlogic.gdx.backends.InputListener;
  * can signal wheter he has consumed the event therefor 
  * ending the multiplexing.
  * 
- * @author marzec
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglInputMultiplexer implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener 

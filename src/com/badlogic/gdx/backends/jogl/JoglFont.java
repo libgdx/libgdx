@@ -31,7 +31,7 @@ import com.badlogic.gdx.math.Rectangle;
 /**
  * An implementation of {@link Font} based on the java graphics framework.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglFont extends Font 

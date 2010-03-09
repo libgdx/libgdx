@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /**
  * Encapsulates a 2D vector. Allows chaining methods by returning a 
  * reference to itself
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Vector2D 

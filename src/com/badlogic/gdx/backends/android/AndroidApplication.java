@@ -71,26 +71,31 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.WindowedMean;
 
 /**
+ * <p>
  * An implementation of the {@link Application} interface for Android. This basically wraps
  * a {@link GLSurfaceView} and derives from {@link Activity}. To instantiate this class create a 
  * new class that derives from it and create an appropriate {@link Activity.onCreate()} method.
  * 
  * Here's an example:
+ * </p>
  * 
+ * <p>
  * <code>
- * public class MyAndroidApp extends AndroidApplication { 
- *   @Override
- *   public void onCreate(Bundle savedInstanceState) {
- *       super.onCreate(savedInstanceState);        
- *       addRenderListener( new MyRenderer() );
- *   }
- * }
+ * public class MyAndroidApp extends AndroidApplication {</br> 
+ *   
+ *   public void onCreate(Bundle savedInstanceState) {</br>
+ *       super.onCreate(savedInstanceState);</br>
+ *       addRenderListener( new MyRenderer() );</br>
+ *   }</br>
+ * }</br>
  * </code>
+ * </p>
  * 
+ * <p>
  * MyRender in this example of course implements the {@link RenderListener} interface. You
  * can use the same RenderListener with an instance of {@link JoglApplication}!
- * 
- * @author mzechner
+ * </p> 
+ * @author badlogicgames@gmail.com
  *
  */
 public class AndroidApplication extends Activity implements GLSurfaceView.Renderer, OnTouchListener, SensorEventListener, OnKeyListener, Application

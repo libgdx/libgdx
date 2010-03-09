@@ -33,7 +33,7 @@ import com.sun.opengl.util.texture.TextureIO;
 /**
  * An implementation of {@link Texture} based on Jogl
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglTexture implements Texture

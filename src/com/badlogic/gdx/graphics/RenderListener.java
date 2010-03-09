@@ -31,7 +31,7 @@ import com.badlogic.gdx.Application;
  * application and not in the UI thread!
  * 
  * 
- * @author mzechner@know-center.at
+ * @author badlogicgames@gmail.com
  *
  */
 public interface RenderListener 

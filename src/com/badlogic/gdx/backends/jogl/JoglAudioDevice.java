@@ -27,7 +27,7 @@ import com.badlogic.gdx.audio.AudioDevice;
  * An implementation of {@link AudioDevice} for desktop Java based on
  * java sound.
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 final class JoglAudioDevice implements AudioDevice 

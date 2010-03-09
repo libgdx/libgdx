@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * A simple implementation of the ear cutting algorithm to triangulate
  * simple polygons without holes. For more information see http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class EarCutTriangulator 

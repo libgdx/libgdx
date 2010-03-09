@@ -25,7 +25,7 @@ import com.badlogic.gdx.Application;
  * to better fit the architectures needs, e.g. to a power of two.
  * To play it save only use power of two textures!
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public interface Texture 

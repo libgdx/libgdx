@@ -23,7 +23,7 @@ import java.util.Arrays;
  * Encapsulates a 3D vector. Allows chaining operations by
  * returning a reference to it self in all modification methods. 
  * 
- * @author mzechner
+ * @author badlogicgames@gmail.com
  *
  */
 public final class Vector implements Serializable
