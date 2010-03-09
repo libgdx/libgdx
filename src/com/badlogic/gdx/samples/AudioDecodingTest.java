@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.RenderListener;
 import com.badlogic.gdx.graphics.Mesh.PrimitiveType;
 
-public class AudioDecoding implements RenderListener 
+public class AudioDecodingTest implements RenderListener 
 {
 	float[] samples = new float[1024];
 	Mesh amplitude;
@@ -34,7 +34,7 @@ public class AudioDecoding implements RenderListener
 	public static void main( String[] argv )
 	{
 		JoglApplication app = new JoglApplication( "Audio Decoding", 480, 320 );
-		app.addRenderListener( new AudioDecoding() );
+		app.addRenderListener( new AudioDecodingTest() );
 	}
 	
 	@Override
