@@ -15,7 +15,7 @@ gdx-helloworld
  -> libs/
     -> armeabi/
        - >libgdx.so
-    -> gdx-0.1.jar
+    -> gdx-0.11.jar
     -> gdx.dll
     -> gluegen-rt-1.0b5.jar
     -> jogl-1.1.1.jar
@@ -89,7 +89,7 @@ gdx-helloworld-android
  -> libs/
     -> armeabi/
        -> libgdx.so
-    -> gdx-0.1.jar
+    -> gdx-0.11.jar
     -> gdx.dll
     -> gluegen-rt-1.0b5.jar
     -> jogl-1.1.1.jar
@@ -101,7 +101,7 @@ gdx-helloworld-android
  -> default.properties
  
  Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
-project in the project tab and the gdx-0.1.jar in the Libraries tab. You don't have to add the other
+project in the project tab and the gdx-0.11.jar in the Libraries tab. You don't have to add the other
 jars as those are only needed for the desktop Java version. 
 
 Now open the GDXHelloWorld.java file and paste the following code in:
@@ -152,7 +152,7 @@ to the <activity> tag. Your manifest should look something like this then:
 
 Now you can start the Activity as you do with any normal android application in eclipse. Et voila, profit!
 
-You can savely remove all jar files != gdx-0.1.jar from the libs/ folder of the android project. The gdx.dll
+You can savely remove all jar files != gdx-0.11.jar from the libs/ folder of the android project. The gdx.dll
 and the libgdx.so file can also be deleted. However, do not delete the libgdx.so file in the folder libs/armeabi/!
 It is the native code for Android of libgdx. 
 
