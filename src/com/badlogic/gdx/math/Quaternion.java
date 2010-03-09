@@ -34,14 +34,14 @@ public final class Quaternion implements Serializable
    
     /**
      * Constructor, sets the four components of the quaternion.
-     * @param a_x The x-component
-     * @param a_y The y-component
-     * @param a_z The z-component
-     * @param a_w The w-component
+     * @param x The x-component
+     * @param y The y-component
+     * @param z The z-component
+     * @param w The w-component
      */
-    public Quaternion(float a_x, float a_y, float a_z, float a_w)
+    public Quaternion(float x, float y, float z, float w)
     {
-        this.set(a_x,a_y,a_z,a_w);
+        this.set(x,y,z,w);
     }
 
     Quaternion( )
@@ -53,69 +53,69 @@ public final class Quaternion implements Serializable
      * Constructor, sets the quaternion components from the given
      * quaternion.
      * 
-     * @param a_qut The quaternion to copy.
+     * @param quaternion The quaternion to copy.
      */
-    public Quaternion(Quaternion a_qut)
+    public Quaternion(Quaternion quaternion)
     {
-        this.set(a_qut);
+        this.set(quaternion);
     }
 
     /**
      * Constructor, sets the quaternion from the given axis vector
      * and the angle around that axis in degrees.
      * 
-     * @param a_axs The axis
-     * @param a_ang The angle in degrees.
+     * @param axis The axis
+     * @param angle The angle in degrees.
      */
-    public Quaternion(Vector a_axs, float a_ang)
+    public Quaternion(Vector axis, float angle)
     {
-        this.set(a_axs,a_ang);
+        this.set(axis,angle);
     }
 
     /**
      * Sets the components of the quaternion
-     * @param a_x The x-component
-     * @param a_y The y-component
-     * @param a_z The z-component
-     * @param a_w The w-component
+     * @param x The x-component
+     * @param y The y-component
+     * @param z The z-component
+     * @param w The w-component
      * @return This quaternion for chaining
      */
-    public Quaternion set(float a_x, float a_y, float a_z, float a_w)
+    public Quaternion set(float x, float y, float z, float w)
     {
-        val[0]=a_x;
-        val[1]=a_y;
-        val[2]=a_z;
-        val[3]=a_w;
+        val[0]=x;
+        val[1]=y;
+        val[2]=z;
+        val[3]=w;
         dirty=true;
         return this;
     }
 
     /**
      * Sets the quaternion components from the given quaternion.
-     * @param a_qut The quaternion.
+     * @param quaternion The quaternion.
      * @return This quaternion for chaining.
      */
-    public Quaternion set(Quaternion a_qut)
+    public Quaternion set(Quaternion quaternion)
     {
-        return this.set(a_qut.val[0],a_qut.val[1],a_qut.val[2],a_qut.val[3]);
+        return this.set(quaternion.val[0],quaternion.val[1],quaternion.val[2],quaternion.val[3]);
     }
 
     /**
      * Sets the quaternion components from the given axis and
      * angle around that axis.
      * 
-     * @param a_axs The axis
-     * @param a_ang The angle in degrees
+     * @param axis The axis
+     * @param angle The angle in degrees
      * @return This quaternion for chaining.
      */
-    public Quaternion set(Vector a_axs, float a_ang)
+    public Quaternion set(Vector axis, float angle)
     {
-        float l_ang= (float)(a_ang *(Math.PI/180));
+        float l_ang= (float)(angle *(Math.PI/180));
         float l_sin = (float)(Math.sin(l_ang/2));
         float l_cos = (float)(Math.cos(l_ang/2));
-        return this.set(a_axs.getX()*l_sin,
-                        a_axs.getY()*l_sin,
-                        a_axs.getZ()*l_sin,
+        return this.set(axis.getX()*l_sin,
+                        axis.getY()*l_sin,
+                        axis.getZ()*l_sin,
                         l_cos).nor();
     }
 
@@ -179,9 +179,9 @@ public final class Quaternion implements Serializable
      * Sets the y-component of the quaternion
      * @param y The y-component
      */
-    public final void setY(float a_y)
+    public final void setY(float y)
     {
-        val[1]=a_y;
+        val[1]=y;
         dirty=true;
     }
 
@@ -198,9 +198,9 @@ public final class Quaternion implements Serializable
      * Sets the z-component of the quaternion
      * @param z The z-component
      */
-    public final void setZ(float a_z)
+    public final void setZ(float z)
     {
-        val[2]=a_z;
+        val[2]=z;
         dirty=true;
     }
 
@@ -216,9 +216,9 @@ public final class Quaternion implements Serializable
      * Sets the w-component of the quaternion
      * @param w The w-component
      */
-    public final void setW(float a_w)
+    public final void setW(float w)
     {
-        val[3]=a_w;
+        val[3]=w;
         dirty=true;
     }
 

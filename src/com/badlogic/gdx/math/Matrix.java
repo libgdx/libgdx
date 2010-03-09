@@ -60,56 +60,56 @@ public final class Matrix
     /**
      * Constructs a matrix from the given matrix
      * 
-     * @param a_matrix The matrix
+     * @param matrix The matrix
      */
-    public Matrix(Matrix a_matrix)
+    public Matrix(Matrix matrix)
     {
-        this.set(a_matrix);
+        this.set(matrix);
     }
 
     /**
      * Constructs a matrix from the given float array. The
      * array must have at least 16 elements
-     * @param a_values The float array
+     * @param values The float array
      */
-    public Matrix(float[] a_values)
+    public Matrix(float[] values)
     {
-        this.set(a_values);
+        this.set(values);
     }
 
     /**
      * Constructs a rotation matrix from the given {@link Quaternion}
-     * @param a_qut The quaternion
+     * @param quaternion The quaternion
      */
-    public Matrix(Quaternion a_qut)
+    public Matrix(Quaternion quaternion)
     {
-        this.set(a_qut);
+        this.set(quaternion);
     }
 
     /**
      * Sets the matrix to the given matrix.
      * 
-     * @param a_matrix The matrix
+     * @param matrix The matrix
      * @return This matrix for chaining
      */
-    public  Matrix set(Matrix a_matrix)
+    public  Matrix set(Matrix matrix)
     {
-        return this.set(a_matrix.val);
+        return this.set(matrix.val);
     }
 
     /**
      * Sets the matrix to the given matrix as a float array.
      * The float array must have at least 16 elements.
      * 
-     * @param a_val The matrix 
+     * @param values The matrix 
      * @return This matrix for chaining
      */
-    public  Matrix set(float[] a_val)
+    public  Matrix set(float[] values)
     {
-        val[M00]=a_val[M00]; val[M10]=a_val[M10]; val[M20]=a_val[M20]; val[M30]=a_val[M30];
-        val[M01]=a_val[M01]; val[M11]=a_val[M11]; val[M21]=a_val[M21]; val[M31]=a_val[M31];
-        val[M02]=a_val[M02]; val[M12]=a_val[M12]; val[M22]=a_val[M22]; val[M32]=a_val[M32];
-        val[M03]=a_val[M03]; val[M13]=a_val[M13]; val[M23]=a_val[M23]; val[M33]=a_val[M33];
+        val[M00]=values[M00]; val[M10]=values[M10]; val[M20]=values[M20]; val[M30]=values[M30];
+        val[M01]=values[M01]; val[M11]=values[M11]; val[M21]=values[M21]; val[M31]=values[M31];
+        val[M02]=values[M02]; val[M12]=values[M12]; val[M22]=values[M22]; val[M32]=values[M32];
+        val[M03]=values[M03]; val[M13]=values[M13]; val[M23]=values[M23]; val[M33]=values[M33];
         return this;
     }
 
@@ -117,21 +117,21 @@ public final class Matrix
      * Sets the matrix to a rotation matrix representing the
      * quaternion.
      * 
-     * @param a_qut The quaternion
+     * @param quaternion The quaternion
      * @return This matrix for chaining
      */
-    public  Matrix set(Quaternion a_qut)
+    public  Matrix set(Quaternion quaternion)
     {
         // Compute quaternion factors
-        float l_xx = a_qut.val[0]*a_qut.val[0];
-        float l_xy = a_qut.val[0]*a_qut.val[1];
-        float l_xz = a_qut.val[0]*a_qut.val[2];
-        float l_xw = a_qut.val[0]*a_qut.val[3];
-        float l_yy = a_qut.val[1]*a_qut.val[1];
-        float l_yz = a_qut.val[1]*a_qut.val[2];
-        float l_yw = a_qut.val[1]*a_qut.val[3];
-        float l_zz = a_qut.val[2]*a_qut.val[2];
-        float l_zw = a_qut.val[2]*a_qut.val[3];
+        float l_xx = quaternion.val[0]*quaternion.val[0];
+        float l_xy = quaternion.val[0]*quaternion.val[1];
+        float l_xz = quaternion.val[0]*quaternion.val[2];
+        float l_xw = quaternion.val[0]*quaternion.val[3];
+        float l_yy = quaternion.val[1]*quaternion.val[1];
+        float l_yz = quaternion.val[1]*quaternion.val[2];
+        float l_yw = quaternion.val[1]*quaternion.val[3];
+        float l_zz = quaternion.val[2]*quaternion.val[2];
+        float l_zw = quaternion.val[2]*quaternion.val[3];
         // Set matrix from quaternion
         val[M00]=1-2*(l_yy +l_zz);
         val[M01]=2*(l_xy -l_zw);
@@ -189,14 +189,14 @@ public final class Matrix
      * Adds a translational component to the matrix in the 4th column. 
      * The other columns are untouched.
      * 
-     * @param a_vector The translation vector
+     * @param vector The translation vector
      * @return This matrix for chaining
      */
-    public  Matrix trn(Vector a_vector)
+    public  Matrix trn(Vector vector)
     {
-        val[M03]+=a_vector.getX();
-        val[M13]+=a_vector.getY();
-        val[M23]+=a_vector.getZ();
+        val[M03]+=vector.getX();
+        val[M13]+=vector.getY();
+        val[M23]+=vector.getZ();
         return this;
     }
     
@@ -229,27 +229,27 @@ public final class Matrix
      * Multiplies this matrix with the given matrix, storing
      * the result in this matrix.
      * 
-     * @param a_mat The other matrix
+     * @param matrix The other matrix
      * @return This matrix for chaining.
      */
-    public  Matrix mul(Matrix a_mat)
+    public  Matrix mul(Matrix matrix)
     {
-        tmp[M00]=val[M00]*a_mat.val[M00] + val[M01]*a_mat.val[M10] + val[M02]*a_mat.val[M20] + val[M03]*a_mat.val[M30];
-        tmp[M01]=val[M00]*a_mat.val[M01] + val[M01]*a_mat.val[M11] + val[M02]*a_mat.val[M21] + val[M03]*a_mat.val[M31];
-        tmp[M02]=val[M00]*a_mat.val[M02] + val[M01]*a_mat.val[M12] + val[M02]*a_mat.val[M22] + val[M03]*a_mat.val[M32];
-        tmp[M03]=val[M00]*a_mat.val[M03] + val[M01]*a_mat.val[M13] + val[M02]*a_mat.val[M23] + val[M03]*a_mat.val[M33];
-        tmp[M10]=val[M10]*a_mat.val[M00] + val[M11]*a_mat.val[M10] + val[M12]*a_mat.val[M20] + val[M13]*a_mat.val[M30];
-        tmp[M11]=val[M10]*a_mat.val[M01] + val[M11]*a_mat.val[M11] + val[M12]*a_mat.val[M21] + val[M13]*a_mat.val[M31];
-        tmp[M12]=val[M10]*a_mat.val[M02] + val[M11]*a_mat.val[M12] + val[M12]*a_mat.val[M22] + val[M13]*a_mat.val[M32];
-        tmp[M13]=val[M10]*a_mat.val[M03] + val[M11]*a_mat.val[M13] + val[M12]*a_mat.val[M23] + val[M13]*a_mat.val[M33];
-        tmp[M20]=val[M20]*a_mat.val[M00] + val[M21]*a_mat.val[M10] + val[M22]*a_mat.val[M20] + val[M23]*a_mat.val[M30];
-        tmp[M21]=val[M20]*a_mat.val[M01] + val[M21]*a_mat.val[M11] + val[M22]*a_mat.val[M21] + val[M23]*a_mat.val[M31];
-        tmp[M22]=val[M20]*a_mat.val[M02] + val[M21]*a_mat.val[M12] + val[M22]*a_mat.val[M22] + val[M23]*a_mat.val[M32];
-        tmp[M23]=val[M20]*a_mat.val[M03] + val[M21]*a_mat.val[M13] + val[M22]*a_mat.val[M23] + val[M23]*a_mat.val[M33];
-        tmp[M30]=val[M30]*a_mat.val[M00] + val[M31]*a_mat.val[M10] + val[M32]*a_mat.val[M20] + val[M33]*a_mat.val[M30];
-        tmp[M31]=val[M30]*a_mat.val[M01] + val[M31]*a_mat.val[M11] + val[M32]*a_mat.val[M21] + val[M33]*a_mat.val[M31];
-        tmp[M32]=val[M30]*a_mat.val[M02] + val[M31]*a_mat.val[M12] + val[M32]*a_mat.val[M22] + val[M33]*a_mat.val[M32];
-        tmp[M33]=val[M30]*a_mat.val[M03] + val[M31]*a_mat.val[M13] + val[M32]*a_mat.val[M23] + val[M33]*a_mat.val[M33];
+        tmp[M00]=val[M00]*matrix.val[M00] + val[M01]*matrix.val[M10] + val[M02]*matrix.val[M20] + val[M03]*matrix.val[M30];
+        tmp[M01]=val[M00]*matrix.val[M01] + val[M01]*matrix.val[M11] + val[M02]*matrix.val[M21] + val[M03]*matrix.val[M31];
+        tmp[M02]=val[M00]*matrix.val[M02] + val[M01]*matrix.val[M12] + val[M02]*matrix.val[M22] + val[M03]*matrix.val[M32];
+        tmp[M03]=val[M00]*matrix.val[M03] + val[M01]*matrix.val[M13] + val[M02]*matrix.val[M23] + val[M03]*matrix.val[M33];
+        tmp[M10]=val[M10]*matrix.val[M00] + val[M11]*matrix.val[M10] + val[M12]*matrix.val[M20] + val[M13]*matrix.val[M30];
+        tmp[M11]=val[M10]*matrix.val[M01] + val[M11]*matrix.val[M11] + val[M12]*matrix.val[M21] + val[M13]*matrix.val[M31];
+        tmp[M12]=val[M10]*matrix.val[M02] + val[M11]*matrix.val[M12] + val[M12]*matrix.val[M22] + val[M13]*matrix.val[M32];
+        tmp[M13]=val[M10]*matrix.val[M03] + val[M11]*matrix.val[M13] + val[M12]*matrix.val[M23] + val[M13]*matrix.val[M33];
+        tmp[M20]=val[M20]*matrix.val[M00] + val[M21]*matrix.val[M10] + val[M22]*matrix.val[M20] + val[M23]*matrix.val[M30];
+        tmp[M21]=val[M20]*matrix.val[M01] + val[M21]*matrix.val[M11] + val[M22]*matrix.val[M21] + val[M23]*matrix.val[M31];
+        tmp[M22]=val[M20]*matrix.val[M02] + val[M21]*matrix.val[M12] + val[M22]*matrix.val[M22] + val[M23]*matrix.val[M32];
+        tmp[M23]=val[M20]*matrix.val[M03] + val[M21]*matrix.val[M13] + val[M22]*matrix.val[M23] + val[M23]*matrix.val[M33];
+        tmp[M30]=val[M30]*matrix.val[M00] + val[M31]*matrix.val[M10] + val[M32]*matrix.val[M20] + val[M33]*matrix.val[M30];
+        tmp[M31]=val[M30]*matrix.val[M01] + val[M31]*matrix.val[M11] + val[M32]*matrix.val[M21] + val[M33]*matrix.val[M31];
+        tmp[M32]=val[M30]*matrix.val[M02] + val[M31]*matrix.val[M12] + val[M32]*matrix.val[M22] + val[M33]*matrix.val[M32];
+        tmp[M33]=val[M30]*matrix.val[M03] + val[M31]*matrix.val[M13] + val[M32]*matrix.val[M23] + val[M33]*matrix.val[M33];
         return this.set(tmp);
     }
 
@@ -333,19 +333,19 @@ public final class Matrix
      * Sets the matrix to a projection matrix with a near- and
      * far plane, a field of view in degrees and an aspect ratio.
      * 
-     * @param a_near The near plane
-     * @param a_far The far plane
-     * @param a_fov The field of view in degrees
-     * @param a_asp The aspect ratio
+     * @param near The near plane
+     * @param far The far plane
+     * @param fov The field of view in degrees
+     * @param aspectRatio The aspect ratio
      * @return This matrix for chaining
      */
-    public  Matrix setToProjection(float a_near, float a_far, float a_fov, float a_asp)
+    public  Matrix setToProjection(float near, float far, float fov, float aspectRatio)
     {
         this.idt();
-        float l_fd=(float)(1.0/Math.tan((a_fov*(Math.PI/180))/2.0));
-        float l_a1=-(a_far+a_near)/(a_far-a_near);
-        float l_a2=-(2*a_far*a_near)/(a_far-a_near);
-        val[M00]=l_fd/a_asp;  val[M10]=0;       val[M20]=0;     val[M30]=0;
+        float l_fd=(float)(1.0/Math.tan((fov*(Math.PI/180))/2.0));
+        float l_a1=-(far+near)/(far-near);
+        float l_a2=-(2*far*near)/(far-near);
+        val[M00]=l_fd/aspectRatio;  val[M10]=0;       val[M20]=0;     val[M30]=0;
         val[M01]=0;           val[M11]=l_fd;    val[M21]=0;     val[M31]=0;
         val[M02]=0;           val[M12]=0;       val[M22]=l_a1;  val[M32]=-1;
         val[M03]=0;           val[M13]=0;       val[M23]=l_a2;  val[M33]=0;
@@ -425,15 +425,15 @@ public final class Matrix
      * by an identity matrix and then setting the 4th column to the
      * translation vector.
      * 
-     * @param a_vector The translation vector
+     * @param vector The translation vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslation(Vector a_vector)
+    public  Matrix setToTranslation(Vector vector)
     {
         this.idt();
-        val[M03]=a_vector.getX();
-        val[M13]=a_vector.getY();
-        val[M23]=a_vector.getZ();
+        val[M03]=vector.getX();
+        val[M13]=vector.getY();
+        val[M23]=vector.getZ();
         return this;
     }
     
@@ -461,19 +461,19 @@ public final class Matrix
      * overwritting it with an identity and then setting the translation
      * vector in the 4th column and the scaling vector in the diagonal.
      * 
-     * @param a_trn The translation vector
-     * @param a_scl The scaling vector
+     * @param translation The translation vector
+     * @param scaling The scaling vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslationAndScaling(Vector a_trn,Vector a_scl)
+    public  Matrix setToTranslationAndScaling(Vector translation,Vector scaling)
     {
         idt();
-        val[M03]=a_trn.getX();
-        val[M13]=a_trn.getY();
-        val[M23]=a_trn.getZ();
-        val[M00]=a_scl.getX();
-        val[M11]=a_scl.getY();
-        val[M22]=a_scl.getZ();
+        val[M03]=translation.getX();
+        val[M13]=translation.getY();
+        val[M23]=translation.getZ();
+        val[M00]=scaling.getX();
+        val[M11]=scaling.getY();
+        val[M22]=scaling.getZ();
         return this;
     }
     
@@ -482,23 +482,23 @@ public final class Matrix
      * overwritting it with an identity and then setting the translation
      * vector in the 4th column and the scaling vector in the diagonal.
      * 
-     * @param tX The x-component of the translation vector
-     * @param tY The y-component of the translation vector
-     * @param tZ The z-component of the translation vector
-     * @param sX The x-component of the scaling vector
-     * @param sY The x-component of the scaling vector
-     * @param sZ The x-component of the scaling vector
+     * @param translationX The x-component of the translation vector
+     * @param translationY The y-component of the translation vector
+     * @param translationZ The z-component of the translation vector
+     * @param scalingX The x-component of the scaling vector
+     * @param scalingY The x-component of the scaling vector
+     * @param scalingZ The x-component of the scaling vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslationAndScaling(float tX, float tY, float tZ, float sX, float sY, float sZ)
+    public  Matrix setToTranslationAndScaling(float translationX, float translationY, float translationZ, float scalingX, float scalingY, float scalingZ)
     {
         this.idt();
-        val[M03]=tX;
-        val[M13]=tY;
-        val[M23]=tZ;
-        val[M00]=sX;
-        val[M11]=sY;
-        val[M22]=sZ;
+        val[M03]=translationX;
+        val[M13]=translationY;
+        val[M23]=translationZ;
+        val[M00]=scalingX;
+        val[M11]=scalingY;
+        val[M22]=scalingZ;
         return this;
     }
 
@@ -508,29 +508,29 @@ public final class Matrix
      * Sets the matrix to a rotation matrix around the given
      * axis.
      * 
-     * @param a_axs The axis
-     * @param a_ang The angle in degrees
+     * @param axis The axis
+     * @param angle The angle in degrees
      * @return This matrix for chaining
      */
-    public  Matrix setToRotation(Vector a_axs, float a_ang)
+    public  Matrix setToRotation(Vector axis, float angle)
     {
         idt();
-        if(a_ang==0) return this;
-        return this.set(quat.set(a_axs,a_ang));
+        if(angle==0) return this;
+        return this.set(quat.set(axis,angle));
     }    
 
     /**
      * Sets this matrix to a scaling matrix
      * 
-     * @param a_vector The scaling vector
+     * @param vector The scaling vector
      * @return This matrix for chaining.
      */
-    public  Matrix setToScaling(Vector a_vector)
+    public  Matrix setToScaling(Vector vector)
     {
         idt();
-        val[M00]=a_vector.getX();
-        val[M11]=a_vector.getY();
-        val[M22]=a_vector.getZ();
+        val[M00]=vector.getX();
+        val[M11]=vector.getY();
+        val[M22]=vector.getZ();
         return this;
     }
     
@@ -560,15 +560,15 @@ public final class Matrix
      * and an up vector. Multiply with a translation matrix
      * to get a camera model view matrix.
      * 
-     * @param a_dir The direction vector
-     * @param a_up The up vector
+     * @param direction The direction vector
+     * @param up The up vector
      * @return This matrix for chaining
      */
-    public  Matrix setToLookat(Vector a_dir, Vector a_up)
+    public  Matrix setToLookat(Vector direction, Vector up)
     {
-		l_vez.set(a_dir).nor();
-		l_vex.set(a_dir).nor();
-        l_vex.crs(a_up).nor();
+		l_vez.set(direction).nor();
+		l_vex.set(direction).nor();
+        l_vex.crs(up).nor();
 		l_vey.set(l_vex).crs(l_vez).nor();
 		idt();
 		val[M00]=l_vex.val[0];
@@ -584,6 +584,9 @@ public final class Matrix
         return this;
     }           
 
+    /**
+     * {@inheritDoc}
+     */
     public  String toString()
     {
         return 
@@ -592,8 +595,5 @@ public final class Matrix
                "["+val[M20]+"|"+val[M21]+"|"+val[M22]+"|"+val[M23]+"]\n"+
                "["+val[M30]+"|"+val[M31]+"|"+val[M32]+"|"+val[M33]+"]\n";              
     }
-
-    public  void setToRotateTo(Vector vector3) {
-    }    
 }
 

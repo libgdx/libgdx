@@ -16,7 +16,6 @@
  */
 package com.badlogic.gdx.math;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
