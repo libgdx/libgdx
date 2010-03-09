@@ -16,28 +16,49 @@
  */
 package com.badlogic.gdx.math;
 
-
-public class Sphere 
+/**
+ * Encapsulates a 3D sphere with a center and a radius
+ * 
+ * @author mzechner
+ *
+ */
+public final class Sphere 
 {
 	private float radius;
-	private final Vector position;
+	private final Vector center;
 	
-	public Sphere( Vector position, float radius )
+	/**
+	 * Constructs a sphere with the given center and radius
+	 * @param center The center
+	 * @param radius The radius
+	 */
+	public Sphere( Vector center, float radius )
 	{
-		this.position = new Vector( position );
+		this.center = new Vector( center );
 		this.radius = radius;		
 	}
 	
-	public Vector getPosition( )
+	/**
+	 * @return the center of the sphere
+	 */
+	public Vector getCenter( )
 	{
-		return position;
+		return center;
 	}
 	
+	/**
+	 * @return the radius of the sphere
+	 */
 	public float getRadius( )
 	{
 		return radius;
 	}
 	
+	/**
+	 * Sets the radius of the sphere
+	 * 
+	 * @param radius the radius
+	 */
 	public void setRadius( float radius )
 	{
 		this.radius = radius;

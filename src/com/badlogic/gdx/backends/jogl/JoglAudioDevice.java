@@ -21,7 +21,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.AudioFormat.Encoding;
 
-import com.badlogic.gdx.AudioDevice;
+import com.badlogic.gdx.audio.AudioDevice;
 
 /**
  * An implementation of {@link AudioDevice} for desktop Java based on

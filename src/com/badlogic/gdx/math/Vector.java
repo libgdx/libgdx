@@ -20,92 +20,133 @@ import java.io.Serializable;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 
+/**
+ * Encapsulates a 3D vector. Allows chaining operations by
+ * returning a reference to it self in all modification methods. 
+ * 
+ * @author mzechner
+ *
+ */
 public final class Vector implements Serializable
-{   
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(val);
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Vector other = (Vector) obj;
-		if (!Arrays.equals(val, other.val))
-			return false;
-		return true;
-	}
-
+{   	
 	private static final long serialVersionUID = 3840054589595372522L;
 	public final float[] val = new float[3];
     boolean dirty = true;
     private static Vector tmp = new Vector();
     private static Vector tmp2 = new Vector();
-    private static Vector tmp3 = new Vector();
-        
-    public final Vector setX(float a_x)
+    private static Vector tmp3 = new Vector();          
+
+    /**
+     * Constructs a vector at (0,0,0)
+     */
+    public Vector()
+    {
+    }
+
+    /**
+     * Creates a vector with the given components
+     * 
+     * @param a_x The x-component
+     * @param a_y The y-component
+     * @param a_z The z-component
+     */
+    public Vector(float a_x, float a_y, float a_z)
+    {
+        this.set(a_x,a_y,a_z);
+    }
+
+    /**
+     * Creates a vector from the given vector
+     * 
+     * @param a_vec The vector
+     */
+    public Vector(Vector a_vec)
+    {
+        this.set(a_vec);
+    }
+
+    /**
+     * Creates a vector from the given array. The 
+     * array must have at least 3 elements.
+     * 
+     * @param a_val The array
+     */
+    public Vector(float[] a_val)
+    {
+        this.set(a_val[0],a_val[1],a_val[2]);
+    }
+
+    /**
+     * Sets the x-component
+     * 
+     * @param a_x the x-component
+     * @return This vector for chaining
+     */
+    public Vector setX(float a_x)
     {
         val[0]=a_x;
         dirty=true;
         return this;
     }
 
-    public final float getX()
+    /**
+     * @return the x-component
+     */
+    public float getX()
     {
         return val[0];
     }
 
-    public final Vector setY(float a_y)
+    /**
+     * Sets the y-component
+     * 
+     * @param a_y the y-component
+     * @return This vector for chaining
+     */
+    public Vector setY(float a_y)
     {
         val[1]=a_y;
         dirty=true;
         return this;
     }
-
-    public final float getY()
+    
+	/**
+	 * @return the y-component
+	 */
+    public  float getY()
     {
         return val[1];
     }
 
-    public final Vector setZ(float a_z)
+    /**
+     * Sets the z-component
+     * 
+     * @param a_z the z-component
+     * @return This vector for chaining
+     */
+    public  Vector setZ(float a_z)
     {
         val[2]=a_z;
         dirty=true;
         return this;
     }
 
-    public final float getZ()
+    /**
+     * @return the z-component
+     */
+    public  float getZ()
     {
         return val[2];
     }
-
-    public Vector()
-    {
-    }
-
-    public Vector(float a_x, float a_y, float a_z)
-    {
-        this.set(a_x,a_y,a_z);
-    }
-
-    public Vector(Vector a_vec)
-    {
-        this.set(a_vec);
-    }
-
-    public Vector(float[] a_val)
-    {
-        this.set(a_val[0],a_val[1],a_val[2]);
-    }
     
+    /**
+     * Sets the vector to the given components
+     * 
+     * @param a_x The x-component 
+     * @param a_y The y-component
+     * @param a_z The z-component
+     * @return this vector for chaining
+     */
     public Vector set(float a_x, float a_y, float a_z)
     {
         val[0]=a_x;
@@ -115,16 +156,32 @@ public final class Vector implements Serializable
         return this;
     }
 
+    /**
+     * Sets the components of the given vector
+     * 
+     * @param a_vec The vector
+     * @return This vector for chaining
+     */
     public Vector set(Vector a_vec)
     {
         return this.set(a_vec.val[0],a_vec.val[1],a_vec.val[2]);
     }
 
+    /**
+     * Sets the components from the array. The array
+     * must have at least 3 elements
+     * 
+     * @param a_val The array
+     * @return this vector for chaining
+     */
     public Vector set(float[] a_val)
     {
         return this.set(a_val[0],a_val[1],a_val[2]);
     }
 
+    /**
+     * @return a copy of this vector
+     */
     public Vector cpy()
     {
         return new Vector(this);
@@ -132,85 +189,168 @@ public final class Vector implements Serializable
     
     /**
      * NEVER EVER SAVE THIS REFERENCE!
-     * @return
+     * 
+     * @return 
      */
-    public Vector tmp()
+    Vector tmp()
     {
     	return tmp.set( this );
     }
     
-    public Vector tmp2()
+    /**
+     * NEVER EVER SAVE THIS REFERENCE!
+     * 
+     * @return 
+     */
+    Vector tmp2()
     {
     	return tmp2.set(this);
     }
     
-    public Vector tmp3()
+    /**
+     * NEVER EVER SAVE THIS REFERENCE!
+     * 
+     * @return 
+     */
+    Vector tmp3()
     {
     	return tmp3.set(this);
     }
     
+    /**
+     * Adds the given vector to this vector
+     * 
+     * @param a_vec The other vector
+     * @return This vector for chaining
+     */
     public Vector add(Vector a_vec)
     {
         return this.add(a_vec.val[0],a_vec.val[1],a_vec.val[2]);
     }
 
+    /**
+     * Adds the given vector to this component
+     * @param a_x The x-component of the other vector
+     * @param a_y The y-component of the other vector
+     * @param a_z The z-component of the other vector
+     * @return This vector for chaining.
+     */
     public Vector add(float a_x, float a_y, float a_z)
     {
         return this.set(val[0]+a_x,val[1]+a_y,val[2]+a_z);
     }
 
+    /**
+     * Adds the given value to all three components of the 
+     * vector.
+     * 
+     * @param a_val The value
+     * @return This vector for chaining
+     */
     public Vector add(float a_val)
     {
         return this.set(val[0]+a_val,val[1]+a_val,val[2]+a_val);
     }
 
+    /**
+     * Subtracts the given vector from this vector 
+     * @param a_vec The other vector
+     * @return This vector for chaining
+     */
     public Vector sub(Vector a_vec)
     {
         return this.sub(a_vec.val[0],a_vec.val[1],a_vec.val[2]);
     }
 
+    /**
+     * Subtracts the other vector from this vector.
+     * 
+     * @param a_x The x-component of the other vector
+     * @param a_y The y-component of the other vector
+     * @param a_z The z-component of the other vector
+     * @return This vector for chaining
+     */
     public Vector sub(float a_x, float a_y, float a_z)
     {
         return this.set(val[0]-a_x,val[1]-a_y,val[2]-a_z);
     }
 
+    /**
+     * Subtracts the given value from all components of this vector
+     * 
+     * @param a_val The value
+     * @return This vector for chaining
+     */
     public Vector sub(float a_val)
     {
         return this.set(val[0]-a_val,val[1]-a_val,val[2]-a_val);
     }
 
+    /**
+     * Multiplies all components of this vector by the given value
+     * 
+     * @param a_val The value
+     * @return This vector for chaining
+     */
     public Vector mul(float a_val)
     {
         return this.set(val[0]*a_val,val[1]*a_val,val[2]*a_val);
     }
 
+    /**
+     * Divides all components of this vector by the given value
+     * 
+     * @param a_val The value
+     * @return This vector for chaining
+     */
     public Vector div(float a_val)
     {
     	float d = 1 / a_val;    	
         return this.set(val[0]*d,val[1]*d,val[2]*d);
     }
 
+    /**     
+     * @return The euclidian length
+     */
     public float len()
     {
         return (float)Math.sqrt(val[0]*val[0]+val[1]*val[1]+val[2]*val[2]);
     }
     
-    public float sqrlen( )
+    /**
+     * @return The squared euclidian length
+     */
+    public float len2( )
     {
     	return val[0]*val[0]+val[1]*val[1]+val[2]*val[2];
     }
 
+    /**
+     * Gets the component at index idx. 
+     * 
+     * @param idx The index
+     * @return The component
+     */
     public float get(int idx)
     {
         return val[idx];
     }
     
+    /**
+     * @param a_vec The other vector
+     * @return Wether this and the other vector are equal
+     */
     public boolean idt(Vector a_vec)
     {
         return val[0]==a_vec.val[0] &&
                val[1]==a_vec.val[1] &&
                val[2]==a_vec.val[2];
     }
+    
+    /**
+     * @param a_vec The other vector
+     * @return The euclidian distance between this and the other vector
+     */
     public float dst(Vector a_vec)
     {
     	float a = a_vec.val[0]-val[0];
@@ -224,7 +364,11 @@ public final class Vector implements Serializable
         return (float)Math.sqrt( a + b + c );
     }
 
-    public float sqrdist( Vector a_vec )
+    /**
+     * @param a_vec The other vector
+     * @return The squared euclidian distance between this and the other vector
+     */
+    public float dist2( Vector a_vec )
     {
     	float a = a_vec.val[0] - val[0];
     	float b = a_vec.val[1] - val[1];
@@ -232,13 +376,11 @@ public final class Vector implements Serializable
     	return a * a + b * b + c * c;    	    
     }
     
-    public Vector abs()
-    {
-        val[0]=Math.abs(val[0]);
-        val[1]=Math.abs(val[1]);
-        val[2]=Math.abs(val[2]);
-        return this;
-    }
+    /**
+     * Normalizes this vector to unit length
+     *     
+     * @return This vector for chaining
+     */
     public Vector nor()
     {
     	if( val[0] == 0 && val[1] == 0 && val[2] == 0 )
@@ -246,22 +388,21 @@ public final class Vector implements Serializable
     	else
     		return this.div(this.len());
     }
-    
-    public boolean equ( Vector v )
-    {
-    	return v.getX() == getX() && v.getY() == getY() && v.getZ() == getZ();
-    }
-    
-    public Vector pck(float a_min, float a_max)
-    {
-        return this.nor().mul(0.5f).add(0.5f).mul(a_max-a_min).sub(a_min);
-    }
-
+        
+    /**
+     * @param a_vec The other vector
+     * @return The dot product between this and the other vector
+     */
     public float dot(Vector a_vec)
     {
         return val[0]*a_vec.val[0]+val[1]*a_vec.val[1]+val[2]*a_vec.val[2];
     }
 
+    /**
+     * Sets this vector to the cross product between it and the other vector.
+     * @param a_vec The other vector
+     * @return This vector for chaining
+     */
     public Vector crs(Vector a_vec)
     {
         return this.set(val[1]*a_vec.val[2]-val[2]*a_vec.val[1],
@@ -269,40 +410,25 @@ public final class Vector implements Serializable
                         val[0]*a_vec.val[1]-val[1]*a_vec.val[0]);
     }
 
+    /**
+     * Sets this vector to the cross product between it and the other vector.
+     * @param x The x-component of the other vector
+     * @param y The y-component of the other vector
+     * @param z The z-component of the other vector
+     * @return This vector for chaining
+     */
     public Vector crs(float x, float y, float z)
     {
         return this.set(val[1]*z-val[2]*y,
                         val[2]*x-val[0]*z,
                         val[0]*y-val[1]*x);
-    }
-    
-    public static void crs(float[] a_vc0, float[] avc1, float[] a_res)
-    {
-        a_res[0]=a_vc0[1]*avc1[2]-a_vc0[2]*avc1[1];
-        a_res[1]=a_vc0[2]*avc1[0]-a_vc0[0]*avc1[2];
-        a_res[2]=a_vc0[0]*avc1[1]-a_vc0[1]*avc1[0];
-    }
-
-    public static void nor(float[] a_vec)
-    {
-        float len = (float)Math.sqrt(a_vec[0]*a_vec[0]+a_vec[1]*a_vec[1]+a_vec[2]*a_vec[2]);
-        a_vec[0]/=len; a_vec[1]/=len; a_vec[2]/=len;
-    }
-
-    public static void add(float[] a_vc0, float[] a_vc1, float[] a_vc2)
-    {
-        a_vc2[0]=a_vc0[0]+a_vc1[0];
-        a_vc2[1]=a_vc0[1]+a_vc1[1];
-        a_vc2[2]=a_vc0[2]+a_vc1[2];
-    }
-
-     public static void mul(float[] a_vc0, float a_fac, float[] a_vc2)
-    {
-        a_vc2[0]=a_vc0[0]*a_fac;
-        a_vc2[1]=a_vc0[1]*a_fac;
-        a_vc2[2]=a_vc0[2]*a_fac;
-    }
-
+    }    
+   
+    /**
+     * Multiplies the vector by the given matrix.
+     * @param a_matrix The matrix
+     * @return This vector for chaining
+     */
     public Vector mul(Matrix a_matrix)
     {
         float l_mat[] = a_matrix.val;
@@ -311,6 +437,14 @@ public final class Vector implements Serializable
                         val[0]*l_mat[Matrix.M20]+val[1]*l_mat[Matrix.M21]+val[2]*l_mat[Matrix.M22]+l_mat[Matrix.M23]);
     }
 
+    /**
+     * Multiplies this vector by the given matrix dividing by
+     * w. This is mostly used to project/unproject vectors
+     * via a perspective projection matrix.
+     * 
+     * @param a_matrix The matrix.
+     * @return This vector for chaining
+     */
     public Vector prj(Matrix a_matrix)
     {
         float l_mat[] = a_matrix.val;
@@ -320,6 +454,13 @@ public final class Vector implements Serializable
                         (val[0]*l_mat[Matrix.M20]+val[1]*l_mat[Matrix.M21]+val[2]*l_mat[Matrix.M22]+l_mat[Matrix.M23])/l_w);
     }
 
+    /**
+     * Multiplies this vector by the first three columns of the
+     * matrix, essentially only applying rotation and scaling.
+     * 
+     * @param a_matrix The matrix
+     * @return This vector for chaining
+     */
     public Vector rot(Matrix a_matrix)
     {
         float l_mat[] = a_matrix.val;
@@ -327,46 +468,49 @@ public final class Vector implements Serializable
                         val[0]*l_mat[Matrix.M10]+val[1]*l_mat[Matrix.M11]+val[2]*l_mat[Matrix.M12],
                         val[0]*l_mat[Matrix.M20]+val[1]*l_mat[Matrix.M21]+val[2]*l_mat[Matrix.M22]);
     }
-
-    public Vector min(Vector a_vector)
-    {
-        return this.set( a_vector.getX()<getX()?a_vector.getX():getX(),
-                         a_vector.getY()<getY()?a_vector.getY():getY(),
-                         a_vector.getZ()<getZ()?a_vector.getZ():getZ());
-    }
-
-    public Vector max(Vector a_vector)
-    {
-        return this.set( a_vector.getX()>getX()?a_vector.getX():getX(),
-                         a_vector.getY()>getY()?a_vector.getY():getY(),
-                         a_vector.getZ()>getZ()?a_vector.getZ():getZ());
-    }
-
+       
+    /**
+     * @return Wether this vector is a unit length vector
+     */
     public boolean isUnit()
     {
         return this.len()==1;
     }
 
+    /**
+     * @return Wether this vector is a zero vector
+     */
     public boolean isZero()
     {
         return val[0]==0 && val[1]==0 && val[2]==0;
-    }
-    
-    public Vector lerp( Vector target, float alpha )
-    {
-    	Vector r = this.cpy().mul( 1.0f - alpha );
-    	r.add( target.tmp().mul( alpha ) );
-    	return r;
-    }
+    }       
 
-    public Vector lerpNoCopy( Vector target, float alpha )
+    /**
+     * Linearly interpolates between this vector and the 
+     * target vector by alpha which is in the range [0,1]. The result
+     * is stored in this vector.
+     * 
+     * @param target The target vector
+     * @param alpha The interpolation coefficient
+     * @return This vector for chaining.
+     */
+    public Vector lerp( Vector target, float alpha )
     {
     	Vector r = this.mul( 1.0f - alpha );
     	r.add( target.tmp().mul( alpha ) );
     	return r;
     }        
-    
-    public Vector slerpNoCopy( Vector target, float alpha )
+
+    /**
+     * Spherically interpolates between this vector and the 
+     * target vector by alpha which is in the range [0,1]. The result
+     * is stored in this vector.
+     * 
+     * @param target The target vector
+     * @param alpha The interpolation coefficient
+     * @return This vector for chaining.
+     */
+    public Vector slerp( Vector target, float alpha )
     {
     	float dot = dot( target );
     	if( dot > 0.99995 || dot < 0.9995 )
@@ -388,50 +532,50 @@ public final class Vector implements Serializable
     	return this.mul((float)Math.cos(theta)).add( v2.mul((float)Math.sin(theta) ) ).nor();
     }   
     
+    /**
+     * @return wether this vector is dirty
+     */
     public boolean isDirty()
     {
         return dirty;
     }
 
+    /**
+     * Sets this vector's dirty flag
+     * @param a_dirty The dirty flag
+     */
     public void setDirty(boolean a_dirty)
     {
         dirty=a_dirty;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String toString()
     {
         return String.format( "%.4f", val[0] ) + ", " + String.format( "%.4f", val[1] ) + ", " + String.format( "%.4f", val[2] );
-    }
-
-	public FloatBuffer toFloatBuffer4(int i)
-	{
-		FloatBuffer buffer = FloatBuffer.allocate( 4 );
-		buffer.put( val[0] );
-		buffer.put( val[1] );
-		buffer.put( val[2] );
-		buffer.put( 0 );
-		buffer.flip( );
-		return buffer;
+    }	
+	
+    /**
+     * Returns the dot product between this and the given 
+     * vector.
+     * 
+     * @param x The x-component of the other vector
+     * @param y The y-component of the other vector
+     * @param z The z-component of the other vector
+     * @return The dot product
+     */
+	public float dot(int x, int y, int z) { 
+		return val[0] * x + val[1] * y + val[2] * z;
 	}
 
-	public static Vector fromString(String nodeValue) 
-	{
-		String[] coords = nodeValue.split( " " );
-		return new Vector( Float.parseFloat( coords[0] ), Float.parseFloat( coords[1] ), Float.parseFloat( coords[2] ));		
-	}
-
-	public Vector scale(int i, int j, int k) 
-	{
-		val[0] *= i;
-		val[1] *= j;
-		val[2] *= k;
-		return this;
-	}
-
-	public float dot(int i, int j, int k) { 
-		return val[0] * i + val[1] * j + val[2] * k;
-	}
-
+	/**
+	 * Returns the squared distance between this point and the given point
+	 * 
+	 * @param point The other point
+	 * @return The squared distance
+	 */
 	public float dst2(Vector point) {
 
     	float a = point.val[0]-val[0];
@@ -445,6 +589,14 @@ public final class Vector implements Serializable
         return a + b + c;
 	}
 
+	/**
+	 * Returns the squared distance between this point and the given point
+	 * 
+	 * @param x The x-component of the other point
+	 * @param y The y-component of the other point
+	 * @param z The z-component of the other point
+	 * @return The squared distance
+	 */
 	public float dst2(float x, float y, float z) {
 		float a = x-val[0];
     	float b = y-val[1];
@@ -461,4 +613,32 @@ public final class Vector implements Serializable
 	{	
 		return (float)Math.sqrt( dst2( x, y, z ));
 	}	 
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		 int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(val);
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vector other = (Vector) obj;
+		if (!Arrays.equals(val, other.val))
+			return false;
+		return true;
+	}
 }

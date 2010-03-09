@@ -20,7 +20,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 
-import com.badlogic.gdx.AudioDevice;
+import com.badlogic.gdx.audio.AudioDevice;
 
 final class AndroidAudioDevice implements AudioDevice 
 {

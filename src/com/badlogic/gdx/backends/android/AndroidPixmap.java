@@ -25,7 +25,7 @@ import android.graphics.RectF;
 import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
 
-import com.badlogic.gdx.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap;
 
 /**
  * And implementation of {@link Pixmap}

@@ -14,10 +14,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.models;
+package com.badlogic.gdx.graphics.models;
 
-public class MD2Triangle 
+import java.nio.FloatBuffer;
+
+public class MD2Frame 
 {
-	public short[] vertices = new short[3];
-	public short[] texCoords = new short[3];
+	public float[] vertices;
+	public FloatBuffer verticesBuffer;
+	public String name;
 }

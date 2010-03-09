@@ -58,16 +58,16 @@ import android.view.View.OnTouchListener;
 import android.widget.EditText;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.AudioDevice;
-import com.badlogic.gdx.Font;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.Pixmap;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.Sound;
-import com.badlogic.gdx.Texture;
-import com.badlogic.gdx.Pixmap.Format;
+import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.backends.InputListener;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.RenderListener;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.math.WindowedMean;
 
 /**

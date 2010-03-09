@@ -23,9 +23,9 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Font;
-import com.badlogic.gdx.Pixmap;
 import com.badlogic.gdx.Application.FontStyle;
+import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -151,8 +151,8 @@ final class JoglFont extends Font
 		g.setFont( font );
 		Rectangle2D bounds = metrics.getStringBounds( "" + character, g);
 		g.dispose();
-		rect.width = (int)Math.ceil(bounds.getWidth());
-		rect.height = getLineHeight();
+		rect.setWidth( (int)Math.ceil(bounds.getWidth()) );
+		rect.setHeight( getLineHeight() );
 	}
 
 }

@@ -14,15 +14,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.models;
+package com.badlogic.gdx.graphics.models;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.Mesh.PrimitiveType;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.PrimitiveType;
 
 /**
  * Encapsulates a loaded MD2Mesh. Not to useful on its own so

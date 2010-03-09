@@ -14,8 +14,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx;
+package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.MatrixMode;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Ray;

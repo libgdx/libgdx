@@ -19,7 +19,7 @@ package com.badlogic.gdx.backends.android;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
-import com.badlogic.gdx.Sound;
+import com.badlogic.gdx.audio.Sound;
 
 /**
  * An implementation of {@link Sound} for Android

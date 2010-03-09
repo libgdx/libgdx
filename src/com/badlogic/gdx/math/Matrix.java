@@ -16,11 +16,17 @@
  */
 package com.badlogic.gdx.math;
 
-import java.io.Serializable;
-import java.nio.FloatBuffer;
 
-
-public final class Matrix implements Serializable
+/**
+ * Encapsulates a column major 4 by 4 matrix. You can access
+ * the linear array for use with OpenGL via the public {@link Matrix.val}
+ * member. Like the {@link Vector} class it allows to chain methods by
+ * returning a reference to itself.
+ * 
+ * @author mzechner
+ *
+ */
+public final class Matrix
 {    
 	private static final long serialVersionUID = -2717655254359579617L;
 	public static final int M00=0;//0;
@@ -42,33 +48,62 @@ public final class Matrix implements Serializable
 
     public final float tmp[] = new float[16];
     public final float val[] = new float[16];
-    final FloatBuffer buffer = FloatBuffer.wrap(val);
-    
+   
+    /**
+     * Constructs an identity matrix
+     */
     public Matrix()
     {
         val[M00]=1f; val[M11]=1f; val[M22]=1f; val[M33]=1f;
     }
 
+    /**
+     * Constructs a matrix from the given matrix
+     * 
+     * @param a_matrix The matrix
+     */
     public Matrix(Matrix a_matrix)
     {
         this.set(a_matrix);
     }
 
+    /**
+     * Constructs a matrix from the given float array. The
+     * array must have at least 16 elements
+     * @param a_values The float array
+     */
     public Matrix(float[] a_values)
     {
         this.set(a_values);
     }
 
+    /**
+     * Constructs a rotation matrix from the given {@link Quaternion}
+     * @param a_qut The quaternion
+     */
     public Matrix(Quaternion a_qut)
     {
         this.set(a_qut);
     }
 
+    /**
+     * Sets the matrix to the given matrix.
+     * 
+     * @param a_matrix The matrix
+     * @return This matrix for chaining
+     */
     public  Matrix set(Matrix a_matrix)
     {
         return this.set(a_matrix.val);
     }
 
+    /**
+     * Sets the matrix to the given matrix as a float array.
+     * The float array must have at least 16 elements.
+     * 
+     * @param a_val The matrix 
+     * @return This matrix for chaining
+     */
     public  Matrix set(float[] a_val)
     {
         val[M00]=a_val[M00]; val[M10]=a_val[M10]; val[M20]=a_val[M20]; val[M30]=a_val[M30];
@@ -78,6 +113,13 @@ public final class Matrix implements Serializable
         return this;
     }
 
+    /**
+     * Sets the matrix to a rotation matrix representing the
+     * quaternion.
+     * 
+     * @param a_qut The quaternion
+     * @return This matrix for chaining
+     */
     public  Matrix set(Quaternion a_qut)
     {
         // Compute quaternion factors
@@ -104,6 +146,17 @@ public final class Matrix implements Serializable
         return this;
     }
 
+    /**
+     * Sets the four columns of the matrix which correspond to the
+     * x-, y- and z-axis of the vector space this matrix creates as
+     * well as the 4th column representing the translation of any
+     * point that is multiplied by this matrix.
+     * 
+     * @param xAxis The x-axis
+     * @param yAxis The y-axis
+     * @param zAxis The z-axis
+     * @param pos The translation vector
+     */
     public void set( Vector xAxis, Vector yAxis, Vector zAxis, Vector pos )
     {
     	val[M00] = xAxis.getX();
@@ -124,16 +177,21 @@ public final class Matrix implements Serializable
     	val[M33] = 1;
     }
 
+    /**
+     * @return a copy of this matrix
+     */
     public  Matrix cpy()
     {
         return new Matrix(this);
     }
 
-    public  Matrix setToIdentity()
-    {
-        return this.idt();
-    }
-
+    /**
+     * Adds a translational component to the matrix in the 4th column. 
+     * The other columns are untouched.
+     * 
+     * @param a_vector The translation vector
+     * @return This matrix for chaining
+     */
     public  Matrix trn(Vector a_vector)
     {
         val[M03]+=a_vector.getX();
@@ -142,6 +200,15 @@ public final class Matrix implements Serializable
         return this;
     }
     
+    /**
+     * Adds a translational component to the matrix in the 4th column.
+     * The other columns are untouched.
+     * 
+     * @param x The x-component of the translation vector
+     * @param y The y-component of the translation vector
+     * @param z The z-component of the translation vector
+     * @return This matrix for chaining
+     */
     public Matrix trn(float x, float y, float z)
     {
         val[M03]+=x;
@@ -150,11 +217,21 @@ public final class Matrix implements Serializable
         return this;
     }
 
+    /**
+     * @return the backing float array
+     */
     public  float[] getValues()
     {
         return val;
     }
 
+    /**
+     * Multiplies this matrix with the given matrix, storing
+     * the result in this matrix.
+     * 
+     * @param a_mat The other matrix
+     * @return This matrix for chaining.
+     */
     public  Matrix mul(Matrix a_mat)
     {
         tmp[M00]=val[M00]*a_mat.val[M00] + val[M01]*a_mat.val[M10] + val[M02]*a_mat.val[M20] + val[M03]*a_mat.val[M30];
@@ -176,6 +253,11 @@ public final class Matrix implements Serializable
         return this.set(tmp);
     }
 
+    /**
+     * Transposes the matrix
+     * 
+     * @return This matrix for chaining
+     */
     public  Matrix tra()
     {
         tmp[M00]=val[M00]; tmp[M01]=val[M10]; tmp[M02]=val[M20]; tmp[M03]=val[M30];
@@ -185,6 +267,11 @@ public final class Matrix implements Serializable
         return this.set(tmp);
     }
 
+    /**
+     * Sets the matrix to an identity matrix
+     * 
+     * @return This matrix for chaining
+     */
     public  Matrix idt()
     {
         val[M00]=1;  val[M01]=0;  val[M02]=0;  val[M03]=0;
@@ -194,6 +281,12 @@ public final class Matrix implements Serializable
         return this;
     }
 
+    /**
+     * Inverts the matrix. Throws a RuntimeException in case the 
+     * matrix is not invertible. Stores the result in this matrix
+     *  
+     * @return This matrix for chaining
+     */
     public  Matrix inv()
     {
         float l_det=this.det();
@@ -222,6 +315,9 @@ public final class Matrix implements Serializable
         return this;
     }
 
+    /**
+     * @return The determinant of this matrix
+     */
     public  float det()
     {
         return
@@ -233,9 +329,19 @@ public final class Matrix implements Serializable
         val[M20] * val[M01] * val[M12] * val[M33]-val[M00] * val[M21] * val[M12] * val[M33]-val[M10] * val[M01] * val[M22] * val[M33]+val[M00] * val[M11] * val[M22] * val[M33];
     }
 
+    /**
+     * Sets the matrix to a projection matrix with a near- and
+     * far plane, a field of view in degrees and an aspect ratio.
+     * 
+     * @param a_near The near plane
+     * @param a_far The far plane
+     * @param a_fov The field of view in degrees
+     * @param a_asp The aspect ratio
+     * @return This matrix for chaining
+     */
     public  Matrix setToProjection(float a_near, float a_far, float a_fov, float a_asp)
     {
-        this.setToIdentity();
+        this.idt();
         float l_fd=(float)(1.0/Math.tan((a_fov*(Math.PI/180))/2.0));
         float l_a1=-(a_far+a_near)/(a_far-a_near);
         float l_a2=-(2*a_far*a_near)/(a_far-a_near);
@@ -246,22 +352,58 @@ public final class Matrix implements Serializable
         return this;
     }
 
+    /**
+     * Sets this matrix to an orthographic projection matrix with the
+     * origin at (x,y) extending by width and height. The near plane
+     * is set to 0, the far plane is set to 1.
+     * 
+     * @param x The x-coordinate of the origin
+     * @param y The y-coordinate of the origin
+     * @param width The width
+     * @param height The height
+     * @return This matrix for chaining
+     */
     public  Matrix setToOrtho2D( float x, float y, float width, float height )
     {
     	setToOrtho( 0, width, 0, height, 0, 1 );
     	return this;
     }
     
+    /**
+     * Sets this matrix to an orthographic projection matrix with the
+     * origin at (x,y) extending by width and height, having a near
+     * and far plane.
+     * 
+     * @param x The x-coordinate of the origin
+     * @param y The y-coordinate of the origin
+     * @param width The width
+     * @param height The height
+     * @param near The near plane
+     * @param far The far plane
+     * @return This matrix for chaining
+     */
     public  Matrix setToOrtho2D( float x, float y, float width, float height, float near, float far )
     {
     	setToOrtho( 0, width, 0, height, near, far );
     	return this;
     }
-    
+
+    /**
+     * Sets the matrix to an orthographic projection like glOrtho (http://www.opengl.org/sdk/docs/man/xhtml/glOrtho.xml)
+     * following the OpenGL equivalent
+     * 
+     * @param left The left clipping plane
+     * @param right The right clipping plane
+     * @param bottom The bottom clipping plane
+     * @param top The top clipping plane
+     * @param near The near clipping plane
+     * @param far The far clipping plane
+     * @return This matrix for chaining
+     */
     public  Matrix setToOrtho( float left, float right, float bottom, float top, float near, float far )
     {
     
-    	this.setToIdentity();
+    	this.idt();
     	float x_orth = 2 / ( right - left );
     	float y_orth = 2 / ( top - bottom );
     	float z_orth = -2 / ( far - near );
@@ -278,27 +420,54 @@ public final class Matrix implements Serializable
     	return this;    	
     }
     
+    /**
+     * Sets this matrix to a translation matrix, overwriting it first
+     * by an identity matrix and then setting the 4th column to the
+     * translation vector.
+     * 
+     * @param a_vector The translation vector
+     * @return This matrix for chaining
+     */
     public  Matrix setToTranslation(Vector a_vector)
     {
-        this.setToIdentity();
+        this.idt();
         val[M03]=a_vector.getX();
         val[M13]=a_vector.getY();
         val[M23]=a_vector.getZ();
         return this;
     }
     
+    /**
+     * Sets this matrix to a translation matrix, overwriting it first
+     * by an identity matrix and then setting the 4th column to the
+     * translation vector.
+     * 
+     * @param x The x-component of the translation vector
+     * @param y The y-component of the translation vector
+     * @param z The z-component of the translation vector
+     * @return This matrix for chaining
+     */
     public  Matrix setToTranslation(float x, float y, float z)
     {
-        this.setToIdentity();
+    	idt();
         val[M03]=x;
         val[M13]=y;
         val[M23]=z;
         return this;
     }
 
+    /**
+     * Sets this matrix to a translation and scaling matrix by first
+     * overwritting it with an identity and then setting the translation
+     * vector in the 4th column and the scaling vector in the diagonal.
+     * 
+     * @param a_trn The translation vector
+     * @param a_scl The scaling vector
+     * @return This matrix for chaining
+     */
     public  Matrix setToTranslationAndScaling(Vector a_trn,Vector a_scl)
     {
-        this.setToIdentity();
+        idt();
         val[M03]=a_trn.getX();
         val[M13]=a_trn.getY();
         val[M23]=a_trn.getZ();
@@ -308,9 +477,22 @@ public final class Matrix implements Serializable
         return this;
     }
     
+    /**
+     * Sets this matrix to a translation and scaling matrix by first
+     * overwritting it with an identity and then setting the translation
+     * vector in the 4th column and the scaling vector in the diagonal.
+     * 
+     * @param tX The x-component of the translation vector
+     * @param tY The y-component of the translation vector
+     * @param tZ The z-component of the translation vector
+     * @param sX The x-component of the scaling vector
+     * @param sY The x-component of the scaling vector
+     * @param sZ The x-component of the scaling vector
+     * @return This matrix for chaining
+     */
     public  Matrix setToTranslationAndScaling(float tX, float tY, float tZ, float sX, float sY, float sZ)
     {
-        this.setToIdentity();
+        this.idt();
         val[M03]=tX;
         val[M13]=tY;
         val[M23]=tZ;
@@ -321,58 +503,74 @@ public final class Matrix implements Serializable
     }
 
     static Quaternion quat = new Quaternion();
+    
+    /**
+     * Sets the matrix to a rotation matrix around the given
+     * axis.
+     * 
+     * @param a_axs The axis
+     * @param a_ang The angle in degrees
+     * @return This matrix for chaining
+     */
     public  Matrix setToRotation(Vector a_axs, float a_ang)
     {
-        this.setToIdentity();
+        idt();
         if(a_ang==0) return this;
         return this.set(quat.set(a_axs,a_ang));
     }    
 
+    /**
+     * Sets this matrix to a scaling matrix
+     * 
+     * @param a_vector The scaling vector
+     * @return This matrix for chaining.
+     */
     public  Matrix setToScaling(Vector a_vector)
     {
-        this.setToIdentity();
+        idt();
         val[M00]=a_vector.getX();
         val[M11]=a_vector.getY();
         val[M22]=a_vector.getZ();
         return this;
     }
     
+    /**
+     * Sets this matrix to a scaling matrix
+     * 
+     * @param x The x-component of the scaling vector
+     * @param y The y-component of the scaling vector
+     * @param z The z-component of the scaling vector
+     * @return This matrix for chaining.
+     */
     public Matrix setToScaling(float x, float y, float z)
     {
-        this.setToIdentity();
+    	idt();
         val[M00]=x;
         val[M11]=y;
         val[M22]=z;
         return this;
-    }
-    
-    public Matrix scale( Vector a_vector )
-    {
-    	val[M00]*=a_vector.getX();
-    	val[M11]*=a_vector.getY();
-    	val[M22]*=a_vector.getZ();
-    	return this;
-    }
-    
-    public Matrix scale( float x, float y, float z )
-    {
-    	val[M00]*=x;
-    	val[M11]*=y;
-    	val[M22]*=z;
-    	return this;
-    }
+    }      
 
     static Vector l_vez = new Vector( );
     static Vector l_vex = new Vector( );
     static Vector l_vey = new Vector( );
     
+    /**
+     * Sets the matrix to a look at matrix with a direction
+     * and an up vector. Multiply with a translation matrix
+     * to get a camera model view matrix.
+     * 
+     * @param a_dir The direction vector
+     * @param a_up The up vector
+     * @return This matrix for chaining
+     */
     public  Matrix setToLookat(Vector a_dir, Vector a_up)
     {
 		l_vez.set(a_dir).nor();
 		l_vex.set(a_dir).nor();
         l_vex.crs(a_up).nor();
 		l_vey.set(l_vex).crs(l_vez).nor();
-        this.setToIdentity();
+		idt();
 		val[M00]=l_vex.val[0];
 		val[M01]=l_vex.val[1];
 		val[M02]=l_vex.val[2];
@@ -384,38 +582,7 @@ public final class Matrix implements Serializable
 		val[M22]=-l_vez.val[2];    	        	
     	
         return this;
-    }         
-
-    public  Matrix setToRotateTo(Vector a_from, Vector a_to)
-    {
-
-        idt();
-        
-        float e, h;
-
-        Vector v = a_from.cpy().crs(a_to);
-        e = a_from.dot(a_to);
-        
-        h = 1.0f/(1.0f + e);
-        float hvx = h * v.get(0);
-        float hvz = h * v.get(2);
-        float hvxy = hvx * v.get(1);
-        float hvxz = hvx * v.get(2);
-        float hvyz = hvz * v.get(1);
-        val[M00] = e + hvx * v.get(0);
-        val[M01] = hvxy - v.get(2);
-        val[M02] = hvxz + v.get(1);
-    
-        val[M10] = hvxy + v.get(2);
-        val[M11] = e + h * v.get(1) * v.get(1);
-        val[M12] = hvyz - v.get(0);
-    
-        val[M20] = hvxz - v.get(1);
-        val[M21] = hvyz + v.get(0);
-        val[M22] = e + hvz * v.get(2);
-
-        return this;
-    }
+    }           
 
     public  String toString()
     {
@@ -427,11 +594,6 @@ public final class Matrix implements Serializable
     }
 
     public  void setToRotateTo(Vector vector3) {
-    }
-    
-    public FloatBuffer toFloatBuffer( )
-    {    
-    	return buffer;
-    }
+    }    
 }
 

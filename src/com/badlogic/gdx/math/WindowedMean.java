@@ -17,19 +17,19 @@
 package com.badlogic.gdx.math;
 
 /**
- * a simple class keeping track
+ * A simple class keeping track
  * of the mean of a stream of values
  * within a certain window. the WindowedMean
  * will only return a value in case enough
  * data has been sampled. After enough
  * data has been sampled the oldest sample
- * will be replace by the newest in case
+ * will be replaced by the newest in case
  * a new sample is added.
  * 
  * @author marzec
  *
  */
-public strictfp class WindowedMean 
+public final class WindowedMean 
 {
 	float values[];
 	int added_values = 0;
@@ -79,7 +79,7 @@ public strictfp class WindowedMean
 	 * window is full the oldest value will be replaced
 	 * by this new value.
 	 * 
-	 * @param value
+	 * @param value The value to add
 	 */
 	public void addValue( float value )
 	{
@@ -96,7 +96,7 @@ public strictfp class WindowedMean
 	 * results when at least window_size samples
 	 * as specified in the constructor have been
 	 * added.
-	 * @return
+	 * @return the mean
 	 */
 	public float getMean( )
 	{
@@ -117,16 +117,25 @@ public strictfp class WindowedMean
 			return 0;
 	}	
 	
+	/**
+	 * @return the oldest value in the window
+	 */
 	public float getOldest( )
 	{
 		return last_value == values.length - 1 ? values[0]: values[last_value+1];
 	}
 
+	/**
+	 * @return the value last added
+	 */
 	public float getLatest() 
 	{
 		return values[last_value-1 == -1?values.length-1:last_value-1];
 	}
 
+	/**
+	 * @return The standard deviation
+	 */
 	public float standardDeviation() 
 	{
 		if( !hasEnoughData() )

@@ -16,16 +16,33 @@
  */
 package com.badlogic.gdx.math;
 
-public class Rectangle
+/**
+ * Encapsulates a 2D rectangle defined by it's bottom corner point
+ * and its extends in x (width) and y (height).
+ * @author mzechner
+ *
+ */
+public final class Rectangle
 {
-	public float x, y;
-	public float width, height;
+	private float x, y;
+	private float width, height;
 	
+	/**
+	 * Constructs a new rectangle with all values set to zero
+	 */
 	public Rectangle( )
 	{
 		
 	}
 	
+	/**
+	 * Constructs a new rectangle with the given corner point in 
+	 * the bottom left and dimensions. 
+	 * @param x The corner point x-coordinate
+	 * @param y The corner point y-coordinate
+	 * @param width The width
+	 * @param height The height
+	 */
 	public Rectangle( float x, float y, float width, float height )
 	{
 		this.x = x;
@@ -34,6 +51,10 @@ public class Rectangle
 		this.height = height;
 	}
 	
+	/**
+	 * Constructs a rectangle based on the given rectangle 
+	 * @param rect The rectangle
+	 */
 	public Rectangle( Rectangle rect )
 	{
 		x = rect.x;
@@ -42,5 +63,71 @@ public class Rectangle
 		height = rect.height;
 	}
 	
-		
+	/**
+	 * @return the x-coordinate of the bottom left corner
+	 */
+	public float getX()
+	{
+		return x;
+	}
+	
+	/**
+	 * Sets the x-coordinate of the bottom left corner
+	 * @param x The x-coordinate
+	 */
+	public void setX( float x )
+	{
+		this.x = x;
+	}
+	
+	/**
+	 * @return the y-coordinate of the bottom left corner
+	 */
+	public float getY()
+	{
+		return y;
+	}
+
+	/**
+	 * Sets the y-coordinate of the bottom left corner
+	 * @param y The y-coordinate
+	 */
+	public void setY( float y )
+	{
+		this.y = y;
+	}
+	
+	/**
+	 * @return the width
+	 */
+	public float getWidth( )
+	{
+		return width;
+	}
+	
+	/**
+	 * Sets the width of this rectangle
+	 * @param width The width
+	 */
+	public void setWidth( float width )
+	{
+		this.width = width;
+	}
+	
+	/**
+	 * @return the height
+	 */
+	public float getHeight( )
+	{
+		return height;
+	}
+	
+	/**
+	 * Sets the height of this rectangle
+	 * @param height The height
+	 */
+	public void setHeight( float height )
+	{
+		this.height = height;
+	}
 }

@@ -27,7 +27,7 @@ import java.util.List;
  * @author mzechner
  *
  */
-public final class CatmullRomSpline implements Serializable
+public final class CatmullRomSpline
 {
 	/**
 	 * 

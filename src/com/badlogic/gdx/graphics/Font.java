@@ -14,13 +14,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx;
+package com.badlogic.gdx.graphics;
 
 import java.util.HashMap;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.TextureFilter;
 import com.badlogic.gdx.Application.TextureWrap;
-import com.badlogic.gdx.Mesh.PrimitiveType;
+import com.badlogic.gdx.graphics.Mesh.PrimitiveType;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -272,7 +273,7 @@ public abstract class Font
 		Rectangle rect = new Rectangle( );
 		getGlyphBounds( character, rect );
 
-		if( glyphX + rect.width >= 256)
+		if( glyphX + rect.getWidth() >= 256)
 		{
 			glyphX = 0;
 			glyphY += getLineGap() + getLineHeight();
@@ -280,8 +281,8 @@ public abstract class Font
 		
 		texture.draw( bitmap, glyphX, glyphY );		
 						
-		Glyph glyph = new Glyph( getGlyphAdvance( character ), (int)rect.width, (int)rect.height, glyphX / 256.0f, glyphY / 256.0f, rect.width / 256.0f, rect.height / 256.0f );
-		glyphX += rect.width;
+		Glyph glyph = new Glyph( getGlyphAdvance( character ), (int)rect.getWidth(), (int)rect.getHeight(), glyphX / 256.0f, glyphY / 256.0f, rect.getWidth() / 256.0f, rect.getHeight() / 256.0f );
+		glyphX += rect.getWidth();
 		return glyph;
 		
 	}

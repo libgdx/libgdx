@@ -40,7 +40,7 @@ import javax.media.opengl.GLEventListener;
 import javax.swing.JPanel;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.graphics.RenderListener;
 import com.badlogic.gdx.math.WindowedMean;
 import com.sun.opengl.impl.NativeLibLoader;
 import com.sun.opengl.util.Animator;

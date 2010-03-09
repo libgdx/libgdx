@@ -18,11 +18,24 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-public class Plane implements Serializable 
-{	
-	private static final long serialVersionUID = 7471550250795948609L;
-
-	enum Intersection
+/**
+ * A plane defined via a unit length normal and the distance from the
+ * origin, as you learned in your math class.
+ * 
+ * @author mzechner
+ *
+ */
+public final class Plane 
+{		
+	/**
+	 * Enum specifying on which side a point lies respective
+	 * to the plane and it's normal. {@link PlaneSide.Front}
+	 * is the side to which the normal points.
+	 * 
+	 * @author mzechner
+	 *
+	 */
+	enum PlaneSide
 	{
 		OnPlane,
 		Back,
@@ -32,82 +45,111 @@ public class Plane implements Serializable
 	protected final Vector normal = new Vector();
 	protected float d = 0;
 	
-	public Plane( )
-	{
-		
-	}
-	
+	/**
+	 * Constructs a new plane based on the normal and distance
+	 * to the origin.
+	 * 
+	 * @param normal The plane normal
+	 * @param d The distance to the origin
+	 */
 	public Plane( Vector normal, float d )
 	{
 		this.normal.set( normal ).nor();
 		this.d = d;
 	}
 	
+	/**
+	 * Constructs a new plane based on the normal and a 
+	 * point on the plane.
+	 * 
+	 * @param normal The normal
+	 * @param point The point on the plane
+	 */
 	public Plane( Vector normal, Vector point )
 	{
 		this.normal.set(normal).nor();
 		this.d = -this.normal.dot( point );
 	}
 	
-	public Plane( Vector a, Vector b, Vector c )
+	/**
+	 * Constructs a new plane out of the three given points
+	 * that are considered to be on the plane. The normal
+	 * is calculated via a cross product between (point1-point2)x(point2-point3)
+	 * 
+	 * @param point1 The first point 
+	 * @param point2 The second point
+	 * @param point3 The third point
+	 */
+	public Plane( Vector point1, Vector point2, Vector point3 )
 	{
-		Vector l = a.tmp().sub(b);
-		Vector r = b.tmp2().sub(c);
+		set( point1, point2, point3 );
+	}
+	
+	/**
+	 * Sets the plane normal and distance to the origin based
+	 * on the three given points which are considered to be
+	 * on the plane. The normal is calculated via a cross product
+	 * between (point1-point2)x(point2-point3)
+	 * 
+	 * @param point1
+	 * @param point2
+	 * @param point3
+	 */
+	public void set( Vector point1, Vector point2, Vector point3 )
+	{
+		Vector l = point1.tmp().sub(point2);
+		Vector r = point2.tmp2().sub(point3);
 		Vector nor = l.crs( r ).nor();
 		normal.set( nor );
-		d = -a.dot( nor );
+		d = -point1.dot( nor );
 	}
 	
-	public void set( Vector a, Vector b, Vector c )
+	/**
+	 * Calculates the shortest distance between the plane and the
+	 * given point.
+	 * 
+	 * @param point The point
+	 * @return the shortest distance between the plane and the point
+	 */
+	public float distance( Vector point )
 	{
-		Vector l = a.tmp().sub(b);
-		Vector r = b.tmp2().sub(c);
-		Vector nor = l.crs( r ).nor();
-		normal.set( nor );
-		d = -a.dot( nor );
+		return normal.dot( point ) + d;
 	}
 	
-	public float distance( Vector p )
+	/**
+	 * Returns on which side the given point lies relative to the 
+	 * plane and its normal. PlaneSide.Front refers to the side
+	 * the plane normal points to.
+	 * 
+	 * @param point The point
+	 * @return The side the point lies relative to the plane
+	 */
+	public PlaneSide testPoint( Vector point )
 	{
-		return normal.dot( p ) + d;
-	}
-	
-	public Intersection testPoint( Vector p )
-	{
-		float dist = normal.dot( p ) + d;
+		float dist = normal.dot( point ) + d;
 		
 		if( dist == 0 )
-			return Intersection.OnPlane;
+			return PlaneSide.OnPlane;
 		else
 			if( dist < 0 )
-				return Intersection.Back;
+				return PlaneSide.Back;
 			else
-				return Intersection.Front;
+				return PlaneSide.Front;
 	}
 	
+	/**
+	 * @return The normal
+	 */
 	public Vector getNormal( )
 	{
 		return normal;
 	}
 	
+	/**
+	 * @return The distance to the origin
+	 */
 	public float getD( )
 	{
 		return d;
-	}
-	
-	public static void main( String[] argv )
-	{
-		Vector v1 = new Vector( 0, 0, 1 );
-		Vector v2 = new Vector( 1, 0, 0 );
-		Vector v3 = new Vector( 1, 0, 1 );		
-		
-		Vector a = new Vector( v2 ).sub( v1 );
-		Vector b = new Vector( v3 ).sub( v1 );
-		System.out.println( a.crs( b ).nor() );					
-		
-//		Plane p1 = new Plane( new Vector( 0, 1, 0 ), 0 );
-//		System.out.println( p1.testPoint( new Vector( 0, 0, 0 ) ));
-//		System.out.println( p1.testPoint( new Vector( 1, 230, 23 ) ) );
-//		System.out.println( p1.testPoint( new Vector( 0, -239, 34 ) ) );
-	}
+	}	
 }

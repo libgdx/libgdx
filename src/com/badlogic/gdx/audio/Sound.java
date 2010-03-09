@@ -14,7 +14,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx;
+package com.badlogic.gdx.audio;
 
 /**
  * A sound is a short audio clip that can be played numerous times.

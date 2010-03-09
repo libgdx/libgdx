@@ -27,7 +27,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.backends.InputListener;
 
 
 /**

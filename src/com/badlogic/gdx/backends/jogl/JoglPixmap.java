@@ -24,7 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import com.badlogic.gdx.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap;
 
 /**
  * An implementation of Pixmap based on the java graphics framework.

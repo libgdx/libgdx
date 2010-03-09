@@ -27,7 +27,7 @@ import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineEvent.Type;
 
-import com.badlogic.gdx.Sound;
+import com.badlogic.gdx.audio.Sound;
 
 /**
  * An implementation of {@link Sound} based on java sound.

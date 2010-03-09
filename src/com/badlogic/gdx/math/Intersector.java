@@ -149,7 +149,7 @@ public final class Intersector
 			return true;
 		}
 		else		
-			if( plane.testPoint( ray.getStartPoint() ) == Plane.Intersection.OnPlane )
+			if( plane.testPoint( ray.getStartPoint() ) == Plane.PlaneSide.OnPlane )
 			{
 				intersection.set( ray.getStartPoint() );
 				return true;
@@ -220,7 +220,7 @@ public final class Intersector
 		Vector dir = ray.dir.cpy().nor();
 		Vector start = ray.start.cpy();
 		float b = 2 * ( dir.dot( start.tmp().sub( center ) ) );
-		float c = start.sqrdist( center ) - radius * radius;
+		float c = start.dist2( center ) - radius * radius;
 		float disc = b * b - 4 * c;
 		if( disc < 0 )
 			return false;
@@ -447,8 +447,8 @@ public final class Intersector
 	 */
 	public static boolean intersectRectangles(Rectangle a, Rectangle b)
 	{		
-		return !(a.x > b.x + b.width || a.x + a.width < b.x ||
-				a.y > b.y + b.height || a.y + a.width < b.y);
+		return !(a.getX() > b.getX() + b.getWidth() || a.getX() + a.getWidth() < b.getX() ||
+				a.getY() > b.getY() + b.getHeight() || a.getY() + a.getHeight() < b.getY());
 	}	
 
 	/**

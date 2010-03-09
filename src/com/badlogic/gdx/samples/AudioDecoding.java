@@ -17,12 +17,12 @@
 package com.badlogic.gdx.samples;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.AudioDevice;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.Mesh.PrimitiveType;
+import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.io.NativeMP3Decoder;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.RenderListener;
+import com.badlogic.gdx.graphics.Mesh.PrimitiveType;
 
 public class AudioDecoding implements RenderListener 
 {

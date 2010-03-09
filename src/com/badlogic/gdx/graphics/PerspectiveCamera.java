@@ -14,8 +14,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx;
+package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.MatrixMode;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix;
@@ -150,11 +151,12 @@ public class PerspectiveCamera
 		return frustum;
 	}
 	
+	Vector tmp2 = new Vector();
 	/**
 	 * Updates all matrices as well as the Frustum based on the
 	 * last set parameters for position, direction, up vector,
 	 * field of view, near and far plane and viewport.
-	 */
+	 */	
 	public void update( )
 	{
 		float aspect = viewportWidth / viewportHeight;
@@ -166,7 +168,7 @@ public class PerspectiveCamera
 		
 		proj.setToProjection( near, far, fov, aspect );
 		model.setToLookat( direction, up );		
-		model.mul( tmp.setToTranslation( position.tmp().mul(-1) ) );
+		model.mul( tmp.setToTranslation( tmp2.set(position).mul(-1) ) );
 		comb.set( proj ).mul( model );		
 	}
 	

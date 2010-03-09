@@ -26,9 +26,9 @@ import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Font;
-import com.badlogic.gdx.Pixmap;
 import com.badlogic.gdx.Application.FontStyle;
+import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -140,7 +140,7 @@ final class AndroidFont extends Font
 	@Override
 	public void getGlyphBounds(char character, Rectangle rect) {		
 		paint.getTextBounds( "" + character, 0, 1, tmpRect );
-		rect.width = tmpRect.width() + 5;
-		rect.height = getLineHeight();
+		rect.setWidth(tmpRect.width() + 5);
+		rect.setHeight(getLineHeight());
 	}
 }

@@ -26,7 +26,7 @@ import java.util.List;
  * @author mzechner
  *
  */
-public class EarCutTriangulator 
+public final class EarCutTriangulator 
 {
 	/**
 	 * Triangulates the list of points and returns an array

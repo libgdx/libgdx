@@ -17,10 +17,10 @@
 package com.badlogic.gdx.samples;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Mesh;
-import com.badlogic.gdx.PerspectiveCamera;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.Mesh.PrimitiveType;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.RenderListener;
+import com.badlogic.gdx.graphics.Mesh.PrimitiveType;
 
 public class AccelerometerTest implements RenderListener 
 {

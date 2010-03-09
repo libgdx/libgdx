@@ -14,13 +14,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.models;
+package com.badlogic.gdx.graphics.models;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Mesh;
+import com.badlogic.gdx.graphics.Mesh;
 
 /**
  * Loads Wavefront OBJ files. Only triangulated meshes are supported.

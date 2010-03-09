@@ -22,10 +22,10 @@ import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 import android.util.Log;
 
-import com.badlogic.gdx.Pixmap;
-import com.badlogic.gdx.Texture;
 import com.badlogic.gdx.Application.TextureFilter;
 import com.badlogic.gdx.Application.TextureWrap;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * An implementation of {@link Texture} for Android

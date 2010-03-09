@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.math.Plane.Intersection;
+import com.badlogic.gdx.math.Plane.PlaneSide;
 
 /**
  * Encapsulates a view frustum based on clipping planes. Offers
@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Plane.Intersection;
  * @author mzechner
  *
  */
-public class Frustum implements Serializable
+public final class Frustum
 {
 	private static final long serialVersionUID = -7082961504074610513L;
 	protected List<Plane> planes = new ArrayList<Plane>(6);
@@ -172,8 +172,8 @@ public class Frustum implements Serializable
 	{
 		for( int i = 0; i < planes.size(); i++ )		
 		{
-			Intersection result = planes.get(i).testPoint( point );
-			if( result == Intersection.Back )
+			PlaneSide result = planes.get(i).testPoint( point );
+			if( result == PlaneSide.Back )
 				return false;
 		}
 		
@@ -225,7 +225,7 @@ public class Frustum implements Serializable
 		{
 			int out = 0;
 			for( int j = 0; j < bounds.getCorners().length; j++ )			
-				if( planes.get(i).testPoint(bounds.getCorners()[j]) == Intersection.Back )
+				if( planes.get(i).testPoint(bounds.getCorners()[j]) == PlaneSide.Back )
 					out++;			
 			
 			if( out == 8 )
