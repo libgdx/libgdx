@@ -160,7 +160,7 @@ public class OrthographicCamera
 	{
 		proj.setToOrtho2D(0, 0, (viewportWidth * scale), (float)(viewportHeight * scale), near, far );
 		model.idt();
-		model.setToTranslation( tmp.set( (float)(-position.getX() + (viewportWidth / 2) * scale), (float)(-position.getY() + (viewportHeight / 2) * scale), (float)(-position.getZ()) ) );
+		model.setToTranslation( tmp.set( (float)(-position.x + (viewportWidth / 2) * scale), (float)(-position.y + (viewportHeight / 2) * scale), (float)(-position.z) ) );
 		combined.set( proj );
 		combined.mul( model );
 		combined.mul( rotationMatrix );
@@ -239,7 +239,7 @@ public class OrthographicCamera
 	 */
 	public float getScreenToWorldX( float screenX )
 	{
-		return  ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.getX();
+		return  ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.x;
 	}
 	
 	/**
@@ -249,7 +249,7 @@ public class OrthographicCamera
 	 */
 	public int getWorldToScreenX( float worldX )
 	{
-		return (int)((worldX + ( viewportWidth * scale ) / 2 - position.getX()) / scale);
+		return (int)((worldX + ( viewportWidth * scale ) / 2 - position.x) / scale);
 	}	
 	
 	/**
@@ -259,7 +259,7 @@ public class OrthographicCamera
 	 */
 	public float getScreenToWorldY( float mouse_y )
 	{
-		return ( (viewportHeight - mouse_y-1) * scale ) - ( viewportHeight * scale ) / 2 + position.getY();
+		return ( (viewportHeight - mouse_y-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y;
 	}
 	
 	/**
@@ -269,7 +269,7 @@ public class OrthographicCamera
 	 */
 	public int getWorldToScreenY( float world_y )
 	{
-		return (int)(-( -world_y + (viewportHeight * scale ) / 2 + position.getY() - viewportHeight * scale ) / scale); 
+		return (int)(-( -world_y + (viewportHeight * scale ) / 2 + position.y - viewportHeight * scale ) / scale); 
 	}	
 		
 	Ray ray = new Ray( new Vector( ), new Vector( ) );

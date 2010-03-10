@@ -42,10 +42,10 @@ public final class Intersector
 		boolean oddNodes = false;
 		for( int i = 0; i < polygon.size(); i++ )
 		{
-			if( (polygon.get(i).getY() < point.y && polygon.get(j).getY() >= point.y ) ||
-				(polygon.get(j).getY() < point.y && polygon.get(i).getY() >= point.y ) )
+			if( (polygon.get(i).y < point.y && polygon.get(j).y >= point.y ) ||
+				(polygon.get(j).y < point.y && polygon.get(i).y >= point.y ) )
 				{
-					if( polygon.get(i).getX() + (point.y - polygon.get(i).getY())/(polygon.get(j).getY() - polygon.get(i).getY())*(polygon.get(j).getX()-polygon.get(i).getX())<point.x )
+					if( polygon.get(i).x + (point.y - polygon.get(i).y)/(polygon.get(j).y - polygon.get(i).y)*(polygon.get(j).x-polygon.get(i).x)<point.x )
 					{
 						oddNodes = !oddNodes;
 					}
@@ -84,7 +84,7 @@ public final class Intersector
 	 */
 	public static boolean intersectSegmentCircle( Vector2D start, Vector2D end, Vector2D center, float squareRadius )
 	{
-		float u = (center.getX() - start.getX()) * ( end.getX() - start.getX() ) + ( center.getY() - start.getY() ) * ( end.getY() - start.getY() );
+		float u = (center.x - start.x) * ( end.x - start.x ) + ( center.y - start.y ) * ( end.y - start.y );
 		float d = start.dst( end );
 		u /= ( d * d );
 		if( u < 0 || u > 1 )
@@ -110,7 +110,7 @@ public final class Intersector
 	 */
 	public static float intersectSegmentCircleDisplace( Vector2D start, Vector2D end, Vector2D point, float radius, Vector2D displacement )
 	{
-		float u = (point.getX() - start.getX()) * ( end.getX() - start.getX() ) + ( point.getY() - start.getY() ) * ( end.getY() - start.getY() );
+		float u = (point.x - start.x) * ( end.x - start.x ) + ( point.y - start.y ) * ( end.y - start.y );
 		float d = start.dst( end );
 		u /= ( d * d );
 		if( u < 0 || u > 1 )
@@ -120,7 +120,7 @@ public final class Intersector
 		d = tmp2.dst(point.x, point.y, 0 );
 		if( d < radius )
 		{
-			displacement.set(point).sub(tmp2.getX(), tmp2.getY()).nor();
+			displacement.set(point).sub(tmp2.x, tmp2.y).nor();
 			return d;
 		}
 		else
@@ -282,30 +282,30 @@ public final class Intersector
 		float t_z_min, t_z_max;
 		float div_x, div_y, div_z;
 
-		div_x = 1 / ray.getDirection().getX();
-		div_y = 1 / ray.getDirection().getY();
-		div_z = 1 / ray.getDirection().getZ();
+		div_x = 1 / ray.getDirection().x;
+		div_y = 1 / ray.getDirection().y;
+		div_z = 1 / ray.getDirection().z;
 
 		if (div_x >= 0)
 		{
-			t_x_min = (bounds.getMin().getX() - ray.getStartPoint().getX()) * div_x;
-			t_x_max = (bounds.getMax().getX() - ray.getStartPoint().getX()) * div_x;
+			t_x_min = (bounds.getMin().x - ray.getStartPoint().x) * div_x;
+			t_x_max = (bounds.getMax().x - ray.getStartPoint().x) * div_x;
 		}
 		else
 		{
-			t_x_min = (bounds.getMax().getX() - ray.getStartPoint().getX()) * div_x;
-			t_x_max = (bounds.getMin().getX() - ray.getStartPoint().getX()) * div_x;
+			t_x_min = (bounds.getMax().x - ray.getStartPoint().x) * div_x;
+			t_x_max = (bounds.getMin().x - ray.getStartPoint().x) * div_x;
 		}
 
 		if (div_y >= 0)
 		{
-			t_y_min = (bounds.getMin().getY() - ray.getStartPoint().getY()) * div_y;
-			t_y_max = (bounds.getMax().getY() - ray.getStartPoint().getY()) * div_y;
+			t_y_min = (bounds.getMin().y - ray.getStartPoint().y) * div_y;
+			t_y_max = (bounds.getMax().y - ray.getStartPoint().y) * div_y;
 		}
 		else
 		{
-			t_y_min = (bounds.getMax().getY() - ray.getStartPoint().getY()) * div_y;
-			t_y_max = (bounds.getMin().getY() - ray.getStartPoint().getY()) * div_y;
+			t_y_min = (bounds.getMax().y - ray.getStartPoint().y) * div_y;
+			t_y_max = (bounds.getMin().y - ray.getStartPoint().y) * div_y;
 		}
 
 		if (t_x_min > t_y_max || (t_y_min > t_x_max))
@@ -318,13 +318,13 @@ public final class Intersector
 
 		if (div_z >= 0)
 		{
-			t_z_min = (bounds.getMin().getZ() - ray.getStartPoint().getZ()) * div_z;
-			t_z_max = (bounds.getMax().getZ() - ray.getStartPoint().getZ()) * div_z;
+			t_z_min = (bounds.getMin().z - ray.getStartPoint().z) * div_z;
+			t_z_max = (bounds.getMax().z - ray.getStartPoint().z) * div_z;
 		}
 		else
 		{
-			t_z_min = (bounds.getMax().getZ() - ray.getStartPoint().getZ()) * div_z;
-			t_z_max = (bounds.getMin().getZ() - ray.getStartPoint().getZ()) * div_z;
+			t_z_min = (bounds.getMax().z - ray.getStartPoint().z) * div_z;
+			t_z_max = (bounds.getMin().z - ray.getStartPoint().z) * div_z;
 		}
 
 		if ((t_x_min > t_z_max) || (t_z_min > t_x_max))
@@ -464,10 +464,10 @@ public final class Intersector
 	 */
 	public static boolean intersectLines( Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4, Vector2D intersection )
 	{
-		float  x1 = p1.getX(), y1 = p1.getY(),
-		x2 = p2.getX(), y2 = p2.getY(),
-		x3 = p3.getX(), y3 = p3.getY(),
-		x4 = p4.getX(), y4 = p4.getY();
+		float  x1 = p1.x, y1 = p1.y,
+		x2 = p2.x, y2 = p2.y,
+		x3 = p3.x, y3 = p3.y,
+		x4 = p4.x, y4 = p4.y;
 
     	float det1 = det(x1, y1, x2, y2);
     	float det2 = det(x3, y3, x4, y4);
@@ -498,12 +498,12 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return Wheter the two line segments intersect
 	 */
-	public static boolean intersectSegments( Vector p1, Vector p2, Vector p3, Vector p4, Vector intersection )
+	public static boolean intersectSegments( Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4, Vector2D intersection )
 	{
-		float  x1 = p1.getX(), y1 = p1.getY(),
-		x2 = p2.getX(), y2 = p2.getY(),
-		x3 = p3.getX(), y3 = p3.getY(),
-		x4 = p4.getX(), y4 = p4.getY();
+		float  x1 = p1.x, y1 = p1.y,
+		x2 = p2.x, y2 = p2.y,
+		x3 = p3.x, y3 = p3.y,
+		x4 = p4.x, y4 = p4.y;
 		
 		float d = (y4-y3)*(x2-x1) - (x4-x3)*(y2-y1);
 		if( d == 0 )
@@ -517,7 +517,7 @@ public final class Intersector
 		if( ub < 0 || ub > 1 )
 			return false;
 		
-		intersection.set( x1 + (x2-x1)*ua, y1 + (y2-y1)*ua, 0 );
+		intersection.set( x1 + (x2-x1)*ua, y1 + (y2-y1)*ua );
 		return true;
 	}
 	

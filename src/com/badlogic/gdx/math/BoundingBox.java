@@ -30,8 +30,8 @@ public final class BoundingBox
 {   
 	private static final long serialVersionUID = -1286036817192127343L;
 	final Vector crn[] = new Vector[8];
-    final Vector min = new Vector();
-    final Vector max = new Vector();
+    public final Vector min = new Vector();
+    public final Vector max = new Vector();
     final Vector cnt = new Vector();
     final Vector dim = new Vector();
     boolean crn_dirty = true;
@@ -50,14 +50,14 @@ public final class BoundingBox
     	if( !crn_dirty )
     		return;
     	
-        crn[0].set(min.getX(),min.getY(),min.getZ());
-        crn[1].set(max.getX(),min.getY(),min.getZ());
-        crn[2].set(max.getX(),max.getY(),min.getZ());
-        crn[3].set(min.getX(),max.getY(),min.getZ());
-        crn[4].set(min.getX(),min.getY(),max.getZ());
-        crn[5].set(max.getX(),min.getY(),max.getZ());
-        crn[6].set(max.getX(),max.getY(),max.getZ());
-        crn[7].set(min.getX(),max.getY(),max.getZ());
+        crn[0].set(min.x,min.y,min.z);
+        crn[1].set(max.x,min.y,min.z);
+        crn[2].set(max.x,max.y,min.z);
+        crn[3].set(min.x,max.y,min.z);
+        crn[4].set(min.x,min.y,max.z);
+        crn[5].set(max.x,min.y,max.z);
+        crn[6].set(max.x,max.y,max.z);
+        crn[7].set(min.x,max.y,max.z);
     	crn_dirty = false;
     }
 
@@ -156,12 +156,12 @@ public final class BoundingBox
      */
     public BoundingBox set(Vector minimum, Vector maximum)
     {
-        min.set(minimum.getX()<maximum.getX()?minimum.getX():maximum.getX(),
-        		minimum.getY()<maximum.getY()?minimum.getY():maximum.getY(),
-        		minimum.getZ()<maximum.getZ()?minimum.getZ():maximum.getZ());
-        max.set(minimum.getX()>maximum.getX()?minimum.getX():maximum.getX(),
-        		minimum.getY()>maximum.getY()?minimum.getY():maximum.getY(),
-        		minimum.getZ()>maximum.getZ()?minimum.getZ():maximum.getZ());
+        min.set(minimum.x<maximum.x?minimum.x:maximum.x,
+        		minimum.y<maximum.y?minimum.y:maximum.y,
+        		minimum.z<maximum.z?minimum.z:maximum.z);
+        max.set(minimum.x>maximum.x?minimum.x:maximum.x,
+        		minimum.y>maximum.y?minimum.y:maximum.y,
+        		minimum.z>maximum.z?minimum.z:maximum.z);
         cnt.set(min).add(max).mul(0.5f);
         dim.set(max).sub( min );
         crn_dirty = true;
@@ -227,12 +227,12 @@ public final class BoundingBox
     {
     	crn_dirty = true;
         return this.set(
-                        min.set(min(min.getX(),point.getX()),
-                                min(min.getY(),point.getY()),
-                                min(min.getZ(),point.getZ())),
-                        max.set(Math.max(max.getX(),point.getX()),
-                                Math.max(max.getY(),point.getY()),
-                                Math.max(max.getZ(),point.getZ()))
+                        min.set(min(min.x,point.x),
+                                min(min.y,point.y),
+                                min(min.z,point.z)),
+                        max.set(Math.max(max.x,point.x),
+                                Math.max(max.y,point.y),
+                                Math.max(max.z,point.z))
                 );
     }
 
@@ -255,7 +255,7 @@ public final class BoundingBox
      */
     public boolean isValid()
     {    	
-        return !(min.getX()==max.getX() && min.getY()==max.getY() && min.getZ()==max.getZ());
+        return !(min.x==max.x && min.y==max.y && min.z==max.z);
     }
 
     /**
@@ -268,12 +268,12 @@ public final class BoundingBox
     {
     	crn_dirty = true;
         return this.set(
-                        min.set(min(min.getX(),a_bounds.min.getX()),
-                                min(min.getY(),a_bounds.min.getY()),
-                                min(min.getZ(),a_bounds.min.getZ())),
-                        max.set(Math.max(max.getX(),a_bounds.max.getX()),
-                                Math.max(max.getY(),a_bounds.max.getY()),
-                                Math.max(max.getZ(),a_bounds.max.getZ()))
+                        min.set(min(min.x,a_bounds.min.x),
+                                min(min.y,a_bounds.min.y),
+                                min(min.z,a_bounds.min.z)),
+                        max.set(Math.max(max.x,a_bounds.max.x),
+                                Math.max(max.y,a_bounds.max.y),
+                                Math.max(max.z,a_bounds.max.z))
                         );
     }
 
@@ -293,12 +293,12 @@ public final class BoundingBox
         for(Vector l_pnt: crn)
         {
             l_pnt.mul(matrix);
-            min.set(min(min.getX(),l_pnt.getX()),
-                    min(min.getY(),l_pnt.getY()),
-                    min(min.getZ(),l_pnt.getZ()));
-            max.set(max(max.getX(),l_pnt.getX()),
-                    max(max.getY(),l_pnt.getY()),
-                    max(max.getZ(),l_pnt.getZ()));
+            min.set(min(min.x,l_pnt.x),
+                    min(min.y,l_pnt.y),
+                    min(min.z,l_pnt.z));
+            max.set(max(max.x,l_pnt.x),
+                    max(max.y,l_pnt.y),
+                    max(max.z,l_pnt.z));
         }
         crn_dirty = true;        
         return this.set(min,max);
@@ -313,12 +313,12 @@ public final class BoundingBox
     public boolean contains(BoundingBox bounds)
     {    	
         if(!isValid()) return true;
-        if(min.getX()>bounds.max.getX()) return false;
-        if(min.getY()>bounds.max.getY()) return false;
-        if(min.getZ()>bounds.max.getZ()) return false;
-        if(max.getX()<bounds.min.getX()) return false;
-        if(max.getY()<bounds.min.getY()) return false;
-        if(max.getZ()<bounds.min.getZ()) return false;
+        if(min.x>bounds.max.x) return false;
+        if(min.y>bounds.max.y) return false;
+        if(min.z>bounds.max.z) return false;
+        if(max.x<bounds.min.x) return false;
+        if(max.y<bounds.min.y) return false;
+        if(max.z<bounds.min.z) return false;
         return true;
     }
     
@@ -330,17 +330,17 @@ public final class BoundingBox
      */
     public boolean contains( Vector v )
     {
-    	if( min.getX() > v.getX() )
+    	if( min.x > v.x )
     		return false;
-    	if( max.getX() < v.getX() )
+    	if( max.x < v.x )
     		return false;
-    	if( min.getY() > v.getY() )
+    	if( min.y > v.y )
     		return false;
-    	if( max.getY() < v.getY() )
+    	if( max.y < v.y )
     		return false;
-    	if( min.getZ() > v.getZ() )
+    	if( min.z > v.z )
     		return false;
-    	if( max.getZ() < v.getZ() )
+    	if( max.z < v.z )
     		return false;
     	
     	return true;
@@ -363,12 +363,12 @@ public final class BoundingBox
 	{	
 		crn_dirty = true;
         return this.set(
-                        min.set(min(min.getX(),x),
-                                min(min.getY(),y),
-                                min(min.getZ(),z)),
-                        max.set(max(max.getX(),x),
-                                max(max.getY(),y),
-                                max(max.getZ(),z))
+                        min.set(min(min.x,x),
+                                min(min.y,y),
+                                min(min.z,z)),
+                        max.set(max(max.x,x),
+                                max(max.y,y),
+                                max(max.z,z))
                 );
 	}
 	

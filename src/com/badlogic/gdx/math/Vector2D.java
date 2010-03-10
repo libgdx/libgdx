@@ -24,7 +24,10 @@ package com.badlogic.gdx.math;
  */
 public final class Vector2D 
 {
-	public float x, y;
+	/** the x-component of this vector **/
+	public float x;
+	/** the y-component of this vector **/
+	public float y;
 	
 	/**
 	 * Constructs a new vector at (0,0)
@@ -208,23 +211,7 @@ public final class Vector2D
 		float x_d = v.x - x;
 		float y_d = v.y - y;
 		return x_d * x_d + y_d * y_d;
-	}
-	
-	/**
-	 * @return the x-component
-	 */
-	public float getX()
-	{
-		return x;
-	}
-	
-	/**
-	 * @return the y-component
-	 */
-	public float getY()
-	{ 
-		return y;
-	}
+	}	
 	
 	public String toString( )
 	{

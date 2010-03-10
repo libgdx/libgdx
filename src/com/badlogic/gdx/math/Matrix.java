@@ -123,15 +123,15 @@ public final class Matrix
     public  Matrix set(Quaternion quaternion)
     {
         // Compute quaternion factors
-        float l_xx = quaternion.val[0]*quaternion.val[0];
-        float l_xy = quaternion.val[0]*quaternion.val[1];
-        float l_xz = quaternion.val[0]*quaternion.val[2];
-        float l_xw = quaternion.val[0]*quaternion.val[3];
-        float l_yy = quaternion.val[1]*quaternion.val[1];
-        float l_yz = quaternion.val[1]*quaternion.val[2];
-        float l_yw = quaternion.val[1]*quaternion.val[3];
-        float l_zz = quaternion.val[2]*quaternion.val[2];
-        float l_zw = quaternion.val[2]*quaternion.val[3];
+        float l_xx = quaternion.x*quaternion.x;
+        float l_xy = quaternion.x*quaternion.y;
+        float l_xz = quaternion.x*quaternion.z;
+        float l_xw = quaternion.x*quaternion.w;
+        float l_yy = quaternion.y*quaternion.y;
+        float l_yz = quaternion.y*quaternion.z;
+        float l_yw = quaternion.y*quaternion.w;
+        float l_zz = quaternion.z*quaternion.z;
+        float l_zw = quaternion.z*quaternion.w;
         // Set matrix from quaternion
         val[M00]=1-2*(l_yy +l_zz);
         val[M01]=2*(l_xy -l_zw);
@@ -159,18 +159,18 @@ public final class Matrix
      */
     public void set( Vector xAxis, Vector yAxis, Vector zAxis, Vector pos )
     {
-    	val[M00] = xAxis.getX();
-    	val[M01] = xAxis.getY();
-    	val[M02] = xAxis.getZ();
-    	val[M10] = yAxis.getX();
-    	val[M11] = yAxis.getY();
-    	val[M12] = yAxis.getZ();
-    	val[M20] = -zAxis.getX();
-    	val[M21] = -zAxis.getY();
-    	val[M22] = -zAxis.getZ();
-    	val[M03] = pos.getX();
-    	val[M13] = pos.getY();
-    	val[M23] = pos.getZ();
+    	val[M00] = xAxis.x;
+    	val[M01] = xAxis.y;
+    	val[M02] = xAxis.z;
+    	val[M10] = yAxis.x;
+    	val[M11] = yAxis.y;
+    	val[M12] = yAxis.z;
+    	val[M20] = -zAxis.x;
+    	val[M21] = -zAxis.y;
+    	val[M22] = -zAxis.z;
+    	val[M03] = pos.x;
+    	val[M13] = pos.y;
+    	val[M23] = pos.z;
     	val[M30] = 0;
     	val[M31] = 0;
     	val[M32] = 0;
@@ -194,9 +194,9 @@ public final class Matrix
      */
     public  Matrix trn(Vector vector)
     {
-        val[M03]+=vector.getX();
-        val[M13]+=vector.getY();
-        val[M23]+=vector.getZ();
+        val[M03]+=vector.x;
+        val[M13]+=vector.y;
+        val[M23]+=vector.z;
         return this;
     }
     
@@ -431,9 +431,9 @@ public final class Matrix
     public  Matrix setToTranslation(Vector vector)
     {
         this.idt();
-        val[M03]=vector.getX();
-        val[M13]=vector.getY();
-        val[M23]=vector.getZ();
+        val[M03]=vector.x;
+        val[M13]=vector.y;
+        val[M23]=vector.z;
         return this;
     }
     
@@ -468,12 +468,12 @@ public final class Matrix
     public  Matrix setToTranslationAndScaling(Vector translation,Vector scaling)
     {
         idt();
-        val[M03]=translation.getX();
-        val[M13]=translation.getY();
-        val[M23]=translation.getZ();
-        val[M00]=scaling.getX();
-        val[M11]=scaling.getY();
-        val[M22]=scaling.getZ();
+        val[M03]=translation.x;
+        val[M13]=translation.y;
+        val[M23]=translation.z;
+        val[M00]=scaling.x;
+        val[M11]=scaling.y;
+        val[M22]=scaling.z;
         return this;
     }
     
@@ -528,9 +528,9 @@ public final class Matrix
     public  Matrix setToScaling(Vector vector)
     {
         idt();
-        val[M00]=vector.getX();
-        val[M11]=vector.getY();
-        val[M22]=vector.getZ();
+        val[M00]=vector.x;
+        val[M11]=vector.y;
+        val[M22]=vector.z;
         return this;
     }
     
@@ -571,15 +571,15 @@ public final class Matrix
         l_vex.crs(up).nor();
 		l_vey.set(l_vex).crs(l_vez).nor();
 		idt();
-		val[M00]=l_vex.val[0];
-		val[M01]=l_vex.val[1];
-		val[M02]=l_vex.val[2];
-		val[M10]=l_vey.val[0];
-		val[M11]=l_vey.val[1];
-		val[M12]=l_vey.val[2];
-		val[M20]=-l_vez.val[0];
-		val[M21]=-l_vez.val[1];
-		val[M22]=-l_vez.val[2];    	        	
+		val[M00]=l_vex.x;
+		val[M01]=l_vex.y;
+		val[M02]=l_vex.z;
+		val[M10]=l_vey.x;
+		val[M11]=l_vey.y;
+		val[M12]=l_vey.z;
+		val[M20]=-l_vez.x;
+		val[M21]=-l_vez.y;
+		val[M22]=-l_vez.z;    	        	
     	
         return this;
     }           

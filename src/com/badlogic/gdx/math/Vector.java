@@ -16,8 +16,6 @@
  */
 package com.badlogic.gdx.math;
 
-import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Encapsulates a 3D vector. Allows chaining operations by
@@ -26,11 +24,16 @@ import java.util.Arrays;
  * @author badlogicgames@gmail.com
  *
  */
-public final class Vector implements Serializable
-{   	
+public final class Vector 
+{   		
 	private static final long serialVersionUID = 3840054589595372522L;
-	public final float[] val = new float[3];
-    boolean dirty = true;
+	/** the x-component of this vector **/
+	public float x;
+	/** the x-component of this vector **/
+	public float y;
+	/** the x-component of this vector **/
+	public float z;	
+    
     private static Vector tmp = new Vector();
     private static Vector tmp2 = new Vector();
     private static Vector tmp3 = new Vector();          
@@ -73,70 +76,7 @@ public final class Vector implements Serializable
     public Vector(float[] values)
     {
         this.set(values[0],values[1],values[2]);
-    }
-
-    /**
-     * Sets the x-component
-     * 
-     * @param x the x-component
-     * @return This vector for chaining
-     */
-    public Vector setX(float x)
-    {
-        val[0]=x;
-        dirty=true;
-        return this;
-    }
-
-    /**
-     * @return the x-component
-     */
-    public float getX()
-    {
-        return val[0];
-    }
-
-    /**
-     * Sets the y-component
-     * 
-     * @param y the y-component
-     * @return This vector for chaining
-     */
-    public Vector setY(float y)
-    {
-        val[1]=y;
-        dirty=true;
-        return this;
-    }
-    
-	/**
-	 * @return the y-component
-	 */
-    public  float getY()
-    {
-        return val[1];
-    }
-
-    /**
-     * Sets the z-component
-     * 
-     * @param z the z-component
-     * @return This vector for chaining
-     */
-    public  Vector setZ(float z)
-    {
-        val[2]=z;
-        dirty=true;
-        return this;
-    }
-
-    /**
-     * @return the z-component
-     */
-    public  float getZ()
-    {
-        return val[2];
-    }
+    }    
     
     /**
      * Sets the vector to the given components
@@ -148,10 +88,9 @@ public final class Vector implements Serializable
      */
     public Vector set(float x, float y, float z)
     {
-        val[0]=x;
-        val[1]=y;
-        val[2]=z;
-        dirty=true;
+        this.x=x;
+        this.y=y;
+        this.z=z;        
         return this;
     }
 
@@ -163,7 +102,7 @@ public final class Vector implements Serializable
      */
     public Vector set(Vector vector)
     {
-        return this.set(vector.val[0],vector.val[1],vector.val[2]);
+        return this.set(vector.x,vector.y,vector.z);
     }
 
     /**
@@ -224,7 +163,7 @@ public final class Vector implements Serializable
      */
     public Vector add(Vector vector)
     {
-        return this.add(vector.val[0],vector.val[1],vector.val[2]);
+        return this.add(vector.x,vector.y,vector.z);
     }
 
     /**
@@ -236,7 +175,7 @@ public final class Vector implements Serializable
      */
     public Vector add(float x, float y, float z)
     {
-        return this.set(val[0]+x,val[1]+y,val[2]+z);
+        return this.set(this.x+x,this.y+y,this.z+z);
     }
 
     /**
@@ -248,7 +187,7 @@ public final class Vector implements Serializable
      */
     public Vector add(float values)
     {
-        return this.set(val[0]+values,val[1]+values,val[2]+values);
+        return this.set(this.x+values,this.y+values,this.z+values);
     }
 
     /**
@@ -258,7 +197,7 @@ public final class Vector implements Serializable
      */
     public Vector sub(Vector a_vec)
     {
-        return this.sub(a_vec.val[0],a_vec.val[1],a_vec.val[2]);
+        return this.sub(a_vec.x,a_vec.y,a_vec.z);
     }
 
     /**
@@ -271,7 +210,7 @@ public final class Vector implements Serializable
      */
     public Vector sub(float x, float y, float z)
     {
-        return this.set(val[0]-x,val[1]-y,val[2]-z);
+        return this.set(this.x-x,this.y-y,this.z-z);
     }
 
     /**
@@ -282,7 +221,7 @@ public final class Vector implements Serializable
      */
     public Vector sub(float value)
     {
-        return this.set(val[0]-value,val[1]-value,val[2]-value);
+        return this.set(this.x-value,this.y-value,this.z-value);
     }
 
     /**
@@ -293,7 +232,7 @@ public final class Vector implements Serializable
      */
     public Vector mul(float value)
     {
-        return this.set(val[0]*value,val[1]*value,val[2]*value);
+        return this.set(this.x*value,this.y*value,this.z*value);
     }
 
     /**
@@ -305,7 +244,7 @@ public final class Vector implements Serializable
     public Vector div(float value)
     {
     	float d = 1 / value;    	
-        return this.set(val[0]*d,val[1]*d,val[2]*d);
+        return this.set(this.x*d,this.y*d,this.z*d);
     }
 
     /**     
@@ -313,7 +252,7 @@ public final class Vector implements Serializable
      */
     public float len()
     {
-        return (float)Math.sqrt(val[0]*val[0]+val[1]*val[1]+val[2]*val[2]);
+        return (float)Math.sqrt(x*x+y*y+z*z);
     }
     
     /**
@@ -321,18 +260,7 @@ public final class Vector implements Serializable
      */
     public float len2( )
     {
-    	return val[0]*val[0]+val[1]*val[1]+val[2]*val[2];
-    }
-
-    /**
-     * Gets the component at index idx. 
-     * 
-     * @param idx The index
-     * @return The component
-     */
-    public float get(int idx)
-    {
-        return val[idx];
+    	return x * x + y * y + z * z;
     }
     
     /**
@@ -341,9 +269,9 @@ public final class Vector implements Serializable
      */
     public boolean idt(Vector vector)
     {
-        return val[0]==vector.val[0] &&
-               val[1]==vector.val[1] &&
-               val[2]==vector.val[2];
+        return x==vector.x &&
+               y==vector.y &&
+               z==vector.z;
     }
     
     /**
@@ -352,9 +280,9 @@ public final class Vector implements Serializable
      */
     public float dst(Vector vector)
     {
-    	float a = vector.val[0]-val[0];
-    	float b = vector.val[1]-val[1];
-    	float c = vector.val[2]-val[2];
+    	float a = vector.x-x;
+    	float b = vector.y-y;
+    	float c = vector.z-z;
     	
         a *= a;
         b *= b;
@@ -369,9 +297,9 @@ public final class Vector implements Serializable
      */
     public float dist2( Vector vector )
     {
-    	float a = vector.val[0] - val[0];
-    	float b = vector.val[1] - val[1];
-    	float c = vector.val[2] - val[2];
+    	float a = vector.x - x;
+    	float b = vector.y - y;
+    	float c = vector.z - z;
     	return a * a + b * b + c * c;    	    
     }
     
@@ -382,7 +310,7 @@ public final class Vector implements Serializable
      */
     public Vector nor()
     {
-    	if( val[0] == 0 && val[1] == 0 && val[2] == 0 )
+    	if( x == 0 && y == 0 && z == 0 )
     		return this;
     	else
     		return this.div(this.len());
@@ -394,7 +322,7 @@ public final class Vector implements Serializable
      */
     public float dot(Vector vector)
     {
-        return val[0]*vector.val[0]+val[1]*vector.val[1]+val[2]*vector.val[2];
+        return x*vector.x+y*vector.y+z*vector.z;
     }
 
     /**
@@ -404,9 +332,9 @@ public final class Vector implements Serializable
      */
     public Vector crs(Vector vector)
     {
-        return this.set(val[1]*vector.val[2]-val[2]*vector.val[1],
-                        val[2]*vector.val[0]-val[0]*vector.val[2],
-                        val[0]*vector.val[1]-val[1]*vector.val[0]);
+        return this.set(y*vector.z-z*vector.y,
+                        z*vector.x-x*vector.z,
+                        x*vector.y-y*vector.x);
     }
 
     /**
@@ -418,9 +346,9 @@ public final class Vector implements Serializable
      */
     public Vector crs(float x, float y, float z)
     {
-        return this.set(val[1]*z-val[2]*y,
-                        val[2]*x-val[0]*z,
-                        val[0]*y-val[1]*x);
+        return this.set(y*z-z*y,
+                        z*x-x*z,
+                        x*y-y*x);
     }    
    
     /**
@@ -431,9 +359,9 @@ public final class Vector implements Serializable
     public Vector mul(Matrix matrix)
     {
         float l_mat[] = matrix.val;
-        return this.set(val[0]*l_mat[Matrix.M00]+val[1]*l_mat[Matrix.M01]+val[2]*l_mat[Matrix.M02]+l_mat[Matrix.M03],
-                        val[0]*l_mat[Matrix.M10]+val[1]*l_mat[Matrix.M11]+val[2]*l_mat[Matrix.M12]+l_mat[Matrix.M13],
-                        val[0]*l_mat[Matrix.M20]+val[1]*l_mat[Matrix.M21]+val[2]*l_mat[Matrix.M22]+l_mat[Matrix.M23]);
+        return this.set(x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02]+l_mat[Matrix.M03],
+                        x*l_mat[Matrix.M10]+y*l_mat[Matrix.M11]+z*l_mat[Matrix.M12]+l_mat[Matrix.M13],
+                        x*l_mat[Matrix.M20]+y*l_mat[Matrix.M21]+z*l_mat[Matrix.M22]+l_mat[Matrix.M23]);
     }
 
     /**
@@ -447,10 +375,10 @@ public final class Vector implements Serializable
     public Vector prj(Matrix matrix)
     {
         float l_mat[] = matrix.val;
-        float l_w = val[0]*l_mat[Matrix.M30]+val[1]*l_mat[Matrix.M31]+val[2]*l_mat[Matrix.M32]+l_mat[Matrix.M33];
-        return this.set((val[0]*l_mat[Matrix.M00]+val[1]*l_mat[Matrix.M01]+val[2]*l_mat[Matrix.M02]+l_mat[Matrix.M03])/l_w,
-                        (val[0]*l_mat[Matrix.M10]+val[1]*l_mat[Matrix.M11]+val[2]*l_mat[Matrix.M12]+l_mat[Matrix.M13])/l_w,
-                        (val[0]*l_mat[Matrix.M20]+val[1]*l_mat[Matrix.M21]+val[2]*l_mat[Matrix.M22]+l_mat[Matrix.M23])/l_w);
+        float l_w = x*l_mat[Matrix.M30]+y*l_mat[Matrix.M31]+z*l_mat[Matrix.M32]+l_mat[Matrix.M33];
+        return this.set((x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02]+l_mat[Matrix.M03])/l_w,
+                        (x*l_mat[Matrix.M10]+y*l_mat[Matrix.M11]+z*l_mat[Matrix.M12]+l_mat[Matrix.M13])/l_w,
+                        (x*l_mat[Matrix.M20]+y*l_mat[Matrix.M21]+z*l_mat[Matrix.M22]+l_mat[Matrix.M23])/l_w);
     }
 
     /**
@@ -463,9 +391,9 @@ public final class Vector implements Serializable
     public Vector rot(Matrix matrix)
     {
         float l_mat[] = matrix.val;
-        return this.set(val[0]*l_mat[Matrix.M00]+val[1]*l_mat[Matrix.M01]+val[2]*l_mat[Matrix.M02],
-                        val[0]*l_mat[Matrix.M10]+val[1]*l_mat[Matrix.M11]+val[2]*l_mat[Matrix.M12],
-                        val[0]*l_mat[Matrix.M20]+val[1]*l_mat[Matrix.M21]+val[2]*l_mat[Matrix.M22]);
+        return this.set(x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02],
+                        x*l_mat[Matrix.M10]+y*l_mat[Matrix.M11]+z*l_mat[Matrix.M12],
+                        x*l_mat[Matrix.M20]+y*l_mat[Matrix.M21]+z*l_mat[Matrix.M22]);
     }
        
     /**
@@ -481,7 +409,7 @@ public final class Vector implements Serializable
      */
     public boolean isZero()
     {
-        return val[0]==0 && val[1]==0 && val[2]==0;
+        return x==0 && y==0 && z==0;
     }       
 
     /**
@@ -526,34 +454,17 @@ public final class Vector implements Serializable
     	    	
     	float theta0 = (float)Math.acos(dot);
     	float theta = theta0 * alpha;
-    	Vector v2 = target.tmp().sub( getX() * dot, getY() * dot, getZ() * dot );
+    	Vector v2 = target.tmp().sub( x * dot, y * dot, z * dot );
     	v2.nor();
     	return this.mul((float)Math.cos(theta)).add( v2.mul((float)Math.sin(theta) ) ).nor();
     }   
-    
-    /**
-     * @return wether this vector is dirty
-     */
-    public boolean isDirty()
-    {
-        return dirty;
-    }
-
-    /**
-     * Sets this vector's dirty flag
-     * @param dirty The dirty flag
-     */
-    public void setDirty(boolean dirty)
-    {
-        this.dirty=dirty;
-    }
 
     /**
      * {@inheritDoc}
      */
     public String toString()
     {
-        return String.format( "%.4f", val[0] ) + ", " + String.format( "%.4f", val[1] ) + ", " + String.format( "%.4f", val[2] );
+        return String.format( "%.4f", x ) + ", " + String.format( "%.4f", y ) + ", " + String.format( "%.4f", z );
     }	
 	
     /**
@@ -566,7 +477,7 @@ public final class Vector implements Serializable
      * @return The dot product
      */
 	public float dot(int x, int y, int z) { 
-		return val[0] * x + val[1] * y + val[2] * z;
+		return this.x * x + this.y * y + this.z * z;
 	}
 
 	/**
@@ -577,9 +488,9 @@ public final class Vector implements Serializable
 	 */
 	public float dst2(Vector point) {
 
-    	float a = point.val[0]-val[0];
-    	float b = point.val[1]-val[1];
-    	float c = point.val[2]-val[2];
+    	float a = point.x-x;
+    	float b = point.y-y;
+    	float c = point.z-z;
     	
         a *= a;
         b *= b;
@@ -597,9 +508,9 @@ public final class Vector implements Serializable
 	 * @return The squared distance
 	 */
 	public float dst2(float x, float y, float z) {
-		float a = x-val[0];
-    	float b = y-val[1];
-    	float c = z-val[2];
+		float a = x-this.x;
+    	float b = y-this.y;
+    	float c = z-this.z;
     	
         a *= a;
         b *= b;
@@ -611,16 +522,18 @@ public final class Vector implements Serializable
 	public float dst(float x, float y, float z) 
 	{	
 		return (float)Math.sqrt( dst2( x, y, z ));
-	}	 
+	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public int hashCode() {
-		 int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(val);
+		final int prime = 31;
+		int result = 1;		
+		result = prime * result + Float.floatToIntBits(x);
+		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + Float.floatToIntBits(z);
 		return result;
 	}
 
@@ -635,8 +548,12 @@ public final class Vector implements Serializable
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Vector other = (Vector) obj;
-		if (!Arrays.equals(val, other.val))
+		Vector other = (Vector) obj;		
+		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x))
+			return false;
+		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y))
+			return false;
+		if (Float.floatToIntBits(z) != Float.floatToIntBits(other.z))
 			return false;
 		return true;
 	}

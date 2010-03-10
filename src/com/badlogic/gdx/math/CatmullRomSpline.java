@@ -179,9 +179,9 @@ public final class CatmullRomSpline
 			T2.set(controlPoints.get(i+2)).sub(controlPoints.get(i)).mul(0.5f);
 		
 			Vector normal = new Vector( T1 ).nor();
-			float x = normal.getX();
-			normal.setX(normal.getY());
-			normal.setY(-x);
+			float x = normal.x;
+			normal.x = normal.y;
+			normal.y = -x;
 			tangents.add( normal );
 			
 			for( int j = 0; j < numPoints; j++ )
@@ -196,9 +196,9 @@ public final class CatmullRomSpline
 				point.add( T1.tmp().mul(h3) );
 				point.add( T2.tmp().mul(h4) );
 				point.nor();
-				x = point.getX();
-				point.setX(point.getY() );
-				point.setY(-x);
+				x = point.x;
+				point.x = point.y;
+				point.y = -x;
 				tangents.add( point );
 				t += increment;
 			}

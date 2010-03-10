@@ -242,7 +242,7 @@ public class PerspectiveCamera
 	{
 		Matrix m = getCombinedMatrix();		
 		pos.prj( m );
-		pos.setX( viewportWidth * ( pos.getX() + 1 ) / 2 );
-		pos.setY( viewportHeight * ( pos.getY() + 1 ) / 2 );			
+		pos.x = viewportWidth * ( pos.x + 1 ) / 2;
+		pos.y = viewportHeight * ( pos.y + 1 ) / 2;			
 	}
 }

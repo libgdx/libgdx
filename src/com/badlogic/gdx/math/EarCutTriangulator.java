@@ -35,11 +35,10 @@ public final class EarCutTriangulator
 	 * @param polygon The polygon to triangulate
 	 * @return The list of triangle vertices.
 	 */
-	public List<Vector> triangulate( List<Vector> polygon )
+	public List<Vector2D> triangulate( List<Vector2D> polygon )
 	{
-		List<Vector> triangles = new ArrayList<Vector>( );
-
-		List<Vector> tmp = new ArrayList<Vector>( polygon.size() );
+		List<Vector2D> triangles = new ArrayList<Vector2D>( );
+		List<Vector2D> tmp = new ArrayList<Vector2D>( polygon.size() );
 		tmp.addAll( polygon );
 		polygon = tmp;
 		
@@ -56,12 +55,12 @@ public final class EarCutTriangulator
 
 			for( int i = 0; i < polygon.size(); i++ )
 			{
-				float x1 = polygon.get(i==0?polygon.size()-1:i-1).getX();
-				float y1 = polygon.get(i==0?polygon.size()-1:i-1).getY();
-				float x2 = polygon.get(i).getX();
-				float y2 = polygon.get(i).getY();
-				float x3 = polygon.get(i==polygon.size()-1?0:i+1).getX();
-				float y3 = polygon.get(i==polygon.size()-1?0:i+1).getY();
+				float x1 = polygon.get(i==0?polygon.size()-1:i-1).x;
+				float y1 = polygon.get(i==0?polygon.size()-1:i-1).y;
+				float x2 = polygon.get(i).x;
+				float y2 = polygon.get(i).y;
+				float x3 = polygon.get(i==polygon.size()-1?0:i+1).x;
+				float y3 = polygon.get(i==polygon.size()-1?0:i+1).y;
 				
 				if( ear( polygon, ptType, x1, y1, x2, y2, x3, y3 ) )
 				{
@@ -88,14 +87,14 @@ public final class EarCutTriangulator
 	 *                    The Law of Cosines is used to determine the
 	 *                    angle.
 	 */
-	public boolean polygonClockwise(List<Vector> polygon)
+	public boolean polygonClockwise(List<Vector2D> polygon)
 	{
 		float area = 0;
 		for( int i = 0; i < polygon.size();i++ )
 		{
-			Vector p1 = polygon.get(i);
-			Vector p2 = polygon.get(i==polygon.size()-1?0:i+1);
-			area += p1.getX() * p2.getY() - p2.getX() * p1.getY();
+			Vector2D p1 = polygon.get(i);
+			Vector2D p2 = polygon.get(i==polygon.size()-1?0:i+1);
+			area += p1.x * p2.y - p2.x * p1.y;
 		}
 		
 		if( area < 0 )
@@ -176,7 +175,7 @@ public final class EarCutTriangulator
 	 */
 	int concaveCount = 0;
 	
-	int[] classifyPoints(List<Vector> polygon)
+	int[] classifyPoints(List<Vector2D> polygon)
 	{
 		int[] ptType = new int[polygon.size()];		
 		concaveCount = 0;
@@ -194,9 +193,9 @@ public final class EarCutTriangulator
 
 		for (int i = 0; i < polygon.size(); i++) {
 			if (i == 0) {
-				if (convex(polygon.get(polygon.size()-1).getX(), polygon.get(polygon.size()-1).getY(),
-						polygon.get(i).getX(), polygon.get(i).getY(),
-						polygon.get(i+1).getX(), polygon.get(i+1).getY())) {
+				if (convex(polygon.get(polygon.size()-1).x, polygon.get(polygon.size()-1).y,
+						polygon.get(i).x, polygon.get(i).y,
+						polygon.get(i+1).x, polygon.get(i+1).y)) {
 					ptType[i] = 1;	/* point is convex */
 				}
 				else {
@@ -207,9 +206,9 @@ public final class EarCutTriangulator
 			else 
 			if( i == polygon.size()-1)
 			{
-				if (convex(polygon.get(i-1).getX(), polygon.get(i-1).getY(),
-						polygon.get(i).getX(), polygon.get(i).getY(),
-						polygon.get(0).getX(), polygon.get(0).getY())) {
+				if (convex(polygon.get(i-1).x, polygon.get(i-1).y,
+						polygon.get(i).x, polygon.get(i).y,
+						polygon.get(0).x, polygon.get(0).y)) {
 					ptType[i] = 1;	/* point is convex */
 				}
 				else {
@@ -219,9 +218,9 @@ public final class EarCutTriangulator
 			}
 			else
 			{    /* i > 0 */
-				if (convex(polygon.get(i-1).getX(), polygon.get(i-1).getY(),
-						polygon.get(i).getX(), polygon.get(i).getY(),
-						polygon.get(i+1).getX(), polygon.get(i+1).getY())) {
+				if (convex(polygon.get(i-1).x, polygon.get(i-1).y,
+						polygon.get(i).x, polygon.get(i).y,
+						polygon.get(i+1).x, polygon.get(i+1).y)) {
 					ptType[i] = 1;	/* point is convex */
 				}
 				else {
@@ -269,7 +268,7 @@ public final class EarCutTriangulator
 	/* triangleContainsPoints:  returns true if the triangle formed by
 	 *                          three points contains another point
 	 */
-	boolean triangleContainsPoint(List<Vector> polygon, int[] ptType, float x1, float y1, float x2,
+	boolean triangleContainsPoint(List<Vector2D> polygon, int[] ptType, float x1, float y1, float x2,
 			float y2, float x3, float y3)
 	{
 		int i = 0;
@@ -278,13 +277,13 @@ public final class EarCutTriangulator
 
 		while ((i < polygon.size() - 1) && (noPointInTriangle)) {
 			if ((ptType[i] == -1)   /* point is concave */  &&
-					(((polygon.get(i).getX() != x1) && (polygon.get(i).getY() != y1)) ||
-							((polygon.get(i).getX() != x2) && (polygon.get(i).getY() != y2)) ||
-							((polygon.get(i).getX() != x3) && (polygon.get(i).getY() != y3)))) {
+					(((polygon.get(i).x != x1) && (polygon.get(i).y != y1)) ||
+							((polygon.get(i).x != x2) && (polygon.get(i).y != y2)) ||
+							((polygon.get(i).x != x3) && (polygon.get(i).y != y3)))) {
 
-				area1 = area(x1, y1, x2, y2, polygon.get(i).getX(), polygon.get(i).getY());
-				area2 = area(x2, y2, x3, y3, polygon.get(i).getX(), polygon.get(i).getY());
-				area3 = area(x3, y3, x1, y1, polygon.get(i).getX(), polygon.get(i).getY());
+				area1 = area(x1, y1, x2, y2, polygon.get(i).x, polygon.get(i).y);
+				area2 = area(x2, y2, x3, y3, polygon.get(i).x, polygon.get(i).y);
+				area3 = area(x3, y3, x1, y1, polygon.get(i).x, polygon.get(i).y);
 
 				if (area1 > 0)
 					if ((area2 > 0) && (area3 > 0))
@@ -302,7 +301,7 @@ public final class EarCutTriangulator
 	/* ear:  returns true if the point (x2, y2) is an ear, false
 	 *       otherwise
 	 */
-	boolean ear(List<Vector> polygon, int[] ptType, float x1, float y1, float x2, float y2, 
+	boolean ear(List<Vector2D> polygon, int[] ptType, float x1, float y1, float x2, float y2, 
 			float x3, float y3)
 	{
 		if (concaveCount != 0)
@@ -317,22 +316,22 @@ public final class EarCutTriangulator
 
 	/* cutEar:  creates triangle that represents ear for graphics purposes
 	 */
-	void cutEar(List<Vector> polygon, List<Vector> triangles, int index)
+	void cutEar(List<Vector2D> polygon, List<Vector2D> triangles, int index)
 	{				
 		if (index == 0) {
-			triangles.add( new Vector( polygon.get(polygon.size()-1) ));
-			triangles.add( new Vector( polygon.get(index) ) );
-			triangles.add( new Vector( polygon.get(index+1) ) );			
+			triangles.add( new Vector2D( polygon.get(polygon.size()-1) ));
+			triangles.add( new Vector2D( polygon.get(index) ) );
+			triangles.add( new Vector2D( polygon.get(index+1) ) );			
 		}
 		else if ((index > 0) && (index < polygon.size()-1)) {
-			triangles.add( new Vector( polygon.get(index-1) ));
-			triangles.add( new Vector( polygon.get(index) ) );
-			triangles.add( new Vector( polygon.get(index+1) ) );
+			triangles.add( new Vector2D( polygon.get(index-1) ));
+			triangles.add( new Vector2D( polygon.get(index) ) );
+			triangles.add( new Vector2D( polygon.get(index+1) ) );
 		}
 		else if (index == polygon.size()-1) {
-			triangles.add( new Vector( polygon.get(index-1) ));
-			triangles.add( new Vector( polygon.get(index) ) );
-			triangles.add( new Vector( polygon.get(0) ) );			
+			triangles.add( new Vector2D( polygon.get(index-1) ));
+			triangles.add( new Vector2D( polygon.get(index) ) );
+			triangles.add( new Vector2D( polygon.get(0) ) );			
 		}		
 	}
 
@@ -340,7 +339,7 @@ public final class EarCutTriangulator
 	/* updatePolygon:  creates new polygon without the ear that was
 	 *                 cut
 	 */
-	void updatePolygon(List<Vector> polygon, int index)
+	void updatePolygon(List<Vector2D> polygon, int index)
 	{	
 		polygon.remove(index);	
 	}
