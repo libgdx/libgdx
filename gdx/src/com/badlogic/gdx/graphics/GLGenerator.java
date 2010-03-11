@@ -19,7 +19,8 @@ import java.util.Set;
 
 /**
  * A simple parser class that takes a gl header file and converts it into
- * a java interface file
+ * a java interface file. This is a complete hack and was only tested
+ * with the headers from the khronos site. Manual post-processing is required.
  * 
  * @author badlogicgames@gmail.com
  *

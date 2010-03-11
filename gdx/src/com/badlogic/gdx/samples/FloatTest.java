@@ -23,8 +23,11 @@ public class FloatTest implements RenderListener
 	}
 
 	Texture tex;
+	Texture tex2;
 	FloatBuffer vertices;
-	final int BYTES_PER_VERTEX = (4+3+2)*4;	
+	final int BYTES_PER_VERTEX = (4+3+2+2)*4;	
+	float angle = 0;
+	float angleIncrement = 0.1f;
 	
 	@Override
 	public void dispose(Application application) 
@@ -36,19 +39,35 @@ public class FloatTest implements RenderListener
 	public void render(Application app) 
 	{			
 		GL10 gl = app.getGL();
-		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );		
+		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glMatrixMode( GL10.GL_MODELVIEW );
+		gl.glLoadIdentity();
+		gl.glRotatef( angle, 0, 0, 1 );
+		angle+=angleIncrement;
+		gl.glEnable(GL10.GL_TEXTURE_2D);		
+		
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);		
 		vertices.position(0);
 		gl.glColorPointer(4, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );
-		vertices.position(4);
+		
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glClientActiveTexture( GL10.GL_TEXTURE0 );
+		gl.glActiveTexture( GL10.GL_TEXTURE0 );
+		tex.bind();
+		vertices.position(4);			
 		gl.glTexCoordPointer( 2, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );
-		vertices.position(6);
+		
+		gl.glClientActiveTexture( GL10.GL_TEXTURE1 );
+		gl.glActiveTexture( GL10.GL_TEXTURE1 );
+		tex2.bind();
+		vertices.position(6);			
+		gl.glTexCoordPointer( 2, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );
+		
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		vertices.position(8);
 		gl.glVertexPointer( 3, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );		
-		gl.glDrawArrays( GL10.GL_TRIANGLES, 0, 3);			
+		gl.glDrawArrays( GL10.GL_TRIANGLES, 0, 3);				
 	}
 
 	@Override
@@ -59,16 +78,21 @@ public class FloatTest implements RenderListener
 		vertices = buffer.asFloatBuffer();					
 				
 		float[] verts = { 							
-						  1, 0, 0, 1,
-						  0, 1, 
-						  -0.5f, -0.5f, 0,
-						  0, 1, 0, 1,
-						  1, 1, 
-						   0.5f, -0.5f, 0,
-						   0, 0, 1, 1,
-						   0.5f, 0, 
-						   0, 0.5f, 0,
-						 };
+				  1, 0, 0, 1,
+				  0, 1,
+				  0, 1,
+				  -0.5f, -0.5f, 0,
+				  
+				  0, 1, 0, 1,
+				  1, 1,
+				  1, 1,
+				  0.5f, -0.5f, 0,
+				   
+				  0, 0, 1, 1,
+				  0.5f, 0,
+				  0.5f, 0,
+				  0, 0.5f, 0,
+				 };
 		vertices.put(verts);
 		vertices.flip();	
 		
@@ -77,8 +101,14 @@ public class FloatTest implements RenderListener
 		pixmap.fill();
 		pixmap.setColor(0, 0, 0, 1 );
 		pixmap.drawLine(0, 0, 256, 256);
-		pixmap.drawLine(256, 0, 0, 256);
+		pixmap.drawLine(256, 0, 0, 256);		
+		tex = application.newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 		
-		tex = application.newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );		
+		pixmap = application.newPixmap( 256, 256, Format.RGBA8888 );
+		pixmap.setColor( 1, 1, 1, 1 );
+		pixmap.fill();
+		pixmap.setColor( 0, 0, 0, 1 );
+		pixmap.drawLine( 128, 0, 128, 256 );
+		tex2 = application.newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 	}
 }

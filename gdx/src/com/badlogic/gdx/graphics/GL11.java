@@ -3,6 +3,16 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+/**
+ * The complete OpenGL ES 1.1 methods wrapped in a Java interface. {@link Application}
+ * implementations like {@link JoglApplication} and {@link AndroidApplication} implement
+ * this interface. The Jogl backend is trying to emulate as much of the functioanlity 
+ * as possible. At the moment a couple of the glGetXX methods are not implemented, mainly
+ * the fixed point versions. FIXME
+ * 
+ * @author mzechner
+ *
+ */
 public interface GL11 extends GL10
 {
 	public static final int GL_OES_VERSION_1_0 = 1;

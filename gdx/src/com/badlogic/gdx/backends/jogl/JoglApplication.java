@@ -924,7 +924,7 @@ public final class JoglApplication implements Application, RenderListener
 	@Override
 	public GL10 getGL() {
 		if( gl == null )
-			gl = new JoglGL10(GLContext.getCurrent().getGL());			
+			gl = new JoglGL11(GLContext.getCurrent().getGL());			
 		return gl;
 	}
 }

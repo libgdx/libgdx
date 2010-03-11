@@ -24,8 +24,9 @@ public class FixedPointTest implements RenderListener
 	}
 
 	Texture tex;
+	Texture tex2;
 	IntBuffer vertices;		
-	final int BYTES_PER_VERTEX = (4+3+2)*4;
+	final int BYTES_PER_VERTEX = (4+3+2+2)*4;
 	int angle = 0;
 	int angleIncrement = fp(0.1f);
 	
@@ -45,15 +46,27 @@ public class FixedPointTest implements RenderListener
 		gl.glLoadIdentity();
 		gl.glRotatex( angle, 0, 0, fp(1) );
 		angle+=angleIncrement;
-		gl.glEnable(GL10.GL_TEXTURE_2D);
-		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glEnable(GL10.GL_TEXTURE_2D);		
+		
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);		
 		vertices.position(0);
 		gl.glColorPointer(4, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );
-		vertices.position(4);
+		
+		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		gl.glClientActiveTexture( GL10.GL_TEXTURE0 );
+		gl.glActiveTexture( GL10.GL_TEXTURE0 );
+		tex.bind();
+		vertices.position(4);			
 		gl.glTexCoordPointer( 2, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );
-		vertices.position(6);
+		
+		gl.glClientActiveTexture( GL10.GL_TEXTURE1 );
+		gl.glActiveTexture( GL10.GL_TEXTURE1 );
+		tex2.bind();
+		vertices.position(6);			
+		gl.glTexCoordPointer( 2, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );
+		
+		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+		vertices.position(8);
 		gl.glVertexPointer( 3, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );		
 		gl.glDrawArrays( GL10.GL_TRIANGLES, 0, 3);					
 	}
@@ -68,13 +81,16 @@ public class FixedPointTest implements RenderListener
 		int[] verts = { 							
 						  fp(1), fp(0), fp(0), fp(1),
 						  fp(0), fp(1),
+						  fp(0), fp(1),
 						  fp(-0.5f), fp(-0.5f), fp(0),
 						  
 						  fp(0), fp(1), fp(0), fp(1),
 						  fp(1), fp(1),
+						  fp(1), fp(1),
 						   fp(0.5f), fp(-0.5f), fp(0),
 						   
 						   fp(0), fp(0), fp(1), fp(1),
+						   fp(0.5f), fp(0),
 						   fp(0.5f), fp(0),
 						   fp(0), fp(0.5f), fp(0),
 						 };
@@ -86,9 +102,15 @@ public class FixedPointTest implements RenderListener
 		pixmap.fill();
 		pixmap.setColor(0, 0, 0, 1 );
 		pixmap.drawLine(0, 0, 256, 256);
-		pixmap.drawLine(256, 0, 0, 256);
-		
+		pixmap.drawLine(256, 0, 0, 256);		
 		tex = application.newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+		
+		pixmap = application.newPixmap( 256, 256, Format.RGBA8888 );
+		pixmap.setColor( 1, 1, 1, 1 );
+		pixmap.fill();
+		pixmap.setColor( 0, 0, 0, 1 );
+		pixmap.drawLine( 128, 0, 128, 256 );
+		tex2 = application.newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 	}
 	
 	public static int fp( float value )

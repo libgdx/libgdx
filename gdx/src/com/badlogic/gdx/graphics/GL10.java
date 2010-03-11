@@ -3,6 +3,15 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+/**
+ * The complete OpenGL ES 1.0 methods wrapped in a Java interface. {@link Application}
+ * implementations like {@link JoglApplication} and {@link AndroidApplication} implement
+ * this interface. The Jogl backend implements the full feature set of this OpenGL ES 
+ * version. A maximum of 8 texture units is supported by it.
+ * 
+ * @author mzechner
+ *
+ */
 public interface GL10
 {
 	public static final int GL_OES_VERSION_1_0 = 1;
