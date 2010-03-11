@@ -27,6 +27,7 @@ import java.util.HashSet;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -317,7 +318,12 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 		}
 		this.gl = gl;
 		if( badlogicGL == null )
-			badlogicGL = new AndroidGL10( gl );
+		{
+			if( gl instanceof GL11 )
+				badlogicGL = new AndroidGL11( gl );
+			else
+				badlogicGL = new AndroidGL10( gl );
+		}
 		deltaTime = ( System.nanoTime() - lastFrameTime ) / 1000000000.0f;
 		lastFrameTime = System.nanoTime();
 		mean.addValue( deltaTime );
