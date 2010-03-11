@@ -43,6 +43,7 @@ import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.InputListener;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.RenderListener;
@@ -91,7 +92,9 @@ public final class JoglApplication implements Application, RenderListener
 	TextInputListener textListener;
 	String text;	
 	
-	ArrayList<CloseListener> closeListeners = new ArrayList<CloseListener>();	
+	ArrayList<CloseListener> closeListeners = new ArrayList<CloseListener>();
+	
+	GL10 gl;
 	
 	/**
 	 * Constructor, sets the title and dimension of the {@link Application}.
@@ -916,6 +919,13 @@ public final class JoglApplication implements Application, RenderListener
 	public AudioDevice getAudioDevice() 
 	{	
 		return new JoglAudioDevice();
+	}
+
+	@Override
+	public GL10 getGL() {
+		if( gl == null )
+			gl = new JoglGL10(GLContext.getCurrent().getGL());			
+		return gl;
 	}
 }
 

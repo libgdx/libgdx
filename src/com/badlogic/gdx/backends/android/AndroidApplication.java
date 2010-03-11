@@ -136,7 +136,8 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	private TextInputListener textListener = null;
 	private Handler handle;
 
-	private GL10 gl;	
+	private GL10 gl;
+	private com.badlogic.gdx.graphics.GL10 badlogicGL;
 
 	private final ArrayList<RenderListener> setupListeners = new ArrayList<RenderListener>( );
 	private final ArrayList<RenderListener> listeners = new ArrayList<RenderListener>( );
@@ -315,6 +316,8 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 			textListener = null;
 		}
 		this.gl = gl;
+		if( badlogicGL == null )
+			badlogicGL = new AndroidGL10( gl );
 		deltaTime = ( System.nanoTime() - lastFrameTime ) / 1000000000.0f;
 		lastFrameTime = System.nanoTime();
 		mean.addValue( deltaTime );
@@ -1307,5 +1310,11 @@ public class AndroidApplication extends Activity implements GLSurfaceView.Render
 	public AudioDevice getAudioDevice()
 	{	
 		return new AndroidAudioDevice();
+	}
+
+	@Override
+	public com.badlogic.gdx.graphics.GL10 getGL() 
+	{	
+		return badlogicGL;
 	}
 }

@@ -25,6 +25,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.InputListener;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.RenderListener;
@@ -893,5 +894,10 @@ public interface Application
 	 * @return wheter we are on Android or not.
 	 */
 	public boolean isAndroid( );
+	
+	/**
+	 * @return the {@link GL10} instance. You can check via instanceof if it has more capabilities (e.g. if its an instance of GL11).
+	 */
+	public GL10 getGL( );
 }
 
