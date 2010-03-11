@@ -15,8 +15,8 @@ gdx-helloworld
  -> libs/
     -> armeabi/
        - >libgdx.so
-    -> gdx-0.11-javadoc.jar
-    -> gdx-0.11.jar
+    -> gdx-0.12-sources.jar
+    -> gdx-0.12.jar
     -> gdx.dll
     -> gluegen-rt-1.0b5.jar
     -> jogl-1.1.1.jar
@@ -90,7 +90,7 @@ gdx-helloworld-android
  -> libs/
     -> armeabi/
        -> libgdx.so
-    -> gdx-0.11.jar
+    -> gdx-0.12.jar
     -> gdx.dll
     -> gluegen-rt-1.0b5.jar
     -> jogl-1.1.1.jar
