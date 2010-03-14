@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.MeshRenderer;
 
 public class MeshRendererTest implements RenderListener
-{
+{	
 	MeshRenderer mesh;
 	
 	@Override
@@ -29,12 +29,13 @@ public class MeshRendererTest implements RenderListener
 
 	@Override
 	public void setup(Application app) 
-	{
-		FloatMesh m = new FloatMesh( 3, 3, true, 4, false, false, 0, 0, false, 0 );
+	{			
+		FloatMesh m = new FloatMesh( 3, 3, true, 4, false, false, 0, 0, true, 3 );
 		m.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1,  
 									  0.5f, -0.5f, 0, 0, 1, 0, 1,
 									  0.0f,  0.5f, 0, 0, 0, 1, 1} );
-		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true );
+		m.setIndices( new short[] { 0, 1, 2 } );
+		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true );		
 	}
 
 	public static void main( String[] argv )
