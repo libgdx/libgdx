@@ -89,4 +89,10 @@ public class JoglApplication implements Application
 		this.listener = listener;
 	}
 
+	@Override
+	public void log(String tag, String message) 
+	{	
+		System.out.println( tag + ": " + message );
+	}
+
 }

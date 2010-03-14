@@ -71,7 +71,7 @@ public class JoglGraphics implements Graphics, RenderListener
             {                 	                	
             	graphicPanel.dispose(); 
             	if( application.listener != null )
-            		application.listener.destroy();
+            		application.listener.destroy(application);
             }
         });                      
         useGL2 = useGL2IfAvailable;
@@ -191,8 +191,7 @@ public class JoglGraphics implements Graphics, RenderListener
 	@Override
 	public void dispose(Application app) 
 	{	
-		if( listener != null )
-			listener.dispose( app );
+		
 	}
 
 	@Override

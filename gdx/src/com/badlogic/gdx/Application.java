@@ -84,6 +84,11 @@ public interface Application
 	public Files getFiles( );
 	
 	/**
+	 * Logs a message to the console or logcat
+	 */
+	public void log( String tag, String message );
+	
+	/**
 	 * Sets the {@link DestroyListener} that is called
 	 * when the {@link Application} is closing.
 	 * 

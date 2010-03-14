@@ -2,6 +2,7 @@ package com.badlogic.gdx.backends.android;
 
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Audio;
@@ -60,6 +61,10 @@ public class AndroidApplication extends Activity implements Application
 	protected void onPause( )
 	{
 		super.onPause( );
+		
+		if( isFinishing() )		
+			graphics.disposeRenderListener();
+		
 		if( graphics.view != null )
 			graphics.view.onPause();
 	}
@@ -76,10 +81,9 @@ public class AndroidApplication extends Activity implements Application
 	protected void onDestroy( )
 	{
 		super.onDestroy();
+		
 		if( listener != null )
-			listener.destroy();
-		if( graphics.listener != null )
-			graphics.listener.dispose( this );
+			listener.destroy(this);
 	}
 	
 	/**
@@ -125,5 +129,14 @@ public class AndroidApplication extends Activity implements Application
 	public void setDestroyListener(DestroyListener listener) 
 	{	
 		this.listener = listener;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void log(String tag, String message) 
+	{	
+		Log.d( tag, message );
 	}
 }

@@ -11,5 +11,9 @@ package com.badlogic.gdx;
  */
 public interface DestroyListener 
 {
-	public void destroy( );
+	/**
+	 * Called when the {@link Application} is destroyed
+	 * @param app the Application
+	 */
+	public void destroy( Application app );
 }

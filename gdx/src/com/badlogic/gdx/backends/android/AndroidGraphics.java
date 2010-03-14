@@ -68,6 +68,8 @@ final class AndroidGraphics implements Graphics, Renderer
 	/** the deltaTime mean **/
 	private WindowedMean mean = new WindowedMean( 5 );
 	
+	/** whether to dispose the render listeners **/
+	private boolean dispose = false;
 	
 	public AndroidGraphics( AndroidApplication activity, boolean useGL2IfAvailable )
 	{		
@@ -307,6 +309,13 @@ final class AndroidGraphics implements Graphics, Renderer
 			if( listener != null )
 				listener.render( app );
 		}
+		
+		if( dispose )
+		{
+			if( listener != null )
+				listener.dispose( app );
+			dispose = false;
+		}
 	}
 	
 	/**
@@ -363,5 +372,17 @@ final class AndroidGraphics implements Graphics, Renderer
 	public float getDeltaTime() 
 	{
 		return mean.getMean() == 0?deltaTime:mean.getMean();
+	}
+
+	public void disposeRenderListener() 
+	{	
+		dispose = true;
+		while( dispose )
+		{
+			try {
+				Thread.sleep( 20 );
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 }

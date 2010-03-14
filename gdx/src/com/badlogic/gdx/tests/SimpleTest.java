@@ -1,12 +1,13 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.DestroyListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 
-public class SimpleTest implements RenderListener, InputListener 
+public class SimpleTest implements RenderListener, InputListener, DestroyListener
 {
 	float r = 1, g = 0, b = 0;
 	
@@ -14,14 +15,16 @@ public class SimpleTest implements RenderListener, InputListener
 	{
 		JoglApplication app = new JoglApplication( "Simple Test", 480, 320, false );
 		app.getGraphics().setRenderListener( new SimpleTest() );
+	}	
+
+	@Override
+	public void setup(Application app) 
+	{
+		app.getInput().addInputListener( this );
+		app.setDestroyListener( this );
+		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created" );
 	}
 	
-	@Override
-	public void dispose(Application app) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public void render(Application app)
 	{
@@ -33,8 +36,15 @@ public class SimpleTest implements RenderListener, InputListener
 	}
 
 	@Override
-	public void setup(Application app) {
-		app.getInput().addInputListener( this );
+	public void dispose(Application app) 
+	{	
+		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", render listener disposed" );
+	}	
+	
+	@Override
+	public void destroy(Application app) 
+	{	
+		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", application destroyed" );
 	}
 
 	@Override
@@ -74,5 +84,4 @@ public class SimpleTest implements RenderListener, InputListener
 		b = (float)Math.random();
 		return false;
 	}
-
 }
