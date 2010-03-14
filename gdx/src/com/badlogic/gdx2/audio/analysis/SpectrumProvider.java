@@ -16,7 +16,7 @@
  */
 package com.badlogic.gdx2.audio.analysis;
 
-import com.badlogic.gdx.audio.io.Decoder;
+import com.badlogic.gdx2.audio.io.Decoder;
 
 /**
  * Provides float[] arrays of successive spectrum frames retrieved via

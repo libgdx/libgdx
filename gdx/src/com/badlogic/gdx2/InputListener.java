@@ -16,7 +16,6 @@
  */
 package com.badlogic.gdx2;
 
-import com.badlogic.gdx.Application;
 
 /**
  * An InputListener is used to receive input events from the keyboard and the touch screen (mouse on the desktop). For this
