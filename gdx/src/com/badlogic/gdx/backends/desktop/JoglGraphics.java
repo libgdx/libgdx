@@ -224,7 +224,7 @@ public class JoglGraphics implements Graphics, RenderListener
 		}
 		else
 		{
-			if( minor < 5 )
+			if( major == 1 && minor < 5 )
 			{
 				gl10 = new JoglGL10( graphicPanel.getGL() );
 			}
