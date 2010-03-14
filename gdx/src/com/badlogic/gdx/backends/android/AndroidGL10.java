@@ -12,7 +12,7 @@ public class AndroidGL10 implements GL10
 	
 	public AndroidGL10( javax.microedition.khronos.opengles.GL10 gl )
 	{
-		this.gl = gl;
+		this.gl = gl;		
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class AndroidGL11 extends AndroidGL10 implements GL11
 	public AndroidGL11(GL10 gl) 
 	{
 		super(gl);	
-		this.gl = (javax.microedition.khronos.opengles.GL11)gl;
+		this.gl = (javax.microedition.khronos.opengles.GL11)gl;		
 	}
 
 	@Override
@@ -399,5 +399,35 @@ public class AndroidGL11 extends AndroidGL10 implements GL11
 	public void glTexParameterxv(int target, int pname, int[] params, int offset) 
 	{	
 		gl.glTexParameterxv( target, pname, params, offset );
+	}
+
+	@Override
+	public void glColorPointer(int size, int type, int stride, int pointer) 
+	{	
+		gl.glColorPointer( size, type, stride, pointer );
+	}
+
+	@Override
+	public void glNormalPointer( int type, int stride, int pointer) 
+	{
+		gl.glNormalPointer( type, stride, pointer );
+	}
+
+	@Override
+	public void glTexCoordPointer(int size, int type, int stride, int pointer) 
+	{	
+		gl.glTexCoordPointer( size, type, stride, pointer );
+	}
+
+	@Override
+	public void glVertexPointer(int size, int type, int stride, int pointer) 
+	{	
+		gl.glVertexPointer( size, type, stride, pointer );
+	}
+	
+	@Override
+	public void glDrawElements( int mode, int count, int type, int indices )
+	{
+		gl.glDrawElements( mode, count, type, indices );
 	}
 }

@@ -157,7 +157,7 @@ final class AndroidGraphics implements Graphics, Renderer
 	@Override
 	public int getHeight() 
 	{	
-		return width;
+		return height;
 	}
 
 	/**
@@ -166,7 +166,7 @@ final class AndroidGraphics implements Graphics, Renderer
 	@Override
 	public int getWidth() 
 	{	
-		return height;
+		return width;
 	}
 
 	/**
@@ -292,7 +292,7 @@ final class AndroidGraphics implements Graphics, Renderer
 	
 	@Override
 	public void onDrawFrame(javax.microedition.khronos.opengles.GL10 gl) 
-	{
+	{			
 		// calculate delta time
 		deltaTime = ( System.nanoTime() - lastFrameTime ) / 1000000000.0f;
 		lastFrameTime = System.nanoTime();
@@ -300,9 +300,7 @@ final class AndroidGraphics implements Graphics, Renderer
 		
 		// this is a hack so the events get processed synchronously.
 		if( input != null )
-			input.update();
-		
-		setupGL( gl );
+			input.update();			
 		
 		synchronized( this )
 		{
@@ -329,7 +327,7 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * @param gl
 	 */
 	private void setupGL( javax.microedition.khronos.opengles.GL10 gl )
-	{
+	{			
 		if( gl10 != null || gl20 != null )
 			return;
 		
@@ -338,15 +336,16 @@ final class AndroidGraphics implements Graphics, Renderer
 		else
 		{
 			gl10 = new AndroidGL10(gl);
-			if( gl instanceof GL11 )
+			if( gl instanceof javax.microedition.khronos.opengles.GL11 )
 			{
 				String renderer = gl.glGetString( GL10.GL_RENDERER );				
 				if( renderer.toLowerCase().contains("pixelflinger" ) )
 					return;
 				
 				if( android.os.Build.MODEL.equals( "MB200" ) || android.os.Build.MODEL.equals( "MB220" ) || android.os.Build.MODEL.contains( "Behold" ) )
-					return;
+					return;				
 				gl11 = new AndroidGL11( (javax.microedition.khronos.opengles.GL11)gl );
+				gl10 = gl11;
 			}
 		}
 	}
@@ -360,7 +359,9 @@ final class AndroidGraphics implements Graphics, Renderer
 
 	@Override
 	public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) 
-	{	
+	{
+		setupGL( gl );
+		
 		if( listener != null )
 			listener.setup( app );
 	}

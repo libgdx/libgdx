@@ -258,5 +258,15 @@ public interface GL11 extends GL10
 	public void glTexParameterxv ( int target, int pname, IntBuffer params );
 
 	public void glPointSizePointerOES ( int type, int stride, Buffer pointer );
+	
+	public void glVertexPointer( int size, int type, int stride, int pointer );
+	
+	public void glColorPointer( int size, int type, int stride, int pointer );
+	
+	public void glNormalPointer( int type, int stride, int pointer );
+	
+	public void glTexCoordPointer( int size, int type, int stride, int pointer );
+	
+	public void glDrawElements( int mode, int count, int type, int indices );
 
 }

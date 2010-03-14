@@ -414,5 +414,34 @@ class JoglGL11 extends JoglGL10 implements GL11
 			tmpFloat[i] = FIXED_TO_FLOAT * params.get();
 		gl.glTexParameterfv( target, pname, tmpFloat, 0 );
 	}
+
+	@Override
+	public void glColorPointer(int size, int type, int stride, int pointer) 
+	{	
+		gl.glColorPointer( size, type, stride, pointer );
+	}
+
+	@Override
+	public void glNormalPointer( int type, int stride, int pointer) 
+	{
+		gl.glNormalPointer( type, stride, pointer );
+	}
+
+	@Override
+	public void glTexCoordPointer(int size, int type, int stride, int pointer) 
+	{	
+		gl.glTexCoordPointer( size, type, stride, pointer );
+	}
+
+	@Override
+	public void glVertexPointer(int size, int type, int stride, int pointer) 
+	{	
+		gl.glVertexPointer( size, type, stride, pointer );
+	}
 	
+	@Override
+	public void glDrawElements( int mode, int count, int type, int indices )
+	{
+		gl.glDrawElements( mode, count, type, indices );
+	}
 }

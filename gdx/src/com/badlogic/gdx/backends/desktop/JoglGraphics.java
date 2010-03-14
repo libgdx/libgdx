@@ -99,13 +99,13 @@ public class JoglGraphics implements Graphics, RenderListener
 	@Override
 	public int getHeight() 
 	{	
-		return graphicPanel.getWidth();
+		return graphicPanel.getHeight();
 	}
 
 	@Override
 	public int getWidth() 
 	{	
-		return graphicPanel.getHeight();
+		return graphicPanel.getWidth();
 	}
 
 	@Override

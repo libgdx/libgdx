@@ -2,11 +2,11 @@ package com.badlogic.gdx;
 
 import java.io.InputStream;
 
+import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.Texture;
