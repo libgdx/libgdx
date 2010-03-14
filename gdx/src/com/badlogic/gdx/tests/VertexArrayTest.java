@@ -36,8 +36,9 @@ public class VertexArrayTest implements RenderListener
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		vertices.position(0);
 		gl.glVertexPointer( 3, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );	
-		
-		gl.glDrawElements( GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);				
+				
+		gl.glDrawElements( GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);			
+//		gl.glDrawArrays( GL10.GL_TRIANGLES, 0, 3 );		
 	}
 
 	@Override
@@ -64,6 +65,7 @@ public class VertexArrayTest implements RenderListener
 		buffer.order(ByteOrder.nativeOrder());
 		indices = buffer.asShortBuffer();
 		indices.put( new short[ ] { 0, 1, 2 } );
+		indices.flip();
 	}
 
 	public static void main( String[] argv )
