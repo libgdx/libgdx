@@ -83,7 +83,9 @@ final class AndroidGraphics implements Graphics, Renderer
 		}
 		else
 			view = new GLSurfaceView( activity );
+		view.setRenderer(this);
 		activity.setContentView( view );
+		this.app = activity;
 	}
 	
 	/**

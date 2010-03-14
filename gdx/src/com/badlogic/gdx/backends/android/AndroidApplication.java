@@ -60,19 +60,22 @@ public class AndroidApplication extends Activity implements Application
 	protected void onPause( )
 	{
 		super.onPause( );
-		graphics.view.onPause();
+		if( graphics.view != null )
+			graphics.view.onPause();
 	}
 	
 	@Override
 	protected void onResume( )
 	{
 		super.onResume();
-		graphics.view.onResume();
+		if( graphics.view != null )
+			graphics.view.onResume();
 	}
 
 	@Override
 	protected void onDestroy( )
 	{
+		super.onDestroy();
 		if( listener != null )
 			listener.destroy();
 		if( graphics.listener != null )
