@@ -9,7 +9,7 @@ import android.widget.ListView;
 
 public class GDXTester extends ListActivity 
 {
-	String[] items = new String[]{ "Simple Test" };
+	String[] items = new String[]{ "Simple Test", "MeshRenderer Test" };
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -27,7 +27,9 @@ public class GDXTester extends ListActivity
 
 		Intent intent = null;
 		if( keyword.equals( items[0] ) )
-			intent = new Intent( this, SimpleTest.class );		
+			intent = new Intent( this, SimpleTest.class );
+		if( keyword.equals( items[1] ) )
+			intent = new Intent( this, MeshRendererTest.class );
 			
 		startActivity( intent );
 	}

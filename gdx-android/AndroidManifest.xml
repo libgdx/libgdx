@@ -15,6 +15,12 @@
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
+		</activity>		
+		
+				<activity android:name=".MeshRendererTest" android:label="MeshRenderer Test">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
 		</activity>			
 		
 	</application>
