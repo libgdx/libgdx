@@ -7,10 +7,9 @@ import java.nio.FloatBuffer;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 
-public class VBOTest implements RenderListener
+public class VertexBuferObjectTest implements RenderListener
 {
 	int vboHandle;
 
@@ -38,7 +37,7 @@ public class VBOTest implements RenderListener
 	}
 
 	@Override
-	public void setup(Application app) 
+	public void surfaceCreated(Application app) 
 	{
 		ByteBuffer buffer = ByteBuffer.allocateDirect( 3 * 7 * 4 );
 		buffer.order(ByteOrder.nativeOrder());
@@ -62,6 +61,12 @@ public class VBOTest implements RenderListener
 	public static void main( String[] argv )
 	{
 		JoglApplication app = new JoglApplication( "VBO Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new VBOTest() );
+		app.getGraphics().setRenderListener( new VertexBuferObjectTest() );
+	}
+
+	@Override
+	public void surfaceChanged(Application app, int width, int height) {
+		// TODO Auto-generated method stub
+		
 	}
 }

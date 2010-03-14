@@ -1,13 +1,13 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.DestroyListener;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 
-public class SimpleTest implements RenderListener, InputListener, DestroyListener
+public class SimpleTest implements RenderListener, InputListener, ApplicationListener
 {
 	float r = 1, g = 0, b = 0;
 	
@@ -18,10 +18,10 @@ public class SimpleTest implements RenderListener, InputListener, DestroyListene
 	}	
 
 	@Override
-	public void setup(Application app) 
+	public void surfaceCreated(Application app) 
 	{
 		app.getInput().addInputListener( this );
-		app.setDestroyListener( this );
+		app.setApplicationListener( this );
 		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created" );
 	}
 	
@@ -83,5 +83,23 @@ public class SimpleTest implements RenderListener, InputListener, DestroyListene
 		g = (float)Math.random();
 		b = (float)Math.random();
 		return false;
+	}
+
+	@Override
+	public void pause(Application app) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume(Application app) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void surfaceChanged(Application app, int width, int height) {
+		// TODO Auto-generated method stub
+		
 	}
 }

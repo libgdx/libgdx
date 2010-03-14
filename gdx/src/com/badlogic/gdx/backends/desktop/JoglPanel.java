@@ -401,7 +401,7 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 		mean.addValue( deltaTime );
 		
 		for( RenderListener listener: setupListeners )
-			listener.setup( application );
+			listener.surfaceCreated( application );
 		listeners.addAll(setupListeners);
 		setupListeners.clear();
 		
@@ -424,7 +424,7 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	public void init(GLAutoDrawable arg0) 
 	{			
 		for( RenderListener listener: listeners )
-			listener.setup( application );		
+			listener.surfaceCreated( application );		
 	}
 
 	@Override

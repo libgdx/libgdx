@@ -49,7 +49,16 @@ public interface RenderListener
 	 * 
 	 * @param app The application
 	 */
-	public void setup( Application app );	
+	public void surfaceCreated( Application app );	
+	
+	/**
+	 * Called when the OpenGL surface changed it's dimensions.
+	 * 
+	 * @param app the Application
+	 * @param width the width of the surface in pixels
+	 * @param height the height of the surface in pixels
+	 */
+	public void surfaceChanged( Application app, int width, int height );
 	
 	/**
 	 * The render method is called every time a new frame 

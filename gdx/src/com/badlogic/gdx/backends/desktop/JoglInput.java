@@ -144,7 +144,13 @@ public class JoglInput implements Input, RenderListener
 	}
 
 	@Override
-	public void setup(Application app) {
+	public void surfaceCreated(Application app) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void surfaceChanged(Application app, int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

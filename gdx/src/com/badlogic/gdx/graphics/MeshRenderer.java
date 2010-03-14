@@ -69,7 +69,7 @@ public class MeshRenderer
 		if( vboVertexHandle != 0 )
 			renderVBO( primitiveType, offset, count );
 		else
-			renderVA( primitiveType );
+			renderVA( primitiveType, offset, count );
 	}
 	
 	private void renderVBO( int primitiveType, int offset, int count )
@@ -130,9 +130,56 @@ public class MeshRenderer
 		gl11.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
 	}
 	
-	private void renderVA( int primitiveType )
+	private void renderVA( int primitiveType, int offset, int count )
 	{
 		
+		gl.glEnableClientState( GL11.GL_VERTEX_ARRAY );		
+		gl.glVertexPointer( mesh.getCoordsSize(), type, mesh.getVertexSize(), mesh.getVerticesBuffer() );
+		
+		if( mesh.hasColors() )
+		{
+			gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
+			mesh.getVerticesBuffer().position( mesh.getColorsOffset() / 4 );
+			gl.glColorPointer( mesh.getColorsSize(), type, mesh.getVertexSize(), mesh.getVerticesBuffer() );
+		}
+		
+		if( mesh.hasNormals() )
+		{
+			gl.glEnableClientState( GL11.GL_NORMAL_ARRAY );
+			mesh.getVerticesBuffer().position( mesh.getNormalsOffset() / 4 );
+			gl.glNormalPointer( type, mesh.getVertexSize(), mesh.getVerticesBuffer() );
+		}
+		
+		if( mesh.hasTexCoords() )
+		{
+			for( int i = 0; i < mesh.getNumTexCoords(); i++ )
+			{
+				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + i );
+				gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
+				mesh.getVerticesBuffer().position( mesh.getTexCoordsOffset() / 4 + i );
+				gl.glTexCoordPointer( mesh.getTexCoordsSize(), type, mesh.getVertexSize(), mesh.getVerticesBuffer() );
+			}
+		}
+		
+		if( mesh.hasIndices() )
+			gl.glDrawElements( primitiveType, count, GL10.GL_UNSIGNED_SHORT, mesh.getIndicesBuffer() );
+		else
+			gl.glDrawArrays( primitiveType, offset, count);
+		
+		if( mesh.hasColors() )
+			gl.glDisableClientState( GL11.GL_COLOR_ARRAY );
+		if( mesh.hasNormals() )
+			gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
+		if( mesh.hasTexCoords() )
+		{
+			for( int i = 0; i < mesh.getNumTexCoords(); i++ )
+			{
+				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + i );
+				gl.glDisableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
+			}
+			gl.glClientActiveTexture( GL11.GL_TEXTURE0 );
+		}
+		mesh.getVerticesBuffer().position(0);
 	}
 	
 	public void dispose( )

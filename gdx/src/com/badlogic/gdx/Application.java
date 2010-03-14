@@ -46,8 +46,9 @@ package com.badlogic.gdx;
  * </p> 
  * 
  * <p>
- * Additionally an Application allows to set a {@link DestroyListener} which will be invoked
- * when the Application is closing. This can be used to save any state that needs saving.
+ * Additionally an Application allows to set a {@link ApplicationListener} which will be invoked
+ * when the Application is paused, resumed or closing. This can be used to save any state that needs saving.
+ * Note that the ApplicationListener will not be called in the rendering thread. 
  * 
  * <p>
  * Generally you will have two projects for your application. The first one will be the 
@@ -89,10 +90,10 @@ public interface Application
 	public void log( String tag, String message );
 	
 	/**
-	 * Sets the {@link DestroyListener} that is called
-	 * when the {@link Application} is closing.
+	 * Sets the {@link ApplicationListener} that is called
+	 * when the {@link Application} is paused, resumed or closing.
 	 * 
-	 * @param listener the DestroyListener 
+	 * @param listener the ApplicationListener 
 	 */
-	public void setDestroyListener( DestroyListener listener );
+	public void setApplicationListener( ApplicationListener listener );
 }

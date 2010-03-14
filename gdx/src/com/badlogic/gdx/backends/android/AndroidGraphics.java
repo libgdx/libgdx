@@ -364,7 +364,7 @@ final class AndroidGraphics implements Graphics, Renderer
 		setupGL( gl );
 		
 		if( listener != null )
-			listener.setup( app );
+			listener.surfaceCreated( app );
 	}
 
 	/**

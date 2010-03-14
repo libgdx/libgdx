@@ -28,7 +28,7 @@ public class MeshRendererTest implements RenderListener
 	}
 
 	@Override
-	public void setup(Application app) 
+	public void surfaceCreated(Application app) 
 	{			
 		FloatMesh m = new FloatMesh( 3, 3, true, 4, false, false, 0, 0, true, 3 );
 		m.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1,  
@@ -42,5 +42,11 @@ public class MeshRendererTest implements RenderListener
 	{
 		JoglApplication app = new JoglApplication( "MeshRenderer Test", 480, 320, false );
 		app.getGraphics().setRenderListener( new MeshRendererTest() );
+	}
+
+	@Override
+	public void surfaceChanged(Application app, int width, int height) {
+		// TODO Auto-generated method stub
+		
 	}
 }

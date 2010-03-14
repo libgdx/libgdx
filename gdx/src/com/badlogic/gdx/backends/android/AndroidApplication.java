@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.DestroyListener;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
@@ -33,7 +33,7 @@ public class AndroidApplication extends Activity implements Application
 	private AndroidFiles resources;
 	
 	/** the DestroyListener **/
-	private DestroyListener listener;
+	private ApplicationListener listener;
 	
 	/**
 	 * This method has to be called in the {@link Activity.onCreate()}
@@ -67,12 +67,19 @@ public class AndroidApplication extends Activity implements Application
 		
 		if( graphics.view != null )
 			graphics.view.onPause();
+		
+		if( listener != null )
+			listener.pause( this );
 	}
 	
 	@Override
 	protected void onResume( )
 	{
 		super.onResume();
+		
+		if( listener != null )
+			listener.resume( this );
+		
 		if( graphics.view != null )
 			graphics.view.onResume();
 	}
@@ -126,7 +133,7 @@ public class AndroidApplication extends Activity implements Application
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setDestroyListener(DestroyListener listener) 
+	public void setApplicationListener(ApplicationListener listener) 
 	{	
 		this.listener = listener;
 	}

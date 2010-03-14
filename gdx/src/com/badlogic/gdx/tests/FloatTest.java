@@ -72,7 +72,7 @@ public class FloatTest implements RenderListener
 	}
 
 	@Override
-	public void setup(Application application) 
+	public void surfaceCreated(Application application) 
 	{
 		ByteBuffer buffer = ByteBuffer.allocateDirect( BYTES_PER_VERTEX * 3 );
 		buffer.order(ByteOrder.nativeOrder());
@@ -111,5 +111,11 @@ public class FloatTest implements RenderListener
 		pixmap.setColor( 0, 0, 0, 1 );
 		pixmap.drawLine( 128, 0, 128, 256 );
 		tex2 = application.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+	}
+
+	@Override
+	public void surfaceChanged(Application app, int width, int height) {
+		// TODO Auto-generated method stub
+		
 	}
 }

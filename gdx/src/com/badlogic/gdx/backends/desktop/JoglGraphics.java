@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.media.opengl.GL;
 import javax.swing.JFrame;
 
 import com.badlogic.gdx.Application;
@@ -36,6 +37,9 @@ public class JoglGraphics implements Graphics, RenderListener
 	
 	/** the render listener **/
 	private RenderListener listener;	
+	
+	/** GL10 instance **/
+	private GL10 gl10;
 	
 	/** GL11 instance **/
 	private GL11 gl11;
@@ -71,7 +75,10 @@ public class JoglGraphics implements Graphics, RenderListener
             {                 	                	
             	graphicPanel.dispose(); 
             	if( application.listener != null )
+            	{
+            		application.listener.pause( application );
             		application.listener.destroy(application);
+            	}
             }
         });                      
         useGL2 = useGL2IfAvailable;
@@ -81,7 +88,7 @@ public class JoglGraphics implements Graphics, RenderListener
 	@Override
 	public GL10 getGL10() 
 	{	
-		return gl11;
+		return gl10;
 	}
 
 	@Override
@@ -204,13 +211,29 @@ public class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void setup(Application app) 
+	public void surfaceCreated(Application app) 
 	{
-		if( useGL2 )		
+		String version = graphicPanel.getGL().glGetString( GL.GL_VERSION );
+		int major = Integer.parseInt("" + version.charAt(0));
+		int minor = Integer.parseInt("" + version.charAt(2));
+		
+		if( useGL2 && major >= 2 )		
+		{
 			// FIXME add check wheter gl 2.0 is supported
-			gl20 = new JoglGL20( graphicPanel.getGL() );		
-		else		
-			gl11 = new JoglGL11( graphicPanel.getGL() );					
+			gl20 = new JoglGL20( graphicPanel.getGL() );
+		}
+		else
+		{
+			if( minor < 5 )
+			{
+				gl10 = new JoglGL10( graphicPanel.getGL() );
+			}
+			else
+			{
+				gl11 = new JoglGL11( graphicPanel.getGL() );
+				gl10 = gl11;
+			}
+		}
 	}
 
 	/**
@@ -220,5 +243,11 @@ public class JoglGraphics implements Graphics, RenderListener
 	public float getDeltaTime() 
 	{
 		return mean.getMean() == 0?deltaTime:mean.getMean();
+	}
+
+	@Override
+	public void surfaceChanged(Application app, int width, int height) {
+		// TODO Auto-generated method stub
+		
 	}
 }

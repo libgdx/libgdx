@@ -2,7 +2,7 @@ package com.badlogic.gdx.backends.desktop;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Audio;
-import com.badlogic.gdx.DestroyListener;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
@@ -20,7 +20,7 @@ public class JoglApplication implements Application
 	private final JoglAudio audio;
 	
 	/** the DestroyListener **/
-	DestroyListener listener;
+	ApplicationListener listener;
 	
 	/**
 	 * Creates a new {@link JoglApplication} with the given
@@ -84,7 +84,7 @@ public class JoglApplication implements Application
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setDestroyListener(DestroyListener listener) 
+	public void setApplicationListener(ApplicationListener listener) 
 	{	
 		this.listener = listener;
 	}
