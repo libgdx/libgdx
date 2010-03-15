@@ -3,18 +3,18 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.FloatMesh;
+import com.badlogic.gdx.graphics.FixedPointMesh;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.MeshRenderer;
 
-public class MeshRendererTest implements RenderListener
-{	
+public class FixedPointMeshRendererTest implements RenderListener
+{
 	MeshRenderer mesh;
 	
 	@Override
 	public void dispose(Application app) 
 	{	
-		
+		mesh.dispose();
 	}
 
 	@Override
@@ -30,26 +30,23 @@ public class MeshRendererTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{			
-		if( mesh == null )
-		{
-			FloatMesh m = new FloatMesh( 3, 3, true, false, false, 0, 0, true, 3 );
-			m.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1,  
-										  0.5f, -0.5f, 0, 0, 1, 0, 1,
-										  0.0f,  0.5f, 0, 0, 0, 1, 1} );
-			m.setIndices( new short[] { 0, 1, 2 } );
-			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );		
-		}
-	}
-
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "MeshRenderer Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new MeshRendererTest() );
+		FixedPointMesh m = new FixedPointMesh( 3, 3, true, false, false, 0, 0, true, 3 );
+		m.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1,  
+									  0.5f, -0.5f, 0, 0, 1, 0, 1,
+									  0.0f,  0.5f, 0, 0, 0, 1, 1} );
+		m.setIndices( new short[] { 0, 1, 2 } );
+		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );		
 	}
 
 	@Override
 	public void surfaceChanged(Application app, int width, int height) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public static void main( String[] argv )
+	{
+		JoglApplication app = new JoglApplication( "MeshRenderer Test", 480, 320, false );
+		app.getGraphics().setRenderListener( new MeshRendererTest() );
 	}
 }

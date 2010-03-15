@@ -128,15 +128,15 @@ public class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Font newFont(String fontName, int size, FontStyle style) 
+	public Font newFont(String fontName, int size, FontStyle style, boolean managed ) 
 	{	
-		return new JoglFont( this, fontName, size, style );
+		return new JoglFont( this, fontName, size, style, managed );
 	}
 
 	@Override
-	public Font newFont(InputStream inputStream, int size, FontStyle style) 
+	public Font newFont(InputStream inputStream, int size, FontStyle style, boolean managed) 
 	{			
-		return new JoglFont( this, inputStream, size, style );
+		return new JoglFont( this, inputStream, size, style, managed );
 	}
 
 	@Override
@@ -172,15 +172,15 @@ public class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
 	{	
-		return new JoglTexture( width, height, minFilter, magFilter, uWrap, vWrap );
+		return new JoglTexture( width, height, minFilter, magFilter, uWrap, vWrap, managed );
 	}
 
 	@Override
-	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
 	{
-		return new JoglTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap );
+		return new JoglTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, managed );
 	}
 
 	/**

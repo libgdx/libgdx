@@ -39,9 +39,9 @@ final class JoglFont extends Font
 	private java.awt.Font font; 
 	private FontMetrics metrics;
 	
-	JoglFont( com.badlogic.gdx.Graphics graphics, String fontName, int size, FontStyle style )
+	JoglFont( com.badlogic.gdx.Graphics graphics, String fontName, int size, FontStyle style, boolean managed )
 	{	
-		super( graphics );
+		super( graphics, managed );
 		font = new java.awt.Font( fontName, getJavaFontStyle(style), size );
 		Graphics g = tmpBitmap.getGraphics();
 		g.setFont( font );
@@ -49,9 +49,9 @@ final class JoglFont extends Font
 		g.dispose();
 	}
 	
-	JoglFont( com.badlogic.gdx.Graphics graphics, InputStream in, int size, FontStyle style )
+	JoglFont( com.badlogic.gdx.Graphics graphics, InputStream in, int size, FontStyle style, boolean managed )
 	{
-		super( graphics );
+		super( graphics, managed );
 		
 		try
 		{

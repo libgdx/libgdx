@@ -70,9 +70,9 @@ public abstract class Font
 	private Graphics graphics;
 	
 	
-	protected Font( Graphics graphics )
+	protected Font( Graphics graphics, boolean managed )
 	{
-		this.texture = graphics.newTexture( 256, 256, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+		this.texture = graphics.newTexture( 256, 256, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );
 		this.graphics = graphics;
 	}
 	

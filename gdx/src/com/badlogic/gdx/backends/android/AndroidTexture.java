@@ -21,10 +21,14 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.opengl.GLUtils;
 import android.util.Log;
 
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,75 +55,141 @@ final class AndroidTexture implements Texture
 	private int texHeight;
 	/** width in pixels of texture **/
 	private int texWidth;	
-	
+	/** whether this texture is managed **/
+	private final boolean isManaged;
+	/** the managed pixmap **/
+	private Bitmap bitmap;
+	/** whether this texture is mip mapped **/
+	private final boolean isMipMap;
+	/** the min filter **/
+	private final TextureFilter minFilter;
+	/** the mag filter **/
+	private final TextureFilter magFilter;
+	/** the u wrap **/
+	private final TextureWrap uWrap;
+	/** the v wrap **/
+	private final TextureWrap vWrap;
+	/** global count of textures **/
 	public static int textures = 0;
-	
-	public boolean isMipMap = false;
+	/** the android graphics instance used to remove the texture when it's disposed **/
+	private final AndroidGraphics graphics;
+	/** invalidate flag **/
+	private boolean invalidated = false;
+			
 	/**
 	 * Creates a new texture based on the given image
 	 * 
 	 * @param gl
 	 * @param bitmap
 	 */
-	AndroidTexture( GL10 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap )
-	{
-		this.gl10 = gl;
-	
-		int[] textures = new int[1];
-		gl.glGenTextures(1, textures, 0);
-		textureHandle = textures[0];
-		
+	AndroidTexture( AndroidGraphics graphics, GL10 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed )
+	{		
+		this.graphics = graphics;
+		this.isManaged = managed;
+		if( isManaged )
+			this.bitmap = image;
+		else
+			this.bitmap = null;
+		this.minFilter = minFilter;
+		this.magFilter = maxFilter;
+		this.uWrap = uWrap;
+		this.vWrap = vWrap;
 		this.width = image.getWidth();
 		this.height = image.getHeight();
 		this.texWidth = image.getWidth();
-		this.texHeight = image.getHeight();			
-		
-		gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter( maxFilter ) );
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, getTextureWrap( uWrap ) );
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap( vWrap ) );
-		
-        gl.glMatrixMode( GL10.GL_TEXTURE );
-        gl.glLoadIdentity();
-        
+		this.texHeight = image.getHeight();	
+		this.gl10 = gl;
+			
+		createTexture( gl );
+		buildMipmap( gl, image);
+
+		AndroidTexture.textures++;	
+		if( minFilter == TextureFilter.MipMap )
+			isMipMap = true;
+		else
+			isMipMap = false;
+		this.graphics.textures.add( this );
+	}
+	
+	AndroidTexture( AndroidGraphics graphics, GL20 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed )
+	{
+		this.graphics = graphics;
+		this.isManaged = managed;
+		if( isManaged )
+			this.bitmap = image;
+		else
+			this.bitmap = null;
+		this.minFilter = minFilter;
+		this.magFilter = maxFilter;
+		this.uWrap = uWrap;
+		this.vWrap = vWrap;
+		this.width = image.getWidth();
+		this.height = image.getHeight();
+		this.texWidth = image.getWidth();
+		this.texHeight = image.getHeight();	
+		this.gl20 = gl;
+	
+		createTexture( gl );        
 		buildMipmap( gl, image);
 
 		AndroidTexture.textures++;
-		
 		if( minFilter == TextureFilter.MipMap )
-			isMipMap = true;			
+			isMipMap = true;
+		else
+			isMipMap = false;
+		this.graphics.textures.add( this );
+	}		
+
+	protected void invalidate( )
+	{
+		invalidated = true;
 	}
 	
-	AndroidTexture( GL20 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap )
+	private void rebuild( )
 	{
-		this.gl20 = gl;
+		if( gl10 != null )
+		{
+			createTexture( gl10 );
+			buildMipmap( gl10, bitmap );
+		}
+		else
+		{
+			createTexture( gl20 );
+			buildMipmap( gl20, bitmap );
+		}
+		invalidated = false;
+	}
 	
+	private void createTexture( GL10 gl )
+	{
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());
 		IntBuffer intBuffer = buffer.asIntBuffer();
 		gl.glGenTextures(1, intBuffer);
-		textureHandle = intBuffer.get(0);
-		
-		this.width = image.getWidth();
-		this.height = image.getHeight();
-		this.texWidth = image.getWidth();
-		this.texHeight = image.getHeight();			
+		textureHandle = intBuffer.get(0);		
 		
 		gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter( maxFilter ) );
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter( magFilter ) );
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, getTextureWrap( uWrap ) );
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap( vWrap ) );		       
-        
-		buildMipmap( gl, image);
-
-		AndroidTexture.textures++;
-		
-		if( minFilter == TextureFilter.MipMap )
-			isMipMap = true;			
-	}		
-
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap( vWrap ) );	
+	}
+	
+	private void createTexture( GL20 gl )
+	{
+		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+		buffer.order(ByteOrder.nativeOrder());
+		IntBuffer intBuffer = buffer.asIntBuffer();
+		gl.glGenTextures(1, intBuffer);
+		textureHandle = intBuffer.get(0);	
+				
+		gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter( magFilter ) );
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, getTextureWrap( uWrap ) );
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap( vWrap ) );
+	}	
+	
 	private int getTextureFilter( TextureFilter filter )
 	{
 		if( filter == TextureFilter.Linear )
@@ -195,25 +265,43 @@ final class AndroidTexture implements Texture
 		}		
 	}
 
+	public boolean isManaged( )
+	{
+		return isManaged;
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void draw( Pixmap bmp, int x, int y )
 	{
+		if( isManaged && invalidated )
+			rebuild( );
+		
 		if( gl10 != null )
 			gl10.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
 		else
 			gl20.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
 		Bitmap bitmap = (Bitmap)bmp.getNativePixmap();
+		if( isManaged )
+		{
+			Canvas canvas = new Canvas( this.bitmap );
+			Rect src = new Rect( );
+			RectF dst = new RectF( );
+			
+			dst.set( x, y, x + this.bitmap.getWidth(), y + this.bitmap.getHeight() );
+			src.set( 0, 0, bitmap.getWidth(), bitmap.getHeight() );
+			
+			canvas.drawBitmap(bitmap, src, dst, null);			
+		}
 		int level = 0;
 		int height = bitmap.getHeight();
 		int width = bitmap.getWidth();	      	       		
 
 		while(height >= 1 || width >= 1 && level < 4 ) {
-			GLUtils.texSubImage2D( GL10.GL_TEXTURE_2D, level, x, y, (Bitmap)bitmap );
+			GLUtils.texSubImage2D( GL10.GL_TEXTURE_2D, level, x, y, bitmap );
 			
-			if(height == 1 || width == 1 ) //|| isMipMap == false ) 
+			if(height == 1 || width == 1 || isMipMap == false ) 
 			{
 				break;
 			}
@@ -238,6 +326,12 @@ final class AndroidTexture implements Texture
 	 */
 	public void bind(  )
 	{				
+		if( isManaged && invalidated )
+		{
+			rebuild( );
+			lastTexture = null;
+		}
+		
 		if( lastTexture != this )
 		{
 			lastTexture = this;
@@ -256,21 +350,42 @@ final class AndroidTexture implements Texture
 	{
 		if( gl10 != null )
 		{
-			int[] textures = { textureHandle };
-			gl10.glDeleteTextures( 1, textures, 0 );
+			if( gl10 instanceof GL11 )
+			{
+				GL11 gl11 = (GL11)gl10;
+				if( gl11.glIsTexture( textureHandle ) )
+				{
+					int[] textures = { textureHandle };
+					gl10.glDeleteTextures( 1, textures, 0 );
+				}
+			}
+			else
+			{
+				int[] textures = { textureHandle };
+				gl10.glDeleteTextures( 1, textures, 0 );
+			}
 		}
 		else
 		{
-			ByteBuffer buffer = ByteBuffer.allocateDirect(4);
-			buffer.order(ByteOrder.nativeOrder());
-			IntBuffer intBuffer = buffer.asIntBuffer();
-			intBuffer.put(textureHandle);
-			intBuffer.position(0);
-			gl20.glDeleteTextures( 1, intBuffer);
+			if( gl20.glIsTexture( textureHandle ) )
+			{
+				ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+				buffer.order(ByteOrder.nativeOrder());
+				IntBuffer intBuffer = buffer.asIntBuffer();
+				intBuffer.put(textureHandle);
+				intBuffer.position(0);
+				gl20.glDeleteTextures( 1, intBuffer);
+			}
 		}		
 		
 		textureHandle = 0;
 		AndroidTexture.textures--;
+		graphics.textures.remove( this );
+		if( bitmap != null )
+		{
+			bitmap.recycle();
+			bitmap = null;
+		}
 	}
 
 	/**

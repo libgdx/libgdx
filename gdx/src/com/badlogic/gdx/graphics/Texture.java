@@ -93,6 +93,11 @@ public interface Texture
 	public int getHeight( );
 
 	/**
+	 * @return whether this texture is managed or not.
+	 */
+	public boolean isManaged( );
+	
+	/**
 	 * Disposes all resources associated with the texture
 	 * @return
 	 */

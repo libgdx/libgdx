@@ -133,7 +133,7 @@ public interface Graphics
 	 * @param style the {@link Font.FontStyle}
 	 * @return a new Font
 	 */
-	public Font newFont( String fontName, int size, Font.FontStyle style );
+	public Font newFont( String fontName, int size, Font.FontStyle style, boolean managed );
 	
 	/**
 	 * Creates a new {@link Font} from the given InputStream having the 
@@ -146,7 +146,7 @@ public interface Graphics
 	 * @param style the {@link Font.FontStyle}
 	 * @return a new Font or null in case the Font could not be loaded
 	 */
-	public Font newFont( InputStream inputStream, int size, Font.FontStyle style );
+	public Font newFont( InputStream inputStream, int size, Font.FontStyle style, boolean managed );
 	
 	/**
 	 * Creates a new {@link Texture} with the specified dimensions, minification
@@ -162,7 +162,7 @@ public interface Graphics
 	 * @param vWrap the {@link Texture.TextureWrap} in v
 	 * @return a new Texture
 	 */
-	public Texture newTexture( int width, int height, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap );
+	public Texture newTexture( int width, int height, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );
 	
 	/**
 	 * Creates a new {@link Texture} from the given {@link Pixmap} using
@@ -179,7 +179,7 @@ public interface Graphics
 	 * @param vWrap the {@link Texture.TextureWrap} in v
 	 * @return a new Texture
 	 */
-	public Texture newTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap );		
+	public Texture newTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );		
 	
 	/**
 	 * Creates a new {@link ShaderProgram} from the given vertex and fragment

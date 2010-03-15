@@ -49,7 +49,7 @@ public class FixedPointMesh implements Mesh
 	private final ShortBuffer indicesBuffer;	
 	
 	public FixedPointMesh( int maxVertices, int coordsSize, 
-					  	   boolean hasColors, int colorsSize,
+					  	   boolean hasColors,
 					  	   boolean hasNormals, 
 					  	   boolean hasTexCoords,  int numTexCoords, int texCoordSize,
 					  	   boolean hasIndices, int maxIndices )
@@ -58,8 +58,6 @@ public class FixedPointMesh implements Mesh
 			throw new IllegalArgumentException( "maxVertices must be > 0" );
 		if( coordsSize < 2 || coordsSize > 4 )
 			throw new IllegalArgumentException( "coordsSize must be >= 2 and <= 4" );
-		if( hasColors && ( colorsSize < 3 || colorsSize > 4 ) )
-			throw new IllegalArgumentException( "colorSize must be >= 2 and <= 4" );
 		if( hasTexCoords && ( texCoordSize < 1 || texCoordSize > 4 ) )
 			throw new IllegalArgumentException( "texCoordSize must be >= 1 and <= 4" );
 		if( hasIndices && maxIndices < 1 )
@@ -71,7 +69,7 @@ public class FixedPointMesh implements Mesh
 		this.numTexCoords = numTexCoords;		
 		
 		this.coordsSize = coordsSize;
-		this.colorsSize = colorsSize;
+		this.colorsSize = 4;
 		this.texCoordsSize = texCoordSize;
 				
 		vertexSize += coordsSize * 4;
@@ -260,7 +258,7 @@ public class FixedPointMesh implements Mesh
 	
 	public static void main( String[] argv )
 	{
-		FixedPointMesh mesh = new FixedPointMesh( 4, 3, true, 4, true, true, 1, 2, true, 3 );
+		FixedPointMesh mesh = new FixedPointMesh( 4, 3, true, true, true, 1, 2, true, 3 );
 		float[] vertices = { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 
 							  0.5f, -0.5f, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0,
 							  0.0f,  0.5f, 0, 0, 0, 1, 1, 0, 0, 1, 0.5f, 1 };

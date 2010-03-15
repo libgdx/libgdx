@@ -1,6 +1,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -70,6 +71,9 @@ final class AndroidGraphics implements Graphics, Renderer
 	
 	/** whether to dispose the render listeners **/
 	private boolean dispose = false;
+	
+	/** list of currently active textures used to invalidate them in case the surface was lost **/
+	protected final ArrayList<AndroidTexture> textures = new ArrayList<AndroidTexture>( );
 	
 	public AndroidGraphics( AndroidApplication activity, boolean useGL2IfAvailable )
 	{		
@@ -191,16 +195,16 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Font newFont(String fontName, int size, FontStyle style) 
+	public Font newFont(String fontName, int size, FontStyle style, boolean managed) 
 	{	
-		return new AndroidFont( this, fontName, size, style );
+		return new AndroidFont( this, fontName, size, style, managed );
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Font newFont(InputStream inputStream, int size, FontStyle style) 
+	public Font newFont(InputStream inputStream, int size, FontStyle style, boolean managed) 
 	{	
 		throw new UnsupportedOperationException( "not implemented yet" ); // FIXME
 	}
@@ -251,15 +255,15 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
 	{	
 		Bitmap.Config config = Bitmap.Config.ARGB_8888;		
 		Bitmap bitmap = Bitmap.createBitmap(width, height, config);
 		Texture texture = null;
 		if( gl10 != null )
-			texture = new AndroidTexture(gl10, bitmap, minFilter, magFilter, uWrap, vWrap);
+			texture = new AndroidTexture(this, gl10, bitmap, minFilter, magFilter, uWrap, vWrap, managed);
 		else
-			texture = new AndroidTexture(gl20, bitmap, minFilter, magFilter, uWrap, vWrap );
+			texture = new AndroidTexture(this, gl20, bitmap, minFilter, magFilter, uWrap, vWrap, managed );
 		bitmap.recycle();
 		return texture;
 	}
@@ -268,12 +272,12 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
 	{	
 		if( gl10 != null )
-			return new AndroidTexture( gl10, (Bitmap)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap );
+			return new AndroidTexture( this, gl10, (Bitmap)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, managed );
 		else
-			return new AndroidTexture( gl20, (Bitmap)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap );
+			return new AndroidTexture( this, gl20, (Bitmap)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, managed );
 	}
 
 	/**
@@ -363,8 +367,11 @@ final class AndroidGraphics implements Graphics, Renderer
 	{
 		setupGL( gl );
 		
+		for( AndroidTexture texture: textures )
+			texture.invalidate();
+		
 		if( listener != null )
-			listener.surfaceCreated( app );
+			listener.surfaceCreated( app );			
 	}
 
 	/**

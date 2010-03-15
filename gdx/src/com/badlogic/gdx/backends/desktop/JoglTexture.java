@@ -44,10 +44,12 @@ final class JoglTexture implements Texture
 	private int texHeight;
 	/** width in pixels of texture **/
 	private int texWidth;	   
-
 	/** texture wrapper **/
 	com.sun.opengl.util.texture.Texture texture;
+	/** whether this textures i managed or not **/
+	private final boolean isManaged;
 	
+	/** global number of textures **/
 	public static int textures = 0;
 	
 	/**
@@ -55,8 +57,9 @@ final class JoglTexture implements Texture
 	 *
 	 * @param textureID The GL texture ID
 	 */
-	JoglTexture(InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
+	JoglTexture(InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed ) 
 	{        
+		this.isManaged = managed;
 		try
 		{
 			BufferedImage image = ImageIO.read(in);			
@@ -80,9 +83,9 @@ final class JoglTexture implements Texture
 		textures++;
 	}	    	
 	
-	JoglTexture(BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
+	JoglTexture(BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed ) 
 	{        
-				
+		this.isManaged = managed;				
 		this.width = image.getWidth();
 		this.height = image.getHeight();
 		texture = com.sun.opengl.util.texture.TextureIO.newTexture( image, minFilter == TextureFilter.MipMap?true:false );		
@@ -103,8 +106,9 @@ final class JoglTexture implements Texture
 	 *
 	 * @param textureID The GL texture ID
 	 */
-	JoglTexture(int width, int height, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap ) 
+	JoglTexture(int width, int height, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed ) 
 	{        		
+		this.isManaged = managed;
 		BufferedImage image = new BufferedImage( width, height, BufferedImage.TYPE_4BYTE_ABGR );			
 		this.width = image.getWidth();
 		this.height = image.getHeight();
@@ -139,6 +143,11 @@ final class JoglTexture implements Texture
 			return GL.GL_CLAMP_TO_EDGE;
 		else
 			return GL.GL_REPEAT;
+	}
+	
+	public boolean isManaged( )
+	{
+		return isManaged;
 	}
 	
 	/**

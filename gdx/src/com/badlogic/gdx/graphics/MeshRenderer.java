@@ -5,18 +5,20 @@ public class MeshRenderer
 	private final GL10 gl;
 	private final Mesh mesh;
 	private final boolean isStatic;
+	private final boolean isManaged;
 	private final int type;
 	private int vboVertexHandle = 0;
-	private int vboIndexHandle = 0;
+	private int vboIndexHandle = 0;	
 	
-	public MeshRenderer( GL10 gl, Mesh mesh, boolean isStatic )
+	public MeshRenderer( GL10 gl, Mesh mesh, boolean isStatic, boolean managed )
 	{
 		this.gl = gl;
 		this.mesh = mesh;
 		this.isStatic = isStatic;
+		this.isManaged = managed;
 		this.type = mesh instanceof FloatMesh?GL10.GL_FLOAT:GL10.GL_FIXED;
 		createVBO( );
-		fillVBO( );
+		fillVBO( );		
 	}	
 	
 	private void createVBO( )
@@ -56,16 +58,25 @@ public class MeshRenderer
 		}
 	}
 	
+	public Mesh getMesh( )
+	{
+		return mesh;
+	}
+	
 	public void update( )
 	{
 		if( vboVertexHandle == 0 )
 			return;
 		
+		GL11 gl11 = (GL11)gl;		
+		if( isManaged && gl11.glIsBuffer( vboVertexHandle ) == false )				
+			createVBO( );		
+		
 		fillVBO( );
 	}
 	
 	public void render( int primitiveType, int offset, int count )
-	{
+	{			
 		if( vboVertexHandle != 0 )
 			renderVBO( primitiveType, offset, count );
 		else
@@ -75,6 +86,12 @@ public class MeshRenderer
 	private void renderVBO( int primitiveType, int offset, int count )
 	{
 		GL11 gl11 = (GL11)gl;			
+		
+		if( isManaged && gl11.glIsBuffer( vboVertexHandle ) == false )
+		{
+			createVBO( );
+			fillVBO( );
+		}
 		
 		gl11.glBindBuffer( GL11.GL_ARRAY_BUFFER, vboVertexHandle );
 		gl11.glEnableClientState( GL11.GL_VERTEX_ARRAY );		
@@ -187,14 +204,17 @@ public class MeshRenderer
 		if( gl instanceof GL11 )
 		{
 			GL11 gl11 = (GL11)gl;
-			int handle[] = new int[1];
-			handle[0] = vboVertexHandle;
-			gl11.glDeleteBuffers(1, handle, 0 );
-			
-			if( mesh.hasIndices() )
+			if( gl11.glIsBuffer( vboVertexHandle ) )
 			{
-				handle[0] = vboIndexHandle;
-				gl11.glDeleteBuffers( 1, handle, 0 );
+				int handle[] = new int[1];
+				handle[0] = vboVertexHandle;
+				gl11.glDeleteBuffers(1, handle, 0 );
+				
+				if( mesh.hasIndices() )
+				{
+					handle[0] = vboIndexHandle;
+					gl11.glDeleteBuffers( 1, handle, 0 );
+				}
 			}
 		}			
 	}
