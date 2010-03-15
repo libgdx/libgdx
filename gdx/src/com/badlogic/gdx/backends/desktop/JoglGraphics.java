@@ -27,7 +27,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
 
-public class JoglGraphics implements Graphics, RenderListener
+/**
+ * An implementation of the {@link Graphics} interface based on Jogl.
+ * @author mzechner
+ *
+ */
+final class JoglGraphics implements Graphics, RenderListener
 {
 	/** the jframe **/
 	private final JFrame frame;

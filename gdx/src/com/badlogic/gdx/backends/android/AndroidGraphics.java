@@ -33,6 +33,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
 
+/**
+ * An implementation of {@link Graphics} for Android.
+ * @author mzechner
+ *
+ */
 final class AndroidGraphics implements Graphics, Renderer
 {
 	/** the gl surfaceview **/

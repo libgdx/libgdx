@@ -15,7 +15,7 @@ import java.nio.ShortBuffer;
  * @author mzechner
  *
  */
-public class FloatMesh implements Mesh
+public final class FloatMesh implements Mesh
 {				
 	/** the number of maximum indices **/
 	private final int maxIndices;

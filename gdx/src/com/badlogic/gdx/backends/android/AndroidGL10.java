@@ -6,7 +6,12 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL10;
 
-public class AndroidGL10 implements GL10
+/**
+ * An implementation of the {@link GL10} interface for Android.
+ * @author mzechner
+ *
+ */
+class AndroidGL10 implements GL10
 {
 	private final javax.microedition.khronos.opengles.GL10 gl;
 	

@@ -13,6 +13,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 
+/**
+ * An implementation of the {@link Application} interface for Android. Create an {@link Activity}
+ * that derives from this class. In the {@link Activity.onCreate()} method call the {@link initialize()}
+ * method specifying the configuration for the GLSurfaceView.
+ * 
+ * @author mzechner
+ *
+ */
 public class AndroidApplication extends Activity implements Application
 {
 	static

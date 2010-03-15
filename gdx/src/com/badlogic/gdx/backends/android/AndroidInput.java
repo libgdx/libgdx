@@ -22,6 +22,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView;
 
+/**
+ * An implementation of the {@link Input} interface for Android. 
+ * 
+ * @author mzechner
+ *
+ */
 final class AndroidInput implements Input, OnKeyListener, OnTouchListener, SensorEventListener
 {
 	/** touch coordinates in x **/

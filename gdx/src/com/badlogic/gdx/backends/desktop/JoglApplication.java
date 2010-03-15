@@ -7,8 +7,15 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 
-
-public class JoglApplication implements Application
+/**
+ * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate
+ * this class with apropriate parameters and then register {@link ApplicationListener}, {@link RenderListener} or {@link InputListener}
+ * instances.
+ * 
+ * @author mzechner
+ *
+ */
+public final class JoglApplication implements Application
 {
 	/** the graphics instance **/
 	private final JoglGraphics graphics;

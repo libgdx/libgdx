@@ -12,7 +12,15 @@ import android.os.Environment;
 
 import com.badlogic.gdx.Files;
 
-public class AndroidFiles implements Files
+/**
+ * An implementation of the {@link Files} interface for Android. External files are stored and accessed
+ * relative to Environment.getExternalStorageDirectory().getAbsolutePath(). Internal files are accessed
+ * relative to the assets directory.
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidFiles implements Files
 {
 	/** external storage path **/
 	private final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";

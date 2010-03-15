@@ -15,7 +15,7 @@ import java.nio.ShortBuffer;
  * @author mzechner
  *
  */
-public class FixedPointMesh implements Mesh
+public final class FixedPointMesh implements Mesh
 {		
 	/** the number of maximum indices **/
 	private final int maxIndices;

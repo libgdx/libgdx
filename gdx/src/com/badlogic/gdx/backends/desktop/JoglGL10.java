@@ -8,7 +8,13 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL10;
 
-
+/**
+ * An implementation of the {@link GL10} interface based on Jogl. Fixed point vertex
+ * arrays are emulated. 
+ * 
+ * @author mzechner
+ *
+ */
 class JoglGL10 implements GL10
 {
 	protected final javax.media.opengl.GL gl;

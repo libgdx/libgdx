@@ -11,7 +11,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 
-public class JoglInput implements Input, RenderListener
+/**
+ * An implementation of the {@link Input} interface hooking a Jogl panel for input.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglInput implements Input, RenderListener
 {
 	/** the multiplexer **/
 	private final JoglInputMultiplexer multiplexer;

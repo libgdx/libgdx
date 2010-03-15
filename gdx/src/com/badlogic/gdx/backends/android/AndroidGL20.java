@@ -6,8 +6,14 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
 
-
-public class AndroidGL20 implements GL20
+/**
+ * An implemenation of the {@link GL20} interface for Android. Uses a native
+ * shared library for the bindings.
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidGL20 implements GL20
 {
 	static
 	{

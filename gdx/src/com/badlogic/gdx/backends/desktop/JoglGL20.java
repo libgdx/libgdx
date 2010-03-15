@@ -10,7 +10,15 @@ import javax.media.opengl.GL;
 
 import com.badlogic.gdx.graphics.GL20;
 
-public class JoglGL20 implements GL20
+/**
+ * An implementation of the {@link GL20} interface based on Jogl. Note that
+ * Jogl shaders and OpenGL ES shaders will not be 100% compatible. Some glGetXXX
+ * methods are not implemented.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglGL20 implements GL20
 {
 	private final GL gl;
 

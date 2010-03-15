@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.Vector;
  * @author badlogicgames@gmail.com
  *
  */
-public class OrthographicCamera 
+public final class OrthographicCamera 
 {
 	public enum Side
 	{

@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 
 /**
- * And implementation of {@link Pixmap}
+ * An implementation of {@link Pixmap} for Android.
  * 
  * @author badlogicgames@gmail.com
  *

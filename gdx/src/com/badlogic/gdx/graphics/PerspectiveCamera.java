@@ -38,7 +38,7 @@ import com.badlogic.gdx.math.Vector;
  * @author badlogicgames@gmail.com
  *
  */
-public class PerspectiveCamera 
+public final class PerspectiveCamera 
 {
 	protected Matrix tmp = new Matrix( );
 	protected Matrix proj = new Matrix( );

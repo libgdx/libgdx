@@ -2,7 +2,13 @@ package com.badlogic.gdx.backends.desktop;
 
 import com.badlogic.gdx.Audio;
 
-public class JoglAudio implements Audio
+/**
+ * An implementation of the {@link Audio} interface for the desktop.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglAudio implements Audio
 {
 
 }

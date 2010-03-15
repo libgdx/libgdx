@@ -8,8 +8,14 @@ import javax.media.opengl.GL;
 
 import com.badlogic.gdx.graphics.GL11;
 
-
-class JoglGL11 extends JoglGL10 implements GL11 
+/**
+ * An implementation of the {@link GL11} interface based on Jogl. Fixed point
+ * vertex arrays are emulated. Some glGetXXX methods are not implemented.
+ * 
+ * @author mzechner
+ *
+ */
+final class JoglGL11 extends JoglGL10 implements GL11 
 {
 	double tmpDouble[] = new double[1000];
 	float tmpFloat[] = new float[1000];

@@ -8,7 +8,13 @@ import javax.microedition.khronos.opengles.GL10;
 
 import com.badlogic.gdx.graphics.GL11;
 
-public class AndroidGL11 extends AndroidGL10 implements GL11
+/**
+ * An implementation of the {@link GL11} interface for Android
+ * 
+ * @author mzechner
+ *
+ */
+final class AndroidGL11 extends AndroidGL10 implements GL11
 {
 	private final javax.microedition.khronos.opengles.GL11 gl;
 			
