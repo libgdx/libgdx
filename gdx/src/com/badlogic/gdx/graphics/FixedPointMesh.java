@@ -5,6 +5,16 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+/**
+ * A {@link Mesh} implementation that stores all it's attributes as 16.16 fixed point values. Indices
+ * are stored as shorts. Vertices and floats are stored in direct Buffers as well as
+ * in arrays. If you directly manipulate one of the arrays you have to call one of the
+ * methods called {@link updateVerticesBufferFromArray()} and {@link updateIndicesBufferFromArray()}
+ * so that the changed vertex and index data is copied over to the direct Buffers. 
+ * 
+ * @author mzechner
+ *
+ */
 public class FixedPointMesh implements Mesh
 {		
 	/** the number of maximum indices **/
@@ -48,6 +58,20 @@ public class FixedPointMesh implements Mesh
 	/** the indices buffer **/
 	private final ShortBuffer indicesBuffer;	
 	
+	/**
+	 * Constructs a new FixedPointMesh with the specified maximum number of 
+	 * vertices and indices as well as the specified attributes.
+	 * 
+	 * @param maxVertices the maximum number of vertices this Mesh can store
+	 * @param coordsSize the number of components for the coordinates. Can be 2, 3 or 4
+	 * @param hasColors whether the Mesh has colors
+	 * @param hasNormals whether the Mesh has normals
+	 * @param hasTexCoords whether the Mesh has texture coordinates
+	 * @param numTexCoords how many texture coordinate sets the Mesh has
+	 * @param texCoordSize the number of components per texture coordinate set. Can be 2, 3 or 4
+	 * @param hasIndices whether the Mesh has indices
+	 * @param maxIndices the number of maximum indices this Mesh can store
+	 */
 	public FixedPointMesh( int maxVertices, int coordsSize, 
 					  	   boolean hasColors,
 					  	   boolean hasNormals, 
@@ -114,96 +138,156 @@ public class FixedPointMesh implements Mesh
 		}
 	}		
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getColorsOffset( )
 	{
 		return colorsOffset;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getNormalsOffset( )
 	{
 		return normalsOffset;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getTexCoordsOffset( )
 	{
 		return texCoordsOffset;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getCoordsSize( )
 	{
 		return coordsSize;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean hasColors( )
 	{
 		return hasColors;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getColorsSize( )
 	{
 		return colorsSize;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean hasNormals( )
 	{
 		return hasNormals;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean hasTexCoords( )
 	{
 		return hasTexCoords;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean hasIndices( )
 	{
 		return indicesArray != null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getTexCoordsSize( )
 	{
 		return texCoordsSize;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getNumTexCoords( )
 	{
 		return numTexCoords;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getNumVertices( )
 	{
 		return verticesBuffer.limit() / vertexSizeInt;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getNumIndices( )
 	{
 		return indicesBuffer.limit();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getVertexSize( )
 	{
 		return vertexSize;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public IntBuffer getVerticesBuffer()
 	{
 		return verticesBuffer;
 	}
 	
+	/**
+	 * @return the underlying array of vertices. 
+	 */
 	public int[] getVerticesArray( )
 	{
 		return verticesArray;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public ShortBuffer getIndicesBuffer( )
 	{
 		return indicesBuffer;
 	}
 	
+	/**
+	 * @return the underlying array of indices or null if this Mesh has no indices
+	 */
 	public short[] getIndicesArray( )
 	{
 		return indicesArray;
 	}
 	
+	/**
+	 * Sets the vertices of this Mesh. The provided array will be copied to both
+	 * the underlying vertices array and the direct Buffer.
+	 * 
+	 * @param vertices the vertices
+	 */
 	public void setVertices( int[] vertices )
 	{
 		if( vertices.length % (vertexSizeInt) != 0 )
@@ -217,7 +301,13 @@ public class FixedPointMesh implements Mesh
 		verticesBuffer.flip();		
 	}
 	
-	
+	/**
+	 * Sets the vertices of this Mesh. The provided array will be copied to both
+	 * the underlying vertices array and the direct Buffer. The floating point 
+	 * values will get converted to 16.16 fixed point values internally.
+	 * 
+	 * @param vertices the vertices
+	 */
 	public void setVertices( float[] vertices )
 	{
 		if( vertices.length % (vertexSizeInt) != 0 )
@@ -232,6 +322,11 @@ public class FixedPointMesh implements Mesh
 		verticesBuffer.flip();		
 	}
 	
+	/**
+	 * Sets the indices of this Mesh. The provided array will be copied to both 
+	 * the underlying indices array and the direct Buffer.
+	 * @param indices the indices
+	 */
 	public void setIndices( short[] indices )
 	{
 		if( indices.length > maxIndices )
@@ -242,6 +337,12 @@ public class FixedPointMesh implements Mesh
 		indicesBuffer.flip();
 	}
 	
+	/**
+	 * Updates the vertices direct Buffer from the internal vertices array starting
+	 * at position 0 using numVertices vertices.
+	 * 
+	 * @param numVertices the number of vertices to update
+	 */
 	public void updateVertexBufferFromArray( int numVertices )
 	{
 		verticesBuffer.position(0);
@@ -249,6 +350,11 @@ public class FixedPointMesh implements Mesh
 		verticesBuffer.flip();		
 	}
 	
+	/**
+	 * Updates the indices direct Buffer from the internal indices array starting at 
+	 * position 0 using numIndices indices.
+	 * @param numIndices the number of indices to update
+	 */
 	public void updateIndexBufferFromArray( int numIndices )
 	{
 		indicesBuffer.position(0);

@@ -21,7 +21,9 @@ package com.badlogic.gdx.graphics;
  * encapsulates a Bitmap on the PC it encapsulates a BufferedImage.
  * Various methods are available to manipulate the Pixmap. This uses
  * the common bitmap coordinate system with the origin being in the
- * top left corner and the y-axis pointing downwards. 
+ * top left corner and the y-axis pointing downwards. Bitmaps can
+ * be disposed to free all related resources. Use after disposing 
+ * will result in nasty exceptions.
  * 
  * @author badlogicgames@gmail.com
  *

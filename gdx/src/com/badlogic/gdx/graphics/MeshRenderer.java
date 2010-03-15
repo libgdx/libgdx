@@ -1,5 +1,17 @@
 package com.badlogic.gdx.graphics;
 
+/**
+ * A MeshRenderer takes a {@link Mesh} and creates an OpenGL vertex array
+ * of vertex buffer object from it depending on the available OpenGL version.
+ * This class of course only works with OpenGL ES 1.x. A MeshRenderer can
+ * be managed meaning that in case of an OpenGL context loss any OpenGL 
+ * related resources like vertex buffer object handles are recreated. Note
+ * that you have to call the {@link update()} method in case you modified
+ * the underlying Mesh in order for the MeshRenderer to adapt the changes.
+ * 
+ * @author mzechner
+ *
+ */
 public class MeshRenderer 
 {
 	private final GL10 gl;
@@ -10,6 +22,16 @@ public class MeshRenderer
 	private int vboVertexHandle = 0;
 	private int vboIndexHandle = 0;	
 	
+	/**
+	 * Constructor, creates a new MeshRenderer wrapping the given {@link Mesh}. In case
+	 * managed is set to true this MeshRenderer will care for recreating any needed
+	 * OpenGL resources in case the OpenGL context was lost.
+	 * 
+	 * @param gl the GL10 instance
+	 * @param mesh the Mesh to wrap
+	 * @param isStatic whether the Mesh is static or will change often. This is just a hint.
+	 * @param managed whether the MeshRenderer should manage context loss
+	 */
 	public MeshRenderer( GL10 gl, Mesh mesh, boolean isStatic, boolean managed )
 	{
 		this.gl = gl;
@@ -58,11 +80,19 @@ public class MeshRenderer
 		}
 	}
 	
+	/**
+	 * @return the underlying {@link Mesh}
+	 */
 	public Mesh getMesh( )
 	{
 		return mesh;
 	}
 	
+	/**
+	 * Updates the MeshRenderer based on the new data
+	 * in the underlying {@link Mesh}. Call this when
+	 * you modified the Mesh externally.
+	 */
 	public void update( )
 	{
 		if( vboVertexHandle == 0 )
@@ -75,8 +105,17 @@ public class MeshRenderer
 		fillVBO( );
 	}
 	
+	/**
+	 * Renders the mesh using the supplied OpenGL primitive type. Offset
+	 * and count specify the offset into the vertex arrays or the indices
+	 * array as well as the number of vertices to use. 
+	 * 
+	 * @param primitiveType the primitiveType. Should be one of {@link GL10.GL_TRIANGLES}, {@link Gl10.GL_TRIANGLE_STRIP}, {@link GL10.GL_TRIANGLE_FAN}, {@link GL10.GL_LINES}, {@link GL10.GL_LINE_STRIP} or {@link GL10.GL_LINE_LOOP}
+	 * @param offset the offset into the vertex or indices array
+	 * @param count the number of vertices or indices to use
+	 */
 	public void render( int primitiveType, int offset, int count )
-	{			
+	{					
 		if( vboVertexHandle != 0 )
 			renderVBO( primitiveType, offset, count );
 		else
@@ -199,6 +238,10 @@ public class MeshRenderer
 		mesh.getVerticesBuffer().position(0);
 	}
 	
+	/**
+	 * Releases all used resources. Call this if you don't use the
+	 * MeshRenderer anymore. The underlying Mesh can be reused.
+	 */
 	public void dispose( )
 	{
 		if( gl instanceof GL11 )

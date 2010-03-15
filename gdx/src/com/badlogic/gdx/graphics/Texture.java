@@ -21,7 +21,9 @@ package com.badlogic.gdx.graphics;
  * It is constructed by an {@link Application} via one of the
  * {@link Application.newTexture()} methods. It might get resized 
  * to better fit the architectures needs, e.g. to a power of two.
- * To play it save only use power of two textures!
+ * To play it save only use power of two textures! Additionally a
+ * Texture can be managed. Managed Textures will be automatically
+ * recreated when the OpenGL context was lost and restored. 
  * 
  * @author badlogicgames@gmail.com
  *
