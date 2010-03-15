@@ -3,7 +3,6 @@ package com.badlogic.gdx.tests;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
@@ -11,7 +10,7 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL11;
 
-public class VertexBuferObjectTest implements RenderListener
+public class VertexBufferObjectTest implements RenderListener
 {
 	int vboHandle;
 	int vboIndexHandle;	
@@ -69,14 +68,14 @@ public class VertexBuferObjectTest implements RenderListener
 		gl.glGenBuffers( 1, handle, 0 );
 		vboIndexHandle = handle[0];
 		gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, vboIndexHandle );
-		gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, 3 * 4, indices, GL11.GL_STATIC_DRAW );
+		gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, 3 * 2, indices, GL11.GL_STATIC_DRAW );
 		gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
 	}
 
 	public static void main( String[] argv )
 	{
 		JoglApplication app = new JoglApplication( "VBO Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new VertexBuferObjectTest() );
+		app.getGraphics().setRenderListener( new VertexBufferObjectTest() );
 	}
 
 	@Override

@@ -16,8 +16,7 @@ class JoglGL10 implements GL10
 	private final FloatBuffer colorBuffer;
 	private final FloatBuffer normalBuffer;
 	private final FloatBuffer vertexBuffer;
-	private final FloatBuffer texCoordBuffer;
-	private final IntBuffer indices;
+	private final FloatBuffer texCoordBuffer;	
 	
 	private float[] tmp = new float[1000];
 		
@@ -39,11 +38,7 @@ class JoglGL10 implements GL10
 		
 		buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
 		buffer.order(ByteOrder.nativeOrder());		
-		texCoordBuffer = buffer.asFloatBuffer();
-		
-		buffer = ByteBuffer.allocateDirect( 200000 * 4 );
-		buffer.order(ByteOrder.nativeOrder());
-		indices = buffer.asIntBuffer();
+		texCoordBuffer = buffer.asFloatBuffer();			
 	}		
 	
 	protected final void convertFixedToFloatbuffer( Buffer source, FloatBuffer target, int stride )
@@ -259,7 +254,7 @@ class JoglGL10 implements GL10
 	public final void glDrawElements(int mode, int count, int type, Buffer indices) 
 	{	
 		// nothing to do here per documentation		
-		gl.glDrawElements( mode, count, type, this.indices );		
+		gl.glDrawElements( mode, count, type, indices );		
 	}
 
 	@Override

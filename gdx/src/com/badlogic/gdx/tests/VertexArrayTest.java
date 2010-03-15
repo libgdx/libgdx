@@ -37,8 +37,7 @@ public class VertexArrayTest implements RenderListener
 		vertices.position(0);
 		gl.glVertexPointer( 3, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );	
 				
-		gl.glDrawElements( GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);			
-//		gl.glDrawArrays( GL10.GL_TRIANGLES, 0, 3 );		
+		gl.glDrawElements( GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);				
 	}
 
 	@Override
