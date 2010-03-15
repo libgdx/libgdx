@@ -69,22 +69,25 @@ public abstract class Font
 	/** the graphics instance **/
 	private Graphics graphics;
 	
+	/** whether the Font is managed or not **/
+	private boolean isManaged;
 	
 	protected Font( Graphics graphics, boolean managed )
 	{
 		this.texture = graphics.newTexture( 256, 256, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );
 		this.graphics = graphics;
+		this.isManaged = managed;
 	}
 	
 	/**
-	 * Creates a new {@link TextRun}.
+	 * Creates a new {@link Text}.
 	 * 
-	 * @return The new TextRun.
+	 * @return The new Text.
 	 */
-//	public TextRun newTextRun( )
-//	{
-//		return new TextRun(app);
-//	}	
+	public Text newText( )
+	{
+		return new Text(graphics, this);
+	}	
 	
 	/**
 	 * Disposes the font and all associated 
@@ -210,5 +213,13 @@ public abstract class Font
 			this.uWidth = uWidth;
 			this.vHeight = vHeight;
 		}
+	}
+
+	/**
+	 * @return whether the font is managed or not
+	 */
+	public boolean isManaged() 
+	{	
+		return isManaged;
 	}	
 }

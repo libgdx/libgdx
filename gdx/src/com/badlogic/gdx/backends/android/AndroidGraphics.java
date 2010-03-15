@@ -269,7 +269,8 @@ final class AndroidGraphics implements Graphics, Renderer
 			texture = new AndroidTexture(this, gl10, bitmap, minFilter, magFilter, uWrap, vWrap, managed);
 		else
 			texture = new AndroidTexture(this, gl20, bitmap, minFilter, magFilter, uWrap, vWrap, managed );
-		bitmap.recycle();
+		if( !managed )
+			bitmap.recycle();
 		return texture;
 	}
 

@@ -289,7 +289,7 @@ final class AndroidTexture implements Texture
 			Rect src = new Rect( );
 			RectF dst = new RectF( );
 			
-			dst.set( x, y, x + this.bitmap.getWidth(), y + this.bitmap.getHeight() );
+			dst.set( x, y, x + bitmap.getWidth(), y + bitmap.getHeight() );
 			src.set( 0, 0, bitmap.getWidth(), bitmap.getHeight() );
 			
 			canvas.drawBitmap(bitmap, src, dst, null);			

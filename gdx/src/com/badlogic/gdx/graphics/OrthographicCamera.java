@@ -179,6 +179,7 @@ public final class OrthographicCamera
 	public void setMatrices( Graphics graphics )
 	{
 		setViewport(graphics.getWidth(), graphics.getHeight());
+		update();
 		GL10 gl = graphics.getGL10();
 		gl.glMatrixMode( GL10.GL_PROJECTION );
 		gl.glLoadMatrixf( getCombinedMatrix().val, 0 );

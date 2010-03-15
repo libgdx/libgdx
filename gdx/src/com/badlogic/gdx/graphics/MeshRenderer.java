@@ -261,4 +261,9 @@ public class MeshRenderer
 			}
 		}			
 	}
+
+	public int getMaximumVertices() 
+	{	
+		return 0;
+	}
 }
