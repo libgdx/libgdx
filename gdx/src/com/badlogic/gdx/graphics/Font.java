@@ -172,8 +172,7 @@ public abstract class Font
 	class Glyph
 	{
 		public int advance;
-		public int width;
-		@SuppressWarnings("unused")
+		public int width;		
 		public int height;
 		public float u;
 		public float v;
