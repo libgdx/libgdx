@@ -19,30 +19,7 @@ import com.badlogic.gdx.math.Rectangle;
  *
  */
 public abstract class Font 
-{
-	/**
-	 * Horizontal text alignement
-	 * @author mzechner
-	 *
-	 */
-	public enum HorizontalAlign
-	{
-		Left,
-		Center, 
-		Right
-	}
-	
-	/**
-	 * Vertical text alignement
-	 * @author mzechner	 
-	 */
-	public enum VerticalAlign
-	{
-		Top,
-		Center,
-		Bottom
-	}
-	
+{	
 	/**
 	 * The font style
 	 * @author mzechner
