@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
@@ -12,6 +13,7 @@ import javax.media.opengl.GL;
 import javax.swing.JFrame;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Font;
@@ -139,9 +141,16 @@ final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Font newFont(InputStream inputStream, int size, FontStyle style, boolean managed) 
-	{			
-		return new JoglFont( this, inputStream, size, style, managed );
+	public Font newFont(Files files, String filename, int size, FontStyle style, boolean managed) 
+	{					
+		InputStream in = files.readInternalFile( filename );
+		JoglFont font = new JoglFont(this, in, size, style, managed);
+		try {
+			in.close();
+		} catch (IOException e) {
+			return null;
+		}
+		return font;
 	}
 
 	@Override

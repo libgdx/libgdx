@@ -136,17 +136,24 @@ public interface Graphics
 	public Font newFont( String fontName, int size, Font.FontStyle style, boolean managed );
 	
 	/**
-	 * Creates a new {@link Font} from the given InputStream having the 
-	 * specified size and style. The InputStream must point to a true type
-	 * font file. The InputStream is not closed. The Font has to be disposed
+	 * Creates a new {@link Font} from the given file using the specified {@link Files}
+	 * instance. The file must point to a true type font file. The filename is relative
+	 * to the internal file path. The Font has to be disposed
 	 * once it's no longer used via the {@link Font.dispose()} method.
 	 * 
-	 * @param inputStream the InputStream
+	 * This method is a bit frustrating from an API design standpoint. The reason this
+	 * does not take an InputStream directly is that on Android fonts can only be
+	 * loaded from filenames or assets. 
+	 * 
+	 * @param Files the Files instance
+	 * @param filename the name of the font file relative to the internal files path.
 	 * @param size the size
 	 * @param style the {@link Font.FontStyle}
+	 * @param wheter the font is managed or not.
 	 * @return a new Font or null in case the Font could not be loaded
 	 */
-	public Font newFont( InputStream inputStream, int size, Font.FontStyle style, boolean managed );
+
+	public Font newFont( Files files, String filename, int size, Font.FontStyle style, boolean managed );
 	
 	/**
 	 * Creates a new {@link Texture} with the specified dimensions, minification

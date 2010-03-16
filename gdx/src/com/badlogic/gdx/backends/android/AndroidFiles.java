@@ -33,6 +33,14 @@ final class AndroidFiles implements Files
 		this.assets = assets;
 	}
 	
+	/**
+	 * @return the asset manager.
+	 */
+	protected AssetManager getAssetManager( )
+	{
+		return assets;
+	}
+	
 	@Override
 	public boolean makeDirectory(String directory) 
 	{	

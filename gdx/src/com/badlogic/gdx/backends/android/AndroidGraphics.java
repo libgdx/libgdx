@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory.Options;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView;
@@ -209,9 +210,11 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Font newFont(InputStream inputStream, int size, FontStyle style, boolean managed) 
+	public Font newFont(Files files, String filename, int size, FontStyle style, boolean managed) 
 	{	
-		throw new UnsupportedOperationException( "not implemented yet" ); // FIXME
+		AndroidFiles aFiles = (AndroidFiles)files;		
+		AndroidFont font = new AndroidFont( this, aFiles.getAssetManager(), filename, size, style, managed );
+		return font;
 	}
 
 	/**
@@ -378,6 +381,8 @@ final class AndroidGraphics implements Graphics, Renderer
 		
 		if( listener != null )
 			listener.surfaceCreated( app );			
+		mean = new WindowedMean( 5 );
+		this.lastFrameTime = System.nanoTime();
 	}
 
 	/**
