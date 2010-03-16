@@ -1,5 +1,8 @@
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.backends.desktop.JoglGL11;
+
+
 /**
  * A MeshRenderer takes a {@link Mesh} and creates an OpenGL vertex array
  * of vertex buffer object from it depending on the available OpenGL version.
@@ -45,7 +48,8 @@ public class MeshRenderer
 	
 	private void createVBO( )
 	{
-		if( !(gl instanceof GL11) )
+		// FIXME the last bit is a hack. No way to support fixed point VBOs
+		if( !(gl instanceof GL11) || (type == GL10.GL_FIXED && gl instanceof JoglGL11) )
 			return;
 	
 		GL11 gl11 = (GL11)gl;
@@ -63,10 +67,11 @@ public class MeshRenderer
 	
 	private void fillVBO( )
 	{
-		if( !(gl instanceof GL11) )
+		// FIXME the last bit is a hack. No way to support fixed point VBOs
+		if( !(gl instanceof GL11) || (type == GL10.GL_FIXED && gl instanceof JoglGL11) )
 			return;
 	
-		GL11 gl11 = (GL11)gl;
+		GL11 gl11 = (GL11)gl;			
 		
 		gl11.glBindBuffer( GL11.GL_ARRAY_BUFFER, vboVertexHandle );
 		gl11.glBufferData( GL11.GL_ARRAY_BUFFER, mesh.getVertexSize() * mesh.getNumVertices(), mesh.getVerticesBuffer(), isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );

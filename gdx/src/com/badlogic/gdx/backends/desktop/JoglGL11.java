@@ -6,6 +6,7 @@ import java.nio.IntBuffer;
 
 import javax.media.opengl.GL;
 
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 
 /**
@@ -15,7 +16,7 @@ import com.badlogic.gdx.graphics.GL11;
  * @author mzechner
  *
  */
-final class JoglGL11 extends JoglGL10 implements GL11 
+public final class JoglGL11 extends JoglGL10 implements GL11 
 {
 	double tmpDouble[] = new double[1000];
 	float tmpFloat[] = new float[1000];
@@ -424,24 +425,32 @@ final class JoglGL11 extends JoglGL10 implements GL11
 	@Override
 	public void glColorPointer(int size, int type, int stride, int pointer) 
 	{	
+		if( type == GL10.GL_FIXED )
+			type = GL10.GL_FLOAT;
 		gl.glColorPointer( size, type, stride, pointer );
 	}
 
 	@Override
 	public void glNormalPointer( int type, int stride, int pointer) 
 	{
+		if( type == GL10.GL_FIXED )
+			type = GL10.GL_FLOAT;
 		gl.glNormalPointer( type, stride, pointer );
 	}
 
 	@Override
 	public void glTexCoordPointer(int size, int type, int stride, int pointer) 
 	{	
+		if( type == GL10.GL_FIXED )
+			type = GL10.GL_FLOAT;
 		gl.glTexCoordPointer( size, type, stride, pointer );
 	}
 
 	@Override
 	public void glVertexPointer(int size, int type, int stride, int pointer) 
 	{	
+		if( type == GL10.GL_FIXED )
+			type = GL10.GL_FLOAT;
 		gl.glVertexPointer( size, type, stride, pointer );
 	}
 	

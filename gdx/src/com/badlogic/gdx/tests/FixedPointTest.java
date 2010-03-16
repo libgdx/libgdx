@@ -3,6 +3,7 @@ package com.badlogic.gdx.tests;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
@@ -14,17 +15,17 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
-public class FloatTest implements RenderListener
+public class FixedPointTest implements RenderListener
 {
 	public static void main( String[] argv )
 	{
-		JoglApplication app = new JoglApplication( "Float Test", 480, 320, false);
-		app.getGraphics().setRenderListener( new FloatTest() );
+		JoglApplication app = new JoglApplication( "Fixed Point Test", 480, 320, false);
+		app.getGraphics().setRenderListener( new FixedPointTest() );
 	}
 
 	Texture tex;
 	Texture tex2;
-	FloatBuffer vertices;
+	IntBuffer vertices;
 	final int BYTES_PER_VERTEX = (4+3+2+2)*4;	
 	float angle = 0;
 	float angleIncrement = 0.1f;
@@ -49,24 +50,24 @@ public class FloatTest implements RenderListener
 		
 		gl.glEnableClientState(GL10.GL_COLOR_ARRAY);		
 		vertices.position(0);
-		gl.glColorPointer(4, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );
+		gl.glColorPointer(4, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );
 		
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 		gl.glClientActiveTexture( GL10.GL_TEXTURE0 );
 		gl.glActiveTexture( GL10.GL_TEXTURE0 );
 		tex.bind();
 		vertices.position(4);			
-		gl.glTexCoordPointer( 2, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );
+		gl.glTexCoordPointer( 2, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );
 		
 		gl.glClientActiveTexture( GL10.GL_TEXTURE1 );
 		gl.glActiveTexture( GL10.GL_TEXTURE1 );
 		tex2.bind();
 		vertices.position(6);			
-		gl.glTexCoordPointer( 2, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );
+		gl.glTexCoordPointer( 2, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );
 		
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		vertices.position(8);
-		gl.glVertexPointer( 3, GL10.GL_FLOAT, BYTES_PER_VERTEX, vertices );	
+		gl.glVertexPointer( 3, GL10.GL_FIXED, BYTES_PER_VERTEX, vertices );	
 		
 		gl.glDrawArrays( GL10.GL_TRIANGLES, 0, 3);				
 	}
@@ -76,23 +77,23 @@ public class FloatTest implements RenderListener
 	{
 		ByteBuffer buffer = ByteBuffer.allocateDirect( BYTES_PER_VERTEX * 3 );
 		buffer.order(ByteOrder.nativeOrder());
-		vertices = buffer.asFloatBuffer();					
+		vertices = buffer.asIntBuffer();					
 				
-		float[] verts = { 							
-				  1, 0, 0, 1,
-				  0, 1,
-				  0, 1,
-				  -0.5f, -0.5f, 0,
+		int[] verts = { 							
+				  fp(1), fp(0), fp(0), fp(1),
+				  fp(0), fp(1),
+				  fp(0), fp(1),
+				  fp(-0.5f), fp(-0.5f), fp(0),
 				  
-				  0, 1, 0, 1,
-				  1, 1,
-				  1, 1,
-				  0.5f, -0.5f, 0,
+				  fp(0), fp(1), fp(0), fp(1),
+				  fp(1), fp(1),
+				  fp(1), fp(1),
+				  fp(0.5f), fp(-0.5f), fp(0),
 				   
-				  0, 0, 1, 1,
-				  0.5f, 0,
-				  0.5f, 0,
-				  0, 0.5f, 0,
+				  fp(0), fp(0), fp(1), fp(1),
+				  fp(0.5f), fp(0),
+				  fp(0.5f), fp(0),
+				  fp(0), fp(0.5f), fp(0),
 				 };
 		vertices.put(verts);
 		vertices.flip();	
@@ -111,11 +112,18 @@ public class FloatTest implements RenderListener
 		pixmap.setColor( 0, 0, 0, 1 );
 		pixmap.drawLine( 128, 0, 128, 256 );
 		tex2 = application.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
+		
+		application.getGraphics().getGL10().glDisable( GL10.GL_TEXTURE_2D );
 	}
 
 	@Override
 	public void surfaceChanged(Application app, int width, int height) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private static int fp( float value )
+	{
+		return (int)(value * 65536);
 	}
 }

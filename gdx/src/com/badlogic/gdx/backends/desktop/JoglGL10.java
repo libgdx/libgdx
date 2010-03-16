@@ -22,7 +22,8 @@ class JoglGL10 implements GL10
 	private final FloatBuffer colorBuffer;
 	private final FloatBuffer normalBuffer;
 	private final FloatBuffer vertexBuffer;
-	private final FloatBuffer texCoordBuffer;	
+	private final FloatBuffer texCoordBuffer[] = new FloatBuffer[16];
+	private int activeTexture = 0;
 	
 	private float[] tmp = new float[1000];
 		
@@ -42,9 +43,12 @@ class JoglGL10 implements GL10
 		buffer.order(ByteOrder.nativeOrder());
 		vertexBuffer = buffer.asFloatBuffer();
 		
-		buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
-		buffer.order(ByteOrder.nativeOrder());		
-		texCoordBuffer = buffer.asFloatBuffer();			
+		for( int i = 0; i < texCoordBuffer.length; i++ )
+		{
+			buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
+			buffer.order(ByteOrder.nativeOrder());		
+			texCoordBuffer[i] = buffer.asFloatBuffer();
+		}
 	}		
 	
 	protected final void convertFixedToFloatbuffer( Buffer source, FloatBuffer target, int stride )
@@ -137,6 +141,7 @@ class JoglGL10 implements GL10
 	@Override
 	public final void glClientActiveTexture(int texture) 
 	{	
+		activeTexture = texture - GL10.GL_TEXTURE0;
 		gl.glClientActiveTexture( texture );
 	}
 
@@ -686,11 +691,10 @@ class JoglGL10 implements GL10
 	@Override
 	public final void glTexCoordPointer(int size, int type, int stride, Buffer pointer) 
 	{				
-		// FIXME add multi texturing support
 		if( type == GL10.GL_FIXED )
 		{
-			convertFixedToFloatbuffer(pointer,texCoordBuffer, stride);
-			gl.glTexCoordPointer( size, GL10.GL_FLOAT, stride, texCoordBuffer );
+			convertFixedToFloatbuffer(pointer,texCoordBuffer[activeTexture], stride);
+			gl.glTexCoordPointer( size, GL10.GL_FLOAT, stride, texCoordBuffer[activeTexture] );
 		}
 		else
 			gl.glTexCoordPointer( size, type, stride, pointer );
