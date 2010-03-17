@@ -17,8 +17,8 @@
 package com.badlogic.gdx.audio;
 
 /**
- * A sound is a short audio clip that can be played numerous times.
- * it's completely loaded into memory. Call the {@link Sound.dispose()}
+ * A Sound is a short audio clip that can be played numerous times in parallel.
+ * It's completely loaded into memory. Call the {@link Sound.dispose()}
  * method when you're done using the Sound.
  * 
  * @author badlogicgames@gmail.com
