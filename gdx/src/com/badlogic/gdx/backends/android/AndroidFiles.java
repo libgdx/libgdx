@@ -1,6 +1,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -41,12 +42,18 @@ final class AndroidFiles implements Files
 		return assets;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean makeDirectory(String directory) 
 	{	
 		return new File( sdcard + directory ).mkdirs();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream readExternalFile(String fileName) 
 	{	
@@ -64,6 +71,9 @@ final class AndroidFiles implements Files
 		return in;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream readInternalFile(String fileName) 
 	{	
@@ -80,6 +90,9 @@ final class AndroidFiles implements Files
 		return in;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public OutputStream writeExternalFile(String filename) 
 	{	
@@ -95,5 +108,24 @@ final class AndroidFiles implements Files
 		}
 		
 		return out;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FileDescriptor getInternalFileDescriptor(String filename) {
+		FileDescriptor fd = null;
+		
+		try
+		{
+			fd = assets.openFd( filename ).getFileDescriptor();
+		}
+		catch( Exception ex )
+		{
+			// fall through
+		}
+		
+		return fd;
 	}
 }

@@ -1,5 +1,6 @@
 package com.badlogic.gdx;
 
+import java.io.FileDescriptor;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -64,4 +65,14 @@ public interface Files
 	 * @return true in case the directory could be created, false otherwise
 	 */
 	public boolean makeDirectory( String directory );
+	
+	/**
+	 * Returns a {@link FileDescriptor} object for an internal file. An internal
+	 * file on Android is given relative to the asset directory. On the desktop
+	 * it is given relative to the application's root directory. 
+	 *  
+	 * @param filename the name of the file
+	 * @return the FileDescriptor or null if the descriptor could not be created
+	 */
+	public FileDescriptor getInternalFileDescriptor( String filename );
 }

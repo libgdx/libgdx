@@ -17,18 +17,23 @@
 package com.badlogic.gdx.audio;
 
 /**
- * Encapsulates an audio device in 44.1khz mono mode. Use
+ * Encapsulates an audio device in 44.1khz mono or stereo mode. Use
  * the {@link AudioDevice.writeSamples()} methods to write
  * float or 16-bit signed short PCM data directly to the 
- * audio device.
- * 
- * FIXME add stereo output.
+ * audio device. Stereo samples are interleaved in the order left channel
+ * sample, right channel sample. The {@link dispose()} method must be called
+ * when this AudioDevice is no longer needed. 
  * 
  * @author badlogicgames@gmail.com
  *
  */
 public interface AudioDevice 
 {
+	/**
+	 * @return whether this AudioDevice is in mono or stereo mode. 
+	 */
+	public boolean isMono( );
+	
 	/**
 	 * Writes the array of 16-bit signed PCM samples to the
 	 * audio device and blocks until they have been processed.
@@ -44,4 +49,10 @@ public interface AudioDevice
 	 * @param samples The samples.
 	 */
 	public void writeSamples( float[] samples );
+	
+	/**
+	 * Frees all resources associated with this AudioDevice. Needs
+	 * to be called when the device is no longer needed.
+	 */
+	public void dispose( );
 }

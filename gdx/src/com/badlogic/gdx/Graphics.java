@@ -137,8 +137,9 @@ public interface Graphics
 	
 	/**
 	 * Creates a new {@link Font} from the given file using the specified {@link Files}
-	 * instance. The file must point to a true type font file. The filename is relative
-	 * to the internal file path. The Font has to be disposed
+	 * instance. The file must point to a true type font file and must also be an internal file
+	 * meaning it is relative to the assets directory on Android or relative to the applications
+	 * root directory on the desktop. The Font has to be disposed
 	 * once it's no longer used via the {@link Font.dispose()} method.
 	 * 
 	 * This method is a bit frustrating from an API design standpoint. The reason this

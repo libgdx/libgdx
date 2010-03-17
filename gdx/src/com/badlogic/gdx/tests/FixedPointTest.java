@@ -2,7 +2,6 @@ package com.badlogic.gdx.tests;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;

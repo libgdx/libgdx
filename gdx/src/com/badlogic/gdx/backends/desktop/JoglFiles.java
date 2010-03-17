@@ -1,6 +1,7 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,12 +22,18 @@ final class JoglFiles implements Files
 {
 	private final String externalPath = System.getProperty("user.home") + "/";		
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean makeDirectory(String directory) 
 	{	
 		return new File( externalPath + directory ).mkdirs();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream readExternalFile(String fileName) 
 	{	
@@ -44,6 +51,9 @@ final class JoglFiles implements Files
 		return in;		
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public InputStream readInternalFile(String fileName) 
 	{	
@@ -61,6 +71,9 @@ final class JoglFiles implements Files
 		return in;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public OutputStream writeExternalFile(String filename) 
 	{	
@@ -76,6 +89,26 @@ final class JoglFiles implements Files
 		}		
 		
 		return out;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FileDescriptor getInternalFileDescriptor(String filename) {
+		FileDescriptor fd = null;
+		
+		try
+		{
+			FileInputStream in = new FileInputStream( filename );
+			fd = in.getFD();
+		}
+		catch( Exception ex )
+		{
+			// fall through
+		}
+		
+		return fd;
 	}
 
 }
