@@ -15,12 +15,10 @@ gdx-helloworld
  -> libs/
     -> armeabi/
        - >libgdx.so
-    -> gdx-0.12-sources.jar
-    -> gdx-0.12.jar
+    -> desktop-dependencies.jar
+    -> gdx-0.13sources.jar
+    -> gdx-0.13.jar
     -> gdx.dll
-    -> gluegen-rt-1.0b5.jar
-    -> jogl-1.1.1.jar
-    -> jogl-natives-1.1.1.jar
     -> libgdx.so
     -> README
     
@@ -43,13 +41,18 @@ public class HelloWorld implements RenderListener
 	public static void main( String[] argv )
 	{
 		JoglApplication app = new JoglApplication( "Hello World", 480, 320 );
-		app.addRenderListener( new HelloWorld() );
+		app.getGraphics().setRenderListener( new HelloWorld() );
 	}
 
 	@Override
-	public void setup(Application arg0) 
+	public void surfaceCreated(Application arg0) 
 	{	
 		
+	}
+	
+	@Override
+	public void surfaceChanged(Application, int width, int height)
+	{
 	}
 	
 	@Override
@@ -119,8 +122,9 @@ public class GDXHelloWorld extends AndroidApplication
 {	
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);        
-        addRenderListener( new HelloWorld() );
+        super.onCreate(savedInstanceState);
+        initialize( false );        
+        getGraphics().setRenderListener( new HelloWorld() );
     }
 }
 =========== CODE ===========  
