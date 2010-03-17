@@ -5,6 +5,13 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 
+/**
+ * A simple test to demonstrate the life cycle of an application and a 
+ * RenderListener.
+ * 
+ * @author mzechner
+ *
+ */
 public class LifeCycleTest implements ApplicationListener, RenderListener
 {
 
