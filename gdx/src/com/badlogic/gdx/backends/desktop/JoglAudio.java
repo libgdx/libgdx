@@ -1,6 +1,8 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -38,8 +40,13 @@ final class JoglAudio implements Audio
 	 */
 	@Override
 	public Sound newSound(FileDescriptor fileDescriptor) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			FileInputStream in = new FileInputStream( fileDescriptor );
+			return new JoglSound( in );
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

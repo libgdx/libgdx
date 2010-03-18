@@ -61,7 +61,7 @@ final class AndroidFiles implements Files
 		
 		try
 		{
-			in = new FileInputStream( fileName );
+			in = new FileInputStream( sdcard + fileName );
 		}
 		catch( FileNotFoundException ex )
 		{
@@ -100,7 +100,7 @@ final class AndroidFiles implements Files
 		
 		try
 		{
-			out = new FileOutputStream( filename );
+			out = new FileOutputStream( sdcard + filename );
 		}
 		catch( FileNotFoundException ex )
 		{
@@ -120,6 +120,26 @@ final class AndroidFiles implements Files
 		try
 		{
 			fd = assets.openFd( filename ).getFileDescriptor();
+		}
+		catch( Exception ex )
+		{
+			// fall through
+		}
+		
+		return fd;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FileDescriptor getExternalFileDescriptor(String filename) 
+	{
+		FileDescriptor fd = null;
+		
+		try
+		{
+			fd = new FileInputStream( sdcard + filename ).getFD();
 		}
 		catch( Exception ex )
 		{

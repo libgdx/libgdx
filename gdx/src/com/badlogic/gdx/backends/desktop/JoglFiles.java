@@ -111,4 +111,23 @@ final class JoglFiles implements Files
 		return fd;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FileDescriptor getExternalFileDescriptor(String filename) {
+		FileDescriptor fd = null;
+		
+		try
+		{
+			FileInputStream in = new FileInputStream( externalPath + filename );
+			fd = in.getFD();
+		}
+		catch( Exception ex )
+		{
+			// fall through
+		}
+		
+		return fd;
+	}
 }

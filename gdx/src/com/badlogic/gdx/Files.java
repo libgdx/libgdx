@@ -75,4 +75,14 @@ public interface Files
 	 * @return the FileDescriptor or null if the descriptor could not be created
 	 */
 	public FileDescriptor getInternalFileDescriptor( String filename );
+	
+	/**
+	 * Returns a {@link FileDescriptor} object for an external file. An external
+	 * file on Android is given relative to the external storage device path. On the
+	 * desktop it is given relative to the user's home directory.
+	 * 
+	 * @param filename the name of the file
+	 * @return the FileDescriptor or null if the descriptor could not be created
+	 */
+	public FileDescriptor getExternalFileDescriptor( String filename );
 }
