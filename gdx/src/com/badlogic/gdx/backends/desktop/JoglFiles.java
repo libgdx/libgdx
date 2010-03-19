@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * Implementation for a desktop application of {@link Files}. Internal
@@ -95,39 +96,25 @@ final class JoglFiles implements Files
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FileDescriptor getInternalFileDescriptor(String filename) {
-		FileDescriptor fd = null;
-		
-		try
-		{
-			FileInputStream in = new FileInputStream( filename );
-			fd = in.getFD();
-		}
-		catch( Exception ex )
-		{
-			// fall through
-		}
-		
-		return fd;
+	public FileHandle getInternalFileHandle(String filename) 
+	{
+		File file = new File( filename );
+		if( file.exists() == false )
+			return null;
+		else 
+			return new JoglFileHandle( file );			
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FileDescriptor getExternalFileDescriptor(String filename) {
-		FileDescriptor fd = null;
-		
-		try
-		{
-			FileInputStream in = new FileInputStream( externalPath + filename );
-			fd = in.getFD();
-		}
-		catch( Exception ex )
-		{
-			// fall through
-		}
-		
-		return fd;
+	public FileHandle getExternalFileHandle(String filename) 
+	{		
+		File file = new File( externalPath + filename );
+		if( file.exists() == false )
+			return null;
+		else 
+			return new JoglFileHandle( file );		
 	}
 }

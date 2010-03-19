@@ -12,6 +12,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * An implementation of the {@link Files} interface for Android. External files are stored and accessed
@@ -114,38 +115,35 @@ final class AndroidFiles implements Files
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FileDescriptor getInternalFileDescriptor(String filename) {
-		FileDescriptor fd = null;
+	public FileHandle getInternalFileHandle(String filename) 
+	{	
+		boolean exists = true;
 		
 		try
 		{
-			fd = assets.openFd( filename ).getFileDescriptor();
+			InputStream in = assets.open( filename );
+			in.close();
 		}
 		catch( Exception ex )
 		{
-			// fall through
+			exists = false;
 		}
 		
-		return fd;
+		if( !exists )
+			return null;
+		else
+			return new AndroidFileHandle( assets, filename);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FileDescriptor getExternalFileDescriptor(String filename) 
+	public FileHandle getExternalFileHandle(String filename) 
 	{
-		FileDescriptor fd = null;
-		
-		try
-		{
-			fd = new FileInputStream( sdcard + filename ).getFD();
-		}
-		catch( Exception ex )
-		{
-			// fall through
-		}
-		
-		return fd;
+		if( new File( sdcard + filename ).exists() == false )
+			return null;
+		else
+			return new AndroidFileHandle( null, sdcard + filename );
 	}
 }

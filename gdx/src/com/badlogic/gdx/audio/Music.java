@@ -26,6 +26,12 @@ public interface Music
 	public void pause( );
 	
 	/**
+	 * Stops a playing or paused Music instance. Next time play()
+	 * is invoked the Music will start from the beginning.
+	 */
+	public void stop( );
+	
+	/**
 	 * @return whether this music stream is playing or not
 	 */
 	public boolean isPlaying( );
@@ -40,12 +46,7 @@ public interface Music
 	 * 
 	 * @param seconds the playback position in seconds
 	 */
-	public void setPlaybackPosition( float seconds );
-	
-	/**
-	 * @return the length of the music stream in seconds.
-	 */
-	public float getLength( );
+	public void setPlaybackPosition( float seconds );	
 	
 	/**
 	 * Sets whether the music stream is looping or not. This
@@ -70,7 +71,7 @@ public interface Music
 	public void setVolume( float volume );
 	
 	/**
-	 * Needs to be called when the Music 
+	 * Needs to be called when the Music is no longer needed.
 	 */
 	public void dispose( );	
 }

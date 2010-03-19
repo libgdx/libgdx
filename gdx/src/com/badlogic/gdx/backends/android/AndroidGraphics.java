@@ -1,5 +1,6 @@
 package com.badlogic.gdx.backends.android;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -21,6 +22,7 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView.Renderer;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -210,10 +212,10 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Font newFont(Files files, String filename, int size, FontStyle style, boolean managed) 
+	public Font newFont(FileHandle file, int size, FontStyle style, boolean managed) 
 	{	
-		AndroidFiles aFiles = (AndroidFiles)files;		
-		AndroidFont font = new AndroidFont( this, aFiles.getAssetManager(), filename, size, style, managed );
+		AndroidFileHandle aHandle = (AndroidFileHandle)file;	
+		AndroidFont font = new AndroidFont( this, aHandle.getAssetManager(), aHandle.getFileName(), size, style, managed );
 		return font;
 	}
 
@@ -241,6 +243,37 @@ final class AndroidGraphics implements Graphics, Renderer
 			return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Pixmap newPixmap(FileHandle file, Format formatHint) 
+	{
+		AndroidFileHandle aHandle = (AndroidFileHandle)file;
+		Options options = new Options( );
+		options.inPreferredConfig = AndroidPixmap.getInternalFormat( formatHint );
+		Bitmap bitmap = null;
+		
+		if( aHandle.isAsset() )
+		{
+			InputStream in;
+			try {
+				in = aHandle.getAssetManager().open( aHandle.getFileName() );
+			} catch (IOException e) {
+				return null;
+			}
+			bitmap = BitmapFactory.decodeStream( in, null, options );
+		}
+		else
+		{
+			bitmap = BitmapFactory.decodeFile( aHandle.getFileName() );
+		}
+		if( bitmap != null )
+			return new AndroidPixmap( bitmap );
+		else
+			return null;		
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -405,4 +438,5 @@ final class AndroidGraphics implements Graphics, Renderer
 			}
 		}
 	}
+
 }

@@ -224,12 +224,12 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
         this.setLayout( new BorderLayout() );
         add(canvas,BorderLayout.CENTER);                
                
-	    animator = new Animator( canvas );
+	    animator = new Animator( canvas );	    
 	    animator.start();        
                 
         canvas.addMouseListener( this );
         canvas.addMouseMotionListener( this );
-        canvas.addKeyListener( this );
+        canvas.addKeyListener( this );               
 	}
 	
 	/**
@@ -424,7 +424,8 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	public void init(GLAutoDrawable arg0) 
 	{			
 		for( RenderListener listener: listeners )
-			listener.surfaceCreated( application );		
+			listener.surfaceCreated( application );
+		setVerticalSynch(true);
 	}
 
 	@Override

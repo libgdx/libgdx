@@ -4,6 +4,8 @@ import java.io.FileDescriptor;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.badlogic.gdx.files.FileHandle;
+
 /**
  * This interface encapsulates the access of internal and external files.
  * Internal files are read-only and come with the application when deployed.
@@ -74,7 +76,7 @@ public interface Files
 	 * @param filename the name of the file
 	 * @return the FileDescriptor or null if the descriptor could not be created
 	 */
-	public FileDescriptor getInternalFileDescriptor( String filename );
+	public FileHandle getInternalFileHandle( String filename );
 	
 	/**
 	 * Returns a {@link FileDescriptor} object for an external file. An external
@@ -84,5 +86,5 @@ public interface Files
 	 * @param filename the name of the file
 	 * @return the FileDescriptor or null if the descriptor could not be created
 	 */
-	public FileDescriptor getExternalFileDescriptor( String filename );
+	public FileHandle getExternalFileHandle( String filename );
 }

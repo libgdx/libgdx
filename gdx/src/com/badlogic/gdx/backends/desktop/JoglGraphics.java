@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,6 +18,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -141,16 +144,20 @@ final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Font newFont(Files files, String filename, int size, FontStyle style, boolean managed) 
+	public Font newFont(FileHandle file, int size, FontStyle style, boolean managed) 
 	{					
-		InputStream in = files.readInternalFile( filename );
-		JoglFont font = new JoglFont(this, in, size, style, managed);
+		JoglFileHandle jHandle = (JoglFileHandle)file;
+		InputStream in;
 		try {
+			in = new FileInputStream( jHandle.getFile() );
+			JoglFont font = new JoglFont(this, in, size, style, managed);			
 			in.close();
-		} catch (IOException e) {
+			
+			return font;
+		} catch (Exception e) 
+		{		
 			return null;
-		}
-		return font;
+		}		
 	}
 
 	@Override
@@ -165,6 +172,20 @@ final class JoglGraphics implements Graphics, RenderListener
 		try
 		{
 			BufferedImage img = (BufferedImage)ImageIO.read( in );
+			return new JoglPixmap( img );
+		}
+		catch( Exception ex )
+		{
+			return null;
+		}		
+	}
+	
+	@Override
+	public Pixmap newPixmap(FileHandle file, Format formatHint) 
+	{	
+		try
+		{
+			BufferedImage img = (BufferedImage)ImageIO.read( ((JoglFileHandle)file).getFile() );
 			return new JoglPixmap( img );
 		}
 		catch( Exception ex )

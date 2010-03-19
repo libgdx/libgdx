@@ -46,7 +46,7 @@ final class AndroidFont extends Font
 
 	AndroidFont(Graphics graphics, String fontName, int size, FontStyle style, boolean managed) 
 	{
-		super( graphics, managed );
+		super( graphics, managed );		
 		font = Typeface.create( fontName, getFontStyle( style ) );
 		paint = new Paint( );
 		paint.setTypeface(font);
@@ -57,8 +57,8 @@ final class AndroidFont extends Font
 
 	AndroidFont(Graphics graphics, AssetManager assets, String file, int size,	FontStyle style, boolean managed) 
 	{	
-		super( graphics, managed );		
-		font = Typeface.createFromAsset( assets, file );
+		super( graphics, managed );				
+		font = Typeface.createFromAsset( assets, file );		
 		paint = new Paint( );
 		paint.setTypeface(font);
 		paint.setTextSize(size);	

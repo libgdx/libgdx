@@ -3,23 +3,31 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 
 public class SoundTest implements RenderListener, InputListener 
 {
 	Sound sound;
+	Music music;
+	float volume = 1.0f;
 
 	@Override
-	public void dispose(Application app) {
-		// TODO Auto-generated method stub
+	public void dispose(Application app) 
+	{	
 		
 	}
 
 	@Override
-	public void render(Application app) {
-		// TODO Auto-generated method stub
-		
+	public void render(Application app) 
+	{		
+try {
+	Thread.sleep( 100 );
+} catch (InterruptedException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
 	}
 
 	@Override
@@ -31,25 +39,36 @@ public class SoundTest implements RenderListener, InputListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{
-		app.getInput().addInputListener( this );
-		sound = app.getAudio().newSound( app.getFiles().getInternalFileDescriptor( "data/shotgun.mp3" ) );
+		app.getInput().addInputListener( this );	
+		sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgun.wav" ) );
+		
+//		music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );	
+//		music.setLooping( true );
+//		music.play();		
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+	public boolean keyDown(int keycode) 
+	{	
 		return false;
 	}
 
 	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
+	public boolean keyTyped(char character) 
+	{
+		if( character == '+' )
+			volume += 0.1f;
+		if( character == '-' )
+			volume -= 0.1f;
+		music.setVolume( volume );		
+			
 		return false;
 	}
 
 	@Override
-	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+	public boolean keyUp(int keycode) 
+	{	
+		
 		return false;
 	}
 
@@ -67,8 +86,8 @@ public class SoundTest implements RenderListener, InputListener
 
 	@Override
 	public boolean touchUp(int x, int y, int pointer) 
-	{
-		sound.play( );
+	{		
+		sound.play();
 		return false;
 	}
 

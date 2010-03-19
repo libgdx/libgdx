@@ -3,6 +3,7 @@ package com.badlogic.gdx;
 import java.io.InputStream;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -113,6 +114,18 @@ public interface Graphics
 	public Pixmap newPixmap( InputStream in, Pixmap.Format formatHint );
 	
 	/**
+	 * Creates a new {@link Pixmap} from the given file which is assumed
+	 * to point to a bitmap in a readable form, e.g. PNG, JPEG. The formatHint
+	 * specifies to which format the Pixmap should be converted. The implementation
+	 * might ignore this hint. 
+	 * 
+	 * @param file the file to load the pixmap from
+	 * @param formatHint the {@link Pixmap.Format} hint
+	 * @return a new Pixmap or null in case the Pixmap could not be loaded
+	 */
+	public Pixmap newPixmap( FileHandle file, Pixmap.Format formatHint );
+	
+	/**
 	 * Creates a new {@link Pixmap} from the given native pixmap. The native
 	 * pixmap is an instance of BufferedImage on the desktop or Bitmap on
 	 * Android. 
@@ -136,25 +149,16 @@ public interface Graphics
 	public Font newFont( String fontName, int size, Font.FontStyle style, boolean managed );
 	
 	/**
-	 * Creates a new {@link Font} from the given file using the specified {@link Files}
-	 * instance. The file must point to a true type font file and must also be an internal file
-	 * meaning it is relative to the assets directory on Android or relative to the applications
-	 * root directory on the desktop. The Font has to be disposed
-	 * once it's no longer used via the {@link Font.dispose()} method.
+	 * Creates a new {@link Font} from the given file. The file must point to a true type font file.
+	 * The Font has to be disposed once it's no longer used via the {@link Font.dispose()} method.
 	 * 
-	 * This method is a bit frustrating from an API design standpoint. The reason this
-	 * does not take an InputStream directly is that on Android fonts can only be
-	 * loaded from filenames or assets. 
-	 * 
-	 * @param Files the Files instance
-	 * @param filename the name of the font file relative to the internal files path.
+	 * @param file the file to load the font from
 	 * @param size the size
 	 * @param style the {@link Font.FontStyle}
 	 * @param wheter the font is managed or not.
 	 * @return a new Font or null in case the Font could not be loaded
 	 */
-
-	public Font newFont( Files files, String filename, int size, Font.FontStyle style, boolean managed );
+	public Font newFont( FileHandle file, int size, Font.FontStyle style, boolean managed );
 	
 	/**
 	 * Creates a new {@link Texture} with the specified dimensions, minification
