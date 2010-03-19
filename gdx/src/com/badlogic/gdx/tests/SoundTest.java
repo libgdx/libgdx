@@ -74,7 +74,7 @@ try {
 
 	@Override
 	public boolean touchDown(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
+		sound.play();
 		return false;
 	}
 
@@ -87,7 +87,6 @@ try {
 	@Override
 	public boolean touchUp(int x, int y, int pointer) 
 	{		
-		sound.play();
 		return false;
 	}
 
