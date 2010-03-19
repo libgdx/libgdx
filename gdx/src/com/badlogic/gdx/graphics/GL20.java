@@ -392,6 +392,8 @@ public interface GL20
 	public void glDrawArrays ( int mode, int first, int count );
 
 	public void glDrawElements ( int mode, int count, int type, Buffer indices );
+	
+	public void glDrawElements ( int mode, int count, int type, int indices );
 
 	public void glEnable ( int cap );
 
@@ -595,6 +597,8 @@ public interface GL20
 	public void glVertexAttrib4fv ( int indx, FloatBuffer values );
 
 	public void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, Buffer ptr );
+	
+	public void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, int ptr );
 
 	public void glViewport ( int x, int y, int width, int height );
 

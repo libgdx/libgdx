@@ -922,4 +922,16 @@ final class JoglGL20 implements GL20
 		gl.glViewport( x, y, width, height );
 	}
 
+	@Override
+	public void glDrawElements(int mode, int count, int type, int indices) 
+	{	
+		gl.glDrawElements( mode, count, type, indices );
+	}
+
+	@Override
+	public void glVertexAttribPointer(int indx, int size, int type, boolean normalized, int stride, int ptr) 
+	{	
+		gl.glVertexAttribPointer( indx, size, type, normalized, stride, ptr );
+	}
+
 }
