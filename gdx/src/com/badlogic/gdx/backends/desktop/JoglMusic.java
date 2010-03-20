@@ -39,10 +39,9 @@ public class JoglMusic implements Music, Runnable
 		this.file = handle.getFile();
 		
 		openAudioInputStream();		
-		AudioFormat audioFormat = ain.getFormat();
-		DataLine.Info	info = new DataLine.Info(SourceDataLine.class,audioFormat);
-		line = (SourceDataLine) AudioSystem.getLine(info);
-		line.open(audioFormat);
+		AudioFormat audioFormat = ain.getFormat();		
+		line = AudioSystem.getSourceDataLine( audioFormat );
+		line.open(audioFormat); //FIXME reduce latency, gotta reimplement the playback thread.
 		line.start();
 		buffer = new byte[10000*ain.getFormat().getFrameSize()];		
 		ain.close();

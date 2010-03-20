@@ -158,7 +158,13 @@ public class JoglSound implements Sound
 	@Override
 	public void play() 
 	{
-		audio.enqueueSound( this );
+		audio.enqueueSound( this, 1 );
+	}
+	
+	@Override
+	public void play( float volume )
+	{
+		audio.enqueueSound( this, volume );
 	}
 
 	/**

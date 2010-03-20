@@ -34,6 +34,15 @@ public interface Sound
 	public void play( );
 	
 	/**
+	 * Plays the sound, you can call this repeatedly to
+	 * play the same sound a couple of times with a bit
+	 * of lag introduced.
+	 * 
+	 * @param volume the volume in the range [0,1]
+	 */
+	public void play( float volume );
+	
+	/**
 	 * Releases all the resources.
 	 */
 	public void dispose( );

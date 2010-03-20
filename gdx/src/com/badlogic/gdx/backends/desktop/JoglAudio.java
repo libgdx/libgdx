@@ -42,14 +42,16 @@ final class JoglAudio implements Audio, Runnable
 	 */
 	class JoglSoundBuffer
 	{
-		public final float[] samples;
-		public final AudioFormat format;
-		public int writtenSamples = 0;
+		private final float[] samples;
+		private final AudioFormat format;
+		private final float volume;
+		private int writtenSamples = 0;
 		
-		public JoglSoundBuffer( JoglSound sound ) throws Exception
+		public JoglSoundBuffer( JoglSound sound, float volume ) throws Exception
 		{			
 			samples = sound.getAudioData( );
-			format = sound.getAudioFormat();					
+			format = sound.getAudioFormat();
+			this.volume = volume;
 		}
 		
 		/**
@@ -63,8 +65,8 @@ final class JoglAudio implements Audio, Runnable
 				int remainingSamples = Math.min( samples.length, writtenSamples + numSamples / 2 );
 				for( int i = writtenSamples, j = 0; i < remainingSamples; i++, j+=2 )
 				{
-					buffer[j] += samples[i];
-					buffer[j+1] += samples[i];
+					buffer[j] += samples[i] * volume;
+					buffer[j+1] += samples[i] * volume;
 					writtenSamples++;
 				}
 			}
@@ -73,8 +75,8 @@ final class JoglAudio implements Audio, Runnable
 				int remainingSamples = Math.min( samples.length, writtenSamples + numSamples );
 				for( int i = writtenSamples, j = 0; i < remainingSamples; i+= 2, j+=2 )
 				{
-					buffer[j] += samples[i];
-					buffer[j+1] += samples[i+1];
+					buffer[j] += samples[i] * volume;
+					buffer[j+1] += samples[i+1] * volume;
 					writtenSamples+=2;
 				}							
 			}	
@@ -139,13 +141,13 @@ final class JoglAudio implements Audio, Runnable
 		}
 	}
 
-	protected void enqueueSound( JoglSound sound )
+	protected void enqueueSound( JoglSound sound, float volume )
 	{
 		try
 		{
 			synchronized( this )
 			{				
-				buffers.add( new JoglSoundBuffer( sound ) );
+				buffers.add( new JoglSoundBuffer( sound, volume ) );
 			}
 		}
 		catch( Exception ex )
