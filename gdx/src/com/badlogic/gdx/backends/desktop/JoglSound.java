@@ -1,25 +1,22 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.files.FileHandle;
 
 /**
  * Implements the {@link Sound} interface for the desktop 
@@ -33,11 +30,18 @@ public class JoglSound implements Sound
 	private final AudioFormat format;
 	
 	/** the audio data **/
-	private final byte[] samples;
+	private final byte[] originalSamples;
+	
+	/** the float audio data **/
+	private float[] samples;
+	
+	/** the audio instance **/
+	private final JoglAudio audio;
 
 	
 	public JoglSound( JoglAudio audio, JoglFileHandle file ) throws UnsupportedAudioFileException, IOException
 	{			
+		this.audio = audio;
 		InputStream fin = new BufferedInputStream( new FileInputStream( file.getFile() ) );		
 		AudioInputStream ain = AudioSystem.getAudioInputStream( fin );
 		AudioFormat baseFormat = ain.getFormat();
@@ -62,7 +66,87 @@ public class JoglSound implements Sound
 		ain.close();
 		System.out.println(decodedFormat);
 		format = decodedFormat;
-		samples = bytes.toByteArray();
+		originalSamples = bytes.toByteArray();		
+		
+		ByteBuffer tmpBuffer = ByteBuffer.wrap( originalSamples );
+		tmpBuffer.order(ByteOrder.LITTLE_ENDIAN);
+		ShortBuffer shorts = tmpBuffer.asShortBuffer();
+		samples = new float[originalSamples.length/2];
+		for( int i = 0; i < samples.length; i++ )
+		{
+			float value = shorts.get(i) / (float)Short.MAX_VALUE;
+			if( value < -1 )
+				value = -1;
+			if( value > 1 )
+				value = 1;
+			samples[i] = value;
+		}
+		
+		samples = resample( samples, decodedFormat.getSampleRate(), decodedFormat.getChannels() == 1 );		
+	}
+	
+	private float[] resample( float[] samples, float sampleRate, boolean isMono )
+	{
+		if( sampleRate == 44100 )
+			return samples;
+		
+		float idxInc = sampleRate / 44100;
+		int numSamples = (int)((samples.length / (float)sampleRate) * 44100);
+		if( !isMono && numSamples % 2 != 0 )
+			numSamples--;
+		
+		float[] newSamples = new float[numSamples];
+		
+		if( isMono )
+		{
+			float idx = 0;
+			for( int i = 0; i < newSamples.length; i++ )
+			{				
+				int intIdx = (int)idx;			
+				if( intIdx >= samples.length - 1 )
+					break;
+				
+				float value = samples[intIdx] + samples[intIdx+1];
+				value /= 2;
+				if( value > 1 )
+					value = 1;
+				if( value < -1 )
+					value = -1;
+				newSamples[i] = value;
+				idx += idxInc;
+			}
+		}
+		else
+		{
+			float idx = 0;			
+			for( int i = 0; i < newSamples.length; i+=2 )
+			{				
+				int intIdxL = (int)idx * 2;			
+				int intIdxR = (int)idx * 2 + 1;
+				if( intIdxL >= samples.length - 2 )
+					break;
+				
+				float value = samples[intIdxL] + samples[intIdxL+2];
+				value /= 2;
+				if( value > 1 )
+					value = 1;
+				if( value < -1 )
+					value = -1;
+				newSamples[i] = value;
+				
+				value = samples[intIdxR] + samples[intIdxR+2];
+				value /= 2;
+				if( value > 1 )
+					value = 1;
+				if( value < -1 )
+					value = -1;
+				newSamples[i+1] = value;
+				
+				idx += idxInc;
+			}
+		}
+				
+		return newSamples;
 	}
 	
 	@Override
@@ -74,15 +158,23 @@ public class JoglSound implements Sound
 	@Override
 	public void play() 
 	{
-		Clip clip;
-		try {
-			clip = AudioSystem.getClip();
-			clip.open( format, samples, 0, samples.length );
-			clip.start();
-		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+		audio.enqueueSound( this );
+	}
+
+	/**
+	 * @return the {@link AudioFormat} of the audio data
+	 */
+	public AudioFormat getAudioFormat() 
+	{	
+		return format;
+	}
+
+	/**
+	 * @return the audio samples in form of a byte array
+	 */
+	public float[] getAudioData() 
+	{	
+		return samples;
 	}
 
 }

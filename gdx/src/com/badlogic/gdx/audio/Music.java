@@ -34,19 +34,7 @@ public interface Music
 	/**
 	 * @return whether this music stream is playing or not
 	 */
-	public boolean isPlaying( );
-	
-	/**
-	 * Sets the playback position. If the music stream is
-	 * not playing the next time {@link play()} is invoked
-	 * the music stream will start playing from the specified
-	 * position. The same is true if the playback has stopped
-	 * playing. Passing in a value that is bigger than the runtime
-	 * or smaller than 0 this call is ignored.
-	 * 
-	 * @param seconds the playback position in seconds
-	 */
-	public void setPlaybackPosition( float seconds );	
+	public boolean isPlaying( );	
 	
 	/**
 	 * Sets whether the music stream is looping or not. This

@@ -22,17 +22,12 @@ public class SoundTest implements RenderListener, InputListener
 	@Override
 	public void render(Application app) 
 	{		
-try {
-	Thread.sleep( 100 );
-} catch (InterruptedException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
+
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
-		// TODO Auto-generated method stub
+	public void surfaceChanged(Application app, int width, int height) 
+	{	
 		
 	}
 
@@ -40,11 +35,11 @@ try {
 	public void surfaceCreated(Application app) 
 	{
 		app.getInput().addInputListener( this );	
-		sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgun.wav" ) );
+		sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgunstereo.wav" ) );
 		
-//		music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );	
-//		music.setLooping( true );
-//		music.play();		
+		music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );	
+		music.setLooping( true );
+		music.play();		
 	}
 
 	@Override

@@ -159,12 +159,6 @@ public class JoglMusic implements Music, Runnable
 	}
 
 	@Override
-	public void setPlaybackPosition(float seconds) 
-	{	
-		
-	}
-
-	@Override
 	public void setVolume(float volume) 
 	{	
 		try
@@ -172,7 +166,7 @@ public class JoglMusic implements Music, Runnable
 			volume = Math.min( 1, volume );
 			volume = Math.max( 0, volume );
 			FloatControl control = (FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
-			control.setValue( -60 + volume * 60 );
+			control.setValue( -80 + volume * 80 );
 		}
 		catch( IllegalArgumentException ex )
 		{
