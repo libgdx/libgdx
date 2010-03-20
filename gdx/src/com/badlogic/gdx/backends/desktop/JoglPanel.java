@@ -334,13 +334,13 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 
 	public void keyPressed(KeyEvent arg0) 
 	{
-		keys.add( arg0.getKeyCode() );		
+		keys.add( JoglInputMultiplexer.translateKeyCode(arg0.getKeyCode()) );		
 	}
 
 	public void keyReleased(KeyEvent arg0) 
 	{
 //		getCanvas().getContext().makeCurrent();
-		keys.remove( arg0.getKeyCode() );		
+		keys.remove( JoglInputMultiplexer.translateKeyCode(arg0.getKeyCode()) );		
 	}
 
 	public void keyTyped(KeyEvent arg0) {

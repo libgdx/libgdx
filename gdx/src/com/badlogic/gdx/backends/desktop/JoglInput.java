@@ -1,6 +1,5 @@
 package com.badlogic.gdx.backends.desktop;
 
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
@@ -94,27 +93,9 @@ final class JoglInput implements Input, RenderListener
 	}
 
 	@Override
-	public boolean isKeyPressed(Keys key) 
-	{	
-		int k = KeyEvent.VK_0;
-		if( key == Keys.Left)
-			k = KeyEvent.VK_LEFT;
-		if( key == Keys.Right )
-			k = KeyEvent.VK_RIGHT;
-		if( key == Keys.Up )
-			k = KeyEvent.VK_UP;
-		if( key == Keys.Down )
-			k = KeyEvent.VK_DOWN;
-		if( key == Keys.Control )
-			k = KeyEvent.VK_CONTROL;
-		if( key == Keys.Shift )
-			k = KeyEvent.VK_SHIFT;
-		if( key == Keys.Space )
-			k = KeyEvent.VK_SPACE;
-		if( key == Keys.Any )
-			panel.isAnyKeyDown( );
-		
-		return panel.isKeyDown( k ); 
+	public boolean isKeyPressed(int key) 
+	{			
+		return panel.isKeyDown( key ); 
 	}
 
 	@Override

@@ -16,7 +16,6 @@ import android.graphics.BitmapFactory.Options;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView;

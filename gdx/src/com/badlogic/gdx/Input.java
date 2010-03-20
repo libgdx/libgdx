@@ -37,20 +37,8 @@ public interface Input
 	 * 
 	 * @author badlogicgames@gmail.com
 	 *
-	 */
-	public enum Keys
-	{
-		Left,
-		Right,
-		Up,
-		Down,
-		Shift,
-		Control,
-		Space,
-		Any
-	}
-	
-	public class Key
+	 */	
+	public class Keys
 	{
 		public static int  	KEYCODE_0 = 7;
 		public static int 	KEYCODE_1 = 8;
@@ -207,10 +195,10 @@ public interface Input
 	/**
 	 * Returns whether the key is pressed.
 	 * 
-	 * @param key The key.
+	 * @param key The key code as found in {@link Input.Keys}.
 	 * @return True or false.
 	 */
-	public boolean isKeyPressed( Keys key );
+	public boolean isKeyPressed( int key );
 	
 	/**
 	 * System dependent method to input a string of text. A dialog

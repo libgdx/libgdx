@@ -1,7 +1,6 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

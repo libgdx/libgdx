@@ -34,14 +34,14 @@ public interface InputListener
 {	
 	/**
 	 * Called when a key was pressed
-	 * @param keycode The system dependent key code
+	 * @param keycode one of the constants in {@link Input.Keys}
 	 * @return whether the input was processed
 	 */
 	public boolean keyDown( int keycode );
 	
 	/**
 	 * Called when a key was released
-	 * @param keycode The system dependent key code
+	 * @param keycode  one of the constants in {@link Input.Keys}
 	 */
 	public boolean keyUp( int keycode );
 	

@@ -257,13 +257,9 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	}
 
 	@Override
-	public boolean isKeyPressed(Keys key) 
+	public boolean isKeyPressed(int key) 
 	{	
-		// FIXME
-		if( key == Keys.Any )
-			return keys.size() > 0;
-		else
-			return false;
+		return false;
 	}
 
 	@Override
