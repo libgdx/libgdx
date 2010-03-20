@@ -42,7 +42,7 @@ public class SoundTest implements RenderListener, InputListener
 		if( music == null )
 		{
 			app.getInput().addInputListener( this );	
-			sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgun44k.ogg" ) );
+			sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgun.wav" ) );
 			
 			music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );				
 			music.play();		
