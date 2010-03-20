@@ -259,7 +259,13 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	@Override
 	public boolean isKeyPressed(int key) 
 	{	
-		return false;
+		synchronized(eventQueue)
+		{
+			if( key == Input.Keys.ANY_KEY )
+				return keys.size() > 0;
+			else
+				return keys.contains( key );
+		}
 	}
 
 	@Override
@@ -339,10 +345,28 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) 
 	{	
-		if( event.getAction() == KeyEvent.ACTION_DOWN )
-			keys.add( event.getKeyCode() );
-		if( event.getAction() == KeyEvent.ACTION_DOWN )
-			keys.remove( event.getKeyCode() );			
+		synchronized( eventQueue )
+		{
+			if( event.getAction() == KeyEvent.ACTION_DOWN )
+			{
+				Event ev = freeEvents.get(freeEventIndex++);
+				ev.set( EventType.KeyDown, 0, 0, 0, event.getKeyCode(), (char)event.getUnicodeChar() );
+				eventQueue.add( ev );
+				keys.add( event.getKeyCode() );
+			}
+			if( event.getAction() == KeyEvent.ACTION_UP )
+			{
+				keys.remove( event.getKeyCode() );
+				
+				Event ev = freeEvents.get(freeEventIndex++);
+				ev.set( EventType.KeyUp, 0, 0, 0, event.getKeyCode(), (char)event.getUnicodeChar() );
+				eventQueue.add( ev );
+				
+				ev = freeEvents.get(freeEventIndex++);
+				ev.set( EventType.KeyTyped, 0, 0, 0, event.getKeyCode(), (char)event.getUnicodeChar() );
+				eventQueue.add( ev );
+			}
+		}
 		
 		return false;
 	}

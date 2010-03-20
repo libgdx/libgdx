@@ -40,6 +40,7 @@ public interface Input
 	 */	
 	public class Keys
 	{
+		public static int 	ANY_KEY = -1;
 		public static int  	KEYCODE_0 = 7;
 		public static int 	KEYCODE_1 = 8;
 		public static int 	KEYCODE_2 = 9;
