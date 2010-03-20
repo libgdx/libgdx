@@ -61,7 +61,7 @@ public class AndroidApplication extends Activity implements Application
 		graphics = new AndroidGraphics( this, useGL2IfAvailable );
 		input = new AndroidInput( this, graphics.view );
 		graphics.setInput( input );
-		audio = new AndroidAudio( );
+		audio = new AndroidAudio( this );
 		resources = new AndroidFiles( this.getAssets() );
 	}
 	
@@ -71,10 +71,12 @@ public class AndroidApplication extends Activity implements Application
 		super.onPause( );
 		
 		if( isFinishing() )		
-			graphics.disposeRenderListener();
+			graphics.disposeRenderListener();		
 		
 		if( graphics.view != null )
 			graphics.view.onPause();
+		
+		audio.pause();
 		
 		if( listener != null )
 			listener.pause( this );
@@ -86,10 +88,12 @@ public class AndroidApplication extends Activity implements Application
 		super.onResume();
 		
 		if( listener != null )
-			listener.resume( this );
+			listener.resume( this );			
 		
 		if( graphics.view != null )
 			graphics.view.onResume();
+		
+		audio.resume();
 	}
 
 	@Override

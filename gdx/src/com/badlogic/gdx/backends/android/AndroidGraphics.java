@@ -259,10 +259,11 @@ final class AndroidGraphics implements Graphics, Renderer
 			InputStream in;
 			try {
 				in = aHandle.getAssetManager().open( aHandle.getFileName() );
+				bitmap = BitmapFactory.decodeStream( in, null, options );
+				in.close();
 			} catch (IOException e) {
 				return null;
-			}
-			bitmap = BitmapFactory.decodeStream( in, null, options );
+			}			
 		}
 		else
 		{

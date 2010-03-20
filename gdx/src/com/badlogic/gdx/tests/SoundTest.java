@@ -39,12 +39,15 @@ public class SoundTest implements RenderListener, InputListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{
-		app.getInput().addInputListener( this );	
-		sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgunstereo.wav" ) );
-		
-		music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );	
-		music.setLooping( true );
-		music.play();		
+		if( music == null )
+		{
+			app.getInput().addInputListener( this );	
+			sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgun44k.ogg" ) );
+			
+			music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );				
+			music.play();		
+			music.setLooping( true );
+		}
 	}
 
 	@Override
