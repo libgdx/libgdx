@@ -58,7 +58,13 @@
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>							
+		</activity>		
+		
+		<activity android:name=".SoundTest" android:label="Sound Test">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>						
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5" />
 
