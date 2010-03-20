@@ -1,3 +1,3 @@
-#Sun Mar 07 14:06:25 CET 2010
+#Sat Mar 20 16:21:09 CET 2010
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true" appendContributed\="true">\r\n<variable delimiter\=";" name\="PWD" operation\="replace" value\="C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32"/>\r\n<variable delimiter\=";" name\="CWD" operation\="replace" value\="C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32"/>\r\n</environment>\r\n
