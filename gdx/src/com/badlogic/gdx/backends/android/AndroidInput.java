@@ -184,6 +184,18 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 					for( int j = 0; j < inputListeners.size(); j++ )					
 						if( inputListeners.get(j).touchDragged(event.x, event.y, event.pointer ) )
 							break;
+				if( event.type == EventType.KeyDown )
+					for( int j = 0; j < inputListeners.size(); j++ )
+						if( inputListeners.get(j).keyDown( event.keycode ) )
+							break;
+				if( event.type == EventType.KeyUp )
+					for( int j = 0; j < inputListeners.size(); j++ )
+						if( inputListeners.get(j).keyUp( event.keycode ) )
+							break;
+				if( event.type == EventType.KeyTyped )
+					for( int j = 0; j < inputListeners.size(); j++ )
+						if( inputListeners.get(j).keyTyped( event.keychar ) )
+							break;
 			}
 			eventQueue.clear();
 			freeEventIndex = 0;
