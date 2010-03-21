@@ -4,11 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="libs/android-1.5.jar"/>
 	<classpathentry kind="lib" path="libs/desktop-dependencies.jar"/>
-	<classpathentry kind="lib" path="libs/jl1.0.jar"/>
-	<classpathentry kind="lib" path="libs/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="libs/tritonus_share.jar"/>
-	<classpathentry kind="lib" path="libs/jogg-0.0.7.jar"/>
-	<classpathentry kind="lib" path="libs/jorbis-0.0.15.jar"/>
-	<classpathentry kind="lib" path="libs/vorbisspi1.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
