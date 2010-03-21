@@ -10,7 +10,8 @@ import android.widget.ListView;
 public class GDXTester extends ListActivity 
 {
 	String[] items = new String[]{ "Life Cycle Test", "Simple Test", "Vertex Array Test", "Vertex Buffer Object Test", "MeshRenderer Test", 
-								   "Fixed Point MeshRenderer Test", "Managed Test", "Text Test", "Sound Test", "Input Test"};
+								   "Fixed Point MeshRenderer Test", "Managed Test", "Text Test", "Sound Test", "Input Test", "Obj Test",
+								   "Fixed Point Test", "Float Test", "Lag Test" };
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -44,9 +45,17 @@ public class GDXTester extends ListActivity
 		if( keyword.equals( items[7] ) )
 			intent = new Intent( this, TextTest.class );
 		if( keyword.equals( items[8] ) )
-			intent = new Intent( this, SoundTest.class );
+			intent = new Intent( this, SoundTest.class );		
 		if( keyword.equals( items[9] ) )
 			intent = new Intent( this, InputTest.class );
+		if( keyword.equals( items[10] ) )
+			intent = new Intent( this, ObjTest.class );
+		if( keyword.equals( items[11] ) )
+			intent = new Intent( this, FixedPointTest.class );
+		if( keyword.equals( items[12] ) )
+			intent = new Intent( this, FloatTest.class );
+		if( keyword.equals( items[13] ) )
+			intent = new Intent( this, LagTest.class );
 			
 		startActivity( intent );
 	}
