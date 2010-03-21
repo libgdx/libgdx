@@ -21,6 +21,17 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 
+/**
+ * This interface encapsulates the creation and managment of audio resources.
+ * It allows you to create direct access links to the audio hardware via
+ * the {@link AudioDevice} interface, create sound effects via the {@link 
+ * Sound} interface and music streams via the {@link Music} interface.
+ * All resources created via this interface have to be disposed once no
+ * longer used.
+ * 
+ * @author mzechner
+ *
+ */
 public interface Audio 
 {
 	/**

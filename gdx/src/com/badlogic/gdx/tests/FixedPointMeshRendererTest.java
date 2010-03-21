@@ -126,12 +126,20 @@ public class FixedPointMeshRendererTest implements RenderListener
 		texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
 	}
 
+	/**
+	 * Called when the surface dimensions changed.
+	 */
 	@Override
 	public void surfaceChanged(Application app, int width, int height) 
 	{
 		
 	}
 	
+	/**
+	 * Main method for the desktop version.
+	 * 
+	 * @param argv
+	 */
 	public static void main( String[] argv )
 	{
 		//

@@ -19,6 +19,11 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+/**
+ * Interface wrapping all the methods of OpenGL ES 2.0
+ * @author mzechner
+ *
+ */
 public interface GL20
 {
 	public static final int GL_ES_VERSION_2_0 = 1;

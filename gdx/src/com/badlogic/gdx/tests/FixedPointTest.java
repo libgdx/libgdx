@@ -32,12 +32,6 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 public class FixedPointTest implements RenderListener
 {
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Fixed Point Test", 480, 320, false);
-		app.getGraphics().setRenderListener( new FixedPointTest() );
-	}
-
 	Texture tex;
 	Texture tex2;
 	IntBuffer vertices;
@@ -140,5 +134,11 @@ public class FixedPointTest implements RenderListener
 	private static int fp( float value )
 	{
 		return (int)(value * 65536);
+	}
+	
+	public static void main( String[] argv )
+	{
+		JoglApplication app = new JoglApplication( "Fixed Point Test", 480, 320, false);
+		app.getGraphics().setRenderListener( new FixedPointTest() );
 	}
 }

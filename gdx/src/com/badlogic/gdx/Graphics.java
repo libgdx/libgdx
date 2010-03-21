@@ -34,8 +34,8 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
  * It allows to retrieve {@link GL10}, {@link GL11} and {@link GL20} instances
  * depending on the available hardware and configuration of the {@link Application}.
  * Additionally it features methods to generate {@link Pixmap}s, {@link Font}s,
- * {@link Texture}s, {@link Mesh}es and {@link ShaderProgram}s. Note that Meshes only work for OpenGL ES 1.x.
- * Also note that ShaderPrograms only work with OpenGL ES 2.0
+ * {@link Texture}s, and {@link ShaderProgram}s. 
+ * Note that ShaderPrograms only work with OpenGL ES 2.0
  * 
  * @author mzechner
  *

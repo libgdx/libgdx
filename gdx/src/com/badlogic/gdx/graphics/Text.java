@@ -20,11 +20,13 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 
 /**
- * A textrun is a mesh that holds the glyphs
- * of the given string. New lines are translated
- * into a new row of glyphs. The glyphs will be
- * positioned in the positive quadrant of the x/y
- * plane.
+ * A Text is created by a {@link Font} and allows you to display formated
+ * strings. A text creates a mesh internally which holds all the glyphs of
+ * the string. Newlines get interpreted. A text can be aligned horizontally
+ * either to the left, the center or the right. The glyphs of the mesh are
+ * constructed on the x/z plane in the positive quadrant. The bounds of the
+ * Text are [0,0]-[Text.getWidth(), Text.getHeight()]. Once the text is no
+ * longer used it must be disposed via the {@link Text.dispose()} method.
  * 
  * @author mzechner
  *
@@ -41,18 +43,7 @@ public class Text
 		Left,
 		Center, 
 		Right
-	}
-	
-	/**
-	 * Vertical text alignement
-	 * @author mzechner	 
-	 */
-	public enum VerticalAlign
-	{
-		Top,
-		Center,
-		Bottom
-	}
+	}	
 	
 	private Graphics graphics;
 	private Font font;
@@ -94,7 +85,7 @@ public class Text
 	public void setHorizontalAlign( HorizontalAlign hAlign )
 	{
 		this.hAlign = hAlign;
-		dirty = true;
+		dirty = true;		
 	}	
 	
 	/**
@@ -123,14 +114,14 @@ public class Text
 			if( width < widths[i] )
 				width = widths[i];
 		}
-		dirty = true;					
+		dirty = true;			
 	}	
 	
 	/**
 	 * Rebuilds the Text from the last set text and {@link HorizontalAlign}.
 	 * This rebuilds he internal mesh and recalculates the bounds of the text. 
 	 */
-	public void rebuild( )
+	private void rebuild( )
 	{					
 		if( mesh == null )		
 		{
@@ -192,7 +183,8 @@ public class Text
 	/**
 	 * Renders the Text. Note that this will bind the glyph texture
 	 * of the {@link Font} being used by this text. The glyph texture
-	 * will stay bound.
+	 * will stay bound. You will have to have blending and texturing enabled for this 
+	 * to work. 
 	 */
 	public void render( )	
 	{

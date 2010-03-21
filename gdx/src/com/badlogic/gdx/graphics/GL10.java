@@ -19,6 +19,12 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+/**
+ * Interface wrapping all standard OpenGL ES 1.0 methods.
+ * 
+ * @author mzechner
+ *
+ */
 public interface GL10
 {
 	public static final int GL_OES_VERSION_1_0 = 1;

@@ -19,6 +19,12 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+/**
+ * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits 
+ * all the methods from {@link GL10}. 
+ * @author mzechner
+ *
+ */
 public interface GL11 extends GL10
 {
 	public static final int GL_OES_VERSION_1_0 = 1;

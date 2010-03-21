@@ -26,7 +26,7 @@ import com.badlogic.gdx.backends.desktop.JoglGL11;
  * be managed meaning that in case of an OpenGL context loss any OpenGL 
  * related resources like vertex buffer object handles are recreated. Note
  * that you have to call the {@link update()} method in case you modified
- * the underlying Mesh in order for the MeshRenderer to adapt the changes.
+ * the underlying Mesh in order for the MeshRenderer to adapt to the changes.
  * 
  * @author mzechner
  *

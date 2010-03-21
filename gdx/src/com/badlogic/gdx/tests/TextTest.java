@@ -50,8 +50,7 @@ public class TextTest implements RenderListener
 			font = app.getGraphics().newFont( app.getFiles().getInternalFileHandle( "data/arial.ttf"), 11, FontStyle.Plain, true );
 			text = font.newText( );
 			text.setText( "This is a test\nIt is a multline text!\nyes really!11!111one" );
-			text.setHorizontalAlign( HorizontalAlign.Center );			
-			text.rebuild();
+			text.setHorizontalAlign( HorizontalAlign.Center );						
 			
 			FloatMesh m = new FloatMesh( 4, 2, false, false, false, 0, 0, false, 0 );
 			m.setVertices( new float[]{ 0, 0, text.getWidth(), 0, text.getWidth(), text.getHeight(), 0, text.getHeight() } );
