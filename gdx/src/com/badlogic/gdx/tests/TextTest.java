@@ -31,7 +31,7 @@ public class TextTest implements RenderListener
 		if( text == null )
 		{
 			cam = new OrthographicCamera();		
-			font = app.getGraphics().newFont( app.getFiles().getInternalFileHandle( "data/arial.ttf"), 12, FontStyle.Plain, true );
+			font = app.getGraphics().newFont( app.getFiles().getInternalFileHandle( "data/arial.ttf"), 11, FontStyle.Plain, true );
 			text = font.newText( );
 			text.setText( "This is a test\nIt is a multline text!\nyes really!11!111one" );
 			text.setHorizontalAlign( HorizontalAlign.Center );			
