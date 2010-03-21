@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 
 /**
  * This interface encapsulates the communication with the graphics pipeline.
@@ -103,27 +104,21 @@ public interface Graphics
 	
 	/**
 	 * Creates a new {@link Pixmap} from the given InputStream which is assumed
-	 * to point to a bitmap in a readable form, e.g. PNG, JPEG. The formatHint
-	 * specifies to which format the Pixmap should be converted. The implementation
-	 * might ignore this hint. The InputStream is not closed.
+	 * to point to a bitmap in a readable form, e.g. PNG, JPEG. The InputStream is not closed.
 	 * 
 	 * @param in the InputStream
-	 * @param formatHint the {@link Pixmap.Format} hint
 	 * @return a new Pixmap or null in case the Pixmap could not be loaded
 	 */
-	public Pixmap newPixmap( InputStream in, Pixmap.Format formatHint );
+	public Pixmap newPixmap( InputStream in);
 	
 	/**
 	 * Creates a new {@link Pixmap} from the given file which is assumed
-	 * to point to a bitmap in a readable form, e.g. PNG, JPEG. The formatHint
-	 * specifies to which format the Pixmap should be converted. The implementation
-	 * might ignore this hint. 
+	 * to point to a bitmap in a readable form, e.g. PNG, JPEG.
 	 * 
 	 * @param file the file to load the pixmap from
-	 * @param formatHint the {@link Pixmap.Format} hint
 	 * @return a new Pixmap or null in case the Pixmap could not be loaded
 	 */
-	public Pixmap newPixmap( FileHandle file, Pixmap.Format formatHint );
+	public Pixmap newPixmap( FileHandle file );
 	
 	/**
 	 * Creates a new {@link Pixmap} from the given native pixmap. The native
@@ -168,13 +163,14 @@ public interface Graphics
 	 * 
 	 * @param width the width in pixels
 	 * @param height the height in pixels
+	 * @param format the format of the texture
 	 * @param minFilter the minification {@link Texture.TextureFilter}
 	 * @param magFilter the magnification {@link Texture.TextureFilter}
 	 * @param uWrap the {@link Texture.TextureWrap} in u
 	 * @param vWrap the {@link Texture.TextureWrap} in v
 	 * @return a new Texture
 	 */
-	public Texture newTexture( int width, int height, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );
+	public Texture newTexture( int width, int height, Format format, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );
 	
 	/**
 	 * Creates a new {@link Texture} from the given {@link Pixmap} using

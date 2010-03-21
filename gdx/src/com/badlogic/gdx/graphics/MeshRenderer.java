@@ -111,6 +111,19 @@ public class MeshRenderer
 	}
 	
 	/**
+	 * Renders the mesh using the supplied OpenGL primitive type.  
+	 * 
+	 * @param primitiveType the primitiveType. Should be one of {@link GL10.GL_TRIANGLES}, {@link Gl10.GL_TRIANGLE_STRIP}, {@link GL10.GL_TRIANGLE_FAN}, {@link GL10.GL_LINES}, {@link GL10.GL_LINE_STRIP} or {@link GL10.GL_LINE_LOOP}
+	 */
+	public void render(int primitiveType) 
+	{	
+		if( mesh.hasIndices() )
+			render( primitiveType, 0, mesh.getNumIndices() );
+		else
+			render( primitiveType, 0, mesh.getNumVertices() );
+	}
+	
+	/**
 	 * Renders the mesh using the supplied OpenGL primitive type. Offset
 	 * and count specify the offset into the vertex arrays or the indices
 	 * array as well as the number of vertices to use. 
@@ -265,10 +278,5 @@ public class MeshRenderer
 				}
 			}
 		}			
-	}
-
-	public int getMaximumVertices() 
-	{	
-		return 0;
 	}
 }

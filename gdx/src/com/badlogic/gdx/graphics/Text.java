@@ -122,7 +122,7 @@ public class Text
 			mesh = new MeshRenderer( graphics.getGL10(), m, false, font.isManaged() );
 		}
 		
-		if( mesh.getMaximumVertices() / 6 < text.length() )
+		if( mesh.getMesh().getMaximumVertices() / 6 < text.length() )
 		{
 			mesh.dispose();
 			FloatMesh m = new FloatMesh( 6 * text.length(), 3, false, false, true, 1, 2, false, 0 );

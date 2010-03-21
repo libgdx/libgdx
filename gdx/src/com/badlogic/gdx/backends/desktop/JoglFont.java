@@ -18,6 +18,8 @@ package com.badlogic.gdx.backends.desktop;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -96,14 +98,15 @@ final class JoglFont extends Font
 	 */
 	@Override
 	public Pixmap getGlyphBitmap(char character) {
-		Graphics g = tmpBitmap.getGraphics();
+		Graphics2D g = (Graphics2D)tmpBitmap.getGraphics();
 		g.setFont( font );
 		Rectangle2D bounds = metrics.getStringBounds( "" + character, g);
 		g.dispose( );
 		
 		BufferedImage bitmap = new BufferedImage( (int)Math.ceil(bounds.getWidth()), getLineHeight(), BufferedImage.TYPE_4BYTE_ABGR );
-		g = bitmap.getGraphics();
-		g.setFont(font);
+		g = (Graphics2D)bitmap.getGraphics();
+		
+		g.setFont(font);		
 		g.setColor( new java.awt.Color( 0x0000000, true ) );
 		g.fillRect( 0, 0, bitmap.getWidth(), bitmap.getHeight() );
 		g.setColor( new java.awt.Color( 0xffffffff, true ) );

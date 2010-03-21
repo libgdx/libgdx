@@ -51,7 +51,7 @@ public class ManagedTest implements RenderListener
 		
 		gl.glEnable(GL10.GL_TEXTURE_2D );
 		texture.bind();
-		mesh.render( GL10.GL_TRIANGLE_FAN, 0, 4 );
+		mesh.render( GL10.GL_TRIANGLE_FAN );
 	}
 	
 	@Override

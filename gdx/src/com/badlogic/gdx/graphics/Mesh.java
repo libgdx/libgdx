@@ -102,4 +102,22 @@ public interface Mesh
 	 * @return the offset of the first texture coordinate of the first vertex in bytes.
 	 */
 	public int getTexCoordsOffset( );
+	
+	/**
+	 * Sets the vertices of this mesh
+	 * @param vertices the vertices
+	 */
+	public void setVertices( float[] vertices );
+	
+	/**
+	 * Sets the indices of this mesh
+	 * 
+	 * @param indices the indices
+	 */
+	public void setIndices( short[] indices );
+
+	/**
+	 * @return the maximum number of vertices this Mesh can hold.
+	 */
+	public int getMaximumVertices();
 }

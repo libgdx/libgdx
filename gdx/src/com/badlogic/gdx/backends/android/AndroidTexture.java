@@ -109,6 +109,8 @@ final class AndroidTexture implements Texture
 		else
 			isMipMap = false;
 		this.graphics.textures.add( this );
+		
+		gl.glBindTexture( GL10.GL_TEXTURE_2D, 0 );
 	}
 	
 	AndroidTexture( AndroidGraphics graphics, GL20 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed )
@@ -138,6 +140,8 @@ final class AndroidTexture implements Texture
 		else
 			isMipMap = false;
 		this.graphics.textures.add( this );
+		
+		gl.glBindTexture( GL10.GL_TEXTURE_2D, 0 );
 	}		
 
 	protected void invalidate( )

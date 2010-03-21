@@ -72,7 +72,7 @@ final class JoglTexture implements Texture
 			throw new RuntimeException( ex );
 		}
 		GL gl = GLContext.getCurrent().getGL();
-        gl.glEnable( GL.GL_TEXTURE_2D );
+        
         bind(); 
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter( maxFilter ) );
@@ -90,7 +90,7 @@ final class JoglTexture implements Texture
 		this.height = image.getHeight();
 		texture = com.sun.opengl.util.texture.TextureIO.newTexture( image, minFilter == TextureFilter.MipMap?true:false );		
 		GL gl = GLContext.getCurrent().getGL();
-        gl.glEnable( GL.GL_TEXTURE_2D );
+        
         bind(); 
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter( maxFilter ) );
@@ -106,16 +106,16 @@ final class JoglTexture implements Texture
 	 *
 	 * @param textureID The GL texture ID
 	 */
-	JoglTexture(int width, int height, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed ) 
+	JoglTexture(int width, int height, int format, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed ) 
 	{        		
 		this.isManaged = managed;
-		BufferedImage image = new BufferedImage( width, height, BufferedImage.TYPE_4BYTE_ABGR );			
+		BufferedImage image = new BufferedImage( width, height, format );			
 		this.width = image.getWidth();
 		this.height = image.getHeight();
 		texture = com.sun.opengl.util.texture.TextureIO.newTexture( image, minFilter == TextureFilter.MipMap?true:false );
 		
 		GL gl = GLContext.getCurrent().getGL();
-        gl.glEnable( GL.GL_TEXTURE_2D );
+        
         bind(); 
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter( maxFilter ) );

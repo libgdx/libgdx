@@ -51,7 +51,7 @@ public abstract class Font
 	
 	protected Font( Graphics graphics, boolean managed )
 	{
-		this.texture = graphics.newTexture( 256, 256, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );
+		this.texture = graphics.newTexture( 512, 512, Pixmap.Format.RGBA4444, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );
 		this.graphics = graphics;
 		this.isManaged = managed;
 	}
@@ -149,7 +149,7 @@ public abstract class Font
 		Rectangle rect = new Rectangle( );
 		getGlyphBounds( character, rect );
 
-		if( glyphX + rect.getWidth() >= 256)
+		if( glyphX + rect.getWidth() >= 512)
 		{
 			glyphX = 0;
 			glyphY += getLineGap() + getLineHeight();
@@ -157,7 +157,7 @@ public abstract class Font
 		
 		texture.draw( bitmap, glyphX, glyphY );		
 						
-		Glyph glyph = new Glyph( getGlyphAdvance( character ), (int)rect.getWidth(), (int)rect.getHeight(), glyphX / 256.0f, glyphY / 256.0f, rect.getWidth() / 256.0f, rect.getHeight() / 256.0f );
+		Glyph glyph = new Glyph( getGlyphAdvance( character ), (int)rect.getWidth(), (int)rect.getHeight(), glyphX / 512.0f, glyphY / 512.0f, rect.getWidth() / 512.0f, rect.getHeight() / 512.0f );
 		glyphX += rect.getWidth();
 		return glyph;	
 	}

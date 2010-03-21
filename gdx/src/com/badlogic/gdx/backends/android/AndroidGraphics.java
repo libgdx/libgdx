@@ -231,11 +231,9 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Pixmap newPixmap(InputStream in, Format formatHint) 
-	{	
-		Options options = new Options( );
-		options.inPreferredConfig = AndroidPixmap.getInternalFormat( formatHint );
-		Bitmap bitmap = BitmapFactory.decodeStream( in, null, options );
+	public Pixmap newPixmap(InputStream in) 
+	{			
+		Bitmap bitmap = BitmapFactory.decodeStream( in, null, null );
 		if( bitmap != null )
 			return new AndroidPixmap( bitmap );
 		else
@@ -246,11 +244,9 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Pixmap newPixmap(FileHandle file, Format formatHint) 
+	public Pixmap newPixmap(FileHandle file) 
 	{
-		AndroidFileHandle aHandle = (AndroidFileHandle)file;
-		Options options = new Options( );
-		options.inPreferredConfig = AndroidPixmap.getInternalFormat( formatHint );
+		AndroidFileHandle aHandle = (AndroidFileHandle)file;		
 		Bitmap bitmap = null;
 		
 		if( aHandle.isAsset() )
@@ -258,7 +254,7 @@ final class AndroidGraphics implements Graphics, Renderer
 			InputStream in;
 			try {
 				in = aHandle.getAssetManager().open( aHandle.getFileName() );
-				bitmap = BitmapFactory.decodeStream( in, null, options );
+				bitmap = BitmapFactory.decodeStream( in, null, null );
 				in.close();
 			} catch (IOException e) {
 				return null;
@@ -296,9 +292,9 @@ final class AndroidGraphics implements Graphics, Renderer
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
+	public Texture newTexture(int width, int height, Pixmap.Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
 	{	
-		Bitmap.Config config = Bitmap.Config.ARGB_8888;		
+		Bitmap.Config config = AndroidPixmap.getInternalFormat(format);		
 		Bitmap bitmap = Bitmap.createBitmap(width, height, config);
 		Texture texture = null;
 		if( gl10 != null )

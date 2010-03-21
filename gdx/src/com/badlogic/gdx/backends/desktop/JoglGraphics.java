@@ -164,7 +164,7 @@ final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Pixmap newPixmap(InputStream in, Format formatHint) 
+	public Pixmap newPixmap(InputStream in) 
 	{	
 		try
 		{
@@ -178,7 +178,7 @@ final class JoglGraphics implements Graphics, RenderListener
 	}
 	
 	@Override
-	public Pixmap newPixmap(FileHandle file, Format formatHint) 
+	public Pixmap newPixmap(FileHandle file) 
 	{	
 		try
 		{
@@ -204,9 +204,12 @@ final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Texture newTexture(int width, int height, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
+	public Texture newTexture(int width, int height, Pixmap.Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
 	{	
-		return new JoglTexture( width, height, minFilter, magFilter, uWrap, vWrap, managed );
+		if( format == Format.Alpha )
+			return new JoglTexture( width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, managed );
+		else
+			return new JoglTexture( width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, managed );
 	}
 
 	@Override

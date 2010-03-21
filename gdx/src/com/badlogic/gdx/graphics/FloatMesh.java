@@ -17,6 +17,9 @@ import java.nio.ShortBuffer;
  */
 public final class FloatMesh implements Mesh
 {				
+	/** the number of maximum vertices **/
+	private final int maxVertices;
+	
 	/** the number of maximum indices **/
 	private final int maxIndices;
 	
@@ -87,6 +90,7 @@ public final class FloatMesh implements Mesh
 		if( hasIndices && maxIndices < 1 )
 			throw new IllegalArgumentException( "maxIndices has to be >= 1" );
 		
+		this.maxVertices = maxVertices;
 		this.hasColors = hasColors;
 		this.hasNormals = hasNormals;
 		this.hasTexCoords = hasTexCoords;
@@ -353,5 +357,14 @@ public final class FloatMesh implements Mesh
 		
 		System.out.println( mesh.getNumVertices() );
 		System.out.println( mesh.getNumIndices() );
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMaximumVertices() 
+	{	
+		return maxVertices;
 	}
 }
