@@ -107,9 +107,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	{
 		public int x, y;		
 		public int pointer;
-		@SuppressWarnings("unused")
 		public int keycode;
-		@SuppressWarnings("unused")
 		public char keychar;
 		public EventType type;
 
