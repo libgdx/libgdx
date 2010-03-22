@@ -3,8 +3,9 @@
 	package="com.badlogic.gdx" android:versionCode="1" android:versionName="1.0">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:debuggable="true">
-		<activity android:name=".GDXTester" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation">
-			
+		<activity android:name=".GDXTester" android:label="@string/app_name"
+			android:configChanges="keyboard|keyboardHidden|orientation">
+
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -22,78 +23,86 @@
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
-		
+
 		<activity android:name=".LifeCycleTest" android:label="Life Cycle Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".VertexBufferObjectTest" android:label="Vertex Buffer Object Test">
+		<activity android:name=".VertexBufferObjectTest"
+			android:label="Vertex Buffer Object Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
-		
+
 		<activity android:name=".VertexArrayTest" android:label="Vertex Array Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
-		
-		<activity android:name=".FixedPointMeshRendererTest" android:label="Fixed Point MeshRenderer Test">
+
+		<activity android:name=".FixedPointMeshRendererTest"
+			android:label="Fixed Point MeshRenderer Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>	
+		</activity>
 
 		<activity android:name=".ManagedTest" android:label="Managed Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
-		
+
 		<activity android:name=".TextTest" android:label="Text Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>		
-		
+		</activity>
+
 		<activity android:name=".SoundTest" android:label="Sound Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 
-		</activity>		
+		</activity>
 		<activity android:name=".ObjTest" android:label="Obj Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>		
-		
+		</activity>
+
 		<activity android:name=".InputTest" android:label="Input Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>			
-		
-				<activity android:name=".FixedPointTest" android:label="Fixed Point Test">
+		</activity>
+
+		<activity android:name=".FixedPointTest" android:label="Fixed Point Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>		
-		
-				<activity android:name=".FloatTest" android:label="Float Test">
+		</activity>
+
+		<activity android:name=".FloatTest" android:label="Float Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>	
-		
-						<activity android:name=".LagTest" android:label="Lag Test">
+		</activity>
+
+		<activity android:name=".LagTest" android:label="Lag Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
-		</activity>						
+		</activity>
+
+		<activity android:name=".Pong" android:label="Pong">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+			</intent-filter>
+		</activity>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5" />
 
