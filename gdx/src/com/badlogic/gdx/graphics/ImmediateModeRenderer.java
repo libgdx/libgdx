@@ -61,10 +61,7 @@ public class ImmediateModeRenderer
 	
 	/** the texture coordinate array and buffer **/
 	private float[] texCoords;
-	private FloatBuffer texCoordsBuffer;
-	
-	/** number of defined vertices **/
-	private int numVertices = 0;
+	private FloatBuffer texCoordsBuffer;	
 	
 	/** the current vertex attribute indices **/
 	private int idxPos = 0;
@@ -111,8 +108,7 @@ public class ImmediateModeRenderer
 	 */
 	public void begin( int primitiveType )
 	{
-		this.primitiveType = primitiveType;
-		numVertices = 0;
+		this.primitiveType = primitiveType;		
 		idxPos = 0;
 		idxCols = 0;
 		idxNors = 0;
