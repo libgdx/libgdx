@@ -356,7 +356,7 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	 */
 	public boolean isButtonDown( int button )
 	{
-		return buttons.contains( button );
+		return buttons.size() > 0;
 	}
 	
 	/**

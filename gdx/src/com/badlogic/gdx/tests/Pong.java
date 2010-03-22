@@ -39,9 +39,11 @@ public class Pong implements RenderListener
 	/** the scores of the left and right paddle **/
 	private int leftScore = 0;
 	private int rightScore = 0;
+	/** the left paddle speed multiplicator, used so that the ai is not perfect **/
+	private float leftPaddleMulti = 1;
 	
 	/** some constants **/
-	private final int BALL_SPEED = 30;
+	private final int BALL_SPEED = 100;
 	/** the position of the ball **/
 	private Vector2D ball = new Vector2D();
 	/** the ball direction **/
@@ -171,15 +173,17 @@ public class Pong implements RenderListener
 		
 		// Finally we render the text centered at the top
 		// of the screen. We use the text bounds for this.
-		// For text to be transparent we have to enable blending.
+		// For text to be transparent we have to enable blending and texturing.
 		// We could setup blending once but i'm lazy :)
+		gl.glEnable( GL10.GL_TEXTURE_2D );
 		gl.glEnable( GL10.GL_BLEND );
 		gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );
 		gl.glPushMatrix();
 		gl.glTranslatef( -score.getWidth() / 2, 160 - score.getHeight(), 0 );
-//		score.render();
+		score.render();
 		gl.glPopMatrix();
 		gl.glDisable( GL10.GL_BLEND );
+		gl.glDisable( GL10.GL_TEXTURE_2D );
 	}
 
 	/**
@@ -207,23 +211,41 @@ public class Pong implements RenderListener
 			ballSpeed = BALL_SPEED; // reset the ball speed 
 			ballDirection.set( (float)Math.random() + 0.1f, (float)Math.random() ).nor(); // new ball direction, must be unit length
 			rightScore++;     // right paddle scored!
+			score.setText( leftScore + " : " + rightScore );
+			// we set the left paddle multiplicator here which governs
+			// how fast the left paddle can follow the ball.
+			leftPaddleMulti = (float)Math.min( 1, Math.random() + 0.3f );
 		}
 		
 		if( ball.x > 240 )
 		{
 			ball.set( 0, 0 ); // reset to center
+			ballSpeed = BALL_SPEED; // reset the ball speed 
 			ballDirection.set( (float)Math.random() + 0.1f, (float)Math.random() ).nor(); // new ball direction, must be unit length
 			leftScore++; 	  // left paddle scored!
+			score.setText( leftScore + " : " + rightScore );
+			// we set the left paddle multiplicator here which governs
+			// how fast the left paddle can follow the ball.
+			leftPaddleMulti = (float)Math.min( 1, Math.random() + 0.3f );
 		}
 		
 		// if the ball is hitting the bottom or top we
 		// reverse its direction in y so that it bounces
-		if( ball.y > 160 || ball.y < -160 )
+		if( ball.y > 160 )
+		{
 			ballDirection.y = -ballDirection.y;
+			ball.y = 160;
+		}
+		
+		if( ball.y < -160 )
+		{
+			ballDirection.y = -ballDirection.y;
+			ball.y = -160;
+		}
 		
 		// if the ball is heading towards the right paddle and
 		// has hit it we reflect it
-		if( ballDirection.x > 0 && ball.x > rightPaddle.x - 5 &&
+		if( ballDirection.x > 0 && ball.x > rightPaddle.x - 5 && ball.x < rightPaddle.x + 5 &&
 		    ball.y > rightPaddle.y - 30 && ball.y < rightPaddle.y + 30 )
 		{
 			ball.x = rightPaddle.x - 6; // set the position of a little so we don't get to this code in the next frame
@@ -232,10 +254,12 @@ public class Pong implements RenderListener
 			ballDirection.y = sign * (float)Math.abs(ball.y - rightPaddle.y) / 30;  // reflect it depending on where the paddle was hit
 			ballDirection.nor();
 			ballSpeed += 10; // and faster!
+			if( ballSpeed > 300 )
+				ballSpeed = 300;
 		}
 		
 		// and the same for the left paddle
-		if( ballDirection.x < 0 && ball.x < leftPaddle.x + 5 &&
+		if( ballDirection.x < 0 && ball.x < leftPaddle.x + 5 && ball.x > leftPaddle.x - 5 &&
 			ball.y > leftPaddle.y - 30 && ball.y < leftPaddle.y + 30 )
 		{
 			ball.x = leftPaddle.x + 6; // set the position of a little so we don't get to this code in the next frame
@@ -244,6 +268,11 @@ public class Pong implements RenderListener
 			ballDirection.y = sign * (float)Math.abs(ball.y - leftPaddle.y) / 30;  // reflect it depending on where the paddle was hit
 			ballDirection.nor();
 			ballSpeed += 10; // and faster!
+			if( ballSpeed > 300 )
+				ballSpeed = 300;
+			// we set the left paddle multiplicator here which governs
+			// how fast the left paddle can follow the ball.
+			leftPaddleMulti = (float)Math.min( 1, Math.random() + 0.3f );
 		}
 		
 		// Has the user touched the screen? then position the paddle
@@ -251,11 +280,23 @@ public class Pong implements RenderListener
 		{
 			// get the touch coordinates and translate them
 			// to the game coordinate system.
-			float touchX = 480 * (app.getInput().getX() / app.getGraphics().getWidth() - 0.5f);
-			float touchY = 320 * (0.5f - app.getInput().getY() / app.getGraphics().getHeight());
+			float touchX = 480 * (app.getInput().getX() / (float)app.getGraphics().getWidth() - 0.5f);
+			float touchY = 320 * (0.5f - app.getInput().getY() / (float)app.getGraphics().getHeight());
 			
-			if( touchX > leftPaddle.x )
-				ball.y = touchY;
+			if( touchX > rightPaddle.x )
+				rightPaddle.y = touchY;						
+		}
+		
+		// very very simple ai. moves when the ball is heading towards
+		// the left paddle
+		if( ballDirection.x < 0 )
+		{
+			float dir = (float)Math.signum(ball.y - leftPaddle.y);
+			leftPaddle.y += dir * deltaTime * (ballSpeed * leftPaddleMulti );
+			if( dir > 0 && leftPaddle.y > ball.y )
+				leftPaddle.y = ball.y;
+			if( dir < 0 && leftPaddle.y < ball.y )
+				leftPaddle.y = ball.y;			
 		}
 	}
 
