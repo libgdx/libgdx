@@ -132,20 +132,26 @@ public class ObjLoader
 				
 				String[] parts = tokens[1].split("/");
 				facesVerts[faceIndex] = getIndex(parts[0], numVertices);
-				facesNormals[faceIndex] = getIndex(parts[2], numNormals);
-				facesUV[faceIndex] = getIndex(parts[1], numUV);
+				if( parts.length > 1 )
+					facesNormals[faceIndex] = getIndex(parts[2], numNormals);
+				if( parts.length > 2 )
+					facesUV[faceIndex] = getIndex(parts[1], numUV);
 				faceIndex++;
 				
 				parts = tokens[2].split("/");
 				facesVerts[faceIndex] = getIndex(parts[0], numVertices);
-				facesNormals[faceIndex] = getIndex(parts[2], numNormals);
-				facesUV[faceIndex] = getIndex(parts[1], numUV);
+				if( parts.length > 1 )
+					facesNormals[faceIndex] = getIndex(parts[2], numNormals);
+				if( parts.length > 2 )
+					facesUV[faceIndex] = getIndex(parts[1], numUV);
 				faceIndex++;
 				
 				parts = tokens[3].split("/");
 				facesVerts[faceIndex] = getIndex(parts[0], numVertices);
-				facesNormals[faceIndex] = getIndex(parts[2], numNormals);				
-				facesUV[faceIndex] = getIndex(parts[1], numUV);
+				if( parts.length > 1 )
+					facesNormals[faceIndex] = getIndex(parts[2], numNormals);
+				if( parts.length > 2 )
+					facesUV[faceIndex] = getIndex(parts[1], numUV);
 				faceIndex++;	
 				numFaces++;
 				continue;
