@@ -1,4 +1,4 @@
-package com.badlogic.gdx.bsp;
+package com.badlogic.gdx.bsp.stuff;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
