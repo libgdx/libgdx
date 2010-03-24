@@ -40,6 +40,9 @@ public class CollisionDetection
 	 * @param p3
 	 * @param plane
 	 */
+	static Vector planeIntersectionPoint = new Vector( );
+	static Vector edge = new Vector( );
+	static Vector baseToVertex = new Vector( );
 	public static void collideTriangle( CollisionPacket packet, Vector p1, Vector p2, Vector p3, Plane plane )
 	{
 		// we ignore back facing triangles
@@ -96,7 +99,7 @@ public class CollisionDetection
 		//
 		// now we know the collision interval, let's do some magic...
 		//
-		Vector collisionPoint = new Vector( );
+		Vector collisionPoint = null;
 		boolean foundCollision = false;
 		float t = 1.0f;
 		
@@ -107,7 +110,7 @@ public class CollisionDetection
 		//
 		if( !embeddedInPlane )
 		{
-			Vector planeIntersectionPoint = new Vector( packet.position ).sub( plane.normal );
+			planeIntersectionPoint.set( packet.position ).sub( plane.normal );
 			planeIntersectionPoint.add( packet.velocity.x * t0, packet.velocity.y * t0, packet.velocity.z * t0 );
 			
 			if( Intersector.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
@@ -127,8 +130,7 @@ public class CollisionDetection
 			Vector velocity = packet.velocity;
 			Vector base = packet.position;
 			float velocitySquaredLength = velocity.len2();
-			float a, b, c;
-			float newT;
+			float a, b, c;			
 			
 			// first check against each vertex
 			a = velocitySquaredLength;
@@ -137,10 +139,117 @@ public class CollisionDetection
 			b = 2 * (velocity.dot( base.tmp().sub(p1) ) );
 			c = p1.tmp().sub(base).len2() - 1;
 			float root = Intersector.getLowestPositiveRoot( a, b, c );
-			if( root != Float.NaN )			
+			if( root != Float.NaN && root < t )
+			{
 				t = root;
+				foundCollision = true;
+				collisionPoint = p1;
+			}
 			
+			// P2
+			b = 2 * (velocity.dot(base.tmp().sub(p2)));
+			c = p2.tmp().sub(base).len2() - 1;
+			root = Intersector.getLowestPositiveRoot(a, b, c);
+			if( root != Float.NaN && root < t )
+			{
+				t = root;
+				foundCollision = true;
+				collisionPoint = p2;
+			}
 			
+			// P2
+			b = 2 * (velocity.dot(base.tmp().sub(p3)));
+			c = p3.tmp().sub(base).len2() - 1;
+			root = Intersector.getLowestPositiveRoot(a, b, c);
+			if( root != Float.NaN && root < t )
+			{
+				t = root;
+				foundCollision = true;
+				collisionPoint = p3;
+			}
+			
+			// now check against edges...						
+			
+			// p1 -> p2
+			edge.set(p2).sub(p1);
+			baseToVertex.set(p1).sub(base);
+			float edgeSquaredLength = edge.len2();
+			float edgeDotVelocity = edge.dot(velocity);
+			float edgeDotBaseToVertex = edge.dot(baseToVertex);
+			
+			a = edgeSquaredLength * - velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
+			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSquaredLength * (1-baseToVertex.len2()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
+			
+			root = Intersector.getLowestPositiveRoot( a, b, c );
+			if( root != Float.NaN && root < t )
+			{
+				float f = (edgeDotVelocity*root - edgeDotBaseToVertex)/edgeSquaredLength;
+				if( f > 0 && f < 1 )
+				{
+					t = root;
+					foundCollision = true;
+					collisionPoint = p1.tmp2().add( edge.tmp().mul(f) );
+				}
+			}
+			
+			// p2 -> p3
+			edge.set(p3).sub(p2);
+			baseToVertex.set(p2).sub(base);
+			edgeSquaredLength = edge.len2();
+			edgeDotVelocity = edge.dot(velocity);
+			edgeDotBaseToVertex = edge.dot(baseToVertex);
+			
+			a = edgeSquaredLength * - velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
+			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSquaredLength * (1-baseToVertex.len2()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
+			
+			root = Intersector.getLowestPositiveRoot( a, b, c );
+			if( root != Float.NaN && root < t )
+			{
+				float f = (edgeDotVelocity*root - edgeDotBaseToVertex)/edgeSquaredLength;
+				if( f > 0 && f < 1 )
+				{
+					t = root;
+					foundCollision = true;
+					collisionPoint = p2.tmp2().add( edge.tmp().mul(f) );
+				}
+			}
+			
+			// p3 -> p1
+			edge.set(p1).sub(p3);
+			baseToVertex.set(p3).sub(base);
+			edgeSquaredLength = edge.len2();
+			edgeDotVelocity = edge.dot(velocity);
+			edgeDotBaseToVertex = edge.dot(baseToVertex);
+			
+			a = edgeSquaredLength * - velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
+			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSquaredLength * (1-baseToVertex.len2()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
+			
+			root = Intersector.getLowestPositiveRoot( a, b, c );
+			if( root != Float.NaN && root < t )
+			{
+				float f = (edgeDotVelocity*root - edgeDotBaseToVertex)/edgeSquaredLength;
+				if( f > 0 && f < 1 )
+				{
+					t = root;
+					foundCollision = true;
+					collisionPoint = p3.tmp2().add( edge.tmp().mul(f) );
+				}
+			}
+			
+			// compose the final result
+			if( foundCollision == true )
+			{
+				float distToCollision = t*packet.velocity.len();
+				if( packet.foundCollision == false || distToCollision < packet.nearestDistance )
+				{
+					packet.nearestDistance = distToCollision;
+					packet.intersectionPoint.set(collisionPoint);
+					packet.foundCollision = true;
+				}
+			}
 		}
 	}
 	
