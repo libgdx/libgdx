@@ -130,7 +130,7 @@ public final class Vector
      * 
      * @return 
      */
-    Vector tmp()
+    public Vector tmp()
     {
     	return tmp.set( this );
     }

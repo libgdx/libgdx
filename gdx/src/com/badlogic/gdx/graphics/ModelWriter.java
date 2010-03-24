@@ -2,7 +2,6 @@ package com.badlogic.gdx.graphics;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,6 +29,8 @@ public class ModelWriter
 	{
 		BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( out ) );
 				
+		if( mesh.getCoordsSize() != 3 )
+			throw new IllegalArgumentException( "vertex position size must be 3" );
 		if( mesh.getNumTexCoords() > 1 )
 			throw new IllegalArgumentException( "only a single texture coordinate set allowed" );
 		if( mesh.getTexCoordsSize() != 2 )
@@ -64,7 +65,7 @@ public class ModelWriter
 		if( mesh.hasIndices() )
 		{
 			short[] indices = mesh.getIndicesArray();
-			for( int i = 0; i < indices.length; i+=3 )
+			for( int i = 0; i < mesh.getNumIndices(); i+=3 )
 			{
 				int i1 = indices[i]+1;
 				int i2 = indices[i]+1;

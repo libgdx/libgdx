@@ -41,8 +41,8 @@ public final class Plane
 		Front
 	}
 	
-	protected final Vector normal = new Vector();
-	protected float d = 0;
+	public final Vector normal = new Vector();
+	public float d = 0;
 	
 	/**
 	 * Constructs a new plane based on the normal and distance
@@ -104,11 +104,24 @@ public final class Plane
 	}
 	
 	/**
-	 * Calculates the shortest distance between the plane and the
+	 * Sets the plane normal and distance
+	 * @param nx normal x-component
+	 * @param ny normal y-component
+	 * @param nz normal z-component
+	 * @param d distance to origin
+	 */
+	public void set( float nx, float ny, float nz, float d )
+	{
+		normal.set( nx, ny, nz );
+		this.d = d;
+	}
+	
+	/**
+	 * Calculates the shortest signed distance between the plane and the
 	 * given point.
 	 * 
 	 * @param point The point
-	 * @return the shortest distance between the plane and the point
+	 * @return the shortest signed distance between the plane and the point
 	 */
 	public float distance( Vector point )
 	{
@@ -134,6 +147,21 @@ public final class Plane
 				return PlaneSide.Back;
 			else
 				return PlaneSide.Front;
+	}
+	
+	/**
+	 * Returns whether the plane is facing the direction vector.
+	 * Think of the direction vector as the direction a camera
+	 * looks in. This method will return true if the front side
+	 * of the plane determined by its normal faces the camera.
+	 * 
+	 * @param direction the direction
+	 * @return whether the plane is front facing
+	 */
+	public boolean isFrontFacing( Vector direction )
+	{
+		float dot = normal.dot( direction );
+		return dot <= 0;
 	}
 	
 	/**
