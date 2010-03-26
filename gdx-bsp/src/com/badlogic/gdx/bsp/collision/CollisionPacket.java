@@ -50,6 +50,8 @@ public final class CollisionPacket
 		this.velocity = new Vector( velocity.x * invRadiusX, velocity.y * invRadiusY, velocity.z * invRadiusZ );
 		this.normalizedVelocity = new Vector( velocity ).nor();
 		this.position = new Vector( position.x * invRadiusX, position.y * invRadiusY, position.z * invRadiusZ );
+		
+		this.intersectionPoint = new Vector( );
 	}
 	
 	/**
@@ -74,5 +76,26 @@ public final class CollisionPacket
 	public float getNearestDistance( )
 	{
 		return nearestDistance;
+	}
+
+	/**
+	 * Sets the position and velocity of the swept ellipsoid. Resets
+	 * the old collision flag and distance.
+	 * 
+	 * @param position the position of the sphere
+	 * @param velocity the velocity of the ellipsoid
+	 */
+	public void set(Vector position, Vector velocity) 
+	{	
+		r3Position.set( position );
+		r3Velocity.set( velocity );
+		
+		this.velocity.set( velocity.x * invRadiusX, velocity.y * invRadiusY, velocity.z * invRadiusZ );
+		this.normalizedVelocity.set( velocity ).nor();
+		this.position.set( position.x * invRadiusX, position.y * invRadiusY, position.z * invRadiusZ );
+		
+		foundCollision = false;
+		nearestDistance = 0;
+		intersectionPoint.set(0,0,0);
 	}
 }

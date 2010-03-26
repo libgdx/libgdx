@@ -22,6 +22,9 @@ public class CollisionMesh
 	
 	/** the plane equations of the triangles **/
 	private final float[] planes;
+	
+	/** whether the triangles are clockwise or not **/
+	private final boolean isClockWise;
 
 	/**
 	 * Constructs a new CollisionMesh from a {@link FloatMesh}. The FloatMesh
@@ -51,6 +54,7 @@ public class CollisionMesh
 		numTriangles = mesh.hasIndices()?mesh.getNumIndices()/3:mesh.getNumVertices()/3;
 		triangles = new float[3 * 3 * numTriangles];
 		planes = new float[4 * numTriangles];
+		isClockWise = clockWise;
 		
 		if( mesh.hasIndices() )
 			fillFromIndexedMesh( mesh );
@@ -207,5 +211,13 @@ public class CollisionMesh
 		}
 		
 		return buffer.toString();
+	}
+	
+	/**
+	 * @return whether the triangles are given in clockwise or counter clockwise order
+	 */
+	public boolean isClockWise( )
+	{
+		return isClockWise;
 	}
 }

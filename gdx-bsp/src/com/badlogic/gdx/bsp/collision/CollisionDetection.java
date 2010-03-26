@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector;
 
 /**
- * Class holding various static methods to perform collision detection
- * and response.
+ * Class holding various static methods to perform collision detection.
  * 
  * @author badlogicgames@gmail.com
  *
@@ -27,7 +26,29 @@ public class CollisionDetection
 	 */
 	public static boolean collide( CollisionMesh mesh, CollisionPacket packet )
 	{
-		return false;
+		Vector p1 = new Vector();
+		Vector p2 = new Vector();
+		Vector p3 = new Vector();
+		Plane plane = new Plane( new Vector(), 0 );
+		
+		float[] triangles = mesh.getTriangles();
+		int numTriangles = mesh.getNumTriangles();
+		int idx = 0;
+		for( int i = 0; i < numTriangles; i++ )
+		{
+			p1.set( triangles[idx++], triangles[idx++], triangles[idx++] ).scale( packet.invRadiusX, packet.invRadiusY, packet.invRadiusZ );
+			p2.set( triangles[idx++], triangles[idx++], triangles[idx++] ).scale( packet.invRadiusX, packet.invRadiusY, packet.invRadiusZ );
+			p3.set( triangles[idx++], triangles[idx++], triangles[idx++] ).scale( packet.invRadiusX, packet.invRadiusY, packet.invRadiusZ );
+			
+			if( mesh.isClockWise() )
+				plane.set( p3, p2, p1 );
+			else
+				plane.set( p1, p2, p3 );
+			
+			collideTriangle( packet, p1, p2, p3, plane );
+		}
+		
+		return packet.isColliding();
 	}
 	
 	/**
@@ -113,12 +134,16 @@ public class CollisionDetection
 			planeIntersectionPoint.set( packet.position ).sub( plane.normal );
 			planeIntersectionPoint.add( packet.velocity.x * t0, packet.velocity.y * t0, packet.velocity.z * t0 );
 			
-			if( Intersector.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
-			{
-				foundCollision = true;
-				t = t0;
-				collisionPoint = planeIntersectionPoint;
-			}
+//			This would make sense, but then we collide with the vertices or edges... gah!
+//			if( plane.testPoint( planeIntersectionPoint ) == PlaneSide.OnPlane )
+//			{
+				if( Intersector.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
+				{
+					foundCollision = true;
+					t = t0;
+					collisionPoint = planeIntersectionPoint;
+				}
+//			}
 		}
 		
 		//
@@ -237,18 +262,18 @@ public class CollisionDetection
 					foundCollision = true;
 					collisionPoint = p3.tmp2().add( edge.tmp().mul(f) );
 				}
-			}
-			
-			// compose the final result
-			if( foundCollision == true )
+			}		
+		}
+		
+		// compose the final result
+		if( foundCollision == true )
+		{
+			float distToCollision = t*packet.velocity.len();
+			if( packet.foundCollision == false || distToCollision < packet.nearestDistance )
 			{
-				float distToCollision = t*packet.velocity.len();
-				if( packet.foundCollision == false || distToCollision < packet.nearestDistance )
-				{
-					packet.nearestDistance = distToCollision;
-					packet.intersectionPoint.set(collisionPoint);
-					packet.foundCollision = true;
-				}
+				packet.nearestDistance = distToCollision;
+				packet.intersectionPoint.set(collisionPoint);
+				packet.foundCollision = true;
 			}
 		}
 	}
@@ -256,9 +281,13 @@ public class CollisionDetection
 	public static void main( String[] argv )
 	{
 		FloatMesh mesh = new FloatMesh( 4, 3, false, false, false, 0, 0, true, 6 );
-		mesh.setVertices( new float[] { -1, 0, 1, 1, 0, 1, 1, 0, -1, -1, 0, -1 } );
-		mesh.setIndices( new short[] { 0, 1, 2, 2, 3, 1 } );
+		mesh.setVertices( new float[] { -0.5f, 0, 0.5f, 0.5f, 0, 0.5f, 0, 0, -0.5f, -0.5f, 0, -0.5f } );
+		mesh.setIndices( new short[] { 0, 1, 2, 2, 3, 1} );
 		CollisionMesh cmesh = new CollisionMesh( mesh, false );
-		System.out.println( cmesh );
+		
+		CollisionPacket packet = new CollisionPacket( new Vector( 0, 1f, 0 ), new Vector( 0, -2, 0 ), 1, 1, 1 );				
+		System.out.println(CollisionDetection.collide( cmesh, packet ));
+		System.out.println(packet.getIntersectionPoint());
+		System.out.println(packet.getNearestDistance());
 	}
 }
