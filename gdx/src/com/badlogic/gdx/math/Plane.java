@@ -34,7 +34,7 @@ public final class Plane
 	 * @author mzechner
 	 *
 	 */
-	enum PlaneSide
+	public enum PlaneSide
 	{
 		OnPlane,
 		Back,
@@ -178,5 +178,17 @@ public final class Plane
 	public float getD( )
 	{
 		return d;
+	}
+
+	/**
+	 * Sets the plane to the given point and normal.
+	 *  
+	 * @param point the point on the plane
+	 * @param normal the normal of the plane
+	 */
+	public void set(Vector point, Vector normal) 
+	{
+		this.normal.set( normal );
+		d = -point.dot( normal );		
 	}	
 }

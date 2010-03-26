@@ -63,9 +63,43 @@ public final class Intersector
 		return Float.NaN;
 	}
 	
+	/**
+	 * Returns whether the given point is inside the triangle. This assumes
+	 * that the point is on the plane of the triangle. No check is performed
+	 * that this is the case.
+	 * 
+	 * @param point the point
+	 * @param t1 the first vertex of the triangle
+	 * @param t2 the second vertex of the triangle
+	 * @param t3 the third vertex of the triangle
+	 * @return whether the point is in the triangle
+	 */
+	private final static Vector v0 = new Vector( );
+	private final static Vector v1 = new Vector( );
+	private final static Vector v2 = new Vector( );
 	public static boolean isPointInTriangle( Vector point, Vector t1, Vector t2, Vector t3 )
 	{
-		return false;
+		v0.set( t3 ).sub( t1 );
+		v1.set( t2 ).sub( t1 );
+		v2.set( point ).sub( t1 );
+
+		float dot00 = v0.dot( v0 );
+		float dot01 = v0.dot( v1 );
+		float dot02 = v0.dot( v2 );
+		float dot11 = v1.dot( v1 );
+		float dot12 = v1.dot( v2 );
+
+		float denom = dot00 * dot11 - dot01 * dot01;
+		if( denom == 0 )
+			return false;
+
+		float u = (dot11 * dot02 - dot01 * dot12) / denom;
+		float v = (dot00 * dot12 - dot01 * dot02) / denom;
+
+		if( u >= 0 && v >= 0 && u + v <= 1 )		
+			return true;		
+		else		
+			return false;		
 	}
 	
 	/**
@@ -218,9 +252,9 @@ public final class Intersector
 		if( !intersectRayPlane( ray, p, i ) )
 			return false;
 
-		Vector v0 = new Vector( ).set( t3 ).sub( t1 );
-		Vector v1 = new Vector( ).set( t2 ).sub( t1 );
-		Vector v2 = new Vector( i ).sub( t1 );
+		v0.set( t3 ).sub( t1 );
+		v1.set( t2 ).sub( t1 );
+		v2.set( i ).sub( t1 );
 
 		float dot00 = v0.dot( v0 );
 		float dot01 = v0.dot( v1 );

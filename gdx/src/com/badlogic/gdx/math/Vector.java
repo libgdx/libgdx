@@ -557,4 +557,18 @@ public final class Vector
 			return false;
 		return true;
 	}
+
+	/**
+	 * Scales the vector components by the given scalars.
+	 * 
+	 * @param scalarX
+	 * @param scalarY
+	 * @param scalarZ
+	 */
+	public void scale(float scalarX, float scalarY, float scalarZ) 
+	{	
+		x *= scalarX;
+		y *= scalarY;
+		z *= scalarZ;
+	}
 }
