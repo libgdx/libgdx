@@ -1,8 +1,5 @@
 package com.badlogic.gdx.tests;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
@@ -36,23 +33,16 @@ public class CollisionTest implements RenderListener
 
 	@Override
 	public void surfaceCreated(Application app) 
-	{	
-		try 
-		{
-			FloatMesh m = (FloatMesh)ModelLoader.loadObj( new FileInputStream( "scene.obj" ), true );
-			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );			
-			cam = new PerspectiveCamera();
-			cam.setFov( 45 );
-			cam.setNear( 0.1f );
-			cam.setFar( 1000 );
-			
-			cMesh = new CollisionMesh( m, false );
-			collider = new EllipsoidCollider( 1, 1, 1, new SlideResponse() );			
-		} 
-		catch (FileNotFoundException e) 
-		{		
-			e.printStackTrace();
-		}
+	{			
+		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
+		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );			
+		cam = new PerspectiveCamera();
+		cam.setFov( 45 );
+		cam.setNear( 0.1f );
+		cam.setFar( 1000 );
+		
+		cMesh = new CollisionMesh( m, false );
+		collider = new EllipsoidCollider( 1, 1, 1, new SlideResponse() );			
 	}
 	
 	@Override
