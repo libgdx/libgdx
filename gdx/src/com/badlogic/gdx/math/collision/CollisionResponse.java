@@ -1,6 +1,5 @@
 package com.badlogic.gdx.math.collision;
 
-import com.badlogic.gdx.math.Vector;
 
 /**
  * A collision response is responsible for altering the 

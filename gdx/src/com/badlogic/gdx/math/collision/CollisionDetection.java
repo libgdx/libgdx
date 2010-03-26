@@ -1,7 +1,5 @@
 package com.badlogic.gdx.math.collision;
 
-import android.text.style.BackgroundColorSpan;
-
 import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
