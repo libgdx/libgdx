@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.collision.CollisionDetection;
 import com.badlogic.gdx.math.collision.CollisionMesh;
 import com.badlogic.gdx.math.collision.EllipsoidCollider;
 import com.badlogic.gdx.math.collision.SlideResponse;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.math.collision.SlideResponse;
 public class CollisionTest implements RenderListener
 {
 	final float VERY_CLOSE_DISTANCE = 0.001f;
-	final float SPEED = 1;	
+	final float SPEED = 0.5f;	
 	CollisionMesh cMesh;
 	EllipsoidCollider collider;
 	MeshRenderer mesh;
@@ -42,7 +43,7 @@ public class CollisionTest implements RenderListener
 		cam.setFar( 1000 );
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 1, 1, 1, new SlideResponse() );			
+		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );			
 	}
 	
 	@Override
@@ -84,23 +85,20 @@ public class CollisionTest implements RenderListener
 		cam.getDirection().set( 0, 0, -1 );
 		mat.setToRotation( axis, yAngle );
 		cam.getDirection().rot( mat );
-				
+		
+		velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity 
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_UP ) )		
 			velocity.add(cam.getDirection().tmp().mul( SPEED * deltaTime));
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) )
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
 		
-		if( !collider.collide( cMesh, cam.getPosition(), velocity, 0.0000001f ) )
-		{
-			velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity when we don't collide
-			collider.collide( cMesh, cam.getPosition(), velocity, 0.0000001f );
-		}
+		collider.collide( cMesh, cam.getPosition(), velocity, 0.0000001f );
 		
 		cam.getPosition().add( velocity );
 		velocity.mul( 0.95f ); // decay
 		
 		
-		System.out.println( velocity );
+		System.out.println( "processed: " + CollisionDetection.getNumProcessedTriangles() + ", culled: " + CollisionDetection.getNumCulledTriangles() + ", early out: " + CollisionDetection.getNumEarlyOutTriangles() + ", collided: " + CollisionDetection.getNumCollidedTriangles() );
 	}
 			
 	@Override

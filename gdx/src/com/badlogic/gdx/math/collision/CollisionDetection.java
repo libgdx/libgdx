@@ -1,5 +1,7 @@
 package com.badlogic.gdx.math.collision;
 
+import android.text.style.BackgroundColorSpan;
+
 import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
@@ -13,6 +15,23 @@ import com.badlogic.gdx.math.Vector;
  */
 public class CollisionDetection 
 {
+	/** temporary vectors **/
+	static final Vector p1 = new Vector();
+	static final Vector p2 = new Vector();
+	static final Vector p3 = new Vector();
+	
+	/** temporary plane **/
+	static final Plane plane = new Plane( new Vector(), 0 );
+	
+	/** number of triangles processed during the last call to collide **/
+	private static int processedTriangles;
+	
+	/** number of early out triangles **/
+	private static int earlyOutTriangles;
+	
+	/** number of backface culled triangles **/
+	private static int culledTriangles;
+	
 	/**
 	 * Collides the ellipsoid moving form start to end having xRadius in the x/z plane
 	 * and yRadius on the y-axis with the given {@link CollisionMesh}.
@@ -25,11 +44,10 @@ public class CollisionDetection
 	 * @return whether a collision happened or not
 	 */
 	public static boolean collide( CollisionMesh mesh, CollisionPacket packet )
-	{
-		Vector p1 = new Vector();
-		Vector p2 = new Vector();
-		Vector p3 = new Vector();
-		Plane plane = new Plane( new Vector(), 0 );
+	{						
+		processedTriangles = 0;
+		earlyOutTriangles = 0;
+		culledTriangles = 0;
 		
 		float[] triangles = mesh.getTriangles();
 		int numTriangles = mesh.getNumTriangles();
@@ -46,6 +64,8 @@ public class CollisionDetection
 				plane.set( p1, p2, p3 );
 			
 			collideTriangle( packet, p1, p2, p3, plane );
+			
+			processedTriangles++;
 		}
 		
 		return packet.isColliding();
@@ -68,7 +88,10 @@ public class CollisionDetection
 	{
 		// we ignore back facing triangles
 		if( !plane.isFrontFacing( packet.normalizedVelocity ) )
+		{
+			culledTriangles++;
 			return;
+		}
 			
 		// calculate the interval of plane intersection
 		float t0, t1;
@@ -84,6 +107,7 @@ public class CollisionDetection
 			// no intersection
 			if( Math.abs( signedDistanceToTrianglePlane ) >= 1.0f )
 			{
+				earlyOutTriangles++;
 				return;
 			}
 			else
@@ -108,7 +132,10 @@ public class CollisionDetection
 			
 			// no collision
 			if( t0 > 1 || t1 < 0 )
+			{
+				earlyOutTriangles++;
 				return;
+			}
 			
 			// clamp
 			if( t0 < 0 ) t0 = 0;
@@ -134,16 +161,14 @@ public class CollisionDetection
 			planeIntersectionPoint.set( packet.position ).sub( plane.normal );
 			planeIntersectionPoint.add( packet.velocity.x * t0, packet.velocity.y * t0, packet.velocity.z * t0 );
 			
-//			This would make sense, but then we collide with the vertices or edges... gah!
-//			if( plane.testPoint( planeIntersectionPoint ) == PlaneSide.OnPlane )
-//			{
-				if( Intersector.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
-				{
-					foundCollision = true;
-					t = t0;
-					collisionPoint = planeIntersectionPoint;
-				}
-//			}
+			earlyOutTriangles++;
+			
+			if( Intersector.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
+			{
+				foundCollision = true;
+				t = t0;
+				collisionPoint = planeIntersectionPoint;
+			}						
 		}
 		
 		//
@@ -276,6 +301,38 @@ public class CollisionDetection
 				packet.foundCollision = true;
 			}
 		}
+	}
+	
+	/**
+	 * @return the number of processed triangles by the last call to collide();
+	 */
+	public static int getNumProcessedTriangles( )
+	{
+		return processedTriangles;
+	}
+	
+	/**
+	 * @return the number of culled triangles by the last call to collide();
+	 */
+	public static int getNumCulledTriangles( )
+	{
+		return culledTriangles;
+	}
+	
+	/**
+	 * @return the number of non colliding triangles by the last call to collide();
+	 */
+	public static int getNumEarlyOutTriangles( )
+	{
+		return earlyOutTriangles;
+	}
+	
+	/**
+	 * @return the number of triangles that actually collided by the last call to collide();
+	 */
+	public static int getNumCollidedTriangles( )
+	{
+		return processedTriangles - culledTriangles - earlyOutTriangles;
 	}
 	
 	public static void main( String[] argv )

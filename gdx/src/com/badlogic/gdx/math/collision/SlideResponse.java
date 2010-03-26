@@ -30,14 +30,14 @@ public class SlideResponse implements CollisionResponse
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void respond(CollisionPacket packet, Vector position, Vector velocity, float displacementDistance) 
+	public void respond(CollisionPacket packet, float displacementDistance) 
 	{	
-		destination.set( position ).add( velocity );
-		newPosition.set( position );
+		destination.set( packet.position ).add( packet.velocity );
+		newPosition.set( packet.position );
 		
 		if( packet.getNearestDistance() >= displacementDistance )
 		{
-			newVelocity.set( velocity ).nor().mul(packet.getNearestDistance() - displacementDistance );
+			newVelocity.set( packet.velocity ).nor().mul(packet.getNearestDistance() - displacementDistance );
 			newPosition.add( newVelocity );
 			
 			newVelocity.nor();
@@ -46,13 +46,13 @@ public class SlideResponse implements CollisionResponse
 				
 		
 		slidingPlaneOrigin.set( packet.getIntersectionPoint() );
-		slidingPlaneNormal.set( position ).sub( packet.getIntersectionPoint() ).nor();		
+		slidingPlaneNormal.set( packet.position ).sub( packet.getIntersectionPoint() ).nor();		
 		slidingPlane.set( slidingPlaneOrigin, slidingPlaneNormal );
 		
 		newDestination.set( destination ).sub( slidingPlane.normal.mul(slidingPlane.distance( destination )) );
 		newVelocity.set( newDestination ).sub( packet.getIntersectionPoint() );
-		velocity.set( newVelocity );
-		position.set( newPosition );
+		packet.velocity.set( newVelocity );
+		packet.position.set( newPosition );
 	}
 	
 }

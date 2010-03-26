@@ -63,7 +63,11 @@ public class EllipsoidCollider
 			if( packet.isColliding() && iterations < 5 )
 			{
 				collided = true;
-				response.respond( packet, position, velocity, displacementDistance );
+				response.respond( packet, displacementDistance );
+				
+				position.set(packet.position).scale( packet.radiusX, packet.radiusY, packet.radiusZ );
+				velocity.set(packet.velocity).scale( packet.radiusX, packet.radiusY, packet.radiusZ );
+				
 				if( velocity.len() < displacementDistance )
 					break;
 			}
