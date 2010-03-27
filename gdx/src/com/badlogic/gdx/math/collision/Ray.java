@@ -14,7 +14,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with libgdx.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.math.collision;
+
+import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Vector;
 
 /**
  * Encapsulates a ray having a starting position and a unit length direction.
@@ -24,20 +27,20 @@ package com.badlogic.gdx.math;
  */
 public final class Ray 
 {
-	protected Vector start = new Vector();
-	protected Vector dir = new Vector();	
+	public final Vector origin = new Vector();
+	public final Vector direction = new Vector();	
 	
 	/**
 	 * Constructor, sets the starting position of the ray
 	 * and the direction. 
 	 * 
-	 * @param start The starting position
-	 * @param dir The direction
+	 * @param origin The starting position
+	 * @param direction The direction
 	 */
-	public Ray( Vector start, Vector dir )
+	public Ray( Vector origin, Vector direction )
 	{
-		this.start.set(start);
-		this.dir.set(dir).nor();
+		this.origin.set(origin);
+		this.direction.set(direction).nor();
 	}
 	
 	/**
@@ -45,7 +48,7 @@ public final class Ray
 	 */
 	public Ray cpy()
 	{
-		return new Ray( this.start, this.dir );
+		return new Ray( this.origin, this.direction );
 	}
 	
 	/**
@@ -57,23 +60,7 @@ public final class Ray
 	 */
 	public Vector getEndPoint( float distance )
 	{
-		return new Vector( start ).add( dir.tmp().mul( distance ) );
-	}
-	
-	/**
-	 * @return the start point
-	 */
-	public Vector getStartPoint( )
-	{
-		return start;
-	}
-	
-	/**
-	 * @return the direction
-	 */
-	public Vector getDirection( )
-	{
-		return dir;
+		return new Vector( origin ).add( direction.tmp().mul( distance ) );
 	}
 	
 	static Vector tmp = new Vector( );
@@ -88,10 +75,10 @@ public final class Ray
 	 */
 	public Ray mul( Matrix matrix )
 	{
-		tmp.set( start ).add( dir );
+		tmp.set( origin ).add( direction );
 		tmp.mul( matrix );
-		start.mul( matrix );
-		dir.set( tmp.sub( start ) );
+		origin.mul( matrix );
+		direction.set( tmp.sub( origin ) );
 		return this;
 	}
 	
@@ -100,21 +87,21 @@ public final class Ray
 	 */
 	public String toString()
 	{
-		return "ray [" + start + ":" + dir + "]";
+		return "ray [" + origin + ":" + direction + "]";
 	}
 
 	/**
 	 * Sets the starting position and the direction 
 	 * of this ray.
 	 * 
-	 * @param start The starting position
-	 * @param dir The direction
+	 * @param origin The starting position
+	 * @param direction The direction
 	 * @return this ray for chaining
 	 */
-	public Ray set( Vector start, Vector dir )
+	public Ray set( Vector origin, Vector direction )
 	{
-		this.start.set(start);
-		this.dir.set(dir);
+		this.origin.set(origin);
+		this.direction.set(direction);
 		return this;
 	}
 	
@@ -132,8 +119,8 @@ public final class Ray
 	 */
 	public Ray set( float x, float y, float z, float dx, float dy, float dz )
 	{
-		this.start.set( x, y, z );
-		this.dir.set( dx, dy, dz );
+		this.origin.set( x, y, z );
+		this.direction.set( dx, dy, dz );
 		return this;
 	}
 	
@@ -145,8 +132,8 @@ public final class Ray
 	 */
 	public Ray set(Ray ray) {
 
-		this.start.set(ray.start);
-		this.dir.set(ray.dir);
+		this.origin.set(ray.origin);
+		this.direction.set(ray.direction);
 		return this;
 	}
 }

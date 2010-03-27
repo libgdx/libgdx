@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Plane.PlaneSide;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 
 /**
  * Encapsulates a view frustum based on clipping planes. Offers
@@ -245,7 +247,7 @@ public final class Frustum
 	 * @param mouse_x The window x-coordinate
 	 * @param mouse_y The window y-coordinate
 	 * @param pos The camera position
-	 * @param dir The camera direction, having unit length
+	 * @param direction The camera direction, having unit length
 	 * @param up The camera up vector, having unit length
 	 * @return the picking ray.
 	 */		

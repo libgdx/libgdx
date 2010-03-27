@@ -18,6 +18,9 @@ package com.badlogic.gdx.math;
 
 import java.util.List;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
+
 /**
  * Class offering various static methods for intersection testing between
  * different geometric objects.
@@ -227,20 +230,20 @@ public final class Intersector
 	 */
 	public static boolean intersectRayPlane( Ray ray, Plane plane, Vector intersection )
 	{
-		float denom = ray.getDirection().dot( plane.getNormal() );
+		float denom = ray.direction.dot( plane.getNormal() );
 		if( denom != 0 )
 		{
-			float t = -( ray.getStartPoint().dot(plane.getNormal()) + plane.getD() ) / denom;
+			float t = -( ray.origin.dot(plane.getNormal()) + plane.getD() ) / denom;
 			if( t < 0 )
 				return false;
 
-			intersection.set( ray.getStartPoint() ).add( ray.getDirection().tmp().mul(t) );
+			intersection.set( ray.origin ).add( ray.direction.tmp().mul(t) );
 			return true;
 		}
 		else		
-			if( plane.testPoint( ray.getStartPoint() ) == Plane.PlaneSide.OnPlane )
+			if( plane.testPoint( ray.origin ) == Plane.PlaneSide.OnPlane )
 			{
-				intersection.set( ray.getStartPoint() );
+				intersection.set( ray.origin );
 				return true;
 			}
 			else
@@ -306,8 +309,8 @@ public final class Intersector
 	 */
 	public static boolean intersectRaySphere( Ray ray, Vector center, float radius, Vector intersection )
 	{
-		Vector dir = ray.dir.cpy().nor();
-		Vector start = ray.start.cpy();
+		Vector dir = ray.direction.cpy().nor();
+		Vector start = ray.origin.cpy();
 		float b = 2 * ( dir.dot( start.tmp().sub( center ) ) );
 		float c = start.dist2( center ) - radius * radius;
 		float disc = b * b - 4 * c;
@@ -371,30 +374,30 @@ public final class Intersector
 		float t_z_min, t_z_max;
 		float div_x, div_y, div_z;
 
-		div_x = 1 / ray.getDirection().x;
-		div_y = 1 / ray.getDirection().y;
-		div_z = 1 / ray.getDirection().z;
+		div_x = 1 / ray.direction.x;
+		div_y = 1 / ray.direction.y;
+		div_z = 1 / ray.direction.z;
 
 		if (div_x >= 0)
 		{
-			t_x_min = (bounds.getMin().x - ray.getStartPoint().x) * div_x;
-			t_x_max = (bounds.getMax().x - ray.getStartPoint().x) * div_x;
+			t_x_min = (bounds.getMin().x - ray.origin.x) * div_x;
+			t_x_max = (bounds.getMax().x - ray.origin.x) * div_x;
 		}
 		else
 		{
-			t_x_min = (bounds.getMax().x - ray.getStartPoint().x) * div_x;
-			t_x_max = (bounds.getMin().x - ray.getStartPoint().x) * div_x;
+			t_x_min = (bounds.getMax().x - ray.origin.x) * div_x;
+			t_x_max = (bounds.getMin().x - ray.origin.x) * div_x;
 		}
 
 		if (div_y >= 0)
 		{
-			t_y_min = (bounds.getMin().y - ray.getStartPoint().y) * div_y;
-			t_y_max = (bounds.getMax().y - ray.getStartPoint().y) * div_y;
+			t_y_min = (bounds.getMin().y - ray.origin.y) * div_y;
+			t_y_max = (bounds.getMax().y - ray.origin.y) * div_y;
 		}
 		else
 		{
-			t_y_min = (bounds.getMax().y - ray.getStartPoint().y) * div_y;
-			t_y_max = (bounds.getMin().y - ray.getStartPoint().y) * div_y;
+			t_y_min = (bounds.getMax().y - ray.origin.y) * div_y;
+			t_y_max = (bounds.getMin().y - ray.origin.y) * div_y;
 		}
 
 		if (t_x_min > t_y_max || (t_y_min > t_x_max))
@@ -407,13 +410,13 @@ public final class Intersector
 
 		if (div_z >= 0)
 		{
-			t_z_min = (bounds.getMin().z - ray.getStartPoint().z) * div_z;
-			t_z_max = (bounds.getMax().z - ray.getStartPoint().z) * div_z;
+			t_z_min = (bounds.getMin().z - ray.origin.z) * div_z;
+			t_z_max = (bounds.getMax().z - ray.origin.z) * div_z;
 		}
 		else
 		{
-			t_z_min = (bounds.getMax().z - ray.getStartPoint().z) * div_z;
-			t_z_max = (bounds.getMin().z - ray.getStartPoint().z) * div_z;
+			t_z_min = (bounds.getMax().z - ray.origin.z) * div_z;
+			t_z_max = (bounds.getMin().z - ray.origin.z) * div_z;
 		}
 
 		if ((t_x_min > t_z_max) || (t_z_min > t_x_max))
@@ -459,7 +462,7 @@ public final class Intersector
 
 			if( result == true )
 			{
-				float dist = ray.getStartPoint().tmp().sub( tmp ).len();
+				float dist = ray.origin.tmp().sub( tmp ).len();
 				if( dist < min_dist )
 				{
 					min_dist = dist;					
@@ -507,7 +510,7 @@ public final class Intersector
 
 			if( result == true )
 			{
-				float dist = ray.getStartPoint().tmp().sub( tmp ).len();
+				float dist = ray.origin.tmp().sub( tmp ).len();
 				if( dist < min_dist )
 				{
 					min_dist = dist;

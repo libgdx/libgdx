@@ -18,8 +18,8 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Matrix;
-import com.badlogic.gdx.math.Ray;
 import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.collision.Ray;
 
 /**
  * An orthographic camera having a position and a scale value for zooming. Looks

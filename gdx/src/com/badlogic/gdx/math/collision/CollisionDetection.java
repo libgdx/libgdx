@@ -1,19 +1,24 @@
 package com.badlogic.gdx.math.collision;
 
+import android.graphics.Path.Direction;
+
 import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Ray;
 import com.badlogic.gdx.math.Vector;
 
 /**
- * Class holding various static methods to perform collision detection.
+ * Class holding various static methods to perform collision detection,
+ * nearest point queries and intersection tests.
  * 
  * @author badlogicgames@gmail.com
  *
  */
 public class CollisionDetection 
 {
+	/** the global epsilon value used for some of the routines in here. set at your own risk **/
+	public static float EPSILON = 0.000000001f;
+	
 	/** temporary vectors **/
 	static final Vector p1 = new Vector();
 	static final Vector p2 = new Vector();
@@ -30,6 +35,539 @@ public class CollisionDetection
 	
 	/** number of backface culled triangles **/
 	private static int culledTriangles;
+	
+	/**
+	 * Calculates the closest point on the plain to the given point.
+	 * 
+	 * @param plane the plane
+	 * @param p the point
+	 * @param o the closest point on the plain to p (output)
+	 */
+	public static void closestPointToPlane( Plane plane, Vector p, Vector o )
+	{
+		float t = plane.normal.dot(p) - plane.d;
+		o.set(p).sub(plane.normal.tmp().mul(t) );
+	}
+	
+	/**
+	 * Calculates the signed distance from the given point
+	 * to the plane. 
+	 * 
+	 * @param plane the plane
+	 * @param p the point
+ 	 * @return the signed distance
+	 */
+	public static float signedDistanceToPlane( Plane plane, Vector p )
+	{
+		return plane.normal.dot(p) - plane.d;
+	}
+	
+	/**
+	 * Calculates the closest point on a {@link Segment} to the
+	 * given point.
+	 * 
+	 * @param s the segment
+	 * @param p the point
+	 * @param o the closest point (output)
+	 */
+	public static void closestPointToSegment( Segment s, Vector p, Vector o )
+	{
+		Vector ab = s.b.tmp().sub(s.a);
+		float t = ab.dot( p.tmp2().sub(s.a) );
+		if( t <= 0 )
+		{
+			o.set(s.a);
+		}
+		else
+		{
+			float denom = ab.dot(ab);
+			if( t >= denom )
+			{
+				o.set( s.b );
+			}
+			else
+			{
+				t = t / denom;
+				o.set( s.a ).add( ab.mul(t) ) ;
+			}
+		}
+	}
+	
+	/**
+	 * Calculates the closest point on a {@link Ray} to the
+	 * given point.
+	 * 
+	 * @param r the ray
+	 * @param p the point
+	 * @param o the closest point (output)
+	 */
+	public static void closestPointToRay( Ray r, Vector p, Vector o )
+	{
+		Vector ab = r.direction;
+		float t = ab.dot( p.tmp2().sub(r.origin) );
+		if( t <= 0 )
+		{
+			o.set(r.origin);
+		}
+		else
+		{
+			float denom = ab.dot(ab);
+			t = t / denom;
+			o.set( r.origin ).add( ab.tmp().mul(t) ) ;
+		}
+	}
+	
+	/**
+	 * Calculates the closest point on a line to the given point
+	 * 
+	 * @param a the first point of the line
+	 * @param b the second point of the line
+	 * @param p the point
+ 	 * @param o the closest point on the line to p
+	 */
+	public static void closestPointToLine( Vector a, Vector b, Vector p, Vector o )
+	{
+		Vector ab = b.tmp().sub(a);
+		float t = ab.dot( p.tmp2().sub(a) );
+		float denom = ab.dot(ab);
+		t = t / denom;
+		o.set( a ).add( ab.mul(t) ) ;
+	}
+	
+	/**
+	 * Returns the closest point in and on the bounding box to the given point.
+	 * If the given point is inside the bounding box the given point is returned.
+	 * 
+	 * @param b the bounding box
+	 * @param p the point
+	 * @param o the closest point
+	 */
+	public static void closestPointToBoundingBox( BoundingBox b, Vector p, Vector o )
+	{
+		o.set( p );
+		if( p.x < b.min.x ) o.x = b.min.x;
+		if( p.x > b.max.x ) o.x = b.max.x;
+		if( p.y < b.min.y ) o.y = b.min.y;
+		if( p.y > b.max.y ) o.y = b.max.y;
+		if( p.z < b.min.z ) o.z = b.min.z;
+		if( p.z > b.max.z ) o.z = b.max.z;
+	}
+	
+	/**
+	 * Returns the squared distance from the point to the bounding box. If the
+	 * point is inside the bounding box 0 is returned.
+	 * 
+	 * @param b the bounding box
+	 * @param p the point 
+	 * @return the squared distance to the bounding box.
+	 */
+	public static float squaredDistanceToBoundingBox( BoundingBox b, Vector p )
+	{
+		float sqDist = 0;
+		if( p.x < b.min.x ) sqDist += (b.min.x - p.x) * (b.min.x - p.x);
+		if( p.x > b.max.x ) sqDist += (p.x - b.max.x ) * ( p.x - b.max.x );
+		
+		if( p.y < b.min.y ) sqDist += (b.min.y - p.y) * (b.min.y - p.y);
+		if( p.y > b.max.y ) sqDist += (p.y - b.max.y ) * ( p.y - b.max.y );
+		
+		if( p.z < b.min.z ) sqDist += (b.min.z - p.z) * (b.min.z - p.z);
+		if( p.z > b.max.z ) sqDist += (p.z - b.max.z ) * ( p.z - b.max.z );
+		
+		return sqDist;
+	}
+	
+	/**
+	 * Returns whether the given sphere and plane intersect
+	 * 
+	 * @param s the sphere
+	 * @param p the plane
+	 * @return whether the sphere and the plane intersect.
+	 */
+	public static boolean testSpherePlane( Sphere s, Plane p )
+	{
+		float dist = s.center.dot( p.normal ) - p.d;
+		return Math.abs( dist ) <= s.radius;
+	}
+	
+	/**
+	 * Returns whether the given bounding box and plane intersect
+	 * 
+	 * @param b the bounding box
+	 * @param p the plane
+	 * @return whether the bounding box and the plane intersect
+	 */
+	static final Vector c = new Vector( );
+	static final Vector e = new Vector( );
+	public static boolean testBoundingBoxPlane( BoundingBox b, Plane p )
+	{
+		c.set( b.max ).add( b.min ).mul(0.5f );
+		e.set( b.max ).sub( c );
+		
+		float r = e.x * Math.abs( p.normal.x ) + e.y * Math.abs( p.normal.y ) + e.z * Math.abs( p.normal.z );
+		float s = p.normal.dot( c ) - p.d;
+		return Math.abs( s ) <= r;
+	}
+	
+	/**
+	 * Returns whether the given bounding box and sphere intersect
+	 * @param b the bounding box
+	 * @param s the sphere
+	 * @return whether the bounding box and sphere intersect
+	 */
+	public static boolean testBoundingBoxSphere( BoundingBox b, Sphere s )
+	{
+		float sqDist = squaredDistanceToBoundingBox( b, s.center );
+		return sqDist <= s.radius * s.radius;
+	}
+	
+	/**
+	 * Tests whether the given ray and bounding box intersect
+	 * @param b the bounding box
+	 * @param r the ray
+	 * @return whether the bounding box and ray intersect
+	 */
+	public static boolean testBoundingBoxRay( BoundingBox b, Ray r )
+	{
+		float t_x_min, t_x_max;
+		float t_y_min, t_y_max;
+		float t_z_min, t_z_max;
+		float div_x, div_y, div_z;
+
+		div_x = 1 / r.direction.x;
+		div_y = 1 / r.direction.y;
+		div_z = 1 / r.direction.z;
+
+		if (div_x >= 0)
+		{
+			t_x_min = (b.getMin().x - r.origin.x) * div_x;
+			t_x_max = (b.getMax().x - r.origin.x) * div_x;
+		}
+		else
+		{
+			t_x_min = (b.getMax().x - r.origin.x) * div_x;
+			t_x_max = (b.getMin().x - r.origin.x) * div_x;
+		}
+
+		if (div_y >= 0)
+		{
+			t_y_min = (b.getMin().y - r.origin.y) * div_y;
+			t_y_max = (b.getMax().y - r.origin.y) * div_y;
+		}
+		else
+		{
+			t_y_min = (b.getMax().y - r.origin.y) * div_y;
+			t_y_max = (b.getMin().y - r.origin.y) * div_y;
+		}
+
+		if (t_x_min > t_y_max || (t_y_min > t_x_max))
+			return false;
+
+		if (t_y_min > t_x_min)
+			t_x_min = t_y_min;
+		if (t_y_max < t_x_max)
+			t_x_max = t_y_max;
+
+		if (div_z >= 0)
+		{
+			t_z_min = (b.getMin().z - r.origin.z) * div_z;
+			t_z_max = (b.getMax().z - r.origin.z) * div_z;
+		}
+		else
+		{
+			t_z_min = (b.getMax().z - r.origin.z) * div_z;
+			t_z_max = (b.getMin().z - r.origin.z) * div_z;
+		}
+
+		if ((t_x_min > t_z_max) || (t_z_min > t_x_max))
+			return false;
+		if (t_z_min > t_x_min)
+			t_x_min = t_z_min;
+		if (t_z_max < t_x_max)
+			t_x_max = t_z_max;
+
+		return ((t_x_min < 1) && (t_x_max > 0));
+	}
+	
+	/**
+	 * Returns whether the given bounding box and segment intersect
+	 * @param b the bounding box
+	 * @param s the segment
+	 * @return whether the bounding box and segment intersect
+	 */
+	final static Vector d = new Vector( );
+	public static boolean testBoundingBoxSegment( BoundingBox b, Segment s )
+	{
+		c.set( b.min ).add( b.max ).mul( 0.5f );
+		e.set( b.max ).sub( c );
+		m .set( s.a ).add( s.b ).mul(0.5f);
+		d.set( s.a ).sub( m );
+		m.sub( c );
+		float adx = Math.abs( d.x );
+		if( Math.abs( m.x ) > e.x + adx ) return false;
+		float ady = Math.abs( d.y );
+		if( Math.abs( m.y ) > e.y + ady ) return false;
+		float adz = Math.abs( d.z );
+		if( Math.abs( m.z ) > e.z + adz ) return false;
+		
+		adx += EPSILON; ady += EPSILON; adz += EPSILON;
+		if( Math.abs( m.y * d.z - m.z * d.y ) > e.y * adz + e.z * ady ) return false;
+		if( Math.abs( m.z * d.x - m.x * d.z ) > e.x * adz + e.z * adx ) return false;
+		if( Math.abs( m.x * d.y - m.y * d.x ) > e.x * ady + e.y * adx ) return false;
+		
+		return true;
+	}
+	
+	/**
+	 * Returns whether the given sphere and ray intersect
+	 * @param s the sphere
+	 * @param r the ray
+	 * @return whether the sphere and ray intersect
+	 */
+	public static boolean testSphereRay( Sphere s, Ray r )
+	{
+		m.set( r.origin ).sub( s.center );
+		float c = m.dot(m) - s.radius*s.radius;
+		if( c < 0 ) return false;
+		float b = m.dot(r.direction);
+		if( b > 0 ) return false;
+		float disc = b*b - c;
+		if( disc < 0 ) return false;
+		return true;
+	}
+	
+	/**
+	 * Tests whether the moving sphere intersects the plane
+	 * @param s the sphere 
+	 * @param v the spheres velocity, encoding the distance and direction it travels
+	 * @param p the plane
+	 * @return whether the sphere and the plane intersect
+	 */
+	public static boolean testMovingSpherePlane( Sphere s, Vector v, Plane p )
+	{
+		float adist = s.center.dot( p.normal ) - p.d;
+		float bdist = s.center.tmp().add( v ).dot( p.normal ) - p.d;
+		
+		if( adist * bdist < 0 ) return true;
+		
+		if( Math.abs( adist ) <= s.radius || Math.abs( bdist ) <= s.radius ) return true;
+		return false;
+	}
+	
+	/**
+	 * Intersects the given segment and plane, returning the intersection point in o
+	 * 
+	 * @param s the segment
+	 * @param p the plane
+	 * @param i the intersection point (output)
+	 * @return whether the segment and the plane intersect
+	 */
+	public static boolean intersectSegmentPlane( Segment s, Plane p, Vector i )
+	{
+		Vector ab = s.b.tmp().sub(s.a);
+		float t = (p.d - p.normal.dot(s.a) ) / p.normal.dot(ab);
+		if( t >= 0 && t <= 1 )
+		{
+			i.set(s.a).add( ab.mul(t) );
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Intersects the given ray and plane and returns the intersection point
+	 * 
+	 * @param r the ray
+	 * @param p the plane
+	 * @param i the intersection point
+	 * @return whether the ray and the plane intersected
+	 */
+	public static boolean intersectRayPlane( Ray r, Plane p, Vector i )
+	{
+		Vector ab = r.direction.tmp();
+		float t = (p.d - p.normal.dot(r.origin) ) / p.normal.dot(ab);
+		if( t >= 0 )
+		{
+			i.set(r.origin).add( ab.mul(t) );
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Intersects the given ray and sphere and returns the intersection point
+	 * @param r the ray
+	 * @param sp the sphere
+	 * @param i the intersection point
+	 * @return whether the ray and the sphere intersect
+	 */
+	final static Vector m = new Vector( );
+	public static boolean intersectRaySphere( Ray r, Sphere sp, Vector i )
+	{
+		m.set( r.origin ).sub(sp.center);
+		float b = m.dot( r.direction );
+		float c = m.dot(m) - sp.radius * sp.radius;
+		if( c > 0 && b > 0 ) return false;
+		float discr = b*b - c;
+		if( discr < 0 ) return false;
+		float t = -b - (float)Math.sqrt( discr );
+		if( t < 0 ) t = 0;
+		i.set( r.origin ).add( r.direction.tmp().mul( t ) );
+		return true;
+	}
+	
+	/**
+	 * Returns whether the given point is inside the given triangle. It is assumed
+	 * that the point lies on the same plane as the triangle.
+	 * 
+	 * @param p the point
+	 * @param t1 the first point of the triangle
+	 * @param t2 the second point of the triangle
+	 * @param t3 the third point of the triangle
+	 * @return whether the point lies in the triangle
+	 */
+	static final Vector v0 = new Vector( );
+	static final Vector v1 = new Vector( );
+	static final Vector v2 = new Vector( );
+	public static boolean isPointInTriangle( Vector p, Vector t1, Vector t2, Vector t3 )
+	{
+		v0.set( t3 ).sub( t1 );
+		v1.set( t2 ).sub( t1 );
+		v2.set( p ).sub( t1 );
+
+		float dot00 = v0.dot( v0 );
+		float dot01 = v0.dot( v1 );
+		float dot02 = v0.dot( v2 );
+		float dot11 = v1.dot( v1 );
+		float dot12 = v1.dot( v2 );
+
+		float denom = dot00 * dot11 - dot01 * dot01;
+		if( denom == 0 )
+			return false;
+
+		float u = (dot11 * dot02 - dot01 * dot12) / denom;
+		float v = (dot00 * dot12 - dot01 * dot02) / denom;
+
+		if( u >= 0 && v >= 0 && u + v <= 1 )		
+			return true;		
+		else		
+			return false;			
+	}
+	
+	/** Intersects the given ray and triangle
+	 * 
+	 * @param r the ray
+	 * @param t1 the first point of the triangle
+	 * @param t2 the second point of the triangle
+	 * @param t3 the third point of the triangle
+	 * @param i the intersection point (output)
+	 * @return whether the ray and the triangle intersect
+	 */
+	public static boolean intersectRayTriangle( Ray r, Vector t1, Vector t2, Vector t3, Vector i )
+	{
+		plane.set( t1, t2, t3 );
+		if( !intersectRayPlane( r, plane, i) )
+			return false;
+		if( isPointInTriangle( i, t1, t2, t3) )
+			return true;
+		else
+			return false;
+	}
+	
+	/** Intersects the given ray and triangle
+	 * 
+	 * @param r the ray
+	 * @param t1 the first point of the triangle
+	 * @param t2 the second point of the triangle
+	 * @param t3 the third point of the triangle
+	 * @param p the plane of the triangle
+	 * @param i the intersection point (output)
+	 * @return whether the ray and the triangle intersect
+	 */
+	public static boolean intersectRayTriangle( Ray r, Vector t1, Vector t2, Vector t3, Plane p, Vector i )
+	{
+		if( !intersectRayPlane( r, p, i) )
+			return false;
+		if( isPointInTriangle( i, t1, t2, t3) )
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Intersects the given segment and triangle intersect
+	 * 
+	 * @param s the segment
+	 * @param t1 the first point of the triangle
+	 * @param t2 the second point of the triangle
+	 * @param t3 the third point of the triangle
+	 * @param i the intersection point
+	 * @return whether the given segment and triangle intersect
+	 */
+	public static boolean intersectSegmentTriangle( Segment s, Vector t1, Vector t2, Vector t3, Vector i )
+	{
+		plane.set( t1, t2, t3 );
+		if( !intersectSegmentPlane( s, plane, i) )
+			return false;
+		if( isPointInTriangle( i, t1, t2, t3) )
+			return true;
+		else return false;
+	}
+	
+	/**
+	 * Intersects the given segment and triangle 
+	 * @param s the segment
+	 * @param t1 the first point of the triangle
+	 * @param t2 the second point of the triangle
+	 * @param t3 the third point of the triangle
+	 * @param p the plane of the triangle
+	 * @param i the intersection point
+	 * @return whether the segment and the triangle intersect
+	 */
+	public static boolean intersectSegmentTriangle( Segment s, Vector t1, Vector t2, Vector t3, Plane p, Vector i )
+	{
+		if( !intersectSegmentPlane( s, p, i) )
+			return false;
+		if( isPointInTriangle( i, t1, t2, t3) )
+			return true;
+		else return false;	
+	}
+	
+	/**
+	 * Intersects the moving sphere and plane
+	 * @param s the sphere
+	 * @param v the velocity of the sphere, encoding the distance and direction it travels
+	 * @param p the plane
+	 * @param i the intersection point
+	 * @return whether the sphere and plane intersect
+	 */
+	public static boolean intersectMovingSpherePlane( Sphere s, Vector v, Plane p, Vector i )
+	{
+		float dist = p.normal.dot( s.center ) - p.d;
+		if( Math.abs( dist ) <= s.radius )
+		{
+			i.set( s.center );
+			return true;
+		}
+		else
+		{
+			float denom = p.normal.dot(v);
+			if( denom * dist >= 0 )
+			{
+				return false;
+			}
+			else
+			{
+				float r = dist > 0 ? s.radius: -s.radius;
+				float t = (r - dist) / denom;
+				if( t < 0 || t > 1 )
+					return false;
+				i.set( s.center ).add( v.tmp().mul(t) ).sub( p.normal.tmp().mul(r) );
+				return true;
+			}
+		}
+	}
 	
 	public static boolean collide( CollisionMesh mesh, Vector start, Vector end, Vector intersectionPoint )
 	{
@@ -60,7 +598,7 @@ public class CollisionDetection
 	 * and yRadius on the y-axis with the given {@link CollisionMesh}.
 	 * 
 	 * @param mesh the CollisionMesh
-	 * @param start the start position of the ellipsoid
+	 * @param origin the start position of the ellipsoid
 	 * @param end the end position of the ellipsoid
 	 * @param xRadius the radius in the x/z plane
 	 * @param yRadius the radius on the y-axis.

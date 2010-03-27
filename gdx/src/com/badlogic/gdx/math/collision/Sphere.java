@@ -14,7 +14,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with libgdx.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.math.collision;
+
+import com.badlogic.gdx.math.Vector;
 
 /**
  * Encapsulates a 3D sphere with a center and a radius
@@ -24,8 +26,10 @@ package com.badlogic.gdx.math;
  */
 public final class Sphere 
 {
-	private float radius;
-	private final Vector center;
+	/** the radius of the sphere **/
+	public float radius;
+	/** the center of the sphere **/
+	public final Vector center;
 	
 	/**
 	 * Constructs a sphere with the given center and radius
@@ -36,31 +40,5 @@ public final class Sphere
 	{
 		this.center = new Vector( center );
 		this.radius = radius;		
-	}
-	
-	/**
-	 * @return the center of the sphere
-	 */
-	public Vector getCenter( )
-	{
-		return center;
-	}
-	
-	/**
-	 * @return the radius of the sphere
-	 */
-	public float getRadius( )
-	{
-		return radius;
-	}
-	
-	/**
-	 * Sets the radius of the sphere
-	 * 
-	 * @param radius the radius
-	 */
-	public void setRadius( float radius )
-	{
-		this.radius = radius;
 	}
 }

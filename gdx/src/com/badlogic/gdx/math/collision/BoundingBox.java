@@ -14,9 +14,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with libgdx.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.math.collision;
 
 import java.util.List;
+
+import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Vector;
 
 /**
  * Encapsulates an axis aligned bounding box represented by a 
