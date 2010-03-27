@@ -77,6 +77,7 @@ public final class Intersector
 	private final static Vector v0 = new Vector( );
 	private final static Vector v1 = new Vector( );
 	private final static Vector v2 = new Vector( );
+		
 	public static boolean isPointInTriangle( Vector point, Vector t1, Vector t2, Vector t3 )
 	{
 		v0.set( t3 ).sub( t1 );
@@ -100,6 +101,18 @@ public final class Intersector
 			return true;		
 		else		
 			return false;		
+	}
+	
+	public static boolean intersectSegmentPlane( Vector start, Vector end, Plane plane, Vector intersection )
+	{	
+		Vector dir = end.tmp().sub(start);
+		float denom = dir.dot( plane.getNormal() );		
+		float t = -( start.dot(plane.getNormal()) + plane.getD() ) / denom;
+		if( t < 0 || t > 1 )
+			return false;
+
+		intersection.set( start ).add( dir.mul(t) );
+		return true;		
 	}
 	
 	/**

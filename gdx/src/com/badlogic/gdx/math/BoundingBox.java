@@ -271,9 +271,9 @@ public final class BoundingBox
                         min.set(min(min.x,a_bounds.min.x),
                                 min(min.y,a_bounds.min.y),
                                 min(min.z,a_bounds.min.z)),
-                        max.set(Math.max(max.x,a_bounds.max.x),
-                                Math.max(max.y,a_bounds.max.y),
-                                Math.max(max.z,a_bounds.max.z))
+                        max.set(max(max.x,a_bounds.max.x),
+                                max(max.y,a_bounds.max.y),
+                                max(max.z,a_bounds.max.z))
                         );
     }
 

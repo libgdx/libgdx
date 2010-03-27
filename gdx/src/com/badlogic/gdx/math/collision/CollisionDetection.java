@@ -3,6 +3,7 @@ package com.badlogic.gdx.math.collision;
 import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
+import com.badlogic.gdx.math.Ray;
 import com.badlogic.gdx.math.Vector;
 
 /**
@@ -29,6 +30,30 @@ public class CollisionDetection
 	
 	/** number of backface culled triangles **/
 	private static int culledTriangles;
+	
+	public static boolean collide( CollisionMesh mesh, Vector start, Vector end, Vector intersectionPoint )
+	{
+		float[] planes = mesh.getPlanes();
+		float[] triangles = mesh.getTriangles();
+		int numTriangles = mesh.getNumTriangles();
+		int idx = 0;
+		int idxt = 0;
+		for( int i = 0; i < numTriangles; i++ )
+		{
+			p1.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
+			p2.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
+			p3.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
+			plane.set( planes[idx++], planes[idx++], planes[idx++], planes[idx++] );					
+			
+			if( Intersector.intersectSegmentPlane(start, end, plane, intersectionPoint ) )
+				if( Intersector.isPointInTriangle( intersectionPoint, p1, p2, p3 ) )
+					return true;
+			
+			processedTriangles++;
+		}
+		
+		return false;
+	}
 	
 	/**
 	 * Collides the ellipsoid moving form start to end having xRadius in the x/z plane

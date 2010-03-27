@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.collision.CollisionDetection;
 import com.badlogic.gdx.math.collision.CollisionMesh;
 import com.badlogic.gdx.math.collision.EllipsoidCollider;
 import com.badlogic.gdx.math.collision.SlideResponse;
+import com.sun.gluegen.runtime.CPU;
 
 public class CollisionTest implements RenderListener
 {
@@ -30,7 +31,9 @@ public class CollisionTest implements RenderListener
 	float yAngle = 0;
 	Matrix mat = new Matrix();	
 	Vector axis = new Vector( 0, 1, 0 );
-	Vector velocity = new Vector( 0, 0, 0 );	
+	Vector velocity = new Vector( 0, 0, 0 );
+	Vector tmp = new Vector( );
+	Vector intersection = new Vector( );
 
 	@Override
 	public void surfaceCreated(Application app) 
@@ -41,9 +44,10 @@ public class CollisionTest implements RenderListener
 		cam.setFov( 45 );
 		cam.setNear( 0.1f );
 		cam.setFar( 1000 );
+		cam.getPosition().y = 5;
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );			
+		collider = new EllipsoidCollider( 0.5f, 0.5f, 0.5f, new SlideResponse() );			
 	}
 	
 	@Override
@@ -78,27 +82,34 @@ public class CollisionTest implements RenderListener
 	private void processInput( Input input, float deltaTime )
 	{
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_LEFT ) )
-			yAngle += deltaTime * 90;
+			yAngle += deltaTime * 120;
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_RIGHT ) )
-			yAngle -= deltaTime * 90;
+			yAngle -= deltaTime * 120;
 		
 		cam.getDirection().set( 0, 0, -1 );
 		mat.setToRotation( axis, yAngle );
 		cam.getDirection().rot( mat );
 		
-		velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity 
+		tmp.set( cam.getPosition() ).y -= 0.55f;
+		
+		if( !CollisionDetection.collide( cMesh, cam.getPosition(), tmp, intersection ) )
+		{
+			velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity
+			System.out.println( "applying gravity");
+		}		
+
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_UP ) )		
 			velocity.add(cam.getDirection().tmp().mul( SPEED * deltaTime));
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) )
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
-		
-		collider.collide( cMesh, cam.getPosition(), velocity, 0.0000001f );
+				
+		collider.collide( cMesh, cam.getPosition(), velocity, 0.0000001f );		
 		
 		cam.getPosition().add( velocity );
-		velocity.mul( 0.95f ); // decay
+		velocity.mul( 0.90f ); // decay
 		
-		
-		System.out.println( "processed: " + CollisionDetection.getNumProcessedTriangles() + ", culled: " + CollisionDetection.getNumCulledTriangles() + ", early out: " + CollisionDetection.getNumEarlyOutTriangles() + ", collided: " + CollisionDetection.getNumCollidedTriangles() );
+//		System.out.println( cam.getPosition() );
+//		System.out.println( "processed: " + CollisionDetection.getNumProcessedTriangles() + ", culled: " + CollisionDetection.getNumCulledTriangles() + ", early out: " + CollisionDetection.getNumEarlyOutTriangles() + ", collided: " + CollisionDetection.getNumCollidedTriangles() );
 	}
 			
 	@Override

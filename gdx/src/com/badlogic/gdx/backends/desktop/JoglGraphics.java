@@ -106,6 +106,7 @@ final class JoglGraphics implements Graphics, RenderListener
         });                      
         useGL2 = useGL2IfAvailable;
         graphicPanel.addGraphicListener( this );
+        graphicPanel.requestFocusInWindow();
 	}
 
 	@Override
