@@ -364,14 +364,13 @@ public class CollisionDetection
 	public static boolean intersectSegmentPlane( Segment s, Plane p, Vector i )
 	{
 		Vector ab = s.b.tmp().sub(s.a);
-		float t = (p.d - p.normal.dot(s.a) ) / p.normal.dot(ab);
-		if( t >= 0 && t <= 1 )
-		{
-			i.set(s.a).add( ab.mul(t) );
-			return true;
-		}
-		
-		return false;
+		float denom = ab.dot( plane.getNormal() );		
+		float t = -( s.a.dot(plane.getNormal()) + plane.getD() ) / denom;
+		if( t < 0 || t > 1 )
+			return false;
+
+		intersection.set( s.a ).add( ab.mul(t) );
+		return true;
 	}
 	
 	/**
@@ -569,7 +568,14 @@ public class CollisionDetection
 		}
 	}
 	
-	public static boolean collide( CollisionMesh mesh, Vector start, Vector end, Vector intersectionPoint )
+	/**
+	 * Returns whether the segment intersects with the given collision mesh
+	 * @param mesh the mesh
+	 * @param segment the segment
+	 * @return whether the mesh and segment intersect
+	 */
+	final static Vector intersection = new Vector( );
+	public static boolean testMeshSegment( CollisionMesh mesh, Segment segment )
 	{
 		float[] planes = mesh.getPlanes();
 		float[] triangles = mesh.getTriangles();
@@ -583,11 +589,35 @@ public class CollisionDetection
 			p3.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
 			plane.set( planes[idx++], planes[idx++], planes[idx++], planes[idx++] );					
 			
-			if( Intersector.intersectSegmentPlane(start, end, plane, intersectionPoint ) )
-				if( Intersector.isPointInTriangle( intersectionPoint, p1, p2, p3 ) )
-					return true;
+			if( intersectSegmentTriangle( segment, p1, p2, p3, plane, intersection ) )
+				return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Returns whether the ray and the given collision mesh intersect
+	 * @param mesh the mesh
+	 * @param ray the ray
+	 * @return whether the mesh and ray intersect
+	 */
+	public static boolean testMeshRay( CollisionMesh mesh, Ray ray )
+	{
+		float[] planes = mesh.getPlanes();
+		float[] triangles = mesh.getTriangles();
+		int numTriangles = mesh.getNumTriangles();
+		int idx = 0;
+		int idxt = 0;
+		for( int i = 0; i < numTriangles; i++ )
+		{
+			p1.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
+			p2.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
+			p3.set( triangles[idxt++], triangles[idxt++], triangles[idxt++] );
+			plane.set( planes[idx++], planes[idx++], planes[idx++], planes[idx++] );					
 			
-			processedTriangles++;
+			if( intersectRayTriangle( ray, p1, p2, p3, plane, intersection ) )
+				return true;
 		}
 		
 		return false;

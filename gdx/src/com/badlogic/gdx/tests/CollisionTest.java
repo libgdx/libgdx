@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.collision.CollisionDetection;
 import com.badlogic.gdx.math.collision.CollisionMesh;
 import com.badlogic.gdx.math.collision.EllipsoidCollider;
+import com.badlogic.gdx.math.collision.Segment;
 import com.badlogic.gdx.math.collision.SlideResponse;
 import com.sun.gluegen.runtime.CPU;
 
@@ -32,8 +33,7 @@ public class CollisionTest implements RenderListener
 	Matrix mat = new Matrix();	
 	Vector axis = new Vector( 0, 1, 0 );
 	Vector velocity = new Vector( 0, 0, 0 );
-	Vector tmp = new Vector( );
-	Vector intersection = new Vector( );
+	Segment segment = new Segment( new Vector(), new Vector() );
 
 	@Override
 	public void surfaceCreated(Application app) 
@@ -47,7 +47,7 @@ public class CollisionTest implements RenderListener
 		cam.getPosition().y = 5;
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 0.5f, 0.5f, 0.5f, new SlideResponse() );			
+		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );			
 	}
 	
 	@Override
@@ -90,9 +90,10 @@ public class CollisionTest implements RenderListener
 		mat.setToRotation( axis, yAngle );
 		cam.getDirection().rot( mat );
 		
-		tmp.set( cam.getPosition() ).y -= 0.55f;
+		segment.a.set( cam.getPosition() );
+		segment.b.set( cam.getPosition() ).y -= 1.1f;
 		
-		if( !CollisionDetection.collide( cMesh, cam.getPosition(), tmp, intersection ) )
+		if( !CollisionDetection.testMeshSegment( cMesh, segment) ) 
 		{
 			velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity
 			System.out.println( "applying gravity");
