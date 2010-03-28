@@ -687,6 +687,8 @@ public class CollisionDetection
 	static Vector baseToVertex = new Vector( );
 	public static void collideTriangle( CollisionPacket packet, Vector p1, Vector p2, Vector p3, Plane plane )
 	{
+		CollisionType type = CollisionType.Vertex;
+		
 		// we ignore back facing triangles
 		if( !plane.isFrontFacing( packet.normalizedVelocity ) )
 		{
@@ -717,7 +719,7 @@ public class CollisionDetection
 				embeddedInPlane = true;
 				t0 = 0;
 				t1 = 1;
-				packet.type = CollisionType.Embedded;
+				type = CollisionType.Embedded;
 			}
 		}
 		else
@@ -771,7 +773,7 @@ public class CollisionDetection
 				foundCollision = true;
 				t = t0;
 				collisionPoint = planeIntersectionPoint;
-				packet.type = CollisionType.Plane;
+				type = CollisionType.Plane;
 			}						
 		}
 		
@@ -798,7 +800,7 @@ public class CollisionDetection
 				t = root;
 				foundCollision = true;
 				collisionPoint = p1;
-				packet.type = CollisionType.Vertex;
+				type = CollisionType.Vertex;
 			}
 			
 			// P2
@@ -812,7 +814,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p2;
-					packet.type = CollisionType.Vertex;					
+					type = CollisionType.Vertex;					
 				}
 			}
 			
@@ -827,7 +829,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p3;
-					packet.type = CollisionType.Vertex;
+					type = CollisionType.Vertex;
 				}
 			}
 			
@@ -856,7 +858,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p1.tmp2().add( edge.tmp().mul(f) );
-					packet.type = CollisionType.Edge;
+					type = CollisionType.Edge;
 				}
 			}
 			
@@ -883,7 +885,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p2.tmp2().add( edge.tmp().mul(f) );
-					packet.type = CollisionType.Edge;
+					type = CollisionType.Edge;
 				}
 			}
 			
@@ -910,7 +912,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p3.tmp2().add( edge.tmp().mul(f) );
-					packet.type = CollisionType.Edge;
+					type = CollisionType.Edge;
 				}
 			}		
 		}
@@ -924,6 +926,7 @@ public class CollisionDetection
 				packet.nearestDistance = distToCollision;
 				packet.intersectionPoint.set(collisionPoint);
 				packet.foundCollision = true;
+				packet.type = type;
 			}
 		}
 	}

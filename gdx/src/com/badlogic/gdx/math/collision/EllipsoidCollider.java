@@ -60,7 +60,7 @@ public class EllipsoidCollider
 			packet.set( position, velocity );
 			CollisionDetection.collide( mesh, packet );
 			
-			if( packet.isColliding() && iterations < 20 )
+			if( packet.isColliding() && iterations < 5 )
 			{
 				System.out.println( "iter: " + iterations + ", type: " + packet.type );
 				collided = true;

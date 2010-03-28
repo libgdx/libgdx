@@ -29,7 +29,7 @@ public class CollisionTest implements RenderListener
 	Font font;
 	Text text;
 	final float VERY_CLOSE_DISTANCE = 0.001f;
-	final float SPEED = 0.5f;	
+	final float SPEED = 1f;	
 	CollisionMesh cMesh;
 	EllipsoidCollider collider;
 	MeshRenderer mesh;
@@ -40,6 +40,7 @@ public class CollisionTest implements RenderListener
 	Matrix mat = new Matrix();	
 	Vector axis = new Vector( 0, 1, 0 );
 	Vector velocity = new Vector( 0, 0, 0 );
+	Vector gravity = new Vector( 0, 0, 0 );
 	Segment segment = new Segment( new Vector(), new Vector() );
 
 	@Override
@@ -156,31 +157,28 @@ public class CollisionTest implements RenderListener
 		mat.setToRotation( axis, yAngle );
 		cam.getDirection().rot( mat );
 		
-		segment.a.set( cam.getPosition() );
-		segment.b.set( cam.getPosition() ).y -= 1.1f;
-//		if( !CollisionDetection.testMeshSegment( cMesh, segment) ) 
-//		{
-//			velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity
-//			System.out.println( "applying gravity");
-//		}		
+	
 
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_UP ) )		
 			velocity.add(cam.getDirection().tmp().mul( SPEED * deltaTime));
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) )
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
-				
-//		velocity.add( 0, -0.5f * deltaTime, 0 );
+								
 		System.out.println( "vel col:");
+		velocity.add( 0, 0.5f * - deltaTime, 0 );
 		collider.collide( cMesh, cam.getPosition(), velocity, 0.00005f );
-		System.out.println( "grav col:");
-		collider.collide( cMesh, cam.getPosition(), new Vector( 0,-2f * deltaTime,0 ), 0.00005f );
-//			System.out.println( "not colliding" );
 		
-//		cam.getPosition().add( velocity );
+		segment.a.set( cam.getPosition() );
+		segment.b.set( cam.getPosition() ).y -= 1.1f;
+//		if( !CollisionDetection.testMeshSegment( cMesh, segment) )
+//		{
+//			System.out.println( "grav col:");
+//			gravity.add( 0, -0.1f * deltaTime, 0 );
+//			collider.collide( cMesh, cam.getPosition(), gravity, 0.00005f );
+//			System.out.println( gravity );
+//		}		
 		velocity.mul( 0.90f ); // decay
-		
-//		System.out.println( cam.getPosition() );
-//		System.out.println( "processed: " + CollisionDetection.getNumProcessedTriangles() + ", culled: " + CollisionDetection.getNumCulledTriangles() + ", early out: " + CollisionDetection.getNumEarlyOutTriangles() + ", collided: " + CollisionDetection.getNumCollidedTriangles() );
+		gravity.mul( 0.9f );					
 	}
 			
 	public void collide( CollisionMesh mesh, Vector origin, Vector velocity )
