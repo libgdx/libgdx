@@ -344,7 +344,7 @@ public final class FloatMesh implements Mesh
 	 */
 	public void updateVertexBufferFromArray( int numVertices )
 	{
-		verticesBuffer.position(0);
+		verticesBuffer.clear();
 		verticesBuffer.put( verticesArray, 0, numVertices * vertexSize / 4 );
 		verticesBuffer.flip();		
 	}

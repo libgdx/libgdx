@@ -17,7 +17,7 @@ import com.badlogic.gdx.math.Vector;
 public class CollisionDetection 
 {
 	/** the global epsilon value used for some of the routines in here. set at your own risk **/
-	public static float EPSILON = 0.000000001f;
+	public static float EPSILON = 0.00001f;
 	
 	/** temporary vectors **/
 	static final Vector p1 = new Vector();
@@ -59,7 +59,7 @@ public class CollisionDetection
 	 */
 	public static float signedDistanceToPlane( Plane plane, Vector p )
 	{
-		return plane.normal.dot(p) - plane.d;
+		return plane.normal.dot(p) + plane.d;
 	}
 	
 	/**
@@ -364,8 +364,8 @@ public class CollisionDetection
 	public static boolean intersectSegmentPlane( Segment s, Plane p, Vector i )
 	{
 		Vector ab = s.b.tmp().sub(s.a);
-		float denom = ab.dot( plane.getNormal() );		
-		float t = -( s.a.dot(plane.getNormal()) + plane.getD() ) / denom;
+		float denom = ab.dot( p.getNormal() );		
+		float t = -( s.a.dot(p.getNormal()) + p.getD() ) / denom;
 		if( t < 0 || t > 1 )
 			return false;
 
@@ -384,7 +384,8 @@ public class CollisionDetection
 	public static boolean intersectRayPlane( Ray r, Plane p, Vector i )
 	{
 		Vector ab = r.direction.tmp();
-		float t = (p.d - p.normal.dot(r.origin) ) / p.normal.dot(ab);
+		float denom = ab.dot( p.getNormal() );
+		float t = -( r.origin.dot(p.getNormal()) + p.getD() ) / denom;
 		if( t >= 0 )
 		{
 			i.set(r.origin).add( ab.mul(t) );
@@ -392,6 +393,14 @@ public class CollisionDetection
 		}
 		
 		return false;
+	}
+	
+	public static float intersectRayPlane( Ray r, Plane p )
+	{
+		Vector ab = r.direction.tmp();
+		float denom = ab.dot( p.getNormal() );
+		float t = -( r.origin.dot(p.getNormal()) + p.getD() ) / denom;
+		return t;
 	}
 	
 	/**
@@ -754,6 +763,7 @@ public class CollisionDetection
 			
 			earlyOutTriangles++;
 			
+			// FIXME maybe isPointInTriangle is wrong?
 			if( Intersector.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
 			{
 				foundCollision = true;
@@ -788,25 +798,31 @@ public class CollisionDetection
 			}
 			
 			// P2
-			b = 2 * (velocity.dot(base.tmp().sub(p2)));
-			c = p2.tmp().sub(base).len2() - 1;
-			root = Intersector.getLowestPositiveRoot(a, b, c);
-			if( root != Float.NaN && root < t )
+			if( !foundCollision )
 			{
-				t = root;
-				foundCollision = true;
-				collisionPoint = p2;
+				b = 2 * (velocity.dot(base.tmp().sub(p2)));
+				c = p2.tmp().sub(base).len2() - 1;
+				root = Intersector.getLowestPositiveRoot(a, b, c);
+				if( root != Float.NaN && root < t )
+				{
+					t = root;
+					foundCollision = true;
+					collisionPoint = p2;
+				}
 			}
 			
 			// P2
-			b = 2 * (velocity.dot(base.tmp().sub(p3)));
-			c = p3.tmp().sub(base).len2() - 1;
-			root = Intersector.getLowestPositiveRoot(a, b, c);
-			if( root != Float.NaN && root < t )
+			if( !foundCollision )
 			{
-				t = root;
-				foundCollision = true;
-				collisionPoint = p3;
+				b = 2 * (velocity.dot(base.tmp().sub(p3)));
+				c = p3.tmp().sub(base).len2() - 1;
+				root = Intersector.getLowestPositiveRoot(a, b, c);
+				if( root != Float.NaN && root < t )
+				{
+					t = root;
+					foundCollision = true;
+					collisionPoint = p3;
+				}
 			}
 			
 			// now check against edges...						
@@ -818,15 +834,18 @@ public class CollisionDetection
 			float edgeDotVelocity = edge.dot(velocity);
 			float edgeDotBaseToVertex = edge.dot(baseToVertex);
 			
-			a = edgeSquaredLength * - velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSquaredLength * (1-baseToVertex.len2()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
+			a = edgeSquaredLength * - velocitySquaredLength + 
+				edgeDotVelocity * edgeDotVelocity;
+			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 
+				2 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSquaredLength * (1-baseToVertex.len2()) + 
+				edgeDotBaseToVertex*edgeDotBaseToVertex;
 			
 			root = Intersector.getLowestPositiveRoot( a, b, c );
 			if( root != Float.NaN && root < t )
 			{
 				float f = (edgeDotVelocity*root - edgeDotBaseToVertex)/edgeSquaredLength;
-				if( f > 0 && f < 1 )
+				if( f >= 0 && f <= 1 )
 				{
 					t = root;
 					foundCollision = true;
@@ -841,15 +860,18 @@ public class CollisionDetection
 			edgeDotVelocity = edge.dot(velocity);
 			edgeDotBaseToVertex = edge.dot(baseToVertex);
 			
-			a = edgeSquaredLength * - velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSquaredLength * (1-baseToVertex.len2()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
+			a = edgeSquaredLength * - velocitySquaredLength + 
+				edgeDotVelocity * edgeDotVelocity;
+			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 
+				2 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSquaredLength * (1-baseToVertex.len2()) + 
+				edgeDotBaseToVertex*edgeDotBaseToVertex;
 			
 			root = Intersector.getLowestPositiveRoot( a, b, c );
 			if( root != Float.NaN && root < t )
 			{
 				float f = (edgeDotVelocity*root - edgeDotBaseToVertex)/edgeSquaredLength;
-				if( f > 0 && f < 1 )
+				if( f >= 0 && f <= 1 )
 				{
 					t = root;
 					foundCollision = true;
@@ -864,15 +886,18 @@ public class CollisionDetection
 			edgeDotVelocity = edge.dot(velocity);
 			edgeDotBaseToVertex = edge.dot(baseToVertex);
 			
-			a = edgeSquaredLength * - velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
-			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 2 * edgeDotVelocity * edgeDotBaseToVertex;
-			c = edgeSquaredLength * (1-baseToVertex.len2()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
+			a = edgeSquaredLength * - velocitySquaredLength + 
+				edgeDotVelocity * edgeDotVelocity;
+			b = edgeSquaredLength*(2*velocity.dot(baseToVertex)) - 
+				2 * edgeDotVelocity * edgeDotBaseToVertex;
+			c = edgeSquaredLength * (1-baseToVertex.len2()) + 
+				edgeDotBaseToVertex*edgeDotBaseToVertex;
 			
 			root = Intersector.getLowestPositiveRoot( a, b, c );
 			if( root != Float.NaN && root < t )
 			{
 				float f = (edgeDotVelocity*root - edgeDotBaseToVertex)/edgeSquaredLength;
-				if( f > 0 && f < 1 )
+				if( f >= 0 && f <= 1 )
 				{
 					t = root;
 					foundCollision = true;
@@ -924,18 +949,88 @@ public class CollisionDetection
 	public static int getNumCollidedTriangles( )
 	{
 		return processedTriangles - culledTriangles - earlyOutTriangles;
+	}	
+
+	/**
+	 * Calculates the closest point on the perimeter of the triangle to the given
+	 * point. The given point is assumed to be on the plane of the triangle
+	 * @param p1 the first point of the triangle
+	 * @param p2 the second point of the triangle
+	 * @param p3 the third point of the triangle
+	 * @param p the point
+	 * @param i the closest point
+	 */
+	static final Vector ab = new Vector( );
+	static final Vector ac = new Vector( );
+	static final Vector ap = new Vector( );
+	static final Vector bp = new Vector( );
+	static final Vector cp = new Vector( );
+	public static void closestPointToTriangle(Vector a, Vector b, Vector c, Vector p, Vector i) 
+	{	
+		ab.set(b).sub(a);
+		ac.set(c).sub(a);
+		ap.set(p).sub(a);
+		float d1 = ab.dot(ap);
+		float d2 = ac.dot(ap);
+		
+		if( d1 <= 0 && d2 <= 0 ) 
+		{
+			i.set(a);
+			return;
+		}
+		
+		bp.set(p).sub(b);
+		float d3 = ab.dot(bp);
+		float d4 = ac.dot(bp);
+		if( d3 >= 0 && d4 <= d3 )
+		{
+			i.set(b);
+			return;
+		}
+		
+		float vc = d1 * d4 - d3 * d2;
+		if( vc <= 0 && d1 >= 0 && d3 <= 0 )
+		{
+			float v = d1 / (d1 - d3);
+			i.set(a).add( ab.mul(v) );
+			return;
+		}
+		
+		cp.set(p).sub(c);
+		float d5 = ab.dot(cp);
+		float d6 = ac.dot(cp);
+		if( d6 >= 0 && d5 <= d6 )
+		{
+			i.set(c);
+			return;
+		}
+		
+		float vb = d5 * d2 - d1 * d6;
+		if( vb <= 0 && d2 >= 0 && d6 <= 0 )
+		{
+			float w = d2 / (d2-d6);
+			i.set(a).add(ac.mul(w));
+			return;
+		}
+		
+		float va = d3 * d6 - d5 * d4;
+		if( va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0 )
+		{
+			float w = (d4 - d3) / ((d4-d3) + (d5 - d6));
+			i.set(b).add( c.tmp().sub(b).mul(w) );
+			return;
+		}
+		
+		float denom = 1.0f / (va + vb + vc );
+		float v = vb * denom;
+		float w = vc * denom;
+		i.set(a).add( ab.mul(v) ).add( ac.mul(w) );
 	}
 	
 	public static void main( String[] argv )
 	{
-		FloatMesh mesh = new FloatMesh( 4, 3, false, false, false, 0, 0, true, 6 );
-		mesh.setVertices( new float[] { -0.5f, 0, 0.5f, 0.5f, 0, 0.5f, 0, 0, -0.5f, -0.5f, 0, -0.5f } );
-		mesh.setIndices( new short[] { 0, 1, 2, 2, 3, 1} );
-		CollisionMesh cmesh = new CollisionMesh( mesh, false );
-		
-		CollisionPacket packet = new CollisionPacket( new Vector( 0, 1f, 0 ), new Vector( 0, -2, 0 ), 1, 1, 1 );				
-		System.out.println(CollisionDetection.collide( cmesh, packet ));
-		System.out.println(packet.getIntersectionPoint());
-		System.out.println(packet.getNearestDistance());
+		Vector i = new Vector();
+		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 2, 0, 0 ), new Vector( 0, 2, 0 ), new Vector( 4, -2, 0 ), i );
+		System.out.println( i );
 	}
 }

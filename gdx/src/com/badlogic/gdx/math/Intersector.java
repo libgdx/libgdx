@@ -83,27 +83,41 @@ public final class Intersector
 		
 	public static boolean isPointInTriangle( Vector point, Vector t1, Vector t2, Vector t3 )
 	{
-		v0.set( t3 ).sub( t1 );
-		v1.set( t2 ).sub( t1 );
-		v2.set( point ).sub( t1 );
-
-		float dot00 = v0.dot( v0 );
-		float dot01 = v0.dot( v1 );
-		float dot02 = v0.dot( v2 );
-		float dot11 = v1.dot( v1 );
-		float dot12 = v1.dot( v2 );
-
-		float denom = dot00 * dot11 - dot01 * dot01;
-		if( denom == 0 )
-			return false;
-
-		float u = (dot11 * dot02 - dot01 * dot12) / denom;
-		float v = (dot00 * dot12 - dot01 * dot02) / denom;
-
-		if( u >= 0 && v >= 0 && u + v <= 1 )		
-			return true;		
-		else		
-			return false;		
+//		v0.set( t3 ).sub( t1 );
+//		v1.set( t2 ).sub( t1 );
+//		v2.set( point ).sub( t1 );
+//
+//		float dot00 = v0.dot( v0 );
+//		float dot01 = v0.dot( v1 );
+//		float dot02 = v0.dot( v2 );
+//		float dot11 = v1.dot( v1 );
+//		float dot12 = v1.dot( v2 );
+//
+//		float denom = dot00 * dot11 - dot01 * dot01;
+//		if( denom == 0 )
+//			return false;
+//
+//		float u = (dot11 * dot02 - dot01 * dot12) / denom;
+//		float v = (dot00 * dot12 - dot01 * dot02) / denom;
+//
+//		if( u >= 0 && v >= 0 && u + v <= 1 )		
+//			return true;		
+//		else		
+//			return false;	
+		
+		v0.set(t1).sub(point);
+		v1.set(t2).sub(point);
+		v2.set(t3).sub(point);
+		
+		float ab = v0.dot(v1);
+		float ac = v0.dot(v2);
+		float bc = v1.dot(v2);
+		float cc = v2.dot(v2);
+		
+		if( bc * ac - cc * ab < 0 ) return false;
+		float bb = v1.dot(v1);
+		if( ab * bc - ac * bb < 0 ) return false;
+		return true;
 	}
 	
 	public static boolean intersectSegmentPlane( Vector start, Vector end, Plane plane, Vector intersection )

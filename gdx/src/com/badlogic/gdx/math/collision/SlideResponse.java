@@ -46,7 +46,7 @@ public class SlideResponse implements CollisionResponse
 				
 		
 		slidingPlaneOrigin.set( packet.getIntersectionPoint() );
-		slidingPlaneNormal.set( packet.position ).sub( packet.getIntersectionPoint() ).nor();		
+		slidingPlaneNormal.set( newPosition ).sub( packet.getIntersectionPoint() ).nor();		
 		slidingPlane.set( slidingPlaneOrigin, slidingPlaneNormal );
 		
 		newDestination.set( destination ).sub( slidingPlane.normal.mul(slidingPlane.distance( destination )) );

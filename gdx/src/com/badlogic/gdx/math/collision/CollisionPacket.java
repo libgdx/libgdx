@@ -32,7 +32,7 @@ public final class CollisionPacket
 	protected final Vector position;
 	
 	protected boolean foundCollision;
-	protected float nearestDistance;
+	protected float nearestDistance = Float.MAX_VALUE;
 	protected Vector intersectionPoint;
 	
 	public CollisionPacket( Vector position, Vector velocity, float radiusX, float radiusY, float radiusZ )
@@ -95,7 +95,7 @@ public final class CollisionPacket
 		this.position.set( position.x * invRadiusX, position.y * invRadiusY, position.z * invRadiusZ );
 		
 		foundCollision = false;
-		nearestDistance = 0;
+		nearestDistance = Float.MAX_VALUE;
 		intersectionPoint.set(0,0,0);
 	}
 }

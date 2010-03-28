@@ -60,19 +60,22 @@ public class EllipsoidCollider
 			packet.set( position, velocity );
 			CollisionDetection.collide( mesh, packet );
 			
-			if( packet.isColliding() && iterations < 5 )
+			if( packet.isColliding() && iterations < 20 )
 			{
 				collided = true;
 				response.respond( packet, displacementDistance );
 				
-				position.set(packet.position).scale( packet.radiusX, packet.radiusY, packet.radiusZ );
-				velocity.set(packet.velocity).scale( packet.radiusX, packet.radiusY, packet.radiusZ );
-				
 				if( velocity.len() < displacementDistance )
-					break;
+					break;				
+				
+				position.set(packet.position).scale( packet.radiusX, packet.radiusY, packet.radiusZ );
+				velocity.set(packet.velocity).scale( packet.radiusX, packet.radiusY, packet.radiusZ );				
 			}
-			else
+			else	
+			{
+				position.add(velocity);
 				break;
+			}
 			iterations++;			
 		}
 		
