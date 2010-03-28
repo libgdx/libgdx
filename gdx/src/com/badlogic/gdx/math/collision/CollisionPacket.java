@@ -16,6 +16,14 @@ import com.badlogic.gdx.math.Vector;
  */
 public final class CollisionPacket 
 {
+	public enum CollisionType
+	{
+		Plane,
+		Vertex,
+		Edge,
+		Embedded
+	}
+	
 	/** the ellipsoid radii **/
 	protected final float radiusX, radiusY, radiusZ;
 	
@@ -34,6 +42,8 @@ public final class CollisionPacket
 	protected boolean foundCollision;
 	protected float nearestDistance = Float.MAX_VALUE;
 	protected Vector intersectionPoint;
+	
+	public CollisionType type;
 	
 	public CollisionPacket( Vector position, Vector velocity, float radiusX, float radiusY, float radiusZ )
 	{		

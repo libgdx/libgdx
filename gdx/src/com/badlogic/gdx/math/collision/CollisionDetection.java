@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.collision.CollisionPacket.CollisionType;
 
 /**
  * Class holding various static methods to perform collision detection,
@@ -716,6 +717,7 @@ public class CollisionDetection
 				embeddedInPlane = true;
 				t0 = 0;
 				t1 = 1;
+				packet.type = CollisionType.Embedded;
 			}
 		}
 		else
@@ -769,6 +771,7 @@ public class CollisionDetection
 				foundCollision = true;
 				t = t0;
 				collisionPoint = planeIntersectionPoint;
+				packet.type = CollisionType.Plane;
 			}						
 		}
 		
@@ -795,6 +798,7 @@ public class CollisionDetection
 				t = root;
 				foundCollision = true;
 				collisionPoint = p1;
+				packet.type = CollisionType.Vertex;
 			}
 			
 			// P2
@@ -808,6 +812,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p2;
+					packet.type = CollisionType.Vertex;					
 				}
 			}
 			
@@ -822,6 +827,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p3;
+					packet.type = CollisionType.Vertex;
 				}
 			}
 			
@@ -850,6 +856,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p1.tmp2().add( edge.tmp().mul(f) );
+					packet.type = CollisionType.Edge;
 				}
 			}
 			
@@ -876,6 +883,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p2.tmp2().add( edge.tmp().mul(f) );
+					packet.type = CollisionType.Edge;
 				}
 			}
 			
@@ -902,6 +910,7 @@ public class CollisionDetection
 					t = root;
 					foundCollision = true;
 					collisionPoint = p3.tmp2().add( edge.tmp().mul(f) );
+					packet.type = CollisionType.Edge;
 				}
 			}		
 		}

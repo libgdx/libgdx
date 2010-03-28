@@ -47,6 +47,14 @@ public class CollisionTest implements RenderListener
 	{			
 		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
 		
+//		FloatMesh m = new FloatMesh( 4, 3, false, false, false, 0, 0, true, 6 );
+//		m.setVertices( new float[] { -5, -2.5f, 5,
+//									  5, -2.5f, 5,
+//									  5,  2.5f, -5,
+//									 -5,  2.5f, -5} );
+//		m.setIndices( new short[] { 0, 1, 2, 2, 3, 0 } );
+		
+		
 //		FloatMesh m = new FloatMesh( 3, 3, false, true, false, 0, 0, false, 0 );
 //		m.setVertices( new float[] { -10, 0, 10, 0, 1, 0,
 //									  10, 0, 10, 0, 1, 0,
@@ -74,11 +82,11 @@ public class CollisionTest implements RenderListener
 		cam.setFov( 45 );
 		cam.setNear( 0.1f );
 		cam.setFar( 1000 );
-		cam.getPosition().y = 1.1f;
+		cam.getPosition().y = 3f;
 		cam.getPosition().z = 0f;
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );
+		collider = new EllipsoidCollider( 1, 1, 1, new SlideResponse() );
 		
 //		font = app.getGraphics().newFont( "Arial", 16, FontStyle.Plain, true );
 //		text = font.newText();
@@ -161,14 +169,17 @@ public class CollisionTest implements RenderListener
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) )
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
 				
-		velocity.add( 0, -0.5f * deltaTime, 0 );
-		collider.collide( cMesh, cam.getPosition(), velocity, 0.005f );
-//		collider.collide( cMesh, cam.getPosition(), new Vector( 0,-2f * deltaTime,0 ), 0.0005f );
+//		velocity.add( 0, -0.5f * deltaTime, 0 );
+		System.out.println( "vel col:");
+		collider.collide( cMesh, cam.getPosition(), velocity, 0.00005f );
+		System.out.println( "grav col:");
+		collider.collide( cMesh, cam.getPosition(), new Vector( 0,-2f * deltaTime,0 ), 0.00005f );
+//			System.out.println( "not colliding" );
 		
 //		cam.getPosition().add( velocity );
 		velocity.mul( 0.90f ); // decay
 		
-		System.out.println( cam.getPosition() );
+//		System.out.println( cam.getPosition() );
 //		System.out.println( "processed: " + CollisionDetection.getNumProcessedTriangles() + ", culled: " + CollisionDetection.getNumCulledTriangles() + ", early out: " + CollisionDetection.getNumEarlyOutTriangles() + ", collided: " + CollisionDetection.getNumCollidedTriangles() );
 	}
 			

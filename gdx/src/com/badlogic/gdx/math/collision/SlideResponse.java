@@ -42,7 +42,9 @@ public class SlideResponse implements CollisionResponse
 			
 			newVelocity.nor();
 			packet.getIntersectionPoint().sub( newVelocity.mul( displacementDistance ) );
+			System.out.println( "displacing" );
 		}
+		System.out.println( packet.getNearestDistance() );
 				
 		
 		slidingPlaneOrigin.set( packet.getIntersectionPoint() );
