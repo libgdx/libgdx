@@ -45,7 +45,7 @@ public class CollisionTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{			
-//		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
+		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
 		
 //		FloatMesh m = new FloatMesh( 3, 3, false, true, false, 0, 0, false, 0 );
 //		m.setVertices( new float[] { -10, 0, 10, 0, 1, 0,
@@ -54,20 +54,20 @@ public class CollisionTest implements RenderListener
 //				
 //		});
 		
-		FloatMesh m = new FloatMesh( 8, 3, false, true, false, 0, 0, true, 12 );
-		m.setVertices( new float[] { -2, 0, -2, 0, 1, 0, 
-									 -2, 0, 2, 0, 1, 0,
-									 2, 0, 2, 0, 1, 0,
-									 2, 0, -2, 0, 1, 0,
-									 
-									 -2, 0, -2, 0, 0, 1,
-									 2, 0, -2, 0, 0, 1,
-									 2, 2, -2, 0, 0, 1, 
-									 -2, 2, -2, 0, 0, 1,
-									 	
-									 
-		} );						
-		m.setIndices( new short[] { 0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4 } );
+//		FloatMesh m = new FloatMesh( 8, 3, false, true, false, 0, 0, true, 12 );
+//		m.setVertices( new float[] { -2, 0, -2, 0, 1, 0, 
+//									 -2, 0, 2, 0, 1, 0,
+//									 2, 0, 2, 0, 1, 0,
+//									 2, 0, -2, 0, 1, 0,
+//									 
+//									 -2, 0, -2, 0, 0, 1,
+//									 2, 0, -2, 0, 0, 1,
+//									 2, 2, -2, 0, 0, 1, 
+//									 -2, 2, -2, 0, 0, 1,
+//									 	
+//									 
+//		} );						
+//		m.setIndices( new short[] { 0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4 } );
 		
 		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );			
 		cam = new PerspectiveCamera();
@@ -78,7 +78,7 @@ public class CollisionTest implements RenderListener
 		cam.getPosition().z = 0f;
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 1f, 1, 1f, new SlideResponse() );
+		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );
 		
 //		font = app.getGraphics().newFont( "Arial", 16, FontStyle.Plain, true );
 //		text = font.newText();
@@ -148,8 +148,8 @@ public class CollisionTest implements RenderListener
 		mat.setToRotation( axis, yAngle );
 		cam.getDirection().rot( mat );
 		
-//		segment.a.set( cam.getPosition() );
-//		segment.b.set( cam.getPosition() ).y -= 1.1f;
+		segment.a.set( cam.getPosition() );
+		segment.b.set( cam.getPosition() ).y -= 1.1f;
 //		if( !CollisionDetection.testMeshSegment( cMesh, segment) ) 
 //		{
 //			velocity.add( 0, -0.5f * deltaTime, 0 ); // gravity
@@ -161,8 +161,9 @@ public class CollisionTest implements RenderListener
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) )
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
 				
-		collider.collide( cMesh, cam.getPosition(), velocity, 0.0005f );
-		collider.collide( cMesh, cam.getPosition(), new Vector( 0,-2f * deltaTime,0 ), 0.0005f );
+		velocity.add( 0, -0.5f * deltaTime, 0 );
+		collider.collide( cMesh, cam.getPosition(), velocity, 0.005f );
+//		collider.collide( cMesh, cam.getPosition(), new Vector( 0,-2f * deltaTime,0 ), 0.0005f );
 		
 //		cam.getPosition().add( velocity );
 		velocity.mul( 0.90f ); // decay
