@@ -32,20 +32,25 @@ public class SlideResponse implements CollisionResponse
 	@Override
 	public void respond(CollisionPacket packet, float displacementDistance) 
 	{	
-		destination.set( packet.position ).add( packet.velocity );
-		newPosition.set( packet.position );
+		if( packet.getNearestDistance() == 0 )
+		{			
+			System.out.println( "embedded: " + packet.position.dst(packet.intersectionPoint) + ", " + packet.plane );
+			float distance = packet.plane.distance(packet.position);
+			packet.position.add(packet.plane.normal.tmp().mul(1 - distance + displacementDistance ));
+			packet.nearestDistance = displacementDistance;			
+		}
 		
-		if( packet.getNearestDistance() >= displacementDistance || packet.getNearestDistance() == 0 )
+		destination.set( packet.position ).add( packet.velocity );
+		newPosition.set( packet.position );		
+		
+		if( packet.getNearestDistance() >= displacementDistance )
 		{
-			newVelocity.set( packet.velocity ).nor().mul(packet.getNearestDistance()!=0?packet.getNearestDistance() - displacementDistance:displacementDistance );
+			newVelocity.set( packet.velocity ).nor().mul(packet.getNearestDistance() - displacementDistance);
 			newPosition.add( newVelocity );
 			
 			newVelocity.nor();
 			packet.getIntersectionPoint().sub( newVelocity.mul( displacementDistance ) );
-			System.out.println( "displacing" );
-		}
-		System.out.println( packet.getNearestDistance() );
-				
+		}			
 		
 		slidingPlaneOrigin.set( packet.getIntersectionPoint() );
 		slidingPlaneNormal.set( newPosition ).sub( packet.getIntersectionPoint() ).nor();		

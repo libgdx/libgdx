@@ -190,5 +190,20 @@ public final class Plane
 	{
 		this.normal.set( normal );
 		d = -point.dot( normal );		
-	}	
+	}
+
+	/**
+	 * Sets this plane from the given plane
+	 * @param plane the plane
+	 */
+	public void set(Plane plane) 
+	{	
+		this.normal.set(plane.normal);
+		this.d = plane.d;
+	}
+	
+	public String toString( )
+	{
+		return normal.toString() + ", " + d;
+	}
 }

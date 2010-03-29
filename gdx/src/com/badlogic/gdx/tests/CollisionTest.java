@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.MeshRenderer;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Text;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector;
@@ -28,10 +27,12 @@ public class CollisionTest implements RenderListener
 {
 	Font font;
 	Text text;
+	final float SCALE = 1;
 	final float VERY_CLOSE_DISTANCE = 0.001f;
-	final float SPEED = 1f;	
+	final float SPEED = 1 * SCALE;	
 	CollisionMesh cMesh;
 	EllipsoidCollider collider;
+	boolean colliding = false;
 	MeshRenderer mesh;
 	PerspectiveCamera cam;		
 	float[] lightColor = { 1, 1, 1, 0 };
@@ -39,22 +40,29 @@ public class CollisionTest implements RenderListener
 	float yAngle = 0;
 	Matrix mat = new Matrix();	
 	Vector axis = new Vector( 0, 1, 0 );
-	Vector velocityTmp = new Vector( );
+	Vector position = new Vector( 0, 0, 0 );
 	Vector velocity = new Vector( 0, 0, 0 );
 	Vector gravity = new Vector( 0, 0, 0 );
 	Segment segment = new Segment( new Vector(), new Vector() );
-
+	Vector start = new Vector( 0, 3 * SCALE, 0 );
+	
+	float ax;
+	float ay;
+	
 	@Override
 	public void surfaceCreated(Application app) 
-	{			
-//		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
+	{		
+		ax = app.getInput().getAccelerometerX();
+		ay = app.getInput().getAccelerometerZ();
+		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
+//		FloatMesh m = (FloatMesh)ModelLoader.loadOct( app.getFiles().readInternalFile( "data/steps.oct" ), true, start );
 		
-		FloatMesh m = new FloatMesh( 3, 3, false, false, false, 0, 0, true, 3 );
-		m.setVertices( new float[] { -5, -2.5f, 5,
-									  5, -2.5f, 5,
-									  0,  2.5f, -5,
-		} );
-		m.setIndices( new short[] { 0, 1, 2 } );
+//		FloatMesh m = new FloatMesh( 3, 3, false, false, false, 0, 0, true, 3 );
+//		m.setVertices( new float[] { -5, -2.5f, 5,
+//									  5, -2.5f, 5,
+//									  0,  2.5f, -5,
+//		} );
+//		m.setIndices( new short[] { 0, 1, 2 } );
 		
 		
 //		FloatMesh m = new FloatMesh( 3, 3, false, true, false, 0, 0, false, 0 );
@@ -83,12 +91,11 @@ public class CollisionTest implements RenderListener
 		cam = new PerspectiveCamera();
 		cam.setFov( 45 );
 		cam.setNear( 0.1f );
-		cam.setFar( 1000 );
-		cam.getPosition().y = 3f;
-		cam.getPosition().z = 0f;
+		cam.setFar( 1000 );		
+		position.set(start).y += SCALE * 3;		
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );
+		collider = new EllipsoidCollider( 0.5f * SCALE, 1 * SCALE, 0.5f * SCALE, new SlideResponse() );
 		
 //		font = app.getGraphics().newFont( "Arial", 16, FontStyle.Plain, true );
 //		text = font.newText();
@@ -105,6 +112,8 @@ public class CollisionTest implements RenderListener
 		
 		render3D( gl, app.getGraphics() );
 //		renderStats( gl, app.getGraphics() );
+		
+		System.out.println( app.getInput().getAccelerometerX() + " " + app.getInput().getAccelerometerY());
 	}	
 		
 	private void renderStats( GL10 gl, Graphics g )
@@ -124,10 +133,12 @@ public class CollisionTest implements RenderListener
 		gl.glColor4f( 1, 1, 1, 1 );
 		gl.glDisable( GL10.GL_BLEND );
 		gl.glDisable( GL10.GL_TEXTURE_2D );		
+		
 	}
 	
 	private void render3D( GL10 gl, Graphics g )
 	{
+		cam.getPosition().set(position);
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 		cam.setMatrices( g );
 		setupLights( gl );					
@@ -148,12 +159,18 @@ public class CollisionTest implements RenderListener
 	{
 		deltaTime = 0.017f;
 		if( input.isKeyPressed( Input.Keys.KEYCODE_ENTER ) )
-			cam.getPosition().set( 0, 2, 0 );
+			position.set( start ).y += SCALE * 2;			
 		
-		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_LEFT ) )
+		if( ( input.isAccelerometerAvailable() && input.getAccelerometerY() < 0 ) )	
+			yAngle += deltaTime * 120 * Math.min( 1, Math.abs( input.getAccelerometerY() )  );		
+		if( ( input.isAccelerometerAvailable() && input.getAccelerometerY() > 0 ) )		
+			yAngle -= deltaTime * 120 * Math.min( 1,  input.getAccelerometerY() );		
+		
+		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_LEFT ) )			
 			yAngle += deltaTime * 120;
+		
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_RIGHT ) )
-			yAngle -= deltaTime * 120;
+			yAngle -= deltaTime * 120;		
 		
 		cam.getDirection().set( 0, 0, -1 );
 		mat.setToRotation( axis, yAngle );
@@ -161,123 +178,18 @@ public class CollisionTest implements RenderListener
 		
 	
 
-		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_UP ) )		
+		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_UP ) || ( input.isAccelerometerAvailable() && input.getAccelerometerX() < 5 ) )		
 			velocity.add(cam.getDirection().tmp().mul( SPEED * deltaTime));
-		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) )
+		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_DOWN ) || ( input.isAccelerometerAvailable() && input.getAccelerometerX() > 6 ) )
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
-								
-		System.out.println( "vel col:");
-//		velocity.add( 0, 0.5f * - deltaTime, 0 );
-		collider.collide( cMesh, cam.getPosition(), velocity, 0.005f );
+										
+		velocity.add( 0, -1f * SCALE * deltaTime, 0 );				
 		
-//		segment.a.set( cam.getPosition() );
-//		segment.b.set( cam.getPosition() ).y -= 1.1f;
-//		if( !CollisionDetection.testMeshSegment( cMesh, segment) )
-//		{
-//			System.out.println( "grav col:");
-			gravity.add( 0, -0.1f * deltaTime, 0 );
-			collider.collide( cMesh, cam.getPosition(), gravity, 0.005f );
-//			System.out.println( gravity );
-//		}		
-//		velocity.set(0,0,0);
-		velocity.mul( 0.90f ); // decay
-		gravity.mul( 0.99f );					
+		colliding = collider.collide( cMesh, position, velocity, 0.005f );				
+		velocity.mul( 0.90f ); 
+		gravity.mul( 0.90f );
 	}
-			
-	public void collide( CollisionMesh mesh, Vector origin, Vector velocity )
-	{
-		float distToTravel = velocity.len();
-		
-		if( distToTravel < CollisionDetection.EPSILON )
-			return;
-		
-		boolean collisionFound = false;
-		float nearestDistance = -1.0f;
-		Vector nearestIntersectionPoint = new Vector();
-		Vector nearestPolygonIntersectionPoint = new Vector( );
-		
-		Vector p1 = new Vector( );
-		Vector p2 = new Vector( );
-		Vector p3 = new Vector( );
-		Plane plane = new Plane( new Vector(), 0 );
-		
-		float[] triangles = mesh.getTriangles();
-		int numTriangles = mesh.getNumTriangles();
-		int idx = 0;
-		for( int i = 0; i < numTriangles; i++ )
-		{
-			p1.set( triangles[idx++], triangles[idx++], triangles[idx++] );
-			p2.set( triangles[idx++], triangles[idx++], triangles[idx++] );
-			p3.set( triangles[idx++], triangles[idx++], triangles[idx++] );
-			
-			if( mesh.isClockWise() )
-				plane.set( p3, p2, p1 );
-			else
-				plane.set( p1, p2, p3 );
-			
-			
-			float pDist = CollisionDetection.signedDistanceToPlane( plane, origin );
-			Vector sphereIntersectionPoint = new Vector( );
-			Vector planeIntersectionPoint = new Vector( );
-			
-			if( pDist < 0 )
-				continue;
-			else
-			if( pDist <= 1.0 )
-			{
-				Vector temp = new Vector( plane.normal ).mul( -pDist );
-				planeIntersectionPoint.set( origin ).add( temp );
-			}
-			else
-			{
-				sphereIntersectionPoint.set( origin ).sub(plane.normal );
-				if( !CollisionDetection.intersectRayPlane( new Ray( sphereIntersectionPoint, velocity), plane, planeIntersectionPoint) )
-					continue;				
-			}
-			
-			Vector polygonIntersectionPoint = new Vector( planeIntersectionPoint );
-			if( !CollisionDetection.isPointInTriangle( planeIntersectionPoint, p1, p2, p3 ) )
-			{
-				Vector in = new Vector();
-				CollisionDetection.closestPointToTriangle( p1, p2, p3, planeIntersectionPoint, in );
-				polygonIntersectionPoint.set(in);
-			}
-			
-			Vector in = new Vector();
-			Vector negativeVelocityVector = new Vector( velocity ).mul(-1);
-			if( CollisionDetection.intersectRaySphere( new Ray( polygonIntersectionPoint, negativeVelocityVector ), new Sphere( origin, 1), in) )
-			{
-				float t = origin.dst( in );
-				if( !collisionFound || t < nearestDistance )
-				{
-					nearestDistance = t;
-					nearestIntersectionPoint.set( in );
-					nearestPolygonIntersectionPoint.set( polygonIntersectionPoint );
-					collisionFound = true;
-				}
-			}
-		}
-		
-		if( !collisionFound )		
-			return;		
-		
-		Vector v = new Vector( velocity ).nor().mul( nearestDistance - CollisionDetection.EPSILON );
-		origin.add( v );
-		
-		v.nor().mul( distToTravel - nearestDistance );
-		Vector destinationPoint = new Vector( nearestPolygonIntersectionPoint ).add( v );
-		
-		Vector slidePlaneOrigin = new Vector( nearestPolygonIntersectionPoint );
-		Vector slidePlaneNormal = new Vector( nearestPolygonIntersectionPoint ).sub(origin).nor();
 				
-		float time = CollisionDetection.intersectRayPlane( new Ray( destinationPoint, slidePlaneNormal ), new Plane( slidePlaneOrigin, slidePlaneNormal ) );
-		slidePlaneNormal.nor().mul(time);
-		Vector destinationProjectionNormal = new Vector( slidePlaneNormal );
-		Vector newDestinationPoint = new Vector( destinationPoint ).add( destinationProjectionNormal );
-		Vector newVelocityVector = newDestinationPoint.sub(nearestPolygonIntersectionPoint);
-		
-		collide( mesh, origin, newVelocityVector );
-	}
 	
 	@Override
 	public void dispose(Application app) 

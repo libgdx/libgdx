@@ -1,5 +1,6 @@
 package com.badlogic.gdx.math.collision;
 
+import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector;
 
 /**
@@ -42,8 +43,10 @@ public final class CollisionPacket
 	protected boolean foundCollision;
 	protected float nearestDistance = Float.MAX_VALUE;
 	protected Vector intersectionPoint;
+	protected Plane plane = new Plane( new Vector(), 0 );
 	
-	public CollisionType type;
+	public CollisionType type;	
+	
 	
 	public CollisionPacket( Vector position, Vector velocity, float radiusX, float radiusY, float radiusZ )
 	{		

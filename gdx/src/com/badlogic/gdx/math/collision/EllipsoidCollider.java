@@ -61,8 +61,7 @@ public class EllipsoidCollider
 			CollisionDetection.collide( mesh, packet );
 			
 			if( packet.isColliding() && iterations < 5 )
-			{
-				System.out.println( "iter: " + iterations + ", type: " + packet.type );
+			{				
 				collided = true;
 				response.respond( packet, displacementDistance );
 				

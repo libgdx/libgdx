@@ -19,6 +19,8 @@ package com.badlogic.gdx.graphics;
 import java.io.InputStream;
 
 import com.badlogic.gdx.graphics.loaders.ObjLoader;
+import com.badlogic.gdx.graphics.loaders.OctLoader;
+import com.badlogic.gdx.math.Vector;
 
 /**
  * A class for loading various model formats such as 
@@ -42,5 +44,20 @@ public class ModelLoader
 	public static Mesh loadObj( InputStream in, boolean useFloats )
 	{
 		return ObjLoader.loadObj( in, useFloats);
+	}
+	
+	/**
+	 * Loads an OCT file as can be found in many of Paul Nettle's
+	 * demo programs. See the source at http://www.paulnettle.com/pub/FluidStudios/CollisionDetection/Fluid_Studios_Collision_Detection_Demo_and_Source.zip
+	 * for more information.
+	 * 
+	 * @param in the InputStream
+	 * @param useFloats whether to return a {@link FloatMesh} or a {@link FixedPointMesh}
+	 * @param start the start position as defined in the map
+	 * @return a Mesh holding the OCT data or null in case something went wrong.
+	 */
+	public static Mesh loadOct( InputStream in, boolean useFloats, Vector start )
+	{
+		return OctLoader.loadOct( in, useFloats, start );
 	}
 }

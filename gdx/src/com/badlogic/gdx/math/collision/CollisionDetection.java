@@ -1,8 +1,5 @@
 package com.badlogic.gdx.math.collision;
 
-import android.graphics.Path.Direction;
-
-import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector;
@@ -927,6 +924,7 @@ public class CollisionDetection
 				packet.intersectionPoint.set(collisionPoint);
 				packet.foundCollision = true;
 				packet.type = type;
+				packet.plane.set(plane);
 			}
 		}
 	}
