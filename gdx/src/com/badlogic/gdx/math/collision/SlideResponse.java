@@ -35,9 +35,9 @@ public class SlideResponse implements CollisionResponse
 		destination.set( packet.position ).add( packet.velocity );
 		newPosition.set( packet.position );
 		
-		if( packet.getNearestDistance() >= displacementDistance )
+		if( packet.getNearestDistance() >= displacementDistance || packet.getNearestDistance() == 0 )
 		{
-			newVelocity.set( packet.velocity ).nor().mul(packet.getNearestDistance() - displacementDistance );
+			newVelocity.set( packet.velocity ).nor().mul(packet.getNearestDistance()!=0?packet.getNearestDistance() - displacementDistance:displacementDistance );
 			newPosition.add( newVelocity );
 			
 			newVelocity.nor();

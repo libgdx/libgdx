@@ -39,6 +39,7 @@ public class CollisionTest implements RenderListener
 	float yAngle = 0;
 	Matrix mat = new Matrix();	
 	Vector axis = new Vector( 0, 1, 0 );
+	Vector velocityTmp = new Vector( );
 	Vector velocity = new Vector( 0, 0, 0 );
 	Vector gravity = new Vector( 0, 0, 0 );
 	Segment segment = new Segment( new Vector(), new Vector() );
@@ -46,14 +47,14 @@ public class CollisionTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{			
-		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
+//		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readInternalFile( "data/scene.obj" ), true );
 		
-//		FloatMesh m = new FloatMesh( 4, 3, false, false, false, 0, 0, true, 6 );
-//		m.setVertices( new float[] { -5, -2.5f, 5,
-//									  5, -2.5f, 5,
-//									  5,  2.5f, -5,
-//									 -5,  2.5f, -5} );
-//		m.setIndices( new short[] { 0, 1, 2, 2, 3, 0 } );
+		FloatMesh m = new FloatMesh( 3, 3, false, false, false, 0, 0, true, 3 );
+		m.setVertices( new float[] { -5, -2.5f, 5,
+									  5, -2.5f, 5,
+									  0,  2.5f, -5,
+		} );
+		m.setIndices( new short[] { 0, 1, 2 } );
 		
 		
 //		FloatMesh m = new FloatMesh( 3, 3, false, true, false, 0, 0, false, 0 );
@@ -87,7 +88,7 @@ public class CollisionTest implements RenderListener
 		cam.getPosition().z = 0f;
 		
 		cMesh = new CollisionMesh( m, false );
-		collider = new EllipsoidCollider( 1, 1, 1, new SlideResponse() );
+		collider = new EllipsoidCollider( 0.5f, 1, 0.5f, new SlideResponse() );
 		
 //		font = app.getGraphics().newFont( "Arial", 16, FontStyle.Plain, true );
 //		text = font.newText();
@@ -145,8 +146,9 @@ public class CollisionTest implements RenderListener
 	
 	private void processInput( Input input, float deltaTime )
 	{
+		deltaTime = 0.017f;
 		if( input.isKeyPressed( Input.Keys.KEYCODE_ENTER ) )
-			cam.getPosition().set( 0, 1, 0 );
+			cam.getPosition().set( 0, 2, 0 );
 		
 		if( input.isKeyPressed( Input.Keys.KEYCODE_DPAD_LEFT ) )
 			yAngle += deltaTime * 120;
@@ -165,20 +167,21 @@ public class CollisionTest implements RenderListener
 			velocity.add(cam.getDirection().tmp().mul(SPEED * -deltaTime));
 								
 		System.out.println( "vel col:");
-		velocity.add( 0, 0.5f * - deltaTime, 0 );
-		collider.collide( cMesh, cam.getPosition(), velocity, 0.00005f );
+//		velocity.add( 0, 0.5f * - deltaTime, 0 );
+		collider.collide( cMesh, cam.getPosition(), velocity, 0.005f );
 		
-		segment.a.set( cam.getPosition() );
-		segment.b.set( cam.getPosition() ).y -= 1.1f;
+//		segment.a.set( cam.getPosition() );
+//		segment.b.set( cam.getPosition() ).y -= 1.1f;
 //		if( !CollisionDetection.testMeshSegment( cMesh, segment) )
 //		{
 //			System.out.println( "grav col:");
-//			gravity.add( 0, -0.1f * deltaTime, 0 );
-//			collider.collide( cMesh, cam.getPosition(), gravity, 0.00005f );
+			gravity.add( 0, -0.1f * deltaTime, 0 );
+			collider.collide( cMesh, cam.getPosition(), gravity, 0.005f );
 //			System.out.println( gravity );
 //		}		
+//		velocity.set(0,0,0);
 		velocity.mul( 0.90f ); // decay
-		gravity.mul( 0.9f );					
+		gravity.mul( 0.99f );					
 	}
 			
 	public void collide( CollisionMesh mesh, Vector origin, Vector velocity )
