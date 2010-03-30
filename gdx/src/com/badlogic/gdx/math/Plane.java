@@ -192,6 +192,7 @@ public final class Plane
 		d = -point.dot( normal );		
 	}
 
+	
 	/**
 	 * Sets this plane from the given plane
 	 * @param plane the plane

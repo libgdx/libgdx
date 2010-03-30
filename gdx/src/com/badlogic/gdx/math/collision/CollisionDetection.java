@@ -43,7 +43,7 @@ public class CollisionDetection
 	 */
 	public static void closestPointToPlane( Plane plane, Vector p, Vector o )
 	{
-		float t = plane.normal.dot(p) - plane.d;
+		float t = plane.normal.dot(p) + plane.d;
 		o.set(p).sub(plane.normal.tmp().mul(t) );
 	}
 	
@@ -1037,10 +1037,71 @@ public class CollisionDetection
 		i.set(a).add( ab.mul(v) ).add( ac.mul(w) );
 	}
 	
-	public static void main( String[] argv )
+	public static void main( String[] argv ) throws Exception
 	{
+		BoundingBox aabb = new BoundingBox();
+		Plane p = new Plane( new Vector(), new Vector() );
+		Vector v = new Vector( );
 		Vector i = new Vector();
-		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 2, 0, 0 ), new Vector( 0, 2, 0 ), new Vector( 4, -2, 0 ), i );
-		System.out.println( i );
+		
+		aabb.set( new Vector( -2, -2, -2 ), new Vector( 2, 2, 2 ) );
+		v.set( -1, 1, -1 );
+		CollisionDetection.closestPointToBoundingBox(aabb, v, i);
+		check(i.x == -1 && i.y == 1 && i.z == -1);
+		
+		v.set( -3, -3, -3 );
+		CollisionDetection.closestPointToBoundingBox(aabb, v, i);
+		check(i.x == -2 && i.y == -2 && i.z == -2);
+		
+		CollisionDetection.closestPointToLine(new Vector( ), new Vector( 1, 1, 1 ), new Vector( -1, 1, -1 ), i );
+		check(i.x == -1 / 3.0f && i.y == -1 / 3.0f && i.z == -1 / 3.0f );
+		
+		p.set( new Vector(1, 1, 1), new Vector( 1, 1, 1 ).nor() );		
+		CollisionDetection.closestPointToPlane( p, new Vector( 3, 3, 3 ), i );
+		check(eeq(i.x, 1) && eeq(i.y, 1) && eeq(i.z, 1) );
+		
+		CollisionDetection.closestPointToRay( new Ray( new Vector( 1, 1, 1 ), new Vector( 1, 1, 1 ) ), new Vector(), i );
+		check(eeq(i.x, 1) && eeq(i.y,1) && eeq(i.z, 1 ) );
+		
+		CollisionDetection.closestPointToRay( new Ray( new Vector( 1, 1, 0 ), new Vector( 1, 1, 0 ) ), new Vector( 1, 3, 0 ), i );
+		check( i.x == 2 && i.y == 2 && i.z == 0 );
+		
+		CollisionDetection.closestPointToSegment( new Segment( new Vector( 1, 1, 1 ), new Vector( 2, 2, 2 ) ), new Vector( ), i );
+		check(eeq(i.x, 1) && eeq(i.y,1) && eeq(i.z, 1 ) );
+		
+		CollisionDetection.closestPointToSegment( new Segment( new Vector( 1, 1, 1 ), new Vector( 2, 2, 2 ) ), new Vector( 3, 3, 3 ), i );
+		check(eeq(i.x, 2) && eeq(i.y,2) && eeq(i.z, 2 ) );
+		
+		CollisionDetection.closestPointToSegment( new Segment( new Vector( 1, 1, 0 ), new Vector( 2, 2, 0 ) ), new Vector( 1, 3, 0 ), i );
+		check(eeq(i.x, 2) && eeq(i.y,2) && eeq(i.z, 0 ) );
+		
+		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 1, 0, 0), new Vector(0, 0.5f, -1 ), new Vector( 0, -1, 0 ), i );
+		check( i.x == 0 && i.y == 0 && i.z == 0 );
+		
+		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 1, 0, 0), new Vector(0, 0.5f, -1 ), new Vector( 0.5f, -1, 0 ), i );
+		check( i.x == 0.5f && i.y == 0 && i.z == 0 );
+		
+		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 1, 0, 0), new Vector(0.5f, 1, -1 ), new Vector( 0.5f, 1, -0.5f ), i );
+		check( i.x == 0.5f && i.y == 0.75f && i.z == -0.75f );
+		
+		check( CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector( 1, 1, 1 ), new Vector() ) ) );
+		check( !CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector( 1, 1, 1 ), new Vector(-3, -3, -3) ) ) );
+		check( !CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector( 1, 1, 1 ), new Vector(3, 3, 3) ) ) );
+		
+		// FIXME this is essentially a aabb segment test!
+//		check( CollisionDetection.testBoundingBoxRay( aabb, new Ray( new Vector( -3, -3, -3 ), new Vector( 1, 1, 1 ) ) ) );
+		
+		CollisionDetection.testBoundingBoxSegment(b, s)
+	}
+	
+	private static boolean eeq( float a, float b )
+	{
+		return ( Math.abs( a - b) < 0.000001 );
+	}
+	
+	private static void check( boolean expr ) throws Exception
+	{
+		if( !expr )
+			throw new Exception( "d'oh" );		
 	}
 }
