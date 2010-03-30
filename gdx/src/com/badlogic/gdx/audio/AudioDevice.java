@@ -39,16 +39,20 @@ public interface AudioDevice
 	 * audio device and blocks until they have been processed.
 	 * 
 	 * @param samples The samples.
+	 * @param offset The offset into the samples array
+	 * @param numSamples the number of samples to write to the device
 	 */
-	public void writeSamples( short[] samples );
+	public void writeSamples( short[] samples, int offset, int numSamples );
 	
 	/**
 	 * Writes the array of float PCM samples to the 
 	 * audio device and blocks until they have been processed.
 	 * 
 	 * @param samples The samples.
+	 * @param offset The offset into the samples array
+	 * @param numSamples the number of samples to write to the device
 	 */
-	public void writeSamples( float[] samples );
+	public void writeSamples( float[] samples, int offset, int numSamples );
 	
 	/**
 	 * Frees all resources associated with this AudioDevice. Needs

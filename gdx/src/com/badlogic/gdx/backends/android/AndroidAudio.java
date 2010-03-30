@@ -83,7 +83,7 @@ final class AndroidAudio implements Audio
 	@Override
 	public AudioDevice newAudioDevice(boolean isMono) 
 	{
-		return null;
+		return new AndroidAudioDevice( isMono );
 	}
 
 	/**

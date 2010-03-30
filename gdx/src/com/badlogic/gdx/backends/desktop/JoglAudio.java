@@ -120,9 +120,9 @@ final class JoglAudio implements Audio, Runnable
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AudioDevice newAudioDevice(boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+	public AudioDevice newAudioDevice(boolean isMono) 
+	{	
+		return new JoglAudioDevice( isMono );
 	}
 
 	/**
@@ -186,7 +186,7 @@ final class JoglAudio implements Audio, Runnable
 				fillBuffer( buffer, bytes, samplesToWrite );
 				int writtenBytes = line.write(bytes, 0, samplesToWrite * 2 );
 				while( writtenBytes != samplesToWrite * 2 )
-					writtenBytes += line.write( bytes, writtenBytes, bytes.length - writtenBytes );			
+					writtenBytes += line.write( bytes, writtenBytes, samplesToWrite - writtenBytes );			
 			}
 					
 			try {
