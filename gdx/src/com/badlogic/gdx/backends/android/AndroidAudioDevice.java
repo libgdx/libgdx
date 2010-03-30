@@ -49,7 +49,9 @@ class AndroidAudioDevice implements AudioDevice
 	@Override
 	public void writeSamples(short[] samples, int offset, int numSamples) 
 	{	
-		track.write( samples, offset, numSamples );
+		int writtenSamples = track.write( samples, offset, numSamples );
+		while( writtenSamples != numSamples )
+			track.write( samples, offset + writtenSamples, numSamples - writtenSamples );
 	}
 
 	@Override
@@ -70,7 +72,9 @@ class AndroidAudioDevice implements AudioDevice
 			buffer[j] = value;
 		}
 		
-		track.write( buffer, 0, numSamples );
+		int writtenSamples = track.write( buffer, 0, numSamples );
+		while( writtenSamples != numSamples )
+			track.write( buffer, writtenSamples, numSamples - writtenSamples );
 	}
 
 }
