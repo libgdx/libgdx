@@ -27,6 +27,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
@@ -41,15 +42,15 @@ final class AndroidFiles implements Files
 {
 	/** external storage path **/
 	private final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-	
+
 	/** asset manager **/
 	private final AssetManager assets;
-	
+
 	AndroidFiles( AssetManager assets )
 	{
 		this.assets = assets;
 	}
-	
+
 	/**
 	 * @return the asset manager.
 	 */
@@ -57,24 +58,12 @@ final class AndroidFiles implements Files
 	{
 		return assets;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean makeDirectory(String directory) 
-	{	
-		return new File( sdcard + directory ).mkdirs();
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public InputStream readExternalFile(String fileName) 
+	
+	private InputStream readExternalFile(String fileName) 
 	{	
 		FileInputStream in = null;
-		
+
 		try
 		{
 			in = new FileInputStream( sdcard + fileName );
@@ -83,15 +72,12 @@ final class AndroidFiles implements Files
 		{
 			// fall through
 		}
-		
+
 		return in;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public InputStream readInternalFile(String fileName) 
+	
+	private InputStream readInternalFile(String fileName) 
 	{	
 		InputStream in = null;
 		try
@@ -102,18 +88,14 @@ final class AndroidFiles implements Files
 		{
 			// fall through
 		}
-		
+
 		return in;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public OutputStream writeExternalFile(String filename) 
+	private OutputStream writeExternalFile(String filename) 
 	{	
 		FileOutputStream out = null;
-		
+
 		try
 		{
 			out = new FileOutputStream( sdcard + filename );
@@ -122,43 +104,146 @@ final class AndroidFiles implements Files
 		{
 			// fall through
 		}
-		
+
 		return out;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FileHandle getInternalFileHandle(String filename) 
+	
+	
+	private InputStream readAbsolutFile(String filename) 
 	{	
-		boolean exists = true;
-		
+		FileInputStream in = null;
+
 		try
 		{
-			InputStream in = assets.open( filename );
-			in.close();
+			in = new FileInputStream( filename );
 		}
-		catch( Exception ex )
+		catch( FileNotFoundException ex )
 		{
-			exists = false;
+			// fall through
 		}
-		
-		if( !exists )
-			return null;
-		else
-			return new AndroidFileHandle( assets, filename);
+
+		return in;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FileHandle getExternalFileHandle(String filename) 
-	{
-		if( new File( sdcard + filename ).exists() == false )
-			return null;
+	public FileHandle getFileHandle(String filename, FileType type) 
+	{	
+		if( type == FileType.Internal )
+		{
+			boolean exists = true;
+	
+			try
+			{
+				InputStream in = assets.open( filename );
+				in.close();
+			}
+			catch( Exception ex )
+			{
+				exists = false;
+			}
+	
+			if( !exists )
+				return null;
+			else
+				return new AndroidFileHandle( assets, filename);			
+		}
+		
+		if( type == FileType.External )
+		{
+			if( new File( sdcard + filename ).exists() == false )
+				return null;
+			else
+				return new AndroidFileHandle( null, sdcard + filename );
+		}
 		else
-			return new AndroidFileHandle( null, sdcard + filename );
+		{
+			if( new File( filename ).exists() == false )
+				return null;
+			else
+				return new AndroidFileHandle( null, filename );
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String[] listDirectory(String directory, FileType type) 
+	{
+		if( type == FileType.Internal )
+		{
+			try
+			{
+				return assets.list( directory );
+			}
+			catch( Exception ex )
+			{
+				return null;
+			}
+		}
+		
+		if( type == FileType.External )		
+			return new File( sdcard + directory ).list();		
+		else
+			return new File( directory ).list();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean makeDirectory(String directory, FileType type) 
+	{
+		if( type == FileType.Internal )
+			return false;
+		
+		if( type == FileType.External )		
+			return new File( sdcard + directory ).mkdirs();
+		else
+			return new File( directory ).mkdirs();		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public InputStream readFile(String fileName, FileType type) 
+	{
+		if( type == FileType.Internal )
+			return readInternalFile( fileName );
+		if( type == FileType.External )
+			return readExternalFile( fileName );
+		else
+			return readAbsolutFile( fileName );		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public OutputStream writeFile(String filename, FileType type) 
+	{
+		if( type == FileType.Internal )
+			return null;
+		if( type == FileType.External )
+			return writeExternalFile( filename );
+		else
+		{
+			FileOutputStream out = null;
+
+			try
+			{
+				out = new FileOutputStream( filename );
+			}
+			catch( FileNotFoundException ex )
+			{
+				// fall through
+			}
+
+			return out;
+		}
 	}
 }

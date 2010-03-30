@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -52,10 +53,10 @@ public class ObjTest implements RenderListener, InputListener
 		{
 			app.getInput().addInputListener( this );
 			
-			Mesh m = ModelLoader.loadObj( app.getFiles().readInternalFile( "data/cube.obj" ), false );
+			Mesh m = ModelLoader.loadObj( app.getFiles().readFile( "data/cube.obj", FileType.Internal ), false );
 			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );
 			
-			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().readInternalFile( "data/badlogic.jpg"));
+			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().readFile( "data/badlogic.jpg", FileType.Internal));
 			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );					
 			
 			cam = new PerspectiveCamera();

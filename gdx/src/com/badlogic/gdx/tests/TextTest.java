@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.graphics.Font;
@@ -47,7 +48,7 @@ public class TextTest implements RenderListener
 		if( text == null )
 		{
 			cam = new OrthographicCamera();		
-			font = app.getGraphics().newFont( app.getFiles().getInternalFileHandle( "data/arial.ttf"), 11, FontStyle.Plain, true );
+			font = app.getGraphics().newFont( app.getFiles().getFileHandle( "data/arial.ttf", FileType.Internal), 11, FontStyle.Plain, true );
 			text = font.newText( );
 			text.setText( "This is a test\nIt is a multline text!\nyes really!11!111one" );
 			text.setHorizontalAlign( HorizontalAlign.Center );						

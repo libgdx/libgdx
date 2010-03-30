@@ -19,6 +19,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
@@ -58,9 +59,9 @@ public class SoundTest implements RenderListener, InputListener
 		if( music == null )
 		{
 			app.getInput().addInputListener( this );	
-			sound = app.getAudio().newSound( app.getFiles().getInternalFileHandle( "data/shotgun.wav" ) );
+			sound = app.getAudio().newSound( app.getFiles().getFileHandle( "data/shotgun.wav", FileType.Internal ) );
 			
-			music = app.getAudio().newMusic( app.getFiles().getInternalFileHandle( "data/cloudconnected.ogg" ) );				
+			music = app.getAudio().newMusic( app.getFiles().getFileHandle( "data/cloudconnected.ogg", FileType.Internal ) );				
 			music.play();		
 			music.setLooping( true );
 		}

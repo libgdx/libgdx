@@ -38,26 +38,74 @@ final class JoglFiles implements Files
 {
 	private final String externalPath = System.getProperty("user.home") + "/";		
 	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean makeDirectory(String directory) 
+	public FileHandle getFileHandle(String filename, FileType type) 
 	{	
-		return new File( externalPath + directory ).mkdirs();
+		File file = null;
+		if( type == FileType.Absolut || type == FileType.Internal )
+			file = new File( filename );
+		else
+			file = new File( this.externalPath + filename );
+			
+		if( file.exists() == false )
+			return null;
+		else
+			return new JoglFileHandle( file );			
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InputStream readExternalFile(String fileName) 
-	{	
-		FileInputStream in = null;
-				
+	public String[] listDirectory(String directory, FileType type) 
+	{
+		File file = null;
+		if( type == FileType.Absolut || type == FileType.Internal )
+			file = new File( directory );
+		else
+			file = new File( this.externalPath + directory );
+		
+		return file.list();			
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean makeDirectory(String directory, FileType type) 
+	{
+		File file = null;
+		
+		if( type == FileType.Internal )
+			return false;
+		
+		if( type == FileType.Absolut )
+			file = new File( directory );
+		else
+			file = new File( this.externalPath + directory );
+		return file.mkdirs();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public InputStream readFile(String fileName, FileType type) 
+	{
+		File file = null;
+		InputStream in = null;
+		if( type == FileType.Absolut || type == FileType.Internal )
+			file = new File( fileName );
+		else
+			file = new File( this.externalPath + fileName );
+
 		try 
 		{
-			in = new FileInputStream( externalPath + fileName );
+			in = new FileInputStream( file );
 		} 
 		catch (FileNotFoundException e) 
 		{		
@@ -71,33 +119,23 @@ final class JoglFiles implements Files
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InputStream readInternalFile(String fileName) 
-	{	
-		FileInputStream in = null;
-		
-		try 
-		{
-			in = new FileInputStream( fileName );
-		} 
-		catch (FileNotFoundException e) 
-		{		
-			// fall through
-		}		
-		
-		return in;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public OutputStream writeExternalFile(String filename) 
-	{	
+	public OutputStream writeFile(String filename, FileType type) 
+	{
+		File file = null;
 		FileOutputStream out = null;
 		
+		if( type == FileType.Internal )
+			return null;
+		
+		if( type == FileType.Absolut )
+			file = new File( filename );
+		else
+			file = new File( this.externalPath + filename );
+		
+		
 		try 
 		{
-			out = new FileOutputStream( externalPath + filename );
+			out = new FileOutputStream( file );
 		} 
 		catch (FileNotFoundException e) 
 		{		
@@ -105,31 +143,5 @@ final class JoglFiles implements Files
 		}		
 		
 		return out;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FileHandle getInternalFileHandle(String filename) 
-	{
-		File file = new File( filename );
-		if( file.exists() == false )
-			return null;
-		else 
-			return new JoglFileHandle( file );			
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FileHandle getExternalFileHandle(String filename) 
-	{		
-		File file = new File( externalPath + filename );
-		if( file.exists() == false )
-			return null;
-		else 
-			return new JoglFileHandle( file );		
 	}
 }

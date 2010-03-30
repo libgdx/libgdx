@@ -3,6 +3,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -32,7 +33,7 @@ public class OctTest implements RenderListener, InputListener
 		{
 			app.getInput().addInputListener( this );
 			
-			Mesh m = ModelLoader.loadOct( app.getFiles().readInternalFile( "data/steps.oct" ), false, new Vector() );
+			Mesh m = ModelLoader.loadOct( app.getFiles().readFile( "data/steps.oct", FileType.Internal ), false, new Vector() );
 			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );									
 			
 			cam = new PerspectiveCamera();

@@ -34,7 +34,7 @@ public class SlideResponse implements CollisionResponse
 	{	
 		if( packet.getNearestDistance() == 0 )
 		{			
-			System.out.println( "embedded: " + packet.position.dst(packet.intersectionPoint) + ", " + packet.plane );
+//			System.out.println( "embedded: " + packet.position.dst(packet.intersectionPoint) + ", " + packet.plane );
 			float distance = packet.plane.distance(packet.position);
 			packet.position.add(packet.plane.normal.tmp().mul(1 - distance + displacementDistance ));
 			packet.nearestDistance = displacementDistance;			

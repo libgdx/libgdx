@@ -23,12 +23,13 @@ import java.io.OutputStream;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
- * This interface encapsulates the access of internal and external files.
+ * This interface encapsulates the access of internal, external and absolut files.
  * Internal files are read-only and come with the application when deployed.
  * On Android assets are internal files, on the desktop anything in the applications
  * root directory is considered to be a an internal file. External files can be read and
  * written to. On Android they are relative to the SD-card, on the desktop they are
- * relative to the user home directory.
+ * relative to the user home directory. Absolut files are just that, fully qualified
+ * filenames.
  * 
  * @author mzechner
  *
@@ -36,71 +37,101 @@ import com.badlogic.gdx.files.FileHandle;
 public interface Files 
 {
 	/**
-	 * Returns an InputStream to the given internal file. On
-	 * Android the filename is relative to the assets directory.
-	 * On the desktop the filename is relative to the application's
-	 * root directory.
-	 * 
-	 * @param fileName the name of the file to open.
-	 * @return the InputStream or null if the file couldn't be opened.
+	 * Enum describing the three file types, internal, external
+	 * and absolut. Internal files are located in the asset directory
+	 * on Android and are relative to the applications root directory
+	 * on the desktop. External files are relative to the SD-card on Android
+	 * and relative to the home directory of the current user on the Desktop.
+	 * Absolut files are just that, absolut files that can point anywhere.
+	 * @author mzechner
+	 *
 	 */
-	public InputStream readInternalFile( String fileName );
+	public enum FileType
+	{
+		Internal,
+		External,
+		Absolut
+	}
 	
 	/**
-	 * Returns an InputStream to the given external file. On
-	 * Android the filename is relative to the external storage
-	 * directory, e.g. /sdcard/.  On the desktop the filename is relative to 
-	 * user's home directory, e.g. /home/mzechner/ on Linux or
-	 * C:/Users/mzechner/ on Windows 7.
+	 * Returns an InputStream to the given file. If type is equal
+	 * to FileType.Internal an internal file will be opened. On Android
+	 * this is relative to the assets directory, on the desktop it is 
+	 * relative to the applications root directory. If type is equal to
+	 * FileType.External an external file will be opened. On Android this
+	 * is relative to the SD-card, on the desktop it is relative to the
+	 * current user's home directory. If type is equal to FileType.Absolut
+	 * the filename is interpreted as an absolut filename. 
 	 * 
 	 * @param fileName the name of the file to open.
+	 * @param type the type of file to open.
 	 * @return the InputStream or null if the file couldn't be opened.
 	 */
-	public InputStream readExternalFile( String fileName );
+	public InputStream readFile( String fileName, FileType type );	
 	
 	/**
-	 * Returns and OutputStream to the given external file. If
+	 * Returns and OutputStream to the given  file. If
 	 * the file does not exist it is created. If the file
-	 * exists it will be overwritten. On Android the filename is relative 
-	 * to the external storage directory, e.g. /sdcard/.  On the desktop 
-	 * the filename is relative to user's home directory, e.g. 
-	 * /home/mzechner/ on Linux or C:/Users/mzechner/ on Windows 7.
+	 * exists it will be overwritten. If type is equal
+	 * to FileType.Internal null will be returned as on Android assets can not be written. If type is equal to
+	 * FileType.External an external file will be opened. On Android this
+	 * is relative to the SD-card, on the desktop it is relative to the
+	 * current user's home directory. If type is equal to FileType.Absolut
+	 * the filename is interpreted as an absolut filename.
 	 * 
 	 * @param filename the name of the file to open
+	 * @param type the type of the file to open
 	 * @return the OutputStream or null if the file couldn't be opened.
 	 */
-	public OutputStream writeExternalFile( String filename );
-	
+	public OutputStream writeFile( String filename, FileType type );
+		
 	/**
 	 * Creates a new directory or directory hierarchy on the external
 	 * storage. If the directory parameter contains sub folders and 
-	 * the parent folders don't exist yet they will be created. On Android the filename is relative 
-	 * to the external storage directory, e.g. /sdcard/.  On the desktop 
-	 * the filename is relative to user's home directory, e.g. 
-	 * /home/mzechner/ on Linux or C:/Users/mzechner/ on Windows 7.  
+	 * the parent folders don't exist yet they will be created. If type is equal
+	 * to FileType.Internal false will be returned as on Android new directories in the asset directory can not be created. If type is equal to
+	 * FileType.External an external directory will be created. On Android this
+	 * is relative to the SD-card, on the desktop it is relative to the
+	 * current user's home directory. If type is equal to FileType.Absolut
+	 * the directory is interpreted as an absolut directory name.
 	 * 
 	 * @param directory the directory
+	 * @param type the type of the directory
 	 * @return true in case the directory could be created, false otherwise
 	 */
-	public boolean makeDirectory( String directory );
+	public boolean makeDirectory( String directory, FileType type );
+	
 	
 	/**
-	 * Returns a {@link FileDescriptor} object for an internal file. An internal
-	 * file on Android is given relative to the asset directory. On the desktop
-	 * it is given relative to the application's root directory. 
+	 * Lists the files and directories in the given directory. If type is equal
+	 * to FileType.Internal an internal directory will be listed. On Android
+	 * this is relative to the assets directory, on the desktop it is 
+	 * relative to the applications root directory. If type is equal to
+	 * FileType.External an external directory will be listed. On Android this
+	 * is relative to the SD-card, on the desktop it is relative to the
+	 * current user's home directory. If type is equal to FileType.Absolut
+	 * the filename is interpreted as an absolut directory.
+	 *  
+	 * @param directory the directory
+	 * @param type the type of the directory
+	 * @return the files and directories in the given directory or null if the directory is none existant
+	 */
+	public String[] listDirectory( String directory, FileType type );
+	
+	
+	/**
+	 * Returns a {@link FileDescriptor} object for a file. If type is equal
+	 * to FileType.Internal an internal file will be opened. On Android
+	 * this is relative to the assets directory, on the desktop it is 
+	 * relative to the applications root directory. If type is equal to
+	 * FileType.External an external file will be opened. On Android this
+	 * is relative to the SD-card, on the desktop it is relative to the
+	 * current user's home directory. If type is equal to FileType.Absolut
+	 * the filename is interpreted as an absolut filename. 
 	 *  
 	 * @param filename the name of the file
+	 * @param type the type of the file
 	 * @return the FileDescriptor or null if the descriptor could not be created
 	 */
-	public FileHandle getInternalFileHandle( String filename );
-	
-	/**
-	 * Returns a {@link FileDescriptor} object for an external file. An external
-	 * file on Android is given relative to the external storage device path. On the
-	 * desktop it is given relative to the user's home directory.
-	 * 
-	 * @param filename the name of the file
-	 * @return the FileDescriptor or null if the descriptor could not be created
-	 */
-	public FileHandle getExternalFileHandle( String filename );
+	public FileHandle getFileHandle( String filename, FileType type );		
 }
