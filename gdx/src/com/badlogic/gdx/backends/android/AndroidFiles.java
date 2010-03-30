@@ -27,7 +27,6 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
 /**

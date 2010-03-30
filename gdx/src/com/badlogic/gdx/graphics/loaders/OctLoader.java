@@ -1,9 +1,7 @@
 package com.badlogic.gdx.graphics.loaders;
 
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +25,7 @@ public class OctLoader
 	private static class OctVert
 	{
 		public float tu, tv;
+		@SuppressWarnings("unused")
 		public float lu, lv;
 		public float x, y, z;
 	}
@@ -35,8 +34,11 @@ public class OctLoader
 	{
 		public int start;
 		public int num;
+		@SuppressWarnings("unused")
 		public int id;
+		@SuppressWarnings("unused")
 		public int lid;
+		@SuppressWarnings("unused")
 		public float nx, ny, nz, d;
 	}
 	
