@@ -1090,8 +1090,7 @@ public class CollisionDetection
 		
 		// FIXME this is essentially a aabb segment test!
 //		check( CollisionDetection.testBoundingBoxRay( aabb, new Ray( new Vector( -3, -3, -3 ), new Vector( 1, 1, 1 ) ) ) );
-		
-		CollisionDetection.testBoundingBoxSegment(b, s)
+				
 	}
 	
 	private static boolean eeq( float a, float b )
