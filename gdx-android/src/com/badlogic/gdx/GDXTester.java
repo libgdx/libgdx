@@ -27,7 +27,7 @@ public class GDXTester extends ListActivity
 {
 	String[] items = new String[]{ "Life Cycle Test", "Simple Test", "Vertex Array Test", "Vertex Buffer Object Test", "MeshRenderer Test", 
 								   "Fixed Point MeshRenderer Test", "Managed Test", "Text Test", "Sound Test", "Input Test", "Obj Test",
-								   "Fixed Point Test", "Float Test", "Lag Test", "Pong", "Collision Test" };
+								   "Fixed Point Test", "Float Test", "Lag Test", "Pong", "Collision Test", "Audio Device Test" };
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -76,6 +76,8 @@ public class GDXTester extends ListActivity
 			intent = new Intent( this, Pong.class );
 		if( keyword.equals( items[15] ) )
 			intent = new Intent( this, CollisionTest.class );
+		if( keyword.equals( items[16] ) )
+			intent = new Intent( this, AudioDeviceTest.class );
 			
 		startActivity( intent );
 	}

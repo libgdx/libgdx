@@ -109,6 +109,8 @@
 				<action android:name="android.intent.action.MAIN" />
 			</intent-filter>
 		</activity>
+		
+		<activity android:name=".AudioDeviceTest" android:label="Audio Device Test"/>			
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5" />
 
