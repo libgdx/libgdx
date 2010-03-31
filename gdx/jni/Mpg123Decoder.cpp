@@ -8,6 +8,7 @@ struct Mp3File
 	mpg123_handle* handle;
 	int channels;
 	long rate;
+	float length;
 	size_t buffer_size;
 	unsigned char* buffer;
 	int leftSamples;
@@ -63,6 +64,11 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_openFile(JN
 	mp3->rate = rate;
 	mp3->buffer = buffer;
 	mp3->buffer_size = buffer_size;
+	int length = mpg123_length( mh );
+	if( length == MPG123_ERR )
+		mp3->length = 0;
+	else
+		mp3->length = length / rate;
 
 	return (jlong)mp3;
 
@@ -161,4 +167,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_closeFile(JN
 	Mp3File* mp3 = (Mp3File*)handle;
 	free(mp3->buffer);
 	cleanup(mp3->handle);
+}
+
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getLength(JNIEnv *, jobject, jlong handle)
+{
+	Mp3File* mp3 = (Mp3File*)handle;
+	return mp3->length;
 }

@@ -49,6 +49,14 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getRate
 
 /*
  * Class:     com_badlogic_gdx_audio_io_Mpg123Decoder
+ * Method:    getLength
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getLength
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_audio_io_Mpg123Decoder
  * Method:    closeFile
  * Signature: (J)V
  */
