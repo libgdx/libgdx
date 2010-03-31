@@ -74,6 +74,14 @@ public class Mpg123Decoder implements Decoder
 		return getRate( handle );
 	}
 	
+	/**
+	 * @return the length of the track in seconds or 0 if the length could not be estimated
+	 */
+	public float getLength( )
+	{
+		return getLength( handle );
+	}
+	
 	private native long openFile( String file );
 	
 	/**
@@ -104,6 +112,8 @@ public class Mpg123Decoder implements Decoder
 	
 	private native int getRate( long handle );
 	
+	private native float getLength( long handle );
+	
 	private native void closeFile( long handle );
 
 	/**
@@ -118,7 +128,7 @@ public class Mpg123Decoder implements Decoder
 	public static void main( String[] argv )
 	{
 		Mpg123Decoder decoder = new Mpg123Decoder( "data/threeofaperfectpair.mp3");
-		System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels());
+		System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );
 		JoglAudioDevice device = new JoglAudioDevice( false );
 		
 		ByteBuffer tmp = ByteBuffer.allocateDirect( 1024 * 2 * decoder.getNumChannels() );
