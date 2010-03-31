@@ -9,6 +9,7 @@
 <externalSetting>
 <entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/gdx"/>
 <entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/gdx/Debug"/>
+<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/gdx/windows"/>
 </externalSetting>
 </externalSettings>
 <extensions>
@@ -23,14 +24,14 @@
 <folderInfo id="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085." name="/" resourcePath="">
 <toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.mingw.so.debug.16658404" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.so.debug">
 <targetPlatform binaryParser="org.eclipse.cdt.core.PE" id="cdt.managedbuild.target.gnu.platform.mingw.so.debug.745396192" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.so.debug"/>
-<builder buildPath="${workspace_loc:/gdx/Debug}" enableAutoBuild="false" errorParsers="" id="cdt.managedbuild.tool.gnu.builder.mingw.base.438963208" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
+<builder buildPath="${workspace_loc:/gdx/Debug}" enableAutoBuild="true" errorParsers="" id="cdt.managedbuild.tool.gnu.builder.mingw.base.438963208" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
 <tool command="as" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.mingw.so.debug.892062880" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.so.debug">
 <inputType id="cdt.managedbuild.tool.gnu.assembler.input.1927594799" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.811567727" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 <tool command="g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.445030819" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug">
-<option id="gnu.cpp.compiler.mingw.so.debug.option.optimization.level.1403482899" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.mingw.so.debug.option.debugging.level.80327525" name="Debug Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.mingw.so.debug.option.optimization.level.1403482899" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.mingw.so.debug.option.debugging.level.80327525" name="Debug Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.preprocessor.def.351061383" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
 <option id="gnu.cpp.compiler.option.include.paths.342753884" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
@@ -49,10 +50,10 @@
 <tool command="g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.so.debug.918978318" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.so.debug">
 <option defaultValue="true" id="gnu.cpp.link.mingw.so.debug.option.shared.965695348" name="Shared (-shared)" superClass="gnu.cpp.link.mingw.so.debug.option.shared" valueType="boolean"/>
 <option id="gnu.cpp.link.option.paths.1024905934" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni/mad}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni/mpg123}&quot;"/>
 </option>
 <option id="gnu.cpp.link.option.libs.378572703" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-<listOptionValue builtIn="false" value="mad"/>
+<listOptionValue builtIn="false" value="mpg123"/>
 </option>
 <option id="gnu.cpp.link.option.flags.726210831" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-Wl,--kill-at" valueType="string"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.812493336" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
@@ -71,8 +72,8 @@
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.1768280657" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base.811567727"/>
 <tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.445030819">
-<option id="gnu.cpp.compiler.mingw.so.debug.option.optimization.level.2134640346" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.mingw.so.debug.option.debugging.level.1914017186" name="Debug Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.mingw.so.debug.option.optimization.level.2134640346" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.mingw.so.debug.option.debugging.level.1914017186" name="Debug Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.include.paths.556148142" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/win32&quot;"/>
@@ -93,7 +94,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="mad/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="jni"/>
+<entry excluding="mpg123" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="jni"/>
 </sourceEntries>
 </configuration>
 </storageModule>

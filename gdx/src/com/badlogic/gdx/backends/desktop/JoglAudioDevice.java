@@ -29,7 +29,7 @@ import com.badlogic.gdx.audio.AudioDevice;
  * @author mzechner
  *
  */
-final class JoglAudioDevice implements AudioDevice 
+public final class JoglAudioDevice implements AudioDevice 
 {
 	/** the audio line **/
 	private SourceDataLine line;
@@ -40,7 +40,7 @@ final class JoglAudioDevice implements AudioDevice
 	/** byte buffer **/
 	private byte[] bytes = new byte[44100*2*2];
 	
-	JoglAudioDevice( boolean isMono )
+	public JoglAudioDevice( boolean isMono )
 	{
 		this.isMono = isMono;
 		
