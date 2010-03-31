@@ -12,106 +12,25 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".SimpleTest" android:label="Simple Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".MeshRendererTest" android:label="MeshRenderer Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".LifeCycleTest" android:label="Life Cycle Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".VertexBufferObjectTest"
-			android:label="Vertex Buffer Object Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".VertexArrayTest" android:label="Vertex Array Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".FixedPointMeshRendererTest"
-			android:label="Fixed Point MeshRenderer Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".ManagedTest" android:label="Managed Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".TextTest" android:label="Text Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".SoundTest" android:label="Sound Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-
-		</activity>
-		<activity android:name=".ObjTest" android:label="Obj Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".InputTest" android:label="Input Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".FixedPointTest" android:label="Fixed Point Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".FloatTest" android:label="Float Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".LagTest" android:label="Lag Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-
-		<activity android:name=".Pong" android:label="Pong">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-		
-		<activity android:name=".CollisionTest" android:label="Collision Test">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-			</intent-filter>
-		</activity>
-		
-		<activity android:name=".AudioDeviceTest" android:label="Audio Device Test"/>			
+		<activity android:name=".SimpleTest" android:label="Simple Test"/>
+		<activity android:name=".MeshRendererTest" android:label="MeshRenderer Test"/>
+		<activity android:name=".LifeCycleTest" android:label="Life Cycle Test"/>
+		<activity android:name=".VertexBufferObjectTest" android:label="Vertex Buffer Object Test"/>
+		<activity android:name=".VertexArrayTest" android:label="Vertex Array Test"/>
+		<activity android:name=".FixedPointMeshRendererTest" android:label="Fixed Point MeshRenderer Test"/>
+		<activity android:name=".ManagedTest" android:label="Managed Test"/>
+		<activity android:name=".TextTest" android:label="Text Test"/>
+		<activity android:name=".SoundTest" android:label="Sound Test"/>
+		<activity android:name=".ObjTest" android:label="Obj Test"/>
+		<activity android:name=".InputTest" android:label="Input Test"/>
+		<activity android:name=".FixedPointTest" android:label="Fixed Point Test"/>			
+		<activity android:name=".FloatTest" android:label="Float Test"/>			
+		<activity android:name=".LagTest" android:label="Lag Test"/>
+		<activity android:name=".Pong" android:label="Pong"/>		
+		<activity android:name=".CollisionTest" android:label="Collision Test"/>					
+		<activity android:name=".AudioDeviceTest" android:label="Audio Device Test"/>
+		<activity android:name=".Mpg123Test" android:label="Mpg123 Test"/>						
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5" />
 
-</manifest> 
+</manifest>
