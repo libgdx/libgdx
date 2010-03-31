@@ -6,11 +6,9 @@ import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.backends.desktop.JoglAudioDevice;
 
 public class Mpg123Test implements RenderListener
 {
@@ -44,12 +42,12 @@ public class Mpg123Test implements RenderListener
 		
 		Mpg123Decoder decoder = new Mpg123Decoder( file );
 		app.log( "Mpg123", "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels());
-		AudioDevice device = app.getAudio().newAudioDevice(false);
+//		AudioDevice device = app.getAudio().newAudioDevice(false);
 		
 		ByteBuffer tmp = ByteBuffer.allocateDirect( 1024 * 2 * decoder.getNumChannels() );
 		tmp.order(ByteOrder.nativeOrder());
 		ShortBuffer buffer = tmp.asShortBuffer();
-		short[] samples = new short[1024*decoder.getNumChannels()];
+//		short[] samples = new short[1024*decoder.getNumChannels()];
 		
 		long start = System.nanoTime();
 		while( decoder.readSamples( decoder.handle, buffer, 1024 * decoder.getNumChannels() ) > 0 )
