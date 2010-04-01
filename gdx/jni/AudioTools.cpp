@@ -87,4 +87,6 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_analysis_AudioTools_spectra
 		float value = *dst++ - *src++;
 		flux += value < 0? 0: value;
 	}
+
+	return flux;
 }
