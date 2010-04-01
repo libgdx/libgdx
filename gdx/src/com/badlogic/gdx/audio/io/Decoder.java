@@ -16,6 +16,9 @@
  */
 package com.badlogic.gdx.audio.io;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
 /**
  * Interface for audio decoders that return successive
  * amplitude frames. When a decoder is no longer used
@@ -27,22 +30,37 @@ package com.badlogic.gdx.audio.io;
 public interface Decoder
 {
 	/**
-	 * Reads in samples.length samples in float PCM format from the decoder. Returns
+	 * Reads in samples.capacity() samples in float PCM format from the decoder. Returns
 	 * the actual number read in. If this number is smaller than
-	 * samples.length then the end of stream has been reached.
+	 * the capcity of the buffer then the end of stream has been reached.
 	 * 
 	 * @param samples The number of read samples.
 	 */
-	public int readSamples( float[] samples );
+	public int readSamples( FloatBuffer samples );
 	
 	/**
-	 * Reads in samples.length samples in 16-bit signed PCM format from the decoder. Returns
+	 * Reads in samples.capacity() samples in 16-bit signed PCM format from the decoder. Returns
 	 * the actual number read in. If this number is smaller than
-	 * samples.length then the end of stream has been reached.
+	 * the capacity of the buffer then the end of stream has been reached.
 	 * 
 	 * @param samples The number of read samples.
 	 */
-	public int readSamples( short[] samples );
+	public int readSamples( ShortBuffer samples );
+	
+	/** 
+	 * @return the number of channels
+	 */
+	public int getNumChannels( );
+	
+	/**
+	 * @return the sampling rate in herz, e.g. 44100
+	 */
+	public int getRate( );
+
+	/**
+	 * @return the length of the file in seconds
+	 */
+	public float getLength( );
 	
 	/**
 	 * Disposes the decoder and frees all associated resources

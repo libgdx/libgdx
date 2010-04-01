@@ -119,7 +119,7 @@ public class AudioTools
 				
 		float[] samples = new float[1024];
 		
-		while( decoder.readSamples( decoder.handle, stereoSamples, stereoSamples.capacity() ) > 0 )
+		while( decoder.readSamples( stereoSamples ) > 0 )
 		{
 			AudioTools.convertToMono( stereoSamples, monoSamples, stereoSamples.capacity() );
 			AudioTools.convertToFloat( monoSamples, floatSamples, 1024 );

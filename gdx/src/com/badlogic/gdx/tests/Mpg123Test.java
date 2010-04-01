@@ -16,17 +16,13 @@
  */
 package com.badlogic.gdx.tests;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.analysis.AudioTools;
-import com.badlogic.gdx.audio.analysis.FFT;
 import com.badlogic.gdx.audio.analysis.KissFFT;
-import com.badlogic.gdx.audio.analysis.NativeFFT;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
@@ -70,7 +66,7 @@ public class Mpg123Test implements RenderListener
 		app.log( "Mpg123", "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );		
 		
 		long start = System.nanoTime();
-		while( decoder.readSamples( decoder.handle, stereoSamples, stereoSamples.capacity() ) > 0 )
+		while( decoder.readSamples( stereoSamples ) > 0 )
 		{
 			AudioTools.convertToMono( stereoSamples, monoSamples, stereoSamples.capacity() );
 			fft.spectrum( monoSamples, spectrum );

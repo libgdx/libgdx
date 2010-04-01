@@ -16,13 +16,19 @@
  */
 package com.badlogic.gdx.audio.io;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.backends.desktop.JoglAudioDevice;
 
+/**
+ * A {@link Decoder} implementation that decodes MP3 files via
+ * libmpg123 natively. 
+ * 
+ * @author mzechner
+ *
+ */
 public class Mpg123Decoder implements Decoder
 {
 	static
@@ -32,6 +38,12 @@ public class Mpg123Decoder implements Decoder
 	
 	public final long handle;
 	
+	/**
+	 * Opens the given file for mp3 decoding. Throws an IllegalArugmentException
+	 * in case the file could not be opened.
+	 * 
+	 * @param filename the filename
+	 */
 	public Mpg123Decoder( String filename )
 	{
 		handle = openFile( filename );
@@ -40,26 +52,32 @@ public class Mpg123Decoder implements Decoder
 			throw new IllegalArgumentException( "couldn't open file" );			
 	}
 	
+	
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int readSamples(float[] samples) 
+	public int readSamples(FloatBuffer samples) 
 	{	
-		return 0;
+		int read = readSamples( handle, samples, samples.capacity() );
+		samples.position(0);
+		return read;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int readSamples(short[] samples) 
+	public int readSamples(ShortBuffer samples) 
 	{	
-		return 0;
+		int read = readSamples( handle, samples, samples.capacity() );
+		samples.position(0);
+		return read;
 	}
 	
-	/** 
-	 * @return the number of channels
+	/**
+	 * {@inheritDoc}
 	 */
 	public int getNumChannels( )
 	{
@@ -67,7 +85,7 @@ public class Mpg123Decoder implements Decoder
 	}
 	
 	/**
-	 * @return the sampling rate
+	 * {@inheritDoc}
 	 */
 	public int getRate( )
 	{
@@ -75,38 +93,18 @@ public class Mpg123Decoder implements Decoder
 	}
 	
 	/**
-	 * @return the length of the track in seconds or 0 if the length could not be estimated
+	 * {@inheritDoc}
 	 */
 	public float getLength( )
 	{
 		return getLength( handle );
 	}
 	
-	private native long openFile( String file );
+	private native int openFile( String filename );
 	
-	/**
-	 * Reads in numSamples float PCM samples to the provided direct FloatBuffer using the
-	 * handle retrievable via {@link NativeMP3Decoder.getHandle()}. This is for 
-	 * people who know what they do. Returns the number of samples actually read.
-	 * 
-	 * @param handle The handle
-	 * @param buffer The direct FloatBuffer
-	 * @param numSamples The number of samples to read
-	 * @return The number of samples read.
-	 */
-	public native int readSamples( long handle, FloatBuffer buffer, int numSamples );
-
-	/**
-	 * Reads in numSamples 16-bit signed PCM samples to the provided direct FloatBuffer using the
-	 * handle retrievable via {@link NativeMP3Decoder.getHandle()}. This is for 
-	 * people who know what they do. Returns the number of samples actually read.
-	 * 
-	 * @param handle The handle
-	 * @param buffer The direct FloatBuffer
-	 * @param numSamples The number of samples to read
-	 * @return The number of samples read.
-	 */
-	public native int readSamples( long handle, ShortBuffer buffer, int numSamples );
+	private native int readSamples( long handle, FloatBuffer buffer, int numSamples );
+	
+	private native int readSamples( long handle, ShortBuffer buffer, int numSamples );
 	
 	private native int getNumChannels( long handle );
 	
@@ -128,20 +126,16 @@ public class Mpg123Decoder implements Decoder
 	public static void main( String[] argv )
 	{
 		Mpg123Decoder decoder = new Mpg123Decoder( "data/threeofaperfectpair.mp3");
-		System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );
 		JoglAudioDevice device = new JoglAudioDevice( false );
-		
-		ByteBuffer tmp = ByteBuffer.allocateDirect( 1024 * 2 * decoder.getNumChannels() );
-		tmp.order(ByteOrder.nativeOrder());
-		ShortBuffer buffer = tmp.asShortBuffer();
+		ShortBuffer buffer = AudioTools.allocateShortBuffer( 1024, decoder.getNumChannels() );
 		short[] samples = new short[1024*decoder.getNumChannels()];
 		
-		while( decoder.readSamples( decoder.handle, buffer, 1024 * decoder.getNumChannels() ) > 0 )
-		{
-			buffer.position(0);
+		System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );							
+		
+		while( decoder.readSamples( buffer ) > 0 )
+		{			
 			buffer.get(samples);
 			device.writeSamples(samples, 0, 1024*2);
-//			System.out.println( "decoded" );
 		}
 		decoder.dispose();
 	}
