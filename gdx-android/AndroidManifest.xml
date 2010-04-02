@@ -29,7 +29,8 @@
 		<activity android:name=".Pong" android:label="Pong"/>		
 		<activity android:name=".CollisionTest" android:label="Collision Test"/>					
 		<activity android:name=".AudioDeviceTest" android:label="Audio Device Test"/>
-		<activity android:name=".Mpg123Test" android:label="Mpg123 Test"/>						
+		<activity android:name=".Mpg123Test" android:label="Mpg123 Test"/>
+		<activity android:name=".VorbisTest" android:label="Vorbis Test"/>							
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5" />
 
