@@ -14,7 +14,7 @@ import com.badlogic.gdx.backends.desktop.JoglAudioDevice;
 public class VorbisDecoder implements Decoder 
 {
 	static
-	{
+	{		
 		System.loadLibrary( "gdx" );
 	}
 	
@@ -99,8 +99,8 @@ public class VorbisDecoder implements Decoder
 		System.out.println( "channels: "+ decoder.getNumChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength() );;
 		
 		JoglAudioDevice device = new JoglAudioDevice( decoder.getNumChannels() == 2?false:true );
-		ShortBuffer samplesBuffer = AudioTools.allocateShortBuffer( 1024, 2 );
-		short[] samples = new short[1024*2];
+		ShortBuffer samplesBuffer = AudioTools.allocateShortBuffer( 1024*10, 2 );
+		short[] samples = new short[samplesBuffer.capacity()];
 				
 		while( decoder.readSamples( samplesBuffer ) > 0 )
 		{
