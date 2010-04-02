@@ -1,5 +1,5 @@
--- libgdx 0.1 --
-Hi there, you seem to have downloaded libgdx 0.1 so let me explain to you how to setup your projects. 
+-- libgdx --
+Hi there, you seem to have downloaded libgdx so let me explain to you how to setup your projects. 
 The following assumes that you are going the proper libgdx way, that is developing your app on the 
 Desktop and then painlessly droping it on your Android device without any further code modifications. 
 We go through this step by step.
@@ -14,10 +14,11 @@ gdx-helloworld
  -> JRE System Library
  -> libs/
     -> armeabi/
+       - >libandroidgl20.so
        - >libgdx.so
     -> desktop-dependencies.jar
-    -> gdx-0.13sources.jar
-    -> gdx-0.13.jar
+    -> gdx-0.21sources.jar
+    -> gdx-0.21.jar
     -> gdx.dll
     -> libgdx.so
     -> README
@@ -92,12 +93,12 @@ gdx-helloworld-android
  -> assets/
  -> libs/
     -> armeabi/
+       -> libandroidgl20.so
        -> libgdx.so
-    -> gdx-0.12.jar
+    -> gdx-0.21.jar
+    -> gdx-0.21-sources.jar
     -> gdx.dll
-    -> gluegen-rt-1.0b5.jar
-    -> jogl-1.1.1.jar
-    -> jogl-natives-1.1.1.jar
+    -> desktop-dependencies.jar
     -> libgdx.so
     -> README
  -> res/
@@ -157,9 +158,9 @@ to the <activity> tag. Your manifest should look something like this then:
 
 Now you can start the Activity as you do with any normal android application in eclipse. Et voila, profit!
 
-You can savely remove all jar files != gdx-0.11.jar from the libs/ folder of the android project. The gdx.dll
-and the libgdx.so file can also be deleted. However, do not delete the libgdx.so file in the folder libs/armeabi/!
-It is the native code for Android of libgdx. 
+You can savely remove all jar files != gdx-0.XX.jar from the libs/ folder of the android project. The gdx.dll
+and the libgdx.so file can also be deleted. However, do not delete the libgdx.so and libandroidgl20.so files in the folder libs/armeabi/!
+They are the native code for Android of libgdx. 
 
 You never have to change the android project again unless you add assets. The rest is done in the Java project.
 Just verify that it works on the device every now and then starting the Activity of the android project.
