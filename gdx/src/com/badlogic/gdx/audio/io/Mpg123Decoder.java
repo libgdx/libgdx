@@ -16,7 +16,6 @@
  */
 package com.badlogic.gdx.audio.io;
 
-import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.audio.analysis.AudioTools;
@@ -51,19 +50,7 @@ public class Mpg123Decoder implements Decoder
 		if( handle == -1 )
 			throw new IllegalArgumentException( "couldn't open file" );			
 	}
-	
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int readSamples(FloatBuffer samples) 
-	{	
-		int read = readSamples( handle, samples, samples.capacity() );
-		samples.position(0);
-		return read;
-	}
+		
 
 	/**
 	 * {@inheritDoc}
@@ -100,9 +87,7 @@ public class Mpg123Decoder implements Decoder
 		return getLength( handle );
 	}
 	
-	private native int openFile( String filename );
-	
-	private native int readSamples( long handle, FloatBuffer buffer, int numSamples );
+	private native int openFile( String filename );	
 	
 	private native int readSamples( long handle, ShortBuffer buffer, int numSamples );
 	

@@ -18,14 +18,6 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_openFile
 /*
  * Class:     com_badlogic_gdx_audio_io_Mpg123Decoder
  * Method:    readSamples
- * Signature: (JLjava/nio/FloatBuffer;I)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples__JLjava_nio_FloatBuffer_2I
-  (JNIEnv *, jobject, jlong, jobject, jint);
-
-/*
- * Class:     com_badlogic_gdx_audio_io_Mpg123Decoder
- * Method:    readSamples
  * Signature: (JLjava/nio/ShortBuffer;I)I
  */
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples__JLjava_nio_ShortBuffer_2I

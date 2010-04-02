@@ -16,7 +16,6 @@
  */
 package com.badlogic.gdx.audio.io;
 
-import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 /**
@@ -28,16 +27,7 @@ import java.nio.ShortBuffer;
  *
  */
 public interface Decoder
-{
-	/**
-	 * Reads in samples.capacity() samples in float PCM format from the decoder. Returns
-	 * the actual number read in. If this number is smaller than
-	 * the capcity of the buffer then the end of stream has been reached.
-	 * 
-	 * @param samples The number of read samples.
-	 */
-	public int readSamples( FloatBuffer samples );
-	
+{	
 	/**
 	 * Reads in samples.capacity() samples in 16-bit signed PCM format from the decoder. Returns
 	 * the actual number read in. If this number is smaller than

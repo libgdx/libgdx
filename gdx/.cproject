@@ -80,6 +80,7 @@
 <option id="gnu.cpp.compiler.mingw.so.debug.option.debugging.level.1914017186" name="Debug Level" superClass="gnu.cpp.compiler.mingw.so.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.include.paths.556148142" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni/libvorbis}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/win32&quot;"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -87,6 +88,9 @@
 <tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.debug.820442457" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.debug.417875152">
 <option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.mingw.so.debug.option.optimization.level.666150281" name="Optimization Level" superClass="gnu.c.compiler.mingw.so.debug.option.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.c.compiler.mingw.so.debug.option.debugging.level.1465294390" name="Debug Level" superClass="gnu.c.compiler.mingw.so.debug.option.debugging.level" value="gnu.c.debugging.level.default" valueType="enumerated"/>
+<option id="gnu.c.compiler.option.include.paths.77139211" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni/libvorbis}&quot;"/>
+</option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1529465493" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 <tool id="cdt.managedbuild.tool.gnu.c.linker.mingw.so.debug.1430881103" name="MinGW C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.mingw.so.debug.892542662">
@@ -98,7 +102,7 @@
 </toolChain>
 </folderInfo>
 <sourceEntries>
-<entry excluding="mpg123" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="jni"/>
+<entry excluding="mpg123|libvorbis" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="jni"/>
 </sourceEntries>
 </configuration>
 </storageModule>
@@ -879,6 +883,9 @@
 <option defaultValue="true" id="gnu.cpp.link.option.shared.1962673577" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" valueType="boolean"/>
 <option id="gnu.cpp.link.option.libs.1122080286" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 <listOptionValue builtIn="false" value="mpg123"/>
+<listOptionValue builtIn="false" value="vorbisfile"/>
+<listOptionValue builtIn="false" value="vorbis"/>
+<listOptionValue builtIn="false" value="ogg"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.827943034" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 <additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

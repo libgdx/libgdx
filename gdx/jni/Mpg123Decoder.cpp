@@ -91,16 +91,6 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_openFile(JN
 
 }
 
-/*
- * Class:     com_badlogic_gdx_audio_io_Mpg123Decoder
- * Method:    readSamples
- * Signature: (ILjava/nio/FloatBuffer;I)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples__ILjava_nio_FloatBuffer_2I(JNIEnv *, jobject, jlong, jobject, jint)
-{
-	return 0;
-}
-
 static inline int readBuffer( Mp3File* mp3 )
 {
 	size_t done = 0;
