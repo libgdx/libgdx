@@ -409,7 +409,10 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 		synchronized( this )
 		{
 			for( RenderListener listener: setupListeners )
+			{
 				listener.surfaceCreated( application );
+				listener.surfaceChanged( application, this.getWidth(), this.getHeight() );
+			}
 			listeners.addAll(setupListeners);
 			setupListeners.clear();
 			
@@ -444,7 +447,10 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 		frameStart = System.nanoTime();
 		
 		for( RenderListener listener: listeners )
-			listener.render( application );	
+		{
+			listener.surfaceChanged( application, this.getWidth(), this.getHeight() );
+			listener.render( application );
+		}
 	}
 
 	

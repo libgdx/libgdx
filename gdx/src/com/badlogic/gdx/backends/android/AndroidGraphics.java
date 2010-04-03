@@ -28,6 +28,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -413,6 +414,9 @@ final class AndroidGraphics implements Graphics, Renderer
 	{	
 		this.width = width;
 		this.height = height;
+		
+		if( listener != null )
+			listener.surfaceChanged( app, width, height);
 	}
 
 	@Override
@@ -422,6 +426,10 @@ final class AndroidGraphics implements Graphics, Renderer
 		
 		for( AndroidTexture texture: textures )
 			texture.invalidate();
+		
+		Display display = app.getWindowManager().getDefaultDisplay();  
+		this.width = display.getWidth();
+		this.height = display.getHeight();
 		
 		if( listener != null )
 			listener.surfaceCreated( app );			

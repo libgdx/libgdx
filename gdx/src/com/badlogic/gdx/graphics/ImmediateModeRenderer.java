@@ -39,7 +39,7 @@ import java.nio.FloatBuffer;
  */
 public class ImmediateModeRenderer 
 {
-	private static final int MAX_VERTICES = 2000;
+	private static final int MAX_VERTICES = 10000 * 3;
 	
 	/** the gl instance **/
 	private final GL10 gl;	

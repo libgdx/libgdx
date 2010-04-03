@@ -20,6 +20,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
+import com.badlogic.gdx.graphics.GL10;
 
 /**
  * A simple test to demonstrate the life cycle of an application and a 
@@ -58,19 +59,19 @@ public class LifeCycleTest implements ApplicationListener, RenderListener
 	@Override
 	public void render(Application app) 
 	{
-	
+		app.getGraphics().getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );
 	}
 
 	@Override
 	public void surfaceChanged(Application app, int width, int height) 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface changed" );	
+		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface changed: " + app.getGraphics().getWidth() + "x" + app.getGraphics().getHeight() );
 	}
 
 	@Override
 	public void surfaceCreated(Application app) 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface created" );
+		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface created: " + app.getGraphics().getWidth() + "x" + app.getGraphics().getHeight() );
 	}
 	
 	public static void main( String[] argv )
