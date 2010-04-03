@@ -33,47 +33,55 @@ public class Mpg123Test implements RenderListener
 	@Override
 	public void dispose(Application app) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void render(final Application app) 
 	{		
-		
+
 	}
 
 	@Override
 	public void surfaceChanged(Application app, int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( final Application app) 
 	{	
-		String file = null;
-		if( app instanceof AndroidApplication )
-			 file = "/sdcard/audio/schism.mp3";
-		else
-			 file = "data/threeofaperfectpair.mp3";
-		
-		Mpg123Decoder decoder = new Mpg123Decoder( file );
-		ShortBuffer stereoSamples = AudioTools.allocateShortBuffer( 1024, decoder.getNumChannels() );
-		ShortBuffer monoSamples = AudioTools.allocateShortBuffer( 1024, 1 );
-		FloatBuffer spectrum = AudioTools.allocateFloatBuffer( 1024 / 2 + 1, 1);
-		KissFFT fft = new KissFFT( 1024 );
-		
-		app.log( "Mpg123", "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );		
-		
-		long start = System.nanoTime();
-		while( decoder.readSamples( stereoSamples ) > 0 )
-		{
-			AudioTools.convertToMono( stereoSamples, monoSamples, stereoSamples.capacity() );
-			fft.spectrum( monoSamples, spectrum );
-		}
-				
-		app.log( "Mpg123", "took " + (System.nanoTime()-start) / 1000000000.0 );
-		decoder.dispose();			
+//		Thread thread = new Thread( new Runnable() {
+//
+//			public void run( )
+//			{
+				String file = null;
+				if( app instanceof AndroidApplication )
+					file = "/sdcard/audio/schism.mp3";
+				else
+					file = "data/threeofaperfectpair.mp3";
+
+				Mpg123Decoder decoder = new Mpg123Decoder( file );
+				ShortBuffer stereoSamples = AudioTools.allocateShortBuffer( 1024, decoder.getNumChannels() );
+				ShortBuffer monoSamples = AudioTools.allocateShortBuffer( 1024, 1 );
+				FloatBuffer spectrum = AudioTools.allocateFloatBuffer( 1024 / 2 + 1, 1);
+				KissFFT fft = new KissFFT( 1024 );
+
+				app.log( "Mpg123", "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );		
+
+				long start = System.nanoTime();
+				while( decoder.readSamples( stereoSamples ) > 0 )
+				{
+					AudioTools.convertToMono( stereoSamples, monoSamples, stereoSamples.capacity() );
+					fft.spectrum( monoSamples, spectrum );
+				}
+
+				app.log( "Mpg123", "took " + (System.nanoTime()-start) / 1000000000.0 );
+				decoder.dispose();
+//			} 
+//		});
+//		thread.setPriority(Thread.MAX_PRIORITY);
+//		thread.start();
 	}
 
 	public static void main( String[] argv )
