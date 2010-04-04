@@ -862,7 +862,7 @@ final class JoglGL20 implements GL20
 	public void glUniformMatrix4fv(int location, int count, boolean transpose,
 			FloatBuffer value) 
 	{	
-		gl.glUniformMatrix2x4fv( location, count, transpose, value );
+		gl.glUniformMatrix4fv( location, count, transpose, value );
 	}
 
 	@Override

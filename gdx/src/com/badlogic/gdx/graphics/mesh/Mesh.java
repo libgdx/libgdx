@@ -304,18 +304,21 @@ public class Mesh
 			{
 				gl.glEnableClientState( GL11.GL_VERTEX_ARRAY );
 				gl.glVertexPointer( attribute.numComponents, type, attributes.vertexSize, attribute.offset );
+				continue;
 			}
 			
 			if( attribute.usage == Usage.Color )
 			{
 				gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
 				gl.glColorPointer( attribute.numComponents, type, attributes.vertexSize, attribute.offset );
+				continue;
 			}
 			
 			if( attribute.usage == Usage.Normal )
 			{
 				gl.glEnableClientState( GL11.GL_NORMAL_ARRAY );
 				gl.glNormalPointer( type, attributes.vertexSize, attribute.offset );
+				continue;
 			}
 			
 			if( attribute.usage == Usage.TextureCoordinates )
@@ -324,6 +327,7 @@ public class Mesh
 				gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				gl.glTexCoordPointer( attribute.numComponents, type, attributes.vertexSize, attribute.offset );
 				textureUnit++;
+				continue;
 			}
 		}
 		
@@ -371,6 +375,7 @@ public class Mesh
 				gl.glEnableClientState( GL11.GL_VERTEX_ARRAY );
 				vertices.position( attribute.offset );
 				gl.glVertexPointer( attribute.numComponents, type, attributes.vertexSize, vertices );
+				continue;
 			}
 			
 			if( attribute.usage == Usage.Color )
@@ -378,6 +383,7 @@ public class Mesh
 				gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
 				vertices.position( attribute.offset );
 				gl.glColorPointer( attribute.numComponents, type, attributes.vertexSize, vertices );
+				continue;
 			}
 			
 			if( attribute.usage == Usage.Normal )
@@ -385,6 +391,7 @@ public class Mesh
 				gl.glEnableClientState( GL11.GL_NORMAL_ARRAY );
 				vertices.position( attribute.offset );
 				gl.glNormalPointer( type, attributes.vertexSize, vertices );
+				continue;
 			}
 			
 			if( attribute.usage == Usage.TextureCoordinates )
@@ -394,6 +401,7 @@ public class Mesh
 				vertices.position( attribute.offset );
 				gl.glTexCoordPointer( attribute.numComponents, type, attributes.vertexSize, vertices );
 				textureUnit++;
+				continue;
 			}
 		}
 		
@@ -437,7 +445,39 @@ public class Mesh
 			throw new IllegalStateException( "can't use this render method with OpenGL ES 1.x" );
 		
 		checkManagedAndDirty();
-	}
+		
+		GL20 gl = graphics.getGL20();
+		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
+		
+		int numAttributes = attributes.size();
+		int type = useFixedPoint?GL11.GL_FIXED:GL11.GL_FLOAT;
+		int textureUnit = 0;
+		
+		for( int i = 0; i < numAttributes; i++ )
+		{
+			VertexAttribute attribute = attributes.get( i );
+			shader.enableVertexAttribute( attribute.alias );
+			shader.setVertexAttribute( attribute.alias, attribute.numComponents, type, false, attributes.vertexSize, attribute.offset );
+		}
+		
+		if( maxIndices > 0 )
+		{			
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
+			gl.glDrawElements( primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset );
+		}	
+		else
+		{
+			gl.glDrawArrays( primitiveType, offset, count);
+		}
+		
+		textureUnit--;
+		
+		for( int i = 0; i < numAttributes; i++ )
+		{
+			VertexAttribute attribute = attributes.get( i );
+			shader.disableVertexAttribute( attribute.alias );
+		}
+	}	
 	
 	private void checkManagedAndDirty( )
 	{

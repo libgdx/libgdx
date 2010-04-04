@@ -37,7 +37,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -212,12 +211,6 @@ final class JoglGraphics implements Graphics, RenderListener
 	public Pixmap newPixmap(Object nativePixmap) 
 	{	
 		return new JoglPixmap( (BufferedImage)nativePixmap );
-	}
-
-	@Override
-	public ShaderProgram newShaderProgram(String vertexShader, String fragmentShader) 
-	{	
-		throw new UnsupportedOperationException( "not implemented yet" ); // FIXME
 	}
 
 	@Override

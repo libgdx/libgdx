@@ -4,7 +4,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.mesh.Mesh;
 import com.badlogic.gdx.graphics.mesh.VertexAttribute;
-import com.badlogic.gdx.graphics.mesh.VertexAttributes;
 import com.badlogic.gdx.graphics.mesh.VertexAttributes.Usage;
 
 public class MeshTest implements RenderListener

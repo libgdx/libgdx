@@ -295,14 +295,6 @@ final class AndroidGraphics implements Graphics, Renderer
 		return new AndroidPixmap( (Bitmap)nativePixmap );
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ShaderProgram newShaderProgram(String vertexShader, String fragmentShader) 
-	{	
-		throw new UnsupportedOperationException( "not implemented yet" ); // FIXME
-	}
 
 	/**
 	 * {@inheritDoc}

@@ -204,18 +204,4 @@ public interface Graphics
 	 * @return a new Texture
 	 */
 	public Texture newTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );		
-	
-	/**
-	 * Creates a new {@link ShaderProgram} from the given vertex and fragment
-	 * shader source. The shaders will be compiled and linked to a program. If the
-	 * shader program did not compile or link correctly one can query the information
-	 * on the problem via {@link ShaderProgram.getLog()}. To check wheter the shader
-	 * program compiled successfully use {@link ShaderProgram.isCompiled()}. If the
-	 * shader did not compile successfully it can't be used.
-	 * 
-	 * @param vertexShader The vertex shader source
-	 * @param fragmentShader The fragment shader source
-	 * @return the ShaderProgram
-	 */
-	public ShaderProgram newShaderProgram( String vertexShader, String fragmentShader );
 }
