@@ -30,7 +30,7 @@ public class MeshShaderTest implements RenderListener
 							   "attribute vec4 a_color;\n" +
 							   "attribute vec2 a_texCoords;\n" +							   
 							   "uniform mat4 u_worldView;\n" +							   
-							   "varying vec3 v_color;" +
+							   "varying vec4 v_color;" +
 							   "varying vec2 v_texCoords;" +							   
 							   "void main()                  \n" +
 							   "{                            \n" +
