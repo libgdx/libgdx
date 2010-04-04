@@ -72,6 +72,7 @@ public class LifeCycleTest implements ApplicationListener, RenderListener
 	public void surfaceCreated(Application app) 
 	{
 		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface created: " + app.getGraphics().getWidth() + "x" + app.getGraphics().getHeight() );
+		System.out.println(app.getGraphics().getGL10().glGetString( GL10.GL_VERSION ) );
 	}
 	
 	public static void main( String[] argv )

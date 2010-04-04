@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.math.Matrix;
 
 /**
  * A SpriteBatch is used to draw 2D rectangles that reference a 
@@ -78,6 +79,9 @@ public final class SpriteBatch
 	/** depth sorter **/
 	private final SpriteSorter sorter = new SpriteSorter();
 	
+	/** the transform to be applied to all sprites **/
+	private final Matrix transform = new Matrix();
+	
 	/**
 	 * Consturctor, sets the {@link Graphics} instance
 	 * to use.
@@ -108,6 +112,25 @@ public final class SpriteBatch
 	 */
 	public void begin( )
 	{
+		transform.idt();
+		freeSprites.addAll( sprites );
+		sprites.clear();
+	}
+	
+	/**
+	 * Sets up the SpriteBatch for drawing. This will disable
+	 * depth buffer testing and writting, culling and lighting.
+	 * It enables blending and alpha testing. It sets the projection
+	 * matrix to an orthographic matrix and the modelview and texture
+	 * matrix to identity. If you have more texture units enabled than
+	 * the first one you have to disable them before calling this. Applies
+	 * the given transformation {@link Matrix} to all subsequently specified sprites.
+	 * 
+	 * @param transform the transformation matrix.
+	 */
+	public void begin( Matrix transform )
+	{
+		transform.set( transform );
 		freeSprites.addAll( sprites );
 		sprites.clear();
 	}
@@ -203,11 +226,56 @@ public final class SpriteBatch
 	 * Renders all the things specified between a call to this
 	 * and a call to {@link SpriteBatch.begin()}. Sprites get
 	 * sorted by their depth in descending order (higher depth
-	 * gets drawn first). 
+	 * gets drawn first). This will alter the following OpenGL 
+	 * states:
+	 * <ul>
+	 * 		<li>disable GL_DEPTH_TEST</li>
+	 * 		<li>disable GL_LIGHTING</li>
+	 *  	<li>disable GL_CULL_FACE</li>
+	 *  	<li>depth mask -> false
+	 *      <li>enable GL_TEXTURE_2D</li>
+	 *      <li>enable GL_BLEND</li>
+	 *      <li>enable GL_ALPHA_TEST</li>
+	 *      <li>blendfunc -> GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA</li>
+	 *      <li>alphafunc -> GL_GREATER, 0</li>
+	 *      <li>clientactivetexture -> GL_TEXTURE_0</li>
+	 * </ul>
+	 * 
+	 * for convenience the following states are set back to their defaults
+	 * 
+	 * <ul>
+	 * 		<li>depth mask -> true</li>
+	 * 		<li>disable GL_BLEND</li>
+	 * 		<li>disable GL_APLHA_TEST</li>
+	 * 		<li>disable GL_TEXTURE_2D</li>
+	 * </ul>
+	 * 
+	 * Also, the projection and modelview matrix will get changed.
 	 */
 	public void end( )
 	{
 		Collections.sort( sprites, sorter );
+		
+		GL10 gl = graphics.getGL10();
+		gl.glDisable( GL10.GL_LIGHTING );
+		gl.glDisable( GL10.GL_DEPTH_TEST );
+		gl.glDisable( GL10.GL_CULL_FACE );
+		gl.glDepthMask ( false );
+		
+		gl.glEnable( GL10.GL_BLEND );
+		gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );
+		gl.glEnable( GL10.GL_ALPHA_TEST );
+		gl.glAlphaFunc( GL10.GL_GREATER, 0 );
+		
+		for( int i = 0; i < sprites.size(); i++ )
+		{
+			
+		}
+		
+		gl.glDepthMask( true );
+		gl.glDisable( GL10.GL_BLEND );
+		gl.glDisable( GL10.GL_ALPHA_TEST );
+		gl.glDisable( GL10.GL_TEXTURE_2D );
 	}
 	
 	
@@ -223,7 +291,6 @@ public final class SpriteBatch
 				return 1;
 			return 0;
 		}
-		
 	}
 	
 }

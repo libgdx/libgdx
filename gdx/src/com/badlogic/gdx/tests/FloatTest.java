@@ -119,14 +119,14 @@ public class FloatTest implements RenderListener
 		pixmap.setColor(0, 0, 0, 1 );
 		pixmap.drawLine(0, 0, 256, 256);
 		pixmap.drawLine(256, 0, 0, 256);		
-		tex = application.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
+		tex = application.getGraphics().newTexture( pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
 		
 		pixmap = application.getGraphics().newPixmap( 256, 256, Format.RGBA8888 );
 		pixmap.setColor( 1, 1, 1, 1 );
 		pixmap.fill();
 		pixmap.setColor( 0, 0, 0, 1 );
 		pixmap.drawLine( 128, 0, 128, 256 );
-		tex2 = application.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
+		tex2 = application.getGraphics().newTexture( pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
 	}
 
 	@Override
