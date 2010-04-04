@@ -140,7 +140,7 @@ public final class FloatMesh implements Mesh
 		verticesArray = new float[vertexSize / 4 * maxVertices];
 		ByteBuffer buffer = ByteBuffer.allocateDirect( vertexSize * maxVertices );
 		buffer.order(ByteOrder.nativeOrder());
-		verticesBuffer = buffer.asFloatBuffer();	
+		verticesBuffer = buffer.asFloatBuffer();
 		
 		if( hasIndices )
 		{

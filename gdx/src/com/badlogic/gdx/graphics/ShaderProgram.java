@@ -53,7 +53,8 @@ public interface ShaderProgram
 	public void end( );
 	
 	/**
-	 * Sets the vertex attribute with the given name.
+	 * Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the attribute name
 	 * @param size the number of components, must be >= 1 and <= 4
@@ -65,7 +66,8 @@ public interface ShaderProgram
 	public void setVertexAttribute( String name, int size, int type, boolean normalize, int stride, FloatBuffer buffer );
 	
 	/**
-	 * Sets the vertex attribute with the given name. 
+	 * Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the attribute name
 	 * @param size the number of components, must be >= 1 and <= 4
@@ -77,14 +79,17 @@ public interface ShaderProgram
 	public void setVertexAttribute( String name, int size, int type, boolean normalize, int offset );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
+	 * 
 	 * @param name the name of the uniform
 	 * @param value the value
 	 */
 	public void setUniform( String name, int value );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -93,7 +98,8 @@ public interface ShaderProgram
 	public void setUniform( String name, int value1, int value2 );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -103,7 +109,8 @@ public interface ShaderProgram
 	public void setUniform( String name, int value1, int value2, int value3 );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -114,7 +121,8 @@ public interface ShaderProgram
 	public void setUniform( String name, int value1, int value2, int value3, int value4 );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value the value
@@ -122,7 +130,8 @@ public interface ShaderProgram
 	public void setUniform( String name, float value );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -131,7 +140,8 @@ public interface ShaderProgram
 	public void setUniform( String name, float value1, float value2 );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -141,7 +151,8 @@ public interface ShaderProgram
 	public void setUniform( String name, float value1, float value2, float value3 );
 	
 	/**
-	 * Sets the uniform with the given name
+	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -152,7 +163,8 @@ public interface ShaderProgram
 	public void setUniform( String name, float value1, float value2, float value3, float value4 );
 	
 	/**
-	 * Sets the uniform matrix with the given name
+	 * Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case
+	 * it is not called in between a {@link begin()}/{@link end()} block.
 	 * @param name the name of the uniform
 	 * @param matrix the matrix
 	 */

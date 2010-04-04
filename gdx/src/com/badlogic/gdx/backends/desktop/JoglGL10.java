@@ -47,21 +47,21 @@ class JoglGL10 implements GL10
 	public JoglGL10( javax.media.opengl.GL gl )
 	{
 		this.gl = gl;
-		ByteBuffer buffer = ByteBuffer.allocateDirect( 500000 * 4 * 4 );		
+		ByteBuffer buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );		
 		buffer.order(ByteOrder.nativeOrder());
 		colorBuffer = buffer.asFloatBuffer();
 		
-		buffer = ByteBuffer.allocateDirect( 500000 * 4 * 3 );
+		buffer = ByteBuffer.allocateDirect( 200000 * 4 * 3 );
 		buffer.order(ByteOrder.nativeOrder());
 		normalBuffer = buffer.asFloatBuffer();
 		
-		buffer = ByteBuffer.allocateDirect( 500000 * 4 * 4 );
+		buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
 		buffer.order(ByteOrder.nativeOrder());
 		vertexBuffer = buffer.asFloatBuffer();
 		
 		for( int i = 0; i < texCoordBuffer.length; i++ )
 		{
-			buffer = ByteBuffer.allocateDirect( 500000 * 4 * 4 );
+			buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
 			buffer.order(ByteOrder.nativeOrder());		
 			texCoordBuffer[i] = buffer.asFloatBuffer();
 		}
