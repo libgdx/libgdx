@@ -4,12 +4,10 @@ import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.io.VorbisDecoder;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.backends.desktop.JoglAudioDevice;
 
 public class VorbisTest implements RenderListener
 {
