@@ -58,16 +58,13 @@ public abstract class Font
 	private int glyphX = 0;
 	private int glyphY = 0;
 	
-	/** the graphics instance **/
-	private Graphics graphics;
 	
 	/** whether the Font is managed or not **/
 	private boolean isManaged;
 	
 	protected Font( Graphics graphics, boolean managed )
 	{
-		this.texture = graphics.newTexture( 512, 512, Pixmap.Format.RGBA4444, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );
-		this.graphics = graphics;
+		this.texture = graphics.newTexture( 512, 512, Pixmap.Format.RGBA4444, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );		
 		this.isManaged = managed;
 	}
 	

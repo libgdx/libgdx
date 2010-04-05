@@ -43,7 +43,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;

@@ -62,7 +62,7 @@ public class Mesh
 	private final boolean useFixedPoint;
 	
 	/** filled already? then use subdata next time **/
-	private boolean filledOnce = false;
+//	private boolean filledOnce = false;
 	
 	/**
 	 * Creates a new Mesh with the given attributes
@@ -141,7 +141,7 @@ public class Mesh
 			indexBufferObjectHandle = handle.get(0);
 		}
 		
-		filledOnce = false;
+//		filledOnce = false;
 	}
 	
 	private void fillBuffers( )
@@ -155,7 +155,7 @@ public class Mesh
 		else
 			fillBuffers( graphics.getGL11() );
 		
-		filledOnce = true;
+//		filledOnce = true;
 	}
 	
 	private void fillBuffers( GL11 gl )

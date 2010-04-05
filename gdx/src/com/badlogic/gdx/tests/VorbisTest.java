@@ -40,8 +40,7 @@ public class VorbisTest implements RenderListener
 			decoder = new VorbisDecoder( "data/cloudconnected.ogg" );
 		app.log( "Vorbis", "channels: "+ decoder.getNumChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength() );;
 				
-		ShortBuffer samplesBuffer = AudioTools.allocateShortBuffer( 1024, 2 );
-		short[] samples = new short[1024*2];
+		ShortBuffer samplesBuffer = AudioTools.allocateShortBuffer( 1024, 2 );		
 			
 		long start = System.nanoTime();
 		while( decoder.readSamples( samplesBuffer ) > 0 )
