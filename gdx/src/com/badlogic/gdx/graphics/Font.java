@@ -16,8 +16,6 @@
  */
 package com.badlogic.gdx.graphics;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
