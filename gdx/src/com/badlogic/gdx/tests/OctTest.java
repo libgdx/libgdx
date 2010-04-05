@@ -23,7 +23,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.MeshRenderer;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector;
@@ -31,7 +30,7 @@ import com.badlogic.gdx.math.Vector;
 public class OctTest implements RenderListener, InputListener
 {
 	PerspectiveCamera cam;
-	MeshRenderer mesh;	
+	Mesh mesh;	
 	float angleY = 0;
 	float angleX = 0;
 	float[] lightColor = { 1, 1, 1, 0 };
@@ -49,8 +48,7 @@ public class OctTest implements RenderListener, InputListener
 		{
 			app.getInput().addInputListener( this );
 			
-			Mesh m = ModelLoader.loadOct( app.getFiles().readFile( "data/steps.oct", FileType.Internal ), false, new Vector() );
-			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );									
+			mesh = ModelLoader.loadOct( app.getGraphics(), app.getFiles().readFile( "data/steps.oct", FileType.Internal ), true, false, new Vector() );											
 			
 			cam = new PerspectiveCamera();
 			cam.getPosition().set( 2, 2, 2 );

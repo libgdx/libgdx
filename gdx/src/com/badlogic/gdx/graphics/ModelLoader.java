@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics;
 
 import java.io.InputStream;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.loaders.ObjLoader;
 import com.badlogic.gdx.graphics.loaders.OctLoader;
 import com.badlogic.gdx.math.Vector;
@@ -37,13 +38,15 @@ public class ModelLoader
 	 * InputStream. The OBJ file must only contain
 	 * triangulated meshes. Materials are ignored.
 	 * 
+	 * @param graphics the Graphics instance used to construct the Mesh
 	 * @param in the InputStream
-	 * @param useFloats whether to return a {@link FloatMesh} or a {@link FixedPointMesh}
+	 * @param managed whether the resulting Mesh should be managed
+	 * @param useFloats whether to use floats or fixed point
 	 * @return a Mesh holding the OBJ data or null in case something went wrong.
 	 */
-	public static Mesh loadObj( InputStream in, boolean useFloats )
+	public static Mesh loadObj( Graphics graphics, InputStream in, boolean managed, boolean useFloats )
 	{
-		return ObjLoader.loadObj( in, useFloats);
+		return ObjLoader.loadObj( graphics, in, managed, useFloats);
 	}
 	
 	/**
@@ -51,13 +54,15 @@ public class ModelLoader
 	 * demo programs. See the source at http://www.paulnettle.com/pub/FluidStudios/CollisionDetection/Fluid_Studios_Collision_Detection_Demo_and_Source.zip
 	 * for more information.
 	 * 
+	 * @param graphics the Graphics instance used to construct the Mesh
 	 * @param in the InputStream
+	 * @param managed whether the resulting Mesh should be managed
 	 * @param useFloats whether to return a {@link FloatMesh} or a {@link FixedPointMesh}
 	 * @param start the start position as defined in the map
 	 * @return a Mesh holding the OCT data or null in case something went wrong.
 	 */
-	public static Mesh loadOct( InputStream in, boolean useFloats, Vector start )
+	public static Mesh loadOct( Graphics graphics, InputStream in, boolean managed, boolean useFloats, Vector start )
 	{
-		return OctLoader.loadOct( in, useFloats, start );
+		return OctLoader.loadOct( graphics, in, managed, useFloats, start );
 	}
 }

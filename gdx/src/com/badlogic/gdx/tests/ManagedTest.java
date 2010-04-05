@@ -19,18 +19,19 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.FloatMesh;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.MeshRenderer;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 public class ManagedTest implements RenderListener
 {
-	MeshRenderer mesh;
+	Mesh mesh;
 	Texture texture;
 
 	@Override
@@ -38,14 +39,15 @@ public class ManagedTest implements RenderListener
 	{	
 		if( mesh == null )
 		{
-			FloatMesh m = new FloatMesh( 4, 2, false,false, true, 1, 2, true, 4  );
-			m.setVertices( new float[] { -0.5f, -0.5f, 0, 0,
+			mesh = new Mesh( app.getGraphics(), false, true, false, 4, 0, 
+							   new VertexAttribute( Usage.Position, 2, "a_position" ),
+							   new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoord" ) );
+			mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 0,
 										  0.5f, -0.5f, 1, 0,
 										  0.5f, 0.5f, 1, 1,
 										  -0.5f, 0.5f, 0, 1 				
 			});
-			m.setIndices( new short[] { 0, 1, 2, 3 } );
-			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );
+//			mesh.setIndices( new short[] { 0, 1, 2, 3 } );			
 			
 			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
 			pixmap.setColor(1, 1, 1, 1 );

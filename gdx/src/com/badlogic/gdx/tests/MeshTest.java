@@ -4,14 +4,14 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.mesh.Mesh;
-import com.badlogic.gdx.graphics.mesh.VertexAttribute;
-import com.badlogic.gdx.graphics.mesh.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 public class MeshTest implements RenderListener
 {
@@ -29,7 +29,7 @@ public class MeshTest implements RenderListener
 	{
 		app.getGraphics().getGL10().glEnable( GL10.GL_TEXTURE_2D );
 		texture.bind();
-		mesh.render( GL10.GL_TRIANGLES );
+		mesh.render( GL10.GL_TRIANGLES, 0, 3 );
 	}
 
 	@Override
@@ -40,15 +40,17 @@ public class MeshTest implements RenderListener
 
 	@Override
 	public void surfaceCreated(Application app) 
-	{
-		mesh = new Mesh( app.getGraphics(), true, true, false, 3, 0, 
-						 new VertexAttribute( Usage.Position, 3, "pos" ),
-						 new VertexAttribute( Usage.Color, 3, "col" ),
-						 new VertexAttribute( Usage.TextureCoordinates, 2, "texCoord0" ) );
-		mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 0, 0,
-										 0.5f, -0.5f, 0, 0, 1, 0, 1, 0,
-										 0, 0.5f, 0, 0, 0, 1, 0.5f, 1 } );
+	{		
+		mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
+				 new VertexAttribute( Usage.Position, 3, "a_position" ), 
+				 new VertexAttribute( Usage.Color, 4, "a_color" ),
+				 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );		
 		
+		mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,
+										 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
+										 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );	
+		mesh.setIndices( new short[] { 0, 1, 2 } );
+
 		Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
 		pixmap.setColor(1, 1, 1, 1 );
 		pixmap.fill();

@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.mesh;
+package com.badlogic.gdx.graphics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -91,6 +91,9 @@ public class VertexAttributes
 			
 			if( attribute.usage == Usage.Color )
 			{
+				if( attribute.numComponents != 4 )
+					throw new IllegalArgumentException( "color attribute must have 4 components" );
+				
 				if( cols )
 					throw new IllegalArgumentException( "two color attributes were specified" );
 				cols = true;

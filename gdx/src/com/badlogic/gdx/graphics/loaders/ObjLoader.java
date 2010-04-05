@@ -19,10 +19,12 @@ package com.badlogic.gdx.graphics.loaders;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
-import com.badlogic.gdx.graphics.FixedPointMesh;
-import com.badlogic.gdx.graphics.FloatMesh;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
  * Loads Wavefront OBJ files, ignores material files.
@@ -38,7 +40,7 @@ public class ObjLoader
 	 * @param useFloats whether to return a FloatMesh or a FixedPointMesh
 	 *
 	 */
-	public static Mesh loadObj( InputStream in, boolean useFloats )
+	public static Mesh loadObj( Graphics graphics, InputStream in, boolean managed, boolean useFloats )
 	{
 		String line = "";
 		
@@ -61,7 +63,7 @@ public class ObjLoader
 		{
 			return null;
 		}
-		return loadObjFromString( line, useFloats );
+		return loadObjFromString( graphics, line, managed, useFloats );
 	}
 	
 	/**
@@ -71,7 +73,7 @@ public class ObjLoader
 	 * @param useFloats whether to return a FloatMesh or a FixedPointMesh
 	 * @return The Mesh
 	 */
-	public static Mesh loadObjFromString( String obj, boolean useFloats )
+	public static Mesh loadObjFromString( Graphics graphics, String obj, boolean managed, boolean useFloats )
 	{
 		String[] lines = obj.split( "\n" );
 		float[] vertices = new float[lines.length * 3];
@@ -184,13 +186,29 @@ public class ObjLoader
 		}
 		
 		Mesh mesh = null;
+		
+		ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>( );
+		attributes.add( new VertexAttribute( Usage.Position, 3, "a_position" ) );
+		if( numNormals > 0 )
+			attributes.add( new VertexAttribute( Usage.Normal, 3, "a_normal" ) );
+		if( numUV > 0 )
+			attributes.add( new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
+				
+		mesh = new Mesh( graphics, managed, true, !useFloats, numFaces * 3, 0, attributes.toArray( new VertexAttribute[attributes.size()] ) );
 		if( useFloats )
-			mesh = new FloatMesh( numFaces * 3, 3, false, numNormals > 0, numUV > 0, 1, 2, false, 0 );
+			mesh.setVertices( verts );
 		else
-			mesh = new FixedPointMesh( numFaces * 3, 3, false, numNormals > 0, numUV > 0, 1, 2, false, 0 );
-		mesh.setVertices( verts );
+			mesh.setVertices( convertToFixedPoint( verts ) );
 		return mesh;
 	}	
+	
+	private static int[] convertToFixedPoint( float[] fverts )
+	{
+		int[] fpverts = new int[fverts.length];
+		for( int i = 0; i < fverts.length; i++ )
+			fpverts[i] = (int)(fverts[i] * 65536);;
+		return fpverts;
+	}
 	
 	private static int getIndex( String index, int size )
 	{

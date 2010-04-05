@@ -53,7 +53,8 @@ public abstract class Font
 	private final Texture texture;
 	
 	/** glyph hashmap **/
-	private final HashMap<Character, Glyph> glyphs = new HashMap<Character, Glyph>( );
+	// FIXME potentially wastefull, for the time being we keep it as a hashmap would be even worse.
+	private final Glyph[] glyphs = new Glyph[Character.MAX_VALUE];
 	
 	/** current position in glyph texture to write the next glyph to **/
 	private int glyphX = 0;
@@ -71,16 +72,6 @@ public abstract class Font
 		this.graphics = graphics;
 		this.isManaged = managed;
 	}
-	
-	/**
-	 * Creates a new {@link Text}.
-	 * 
-	 * @return The new Text.
-	 */
-	public Text newText( )
-	{
-		return new Text(graphics, this);
-	}	
 	
 	/**
 	 * Disposes the font and all associated 
@@ -150,11 +141,11 @@ public abstract class Font
 	 */
 	protected Glyph getGlyph( char character )
 	{
-		Glyph glyph = glyphs.get(character);
+		Glyph glyph = glyphs[character];
 		if( glyph == null )
 		{
 			glyph = createGlyph(character);
-			glyphs.put( character, glyph );
+			glyphs[character] = glyph;
 		}
 		return glyph;
 	}
@@ -185,7 +176,7 @@ public abstract class Font
 	 * @author mzechner
 	 *
 	 */
-	class Glyph
+	protected class Glyph
 	{
 		public int advance;
 		public int width;		

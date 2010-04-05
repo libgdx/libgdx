@@ -5,15 +5,15 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.mesh.Mesh;
-import com.badlogic.gdx.graphics.mesh.VertexAttribute;
-import com.badlogic.gdx.graphics.mesh.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix;
 
 public class MeshShaderTest implements RenderListener
@@ -54,7 +54,7 @@ public class MeshShaderTest implements RenderListener
 			System.exit(0);
 		}
 		
-		mesh = new Mesh( app.getGraphics(), true, true, false, 3, 0, 
+		mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
 						 new VertexAttribute( Usage.Position, 3, "a_position" ),
 						 new VertexAttribute( Usage.Color, 3, "a_color" ),
 						 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
@@ -62,6 +62,7 @@ public class MeshShaderTest implements RenderListener
 		mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 0, 0,
 										 0.5f, -0.5f, 0, 0, 1, 0, 1, 0,
 										 0, 0.5f, 0, 0, 0, 1, 0.5f, 1 } );	
+		mesh.setIndices( new short[] { 0, 1, 2 } );
 		
 		matrix.setToTranslation( 0.3f, 0.2f, 0 );
 		

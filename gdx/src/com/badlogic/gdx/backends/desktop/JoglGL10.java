@@ -69,9 +69,9 @@ class JoglGL10 implements GL10
 	
 	protected final void convertFixedToFloatbuffer( Buffer source, FloatBuffer target, int stride )
 	{		
-		if( source instanceof IntBuffer )
+		if( source instanceof IntBuffer || source instanceof ByteBuffer )
 		{
-			IntBuffer buffer = (IntBuffer)source;
+			IntBuffer buffer = source instanceof ByteBuffer?((ByteBuffer)source).asIntBuffer():(IntBuffer)source;
 			if( stride % 4 != 0 )
 				throw new IllegalArgumentException( "Can't cope with strides % 4 != 0 for IntBuffers" );
 			target.clear();

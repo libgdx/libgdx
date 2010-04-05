@@ -16,7 +16,9 @@
  */
 package com.badlogic.gdx.math.collision;
 
-import com.badlogic.gdx.graphics.FloatMesh;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector;
 
@@ -58,38 +60,47 @@ public class CollisionMesh
 	 * @param mesh the FloatMesh to construct the CollisionMesh from
 	 * @param clockWise whether the triangles are given in clockwise order or counter clockwise order
 	 */
-	public CollisionMesh( FloatMesh mesh, boolean clockWise )
+	public CollisionMesh( Mesh mesh, boolean clockWise )
 	{
-		if( mesh.hasIndices() && mesh.getNumIndices() % 3 != 0 )
+		if( mesh.usesFixedPoint() )
+			throw new IllegalArgumentException( "Mesh must use floats" );
+		if( mesh.getMaxIndices() > 0 && mesh.getNumIndices() % 3 != 0 )
 			throw new IllegalArgumentException( "Mesh must hold triangles" );
-		if( mesh.hasIndices() == false && mesh.getNumVertices() % 3 != 0 )
+		if( mesh.getMaxIndices() == 0 && mesh.getNumVertices() % 3 != 0 )
 			throw new IllegalArgumentException( "Mesh must hold triangles" );
-		if( mesh.getCoordsSize() != 3 )
+		VertexAttribute position = mesh.getVertexAttribute( Usage.Position );
+		if(  position == null )
+			throw new IllegalArgumentException( "Ill-shaped mesh, does not have a position vertex attribute" );
+		if( position.numComponents != 3 )
 			throw new IllegalArgumentException( "Vertex coordinates must be three dimensional" );
 		
-		numTriangles = mesh.hasIndices()?mesh.getNumIndices()/3:mesh.getNumVertices()/3;
+		numTriangles = mesh.getMaxIndices()>0?mesh.getNumIndices()/3:mesh.getNumVertices()/3;
 		triangles = new float[3 * 3 * numTriangles];
 		planes = new float[4 * numTriangles];
 		isClockWise = clockWise;
 		
-		if( mesh.hasIndices() )
-			fillFromIndexedMesh( mesh );
+		if( mesh.getMaxIndices()>0 )
+			fillFromIndexedMesh( position, mesh );
 		else
-			fillFromMesh( mesh );
+			fillFromMesh( position, mesh );
 		calculatePlanes( clockWise );
 	}
 	
-	private void fillFromIndexedMesh( FloatMesh mesh )
+	private void fillFromIndexedMesh( VertexAttribute position, Mesh mesh )
 	{
 		int idx = 0;
+		int offset = position.offset / 4;
 		int stride = mesh.getVertexSize() / 4;
-		float[] vertices = mesh.getVerticesArray();
-		short[] indices = mesh.getIndicesArray();
+		float[] vertices = new float[mesh.getVerticesBuffer().limit()/4];
+		mesh.getVerticesBuffer().asFloatBuffer().get(vertices);
+		short[] indices = new short[mesh.getIndicesBuffer().limit() / 4];
+		mesh.getIndicesBuffer().get(indices);
+		
 		for( int i = 0; i < mesh.getNumIndices(); i+=3 )
 		{			
-			int idx1 = indices[i] * stride;
-			int idx2 = indices[i+1] * stride;
-			int idx3 = indices[i+2] * stride;
+			int idx1 = indices[i] * stride + offset;
+			int idx2 = indices[i+1] * stride + offset;
+			int idx3 = indices[i+2] * stride + offset;
 			
 			triangles[idx++] = vertices[idx1]; 
 			triangles[idx++] = vertices[idx1+1];
@@ -105,16 +116,18 @@ public class CollisionMesh
 		}
 	}
 	
-	private void fillFromMesh( FloatMesh mesh )
+	private void fillFromMesh( VertexAttribute position, Mesh mesh )
 	{
 		int idx = 0;
+		int offset = position.offset / 4;
 		int stride = mesh.getVertexSize() / 4;
-		float[] vertices = mesh.getVerticesArray();		
+		float[] vertices = new float[mesh.getVerticesBuffer().limit()/4];
+		mesh.getVerticesBuffer().asFloatBuffer().get(vertices);
 		for( int i = 0; i < mesh.getNumVertices(); i+=3 )
 		{			
-			int idx1 = (i) * stride;
-			int idx2 = (i+1) * stride;
-			int idx3 = (i+2) * stride;
+			int idx1 = (i) * stride + offset;
+			int idx2 = (i+1) * stride + offset;
+			int idx3 = (i+2) * stride + offset;
 			
 			triangles[idx++] = vertices[idx1]; 
 			triangles[idx++] = vertices[idx1+1];

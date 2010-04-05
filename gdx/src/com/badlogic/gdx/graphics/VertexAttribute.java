@@ -1,6 +1,6 @@
-package com.badlogic.gdx.graphics.mesh;
+package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.graphics.mesh.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
  * A single vertex attribute defined by its {@link Usage}, its number of components 

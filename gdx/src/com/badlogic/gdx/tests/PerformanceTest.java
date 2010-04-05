@@ -6,15 +6,14 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.MeshRenderer;
 import com.badlogic.gdx.graphics.ModelLoader;
 
 public class PerformanceTest implements RenderListener
 {
-	boolean fixed = true;
+	boolean fixed = false;
 	
-	MeshRenderer fpMesh;
-	MeshRenderer flMesh;
+	Mesh fpMesh;
+	Mesh flMesh;
 
 	long startTime = System.nanoTime();
 	int frames = 0;
@@ -28,7 +27,7 @@ public class PerformanceTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{
-		MeshRenderer m = null;
+		Mesh m = null;
 		if( fixed )		
 			m = fpMesh;
 		else		
@@ -41,7 +40,7 @@ public class PerformanceTest implements RenderListener
 		
 		if( (System.nanoTime() - startTime ) > 1000000000 )
 		{
-			app.log( "Performance", frames + " fps, " + ( m.getMesh().getNumVertices() / 3 ) * frames * 10 + " tris/s" );
+			app.log( "Performance", frames + " fps, " + ( m.getNumVertices() / 3 ) * frames * 10 + " tris/s" );
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -57,10 +56,8 @@ public class PerformanceTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{	
-		Mesh m = ModelLoader.loadObj( app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false );
-		fpMesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );
-		m = ModelLoader.loadObj( app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), true );
-		flMesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );
+		fpMesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false, false );		
+		flMesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false, true );		
 	}
 	
 	public static void main( String[] argv )

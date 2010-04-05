@@ -23,7 +23,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.MeshRenderer;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -34,7 +33,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 public class ObjTest implements RenderListener, InputListener
 {
 	PerspectiveCamera cam;
-	MeshRenderer mesh;
+	Mesh mesh;
 	Texture texture;
 	float angleY = 0;
 	float angleX = 0;
@@ -53,8 +52,7 @@ public class ObjTest implements RenderListener, InputListener
 		{
 			app.getInput().addInputListener( this );
 			
-			Mesh m = ModelLoader.loadObj( app.getFiles().readFile( "data/cube.obj", FileType.Internal ), false );
-			mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );
+			mesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/cube.obj", FileType.Internal ), true, false );			
 			
 			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().readFile( "data/badlogic.jpg", FileType.Internal));
 			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );					

@@ -1,10 +1,8 @@
 package com.badlogic.gdx.graphics;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Font.Glyph;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix;
 
 /**
@@ -38,49 +36,36 @@ import com.badlogic.gdx.math.Matrix;
  *
  */
 public final class SpriteBatch 
-{
-	/**
-	 * Sprite helper class
-	 * @author mzechner
-	 *
-	 */
-	private final class Sprite
-	{
-		/** the texture to use for this sprite **/
-		public Texture texture;
-		/** the source rect in texture coordinates **/
-		public float srcX, srcY, srcWidth, srcHeight;
-		/** the x and y coordinate on screen of the origin, z is the layer depth of the sprite **/
-		public int x, y, depth;
-		/** width and height of the sprite **/
-		public int width, height;
-		/** the origin relative to the upper left corner of the sprite **/
-		public int originX, originY;
-		/** the scale on the x and y axis **/
-		public float scaleX, scaleY;
-		/** the rotation around the origin **/
-		public float rotation;
-		/** the color **/
-		public Color tint = new Color( 1, 1, 1, 1 );
-	}
+{	
+	private static final int MAX_VERTICES = 6 * 5000;
+	
+	/** the mesh used to transfer the data to the GPU **/
+	private final Mesh mesh;
 	
 	/** the graphics instance **/
-	private final Graphics graphics;	
-	
-	/** the renderer **/
-	private final ImmediateModeRenderer renderer;
-	
-	/** list of free sprites **/
-	private final ArrayList<Sprite> freeSprites = new ArrayList<Sprite>( 300 );
-	
-	/** list of sprites to draw **/
-	private final ArrayList<Sprite> sprites = new ArrayList<Sprite>( 300 );
-	
-	/** depth sorter **/
-	private final SpriteSorter sorter = new SpriteSorter();
+	private final Graphics graphics;			
 	
 	/** the transform to be applied to all sprites **/
 	private final Matrix transform = new Matrix();
+	
+	/** the view matrix holding the orthogonal projection **/
+	private final Matrix viewMatrix = new Matrix();
+	
+	/** the vertex storage **/
+	private final float[] vertices = new float[MAX_VERTICES * (2 + 4 + 2)];
+	
+	/** last texture **/
+	private Texture lastTexture = null;
+	
+	/** current index into vertices **/
+	private int idx = 0;
+	
+	/** drawing flag **/
+	private boolean drawing = false;
+	
+	/** inverse texture width and height **/
+	private float invTexWidth = 0;
+	private float invTexHeight = 0;
 	
 	/**
 	 * Consturctor, sets the {@link Graphics} instance
@@ -90,16 +75,12 @@ public final class SpriteBatch
 	 */
 	public SpriteBatch( Graphics graphics )
 	{
-		this.graphics = graphics;
-		this.renderer = null;
-	}
-	
-	private Sprite getFreeSprite( )
-	{
-		if( freeSprites.size() == 0 )
-			return new Sprite( );
-		else
-			return freeSprites.remove( freeSprites.size()-1);
+		this.graphics = graphics;		
+		this.mesh = new Mesh( graphics, true, false, false, MAX_VERTICES, 0, 
+							  new VertexAttribute( Usage.Position, 2, "a_position" ),
+							  new VertexAttribute( Usage.Color, 4, "a_color" ),
+							  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
+		viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
 	}
 	
 	/**
@@ -112,9 +93,8 @@ public final class SpriteBatch
 	 */
 	public void begin( )
 	{
-		transform.idt();
-		freeSprites.addAll( sprites );
-		sprites.clear();
+		transform.idt();		
+		begin( transform );
 	}
 	
 	/**
@@ -130,9 +110,33 @@ public final class SpriteBatch
 	 */
 	public void begin( Matrix transform )
 	{
-		transform.set( transform );
-		freeSprites.addAll( sprites );
-		sprites.clear();
+		if( graphics.isGL20Available() == false )
+		{
+			transform.set( transform );
+			viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
+					
+			GL10 gl = graphics.getGL10();
+			gl.glDisable( GL10.GL_LIGHTING );
+			gl.glDisable( GL10.GL_DEPTH_TEST );
+			gl.glDisable( GL10.GL_CULL_FACE );
+			gl.glDepthMask ( false );
+			
+			gl.glEnable( GL10.GL_BLEND );
+			gl.glEnable( GL10.GL_TEXTURE_2D );
+			gl.glEnable( GL10.GL_ALPHA_TEST );
+			gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );			
+			gl.glAlphaFunc( GL10.GL_GREATER, 0 );
+			
+			
+			gl.glMatrixMode( GL10.GL_PROJECTION );
+			gl.glLoadMatrixf( viewMatrix.val, 0 );
+			gl.glMatrixMode( GL10.GL_MODELVIEW );
+			gl.glLoadMatrixf( transform.val, 0 );
+		}
+		
+		idx = 0;
+		lastTexture = null;
+		drawing = true;
 	}
 	
 	/**
@@ -153,144 +157,247 @@ public final class SpriteBatch
 	 * @param tint the tint Color
 	 */
 	public void draw( Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
-	{
-		Sprite sprite = getFreeSprite( );
-		sprite.texture = texture;
-		sprite.x = x; 
-		sprite.y = y;
-		sprite.depth = 0;
-		sprite.width = width;
-		sprite.height = height;
-		sprite.srcX = srcX / texture.getWidth();
-		sprite.srcY = srcY / texture.getHeight();
-		sprite.srcHeight = srcHeight / texture.getHeight();
-		sprite.srcWidth = srcWidth / texture.getWidth();
-		sprite.originX = 0;
-		sprite.originY = 0;
-		sprite.scaleX = 0;
-		sprite.scaleY = 0;
-		sprite.rotation = 0;
-		sprite.tint.set(Color.WHITE);
+	{		
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
 		
+		if( texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+		
+		float u = srcX * invTexWidth;
+		float v = srcY * invTexHeight;
+		float u2 = (srcX + srcWidth) * invTexWidth;
+		float v2 = (srcY + srcHeight) * invTexHeight;
+		float fx = (float)x;
+		float fy = (float)y;
+		float fx2 = (float)(x + width);
+		float fy2 = (float)(y - height);
+		
+		vertices[idx++] = fx;
+		vertices[idx++] = fy;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v; 
+		
+		vertices[idx++] = fx;
+		vertices[idx++] = fy2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v2;
+		
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v2;
+		
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v2;
+		
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v;
+		
+		vertices[idx++] = fx;
+		vertices[idx++] = fy;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v;
+		
+		if( idx == vertices.length )
+			renderMesh();
 	}
 	
 	/**
-	 * Draws a rectangle with its origin at x,y having
-	 * the given width and height in pixels. The origin is given relative to the
-	 * rectangles top left corner. Rotation specifies the rotation of the rectangle
-	 * around the origin. ScaleX and scaleY specify the scaling in x and y. The portion of the {@link Texture}
-	 * given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and
-	 * sizes are given in texels. The rectangle will have the given tint {@link Color}. The
-	 * depth specifies at which layer the sprite should be rendered. Sprites are sorted
-	 * upon a call to {@link SpriteBatch.end()} according to their depth.
+	 * Draws a rectangle with the top left corner at x,y having
+	 * the given width and height in pixels. The portion of the {@link Texture}
+	 * given by srcX, srcY and srcWidth, srcHeight are used. These coordinates and
+	 * sizes are given in texels. The rectangle will have the given tint {@link Color}.
 	 *  
 	 * @param texture the Texture
 	 * @param x the x-coordinate in screen space
 	 * @param y the y-coordinate in screen space
 	 * @param width the width in pixels
 	 * @param height the height in pixels
-	 * @param originX the x-coordinate of the origin relative to the top left corner
-	 * @param originY the y-coordinate of the origin relative to the top left corner
-	 * @param rotation the rotation around the origin
-	 * @param scaleX the scale on the x-axis
-	 * @param scaleY the scale on the y-axis
 	 * @param srcX the x-coordinate in texel space
 	 * @param srcY the y-coordinate in texel space
 	 * @param srcWidth the source with in texels
 	 * @param srcHeight the source height in texels
 	 * @param tint the tint Color
-	 * @param depth the sorting depth
 	 */
-	public void draw( Texture texture, int x, int y, int width, int height, int originX, int originY, float rotation, int scaleX, int scaleY, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, int depth )
+	public void draw( Texture texture, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
+	{		
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+		
+		float u = srcX / (float)texture.getWidth();
+		float v = srcY / (float)texture.getHeight();
+		float u2 = (srcX + srcWidth) / (float)texture.getWidth();
+		float v2 = (srcY + srcHeight) / (float)texture.getHeight();
+		float fx = (float)x;
+		float fy = (float)y;
+		float fx2 = (float)(x + srcWidth);
+		float fy2 = (float)(y - srcHeight);
+		
+		vertices[idx++] = fx;
+		vertices[idx++] = fy;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v; 
+		
+		vertices[idx++] = fx;
+		vertices[idx++] = fy2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v2;
+		
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v2;
+		
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v2;
+		
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v;
+		
+		vertices[idx++] = fx;
+		vertices[idx++] = fy;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v; 
+		
+		if( idx == vertices.length )
+			renderMesh();
+	}
+	
+	private void renderMesh( )
 	{
-		Sprite sprite = getFreeSprite( );
-		sprite.texture = texture;
-		sprite.x = x; 
-		sprite.y = y;
-		sprite.depth = depth;
-		sprite.width = width;
-		sprite.height = height;
-		sprite.srcX = srcX / texture.getWidth();
-		sprite.srcY = srcY / texture.getHeight();
-		sprite.srcHeight = srcHeight / texture.getHeight();
-		sprite.srcWidth = srcWidth / texture.getWidth();
-		sprite.originX = originX;
-		sprite.originY = originY;
-		sprite.scaleX = scaleX;
-		sprite.scaleY = scaleY;
-		sprite.rotation = rotation;
-		sprite.tint.set( tint );
+		if( idx == 0 )
+			return;
+		
+		lastTexture.bind();
+		mesh.setVertices(vertices, 0, idx);
+		mesh.render( GL10.GL_TRIANGLES );
+		idx = 0;
+	}	
+	
+	/**
+	 * Draws a text with its bounding box's top left corner at x,y using
+	 * the given {@link Font}. This will ignore any newlines, tabs and 
+	 * other special characters.
+	 * 
+	 * @param font the Font
+	 * @param text the text
+	 * @param x the x-coordinate of the strings bounding box's upper left corner
+	 * @param y the y-coordinate of the strings bounding box's upper left corner
+	 * @param tint the tint of the text
+	 */
+	public void drawText( Font font, String text, int x, int y, Color tint )
+	{
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( font.getTexture() != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = font.getTexture();			
+		}			
+		
+		int len = text.length();		
+		for( int i = 0; i < len; i++ )
+		{
+			char c = text.charAt(i);
+			Glyph g = font.getGlyph(c);
+			
+			float fx = x;
+			float fy = y;
+			float fx2 = x + g.width;
+			float fy2 = y - g.height;
+			float u = g.u;
+			float v = g.v;
+			float u2 = g.u + g.uWidth;
+			float v2 = g.v + g.vHeight;
+			
+			vertices[idx++] = fx;
+			vertices[idx++] = fy;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u; vertices[idx++] = v; 
+			
+			vertices[idx++] = fx;
+			vertices[idx++] = fy2;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy2;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u2; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy2;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u2; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u2; vertices[idx++] = v;
+			
+			vertices[idx++] = fx;
+			vertices[idx++] = fy;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u; vertices[idx++] = v; 
+			
+			x += g.advance;
+			
+			if( idx == vertices.length )
+				renderMesh();
+		}
 	}
 	
 	/**
-	 * Renders all the things specified between a call to this
-	 * and a call to {@link SpriteBatch.begin()}. Sprites get
-	 * sorted by their depth in descending order (higher depth
-	 * gets drawn first). This will alter the following OpenGL 
-	 * states:
-	 * <ul>
-	 * 		<li>disable GL_DEPTH_TEST</li>
-	 * 		<li>disable GL_LIGHTING</li>
-	 *  	<li>disable GL_CULL_FACE</li>
-	 *  	<li>depth mask -> false
-	 *      <li>enable GL_TEXTURE_2D</li>
-	 *      <li>enable GL_BLEND</li>
-	 *      <li>enable GL_ALPHA_TEST</li>
-	 *      <li>blendfunc -> GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA</li>
-	 *      <li>alphafunc -> GL_GREATER, 0</li>
-	 *      <li>clientactivetexture -> GL_TEXTURE_0</li>
-	 * </ul>
-	 * 
-	 * for convenience the following states are set back to their defaults
-	 * 
-	 * <ul>
-	 * 		<li>depth mask -> true</li>
-	 * 		<li>disable GL_BLEND</li>
-	 * 		<li>disable GL_APLHA_TEST</li>
-	 * 		<li>disable GL_TEXTURE_2D</li>
-	 * </ul>
-	 * 
-	 * Also, the projection and modelview matrix will get changed.
+	 * Finishes off rendering of the last batch of sprites
 	 */
 	public void end( )
-	{
-		Collections.sort( sprites, sorter );
+	{		
+		if( idx > 0 )
+			renderMesh();
+		lastTexture = null;
+		idx = 0;
+		drawing = false;
 		
-		GL10 gl = graphics.getGL10();
-		gl.glDisable( GL10.GL_LIGHTING );
-		gl.glDisable( GL10.GL_DEPTH_TEST );
-		gl.glDisable( GL10.GL_CULL_FACE );
-		gl.glDepthMask ( false );
-		
-		gl.glEnable( GL10.GL_BLEND );
-		gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );
-		gl.glEnable( GL10.GL_ALPHA_TEST );
-		gl.glAlphaFunc( GL10.GL_GREATER, 0 );
-		
-		for( int i = 0; i < sprites.size(); i++ )
+		if( graphics.isGL20Available() == false )
 		{
-			
+			GL10 gl = graphics.getGL10();
+			gl.glDepthMask ( true );			
+			gl.glDisable( GL10.GL_BLEND );
+			gl.glDisable( GL10.GL_TEXTURE_2D );
+			gl.glDisable( GL10.GL_ALPHA_TEST );
+			gl.glDisable( GL10.GL_TEXTURE_2D );
 		}
-		
-		gl.glDepthMask( true );
-		gl.glDisable( GL10.GL_BLEND );
-		gl.glDisable( GL10.GL_ALPHA_TEST );
-		gl.glDisable( GL10.GL_TEXTURE_2D );
-	}
-	
-	
-	final static class SpriteSorter implements Comparator<Sprite>
-	{
-		@Override
-		public int compare(Sprite sprite1, Sprite sprite2) 
-		{	
-			float value = sprite1.depth - sprite2.depth;
-			if( value < 0 )
-				return -1;
-			if( value > 0 )
-				return 1;
-			return 0;
+		else
+		{
+			GL20 gl = graphics.getGL20();
+			gl.glDepthMask ( true );			
+			gl.glDisable( GL10.GL_BLEND );
+			gl.glDisable( GL10.GL_TEXTURE_2D );
+			gl.glDisable( GL10.GL_ALPHA_TEST );
+			gl.glDisable( GL10.GL_TEXTURE_2D );
 		}
-	}
-	
+	}			
 }

@@ -22,13 +22,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.FloatMesh;
-import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.MeshRenderer;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Text;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.collision.CollisionMesh;
@@ -37,16 +34,14 @@ import com.badlogic.gdx.math.collision.Segment;
 import com.badlogic.gdx.math.collision.SlideResponse;
 
 public class CollisionTest implements RenderListener
-{
-	Font font;
-	Text text;
+{	
 	final float SCALE = 1;
 	final float VERY_CLOSE_DISTANCE = 0.001f;
 	final float SPEED = 1 * SCALE;	
 	CollisionMesh cMesh;
 	EllipsoidCollider collider;
 	boolean colliding = false;
-	MeshRenderer mesh;
+	Mesh mesh;
 	PerspectiveCamera cam;		
 	float[] lightColor = { 1, 1, 1, 0 };
 	float[] lightPosition = { 2, 5, 10, 0 }; 
@@ -67,16 +62,15 @@ public class CollisionTest implements RenderListener
 	{		
 		ax = app.getInput().getAccelerometerX();
 		ay = app.getInput().getAccelerometerZ();
-		FloatMesh m = (FloatMesh)ModelLoader.loadObj( app.getFiles().readFile( "data/scene2.obj", FileType.Internal ), true );
-		
-		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );			
+		mesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/scene.obj", FileType.Internal ), true, true );
+				
 		cam = new PerspectiveCamera();
 		cam.setFov( 45 );
 		cam.setNear( 0.1f );
 		cam.setFar( 1000 );		
 		position.set(start).y += SCALE * 3;		
 		
-		cMesh = new CollisionMesh( m, false );
+		cMesh = new CollisionMesh( mesh, false );
 		collider = new EllipsoidCollider( 0.5f * SCALE, 1 * SCALE, 0.5f * SCALE, new SlideResponse() );		
 	}
 	

@@ -19,14 +19,15 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.FixedPointMesh;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.MeshRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Text;
+import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Vector2D;
 
 /**
@@ -41,13 +42,13 @@ public class Pong implements RenderListener
 	/** the camera **/
 	private OrthographicCamera camera;
 	/** the MeshRenderer for the paddles **/
-	private MeshRenderer paddleMesh;
+	private Mesh paddleMesh;
 	/** the MeshRenderer for the ball **/
-	private MeshRenderer ballMesh;
+	private Mesh ballMesh;
 	/** the Font **/
 	private Font font;
-	/** the Text for displaying the score **/
-	private Text score;
+	/** sprite batch **/
+	private SpriteBatch spriteBatch;
 	
 	/** the position of the two paddles **/
 	private Vector2D leftPaddle = new Vector2D();
@@ -67,6 +68,8 @@ public class Pong implements RenderListener
 	/** the current ball speed **/
 	private int ballSpeed = BALL_SPEED;
 	
+	/** score string **/
+	private String score = "";
 	
 	/**
 	 * Here we setup all the resources. A {@link MeshRenderer}
@@ -94,30 +97,28 @@ public class Pong implements RenderListener
 		// texture coordinates or indices. Note that we use a fixed
 		// point Mesh here. The paddle has dimensions (10, 60).
 		//
-		Mesh mesh = new FixedPointMesh( 4, 2, false, false, false, 0, 0, false, 0 );
-		mesh.setVertices( new float[] { -5, -30, 
+		paddleMesh = new Mesh( app.getGraphics(), true, true, false, 4, 0, new VertexAttribute( Usage.Position, 2, "a_position" ) );
+		paddleMesh.setVertices( new float[] { -5, -30, 
 										 5, -30, 
 										 5,  30,
-										-5,  30 } );
-		paddleMesh = new MeshRenderer( app.getGraphics().getGL10(), mesh, true, true );
+										-5,  30 } );		
 		
 		// 
 		// We do the same for the ball which has dimensions (10,10)
 		//
-		mesh = new FixedPointMesh( 4, 2, false, false, false, 0, 0, false, 0 );
-		mesh.setVertices( new float[] { -5, -5,
+		ballMesh = new Mesh( app.getGraphics(), true, true, false, 4, 0, new VertexAttribute( Usage.Position, 2, "a_position" ) );
+		ballMesh.setVertices( new float[] { -5, -5,
 										 5, -5,
 										 5,  5,
-										-5,  5 } );
-		ballMesh = new MeshRenderer( app.getGraphics().getGL10(), mesh, true, true );
+										-5,  5 } );		
 		
 		//
 		// We construct a new font from a system font. We assume
 		// Arial is installed on both the desktop and Android.
 		//
 		font = app.getGraphics().newFont( "Arial", 30, FontStyle.Plain, true );
-		score = font.newText();
-		score.setText( "0 : 0" );
+		score = "0 : 0";
+		spriteBatch = new SpriteBatch( app.getGraphics() );
 		
 		//
 		// Finally we construct an {@link OrthographicCamera} which
@@ -191,15 +192,9 @@ public class Pong implements RenderListener
 		// of the screen. We use the text bounds for this.
 		// For text to be transparent we have to enable blending and texturing.
 		// We could setup blending once but i'm lazy :)
-		gl.glEnable( GL10.GL_TEXTURE_2D );
-		gl.glEnable( GL10.GL_BLEND );
-		gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );
-		gl.glPushMatrix();
-		gl.glTranslatef( -score.getWidth() / 2, 160 - score.getHeight(), 0 );
-		score.render();
-		gl.glPopMatrix();
-		gl.glDisable( GL10.GL_BLEND );
-		gl.glDisable( GL10.GL_TEXTURE_2D );
+		spriteBatch.begin();
+		spriteBatch.drawText( font, score, app.getGraphics().getWidth() / 2 - font.getStringWidth(score) / 2, app.getGraphics().getHeight(), Color.WHITE );		
+		spriteBatch.end();
 	}
 
 	/**
@@ -227,7 +222,7 @@ public class Pong implements RenderListener
 			ballSpeed = BALL_SPEED; // reset the ball speed 
 			ballDirection.set( (float)Math.random() + 0.1f, (float)Math.random() ).nor(); // new ball direction, must be unit length
 			rightScore++;     // right paddle scored!
-			score.setText( leftScore + " : " + rightScore );
+			score = leftScore + " : " + rightScore;
 			// we set the left paddle multiplicator here which governs
 			// how fast the left paddle can follow the ball.
 			leftPaddleMulti = (float)Math.min( 1, Math.random() + 0.3f );
@@ -239,7 +234,7 @@ public class Pong implements RenderListener
 			ballSpeed = BALL_SPEED; // reset the ball speed 
 			ballDirection.set( (float)Math.random() + 0.1f, (float)Math.random() ).nor(); // new ball direction, must be unit length
 			leftScore++; 	  // left paddle scored!
-			score.setText( leftScore + " : " + rightScore );
+			score = leftScore + " : " + rightScore;
 			// we set the left paddle multiplicator here which governs
 			// how fast the left paddle can follow the ball.
 			leftPaddleMulti = (float)Math.min( 1, Math.random() + 0.3f );

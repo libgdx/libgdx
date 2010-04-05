@@ -1,15 +1,12 @@
 package com.badlogic.gdx.graphics.loaders;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
-import com.badlogic.gdx.graphics.FixedPointMesh;
-import com.badlogic.gdx.graphics.FloatMesh;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.ModelWriter;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Vector;
 
 /**
@@ -42,7 +39,7 @@ public class OctLoader
 		public float nx, ny, nz, d;
 	}
 	
-	public static Mesh loadOct( InputStream inputStream, boolean useFloats, Vector start )
+	public static Mesh loadOct( Graphics graphics, InputStream inputStream, boolean managed, boolean useFloats, Vector start )
 	{
 		LittleEndianInputStream in =  new LittleEndianInputStream( new BufferedInputStream(inputStream) );		
 		
@@ -111,13 +108,15 @@ public class OctLoader
 				}
 			}
 			
-			Mesh m = null;
+			Mesh m = new Mesh( graphics, managed, true, !useFloats, numTriangles * 3, 0, 
+							   new VertexAttribute( Usage.Position, 3, "a_position"), 
+							   new VertexAttribute( Usage.Normal, 3, "a_position"),
+							   new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords")
+							   );			
 			if( useFloats )
-				m = new FloatMesh( numTriangles * 3, 3, false, true, true, 1, 2, false, 0 );
+				m.setVertices( triangles );
 			else
-				m = new FixedPointMesh( numTriangles * 3, 3, false, true, true, 1, 2, false, 0 );
-			
-			m.setVertices( triangles );
+				m.setVertices( convertToFixedPoint( triangles ) );					
 			
 			return m;
 		}
@@ -128,9 +127,11 @@ public class OctLoader
 		}			
 	}
 	
-	public static void main( String[] argv ) throws IOException
+	private static int[] convertToFixedPoint( float[] fverts )
 	{
-		Mesh m = OctLoader.loadOct( new FileInputStream( "data/house5.oct" ), true, new Vector() );
-		ModelWriter.writeObj( new FileOutputStream( "data/house5.obj" ), (FloatMesh)m );
-	}
+		int[] fpverts = new int[fverts.length];
+		for( int i = 0; i < fverts.length; i++ )
+			fpverts[i] = (int)(fverts[i] * 65536);;
+		return fpverts;
+	}	
 }

@@ -49,7 +49,7 @@ import com.badlogic.gdx.math.WindowedMean;
  * @author mzechner
  *
  */
-final class JoglGraphics implements Graphics, RenderListener
+public final class JoglGraphics implements Graphics, RenderListener
 {
 	/** the jframe **/
 	private final JFrame frame;

@@ -19,14 +19,15 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.FixedPointMesh;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.MeshRenderer;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
  * Demonstrates the use of a {@link MeshRenderer} and a {@link Mesh} to
@@ -35,10 +36,10 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  * @author mzechner
  *
  */
-public class FixedPointMeshRendererTest implements RenderListener
+public class FixedPointMeshTest implements RenderListener
 {
 	/** the MeshRenderer **/
-	MeshRenderer mesh;
+	Mesh mesh;
 	/** the Texture **/
 	Texture texture;
 	
@@ -83,32 +84,31 @@ public class FixedPointMeshRendererTest implements RenderListener
 	public void surfaceCreated(Application app) 
 	{		
 		//
-		// We first have to create a FixedPointMesh to hold 
+		// We first have to create a Mesh to hold 
 		// our vertex data. The mesh is composed of 3 vertices 
 		// forming a triangle. Each vertex has a 3 component position
 		// a 4 component color and a 2 component texture coordinate. 
 		// Additionally we use indices, in this case 3. Note that for 
 		// this example indices are a bit of overkill.
 		//
-		FixedPointMesh m = new FixedPointMesh( 3, 3, true, false, true, 1, 2, true, 3 );
+		mesh = new Mesh( app.getGraphics(), true, true, true, 3, 3, 
+						 new VertexAttribute( Usage.Position, 3, "a_position" ),
+						 new VertexAttribute( Usage.Color, 4, "a_color" ),
+						 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
 		
 		//
 		// Set the actual vertex data. Note that we use floats here. The
 		// MeshRenderer.setVertices() method will convert the floats to fixed
 		// point for use.
 		// 
-		m.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,  
-									  0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
-									  0.0f,  0.5f, 0, 0, 0, 1, 1, 0.5f, 1} );
+		mesh.setVertices( new int[]   { fp(-0.5f), fp(-0.5f), fp(0), fp(1), fp(0), fp(0), fp(1), fp(0), fp(0),  
+									    fp(0.5f), fp(-0.5f), fp(0), fp(0), fp(1), fp(0), fp(1), fp(1), fp(0),
+									    fp(0.0f), fp(0.5f), fp(0), fp(0), fp(0), fp(1), fp(1), fp(0.5f), fp(1)} );
 		//
 		// we also set the vertex indices.
 		//
-		m.setIndices( new short[] { 0, 1, 2 } );
-		
-		//
-		// Instantiate the MeshRenderer with the Mesh we just created. 
-		// 
-		mesh = new MeshRenderer( app.getGraphics().getGL10(), m, true, true );		
+		mesh.setIndices( new short[] { 0, 1, 2 } );
+			
 		
 		//
 		// Create a small Pixmap and draw some lines to it.
@@ -147,6 +147,12 @@ public class FixedPointMeshRendererTest implements RenderListener
 		// as the RenderListener.
 		//
 		JoglApplication app = new JoglApplication( "Fixed Point MeshRenderer Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new FixedPointMeshRendererTest() );
+		app.getGraphics().setRenderListener( new FixedPointMeshTest() );
+	}
+	
+	private static int fp( float val )
+	{
+		return (int)(val * 65536); 
+
 	}
 }
