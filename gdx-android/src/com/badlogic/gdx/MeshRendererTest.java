@@ -28,6 +28,6 @@ public class MeshRendererTest extends AndroidApplication
 		super.onCreate( bundle );
 		setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
 		initialize(false);
-		getGraphics().setRenderListener( new com.badlogic.gdx.tests.MeshRendererTest() );
+		getGraphics().setRenderListener( new com.badlogic.gdx.tests.MeshTest() );
 	}
 }

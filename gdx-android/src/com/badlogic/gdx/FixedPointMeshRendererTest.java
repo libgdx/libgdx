@@ -26,6 +26,6 @@ public class FixedPointMeshRendererTest extends AndroidApplication
 	{
 		super.onCreate( bundle );
 		initialize( false );
-		getGraphics().setRenderListener( new com.badlogic.gdx.tests.FixedPointMeshRendererTest() );
+		getGraphics().setRenderListener( new com.badlogic.gdx.tests.FixedPointMeshTest() );
 	}
 }

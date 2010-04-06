@@ -32,8 +32,10 @@
 		<activity android:name=".Mpg123Test" android:label="Mpg123 Test"/>
 		<activity android:name=".VorbisTest" android:label="Vorbis Test"/>
 		<activity android:name=".PerformanceTest" android:label="Performance Test"/>
-		<activity android:name=".MeshShaderTest" android:label="Mesh Shader Test"/>									
+		<activity android:name=".MeshShaderTest" android:label="Mesh Shader Test"/>
+		<activity android:name=".SpriteBatchTest" android:label="SpriteBatch Test" />									
+		<activity android:name=".SpriteBatchShaderTest" android:label="SpriteBatch Shader Test" />
 	</application>
-	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5" />
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 
 </manifest>
