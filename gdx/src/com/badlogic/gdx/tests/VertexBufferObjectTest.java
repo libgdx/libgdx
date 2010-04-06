@@ -16,8 +16,6 @@
  */
 package com.badlogic.gdx.tests;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -58,9 +56,7 @@ public class VertexBufferObjectTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{
-		ByteBuffer buffer = ByteBuffer.allocateDirect( 3 * 7 * 4 );
-		buffer.order(ByteOrder.nativeOrder());
-		FloatBuffer vertices = buffer.asFloatBuffer();
+		FloatBuffer vertices = FloatBuffer.wrap( new float[3 * 7] );
 		vertices.put( new float[] {
 					-0.5f, -0.5f, 0, 1, 0, 0, 1,
 					 0.5f, -0.5f, 0, 0, 1, 0, 1,
@@ -76,9 +72,7 @@ public class VertexBufferObjectTest implements RenderListener
 		gl.glBufferData( GL11.GL_ARRAY_BUFFER, 3 * 7 * 4, vertices, GL11.GL_STATIC_DRAW );
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );		
 		
-		buffer = ByteBuffer.allocateDirect( 3 * 4 );
-		buffer.order(ByteOrder.nativeOrder());
-		ShortBuffer indices = buffer.asShortBuffer();
+		ShortBuffer indices = ShortBuffer.wrap( new short[3] );
 		indices.put( new short[ ] { 0, 1, 2 } );
 		indices.flip();
 		gl.glGenBuffers( 1, handle, 0 );

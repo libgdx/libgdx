@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
  * 
  * @author mzechner
  *
+ * FIXME managed VBOs will leak two vbo handles per instance!
  */
 public class Mesh 
 {
@@ -29,7 +31,7 @@ public class Mesh
 	private final int maxIndices;
 	
 	/** the direct byte buffer that holds the vertices **/
-	private final ByteBuffer vertices;
+	private final Buffer vertices;
 	
 	/** a view of the vertices buffer for manipulating floats **/
 	private final FloatBuffer verticesFloat;
@@ -61,8 +63,11 @@ public class Mesh
 	/** fixed point? **/
 	private final boolean useFixedPoint;
 	
+	/** whether direct buffers are used **/
+	private final boolean usesDirectBuffers;
+	
 	/** filled already? then use subdata next time **/
-//	private boolean filledOnce = false;
+	private boolean filledOnce = false;
 	
 	/**
 	 * Creates a new Mesh with the given attributes
@@ -84,15 +89,42 @@ public class Mesh
 		this.maxIndices = maxIndices;
 		this.attributes = new VertexAttributes( attributes );
 		
-		vertices = ByteBuffer.allocateDirect( maxVertices * this.attributes.vertexSize );
-		vertices.order(ByteOrder.nativeOrder());
-	
-		verticesFixed = vertices.asIntBuffer();
-		verticesFloat = vertices.asFloatBuffer();
+		if( graphics instanceof JoglGraphics )
+			usesDirectBuffers = true;
+		else
+		{
+			if( graphics.isGL11Available() || graphics.isGL20Available() )
+				usesDirectBuffers = false;
+			else
+				usesDirectBuffers = true;
+		}
 		
-		ByteBuffer buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
-		buffer.order( ByteOrder.nativeOrder() );
-		indices = buffer.asShortBuffer();
+		if( usesDirectBuffers == false )
+		{
+			vertices = useFixedPoint?IntBuffer.wrap( new int[maxVertices * this.attributes.vertexSize/4] ):FloatBuffer.wrap( new float[maxVertices * this.attributes.vertexSize/4] );
+			if( useFixedPoint )
+			{
+				verticesFixed = (IntBuffer)vertices;
+				verticesFloat = null;
+			}
+			else
+			{
+				verticesFloat = (FloatBuffer)vertices;
+				verticesFixed = null;
+			}
+			indices = ShortBuffer.wrap( new short[maxIndices] );
+		}
+		else
+		{
+			ByteBuffer buffer = ByteBuffer.allocateDirect( maxVertices * this.attributes.vertexSize );
+			buffer.order(ByteOrder.nativeOrder());
+			vertices = buffer;
+			verticesFixed = buffer.asIntBuffer();
+			verticesFloat = buffer.asFloatBuffer();
+			buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
+			buffer.order( ByteOrder.nativeOrder() );
+			indices = buffer.asShortBuffer();
+		}									
 		
 		createBuffers( );
 	}
@@ -141,7 +173,7 @@ public class Mesh
 			indexBufferObjectHandle = handle.get(0);
 		}
 		
-//		filledOnce = false;
+		filledOnce = false;
 	}
 	
 	private void fillBuffers( )
@@ -155,7 +187,7 @@ public class Mesh
 		else
 			fillBuffers( graphics.getGL11() );
 		
-//		filledOnce = true;
+		filledOnce = true;
 	}
 	
 	private void fillBuffers( GL11 gl )
@@ -163,9 +195,9 @@ public class Mesh
 		// FIXME potential bug? if subdata is bigger than first uploaded data, do we get into trouble?
 		// FIXME disabled at the moment. per documentation this produces a bug.
 //		if( filledOnce == false )
-//		{
+//		{			
 			gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-			gl.glBufferData( GL11.GL_ARRAY_BUFFER, vertices.limit(), vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
+			gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
 			gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
 			
 			if( maxIndices > 0 )
@@ -195,13 +227,13 @@ public class Mesh
 //		if( filledOnce == false )
 //		{
 			gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-			gl.glBufferData( GL20.GL_ARRAY_BUFFER, vertices.limit(), vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
+			gl.glBufferData( GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
 			gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
 			
 			if( maxIndices > 0 )
 			{
 				gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-				gl.glBufferData( GL20.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL20.GL_STATIC_DRAW: GL20.GL_DYNAMIC_DRAW );
+				gl.glBufferData( GL20.GL_ELEMENT_ARRAY_BUFFER, getNumIndices() * 2, indices, isStatic?GL20.GL_STATIC_DRAW: GL20.GL_DYNAMIC_DRAW );
 				gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
 			}
 //		}
@@ -231,13 +263,17 @@ public class Mesh
 	{
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
+				
+		verticesFloat.clear();			
+		verticesFloat.put( vertices );			
+		verticesFloat.limit(vertices.length);			
+		verticesFloat.position(0);		
 		
-		verticesFloat.clear();
-		verticesFloat.put( vertices );
-		verticesFloat.limit(vertices.length);
-		verticesFloat.position(0);
-		this.vertices.limit(verticesFloat.limit()*4);
-		this.vertices.position(0);
+		if( usesDirectBuffers )
+		{ 			
+			this.vertices.limit(verticesFloat.limit()*4);									
+			this.vertices.position(0);			
+		}
 		dirty = true;
 	}
 	
@@ -259,8 +295,11 @@ public class Mesh
 		verticesFloat.put( vertices, offset, count );
 		verticesFloat.limit( count );
 		verticesFloat.position(0);
-		this.vertices.limit(verticesFloat.limit()*4);
-		this.vertices.position(0);
+		if( usesDirectBuffers )
+		{
+			this.vertices.limit(verticesFloat.limit()*4);
+			this.vertices.position(0);
+		}
 		dirty = true;
 	}
 	
@@ -280,8 +319,11 @@ public class Mesh
 		verticesFixed.put( vertices );
 		verticesFixed.limit( vertices.length );
 		verticesFixed.position(0);
-		this.vertices.limit(verticesFixed.limit()*4);
-		this.vertices.position(0);
+		if( usesDirectBuffers )
+		{
+			this.vertices.limit(verticesFixed.limit()*4);
+			this.vertices.position(0);
+		}
 		dirty = true;
 	}
 	
@@ -303,8 +345,11 @@ public class Mesh
 		verticesFixed.put( vertices, offset, count );
 		verticesFixed.limit(count);
 		verticesFixed.position(0);
-		this.vertices.limit(verticesFixed.limit()*4);
-		this.vertices.position(0);
+		if( usesDirectBuffers )
+		{
+			this.vertices.limit(verticesFixed.limit()*4);
+			this.vertices.position(0);
+		}
 		dirty = true;
 	}
 	
@@ -333,7 +378,7 @@ public class Mesh
 	 */
 	public int getNumVertices( )
 	{
-		return vertices.limit() / attributes.vertexSize;
+		return vertices.limit() / (attributes.vertexSize / (usesDirectBuffers?1:4));
 	}
 	
 	/**
@@ -678,7 +723,7 @@ public class Mesh
 	 * @param usage the Usage.
 	 * @return the VertexAttribute or null if no attribute with that usage was found.
 	 */
-	public VertexAttribute getVertexAttribute(Usage usage) 
+	public VertexAttribute getVertexAttribute(int usage) 
 	{	
 		for( int i = 0; i < attributes.size(); i++ )
 			if( attributes.get(i).usage == usage )
@@ -698,7 +743,7 @@ public class Mesh
 	/**
 	 * @return the backing ByteBuffer holding the vertices
 	 */
-	public ByteBuffer getVerticesBuffer( )
+	public Buffer getVerticesBuffer( )
 	{
 		return vertices;
 	}
@@ -709,5 +754,38 @@ public class Mesh
 	public ShortBuffer getIndicesBuffer( )
 	{
 		return indices;
+	}
+
+	/**
+	 * Returns getNumVertices() vertices in the float array
+	 * @param vertices the destination array
+	 */
+	public void getVertices(float[] vertices) 
+	{	
+		if( useFixedPoint )
+			throw new IllegalArgumentException( "can't get float vertices from fixed point mesh" );
+		
+		verticesFloat.get(vertices);
+	}
+	
+	/**
+	 * Returns getNumVertices() vertices in the fixed point array
+	 * @param vertices the destination array
+	 */
+	public void getVertices( int[] vertices )
+	{
+		if( !useFixedPoint )
+			throw new IllegalArgumentException( "can't get fixed point vertices from float mesh" );
+		
+		verticesFixed.get(vertices);
+	}
+	
+	/**
+	 * Returns getNumIndices() indices in the short array
+	 * @param indices the destination array
+	 */
+	public void getIndices( short[] indices )
+	{
+		this.indices.get(indices);
 	}
 }

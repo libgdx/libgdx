@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 public final class VertexAttribute
 {
 	/** the attribute {@link Usage} **/
-	public final Usage usage;
+	public final int usage;
 	/** the number of components this attribute has **/
 	public final int numComponents;
 	/** the offset of this attribute in bytes, don't change this! **/
@@ -32,7 +32,7 @@ public final class VertexAttribute
 	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
 	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
 	 */
-	public VertexAttribute( Usage usage, int numComponents, String alias )
+	public VertexAttribute( int usage, int numComponents, String alias )
 	{
 		this.usage = usage;
 		this.numComponents = numComponents;

@@ -13,7 +13,7 @@ import java.util.List;
  * @author mzechner
  *
  */
-public class VertexAttributes 
+public final class VertexAttributes 
 {	
 	/**
 	 * The usage of a vertex attribute.
@@ -21,13 +21,13 @@ public class VertexAttributes
 	 * @author mzechner
 	 *
 	 */
-	public enum Usage
+	public final class Usage
 	{
-		Position,
-		Color,
-		Normal,
-		TextureCoordinates,
-		Generic
+		public static final int Position = 0;
+		public static final int Color = 1;
+		public static final int Normal = 2;
+		public static final int TextureCoordinates = 3;
+		public static final int Generic = 4;
 	}
 	
 	/** the attributes in the order they were specified **/

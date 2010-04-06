@@ -242,14 +242,14 @@ public final class SpriteBatch
 			invTexHeight = 1.0f / texture.getHeight();
 		}
 		
-		float u = srcX / (float)texture.getWidth();
-		float v = srcY / (float)texture.getHeight();
-		float u2 = (srcX + srcWidth) / (float)texture.getWidth();
-		float v2 = (srcY + srcHeight) / (float)texture.getHeight();
+		float u = srcX * invTexWidth;
+		float v = srcY * invTexHeight;
+		float u2 = (srcX + srcWidth) * invTexWidth;
+		float v2 = (srcY + srcHeight) * invTexHeight;
 		float fx = (float)x;
 		float fy = (float)y;
 		float fx2 = (float)(x + srcWidth);
-		float fy2 = (float)(y - srcHeight);
+		float fy2 = (float)(y - srcHeight);		
 		
 		vertices[idx++] = fx;
 		vertices[idx++] = fy;
@@ -284,15 +284,77 @@ public final class SpriteBatch
 		if( idx == vertices.length )
 			renderMesh();
 	}
+		
+	public void draw( Texture texture, int xy[], int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
+	{
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+		
+		float u = srcX * invTexWidth;
+		float v = srcY * invTexHeight;
+		float u2 = (srcX + srcWidth) * invTexWidth;
+		float v2 = (srcY + srcHeight) * invTexHeight;
+		
+		for( int i = 0; i < xy.length; i+=2 )
+		{
+			int x = xy[i];
+			int y = xy[i+1];
+			float fx = (float)x;
+			float fy = (float)y;
+			float fx2 = (float)(x + srcWidth);
+			float fy2 = (float)(y - srcHeight);		
+			
+			vertices[idx++] = fx;
+			vertices[idx++] = fy;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u; vertices[idx++] = v; 
+			
+			vertices[idx++] = fx;
+			vertices[idx++] = fy2;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy2;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u2; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy2;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u2; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u2; vertices[idx++] = v;
+			
+			vertices[idx++] = fx;
+			vertices[idx++] = fy;
+			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = u; vertices[idx++] = v; 
+			
+			if( idx == vertices.length )
+				renderMesh();
+		}
+	}
 	
 	private void renderMesh( )
 	{
 		if( idx == 0 )
 			return;
-		
-		lastTexture.bind();
-		mesh.setVertices(vertices, 0, idx);
-		mesh.render( GL10.GL_TRIANGLES );
+			
+		lastTexture.bind();		
+		mesh.setVertices(vertices, 0, idx);	
+		mesh.render( GL10.GL_TRIANGLES );		
 		idx = 0;
 	}	
 	

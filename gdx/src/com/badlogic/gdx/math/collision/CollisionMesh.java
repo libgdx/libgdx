@@ -91,10 +91,10 @@ public class CollisionMesh
 		int idx = 0;
 		int offset = position.offset / 4;
 		int stride = mesh.getVertexSize() / 4;
-		float[] vertices = new float[mesh.getVerticesBuffer().limit()/4];
-		mesh.getVerticesBuffer().asFloatBuffer().get(vertices);
-		short[] indices = new short[mesh.getIndicesBuffer().limit() / 4];
-		mesh.getIndicesBuffer().get(indices);
+		float[] vertices = new float[mesh.getNumVertices() * (mesh.getVertexSize() / 4)];
+		mesh.getVertices(vertices);
+		short[] indices = new short[mesh.getNumIndices()];
+		mesh.getIndices(indices);
 		
 		for( int i = 0; i < mesh.getNumIndices(); i+=3 )
 		{			
@@ -121,8 +121,8 @@ public class CollisionMesh
 		int idx = 0;
 		int offset = position.offset / 4;
 		int stride = mesh.getVertexSize() / 4;
-		float[] vertices = new float[mesh.getVerticesBuffer().limit()/4];
-		mesh.getVerticesBuffer().asFloatBuffer().get(vertices);
+		float[] vertices = new float[mesh.getNumVertices() * (mesh.getVertexSize() / 4)];
+		mesh.getVertices(vertices);
 		for( int i = 0; i < mesh.getNumVertices(); i+=3 )
 		{			
 			int idx1 = (i) * stride + offset;
