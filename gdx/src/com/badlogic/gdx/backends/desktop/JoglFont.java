@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.desktop;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -105,7 +106,12 @@ final class JoglFont extends Font
 		BufferedImage bitmap = new BufferedImage( (int)Math.ceil(bounds.getWidth()), getLineHeight(), BufferedImage.TYPE_4BYTE_ABGR );
 		g = (Graphics2D)bitmap.getGraphics();
 		
-		g.setFont(font);		
+		g.setFont(font);	
+	    g.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING,
+	                                             RenderingHints.VALUE_ANTIALIAS_ON ));	    
+	    g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+	                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+
 		g.setColor( new java.awt.Color( 0x0000000, true ) );
 		g.fillRect( 0, 0, bitmap.getWidth(), bitmap.getHeight() );
 		g.setColor( new java.awt.Color( 0xffffffff, true ) );

@@ -16,12 +16,15 @@
  */
 package com.badlogic.gdx.backends.android;
 
+import java.io.FileOutputStream;
+
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Paint.FontMetrics;
 import android.graphics.Paint.Style;
 
@@ -99,13 +102,28 @@ final class AndroidFont extends Font
 		paint.getTextBounds( "" + character, 0, 1, rect );
 		Bitmap bitmap = Bitmap.createBitmap( rect.width()==0?1:rect.width() + 5, getLineHeight(), Bitmap.Config.ARGB_8888 );
 		Canvas g = new Canvas( bitmap );
-//		paint.setAntiAlias(true);
+		paint.setAntiAlias(true);
 		paint.setColor(0x00000000);
 		paint.setStyle(Style.FILL);
 		g.drawRect( new Rect( 0, 0, rect.width() + 5, getLineHeight()), paint);
 		paint.setColor(0xFFFFFFFF);		
-		g.drawText( "" + character, 0, -metrics.ascent, paint );		
+		g.drawText( "" + character, 0, -metrics.ascent, paint );
+//		writeBitmap( bitmap );
 		return new AndroidPixmap( bitmap );
+	}
+	
+	private void writeBitmap( Bitmap bmp )
+	{
+		try
+		{
+			FileOutputStream out = new FileOutputStream( "/sdcard/glyph.png" );
+			bmp.compress(CompressFormat.PNG, 100, out );
+			out.close();
+		}
+		catch( Exception ex )
+		{
+			System.out.println( "nope");
+		}
 	}
 
 	/**

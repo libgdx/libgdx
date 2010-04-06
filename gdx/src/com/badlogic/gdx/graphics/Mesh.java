@@ -132,7 +132,7 @@ public class Mesh
 	private void createBuffers( )
 	{
 		// FIXME this is a hack as there's no way to support fixed point VBOs
-		if( graphics instanceof JoglGraphics )
+		if( useFixedPoint && graphics instanceof JoglGraphics )
 			return;
 		
 		if( graphics.isGL11Available() == false && graphics.isGL20Available() == false )
@@ -191,65 +191,31 @@ public class Mesh
 	}
 	
 	private void fillBuffers( GL11 gl )
-	{				
-		// FIXME potential bug? if subdata is bigger than first uploaded data, do we get into trouble?
-		// FIXME disabled at the moment. per documentation this produces a bug.
-//		if( filledOnce == false )
-//		{			
-			gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-			gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
-			gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
-			
-			if( maxIndices > 0 )
-			{
-				gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-				gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL11.GL_STATIC_DRAW: GL11.GL_DYNAMIC_DRAW );
-				gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
-			}
-//		}
-//		else
-//		{
-//			gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-//			gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, vertices.limit(), vertices );
-//			gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
-//			
-//			if( maxIndices > 0 )
-//			{
-//				gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-//				gl.glBufferSubData( GL11.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );				
-//				gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
-//			}
-//		}
+	{							
+		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
+		gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
+		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
+		
+		if( maxIndices > 0 )
+		{
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
+			gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL11.GL_STATIC_DRAW: GL11.GL_DYNAMIC_DRAW );
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
+		}
 	}
 	
 	private void fillBuffers( GL20 gl )
 	{				
-//		if( filledOnce == false )
-//		{
-			gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-			gl.glBufferData( GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
-			gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
-			
-			if( maxIndices > 0 )
-			{
-				gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-				gl.glBufferData( GL20.GL_ELEMENT_ARRAY_BUFFER, getNumIndices() * 2, indices, isStatic?GL20.GL_STATIC_DRAW: GL20.GL_DYNAMIC_DRAW );
-				gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
-			}
-//		}
-//		else
-//		{
-//			gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-//			gl.glBufferSubData( GL20.GL_ARRAY_BUFFER, 0, vertices.limit(), vertices );
-//			gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
-//			
-//			if( maxIndices > 0 )
-//			{
-//				gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-//				gl.glBufferSubData( GL20.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );				
-//				gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
-//			}
-//		}
+		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
+		gl.glBufferData( GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
+		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
+		
+		if( maxIndices > 0 )
+		{
+			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
+			gl.glBufferData( GL20.GL_ELEMENT_ARRAY_BUFFER, getNumIndices() * 2, indices, isStatic?GL20.GL_STATIC_DRAW: GL20.GL_DYNAMIC_DRAW );
+			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
+		}
 	}
 	
 	/**
@@ -766,6 +732,7 @@ public class Mesh
 			throw new IllegalArgumentException( "can't get float vertices from fixed point mesh" );
 		
 		verticesFloat.get(vertices);
+		verticesFloat.position(0);
 	}
 	
 	/**
@@ -778,6 +745,7 @@ public class Mesh
 			throw new IllegalArgumentException( "can't get fixed point vertices from float mesh" );
 		
 		verticesFixed.get(vertices);
+		verticesFixed.position(0);
 	}
 	
 	/**
@@ -787,5 +755,6 @@ public class Mesh
 	public void getIndices( short[] indices )
 	{
 		this.indices.get(indices);
+		this.indices.position(0);
 	}
 }

@@ -21,13 +21,14 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 
 public class TextTest implements RenderListener
 {
 	SpriteBatch spriteBatch;
-	Font font;	
+	Font font;				
 	
 	public static void main( String[] argv )
 	{
@@ -41,15 +42,18 @@ public class TextTest implements RenderListener
 		if( font == null )
 		{		
 			spriteBatch = new SpriteBatch(app.getGraphics());
-			font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );
+			font = app.getGraphics().newFont( "Arial", 32, FontStyle.Italic, true );
 		}
 	}
 	
 	@Override
 	public void render(Application app) 
 	{
+		app.getGraphics().getGL10().glClearColor( 0.7f, 0.7f, 0.7f, 1 );
+		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT );						
+		
 		spriteBatch.begin();
-		spriteBatch.drawText( font, "this is a test", 100, 100, Color.WHITE );
+		spriteBatch.drawText( font, "this is a test", 100, 100, Color.RED );
 		spriteBatch.end();
 	}
 

@@ -39,6 +39,7 @@ public interface Pixmap
 	public enum Format
 	{
 		Alpha,
+		RGB565,
 		RGBA4444,
 		RGBA8888
 	}

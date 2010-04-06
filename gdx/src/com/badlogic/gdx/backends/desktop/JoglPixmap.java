@@ -54,7 +54,7 @@ final class JoglPixmap implements Pixmap
 
 	private int getInternalFormat( Pixmap.Format format )
 	{
-		if( format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 )
+		if( format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565 )
 			return BufferedImage.TYPE_4BYTE_ABGR;
 		else
 			return BufferedImage.TYPE_BYTE_GRAY;

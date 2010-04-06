@@ -56,12 +56,12 @@ public class MeshShaderTest implements RenderListener
 		
 		mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
 						 new VertexAttribute( Usage.Position, 3, "a_position" ),
-						 new VertexAttribute( Usage.Color, 3, "a_color" ),
+						 new VertexAttribute( Usage.Color, 4, "a_color" ),
 						 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
 		
-		mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 0, 0,
-										 0.5f, -0.5f, 0, 0, 1, 0, 1, 0,
-										 0, 0.5f, 0, 0, 0, 1, 0.5f, 1 } );	
+		mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,
+										 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
+										 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );	
 		mesh.setIndices( new short[] { 0, 1, 2 } );
 		
 		matrix.setToTranslation( 0.3f, 0.2f, 0 );

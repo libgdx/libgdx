@@ -1,5 +1,7 @@
 package com.badlogic.gdx.tests;
 
+import java.util.Random;
+
 import javax.media.opengl.GL;
 
 import com.badlogic.gdx.Application;
@@ -9,18 +11,17 @@ import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
-public class SpriteBatchTest implements RenderListener 
+public class SpriteBatchShaderTest implements RenderListener
 {
 	int SPRITES = 500;
 	
@@ -46,10 +47,10 @@ public class SpriteBatchTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{	
-		GL10 gl = app.getGraphics().getGL10();
+		GL20 gl = app.getGraphics().getGL20();
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL.GL_COLOR_BUFFER_BIT );
-		
+				
 		float begin = 0;
 		float end = 0;
 		float draw1 = 0;
@@ -123,7 +124,7 @@ public class SpriteBatchTest implements RenderListener
 
 	public static void main( String[] argv )
 	{
-		JoglApplication app = new JoglApplication( "SpriteBatch Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new SpriteBatchTest() );
+		JoglApplication app = new JoglApplication( "SpriteBatch Shader Test", 480, 320, true );
+		app.getGraphics().setRenderListener( new SpriteBatchShaderTest() );
 	}
 }

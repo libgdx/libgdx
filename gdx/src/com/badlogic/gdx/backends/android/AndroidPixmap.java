@@ -74,6 +74,8 @@ final class AndroidPixmap implements Pixmap
 			return Bitmap.Config.ALPHA_8;
 		if( format == Pixmap.Format.RGBA4444 )
 			return Bitmap.Config.ARGB_4444;
+		if( format == Pixmap.Format.RGB565 )
+			return Bitmap.Config.RGB_565;
 		return Bitmap.Config.ARGB_8888;
 	}
 	

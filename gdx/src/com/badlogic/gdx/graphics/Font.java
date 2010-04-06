@@ -64,7 +64,7 @@ public abstract class Font
 	
 	protected Font( Graphics graphics, boolean managed )
 	{
-		this.texture = graphics.newTexture( 512, 512, Pixmap.Format.RGBA4444, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );		
+		this.texture = graphics.newTexture( 512, 512, Pixmap.Format.RGBA8888, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );		
 		this.isManaged = managed;
 	}
 	
