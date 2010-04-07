@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * A collision mesh holds the triangles against which collision
@@ -145,10 +145,10 @@ public class CollisionMesh
 	
 	private void calculatePlanes( boolean clockWise )
 	{
-		Vector a = new Vector( );		
-		Vector b = new Vector( );
-		Vector c = new Vector( );
-		Plane plane = new Plane( new Vector( 0, 0, 1 ), 0 );
+		Vector3 a = new Vector3( );		
+		Vector3 b = new Vector3( );
+		Vector3 c = new Vector3( );
+		Plane plane = new Plane( new Vector3( 0, 0, 1 ), 0 );
 		
 		int idx = 0;
 		int pidx = 0;

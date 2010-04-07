@@ -30,15 +30,15 @@ public final class EarCutTriangulator
 {
 	/**
 	 * Triangulates the list of points and returns an array
-	 * of {@link Vector} triples that each form a single triangle.
+	 * of {@link Vector3} triples that each form a single triangle.
 	 * 
 	 * @param polygon The polygon to triangulate
 	 * @return The list of triangle vertices.
 	 */
-	public List<Vector2D> triangulate( List<Vector2D> polygon )
+	public List<Vector2> triangulate( List<Vector2> polygon )
 	{
-		List<Vector2D> triangles = new ArrayList<Vector2D>( );
-		List<Vector2D> tmp = new ArrayList<Vector2D>( polygon.size() );
+		List<Vector2> triangles = new ArrayList<Vector2>( );
+		List<Vector2> tmp = new ArrayList<Vector2>( polygon.size() );
 		tmp.addAll( polygon );
 		polygon = tmp;
 		
@@ -87,13 +87,13 @@ public final class EarCutTriangulator
 	 *                    The Law of Cosines is used to determine the
 	 *                    angle.
 	 */
-	public boolean polygonClockwise(List<Vector2D> polygon)
+	public boolean polygonClockwise(List<Vector2> polygon)
 	{
 		float area = 0;
 		for( int i = 0; i < polygon.size();i++ )
 		{
-			Vector2D p1 = polygon.get(i);
-			Vector2D p2 = polygon.get(i==polygon.size()-1?0:i+1);
+			Vector2 p1 = polygon.get(i);
+			Vector2 p2 = polygon.get(i==polygon.size()-1?0:i+1);
 			area += p1.x * p2.y - p2.x * p1.y;
 		}
 		
@@ -175,7 +175,7 @@ public final class EarCutTriangulator
 	 */
 	int concaveCount = 0;
 	
-	int[] classifyPoints(List<Vector2D> polygon)
+	int[] classifyPoints(List<Vector2> polygon)
 	{
 		int[] ptType = new int[polygon.size()];		
 		concaveCount = 0;
@@ -268,7 +268,7 @@ public final class EarCutTriangulator
 	/* triangleContainsPoints:  returns true if the triangle formed by
 	 *                          three points contains another point
 	 */
-	boolean triangleContainsPoint(List<Vector2D> polygon, int[] ptType, float x1, float y1, float x2,
+	boolean triangleContainsPoint(List<Vector2> polygon, int[] ptType, float x1, float y1, float x2,
 			float y2, float x3, float y3)
 	{
 		int i = 0;
@@ -301,7 +301,7 @@ public final class EarCutTriangulator
 	/* ear:  returns true if the point (x2, y2) is an ear, false
 	 *       otherwise
 	 */
-	boolean ear(List<Vector2D> polygon, int[] ptType, float x1, float y1, float x2, float y2, 
+	boolean ear(List<Vector2> polygon, int[] ptType, float x1, float y1, float x2, float y2, 
 			float x3, float y3)
 	{
 		if (concaveCount != 0)
@@ -316,22 +316,22 @@ public final class EarCutTriangulator
 
 	/* cutEar:  creates triangle that represents ear for graphics purposes
 	 */
-	void cutEar(List<Vector2D> polygon, List<Vector2D> triangles, int index)
+	void cutEar(List<Vector2> polygon, List<Vector2> triangles, int index)
 	{				
 		if (index == 0) {
-			triangles.add( new Vector2D( polygon.get(polygon.size()-1) ));
-			triangles.add( new Vector2D( polygon.get(index) ) );
-			triangles.add( new Vector2D( polygon.get(index+1) ) );			
+			triangles.add( new Vector2( polygon.get(polygon.size()-1) ));
+			triangles.add( new Vector2( polygon.get(index) ) );
+			triangles.add( new Vector2( polygon.get(index+1) ) );			
 		}
 		else if ((index > 0) && (index < polygon.size()-1)) {
-			triangles.add( new Vector2D( polygon.get(index-1) ));
-			triangles.add( new Vector2D( polygon.get(index) ) );
-			triangles.add( new Vector2D( polygon.get(index+1) ) );
+			triangles.add( new Vector2( polygon.get(index-1) ));
+			triangles.add( new Vector2( polygon.get(index) ) );
+			triangles.add( new Vector2( polygon.get(index+1) ) );
 		}
 		else if (index == polygon.size()-1) {
-			triangles.add( new Vector2D( polygon.get(index-1) ));
-			triangles.add( new Vector2D( polygon.get(index) ) );
-			triangles.add( new Vector2D( polygon.get(0) ) );			
+			triangles.add( new Vector2( polygon.get(index-1) ));
+			triangles.add( new Vector2( polygon.get(index) ) );
+			triangles.add( new Vector2( polygon.get(0) ) );			
 		}		
 	}
 
@@ -339,7 +339,7 @@ public final class EarCutTriangulator
 	/* updatePolygon:  creates new polygon without the ear that was
 	 *                 cut
 	 */
-	void updatePolygon(List<Vector2D> polygon, int index)
+	void updatePolygon(List<Vector2> polygon, int index)
 	{	
 		polygon.remove(index);	
 	}

@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math.collision;
 
 import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * A collision package contains an ellipsoids starting position
@@ -48,23 +48,23 @@ public final class CollisionPacket
 	protected final float invRadiusX, invRadiusY, invRadiusZ;
 	
 	/** the position and velocity of the ellipsoid in 3-space **/
-	protected final Vector r3Velocity;
-	protected final Vector r3Position;
+	protected final Vector3 r3Velocity;
+	protected final Vector3 r3Position;
 	
 	/** the position and velocity of the ellipsoid in ellipsoid-space **/
-	protected final Vector velocity;
-	protected final Vector normalizedVelocity;
-	protected final Vector position;
+	protected final Vector3 velocity;
+	protected final Vector3 normalizedVelocity;
+	protected final Vector3 position;
 	
 	protected boolean foundCollision;
 	protected float nearestDistance = Float.MAX_VALUE;
-	protected Vector intersectionPoint;
-	protected Plane plane = new Plane( new Vector(), 0 );
+	protected Vector3 intersectionPoint;
+	protected Plane plane = new Plane( new Vector3(), 0 );
 	
 	public CollisionType type;	
 	
 	
-	public CollisionPacket( Vector position, Vector velocity, float radiusX, float radiusY, float radiusZ )
+	public CollisionPacket( Vector3 position, Vector3 velocity, float radiusX, float radiusY, float radiusZ )
 	{		
 		this.radiusX = radiusX;
 		this.radiusY = radiusY;
@@ -73,14 +73,14 @@ public final class CollisionPacket
 		this.invRadiusY = 1 / radiusY;
 		this.invRadiusZ = 1 / radiusZ;
 		
-		r3Position = new Vector( position );
-		r3Velocity = new Vector( velocity );
+		r3Position = new Vector3( position );
+		r3Velocity = new Vector3( velocity );
 		
-		this.velocity = new Vector( velocity.x * invRadiusX, velocity.y * invRadiusY, velocity.z * invRadiusZ );
-		this.normalizedVelocity = new Vector( velocity ).nor();
-		this.position = new Vector( position.x * invRadiusX, position.y * invRadiusY, position.z * invRadiusZ );
+		this.velocity = new Vector3( velocity.x * invRadiusX, velocity.y * invRadiusY, velocity.z * invRadiusZ );
+		this.normalizedVelocity = new Vector3( velocity ).nor();
+		this.position = new Vector3( position.x * invRadiusX, position.y * invRadiusY, position.z * invRadiusZ );
 		
-		this.intersectionPoint = new Vector( );
+		this.intersectionPoint = new Vector3( );
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public final class CollisionPacket
 	/**
 	 * @return the point of intersection
 	 */
-	public Vector getIntersectionPoint( )
+	public Vector3 getIntersectionPoint( )
 	{
 		return intersectionPoint;
 	}
@@ -114,7 +114,7 @@ public final class CollisionPacket
 	 * @param position the position of the sphere
 	 * @param velocity the velocity of the ellipsoid
 	 */
-	public void set(Vector position, Vector velocity) 
+	public void set(Vector3 position, Vector3 velocity) 
 	{	
 		r3Position.set( position );
 		r3Velocity.set( velocity );

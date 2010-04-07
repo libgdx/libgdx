@@ -20,7 +20,7 @@ package com.badlogic.gdx.math;
 /**
  * Encapsulates a column major 4 by 4 matrix. You can access
  * the linear array for use with OpenGL via the public {@link Matrix.val}
- * member. Like the {@link Vector} class it allows to chain methods by
+ * member. Like the {@link Vector3} class it allows to chain methods by
  * returning a reference to itself.
  * 
  * @author badlogicgames@gmail.com
@@ -157,7 +157,7 @@ public final class Matrix
      * @param zAxis The z-axis
      * @param pos The translation vector
      */
-    public void set( Vector xAxis, Vector yAxis, Vector zAxis, Vector pos )
+    public void set( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis, Vector3 pos )
     {
     	val[M00] = xAxis.x;
     	val[M01] = xAxis.y;
@@ -192,7 +192,7 @@ public final class Matrix
      * @param vector The translation vector
      * @return This matrix for chaining
      */
-    public  Matrix trn(Vector vector)
+    public  Matrix trn(Vector3 vector)
     {
         val[M03]+=vector.x;
         val[M13]+=vector.y;
@@ -428,7 +428,7 @@ public final class Matrix
      * @param vector The translation vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslation(Vector vector)
+    public  Matrix setToTranslation(Vector3 vector)
     {
         this.idt();
         val[M03]=vector.x;
@@ -465,7 +465,7 @@ public final class Matrix
      * @param scaling The scaling vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslationAndScaling(Vector translation,Vector scaling)
+    public  Matrix setToTranslationAndScaling(Vector3 translation,Vector3 scaling)
     {
         idt();
         val[M03]=translation.x;
@@ -512,7 +512,7 @@ public final class Matrix
      * @param angle The angle in degrees
      * @return This matrix for chaining
      */
-    public  Matrix setToRotation(Vector axis, float angle)
+    public  Matrix setToRotation(Vector3 axis, float angle)
     {
         idt();
         if(angle==0) return this;
@@ -525,7 +525,7 @@ public final class Matrix
      * @param vector The scaling vector
      * @return This matrix for chaining.
      */
-    public  Matrix setToScaling(Vector vector)
+    public  Matrix setToScaling(Vector3 vector)
     {
         idt();
         val[M00]=vector.x;
@@ -551,9 +551,9 @@ public final class Matrix
         return this;
     }      
 
-    static Vector l_vez = new Vector( );
-    static Vector l_vex = new Vector( );
-    static Vector l_vey = new Vector( );
+    static Vector3 l_vez = new Vector3( );
+    static Vector3 l_vex = new Vector3( );
+    static Vector3 l_vey = new Vector3( );
     
     /**
      * Sets the matrix to a look at matrix with a direction
@@ -564,7 +564,7 @@ public final class Matrix
      * @param up The up vector
      * @return This matrix for chaining
      */
-    public  Matrix setToLookat(Vector direction, Vector up)
+    public  Matrix setToLookat(Vector3 direction, Vector3 up)
     {
 		l_vez.set(direction).nor();
 		l_vex.set(direction).nor();

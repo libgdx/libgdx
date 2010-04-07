@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Matrix;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.CollisionMesh;
 import com.badlogic.gdx.math.collision.EllipsoidCollider;
 import com.badlogic.gdx.math.collision.Segment;
@@ -47,12 +47,12 @@ public class CollisionTest implements RenderListener
 	float[] lightPosition = { 2, 5, 10, 0 }; 
 	float yAngle = 0;
 	Matrix mat = new Matrix();	
-	Vector axis = new Vector( 0, 1, 0 );
-	Vector position = new Vector( 0, 0, 0 );
-	Vector velocity = new Vector( 0, 0, 0 );
-	Vector gravity = new Vector( 0, 0, 0 );
-	Segment segment = new Segment( new Vector(), new Vector() );
-	Vector start = new Vector( 0, 3 * SCALE, 0 );
+	Vector3 axis = new Vector3( 0, 1, 0 );
+	Vector3 position = new Vector3( 0, 0, 0 );
+	Vector3 velocity = new Vector3( 0, 0, 0 );
+	Vector3 gravity = new Vector3( 0, 0, 0 );
+	Segment segment = new Segment( new Vector3(), new Vector3() );
+	Vector3 start = new Vector3( 0, 3 * SCALE, 0 );
 	
 	float ax;
 	float ay;

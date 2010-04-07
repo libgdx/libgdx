@@ -24,7 +24,7 @@ package com.badlogic.gdx.math;
  * @author badlogicgames@gmail.com
  *
  */
-public final class Vector 
+public final class Vector3 
 {   		
 	private static final long serialVersionUID = 3840054589595372522L;
 	/** the x-component of this vector **/
@@ -34,14 +34,14 @@ public final class Vector
 	/** the x-component of this vector **/
 	public float z;	
     
-    private static Vector tmp = new Vector();
-    private static Vector tmp2 = new Vector();
-    private static Vector tmp3 = new Vector();          
+    private static Vector3 tmp = new Vector3();
+    private static Vector3 tmp2 = new Vector3();
+    private static Vector3 tmp3 = new Vector3();          
 
     /**
      * Constructs a vector at (0,0,0)
      */
-    public Vector()
+    public Vector3()
     {
     }
 
@@ -52,7 +52,7 @@ public final class Vector
      * @param y The y-component
      * @param z The z-component
      */
-    public Vector(float x, float y, float z)
+    public Vector3(float x, float y, float z)
     {
         this.set(x,y,z);
     }
@@ -62,7 +62,7 @@ public final class Vector
      * 
      * @param vector The vector
      */
-    public Vector(Vector vector)
+    public Vector3(Vector3 vector)
     {
         this.set(vector);
     }
@@ -73,7 +73,7 @@ public final class Vector
      * 
      * @param values The array
      */
-    public Vector(float[] values)
+    public Vector3(float[] values)
     {
         this.set(values[0],values[1],values[2]);
     }    
@@ -86,7 +86,7 @@ public final class Vector
      * @param z The z-component
      * @return this vector for chaining
      */
-    public Vector set(float x, float y, float z)
+    public Vector3 set(float x, float y, float z)
     {
         this.x=x;
         this.y=y;
@@ -100,7 +100,7 @@ public final class Vector
      * @param vector The vector
      * @return This vector for chaining
      */
-    public Vector set(Vector vector)
+    public Vector3 set(Vector3 vector)
     {
         return this.set(vector.x,vector.y,vector.z);
     }
@@ -112,7 +112,7 @@ public final class Vector
      * @param values The array
      * @return this vector for chaining
      */
-    public Vector set(float[] values)
+    public Vector3 set(float[] values)
     {
         return this.set(values[0],values[1],values[2]);
     }
@@ -120,9 +120,9 @@ public final class Vector
     /**
      * @return a copy of this vector
      */
-    public Vector cpy()
+    public Vector3 cpy()
     {
-        return new Vector(this);
+        return new Vector3(this);
     }
     
     /**
@@ -130,7 +130,7 @@ public final class Vector
      * 
      * @return 
      */
-    public Vector tmp()
+    public Vector3 tmp()
     {
     	return tmp.set( this );
     }
@@ -140,7 +140,7 @@ public final class Vector
      * 
      * @return 
      */
-    public Vector tmp2()
+    public Vector3 tmp2()
     {
     	return tmp2.set(this);
     }
@@ -150,7 +150,7 @@ public final class Vector
      * 
      * @return 
      */
-    Vector tmp3()
+    Vector3 tmp3()
     {
     	return tmp3.set(this);
     }
@@ -161,7 +161,7 @@ public final class Vector
      * @param vector The other vector
      * @return This vector for chaining
      */
-    public Vector add(Vector vector)
+    public Vector3 add(Vector3 vector)
     {
         return this.add(vector.x,vector.y,vector.z);
     }
@@ -173,7 +173,7 @@ public final class Vector
      * @param z The z-component of the other vector
      * @return This vector for chaining.
      */
-    public Vector add(float x, float y, float z)
+    public Vector3 add(float x, float y, float z)
     {
         return this.set(this.x+x,this.y+y,this.z+z);
     }
@@ -185,7 +185,7 @@ public final class Vector
      * @param values The value
      * @return This vector for chaining
      */
-    public Vector add(float values)
+    public Vector3 add(float values)
     {
         return this.set(this.x+values,this.y+values,this.z+values);
     }
@@ -195,7 +195,7 @@ public final class Vector
      * @param a_vec The other vector
      * @return This vector for chaining
      */
-    public Vector sub(Vector a_vec)
+    public Vector3 sub(Vector3 a_vec)
     {
         return this.sub(a_vec.x,a_vec.y,a_vec.z);
     }
@@ -208,7 +208,7 @@ public final class Vector
      * @param z The z-component of the other vector
      * @return This vector for chaining
      */
-    public Vector sub(float x, float y, float z)
+    public Vector3 sub(float x, float y, float z)
     {
         return this.set(this.x-x,this.y-y,this.z-z);
     }
@@ -219,7 +219,7 @@ public final class Vector
      * @param value The value
      * @return This vector for chaining
      */
-    public Vector sub(float value)
+    public Vector3 sub(float value)
     {
         return this.set(this.x-value,this.y-value,this.z-value);
     }
@@ -230,7 +230,7 @@ public final class Vector
      * @param value The value
      * @return This vector for chaining
      */
-    public Vector mul(float value)
+    public Vector3 mul(float value)
     {
         return this.set(this.x*value,this.y*value,this.z*value);
     }
@@ -241,7 +241,7 @@ public final class Vector
      * @param value The value
      * @return This vector for chaining
      */
-    public Vector div(float value)
+    public Vector3 div(float value)
     {
     	float d = 1 / value;    	
         return this.set(this.x*d,this.y*d,this.z*d);
@@ -267,7 +267,7 @@ public final class Vector
      * @param vector The other vector
      * @return Wether this and the other vector are equal
      */
-    public boolean idt(Vector vector)
+    public boolean idt(Vector3 vector)
     {
         return x==vector.x &&
                y==vector.y &&
@@ -278,7 +278,7 @@ public final class Vector
      * @param vector The other vector
      * @return The euclidian distance between this and the other vector
      */
-    public float dst(Vector vector)
+    public float dst(Vector3 vector)
     {
     	float a = vector.x-x;
     	float b = vector.y-y;
@@ -295,7 +295,7 @@ public final class Vector
      * @param vector The other vector
      * @return The squared euclidian distance between this and the other vector
      */
-    public float dist2( Vector vector )
+    public float dist2( Vector3 vector )
     {
     	float a = vector.x - x;
     	float b = vector.y - y;
@@ -308,7 +308,7 @@ public final class Vector
      *     
      * @return This vector for chaining
      */
-    public Vector nor()
+    public Vector3 nor()
     {
     	if( x == 0 && y == 0 && z == 0 )
     		return this;
@@ -320,7 +320,7 @@ public final class Vector
      * @param vector The other vector
      * @return The dot product between this and the other vector
      */
-    public float dot(Vector vector)
+    public float dot(Vector3 vector)
     {
         return x*vector.x+y*vector.y+z*vector.z;
     }
@@ -330,7 +330,7 @@ public final class Vector
      * @param vector The other vector
      * @return This vector for chaining
      */
-    public Vector crs(Vector vector)
+    public Vector3 crs(Vector3 vector)
     {
         return this.set(y*vector.z-z*vector.y,
                         z*vector.x-x*vector.z,
@@ -344,7 +344,7 @@ public final class Vector
      * @param z The z-component of the other vector
      * @return This vector for chaining
      */
-    public Vector crs(float x, float y, float z)
+    public Vector3 crs(float x, float y, float z)
     {
         return this.set(y*z-z*y,
                         z*x-x*z,
@@ -356,7 +356,7 @@ public final class Vector
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector mul(Matrix matrix)
+    public Vector3 mul(Matrix matrix)
     {
         float l_mat[] = matrix.val;
         return this.set(x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02]+l_mat[Matrix.M03],
@@ -372,7 +372,7 @@ public final class Vector
      * @param matrix The matrix.
      * @return This vector for chaining
      */
-    public Vector prj(Matrix matrix)
+    public Vector3 prj(Matrix matrix)
     {
         float l_mat[] = matrix.val;
         float l_w = x*l_mat[Matrix.M30]+y*l_mat[Matrix.M31]+z*l_mat[Matrix.M32]+l_mat[Matrix.M33];
@@ -388,7 +388,7 @@ public final class Vector
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector rot(Matrix matrix)
+    public Vector3 rot(Matrix matrix)
     {
         float l_mat[] = matrix.val;
         return this.set(x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02],
@@ -421,9 +421,9 @@ public final class Vector
      * @param alpha The interpolation coefficient
      * @return This vector for chaining.
      */
-    public Vector lerp( Vector target, float alpha )
+    public Vector3 lerp( Vector3 target, float alpha )
     {
-    	Vector r = this.mul( 1.0f - alpha );
+    	Vector3 r = this.mul( 1.0f - alpha );
     	r.add( target.tmp().mul( alpha ) );
     	return r;
     }        
@@ -437,7 +437,7 @@ public final class Vector
      * @param alpha The interpolation coefficient
      * @return This vector for chaining.
      */
-    public Vector slerp( Vector target, float alpha )
+    public Vector3 slerp( Vector3 target, float alpha )
     {
     	float dot = dot( target );
     	if( dot > 0.99995 || dot < 0.9995 )
@@ -454,7 +454,7 @@ public final class Vector
     	    	
     	float theta0 = (float)Math.acos(dot);
     	float theta = theta0 * alpha;
-    	Vector v2 = target.tmp().sub( x * dot, y * dot, z * dot );
+    	Vector3 v2 = target.tmp().sub( x * dot, y * dot, z * dot );
     	v2.nor();
     	return this.mul((float)Math.cos(theta)).add( v2.mul((float)Math.sin(theta) ) ).nor();
     }   
@@ -486,7 +486,7 @@ public final class Vector
 	 * @param point The other point
 	 * @return The squared distance
 	 */
-	public float dst2(Vector point) {
+	public float dst2(Vector3 point) {
 
     	float a = point.x-x;
     	float b = point.y-y;
@@ -548,7 +548,7 @@ public final class Vector
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Vector other = (Vector) obj;		
+		Vector3 other = (Vector3) obj;		
 		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x))
 			return false;
 		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y))

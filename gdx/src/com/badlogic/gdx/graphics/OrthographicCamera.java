@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Matrix;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
 /**
@@ -48,10 +48,10 @@ public final class OrthographicCamera
 	}
 	
 	private Side side;
-	private Vector position = new Vector( );
-    private Vector direction = new Vector( 0, 0, -1 );
-    private Vector up = new Vector( 0, 0, -1 );
-    private Vector axis = new Vector( 0, 1, 0 );    
+	private Vector3 position = new Vector3( );
+    private Vector3 direction = new Vector3( 0, 0, -1 );
+    private Vector3 up = new Vector3( 0, 0, -1 );
+    private Vector3 axis = new Vector3( 0, 1, 0 );    
 	private float near = -1000;
 	private float far = 1000;
 	private float scale = 1.0f;
@@ -135,7 +135,7 @@ public final class OrthographicCamera
 	/**
 	 * @return The position
 	 */
-	public Vector getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 	
@@ -151,7 +151,7 @@ public final class OrthographicCamera
 		this.viewportHeight = height;
 	}
 	
-	Vector tmp = new Vector( );
+	Vector3 tmp = new Vector3( );
 	
 	/**
 	 * Updates the frustum as well as the matrices of the camera
@@ -275,8 +275,8 @@ public final class OrthographicCamera
 		return (int)(-( -world_y + (viewportHeight * scale ) / 2 + position.y - viewportHeight * scale ) / scale); 
 	}	
 		
-	Ray ray = new Ray( new Vector( ), new Vector( ) );
-	Vector tmp2 = new Vector( );
+	Ray ray = new Ray( new Vector3( ), new Vector3( ) );
+	Vector3 tmp2 = new Vector3( );
 	
 	/**
 	 * Returns a ray in world space form the given screen coordinates.

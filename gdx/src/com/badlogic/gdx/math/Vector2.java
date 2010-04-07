@@ -22,7 +22,7 @@ package com.badlogic.gdx.math;
  * @author badlogicgames@gmail.com
  *
  */
-public final class Vector2D 
+public final class Vector2 
 {
 	/** the x-component of this vector **/
 	public float x;
@@ -32,7 +32,7 @@ public final class Vector2D
 	/**
 	 * Constructs a new vector at (0,0)
 	 */
-	public Vector2D( )
+	public Vector2( )
 	{
 		
 	}
@@ -42,7 +42,7 @@ public final class Vector2D
 	 * @param x The x-component
 	 * @param y The y-component
 	 */
-	public Vector2D( float x, float y )
+	public Vector2( float x, float y )
 	{
 		this.x = x;
 		this.y = y;
@@ -52,7 +52,7 @@ public final class Vector2D
 	 * Constructs a vector from the given vector
 	 * @param v The vector
 	 */
-	public Vector2D( Vector2D v )
+	public Vector2( Vector2 v )
 	{
 		set( v );
 	}
@@ -60,9 +60,9 @@ public final class Vector2D
 	/**
 	 * @return a copy of this vector
 	 */
-	public Vector2D cpy( )
+	public Vector2 cpy( )
 	{
-		return new Vector2D( this );
+		return new Vector2( this );
 	}
 	
 	/**
@@ -86,7 +86,7 @@ public final class Vector2D
 	 * @param v The vector
 	 * @return This vector for chaining
 	 */
-	public Vector2D set( Vector2D v )
+	public Vector2 set( Vector2 v )
 	{
 		x = v.x;
 		y = v.y;
@@ -99,7 +99,7 @@ public final class Vector2D
 	 * @param y The y-component
 	 * @return This vector for chaining
 	 */
-	public Vector2D set( float x, float y )
+	public Vector2 set( float x, float y )
 	{
 		this.x = x;
 		this.y = y;
@@ -111,7 +111,7 @@ public final class Vector2D
 	 * @param v The vector
 	 * @return This vector for chaining
 	 */
-	public Vector2D sub( Vector2D v )
+	public Vector2 sub( Vector2 v )
 	{
 		x -= v.x;
 		y -= v.y;
@@ -122,7 +122,7 @@ public final class Vector2D
 	 * Normalizes this vector
 	 * @return This vector for chaining
 	 */
-	public Vector2D nor( )
+	public Vector2 nor( )
 	{
 		float len = len( );
 		if( len != 0 )
@@ -138,7 +138,7 @@ public final class Vector2D
 	 * @param v The vector
 	 * @return This vector for chaining
 	 */
-	public Vector2D add( Vector2D v )
+	public Vector2 add( Vector2 v )
 	{
 		x += v.x;
 		y += v.y;
@@ -151,7 +151,7 @@ public final class Vector2D
 	 * @param y The y-component
 	 * @return This vector for chaining
 	 */
-	public Vector2D add( float x, float y )
+	public Vector2 add( float x, float y )
 	{
 		this.x += x;
 		this.y += y;
@@ -162,7 +162,7 @@ public final class Vector2D
 	 * @param v The other vector
 	 * @return The dot product between this and the other vector
 	 */
-	public float dot( Vector2D v )
+	public float dot( Vector2 v )
 	{
 		return x * v.x + y * v.y;
 	}
@@ -172,7 +172,7 @@ public final class Vector2D
 	 * @param scalar The scalar
 	 * @return This vector for chaining
 	 */
-	public Vector2D mul( float scalar )
+	public Vector2 mul( float scalar )
 	{
 		x *= scalar;
 		y *= scalar;
@@ -183,7 +183,7 @@ public final class Vector2D
 	 * @param v The other vector
 	 * @return the distance between this and the other vector
 	 */
-	public float dst(Vector2D v) 
+	public float dst(Vector2 v) 
 	{	
 		float x_d = v.x - x;
 		float y_d = v.y - y;
@@ -206,7 +206,7 @@ public final class Vector2D
 	 * @param v The other vector
 	 * @return the squared distance between this and the other vector
 	 */
-	public float dst2(Vector2D v)
+	public float dst2(Vector2 v)
 	{
 		float x_d = v.x - x;
 		float y_d = v.y - y;
@@ -224,7 +224,7 @@ public final class Vector2D
 	 * @param y The y-component of the other vector
 	 * @return This vector for chaining
 	 */
-	public Vector sub(float x, float y) 
+	public Vector3 sub(float x, float y) 
 	{
 		this.x -= x;
 		this.y -= y;

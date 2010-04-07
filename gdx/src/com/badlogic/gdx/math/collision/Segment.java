@@ -16,7 +16,7 @@
  */
 package com.badlogic.gdx.math.collision;
 
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * A Segment is a line in 3-space having a staring
@@ -28,10 +28,10 @@ import com.badlogic.gdx.math.Vector;
 public class Segment 
 {
 	/** the starting position **/
-	public final Vector a = new Vector( );
+	public final Vector3 a = new Vector3( );
 	
 	/** the ending position **/
-	public final Vector b = new Vector( );
+	public final Vector3 b = new Vector3( );
 	
 	/**
 	 * Constructs a new Segment from the two points
@@ -40,7 +40,7 @@ public class Segment
 	 * @param a the first point
 	 * @param b the second point
 	 */
-	public Segment( Vector a, Vector b )
+	public Segment( Vector3 a, Vector3 b )
 	{
 		this.a.set(a);
 		this.b.set(b);

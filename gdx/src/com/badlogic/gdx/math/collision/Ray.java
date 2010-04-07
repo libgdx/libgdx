@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math.collision;
 
 import com.badlogic.gdx.math.Matrix;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Encapsulates a ray having a starting position and a unit length direction.
@@ -27,8 +27,8 @@ import com.badlogic.gdx.math.Vector;
  */
 public final class Ray 
 {
-	public final Vector origin = new Vector();
-	public final Vector direction = new Vector();	
+	public final Vector3 origin = new Vector3();
+	public final Vector3 direction = new Vector3();	
 	
 	/**
 	 * Constructor, sets the starting position of the ray
@@ -37,7 +37,7 @@ public final class Ray
 	 * @param origin The starting position
 	 * @param direction The direction
 	 */
-	public Ray( Vector origin, Vector direction )
+	public Ray( Vector3 origin, Vector3 direction )
 	{
 		this.origin.set(origin);
 		this.direction.set(direction).nor();
@@ -58,12 +58,12 @@ public final class Ray
 	 * @param distance The distance from the end point to the start point.
 	 * @return The end point
 	 */
-	public Vector getEndPoint( float distance )
+	public Vector3 getEndPoint( float distance )
 	{
-		return new Vector( origin ).add( direction.tmp().mul( distance ) );
+		return new Vector3( origin ).add( direction.tmp().mul( distance ) );
 	}
 	
-	static Vector tmp = new Vector( );
+	static Vector3 tmp = new Vector3( );
 	
 	/**
 	 * Multiplies the ray by the given matrix. Use
@@ -98,7 +98,7 @@ public final class Ray
 	 * @param direction The direction
 	 * @return this ray for chaining
 	 */
-	public Ray set( Vector origin, Vector direction )
+	public Ray set( Vector3 origin, Vector3 direction )
 	{
 		this.origin.set(origin);
 		this.direction.set(direction);

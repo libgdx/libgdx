@@ -32,16 +32,40 @@ public class Color
 		this.b = b;
 		this.a = a;
 	}
+
+	/**
+	 * Constructs a new color using the given color
+	 * @param color the color
+	 */
+	public Color( Color color )
+	{
+		set( color );
+	}
 	
 	/**
 	 * Sets this color to the given color.
 	 * @param color the Color
 	 */
-	public void set( Color color )
+	public Color set( Color color )
 	{
 		this.r = color.r;
 		this.g = color.g;
 		this.b = color.b;
 		this.a = color.a;
+		return this;
+	}
+	
+	/**
+	 * Multiplies the this color and the given color
+	 * @param color the color
+	 * @return this color.
+	 */
+	public Color mul( Color color )
+	{
+		this.r *= color.r;
+		this.g *= color.g;
+		this.b *= color.b;
+		this.a *= color.a;
+		return this;
 	}
 }

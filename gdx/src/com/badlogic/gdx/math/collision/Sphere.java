@@ -16,7 +16,7 @@
  */
 package com.badlogic.gdx.math.collision;
 
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Encapsulates a 3D sphere with a center and a radius
@@ -29,16 +29,16 @@ public final class Sphere
 	/** the radius of the sphere **/
 	public float radius;
 	/** the center of the sphere **/
-	public final Vector center;
+	public final Vector3 center;
 	
 	/**
 	 * Constructs a sphere with the given center and radius
 	 * @param center The center
 	 * @param radius The radius
 	 */
-	public Sphere( Vector center, float radius )
+	public Sphere( Vector3 center, float radius )
 	{
-		this.center = new Vector( center );
+		this.center = new Vector3( center );
 		this.radius = radius;		
 	}
 }

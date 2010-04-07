@@ -18,7 +18,7 @@ package com.badlogic.gdx.math.collision;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.CollisionPacket.CollisionType;
 
 /**
@@ -34,12 +34,12 @@ public class CollisionDetection
 	public static float EPSILON = 0.00001f;
 	
 	/** temporary vectors **/
-	static final Vector p1 = new Vector();
-	static final Vector p2 = new Vector();
-	static final Vector p3 = new Vector();
+	static final Vector3 p1 = new Vector3();
+	static final Vector3 p2 = new Vector3();
+	static final Vector3 p3 = new Vector3();
 	
 	/** temporary plane **/
-	static final Plane plane = new Plane( new Vector(), 0 );
+	static final Plane plane = new Plane( new Vector3(), 0 );
 	
 	/** number of triangles processed during the last call to collide **/
 	private static int processedTriangles;
@@ -57,7 +57,7 @@ public class CollisionDetection
 	 * @param p the point
 	 * @param o the closest point on the plain to p (output)
 	 */
-	public static void closestPointToPlane( Plane plane, Vector p, Vector o )
+	public static void closestPointToPlane( Plane plane, Vector3 p, Vector3 o )
 	{
 		float t = plane.normal.dot(p) + plane.d;
 		o.set(p).sub(plane.normal.tmp().mul(t) );
@@ -71,7 +71,7 @@ public class CollisionDetection
 	 * @param p the point
  	 * @return the signed distance
 	 */
-	public static float signedDistanceToPlane( Plane plane, Vector p )
+	public static float signedDistanceToPlane( Plane plane, Vector3 p )
 	{
 		return plane.normal.dot(p) + plane.d;
 	}
@@ -84,9 +84,9 @@ public class CollisionDetection
 	 * @param p the point
 	 * @param o the closest point (output)
 	 */
-	public static void closestPointToSegment( Segment s, Vector p, Vector o )
+	public static void closestPointToSegment( Segment s, Vector3 p, Vector3 o )
 	{
-		Vector ab = s.b.tmp().sub(s.a);
+		Vector3 ab = s.b.tmp().sub(s.a);
 		float t = ab.dot( p.tmp2().sub(s.a) );
 		if( t <= 0 )
 		{
@@ -115,9 +115,9 @@ public class CollisionDetection
 	 * @param p the point
 	 * @param o the closest point (output)
 	 */
-	public static void closestPointToRay( Ray r, Vector p, Vector o )
+	public static void closestPointToRay( Ray r, Vector3 p, Vector3 o )
 	{
-		Vector ab = r.direction;
+		Vector3 ab = r.direction;
 		float t = ab.dot( p.tmp2().sub(r.origin) );
 		if( t <= 0 )
 		{
@@ -139,9 +139,9 @@ public class CollisionDetection
 	 * @param p the point
  	 * @param o the closest point on the line to p
 	 */
-	public static void closestPointToLine( Vector a, Vector b, Vector p, Vector o )
+	public static void closestPointToLine( Vector3 a, Vector3 b, Vector3 p, Vector3 o )
 	{
-		Vector ab = b.tmp().sub(a);
+		Vector3 ab = b.tmp().sub(a);
 		float t = ab.dot( p.tmp2().sub(a) );
 		float denom = ab.dot(ab);
 		t = t / denom;
@@ -156,7 +156,7 @@ public class CollisionDetection
 	 * @param p the point
 	 * @param o the closest point
 	 */
-	public static void closestPointToBoundingBox( BoundingBox b, Vector p, Vector o )
+	public static void closestPointToBoundingBox( BoundingBox b, Vector3 p, Vector3 o )
 	{
 		o.set( p );
 		if( p.x < b.min.x ) o.x = b.min.x;
@@ -175,7 +175,7 @@ public class CollisionDetection
 	 * @param p the point 
 	 * @return the squared distance to the bounding box.
 	 */
-	public static float squaredDistanceToBoundingBox( BoundingBox b, Vector p )
+	public static float squaredDistanceToBoundingBox( BoundingBox b, Vector3 p )
 	{
 		float sqDist = 0;
 		if( p.x < b.min.x ) sqDist += (b.min.x - p.x) * (b.min.x - p.x);
@@ -210,8 +210,8 @@ public class CollisionDetection
 	 * @param p the plane
 	 * @return whether the bounding box and the plane intersect
 	 */
-	static final Vector c = new Vector( );
-	static final Vector e = new Vector( );
+	static final Vector3 c = new Vector3( );
+	static final Vector3 e = new Vector3( );
 	public static boolean testBoundingBoxPlane( BoundingBox b, Plane p )
 	{
 		c.set( b.max ).add( b.min ).mul(0.5f );
@@ -308,7 +308,7 @@ public class CollisionDetection
 	 * @param s the segment
 	 * @return whether the bounding box and segment intersect
 	 */
-	final static Vector d = new Vector( );
+	final static Vector3 d = new Vector3( );
 	public static boolean testBoundingBoxSegment( BoundingBox b, Segment s )
 	{
 		c.set( b.min ).add( b.max ).mul( 0.5f );
@@ -356,7 +356,7 @@ public class CollisionDetection
 	 * @param p the plane
 	 * @return whether the sphere and the plane intersect
 	 */
-	public static boolean testMovingSpherePlane( Sphere s, Vector v, Plane p )
+	public static boolean testMovingSpherePlane( Sphere s, Vector3 v, Plane p )
 	{
 		float adist = s.center.dot( p.normal ) - p.d;
 		float bdist = s.center.tmp().add( v ).dot( p.normal ) - p.d;
@@ -375,9 +375,9 @@ public class CollisionDetection
 	 * @param i the intersection point (output)
 	 * @return whether the segment and the plane intersect
 	 */
-	public static boolean intersectSegmentPlane( Segment s, Plane p, Vector i )
+	public static boolean intersectSegmentPlane( Segment s, Plane p, Vector3 i )
 	{
-		Vector ab = s.b.tmp().sub(s.a);
+		Vector3 ab = s.b.tmp().sub(s.a);
 		float denom = ab.dot( p.getNormal() );		
 		float t = -( s.a.dot(p.getNormal()) + p.getD() ) / denom;
 		if( t < 0 || t > 1 )
@@ -395,9 +395,9 @@ public class CollisionDetection
 	 * @param i the intersection point
 	 * @return whether the ray and the plane intersected
 	 */
-	public static boolean intersectRayPlane( Ray r, Plane p, Vector i )
+	public static boolean intersectRayPlane( Ray r, Plane p, Vector3 i )
 	{
-		Vector ab = r.direction.tmp();
+		Vector3 ab = r.direction.tmp();
 		float denom = ab.dot( p.getNormal() );
 		float t = -( r.origin.dot(p.getNormal()) + p.getD() ) / denom;
 		if( t >= 0 )
@@ -411,7 +411,7 @@ public class CollisionDetection
 	
 	public static float intersectRayPlane( Ray r, Plane p )
 	{
-		Vector ab = r.direction.tmp();
+		Vector3 ab = r.direction.tmp();
 		float denom = ab.dot( p.getNormal() );
 		float t = -( r.origin.dot(p.getNormal()) + p.getD() ) / denom;
 		return t;
@@ -424,8 +424,8 @@ public class CollisionDetection
 	 * @param i the intersection point
 	 * @return whether the ray and the sphere intersect
 	 */
-	final static Vector m = new Vector( );
-	public static boolean intersectRaySphere( Ray r, Sphere sp, Vector i )
+	final static Vector3 m = new Vector3( );
+	public static boolean intersectRaySphere( Ray r, Sphere sp, Vector3 i )
 	{
 		m.set( r.origin ).sub(sp.center);
 		float b = m.dot( r.direction );
@@ -449,10 +449,10 @@ public class CollisionDetection
 	 * @param t3 the third point of the triangle
 	 * @return whether the point lies in the triangle
 	 */
-	static final Vector v0 = new Vector( );
-	static final Vector v1 = new Vector( );
-	static final Vector v2 = new Vector( );
-	public static boolean isPointInTriangle( Vector p, Vector t1, Vector t2, Vector t3 )
+	static final Vector3 v0 = new Vector3( );
+	static final Vector3 v1 = new Vector3( );
+	static final Vector3 v2 = new Vector3( );
+	public static boolean isPointInTriangle( Vector3 p, Vector3 t1, Vector3 t2, Vector3 t3 )
 	{
 		v0.set( t3 ).sub( t1 );
 		v1.set( t2 ).sub( t1 );
@@ -486,7 +486,7 @@ public class CollisionDetection
 	 * @param i the intersection point (output)
 	 * @return whether the ray and the triangle intersect
 	 */
-	public static boolean intersectRayTriangle( Ray r, Vector t1, Vector t2, Vector t3, Vector i )
+	public static boolean intersectRayTriangle( Ray r, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 i )
 	{
 		plane.set( t1, t2, t3 );
 		if( !intersectRayPlane( r, plane, i) )
@@ -507,7 +507,7 @@ public class CollisionDetection
 	 * @param i the intersection point (output)
 	 * @return whether the ray and the triangle intersect
 	 */
-	public static boolean intersectRayTriangle( Ray r, Vector t1, Vector t2, Vector t3, Plane p, Vector i )
+	public static boolean intersectRayTriangle( Ray r, Vector3 t1, Vector3 t2, Vector3 t3, Plane p, Vector3 i )
 	{
 		if( !intersectRayPlane( r, p, i) )
 			return false;
@@ -527,7 +527,7 @@ public class CollisionDetection
 	 * @param i the intersection point
 	 * @return whether the given segment and triangle intersect
 	 */
-	public static boolean intersectSegmentTriangle( Segment s, Vector t1, Vector t2, Vector t3, Vector i )
+	public static boolean intersectSegmentTriangle( Segment s, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 i )
 	{
 		plane.set( t1, t2, t3 );
 		if( !intersectSegmentPlane( s, plane, i) )
@@ -547,7 +547,7 @@ public class CollisionDetection
 	 * @param i the intersection point
 	 * @return whether the segment and the triangle intersect
 	 */
-	public static boolean intersectSegmentTriangle( Segment s, Vector t1, Vector t2, Vector t3, Plane p, Vector i )
+	public static boolean intersectSegmentTriangle( Segment s, Vector3 t1, Vector3 t2, Vector3 t3, Plane p, Vector3 i )
 	{
 		if( !intersectSegmentPlane( s, p, i) )
 			return false;
@@ -564,7 +564,7 @@ public class CollisionDetection
 	 * @param i the intersection point
 	 * @return whether the sphere and plane intersect
 	 */
-	public static boolean intersectMovingSpherePlane( Sphere s, Vector v, Plane p, Vector i )
+	public static boolean intersectMovingSpherePlane( Sphere s, Vector3 v, Plane p, Vector3 i )
 	{
 		float dist = p.normal.dot( s.center ) - p.d;
 		if( Math.abs( dist ) <= s.radius )
@@ -597,7 +597,7 @@ public class CollisionDetection
 	 * @param segment the segment
 	 * @return whether the mesh and segment intersect
 	 */
-	final static Vector intersection = new Vector( );
+	final static Vector3 intersection = new Vector3( );
 	public static boolean testMeshSegment( CollisionMesh mesh, Segment segment )
 	{
 		float[] planes = mesh.getPlanes();
@@ -695,10 +695,10 @@ public class CollisionDetection
 	 * @param p3
 	 * @param plane
 	 */
-	static Vector planeIntersectionPoint = new Vector( );
-	static Vector edge = new Vector( );
-	static Vector baseToVertex = new Vector( );
-	public static void collideTriangle( CollisionPacket packet, Vector p1, Vector p2, Vector p3, Plane plane )
+	static Vector3 planeIntersectionPoint = new Vector3( );
+	static Vector3 edge = new Vector3( );
+	static Vector3 baseToVertex = new Vector3( );
+	public static void collideTriangle( CollisionPacket packet, Vector3 p1, Vector3 p2, Vector3 p3, Plane plane )
 	{
 		CollisionType type = CollisionType.Vertex;
 		
@@ -764,7 +764,7 @@ public class CollisionDetection
 		//
 		// now we know the collision interval, let's do some magic...
 		//
-		Vector collisionPoint = null;
+		Vector3 collisionPoint = null;
 		boolean foundCollision = false;
 		float t = 1.0f;
 		
@@ -796,8 +796,8 @@ public class CollisionDetection
 		//
 		if( foundCollision == false )
 		{
-			Vector velocity = packet.velocity;
-			Vector base = packet.position;
+			Vector3 velocity = packet.velocity;
+			Vector3 base = packet.position;
 			float velocitySquaredLength = velocity.len2();
 			float a, b, c;			
 			
@@ -986,12 +986,12 @@ public class CollisionDetection
 	 * @param p the point
 	 * @param i the closest point
 	 */
-	static final Vector ab = new Vector( );
-	static final Vector ac = new Vector( );
-	static final Vector ap = new Vector( );
-	static final Vector bp = new Vector( );
-	static final Vector cp = new Vector( );
-	public static void closestPointToTriangle(Vector a, Vector b, Vector c, Vector p, Vector i) 
+	static final Vector3 ab = new Vector3( );
+	static final Vector3 ac = new Vector3( );
+	static final Vector3 ap = new Vector3( );
+	static final Vector3 bp = new Vector3( );
+	static final Vector3 cp = new Vector3( );
+	public static void closestPointToTriangle(Vector3 a, Vector3 b, Vector3 c, Vector3 p, Vector3 i) 
 	{	
 		ab.set(b).sub(a);
 		ac.set(c).sub(a);
@@ -1056,11 +1056,11 @@ public class CollisionDetection
 	public static void main( String[] argv ) throws Exception
 	{
 		BoundingBox aabb = new BoundingBox();
-		Plane p = new Plane( new Vector(), new Vector() );
-		Vector v = new Vector( );
-		Vector i = new Vector();
+		Plane p = new Plane( new Vector3(), new Vector3() );
+		Vector3 v = new Vector3( );
+		Vector3 i = new Vector3();
 		
-		aabb.set( new Vector( -2, -2, -2 ), new Vector( 2, 2, 2 ) );
+		aabb.set( new Vector3( -2, -2, -2 ), new Vector3( 2, 2, 2 ) );
 		v.set( -1, 1, -1 );
 		CollisionDetection.closestPointToBoundingBox(aabb, v, i);
 		check(i.x == -1 && i.y == 1 && i.z == -1);
@@ -1069,40 +1069,40 @@ public class CollisionDetection
 		CollisionDetection.closestPointToBoundingBox(aabb, v, i);
 		check(i.x == -2 && i.y == -2 && i.z == -2);
 		
-		CollisionDetection.closestPointToLine(new Vector( ), new Vector( 1, 1, 1 ), new Vector( -1, 1, -1 ), i );
+		CollisionDetection.closestPointToLine(new Vector3( ), new Vector3( 1, 1, 1 ), new Vector3( -1, 1, -1 ), i );
 		check(i.x == -1 / 3.0f && i.y == -1 / 3.0f && i.z == -1 / 3.0f );
 		
-		p.set( new Vector(1, 1, 1), new Vector( 1, 1, 1 ).nor() );		
-		CollisionDetection.closestPointToPlane( p, new Vector( 3, 3, 3 ), i );
+		p.set( new Vector3(1, 1, 1), new Vector3( 1, 1, 1 ).nor() );		
+		CollisionDetection.closestPointToPlane( p, new Vector3( 3, 3, 3 ), i );
 		check(eeq(i.x, 1) && eeq(i.y, 1) && eeq(i.z, 1) );
 		
-		CollisionDetection.closestPointToRay( new Ray( new Vector( 1, 1, 1 ), new Vector( 1, 1, 1 ) ), new Vector(), i );
+		CollisionDetection.closestPointToRay( new Ray( new Vector3( 1, 1, 1 ), new Vector3( 1, 1, 1 ) ), new Vector3(), i );
 		check(eeq(i.x, 1) && eeq(i.y,1) && eeq(i.z, 1 ) );
 		
-		CollisionDetection.closestPointToRay( new Ray( new Vector( 1, 1, 0 ), new Vector( 1, 1, 0 ) ), new Vector( 1, 3, 0 ), i );
+		CollisionDetection.closestPointToRay( new Ray( new Vector3( 1, 1, 0 ), new Vector3( 1, 1, 0 ) ), new Vector3( 1, 3, 0 ), i );
 		check( i.x == 2 && i.y == 2 && i.z == 0 );
 		
-		CollisionDetection.closestPointToSegment( new Segment( new Vector( 1, 1, 1 ), new Vector( 2, 2, 2 ) ), new Vector( ), i );
+		CollisionDetection.closestPointToSegment( new Segment( new Vector3( 1, 1, 1 ), new Vector3( 2, 2, 2 ) ), new Vector3( ), i );
 		check(eeq(i.x, 1) && eeq(i.y,1) && eeq(i.z, 1 ) );
 		
-		CollisionDetection.closestPointToSegment( new Segment( new Vector( 1, 1, 1 ), new Vector( 2, 2, 2 ) ), new Vector( 3, 3, 3 ), i );
+		CollisionDetection.closestPointToSegment( new Segment( new Vector3( 1, 1, 1 ), new Vector3( 2, 2, 2 ) ), new Vector3( 3, 3, 3 ), i );
 		check(eeq(i.x, 2) && eeq(i.y,2) && eeq(i.z, 2 ) );
 		
-		CollisionDetection.closestPointToSegment( new Segment( new Vector( 1, 1, 0 ), new Vector( 2, 2, 0 ) ), new Vector( 1, 3, 0 ), i );
+		CollisionDetection.closestPointToSegment( new Segment( new Vector3( 1, 1, 0 ), new Vector3( 2, 2, 0 ) ), new Vector3( 1, 3, 0 ), i );
 		check(eeq(i.x, 2) && eeq(i.y,2) && eeq(i.z, 0 ) );
 		
-		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 1, 0, 0), new Vector(0, 0.5f, -1 ), new Vector( 0, -1, 0 ), i );
+		CollisionDetection.closestPointToTriangle( new Vector3( ), new Vector3( 1, 0, 0), new Vector3(0, 0.5f, -1 ), new Vector3( 0, -1, 0 ), i );
 		check( i.x == 0 && i.y == 0 && i.z == 0 );
 		
-		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 1, 0, 0), new Vector(0, 0.5f, -1 ), new Vector( 0.5f, -1, 0 ), i );
+		CollisionDetection.closestPointToTriangle( new Vector3( ), new Vector3( 1, 0, 0), new Vector3(0, 0.5f, -1 ), new Vector3( 0.5f, -1, 0 ), i );
 		check( i.x == 0.5f && i.y == 0 && i.z == 0 );
 		
-		CollisionDetection.closestPointToTriangle( new Vector( ), new Vector( 1, 0, 0), new Vector(0.5f, 1, -1 ), new Vector( 0.5f, 1, -0.5f ), i );
+		CollisionDetection.closestPointToTriangle( new Vector3( ), new Vector3( 1, 0, 0), new Vector3(0.5f, 1, -1 ), new Vector3( 0.5f, 1, -0.5f ), i );
 		check( i.x == 0.5f && i.y == 0.75f && i.z == -0.75f );
 		
-		check( CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector( 1, 1, 1 ), new Vector() ) ) );
-		check( !CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector( 1, 1, 1 ), new Vector(-3, -3, -3) ) ) );
-		check( !CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector( 1, 1, 1 ), new Vector(3, 3, 3) ) ) );
+		check( CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector3( 1, 1, 1 ), new Vector3() ) ) );
+		check( !CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector3( 1, 1, 1 ), new Vector3(-3, -3, -3) ) ) );
+		check( !CollisionDetection.testBoundingBoxPlane( aabb, new Plane( new Vector3( 1, 1, 1 ), new Vector3(3, 3, 3) ) ) );
 		
 		// FIXME this is essentially a aabb segment test!
 //		check( CollisionDetection.testBoundingBoxRay( aabb, new Ray( new Vector( -3, -3, -3 ), new Vector( 1, 1, 1 ) ) ) );

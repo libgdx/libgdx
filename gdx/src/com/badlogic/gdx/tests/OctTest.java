@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 public class OctTest implements RenderListener, InputListener
 {
@@ -48,7 +48,7 @@ public class OctTest implements RenderListener, InputListener
 		{
 			app.getInput().addInputListener( this );
 			
-			mesh = ModelLoader.loadOct( app.getGraphics(), app.getFiles().readFile( "data/steps.oct", FileType.Internal ), true, false, new Vector() );											
+			mesh = ModelLoader.loadOct( app.getGraphics(), app.getFiles().readFile( "data/steps.oct", FileType.Internal ), true, false, new Vector3() );											
 			
 			cam = new PerspectiveCamera();
 			cam.getPosition().set( 2, 2, 2 );

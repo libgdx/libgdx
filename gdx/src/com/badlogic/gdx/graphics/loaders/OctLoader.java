@@ -7,7 +7,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Loads an OCT file as found in many of Paul Nettle's demos.
@@ -39,7 +39,7 @@ public class OctLoader
 		public float nx, ny, nz, d;
 	}
 	
-	public static Mesh loadOct( Graphics graphics, InputStream inputStream, boolean managed, boolean useFloats, Vector start )
+	public static Mesh loadOct( Graphics graphics, InputStream inputStream, boolean managed, boolean useFloats, Vector3 start )
 	{
 		LittleEndianInputStream in =  new LittleEndianInputStream( new BufferedInputStream(inputStream) );		
 		

@@ -21,7 +21,7 @@ import java.io.InputStream;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.loaders.ObjLoader;
 import com.badlogic.gdx.graphics.loaders.OctLoader;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * A class for loading various model formats such as 
@@ -61,7 +61,7 @@ public class ModelLoader
 	 * @param start the start position as defined in the map
 	 * @return a Mesh holding the OCT data or null in case something went wrong.
 	 */
-	public static Mesh loadOct( Graphics graphics, InputStream in, boolean managed, boolean useFloats, Vector start )
+	public static Mesh loadOct( Graphics graphics, InputStream in, boolean managed, boolean useFloats, Vector3 start )
 	{
 		return OctLoader.loadOct( graphics, in, managed, useFloats, start );
 	}

@@ -19,7 +19,7 @@ package com.badlogic.gdx.math.collision;
 import java.util.List;
 
 import com.badlogic.gdx.math.Matrix;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Encapsulates an axis aligned bounding box represented by a 
@@ -32,18 +32,18 @@ import com.badlogic.gdx.math.Vector;
 public final class BoundingBox
 {   
 	private static final long serialVersionUID = -1286036817192127343L;
-	final Vector crn[] = new Vector[8];
-    public final Vector min = new Vector();
-    public final Vector max = new Vector();
-    final Vector cnt = new Vector();
-    final Vector dim = new Vector();
+	final Vector3 crn[] = new Vector3[8];
+    public final Vector3 min = new Vector3();
+    public final Vector3 max = new Vector3();
+    final Vector3 cnt = new Vector3();
+    final Vector3 dim = new Vector3();
     boolean crn_dirty = true;
     
     
     /**
      * @return the center of the bounding box
      */
-    public Vector getCenter()
+    public Vector3 getCenter()
     {
         return cnt;
     }    
@@ -67,7 +67,7 @@ public final class BoundingBox
     /**
      * @return the corners of this bounding box
      */
-    public Vector[] getCorners()
+    public Vector3[] getCorners()
     {
     	updateCorners();
         return crn;
@@ -76,7 +76,7 @@ public final class BoundingBox
     /**
      * @return The dimensions of this bounding box on all three axis
      */
-    public Vector getDimensions( )
+    public Vector3 getDimensions( )
     {
     	return dim;
     }
@@ -84,7 +84,7 @@ public final class BoundingBox
     /**
      * @return The minimum vector
      */
-    public Vector getMin()
+    public Vector3 getMin()
     {
         return min;
     }
@@ -92,7 +92,7 @@ public final class BoundingBox
     /**
      * @return The maximum vector
      */
-    public synchronized Vector getMax()
+    public synchronized Vector3 getMax()
     {
         return max;
     }
@@ -105,7 +105,7 @@ public final class BoundingBox
     {
     	crn_dirty = true;
         for(int l_idx=0;l_idx<8;l_idx++)
-            crn[l_idx]=new Vector();
+            crn[l_idx]=new Vector3();
         clr();
     }
 
@@ -119,7 +119,7 @@ public final class BoundingBox
     {
     	crn_dirty = true;
         for(int l_idx=0;l_idx<8;l_idx++)
-            crn[l_idx]=new Vector();
+            crn[l_idx]=new Vector3();
         this.set(bounds);
     }
 
@@ -130,11 +130,11 @@ public final class BoundingBox
      * @param minimum The minimum vector
      * @param maximum The maximum vector
      */
-    public BoundingBox(Vector minimum, Vector maximum)
+    public BoundingBox(Vector3 minimum, Vector3 maximum)
     {
     	crn_dirty = true;
         for(int l_idx=0;l_idx<8;l_idx++)
-            crn[l_idx]=new Vector();
+            crn[l_idx]=new Vector3();
         this.set(minimum,maximum);
     }
 
@@ -157,7 +157,7 @@ public final class BoundingBox
      * @param maximum The maximum vector
      * @return This bounding box for chaining.
      */
-    public BoundingBox set(Vector minimum, Vector maximum)
+    public BoundingBox set(Vector3 minimum, Vector3 maximum)
     {
         min.set(minimum.x<maximum.x?minimum.x:maximum.x,
         		minimum.y<maximum.y?minimum.y:maximum.y,
@@ -178,10 +178,10 @@ public final class BoundingBox
      * @param points The points.
      * @return This bounding box for chaining.
      */
-    public BoundingBox set(Vector[] points)
+    public BoundingBox set(Vector3[] points)
     {
         this.inf();
-        for(Vector l_point: points)
+        for(Vector3 l_point: points)
             this.ext(l_point);
         crn_dirty = true;
         return this;
@@ -194,10 +194,10 @@ public final class BoundingBox
      * @param points The points.
      * @return This bounding box for chaining.
      */
-    public BoundingBox set(List<Vector> points)
+    public BoundingBox set(List<Vector3> points)
     {
         this.inf();
-        for(Vector l_point: points)
+        for(Vector3 l_point: points)
             this.ext(l_point);
         crn_dirty = true;
         return this;
@@ -221,12 +221,12 @@ public final class BoundingBox
 
     /**
      * Extends the bounding box to incorporate the given
-     * {@link Vector}.
+     * {@link Vector3}.
      * 
      * @param point The vector
      * @return This bounding box for chaining.
      */
-    public BoundingBox ext(Vector point)
+    public BoundingBox ext(Vector3 point)
     {
     	crn_dirty = true;
         return this.set(
@@ -293,7 +293,7 @@ public final class BoundingBox
     {        
         updateCorners();
         this.inf();
-        for(Vector l_pnt: crn)
+        for(Vector3 l_pnt: crn)
         {
             l_pnt.mul(matrix);
             min.set(min(min.x,l_pnt.x),
@@ -331,7 +331,7 @@ public final class BoundingBox
      * @param v The vector
      * @return Wheter the vector is contained or not.
      */
-    public boolean contains( Vector v )
+    public boolean contains( Vector3 v )
     {
     	if( min.x > v.x )
     		return false;

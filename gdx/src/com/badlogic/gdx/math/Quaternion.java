@@ -68,7 +68,7 @@ public final class Quaternion implements Serializable
      * @param axis The axis
      * @param angle The angle in degrees.
      */
-    public Quaternion(Vector axis, float angle)
+    public Quaternion(Vector3 axis, float angle)
     {
         this.set(axis,angle);
     }
@@ -108,7 +108,7 @@ public final class Quaternion implements Serializable
      * @param angle The angle in degrees
      * @return This quaternion for chaining.
      */
-    public Quaternion set(Vector axis, float angle)
+    public Quaternion set(Vector3 axis, float angle)
     {
         float l_ang= (float)(angle *(Math.PI/180));
         float l_sin = (float)(Math.sin(l_ang/2));

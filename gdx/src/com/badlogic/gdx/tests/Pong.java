@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Vector2D;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * A simple Pong remake showing how easy it is to quickly
@@ -51,8 +51,8 @@ public class Pong implements RenderListener
 	private SpriteBatch spriteBatch;
 	
 	/** the position of the two paddles **/
-	private Vector2D leftPaddle = new Vector2D();
-	private Vector2D rightPaddle = new Vector2D();
+	private Vector2 leftPaddle = new Vector2();
+	private Vector2 rightPaddle = new Vector2();
 	/** the scores of the left and right paddle **/
 	private int leftScore = 0;
 	private int rightScore = 0;
@@ -62,9 +62,9 @@ public class Pong implements RenderListener
 	/** some constants **/
 	private final int BALL_SPEED = 100;
 	/** the position of the ball **/
-	private Vector2D ball = new Vector2D();
+	private Vector2 ball = new Vector2();
 	/** the ball direction **/
-	private Vector2D ballDirection = new Vector2D();
+	private Vector2 ballDirection = new Vector2();
 	/** the current ball speed **/
 	private int ballSpeed = BALL_SPEED;
 	

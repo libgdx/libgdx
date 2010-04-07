@@ -16,7 +16,7 @@
  */
 package com.badlogic.gdx.math.collision;
 
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * An EllipsoidCollider is a class that encapsulates the property of
@@ -49,7 +49,7 @@ public class EllipsoidCollider
 		if( response == null )
 			throw new IllegalArgumentException( "response must be != null" );
 		
-		packet = new CollisionPacket( new Vector(), new Vector(), xRadius, yRadius, zRadius );
+		packet = new CollisionPacket( new Vector3(), new Vector3(), xRadius, yRadius, zRadius );
 		this.response = response;
 	}
 	
@@ -67,7 +67,7 @@ public class EllipsoidCollider
 	 * @param velocity the velocity
 	 * @param displacementDistance the distance by which to displace a collider
 	 */
-	public boolean collide( CollisionMesh mesh, Vector position, Vector velocity, float displacementDistance )
+	public boolean collide( CollisionMesh mesh, Vector3 position, Vector3 velocity, float displacementDistance )
 	{
 		boolean collided = false;
 		int iterations = 0;

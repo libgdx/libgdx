@@ -75,25 +75,25 @@ public final class Frustum
 		this.far_width = this.far_height * aspect;		
 	}
 	
-	Vector tmp = new Vector();
-	Vector tmp2 = new Vector();
+	Vector3 tmp = new Vector3();
+	Vector3 tmp2 = new Vector3();
 	
-	static Vector X = new Vector();
-	static Vector Y = new Vector();
-	static Vector Z = new Vector();
+	static Vector3 X = new Vector3();
+	static Vector3 Y = new Vector3();
+	static Vector3 Z = new Vector3();
 	
-	static Vector near_tl = new Vector();
-	static Vector near_tr = new Vector();
-	static Vector near_bl = new Vector();
-	static Vector near_br = new Vector();
+	static Vector3 near_tl = new Vector3();
+	static Vector3 near_tr = new Vector3();
+	static Vector3 near_bl = new Vector3();
+	static Vector3 near_br = new Vector3();
 	
-	static Vector far_tl = new Vector();
-	static Vector far_tr = new Vector();
-	static Vector far_bl = new Vector();
-	static Vector far_br = new Vector();
+	static Vector3 far_tl = new Vector3();
+	static Vector3 far_tr = new Vector3();
+	static Vector3 far_bl = new Vector3();
+	static Vector3 far_br = new Vector3();
 	
-	static Vector near_center = new Vector( );
-	static Vector far_center = new Vector( );
+	static Vector3 near_center = new Vector3( );
+	static Vector3 far_center = new Vector3( );
 	
 	/**
 	 * Sets the camera orientation. This will add 6 planes
@@ -105,7 +105,7 @@ public final class Frustum
 	 * @param dir The camera direction with unit length
 	 * @param up The camera up vector with unit length
 	 */
-	public void setCameraOrientation( Vector pos, Vector dir, Vector up )
+	public void setCameraOrientation( Vector3 pos, Vector3 dir, Vector3 up )
 	{				
 		X.set(0,0,0);
 		Y.set(0,0,0);
@@ -169,7 +169,7 @@ public final class Frustum
 	 * @param point The point
 	 * @return Wheter the point is in the frustum.
 	 */
-	public boolean pointInFrustum( Vector point )
+	public boolean pointInFrustum( Vector3 point )
 	{
 		for( int i = 0; i < planes.size(); i++ )		
 		{
@@ -188,7 +188,7 @@ public final class Frustum
 	 * @param radius The radius of the sphere
 	 * @return Wheter the sphere is in the frustum
 	 */
-	public boolean sphereInFrustum( Vector center, float radius )
+	public boolean sphereInFrustum( Vector3 center, float radius )
 	{
 		for( int i = 0; i < planes.size(); i++ )		
 			if( planes.get(i).distance( center ) < -radius )
@@ -205,7 +205,7 @@ public final class Frustum
 	 * @param radius The radius of the sphere
 	 * @return Wheter the sphere is in the frustum
 	 */
-	public boolean sphereInFrustumWithoutNearFar( Vector center, float radius )
+	public boolean sphereInFrustumWithoutNearFar( Vector3 center, float radius )
 	{
 		for( int i = 0; i < planes.size(); i++ )		
 			if( planes.get(i).distance( center ) < -radius )
@@ -251,9 +251,9 @@ public final class Frustum
 	 * @param up The camera up vector, having unit length
 	 * @return the picking ray.
 	 */		
-	Ray ray = new Ray( new Vector(), new Vector() );
+	Ray ray = new Ray( new Vector3(), new Vector3() );
 	public Ray calculatePickRay( float screen_width, float screen_height, float mouse_x, float mouse_y, 
-								  Vector pos, Vector dir, Vector up )
+								  Vector3 pos, Vector3 dir, Vector3 up )
 	{
 		float n_x = mouse_x - screen_width / 2.0f;
 		float n_y = mouse_y - screen_height / 2.0f;
@@ -264,7 +264,7 @@ public final class Frustum
 		X.set( up.tmp().crs( Z ) ).nor();
 		Y.set( Z.tmp().crs(X) ).nor();
 		near_center.set( pos.tmp3().sub( Z.tmp2().mul( near ) ) );		
-		Vector near_point = X.tmp3().mul( near_width ).mul( n_x ).add( Y.tmp2().mul( near_height).mul(n_y ) );
+		Vector3 near_point = X.tmp3().mul( near_width ).mul( n_x ).add( Y.tmp2().mul( near_height).mul(n_y ) );
 		near_point.add( near_center );		
 		
 		return ray.set( near_point.tmp(), near_point.sub( pos ).nor() );

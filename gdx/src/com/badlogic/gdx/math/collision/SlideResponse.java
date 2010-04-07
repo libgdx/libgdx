@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math.collision;
 
 import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Implementation of a sliding {@link CollisionResponse}
@@ -28,19 +28,19 @@ import com.badlogic.gdx.math.Vector;
 public class SlideResponse implements CollisionResponse 
 {
 	/** the original destination of the collider **/
-	private final Vector destination = new Vector( );
+	private final Vector3 destination = new Vector3( );
 	/** the new position of the collider **/	
-	private final Vector newPosition = new Vector( );
+	private final Vector3 newPosition = new Vector3( );
 	/** the new destination **/
-	private final Vector newDestination = new Vector( );
+	private final Vector3 newDestination = new Vector3( );
 	/** the new velocity **/
-	private final Vector newVelocity = new Vector( );
+	private final Vector3 newVelocity = new Vector3( );
 	/** the sliding plane origin **/
-	private final Vector slidingPlaneOrigin = new Vector( );
+	private final Vector3 slidingPlaneOrigin = new Vector3( );
 	/** the sliding plane normal **/
-	private final Vector slidingPlaneNormal = new Vector( );
+	private final Vector3 slidingPlaneNormal = new Vector3( );
 	/** the sliding plane **/
-	private final Plane slidingPlane = new Plane( new Vector(), 0 );		
+	private final Plane slidingPlane = new Plane( new Vector3(), 0 );		
 	
 	/**
 	 * {@inheritDoc}

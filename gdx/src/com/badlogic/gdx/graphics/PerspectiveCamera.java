@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix;
-import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
 
@@ -44,10 +44,10 @@ public final class PerspectiveCamera
 	protected Matrix proj = new Matrix( );
 	protected Matrix model = new Matrix( );
 	protected Matrix comb = new Matrix( );
-	private final Vector direction = new Vector( 0, 0, -1 );
-	private final Vector up = new Vector( 0, 1, 0 );
-	private final Vector right = new Vector( 1, 0, 0 );
-	private final Vector position = new Vector( );
+	private final Vector3 direction = new Vector3( 0, 0, -1 );
+	private final Vector3 up = new Vector3( 0, 1, 0 );
+	private final Vector3 right = new Vector3( 1, 0, 0 );
+	private final Vector3 position = new Vector3( );
 	private final Frustum frustum = new Frustum( );
 	
 	private float near = 1;
@@ -154,7 +154,7 @@ public final class PerspectiveCamera
 		return frustum;
 	}
 	
-	Vector tmp2 = new Vector();
+	Vector3 tmp2 = new Vector3();
 	/**
 	 * Updates all matrices as well as the Frustum based on the
 	 * last set parameters for position, direction, up vector,
@@ -197,28 +197,28 @@ public final class PerspectiveCamera
 	/**
 	 * @return The direction vector.
 	 */
-	public Vector getDirection() {
+	public Vector3 getDirection() {
 		return direction;
 	}
 	
 	/**
 	 * @return The right vector
 	 */
-	public Vector getRight() {
+	public Vector3 getRight() {
 		return right;
 	}
 	
 	/**
 	 * @return The up vector. 
 	 */
-	public Vector getUp() {
+	public Vector3 getUp() {
 		return up;
 	}
 	
 	/**
 	 * @return The position.
 	 */
-	public Vector getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}	
 	
@@ -242,7 +242,7 @@ public final class PerspectiveCamera
 	 * the x- and y-coordinate of the provided vector.
 	 * @param pos The vector to project
 	 */
-	public void project( Vector pos )
+	public void project( Vector3 pos )
 	{
 		Matrix m = getCombinedMatrix();		
 		pos.prj( m );

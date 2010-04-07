@@ -65,7 +65,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 
     public GLSurfaceView20(Context context) {
         super(context);
-        init(false, 0, 0);
+        init(false, 16, 0);
     }
 
     public GLSurfaceView20(Context context, boolean translucent, int depth, int stencil) {

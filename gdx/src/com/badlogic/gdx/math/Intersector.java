@@ -77,11 +77,11 @@ public final class Intersector
 	 * @param t3 the third vertex of the triangle
 	 * @return whether the point is in the triangle
 	 */
-	private final static Vector v0 = new Vector( );
-	private final static Vector v1 = new Vector( );
-	private final static Vector v2 = new Vector( );
+	private final static Vector3 v0 = new Vector3( );
+	private final static Vector3 v1 = new Vector3( );
+	private final static Vector3 v2 = new Vector3( );
 		
-	public static boolean isPointInTriangle( Vector point, Vector t1, Vector t2, Vector t3 )
+	public static boolean isPointInTriangle( Vector3 point, Vector3 t1, Vector3 t2, Vector3 t3 )
 	{
 //		v0.set( t3 ).sub( t1 );
 //		v1.set( t2 ).sub( t1 );
@@ -120,9 +120,9 @@ public final class Intersector
 		return true;
 	}
 	
-	public static boolean intersectSegmentPlane( Vector start, Vector end, Plane plane, Vector intersection )
+	public static boolean intersectSegmentPlane( Vector3 start, Vector3 end, Plane plane, Vector3 intersection )
 	{	
-		Vector dir = end.tmp().sub(start);
+		Vector3 dir = end.tmp().sub(start);
 		float denom = dir.dot( plane.getNormal() );		
 		float t = -( start.dot(plane.getNormal()) + plane.getD() ) / denom;
 		if( t < 0 || t > 1 )
@@ -134,14 +134,14 @@ public final class Intersector
 	
 	/**
 	 * Checks wheter the given point is in the polygon. Only the
-	 * x and y coordinates of the provided {@link Vector}s are used.
+	 * x and y coordinates of the provided {@link Vector3}s are used.
 	 * 
 	 * @param polygon The polygon vertices
 	 * @param x The x-coordinate
 	 * @param y The y-coordinate
 	 * @return Wheter the point is in the polygon
 	 */
-	public static boolean isPointInPolygon( List<Vector2D> polygon, Vector2D point )
+	public static boolean isPointInPolygon( List<Vector2> polygon, Vector2 point )
 	{
 		
 		int j = polygon.size() - 1;
@@ -170,7 +170,7 @@ public final class Intersector
 	 * 
 	 * @return The distance between the line segment and the point.
 	 */	
-	public static float distanceLinePoint( Vector2D start, Vector2D end, Vector2D point )
+	public static float distanceLinePoint( Vector2 start, Vector2 end, Vector2 point )
 	{
 		tmp.set( end.x, end.y, 0 ).sub(start.x, start.y, 0);
 		float l = tmp.len();
@@ -188,7 +188,7 @@ public final class Intersector
 	 * @param squareRadius The squared radius of the circle
 	 * @return Wheter the line segment and the circle intersect
 	 */
-	public static boolean intersectSegmentCircle( Vector2D start, Vector2D end, Vector2D center, float squareRadius )
+	public static boolean intersectSegmentCircle( Vector2 start, Vector2 end, Vector2 center, float squareRadius )
 	{
 		float u = (center.x - start.x) * ( end.x - start.x ) + ( center.y - start.y ) * ( end.y - start.y );
 		float d = start.dst( end );
@@ -214,7 +214,7 @@ public final class Intersector
 	 * @param displacement The displacement vector set by the method having unit length
 	 * @return The displacement or Float.POSITIVE_INFINITY if no intersection is present 
 	 */
-	public static float intersectSegmentCircleDisplace( Vector2D start, Vector2D end, Vector2D point, float radius, Vector2D displacement )
+	public static float intersectSegmentCircleDisplace( Vector2 start, Vector2 end, Vector2 point, float radius, Vector2 displacement )
 	{
 		float u = (point.x - start.x) * ( end.x - start.x ) + ( point.y - start.y ) * ( end.y - start.y );
 		float d = start.dst( end );
@@ -242,7 +242,7 @@ public final class Intersector
 	 * @param intersection The vector the intersection point is written to
 	 * @return Wheter an intersection is present.
 	 */
-	public static boolean intersectRayPlane( Ray ray, Plane plane, Vector intersection )
+	public static boolean intersectRayPlane( Ray ray, Plane plane, Vector3 intersection )
 	{
 		float denom = ray.direction.dot( plane.getNormal() );
 		if( denom != 0 )
@@ -275,10 +275,10 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return True in case an intersection is present.
 	 */
-	public static boolean intersectRayTriangle( Ray ray, Vector t1, Vector t2, Vector t3, Vector intersection )
+	public static boolean intersectRayTriangle( Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection )
 	{       
 		Plane p = new Plane( t1, t2, t3 );		
-		Vector i = new Vector();
+		Vector3 i = new Vector3();
 		if( !intersectRayPlane( ray, p, i ) )
 			return false;
 
@@ -321,10 +321,10 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return Wheter an interesection is present.
 	 */
-	public static boolean intersectRaySphere( Ray ray, Vector center, float radius, Vector intersection )
+	public static boolean intersectRaySphere( Ray ray, Vector3 center, float radius, Vector3 intersection )
 	{
-		Vector dir = ray.direction.cpy().nor();
-		Vector start = ray.origin.cpy();
+		Vector3 dir = ray.direction.cpy().nor();
+		Vector3 start = ray.origin.cpy();
 		float b = 2 * ( dir.dot( start.tmp().sub( center ) ) );
 		float c = start.dist2( center ) - radius * radius;
 		float disc = b * b - 4 * c;
@@ -443,11 +443,11 @@ public final class Intersector
 		return ((t_x_min < 1) && (t_x_max > 0));
 	}
 
-	static Vector tmp = new Vector();
-	static Vector best = new Vector();
-	static Vector tmp1 = new Vector();
-	static Vector tmp2 = new Vector();
-	static Vector tmp3 = new Vector();
+	static Vector3 tmp = new Vector3();
+	static Vector3 best = new Vector3();
+	static Vector3 tmp1 = new Vector3();
+	static Vector3 tmp2 = new Vector3();
+	static Vector3 tmp3 = new Vector3();
 
 	/**
 	 * Intersects the given ray with list of triangles. Returns the nearest
@@ -458,7 +458,7 @@ public final class Intersector
 	 * @param intersection The nearest intersection point
 	 * @return Wheter the ray and the triangles intersect.
 	 */
-	public static boolean intersectRayTriangles( Ray ray, float[] triangles, Vector intersection )
+	public static boolean intersectRayTriangles( Ray ray, float[] triangles, Vector3 intersection )
 	{				
 		float min_dist = Float.MAX_VALUE;
 		boolean hit = false;
@@ -505,10 +505,10 @@ public final class Intersector
 	 * @param intersection The nearest intersection point
 	 * @return Wheter the ray and the triangles intersect.
 	 */
-	public static boolean intersectRayTriangles( Ray ray, List<Vector> triangles, Vector intersection )
+	public static boolean intersectRayTriangles( Ray ray, List<Vector3> triangles, Vector3 intersection )
 	{
-		Vector tmp = new Vector();
-		Vector best = null;
+		Vector3 tmp = new Vector3();
+		Vector3 best = null;
 		float min_dist = Float.MAX_VALUE;
 
 		if( triangles.size() % 3 != 0 )
@@ -529,7 +529,7 @@ public final class Intersector
 				{
 					min_dist = dist;
 					if( best == null )
-						best = new Vector();
+						best = new Vector3();
 					best.set( tmp );
 				}
 			}
@@ -568,7 +568,7 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return Wheter the two lines intersect
 	 */
-	public static boolean intersectLines( Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4, Vector2D intersection )
+	public static boolean intersectLines( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection )
 	{
 		float  x1 = p1.x, y1 = p1.y,
 		x2 = p2.x, y2 = p2.y,
@@ -604,7 +604,7 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return Wheter the two line segments intersect
 	 */
-	public static boolean intersectSegments( Vector2D p1, Vector2D p2, Vector2D p3, Vector2D p4, Vector2D intersection )
+	public static boolean intersectSegments( Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Vector2 intersection )
 	{
 		float  x1 = p1.x, y1 = p1.y,
 		x2 = p2.x, y2 = p2.y,
