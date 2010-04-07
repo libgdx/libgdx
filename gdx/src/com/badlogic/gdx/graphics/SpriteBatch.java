@@ -119,7 +119,7 @@ public final class SpriteBatch
 							    "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" +
 							    "}"; 
 		
-		shader = new ShaderProgram( graphics.getGL20(), vertexShader, fragmentShader);
+		shader = new ShaderProgram( graphics.getGL20(), vertexShader, fragmentShader, true);
 		if( shader.isCompiled() == false )
 			throw new IllegalArgumentException( "couldn't compile shader: " + shader.getLog()  );
 	}

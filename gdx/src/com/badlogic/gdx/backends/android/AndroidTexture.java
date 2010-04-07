@@ -448,4 +448,13 @@ final class AndroidTexture implements Texture
 	public int getWidth() {
 		return texWidth;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getTextureObjectHandle() 
+	{
+		return textureHandle;
+	}
 }

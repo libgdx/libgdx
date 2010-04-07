@@ -47,7 +47,7 @@ public class MeshShaderTest implements RenderListener
 							    "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" +
 							    "}";  
 		
-		shader = new ShaderProgram( app.getGraphics().getGL20(), vertexShader, fragmentShader);
+		shader = new ShaderProgram( app.getGraphics().getGL20(), vertexShader, fragmentShader, true);
 		if( shader.isCompiled() == false )
 		{
 			app.log( "ShaderTest", shader.getLog() );

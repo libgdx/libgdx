@@ -209,4 +209,13 @@ final class JoglTexture implements Texture
 		texture.bind();
 		texture.updateSubImage( data, 0, x, y );		
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getTextureObjectHandle() 
+	{
+		return texture.getTextureObject();
+	}
 }

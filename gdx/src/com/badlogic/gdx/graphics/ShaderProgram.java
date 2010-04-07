@@ -59,6 +59,15 @@ public class ShaderProgram
 	/** matrix float buffer **/
 	private final FloatBuffer matrix;
 	
+	/** managed? **/
+	private final boolean managed;
+	
+	/** vertex shader source **/
+	private final String vertexShaderSource;
+	
+	/** fragment shader source **/
+	private final String fragmentShaderSource;
+	
 	/**
 	 * Construcs a new JOglShaderProgram and immediatly compiles it. 
 	 * 
@@ -67,7 +76,7 @@ public class ShaderProgram
 	 * @param fragmentShader the fragment shader
 	 */
 	
-	public ShaderProgram( GL20 gl, String vertexShader, String fragmentShader )
+	public ShaderProgram( GL20 gl, String vertexShader, String fragmentShader, boolean managed )
 	{
 		if( gl == null )
 			throw new IllegalArgumentException( "gl must not be null" );
@@ -76,6 +85,10 @@ public class ShaderProgram
 		if( fragmentShader == null )
 			throw new IllegalArgumentException( "fragment shader must not be null" );
 		this.gl = gl;
+		
+		this.managed = managed;
+		this.vertexShaderSource = vertexShader;
+		this.fragmentShaderSource = fragmentShader;
 		
 		compileShaders( vertexShader, fragmentShader );
 		
@@ -220,6 +233,7 @@ public class ShaderProgram
 	 */	
 	public void setUniformi(String name, int value) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);		
 		gl.glUniform1i( location, value );
 	}
@@ -234,6 +248,7 @@ public class ShaderProgram
 	 */
 	public void setUniformi(String name, int value1, int value2) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform2i( location, value1, value2 );
 	}
@@ -249,6 +264,7 @@ public class ShaderProgram
 	 */
 	public void setUniformi(String name, int value1, int value2, int value3) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform3i( location, value1, value2, value3 );
 	}
@@ -265,6 +281,7 @@ public class ShaderProgram
 	 */
 	public void setUniformi(String name, int value1, int value2, int value3, int value4) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform4i( location, value1, value2, value3, value4 );
 	}
@@ -278,6 +295,7 @@ public class ShaderProgram
 	 */	
 	public void setUniformf(String name, float value) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform1f( location, value );
 	}
@@ -292,6 +310,7 @@ public class ShaderProgram
 	 */
 	public void setUniformf(String name, float value1, float value2) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform2f( location, value1, value2 );
 	}
@@ -307,6 +326,7 @@ public class ShaderProgram
 	 */
 	public void setUniformf(String name, float value1, float value2, float value3) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform3f( location, value1, value2, value3 );
 	}
@@ -323,6 +343,7 @@ public class ShaderProgram
 	 */
 	public void setUniformf(String name, float value1, float value2, float value3, float value4) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform4f( location, value1, value2, value3, value4 );
 	}
@@ -335,6 +356,7 @@ public class ShaderProgram
 	 */
 	public void setUniformMatrix(String name, Matrix matrix) 
 	{	
+		checkManaged( );
 		int location = fetchUniformLocation(name);
 		this.matrix.put( matrix.val );
 		this.matrix.position(0);
@@ -354,6 +376,7 @@ public class ShaderProgram
 	 */
 	public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, FloatBuffer buffer) 
 	{	
+		checkManaged( );
 		int location = fetchAttributeLocation(name);
 		gl.glVertexAttribPointer( location, size, type, normalize, stride, buffer );
 	}
@@ -371,6 +394,7 @@ public class ShaderProgram
 	 */
 	public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, int offset) 
 	{	
+		checkManaged( );
 		int location = fetchAttributeLocation(name);
 		gl.glVertexAttribPointer( location, size, type, normalize, stride, offset );
 	}
@@ -382,6 +406,7 @@ public class ShaderProgram
 	 */
 	public void begin() 
 	{	
+		checkManaged( );
 		gl.glUseProgram( program );
 	}
 
@@ -412,6 +437,7 @@ public class ShaderProgram
 	 */
 	public void disableVertexAttribute(String name) 
 	{	
+		checkManaged( );
 		int location = fetchAttributeLocation( name );
 		gl.glDisableVertexAttribArray( location );
 	}
@@ -422,7 +448,17 @@ public class ShaderProgram
 	 */
 	public void enableVertexAttribute(String name) 
 	{	
+		checkManaged( );
 		int location = fetchAttributeLocation( name );
 		gl.glEnableVertexAttribArray( location );
-	}	
+	}
+	
+	private void checkManaged( )
+	{
+		if( !managed )
+			return;
+		
+		if( gl.glIsProgram(program) == false )
+			compileShaders(vertexShaderSource, fragmentShaderSource );
+	}
 }

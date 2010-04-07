@@ -104,4 +104,9 @@ public interface Texture
 	 * @return
 	 */
 	public void dispose( );
+	
+	/**
+	 * @return the OpenGL texture object handle so you can change texture parameters.
+	 */
+	public int getTextureObjectHandle( );
 }
