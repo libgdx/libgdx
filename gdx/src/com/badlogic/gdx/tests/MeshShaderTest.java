@@ -3,13 +3,17 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.ShaderProgram;
+import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -19,6 +23,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class MeshShaderTest implements RenderListener
 {
+	SpriteBatch spriteBatch;
+	Font font;
 	ShaderProgram shader;
 	Mesh mesh;		
 	Texture texture;
@@ -74,6 +80,9 @@ public class MeshShaderTest implements RenderListener
 			pixmap.drawLine(0, 0, 256, 256);
 			pixmap.drawLine(256, 0, 0, 256);
 			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
+			
+			spriteBatch = new SpriteBatch( app.getGraphics() );
+			font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );
 		}
 	}
 
@@ -94,6 +103,10 @@ public class MeshShaderTest implements RenderListener
 		shader.setUniformi( "u_texture", 0 );
 		mesh.render( shader, GL10.GL_TRIANGLES );
 		shader.end();
+		
+		spriteBatch.begin();
+		spriteBatch.drawText( font, "This is a test", 100, 100, Color.RED );
+		spriteBatch.end();
 	}
 	
 	@Override

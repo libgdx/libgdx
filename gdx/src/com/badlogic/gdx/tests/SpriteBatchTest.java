@@ -99,7 +99,7 @@ public class SpriteBatchTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{					
-		spriteBatch = new SpriteBatch( app.getGraphics() );
+		spriteBatch = new SpriteBatch( app.getGraphics() );		
 		
 		Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ) );		
 		texture = app.getGraphics().newTexture( 32, 32, Format.RGB565, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );

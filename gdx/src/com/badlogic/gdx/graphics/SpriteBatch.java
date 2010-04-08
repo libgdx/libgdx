@@ -75,6 +75,9 @@ public final class SpriteBatch
 	
 	/** number of render calls **/
 	public int renderCalls = 0;
+
+	/** whether blending is enabled or not **/
+	private boolean blendingDisabled;
 	
 	/**
 	 * Consturctor, sets the {@link Graphics} instance
@@ -163,12 +166,18 @@ public final class SpriteBatch
 			gl.glDisable( GL10.GL_CULL_FACE );
 			gl.glDepthMask ( false );
 			
-			gl.glEnable( GL10.GL_BLEND );
 			gl.glEnable( GL10.GL_TEXTURE_2D );
-			gl.glEnable( GL10.GL_ALPHA_TEST );
-			gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );			
-			gl.glAlphaFunc( GL10.GL_GREATER, 0 );
-			gl.glActiveTexture( GL20.GL_TEXTURE0 );
+			gl.glActiveTexture( GL10.GL_TEXTURE0 );
+			
+			if( !blendingDisabled )
+			{
+				gl.glEnable( GL10.GL_BLEND );						;				
+				gl.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );							
+			}			
+			else
+			{
+				gl.glDisable( GL10.GL_BLEND );				
+			}
 			
 			gl.glMatrixMode( GL10.GL_PROJECTION );
 			gl.glLoadMatrixf( viewMatrix.val, 0 );
@@ -185,10 +194,18 @@ public final class SpriteBatch
 			gl.glDisable( GL20.GL_CULL_FACE );
 			gl.glDepthMask ( false );
 			
-			gl.glEnable( GL20.GL_BLEND );
 			gl.glEnable( GL20.GL_TEXTURE_2D );
-			gl.glBlendFunc( GL20.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );						
 			gl.glActiveTexture( GL20.GL_TEXTURE0 );
+			
+			if( !blendingDisabled )
+			{
+				gl.glEnable( GL20.GL_BLEND );						;				
+				gl.glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );							
+			}			
+			else
+			{
+				gl.glDisable( GL20.GL_BLEND );				
+			}
 			
 			shader.begin();
 			shader.setUniformMatrix( "u_projectionViewMatrix", viewMatrix );
@@ -456,18 +473,34 @@ public final class SpriteBatch
 		if( graphics.isGL20Available() )
 		{
 			if( useTextBlend )
+			{
 				graphics.getGL20().glBlendFunc( GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA );
+				if( blendingDisabled )
+					graphics.getGL20().glEnable( GL20.GL_BLEND );
+			}
 			else
 				graphics.getGL20().glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );
 			mesh.render( shader, GL10.GL_TRIANGLES );
+			if( useTextBlend && blendingDisabled )
+			{				
+				graphics.getGL20().glDisable( GL20.GL_BLEND );
+			}
 		}
 		else
 		{
 			if( useTextBlend )
+			{
 				graphics.getGL10().glBlendFunc( GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA );
+				if( blendingDisabled )
+					graphics.getGL10().glEnable( GL20.GL_BLEND );
+			}
 			else
 				graphics.getGL10().glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );
 			mesh.render( GL10.GL_TRIANGLES );
+			if( useTextBlend && blendingDisabled )
+			{				
+				graphics.getGL10().glDisable( GL20.GL_BLEND );
+			}
 		}
 		idx = 0;
 	}	
@@ -547,4 +580,14 @@ public final class SpriteBatch
 				renderMesh();
 		}
 	}		
+	
+	public void disableBlending( )
+	{
+		blendingDisabled = true;
+	}
+	
+	public void enableBlending( )
+	{
+		blendingDisabled = false;
+	}
 }
