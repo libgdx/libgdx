@@ -565,10 +565,11 @@ public final class Vector3
 	 * @param scalarY
 	 * @param scalarZ
 	 */
-	public void scale(float scalarX, float scalarY, float scalarZ) 
+	public Vector3 scale(float scalarX, float scalarY, float scalarZ) 
 	{	
 		x *= scalarX;
 		y *= scalarY;
 		z *= scalarZ;
+		return this;
 	}
 }
