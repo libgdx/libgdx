@@ -17,8 +17,8 @@ gdx-helloworld
        - >libandroidgl20.so
        - >libgdx.so
     -> desktop-dependencies.jar
-    -> gdx-0.21sources.jar
-    -> gdx-0.21.jar
+    -> gdx-0.3-sources.jar
+    -> gdx-0.3.jar
     -> gdx.dll
     -> libgdx.so
     -> README
@@ -95,8 +95,8 @@ gdx-helloworld-android
     -> armeabi/
        -> libandroidgl20.so
        -> libgdx.so
-    -> gdx-0.21.jar
-    -> gdx-0.21-sources.jar
+    -> gdx-0.3.jar
+    -> gdx-0.3-sources.jar
     -> gdx.dll
     -> desktop-dependencies.jar
     -> libgdx.so
@@ -106,7 +106,7 @@ gdx-helloworld-android
  -> default.properties
  
  Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
-project in the project tab and the gdx-0.11.jar in the Libraries tab. You don't have to add the other
+project in the project tab and the gdx-0.3.jar in the Libraries tab. You don't have to add the other
 jars as those are only needed for the desktop Java version. 
 
 Now open the GDXHelloWorld.java file and paste the following code in:

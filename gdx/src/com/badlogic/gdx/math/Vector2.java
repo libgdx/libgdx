@@ -24,6 +24,9 @@ package com.badlogic.gdx.math;
  */
 public final class Vector2 
 {
+	/** static temporary vector **/
+	private final static Vector2 tmp = new Vector2();
+	
 	/** the x-component of this vector **/
 	public float x;
 	/** the y-component of this vector **/
@@ -224,10 +227,18 @@ public final class Vector2
 	 * @param y The y-component of the other vector
 	 * @return This vector for chaining
 	 */
-	public Vector3 sub(float x, float y) 
+	public Vector2 sub(float x, float y) 
 	{
 		this.x -= x;
 		this.y -= y;
-		return null;
+		return this;
+	}
+	
+	/**	 
+	 * @return a temporary copy of this vector. Use with care as this is backed by a single static Vector2 instance. v1.tmp().add( v2.tmp() ) will not work!
+	 */
+	public Vector2 tmp( )
+	{
+		return tmp.set(this);
 	}
 }
