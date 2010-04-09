@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.math.Matrix;
@@ -32,6 +33,9 @@ import com.badlogic.gdx.math.Matrix;
  */
 public class ShaderProgram 
 {
+	/** the list of currently available shaders **/
+	private final static ArrayList<ShaderProgram> shaders = new ArrayList<ShaderProgram>( );
+	
 	/** the gl instance **/
 	private final GL20 gl;
 
@@ -68,6 +72,9 @@ public class ShaderProgram
 	/** fragment shader source **/
 	private final String fragmentShaderSource;
 	
+	/** whether this shader was invalidated **/
+	private boolean invalidated;
+	
 	/**
 	 * Construcs a new JOglShaderProgram and immediatly compiles it. 
 	 * 
@@ -95,6 +102,7 @@ public class ShaderProgram
 		ByteBuffer buffer = ByteBuffer.allocateDirect( 4 * 16 );
 		buffer.order(ByteOrder.nativeOrder());
 		matrix = buffer.asFloatBuffer();
+		shaders.add( this );
 	}
 	
 	/**
@@ -429,6 +437,7 @@ public class ShaderProgram
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram( program );
+		shaders.remove( this );
 	}
 
 	/**
@@ -458,7 +467,21 @@ public class ShaderProgram
 		if( !managed )
 			return;
 		
-		if( gl.glIsProgram(program) == false )
+		if( invalidated )
 			compileShaders(vertexShaderSource, fragmentShaderSource );
+		invalidated = false;
+	}
+	
+	/**
+	 * Invalidates all shaders so the next time they are used
+	 * new handles are generated
+	 */
+	public static void invalidateAllShaderPrograms( )
+	{
+		for( int i = 0; i < shaders.size(); i++ )
+		{
+			shaders.get(i).invalidated = true;
+			shaders.get(i).checkManaged();
+		}
 	}
 }

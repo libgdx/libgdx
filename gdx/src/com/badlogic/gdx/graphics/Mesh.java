@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.desktop.JoglGraphics;
@@ -17,10 +18,13 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
  * 
  * @author mzechner
  *
- * FIXME managed VBOs will leak two vbo handles per instance!
+ * 
  */
 public class Mesh 
 {
+	/** list of all meshes **/
+	private static final ArrayList<Mesh> meshes = new ArrayList<Mesh>( );
+	
 	/** the vertex attributes **/
 	private final VertexAttributes attributes;
 	
@@ -64,10 +68,10 @@ public class Mesh
 	private final boolean useFixedPoint;
 	
 	/** whether direct buffers are used **/
-	private final boolean usesDirectBuffers;
+	private final boolean usesDirectBuffers;	
 	
-	/** filled already? then use subdata next time **/
-	private boolean filledOnce = false;
+	/** whether this mesh was invalidated due to a context loss **/
+	private boolean invalidated = false;
 	
 	/**
 	 * Creates a new Mesh with the given attributes
@@ -127,6 +131,8 @@ public class Mesh
 		}									
 		
 		createBuffers( );
+		
+		meshes.add( this );
 	}
 	
 	private void createBuffers( )
@@ -146,16 +152,38 @@ public class Mesh
 	
 	private void constructBufferObjects( GL11 gl )
 	{
-		int[] handle = new int[1];
-		gl.glGenBuffers( 1, handle, 0 );
+		ByteBuffer tmp = ByteBuffer.allocateDirect( 4 );
+		tmp.order( ByteOrder.nativeOrder() );
+		IntBuffer handle = tmp.asIntBuffer();
 		
-		vertexBufferObjectHandle = handle[0];
+		gl.glGenBuffers( 1, handle );
+		vertexBufferObjectHandle = handle.get(0);		
+		int oldLimit = vertices.limit();
+		int oldPosition = vertices.position();
+		vertices.position(0);
+		vertices.limit(vertices.capacity());		
+		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
+		gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
+		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
+		vertices.position(oldPosition);
+		vertices.limit(oldLimit);
 		
 		if( maxIndices > 0 )
 		{
-			gl.glGenBuffers( 1, handle, 0 );
-			indexBufferObjectHandle = handle[0];
+			gl.glGenBuffers( 1, handle );
+			indexBufferObjectHandle = handle.get(0);			
+			oldPosition = indices.position();
+			oldLimit = indices.limit();
+			indices.position(0);
+			indices.limit(indices.capacity());
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
+			gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
+			indices.position(oldPosition);
+			indices.limit(oldLimit);
 		}
+		
+		dirty = false;
 	}
 	
 	private void constructBufferObjects( GL20 gl )
@@ -165,15 +193,33 @@ public class Mesh
 		IntBuffer handle = tmp.asIntBuffer();
 		
 		gl.glGenBuffers( 1, handle );
-		vertexBufferObjectHandle = handle.get(0);
+		vertexBufferObjectHandle = handle.get(0);		
+		int oldLimit = vertices.limit();
+		int oldPosition = vertices.position();
+		vertices.position(0);
+		vertices.limit(vertices.capacity());
+		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
+		gl.glBufferData( GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
+		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
+		vertices.position(oldPosition);
+		vertices.limit(oldLimit);
 		
 		if( maxIndices > 0 )
 		{
 			gl.glGenBuffers( 1, handle );
-			indexBufferObjectHandle = handle.get(0);
+			indexBufferObjectHandle = handle.get(0);		
+			oldPosition = indices.position();
+			oldLimit = indices.limit();
+			indices.position(0);
+			indices.limit(indices.capacity());
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
+			gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
+			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
+			indices.position(oldPosition);
+			indices.limit(oldLimit);
 		}
 		
-		filledOnce = false;
+		dirty = false;		
 	}
 	
 	private void fillBuffers( )
@@ -185,21 +231,19 @@ public class Mesh
 		if( graphics.isGL20Available() )
 			fillBuffers( graphics.getGL20() );
 		else
-			fillBuffers( graphics.getGL11() );
-		
-		filledOnce = true;
+			fillBuffers( graphics.getGL11() );			
 	}
 	
 	private void fillBuffers( GL11 gl )
 	{							
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-		gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
+		gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
 		
 		if( maxIndices > 0 )
 		{
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-			gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL11.GL_STATIC_DRAW: GL11.GL_DYNAMIC_DRAW );
+			gl.glBufferSubData( GL11.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 	}
@@ -207,13 +251,13 @@ public class Mesh
 	private void fillBuffers( GL20 gl )
 	{				
 		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-		gl.glBufferData( GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
+		gl.glBufferSubData( GL20.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
 		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
 		
 		if( maxIndices > 0 )
 		{
 			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-			gl.glBufferData( GL20.GL_ELEMENT_ARRAY_BUFFER, getNumIndices() * 2, indices, isStatic?GL20.GL_STATIC_DRAW: GL20.GL_DYNAMIC_DRAW );
+			gl.glBufferSubData( GL20.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );
 			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 	}
@@ -595,20 +639,21 @@ public class Mesh
 		if( vertexBufferObjectHandle == 0 )
 			return;
 		
-		if( managed )
+		if( managed && invalidated )
 		{
-			if( graphics.isGL11Available() && graphics.getGL11().glIsBuffer( vertexBufferObjectHandle ) == false )
+			if( graphics.isGL11Available() )
 			{
 				createBuffers();
 				fillBuffers( );
 			}
-			if( graphics.isGL20Available() && graphics.getGL20().glIsBuffer( vertexBufferObjectHandle ) == false )
+			if( graphics.isGL20Available() )
 			{
 				createBuffers();
 				fillBuffers( );
-			}
+			}			
 		}
 		
+		invalidated = false;
 		if( dirty )
 			fillBuffers( );
 	}
@@ -625,6 +670,8 @@ public class Mesh
 			dispose( graphics.getGL20() );
 		else
 			dispose( graphics.getGL11() );
+		
+		meshes.remove(this);
 	}
 	
 	private void dispose( GL11 gl )
@@ -756,5 +803,18 @@ public class Mesh
 	{
 		this.indices.get(indices);
 		this.indices.position(0);
+	}
+	
+	/**
+	 * Invalidates all meshes so the next time they are rendered
+	 * new VBO handles are generated.
+	 */
+	public static void invalidateAllMeshes( )
+	{
+		for( int i = 0; i < meshes.size(); i++ )
+		{
+			meshes.get(i).invalidated = true;
+			meshes.get(i).checkManagedAndDirty();			
+		}
 	}
 }
