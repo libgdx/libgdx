@@ -264,7 +264,12 @@ public final class SpriteBatch
 	 * @param srcHeight the source height in texels
 	 * @param tint the tint Color
 	 */
-	public void draw( Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
+	public void draw(Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint ) 
+	{	
+		draw( texture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, tint, false );
+	}
+	
+	public void draw( Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipY )
 	{		
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
@@ -287,6 +292,13 @@ public final class SpriteBatch
 		float fy = (float)y;
 		float fx2 = (float)(x + width);
 		float fy2 = (float)(y - height);
+		
+		if( flipY )
+		{
+			float tmp = v;
+			v = v2;
+			v2 = tmp;
+		}
 		
 		vertices[idx++] = fx;
 		vertices[idx++] = fy;

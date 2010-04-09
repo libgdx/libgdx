@@ -38,6 +38,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView.Renderer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.FrameBuffer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
@@ -416,6 +417,7 @@ final class AndroidGraphics implements Graphics, Renderer
 		Mesh.invalidateAllMeshes();
 		AndroidTexture.invalidateAllTextures();		
 		ShaderProgram.invalidateAllShaderPrograms();
+		FrameBuffer.invalidateAllFrameBuffers();
 		
 		Display display = app.getWindowManager().getDefaultDisplay();  
 		this.width = display.getWidth();

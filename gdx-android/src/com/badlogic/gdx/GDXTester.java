@@ -29,7 +29,7 @@ public class GDXTester extends ListActivity
 								   "Fixed Point MeshRenderer Test", "Managed Test", "Text Test", "Sound Test", "Input Test", "Obj Test",
 								   "Fixed Point Test", "Float Test", "Lag Test", "Pong", "Collision Test", "Audio Device Test", 
 								   "Mpg123 Test", "Vorbis Test", "Performance Test", "Mesh Shader Test", "SpriteBatch Test",
-								   "SpriteBatch Shader Test"};
+								   "SpriteBatch Shader Test", "FrameBuffer Test"};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -92,6 +92,8 @@ public class GDXTester extends ListActivity
 			intent = new Intent( this, SpriteBatchTest.class );
 		if( keyword.equals( items[22] ) )
 			intent = new Intent( this, SpriteBatchShaderTest.class );
+		if( keyword.equals( items[23] ) )
+			intent = new Intent( this, FrameBufferTest.class );
 			
 		startActivity( intent );
 	}
