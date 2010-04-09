@@ -41,23 +41,26 @@ public class MeshTest implements RenderListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{		
-		mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
-				 new VertexAttribute( Usage.Position, 3, "a_position" ), 
-				 new VertexAttribute( Usage.Color, 4, "a_color" ),
-				 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );		
-		
-		mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,
-										 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
-										 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );	
-		mesh.setIndices( new short[] { 0, 1, 2 } );
-
-		Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
-		pixmap.setColor(1, 1, 1, 1 );
-		pixmap.fill();
-		pixmap.setColor(0, 0, 0, 1 );
-		pixmap.drawLine(0, 0, 256, 256);
-		pixmap.drawLine(256, 0, 0, 256);
-		texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
+		if( mesh == null )
+		{
+			mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
+					 new VertexAttribute( Usage.Position, 3, "a_position" ), 
+					 new VertexAttribute( Usage.Color, 4, "a_color" ),
+					 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );		
+			
+			mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,
+											 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
+											 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );	
+			mesh.setIndices( new short[] { 0, 1, 2 } );
+	
+			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
+			pixmap.setColor(1, 1, 1, 1 );
+			pixmap.fill();
+			pixmap.setColor(0, 0, 0, 1 );
+			pixmap.drawLine(0, 0, 256, 256);
+			pixmap.drawLine(256, 0, 0, 256);
+			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
+		}
 	}
 
 	public static void main( String[] argv )

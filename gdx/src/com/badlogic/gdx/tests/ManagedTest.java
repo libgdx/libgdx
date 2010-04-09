@@ -39,7 +39,7 @@ public class ManagedTest implements RenderListener
 	{	
 		if( mesh == null )
 		{
-			mesh = new Mesh( app.getGraphics(), false, true, false, 4, 0, 
+			mesh = new Mesh( app.getGraphics(), true, true, false, 4, 4, 
 							   new VertexAttribute( Usage.Position, 2, "a_position" ),
 							   new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoord" ) );
 			mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 0,
@@ -47,7 +47,7 @@ public class ManagedTest implements RenderListener
 										  0.5f, 0.5f, 1, 1,
 										  -0.5f, 0.5f, 0, 1 				
 			});
-//			mesh.setIndices( new short[] { 0, 1, 2, 3 } );			
+			mesh.setIndices( new short[] { 0, 1, 2, 3 } );			
 			
 			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
 			pixmap.setColor(1, 1, 1, 1 );

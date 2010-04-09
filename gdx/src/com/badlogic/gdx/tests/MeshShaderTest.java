@@ -95,6 +95,7 @@ public class MeshShaderTest implements RenderListener
 		angle += app.getGraphics().getDeltaTime() * 45;
 		matrix.setToRotation( axis, angle );		
 		
+		app.getGraphics().getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
 		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
 		app.getGraphics().getGL20().glEnable( GL20.GL_TEXTURE_2D );
 		texture.bind();
