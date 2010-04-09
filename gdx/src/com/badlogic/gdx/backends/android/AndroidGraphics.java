@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.android;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -42,7 +41,9 @@ import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -92,10 +93,7 @@ final class AndroidGraphics implements Graphics, Renderer
 	private WindowedMean mean = new WindowedMean( 5 );
 	
 	/** whether to dispose the render listeners **/
-	private boolean dispose = false;
-	
-	/** list of currently active textures used to invalidate them in case the surface was lost **/
-	protected final ArrayList<AndroidTexture> textures = new ArrayList<AndroidTexture>( );
+	private boolean dispose = false;	
 	
 	public AndroidGraphics( AndroidApplication activity, boolean useGL2IfAvailable )
 	{		
@@ -414,9 +412,10 @@ final class AndroidGraphics implements Graphics, Renderer
 	public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) 
 	{
 		setupGL( gl );
-		
-		for( AndroidTexture texture: textures )
-			texture.invalidate();
+						
+		Mesh.invalidateAllMeshes();
+		AndroidTexture.invalidateAllTextures();		
+		ShaderProgram.invalidateAllShaderPrograms();
 		
 		Display display = app.getWindowManager().getDefaultDisplay();  
 		this.width = display.getWidth();

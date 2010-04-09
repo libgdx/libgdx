@@ -208,8 +208,8 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
     	caps.setAlphaBits(8);
     	caps.setDepthBits(16);
     	caps.setStencilBits(8);    	
-    	caps.setNumSamples(4);
-    	caps.setSampleBuffers(true);
+    	caps.setNumSamples(0);
+    	caps.setSampleBuffers(false);
     	caps.setDoubleBuffered(true);  
     	
     	if( context == null )

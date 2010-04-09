@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -42,7 +43,9 @@ import com.badlogic.gdx.graphics.Texture;
  *
  */
 final class AndroidTexture implements Texture
-{
+{	
+	/** list of currently active textures used to invalidate them in case the surface was lost **/
+	private static final ArrayList<AndroidTexture> textures = new ArrayList<AndroidTexture>( );
 	/** the texture handle **/
 	private int textureHandle;
 	/** handle to gl wrapper **/
@@ -70,9 +73,7 @@ final class AndroidTexture implements Texture
 	/** the u wrap **/
 	private final TextureWrap uWrap;
 	/** the v wrap **/
-	private final TextureWrap vWrap;
-	/** global count of textures **/
-	public static int textures = 0;
+	private final TextureWrap vWrap;	
 	/** the android graphics instance used to remove the texture when it's disposed **/
 	private final AndroidGraphics graphics;
 	/** invalidate flag **/
@@ -111,12 +112,10 @@ final class AndroidTexture implements Texture
 			isMipMap = false;
 		
 		createTexture( gl );
-		buildMipmap( gl, image);
-
-		AndroidTexture.textures++;	
-		this.graphics.textures.add( this );
-		
+		buildMipmap( gl, image);					
 		gl.glBindTexture( GL10.GL_TEXTURE_2D, 0 );
+		
+		textures.add( this );
 	}
 	
 	AndroidTexture( AndroidGraphics graphics, GL20 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed )
@@ -144,18 +143,10 @@ final class AndroidTexture implements Texture
 			isMipMap = false;
 		
 		createTexture( gl );        
-		buildMipmap( gl, image);
-
-		AndroidTexture.textures++;
-		this.graphics.textures.add( this );
-		
+		buildMipmap( gl, image);					
 		gl.glBindTexture( GL20.GL_TEXTURE_2D, 0 );
+		textures.add( this );
 	}		
-
-	protected void invalidate( )
-	{
-		invalidated = true;
-	}
 	
 	private void rebuild( )
 	{
@@ -322,10 +313,7 @@ final class AndroidTexture implements Texture
 		}
 		int level = 0;
 		int height = bitmap.getHeight();
-		int width = bitmap.getWidth();	      	       		
-
-		GL10 gl10 = graphics.getGL10();
-		GL20 gl20 = graphics.getGL20();			
+		int width = bitmap.getWidth();	      	       					
 		
 		while(height >= 1 || width >= 1 && level < 4 ) {
 			GLUtils.texSubImage2D( GL10.GL_TEXTURE_2D, level, x, y, bitmap );			
@@ -407,14 +395,13 @@ final class AndroidTexture implements Texture
 			}
 		}		
 		
-		textureHandle = 0;
-		AndroidTexture.textures--;
-		graphics.textures.remove( this );
+		textureHandle = 0;				
 		if( bitmap != null )
 		{
 			bitmap.recycle();
 			bitmap = null;
 		}
+		textures.remove( this );
 	}
 
 	/**
@@ -456,5 +443,19 @@ final class AndroidTexture implements Texture
 	public int getTextureObjectHandle() 
 	{
 		return textureHandle;
+	}
+	
+	public static void invalidateAllTextures( )
+	{
+		for( int i = 0; i < textures.size(); i++ )
+		{			
+			if( textures.get(i).isManaged )
+			{
+				AndroidTexture texture = textures.get(i);
+				texture.invalidated = true;
+				texture.rebuild( );				
+			}
+		}
+		lastTexture = null;
 	}
 }

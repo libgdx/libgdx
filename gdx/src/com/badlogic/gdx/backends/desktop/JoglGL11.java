@@ -51,7 +51,7 @@ public final class JoglGL11 extends JoglGL10 implements GL11
 	@Override
 	public void glBufferData(int target, int size, Buffer data, int usage) 
 	{	
-		gl.glBufferData( target, size, data, usage );
+		gl.glBufferData( target, size, data, usage );		
 	}
 
 	@Override
