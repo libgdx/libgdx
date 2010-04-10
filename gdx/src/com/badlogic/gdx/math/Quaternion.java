@@ -155,4 +155,32 @@ public final class Quaternion implements Serializable
     {
         return "["+x+"|"+y+"|"+z+"|"+w+"]";
     }    
+    
+    /**
+     * Sets the quaternion to the given euler angles.
+     * @param yaw the yaw in degrees
+     * @param pitch the pitch in degress
+     * @param roll the roll in degess
+     * @return this quaternion
+     */
+    public Quaternion setEulerAngles( float yaw, float pitch, float roll )
+    {
+    	yaw = (float)Math.toRadians(yaw);
+    	pitch = (float)Math.toRadians(pitch);
+    	roll = (float)Math.toRadians(roll);
+   	 	float num9 = roll * 0.5f;
+   	    float num6 = (float) Math.sin(num9);
+   	    float num5 = (float) Math.cos(num9);
+   	    float num8 = pitch * 0.5f;
+   	    float num4 = (float) Math.sin(num8);
+   	    float num3 = (float) Math.cos(num8);
+   	    float num7 = yaw * 0.5f;
+   	    float num2 = (float) Math.sin(num7);
+   	    float num = (float) Math.cos(num7);
+   	    x = ((num * num4) * num5) + ((num2 * num3) * num6);
+   	    y = ((num2 * num3) * num5) - ((num * num4) * num6);
+   	    z = ((num * num3) * num6) - ((num2 * num4) * num5);
+   	    w = ((num * num3) * num5) + ((num2 * num4) * num6);
+   	    return this;
+    }
 }

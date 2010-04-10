@@ -188,11 +188,11 @@ public class ObjLoader
 		Mesh mesh = null;
 		
 		ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>( );
-		attributes.add( new VertexAttribute( Usage.Position, 3, "a_position" ) );
+		attributes.add( new VertexAttribute( Usage.Position, 3, "a_Position" ) );
 		if( numNormals > 0 )
-			attributes.add( new VertexAttribute( Usage.Normal, 3, "a_normal" ) );
+			attributes.add( new VertexAttribute( Usage.Normal, 3, "a_Normal" ) );
 		if( numUV > 0 )
-			attributes.add( new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
+			attributes.add( new VertexAttribute( Usage.TextureCoordinates, 2, "a_TexCoord" ) );
 				
 		mesh = new Mesh( graphics, managed, true, !useFloats, numFaces * 3, 0, attributes.toArray( new VertexAttribute[attributes.size()] ) );
 		if( useFloats )

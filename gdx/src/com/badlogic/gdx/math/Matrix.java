@@ -518,6 +518,21 @@ public final class Matrix
         if(angle==0) return this;
         return this.set(quat.set(axis,angle));
     }    
+    
+    /**
+     * Sets this matrix to a rotation matrix from the given euler
+     * angles. 
+     * @param yaw the yaw in degrees
+     * @param pitch the pitch in degress
+     * @param roll the roll in degrees
+     * @return this matrix
+     */
+    public Matrix setFromEulerAngles( float yaw, float pitch, float roll )
+    {
+    	idt();
+    	quat.setEulerAngles(yaw, pitch, roll);
+    	return this.set(quat);
+    }
 
     /**
      * Sets this matrix to a scaling matrix

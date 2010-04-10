@@ -212,9 +212,8 @@ public class ShaderProgram
 		if( (location = attributes.get( name )) == null )
 		{
 			location = gl.glGetAttribLocation( program, name );
-			if( location == - 1 )
-				throw new IllegalArgumentException( "no attribute with name '" + name + "' in shader" );
-			attributes.put( name, location );			
+			if( location != - 1 )
+				attributes.put( name, location );			
 		}
 		return location;
 	}
@@ -448,6 +447,8 @@ public class ShaderProgram
 	{	
 		checkManaged( );
 		int location = fetchAttributeLocation( name );
+		if( location == -1 )
+			return;
 		gl.glDisableVertexAttribArray( location );
 	}
 
@@ -459,6 +460,8 @@ public class ShaderProgram
 	{	
 		checkManaged( );
 		int location = fetchAttributeLocation( name );
+		if( location == -1 )
+			return;
 		gl.glEnableVertexAttribArray( location );
 	}
 	
@@ -483,5 +486,20 @@ public class ShaderProgram
 			shaders.get(i).invalidated = true;
 			shaders.get(i).checkManaged();
 		}
+	}
+
+	/**
+	 * Sets the given attribute
+	 * 
+	 * @param name the name of the attribute
+	 * @param value1 the first value
+	 * @param value2 the second value
+	 * @param value3 the third value 
+	 * @param value4 the fourth value
+	 */
+	public void setAttributef(String name, float value1, float value2, float value3, float value4 ) 
+	{	 
+		int location = fetchAttributeLocation( name );
+		gl.glVertexAttrib4f( location, value1, value2, value3, value4 );
 	}
 }

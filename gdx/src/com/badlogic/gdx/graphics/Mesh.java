@@ -489,7 +489,7 @@ public class Mesh
 		if( maxIndices > 0 )
 		{			
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-			gl.glDrawElements( primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset );
+			gl.glDrawElements( primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2 );
 		}	
 		else
 		{
@@ -618,7 +618,7 @@ public class Mesh
 		if( maxIndices > 0 )
 		{			
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-			gl.glDrawElements( primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset );
+			gl.glDrawElements( primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2 );
 		}	
 		else
 		{
