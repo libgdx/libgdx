@@ -170,8 +170,8 @@ public final class PerspectiveCamera
 		right.set( direction ).crs( up );
 		
 		proj.setToProjection( near, far, fov, aspect );
-		model.setToLookat( direction, up );		
-		model.mul( tmp.setToTranslation( tmp2.set(position).mul(-1) ) );
+		model.setToLookAt( position, tmp2.set(position).add(direction), up );		
+//		model.mul( tmp.setToTranslation( tmp2.set(position).mul(-1) ) );
 		comb.set( proj ).mul( model );		
 	}
 	

@@ -579,7 +579,7 @@ public final class Matrix
      * @param up The up vector
      * @return This matrix for chaining
      */
-    public  Matrix setToLookat(Vector3 direction, Vector3 up)
+    public  Matrix setToLookAt(Vector3 direction, Vector3 up)
     {
 		l_vez.set(direction).nor();
 		l_vex.set(direction).nor();
@@ -597,7 +597,27 @@ public final class Matrix
 		val[M22]=-l_vez.z;    	        	
     	
         return this;
-    }           
+    }          
+    
+    /**
+     * Sets this matrix to a look at matrix with the given
+     * position, target and up vector.
+     * 
+     * @param position the position
+     * @param target the target
+     * @param up the up vector
+     * @return this matrix
+     */
+    static Vector3 tmpVec = new Vector3();   
+    static Matrix tmpMat = new Matrix();
+    public Matrix setToLookAt( Vector3 position, Vector3 target, Vector3 up )
+    {
+    	tmpVec.set(target).sub(position);
+    	setToLookAt( tmpVec, up);    	   
+    	this.mul( tmpMat.setToTranslation( position.tmp().mul(-1) ) );
+    	
+    	return this;
+    }    
 
     /**
      * {@inheritDoc}
@@ -610,5 +630,16 @@ public final class Matrix
                "["+val[M20]+"|"+val[M21]+"|"+val[M22]+"|"+val[M23]+"]\n"+
                "["+val[M30]+"|"+val[M31]+"|"+val[M32]+"|"+val[M33]+"]\n";              
     }
+
+    /**
+     * Linearly interpolates between this matrix and the given matrix mixing by alpha
+     * @param matrix the matrix
+     * @param alpha the alpha value in the range [0,1]
+     */
+	public void lerp(Matrix matrix, float alpha) 
+	{	
+		for( int i = 0; i < 16; i++ )
+			this.val[i] = this.val[i] * (1-alpha) + matrix.val[i] * alpha;
+	}
 }
 
