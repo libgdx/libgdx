@@ -2,7 +2,5 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="libs/android-1.5.jar" sourcepath="C:/Users/mzechner/Desktop/jogl/src/classes"/>
-	<classpathentry kind="lib" path="libs/desktop-dependencies.jar" sourcepath="C:/Users/mzechner/Desktop/jogl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
