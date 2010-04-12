@@ -132,7 +132,8 @@ public class Mesh
 		
 		createBuffers( );
 		
-		meshes.add( this );
+		if( managed )
+			meshes.add( this );
 	}
 	
 	private void createBuffers( )

@@ -102,7 +102,8 @@ public class ShaderProgram
 		ByteBuffer buffer = ByteBuffer.allocateDirect( 4 * 16 );
 		buffer.order(ByteOrder.nativeOrder());
 		matrix = buffer.asFloatBuffer();
-		shaders.add( this );
+		if( managed )
+			shaders.add( this );
 	}
 	
 	/**

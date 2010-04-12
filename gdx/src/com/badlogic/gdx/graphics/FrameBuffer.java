@@ -61,7 +61,9 @@ public class FrameBuffer
 		colorTexture = graphics.newTexture(width, height, format, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed);
 		
 		build( );
-		buffers.add( this );
+		
+		if( managed )
+			buffers.add( this );
 	}
 	
 	private void build( )
