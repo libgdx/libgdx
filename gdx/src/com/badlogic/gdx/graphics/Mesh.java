@@ -512,6 +512,10 @@ public class Mesh
 				textureUnit--;
 			}		
 		}
+			
+		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
+		if( maxIndices > 0 )
+			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
 	}
 	
 	private void renderVA( int primitiveType, int offset, int count )
@@ -632,6 +636,10 @@ public class Mesh
 			VertexAttribute attribute = attributes.get( i );
 			shader.disableVertexAttribute( attribute.alias );
 		}
+		
+		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
+		if( maxIndices > 0 )
+			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
 	}	
 	
 	private void checkManagedAndDirty( )

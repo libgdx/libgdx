@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Matrix;
  * y-axis pointing upwards and the origin is in the lower left corner of
  * the screen.
  * 
- * A sprite rendered via this patch has an origin relative to it's
+ * A sprite rendered via this batch has an origin relative to it's
  * top left corner and a position in screen coordinates for that origin.
  * 
  * A sprite has a width and height in screen coordinates
@@ -234,7 +234,6 @@ public final class SpriteBatch
 			GL10 gl = graphics.getGL10();
 			gl.glDepthMask ( true );			
 			gl.glDisable( GL10.GL_BLEND );			
-			gl.glDisable( GL10.GL_ALPHA_TEST );
 			gl.glDisable( GL10.GL_TEXTURE_2D );
 		}
 		else
@@ -249,9 +248,154 @@ public final class SpriteBatch
 	
 	/**
 	 * Draws a rectangle with the top left corner at x,y having
+	 * the given width and height in pixels. The rectangle is offset by originX, originY relative to the
+	 * origin. Scale specifies the scaling factor by which the rectangle should be scaled around originX,originY. 
+	 * Rotation specifies the angle of counter clockwise rotation of the rectangle around originX, originY.
+	 * The portion of the {@link Texture}
+	 * given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and
+	 * sizes are given in texels. The rectangle will have the given tint {@link Color}. FlipX
+	 * and flipY specify whether the texture portion should be fliped horizontally or vertically.
+	 *  
+	 * @param texture the Texture
+	 * @param x the x-coordinate in screen space
+	 * @param y the y-coordinate in screen space
+	 * @param originX the x-coordinate of the scaling and rotation origin relative to the screen space coordinates
+	 * @param originY the y-coordinate of the scaling and rotation origin relative to the screen space coordinates
+	 * @param width the width in pixels
+	 * @param height the height in pixels
+	 * @param scale the scale of the rectangle around originX/originY
+	 * @param rotation the angle of counter clockwise rotation of the rectangle around originX/originY
+	 * @param srcX the x-coordinate in texel space
+	 * @param srcY the y-coordinate in texel space
+	 * @param srcWidth the source with in texels
+	 * @param srcHeight the source height in texels
+	 * @param tint the tint Color
+	 * @param flipX whether to flip the sprite horizontally
+	 * @param flipY whether to flip the sprite vertically
+	 */
+	public void draw(Texture texture, int x, int y, int originX, int originY, int width, int height, float scale, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY )
+	{
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+		
+		useTextBlend = false;			
+		
+		// top left and bottom right corner points relative to origin
+		float worldOriginX = x + originX;
+		float worldOriginY = y + originY;
+		float fx = x - worldOriginX;
+		float fy = y - worldOriginY;
+		float fx2 = x + width - worldOriginX;
+		float fy2 = y - height - worldOriginY;
+		
+		// scale
+		fx *= scale;
+		fy *= scale;
+		fx2 *= scale;
+		fy2 *= scale;
+		
+		// construct corner points, start from top left and go counter clockwise
+		float p1x = fx;
+		float p1y = fy;
+		float p2x = fx;
+		float p2y = fy2;
+		float p3x = fx2;
+		float p3y = fy2;
+		float p4x = fx2;
+		float p4y = fy;
+		
+		// rotate
+		float cos = (float)Math.cos( Math.toRadians( rotation ) );
+		float sin = (float)Math.sin( Math.toRadians( rotation ) );
+		
+		float x1 = cos * p1x - sin * p1y;
+		float y1 = sin * p1x + cos * p1y;
+		
+		float x2 = cos * p2x - sin * p2y;
+		float y2 = sin * p2x + cos * p2y;
+		
+		float x3 = cos * p3x - sin * p3y;
+		float y3 = sin * p3x + cos * p3y;
+		
+		float x4 = cos * p4x - sin * p4y;
+		float y4 = sin * p4x + cos * p4y;			
+		
+		// translate to worldspace
+		float worldX = x + originX;
+		float worldY = y + originY;
+		
+		x1 += worldX; y1 += worldY;
+		x2 += worldX; y2 += worldY;
+		x3 += worldX; y3 += worldY;
+		x4 += worldX; y4 += worldY;
+		
+		float u = srcX * invTexWidth;
+		float v = srcY * invTexHeight;
+		float u2 = (srcX + srcWidth) * invTexWidth;
+		float v2 = (srcY + srcHeight) * invTexHeight;
+		
+		if( flipX )
+		{
+			float tmp = u;
+			u = u2;
+			u2 = tmp;
+		}
+		
+		if( flipY )
+		{
+			float tmp = v;
+			v = v2;
+			v2 = tmp;
+		}			
+		
+		vertices[idx++] = x1;
+		vertices[idx++] = y1;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v; 
+		
+		vertices[idx++] = x2;
+		vertices[idx++] = y2;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v2;
+		
+		vertices[idx++] = x3;
+		vertices[idx++] = y3;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v2;
+		
+		vertices[idx++] = x3;
+		vertices[idx++] = y3;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v2;
+		
+		vertices[idx++] = x4;
+		vertices[idx++] = y4;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u2; vertices[idx++] = v;
+		
+		vertices[idx++] = x1;
+		vertices[idx++] = y1;
+		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = u; vertices[idx++] = v;
+		
+		if( idx == vertices.length )
+			renderMesh();
+	}
+	
+	/**
+	 * Draws a rectangle with the top left corner at x,y having
 	 * the given width and height in pixels. The portion of the {@link Texture}
-	 * given by srcX, srcY and srcWidth, srcHeight are used. These coordinates and
-	 * sizes are given in texels. The rectangle will have the given tint {@link Color}.
+	 * given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and
+	 * sizes are given in texels. The rectangle will have the given tint {@link Color}. FlipX
+	 * and flipY specify whether the texture portion should be fliped horizontally or vertically.
 	 *  
 	 * @param texture the Texture
 	 * @param x the x-coordinate in screen space
@@ -263,14 +407,11 @@ public final class SpriteBatch
 	 * @param srcWidth the source with in texels
 	 * @param srcHeight the source height in texels
 	 * @param tint the tint Color
+	 * @param flipX whether to flip the sprite horizontally
+	 * @param flipY whether to flip the sprite vertically
 	 */
-	public void draw(Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint ) 
-	{	
-		draw( texture, x, y, width, height, srcX, srcY, srcWidth, srcHeight, tint, false );
-	}
-	
-	public void draw( Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipY )
-	{		
+	public void draw(Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY ) 
+	{
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
 		
@@ -293,12 +434,19 @@ public final class SpriteBatch
 		float fx2 = (float)(x + width);
 		float fy2 = (float)(y - height);
 		
+		if( flipX )
+		{
+			float tmp = u;
+			u = u2;
+			u2 = tmp;
+		}
+		
 		if( flipY )
 		{
 			float tmp = v;
 			v = v2;
 			v2 = tmp;
-		}
+		}			
 		
 		vertices[idx++] = fx;
 		vertices[idx++] = fy;
@@ -407,71 +555,7 @@ public final class SpriteBatch
 		
 		if( idx == vertices.length )
 			renderMesh();
-	}
-		
-	public void draw( Texture texture, int xy[], int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
-	{
-		if( !drawing )
-			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
-		
-		if( texture != lastTexture )
-		{		
-			renderMesh( );
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
-		}
-		
-		useTextBlend = false;
-		
-		float u = srcX * invTexWidth;
-		float v = srcY * invTexHeight;
-		float u2 = (srcX + srcWidth) * invTexWidth;
-		float v2 = (srcY + srcHeight) * invTexHeight;
-		
-		for( int i = 0; i < xy.length; i+=2 )
-		{
-			int x = xy[i];
-			int y = xy[i+1];
-			float fx = (float)x;
-			float fy = (float)y;
-			float fx2 = (float)(x + srcWidth);
-			float fy2 = (float)(y - srcHeight);		
-			
-			vertices[idx++] = fx;
-			vertices[idx++] = fy;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
-			vertices[idx++] = u; vertices[idx++] = v; 
-			
-			vertices[idx++] = fx;
-			vertices[idx++] = fy2;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
-			vertices[idx++] = u; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
-			vertices[idx++] = fy2;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
-			vertices[idx++] = u2; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
-			vertices[idx++] = fy2;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
-			vertices[idx++] = u2; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
-			vertices[idx++] = fy;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
-			vertices[idx++] = u2; vertices[idx++] = v;
-			
-			vertices[idx++] = fx;
-			vertices[idx++] = fy;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
-			vertices[idx++] = u; vertices[idx++] = v; 
-			
-			if( idx == vertices.length )
-				renderMesh();
-		}
-	}
+	}		
 	
 	private void renderMesh( )
 	{
@@ -593,11 +677,17 @@ public final class SpriteBatch
 		}
 	}		
 	
+	/**
+	 * Disables blending for drawing sprites. Does not disable blending for text rendering
+	 */
 	public void disableBlending( )
 	{
 		blendingDisabled = true;
 	}
 	
+	/**
+	 * Enables blending for sprites
+	 */
 	public void enableBlending( )
 	{
 		blendingDisabled = false;
