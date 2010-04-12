@@ -6,7 +6,6 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
-import com.badlogic.gdx.backends.desktop.JoglAudioDevice;
 
 /**
  * Class holding various static native methods for processing 
@@ -107,27 +106,27 @@ public class AudioTools
 		return b.asShortBuffer();	
 	}
 	
-	public static void main( String[] argv )
-	{
-		Mpg123Decoder decoder = new Mpg123Decoder( "data/threeofaperfectpair.mp3");
-		System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );
-		JoglAudioDevice device = new JoglAudioDevice( true );
-		
-		ShortBuffer stereoSamples = AudioTools.allocateShortBuffer( 1024, decoder.getNumChannels() );
-		ShortBuffer monoSamples = AudioTools.allocateShortBuffer( 1024, 1 );
-		FloatBuffer floatSamples = AudioTools.allocateFloatBuffer( 1024, 1 );
-				
-		float[] samples = new float[1024];
-		
-		while( decoder.readSamples( stereoSamples ) > 0 )
-		{
-			AudioTools.convertToMono( stereoSamples, monoSamples, stereoSamples.capacity() );
-			AudioTools.convertToFloat( monoSamples, floatSamples, 1024 );
-			
-			floatSamples.position(0);
-			floatSamples.get(samples);
-			device.writeSamples(samples, 0, monoSamples.capacity());
-		}
-		decoder.dispose();
-	}
+//	public static void main( String[] argv )
+//	{
+//		Mpg123Decoder decoder = new Mpg123Decoder( "data/threeofaperfectpair.mp3");
+//		System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );
+//		JoglAudioDevice device = new JoglAudioDevice( true );
+//		
+//		ShortBuffer stereoSamples = AudioTools.allocateShortBuffer( 1024, decoder.getNumChannels() );
+//		ShortBuffer monoSamples = AudioTools.allocateShortBuffer( 1024, 1 );
+//		FloatBuffer floatSamples = AudioTools.allocateFloatBuffer( 1024, 1 );
+//				
+//		float[] samples = new float[1024];
+//		
+//		while( decoder.readSamples( stereoSamples ) > 0 )
+//		{
+//			AudioTools.convertToMono( stereoSamples, monoSamples, stereoSamples.capacity() );
+//			AudioTools.convertToFloat( monoSamples, floatSamples, 1024 );
+//			
+//			floatSamples.position(0);
+//			floatSamples.get(samples);
+//			device.writeSamples(samples, 0, monoSamples.capacity());
+//		}
+//		decoder.dispose();
+//	}
 }

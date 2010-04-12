@@ -81,6 +81,17 @@ package com.badlogic.gdx;
 public interface Application 
 {
 	/**
+	 * Enumeration of possible {@link Application} types
+	 * @author mzechner
+	 *
+	 */
+	public enum ApplicationType
+	{
+		Android,
+		Desktop
+	}
+	
+	/**
 	 * @return the {@link Graphics} instance
 	 */
 	public Graphics getGraphics( );
@@ -104,6 +115,11 @@ public interface Application
 	 * Logs a message to the console or logcat
 	 */
 	public void log( String tag, String message );
+	
+	/**
+	 * @return what {@link ApplicationType} this application has, e.g. Android or Desktop
+	 */
+	public ApplicationType getType( );
 	
 	/**
 	 * Sets the {@link ApplicationListener} that is called

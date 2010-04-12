@@ -9,7 +9,7 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.desktop.JoglGraphics;
+import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
@@ -93,7 +93,7 @@ public class Mesh
 		this.maxIndices = maxIndices;
 		this.attributes = new VertexAttributes( attributes );
 		
-		if( graphics instanceof JoglGraphics )
+		if( graphics.getType() == GraphicsType.JoglGL )
 			usesDirectBuffers = true;
 		else
 		{
@@ -138,7 +138,7 @@ public class Mesh
 	private void createBuffers( )
 	{
 		// FIXME this is a hack as there's no way to support fixed point VBOs
-		if( useFixedPoint && graphics instanceof JoglGraphics )
+		if( useFixedPoint && graphics.getType() == GraphicsType.JoglGL)
 			return;
 		
 		if( graphics.isGL11Available() == false && graphics.isGL20Available() == false )

@@ -18,7 +18,6 @@ package com.badlogic.gdx;
 
 import java.io.InputStream;
 
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
@@ -42,6 +41,19 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
  */
 public interface Graphics 
 {
+	/**
+	 * Enumeration describing different types of 
+	 * {@link Graphics} implementations. Might be
+	 * extended by say LWJGL.
+	 * @author mzechner
+	 *
+	 */
+	public enum GraphicsType
+	{
+		AndroidGL,
+		JoglGL
+	}
+	
 	/**
 	 * Returns whether OpenGL ES 1.1 is available. If it is
 	 * you can get an instance of {@link GL11} via {@link getGL11()}
@@ -203,5 +215,10 @@ public interface Graphics
 	 * @param vWrap the {@link Texture.TextureWrap} in v
 	 * @return a new Texture
 	 */
-	public Texture newTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );		
+	public Texture newTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );
+	
+	/**
+	 * @return the {@link GraphicsType} of this Graphics instance
+	 */
+	public GraphicsType getType( );
 }
