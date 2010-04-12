@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.badlogic.gdx"
+      android:versionCode="1"
+      android:versionName="1.0">
+<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:debuggable="true">
+		<activity android:name=".GDXTester" android:label="@string/app_name"
+			android:configChanges="keyboard|keyboardHidden|orientation">
+
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity android:name=".SimpleTest" android:label="Simple Test"/>
+		<activity android:name=".MeshRendererTest" android:label="MeshRenderer Test"/>
+		<activity android:name=".LifeCycleTest" android:label="Life Cycle Test"/>
+		<activity android:name=".VertexBufferObjectTest" android:label="Vertex Buffer Object Test"/>
+		<activity android:name=".VertexArrayTest" android:label="Vertex Array Test"/>
+		<activity android:name=".FixedPointMeshRendererTest" android:label="Fixed Point MeshRenderer Test"/>
+		<activity android:name=".ManagedTest" android:label="Managed Test"/>
+		<activity android:name=".TextTest" android:label="Text Test"/>
+		<activity android:name=".SoundTest" android:label="Sound Test"/>
+		<activity android:name=".ObjTest" android:label="Obj Test"/>
+		<activity android:name=".InputTest" android:label="Input Test"/>
+		<activity android:name=".FixedPointTest" android:label="Fixed Point Test"/>			
+		<activity android:name=".FloatTest" android:label="Float Test"/>			
+		<activity android:name=".LagTest" android:label="Lag Test"/>
+		<activity android:name=".Pong" android:label="Pong"/>		
+		<activity android:name=".CollisionTest" android:label="Collision Test"/>					
+		<activity android:name=".AudioDeviceTest" android:label="Audio Device Test"/>
+		<activity android:name=".Mpg123Test" android:label="Mpg123 Test"/>
+		<activity android:name=".VorbisTest" android:label="Vorbis Test"/>
+		<activity android:name=".PerformanceTest" android:label="Performance Test"/>
+		<activity android:name=".MeshShaderTest" android:label="Mesh Shader Test"/>
+		<activity android:name=".SpriteBatchTest" android:label="SpriteBatch Test" />									
+		<activity android:name=".SpriteBatchShaderTest" android:label="SpriteBatch Shader Test" />
+		<activity android:name=".FrameBufferTest" android:label="FrameBuffer Test" />
+	</application>
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
+
+</manifest> 
