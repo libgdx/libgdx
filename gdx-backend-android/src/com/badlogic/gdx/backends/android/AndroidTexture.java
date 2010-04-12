@@ -112,7 +112,8 @@ final class AndroidTexture implements Texture
 		buildMipmap( gl, image);					
 		gl.glBindTexture( GL10.GL_TEXTURE_2D, 0 );
 		
-		textures.add( this );
+		if( isManaged )
+			textures.add( this );
 	}
 	
 	AndroidTexture( AndroidGraphics graphics, GL20 gl, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed )
