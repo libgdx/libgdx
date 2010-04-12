@@ -38,6 +38,7 @@
 		<activity android:name=".SpriteBatchTest" android:label="SpriteBatch Test" />									
 		<activity android:name=".SpriteBatchShaderTest" android:label="SpriteBatch Shader Test" />
 		<activity android:name=".FrameBufferTest" android:label="FrameBuffer Test" />
+		<activity android:name=".SpriteBatchRotationTest" android:label="SpriteBatchRotation Test" />
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 
