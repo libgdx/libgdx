@@ -88,7 +88,8 @@ public interface Application
 	public enum ApplicationType
 	{
 		Android,
-		Desktop
+		Desktop,
+		Applet
 	}
 	
 	/**
