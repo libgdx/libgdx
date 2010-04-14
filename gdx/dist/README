@@ -16,17 +16,21 @@ gdx-helloworld
     -> armeabi/
        - >libandroidgl20.so
        - >libgdx.so
-    -> desktop-dependencies.jar
-    -> gdx-0.3-sources.jar
-    -> gdx-0.3.jar
+    -> gdx-0.4-sources.jar
+    -> gdx-0.4.jar
+    -> gdx-backend-android.jar
+    -> gdx-backend-applet.jar
+    -> gdx-backend-desktop.jar
+    -> gdx-dependencies-applet.jar
+    -> gdx-dependencies-desktop.jar
     -> gdx.dll
     -> libgdx.so
     -> README
     
 Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
 "Java Build Path" to the left in the new dialog and then click the Libraries tab. In the libraries tab 
-click Add Libaries, browse to the gdx-helloworld/libs folder and select all the Jar-files. Now you have 
-added all that's needed for the Java project to compile. 
+click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx-0.4.jar, gdx-backend-desktop.jar and gdx-dependencies-desktop.jar. Now you have 
+added all that's needed for the Java desktop project to compile. 
 
 Create a new package in the "src/" folder of the gdx-helloworld project, say "com.badlogic.helloworld" 
 and create a new class called "HelloWorld" in this package. Here's the source to put into this class:
@@ -95,10 +99,14 @@ gdx-helloworld-android
     -> armeabi/
        -> libandroidgl20.so
        -> libgdx.so
-    -> gdx-0.3.jar
-    -> gdx-0.3-sources.jar
+    -> gdx-0.4-sources.jar
+    -> gdx-0.4.jar
+    -> gdx-backend-android.jar
+    -> gdx-backend-applet.jar
+    -> gdx-backend-desktop.jar
+    -> gdx-dependencies-applet.jar
+    -> gdx-dependencies-desktop.jar
     -> gdx.dll
-    -> desktop-dependencies.jar
     -> libgdx.so
     -> README
  -> res/
@@ -106,7 +114,7 @@ gdx-helloworld-android
  -> default.properties
  
  Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
-project in the project tab and the gdx-0.3.jar in the Libraries tab. You don't have to add the other
+project in the project tab and the gdx-0.4.jar and gdx-backend-android.jar in the Libraries tab. You don't have to add the other
 jars as those are only needed for the desktop Java version. 
 
 Now open the GDXHelloWorld.java file and paste the following code in:
