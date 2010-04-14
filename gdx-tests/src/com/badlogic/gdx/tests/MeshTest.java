@@ -26,6 +26,7 @@ public class MeshTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{
+		app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		app.getGraphics().getGL10().glEnable( GL10.GL_TEXTURE_2D );
 		texture.bind();
 		mesh.render( GL10.GL_TRIANGLES, 0, 3 );

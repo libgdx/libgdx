@@ -43,6 +43,7 @@ public class TextTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{
+		app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		app.getGraphics().getGL10().glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT );						
 		

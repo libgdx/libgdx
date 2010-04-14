@@ -81,6 +81,7 @@ public class CollisionTest implements RenderListener
 		GL10 gl = app.getGraphics().getGL10();
 		gl.glClearColor( 0, 0, 0, 0 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT );
+		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		
 		render3D( gl, app.getGraphics() );			
 	}			

@@ -74,6 +74,7 @@ public class ObjTest implements RenderListener, InputListener
 	{	
 		GL10 gl = app.getGraphics().getGL10();
 				
+		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT );
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 		gl.glEnable( GL10.GL_LIGHTING );		

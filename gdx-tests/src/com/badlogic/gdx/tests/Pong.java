@@ -157,6 +157,7 @@ public class Pong implements RenderListener
 		
 		// First we clear the screen
 		GL10 gl = app.getGraphics().getGL10();
+		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		
 		// Next we update the camera and set the camera matrix

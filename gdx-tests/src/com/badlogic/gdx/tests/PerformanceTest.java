@@ -26,6 +26,7 @@ public class PerformanceTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{
+		app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		Mesh m = null;
 		if( fixed )		
 			m = fpMesh;

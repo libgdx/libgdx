@@ -48,6 +48,7 @@ public class FixedPointTest implements RenderListener
 	public void render(Application app) 
 	{			
 		GL10 gl = app.getGraphics().getGL10();
+		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		gl.glMatrixMode( GL10.GL_MODELVIEW );
