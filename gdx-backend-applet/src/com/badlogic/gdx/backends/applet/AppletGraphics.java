@@ -18,16 +18,12 @@ package com.badlogic.gdx.backends.applet;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
-import javax.swing.JFrame;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Graphics;
