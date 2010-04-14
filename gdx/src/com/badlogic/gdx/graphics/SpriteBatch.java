@@ -161,6 +161,7 @@ public final class SpriteBatch
 			viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
 					
 			GL10 gl = graphics.getGL10();
+			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
 			gl.glDisable( GL10.GL_LIGHTING );
 			gl.glDisable( GL10.GL_DEPTH_TEST );
 			gl.glDisable( GL10.GL_CULL_FACE );
@@ -189,7 +190,8 @@ public final class SpriteBatch
 			transform.set( transform );
 			viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() ).mul(transform);
 					
-			GL20 gl = graphics.getGL20();			
+			GL20 gl = graphics.getGL20();		
+			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
 			gl.glDisable( GL20.GL_DEPTH_TEST );
 			gl.glDisable( GL20.GL_CULL_FACE );
 			gl.glDepthMask ( false );
