@@ -27,12 +27,6 @@ public class FrameBuffer
 	/** the color buffer texture **/
 	private Texture colorTexture;	
 	
-	/** whether the frame buffer has a depth buffer attached **/
-	private boolean hasDepth;
-	
-	/** whether the frame buffer is managed **/
-	private boolean managed;
-	
 	/** the framebuffer handle **/
 	private int framebufferHandle;
 	
@@ -55,9 +49,7 @@ public class FrameBuffer
 	 */
 	public FrameBuffer( Graphics graphics, Pixmap.Format format, int width, int height, boolean hasDepth, boolean managed )
 	{
-		this.graphics = graphics;
-		this.hasDepth = hasDepth;
-		this.managed = managed;
+		this.graphics = graphics;		
 		colorTexture = graphics.newTexture(width, height, format, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed);
 		
 		build( );
