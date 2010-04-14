@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.AudioDevice;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 
 public class AudioDeviceTest implements RenderListener
 {
@@ -83,9 +82,4 @@ public class AudioDeviceTest implements RenderListener
 		}
 	}
 
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "AudioDevice Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new AudioDeviceTest() );
-	}
 }

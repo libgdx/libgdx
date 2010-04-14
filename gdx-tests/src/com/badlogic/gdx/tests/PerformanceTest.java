@@ -3,7 +3,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
@@ -59,10 +58,5 @@ public class PerformanceTest implements RenderListener
 		fpMesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false, false );		
 		flMesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false, true );		
 	}
-	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Performance Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new PerformanceTest() );
-	}
+		
 }

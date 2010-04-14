@@ -20,18 +20,12 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 
 public class SimpleTest implements RenderListener, InputListener, ApplicationListener
 {
 	float r = 1, g = 0, b = 0;
-	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Simple Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new SimpleTest() );
-	}	
+
 
 	@Override
 	public void surfaceCreated(Application app) 

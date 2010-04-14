@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 
 /**
@@ -75,11 +74,4 @@ public class LifeCycleTest implements ApplicationListener, RenderListener
 		System.out.println(app.getGraphics().getGL10().glGetString( GL10.GL_VERSION ) );
 	}
 	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Life Cycle Test", 480, 320, false );
-		LifeCycleTest test = new LifeCycleTest( );
-		app.setApplicationListener( test );
-		app.getGraphics().setRenderListener( test );
-	}
 }

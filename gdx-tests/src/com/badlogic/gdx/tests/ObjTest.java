@@ -20,7 +20,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
@@ -107,12 +106,7 @@ public class ObjTest implements RenderListener, InputListener
 	{	
 		
 	}	
-
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Obj Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new ObjTest() );
-	}
+	
 
 	@Override
 	public boolean keyDown(int keycode) {

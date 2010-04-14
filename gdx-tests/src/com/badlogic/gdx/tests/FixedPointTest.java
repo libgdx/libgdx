@@ -22,7 +22,6 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -136,9 +135,4 @@ public class FixedPointTest implements RenderListener
 		return (int)(value * 65536);
 	}
 	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Fixed Point Test", 480, 320, false);
-		app.getGraphics().setRenderListener( new FixedPointTest() );
-	}
 }

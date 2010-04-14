@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -135,20 +134,7 @@ public class FixedPointMeshTest implements RenderListener
 		
 	}
 	
-	/**
-	 * Main method for the desktop version.
-	 * 
-	 * @param argv
-	 */
-	public static void main( String[] argv )
-	{
-		//
-		// Setup the JoglApplication and set the an instance of this class
-		// as the RenderListener.
-		//
-		JoglApplication app = new JoglApplication( "Fixed Point MeshRenderer Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new FixedPointMeshTest() );
-	}
+
 	
 	private static int fp( float val )
 	{

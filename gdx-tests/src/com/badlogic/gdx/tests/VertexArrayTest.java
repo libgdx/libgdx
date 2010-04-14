@@ -23,7 +23,6 @@ import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 
 public class VertexArrayTest implements RenderListener
@@ -81,12 +80,6 @@ public class VertexArrayTest implements RenderListener
 		indices = buffer.asShortBuffer();
 		indices.put( new short[ ] { 0, 1, 2 } );
 		indices.flip();
-	}
-
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "VA Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new VertexArrayTest() );
 	}
 
 	@Override

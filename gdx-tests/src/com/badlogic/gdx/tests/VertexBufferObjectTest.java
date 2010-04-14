@@ -21,7 +21,6 @@ import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL11;
 
 public class VertexBufferObjectTest implements RenderListener
@@ -82,11 +81,6 @@ public class VertexBufferObjectTest implements RenderListener
 		gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
 	}
 
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "VBO Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new VertexBufferObjectTest() );
-	}
 
 	@Override
 	public void surfaceChanged(Application app, int width, int height) {

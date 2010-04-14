@@ -7,7 +7,6 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.io.VorbisDecoder;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 
 public class VorbisTest implements RenderListener
 {
@@ -51,9 +50,4 @@ public class VorbisTest implements RenderListener
 		decoder.dispose();	
 	}
 
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Vorbis test", 480, 320, false );
-		app.getGraphics().setRenderListener( new VorbisTest() );
-	}
 }

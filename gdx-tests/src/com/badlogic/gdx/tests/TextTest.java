@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
@@ -29,12 +28,7 @@ public class TextTest implements RenderListener
 {
 	SpriteBatch spriteBatch;
 	Font font;				
-	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Text Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new TextTest() );
-	}	
+
 
 	@Override
 	public void surfaceCreated(Application app) 

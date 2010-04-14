@@ -22,7 +22,6 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 
 public class SoundTest implements RenderListener, InputListener 
 {
@@ -108,11 +107,5 @@ public class SoundTest implements RenderListener, InputListener
 	public boolean touchUp(int x, int y, int pointer) 
 	{		
 		return false;
-	}
-
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Sound Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new SoundTest() );
 	}
 }

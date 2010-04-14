@@ -21,7 +21,6 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
@@ -153,9 +152,5 @@ public class CollisionTest implements RenderListener
 		
 	}
 
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Collision Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new CollisionTest() );
-	}
+	
 }

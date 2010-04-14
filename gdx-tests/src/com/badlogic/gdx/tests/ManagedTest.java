@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -84,9 +83,5 @@ public class ManagedTest implements RenderListener
 		
 	}
 	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Managed Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new ManagedTest() );
-	}
+	
 }

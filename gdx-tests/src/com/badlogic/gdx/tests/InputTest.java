@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 
 public class InputTest implements RenderListener, InputListener
 {
@@ -89,9 +88,5 @@ public class InputTest implements RenderListener, InputListener
 		return false;
 	}
 
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Key Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new InputTest() );
-	}
+
 }

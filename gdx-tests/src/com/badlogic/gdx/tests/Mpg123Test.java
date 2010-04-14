@@ -25,7 +25,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.KissFFT;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 
 public class Mpg123Test implements RenderListener
 {
@@ -83,10 +82,5 @@ public class Mpg123Test implements RenderListener
 //		thread.setPriority(Thread.MAX_PRIORITY);
 //		thread.start();
 	}
-
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Mpg123 Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new Mpg123Test() );
-	}
+	
 }

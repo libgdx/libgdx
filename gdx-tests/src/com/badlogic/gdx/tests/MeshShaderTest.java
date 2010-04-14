@@ -2,7 +2,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
@@ -122,9 +121,5 @@ public class MeshShaderTest implements RenderListener
 		
 	}
 	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Mesh Test", 480, 320, true );
-		app.getGraphics().setRenderListener( new MeshShaderTest() );
-	}
+
 }

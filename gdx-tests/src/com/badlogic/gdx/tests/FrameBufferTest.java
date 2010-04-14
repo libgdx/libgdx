@@ -3,7 +3,6 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FrameBuffer;
 import com.badlogic.gdx.graphics.GL20;
@@ -98,10 +97,5 @@ public class FrameBufferTest implements RenderListener
 			throw new IllegalStateException( meshShader.getLog() );			
 	}
 	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "FrameBuffer Test", 480, 320, true );
-		app.getGraphics().setRenderListener( new FrameBufferTest() );
-	}
 
 }

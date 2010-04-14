@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
@@ -315,16 +314,5 @@ public class Pong implements RenderListener
 	public void surfaceChanged(Application app, int width, int height) 
 	{
 		
-	}
-	
-	/**
-	 * The main method for the desktop version of Pong.
-	 * @param argv
-	 */
-	public static void main( String[] argv )
-	{
-		// we create a new JoglApplication and register a new Pong instances as the RenderListener
-		JoglApplication app = new JoglApplication( "Pong", 480, 320, false );
-		app.getGraphics().setRenderListener( new Pong() );
-	}
+	}	
 }

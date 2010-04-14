@@ -22,7 +22,6 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,12 +30,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 public class FloatTest implements RenderListener
-{
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Float Test", 480, 320, false);
-		app.getGraphics().setRenderListener( new FloatTest() );
-	}
+{	
 
 	Texture tex;
 	Texture tex2;
