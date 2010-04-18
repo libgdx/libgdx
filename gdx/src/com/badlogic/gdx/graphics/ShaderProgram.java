@@ -404,6 +404,8 @@ public class ShaderProgram
 	{	
 		checkManaged( );
 		int location = fetchAttributeLocation(name);
+		if( location == -1 )
+			return;
 		gl.glVertexAttribPointer( location, size, type, normalize, stride, offset );
 	}
 	

@@ -116,7 +116,7 @@ public class ModelLoader
 			{
 				float[] vertices = new float[numElements];
 				for( int i = 0; i < numElements; i++ )
-					vertices[i] = din.readInt();
+					vertices[i] = din.readFloat();
 				mesh.setVertices( vertices );
 			}
 			
