@@ -619,6 +619,35 @@ public final class Matrix
     	return this;
     }    
 
+    static Vector3 right = new Vector3();
+    static Vector3 tmpForward = new Vector3();
+    static Vector3 tmpUp = new Vector3();    
+    public Matrix setToWorld( Vector3 position, Vector3 forward, Vector3 up )
+    { 
+    	tmpForward.set(forward).nor();
+    	right.set(tmpForward).crs(up).nor();
+        tmpUp.set(right).crs(tmpForward).nor();
+        
+        val[M00] = right.x;
+        val[M01] = right.y;
+        val[M02] = right.z;
+        
+        val[M10] = tmpUp.x;
+        val[M11] = tmpUp.y;
+        val[M12] = tmpUp.z;
+        
+        val[M20] = -tmpForward.x;
+        val[M21] = -tmpForward.y;
+        val[M22] = -tmpForward.z;
+    	
+    	val[M30] = position.x;
+    	val[M31] = position.y;
+    	val[M32] = position.z;
+    	
+    	val[M03] = val[M13] = val[M23] = 0; val[M33] = 1.0f;
+    	return this;
+    }
+    
     /**
      * {@inheritDoc}
      */
