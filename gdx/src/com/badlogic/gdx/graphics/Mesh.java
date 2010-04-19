@@ -238,7 +238,9 @@ public class Mesh
 	private void fillBuffers( GL11 gl )
 	{							
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-		gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
+		gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW);
+		// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
+//		gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
 		
 		if( maxIndices > 0 )
