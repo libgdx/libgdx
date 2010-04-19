@@ -59,7 +59,7 @@ import android.util.Log;
  *   that matches it exactly (with regards to red/green/blue/alpha channels
  *   bit depths). Failure to do so would result in an EGL_BAD_MATCH error.
  */
-public class GLSurfaceView20 extends GLSurfaceView {
+public class GLSurfaceView20 extends GLBaseSurfaceView {
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
 
@@ -101,7 +101,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
         /* Set the renderer responsible for frame rendering */        
     }
 
-    private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
+    private static class ContextFactory implements GLBaseSurfaceView.EGLContextFactory {
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
             Log.w(TAG, "creating OpenGL ES 2.0 context");
@@ -124,7 +124,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
         }
     }
 
-    private static class ConfigChooser implements GLSurfaceView.EGLConfigChooser {
+    private static class ConfigChooser implements GLBaseSurfaceView.EGLConfigChooser {
 
         public ConfigChooser(int r, int g, int b, int a, int depth, int stencil) {
             mRedSize = r;

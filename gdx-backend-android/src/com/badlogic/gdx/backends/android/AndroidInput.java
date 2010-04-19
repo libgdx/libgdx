@@ -26,6 +26,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -36,7 +37,6 @@ import android.widget.EditText;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView;
 
 /**
  * An implementation of the {@link Input} interface for Android. 

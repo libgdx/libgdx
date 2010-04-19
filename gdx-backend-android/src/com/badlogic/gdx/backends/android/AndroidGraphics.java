@@ -27,15 +27,16 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.Renderer;
 import android.view.Display;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView.Renderer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.FrameBuffer;
@@ -104,13 +105,16 @@ final class AndroidGraphics implements Graphics, Renderer
 		if( useGL2IfAvailable )
 		{
 			if( checkGL20( activity ) )			
-				view = new GLSurfaceView20( activity );
-			else
-				view = new GLSurfaceView( activity );
+				view = new GLSurfaceView20( activity );							
+			else			
+				view = new android.opengl.GLSurfaceView( activity );
 		}
 		else
-			view = new GLSurfaceView( activity );
-		view.setRenderer(this);
+		{
+			view = new android.opengl.GLSurfaceView( activity );			
+		}
+				
+		view.setRenderer( this );
 		activity.setContentView( view );
 		this.app = activity;
 	}
@@ -421,7 +425,7 @@ final class AndroidGraphics implements Graphics, Renderer
 		
 		Display display = app.getWindowManager().getDefaultDisplay();  
 		this.width = display.getWidth();
-		this.height = display.getHeight();
+		this.height = display.getHeight();		
 		
 		if( listener != null )
 			listener.surfaceCreated( app );			
