@@ -23,6 +23,14 @@
 
 #define MAX_SHORT 32767.0f
 
+static inline float scale( kiss_fft_scalar val )
+{
+	if( val < 0 )
+		return val * ( 1 / 32768.0f );
+	else
+		return val * ( 1 / 32767.0f );
+}
+
 struct KissFFT
 {
 	kiss_fftr_cfg config;
@@ -73,13 +81,13 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_spectrum(JNI
 
 	kiss_fftr( fft->config, samples, fft->spectrum );
 
-	float SCALE = 1 / 32767.0f * 1024.0f;
 	int len = fft->numSamples / 2 + 1;
 	for( int i = 0; i < len; i++ )
 	{
-		float re = fft->spectrum[i].r * SCALE;
-		float im = fft->spectrum[i].i * SCALE;
+		float re = scale(fft->spectrum[i].r);
+		float im = scale(fft->spectrum[i].i);
 
 		spectrum[i] = sqrt(re*re + im*im);
 	}
 }
+
