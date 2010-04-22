@@ -10,7 +10,7 @@ import com.badlogic.gdx.audio.analysis.KissFFT;
 
 public class FFTTest 
 {
-	static int SAMPLES = 1024;
+	static int SAMPLES = 512;
 	
 	public static void main( String[] argv )
 	{		
@@ -38,9 +38,9 @@ public class FFTTest
 			System.out.print( floatSpectrum.get( i ) + ", " );
 		System.out.println( "]" );
 		
-		System.out.println( sum( samples ) );
-		System.out.println( sum( spectrum ) );
-		System.out.println( sum( floatSpectrum ));		
+		System.out.println( sum( samples ) / SAMPLES );
+//		System.out.println( sum( spectrum ) );
+//		System.out.println( sum( floatSpectrum ));		
 		kfft.dispose();
 	}	
 	
@@ -71,7 +71,7 @@ public class FFTTest
 	
 	private static void createSine( float samples[], ShortBuffer shortSamples )
 	{
-		final float frequency = 440;
+		final float frequency = 44100 / (SAMPLES / 2);
         float increment = (float)(2*Math.PI) * frequency / 44100; // angular increment for each sample
         float angle = 0;	                    
         
