@@ -82,12 +82,16 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_analysis_KissFFT_spectrum(JNI
 	kiss_fftr( fft->config, samples, fft->spectrum );
 
 	int len = fft->numSamples / 2 + 1;
+
 	for( int i = 0; i < len; i++ )
 	{
-		float re = scale(fft->spectrum[i].r);
-		float im = scale(fft->spectrum[i].i);
+		float re = scale(fft->spectrum[i].r) * fft->numSamples;
+		float im = scale(fft->spectrum[i].i) * fft->numSamples;
 
-		spectrum[i] = sqrt(re*re + im*im);
+		if( i > 0 )
+			spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples / 2);
+		else
+			spectrum[i] = sqrtf(re*re + im*im) / (fft->numSamples);
 	}
 }
 
