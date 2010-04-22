@@ -10,7 +10,7 @@ import com.badlogic.gdx.audio.analysis.KissFFT;
 
 public class FFTTest 
 {
-	static int SAMPLES = 512;
+	static int SAMPLES = 256;
 	
 	public static void main( String[] argv )
 	{		
@@ -73,13 +73,17 @@ public class FFTTest
 	{
 		final float frequency = 44100 / (SAMPLES / 2);
         float increment = (float)(2*Math.PI) * frequency / 44100; // angular increment for each sample
-        float angle = 0;	                    
+        float angle = 0;
+        final float frequency2 = 44100 / (SAMPLES / 2) * 4;
+        float increment2 = (float)(2*Math.PI) * frequency2 / 44100;
+        float angle2 = 0;
         
         for( int i = 0; i < samples.length; i++ )
         {
-           samples[i] = (float)Math.sin( angle );
+           samples[i] = Math.max(0, Math.min((float)Math.sin( angle ) + (float)Math.sin(angle2), 1));
            shortSamples.put( (short)(Short.MAX_VALUE * samples[i]) );
            angle += increment;
+           angle2 += increment2;
         }
 	}
 }
