@@ -86,6 +86,27 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_readSamples(
 	return read / 2;
 }
 
+static char buffer[10000];
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_skipSamples(JNIEnv *, jobject, jlong handle, jint numSamples)
+{
+	OggFile* file = (OggFile*)handle;
+	int toRead = 2 * numSamples;
+	int read = 0;
+
+	while( read != toRead )
+	{
+		int ret = ov_read( file->ogg, buffer, (toRead - read)>10000?10000:(toRead-read), &file->bitstream );
+		if( ret == OV_HOLE )
+			continue;
+		if( ret == OV_EBADLINK || ret == OV_EINVAL || ret == 0 )
+			return read / 2;
+		read+=ret;
+	}
+
+	return read / 2;
+}
+
 /*
  * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
  * Method:    closeFile

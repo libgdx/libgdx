@@ -110,7 +110,7 @@ static inline int readBuffer( Mp3File* mp3 )
  * Method:    readSamples
  * Signature: (ILjava/nio/ShortBuffer;I)I
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples__JLjava_nio_ShortBuffer_2I(JNIEnv *env, jobject, jlong handle, jobject buffer, jint numSamples)
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples(JNIEnv *env, jobject, jlong handle, jobject buffer, jint numSamples)
 {
 	Mp3File* mp3 = (Mp3File*)handle;
 	short* target = (short*)env->GetDirectBufferAddress(buffer);
@@ -125,6 +125,32 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples_
 			{
 				*target = *src;
 			}
+		}
+		else
+		{
+			int result = readBuffer( mp3 );
+			if( result == 0 )
+				return 0;
+		}
+
+	}
+
+	if( idx > numSamples )
+		return 0;
+
+	return idx;
+}
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_skipSamples(JNIEnv *env, jobject, jlong handle, jint numSamples)
+{
+	Mp3File* mp3 = (Mp3File*)handle;
+
+	int idx = 0;
+	while( idx != numSamples )
+	{
+		if( mp3->leftSamples > 0 )
+		{
+			for( ; idx < numSamples && mp3->offset < mp3->buffer_size / 2; mp3->leftSamples--, mp3->offset++, idx++ );
 		}
 		else
 		{

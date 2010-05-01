@@ -37,6 +37,15 @@ public interface Decoder
 	 */
 	public int readSamples( ShortBuffer samples );
 	
+	/**
+	 * Skips numSamples samples. If the decoded file is in stereo the left and right channel samples
+	 * are counted as 2 samples.
+	 * 
+	 * @param numSamples the number of samples to skip
+	 * @return the number of samples actually skipped. If this is < numSamples then the end of the file has been reached.
+	 */
+	public int skipSamples( int numSamples );
+	
 	/** 
 	 * @return the number of channels
 	 */

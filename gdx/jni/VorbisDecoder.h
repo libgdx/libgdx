@@ -49,6 +49,14 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_readSamples
 
 /*
  * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
+ * Method:    skipSamples
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_VorbisDecoder_skipSamples
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     com_badlogic_gdx_audio_io_VorbisDecoder
  * Method:    closeFile
  * Signature: (J)V
  */

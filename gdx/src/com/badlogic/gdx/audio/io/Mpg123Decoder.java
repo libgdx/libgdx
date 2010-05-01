@@ -65,6 +65,15 @@ public class Mpg123Decoder implements Decoder
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public int skipSamples(int numSamples) 
+	{	
+		return skipSamples( handle, numSamples );
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getNumChannels( )
 	{
 		return getNumChannels( handle );
@@ -86,9 +95,11 @@ public class Mpg123Decoder implements Decoder
 		return getLength( handle );
 	}
 	
-	private native int openFile( String filename );	
+	private native long openFile( String filename );	
 	
 	private native int readSamples( long handle, ShortBuffer buffer, int numSamples );
+	
+	private native int skipSamples( long handle, int numSamples );
 	
 	private native int getNumChannels( long handle );
 	

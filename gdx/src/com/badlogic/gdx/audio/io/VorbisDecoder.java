@@ -80,6 +80,15 @@ public class VorbisDecoder implements Decoder
 		return read;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int skipSamples(int numSamples) 
+	{	
+		return skipSamples( handle, numSamples );
+	}
+	
 	private native long openFile( String file );
 	
 	private native int getNumChannels( long handle );
@@ -89,6 +98,8 @@ public class VorbisDecoder implements Decoder
 	private native float getLength( long handle );
 	
 	private native int readSamples( long handle, ShortBuffer buffer, int numSamples );
+	
+	private native int skipSamples( long handle, int numSamples );
 	
 	private native void closeFile( long handle );
 	
