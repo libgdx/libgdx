@@ -133,4 +133,12 @@ public class Color
 		if( a < 0 ) a = 0; 
 		if( a > 1 ) a = 1;
 	}
+
+	public void set(float r, float g, float b, float a) 
+	{	
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+	}
 }
