@@ -15,7 +15,7 @@
  *  along with libgdx.  If not, see <http://www.gnu.org/licenses/>.
  */
 #define FIXED_POINT
-#include "kissfft/kiss_fftr.h"
+#include "kiss_fftr.h"
 #include "KissFFT.h"
 #include <stdlib.h>
 #include <stdio.h>
