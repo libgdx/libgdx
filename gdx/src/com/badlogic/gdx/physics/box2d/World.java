@@ -1,6 +1,7 @@
 package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
  * The world class manages all physics entities, dynamic simulation,
@@ -316,7 +317,24 @@ public class World
 		System.loadLibrary( "gdx" );
 				
 		World world = new World( new Vector2( 0, -10 ), true );
-			
+		BodyDef bodyDef = new BodyDef( );
+		bodyDef.active = true;
+		bodyDef.position.set( 0, 0 );
+		bodyDef.type = BodyType.DynamicBody;
+		
+		CircleShape shape = new CircleShape();
+		shape.setRadius(1);		
+		
+		Body body = world.createBody(bodyDef);
+		body.createFixture(shape, 1);
+		shape.dispose();
+		
+		for( int i = 0; i < 60; i++ )
+		{
+			world.step( 1 / 60.0f, 5, 5 );
+			System.out.println(body.getWorldCenter());
+		}
+		
 		world.dispose();		
 	}
 }

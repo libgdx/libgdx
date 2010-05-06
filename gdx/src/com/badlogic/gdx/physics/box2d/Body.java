@@ -82,10 +82,10 @@ public class Body
 	 */
 	public void setTransform(Vector2 position, float angle)
 	{
-		jniSetTransform(position.x, position.y, angle);
+		jniSetTransform( addr, position.x, position.y, angle);
 	}	
 	
-	private native void jniSetTransform( float positionX, float positionY, float angle );
+	private native void jniSetTransform( long addr, float positionX, float positionY, float angle );
 	
 	/** 
 	 * Get the body transform for the body's origin. FIXME
