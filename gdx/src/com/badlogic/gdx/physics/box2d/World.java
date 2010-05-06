@@ -99,10 +99,10 @@ public class World
 	 */
 	public void destroyBody(Body body)
 	{
-		jniDestroyBody( body.addr );
+		jniDestroyBody( body.addr, body.addr );
 	}
 
-	private native void jniDestroyBody( long addr );
+	private native void jniDestroyBody( long addr, long bodyAddr );
 	
 	/** 
 	 * Create a joint to constrain bodies together. No reference to the definition
@@ -126,10 +126,10 @@ public class World
 	 */
 	public void destroyJoint(Joint joint)
 	{
-		jniDestroyJoint( joint.addr );
+		jniDestroyJoint( joint.addr, joint.addr );
 	}
 	
-	private native void jniDestroyJoint( long addr );
+	private native void jniDestroyJoint( long addr, long jointAddr );
 
 	/**
 	 * Take a time step. This performs collision detection, integration,
@@ -303,4 +303,20 @@ public class World
 //	/// @return the head of the world contact list.
 //	/// @warning contacts are 
 //	b2Contact* GetContactList();
+	
+	public void dispose( )
+	{
+		jniDispose( addr );
+	}
+	
+	private native void jniDispose( long addr );
+	
+	public static void main( String[] argv )
+	{
+		System.loadLibrary( "gdx" );
+				
+		World world = new World( new Vector2( 0, -10 ), true );
+			
+		world.dispose();		
+	}
 }
