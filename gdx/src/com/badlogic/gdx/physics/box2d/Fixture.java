@@ -3,7 +3,13 @@ package com.badlogic.gdx.physics.box2d;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 public class Fixture 
-{
+{			
+	/** world **/
+	private final World world;
+	
+	/** body **/
+	private final Body body;
+	
 	/** the address of the fixture **/
 	protected final long addr;
 	
@@ -11,8 +17,10 @@ public class Fixture
 	 * Constructs a new fixture
 	 * @param addr the address of the fixture
 	 */
-	protected Fixture( long addr )
+	protected Fixture( World world, Body body, long addr )
 	{
+		this.world = world;
+		this.body = body;
 		this.addr = addr;
 	}
 	
@@ -85,9 +93,13 @@ public class Fixture
 	
 	private native void jniGetFilterData( long addr, short[] filter );
 
-//	/// Get the parent body of this fixture. This is NULL if the fixture is not attached.
-//	/// @return the parent body.
-//	b2Body* GetBody();
+	/**
+	 *  Get the parent body of this fixture. This is NULL if the fixture is not attached.
+	 */
+	public Body getBody()
+	{
+		return body;
+	}
 //	const b2Body* GetBody() const;
 //
 //	/// Get the next fixture in the parent body's fixture list.

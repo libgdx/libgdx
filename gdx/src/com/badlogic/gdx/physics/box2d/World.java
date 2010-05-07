@@ -1,7 +1,18 @@
 package com.badlogic.gdx.physics.box2d;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.JointDef.JointType;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
+import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
+import com.badlogic.gdx.physics.box2d.joints.LineJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
+import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 
 /**
  * The world class manages all physics entities, dynamic simulation,
@@ -13,6 +24,21 @@ public class World
 {
 	/** the address of the world instance **/
 	private final long addr;
+	
+	/** all known bodies **/
+	protected final HashMap<Long, Body> bodies = new HashMap<Long, Body>();
+	
+	/** all known fixtures **/
+	protected final HashMap<Long, Fixture> fixtures = new HashMap<Long, Fixture>( );
+	
+	/** all known joints **/
+	protected final HashMap<Long, Joint> joints = new HashMap<Long, Joint>( );
+	
+	/** Contact filter **/
+	protected ContactFilter contactFilter = null;
+	
+	/** Contact listener **/
+	protected ContactListener contactListener = null;
 	
 	/**
 	 * Construct a world object.
@@ -42,7 +68,7 @@ public class World
 	 */ 
 	public void setContactFilter(ContactFilter filter)
 	{
-		
+		this.contactFilter = filter;
 	}
 
 	/**
@@ -51,7 +77,7 @@ public class World
 	 */
 	void setContactListener(ContactListener listener)
 	{
-		
+		this.contactListener = listener;
 	}
 
 	/**
@@ -61,7 +87,7 @@ public class World
 	 */
 	public Body createBody(BodyDef def)
 	{
-		return new Body( jniCreateBody( addr, 
+		Body body = new Body( this, jniCreateBody( addr, 
 										def.type.getValue(),
 										def.position.x, def.position.y,
 										def.angle, 
@@ -75,6 +101,8 @@ public class World
 										def.bullet,
 										def.active,
 										def.inertiaScale) );
+		this.bodies.put( body.addr, body );
+		return body;
 	}
 	
 	private native long jniCreateBody( long addr, 
@@ -101,6 +129,11 @@ public class World
 	public void destroyBody(Body body)
 	{
 		jniDestroyBody( body.addr, body.addr );
+		this.bodies.remove( body.addr );
+		for( int i = 0; i < body.getFixtureList().size(); i++ )
+			this.fixtures.remove(body.getFixtureList().get(i).addr);
+		for( int i = 0; i < body.getJointList().size(); i++ )
+			this.joints.remove(body.getJointList().get(i).joint.addr);		
 	}
 
 	private native void jniDestroyBody( long addr, long bodyAddr );
@@ -113,8 +146,34 @@ public class World
 	public Joint createJoint(JointDef def)
 	{
 		long jointAddr = jniCreateJoint( addr, def.type.getValue(), def.bodyA.addr, def.bodyB.addr, def.collideConnected);
-		
-		return null;
+		Joint joint = null;
+		if( def.type == JointType.DistanceJoint )
+			joint = new DistanceJoint( this, jointAddr );
+		if( def.type == JointType.FrictionJoint )
+			joint = new FrictionJoint( this, jointAddr );
+		if( def.type == JointType.GearJoint )
+			joint = new GearJoint( this, jointAddr );
+		if( def.type == JointType.LineJoint )
+			joint = new LineJoint( this, jointAddr );
+		if( def.type == JointType.MouseJoint )
+			joint = new MouseJoint( this, jointAddr );
+		if( def.type == JointType.PrismaticJoint )
+			joint = new PrismaticJoint( this, jointAddr);
+		if( def.type == JointType.PulleyJoint )
+			joint = new PulleyJoint( this, jointAddr );
+		if( def.type == JointType.RevoluteJoint )
+			joint = new RevoluteJoint( this, jointAddr );
+		if( def.type == JointType.WeldJoint )
+			joint = new WeldJoint( this, jointAddr );
+		if( joint != null )
+			joints.put( joint.addr, joint );
+		JointEdge jointEdgeA = new JointEdge( def.bodyB, joint );
+		JointEdge jointEdgeB = new JointEdge( def.bodyA, joint ); 
+		joint.jointEdgeA = jointEdgeA;
+		joint.jointEdgeB = jointEdgeB;
+		def.bodyA.joints.add( jointEdgeA );
+		def.bodyB.joints.add( jointEdgeB );
+		return joint;
 	}
 	
 	private native long jniCreateJoint( long addr, int type, long bodyA, long bodyB, boolean collideConnected );
@@ -127,7 +186,10 @@ public class World
 	 */
 	public void destroyJoint(Joint joint)
 	{
-		jniDestroyJoint( joint.addr, joint.addr );
+		jniDestroyJoint( addr, joint.addr );
+		joints.remove(joint.addr);
+		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
+		joint.jointEdgeB.other.joints.remove(joint.jointEdgeA);
 	}
 	
 	private native void jniDestroyJoint( long addr, long jointAddr );
@@ -235,7 +297,7 @@ public class World
 	 * Get the global gravity vector.
 	 */
 	final float[] tmpGravity = new float[2];
-	final Vector2 gravity = new Vector2( );
+	final Vector2 gravity = new Vector2( );	
 	public Vector2 getGravity()
 	{
 		jniGetGravity( addr, tmpGravity );
@@ -319,22 +381,90 @@ public class World
 		World world = new World( new Vector2( 0, -10 ), true );
 		BodyDef bodyDef = new BodyDef( );
 		bodyDef.active = true;
-		bodyDef.position.set( 0, 0 );
+		bodyDef.position.set( 0, 10 );
 		bodyDef.type = BodyType.DynamicBody;
 		
 		CircleShape shape = new CircleShape();
 		shape.setRadius(1);		
 		
 		Body body = world.createBody(bodyDef);
-		body.createFixture(shape, 1);
+		Fixture fixture = body.createFixture(shape, 1);
+		fixture.setRestitution(0.5f);
 		shape.dispose();
 		
-		for( int i = 0; i < 60; i++ )
-		{
-			world.step( 1 / 60.0f, 5, 5 );
-			System.out.println(body.getWorldCenter());
-		}
+		bodyDef.position.set( 0, -1 );
+		bodyDef.type = BodyType.StaticBody;
 		
-		world.dispose();		
+		PolygonShape pShape = new PolygonShape();
+		pShape.setAsBox( 2, 1 );
+		Body body2 = world.createBody(bodyDef);
+		body2.createFixture(pShape, 1);
+		pShape.dispose();
+		
+		body.setUserData( "circle" );
+		body2.setUserData( "ground" );
+		
+		world.setContactFilter( new ContactFilter() {
+			
+			@Override
+			public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) 
+			{
+				System.out.println( "contact between " + fixtureA.getBody().getUserData() + " and " + fixtureB.getBody().getUserData() );
+				return true;
+			}
+		});
+		
+		world.setContactListener( new ContactListener() 
+		{
+			
+			@Override
+			public void endContact(Contact contact) 
+			{
+				System.out.println( "ending contact " + contact.getFixtureA().getBody().getUserData() + ": " + contact.getFixtureB().getBody().getUserData());				
+			}
+			
+			@Override
+			public void beginContact(Contact contact) 
+			{			
+				System.out.println( "beginning contact " + contact.getFixtureA().getBody().getUserData() + ": " + contact.getFixtureB().getBody().getUserData());
+			}
+		});
+		
+		for( int i = 0; i < 60*3; i++)
+		{
+			world.step( 1 / 60.0f, 1, 1 );
+//			System.out.println(body.getWorldCenter());
+		}				
+	}
+	
+	/**
+	 * Internal method called from JNI in case a contact happens
+	 * @param fixtureA
+	 * @param fixtureB
+	 * @return
+	 */
+	private boolean contactFilter( long fixtureA, long fixtureB )
+	{
+		if( contactFilter != null )
+			return contactFilter.shouldCollide( fixtures.get(fixtureA), fixtures.get(fixtureB));
+		else
+			return true;
+	}
+	
+	private final Contact contact = new Contact( this, 0 );
+	private void beginContact( long contactAddr )
+	{
+		contact.addr = contactAddr;
+		
+		if( contactListener != null )
+			contactListener.beginContact( contact );
+	}
+	
+	private void endContact( long contactAddr )
+	{
+		contact.addr = contactAddr;
+		
+		if( contactListener != null )
+			contactListener.endContact( contact );
 	}
 }

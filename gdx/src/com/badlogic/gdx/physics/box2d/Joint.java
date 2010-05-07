@@ -8,15 +8,25 @@ public abstract class Joint
 	/** the address of the joint **/
 	protected long addr;
 	
+	/** world **/
+	private final World world;
+	
 	/** temporary float array **/
 	private final float[] tmp = new float[2];
+	
+	/** joint edge a **/
+	protected JointEdge jointEdgeA;
+	
+	/** joint edge b **/
+	protected JointEdge jointEdgeB;
 	
 	/**
 	 * Constructs a new joint
 	 * @param addr the address of the joint
 	 */
-	protected Joint( long addr )
+	protected Joint( World world, long addr )
 	{
+		this.world = world;
 		this.addr = addr;
 	}
 	
@@ -39,7 +49,7 @@ public abstract class Joint
 	 */
 	public Body getBodyA()
 	{
-		return new Body( jniGetBodyA( addr ) );
+		return world.bodies.get( jniGetBodyA( addr ) );
 	}	
 	
 	private native long jniGetBodyA( long addr );
@@ -49,7 +59,7 @@ public abstract class Joint
 	 */
 	public Body getBodyB()
 	{
-		return new Body( jniGetBodyB( addr ) );
+		return world.bodies.get( jniGetBodyB( addr ) );
 	}	
 	
 	private native long jniGetBodyB( long addr );

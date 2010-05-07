@@ -1,6 +1,73 @@
 #include "Box2D.h"
 #include "World.h"
 
+static jclass worldClass = 0;
+static jmethodID shouldCollideID = 0;
+static jmethodID beginContactID = 0;
+static jmethodID endContactID = 0;
+
+class CustomContactFilter: public b2ContactFilter
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+	CustomContactFilter( JNIEnv* env, jobject obj )
+	{
+		this->env = env;
+		this->obj = obj;
+
+		if( worldClass == 0 )
+			worldClass = env->GetObjectClass(obj);
+		if( shouldCollideID == 0 )
+			shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
+	}
+
+	virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
+	{
+		if( shouldCollideID != 0 )
+			env->CallBooleanMethod( obj, shouldCollideID, (jlong)fixtureA, (jlong)fixtureB );
+		else
+			return true;
+	}
+};
+
+class CustomContactListener: public b2ContactListener
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+		CustomContactListener( JNIEnv* env, jobject obj )
+		{
+			this->env = env;
+			this->obj = obj;
+
+			if( worldClass == 0 )
+				worldClass = env->GetObjectClass(obj);
+			if( beginContactID == 0 )
+				beginContactID = env->GetMethodID(worldClass, "beginContact", "(J)V" );
+			if( endContactID == 0 )
+				endContactID = env->GetMethodID( worldClass, "endContact", "(J)V" );
+		}
+
+		/// Called when two fixtures begin to touch.
+		void BeginContact(b2Contact* contact)
+		{
+			if( beginContactID != 0 )
+				env->CallVoidMethod(obj, beginContactID, (jlong)contact );
+		}
+
+		/// Called when two fixtures cease to touch.
+		void EndContact(b2Contact* contact)
+		{
+			if( endContactID != 0 )
+				env->CallVoidMethod(obj, endContactID, (jlong)contact);
+		}
+};
+
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    newWorld
@@ -126,9 +193,13 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyJoint
  * Signature: (JFII)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniStep
- (JNIEnv *, jobject, jlong addr, jfloat timeStep, jint velocityIterations, jint positionIterations)
+ (JNIEnv *env, jobject obj, jlong addr, jfloat timeStep, jint velocityIterations, jint positionIterations)
 {
 	b2World* world = (b2World*)addr;
+	CustomContactFilter contactFilter(env, obj);
+	CustomContactListener contactListener(env,obj);
+	world->SetContactFilter(&contactFilter);
+	world->SetContactListener(&contactListener);
 	world->Step( timeStep, velocityIterations, positionIterations );
 }
 

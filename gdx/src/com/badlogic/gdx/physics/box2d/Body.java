@@ -1,5 +1,7 @@
 package com.badlogic.gdx.physics.box2d;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
@@ -16,12 +18,26 @@ public class Body
 	/** temporary float array **/
 	private final float[] tmp = new float[4];
 	
+	/** World **/
+	private final World world;
+	
+	/** Fixtures of this body **/
+	private ArrayList<Fixture> fixtures = new ArrayList<Fixture>(2);
+	
+	/** Joints of this body **/
+	protected ArrayList<JointEdge> joints = new ArrayList<JointEdge>(2);
+	
+	/** user data **/
+	private Object userData;
+	
 	/**
 	 * Constructs a new body with the given address
+	 * @param world the world
 	 * @param addr the address
 	 */
-	protected Body( long addr )
+	protected Body( World world, long addr )
 	{
+		this.world = world;
 		this.addr = addr;
 	}
 	
@@ -36,7 +52,10 @@ public class Body
 	 */	 
 	public Fixture createFixture(FixtureDef def)
 	{		
-		return new Fixture( jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density, def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex) );
+		Fixture fixture = new Fixture( world, this, jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density, def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex) );
+		this.world.fixtures.put( fixture.addr, fixture );
+		this.fixtures.add( fixture );
+		return fixture;
 	}
 	
 	private native long jniCreateFixture( long addr, long shapeAddr, float friction, float restitution, float density, boolean isSensor, short filterCategoryBits, short filterMaskBits, short filterGroupIndex );
@@ -52,7 +71,10 @@ public class Body
 	 */
 	public Fixture createFixture(Shape shape, float density)
 	{
-		return new Fixture( jniCreateFixture(addr, shape.addr, density));
+		Fixture fixture = new Fixture( world, this, jniCreateFixture(addr, shape.addr, density));
+		this.world.fixtures.put( fixture.addr, fixture );
+		this.fixtures.add( fixture );
+		return fixture;
 	}
 	
 	private native long jniCreateFixture( long addr, long shapeAddr, float density );
@@ -69,6 +91,8 @@ public class Body
 	public void destroyFixture(Fixture fixture)
 	{
 		jniDestroyFixture( addr, fixture.addr );
+		this.world.fixtures.remove(fixture);
+		this.fixtures.remove(fixture);
 	}
 	
 	private native void jniDestroyFixture( long addr, long fixtureAddr );
@@ -580,25 +604,51 @@ public class Body
 	
 	private native boolean jniIsFixedRotation( long addr );
 	
-//	// Get the list of all fixtures attached to this body.
-//	b2Fixture* GetFixtureList();
-//	const b2Fixture* GetFixtureList() const;
-//
-//	/// Get the list of all joints attached to this body.
-//	b2JointEdge* GetJointList();
-//	const b2JointEdge* GetJointList() const;
-//
+	/**
+	 * Get the list of all fixtures attached to this body.
+	 * Do not modify the list!
+	 */
+	public ArrayList<Fixture> getFixtureList()
+	{
+		return fixtures;
+	}
+
+	/**
+	 *  Get the list of all joints attached to this body.
+	 *  Do not modify the list!
+	 */
+	public ArrayList<JointEdge> getJointList()
+	{
+		return joints;
+	}	
+
 //	/// Get the list of all contacts attached to this body.
 //	/// @warning this list changes during the time step and you may
 //	/// miss some collisions if you don't use b2ContactListener.
 //	b2ContactEdge* GetContactList();
 //	const b2ContactEdge* GetContactList() const;
-//
-//	/// Get the next body in the world's body list.
-//	b2Body* GetNext();
-//	const b2Body* GetNext() const;
-//
-//	/// Get the parent world of this body.
-//	b2World* GetWorld();
-//	const b2World* GetWorld() const;
+	
+	/**
+	 *  Get the parent world of this body.
+	 */
+	public World getWorld()
+	{
+		return world;
+	}
+	
+	/**
+	 * Get the user data
+	 */
+	public Object getUserData( )
+	{
+		return userData;
+	}
+	
+	/**
+	 * Set the user data
+	 */
+	public void setUserData( Object userData )
+	{
+		this.userData = userData;
+	}
 }
