@@ -39,6 +39,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.util.Log;
 
 /**
@@ -59,7 +60,7 @@ import android.util.Log;
  *   that matches it exactly (with regards to red/green/blue/alpha channels
  *   bit depths). Failure to do so would result in an EGL_BAD_MATCH error.
  */
-public class GLSurfaceView20 extends GLBaseSurfaceView {
+public class GLSurfaceView20 extends GLSurfaceView {
     private static String TAG = "GL2JNIView";
     private static final boolean DEBUG = false;
 
@@ -82,8 +83,8 @@ public class GLSurfaceView20 extends GLBaseSurfaceView {
          */
         if (translucent) {
             this.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        }
-
+        }       
+        
         /* Setup the context factory for 2.0 rendering.
          * See ContextFactory class definition below
          */
@@ -101,7 +102,7 @@ public class GLSurfaceView20 extends GLBaseSurfaceView {
         /* Set the renderer responsible for frame rendering */        
     }
 
-    private static class ContextFactory implements GLBaseSurfaceView.EGLContextFactory {
+    private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
         private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
         public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
             Log.w(TAG, "creating OpenGL ES 2.0 context");
@@ -124,7 +125,7 @@ public class GLSurfaceView20 extends GLBaseSurfaceView {
         }
     }
 
-    private static class ConfigChooser implements GLBaseSurfaceView.EGLConfigChooser {
+    private static class ConfigChooser implements GLSurfaceView.EGLConfigChooser {
 
         public ConfigChooser(int r, int g, int b, int a, int depth, int stencil) {
             mRedSize = r;
