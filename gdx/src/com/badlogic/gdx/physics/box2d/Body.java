@@ -27,6 +27,9 @@ public class Body
 	/** Joints of this body **/
 	protected ArrayList<JointEdge> joints = new ArrayList<JointEdge>(2);
 	
+	/** Contacts of this body **/
+	protected ArrayList<ContactEdge> contacts = new ArrayList<ContactEdge>(2);
+	
 	/** user data **/
 	private Object userData;
 	
@@ -412,6 +415,7 @@ public class Body
 	 * @return the world velocity of a point.
 	 */	
 	public final Vector2 linVelLoc = new Vector2( );
+	
 	public Vector2 getLinearVelocityFromLocalPoint(Vector2 localPoint)
 	{
 		jniGetLinearVelocityFromLocalPoint( addr, localPoint.x, localPoint.y, tmp );
@@ -622,11 +626,16 @@ public class Body
 		return joints;
 	}	
 
-//	/// Get the list of all contacts attached to this body.
-//	/// @warning this list changes during the time step and you may
-//	/// miss some collisions if you don't use b2ContactListener.
-//	b2ContactEdge* GetContactList();
-//	const b2ContactEdge* GetContactList() const;
+	/**
+	 *  Get the list of all contacts attached to this body.	 
+	 * @warning this list changes during the time step and you may
+	 * miss some collisions if you don't use b2ContactListener.
+	 * Do not modify the returned list!
+	 */
+	ArrayList<ContactEdge> getContactList()
+	{
+		return contacts;
+	}
 	
 	/**
 	 *  Get the parent world of this body.

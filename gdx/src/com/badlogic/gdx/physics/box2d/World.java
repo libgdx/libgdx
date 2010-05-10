@@ -1,6 +1,7 @@
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -22,6 +23,11 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
  */
 public class World 
 {
+	static
+	{
+		System.loadLibrary( "gdx" );
+	}
+	
 	/** the address of the world instance **/
 	private final long addr;
 	
@@ -39,6 +45,12 @@ public class World
 	
 	/** Contact listener **/
 	protected ContactListener contactListener = null;
+
+	/** contact edge pool **/
+	protected final Stack<ContactEdge> contactEdgePool = new Stack<ContactEdge>( );
+	
+	/** contact pool **/
+	protected final Stack<Contact> contactPool = new Stack<Contact>( );
 	
 	/**
 	 * Construct a world object.
@@ -48,6 +60,12 @@ public class World
 	public World( Vector2 gravity, boolean doSleep )
 	{
 		addr = newWorld( gravity.x, gravity.y, doSleep );
+		
+		for( int i = 0; i < 1000; i++ )
+		{
+			contactEdgePool.push( new ContactEdge() );
+			contactPool.push( new Contact(this, 0) );
+		}
 	}
 	
 	private native long newWorld( float gravityX, float gravityY, boolean doSleep );
@@ -450,11 +468,39 @@ public class World
 		else
 			return true;
 	}
-	
-	private final Contact contact = new Contact( this, 0 );
+		
 	private void beginContact( long contactAddr )
 	{
+		Contact contact = null;
+		if( contactPool.size() == 0 )
+			contact = new Contact( this, contactAddr );
+		else
+			contact = contactPool.pop();
 		contact.addr = contactAddr;
+		
+		Body bodyA = contact.getFixtureA().getBody();
+		Body bodyB = contact.getFixtureB().getBody();
+		
+		ContactEdge contactA = null;
+		ContactEdge contactB = null;
+		
+		if( contactEdgePool.size() == 0 )		
+			contactA = new ContactEdge( );
+		else
+			contactA = contactEdgePool.pop();
+		
+		if( contactEdgePool.size() == 0 )
+			contactB = new ContactEdge( );
+		else
+			contactB = contactEdgePool.pop();						
+		
+		contactA.contact = contact;
+		contactA.other = bodyB;
+		contactB.contact = contact;
+		contactB.other = bodyA;
+		
+		bodyA.contacts.add( contactA );
+		bodyB.contacts.add( contactB );
 		
 		if( contactListener != null )
 			contactListener.beginContact( contact );
@@ -462,7 +508,16 @@ public class World
 	
 	private void endContact( long contactAddr )
 	{
+		Contact contact = null;
+		if( contactPool.size() == 0 )
+			contact = new Contact( this, contactAddr );
+		else
+			contact = contactPool.pop();
 		contact.addr = contactAddr;
+		
+		Body bodyA = contact.getFixtureA().getBody();
+		Body bodyB = contact.getFixtureB().getBody();
+				
 		
 		if( contactListener != null )
 			contactListener.endContact( contact );

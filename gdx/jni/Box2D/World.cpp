@@ -27,7 +27,7 @@ public:
 	virtual bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB)
 	{
 		if( shouldCollideID != 0 )
-			env->CallBooleanMethod( obj, shouldCollideID, (jlong)fixtureA, (jlong)fixtureB );
+			return env->CallBooleanMethod( obj, shouldCollideID, (jlong)fixtureA, (jlong)fixtureB );
 		else
 			return true;
 	}
@@ -54,14 +54,14 @@ public:
 		}
 
 		/// Called when two fixtures begin to touch.
-		void BeginContact(b2Contact* contact)
+		virtual void BeginContact(b2Contact* contact)
 		{
 			if( beginContactID != 0 )
 				env->CallVoidMethod(obj, beginContactID, (jlong)contact );
 		}
 
 		/// Called when two fixtures cease to touch.
-		void EndContact(b2Contact* contact)
+		virtual void EndContact(b2Contact* contact)
 		{
 			if( endContactID != 0 )
 				env->CallVoidMethod(obj, endContactID, (jlong)contact);
