@@ -6,7 +6,7 @@ LOCAL_MODULE    := gdx
 LOCAL_ARM_MODE := arm
 LOCAL_SRC_FILES := \
 AudioTools.cpp \
-mpg123/Mpg123Decoder.cpp \
+Mpg123Decoder.cpp \
 vorbis/VorbisDecoder.cpp \
 kissfft/KissFFT.cpp \
 Box2D/Box2D.h \
