@@ -337,7 +337,7 @@ final class AndroidGraphics implements Graphics, Renderer
 		synchronized( this )
 		{
 			if( this.listener != null )
-				listener.dispose( app );
+				this.listener.dispose( app );
 			this.listener = listener;
 		}
 	}
