@@ -111,10 +111,10 @@ public class LineJoint extends Joint
 	 */
 	public void setMotorSpeed(float speed)
 	{
-		jniSetMotorEnabled( addr, speed );
+		jniSetMotorSpeed( addr, speed );
 	}
 	
-	private native void jniSetMotorEnabled( long addr, float speed );
+	private native void jniSetMotorSpeed( long addr, float speed );
 
 	/** 
 	 * Get the motor speed, usually in meters per second.
@@ -137,7 +137,8 @@ public class LineJoint extends Joint
 	private native void jniSetMaxMotorForce( long addr, float force );
 	
 	/** 
-	 * Set/Get the maximum motor force, usually in N.
+	 * Set/Get the maximum motor force, usually in N. 
+	 * FIXME returns 0 at the moment due to a linking problem.
 	 */
 	public float getMaxMotorForce()
 	{

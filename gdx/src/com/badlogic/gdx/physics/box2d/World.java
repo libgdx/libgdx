@@ -7,14 +7,23 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
+import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 import com.badlogic.gdx.physics.box2d.joints.GearJoint;
+import com.badlogic.gdx.physics.box2d.joints.GearJointDef;
 import com.badlogic.gdx.physics.box2d.joints.LineJoint;
+import com.badlogic.gdx.physics.box2d.joints.LineJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
+import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 /**
  * The world class manages all physics entities, dynamic simulation,
@@ -164,7 +173,7 @@ public class World
 	 */
 	public Joint createJoint(JointDef def)
 	{
-		long jointAddr = jniCreateJoint( addr, def.type.getValue(), def.bodyA.addr, def.bodyB.addr, def.collideConnected);
+		long jointAddr = createProperJoint( def );
 		Joint joint = null;
 		if( def.type == JointType.DistanceJoint )
 			joint = new DistanceJoint( this, jointAddr );
@@ -195,10 +204,183 @@ public class World
 		return joint;
 	}
 	
-	private native long jniCreateJoint( long addr, int type, long bodyA, long bodyB, boolean collideConnected );
+	private long createProperJoint( JointDef def )
+	{
+		if( def.type == JointType.DistanceJoint )
+		{
+			DistanceJointDef d = (DistanceJointDef)def;
+			return jniCreateDistanceJoint( addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, 
+										   d.localAnchorA.x, d.localAnchorA.y,
+										   d.localAnchorB.x, d.localAnchorB.y, 
+										   d.length, d.frequencyHz, d.dampingRatio);
+		}		
+		if( def.type == JointType.FrictionJoint )
+		{
+			FrictionJointDef d = (FrictionJointDef)def;
+			return jniCreateFrictionJoint( addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+										   d.localAnchorA.x, d.localAnchorA.y,
+										   d.localAnchorB.x, d.localAnchorB.y,
+										   d.maxForce,
+										   d.maxTorque );
+		}
+		if( def.type == JointType.GearJoint )
+		{
+			GearJointDef d = (GearJointDef)def;
+			return jniCreateGearJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+									  d.joint1.addr, d.joint2.addr, d.ratio );
+		}
+		if( def.type == JointType.LineJoint )
+		{
+			LineJointDef d = (LineJointDef)def;
+			return jniCreateLineJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+									  d.localAnchorA.x, d.localAnchorA.y,
+									  d.localAnchorB.x, d.localAnchorB.y,
+									  d.localAxisA.x, d.localAxisA.y,
+									  d.enableLimit,
+									  d.lowerTranslation,
+									  d.upperTranslation,
+									  d.enableMotor, 
+									  d.maxMotorForce, 
+									  d.motorSpeed ); 
+									  
+		}
+		if( def.type == JointType.MouseJoint )
+		{
+			MouseJointDef d = (MouseJointDef)def;
+			return jniCreateMouseJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+									   d.target.x, d.target.y, d.maxForce, d.frequencyHz, d.dampingRatio );
+		}
+		if( def.type == JointType.PrismaticJoint )
+		{
+			PrismaticJointDef d = (PrismaticJointDef)def;
+			return jniCreatePrismaticJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, 
+					  					   d.localAnchorA.x, d.localAnchorA.y,
+					  					   d.localAnchorB.x, d.localAnchorB.y,
+					  					   d.localAxis1.x, d.localAxis1.y,
+					  					   d.referenceAngle, 
+					  					   d.enableLimit, 
+					  					   d.lowerTranslation, 
+					  					   d.upperTranslation, 
+					  					   d.enableMotor, 
+					  					   d.maxMotorForce, 
+					  					   d.motorSpeed );
+		}
+		if( def.type == JointType.PulleyJoint )
+		{
+			PulleyJointDef d = (PulleyJointDef)def;
+			return jniCreatePulleyJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+										d.groundAnchorA.x, d.groundAnchorA.y,
+										d.groundAnchorB.x, d.groundAnchorB.y, 
+										d.localAnchorA.x, d.localAnchorA.y,
+										d.localAnchorB.x, d.localAnchorB.y,
+										d.lengthA,
+										d.maxLengthA,
+										d.lengthB, 
+										d.maxLengthB, 
+										d.ratio );
+										
+		}
+		if( def.type == JointType.RevoluteJoint )
+		{
+			RevoluteJointDef d = (RevoluteJointDef)def;
+			return jniCreateRevoluteJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+										  d.localAnchorA.x, d.localAnchorA.y,
+										  d.localAnchorB.x, d.localAnchorB.y,
+										  d.referenceAngle, 
+										  d.enableLimit, 
+										  d.lowerAngle, 
+										  d.upperAngle, 
+										  d.enableMotor, 
+										  d.motorSpeed, 
+										  d.maxMotorTorque );			
+		}
+		if( def.type == JointType.WeldJoint )
+		{
+			WeldJointDef d = (WeldJointDef)def;
+			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected,
+									  d.localAnchorA.x, d.localAnchorA.y,
+									  d.localAnchorB.x, d.localAnchorB.y,
+									  d.referenceAngle );
+		}
+		
+		return 0;
+	}
 	
+	private native long jniCreateDistanceJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+												float localAnchorAX, float localAnchorAY, 
+												float localAnchorBX, float localAnchorBY,
+												float length,
+												float frequencyHz,
+												float dampingRatio );
 	
-
+	private native long jniCreateFrictionJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+												float localAnchorAX, float localAnchorAY, 
+												float localAnchorBX, float localAnchorBY,
+												float maxForce,
+												float maxTorque);
+	
+	private native long jniCreateGearJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+											long joint1,
+											long joint2,
+											float ratio
+											);
+	
+	private native long jniCreateLineJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+											float localAnchorAX, float localAnchorAY, 
+											float localAnchorBX, float localAnchorBY,
+											float localAxisAX, float localAxisAY,
+											boolean enableLimit,
+											float lowerTranslation,
+											float upperTranslation,
+											boolean enableMotor,
+											float maxMotorForce,
+											float motorSpeed );
+	
+	private native long jniCreateMouseJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+											 float targetX, float targetY,
+											 float maxForce,
+											 float frequencyHz,
+											 float dampingRatio);
+	
+	private native long jniCreatePrismaticJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+												 float localAnchorAX, float localAnchorAY, 
+												 float localAnchorBX, float localAnchorBY,
+												 float localAxisAX, float localAxisAY,
+												 float referenceAngle,
+												 boolean enableLimit,
+												 float lowerTranslation,
+												 float upperTranslation,
+												 boolean enableMotor,
+												 float maxMotorForce,
+												 float motorSpeed );
+	
+	private native long jniCreatePulleyJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+											  float groundAnchorAX, float groundAnchorAY,
+											  float groundAnchorBX, float groundAnchorBY,
+											  float localAnchorAX, float localAnchorAY,
+											  float localAnchorBX, float localAnchorBY,
+											  float lengthA,
+											  float maxLengthA,
+											  float lengthB,
+											  float maxLengthB,
+											  float ratio);
+	
+	private native long jniCreateRevoluteJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+											    float localAnchorAX, float localAnchorAY,
+											    float localAnchorBX, float localAnchorBY,
+											    float referenceAngle,
+											    boolean enableLimit,
+											    float lowerAngle,
+											    float upperAngle,
+											    boolean enableMotor,
+											    float motorSpeed,
+											    float maxMotorTorque);
+	
+	private native long jniCreateWeldJoint( long addr, long bodyA, long bodyB, boolean collideConnected,
+										    float localAnchorAX, float localAnchorAY,
+										    float localAnchorBX, float localAnchorBY,
+										    float referenceAngle);	
+		
 	/**
 	 * Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks.

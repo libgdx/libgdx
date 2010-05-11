@@ -29,5 +29,5 @@ public class GearJointDef extends JointDef
 	 * The gear ratio.	 
 	 * @see GearJoint for explanation.
 	 */
-	float ratio = 1;
+	public float ratio = 1;
 }

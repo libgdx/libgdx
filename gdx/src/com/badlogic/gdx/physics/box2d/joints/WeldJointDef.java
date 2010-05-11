@@ -29,5 +29,5 @@ public class WeldJointDef extends JointDef
 	public final Vector2 localAnchorB = new Vector2();
 
 	/// The body2 angle minus body1 angle in the reference state (radians).
-	float referenceAngle = 0;
+	public float referenceAngle = 0;
 }

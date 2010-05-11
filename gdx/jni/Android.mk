@@ -18,6 +18,14 @@ Box2D/PolygonShape.cpp \
 Box2D/Shape.cpp \
 Box2D/World.cpp \
 Box2D/Box2D.h \
+Box2D/DistanceJoint.cpp \
+Box2D/FrictionJoint.cpp \
+Box2D/GearJoint.cpp \
+Box2D/LineJoint.cpp \
+Box2D/MouseJoint.cpp \
+Box2D/PrismaticJoint.cpp \
+Box2D/PulleyJoint.cpp \
+Box2D/RevoluteJoint.cpp \
 Box2D/Collision/b2BroadPhase.cpp \
 Box2D/Collision/b2BroadPhase.h \
 Box2D/Collision/b2CollideCircle.cpp \

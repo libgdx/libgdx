@@ -156,7 +156,7 @@ inline b2JointType getJointType( int type )
  * Method:    jniCreateJoint
  * Signature: (JIJJZ)J
  */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateJoint
+/*JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateJoint
 (JNIEnv *, jobject, jlong addr, jint type, jlong bodyAAddr, jlong bodyBAddr, jboolean collideConnected )
 {
 	b2World* world = (b2World*)addr;
@@ -171,7 +171,107 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateJoint
 
 	b2Joint* joint = world->CreateJoint( &jointDef );
 	return (jlong)joint;
+}*/
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateDistanceJoint
+ * Signature: (JJJZFFFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateDistanceJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat length, jfloat frequencyHz, jfloat dampingRatio)
+{
+
 }
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateFrictionJoint
+ * Signature: (JJJZFFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateFrictionJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat maxForce, jfloat maxTorque)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateGearJoint
+ * Signature: (JJJZJJF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateGearJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jlong joint1, jlong joint2, jfloat ratio)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateLineJoint
+ * Signature: (JJJZFFFFFFZFFZFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateLineJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat localAxisAX, jfloat localAxisAY, jboolean enableLimit, jfloat lowerTranslation, jfloat upperTranslation, jboolean enableMotor, jfloat maxMotorForce, jfloat motorSpeed)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateMouseJoint
+ * Signature: (JJJZFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateMouseJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat targetX, jfloat targetY, jfloat maxForce, jfloat frequencyHz, jfloat dampingRatio)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreatePrismaticJoint
+ * Signature: (JJJZFFFFFFFZFFZFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePrismaticJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat localAxisAX, jfloat localAxisAY, jfloat referenceAngle, jboolean enableLimit, jfloat lowerTranslation, jfloat upperTranslation, jboolean enableMotor, jfloat maxMotorForce, jfloat motorSpeed)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreatePulleyJoint
+ * Signature: (JJJZFFFFFFFFFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePulleyJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat groundAnchorAX, jfloat groundAnchorAY, jfloat groundAnchorBX, jfloat groundAnchorBY, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat lengthA, jfloat maxLengthA, jfloat lengthB, jfloat maxLengthB, jfloat ratio)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateRevoluteJoint
+ * Signature: (JJJZFFFFFZFFZFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRevoluteJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat referenceAngle, jboolean enableLimit, jfloat lowerAngle, jfloat upperAngle, jboolean enableMotor, jfloat motorSpeed, jfloat maxMotorTorque)
+{
+
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateWeldJoint
+ * Signature: (JJJZFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWeldJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat referenceAngle)
+{
+
+}
+
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
