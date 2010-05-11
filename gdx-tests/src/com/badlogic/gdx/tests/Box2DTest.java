@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,8 +35,8 @@ public class Box2DTest implements RenderListener
 	{	
 		app.getGraphics().getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );		
 		cam.setMatrices(app.getGraphics());	
-		
-		world.step( app.getGraphics().getDeltaTime(), 5, 5 );
+				
+		world.step( app.getGraphics().getDeltaTime(), 5, 5 );		
 		
 		for( int i = 0; i < boxes.size(); i++ )				
 			renderBox( app.getGraphics().getGL10(), boxes.get(i) );		
@@ -88,7 +87,7 @@ public class Box2DTest implements RenderListener
 		ground.createFixture( groundBox, 1 );
 		groundBox.dispose();
 		
-		for( int i = 0; i < 20; i++ )
+		for( int i = 0; i < 100; i++ )
 		{			
 			boxes.add(createBox( ));
 		}
@@ -115,9 +114,9 @@ public class Box2DTest implements RenderListener
 		
 	}
 	
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Box2D Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new com.badlogic.gdx.tests.Box2DTest() );
-	}
+//	public static void main( String[] argv )
+//	{
+//		JoglApplication app = new JoglApplication( "Box2D Test", 480, 320, false );
+//		app.getGraphics().setRenderListener( new com.badlogic.gdx.tests.Box2DTest() );
+//	}
 }

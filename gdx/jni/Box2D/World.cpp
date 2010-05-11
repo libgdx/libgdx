@@ -128,7 +128,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateBody
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody
 (JNIEnv *, jobject, jlong addr, jlong bodyAddr)
 {
-	b2World* world = (b2World*)world;
+	b2World* world = (b2World*)addr;
 	b2Body* body = (b2Body*)addr;
 	world->DestroyBody(body);
 }
@@ -182,7 +182,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyJoint
 (JNIEnv *, jobject, jlong addr, jlong jointAddr)
 {
 	b2World* world = (b2World*)addr;
-	b2Joint* joint = (b2Joint*)joint;
+	b2Joint* joint = (b2Joint*)jointAddr;
 
 	world->DestroyJoint( joint );
 }

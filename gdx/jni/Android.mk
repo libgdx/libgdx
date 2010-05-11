@@ -9,6 +9,14 @@ AudioTools.cpp \
 Mpg123Decoder.cpp \
 vorbis/VorbisDecoder.cpp \
 kissfft/KissFFT.cpp \
+Box2D/Body.cpp \
+Box2D/CircleShape.cpp \
+Box2D/Contact.cpp \
+Box2D/Fixture.cpp \
+Box2D/Joint.cpp \
+Box2D/PolygonShape.cpp \
+Box2D/Shape.cpp \
+Box2D/World.cpp \
 Box2D/Box2D.h \
 Box2D/Collision/b2BroadPhase.cpp \
 Box2D/Collision/b2BroadPhase.h \
