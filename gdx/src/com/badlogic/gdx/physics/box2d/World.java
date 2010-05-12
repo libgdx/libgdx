@@ -602,56 +602,56 @@ public class World
 		
 	private void beginContact( long contactAddr )
 	{
-		Contact contact = null;
-		if( contactPool.size() == 0 )
-			contact = new Contact( this, contactAddr );
-		else
-			contact = contactPool.pop();
-		contact.addr = contactAddr;
-		
-		Body bodyA = contact.getFixtureA().getBody();
-		Body bodyB = contact.getFixtureB().getBody();
-		
-		ContactEdge contactA = null;
-		ContactEdge contactB = null;
-		
-		if( contactEdgePool.size() == 0 )		
-			contactA = new ContactEdge( );
-		else
-			contactA = contactEdgePool.pop();
-		
-		if( contactEdgePool.size() == 0 )
-			contactB = new ContactEdge( );
-		else
-			contactB = contactEdgePool.pop();						
-		
-		contactA.contact = contact;
-		contactA.other = bodyB;
-		contactB.contact = contact;
-		contactB.other = bodyA;
-		
-		bodyA.contacts.add( contactA );
-		bodyB.contacts.add( contactB );
-		
-		if( contactListener != null )
-			contactListener.beginContact( contact );
+//		Contact contact = null;
+//		if( contactPool.size() == 0 )
+//			contact = new Contact( this, contactAddr );
+//		else
+//			contact = contactPool.pop();
+//		contact.addr = contactAddr;
+//		
+//		Body bodyA = contact.getFixtureA().getBody();
+//		Body bodyB = contact.getFixtureB().getBody();
+//		
+//		ContactEdge contactA = null;
+//		ContactEdge contactB = null;
+//		
+//		if( contactEdgePool.size() == 0 )		
+//			contactA = new ContactEdge( );
+//		else
+//			contactA = contactEdgePool.pop();
+//		
+//		if( contactEdgePool.size() == 0 )
+//			contactB = new ContactEdge( );
+//		else
+//			contactB = contactEdgePool.pop();						
+//		
+//		contactA.contact = contact;
+//		contactA.other = bodyB;
+//		contactB.contact = contact;
+//		contactB.other = bodyA;
+//		
+//		bodyA.contacts.add( contactA );
+//		bodyB.contacts.add( contactB );
+//		
+//		if( contactListener != null )
+//			contactListener.beginContact( contact );
 	}
 	
 	private void endContact( long contactAddr )
 	{
-		Contact contact = null;
-		if( contactPool.size() == 0 )
-			contact = new Contact( this, contactAddr );
-		else
-			contact = contactPool.pop();
-		contact.addr = contactAddr;
-		
-		Body bodyA = contact.getFixtureA().getBody();
-		Body bodyB = contact.getFixtureB().getBody();
-				
-		
-		if( contactListener != null )
-			contactListener.endContact( contact );
+//		Contact contact = null;
+//		if( contactPool.size() == 0 )
+//			contact = new Contact( this, contactAddr );
+//		else
+//			contact = contactPool.pop();
+//		contact.addr = contactAddr;
+//		
+//		Body bodyA = contact.getFixtureA().getBody();
+//		Body bodyB = contact.getFixtureB().getBody();
+//				
+//		
+//		if( contactListener != null )
+//			contactListener.endContact( contact );
 	}
 	
 	private boolean reportFixture( long addr )
