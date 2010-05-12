@@ -19,6 +19,7 @@
 #include "Box2D/Dynamics/Joints/b2MouseJoint.h"
 #include "Box2D/Dynamics/b2Body.h"
 #include "Box2D/Dynamics/b2TimeStep.h"
+#include <stdio.h>
 
 // p = attached point, m = mouse point
 // C = p - m

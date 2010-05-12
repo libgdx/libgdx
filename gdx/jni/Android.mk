@@ -132,7 +132,8 @@ vorbis/vorbisfile.c \
 vorbis/window.c
 				   
 				   
-LOCAL_CFLAGS := -DFIXED_POINT -ffast-math -O3 -Wall -I$(LOCAL_PATH) -D_ARM_ASSEM_
+LOCAL_CFLAGS := -DFIXED_POINT -ffast-math -O3 -Wall -I$(LOCAL_PATH) -D_ARM_ASSEM_ -DANDROID
 LOCAL_CPPFLAGS := -DFIXED_POINT -I$LOCAL_PATH/libvorbis/ -D_ARM_ASSEM_
+LOCAL_LDLIBS := -llog
 
 include $(BUILD_SHARED_LIBRARY)

@@ -54,14 +54,14 @@ public class Body
 	 *  @warning This function is locked during callbacks.
 	 */	 
 	public Fixture createFixture(FixtureDef def)
-	{		
+	{				
 		Fixture fixture = new Fixture( world, this, jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density, def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex) );
 		this.world.fixtures.put( fixture.addr, fixture );
 		this.fixtures.add( fixture );
 		return fixture;
 	}
 	
-	private native long jniCreateFixture( long addr, long shapeAddr, float friction, float restitution, float density, boolean isSensor, short filterCategoryBits, short filterMaskBits, short filterGroupIndex );
+	private native long jniCreateFixture( long addr, long shapeAddr, float friction, float restitution, float density, boolean isSensor, short filterCategoryBits, short filterMaskBits, short filterGroupIndex );		
 	
 	/**
 	 * Creates a fixture from a shape and attach it to this body.

@@ -30,10 +30,10 @@ public class MouseJointDef extends JointDef
 	/**
 	 *  The response speed.
 	 */
-	public float frequencyHz = 0;
+	public float frequencyHz = 5.0f;
 
 	/**
 	 *  The damping ratio. 0 = no damping, 1 = critical damping.
 	 */
-	public float dampingRatio = 0;
+	public float dampingRatio = 0.7f;
 }

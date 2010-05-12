@@ -217,6 +217,14 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetAutoC
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniQueryAABB
+ * Signature: (JFFFF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniQueryAABB
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniDispose
  * Signature: (J)V
  */

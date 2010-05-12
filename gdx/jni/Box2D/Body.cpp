@@ -1,5 +1,10 @@
 #include "Box2D.h"
 #include "Body.h"
+#include <stdio.h>
+
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
@@ -10,8 +15,12 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniCreateFixtur
 (JNIEnv *, jobject, jlong addr, jlong shapeAddr, jfloat friction, jfloat restitution, jfloat density, jboolean isSensor, jshort categoryBits, jshort maskBits, jshort groupIndex)
 {
 	b2Body* body = (b2Body*)addr;
-	b2Shape* shape = (b2Shape*)shape;
+	b2Shape* shape = (b2Shape*)shapeAddr;
 	b2FixtureDef fixtureDef;
+
+#ifdef ANDROID
+	//__android_log_print( ANDROID_LOG_INFO, "Box2DTest", "body: %d, shape: %d", body, shape );
+#endif
 
 	fixtureDef.shape = shape;
 	fixtureDef.friction = friction;

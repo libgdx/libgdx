@@ -538,11 +538,22 @@ public class World
 	
 	private native boolean jniGetAutoClearForces( long addr );
 	
-//	/// Query the world for all fixtures that potentially overlap the
-//	/// provided AABB.
-//	/// @param callback a user implemented callback class.
-//	/// @param aabb the query box.
-//	void QueryAABB(b2QueryCallback* callback, const b2AABB& aabb) const;
+	/**
+	 *  Query the world for all fixtures that potentially overlap the
+	 * provided AABB.
+	 * @param callback a user implemented callback class.
+	 * @param aabb the query box.
+	 */
+	public void QueryAABB(QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY )
+	{
+		queryCallback = callback;
+		jniQueryAABB( addr, lowerX, lowerY, upperX, upperY );
+	}
+	
+	private QueryCallback queryCallback = null;;
+	
+	private native void jniQueryAABB( long addr, float lowX, float lowY, float upX, float upY );
+	
 //
 //	/// Ray-cast the world for all fixtures in the path of the ray. Your callback
 //	/// controls whether you get the closest point, any point, or n-points.
@@ -573,70 +584,7 @@ public class World
 		jniDispose( addr );
 	}
 	
-	private native void jniDispose( long addr );
-	
-	public static void main( String[] argv )
-	{
-		System.loadLibrary( "gdx" );
-				
-		World world = new World( new Vector2( 0, -10 ), true );
-		BodyDef bodyDef = new BodyDef( );
-		bodyDef.active = true;
-		bodyDef.position.set( 0, 10 );
-		bodyDef.type = BodyType.DynamicBody;
-		
-		CircleShape shape = new CircleShape();
-		shape.setRadius(1);		
-		
-		Body body = world.createBody(bodyDef);
-		Fixture fixture = body.createFixture(shape, 1);
-		fixture.setRestitution(0.5f);
-		shape.dispose();
-		
-		bodyDef.position.set( 0, -1 );
-		bodyDef.type = BodyType.StaticBody;
-		
-		PolygonShape pShape = new PolygonShape();
-		pShape.setAsBox( 2, 1 );
-		Body body2 = world.createBody(bodyDef);
-		body2.createFixture(pShape, 1);
-		pShape.dispose();
-		
-		body.setUserData( "circle" );
-		body2.setUserData( "ground" );
-		
-		world.setContactFilter( new ContactFilter() {
-			
-			@Override
-			public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) 
-			{
-				System.out.println( "contact between " + fixtureA.getBody().getUserData() + " and " + fixtureB.getBody().getUserData() );
-				return true;
-			}
-		});
-		
-		world.setContactListener( new ContactListener() 
-		{
-			
-			@Override
-			public void endContact(Contact contact) 
-			{
-				System.out.println( "ending contact " + contact.getFixtureA().getBody().getUserData() + ": " + contact.getFixtureB().getBody().getUserData());				
-			}
-			
-			@Override
-			public void beginContact(Contact contact) 
-			{			
-				System.out.println( "beginning contact " + contact.getFixtureA().getBody().getUserData() + ": " + contact.getFixtureB().getBody().getUserData());
-			}
-		});
-		
-		for( int i = 0; i < 60*3; i++)
-		{
-			world.step( 1 / 60.0f, 1, 1 );
-//			System.out.println(body.getWorldCenter());
-		}				
-	}
+	private native void jniDispose( long addr );	
 	
 	/**
 	 * Internal method called from JNI in case a contact happens
@@ -704,5 +652,13 @@ public class World
 		
 		if( contactListener != null )
 			contactListener.endContact( contact );
+	}
+	
+	private boolean reportFixture( long addr )
+	{
+		if( queryCallback != null )
+			return queryCallback.reportFixture( fixtures.get( addr ) );
+		else
+			return false;
 	}
 }
