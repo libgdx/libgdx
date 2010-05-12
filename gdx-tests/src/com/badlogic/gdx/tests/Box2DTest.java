@@ -54,7 +54,7 @@ public class Box2DTest implements RenderListener, InputListener
 		cam.setMatrices(app.getGraphics());	
 				
 		long s = System.nanoTime();
-		world.step( app.getGraphics().getDeltaTime(), 8, 3 );
+		world.step( app.getGraphics().getDeltaTime(), 1, 1 );
 		float updateTime = (System.nanoTime()-s)/1000000000.0f;
 		
 		for( int i = 0; i < boxes.size(); i++ )				
@@ -122,7 +122,7 @@ public class Box2DTest implements RenderListener, InputListener
 		ground.createFixture( groundBox, 1 );
 		groundBox.dispose();
 		
-		for( int i = 0; i < 20; i++ )
+		for( int i = 0; i < 100; i++ )
 		{			
 			boxes.add(createBox( ));
 		}			
