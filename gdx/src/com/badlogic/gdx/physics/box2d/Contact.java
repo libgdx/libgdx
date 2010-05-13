@@ -15,19 +15,24 @@ public class Contact
 	/** the world **/
 	protected World world;
 	
+	/** the world manifold **/
+	protected final WorldManifold worldManifold = new WorldManifold( 0, 0 );
+	
 	protected Contact( World world, long addr )
 	{
 		this.addr = addr;
-		this.world = world;
+		this.world = world;		
 	}
 	
 	/**
 	 * Get the world manifold.
-	 */
+	 */	
 	public WorldManifold GetWorldManifold()
 	{
-		long worldManifoldAddr = jniGetWorldManifold( addr );				
-		return null;
+		long worldManifoldAddr = jniGetWorldManifold( addr );
+		worldManifold.addr = worldManifoldAddr;
+		worldManifold.contactAddr = addr;
+		return worldManifold;
 	}
 	
 	private native long jniGetWorldManifold( long addr );

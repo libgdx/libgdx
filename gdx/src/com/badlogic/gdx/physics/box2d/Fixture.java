@@ -1,5 +1,6 @@
 package com.badlogic.gdx.physics.box2d;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 public class Fixture 
@@ -100,6 +101,18 @@ public class Fixture
 	{
 		return body;
 	}
+	
+	/** 
+	 * Test a point for containment in this fixture.	 
+	 * @param p a point in world coordinates.
+	 */
+	public boolean testPoint(Vector2 p)
+	{
+		return jniTestPoint( addr, p.x, p.y );
+	}
+	
+	private native boolean jniTestPoint( long addr, float x, float y );
+	
 //	const b2Body* GetBody() const;
 //
 //	/// Get the next fixture in the parent body's fixture list.
@@ -113,11 +126,6 @@ public class Fixture
 //
 //	/// Set the user data. Use this to store your application specific data.
 //	void SetUserData(void* data);
-
-//	/// Test a point for containment in this fixture.
-//	/// @param xf the shape world transform.
-//	/// @param p a point in world coordinates.
-//	bool TestPoint(const b2Vec2& p) const;
 //
 //	/// Cast a ray against this shape.
 //	/// @param output the ray-cast results.

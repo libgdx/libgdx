@@ -603,6 +603,28 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetAutoC
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniGetContactList
+ * Signature: (J[J)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactList
+  (JNIEnv *env, jobject, jlong addr, jlongArray contacts)
+{
+	b2World* world = (b2World*)addr;
+	jlong* tmp = (jlong*)env->GetPrimitiveArrayCritical( contacts, 0 );
+
+	b2Contact* contact = world->GetContactList();
+	int i = 0;
+	while( contact != 0 )
+	{
+		tmp[i++] = (jlong)contact;
+		contact = contact->GetNext();
+	}
+
+	env->ReleasePrimitiveArrayCritical( contacts, tmp, 0 );
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniDispose
  * Signature: (J)V
  */

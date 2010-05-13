@@ -148,3 +148,15 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetRestitu
 	b2Fixture* fixture = (b2Fixture*)addr;
 	fixture->SetRestitution(restitution);
 }
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Fixture
+ * Method:    jniTestPoint
+ * Signature: (JFF)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniTestPoint
+  (JNIEnv *, jobject, jlong addr, jfloat x, jfloat y)
+{
+	b2Fixture* fixture = (b2Fixture*)addr;
+	return fixture->TestPoint( b2Vec2( x, y ) );
+}

@@ -1,6 +1,8 @@
 package com.badlogic.gdx.physics.box2d;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 import com.badlogic.gdx.math.Vector2;
@@ -54,13 +56,7 @@ public class World
 	protected ContactFilter contactFilter = null;
 	
 	/** Contact listener **/
-	protected ContactListener contactListener = null;
-
-	/** contact edge pool **/
-	protected final Stack<ContactEdge> contactEdgePool = new Stack<ContactEdge>( );
-	
-	/** contact pool **/
-	protected final Stack<Contact> contactPool = new Stack<Contact>( );
+	protected ContactListener contactListener = null;		
 	
 	/**
 	 * Construct a world object.
@@ -69,13 +65,10 @@ public class World
 	 */
 	public World( Vector2 gravity, boolean doSleep )
 	{
-		addr = newWorld( gravity.x, gravity.y, doSleep );
+		addr = newWorld( gravity.x, gravity.y, doSleep );	
 		
-		for( int i = 0; i < 1000; i++ )
-		{
-			contactEdgePool.push( new ContactEdge() );
-			contactPool.push( new Contact(this, 0) );
-		}
+		for( int i = 0; i < 200; i++ )
+			freeContacts.add( new Contact( this, 0 ) );
 	}
 	
 	private native long newWorld( float gravityX, float gravityY, boolean doSleep );
@@ -563,21 +556,41 @@ public class World
 //	/// @param point2 the ray ending point
 //	void RayCast(b2RayCastCallback* callback, const b2Vec2& point1, const b2Vec2& point2) const;
 //
-//	/// Get the world body list. With the returned body, use b2Body::GetNext to get
-//	/// the next body in the world list. A NULL body indicates the end of the list.
-//	/// @return the head of the world body list.
-//	b2Body* GetBodyList();
-//
-//	/// Get the world joint list. With the returned joint, use b2Joint::GetNext to get
-//	/// the next joint in the world list. A NULL joint indicates the end of the list.
-//	/// @return the head of the world joint list.
-//	b2Joint* GetJointList();
-//
 //	/// Get the world contact list. With the returned contact, use b2Contact::GetNext to get
 //	/// the next contact in the world list. A NULL contact indicates the end of the list.
 //	/// @return the head of the world contact list.
 //	/// @warning contacts are 
 //	b2Contact* GetContactList();
+	
+	private long[] contactAddrs = new long[200];	
+	private final ArrayList<Contact> contacts = new ArrayList<Contact>( );
+	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>( );
+	private int freeIdx = 0;
+	
+	public List<Contact> getContactList( )
+	{
+		int numContacts = getContactCount();
+		if( numContacts > contactAddrs.length )
+			contactAddrs = new long[numContacts];
+		if( numContacts > freeContacts.size() )
+		{
+			for( int i = 0; i < numContacts - freeContacts.size(); i++ )
+				freeContacts.add( new Contact( this, 0 ) );
+		}
+		jniGetContactList( addr, contactAddrs );
+		
+		contacts.clear();			
+		for( int i = 0; i < numContacts; i++ )
+		{
+			Contact contact = freeContacts.get(i);
+			contact.addr = contactAddrs[i];
+			contacts.add( contact );
+		}
+		
+		return contacts;
+	}
+		
+	private native void jniGetContactList( long addr, long[] contacts );
 	
 	public void dispose( )
 	{
@@ -600,58 +613,21 @@ public class World
 			return true;
 	}
 		
+	private final Contact contact = new Contact(this, 0 );
+	
 	private void beginContact( long contactAddr )
 	{
-//		Contact contact = null;
-//		if( contactPool.size() == 0 )
-//			contact = new Contact( this, contactAddr );
-//		else
-//			contact = contactPool.pop();
-//		contact.addr = contactAddr;
-//		
-//		Body bodyA = contact.getFixtureA().getBody();
-//		Body bodyB = contact.getFixtureB().getBody();
-//		
-//		ContactEdge contactA = null;
-//		ContactEdge contactB = null;
-//		
-//		if( contactEdgePool.size() == 0 )		
-//			contactA = new ContactEdge( );
-//		else
-//			contactA = contactEdgePool.pop();
-//		
-//		if( contactEdgePool.size() == 0 )
-//			contactB = new ContactEdge( );
-//		else
-//			contactB = contactEdgePool.pop();						
-//		
-//		contactA.contact = contact;
-//		contactA.other = bodyB;
-//		contactB.contact = contact;
-//		contactB.other = bodyA;
-//		
-//		bodyA.contacts.add( contactA );
-//		bodyB.contacts.add( contactB );
-//		
-//		if( contactListener != null )
-//			contactListener.beginContact( contact );
+		contact.addr = contactAddr;		
+		if( contactListener != null )
+			contactListener.beginContact( contact );
 	}
 	
 	private void endContact( long contactAddr )
 	{
-//		Contact contact = null;
-//		if( contactPool.size() == 0 )
-//			contact = new Contact( this, contactAddr );
-//		else
-//			contact = contactPool.pop();
-//		contact.addr = contactAddr;
-//		
-//		Body bodyA = contact.getFixtureA().getBody();
-//		Body bodyB = contact.getFixtureB().getBody();
-//				
-//		
-//		if( contactListener != null )
-//			contactListener.endContact( contact );
+		contact.addr = contactAddr;
+		contact.GetWorldManifold();	
+		if( contactListener != null )
+			contactListener.endContact( contact );
 	}
 	
 	private boolean reportFixture( long addr )

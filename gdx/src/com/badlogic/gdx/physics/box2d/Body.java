@@ -25,10 +25,7 @@ public class Body
 	private ArrayList<Fixture> fixtures = new ArrayList<Fixture>(2);
 	
 	/** Joints of this body **/
-	protected ArrayList<JointEdge> joints = new ArrayList<JointEdge>(2);
-	
-	/** Contacts of this body **/
-	protected ArrayList<ContactEdge> contacts = new ArrayList<ContactEdge>(2);
+	protected ArrayList<JointEdge> joints = new ArrayList<JointEdge>(2);	
 	
 	/** user data **/
 	private Object userData;
@@ -632,10 +629,10 @@ public class Body
 	 * miss some collisions if you don't use b2ContactListener.
 	 * Do not modify the returned list!
 	 */
-	ArrayList<ContactEdge> getContactList()
-	{
-		return contacts;
-	}
+//	ArrayList<ContactEdge> getContactList()
+//	{
+//		return contacts;
+//	}
 	
 	/**
 	 *  Get the parent world of this body.

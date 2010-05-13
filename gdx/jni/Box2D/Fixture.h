@@ -49,6 +49,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetFilterD
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Fixture
+ * Method:    jniTestPoint
+ * Signature: (JFF)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniTestPoint
+  (JNIEnv *, jobject, jlong, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Fixture
  * Method:    jniSetDensity
  * Signature: (JF)V
  */

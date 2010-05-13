@@ -10,7 +10,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetWorldM
   (JNIEnv *, jobject, jlong addr)
 {
 	b2Contact* contact = (b2Contact*)addr;
-	return 0; //(jlong)contact->GetWorldManifold(b2WorldManiforl);
+	return (jlong)contact->GetWorldManifold(b2WorldManiforl);
 }
 
 /*

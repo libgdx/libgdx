@@ -16,11 +16,13 @@ import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
@@ -67,6 +69,25 @@ public class Box2DTest implements RenderListener, InputListener
 				renderer.vertex( mouseJoint.getAnchorB().x, mouseJoint.getAnchorB().y, 0 );
 			renderer.end();
 		}
+		
+//		List<Contact> contacts = world.getContactList();
+//		renderer.begin( GL10.GL_POINTS );
+//		for( int i = 0; i < contacts.size(); i++ )
+//		{
+//			Contact contact = contacts.get(i);
+//			if( contact.isTouching() )
+//			{
+//				WorldManifold manifold = contact.GetWorldManifold();
+//				int numContactPoints = manifold.getNumberOfContactPoints();
+//				Vector2[] contactPoints = manifold.getPoints();
+//				for( int j = 0; j < numContactPoints; j++ )
+//				{			
+//					renderer.color(0, 1, 0, 1 );
+//					renderer.vertex( contactPoints[j].x, contactPoints[j].y, 0 );
+//				}
+//			}
+//		}
+//		renderer.end();
 		
 		batch.begin();
 		batch.drawText( font, fps + " update: " + updateTime, 0, 16, Color.RED );
@@ -188,23 +209,28 @@ public class Box2DTest implements RenderListener, InputListener
 	}
 
 	Body hitBody = null;
+	Vector2 testPoint = new Vector2( );
 	@Override
 	public boolean touchDown(int x, int y, int pointer) 
 	{
-		float wX = cam.getScreenToWorldX(x);
-		float wY = cam.getScreenToWorldY(y);
+		testPoint.set( cam.getScreenToWorldX(x), cam.getScreenToWorldY(y) );
 		
 		QueryCallback callback = new QueryCallback() {			
 			@Override
 			public boolean reportFixture(Fixture fixture) 
 			{				
-				hitBody = fixture.getBody();
-				return false;
+				if( fixture.testPoint( testPoint ) )
+				{
+					hitBody = fixture.getBody();
+					return false;
+				}
+				else
+					return true;
 			}
 		};
 		
 		hitBody = null;
-		world.QueryAABB( callback, wX - 0.1f, wY - 0.1f, wX + 0.1f, wY + 0.1f );
+		world.QueryAABB( callback, testPoint.x - 0.1f, testPoint.y - 0.1f, testPoint.x + 0.1f, testPoint.y + 0.1f );
 		
 		if( hitBody != null )
 		{
@@ -212,7 +238,7 @@ public class Box2DTest implements RenderListener, InputListener
 			def.bodyA = ground;
 			def.bodyB = hitBody;
 			def.collideConnected = true;
-			def.target.set( wX, wY );
+			def.target.set( testPoint );
 			def.maxForce = 1000.0f * hitBody.getMass();
 			
 			mouseJoint = (MouseJoint)world.createJoint( def );
