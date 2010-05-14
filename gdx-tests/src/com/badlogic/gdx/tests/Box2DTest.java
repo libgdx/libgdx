@@ -56,7 +56,7 @@ public class Box2DTest implements RenderListener, InputListener
 		cam.setMatrices(app.getGraphics());	
 				
 		long s = System.nanoTime();
-		world.step( app.getGraphics().getDeltaTime(), 8, 3 );
+		world.step( app.getGraphics().getDeltaTime(), 1, 1 );
 		float updateTime = (System.nanoTime()-s)/1000000000.0f;
 		
 		for( int i = 0; i < boxes.size(); i++ )				
@@ -91,7 +91,7 @@ public class Box2DTest implements RenderListener, InputListener
 		renderer.end();
 		
 		batch.begin();
-		batch.drawText( font, fps + " update: " + updateTime, 0, 16, Color.RED );
+		batch.drawText( font, fps + " update: " + updateTime + " memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024), 0, 16, Color.RED );
 		batch.end();
 		
 		if( System.nanoTime() - start > 1000000000 )
@@ -144,7 +144,7 @@ public class Box2DTest implements RenderListener, InputListener
 		ground.createFixture( groundBox, 1 );
 		groundBox.dispose();
 		
-		for( int i = 0; i < 60; i++ )
+		for( int i = 0; i < 50; i++ )
 		{			
 			boxes.add(createBox( ));
 		}			
@@ -166,8 +166,7 @@ public class Box2DTest implements RenderListener, InputListener
 		fixture.density = 10;
 		fixture.friction = 0.4f;
 		fixture.restitution = 0.1f;		
-		box.createFixture(fixture);
-//		box.createFixture(poly, 10);
+		box.createFixture(fixture);	
 		poly.dispose();
 		return box;
 	}
@@ -178,8 +177,8 @@ public class Box2DTest implements RenderListener, InputListener
 		if( renderer == null )
 		{
 			renderer = new ImmediateModeRenderer(app.getGraphics().getGL10());
-			cam = new OrthographicCamera();
-			cam.setViewport( app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+			cam = new OrthographicCamera(app.getGraphics());
+			cam.setViewport( 480, 320 );
 			cam.setScale( 0.1f );
 			cam.getPosition().set( 0, 16, 0 );
 			
@@ -214,7 +213,7 @@ public class Box2DTest implements RenderListener, InputListener
 	@Override
 	public boolean touchDown(int x, int y, int pointer) 
 	{
-		testPoint.set( cam.getScreenToWorldX(x), cam.getScreenToWorldY(y) );
+		cam.getScreenToWorld( x, y, testPoint );		
 		
 		QueryCallback callback = new QueryCallback() {			
 			@Override
@@ -255,9 +254,7 @@ public class Box2DTest implements RenderListener, InputListener
 	{
 		if( mouseJoint != null )
 		{			
-			float wX = cam.getScreenToWorldX(x);
-			float wY = cam.getScreenToWorldY(y);
-			target.set( wX, wY );		
+			cam.getScreenToWorld( x, y, target );					
 			mouseJoint.setTarget( target );			
 		}
 		return false;

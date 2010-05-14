@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -63,11 +64,14 @@ public final class OrthographicCamera
 	private final Matrix combined = new Matrix();
 	private final Matrix rotationMatrix = new Matrix();
 	
+	private final Graphics graphics;
+	
 	/**
 	 * Constructor, sets side to {@link Side.FRONT}
 	 */
-	public OrthographicCamera( )
+	public OrthographicCamera( Graphics graphics )
 	{
+		this.graphics = graphics;
 		setSide(Side.FRONT);
 	}
 	
@@ -235,6 +239,24 @@ public final class OrthographicCamera
 	}
 	
 	/**
+	 * Calculates the world coordinates of the given screen coordinates and stores
+	 * the result in world
+	 * @param graphics the Graphics instance used to determine the real screen size
+	 * @param screenX the x-coordinate of the screen position
+	 * @param screenY the y-coordinate of the screen position
+	 * @param world the vector to store the result in
+	 */
+	public void getScreenToWorld( float screenX, float screenY, Vector2 world )
+	{
+		screenX = screenX / graphics.getWidth() * viewportWidth;
+		screenY = screenY / graphics.getHeight() * viewportHeight;
+		
+		world.set( ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.x,
+				   ( (viewportHeight -screenY-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y );
+					
+	}
+	
+	/**
 	 * Returns the given screen x-coordinates as a world x-coordinate
 	 * @param screenX The screen x-coordinate
 	 * @return The world x-coordinate
@@ -242,7 +264,7 @@ public final class OrthographicCamera
 	public float getScreenToWorldX( float screenX )
 	{
 		return  ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.x;
-	}
+	}	
 	
 	/**
 	 * Returns the given world x-coordinate as a screen x-coordinate

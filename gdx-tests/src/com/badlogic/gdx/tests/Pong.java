@@ -126,7 +126,7 @@ public class Pong implements RenderListener
 		// on devices like the Droid. The screen center will be at (0,0)
 		// so that's the reference frame for our scene.
 		//
-		camera = new OrthographicCamera( );
+		camera = new OrthographicCamera( app.getGraphics() );
 		camera.setViewport( 480, 320 );		
 	}
 	

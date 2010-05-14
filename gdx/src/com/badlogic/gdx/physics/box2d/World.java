@@ -574,7 +574,8 @@ public class World
 			contactAddrs = new long[numContacts];
 		if( numContacts > freeContacts.size() )
 		{
-			for( int i = 0; i < numContacts - freeContacts.size(); i++ )
+			int freeConts = freeContacts.size();
+			for( int i = 0; i < numContacts - freeConts; i++ )
 				freeContacts.add( new Contact( this, 0 ) );
 		}
 		jniGetContactList( addr, contactAddrs );
