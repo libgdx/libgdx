@@ -70,24 +70,25 @@ public class Box2DTest implements RenderListener, InputListener
 			renderer.end();
 		}
 		
-//		List<Contact> contacts = world.getContactList();
-//		renderer.begin( GL10.GL_POINTS );
-//		for( int i = 0; i < contacts.size(); i++ )
-//		{
-//			Contact contact = contacts.get(i);
-//			if( contact.isTouching() )
-//			{
-//				WorldManifold manifold = contact.GetWorldManifold();
-//				int numContactPoints = manifold.getNumberOfContactPoints();
-//				Vector2[] contactPoints = manifold.getPoints();
-//				for( int j = 0; j < numContactPoints; j++ )
-//				{			
-//					renderer.color(0, 1, 0, 1 );
-//					renderer.vertex( contactPoints[j].x, contactPoints[j].y, 0 );
-//				}
-//			}
-//		}
-//		renderer.end();
+		List<Contact> contacts = world.getContactList();
+		app.getGraphics().getGL10().glPointSize( 4 );
+		renderer.begin( GL10.GL_POINTS );
+		for( int i = 0; i < contacts.size(); i++ )
+		{
+			Contact contact = contacts.get(i);
+			if( contact.isTouching() )
+			{
+				WorldManifold manifold = contact.GetWorldManifold();
+				int numContactPoints = manifold.getNumberOfContactPoints();
+				Vector2[] contactPoints = manifold.getPoints();
+				for( int j = 0; j < numContactPoints; j++ )
+				{			
+					renderer.color(0, 1, 0, 1 );
+					renderer.vertex( contactPoints[j].x, contactPoints[j].y, 0 );
+				}
+			}
+		}
+		renderer.end();
 		
 		batch.begin();
 		batch.drawText( font, fps + " update: " + updateTime, 0, 16, Color.RED );
