@@ -21,7 +21,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
-public class Box2DTest2 implements RenderListener, InputListener
+public class Box2DTest implements RenderListener, InputListener
 {
 	/** the camera **/
 	private OrthographicCamera camera;
