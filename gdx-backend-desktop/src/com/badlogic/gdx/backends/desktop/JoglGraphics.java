@@ -78,6 +78,16 @@ public final class JoglGraphics implements Graphics, RenderListener
 	/** the deltaTime **/
 	private float deltaTime = 0;
 	
+	/** frame start time **/
+	private long frameStart = System.nanoTime();
+	
+	/** frame counter **/
+	private int frames = 0;
+	
+	/** last fps **/
+	private int fps;
+	
+	
 	/** the deltaTime mean **/
 	private WindowedMean mean = new WindowedMean( 5 );
 	
@@ -252,7 +262,15 @@ public final class JoglGraphics implements Graphics, RenderListener
 		// calculate delta time
 		deltaTime = ( System.nanoTime() - lastFrameTime ) / 1000000000.0f;
 		lastFrameTime = System.nanoTime();
-		mean.addValue( deltaTime );			
+		mean.addValue( deltaTime );	
+		
+		if( System.nanoTime() - frameStart > 1000000000 )
+		{
+			fps = frames;
+			frames = 0;
+			frameStart = System.nanoTime();
+		}
+		frames++;
 	}
 
 	@Override
@@ -303,5 +321,14 @@ public final class JoglGraphics implements Graphics, RenderListener
 	public GraphicsType getType() 
 	{	
 		return GraphicsType.JoglGL;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getFramesPerSecond() 
+	{	
+		return fps;
 	}
 }

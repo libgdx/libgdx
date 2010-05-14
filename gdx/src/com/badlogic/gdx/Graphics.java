@@ -108,6 +108,11 @@ public interface Graphics
 	public float getDeltaTime( );
 	
 	/**
+	 * @return the number of frames per second
+	 */
+	public int getFramesPerSecond( );
+	
+	/**
 	 * Sets the {@link RenderListener}. The RenderListener will be called
 	 * once the OpenGL surface has been setup to give it an opportunity to
 	 * create all its graphic resources like textures and meshes. After the

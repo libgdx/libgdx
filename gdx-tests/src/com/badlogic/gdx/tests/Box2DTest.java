@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -28,6 +32,10 @@ public class Box2DTest implements RenderListener, InputListener
 	
 	/** the immediate mode renderer to output our debug drawings **/
 	private ImmediateModeRenderer renderer;
+	
+	/** a spritebatch and a font for text rendering **/
+	private SpriteBatch batch;
+	private Font font;
 	
 	/** our box2D world **/
 	private World world;		
@@ -60,6 +68,10 @@ public class Box2DTest implements RenderListener, InputListener
 		
 		// next we setup the immediate mode renderer
 		renderer = new ImmediateModeRenderer(app.getGraphics().getGL10());
+		
+		// next we create a SpriteBatch and a font
+		batch = new SpriteBatch(app.getGraphics());
+		font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );
 		
 		// next we create out physics world.
 		createPhysicsWorld( );
@@ -106,7 +118,7 @@ public class Box2DTest implements RenderListener, InputListener
 		// next we create the 50 box bodies using the PolygonShape we just
 		// defined. This process is similar to the one we used for the ground
 		// body. Note that we reuse the polygon for each body fixture.
-		for( int i = 0; i < 50; i++ )
+		for( int i = 0; i < 20; i++ )
 		{
 			// Create the BodyDef, set a random position above the 
 			// ground and create a new body
@@ -134,7 +146,9 @@ public class Box2DTest implements RenderListener, InputListener
 		// we use the delta time provided by the Graphics
 		// instance. Normally you'll want to fix the time
 		// step.
-		world.step( app.getGraphics().getDeltaTime(), 8, 3 );
+		long start = System.nanoTime();
+		world.step( app.getGraphics().getDeltaTime(), 3, 3 );
+		float updateTime = (System.nanoTime() - start) / 1000000000.0f;
 		
 		// next we clear the color buffer and set the camera
 		// matrices
@@ -164,7 +178,7 @@ public class Box2DTest implements RenderListener, InputListener
 			{
 				// get the world manifold from which we get the
 				// contact points. A manifold can have 0, 1 or 2
-				// contact points.
+				// contact points.		
 				WorldManifold manifold = contact.GetWorldManifold();
 				int numContactPoints = manifold.getNumberOfContactPoints();
 				for( int j = 0; j < numContactPoints; j++ )
@@ -177,6 +191,11 @@ public class Box2DTest implements RenderListener, InputListener
 		}
 		renderer.end();
 		gl.glPointSize(1);
+		
+		// finally we render the time it took to update the world
+		batch.begin();
+		batch.drawText( font, "fps: " + app.getGraphics().getFramesPerSecond() + " update time: " + updateTime, 0, app.getGraphics().getHeight(), Color.RED );
+		batch.end();
 	}
 	
 	private void renderBox( GL10 gl, Body body, float halfWidth, float halfHeight )

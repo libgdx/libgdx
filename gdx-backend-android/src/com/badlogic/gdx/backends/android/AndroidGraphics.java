@@ -91,6 +91,15 @@ final class AndroidGraphics implements Graphics, Renderer
 	/** the deltaTime **/
 	private float deltaTime = 0;
 	
+	/** frame start time **/
+	private long frameStart = System.nanoTime();
+	
+	/** frame counter **/
+	private int frames = 0;
+	
+	/** last fps **/
+	private int fps;
+	
 	/** the deltaTime mean **/
 	private WindowedMean mean = new WindowedMean( 5 );
 	
@@ -367,6 +376,15 @@ final class AndroidGraphics implements Graphics, Renderer
 			listener = null;
 			dispose = false;
 		}
+		
+		
+		if( System.nanoTime() - frameStart > 1000000000 )
+		{
+			fps = frames;
+			frames = 0;
+			frameStart = System.nanoTime();
+		}
+		frames++;
 	}
 	
 	/**
@@ -461,6 +479,15 @@ final class AndroidGraphics implements Graphics, Renderer
 	public GraphicsType getType() 
 	{	
 		return GraphicsType.AndroidGL;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getFramesPerSecond() 
+	{
+		return fps;
 	}
 
 }
