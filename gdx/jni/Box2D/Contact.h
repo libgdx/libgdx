@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Contact
  * Method:    jniGetWorldManifold
- * Signature: (J)J
+ * Signature: (J[F)I
  */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetWorldManifold
-  (JNIEnv *, jobject, jlong);
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetWorldManifold
+  (JNIEnv *, jobject, jlong, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Contact

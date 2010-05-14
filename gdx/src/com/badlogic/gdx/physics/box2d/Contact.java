@@ -1,5 +1,7 @@
 package com.badlogic.gdx.physics.box2d;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * The class manages contact between two shapes. A contact exists for each overlapping
  * AABB in the broad-phase (except if filtered). Therefore a contact object may exist
@@ -16,7 +18,7 @@ public class Contact
 	protected World world;
 	
 	/** the world manifold **/
-	protected final WorldManifold worldManifold = new WorldManifold( 0, 0 );
+	protected final WorldManifold worldManifold = new WorldManifold( );
 	
 	protected Contact( World world, long addr )
 	{
@@ -27,15 +29,24 @@ public class Contact
 	/**
 	 * Get the world manifold.
 	 */	
+	private final float[] tmp = new float[6];
 	public WorldManifold GetWorldManifold()
 	{
-		long worldManifoldAddr = jniGetWorldManifold( addr );
-		worldManifold.addr = worldManifoldAddr;
-		worldManifold.contactAddr = addr;
+		int numContactPoints = jniGetWorldManifold( addr, tmp );
+		
+		worldManifold.numContactPoints = numContactPoints;
+		worldManifold.normal.set( tmp[0], tmp[1] );
+		for( int i = 0; i < numContactPoints; i++ )
+		{
+			Vector2 point = worldManifold.points[i];
+			point.x = tmp[2+i*2];
+			point.y = tmp[2+i*2 + 1];
+		}
+		
 		return worldManifold;
 	}
 	
-	private native long jniGetWorldManifold( long addr );
+	private native int jniGetWorldManifold( long addr, float[] manifold );
 	
 	public boolean isTouching( )
 	{
