@@ -281,4 +281,9 @@ public final class AppletGraphics implements Graphics, RenderListener
 	{	
 		return GraphicsType.JoglGL;
 	}
+
+	@Override
+	public int getFramesPerSecond() {
+		return 0; // FIXME
+	}
 }
