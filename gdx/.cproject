@@ -1069,8 +1069,8 @@
 <tool command="g++ -fPIC" id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1485838342" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.84440414" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/win32&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/linux&quot;"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.1289272877" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.732049915" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
