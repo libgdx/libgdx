@@ -67,7 +67,7 @@ class AndroidAudioDevice implements AudioDevice
 	{	
 		int writtenSamples = track.write( samples, offset, numSamples );
 		while( writtenSamples != numSamples )
-			track.write( samples, offset + writtenSamples, numSamples - writtenSamples );
+			writtenSamples += track.write( samples, offset + writtenSamples, numSamples - writtenSamples );
 	}
 
 	@Override
@@ -90,7 +90,7 @@ class AndroidAudioDevice implements AudioDevice
 		
 		int writtenSamples = track.write( buffer, 0, numSamples );
 		while( writtenSamples != numSamples )
-			track.write( buffer, writtenSamples, numSamples - writtenSamples );
+			writtenSamples += track.write( buffer, writtenSamples, numSamples - writtenSamples );
 	}
 
 }
