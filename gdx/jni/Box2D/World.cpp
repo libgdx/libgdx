@@ -143,7 +143,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody
 (JNIEnv *, jobject, jlong addr, jlong bodyAddr)
 {
 	b2World* world = (b2World*)addr;
-	b2Body* body = (b2Body*)addr;
+	b2Body* body = (b2Body*)bodyAddr;
 	world->DestroyBody(body);
 }
 
