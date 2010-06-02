@@ -52,6 +52,7 @@ public class Box2DTest implements RenderListener, InputListener
 	/** a hit body **/
 	private Body hitBody = null;
 
+
 	@Override
 	public void surfaceCreated(Application app) 
 	{	
@@ -109,6 +110,11 @@ public class Box2DTest implements RenderListener, InputListener
 		groundBody.createFixture( groundPoly, 10 );
 		groundPoly.dispose();
 		
+		createBoxes( );
+	}
+	
+	private void createBoxes( )
+	{
 		// next we create 50 boxes at random locations above the ground
 		// body. First we create a nice polygon representing a box 2 meters
 		// wide and high.
@@ -275,6 +281,13 @@ public class Box2DTest implements RenderListener, InputListener
 			mouseJoint = (MouseJoint)world.createJoint( def );
 			hitBody.setAwake(true);
 		}
+		else
+		{
+			for( Body box: boxes )
+				world.destroyBody( box );
+			boxes.clear();
+			createBoxes();
+		}
 				
 		return false;
 	}
@@ -320,7 +333,7 @@ public class Box2DTest implements RenderListener, InputListener
 	@Override
 	public void dispose(Application app) 
 	{	
-		
+		world.dispose();
 	}
 
 	@Override
