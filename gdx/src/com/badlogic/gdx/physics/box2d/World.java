@@ -149,7 +149,7 @@ public class World
 	 */
 	public void destroyBody(Body body)
 	{
-		jniDestroyBody( body.addr, body.addr );
+		jniDestroyBody( addr, body.addr );
 		this.bodies.remove( body.addr );
 		for( int i = 0; i < body.getFixtureList().size(); i++ )
 			this.fixtures.remove(body.getFixtureList().get(i).addr);
