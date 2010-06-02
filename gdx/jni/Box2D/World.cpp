@@ -1,5 +1,8 @@
 #include "Box2D.h"
 #include "World.h"
+#ifdef ANDROID
+#include <android/log.h>
+#endif
 
 static jclass worldClass = 0;
 static jmethodID shouldCollideID = 0;
@@ -131,6 +134,9 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateBody
 
 	b2World* world = (b2World*)addr;
 	b2Body* body = world->CreateBody( &bodyDef );
+//#ifdef ANDROID
+//	__android_log_write(ANDROID_LOG_ERROR,"Tag","HIIII");
+//#endif
 	return (jlong)body;
 }
 
@@ -434,6 +440,8 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniStep
 	world->SetContactFilter(&contactFilter);
 	world->SetContactListener(&contactListener);
 	world->Step( timeStep, velocityIterations, positionIterations );
+	world->SetContactFilter(0);
+	world->SetContactListener(0);
 }
 
 /*

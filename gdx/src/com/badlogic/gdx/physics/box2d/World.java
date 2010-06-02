@@ -96,7 +96,7 @@ public class World
 	 *  Register a contact event listener. The listener is owned by you and must
 	 * remain in scope.
 	 */
-	void setContactListener(ContactListener listener)
+	public void setContactListener(ContactListener listener)
 	{
 		this.contactListener = listener;
 	}
@@ -148,13 +148,13 @@ public class World
 	 * @warning This function is locked during callbacks.
 	 */
 	public void destroyBody(Body body)
-	{
-		jniDestroyBody( addr, body.addr );
+	{		
 		this.bodies.remove( body.addr );
 		for( int i = 0; i < body.getFixtureList().size(); i++ )
 			this.fixtures.remove(body.getFixtureList().get(i).addr);
 		for( int i = 0; i < body.getJointList().size(); i++ )
-			this.joints.remove(body.getJointList().get(i).joint.addr);		
+			this.joints.remove(body.getJointList().get(i).joint.addr);
+		jniDestroyBody( addr, body.addr );
 	}
 
 	private native void jniDestroyBody( long addr, long bodyAddr );
@@ -379,11 +379,11 @@ public class World
 	 * @warning This function is locked during callbacks.
 	 */
 	public void destroyJoint(Joint joint)
-	{
-		jniDestroyJoint( addr, joint.addr );
+	{		
 		joints.remove(joint.addr);
 		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
 		joint.jointEdgeB.other.joints.remove(joint.jointEdgeA);
+		jniDestroyJoint( addr, joint.addr );
 	}
 	
 	private native void jniDestroyJoint( long addr, long jointAddr );
