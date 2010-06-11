@@ -128,15 +128,14 @@ final class AndroidFont extends Font
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
+	Rect tmpRect = new Rect();
+	@Override	
 	public int getStringWidth(String text) 
-	{		
-		Rect rect = new Rect();
-		paint.getTextBounds(text, 0, text.length(), rect);
-		return rect.width();
+	{				
+		paint.getTextBounds(text, 0, text.length(), tmpRect);
+		return tmpRect.width();
 	}
 
-	Rect tmpRect = new Rect();
 	/**
 	 * {@inheritDoc}
 	 */
