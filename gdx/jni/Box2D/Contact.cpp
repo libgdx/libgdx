@@ -86,5 +86,5 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtur
   (JNIEnv *, jobject, jlong addr)
 {
 	b2Contact* contact = (b2Contact*)addr;
-	return (jlong)contact->GetFixtureA();
+	return (jlong)contact->GetFixtureB();
 }

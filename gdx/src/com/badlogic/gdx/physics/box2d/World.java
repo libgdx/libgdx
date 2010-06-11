@@ -611,7 +611,18 @@ public class World
 		if( contactFilter != null )
 			return contactFilter.shouldCollide( fixtures.get(fixtureA), fixtures.get(fixtureB));
 		else
-			return true;
+		{
+			Filter filterA = fixtures.get(fixtureA).getFilterData();
+			Filter filterB = fixtures.get(fixtureB).getFilterData();					
+
+			if (filterA.groupIndex == filterB.groupIndex && filterA.groupIndex != 0)
+			{
+				return filterA.groupIndex > 0;
+			}
+
+			boolean collide = (filterA.maskBits & filterB.categoryBits) != 0 && (filterA.categoryBits & filterB.maskBits) != 0;
+			return collide;
+		}
 	}
 		
 	private final Contact contact = new Contact(this, 0 );
