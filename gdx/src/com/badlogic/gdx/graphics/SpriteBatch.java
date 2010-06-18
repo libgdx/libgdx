@@ -136,8 +136,7 @@ public final class SpriteBatch
 	 * the first one you have to disable them before calling this.  
 	 */
 	public void begin( )
-	{
-		renderCalls = 0;
+	{		
 		transform.idt();		
 		begin( transform );
 	}
@@ -145,21 +144,35 @@ public final class SpriteBatch
 	/**
 	 * Sets up the SpriteBatch for drawing. This will disable
 	 * depth buffer testing and writting, culling and lighting.
-	 * It enables blending and alpha testing. It sets the projection
-	 * matrix to an orthographic matrix and the modelview and texture
-	 * matrix to identity. If you have more texture units enabled than
+	 * It enables blending and alpha testing. If you have more texture units enabled than
 	 * the first one you have to disable them before calling this. Applies
-	 * the given transformation {@link Matrix} to all subsequently specified sprites.
+	 * the given transformation {@link Matrix} to all subsequently specified sprites. Loads
+	 * an orthographic projection matrix with the full screen as the viewport.
 	 * 
 	 * @param transform the transformation matrix.
 	 */
 	public void begin( Matrix transform )
+	{		
+		viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
+		begin( viewMatrix, transform );
+	}
+	
+	/**
+	 * Sets up the SpriteBatch for drawing. This will disable
+	 * depth buffer testing and writting, culling and lighting.
+	 * It enables blending and alpha testing. If you have more texture units enabled than
+	 * the first one you have to disable them before calling this. Applies
+	 * the given transformation {@link Matrix} to all subsequently specified sprites. Uses
+	 * the provided projection matrix.
+	 * 
+	 * @param projection the projection matrix;
+	 * @param transform the transformation matrix.
+	 */
+	public void begin( Matrix projection, Matrix transform )
 	{
+		renderCalls = 0;
 		if( graphics.isGL20Available() == false )
-		{
-			transform.set( transform );
-			viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
-					
+		{										
 			GL10 gl = graphics.getGL10();
 			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
 			gl.glDisable( GL10.GL_LIGHTING );
@@ -181,14 +194,13 @@ public final class SpriteBatch
 			}
 			
 			gl.glMatrixMode( GL10.GL_PROJECTION );
-			gl.glLoadMatrixf( viewMatrix.val, 0 );
+			gl.glLoadMatrixf( projection.val, 0 );
 			gl.glMatrixMode( GL10.GL_MODELVIEW );
 			gl.glLoadMatrixf( transform.val, 0 );
 		}		
 		else
 		{
-			transform.set( transform );
-			viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() ).mul(transform);
+			viewMatrix.set(projection).mul(transform);			
 					
 			GL20 gl = graphics.getGL20();		
 			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
