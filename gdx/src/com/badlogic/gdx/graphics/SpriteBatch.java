@@ -696,7 +696,8 @@ public final class SpriteBatch
 	 */
 	public void disableBlending( )
 	{
-		blendingDisabled = true;
+		renderMesh();
+		blendingDisabled = true;		
 	}
 	
 	/**
@@ -704,6 +705,7 @@ public final class SpriteBatch
 	 */
 	public void enableBlending( )
 	{
+		renderMesh();
 		blendingDisabled = false;
 	}
 }
