@@ -275,7 +275,7 @@ public final class SpriteBatch
 	 * @param flipX whether to flip the sprite horizontally
 	 * @param flipY whether to flip the sprite vertically
 	 */
-	public void draw(Texture texture, int x, int y, int originX, int originY, int width, int height, float scale, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY )
+	public void draw(Texture texture, float x, float y, float originX, float originY, float width, float height, float scale, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY )
 	{
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
@@ -412,7 +412,7 @@ public final class SpriteBatch
 	 * @param flipX whether to flip the sprite horizontally
 	 * @param flipY whether to flip the sprite vertically
 	 */
-	public void draw(Texture texture, int x, int y, int width, int height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY ) 
+	public void draw(Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY ) 
 	{
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
@@ -501,7 +501,7 @@ public final class SpriteBatch
 	 * @param srcHeight the source height in texels
 	 * @param tint the tint Color
 	 */
-	public void draw( Texture texture, int x, int y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
+	public void draw( Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
 	{		
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
@@ -614,7 +614,7 @@ public final class SpriteBatch
 	 * @param y the y-coordinate of the strings bounding box's upper left corner
 	 * @param tint the tint of the text
 	 */
-	public void drawText( Font font, String text, int x, int y, Color tint )
+	public void drawText( Font font, String text, float x, float y, Color tint )
 	{
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
