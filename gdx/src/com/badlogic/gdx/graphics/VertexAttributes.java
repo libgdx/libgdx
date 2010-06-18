@@ -31,7 +31,7 @@ public final class VertexAttributes
 	}
 	
 	/** the attributes in the order they were specified **/
-	private final List<VertexAttribute> attributes;
+	private final VertexAttribute[] attributes;
 	
 	/** the size of a single vertex in bytes **/
 	public final int vertexSize;
@@ -44,11 +44,11 @@ public final class VertexAttributes
 		if( attributes.length == 0 )
 			throw new IllegalArgumentException( "attributes must be >= 1" );
 		
-		ArrayList<VertexAttribute> list = new ArrayList<VertexAttribute>();
+		VertexAttribute[] list = new VertexAttribute[attributes.length];
 		for( int i = 0; i < attributes.length; i++ )
-			list.add( attributes[i] );
+			list[i] = attributes[i];
 		
-		this.attributes = Collections.unmodifiableList( list );
+		this.attributes = list;
 		
 		checkValidity( );
 		vertexSize = calculateOffsets( );
@@ -57,9 +57,9 @@ public final class VertexAttributes
 	private int calculateOffsets( )
 	{
 		int count = 0;
-		for( int i = 0; i < attributes.size(); i++ )
+		for( int i = 0; i < attributes.length; i++ )
 		{
-			VertexAttribute attribute = attributes.get(i);
+			VertexAttribute attribute = attributes[i];
 			attribute.offset = count;
 			count += 4 * attribute.numComponents;
 		}
@@ -73,9 +73,9 @@ public final class VertexAttributes
 		boolean cols = false;
 		boolean nors = false;
 		
-		for( int i = 0; i < attributes.size(); i++ )
+		for( int i = 0; i < attributes.length; i++ )
 		{
-			VertexAttribute attribute = attributes.get(i);
+			VertexAttribute attribute = attributes[i];
 			if( attribute.usage == Usage.Position )
 			{
 				if( pos )
@@ -106,7 +106,7 @@ public final class VertexAttributes
 	 */
 	public int size()
 	{
-		return attributes.size();
+		return attributes.length;
 	}
 	
 	/**
@@ -115,6 +115,6 @@ public final class VertexAttributes
 	 */
 	public VertexAttribute get( int index )
 	{
-		return attributes.get(index);
+		return attributes[index];
 	}
 }
