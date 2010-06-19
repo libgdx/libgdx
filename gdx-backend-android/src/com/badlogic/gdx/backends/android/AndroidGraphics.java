@@ -16,42 +16,30 @@
  */
 package com.badlogic.gdx.backends.android;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.view.Display;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.FrameBuffer;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.ShaderProgram;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * An implementation of {@link Graphics} for Android.
@@ -113,9 +101,9 @@ final class AndroidGraphics implements Graphics, Renderer
 		
 		if( useGL2IfAvailable )
 		{
-			if( checkGL20( activity ) )			
-				view = new GLSurfaceView20( activity );							
-			else			
+//			if( checkGL20( activity ) )
+//				view = new GLSurfaceView20( activity );
+//			else
 				view = new android.opengl.GLSurfaceView( activity );
 		}
 		else
@@ -402,9 +390,9 @@ final class AndroidGraphics implements Graphics, Renderer
 		if( gl10 != null || gl20 != null )
 			return;
 		
-		if( view instanceof GLSurfaceView20 )
-			gl20 = new AndroidGL20();
-		else
+//		if( view instanceof GLSurfaceView20 )
+//			gl20 = new AndroidGL20();
+//		else
 		{
 			gl10 = new AndroidGL10(gl);
 			if( gl instanceof javax.microedition.khronos.opengles.GL11 )
