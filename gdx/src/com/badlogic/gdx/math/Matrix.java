@@ -608,8 +608,8 @@ public final class Matrix
      * @param up the up vector
      * @return this matrix
      */
-    static Vector3 tmpVec = new Vector3();   
-    static Matrix tmpMat = new Matrix();
+    static final Vector3 tmpVec = new Vector3();   
+    static final Matrix tmpMat = new Matrix();
     public Matrix setToLookAt( Vector3 position, Vector3 target, Vector3 up )
     {
     	tmpVec.set(target).sub(position);
