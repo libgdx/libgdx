@@ -70,6 +70,10 @@ public final class SpriteBatch
 	/** whether to use the blend mode for text or for sprites **/
 	private boolean useTextBlend = false;
 	
+	/** blend function src & target **/
+	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
+	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
+	
 	/** the shader for opengl 2.0 **/
 	private ShaderProgram shader;
 	
@@ -589,7 +593,7 @@ public final class SpriteBatch
 					graphics.getGL20().glEnable( GL20.GL_BLEND );
 			}
 			else
-				graphics.getGL20().glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );
+				graphics.getGL20().glBlendFunc( blendSrcFunc, blendDstFunc );
 			mesh.render( shader, GL10.GL_TRIANGLES );
 			if( useTextBlend && blendingDisabled )
 			{				
@@ -605,7 +609,7 @@ public final class SpriteBatch
 					graphics.getGL10().glEnable( GL20.GL_BLEND );
 			}
 			else
-				graphics.getGL10().glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );
+				graphics.getGL10().glBlendFunc( blendSrcFunc, blendDstFunc );
 			mesh.render( GL10.GL_TRIANGLES );
 			if( useTextBlend && blendingDisabled )
 			{				
@@ -707,5 +711,19 @@ public final class SpriteBatch
 	{
 		renderMesh();
 		blendingDisabled = false;
+	}
+	
+	/**
+	 * Sets the blending function to be used when rendering sprites. This will
+	 * have no effect on the blend function used for text rendering!
+	 * 
+	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
+	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA
+	 */
+	public void setBlendFunction( int srcFunc, int dstFunc )
+	{
+		renderMesh( );
+		blendSrcFunc = srcFunc;
+		blendDstFunc = dstFunc;
 	}
 }
