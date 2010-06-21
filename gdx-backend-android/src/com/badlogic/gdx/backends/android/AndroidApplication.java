@@ -69,14 +69,39 @@ public class AndroidApplication extends Activity implements Application
 	 * {@link GL10} and {@link GL11} interfaces should not be used when
 	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was
 	 * successful use the {@link AndroidApplication.getGraphics().isGL20Available()}
-	 * method. 
+	 * method. Sleep time in touch event handler is 0, so no sleeping is performed.
 	 * 
 	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
 	 */
 	public void initialize( boolean useGL2IfAvailable )
 	{
 		graphics = new AndroidGraphics( this, useGL2IfAvailable );
-		input = new AndroidInput( this, graphics.view );
+		input = new AndroidInput( this, graphics.view, 0 );
+		graphics.setInput( input );
+		audio = new AndroidAudio( this );
+		resources = new AndroidFiles( this.getAssets() );
+	}
+	
+	/**
+	 * This method has to be called in the {@link Activity.onCreate()}
+	 * method. It sets up all the things necessary to get input, render
+	 * via OpenGL and so on. If useGL20IfAvailable is set the
+	 * AndroidApplication will try to create an OpenGL ES 2.0 context
+	 * which can then be used via {@link AndroidApplication.getGraphics().getGL20()}. The
+	 * {@link GL10} and {@link GL11} interfaces should not be used when
+	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was
+	 * successful use the {@link AndroidApplication.getGraphics().isGL20Available()}
+	 * method. sleepTime specifies the number of milliseconds to sleep in the touch
+	 * event handler. This may be used on <= 1.6 Android devices. Note that it will not 
+	 * solve the CPU usage problem of the event handler of the Android system. Things will
+	 * still slow down. 
+	 * 
+	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
+	 */
+	public void initialize( boolean useGL2IfAvailable, int sleepTime )
+	{
+		graphics = new AndroidGraphics( this, useGL2IfAvailable );
+		input = new AndroidInput( this, graphics.view, sleepTime );
 		graphics.setInput( input );
 		audio = new AndroidAudio( this );
 		resources = new AndroidFiles( this.getAssets() );

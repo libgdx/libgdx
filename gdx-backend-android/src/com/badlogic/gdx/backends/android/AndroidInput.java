@@ -82,6 +82,9 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	/** the app **/
 	private final AndroidApplication app;	
 	
+	/** touch handler sleep time in milliseconds**/
+	private int sleepTime = 0;
+	
 	/**
 	 * helper enum
 	 * @author mzechner
@@ -131,7 +134,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	/** index to the next free event **/
 	private int freeEventIndex = 0;
 	
-	AndroidInput( AndroidApplication activity, GLSurfaceView view )
+	AndroidInput( AndroidApplication activity, GLSurfaceView view, int sleepTime )
 	{
 		view.setOnKeyListener( this );
 		view.setOnTouchListener( this );
@@ -157,6 +160,8 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 
 		handle = new Handler();		
 		this.app = activity;
+		
+		this.sleepTime = sleepTime;
 	}
 
 	/**
@@ -363,6 +368,15 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 				eventQueue.add( ev );
 			}
 			touched[0] = false;			
+		}
+		
+		if( sleepTime != 0 )
+		{
+			try {
+				Thread.sleep( sleepTime );
+			} catch (InterruptedException e) {
+				// yeah, right...
+			}
 		}
 		
 		return true;
