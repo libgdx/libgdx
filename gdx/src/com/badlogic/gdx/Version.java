@@ -9,5 +9,5 @@ package com.badlogic.gdx;
 public class Version 
 {	
 	/** the current version of libgdx in the major.minor format **/
-	public static String VERSION = "0.51";
+	public static String VERSION = "0.52";
 }
