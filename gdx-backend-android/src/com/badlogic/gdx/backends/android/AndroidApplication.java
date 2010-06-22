@@ -27,6 +27,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Version;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 
@@ -42,7 +43,7 @@ public class AndroidApplication extends Activity implements Application
 {
 	static
 	{
-		System.loadLibrary( "gdx" );
+		System.loadLibrary( "gdx" + Version.VERSION );
 	}
 	
 	/** the android graphics instance **/
