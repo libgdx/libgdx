@@ -43,7 +43,7 @@ public class AndroidApplication extends Activity implements Application
 {
 	static
 	{
-		System.loadLibrary( "gdx" + Version.VERSION );
+		System.loadLibrary( "gdx-" + Version.VERSION );
 	}
 	
 	/** the android graphics instance **/
