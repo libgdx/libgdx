@@ -26,6 +26,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Font.FontStyle;
@@ -101,9 +102,9 @@ final class AndroidGraphics implements Graphics, Renderer
 		
 		if( useGL2IfAvailable )
 		{
-//			if( checkGL20( activity ) )
-//				view = new GLSurfaceView20( activity );
-//			else
+			if( checkGL20( activity ) )
+				view = new GLSurfaceView20( activity );
+			else
 				view = new android.opengl.GLSurfaceView( activity );
 		}
 		else
@@ -390,9 +391,9 @@ final class AndroidGraphics implements Graphics, Renderer
 		if( gl10 != null || gl20 != null )
 			return;
 		
-//		if( view instanceof GLSurfaceView20 )
-//			gl20 = new AndroidGL20();
-//		else
+		if( view instanceof GLSurfaceView20 )
+			gl20 = new AndroidGL20();
+		else
 		{
 			gl10 = new AndroidGL10(gl);
 			if( gl instanceof javax.microedition.khronos.opengles.GL11 )
