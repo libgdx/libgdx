@@ -23,13 +23,13 @@ gdx-helloworld
     -> gdx-backend-desktop.jar
     -> gdx-dependencies-applet.jar
     -> gdx-dependencies-desktop.jar
-    -> gdx.dll
-    -> libgdx.so
+    -> gdx-0.52.dll
+    -> libgdx-0.52.so
     -> README
     
 Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
 "Java Build Path" to the left in the new dialog and then click the Libraries tab. In the libraries tab 
-click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx-0.4.jar, gdx-backend-desktop.jar and gdx-dependencies-desktop.jar. Now you have 
+click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx-0.52.jar, gdx-backend-desktop.jar and gdx-dependencies-desktop.jar. Now you have 
 added all that's needed for the Java desktop project to compile. 
 
 Create a new package in the "src/" folder of the gdx-helloworld project, say "com.badlogic.helloworld" 
@@ -98,23 +98,23 @@ gdx-helloworld-android
  -> libs/
     -> armeabi/
        -> libandroidgl20.so
-       -> libgdx.so
-    -> gdx-0.4-sources.jar
-    -> gdx-0.4.jar
+       -> libgdx-0.52.so
+    -> gdx-0.52-sources.jar
+    -> gdx-0.52.jar
     -> gdx-backend-android.jar
     -> gdx-backend-applet.jar
     -> gdx-backend-desktop.jar
     -> gdx-dependencies-applet.jar
     -> gdx-dependencies-desktop.jar
-    -> gdx.dll
-    -> libgdx.so
+    -> gdx-0.52.dll
+    -> libgdx-0.52.so
     -> README
  -> res/
  -> AndroidManifset.xml
  -> default.properties
  
  Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
-project in the project tab and the gdx-0.4.jar and gdx-backend-android.jar in the Libraries tab. You don't have to add the other
+project in the project tab and the gdx-0.52.jar and gdx-backend-android.jar in the Libraries tab. You don't have to add the other
 jars as those are only needed for the desktop Java version. 
 
 Now open the GDXHelloWorld.java file and paste the following code in:
@@ -167,7 +167,7 @@ to the <activity> tag. Your manifest should look something like this then:
 Now you can start the Activity as you do with any normal android application in eclipse. Et voila, profit!
 
 You can savely remove all jar files != gdx-0.XX.jar from the libs/ folder of the android project. The gdx.dll
-and the libgdx.so file can also be deleted. However, do not delete the libgdx.so and libandroidgl20.so files in the folder libs/armeabi/!
+and the libgdx.so file can also be deleted. However, do not delete the libgdx-0.52.so and libandroidgl20.so files in the folder libs/armeabi/!
 They are the native code for Android of libgdx. 
 
 You never have to change the android project again unless you add assets. The rest is done in the Java project.
