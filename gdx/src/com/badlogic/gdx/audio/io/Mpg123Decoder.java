@@ -18,6 +18,7 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.Version;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 
 /**
@@ -31,7 +32,7 @@ public class Mpg123Decoder implements Decoder
 {
 	static
 	{
-		System.loadLibrary( "gdx" );
+		System.loadLibrary( "gdx-" + Version.VERSION );
 	}
 	
 	public final long handle;

@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.Version;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
 
 /**
@@ -18,7 +19,7 @@ public class AudioTools
 {
 	static
 	{
-		System.loadLibrary( "gdx" );
+		System.loadLibrary( "gdx-" + Version.VERSION );
 	}
 	
 	/**

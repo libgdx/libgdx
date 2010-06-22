@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import com.badlogic.gdx.Version;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
@@ -37,7 +38,7 @@ public class World
 {
 	static
 	{
-		System.loadLibrary( "gdx" );
+		System.loadLibrary( "gdx-" + Version.VERSION );
 	}
 	
 	/** the address of the world instance **/
