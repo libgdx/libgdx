@@ -41,12 +41,10 @@ public class GameOver implements Screen
 	{
 		spriteBatch = new SpriteBatch(app.getGraphics());
 		Pixmap backgroundPixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/planet.jpg", FileType.Internal ) );
-		background = app.getGraphics().newTexture( backgroundPixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
-		backgroundPixmap.dispose();
+		background = app.getGraphics().newTexture( backgroundPixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );		
 		
 		Pixmap logoPixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/title.png", FileType.Internal ) );
-		logo = app.getGraphics().newTexture( logoPixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
-		logoPixmap.dispose();
+		logo = app.getGraphics().newTexture( logoPixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );		
 		
 		font = app.getGraphics().newFont( app.getFiles().getFileHandle( "data/font.ttf", FileType.Internal), 16, FontStyle.Plain, true );
 	}

@@ -97,20 +97,16 @@ public class Renderer
 			in.close();
 			
 			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/ship.png", FileType.Internal ) );
-			shipTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
-			pixmap.dispose();
+			shipTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
 			
 			pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/invader.png", FileType.Internal ) );
-			invaderTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
-			pixmap.dispose();
+			invaderTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
 			
 			pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/planet.jpg", FileType.Internal ) );
-			backgroundTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
-			pixmap.dispose();
+			backgroundTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
 			
 			pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/explode.png", FileType.Internal ) );
-			explosionTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
-			pixmap.dispose();
+			explosionTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
 			
 			explosionMesh = new Mesh( app.getGraphics(), true, true, false, 4 * 16, 0, 
 									  new VertexAttribute( Usage.Position, 3, "a_position"),

@@ -71,6 +71,7 @@ public class GdxInvaders implements RenderListener
 			Music music = app.getAudio().newMusic( app.getFiles().getFileHandle( "data/8.12.mp3", FileType.Internal ) );
 			music.setLooping(true);
 			music.play();
+			isInitialized = true;
 		}
 	}
 }
