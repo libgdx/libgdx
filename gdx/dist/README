@@ -15,9 +15,9 @@ gdx-helloworld
  -> libs/
     -> armeabi/
        - >libandroidgl20.so
-       - >libgdx.so
-    -> gdx-0.4-sources.jar
-    -> gdx-0.4.jar
+       - >libgdx-0.52.so
+    -> gdx-0.52-sources.jar
+    -> gdx-0.52.jar
     -> gdx-backend-android.jar
     -> gdx-backend-applet.jar
     -> gdx-backend-desktop.jar
