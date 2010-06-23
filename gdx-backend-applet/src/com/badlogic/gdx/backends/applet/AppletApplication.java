@@ -57,10 +57,11 @@ public class AppletApplication implements Application
 	 * method. 
 	 * 
 	 * @param useGL20IfAvailable wheter to use OpenGL 2.0 if it is available or not
+	 * @param allowFixedPoint not allowing fixed point will reduce memory consumption considerably
 	 */
-	public AppletApplication( Applet applet, boolean useGL20IfAvailable )
+	public AppletApplication( Applet applet, boolean useGL20IfAvailable, boolean allowFixedPoint )
 	{
-		graphics = new AppletGraphics( this, applet, useGL20IfAvailable );
+		graphics = new AppletGraphics( this, applet, useGL20IfAvailable, allowFixedPoint );
 		input = new AppletInput( graphics.graphicPanel );
 		audio = new AppletAudio( );
 	}

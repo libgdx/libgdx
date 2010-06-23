@@ -40,35 +40,52 @@ class AppletGL10 implements GL10
 	private final FloatBuffer vertexBuffer;
 	private final FloatBuffer texCoordBuffer[] = new FloatBuffer[16];
 	private int activeTexture = 0;
-	
+	private boolean allowFixedPoint = true;
 	private float[] tmp = new float[1000];
 		
 	
-	public AppletGL10( javax.media.opengl.GL gl )
-	{
+	public AppletGL10( javax.media.opengl.GL gl, boolean allowFixedPoint )
+	{		
 		this.gl = gl;
-		ByteBuffer buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );		
-		buffer.order(ByteOrder.nativeOrder());
-		colorBuffer = buffer.asFloatBuffer();
-		
-		buffer = ByteBuffer.allocateDirect( 200000 * 4 * 3 );
-		buffer.order(ByteOrder.nativeOrder());
-		normalBuffer = buffer.asFloatBuffer();
-		
-		buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
-		buffer.order(ByteOrder.nativeOrder());
-		vertexBuffer = buffer.asFloatBuffer();
-		
-		for( int i = 0; i < texCoordBuffer.length; i++ )
-		{
+		this.allowFixedPoint = allowFixedPoint;
+		if( allowFixedPoint )
+		{				
+			ByteBuffer buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );		
+			buffer.order(ByteOrder.nativeOrder());
+			colorBuffer = buffer.asFloatBuffer();
+			
+			buffer = ByteBuffer.allocateDirect( 200000 * 4 * 3 );
+			buffer.order(ByteOrder.nativeOrder());
+			normalBuffer = buffer.asFloatBuffer();
+			
 			buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
-			buffer.order(ByteOrder.nativeOrder());		
-			texCoordBuffer[i] = buffer.asFloatBuffer();
+			buffer.order(ByteOrder.nativeOrder());
+			vertexBuffer = buffer.asFloatBuffer();
+			
+			for( int i = 0; i < texCoordBuffer.length; i++ )
+			{
+				buffer = ByteBuffer.allocateDirect( 200000 * 4 * 4 );
+				buffer.order(ByteOrder.nativeOrder());		
+				texCoordBuffer[i] = buffer.asFloatBuffer();
+			}
+		}
+		else
+		{
+			colorBuffer = null;
+			normalBuffer = null;
+			vertexBuffer = null;
+			for( int i = 0; i < texCoordBuffer.length; i++ )
+			{
+				texCoordBuffer[i] = null;
+			}
 		}
 	}		
 	
 	protected final void convertFixedToFloatbuffer( Buffer source, FloatBuffer target, int stride )
 	{		
+		if( !allowFixedPoint )
+			throw new IllegalStateException( "fixed point meshes were disabled when constructing the Applet!" );
+		
 		if( source instanceof IntBuffer || source instanceof ByteBuffer )
 		{
 			IntBuffer buffer = source instanceof ByteBuffer?((ByteBuffer)source).asIntBuffer():(IntBuffer)source;

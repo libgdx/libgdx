@@ -35,26 +35,17 @@ import com.badlogic.gdx.files.FileHandle;
  *
  */
 final class AppletFiles implements Files
-{
-	private final String externalPath = System.getProperty("user.home") + "/";		
-	
-
+{	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public FileHandle getFileHandle(String filename, FileType type) 
-	{	
-		File file = null;
-		if( type == FileType.Absolut || type == FileType.Internal )
-			file = new File( filename );
-		else
-			file = new File( this.externalPath + filename );
-			
-		if( file.exists() == false )
+	{			
+		if( type == FileType.Absolut || type == FileType.External )
 			return null;
 		else
-			return new AppletFileHandle( file );			
+			return new AppletFileHandle( filename );			
 	}
 
 	/**
@@ -63,13 +54,7 @@ final class AppletFiles implements Files
 	@Override
 	public String[] listDirectory(String directory, FileType type) 
 	{
-		File file = null;
-		if( type == FileType.Absolut || type == FileType.Internal )
-			file = new File( directory );
-		else
-			file = new File( this.externalPath + directory );
-		
-		return file.list();			
+		return new String[0];
 	}
 
 	/**
@@ -78,16 +63,7 @@ final class AppletFiles implements Files
 	@Override
 	public boolean makeDirectory(String directory, FileType type) 
 	{
-		File file = null;
-		
-		if( type == FileType.Internal )
-			return false;
-		
-		if( type == FileType.Absolut )
-			file = new File( directory );
-		else
-			file = new File( this.externalPath + directory );
-		return file.mkdirs();
+		return false;
 	}
 
 	/**
@@ -96,23 +72,10 @@ final class AppletFiles implements Files
 	@Override
 	public InputStream readFile(String fileName, FileType type) 
 	{
-		File file = null;
-		InputStream in = null;
-		if( type == FileType.Absolut || type == FileType.Internal )
-			file = new File( fileName );
+		if( type == FileType.Absolut || type == FileType.External )
+			return null;
 		else
-			file = new File( this.externalPath + fileName );
-
-		try 
-		{
-			in = new FileInputStream( file );
-		} 
-		catch (FileNotFoundException e) 
-		{		
-			// fall through
-		}		
-		
-		return in;		
+			return new AppletFileHandle( fileName ).getInputStream();	
 	}
 
 	/**
@@ -121,27 +84,6 @@ final class AppletFiles implements Files
 	@Override
 	public OutputStream writeFile(String filename, FileType type) 
 	{
-		File file = null;
-		FileOutputStream out = null;
-		
-		if( type == FileType.Internal )
-			return null;
-		
-		if( type == FileType.Absolut )
-			file = new File( filename );
-		else
-			file = new File( this.externalPath + filename );
-		
-		
-		try 
-		{
-			out = new FileOutputStream( file );
-		} 
-		catch (FileNotFoundException e) 
-		{		
-			// fall through
-		}		
-		
-		return out;
+		return null;
 	}
 }

@@ -37,9 +37,9 @@ public final class AppletGL11 extends AppletGL10 implements GL11
 	double tmpDouble[] = new double[1000];
 	float tmpFloat[] = new float[1000];
 	
-	public AppletGL11(GL gl) 
+	public AppletGL11(GL gl, boolean allowFixedPoint) 
 	{
-		super(gl);
+		super(gl, allowFixedPoint);
 	}
 
 	@Override

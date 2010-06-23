@@ -75,7 +75,10 @@ public final class AppletGraphics implements Graphics, RenderListener
 	/** the deltaTime mean **/
 	private WindowedMean mean = new WindowedMean( 5 );
 	
-	AppletGraphics( Application application, Applet applet, boolean useGL2IfAvailable )
+	/** whether to allow fixed point or not **/
+	private boolean allowFixedPoint;
+	
+	AppletGraphics( Application application, Applet applet, boolean useGL2IfAvailable, boolean allowFixedPoint )
 	{				
 		graphicPanel = new AppletPanel( application );            
         applet.setLayout( new BorderLayout() );
@@ -83,6 +86,7 @@ public final class AppletGraphics implements Graphics, RenderListener
         useGL2 = useGL2IfAvailable;
         graphicPanel.addGraphicListener( this );
         graphicPanel.requestFocusInWindow();
+        this.allowFixedPoint = allowFixedPoint;
 	}
 
 	@Override
@@ -139,7 +143,7 @@ public final class AppletGraphics implements Graphics, RenderListener
 		AppletFileHandle jHandle = (AppletFileHandle)file;
 		InputStream in;
 		try {
-			in = new FileInputStream( jHandle.getFile() );
+			in = jHandle.getInputStream();
 			AppletFont font = new AppletFont(this, in, size, style, managed);			
 			in.close();
 			
@@ -175,7 +179,9 @@ public final class AppletGraphics implements Graphics, RenderListener
 	{	
 		try
 		{
-			BufferedImage img = (BufferedImage)ImageIO.read( ((AppletFileHandle)file).getFile() );
+			InputStream in = ((AppletFileHandle)file).getInputStream();
+			BufferedImage img = (BufferedImage)ImageIO.read( in );
+			in.close();
 			return new AppletPixmap( img );
 		}
 		catch( Exception ex )
@@ -248,11 +254,11 @@ public final class AppletGraphics implements Graphics, RenderListener
 		{
 			if( major == 1 && minor < 5 )
 			{
-				gl10 = new AppletGL10( graphicPanel.getGL() );
+				gl10 = new AppletGL10( graphicPanel.getGL(), allowFixedPoint );
 			}
 			else
 			{
-				gl11 = new AppletGL11( graphicPanel.getGL() );
+				gl11 = new AppletGL11( graphicPanel.getGL(), allowFixedPoint );
 				gl10 = gl11;
 			}
 		}

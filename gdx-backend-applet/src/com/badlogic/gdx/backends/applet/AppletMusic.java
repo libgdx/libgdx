@@ -40,7 +40,7 @@ public class AppletMusic implements Music, Runnable
 	
 	private State state = State.Stopped;
 	private final Thread thread;
-	private final File file;
+	private final AppletFileHandle file;
 	private AudioInputStream ain;
 	private final SourceDataLine line;
 	private final byte[] buffer;
@@ -49,7 +49,7 @@ public class AppletMusic implements Music, Runnable
 	
 	public AppletMusic( AppletFileHandle handle ) throws UnsupportedAudioFileException, IOException, LineUnavailableException
 	{			
-		this.file = handle.getFile();
+		this.file = handle;
 		
 		openAudioInputStream();		
 		AudioFormat audioFormat = ain.getFormat();		
@@ -68,7 +68,7 @@ public class AppletMusic implements Music, Runnable
 	
 	private void openAudioInputStream( ) throws UnsupportedAudioFileException, IOException
 	{			
-		ain = AudioSystem.getAudioInputStream(file);		
+		ain = AudioSystem.getAudioInputStream(file.getInputStream());		
 		AudioFormat baseFormat = ain.getFormat();
 		AudioFormat  decodedFormat = new AudioFormat(
 				AudioFormat.Encoding.PCM_SIGNED,

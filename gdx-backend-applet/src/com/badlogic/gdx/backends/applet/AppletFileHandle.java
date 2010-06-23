@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.applet;
 
 import java.io.File;
+import java.io.InputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -29,18 +30,18 @@ import com.badlogic.gdx.files.FileHandle;
 public class AppletFileHandle implements FileHandle
 {
 	/** the file **/
-	private final File file;
+	private final String uri;
 	
-	AppletFileHandle( File file )
+	AppletFileHandle( String uri )
 	{
-		this.file = file;
+		this.uri = uri;
 	}
 	
 	/**
-	 * @return the underlying {@link File}.
+	 * @return the underlying {@link InputStream}. Needs to be closed when the handle is no longer used.
 	 */
-	public File getFile( )
+	public InputStream getInputStream( )
 	{
-		return file;
+		return getClass().getResourceAsStream( "/" + uri );
 	}
 }

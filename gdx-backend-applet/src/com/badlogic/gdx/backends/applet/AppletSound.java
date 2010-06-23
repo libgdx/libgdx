@@ -57,7 +57,7 @@ public class AppletSound implements Sound
 	public AppletSound( AppletAudio audio, AppletFileHandle file ) throws UnsupportedAudioFileException, IOException
 	{			
 		this.audio = audio;
-		InputStream fin = new BufferedInputStream( new FileInputStream( file.getFile() ) );		
+		InputStream fin = new BufferedInputStream( file.getInputStream() );		
 		AudioInputStream ain = AudioSystem.getAudioInputStream( fin );
 		AudioFormat baseFormat = ain.getFormat();
 		AudioFormat  decodedFormat = new AudioFormat(
