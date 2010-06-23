@@ -1,0 +1,25 @@
+<html>
+<body>
+	<applet code="org.jdesktop.applet.util.JNLPAppletLauncher"
+	      width=640
+	      height=480
+	      archive="http://download.java.net/media/applet-launcher/applet-launcher.jar,
+	               http://download.java.net/media/jogl/builds/archive/jsr-231-webstart-current/jogl.jar,
+	               http://download.java.net/media/gluegen/webstart/gluegen-rt.jar,
+	               simpletestapplet.jar,
+	               gdx-invaders.jar,
+	               gdx-0.52.jar,
+	               gdx-backend-applet.jar,
+	               gdx-dependencies-applet.jar">
+
+	   <param name="codebase_lookup" value="false">
+	   <param name="subapplet.classname" value="com.badlogic.gdxinvaders.GdxInvadersApplet">
+	   <param name="subapplet.displayname" value="Gdx Invaders">
+	   <param name="noddraw.check" value="true">
+	   <param name="progressbar" value="true">
+	   <param name="jnlpNumExtensions" value="1">
+	   <param name="jnlpExtension1" value="http://download.java.net/media/jogl/builds/archive/jsr-231-webstart-current/jogl.jnlp">             
+   </applet>
+
+</body>
+</html>
