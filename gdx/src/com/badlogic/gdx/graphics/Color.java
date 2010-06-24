@@ -17,7 +17,7 @@ public class Color
 	
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
-	
+
 	/**
 	 * Constructor, sets the components of the color
 	 * @param r the red component
@@ -141,4 +141,28 @@ public class Color
 		this.b = b;
 		this.a = a;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Color color = (Color) o;
+
+        if (Float.compare(color.a, a) != 0) return false;
+        if (Float.compare(color.b, b) != 0) return false;
+        if (Float.compare(color.g, g) != 0) return false;
+        if (Float.compare(color.r, r) != 0) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (r != +0.0f ? Float.floatToIntBits(r) : 0);
+        result = 31 * result + (g != +0.0f ? Float.floatToIntBits(g) : 0);
+        result = 31 * result + (b != +0.0f ? Float.floatToIntBits(b) : 0);
+        result = 31 * result + (a != +0.0f ? Float.floatToIntBits(a) : 0);
+        return result;
+    }
 }
