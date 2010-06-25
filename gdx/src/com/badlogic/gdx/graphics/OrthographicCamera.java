@@ -164,9 +164,9 @@ public final class OrthographicCamera
 	 */
 	public void update( )
 	{
-		proj.setToOrtho2D(0, 0, (viewportWidth * scale), (float)(viewportHeight * scale), near, far );
+		proj.setToOrtho2D(0, 0, (viewportWidth * scale), (viewportHeight * scale), near, far );
 		model.idt();
-		model.setToTranslation( tmp.set( (float)(-position.x + (viewportWidth / 2) * scale), (float)(-position.y + (viewportHeight / 2) * scale), (float)(-position.z) ) );
+		model.setToTranslation( tmp.set( (-position.x + (viewportWidth / 2) * scale), (-position.y + (viewportHeight / 2) * scale), (-position.z) ) );
 		combined.set( proj );
 		combined.mul( model );
 		combined.mul( rotationMatrix );
@@ -178,7 +178,7 @@ public final class OrthographicCamera
 	 * The current matrices get overwritten. The matrix mode will be left in the model view state after
 	 * a call to this.
 	 * 
-	 * @param app The application to set the matrices for.
+	 * @param graphics The Graphics to set the matrices for.
 	 */
 	public void setMatrices( Graphics graphics )
 	{
@@ -241,7 +241,6 @@ public final class OrthographicCamera
 	/**
 	 * Calculates the world coordinates of the given screen coordinates and stores
 	 * the result in world
-	 * @param graphics the Graphics instance used to determine the real screen size
 	 * @param screenX the x-coordinate of the screen position
 	 * @param screenY the y-coordinate of the screen position
 	 * @param world the vector to store the result in
@@ -277,23 +276,23 @@ public final class OrthographicCamera
 	}	
 	
 	/**
-	 * Returns the given screen y-coordinates as a world x-coordinate
+	 * Returns the given screen y-coordinates as a world y-coordinate
 	 * @param screenX The screen y-coordinate
 	 * @return The world y-coordinate
 	 */
-	public float getScreenToWorldY( float mouse_y )
+	public float getScreenToWorldY( float screenX )
 	{
-		return ( (viewportHeight - mouse_y-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y;
+		return ( (viewportHeight - screenX-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y;
 	}
 	
 	/**
 	 * Returns the given world y-coordinate as a screen x-coordinate
-	 * @param worldX The world y-coordinate
+	 * @param worldY The world y-coordinate
 	 * @return The screen y-coordinate
 	 */
-	public int getWorldToScreenY( float world_y )
+	public int getWorldToScreenY( float worldY )
 	{
-		return (int)(-( -world_y + (viewportHeight * scale ) / 2 + position.y - viewportHeight * scale ) / scale); 
+		return (int)(-( -worldY + (viewportHeight * scale ) / 2 + position.y - viewportHeight * scale ) / scale);
 	}	
 		
 	Ray ray = new Ray( new Vector3( ), new Vector3( ) );
@@ -306,7 +305,7 @@ public final class OrthographicCamera
 	 * it outside of this class.
 	 * 
 	 * @param screenX The screen x-coordinate
-	 * @param mouse_y The screen y-coordinate
+	 * @param screenY The screen y-coordinate
 	 * @return The picking ray.
 	 */
 	public Ray getPickRay( int screenX, int screenY )
