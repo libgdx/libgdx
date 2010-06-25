@@ -277,12 +277,12 @@ public final class OrthographicCamera
 	
 	/**
 	 * Returns the given screen y-coordinates as a world y-coordinate
-	 * @param screenX The screen y-coordinate
+	 * @param screenY The screen y-coordinate
 	 * @return The world y-coordinate
 	 */
-	public float getScreenToWorldY( float screenX )
+	public float getScreenToWorldY( float screenY )
 	{
-		return ( (viewportHeight - screenX-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y;
+		return ( (viewportHeight - screenY-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y;
 	}
 	
 	/**
