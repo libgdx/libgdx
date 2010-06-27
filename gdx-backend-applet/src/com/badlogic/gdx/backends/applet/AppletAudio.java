@@ -238,7 +238,6 @@ final class AppletAudio implements Audio, Runnable
 	 */
 	@Override
 	public AudioRecorder newAudioRecoder(int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AppletAudioRecorder(samplingRate, isMono);
 	}
 }
