@@ -726,4 +726,14 @@ public final class SpriteBatch
 		blendSrcFunc = srcFunc;
 		blendDstFunc = dstFunc;
 	}
+	
+	/**
+	 * Disposes all resources associated with this SpriteBatch
+	 */
+	public void dispose( )
+	{
+		mesh.dispose();
+		if( shader != null )
+			shader.dispose();
+	}
 }
