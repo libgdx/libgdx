@@ -173,7 +173,6 @@ final class AndroidAudio implements Audio
 	 */
 	@Override
 	public AudioRecorder newAudioRecoder(int samplingRate, boolean isMono) {
-		// TODO Auto-generated method stub
-		return null;
+		return new AndroidAudioRecorder( samplingRate, isMono );
 	}
 }

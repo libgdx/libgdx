@@ -24,7 +24,8 @@ import com.badlogic.gdx.audio.AudioDevice;
 
 /**
  * Implementation of the {@link AudioDevice} interface for Android
- * using the AudioTrack class.
+ * using the AudioTrack class. You will need to set the permission
+ * android.permission.RECORD_AUDIO in your manifest file.
  * @author mzechner
  *
  */
