@@ -17,6 +17,7 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -40,9 +41,19 @@ public interface Audio
 	 * {@link AudioDevice.dispose()} method when it is no longer used.
 	 * 
 	 * @param isMono whether the AudioDevice should be in mono or stereo mode
-	 * @return
+	 * @return the AudioDevice
 	 */
 	public AudioDevice newAudioDevice( boolean isMono );
+	
+	/**
+	 * Creates a new {@link AudioRecorder}. The AudioDevice has to be disposed
+	 * after it is no longer used.
+	 * 
+	 * @param samplingRate the sampling rate in Herz
+	 * @param isMono whether the recorder records in mono or stereo
+	 * @return the AudioRecorder
+	 */
+	public AudioRecorder newAudioRecoder( int samplingRate, boolean isMono );
 	
 	/**
 	 * Creates a new {@link Sound} which is used to playback audio effects such

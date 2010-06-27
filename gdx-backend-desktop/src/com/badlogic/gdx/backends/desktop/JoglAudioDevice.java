@@ -47,7 +47,7 @@ public final class JoglAudioDevice implements AudioDevice
 		try {
 			AudioFormat format = new AudioFormat( 44100.0f, 16, isMono?1:2, true, false );
 			line = AudioSystem.getSourceDataLine( format );
-			line.open(format, 4410);
+			line.open(format, 4410*2);
 			line.start();				
 		} catch (Exception e) {
 			e.printStackTrace();			
@@ -76,8 +76,8 @@ public final class JoglAudioDevice implements AudioDevice
 		for( int i = offset, j = 0; i < offset + numSamples; i++, j+=2 )
         {
         		short value = samples[i];        		                		                   
-                bytes[j] = (byte)(value | 0xff);
-                bytes[j+1] = (byte)(value >> 8 );
+                bytes[j+1] = (byte)(value & 0xff);
+                bytes[j] = (byte)(value >> 8 );
         }
 		
 		int writtenBytes = line.write( bytes, 0, numSamples * 2 );
