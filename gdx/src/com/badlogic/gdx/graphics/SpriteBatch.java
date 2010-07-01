@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.Matrix;
  * @author mzechner
  *
  */
-public final class SpriteBatch 
+public  class SpriteBatch
 {	
 	private static final int MAX_VERTICES = 6 * 5000;
 	
@@ -43,45 +43,45 @@ public final class SpriteBatch
 	private final Mesh mesh;
 	
 	/** the graphics instance **/
-	private final Graphics graphics;			
+	protected final Graphics graphics;
 	
 	/** the transform to be applied to all sprites **/
-	private final Matrix transform = new Matrix();
+	protected final Matrix transform = new Matrix();
 	
 	/** the view matrix holding the orthogonal projection **/
-	private final Matrix viewMatrix = new Matrix();
+	protected final Matrix viewMatrix = new Matrix();
 	
 	/** the vertex storage **/
-	private final float[] vertices = new float[MAX_VERTICES * (2 + 4 + 2)];
+	protected final float[] vertices = new float[MAX_VERTICES * (2 + 4 + 2)];
 	
 	/** last texture **/
-	private Texture lastTexture = null;
+	protected Texture lastTexture = null;
 	
 	/** current index into vertices **/
-	private int idx = 0;
+	protected int idx = 0;
 	
 	/** drawing flag **/
-	private boolean drawing = false;
+	protected boolean drawing = false;
 	
 	/** inverse texture width and height **/
-	private float invTexWidth = 0;
-	private float invTexHeight = 0;
+	protected float invTexWidth = 0;
+	protected float invTexHeight = 0;
 	
 	/** whether to use the blend mode for text or for sprites **/
-	private boolean useTextBlend = false;
+	protected boolean useTextBlend = false;
 	
 	/** blend function src & target **/
 	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
 	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 	
 	/** the shader for opengl 2.0 **/
-	private ShaderProgram shader;
+	protected ShaderProgram shader;
 	
 	/** number of render calls **/
-	public int renderCalls = 0;
+	protected int renderCalls = 0;
 
 	/** whether blending is enabled or not **/
-	private boolean blendingDisabled;
+	protected boolean blendingDisabled;
 	
 	/**
 	 * Consturctor, sets the {@link Graphics} instance
@@ -204,27 +204,27 @@ public final class SpriteBatch
 		}		
 		else
 		{
-			viewMatrix.set(projection).mul(transform);			
-					
-			GL20 gl = graphics.getGL20();		
+			viewMatrix.set(projection).mul(transform);
+
+			GL20 gl = graphics.getGL20();
 			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
 			gl.glDisable( GL20.GL_DEPTH_TEST );
 			gl.glDisable( GL20.GL_CULL_FACE );
 			gl.glDepthMask ( false );
-			
+
 			gl.glEnable( GL20.GL_TEXTURE_2D );
 			gl.glActiveTexture( GL20.GL_TEXTURE0 );
-			
+
 			if( !blendingDisabled )
 			{
-				gl.glEnable( GL20.GL_BLEND );										
-				gl.glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );							
-			}			
+				gl.glEnable( GL20.GL_BLEND );
+				gl.glBlendFunc( GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA );
+			}
 			else
 			{
-				gl.glDisable( GL20.GL_BLEND );				
+				gl.glDisable( GL20.GL_BLEND );
 			}
-			
+
 			shader.begin();
 			shader.setUniformMatrix( "u_projectionViewMatrix", viewMatrix );
 			shader.setUniformi( "u_texture", 0 );
@@ -569,7 +569,7 @@ public final class SpriteBatch
 			renderMesh();
 	}		
 	
-	private void renderMesh( )
+	protected void renderMesh( )
 	{
 		if( idx == 0 )
 			return;

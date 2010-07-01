@@ -14,6 +14,7 @@ public class TextureRenderTest implements RenderListener {
     private Texture texture;
 
     private ArrayList<SimpleRect> rects = new ArrayList<SimpleRect>();
+    Color color = new Color(Color.GREEN);
 
 
     @Override
@@ -46,10 +47,10 @@ public class TextureRenderTest implements RenderListener {
             float v = rect.y * invTexHeight;
             float u2 = (rect.x + rect.width) * invTexWidth;
             float v2 = (rect.y + rect.height) * invTexHeight;
-            float fx = 0.0F;
-            float fy = 0.0F;
-            float fx2 = (rect.width);
-            float fy2 = (-rect.height);
+            float fx = rect.x;
+            float fy = rect.y;
+            float fx2 = (rect.x + rect.width);
+            float fy2 = (rect.y -rect.height);
 
             vertices[idx++] = fx;
             vertices[idx++] = fy;
@@ -102,6 +103,8 @@ public class TextureRenderTest implements RenderListener {
 
         camera.update();
 
+
+
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadMatrixf(camera.getCombinedMatrix().val, 0);
         gl.glMatrixMode(GL10.GL_MODELVIEW);
@@ -111,6 +114,10 @@ public class TextureRenderTest implements RenderListener {
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 
+         gl.glColor4f(color.r, color.g, color.b, color.a);
+        
+         gl.glColor4f(Color.WHITE.r, Color.WHITE.g, Color.WHITE.b, 0.5F);
+
         texture.bind();
 
 
@@ -118,8 +125,8 @@ public class TextureRenderTest implements RenderListener {
             SimpleRect rect = rects.get(i);
             gl.glPushMatrix();
 
-            float x = (rect.index + 1) * 60F;
-            gl.glTranslatef(x, 100F, 0F);
+//            float x = (rect.index + 1) * 60F;
+            gl.glTranslatef(100, 100F, 0F);
 
             mesh.render(GL10.GL_TRIANGLES, rect.index * 24, 24);
 
