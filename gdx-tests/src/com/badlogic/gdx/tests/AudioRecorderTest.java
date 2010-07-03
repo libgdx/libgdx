@@ -83,6 +83,6 @@ public class AudioRecorderTest implements RenderListener, ApplicationListener
 	public void resume(Application app) 
 	{
 		device = app.getAudio().newAudioDevice(true);
-		recorder = app.getAudio().newAudioRecoder( 22050, true );		
+		recorder = app.getAudio().newAudioRecoder( 44100, true );		
 	}	
 }
