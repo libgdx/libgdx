@@ -185,7 +185,7 @@ public  class SpriteBatch
 			gl.glDepthMask ( false );
 			
 			gl.glEnable( GL10.GL_TEXTURE_2D );
-			gl.glActiveTexture( GL10.GL_TEXTURE0 );
+			//gl.glActiveTexture( GL10.GL_TEXTURE0 );
 			
 			if( !blendingDisabled )
 			{
@@ -213,7 +213,7 @@ public  class SpriteBatch
 			gl.glDepthMask ( false );
 
 			gl.glEnable( GL20.GL_TEXTURE_2D );
-			gl.glActiveTexture( GL20.GL_TEXTURE0 );
+			//gl.glActiveTexture( GL20.GL_TEXTURE0 );
 
 			if( !blendingDisabled )
 			{

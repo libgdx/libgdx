@@ -481,7 +481,7 @@ public class Mesh
 			
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				gl.glTexCoordPointer( attribute.numComponents, type, attributes.vertexSize, attribute.offset );
 				textureUnit++;
@@ -510,7 +510,7 @@ public class Mesh
 				gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glDisableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				textureUnit--;
 			}		
@@ -558,7 +558,7 @@ public class Mesh
 			
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				vertices.position( attribute.offset );
 				gl.glTexCoordPointer( attribute.numComponents, type, attributes.vertexSize, vertices );
@@ -583,7 +583,7 @@ public class Mesh
 				gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glDisableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				textureUnit--;
 			}		
