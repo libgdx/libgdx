@@ -78,7 +78,7 @@ public  class SpriteBatch
 	protected ShaderProgram shader;
 	
 	/** number of render calls **/
-	protected int renderCalls = 0;
+	public int renderCalls = 0;
 
 	/** whether blending is enabled or not **/
 	protected boolean blendingDisabled;
