@@ -1,13 +1,27 @@
+/*******************************************************************************
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
@@ -590,6 +604,22 @@ public class World
 		}
 		
 		return contacts;
+	}
+	
+	/**
+	 * @return all bodies currently in the simulation
+	 */
+	public Collection<Body> getBodies( )
+	{
+		return bodies.values();
+	}
+	
+	/**
+	 * @return all joints currently in the simulation
+	 */
+	public Collection<Joint> getJoints( )
+	{
+		return joints.values();
 	}
 		
 	private native void jniGetContactList( long addr, long[] contacts );
