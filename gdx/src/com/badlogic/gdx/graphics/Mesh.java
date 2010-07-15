@@ -428,10 +428,6 @@ public class Mesh
 	 */
 	public void render( int primitiveType )
 	{
-		if( graphics.isGL20Available() )
-			throw new IllegalStateException( "can't use this render method with OpenGL ES 2.0" );
-		
-		checkManagedAndDirty();
 		render( primitiveType, 0, maxIndices > 0? getNumIndices(): getNumVertices() );
 	}
 	
