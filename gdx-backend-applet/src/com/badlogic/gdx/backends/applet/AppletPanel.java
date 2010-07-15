@@ -1,22 +1,20 @@
-/*
- *  This file is part of Libgdx by Mario Zechner (badlogicgames@gmail.com)
- *
- *  Libgdx is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Libgdx is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with libgdx.  If not, see <http://www.gnu.org/licenses/>.
- */
+/*******************************************************************************
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.backends.applet;
 
-import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -24,11 +22,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -43,7 +36,6 @@ import javax.swing.JPanel;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.math.WindowedMean;
-import com.sun.opengl.impl.NativeLibLoader;
 import com.sun.opengl.util.Animator;
 
 /**
@@ -59,9 +51,6 @@ import com.sun.opengl.util.Animator;
 final class AppletPanel extends JPanel implements GLEventListener, MouseMotionListener, MouseListener, KeyListener
 {	
 	private static final long serialVersionUID = -3638194405409146221L;
-
-	/** global flag used to check wheter the libraries are loaded already **/
-	private static boolean loaded = false;
 	
 	/** the context to be used by all GraphicPanels **/
 	private static GLContext context = null;	
