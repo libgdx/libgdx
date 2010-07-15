@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdxinvaders;
 
 import java.io.InputStream;
@@ -228,15 +243,6 @@ public class Renderer
 		gl.glMatrixMode( GL10.GL_MODELVIEW );
 		gl.glLoadIdentity();			
 	}
-	
-//	private void set2DProjection( GL10 gl, GameActivity activity )
-//	{
-//		gl.glMatrixMode( GL10.GL_PROJECTION );
-//		gl.glLoadIdentity();
-//		GLU.gluOrtho2D( gl, 0, activity.getViewportWidth(), 0, activity.getViewportHeight() );
-//		gl.glMatrixMode( GL10.GL_MODELVIEW );
-//		gl.glLoadIdentity();
-//	}
 	
 	float[] direction = { 1, 0.5f, 0, 0 };	
 	private void setLighting( GL10 gl )
