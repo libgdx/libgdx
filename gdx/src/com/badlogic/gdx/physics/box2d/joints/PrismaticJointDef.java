@@ -63,7 +63,7 @@ public class PrismaticJointDef extends JointDef
 	/**
 	 *  The local translation axis in body1.
 	 */
-	public final Vector2 localAxis1 = new Vector2( );
+	public final Vector2 localAxis1 = new Vector2(1, 0);
 
 	/**
 	 *  The constrained angle between the bodies: body2_angle - body1_angle.
