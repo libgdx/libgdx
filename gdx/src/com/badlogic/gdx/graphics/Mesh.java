@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
@@ -88,6 +73,9 @@ public class Mesh
 	/** whether this mesh was invalidated due to a context loss **/
 	private boolean invalidated = false;
 	
+	/** whether attempted to create buffer the first time**/
+	private boolean bufferCreatedFirstTime = false;
+	
 	/**
 	 * Creates a new Mesh with the given attributes
 	 * 
@@ -145,8 +133,7 @@ public class Mesh
 			indices = buffer.asShortBuffer();
 		}									
 		
-		createBuffers( );
-		
+		bufferCreatedFirstTime = false;
 		if( managed )
 			meshes.add( this );
 	}
@@ -427,7 +414,7 @@ public class Mesh
 	 * @param primitiveType the primitive type
 	 */
 	public void render( int primitiveType )
-	{
+	{	
 		render( primitiveType, 0, maxIndices > 0? getNumIndices(): getNumVertices() );
 	}
 	
@@ -605,10 +592,6 @@ public class Mesh
 	
 	public void render( ShaderProgram shader, int primitiveType )
 	{
-		if( !graphics.isGL20Available() )
-			throw new IllegalStateException( "can't use this render method with OpenGL ES 1.x" );
-		
-		checkManagedAndDirty();
 		render( shader, primitiveType, 0, maxIndices > 0? getNumIndices(): getNumVertices() );
 	}
 	
@@ -658,10 +641,15 @@ public class Mesh
 	
 	private void checkManagedAndDirty( )
 	{
-		if( vertexBufferObjectHandle == 0 )
+		if( ! bufferCreatedFirstTime ){
+			createBuffers();
+			bufferCreatedFirstTime = true;
+		}
+		
+		if(vertexBufferObjectHandle == 0 )
 			return;
 		
-		if( managed && invalidated )
+		if( managed && invalidated || !bufferCreatedFirstTime)
 		{
 			if( graphics.isGL11Available() )
 			{
@@ -674,6 +662,7 @@ public class Mesh
 				fillBuffers( );
 			}			
 		}
+		
 		
 		invalidated = false;
 		if( dirty )
