@@ -19,6 +19,9 @@ package com.badlogic.gdx.physics.box2d;
  * A shape is used for collision detection. You can create a shape however you like.
  * Shapes used for simulation in b2World are created automatically when a b2Fixture
  * is created.
+ * 
+ * NOTE: YOU NEED TO DISPOSE SHAPES AFTER YOU NO LONGER USE THEM! E.g. after calling
+ * body.createFixture();
  * @author mzechner
  *
  */
