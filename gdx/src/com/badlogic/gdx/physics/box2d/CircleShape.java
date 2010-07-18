@@ -31,6 +31,11 @@ public class CircleShape extends Shape
 	
 	private native long newCircleShape( );
 	
+	protected CircleShape( long addr )
+	{
+		this.addr = addr;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

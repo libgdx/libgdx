@@ -176,3 +176,10 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniTestPo
 	b2Fixture* fixture = (b2Fixture*)addr;
 	return fixture->TestPoint( b2Vec2( x, y ) );
 }
+
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetShape
+  (JNIEnv *, jobject, jlong addr)
+{
+	b2Fixture* fixture = (b2Fixture*)addr;
+	return (jlong)fixture->GetShape();
+}

@@ -83,4 +83,31 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAs
 	poly->SetAsEdge(b2Vec2(v1x, v1y), b2Vec2(v2x,v2y));
 }
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_PolygonShape
+ * Method:    jniGetVertexCount
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniGetVertexCount
+  (JNIEnv *, jobject, jlong addr)
+{
+	b2PolygonShape* poly = (b2PolygonShape*)addr;
+	return poly->GetVertexCount();
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_PolygonShape
+ * Method:    jniGetVertex
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniGetVertex
+  (JNIEnv *env, jobject, jlong addr, jint index, jfloatArray verts)
+{
+	b2PolygonShape* poly = (b2PolygonShape*)addr;
+	const b2Vec2 v = poly->GetVertex( index );
+	float* vertices = (float*)env->GetPrimitiveArrayCritical(verts, 0);
+	vertices[0] = v.x;
+	vertices[1] = v.y;
+	env->ReleasePrimitiveArrayCritical(verts, vertices, 0 );
+}
 

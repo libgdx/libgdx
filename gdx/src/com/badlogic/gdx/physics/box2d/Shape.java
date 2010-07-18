@@ -74,6 +74,8 @@ public abstract class Shape
 	}
 	
 	private native void jniDispose( long addr );
+	
+	protected static native int jniGetType( long addr );
 
 //	/// Test a point for containment in this shape. This only works for convex shapes.
 //	/// @param xf the shape world transform.

@@ -51,3 +51,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniDispose
 	b2Shape* shape = (b2Shape*)addr;
 	delete shape;
 }
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetType
+  (JNIEnv *, jclass, jlong addr)
+{
+	b2Shape* shape = (b2Shape*)addr;
+	return shape->m_type;
+}

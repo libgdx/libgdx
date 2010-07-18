@@ -29,6 +29,9 @@ public class Fixture
 	/** the address of the fixture **/
 	protected final long addr;
 	
+	/** the shape, initialized lazy **/
+	protected Shape shape;
+	
 	/**
 	 * Constructs a new fixture
 	 * @param addr the address of the fixture
@@ -55,12 +58,27 @@ public class Fixture
 	
 	private native int jniGetType( long addr );
 
-//	/// Get the child shape. You can modify the child shape, however you should not change the
-//	/// number of vertices because this will crash some collision caching mechanisms.
-//	/// Manipulating the shape may lead to non-physical behavior.
-//	b2Shape* GetShape();
-//	const b2Shape* GetShape() const;
-
+	/**
+	 * Returns the shape of this fixture
+	 */
+	public Shape getShape( )
+	{
+		if( shape == null )
+		{
+			long shapeAddr = jniGetShape( addr );
+			int type = Shape.jniGetType( addr );
+			
+			if( type == 0 )
+				shape = new CircleShape( shapeAddr );
+			else
+				shape = new PolygonShape( shapeAddr );
+		}
+		
+		return shape;
+	}
+	
+	private native long jniGetShape( long addr );
+	
 	/**
 	 *  Set if this fixture is a sensor.
 	 */

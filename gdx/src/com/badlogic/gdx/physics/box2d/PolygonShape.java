@@ -27,6 +27,11 @@ public class PolygonShape extends Shape
 		addr = newPolygonShape( );
 	}
 	
+	protected PolygonShape( long addr )
+	{
+		this.addr = addr;
+	}
+	
 	private native long newPolygonShape( );
 	
 	/**
@@ -89,5 +94,30 @@ public class PolygonShape extends Shape
 		jniSetAsEdge( addr, v1.x, v1.y, v2.x, v2.y );
 	}
 	
-	private native void jniSetAsEdge( long addr, float v1x, float v1y, float v2x, float v2y );	
+	private native void jniSetAsEdge( long addr, float v1x, float v1y, float v2x, float v2y );
+	
+	/**
+	 * @return the number of vertices
+	 */
+	public int getVertexCount( )
+	{
+		return jniGetVertexCount( addr );
+	}
+	
+	private native int jniGetVertexCount( long addr );
+	
+	/**
+	 * Returns the vertex at the given position.
+	 * @param index the index of the vertex 0 <= index < getVertexCount( ) 
+	 * @param vertex vertex
+	 */
+	private static float[] verts = new float[2];
+	public void getVertex( int index, Vector2 vertex )
+	{
+		jniGetVertex( addr, index, verts );
+		vertex.x = verts[0];
+		vertex.y = verts[1];
+	}
+	
+	private native void jniGetVertex( long addr, int index, float[] verts );
 }
