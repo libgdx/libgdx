@@ -19,11 +19,11 @@ package com.badlogic.gdx.backends.android;
 
 import android.app.Activity;
 import android.util.Log;
-
 import android.widget.FrameLayout.LayoutParams;
+
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
