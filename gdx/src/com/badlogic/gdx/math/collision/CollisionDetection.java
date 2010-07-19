@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.math.collision;
 
+import com.badlogic.gdx.math.FastMath;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
@@ -432,7 +433,7 @@ public class CollisionDetection
 		if( c > 0 && b > 0 ) return false;
 		float discr = b*b - c;
 		if( discr < 0 ) return false;
-		float t = -b - (float)Math.sqrt( discr );
+		float t = -b - FastMath.sqrt( discr );
 		if( t < 0 ) t = 0;
 		i.set( r.origin ).add( r.direction.tmp().mul( t ) );
 		return true;

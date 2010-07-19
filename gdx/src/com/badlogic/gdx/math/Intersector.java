@@ -44,7 +44,7 @@ public final class Intersector
 		if( det < 0 )
 			return Float.NaN;
 		
-		float sqrtD = (float)Math.sqrt( det );
+		float sqrtD = FastMath.sqrt( det );
 		float invA = 1 / (2 * a);
 		float r1 = (-b - sqrtD) * invA;
 		float r2 = (-b + sqrtD) * invA;
@@ -331,7 +331,7 @@ public final class Intersector
 			return false;
 
 		// compute q as described above
-		float distSqrt = (float)Math.sqrt(disc);
+		float distSqrt = FastMath.sqrt(disc);
 		float q;
 		if (b < 0)
 			q = (-b - distSqrt)/2.0f;
