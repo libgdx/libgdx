@@ -175,7 +175,7 @@ public class Box2DTest implements RenderListener, InputListener
 		// matrices
 		GL10 gl = app.getGraphics().getGL10();
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
-		camera.setMatrices( app.getGraphics() );
+		camera.setMatrices( );
 		
 		// next we render the ground body
 		renderBox( gl, groundBody, 50, 1 );
