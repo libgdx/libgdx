@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.FastMath;
 import com.badlogic.gdx.math.Matrix;
 
 /**
@@ -347,8 +346,8 @@ public  class SpriteBatch
 		final float p4y = fy;
 		
 		// rotate
-		final float cos = FastMath.cos( rotation * FastMath.DEGREES_TO_RADIANS );
-		final float sin = FastMath.sin( rotation * FastMath.DEGREES_TO_RADIANS );
+		final float cos = (float)Math.cos( (float)Math.toRadians(rotation) );
+		final float sin = (float)Math.sin( (float)Math.toRadians(rotation) );
 		
 		float x1 = cos * p1x - sin * p1y;
 		float y1 = sin * p1x + cos * p1y;

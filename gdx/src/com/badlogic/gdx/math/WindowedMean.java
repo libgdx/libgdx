@@ -147,6 +147,6 @@ public final class WindowedMean
 			sum += (values[i] - mean) * (values[i] - mean);
 		}
 		
-		return FastMath.sqrt( sum / values.length );
+		return (float)Math.sqrt( sum / values.length );
 	}
 }

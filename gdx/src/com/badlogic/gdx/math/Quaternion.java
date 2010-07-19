@@ -109,9 +109,9 @@ public final class Quaternion implements Serializable
      */
     public Quaternion set(Vector3 axis, float angle)
     {
-        float l_ang= angle * FastMath.DEGREES_TO_RADIANS;
-        float l_sin = FastMath.sin(l_ang/2);
-        float l_cos = FastMath.cos(l_ang/2);
+        float l_ang= (float)Math.toRadians(angle);
+        float l_sin = (float)Math.sin(l_ang/2);
+        float l_cos = (float)Math.cos(l_ang/2);
         return this.set(axis.x*l_sin,
                         axis.y*l_sin,
                         axis.z*l_sin,
@@ -131,7 +131,7 @@ public final class Quaternion implements Serializable
      */
     public float len()
     {
-        return FastMath.sqrt(x * x + y * y + z * z + w * w );
+        return (float)Math.sqrt(x * x + y * y + z * z + w * w );
     }
 
     /**
@@ -164,18 +164,18 @@ public final class Quaternion implements Serializable
      */
     public Quaternion setEulerAngles( float yaw, float pitch, float roll )
     {
-    	yaw = yaw * FastMath.DEGREES_TO_RADIANS;
-    	pitch = pitch * FastMath.DEGREES_TO_RADIANS;
-    	roll = roll * FastMath.DEGREES_TO_RADIANS;
+    	yaw = (float)Math.toRadians(yaw);
+    	pitch = (float)Math.toRadians(pitch);
+    	roll = (float)Math.toRadians(roll);
    	 	float num9 = roll * 0.5f;
-   	    float num6 = FastMath.sin(num9);
-   	    float num5 = FastMath.cos(num9);
+   	    float num6 = (float)Math.sin(num9);
+   	    float num5 = (float)Math.cos(num9);
    	    float num8 = pitch * 0.5f;
-   	    float num4 = FastMath.sin(num8);
-   	    float num3 = FastMath.cos(num8);
+   	    float num4 = (float)Math.sin(num8);
+   	    float num3 = (float)Math.cos(num8);
    	    float num7 = yaw * 0.5f;
-   	    float num2 = FastMath.sin(num7);
-   	    float num = FastMath.cos(num7);
+   	    float num2 = (float)Math.sin(num7);
+   	    float num = (float)Math.cos(num7);
    	    x = ((num * num4) * num5) + ((num2 * num3) * num6);
    	    y = ((num2 * num3) * num5) - ((num * num4) * num6);
    	    z = ((num * num3) * num6) - ((num2 * num4) * num5);

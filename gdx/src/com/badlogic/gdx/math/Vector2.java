@@ -72,7 +72,7 @@ public final class Vector2
 	 */
 	public float len( )
 	{
-		return FastMath.sqrt( x * x + y * y );
+		return (float)Math.sqrt( x * x + y * y );
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public final class Vector2
 	{	
 		float x_d = v.x - x;
 		float y_d = v.y - y;
-		return FastMath.sqrt( x_d * x_d + y_d * y_d );
+		return (float)Math.sqrt( x_d * x_d + y_d * y_d );
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public final class Vector2
 	{
 		float x_d = x - this.x;
 		float y_d = y - this.y;
-		return FastMath.sqrt( x_d * x_d + y_d * y_d );
+		return (float)Math.sqrt( x_d * x_d + y_d * y_d );
 	}
 	
 	/**

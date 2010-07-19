@@ -251,7 +251,7 @@ public final class Vector3
      */
     public float len()
     {
-        return FastMath.sqrt(x*x+y*y+z*z);
+        return (float)Math.sqrt(x*x+y*y+z*z);
     }
     
     /**
@@ -287,7 +287,7 @@ public final class Vector3
         b *= b;
         c *= c;
         
-        return FastMath.sqrt( a + b + c );
+        return (float)Math.sqrt( a + b + c );
     }
 
     /**
@@ -455,7 +455,7 @@ public final class Vector3
     	float theta = theta0 * alpha;
     	Vector3 v2 = target.tmp().sub( x * dot, y * dot, z * dot );
     	v2.nor();
-    	return this.mul(FastMath.cos(theta)).add( v2.mul(FastMath.sin(theta) ) ).nor();
+    	return this.mul((float)Math.cos(theta)).add( v2.mul((float)Math.sin(theta) ) ).nor();
     }   
 
     /**
@@ -520,7 +520,7 @@ public final class Vector3
 
 	public float dst(float x, float y, float z) 
 	{	
-		return FastMath.sqrt( dst2( x, y, z ));
+		return (float)Math.sqrt( dst2( x, y, z ));
 	}
 	
 	/**
