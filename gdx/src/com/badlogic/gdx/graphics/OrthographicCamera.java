@@ -176,10 +176,8 @@ public final class OrthographicCamera
 	 * and position and loads an identity to the model view matrix of OpenGL ES 1.x. 
 	 * The current matrices get overwritten. The matrix mode will be left in the model view state after
 	 * a call to this.
-	 * 
-	 * @param graphics The Graphics to set the matrices for.
 	 */
-	public void setMatrices( Graphics graphics )
+	public void setMatrices( )
 	{
 		update();
 		GL10 gl = graphics.getGL10();
@@ -251,7 +249,19 @@ public final class OrthographicCamera
 		
 		world.set( ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.x,
 				   ( (viewportHeight -screenY-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y );
-					
+	}
+	
+	/**
+	 * Calculates the screen coordinates of the given world coordinates
+	 *  
+	 * @param worldX world x-coordinate
+	 * @param worldY world y-coordinate
+	 * @param screen the screen coordinates get stored here
+	 */
+	public void getWorldToScreen( float worldX, float worldY, Vector2 screen )
+	{
+		screen.x = (int)((worldX + ( viewportWidth * scale ) / 2 - position.x) / scale);
+		screen.y = (int)(-( -worldY + (viewportHeight * scale ) / 2 + position.y - viewportHeight * scale ) / scale);
 	}
 	
 	/**
