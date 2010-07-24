@@ -248,7 +248,7 @@ public final class OrthographicCamera
 		screenY = screenY / graphics.getHeight() * viewportHeight;
 		
 		world.set( ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.x,
-				   ( (viewportHeight -screenY-1) * scale ) - ( viewportHeight * scale ) / 2 + position.y );
+				   ( (viewportHeight -screenY) * scale ) - ( viewportHeight * scale ) / 2 + position.y );
 	}
 	
 	/**

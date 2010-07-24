@@ -1,0 +1,175 @@
+package com.badlogic.gdx.physics.box2d;
+
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Transform;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Shape.Type;
+
+public class Box2DDebugRenderer 
+{	
+	/** Graphics instance **/
+	protected Graphics g;
+	
+	/** the immediate mode renderer to output our debug drawings **/
+	protected ImmediateModeRenderer renderer;
+	
+	/** a spritebatch and a font for text rendering **/
+	public final SpriteBatch batch;
+	public final Font font;
+	
+	/** vertices for polygon rendering **/
+	private static Vector2[] vertices = new Vector2[100];
+	
+	public Box2DDebugRenderer( Graphics graphics )
+	{	
+		// we remember the graphics instance
+		g = graphics;
+		
+		// next we setup the immediate mode renderer
+		renderer = new ImmediateModeRenderer(g.getGL10());
+		
+		// next we create a SpriteBatch and a font
+		batch = new SpriteBatch(g);
+		font = g.newFont( "Arial", 12, FontStyle.Plain, true );
+		
+		// initialize vertices array
+		for( int i = 0; i < vertices.length; i++ )
+			vertices[i] = new Vector2( );
+	}
+	
+	/**
+	 * This assumes that the projection matrix has already been 
+	 * set.
+	 */
+	public void render( World world )
+	{
+		renderBodies( world );
+	}
+	
+	private final Color SHAPE_NOT_ACTIVE = new Color( 0.5f, 0.5f, 0.3f, 1 );
+	private final Color SHAPE_STATIC = new Color( 0.5f, 0.9f, 0.5f, 1 );
+	private final Color SHAPE_KINEMATIC = new Color( 0.5f, 0.5f, 0.9f, 1 );
+	private final Color SHAPE_NOT_AWAKE = new Color( 0.6f, 0.6f, 0.6f, 1 );
+	private final Color SHAPE_AWAKE = new Color( 0.9f, 0.7f, 0.7f, 1 );
+	
+	private void renderBodies( World world )
+	{
+		for( Body body: world.getBodies() )
+		{
+			Transform transform = body.getTransform( );
+			
+			for( Fixture fixture: body.getFixtureList() )
+			{				
+				if( body.isActive() == false )
+					drawShape( fixture, transform, SHAPE_NOT_ACTIVE );
+				else
+				if( body.getType() == BodyType.StaticBody )
+					drawShape( fixture, transform, SHAPE_STATIC );
+				else
+				if( body.getType() == BodyType.KinematicBody )
+					drawShape( fixture, transform, SHAPE_KINEMATIC );
+				else
+				if( body.isAwake() == false )
+					drawShape( fixture, transform, SHAPE_NOT_AWAKE );
+				else
+					drawShape( fixture, transform, SHAPE_AWAKE );
+			}
+		}
+		
+		for( Joint joint: world.getJoints() )		
+			drawJoint( joint );		
+		
+		for( Contact contact: world.getContactList() )		
+			drawContact( contact );		
+	}
+	
+	private static Vector2 t = new Vector2();
+	private static Vector2 axis = new Vector2();	
+	private void drawShape( Fixture fixture, Transform transform, Color color )
+	{
+		if( fixture.getType() == Type.Circle )
+		{
+			CircleShape circle = (CircleShape)fixture.getShape();			
+			t.set( circle.getPosition() );
+			transform.mul( t );
+			drawSolidCircle( t, circle.getRadius(), axis.set( transform.vals[Transform.COL1_X], transform.vals[Transform.COL1_Y] ), color );
+		}
+		else
+		{
+			PolygonShape poly = (PolygonShape)fixture.getShape();
+			int vertexCount = poly.getVertexCount();
+			for( int i = 0; i < vertexCount; i++ )
+			{
+				poly.getVertex(i, vertices[i]);
+				transform.mul( vertices[i] );
+			}
+			drawSolidPolygon( vertices, vertexCount, color );
+		}
+	}
+	
+	
+	private final Vector2 v = new Vector2( );
+	private void drawSolidCircle( Vector2 center, float radius, Vector2 axis, Color color )
+	{
+		renderer.begin( GL10.GL_LINE_LOOP );
+		float angle = 0;
+		float angleInc = 2 * (float)Math.PI / 20;
+		for( int i = 0; i < 20; i++, angle += angleInc )
+		{
+			v.set( (float)Math.cos(angle) * radius + center.x, (float)Math.sin(angle) * radius + center.y );
+			renderer.color( color.r, color.g, color.b, color.a );
+			renderer.vertex( v.x, v.y, 0 );
+		}
+		renderer.end( );
+		
+		renderer.begin( GL10.GL_LINES );
+		renderer.color( color.r, color.g, color.b, color.a );
+		renderer.vertex( center.x, center.y, 0 );
+		renderer.color( color.r, color.g, color.b, color.a );
+		renderer.vertex( center.x + axis.x * radius, center.y + axis.y, 0 );
+		renderer.end( );
+	}
+	
+	private void drawSolidPolygon( Vector2[] vertices, int vertexCount, Color color )
+	{
+		renderer.begin( GL10.GL_LINE_LOOP );
+		for( int i = 0; i < vertexCount; i++ )
+		{
+			Vector2 v = vertices[i];
+			renderer.color( color.r, color.g, color.b, color.a );
+			renderer.vertex( v.x, v.y, 0 );
+		}
+		renderer.end();
+	}
+	
+	private void drawJoint( Joint joint )
+	{
+		
+	}
+	
+	private void drawContact( Contact contact )
+	{
+		
+	}
+	
+	public void dispose( )
+	{
+		batch.dispose();
+		font.dispose();
+	}
+}

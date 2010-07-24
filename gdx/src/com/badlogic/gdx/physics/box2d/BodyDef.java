@@ -53,7 +53,7 @@ public class BodyDef
 	
 	/** The body type: static, kinematic, or dynamic.
 	    Note: if a dynamic body would have zero mass, the mass is set to one. **/
-	public BodyType type;
+	public BodyType type = BodyType.StaticBody;
 
 	/** The world position of the body. Avoid creating bodies at the origin
 	    since this can lead to many overlapping shapes. **/

@@ -87,6 +87,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform
 	body->SetTransform(b2Vec2(positionX, positionY), angle);
 }
 
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetTransform
+  (JNIEnv *env, jobject, jlong addr, jfloatArray vals)
+{
+	b2Body* body = (b2Body*)addr;
+	float* valOut = (float*)env->GetPrimitiveArrayCritical(vals, 0);
+	b2Transform t = body->GetTransform();
+
+	valOut[0] = t.position.x;
+	valOut[1] = t.position.y;
+	valOut[2] = t.R.col1.x;
+	valOut[3] = t.R.col1.y;
+	valOut[4] = t.R.col2.x;
+	valOut[5] = t.R.col2.y;
+	env->ReleasePrimitiveArrayCritical(vals, valOut, 0);
+}
+
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniGetPosition

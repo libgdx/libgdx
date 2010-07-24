@@ -132,9 +132,12 @@ public class Body
 	private final Transform transform = new Transform( );
 	public Transform getTransform()
 	{
+		jniGetTransform( addr, transform.vals );
 		return transform;
 	}
 
+	private native void jniGetTransform( long addr, float[] vals );
+	
 	/**
 	 * Get the world body origin position.
 	 * @return the world position of the body's origin.

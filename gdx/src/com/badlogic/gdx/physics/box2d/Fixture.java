@@ -66,7 +66,7 @@ public class Fixture
 		if( shape == null )
 		{
 			long shapeAddr = jniGetShape( addr );
-			int type = Shape.jniGetType( addr );
+			int type = Shape.jniGetType( shapeAddr );
 			
 			if( type == 0 )
 				shape = new CircleShape( shapeAddr );
