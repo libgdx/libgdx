@@ -7,7 +7,8 @@ import com.badlogic.gdx.Input.Keys;
 
 public class TestCollection implements RenderListener, InputListener 
 {
-	private final Box2DTest[] tests = { new SimpleTest(), new Pyramid( ), new OneSidedPlatform(), new VerticalStack()			
+	private final Box2DTest[] tests = { new SimpleTest(), new Pyramid( ), new OneSidedPlatform(), new VerticalStack(),
+										new VaryingRestitution()
 	};
 	
 	private int testIndex = 0;
