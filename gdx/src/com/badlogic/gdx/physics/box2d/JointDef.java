@@ -19,16 +19,16 @@ public class JointDef
 {
 	public enum JointType
 	{
-		RevoluteJoint(0),
-		PrismaticJoint(1),
-		DistanceJoint(2),
-		PulleyJoint(3),
-		MouseJoint(4),
-		GearJoint(5),
-		LineJoint(6),
-		WeldJoint(7),
-		FrictionJoint(8),
-		Unknown(9);
+		Unknown(0),
+		RevoluteJoint(1),
+		PrismaticJoint(2),
+		DistanceJoint(3),
+		PulleyJoint(4),
+		MouseJoint(5),
+		GearJoint(6),
+		LineJoint(7),
+		WeldJoint(8),
+		FrictionJoint(9);		
 		
 		private int value;
 		

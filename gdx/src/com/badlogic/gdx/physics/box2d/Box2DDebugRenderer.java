@@ -18,7 +18,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Transform;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
+import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
+import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 
 public class Box2DDebugRenderer 
 {	
@@ -65,7 +69,8 @@ public class Box2DDebugRenderer
 	private final Color SHAPE_STATIC = new Color( 0.5f, 0.9f, 0.5f, 1 );
 	private final Color SHAPE_KINEMATIC = new Color( 0.5f, 0.5f, 0.9f, 1 );
 	private final Color SHAPE_NOT_AWAKE = new Color( 0.6f, 0.6f, 0.6f, 1 );
-	private final Color SHAPE_AWAKE = new Color( 0.9f, 0.7f, 0.7f, 1 );
+	private final Color SHAPE_AWAKE = new Color( 0.9f, 0.7f, 0.7f, 1 );	
+	private final Color JOINT_COLOR = new Color( 0.5f, 0.8f, 0.8f, 1 );
 	
 	private void renderBodies( World world )
 	{
@@ -155,11 +160,54 @@ public class Box2DDebugRenderer
 			renderer.vertex( v.x, v.y, 0 );
 		}
 		renderer.end();
-	}
+	}	
 	
 	private void drawJoint( Joint joint )
 	{
+		Body bodyA = joint.getBodyA();
+		Body bodyB = joint.getBodyB();
+		Transform xf1 = bodyA.getTransform();
+		Transform xf2 = bodyB.getTransform();
 		
+		Vector2 x1 = xf1.getPosition();
+		Vector2 x2 = xf2.getPosition();
+		Vector2 p1 = joint.getAnchorA();
+		Vector2 p2 = joint.getAnchorB();
+		
+		if( joint.getType() == JointType.DistanceJoint )
+		{
+			drawSegment( p1, p2, JOINT_COLOR );
+		}
+		else
+		if( joint.getType() == JointType.PulleyJoint )
+		{
+			PulleyJoint pulley = (PulleyJoint)joint;
+			Vector2 s1 = pulley.getGroundAnchorA();
+			Vector2 s2 = pulley.getGroundAnchorB();
+			drawSegment( s1, p1, JOINT_COLOR);
+			drawSegment( s2, p2, JOINT_COLOR );
+			drawSegment( s1, s2, JOINT_COLOR );
+		}
+		else
+		if( joint.getType() == JointType.MouseJoint )
+		{
+		}
+		else
+		{			
+			drawSegment( x1, p1, JOINT_COLOR );
+			drawSegment( p1, p2, JOINT_COLOR );
+			drawSegment( x2, p2, JOINT_COLOR );
+		}
+	}
+	
+	private void drawSegment( Vector2 x1, Vector2 x2, Color color )
+	{
+		renderer.begin( GL10.GL_LINES );
+		renderer.color( color.r, color.g, color.b, color.a );
+		renderer.vertex( x1.x, x1.y, 0 );
+		renderer.color( color.r, color.g, color.b, color.a );
+		renderer.vertex( x2.x, x2.y, 0 );
+		renderer.end();
 	}
 	
 	private void drawContact( Contact contact )

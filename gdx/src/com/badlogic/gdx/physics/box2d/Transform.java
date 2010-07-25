@@ -36,6 +36,8 @@ public class Transform
 	
 	public float[] vals = new float[6];
 
+	private Vector2 position = new Vector2( );
+	
 	/**
 	 * Transforms the given vector by this transform
 	 * @param v the vector
@@ -47,5 +49,10 @@ public class Transform
 		
 		v.x = x;
 		v.y = y;
+	}
+	
+	public Vector2 getPosition( )
+	{
+		return position.set( vals[0], vals[1] );
 	}
 }
