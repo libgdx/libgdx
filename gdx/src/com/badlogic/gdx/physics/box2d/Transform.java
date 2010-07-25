@@ -38,21 +38,63 @@ public class Transform
 
 	private Vector2 position = new Vector2( );
 	
+	public Transform( )
+	{
+		
+	}
+	
+	/**
+	 * Constructs a new Transform instance with the
+	 * given position and angle
+	 * @param position the position
+	 * @param angle the angle in radians
+	 */
+	public Transform( Vector2 position, float angle )
+	{
+		setPosition( position );
+		setRotation( angle );		
+	}
+	
 	/**
 	 * Transforms the given vector by this transform
 	 * @param v the vector
 	 */
-	public void mul(Vector2 v) 
+	public Vector2 mul(Vector2 v) 
 	{	
 		float x = vals[POS_X] + vals[COL1_X] * v.x + vals[COL2_X] * v.y;
 		float y = vals[POS_Y] + vals[COL1_Y] * v.x + vals[COL2_Y] * v.y;
 		
 		v.x = x;
 		v.y = y;
+		return v;
 	}
-	
+
+	/**
+	 * @return the position, modification of the vector has no effect on the Transform
+	 */
 	public Vector2 getPosition( )
 	{
 		return position.set( vals[0], vals[1] );
+	}
+
+	/**
+	 * Sets the rotation of this transform
+	 * @param angle angle in radians
+	 */
+	public void setRotation( float angle ) 
+	{		
+		float c = (float)Math.cos( angle ), s = (float)Math.sin( angle );
+		vals[COL1_X] = c; vals[COL2_X] = -s;
+		vals[COL1_Y] = s; vals[COL2_Y] = c;
+	}
+
+	/**
+	 * Sets the position of this transform
+	 * @param pos the position
+	 */
+	public void setPosition(Vector2 pos) 
+	{	
+		this.vals[POS_X] = pos.x;
+		this.vals[POS_Y] = pos.y;
 	}
 }
