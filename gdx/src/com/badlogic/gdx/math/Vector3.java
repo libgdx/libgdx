@@ -475,7 +475,7 @@ public final class Vector3
      * @param z The z-component of the other vector
      * @return The dot product
      */
-	public float dot(int x, int y, int z) { 
+	public float dot(float x, float y, float z) { 
 		return this.x * x + this.y * y + this.z * z;
 	}
 
