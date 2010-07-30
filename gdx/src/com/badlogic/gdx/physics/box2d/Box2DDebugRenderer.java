@@ -146,7 +146,7 @@ public class Box2DDebugRenderer
 		renderer.color( color.r, color.g, color.b, color.a );
 		renderer.vertex( center.x, center.y, 0 );
 		renderer.color( color.r, color.g, color.b, color.a );
-		renderer.vertex( center.x + axis.x * radius, center.y + axis.y, 0 );
+		renderer.vertex( center.x + axis.x * radius, center.y + axis.y * radius, 0 );
 		renderer.end( );
 	}
 	
