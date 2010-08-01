@@ -42,6 +42,7 @@
 		<activity android:name=".Box2DTest" android:label="Box2D Test"/>
 		<activity android:name=".AudioRecorderTest" android:label="Audio Recorder Test"/>
 		<activity android:name=".box2d.TestCollection" android:label="Box2D Test Collection"/>
+		<activity android:name=".ResourcesTest" android:label="Resources Test"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>

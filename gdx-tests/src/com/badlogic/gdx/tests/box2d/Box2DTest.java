@@ -120,11 +120,15 @@ public abstract class Box2DTest implements RenderListener, InputListener
 	@Override
 	public void dispose(Application app) 
 	{	
+		app.getInput().removeInputListener( this );
+		
 		renderer.dispose();
 		world.dispose();
+		
+		renderer = null;
+		world = null;
 		mouseJoint = null;
-		hitBody = null;
-		app.getInput().removeInputListener( this );
+		hitBody = null;		
 	}
 
 	@Override
