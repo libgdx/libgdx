@@ -160,10 +160,11 @@ public class AndroidApplication extends Activity implements Application {
         if (isFinishing())
             graphics.disposeRenderListener();
 
-        if (graphics.view != null)
+        if ( graphics != null && graphics.view != null)
             graphics.view.onPause();
 
-        audio.pause();
+        if( audio != null )
+        	audio.pause();
 
         if (listener != null)
             listener.pause(this);
@@ -176,10 +177,11 @@ public class AndroidApplication extends Activity implements Application {
         if (listener != null)
             listener.resume(this);
 
-        if (graphics.view != null)
+        if ( graphics != null && graphics.view != null)
             graphics.view.onResume();
 
-        audio.resume();
+        if( audio != null )
+        	audio.resume();
     }
 
     @Override
