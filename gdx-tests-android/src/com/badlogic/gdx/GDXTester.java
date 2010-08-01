@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.box2d.TestCollection;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,7 +31,7 @@ public class GDXTester extends ListActivity
 								   "Fixed Point Test", "Float Test", "Lag Test", "Pong", "Collision Test", "Audio Device Test", 
 								   "Mpg123 Test", "Vorbis Test", "Performance Test", "Mesh Shader Test", "SpriteBatch Test",
 								   "SpriteBatch Shader Test", "FrameBuffer Test", "SpriteBatch Rotation Test", "Box2D Test",
-								   "Audio Recorder Test"};
+								   "Audio Recorder Test", "Box2D Test Collection"};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -100,6 +102,8 @@ public class GDXTester extends ListActivity
 			intent = new Intent( this, Box2DTest.class );
 		if( keyword.equals( items[26] ) )
 			intent = new Intent( this, AudioRecorderTest.class );
+		if( keyword.equals( items[27] ) )
+			intent = new Intent( this, TestCollection.class );
 			
 		startActivity( intent );
 	}
