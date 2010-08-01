@@ -117,7 +117,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_LineJoint_
  * Method:    jniEnableMotor
  * Signature: (JZ)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_LineJoint_jniEnableMotor
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_LineJoint_jniEnableMotor
   (JNIEnv *, jobject, jlong addr, jboolean flag)
 {
 	b2LineJoint* joint = (b2LineJoint*)addr;

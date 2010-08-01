@@ -119,7 +119,7 @@ public class LineJoint extends Joint
 		jniEnableMotor( addr, flag );
 	}
 	
-	private native boolean jniEnableMotor( long addr, boolean flag );
+	private native void jniEnableMotor( long addr, boolean flag );
 
 	/**
 	 *  Set the motor speed, usually in meters per second.
