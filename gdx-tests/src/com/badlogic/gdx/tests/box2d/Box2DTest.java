@@ -70,7 +70,7 @@ public abstract class Box2DTest implements RenderListener, InputListener
 		world.step( 1 / 60.0f, 8, 3 );
 		
 		// clear the screen and setup the projection matrix
-		GL10 gl = app.getGraphics().getGL10();
+		GL10 gl = app.getGraphics().getGL10();		
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );		
 		camera.setMatrices( );
 		

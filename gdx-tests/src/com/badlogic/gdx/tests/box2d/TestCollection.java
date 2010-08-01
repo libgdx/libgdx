@@ -64,12 +64,14 @@ public class TestCollection implements RenderListener, InputListener
 	{
 		if( keycode == Keys.KEYCODE_SPACE )
 		{
+			app.log( "TestCollection", "disposing test '" + tests[testIndex].getClass().getName() );
 			tests[testIndex].dispose( app );
 			testIndex++;
 			if( testIndex >= tests.length )
 				testIndex = 0;
 			Box2DTest test = tests[testIndex];
-			test.surfaceCreated( app );		
+			test.surfaceCreated( app );
+			app.log( "TestCollection", "created test '" + tests[testIndex].getClass().getName() );
 		}
 		
 		return false;

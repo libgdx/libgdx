@@ -125,8 +125,12 @@ public class VerticalStack extends Box2DTest
 	public void render( Application app )
 	{
 		super.render( app );
-		renderer.batch.begin();
-		renderer.batch.drawText( renderer.font, "Press: (,) to launch a bullet", 0, app.getGraphics().getHeight(), Color.WHITE);
-		renderer.batch.end();
+		
+		if( renderer.batch != null )
+		{
+			renderer.batch.begin();
+			renderer.batch.drawText( renderer.font, "Press: (,) to launch a bullet", 0, app.getGraphics().getHeight(), Color.WHITE);
+			renderer.batch.end();
+		}
 	}
 }

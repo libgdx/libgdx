@@ -156,8 +156,11 @@ public class BodyTypes extends Box2DTest
 		
 		super.render( app );
 		
-		renderer.batch.begin();
-		renderer.batch.drawText( renderer.font, "Keys: (d) dynamic, (s) static, (k) kinematic", 0, app.getGraphics().getHeight(), Color.WHITE );
-		renderer.batch.end();
+		if( renderer.batch != null )
+		{
+			renderer.batch.begin();
+			renderer.batch.drawText( renderer.font, "Keys: (d) dynamic, (s) static, (k) kinematic", 0, app.getGraphics().getHeight(), Color.WHITE );
+			renderer.batch.end();
+		}
 	}
 }

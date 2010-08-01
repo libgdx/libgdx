@@ -92,9 +92,12 @@ public class Prismatic extends Box2DTest
 	{
 		super.render( app );
 		
-		renderer.batch.begin();
-		renderer.batch.drawText( renderer.font, "Keys: (l) limits, (m) motors, (s) speed", 0, app.getGraphics().getHeight(), Color.WHITE );
-		renderer.batch.drawText( renderer.font, "Motor Force = " + m_joint.getMotorForce(), 0, app.getGraphics().getHeight() - 15, Color.WHITE );
-		renderer.batch.end();
+		if( renderer.batch != null )
+		{
+			renderer.batch.begin();
+			renderer.batch.drawText( renderer.font, "Keys: (l) limits, (m) motors, (s) speed", 0, app.getGraphics().getHeight(), Color.WHITE );
+			renderer.batch.drawText( renderer.font, "Motor Force = " + m_joint.getMotorForce(), 0, app.getGraphics().getHeight() - 15, Color.WHITE );
+			renderer.batch.end();
+		}
 	}
 }
