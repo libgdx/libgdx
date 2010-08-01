@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-desktop.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-dependencies-desktop.jar"/>
-	<classpathentry kind="lib" path="libs/gdx-0.52.jar" sourcepath="libs/gdx-0.52-sources.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-0.6.jar" sourcepath="libs/gdx-0.6-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
