@@ -48,8 +48,8 @@ public class Box2DDebugRenderer
 	protected ImmediateModeRenderer renderer;
 	
 	/** a spritebatch and a font for text rendering **/
-	public final SpriteBatch batch;
-	public final Font font;
+	public SpriteBatch batch;
+	public Font font;
 	
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[100];

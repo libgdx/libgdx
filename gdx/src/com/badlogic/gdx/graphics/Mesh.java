@@ -674,15 +674,15 @@ public class Mesh
 	 */
 	public void dispose( )
 	{
+		meshes.remove(this);
+		
 		if( graphics.isGL11Available() == false && graphics.isGL20Available() == false )
 			return;
 		
 		if( graphics.isGL20Available() )
 			dispose( graphics.getGL20() );
 		else
-			dispose( graphics.getGL11() );
-		
-		meshes.remove(this);
+			dispose( graphics.getGL11() );			
 	}
 	
 	private void dispose( GL11 gl )
