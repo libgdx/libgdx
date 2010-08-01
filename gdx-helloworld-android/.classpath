@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-helloworld"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
-	<classpathentry kind="lib" path="libs/gdx-0.52.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
