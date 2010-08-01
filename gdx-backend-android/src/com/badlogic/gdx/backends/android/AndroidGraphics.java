@@ -439,6 +439,8 @@ final class AndroidGraphics implements Graphics, Renderer {
             listener.surfaceCreated(app);
         mean = new WindowedMean(5);
         this.lastFrameTime = System.nanoTime();
+        
+        gl.glViewport( 0, 0, this.width, this.height );
     }
 
     /**
