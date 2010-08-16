@@ -32,6 +32,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
@@ -122,7 +123,10 @@ public class Box2DTest implements RenderListener, InputListener
 		// defined above. Note that we have to dispose PolygonShapes
 		// and CircleShapes once they are no longer used. This is the
 		// only time you have to care explicitely for memomry managment.
-		groundBody.createFixture( groundPoly, 10 );
+		FixtureDef fixtureDef = new FixtureDef( );
+		fixtureDef.shape = groundPoly;
+		fixtureDef.filter.groupIndex = 0;
+		groundBody.createFixture( fixtureDef );
 		groundPoly.dispose();
 		
 		createBoxes( );
@@ -150,7 +154,9 @@ public class Box2DTest implements RenderListener, InputListener
 			Body boxBody = world.createBody( boxBodyDef );
 			
 			// add the boxPoly shape as a fixture
-			boxBody.createFixture( boxPoly, 10 );
+			FixtureDef fixtureDef = new FixtureDef( );
+			fixtureDef.shape = boxPoly;			
+			boxBody.createFixture( fixtureDef );
 			
 			// add the box to our list of boxes
 			boxes.add( boxBody );
