@@ -106,7 +106,7 @@ public class Body
 	public void destroyFixture(Fixture fixture)
 	{
 		jniDestroyFixture( addr, fixture.addr );
-		this.world.fixtures.remove(fixture);
+		this.world.fixtures.remove(fixture.addr);
 		this.fixtures.remove(fixture);
 	}
 	

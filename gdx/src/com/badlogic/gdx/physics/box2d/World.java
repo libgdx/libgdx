@@ -17,7 +17,6 @@ package com.badlogic.gdx.physics.box2d;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Version;
@@ -41,6 +40,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
+import com.badlogic.gdx.utils.LongHashMap;
 
 /**
  * The world class manages all physics entities, dynamic simulation,
@@ -59,13 +59,13 @@ public class World
 	private final long addr;
 	
 	/** all known bodies **/
-	protected final HashMap<Long, Body> bodies = new HashMap<Long, Body>();
+	protected final LongHashMap<Body> bodies = new LongHashMap<Body>(100);
 	
 	/** all known fixtures **/
-	protected final HashMap<Long, Fixture> fixtures = new HashMap<Long, Fixture>( );
+	protected final LongHashMap<Fixture> fixtures = new LongHashMap<Fixture>(100);
 	
 	/** all known joints **/
-	protected final HashMap<Long, Joint> joints = new HashMap<Long, Joint>( );
+	protected final LongHashMap<Joint> joints = new LongHashMap<Joint>( 100 );
 	
 	/** Contact filter **/
 	protected ContactFilter contactFilter = null;
@@ -609,7 +609,7 @@ public class World
 	/**
 	 * @return all bodies currently in the simulation
 	 */
-	public Collection<Body> getBodies( )
+	public Iterable<Body> getBodies( )
 	{
 		return bodies.values();
 	}
@@ -617,7 +617,7 @@ public class World
 	/**
 	 * @return all joints currently in the simulation
 	 */
-	public Collection<Joint> getJoints( )
+	public Iterable<Joint> getJoints( )
 	{
 		return joints.values();
 	}
