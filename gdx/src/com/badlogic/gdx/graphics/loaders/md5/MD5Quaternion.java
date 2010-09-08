@@ -36,9 +36,9 @@ public class MD5Quaternion
 		this.z = q.z;
 	}
 	
-	private void computeW( )
+	public void computeW( )
 	{
-		float t = 1.0f - ( x * x - y * y - z * z );
+		float t = 1.0f - x * x - y * y - z * z;
 		
 		if( t < 0.0f )
 			w = 0;
