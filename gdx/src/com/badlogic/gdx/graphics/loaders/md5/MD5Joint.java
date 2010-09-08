@@ -9,5 +9,5 @@ public class MD5Joint
 	public int parent;
 	
 	public final Vector3 pos = new Vector3( );
-	public final Quaternion orient = new Quaternion( 0, 0, 0, 0 );
+	public final MD5Quaternion orient = new MD5Quaternion();
 }

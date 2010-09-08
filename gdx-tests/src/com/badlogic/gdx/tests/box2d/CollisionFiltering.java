@@ -164,7 +164,7 @@ public class CollisionFiltering extends Box2DTest
         circleBodyDef.position.set( 5, 6 );
         
         Body body6 = world.createBody( circleBodyDef );
-        body6.createFixture( circleShapeDef );
+        body6.createFixture( circleShapeDef );      
 	}
 
 }

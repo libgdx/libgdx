@@ -24,10 +24,28 @@ public class MD5Loader
 					int version = Integer.parseInt(line.split( " " )[1]);
 					if( version != 10 )
 						throw new IllegalArgumentException( "Not a valid MD5 file, go version " + version + ", need 10" );
-				}							
+				}		
+				
+				//
+				// read number of joints
+				//
+				if( line.startsWith( "numJoints" ) )
+				{
+					int numJoints = Integer.parseInt( line.split( " " )[1] );
+					model.baseSkeleton = new MD5Joint[numJoints];
+				}
+				
+				//
+				// read number of meshes
+				//
+				if( line.startsWith( "numMeshes" ) )
+				{
+					int numMeshes = Integer.parseInt( line.split( " " )[1] );
+					model.meshes = new MD5Mesh[numMeshes];
+				}
 			}
 			
-			return null;
+			return model;
 		}
 		catch( Exception ex )
 		{
