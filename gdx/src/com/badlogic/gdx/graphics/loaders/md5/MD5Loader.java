@@ -154,7 +154,7 @@ public class MD5Loader
 							weight.bias = Float.parseFloat( tokens.get(3) );
 							weight.pos.x = Float.parseFloat( tokens.get(5) );
 							weight.pos.y = Float.parseFloat( tokens.get(6) );
-							weight.pos.z = Float.parseFloat( tokens.get(7) );
+							weight.pos.z = Float.parseFloat( tokens.get(7) );						
 							
 							mesh.weights[weightIndex] = weight;
 						}

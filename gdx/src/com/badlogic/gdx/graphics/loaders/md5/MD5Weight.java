@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 public class MD5Weight 
 {
 	public int joint;
-	public float bias;
+	public float bias;	
 	
 	public final Vector3 pos = new Vector3( );
 }
