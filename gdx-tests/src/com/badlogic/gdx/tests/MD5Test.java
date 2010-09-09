@@ -73,7 +73,7 @@ public class MD5Test implements RenderListener
 			gl.glRotatef( angle, 0, 1, 0 );
 			gl.glRotatef( -90, 1, 0, 0 );
 			
-//			renderer.setSkeleton( model.baseSkeleton );
+			renderer.setSkeleton( model.baseSkeleton );
 			renderer.render( );
 		}
 		
