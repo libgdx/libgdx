@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Loader;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
@@ -18,6 +19,7 @@ public class MD5Test implements RenderListener
 {
 	PerspectiveCamera camera;
 	MD5Model model;
+	MD5Animation anim;
 	MD5Renderer renderer;
 	SpriteBatch batch;
 	Font font;
@@ -29,6 +31,7 @@ public class MD5Test implements RenderListener
 		if( model == null )
 		{
 			model = MD5Loader.loadModel( app.getFiles().readFile( "data/zfat.md5mesh", FileType.Internal) );
+			anim = MD5Loader.loadAnimation( app.getFiles().readFile( "data/walk1.md5anim", FileType.Internal ) );
 			renderer = new MD5Renderer( app.getGraphics(), model, true );
 		
 			camera = new PerspectiveCamera();
@@ -51,6 +54,7 @@ public class MD5Test implements RenderListener
 	}
 
 	float angle = 0;
+	int frame = 0;
 	
 	@Override
 	public void render(Application app) 
@@ -69,9 +73,12 @@ public class MD5Test implements RenderListener
 			gl.glRotatef( angle, 0, 1, 0 );
 			gl.glRotatef(-90, 1, 0, 0 );
 			
-			renderer.setSkeleton( model.baseSkeleton );
+			renderer.setSkeleton( anim.frames[frame] );
 			renderer.render();
 		}
+		
+		frame++;
+		frame = frame % anim.frames.length;
 		
 		gl.glDisable( GL10.GL_DEPTH_TEST );
 		batch.begin();
