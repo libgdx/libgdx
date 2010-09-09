@@ -785,5 +785,10 @@ class AndroidGL10 implements GL10
 	public final void glTexEnvxv(int target, int pname, int[] params, int offset) 
 	{	
 		gl.glTexEnvxv( target, pname, params, offset );
+	}
+
+	@Override
+	public void glPolygonMode(int face, int mode) {
+		throw new UnsupportedOperationException( "not available in OpenGL ES" );		
 	}		
 }

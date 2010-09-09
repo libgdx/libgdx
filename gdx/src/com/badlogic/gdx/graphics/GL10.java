@@ -62,7 +62,7 @@ public interface GL10
 	public static final int GL_SRC_ALPHA_SATURATE = 0x0308;
 	public static final int GL_FRONT = 0x0404;
 	public static final int GL_BACK = 0x0405;
-	public static final int GL_FRONT_AND_BACK = 0x0408;
+	public static final int GL_FRONT_AND_BACK = 0x0408;	
 	public static final int GL_FOG = 0x0B60;
 	public static final int GL_LIGHTING = 0x0B50;
 	public static final int GL_TEXTURE_2D = 0x0DE1;
@@ -265,6 +265,10 @@ public interface GL10
 	public static final int GL_LIGHT6 = 0x4006;
 	public static final int GL_LIGHT7 = 0x4007;
 
+	public static final int GL_POINT = 0x1B00;
+	public static final int GL_LINE = 0x1B01;
+	public static final int GL_FILL = 0x1B02;
+	
 	public void glActiveTexture ( int texture );
 
 	public void glAlphaFunc ( int func, float ref );
@@ -511,4 +515,5 @@ public interface GL10
 
 	public void glViewport ( int x, int y, int width, int height );
 
+	public void glPolygonMode( int face, int mode );
 }

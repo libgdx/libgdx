@@ -1,12 +1,8 @@
 package com.badlogic.gdx.tests.desktop;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Loader;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Mesh;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
 
 public class MD5Test 
 {

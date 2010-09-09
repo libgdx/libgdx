@@ -46,7 +46,9 @@ public class MD5Mesh
 				MD5Joint joint = skeleton[weight.joint];
 				
 				quat.set( joint.orient );
-				weightVertex.set( weight.pos );
+				weightVertex.x = weight.pos.x;
+				weightVertex.y = weight.pos.y;
+				weightVertex.z = weight.pos.z;
 				quat.rotate( weightVertex );
 				
 				finalVertex.x += (joint.pos.x + weightVertex.x) * weight.bias;
@@ -59,5 +61,5 @@ public class MD5Mesh
 			verts[k++] = finalVertex.z;
 			k+=2;
 		}
-	}
+	}	
 }

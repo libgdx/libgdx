@@ -71,7 +71,7 @@ public class MD5Quaternion
 		w = tw;
 		x = tx;
 		y = ty;
-		z = tz;
+		z = tz;		
 	}
 	
 	public void multiply( Vector3 v )
@@ -93,7 +93,7 @@ public class MD5Quaternion
 	{
 		inv.x = -x; inv.y = -y; inv.z = -z; inv.w = w;
 		
-		inv.normalize();
+//		inv.normalize();
 		tmp.set( this );
 		tmp.multiply( vec );
 		tmp.multiply( inv );

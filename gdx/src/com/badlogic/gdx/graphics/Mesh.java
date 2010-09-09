@@ -240,9 +240,11 @@ public class Mesh
 	private void fillBuffers( GL11 gl )
 	{							
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-		gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW);
 		// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
-//		gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
+		if( graphics.getType() == GraphicsType.AndroidGL )
+			gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW);
+		else
+			gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );
 		
 		if( maxIndices > 0 )
@@ -479,7 +481,7 @@ public class Mesh
 			
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				gl.glTexCoordPointer( attribute.numComponents, type, attributes.vertexSize, attribute.offset );
 				textureUnit++;
@@ -508,7 +510,7 @@ public class Mesh
 				gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glDisableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				textureUnit--;
 			}		
@@ -556,7 +558,7 @@ public class Mesh
 			
 			if( attribute.usage == Usage.TextureCoordinates )
 			{
-				//gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
+				gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
 				gl.glEnableClientState( GL11.GL_TEXTURE_COORD_ARRAY );
 				vertices.position( attribute.offset );
 				gl.glTexCoordPointer( attribute.numComponents, type, attributes.vertexSize, vertices );

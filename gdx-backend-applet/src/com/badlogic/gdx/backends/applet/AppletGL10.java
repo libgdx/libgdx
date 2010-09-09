@@ -948,4 +948,10 @@ class AppletGL10 implements GL10
 			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
 		gl.glTexEnvfv( target, pname, tmp, 0 );
 	}		
+	
+	@Override
+	public void glPolygonMode(int face, int mode) 
+	{	
+		gl.glPolygonMode( face, mode );
+	}		
 }

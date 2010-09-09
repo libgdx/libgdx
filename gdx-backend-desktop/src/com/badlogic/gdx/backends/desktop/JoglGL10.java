@@ -157,7 +157,14 @@ class JoglGL10 implements GL10
 	public final void glClientActiveTexture(int texture) 
 	{	
 		activeTexture = texture - GL10.GL_TEXTURE0;
-		gl.glClientActiveTexture( texture );
+		try
+		{
+			gl.glClientActiveTexture( texture );
+		}
+		catch( Throwable ex )
+		{
+			// FIXME this is for my lousy netbook...
+		}
 	}
 
 	@Override
@@ -930,5 +937,11 @@ class JoglGL10 implements GL10
 		for( int i = 0; i + offset< params.length; i++ )
 			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
 		gl.glTexEnvfv( target, pname, tmp, 0 );
+	}
+
+	@Override
+	public void glPolygonMode(int face, int mode) 
+	{	
+		gl.glPolygonMode( face, mode );
 	}		
 }
