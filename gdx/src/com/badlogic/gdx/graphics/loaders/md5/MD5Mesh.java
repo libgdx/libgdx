@@ -34,8 +34,13 @@ public class MD5Mesh
 		return indices;
 	}
 		
-	private final Vector3 finalVertex = new Vector3( );	
+	private static final Vector3 finalVertex = new Vector3( );
 	public void calculateVertices( MD5Joints skeleton, float[] verts )
+	{
+		calculateVertices( skeleton, weights, vertices, verts );
+	}
+	
+	public static void calculateVertices( MD5Joints skeleton, float[] weights, float vertices[], float[] verts )
 	{
 		for( int vertexOffset = 2, k = 0; vertexOffset < vertices.length; vertexOffset += 4 )
 		{
@@ -49,8 +54,15 @@ public class MD5Mesh
 			{								
 				int jointOffset = (int)weights[weightOffset++] << 3;				
 				float bias = weights[weightOffset++];				
-				float vx = weights[weightOffset++], vy = weights[weightOffset++], vz = weights[weightOffset++];
-				float qx = skeleton.joints[jointOffset+4], qy = skeleton.joints[jointOffset+5], qz = skeleton.joints[jointOffset+6], qw = skeleton.joints[jointOffset+7];
+				float vx = weights[weightOffset++];
+				float vy = weights[weightOffset++];
+				float vz = weights[weightOffset++];
+				
+				float qx = skeleton.joints[jointOffset+4];
+				float qy = skeleton.joints[jointOffset+5];
+				float qz = skeleton.joints[jointOffset+6];
+				float qw = skeleton.joints[jointOffset+7];
+				
 				float ix = -qx, iy = -qy, iz = -qz, iw = qw;				
 				
 				float tw = -qx * vx - qy * vy - qz * vz;
@@ -72,38 +84,10 @@ public class MD5Mesh
 			verts[k++] = finalVertex.z;
 			k+=2;
 		}
-		
-//		for( int i = 0, k = 0; i < vertices.length; i++ )
-//		{
-//			finalVertex.x = finalVertex.y = finalVertex.z = 0;
-//			int weightIndex = vertices[i].start;
-//			for( int j = 0; j < vertices[i].count; j++, weightIndex++ )
-//			{
-//				MD5Weight weight = weights[weightIndex];
-//				MD5Joint joint = skeleton[weight.joint];			
-//								
-//				float vx = weight.pos.x, vy = weight.pos.y, vz = weight.pos.z;
-//				float qx = joint.orient.x, qy = joint.orient.y, qz = joint.orient.z, qw = joint.orient.w;
-//				float ix = -qx, iy = -qy, iz = -qz, iw = qw;				
-//				
-//				float tw = -qx * vx - qy * vy - qz * vz;
-//				float tx =  qw * vx + qy * vz - qz * vy;
-//				float ty =  qw * vy + qz * vx - qx * vz;
-//				float tz =  qw * vz + qx * vy - qy * vx;
-//				
-//				vx = tx * iw + tw * ix + ty * iz - tz * iy;
-//				vy = ty * iw + tw * iy + tz * ix - tx * iz;
-//				vz = tz * iw + tw * iz + tx * iy - ty * ix;				
-//				
-//				finalVertex.x += (joint.pos.x + vx) * weight.bias;
-//				finalVertex.y += (joint.pos.y + vy) * weight.bias;
-//				finalVertex.z += (joint.pos.z + vz) * weight.bias;
-//			}
-//			
-//			verts[k++] = finalVertex.x;
-//			verts[k++] = finalVertex.y;
-//			verts[k++] = finalVertex.z;
-//			k+=2;
-//		}
 	}	
+	
+	public void calculateVerticesJni( MD5Joints skeleton, float[] verts )
+	{
+		MD5Jni.calculateVertices( skeleton.joints, weights, vertices, verts, numVertices );
+	}
 }

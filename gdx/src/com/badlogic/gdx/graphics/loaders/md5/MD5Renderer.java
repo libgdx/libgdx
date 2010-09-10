@@ -11,18 +11,18 @@ public class MD5Renderer
 	private final MD5Model model;
 	private final Mesh mesh;
 	private final short[][] indices;
-	private final float[][] vertices;
-	private final Graphics g;
+	private final float[][] vertices;	
+	private final boolean useJni;
 	
-	public MD5Renderer( Graphics g, MD5Model model, boolean managed )
+	public MD5Renderer( Graphics g, MD5Model model, boolean useJni, boolean managed )
 	{
 		int maxVertices = 0;
 		int maxIndices = 0;
-		
-		this.g = g;
+				
 		this.model = model;
-		indices = new short[model.meshes.length][];
-		vertices = new float[model.meshes.length][];
+		this.useJni = useJni;
+		this.indices = new short[model.meshes.length][];
+		this.vertices = new float[model.meshes.length][];
 		
 		for( int i = 0; i < model.meshes.length; i++ )
 		{
@@ -31,11 +31,11 @@ public class MD5Renderer
 			if( maxIndices < model.meshes[i].numTriangles * 3 )
 				maxIndices = model.meshes[i].numTriangles * 3;
 			
-			indices[i] = model.meshes[i].getIndices();
-			vertices[i] = model.meshes[i].createVertexArray();
+			this.indices[i] = model.meshes[i].getIndices();
+			this.vertices[i] = model.meshes[i].createVertexArray();
 		}
 		
-		mesh = new Mesh( g, managed, false, false, maxVertices, maxIndices, 
+		this.mesh = new Mesh( g, managed, false, false, maxVertices, maxIndices, 
 		 			     new VertexAttribute( VertexAttributes.Usage.Position, 3, "a_position" ), 
 						 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords" ) );		
 	}
@@ -45,15 +45,17 @@ public class MD5Renderer
 		for( int i = 0; i < model.meshes.length; i++ )
 		{
 			MD5Mesh mesh = model.meshes[i];
-			mesh.calculateVertices( skeleton, vertices[i] );
+			if( useJni )
+				mesh.calculateVerticesJni( skeleton, vertices[i] );
+			else
+				mesh.calculateVertices( skeleton, vertices[i] );
 		}
 	}
 	
 	public void render( )
 	{
 		for( int i = 0; i < model.meshes.length; i++ )
-		{
-			MD5Mesh mesh = model.meshes[i];						
+		{						
 			this.mesh.setIndices( indices[i] );
 			this.mesh.setVertices( vertices[i] );
 			this.mesh.render( GL10.GL_TRIANGLES, 0, indices[i].length );

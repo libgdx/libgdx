@@ -186,8 +186,7 @@ public class MD5Loader
 		MD5Animation animation = new MD5Animation( );
 		
 		try
-		{
-			int currFrame = 0;
+		{			
 			String line;
 			JointInfo[] jointInfos = null;
 			BaseFrameJoint[] baseFrame = null;
@@ -406,20 +405,12 @@ public class MD5Loader
 			{
 				skelFrame.joints[thisJointIdx+1] = animatedPos.x;
 				skelFrame.joints[thisJointIdx+2] = animatedPos.y;
-				skelFrame.joints[thisJointIdx+3] = animatedPos.z;
-				
-//				animatedOrient.x = -animatedOrient.x;
-//				animatedOrient.y = -animatedOrient.y;
-//				animatedOrient.z = -animatedOrient.z;
-//				animatedOrient.w = -animatedOrient.w;
+				skelFrame.joints[thisJointIdx+3] = animatedPos.z;			
 				
 				skelFrame.joints[thisJointIdx+4] = animatedOrient.x;
 				skelFrame.joints[thisJointIdx+5] = animatedOrient.y;
 				skelFrame.joints[thisJointIdx+6] = animatedOrient.z;
-				skelFrame.joints[thisJointIdx+7] = animatedOrient.w;
-				
-				if( frameIndex == 0 )
-					System.out.println( animatedPos + " | " + animatedOrient );
+				skelFrame.joints[thisJointIdx+7] = animatedOrient.w;							
 			}
 			else
 			{
@@ -443,10 +434,7 @@ public class MD5Loader
 				skelFrame.joints[thisJointIdx+4] = parentOrient.x;
 				skelFrame.joints[thisJointIdx+5] = parentOrient.y;
 				skelFrame.joints[thisJointIdx+6] = parentOrient.z;
-				skelFrame.joints[thisJointIdx+7] = parentOrient.w;
-				
-				if( frameIndex == 0 )
-					System.out.println( parentPos.add( animatedPos ) + " | " + parentOrient );
+				skelFrame.joints[thisJointIdx+7] = parentOrient.w;							
 			}
 		}
 	}

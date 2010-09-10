@@ -1,3 +1,11 @@
-#Sat Mar 20 16:21:09 CET 2010
+#Fri Sep 10 17:40:42 CEST 2010
 eclipse.preferences.version=1
-environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<environment append\="true" appendContributed\="true">\r\n<variable delimiter\=";" name\="PWD" operation\="replace" value\="C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32"/>\r\n<variable delimiter\=";" name\="CWD" operation\="replace" value\="C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32"/>\r\n</environment>\r\n
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085=
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/CWD/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/CWD/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/CWD/value=C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/PWD/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/PWD/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/PWD/value=C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/append=true
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/appendContributed=true
