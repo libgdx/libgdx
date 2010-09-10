@@ -2,7 +2,8 @@ package com.badlogic.gdx.graphics.loaders.md5;
 
 public class MD5Model 
 {
-	public MD5Joint[] baseSkeleton;
+	public int numJoints;
+	public MD5Joints baseSkeleton;
 	public MD5Mesh[] meshes;
 	
 	public int getNumVertices( )
@@ -10,7 +11,7 @@ public class MD5Model
 		int numVertices = 0;
 		
 		for( int i = 0; i < meshes.length; i++ )
-			numVertices += meshes[i].vertices.length;
+			numVertices += meshes[i].numVertices;
 		
 		return numVertices;
 	}
@@ -20,7 +21,7 @@ public class MD5Model
 		int numTriangles = 0;
 		
 		for( int i = 0; i < meshes.length; i++ )
-			numTriangles += meshes[i].triangles.length;
+			numTriangles += meshes[i].numTriangles;
 		
 		return numTriangles;
 	}

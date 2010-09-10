@@ -18,6 +18,7 @@ public class MD5Loader
 		BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
 		MD5Model model = new MD5Model( );
 		List<String>tokens = new ArrayList<String>( 10 );
+		MD5Quaternion quat = new MD5Quaternion( );
 		
 		try
 		{			
@@ -45,8 +46,11 @@ public class MD5Loader
 				//
 				if( tokens.get(0).equals( "numJoints" ) )
 				{
-					int numJoints = Integer.parseInt( tokens.get(1) );
-					model.baseSkeleton = new MD5Joint[numJoints];
+					int numJoints = Integer.parseInt( tokens.get(1) );					
+					model.baseSkeleton = new MD5Joints();
+					model.baseSkeleton.names = new String[numJoints];
+					model.baseSkeleton.numJoints = numJoints;
+					model.baseSkeleton.joints = new float[numJoints*8];
 				}
 				
 				//
@@ -63,7 +67,7 @@ public class MD5Loader
 				//
 				if( tokens.get(0).equals( "joints") )
 				{
-					for( int i = 0; i < model.baseSkeleton.length; i++ )
+					for( int i = 0; i < model.baseSkeleton.numJoints; i++ )
 					{
 						line = reader.readLine();
 						tokenize( line, tokens );
@@ -71,23 +75,24 @@ public class MD5Loader
 						{
 							i--;
 							continue;
-						}
-							
-						MD5Joint joint = new MD5Joint( );
+						}							
 						
-						joint.name = tokens.get(0);
-						joint.parent = Integer.parseInt( tokens.get(1) );
+						int jointIdx = i << 3;
+						model.baseSkeleton.names[i] = tokens.get(0);;
+						model.baseSkeleton.joints[jointIdx] =  Integer.parseInt( tokens.get(1) );;
+						model.baseSkeleton.joints[jointIdx+1] = Float.parseFloat( tokens.get(3) );
+						model.baseSkeleton.joints[jointIdx+2] = Float.parseFloat( tokens.get(4) );
+						model.baseSkeleton.joints[jointIdx+3] = Float.parseFloat( tokens.get(5) );											
 						
-						joint.pos.x = Float.parseFloat( tokens.get(3) );
-						joint.pos.y = Float.parseFloat( tokens.get(4) );
-						joint.pos.z = Float.parseFloat( tokens.get(5) );
+						quat.x = Float.parseFloat( tokens.get(8) );
+						quat.y = Float.parseFloat( tokens.get(9) );
+						quat.z = Float.parseFloat( tokens.get(10) );
+						quat.computeW();						
 						
-						joint.orient.x = Float.parseFloat( tokens.get(8) );
-						joint.orient.y = Float.parseFloat( tokens.get(9) );
-						joint.orient.z = Float.parseFloat( tokens.get(10) );
-						joint.orient.computeW();
-						
-						model.baseSkeleton[i] = joint;
+						model.baseSkeleton.joints[jointIdx+4] = quat.x;
+						model.baseSkeleton.joints[jointIdx+5] = quat.y;
+						model.baseSkeleton.joints[jointIdx+6] = quat.z;
+						model.baseSkeleton.joints[jointIdx+7] = quat.w;						
 					}
 				}
 				
@@ -116,50 +121,50 @@ public class MD5Loader
 							mesh.shader = tokens.get(1);
 						}
 						if( tokens.get(0).equals( "numverts" ) )
-						{
-							mesh.vertices = new MD5Vertex[Integer.parseInt( tokens.get(1) )];
+						{							
+							mesh.vertices = new float[Integer.parseInt( tokens.get(1) )*4];
+							mesh.numVertices = mesh.vertices.length / 4;
 						}
 						if( tokens.get(0).equals( "numtris" ) )
-						{
-							mesh.triangles = new MD5Triangle[Integer.parseInt( tokens.get(1) )];
+						{							
+							mesh.indices = new short[Integer.parseInt( tokens.get(1) )*3];
+							mesh.numTriangles = mesh.indices.length / 3;
 						}
 						if( tokens.get(0).equals( "numweights" ) )
-						{
-							mesh.weights = new MD5Weight[Integer.parseInt( tokens.get(1) )];
+						{							
+							mesh.weights = new float[Integer.parseInt( tokens.get(1) )*5];
+							mesh.numWeights = mesh.weights.length / 5;
 						}
 						if( tokens.get(0).equals( "vert" ) )
-						{
-							MD5Vertex vert = new MD5Vertex( );
-							vertIndex = Integer.parseInt( tokens.get(1) );
-							vert.st.x = Float.parseFloat( tokens.get(3) );
-							vert.st.y = Float.parseFloat( tokens.get(4) );
-							vert.start = Integer.parseInt( tokens.get(6) );
-							vert.count = Integer.parseInt( tokens.get(7) );
+						{							
+							vertIndex = Integer.parseInt( tokens.get(1) );							
 							
-							mesh.vertices[vertIndex] = vert;
+							int idx = vertIndex*4;
+							mesh.vertices[idx++] = Float.parseFloat( tokens.get(3) ); // s
+							mesh.vertices[idx++] = Float.parseFloat( tokens.get(4) ); // t
+							mesh.vertices[idx++] = Float.parseFloat( tokens.get(6) ); // start
+							mesh.vertices[idx++] = Float.parseFloat( tokens.get(7) ); // count
 						}
 						if( tokens.get(0).equals( "tri" ) )
-						{
-							MD5Triangle tri = new MD5Triangle( );
-							triIndex = Integer.parseInt( tokens.get(1) );
-							tri.indices[0] = Integer.parseInt( tokens.get(2) );
-							tri.indices[1] = Integer.parseInt( tokens.get(3) );							
-							tri.indices[2] = Integer.parseInt( tokens.get(4) );
+						{							
+							triIndex = Integer.parseInt( tokens.get(1) );													
 							
-							mesh.triangles[triIndex] = tri;
+							int idx = triIndex*3;
+							mesh.indices[idx++] = Short.parseShort( tokens.get(2) ); // idx 1
+							mesh.indices[idx++] = Short.parseShort( tokens.get(3) ); // idx 2
+							mesh.indices[idx++] = Short.parseShort( tokens.get(4) ); // idx 3
 						}
 						
 						if( tokens.get(0).equals( "weight" ) )
-						{
-							MD5Weight weight = new MD5Weight( );
-							weightIndex = Integer.parseInt( tokens.get(1) );
-							weight.joint = Integer.parseInt( tokens.get(2) );
-							weight.bias = Float.parseFloat( tokens.get(3) );
-							weight.pos.x = Float.parseFloat( tokens.get(5) );
-							weight.pos.y = Float.parseFloat( tokens.get(6) );
-							weight.pos.z = Float.parseFloat( tokens.get(7) );						
+						{							
+							weightIndex = Integer.parseInt( tokens.get(1) );													
 							
-							mesh.weights[weightIndex] = weight;
+							int idx = weightIndex*5;
+							mesh.weights[idx++] = Integer.parseInt( tokens.get(2) ); // joint
+							mesh.weights[idx++] = Float.parseFloat( tokens.get(3) ); // bias
+							mesh.weights[idx++] = Float.parseFloat( tokens.get(5) ); // pos.x
+							mesh.weights[idx++] = Float.parseFloat( tokens.get(6) ); // pos.y
+							mesh.weights[idx++] = Float.parseFloat( tokens.get(7) ); // pos.z
 						}
 					}
 				}
@@ -203,7 +208,7 @@ public class MD5Loader
 				if( tokens.get(0).equals( "numFrames" ) )
 				{
 					int numFrames = Integer.parseInt(tokens.get(1));
-					animation.frames = new MD5Joint[numFrames][];
+					animation.frames = new MD5Joints[numFrames];
 					animation.bounds = new BoundingBox[numFrames];
 				}
 				
@@ -212,9 +217,10 @@ public class MD5Loader
 					int numJoints = Integer.parseInt( tokens.get(1) );
 					for( int i = 0; i < animation.frames.length; i++ )
 					{
-						animation.frames[i] = new MD5Joint[numJoints];
-						for( int j = 0; j < numJoints; j++ )
-							animation.frames[i][j] = new MD5Joint();
+						animation.frames[i] = new MD5Joints();
+						animation.frames[i].numJoints = numJoints;
+						animation.frames[i].names = new String[numJoints];
+						animation.frames[i].joints = new float[numJoints * 8];						
 					}
 					
 					jointInfos = new JointInfo[numJoints];
@@ -334,11 +340,15 @@ public class MD5Loader
 			ex.printStackTrace( );
 			return null;
 		}
-	}
+	}		
+	
+	static MD5Quaternion thisOrient = new MD5Quaternion( );
+	static MD5Quaternion parentOrient = new MD5Quaternion( );
+	static Vector3 parentPos = new Vector3( );
 	
 	private static void buildFrameSkeleton( JointInfo[] jointInfos, BaseFrameJoint[] baseFrame, float[] animFrameData, MD5Animation animation, int frameIndex )
 	{	
-		MD5Joint[] skelFrame = animation.frames[frameIndex];
+		MD5Joints skelFrame = animation.frames[frameIndex];
 		
 		for( int i = 0; i < jointInfos.length; i++ )
 		{
@@ -388,28 +398,55 @@ public class MD5Loader
 			
 			animatedOrient.computeW();
 			
-			MD5Joint thisJoint = skelFrame[i];
+			int thisJointIdx = i << 3;
+			skelFrame.names[i] = jointInfos[i].name;
+			skelFrame.joints[thisJointIdx] = jointInfos[i].parent;									
 			
-			int parent = jointInfos[i].parent;
-			thisJoint.parent = parent;
-			thisJoint.name = jointInfos[i].name;
-			
-			if( thisJoint.parent < 0 )
+			if( jointInfos[i].parent < 0 )
 			{
-				thisJoint.pos.set( animatedPos );
-				thisJoint.orient.set( animatedOrient );
+				skelFrame.joints[thisJointIdx+1] = animatedPos.x;
+				skelFrame.joints[thisJointIdx+2] = animatedPos.y;
+				skelFrame.joints[thisJointIdx+3] = animatedPos.z;
+				
+//				animatedOrient.x = -animatedOrient.x;
+//				animatedOrient.y = -animatedOrient.y;
+//				animatedOrient.z = -animatedOrient.z;
+//				animatedOrient.w = -animatedOrient.w;
+				
+				skelFrame.joints[thisJointIdx+4] = animatedOrient.x;
+				skelFrame.joints[thisJointIdx+5] = animatedOrient.y;
+				skelFrame.joints[thisJointIdx+6] = animatedOrient.z;
+				skelFrame.joints[thisJointIdx+7] = animatedOrient.w;
+				
+				if( frameIndex == 0 )
+					System.out.println( animatedPos + " | " + animatedOrient );
 			}
 			else
 			{
-				MD5Joint parentJoint = skelFrame[parent];
-				parentJoint.orient.rotate( animatedPos );
-				thisJoint.pos.x = animatedPos.x + parentJoint.pos.x;
-				thisJoint.pos.y = animatedPos.y + parentJoint.pos.y;
-				thisJoint.pos.z = animatedPos.z + parentJoint.pos.z;
+				int parentJointIdx = jointInfos[i].parent << 3;
+				parentPos.x = skelFrame.joints[parentJointIdx + 1];
+				parentPos.y = skelFrame.joints[parentJointIdx + 2];
+				parentPos.z = skelFrame.joints[parentJointIdx + 3];
 				
-				thisJoint.orient.set( parentJoint.orient );
-				thisJoint.orient.multiply( animatedOrient );
-				thisJoint.orient.normalize();
+				parentOrient.x = skelFrame.joints[parentJointIdx + 4];
+				parentOrient.y = skelFrame.joints[parentJointIdx + 5];
+				parentOrient.z = skelFrame.joints[parentJointIdx + 6];
+				parentOrient.w = skelFrame.joints[parentJointIdx + 7];
+				
+				parentOrient.rotate( animatedPos );
+				skelFrame.joints[thisJointIdx+1] = animatedPos.x + parentPos.x;
+				skelFrame.joints[thisJointIdx+2] = animatedPos.y + parentPos.y;
+				skelFrame.joints[thisJointIdx+3] = animatedPos.z + parentPos.z;
+								
+				parentOrient.multiply( animatedOrient );
+				parentOrient.normalize();
+				skelFrame.joints[thisJointIdx+4] = parentOrient.x;
+				skelFrame.joints[thisJointIdx+5] = parentOrient.y;
+				skelFrame.joints[thisJointIdx+6] = parentOrient.z;
+				skelFrame.joints[thisJointIdx+7] = parentOrient.w;
+				
+				if( frameIndex == 0 )
+					System.out.println( parentPos.add( animatedPos ) + " | " + parentOrient );
 			}
 		}
 	}

@@ -63,12 +63,12 @@ public class MD5Quaternion
 	
 	public void multiply( MD5Quaternion q )
 	{
-//		float tw = w * q.w - x * q.x - y * q.y - z * q.z;
+		float tw = w * q.w - x * q.x - y * q.y - z * q.z;
 		float tx = x * q.w + w * q.x + y * q.z - z * q.y;
 		float ty = y * q.w + w * q.y + z * q.x - x * q.z;
 		float tz = z * q.w + w * q.z + x * q.y - y * q.x;
 		
-//		w = tw;
+		w = tw;
 		x = tx;
 		y = ty;
 		z = tz;		
@@ -157,5 +157,10 @@ public class MD5Quaternion
 		x = k0 * x + k1 * q1x;
 		y = k0 * y + k1 * q1y;
 		z = k0 * z + k1 * q1z;
+	}
+	
+	public String toString( )
+	{
+		return String.format( "%.4f", x ) + ", " + String.format( "%.4f", y ) + ", " + String.format( "%.4f", z ) + ", " + String.format( "%.4f", w );
 	}
 }

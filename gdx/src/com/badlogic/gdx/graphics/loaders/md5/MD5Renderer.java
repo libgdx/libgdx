@@ -26,12 +26,12 @@ public class MD5Renderer
 		
 		for( int i = 0; i < model.meshes.length; i++ )
 		{
-			if( maxVertices < model.meshes[i].vertices.length )
-				maxVertices = model.meshes[i].vertices.length;
-			if( maxIndices < model.meshes[i].triangles.length * 3 )
-				maxIndices = model.meshes[i].triangles.length * 3;
+			if( maxVertices < model.meshes[i].numVertices )
+				maxVertices = model.meshes[i].numVertices;
+			if( maxIndices < model.meshes[i].numTriangles * 3 )
+				maxIndices = model.meshes[i].numTriangles * 3;
 			
-			indices[i] = model.meshes[i].createIndexArray();
+			indices[i] = model.meshes[i].getIndices();
 			vertices[i] = model.meshes[i].createVertexArray();
 		}
 		
@@ -40,7 +40,7 @@ public class MD5Renderer
 						 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords" ) );		
 	}
 	
-	public void setSkeleton( MD5Joint[] skeleton )
+	public void setSkeleton( MD5Joints skeleton )
 	{
 		for( int i = 0; i < model.meshes.length; i++ )
 		{
