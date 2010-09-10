@@ -33,8 +33,7 @@ public class MD5Mesh
 	{
 		return indices;
 	}
-		
-	private static final Vector3 finalVertex = new Vector3( );
+			
 	public void calculateVertices( MD5Joints skeleton, float[] verts )
 	{
 		calculateVertices( skeleton, weights, vertices, verts );
@@ -44,7 +43,9 @@ public class MD5Mesh
 	{
 		for( int vertexOffset = 2, k = 0; vertexOffset < vertices.length; vertexOffset += 4 )
 		{
-			finalVertex.x = finalVertex.y = finalVertex.z = 0;
+			float finalX = 0;
+			float finalY = 0;
+			float finalZ = 0;
 			
 			int weightOffset = (int)vertices[vertexOffset];
 			int weightCount = (int)vertices[vertexOffset+1];
@@ -74,14 +75,14 @@ public class MD5Mesh
 				vy = ty * iw + tw * iy + tz * ix - tx * iz;
 				vz = tz * iw + tw * iz + tx * iy - ty * ix;				
 								
-				finalVertex.x += (skeleton.joints[jointOffset+1] + vx) * bias;
-				finalVertex.y += (skeleton.joints[jointOffset+2] + vy) * bias;
-				finalVertex.z += (skeleton.joints[jointOffset+3] + vz) * bias;
+				finalX += (skeleton.joints[jointOffset+1] + vx) * bias;
+				finalY += (skeleton.joints[jointOffset+2] + vy) * bias;
+				finalZ += (skeleton.joints[jointOffset+3] + vz) * bias;
 			}
 			
-			verts[k++] = finalVertex.x;
-			verts[k++] = finalVertex.y;
-			verts[k++] = finalVertex.z;
+			verts[k++] = finalX;
+			verts[k++] = finalY;
+			verts[k++] = finalZ;
 			k+=2;
 		}
 	}	
