@@ -35,10 +35,10 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.351061383" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
 								<option id="gnu.cpp.compiler.option.include.paths.342753884" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/win32&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}\include\win32&quot;"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.717141589" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.717141589" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2 " valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.702080840" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool command="gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.debug.417875152" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.debug">
@@ -213,7 +213,7 @@
 						<parser enabled="true"/>
 					</scannerInfoProvider>
 				</profile>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -316,7 +316,7 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -1215,7 +1215,7 @@
 						<parser enabled="true"/>
 					</scannerInfoProvider>
 				</profile>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -1318,7 +1318,7 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>

@@ -16,20 +16,27 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_loaders_md5_MD5Jni_calcula
 		int weightOffset = (int)pVerticesIn[vertexOffset];
 		int weightCount = (int)pVerticesIn[vertexOffset +1];
 		weightOffset = (weightOffset << 2) + weightOffset;
+		float* vWeights = pWeights + weightOffset;
 
 		for( int j = 0; j < weightCount; j++ )
 		{
-			int jointOffset = (int)pWeights[weightOffset++] << 3;
-			float bias = pWeights[weightOffset++];
+			int jointOffset = (int)(*vWeights++) << 3;
+			float bias = *vWeights++;
+			float *vSkeleton = pSkeleton + jointOffset + 1;
 
-			float vx = pWeights[weightOffset++];
-			float vy = pWeights[weightOffset++];
-			float vz = pWeights[weightOffset++];
 
-			float qx = pSkeleton[jointOffset+4];
-			float qy = pSkeleton[jointOffset+5];
-			float qz = pSkeleton[jointOffset+6];
-			float qw = pSkeleton[jointOffset+7];
+			float vx = *vWeights++;
+			float vy = *vWeights++;
+			float vz = *vWeights++;
+
+			float jx = *vSkeleton++;
+			float jy = *vSkeleton++;
+			float jz = *vSkeleton++;
+
+			float qx = *vSkeleton++;
+			float qy = *vSkeleton++;
+			float qz = *vSkeleton++;
+			float qw = *vSkeleton++;
 
 			float ix = -qx, iy = -qy, iz = -qz, iw = qw;
 
@@ -42,9 +49,9 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_loaders_md5_MD5Jni_calcula
 			vy = ty * iw + tw * iy + tz * ix - tx * iz;
 			vz = tz * iw + tw * iz + tx * iy - ty * ix;
 
-			finalX += (pSkeleton[jointOffset+1] + vx) * bias;
-			finalY += (pSkeleton[jointOffset+2] + vy) * bias;
-			finalZ += (pSkeleton[jointOffset+3] + vz) * bias;
+			finalX += (jx + vx) * bias;
+			finalY += (jy + vy) * bias;
+			finalZ += (jz + vz) * bias;
 		}
 
 		pVerticesOut[k++] = finalX;
