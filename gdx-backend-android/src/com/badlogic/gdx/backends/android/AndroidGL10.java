@@ -789,6 +789,6 @@ class AndroidGL10 implements GL10
 
 	@Override
 	public void glPolygonMode(int face, int mode) {
-		throw new UnsupportedOperationException( "not available in OpenGL ES" );		
+//		throw new UnsupportedOperationException( "not available in OpenGL ES" );		
 	}		
 }

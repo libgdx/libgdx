@@ -44,8 +44,10 @@
 		<activity android:name=".box2d.TestCollection" android:label="Box2D Test Collection"/>
 		<activity android:name=".ResourcesTest" android:label="Resources Test"/>
 		<activity android:name=".MD5Test" android:label="MD5 Test"/>
+		<activity android:name=".MicroBenchmarks" android:label="Micro Benchmarks"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 </manifest> 

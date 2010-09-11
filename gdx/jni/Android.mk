@@ -7,6 +7,8 @@ LOCAL_ARM_MODE := arm
 LOCAL_SRC_FILES := \
 AudioTools.cpp \
 Mpg123Decoder.cpp \
+MD5Jni.cpp \
+BufferUtils.cpp \
 vorbis/VorbisDecoder.cpp \
 kissfft/KissFFT.cpp \
 Box2D/Body.cpp \

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.utils.BufferUtils;
 
 /**
  * A Mesh holds vertices composed of attributes specified by a 
@@ -65,10 +66,7 @@ public class Mesh
 	private final boolean isStatic;
 	
 	/** fixed point? **/
-	private final boolean useFixedPoint;
-	
-	/** whether direct buffers are used **/
-	private final boolean usesDirectBuffers;	
+	private final boolean useFixedPoint;	
 	
 	/** whether this mesh was invalidated due to a context loss **/
 	private boolean invalidated = false;
@@ -96,42 +94,14 @@ public class Mesh
 		this.maxIndices = maxIndices;
 		this.attributes = new VertexAttributes( attributes );
 		
-		if( graphics.getType() == GraphicsType.JoglGL )
-			usesDirectBuffers = true;
-		else
-		{
-			if( graphics.isGL11Available() || graphics.isGL20Available() )
-				usesDirectBuffers = false;
-			else
-				usesDirectBuffers = true;
-		}
-		
-		if( usesDirectBuffers == false )
-		{
-			vertices = useFixedPoint?IntBuffer.wrap( new int[maxVertices * this.attributes.vertexSize/4] ):FloatBuffer.wrap( new float[maxVertices * this.attributes.vertexSize/4] );
-			if( useFixedPoint )
-			{
-				verticesFixed = (IntBuffer)vertices;
-				verticesFloat = null;
-			}
-			else
-			{
-				verticesFloat = (FloatBuffer)vertices;
-				verticesFixed = null;
-			}
-			indices = ShortBuffer.wrap( new short[maxIndices] );
-		}
-		else
-		{
-			ByteBuffer buffer = ByteBuffer.allocateDirect( maxVertices * this.attributes.vertexSize );
-			buffer.order(ByteOrder.nativeOrder());
-			vertices = buffer;
-			verticesFixed = buffer.asIntBuffer();
-			verticesFloat = buffer.asFloatBuffer();
-			buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
-			buffer.order( ByteOrder.nativeOrder() );
-			indices = buffer.asShortBuffer();
-		}									
+		ByteBuffer buffer = ByteBuffer.allocateDirect( maxVertices * this.attributes.vertexSize );
+		buffer.order(ByteOrder.nativeOrder());
+		vertices = buffer;
+		verticesFixed = buffer.asIntBuffer();
+		verticesFloat = buffer.asFloatBuffer();
+		buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
+		buffer.order( ByteOrder.nativeOrder() );
+		indices = buffer.asShortBuffer();
 		
 		bufferCreatedFirstTime = false;
 		if( managed )
@@ -281,16 +251,9 @@ public class Mesh
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
 				
-		verticesFloat.clear();			
-		verticesFloat.put( vertices );			
-		verticesFloat.limit(vertices.length);			
-		verticesFloat.position(0);		
-		
-		if( usesDirectBuffers )
-		{ 			
-			this.vertices.limit(verticesFloat.limit()*4);									
-			this.vertices.position(0);			
-		}
+		BufferUtils.copy( vertices, verticesFloat, vertices.length, 0 );				
+		this.vertices.limit(verticesFloat.limit()*4);									
+		this.vertices.position(0);					
 		dirty = true;
 	}
 	
@@ -307,16 +270,11 @@ public class Mesh
 	{	
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
+				
+		BufferUtils.copy( vertices, verticesFloat, count, offset );
+		this.vertices.limit(verticesFloat.limit()*4);
+		this.vertices.position(0);
 		
-		verticesFloat.clear();
-		verticesFloat.put( vertices, offset, count );
-		verticesFloat.limit( count );
-		verticesFloat.position(0);
-		if( usesDirectBuffers )
-		{
-			this.vertices.limit(verticesFloat.limit()*4);
-			this.vertices.position(0);
-		}
 		dirty = true;
 	}
 	
@@ -335,12 +293,9 @@ public class Mesh
 		verticesFixed.clear();
 		verticesFixed.put( vertices );
 		verticesFixed.limit( vertices.length );
-		verticesFixed.position(0);
-		if( usesDirectBuffers )
-		{
-			this.vertices.limit(verticesFixed.limit()*4);
-			this.vertices.position(0);
-		}
+		verticesFixed.position(0);		
+		this.vertices.limit(verticesFixed.limit()*4);
+		this.vertices.position(0);		
 		dirty = true;
 	}
 	
@@ -361,12 +316,9 @@ public class Mesh
 		verticesFixed.clear();
 		verticesFixed.put( vertices, offset, count );
 		verticesFixed.limit(count);
-		verticesFixed.position(0);
-		if( usesDirectBuffers )
-		{
-			this.vertices.limit(verticesFixed.limit()*4);
-			this.vertices.position(0);
-		}
+		verticesFixed.position(0);		
+		this.vertices.limit(verticesFixed.limit()*4);
+		this.vertices.position(0);		
 		dirty = true;
 	}
 	
@@ -395,7 +347,7 @@ public class Mesh
 	 */
 	public int getNumVertices( )
 	{
-		return vertices.limit() / (attributes.vertexSize / (usesDirectBuffers?1:4));
+		return vertices.limit() / attributes.vertexSize;
 	}
 	
 	/**

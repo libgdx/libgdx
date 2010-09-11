@@ -37,13 +37,14 @@ public class MD5Test implements RenderListener
 			anim = MD5Loader.loadAnimation( app.getFiles().readFile( "data/walk1.md5anim", FileType.Internal ) );											
 			skeleton = new MD5Joints();
 			skeleton.joints = new float[anim.frames[0].joints.length];
-			animInfo = new MD5AnimationInfo( anim.frames.length, anim.secondsPerFrame );
+			animInfo = new MD5AnimationInfo( anim.frames.length, anim.secondsPerFrame );			
+			renderer = new MD5Renderer( app.getGraphics(), model, true, true );
 			
-			renderer = new MD5Renderer( app.getGraphics(), model, false, true );
-			long start = System.nanoTime();
-			for(  int i = 0; i < 100000; i++ )			
-				renderer.setSkeleton( model.baseSkeleton );
-			app.log( "MD5 Test", "took: " + (System.nanoTime() - start ) / 1000000000.0 );
+			
+//			long start = System.nanoTime();
+//			for(  int i = 0; i < 100000; i++ )			
+//				renderer.setSkeleton( model.baseSkeleton );
+//			app.log( "MD5 Test", "took: " + (System.nanoTime() - start ) / 1000000000.0 );
 			
 		
 			camera = new PerspectiveCamera();
@@ -79,7 +80,7 @@ public class MD5Test implements RenderListener
 		
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_LINE );
-		for( int z = 0; z < 500; z += 50 )
+		for( int z = 0; z < 50; z += 50 )
 		{
 			gl.glLoadIdentity();
 			gl.glTranslatef( 0, 0, -z );
