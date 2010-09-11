@@ -3,96 +3,117 @@ package com.badlogic.gdx;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-
-import com.badlogic.gdx.utils.BufferUtils;
+import java.nio.IntBuffer;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.badlogic.gdx.utils.BufferUtils;
 
 public class MicroBenchmarks extends Activity
 {
-	Thread t;
+	final int TRIES = 5;
 	long start = 0;
+	ScrollView sv;
+	TextView tv;	
+	Thread testThread = new Thread( new Runnable( ) {
+		
+		@Override
+		public void run() 
+		{
+			ByteBuffer buffer = ByteBuffer.allocateDirect( 1024*1024 * Float.SIZE / 8 );
+			buffer.order(ByteOrder.nativeOrder());			
+			FloatBuffer floatBuffer = buffer.asFloatBuffer();
+			IntBuffer intBuffer = buffer.asIntBuffer();
+			
+			float[] floatArray = new float[1024*1024];
+			int[] intArray = new int[1024*1024];
+			
+			// single put
+			tic();
+			for( int tries = 0; tries < TRIES; tries++ )
+			{
+				for( int i = 0; i < floatArray.length; i++ )
+					floatBuffer.put( floatArray[i] );
+				floatBuffer.clear();
+			}
+			toc( "single put" );
+
+			// single indexed put
+			tic();
+			for( int tries = 0; tries < TRIES; tries++ )
+			{
+				for( int i = 0; i < floatArray.length; i++ )
+					floatBuffer.put( i, floatArray[i] );
+				floatBuffer.clear();
+			}
+			toc( "single indexed put" );
+			
+			// bulk put
+			tic();
+			for( int tries = 0; tries < TRIES; tries++ )
+			{
+				floatBuffer.put( floatArray );
+				floatBuffer.clear();
+			}
+			toc( "vector put" );
+			
+			// convert bulk put
+			tic();
+			for( int tries = 0; tries < TRIES; tries++ )
+			{
+				for( int i = 0; i < floatArray.length; i++ )
+					intArray[i] = Float.floatToIntBits(floatArray[i]);
+				intBuffer.put(intArray);
+				intBuffer.clear();
+			}
+			toc( "convert bulk put" );
+			
+			// jni bulk put
+			tic();
+			for( int tries = 0; tries < TRIES; tries++ )
+			{
+				BufferUtils.copy( floatArray, floatBuffer, floatArray.length, 0 );
+				floatBuffer.clear();
+			}
+			toc( "jni bulk put" );			
+		}
+		
+	});	
 	
 	public void onCreate( Bundle bundle )
 	{		
-		super.onCreate( bundle );
-	
-		if( t == null )
-		{
-			t = new Thread( new Runnable( ) {
-	
-				@Override
-				public void run() 
-				{
-					ByteBuffer byteBuffer = ByteBuffer.allocateDirect( 1024*1024 * Float.SIZE / 8 );
-					byteBuffer.order( ByteOrder.nativeOrder() );
-					FloatBuffer buffer = byteBuffer.asFloatBuffer();
-					float[] array = new float[1024*1024];
-					
-					// single put
-					tic();
-					for( int tries = 0; tries < 25; tries++ )
-					{
-						for( int i = 0; i < array.length; i++ )
-							buffer.put( array[i] );
-						buffer.clear();
-					}
-					toc( "single put" );
-	
-					// single indexed put
-					tic();
-					for( int tries = 0; tries < 25; tries++ )
-					{
-						for( int i = 0; i < array.length; i++ )
-							buffer.put( i, array[i] );
-						buffer.clear();
-					}
-					toc( "single indexed put" );
-					
-					// bulk put
-					tic();
-					for( int tries = 0; tries < 25; tries++ )
-					{
-						buffer.put( array );
-						buffer.clear();
-					}
-					toc( "vector put" );
-					
-					// jni bulk put
-					tic();
-					for( int tries = 0; tries < 25; tries++ )
-					{
-						BufferUtils.copy( array, buffer, array.length, 0 );
-						buffer.clear();
-					}
-					toc( "jni put" );
-					
-					// jni test
-					byteBuffer = ByteBuffer.allocateDirect( 4 * Float.SIZE / 8 );
-					byteBuffer.order(ByteOrder.nativeOrder());
-					buffer = byteBuffer.asFloatBuffer();					
-					array = new float[] { 0, 1, 2, 3 };
-					BufferUtils.copy( array, buffer, 4, 0 );
-					System.out.println( buffer.get(0));
-					System.out.println( buffer.get(1));
-					System.out.println( buffer.get(2));
-					System.out.println( buffer.get(3));
-				}
-				
-			});
-			t.start();
-		}
+		super.onCreate( bundle );	
+		
+		tv = new TextView( this );
+		sv = new ScrollView( this );
+		sv.addView( tv );
+		setContentView( sv );
+
+		testThread.start();
 	}
-	
+
 	private void tic( )
 	{
 		start = System.nanoTime();
 	}
 	
-	private void toc( String info )
+	private void toc( final String info )
 	{
+		tv.post( new Runnable() {
+
+			@Override
+			public void run()
+			{
+				StringBuilder buff = new StringBuilder( tv.getText() );
+				buff.append( info ).append( ", " ).append((System.nanoTime()-start)/1000000000.0f).append( " secs\n" );
+				tv.setText( buff.toString() );
+			}
+		} );
+
 		Log.d( "MicroBenchmarks", info + ", " + (System.nanoTime()-start)/1000000000.0f );
 	}
 }

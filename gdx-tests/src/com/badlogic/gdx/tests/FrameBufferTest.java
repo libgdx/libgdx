@@ -47,7 +47,7 @@ public class FrameBufferTest implements RenderListener
 	public void render(Application app) 
 	{						
 		frameBuffer.begin();
-		app.getGraphics().getGL20().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		app.getGraphics().getGL20().glViewport( 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight() );
 		app.getGraphics().getGL20().glClearColor( 0f, 1f, 0f, 1 );
 		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
 		meshShader.begin();
@@ -55,6 +55,7 @@ public class FrameBufferTest implements RenderListener
 		meshShader.end();
 		frameBuffer.end();	
 		
+		app.getGraphics().getGL20().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
 		app.getGraphics().getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
 		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
 		

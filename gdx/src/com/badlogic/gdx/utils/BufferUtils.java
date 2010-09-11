@@ -21,18 +21,19 @@ public class BufferUtils
 	}
 	
 	/**
-	 * Copies the full src array to the given ByteBuffer. The
-	 * ByteBuffer is assumed to be a direct buffer. The method
-	 * will crash if that is not the case! The position of the
-	 * buffer is set to 0 and the limit is set according to numFloats
-	 * depending on the buffer type, e.g. for FloatBuffer it is numFloats
-	 * for a ByteBuffer it is numFloats * 4; This will only work with
-	 * ByteBuffers or FloatBuffers!
+	 * Copies numFloats floats from src starting at offset to dst. Dst is 
+	 * assumed to be a direct {@link Buffer}. The method will crash if that
+	 * is not the case. The position and limit of the buffer are ignored, the copy
+	 * is placed at position 0 in the buffer. After the copying process the position
+	 * of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a
+	 * ByteBuffer and numFloats if it is a FloatBuffer. In case the Buffer is neither 
+	 * a ByteBuffer nor a FloatBuffer the limit is not set. This is an expert method,
+	 * use at your own risk.  
 	 * 
 	 * @param src the source array
-	 * @param dst the buffer, must be either a ByteBuffer or a FloatBuffer
-	 * @param numFloats the number of floats to copy from src
-	 * @param offset the offset in floats from which to start copying from src
+	 * @param dst the destination buffer, has to be a direct Buffer
+	 * @param numFloats the number of floats to copy
+	 * @param offset the offset in src to start copying from
 	 */
 	public static void copy( float[] src, Buffer dst, int numFloats, int offset )
 	{		
@@ -46,22 +47,7 @@ public class BufferUtils
 			dst.limit(numFloats);		
 	}
 	
-	private native static void copyJni( float[] src, Buffer dst, int numFloats, int offset );
-	
-	/**
-	 * Copies numBytes bytes from src to dst. Both ByteBuffers are assumed to be direct buffers.
-	 * The method will crash if that is not the case! Do not use on the
-	 * same buffer. Copies from the beginning of src to the beginning of dst, ignoring the
-	 * current position in the buffer.
-	 * 
-	 * @param src the source buffer 
-	 * @param dst the destination buffer
-	 * @param numBytes the number of bytes to copy.
-	 */
-	public static void copy( Buffer src, Buffer dst, int numBytes )
-	{
-		copyJni( src, dst, numBytes ); 
-	}
+	private native static void copyJni( float[] src, Buffer dst, int numFloats, int offset );	
 	
 	private native static void copyJni( Buffer src, Buffer dst, int numBytes );
 }

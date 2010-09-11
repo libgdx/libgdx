@@ -38,7 +38,7 @@ public class MD5Test implements RenderListener
 			skeleton = new MD5Joints();
 			skeleton.joints = new float[anim.frames[0].joints.length];
 			animInfo = new MD5AnimationInfo( anim.frames.length, anim.secondsPerFrame );			
-			renderer = new MD5Renderer( app.getGraphics(), model, true, true );
+			renderer = new MD5Renderer( app.getGraphics(), model, false, true );
 			
 			
 //			long start = System.nanoTime();
