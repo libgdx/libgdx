@@ -220,7 +220,11 @@ public class Mesh
 		if( maxIndices > 0 )
 		{
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-			gl.glBufferSubData( GL11.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );
+			// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
+			if( graphics.getType() == GraphicsType.AndroidGL )
+				gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
+			else
+				gl.glBufferSubData( GL11.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 	}

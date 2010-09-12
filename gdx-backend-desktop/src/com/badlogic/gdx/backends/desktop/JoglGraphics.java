@@ -103,13 +103,12 @@ public final class JoglGraphics implements Graphics, RenderListener
         frame.addWindowListener(new WindowAdapter()
         {
             public void windowClosing(WindowEvent e)
-            {                 	                	
-            	graphicPanel.dispose(); 
-            	if( application.listener != null )
-            	{
+            {   
+            	if( application.listener != null )            
             		application.listener.pause( application );
-            		application.listener.destroy(application);
-            	}
+            	graphicPanel.dispose(); 
+            	if( application.listener != null )            	
+            		application.listener.destroy(application);            	
             }
         });                      
         useGL2 = useGL2IfAvailable;

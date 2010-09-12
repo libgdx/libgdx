@@ -32,35 +32,33 @@ public class MD5Test implements RenderListener, InputListener
 	@Override
 	public void surfaceCreated(Application app) 
 	{
-		if( model == null )
-		{
-			model = MD5Loader.loadModel( app.getFiles().readFile( "data/zfat.md5mesh", FileType.Internal) );
-			anim = MD5Loader.loadAnimation( app.getFiles().readFile( "data/walk1.md5anim", FileType.Internal ) );											
-			skeleton = new MD5Joints();
-			skeleton.joints = new float[anim.frames[0].joints.length];
-			animInfo = new MD5AnimationInfo( anim.frames.length, anim.secondsPerFrame );			
-			renderer = new MD5Renderer( app.getGraphics(), model, true, true );
-			
-			
+		app.log( "MD5 Test", "created" );		
+		model = MD5Loader.loadModel( app.getFiles().readFile( "data/zfat.md5mesh", FileType.Internal) );
+		anim = MD5Loader.loadAnimation( app.getFiles().readFile( "data/walk1.md5anim", FileType.Internal ) );											
+		skeleton = new MD5Joints();
+		skeleton.joints = new float[anim.frames[0].joints.length];
+		animInfo = new MD5AnimationInfo( anim.frames.length, anim.secondsPerFrame );			
+		renderer = new MD5Renderer( app.getGraphics(), model, true, false );
+		renderer.setSkeleton( model.baseSkeleton );
+		
+		
 //			long start = System.nanoTime();
 //			for(  int i = 0; i < 100000; i++ )			
 //				renderer.setSkeleton( model.baseSkeleton );
 //			app.log( "MD5 Test", "took: " + (System.nanoTime() - start ) / 1000000000.0 );
-			
 		
-			camera = new PerspectiveCamera();
-			camera.getPosition().set( 0, 25, 100 );
-			camera.setFov(60);
-			camera.setNear( 1 );
-			camera.setFar( 1000 );
-			camera.setViewport( app.getGraphics().getWidth(), app.getGraphics().getHeight() );
-		
-			batch = new SpriteBatch( app.getGraphics() );
-			font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );		
-			app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
-			
-			app.getInput().addInputListener( this );
-		}
+	
+		camera = new PerspectiveCamera();
+		camera.getPosition().set( 0, 25, 100 );
+		camera.setFov(60);
+		camera.setNear( 1 );
+		camera.setFar( 1000 );
+		camera.setViewport( app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+	
+		batch = new SpriteBatch( app.getGraphics() );
+		font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, false );		
+		app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );		
+		app.getInput().addInputListener( this );		
 	}
 
 	@Override
@@ -82,22 +80,31 @@ public class MD5Test implements RenderListener, InputListener
 		animInfo.update( app.getGraphics().getDeltaTime() );		
 		
 		gl.glEnable( GL10.GL_DEPTH_TEST );
-		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_LINE );
+//		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_LINE );
+		
+		long start = 0;
+		float renderTime = 0;
+		float skinTime = 0;
+		
 		for( int z = 0; z < 50; z += 50 )
 		{
 			gl.glLoadIdentity();
 			gl.glTranslatef( 0, 0, -z );
 			gl.glRotatef( angle, 0, 1, 0 );
 			gl.glRotatef(-90, 1, 0, 0 );
-						
+								
+			start = System.nanoTime();
+			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()], anim.frames[animInfo.getNextFrame()], skeleton, animInfo.getInterpolation() );
+			renderer.setSkeleton( skeleton );
+			skinTime = (System.nanoTime() - start ) / 1000000000.0f;
 			
-//			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()], anim.frames[animInfo.getNextFrame()], skeleton, animInfo.getInterpolation() );
-			renderer.setSkeleton( model.baseSkeleton );
+			start = System.nanoTime();
 			renderer.render();
+			renderTime = (System.nanoTime()-start) / 1000000000.0f;
 		}
 		
 		gl.glDisable( GL10.GL_DEPTH_TEST );
-		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_FILL );
+//		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_FILL );
 		batch.begin();
 		batch.drawText( font, "fps: " + app.getGraphics().getFramesPerSecond() + (renderer.isJniUsed()?", jni":", java"), 10, 20, Color.WHITE );
 		batch.end();
@@ -105,8 +112,17 @@ public class MD5Test implements RenderListener, InputListener
 
 	@Override
 	public void dispose(Application app) {
-		// TODO Auto-generated method stub
+		batch.dispose();
+		renderer.dispose();
+		font.dispose();
 		
+		batch = null;
+		renderer = null;
+		font = null;
+		
+		System.gc();
+		
+		app.getInput().removeInputListener(this);
 	}
 
 	@Override

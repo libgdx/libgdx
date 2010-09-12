@@ -236,12 +236,12 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	 */
 	public void dispose( )
 	{
+		if( animator != null )		
+			animator.stop();					
 		canvas.getContext().makeCurrent();
 		for( RenderListener listener: listeners )
 			listener.dispose( application );
-		remove(canvas);
-		if( animator != null )
-			animator.stop();    	
+		remove(canvas);   	
 	}
 	
 	

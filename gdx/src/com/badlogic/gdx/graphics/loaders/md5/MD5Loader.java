@@ -15,7 +15,7 @@ public class MD5Loader
 	
 	public static MD5Model loadModel( InputStream in )
 	{
-		BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
+		BufferedReader reader = new BufferedReader( new InputStreamReader( in ), 1024 );
 		MD5Model model = new MD5Model( );
 		List<String>tokens = new ArrayList<String>( 10 );
 		MD5Quaternion quat = new MD5Quaternion( );
@@ -36,7 +36,7 @@ public class MD5Loader
 				//
 				if( tokens.get(0).equals( "MD5Version" ) )
 				{
-					int version = Integer.parseInt(tokens.get(1));
+					int version = parseInt(tokens.get(1));
 					if( version != 10 )
 						throw new IllegalArgumentException( "Not a valid MD5 file, go version " + version + ", need 10" );
 				}		
@@ -46,7 +46,7 @@ public class MD5Loader
 				//
 				if( tokens.get(0).equals( "numJoints" ) )
 				{
-					int numJoints = Integer.parseInt( tokens.get(1) );					
+					int numJoints = parseInt( tokens.get(1) );					
 					model.baseSkeleton = new MD5Joints();
 					model.baseSkeleton.names = new String[numJoints];
 					model.baseSkeleton.numJoints = numJoints;
@@ -58,7 +58,7 @@ public class MD5Loader
 				//
 				if( tokens.get(0).equals( "numMeshes" ) )
 				{
-					int numMeshes = Integer.parseInt( tokens.get(1) );
+					int numMeshes = parseInt( tokens.get(1) );
 					model.meshes = new MD5Mesh[numMeshes];
 				}
 				
@@ -79,14 +79,14 @@ public class MD5Loader
 						
 						int jointIdx = i << 3;
 						model.baseSkeleton.names[i] = tokens.get(0);;
-						model.baseSkeleton.joints[jointIdx] =  Integer.parseInt( tokens.get(1) );;
-						model.baseSkeleton.joints[jointIdx+1] = Float.parseFloat( tokens.get(3) );
-						model.baseSkeleton.joints[jointIdx+2] = Float.parseFloat( tokens.get(4) );
-						model.baseSkeleton.joints[jointIdx+3] = Float.parseFloat( tokens.get(5) );											
+						model.baseSkeleton.joints[jointIdx] =  parseInt( tokens.get(1) );;
+						model.baseSkeleton.joints[jointIdx+1] = parseFloat( tokens.get(3) );
+						model.baseSkeleton.joints[jointIdx+2] = parseFloat( tokens.get(4) );
+						model.baseSkeleton.joints[jointIdx+3] = parseFloat( tokens.get(5) );											
 						
-						quat.x = Float.parseFloat( tokens.get(8) );
-						quat.y = Float.parseFloat( tokens.get(9) );
-						quat.z = Float.parseFloat( tokens.get(10) );
+						quat.x = parseFloat( tokens.get(8) );
+						quat.y = parseFloat( tokens.get(9) );
+						quat.z = parseFloat( tokens.get(10) );
 						quat.computeW();						
 						
 						model.baseSkeleton.joints[jointIdx+4] = quat.x;
@@ -122,32 +122,32 @@ public class MD5Loader
 						}
 						if( tokens.get(0).equals( "numverts" ) )
 						{							
-							mesh.vertices = new float[Integer.parseInt( tokens.get(1) )*4];
+							mesh.vertices = new float[parseInt( tokens.get(1) )*4];
 							mesh.numVertices = mesh.vertices.length / 4;
 						}
 						if( tokens.get(0).equals( "numtris" ) )
 						{							
-							mesh.indices = new short[Integer.parseInt( tokens.get(1) )*3];
+							mesh.indices = new short[parseInt( tokens.get(1) )*3];
 							mesh.numTriangles = mesh.indices.length / 3;
 						}
 						if( tokens.get(0).equals( "numweights" ) )
 						{							
-							mesh.weights = new float[Integer.parseInt( tokens.get(1) )*5];
+							mesh.weights = new float[parseInt( tokens.get(1) )*5];
 							mesh.numWeights = mesh.weights.length / 5;
 						}
 						if( tokens.get(0).equals( "vert" ) )
 						{							
-							vertIndex = Integer.parseInt( tokens.get(1) );							
+							vertIndex = parseInt( tokens.get(1) );							
 							
 							int idx = vertIndex*4;
-							mesh.vertices[idx++] = Float.parseFloat( tokens.get(3) ); // s
-							mesh.vertices[idx++] = Float.parseFloat( tokens.get(4) ); // t
-							mesh.vertices[idx++] = Float.parseFloat( tokens.get(6) ); // start
-							mesh.vertices[idx++] = Float.parseFloat( tokens.get(7) ); // count
+							mesh.vertices[idx++] = parseFloat( tokens.get(3) ); // s
+							mesh.vertices[idx++] = parseFloat( tokens.get(4) ); // t
+							mesh.vertices[idx++] = parseFloat( tokens.get(6) ); // start
+							mesh.vertices[idx++] = parseFloat( tokens.get(7) ); // count
 						}
 						if( tokens.get(0).equals( "tri" ) )
 						{							
-							triIndex = Integer.parseInt( tokens.get(1) );													
+							triIndex = parseInt( tokens.get(1) );													
 							
 							int idx = triIndex*3;
 							mesh.indices[idx++] = Short.parseShort( tokens.get(2) ); // idx 1
@@ -157,14 +157,14 @@ public class MD5Loader
 						
 						if( tokens.get(0).equals( "weight" ) )
 						{							
-							weightIndex = Integer.parseInt( tokens.get(1) );													
+							weightIndex = parseInt( tokens.get(1) );													
 							
 							int idx = weightIndex*5;
-							mesh.weights[idx++] = Integer.parseInt( tokens.get(2) ); // joint
-							mesh.weights[idx++] = Float.parseFloat( tokens.get(3) ); // bias
-							mesh.weights[idx++] = Float.parseFloat( tokens.get(5) ); // pos.x
-							mesh.weights[idx++] = Float.parseFloat( tokens.get(6) ); // pos.y
-							mesh.weights[idx++] = Float.parseFloat( tokens.get(7) ); // pos.z
+							mesh.weights[idx++] = parseInt( tokens.get(2) ); // joint
+							mesh.weights[idx++] = parseFloat( tokens.get(3) ); // bias
+							mesh.weights[idx++] = parseFloat( tokens.get(5) ); // pos.x
+							mesh.weights[idx++] = parseFloat( tokens.get(6) ); // pos.y
+							mesh.weights[idx++] = parseFloat( tokens.get(7) ); // pos.z
 						}
 					}
 				}
@@ -206,14 +206,14 @@ public class MD5Loader
 				
 				if( tokens.get(0).equals( "numFrames" ) )
 				{
-					int numFrames = Integer.parseInt(tokens.get(1));
+					int numFrames = parseInt(tokens.get(1));
 					animation.frames = new MD5Joints[numFrames];
 					animation.bounds = new BoundingBox[numFrames];
 				}
 				
 				if( tokens.get(0).equals( "numJoints" ) )
 				{
-					int numJoints = Integer.parseInt( tokens.get(1) );
+					int numJoints = parseInt( tokens.get(1) );
 					for( int i = 0; i < animation.frames.length; i++ )
 					{
 						animation.frames[i] = new MD5Joints();
@@ -228,14 +228,14 @@ public class MD5Loader
 				
 				if( tokens.get(0).equals( "frameRate" ) )
 				{
-					int frameRate = Integer.parseInt( tokens.get(1) );
+					int frameRate = parseInt( tokens.get(1) );
 					animation.frameRate = frameRate;
 					animation.secondsPerFrame = 1.0f / frameRate;
 				}
 				
 				if( tokens.get(0).equals( "numAnimatedComponents" ) )
 				{
-					int numAnimatedComponents = Integer.parseInt( tokens.get(1) );
+					int numAnimatedComponents = parseInt( tokens.get(1) );
 					animFrameData = new float[numAnimatedComponents];
 				}
 				
@@ -253,9 +253,9 @@ public class MD5Loader
 						
 						JointInfo jointInfo = new JointInfo();
 						jointInfo.name = tokens.get(0);
-						jointInfo.parent = Integer.parseInt( tokens.get(1) );
-						jointInfo.flags = Integer.parseInt( tokens.get(2) );
-						jointInfo.startIndex = Integer.parseInt( tokens.get(3) );
+						jointInfo.parent = parseInt( tokens.get(1) );
+						jointInfo.flags = parseInt( tokens.get(2) );
+						jointInfo.startIndex = parseInt( tokens.get(3) );
 							
 						jointInfos[i] = jointInfo;
 					}
@@ -274,13 +274,13 @@ public class MD5Loader
 						}
 						
 						BoundingBox bounds = new BoundingBox( );
-						bounds.min.x = Float.parseFloat( tokens.get( 1 ) );
-						bounds.min.y = Float.parseFloat( tokens.get( 2 ) );
-						bounds.min.z = Float.parseFloat( tokens.get( 3 ) );
+						bounds.min.x = parseFloat( tokens.get( 1 ) );
+						bounds.min.y = parseFloat( tokens.get( 2 ) );
+						bounds.min.z = parseFloat( tokens.get( 3 ) );
 						
-						bounds.max.x = Float.parseFloat( tokens.get( 6 ) );
-						bounds.max.y = Float.parseFloat( tokens.get( 7 ) );
-						bounds.max.z = Float.parseFloat( tokens.get( 8 ) );
+						bounds.max.x = parseFloat( tokens.get( 6 ) );
+						bounds.max.y = parseFloat( tokens.get( 7 ) );
+						bounds.max.z = parseFloat( tokens.get( 8 ) );
 						
 						animation.bounds[i] = bounds;
 					}
@@ -299,13 +299,13 @@ public class MD5Loader
 						}
 						
 						BaseFrameJoint joint = new BaseFrameJoint( );
-						joint.pos.x = Float.parseFloat( tokens.get(1) );
-						joint.pos.y = Float.parseFloat( tokens.get(2) );
-						joint.pos.z = Float.parseFloat( tokens.get(3) );
+						joint.pos.x = parseFloat( tokens.get(1) );
+						joint.pos.y = parseFloat( tokens.get(2) );
+						joint.pos.z = parseFloat( tokens.get(3) );
 						
-						joint.orient.x = Float.parseFloat( tokens.get(6) );
-						joint.orient.y = Float.parseFloat( tokens.get(7) );
-						joint.orient.z = Float.parseFloat( tokens.get(8) );
+						joint.orient.x = parseFloat( tokens.get(6) );
+						joint.orient.y = parseFloat( tokens.get(7) );
+						joint.orient.z = parseFloat( tokens.get(8) );
 						joint.orient.computeW();
 						
 						baseFrame[i] = joint;
@@ -314,7 +314,7 @@ public class MD5Loader
 				
 				if( tokens.get(0).equals( "frame" ) )
 				{
-					int frameIndex = Integer.parseInt( tokens.get(1) );
+					int frameIndex = parseInt( tokens.get(1) );
 					
 					int i = 0;
 					line = reader.readLine();
@@ -322,7 +322,7 @@ public class MD5Loader
 					while( tokens.get(0).equals( "}" ) == false )
 					{	
 						for( int j = 0; j < tokens.size(); j++ )
-							animFrameData[i++] = Float.parseFloat(tokens.get(j) );
+							animFrameData[i++] = parseFloat(tokens.get(j) );
 						
 						line = reader.readLine();
 						tokenize( line, tokens );
@@ -344,6 +344,68 @@ public class MD5Loader
 	static MD5Quaternion thisOrient = new MD5Quaternion( );
 	static MD5Quaternion parentOrient = new MD5Quaternion( );
 	static Vector3 parentPos = new Vector3( );
+	
+	private static float parseFloat( String value )
+	{
+		float front = 0;
+		float back = 0;
+		float sign = 1;
+		boolean isBack = false;
+		int count = 1;
+		int len = value.length();
+		for( int i = 0; i < len; i++ )
+		{
+			char c = value.charAt(i);
+			if( c == '-' )
+			{
+				sign = -1;
+				continue;
+			}
+			if( c == '+' )			
+				continue;			
+			if( c == '.' || c == ',' )
+			{
+				isBack = true;
+				continue;
+			}
+			
+			float val = c - '0';
+			if( !isBack )			
+				front = front * 10 + val;			
+			else			
+				back = back + val * ( 1.0f / (float)Math.pow( 10, count++ ));							
+		}
+		
+		return sign * (front + back);
+	}
+	
+	private static int parseInt( String value )
+	{
+		int front = 0;		
+		int sign = 1;		
+		
+		int len = value.length();
+		for( int i = 0; i < len; i++ )
+		{
+			char c = value.charAt(i);
+			if( c == '-' )
+			{
+				sign = -1;
+				continue;
+			}
+			if( c == '+' )			
+				continue;			
+			if( c == '.' || c == ',' )
+			{
+				break;
+			}
+			
+			int val = c - '0';					
+			front = front * 10 + val;												
+		}
+		
+		return sign * front;
+	}
 	
 	private static void buildFrameSkeleton( JointInfo[] jointInfos, BaseFrameJoint[] baseFrame, float[] animFrameData, MD5Animation animation, int frameIndex )
 	{	
