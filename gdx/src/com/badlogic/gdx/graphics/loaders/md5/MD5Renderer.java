@@ -12,7 +12,7 @@ public class MD5Renderer
 	private final Mesh mesh;
 	private final short[][] indices;
 	private final float[][] vertices;	
-	private final boolean useJni;
+	private boolean useJni;
 	
 	public MD5Renderer( Graphics g, MD5Model model, boolean useJni, boolean managed )
 	{
@@ -52,6 +52,11 @@ public class MD5Renderer
 		}
 	}
 	
+	public void setUseJni( boolean useJni )
+	{
+		this.useJni = useJni;
+	}
+	
 	public void render( )
 	{
 		for( int i = 0; i < model.meshes.length; i++ )
@@ -65,5 +70,10 @@ public class MD5Renderer
 	public void dispose( )
 	{
 		mesh.dispose( );
+	}
+
+	public boolean isJniUsed() 
+	{	
+		return useJni;
 	}
 }

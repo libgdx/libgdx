@@ -14,9 +14,9 @@
 * limitations under the License.
 */
 #include "VorbisDecoder.h"
-#include "vorbis/ogg.h"
-#include "vorbis/ivorbiscodec.h"
-#include "vorbis/ivorbisfile.h"
+#include "ogg.h"
+#include "ivorbiscodec.h"
+#include "ivorbisfile.h"
 #include <stdlib.h>
 #include <stdio.h>
 

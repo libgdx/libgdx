@@ -13,7 +13,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#define FIXED_POINT
 #include "kiss_fftr.h"
 #include "KissFFT.h"
 #include <stdlib.h>
