@@ -1,27 +1,17 @@
-LOCAL_PATH := $(call my-dir)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := mpg123
-LOCAL_SRC_FILES := equalizer.c \
-index.c \
-layer2.c \
-synth.c \
-dct64.c \
-format.c \
-layer3.c \
-ntom.c \
-parse.c \
-readers.c \
-frame.c \
-layer1.c \
-libmpg123.c \
-optimize.c \
-synth_arm.S \
-tabinit.c \
-id3.c
-
-LOCAL_ARM_MODE := arm
-LOCAL_CFLAGS := -ffast-math -O2 -Wall
-
-include $(BUILD_STATIC_LIBRARY)
+GDX_SRC_FILES += mpg123/equalizer.c \
+				 mpg123/index.c \
+				 mpg123/layer2.c \
+				 mpg123/synth.c \
+				 mpg123/dct64.c \
+				 mpg123/format.c \
+				 mpg123/layer3.c \
+				 mpg123/ntom.c \
+				 mpg123/parse.c \
+				 mpg123/readers.c \
+				 mpg123/frame.c \
+				 mpg123/layer1.c \
+				 mpg123/libmpg123.c \
+				 mpg123/optimize.c \
+				 mpg123/synth_arm.S \
+				 mpg123/tabinit.c \
+				 mpg123/id3.c

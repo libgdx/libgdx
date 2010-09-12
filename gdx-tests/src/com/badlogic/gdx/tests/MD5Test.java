@@ -1,6 +1,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
@@ -16,7 +17,7 @@ import com.badlogic.gdx.graphics.loaders.md5.MD5Loader;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
 
-public class MD5Test implements RenderListener
+public class MD5Test implements RenderListener, InputListener
 {
 	PerspectiveCamera camera;
 	MD5Model model;
@@ -38,7 +39,7 @@ public class MD5Test implements RenderListener
 			skeleton = new MD5Joints();
 			skeleton.joints = new float[anim.frames[0].joints.length];
 			animInfo = new MD5AnimationInfo( anim.frames.length, anim.secondsPerFrame );			
-			renderer = new MD5Renderer( app.getGraphics(), model, false, true );
+			renderer = new MD5Renderer( app.getGraphics(), model, true, true );
 			
 			
 //			long start = System.nanoTime();
@@ -57,6 +58,8 @@ public class MD5Test implements RenderListener
 			batch = new SpriteBatch( app.getGraphics() );
 			font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );		
 			app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+			
+			app.getInput().addInputListener( this );
 		}
 	}
 
@@ -88,15 +91,15 @@ public class MD5Test implements RenderListener
 			gl.glRotatef(-90, 1, 0, 0 );
 						
 			
-			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()], anim.frames[animInfo.getNextFrame()], skeleton, animInfo.getInterpolation() );
-			renderer.setSkeleton( skeleton );
+//			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()], anim.frames[animInfo.getNextFrame()], skeleton, animInfo.getInterpolation() );
+			renderer.setSkeleton( model.baseSkeleton );
 			renderer.render();
 		}
 		
 		gl.glDisable( GL10.GL_DEPTH_TEST );
 		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_FILL );
 		batch.begin();
-		batch.drawText( font, "fps: " + app.getGraphics().getFramesPerSecond(), 10, 20, Color.WHITE );
+		batch.drawText( font, "fps: " + app.getGraphics().getFramesPerSecond() + (renderer.isJniUsed()?", jni":", java"), 10, 20, Color.WHITE );
 		batch.end();
 	}
 
@@ -104,6 +107,43 @@ public class MD5Test implements RenderListener
 	public void dispose(Application app) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int x, int y, int pointer) 
+	{
+		renderer.setUseJni( !renderer.isJniUsed() );
+		return false;
 	}
 
 }

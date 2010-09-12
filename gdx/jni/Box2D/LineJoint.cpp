@@ -169,7 +169,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_LineJoint_jn
   (JNIEnv *, jobject, jlong addr)
 {
 	b2LineJoint* joint = (b2LineJoint*)addr;
-	return 0;
+	return 0; // FIXME this is not a bug, the method just isn't defined in b2LineJoint. strange shit
 }
 
 /*

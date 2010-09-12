@@ -1,26 +1,18 @@
-LOCAL_PATH := $(call my-dir)
+GDX_SRC_FILES += vorbis/bitwise.c \
+				 vorbis/block.c \
+				 vorbis/codebook.c \
+				 vorbis/floor0.c \
+				 vorbis/floor1.c \
+				 vorbis/framing.c \
+				 vorbis/info.c \
+				 vorbis/mapping0.c \
+				 vorbis/mdct.c \
+				 vorbis/registry.c \
+				 vorbis/res012.c \
+				 vorbis/sharedbook.c \
+				 vorbis/synthesis.c \
+				 vorbis/vorbisfile.c \
+				 vorbis/window.c \
+				 vorbis/VorbisDecoder.cpp
 
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := vorbis
-LOCAL_SRC_FILES := bitwise.c \
-block.c \
-codebook.c \
-floor0.c \
-floor1.c \
-framing.c \
-info.c \
-mapping0.c \
-mdct.c \
-registry.c \
-res012.c \
-sharedbook.c \
-synthesis.c \
-vorbisfile.c \
-window.c \
-VorbisDecoder.cpp
-
-LOCAL_ARM_MODE := arm
-LOCAL_CFLAGS := -D_ARM_ASSEM_ -ffast-math -O2 -Wall 
-
-include $(BUILD_STATIC_LIBRARY)
+GDX_CFLAGS += -D_ARM_ASSEM_ 

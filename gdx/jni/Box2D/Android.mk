@@ -1,62 +1,53 @@
-LOCAL_PATH := $(call my-dir)
+GDX_SRC_FILES += Box2D/Body.cpp \
+Box2D/CircleShape.cpp \
+Box2D/Contact.cpp \
+Box2D/Fixture.cpp \
+Box2D/Joint.cpp \
+Box2D/PolygonShape.cpp \
+Box2D/Shape.cpp \
+Box2D/World.cpp \
+Box2D/DistanceJoint.cpp \
+Box2D/FrictionJoint.cpp \
+Box2D/GearJoint.cpp \
+Box2D/LineJoint.cpp \
+Box2D/MouseJoint.cpp \
+Box2D/PrismaticJoint.cpp \
+Box2D/PulleyJoint.cpp \
+Box2D/RevoluteJoint.cpp \
+Box2D/Collision/b2BroadPhase.cpp \
+Box2D/Collision/b2CollideCircle.cpp \
+Box2D/Collision/b2CollidePolygon.cpp \
+Box2D/Collision/b2Collision.cpp \
+Box2D/Collision/b2Distance.cpp \
+Box2D/Collision/b2DynamicTree.cpp \
+Box2D/Collision/b2TimeOfImpact.cpp \
+Box2D/Collision/Shapes/b2CircleShape.cpp \
+Box2D/Collision/Shapes/b2PolygonShape.cpp \
+Box2D/Common/b2BlockAllocator.cpp \
+Box2D/Common/b2Math.cpp \
+Box2D/Common/b2Settings.cpp \
+Box2D/Common/b2StackAllocator.cpp \
+Box2D/Dynamics/b2Body.cpp \
+Box2D/Dynamics/b2ContactManager.cpp \
+Box2D/Dynamics/b2Fixture.cpp \
+Box2D/Dynamics/b2Island.cpp \
+Box2D/Dynamics/b2World.cpp \
+Box2D/Dynamics/b2WorldCallbacks.cpp \
+Box2D/Dynamics/Contacts/b2CircleContact.cpp \
+Box2D/Dynamics/Contacts/b2Contact.cpp \
+Box2D/Dynamics/Contacts/b2ContactSolver.cpp \
+Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.cpp \
+Box2D/Dynamics/Contacts/b2PolygonContact.cpp \
+Box2D/Dynamics/Contacts/b2TOISolver.cpp \
+Box2D/Dynamics/Joints/b2DistanceJoint.cpp \
+Box2D/Dynamics/Joints/b2FrictionJoint.cpp \
+Box2D/Dynamics/Joints/b2GearJoint.cpp \
+Box2D/Dynamics/Joints/b2Joint.cpp \
+Box2D/Dynamics/Joints/b2LineJoint.cpp \
+Box2D/Dynamics/Joints/b2MouseJoint.cpp \
+Box2D/Dynamics/Joints/b2PrismaticJoint.cpp \
+Box2D/Dynamics/Joints/b2PulleyJoint.cpp \
+Box2D/Dynamics/Joints/b2RevoluteJoint.cpp \
+Box2D/Dynamics/Joints/b2WeldJoint.cpp
 
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := box2d
-LOCAL_SRC_FILES := Body.cpp \
-CircleShape.cpp \
-Contact.cpp \
-Fixture.cpp \
-Joint.cpp \
-PolygonShape.cpp \
-Shape.cpp \
-World.cpp \
-DistanceJoint.cpp \
-FrictionJoint.cpp \
-GearJoint.cpp \
-LineJoint.cpp \
-MouseJoint.cpp \
-PrismaticJoint.cpp \
-PulleyJoint.cpp \
-RevoluteJoint.cpp \
-Collision/b2BroadPhase.cpp \
-Collision/b2CollideCircle.cpp \
-Collision/b2CollidePolygon.cpp \
-Collision/b2Collision.cpp \
-Collision/b2Distance.cpp \
-Collision/b2DynamicTree.cpp \
-Collision/b2TimeOfImpact.cpp \
-Collision/Shapes/b2CircleShape.cpp \
-Collision/Shapes/b2PolygonShape.cpp \
-Common/b2BlockAllocator.cpp \
-Common/b2Math.cpp \
-Common/b2Settings.cpp \
-Common/b2StackAllocator.cpp \
-Dynamics/b2Body.cpp \
-Dynamics/b2ContactManager.cpp \
-Dynamics/b2Fixture.cpp \
-Dynamics/b2Island.cpp \
-Dynamics/b2World.cpp \
-Dynamics/b2WorldCallbacks.cpp \
-Dynamics/Contacts/b2CircleContact.cpp \
-Dynamics/Contacts/b2Contact.cpp \
-Dynamics/Contacts/b2ContactSolver.cpp \
-Dynamics/Contacts/b2PolygonAndCircleContact.cpp \
-Dynamics/Contacts/b2PolygonContact.cpp \
-Dynamics/Contacts/b2TOISolver.cpp \
-Dynamics/Joints/b2DistanceJoint.cpp \
-Dynamics/Joints/b2FrictionJoint.cpp \
-Dynamics/Joints/b2GearJoint.cpp \
-Dynamics/Joints/b2Joint.cpp \
-Dynamics/Joints/b2LineJoint.cpp \
-Dynamics/Joints/b2MouseJoint.cpp \
-Dynamics/Joints/b2PrismaticJoint.cpp \
-Dynamics/Joints/b2PulleyJoint.cpp \
-Dynamics/Joints/b2RevoluteJoint.cpp \
-Dynamics/Joints/b2WeldJoint.cpp
-
-LOCAL_ARM_MODE := arm
-LOCAL_C_INCLUDES := $(LOCAL_PATH) $(LOCAL_PATH)/..
-LOCAL_CFLAGS := -ffast-math -O2 -Wall 
-
-include $(BUILD_STATIC_LIBRARY)
+LOCAL_C_INCLUDES += $(LOCAL_PATH) $(LOCAL_PATH)/.. 
