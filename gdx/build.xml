@@ -5,7 +5,7 @@
  and creates a distribution out of this mess. 
 
 -->
-<project name="gdx" default="dist" basedir="../" xmlns:cpptasks="antlib:net.sf.antcontrib.cpptasks" >
+<project name="gdx" default="all" basedir="../" >
 
 	<description>libgdx distribution build file</description>
 	
@@ -31,9 +31,7 @@
 	
 	<!-- init task, creates all necessary directories -->
 	<target name="init" depends="clean">
-		<mkdir dir="libs/"/>
-		<mkdir dir="libs/armeabi"/>
-		<mkdir dir="libs/armeabi-v7a"/>
+		<mkdir dir="${stable}"/>
 		<mkdir dir="gdx/bin"/>
 		<mkdir dir="gdx-backend-applet/bin"/>
 		<mkdir dir="gdx-backend-android/bin"/>
@@ -41,7 +39,7 @@
 	</target>
 	
 	<!-- compiles the java code of all modules -->
-	<target name="compile" depends="init,compile-native">
+	<target name="compile" depends="init">
 		<!-- build gdx api -->
 		<javac srcdir="gdx/src" destdir="gdx/bin"/>
 		
@@ -79,9 +77,8 @@
 	</target>
 	
 	<!-- builds the distribution directory, does not include the desktop libs -->
-	<target name="dist">
-		<delete dir="gdx/bin/ndk"/>
-		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" excludes="gdx/ndk"/>
+	<target name="dist" depends="compile,compile-native">
+		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" excludes="gdx/ndk/**"/>
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>
 		<jar destfile="${stable}/gdx-backend-desktop.jar" basedir="gdx-backend-desktop/bin"/>
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="gdx-backend-android/bin"/>
@@ -97,6 +94,7 @@
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html"/>
 	</target>
 	
+	<!-- updates dependencies of hello-world, invaders and tests android-->
 	<target name="update-demos" depends="dist">
 		<copy tofile="gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar"/>
 		<copy tofile="gdx-helloworld/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
@@ -110,5 +108,26 @@
 		<copy tofile="gdx-helloworld-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
 		<copy tofile="gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
 		<copy tofile="gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
+		
+		<copy tofile="gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
+		<copy tofile="gdx-invaders/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
+		<copy tofile="gdx-invaders/libs/gdx-dependencies-desktop.jar" file="${stable}/gdx-dependencies-desktop.jar"/>
+		<copy tofile="gdx-invaders/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
+		<copy tofile="gdx-invaders/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
+		
+		<copy tofile="gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
+		<copy tofile="gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
+		<copy tofile="gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
+		<copy tofile="gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
+		
+		<copy tofile="gdx-tests-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
+		<copy tofile="gdx-tests-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
+		<copy tofile="gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
+	</target>
+	
+	<!-- do everything -->
+	<target name="all" depends="update-demos">
 	</target>
 </project>
