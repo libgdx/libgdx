@@ -39,8 +39,10 @@ import com.badlogic.gdx.graphics.GL11;
  * @author mzechner
  */
 public class AndroidApplication extends Activity implements Application {
-    static {
-        System.loadLibrary("gdx-" + Version.VERSION);
+    
+	static 
+    {
+		Version.loadLibrary();
     }
 
     /**
