@@ -67,7 +67,7 @@ public abstract class Box2DTest implements RenderListener, InputListener
 	public void render(Application app) 
 	{
 		// update the world with a fixed time step
-		world.step( 1 / 60.0f, 8, 3 );
+		world.step( app.getGraphics().getDeltaTime(), 8, 3 );
 		
 		// clear the screen and setup the projection matrix
 		GL10 gl = app.getGraphics().getGL10();		
