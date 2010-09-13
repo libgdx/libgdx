@@ -25,4 +25,9 @@ public class Version
 {	
 	/** the current version of libgdx in the major.minor format **/
 	public static String VERSION = "0.61";
+	
+	public static void loadLibrary()
+	{
+		System.loadLibrary( "gdx" );
+	}
 }

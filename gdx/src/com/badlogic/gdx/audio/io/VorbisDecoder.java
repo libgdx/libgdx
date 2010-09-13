@@ -17,9 +17,6 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Version;
-import com.badlogic.gdx.audio.analysis.AudioTools;
-
 /**
  * A {@link Decoder} implementation that decodes OGG Vorbis files using
  * libvorbis and libogg
@@ -27,12 +24,7 @@ import com.badlogic.gdx.audio.analysis.AudioTools;
  *
  */
 public class VorbisDecoder implements Decoder 
-{
-	static
-	{		
-		System.loadLibrary( "gdx-" + Version.VERSION );
-	}
-	
+{	
 	/** the handle **/
 	private final long handle;
 	

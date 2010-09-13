@@ -16,10 +16,8 @@
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import com.badlogic.gdx.Version;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
@@ -49,12 +47,7 @@ import com.badlogic.gdx.utils.LongHashMap;
  * @author mzechner
  */
 public class World 
-{
-	static
-	{
-		System.loadLibrary( "gdx-" + Version.VERSION );
-	}
-	
+{	
 	/** the address of the world instance **/
 	private final long addr;
 	

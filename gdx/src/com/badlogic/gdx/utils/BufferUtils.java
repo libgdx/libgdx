@@ -4,8 +4,6 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
-import com.badlogic.gdx.Version;
-
 /**
  * Class with static helper methods to increase the speed of 
  * array/direct buffer and direct buffer/direct buffer transfers
@@ -14,12 +12,7 @@ import com.badlogic.gdx.Version;
  *
  */
 public class BufferUtils 
-{
-	static
-	{
-		System.loadLibrary( "gdx-" + Version.VERSION );
-	}
-	
+{	
 	/**
 	 * Copies numFloats floats from src starting at offset to dst. Dst is 
 	 * assumed to be a direct {@link Buffer}. The method will crash if that

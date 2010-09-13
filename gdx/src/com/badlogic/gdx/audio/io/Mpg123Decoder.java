@@ -17,9 +17,6 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Version;
-import com.badlogic.gdx.audio.analysis.AudioTools;
-
 /**
  * A {@link Decoder} implementation that decodes MP3 files via
  * libmpg123 natively. 
@@ -28,12 +25,7 @@ import com.badlogic.gdx.audio.analysis.AudioTools;
  *
  */
 public class Mpg123Decoder implements Decoder
-{
-	static
-	{
-		System.loadLibrary( "gdx-" + Version.VERSION );
-	}
-	
+{	
 	public final long handle;
 	
 	/**

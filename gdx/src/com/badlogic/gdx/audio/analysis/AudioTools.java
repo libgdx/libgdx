@@ -20,9 +20,6 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Version;
-import com.badlogic.gdx.audio.io.Mpg123Decoder;
-
 /**
  * Class holding various static native methods for processing 
  * audio data.
@@ -31,12 +28,7 @@ import com.badlogic.gdx.audio.io.Mpg123Decoder;
  *
  */
 public class AudioTools 
-{
-	static
-	{
-		System.loadLibrary( "gdx-" + Version.VERSION );
-	}
-	
+{	
 	/**
 	 * Converts the 16-bit signed PCM data given in source to 32-bit float PCM
 	 * in the range [-1,1]. It is assumed that there's numSamples elements available

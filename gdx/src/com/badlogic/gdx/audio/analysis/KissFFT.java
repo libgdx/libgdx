@@ -18,15 +18,8 @@ package com.badlogic.gdx.audio.analysis;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Version;
-
 public class KissFFT 
 {
-	static
-	{
-		System.loadLibrary( "gdx-" + Version.VERSION );
-	}
-
 	/** the pointer to the kiss fft object **/
 	private final long handle;
 
