@@ -71,7 +71,7 @@
 	<!-- compiles the native code (for android only atm) -->
 	<target name="compile-native" depends="init">
 		<exec executable="make" dir="gdx">
-			<arg value="-f"/>
+			<arg value="-f"/>			
 			<arg value="${env.NDK_HOME}/build/core/build-local.mk"/>
 		</exec>
 	</target>
@@ -120,14 +120,17 @@
 		<copy tofile="gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
 		<copy tofile="gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
 		<copy tofile="gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
-		<copy tofile="gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
-		
+		<copy tofile="gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>		
+	</target>
+	
+	<!-- updates the native libs of the android test suite -->
+	<target name="update-android-tests" depends="dist">
 		<copy tofile="gdx-tests-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
 		<copy tofile="gdx-tests-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
 		<copy tofile="gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
 	</target>
 	
 	<!-- do everything -->
-	<target name="all" depends="update-demos">
+	<target name="all" depends="update-demos,update-android-tests">
 	</target>
 </project>
