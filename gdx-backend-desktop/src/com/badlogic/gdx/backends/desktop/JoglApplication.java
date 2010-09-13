@@ -21,6 +21,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Version;
 
 /**
  * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate
@@ -32,6 +33,12 @@ import com.badlogic.gdx.Input;
  */
 public final class JoglApplication implements Application
 {
+	static 
+	{
+		Version.loadLibrary();
+	}
+
+	
 	/** the graphics instance **/
 	private final JoglGraphics graphics;
 	
