@@ -73,6 +73,11 @@
 		<exec executable="make" dir="gdx">
 			<arg value="-f"/>			
 			<arg value="${env.NDK_HOME}/build/core/build-local.mk"/>
+			<arg value="clean"/>
+		</exec>
+		<exec executable="make" dir="gdx">
+			<arg value="-f"/>			
+			<arg value="${env.NDK_HOME}/build/core/build-local.mk"/>
 		</exec>
 	</target>
 	
