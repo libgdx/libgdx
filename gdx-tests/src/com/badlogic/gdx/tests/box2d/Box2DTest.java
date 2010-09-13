@@ -28,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
@@ -94,7 +95,7 @@ public abstract class Box2DTest implements RenderListener, InputListener
 		// We also position the camera so that it 
 		// looks at (0,16) (that's where the middle of the
 		// screen will be located).
-		camera = new OrthographicCamera( app.getGraphics() );
+		camera = new OrthographicCamera( app.getGraphics() );		
 		camera.setViewport( 48, 32 );
 		camera.getPosition().set( 0, 15, 0 );
 		
@@ -178,6 +179,10 @@ public abstract class Box2DTest implements RenderListener, InputListener
 		
 		if( hitBody == groundBody )
 			hitBody = null;
+		
+		// ignore kinematic bodies, they don't work with the mouse joint
+		if( hitBody.getType() == BodyType.KinematicBody )
+			return false;
 		
 		// if we hit something we create a new mouse joint
 		// and attach it to the hit body. 

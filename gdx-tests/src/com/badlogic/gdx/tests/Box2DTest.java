@@ -150,7 +150,7 @@ public class Box2DTest implements RenderListener, InputListener
 			BodyDef boxBodyDef = new BodyDef( );
 			boxBodyDef.type = BodyType.DynamicBody;
 			boxBodyDef.position.x = -24 + (float)(Math.random() * 48);
-			boxBodyDef.position.y = 10 +  (float)(Math.random() * 100);		
+			boxBodyDef.position.y = 10 +  (float)(Math.random() * 100);					
 			Body boxBody = world.createBody( boxBodyDef );
 			
 			// add the boxPoly shape as a fixture
