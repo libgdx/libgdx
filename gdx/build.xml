@@ -86,8 +86,8 @@
 		<jar destfile="${stable}/gdx-backend-desktop.jar" basedir="gdx-backend-desktop/bin"/>
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="gdx-backend-android/bin"/>
 		<jar destfile="${stable}/gdx-backend-applet.jar" basedir="gdx-backend-applet/bin"/>
-		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll"/>
-		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so"/>
+		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false"/>
+		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false"/>
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so"/>
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so"/>
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so"/>		
@@ -98,11 +98,12 @@
 	</target>
 	
 	<target name="update-demos" depends="dist">
-		<copy todir="gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar"/>
-		<copy todir="gdx-helloworld/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
-		<copy todir="gdx-helloworld/libs/gdx-dependencies-desktop.jar" file="${stable}/gdx-dependencies-desktop.jar"/>
-		<copy todir="gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll"/>
-		<copy todir="gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so"/>
+		<copy tofile="gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="gdx-helloworld/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
+		<copy tofile="gdx-helloworld/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
+		<copy tofile="gdx-helloworld/libs/gdx-dependencies-desktop.jar" file="${stable}/gdx-dependencies-desktop.jar"/>
+		<copy tofile="gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
+		<copy tofile="gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
 		
 		<copy tofile="gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar"/>
 		<copy tofile="gdx-helloworld-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
