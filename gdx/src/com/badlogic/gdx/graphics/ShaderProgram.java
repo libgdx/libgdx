@@ -25,8 +25,40 @@ import java.util.HashMap;
 import com.badlogic.gdx.math.Matrix;
 
 /**
+ * <p>
  * A shader program encapsulates a vertex and fragment shader
  * pair linked to form a shader program useable with OpenGL ES 2.0.
+ * </p>
+ * 
+ * <p>
+ * After construction a ShaderProgram can be used to draw {@link Meshes}
+ * or sprites via a {@link SpriteBatch}. To make the GPU use a specific
+ * ShaderProgram the programs {@link ShaderProgram.begin()} method must be
+ * used which effectively binds the program. 
+ * </p>
+ * 
+ * <p>
+ * When a ShaderProgram is bound one can set uniforms, vertex attributes
+ * and attributes as needed via the respective methods.
+ * </p>
+ * 
+ * <p>
+ * A ShaderProgram can be unbound with a call to {@link ShaderProgram.end()}
+ * </p>
+ * 
+ * <p>
+ * A ShaderProgram must be disposed via a call to {@link ShaderProgram.dispose()} when
+ * it is no longer needed
+ * </p>
+ * 
+ * <p>
+ * ShaderPrograms can be managed. In case the OpenGL context is lost all shaders get
+ * invalidated and have to be reloaded. This happens on Android when a user switches
+ * to another application or receives an incoming call. Managed ShaderPrograms are
+ * automatically reloaded when the OpenGL context is recreated so you don't have to 
+ * do this manually.
+ * </p>
+ * 
  * @author mzechner
  *
  */

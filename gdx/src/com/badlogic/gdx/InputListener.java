@@ -22,9 +22,8 @@ package com.badlogic.gdx;
  * events might arrive asynchronously in a UI thread, the {@link Input} instance will buffer those events
  * and invoke the methods of the listener in the rendering thread to get rid of the need to synchronize
  * the UI and renderer thread for input. If an InputListener signals that it processed an event by 
- * returning true the event will not be passed to other listeners in the listener chain (multiple
- * InputListeners can register with an Input instance). Note that
- * mouse and touch screen are equivalent here.
+ * returning true the the event will not be passed to other listeners in the listener chain (multiple
+ * InputListeners can register with an Input instance). 
  * 
  * @author badlogicgames@gmail.com
  *
@@ -54,15 +53,15 @@ public interface InputListener
 	/**
 	 * Called when the screen was touched or the mouse was pressed. 
 	 * 
-	 * @param x The x coordinate
-	 * @param y The y coordinate
+	 * @param x The x coordinate, origin is in the upper left corner
+	 * @param y The y coordinate, origin is in the upper left corner
 	 * @param pointer the pointer for the event. Unsupported yet, used for multitouch later on.
 	 * @return whether the input was processed
 	 */
 	public boolean touchDown( int x, int y, int pointer );
 	
 	/**
-	 * Called when a finger was lifted or the mouse button was released. 
+	 * Called when a finger was lifted or a mouse button was released. 
 	 * 
 	 * @param x The x coordinate
 	 * @param y The y coordinate

@@ -24,10 +24,13 @@ import com.badlogic.gdx.files.FileHandle;
 /**
  * This interface encapsulates the creation and managment of audio resources.
  * It allows you to create direct access links to the audio hardware via
- * the {@link AudioDevice} interface, create sound effects via the {@link 
- * Sound} interface and music streams via the {@link Music} interface.
- * All resources created via this interface have to be disposed once no
- * longer used.
+ * the {@link AudioDevice} and {@link AudioRecorder} interfaces, create sound effects via the {@link Sound} 
+ * interface and play music streams via the {@link Music} interface.
+ * 
+ * <p>
+ * All resources created via this interface have to be disposed as soon as they
+ * are no longer used.
+ * </p>
  * 
  * @author mzechner
  *
@@ -41,41 +44,56 @@ public interface Audio
 	 * 
 	 * @param isMono whether the AudioDevice should be in mono or stereo mode
 	 * @return the AudioDevice
+	 * 
+	 * @throws GdxRuntimeException in case the device could not be created
 	 */
 	public AudioDevice newAudioDevice( boolean isMono );
 	
 	/**
-	 * Creates a new {@link AudioRecorder}. The AudioDevice has to be disposed
+	 * Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed
 	 * after it is no longer used.
 	 * 
 	 * @param samplingRate the sampling rate in Herz
 	 * @param isMono whether the recorder records in mono or stereo
 	 * @return the AudioRecorder
+	 * 
+	 * @throws GdxRuntimeException in case the recorder could not be created
 	 */
 	public AudioRecorder newAudioRecoder( int samplingRate, boolean isMono );
 	
 	/**
-	 * Creates a new {@link Sound} which is used to playback audio effects such
+	 * <p>
+	 * Creates a new {@link Sound} which is used to play back audio effects such
 	 * as gun shots or explosions. The Sound's audio data is retrieved from the
 	 * file specified via the {@link FileHandle}. Note that the complete audio
 	 * data is loaded into RAM. You should therefore not load big audio files 
-	 * with this methods. Currently supported formats are WAV, MP3 and OGG. The
-	 * Sound has to be disposed if it is no longer used via the {@link Sound.dispose()}
+	 * with this methods. The current upper limit for decoded audio is 1 MB.
+	 * </p>
+	 * 
+	 * <p>
+	 * Currently supported formats are WAV, MP3 and OGG.
+	 * </p>
+	 * 
+	 * <p>
+	 * The Sound has to be disposed if it is no longer used via the {@link Sound.dispose()}
 	 * method.
+	 * </p>
 	 * 
 	 * @param file the FileHandle to the audio file
-	 * @return the new Sound or null if the Sound could not be loaded.
+	 * @return the new Sound or null if the Sound could not be loaded
+	 * @throws GdxRuntimeException in case the sound could not be loaded
 	 */
 	public Sound newSound( FileHandle fileHandle );
 	
 	/**
 	 * Creates a new {@link Music} instance which is used to playback a music
 	 * stream from a file. Currently supported formats are WAV, MP3 and OGG.
-	 * The Music has to be disposed if it is no longer used via the {@link Music.dispose()}
+	 * The Music instance has to be disposed if it is no longer used via the {@link Music.dispose()}
 	 * method.
 	 * 
 	 * @param file the FileHandle 
-	 * @return the new Music or null if the Music could not be loaded.
+	 * @return the new Music or null if the Music could not be loaded
+	 * @throws GdxRuntimeException in case the music could not be loaded
 	 */
 	public Music newMusic( FileHandle file );
 }

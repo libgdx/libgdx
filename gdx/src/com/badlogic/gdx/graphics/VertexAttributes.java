@@ -111,6 +111,9 @@ public final class VertexAttributes
 				cols = true;
 			}
 		}
+		
+		if( pos == false )
+			throw new IllegalArgumentException( "no position attribute was specified" );
 	}
 	
 	/**

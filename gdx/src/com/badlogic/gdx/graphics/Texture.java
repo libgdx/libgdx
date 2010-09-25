@@ -16,13 +16,32 @@
 package com.badlogic.gdx.graphics;
 
 /**
- * A Texture represents a bitmap to be applied to a {@link Mesh}. 
- * It is constructed by an {@link Graphics} via one of the
- * {@link Graphics.newTexture()} methods. It might get resized 
- * to better fit the architectures needs, e.g. to a power of two.
- * To play it save only use power of two textures! Additionally a
- * Texture can be managed. Managed Textures will be automatically
- * recreated when the OpenGL context was lost and restored. 
+ * <p>A Texture wraps a standard OpenGL ES texture.</p> 
+ *  
+ * <p>It is constructed by an {@link Graphics} via one of the
+ * {@link Graphics.newTexture()} methods.</p>
+ * 
+ * <p>A Texture can be managed. If the OpenGL context is lost
+ * all textures get invalidated. This happens when a user switches
+ * to another application or receives an incoming call. Managed
+ * textures get reloaded automatically. The drawback: they will
+ * use up double the memory they'd use when they were not managed.
+ * This will change in future versions and use a disk cache or 
+ * another mechanism to get rid of the double memory consumption
+ * </p>
+ * 
+ * <p>
+ * A Texture has to be bound via the {@link Texture.bind()} method in order for it to be applied to geometry.
+ * </p>
+ * 
+ * <p> 
+ * You can draw {@link Pixmap}s to a texture at any time. The changes will be automatically uploaded to
+ * texture memory. This is of course not extremely fast so use it with care.
+ * </p>
+ * 
+ * <p>
+ * A Texture must be disposed when it is no longer used
+ * </p>
  * 
  * @author badlogicgames@gmail.com
  *

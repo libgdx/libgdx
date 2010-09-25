@@ -22,9 +22,9 @@ import com.badlogic.gdx.Application;
  * and will receive setup, render and dispose events. In case
  * of a setup event the listener can create any resources it
  * needs later on to draw. The setup method is also called when
- * the OpenGL surface has been recreated. This happens only on
+ * the OpenGL surface has been recreated after a context loss. This happens only on
  * Android in case the application was paused and resumed. All
- * OpenGL resources like textures and shaders are lost and have to
+ * OpenGL resources like textures, meshes and shaders are lost and have to
  * be recreated. The render method is called whenever the {@link Application} is redrawn. The 
  * dispose method is called before the Application is closed 
  * or the RenderListener is unregistered from the Graphics instance.
@@ -69,7 +69,7 @@ public interface RenderListener
 	
 	/**
 	 * The dispose method is called when the application is closing
-	 * or the {@link RenderListener} has been unregistered form the
+	 * or the {@link RenderListener} has been unregistered from the
 	 * Graphics instance.
 	 * 
 	 * @param app The application

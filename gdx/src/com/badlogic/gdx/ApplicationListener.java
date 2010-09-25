@@ -16,11 +16,14 @@
 package com.badlogic.gdx;
 
 /**
- * An ApplicationListener is called when the {@link Application}
+ * <p>An <code>ApplicationListener</code> is called when the {@link Application}
  * is resumed, paused and destroyed. This allows you to save any states you want
  * to save. The methods are not called from within
- * the rendering thread so care has to be taken. This follows
- * the standard Android Activity life-cycle and is emulated on
+ * the rendering thread so care has to be taken. Do not load or unload any Graphics
+ * related resources in the provided by this interface!</p>
+ * 
+ * <p>The <code>ApplicationListener</code> interface follows
+ * the standard Android activity life-cycle and is emulated on
  * the desktop accordingly. The pause method will be called after the rendering
  * thread has been paused. The resume method will be called before the rendering
  * thread has been started.

@@ -14,8 +14,34 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /**
+ * <p>
  * A Mesh holds vertices composed of attributes specified by a 
- * {@link VertexAttributes} instance. The vertices are held in
+ * {@link VertexAttributes} instance. The vertices are held either
+ * in VRAM in form of vertex buffer objects or in RAM in form of
+ * vertex arrays. The former variant is more performant and is prefered
+ * over vertex arrays if hardware supports it.
+ * </p>
+ * 
+ * <p>Meshes can be managed. If the OpenGL context is lost all vertex buffer
+ * objects get invalidated and must be reloaded when the context is recreated. This
+ * only happens on Android when a user switches to another application or receives
+ * an incoming call. A managed Mesh will be reloaded automagically so you don't have
+ * to do this manually. 
+ * </p>
+ * 
+ * <p>
+ * A Mesh consists of vertices and optionally indices which specify which vertices
+ * define a triangle. Each vertex is composed of attributes such as position, normal,
+ * color or texture coordinate. Note that not all of this attributes must be given, except
+ * for position which is non-optional. Each attribute has an alias which is used when
+ * rendering a Mesh in OpenGL ES 2.0. The alias is used to bind a specific vertex attribute
+ * to a shader attribute. The shader source and the alias of the attribute must match exactly
+ * for this to work. For OpenGL ES 1.x rendering this aliases are irrelevant.
+ * </p>
+ * 
+ * <p>
+ * Meshes can be used with either OpenGL ES 1.x or OpenGL ES 2.0.
+ * </p> 
  * 
  * @author mzechner
  *
@@ -75,14 +101,15 @@ public class Mesh
 	private boolean bufferCreatedFirstTime = false;
 	
 	/**
-	 * Creates a new Mesh with the given attributes
+	 * Creates a new Mesh with the given attributes.
 	 * 
 	 * @param graphics the graphics instance
 	 * @param managed whether this mesh should be managed or not.
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
 	 * @param useFixedPoint whether to use fixed point or floats
 	 * @param maxVertices the maximum number of vertices this mesh can hold
 	 * @param maxIndices the maximum number of indices this mesh can hold
-	 * @param attributes the {@link VertexAttribute}s.
+	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position, normal or texture coordinate
 	 */
 	public Mesh( Graphics graphics, boolean managed, boolean isStatic, boolean useFixedPoint, int maxVertices, int maxIndices, VertexAttribute ... attributes )
 	{
@@ -363,11 +390,15 @@ public class Mesh
 	}
 	
 	/**
+	 * <p>
 	 * Renders the mesh using the given primitive type. If indices
 	 * are set for this mesh then getNumIndices() / #vertices per primitive
 	 * primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
+	 * </p>
 	 * 
+	 * <p>
 	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
+	 * </p>
 	 * 
 	 * @param primitiveType the primitive type
 	 */
@@ -377,13 +408,17 @@ public class Mesh
 	}
 	
 	/**
+	 * <p>
 	 * Renders the mesh using the given primitive type. offset specifies the
 	 * offset into either the vertex buffer or the index buffer depending on
 	 * whether indices are defined. count specifies the number of 
 	 * vertices or indices to use thus count / #vertices per primitive primitives
 	 * are rendered.
+	 * </p>
 	 * 
+	 * <p>
 	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
+	 * </p>
 	 * 
 	 * @param primitiveType the primitive type
 	 * @param offset the offset into the vertex or index buffer
@@ -547,12 +582,65 @@ public class Mesh
 		
 		vertices.position(0);
 	}
-	
+
+	/**
+	 * <p>
+	 * Renders the mesh using the given primitive type. If indices
+	 * are set for this mesh then getNumIndices() / #vertices per primitive
+	 * primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method will automatically bind each vertex attribute as specified at
+	 * construction time via {@link VertexAttributes} to the respective shader
+	 * attributes. The binding is based on the alias defined for each VertexAttribute. 
+	 * </p>
+	 * 
+	 * <p>
+	 * This method must only be called after the {@link ShaderProgram.begin()} method has been
+	 * called!
+	 * </p>
+	 * 
+	 * <p>
+	 * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
+	 * </p>
+	 * 
+	 * @param primitiveType the primitive type
+	 */
 	public void render( ShaderProgram shader, int primitiveType )
 	{
 		render( shader, primitiveType, 0, maxIndices > 0? getNumIndices(): getNumVertices() );
 	}
-	
+
+	/**
+	 * <p>
+	 * Renders the mesh using the given primitive type. offset specifies the
+	 * offset into either the vertex buffer or the index buffer depending on
+	 * whether indices are defined. count specifies the number of 
+	 * vertices or indices to use thus count / #vertices per primitive primitives
+	 * are rendered.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method will automatically bind each vertex attribute as specified at
+	 * construction time via {@link VertexAttributes} to the respective shader
+	 * attributes. The binding is based on the alias defined for each VertexAttribute. 
+	 * </p>
+	 * 
+	 * <p>
+	 * This method must only be called after the {@link ShaderProgram.begin()} method has been
+	 * called!
+	 * </p>
+	 * 
+	 * <p>
+	 * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
+	 * </p>
+	 * 
+	 * @param shader the shader to be used
+	 * @param primitiveType the primitive type
+	 * @param offset the offset into the vertex or index buffer
+	 * @param count number of vertices or indices to use
+	 */
 	public void render( ShaderProgram shader, int primitiveType, int offset, int count )
 	{
 		if( !graphics.isGL20Available() )

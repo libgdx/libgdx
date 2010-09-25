@@ -25,11 +25,21 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 /**
+ * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper
  * class which should cover most FBO uses. It will automatically create a 
  * texture for the color attachment and a renderbuffer for the depth buffer.
  * You can get a hold of the texture by {@link FrameBuffer.getColorBufferTexture()}.
  * This class will only work with OpenGL ES 2.0.
+ * </p>
+ * 
+ * <p>
+ * FrameBuffers can be managed. In case of an OpenGL context loss, which only happens
+ * on Android when a user switches to another application or receives an incoming call, the
+ * framebuffer will be automatically recreated. This will essentially double the size
+ * of the memory used so use this feature with care. Future versions will fix this and not
+ * eat up additional memory.
+ * </p>
  *   
  * @author mzechner
  *
@@ -61,6 +71,7 @@ public class FrameBuffer
 	 * @param height the height of the framebuffer in pixels 
 	 * @param hasDepth whether to attach a depth buffer
 	 * @param managed whether this framebuffer should be managed
+	 * @throws GdxRuntimeException in case the FraeBuffer could not be created
 	 */
 	public FrameBuffer( Graphics graphics, Pixmap.Format format, int width, int height, boolean hasDepth, boolean managed )
 	{

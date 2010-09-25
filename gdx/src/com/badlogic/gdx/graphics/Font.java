@@ -21,15 +21,36 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
+ * <p>
  * A Font creates glyph bitmaps and stores them in a texture cache. 
  * It has methods to retrieve text metrics to calculate bounds. To
- * use a Font for text output one has to create a {@link Text} instance
- * via the {@link Font.newText()} method. Once the Font is no longer
+ * render text with a specific Font one has to use a {@link SpriteBatch}
+ * instance and it's {@link SpriteBatch.drawText()} method. Once the Font is no longer
  * needed it has to be disposed via the {@link Font.dispose()} method
  * to free all resources.
+ * </p>
+ * 
+ * <p>
+ * Fonts must be created by the {@link Graphics.newFont()} methods.
+ * </p>
+ * 
+ * <p>
+ * A Font can be managed. In case the OpenGL context is lost all OpenGL resources
+ * such as textures get invalidated and have to be reloaded. A Font is basically a
+ * texture and is thus also invalidated by a context loss. A context loss happens
+ * when a user presses switches to another application or receives an incoming call. This
+ * only happens on Android, there are not context losses on the desktop. A managed Font
+ * will be reloaded automatically after a context loss so you don't have to do that
+ * manually. The drawback: it uses twice the memory for storing the original bitmap
+ * from which the texture cache was created. Use this only if you know that you have
+ * enough memory available. Future versions will use a different mechanism to get
+ * rid of this additional memory overhead.
+ * </p>
  * 
  * @author badlogicgames@gmail.com
  *
+ * FIXME this class could be improved quiet a lot. Dynamical texture resizes, better
+ * subregion allocation and so on. 
  */
 public abstract class Font 
 {	
@@ -46,11 +67,14 @@ public abstract class Font
 		BoldItalic
 	}
 	
+	private final static int TEXTURE_WIDTH = 512;
+	private final static int TEXTURE_HEIGHT = 512;
+	
 	/** the glyph texture **/
 	private final Texture texture;
 	
 	/** glyph hashmap **/
-	// FIXME potentially wastefull, for the time being we keep it as a hashmap would be even worse.
+	// FIXME potentially wasteful, for the time being we keep it as a hashmap would be even worse.
 	private final Glyph[] glyphs = new Glyph[Character.MAX_VALUE];
 	
 	/** current position in glyph texture to write the next glyph to **/
@@ -69,8 +93,7 @@ public abstract class Font
 	
 	/**
 	 * Disposes the font and all associated 
-	 * resources. Does not dispose the {@link TextRun}s
-	 * created via this Font.
+	 * resources.
 	 */
 	public void dispose( )
 	{

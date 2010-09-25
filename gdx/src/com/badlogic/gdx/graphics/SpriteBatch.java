@@ -21,31 +21,68 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix;
 
 /**
+ * <p>
  * A SpriteBatch is used to draw 2D rectangles that reference a 
- * texture. The class will batch the drawing commands and optimize
+ * texture (region). The class will batch the drawing commands and optimize
  * them for processing by the GPU.
+ * </p>
  * 
+ * <p>
  * To draw something with a SpriteBatch one has to first call the
- * {@link SpriteBatch.begin()} method which will setup apropriate
+ * {@link SpriteBatch.begin()} method which will setup appropriate
  * render states. When you are done with drawing you have to call
  * {@link SpriteBatch.end()} which will actually draw the things you
  * specified.
+ * </p>
  * 
+ * <p>
  * All drawing commands of the SpriteBatch operate in screen coordinates.
  * The screen coordinate system has an x-axis pointing to the right, an
  * y-axis pointing upwards and the origin is in the lower left corner of
- * the screen.
+ * the screen. You can also provide your own transformation and projection
+ * matrices if you so wish.
+ * </p>
  * 
+ * <p>
  * A sprite rendered via this batch has an origin relative to it's
  * top left corner and a position in screen coordinates for that origin.
+ * </p>
  * 
+ * <p>
  * A sprite has a width and height in screen coordinates
+ * </p>
  * 
+ * <p>
  * A sprite can be scaled on the x and y axis.
- * 
+ * </p>
+ *
+ * <p>
  * A sprite can be rotated around the origin by some angle.
+ * </p>
  * 
+ * <p>
  * A sprite references a portion of a texture where the portion is specified in texels.
+ * </p>
+ * 
+ * <p>A SpriteBatch can be managed. In case the OpenGL context is lost all OpenGL resources
+ * a SpriteBatch uses internally get invalidated. A context is lost when a user switches to
+ * another application or receives an incoming call. A managed SpriteBatch will be automatically
+ * reloaded after the OpenGL context is restored.
+ * </p>
+ * 
+ * <p>
+ * A SpriteBatch is a pretty heavy object so you should only ever have one in your program.
+ * </p>
+ * 
+ * <p>
+ * A SpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use
+ * its own custom shader to draw all provided sprites. Specifying your own shader does not work
+ * (yet).
+ * </p>
+ * 
+ * <p>
+ * A SpriteBatch has to be disposed if it is no longer used.
+ * </p>
  * 
  * @author mzechner
  *
@@ -152,7 +189,10 @@ public  class SpriteBatch
 	 * It enables blending and alpha testing. It sets the projection
 	 * matrix to an orthographic matrix and the modelview and texture
 	 * matrix to identity. If you have more texture units enabled than
-	 * the first one you have to disable them before calling this.  
+	 * the first one you have to disable them before calling this. The
+	 * coordinate system used will have it's origin in the lower left
+	 * corner, x pointing to the right and y point up. The coordinates
+	 * for sprites will be interpreted in pixels.
 	 */
 	public void begin( )
 	{		
@@ -167,6 +207,9 @@ public  class SpriteBatch
 	 * the first one you have to disable them before calling this. Applies
 	 * the given transformation {@link Matrix} to all subsequently specified sprites. Loads
 	 * an orthographic projection matrix with the full screen as the viewport.
+	 * The coordinate system used will have it's origin in the lower left
+	 * corner, x pointing to the right and y point up. The coordinates
+	 * for sprites will be interpreted in pixels.
 	 * 
 	 * @param transform the transformation matrix.
 	 */
@@ -182,7 +225,8 @@ public  class SpriteBatch
 	 * It enables blending and alpha testing. If you have more texture units enabled than
 	 * the first one you have to disable them before calling this. Applies
 	 * the given transformation {@link Matrix} to all subsequently specified sprites. Uses
-	 * the provided projection matrix.
+	 * the provided projection matrix and therefore does not necessarily work
+	 * in screen coordinates anymore. You have to know what you do if you use this.
 	 * 
 	 * @param projection the projection matrix;
 	 * @param transform the transformation matrix.

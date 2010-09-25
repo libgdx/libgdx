@@ -21,7 +21,7 @@ import java.nio.FloatBuffer;
 
 /**
  * An ImmediateModeRenderer allows you to perform immediate mode rendering as you
- * were acustomed to in your desktop OpenGL environment. In order to draw something
+ * were accustomed to in your desktop OpenGL environment. In order to draw something
  * you first have to call {@link ImmediateModeRenderer.begin()} with the primitive
  * type you want to render. Next you specify as many vertices as you want by first
  * defining the vertex color, normal and texture coordinates followed by the vertex
@@ -29,7 +29,8 @@ import java.nio.FloatBuffer;
  * specifying the geometry you have to call {@link ImmediateModeRenderer.end()} to
  * make the renderer render the geometry. Internally the renderer uses vertex arrays
  * to render the provided geometry. This is not the best performing way to do this
- * so use this class only for non performance critical low vertex count geometries.
+ * so use this class only for non performance critical low vertex count geometries while
+ * debugging.
  * 
  * Note that this class of course only works with OpenGL ES 1.x.
  * 

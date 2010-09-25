@@ -17,7 +17,8 @@ package com.badlogic.gdx.graphics;
 
 /**
  * A color class, holding the r, g, b and alpha component
- * as floats in the range [0,1].
+ * as floats in the range [0,1]. All methods perform clamping
+ * on the internal values after execution. 
  * 
  * @author mzechner
  *
@@ -89,7 +90,6 @@ public class Color
 
 	/**
 	 * Multiplies all components of this Color with the given value. 
-	 * No clipping is performed!
 	 * 
 	 * @param value the value
 	 * @return this color

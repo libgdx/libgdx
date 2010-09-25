@@ -17,7 +17,7 @@ package com.badlogic.gdx.graphics;
 
 /**
  * A Pixmap represents a plattform specific bitmap. On Android it 
- * encapsulates a Bitmap on the PC it encapsulates a BufferedImage.
+ * encapsulates a Bitmap on the desktop it encapsulates a BufferedImage.
  * Various methods are available to manipulate the Pixmap. This uses
  * the common bitmap coordinate system with the origin being in the
  * top left corner and the y-axis pointing downwards. Bitmaps can

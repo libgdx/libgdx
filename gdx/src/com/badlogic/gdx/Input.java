@@ -16,20 +16,37 @@
 package com.badlogic.gdx;
 
 /**
+ * <p>
  * Interface to the input facilities. This allows to poll the state
  * of the keyboard, touch screen and accelerometer. On the desktop
  * the touch screen is replaced by mouse input, the accelerometer is
- * of course not available. Additionally one can register an {@link 
+ * of course not available.
+ * </p>
+ * 
+ * <p>Additionally one can register an {@link 
  * InputListener} with this module. The InputListener will then be
- * called each time a key is pressed or released or a touch event occured.
+ * called each time a key is pressed or released or a touch event occures.
+ * </p>
+ * 
+ * <p>
  * The InputListener will be called in the rendering thread of the 
  * graphics module to which a RenderListener is probably attached. This 
  * means that one does not have to take precautions to guarantee thread
  * safety. One can safely call graphics methods from within the InputListener
- * callbacks. One or more InputListeners can be registered with the module.
+ * callbacks.
+ * </p>
+ * 
+ * <p>
+ * One or more InputListeners can be registered with the module.
  * The events will then get passed to the InputListeners in the order they
  * have been registered with the module. If an InputListeners signals that
  * it consumed the event the InputListeners down the chain will not be invoked.
+ * </p>
+ * 
+ * <p>
+ * Keyboard keys are translated to the constants in {@link Keys} transparantely
+ * on all systems. Do not use system specific key constants. 
+ * </p>
  * 
  * @author mzechner
  *
@@ -212,7 +229,7 @@ public interface Input
 	 * Returns whether the key is pressed.
 	 * 
 	 * @param key The key code as found in {@link Input.Keys}.
-	 * @return True or false.
+	 * @return true or false.
 	 */
 	public boolean isKeyPressed( int key );
 	

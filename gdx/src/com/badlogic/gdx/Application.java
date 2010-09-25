@@ -17,36 +17,38 @@ package com.badlogic.gdx;
 
 /**
  * <p>
- * An application is the main class of your project. It manages the different
+ * An <code>Application<code> is the main class of your project. It manages the different
  * aspects of your application, namely {@link Graphics}, {@link Audio}, {@link Input}
  * and {@link Files}.
  * </p> 
  * 
  * <p>
- * An application can either be a desktop application ({@link DesktopApplication}} or
- * an Android application ({@link AndroidApplication}). Refer to the documentation
- * of those classes to see how to setup each of of them.
+ * An application can either be a desktop application ({@link JoglApplication}), an
+ * applet ({@link AppletApplication} or and Android application ({@link AndroidApplication}).
+ * Each application class has it's own startup and initialization methods. Please refer to
+ * their documentation for more information.
  * </p> 
  * 
  * <p>
  * {@link Graphics} offers you various methods to output visuals to the screen. This is
- * achieved via OpenGL ES 2.0. On the desktop the features of OpenGL ES 2.0 are
+ * achieved via OpenGL ES 1.0, 1.1 or 2.0 depending on what's available an the platform. 
+ * On the desktop the features of OpenGL ES 2.0 are
  * emulated via Jogl. On Android the functionality of the Java OpenGL ES bindings
- * is used. The Graphics object allows you to register a {link RenderListener} which will
- * be called each time a new frame has to be drawn. This RenderListener usually 
+ * is used. The Graphics object allows you to register a {@link RenderListener} which will
+ * be called each time a new frame has to be drawn. This <code>RenderListener<code> usually 
  * houses you application logic.
  * </p>
  * 
  * <p>
- * {@link Audio} offers you various methods to output sound and music. This is achieved
- * via Java Sound on the desktop. On Android the Android media framework is used.
+ * {@link Audio} offers you various methods to output and record sound and music. This is achieved
+ * via the Java Sound API on the desktop. On Android the Android media framework is used.
  * </p>
  * 
  * <p>
- * {@link Input} offers you various methods to poll user input form the keyboard, touch screen,
+ * {@link Input} offers you various methods to poll user input from the keyboard, touch screen,
  * mouse and accelerometer. Additionally you can register an {@link InputListener}
- * which allows for event based input processing. The InputListener will be called
- * in the rendering thread which will also call your RenderListener. This way you
+ * which allows for event based input processing. The <code>InputListener</code> will be called
+ * in the rendering thread which will also call your <code>RenderListener</code>. This way you
  * don't have to care about thread synchronization when you process input events.
  * </p>
  * 
@@ -57,21 +59,34 @@ package com.badlogic.gdx;
  * is where internal files will be looked up. Internal files are read only. External
  * files are resources you create in your application and write to an external storage.
  * On Android external files reside on the SD-card, on the desktop external files
- * are written to a users home directory.
+ * are written to a users home directory. If you know what you do you can also specify
+ * absolute file names. This is not portable, so take great care when using this feature.
  * </p> 
  * 
  * <p>
- * Additionally an Application allows to set a {@link ApplicationListener} which will be invoked
- * when the Application is paused, resumed or closing. This can be used to save any state that needs saving.
- * Note that the ApplicationListener will not be called in the rendering thread. 
+ * Additionally an <code>Application</code> allows to set a {@link ApplicationListener} which will be invoked
+ * when the <code>Application</code> is paused, resumed or closing. This can be used to save any state that needs saving.
+ * Note that the <code>ApplicationListener<code> will not be called in the rendering thread. 
  * 
  * <p>
  * Generally you will have two projects for your application. The first one will be the 
- * desktop project which houses all your application code. The second one will be the
- * Android project which only contains an Activity derived from {link AndroidApplication}.
- * In this activity you register a RenderListener instance which is the same you use
- * in your desktop project. In this way both the desktop and Android version of your
+ * desktop project which houses all your application code as well as a {@link JoglApplication}. 
+ * The second project will be the Android project which only contains an Activity derived from {@link AndroidApplication}.
+ * In both applications you register the same RenderListener instance which will get your application
+ * going on both systems. In this way both the desktop and Android version of your
  * application share the same code. They only differ in setting up the Application instance.
+ * </p>
+ * 
+ * <p>
+ * The <code>Application</code> also has a set of methods that you can use to query specific
+ * information such as the operating system the application is currently running on and so forth.
+ * This allows you to have operating system dependent code paths. It is however not recommended
+ * to use this facilities.
+ * </p>
+ * 
+ * <p>
+ * The <code>Application</code> also has a simple logging method which will print to standard out
+ * on the desktop and to logcat on Android.
  * </p>
  * 
  * @author mzechner
