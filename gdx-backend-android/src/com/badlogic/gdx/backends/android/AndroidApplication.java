@@ -69,7 +69,7 @@ public class AndroidApplication extends Activity implements Application {
      * the DestroyListener *
      */
     private ApplicationListener listener;
-
+    
     /**
      * This method has to be called in the {@link Activity.onCreate()}
      * method. It sets up all the things necessary to get input, render
@@ -126,7 +126,7 @@ public class AndroidApplication extends Activity implements Application {
      * @param layoutParams      specifies the {@link LayoutParams} that will be applied to the ContentView in {@link AndroidGraphics}
      */
     public void initialize(boolean useGL2IfAvailable, LayoutParams layoutParams) {
-        this.initialize(useGL2IfAvailable, 0, layoutParams);
+        this.initialize(useGL2IfAvailable, 15, layoutParams);
     }
 
     /**
@@ -147,12 +147,13 @@ public class AndroidApplication extends Activity implements Application {
      * @param sleepTime         specifies the number of milliseconds to sleep in the touch event handler
      * @param layoutParams      specifies the {@link LayoutParams} that will be applied to the ContentView in {@link AndroidGraphics}
      */
-    public void initialize(boolean useGL2IfAvailable, int sleepTime, LayoutParams layoutParams) {
+    public void initialize(boolean useGL2IfAvailable, int sleepTime, LayoutParams layoutParams) 
+    {    	    	
         graphics = new AndroidGraphics(this, useGL2IfAvailable, layoutParams);
         input = new AndroidInput(this, graphics.view, sleepTime);
         graphics.setInput(input);
         audio = new AndroidAudio(this);
-        resources = new AndroidFiles(this.getAssets());
+        resources = new AndroidFiles(this.getAssets());    
     }
 
     @Override
@@ -192,6 +193,8 @@ public class AndroidApplication extends Activity implements Application {
 
         if (listener != null)
             listener.destroy(this);
+        
+        audio.dispose();
     }
 
     /**

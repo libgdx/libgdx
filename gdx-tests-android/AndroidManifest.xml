@@ -45,6 +45,8 @@
 		<activity android:name=".ResourcesTest" android:label="Resources Test"/>
 		<activity android:name=".MD5Test" android:label="MD5 Test"/>
 		<activity android:name=".MicroBenchmarks" android:label="Micro Benchmarks"/>
+		<activity android:name=".MultitouchTest" android:label="Multitouch Test"/>
+		<activity android:name=".BufferUtilsTest" android:label="BufferUtils Test"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>

@@ -174,4 +174,12 @@ final class AndroidAudio implements Audio
 	public AudioRecorder newAudioRecoder(int samplingRate, boolean isMono) {
 		return new AndroidAudioRecorder( samplingRate, isMono );
 	}
+
+	/**
+	 * Kills the soundpool and all other resources
+	 */
+	public void dispose() 
+	{	
+		soundPool.release();
+	}
 }

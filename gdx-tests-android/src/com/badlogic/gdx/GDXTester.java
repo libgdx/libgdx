@@ -31,7 +31,7 @@ public class GDXTester extends ListActivity
 								   "Fixed Point Test", "Float Test", "Lag Test", "Pong", "Collision Test", "Audio Device Test", 
 								   "Mpg123 Test", "Vorbis Test", "Performance Test", "Mesh Shader Test", "SpriteBatch Test",
 								   "SpriteBatch Shader Test", "FrameBuffer Test", "SpriteBatch Rotation Test", "Box2D Test",
-								   "Audio Recorder Test", "Box2D Test Collection", "Resources Test", "MD5 Test", "Micro Benchmarks"};
+								   "Audio Recorder Test", "Box2D Test Collection", "Resources Test", "MD5 Test", "Micro Benchmarks", "Multitouch Test", "BufferUtils Test"};
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -110,6 +110,10 @@ public class GDXTester extends ListActivity
 			intent = new Intent( this, MD5Test.class );
 		if( keyword.equals( items[30] ) )
 			intent = new Intent( this, MicroBenchmarks.class );
+		if( keyword.equals( items[31] ) )
+			intent = new Intent( this, MultitouchTest.class );
+		if( keyword.equals( items[32] ) )
+			intent = new Intent( this, BufferUtilsTest.class );
 			
 		startActivity( intent );
 	}

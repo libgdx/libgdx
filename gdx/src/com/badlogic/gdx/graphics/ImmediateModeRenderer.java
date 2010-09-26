@@ -215,7 +215,7 @@ public class ImmediateModeRenderer
 		
 		if( texCoordsDefined )
 		{
-			//gl.glClientActiveTexture( GL10.GL_TEXTURE0 );
+			gl.glClientActiveTexture( GL10.GL_TEXTURE0 );
 			gl.glEnableClientState( GL10.GL_TEXTURE_COORD_ARRAY );
 			texCoordsBuffer.clear();
 			texCoordsBuffer.put( texCoords, 0, idxTexCoords );

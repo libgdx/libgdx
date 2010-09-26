@@ -282,9 +282,9 @@ public class Mesh
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
 				
-		BufferUtils.copy( vertices, verticesFloat, vertices.length, 0 );				
-		this.vertices.limit(verticesFloat.limit()*4);									
-		this.vertices.position(0);					
+		BufferUtils.copy( vertices, this.vertices, vertices.length, 0 );				
+		this.verticesFloat.limit(this.vertices.limit() >> 2);									
+		this.verticesFloat.position(0);					
 		dirty = true;
 	}
 	
@@ -302,9 +302,9 @@ public class Mesh
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
 				
-		BufferUtils.copy( vertices, verticesFloat, count, offset );
-		this.vertices.limit(verticesFloat.limit()*4);
-		this.vertices.position(0);
+		int result = BufferUtils.copy( vertices, this.vertices, count, offset );
+		this.verticesFloat.limit(this.vertices.limit()>>2);
+		this.verticesFloat.position(0);
 		
 		dirty = true;
 	}

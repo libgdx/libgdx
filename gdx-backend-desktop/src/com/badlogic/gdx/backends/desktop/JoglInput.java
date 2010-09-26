@@ -157,4 +157,36 @@ final class JoglInput implements Input, RenderListener
 		
 	}
 
+	@Override
+	public int getX(int pointer) 
+	{	
+		if( pointer > 0 )
+			return 0;
+		else
+			return getX();
+	}
+
+	@Override
+	public int getY(int pointer) 
+	{
+		if( pointer > 0 )
+			return 0;
+		else
+			return getY();
+	}
+
+	@Override
+	public boolean isTouched(int pointer) 
+	{
+		if( pointer > 0 )
+			return false;
+		else
+			return isTouched();		
+	}
+
+	@Override
+	public boolean supportsMultitouch() 
+	{
+		return false;
+	}
 }

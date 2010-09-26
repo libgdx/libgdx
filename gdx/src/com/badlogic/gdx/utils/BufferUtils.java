@@ -27,20 +27,22 @@ public class BufferUtils
 	 * @param dst the destination buffer, has to be a direct Buffer
 	 * @param numFloats the number of floats to copy
 	 * @param offset the offset in src to start copying from
+	 * @return -1 when src ptr was crap, -2 when dst ptr was crap, 0 if everything was ok.
 	 */
-	public static void copy( float[] src, Buffer dst, int numFloats, int offset )
+	public static int copy( float[] src, Buffer dst, int numFloats, int offset )
 	{		
-		copyJni( src, dst, numFloats, offset );
-		dst.position(0);
+		int result = copyJni( src, dst, numFloats, offset );
+		dst.position(0);  
 	
-		if( dst instanceof ByteBuffer )
+		if( dst instanceof ByteBuffer )  
 			dst.limit(numFloats << 2);
 		else
-		if( dst instanceof FloatBuffer )
-			dst.limit(numFloats);		
+		if( dst instanceof FloatBuffer ) 
+			dst.limit(numFloats);
+		return 0;
 	}
 	
-	private native static void copyJni( float[] src, Buffer dst, int numFloats, int offset );	
+	private native static int copyJni( float[] src, Buffer dst, int numFloats, int offset );	
 	
 	private native static void copyJni( Buffer src, Buffer dst, int numBytes );
 }

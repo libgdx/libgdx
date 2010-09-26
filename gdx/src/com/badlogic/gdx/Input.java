@@ -216,14 +216,42 @@ public interface Input
 	public int getX( );
 	
 	/**
+	 * Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The
+	 * pointer id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1
+	 * is the second and so on. When two fingers are touched down and the first one is lifted the second one becomes
+	 * the first one.
+	 * @param pointer the pointer id.
+	 * @return the x coordinate
+	 */
+	public int getX( int pointer );
+	
+	/**
 	 * @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner.
 	 */
 	public int getY( );
 	
 	/**
+	 * Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The
+	 * pointer id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1
+	 * is the second and so on. When two fingers are touched down and the first one is lifted the second one becomes
+	 * the first one.
+	 * 
+	 * @param pointer the pointer id.
+	 * @return the y coordinate
+	 */
+	public int getY( int pointer );
+	
+	/**
 	 * @return whether the screen is currently touched.
 	 */
 	public boolean isTouched( );
+	
+	/**
+	 * Whether the screen is currently touched by the pointer with the given index.
+	 * @param pointer the pointer
+	 * @return whether the screen is touched by the pointer
+	 */
+	public boolean isTouched( int pointer );
 	
 	/**
 	 * Returns whether the key is pressed.
@@ -245,4 +273,13 @@ public interface Input
 	 * @param text The message presented to the user.
 	 */
 	public void getTextInput( TextInputListener listener, String title, String text );
+	
+	/**
+	 * Returns whether multitouch is supported by the device. Note that this
+	 * also includes the broken multitouch on the Droid or Nexus One! This will
+	 * only work correctly from Android version 2.1 onwards.
+	 * 
+	 * @return whether multitouch is supported
+	 */
+	public boolean supportsMultitouch( );	
 }

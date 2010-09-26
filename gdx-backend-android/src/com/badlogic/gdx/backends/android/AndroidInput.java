@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -45,14 +46,14 @@ import com.badlogic.gdx.InputListener;
  */
 final class AndroidInput implements Input, OnKeyListener, OnTouchListener, SensorEventListener
 {
-	/** touch coordinates in x **/
-	private int[] touchX = new int[10];
+	/** touch coordinates in x, package private for touch handlers **/
+	int[] touchX = new int[10];
 	
-	/** touch coordinates in y **/
-	private int[] touchY = new int[10];
+	/** touch coordinates in y, package private for touch handlers **/
+	int[] touchY = new int[10];
 	
-	/** touch state **/
-	private boolean[] touched = new boolean[10];	
+	/** touch state, package private for touch handlers **/
+	boolean[] touched = new boolean[10];	
 
 	/** key state **/
 	private HashSet<Integer> keys = new HashSet<Integer>( );
@@ -81,6 +82,9 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	/** the app **/
 	private final AndroidApplication app;	
 	
+	/** the touch handler **/
+	private final AndroidTouchHandler touchHandler;
+	
 	/** touch handler sleep time in milliseconds**/
 	private int sleepTime = 0;
 	
@@ -89,7 +93,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	 * @author mzechner
 	 *
 	 */
-	private enum EventType
+	static enum EventType
 	{
 		MouseDown,
 		MouseUp,
@@ -105,7 +109,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	 * @author mzechner
 	 *
 	 */
-	private class Event
+	static class Event
 	{
 		public int x, y;		
 		public int pointer;
@@ -124,14 +128,17 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 		}
 	}	
 
-	/** queue of events to be processed **/
-	private final ArrayList<Event> eventQueue = new ArrayList<Event>( );
+	/** queue of events to be processed, package private for touch handlers **/
+	final ArrayList<Event> eventQueue = new ArrayList<Event>( );
 	
-	/** pool of free Event instances **/
-	private final ArrayList<Event> freeEvents = new ArrayList<Event>( );
+	/** pool of free Event instances, package private for touch handlers **/
+	final ArrayList<Event> freeEvents = new ArrayList<Event>( );
 	
-	/** index to the next free event **/
-	private int freeEventIndex = 0;
+	/** index to the next free event, package private for touch handlers **/
+	int freeEventIndex = 0;
+	
+	/** whether multitouch is supported or not **/
+	final boolean hasMultitouch;
 	
 	AndroidInput( AndroidApplication activity, GLSurfaceView view, int sleepTime )
 	{
@@ -161,6 +168,39 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 		this.app = activity;
 		
 		this.sleepTime = sleepTime;
+		
+		Field sdkIntField = null;		
+		try 
+		{
+			sdkIntField = android.os.Build.VERSION.class.getField( "SDK_INT" );
+		}
+		catch (Throwable e) 
+		{		
+			// we use single touch handler, can't identify version otherwise...
+		} 
+			
+		if( sdkIntField == null )
+		{
+			touchHandler = new AndroidSingleTouchHandler();
+		}
+		else
+		{
+			int sdkVersion = -1;
+			try {
+				sdkVersion = sdkIntField.getInt( null );
+			} 
+			catch (Throwable e) 
+			{
+				// silently ignore this shit...
+			}
+			
+			if( sdkVersion >= 5 )
+				touchHandler = new AndroidMultiTouchHandler();
+			else
+				touchHandler = new AndroidSingleTouchHandler();
+		}
+		
+		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler && ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
 	}
 
 	/**
@@ -279,7 +319,24 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	{	
 		return touchY[0];
 	}
+	
+	@Override
+	public int getX( int pointer ) 
+	{	
+		return touchX[pointer];
+	}
 
+	@Override
+	public int getY( int pointer ) 
+	{	
+		return touchY[pointer];
+	}
+
+	public boolean isTouched( int pointer )
+	{
+		return touched[pointer];
+	}
+	
 	@Override
 	public boolean isAccelerometerAvailable() 
 	{	
@@ -323,51 +380,8 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 			view.requestFocusFromTouch();
 			requestFocus = false;
 		}
-		
-		touchX[0] = (int)event.getX();
-		touchY[0] = (int)event.getY();
-		if( event.getAction() == MotionEvent.ACTION_DOWN )
-		{
-			synchronized( eventQueue )
-			{
-				Event ev = freeEvents.get(freeEventIndex++);
-				ev.set( EventType.MouseDown, touchX[0], touchY[0], 0, 0, '\0' );
-				eventQueue.add( ev );
-			}
-
-			touched[0] = true;
-		}
-		if( event.getAction() == MotionEvent.ACTION_MOVE )
-		{
-			synchronized( eventQueue )
-			{				
-				Event ev = freeEvents.get(freeEventIndex++);
-				ev.set( EventType.MouseDragged, touchX[0], touchY[0], 0, 0, '\0' );
-				eventQueue.add( ev );
-			}
-			touched[0] = true;			
-		}
-		if( event.getAction() == MotionEvent.ACTION_UP )
-		{			
-			synchronized( eventQueue )
-			{
-				Event ev = freeEvents.get(freeEventIndex++);
-				ev.set( EventType.MouseUp, touchX[0], touchY[0], 0, 0, '\0' );
-				eventQueue.add( ev );
-			}
-			touched[0] = false;			
-		}
-		
-		if( event.getAction() == MotionEvent.ACTION_CANCEL )
-		{				
-			synchronized( eventQueue )
-			{
-				Event ev = freeEvents.get(freeEventIndex++);
-				ev.set( EventType.MouseUp, touchX[0], touchY[0], 0, 0, '\0' );
-				eventQueue.add( ev );
-			}
-			touched[0] = false;			
-		}
+				
+		touchHandler.onTouch( event, this );
 		
 		if( sleepTime != 0 )
 		{
@@ -423,5 +437,11 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 		{
 			System.arraycopy( event.values, 0, accelerometerValues, 0, accelerometerValues.length );			
 		}		
+	}
+
+	@Override
+	public boolean supportsMultitouch() 
+	{	
+		return hasMultitouch;
 	}
 }
