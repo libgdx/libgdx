@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava_nio_Buffer_2II
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava_nio_Buffer_2II
   (JNIEnv *env, jclass, jfloatArray src, jobject dst, jint numFloats, jint offset )
 {
 	float* pDst = (float*)env->GetDirectBufferAddress( dst );
@@ -12,8 +12,6 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 	memcpy( pDst, pSrc + (offset << 2), numFloats << 2 );
 
 	env->ReleasePrimitiveArrayCritical(src, pSrc, 0);
-
-	return (int)pDst;
 }
 
 /*

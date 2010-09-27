@@ -10,9 +10,9 @@ extern "C" {
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    copyJni
- * Signature: ([FLjava/nio/Buffer;II)I
+ * Signature: ([FLjava/nio/Buffer;II)V
  */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava_nio_Buffer_2II
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava_nio_Buffer_2II
   (JNIEnv *, jclass, jfloatArray, jobject, jint, jint);
 
 /*

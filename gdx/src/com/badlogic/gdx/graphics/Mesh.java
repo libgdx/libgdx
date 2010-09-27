@@ -302,7 +302,7 @@ public class Mesh
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
 				
-		int result = BufferUtils.copy( vertices, this.vertices, count, offset );
+		BufferUtils.copy( vertices, this.vertices, count, offset );
 		this.verticesFloat.limit(this.vertices.limit()>>2);
 		this.verticesFloat.position(0);
 		
