@@ -33,7 +33,7 @@ public class Color
 	
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
-
+	
 	/**
 	 * Constructor, sets the components of the color
 	 * @param r the red component
@@ -179,5 +179,65 @@ public class Color
         result = 31 * result + (b != +0.0f ? Float.floatToIntBits(b) : 0);
         result = 31 * result + (a != +0.0f ? Float.floatToIntBits(a) : 0);
         return result;
+    }
+    
+    /**
+     * Packs the four color components which should be in the range 0-255 into
+     * a 32-bit integer and then converts it to a float. Note that no range
+     * checking is performed for higher performance. 
+     * @param r the red component, 0 - 255
+     * @param g the green component, 0 - 255
+     * @param b the blue component, 0 - 255
+     * @param a the alpha component, 0 - 255
+     * @return the packed color as a float
+     */
+    public static float toFloatBits( int r, int g, int b, int a )
+    {
+    	int color = ( a << 24 ) | ( b << 16 ) | ( g << 8 ) | r;
+    	float floatColor = Float.intBitsToFloat( color );
+    	return floatColor;
+    }
+
+    /**
+     * Packs the four color components which should be in the range 0-255 into
+     * a 32-bit. Note that no range checking is performed for higher performance. 
+     * @param r the red component, 0 - 255
+     * @param g the green component, 0 - 255
+     * @param b the blue component, 0 - 255
+     * @param a the alpha component, 0 - 255
+     * @return the packed color as a 32-bit int
+     */
+    public static float toIntBits( int r, int g, int b, int a )
+    {
+    	return ( a << 24 ) | ( b << 16 ) | ( g << 8 ) | r;
+
+    }
+    
+    /**
+     * Packs the 4 components of this color into a 32-bit int and returns it as a 
+     * float. 
+     * 
+     * @return the packed color as a 32-bit float
+     */
+    public float toFloatBits( )
+    {
+    	int color = ( (int)( 255 * r ) << 24 ) |
+    		   		( (int)( 255 * g ) << 16 ) |
+    		   		( (int)( 255 * b ) << 8 ) |
+    		   		( (int)( 255 * a ) );
+        return Float.intBitsToFloat( color );
+    }
+    
+    /**
+     * Packs the 4 components of this color into a 32-bit int.
+     * @return the packed color as a 32-bit int.
+     */
+    public int toIntBits( )
+    {
+    	int color = ( (int)( 255 * a ) << 24 ) |
+   					( (int)( 255 * b ) << 16 ) |
+   					( (int)( 255 * g ) << 8 ) |
+   					( (int)( 255 * r ) );
+    	return color;
     }
 }

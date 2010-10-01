@@ -457,10 +457,13 @@ public class Mesh
 				continue;
 			}
 			
-			if( attribute.usage == Usage.Color )
+			if( attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked )
 			{
+				int colorType = type;
+				if( attribute.usage == Usage.ColorPacked )
+					colorType = GL11.GL_UNSIGNED_BYTE;
 				gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
-				gl.glColorPointer( attribute.numComponents, type, attributes.vertexSize, attribute.offset );
+				gl.glColorPointer( attribute.numComponents, colorType, attributes.vertexSize, attribute.offset );
 				continue;
 			}
 			
@@ -532,11 +535,14 @@ public class Mesh
 				continue;
 			}
 			
-			if( attribute.usage == Usage.Color )
+			if( attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked )
 			{
+				int colorType = type;
+				if( attribute.usage == Usage.ColorPacked )
+					colorType = GL11.GL_UNSIGNED_BYTE;
 				gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
 				vertices.position( attribute.offset );
-				gl.glColorPointer( attribute.numComponents, type, attributes.vertexSize, vertices );
+				gl.glColorPointer( attribute.numComponents, colorType, attributes.vertexSize, vertices );
 				continue;
 			}
 			
@@ -660,7 +666,10 @@ public class Mesh
 		{
 			VertexAttribute attribute = attributes.get( i );
 			shader.enableVertexAttribute( attribute.alias );
-			shader.setVertexAttribute( attribute.alias, attribute.numComponents, type, false, attributes.vertexSize, attribute.offset );
+			int colorType = type;
+			if( attribute.usage == Usage.ColorPacked )
+				colorType = GL20.GL_UNSIGNED_BYTE;
+			shader.setVertexAttribute( attribute.alias, attribute.numComponents, colorType, false, attributes.vertexSize, attribute.offset );
 		}
 		
 		if( maxIndices > 0 )

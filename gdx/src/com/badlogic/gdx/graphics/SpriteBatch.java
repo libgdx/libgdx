@@ -104,7 +104,7 @@ public  class SpriteBatch
 	protected final Matrix viewMatrix = new Matrix();
 	
 	/** the vertex storage **/
-	protected final float[] vertices = new float[MAX_VERTICES * (2 + 4 + 2)];
+	protected final float[] vertices = new float[MAX_VERTICES * (2 + 1 + 2)];
 	
 	/** last texture **/
 	protected Texture lastTexture = null;
@@ -146,7 +146,7 @@ public  class SpriteBatch
 		this.graphics = graphics;		
 		this.mesh = new Mesh( graphics, true, false, false, MAX_VERTICES, 0, 
 							  new VertexAttribute( Usage.Position, 2, "a_position" ),
-							  new VertexAttribute( Usage.Color, 4, "a_color" ),
+							  new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
 							  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
 		viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
 		
@@ -433,34 +433,36 @@ public  class SpriteBatch
 			v2 = tmp;
 		}			
 		
+		final float color = tint.toFloatBits();
+		
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v; 
 		
 		vertices[idx++] = x2;
 		vertices[idx++] = y2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v2;
 		
 		vertices[idx++] = x3;
 		vertices[idx++] = y3;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color; 
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = x3;
 		vertices[idx++] = y3;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = x4;
 		vertices[idx++] = y4;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v;
 		
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v;
 		
 		if( idx == vertices.length )
@@ -523,34 +525,36 @@ public  class SpriteBatch
 			v2 = tmp;
 		}			
 		
+		final float color = tint.toFloatBits();
+		
 		vertices[idx++] = x;
 		vertices[idx++] = y;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v; 
 		
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v;
 		
 		vertices[idx++] = x;
 		vertices[idx++] = y;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v;
 		
 		if( idx == vertices.length )
@@ -594,34 +598,36 @@ public  class SpriteBatch
         final float fx2 = x + srcWidth;
 		final float fy2 = y - srcHeight;
 		
+		final float color = tint.toFloatBits();
+		
 		vertices[idx++] = x;
 		vertices[idx++] = y;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v; 
 		
 		vertices[idx++] = x;
 		vertices[idx++] = fy2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
 		vertices[idx++] = fy2;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
 		vertices[idx++] = y;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v;
 		
 		vertices[idx++] = x;
 		vertices[idx++] = y;
-		vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+		vertices[idx++] = color;
 		vertices[idx++] = u; vertices[idx++] = v; 
 		
 		if( idx == vertices.length )
@@ -696,6 +702,8 @@ public  class SpriteBatch
 				
 		useTextBlend = true;			
 		
+		final float color = tint.toFloatBits();
+		
 		int len = text.length();		
 		for( int i = 0; i < len; i++ )
 		{
@@ -712,32 +720,32 @@ public  class SpriteBatch
 			
 			vertices[idx++] = fx;
 			vertices[idx++] = y;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = color;
 			vertices[idx++] = u; vertices[idx++] = v; 
 			
 			vertices[idx++] = fx;
 			vertices[idx++] = fy2;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = color;
 			vertices[idx++] = u; vertices[idx++] = v2;
 			
 			vertices[idx++] = fx2;
 			vertices[idx++] = fy2;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = color;
 			vertices[idx++] = u2; vertices[idx++] = v2;
 			
 			vertices[idx++] = fx2;
 			vertices[idx++] = fy2;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = color;
 			vertices[idx++] = u2; vertices[idx++] = v2;
 			
 			vertices[idx++] = fx2;
 			vertices[idx++] = y;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = color;
 			vertices[idx++] = u2; vertices[idx++] = v;
 			
 			vertices[idx++] = fx;
 			vertices[idx++] = y;
-			vertices[idx++] = tint.r; vertices[idx++] = tint.g; vertices[idx++] = tint.b; vertices[idx++] = tint.a;
+			vertices[idx++] = color;
 			vertices[idx++] = u; vertices[idx++] = v; 
 			
 			x += g.advance;

@@ -37,6 +37,7 @@ public final class VertexAttributes
 	{
 		public static final int Position = 0;
 		public static final int Color = 1;
+		public static final int ColorPacked = 5;
 		public static final int Normal = 2;
 		public static final int TextureCoordinates = 3;
 		public static final int Generic = 4;
@@ -73,7 +74,10 @@ public final class VertexAttributes
 		{
 			VertexAttribute attribute = attributes[i];
 			attribute.offset = count;
-			count += 4 * attribute.numComponents;
+			if( attribute.usage == VertexAttributes.Usage.ColorPacked )
+				count += 4;
+			else
+				count += 4 * attribute.numComponents;
 		}
 		
 		return count;
@@ -101,7 +105,7 @@ public final class VertexAttributes
 					throw new IllegalArgumentException( "two normal attributes were specified" );
 			}
 			
-			if( attribute.usage == Usage.Color )
+			if( attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked )
 			{
 				if( attribute.numComponents != 4 )
 					throw new IllegalArgumentException( "color attribute must have 4 components" );
