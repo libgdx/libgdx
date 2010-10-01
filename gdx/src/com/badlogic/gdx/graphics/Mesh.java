@@ -238,6 +238,7 @@ public class Mesh
 	{							
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
 		// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
+		// Does not have a lot of impact on the Droid with 2.1 (2-3 frames for MD5Test) but still shitty.
 		if( graphics.getType() == GraphicsType.AndroidGL )
 			gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW);
 		else

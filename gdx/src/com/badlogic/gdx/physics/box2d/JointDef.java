@@ -18,7 +18,7 @@ package com.badlogic.gdx.physics.box2d;
 public class JointDef 
 {
 	public enum JointType
-	{
+	{	
 		Unknown(0),
 		RevoluteJoint(1),
 		PrismaticJoint(2),
@@ -29,7 +29,12 @@ public class JointDef
 		LineJoint(7),
 		WeldJoint(8),
 		FrictionJoint(9);		
-		
+	
+		public static JointType[] valueTypes = new JointType[] { Unknown, RevoluteJoint, 	
+																 PrismaticJoint, DistanceJoint, 
+																 PulleyJoint, MouseJoint,
+																 GearJoint, LineJoint, 
+																 WeldJoint, FrictionJoint} ;
 		private int value;
 		
 		JointType( int value )

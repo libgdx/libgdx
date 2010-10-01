@@ -51,10 +51,10 @@ public abstract class Joint
 	public JointType getType()
 	{
 		int type = jniGetType( addr );
-		for( int i = 0; i < JointType.values().length; i++ )
-			if( JointType.values()[i].getValue() == type )
-				return JointType.values()[i];
-		return JointType.Unknown;
+		if( type > 0 && type < JointType.valueTypes.length )
+			return JointType.valueTypes[type];
+		else
+			return JointType.Unknown;
 	}
 	
 	private native int jniGetType( long addr );
