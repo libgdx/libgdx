@@ -43,4 +43,10 @@ public class BufferUtils
 	private native static void copyJni( float[] src, Buffer dst, int numFloats, int offset );	
 	
 	private native static void copyJni( Buffer src, Buffer dst, int numBytes );
+	
+	public static native float int2float( int value );
+	
+	public static native int float2int( float value );
+	
+	public static native boolean bitEqual( int value1, float value2 );
 }

@@ -27,3 +27,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 
 	memcpy( pDst, pSrc, numBytes );
 }
+
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_utils_BufferUtils_int2float
+  (JNIEnv *, jclass, jint value )
+{
+	return *((jfloat*)&value);
+}
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_utils_BufferUtils_float2int
+  (JNIEnv *, jclass, jfloat value)
+{
+	return *((jint*)&value);
+}
+
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_utils_BufferUtils_bitEqual
+  (JNIEnv *, jclass, jint value1, jfloat value2)
+{
+	jint v = *((jint*)&value2);
+	return v == value1;
+}

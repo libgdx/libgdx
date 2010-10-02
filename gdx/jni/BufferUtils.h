@@ -23,6 +23,30 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_nio_Buffer_2Ljava_nio_Buffer_2I
   (JNIEnv *, jclass, jobject, jobject, jint);
 
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    int2float
+ * Signature: (I)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_utils_BufferUtils_int2float
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    float2int
+ * Signature: (F)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_utils_BufferUtils_float2int
+  (JNIEnv *, jclass, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    bitEqual
+ * Signature: (IF)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_utils_BufferUtils_bitEqual
+  (JNIEnv *, jclass, jint, jfloat);
+
 #ifdef __cplusplus
 }
 #endif

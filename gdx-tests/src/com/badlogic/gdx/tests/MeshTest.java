@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -60,14 +61,14 @@ public class MeshTest implements RenderListener
 		{
 			mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
 					 new VertexAttribute( Usage.Position, 3, "a_position" ), 
-					 new VertexAttribute( Usage.Color, 4, "a_color" ),
+					 new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
 					 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );		
 			
-			mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,
-											 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
-											 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );	
-			mesh.setIndices( new short[] { 0, 1, 2 } );
-	
+			mesh.setVertices( new float[] { -0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0,
+											 0.5f, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 1, 0,
+											 0, 0.5f, 0, Color.toFloatBits( 0, 0, 255, 255 ), 0.5f, 1 } );	
+			mesh.setIndices( new short[] { 0, 1, 2 } );			
+			
 			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
 			pixmap.setColor(1, 1, 1, 1 );
 			pixmap.fill();

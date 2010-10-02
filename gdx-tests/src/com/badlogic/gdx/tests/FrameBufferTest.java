@@ -22,11 +22,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FrameBuffer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 public class FrameBufferTest implements RenderListener
@@ -46,22 +49,25 @@ public class FrameBufferTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{						
-		frameBuffer.begin();
-		app.getGraphics().getGL20().glViewport( 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight() );
+//		frameBuffer.begin();
+//		app.getGraphics().getGL20().glViewport( 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight() );
 		app.getGraphics().getGL20().glClearColor( 0f, 1f, 0f, 1 );
 		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
+		app.getGraphics().getGL20().glEnable( GL20.GL_TEXTURE_2D );
+//		texture.bind();		
 		meshShader.begin();
+//		meshShader.setUniformi( "u_texture", 0 );
 		mesh.render(meshShader, GL20.GL_TRIANGLES);
 		meshShader.end();
-		frameBuffer.end();	
-		
-		app.getGraphics().getGL20().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
-		app.getGraphics().getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
-		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
-		
-		spriteBatch.begin();
-		spriteBatch.draw( frameBuffer.getColorBufferTexture(), 0, 200, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(), frameBuffer.getColorBufferTexture().getHeight(), Color.WHITE, false, true );
-		spriteBatch.end();
+//		frameBuffer.end();	
+//		
+//		app.getGraphics().getGL20().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+//		app.getGraphics().getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
+//		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
+//		
+//		spriteBatch.begin();
+//		spriteBatch.draw( frameBuffer.getColorBufferTexture(), 0, 200, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(), frameBuffer.getColorBufferTexture().getHeight(), Color.WHITE, false, true );
+//		spriteBatch.end();
 	}
 
 	@Override
@@ -76,14 +82,32 @@ public class FrameBufferTest implements RenderListener
 		if( mesh == null )
 		{
 			mesh = new Mesh( app.getGraphics(), true, true, false, 3, 0, 
-							 new VertexAttribute( Usage.Position, 2, "a_Position" ),
-							 new VertexAttribute( Usage.Color, 4, "a_Color" ) );
-			mesh.setVertices( new float[] {
-							-0.5f, -0.5f, 1, 0, 0, 1,
-							0.5f, -0.5f, 0, 1, 0, 1,
-							0, 0.5f, 0, 0, 1, 1
-			});
-					
+							 new VertexAttribute( Usage.Position, 3, "a_Position" ),
+							 new VertexAttribute( Usage.ColorPacked, 4, "a_Color" ),
+							 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
+			float c1 = Color.toFloatBits(255, 0, 0, 255);
+			float c2 = Color.toFloatBits(255, 0, 0, 255);;
+			float c3 = Color.toFloatBits(0, 0, 255, 255);;
+			
+			mesh.setVertices( new float[] { -0.5f, -0.5f, 0, c1, 0, 0,
+					 						 0.5f, -0.5f, 0, c2, 1, 0,
+					 						 0, 0.5f, 0, c3, 0.5f, 1 } );
+			
+//			mesh = new Mesh( app.getGraphics(), true, true, false, 3, 0, 
+//					 new VertexAttribute( Usage.Position, 3, "a_Position" ),
+//					 new VertexAttribute( Usage.Color, 4, "a_Color" ),
+//					 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
+//	mesh.setVertices( new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0,
+//			 						 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0,
+//			 						 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );
+			
+			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
+			pixmap.setColor(1, 1, 1, 1 );
+			pixmap.fill();
+			pixmap.setColor(0, 0, 0, 1 );
+			pixmap.drawLine(0, 0, 256, 256);
+			pixmap.drawLine(256, 0, 0, 256);
+			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
 			
 			spriteBatch = new SpriteBatch(app.getGraphics() );			
 			frameBuffer = new FrameBuffer( app.getGraphics(), Format.RGB565, 128, 128, true, true );	
@@ -94,19 +118,29 @@ public class FrameBufferTest implements RenderListener
 	private void createShader( Graphics graphics )
 	{
 		String vertexShader =  "attribute vec4 a_Position;    \n" +
-							   "attribute vec4 a_Color;\n" +		   							  		   							   
+							   "attribute vec4 a_Color;\n" +	
+							   "attribute vec2 a_texCoords;\n" + 
 							   "varying vec4 v_Color;" +
-							   						  
+							   "varying vec2 v_texCoords; \n" +
+							   
 							   "void main()                  \n" +
 							   "{                            \n" +
-							   "   v_Color = vec4(a_Color.x, a_Color.y, a_Color.z, 1); \n" +							   
+//							   "   if( a_Color.g == 0.0f && a_Color.b == 0.0f && a_Color.r == 1f )" +
+//							   "      v_Color = vec4(a_Color.r, 0, 0, 0); \n" +
+//							   "   else\n" +
+//							   "      v_Color = vec4(0, 0, 1, 1);" +
+							   "   v_Color = a_Color;" +
+							   "   v_texCoords = a_texCoords;\n" + 
 							   "   gl_Position =   a_Position;  \n" +
 							   "}                            \n";
 		String fragmentShader = "precision mediump float;\n" +
-								"varying vec4 v_Color;\n" +																							
+								"varying vec4 v_Color;\n" +
+								"varying vec2 v_texCoords; \n" +
+//								"uniform sampler2D u_texture;\n" +
+								
 								"void main()                                  \n" +
 							    "{                                            \n" +							    							   
-							    "  gl_FragColor = v_Color;\n" +
+							    "  gl_FragColor = v_Color; // * texture2D(u_texture, v_texCoords);\n" +
 							    "}"; 
 		
 		meshShader = new ShaderProgram( graphics.getGL20(), vertexShader, fragmentShader, true );

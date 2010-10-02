@@ -174,8 +174,8 @@ public  class SpriteBatch
 								"varying vec2 v_texCoords;\n" +								
 								"uniform sampler2D u_texture;\n" +
 								"void main()                                  \n" +
-							    "{                                            \n" +							    							   
-							    "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" +
+							    "{                                            \n" +							    
+							    "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords); \n" +
 							    "}"; 
 		
 		shader = new ShaderProgram( graphics.getGL20(), vertexShader, fragmentShader, true);

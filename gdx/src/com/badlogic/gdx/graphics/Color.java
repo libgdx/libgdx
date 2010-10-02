@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.utils.BufferUtils;
+
 /**
  * A color class, holding the r, g, b and alpha component
  * as floats in the range [0,1]. All methods perform clamping
@@ -221,10 +223,10 @@ public class Color
      */
     public float toFloatBits( )
     {
-    	int color = ( (int)( 255 * r ) << 24 ) |
-    		   		( (int)( 255 * g ) << 16 ) |
-    		   		( (int)( 255 * b ) << 8 ) |
-    		   		( (int)( 255 * a ) );
+    	int color = ( (int)( 255 * a ) << 24 ) |
+    		   		( (int)( 255 * b ) << 16 ) |
+    		   		( (int)( 255 * g ) << 8 ) |
+    		   		( (int)( 255 * r ) );
         return Float.intBitsToFloat( color );
     }
     
