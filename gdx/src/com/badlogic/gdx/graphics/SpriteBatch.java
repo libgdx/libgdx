@@ -575,7 +575,7 @@ public  class SpriteBatch
 	 * @param srcWidth the source with in texels
 	 * @param srcHeight the source height in texels
 	 * @param tint the tint Color
-	 */
+	 */	
 	public void draw( Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint )
 	{		
 		if( !drawing )
@@ -633,6 +633,89 @@ public  class SpriteBatch
 		if( idx == vertices.length )
 			renderMesh();
 	}		
+	
+	/**
+	 * Draws all the sprites given in the float array with the same tint color.
+	 * Sprites are layed out in the float array as follows.</br>
+	 * 
+	 * <code>
+	 * [ x, y, srcx, srcy, srcwidth, srcheight, <-- first sprite 
+	 *   x, y, srcx, srcy, srcwidth, srcheight, <-- second sprite
+	 *   ...
+	 * ]
+	 * </code>
+	 * 
+	 * @param texture the texture to be used
+	 * @param sprites the sprites to be drawn
+	 * @param tint the tint color used for each sprite
+	 */
+	public void draw( Texture texture, float[] sprites, Color tint )
+	{
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+		
+		useTextBlend = false;
+		
+		final float color = tint.toFloatBits();
+		
+		for( int i = 0; i < sprites.length; i+=6 )
+		{
+			final float x = sprites[i+0];
+			final float y = sprites[i+1];
+			final float srcX = sprites[i+2];
+			final float srcY = sprites[i+3];
+			final float srcWidth = sprites[i+4];
+			final float srcHeight = sprites[i+5];
+			
+			final float u = srcX * invTexWidth;
+			final float v = srcY * invTexHeight;
+			final float u2 = (srcX + srcWidth) * invTexWidth;
+			final float v2 = (srcY + srcHeight) * invTexHeight;
+	        final float fx2 = x + srcWidth;
+			final float fy2 = y - srcHeight;					
+			
+			vertices[idx++] = x;
+			vertices[idx++] = y;
+			vertices[idx++] = color;
+			vertices[idx++] = u; vertices[idx++] = v; 
+			
+			vertices[idx++] = x;
+			vertices[idx++] = fy2;
+			vertices[idx++] = color;
+			vertices[idx++] = u; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy2;
+			vertices[idx++] = color;
+			vertices[idx++] = u2; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = fy2;
+			vertices[idx++] = color;
+			vertices[idx++] = u2; vertices[idx++] = v2;
+			
+			vertices[idx++] = fx2;
+			vertices[idx++] = y;
+			vertices[idx++] = color;
+			vertices[idx++] = u2; vertices[idx++] = v;
+			
+			vertices[idx++] = x;
+			vertices[idx++] = y;
+			vertices[idx++] = color;
+			vertices[idx++] = u; vertices[idx++] = v; 
+			
+			if( idx == vertices.length )
+				renderMesh();
+		}
+	}
 	
 	protected void renderMesh( )
 	{

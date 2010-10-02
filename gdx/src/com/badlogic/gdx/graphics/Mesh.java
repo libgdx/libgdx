@@ -499,7 +499,7 @@ public class Mesh
 		for( int i = 0; i < numAttributes; i++ )
 		{
 			VertexAttribute attribute = attributes.get( i );
-			if( attribute.usage == Usage.Color )
+			if( attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked )
 				gl.glDisableClientState( GL11.GL_COLOR_ARRAY );
 			if( attribute.usage == Usage.Normal )
 				gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
@@ -575,7 +575,7 @@ public class Mesh
 		for( int i = 0; i < numAttributes; i++ )
 		{
 			VertexAttribute attribute = attributes.get( i );
-			if( attribute.usage == Usage.Color )
+			if( attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked )
 				gl.glDisableClientState( GL11.GL_COLOR_ARRAY );
 			if( attribute.usage == Usage.Normal )
 				gl.glDisableClientState( GL11.GL_NORMAL_ARRAY );
@@ -667,9 +667,13 @@ public class Mesh
 			VertexAttribute attribute = attributes.get( i );
 			shader.enableVertexAttribute( attribute.alias );
 			int colorType = type;
+			boolean normalize = false;
 			if( attribute.usage == Usage.ColorPacked )
+			{
 				colorType = GL20.GL_UNSIGNED_BYTE;
-			shader.setVertexAttribute( attribute.alias, attribute.numComponents, colorType, false, attributes.vertexSize, attribute.offset );
+				normalize = true;
+			}
+			shader.setVertexAttribute( attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize, attribute.offset );
 		}
 		
 		if( maxIndices > 0 )

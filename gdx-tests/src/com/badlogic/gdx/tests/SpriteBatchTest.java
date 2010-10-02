@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
@@ -30,7 +31,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
-public class SpriteBatchTest implements RenderListener 
+public class SpriteBatchTest implements RenderListener, InputListener
 {
 	int SPRITES = 500;
 	
@@ -41,11 +42,10 @@ public class SpriteBatchTest implements RenderListener
 	Texture texture2;
 	Font font;
 	SpriteBatch spriteBatch;
-	int coords[] = new int[SPRITES*2];
-	int coords2[] = new int[SPRITES*2];
+	float sprites[] = new float[SPRITES*6];
+	float sprites2[] = new float[SPRITES*6];	
 	
-	Mesh mesh;
-	float vertices[] = new float[SPRITES * 6 * ( 2 + 2 + 4 )];
+	int renderMethod = 0;
 	
 	@Override
 	public void dispose(Application app) 
@@ -56,6 +56,14 @@ public class SpriteBatchTest implements RenderListener
 	@Override
 	public void render(Application app) 
 	{	
+		if( renderMethod == 0 )
+			renderNormal( app );
+		if( renderMethod == 1 )
+			renderArray( app );
+	}		
+	
+	private void renderNormal( Application app )
+	{
 		GL10 gl = app.getGraphics().getGL10();
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
@@ -69,22 +77,22 @@ public class SpriteBatchTest implements RenderListener
 		long start = System.nanoTime();
 		spriteBatch.begin();			
 		begin = (System.nanoTime()-start)/1000000000.0f;
-		
-		int len = coords.length;
+				
 		start = System.nanoTime();
-		for( int i = 0; i < len; i+=2 )		
-			spriteBatch.draw( texture, coords[i], coords[i+1], 0, 0, 32, 32, Color.WHITE );
+		for( int i = 0; i < sprites.length; i+=6 )		
+			spriteBatch.draw( texture, sprites[i], sprites[i+1], 0, 0, 32, 32, Color.WHITE );
 		draw1 = (System.nanoTime()-start)/1000000000.0f;
 		
 		start = System.nanoTime();
-		for( int i = 0; i < coords2.length; i+=2 )		
-			spriteBatch.draw( texture2, coords2[i], coords2[i+1], 0, 0, 32, 32, Color.WHITE );
+		for( int i = 0; i < sprites2.length; i+=6 )		
+			spriteBatch.draw( texture2, sprites2[i], sprites2[i+1], 0, 0, 32, 32, Color.WHITE );
 		draw2 = (System.nanoTime()-start)/1000000000.0f;
 				
 		start = System.nanoTime();
 		spriteBatch.drawText( font, "Question?", 100, 300, Color.RED );		
 		spriteBatch.drawText( font, "and another this is a test", 200, 100, Color.WHITE );
 		spriteBatch.drawText( font, "all hail and another this is a test", 200, 200, Color.WHITE );
+		spriteBatch.drawText( font, "normal fps: " + app.getGraphics().getFramesPerSecond(), 10, 30, Color.RED );
 		drawText = (System.nanoTime()-start)/1000000000.0f;
 		
 		start = System.nanoTime();
@@ -98,8 +106,52 @@ public class SpriteBatchTest implements RenderListener
 			startTime = System.nanoTime();
 		}
 		frames++;
-	}		
+	}
 
+	private void renderArray( Application app )
+	{
+		GL10 gl = app.getGraphics().getGL10();
+		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
+		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+		
+		float begin = 0;
+		float end = 0;
+		float draw1 = 0;
+		float draw2 = 0;
+		float drawText = 0;
+		
+		long start = System.nanoTime();
+		spriteBatch.begin();			
+		begin = (System.nanoTime()-start)/1000000000.0f;
+				
+		start = System.nanoTime();			
+		spriteBatch.draw( texture, sprites, Color.WHITE );
+		draw1 = (System.nanoTime()-start)/1000000000.0f;
+		
+		start = System.nanoTime();			
+		spriteBatch.draw( texture2, sprites2, Color.WHITE );
+		draw2 = (System.nanoTime()-start)/1000000000.0f;
+				
+		start = System.nanoTime();
+		spriteBatch.drawText( font, "Question?", 100, 300, Color.RED );		
+		spriteBatch.drawText( font, "and another this is a test", 200, 100, Color.WHITE );
+		spriteBatch.drawText( font, "all hail and another this is a test", 200, 200, Color.WHITE );
+		spriteBatch.drawText( font, "array fps: " + app.getGraphics().getFramesPerSecond(), 10, 40, Color.RED );
+		drawText = (System.nanoTime()-start)/1000000000.0f;
+		
+		start = System.nanoTime();
+		spriteBatch.end();
+		end = (System.nanoTime()-start)/1000000000.0f;
+		
+		if( System.nanoTime() - startTime > 1000000000 )
+		{
+			app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
+			frames = 0;
+			startTime = System.nanoTime();
+		}
+		frames++;
+	}
+	
 	@Override
 	public void surfaceChanged(Application app, int width, int height) 
 	{	
@@ -122,13 +174,60 @@ public class SpriteBatchTest implements RenderListener
 		
 		font = app.getGraphics().newFont( "Arial", 32, FontStyle.Plain, true );
 		
-		for( int i = 0; i < coords.length; i+=2 )
+		for( int i = 0; i < sprites.length; i+=6 )
 		{
-			coords[i] = (int)(Math.random() * app.getGraphics().getWidth());
-			coords[i+1] = (int)(Math.random() * app.getGraphics().getHeight());
-			coords2[i] = (int)(Math.random() * app.getGraphics().getWidth());
-			coords2[i+1] = (int)(Math.random() * app.getGraphics().getHeight());
+			sprites[i] = (int)(Math.random() * app.getGraphics().getWidth());
+			sprites[i+1] = (int)(Math.random() * app.getGraphics().getHeight());
+			sprites[i+2] = 0;
+			sprites[i+3] = 0;
+			sprites[i+4] = 32;
+			sprites[i+5] = 32;
+			sprites2[i] = (int)(Math.random() * app.getGraphics().getWidth());
+			sprites2[i+1] = (int)(Math.random() * app.getGraphics().getHeight());
+			sprites2[i+2] = 0;
+			sprites2[i+3] = 0;
+			sprites2[i+4] = 32;
+			sprites2[i+5] = 32;
 		}		
+		
+		app.getInput().addInputListener( this );
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int x, int y, int pointer) 
+	{
+		renderMethod = (renderMethod + 1) % 2;		
+		return false;
 	}
 
 }
