@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -169,36 +168,13 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 		
 		this.sleepTime = sleepTime;
 		
-		Field sdkIntField = null;		
-		try 
-		{
-			sdkIntField = android.os.Build.VERSION.class.getField( "SDK_INT" );
-		}
-		catch (Throwable e) 
-		{		
-			// we use single touch handler, can't identify version otherwise...
-		} 
-			
-		if( sdkIntField == null )
-		{
-			touchHandler = new AndroidSingleTouchHandler();
-		}
+		int sdkVersion = Integer.parseInt( android.os.Build.VERSION.SDK );		
+		
+		if( sdkVersion >= 5 )
+			touchHandler = new AndroidMultiTouchHandler();
 		else
-		{
-			int sdkVersion = -1;
-			try {
-				sdkVersion = sdkIntField.getInt( null );
-			} 
-			catch (Throwable e) 
-			{
-				// silently ignore this shit...
-			}
-			
-			if( sdkVersion >= 5 )
-				touchHandler = new AndroidMultiTouchHandler();
-			else
-				touchHandler = new AndroidSingleTouchHandler();
-		}
+			touchHandler = new AndroidSingleTouchHandler();
+		
 		
 		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler && ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
 	}
