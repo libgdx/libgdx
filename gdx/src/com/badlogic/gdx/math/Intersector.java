@@ -475,6 +475,60 @@ public final class Intersector
 			return true;
 		}
 	}
+	
+	/**
+	 * Intersects the given ray with list of triangles. Returns the nearest
+	 * intersection point in intersection
+	 *  
+	 * @param ray The ray
+	 * @param vertices the vertices
+	 * @param indices the indices, each successive 3 shorts index the 3 vertices of a triangle
+	 * @param vertexSize the size of a vertex in floats
+	 * @param intersection The nearest intersection point
+	 * @return Wheter the ray and the triangles intersect.
+	 */
+	public static boolean intersectRayTriangles( Ray ray, float[] vertices, short[] indices, int vertexSize, Vector3 intersection )
+	{				
+		float min_dist = Float.MAX_VALUE;
+		boolean hit = false;
+
+		if( ( indices.length % 3) != 0 )
+			throw new RuntimeException( "triangle list size is not a multiple of 3" );
+
+		for( int i = 0; i < indices.length; i+=3 )
+		{
+			int i1 = indices[i] * vertexSize;
+			int i2 = indices[i+1] * vertexSize;
+			int i3 = indices[i+2] * vertexSize;
+			
+			boolean result = intersectRayTriangle( ray, 
+					tmp1.set( vertices[i1], vertices[i1+1], vertices[i1+2] ),
+					tmp2.set( vertices[i2], vertices[i2+1], vertices[i2+2] ),
+					tmp3.set( vertices[i3], vertices[i3+1], vertices[i3+2] ),												   
+					tmp);
+
+			if( result == true )
+			{
+				float dist = ray.origin.tmp().sub( tmp ).len();
+				if( dist < min_dist )
+				{
+					min_dist = dist;					
+					best.set( tmp );
+					hit = true;
+				}
+			}
+		}
+
+		if( hit == false )
+			return false;
+		else
+		{
+			if( intersection != null )
+				intersection.set( best );
+			return true;
+		}
+	}
+
 
 	/**
 	 * Intersects the given ray with list of triangles. Returns the nearest
