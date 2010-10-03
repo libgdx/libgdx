@@ -81,29 +81,7 @@ public final class Intersector
 	private final static Vector3 v2 = new Vector3( );
 		
 	public static boolean isPointInTriangle( Vector3 point, Vector3 t1, Vector3 t2, Vector3 t3 )
-	{
-//		v0.set( t3 ).sub( t1 );
-//		v1.set( t2 ).sub( t1 );
-//		v2.set( point ).sub( t1 );
-//
-//		float dot00 = v0.dot( v0 );
-//		float dot01 = v0.dot( v1 );
-//		float dot02 = v0.dot( v2 );
-//		float dot11 = v1.dot( v1 );
-//		float dot12 = v1.dot( v2 );
-//
-//		float denom = dot00 * dot11 - dot01 * dot01;
-//		if( denom == 0 )
-//			return false;
-//
-//		float u = (dot11 * dot02 - dot01 * dot12) / denom;
-//		float v = (dot00 * dot12 - dot01 * dot02) / denom;
-//
-//		if( u >= 0 && v >= 0 && u + v <= 1 )		
-//			return true;		
-//		else		
-//			return false;	
-		
+	{	
 		v0.set(t1).sub(point);
 		v1.set(t2).sub(point);
 		v2.set(t3).sub(point);
@@ -274,10 +252,11 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return True in case an intersection is present.
 	 */
+	private static final Plane p = new Plane( new Vector3(), 0 );
+	private static final Vector3 i = new Vector3( );
 	public static boolean intersectRayTriangle( Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection )
 	{       
-		Plane p = new Plane( t1, t2, t3 );		
-		Vector3 i = new Vector3();
+		p.set( t1, t2, t3 );		
 		if( !intersectRayPlane( ray, p, i ) )
 			return false;
 
@@ -320,10 +299,12 @@ public final class Intersector
 	 * @param intersection The intersection point
 	 * @return Wheter an interesection is present.
 	 */
+	private static final Vector3 dir = new Vector3();
+	private static final Vector3 start = new Vector3();
 	public static boolean intersectRaySphere( Ray ray, Vector3 center, float radius, Vector3 intersection )
 	{
-		Vector3 dir = ray.direction.cpy().nor();
-		Vector3 start = ray.origin.cpy();
+		dir.set( ray.direction ).nor();
+		start.set(ray.origin);
 		float b = 2 * ( dir.dot( start.tmp().sub( center ) ) );
 		float c = start.dist2( center ) - radius * radius;
 		float disc = b * b - 4 * c;
@@ -393,24 +374,24 @@ public final class Intersector
 
 		if (div_x >= 0)
 		{
-			t_x_min = (bounds.getMin().x - ray.origin.x) * div_x;
-			t_x_max = (bounds.getMax().x - ray.origin.x) * div_x;
+			t_x_min = (bounds.min.x - ray.origin.x) * div_x;
+			t_x_max = (bounds.max.x - ray.origin.x) * div_x;
 		}
 		else
 		{
-			t_x_min = (bounds.getMax().x - ray.origin.x) * div_x;
-			t_x_max = (bounds.getMin().x - ray.origin.x) * div_x;
+			t_x_min = (bounds.max.x - ray.origin.x) * div_x;
+			t_x_max = (bounds.min.x - ray.origin.x) * div_x;
 		}
 
 		if (div_y >= 0)
 		{
-			t_y_min = (bounds.getMin().y - ray.origin.y) * div_y;
-			t_y_max = (bounds.getMax().y - ray.origin.y) * div_y;
+			t_y_min = (bounds.min.y - ray.origin.y) * div_y;
+			t_y_max = (bounds.max.y - ray.origin.y) * div_y;
 		}
 		else
 		{
-			t_y_min = (bounds.getMax().y - ray.origin.y) * div_y;
-			t_y_max = (bounds.getMin().y - ray.origin.y) * div_y;
+			t_y_min = (bounds.max.y - ray.origin.y) * div_y;
+			t_y_max = (bounds.min.y - ray.origin.y) * div_y;
 		}
 
 		if (t_x_min > t_y_max || (t_y_min > t_x_max))
@@ -423,13 +404,13 @@ public final class Intersector
 
 		if (div_z >= 0)
 		{
-			t_z_min = (bounds.getMin().z - ray.origin.z) * div_z;
-			t_z_max = (bounds.getMax().z - ray.origin.z) * div_z;
+			t_z_min = (bounds.min.z - ray.origin.z) * div_z;
+			t_z_max = (bounds.max.z - ray.origin.z) * div_z;
 		}
 		else
 		{
-			t_z_min = (bounds.getMax().z - ray.origin.z) * div_z;
-			t_z_max = (bounds.getMin().z - ray.origin.z) * div_z;
+			t_z_min = (bounds.max.z - ray.origin.z) * div_z;
+			t_z_max = (bounds.min.z - ray.origin.z) * div_z;
 		}
 
 		if ((t_x_min > t_z_max) || (t_z_min > t_x_max))
@@ -506,8 +487,6 @@ public final class Intersector
 	 */
 	public static boolean intersectRayTriangles( Ray ray, List<Vector3> triangles, Vector3 intersection )
 	{
-		Vector3 tmp = new Vector3();
-		Vector3 best = null;
 		float min_dist = Float.MAX_VALUE;
 
 		if( triangles.size() % 3 != 0 )
@@ -527,8 +506,6 @@ public final class Intersector
 				if( dist < min_dist )
 				{
 					min_dist = dist;
-					if( best == null )
-						best = new Vector3();
 					best.set( tmp );
 				}
 			}
