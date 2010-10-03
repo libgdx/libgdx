@@ -167,8 +167,8 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		texture = app.getGraphics().newTexture( 32, 32, Format.RGB565, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
 		texture.draw( pixmap, 0, 0);
 		
-		pixmap = app.getGraphics().newPixmap(32, 32, Format.RGB565 );
-		pixmap.setColor(1, 1, 0, 1 );
+		pixmap = app.getGraphics().newPixmap(32, 32, Format.RGBA8888 );
+		pixmap.setColor(1, 1, 0, 0.5f );
 		pixmap.fill();
 		texture2 = app.getGraphics().newTexture( pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
 		
@@ -176,14 +176,14 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		
 		for( int i = 0; i < sprites.length; i+=6 )
 		{
-			sprites[i] = (int)(Math.random() * app.getGraphics().getWidth());
-			sprites[i+1] = (int)(Math.random() * app.getGraphics().getHeight());
+			sprites[i] = (int)(Math.random() * (app.getGraphics().getWidth() - 32));
+			sprites[i+1] = (int)(Math.random() * (app.getGraphics().getHeight() - 32)) + 32;
 			sprites[i+2] = 0;
 			sprites[i+3] = 0;
 			sprites[i+4] = 32;
 			sprites[i+5] = 32;
-			sprites2[i] = (int)(Math.random() * app.getGraphics().getWidth());
-			sprites2[i+1] = (int)(Math.random() * app.getGraphics().getHeight());
+			sprites2[i] = (int)(Math.random() * (app.getGraphics().getWidth() - 32));
+			sprites2[i+1] = (int)(Math.random() * (app.getGraphics().getHeight() - 32)) + 32;
 			sprites2[i+2] = 0;
 			sprites2[i+3] = 0;
 			sprites2[i+4] = 32;
