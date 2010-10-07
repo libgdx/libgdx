@@ -25,6 +25,7 @@ public class TerrainTest implements RenderListener
 	PerspectiveCamera camera;
 	Vector3 intersection = new Vector3( );
 	boolean intersected = false;
+	long lastTime = System.nanoTime();
 	
 	@Override
 	public void surfaceCreated(Application app) 
@@ -33,7 +34,7 @@ public class TerrainTest implements RenderListener
 		{
 			renderer = new ImmediateModeRenderer( app.getGraphics().getGL10() );
 			
-			chunk = new TerrainChunk( 64, 64, 4 );
+			chunk = new TerrainChunk( 32, 32, 4 );
 			
 			Random rand = new Random();
 			int len = chunk.vertices.length;
@@ -86,6 +87,12 @@ public class TerrainTest implements RenderListener
 			
 		
 		handleInput( app.getInput(), app.getGraphics().getDeltaTime() );
+		
+		if( System.nanoTime() - lastTime > 1000000000 )
+		{
+			app.log( "TerrainTest", "fps: " + app.getGraphics().getFramesPerSecond() );
+			lastTime = System.nanoTime();
+		}
 	}
 	
 	private void handleInput( Input input, float delta )

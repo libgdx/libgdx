@@ -47,6 +47,7 @@
 		<activity android:name=".MicroBenchmarks" android:label="Micro Benchmarks"/>
 		<activity android:name=".MultitouchTest" android:label="Multitouch Test"/>
 		<activity android:name=".BufferUtilsTest" android:label="BufferUtils Test"/>
+		<activity android:name=".TerrainTest" android:label="Terrain Test"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
