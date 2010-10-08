@@ -205,6 +205,8 @@ final class JoglTexture implements Texture
 	 */
 	public void draw( Pixmap pixmap, int x, int y )
 	{
+		if( isManaged )
+			throw new GdxRuntimeException( "Can't draw to a managed texture" );
 		TextureData data = TextureIO.newTextureData((BufferedImage)pixmap.getNativePixmap(), true);
 		texture.bind();
 		texture.updateSubImage( data, 0, x, y );		
