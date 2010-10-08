@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tests.desktop;
+package com.badlogic.gdx;
 
-import com.badlogic.gdx.backends.desktop.JoglApplication;
-
-public class CollisionTest 
+/**
+ * <p>Environment class holding references to the Application, Graphics, Audio,
+ * Files and Input instances. The references are held in public static fields.
+ * Do not mess with this! This essentially allows you static access to all sub
+ * systems. It is your responsiblity to keep things thread safe. Don't use Graphics
+ * in a thread that is not the rendering thread or things will go crazy. Really.</p> 
+ * 
+ * <p>This is kind of messy but better than throwing around Graphics and similar instances.
+ * I'm aware of the design faux pas</p>
+ * @author mzechner
+ *
+ */
+public class Gdx 
 {
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Collision Test", 480, 320, false );
-		app.getGraphics().setRenderListener( new com.badlogic.gdx.tests.CollisionTest() );
-	}
+	public static Application app;
+	public static Graphics graphics;
+	public static Audio audio;
+	public static Input input;
+	public static Files files;
 }

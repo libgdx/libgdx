@@ -197,7 +197,8 @@ public interface Graphics
 	 * Creates a new {@link Font} from the given font name, the size and the style.
 	 * The font is looked up by name in the system fonts. In case no font with that
 	 * name could be found a default font is returned. The Font has to be disposed
-	 * once it's no longer used via the {@link Font.dispose()} method.
+	 * once it's no longer used via the {@link Font.dispose()} method. The font is
+	 * managed automatically and will be recreated when the OpenGL context is lost.
 	 * 
 	 * @param fontName the font name
 	 * @param size the size
@@ -205,26 +206,28 @@ public interface Graphics
 	 * @return a new Font
 	 * @throws GdxRuntimeException in case the Font could not be created
 	 */
-	public Font newFont( String fontName, int size, Font.FontStyle style, boolean managed );
+	public Font newFont( String fontName, int size, Font.FontStyle style);
 	
 	/**
 	 * Creates a new {@link Font} from the given file. The file must point to a true type font file.
 	 * The Font has to be disposed once it's no longer used via the {@link Font.dispose()} method.
+	 * The font is managed automatically and will be recreated when the OpenGL context is lost.
 	 * 
 	 * @param file the file to load the font from
 	 * @param size the size
 	 * @param style the {@link Font.FontStyle}
-	 * @param wheter the font is managed or not.
 	 * @return a new Font
 	 * @throws GdxRuntimeException in case the Font could not be created
 	 */
-	public Font newFont( FileHandle file, int size, Font.FontStyle style, boolean managed );
+	public Font newFont( FileHandle file, int size, Font.FontStyle style );
 	
 	/**
 	 * Creates a new {@link Texture} with the specified dimensions, minification
 	 * and magnification filters and texture wraps in u and v. The Texture has
 	 * to be disposed via the {@link Texture.dispose()} methods once it is no
 	 * longer used. The width and height of the texture have to be a power of two!
+	 * Textures created via this method can not be managed and have to be recreated
+	 * manually when the OpenGL context is lost.
 	 * 
 	 * @param width the width in pixels, has to be a power of 2
 	 * @param height the height in pixels, has to be a power of 2
@@ -233,11 +236,10 @@ public interface Graphics
 	 * @param magFilter the magnification {@link Texture.TextureFilter}
 	 * @param uWrap the {@link Texture.TextureWrap} in u
 	 * @param vWrap the {@link Texture.TextureWrap} in v
-	 * @param managed whether this texture is managed or not
 	 * @return a new Texture
 	 * @throws GdxRuntimeException in case the Texture could not be created
 	 */
-	public Texture newTexture( int width, int height, Format format, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );
+	public Texture newUnmanagedTexture( int width, int height, Format format, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap );
 	
 	/**
 	 * Creates a new {@link Texture} from the given {@link Pixmap} using
@@ -246,17 +248,39 @@ public interface Graphics
 	 * mip maps will be created automatically. The Texture has
 	 * to be disposed via the {@link Texture.dispose()} methods once it is no
 	 * longer used. The Pixmap's width and height have to be a power of 2!
+	 * Textures created via this method can not be managed and have to be recreated
+	 * manually when the OpenGL context is lost.
 	 * 
 	 * @param pixmap the pixmap
 	 * @param minFilter the minification {@link Texture.TextureFilter}
 	 * @param magFilter the magnification {@link Texture.TextureFilter}
 	 * @param uWrap the {@link Texture.TextureWrap} in u
 	 * @param vWrap the {@link Texture.TextureWrap} in v
-	 * @param managed whether this texture is managed
 	 * @return a new Texture
 	 * @throws GdxRuntimeException in case the texture could not be created
 	 */
-	public Texture newTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap, boolean managed );
+	public Texture newUnmanagedTexture( Pixmap pixmap, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap );
+	
+	/**
+	 * Creates a new {@link Texture} from the given {@link FileHandle} using
+	 * the specified minification and magnification filter and texture wraps in
+	 * u and v. If the minification filter is specified as {@link Texture.TextureFilter.MipMap}
+	 * mip maps will be created automatically. The Texture has
+	 * to be disposed via the {@link Texture.dispose()} methods once it is no
+	 * longer used. The FileHandle must point to a valid Jpg, Bmp or Png file.
+	 * The Pixmap's width and height have to be a power of 2!
+	 * Textures created via this method are managed and will be recreated automatically after 
+	 * the OpenGL context has been lost and recreated. 
+	 * 
+	 * @param file the FileHandle pointing to a Jpg, Bmp or Png file.
+	 * @param minFilter the minification {@link Texture.TextureFilter}
+	 * @param magFilter the magnification {@link Texture.TextureFilter}
+	 * @param uWrap the {@link Texture.TextureWrap} in u
+	 * @param vWrap the {@link Texture.TextureWrap} in v
+	 * @return a new Texture
+	 * @throws GdxRuntimeException in case the texture could not be created
+	 */
+	public Texture newTexture( FileHandle file, Texture.TextureFilter minFilter, Texture.TextureFilter magFilter, Texture.TextureWrap uWrap, Texture.TextureWrap vWrap );
 	
 	/**
 	 * @return the {@link GraphicsType} of this Graphics instance

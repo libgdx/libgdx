@@ -15,7 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.Graphics;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Rectangle;
@@ -71,7 +74,7 @@ public abstract class Font
 	private final static int TEXTURE_HEIGHT = 512;
 	
 	/** the glyph texture **/
-	private final Texture texture;
+	private Texture texture;
 	
 	/** glyph hashmap **/
 	// FIXME potentially wasteful, for the time being we keep it as a hashmap would be even worse.
@@ -81,14 +84,21 @@ public abstract class Font
 	private int glyphX = 0;
 	private int glyphY = 0;
 	
+	private static final List<Font> fonts = new ArrayList<Font>( );
 	
-	/** whether the Font is managed or not **/
-	private boolean isManaged;
-	
-	protected Font( Graphics graphics, boolean managed )
+	protected Font( )
 	{
-		this.texture = graphics.newTexture( 512, 512, Pixmap.Format.RGBA8888, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed );		
-		this.isManaged = managed;
+		fonts.add( this );
+		build();
+	}
+	
+	private void build( )
+	{
+		for( int i = 0; i < glyphs.length; i++ )
+			glyphs[i] = null;
+		this.texture = Gdx.graphics.newUnmanagedTexture( TEXTURE_WIDTH, TEXTURE_HEIGHT, Pixmap.Format.RGBA8888, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+		glyphX = 0;
+		glyphY = 0;
 	}
 	
 	/**
@@ -97,6 +107,7 @@ public abstract class Font
 	 */
 	public void dispose( )
 	{
+		fonts.remove( this );
 		texture.dispose();
 	}
 	
@@ -173,7 +184,7 @@ public abstract class Font
 		Rectangle rect = new Rectangle( );
 		getGlyphBounds( character, rect );
 
-		if( glyphX + rect.getWidth() >= 512)
+		if( glyphX + rect.getWidth() >= TEXTURE_WIDTH)
 		{
 			glyphX = 0;
 			glyphY += getLineGap() + getLineHeight();
@@ -181,9 +192,24 @@ public abstract class Font
 		
 		texture.draw( bitmap, glyphX, glyphY );		
 						
-		Glyph glyph = new Glyph( getGlyphAdvance( character ), (int)rect.getWidth(), (int)rect.getHeight(), glyphX / 512.0f, glyphY / 512.0f, rect.getWidth() / 512.0f, rect.getHeight() / 512.0f );
+		Glyph glyph = new Glyph( getGlyphAdvance( character ), (int)rect.getWidth(), (int)rect.getHeight(), glyphX / (float)TEXTURE_WIDTH, glyphY / (float)TEXTURE_HEIGHT, rect.getWidth() / (float)TEXTURE_WIDTH, rect.getHeight() / (float)TEXTURE_HEIGHT);
 		glyphX += rect.getWidth();
 		return glyph;	
+	}
+	
+	/**
+	 * This rebuilds all fonts currently alive. Used when the OpenGL context
+	 * was lost and is being reconstructed. Use with care.
+	 */
+	public static void invalidateAllFonts( )
+	{
+		for( int i = 0; i < fonts.size(); i++ )
+			fonts.get(i).build();
+	}
+	
+	public static void clearAllFonts( )
+	{
+		fonts.clear();
 	}
 	
 	/** 
@@ -214,12 +240,4 @@ public abstract class Font
 			this.vHeight = vHeight;
 		}
 	}
-
-	/**
-	 * @return whether the font is managed or not
-	 */
-	public boolean isManaged() 
-	{	
-		return isManaged;
-	}	
 }

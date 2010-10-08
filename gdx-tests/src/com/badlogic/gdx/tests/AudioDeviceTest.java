@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.AudioDevice;
 
@@ -25,7 +26,7 @@ public class AudioDeviceTest implements RenderListener
 	boolean stop = false;
 	
 	@Override
-	public void dispose(Application app) {
+	public void dispose() {
 		stop = true;
 		try {
 			thread.join();
@@ -36,23 +37,23 @@ public class AudioDeviceTest implements RenderListener
 	}
 
 	@Override
-	public void render(Application app) {
+	public void render() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged(int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{	
 		if( thread == null )
 		{
-			final AudioDevice device = app.getAudio().newAudioDevice( false );
+			final AudioDevice device = Gdx.app.getAudio().newAudioDevice( false );
 			thread = new Thread( new Runnable() {
 				@Override
 				public void run() 

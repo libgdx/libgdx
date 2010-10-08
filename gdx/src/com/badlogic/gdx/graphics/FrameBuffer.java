@@ -20,7 +20,8 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -58,14 +59,19 @@ public class FrameBuffer
 	/** the depthbuffer render object handle **/
 	private int depthbufferHandle;
 	
-	/** the graphics object **/
-	private Graphics graphics;
+	/** width **/
+	private final int width;
+	
+	/** height **/
+	private final int height;
+	
+	/** format **/
+	private final Pixmap.Format format;
 	
 	/**
 	 * Creates a new FrameBuffer having the given dimensions and potentially
 	 * a depth buffer attached.
 	 * 
-	 * @param graphics the {@link Graphics} object
 	 * @param format the format of the color buffer
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels 
@@ -73,20 +79,20 @@ public class FrameBuffer
 	 * @param managed whether this framebuffer should be managed
 	 * @throws GdxRuntimeException in case the FraeBuffer could not be created
 	 */
-	public FrameBuffer( Graphics graphics, Pixmap.Format format, int width, int height, boolean hasDepth, boolean managed )
-	{
-		this.graphics = graphics;		
-		colorTexture = graphics.newTexture(width, height, format, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, managed);
-		
+	public FrameBuffer( Pixmap.Format format, int width, int height, boolean hasDepth )
+	{				
+		this.width = width;
+		this.height = height;
+		this.format = format;
 		build( );
 		
-		if( managed )
-			buffers.add( this );
+		buffers.add( this );
 	}
 	
 	private void build( )
 	{
-		GL20 gl = graphics.getGL20();
+		colorTexture = Gdx.graphics.newUnmanagedTexture(width, height, format, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+		GL20 gl = Gdx.graphics.getGL20();
 		
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
 		tmp.order(ByteOrder.nativeOrder());
@@ -136,7 +142,7 @@ public class FrameBuffer
 	 */
 	public void dispose( )
 	{
-		GL20 gl = graphics.getGL20();
+		GL20 gl = Gdx.graphics.getGL20();
 		
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
 		tmp.order(ByteOrder.nativeOrder());
@@ -159,8 +165,8 @@ public class FrameBuffer
 	 */
 	public void begin( )
 	{
-		graphics.getGL20().glViewport( 0, 0, colorTexture.getWidth(), colorTexture.getHeight() );
-		graphics.getGL20().glBindFramebuffer( GL20.GL_FRAMEBUFFER, framebufferHandle );
+		Gdx.graphics.getGL20().glViewport( 0, 0, colorTexture.getWidth(), colorTexture.getHeight() );
+		Gdx.graphics.getGL20().glBindFramebuffer( GL20.GL_FRAMEBUFFER, framebufferHandle );
 	}
 	
 	/**
@@ -168,8 +174,8 @@ public class FrameBuffer
 	 */
 	public void end( )
 	{
-		graphics.getGL20().glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
-		graphics.getGL20().glBindFramebuffer( GL20.GL_FRAMEBUFFER, 0 );
+		Gdx.graphics.getGL20().glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		Gdx.graphics.getGL20().glBindFramebuffer( GL20.GL_FRAMEBUFFER, 0 );
 	}
 	
 	/**
@@ -179,10 +185,18 @@ public class FrameBuffer
 	 */
 	public static void invalidateAllFrameBuffers( )
 	{
+		if( Gdx.graphics.getGL20() == null )
+			return;
+		
 		for( int i = 0; i < buffers.size(); i++ )
 		{
 			buffers.get(i).build();
 		}
+	}
+	
+	public static void clearAllFrameBuffers( )
+	{
+		buffers.clear();
 	}
 
 	/**

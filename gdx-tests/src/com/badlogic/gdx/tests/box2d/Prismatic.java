@@ -15,15 +15,15 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests.box2d;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 
@@ -88,15 +88,15 @@ public class Prismatic extends Box2DTest
 		
 	}
 	
-	public void render( Application app )
+	public void render( )
 	{
-		super.render( app );
+		super.render( );
 		
 		if( renderer.batch != null )
 		{
 			renderer.batch.begin();
-			renderer.batch.drawText( renderer.font, "Keys: (l) limits, (m) motors, (s) speed", 0, app.getGraphics().getHeight(), Color.WHITE );
-			renderer.batch.drawText( renderer.font, "Motor Force = " + m_joint.getMotorForce(), 0, app.getGraphics().getHeight() - 15, Color.WHITE );
+			renderer.batch.drawText( renderer.font, "Keys: (l) limits, (m) motors, (s) speed", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE );
+			renderer.batch.drawText( renderer.font, "Motor Force = " + m_joint.getMotorForce(), 0, Gdx.app.getGraphics().getHeight() - 15, Color.WHITE );
 			renderer.batch.end();
 		}
 	}

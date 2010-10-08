@@ -24,10 +24,7 @@ package com.badlogic.gdx.graphics;
  * <p>A Texture can be managed. If the OpenGL context is lost
  * all textures get invalidated. This happens when a user switches
  * to another application or receives an incoming call. Managed
- * textures get reloaded automatically. The drawback: they will
- * use up double the memory they'd use when they were not managed.
- * This will change in future versions and use a disk cache or 
- * another mechanism to get rid of the double memory consumption
+ * textures get reloaded automatically. 
  * </p>
  * 
  * <p>

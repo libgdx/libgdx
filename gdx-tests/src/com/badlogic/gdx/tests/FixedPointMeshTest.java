@@ -15,16 +15,16 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
@@ -45,7 +45,7 @@ public class FixedPointMeshTest implements RenderListener
 	 * Called when the RenderListener is disposed.
 	 */
 	@Override
-	public void dispose(Application app) 
+	public void dispose() 
 	{	
 		texture.dispose();
 		mesh.dispose();
@@ -55,14 +55,14 @@ public class FixedPointMeshTest implements RenderListener
 	 * Called when the RenderListener needs to draw a new frame.
 	 */
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{
 		//
 		// setup the OpenGL Viewport and clear the
 		// framebuffer with a light gray color.
 		//
-		GL10 gl = app.getGraphics().getGL10();
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		
@@ -79,8 +79,14 @@ public class FixedPointMeshTest implements RenderListener
 	 * our MeshRenderer and Texture here.
 	 */
 	@Override
-	public void surfaceCreated(Application app) 
-	{		
+	public void surfaceCreated() 
+	{
+		if( texture != null )
+		{
+			texture.dispose();
+			mesh.dispose();
+		}
+		
 		//
 		// We first have to create a Mesh to hold 
 		// our vertex data. The mesh is composed of 3 vertices 
@@ -89,7 +95,7 @@ public class FixedPointMeshTest implements RenderListener
 		// Additionally we use indices, in this case 3. Note that for 
 		// this example indices are a bit of overkill.
 		//
-		mesh = new Mesh( app.getGraphics(), true, true, true, 3, 3, 
+		mesh = new Mesh( true, true, 3, 3, 
 						 new VertexAttribute( Usage.Position, 3, "a_position" ),
 						 new VertexAttribute( Usage.Color, 4, "a_color" ),
 						 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
@@ -111,7 +117,7 @@ public class FixedPointMeshTest implements RenderListener
 		//
 		// Create a small Pixmap and draw some lines to it.
 		//
-		Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
+		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888 );
 		pixmap.setColor(1, 1, 1, 1 );
 		pixmap.fill();
 		pixmap.setColor(0, 0, 0, 1 );
@@ -121,14 +127,14 @@ public class FixedPointMeshTest implements RenderListener
 		//
 		// Create a texture from the Pixmap we just drew.
 		//
-		texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
+		texture = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 	}
 
 	/**
 	 * Called when the surface dimensions changed.
 	 */
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged(int width, int height) 
 	{
 		
 	}

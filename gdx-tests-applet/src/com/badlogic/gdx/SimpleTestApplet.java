@@ -36,7 +36,7 @@ public class SimpleTestApplet extends Applet implements RenderListener, InputLis
 	public void init()
 	{
 		AppletApplication app = new AppletApplication( this, false, false );		
-		app.getGraphics().setRenderListener( this );
+		Gdx.graphics.setRenderListener( this );
 	}
 
 	PerspectiveCamera cam;
@@ -53,16 +53,14 @@ public class SimpleTestApplet extends Applet implements RenderListener, InputLis
 	int frames = 0;
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{	
 		if( mesh == null )
 		{
-			app.getInput().addInputListener( this );
+			Gdx.input.addInputListener( this );
 			
-			mesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/cube.obj", FileType.Internal ), true, true );			
-			
-			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().readFile( "data/badlogic.jpg", FileType.Internal));
-			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );					
+			mesh = ModelLoader.loadObj(  Gdx.files.readFile( "data/cube.obj", FileType.Internal ), true);			
+			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogic.jpd", FileType.Internal), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );					
 			
 			cam = new PerspectiveCamera();
 			cam.getPosition().set( 2, 2, 2 );
@@ -72,24 +70,24 @@ public class SimpleTestApplet extends Applet implements RenderListener, InputLis
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged(int width, int height) 
 	{	
 		
 	}
 	
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{	
-		GL10 gl = app.getGraphics().getGL10();
+		GL10 gl = Gdx.graphics.getGL10();
 				
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT );
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 		gl.glEnable( GL10.GL_LIGHTING );		
 		gl.glEnable( GL10.GL_COLOR_MATERIAL );
 		gl.glEnable( GL10.GL_TEXTURE_2D );
 		
-		cam.setMatrices( app.getGraphics() );							
+		cam.setMatrices( );							
 		
 		gl.glEnable( GL10.GL_LIGHT0 );				
 		gl.glLightfv( GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0 );
@@ -102,7 +100,7 @@ public class SimpleTestApplet extends Applet implements RenderListener, InputLis
 		
 		if( System.nanoTime() - frameStart > 1000000000 )
 		{
-			app.log( "Obj Test", "fps: " + frames );
+			Gdx.app.log( "Obj Test", "fps: " + frames );
 			frames = 0;
 			frameStart = System.nanoTime();
 		}
@@ -111,7 +109,7 @@ public class SimpleTestApplet extends Applet implements RenderListener, InputLis
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}	

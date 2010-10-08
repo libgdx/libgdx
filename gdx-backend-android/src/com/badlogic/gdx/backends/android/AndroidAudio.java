@@ -27,6 +27,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
@@ -111,8 +112,7 @@ final class AndroidAudio implements Audio
 			}
 			catch( Exception ex )
 			{
-				ex.printStackTrace();				
-				return null;
+				throw new GdxRuntimeException( "Couldn't load Music from file '" + file + "'", ex );
 			}
 		}
 		else
@@ -127,8 +127,7 @@ final class AndroidAudio implements Audio
 			}
 			catch( Exception ex )
 			{
-				ex.printStackTrace();				
-				return null;
+				throw new GdxRuntimeException( "Couldn't load music from file '" + file + "'", ex );
 			}
 		}
 
@@ -149,8 +148,7 @@ final class AndroidAudio implements Audio
 				descriptor.close();
 				return sound;
 			} catch (IOException e) {
-				e.printStackTrace();
-				return null;
+				throw new GdxRuntimeException( "Couldn't load Sound from file '" + file + "'", e );
 			}
 		}
 		else
@@ -161,8 +159,7 @@ final class AndroidAudio implements Audio
 			}
 			catch( Exception e )
 			{
-				e.printStackTrace();
-				return null;
+				throw new GdxRuntimeException( "Couldn't load Sound from file '" + file + "'", e );
 			}
 		}		
 	}

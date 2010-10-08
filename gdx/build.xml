@@ -15,7 +15,7 @@
 	<property environment="env"/>
 	
 	<!-- libgdx version -->
-	<property name="version" value="0.61"/>
+	<property name="version" value="0.7"/>
 	
 	<!-- output directory for distribution -->
 	<property name="stable" value="libgdx-${version}"/>
@@ -81,9 +81,11 @@
 		</exec>
 	</target>
 	
-	<!-- builds the distribution directory, does not include the desktop libs -->
+	<!-- builds the distribution directory, does not include the desktop libs 
+		for some reason excludes don't work so i have to delete the ndk directory first... -->
 	<target name="dist" depends="compile,compile-native">
-		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" excludes="gdx/ndk/**"/>
+		<delete dir="gdx/bin/ndk"/>
+		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin"/>
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>
 		<jar destfile="${stable}/gdx-backend-desktop.jar" basedir="gdx-backend-desktop/bin"/>
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="gdx-backend-android/bin"/>

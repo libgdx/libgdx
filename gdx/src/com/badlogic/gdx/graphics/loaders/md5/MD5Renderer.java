@@ -1,6 +1,5 @@
 package com.badlogic.gdx.graphics.loaders.md5;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -14,7 +13,7 @@ public class MD5Renderer
 	private final float[][] vertices;	
 	private boolean useJni;
 	
-	public MD5Renderer( Graphics g, MD5Model model, boolean useJni, boolean managed )
+	public MD5Renderer( MD5Model model, boolean useJni )
 	{
 		int maxVertices = 0;
 		int maxIndices = 0;
@@ -35,7 +34,7 @@ public class MD5Renderer
 			this.vertices[i] = model.meshes[i].createVertexArray();
 		}
 		
-		this.mesh = new Mesh( g, managed, false, false, maxVertices, maxIndices, 
+		this.mesh = new Mesh( false, false, maxVertices, maxIndices, 
 		 			     new VertexAttribute( VertexAttributes.Usage.Position, 3, "a_position" ), 
 						 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords" ) );		
 	}

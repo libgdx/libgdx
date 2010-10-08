@@ -19,6 +19,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL11;
 
@@ -28,17 +29,17 @@ public class VertexBufferObjectTest implements RenderListener
 	int vboIndexHandle;	
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{	
-		GL11 gl = app.getGraphics().getGL11();
+		GL11 gl = Gdx.graphics.getGL11();
 		
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL11.GL_COLOR_BUFFER_BIT );
 				
@@ -52,7 +53,7 @@ public class VertexBufferObjectTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		FloatBuffer vertices = FloatBuffer.wrap( new float[3 * 7] );
 		vertices.put( new float[] {
@@ -62,7 +63,7 @@ public class VertexBufferObjectTest implements RenderListener
 		});
 		vertices.flip();
 		
-		GL11 gl = app.getGraphics().getGL11();
+		GL11 gl = Gdx.graphics.getGL11();
 		int[] handle = new int[1];
 		gl.glGenBuffers( 1, handle, 0 );
 		vboHandle = handle[0];
@@ -82,7 +83,7 @@ public class VertexBufferObjectTest implements RenderListener
 
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged(int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

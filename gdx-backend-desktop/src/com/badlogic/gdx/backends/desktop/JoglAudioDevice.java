@@ -19,6 +19,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.audio.AudioDevice;
 
 /**
@@ -49,7 +50,7 @@ public final class JoglAudioDevice implements AudioDevice
 			line.open(format, 4410*2);
 			line.start();				
 		} catch (Exception e) {
-			e.printStackTrace();			
+			throw new GdxRuntimeException( "Couldn't createa AudioDevice", e );			
 		}			
 	}
 	

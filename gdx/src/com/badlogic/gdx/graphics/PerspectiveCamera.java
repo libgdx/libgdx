@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Matrix;
@@ -180,13 +181,12 @@ public final class PerspectiveCamera
 	 * matrices are overwritten. Upon returning from this
 	 * method the matrix mode will be GL10.GL_MODELVIEW.
 	 * 
-	 * @param graphics the Graphics instance.
 	 */
-	public void setMatrices( Graphics graphics )
+	public void setMatrices( )
 	{
-		setViewport(graphics.getWidth(), graphics.getHeight());
+		setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		update();
-		GL10 gl = graphics.getGL10();
+		GL10 gl = Gdx.graphics.getGL10();
 		gl.glMatrixMode( GL10.GL_PROJECTION );
 		gl.glLoadMatrixf( getCombinedMatrix().val, 0 );
 		gl.glMatrixMode( GL10.GL_MODELVIEW );

@@ -15,13 +15,20 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests.desktop;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.JoglApplication;
-import com.badlogic.gdx.graphics.*;
-
-import java.util.ArrayList;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 
 public class TextureRenderTest implements RenderListener {
 
@@ -33,13 +40,13 @@ public class TextureRenderTest implements RenderListener {
 
 
     @Override
-    public void surfaceCreated(final Application app) {
-        camera = new OrthographicCamera(app.getGraphics());
+    public void surfaceCreated( ) {
+        camera = new OrthographicCamera();
         camera.setViewport(480, 320);
-        camera.getPosition().set(app.getGraphics().getWidth() / 2, app.getGraphics().getHeight() / 2, 0);
+        camera.getPosition().set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
-        Pixmap pixmap = app.getGraphics().newPixmap(app.getFiles().getFileHandle("data/badlogic.jpg", Files.FileType.Internal));
-        texture = app.getGraphics().newTexture(pixmap, Texture.TextureFilter.Linear, Texture.TextureFilter.Linear, Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge, true);
+        
+        texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", Files.FileType.Internal), Texture.TextureFilter.Linear, Texture.TextureFilter.Linear, Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
 
 
         float invTexWidth = 1.0f / texture.getWidth();
@@ -47,7 +54,7 @@ public class TextureRenderTest implements RenderListener {
 
         rects = createRects();
 
-        this.mesh = new Mesh(app.getGraphics(), true, true, false, 4 * rects.size(), 12,
+        this.mesh = new Mesh( true, false, 4 * rects.size(), 12,
                 new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_position"),
                 new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoord"));
 
@@ -95,15 +102,15 @@ public class TextureRenderTest implements RenderListener {
     }
 
     @Override
-    public void surfaceChanged(Application app, int width, int height) {
+    public void surfaceChanged(int width, int height) {
 
     }
 
     @Override
-    public void render(Application app) {
+    public void render( ) {
 
-        GL10 gl = app.getGraphics().getGL10();
-        gl.glViewport(0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight());
+        GL10 gl = Gdx.graphics.getGL10();
+        gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
         gl.glEnable(GL10.GL_TEXTURE_2D);
 
@@ -134,7 +141,7 @@ public class TextureRenderTest implements RenderListener {
     }
 
     @Override
-    public void dispose(Application app) {
+    public void dispose( ) {
 
     }
 
@@ -166,6 +173,6 @@ public class TextureRenderTest implements RenderListener {
     public static void main( String[] argv )
     {
     	JoglApplication app = new JoglApplication("TextureRender Test", 480, 320, false );
-    	app.getGraphics().setRenderListener( new TextureRenderTest() );
+    	Gdx.graphics.setRenderListener( new TextureRenderTest() );
     }
 }

@@ -3,6 +3,7 @@ package com.badlogic.gdx.tests;
 import java.util.Random;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.RenderListener;
@@ -28,11 +29,11 @@ public class TerrainTest implements RenderListener
 	long lastTime = System.nanoTime();
 	
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		if( chunk == null )
 		{
-			renderer = new ImmediateModeRenderer( app.getGraphics().getGL10() );
+			renderer = new ImmediateModeRenderer( );
 			
 			chunk = new TerrainChunk( 32, 32, 4 );
 			
@@ -41,7 +42,7 @@ public class TerrainTest implements RenderListener
 			for( int i = 3; i < len; i+=4 )
 				chunk.vertices[i] = Color.toFloatBits( rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 255 );
 			
-			mesh = new Mesh( app.getGraphics(), true, true, false, chunk.vertices.length / 3, chunk.indices.length, 
+			mesh = new Mesh( true, false, chunk.vertices.length / 3, chunk.indices.length, 
 							 new VertexAttribute( VertexAttributes.Usage.Position, 3, "a_position" ),
 							 new VertexAttribute( VertexAttributes.Usage.ColorPacked, 4, "a_color" ) );
 			
@@ -51,7 +52,7 @@ public class TerrainTest implements RenderListener
 			camera = new PerspectiveCamera();
 			camera.getPosition().set( 0, 5, 5 );
 			camera.getDirection().set( 0, 0, 0 ).sub( camera.getPosition() ).nor();
-			camera.setViewport( app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+			camera.setViewport( Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 			camera.setNear( 0.5f );
 			camera.setFar( 300 );
 			camera.setFov( 67 );
@@ -59,20 +60,20 @@ public class TerrainTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{
-		GL10 gl = app.getGraphics().getGL10();
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT );
 		
-		camera.setMatrices( app.getGraphics() );
+		camera.setMatrices( );
 		gl.glColor4f( 1, 1, 1, 1 );
 		mesh.render( GL10.GL_TRIANGLES );
 		
@@ -86,11 +87,11 @@ public class TerrainTest implements RenderListener
 		}
 			
 		
-		handleInput( app.getInput(), app.getGraphics().getDeltaTime() );
+		handleInput( Gdx.input, Gdx.graphics.getDeltaTime() );
 		
 		if( System.nanoTime() - lastTime > 1000000000 )
 		{
-			app.log( "TerrainTest", "fps: " + app.getGraphics().getFramesPerSecond() );
+			Gdx.app.log( "TerrainTest", "fps: " + Gdx.graphics.getFramesPerSecond() );
 			lastTime = System.nanoTime();
 		}
 	}
@@ -123,7 +124,7 @@ public class TerrainTest implements RenderListener
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{
 		
 	}

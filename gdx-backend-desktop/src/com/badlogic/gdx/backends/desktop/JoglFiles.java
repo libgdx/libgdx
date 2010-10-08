@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
@@ -51,7 +52,7 @@ final class JoglFiles implements Files
 			file = new File( this.externalPath + filename );
 			
 		if( file.exists() == false )
-			return null;
+			throw new GdxRuntimeException( "File '" + filename + "' doesn't exist" );
 		else
 			return new JoglFileHandle( file );			
 	}
@@ -67,6 +68,9 @@ final class JoglFiles implements Files
 			file = new File( directory );
 		else
 			file = new File( this.externalPath + directory );
+		
+		if( file.exists() == false )
+			throw new GdxRuntimeException( "Directory '" + directory + "' does not exist" );
 		
 		return file.list();			
 	}
@@ -108,7 +112,7 @@ final class JoglFiles implements Files
 		} 
 		catch (FileNotFoundException e) 
 		{		
-			// fall through
+			throw new GdxRuntimeException( "File '" + file + "' does not exist" );
 		}		
 		
 		return in;		
@@ -138,7 +142,7 @@ final class JoglFiles implements Files
 		} 
 		catch (FileNotFoundException e) 
 		{		
-			// fall through
+			throw new GdxRuntimeException( "File '" + file + "' does not exist" );
 		}		
 		
 		return out;

@@ -19,6 +19,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.GdxRuntimeException;
+
 /**
  * An ImmediateModeRenderer allows you to perform immediate mode rendering as you
  * were accustomed to in your desktop OpenGL environment. In order to draw something
@@ -40,9 +43,6 @@ import java.nio.FloatBuffer;
 public class ImmediateModeRenderer 
 {
 	private static final int MAX_VERTICES = 2000 * 3;
-	
-	/** the gl instance **/
-	private final GL10 gl;	
 	
 	/** the primitive type **/
 	private int primitiveType;
@@ -78,9 +78,11 @@ public class ImmediateModeRenderer
 	 * Constructs a new ImmediateModeRenderer
 	 * @param gl
 	 */
-	public ImmediateModeRenderer( GL10 gl )
+	public ImmediateModeRenderer( )
 	{
-		this.gl = gl;
+		if( Gdx.graphics.isGL20Available() )
+			throw new GdxRuntimeException( "ImmediateModeRenderer can only be used with OpenGL ES 1.0/1.1" );
+		
 		this.positions = new float[3*MAX_VERTICES];
 		this.positionsBuffer = allocateBuffer( 3 * MAX_VERTICES );
 		this.colors = new float[4 * MAX_VERTICES];
@@ -189,6 +191,7 @@ public class ImmediateModeRenderer
 		if( idxPos == 0 )
 			return;
 		
+		GL10 gl = Gdx.graphics.getGL10();
 		gl.glEnableClientState( GL10.GL_VERTEX_ARRAY );	
 		positionsBuffer.clear();
 		positionsBuffer.put( positions, 0, idxPos );

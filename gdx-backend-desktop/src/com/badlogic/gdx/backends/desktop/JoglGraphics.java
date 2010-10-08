@@ -27,18 +27,18 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.swing.JFrame;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
@@ -105,10 +105,10 @@ public final class JoglGraphics implements Graphics, RenderListener
             public void windowClosing(WindowEvent e)
             {   
             	if( application.listener != null )            
-            		application.listener.pause( application );
+            		application.listener.pause( );
             	graphicPanel.dispose(); 
             	if( application.listener != null )            	
-            		application.listener.destroy(application);            	
+            		application.listener.destroy( );            	
             }
         });                      
         useGL2 = useGL2IfAvailable;
@@ -159,25 +159,25 @@ public final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Font newFont(String fontName, int size, FontStyle style, boolean managed ) 
+	public Font newFont(String fontName, int size, FontStyle style) 
 	{	
-		return new JoglFont( this, fontName, size, style, managed );
+		return new JoglFont( fontName, size, style);
 	}
 
 	@Override
-	public Font newFont(FileHandle file, int size, FontStyle style, boolean managed) 
+	public Font newFont(FileHandle file, int size, FontStyle style) 
 	{					
 		JoglFileHandle jHandle = (JoglFileHandle)file;
 		InputStream in;
 		try {
 			in = new FileInputStream( jHandle.getFile() );
-			JoglFont font = new JoglFont(this, in, size, style, managed);			
+			JoglFont font = new JoglFont(in, size, style);			
 			in.close();
 			
 			return font;
 		} catch (Exception e) 
 		{		
-			return null;
+			throw new GdxRuntimeException( "Couldn't load font from file '" + file + "'", e );
 		}		
 	}
 
@@ -197,7 +197,7 @@ public final class JoglGraphics implements Graphics, RenderListener
 		}
 		catch( Exception ex )
 		{
-			return null;
+			throw new GdxRuntimeException( "Couldn't load Pixmap from InputStream", ex );
 		}		
 	}
 	
@@ -211,7 +211,7 @@ public final class JoglGraphics implements Graphics, RenderListener
 		}
 		catch( Exception ex )
 		{
-			return null;
+			throw new GdxRuntimeException( "Couldn't load Pixmap from file '" + file + "'", ex );
 		}		
 	}
 
@@ -221,21 +221,43 @@ public final class JoglGraphics implements Graphics, RenderListener
 		return new JoglPixmap( (BufferedImage)nativePixmap );
 	}
 
-	@Override
-	public Texture newTexture(int width, int height, Pixmap.Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
-	{	
-		if( format == Format.Alpha )
-			return new JoglTexture( width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, managed );
-		else
-			return new JoglTexture( width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, managed );
-	}
-
-	@Override
-	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
+	private static boolean isPowerOfTwo( int value )
 	{
-		return new JoglTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, managed );
+		 return ((value!=0) && (value&(value-1))==0);
+	}
+	
+	@Override
+	public Texture newUnmanagedTexture(int width, int height, Pixmap.Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	{	
+		if( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) )
+			throw new GdxRuntimeException( "Texture dimensions must be a power of two" );
+		
+		if( format == Format.Alpha )
+			return new JoglTexture( width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, false );
+		else
+			return new JoglTexture( width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, false );
 	}
 
+	@Override
+	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	{
+		if( !isPowerOfTwo( pixmap.getHeight() ) || !isPowerOfTwo( pixmap.getWidth() ) )
+			throw new GdxRuntimeException( "Texture dimensions must be a power of two" );
+		
+		return new JoglTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false );
+	}
+
+	@Override
+	public Texture newTexture(FileHandle file, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	{
+		Pixmap pixmap = newPixmap( file );
+		if( !isPowerOfTwo( pixmap.getHeight() ) || !isPowerOfTwo( pixmap.getWidth() ) )
+			throw new GdxRuntimeException( "Texture dimensions must be a power of two" );
+		
+		return new JoglTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false );
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -249,13 +271,13 @@ public final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose() 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{			
 		// calculate delta time
 		deltaTime = ( System.nanoTime() - lastFrameTime ) / 1000000000.0f;
@@ -272,7 +294,7 @@ public final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{
 		String version = graphicPanel.getGL().glGetString( GL.GL_VERSION );
 		int major = Integer.parseInt("" + version.charAt(0));
@@ -307,7 +329,7 @@ public final class JoglGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

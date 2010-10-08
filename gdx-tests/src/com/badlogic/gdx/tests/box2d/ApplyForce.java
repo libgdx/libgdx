@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests.box2d;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -170,14 +171,14 @@ public class ApplyForce extends Box2DTest
 		return false;
 	}
 	
-	public void render( Application app )
+	public void render( )
 	{
-		super.render( app );
+		super.render( );
 		
 		if( renderer.batch != null )
 		{
 			renderer.batch.begin();
-			renderer.batch.drawText( renderer.font, "Keys (w), (a), (d) to fly", 0, app.getGraphics().getHeight(), Color.WHITE);
+			renderer.batch.drawText( renderer.font, "Keys (w), (a), (d) to fly", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE);
 			renderer.batch.end();
 		}
 	}

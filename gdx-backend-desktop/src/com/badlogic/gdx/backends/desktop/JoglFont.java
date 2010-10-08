@@ -23,6 +23,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Rectangle;
@@ -40,9 +41,9 @@ final class JoglFont extends Font
 	private java.awt.Font font; 
 	private FontMetrics metrics;
 	
-	JoglFont( com.badlogic.gdx.Graphics graphics, String fontName, int size, FontStyle style, boolean managed )
+	JoglFont( String fontName, int size, FontStyle style)
 	{	
-		super( graphics, managed );
+		super( );
 		font = new java.awt.Font( fontName, getJavaFontStyle(style), size );
 		Graphics g = tmpBitmap.getGraphics();
 		g.setFont( font );
@@ -50,9 +51,9 @@ final class JoglFont extends Font
 		g.dispose();
 	}
 	
-	JoglFont( com.badlogic.gdx.Graphics graphics, InputStream in, int size, FontStyle style, boolean managed )
+	JoglFont( InputStream in, int size, FontStyle style )
 	{
-		super( graphics, managed );
+		super( );
 		
 		try
 		{
@@ -61,7 +62,7 @@ final class JoglFont extends Font
 		}
 		catch( Exception ex )
 		{
-			font = new java.awt.Font( "Arial", getJavaFontStyle(style), size );
+			throw new GdxRuntimeException( "Couldn't load font from InputStream", ex );
 		}
 		Graphics g = tmpBitmap.getGraphics();
 		g.setFont( font );

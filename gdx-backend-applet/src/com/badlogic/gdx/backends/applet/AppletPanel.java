@@ -143,7 +143,7 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 	{
 		canvas.getContext().makeCurrent();
 		for( RenderListener listener: listeners )
-			listener.dispose( application );
+			listener.dispose( );
 		remove(canvas);
 		if( animator != null )
 			animator.stop();    	
@@ -297,7 +297,7 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 		{
 			setupListeners.remove(listener);
 			listeners.remove( listener );
-			listener.dispose( application );
+			listener.dispose( );
 		}
 	}
 
@@ -314,14 +314,14 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 		{
 			for( RenderListener listener: setupListeners )
 			{
-				listener.surfaceCreated( application );
-				listener.surfaceChanged( application, this.getWidth(), this.getHeight() );
+				listener.surfaceCreated( );
+				listener.surfaceChanged( this.getWidth(), this.getHeight() );
 			}
 			listeners.addAll(setupListeners);
 			setupListeners.clear();
 			
 			for( RenderListener listener: listeners )
-				listener.render( application );	
+				listener.render( );	
 		}
 				
 	}
@@ -333,14 +333,14 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 		frameStart = System.nanoTime();
 		
 		for( RenderListener listener: listeners )
-			listener.render( application );			
+			listener.render( );			
 	}
 
 	@Override
 	public void init(GLAutoDrawable arg0) 
 	{			
 		for( RenderListener listener: listeners )
-			listener.surfaceCreated( application );
+			listener.surfaceCreated( );
 		setVerticalSynch(true);
 	}
 
@@ -352,8 +352,8 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 		
 		for( RenderListener listener: listeners )
 		{
-			listener.surfaceChanged( application, this.getWidth(), this.getHeight() );
-			listener.render( application );
+			listener.surfaceChanged( this.getWidth(), this.getHeight() );
+			listener.render( );
 		}
 	}
 

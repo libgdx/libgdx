@@ -16,20 +16,22 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FrameBuffer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 public class FrameBufferTest implements RenderListener
@@ -41,19 +43,19 @@ public class FrameBufferTest implements RenderListener
 	SpriteBatch spriteBatch;
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose() 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{						
 		frameBuffer.begin();
-		app.getGraphics().getGL20().glViewport( 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight() );
-		app.getGraphics().getGL20().glClearColor( 0f, 1f, 0f, 1 );
-		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
-		app.getGraphics().getGL20().glEnable( GL20.GL_TEXTURE_2D );
+		Gdx.graphics.getGL20().glViewport( 0, 0, frameBuffer.getWidth(), frameBuffer.getHeight() );
+		Gdx.graphics.getGL20().glClearColor( 0f, 1f, 0f, 1 );
+		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
+		Gdx.graphics.getGL20().glEnable( GL20.GL_TEXTURE_2D );
 		texture.bind();		
 		meshShader.begin();
 		meshShader.setUniformi( "u_texture", 0 );
@@ -61,9 +63,9 @@ public class FrameBufferTest implements RenderListener
 		meshShader.end();
 		frameBuffer.end();	
 		
-		app.getGraphics().getGL20().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
-		app.getGraphics().getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
-		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
+		Gdx.graphics.getGL20().glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		Gdx.graphics.getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
+		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
 		
 		spriteBatch.begin();
 		spriteBatch.draw( frameBuffer.getColorBufferTexture(), 0, 200, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(), frameBuffer.getColorBufferTexture().getHeight(), Color.WHITE, false, true );
@@ -71,17 +73,17 @@ public class FrameBufferTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged(int width, int height) 
 	{	
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{	
 		if( mesh == null )
 		{
-			mesh = new Mesh( app.getGraphics(), true, true, false, 3, 0, 
+			mesh = new Mesh( true, false, 3, 0, 
 							 new VertexAttribute( Usage.Position, 3, "a_Position" ),
 							 new VertexAttribute( Usage.ColorPacked, 4, "a_Color" ),
 							 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
@@ -93,17 +95,11 @@ public class FrameBufferTest implements RenderListener
 					 						 0.5f, -0.5f, 0, c2, 1, 0,
 					 						 0, 0.5f, 0, c3, 0.5f, 1 } );			
 			
-			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
-			pixmap.setColor(1, 1, 1, 1 );
-			pixmap.fill();
-			pixmap.setColor(0, 0, 0, 1 );
-			pixmap.drawLine(0, 0, 256, 256);
-			pixmap.drawLine(256, 0, 0, 256);
-			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
+			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
-			spriteBatch = new SpriteBatch(app.getGraphics() );			
-			frameBuffer = new FrameBuffer( app.getGraphics(), Format.RGB565, 128, 128, true, true );	
-			createShader(app.getGraphics());
+			spriteBatch = new SpriteBatch( );			
+			frameBuffer = new FrameBuffer( Format.RGB565, 128, 128, true );	
+			createShader(Gdx.graphics);
 		}
 	}
 	
@@ -131,7 +127,7 @@ public class FrameBufferTest implements RenderListener
 							    "  gl_FragColor = v_Color * texture2D(u_texture, v_texCoords);\n" +
 							    "}"; 
 		
-		meshShader = new ShaderProgram( graphics.getGL20(), vertexShader, fragmentShader, true );
+		meshShader = new ShaderProgram( vertexShader, fragmentShader );
 		if( meshShader.isCompiled() == false )
 			throw new IllegalStateException( meshShader.getLog() );			
 	}

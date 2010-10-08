@@ -17,9 +17,9 @@ package com.badlogic.gdx.tests;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.io.VorbisDecoder;
 
@@ -27,32 +27,32 @@ public class VorbisTest implements RenderListener
 {
 
 	@Override
-	public void dispose(Application app) {
+	public void dispose( ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void render(Application app) {
+	public void render( ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged(int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		VorbisDecoder decoder = null;
-		if( app.getType() == ApplicationType.Android )
+		if( Gdx.app.getType() == ApplicationType.Android )
 			decoder = new VorbisDecoder( "/sdcard/audio/schism.ogg" );
 		else
 			decoder = new VorbisDecoder( "data/cloudconnected.ogg" );
-		app.log( "Vorbis", "channels: "+ decoder.getNumChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength() );;
+		Gdx.app.log( "Vorbis", "channels: "+ decoder.getNumChannels() + ", rate: " + decoder.getRate() + ", length: " + decoder.getLength() );;
 				
 		ShortBuffer samplesBuffer = AudioTools.allocateShortBuffer( 1024, 2 );		
 			
@@ -61,7 +61,7 @@ public class VorbisTest implements RenderListener
 		{
 			
 		}
-		app.log( "Vorbis", "took " + (System.nanoTime()-start)/1000000000.0 );
+		Gdx.app.log( "Vorbis", "took " + (System.nanoTime()-start)/1000000000.0 );
 		decoder.dispose();	
 	}
 

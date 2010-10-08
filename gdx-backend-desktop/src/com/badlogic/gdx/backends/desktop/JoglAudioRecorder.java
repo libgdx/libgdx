@@ -16,10 +16,11 @@
 package com.badlogic.gdx.backends.desktop;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.AudioFormat.Encoding;
 
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.audio.AudioRecorder;
 
 /**
@@ -48,7 +49,7 @@ public class JoglAudioRecorder implements AudioRecorder
 		}
 		catch( Exception ex )
 		{			
-			throw new IllegalStateException( "Couldn't create AudioRecorder", ex );
+			throw new GdxRuntimeException( "Couldn't create AudioRecorder", ex );
 		}
 	}
 	

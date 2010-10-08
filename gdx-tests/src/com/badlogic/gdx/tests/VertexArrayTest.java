@@ -21,6 +21,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 
@@ -31,16 +32,16 @@ public class VertexArrayTest implements RenderListener
 	final int BYTES_PER_VERTEX = (3+4)*4;		
 	
 	@Override
-	public void dispose(Application application) 
+	public void dispose( ) 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{			
-		GL10 gl = app.getGraphics().getGL10();
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );		
 		
@@ -56,7 +57,7 @@ public class VertexArrayTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceCreated(Application application) 
+	public void surfaceCreated( ) 
 	{
 		ByteBuffer buffer = ByteBuffer.allocateDirect( BYTES_PER_VERTEX * 3 );
 		buffer.order(ByteOrder.nativeOrder());
@@ -83,7 +84,7 @@ public class VertexArrayTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

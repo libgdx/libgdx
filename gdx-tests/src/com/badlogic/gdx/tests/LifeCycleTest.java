@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 
@@ -31,46 +32,46 @@ public class LifeCycleTest implements ApplicationListener, RenderListener
 {
 
 	@Override
-	public void destroy(Application app) 
+	public void destroy() 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", app destroyed" );
+		Gdx.app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", app destroyed" );
 	}
 
 	@Override
-	public void pause(Application app) 
+	public void pause() 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", app paused" );		
+		Gdx.app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", app paused" );		
 	}
 
 	@Override
-	public void resume(Application app) 
+	public void resume() 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", app resumed" );
+		Gdx.app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", app resumed" );
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose() 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer disposed" );	
+		Gdx.app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer disposed" );	
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{
-		app.getGraphics().getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );
+		Gdx.graphics.getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface changed: " + app.getGraphics().getWidth() + "x" + app.getGraphics().getHeight() );
+		Gdx.app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface changed: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() );
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{
-		app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface created: " + app.getGraphics().getWidth() + "x" + app.getGraphics().getHeight() );
-		System.out.println(app.getGraphics().getGL10().glGetString( GL10.GL_VERSION ) );
+		Gdx.app.log( "Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface created: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() );
+		System.out.println(Gdx.graphics.getGL10().glGetString( GL10.GL_VERSION ) );
 	}
 	
 }

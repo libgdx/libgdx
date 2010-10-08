@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -39,7 +38,7 @@ public class ObjLoader
 	 * @param useFloats whether to return a FloatMesh or a FixedPointMesh
 	 *
 	 */
-	public static Mesh loadObj( Graphics graphics, InputStream in, boolean managed, boolean useFloats )
+	public static Mesh loadObj( InputStream in, boolean useFloats )
 	{
 		String line = "";
 		
@@ -62,7 +61,7 @@ public class ObjLoader
 		{
 			return null;
 		}
-		return loadObjFromString( graphics, line, managed, useFloats );
+		return loadObjFromString( line, useFloats );
 	}
 	
 	/**
@@ -72,7 +71,7 @@ public class ObjLoader
 	 * @param useFloats whether to return a FloatMesh or a FixedPointMesh
 	 * @return The Mesh
 	 */
-	public static Mesh loadObjFromString( Graphics graphics, String obj, boolean managed, boolean useFloats )
+	public static Mesh loadObjFromString( String obj, boolean useFloats )
 	{
 		String[] lines = obj.split( "\n" );
 		float[] vertices = new float[lines.length * 3];
@@ -193,7 +192,7 @@ public class ObjLoader
 		if( numUV > 0 )
 			attributes.add( new VertexAttribute( Usage.TextureCoordinates, 2, "a_TexCoord" ) );
 				
-		mesh = new Mesh( graphics, managed, true, !useFloats, numFaces * 3, 0, attributes.toArray( new VertexAttribute[attributes.size()] ) );
+		mesh = new Mesh( true, !useFloats, numFaces * 3, 0, attributes.toArray( new VertexAttribute[attributes.size()] ) );
 		if( useFloats )
 			mesh.setVertices( verts );
 		else

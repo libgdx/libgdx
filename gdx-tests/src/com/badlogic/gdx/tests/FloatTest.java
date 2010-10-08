@@ -20,11 +20,12 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -39,16 +40,17 @@ public class FloatTest implements RenderListener
 	float angleIncrement = 0.1f;
 	
 	@Override
-	public void dispose(Application application) 
+	public void dispose() 
 	{	
-		
+		tex.dispose();
+		tex2.dispose();
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{			
-		GL10 gl = app.getGraphics().getGL10();
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		gl.glMatrixMode( GL10.GL_MODELVIEW );
@@ -82,8 +84,14 @@ public class FloatTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceCreated(Application application) 
+	public void surfaceCreated() 
 	{
+		if( tex != null )
+		{
+			tex.dispose();
+			tex2.dispose();
+		}
+		
 		ByteBuffer buffer = ByteBuffer.allocateDirect( BYTES_PER_VERTEX * 3 );
 		buffer.order(ByteOrder.nativeOrder());
 		vertices = buffer.asFloatBuffer();					
@@ -107,24 +115,24 @@ public class FloatTest implements RenderListener
 		vertices.put(verts);
 		vertices.flip();	
 		
-		Pixmap pixmap = application.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
+		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888 );
 		pixmap.setColor(1, 1, 1, 1 );
 		pixmap.fill();
 		pixmap.setColor(0, 0, 0, 1 );
 		pixmap.drawLine(0, 0, 256, 256);
 		pixmap.drawLine(256, 0, 0, 256);		
-		tex = application.getGraphics().newTexture( pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
+		tex = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 		
-		pixmap = application.getGraphics().newPixmap( 256, 256, Format.RGBA8888 );
+		pixmap = Gdx.graphics.newPixmap( 256, 256, Format.RGBA8888 );
 		pixmap.setColor( 1, 1, 1, 1 );
 		pixmap.fill();
 		pixmap.setColor( 0, 0, 0, 1 );
 		pixmap.drawLine( 128, 0, 128, 256 );
-		tex2 = application.getGraphics().newTexture( pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, false );
+		tex2 = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged(int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

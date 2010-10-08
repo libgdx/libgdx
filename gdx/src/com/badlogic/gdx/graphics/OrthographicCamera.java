@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Vector2;
@@ -63,14 +64,11 @@ public final class OrthographicCamera
 	private final Matrix combined = new Matrix();
 	private final Matrix rotationMatrix = new Matrix();
 	
-	private final Graphics graphics;
-	
 	/**
 	 * Constructor, sets side to {@link Side.FRONT}
 	 */
-	public OrthographicCamera( Graphics graphics )
+	public OrthographicCamera( )
 	{
-		this.graphics = graphics;
 		setSide(Side.FRONT);
 	}
 	
@@ -180,7 +178,7 @@ public final class OrthographicCamera
 	public void setMatrices( )
 	{
 		update();
-		GL10 gl = graphics.getGL10();
+		GL10 gl = Gdx.graphics.getGL10();
 		gl.glMatrixMode( GL10.GL_PROJECTION );
 		gl.glLoadMatrixf( getCombinedMatrix().val, 0 );
 		gl.glMatrixMode( GL10.GL_MODELVIEW );
@@ -244,8 +242,8 @@ public final class OrthographicCamera
 	 */
 	public void getScreenToWorld( float screenX, float screenY, Vector2 world )
 	{
-		screenX = screenX / graphics.getWidth() * viewportWidth;
-		screenY = screenY / graphics.getHeight() * viewportHeight;
+		screenX = screenX / Gdx.graphics.getWidth() * viewportWidth;
+		screenY = screenY / Gdx.graphics.getHeight() * viewportHeight;
 		
 		world.set( ( screenX * scale ) - ( viewportWidth * scale ) / 2 + position.x,
 				   ( (viewportHeight -screenY) * scale ) - ( viewportHeight * scale ) / 2 + position.y );

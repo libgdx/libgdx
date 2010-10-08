@@ -39,9 +39,8 @@ public interface ApplicationListener
 	 * when a user pressed the Home button on Android.
 	 * This will not be called in the rendering thread. Instead
 	 * the rendering thread will be paused before this method is called.
-	 * @param app the Application
 	 */
-	public void pause( Application app );
+	public void pause( );
 	
 	/**
 	 * Called when the {@link Application} is resumed
@@ -49,14 +48,12 @@ public interface ApplicationListener
 	 * created. This will not be called in the rendering thread.
 	 * Instead this callback will be first called, then the
 	 * rendering thread will be resumed.
-	 * @param app the Application
 	 */
-	public void resume( Application app );
+	public void resume( );
 	
 	/**
 	 * Called when the {@link Application} is destroyed. This
 	 * will not be called in the rendering thread.
-	 * @param app the Application
 	 */
-	public void destroy( Application app );
+	public void destroy( );
 }

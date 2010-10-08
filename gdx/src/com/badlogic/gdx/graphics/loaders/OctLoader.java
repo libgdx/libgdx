@@ -55,7 +55,7 @@ public class OctLoader
 		public float nx, ny, nz, d;
 	}
 	
-	public static Mesh loadOct( Graphics graphics, InputStream inputStream, boolean managed, boolean useFloats, Vector3 start )
+	public static Mesh loadOct(InputStream inputStream, boolean useFloats, Vector3 start )
 	{
 		LittleEndianInputStream in =  new LittleEndianInputStream( new BufferedInputStream(inputStream) );		
 		
@@ -124,7 +124,7 @@ public class OctLoader
 				}
 			}
 			
-			Mesh m = new Mesh( graphics, managed, true, !useFloats, numTriangles * 3, 0, 
+			Mesh m = new Mesh( true, !useFloats, numTriangles * 3, 0, 
 							   new VertexAttribute( Usage.Position, 3, "a_position"), 
 							   new VertexAttribute( Usage.Normal, 3, "a_position"),
 							   new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords")

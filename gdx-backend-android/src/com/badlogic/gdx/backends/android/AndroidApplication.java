@@ -25,6 +25,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Version;
@@ -153,7 +154,13 @@ public class AndroidApplication extends Activity implements Application {
         input = new AndroidInput(this, graphics.view, sleepTime);
         graphics.setInput(input);
         audio = new AndroidAudio(this);
-        resources = new AndroidFiles(this.getAssets());    
+        resources = new AndroidFiles(this.getAssets());   
+        
+        Gdx.app = this;
+		Gdx.input = this.getInput();
+		Gdx.audio = this.getAudio();
+		Gdx.files = this.getFiles();
+		Gdx.graphics = this.getGraphics();
     }
 
     @Override
@@ -161,7 +168,10 @@ public class AndroidApplication extends Activity implements Application {
         super.onPause();
 
         if (isFinishing())
+        {
             graphics.disposeRenderListener();
+            graphics.clearManagedCaches();
+        }
 
         if ( graphics != null && graphics.view != null)
             graphics.view.onPause();
@@ -170,15 +180,21 @@ public class AndroidApplication extends Activity implements Application {
         	audio.pause();
 
         if (listener != null)
-            listener.pause(this);
+            listener.pause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        Gdx.app = this;
+		Gdx.input = this.getInput();
+		Gdx.audio = this.getAudio();
+		Gdx.files = this.getFiles();
+		Gdx.graphics = this.getGraphics();
+        
         if (listener != null)
-            listener.resume(this);
+            listener.resume();
 
         if ( graphics != null && graphics.view != null)
             graphics.view.onResume();
@@ -192,7 +208,7 @@ public class AndroidApplication extends Activity implements Application {
         super.onDestroy();
 
         if (listener != null)
-            listener.destroy(this);
+            listener.destroy();
         
         audio.dispose();
     }

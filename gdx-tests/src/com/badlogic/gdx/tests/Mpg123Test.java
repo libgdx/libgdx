@@ -18,9 +18,9 @@ package com.badlogic.gdx.tests;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.KissFFT;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
@@ -29,32 +29,32 @@ public class Mpg123Test implements RenderListener
 {
 
 	@Override
-	public void dispose(Application app) {
+	public void dispose( ) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void render(final Application app) 
+	public void render( ) 
 	{		
 
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void surfaceCreated( final Application app) 
+	public void surfaceCreated( ) 
 	{	
 //		Thread thread = new Thread( new Runnable() {
 //
 //			public void run( )
 //			{
 				String file = null;
-				if( app.getType() == ApplicationType.Android )
+				if( Gdx.app.getType() == ApplicationType.Android )
 					file = "/sdcard/audio/schism.mp3";
 				else
 					file = "data/threeofaperfectpair.mp3";
@@ -65,7 +65,7 @@ public class Mpg123Test implements RenderListener
 				FloatBuffer spectrum = AudioTools.allocateFloatBuffer( 1024 / 2 + 1, 1);
 				KissFFT fft = new KissFFT( 1024 );
 
-				app.log( "Mpg123", "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );		
+				Gdx.app.log( "Mpg123", "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " + decoder.getLength() );		
 
 				long start = System.nanoTime();
 				while( decoder.readSamples( stereoSamples ) > 0 )
@@ -74,7 +74,7 @@ public class Mpg123Test implements RenderListener
 					fft.spectrum( monoSamples, spectrum );
 				}
 
-				app.log( "Mpg123", "took " + (System.nanoTime()-start) / 1000000000.0 );
+				Gdx.app.log( "Mpg123", "took " + (System.nanoTime()-start) / 1000000000.0 );
 				decoder.dispose();
 //			} 
 //		});

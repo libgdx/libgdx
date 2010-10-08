@@ -54,14 +54,12 @@ public class MainMenu implements Screen
 	
 	public MainMenu( Application app )
 	{	
-		spriteBatch = new SpriteBatch(app.getGraphics());
-		Pixmap backgroundPixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/planet.jpg", FileType.Internal ) );
-		background = app.getGraphics().newTexture( backgroundPixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );		
+		spriteBatch = new SpriteBatch();
+		background = app.getGraphics().newTexture( app.getFiles().getFileHandle( "data/planet.jpg", FileType.Internal ), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);		
 		
-		Pixmap logoPixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/title.png", FileType.Internal ) );
-		logo = app.getGraphics().newTexture( logoPixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );		
+		logo = app.getGraphics().newTexture( app.getFiles().getFileHandle( "data/title.png", FileType.Internal ), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);		
 		
-		font = app.getGraphics().newFont( app.getFiles().getFileHandle( "data/font.ttf", FileType.Internal), 16, FontStyle.Plain, true );		
+		font = app.getGraphics().newFont( app.getFiles().getFileHandle( "data/font.ttf", FileType.Internal), 16, FontStyle.Plain);		
 	}	
 
 	@Override
@@ -96,7 +94,7 @@ public class MainMenu implements Screen
 	@Override
 	public void dispose() 
 	{	
-		//spriteBatch.dispose();
+		spriteBatch.dispose();
 		background.dispose();
 		logo.dispose();
 		font.dispose();

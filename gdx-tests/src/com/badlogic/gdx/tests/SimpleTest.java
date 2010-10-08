@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
@@ -27,17 +28,17 @@ public class SimpleTest implements RenderListener, InputListener, ApplicationLis
 
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{
-		app.getInput().addInputListener( this );
-		app.setApplicationListener( this );
-		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created" );
+		Gdx.input.addInputListener( this );
+		Gdx.app.setApplicationListener( this );
+		Gdx.app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created" );
 	}
 	
 	@Override
-	public void render(Application app)
+	public void render( )
 	{
-		GL10 gl = app.getGraphics().getGL10();
+		GL10 gl = Gdx.app.getGraphics().getGL10();
 		
 		gl.glClearColor( r, g, b, 1 );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
@@ -45,15 +46,15 @@ public class SimpleTest implements RenderListener, InputListener, ApplicationLis
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
-		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", render listener disposed" );
+		Gdx.app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", render listener disposed" );
 	}	
 	
 	@Override
-	public void destroy(Application app) 
+	public void destroy( ) 
 	{	
-		app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", application destroyed" );
+		Gdx.app.log( "Simple Test", "Thread=" + Thread.currentThread().getId() + ", application destroyed" );
 	}
 
 	@Override
@@ -95,19 +96,19 @@ public class SimpleTest implements RenderListener, InputListener, ApplicationLis
 	}
 
 	@Override
-	public void pause(Application app) {
+	public void pause( ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void resume(Application app) {
+	public void resume( ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

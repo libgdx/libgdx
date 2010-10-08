@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
@@ -75,10 +76,13 @@ public class Pong implements RenderListener
 	 * for the ball and a {@link Text} for rendering the score.
 	 */
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
-		setupGraphics( app );
-		setupGame( );
+		if( camera == null )
+		{
+			setupGraphics( );
+			setupGame( );
+		}
 	}
 	
 	/**
@@ -86,7 +90,7 @@ public class Pong implements RenderListener
 	 * Meshes, the camera and the Font
 	 * @param app
 	 */
-	private void setupGraphics( Application app )
+	private void setupGraphics( )
 	{
 		//
 		// We first construct the paddle mesh which consists of
@@ -95,7 +99,7 @@ public class Pong implements RenderListener
 		// texture coordinates or indices. Note that we use a fixed
 		// point Mesh here. The paddle has dimensions (10, 60).
 		//
-		paddleMesh = new Mesh( app.getGraphics(), true, true, false, 4, 0, new VertexAttribute( Usage.Position, 2, "a_position" ) );
+		paddleMesh = new Mesh( true, false, 4, 0, new VertexAttribute( Usage.Position, 2, "a_position" ) );
 		paddleMesh.setVertices( new float[] { -5, -30, 
 										 5, -30, 
 										 5,  30,
@@ -104,7 +108,7 @@ public class Pong implements RenderListener
 		// 
 		// We do the same for the ball which has dimensions (10,10)
 		//
-		ballMesh = new Mesh( app.getGraphics(), true, true, false, 4, 0, new VertexAttribute( Usage.Position, 2, "a_position" ) );
+		ballMesh = new Mesh( true, false, 4, 0, new VertexAttribute( Usage.Position, 2, "a_position" ) );
 		ballMesh.setVertices( new float[] { -5, -5,
 										 5, -5,
 										 5,  5,
@@ -114,9 +118,9 @@ public class Pong implements RenderListener
 		// We construct a new font from a system font. We assume
 		// Arial is installed on both the desktop and Android.
 		//
-		font = app.getGraphics().newFont( "Arial", 30, FontStyle.Plain, true );
+		font = Gdx.graphics.newFont( "Arial", 30, FontStyle.Plain );
 		score = "0 : 0";
-		spriteBatch = new SpriteBatch( app.getGraphics() );
+		spriteBatch = new SpriteBatch( );
 		
 		//
 		// Finally we construct an {@link OrthographicCamera} which
@@ -125,7 +129,7 @@ public class Pong implements RenderListener
 		// on devices like the Droid. The screen center will be at (0,0)
 		// so that's the reference frame for our scene.
 		//
-		camera = new OrthographicCamera( app.getGraphics() );
+		camera = new OrthographicCamera( );
 		camera.setViewport( 480, 320 );		
 	}
 	
@@ -143,20 +147,20 @@ public class Pong implements RenderListener
 	}
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{
 		// we update the game state so things move.
-		updateGame(app);
+		updateGame();
 		
 		// First we clear the screen
-		GL10 gl = app.getGraphics().getGL10();
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		
 		// Next we update the camera and set the camera matrix
@@ -192,7 +196,7 @@ public class Pong implements RenderListener
 		// For text to be transparent we have to enable blending and texturing.
 		// We could setup blending once but i'm lazy :)
 		spriteBatch.begin();
-		spriteBatch.drawText( font, score, app.getGraphics().getWidth() / 2 - font.getStringWidth(score) / 2, app.getGraphics().getHeight(), Color.WHITE );		
+		spriteBatch.drawText( font, score, Gdx.graphics.getWidth() / 2 - font.getStringWidth(score) / 2, Gdx.graphics.getHeight(), Color.WHITE );		
 		spriteBatch.end();
 	}
 
@@ -203,10 +207,10 @@ public class Pong implements RenderListener
 	 * 
 	 * @param deltaTime the time elapsed since the last frame
 	 */
-	private void updateGame( Application app ) 
+	private void updateGame( ) 
 	{
 		// the delta time so we can do frame independant time based movement
-		float deltaTime = app.getGraphics().getDeltaTime();
+		float deltaTime = Gdx.graphics.getDeltaTime();
 		
 		// move the ball with a velocity of 50 pixels
 		// per second. The ballDirection is a unit vector
@@ -286,12 +290,12 @@ public class Pong implements RenderListener
 		}
 		
 		// Has the user touched the screen? then position the paddle
-		if( app.getInput().isTouched() )
+		if( Gdx.input.isTouched() )
 		{
 			// get the touch coordinates and translate them
 			// to the game coordinate system.
-			float touchX = 480 * (app.getInput().getX() / (float)app.getGraphics().getWidth() - 0.5f);
-			float touchY = 320 * (0.5f - app.getInput().getY() / (float)app.getGraphics().getHeight());
+			float touchX = 480 * (Gdx.input.getX() / (float)Gdx.graphics.getWidth() - 0.5f);
+			float touchY = 320 * (0.5f - Gdx.input.getY() / (float)Gdx.graphics.getHeight());
 			
 			if( touchX > rightPaddle.x )
 				rightPaddle.y = touchY;						
@@ -311,7 +315,7 @@ public class Pong implements RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{
 		
 	}	

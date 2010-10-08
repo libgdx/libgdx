@@ -16,9 +16,10 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
@@ -44,16 +45,14 @@ public class ObjTest implements RenderListener, InputListener
 	int frames = 0;
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{	
 		if( mesh == null )
 		{
-			app.getInput().addInputListener( this );
+			Gdx.input.addInputListener( this );
 			
-			mesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/cube.obj", FileType.Internal ), true, false );			
-			
-			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().readFile( "data/badlogic.jpg", FileType.Internal));
-			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );					
+			mesh = ModelLoader.loadObj( Gdx.files.readFile( "data/cube.obj", FileType.Internal ), true );			
+			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );					
 			
 			cam = new PerspectiveCamera();
 			cam.getPosition().set( 2, 2, 2 );
@@ -63,24 +62,24 @@ public class ObjTest implements RenderListener, InputListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{	
 		
 	}
 	
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{	
-		GL10 gl = app.getGraphics().getGL10();
+		GL10 gl = Gdx.graphics.getGL10();
 				
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT );
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 		gl.glEnable( GL10.GL_LIGHTING );		
 		gl.glEnable( GL10.GL_COLOR_MATERIAL );
 		gl.glEnable( GL10.GL_TEXTURE_2D );
 		
-		cam.setMatrices( app.getGraphics() );							
+		cam.setMatrices( );							
 		
 		gl.glEnable( GL10.GL_LIGHT0 );				
 		gl.glLightfv( GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0 );
@@ -93,7 +92,7 @@ public class ObjTest implements RenderListener, InputListener
 		
 		if( System.nanoTime() - frameStart > 1000000000 )
 		{
-			app.log( "Obj Test", "fps: " + frames );
+			Gdx.app.log( "Obj Test", "fps: " + frames );
 			frames = 0;
 			frameStart = System.nanoTime();
 		}
@@ -102,7 +101,7 @@ public class ObjTest implements RenderListener, InputListener
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}	

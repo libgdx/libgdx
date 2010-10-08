@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
@@ -70,7 +71,7 @@ public class Box2DTest implements RenderListener, InputListener
 
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{	
 		// setup the camera. In Box2D we operate on a 
 		// meter scale, pixels won't do it. So we use
@@ -79,23 +80,23 @@ public class Box2DTest implements RenderListener, InputListener
 		// We also position the camera so that it 
 		// looks at (0,16) (that's where the middle of the
 		// screen will be located).
-		camera = new OrthographicCamera( app.getGraphics() );
+		camera = new OrthographicCamera();
 		camera.setViewport( 48, 32 );
 		camera.getPosition().set( 0, 16, 0 );
 		
 		// next we setup the immediate mode renderer
-		renderer = new ImmediateModeRenderer(app.getGraphics().getGL10());
+		renderer = new ImmediateModeRenderer();
 		
 		// next we create a SpriteBatch and a font
-		batch = new SpriteBatch(app.getGraphics());
-		font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );
+		batch = new SpriteBatch();
+		font = Gdx.graphics.newFont( "Arial", 12, FontStyle.Plain );
 		
 		// next we create out physics world.
 		createPhysicsWorld( );
 		
 		// finally we register ourselfs as an InputListener so we
 		// can manipulate our world
-		app.getInput().addInputListener( this );
+		Gdx.input.addInputListener( this );
 	}
 	
 	private void createPhysicsWorld( )
@@ -167,19 +168,19 @@ public class Box2DTest implements RenderListener, InputListener
 	}
 	
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{	
 		// first we update the world. For simplicity
 		// we use the delta time provided by the Graphics
 		// instance. Normally you'll want to fix the time
 		// step.
 		long start = System.nanoTime();
-		world.step( app.getGraphics().getDeltaTime(), 3, 3 );
+		world.step( Gdx.graphics.getDeltaTime(), 3, 3 );
 		float updateTime = (System.nanoTime() - start) / 1000000000.0f;
 		
 		// next we clear the color buffer and set the camera
 		// matrices
-		GL10 gl = app.getGraphics().getGL10();
+		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		camera.setMatrices( );
 		
@@ -221,7 +222,7 @@ public class Box2DTest implements RenderListener, InputListener
 		
 		// finally we render the time it took to update the world
 		batch.begin();
-		batch.drawText( font, "fps: " + app.getGraphics().getFramesPerSecond() + " update time: " + updateTime, 0, app.getGraphics().getHeight(), Color.RED );
+		batch.drawText( font, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0, Gdx.graphics.getHeight(), Color.RED );
 		batch.end();
 	}
 	
@@ -346,13 +347,13 @@ public class Box2DTest implements RenderListener, InputListener
 	// MOVE ALONG
 	//---------------------------------------------------------------
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{	
 		
 	}
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		world.dispose();
 	}

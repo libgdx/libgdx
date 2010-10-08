@@ -26,6 +26,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
@@ -68,7 +69,7 @@ final class AndroidFiles implements Files
 		}
 		catch( FileNotFoundException ex )
 		{
-			// fall through
+			throw new GdxRuntimeException( "Couldn't open file '" + fileName + "'", ex );
 		}
 
 		return in;
@@ -84,7 +85,7 @@ final class AndroidFiles implements Files
 		}
 		catch( Exception ex )
 		{
-			// fall through
+			throw new GdxRuntimeException( "Couldn't load file '" + fileName + "'", ex );
 		}
 
 		return in;
@@ -100,7 +101,7 @@ final class AndroidFiles implements Files
 		}
 		catch( FileNotFoundException ex )
 		{
-			// fall through
+			throw new GdxRuntimeException( "Couldn't open file '" + filename + "'", ex );
 		}
 
 		return out;
@@ -117,7 +118,7 @@ final class AndroidFiles implements Files
 		}
 		catch( FileNotFoundException ex )
 		{
-			// fall through
+			throw new GdxRuntimeException( "Couldn't open file '" + filename + "'", ex );
 		}
 
 		return in;
@@ -144,7 +145,7 @@ final class AndroidFiles implements Files
 			}
 	
 			if( !exists )
-				return null;
+				throw new GdxRuntimeException( "Couldn't open file '" + filename + "'" );
 			else
 				return new AndroidFileHandle( assets, filename);			
 		}
@@ -152,14 +153,14 @@ final class AndroidFiles implements Files
 		if( type == FileType.External )
 		{
 			if( new File( sdcard + filename ).exists() == false )
-				return null;
+				throw new GdxRuntimeException( "Couldn't open file '" + filename + "'" );
 			else
 				return new AndroidFileHandle( null, sdcard + filename );
 		}
 		else
 		{
 			if( new File( filename ).exists() == false )
-				return null;
+				throw new GdxRuntimeException( "Couldn't open file '" + filename + "'" );
 			else
 				return new AndroidFileHandle( null, filename );
 		}
@@ -179,14 +180,24 @@ final class AndroidFiles implements Files
 			}
 			catch( Exception ex )
 			{
-				return null;
+				throw new GdxRuntimeException( "Couldn't open directory '" + directory + "'" );
 			}
 		}
 		
-		if( type == FileType.External )		
-			return new File( sdcard + directory ).list();		
+		if( type == FileType.External )	
+		{
+			if( new File( sdcard + directory ).exists() == false )
+				throw new GdxRuntimeException( "Couldn't open directory '" + directory + "'" );
+			else
+				return new File( sdcard + directory ).list();
+		}
 		else
-			return new File( directory ).list();
+		{
+			if( new File( directory ).exists() == false )
+				throw new GdxRuntimeException( "Couldn't open directory '" + directory + "'" );
+			else
+				return new File( directory ).list();
+		}
 	}
 
 	/**
@@ -238,7 +249,7 @@ final class AndroidFiles implements Files
 			}
 			catch( FileNotFoundException ex )
 			{
-				// fall through
+				throw new GdxRuntimeException( "Couldn't open file '" + filename + "'", ex );
 			}
 
 			return out;

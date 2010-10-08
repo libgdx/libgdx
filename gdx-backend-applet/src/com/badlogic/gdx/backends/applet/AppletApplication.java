@@ -19,11 +19,16 @@ package com.badlogic.gdx.backends.applet;
 import java.applet.Applet;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
 
 /**
  * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate
@@ -64,6 +69,12 @@ public class AppletApplication implements Application
 		graphics = new AppletGraphics( this, applet, useGL20IfAvailable, allowFixedPoint );
 		input = new AppletInput( graphics.graphicPanel );
 		audio = new AppletAudio( );
+		
+		Gdx.app = this;
+		Gdx.graphics = this.getGraphics();
+		Gdx.input = this.getInput();
+		Gdx.audio = this.getAudio();
+		Gdx.files = this.getFiles();
 	}
 	
 	/**

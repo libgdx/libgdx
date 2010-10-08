@@ -72,9 +72,9 @@ public class ContinuousTest extends Box2DTest
 		m_body.setAngularVelocity( m_angularVelocity );
 	}
 
-	public void render( Application app )
+	public void render( )
 	{
-		super.render( app );
+		super.render( );
 		
 		
 		m_stepCount++;

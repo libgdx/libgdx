@@ -16,8 +16,9 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
@@ -33,15 +34,15 @@ public class PerformanceTest implements RenderListener
 	int frames = 0;
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{
-		app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		Gdx.graphics.getGL10().glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		Mesh m = null;
 		if( fixed )		
 			m = fpMesh;
@@ -55,7 +56,7 @@ public class PerformanceTest implements RenderListener
 		
 		if( (System.nanoTime() - startTime ) > 1000000000 )
 		{
-			app.log( "Performance", frames + " fps, " + ( m.getNumVertices() / 3 ) * frames * 10 + " tris/s" );
+			Gdx.app.log( "Performance", frames + " fps, " + ( m.getNumVertices() / 3 ) * frames * 10 + " tris/s" );
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -63,16 +64,19 @@ public class PerformanceTest implements RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{	
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{	
-		fpMesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false, false );		
-		flMesh = ModelLoader.loadObj( app.getGraphics(), app.getFiles().readFile( "data/heavysphere.obj", FileType.Internal), false, true );		
+		if( fpMesh == null )
+		{
+			fpMesh = ModelLoader.loadObj( Gdx.files.readFile( "data/heavysphere.obj", FileType.Internal), false );		
+			flMesh = ModelLoader.loadObj( Gdx.files.readFile( "data/heavysphere.obj", FileType.Internal), false );
+		}
 	}
 		
 }

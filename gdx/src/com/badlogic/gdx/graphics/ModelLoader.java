@@ -41,15 +41,13 @@ public class ModelLoader
 	 * InputStream. The OBJ file must only contain
 	 * triangulated meshes. Materials are ignored.
 	 * 
-	 * @param graphics the Graphics instance used to construct the Mesh
 	 * @param in the InputStream
-	 * @param managed whether the resulting Mesh should be managed
 	 * @param useFloats whether to use floats or fixed point
 	 * @return a Mesh holding the OBJ data or null in case something went wrong.
 	 */
-	public static Mesh loadObj( Graphics graphics, InputStream in, boolean managed, boolean useFloats )
+	public static Mesh loadObj( InputStream in, boolean useFloats )
 	{
-		return ObjLoader.loadObj( graphics, in, managed, useFloats);
+		return ObjLoader.loadObj( in, useFloats);
 	}
 	
 	/**
@@ -57,27 +55,23 @@ public class ModelLoader
 	 * demo programs. See the source at http://www.paulnettle.com/pub/FluidStudios/CollisionDetection/Fluid_Studios_Collision_Detection_Demo_and_Source.zip
 	 * for more information.
 	 * 
-	 * @param graphics the Graphics instance used to construct the Mesh
 	 * @param in the InputStream
-	 * @param managed whether the resulting Mesh should be managed
 	 * @param useFloats whether to return a {@link FloatMesh} or a {@link FixedPointMesh}
 	 * @param start the start position as defined in the map
 	 * @return a Mesh holding the OCT data or null in case something went wrong.
 	 */
-	public static Mesh loadOct( Graphics graphics, InputStream in, boolean managed, boolean useFloats, Vector3 start )
+	public static Mesh loadOct( InputStream in, boolean useFloats, Vector3 start )
 	{
-		return OctLoader.loadOct( graphics, in, managed, useFloats, start );
+		return OctLoader.loadOct( in, useFloats, start );
 	}
 	
 	/**
 	 * Loads a GDX3D file previously written with {@link ModelWriter.writeGdx3D}.
 	 * 
-	 * @param graphics the Graphics instance used to construct the Mesh
 	 * @param in the InputStream
-	 * @param managed whether the resulting Mesh should be managed
 	 * @return a Mesh holding the Gdx3D data or null in case something went wrong.
 	 */
-	public static Mesh loadGdx3D( Graphics graphics, InputStream in, boolean managed )
+	public static Mesh loadGdx3D( InputStream in )
 	{
 		try
 		{
@@ -102,7 +96,7 @@ public class ModelLoader
 			int numElements = din.readInt();
 			int numIndices = din.readInt();
 			
-			Mesh mesh = new Mesh( graphics, managed, true, usesFixedPoint, numVertices, numIndices, attributes.toArray( new VertexAttribute[0] ) );
+			Mesh mesh = new Mesh( true, usesFixedPoint, numVertices, numIndices, attributes.toArray( new VertexAttribute[0] ) );
 			
 			if( usesFixedPoint )
 			{

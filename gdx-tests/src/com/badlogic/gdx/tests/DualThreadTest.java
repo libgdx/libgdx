@@ -2,6 +2,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.utils.PauseableThread;
@@ -11,9 +12,9 @@ public class DualThreadTest implements ApplicationListener, RenderListener, Inpu
 	PauseableThread gameLoop;
 	
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{			
-		app.getInput().addInputListener( this );
+		Gdx.input.addInputListener( this );
 		
 		if( gameLoop == null )
 		{
@@ -30,37 +31,37 @@ public class DualThreadTest implements ApplicationListener, RenderListener, Inpu
 	}
 	
 	@Override
-	public void destroy(Application app) 
+	public void destroy() 
 	{			
 		gameLoop.stopThread();
 	}
 
 	@Override
-	public void pause(Application app) 
+	public void pause() 
 	{	
 		gameLoop.onPause();
 	}
 
 	@Override
-	public void resume(Application app) 
+	public void resume() 
 	{	
 		gameLoop.onResume();
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose() 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{	
 		
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged(int width, int height) 
 	{	
 		
 	}

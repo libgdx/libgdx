@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
@@ -31,16 +32,16 @@ public class AudioRecorderTest implements RenderListener, ApplicationListener
 	ImmediateModeRenderer renderer;
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose() 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{	
-		GL10 gl = app.getGraphics().getGL10();
-		gl.glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );					
 		
 		float incX = 2.0f / samples.length;
@@ -52,17 +53,17 @@ public class AudioRecorderTest implements RenderListener, ApplicationListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{	
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated() 
 	{	
-		device = app.getAudio().newAudioDevice(true);
-		recorder = app.getAudio().newAudioRecoder( 44100, true );
-		renderer = new ImmediateModeRenderer( app.getGraphics().getGL10() );
+		device = Gdx.audio.newAudioDevice(true);
+		recorder = Gdx.audio.newAudioRecoder( 44100, true );
+		renderer = new ImmediateModeRenderer(  );
 		
 		Thread t = new Thread( new Runnable() {
 
@@ -78,26 +79,26 @@ public class AudioRecorderTest implements RenderListener, ApplicationListener
 		t.setDaemon( true );
 		t.start();
 		
-		app.setApplicationListener( this );
+		Gdx.app.setApplicationListener( this );
 	}
 
 	@Override
-	public void destroy(Application app) {
+	public void destroy() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void pause(Application app) 
+	public void pause() 
 	{
 		device.dispose();
 		recorder.dispose();
 	}
 
 	@Override
-	public void resume(Application app) 
+	public void resume() 
 	{
-		device = app.getAudio().newAudioDevice(true);
-		recorder = app.getAudio().newAudioRecoder( 44100, true );		
+		device = Gdx.audio.newAudioDevice(true);
+		recorder = Gdx.audio.newAudioRecoder( 44100, true );		
 	}	
 }

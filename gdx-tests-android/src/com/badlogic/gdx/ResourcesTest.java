@@ -32,19 +32,19 @@ public class ResourcesTest extends AndroidApplication implements RenderListener
 	public void onCreate( Bundle bundle )
 	{
 		super.onCreate( bundle );
-		initialize( true );
+		initialize( false );
 		getGraphics().setRenderListener( this );
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{
 		font.dispose();
 		batch.dispose();		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{	
 		if( font != null )
 		{
@@ -52,19 +52,19 @@ public class ResourcesTest extends AndroidApplication implements RenderListener
 			batch.dispose();
 		}
 		
-		font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );
-		batch = new SpriteBatch( app.getGraphics() );
-		renderer = new ImmediateModeRenderer( app.getGraphics().getGL10() );
+		font = Gdx.app.getGraphics().newFont( "Arial", 12, FontStyle.Plain );
+		batch = new SpriteBatch( );
+		renderer = new ImmediateModeRenderer( );
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) {
+	public void surfaceCreated() {
 		// TODO Auto-generated method stub
 		
 	}

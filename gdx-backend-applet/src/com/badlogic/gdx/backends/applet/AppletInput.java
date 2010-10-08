@@ -129,13 +129,13 @@ final class AppletInput implements Input, RenderListener
 	}
 
 	@Override
-	public void dispose(Application app) {
+	public void dispose( ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{			
 		multiplexer.processEvents();
 		
@@ -147,13 +147,13 @@ final class AppletInput implements Input, RenderListener
 	}
 
 	@Override
-	public void surfaceCreated(Application app) {
+	public void surfaceCreated( ) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

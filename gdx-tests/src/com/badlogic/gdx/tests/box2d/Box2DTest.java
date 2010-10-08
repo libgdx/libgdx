@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests.box2d;
 
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
@@ -65,13 +66,13 @@ public abstract class Box2DTest implements RenderListener, InputListener
 	protected Vector2 tmp = new Vector2();
 	
 	@Override
-	public void render(Application app) 
+	public void render() 
 	{
 		// update the world with a fixed time step
-		world.step( app.getGraphics().getDeltaTime(), 8, 3 );
+		world.step( Gdx.app.getGraphics().getDeltaTime(), 8, 3 );
 		
 		// clear the screen and setup the projection matrix
-		GL10 gl = app.getGraphics().getGL10();		
+		GL10 gl = Gdx.app.getGraphics().getGL10();		
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );		
 		camera.setMatrices( );
 		
@@ -80,13 +81,13 @@ public abstract class Box2DTest implements RenderListener, InputListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged(int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		// setup the camera. In Box2D we operate on a 
 		// meter scale, pixels won't do it. So we use
@@ -95,12 +96,12 @@ public abstract class Box2DTest implements RenderListener, InputListener
 		// We also position the camera so that it 
 		// looks at (0,16) (that's where the middle of the
 		// screen will be located).
-		camera = new OrthographicCamera( app.getGraphics() );		
+		camera = new OrthographicCamera( );		
 		camera.setViewport( 48, 32 );
 		camera.getPosition().set( 0, 15, 0 );
 		
 		// create the debug renderer
-		renderer = new Box2DDebugRenderer( app.getGraphics() );
+		renderer = new Box2DDebugRenderer( );
 		
 		// create the world
 		world = new World( new Vector2( 0, -10 ), true );
@@ -112,16 +113,16 @@ public abstract class Box2DTest implements RenderListener, InputListener
 		
 		// finally we register ourself as an InputListener so we
 		// can manipulate our world
-		app.getInput().addInputListener( this );
+		Gdx.input.addInputListener( this );
 		
 		// call abstract method to populate the world
 		createWorld( world );
 	}
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
-		app.getInput().removeInputListener( this );
+		Gdx.input.removeInputListener( this );
 		
 		renderer.dispose();
 		world.dispose();
@@ -181,7 +182,7 @@ public abstract class Box2DTest implements RenderListener, InputListener
 			hitBody = null;
 		
 		// ignore kinematic bodies, they don't work with the mouse joint
-		if( hitBody.getType() == BodyType.KinematicBody )
+		if( hitBody != null && hitBody.getType() == BodyType.KinematicBody )
 			return false;
 		
 		// if we hit something we create a new mouse joint

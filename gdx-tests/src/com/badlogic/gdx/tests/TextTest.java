@@ -15,13 +15,13 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 
 public class TextTest implements RenderListener
 {
@@ -30,21 +30,21 @@ public class TextTest implements RenderListener
 
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		if( font == null )
 		{		
-			spriteBatch = new SpriteBatch(app.getGraphics());
-			font = app.getGraphics().newFont( "Arial", 32, FontStyle.Italic, true );
+			spriteBatch = new SpriteBatch( );
+			font = Gdx.graphics.newFont( "Arial", 32, FontStyle.Italic );
 		}
 	}
 	
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{
-		app.getGraphics().getGL10().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
-		app.getGraphics().getGL10().glClearColor( 0.7f, 0.7f, 0.7f, 1 );
-		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT );						
+		Gdx.graphics.getGL10().glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		Gdx.graphics.getGL10().glClearColor( 0.7f, 0.7f, 0.7f, 1 );
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT );						
 		
 		spriteBatch.begin();
 		spriteBatch.drawText( font, "this is a test", 100, 100, Color.RED );
@@ -52,13 +52,13 @@ public class TextTest implements RenderListener
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}
 	
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{	
 		
 	}

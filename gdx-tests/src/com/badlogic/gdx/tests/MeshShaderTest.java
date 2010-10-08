@@ -16,21 +16,23 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.Font.FontStyle;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix;
 import com.badlogic.gdx.math.Vector3;
@@ -45,7 +47,7 @@ public class MeshShaderTest implements RenderListener
 	Matrix matrix = new Matrix();
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		if( shader == null )
 		{
@@ -70,14 +72,14 @@ public class MeshShaderTest implements RenderListener
 								    "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" +
 								    "}";  
 			
-			shader = new ShaderProgram( app.getGraphics().getGL20(), vertexShader, fragmentShader, true);
+			shader = new ShaderProgram( vertexShader, fragmentShader );
 			if( shader.isCompiled() == false )
 			{
-				app.log( "ShaderTest", shader.getLog() );
+				Gdx.app.log( "ShaderTest", shader.getLog() );
 				System.exit(0);
 			}
 			
-			mesh = new Mesh( app.getGraphics(), true, true, false, 3, 3, 
+			mesh = new Mesh( true, false, 3, 3, 
 							 new VertexAttribute( Usage.Position, 3, "a_position" ),
 							 new VertexAttribute( Usage.Color, 4, "a_color" ),
 							 new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
@@ -87,16 +89,10 @@ public class MeshShaderTest implements RenderListener
 											 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 } );	
 			mesh.setIndices( new short[] { 0, 1, 2 } );					
 			
-			Pixmap pixmap = app.getGraphics().newPixmap(256, 256, Format.RGBA8888 );
-			pixmap.setColor(1, 1, 1, 1 );
-			pixmap.fill();
-			pixmap.setColor(0, 0, 0, 1 );
-			pixmap.drawLine(0, 0, 256, 256);
-			pixmap.drawLine(256, 0, 0, 256);
-			texture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );
+			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
-			spriteBatch = new SpriteBatch( app.getGraphics() );
-			font = app.getGraphics().newFont( "Arial", 12, FontStyle.Plain, true );
+			spriteBatch = new SpriteBatch( );
+			font = Gdx.graphics.newFont( "Arial", 12, FontStyle.Plain );
 		}
 	}
 
@@ -104,15 +100,15 @@ public class MeshShaderTest implements RenderListener
 	float angle = 0;
 	
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{
-		angle += app.getGraphics().getDeltaTime() * 45;
+		angle += Gdx.graphics.getDeltaTime() * 45;
 		matrix.setToRotation( axis, angle );		
 		
-		app.getGraphics().getGL20().glViewport( 0, 0, app.getGraphics().getWidth(), app.getGraphics().getHeight() );
-		app.getGraphics().getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
-		app.getGraphics().getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
-		app.getGraphics().getGL20().glEnable( GL20.GL_TEXTURE_2D );
+		Gdx.graphics.getGL20().glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		Gdx.graphics.getGL20().glClearColor( 0.2f, 0.2f, 0.2f, 1 );
+		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
+		Gdx.graphics.getGL20().glEnable( GL20.GL_TEXTURE_2D );
 		texture.bind();
 		shader.begin();		
 		shader.setUniformMatrix( "u_worldView", matrix );
@@ -126,15 +122,15 @@ public class MeshShaderTest implements RenderListener
 	}
 	
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged( int width, int height) 
 	{	
 		
 	}
 	
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{
-		
+		Gdx.app.log( "MeshShaderTEst", "disposed" );
 	}
 	
 

@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -94,9 +95,6 @@ public  class SpriteBatch
 	/** the mesh used to transfer the data to the GPU **/
 	private final Mesh mesh;
 	
-	/** the graphics instance **/
-	protected final Graphics graphics;
-	
 	/** the transform to be applied to all sprites **/
 	protected final Matrix transform = new Matrix();
 	
@@ -141,16 +139,15 @@ public  class SpriteBatch
 	 * 
 	 * @param graphics the Graphics instance
 	 */
-	public SpriteBatch( Graphics graphics )
-	{
-		this.graphics = graphics;		
-		this.mesh = new Mesh( graphics, true, false, false, MAX_VERTICES, 0, 
+	public SpriteBatch( )
+	{		
+		this.mesh = new Mesh( false, false, MAX_VERTICES, 0, 
 							  new VertexAttribute( Usage.Position, 2, "a_position" ),
 							  new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
 							  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
-		viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
+		viewMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		
-		if( graphics.isGL20Available() )
+		if( Gdx.graphics.isGL20Available() )
 			createShader( );
 	}
 	
@@ -178,7 +175,7 @@ public  class SpriteBatch
 							    "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords); \n" +
 							    "}"; 
 		
-		shader = new ShaderProgram( graphics.getGL20(), vertexShader, fragmentShader, true);
+		shader = new ShaderProgram( vertexShader, fragmentShader );
 		if( shader.isCompiled() == false )
 			throw new IllegalArgumentException( "couldn't compile shader: " + shader.getLog()  );
 	}
@@ -215,7 +212,7 @@ public  class SpriteBatch
 	 */
 	public void begin( Matrix transform )
 	{		
-		viewMatrix.setToOrtho2D( 0, 0, graphics.getWidth(), graphics.getHeight() );
+		viewMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		begin( viewMatrix, transform );
 	}
 	
@@ -234,10 +231,10 @@ public  class SpriteBatch
 	public void begin( Matrix projection, Matrix transform )
 	{
 		renderCalls = 0;
-		if( graphics.isGL20Available() == false )
+		if( Gdx.graphics.isGL20Available() == false )
 		{										
-			GL10 gl = graphics.getGL10();
-			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
+			GL10 gl = Gdx.graphics.getGL10();
+			gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 			gl.glDisable( GL10.GL_LIGHTING );
 			gl.glDisable( GL10.GL_DEPTH_TEST );
 			gl.glDisable( GL10.GL_CULL_FACE );
@@ -265,8 +262,8 @@ public  class SpriteBatch
 		{
 			viewMatrix.set(projection).mul(transform);
 
-			GL20 gl = graphics.getGL20();
-			gl.glViewport( 0, 0, graphics.getWidth(), graphics.getHeight() );
+			GL20 gl = Gdx.graphics.getGL20();
+			gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 			gl.glDisable( GL20.GL_DEPTH_TEST );
 			gl.glDisable( GL20.GL_CULL_FACE );
 			gl.glDepthMask ( false );
@@ -306,9 +303,9 @@ public  class SpriteBatch
 		idx = 0;
 		drawing = false;
 		
-		if( graphics.isGL20Available() == false )
+		if( Gdx.graphics.isGL20Available() == false )
 		{
-			GL10 gl = graphics.getGL10();
+			GL10 gl = Gdx.graphics.getGL10();
 			gl.glDepthMask ( true );			
 			gl.glDisable( GL10.GL_BLEND );			
 			gl.glDisable( GL10.GL_TEXTURE_2D );
@@ -316,7 +313,7 @@ public  class SpriteBatch
 		else
 		{
 			shader.end();
-			GL20 gl = graphics.getGL20();
+			GL20 gl = Gdx.graphics.getGL20();
 			gl.glDepthMask ( true );			
 			gl.glDisable( GL20.GL_BLEND );
 			gl.glDisable( GL20.GL_TEXTURE_2D );						
@@ -726,36 +723,36 @@ public  class SpriteBatch
 		
 		lastTexture.bind();		
 		mesh.setVertices(vertices, 0, idx);	
-		if( graphics.isGL20Available() )
+		if( Gdx.graphics.isGL20Available() )
 		{
 			if( useTextBlend )
 			{
-				graphics.getGL20().glBlendFunc( GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA );
+				Gdx.graphics.getGL20().glBlendFunc( GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA );
 				if( blendingDisabled )
-					graphics.getGL20().glEnable( GL20.GL_BLEND );
+					Gdx.graphics.getGL20().glEnable( GL20.GL_BLEND );
 			}
 			else
-				graphics.getGL20().glBlendFunc( blendSrcFunc, blendDstFunc );
+				Gdx.graphics.getGL20().glBlendFunc( blendSrcFunc, blendDstFunc );
 			mesh.render( shader, GL10.GL_TRIANGLES );
 			if( useTextBlend && blendingDisabled )
 			{				
-				graphics.getGL20().glDisable( GL20.GL_BLEND );
+				Gdx.graphics.getGL20().glDisable( GL20.GL_BLEND );
 			}
 		}
 		else
 		{
 			if( useTextBlend )
 			{
-				graphics.getGL10().glBlendFunc( GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA );
+				Gdx.graphics.getGL10().glBlendFunc( GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA );
 				if( blendingDisabled )
-					graphics.getGL10().glEnable( GL20.GL_BLEND );
+					Gdx.graphics.getGL10().glEnable( GL20.GL_BLEND );
 			}
 			else
-				graphics.getGL10().glBlendFunc( blendSrcFunc, blendDstFunc );
+				Gdx.graphics.getGL10().glBlendFunc( blendSrcFunc, blendDstFunc );
 			mesh.render( GL10.GL_TRIANGLES );
 			if( useTextBlend && blendingDisabled )
 			{				
-				graphics.getGL10().glDisable( GL20.GL_BLEND );
+				Gdx.graphics.getGL10().glDisable( GL20.GL_BLEND );
 			}
 		}
 		idx = 0;

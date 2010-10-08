@@ -40,9 +40,9 @@ final class AppletFont extends Font
 	private java.awt.Font font; 
 	private FontMetrics metrics;
 	
-	AppletFont( com.badlogic.gdx.Graphics graphics, String fontName, int size, FontStyle style, boolean managed )
+	AppletFont( com.badlogic.gdx.Graphics graphics, String fontName, int size, FontStyle style )
 	{	
-		super( graphics, managed );
+		super( );
 		font = new java.awt.Font( fontName, getJavaFontStyle(style), size );
 		Graphics g = tmpBitmap.getGraphics();
 		g.setFont( font );
@@ -50,9 +50,9 @@ final class AppletFont extends Font
 		g.dispose();
 	}
 	
-	AppletFont( com.badlogic.gdx.Graphics graphics, InputStream in, int size, FontStyle style, boolean managed )
+	AppletFont( com.badlogic.gdx.Graphics graphics, InputStream in, int size, FontStyle style )
 	{
-		super( graphics, managed );
+		super( );
 		
 		try
 		{

@@ -24,6 +24,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
@@ -134,9 +135,10 @@ final class JoglAudio implements Audio, Runnable
 		try {			
 			JoglMusic music = new JoglMusic( ((JoglFileHandle)file) );			
 			return music;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+		} 
+		catch (Exception e) 
+		{
+			throw new GdxRuntimeException( "Couldn't create Music instance from file '" + file + "'", e );
 		}
 	}
 
@@ -149,8 +151,7 @@ final class JoglAudio implements Audio, Runnable
 			JoglSound sound = new JoglSound( this, ((JoglFileHandle)file) );			
 			return sound;
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			throw new GdxRuntimeException( "Couldn't create Sound instance from file '" + file + "'", e );
 		}
 	}
 

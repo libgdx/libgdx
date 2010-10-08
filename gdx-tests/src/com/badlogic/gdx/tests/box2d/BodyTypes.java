@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests.box2d;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -139,7 +140,7 @@ public class BodyTypes extends Box2DTest
 	}
 	
 	@Override
-	public void render( Application app )
+	public void render( )
 	{
 		if( m_platform.getType() == BodyType.KinematicBody )
 		{
@@ -154,12 +155,12 @@ public class BodyTypes extends Box2DTest
 			}
 		}
 		
-		super.render( app );
+		super.render(  );
 		
 		if( renderer.batch != null )
 		{
 			renderer.batch.begin();
-			renderer.batch.drawText( renderer.font, "Keys: (d) dynamic, (s) static, (k) kinematic", 0, app.getGraphics().getHeight(), Color.WHITE );
+			renderer.batch.drawText( renderer.font, "Keys: (d) dynamic, (s) static, (k) kinematic", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE );
 			renderer.batch.end();
 		}
 	}

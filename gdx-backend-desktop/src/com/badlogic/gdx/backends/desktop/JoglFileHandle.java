@@ -42,4 +42,9 @@ public class JoglFileHandle implements FileHandle
 	{
 		return file;
 	}
+	
+	public String toString( )
+	{
+		return file.toString();
+	}
 }

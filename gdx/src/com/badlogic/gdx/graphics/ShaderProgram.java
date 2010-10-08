@@ -22,6 +22,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix;
 
 /**
@@ -52,7 +53,7 @@ import com.badlogic.gdx.math.Matrix;
  * </p>
  * 
  * <p>
- * ShaderPrograms can be managed. In case the OpenGL context is lost all shaders get
+ * ShaderPrograms are managed. In case the OpenGL context is lost all shaders get
  * invalidated and have to be reloaded. This happens on Android when a user switches
  * to another application or receives an incoming call. Managed ShaderPrograms are
  * automatically reloaded when the OpenGL context is recreated so you don't have to 
@@ -66,9 +67,6 @@ public class ShaderProgram
 {
 	/** the list of currently available shaders **/
 	private final static ArrayList<ShaderProgram> shaders = new ArrayList<ShaderProgram>( );
-	
-	/** the gl instance **/
-	private final GL20 gl;
 
 	/** the log **/
 	private String log = "";
@@ -114,17 +112,14 @@ public class ShaderProgram
 	 * @param fragmentShader the fragment shader
 	 */
 	
-	public ShaderProgram( GL20 gl, String vertexShader, String fragmentShader, boolean managed )
+	public ShaderProgram( String vertexShader, String fragmentShader )
 	{
-		if( gl == null )
-			throw new IllegalArgumentException( "gl must not be null" );
 		if( vertexShader == null )
 			throw new IllegalArgumentException( "vertex shader must not be null" );
 		if( fragmentShader == null )
 			throw new IllegalArgumentException( "fragment shader must not be null" );
-		this.gl = gl;
 		
-		this.managed = managed;
+		this.managed = true;
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
 		
@@ -165,6 +160,7 @@ public class ShaderProgram
 	
 	private int loadShader( int type, String source )
 	{
+		GL20 gl = Gdx.graphics.getGL20();
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
 		tmp.order(ByteOrder.nativeOrder());
 		IntBuffer intbuf = tmp.asIntBuffer();
@@ -195,6 +191,7 @@ public class ShaderProgram
 	
 	private int linkProgram( )
 	{
+		GL20 gl = Gdx.graphics.getGL20();
 		int program = gl.glCreateProgram();
 		if( program == 0 )		
 			return -1;		
@@ -240,6 +237,7 @@ public class ShaderProgram
 
 	private int fetchAttributeLocation( String name )
 	{
+		GL20 gl = Gdx.graphics.getGL20();
 		Integer location;
 		if( (location = attributes.get( name )) == null )
 		{
@@ -252,6 +250,7 @@ public class ShaderProgram
 	
 	private int fetchUniformLocation( String name )
 	{
+		GL20 gl = Gdx.graphics.getGL20();
 		Integer location;
 		if( (location = uniforms.get( name )) == null )
 		{
@@ -272,6 +271,7 @@ public class ShaderProgram
 	 */	
 	public void setUniformi(String name, int value) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);		
 		gl.glUniform1i( location, value );
@@ -287,6 +287,7 @@ public class ShaderProgram
 	 */
 	public void setUniformi(String name, int value1, int value2) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform2i( location, value1, value2 );
@@ -303,6 +304,7 @@ public class ShaderProgram
 	 */
 	public void setUniformi(String name, int value1, int value2, int value3) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform3i( location, value1, value2, value3 );
@@ -320,6 +322,7 @@ public class ShaderProgram
 	 */
 	public void setUniformi(String name, int value1, int value2, int value3, int value4) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform4i( location, value1, value2, value3, value4 );
@@ -334,6 +337,7 @@ public class ShaderProgram
 	 */	
 	public void setUniformf(String name, float value) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform1f( location, value );
@@ -349,6 +353,7 @@ public class ShaderProgram
 	 */
 	public void setUniformf(String name, float value1, float value2) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform2f( location, value1, value2 );
@@ -365,6 +370,7 @@ public class ShaderProgram
 	 */
 	public void setUniformf(String name, float value1, float value2, float value3) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform3f( location, value1, value2, value3 );
@@ -382,6 +388,7 @@ public class ShaderProgram
 	 */
 	public void setUniformf(String name, float value1, float value2, float value3, float value4) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		gl.glUniform4f( location, value1, value2, value3, value4 );
@@ -395,6 +402,7 @@ public class ShaderProgram
 	 */
 	public void setUniformMatrix(String name, Matrix matrix) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchUniformLocation(name);
 		this.matrix.put( matrix.val );
@@ -415,6 +423,7 @@ public class ShaderProgram
 	 */
 	public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, FloatBuffer buffer) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchAttributeLocation(name);
 		gl.glVertexAttribPointer( location, size, type, normalize, stride, buffer );
@@ -433,6 +442,7 @@ public class ShaderProgram
 	 */
 	public void setVertexAttribute(String name, int size, int type, boolean normalize, int stride, int offset) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchAttributeLocation(name);
 		if( location == -1 )
@@ -447,6 +457,7 @@ public class ShaderProgram
 	 */
 	public void begin() 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		gl.glUseProgram( program );
 	}
@@ -458,6 +469,7 @@ public class ShaderProgram
 	 */
 	public void end() 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		gl.glUseProgram( 0 );
 	}
 	
@@ -467,6 +479,7 @@ public class ShaderProgram
 	 */
 	public void dispose() 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram( program );
@@ -479,6 +492,7 @@ public class ShaderProgram
 	 */
 	public void disableVertexAttribute(String name) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchAttributeLocation( name );
 		if( location == -1 )
@@ -492,6 +506,7 @@ public class ShaderProgram
 	 */
 	public void enableVertexAttribute(String name) 
 	{	
+		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );
 		int location = fetchAttributeLocation( name );
 		if( location == -1 )
@@ -515,11 +530,19 @@ public class ShaderProgram
 	 */
 	public static void invalidateAllShaderPrograms( )
 	{
+		if( Gdx.graphics.getGL20() == null )
+			return;
+		
 		for( int i = 0; i < shaders.size(); i++ )
 		{
 			shaders.get(i).invalidated = true;
 			shaders.get(i).checkManaged();
 		}
+	}
+	
+	public static void clearAllShaderPrograms( )
+	{
+		shaders.clear();
 	}
 
 	/**
@@ -533,6 +556,7 @@ public class ShaderProgram
 	 */
 	public void setAttributef(String name, float value1, float value2, float value3, float value4 ) 
 	{	 
+		GL20 gl = Gdx.graphics.getGL20();
 		int location = fetchAttributeLocation( name );
 		gl.glVertexAttrib4f( location, value1, value2, value3, value4 );
 	}

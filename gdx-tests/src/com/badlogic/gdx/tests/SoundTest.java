@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
@@ -29,13 +29,13 @@ public class SoundTest implements RenderListener, InputListener
 	float volume = 1.0f;
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{		
 		try {
 			Thread.sleep( 100 );
@@ -46,20 +46,20 @@ public class SoundTest implements RenderListener, InputListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) 
+	public void surfaceChanged(int width, int height) 
 	{	
 		
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		if( music == null )
 		{
-			app.getInput().addInputListener( this );	
-			sound = app.getAudio().newSound( app.getFiles().getFileHandle( "data/shotgun.wav", FileType.Internal ) );
+			Gdx.input.addInputListener( this );	
+			sound = Gdx.audio.newSound( Gdx.files.getFileHandle( "data/shotgun.wav", FileType.Internal ) );
 			
-			music = app.getAudio().newMusic( app.getFiles().getFileHandle( "data/cloudconnected.ogg", FileType.Internal ) );				
+			music = Gdx.audio.newMusic( Gdx.files.getFileHandle( "data/cloudconnected.ogg", FileType.Internal ) );				
 			music.play();		
 			music.setLooping( true );
 		}

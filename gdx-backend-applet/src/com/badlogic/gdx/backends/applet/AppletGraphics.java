@@ -130,19 +130,19 @@ public final class AppletGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Font newFont(String fontName, int size, FontStyle style, boolean managed ) 
+	public Font newFont(String fontName, int size, FontStyle style ) 
 	{	
-		return new AppletFont( this, fontName, size, style, managed );
+		return new AppletFont( this, fontName, size, style );
 	}
 
 	@Override
-	public Font newFont(FileHandle file, int size, FontStyle style, boolean managed) 
+	public Font newFont(FileHandle file, int size, FontStyle style ) 
 	{					
 		AppletFileHandle jHandle = (AppletFileHandle)file;
 		InputStream in;
 		try {
 			in = jHandle.getInputStream();
-			AppletFont font = new AppletFont(this, in, size, style, managed);			
+			AppletFont font = new AppletFont(this, in, size, style );			
 			in.close();
 			
 			return font;
@@ -195,18 +195,18 @@ public final class AppletGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public Texture newTexture(int width, int height, Pixmap.Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
+	public Texture newUnmanagedTexture(int width, int height, Pixmap.Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap ) 
 	{	
 		if( format == Format.Alpha )
-			return new AppletTexture( width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, managed );
+			return new AppletTexture( width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, false );
 		else
-			return new AppletTexture( width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, managed );
+			return new AppletTexture( width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, false );
 	}
 
 	@Override
-	public Texture newTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed) 
+	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap ) 
 	{
-		return new AppletTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, managed );
+		return new AppletTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false );
 	}
 
 	/**
@@ -222,13 +222,13 @@ public final class AppletGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void dispose(Application app) 
+	public void dispose( ) 
 	{	
 		
 	}
 
 	@Override
-	public void render(Application app) 
+	public void render( ) 
 	{			
 		// calculate delta time
 		deltaTime = ( System.nanoTime() - lastFrameTime ) / 1000000000.0f;
@@ -237,7 +237,7 @@ public final class AppletGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void surfaceCreated(Application app) 
+	public void surfaceCreated( ) 
 	{
 		String version = graphicPanel.getGL().glGetString( GL.GL_VERSION );
 		int major = Integer.parseInt("" + version.charAt(0));
@@ -272,7 +272,7 @@ public final class AppletGraphics implements Graphics, RenderListener
 	}
 
 	@Override
-	public void surfaceChanged(Application app, int width, int height) {
+	public void surfaceChanged( int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -289,5 +289,13 @@ public final class AppletGraphics implements Graphics, RenderListener
 	@Override
 	public int getFramesPerSecond() {
 		return 0; // FIXME
+	}
+
+	@Override
+	public Texture newTexture(FileHandle file, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) 
+	{
+		Pixmap pixmap = newPixmap( file );
+		return new AppletTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, true );
 	}
 }

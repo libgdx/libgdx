@@ -16,6 +16,7 @@
 package com.badlogic.gdx.tests.box2d;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -122,14 +123,14 @@ public class VerticalStack extends Box2DTest
 		return false;
 	}
 	
-	public void render( Application app )
+	public void render(  )
 	{
-		super.render( app );
+		super.render( );
 		
 		if( renderer.batch != null )
 		{
 			renderer.batch.begin();
-			renderer.batch.drawText( renderer.font, "Press: (,) to launch a bullet", 0, app.getGraphics().getHeight(), Color.WHITE);
+			renderer.batch.drawText( renderer.font, "Press: (,) to launch a bullet", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE);
 			renderer.batch.end();
 		}
 	}

@@ -8,7 +8,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.BufferUtils;
  * over vertex arrays if hardware supports it.
  * </p>
  * 
- * <p>Meshes can be managed. If the OpenGL context is lost all vertex buffer
+ * <p>Meshes are automatically managed. If the OpenGL context is lost all vertex buffer
  * objects get invalidated and must be reloaded when the context is recreated. This
  * only happens on Android when a user switches to another application or receives
  * an incoming call. A managed Mesh will be reloaded automagically so you don't have
@@ -82,9 +82,6 @@ public class Mesh
 	/** dirty flag **/
 	private boolean dirty = false;
 	
-	/** the graphics object **/
-	private final Graphics graphics;
-	
 	/** managed? **/
 	private final boolean managed;
 	
@@ -103,18 +100,15 @@ public class Mesh
 	/**
 	 * Creates a new Mesh with the given attributes.
 	 * 
-	 * @param graphics the graphics instance
-	 * @param managed whether this mesh should be managed or not.
 	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
 	 * @param useFixedPoint whether to use fixed point or floats
 	 * @param maxVertices the maximum number of vertices this mesh can hold
 	 * @param maxIndices the maximum number of indices this mesh can hold
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position, normal or texture coordinate
 	 */
-	public Mesh( Graphics graphics, boolean managed, boolean isStatic, boolean useFixedPoint, int maxVertices, int maxIndices, VertexAttribute ... attributes )
+	public Mesh( boolean isStatic, boolean useFixedPoint, int maxVertices, int maxIndices, VertexAttribute ... attributes )
 	{
-		this.graphics = graphics;
-		this.managed = managed;
+		this.managed = true;
 		this.isStatic = isStatic;
 		this.useFixedPoint = useFixedPoint;
 		this.maxVertices = maxVertices;
@@ -138,16 +132,16 @@ public class Mesh
 	private void createBuffers( )
 	{
 		// FIXME this is a hack as there's no way to support fixed point VBOs
-		if( useFixedPoint && graphics.getType() == GraphicsType.JoglGL)
+		if( useFixedPoint && Gdx.graphics.getType() == GraphicsType.JoglGL)
 			return;
 		
-		if( graphics.isGL11Available() == false && graphics.isGL20Available() == false )
+		if( Gdx.graphics.isGL11Available() == false && Gdx.graphics.isGL20Available() == false )
 			return;
 		
-		if( graphics.isGL20Available() )
-			constructBufferObjects( graphics.getGL20() );
+		if( Gdx.graphics.isGL20Available() )
+			constructBufferObjects( Gdx.graphics.getGL20() );
 		else
-			constructBufferObjects( graphics.getGL11() );
+			constructBufferObjects( Gdx.graphics.getGL11() );
 	}
 	
 	private void constructBufferObjects( GL11 gl )
@@ -225,13 +219,13 @@ public class Mesh
 	private void fillBuffers( )
 	{
 		dirty = false;
-		if( graphics.isGL11Available() == false && graphics.isGL20Available() == false )
+		if( Gdx.graphics.isGL11Available() == false && Gdx.graphics.isGL20Available() == false )
 			return;
 		
-		if( graphics.isGL20Available() )
-			fillBuffers( graphics.getGL20() );
+		if( Gdx.graphics.isGL20Available() )
+			fillBuffers( Gdx.graphics.getGL20() );
 		else
-			fillBuffers( graphics.getGL11() );			
+			fillBuffers( Gdx.graphics.getGL11() );			
 	}
 	
 	private void fillBuffers( GL11 gl )
@@ -239,7 +233,7 @@ public class Mesh
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
 		// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
 		// Does not have a lot of impact on the Droid with 2.1 (2-3 frames for MD5Test) but still shitty.
-		if( graphics.getType() == GraphicsType.AndroidGL )
+		if( Gdx.graphics.getType() == GraphicsType.AndroidGL )
 			gl.glBufferData( GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW);
 		else
 			gl.glBufferSubData( GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
@@ -249,7 +243,7 @@ public class Mesh
 		{
 			gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
 			// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
-			if( graphics.getType() == GraphicsType.AndroidGL )
+			if( Gdx.graphics.getType() == GraphicsType.AndroidGL )
 				gl.glBufferData( GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL11.GL_STATIC_DRAW:GL11.GL_DYNAMIC_DRAW );
 			else
 				gl.glBufferSubData( GL11.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );
@@ -427,7 +421,7 @@ public class Mesh
 	 */
 	public void render( int primitiveType, int offset, int count )
 	{
-		if( graphics.isGL20Available() )
+		if( Gdx.graphics.isGL20Available() )
 			throw new IllegalStateException( "can't use this render method with OpenGL ES 2.0" );
 		
 		checkManagedAndDirty();
@@ -440,7 +434,7 @@ public class Mesh
 	
 	private void renderVBO( int primitiveType, int offset, int count )
 	{
-		GL11 gl = graphics.getGL11();
+		GL11 gl = Gdx.graphics.getGL11();
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
 		
 		int numAttributes = attributes.size();
@@ -518,7 +512,7 @@ public class Mesh
 	
 	private void renderVA( int primitiveType, int offset, int count )
 	{
-		GL10 gl = graphics.getGL10();
+		GL10 gl = Gdx.graphics.getGL10();
 		
 		int numAttributes = attributes.size();
 		int type = useFixedPoint?GL11.GL_FIXED:GL11.GL_FLOAT;
@@ -650,12 +644,12 @@ public class Mesh
 	 */
 	public void render( ShaderProgram shader, int primitiveType, int offset, int count )
 	{
-		if( !graphics.isGL20Available() )
+		if( !Gdx.graphics.isGL20Available() )
 			throw new IllegalStateException( "can't use this render method with OpenGL ES 1.x" );
 		
 		checkManagedAndDirty();
 		
-		GL20 gl = graphics.getGL20();
+		GL20 gl = Gdx.graphics.getGL20();
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
 		
 		int numAttributes = attributes.size();
@@ -711,12 +705,12 @@ public class Mesh
 		
 		if( managed && invalidated || !bufferCreatedFirstTime)
 		{
-			if( graphics.isGL11Available() )
+			if( Gdx.graphics.isGL11Available() )
 			{
 				createBuffers();
 				fillBuffers( );
 			}
-			if( graphics.isGL20Available() )
+			if( Gdx.graphics.isGL20Available() )
 			{
 				createBuffers();
 				fillBuffers( );
@@ -736,13 +730,13 @@ public class Mesh
 	{
 		meshes.remove(this);
 		
-		if( graphics.isGL11Available() == false && graphics.isGL20Available() == false )
+		if( Gdx.graphics.isGL11Available() == false && Gdx.graphics.isGL20Available() == false )
 			return;
 		
-		if( graphics.isGL20Available() )
-			dispose( graphics.getGL20() );
+		if( Gdx.graphics.isGL20Available() )
+			dispose( Gdx.graphics.getGL20() );
 		else
-			dispose( graphics.getGL11() );			
+			dispose( Gdx.graphics.getGL11() );			
 	}
 	
 	private void dispose( GL11 gl )
@@ -882,10 +876,21 @@ public class Mesh
 	 */
 	public static void invalidateAllMeshes( )
 	{
+		// FIXME, this is evil in the test environment. WE
+		
 		for( int i = 0; i < meshes.size(); i++ )
 		{
 			meshes.get(i).invalidated = true;
 			meshes.get(i).checkManagedAndDirty();			
 		}
+	}
+	
+	/**
+	 * Will clear the managed mesh cache. I wouldn't use this
+	 * if i was you :)
+	 */
+	public static void clearAllMeshes( )
+	{
+		meshes.clear();
 	}
 }

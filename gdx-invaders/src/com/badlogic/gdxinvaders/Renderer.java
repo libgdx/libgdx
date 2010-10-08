@@ -93,37 +93,30 @@ public class Renderer
 	{			
 		try
 		{	
-			spriteBatch = new SpriteBatch(app.getGraphics());
+			spriteBatch = new SpriteBatch();
 			
 			InputStream in = app.getFiles().readFile( "data/ship.obj", FileType.Internal );		
-			shipMesh = ModelLoader.loadObj( app.getGraphics(), in, true, true );
+			shipMesh = ModelLoader.loadObj( in, true );
 			in.close();
 			
 			in = app.getFiles().readFile( "data/invader.obj", FileType.Internal );		
-			invaderMesh = ModelLoader.loadObj( app.getGraphics(), in, true, true );
+			invaderMesh = ModelLoader.loadObj( in, true );
 			in.close();
 			
 			in = app.getFiles().readFile( "data/block.obj", FileType.Internal );		
-			blockMesh = ModelLoader.loadObj( app.getGraphics(), in, true, true );
+			blockMesh = ModelLoader.loadObj( in, true );
 			in.close();
 			
 			in = app.getFiles().readFile( "data/shot.obj", FileType.Internal );		
-			shotMesh = ModelLoader.loadObj( app.getGraphics(), in, true, true );
+			shotMesh = ModelLoader.loadObj( in, true );
 			in.close();
 			
-			Pixmap pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/ship.png", FileType.Internal ) );
-			shipTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
+			shipTexture = app.getGraphics().newTexture( app.getFiles().getFileHandle( "data/ship.png", FileType.Internal ), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );			
+			invaderTexture = app.getGraphics().newTexture( app.getFiles().getFileHandle( "data/invader.png", FileType.Internal ), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );			
+			backgroundTexture = app.getGraphics().newTexture(  app.getFiles().getFileHandle( "data/planet.jpg", FileType.Internal ) , TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );			
+			explosionTexture = app.getGraphics().newTexture( app.getFiles().getFileHandle( "data/explode.png", FileType.Internal ), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);			
 			
-			pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/invader.png", FileType.Internal ) );
-			invaderTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
-			
-			pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/planet.jpg", FileType.Internal ) );
-			backgroundTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
-			
-			pixmap = app.getGraphics().newPixmap( app.getFiles().getFileHandle( "data/explode.png", FileType.Internal ) );
-			explosionTexture = app.getGraphics().newTexture( pixmap, TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge, true );			
-			
-			explosionMesh = new Mesh( app.getGraphics(), true, true, false, 4 * 16, 0, 
+			explosionMesh = new Mesh( true, false, 4 * 16, 0, 
 									  new VertexAttribute( Usage.Position, 3, "a_position"),
 									  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoord") );
 			
@@ -161,7 +154,7 @@ public class Renderer
 			
 			explosionMesh.setVertices(vertices);
 			
-			font = app.getGraphics().newFont( app.getFiles().getFileHandle( "data/font.ttf", FileType.Internal), 10, FontStyle.Plain, true );
+			font = app.getGraphics().newFont( app.getFiles().getFileHandle( "data/font.ttf", FileType.Internal), 10, FontStyle.Plain );
 			
 			camera = new PerspectiveCamera();
 			camera.setFov(67);
@@ -330,7 +323,7 @@ public class Renderer
 	
 	public void dispose( )
 	{
-		//spriteBatch.dispose();
+		spriteBatch.dispose();
 		shipTexture.dispose();
 		invaderTexture.dispose();
 		backgroundTexture.dispose();

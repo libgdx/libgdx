@@ -15,34 +15,22 @@
  ******************************************************************************/
 package com.badlogic.gdx.physics.box2d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.Joint;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Transform;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
-import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 
 public class Box2DDebugRenderer 
 {	
-	/** Graphics instance **/
-	protected Graphics g;
 	
 	/** the immediate mode renderer to output our debug drawings **/
 	protected ImmediateModeRenderer renderer;
@@ -54,17 +42,14 @@ public class Box2DDebugRenderer
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[100];
 	
-	public Box2DDebugRenderer( Graphics graphics )
+	public Box2DDebugRenderer( )
 	{	
-		// we remember the graphics instance
-		g = graphics;
-		
 		// next we setup the immediate mode renderer
-		renderer = new ImmediateModeRenderer(g.getGL10());
+		renderer = new ImmediateModeRenderer();
 		
 		// next we create a SpriteBatch and a font
-		batch = new SpriteBatch(g);
-		font = g.newFont( "Arial", 12, FontStyle.Plain, true );
+		batch = new SpriteBatch();
+		font = Gdx.graphics.newFont( "Arial", 12, FontStyle.Plain );
 		
 		// initialize vertices array
 		for( int i = 0; i < vertices.length; i++ )

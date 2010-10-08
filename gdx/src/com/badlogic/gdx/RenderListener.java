@@ -43,36 +43,30 @@ public interface RenderListener
 	 * the {@link Application} and every time the OpenGL surface
 	 * is recreated. On Android this happens when the application
 	 * is unpaused after it was paused by a press of the home button
-	 * or an incoming call. All textures, shaders and other OpenGL
-	 * resources will be lost and have to be recreated.
+	 * or an incoming call. All unmanaged textures have to be recreated
+	 * manually, all other resources will be reloaded automatically.
 	 * 
-	 * @param app The application
 	 */
-	public void surfaceCreated( Application app );	
+	public void surfaceCreated( );	
 	
 	/**
 	 * Called when the OpenGL surface changed it's dimensions.
 	 * 
-	 * @param app the Application
 	 * @param width the width of the surface in pixels
 	 * @param height the height of the surface in pixels
 	 */
-	public void surfaceChanged( Application app, int width, int height );
+	public void surfaceChanged( int width, int height );
 	
 	/**
 	 * The render method is called every time a new frame 
 	 * should be rendered.  
-	 *
-	 * @param app The application
 	 */
-	public void render( Application app );
+	public void render( );
 	
 	/**
 	 * The dispose method is called when the application is closing
 	 * or the {@link RenderListener} has been unregistered from the
 	 * Graphics instance.
-	 * 
-	 * @param app The application
 	 */	
-	public void dispose( Application app );
+	public void dispose( );
 }

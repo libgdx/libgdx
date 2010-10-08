@@ -63,4 +63,9 @@ public class AndroidFileHandle implements FileHandle
 	{
 		return filename;
 	}
+	
+	public String toString( )
+	{
+		return filename;
+	}
 }

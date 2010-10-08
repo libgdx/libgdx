@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.utils.BufferUtils;
 
 /**
  * A color class, holding the r, g, b and alpha component
