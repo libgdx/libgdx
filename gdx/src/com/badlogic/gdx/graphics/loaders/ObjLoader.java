@@ -96,7 +96,7 @@ public class ObjLoader
 			String line = lines[i];			
 			if( line.startsWith( "v " ) )
 			{
-				String[] tokens = line.split( " " );
+				String[] tokens = line.split( "[ ]+" );
 				vertices[vertexIndex] = Float.parseFloat(tokens[1]);
 				vertices[vertexIndex+1] = Float.parseFloat(tokens[2]);
 				vertices[vertexIndex+2] = Float.parseFloat(tokens[3]);
@@ -107,7 +107,7 @@ public class ObjLoader
 				
 			if( line.startsWith( "vn " ) )
 			{
-				String[] tokens = line.split( " " );
+				String[] tokens = line.split( "[ ]+" );
 				normals[normalIndex] = Float.parseFloat(tokens[1]);
 				normals[normalIndex+1] = Float.parseFloat(tokens[2]);
 				normals[normalIndex+2] = Float.parseFloat(tokens[3]);
@@ -118,7 +118,7 @@ public class ObjLoader
 			
 			if( line.startsWith( "vt" ) )
 			{
-				String[] tokens = line.split( " " );
+				String[] tokens = line.split( "[ ]+" );
 				uv[uvIndex] = Float.parseFloat(tokens[1]);
 				uv[uvIndex+1] = Float.parseFloat(tokens[2]);				
 				uvIndex += 2;
@@ -128,7 +128,7 @@ public class ObjLoader
 			
 			if( line.startsWith( "f " ) )
 			{
-				String[] tokens = line.split( " " );
+				String[] tokens = line.split( "[ ]+" );
 				
 				String[] parts = tokens[1].split("/");
 				facesVerts[faceIndex] = getIndex(parts[0], numVertices);
