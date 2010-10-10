@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.physics.box2d;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
@@ -73,13 +75,15 @@ public class Box2DDebugRenderer
 	private final Color JOINT_COLOR = new Color( 0.5f, 0.8f, 0.8f, 1 );
 	
 	private void renderBodies( World world )
-	{
+	{	
 		for( Body body: world.getBodies() )
 		{
 			Transform transform = body.getTransform( );
-			
-			for( Fixture fixture: body.getFixtureList() )
+			int len = body.getFixtureList().size();
+			List<Fixture> fixtures = body.getFixtureList();
+			for( int i = 0; i < len; i++ )
 			{				
+				Fixture fixture = fixtures.get( i );
 				if( body.isActive() == false )
 					drawShape( fixture, transform, SHAPE_NOT_ACTIVE );
 				else
@@ -99,8 +103,9 @@ public class Box2DDebugRenderer
 		for( Joint joint: world.getJoints() )		
 			drawJoint( joint );		
 		
-		for( Contact contact: world.getContactList() )		
-			drawContact( contact );		
+		int len = world.getContactList().size();
+		for( int i = 0; i < len; i++ )		
+			drawContact( world.getContactList().get(i) );		
 	}
 	
 	private static Vector2 t = new Vector2();
