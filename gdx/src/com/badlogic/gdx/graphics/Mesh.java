@@ -254,13 +254,19 @@ public class Mesh
 	private void fillBuffers( GL20 gl )
 	{				
 		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle );
-		gl.glBufferSubData( GL20.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );
+		if( Gdx.graphics.getType() == GraphicsType.AndroidGL )
+			gl.glBufferData( GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW);
+		else
+			gl.glBufferSubData( GL20.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices );		
 		gl.glBindBuffer( GL20.GL_ARRAY_BUFFER, 0 );
 		
 		if( maxIndices > 0 )
 		{
 			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle );
-			gl.glBufferSubData( GL20.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );
+			if( Gdx.graphics.getType() == GraphicsType.AndroidGL )
+				gl.glBufferData( GL20.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic?GL20.GL_STATIC_DRAW:GL20.GL_DYNAMIC_DRAW );
+			else
+				gl.glBufferSubData( GL20.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices );			
 			gl.glBindBuffer( GL20.GL_ELEMENT_ARRAY_BUFFER, 0 );
 		}
 	}

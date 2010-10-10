@@ -75,7 +75,8 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		float drawText = 0;
 		
 		long start = System.nanoTime();
-		spriteBatch.begin();			
+		spriteBatch.begin();
+		//spriteBatch.disableBlending();
 		begin = (System.nanoTime()-start)/1000000000.0f;
 				
 		start = System.nanoTime();
