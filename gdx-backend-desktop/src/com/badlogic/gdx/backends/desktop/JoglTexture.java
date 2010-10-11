@@ -35,11 +35,7 @@ import com.sun.opengl.util.texture.TextureIO;
  *
  */
 final class JoglTexture implements Texture
-{				   
-	/** height of original image in pixels **/
-	private int height;    
-	/** width of original image in pixels **/
-	private int width;        
+{				         
 	/** height in pixels of texture **/
 	private int texHeight;
 	/** width in pixels of texture **/
@@ -63,8 +59,6 @@ final class JoglTexture implements Texture
 		try
 		{
 			BufferedImage image = ImageIO.read(in);			
-			this.width = image.getWidth();
-			this.height = image.getHeight();
 			texture = com.sun.opengl.util.texture.TextureIO.newTexture( image, minFilter == TextureFilter.MipMap?true:false );
 		}
 		catch( Exception ex )
@@ -86,8 +80,6 @@ final class JoglTexture implements Texture
 	JoglTexture(BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed ) 
 	{        
 		this.isManaged = managed;				
-		this.width = image.getWidth();
-		this.height = image.getHeight();
 		texture = com.sun.opengl.util.texture.TextureIO.newTexture( image, minFilter == TextureFilter.MipMap?true:false );		
 		GL gl = GLContext.getCurrent().getGL();
         
@@ -110,8 +102,6 @@ final class JoglTexture implements Texture
 	{        		
 		this.isManaged = managed;
 		BufferedImage image = new BufferedImage( width, height, format );			
-		this.width = image.getWidth();
-		this.height = image.getHeight();
 		texture = com.sun.opengl.util.texture.TextureIO.newTexture( image, minFilter == TextureFilter.MipMap?true:false );
 		
 		GL gl = GLContext.getCurrent().getGL();
@@ -174,22 +164,6 @@ final class JoglTexture implements Texture
 	@Override
 	public int getHeight() {
 		return texHeight;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getImageHeight() {
-		return height;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getImageWidth() {
-		return width;
 	}
 
 	/**

@@ -47,11 +47,7 @@ final class AndroidTexture implements Texture
 	/** handle to gl wrapper **/
 	private GL10 gl10;
 	/** handle to the gl 2 wrapper **/
-	private GL20 gl20;
-	/** height of original image in pixels **/
-	private int height;    
-	/** width of original image in pixels **/
-	private int width;        
+	private GL20 gl20;    
 	/** height in pixels of texture **/
 	private int texHeight;
 	/** width in pixels of texture **/
@@ -94,8 +90,6 @@ final class AndroidTexture implements Texture
 		this.vWrap = vWrap;
 		if( image != null )
 		{
-			this.width = image.getWidth();
-			this.height = image.getHeight();
 			this.texWidth = image.getWidth();
 			this.texHeight = image.getHeight();	
 			this.format = image.getConfig();
@@ -129,8 +123,6 @@ final class AndroidTexture implements Texture
 		this.vWrap = vWrap;
 		if( image != null )
 		{
-			this.width = image.getWidth();
-			this.height = image.getHeight();
 			this.texWidth = image.getWidth();
 			this.texHeight = image.getHeight();	
 			this.format = image.getConfig();
@@ -221,8 +213,6 @@ final class AndroidTexture implements Texture
 	{
 		Pixmap pixmap = Gdx.graphics.newPixmap( file );
 		Bitmap image = (Bitmap)pixmap.getNativePixmap();
-		this.width = image.getWidth();
-		this.height = image.getHeight();
 		this.texWidth = image.getWidth();
 		this.texHeight = image.getHeight();	
 		this.format = image.getConfig();
@@ -438,22 +428,6 @@ final class AndroidTexture implements Texture
 	@Override
 	public int getHeight() {
 		return texHeight;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getImageHeight() {
-		return height;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getImageWidth() {
-		return width;
 	}
 
 	/**

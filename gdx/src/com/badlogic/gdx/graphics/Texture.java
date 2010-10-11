@@ -87,18 +87,6 @@ public interface Texture
 	
 	/**
 	 * 
-	 * @return the width of the original image in pixels
-	 */
-	public int getImageWidth( );
-	
-	/**
-	 * 
-	 * @return the height of the original image in pixels
-	 */
-	public int getImageHeight( );
-	
-	/**
-	 * 
 	 * @return the width of the texture in pixels
 	 */
 	public int getWidth( );
