@@ -221,11 +221,15 @@ public final class Frustum
 	 */
 	public boolean boundsInFrustum( BoundingBox bounds )
 	{
-		for( int i = 0; i < planes.size(); i++ )
+		Vector3[] corners = bounds.getCorners();
+		int len = corners.length;
+		
+		for( int i = 0, len2 = planes.size(); i < len2; i++ )
 		{
 			int out = 0;
-			for( int j = 0; j < bounds.getCorners().length; j++ )			
-				if( planes.get(i).testPoint(bounds.getCorners()[j]) == PlaneSide.Back )
+			
+			for( int j = 0; j < len; j++ )			
+				if( planes.get(i).testPoint(corners[j]) == PlaneSide.Back )
 					out++;			
 			
 			if( out == 8 )
