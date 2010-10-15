@@ -153,35 +153,29 @@ public class Matrix3
 	
 	public static void main( String[] argv )
 	{
-		Matrix3 transform = new Matrix3( );
-		Matrix3 tmp = new Matrix3( );
-		
 		float refX = 50, refY = -50;
 		float scaleX = 2, scaleY = 1;
 		float rotation = 45;
 		float x = -232, y = 123;
 		
+		Matrix3 transform = new Matrix3( );
+		Matrix3 tmp = new Matrix3( );
 		transform.idt();
 		transform.setToTranslation( -refX, -refY );
 		transform.mul( tmp.setToScaling( scaleX, scaleY ) );
 		transform.mul( tmp.setToRotation( rotation ) );
 		transform.mul( tmp.setToTranslation( refX, refY ) );
 		transform.mul( tmp.setToTranslation( x, y ) );
-		
-//		System.out.println( transform );
 		System.out.println( new Vector2( ).mul( transform ) );
 		
 		Matrix transform4 = new Matrix( );
 		Matrix tmp4 = new Matrix( );
-		
 		transform4.idt();
 		transform4.setToTranslation( -refX, -refY, 0 );
 		transform4.mul( tmp4.setToScaling( scaleX, scaleY, 1 ) );
 		transform4.mul( tmp4.setToRotation( new Vector3( 0, 0, 1 ), rotation ) );
 		transform4.mul( tmp4.setToTranslation( refX, refY, 0 ) );
 		transform4.mul( tmp4.setToTranslation( x, y, 0 ) );
-		
-//		System.out.println( transform4 );
 		System.out.println( new Vector3( ).mul( transform4 ) );
 	}
 }
