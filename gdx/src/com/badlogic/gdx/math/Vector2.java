@@ -240,4 +240,18 @@ public final class Vector2
 	{
 		return tmp.set(this);
 	}
+	
+	/**
+	 * Multiplies this vector by the given matrix
+	 * @param mat the matrix
+	 * @return this vector
+	 */
+	public Vector2 mul( Matrix3 mat )
+	{
+		float x = this.x * mat.vals[0] + this.y * mat.vals[1] + mat.vals[2];
+		float y = this.x * mat.vals[3] + this.y * mat.vals[4] + mat.vals[5];
+		this.x = x;
+		this.y = y;
+		return this;
+	}
 }
