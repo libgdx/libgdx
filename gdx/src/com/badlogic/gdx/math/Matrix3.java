@@ -78,8 +78,8 @@ public class Matrix3
 	public Matrix3 setToRotation( float angle )
 	{
 		angle = DEGREE_TO_RAD * angle;
-		float cos = -(float)Math.cos( angle );
-		float sin = -(float)Math.sin( angle );
+		float cos = (float)Math.cos( angle );
+		float sin = (float)Math.sin( angle );
 		
 		this.vals[0] = cos;
 		this.vals[1] = sin;
@@ -145,27 +145,10 @@ public class Matrix3
 	
 	public String toString( )
 	{
-		StringBuilder buffer = new StringBuilder( );
-		buffer.append( vals[0] );
-		buffer.append( " " );
-		buffer.append( vals[3] );
-		buffer.append( " " );
-		buffer.append( vals[6] );
-		buffer.append( "\n" );
-		buffer.append( vals[1] );
-		buffer.append( " " );
-		buffer.append( vals[4] );
-		buffer.append( " " );
-		buffer.append( vals[7] );
-		buffer.append( "\n" );
-		buffer.append( vals[2] );
-		buffer.append( " " );
-		buffer.append( vals[5] );
-		buffer.append( " " );
-		buffer.append( vals[8] );
-		buffer.append( "\n" );
-		
-		return buffer.toString( );
+		return 
+        "["+vals[0]+"|"+vals[3]+"|"+vals[6]+"]\n"+
+        "["+vals[1]+"|"+vals[4]+"|"+vals[7]+"]\n"+
+        "["+vals[2]+"|"+vals[5]+"|"+vals[8]+"]";  
 	}
 	
 	public static void main( String[] argv )
@@ -173,10 +156,10 @@ public class Matrix3
 		Matrix3 transform = new Matrix3( );
 		Matrix3 tmp = new Matrix3( );
 		
-		float refX = 50, refY = 50;
-		float scaleX = 1, scaleY = 1;
-		float rotation = 90;
-		float x = 0, y = 0;
+		float refX = 50, refY = -50;
+		float scaleX = 2, scaleY = 1;
+		float rotation = 45;
+		float x = -232, y = 123;
 		
 		transform.idt();
 		transform.setToTranslation( -refX, -refY );
@@ -185,8 +168,8 @@ public class Matrix3
 		transform.mul( tmp.setToTranslation( refX, refY ) );
 		transform.mul( tmp.setToTranslation( x, y ) );
 		
+//		System.out.println( transform );
 		System.out.println( new Vector2( ).mul( transform ) );
-		
 		
 		Matrix transform4 = new Matrix( );
 		Matrix tmp4 = new Matrix( );
@@ -198,6 +181,7 @@ public class Matrix3
 		transform4.mul( tmp4.setToTranslation( refX, refY, 0 ) );
 		transform4.mul( tmp4.setToTranslation( x, y, 0 ) );
 		
+//		System.out.println( transform4 );
 		System.out.println( new Vector3( ).mul( transform4 ) );
 	}
 }
