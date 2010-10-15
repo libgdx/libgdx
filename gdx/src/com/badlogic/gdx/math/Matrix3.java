@@ -177,8 +177,7 @@ public class Matrix3
 			throw new GdxRuntimeException( "Can't invert a singular matrix" );
 		
 		// TODO insert code... http://stackoverflow.com/questions/983999/simple-3x3-matrix-inverse-code-c
-		
-		return this;
+		throw new GdxRuntimeException( "Not implemented yet" );
 	}
 	
 	public static void main( String[] argv )

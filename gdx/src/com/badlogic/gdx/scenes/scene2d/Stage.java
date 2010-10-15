@@ -1,5 +1,11 @@
 package com.badlogic.gdx.scenes.scene2d;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>A Stage is a container for StageObjects and handles
  * distributing touch events, animating StageObjects and
@@ -24,6 +30,8 @@ public class Stage
 	private final int centerY;
 	private final boolean stretch;
 	
+	private final Group root;
+	
 	/**
 	 * <p>Constructs a new Stage object with the given
 	 * dimensions. If the device resolution does not
@@ -42,13 +50,16 @@ public class Stage
 		this.width = width;
 		this.height = height;
 		this.stretch = stretch;
+		this.root = new Group( "root" );
 		
 		// TODO implement stretch, adjust width or height
 		
 		centerX = width / 2;
 		centerY = height / 2;
+		
+		
 	}
-
+	
 	/**
 	 * @return the width of the stage in dips
 	 */
@@ -119,5 +130,20 @@ public class Stage
 	public boolean isStretched( )
 	{
 		return stretch;
+	}
+	
+	public Actor findActor( String name )
+	{
+		return root.findActor( name );
+	}
+	
+	public List<Actor> getActors( )
+	{
+		return root.getActors();
+	}
+	
+	public List<Group> getGroups( )
+	{
+		return root.getGroups();
 	}
 }

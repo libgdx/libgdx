@@ -1,6 +1,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,14 +20,24 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Group extends Actor
 {
-	private final Matrix3 transform = new Matrix3( );
-	private final Matrix3 tmp = new Matrix3( );
-	private final List<Actor> actors = new ArrayList<Actor>( );
-	private final Map<String, Actor> namesToActors = new HashMap<String, Actor>( );
+	private final Matrix3 transform;
+	private final Matrix3 tmp;
+	private final List<Actor> children; // TODO O(n) delete, baaad.
+	private final List<Actor> immutableChildren; 
+	private final List<Group> groups; // TODO O(n) delete, baad.
+	private final List<Group> immutableGroups;
+	private final Map<String, Actor> namesToActors;
 	
 	public Group( String name )
 	{
 		super( name );
+		this.transform = new Matrix3( );
+		this.tmp = new Matrix3( );
+		this.children = new ArrayList<Actor>( );
+		this.immutableChildren = Collections.unmodifiableList( this.children );
+		this.groups = new ArrayList<Group>( );
+		this.immutableGroups = Collections.unmodifiableList( this.groups );
+		this.namesToActors = new HashMap<String, Actor>( );
 	}
 	
 	private void updateTransform( )
@@ -44,9 +55,12 @@ public class Group extends Actor
 			transform.mul( tmp.setToTranslation( x, y ) );
 	}
 	
-	public void insert( Actor actor )
+	public void add( Actor actor )
 	{
-		actors.add( actor );
+		children.add( actor );
+		if( actor instanceof Group )
+			groups.add( (Group)actor );
+		namesToActors.put( actor.name, actor );
 	}
 	
 	@Override
@@ -97,29 +111,30 @@ public class Group extends Actor
 		
 	}
 	
-	public static void main( String[] argv )
+	public Actor findActor( String name )
 	{
-		Matrix3 mat = new Matrix3( );
-		Matrix3 tmp = new Matrix3( );
-		Vector2 v = new Vector2( 1, 0 );
+		Actor actor = namesToActors.get( name );
+		if( actor == null )
+		{
+			int len = groups.size();
+			for( int i = 0; i < len; i++ )
+			{
+				actor = groups.get(i).findActor( name );
+				if( actor != null )
+					return actor;
+			}
+		}
 		
-		mat.mul( tmp.setToScaling( 2, 1 ) );
-		mat.mul( tmp.setToRotation( 90 ) );
-		mat.mul( tmp.setToTranslation(1, 0 ) );
-		
-		v.mul( mat );
-		System.out.println( v );
-		
-		Matrix4 mat4 = new Matrix4( );
-		Matrix4 tmp4 = new Matrix4( );
-		Vector3 v3 = new Vector3( 1, 0, 0 );
-		
-		mat4.mul( tmp4.setToScaling( 2, 1, 0 ) );
-		mat4.mul( tmp4.setToRotation( new Vector3( 0, 0, 1 ), 90 ) );
-		mat4.mul( tmp4.setToTranslation( 1, 0, 0 ) );
-		
-		
-		v3.mul( mat4 );
-		System.out.println( v3 );
+		return actor;
+	}
+	
+	public List<Actor> getActors( )
+	{
+		return immutableChildren;
+	}
+	
+	public List<Group> getGroups( )
+	{
+		return immutableGroups;
 	}
 }
