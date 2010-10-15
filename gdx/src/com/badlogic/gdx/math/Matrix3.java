@@ -1,5 +1,7 @@
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.GdxRuntimeException;
+
 /**
  * A 3x3 column major matrix for 2D transforms.
  * 
@@ -151,6 +153,34 @@ public class Matrix3
         "["+vals[2]+"|"+vals[5]+"|"+vals[8]+"]";  
 	}
 	
+	/**
+	 * @return the determinant of this matrix
+	 */
+	public float det( )
+	{
+		return vals[0] * vals[4] * vals[8] + 
+			   vals[3] * vals[7] * vals[2] +
+			   vals[6] * vals[1] * vals[5] -
+			   vals[0] * vals[7] * vals[5] -
+			   vals[3] * vals[1] * vals[8] -
+			   vals[6] * vals[4] * vals[2];
+	}
+	
+	/**
+	 * Inverts this matrix given that the determinant is != 0
+	 * @return this matrix
+	 */
+	public Matrix3 inv( )
+	{
+		float det = det( );
+		if( det == 0 )
+			throw new GdxRuntimeException( "Can't invert a singular matrix" );
+		
+		// TODO insert code... http://stackoverflow.com/questions/983999/simple-3x3-matrix-inverse-code-c
+		
+		return this;
+	}
+	
 	public static void main( String[] argv )
 	{
 		float refX = 50, refY = -50;
@@ -160,6 +190,10 @@ public class Matrix3
 		
 		Matrix3 transform = new Matrix3( );
 		Matrix3 tmp = new Matrix3( );
+		
+		tmp.vals = new float[] { -2, -1, 2, 2, 1, 0, -3, 3, -1 };
+		System.out.println( tmp.det() );
+		
 		transform.idt();
 		transform.setToTranslation( -refX, -refY );
 		transform.mul( tmp.setToScaling( scaleX, scaleY ) );
