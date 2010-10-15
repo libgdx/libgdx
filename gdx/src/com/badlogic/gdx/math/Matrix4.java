@@ -183,39 +183,7 @@ public final class Matrix4
     {
         return new Matrix4(this);
     }
-
-    /**
-     * Adds a translational component to the matrix in the 4th column. 
-     * The other columns are untouched.
-     * 
-     * @param vector The translation vector
-     * @return This matrix for chaining
-     */
-    public  Matrix4 trn(Vector3 vector)
-    {
-        val[M03]+=vector.x;
-        val[M13]+=vector.y;
-        val[M23]+=vector.z;
-        return this;
-    }
     
-    /**
-     * Adds a translational component to the matrix in the 4th column.
-     * The other columns are untouched.
-     * 
-     * @param x The x-component of the translation vector
-     * @param y The y-component of the translation vector
-     * @param z The z-component of the translation vector
-     * @return This matrix for chaining
-     */
-    public Matrix4 trn(float x, float y, float z)
-    {
-        val[M03]+=x;
-        val[M13]+=y;
-        val[M23]+=z;
-        return this;
-    }
-
     /**
      * @return the backing float array
      */
@@ -627,23 +595,7 @@ public final class Matrix4
     	right.set(tmpForward).crs(up).nor();
         tmpUp.set(right).crs(tmpForward).nor();
         
-        val[M00] = right.x;
-        val[M01] = right.y;
-        val[M02] = right.z;
-        
-        val[M10] = tmpUp.x;
-        val[M11] = tmpUp.y;
-        val[M12] = tmpUp.z;
-        
-        val[M20] = -tmpForward.x;
-        val[M21] = -tmpForward.y;
-        val[M22] = -tmpForward.z;
-    	
-    	val[M30] = position.x;
-    	val[M31] = position.y;
-    	val[M32] = position.z;
-    	
-    	val[M03] = val[M13] = val[M23] = 0; val[M33] = 1.0f;
+        this.set( right, tmpUp, tmpForward, position );
     	return this;
     }
     
