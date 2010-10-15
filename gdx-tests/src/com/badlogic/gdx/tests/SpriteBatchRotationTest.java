@@ -15,31 +15,34 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Files.FileType;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.math.Vector2;
 
 public class SpriteBatchRotationTest implements RenderListener
-{
-	ImmediateModeRenderer im;
+{	
 	SpriteBatch spriteBatch;
 	Texture texture;
-	float angle = 90;
+	Font font;
+	float[] sprites;
+	float angle = 0;
 	float scale = 1;
-	float vScale = -1f;
+	float vScale = 1;
+	IntBuffer pixelBuffer;
 	
-	Vector2 point = new Vector2( -100, 0 );
-
 	@Override
 	public void dispose( ) 
 	{	
@@ -51,21 +54,42 @@ public class SpriteBatchRotationTest implements RenderListener
 	{	
 		Gdx.graphics.getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );		
 		spriteBatch.begin();
-		spriteBatch.draw( texture, 100, 100, 25, -25, 100, 100, scale, angle, 0, 0, 32, 32, Color.WHITE, false, false );		
-		spriteBatch.end();
+		spriteBatch.draw( texture, 16, 10, 16, 16, 32, 32, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );		
+		spriteBatch.draw( texture, 64, 10, 32, 32, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 112, 10, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE );
+		spriteBatch.draw( texture, sprites, Color.WHITE );
+		
+		spriteBatch.draw( texture, 16, 58, 16, 16, 32, 32, 1, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 64, 58, 16, 16, 32, 32, scale, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 112, 58, 16, 16, 32, 32, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		
+		spriteBatch.drawText( font, "Test", 208, 10, Color.WHITE );
+		spriteBatch.end();		
+		Gdx.graphics.getGL10().glFlush();
+		
+		Gdx.graphics.getGL10().glReadPixels( 16, 10, 1, 1, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixelBuffer );
+		if( pixelBuffer.get(0) != 0xff00ff00 )
+			throw new GdxRuntimeException( "not pixel perfect!" );
+		Gdx.graphics.getGL10().glReadPixels( 47, 10, 1, 1, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixelBuffer );
+		if( pixelBuffer.get(0) != 0xffff0000 )
+			throw new GdxRuntimeException( "not pixel perfect!" );
+		Gdx.graphics.getGL10().glReadPixels( 16, 41, 1, 1, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixelBuffer );
+		if( pixelBuffer.get(0) != 0xff0000ff )
+			throw new GdxRuntimeException( "not pixel perfect!" );
 				
-		im.begin( GL10.GL_POINTS );		
-		im.color( 0, 1, 0, 1 );
-		im.vertex( 100 + 25, 100 - 25, 0 );		
-		im.end();						
-		
-		angle += 45 * Gdx.graphics.getDeltaTime();
-		if( vScale < 0 && scale < 0.1f )
-			vScale *= -1;
-		if( vScale > 0 && scale > 3f )
-			vScale *= -1;
-		
+		angle += 20 * Gdx.graphics.getDeltaTime();
 		scale += vScale * Gdx.graphics.getDeltaTime();
+		if( scale > 2 )
+		{
+			vScale = -vScale;
+			scale = 2;
+		}
+		if( scale < 0 )
+		{
+			vScale = -vScale;
+			scale = 0;
+		}
+		
 	}
 
 	@Override
@@ -78,10 +102,14 @@ public class SpriteBatchRotationTest implements RenderListener
 	public void surfaceCreated( ) 
 	{
 		if( spriteBatch == null )
-		{
-			im = new ImmediateModeRenderer( );
+		{			
 			spriteBatch = new SpriteBatch( );  
-			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/test.png", FileType.Internal ), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+			font = Gdx.graphics.newFont( "Arial", 12, FontStyle.Plain );
+			sprites = new float[] { 160, 10, 0, 0, texture.getWidth(), texture.getHeight() };
+			ByteBuffer buffer = ByteBuffer.allocateDirect( 4 );
+			buffer.order(ByteOrder.nativeOrder());
+			pixelBuffer = buffer.asIntBuffer();
 		}
 	}
 }

@@ -342,13 +342,13 @@ public  class SpriteBatch
 		
 		useTextBlend = false;			
 		
-		// top left and bottom right corner points relative to origin
+		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
 		final float worldOriginY = y + originY;
 		float fx = x - worldOriginX;
 		float fy = y - worldOriginY;
 		float fx2 = x + width - worldOriginX;
-		float fy2 = y - height - worldOriginY;
+		float fy2 = y + height - worldOriginY;
 		
 		// scale
 		fx *= scale;
@@ -392,9 +392,9 @@ public  class SpriteBatch
 		x4 += worldX; y4 += worldY;
 		
 		float u = srcX * invTexWidth;
-		float v = srcY * invTexHeight;
+		float v = (srcY + srcHeight) * invTexHeight;
 		float u2 = (srcX + srcWidth) * invTexWidth;
-		float v2 = (srcY + srcHeight) * invTexHeight;
+		float v2 = srcY * invTexHeight;
 		
 		if( flipX )
 		{
@@ -482,11 +482,11 @@ public  class SpriteBatch
 		useTextBlend = false;
 		
 		float u = srcX * invTexWidth;
-		float v = srcY * invTexHeight;
+		float v = (srcY + srcHeight) * invTexHeight;
 		float u2 = (srcX + srcWidth) * invTexWidth;
-		float v2 = (srcY + srcHeight) * invTexHeight;
+		float v2 =  srcY * invTexHeight;
         final float fx2 = x + width;
-		final float fy2 = y - height;
+		final float fy2 = y + height;
 		
 		if( flipX )
 		{
@@ -569,11 +569,11 @@ public  class SpriteBatch
 		useTextBlend = false;
 		
 		final float u = srcX * invTexWidth;
-		final float v = srcY * invTexHeight;
+		final float v = (srcY + srcHeight) * invTexHeight;
 		final float u2 = (srcX + srcWidth) * invTexWidth;
-		final float v2 = (srcY + srcHeight) * invTexHeight;
+		final float v2 =  srcY * invTexHeight;
         final float fx2 = x + srcWidth;
-		final float fy2 = y - srcHeight;
+		final float fy2 = y + srcHeight;
 		
 		final float color = tint.toFloatBits();
 		
@@ -653,11 +653,11 @@ public  class SpriteBatch
 			final float srcHeight = sprites[i+5];
 			
 			final float u = srcX * invTexWidth;
-			final float v = srcY * invTexHeight;
+			final float v = (srcY + srcHeight) * invTexHeight;
 			final float u2 = (srcX + srcWidth) * invTexWidth;
-			final float v2 = (srcY + srcHeight) * invTexHeight;
+			final float v2 =  srcY * invTexHeight;
 	        final float fx2 = x + srcWidth;
-			final float fy2 = y - srcHeight;					
+			final float fy2 = y + srcHeight;					
 			
 			vertices[idx++] = x;
 			vertices[idx++] = y;
@@ -784,11 +784,11 @@ public  class SpriteBatch
 			
 			final float fx = x;
             final float fx2 = x + g.width;
-			final float fy2 = y - g.height;
+			final float fy2 = y + g.height;
 			final float u = g.u;
-			final float v = g.v;
+			final float v = g.v + g.vHeight;
 			final float u2 = g.u + g.uWidth;
-			final float v2 = g.v + g.vHeight;
+			final float v2 = g.v;
 			
 			vertices[idx++] = fx;
 			vertices[idx++] = y;
