@@ -17,7 +17,7 @@ package com.badlogic.gdx.math.collision;
 
 import java.util.List;
 
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -288,7 +288,7 @@ public final class BoundingBox
      * @param matrix The matrix
      * @return This bounding box for chaining.
      */
-    public BoundingBox mul(Matrix matrix)
+    public BoundingBox mul(Matrix4 matrix)
     {        
         updateCorners();
         this.inf();

@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.math.collision;
 
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -72,7 +72,7 @@ public final class Ray
 	 * @param matrix The matrix 
 	 * @return This ray for chaining.
 	 */
-	public Ray mul( Matrix matrix )
+	public Ray mul( Matrix4 matrix )
 	{
 		tmp.set( origin ).add( direction );
 		tmp.mul( matrix );

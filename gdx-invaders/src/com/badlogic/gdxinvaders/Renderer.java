@@ -27,7 +27,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -35,7 +34,7 @@ import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdxinvaders.simulation.Block;
 import com.badlogic.gdxinvaders.simulation.Explosion;
@@ -83,8 +82,8 @@ public class Renderer
 	private int lastWave = 0;
 	
 	/** view and transform matrix for text rendering **/
-	private Matrix viewMatrix = new Matrix();
-	private Matrix transformMatrix = new Matrix();
+	private Matrix4 viewMatrix = new Matrix4();
+	private Matrix4 transformMatrix = new Matrix4();
 	
 	/** perspective camera **/
 	private PerspectiveCamera camera;

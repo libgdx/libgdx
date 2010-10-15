@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 
 public class SimpleTestApplet extends Applet implements RenderListener, InputListener
 {

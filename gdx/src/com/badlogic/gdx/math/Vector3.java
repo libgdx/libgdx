@@ -355,12 +355,12 @@ public final class Vector3
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector3 mul(Matrix matrix)
+    public Vector3 mul(Matrix4 matrix)
     {
         float l_mat[] = matrix.val;
-        return this.set(x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02]+l_mat[Matrix.M03],
-                        x*l_mat[Matrix.M10]+y*l_mat[Matrix.M11]+z*l_mat[Matrix.M12]+l_mat[Matrix.M13],
-                        x*l_mat[Matrix.M20]+y*l_mat[Matrix.M21]+z*l_mat[Matrix.M22]+l_mat[Matrix.M23]);
+        return this.set(x*l_mat[Matrix4.M00]+y*l_mat[Matrix4.M01]+z*l_mat[Matrix4.M02]+l_mat[Matrix4.M03],
+                        x*l_mat[Matrix4.M10]+y*l_mat[Matrix4.M11]+z*l_mat[Matrix4.M12]+l_mat[Matrix4.M13],
+                        x*l_mat[Matrix4.M20]+y*l_mat[Matrix4.M21]+z*l_mat[Matrix4.M22]+l_mat[Matrix4.M23]);
     }
 
     /**
@@ -371,13 +371,13 @@ public final class Vector3
      * @param matrix The matrix.
      * @return This vector for chaining
      */
-    public Vector3 prj(Matrix matrix)
+    public Vector3 prj(Matrix4 matrix)
     {
         float l_mat[] = matrix.val;
-        float l_w = x*l_mat[Matrix.M30]+y*l_mat[Matrix.M31]+z*l_mat[Matrix.M32]+l_mat[Matrix.M33];
-        return this.set((x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02]+l_mat[Matrix.M03])/l_w,
-                        (x*l_mat[Matrix.M10]+y*l_mat[Matrix.M11]+z*l_mat[Matrix.M12]+l_mat[Matrix.M13])/l_w,
-                        (x*l_mat[Matrix.M20]+y*l_mat[Matrix.M21]+z*l_mat[Matrix.M22]+l_mat[Matrix.M23])/l_w);
+        float l_w = x*l_mat[Matrix4.M30]+y*l_mat[Matrix4.M31]+z*l_mat[Matrix4.M32]+l_mat[Matrix4.M33];
+        return this.set((x*l_mat[Matrix4.M00]+y*l_mat[Matrix4.M01]+z*l_mat[Matrix4.M02]+l_mat[Matrix4.M03])/l_w,
+                        (x*l_mat[Matrix4.M10]+y*l_mat[Matrix4.M11]+z*l_mat[Matrix4.M12]+l_mat[Matrix4.M13])/l_w,
+                        (x*l_mat[Matrix4.M20]+y*l_mat[Matrix4.M21]+z*l_mat[Matrix4.M22]+l_mat[Matrix4.M23])/l_w);
     }
 
     /**
@@ -387,12 +387,12 @@ public final class Vector3
      * @param matrix The matrix
      * @return This vector for chaining
      */
-    public Vector3 rot(Matrix matrix)
+    public Vector3 rot(Matrix4 matrix)
     {
         float l_mat[] = matrix.val;
-        return this.set(x*l_mat[Matrix.M00]+y*l_mat[Matrix.M01]+z*l_mat[Matrix.M02],
-                        x*l_mat[Matrix.M10]+y*l_mat[Matrix.M11]+z*l_mat[Matrix.M12],
-                        x*l_mat[Matrix.M20]+y*l_mat[Matrix.M21]+z*l_mat[Matrix.M22]);
+        return this.set(x*l_mat[Matrix4.M00]+y*l_mat[Matrix4.M01]+z*l_mat[Matrix4.M02],
+                        x*l_mat[Matrix4.M10]+y*l_mat[Matrix4.M11]+z*l_mat[Matrix4.M12],
+                        x*l_mat[Matrix4.M20]+y*l_mat[Matrix4.M21]+z*l_mat[Matrix4.M22]);
     }
        
     /**

@@ -20,13 +20,12 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 
 /**
  * The game over screen displays the final score and a game over
@@ -49,8 +48,8 @@ public class GameOver implements Screen
 	/** is done flag **/
 	private boolean isDone = false;
 	/** view & transform matrix **/
-	private final Matrix viewMatrix = new Matrix( );
-	private final Matrix transformMatrix = new Matrix( );	
+	private final Matrix4 viewMatrix = new Matrix4( );
+	private final Matrix4 transformMatrix = new Matrix4( );	
 	
 	public GameOver( Application app )
 	{

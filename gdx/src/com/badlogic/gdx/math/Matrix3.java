@@ -202,8 +202,8 @@ public class Matrix3
 		transform.mul( tmp.setToTranslation( x, y ) );
 		System.out.println( new Vector2( ).mul( transform ) );
 		
-		Matrix transform4 = new Matrix( );
-		Matrix tmp4 = new Matrix( );
+		Matrix4 transform4 = new Matrix4( );
+		Matrix4 tmp4 = new Matrix4( );
 		transform4.idt();
 		transform4.setToTranslation( -refX, -refY, 0 );
 		transform4.mul( tmp4.setToScaling( scaleX, scaleY, 1 ) );

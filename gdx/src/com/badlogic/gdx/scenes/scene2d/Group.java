@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -110,8 +110,8 @@ public class Group extends Actor
 		v.mul( mat );
 		System.out.println( v );
 		
-		Matrix mat4 = new Matrix( );
-		Matrix tmp4 = new Matrix( );
+		Matrix4 mat4 = new Matrix4( );
+		Matrix4 tmp4 = new Matrix4( );
 		Vector3 v3 = new Vector3( 1, 0, 0 );
 		
 		mat4.mul( tmp4.setToScaling( 2, 1, 0 ) );

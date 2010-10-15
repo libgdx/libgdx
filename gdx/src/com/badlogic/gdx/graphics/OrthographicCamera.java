@@ -17,7 +17,7 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -59,10 +59,10 @@ public final class OrthographicCamera
 	private float viewportWidth = 0;
 	private float viewportHeight = 0;
 	
-	private final Matrix proj = new Matrix();
-	private final Matrix model = new Matrix();
-	private final Matrix combined = new Matrix();
-	private final Matrix rotationMatrix = new Matrix();
+	private final Matrix4 proj = new Matrix4();
+	private final Matrix4 model = new Matrix4();
+	private final Matrix4 combined = new Matrix4();
+	private final Matrix4 rotationMatrix = new Matrix4();
 	
 	/**
 	 * Constructor, sets side to {@link Side.FRONT}
@@ -185,7 +185,7 @@ public final class OrthographicCamera
 		gl.glLoadIdentity();
 	}
 	
-	private Matrix calculateRotationMatrix( )
+	private Matrix4 calculateRotationMatrix( )
 	{
 		float rotation = 0;
 		if( side == Side.FRONT )
@@ -335,7 +335,7 @@ public final class OrthographicCamera
 	/**
 	 * @return The combined matrix.
 	 */
-	public Matrix getCombinedMatrix() 
+	public Matrix4 getCombinedMatrix() 
 	{	
 		return combined;
 	}

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 
 /**
  * <p>
@@ -400,7 +400,7 @@ public class ShaderProgram
 	 * @param name the name of the uniform
 	 * @param matrix the matrix
 	 */
-	public void setUniformMatrix(String name, Matrix matrix) 
+	public void setUniformMatrix(String name, Matrix4 matrix) 
 	{	
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged( );

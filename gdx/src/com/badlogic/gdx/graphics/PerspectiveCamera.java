@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
@@ -40,10 +40,10 @@ import com.badlogic.gdx.math.collision.Ray;
  */
 public final class PerspectiveCamera 
 {
-	protected Matrix tmp = new Matrix( );
-	protected Matrix proj = new Matrix( );
-	protected Matrix model = new Matrix( );
-	protected Matrix comb = new Matrix( );
+	protected Matrix4 tmp = new Matrix4( );
+	protected Matrix4 proj = new Matrix4( );
+	protected Matrix4 model = new Matrix4( );
+	protected Matrix4 comb = new Matrix4( );
 	private final Vector3 direction = new Vector3( 0, 0, -1 );
 	private final Vector3 up = new Vector3( 0, 1, 0 );
 	private final Vector3 right = new Vector3( 1, 0, 0 );
@@ -125,7 +125,7 @@ public final class PerspectiveCamera
 	/**
 	 * @return The projection matrix.
 	 */
-	public Matrix getProjectionMatrix() 
+	public Matrix4 getProjectionMatrix() 
 	{		
 		return proj;
 	}
@@ -133,7 +133,7 @@ public final class PerspectiveCamera
 	/**
 	 * @return The modelview matrix.
 	 */
-	public Matrix getModelviewMatrix()
+	public Matrix4 getModelviewMatrix()
 	{
 		return model;
 	}
@@ -141,7 +141,7 @@ public final class PerspectiveCamera
 	/**
 	 * @return The combined matrix, projection * modelview
 	 */
-	public Matrix getCombinedMatrix( )
+	public Matrix4 getCombinedMatrix( )
 	{
 		return comb;
 	}
@@ -243,7 +243,7 @@ public final class PerspectiveCamera
 	 */
 	public void project( Vector3 pos )
 	{
-		Matrix m = getCombinedMatrix();		
+		Matrix4 m = getCombinedMatrix();		
 		pos.prj( m );
 		pos.x = viewportWidth * ( pos.x + 1 ) / 2;
 		pos.y = viewportHeight * ( pos.y + 1 ) / 2;			

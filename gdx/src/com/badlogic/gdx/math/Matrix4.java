@@ -18,14 +18,14 @@ package com.badlogic.gdx.math;
 
 /**
  * Encapsulates a column major 4 by 4 matrix. You can access
- * the linear array for use with OpenGL via the public {@link Matrix.val}
+ * the linear array for use with OpenGL via the public {@link Matrix4.val}
  * member. Like the {@link Vector3} class it allows to chain methods by
  * returning a reference to itself.
  * 
  * @author badlogicgames@gmail.com
  *
  */
-public final class Matrix
+public final class Matrix4
 {    
 	private static final long serialVersionUID = -2717655254359579617L;
 	public static final int M00=0;//0;
@@ -51,7 +51,7 @@ public final class Matrix
     /**
      * Constructs an identity matrix
      */
-    public Matrix()
+    public Matrix4()
     {
         val[M00]=1f; val[M11]=1f; val[M22]=1f; val[M33]=1f;
     }
@@ -61,7 +61,7 @@ public final class Matrix
      * 
      * @param matrix The matrix
      */
-    public Matrix(Matrix matrix)
+    public Matrix4(Matrix4 matrix)
     {
         this.set(matrix);
     }
@@ -71,7 +71,7 @@ public final class Matrix
      * array must have at least 16 elements
      * @param values The float array
      */
-    public Matrix(float[] values)
+    public Matrix4(float[] values)
     {
         this.set(values);
     }
@@ -80,7 +80,7 @@ public final class Matrix
      * Constructs a rotation matrix from the given {@link Quaternion}
      * @param quaternion The quaternion
      */
-    public Matrix(Quaternion quaternion)
+    public Matrix4(Quaternion quaternion)
     {
         this.set(quaternion);
     }
@@ -91,7 +91,7 @@ public final class Matrix
      * @param matrix The matrix
      * @return This matrix for chaining
      */
-    public  Matrix set(Matrix matrix)
+    public  Matrix4 set(Matrix4 matrix)
     {
         return this.set(matrix.val);
     }
@@ -103,7 +103,7 @@ public final class Matrix
      * @param values The matrix 
      * @return This matrix for chaining
      */
-    public  Matrix set(float[] values)
+    public  Matrix4 set(float[] values)
     {
         val[M00]=values[M00]; val[M10]=values[M10]; val[M20]=values[M20]; val[M30]=values[M30];
         val[M01]=values[M01]; val[M11]=values[M11]; val[M21]=values[M21]; val[M31]=values[M31];
@@ -119,7 +119,7 @@ public final class Matrix
      * @param quaternion The quaternion
      * @return This matrix for chaining
      */
-    public  Matrix set(Quaternion quaternion)
+    public  Matrix4 set(Quaternion quaternion)
     {
         // Compute quaternion factors
         float l_xx = quaternion.x*quaternion.x;
@@ -179,9 +179,9 @@ public final class Matrix
     /**
      * @return a copy of this matrix
      */
-    public  Matrix cpy()
+    public  Matrix4 cpy()
     {
-        return new Matrix(this);
+        return new Matrix4(this);
     }
 
     /**
@@ -191,7 +191,7 @@ public final class Matrix
      * @param vector The translation vector
      * @return This matrix for chaining
      */
-    public  Matrix trn(Vector3 vector)
+    public  Matrix4 trn(Vector3 vector)
     {
         val[M03]+=vector.x;
         val[M13]+=vector.y;
@@ -208,7 +208,7 @@ public final class Matrix
      * @param z The z-component of the translation vector
      * @return This matrix for chaining
      */
-    public Matrix trn(float x, float y, float z)
+    public Matrix4 trn(float x, float y, float z)
     {
         val[M03]+=x;
         val[M13]+=y;
@@ -231,7 +231,7 @@ public final class Matrix
      * @param matrix The other matrix
      * @return This matrix for chaining.
      */
-    public  Matrix mul(Matrix matrix)
+    public  Matrix4 mul(Matrix4 matrix)
     {
         tmp[M00]=val[M00]*matrix.val[M00] + val[M01]*matrix.val[M10] + val[M02]*matrix.val[M20] + val[M03]*matrix.val[M30];
         tmp[M01]=val[M00]*matrix.val[M01] + val[M01]*matrix.val[M11] + val[M02]*matrix.val[M21] + val[M03]*matrix.val[M31];
@@ -257,7 +257,7 @@ public final class Matrix
      * 
      * @return This matrix for chaining
      */
-    public  Matrix tra()
+    public  Matrix4 tra()
     {
         tmp[M00]=val[M00]; tmp[M01]=val[M10]; tmp[M02]=val[M20]; tmp[M03]=val[M30];
         tmp[M10]=val[M01]; tmp[M11]=val[M11]; tmp[M12]=val[M21]; tmp[M13]=val[M31];
@@ -271,7 +271,7 @@ public final class Matrix
      * 
      * @return This matrix for chaining
      */
-    public  Matrix idt()
+    public  Matrix4 idt()
     {
         val[M00]=1;  val[M01]=0;  val[M02]=0;  val[M03]=0;
         val[M10]=0;  val[M11]=1;  val[M12]=0;  val[M13]=0;
@@ -286,7 +286,7 @@ public final class Matrix
      *  
      * @return This matrix for chaining
      */
-    public  Matrix inv()
+    public  Matrix4 inv()
     {
         float l_det=this.det();
         if(l_det==0f) throw new RuntimeException("non-invertible matrix");
@@ -338,7 +338,7 @@ public final class Matrix
      * @param aspectRatio The aspect ratio
      * @return This matrix for chaining
      */
-    public  Matrix setToProjection(float near, float far, float fov, float aspectRatio)
+    public  Matrix4 setToProjection(float near, float far, float fov, float aspectRatio)
     {
         this.idt();
         float l_fd=(float)(1.0/Math.tan((fov*(Math.PI/180))/2.0));
@@ -362,7 +362,7 @@ public final class Matrix
      * @param height The height
      * @return This matrix for chaining
      */
-    public  Matrix setToOrtho2D( float x, float y, float width, float height )
+    public  Matrix4 setToOrtho2D( float x, float y, float width, float height )
     {
     	setToOrtho( 0, width, 0, height, 0, 1 );
     	return this;
@@ -381,7 +381,7 @@ public final class Matrix
      * @param far The far plane
      * @return This matrix for chaining
      */
-    public  Matrix setToOrtho2D( float x, float y, float width, float height, float near, float far )
+    public  Matrix4 setToOrtho2D( float x, float y, float width, float height, float near, float far )
     {
     	setToOrtho( 0, width, 0, height, near, far );
     	return this;
@@ -399,7 +399,7 @@ public final class Matrix
      * @param far The far clipping plane
      * @return This matrix for chaining
      */
-    public  Matrix setToOrtho( float left, float right, float bottom, float top, float near, float far )
+    public  Matrix4 setToOrtho( float left, float right, float bottom, float top, float near, float far )
     {
     
     	this.idt();
@@ -427,7 +427,7 @@ public final class Matrix
      * @param vector The translation vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslation(Vector3 vector)
+    public  Matrix4 setToTranslation(Vector3 vector)
     {
         this.idt();
         val[M03]=vector.x;
@@ -446,7 +446,7 @@ public final class Matrix
      * @param z The z-component of the translation vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslation(float x, float y, float z)
+    public  Matrix4 setToTranslation(float x, float y, float z)
     {
     	idt();
         val[M03]=x;
@@ -464,7 +464,7 @@ public final class Matrix
      * @param scaling The scaling vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslationAndScaling(Vector3 translation,Vector3 scaling)
+    public  Matrix4 setToTranslationAndScaling(Vector3 translation,Vector3 scaling)
     {
         idt();
         val[M03]=translation.x;
@@ -489,7 +489,7 @@ public final class Matrix
      * @param scalingZ The x-component of the scaling vector
      * @return This matrix for chaining
      */
-    public  Matrix setToTranslationAndScaling(float translationX, float translationY, float translationZ, float scalingX, float scalingY, float scalingZ)
+    public  Matrix4 setToTranslationAndScaling(float translationX, float translationY, float translationZ, float scalingX, float scalingY, float scalingZ)
     {
         this.idt();
         val[M03]=translationX;
@@ -511,7 +511,7 @@ public final class Matrix
      * @param angle The angle in degrees
      * @return This matrix for chaining
      */
-    public  Matrix setToRotation(Vector3 axis, float angle)
+    public  Matrix4 setToRotation(Vector3 axis, float angle)
     {
         idt();
         if(angle==0) return this;
@@ -526,7 +526,7 @@ public final class Matrix
      * @param roll the roll in degrees
      * @return this matrix
      */
-    public Matrix setFromEulerAngles( float yaw, float pitch, float roll )
+    public Matrix4 setFromEulerAngles( float yaw, float pitch, float roll )
     {
     	idt();
     	quat.setEulerAngles(yaw, pitch, roll);
@@ -539,7 +539,7 @@ public final class Matrix
      * @param vector The scaling vector
      * @return This matrix for chaining.
      */
-    public  Matrix setToScaling(Vector3 vector)
+    public  Matrix4 setToScaling(Vector3 vector)
     {
         idt();
         val[M00]=vector.x;
@@ -556,7 +556,7 @@ public final class Matrix
      * @param z The z-component of the scaling vector
      * @return This matrix for chaining.
      */
-    public Matrix setToScaling(float x, float y, float z)
+    public Matrix4 setToScaling(float x, float y, float z)
     {
     	idt();
         val[M00]=x;
@@ -578,7 +578,7 @@ public final class Matrix
      * @param up The up vector
      * @return This matrix for chaining
      */
-    public  Matrix setToLookAt(Vector3 direction, Vector3 up)
+    public  Matrix4 setToLookAt(Vector3 direction, Vector3 up)
     {
 		l_vez.set(direction).nor();
 		l_vex.set(direction).nor();
@@ -608,8 +608,8 @@ public final class Matrix
      * @return this matrix
      */
     static final Vector3 tmpVec = new Vector3();   
-    static final Matrix tmpMat = new Matrix();
-    public Matrix setToLookAt( Vector3 position, Vector3 target, Vector3 up )
+    static final Matrix4 tmpMat = new Matrix4();
+    public Matrix4 setToLookAt( Vector3 position, Vector3 target, Vector3 up )
     {
     	tmpVec.set(target).sub(position);
     	setToLookAt( tmpVec, up);    	   
@@ -621,7 +621,7 @@ public final class Matrix
     static Vector3 right = new Vector3();
     static Vector3 tmpForward = new Vector3();
     static Vector3 tmpUp = new Vector3();    
-    public Matrix setToWorld( Vector3 position, Vector3 forward, Vector3 up )
+    public Matrix4 setToWorld( Vector3 position, Vector3 forward, Vector3 up )
     { 
     	tmpForward.set(forward).nor();
     	right.set(tmpForward).crs(up).nor();
@@ -664,7 +664,7 @@ public final class Matrix
      * @param matrix the matrix
      * @param alpha the alpha value in the range [0,1]
      */
-	public void lerp(Matrix matrix, float alpha) 
+	public void lerp(Matrix4 matrix, float alpha) 
 	{	
 		for( int i = 0; i < 16; i++ )
 			this.val[i] = this.val[i] * (1-alpha) + matrix.val[i] * alpha;

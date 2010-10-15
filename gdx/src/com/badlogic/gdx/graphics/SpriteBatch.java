@@ -19,7 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 
 /**
  * <p>
@@ -96,10 +96,10 @@ public  class SpriteBatch
 	private final Mesh mesh;
 	
 	/** the transform to be applied to all sprites **/
-	protected final Matrix transform = new Matrix();
+	protected final Matrix4 transform = new Matrix4();
 	
 	/** the view matrix holding the orthogonal projection **/
-	protected final Matrix viewMatrix = new Matrix();
+	protected final Matrix4 viewMatrix = new Matrix4();
 	
 	/** the vertex storage **/
 	protected final float[] vertices = new float[MAX_VERTICES * (2 + 1 + 2)];
@@ -202,7 +202,7 @@ public  class SpriteBatch
 	 * depth buffer testing and writting, culling and lighting.
 	 * It enables blending and alpha testing. If you have more texture units enabled than
 	 * the first one you have to disable them before calling this. Applies
-	 * the given transformation {@link Matrix} to all subsequently specified sprites. Loads
+	 * the given transformation {@link Matrix4} to all subsequently specified sprites. Loads
 	 * an orthographic projection matrix with the full screen as the viewport.
 	 * The coordinate system used will have it's origin in the lower left
 	 * corner, x pointing to the right and y point up. The coordinates
@@ -210,7 +210,7 @@ public  class SpriteBatch
 	 * 
 	 * @param transform the transformation matrix.
 	 */
-	public void begin( Matrix transform )
+	public void begin( Matrix4 transform )
 	{		
 		viewMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		begin( viewMatrix, transform );
@@ -221,14 +221,14 @@ public  class SpriteBatch
 	 * depth buffer testing and writting, culling and lighting.
 	 * It enables blending and alpha testing. If you have more texture units enabled than
 	 * the first one you have to disable them before calling this. Applies
-	 * the given transformation {@link Matrix} to all subsequently specified sprites. Uses
+	 * the given transformation {@link Matrix4} to all subsequently specified sprites. Uses
 	 * the provided projection matrix and therefore does not necessarily work
 	 * in screen coordinates anymore. You have to know what you do if you use this.
 	 * 
 	 * @param projection the projection matrix;
 	 * @param transform the transformation matrix.
 	 */
-	public void begin( Matrix projection, Matrix transform )
+	public void begin( Matrix4 projection, Matrix4 transform )
 	{
 		renderCalls = 0;
 		if( Gdx.graphics.isGL20Available() == false )

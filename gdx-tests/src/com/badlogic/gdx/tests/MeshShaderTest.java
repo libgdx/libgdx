@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Matrix;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 public class MeshShaderTest implements RenderListener
@@ -44,7 +44,7 @@ public class MeshShaderTest implements RenderListener
 	ShaderProgram shader;
 	Mesh mesh;		
 	Texture texture;
-	Matrix matrix = new Matrix();
+	Matrix4 matrix = new Matrix4();
 
 	@Override
 	public void surfaceCreated( ) 

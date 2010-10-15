@@ -15,7 +15,7 @@
 	<property environment="env"/>
 	
 	<!-- libgdx version -->
-	<property name="version" value="0.7"/>
+	<property name="version" value="0.71"/>
 	
 	<!-- output directory for distribution -->
 	<property name="stable" value="libgdx-${version}"/>
