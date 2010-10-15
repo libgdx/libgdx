@@ -119,7 +119,14 @@ public class Matrix3
 		return this;		
 	}
 	
-	public Matrix3 setToScale( float sx, float sy )
+	/**
+	 * Sets this matrix to a scaling matrix
+	 * 
+	 * @param sx the scale in x
+	 * @param sy the scale in y
+	 * @return this matrix
+	 */
+	public Matrix3 setToScaling( float sx, float sy )
 	{
 		this.vals[0] = sx;
 		this.vals[1] = 0;
@@ -134,5 +141,63 @@ public class Matrix3
 		this.vals[8] = 1;
 		
 		return this;
+	}
+	
+	public String toString( )
+	{
+		StringBuilder buffer = new StringBuilder( );
+		buffer.append( vals[0] );
+		buffer.append( " " );
+		buffer.append( vals[3] );
+		buffer.append( " " );
+		buffer.append( vals[6] );
+		buffer.append( "\n" );
+		buffer.append( vals[1] );
+		buffer.append( " " );
+		buffer.append( vals[4] );
+		buffer.append( " " );
+		buffer.append( vals[7] );
+		buffer.append( "\n" );
+		buffer.append( vals[2] );
+		buffer.append( " " );
+		buffer.append( vals[5] );
+		buffer.append( " " );
+		buffer.append( vals[8] );
+		buffer.append( "\n" );
+		
+		return buffer.toString( );
+	}
+	
+	public static void main( String[] argv )
+	{
+		Matrix3 transform = new Matrix3( );
+		Matrix3 tmp = new Matrix3( );
+		
+		float refX = 50, refY = 50;
+		float scaleX = 1, scaleY = 1;
+		float rotation = 90;
+		float x = 0, y = 0;
+		
+		transform.idt();
+		transform.setToTranslation( -refX, -refY );
+		transform.mul( tmp.setToScaling( scaleX, scaleY ) );
+		transform.mul( tmp.setToRotation( rotation ) );
+		transform.mul( tmp.setToTranslation( refX, refY ) );
+		transform.mul( tmp.setToTranslation( x, y ) );
+		
+		System.out.println( new Vector2( ).mul( transform ) );
+		
+		
+		Matrix transform4 = new Matrix( );
+		Matrix tmp4 = new Matrix( );
+		
+		transform4.idt();
+		transform4.setToTranslation( -refX, -refY, 0 );
+		transform4.mul( tmp4.setToScaling( scaleX, scaleY, 1 ) );
+		transform4.mul( tmp4.setToRotation( new Vector3( 0, 0, 1 ), rotation ) );
+		transform4.mul( tmp4.setToTranslation( refX, refY, 0 ) );
+		transform4.mul( tmp4.setToTranslation( x, y, 0 ) );
+		
+		System.out.println( new Vector3( ).mul( transform4 ) );
 	}
 }
