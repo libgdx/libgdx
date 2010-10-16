@@ -93,28 +93,6 @@ public class Group extends Actor
 	}
 
 	final Vector2 point = new Vector2( );
-	
-	@Override
-	protected boolean touchDown(float x, float y, int pointer) 
-	{	
-		int len = children.size();
-		for( int i = 0; i < len; i++ )
-		{
-			Actor child = children.get(i);
-			if( !child.touchable )
-				continue;
-			
-			toChildCoordinateSystem( child, x, y, point );
-			
-			if( child.touchDown( point.x, point.y, pointer ) )
-			{
-				System.out.println( "hit " + child.name );
-				return true;
-			}
-		}
-		
-		return false;
-	}
 
 	static final Vector2 xAxis = new Vector2();
 	static final Vector2 yAxis = new Vector2();
@@ -235,16 +213,66 @@ public class Group extends Actor
 	}
 	
 	@Override
+	protected boolean touchDown(float x, float y, int pointer) 
+	{	
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+		{
+			Actor child = children.get(i);
+			if( !child.touchable )
+				continue;
+			
+			toChildCoordinateSystem( child, x, y, point );
+			
+			if( child.touchDown( point.x, point.y, pointer ) )
+			{
+				System.out.println( "hit " + child.name );
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Override
 	protected boolean touchUp(float x, float y, int pointer) 
 	{
-		updateTransform();
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+		{
+			Actor child = children.get(i);
+			if( !child.touchable )
+				continue;
+			
+			toChildCoordinateSystem( child, x, y, point );
+			
+			if( child.touchUp( point.x, point.y, pointer ) )
+			{
+				System.out.println( "hit " + child.name );
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	protected boolean touchDragged(float x, float y, int pointer) 
 	{
-		updateTransform();
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+		{
+			Actor child = children.get(i);
+			if( !child.touchable )
+				continue;
+			
+			toChildCoordinateSystem( child, x, y, point );
+			
+			if( child.touchDragged( point.x, point.y, pointer ) )
+			{
+				System.out.println( "hit " + child.name );
+				return true;
+			}
+		}
 		return false;
 	}
 	

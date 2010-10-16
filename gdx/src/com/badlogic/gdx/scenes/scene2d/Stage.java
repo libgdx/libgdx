@@ -167,7 +167,6 @@ public class Stage
 		stageY = stageY / Gdx.graphics.getHeight() * height;
 		
 		Group.toChildCoordinateSystem( root, stageX, stageY, point );
-		System.out.println( "root " + point.x + ", " + point.y );
 		return root.touchDown(point.x, point.y, pointer);
 	}
 
@@ -177,7 +176,8 @@ public class Stage
 		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
 		stageY = stageY / Gdx.graphics.getHeight() * height;
 		
-		return root.touchUp( stageX, stageY, pointer );
+		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		return root.touchUp( point.x, point.y, pointer );
 	}
 
 	public boolean touchDragged(int x, int y, int pointer) 
@@ -186,7 +186,8 @@ public class Stage
 		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
 		stageY = stageY / Gdx.graphics.getHeight() * height;
 		
-		return root.touchDragged( stageX, stageY, pointer );	
+		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		return root.touchDragged( point.x, point.y, pointer );	
 	}
 	
 	public void render( )
