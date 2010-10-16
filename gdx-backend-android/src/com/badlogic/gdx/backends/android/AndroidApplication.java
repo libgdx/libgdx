@@ -31,6 +31,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Version;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 
@@ -191,7 +193,12 @@ public class AndroidApplication extends Activity implements Application {
         }
 
         if ( graphics != null && graphics.view != null)
-            graphics.view.onPause();
+        {
+        	if( graphics.view instanceof GLSurfaceViewCupcake )
+        		((GLSurfaceViewCupcake)graphics.view).onPause();
+        	if( graphics.view instanceof android.opengl.GLSurfaceView )
+        		((android.opengl.GLSurfaceView)graphics.view).onPause();
+        }
 
         if( audio != null )
         	audio.pause();
@@ -214,7 +221,12 @@ public class AndroidApplication extends Activity implements Application {
             listener.resume();
 
         if ( graphics != null && graphics.view != null)
-            graphics.view.onResume();
+        {
+        	if( graphics.view instanceof GLSurfaceViewCupcake )
+        		((GLSurfaceViewCupcake)graphics.view).onResume();
+        	if( graphics.view instanceof android.opengl.GLSurfaceView )
+        		((android.opengl.GLSurfaceView)graphics.view).onResume();
+        }
 
         if( audio != null )
         	audio.resume();

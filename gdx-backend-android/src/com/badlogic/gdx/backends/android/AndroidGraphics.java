@@ -23,11 +23,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,6 +38,7 @@ import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.Font.FontStyle;
@@ -62,7 +64,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 	/**
 	 * the gl surfaceview *
 	 */
-	protected final GLSurfaceView view;
+	protected final View view;
 
 	/**
 	 * the android input we have to call *
@@ -139,16 +141,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		if (useGL2IfAvailable) {
-			if( checkGL20( ) )
-				view = new GLSurfaceView20( activity );
-			else
-				view = new android.opengl.GLSurfaceView(activity);
-		} else {
-			view = new android.opengl.GLSurfaceView(activity);
-		}
-
-		view.setRenderer(this);
+		view = createGLSurfaceView(activity, useGL2IfAvailable);
 
 		if (layoutParams != null)
 			activity.setContentView(view, layoutParams);
@@ -158,18 +151,11 @@ final class AndroidGraphics implements Graphics, Renderer {
 		this.app = activity;
 	}
 	
+	
+	
 	public AndroidGraphics(AndroidApplication activity, ViewGroup viewGroup, boolean useGL2IfAvailable, ViewGroup.LayoutParams layoutParams) {
 
-		if (useGL2IfAvailable) {
-			if( checkGL20( ) )
-				view = new GLSurfaceView20( activity );
-			else
-				view = new android.opengl.GLSurfaceView(activity);
-		} else {
-			view = new android.opengl.GLSurfaceView(activity);
-		}
-
-		view.setRenderer(this);
+		view = createGLSurfaceView( activity, useGL2IfAvailable );
 
 		if (layoutParams != null)
 			viewGroup.addView( view, layoutParams );
@@ -178,7 +164,34 @@ final class AndroidGraphics implements Graphics, Renderer {
 
 		this.app = activity;
 	}
+	
+	private View createGLSurfaceView( Activity activity, boolean useGL2 )
+	{
+		if (useGL2 && checkGL20( ) ) 
+		{
+			GLSurfaceView20 view = new GLSurfaceView20( activity );
+			view.setRenderer( this );
+			return view;
+		} 
+		else 
+		{
+			if( Integer.parseInt( android.os.Build.VERSION.SDK ) <= 4 )
+			{
+				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake( activity );
+				view.setRenderer( this );
+				return view;
+			}
+			else
+			{
+				android.opengl.GLSurfaceView view = new android.opengl.GLSurfaceView( activity );
+				view.setRenderer( this );
+				return view;
+			}
+		}
 
+		
+	}
+	
 	/**
 	 * This is a hack...
 	 *
