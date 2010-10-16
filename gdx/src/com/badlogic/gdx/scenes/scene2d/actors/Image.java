@@ -59,7 +59,12 @@ public class Image extends Actor
 	protected void render(SpriteBatch batch) 
 	{
 		if( region.texture != null )
-			batch.draw( region.texture, x, y, refX, refY, width, height, scaleX, scaleY, rotation, region.x, region.y, region.width, region.height, color, false, false );
+		{
+			if( scaleX == 0 && scaleY == 0 && rotation == 0 )
+				batch.draw( region.texture, x, y, width, height, region.x, region.y, region.width, region.height, color, false, false );
+			else
+				batch.draw( region.texture, x, y, refX, refY, width, height, scaleX, scaleY, rotation, region.x, region.y, region.width, region.height, color, false, false );
+		}
 	}
 
 	@Override

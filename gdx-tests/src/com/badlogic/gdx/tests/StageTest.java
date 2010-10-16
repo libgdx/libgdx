@@ -39,7 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.actors.Label;
 
 public class StageTest implements RenderListener, InputListener
 {
-	private static final int NUM_SPRITES = 4;
+	private static final int NUM_SPRITES = (int)Math.sqrt(1000 / 10);
 	private static final int NUM_GROUPS = 10;
 	private static final float SPACING = 5;
 	ImmediateModeRenderer renderer;
@@ -48,6 +48,9 @@ public class StageTest implements RenderListener, InputListener
 	Texture texture;
 	Texture uiTexture;
 	Font font;
+	
+	boolean rotateSprites = false;
+	boolean scaleSprites = false;
 	float angle;
 	Vector2 point = new Vector2( );
 	List<Image> images = new ArrayList<Image>( );
@@ -85,9 +88,17 @@ public class StageTest implements RenderListener, InputListener
 			ui = new Stage( 480, 320, false );
 			Image blend = new Image( "blend button", new TextureRegion( uiTexture, 0, 0, 64, 32 ) );
 			blend.y = ui.height() - 32;
+			Image rotate = new Image( "rotate button", new TextureRegion( uiTexture, 64, 0, 64, 32 ) );
+			rotate.y = blend.y; rotate.x = 64;
+			Image scale = new Image( "scale button", new TextureRegion( uiTexture, 64, 32, 64, 32 ) );
+			scale.y = blend.y; scale.x = 128;
+			
 			ui.addActor( blend );
+			ui.addActor( rotate );
+			ui.addActor( scale );
 			
 			Label fps = new Label( "fps", font, "fps: 0"  );
+			fps.color.set( 0, 1, 0, 1 );
 			ui.addActor( fps );
 			
 			Thread.currentThread().setPriority( Thread.MAX_PRIORITY );
@@ -132,12 +143,15 @@ public class StageTest implements RenderListener, InputListener
 			
 			if( actor != null )			
 				if( actor instanceof Image )				
-					((Image)actor).color.set( (float)Math.random(), (float)Math.random(), (float)Math.random(), 1 );
+					((Image)actor).color.set( (float)Math.random(), (float)Math.random(), (float)Math.random(), 0.5f + 0.5f * (float)Math.random() );
 		}
 		
 		int len = stage.getGroups().size();
 		for( int i = 0; i < len; i++ )
-			stage.getGroups().get(i).rotation += Gdx.graphics.getDeltaTime();
+			if( rotateSprites )
+				stage.getGroups().get(i).rotation += Gdx.graphics.getDeltaTime();
+			else
+				stage.getGroups().get(i).rotation = 0;
 
 		scale += vScale * Gdx.graphics.getDeltaTime();
 		if( scale > 1 )
@@ -155,9 +169,21 @@ public class StageTest implements RenderListener, InputListener
 		for( int i = 0; i < len; i++ )
 		{
 			Image img = images.get(i);
-			img.rotation -= 40 * Gdx.graphics.getDeltaTime();
-			img.scaleX = scale;
-			img.scaleY = scale;
+			if( rotateSprites )
+				img.rotation -= 40 * Gdx.graphics.getDeltaTime();
+			else
+				img.rotation = 0;
+			
+			if( scaleSprites )
+			{
+				img.scaleX = scale;
+				img.scaleY = scale;
+			}
+			else
+			{
+				img.scaleX = 1;
+				img.scaleY = 1;
+			}
 		}
 			
 		stage.render( );
@@ -174,7 +200,7 @@ public class StageTest implements RenderListener, InputListener
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize( 4 );
 
-		((Label)ui.findActor( "fps" )).text = "fps: " + Gdx.graphics.getFramesPerSecond();
+		((Label)ui.findActor( "fps" )).text = "fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() + ", groups " + stage.getGroups().size();
 		ui.render( );
 	}
 
@@ -184,16 +210,18 @@ public class StageTest implements RenderListener, InputListener
 		boolean touched = ui.touchDown( x, y, pointer );
 		if( touched )
 		{
-			if( stage.getSpriteBatch().isBlendingEnabled() )
-			{
-				stage.getSpriteBatch().disableBlending();
-				((Image)ui.getLastTouchedChild()).region.y = 32;
-			}
-			else
-			{
-				stage.getSpriteBatch().enableBlending();
-				((Image)ui.getLastTouchedChild()).region.y = 0;
-			}
+			Actor hitActor = ui.getLastTouchedChild();
+			if( hitActor == null )
+				return touched;
+			if( hitActor.name.startsWith( "blend" ) )
+				if( stage.getSpriteBatch().isBlendingEnabled() )
+					stage.getSpriteBatch().disableBlending();
+				else
+					stage.getSpriteBatch().enableBlending();
+			if( hitActor.name.startsWith( "rotate" ) )
+				rotateSprites = !rotateSprites;
+			if( hitActor.name.startsWith( "scale" ) )
+				scaleSprites = !scaleSprites;
 		}
 		return touched;
 	}
