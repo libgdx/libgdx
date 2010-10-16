@@ -188,11 +188,11 @@ public class Group extends Actor
 				}
 				else
 				{
-					float refX = -sin * child.refX + cos * child.refY;
-					float refY =  cos * child.refX + sin * child.refY;
+					float srefX = child.refX * child.scaleY;
+					float srefY = child.refY * child.scaleX;
 					
-					refX *= child.scaleX;
-					refY *= child.scaleY;
+					float refX = -sin * srefX + cos * srefY;
+					float refY =  cos * srefX + sin * srefY;
 					
 					float px = child.x + child.refX - refX;
 					float py = child.y + child.refY - refY;
