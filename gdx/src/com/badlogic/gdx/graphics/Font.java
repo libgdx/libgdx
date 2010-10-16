@@ -156,7 +156,7 @@ public abstract class Font
 	/**
 	 * @return The glyph texture
 	 */
-	protected Texture getTexture( )
+	public Texture getTexture( )
 	{
 		return texture;
 	}
@@ -167,7 +167,7 @@ public abstract class Font
 	 * @param character The character
 	 * @return The glyph of the character
 	 */
-	protected Glyph getGlyph( char character )
+	public Glyph getGlyph( char character )
 	{
 		Glyph glyph = glyphs[character];
 		if( glyph == null )
@@ -219,7 +219,7 @@ public abstract class Font
 	 * @author mzechner
 	 *
 	 */
-	protected class Glyph
+	public static class Glyph
 	{
 		public int advance;
 		public int width;		
