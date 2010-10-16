@@ -40,11 +40,11 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Stage
 {		
-	private final int width;
-	private final int height;
-	private final int centerX;
-	private final int centerY;
-	private final boolean stretch;
+	private float width;
+	private float height;
+	private float centerX;
+	private float centerY;
+	private boolean stretch;
 	
 	private final Group root;
 	
@@ -65,7 +65,7 @@ public class Stage
 	 * @param height the height of the viewport
 	 * @param stretch whether to stretch the viewport to the real device resolution
 	 */
-	public Stage( int width, int height, boolean stretch ) 
+	public Stage( float width, float height, boolean stretch ) 
 	{
 		this.width = width;
 		this.height = height;
@@ -74,8 +74,49 @@ public class Stage
 		this.batch = new SpriteBatch( );
 		this.projection = new Matrix4( );
 		this.identity = new Matrix4( );
-		
+		setViewport( width, height, stretch );
+	}
+	
+	/**
+	 * Sets the viewport dimensions in device independent pixels. If stretch
+	 * is false and the viewport aspect ratio is not equal to the device
+	 * ratio then the bigger dimension of the viewport will be extended (device
+	 * independent pixels stay quardatic instead of getting stretched).
+	 * 
+	 * @param width thew width of the viewport in device independent pixels
+	 * @param height the height of the viewport in device independent pixels
+	 * @param strech whether to stretch the viewport or not
+	 */
+	public void setViewport( float width, float height, boolean strech )
+	{
 		// TODO implement stretch, adjust width or height
+		if( !stretch )
+		{
+			if( width > height )
+			{
+				float toDeviceSpace = Gdx.graphics.getHeight() / height;
+				float toViewportSpace = height / Gdx.graphics.getHeight();
+				
+				float deviceWidth = width * toDeviceSpace;
+				this.width = width + (Gdx.graphics.getWidth() - deviceWidth ) * toViewportSpace;
+				this.height = height;
+			}
+			else
+			{
+				float toDeviceSpace = Gdx.graphics.getWidth() / width;
+				float toViewportSpace = width / Gdx.graphics.getWidth();
+				
+				float deviceHeight = height * toDeviceSpace;
+				this.height = height + (Gdx.graphics.getHeight() - deviceHeight ) * toViewportSpace;
+				this.width = width;
+			}
+		}
+		else
+		{
+			this.width = width;
+			this.height = height;
+		}
+		
 		
 		centerX = width / 2;
 		centerY = height / 2;
@@ -86,7 +127,7 @@ public class Stage
 	/**
 	 * @return the width of the stage in dips
 	 */
-	public int width()
+	public float width()
 	{
 		return width;
 	}
@@ -94,7 +135,7 @@ public class Stage
 	/**
 	 * @return the height of the stage in dips
 	 */
-	public int height()
+	public float height()
 	{
 		return height;
 	}
@@ -110,7 +151,7 @@ public class Stage
 	/**
 	 * @return the x-coordinate of the right edge of the stage in dips
 	 */
-	public int right( )
+	public float right( )
 	{
 		return width - 1;
 	}
@@ -118,7 +159,7 @@ public class Stage
 	/**
 	 * @return the y-coordinate of the top edge of the stage in dips
 	 */
-	public int top( )
+	public float top( )
 	{
 		return height - 1;
 	}
@@ -126,7 +167,7 @@ public class Stage
 	/**
 	 * @return the y-coordinate of the bottom edge of the stage in dips
 	 */
-	public int bottom( )
+	public float bottom( )
 	{
 		return 0;
 	}
@@ -134,7 +175,7 @@ public class Stage
 	/**
 	 * @return the center x-coordinate of the stage in dips
 	 */
-	public int centerX( )
+	public float centerX( )
 	{
 		return centerX;
 	}
@@ -142,7 +183,7 @@ public class Stage
 	/**
 	 * @return the center y-coordinate of the stage in dips
 	 */
-	public int centerY( )
+	public float centerY( )
 	{
 		return centerY;
 	}
@@ -238,6 +279,16 @@ public class Stage
 		return root;
 	}
 
+	public SpriteBatch getSpriteBatch( )
+	{
+		return batch;
+	}
+	
+	public Actor getLastTouchedChild( )
+	{
+		return root.lastTouchedChild;
+	}
+	
 	public Actor hit(float x, float y) 
 	{
 		Group.toChildCoordinates( root, x, y, point );

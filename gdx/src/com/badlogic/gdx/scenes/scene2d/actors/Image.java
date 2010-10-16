@@ -64,8 +64,7 @@ public class Image extends Actor
 
 	@Override
 	protected boolean touchDown(float x, float y, int pointer) {
-		System.out.println( name + " touch down:"  + x + ", " + y );
-		return false;
+		return x > 0 && y > 0 && x < width && y < height;
 	}
 
 	@Override

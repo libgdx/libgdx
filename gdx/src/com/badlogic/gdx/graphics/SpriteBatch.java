@@ -896,4 +896,12 @@ public  class SpriteBatch
 	{
 		return transformMatrix;
 	}
+
+	/**
+	 * @return whether blending for sprites is enabled
+	 */
+	public boolean isBlendingEnabled() 
+	{
+		return !blendingDisabled;
+	}
 }

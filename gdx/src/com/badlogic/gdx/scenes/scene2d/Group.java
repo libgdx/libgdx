@@ -21,7 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -34,6 +40,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Group extends Actor
 {
+	public static Texture debugTexture;
+	public static boolean debug = false;
+	
 	private final Matrix4 tmp4 = new Matrix4( );
 	private final Matrix4 oldBatchTransform = new Matrix4( );	
 	private final Matrix3 transform;
@@ -44,6 +53,8 @@ public class Group extends Actor
 	private final List<Group> groups; // TODO O(n) delete, baad.
 	private final List<Group> immutableGroups;
 	private final Map<String, Actor> namesToActors;
+	
+	public Actor lastTouchedChild;
 	
 	public Group( String name )
 	{
@@ -89,6 +100,9 @@ public class Group extends Actor
 	{
 		updateTransform( );
 		tmp4.set( scenetransform );		
+		
+		if( debug && debugTexture != null )
+			batch.draw( debugTexture, x, y, refX, refY, 200, 200, scaleX, scaleY, rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), Color.WHITE, false, false );
 		
 		batch.end();
 		Matrix4 projection = batch.getProjectionMatrix();
@@ -226,8 +240,8 @@ public class Group extends Actor
 	@Override
 	protected boolean touchDown(float x, float y, int pointer) 
 	{	
-		int len = children.size();
-		for( int i = 0; i < len; i++ )
+		int len = children.size() - 1;
+		for( int i = len; i >= 0; i-- )
 		{
 			Actor child = children.get(i);
 			if( !child.touchable )
@@ -236,7 +250,13 @@ public class Group extends Actor
 			toChildCoordinates( child, x, y, point );
 			
 			if( child.touchDown( point.x, point.y, pointer ) )
+			{
+				if( child instanceof Group )
+					lastTouchedChild = ((Group)child).lastTouchedChild;
+				else
+					lastTouchedChild = child;
 				return true;
+			}
 		}
 		
 		return false;
@@ -245,8 +265,8 @@ public class Group extends Actor
 	@Override
 	protected boolean touchUp(float x, float y, int pointer) 
 	{
-		int len = children.size();
-		for( int i = 0; i < len; i++ )
+		int len = children.size() - 1;
+		for( int i = len; i >= 0; i-- )
 		{
 			Actor child = children.get(i);
 			if( !child.touchable )
@@ -263,8 +283,8 @@ public class Group extends Actor
 	@Override
 	protected boolean touchDragged(float x, float y, int pointer) 
 	{
-		int len = children.size();
-		for( int i = 0; i < len; i++ )
+		int len = children.size() - 1;
+		for( int i = len; i >= 0; i-- )
 		{
 			Actor child = children.get(i);
 			if( !child.touchable )
@@ -280,8 +300,8 @@ public class Group extends Actor
 	
 	public Actor hit( float x, float y )
 	{
-		int len = children.size();
-		for( int i = 0; i < len; i++ )
+		int len = children.size() - 1;
+		for( int i = len; i >= 0; i-- )
 		{
 			Actor child = children.get(i);
 			
@@ -338,5 +358,20 @@ public class Group extends Actor
 	public List<Group> getGroups( )
 	{
 		return immutableGroups;
+	}
+	
+	public static void enableDebugging( String debugTextureFile )
+	{
+		debugTexture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( debugTextureFile, FileType.Internal ), 
+												TextureFilter.Linear, TextureFilter.Linear,
+												TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		debug = true;
+	}
+	
+	public static void disableDebugging( )
+	{
+		if( debugTexture != null )
+			debugTexture.dispose();
+		debug = false;
 	}
 }
