@@ -23,12 +23,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.view.Display;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout.LayoutParams;
@@ -140,7 +140,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		if (useGL2IfAvailable) {
-			if( checkGL20( activity ) )
+			if( checkGL20( ) )
 				view = new GLSurfaceView20( activity );
 			else
 				view = new android.opengl.GLSurfaceView(activity);
@@ -157,6 +157,27 @@ final class AndroidGraphics implements Graphics, Renderer {
 
 		this.app = activity;
 	}
+	
+	public AndroidGraphics(AndroidApplication activity, ViewGroup viewGroup, boolean useGL2IfAvailable, ViewGroup.LayoutParams layoutParams) {
+
+		if (useGL2IfAvailable) {
+			if( checkGL20( ) )
+				view = new GLSurfaceView20( activity );
+			else
+				view = new android.opengl.GLSurfaceView(activity);
+		} else {
+			view = new android.opengl.GLSurfaceView(activity);
+		}
+
+		view.setRenderer(this);
+
+		if (layoutParams != null)
+			viewGroup.addView( view, layoutParams );
+		else
+			viewGroup.addView( view );
+
+		this.app = activity;
+	}
 
 	/**
 	 * This is a hack...
@@ -167,7 +188,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		this.input = input;
 	}
 
-	private boolean checkGL20(Activity context) {
+	private boolean checkGL20( ) {
 		EGL10 egl = (EGL10) EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 

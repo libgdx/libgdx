@@ -75,13 +75,74 @@ public class StageTest implements RenderListener, InputListener
 			stage.addActor( group2 );
 			stage.addActor( img );
 			
-			System.out.println( stage.graphToString() );
+//			System.out.println( stage.graphToString() );
+//			benchMark();
 		}
 	}
 	
 	public void benchMark( )
 	{
+		int CALLS = 100000;
+		Vector2 out = new Vector2( );
+		Image img = new Image( "test" );
+		img.x = 100; img.y = 100;
+		img.width = 50; img.height = 50;
 		
+		long start = System.nanoTime();
+		for( int i = 0; i < CALLS; i++ )
+			Group.toChildCoordinates(img, 0, 0, out);
+		
+		img.scaleX = 2;
+		for( int i = 0; i < CALLS; i++ )
+			Group.toChildCoordinates(img, 0, 0, out);
+		
+		img.refX = 10;
+		for( int i = 0; i < CALLS; i++ )
+			Group.toChildCoordinates(img, 0, 0, out);
+		
+		img.scaleX = 1; img.refX = 0;
+		img.rotation = 54;
+		for( int i = 0; i < CALLS; i++ )
+			Group.toChildCoordinates(img, 0, 0, out);
+		
+		img.scaleX = 2;
+		for( int i = 0; i < CALLS; i++ )
+			Group.toChildCoordinates(img, 0, 0, out);
+		
+		img.refX = 10;
+		for( int i = 0; i < CALLS; i++ )
+			Group.toChildCoordinates(img, 0, 0, out);
+		Gdx.app.log("Stage Test", "unoptimized: " + (System.nanoTime() - start ) / 1000000000.0f );
+		
+		img = new Image( "test" );
+		img.x = 100; img.y = 100;
+		img.width = 50; img.height = 50;
+		
+		start = System.nanoTime();
+		for( int i = 0; i < CALLS; i++ )
+			Group.slowToChildCoordinateSystem(img, 0, 0, out);
+		
+		img.scaleX = 2;
+		for( int i = 0; i < CALLS; i++ )
+			Group.slowToChildCoordinateSystem(img, 0, 0, out);
+		
+		img.refX = 10;
+		for( int i = 0; i < CALLS; i++ )
+			Group.slowToChildCoordinateSystem(img, 0, 0, out);
+		
+		img.scaleX = 1; img.refX = 0;
+		img.rotation = 54;
+		for( int i = 0; i < CALLS; i++ )
+			Group.slowToChildCoordinateSystem(img, 0, 0, out);
+		
+		img.scaleX = 2;
+		for( int i = 0; i < CALLS; i++ )
+			Group.slowToChildCoordinateSystem(img, 0, 0, out);
+		
+		img.refX = 10;
+		for( int i = 0; i < CALLS; i++ )
+			Group.slowToChildCoordinateSystem(img, 0, 0, out);
+		Gdx.app.log("Stage Test", "unoptimized: " + (System.nanoTime() - start ) / 1000000000.0f );
 	}
 
 	@Override

@@ -19,6 +19,8 @@ package com.badlogic.gdx.backends.android;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout.LayoutParams;
 
 import com.badlogic.gdx.Application;
@@ -151,6 +153,21 @@ public class AndroidApplication extends Activity implements Application {
     public void initialize(boolean useGL2IfAvailable, int sleepTime, LayoutParams layoutParams) 
     {    	    	
         graphics = new AndroidGraphics(this, useGL2IfAvailable, layoutParams);
+        input = new AndroidInput(this, graphics.view, sleepTime);
+        graphics.setInput(input);
+        audio = new AndroidAudio(this);
+        resources = new AndroidFiles(this.getAssets());   
+        
+        Gdx.app = this;
+		Gdx.input = this.getInput();
+		Gdx.audio = this.getAudio();
+		Gdx.files = this.getFiles();
+		Gdx.graphics = this.getGraphics();
+    }
+    
+    public void initialize( boolean useGL2IfAvailable, int sleepTime, ViewGroup view, ViewGroup.LayoutParams layoutParams )
+    {
+        graphics = new AndroidGraphics(this, view, useGL2IfAvailable, layoutParams);
         input = new AndroidInput(this, graphics.view, sleepTime);
         graphics.setInput(input);
         audio = new AndroidAudio(this);
