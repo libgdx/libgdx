@@ -1,6 +1,5 @@
 package com.badlogic.gdx.scenes.scene2d;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.SpriteBatch;
 
 /**
@@ -25,6 +24,7 @@ public abstract class Actor
 {
 	public Group parent;
 	public final String name;
+	public boolean touchable = true;
 	
 	public float x;
 	public float y;
@@ -32,8 +32,8 @@ public abstract class Actor
 	public float height;
 	public float refX;
 	public float refY;
-	public float scaleX;
-	public float scaleY;
+	public float scaleX = 1;
+	public float scaleY = 1;
 	public float rotation;
 	
 	public Actor( String name )
@@ -47,19 +47,16 @@ public abstract class Actor
 	 * @param stage the stage
 	 * @param batch the spritebatch to render with
 	 */
-	abstract void render( Stage stage, SpriteBatch batch );
+	protected abstract void render( SpriteBatch batch );
 	
-	abstract boolean hit( int x, int y );
+	protected abstract boolean touchDown( float x, float y, int pointer );
 	
-	abstract void touchDown( int x, int y, int pointer );
+	protected abstract boolean touchUp( float x, float y, int pointer );
 	
-	abstract void touchUp( int x, int y, int pointer );
+	protected abstract boolean touchDragged( float x, float y, int pointer );
 	
-	abstract void touchDragged( int x, int y, int pointer );
-	
-	abstract void keyDown( int keycode );
-	
-	abstract void keyUp( int keycode );
-	
-	abstract void keytyped( int keycode );
+	public String toString( )
+	{
+		return name + ": [x=" + x + ", y=" + y + ", refX=" + refX + ", refY=" + refY + ", width=" + width + ", height=" + height + "]";
+	}
 }

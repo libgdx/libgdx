@@ -54,14 +54,16 @@ public class SpriteBatchRotationTest implements RenderListener
 	{	
 		Gdx.graphics.getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );		
 		spriteBatch.begin();
-		spriteBatch.draw( texture, 16, 10, 16, 16, 32, 32, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );		
+		spriteBatch.draw( texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );		
 		spriteBatch.draw( texture, 64, 10, 32, 32, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
 		spriteBatch.draw( texture, 112, 10, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE );
 		spriteBatch.draw( texture, sprites, Color.WHITE );
 		
-		spriteBatch.draw( texture, 16, 58, 16, 16, 32, 32, 1, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
-		spriteBatch.draw( texture, 64, 58, 16, 16, 32, 32, scale, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
-		spriteBatch.draw( texture, 112, 58, 16, 16, 32, 32, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 16, 58, 16, 16, 32, 32, 1, 1, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 64, 58, 16, 16, 32, 32, scale, scale, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 112, 58, 16, 16, 32, 32, scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+		spriteBatch.draw( texture, 160, 58, 0, 0, 32, 32, scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
+
 		
 		spriteBatch.drawText( font, "Test", 208, 10, Color.WHITE );
 		spriteBatch.end();		

@@ -1,10 +1,12 @@
 package com.badlogic.gdx.scenes.scene2d;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * <p>A Stage is a container for StageObjects and handles
@@ -24,6 +26,9 @@ import java.util.Map;
  */
 public class Stage
 {
+	public static Texture debugTexture = null;
+	public static boolean enableDebugging = false;
+	
 	private final int width;
 	private final int height;
 	private final int centerX;
@@ -31,6 +36,10 @@ public class Stage
 	private final boolean stretch;
 	
 	private final Group root;
+	
+	private final SpriteBatch batch;
+	private final Matrix4 projection;
+	private final Matrix4 identity;
 	
 	/**
 	 * <p>Constructs a new Stage object with the given
@@ -51,13 +60,16 @@ public class Stage
 		this.height = height;
 		this.stretch = stretch;
 		this.root = new Group( "root" );
+		this.batch = new SpriteBatch( );
+		this.projection = new Matrix4( );
+		this.identity = new Matrix4( );
 		
 		// TODO implement stretch, adjust width or height
 		
 		centerX = width / 2;
 		centerY = height / 2;
 		
-		
+		projection.setToOrtho2D( 0, 0, this.width, this.height );
 	}
 	
 	/**
@@ -145,5 +157,80 @@ public class Stage
 	public List<Group> getGroups( )
 	{
 		return root.getGroups();
+	}
+	
+	final Vector2 point = new Vector2( );
+	public boolean touchDown(int x, int y, int pointer) 
+	{
+		float stageY = (Gdx.graphics.getHeight() - 1) - y;
+		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
+		stageY = stageY / Gdx.graphics.getHeight() * height;
+		
+		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		System.out.println( "root " + point.x + ", " + point.y );
+		return root.touchDown(point.x, point.y, pointer);
+	}
+
+	public boolean touchUp(int x, int y, int pointer) 
+	{
+		float stageY = (Gdx.graphics.getHeight() - 1) - y;
+		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
+		stageY = stageY / Gdx.graphics.getHeight() * height;
+		
+		return root.touchUp( stageX, stageY, pointer );
+	}
+
+	public boolean touchDragged(int x, int y, int pointer) 
+	{
+		float stageY = (Gdx.graphics.getHeight() - 1) - y;
+		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
+		stageY = stageY / Gdx.graphics.getHeight() * height;
+		
+		return root.touchDragged( stageX, stageY, pointer );	
+	}
+	
+	public void render( )
+	{
+		batch.begin( projection, identity );
+		root.render( batch );
+		batch.end( );
+	}
+	
+	public void dispose( )
+	{
+		batch.dispose();
+	}
+
+	public void addActor(Actor actor) 
+	{
+		root.addActor( actor );
+	}
+	
+	public String graphToString( )
+	{
+		StringBuilder buffer = new StringBuilder( );
+		graphToString( buffer, root, 0 );
+		return buffer.toString();
+	}
+	
+	private void graphToString( StringBuilder buffer, Actor actor, int level )
+	{
+		for( int i = 0; i < level; i++ )
+			buffer.append( ' ' );
+		
+		buffer.append( actor );
+		buffer.append( "\n" );
+		
+		if( actor instanceof Group )
+		{
+			Group group = (Group)actor;
+			for( int i = 0; i < group.getActors().size(); i++ )
+				graphToString( buffer, group.getActors().get(i), level + 1 );
+		}
+	}
+
+	public Group getRoot() 
+	{
+		return root;
 	}
 }

@@ -90,16 +90,19 @@ import com.badlogic.gdx.math.Matrix4;
  */
 public  class SpriteBatch
 {	
-	private static final int MAX_VERTICES = 6 * 5000;
+	private static final int MAX_VERTICES = 6 * 1000;
 	
 	/** the mesh used to transfer the data to the GPU **/
 	private final Mesh mesh;
 	
 	/** the transform to be applied to all sprites **/
-	protected final Matrix4 transform = new Matrix4();
+	protected final Matrix4 transformMatrix = new Matrix4();
 	
 	/** the view matrix holding the orthogonal projection **/
-	protected final Matrix4 viewMatrix = new Matrix4();
+	protected final Matrix4 projectionMatrix = new Matrix4();
+	
+	/** the combined transform and view matrix **/
+	protected final Matrix4 combinedMatrix = new Matrix4( );
 	
 	/** the vertex storage **/
 	protected final float[] vertices = new float[MAX_VERTICES * (2 + 1 + 2)];
@@ -145,7 +148,7 @@ public  class SpriteBatch
 							  new VertexAttribute( Usage.Position, 2, "a_position" ),
 							  new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
 							  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
-		viewMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		projectionMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		
 		if( Gdx.graphics.isGL20Available() )
 			createShader( );
@@ -193,8 +196,8 @@ public  class SpriteBatch
 	 */
 	public void begin( )
 	{		
-		transform.idt();		
-		begin( transform );
+		transformMatrix.idt();		
+		begin( transformMatrix );
 	}
 	
 	/**
@@ -212,8 +215,8 @@ public  class SpriteBatch
 	 */
 	public void begin( Matrix4 transform )
 	{		
-		viewMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-		begin( viewMatrix, transform );
+		projectionMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		begin( projectionMatrix, transform );
 	}
 	
 	/**
@@ -231,6 +234,8 @@ public  class SpriteBatch
 	public void begin( Matrix4 projection, Matrix4 transform )
 	{
 		renderCalls = 0;
+		this.projectionMatrix.set( projection );
+		this.transformMatrix.set( transform );
 		if( Gdx.graphics.isGL20Available() == false )
 		{										
 			GL10 gl = Gdx.graphics.getGL10();
@@ -244,13 +249,13 @@ public  class SpriteBatch
 			//gl.glActiveTexture( GL10.GL_TEXTURE0 );
 			
 			gl.glMatrixMode( GL10.GL_PROJECTION );
-			gl.glLoadMatrixf( projection.val, 0 );
+			gl.glLoadMatrixf( projectionMatrix.val, 0 );
 			gl.glMatrixMode( GL10.GL_MODELVIEW );
-			gl.glLoadMatrixf( transform.val, 0 );
+			gl.glLoadMatrixf( transformMatrix.val, 0 );
 		}		
 		else
 		{
-			viewMatrix.set(projection).mul(transform);
+			combinedMatrix.set(projection).mul(transform);
 
 			GL20 gl = Gdx.graphics.getGL20();
 			gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
@@ -262,7 +267,7 @@ public  class SpriteBatch
 			//gl.glActiveTexture( GL20.GL_TEXTURE0 );
 
 			shader.begin();
-			shader.setUniformMatrix( "u_projectionViewMatrix", viewMatrix );
+			shader.setUniformMatrix( "u_projectionViewMatrix", combinedMatrix );
 			shader.setUniformi( "u_texture", 0 );
 		}
 		
@@ -317,7 +322,8 @@ public  class SpriteBatch
 	 * @param originY the y-coordinate of the scaling and rotation origin relative to the screen space coordinates
 	 * @param width the width in pixels
 	 * @param height the height in pixels
-	 * @param scale the scale of the rectangle around originX/originY
+	 * @param scaleX the scale of the rectangle around originX/originY in x
+	 * @param scaleY the scale of the rectangle around originX/originY in y
 	 * @param rotation the angle of counter clockwise rotation of the rectangle around originX/originY
 	 * @param srcX the x-coordinate in texel space
 	 * @param srcY the y-coordinate in texel space
@@ -327,7 +333,7 @@ public  class SpriteBatch
 	 * @param flipX whether to flip the sprite horizontally
 	 * @param flipY whether to flip the sprite vertically
 	 */
-	public void draw(Texture texture, float x, float y, float originX, float originY, float width, float height, float scale, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY )
+	public void draw(Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY )
 	{
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
@@ -351,10 +357,10 @@ public  class SpriteBatch
 		float fy2 = y + height - worldOriginY;
 		
 		// scale
-		fx *= scale;
-		fy *= scale;
-		fx2 *= scale;
-		fy2 *= scale;
+		fx *= scaleX;
+		fy *= scaleY;
+		fx2 *= scaleX;
+		fy2 *= scaleY;
 		
 		// construct corner points, start from top left and go counter clockwise
 		final float p1x = fx;
@@ -867,5 +873,27 @@ public  class SpriteBatch
 		mesh.dispose();
 		if( shader != null )
 			shader.dispose();
+	}
+	
+	/**
+	 * Returns the current projection matrix. Changing this
+	 * will result in undefined behaviour.
+	 * 
+	 * @return the currently set projection matrix
+	 */
+	public Matrix4 getProjectionMatrix( )
+	{
+		return projectionMatrix;
+	}
+	
+	/**
+	 * Returns the current transform matrix. Changing this
+	 * will result in undefined behaviour.
+	 * 
+	 * @return the currently set transform matrix
+	 */
+	public Matrix4 getTransformMatrix( )
+	{
+		return transformMatrix;
 	}
 }

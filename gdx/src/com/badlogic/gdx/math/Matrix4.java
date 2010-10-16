@@ -621,5 +621,28 @@ public final class Matrix4
 		for( int i = 0; i < 16; i++ )
 			this.val[i] = this.val[i] * (1-alpha) + matrix.val[i] * alpha;
 	}
+
+	/**
+	 * Sets this matrix to the given 3x3 matrix. The third
+	 * column of this matrix is set to (0,0,1,0).
+	 * @param mat the matrix
+	 */
+	public Matrix4 set(Matrix3 mat) 
+	{
+		val[0] = mat.vals[0];
+		val[1] = mat.vals[1];
+		val[2] = mat.vals[2];
+		val[3] = 0;
+		val[4] = mat.vals[3];
+		val[5] = mat.vals[4];
+		val[6] = mat.vals[5];
+		val[7] = 0;
+		val[8] = 0; val[9] = 0; val[10] = 1; val[11] = 0;
+		val[12] = mat.vals[6];
+		val[13] = mat.vals[7];
+		val[14] = 0;
+		val[15] = mat.vals[8];
+		return this;
+	}
 }
 

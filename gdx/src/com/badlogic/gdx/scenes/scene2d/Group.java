@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * A group is an Actor that contains other Actors (also other Groups which are Actors).
@@ -20,8 +20,11 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Group extends Actor
 {
+	private final Matrix4 tmp4 = new Matrix4( );
+	private final Matrix4 oldBatchTransform = new Matrix4( );	
 	private final Matrix3 transform;
-	private final Matrix3 tmp;
+	private final Matrix3 scenetransform = new Matrix3( );
+	
 	private final List<Actor> children; // TODO O(n) delete, baaad.
 	private final List<Actor> immutableChildren; 
 	private final List<Group> groups; // TODO O(n) delete, baad.
@@ -32,7 +35,6 @@ public class Group extends Actor
 	{
 		super( name );
 		this.transform = new Matrix3( );
-		this.tmp = new Matrix3( );
 		this.children = new ArrayList<Actor>( );
 		this.immutableChildren = Collections.unmodifiableList( this.children );
 		this.groups = new ArrayList<Group>( );
@@ -46,69 +48,221 @@ public class Group extends Actor
 		if( refX != 0 || refY != 0 )
 			transform.setToTranslation( refX, refY );
 		if( scaleX != 1 || scaleY != 1 )
-			transform.mul( tmp.setToScaling( scaleX, scaleY ) );
+			transform.mul( scenetransform.setToScaling( scaleX, scaleY ) );
 		if( rotation != 0 )
-			transform.mul( tmp.setToRotation( rotation ) );
+			transform.mul( scenetransform.setToRotation( rotation ) );
 		if( refX != 0 || refY != 0 )
-			transform.mul( tmp.setToTranslation( -refX, -refY ) );
+			transform.mul( scenetransform.setToTranslation( -refX, -refY ) );
 		if( x != 0 || y != 0 )
-			transform.mul( tmp.setToTranslation( x, y ) );
+		{
+			transform.getValues()[6] += x;
+			transform.getValues()[7] += y;
+		}
+		
+		if( parent != null )
+		{
+			scenetransform.set(parent.scenetransform);
+			scenetransform.mul( transform );
+		}
+		else
+		{
+			scenetransform.set(transform);
+		}
 	}
 	
-	public void add( Actor actor )
+	@Override
+	protected void render( SpriteBatch batch ) 
+	{
+		updateTransform( );
+		tmp4.set( scenetransform );
+		
+		if( Stage.enableDebugging )
+			batch.draw( Stage.debugTexture, x, y, refX, refY, 200, 200, scaleX, scaleY, rotation, 0, 0, Stage.debugTexture.getWidth(), Stage.debugTexture.getHeight(), Color.WHITE, false, false  );
+		
+		batch.end();
+		Matrix4 projection = batch.getProjectionMatrix();
+		oldBatchTransform.set(batch.getTransformMatrix());
+		batch.begin( projection, tmp4 );
+
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+			children.get(i).render( batch );
+		
+		batch.end();
+		batch.begin( projection, oldBatchTransform );
+	}
+
+	final Vector2 point = new Vector2( );
+	
+	@Override
+	protected boolean touchDown(float x, float y, int pointer) 
+	{	
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+		{
+			Actor child = children.get(i);
+			if( !child.touchable )
+				continue;
+			
+			toChildCoordinateSystem( child, x, y, point );
+			
+			if( child.touchDown( point.x, point.y, pointer ) )
+			{
+				System.out.println( "hit " + child.name );
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	static final Vector2 xAxis = new Vector2();
+	static final Vector2 yAxis = new Vector2();
+	static final Vector2 p = new Vector2();
+	static final Vector2 ref = new Vector2();
+	public static void toChildCoordinateSystem( Actor child, float x, float y, Vector2 out )
+	{
+		if( child.rotation == 0 )
+		{
+			if( child.scaleX == 1 && child.scaleY == 1 )
+			{
+				out.x = x - child.x;
+				out.y = y - child.y;
+			}
+			else
+			{
+				if( child.refX == 0 && child.refY == 0 )
+				{
+					out.x = (x - child.x) / child.scaleX;
+					out.y = (y - child.y) / child.scaleY;
+				}
+				else
+				{
+					out.x = x / child.scaleX - (child.x - child.refX);
+					out.x = x / child.scaleX - (child.x - child.refX);
+				}
+			}
+		}
+		else
+		{
+			final float cos = (float)Math.cos( (float)Math.toRadians(child.rotation) );
+			final float sin = (float)Math.sin( (float)Math.toRadians(child.rotation) );
+			
+			if( child.scaleX == 1 && child.scaleY == 1 )
+			{
+				if( child.refX == 0 && child.refY == 0 )
+				{	
+					float tox = x - child.x;
+					float toy = y - child.y;
+					
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+				}
+				else
+				{
+					float refX = -sin * child.refX + cos * child.refY;
+					float refY =  cos * child.refX + sin * child.refY;
+					
+					float px = child.x + child.refX - refX;
+					float py = child.y + child.refY - refY;
+					
+					float tox = x - px;
+					float toy = y - py;
+					
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+				}
+			}
+			else
+			{
+				if( child.refX == 0 && child.refY == 0 )
+				{	
+					float tox = x - child.x;
+					float toy = y - child.y;
+					
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+					
+					out.x /= child.scaleX;
+					out.y /= child.scaleY;
+				}
+				else
+				{
+					float refX = -sin * child.refX + cos * child.refY;
+					float refY =  cos * child.refX + sin * child.refY;
+					
+					refX *= child.scaleX;
+					refY *= child.scaleY;
+					
+					float px = child.x + child.refX - refX;
+					float py = child.y + child.refY - refY;
+					
+					float tox = x - px;
+					float toy = y - py;
+					
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+					
+					out.x /= child.scaleX;
+					out.y /= child.scaleY;
+				}
+			}
+		}
+	}
+	
+	public static void slowToChildCoordinateSystem( Actor child, float x, float y, Vector2 out )
+	{
+		final float cos = (float)Math.cos( (float)Math.toRadians(child.rotation) );
+		final float sin = (float)Math.sin( (float)Math.toRadians(child.rotation) );
+		
+		float refX = -sin * child.refX + cos * child.refY;
+		float refY =  cos * child.refX + sin * child.refY;
+		
+		refX *= child.scaleX;
+		refY *= child.scaleY;
+		
+		float px = child.x + child.refX - refX;
+		float py = child.y + child.refY - refY;
+		
+		float tox = x - px;
+		float toy = y - py;
+		
+		out.x = tox * cos + toy * sin;
+		out.y = tox * -sin + toy * cos;
+		
+		out.x /= child.scaleX;
+		out.y /= child.scaleY;
+	}
+	
+	@Override
+	protected boolean touchUp(float x, float y, int pointer) 
+	{
+		updateTransform();
+		return false;
+	}
+
+	@Override
+	protected boolean touchDragged(float x, float y, int pointer) 
+	{
+		updateTransform();
+		return false;
+	}
+	
+	public void addActor( Actor actor )
 	{
 		children.add( actor );
 		if( actor instanceof Group )
 			groups.add( (Group)actor );
 		namesToActors.put( actor.name, actor );
+		actor.parent = this;
 	}
 	
-	@Override
-	void render(Stage stage, SpriteBatch batch) 
+	public void removeActor( Actor actor )
 	{
-		updateTransform( );
-	}
-
-	@Override
-	boolean hit(int x, int y) 
-	{
-		return false;
-	}
-
-	@Override
-	void touchDown(int x, int y, int pointer) 
-	{
-		
-	}
-
-	@Override
-	void touchUp(int x, int y, int pointer) 
-	{
-		
-	}
-
-	@Override
-	void touchDragged(int x, int y, int pointer) 
-	{
-		
-	}
-
-	@Override
-	void keyDown(int keycode) 
-	{
-		
-	}
-
-	@Override
-	void keyUp(int keycode) 
-	{
-		
-	}
-
-	@Override
-	void keytyped(int keycode) 
-	{
-		
+		children.remove( actor );
+		if( actor instanceof Group )
+			groups.remove( (Group)actor );
+		namesToActors.remove( actor.name );
 	}
 	
 	public Actor findActor( String name )

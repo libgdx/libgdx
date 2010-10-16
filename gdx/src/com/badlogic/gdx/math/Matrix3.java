@@ -211,4 +211,23 @@ public class Matrix3
 		transform4.mul( tmp4.setToTranslation( x, y, 0 ) );
 		System.out.println( new Vector3( ).mul( transform4 ) );
 	}
+
+	public Matrix3 set(Matrix3 mat) 
+	{
+		vals[0] = mat.vals[0];
+		vals[1] = mat.vals[1];
+		vals[2] = mat.vals[2];
+		vals[3] = mat.vals[3];
+		vals[4] = mat.vals[4];
+		vals[5] = mat.vals[5];
+		vals[6] = mat.vals[6];
+		vals[7] = mat.vals[7];
+		vals[8] = mat.vals[8];
+		return this;
+	}
+
+	public float[] getValues() 
+	{
+		return vals;
+	}
 }
