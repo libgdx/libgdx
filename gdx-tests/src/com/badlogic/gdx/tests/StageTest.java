@@ -89,7 +89,7 @@ public class StageTest implements RenderListener, InputListener
 			{
 				if( actor instanceof Image )
 				{
-					((Image)actor).color.a = (float)Math.random();
+					((Image)actor).color.b = (float)Math.random();
 				}
 			}
 		}
