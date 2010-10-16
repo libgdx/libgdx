@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
@@ -33,42 +34,39 @@ public class StageTest implements RenderListener, InputListener
 					
 			stage = new Stage( 480, 320, true );
 			
-//			Image img2 = new Image( "img2", texture );
-//			img2.x = 50; img2.y = 50;
-//			img2.rotation = -45;
-//			
-//			Group group = new Group( "group" );
-//			group.refX = 50; group.refY = 50;
-//			group.x = 100; group.y = 100;
-//			group.rotation = 45;
-//			group.scaleX = group.scaleY = 0.5f;
-//			group.addActor( img2 );
-//			
-//			Group group2 = new Group( "group2" );
-//			group2.x = 200; group2.y = 100;
-//			group2.refX = 50; group2.refY = 50;
-//			group2.rotation = 45;
-//			group2.addActor( group );
-//			group2.addActor( new Image( "img3", texture ) );
-//					
-//			Image img = new Image( "img", texture );
-//			img.x = 100; img.y = 100;
-//			img.scaleX = 2; img.scaleY = 2f;
-//			img.refX = 0; img.refY = 0;
-//			img.rotation = 90;
-
-//			stage.addActor( group2 );
-//			stage.addActor( img );
+			Image img2 = new Image( "img2", texture );
+			img2.x = 50; img2.y = 50;
+			img2.rotation = -45;
 			
-			Group root = stage.getRoot();
-			root.rotation = 45; // + 90;
-//			root.scaleX = 2; root.scaleY = 0.5f;
-			root.x = 100; root.y = 100;
-			root.refX = 50; root.refY = 50;
-			root.scaleX = 1.25f; root.scaleY = 0.75f;
+			Group group = new Group( "group" );
+			group.refX = 50; group.refY = 50;
+			group.x = 100; group.y = 100;
+			group.rotation = 45;
+			group.scaleX = group.scaleY = 0.5f;
+			group.addActor( img2 );
+			
+			Group group2 = new Group( "group2" );
+			group2.x = 200; group2.y = 100;
+			group2.refX = 50; group2.refY = 50;
+			group2.rotation = 45;
+			group2.addActor( group );
+			group2.addActor( new Image( "img3", texture ) );
+					
+			Image img = new Image( "img", texture );
+			img.x = 100; img.y = 100;
+			img.scaleX = 2; img.scaleY = 2f;
+			img.refX = 0; img.refY = 0;
+			img.rotation = 90;
+			stage.addActor( group2 );
+			stage.addActor( img );
 			
 			System.out.println( stage.graphToString() );
 		}
+	}
+	
+	public void benchMark( )
+	{
+		
 	}
 
 	@Override
@@ -84,7 +82,19 @@ public class StageTest implements RenderListener, InputListener
 		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		
-//		stage.findActor( "img2" ).rotation += 20 * Gdx.graphics.getDeltaTime();
+		if( Gdx.input.isTouched() )
+		{
+			Actor actor = stage.hit( Gdx.input.getX(), Gdx.input.getY() );
+			if( actor != null )
+			{
+				if( actor instanceof Image )
+				{
+					((Image)actor).color.a = (float)Math.random();
+				}
+			}
+		}
+		
+		stage.findActor( "img2" ).rotation += 20 * Gdx.graphics.getDeltaTime();
 		stage.render( );
 	}
 

@@ -234,4 +234,14 @@ public class Stage
 	{
 		return root;
 	}
+
+	public Actor hit(float x, float y) 
+	{
+		float stageY = (Gdx.graphics.getHeight() - 1) - y;
+		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
+		stageY = stageY / Gdx.graphics.getHeight() * height;
+
+		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		return root.hit( point.x, point.y );
+	}
 }

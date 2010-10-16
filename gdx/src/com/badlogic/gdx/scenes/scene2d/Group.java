@@ -225,10 +225,7 @@ public class Group extends Actor
 			toChildCoordinateSystem( child, x, y, point );
 			
 			if( child.touchDown( point.x, point.y, pointer ) )
-			{
-				System.out.println( "hit " + child.name );
 				return true;
-			}
 		}
 		
 		return false;
@@ -247,10 +244,7 @@ public class Group extends Actor
 			toChildCoordinateSystem( child, x, y, point );
 			
 			if( child.touchUp( point.x, point.y, pointer ) )
-			{
-				System.out.println( "hit " + child.name );
 				return true;
-			}
 		}
 		return false;
 	}
@@ -268,12 +262,27 @@ public class Group extends Actor
 			toChildCoordinateSystem( child, x, y, point );
 			
 			if( child.touchDragged( point.x, point.y, pointer ) )
-			{
-				System.out.println( "hit " + child.name );
 				return true;
-			}
 		}
 		return false;
+	}
+	
+	public Actor hit( float x, float y )
+	{
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+		{
+			Actor child = children.get(i);
+			
+			toChildCoordinateSystem( child, x, y, point );
+			
+			Actor hit = child.hit( point.x, point.y );
+			if( hit != null )
+			{
+				return hit;
+			}
+		}
+		return null;	
 	}
 	
 	public void addActor( Actor actor )

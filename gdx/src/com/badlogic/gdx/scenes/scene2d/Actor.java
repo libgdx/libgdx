@@ -55,6 +55,8 @@ public abstract class Actor
 	
 	protected abstract boolean touchDragged( float x, float y, int pointer );
 	
+	public abstract Actor hit( float x, float y );
+	
 	public String toString( )
 	{
 		return name + ": [x=" + x + ", y=" + y + ", refX=" + refX + ", refY=" + refY + ", width=" + width + ", height=" + height + "]";
