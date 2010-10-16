@@ -1,13 +1,15 @@
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,6 +20,7 @@ public class StageTest implements RenderListener, InputListener
 	Stage stage;
 	Texture texture;
 	float angle;
+	Vector2 point = new Vector2( );
 
 	@Override
 	public void surfaceCreated() 
@@ -27,9 +30,6 @@ public class StageTest implements RenderListener, InputListener
 			Gdx.input.addInputListener( this );
 			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ),
 											   TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
-			Stage.debugTexture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/debug.png", FileType.Internal ),
-														  TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
-			Stage.enableDebugging = true;
 
 					
 			stage = new Stage( 480, 320, true );
@@ -84,20 +84,45 @@ public class StageTest implements RenderListener, InputListener
 		
 		if( Gdx.input.isTouched() )
 		{
-			Actor actor = stage.hit( Gdx.input.getX(), Gdx.input.getY() );
-			if( actor != null )
-			{
-				if( actor instanceof Image )
-				{
-					((Image)actor).color.b = (float)Math.random();
-				}
-			}
+			stage.toStageCoordinates( Gdx.input.getX(), Gdx.input.getY(), point );
+			Actor actor = stage.hit( point.x, point.y );
+			
+			if( actor != null )			
+				if( actor instanceof Image )				
+					((Image)actor).color.set( (float)Math.random(), 0, 0, 1 );
+			
+			actor = stage.findActor( "img2" );
+			actor.toLocalCoordinates( point );
+			if( actor.hit( point.x, point.y ) != null )
+				((Image)actor).color.set( Color.GREEN );
+			else
+				((Image)actor).color.set( Color.WHITE );
 		}
 		
+		stage.findActor( "img" ).rotation += 20 * Gdx.graphics.getDeltaTime();		
 		stage.findActor( "img2" ).rotation += 20 * Gdx.graphics.getDeltaTime();
+		stage.findActor( "img3" ).rotation += 20 * Gdx.graphics.getDeltaTime();
 		stage.render( );
 	}
 
+	@Override
+	public boolean touchDown(int x, int y, int pointer) 
+	{
+		return stage.touchDown( x, y, pointer );
+	}
+
+	@Override
+	public boolean touchUp(int x, int y, int pointer) 
+	{
+		return stage.touchUp( x, y, pointer );
+	}
+
+	@Override
+	public boolean touchDragged(int x, int y, int pointer) 
+	{
+		return stage.touchDragged( x, y, pointer );
+	}
+	
 	@Override
 	public void dispose() 
 	{
@@ -120,23 +145,5 @@ public class StageTest implements RenderListener, InputListener
 	public boolean keyTyped(char character) 
 	{
 		return false;
-	}
-
-	@Override
-	public boolean touchDown(int x, int y, int pointer) 
-	{
-		return stage.touchDown( x, y, pointer );
-	}
-
-	@Override
-	public boolean touchUp(int x, int y, int pointer) 
-	{
-		return stage.touchUp( x, y, pointer );
-	}
-
-	@Override
-	public boolean touchDragged(int x, int y, int pointer) 
-	{
-		return stage.touchDragged( x, y, pointer );
 	}
 }

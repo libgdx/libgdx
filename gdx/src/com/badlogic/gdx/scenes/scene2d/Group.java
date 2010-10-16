@@ -74,10 +74,7 @@ public class Group extends Actor
 	protected void render( SpriteBatch batch ) 
 	{
 		updateTransform( );
-		tmp4.set( scenetransform );
-		
-		if( Stage.enableDebugging )
-			batch.draw( Stage.debugTexture, x, y, refX, refY, 200, 200, scaleX, scaleY, rotation, 0, 0, Stage.debugTexture.getWidth(), Stage.debugTexture.getHeight(), Color.WHITE, false, false  );
+		tmp4.set( scenetransform );		
 		
 		batch.end();
 		Matrix4 projection = batch.getProjectionMatrix();
@@ -98,7 +95,7 @@ public class Group extends Actor
 	static final Vector2 yAxis = new Vector2();
 	static final Vector2 p = new Vector2();
 	static final Vector2 ref = new Vector2();
-	public static void toChildCoordinateSystem( Actor child, float x, float y, Vector2 out )
+	public static void toChildCoordinates( Actor child, float x, float y, Vector2 out )
 	{
 		if( child.rotation == 0 )
 		{
@@ -222,7 +219,7 @@ public class Group extends Actor
 			if( !child.touchable )
 				continue;
 			
-			toChildCoordinateSystem( child, x, y, point );
+			toChildCoordinates( child, x, y, point );
 			
 			if( child.touchDown( point.x, point.y, pointer ) )
 				return true;
@@ -241,7 +238,7 @@ public class Group extends Actor
 			if( !child.touchable )
 				continue;
 			
-			toChildCoordinateSystem( child, x, y, point );
+			toChildCoordinates( child, x, y, point );
 			
 			if( child.touchUp( point.x, point.y, pointer ) )
 				return true;
@@ -259,7 +256,7 @@ public class Group extends Actor
 			if( !child.touchable )
 				continue;
 			
-			toChildCoordinateSystem( child, x, y, point );
+			toChildCoordinates( child, x, y, point );
 			
 			if( child.touchDragged( point.x, point.y, pointer ) )
 				return true;
@@ -274,7 +271,7 @@ public class Group extends Actor
 		{
 			Actor child = children.get(i);
 			
-			toChildCoordinateSystem( child, x, y, point );
+			toChildCoordinates( child, x, y, point );
 			
 			Actor hit = child.hit( point.x, point.y );
 			if( hit != null )

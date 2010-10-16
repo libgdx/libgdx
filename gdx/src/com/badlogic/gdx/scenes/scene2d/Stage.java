@@ -25,10 +25,7 @@ import com.badlogic.gdx.math.Vector2;
  *
  */
 public class Stage
-{
-	public static Texture debugTexture = null;
-	public static boolean enableDebugging = false;
-	
+{		
 	private final int width;
 	private final int height;
 	private final int centerX;
@@ -160,33 +157,25 @@ public class Stage
 	}
 	
 	final Vector2 point = new Vector2( );
+	final Vector2 coords = new Vector2( );
 	public boolean touchDown(int x, int y, int pointer) 
 	{
-		float stageY = (Gdx.graphics.getHeight() - 1) - y;
-		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
-		stageY = stageY / Gdx.graphics.getHeight() * height;
-		
-		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		toStageCoordinates(x, y, coords );		
+		Group.toChildCoordinates( root, coords.x, coords.y, point );
 		return root.touchDown(point.x, point.y, pointer);
 	}
 
 	public boolean touchUp(int x, int y, int pointer) 
 	{
-		float stageY = (Gdx.graphics.getHeight() - 1) - y;
-		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
-		stageY = stageY / Gdx.graphics.getHeight() * height;
-		
-		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		toStageCoordinates(x, y, coords );		
+		Group.toChildCoordinates( root, coords.x, coords.y, point );
 		return root.touchUp( point.x, point.y, pointer );
 	}
 
 	public boolean touchDragged(int x, int y, int pointer) 
 	{
-		float stageY = (Gdx.graphics.getHeight() - 1) - y;
-		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
-		stageY = stageY / Gdx.graphics.getHeight() * height;
-		
-		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		toStageCoordinates(x, y, coords );		
+		Group.toChildCoordinates( root, coords.x, coords.y, point );
 		return root.touchDragged( point.x, point.y, pointer );	
 	}
 	
@@ -237,11 +226,14 @@ public class Stage
 
 	public Actor hit(float x, float y) 
 	{
-		float stageY = (Gdx.graphics.getHeight() - 1) - y;
-		float stageX = (float)x / Gdx.graphics.getWidth() * width; 
-		stageY = stageY / Gdx.graphics.getHeight() * height;
-
-		Group.toChildCoordinateSystem( root, stageX, stageY, point );
+		Group.toChildCoordinates( root, x, y, point );
 		return root.hit( point.x, point.y );
+	}
+	
+	public void toStageCoordinates( int x, int y, Vector2 out )
+	{
+		out.y = (Gdx.graphics.getHeight() - 1) - y;
+		out.x = (float)x / Gdx.graphics.getWidth() * width; 
+		out.y = out.y / Gdx.graphics.getHeight() * height;		
 	}
 }

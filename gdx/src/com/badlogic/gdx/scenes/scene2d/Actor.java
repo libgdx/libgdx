@@ -1,6 +1,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * <p>An Actor is part of a Stage or a group within a stage
@@ -56,6 +57,15 @@ public abstract class Actor
 	protected abstract boolean touchDragged( float x, float y, int pointer );
 	
 	public abstract Actor hit( float x, float y );
+	
+	public void toLocalCoordinates( Vector2 point )
+	{
+		if( parent == null )
+			return;
+		
+		parent.toLocalCoordinates( point );
+		Group.toChildCoordinates(this, point.x, point.y, point );
+	}
 	
 	public String toString( )
 	{
