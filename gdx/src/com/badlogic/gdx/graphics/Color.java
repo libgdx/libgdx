@@ -135,7 +135,7 @@ public class Color
 		return this;
 	}
 	
-	private void clamp( )
+	public void clamp( )
 	{
 		if( r < 0 ) r = 0; 
 		if( r > 1 ) r = 1;
