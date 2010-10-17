@@ -15,8 +15,12 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.PooledLinkedList;
 
 /**
  * <p>An Actor is part of a Stage or a group within a stage
@@ -52,6 +56,8 @@ public abstract class Actor
 	public float scaleY = 1;
 	public float rotation;
 	
+	private PooledLinkedList<Action> actions = new PooledLinkedList<Action>( 10 );
+	
 	public Actor( String name )
 	{
 		this.name = name;
@@ -82,8 +88,32 @@ public abstract class Actor
 		Group.toChildCoordinates(this, point.x, point.y, point );
 	}
 	
+	public void remove( )
+	{
+		parent.removeActor( this );
+	}
+	
+	protected void act( float delta )
+	{
+		actions.iter();
+		Action action;
+		
+		while( (action = actions.next() ) != null )
+		{
+			action.act( delta );
+			if( action.isDone() )
+				actions.remove();
+		}
+	}
+	
+	public void action( Action action )
+	{
+		actions.add( action );
+	}
+	
 	public String toString( )
 	{
 		return name + ": [x=" + x + ", y=" + y + ", refX=" + refX + ", refY=" + refY + ", width=" + width + ", height=" + height + "]";
 	}
+	
 }

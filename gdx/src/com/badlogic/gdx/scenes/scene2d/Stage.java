@@ -234,6 +234,11 @@ public class Stage
 		return root.touchDragged( point.x, point.y, pointer );	
 	}
 	
+	public void act( float delta )
+	{
+		root.act( delta );
+	}
+	
 	public void render( )
 	{
 		batch.begin( projection, identity );

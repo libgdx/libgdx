@@ -95,6 +95,18 @@ public class Group extends Actor
 		}
 	}
 	
+	protected void act( float delta )
+	{
+		super.act( delta );
+		
+		int len = children.size();
+		for( int i = 0; i < len; i++ )
+		{
+			Actor child = children.get(i);
+			child.act( delta );
+		}
+	}
+	
 	@Override
 	protected void render( SpriteBatch batch ) 
 	{
@@ -213,33 +225,12 @@ public class Group extends Actor
 		}
 	}
 	
-	public static void slowToChildCoordinateSystem( Actor child, float x, float y, Vector2 out )
-	{
-		final float cos = (float)Math.cos( (float)Math.toRadians(child.rotation) );
-		final float sin = (float)Math.sin( (float)Math.toRadians(child.rotation) );
-		
-		float refX = -sin * child.refX + cos * child.refY;
-		float refY =  cos * child.refX + sin * child.refY;
-		
-		refX *= child.scaleX;
-		refY *= child.scaleY;
-		
-		float px = child.x + child.refX - refX;
-		float py = child.y + child.refY - refY;
-		
-		float tox = x - px;
-		float toy = y - py;
-		
-		out.x = tox * cos + toy * sin;
-		out.y = tox * -sin + toy * cos;
-		
-		out.x /= child.scaleX;
-		out.y /= child.scaleY;
-	}
-	
 	@Override
 	protected boolean touchDown(float x, float y, int pointer) 
 	{	
+		if( !touchable )
+			return false;
+		
 		int len = children.size() - 1;
 		for( int i = len; i >= 0; i-- )
 		{
@@ -265,6 +256,9 @@ public class Group extends Actor
 	@Override
 	protected boolean touchUp(float x, float y, int pointer) 
 	{
+		if( !touchable )
+			return false;
+		
 		int len = children.size() - 1;
 		for( int i = len; i >= 0; i-- )
 		{
@@ -283,6 +277,9 @@ public class Group extends Actor
 	@Override
 	protected boolean touchDragged(float x, float y, int pointer) 
 	{
+		if( !touchable )
+			return false;
+		
 		int len = children.size() - 1;
 		for( int i = len; i >= 0; i-- )
 		{

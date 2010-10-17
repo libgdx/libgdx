@@ -33,14 +33,16 @@ public class Pool <T>
 	
 	/** the list of free objects **/
 	private final List<T> freeObjects = new ArrayList( );
-	/** the list of used objects **/
-	private final List<T> usedObjects = new ArrayList( );
 	/** the factory **/
 	private final PoolObjectFactory<T> factory;
+	/** maximum size of pool **/
+	private final int maxSize;
 	
-	public Pool( PoolObjectFactory<T> factory )
+	
+	public Pool( PoolObjectFactory<T> factory, int maxSize )
 	{
 		this.factory = factory;
+		this.maxSize = maxSize;
 	}
 	
 	/**
@@ -58,16 +60,12 @@ public class Pool <T>
 		else
 			object = freeObjects.remove( freeObjects.size() - 1 );
 		
-		usedObjects.add( object );
 		return object;		
 	}
 	
-	/**
-	 * Frees all objects created by this Pool
-	 */
-	public void freeAll( )
+	public void free( T object )
 	{
-		freeObjects.addAll( usedObjects );
-		usedObjects.clear();
+		if( freeObjects.size() < maxSize )
+			freeObjects.add( object );
 	}
 }
