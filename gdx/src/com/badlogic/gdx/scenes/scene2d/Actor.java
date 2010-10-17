@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.PooledLinkedList;
@@ -108,7 +105,13 @@ public abstract class Actor
 	
 	public void action( Action action )
 	{
+		action.setTarget( this );
 		actions.add( action );
+	}
+	
+	public void clearActions( )
+	{
+		actions.clear( );
 	}
 	
 	public String toString( )

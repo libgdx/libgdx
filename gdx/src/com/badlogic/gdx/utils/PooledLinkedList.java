@@ -156,4 +156,13 @@ public class PooledLinkedList<T>
 		list.next();
 		list.remove();
 	}
+
+	public void clear() 
+	{
+		iter();
+		T v = null;
+		while( ( v = next() ) != null )
+			remove();
+		
+	}
 }
