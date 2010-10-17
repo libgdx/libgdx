@@ -50,6 +50,7 @@
 		<activity android:name=".WaterRipples" android:label="Water Ripples"/>
 		<activity android:name=".StageTest" android:label="Stage Test"/>
 		<activity android:name=".WindowedTest" android:label="Windowed Test"/>
+		<activity android:name=".FillrateTest" android:label="Fillrate Test"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
