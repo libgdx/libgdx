@@ -137,34 +137,11 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 */
 	private boolean dispose = false;
 
-	public AndroidGraphics(AndroidApplication activity, boolean useGL2IfAvailable, LayoutParams layoutParams) {
-		activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+	public AndroidGraphics(AndroidApplication activity, boolean useGL2IfAvailable) {
 		view = createGLSurfaceView(activity, useGL2IfAvailable);
-
-		if (layoutParams != null)
-			activity.setContentView(view, layoutParams);
-		else
-			activity.setContentView(view);
-
 		this.app = activity;
 	}
-	
-	
-	
-	public AndroidGraphics(AndroidApplication activity, ViewGroup viewGroup, boolean useGL2IfAvailable, ViewGroup.LayoutParams layoutParams) {
 
-		view = createGLSurfaceView( activity, useGL2IfAvailable );
-
-		if (layoutParams != null)
-			viewGroup.addView( view, layoutParams );
-		else
-			viewGroup.addView( view );
-
-		this.app = activity;
-	}
-	
 	private View createGLSurfaceView( Activity activity, boolean useGL2 )
 	{
 		if (useGL2 && checkGL20( ) ) 
@@ -189,9 +166,9 @@ final class AndroidGraphics implements Graphics, Renderer {
 			}
 		}
 
-		
+
 	}
-	
+
 	/**
 	 * This is a hack...
 	 *
@@ -479,85 +456,95 @@ final class AndroidGraphics implements Graphics, Renderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	 @Override
-	 public float getDeltaTime() {
-		 return mean.getMean() == 0 ? deltaTime : mean.getMean();
-	 }
+	@Override
+	public float getDeltaTime() {
+		return mean.getMean() == 0 ? deltaTime : mean.getMean();
+	}
 
-	 public void disposeRenderListener() {
-		 dispose = true;
-		 while (dispose) {
-			 try {
-				 Thread.sleep(20);
-			 } catch (InterruptedException e) {
-			 }
-		 }
-	 }
+	public void disposeRenderListener() {
+		dispose = true;
+		while (dispose) {
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
 
-	 /**
-	  * {@inheritDoc}
-	  */
-	 @Override
-	 public GraphicsType getType() {
-		 return GraphicsType.AndroidGL;
-	 }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GraphicsType getType() {
+		return GraphicsType.AndroidGL;
+	}
 
-	 /**
-	  * {@inheritDoc}
-	  */
-	 @Override
-	 public int getFramesPerSecond() {
-		 return fps;
-	 }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getFramesPerSecond() {
+		return fps;
+	}
 
-	 @Override
-	 public Texture newUnmanagedTexture(int width, int height, Format format,
-			 TextureFilter minFilter, TextureFilter magFilter,
-			 TextureWrap uWrap, TextureWrap vWrap) 
-	 {
-		 if( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) )
-			 throw new GdxRuntimeException( "Dimensions have to be a power of two" );
+	@Override
+	public Texture newUnmanagedTexture(int width, int height, Format format,
+			TextureFilter minFilter, TextureFilter magFilter,
+			TextureWrap uWrap, TextureWrap vWrap) 
+	{
+		if( !isPowerOfTwo( width ) || !isPowerOfTwo( height ) )
+			throw new GdxRuntimeException( "Dimensions have to be a power of two" );
 
-		 Bitmap.Config config = AndroidPixmap.getInternalFormat(format);
-		 Bitmap bitmap = Bitmap.createBitmap(width, height, config);
-		 Texture texture = null;
-		 if (gl10 != null)
-			 texture = new AndroidTexture(this, gl10, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
-		 else
-			 texture = new AndroidTexture(this, gl20, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
+		Bitmap.Config config = AndroidPixmap.getInternalFormat(format);
+		Bitmap bitmap = Bitmap.createBitmap(width, height, config);
+		Texture texture = null;
+		if (gl10 != null)
+			texture = new AndroidTexture(this, gl10, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
+		else
+			texture = new AndroidTexture(this, gl20, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
 
-		 bitmap.recycle();
-		 return texture;
-	 }
+		bitmap.recycle();
+		return texture;
+	}
 
-	 @Override
-	 public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
-			 TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+	@Override
+	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 
-		 if( !isPowerOfTwo( pixmap.getWidth() ) || !isPowerOfTwo( pixmap.getHeight() ) )
-			 throw new GdxRuntimeException( "Dimensions have to be a power of two" );
+		if( !isPowerOfTwo( pixmap.getWidth() ) || !isPowerOfTwo( pixmap.getHeight() ) )
+			throw new GdxRuntimeException( "Dimensions have to be a power of two" );
 
-		 if (gl10 != null)
-			 return new AndroidTexture(this, gl10, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
-		 else
-			 return new AndroidTexture(this, gl20, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
-	 }
+		if (gl10 != null)
+			return new AndroidTexture(this, gl10, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
+		else
+			return new AndroidTexture(this, gl20, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
+	}
 
-	 @Override
-	 public Texture newTexture(FileHandle file, TextureFilter minFilter,
-			 TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		 if (gl10 != null)
-			 return new AndroidTexture(this, gl10, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);
-		 else
-			 return new AndroidTexture(this, gl20, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);	}
+	@Override
+	public Texture newTexture(FileHandle file, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+		if (gl10 != null)
+			return new AndroidTexture(this, gl10, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);
+		else
+			return new AndroidTexture(this, gl20, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);	}
 
-	 public void clearManagedCaches() 
-	 {
-		 Mesh.clearAllMeshes();
-		 AndroidTexture.clearAllTextures();
-		 ShaderProgram.clearAllShaderPrograms();
-		 FrameBuffer.clearAllFrameBuffers();
-		 Font.clearAllFonts();
-	 }
+	public void clearManagedCaches() 
+	{
+		Mesh.clearAllMeshes();
+		AndroidTexture.clearAllTextures();
+		ShaderProgram.clearAllShaderPrograms();
+		FrameBuffer.clearAllFrameBuffers();
+		Font.clearAllFonts();
+	}
+
+
+
+	/** 
+	 * @return the GLSurfaceView
+	 */
+	public View getView() 
+	{
+		return view;
+	}
 
 }

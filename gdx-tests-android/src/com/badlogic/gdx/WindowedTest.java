@@ -28,13 +28,14 @@ public class WindowedTest extends AndroidApplication implements RenderListener
 		Button b2 = new Button( this );
 		b2.setText( "New Window" );
 		b2.setLayoutParams( new LinearLayout.LayoutParams( LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT ) );
+		View view = initializeForView( false, 16 );
 		
 		LinearLayout layout = new LinearLayout( this );
 		layout.setOrientation( LinearLayout.VERTICAL );
 		layout.addView( b1 );
 		layout.addView( b2 );
+		layout.addView( view, new LinearLayout.LayoutParams( LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT ) );
 		
-		initialize( false, 16, layout, new LinearLayout.LayoutParams( LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT ) );
 		getGraphics().setRenderListener(this);
 		setContentView( layout );
 		
