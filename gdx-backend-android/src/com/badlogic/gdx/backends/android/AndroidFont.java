@@ -96,7 +96,7 @@ final class AndroidFont extends Font
 	public Pixmap getGlyphBitmap(char character) {
 		Rect rect = new Rect();		
 		paint.getTextBounds( "" + character, 0, 1, rect );
-		Bitmap bitmap = Bitmap.createBitmap( rect.width()==0?1:rect.width() + 5, getLineHeight(), Bitmap.Config.ARGB_8888 );
+		Bitmap bitmap = Bitmap.createBitmap( rect.width()==0?1:rect.width() + 5, getLineHeight(), AndroidPixmap.getInternalFormat(Font.pixelFormat) );
 		Canvas g = new Canvas( bitmap );
 		paint.setAntiAlias(true);
 		paint.setColor(0x00000000);

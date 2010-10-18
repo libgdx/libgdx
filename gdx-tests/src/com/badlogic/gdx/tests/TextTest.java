@@ -47,6 +47,7 @@ public class TextTest implements RenderListener
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT );						
 		
 		spriteBatch.begin();
+		spriteBatch.draw( font.getTexture(), 0, 100, font.getTexture().getWidth(), font.getTexture().getHeight(), 0, 0, font.getTexture().getWidth(), font.getTexture().getHeight(), Color.WHITE, false, true );
 		spriteBatch.drawText( font, "this is a test", 100, 100, Color.RED );
 		spriteBatch.end();
 	}

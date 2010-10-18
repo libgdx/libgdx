@@ -57,6 +57,8 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public abstract class Font 
 {	
+	protected static final Pixmap.Format pixelFormat = Pixmap.Format.Alpha;
+	
 	/**
 	 * The font style
 	 * @author mzechner
@@ -96,7 +98,7 @@ public abstract class Font
 	{
 		for( int i = 0; i < glyphs.length; i++ )
 			glyphs[i] = null;
-		this.texture = Gdx.graphics.newUnmanagedTexture( TEXTURE_WIDTH, TEXTURE_HEIGHT, Pixmap.Format.RGBA8888, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+		this.texture = Gdx.graphics.newUnmanagedTexture( TEXTURE_WIDTH, TEXTURE_HEIGHT, pixelFormat, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 		glyphX = 0;
 		glyphY = 0;
 	}

@@ -326,8 +326,8 @@ final class AndroidTexture implements Texture
 		else
 			gl20.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
 		Bitmap bitmap = (Bitmap)bmp.getNativePixmap();
-		if( bitmap.getConfig() != format )
-			throw new IllegalArgumentException( "can't draw bitmap with different format: " + bitmap.getConfig() + " != " + format );
+//		if( bitmap.getConfig() != format )
+//			throw new IllegalArgumentException( "can't draw bitmap with different format: " + bitmap.getConfig() + " != " + format );
 
 		int level = 0;
 		int height = bitmap.getHeight();
