@@ -100,7 +100,6 @@ public class LwjglApplication implements Application {
 			out = null;
 			in.close();
 			in = null;
-			System.load( new File( libName ).getAbsolutePath() );
 		}
 		catch( Throwable t )
 		{
@@ -237,7 +236,7 @@ public class LwjglApplication implements Application {
 				listeners.get(i).render();
 
 			Display.update();
-			Display.sync(60);
+//			Display.sync(60);
 		}
 
 		if (appListener != null) appListener.pause();
