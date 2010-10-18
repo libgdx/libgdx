@@ -46,9 +46,9 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 	private GL11 gl11;
 	private GL20 gl20;
 	private final boolean useGL2;
-	private float lastTime;
+	private long lastTime;
 	private float deltaTime = 0;
-	private float frameStart = 0;
+	private long frameStart = 0;
 	private int frames = 0;
 	private int fps;
 
@@ -170,11 +170,11 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 	}
 
 	public void render () {
-		float time = Sys.getTime() / Sys.getTimerResolution();
-		deltaTime = (int)(time - lastTime);
+		long time = System.nanoTime();
+		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
 
-		if (time - frameStart > 1) {
+		if (time - frameStart >= 1000000000 ) {
 			fps = frames;
 			frames = 0;
 			frameStart = time;
@@ -199,7 +199,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 			}
 		}
 
-		lastTime = (Sys.getTime() * 1000) / Sys.getTimerResolution();
+		lastTime = System.nanoTime();
 	}
 
 	public float getDeltaTime () {

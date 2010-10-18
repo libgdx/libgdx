@@ -185,19 +185,15 @@ public class LwjglApplication implements Application {
 		}
 		for (RenderListener listener : listeners)
 			listener.render();
-
-		long lastTime = (Sys.getTime() * 1000) / Sys.getTimerResolution();
+		
 		while (running && !Display.isCloseRequested()) {
-			long time = (Sys.getTime() * 1000) / Sys.getTimerResolution();
-			int delta = (int)(time - lastTime);
-			lastTime = time;
 
 			if (Keyboard.isCreated()) {
 				while (Keyboard.next()) {
 					if (Keyboard.getEventKeyState())
-						input.fireKeyDown(Keyboard.getEventKey());
+						input.fireKeyDown(LwjglInput.getKeyCode(Keyboard.getEventKey()));
 					else {
-						input.fireKeyUp(Keyboard.getEventKey());
+						input.fireKeyUp(LwjglInput.getKeyCode(Keyboard.getEventKey()));
 						input.fireKeyTyped(Keyboard.getEventCharacter());
 					}
 				}
@@ -235,8 +231,8 @@ public class LwjglApplication implements Application {
 			for (int i = 0, n = listeners.size(); i < n; i++)
 				listeners.get(i).render();
 
-			Display.update();
-//			Display.sync(60);
+			Display.update();		
+//			Display.sync( 60 );
 		}
 
 		if (appListener != null) appListener.pause();

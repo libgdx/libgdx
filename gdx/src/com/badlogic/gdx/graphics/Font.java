@@ -57,7 +57,7 @@ import com.badlogic.gdx.math.Rectangle;
  */
 public abstract class Font 
 {	
-	protected static final Pixmap.Format pixelFormat = Pixmap.Format.Alpha;
+	protected static final Pixmap.Format pixelFormat = Pixmap.Format.RGBA8888;
 	
 	/**
 	 * The font style
