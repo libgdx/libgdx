@@ -196,7 +196,7 @@ public class Pong implements RenderListener
 		// For text to be transparent we have to enable blending and texturing.
 		// We could setup blending once but i'm lazy :)
 		spriteBatch.begin();
-		spriteBatch.drawText( font, score, Gdx.graphics.getWidth() / 2 - font.getStringWidth(score) / 2, Gdx.graphics.getHeight(), Color.WHITE );		
+		spriteBatch.drawText( font, score, Gdx.graphics.getWidth() / 2 - font.getStringWidth(score) / 2, Gdx.graphics.getHeight() - font.getLineHeight(), Color.WHITE );		
 		spriteBatch.end();
 	}
 

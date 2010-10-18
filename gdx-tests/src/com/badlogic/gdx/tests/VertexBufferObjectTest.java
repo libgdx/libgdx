@@ -18,10 +18,10 @@ package com.badlogic.gdx.tests;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.utils.BufferUtils;
 
 public class VertexBufferObjectTest implements RenderListener
 {
@@ -43,19 +43,22 @@ public class VertexBufferObjectTest implements RenderListener
 		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
 		gl.glClear( GL11.GL_COLOR_BUFFER_BIT );
 				
+		gl.glColor4f( 1, 1, 1, 1 );
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, vboHandle );
 		gl.glBindBuffer( GL11.GL_ELEMENT_ARRAY_BUFFER, vboIndexHandle );
-		gl.glEnableClientState( GL11.GL_VERTEX_ARRAY );
-		gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
+		gl.glEnableClientState( GL11.GL_VERTEX_ARRAY );		
 		gl.glVertexPointer( 3, GL11.GL_FLOAT, 7 * 4, 0 );
-		gl.glColorPointer( 4, GL11.GL_FLOAT, 7 * 4, 3 * 4 );		
+		gl.glEnableClientState( GL11.GL_COLOR_ARRAY );
+		gl.glColorPointer( 4, GL11.GL_FLOAT, 7 * 4, 3 * 4 );
+		gl.glDrawArrays( GL11.GL_TRIANGLES, 0, 3 );
 		gl.glDrawElements( GL11.GL_TRIANGLES, 3, GL11.GL_UNSIGNED_SHORT, 0 );		
 	}
 
 	@Override
 	public void surfaceCreated( ) 
 	{
-		FloatBuffer vertices = FloatBuffer.wrap( new float[3 * 7] );
+		
+		FloatBuffer vertices = BufferUtils.newFloatBuffer( 3 * 7 );
 		vertices.put( new float[] {
 					-0.5f, -0.5f, 0, 1, 0, 0, 1,
 					 0.5f, -0.5f, 0, 0, 1, 0, 1,
@@ -71,7 +74,7 @@ public class VertexBufferObjectTest implements RenderListener
 		gl.glBufferData( GL11.GL_ARRAY_BUFFER, 3 * 7 * 4, vertices, GL11.GL_STATIC_DRAW );
 		gl.glBindBuffer( GL11.GL_ARRAY_BUFFER, 0 );		
 		
-		ShortBuffer indices = ShortBuffer.wrap( new short[3] );
+		ShortBuffer indices = BufferUtils.newShortBuffer( 3 );
 		indices.put( new short[ ] { 0, 1, 2 } );
 		indices.flip();
 		gl.glGenBuffers( 1, handle, 0 );
