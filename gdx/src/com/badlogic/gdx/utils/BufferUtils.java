@@ -2,7 +2,10 @@ package com.badlogic.gdx.utils;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Class with static helper methods to increase the speed of 
@@ -49,4 +52,32 @@ public class BufferUtils
 	public static native int float2int( float value );
 	
 	public static native boolean bitEqual( int value1, float value2 );
+	
+	public static FloatBuffer newFloatBuffer( int numFloats )
+	{
+		ByteBuffer buffer = ByteBuffer.allocateDirect( numFloats * Float.SIZE / 8 );
+		buffer.order( ByteOrder.nativeOrder() );
+		return buffer.asFloatBuffer();
+	}
+	
+	public static ShortBuffer newShortBuffer( int numShorts )
+	{
+		ByteBuffer buffer = ByteBuffer.allocateDirect( numShorts * Short.SIZE / 8 );
+		buffer.order( ByteOrder.nativeOrder() );
+		return buffer.asShortBuffer();
+	}
+	
+	public static IntBuffer newIntBuffer( int numInts )
+	{
+		ByteBuffer buffer = ByteBuffer.allocateDirect( numInts * Integer.SIZE / 8 );
+		buffer.order( ByteOrder.nativeOrder() );
+		return buffer.asIntBuffer();
+	}
+	
+	public static ByteBuffer newByteBuffer( int numBytes )
+	{
+		ByteBuffer buffer = ByteBuffer.allocateDirect( numBytes * Byte.SIZE / 8 );
+		buffer.order( ByteOrder.nativeOrder() );
+		return buffer;
+	}
 }
