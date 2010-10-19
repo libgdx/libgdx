@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.backends.desktop;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +22,8 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.Util;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -42,22 +43,23 @@ final class LwjglTexture implements Texture {
 	/** whether this textures i managed or not **/
 	private final boolean isManaged;
 	private int textureID;
+	private final boolean isMipMapped;
 
 	/** global number of textures **/
 	public static int textures = 0;
 
-	static private IntBuffer buffer = BufferUtils.createIntBuffer(1);
 	static private ByteBuffer imageBuffer;
 	static private final BitmapDecoder bitmapDecoder = new BitmapDecoder();
-	static private final PNGDecoder pngDecoder = new PNGDecoder();
-
+	
 	/**
 	 * Create a new texture
 	 */
 	LwjglTexture (FileHandle file, InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
-		load(file, in);
+		this.isMipMapped = minFilter == TextureFilter.MipMap;
+		BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap( file ).getNativePixmap();
+		loadMipMap( image );
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -69,7 +71,8 @@ final class LwjglTexture implements Texture {
 	LwjglTexture (BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
-		load(image);
+		this.isMipMapped = minFilter == TextureFilter.MipMap;
+		loadMipMap(image);
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -84,8 +87,9 @@ final class LwjglTexture implements Texture {
 	LwjglTexture (int width, int height, int format, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
-		BufferedImage image = new BufferedImage(width, height, format);
-		load(image);
+		this.isMipMapped = minFilter == TextureFilter.MipMap;
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		loadMipMap(image);
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -94,52 +98,53 @@ final class LwjglTexture implements Texture {
 		textures++;
 	}
 
-	private void load (FileHandle file, InputStream in) {
-		try {
-			if (file.toString().endsWith("png")) {
-				pngDecoder.decodeHeader(in);
-				texWidth = pngDecoder.getWidth();
-				texHeight = pngDecoder.getHeight();
-				int stride = pngDecoder.getWidth() * 4;
-				int bufferSize = stride * pngDecoder.getHeight();
-				if (imageBuffer == null || imageBuffer.capacity() < bufferSize)
-					imageBuffer = ByteBuffer.allocateDirect(bufferSize);
-				else
-					imageBuffer.clear();
-				pngDecoder.decode(imageBuffer, stride, PNGDecoder.Format.RGBA);
-				imageBuffer.flip();
-			} else {
-				imageBuffer = bitmapDecoder.decode(in, imageBuffer);
-				texWidth = bitmapDecoder.width;
-				texHeight = bitmapDecoder.height;
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Couldn't load Texture: " + file, ex);
-		}
-		buffer.clear();
-		GL11.glGenTextures(buffer);
-		textureID = buffer.get(0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, texWidth, texHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-			imageBuffer);
-	}
-
-	private void load (BufferedImage image) {
+	private ByteBuffer toByteBuffer( BufferedImage image )
+	{
 		try {
 			imageBuffer = bitmapDecoder.decode(image, imageBuffer);
-			texWidth = bitmapDecoder.width;
-			texHeight = bitmapDecoder.height;
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Couldn't load Texture", ex);
+			return imageBuffer;
+		} catch (IOException e) {
+			throw new GdxRuntimeException( "couldn't decode image" );
 		}
-		buffer.clear();
-		GL11.glGenTextures(buffer);
-		textureID = buffer.get(0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, texWidth, texHeight, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-			imageBuffer);
 	}
+	
+	private BufferedImage scaleDown( BufferedImage image )
+	{
+		BufferedImage scaled = new BufferedImage( image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR );
+		Graphics2D g = scaled.createGraphics();
+		g.drawImage( image, 0, 0, scaled.getWidth(), scaled.getHeight(), null ); //FIXME replace with something that looks actually like a scaled image...
+		g.dispose();
+		return scaled;
+	}
+	
+	private void loadMipMap( BufferedImage image )
+	{
+		int level = 0;
+		int height = image.getHeight();
+		int width = image.getWidth();
+		texWidth = width;
+		texHeight = height;
+		textureID = GL11.glGenTextures();
+		GL11.glBindTexture( GL11.GL_TEXTURE_2D, textureID );
 
+		while(height >= 1 || width >= 1 && level < 4 ) {
+			ByteBuffer imageBuffer = toByteBuffer( image );
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA8, bitmapDecoder.width, bitmapDecoder.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);			
+			if(height == 1 || width == 1 || isMipMapped == false ) 
+			{
+				break;
+			}
+
+			level++;
+			if( height > 1 )
+				height /= 2;
+			if( width > 1 )
+				width /= 2;
+
+			image = scaleDown( image );	
+		}		
+	}
+	
 	private int getTextureFilter (TextureFilter filter) {
 		if (filter == TextureFilter.Linear)
 			return GL11.GL_LINEAR;
@@ -179,14 +184,31 @@ final class LwjglTexture implements Texture {
 
 	public void draw (Pixmap pixmap, int x, int y) {
 		if (isManaged) throw new GdxRuntimeException("Can't draw to a managed texture");
-		try {
-			imageBuffer = bitmapDecoder.decode((BufferedImage)pixmap.getNativePixmap(), imageBuffer);
-		} catch (IOException ex) {
-			throw new GdxRuntimeException(ex);
-		}
+		BufferedImage image = (BufferedImage)pixmap.getNativePixmap();
+		
+		int level = 0;
+		int height = image.getHeight();
+		int width = image.getWidth();
 		bind();
-		GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0, x, y, bitmapDecoder.width, bitmapDecoder.height, GL11.GL_RGBA,
-			GL11.GL_UNSIGNED_BYTE, imageBuffer);
+		while(height >= 1 || width >= 1 && level < 4 ) {
+			ByteBuffer imageBuffer = toByteBuffer( image );
+			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, bitmapDecoder.width, bitmapDecoder.height, GL11.GL_RGBA,
+					GL11.GL_UNSIGNED_BYTE, imageBuffer);			
+			if(height == 1 || width == 1 || isMipMapped == false ) 
+			{
+				break;
+			}
+
+			level++;
+			if( height > 1 )
+				height /= 2;
+			if( width > 1 )
+				width /= 2;
+
+			image = scaleDown( image );	
+		}	
+		
+
 	}
 
 	public int getTextureObjectHandle () {

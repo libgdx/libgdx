@@ -68,7 +68,7 @@ public class FrameBufferTest implements RenderListener
 		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT );
 		
 		spriteBatch.begin();
-		spriteBatch.draw( frameBuffer.getColorBufferTexture(), 0, 200, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(), frameBuffer.getColorBufferTexture().getHeight(), Color.WHITE, false, true );
+		spriteBatch.draw( frameBuffer.getColorBufferTexture(), 0, 0, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(), frameBuffer.getColorBufferTexture().getHeight(), Color.WHITE, false, true );
 		spriteBatch.end();
 	}
 

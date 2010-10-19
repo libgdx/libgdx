@@ -10,8 +10,8 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Hashtable;
 
@@ -24,14 +24,6 @@ class BitmapDecoder {
 	int width, height;
 
 	private BufferedImage tempImage;
-
-	public BitmapDecoder () {
-		super();
-	}
-
-	public ByteBuffer decode (InputStream input, ByteBuffer buffer) throws IOException {
-		return decode(ImageIO.read(input), buffer);
-	}
 
 	public ByteBuffer decode (BufferedImage image, ByteBuffer buffer) throws IOException {
 		if (image == null) throw new IOException("Invalid image.");
@@ -50,6 +42,10 @@ class BitmapDecoder {
 		g.fillRect(0, 0, width, height);
 		g.setComposite(AlphaComposite.SrcOver);
 		g.drawImage(image, 0, 0, null);
+		g.dispose();
+		
+		ImageIO.write( image, "png", new File( "in.png" ) );
+		ImageIO.write( tempImage, "png", new File( "out.png" ) );
 
 		int bufferSize = width * height * 4;
 		if (buffer == null || buffer.capacity() < bufferSize)

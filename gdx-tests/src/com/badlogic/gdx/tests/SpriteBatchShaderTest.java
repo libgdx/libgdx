@@ -45,6 +45,8 @@ public class SpriteBatchShaderTest implements RenderListener
 	int coords[] = new int[SPRITES*2];
 	int coords2[] = new int[SPRITES*2];
 	
+	Color col = new Color( 1, 1, 1, 0.6f );
+	
 	Mesh mesh;
 	float vertices[] = new float[SPRITES * 6 * ( 2 + 2 + 4 )];
 	
@@ -69,7 +71,6 @@ public class SpriteBatchShaderTest implements RenderListener
 		
 		long start = System.nanoTime();
 		spriteBatch.begin();		
-//		spriteBatch.disableBlending();
 		begin = (System.nanoTime()-start)/1000000000.0f;
 		
 		int len = coords.length;
@@ -80,7 +81,7 @@ public class SpriteBatchShaderTest implements RenderListener
 		
 		start = System.nanoTime();
 		for( int i = 0; i < coords2.length; i+=2 )		
-			spriteBatch.draw( texture2, coords2[i], coords2[i+1], 0, 0, 32, 32, Color.WHITE );
+			spriteBatch.draw( texture2, coords2[i], coords2[i+1], 0, 0, 32, 32, col );
 		draw2 = (System.nanoTime()-start)/1000000000.0f;
 				
 		start = System.nanoTime();
