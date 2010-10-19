@@ -33,7 +33,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 public class SpriteBatchTest implements RenderListener, InputListener
 {
-	int SPRITES = 500;
+	int SPRITES = 336 / 2;
 	
 	long startTime = System.nanoTime();
 	int frames = 0;

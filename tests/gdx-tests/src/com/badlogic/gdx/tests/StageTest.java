@@ -39,8 +39,8 @@ import com.badlogic.gdx.scenes.scene2d.actors.Label;
 
 public class StageTest implements RenderListener, InputListener
 {
-	private static final int NUM_SPRITES = (int)Math.sqrt(400 / 10);
-	private static final int NUM_GROUPS = 10;
+	private static final int NUM_GROUPS = 5;
+	private static final int NUM_SPRITES = (int)Math.sqrt(400 / NUM_GROUPS);	
 	private static final float SPACING = 5;
 	ImmediateModeRenderer renderer;
 	Stage stage;
