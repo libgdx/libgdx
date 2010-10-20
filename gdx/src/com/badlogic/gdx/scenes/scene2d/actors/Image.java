@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d.actors;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureRegion;
@@ -23,20 +22,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Image extends Actor
 {
-	public final Color color;
 	public final TextureRegion region;
 	
 	public Image( String name )
 	{
 		super( name );
-		this.color = new Color( 1, 1, 1, 1 );
 		this.region = new TextureRegion( null, 0, 0, 0, 0 );
 	}
 	
 	public Image( String name, Texture texture )
 	{
 		super( name );
-		this.color = new Color( 1, 1, 1, 1 );
 		this.refX = texture.getWidth() / 2.0f;
 		this.refY = texture.getHeight() / 2.0f;
 		this.width = texture.getWidth();
@@ -47,7 +43,6 @@ public class Image extends Actor
 	public Image( String name, TextureRegion region )
 	{
 		super( name );
-		this.color = new Color( 1, 1, 1, 1 );
 		this.refX = region.width / 2.0f;
 		this.refY = region.height / 2.0f;
 		this.width = region.width;

@@ -55,6 +55,7 @@ public class Group extends Actor
 	private final Map<String, Actor> namesToActors;
 	
 	public Actor lastTouchedChild;
+	public Actor focusedActor = null;
 	
 	public Group( String name )
 	{
@@ -231,6 +232,13 @@ public class Group extends Actor
 		if( !touchable )
 			return false;
 		
+		if( focusedActor != null )
+		{
+			point.x = x; point.y = y;
+			focusedActor.toLocalCoordinates( point );
+			focusedActor.touchDown( point.x, point.y, pointer );
+		}
+		
 		int len = children.size() - 1;
 		for( int i = len; i >= 0; i-- )
 		{
@@ -259,6 +267,13 @@ public class Group extends Actor
 		if( !touchable )
 			return false;
 		
+		if( focusedActor != null )
+		{
+			point.x = x; point.y = y;
+			focusedActor.toLocalCoordinates( point );
+			focusedActor.touchUp( point.x, point.y, pointer );
+		}
+		
 		int len = children.size() - 1;
 		for( int i = len; i >= 0; i-- )
 		{
@@ -279,6 +294,13 @@ public class Group extends Actor
 	{
 		if( !touchable )
 			return false;
+
+		if( focusedActor != null )
+		{
+			point.x = x; point.y = y;
+			focusedActor.toLocalCoordinates( point );
+			focusedActor.touchDragged( point.x, point.y, pointer );
+		}
 		
 		int len = children.size() - 1;
 		for( int i = len; i >= 0; i-- )
@@ -355,6 +377,13 @@ public class Group extends Actor
 	public List<Group> getGroups( )
 	{
 		return immutableGroups;
+	}
+	
+	public void focus( Actor actor )
+	{
+		focusedActor = actor;
+		if( parent != null )
+			parent.focus( actor );
 	}
 	
 	public static void enableDebugging( String debugTextureFile )

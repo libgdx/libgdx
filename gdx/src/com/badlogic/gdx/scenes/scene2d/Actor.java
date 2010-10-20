@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.PooledLinkedList;
@@ -52,6 +53,7 @@ public abstract class Actor
 	public float scaleX = 1;
 	public float scaleY = 1;
 	public float rotation;
+	public final Color color = new Color( 1, 1, 1, 1 );
 	
 	private PooledLinkedList<Action> actions = new PooledLinkedList<Action>( 10 );
 	
