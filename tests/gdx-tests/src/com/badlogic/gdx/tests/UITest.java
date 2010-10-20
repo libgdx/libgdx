@@ -12,9 +12,14 @@ import com.badlogic.gdx.graphics.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Delay;
+import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
+import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveTo;
+import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateTo;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
+import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 
 public class UITest implements RenderListener, InputListener
@@ -44,9 +49,18 @@ public class UITest implements RenderListener, InputListener
 			atlas.addRegion( "scale", 64, 32, 64, 32 );
 			
 			Image img1 = new Image( "image1", atlas.getRegion( "blend" ) );
-			img1.action( MoveTo.$( 100, 100, 2 ) );
-			img1.action( RotateTo.$( 360, 2 ) );
-			img1.action( ScaleTo.$( 0.5f, 0.5f, 2 ) );
+			img1.action( Sequence.$( 
+										MoveTo.$( 100, 100, 1 ),
+										ScaleTo.$( 0.5f, 0.5f, 1 ),
+										FadeOut.$( 0.5f ),
+										Delay.$( 
+												 Parallel.$( 
+														 	 RotateTo.$( 360, 1 ), 
+														 	 FadeIn.$( 1 ),
+														 	 ScaleTo.$( 1, 1, 1 ))
+												, 1 )
+									)
+						);
 			ui.addActor( img1 );
 			
 		}
