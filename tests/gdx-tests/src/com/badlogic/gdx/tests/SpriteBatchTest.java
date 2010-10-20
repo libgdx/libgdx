@@ -15,25 +15,25 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 public class SpriteBatchTest implements RenderListener, InputListener
 {
-	int SPRITES = 336 / 2;
+	int SPRITES = 1000000 / 2;
 	
 	long startTime = System.nanoTime();
 	int frames = 0;
@@ -44,6 +44,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	SpriteBatch spriteBatch;
 	float sprites[] = new float[SPRITES*6];
 	float sprites2[] = new float[SPRITES*6];	
+	Sprite[] sprites3 = new Sprite[SPRITES*2];
 	
 	int renderMethod = 0;
 	
@@ -60,6 +61,8 @@ public class SpriteBatchTest implements RenderListener, InputListener
 			renderNormal(  );
 		if( renderMethod == 1 )
 			renderArray( );
+		if( renderMethod == 2 )
+			renderSprites( );
 	}		
 	
 	private void renderNormal( )
@@ -153,6 +156,52 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		frames++;
 	}
 	
+	private void renderSprites( )
+	{
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
+		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+		
+		float begin = 0;
+		float end = 0;
+		float draw1 = 0;
+		float draw2 = 0;
+		float drawText = 0;
+		
+		long start = System.nanoTime();
+		spriteBatch.begin();			
+		begin = (System.nanoTime()-start)/1000000000.0f;
+				
+		start = System.nanoTime();	
+		for( int i = 0; i < SPRITES; i++ )
+			spriteBatch.draw( sprites3[i] );
+		draw1 = (System.nanoTime()-start)/1000000000.0f;
+		
+		start = System.nanoTime();			
+		for( int i = SPRITES; i < SPRITES << 1; i++ )
+			spriteBatch.draw( sprites3[i] );
+		draw2 = (System.nanoTime()-start)/1000000000.0f;
+				
+		start = System.nanoTime();
+		spriteBatch.drawText( font, "Question?", 100, 300, Color.RED );		
+		spriteBatch.drawText( font, "and another this is a test", 200, 100, Color.WHITE );
+		spriteBatch.drawText( font, "all hail and another this is a test", 200, 200, Color.WHITE );
+		spriteBatch.drawText( font, "Sprite fps: " + Gdx.graphics.getFramesPerSecond(), 10, 40, Color.RED );
+		drawText = (System.nanoTime()-start)/1000000000.0f;
+		
+		start = System.nanoTime();
+		spriteBatch.end();
+		end = (System.nanoTime()-start)/1000000000.0f;
+		
+		if( System.nanoTime() - startTime > 1000000000 )
+		{
+			Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
+			frames = 0;
+			startTime = System.nanoTime();
+		}
+		frames++;
+	}
+	
 	@Override
 	public void surfaceChanged(int width, int height) 
 	{	
@@ -163,34 +212,46 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	public void surfaceCreated( ) 
 	{					
 		if( spriteBatch == null )
-			spriteBatch = new SpriteBatch( );		
+			spriteBatch = new SpriteBatch( 10000 );		
 		
 		Pixmap pixmap = Gdx.graphics.newPixmap( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ) );		
 		texture = Gdx.graphics.newUnmanagedTexture( 32, 32, Format.RGB565, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 		texture.draw( pixmap, 0, 0);
+		pixmap.dispose();
 		
 		pixmap = Gdx.graphics.newPixmap(32, 32, Format.RGBA8888 );
 		pixmap.setColor(1, 1, 0, 0.5f );
 		pixmap.fill();
-		texture2 = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+//		texture2 = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
+		texture2 = texture;
+		pixmap.dispose();
 		
 		font = Gdx.graphics.newFont( "Arial", 32, FontStyle.Plain );
 		
 		for( int i = 0; i < sprites.length; i+=6 )
 		{
 			sprites[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			sprites[i+1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32)) + 32;
+			sprites[i+1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
 			sprites[i+2] = 0;
 			sprites[i+3] = 0;
 			sprites[i+4] = 32;
 			sprites[i+5] = 32;
 			sprites2[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			sprites2[i+1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32)) + 32;
+			sprites2[i+1] = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
 			sprites2[i+2] = 0;
 			sprites2[i+3] = 0;
 			sprites2[i+4] = 32;
-			sprites2[i+5] = 32;
+			sprites2[i+5] = 32;			
 		}		
+		
+		for( int i = 0; i < SPRITES * 2; i++ )
+		{
+			sprites3[i] = new Sprite( texture, 0, 0, 32, 32 );			
+			sprites3[i].setBounds((int)(Math.random() * (Gdx.graphics.getWidth() - 32)), (int)(Math.random() * (Gdx.graphics.getHeight() - 32)), 32, 32 );
+			if( i >= SPRITES )
+				sprites3[i].texture = texture2;
+			
+		}
 		
 		Gdx.input.addInputListener( this );
 	}
@@ -228,7 +289,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	@Override
 	public boolean touchUp(int x, int y, int pointer) 
 	{
-		renderMethod = (renderMethod + 1) % 2;		
+		renderMethod = (renderMethod + 1) % 3;		
 		return false;
 	}
 
