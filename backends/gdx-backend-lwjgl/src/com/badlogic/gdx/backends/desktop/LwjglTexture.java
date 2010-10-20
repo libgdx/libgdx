@@ -18,10 +18,12 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
@@ -49,7 +51,6 @@ final class LwjglTexture implements Texture {
 	public static int textures = 0;
 
 	static private ByteBuffer imageBuffer;
-	static private final BitmapDecoder bitmapDecoder = new BitmapDecoder();
 	
 	/**
 	 * Create a new texture
@@ -88,7 +89,7 @@ final class LwjglTexture implements Texture {
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = minFilter == TextureFilter.MipMap;
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		BufferedImage image = new BufferedImage(width, height, format);
 		loadMipMap(image);
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
@@ -100,8 +101,17 @@ final class LwjglTexture implements Texture {
 
 	private ByteBuffer toByteBuffer( BufferedImage image )
 	{
+		if( imageBuffer == null || imageBuffer.capacity() / 4 < image.getWidth() * image.getHeight() )
+		{
+			imageBuffer = ByteBuffer.allocateDirect( image.getWidth() * image.getHeight() * 4 );
+			imageBuffer.order(ByteOrder.LITTLE_ENDIAN);
+		}
+		
+		imageBuffer.clear();
+		
 		try {
-			imageBuffer = bitmapDecoder.decode(image, imageBuffer);
+			new TextureDataSource( image ).decode( imageBuffer );
+			imageBuffer.flip();
 			return imageBuffer;
 		} catch (IOException e) {
 			throw new GdxRuntimeException( "couldn't decode image" );
@@ -110,7 +120,7 @@ final class LwjglTexture implements Texture {
 	
 	private BufferedImage scaleDown( BufferedImage image )
 	{
-		BufferedImage scaled = new BufferedImage( image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR );
+		BufferedImage scaled = new BufferedImage( image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR_PRE );
 		Graphics2D g = scaled.createGraphics();
 		g.drawImage( image, 0, 0, scaled.getWidth(), scaled.getHeight(), null ); //FIXME replace with something that looks actually like a scaled image...
 		g.dispose();
@@ -129,7 +139,7 @@ final class LwjglTexture implements Texture {
 
 		while(height >= 1 || width >= 1 && level < 4 ) {
 			ByteBuffer imageBuffer = toByteBuffer( image );
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA8, bitmapDecoder.width, bitmapDecoder.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);			
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA8, width, height, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageBuffer);			
 			if(height == 1 || width == 1 || isMipMapped == false ) 
 			{
 				break;
@@ -192,7 +202,7 @@ final class LwjglTexture implements Texture {
 		bind();
 		while(height >= 1 || width >= 1 && level < 4 ) {
 			ByteBuffer imageBuffer = toByteBuffer( image );
-			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, bitmapDecoder.width, bitmapDecoder.height, GL11.GL_RGBA,
+			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, width, height, GL11.GL_RGBA,
 					GL11.GL_UNSIGNED_BYTE, imageBuffer);			
 			if(height == 1 || width == 1 || isMipMapped == false ) 
 			{

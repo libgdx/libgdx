@@ -51,6 +51,7 @@
 		<activity android:name=".StageTest" android:label="Stage Test"/>
 		<activity android:name=".WindowedTest" android:label="Windowed Test"/>
 		<activity android:name=".FillrateTest" android:label="Fillrate Test"/>
+		<activity android:name=".AlphaTest" android:label="Alpha Test"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>

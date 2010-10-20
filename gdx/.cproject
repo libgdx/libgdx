@@ -36,8 +36,8 @@
 <option id="gnu.cpp.compiler.option.preprocessor.def.351061383" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
 <option id="gnu.cpp.compiler.option.include.paths.342753884" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${JDK_HOME}\include&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${JDK_HOME}\include\win32&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}\include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}\include\win32&quot;"/>
 </option>
 <option id="gnu.cpp.compiler.option.other.other.717141589" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2 " valueType="string"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.702080840" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -1070,9 +1070,9 @@
 <tool id="cdt.managedbuild.tool.gnu.archiver.base.830161879" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 <tool command="g++ -fPIC" id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1485838342" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 <option id="gnu.cpp.compiler.option.include.paths.84440414" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}/include&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/linux&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}/include/linux&quot;"/>
 </option>
 <option id="gnu.cpp.compiler.option.optimization.level.1289272877" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
 <option id="gnu.cpp.compiler.option.debugging.level.732049915" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
