@@ -37,7 +37,6 @@ public class SpriteBatchRotationTest implements RenderListener
 	SpriteBatch spriteBatch;
 	Texture texture;
 	Font font;
-	float[] sprites;
 	float angle = 0;
 	float scale = 1;
 	float vScale = 1;
@@ -56,8 +55,7 @@ public class SpriteBatchRotationTest implements RenderListener
 		spriteBatch.begin();
 		spriteBatch.draw( texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );		
 		spriteBatch.draw( texture, 64, 10, 32, 32, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
-		spriteBatch.draw( texture, 112, 10, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE );
-		spriteBatch.draw( texture, sprites, Color.WHITE );
+		spriteBatch.draw( texture, 112, 10, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE );		
 		
 		spriteBatch.draw( texture, 16, 58, 16, 16, 32, 32, 1, 1, angle, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
 		spriteBatch.draw( texture, 64, 58, 16, 16, 32, 32, scale, scale, 0, 0, 0, texture.getWidth(), texture.getHeight(), Color.WHITE, false, false );
@@ -110,8 +108,7 @@ public class SpriteBatchRotationTest implements RenderListener
 		{			
 			spriteBatch = new SpriteBatch( );  
 			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/test.png", FileType.Internal ), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
-			font = Gdx.graphics.newFont( "Arial", 12, FontStyle.Plain );
-			sprites = new float[] { 160, 10, 0, 0, texture.getWidth(), texture.getHeight() };
+			font = Gdx.graphics.newFont( "Arial", 12, FontStyle.Plain );			
 			ByteBuffer buffer = ByteBuffer.allocateDirect( 4 );
 			buffer.order(ByteOrder.nativeOrder());
 			pixelBuffer = buffer.asIntBuffer();

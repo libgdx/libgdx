@@ -20,6 +20,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * <p>
@@ -371,10 +372,13 @@ public  class SpriteBatch
 		float fy2 = y + height - worldOriginY;
 		
 		// scale
-		fx *= scaleX;
-		fy *= scaleY;
-		fx2 *= scaleX;
-		fy2 *= scaleY;
+		if( scaleX != 1 || scaleY != 1 )
+		{
+			fx *= scaleX;
+			fy *= scaleY;
+			fx2 *= scaleX;
+			fy2 *= scaleY;
+		}
 		
 		// construct corner points, start from top left and go counter clockwise
 		final float p1x = fx;
@@ -386,21 +390,48 @@ public  class SpriteBatch
 		final float p4x = fx2;
 		final float p4y = fy;
 		
+		float x1;
+		float y1;
+		float x2;
+		float y2;
+		float x3;
+		float y3;
+		float x4;
+		float y4;
+		
+		
 		// rotate
-		final float cos = (float)Math.cos( (float)Math.toRadians(rotation) );
-		final float sin = (float)Math.sin( (float)Math.toRadians(rotation) );
-		
-		float x1 = cos * p1x - sin * p1y;
-		float y1 = sin * p1x + cos * p1y;
-		
-		float x2 = cos * p2x - sin * p2y;
-		float y2 = sin * p2x + cos * p2y;
-		
-		float x3 = cos * p3x - sin * p3y;
-		float y3 = sin * p3x + cos * p3y;
-		
-		float x4 = cos * p4x - sin * p4y;
-		float y4 = sin * p4x + cos * p4y;			
+		if( rotation != 0 )
+		{
+			final float cos = MathUtils.cosDeg( rotation );
+			final float sin = MathUtils.sinDeg( rotation );						
+			
+			x1 = cos * p1x - sin * p1y;
+			y1 = sin * p1x + cos * p1y;
+			
+			x2 = cos * p2x - sin * p2y;
+			y2 = sin * p2x + cos * p2y;
+			
+			x3 = cos * p3x - sin * p3y;
+			y3 = sin * p3x + cos * p3y;
+			
+			x4 = cos * p4x - sin * p4y;
+			y4 = sin * p4x + cos * p4y;			
+		}
+		else
+		{
+			x1 = p1x;
+			y1 = p1y;
+			
+			x2 = p2x;
+			y2 = p2y;
+			
+			x3 = p3x;
+			y3 = p3y;
+			
+			x4 = p4x;
+			y4 = p4y;
+		}			
 		
 		// translate to worldspace
 		final float worldX = x + originX;
@@ -629,90 +660,7 @@ public  class SpriteBatch
 		
 		if( idx == vertices.length )
 			renderMesh();
-	}		
-	
-	/**
-	 * Draws all the sprites given in the float array with the same tint color.
-	 * Sprites are layed out in the float array as follows.</br>
-	 * 
-	 * <code>
-	 * [ x, y, srcx, srcy, srcwidth, srcheight, <-- first sprite 
-	 *   x, y, srcx, srcy, srcwidth, srcheight, <-- second sprite
-	 *   ...
-	 * ]
-	 * </code>
-	 * 
-	 * @param texture the texture to be used
-	 * @param sprites the sprites to be drawn
-	 * @param tint the tint color used for each sprite
-	 */
-	public void draw( Texture texture, float[] sprites, Color tint )
-	{
-		if( !drawing )
-			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
-		
-		if( texture != lastTexture )
-		{		
-			renderMesh( );
-			lastTexture = texture;
-			invTexWidth = 1.0f / texture.getWidth();
-			invTexHeight = 1.0f / texture.getHeight();
-		}
-		
-		useTextBlend = false;
-		
-		final float color = tint.toFloatBits();
-		
-		for( int i = 0; i < sprites.length; i+=6 )
-		{
-			final float x = sprites[i+0];
-			final float y = sprites[i+1];
-			final float srcX = sprites[i+2];
-			final float srcY = sprites[i+3];
-			final float srcWidth = sprites[i+4];
-			final float srcHeight = sprites[i+5];
-			
-			final float u = srcX * invTexWidth;
-			final float v = (srcY + srcHeight) * invTexHeight;
-			final float u2 = (srcX + srcWidth) * invTexWidth;
-			final float v2 =  srcY * invTexHeight;
-	        final float fx2 = x + srcWidth;
-			final float fy2 = y + srcHeight;					
-			
-			vertices[idx++] = x;
-			vertices[idx++] = y;
-			vertices[idx++] = color;
-			vertices[idx++] = u; vertices[idx++] = v; 
-			
-			vertices[idx++] = x;
-			vertices[idx++] = fy2;
-			vertices[idx++] = color;
-			vertices[idx++] = u; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
-			vertices[idx++] = fy2;
-			vertices[idx++] = color;
-			vertices[idx++] = u2; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
-			vertices[idx++] = fy2;
-			vertices[idx++] = color;
-			vertices[idx++] = u2; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
-			vertices[idx++] = y;
-			vertices[idx++] = color;
-			vertices[idx++] = u2; vertices[idx++] = v;
-			
-			vertices[idx++] = x;
-			vertices[idx++] = y;
-			vertices[idx++] = color;
-			vertices[idx++] = u; vertices[idx++] = v; 
-			
-			if( idx == vertices.length )
-				renderMesh();
-		}
-	}
+	}			
 	
 	public void draw( Sprite sprite )
 	{
@@ -730,6 +678,28 @@ public  class SpriteBatch
 		useTextBlend = false;
 		
 		System.arraycopy(sprite.vertices, 0, vertices, idx, 30);
+		idx += 30;
+		
+		if( idx == vertices.length )
+			renderMesh();
+	}
+	
+	public void draw( Sprite2 sprite )
+	{
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( sprite.texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = sprite.texture;
+			invTexWidth = 1.0f / sprite.texture.getWidth();
+			invTexHeight = 1.0f / sprite.texture.getHeight();
+		}
+		
+		useTextBlend = false;
+
+		sprite.computeVertices( vertices, idx );
 		idx += 30;
 		
 		if( idx == vertices.length )
