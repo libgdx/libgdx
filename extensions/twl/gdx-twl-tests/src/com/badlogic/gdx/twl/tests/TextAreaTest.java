@@ -14,16 +14,14 @@ import com.badlogic.gdx.twl.renderer.GdxRenderer;
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.FPSCounter;
 import de.matthiasmann.twl.GUI;
-import de.matthiasmann.twl.Rect;
 import de.matthiasmann.twl.ScrollPane;
 import de.matthiasmann.twl.TextArea;
 import de.matthiasmann.twl.Timer;
 import de.matthiasmann.twl.textarea.HTMLTextAreaModel;
 import de.matthiasmann.twl.textarea.Style;
 import de.matthiasmann.twl.textarea.StyleAttribute;
-import de.matthiasmann.twl.textarea.TextAreaModel;
-import de.matthiasmann.twl.textarea.Value;
 import de.matthiasmann.twl.textarea.TextAreaModel.Element;
+import de.matthiasmann.twl.textarea.Value;
 import de.matthiasmann.twl.theme.ThemeManager;
 
 public class TextAreaTest implements RenderListener {
