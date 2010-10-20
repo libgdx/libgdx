@@ -89,8 +89,9 @@ import com.badlogic.gdx.math.Matrix4;
  *
  */
 public  class SpriteBatch
-{	
-	private static final int MAX_VERTICES = 6 * 1000;
+{		
+	private static final int VERTEX_SIZE = 2 + 1 + 2;
+	private static final int SPRITE_SIZE = 6 * VERTEX_SIZE;
 	
 	/** the mesh used to transfer the data to the GPU **/
 	private final Mesh mesh;
@@ -105,7 +106,7 @@ public  class SpriteBatch
 	protected final Matrix4 combinedMatrix = new Matrix4( );
 	
 	/** the vertex storage **/
-	protected final float[] vertices = new float[MAX_VERTICES * (2 + 1 + 2)];
+	protected final float[] vertices;
 	
 	/** last texture **/
 	protected Texture lastTexture = null;
@@ -144,14 +145,27 @@ public  class SpriteBatch
 	 */
 	public SpriteBatch( )
 	{		
-		this.mesh = new Mesh( false, false, MAX_VERTICES, 0, 
-							  new VertexAttribute( Usage.Position, 2, "a_position" ),
-							  new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
-							  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
+		this( 1000 );
+	}
+
+	/**
+	 * Consturctor, sets the {@link Graphics} instance
+	 * to use.
+	 * 
+	 * @param graphics the Graphics instance
+	 */
+	public SpriteBatch( int size )
+	{
+		this.mesh = new Mesh( false, false, size * 6, 0, 
+				  new VertexAttribute( Usage.Position, 2, "a_position" ),
+				  new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
+				  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
 		projectionMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		
+		vertices = new float[size * SPRITE_SIZE];
+		
 		if( Gdx.graphics.isGL20Available() )
-			createShader( );
+		createShader( );	
 	}
 	
 	private void createShader( )
