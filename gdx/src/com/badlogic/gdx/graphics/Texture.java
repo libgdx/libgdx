@@ -66,7 +66,7 @@ public interface Texture
 	public enum TextureWrap
 	{
 		ClampToEdge,
-		Wrap
+		Repeat
 	}
 	
 	/**
