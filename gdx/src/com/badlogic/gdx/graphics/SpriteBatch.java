@@ -700,6 +700,28 @@ public  class SpriteBatch
 		}
 	}
 	
+	public void draw( Sprite sprite )
+	{
+		if( !drawing )
+			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
+		
+		if( sprite.texture != lastTexture )
+		{		
+			renderMesh( );
+			lastTexture = sprite.texture;
+			invTexWidth = 1.0f / sprite.texture.getWidth();
+			invTexHeight = 1.0f / sprite.texture.getHeight();
+		}
+		
+		useTextBlend = false;
+		
+		System.arraycopy(sprite.vertices, 0, vertices, idx, 30);
+		idx += 30;
+		
+		if( idx == vertices.length )
+			renderMesh();
+	}
+
 	protected void renderMesh( )
 	{
 		if( idx == 0 )
