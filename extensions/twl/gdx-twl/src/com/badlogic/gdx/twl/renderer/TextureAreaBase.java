@@ -71,21 +71,21 @@ class TextureAreaBase {
 		texCoords.put(tx0);
 		texCoords.put(ty1);
 		vertices.put(x);
-		vertices.put((y + h));
+		vertices.put(y + h);
 
 		texCoords.put(tx1);
 		texCoords.put(ty0);
-		vertices.put((x + w));
+		vertices.put(x + w);
 		vertices.put(y);
 
 		texCoords.put(tx1);
 		texCoords.put(ty1);
-		vertices.put((x + w));
-		vertices.put((y + h));
+		vertices.put(x + w);
+		vertices.put(y + h);
 
 		texCoords.flip();
 		vertices.flip();
-		
+
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glVertexPointer(2, GL10.GL_FLOAT, 0, vertices);
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texCoords);

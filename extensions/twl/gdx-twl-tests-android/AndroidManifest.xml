@@ -6,7 +6,7 @@
 <application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:debuggable="true">
 
-		<activity android:name=".TwlTest" android:label="TWL Test">
+		<activity android:name=".TextAreaTest" android:label="TextArea Test">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />

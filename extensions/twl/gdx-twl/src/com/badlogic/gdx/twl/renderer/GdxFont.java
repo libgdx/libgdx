@@ -162,14 +162,17 @@ class GdxFont implements Font {
 	}
 
 	public FontCache cacheText (FontCache prevCache, CharSequence str) {
+		// if (true) return null;
 		return cacheText(prevCache, str, 0, str.length());
 	}
 
 	public FontCache cacheText (FontCache prevCache, CharSequence str, int start, int end) {
+		// if (true) return null;
 		return bitmapFont.cacheText(this, prevCache, str, start, end);
 	}
 
 	public FontCache cacheMultiLineText (FontCache prevCache, CharSequence str, int width, HAlignment align) {
+		// if (true) return null;
 		return bitmapFont.cacheMultiLineText(this, prevCache, str, width, align);
 	}
 

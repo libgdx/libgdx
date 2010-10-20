@@ -14,6 +14,8 @@
     </inputMapDef>
     <images file="badlogic.png">
         <area name="badlogic" xywh="*"/></images>
+    <images file="twllogo.png">
+        <area name="twllogo" xywh="*"/></images>
     <images file="widgets.png">
         <area name="white" xywh="1,36,1,1"/>
         <area name="box" xywh="1,1,42,34" splitx="L13,B13" splity="L5,B5" nocenter="true"/>
@@ -65,6 +67,12 @@
 				</select>
 				</images>
     <fontDef name="normal" filename="font.fnt" color="#FFFFFF" default="true">
+        <fontParam if="error" color="red"/>
+        <fontParam if="warning" color="orange"/>
+        <fontParam if="disabled" color="gray"/>
+        <fontParam if="textSelection" color="blue"/>
+    </fontDef>
+    <fontDef name="heading" filename="font-heading.fnt" color="#FFFFFF">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
@@ -140,11 +148,13 @@
         <param name="fonts">
             <map>
                 <param name="default"><font>button.font</font></param>
+                <param name="heading"><font>heading</font></param>
             </map>
         </param>
         <param name="images">
             <map>
                 <param name="badlogic"><image>badlogic</image></param>
+                <param name="twllogo"><image>twllogo</image></param>
             </map>
         </param></theme>
     <theme name="listbox" ref="-defaults">
