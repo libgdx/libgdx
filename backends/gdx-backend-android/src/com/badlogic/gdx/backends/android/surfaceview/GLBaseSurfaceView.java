@@ -34,7 +34,6 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 /**
  * An implementation of SurfaceView that uses the dedicated surface for

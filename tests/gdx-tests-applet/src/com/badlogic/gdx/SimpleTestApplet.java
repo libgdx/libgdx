@@ -23,19 +23,17 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.math.Matrix4;
 
 public class SimpleTestApplet extends Applet implements RenderListener, InputListener
-{
+{	
+	private static final long serialVersionUID = 2795113572615488100L;
+
 	public void init()
 	{
-		AppletApplication app = new AppletApplication( this, false, false );		
+		new AppletApplication( this, false, false );		
 		Gdx.graphics.setRenderListener( this );
 	}
 

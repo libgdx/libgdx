@@ -93,10 +93,7 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	
 	/** delta time between current and last frame **/
 	private float deltaTime = 0;
-	private WindowedMean mean = new WindowedMean(10);
-	
-	/** the application **/
-	private Application application = null;
+	private WindowedMean mean = new WindowedMean(10);	
 
 	private JoglInputMultiplexer multiplexer;
 	
@@ -198,7 +195,6 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	{
 		super();
 		loadLibraries();		      
-		this.application = application;				
 		
 		GLCapabilities caps = new GLCapabilities();
 		caps.setRedBits(8);

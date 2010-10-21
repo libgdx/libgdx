@@ -16,6 +16,7 @@ import java.util.List;
  *
  * @param <T> the type
  */
+@SuppressWarnings("unchecked")
 public class Pool <T> 
 {	
 	/**

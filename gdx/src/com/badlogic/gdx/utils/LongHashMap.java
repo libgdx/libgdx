@@ -2,8 +2,6 @@ package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.physics.box2d.Body;
-
 /**
  * An long to object hashmap, taken from Amarena2D (thanks Christoph :p).
  * 
@@ -54,14 +52,16 @@ public class LongHashMap<T> {
             return false;
     }
 
-    public T get (long key) {
+    @SuppressWarnings("unchecked")
+	public T get (long key) {
             int index = (int)(key & mask);
             for (Entry e = table[index]; e != null; e = e.next)
                     if (e.key == key) return (T)e.value;
             return null;
     }
 
-    public T put (long key, T value) {
+    @SuppressWarnings("unchecked")
+	public T put (long key, T value) {
             int index = (int)(key & mask);
             // Check if key already exists.
             for (Entry e = table[index]; e != null; e = e.next) {
@@ -98,7 +98,8 @@ public class LongHashMap<T> {
             return null;
     }
 
-    public T remove (long key) {
+    @SuppressWarnings("unchecked")
+	public T remove (long key) {
             int index = (int)(key & mask);
             Entry prev = table[index];
             Entry e = prev;
@@ -197,6 +198,7 @@ public class LongHashMap<T> {
 				}	
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public T next() 
 			{			

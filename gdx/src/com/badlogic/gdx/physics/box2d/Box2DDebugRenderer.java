@@ -18,13 +18,12 @@ package com.badlogic.gdx.physics.box2d;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;

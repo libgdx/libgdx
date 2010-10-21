@@ -25,7 +25,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.opengl.GLSurfaceView;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;

@@ -25,6 +25,7 @@ class BitmapDecoder {
 
 	private BufferedImage tempImage;
 
+	@SuppressWarnings("unchecked")
 	public ByteBuffer decode (BufferedImage image, ByteBuffer buffer) throws IOException {
 		if (image == null) throw new IOException("Invalid image.");
 		width = image.getWidth();

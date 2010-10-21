@@ -85,6 +85,7 @@ import java.util.TreeSet;
  * @author JSON.org
  * @version 2010-05-17
  */
+@SuppressWarnings("unchecked")
 public class JSONObject {
 
     /**
@@ -127,8 +128,8 @@ public class JSONObject {
 
     /**
      * The map where the JSONObject's properties are kept.
-     */
-    private Map map;
+     */    
+	private Map map;
 
 
     /**
@@ -235,8 +236,8 @@ public class JSONObject {
      * @param map A map object that can be used to initialize the contents of
      *  the JSONObject.
      * @throws JSONException 
-     */
-    public JSONObject(Map map) {
+     */    
+	public JSONObject(Map map) {
         this.map = new HashMap();
         if (map != null) {
             Iterator i = map.entrySet().iterator();
@@ -898,8 +899,8 @@ public class JSONObject {
         return o != null ? o.toString() : defaultValue;
     }
 
-
-    private void populateMap(Object bean) {
+    
+	private void populateMap(Object bean) {
         Class klass = bean.getClass();
 
 // If klass is a System class then set includeSuperClass to false. 

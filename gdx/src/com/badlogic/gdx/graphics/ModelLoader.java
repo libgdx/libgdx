@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.loaders.ObjLoader;
 import com.badlogic.gdx.graphics.loaders.OctLoader;
 import com.badlogic.gdx.math.Vector3;

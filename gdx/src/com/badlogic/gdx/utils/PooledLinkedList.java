@@ -160,6 +160,7 @@ public class PooledLinkedList<T>
 	public void clear() 
 	{
 		iter();
+		@SuppressWarnings("unused")
 		T v = null;
 		while( ( v = next() ) != null )
 			remove();

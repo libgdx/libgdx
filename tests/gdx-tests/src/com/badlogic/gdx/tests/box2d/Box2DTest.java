@@ -16,7 +16,6 @@
 package com.badlogic.gdx.tests.box2d;
 
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;

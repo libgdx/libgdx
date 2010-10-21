@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.loaders;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;

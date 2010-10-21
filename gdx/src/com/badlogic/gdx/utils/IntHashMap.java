@@ -2,9 +2,6 @@ package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.utils.LongHashMap.Entry;
-import com.badlogic.gdx.utils.LongHashMap.EntryIterable;
-
 /**
  * An int to object hashmap, taken from Amarena2D (thanks Christoph :p).
  * 
@@ -55,14 +52,16 @@ public class IntHashMap<T> {
             return false;
     }
 
-    public T get (int key) {
+    @SuppressWarnings("unchecked")
+	public T get (int key) {
             int index = key & mask;
             for (Entry e = table[index]; e != null; e = e.next)
                     if (e.key == key) return (T)e.value;
             return null;
     }
 
-    public T put (int key, T value) {
+    @SuppressWarnings("unchecked")
+	public T put (int key, T value) {
             int index = key & mask;
             // Check if key already exists.
             for (Entry e = table[index]; e != null; e = e.next) {
@@ -99,7 +98,8 @@ public class IntHashMap<T> {
             return null;
     }
 
-    public T remove (int key) {
+    @SuppressWarnings("unchecked")
+	public T remove (int key) {
             int index = key & mask;
             Entry prev = table[index];
             Entry e = prev;
@@ -193,6 +193,7 @@ public class IntHashMap<T> {
 				}	
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public T next() 
 			{			

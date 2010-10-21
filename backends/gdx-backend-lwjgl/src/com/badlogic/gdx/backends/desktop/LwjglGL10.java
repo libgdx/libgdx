@@ -24,7 +24,6 @@ import java.nio.ShortBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL21;
 
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.GL10;

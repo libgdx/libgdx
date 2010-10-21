@@ -30,6 +30,7 @@ public class CollisionFiltering extends Box2DTest
 	private final static short k_smallGroup = 1;
 	private final static short k_largeGroup = -1;
 
+	@SuppressWarnings("unused")
 	private final static short k_defaultCategory = 0x0001;
 	private final static short k_triangleCategory = 0x0002;
 	private final static short k_boxCategory = 0x0004;

@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
@@ -44,8 +43,8 @@ public class AudioRecorderTest implements RenderListener, ApplicationListener
 		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );					
 		
-		float incX = 2.0f / samples.length;
-		float x = -1;
+//		float incX = 2.0f / samples.length;
+//		float x = -1;
 //		renderer.begin( GL10.GL_LINE_STRIP );
 //		for( int i = 0; i < samples.length/100; i++, x+=incX )			
 //			renderer.vertex( x, samples[i] / (float)Short.MAX_VALUE, 0 );

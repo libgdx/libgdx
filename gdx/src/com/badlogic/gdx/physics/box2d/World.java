@@ -572,8 +572,7 @@ public class World
 	
 	private long[] contactAddrs = new long[200];	
 	private final ArrayList<Contact> contacts = new ArrayList<Contact>( );
-	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>( );
-	private int freeIdx = 0;
+	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>( );	
 	
 	public List<Contact> getContactList( )
 	{
@@ -630,6 +629,7 @@ public class World
 	 * @param fixtureB
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private boolean contactFilter( long fixtureA, long fixtureB )
 	{
 		if( contactFilter != null )
@@ -651,6 +651,7 @@ public class World
 		
 	private final Contact contact = new Contact(this, 0 );
 	
+	@SuppressWarnings("unused")
 	private void beginContact( long contactAddr )
 	{
 		contact.addr = contactAddr;		
@@ -658,6 +659,7 @@ public class World
 			contactListener.beginContact( contact );
 	}
 	
+	@SuppressWarnings("unused")
 	private void endContact( long contactAddr )
 	{
 		contact.addr = contactAddr;
@@ -666,6 +668,7 @@ public class World
 			contactListener.endContact( contact );
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean reportFixture( long addr )
 	{
 		if( queryCallback != null )

@@ -67,9 +67,7 @@ final class AndroidTexture implements Texture
 	/** the v wrap **/
 	private final TextureWrap vWrap;		
 	/** invalidate flag **/
-	private boolean invalidated = false;
-	/** the format of this texture **/
-	private Bitmap.Config format;
+	private boolean invalidated = false;	
 	/** file handle **/
 	private AndroidFileHandle file;
 
@@ -92,7 +90,6 @@ final class AndroidTexture implements Texture
 		{
 			this.texWidth = image.getWidth();
 			this.texHeight = image.getHeight();	
-			this.format = image.getConfig();
 		}
 		this.gl10 = gl;
 
@@ -124,8 +121,7 @@ final class AndroidTexture implements Texture
 		if( image != null )
 		{
 			this.texWidth = image.getWidth();
-			this.texHeight = image.getHeight();	
-			this.format = image.getConfig();
+			this.texHeight = image.getHeight();				
 		}
 		this.gl20 = gl;
 
@@ -214,8 +210,7 @@ final class AndroidTexture implements Texture
 		Pixmap pixmap = Gdx.graphics.newPixmap( file );
 		Bitmap image = (Bitmap)pixmap.getNativePixmap();
 		this.texWidth = image.getWidth();
-		this.texHeight = image.getHeight();	
-		this.format = image.getConfig();
+		this.texHeight = image.getHeight();			
 		return (Bitmap)pixmap.getNativePixmap();
 	}
 

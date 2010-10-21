@@ -21,6 +21,8 @@ import com.badlogic.gdx.backends.applet.AppletApplication;
 
 public class GdxInvadersApplet extends Applet
 {
+	private static final long serialVersionUID = -2444740109586326922L;
+
 	public void init()
 	{
 		AppletApplication app = new AppletApplication( this, false, false );		

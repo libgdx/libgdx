@@ -19,20 +19,18 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.Sys;
-
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 

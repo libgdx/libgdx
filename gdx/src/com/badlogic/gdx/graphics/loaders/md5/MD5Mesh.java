@@ -1,6 +1,5 @@
 package com.badlogic.gdx.graphics.loaders.md5;
 
-import com.badlogic.gdx.math.Vector3;
 
 public class MD5Mesh 
 {	

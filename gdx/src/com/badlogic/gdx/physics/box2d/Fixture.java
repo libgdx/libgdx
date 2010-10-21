@@ -19,10 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 public class Fixture 
-{			
-	/** world **/
-	private final World world;
-	
+{					
 	/** body **/
 	private final Body body;
 	
@@ -36,9 +33,8 @@ public class Fixture
 	 * Constructs a new fixture
 	 * @param addr the address of the fixture
 	 */
-	protected Fixture( World world, Body body, long addr )
+	protected Fixture( Body body, long addr )
 	{
-		this.world = world;
 		this.body = body;
 		this.addr = addr;
 	}

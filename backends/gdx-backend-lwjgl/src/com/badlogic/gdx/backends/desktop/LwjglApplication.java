@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.Version;
 
+@SuppressWarnings("unchecked")
 public class LwjglApplication implements Application {
 	static {
 		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
@@ -119,8 +119,7 @@ public class LwjglApplication implements Application {
 	private final LwjglAudio audio;
 
 	protected int width, height;
-	private String title = "";
-	private boolean isPaused;
+	private String title = "";	
 	private boolean mousePressed;
 	private int mouseX, mouseY;
 	private volatile boolean running = true;

@@ -36,7 +36,6 @@ import com.badlogic.gdx.graphics.GL10;
  * 
  */
 public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
-	private double tmpDouble[] = new double[1000];
 	private float tmpFloat[] = new float[1000];
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;

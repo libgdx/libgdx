@@ -17,7 +17,6 @@ package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;

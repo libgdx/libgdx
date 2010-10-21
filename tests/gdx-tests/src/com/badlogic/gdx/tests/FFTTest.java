@@ -67,6 +67,7 @@ public class FFTTest
 		return sum;
 	}
 	
+	@SuppressWarnings("unused")
 	private static float sum( FloatBuffer buffer )
 	{
 		float sum = 0;
@@ -75,6 +76,7 @@ public class FFTTest
 		return sum;
 	}
 	
+	@SuppressWarnings("unused")
 	private static void createFlat( float samples[], ShortBuffer shortSamples )
 	{
 		for( int i = 0; i < samples.length; i++ )

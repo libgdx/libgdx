@@ -17,7 +17,6 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;

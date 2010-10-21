@@ -13,7 +13,6 @@
 
 package com.badlogic.gdx.backends.desktop;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -36,6 +35,7 @@ import com.badlogic.gdx.RenderListener;
 final class LwjglInput implements Input, RenderListener {
 	String text;
 	TextInputListener textListener;
+	@SuppressWarnings("unchecked")
 	private final ArrayList<InputListener> listeners = new ArrayList();
 
 	public void addInputListener (InputListener listener) {

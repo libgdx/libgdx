@@ -1,16 +1,15 @@
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.loaders.md5.MD5AnimationInfo;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Joints;
@@ -75,6 +74,7 @@ public class MD5Test implements RenderListener, InputListener
 	float angle = 0;	
 	
 	@Override
+	@SuppressWarnings("unused")
 	public void render() 
 	{
 		GL10 gl = Gdx.graphics.getGL10();
@@ -87,7 +87,7 @@ public class MD5Test implements RenderListener, InputListener
 		gl.glEnable( GL10.GL_DEPTH_TEST );
 //		gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_LINE );
 		
-		long start = 0;
+		long start = 0;	
 		float renderTime = 0;
 		float skinTime = 0;
 		

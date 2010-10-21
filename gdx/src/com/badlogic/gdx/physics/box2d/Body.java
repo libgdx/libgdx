@@ -67,7 +67,7 @@ public class Body
 	 */	 
 	public Fixture createFixture(FixtureDef def)
 	{				
-		Fixture fixture = new Fixture( world, this, jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density, def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex) );
+		Fixture fixture = new Fixture( this, jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density, def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex) );
 		this.world.fixtures.put( fixture.addr, fixture );
 		this.fixtures.add( fixture );
 		return fixture;
@@ -86,7 +86,7 @@ public class Body
 	 */
 	public Fixture createFixture(Shape shape, float density)
 	{
-		Fixture fixture = new Fixture( world, this, jniCreateFixture(addr, shape.addr, density));
+		Fixture fixture = new Fixture( this, jniCreateFixture(addr, shape.addr, density));
 		this.world.fixtures.put( fixture.addr, fixture );
 		this.fixtures.add( fixture );
 		return fixture;

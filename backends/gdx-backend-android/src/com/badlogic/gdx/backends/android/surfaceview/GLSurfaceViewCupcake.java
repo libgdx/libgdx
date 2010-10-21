@@ -36,9 +36,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake.EGLConfigChooser;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake.GLWrapper;
-
 /**
  * An implementation of SurfaceView that uses the dedicated surface for
  * displaying OpenGL rendering.

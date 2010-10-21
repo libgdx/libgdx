@@ -17,7 +17,6 @@ package com.badlogic.gdx.tests.desktop;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
@@ -25,7 +24,6 @@ import com.badlogic.gdx.backends.desktop.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -172,7 +170,7 @@ public class TextureRenderTest implements RenderListener {
 
     public static void main( String[] argv )
     {
-    	JoglApplication app = new JoglApplication("TextureRender Test", 480, 320, false );
+    	new JoglApplication("TextureRender Test", 480, 320, false );
     	Gdx.graphics.setRenderListener( new TextureRenderTest() );
     }
 }

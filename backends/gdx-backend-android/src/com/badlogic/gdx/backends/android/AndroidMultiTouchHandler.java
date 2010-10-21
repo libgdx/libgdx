@@ -15,11 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
+import android.view.MotionEvent;
+
 import com.badlogic.gdx.backends.android.AndroidInput.Event;
 import com.badlogic.gdx.backends.android.AndroidInput.EventType;
-
-import android.util.Log;
-import android.view.MotionEvent;
 
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is

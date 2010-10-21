@@ -84,10 +84,7 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 	
 	/** delta time between current and last frame **/
 	private float deltaTime = 0;
-	private WindowedMean mean = new WindowedMean(10);
-	
-	/** the application **/
-	private Application application = null;
+	private WindowedMean mean = new WindowedMean(10);	
 
 	private AppletInputMultiplexer multiplexer;	
 	
@@ -102,8 +99,7 @@ final class AppletPanel extends JPanel implements GLEventListener, MouseMotionLi
 	 */
 	AppletPanel( Application application )
 	{
-		super();		      
-		this.application = application;				
+		super();		      			
 		
 		GLCapabilities caps = new GLCapabilities();
 		caps.setRedBits(8);

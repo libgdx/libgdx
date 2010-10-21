@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
