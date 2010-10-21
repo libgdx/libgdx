@@ -220,104 +220,104 @@ public final class Sprite2
 		if( dirty )
 		{		
 			
-			computeVerticesJNI( vertices, offset, x, y, width, height, originX, originY, scaleX, scaleY, rotation );
-//			final float x = this.x;
-//			final float y = this.y;
-//			final float originX = this.originX;
-//			final float originY = this.originY;
-//			final float width = this.width;
-//			final float height = this.height;
-//			final float scaleX = this.scaleX;
-//			final float scaleY = this.scaleY;
-//			final float rotation = this.rotation;
-//			final float[] vertices = this.vertices;
-//			
-//			// bottom left and top right corner points relative to origin
-//			final float worldOriginX = x + originX;
-//			final float worldOriginY = y + originY;
-//			float fx = -originX;
-//			float fy = -originY;
-//			float fx2 = width - originX;
-//			float fy2 = height - originY;
-//			
-//			// scale
-//			if( scaleX != 1 || scaleY != 1 )
-//			{
-//				fx *= scaleX;
-//				fy *= scaleY;
-//				fx2 *= scaleX;
-//				fy2 *= scaleY;
-//			}
-//			
-//			// construct corner points, start from top left and go counter clockwise
-//			final float p1x = fx;
-//			final float p1y = fy;
-//			final float p2x = fx;
-//			final float p2y = fy2;
-//			final float p3x = fx2;
-//			final float p3y = fy2;
-//			final float p4x = fx2;
-//			final float p4y = fy;
-//			
-//			float x1;
-//			float y1;
-//			float x2;
-//			float y2;
-//			float x3;
-//			float y3;
-//			float x4;
-//			float y4;
-//			
-//			
-//			// rotate
-//			if( rotation != 0 )
-//			{
-//				final float cos = MathUtils.cosDeg( rotation );
-//				final float sin = MathUtils.sinDeg( rotation );						
-//				
-//				x1 = cos * p1x - sin * p1y;
-//				y1 = sin * p1x + cos * p1y;
-//				
-//				x2 = cos * p2x - sin * p2y;
-//				y2 = sin * p2x + cos * p2y;
-//				
-//				x3 = cos * p3x - sin * p3y;
-//				y3 = sin * p3x + cos * p3y;
-//				
-//				x4 = cos * p4x - sin * p4y;
-//				y4 = sin * p4x + cos * p4y;			
-//			}
-//			else
-//			{
-//				x1 = p1x;
-//				y1 = p1y;
-//				
-//				x2 = p2x;
-//				y2 = p2y;
-//				
-//				x3 = p3x;
-//				y3 = p3y;
-//				
-//				x4 = p4x;
-//				y4 = p4y;
-//			}			
-//			
-//			x1 += worldOriginX; y1 += worldOriginY;
-//			x2 += worldOriginX; y2 += worldOriginY;
-//			x3 += worldOriginX; y3 += worldOriginY;
-//			x4 += worldOriginX; y4 += worldOriginY;								
-//			
-//			vertices[X1] = x1;
-//			vertices[Y1] = y1;		
-//			
-//			vertices[X2] = x2;
-//			vertices[Y2] = y2;		
-//			
-//			vertices[X3] = x3;
-//			vertices[Y3] = y3;		
-//			
-//			vertices[X4] = x4;
-//			vertices[Y4] = y4;		
+//			computeVerticesJNI( vertices, offset, x, y, width, height, originX, originY, scaleX, scaleY, rotation );
+			final float x = this.x;
+			final float y = this.y;
+			final float originX = this.originX;
+			final float originY = this.originY;
+			final float width = this.width;
+			final float height = this.height;
+			final float scaleX = this.scaleX;
+			final float scaleY = this.scaleY;
+			final float rotation = this.rotation;
+			final float[] vertices = this.vertices;
+			
+			// bottom left and top right corner points relative to origin
+			final float worldOriginX = x + originX;
+			final float worldOriginY = y + originY;
+			float fx = -originX;
+			float fy = -originY;
+			float fx2 = width - originX;
+			float fy2 = height - originY;
+			
+			// scale
+			if( scaleX != 1 || scaleY != 1 )
+			{
+				fx *= scaleX;
+				fy *= scaleY;
+				fx2 *= scaleX;
+				fy2 *= scaleY;
+			}
+			
+			// construct corner points, start from top left and go counter clockwise
+			final float p1x = fx;
+			final float p1y = fy;
+			final float p2x = fx;
+			final float p2y = fy2;
+			final float p3x = fx2;
+			final float p3y = fy2;
+			final float p4x = fx2;
+			final float p4y = fy;
+			
+			float x1;
+			float y1;
+			float x2;
+			float y2;
+			float x3;
+			float y3;
+			float x4;
+			float y4;
+			
+			
+			// rotate
+			if( rotation != 0 )
+			{
+				final float cos = MathUtils.cosDeg( rotation );
+				final float sin = MathUtils.sinDeg( rotation );						
+				
+				x1 = cos * p1x - sin * p1y;
+				y1 = sin * p1x + cos * p1y;
+				
+				x2 = cos * p2x - sin * p2y;
+				y2 = sin * p2x + cos * p2y;
+				
+				x3 = cos * p3x - sin * p3y;
+				y3 = sin * p3x + cos * p3y;
+				
+				x4 = cos * p4x - sin * p4y;
+				y4 = sin * p4x + cos * p4y;			
+			}
+			else
+			{
+				x1 = p1x;
+				y1 = p1y;
+				
+				x2 = p2x;
+				y2 = p2y;
+				
+				x3 = p3x;
+				y3 = p3y;
+				
+				x4 = p4x;
+				y4 = p4y;
+			}			
+			
+			x1 += worldOriginX; y1 += worldOriginY;
+			x2 += worldOriginX; y2 += worldOriginY;
+			x3 += worldOriginX; y3 += worldOriginY;
+			x4 += worldOriginX; y4 += worldOriginY;								
+			
+			vertices[X1] = x1;
+			vertices[Y1] = y1;		
+			
+			vertices[X2] = x2;
+			vertices[Y2] = y2;		
+			
+			vertices[X3] = x3;
+			vertices[Y3] = y3;		
+			
+			vertices[X4] = x4;
+			vertices[Y4] = y4;		
 			
 			dirty = false;
 		}
