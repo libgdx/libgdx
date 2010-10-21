@@ -241,7 +241,9 @@ public class Stage
 	
 	public void render( )
 	{
-		batch.begin( projection, identity );
+		batch.setProjectionMatrix( projection );
+		batch.setTransformMatrix( identity );
+		batch.begin( );
 		root.render( batch );
 		batch.end( );
 	}

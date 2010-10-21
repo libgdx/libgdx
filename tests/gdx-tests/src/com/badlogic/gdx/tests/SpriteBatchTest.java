@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Sprite;
-import com.badlogic.gdx.graphics.Sprite2;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
@@ -46,7 +45,6 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	float sprites[] = new float[SPRITES*6];
 	float sprites2[] = new float[SPRITES*6];		
 	Sprite[] sprites3 = new Sprite[SPRITES*2];
-	Sprite2[] sprites4 = new Sprite2[SPRITES*2];
 	float angle = 0;
 	float ROTATION_SPEED = 20;
 	float scale = 1;
@@ -66,8 +64,6 @@ public class SpriteBatchTest implements RenderListener, InputListener
 			renderNormal(  );;
 		if( renderMethod == 1 )
 			renderSprites( );
-		if( renderMethod == 2 )
-			renderSprites2( );
 	}		
 	
 	private void renderNormal( )
@@ -198,78 +194,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 			startTime = System.nanoTime();
 		}
 		frames++;
-	}
-	
-	private void renderSprites2( )
-	{
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClearColor( 0.7f, 0.7f, 0.7f, 1 );
-		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
-		
-		float begin = 0;
-		float end = 0;
-		float draw1 = 0;
-		float draw2 = 0;
-		float drawText = 0;
-		
-		long start = System.nanoTime();
-		spriteBatch.begin();					
-		begin = (System.nanoTime()-start)/1000000000.0f;
-				
-		float angleInc = ROTATION_SPEED * Gdx.graphics.getDeltaTime();
-		scale += SCALE_SPEED * Gdx.graphics.getDeltaTime();
-		if( scale < 0.5f )
-		{
-			scale = 0.5f;
-			SCALE_SPEED = 1;
-		}
-		if( scale > 1.0f )
-		{
-			scale = 1.0f;
-			SCALE_SPEED = -1;
-		}
-		
-		start = System.nanoTime();	
-		for( int i = 0; i < SPRITES; i++ )
-		{
-			if( angleInc != 0 )
-				sprites4[i].rotate( angleInc );
-			if( scale != 1 )
-				sprites4[i].setScale( scale );
-			spriteBatch.draw( sprites4[i] );
-		}
-		draw1 = (System.nanoTime()-start)/1000000000.0f;
-		
-		start = System.nanoTime();			
-		for( int i = SPRITES; i < SPRITES << 1; i++ )
-		{
-			if( angleInc != 0 )
-				sprites4[i].rotate( angleInc );
-			if( scale != 1 )
-				sprites4[i].setScale( scale );
-			spriteBatch.draw( sprites4[i] );
-		}
-		draw2 = (System.nanoTime()-start)/1000000000.0f;
-				
-		start = System.nanoTime();
-		spriteBatch.drawText( font, "Question?", 100, 300, Color.RED );		
-		spriteBatch.drawText( font, "and another this is a test", 200, 100, Color.WHITE );
-		spriteBatch.drawText( font, "all hail and another this is a test", 200, 200, Color.WHITE );
-		spriteBatch.drawText( font, "Sprite2 fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED );
-		drawText = (System.nanoTime()-start)/1000000000.0f;
-		
-		start = System.nanoTime();
-		spriteBatch.end();
-		end = (System.nanoTime()-start)/1000000000.0f;
-		
-		if( System.nanoTime() - startTime > 1000000000 )
-		{
-			Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
-			frames = 0;
-			startTime = System.nanoTime();
-		}
-		frames++;
-	}
+	}	
 	
 	@Override
 	public void surfaceChanged(int width, int height) 
@@ -324,11 +249,6 @@ public class SpriteBatchTest implements RenderListener, InputListener
 				sprites3[i] = new Sprite( texture, 32, 32 );
 			sprites3[i].setPosition(x, y);
 			sprites3[i].setOrigin(16, 16);
-
-			sprites4[i] = new Sprite2( texture );			
-			sprites4[i].setBounds(x, y, 32, 32 );
-			if( i >= SPRITES )
-				sprites4[i].texture = texture2;	
 		}
 		
 		Gdx.input.addInputListener( this );
@@ -367,7 +287,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	@Override
 	public boolean touchUp(int x, int y, int pointer) 
 	{
-		renderMethod = (renderMethod + 1) % 3;		
+		renderMethod = (renderMethod + 1) % 2;		
 		return false;
 	}
 

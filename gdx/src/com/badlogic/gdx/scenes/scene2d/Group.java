@@ -117,17 +117,18 @@ public class Group extends Actor
 		if( debug && debugTexture != null )
 			batch.draw( debugTexture, x, y, refX, refY, 200, 200, scaleX, scaleY, rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), Color.WHITE, false, false );
 		
-		batch.end();
-		Matrix4 projection = batch.getProjectionMatrix();
+		batch.end();		
 		oldBatchTransform.set(batch.getTransformMatrix());
-		batch.begin( projection, tmp4 );
+		batch.setTransformMatrix( tmp4 );
+		batch.begin( );
 
 		int len = children.size();
 		for( int i = 0; i < len; i++ )
 			children.get(i).render( batch );
 		
 		batch.end();
-		batch.begin( projection, oldBatchTransform );
+		batch.setTransformMatrix( oldBatchTransform );
+		batch.begin( );
 	}
 
 	final Vector2 point = new Vector2( );

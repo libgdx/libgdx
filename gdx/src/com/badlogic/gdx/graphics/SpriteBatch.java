@@ -16,6 +16,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -139,10 +140,10 @@ public  class SpriteBatch
 	protected boolean blendingDisabled=false;
 	
 	/**
-	 * Consturctor, sets the {@link Graphics} instance
-	 * to use.
-	 * 
-	 * @param graphics the Graphics instance
+	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection
+	 * with y-axis point upwards, x-axis point to the right and the origin being in the bottome
+	 * left corner of the screen. The projection will be pixel perfect with respect to the
+	 * screen resolution.
 	 */
 	public SpriteBatch( )
 	{		
@@ -150,10 +151,14 @@ public  class SpriteBatch
 	}
 
 	/**
-	 * Consturctor, sets the {@link Graphics} instance
-	 * to use.
+	 * <p>Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection
+	 * with y-axis point upwards, x-axis point to the right and the origin being in the bottome
+	 * left corner of the screen. The projection will be pixel perfect with respect to the
+	 * screen resolution.</p> 
 	 * 
-	 * @param graphics the Graphics instance
+	 * <p>The size parameter specifies the maximum size of a single batch in number of sprites</p>
+	 * 
+	 * @param size the batch size in number of sprites
 	 */
 	public SpriteBatch( int size )
 	{
@@ -215,42 +220,6 @@ public  class SpriteBatch
 	/**
 	 * Sets up the SpriteBatch for drawing. This will disable
 	 * depth buffer testing and writting, culling and lighting.
-	 * It enables blending and alpha testing. It sets the projection
-	 * matrix to an orthographic matrix and the modelview and texture
-	 * matrix to identity. If you have more texture units enabled than
-	 * the first one you have to disable them before calling this. The
-	 * coordinate system used will have it's origin in the lower left
-	 * corner, x pointing to the right and y point up. The coordinates
-	 * for sprites will be interpreted in pixels.
-	 */
-	public void begin( )
-	{		
-		transformMatrix.idt();		
-		begin( transformMatrix );
-	}
-	
-	/**
-	 * Sets up the SpriteBatch for drawing. This will disable
-	 * depth buffer testing and writting, culling and lighting.
-	 * It enables blending and alpha testing. If you have more texture units enabled than
-	 * the first one you have to disable them before calling this. Applies
-	 * the given transformation {@link Matrix4} to all subsequently specified sprites. Loads
-	 * an orthographic projection matrix with the full screen as the viewport.
-	 * The coordinate system used will have it's origin in the lower left
-	 * corner, x pointing to the right and y point up. The coordinates
-	 * for sprites will be interpreted in pixels.
-	 * 
-	 * @param transform the transformation matrix.
-	 */
-	public void begin( Matrix4 transform )
-	{		
-		projectionMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-		begin( projectionMatrix, transform );
-	}
-	
-	/**
-	 * Sets up the SpriteBatch for drawing. This will disable
-	 * depth buffer testing and writting, culling and lighting.
 	 * It enables blending and alpha testing. If you have more texture units enabled than
 	 * the first one you have to disable them before calling this. Applies
 	 * the given transformation {@link Matrix4} to all subsequently specified sprites. Uses
@@ -260,11 +229,10 @@ public  class SpriteBatch
 	 * @param projection the projection matrix;
 	 * @param transform the transformation matrix.
 	 */
-	public void begin( Matrix4 projection, Matrix4 transform )
+	public void begin( )
 	{
 		renderCalls = 0;
-		this.projectionMatrix.set( projection );
-		this.transformMatrix.set( transform );
+		
 		if( Gdx.graphics.isGL20Available() == false )
 		{										
 			GL10 gl = Gdx.graphics.getGL10();
@@ -284,7 +252,7 @@ public  class SpriteBatch
 		}		
 		else
 		{
-			combinedMatrix.set(projection).mul(transform);
+			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
 			GL20 gl = Gdx.graphics.getGL20();
 			gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
@@ -642,6 +610,10 @@ public  class SpriteBatch
 			renderMesh();
 	}			
 	
+	/**
+	 * Draws the given {@link Sprite}
+	 * @param sprite the sprite
+	 */
 	public void draw( Sprite sprite )
 	{
 		if( !drawing )
@@ -662,29 +634,7 @@ public  class SpriteBatch
 		
 		if( idx == vertices.length )
 			renderMesh();
-	}
-	
-	public void draw( Sprite2 sprite )
-	{
-		if( !drawing )
-			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
-		
-		if( sprite.texture != lastTexture )
-		{		
-			renderMesh( );
-			lastTexture = sprite.texture;
-			invTexWidth = 1.0f / sprite.texture.getWidth();
-			invTexHeight = 1.0f / sprite.texture.getHeight();
-		}
-		
-		useTextBlend = false;
-
-		sprite.computeVertices( vertices, idx );
-		idx += 20;
-		
-		if( idx == vertices.length )
-			renderMesh();
-	}
+	}	
 
 	protected void renderMesh( )
 	{
@@ -871,6 +821,32 @@ public  class SpriteBatch
 	public Matrix4 getTransformMatrix( )
 	{
 		return transformMatrix;
+	}
+	
+	/**
+	 * Sets the projection matrix to be used by this SpriteBatch. Can
+	 * only be set outside a {@link #begin()}/{@link #end()} block.
+	 * @param projection the projection matrix
+	 */
+	public void setProjectionMatrix( Matrix4 projection )
+	{
+		if( drawing )
+			throw new GdxRuntimeException( "Can't set the matrix within begin()/end() block" );
+		
+		projectionMatrix.set( projection );
+	}
+	
+	/**
+	 * Sets the transform matrix to be used by this SpriteBatch. Can
+	 * only be set outside a {@link #begin()}/{@link #end()} block.
+	 * @param projection the projection matrix
+	 */
+	public void setTransformMatrix( Matrix4 transform )
+	{
+		if( drawing )
+			throw new GdxRuntimeException( "Can't set the matrix within begin()/end() block" );
+		
+		transformMatrix.set( transform );
 	}
 
 	/**
