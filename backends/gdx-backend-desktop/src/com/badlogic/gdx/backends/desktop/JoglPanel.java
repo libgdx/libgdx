@@ -437,7 +437,7 @@ final class JoglPanel extends JPanel implements GLEventListener, MouseMotionList
 	{			
 		for( RenderListener listener: listeners )
 			listener.surfaceCreated( );
-		setVerticalSynch(false);
+		setVerticalSynch(true);
 	}
 
 	@Override
