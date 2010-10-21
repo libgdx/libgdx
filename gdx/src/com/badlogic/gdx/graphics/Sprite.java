@@ -47,29 +47,16 @@ public class Sprite {
 	}
 
 	/**
-	 * Sets the origin in relation to the sprite's position for scaling and rotation.
-	 */
-	public void setOrigin (float originX, float originY) {
-		this.originX = originX;
-		this.originY = originY;
-		dirty = true;
-	}
-
-	/**
-	 * Sets the position where the sprite will be drawn.
-	 */
-	public void setPosition (float x, float y) {
-		translate(x - this.x, y - this.y);
-	}
-
-	/**
-	 * Sets the size and position where the sprite will be drawn, before scaling and rotation are applied.
+	 * Sets the size and position where the sprite will be drawn, before scaling and rotation are applied. If origin, rotation, or
+	 * scale are changed, it is slightly more efficient to set the bounds afterward.
 	 */
 	public void setBounds (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+
+		if (dirty) return;
 
 		float x2 = x + width;
 		float y2 = y + height;
@@ -90,11 +77,22 @@ public class Sprite {
 	}
 
 	/**
-	 * Sets the position relative to the current position where the sprite will be drawn.
+	 * Sets the position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
+	 * to set the position afterward.
+	 */
+	public void setPosition (float x, float y) {
+		translate(x - this.x, y - this.y);
+	}
+
+	/**
+	 * Sets the position relative to the current position where the sprite will be drawn. If origin, rotation, or scale are
+	 * changed, it is slightly more efficient to translate afterward.
 	 */
 	public void translate (float xAmount, float yAmount) {
 		x += xAmount;
 		y += yAmount;
+
+		if (dirty) return;
 
 		float[] vertices = this.vertices;
 		vertices[X1] += xAmount;
@@ -215,6 +213,15 @@ public class Sprite {
 		vertices[C2] = color;
 		vertices[C3] = color;
 		vertices[C4] = color;
+	}
+
+	/**
+	 * Sets the origin in relation to the sprite's position for scaling and rotation.
+	 */
+	public void setOrigin (float originX, float originY) {
+		this.originX = originX;
+		this.originY = originY;
+		dirty = true;
 	}
 
 	public void setRotation (float degrees) {
