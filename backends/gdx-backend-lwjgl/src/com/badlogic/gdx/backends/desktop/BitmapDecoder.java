@@ -45,10 +45,7 @@ class BitmapDecoder {
 		g.fillRect(0, 0, width, height);
 		g.setComposite(AlphaComposite.SrcOver);
 		g.drawImage(image, 0, 0, null);
-		g.dispose();
-		
-		ImageIO.write( image, "png", new File( "in.png" ) );
-		ImageIO.write( tempImage, "png", new File( "out.png" ) );
+		g.dispose();			
 
 		int bufferSize = width * height * 4;
 		if (buffer == null || buffer.capacity() < bufferSize)
