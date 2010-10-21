@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.MathUtils;
  */
 public final class Sprite2 
 {	
-	protected final float vertices[] = new float[30];
+	protected final float vertices[] = new float[20];
 	private boolean dirty = false;
 			
 	public float x, y, width, height;
@@ -106,13 +106,8 @@ public final class Sprite2
 		vertices[V3] = v2;
 
 		vertices[U4] = u2;
-		vertices[V4] = v2;
+		vertices[V4] = v;
 
-		vertices[U5] = u2;
-		vertices[V5] = v;
-
-		vertices[U6] = u;
-		vertices[V6] = v;		
 	}	
 	
 	public void setTextureWrap (boolean x, boolean y) {
@@ -132,8 +127,6 @@ public final class Sprite2
 			vertices[U2] = u2;
 			vertices[U3] = u;
 			vertices[U4] = u;
-			vertices[U5] = u;
-			vertices[U6] = u2;
 		}
 		if (y) 
 		{
@@ -142,9 +135,7 @@ public final class Sprite2
 			vertices[V1] = v2;
 			vertices[V2] = v;
 			vertices[V3] = v;
-			vertices[V4] = v;
-			vertices[V5] = v2;
-			vertices[V6] = v2;
+			vertices[V4] = v2;
 		}
 	}
 	
@@ -158,8 +149,6 @@ public final class Sprite2
 			vertices[U2] = u;
 			vertices[U3] = u2;
 			vertices[U4] = u2;
-			vertices[U5] = u2;
-			vertices[U6] = u;
 		}
 		if (yAmount > 0) 
 		{
@@ -168,9 +157,7 @@ public final class Sprite2
 			vertices[V1] = v;
 			vertices[V2] = v2;
 			vertices[V3] = v2;
-			vertices[V4] = v2;
-			vertices[V5] = v;
-			vertices[V6] = v;
+			vertices[V4] = v;
 		}
 	}
 	
@@ -185,8 +172,6 @@ public final class Sprite2
 		vertices[C2] = c;
 		vertices[C3] = c;
 		vertices[C4] = c;
-		vertices[C5] = c;
-		vertices[C6] = c;
 	}
 	
 	public void setColor( float r, float g, float b, float a )
@@ -200,8 +185,6 @@ public final class Sprite2
 		vertices[C2] = c;
 		vertices[C3] = c;
 		vertices[C4] = c;
-		vertices[C5] = c;
-		vertices[C6] = c;
 	}	
 	
 	/**
@@ -325,19 +308,13 @@ public final class Sprite2
 			vertices[X3] = x3;
 			vertices[Y3] = y3;		
 			
-			vertices[X4] = x3;
-			vertices[Y4] = y3;		
-			
-			vertices[X5] = x4;
-			vertices[Y5] = y4;
-			
-			vertices[X6] = x1;
-			vertices[Y6] = y1;
+			vertices[X4] = x4;
+			vertices[Y4] = y4;		
 			
 			dirty = false;
 		}
 		
-		System.arraycopy(vertices, 0, out, offset, 30);		
+		System.arraycopy(vertices, 0, out, offset, 20);		
 	}	
 	
 	static private final int X1 = 0;
@@ -360,14 +337,4 @@ public final class Sprite2
 	static private final int C4 = 17;
 	static private final int U4 = 18;
 	static private final int V4 = 19;
-	static private final int X5 = 20;
-	static private final int Y5 = 21;
-	static private final int C5 = 22;
-	static private final int U5 = 23;
-	static private final int V5 = 24;
-	static private final int X6 = 25;
-	static private final int Y6 = 26;
-	static private final int C6 = 27;
-	static private final int U6 = 28;
-	static private final int V6 = 29;
 }

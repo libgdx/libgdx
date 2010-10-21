@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 public class SpriteBatchTest implements RenderListener, InputListener
 {
-	int SPRITES = 400 / 2;
+	int SPRITES = 2 / 2;
 	
 	long startTime = System.nanoTime();
 	int frames = 0;
@@ -281,7 +281,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	public void surfaceCreated( ) 
 	{					
 		if( spriteBatch == null )
-			spriteBatch = new SpriteBatch( 10000 );		
+			spriteBatch = new SpriteBatch( 1000 );		
 		
 		Pixmap pixmap = Gdx.graphics.newPixmap( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ) );		
 		texture = Gdx.graphics.newUnmanagedTexture( 32, 32, Format.RGB565, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );

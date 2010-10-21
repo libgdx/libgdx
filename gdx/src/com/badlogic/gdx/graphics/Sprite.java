@@ -12,7 +12,7 @@ public class Sprite {
 	public Texture texture;
 	public float width, height;
 	public float originX, originY;
-	public float[] vertices = new float[30];
+	public float[] vertices = new float[20];
 
 	public Sprite (String path) {
 		this(Gdx.files.getFileHandle(path, FileType.Internal), -1, -1);
@@ -61,13 +61,7 @@ public class Sprite {
 		vertices[Y3] = y2;
 
 		vertices[X4] = x2;
-		vertices[Y4] = y2;
-
-		vertices[X5] = x2;
-		vertices[Y5] = y;
-
-		vertices[X6] = x;
-		vertices[Y6] = y;
+		vertices[Y4] = y;
 	}
 
 	/**
@@ -90,13 +84,7 @@ public class Sprite {
 		vertices[Y3] = y2;
 
 		vertices[X4] = x2;
-		vertices[Y4] = y2;
-
-		vertices[X5] = x2;
-		vertices[Y5] = y;
-
-		vertices[X6] = x;
-		vertices[Y6] = y;
+		vertices[Y4] = y;
 	}
 
 	/**
@@ -121,13 +109,7 @@ public class Sprite {
 		vertices[Y3] = y2;
 
 		vertices[X4] = x2;
-		vertices[Y4] = y2;
-
-		vertices[X5] = x2;
-		vertices[Y5] = y;
-
-		vertices[X6] = x;
-		vertices[Y6] = y;
+		vertices[Y4] = y;
 	}
 
 	public void setTextureBounds (int srcX, int srcY, int srcWidth, int srcHeight) {
@@ -148,13 +130,7 @@ public class Sprite {
 		vertices[V3] = v2;
 
 		vertices[U4] = u2;
-		vertices[V4] = v2;
-
-		vertices[U5] = u2;
-		vertices[V5] = v;
-
-		vertices[U6] = u;
-		vertices[V6] = v;
+		vertices[V4] = v;
 	}
 
 	public void setColor (Color tint) {
@@ -163,8 +139,6 @@ public class Sprite {
 		vertices[C2] = color;
 		vertices[C3] = color;
 		vertices[C4] = color;
-		vertices[C5] = color;
-		vertices[C6] = color;
 	}
 
 	public void setColor (float r, float g, float b, float a) {
@@ -177,8 +151,6 @@ public class Sprite {
 		vertices[C2] = color;
 		vertices[C3] = color;
 		vertices[C4] = color;
-		vertices[C5] = color;
-		vertices[C6] = color;
 	}
 
 	public void setWrap (boolean x, boolean y) {
@@ -196,8 +168,6 @@ public class Sprite {
 			vertices[U2] = u2;
 			vertices[U3] = u;
 			vertices[U4] = u;
-			vertices[U5] = u;
-			vertices[U6] = u2;
 		}
 		if (y) {
 			float v = vertices[V1];
@@ -205,9 +175,7 @@ public class Sprite {
 			vertices[V1] = v2;
 			vertices[V2] = v;
 			vertices[V3] = v;
-			vertices[V4] = v;
-			vertices[V5] = v2;
-			vertices[V6] = v2;
+			vertices[V4] = v2;
 		}
 	}
 
@@ -219,8 +187,6 @@ public class Sprite {
 			vertices[U2] = u;
 			vertices[U3] = u2;
 			vertices[U4] = u2;
-			vertices[U5] = u2;
-			vertices[U6] = u;
 		}
 		if (yAmount > 0) {
 			float v = (vertices[V1] + yAmount) % 1;
@@ -228,9 +194,7 @@ public class Sprite {
 			vertices[V1] = v;
 			vertices[V2] = v2;
 			vertices[V3] = v2;
-			vertices[V4] = v2;
-			vertices[V5] = v;
-			vertices[V6] = v;
+			vertices[V4] = v;
 		}
 	}
 
@@ -246,8 +210,8 @@ public class Sprite {
 
 		x = vertices[X1] - originX;
 		y = vertices[Y1] - originY;
-		vertices[X1] = vertices[X6] = x * cos - y * sin + originX;
-		vertices[Y1] = vertices[Y6] = y * cos + x * sin + originY;
+		vertices[X1] = x * cos - y * sin + originX;
+		vertices[Y1] = y * cos + x * sin + originY;
 
 		x = vertices[X2] - originX;
 		y = vertices[Y2] - originY;
@@ -256,27 +220,27 @@ public class Sprite {
 
 		x = vertices[X3] - originX;
 		y = vertices[Y3] - originY;
-		vertices[X3] = vertices[X4] = x * cos - y * sin + originX;
-		vertices[Y3] = vertices[Y4] = y * cos + x * sin + originY;
+		vertices[X3] = x * cos - y * sin + originX;
+		vertices[Y3] = y * cos + x * sin + originY;
 
-		x = vertices[X5] - originX;
-		y = vertices[Y5] - originY;
-		vertices[X5] = x * cos - y * sin + originX;
-		vertices[Y5] = y * cos + x * sin + originY;
+		x = vertices[X4] - originX;
+		y = vertices[Y4] - originY;
+		vertices[X4] = x * cos - y * sin + originX;
+		vertices[Y4] = y * cos + x * sin + originY;
 	}
 
 	public void scale (float scale) {
-		vertices[X1] = vertices[X6] = originX + (vertices[X1] - originX) * scale;
-		vertices[Y1] = vertices[Y6] = originY + (vertices[Y1] - originY) * scale;
+		vertices[X1] = originX + (vertices[X1] - originX) * scale;
+		vertices[Y1] = originY + (vertices[Y1] - originY) * scale;
 
 		vertices[X2] = originX + (vertices[X2] - originX) * scale;
 		vertices[Y2] = originY + (vertices[Y2] - originY) * scale;
 
-		vertices[X3] = vertices[X4] = originX + (vertices[X3] - originX) * scale;
-		vertices[Y3] = vertices[Y4] = originY + (vertices[Y3] - originY) * scale;
+		vertices[X3] = originX + (vertices[X3] - originX) * scale;
+		vertices[Y3] = originY + (vertices[Y3] - originY) * scale;
 
-		vertices[X5] = originX + (vertices[X5] - originX) * scale;
-		vertices[Y5] = originY + (vertices[Y5] - originY) * scale;
+		vertices[X4] = originX + (vertices[X4] - originX) * scale;
+		vertices[Y4] = originY + (vertices[Y4] - originY) * scale;
 	}
 
 	public void destroy () {
@@ -303,14 +267,4 @@ public class Sprite {
 	static private final int C4 = 17;
 	static private final int U4 = 18;
 	static private final int V4 = 19;
-	static private final int X5 = 20;
-	static private final int Y5 = 21;
-	static private final int C5 = 22;
-	static private final int U5 = 23;
-	static private final int V5 = 24;
-	static private final int X6 = 25;
-	static private final int Y6 = 26;
-	static private final int C6 = 27;
-	static private final int U6 = 28;
-	static private final int V6 = 29;
 }

@@ -92,7 +92,7 @@ import com.badlogic.gdx.utils.MathUtils;
 public  class SpriteBatch
 {		
 	private static final int VERTEX_SIZE = 2 + 1 + 2;
-	private static final int SPRITE_SIZE = 6 * VERTEX_SIZE;
+	private static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 	
 	/** the mesh used to transfer the data to the GPU **/
 	private final Mesh mesh;
@@ -157,13 +157,27 @@ public  class SpriteBatch
 	 */
 	public SpriteBatch( int size )
 	{
-		this.mesh = new Mesh( false, false, size * 6, 0, 
+		this.mesh = new Mesh( false, false, size * 4, size * 6, 
 				  new VertexAttribute( Usage.Position, 2, "a_position" ),
 				  new VertexAttribute( Usage.ColorPacked, 4, "a_color" ),
 				  new VertexAttribute( Usage.TextureCoordinates, 2, "a_texCoords" ) );
 		projectionMatrix.setToOrtho2D( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
 		
 		vertices = new float[size * SPRITE_SIZE];
+		
+		short[] indices = new short[size*6];
+		int len = size * 6;
+		short j = 0;
+		for( int i = 0; i < len; i+=6, j+=4 )
+		{
+			indices[i+0] = (short)(j + 0);
+			indices[i+1] = (short)(j + 1);
+			indices[i+2] = (short)(j + 2);
+			indices[i+3] = (short)(j + 2);
+			indices[i+4] = (short)(j + 3);
+			indices[i+5] = (short)(j + 0);
+		}
+		mesh.setIndices( indices );
 		
 		if( Gdx.graphics.isGL20Available() )
 		createShader( );	
@@ -474,20 +488,10 @@ public  class SpriteBatch
 		vertices[idx++] = color; 
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
-		vertices[idx++] = x3;
-		vertices[idx++] = y3;
-		vertices[idx++] = color;
-		vertices[idx++] = u2; vertices[idx++] = v2;
-		
 		vertices[idx++] = x4;
 		vertices[idx++] = y4;
 		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v;
-		
-		vertices[idx++] = x1;
-		vertices[idx++] = y1;
-		vertices[idx++] = color;
-		vertices[idx++] = u; vertices[idx++] = v;
 		
 		if( idx == vertices.length )
 			renderMesh();
@@ -567,19 +571,9 @@ public  class SpriteBatch
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2; vertices[idx++] = v2;
-		
-		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v;
-		
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u; vertices[idx++] = v;
 		
 		if( idx == vertices.length )
 			renderMesh();
@@ -640,19 +634,9 @@ public  class SpriteBatch
 		vertices[idx++] = u2; vertices[idx++] = v2;
 		
 		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2; vertices[idx++] = v2;
-		
-		vertices[idx++] = fx2;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
 		vertices[idx++] = u2; vertices[idx++] = v;
-		
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u; vertices[idx++] = v; 
 		
 		if( idx == vertices.length )
 			renderMesh();
@@ -673,8 +657,8 @@ public  class SpriteBatch
 		
 		useTextBlend = false;
 		
-		System.arraycopy(sprite.vertices, 0, vertices, idx, 30);
-		idx += 30;
+		System.arraycopy(sprite.vertices, 0, vertices, idx, 20);
+		idx += 20;
 		
 		if( idx == vertices.length )
 			renderMesh();
@@ -696,7 +680,7 @@ public  class SpriteBatch
 		useTextBlend = false;
 
 		sprite.computeVertices( vertices, idx );
-		idx += 30;
+		idx += 20;
 		
 		if( idx == vertices.length )
 			renderMesh();
@@ -732,7 +716,7 @@ public  class SpriteBatch
 				}
 			}
 			
-			mesh.render( shader, GL10.GL_TRIANGLES );
+			mesh.render( shader, GL10.GL_TRIANGLES, 0, idx / 20 * 6 );
 		}
 		else
 		{
@@ -753,7 +737,7 @@ public  class SpriteBatch
 					Gdx.graphics.getGL10().glBlendFunc( blendSrcFunc, blendDstFunc );
 				}
 			}
-			mesh.render( GL10.GL_TRIANGLES );
+			mesh.render( GL10.GL_TRIANGLES, 0, idx / 20 * 6 );
 		}
 		idx = 0;
 	}	
@@ -814,19 +798,9 @@ public  class SpriteBatch
 			vertices[idx++] = u2; vertices[idx++] = v2;
 			
 			vertices[idx++] = fx2;
-			vertices[idx++] = fy2;
-			vertices[idx++] = color;
-			vertices[idx++] = u2; vertices[idx++] = v2;
-			
-			vertices[idx++] = fx2;
 			vertices[idx++] = y;
 			vertices[idx++] = color;
 			vertices[idx++] = u2; vertices[idx++] = v;
-			
-			vertices[idx++] = fx;
-			vertices[idx++] = y;
-			vertices[idx++] = color;
-			vertices[idx++] = u; vertices[idx++] = v; 
 			
 			x += g.advance;
 			
