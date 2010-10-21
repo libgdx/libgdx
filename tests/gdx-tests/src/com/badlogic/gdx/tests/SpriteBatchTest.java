@@ -50,7 +50,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 	float angle = 0;
 	float ROTATION_SPEED = 20;
 	float scale = 1;
-	float SCALE_SPEED = 0; //-1;
+	float SCALE_SPEED = -1;
 	int renderMethod = 0;
 	
 	@Override
@@ -213,8 +213,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		float drawText = 0;
 		
 		long start = System.nanoTime();
-		spriteBatch.begin();			
-		spriteBatch.disableBlending();
+		spriteBatch.begin();					
 		begin = (System.nanoTime()-start)/1000000000.0f;
 				
 		float angleInc = ROTATION_SPEED * Gdx.graphics.getDeltaTime();

@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 
 
 import android.app.Activity;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -279,5 +280,14 @@ public class AndroidApplication extends Activity implements Application {
     @Override
     public ApplicationType getType() {
         return ApplicationType.Android;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public int getVersion() 
+	{	
+		return Build.VERSION.SDK.charAt(0) - '0';
 	}
 }

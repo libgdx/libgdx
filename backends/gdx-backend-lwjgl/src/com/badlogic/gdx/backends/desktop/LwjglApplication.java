@@ -301,4 +301,10 @@ public class LwjglApplication implements Application {
 	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
+	
+	@Override
+	public int getVersion() 
+	{
+		return 0;
+	}
 }

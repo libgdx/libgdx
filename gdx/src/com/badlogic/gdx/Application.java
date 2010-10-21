@@ -137,6 +137,11 @@ public interface Application
 	public ApplicationType getType( );
 	
 	/**
+	 * @return the Android API level on Android or 0 on the desktop.
+	 */
+	public int getVersion( );
+	
+	/**
 	 * Sets the {@link ApplicationListener} that is called
 	 * when the {@link Application} is paused, resumed or closing.
 	 * 

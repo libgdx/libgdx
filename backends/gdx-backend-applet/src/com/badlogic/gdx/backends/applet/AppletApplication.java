@@ -137,4 +137,10 @@ public class AppletApplication implements Application
 		return ApplicationType.Applet;
 	}
 
+	@Override
+	public int getVersion() 
+	{
+		return 0;
+	}
+
 }

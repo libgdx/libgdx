@@ -32,7 +32,7 @@ public class BufferUtils
 	 * @param offset the offset in src to start copying from
 	 */
 	public static void copy( float[] src, Buffer dst, int numFloats, int offset )
-	{		
+	{				
 		copyJni( src, dst, numFloats, offset );
 		dst.position(0);  
 	
@@ -40,7 +40,7 @@ public class BufferUtils
 			dst.limit(numFloats << 2);
 		else
 		if( dst instanceof FloatBuffer ) 
-			dst.limit(numFloats);
+			dst.limit(numFloats);			
 	}
 	
 	private native static void copyJni( float[] src, Buffer dst, int numFloats, int offset );	

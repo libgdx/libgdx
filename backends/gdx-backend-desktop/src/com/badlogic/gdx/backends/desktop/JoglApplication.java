@@ -143,5 +143,11 @@ public final class JoglApplication implements Application
 	{	
 		return ApplicationType.Desktop;
 	}
+	
+	@Override
+	public int getVersion() 
+	{
+		return 0;
+	}
 
 }

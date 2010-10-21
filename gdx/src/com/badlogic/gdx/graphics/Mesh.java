@@ -8,6 +8,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -62,7 +63,7 @@ public class Mesh
 	private final int maxIndices;
 	
 	/** the direct byte buffer that holds the vertices **/
-	private final Buffer vertices;
+	private final ByteBuffer vertices;
 	
 	/** a view of the vertices buffer for manipulating floats **/
 	private final FloatBuffer verticesFloat;
@@ -97,6 +98,12 @@ public class Mesh
 	/** whether attempted to create buffer the first time**/
 	private boolean bufferCreatedFirstTime = false;
 	
+	/** whether we use direct buffers or not **/
+	private final boolean isDirect;
+	
+	/** whether VBOs are used or not **/
+	private final boolean useVBO;
+	
 	/**
 	 * Creates a new Mesh with the given attributes.
 	 * 
@@ -115,14 +122,47 @@ public class Mesh
 		this.maxIndices = maxIndices;
 		this.attributes = new VertexAttributes( attributes );
 		
-		ByteBuffer buffer = ByteBuffer.allocateDirect( maxVertices * this.attributes.vertexSize );
-		buffer.order(ByteOrder.nativeOrder());
-		vertices = buffer;
-		verticesFixed = buffer.asIntBuffer();
-		verticesFloat = buffer.asFloatBuffer();
-		buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
-		buffer.order( ByteOrder.nativeOrder() );
-		indices = buffer.asShortBuffer();
+		if( Gdx.app.getType() != Application.ApplicationType.Android )
+		{
+			useVBO = Gdx.graphics.isGL11Available() == true || Gdx.graphics.isGL20Available() == true;
+			isDirect = true;
+		}
+		else
+		{
+			useVBO = Gdx.graphics.isGL11Available() == true || Gdx.graphics.isGL20Available() == true;
+			if( useVBO )
+			{
+//				if( Gdx.app.getVersion() < 5 )
+//					isDirect = false;
+//				else
+					isDirect = true;
+			}
+			else
+				isDirect = true;
+		}
+		
+		if( isDirect )
+		{
+			ByteBuffer buffer = ByteBuffer.allocateDirect( maxVertices * this.attributes.vertexSize );
+			buffer.order(ByteOrder.nativeOrder());
+			vertices = buffer;
+			verticesFixed = buffer.asIntBuffer();
+			verticesFloat = buffer.asFloatBuffer();
+			buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
+			buffer.order( ByteOrder.nativeOrder() );
+			indices = buffer.asShortBuffer();
+		}
+		else
+		{
+			ByteBuffer buffer = ByteBuffer.allocate( maxVertices * this.attributes.vertexSize );
+			buffer.order(ByteOrder.nativeOrder());
+			vertices = buffer;
+			verticesFixed = buffer.asIntBuffer();
+			verticesFloat = buffer.asFloatBuffer();
+			buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
+			buffer.order(ByteOrder.nativeOrder());
+			indices = buffer.asShortBuffer();
+		}
 		
 		bufferCreatedFirstTime = false;
 		if( managed )
@@ -135,7 +175,7 @@ public class Mesh
 		if( useFixedPoint && Gdx.graphics.getType() == GraphicsType.JoglGL)
 			return;
 		
-		if( Gdx.graphics.isGL11Available() == false && Gdx.graphics.isGL20Available() == false )
+		if( !useVBO )
 			return;
 		
 		if( Gdx.graphics.isGL20Available() )
@@ -282,10 +322,23 @@ public class Mesh
 	{
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
-				
-		BufferUtils.copy( vertices, this.vertices, vertices.length, 0 );				
-		this.verticesFloat.limit(this.vertices.limit() >> 2);									
-		this.verticesFloat.position(0);					
+					
+		if( isDirect )
+		{
+			BufferUtils.copy( vertices, this.vertices, vertices.length, 0 );
+			this.verticesFloat.limit(this.vertices.limit() >> 2);									
+			this.verticesFloat.position(0);					
+		}
+		else
+		{
+			this.verticesFloat.clear();
+			this.verticesFloat.put( vertices );
+			this.verticesFloat.limit( vertices.length );
+			this.verticesFloat.position(0);
+			this.vertices.limit(verticesFloat.limit()<<2);
+			this.vertices.position(0);		
+		}
+					
 		dirty = true;
 	}
 	
@@ -303,9 +356,21 @@ public class Mesh
 		if( useFixedPoint )
 			throw new IllegalArgumentException( "can't set float vertices for fixed point mesh" );
 				
-		BufferUtils.copy( vertices, this.vertices, count, offset );
-		this.verticesFloat.limit(this.vertices.limit()>>2);
-		this.verticesFloat.position(0);
+		if( isDirect )
+		{
+			BufferUtils.copy( vertices, this.vertices, count, offset );
+			this.verticesFloat.limit(this.vertices.limit()>>2);
+			this.verticesFloat.position(0);
+		}
+		else
+		{
+			this.verticesFloat.clear();
+			this.verticesFloat.put( vertices, offset, count );
+			this.verticesFloat.limit( count );
+			this.verticesFloat.position(0);
+			this.vertices.limit(verticesFloat.limit()<<2);
+			this.vertices.position(0);
+		}
 		
 		dirty = true;
 	}
@@ -326,7 +391,7 @@ public class Mesh
 		verticesFixed.put( vertices );
 		verticesFixed.limit( vertices.length );
 		verticesFixed.position(0);		
-		this.vertices.limit(verticesFixed.limit()*4);
+		this.vertices.limit(verticesFixed.limit()<<2);
 		this.vertices.position(0);		
 		dirty = true;
 	}
@@ -362,6 +427,7 @@ public class Mesh
 	public void setIndices( short[] indices )
 	{	
 		this.indices.put( indices );
+		this.indices.limit( indices.length );
 		this.indices.position(0);
 		dirty = true;
 	}
