@@ -4,6 +4,11 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.MathUtils;
 
+/**
+ * Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}.
+ * @author mzechner
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class Sprite {
 	Texture texture;
 	private float[] vertices = new float[20];
@@ -14,14 +19,24 @@ public class Sprite {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty;
 
+	/**
+	 * Creates a sprite with both bounds and texture region equal to the size of the texture.
+	 */
 	public Sprite (Texture texture) {
 		this(texture, 0, 0, texture.getWidth(), texture.getHeight());
 	}
 
+	/**
+	 * Creates a sprite with both bounds and texture region equal to the specified size. The texture region's upper left corner
+	 * will be 0,0.
+	 */
 	public Sprite (Texture texture, int srcWidth, int srcHeight) {
 		this(texture, 0, 0, srcWidth, srcHeight);
 	}
 
+	/**
+	 * Creates a sprite with both bounds and texture region equal to the specified size.
+	 */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		this.texture = texture;
 		setTextureRegion(srcX, srcY, srcWidth, srcHeight);
@@ -30,16 +45,25 @@ public class Sprite {
 		setOrigin(srcWidth / 2, srcHeight / 2);
 	}
 
+	/**
+	 * Sets the origin in relation to the sprite's position for scaling and rotation.
+	 */
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
 		dirty = true;
 	}
 
+	/**
+	 * Sets the position where the sprite will be drawn.
+	 */
 	public void setPosition (float x, float y) {
 		translate(x - this.x, y - this.y);
 	}
 
+	/**
+	 * Sets the size and position where the sprite will be drawn, before scaling and rotation are applied.
+	 */
 	public void setBounds (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
@@ -64,6 +88,9 @@ public class Sprite {
 		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
 
+	/**
+	 * Sets the position relative to the current position where the sprite will be drawn.
+	 */
 	public void translate (float xAmount, float yAmount) {
 		x += xAmount;
 		y += yAmount;
@@ -82,6 +109,9 @@ public class Sprite {
 		vertices[Y4] += yAmount;
 	}
 
+	/**
+	 * Sets the texture coordinates in pixels to apply to the sprite.
+	 */
 	public void setTextureRegion (int srcX, int srcY, int srcWidth, int srcHeight) {
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();
@@ -104,11 +134,62 @@ public class Sprite {
 		vertices[V4] = v;
 	}
 
+	/**
+	 * Sets whether the texture will be repeated or stetched. The default is stretched.
+	 * @param x If true, the texture will be repeated.
+	 * @param y If true, the texture will be repeated.
+	 */
 	public void setTextureRepeat (boolean x, boolean y) {
 		texture.bind();
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
+	}
+
+	/**
+	 * Flips the texture.
+	 */
+	public void flip (boolean x, boolean y) {
+		float[] vertices = this.vertices;
+		if (x) {
+			float u = vertices[U1];
+			float u2 = vertices[U3];
+			vertices[U1] = u2;
+			vertices[U2] = u2;
+			vertices[U3] = u;
+			vertices[U4] = u;
+		}
+		if (y) {
+			float v = vertices[V1];
+			float v2 = vertices[V3];
+			vertices[V1] = v2;
+			vertices[V2] = v;
+			vertices[V3] = v;
+			vertices[V4] = v2;
+		}
+	}
+
+	/**
+	 * Offsets the texture region relative to the current texture region.
+	 */
+	public void scrollTexture (float xAmount, float yAmount) {
+		float[] vertices = this.vertices;
+		if (xAmount > 0) {
+			float u = (vertices[2] + xAmount) % 1;
+			float u2 = u + width / texture.getWidth();
+			vertices[U1] = u;
+			vertices[U2] = u;
+			vertices[U3] = u2;
+			vertices[U4] = u2;
+		}
+		if (yAmount > 0) {
+			float v = (vertices[V1] + yAmount) % 1;
+			float v2 = v + height / texture.getHeight();
+			vertices[V1] = v;
+			vertices[V2] = v2;
+			vertices[V3] = v2;
+			vertices[V4] = v;
+		}
 	}
 
 	public void setColor (Color tint) {
@@ -133,51 +214,14 @@ public class Sprite {
 		vertices[C4] = color;
 	}
 
-	public void flip (boolean x, boolean y) {
-		float[] vertices = this.vertices;
-		if (x) {
-			float u = vertices[U1];
-			float u2 = vertices[U3];
-			vertices[U1] = u2;
-			vertices[U2] = u2;
-			vertices[U3] = u;
-			vertices[U4] = u;
-		}
-		if (y) {
-			float v = vertices[V1];
-			float v2 = vertices[V3];
-			vertices[V1] = v2;
-			vertices[V2] = v;
-			vertices[V3] = v;
-			vertices[V4] = v2;
-		}
-	}
-
-	public void scrollTexture (float xAmount, float yAmount) {
-		float[] vertices = this.vertices;
-		if (xAmount > 0) {
-			float u = (vertices[2] + xAmount) % 1;
-			float u2 = u + width / texture.getWidth();
-			vertices[U1] = u;
-			vertices[U2] = u;
-			vertices[U3] = u2;
-			vertices[U4] = u2;
-		}
-		if (yAmount > 0) {
-			float v = (vertices[V1] + yAmount) % 1;
-			float v2 = v + height / texture.getHeight();
-			vertices[V1] = v;
-			vertices[V2] = v2;
-			vertices[V3] = v2;
-			vertices[V4] = v;
-		}
-	}
-
 	public void setRotation (float rotation) {
 		this.rotation = rotation;
 		dirty = true;
 	}
 
+	/**
+	 * Sets the sprite's rotation relative to the current rotation.
+	 */
 	public void rotate (float degrees) {
 		rotation += degrees;
 		dirty = true;
@@ -194,6 +238,9 @@ public class Sprite {
 		dirty = true;
 	}
 
+	/**
+	 * Sets the sprite's scale relative to the current scale.
+	 */
 	public void scale (float amount) {
 		this.scaleX += amount;
 		this.scaleY += amount;
