@@ -63,7 +63,7 @@ public class Mesh
 	private final int maxIndices;
 	
 	/** the direct byte buffer that holds the vertices **/
-	private final ByteBuffer vertices;
+	private final Buffer vertices;
 	
 	/** a view of the vertices buffer for manipulating floats **/
 	private final FloatBuffer verticesFloat;
@@ -132,9 +132,9 @@ public class Mesh
 			useVBO = Gdx.graphics.isGL11Available() == true || Gdx.graphics.isGL20Available() == true;
 			if( useVBO )
 			{
-//				if( Gdx.app.getVersion() < 5 )
-//					isDirect = false;
-//				else
+				if( Gdx.app.getVersion() < 5 )
+					isDirect = false;
+				else
 					isDirect = true;
 			}
 			else
@@ -154,14 +154,20 @@ public class Mesh
 		}
 		else
 		{
-			ByteBuffer buffer = ByteBuffer.allocate( maxVertices * this.attributes.vertexSize );
-			buffer.order(ByteOrder.nativeOrder());
-			vertices = buffer;
-			verticesFixed = buffer.asIntBuffer();
-			verticesFloat = buffer.asFloatBuffer();
-			buffer = ByteBuffer.allocateDirect( maxIndices * 2 );
-			buffer.order(ByteOrder.nativeOrder());
-			indices = buffer.asShortBuffer();
+			
+			if( useFixedPoint )
+			{
+				verticesFixed = IntBuffer.allocate( maxVertices * this.attributes.vertexSize / 4 );
+				verticesFloat = null;
+				vertices = verticesFixed;
+			}
+			else
+			{
+				verticesFloat = FloatBuffer.allocate( maxVertices * this.attributes.vertexSize / 4 );
+				verticesFixed = null;
+				vertices = verticesFloat;
+			}
+			indices = ShortBuffer.allocate( maxIndices );
 		}
 		
 		bufferCreatedFirstTime = false;
@@ -334,9 +340,7 @@ public class Mesh
 			this.verticesFloat.clear();
 			this.verticesFloat.put( vertices );
 			this.verticesFloat.limit( vertices.length );
-			this.verticesFloat.position(0);
-			this.vertices.limit(verticesFloat.limit()<<2);
-			this.vertices.position(0);		
+			this.verticesFloat.position(0);			
 		}
 					
 		dirty = true;
@@ -367,9 +371,7 @@ public class Mesh
 			this.verticesFloat.clear();
 			this.verticesFloat.put( vertices, offset, count );
 			this.verticesFloat.limit( count );
-			this.verticesFloat.position(0);
-			this.vertices.limit(verticesFloat.limit()<<2);
-			this.vertices.position(0);
+			this.verticesFloat.position(0);			
 		}
 		
 		dirty = true;
@@ -391,8 +393,12 @@ public class Mesh
 		verticesFixed.put( vertices );
 		verticesFixed.limit( vertices.length );
 		verticesFixed.position(0);		
-		this.vertices.limit(verticesFixed.limit()<<2);
-		this.vertices.position(0);		
+		
+		if( isDirect )
+		{
+			this.vertices.limit(verticesFixed.limit()<<2);
+			this.vertices.position(0);
+		}
 		dirty = true;
 	}
 	
@@ -414,8 +420,12 @@ public class Mesh
 		verticesFixed.put( vertices, offset, count );
 		verticesFixed.limit(count);
 		verticesFixed.position(0);		
-		this.vertices.limit(verticesFixed.limit()*4);
-		this.vertices.position(0);		
+		
+		if( isDirect )
+		{
+			this.vertices.limit(verticesFixed.limit()*4);
+			this.vertices.position(0);
+		}
 		dirty = true;
 	}
 	
@@ -445,7 +455,7 @@ public class Mesh
 	 */
 	public int getNumVertices( )
 	{
-		return vertices.limit() / attributes.vertexSize;
+		return vertices.limit() / attributes.vertexSize * (isDirect?1:4);
 	}
 	
 	/**
@@ -891,15 +901,22 @@ public class Mesh
 	}
 	
 	/**
-	 * @return the backing ByteBuffer holding the vertices
+	 * @return the backing FloatBuffer holding the vertices. Will be null if this is a fixed point mesh. Does not have to be a direct buffer on Android!
 	 */
-	public Buffer getVerticesBuffer( )
+	public FloatBuffer getVerticesBufferFloat( )
 	{
-		return vertices;
+		return verticesFloat;
+	}
+	/**
+	 * @return the backing IntBuffer holding the vertices. Will be null if this is a floating point mesh. Does not have to be a direct buffer on Android!
+	 */
+	public IntBuffer getVerticesBufferFixed( )
+	{
+		return verticesFixed;
 	}
 	
 	/**
-	 * @return the backing shortbuffer holding the indices
+	 * @return the backing shortbuffer holding the indices.  Does not have to be a direct buffer on Android!
 	 */
 	public ShortBuffer getIndicesBuffer( )
 	{
@@ -964,5 +981,10 @@ public class Mesh
 	public static void clearAllMeshes( )
 	{
 		meshes.clear();
+	}
+
+	public void setDirty() 
+	{
+		dirty = true;		
 	}
 }

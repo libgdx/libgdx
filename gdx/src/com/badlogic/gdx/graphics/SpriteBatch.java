@@ -396,8 +396,8 @@ public  class SpriteBatch
 			x3 = cos * p3x - sin * p3y;
 			y3 = sin * p3x + cos * p3y;
 			
-			x4 = cos * p4x - sin * p4y;
-			y4 = sin * p4x + cos * p4y;			
+			x4 = x1 + (x3 - x2);
+			y4 = y3 - (y2 - y1);			
 		}
 		else
 		{

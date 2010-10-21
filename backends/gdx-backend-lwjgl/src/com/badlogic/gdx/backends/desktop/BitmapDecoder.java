@@ -13,28 +13,30 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
 class BitmapDecoder {
-	static public final ColorModel rgbaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
+	private static final ColorModel rgbaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
 		8, 8, 8, 8}, true, false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
 
-	int width, height;
-
-	private BufferedImage tempImage;
+	private static int width, height;
+	private static ByteBuffer buffer;
+	private static BufferedImage tempImage;
 
 	@SuppressWarnings("unchecked")
-	public ByteBuffer decode (BufferedImage image, ByteBuffer buffer) throws IOException {
+	public static ByteBuffer decode (BufferedImage image) throws IOException {
 		if (image == null) throw new IOException("Invalid image.");
+
 		width = image.getWidth();
 		height = image.getHeight();
 
 		WritableRaster raster;
 		if (tempImage == null || tempImage.getWidth() < width || tempImage.getHeight() < height) {
 			raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, width, height, 4, null);
-			tempImage = new BufferedImage(rgbaColorModel, raster, false, new Hashtable());
+			tempImage = new BufferedImage(rgbaColorModel, raster, true, new Hashtable());
 		} else
 			raster = tempImage.getRaster();
 

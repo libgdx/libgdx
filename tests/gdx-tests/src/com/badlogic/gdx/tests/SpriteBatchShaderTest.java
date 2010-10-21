@@ -114,13 +114,18 @@ public class SpriteBatchShaderTest implements RenderListener
 		if( spriteBatch == null )
 			spriteBatch = new SpriteBatch( );
 		
-		Pixmap pixmap = Gdx.graphics.newPixmap( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ) );		
+		Pixmap pixmap = Gdx.graphics.newPixmap( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ) );
+//		pixmap.setColor( 0, 0, 0, 0 );
+//		pixmap.fillCircle( 16, 16, 4 );
 		texture = Gdx.graphics.newUnmanagedTexture( 32, 32, Format.RGB565, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 		texture.draw( pixmap, 0, 0);
 		
 		pixmap = Gdx.graphics.newPixmap(32, 32, Format.RGB565 );
-		pixmap.setColor(1, 1, 0, 1 );
+		pixmap.setColor(1, 1, 0, 0.7f );
 		pixmap.fill();
+//		pixmap.setColor( 0, 0, 0, 0 );
+//		pixmap.fillCircle( 16, 16, 4 );
+//		
 		texture2 = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 		
 		if( font == null )

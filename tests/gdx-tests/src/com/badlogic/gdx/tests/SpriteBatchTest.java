@@ -118,7 +118,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		
 		if( System.nanoTime() - startTime > 1000000000 )
 		{
-			Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
+//			Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -189,7 +189,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		
 		if( System.nanoTime() - startTime > 1000000000 )
 		{
-			Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
+//			Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 + ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
 			startTime = System.nanoTime();
 		}

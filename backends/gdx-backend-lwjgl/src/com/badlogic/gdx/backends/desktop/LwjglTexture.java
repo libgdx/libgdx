@@ -99,20 +99,12 @@ final class LwjglTexture implements Texture {
 
 	private ByteBuffer toByteBuffer( BufferedImage image )
 	{
-		if( imageBuffer == null || imageBuffer.capacity() / 4 < image.getWidth() * image.getHeight() )
-		{
-			imageBuffer = ByteBuffer.allocateDirect( image.getWidth() * image.getHeight() * 4 );
-			imageBuffer.order(ByteOrder.LITTLE_ENDIAN);
-		}
-		
-		imageBuffer.clear();
-		
 		try {
-			new TextureDataSource( image ).decode( imageBuffer );
-			imageBuffer.flip();
+			imageBuffer = BitmapDecoder.decode( image );
 			return imageBuffer;
-		} catch (IOException e) {
-			throw new GdxRuntimeException( "couldn't decode image" );
+		} catch (IOException e) 
+		{		
+			throw new GdxRuntimeException( "Couldn't decode image", e );
 		}
 	}
 	
