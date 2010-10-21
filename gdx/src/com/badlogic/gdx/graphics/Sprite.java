@@ -273,8 +273,8 @@ public class Sprite {
 			vertices[X3] = localX2 * cos - localY2 * sin + worldOriginX;
 			vertices[Y3] = localY2 * cos + localX2 * sin + worldOriginY;
 
-			vertices[X4] = localX2 * cos - localY * sin + worldOriginX;
-			vertices[Y4] = localY * cos + localX2 * sin + worldOriginY;
+			vertices[X4] = vertices[X1] + (vertices[X3] - vertices[X2]);
+			vertices[Y4] = vertices[Y3] - (vertices[Y2] - vertices[Y1]);
 		}
 		System.arraycopy(vertices, 0, out, offset, 20);
 	}
