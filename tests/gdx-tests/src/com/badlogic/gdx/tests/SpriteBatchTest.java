@@ -216,8 +216,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		pixmap = Gdx.graphics.newPixmap(32, 32, Format.RGBA8888 );
 		pixmap.setColor(1, 1, 0, 0.5f );
 		pixmap.fill();
-//		texture2 = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
-		texture2 = texture;
+		texture2 = Gdx.graphics.newUnmanagedTexture( pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );		
 		pixmap.dispose();
 		
 		font = Gdx.graphics.newFont( "Arial", 32, FontStyle.Plain );

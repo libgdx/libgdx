@@ -20,6 +20,10 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
@@ -64,7 +68,7 @@ final class LwjglPixmap implements Pixmap {
 	
 	private int getInternalFormat (Pixmap.Format format) {
 //		if (format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565)
-			return BufferedImage.TYPE_INT_ARGB;
+			return BufferedImage.TYPE_4BYTE_ABGR;
 //		else
 //			return BufferedImage.TYPE_BYTE_GRAY;
 	}
@@ -166,7 +170,6 @@ final class LwjglPixmap implements Pixmap {
 	}
 
 	public void dispose () {
-		// TODO Auto-generated method stub
 
 	}
 

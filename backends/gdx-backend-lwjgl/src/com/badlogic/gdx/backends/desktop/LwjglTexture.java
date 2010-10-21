@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.backends.desktop;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -30,7 +31,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * An implementation of {@link Texture} based on Jogl
+ * I apologize for this class. It is a big fucking mess which can be attributed to the late hour
+ * i created this piece of shit in. Please take my apologize. It is slow. It is ugly. It is aids.
  * 
  * @author badlogicgames@gmail.com
  * 
@@ -71,7 +73,9 @@ final class LwjglTexture implements Texture {
 		boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = minFilter == TextureFilter.MipMap;
-		loadMipMap(image);
+		BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR );
+		loadMipMap(img);
+		this.draw( Gdx.graphics.newPixmap(image), 0, 0 );
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -125,7 +129,7 @@ final class LwjglTexture implements Texture {
 		texWidth = width;
 		texHeight = height;
 		textureID = GL11.glGenTextures();
-		GL11.glBindTexture( GL11.GL_TEXTURE_2D, textureID );
+		GL11.glBindTexture( GL11.GL_TEXTURE_2D, textureID );		
 
 		while(height >= 1 || width >= 1 && level < 4 ) {
 			ByteBuffer imageBuffer = toByteBuffer( image );
