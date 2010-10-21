@@ -238,6 +238,7 @@ public class Group extends Actor
 			point.x = x; point.y = y;
 			focusedActor.toLocalCoordinates( point );
 			focusedActor.touchDown( point.x, point.y, pointer );
+			return true;
 		}
 		
 		int len = children.size() - 1;
@@ -273,6 +274,7 @@ public class Group extends Actor
 			point.x = x; point.y = y;
 			focusedActor.toLocalCoordinates( point );
 			focusedActor.touchUp( point.x, point.y, pointer );
+			return true;
 		}
 		
 		int len = children.size() - 1;
@@ -301,6 +303,7 @@ public class Group extends Actor
 			point.x = x; point.y = y;
 			focusedActor.toLocalCoordinates( point );
 			focusedActor.touchDragged( point.x, point.y, pointer );
+			return true;
 		}
 		
 		int len = children.size() - 1;

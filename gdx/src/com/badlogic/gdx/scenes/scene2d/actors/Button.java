@@ -70,16 +70,21 @@ public class Button extends Actor
 	protected boolean touchDown(float x, float y, int pointer) {
 		boolean result = x > 0 && y > 0 && x < width && y < height;
 		pressed = result;
-		parent.focus( this );
+		if( pressed )
+			parent.focus( this );
 		return result;
 	}
 
 	@Override
 	protected boolean touchUp(float x, float y, int pointer) 
 	{
+		if( !pressed )
+			return false;
+		
 		parent.focus( null );
+		pressed = false;
 		if( clickListener != null )
-			clickListener.clicked( this );
+			clickListener.clicked( this );		
 		return true;
 	}
 
