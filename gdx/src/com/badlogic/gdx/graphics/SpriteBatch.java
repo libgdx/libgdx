@@ -366,10 +366,10 @@ public  class SpriteBatch
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
 		final float worldOriginY = y + originY;
-		float fx = x - worldOriginX;
-		float fy = y - worldOriginY;
-		float fx2 = x + width - worldOriginX;
-		float fy2 = y + height - worldOriginY;
+		float fx = -originX;
+		float fy = -originY;
+		float fx2 = width - originX;
+		float fy2 = height - originY;
 		
 		// scale
 		if( scaleX != 1 || scaleY != 1 )
@@ -433,14 +433,10 @@ public  class SpriteBatch
 			y4 = p4y;
 		}			
 		
-		// translate to worldspace
-		final float worldX = x + originX;
-		final float worldY = y + originY;
-		
-		x1 += worldX; y1 += worldY;
-		x2 += worldX; y2 += worldY;
-		x3 += worldX; y3 += worldY;
-		x4 += worldX; y4 += worldY;
+		x1 += worldOriginX; y1 += worldOriginY;
+		x2 += worldOriginX; y2 += worldOriginY;
+		x3 += worldOriginX; y3 += worldOriginY;
+		x4 += worldOriginX; y4 += worldOriginY;
 		
 		float u = srcX * invTexWidth;
 		float v = (srcY + srcHeight) * invTexHeight;

@@ -8,18 +8,18 @@ import com.badlogic.gdx.utils.MathUtils;
  * @author mzechner
  *
  */
-public class Sprite2 
+public final class Sprite2 
 {	
 	protected final float vertices[] = new float[30];
 	private boolean dirty = false;
-		
-	public Texture texture;
+			
 	public float x, y, width, height;
 	public float scaleX, scaleY;
 	public float rotation;
 	public float originX, originY;
 	public float srcX, srcY, srcWidth, srcHeight;
-	public final Color color;
+	public float r, g, b, a;
+	public Texture texture;
 	
 	public Sprite2( Texture texture )
 	{
@@ -29,9 +29,8 @@ public class Sprite2
 	public Sprite2( Texture texture, int srcX, int srcY, int srcWidth, int srcHeight )
 	{
 		this.texture = texture;
-		setTextureRegion( srcX, srcY, srcWidth, srcHeight );
-		color = new Color( 1, 1, 1, 1 );
-		setColor( color );
+		setTextureRegion( srcX, srcY, srcWidth, srcHeight );		
+		setColor( 1, 1, 1, 1 );
 		
 		width = srcWidth;
 		height = srcHeight;
@@ -177,7 +176,10 @@ public class Sprite2
 	
 	public void setColor( Color color )
 	{
-		this.color.set( color );
+		this.r = color.r;
+		this.g = color.g;
+		this.b = color.b;
+		this.a = color.a;
 		float c = color.toFloatBits();
 		vertices[C1] = c;
 		vertices[C2] = c;
@@ -189,8 +191,11 @@ public class Sprite2
 	
 	public void setColor( float r, float g, float b, float a )
 	{
-		this.color.set( r, g, b, a );
-		float c = color.toFloatBits();
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+		float c = Color.toFloatBits(r, g, b, a);
 		vertices[C1] = c;
 		vertices[C2] = c;
 		vertices[C3] = c;
@@ -221,17 +226,28 @@ public class Sprite2
 		scaleY += scale;
 	}
 	
-	protected final void computeVertices( float[] out, int offset )
+	protected final void computeVertices( final float[] out, final int offset )
 	{			
 		if( dirty )
 		{		
+			final float x = this.x;
+			final float y = this.y;
+			final float originX = this.originX;
+			final float originY = this.originY;
+			final float width = this.width;
+			final float height = this.height;
+			final float scaleX = this.scaleX;
+			final float scaleY = this.scaleY;
+			final float rotation = this.rotation;
+			final float[] vertices = this.vertices;
+			
 			// bottom left and top right corner points relative to origin
 			final float worldOriginX = x + originX;
 			final float worldOriginY = y + originY;
-			float fx = x - worldOriginX;
-			float fy = y - worldOriginY;
-			float fx2 = x + width - worldOriginX;
-			float fy2 = y + height - worldOriginY;
+			float fx = -originX;
+			float fy = -originY;
+			float fx2 = width - originX;
+			float fy2 = height - originY;
 			
 			// scale
 			if( scaleX != 1 || scaleY != 1 )
