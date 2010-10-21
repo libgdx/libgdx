@@ -657,7 +657,7 @@ public  class SpriteBatch
 		
 		useTextBlend = false;
 		
-		System.arraycopy(sprite.vertices, 0, vertices, idx, 20);
+		sprite.computeVertices( vertices, idx );
 		idx += 20;
 		
 		if( idx == vertices.length )

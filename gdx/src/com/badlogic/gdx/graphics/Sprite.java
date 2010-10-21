@@ -1,79 +1,54 @@
 
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.MathUtils;
 
 public class Sprite {
-	public Texture texture;
-	public float width, height;
-	public float originX, originY;
-	public float[] vertices = new float[20];
+	Texture texture;
+	private float[] vertices = new float[20];
+	private float x, y;
+	private float width, height;
+	private float originX, originY;
+	private float rotation;
+	private float scaleX = 1, scaleY = 1;
+	private boolean dirty;
 
-	public Sprite (String path) {
-		this(Gdx.files.getFileHandle(path, FileType.Internal), -1, -1);
+	public Sprite (Texture texture) {
+		this(texture, 0, 0, texture.getWidth(), texture.getHeight());
 	}
 
-	public Sprite (String path, int width, int height) {
-		this(Gdx.files.getFileHandle(path, FileType.Internal), width, height);
-	}
-
-	public Sprite (FileHandle file) {
-		this(file, -1, -1);
-	}
-
-	public Sprite (FileHandle file, int width, int height) {
-		texture = Gdx.graphics.newTexture(file, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
-		if (width == -1) width = texture.getWidth();
-		if (height == -1) height = texture.getHeight();
-		setBounds(0, 0, width, height);
-		setTextureBounds(0, 0, width, height);
-		setColor(1, 1, 1, 1);
-		flip(false, true);
+	public Sprite (Texture texture, int srcWidth, int srcHeight) {
+		this(texture, 0, 0, srcWidth, srcHeight);
 	}
 
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		this.texture = texture;
-		setTextureBounds(srcX, srcY, srcWidth, srcHeight);
+		setTextureRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
-		flip(false, true);
+		setBounds(0, 0, srcWidth, srcHeight);
+		setOrigin(srcWidth / 2, srcHeight / 2);
 	}
 
-	/**
-	 * Sets the screen coordinates where the sprite will be drawn. Invalidates the origin (see {@link #translate(float, float)}).
-	 */
+	public void setOrigin (float originX, float originY) {
+		this.originX = originX;
+		this.originY = originY;
+		dirty = true;
+	}
+
 	public void setPosition (float x, float y) {
-		float x2 = x + width;
-		float y2 = y + height;
-
-		vertices[X1] = x;
-		vertices[Y1] = y;
-
-		vertices[X2] = x;
-		vertices[Y2] = y2;
-
-		vertices[X3] = x2;
-		vertices[Y3] = y2;
-
-		vertices[X4] = x2;
-		vertices[Y4] = y;
+		translate(x - this.x, y - this.y);
 	}
 
-	/**
-	 * Sets the screen coordinates where the sprite will be drawn. Invalidates the origin (see {@link #translate(float, float)}).
-	 */
 	public void setBounds (float x, float y, float width, float height) {
+		this.x = x;
+		this.y = y;
 		this.width = width;
 		this.height = height;
 
 		float x2 = x + width;
 		float y2 = y + height;
-
+		float[] vertices = this.vertices;
 		vertices[X1] = x;
 		vertices[Y1] = y;
 
@@ -85,34 +60,29 @@ public class Sprite {
 
 		vertices[X4] = x2;
 		vertices[Y4] = y;
+
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
 	}
 
-	/**
-	 * Shifts the screen coordinates where the sprite will be drawn. Preserves the origin.
-	 */
 	public void translate (float xAmount, float yAmount) {
-		originX += xAmount;
-		originY += yAmount;
+		x += xAmount;
+		y += yAmount;
 
-		float x = vertices[X1] + xAmount;
-		float y = vertices[Y1] + yAmount;
-		float x2 = x + width;
-		float y2 = y + height;
+		float[] vertices = this.vertices;
+		vertices[X1] += xAmount;
+		vertices[Y1] += yAmount;
 
-		vertices[X1] = x;
-		vertices[Y1] = y;
+		vertices[X2] += xAmount;
+		vertices[Y2] += yAmount;
 
-		vertices[X2] = x;
-		vertices[Y2] = y2;
+		vertices[X3] += xAmount;
+		vertices[Y3] += yAmount;
 
-		vertices[X3] = x2;
-		vertices[Y3] = y2;
-
-		vertices[X4] = x2;
-		vertices[Y4] = y;
+		vertices[X4] += xAmount;
+		vertices[Y4] += yAmount;
 	}
 
-	public void setTextureBounds (int srcX, int srcY, int srcWidth, int srcHeight) {
+	public void setTextureRegion (int srcX, int srcY, int srcWidth, int srcHeight) {
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();
 		float u = srcX * invTexWidth;
@@ -120,6 +90,7 @@ public class Sprite {
 		float u2 = (srcX + srcWidth) * invTexWidth;
 		float v2 = srcY * invTexHeight;
 
+		float[] vertices = this.vertices;
 		vertices[U1] = u;
 		vertices[V1] = v;
 
@@ -133,8 +104,16 @@ public class Sprite {
 		vertices[V4] = v;
 	}
 
+	public void setTextureRepeat (boolean x, boolean y) {
+		texture.bind();
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
+	}
+
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
+		float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
@@ -147,20 +126,15 @@ public class Sprite {
 			((int)(255 * g) << 8) | //
 			((int)(255 * r));
 		float color = Float.intBitsToFloat(intBits);
+		float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
 
-	public void setWrap (boolean x, boolean y) {
-		texture.bind();
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
-	}
-
 	public void flip (boolean x, boolean y) {
+		float[] vertices = this.vertices;
 		if (x) {
 			float u = vertices[U1];
 			float u2 = vertices[U3];
@@ -180,6 +154,7 @@ public class Sprite {
 	}
 
 	public void scrollTexture (float xAmount, float yAmount) {
+		float[] vertices = this.vertices;
 		if (xAmount > 0) {
 			float u = (vertices[2] + xAmount) % 1;
 			float u2 = u + width / texture.getWidth();
@@ -198,53 +173,100 @@ public class Sprite {
 		}
 	}
 
-	public void setOrigin (float x, float y) {
-		originX = x;
-		originY = y;
+	public void setRotation (float rotation) {
+		this.rotation = rotation;
+		dirty = true;
 	}
 
 	public void rotate (float degrees) {
-		float cos = MathUtils.cosDeg(degrees);
-		float sin = MathUtils.sinDeg(degrees);
-		float x, y;
-
-		x = vertices[X1] - originX;
-		y = vertices[Y1] - originY;
-		vertices[X1] = x * cos - y * sin + originX;
-		vertices[Y1] = y * cos + x * sin + originY;
-
-		x = vertices[X2] - originX;
-		y = vertices[Y2] - originY;
-		vertices[X2] = x * cos - y * sin + originX;
-		vertices[Y2] = y * cos + x * sin + originY;
-
-		x = vertices[X3] - originX;
-		y = vertices[Y3] - originY;
-		vertices[X3] = x * cos - y * sin + originX;
-		vertices[Y3] = y * cos + x * sin + originY;
-
-		x = vertices[X4] - originX;
-		y = vertices[Y4] - originY;
-		vertices[X4] = x * cos - y * sin + originX;
-		vertices[Y4] = y * cos + x * sin + originY;
+		rotation += degrees;
+		dirty = true;
 	}
 
-	public void scale (float scale) {
-		vertices[X1] = originX + (vertices[X1] - originX) * scale;
-		vertices[Y1] = originY + (vertices[Y1] - originY) * scale;
-
-		vertices[X2] = originX + (vertices[X2] - originX) * scale;
-		vertices[Y2] = originY + (vertices[Y2] - originY) * scale;
-
-		vertices[X3] = originX + (vertices[X3] - originX) * scale;
-		vertices[Y3] = originY + (vertices[Y3] - originY) * scale;
-
-		vertices[X4] = originX + (vertices[X4] - originX) * scale;
-		vertices[Y4] = originY + (vertices[Y4] - originY) * scale;
+	public void setScale (float scale) {
+		this.scaleX = this.scaleY = scale;
+		dirty = true;
 	}
 
-	public void destroy () {
-		texture.dispose(); // BOZO - Child images?
+	public void setScale (float scaleX, float scaleY) {
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+		dirty = true;
+	}
+
+	public void scale (float amount) {
+		this.scaleX += amount;
+		this.scaleY += amount;
+		dirty = true;
+	}
+
+	protected final void computeVertices (final float[] out, final int offset) {
+		if (dirty) {
+			dirty = false;
+
+			float[] vertices = this.vertices;
+			float localX = -originX * scaleX;
+			float localY = -originY * scaleY;
+			float localX2 = (-originX + width) * scaleX;
+			float localY2 = (-originY + height) * scaleY;
+			float cos = MathUtils.cosDeg(rotation);
+			float sin = MathUtils.sinDeg(rotation);
+			float worldOriginX = this.x + originX;
+			float worldOriginY = this.y + originY;
+
+			vertices[X1] = localX * cos - localY * sin + worldOriginX;
+			vertices[Y1] = localY * cos + localX * sin + worldOriginY;
+
+			vertices[X2] = localX * cos - localY2 * sin + worldOriginX;
+			vertices[Y2] = localY2 * cos + localX * sin + worldOriginY;
+
+			vertices[X3] = localX2 * cos - localY2 * sin + worldOriginX;
+			vertices[Y3] = localY2 * cos + localX2 * sin + worldOriginY;
+
+			vertices[X4] = localX2 * cos - localY * sin + worldOriginX;
+			vertices[Y4] = localY * cos + localX2 * sin + worldOriginY;
+		}
+		System.arraycopy(vertices, 0, out, offset, 20);
+	}
+
+	public Texture getTexture () {
+		return texture;
+	}
+
+	public float getX () {
+		return x;
+	}
+
+	public float getY () {
+		return y;
+	}
+
+	public float getWidth () {
+		return width;
+	}
+
+	public float getHeight () {
+		return height;
+	}
+
+	public float getOriginX () {
+		return originX;
+	}
+
+	public float getOriginY () {
+		return originY;
+	}
+
+	public float getRotation () {
+		return rotation;
+	}
+
+	public float getScaleX () {
+		return scaleX;
+	}
+
+	public float getScaleY () {
+		return scaleY;
 	}
 
 	static private final int X1 = 0;

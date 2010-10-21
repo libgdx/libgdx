@@ -318,12 +318,13 @@ public class SpriteBatchTest implements RenderListener, InputListener
 			int x = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
 			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));			
 			
-			sprites3[i] = new Sprite( texture, 0, 0, 32, 32 );			
-			sprites3[i].setBounds(x, y, 32, 32 );
-			sprites3[i].flip( false, true );
 			if( i >= SPRITES )
-				sprites3[i].texture = texture2;
-			
+				sprites3[i] = new Sprite( texture2, 32, 32 );
+			else
+				sprites3[i] = new Sprite( texture, 32, 32 );
+			sprites3[i].setPosition(x, y);
+			sprites3[i].setOrigin(16, 16);
+
 			sprites4[i] = new Sprite2( texture );			
 			sprites4[i].setBounds(x, y, 32, 32 );
 			if( i >= SPRITES )
