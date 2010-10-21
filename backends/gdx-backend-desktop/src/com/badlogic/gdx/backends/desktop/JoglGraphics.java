@@ -100,6 +100,7 @@ public final class JoglGraphics implements Graphics, RenderListener
         frame.pack();
         frame.setVisible( true );                
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         frame.addWindowListener(new WindowAdapter()
         {
             public void windowClosing(WindowEvent e)
