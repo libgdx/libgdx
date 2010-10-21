@@ -249,7 +249,7 @@ public final class Sprite2
 				fy2 *= scaleY;
 			}
 			
-			// construct corner points, start from top left and go counter clockwise
+			// construct corner points, start from bottom left and go clockwise
 			final float p1x = fx;
 			final float p1y = fy;
 			final float p2x = fx;
@@ -284,8 +284,8 @@ public final class Sprite2
 				x3 = cos * p3x - sin * p3y;
 				y3 = sin * p3x + cos * p3y;
 				
-				x4 = cos * p4x - sin * p4y;
-				y4 = sin * p4x + cos * p4y;			
+				x4 = x1 + (x3 - x2);
+				y4 = y3 - (y2 - y1);			
 			}
 			else
 			{
