@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 public class SpriteBatchTest implements RenderListener, InputListener
 {
-	int SPRITES = 2 / 2;
+	int SPRITES = 400 / 2;
 	
 	long startTime = System.nanoTime();
 	int frames = 0;
@@ -214,6 +214,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 		
 		long start = System.nanoTime();
 		spriteBatch.begin();			
+		spriteBatch.disableBlending();
 		begin = (System.nanoTime()-start)/1000000000.0f;
 				
 		float angleInc = ROTATION_SPEED * Gdx.graphics.getDeltaTime();

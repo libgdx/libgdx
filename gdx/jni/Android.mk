@@ -5,7 +5,8 @@ GDX_CFLAGS 	  := -O2 -Wall
 GDX_SRC_FILES := AudioTools.cpp \
 				 BufferUtils.cpp \
 				 MD5Jni.cpp \
-				 Mpg123Decoder.cpp
+				 Mpg123Decoder.cpp \
+				 Sprite2.cpp
 
 include $(LOCAL_PATH)/Box2D/Android.mk
 include $(LOCAL_PATH)/kissfft/Android.mk
