@@ -38,6 +38,7 @@ public class Sprite {
 	 * Creates a sprite with both bounds and texture region equal to the specified size.
 	 */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
+		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
 		this.texture = texture;
 		setTextureRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
@@ -171,11 +172,13 @@ public class Sprite {
 
 	/**
 	 * Offsets the texture region relative to the current texture region.
+	 * @param xAmount The percentage to offset horizontally.
+	 * @param yAmount The percentage to offset vertically.
 	 */
 	public void scrollTexture (float xAmount, float yAmount) {
 		float[] vertices = this.vertices;
 		if (xAmount > 0) {
-			float u = (vertices[2] + xAmount) % 1;
+			float u = (vertices[U1] + xAmount) % 1;
 			float u2 = u + width / texture.getWidth();
 			vertices[U1] = u;
 			vertices[U2] = u;
@@ -214,8 +217,8 @@ public class Sprite {
 		vertices[C4] = color;
 	}
 
-	public void setRotation (float rotation) {
-		this.rotation = rotation;
+	public void setRotation (float degrees) {
+		this.rotation = degrees;
 		dirty = true;
 	}
 
@@ -227,8 +230,8 @@ public class Sprite {
 		dirty = true;
 	}
 
-	public void setScale (float scale) {
-		this.scaleX = this.scaleY = scale;
+	public void setScale (float scaleXY) {
+		this.scaleX = this.scaleY = scaleXY;
 		dirty = true;
 	}
 
