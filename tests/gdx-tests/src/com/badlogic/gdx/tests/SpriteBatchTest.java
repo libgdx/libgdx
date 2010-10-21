@@ -164,7 +164,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 			if( angleInc != 0)
 				sprites3[i].rotate( angleInc ); // this is aids
 			if( scale != 1 )
-				sprites3[i].scale( scale ); // this is aids
+				sprites3[i].setScale( scale ); // this is aids
 			spriteBatch.draw( sprites3[i] );
 		}
 		draw1 = (System.nanoTime()-start)/1000000000.0f;
@@ -175,7 +175,7 @@ public class SpriteBatchTest implements RenderListener, InputListener
 			if( angleInc != 0)
 				sprites3[i].rotate( angleInc ); // this is aids
 			if( scale != 1 )
-				sprites3[i].scale( scale ); // this is aids
+				sprites3[i].setScale( scale ); // this is aids
 			spriteBatch.draw( sprites3[i] );
 		}
 		draw2 = (System.nanoTime()-start)/1000000000.0f;

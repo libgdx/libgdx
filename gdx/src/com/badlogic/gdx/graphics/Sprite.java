@@ -264,17 +264,23 @@ public class Sprite {
 			float worldOriginX = this.x + originX;
 			float worldOriginY = this.y + originY;
 
-			vertices[X1] = localX * cos - localY * sin + worldOriginX;
-			vertices[Y1] = localY * cos + localX * sin + worldOriginY;
+			float x1 = localX * cos - localY * sin + worldOriginX;
+			float y1 = localY * cos + localX * sin + worldOriginY;
+			vertices[X1] = x1;
+			vertices[Y1] = y1;
 
-			vertices[X2] = localX * cos - localY2 * sin + worldOriginX;
-			vertices[Y2] = localY2 * cos + localX * sin + worldOriginY;
+			float x2 = localX * cos - localY2 * sin + worldOriginX;
+			float y2 = localY2 * cos + localX * sin + worldOriginY;
+			vertices[X2] = x2;
+			vertices[Y2] = y2;
 
-			vertices[X3] = localX2 * cos - localY2 * sin + worldOriginX;
-			vertices[Y3] = localY2 * cos + localX2 * sin + worldOriginY;
+			float x3 = localX2 * cos - localY2 * sin + worldOriginX;
+			float y3 = localY2 * cos + localX2 * sin + worldOriginY;
+			vertices[X3] = x3;
+			vertices[Y3] = y3;
 
-			vertices[X4] = vertices[X1] + (vertices[X3] - vertices[X2]);
-			vertices[Y4] = vertices[Y3] - (vertices[Y2] - vertices[Y1]);
+			vertices[X4] = x1 + (x3 - x2);
+			vertices[Y4] = y3 - (y2 - y1);
 		}
 		System.arraycopy(vertices, 0, out, offset, 20);
 	}
