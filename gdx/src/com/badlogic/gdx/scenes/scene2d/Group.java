@@ -71,14 +71,14 @@ public class Group extends Actor
 	private void updateTransform( )
 	{
 		transform.idt();
-		if( refX != 0 || refY != 0 )
-			transform.setToTranslation( refX, refY );
+		if( originX != 0 || originY != 0 )
+			transform.setToTranslation( originX, originY );
 		if( scaleX != 1 || scaleY != 1 )
 			transform.mul( scenetransform.setToScaling( scaleX, scaleY ) );
 		if( rotation != 0 )
 			transform.mul( scenetransform.setToRotation( rotation ) );
-		if( refX != 0 || refY != 0 )
-			transform.mul( scenetransform.setToTranslation( -refX, -refY ) );
+		if( originX != 0 || originY != 0 )
+			transform.mul( scenetransform.setToTranslation( -originX, -originY ) );
 		if( x != 0 || y != 0 )
 		{
 			transform.getValues()[6] += x;
@@ -115,7 +115,7 @@ public class Group extends Actor
 		tmp4.set( scenetransform );		
 		
 		if( debug && debugTexture != null )
-			batch.draw( debugTexture, x, y, refX, refY, 200, 200, scaleX, scaleY, rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), Color.WHITE, false, false );
+			batch.draw( debugTexture, x, y, originX, originY, width==0?200:width, height==0?200:height, scaleX, scaleY, rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), Color.WHITE, false, false );
 		
 		batch.end();		
 		oldBatchTransform.set(batch.getTransformMatrix());
@@ -148,15 +148,15 @@ public class Group extends Actor
 			}
 			else
 			{
-				if( child.refX == 0 && child.refY == 0 )
+				if( child.originX == 0 && child.originY == 0 )
 				{
 					out.x = (x - child.x) / child.scaleX;
 					out.y = (y - child.y) / child.scaleY;
 				}
 				else
 				{
-					out.x = x / child.scaleX - (child.x - child.refX);
-					out.x = x / child.scaleX - (child.x - child.refX);
+					out.x = x / child.scaleX - (child.x - child.originX);
+					out.x = x / child.scaleX - (child.x - child.originX);
 				}
 			}
 		}
@@ -167,7 +167,7 @@ public class Group extends Actor
 			
 			if( child.scaleX == 1 && child.scaleY == 1 )
 			{
-				if( child.refX == 0 && child.refY == 0 )
+				if( child.originX == 0 && child.originY == 0 )
 				{	
 					float tox = x - child.x;
 					float toy = y - child.y;
@@ -177,11 +177,11 @@ public class Group extends Actor
 				}
 				else
 				{
-					float refX = -sin * child.refX + cos * child.refY;
-					float refY =  cos * child.refX + sin * child.refY;
+					float refX = -sin * child.originX + cos * child.originY;
+					float refY =  cos * child.originX + sin * child.originY;
 					
-					float px = child.x + child.refX - refX;
-					float py = child.y + child.refY - refY;
+					float px = child.x + child.originX - refX;
+					float py = child.y + child.originY - refY;
 					
 					float tox = x - px;
 					float toy = y - py;
@@ -192,7 +192,7 @@ public class Group extends Actor
 			}
 			else
 			{
-				if( child.refX == 0 && child.refY == 0 )
+				if( child.originX == 0 && child.originY == 0 )
 				{	
 					float tox = x - child.x;
 					float toy = y - child.y;
@@ -205,14 +205,14 @@ public class Group extends Actor
 				}
 				else
 				{
-					float srefX = child.refX * child.scaleY;
-					float srefY = child.refY * child.scaleX;
+					float srefX = child.originX * child.scaleY;
+					float srefY = child.originY * child.scaleX;
 					
 					float refX = -sin * srefX + cos * srefY;
 					float refY =  cos * srefX + sin * srefY;
 					
-					float px = child.x + child.refX - refX;
-					float py = child.y + child.refY - refY;
+					float px = child.x + child.originX - refX;
+					float py = child.y + child.originY - refY;
 					
 					float tox = x - px;
 					float toy = y - py;
@@ -232,6 +232,9 @@ public class Group extends Actor
 	{	
 		if( !touchable )
 			return false;
+		
+		if( debug )
+			Gdx.app.log( "Group", name + ": " + x + ", " + y );
 		
 		if( focusedActor != null )
 		{

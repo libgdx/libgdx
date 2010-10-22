@@ -48,8 +48,8 @@ public abstract class Actor
 	public float y;
 	public float width;
 	public float height;
-	public float refX;
-	public float refY;
+	public float originX;
+	public float originY;
 	public float scaleX = 1;
 	public float scaleY = 1;
 	public float rotation;
@@ -118,7 +118,7 @@ public abstract class Actor
 	
 	public String toString( )
 	{
-		return name + ": [x=" + x + ", y=" + y + ", refX=" + refX + ", refY=" + refY + ", width=" + width + ", height=" + height + "]";
+		return name + ": [x=" + x + ", y=" + y + ", refX=" + originX + ", refY=" + originY + ", width=" + width + ", height=" + height + "]";
 	}
 	
 }

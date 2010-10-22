@@ -33,8 +33,8 @@ public class Image extends Actor
 	public Image( String name, Texture texture )
 	{
 		super( name );
-		this.refX = texture.getWidth() / 2.0f;
-		this.refY = texture.getHeight() / 2.0f;
+		this.originX = texture.getWidth() / 2.0f;
+		this.originY = texture.getHeight() / 2.0f;
 		this.width = texture.getWidth();
 		this.height = texture.getHeight();
 		this.region = new TextureRegion( texture, 0, 0, texture.getWidth(), texture.getHeight() );
@@ -43,8 +43,8 @@ public class Image extends Actor
 	public Image( String name, TextureRegion region )
 	{
 		super( name );
-		this.refX = region.width / 2.0f;
-		this.refY = region.height / 2.0f;
+		this.originX = region.width / 2.0f;
+		this.originY = region.height / 2.0f;
 		this.width = region.width;
 		this.height = region.height;
 		this.region = new TextureRegion( region.texture, region.x, region.y, region.width, region.height );
@@ -58,7 +58,7 @@ public class Image extends Actor
 			if( scaleX == 0 && scaleY == 0 && rotation == 0 )
 				batch.draw( region.texture, x, y, width, height, region.x, region.y, region.width, region.height, color, false, false );
 			else
-				batch.draw( region.texture, x, y, refX, refY, width, height, scaleX, scaleY, rotation, region.x, region.y, region.width, region.height, color, false, false );
+				batch.draw( region.texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, region.x, region.y, region.width, region.height, color, false, false );
 		}
 	}
 

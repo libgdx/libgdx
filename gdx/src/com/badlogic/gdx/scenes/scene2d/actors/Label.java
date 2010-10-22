@@ -16,6 +16,8 @@ public class Label extends Actor
 		super(name);
 		this.font = font;
 		this.text = text;
+		this.width = font.getStringWidth( text );
+		this.height = font.getLineHeight();
 	}
 	
 	@Override

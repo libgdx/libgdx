@@ -27,8 +27,8 @@ public class Button extends Actor
 	public Button( String name, Texture texture )
 	{
 		super( name );
-		this.refX = texture.getWidth() / 2.0f;
-		this.refY = texture.getHeight() / 2.0f;
+		this.originX = texture.getWidth() / 2.0f;
+		this.originY = texture.getHeight() / 2.0f;
 		this.width = texture.getWidth();
 		this.height = texture.getHeight();
 		this.pressedRegion = new TextureRegion( texture, 0, 0, texture.getWidth(), texture.getHeight() );
@@ -43,8 +43,8 @@ public class Button extends Actor
 	public Button( String name, TextureRegion unpressedRegion, TextureRegion pressedRegion )
 	{
 		super( name );
-		this.refX = unpressedRegion.width / 2.0f;
-		this.refY = unpressedRegion.height / 2.0f;
+		this.originX = unpressedRegion.width / 2.0f;
+		this.originY = unpressedRegion.height / 2.0f;
 		this.width = unpressedRegion.width;
 		this.height = unpressedRegion.height;
 		this.unpressedRegion = new TextureRegion( unpressedRegion.texture, unpressedRegion.x, unpressedRegion.y, unpressedRegion.width, unpressedRegion.height );
@@ -62,7 +62,7 @@ public class Button extends Actor
 			if( scaleX == 0 && scaleY == 0 && rotation == 0 )
 				batch.draw( region.texture, x, y, width, height, region.x, region.y, region.width, region.height, color, false, false );
 			else
-				batch.draw( region.texture, x, y, refX, refY, width, height, scaleX, scaleY, rotation, region.x, region.y, region.width, region.height, color, false, false );
+				batch.draw( region.texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, region.x, region.y, region.width, region.height, color, false, false );
 		}
 	}
 
