@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Delay;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
@@ -22,6 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup;
+import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup.LinearGroupLayout;
 
 public class UITest implements RenderListener, InputListener
 {
@@ -64,12 +67,30 @@ public class UITest implements RenderListener, InputListener
 												, 1 )
 									)
 						);
-			ui.addActor( img1 );
+//			ui.addActor( img1 );
 			
-			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );
-			button.x = 100;
-			ui.addActor( button );
+			Group group = new Group( "group" );
+			group.rotation = 700;			
+			group.width = 64; group.height = 32 * 3;
+			group.originX = group.width / 2; group.originY = group.height / 2;
+			group.x = 100;
+			group.y = 150;
+			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );			
+			group.addActor( button );
+			ui.addActor( group );
 			
+			LinearGroup linear = new LinearGroup( "linear", 64, 32 * 3, LinearGroupLayout.Vertical );
+			linear.x = 200; linear.y = 150; linear.scaleX = linear.scaleY = 1;
+			linear.addActor( new Button( "blend", atlas.getRegion( "blend" ) ) );
+			linear.addActor( new Button( "scale", atlas.getRegion( "scale" ) ) );
+			linear.addActor( new Button( "rotate", atlas.getRegion( "rotate" ) ) );
+//			linear.rotation = 720;
+			linear.action( Parallel.$( RotateTo.$( 720, 2 ) ) );			
+			
+			ui.addActor( linear );
+//			ui.getRoot().rotation = 720;
+			
+			Group.enableDebugging( "data/debug.png" );
 		}
 	}
 
@@ -124,14 +145,17 @@ public class UITest implements RenderListener, InputListener
 		if( !ui.touchUp( x, y, pointer ) )
 		{
 			Actor actor = ui.findActor( "image1" );
-			ui.toStageCoordinates( x, y, point );
-			actor.clearActions();
-			actor.action( MoveTo.$( point.x, point.y, 2 ) );
-			actor.action( RotateTo.$( actor.rotation + 90, 2 ) );
-			if( actor.scaleX == 1.0f )
-				actor.action( ScaleTo.$( 0.5f, 0.5f, 2 ) );
-			else
-				actor.action( ScaleTo.$( 1f, 1f, 2 ) );
+			if( actor != null )
+			{
+				ui.toStageCoordinates( x, y, point );
+				actor.clearActions();
+				actor.action( MoveTo.$( point.x, point.y, 2 ) );
+				actor.action( RotateTo.$( actor.rotation + 90, 2 ) );
+				if( actor.scaleX == 1.0f )
+					actor.action( ScaleTo.$( 0.5f, 0.5f, 2 ) );
+				else
+					actor.action( ScaleTo.$( 1f, 1f, 2 ) );
+			}
 		}
 		return false;
 	}

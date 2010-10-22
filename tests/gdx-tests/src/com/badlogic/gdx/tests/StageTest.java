@@ -75,8 +75,8 @@ public class StageTest implements RenderListener, InputListener
 				Group group = new Group( "group" + i );
 				group.x = (float)Math.random() * (stage.width() - NUM_SPRITES * (32 + SPACING));
 				group.y = (float)Math.random() * (stage.height() - NUM_SPRITES * (32 + SPACING));
-				group.refX = loc;
-				group.refY = loc;
+				group.originX = loc;
+				group.originY = loc;
 				
 				fillGroup( group, texture );
 				stage.addActor( group );
@@ -195,7 +195,7 @@ public class StageTest implements RenderListener, InputListener
 		{
 			renderer.color( 1, 0, 0, 1 );
 			Group group = stage.getRoot().getGroups().get(i);
-			renderer.vertex( group.x + group.refX, group.y + group.refY, 0 );
+			renderer.vertex( group.x + group.originX, group.y + group.originY, 0 );
 		}
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize( 4 );
