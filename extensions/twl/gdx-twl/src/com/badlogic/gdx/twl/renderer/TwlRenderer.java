@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
@@ -71,14 +69,14 @@ public class TwlRenderer implements Renderer {
 	public void endRendering () {
 		spriteBatch.end();
 		if (hasScissor) {
-			Gdx.graphics.getGL10().glDisable(GL11.GL_SCISSOR_TEST);
+			Gdx.graphics.getGL10().glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
 		}
 	}
 
 	public void setClipRect (Rect rect) {
 		if (rect == null) {
-			Gdx.graphics.getGL10().glDisable(GL11.GL_SCISSOR_TEST);
+			Gdx.graphics.getGL10().glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
 		} else {
 			GL10 gl = Gdx.graphics.getGL10();
