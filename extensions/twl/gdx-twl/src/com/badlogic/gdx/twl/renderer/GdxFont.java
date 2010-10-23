@@ -89,15 +89,18 @@ class GdxFont implements Font {
 	}
 
 	public FontCache cacheText (FontCache cache, CharSequence str, int start, int end) {
-		if (cache == null) cache = new GdxFontCache(this, str.length());
-		return (GdxFontCache)bitmapFont
-			.cacheText((GdxFontCache)cache, str, 0, 0, com.badlogic.gdx.graphics.Color.WHITE, start, end);
+		if (cache == null) cache = new GdxFontCache();
+		BitmapFontCache bitmapCache = ((GdxFontCache)cache).bitmapCache;
+		bitmapFont.cacheText(bitmapCache, str, 0, 0, com.badlogic.gdx.graphics.Color.WHITE, start, end);
+		return cache;
 	}
 
 	public FontCache cacheMultiLineText (FontCache cache, CharSequence str, int width, de.matthiasmann.twl.HAlignment align) {
-		if (cache == null) cache = new GdxFontCache(this, str.length());
-		return (GdxFontCache)bitmapFont.cacheMultiLineText((GdxFontCache)cache, str, 0, 0, com.badlogic.gdx.graphics.Color.WHITE,
-			width, HAlignment.values()[align.ordinal()]);
+		if (cache == null) cache = new GdxFontCache();
+		BitmapFontCache bitmapCache = ((GdxFontCache)cache).bitmapCache;
+		bitmapFont.cacheMultiLineText(bitmapCache, str, 0, 0, com.badlogic.gdx.graphics.Color.WHITE, width,
+			HAlignment.values()[align.ordinal()]);
+		return cache;
 	}
 
 	public void destroy () {
@@ -166,21 +169,27 @@ class GdxFont implements Font {
 		}
 	}
 
-	static private class GdxFontCache extends BitmapFontCache implements FontCache {
-		private final GdxFont font;
+	private class GdxFontCache implements FontCache {
+		final BitmapFontCache bitmapCache;
 
-		public GdxFontCache (GdxFont font, int glyphCount) {
-			super(font.bitmapFont.getTexture(), glyphCount);
-			this.font = font;
+		public GdxFontCache () {
+			bitmapCache = bitmapFont.newCache();
 		}
 
 		public void draw (AnimationState as, int x, int y) {
 			y = Gdx.graphics.getHeight() - y;
-			GdxFont.FontState fontState = font.evalFontState(as);
-			TwlRenderer renderer = font.renderer;
-			setColor(renderer.getColor(fontState.color));
-			setPosition(x + fontState.offsetX, y + fontState.offsetY);
-			draw(renderer.spriteBatch);
+			GdxFont.FontState fontState = evalFontState(as);
+			bitmapCache.setColor(renderer.getColor(fontState.color));
+			bitmapCache.setPosition(x + fontState.offsetX, y + fontState.offsetY);
+			bitmapCache.draw(renderer.spriteBatch);
+		}
+
+		public int getWidth () {
+			return bitmapCache.getWidth();
+		}
+
+		public int getHeight () {
+			return bitmapCache.getHeight();
 		}
 
 		public void destroy () {
