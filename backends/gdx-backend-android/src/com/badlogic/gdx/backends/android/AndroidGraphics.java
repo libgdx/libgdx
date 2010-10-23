@@ -510,11 +510,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		Bitmap.Config config = AndroidPixmap.getInternalFormat(format);
 		Bitmap bitmap = Bitmap.createBitmap(width, height, config);
 		Texture texture = null;
-		if (gl10 != null)
-			texture = new AndroidTexture(this, gl10, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
-		else
-			texture = new AndroidTexture(this, gl20, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
-
+		texture = new AndroidTexture(this, bitmap, minFilter, magFilter, uWrap, vWrap, false, null );
 		bitmap.recycle();
 		return texture;
 	}
@@ -526,19 +522,14 @@ final class AndroidGraphics implements Graphics, Renderer {
 		if( !isPowerOfTwo( pixmap.getWidth() ) || !isPowerOfTwo( pixmap.getHeight() ) )
 			throw new GdxRuntimeException( "Dimensions have to be a power of two" );
 
-		if (gl10 != null)
-			return new AndroidTexture(this, gl10, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
-		else
-			return new AndroidTexture(this, gl20, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
+		return new AndroidTexture(this, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
 	}
 
 	@Override
 	public Texture newTexture(FileHandle file, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (gl10 != null)
-			return new AndroidTexture(this, gl10, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);
-		else
-			return new AndroidTexture(this, gl20, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);	}
+			return new AndroidTexture(this, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);
+	}
 
 	public void clearManagedCaches() 
 	{
