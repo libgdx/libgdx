@@ -30,6 +30,7 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.view.Display;
 import android.view.View;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
@@ -41,6 +42,7 @@ import com.badlogic.gdx.graphics.FrameBuffer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.ShaderProgram;
@@ -83,6 +85,11 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 */
 	protected AndroidApplication app;
 
+	/**
+	 * Common instance
+	 */
+	protected GLCommon gl;
+	
 	/**
 	 * the GL10 instance *
 	 */
@@ -401,10 +408,14 @@ final class AndroidGraphics implements Graphics, Renderer {
 			return;
 
 		if( view instanceof GLSurfaceView20 )
+		{
 			gl20 = new AndroidGL20();
+			this.gl = gl20;
+		}
 		else
 		{
 			gl10 = new AndroidGL10(gl);
+			this.gl = gl10;
 			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
 				String renderer = gl.glGetString(GL10.GL_RENDERER);
 				if (renderer.toLowerCase().contains("pixelflinger"))
@@ -416,6 +427,11 @@ final class AndroidGraphics implements Graphics, Renderer {
 				gl10 = gl11;
 			}
 		}
+		
+		Gdx.gl = this.gl;
+		Gdx.gl10 = gl10;
+		Gdx.gl11 = gl11;
+		Gdx.gl20 = gl20;
 	}
 
 	@Override
@@ -541,6 +557,15 @@ final class AndroidGraphics implements Graphics, Renderer {
 	public View getView() 
 	{
 		return view;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public GLCommon getGLCommon() 
+	{		
+		return gl;
 	}
 
 }

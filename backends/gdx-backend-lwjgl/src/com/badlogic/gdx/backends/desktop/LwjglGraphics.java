@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
@@ -40,6 +41,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  */
 public final class LwjglGraphics implements Graphics, RenderListener {
 	private final LwjglApplication app;
+	private GLCommon gl;
 	private GL10 gl10;
 	private GL11 gl11;
 	private GL20 gl20;
@@ -188,6 +190,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		if (useGL2 && major >= 2) {
 			// FIXME add check whether gl 2.0 is supported
 			gl20 = new LwjglGL20();
+			gl = gl20;
 		} else {
 			if (major == 1 && minor < 5) {
 				gl10 = new LwjglGL10();
@@ -195,6 +198,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 				gl11 = new LwjglGL11();
 				gl10 = gl11;
 			}
+			gl = gl10;
 		}
 
 		lastTime = System.nanoTime();
@@ -213,5 +217,10 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 
 	public int getFramesPerSecond () {
 		return fps;
+	}
+
+	@Override
+	public GLCommon getGLCommon() {
+		return gl;
 	}
 }

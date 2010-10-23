@@ -70,13 +70,15 @@ public class UITest implements RenderListener, InputListener
 //			ui.addActor( img1 );
 			
 			Group group = new Group( "group" );
-			group.rotation = 700;			
+			group.rotation = 45;			
 			group.width = 64; group.height = 32 * 3;
 			group.originX = group.width / 2; group.originY = group.height / 2;
 			group.x = 100;
 			group.y = 150;
+			group.scaleX = 2f; group.scaleY = 2;
 			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );			
 			group.addActor( button );
+//			group.action( RotateTo.$( 720, 4 ) );
 			ui.addActor( group );
 			
 			LinearGroup linear = new LinearGroup( "linear", 64, 32 * 3, LinearGroupLayout.Vertical );
@@ -85,9 +87,9 @@ public class UITest implements RenderListener, InputListener
 			linear.addActor( new Button( "scale", atlas.getRegion( "scale" ) ) );
 			linear.addActor( new Button( "rotate", atlas.getRegion( "rotate" ) ) );
 //			linear.rotation = 720;
-			linear.action( Parallel.$( RotateTo.$( 720, 2 ) ) );			
+//			linear.action( Parallel.$( RotateTo.$( 720, 2 ) ) );			
 			
-			ui.addActor( linear );
+//			ui.addActor( linear );
 //			ui.getRoot().rotation = 720;
 			
 			Group.enableDebugging( "data/debug.png" );

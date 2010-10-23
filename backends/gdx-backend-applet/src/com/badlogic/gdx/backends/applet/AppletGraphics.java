@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Font.FontStyle;
@@ -51,6 +53,9 @@ public final class AppletGraphics implements Graphics, RenderListener
 	
 	/** the render listener **/
 	private RenderListener listener;	
+	
+	/** GLCommon instance **/
+	private GLCommon gl;
 	
 	/** GL10 instance **/
 	private GL10 gl10;
@@ -247,19 +252,26 @@ public final class AppletGraphics implements Graphics, RenderListener
 		{
 			// FIXME add check wheter gl 2.0 is supported
 			gl20 = new AppletGL20( graphicPanel.getGL() );
+			gl = gl20;
 		}
 		else
 		{
 			if( major == 1 && minor < 5 )
 			{
-				gl10 = new AppletGL10( graphicPanel.getGL(), allowFixedPoint );
+				gl10 = new AppletGL10( graphicPanel.getGL(), allowFixedPoint );			
 			}
 			else
 			{
 				gl11 = new AppletGL11( graphicPanel.getGL(), allowFixedPoint );
-				gl10 = gl11;
+				gl10 = gl11;				
 			}
+			gl = gl10;
 		}
+		
+		Gdx.gl = gl;
+		Gdx.gl10 = gl10;
+		Gdx.gl11 = gl11;
+		Gdx.gl20 = gl20;
 	}
 
 	/**
@@ -297,5 +309,10 @@ public final class AppletGraphics implements Graphics, RenderListener
 	{
 		Pixmap pixmap = newPixmap( file );
 		return new AppletTexture( (BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, true );
+	}
+
+	@Override
+	public GLCommon getGLCommon() {
+		return gl;
 	}
 }

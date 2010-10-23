@@ -27,18 +27,20 @@ import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.swing.JFrame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
@@ -58,6 +60,9 @@ public final class JoglGraphics implements Graphics, RenderListener
 	
 	/** the render listener **/
 	private RenderListener listener;	
+	
+	/** Common instance **/
+	private GLCommon gl;
 	
 	/** GL10 instance **/
 	private GL10 gl10;
@@ -305,6 +310,7 @@ public final class JoglGraphics implements Graphics, RenderListener
 		{
 			// FIXME add check wheter gl 2.0 is supported
 			gl20 = new JoglGL20( graphicPanel.getGL() );
+			gl = gl20;
 		}
 		else
 		{
@@ -317,7 +323,13 @@ public final class JoglGraphics implements Graphics, RenderListener
 				gl11 = new JoglGL11( graphicPanel.getGL() );
 				gl10 = gl11;
 			}
+			gl = gl10;
 		}
+		
+		Gdx.gl = gl;
+		Gdx.gl10 = gl10;
+		Gdx.gl11 = gl11;
+		Gdx.gl20 = gl20;
 	}
 
 	/**
@@ -351,5 +363,10 @@ public final class JoglGraphics implements Graphics, RenderListener
 	public int getFramesPerSecond() 
 	{	
 		return fps;
+	}
+
+	@Override
+	public GLCommon getGLCommon() { 
+		return gl;
 	}
 }

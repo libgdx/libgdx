@@ -73,10 +73,10 @@ public class Group extends Actor
 		transform.idt();
 		if( originX != 0 || originY != 0 )
 			transform.setToTranslation( originX, originY );
-		if( scaleX != 1 || scaleY != 1 )
-			transform.mul( scenetransform.setToScaling( scaleX, scaleY ) );
 		if( rotation != 0 )
 			transform.mul( scenetransform.setToRotation( rotation ) );
+		if( scaleX != 1 || scaleY != 1 )
+			transform.mul( scenetransform.setToScaling( scaleX, scaleY ) );
 		if( originX != 0 || originY != 0 )
 			transform.mul( scenetransform.setToTranslation( -originX, -originY ) );
 		if( x != 0 || y != 0 )
@@ -114,7 +114,7 @@ public class Group extends Actor
 		updateTransform( );
 		tmp4.set( scenetransform );		
 		
-		if( debug && debugTexture != null )
+		if( debug && debugTexture != null && parent != null )
 			batch.draw( debugTexture, x, y, originX, originY, width==0?200:width, height==0?200:height, scaleX, scaleY, rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), Color.WHITE, false, false );
 		
 		batch.end();		
@@ -177,14 +177,17 @@ public class Group extends Actor
 				}
 				else
 				{
-					float refX = -sin * child.originX + cos * child.originY;
-					float refY =  cos * child.originX + sin * child.originY;
+					final float worldOriginX = child.x + child.originX;
+					final float worldOriginY = child.y + child.originY;
+					float fx = -child.originX;
+					float fy = -child.originY;
 					
-					float px = child.x + child.originX - refX;
-					float py = child.y + child.originY - refY;
+					float x1 = cos * fx - sin * fy;
+					float y1 = sin * fx + cos * fy;
+					x1 += worldOriginX; y1 += worldOriginY;
 					
-					float tox = x - px;
-					float toy = y - py;
+					float tox = x - x1;
+					float toy = y - y1;
 					
 					out.x = tox * cos + toy * sin;
 					out.y = tox * -sin + toy * cos;
@@ -205,23 +208,44 @@ public class Group extends Actor
 				}
 				else
 				{
-					float srefX = child.originX * child.scaleY;
-					float srefY = child.originY * child.scaleX;
+					float srefX = child.originX * child.scaleX;
+					float srefY = child.originY * child.scaleY;
 					
-					float refX = -sin * srefX + cos * srefY;
-					float refY =  cos * srefX + sin * srefY;
+					final float worldOriginX = child.x + srefX;
+					final float worldOriginY = child.y + srefY;
+					float fx = -srefX;
+					float fy = -srefY;
 					
-					float px = child.x + child.originX - refX;
-					float py = child.y + child.originY - refY;
+					float x1 = cos * fx - sin * fy;
+					float y1 = sin * fx + cos * fy;
+					x1 += worldOriginX; y1 += worldOriginY;
 					
-					float tox = x - px;
-					float toy = y - py;
+					float tox = x - x1;
+					float toy = y - y1;
 					
 					out.x = tox * cos + toy * sin;
 					out.y = tox * -sin + toy * cos;
 					
 					out.x /= child.scaleX;
 					out.y /= child.scaleY;
+					
+//					float srefX = child.originX * child.scaleY;
+//					float srefY = child.originY * child.scaleX;
+//					
+//					float refX = -sin * srefX + cos * srefY;
+//					float refY =  cos * srefX + sin * srefY;
+//					
+//					float px = child.x + child.originX - refX;
+//					float py = child.y + child.originY - refY;
+//					
+//					float tox = x - px;
+//					float toy = y - py;
+//					
+//					out.x = tox * cos + toy * sin;
+//					out.y = tox * -sin + toy * cos;
+//					
+//					out.x /= child.scaleX;
+//					out.y /= child.scaleY;
 				}
 			}
 		}
