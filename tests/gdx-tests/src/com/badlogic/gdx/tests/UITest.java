@@ -48,11 +48,13 @@ public class UITest implements RenderListener, InputListener
 			ui = new Stage( 480, 320, false );
 			atlas = new TextureAtlas( uiTexture );
 			atlas.addRegion( "blend", 0, 0, 64, 32 );
-			atlas.addRegion( "!blend", 0, 32, 64, 32 );
+			atlas.addRegion( "blendDown", -1, -1, 64, 32 );
 			atlas.addRegion( "rotate", 64, 0, 64, 32 );
+			atlas.addRegion( "rotateDown", 63, -1, 64, 32 );
 			atlas.addRegion( "scale", 64, 32, 64, 32 );
+			atlas.addRegion( "scaleDown", 63, 31, 64, 32 );
 			atlas.addRegion( "button", 0, 64, 64, 32 );
-			atlas.addRegion( "buttonDown", -2, 62, 64, 32 );
+			atlas.addRegion( "buttonDown", -1, 63, 64, 32 );
 			
 			Image img1 = new Image( "image1", atlas.getRegion( "blend" ) );
 			img1.action( Sequence.$( 
@@ -67,32 +69,22 @@ public class UITest implements RenderListener, InputListener
 												, 1 )
 									)
 						);
-//			ui.addActor( img1 );
+			ui.addActor( img1 );
 			
-			Group group = new Group( "group" );
-			group.rotation = 45;			
-			group.width = 64; group.height = 32 * 3;
-			group.originX = group.width / 2; group.originY = group.height / 2;
-			group.x = 100;
-			group.y = 150;
-			group.scaleX = 2f; group.scaleY = 2;
 			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );			
-			group.addActor( button );
-//			group.action( RotateTo.$( 720, 4 ) );
-			ui.addActor( group );
+			ui.addActor( button );
 			
 			LinearGroup linear = new LinearGroup( "linear", 64, 32 * 3, LinearGroupLayout.Vertical );
-			linear.x = 200; linear.y = 150; linear.scaleX = linear.scaleY = 1;
-			linear.addActor( new Button( "blend", atlas.getRegion( "blend" ) ) );
-			linear.addActor( new Button( "scale", atlas.getRegion( "scale" ) ) );
-			linear.addActor( new Button( "rotate", atlas.getRegion( "rotate" ) ) );
-//			linear.rotation = 720;
-//			linear.action( Parallel.$( RotateTo.$( 720, 2 ) ) );			
+			linear.x = 200; linear.y = 150; linear.scaleX = linear.scaleY = 0;
+			linear.addActor( new Button( "blend", atlas.getRegion( "blend" ), atlas.getRegion( "blendDown" )  ) );
+			linear.addActor( new Button( "scale", atlas.getRegion( "scale" ), atlas.getRegion( "scaleDown" ) ) );
+			linear.addActor( new Button( "rotate", atlas.getRegion( "rotate" ), atlas.getRegion( "rotateDown" ) ) );
+			linear.action( Parallel.$( ScaleTo.$( 1, 1, 2 ), RotateTo.$( 720, 2 ) ) );			
 			
-//			ui.addActor( linear );
-//			ui.getRoot().rotation = 720;
+			ui.addActor( linear );
+
 			
-			Group.enableDebugging( "data/debug.png" );
+//			Group.enableDebugging( "data/debug.png" );
 		}
 	}
 

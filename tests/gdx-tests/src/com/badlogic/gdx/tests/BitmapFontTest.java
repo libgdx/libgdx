@@ -40,17 +40,21 @@ public class BitmapFontTest implements RenderListener {
 				return false;
 			}
 		});
-
-		cache1 = font.cacheText(null, "(cached)", 10, 76, Color.WHITE);
+		cache1 = font.newCache( );
+		cache2 = font.newCache( );
+		cache3 = font.newCache( );
+		cache4 = font.newCache( );
+		
+		font.cacheText(cache1, "(cached)", 10, 76, Color.WHITE);
 
 		String text = "Sphinx of black quartz,\njudge my vow.";
-		cache2 = font.cacheMultiLineText(null, text, 5, 310, Color.RED, 470, BitmapFont.HAlignment.LEFT);
+		font.cacheMultiLineText(cache2, text, 5, 310, Color.RED, 470, BitmapFont.HAlignment.LEFT);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		cache3 = font.cacheMultiLineText(null, text, 5, 210, blue, 470, BitmapFont.HAlignment.CENTER);
+		font.cacheMultiLineText(cache3, text, 5, 210, blue, 470, BitmapFont.HAlignment.CENTER);
 
 		text = "Kerning: LYA moo";
-		cache4 = font.cacheText(null, text, 210, 76, Color.WHITE, 0, text.length() - 3);
+		font.cacheText(cache4, text, 210, 76, Color.WHITE, 0, text.length() - 3);
 	}
 
 	public void surfaceChanged (int width, int height) {
@@ -79,7 +83,7 @@ public class BitmapFontTest implements RenderListener {
 		font.drawMultiLineText(spriteBatch, text, 5, 310, Color.RED);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		font.drawMultiLineText(spriteBatch, text, 5, 210, blue, 470, BitmapFont.HAlignment.CENTER);
+		font.drawMultiLineText(spriteBatch, text, 5, 210, blue, 470, BitmapFont.HAlignment.RIGHT);
 
 		text = "Kerning: LYA moo";
 		font.draw(spriteBatch, text, 210, 76, Color.WHITE, 0, text.length() - 3);

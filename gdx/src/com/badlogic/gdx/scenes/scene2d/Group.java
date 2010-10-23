@@ -211,8 +211,8 @@ public class Group extends Actor
 					float srefX = child.originX * child.scaleX;
 					float srefY = child.originY * child.scaleY;
 					
-					final float worldOriginX = child.x + srefX;
-					final float worldOriginY = child.y + srefY;
+					final float worldOriginX = child.x + child.originX;
+					final float worldOriginY = child.y + child.originY;
 					float fx = -srefX;
 					float fy = -srefY;
 					
@@ -228,24 +228,6 @@ public class Group extends Actor
 					
 					out.x /= child.scaleX;
 					out.y /= child.scaleY;
-					
-//					float srefX = child.originX * child.scaleY;
-//					float srefY = child.originY * child.scaleX;
-//					
-//					float refX = -sin * srefX + cos * srefY;
-//					float refY =  cos * srefX + sin * srefY;
-//					
-//					float px = child.x + child.originX - refX;
-//					float py = child.y + child.originY - refY;
-//					
-//					float tox = x - px;
-//					float toy = y - py;
-//					
-//					out.x = tox * cos + toy * sin;
-//					out.y = tox * -sin + toy * cos;
-//					
-//					out.x /= child.scaleX;
-//					out.y /= child.scaleY;
 				}
 			}
 		}
