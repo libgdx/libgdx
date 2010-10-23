@@ -1,17 +1,17 @@
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureAtlas;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureAtlas;
+import com.badlogic.gdx.graphics.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Delay;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup.LinearGroupLayout;
 public class UITest implements RenderListener, InputListener
 {
 	Texture uiTexture;
+	Texture badlogic;
 	TextureAtlas atlas;
 	Stage ui;
 	
@@ -43,7 +44,9 @@ public class UITest implements RenderListener, InputListener
 												TextureFilter.Linear, TextureFilter.Linear,
 												TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
-			
+			badlogic = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogic.jpg", FileType.Internal ),
+												TextureFilter.MipMap, TextureFilter.Linear,
+												TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
 			ui = new Stage( 480, 320, false );
 			atlas = new TextureAtlas( uiTexture );
@@ -56,8 +59,12 @@ public class UITest implements RenderListener, InputListener
 			atlas.addRegion( "button", 0, 64, 64, 32 );
 			atlas.addRegion( "buttonDown", -1, 63, 64, 32 );
 			
-			Image img1 = new Image( "image1", atlas.getRegion( "blend" ) );
+			Image img1 = new Image( "image1", new TextureRegion( badlogic, 0, 0, 256, 256 ) );
+			img1.width = img1.height = 64; img1.originX = img1.originY = 32;
+			ui.addActor( img1 );
 			img1.action( Sequence.$( 
+										FadeOut.$(0),
+										FadeIn.$(1),
 										Delay.$( MoveTo.$( 100, 100, 1 ), 2 ),
 										ScaleTo.$( 0.5f, 0.5f, 1 ),
 										FadeOut.$( 0.5f ),
@@ -69,7 +76,6 @@ public class UITest implements RenderListener, InputListener
 												, 1 )
 									)
 						);
-			ui.addActor( img1 );
 			
 			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );			
 			ui.addActor( button );
@@ -79,9 +85,17 @@ public class UITest implements RenderListener, InputListener
 			linear.addActor( new Button( "blend", atlas.getRegion( "blend" ), atlas.getRegion( "blendDown" )  ) );
 			linear.addActor( new Button( "scale", atlas.getRegion( "scale" ), atlas.getRegion( "scaleDown" ) ) );
 			linear.addActor( new Button( "rotate", atlas.getRegion( "rotate" ), atlas.getRegion( "rotateDown" ) ) );
-			linear.action( Parallel.$( ScaleTo.$( 1, 1, 2 ), RotateTo.$( 720, 2 ) ) );			
-			
 			ui.addActor( linear );
+			linear.action( Parallel.$( ScaleTo.$( 1, 1, 2 ), RotateTo.$( 720, 2 ) ) );			
+
+			
+			LinearGroup linearh = new LinearGroup( "linearh", 64 * 3, 32, LinearGroupLayout.Horizontal );
+			linearh.x = 500; linearh.y = 10;
+			linearh.addActor( new Button( "blendh", atlas.getRegion( "blend" ), atlas.getRegion( "blendDown" )  ) );
+			linearh.addActor( new Button( "scaleh", atlas.getRegion( "scale" ), atlas.getRegion( "scaleDown" ) ) );
+			linearh.addActor( new Button( "rotateh", atlas.getRegion( "rotate" ), atlas.getRegion( "rotateDown" ) ) );
+			ui.addActor( linearh );			
+			linearh.action( MoveTo.$(100, 10, 1.5f) );	
 
 			
 //			Group.enableDebugging( "data/debug.png" );
