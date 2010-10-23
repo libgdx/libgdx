@@ -23,7 +23,7 @@ import java.nio.IntBuffer;
  * @author mzechner
  *
  */
-public interface GL20
+public interface GL20 extends GLCommon
 {
 	public static final int GL_ES_VERSION_2_0 = 1;
 	public static final int GL_DEPTH_BUFFER_BIT = 0x00000100;

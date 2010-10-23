@@ -15,12 +15,20 @@
  ******************************************************************************/
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
+
 /**
  * <p>Environment class holding references to the Application, Graphics, Audio,
  * Files and Input instances. The references are held in public static fields.
  * Do not mess with this! This essentially allows you static access to all sub
  * systems. It is your responsiblity to keep things thread safe. Don't use Graphics
  * in a thread that is not the rendering thread or things will go crazy. Really.</p> 
+ * 
+ * <p>There's also references to GLCommon, GL10, GL11 and GL20. The same rules as above 
+ * apply. Don't mess with this or things will break!</p>
  * 
  * <p>This is kind of messy but better than throwing around Graphics and similar instances.
  * I'm aware of the design faux pas</p>
@@ -34,4 +42,9 @@ public class Gdx
 	public static Audio audio;
 	public static Input input;
 	public static Files files;
+	
+	public static GLCommon gl;
+	public static GL10 gl10;
+	public static GL11 gl11;
+	public static GL20 gl20;
 }

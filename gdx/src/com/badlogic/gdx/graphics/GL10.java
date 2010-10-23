@@ -24,7 +24,7 @@ import java.nio.IntBuffer;
  * @author mzechner
  *
  */
-public interface GL10
+public interface GL10 extends GLCommon
 {
 	public static final int GL_OES_VERSION_1_0 = 1;
 	public static final int GL_OES_read_format = 1;
