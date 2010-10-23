@@ -22,9 +22,10 @@ import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * <p>
@@ -99,6 +100,11 @@ public interface Graphics
 	 * @see AndroidApplication
 	 */
 	public boolean isGL20Available( );
+	
+	/**
+	 * @return a {@link GLCommon} instance
+	 */
+	public GLCommon getGLCommon( );
 	
 	/**
 	 * @return the {@link GL10} instance
