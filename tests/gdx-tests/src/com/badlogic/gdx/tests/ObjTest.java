@@ -49,8 +49,8 @@ public class ObjTest implements RenderListener, InputListener
 		{
 			Gdx.input.addInputListener( this );
 			
-			mesh = ModelLoader.loadObj( Gdx.files.readFile( "data/cube.obj", FileType.Internal ), true );			
-			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );					
+			mesh = ModelLoader.loadObj( Gdx.files.readFile( "data/scene.obj", FileType.Internal ), true );			
+			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/villager.png", FileType.Internal), TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );					
 			
 			cam = new PerspectiveCamera();
 			cam.getPosition().set( 2, 2, 2 );
