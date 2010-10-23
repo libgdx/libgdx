@@ -1,50 +1,46 @@
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
-public class MoveTo implements Action
+public class FadeTo implements Action
 {
-	static final Pool<MoveTo> pool = new Pool<MoveTo>( new PoolObjectFactory<MoveTo>() {
+	static final Pool<FadeTo> pool = new Pool<FadeTo>( new PoolObjectFactory<FadeTo>() {
 		@Override
-		public MoveTo createObject() 
+		public FadeTo createObject() 
 		{
-			return new MoveTo( );
+			return new FadeTo( );
 		}
 	}, 100 );
 	
-	private float x;
-	private float y;
-	private float startX;
-	private float startY;
-	private float deltaX;
-	private float deltaY;
+	float toAlpha = 0;
+	float startAlpha;
+	float deltaAlpha = 0;
 	private float duration;
 	private float invDuration;
 	private float taken = 0;
 	private Actor target;
 	private boolean done;
-	public static MoveTo $( float x, float y, float duration )
+	
+	public static FadeTo $( float alpha, float duration )
 	{
-		MoveTo action = pool.newObject();
-		action.x = x;
-		action.y = y;
+		FadeTo action = pool.newObject();
+		if( alpha < 0 ) alpha = 0;
+		if( alpha > 1 ) alpha = 1;
+		action.toAlpha = alpha;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
 		return action;
 	}
-	
+
 	@Override
 	public void setTarget(Actor actor) 
 	{
 		this.target = actor;
-		this.startX = target.x;
-		this.startY = target.y;
-		this.deltaX = x - target.x;
-		this.deltaY = y - target.y;
+		this.startAlpha = this.target.color.a;
+		this.deltaAlpha = toAlpha - this.target.color.a;
 		this.taken = 0;
 		this.done = false;
 	}
@@ -61,8 +57,7 @@ public class MoveTo implements Action
 		}
 		
 		float alpha = taken * invDuration;
-		target.x = startX + deltaX * alpha;
-		target.y = startY + deltaY * alpha;
+		target.color.a = startAlpha + deltaAlpha * alpha;
 	}
 
 	@Override

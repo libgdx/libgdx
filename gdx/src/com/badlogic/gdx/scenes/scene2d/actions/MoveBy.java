@@ -6,13 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
-public class MoveTo implements Action
+public class MoveBy implements Action
 {
-	static final Pool<MoveTo> pool = new Pool<MoveTo>( new PoolObjectFactory<MoveTo>() {
+	static final Pool<MoveBy> pool = new Pool<MoveBy>( new PoolObjectFactory<MoveBy>() {
 		@Override
-		public MoveTo createObject() 
+		public MoveBy createObject() 
 		{
-			return new MoveTo( );
+			return new MoveBy( );
 		}
 	}, 100 );
 	
@@ -27,9 +27,10 @@ public class MoveTo implements Action
 	private float taken = 0;
 	private Actor target;
 	private boolean done;
-	public static MoveTo $( float x, float y, float duration )
+	
+	public static MoveBy $( float x, float y, float duration )
 	{
-		MoveTo action = pool.newObject();
+		MoveBy action = pool.newObject();
 		action.x = x;
 		action.y = y;
 		action.duration = duration;
@@ -43,8 +44,8 @@ public class MoveTo implements Action
 		this.target = actor;
 		this.startX = target.x;
 		this.startY = target.y;
-		this.deltaX = x - target.x;
-		this.deltaY = y - target.y;
+		this.deltaX = x;
+		this.deltaY = y;
 		this.taken = 0;
 		this.done = false;
 	}
@@ -71,3 +72,4 @@ public class MoveTo implements Action
 		return done;
 	}
 }
+

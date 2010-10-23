@@ -1,37 +1,33 @@
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
-public class MoveTo implements Action
+public class RotateBy implements Action
 {
-	static final Pool<MoveTo> pool = new Pool<MoveTo>( new PoolObjectFactory<MoveTo>() {
+	static final Pool<RotateBy> pool = new Pool<RotateBy>( new PoolObjectFactory<RotateBy>() {
 		@Override
-		public MoveTo createObject() 
+		public RotateBy createObject() 
 		{
-			return new MoveTo( );
+			return new RotateBy( );
 		}
 	}, 100 );
 	
-	private float x;
-	private float y;
-	private float startX;
-	private float startY;
-	private float deltaX;
-	private float deltaY;
+	private float rotation;
+	private float startRotation;;
+	private float deltaRotation;
 	private float duration;
 	private float invDuration;
 	private float taken = 0;
 	private Actor target;
 	private boolean done;
-	public static MoveTo $( float x, float y, float duration )
+	
+	public static RotateBy $( float rotation, float duration )
 	{
-		MoveTo action = pool.newObject();
-		action.x = x;
-		action.y = y;
+		RotateBy action = pool.newObject();
+		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
 		return action;
@@ -41,10 +37,8 @@ public class MoveTo implements Action
 	public void setTarget(Actor actor) 
 	{
 		this.target = actor;
-		this.startX = target.x;
-		this.startY = target.y;
-		this.deltaX = x - target.x;
-		this.deltaY = y - target.y;
+		this.startRotation = target.rotation;
+		this.deltaRotation = rotation;
 		this.taken = 0;
 		this.done = false;
 	}
@@ -57,12 +51,13 @@ public class MoveTo implements Action
 		{
 			pool.free( this );
 			taken = duration;
+			target.rotation = rotation;
 			done = true;
+			return;
 		}
 		
 		float alpha = taken * invDuration;
-		target.x = startX + deltaX * alpha;
-		target.y = startY + deltaY * alpha;
+		target.rotation = startRotation + deltaRotation * alpha;
 	}
 
 	@Override
@@ -71,3 +66,4 @@ public class MoveTo implements Action
 		return done;
 	}
 }
+
