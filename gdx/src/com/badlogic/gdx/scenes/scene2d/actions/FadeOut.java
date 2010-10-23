@@ -48,7 +48,6 @@ public class FadeOut implements Action
 		taken += delta;
 		if( taken >= duration )
 		{
-			pool.free( this );
 			taken = duration;
 			done = true;
 		}
@@ -61,5 +60,16 @@ public class FadeOut implements Action
 	public boolean isDone() 
 	{
 		return done;
+	}
+
+	@Override
+	public void finish() 
+	{
+		pool.free( this );		
+	}
+
+	@Override
+	public Action copy() {
+		return $( duration );
 	}
 }

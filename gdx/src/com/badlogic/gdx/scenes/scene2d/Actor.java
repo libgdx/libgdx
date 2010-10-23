@@ -101,7 +101,10 @@ public abstract class Actor
 		{
 			action.act( delta );
 			if( action.isDone() )
+			{
+				action.finish();
 				actions.remove();
+			}
 		}
 	}
 	

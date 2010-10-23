@@ -16,8 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Delay;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
+import com.badlogic.gdx.scenes.scene2d.actions.Forever;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
+import com.badlogic.gdx.scenes.scene2d.actions.Repeat;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateTo;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
@@ -78,8 +81,18 @@ public class UITest implements RenderListener, InputListener
 						);
 			ui.addActor( img1 );
 			
+			Image img2 = new Image( "image2", new TextureRegion( badlogic, 0, 0, 256, 256 ) );
+			img2.width = img2.height = 64; img2.originX = img2.originY = 32;
+			img2.action( Repeat.$( Sequence.$( 
+												MoveBy.$( 50, 0, 1 ),
+												MoveBy.$( 0, 50, 1 ),
+												MoveBy.$(-50, 0, 1 ),
+												MoveBy.$( 0, -50, 1 )
+			), 3 ) );
+			ui.addActor( img2 );
+			
 			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );
-			button.action( RotateBy.$( 360, 4 ) );
+			button.action( Forever.$(RotateBy.$( 360, 4 )) );
 			ui.addActor( button );
 			
 			LinearGroup linear = new LinearGroup( "linear", 64, 32 * 3, LinearGroupLayout.Vertical );

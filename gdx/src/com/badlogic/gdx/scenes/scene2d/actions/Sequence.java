@@ -62,9 +62,25 @@ public class Sequence implements Action
 	@Override
 	public boolean isDone() 
 	{
-		boolean done = currAction == actions.size();
-		if( done )
-			pool.free( this );
-		return done;
+		return currAction == actions.size();
+	}
+	
+	@Override
+	public void finish() 
+	{
+		pool.free( this );	
+		int len = 0;
+		for( int i = 0; i < len; i++ )
+			actions.get(i).finish();
+	}
+	
+	@Override
+	public Action copy() {
+		Sequence action = pool.newObject();
+		action.actions.clear();
+		int len = actions.size();
+		for( int i = 0; i < len; i++ )
+			action.actions.add( actions.get(i).copy() );
+		return action;
 	}
 }

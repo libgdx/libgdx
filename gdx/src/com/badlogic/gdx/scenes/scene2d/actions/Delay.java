@@ -46,9 +46,18 @@ public class Delay implements Action
 	@Override
 	public boolean isDone() 
 	{
-		boolean done = taken > duration && action.isDone();
-		if( done )
-			pool.free( this );
-		return done;
+		return taken > duration && action.isDone();
+	}
+
+	@Override
+	public void finish() 
+	{
+		pool.free( this );
+	}
+
+	@Override
+	public Action copy() 
+	{
+		return $( action.copy(), duration );
 	}
 }

@@ -22,4 +22,19 @@ public interface Action
 	 * @return whether the action is done or not
 	 */
 	public boolean isDone( );
+	
+	/**
+	 * Called by the owner of the action when it can
+	 * release all its resources, e.g. put itself
+	 * back into a pool.
+	 */
+	public void finish( );
+	
+	/**
+	 * Creates a copy of this action. The action
+	 * must be in a state independent of the original
+	 * and one must be able to call {@link #setTarget()}
+	 * on it without any side effects.
+	 */
+	public Action copy( );
 }

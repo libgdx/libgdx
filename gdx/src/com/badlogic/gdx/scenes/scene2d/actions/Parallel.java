@@ -54,4 +54,23 @@ public class Parallel implements Action
 				return false;
 		return true;
 	}
+	
+	@Override
+	public void finish() 
+	{
+		pool.free( this );	
+		int len = 0;
+		for( int i = 0; i < len; i++ )
+			actions.get(i).finish();
+	}
+
+	@Override
+	public Action copy() {
+		Parallel action = pool.newObject();
+		action.actions.clear();
+		int len = actions.size();
+		for( int i = 0; i < len; i++ )
+			action.actions.add( actions.get(i).copy() );
+		return action;
+	}
 }

@@ -49,7 +49,6 @@ public class RotateTo implements Action
 		taken += delta;
 		if( taken >= duration )
 		{
-			pool.free( this );
 			taken = duration;
 			target.rotation = rotation;
 			done = true;
@@ -64,6 +63,17 @@ public class RotateTo implements Action
 	public boolean isDone() 
 	{
 		return done;
+	}
+	
+	@Override
+	public void finish() 
+	{
+		pool.free( this );	
+	}
+
+	@Override
+	public Action copy() {
+		return $(rotation, duration);
 	}
 }
 
