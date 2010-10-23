@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateTo;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
@@ -61,9 +62,8 @@ public class UITest implements RenderListener, InputListener
 			
 			Image img1 = new Image( "image1", new TextureRegion( badlogic, 0, 0, 256, 256 ) );
 			img1.width = img1.height = 64; img1.originX = img1.originY = 32;
-			ui.addActor( img1 );
 			img1.action( Sequence.$( 
-										FadeOut.$(0),
+										FadeOut.$(1),
 										FadeIn.$(1),
 										Delay.$( MoveTo.$( 100, 100, 1 ), 2 ),
 										ScaleTo.$( 0.5f, 0.5f, 1 ),
@@ -76,8 +76,10 @@ public class UITest implements RenderListener, InputListener
 												, 1 )
 									)
 						);
+			ui.addActor( img1 );
 			
-			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );			
+			Button button = new Button( "button", atlas.getRegion( "button" ), atlas.getRegion( "buttonDown" ) );
+			button.action( RotateBy.$( 360, 4 ) );
 			ui.addActor( button );
 			
 			LinearGroup linear = new LinearGroup( "linear", 64, 32 * 3, LinearGroupLayout.Vertical );
@@ -85,18 +87,16 @@ public class UITest implements RenderListener, InputListener
 			linear.addActor( new Button( "blend", atlas.getRegion( "blend" ), atlas.getRegion( "blendDown" )  ) );
 			linear.addActor( new Button( "scale", atlas.getRegion( "scale" ), atlas.getRegion( "scaleDown" ) ) );
 			linear.addActor( new Button( "rotate", atlas.getRegion( "rotate" ), atlas.getRegion( "rotateDown" ) ) );
+			linear.action( Parallel.$( ScaleTo.$( 1, 1, 2 ), RotateTo.$( 720, 2 ) ) );
 			ui.addActor( linear );
-			linear.action( Parallel.$( ScaleTo.$( 1, 1, 2 ), RotateTo.$( 720, 2 ) ) );			
-
 			
 			LinearGroup linearh = new LinearGroup( "linearh", 64 * 3, 32, LinearGroupLayout.Horizontal );
 			linearh.x = 500; linearh.y = 10;
 			linearh.addActor( new Button( "blendh", atlas.getRegion( "blend" ), atlas.getRegion( "blendDown" )  ) );
 			linearh.addActor( new Button( "scaleh", atlas.getRegion( "scale" ), atlas.getRegion( "scaleDown" ) ) );
 			linearh.addActor( new Button( "rotateh", atlas.getRegion( "rotate" ), atlas.getRegion( "rotateDown" ) ) );
+			linearh.action( MoveTo.$(100, 10, 1.5f) );
 			ui.addActor( linearh );			
-			linearh.action( MoveTo.$(100, 10, 1.5f) );	
-
 			
 //			Group.enableDebugging( "data/debug.png" );
 		}
@@ -158,7 +158,7 @@ public class UITest implements RenderListener, InputListener
 				ui.toStageCoordinates( x, y, point );
 				actor.clearActions();
 				actor.action( MoveTo.$( point.x, point.y, 2 ) );
-				actor.action( RotateTo.$( actor.rotation + 90, 2 ) );
+				actor.action( RotateBy.$( 90, 2 ) );
 				if( actor.scaleX == 1.0f )
 					actor.action( ScaleTo.$( 0.5f, 0.5f, 2 ) );
 				else

@@ -25,10 +25,10 @@ public class Sequence implements Action
 	public static Sequence $( Action ... actions )
 	{
 		Sequence action = pool.newObject();
+		action.actions.clear();
 		int len = actions.length;
 		for( int i = 0; i < len; i++ )
 			action.actions.add( actions[i] );
-		action.currAction = 0;
 		return action;
 	}
 	
@@ -38,6 +38,7 @@ public class Sequence implements Action
 		this.target = actor;
 		if( actions.size() > 0 )
 			actions.get(0).setTarget( target );
+		this.currAction = 0;
 	}
 
 	@Override

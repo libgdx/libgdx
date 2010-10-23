@@ -51,7 +51,6 @@ public class RotateBy implements Action
 		{
 			pool.free( this );
 			taken = duration;
-			target.rotation = rotation;
 			done = true;
 			return;
 		}

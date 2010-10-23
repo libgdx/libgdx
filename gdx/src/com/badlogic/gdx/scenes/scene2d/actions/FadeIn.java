@@ -62,5 +62,4 @@ public class FadeIn implements Action
 	{
 		return done;
 	}
-
 }
