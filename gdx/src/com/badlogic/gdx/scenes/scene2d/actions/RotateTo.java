@@ -30,8 +30,6 @@ public class RotateTo implements Action
 		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.taken = 0;
-		action.done = false;
 		return action;
 	}
 	
@@ -41,6 +39,8 @@ public class RotateTo implements Action
 		this.target = actor;
 		this.startRotation = target.rotation;
 		this.deltaRotation = rotation - target.rotation;
+		this.taken = 0;
+		this.done = false;
 	}
 
 	@Override

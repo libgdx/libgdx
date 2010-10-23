@@ -23,7 +23,6 @@ public class Delay implements Action
 	public static Delay $( Action action, float duration )
 	{
 		Delay delay = pool.newObject();
-		delay.taken = 0;
 		delay.duration = duration;
 		delay.action = action;
 		return delay;
@@ -33,6 +32,7 @@ public class Delay implements Action
 	public void setTarget(Actor actor) 
 	{
 		action.setTarget( actor );
+		this.taken = 0;
 	}
 
 	@Override

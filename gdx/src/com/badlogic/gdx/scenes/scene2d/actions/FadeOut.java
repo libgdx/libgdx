@@ -28,8 +28,6 @@ public class FadeOut implements Action
 		FadeOut action = pool.newObject();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.taken = 0;
-		action.done = false;
 		return action;
 	}
 
@@ -40,6 +38,8 @@ public class FadeOut implements Action
 		this.target.color.a = 1;
 		this.startAlpha = 1;
 		this.deltaAlpha = -1;
+		this.taken = 0;
+		this.done = false;
 	}
 
 	@Override

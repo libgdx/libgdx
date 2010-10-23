@@ -34,8 +34,6 @@ public class ScaleTo implements Action
 		action.scaleY = scaleY;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.taken = 0;
-		action.done = false;
 		return action;
 	}
 	
@@ -47,6 +45,8 @@ public class ScaleTo implements Action
 		this.deltaScaleX= scaleX - target.scaleX;
 		this.startScaleY = target.scaleY;
 		this.deltaScaleY= scaleY - target.scaleY;
+		this.taken = 0;
+		this.done = false;
 	}
 
 	@Override

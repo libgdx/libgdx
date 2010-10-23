@@ -28,8 +28,6 @@ public class FadeIn implements Action
 		FadeIn action = pool.newObject();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.taken = 0;
-		action.done = false;
 		return action;
 	}
 
@@ -40,6 +38,8 @@ public class FadeIn implements Action
 		this.target.color.a = 0;
 		this.startAlpha = 0;
 		this.deltaAlpha = 1;
+		this.taken = 0;
+		this.done = false;
 	}
 
 	@Override

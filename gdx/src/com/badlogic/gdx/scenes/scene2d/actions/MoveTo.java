@@ -36,8 +36,6 @@ public class MoveTo implements Action
 		action.y = y;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.taken = 0;
-		action.done = false;
 		return action;
 	}
 	
@@ -52,6 +50,8 @@ public class MoveTo implements Action
 		this.startY = target.y;
 		this.deltaX = x - target.x;
 		this.deltaY = y - target.y;
+		this.taken = 0;
+		this.done = false;
 	}
 
 	@Override
