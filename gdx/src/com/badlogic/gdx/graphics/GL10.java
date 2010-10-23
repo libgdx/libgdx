@@ -268,28 +268,14 @@ public interface GL10 extends GLCommon
 	public static final int GL_POINT = 0x1B00;
 	public static final int GL_LINE = 0x1B01;
 	public static final int GL_FILL = 0x1B02;
-	
-	public void glActiveTexture ( int texture );
 
 	public void glAlphaFunc ( int func, float ref );
 
 	public void glAlphaFuncx ( int func, int ref );
 
-	public void glBindTexture ( int target, int texture );
-
-	public void glBlendFunc ( int sfactor, int dfactor );
-
-	public void glClear ( int mask );
-
-	public void glClearColor ( float red, float green, float blue, float alpha );
-
 	public void glClearColorx ( int red, int green, int blue, int alpha );
 
-	public void glClearDepthf ( float depth );
-
 	public void glClearDepthx ( int depth );
-
-	public void glClearStencil ( int s );
 
 	public void glClientActiveTexture ( int texture );
 
@@ -297,47 +283,15 @@ public interface GL10 extends GLCommon
 
 	public void glColor4x ( int red, int green, int blue, int alpha );
 
-	public void glColorMask ( boolean red, boolean green, boolean blue, boolean alpha );
-
 	public void glColorPointer ( int size, int type, int stride, Buffer pointer );
 
-	public void glCompressedTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data );
-
-	public void glCompressedTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data );
-
-	public void glCopyTexImage2D ( int target, int level, int internalformat, int x, int y, int width, int height, int border );
-
-	public void glCopyTexSubImage2D ( int target, int level, int xoffset, int yoffset, int x, int y, int width, int height );
-
-	public void glCullFace ( int mode );
-
 	public void glDeleteTextures( int n, int[] textures, int offset );
-	
-	public void glDeleteTextures ( int n, IntBuffer textures );
-
-	public void glDepthFunc ( int func );
-
-	public void glDepthMask ( boolean flag );
-
-	public void glDepthRangef ( float zNear, float zFar );
 
 	public void glDepthRangex ( int zNear, int zFar );
 
-	public void glDisable ( int cap );
-
 	public void glDisableClientState ( int array );
 
-	public void glDrawArrays ( int mode, int first, int count );
-
-	public void glDrawElements ( int mode, int count, int type, Buffer indices );
-
-	public void glEnable ( int cap );
-
 	public void glEnableClientState ( int array );
-
-	public void glFinish (  );
-
-	public void glFlush (  );
 
 	public void glFogf ( int pname, float param );
 
@@ -351,25 +305,13 @@ public interface GL10 extends GLCommon
 	
 	public void glFogxv ( int pname, IntBuffer params );
 
-	public void glFrontFace ( int mode );
-
 	public void glFrustumf ( float left, float right, float bottom, float top, float zNear, float zFar );
 
 	public void glFrustumx ( int left, int right, int bottom, int top, int zNear, int zFar );
 
 	public void glGenTextures ( int n, int[] textures, int offset );
-	
-	public void glGenTextures ( int n, IntBuffer textures );
-
-	public int glGetError (  );
 
 	public void glGetIntegerv ( int pname, int[] params, int offset );
-	
-	public void glGetIntegerv ( int pname, IntBuffer params );
-
-	public String glGetString ( int name );
-
-	public void glHint ( int target, int mode );
 
 	public void glLightModelf ( int pname, float param );
 
@@ -394,8 +336,6 @@ public interface GL10 extends GLCommon
 	public void glLightxv ( int light, int pname, int[] params, int offset );
 	
 	public void glLightxv ( int light, int pname, IntBuffer params );
-
-	public void glLineWidth ( float width );
 
 	public void glLineWidthx ( int width );
 
@@ -447,21 +387,15 @@ public interface GL10 extends GLCommon
 
 	public void glOrthox ( int left, int right, int bottom, int top, int zNear, int zFar );
 
-	public void glPixelStorei ( int pname, int param );
-
 	public void glPointSize ( float size );
 
 	public void glPointSizex ( int size );
-
-	public void glPolygonOffset ( float factor, float units );
 
 	public void glPolygonOffsetx ( int factor, int units );
 
 	public void glPopMatrix (  );
 
 	public void glPushMatrix (  );
-
-	public void glReadPixels ( int x, int y, int width, int height, int format, int type, Buffer pixels );
 
 	public void glRotatef ( float angle, float x, float y, float z );
 
@@ -475,15 +409,7 @@ public interface GL10 extends GLCommon
 
 	public void glScalex ( int x, int y, int z );
 
-	public void glScissor ( int x, int y, int width, int height );
-
 	public void glShadeModel ( int mode );
-
-	public void glStencilFunc ( int func, int ref, int mask );
-
-	public void glStencilMask ( int mask );
-
-	public void glStencilOp ( int fail, int zfail, int zpass );
 
 	public void glTexCoordPointer ( int size, int type, int stride, Buffer pointer );
 
@@ -499,21 +425,13 @@ public interface GL10 extends GLCommon
 	
 	public void glTexEnvxv ( int target, int pname, IntBuffer params );
 
-	public void glTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels );
-
-	public void glTexParameterf ( int target, int pname, float param );
-
 	public void glTexParameterx ( int target, int pname, int param );
-
-	public void glTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels );
 
 	public void glTranslatef ( float x, float y, float z );
 
 	public void glTranslatex ( int x, int y, int z );
 
 	public void glVertexPointer ( int size, int type, int stride, Buffer pointer );
-
-	public void glViewport ( int x, int y, int width, int height );
 
 	public void glPolygonMode( int face, int mode );
 }

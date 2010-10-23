@@ -329,8 +329,6 @@ public interface GL20 extends GLCommon
 	public static final int GL_MAX_RENDERBUFFER_SIZE = 0x84E8;
 	public static final int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506;
 
-	public void glActiveTexture ( int texture );
-
 	public void glAttachShader ( int program, int shader );
 
 	public void glBindAttribLocation ( int program, int index, String name );
@@ -341,15 +339,11 @@ public interface GL20 extends GLCommon
 
 	public void glBindRenderbuffer ( int target, int renderbuffer );
 
-	public void glBindTexture ( int target, int texture );
-
 	public void glBlendColor ( float red, float green, float blue, float alpha );
 
 	public void glBlendEquation (  int mode  );
 
 	public void glBlendEquationSeparate ( int modeRGB, int modeAlpha );
-
-	public void glBlendFunc ( int sfactor, int dfactor );
 
 	public void glBlendFuncSeparate ( int srcRGB, int dstRGB, int srcAlpha, int dstAlpha );
 
@@ -359,31 +353,11 @@ public interface GL20 extends GLCommon
 
 	public int glCheckFramebufferStatus ( int target );
 
-	public void glClear ( int mask );
-
-	public void glClearColor ( float red, float green, float blue, float alpha );
-
-	public void glClearDepthf ( float depth );
-
-	public void glClearStencil ( int s );
-
-	public void glColorMask ( boolean red, boolean green, boolean blue, boolean alpha );
-
 	public void glCompileShader ( int shader );
-
-	public void glCompressedTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data );
-
-	public void glCompressedTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data );
-
-	public void glCopyTexImage2D ( int target, int level, int internalformat, int x, int y, int width, int height, int border );
-
-	public void glCopyTexSubImage2D ( int target, int level, int xoffset, int yoffset, int x, int y, int width, int height );
 
 	public int glCreateProgram (  );
 
 	public int glCreateShader ( int type );
-
-	public void glCullFace ( int mode );
 
 	public void glDeleteBuffers ( int n, IntBuffer buffers );
 
@@ -395,39 +369,17 @@ public interface GL20 extends GLCommon
 
 	public void glDeleteShader ( int shader );
 
-	public void glDeleteTextures ( int n, IntBuffer textures );
-
-	public void glDepthFunc ( int func );
-
-	public void glDepthMask ( boolean flag );
-
-	public void glDepthRangef ( float zNear, float zFar );
-
 	public void glDetachShader ( int program, int shader );
 
-	public void glDisable ( int cap );
-
 	public void glDisableVertexAttribArray ( int index );
-
-	public void glDrawArrays ( int mode, int first, int count );
-
-	public void glDrawElements ( int mode, int count, int type, Buffer indices );
 	
 	public void glDrawElements ( int mode, int count, int type, int indices );
 
-	public void glEnable ( int cap );
-
 	public void glEnableVertexAttribArray ( int index );
-
-	public void glFinish (  );
-
-	public void glFlush (  );
 
 	public void glFramebufferRenderbuffer ( int target, int attachment, int renderbuffertarget, int renderbuffer );
 
 	public void glFramebufferTexture2D ( int target, int attachment, int textarget, int texture, int level );
-
-	public void glFrontFace ( int mode );
 
 	public void glGenBuffers ( int n, IntBuffer buffers );
 
@@ -436,8 +388,6 @@ public interface GL20 extends GLCommon
 	public void glGenFramebuffers ( int n, IntBuffer framebuffers );
 
 	public void glGenRenderbuffers ( int n, IntBuffer renderbuffers );
-
-	public void glGenTextures ( int n, IntBuffer textures );
 
 	// deviates
 	public String glGetActiveAttrib ( int program, int index, IntBuffer size, Buffer type );
@@ -453,13 +403,9 @@ public interface GL20 extends GLCommon
 
 	public void glGetBufferParameteriv ( int target, int pname, IntBuffer params );
 
-	public int glGetError (  );
-
 	public void glGetFloatv ( int pname, FloatBuffer params );
 
 	public void glGetFramebufferAttachmentParameteriv ( int target, int attachment, int pname, IntBuffer params );
-
-	public void glGetIntegerv ( int pname, IntBuffer params );
 
 	public void glGetProgramiv ( int program, int pname, IntBuffer params );
 
@@ -477,8 +423,6 @@ public interface GL20 extends GLCommon
 
 	public void glGetShaderSource ( int shader, int bufsize, Buffer length, String source );
 
-	public String glGetString ( int name );
-
 	public void glGetTexParameterfv ( int target, int pname, FloatBuffer params );
 
 	public void glGetTexParameteriv ( int target, int pname, IntBuffer params );
@@ -495,8 +439,6 @@ public interface GL20 extends GLCommon
 
 	public void glGetVertexAttribPointerv ( int index, int pname, Buffer pointer );
 
-	public void glHint ( int target, int mode );
-
 	public boolean glIsBuffer ( int buffer );
 
 	public boolean glIsEnabled ( int cap );
@@ -511,15 +453,7 @@ public interface GL20 extends GLCommon
 
 	public boolean glIsTexture ( int texture );
 
-	public void glLineWidth ( float width );
-
 	public void glLinkProgram ( int program );
-
-	public void glPixelStorei ( int pname, int param );
-
-	public void glPolygonOffset ( float factor, float units );
-
-	public void glReadPixels ( int x, int y, int width, int height, int format, int type, Buffer pixels );
 
 	public void glReleaseShaderCompiler (  );
 
@@ -527,36 +461,22 @@ public interface GL20 extends GLCommon
 
 	public void glSampleCoverage ( float value, boolean invert );
 
-	public void glScissor ( int x, int y, int width, int height );
-
 	public void glShaderBinary ( int n, IntBuffer shaders, int binaryformat, Buffer binary, int length );
 
 	// Deviates
 	public void glShaderSource ( int shader, String string );
 
-	public void glStencilFunc ( int func, int ref, int mask );
-
 	public void glStencilFuncSeparate ( int face, int func, int ref, int mask );
-
-	public void glStencilMask ( int mask );
 
 	public void glStencilMaskSeparate ( int face, int mask );
 
-	public void glStencilOp ( int fail, int zfail, int zpass );
-
 	public void glStencilOpSeparate ( int face, int fail, int zfail, int zpass );
-
-	public void glTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels );
-
-	public void glTexParameterf ( int target, int pname, float param );
 
 	public void glTexParameterfv ( int target, int pname, FloatBuffer params );
 
 	public void glTexParameteri ( int target, int pname, int param );
 
 	public void glTexParameteriv ( int target, int pname, IntBuffer params );
-
-	public void glTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels );
 
 	public void glUniform1f ( int location, float x );
 
@@ -619,7 +539,4 @@ public interface GL20 extends GLCommon
 	public void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, Buffer ptr );
 	
 	public void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, int ptr );
-
-	public void glViewport ( int x, int y, int width, int height );
-
 }
