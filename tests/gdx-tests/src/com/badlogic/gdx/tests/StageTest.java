@@ -82,7 +82,7 @@ public class StageTest implements RenderListener, InputListener
 				stage.addActor( group );
 			}
 			
-			uiTexture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/uiTexture.png", FileType.Internal ),
+			uiTexture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/ui.png", FileType.Internal ),
 												 TextureFilter.Linear, TextureFilter.Linear, 
 												 TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			ui = new Stage( 480, 320, false );
