@@ -48,6 +48,7 @@ final class JoglPixmap implements Pixmap
 	
 	JoglPixmap(BufferedImage image) 
 	{
+		if (image == null) throw new IllegalArgumentException("image cannot be null.");
 		pixmap = image;
 	}
 

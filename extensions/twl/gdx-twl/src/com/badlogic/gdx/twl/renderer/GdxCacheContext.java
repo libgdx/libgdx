@@ -24,63 +24,67 @@ package com.badlogic.gdx.twl.renderer;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.GdxRuntimeException;
+import com.badlogic.gdx.graphics.BitmapFont;
 
 import de.matthiasmann.twl.renderer.CacheContext;
 
 class GdxCacheContext implements CacheContext {
-	final GdxRenderer renderer;
-	final HashMap<String, GdxTexture> textures;
-	final HashMap<String, BitmapFont> fontCache;
-	final ArrayList<GdxTexture> allTextures;
-	boolean valid;
+	final TwlRenderer renderer;
+	final HashMap<String, GdxTexture> textures = new HashMap();
+	final HashMap<String, BitmapFont> fonts = new HashMap();
+	boolean valid = true;
 
-	protected GdxCacheContext (GdxRenderer renderer) {
+	GdxCacheContext (TwlRenderer renderer) {
 		this.renderer = renderer;
-		this.textures = new HashMap<String, GdxTexture>();
-		this.fontCache = new HashMap<String, BitmapFont>();
-		this.allTextures = new ArrayList<GdxTexture>();
-		valid = true;
 	}
+
+	// BOZO - This URL stuff sucks.
 
 	GdxTexture loadTexture (URL url) throws IOException {
 		String urlString = url.toString();
 		GdxTexture texture = textures.get(urlString);
 		if (texture == null) {
-			texture = createTexture(url);
+			if (!valid) throw new IllegalStateException("CacheContext has been destroyed.");
+			String path;
+			try {
+				path = new File(url.toURI()).getPath();
+			} catch (Exception ex) {
+				path = new File(url.getPath()).getPath();
+			}
+			if (path.startsWith(File.separator)) path = path.substring(1);
+			int index = path.indexOf('!');
+			if (index != -1) path = path.substring(index + 1);
+			texture = new GdxTexture(renderer, path);
 			textures.put(urlString, texture);
 		}
 		return texture;
 	}
 
-	GdxTexture createTexture (URL textureUrl) throws IOException {
-		if (!valid) {
-			throw new IllegalStateException("CacheContext already destroyed");
-		}
-		File file;
-		try {
-			file = new File(textureUrl.toURI());
-		} catch (Exception ex) {
-			file = new File(textureUrl.getPath());
-		}
-		String path = file.getPath();
-		int index = path.indexOf('!');
-		if (index != -1) path = path.substring(index + 1);
-		GdxTexture texture = new GdxTexture(renderer, path);
-		allTextures.add(texture);
-		return texture;
-	}
-
 	BitmapFont loadBitmapFont (URL url) throws IOException {
-		String urlString = url.toString();
-		BitmapFont bmFont = fontCache.get(urlString);
-		if (bmFont == null) {
-			bmFont = BitmapFont.loadFont(renderer, url);
-			fontCache.put(urlString, bmFont);
+		String urlString = url.toExternalForm();
+		BitmapFont bitmapFont = fonts.get(urlString);
+		if (bitmapFont == null) {
+			String fontFile;
+			try {
+				fontFile = new File(url.toURI().getPath()).toString();
+			} catch (URISyntaxException ex) {
+				throw new GdxRuntimeException(ex);
+			}
+			if (fontFile.startsWith(File.separator)) fontFile = fontFile.substring(1);
+			String textureFile = fontFile.endsWith(".fnt") ? fontFile.substring(0, fontFile.length() - 3) + "png" : fontFile
+				+ ".png";
+			bitmapFont = new BitmapFont(Gdx.files.getFileHandle(fontFile, FileType.Internal), Gdx.files.getFileHandle(textureFile,
+				FileType.Internal));
+			fonts.put(urlString, bitmapFont);
 		}
-		return bmFont;
+		return bitmapFont;
 	}
 
 	public boolean isValid () {
@@ -89,16 +93,13 @@ class GdxCacheContext implements CacheContext {
 
 	public void destroy () {
 		try {
-			for (GdxTexture t : allTextures) {
-				t.destroy();
-			}
-			for (BitmapFont f : fontCache.values()) {
-				f.destroy();
-			}
+			for (GdxTexture texture : textures.values())
+				texture.destroy();
+			for (BitmapFont bitmapFont : fonts.values())
+				bitmapFont.dispose();
 		} finally {
 			textures.clear();
-			fontCache.clear();
-			allTextures.clear();
+			fonts.clear();
 			valid = false;
 		}
 	}

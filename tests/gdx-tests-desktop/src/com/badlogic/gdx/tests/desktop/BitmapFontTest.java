@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.files;
+package com.badlogic.gdx.tests.desktop;
 
-import java.io.InputStream;
+import com.badlogic.gdx.backends.desktop.JoglApplication;
 
-/**
- * A file handle represents a system dependant representation of an
- * internal or external file. FileHandles can only be created via
- * a {@link Files} instance.
- * 
- * @author mzechner
- *
- */
-public interface FileHandle 
+public class BitmapFontTest
 {
-	public InputStream getInputStream ();
+	public static void main( String[] argv )
+	{
+		JoglApplication app = new JoglApplication( "Float Test", 480, 320, false);
+		app.getGraphics().setRenderListener( new com.badlogic.gdx.tests.BitmapFontTest() );
+	}
 }

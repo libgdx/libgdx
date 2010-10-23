@@ -2,13 +2,14 @@
 package com.badlogic.gdx.twl.renderer;
 
 import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.RenderListener;
 
 import de.matthiasmann.twl.GUI;
 
-public class GdxInputListener implements InputListener {
+public class TwlInputListener implements InputListener, RenderListener {
 	private final GUI gui;
 
-	public GdxInputListener (GUI gui) {
+	public TwlInputListener (GUI gui) {
 		this.gui = gui;
 	}
 
@@ -35,5 +36,19 @@ public class GdxInputListener implements InputListener {
 
 	public boolean touchDragged (int x, int y, int pointer) {
 		return gui.handleMouse(x, y, -1, true);
+	}
+
+	public void surfaceCreated () {
+	}
+
+	public void surfaceChanged (int width, int height) {
+		gui.setSize();
+	}
+
+	public void render () {
+	}
+
+	public void dispose () {
+		gui.destroy();
 	}
 }

@@ -18,9 +18,9 @@ class TextureAreaBase {
 
 	FloatBuffer texCoords = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
 	FloatBuffer vertices = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
-	final GdxRenderer renderer;
+	final TwlRenderer renderer;
 
-	TextureAreaBase (GdxRenderer renderer, int x, int y, int width, int height, float texWidth, float texHeight) {
+	TextureAreaBase (TwlRenderer renderer, int x, int y, int width, int height, float texWidth, float texHeight) {
 		this.renderer = renderer;
 		// negative size allows for flipping
 		this.width = (short)Math.abs(width);

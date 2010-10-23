@@ -1,15 +1,11 @@
 
 package com.badlogic.gdx.twl.tests;
 
-import java.io.IOException;
-import java.net.URL;
-
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.twl.renderer.GdxInputListener;
-import com.badlogic.gdx.twl.renderer.GdxRenderer;
+import com.badlogic.gdx.twl.renderer.TwlRenderer;
 
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.FPSCounter;
@@ -22,7 +18,6 @@ import de.matthiasmann.twl.textarea.Style;
 import de.matthiasmann.twl.textarea.StyleAttribute;
 import de.matthiasmann.twl.textarea.TextAreaModel.Element;
 import de.matthiasmann.twl.textarea.Value;
-import de.matthiasmann.twl.theme.ThemeManager;
 
 public class TextAreaTest implements RenderListener {
 	GUI gui;
@@ -43,16 +38,7 @@ public class TextAreaTest implements RenderListener {
 		layout.setHorizontalGroup(layout.createParallelGroup().addWidgets(scrollPane, fpsCounter));
 		layout.setVerticalGroup(layout.createSequentialGroup().addWidget(scrollPane).addGap(5).addWidget(fpsCounter).addGap(5));
 
-		GdxRenderer renderer = new GdxRenderer();
-		gui = new GUI(layout, renderer, null);
-		URL themeURL = getClass().getResource("/widgets.xml");
-		try {
-			gui.applyTheme(ThemeManager.createThemeManager(themeURL, renderer));
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error loading theme: " + themeURL, ex);
-		}
-
-		Gdx.input.addInputListener(new GdxInputListener(gui));
+		gui = TwlRenderer.createGUI(layout, Gdx.files.getFileHandle("data/widgets.xml", FileType.Internal));
 
 		textArea.addCallback(new TextArea.Callback() {
 			Timer timer;
@@ -89,8 +75,10 @@ public class TextAreaTest implements RenderListener {
 	}
 
 	public void surfaceChanged (int width, int height) {
+		gui.setSize();
 	}
 
 	public void dispose () {
+		gui.destroy();
 	}
 }

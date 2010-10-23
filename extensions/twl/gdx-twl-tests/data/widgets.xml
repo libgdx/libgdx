@@ -12,11 +12,11 @@
         <action name="paste">ctrl V</action>
         <action name="paste">cmd V</action>
     </inputMapDef>
-    <images file="badlogic.png">
+    <images file="data/badlogic.png">
         <area name="badlogic" xywh="*"/></images>
-    <images file="twllogo.png">
+    <images file="data/twllogo.png">
         <area name="twllogo" xywh="*"/></images>
-    <images file="widgets.png">
+    <images file="data/widgets.png">
         <area name="white" xywh="1,36,1,1"/>
         <area name="box" xywh="1,1,42,34" splitx="L13,B13" splity="L5,B5" nocenter="true"/>
         <area name="box bg" xywh="44,3,38,30" splitx="L9,B9" splity="L9,B9" inset="2"/>
@@ -66,19 +66,19 @@
             <alias ref="none"/>
 				</select>
 				</images>
-    <fontDef name="normal" filename="font.fnt" color="#FFFFFF" default="true">
+    <fontDef name="normal" filename="data/font.fnt" color="#FFFFFF" default="true">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
         <fontParam if="textSelection" color="blue"/>
     </fontDef>
-    <fontDef name="heading" filename="font-heading.fnt" color="#FFFFFF">
+    <fontDef name="heading" filename="data/font-heading.fnt" color="#FFFFFF">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
         <fontParam if="textSelection" color="blue"/>
     </fontDef>
-    <fontDef name="button.font" filename="font.fnt" color="#FFFFFF">
+    <fontDef name="button.font" filename="data/font.fnt" color="#FFFFFF">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>

@@ -27,8 +27,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.BitmapFont;
+import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.BitmapFontCache;
+import com.badlogic.gdx.graphics.Texture;
+
 import de.matthiasmann.twl.Color;
-import de.matthiasmann.twl.HAlignment;
 import de.matthiasmann.twl.renderer.AnimationState;
 import de.matthiasmann.twl.renderer.Font;
 import de.matthiasmann.twl.renderer.FontCache;
@@ -36,75 +41,24 @@ import de.matthiasmann.twl.renderer.FontParameter;
 import de.matthiasmann.twl.utils.StateExpression;
 
 /**
- * 
- * @author Matthias Mann
+ * @author Nathan Sweet <misc@n4te.com>
  */
 class GdxFont implements Font {
-	final GdxRenderer renderer;
+	final TwlRenderer renderer;
 	final BitmapFont bitmapFont;
 	private final FontState[] fontStates;
-	private int[] multiLineInfo;
 
-	GdxFont (GdxRenderer renderer, BitmapFont font, Map<String, String> params, Collection<FontParameter> condParams) {
+	public GdxFont (TwlRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
+		this.bitmapFont = bitmapFont;
 		this.renderer = renderer;
-		this.bitmapFont = font;
-		font.font = this;
-
 		ArrayList<FontState> states = new ArrayList<FontState>();
 		for (FontParameter p : condParams) {
 			HashMap<String, String> effective = new HashMap<String, String>(params);
 			effective.putAll(p.getParams());
-			states.add(createFontState(p.getCondition(), effective));
+			states.add(new FontState(p.getCondition(), effective));
 		}
-		states.add(createFontState(null, params));
+		states.add(new FontState(null, params));
 		this.fontStates = states.toArray(new FontState[states.size()]);
-	}
-
-	private FontState createFontState (StateExpression cond, Map<String, String> params) {
-		String colorStr = params.get("color");
-		if (colorStr == null) {
-			throw new IllegalArgumentException("color needs to be defined");
-		}
-		int offsetX = parseInt(params.get("offsetX"), 0);
-		int offsetY = parseInt(params.get("offsetY"), 0);
-		int underlineOffset = parseInt(params.get("underlineOffset"), 0);
-		Color color = Color.parserColor(colorStr);
-		if (color == null) {
-			throw new IllegalArgumentException("unknown color name");
-		}
-		FontState p = new FontState(cond, color, offsetX, offsetY, underlineOffset);
-		return p;
-	}
-
-	private static int parseInt (String valueStr, int defaultValue) {
-		if (valueStr == null) {
-			return defaultValue;
-		}
-		return Integer.parseInt(valueStr);
-	}
-
-	private static boolean parseBoolean (String valueStr) {
-		if (valueStr == null) {
-			return false;
-		}
-		return Boolean.parseBoolean(valueStr);
-	}
-
-	FontState evalFontState (AnimationState as) {
-		int i = 0;
-		for (int n = fontStates.length - 1; i < n; i++) {
-			if (fontStates[i].condition.evaluate(as)) {
-				break;
-			}
-		}
-		return fontStates[i];
-	}
-
-	private int[] getMultiLineInfo (int numLines) {
-		if (multiLineInfo == null || multiLineInfo.length < numLines) {
-			multiLineInfo = new int[numLines];
-		}
-		return multiLineInfo;
 	}
 
 	public int drawText (AnimationState as, int x, int y, CharSequence str) {
@@ -112,80 +66,54 @@ class GdxFont implements Font {
 	}
 
 	public int drawText (AnimationState as, int x, int y, CharSequence str, int start, int end) {
+		y = Gdx.graphics.getHeight() - y;
 		FontState fontState = evalFontState(as);
 		x += fontState.offsetX;
 		y += fontState.offsetY;
-		int width;
-		if (!bitmapFont.prepare()) {
-			return 0;
-		}
-		try {
-			renderer.tintStack.setColor(fontState.color);
-			width = bitmapFont.drawText(x, y, str, start, end);
-		} finally {
-			bitmapFont.cleanup();
-		}
-		return width;
+		com.badlogic.gdx.graphics.Color color = renderer.getColor(fontState.color);
+		return bitmapFont.draw(renderer.spriteBatch, str, x, y, color);
 	}
 
-	public int drawMultiLineText (AnimationState as, int x, int y, CharSequence str, int width, HAlignment align) {
+	public int drawMultiLineText (AnimationState as, int x, int y, CharSequence str, int width,
+		de.matthiasmann.twl.HAlignment align) {
+		y = Gdx.graphics.getHeight() - y;
 		FontState fontState = evalFontState(as);
 		x += fontState.offsetX;
 		y += fontState.offsetY;
-		int numLines;
-		if (!bitmapFont.prepare()) {
-			return 0;
-		}
-		try {
-			renderer.tintStack.setColor(fontState.color);
-			numLines = bitmapFont.drawMultiLineText(x, y, str, width, align);
-		} finally {
-			bitmapFont.cleanup();
-		}
-		return numLines * bitmapFont.getLineHeight();
+		com.badlogic.gdx.graphics.Color color = renderer.getColor(fontState.color);
+		return bitmapFont.drawMultiLineText(renderer.spriteBatch, str, x, y, color, width, HAlignment.values()[align.ordinal()]);
 	}
 
-	public int computeVisibleGlpyhs (CharSequence str, int start, int end, int availWidth) {
-		return bitmapFont.computeVisibleGlpyhs(str, start, end, availWidth);
+	public FontCache cacheText (FontCache cache, CharSequence str) {
+		return cacheText(cache, str, 0, str.length());
 	}
 
-	public int computeTextWidth (CharSequence str) {
-		return bitmapFont.computeTextWidth(str, 0, str.length());
+	public FontCache cacheText (FontCache cache, CharSequence str, int start, int end) {
+		if (cache == null) cache = new GdxFontCache(this, str.length());
+		return (GdxFontCache)bitmapFont
+			.cacheText((GdxFontCache)cache, str, 0, 0, com.badlogic.gdx.graphics.Color.WHITE, start, end);
 	}
 
-	public int computeTextWidth (CharSequence str, int start, int end) {
-		return bitmapFont.computeTextWidth(str, start, end);
+	public FontCache cacheMultiLineText (FontCache cache, CharSequence str, int width, de.matthiasmann.twl.HAlignment align) {
+		if (cache == null) cache = new GdxFontCache(this, str.length());
+		return (GdxFontCache)bitmapFont.cacheMultiLineText((GdxFontCache)cache, str, 0, 0, com.badlogic.gdx.graphics.Color.WHITE,
+			width, HAlignment.values()[align.ordinal()]);
 	}
 
-	public int computeMultiLineTextWidth (CharSequence str) {
-		return bitmapFont.computeMultiLineTextWidth(str);
+	public void destroy () {
+		bitmapFont.dispose();
 	}
 
-	public FontCache cacheText (FontCache prevCache, CharSequence str) {
-		// if (true) return null;
-		return cacheText(prevCache, str, 0, str.length());
-	}
-
-	public FontCache cacheText (FontCache prevCache, CharSequence str, int start, int end) {
-		// if (true) return null;
-		return bitmapFont.cacheText(this, prevCache, str, start, end);
-	}
-
-	public FontCache cacheMultiLineText (FontCache prevCache, CharSequence str, int width, HAlignment align) {
-		// if (true) return null;
-		return bitmapFont.cacheMultiLineText(this, prevCache, str, width, align);
-	}
-
-	public int getSpaceWidth () {
-		return bitmapFont.getSpaceWidth();
+	public int getBaseLine () {
+		return bitmapFont.getBaseLine();
 	}
 
 	public int getLineHeight () {
 		return bitmapFont.getLineHeight();
 	}
 
-	public int getBaseLine () {
-		return bitmapFont.getBaseLine();
+	public int getSpaceWidth () {
+		return bitmapFont.getSpaceWidth();
 	}
 
 	public int getEM () {
@@ -196,23 +124,66 @@ class GdxFont implements Font {
 		return bitmapFont.getEX();
 	}
 
-	public void destroy () {
-		bitmapFont.destroy();
+	public int computeMultiLineTextWidth (CharSequence str) {
+		return bitmapFont.computeMultiLineTextWidth(str);
 	}
 
-	static class FontState {
+	public int computeTextWidth (CharSequence str) {
+		return bitmapFont.computeTextWidth(str);
+	}
+
+	public int computeTextWidth (CharSequence str, int start, int end) {
+		return bitmapFont.computeTextWidth(str, start, end);
+	}
+
+	public int computeVisibleGlpyhs (CharSequence str, int start, int end, int width) {
+		return bitmapFont.computeVisibleGlpyhs(str, start, end, width);
+	}
+
+	FontState evalFontState (AnimationState animationState) {
+		int i = 0;
+		for (int n = fontStates.length - 1; i < n; i++)
+			if (fontStates[i].condition.evaluate(animationState)) break;
+		return fontStates[i];
+	}
+
+	static private class FontState {
 		final StateExpression condition;
 		final Color color;
 		final int offsetX;
 		final int offsetY;
-		final int underlineOffset;
 
-		public FontState (StateExpression condition, Color color, int offsetX, int offsetY, int underlineOffset) {
+		public FontState (StateExpression condition, Map<String, String> params) {
 			this.condition = condition;
-			this.color = color;
-			this.offsetX = offsetX;
-			this.offsetY = offsetY;
-			this.underlineOffset = underlineOffset;
+			String colorStr = params.get("color");
+			if (colorStr == null) throw new IllegalArgumentException("Color must be defined.");
+			color = Color.parserColor(colorStr);
+			if (color == null) throw new IllegalArgumentException("Unknown color name: " + colorStr);
+			String value = params.get("offsetX");
+			offsetX = value == null ? 0 : Integer.parseInt(value);
+			value = params.get("offsetY");
+			offsetY = value == null ? 0 : Integer.parseInt(value);
+		}
+	}
+
+	static private class GdxFontCache extends BitmapFontCache implements FontCache {
+		private final GdxFont font;
+
+		public GdxFontCache (GdxFont font, int glyphCount) {
+			super(font.bitmapFont.getTexture(), glyphCount);
+			this.font = font;
+		}
+
+		public void draw (AnimationState as, int x, int y) {
+			y = Gdx.graphics.getHeight() - y;
+			GdxFont.FontState fontState = font.evalFontState(as);
+			TwlRenderer renderer = font.renderer;
+			setColor(renderer.getColor(fontState.color));
+			setPosition(x + fontState.offsetX, y + fontState.offsetY);
+			draw(renderer.spriteBatch);
+		}
+
+		public void destroy () {
 		}
 	}
 }

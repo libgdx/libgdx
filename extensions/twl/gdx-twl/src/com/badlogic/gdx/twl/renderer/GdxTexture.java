@@ -45,10 +45,10 @@ class GdxTexture implements Texture, Resource {
 		}
 	}
 
-	final GdxRenderer renderer;
-	private com.badlogic.gdx.graphics.Texture texture;
+	final TwlRenderer renderer;
+	final com.badlogic.gdx.graphics.Texture texture;
 
-	public GdxTexture (GdxRenderer renderer, String path) {
+	public GdxTexture (TwlRenderer renderer, String path) {
 		this.renderer = renderer;
 		if (path.charAt(0) == '/') path = path.substring(1);
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(path, FileType.Internal), TextureFilter.Linear,
@@ -67,9 +67,10 @@ class GdxTexture implements Texture, Resource {
 		return texture.getHeight();
 	}
 
+	// BOZO
 	boolean bind (Color color) {
 		texture.bind();
-		renderer.tintStack.setColor(color);
+		//renderer.tintStack.setColor(color);
 		return true;
 	}
 

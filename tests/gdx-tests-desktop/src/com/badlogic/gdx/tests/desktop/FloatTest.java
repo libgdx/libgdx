@@ -21,7 +21,7 @@ public class FloatTest
 {
 	public static void main( String[] argv )
 	{
-		JoglApplication app = new JoglApplication( "Float Test", 480, 320, false);
-		app.getGraphics().setRenderListener( new com.badlogic.gdx.tests.FloatTest() );
+		JoglApplication app = new JoglApplication( "BitmapFont Test", 480, 320, false);
+		app.getGraphics().setRenderListener( new com.badlogic.gdx.tests.BitmapFontTest() );
 	}
 }

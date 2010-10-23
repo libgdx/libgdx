@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+ * Copyright 2010 mzechner
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.files;
+package com.badlogic.gdx;
 
-import java.io.InputStream;
+import android.os.Bundle;
 
-/**
- * A file handle represents a system dependant representation of an
- * internal or external file. FileHandles can only be created via
- * a {@link Files} instance.
- * 
- * @author mzechner
- *
- */
-public interface FileHandle 
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
+public class BitmapFontTest extends AndroidApplication
 {
-	public InputStream getInputStream ();
+	public void onCreate( Bundle bundle )
+	{
+		super.onCreate( bundle );
+		initialize( false );
+		getGraphics().setRenderListener( new com.badlogic.gdx.tests.BitmapFontTest() );
+	}
 }

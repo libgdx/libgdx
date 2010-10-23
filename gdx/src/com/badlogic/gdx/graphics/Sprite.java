@@ -5,12 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.MathUtils;
 
 /**
- * Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A
- * Sprite has a position and a size given as width and height. The position is relative to the origin of
- * the coordinate system specified via {@link SpriteBatch#begin()} and the respective matrices. A Sprite is
- * always rectangular and its position (x, y) are located in the bottom left corner of that rectangle. A Sprite
- * also has an origin around which rotations and scaling are performed. The origin is given relative to the
- * bottom left corner of the Sprite. Texture information is given as pixels and is always relative to texture space.
+ * Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A Sprite has a position
+ * and a size given as width and height. The position is relative to the origin of the coordinate system specified via
+ * {@link SpriteBatch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
+ * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed. The
+ * origin is given relative to the bottom left corner of the Sprite. Texture information is given as pixels and is always relative
+ * to texture space.
  * 
  * @author mzechner
  * @author Nathan Sweet <misc@n4te.com>
@@ -263,7 +263,7 @@ public class Sprite {
 		dirty = true;
 	}
 
-	protected final void computeVertices (final float[] out, final int offset) {
+	public void draw (SpriteBatch spriteBatch) {
 		if (dirty) {
 			dirty = false;
 
@@ -295,7 +295,7 @@ public class Sprite {
 			vertices[X4] = x1 + (x3 - x2);
 			vertices[Y4] = y3 - (y2 - y1);
 		}
-		System.arraycopy(vertices, 0, out, offset, 20);
+		spriteBatch.draw(texture, vertices, 0, 20);
 	}
 
 	public Texture getTexture () {

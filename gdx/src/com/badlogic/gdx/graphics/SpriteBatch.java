@@ -608,32 +608,28 @@ public  class SpriteBatch
 		if( idx == vertices.length )
 			renderMesh();
 	}			
-	
-	/**
-	 * Draws the given {@link Sprite}
-	 * @param sprite the sprite
-	 */
-	public void draw( Sprite sprite )
+
+	public void draw( Texture texture, float[] spriteVertices, int offset, int length )
 	{
 		if( !drawing )
 			throw new IllegalStateException( "you have to call SpriteBatch.begin() first" );
 		
-		if( sprite.texture != lastTexture )
+		if( texture != lastTexture )
 		{		
 			renderMesh( );
-			lastTexture = sprite.texture;
-			invTexWidth = 1.0f / sprite.texture.getWidth();
-			invTexHeight = 1.0f / sprite.texture.getHeight();
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
 		}
 		
 		useTextBlend = false;
-		
-		sprite.computeVertices( vertices, idx );
-		idx += 20;
-		
-		if( idx == vertices.length )
+
+		if( idx + length >= vertices.length )
 			renderMesh();
-	}	
+
+		System.arraycopy(spriteVertices, offset, vertices, idx, length);
+		idx += length;
+	}
 
 	protected void renderMesh( )
 	{

@@ -14,7 +14,11 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
@@ -36,6 +40,14 @@ public class LwjglFileHandle implements FileHandle {
 	 */
 	public File getFile () {
 		return file;
+	}
+
+	public InputStream getInputStream () {
+		try {
+			return new FileInputStream(file);
+		} catch (FileNotFoundException ex) {
+			throw new GdxRuntimeException("Error reading file: " + file);
+		}
 	}
 
 	public String toString () {
