@@ -24,7 +24,6 @@ package com.badlogic.gdx.twl.renderer;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -35,18 +34,8 @@ import de.matthiasmann.twl.renderer.Resource;
 import de.matthiasmann.twl.renderer.Texture;
 
 class GdxTexture implements Texture, Resource {
-	public enum Filter {
-		NEAREST(GL10.GL_NEAREST), LINEAR(GL10.GL_LINEAR);
-
-		final int glValue;
-
-		Filter (int value) {
-			this.glValue = value;
-		}
-	}
-
-	final TwlRenderer renderer;
-	final com.badlogic.gdx.graphics.Texture texture;
+	private final TwlRenderer renderer;
+	private final com.badlogic.gdx.graphics.Texture texture;
 
 	public GdxTexture (TwlRenderer renderer, String path) {
 		this.renderer = renderer;
@@ -55,8 +44,21 @@ class GdxTexture implements Texture, Resource {
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
-	public void destroy () {
-		texture.dispose();
+	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled) {
+		if (x < 0 || x >= getWidth()) throw new IllegalArgumentException("x");
+		if (y < 0 || y >= getHeight()) throw new IllegalArgumentException("y");
+		if (x + Math.abs(width) > getWidth()) throw new IllegalArgumentException("width");
+		if (y + Math.abs(height) > getHeight()) throw new IllegalArgumentException("height");
+		if (tiled && (width <= 0 || height <= 0))
+			throw new IllegalArgumentException("Tiled rendering requires positive width & height.");
+		return new GdxImage(renderer, texture, x, y, width, height, tintColor, tiled);
+	}
+
+	public MouseCursor createCursor (int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) {
+		return null;
+	}
+
+	public void themeLoadingDone () {
 	}
 
 	public int getWidth () {
@@ -67,41 +69,7 @@ class GdxTexture implements Texture, Resource {
 		return texture.getHeight();
 	}
 
-	// BOZO
-	boolean bind (Color color) {
-		texture.bind();
-		// renderer.tintStack.setColor(color);
-		return true;
-	}
-
-	boolean bind () {
-		texture.bind();
-		return true;
-	}
-
-	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled) {
-		if (x < 0 || x >= getWidth()) {
-			throw new IllegalArgumentException("x");
-		}
-		if (y < 0 || y >= getHeight()) {
-			throw new IllegalArgumentException("y");
-		}
-		if (x + Math.abs(width) > getWidth()) {
-			throw new IllegalArgumentException("width");
-		}
-		if (y + Math.abs(height) > getHeight()) {
-			throw new IllegalArgumentException("height");
-		}
-		if (tiled && (width <= 0 || height <= 0)) {
-			throw new IllegalArgumentException("Tiled rendering requires positive width & height");
-		}
-		return new TextureArea(this, x, y, width, height, tintColor, tiled);
-	}
-
-	public MouseCursor createCursor (int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) {
-		return null;
-	}
-
-	public void themeLoadingDone () {
+	public void destroy () {
+		texture.dispose();
 	}
 }

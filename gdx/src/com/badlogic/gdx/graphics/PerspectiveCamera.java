@@ -167,7 +167,7 @@ public final class PerspectiveCamera {
 	public void setMatrices () {
 		setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		update();
-		GL10 gl = Gdx.graphics.getGL10();
+		GL10 gl = Gdx.gl10;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadMatrixf(getCombinedMatrix().val, 0);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);

@@ -19,6 +19,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
@@ -200,6 +201,11 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 			}
 			gl = gl10;
 		}
+
+		Gdx.gl = gl;
+		Gdx.gl10 = gl10;
+		Gdx.gl11 = gl11;
+		Gdx.gl20 = gl20;
 
 		lastTime = System.nanoTime();
 	}

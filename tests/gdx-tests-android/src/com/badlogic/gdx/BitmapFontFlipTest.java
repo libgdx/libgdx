@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+ * Copyright 2010 mzechner
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -11,13 +11,16 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.desktop;
+package com.badlogic.gdx;
 
-import com.badlogic.gdx.backends.desktop.JoglApplication;
+import android.os.Bundle;
 
-public class BitmapFontTest {
-	public static void main (String[] argv) {
-		JoglApplication app = new JoglApplication("BitmapFont Flip Test", 480, 320, false);
-		app.getGraphics().setRenderListener(new com.badlogic.gdx.tests.BitmapFontTest());
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
+public class BitmapFontFlipTest extends AndroidApplication {
+	public void onCreate (Bundle bundle) {
+		super.onCreate(bundle);
+		initialize(false);
+		getGraphics().setRenderListener(new com.badlogic.gdx.tests.BitmapFontFlipTest());
 	}
 }

@@ -70,7 +70,7 @@ public class TextAreaTest implements RenderListener {
 	}
 
 	public void render () {
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gui.update();
 	}
 

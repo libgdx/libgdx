@@ -172,7 +172,7 @@ public class ImmediateModeRenderer {
 	public void end () {
 		if (idxPos == 0) return;
 
-		GL10 gl = Gdx.graphics.getGL10();
+		GL10 gl = Gdx.gl10;
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		positionsBuffer.clear();
 		positionsBuffer.put(positions, 0, idxPos);

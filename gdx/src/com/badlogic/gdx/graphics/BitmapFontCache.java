@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.graphics.BitmapFont.Glyph;
+
 /**
  * A BitmapFontCache caches glyph geometry produced by a call to one of the
  * {@link BitmapFont#cacheText(BitmapFontCache, CharSequence, int, int, Color)} methods. It caches the glyph geometry, providing a
@@ -13,7 +15,6 @@ package com.badlogic.gdx.graphics;
 public class BitmapFontCache {
 	private final Texture texture;
 	private float[] vertices;
-	private final float invTexWidth, invTexHeight;
 	private int idx;
 	int width, height;
 	private float x, y;
@@ -21,8 +22,6 @@ public class BitmapFontCache {
 
 	BitmapFontCache (Texture texture) {
 		this.texture = texture;
-		invTexWidth = 1.0f / texture.getWidth();
-		invTexHeight = 1.0f / texture.getHeight();
 	}
 
 	/**
@@ -76,14 +75,15 @@ public class BitmapFontCache {
 			vertices[i] = color;
 	}
 
-	void addGlyph (float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint) {
-		final float x2 = x + srcWidth;
-		final float y2 = y + srcHeight;
-		final float u = srcX * invTexWidth;
-		final float v = (srcY + srcHeight) * invTexHeight;
-		final float u2 = (srcX + srcWidth) * invTexWidth;
-		final float v2 = srcY * invTexHeight;
-		final float color = tint.toFloatBits();
+	void addGlyph (Glyph glyph, float x, float y, float color) {
+		x += glyph.xoffset;
+		y += glyph.yoffset;
+		final float x2 = x + glyph.width;
+		final float y2 = y + glyph.height;
+		final float u = glyph.u;
+		final float u2 = glyph.u2;
+		final float v = glyph.v;
+		final float v2 = glyph.v2;
 
 		float[] vertices = this.vertices;
 		vertices[idx++] = x;

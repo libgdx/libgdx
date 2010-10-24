@@ -23,6 +23,7 @@ public class Sprite {
 	private float originX, originY;
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
+	private Color color = new Color(1, 1, 1, 1);
 	private boolean dirty;
 
 	/**
@@ -48,8 +49,8 @@ public class Sprite {
 		this.texture = texture;
 		setTextureRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
-		setBounds(0, 0, srcWidth, srcHeight);
-		setOrigin(srcWidth / 2, srcHeight / 2);
+		setBounds(0, 0, Math.abs(srcWidth), Math.abs(srcHeight));
+		setOrigin(width / 2, height / 2);
 	}
 
 	/**
@@ -146,7 +147,7 @@ public class Sprite {
 	 */
 	public void setTextureRepeat (boolean x, boolean y) {
 		texture.bind();
-		GL10 gl = Gdx.graphics.getGL10();
+		GL10 gl = Gdx.gl10;
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
 	}
@@ -200,6 +201,7 @@ public class Sprite {
 	}
 
 	public void setColor (Color tint) {
+		this.color = tint;
 		float color = tint.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
@@ -209,6 +211,10 @@ public class Sprite {
 	}
 
 	public void setColor (float r, float g, float b, float a) {
+		color.r = r;
+		color.g = g;
+		color.b = b;
+		color.a = a;
 		int intBits = ((int)(255 * a) << 24) | //
 			((int)(255 * b) << 16) | //
 			((int)(255 * g) << 8) | //
@@ -336,6 +342,10 @@ public class Sprite {
 
 	public float getScaleY () {
 		return scaleY;
+	}
+
+	public Color getColor () {
+		return color;
 	}
 
 	static private final int X1 = 0;

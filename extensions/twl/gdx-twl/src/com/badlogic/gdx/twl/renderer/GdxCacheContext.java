@@ -37,15 +37,15 @@ import de.matthiasmann.twl.renderer.CacheContext;
 
 class GdxCacheContext implements CacheContext {
 	final TwlRenderer renderer;
-	final HashMap<String, GdxTexture> textures = new HashMap();
-	final HashMap<String, BitmapFont> fonts = new HashMap();
-	boolean valid = true;
+	private final HashMap<String, GdxTexture> textures = new HashMap();
+	private final HashMap<String, BitmapFont> fonts = new HashMap();
+	private boolean valid = true;
 
 	GdxCacheContext (TwlRenderer renderer) {
 		this.renderer = renderer;
 	}
 
-	// BOZO - This URL stuff sucks.
+	// BOZO - This URL stuff sucks. Look at URLStreamHandler.
 
 	GdxTexture loadTexture (URL url) throws IOException {
 		String urlString = url.toString();
@@ -81,7 +81,7 @@ class GdxCacheContext implements CacheContext {
 			String textureFile = fontFile.endsWith(".fnt") ? fontFile.substring(0, fontFile.length() - 3) + "png" : fontFile
 				+ ".png";
 			bitmapFont = new BitmapFont(Gdx.files.getFileHandle(fontFile, FileType.Internal), Gdx.files.getFileHandle(textureFile,
-				FileType.Internal));
+				FileType.Internal), true);
 			fonts.put(urlString, bitmapFont);
 		}
 		return bitmapFont;

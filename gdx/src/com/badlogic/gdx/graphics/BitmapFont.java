@@ -36,21 +36,26 @@ public class BitmapFont {
 
 	private final Texture texture;
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private int lineHeight;
-	private int baseLine;
-	private int spaceWidth;
-	private int ex;
-	private int capHeight;
+	private final int lineHeight;
+	private final int baseLine;
+	private final int spaceWidth;
+	private final int xHeight;
+	private final int capHeight;
+	private final int yOffset;
+	private final float down;
 
 	/**
 	 * Creates a new BitmapFont instance based on a .fnt file and an image file holding the page with glyphs. Currently only
 	 * supports single page AngleCode fonts.
 	 * @param fontFile The font file
 	 * @param imageFile The image file
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
-	public BitmapFont (FileHandle fontFile, FileHandle imageFile) {
+	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
 		texture = Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
+		float invTexWidth = 1.0f / texture.getWidth();
+		float invTexHeight = 1.0f / texture.getHeight();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.getInputStream()), 512);
 		try {
@@ -85,9 +90,9 @@ public class BitmapFont {
 				} else
 					continue;
 				tokens.nextToken();
-				glyph.x = Integer.parseInt(tokens.nextToken());
+				float srcX = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
-				glyph.y = Integer.parseInt(tokens.nextToken());
+				float srcY = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
 				glyph.width = (Integer.parseInt(tokens.nextToken()));
 				tokens.nextToken();
@@ -95,9 +100,22 @@ public class BitmapFont {
 				tokens.nextToken();
 				glyph.xoffset = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
-				glyph.yoffset = glyph.height + Integer.parseInt(tokens.nextToken());
+				if (flip)
+					glyph.yoffset = Integer.parseInt(tokens.nextToken()) - lineHeight + baseLine;
+				else
+					glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
 				tokens.nextToken();
 				glyph.xadvance = Integer.parseInt(tokens.nextToken());
+
+				glyph.u = srcX * invTexWidth;
+				glyph.u2 = (srcX + glyph.width) * invTexWidth;
+				if (flip) {
+					glyph.v = srcY * invTexHeight;
+					glyph.v2 = (srcY + glyph.height) * invTexHeight;
+				} else {
+					glyph.v2 = srcY * invTexHeight;
+					glyph.v = (srcY + glyph.height) * invTexHeight;
+				}
 			}
 
 			while (true) {
@@ -121,8 +139,14 @@ public class BitmapFont {
 			Glyph g = getGlyph(' ');
 			spaceWidth = (g != null) ? g.xadvance + g.width : 1;
 
-			Glyph gx = getGlyph('x');
-			ex = gx != null ? gx.height : 1;
+			g = getGlyph('x');
+			xHeight = g != null ? g.height : 1;
+			
+			g = getGlyph('M');
+			capHeight = g != null ? g.height : 1;
+
+			yOffset = flip ? 0 : lineHeight - baseLine;
+			down = flip ? 1 : -1;
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
 		} finally {
@@ -160,20 +184,21 @@ public class BitmapFont {
 	 * @param str The string
 	 * @param x The x position of the left most character
 	 * @param y The y position of the left most character's top left corner
-	 * @param color The color
+	 * @param tint The color
 	 * @param start the first character of the string to draw
 	 * @param end the last character of the string to draw
 	 * @return the width of the rendered string
 	 */
-	public int draw (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int start, int end) {
-		y += capHeight;
+	public int draw (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color tint, int start, int end) {
+		final float color = tint.toFloatBits();
+		y += yOffset;
 		int startX = x;
 		Glyph lastGlyph = null;
 		while (start < end) {
 			lastGlyph = getGlyph(str.charAt(start++));
 			if (lastGlyph != null) {
-				spriteBatch.draw(texture, x + lastGlyph.xoffset, y - lastGlyph.yoffset, lastGlyph.x, lastGlyph.y, lastGlyph.width,
-					lastGlyph.height, color);
+				spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
+					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
 				x += lastGlyph.xadvance;
 				break;
 			}
@@ -184,8 +209,8 @@ public class BitmapFont {
 			if (g != null) {
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
-				spriteBatch.draw(texture, x + lastGlyph.xoffset, y - lastGlyph.yoffset, lastGlyph.x, lastGlyph.y, lastGlyph.width,
-					lastGlyph.height, color);
+				spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
+					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
 				x += g.xadvance;
 			}
 		}
@@ -239,7 +264,7 @@ public class BitmapFont {
 			}
 			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
 			start = lineEnd + 1;
-			y -= lineHeight;
+			y += lineHeight * down;
 			numLines++;
 		}
 		return numLines * lineHeight;
@@ -299,19 +324,18 @@ public class BitmapFont {
 			}
 			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
 			start = lineEnd + 1;
-			y -= lineHeight;
+			y += lineHeight * down;
 			numLines++;
 		}
 		return numLines * lineHeight;
 	}
 
-	private void addToCache (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int start, int end) {
+	private void addToCache (BitmapFontCache cache, CharSequence str, int x, int y, float color, int start, int end) {
 		Glyph lastGlyph = null;
 		while (start < end) {
 			lastGlyph = getGlyph(str.charAt(start++));
 			if (lastGlyph != null) {
-				cache.addGlyph(x + lastGlyph.xoffset, y - lastGlyph.yoffset, lastGlyph.x, lastGlyph.y, lastGlyph.width,
-					lastGlyph.height, color);
+				cache.addGlyph(lastGlyph, x, y, color);
 				x += lastGlyph.xadvance;
 				break;
 			}
@@ -322,8 +346,7 @@ public class BitmapFont {
 			if (g != null) {
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
-				cache.addGlyph(x + lastGlyph.xoffset, y - lastGlyph.yoffset, lastGlyph.x, lastGlyph.y, lastGlyph.width,
-					lastGlyph.height, color);
+				cache.addGlyph(lastGlyph, x, y, color);
 				x += g.xadvance;
 			}
 		}
@@ -334,7 +357,7 @@ public class BitmapFont {
 	 * @return The new cache
 	 */
 	public BitmapFontCache newCache () {
-		return new BitmapFontCache(this.texture);
+		return new BitmapFontCache(texture);
 	}
 
 	/**
@@ -355,13 +378,14 @@ public class BitmapFont {
 	 * @param str The string
 	 * @param x The x position of the left most character
 	 * @param y The y position of the left most character's top left corner
-	 * @param color The color
+	 * @param tint The color
 	 * @param start The first character of the string to draw
 	 * @param end The last character of the string to draw
 	 */
-	public void cacheText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int start, int end) {
+	public void cacheText (BitmapFontCache cache, CharSequence str, int x, int y, Color tint, int start, int end) {
+		final float color = tint.toFloatBits();
 		cache.reset(end - start);
-		y += capHeight;
+		y += yOffset;
 		addToCache(cache, str, x, y, color, start, end);
 		cache.width = x;
 		cache.height = lineHeight;
@@ -391,12 +415,14 @@ public class BitmapFont {
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
 	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
+	 * @param tint The color
 	 * @param alignmentWidth The alignment width
 	 * @param alignment The horizontal alignment
 	 */
-	public void cacheMultiLineText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int alignmentWidth,
+	public void cacheMultiLineText (BitmapFontCache cache, CharSequence str, int x, int y, Color tint, int alignmentWidth,
 		HAlignment alignment) {
+		final float color = tint.toFloatBits();
+		y += yOffset;
 		int length = str.length();
 		cache.reset(length);
 		int start = 0;
@@ -411,7 +437,7 @@ public class BitmapFont {
 			}
 			addToCache(cache, str, x + xOffset, y, color, start, lineEnd);
 			start = lineEnd + 1;
-			y -= lineHeight;
+			y += lineHeight * down;
 			numLines++;
 		}
 		cache.width = alignmentWidth;
@@ -421,7 +447,7 @@ public class BitmapFont {
 	/**
 	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
 	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
-	 * at spaces based on the given <code>wrapWidth</code>.
+	 * at spaces based on the given <code>wrapWidth</code>. The wrapped text is left aligned.
 	 * @param cache The cache
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
@@ -444,11 +470,13 @@ public class BitmapFont {
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
 	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
+	 * @param tint The color
 	 * @param wrapWidth The wrap width
 	 */
-	public void cacheWrappedText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int wrapWidth,
+	public void cacheWrappedText (BitmapFontCache cache, CharSequence str, int x, int y, Color tint, int wrapWidth,
 		HAlignment alignment) {
+		final float color = tint.toFloatBits();
+		y += yOffset;
 		int length = str.length();
 		cache.reset(length);
 		int start = 0;
@@ -471,7 +499,7 @@ public class BitmapFont {
 			}
 			addToCache(cache, str, x + xOffset, y, color, start, lineEnd);
 			start = lineEnd + 1;
-			y -= lineHeight;
+			y += lineHeight * down;
 			numLines++;
 		}
 		cache.width = wrapWidth;
@@ -591,7 +619,7 @@ public class BitmapFont {
 	 * @return The x-height, which is the typical height of lowercase characters
 	 */
 	public int getXHeight () {
-		return ex;
+		return xHeight;
 	}
 
 	/**
@@ -609,8 +637,8 @@ public class BitmapFont {
 	}
 
 	static class Glyph {
-		int x, y;
 		int width, height;
+		float u, v, u2, v2;
 		int xoffset, yoffset;
 		int xadvance;
 		byte[][] kerning;

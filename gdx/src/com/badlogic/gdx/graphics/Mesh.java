@@ -527,7 +527,7 @@ public class Mesh {
 	}
 
 	private void renderVA (int primitiveType, int offset, int count) {
-		GL10 gl = Gdx.graphics.getGL10();
+		GL10 gl = Gdx.gl10;
 
 		int numAttributes = attributes.size();
 		int type = useFixedPoint ? GL11.GL_FIXED : GL11.GL_FLOAT;

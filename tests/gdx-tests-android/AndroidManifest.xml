@@ -53,6 +53,7 @@
 		<activity android:name=".FillrateTest" android:label="Fillrate Test"/>
 		<activity android:name=".AlphaTest" android:label="Alpha Test"/>
 		<activity android:name=".BitmapFontTest" android:label="BitmapFont Test"/>
+		<activity android:name=".BitmapFontFlipTest" android:label="BitmapFont Flip Test"/>
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>

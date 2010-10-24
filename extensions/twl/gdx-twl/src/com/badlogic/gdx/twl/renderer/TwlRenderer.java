@@ -12,7 +12,9 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 
 import de.matthiasmann.twl.GUI;
 import de.matthiasmann.twl.Rect;
@@ -28,8 +30,6 @@ import de.matthiasmann.twl.renderer.Texture;
 import de.matthiasmann.twl.theme.ThemeManager;
 
 public class TwlRenderer implements Renderer {
-	private final int[] temp = new int[1];
-
 	private int mouseX, mouseY;
 	private GdxCacheContext cacheContext;
 	private boolean hasScissor;
@@ -37,6 +37,10 @@ public class TwlRenderer implements Renderer {
 	private TintStack tintStack = tintStateRoot;
 	private final Color tempColor = new Color(1, 1, 1, 1);
 	final SpriteBatch spriteBatch = new SpriteBatch();
+
+	public TwlRenderer () {
+		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1));
+	}
 
 	public GdxCacheContext createNewCacheContext () {
 		return new GdxCacheContext(this);
@@ -69,20 +73,19 @@ public class TwlRenderer implements Renderer {
 	public void endRendering () {
 		spriteBatch.end();
 		if (hasScissor) {
-			Gdx.graphics.getGL10().glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
 		}
 	}
 
 	public void setClipRect (Rect rect) {
 		if (rect == null) {
-			Gdx.graphics.getGL10().glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
 		} else {
-			GL10 gl = Gdx.graphics.getGL10();
-			gl.glScissor(rect.getX(), Gdx.graphics.getHeight() - rect.getBottom(), rect.getWidth(), rect.getHeight());
+			Gdx.gl.glScissor(rect.getX(), Gdx.graphics.getHeight() - rect.getBottom(), rect.getWidth(), rect.getHeight());
 			if (!hasScissor) {
-				gl.glEnable(GL10.GL_SCISSOR_TEST);
+				Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 				hasScissor = true;
 			}
 		}

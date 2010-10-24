@@ -202,7 +202,7 @@ public class SpriteBatch {
 		renderCalls = 0;
 
 		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.graphics.getGL10();
+			GL10 gl = Gdx.gl10;
 			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			gl.glDisable(GL10.GL_LIGHTING);
 			gl.glDisable(GL10.GL_DEPTH_TEST);
@@ -219,7 +219,7 @@ public class SpriteBatch {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-			GL20 gl = Gdx.graphics.getGL20();
+			GL20 gl = Gdx.gl20;
 			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			gl.glDisable(GL20.GL_DEPTH_TEST);
 			gl.glDisable(GL20.GL_CULL_FACE);
@@ -248,13 +248,13 @@ public class SpriteBatch {
 		drawing = false;
 
 		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.graphics.getGL10();
+			GL10 gl = Gdx.gl10;
 			gl.glDepthMask(true);
 			gl.glDisable(GL10.GL_BLEND);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
 		} else {
 			shader.end();
-			GL20 gl = Gdx.graphics.getGL20();
+			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(true);
 			gl.glDisable(GL20.GL_BLEND);
 			gl.glDisable(GL20.GL_TEXTURE_2D);
@@ -562,6 +562,61 @@ public class SpriteBatch {
 		if (idx == vertices.length) renderMesh();
 	}
 
+	/**
+	 * Draws a rectangle with the top left corner at x,y having the given width and height in pixels. The portion of the
+	 * {@link Texture} given by u, v and u2, v2 are used. These coordinates and sizes are given in texture size percentage. The
+	 * rectangle will have the given tint {@link Color}.
+	 * 
+	 * @param texture the Texture
+	 * @param x the x-coordinate in screen space
+	 * @param y the y-coordinate in screen space
+	 * @param srcWidth the source with in texels
+	 * @param srcHeight the source height in texels
+	 * @param color the tint Color
+	 */
+	public void draw (Texture texture, float x, float y, int srcWidth, int srcHeight, float u, float v, float u2, float v2,
+		float color) {
+		if (!drawing) throw new IllegalStateException("you have to call SpriteBatch.begin() first");
+
+		if (texture != lastTexture) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		}
+
+		useTextBlend = false;
+
+		final float fx2 = x + srcWidth;
+		final float fy2 = y + srcHeight;
+
+		vertices[idx++] = x;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v;
+
+		vertices[idx++] = x;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v;
+
+		if (idx == vertices.length) renderMesh();
+	}
+
 	public void draw (Texture texture, float[] spriteVertices, int offset, int length) {
 		if (!drawing) throw new IllegalStateException("you have to call SpriteBatch.begin() first");
 
@@ -590,29 +645,29 @@ public class SpriteBatch {
 
 		if (Gdx.graphics.isGL20Available()) {
 			if (useTextBlend) {
-				Gdx.graphics.getGL20().glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-				Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
+				GL20 gl20 = Gdx.gl20;
+				gl20.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+				gl20.glEnable(GL20.GL_BLEND);
+			} else if (blendingDisabled) {
+				Gdx.gl20.glDisable(GL20.GL_BLEND);
 			} else {
-				if (blendingDisabled) {
-					Gdx.graphics.getGL20().glDisable(GL20.GL_BLEND);
-				} else {
-					Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-					Gdx.graphics.getGL20().glBlendFunc(blendSrcFunc, blendDstFunc);
-				}
+				GL20 gl20 = Gdx.gl20;
+				gl20.glEnable(GL20.GL_BLEND);
+				gl20.glBlendFunc(blendSrcFunc, blendDstFunc);
 			}
 
 			mesh.render(shader, GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		} else {
 			if (useTextBlend) {
-				Gdx.graphics.getGL10().glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-				Gdx.graphics.getGL10().glEnable(GL10.GL_BLEND);
+				GL10 gl10 = Gdx.gl10;
+				gl10.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+				gl10.glEnable(GL10.GL_BLEND);
+			} else if (blendingDisabled) {
+				Gdx.gl10.glDisable(GL10.GL_BLEND);
 			} else {
-				if (blendingDisabled) {
-					Gdx.graphics.getGL10().glDisable(GL10.GL_BLEND);
-				} else {
-					Gdx.graphics.getGL10().glEnable(GL10.GL_BLEND);
-					Gdx.graphics.getGL10().glBlendFunc(blendSrcFunc, blendDstFunc);
-				}
+				GL10 gl10 = Gdx.gl10;
+				gl10.glEnable(GL10.GL_BLEND);
+				gl10.glBlendFunc(blendSrcFunc, blendDstFunc);
 			}
 			mesh.render(GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		}

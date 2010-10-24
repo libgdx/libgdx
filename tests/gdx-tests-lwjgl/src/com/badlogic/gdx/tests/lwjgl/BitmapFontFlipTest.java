@@ -11,13 +11,13 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.desktop;
+package com.badlogic.gdx.tests.lwjgl;
 
-import com.badlogic.gdx.backends.desktop.JoglApplication;
+import com.badlogic.gdx.backends.desktop.LwjglApplication;
 
-public class BitmapFontTest {
+public class BitmapFontFlipTest {
 	public static void main (String[] argv) {
-		JoglApplication app = new JoglApplication("BitmapFont Flip Test", 480, 320, false);
-		app.getGraphics().setRenderListener(new com.badlogic.gdx.tests.BitmapFontTest());
+		LwjglApplication app = new LwjglApplication("BitmapFont Flip Test", 480, 320, false);
+		app.getGraphics().setRenderListener(new com.badlogic.gdx.tests.BitmapFontFlipTest());
 	}
 }

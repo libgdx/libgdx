@@ -29,7 +29,7 @@ public class GDXTester extends ListActivity {
 		"Performance Test", "Mesh Shader Test", "SpriteBatch Test", "SpriteBatch Shader Test", "FrameBuffer Test",
 		"SpriteBatch Rotation Test", "Box2D Test", "Audio Recorder Test", "Box2D Test Collection", "Resources Test", "MD5 Test",
 		"Micro Benchmarks", "Multitouch Test", "BufferUtils Test", "Terrain Test", "Water Ripples", "Stage Test", "Windowed Test",
-		"Fillrate Test", "Alpha Test", "BitmapFont Test"};
+		"Fillrate Test", "Alpha Test", "BitmapFont Test", "BitmapFont Flip Test"};
 
 	@Override public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,6 +82,7 @@ public class GDXTester extends ListActivity {
 		if (keyword.equals(items[36])) intent = new Intent(this, FillrateTest.class);
 		if (keyword.equals(items[37])) intent = new Intent(this, AlphaTest.class);
 		if (keyword.equals(items[38])) intent = new Intent(this, BitmapFontTest.class);
+		if (keyword.equals(items[39])) intent = new Intent(this, BitmapFontFlipTest.class);
 
 		startActivity(intent);
 	}
