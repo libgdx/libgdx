@@ -123,9 +123,9 @@ public class Mesh {
 		} else {
 			useVBO = Gdx.graphics.isGL11Available() == true || Gdx.graphics.isGL20Available() == true;
 			if (useVBO) {
-				if (Gdx.app.getVersion() < 5)
-					isDirect = false;
-				else
+//				if (Gdx.app.getVersion() < 5)
+//					isDirect = false;
+//				else
 					isDirect = true;
 			} else
 				isDirect = true;
