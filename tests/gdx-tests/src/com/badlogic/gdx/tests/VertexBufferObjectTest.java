@@ -19,9 +19,10 @@ import java.nio.ShortBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class VertexBufferObjectTest implements RenderListener {
+public class VertexBufferObjectTest implements GdxTest {
 	int vboHandle;
 	int vboIndexHandle;
 
@@ -74,5 +75,10 @@ public class VertexBufferObjectTest implements RenderListener {
 	@Override public void surfaceChanged (int width, int height) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

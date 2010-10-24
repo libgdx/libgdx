@@ -21,8 +21,9 @@ import java.nio.ShortBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class VertexArrayTest implements RenderListener {
+public class VertexArrayTest implements GdxTest {
 	FloatBuffer vertices;
 	ShortBuffer indices;
 	final int BYTES_PER_VERTEX = (3 + 4) * 4;
@@ -71,5 +72,10 @@ public class VertexArrayTest implements RenderListener {
 	@Override public void surfaceChanged (int width, int height) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

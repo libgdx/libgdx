@@ -12,8 +12,9 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MeshMultitextureTest implements RenderListener {
+public class MeshMultitextureTest implements GdxTest {
 	Texture tex1;
 	Texture tex2;
 	Mesh mesh;
@@ -65,6 +66,11 @@ public class MeshMultitextureTest implements RenderListener {
 		0, 1, 0, 1, 1, 1, 1, 1, 0.5f, -0.5f, 0,
 
 		0, 0, 1, 1, 0.5f, 0, 0.5f, 0, 0, 0.5f, 0,});
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

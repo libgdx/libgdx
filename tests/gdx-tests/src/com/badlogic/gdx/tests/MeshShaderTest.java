@@ -31,8 +31,9 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MeshShaderTest implements RenderListener {
+public class MeshShaderTest implements GdxTest {
 	SpriteBatch spriteBatch;
 	Font font;
 	ShaderProgram shader;
@@ -102,6 +103,11 @@ public class MeshShaderTest implements RenderListener {
 
 	@Override public void dispose () {
 		Gdx.app.log("MeshShaderTEst", "disposed");
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

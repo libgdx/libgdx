@@ -18,8 +18,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SimpleTest implements RenderListener, InputListener, ApplicationListener {
+public class SimpleTest implements GdxTest, InputListener, ApplicationListener {
 	float r = 1, g = 0, b = 0;
 
 	@Override public void surfaceCreated () {
@@ -89,5 +90,10 @@ public class SimpleTest implements RenderListener, InputListener, ApplicationLis
 	@Override public void surfaceChanged (int width, int height) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -26,8 +26,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class TextureRenderTest implements RenderListener {
+public class TextureRenderTest implements GdxTest {
 
 	private OrthographicCamera camera;
 	private Mesh mesh;
@@ -171,6 +172,11 @@ public class TextureRenderTest implements RenderListener {
 			this.height = height;
 			this.width = width;
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

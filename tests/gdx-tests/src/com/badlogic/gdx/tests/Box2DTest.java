@@ -38,8 +38,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class Box2DTest implements RenderListener, InputListener {
+public class Box2DTest implements GdxTest, InputListener {
 	/** the camera **/
 	private OrthographicCamera camera;
 
@@ -332,6 +333,11 @@ public class Box2DTest implements RenderListener, InputListener {
 	}
 
 	@Override public boolean keyUp (int keycode) {
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

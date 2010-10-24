@@ -18,15 +18,15 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class FloatTest implements RenderListener {
+public class FloatTest implements GdxTest {
 
 	Texture tex;
 	Texture tex2;
@@ -114,5 +114,10 @@ public class FloatTest implements RenderListener {
 	@Override public void surfaceChanged (int width, int height) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

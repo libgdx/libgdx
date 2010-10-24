@@ -1,10 +1,9 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.BitmapFontCache;
 import com.badlogic.gdx.graphics.Color;
@@ -14,8 +13,9 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class BitmapFontTest implements RenderListener {
+public class BitmapFontTest implements GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private Sprite logoSprite;
@@ -118,5 +118,10 @@ public class BitmapFontTest implements RenderListener {
 	}
 
 	public void dispose () {
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

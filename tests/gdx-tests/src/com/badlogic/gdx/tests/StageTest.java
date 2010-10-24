@@ -34,8 +34,9 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.actors.Label;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class StageTest implements RenderListener, InputListener {
+public class StageTest implements GdxTest, InputListener {
 	private static final int NUM_GROUPS = 5;
 	private static final int NUM_SPRITES = (int)Math.sqrt(400 / NUM_GROUPS);
 	private static final float SPACING = 5;
@@ -223,6 +224,11 @@ public class StageTest implements RenderListener, InputListener {
 	}
 
 	@Override public boolean keyTyped (char character) {
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

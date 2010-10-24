@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
 /**
  * A simple Pong remake showing how easy it is to quickly prototype a game with libgdx.
@@ -32,7 +33,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author mzechner
  * 
  */
-public class Pong implements RenderListener {
+public class Pong implements GdxTest {
 	/** the camera **/
 	private OrthographicCamera camera;
 	/** the MeshRenderer for the paddles **/
@@ -278,5 +279,10 @@ public class Pong implements RenderListener {
 
 	@Override public void surfaceChanged (int width, int height) {
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

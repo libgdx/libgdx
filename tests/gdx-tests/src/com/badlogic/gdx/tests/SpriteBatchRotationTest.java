@@ -28,8 +28,9 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpriteBatchRotationTest implements RenderListener {
+public class SpriteBatchRotationTest implements GdxTest {
 	SpriteBatch spriteBatch;
 	Texture texture;
 	Font font;
@@ -103,5 +104,10 @@ public class SpriteBatchRotationTest implements RenderListener {
 			buffer.order(ByteOrder.nativeOrder());
 			pixelBuffer = buffer.asIntBuffer();
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -16,8 +16,9 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class InputTest implements RenderListener, InputListener {
+public class InputTest implements GdxTest, InputListener {
 	@Override public void dispose () {
 		// TODO Auto-generated method stub
 
@@ -64,6 +65,11 @@ public class InputTest implements RenderListener, InputListener {
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
 		Gdx.app.log("Input Test", "touch up: " + x + ", " + y);
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -13,24 +13,24 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FrameBuffer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.ShaderProgram;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class FrameBufferTest implements RenderListener {
+public class FrameBufferTest implements GdxTest {
 	FrameBuffer frameBuffer;
 	Mesh mesh;
 	ShaderProgram meshShader;
@@ -103,6 +103,11 @@ public class FrameBufferTest implements RenderListener {
 
 		meshShader = new ShaderProgram(vertexShader, fragmentShader);
 		if (meshShader.isCompiled() == false) throw new IllegalStateException(meshShader.getLog());
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

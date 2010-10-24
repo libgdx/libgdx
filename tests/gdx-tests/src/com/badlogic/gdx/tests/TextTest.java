@@ -14,14 +14,14 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class TextTest implements RenderListener {
+public class TextTest implements GdxTest {
 	SpriteBatch spriteBatch;
 	Font font;
 
@@ -50,5 +50,10 @@ public class TextTest implements RenderListener {
 
 	@Override public void surfaceChanged (int width, int height) {
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

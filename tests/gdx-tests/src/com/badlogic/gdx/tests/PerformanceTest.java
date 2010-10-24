@@ -19,8 +19,9 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class PerformanceTest implements RenderListener {
+public class PerformanceTest implements GdxTest {
 	boolean fixed = false;
 
 	Mesh fpMesh;
@@ -62,6 +63,11 @@ public class PerformanceTest implements RenderListener {
 			fpMesh = ModelLoader.loadObj(Gdx.files.readFile("data/heavysphere.obj", FileType.Internal), false);
 			flMesh = ModelLoader.loadObj(Gdx.files.readFile("data/heavysphere.obj", FileType.Internal), false);
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

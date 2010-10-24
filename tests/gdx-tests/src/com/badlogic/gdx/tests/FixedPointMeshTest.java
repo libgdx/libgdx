@@ -14,16 +14,16 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
 /**
  * Demonstrates the use of a {@link MeshRenderer} and a {@link Mesh} to render fixed point vertex data.
@@ -31,7 +31,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
  * @author mzechner
  * 
  */
-public class FixedPointMeshTest implements RenderListener {
+public class FixedPointMeshTest implements GdxTest {
 	/** the MeshRenderer **/
 	Mesh mesh;
 	/** the Texture **/
@@ -127,5 +127,10 @@ public class FixedPointMeshTest implements RenderListener {
 	private static int fp (float val) {
 		return (int)(val * 65536);
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

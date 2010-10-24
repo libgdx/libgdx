@@ -27,8 +27,9 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpriteBatchShaderTest implements RenderListener {
+public class SpriteBatchShaderTest implements GdxTest {
 	int SPRITES = 500;
 
 	long startTime = System.nanoTime();
@@ -126,6 +127,11 @@ public class SpriteBatchShaderTest implements RenderListener {
 			coords2[i] = (int)(Math.random() * Gdx.graphics.getWidth());
 			coords2[i + 1] = (int)(Math.random() * Gdx.graphics.getHeight());
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

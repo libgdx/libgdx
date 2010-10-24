@@ -20,8 +20,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.io.VorbisDecoder;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class VorbisTest implements RenderListener {
+public class VorbisTest implements GdxTest {
 
 	@Override public void dispose () {
 		// TODO Auto-generated method stub
@@ -56,6 +57,11 @@ public class VorbisTest implements RenderListener {
 		}
 		Gdx.app.log("Vorbis", "took " + (System.nanoTime() - start) / 1000000000.0);
 		decoder.dispose();
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -24,8 +24,9 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ObjTest implements RenderListener, InputListener {
+public class ObjTest implements GdxTest, InputListener {
 	PerspectiveCamera cam;
 	Mesh mesh;
 	Texture texture;
@@ -122,6 +123,11 @@ public class ObjTest implements RenderListener, InputListener {
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
 		// TODO Auto-generated method stub
 		return false;
 	}

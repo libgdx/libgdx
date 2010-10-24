@@ -19,8 +19,9 @@ import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SoundTest implements RenderListener, InputListener {
+public class SoundTest implements GdxTest, InputListener {
 	Sound sound;
 	Music music;
 	float volume = 1.0f;
@@ -81,6 +82,11 @@ public class SoundTest implements RenderListener, InputListener {
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

@@ -23,8 +23,9 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ManagedTest implements RenderListener {
+public class ManagedTest implements GdxTest {
 	Mesh mesh;
 	Texture texture;
 
@@ -57,6 +58,11 @@ public class ManagedTest implements RenderListener {
 
 	@Override public void surfaceChanged (int width, int height) {
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

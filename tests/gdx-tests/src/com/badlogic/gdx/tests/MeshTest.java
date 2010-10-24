@@ -24,8 +24,9 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MeshTest implements RenderListener {
+public class MeshTest implements GdxTest {
 	Mesh mesh;
 	Texture texture;
 
@@ -58,6 +59,11 @@ public class MeshTest implements RenderListener {
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

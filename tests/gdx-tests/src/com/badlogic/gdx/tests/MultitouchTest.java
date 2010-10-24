@@ -8,8 +8,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MultitouchTest implements RenderListener, InputListener {
+public class MultitouchTest implements GdxTest, InputListener {
 	ImmediateModeRenderer renderer;
 	OrthographicCamera camera;
 
@@ -80,6 +81,11 @@ public class MultitouchTest implements RenderListener, InputListener {
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
 		Gdx.app.log("Multitouch", "up: " + pointer);
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

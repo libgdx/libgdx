@@ -30,8 +30,9 @@ import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup.LinearGroupLayout;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class UITest implements RenderListener, InputListener {
+public class UITest implements GdxTest, InputListener {
 	Texture uiTexture;
 	Texture badlogic;
 	TextureAtlas atlas;
@@ -160,6 +161,11 @@ public class UITest implements RenderListener, InputListener {
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
 		ui.touchDragged(x, y, pointer);
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

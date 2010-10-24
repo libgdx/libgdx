@@ -17,8 +17,9 @@ import com.badlogic.gdx.graphics.loaders.md5.MD5Joints;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Loader;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MD5Test implements RenderListener, InputListener {
+public class MD5Test implements GdxTest, InputListener {
 	PerspectiveCamera camera;
 	MD5Model model;
 	MD5Animation anim;
@@ -146,6 +147,11 @@ public class MD5Test implements RenderListener, InputListener {
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
 		renderer.setUseJni(!renderer.isJniUsed());
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

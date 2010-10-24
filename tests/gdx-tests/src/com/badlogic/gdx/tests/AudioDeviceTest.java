@@ -16,8 +16,9 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class AudioDeviceTest implements RenderListener {
+public class AudioDeviceTest implements GdxTest {
 	Thread thread;
 	boolean stop = false;
 
@@ -66,6 +67,11 @@ public class AudioDeviceTest implements RenderListener {
 			});
 			thread.start();
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

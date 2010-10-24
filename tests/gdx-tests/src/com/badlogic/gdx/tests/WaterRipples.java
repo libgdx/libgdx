@@ -23,8 +23,9 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class WaterRipples implements RenderListener, InputListener {
+public class WaterRipples implements GdxTest, InputListener {
 	static final short WIDTH = 50;
 	static final short HEIGHT = 50;
 	static final float INV_WIDTH = 1.0f / WIDTH;
@@ -240,6 +241,11 @@ public class WaterRipples implements RenderListener, InputListener {
 
 	@Override public void surfaceChanged (int width, int height) {
 
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

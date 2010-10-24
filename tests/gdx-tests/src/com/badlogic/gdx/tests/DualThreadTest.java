@@ -4,10 +4,10 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.PauseableThread;
 
-public class DualThreadTest implements ApplicationListener, RenderListener, InputListener {
+public class DualThreadTest implements ApplicationListener, GdxTest, InputListener {
 	PauseableThread gameLoop;
 
 	@Override public void surfaceCreated () {
@@ -79,6 +79,11 @@ public class DualThreadTest implements ApplicationListener, RenderListener, Inpu
 			gameLoop.onResume();
 		else
 			gameLoop.onPause();
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

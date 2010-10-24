@@ -1,19 +1,19 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class FillrateTest implements RenderListener, InputListener {
+public class FillrateTest implements GdxTest, InputListener {
 	Texture texture;
 	Mesh mesh;
 	int numFills = 1;
@@ -141,6 +141,11 @@ public class FillrateTest implements RenderListener, InputListener {
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -11,8 +11,9 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class AlphaTest implements RenderListener {
+public class AlphaTest implements GdxTest {
 	SpriteBatch batch;
 	Texture texture;
 
@@ -42,5 +43,9 @@ public class AlphaTest implements RenderListener {
 		texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 		batch = new SpriteBatch();
+	}
+
+	@Override public boolean needsGL20 () {
+		return false;
 	}
 }

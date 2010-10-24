@@ -22,8 +22,9 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.KissFFT;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class Mpg123Test implements RenderListener {
+public class Mpg123Test implements GdxTest {
 
 	@Override public void dispose () {
 		// TODO Auto-generated method stub
@@ -71,6 +72,11 @@ public class Mpg123Test implements RenderListener {
 // });
 // thread.setPriority(Thread.MAX_PRIORITY);
 // thread.start();
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

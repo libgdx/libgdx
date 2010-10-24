@@ -17,6 +17,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
 /**
  * A simple test to demonstrate the life cycle of an application and a RenderListener.
@@ -24,7 +25,7 @@ import com.badlogic.gdx.graphics.GL10;
  * @author mzechner
  * 
  */
-public class LifeCycleTest implements ApplicationListener, RenderListener {
+public class LifeCycleTest implements ApplicationListener, GdxTest {
 
 	@Override public void destroy () {
 		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app destroyed");
@@ -55,6 +56,11 @@ public class LifeCycleTest implements ApplicationListener, RenderListener {
 		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", renderer surface created: " + Gdx.graphics.getWidth()
 			+ "x" + Gdx.graphics.getHeight());
 		System.out.println(Gdx.graphics.getGL10().glGetString(GL10.GL_VERSION));
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

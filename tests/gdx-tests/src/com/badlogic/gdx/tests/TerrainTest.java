@@ -6,7 +6,6 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
@@ -17,8 +16,9 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class TerrainTest implements RenderListener {
+public class TerrainTest implements GdxTest {
 	ImmediateModeRenderer renderer;
 	TerrainChunk chunk;
 	Mesh mesh;
@@ -179,5 +179,10 @@ public class TerrainTest implements RenderListener {
 				i4 = (short)(row + pitch);
 			}
 		}
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

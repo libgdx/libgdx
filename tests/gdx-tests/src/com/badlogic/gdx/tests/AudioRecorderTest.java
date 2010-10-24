@@ -15,13 +15,13 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class AudioRecorderTest implements RenderListener, ApplicationListener {
+public class AudioRecorderTest implements GdxTest, ApplicationListener {
 	short[] samples = new short[1024 * 4];
 	AudioDevice device;
 	AudioRecorder recorder;
@@ -81,5 +81,10 @@ public class AudioRecorderTest implements RenderListener, ApplicationListener {
 	@Override public void resume () {
 		device = Gdx.audio.newAudioDevice(true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

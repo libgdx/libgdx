@@ -21,8 +21,9 @@ import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ImmediateModeRendererTest implements RenderListener {
+public class ImmediateModeRendererTest implements GdxTest {
 	ImmediateModeRenderer renderer;
 	Texture texture;
 
@@ -56,6 +57,11 @@ public class ImmediateModeRendererTest implements RenderListener {
 
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

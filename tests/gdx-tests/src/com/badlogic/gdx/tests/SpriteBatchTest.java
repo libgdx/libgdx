@@ -28,8 +28,9 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpriteBatchTest implements RenderListener, InputListener {
+public class SpriteBatchTest implements GdxTest, InputListener {
 	int SPRITES = 400 / 2;
 
 	long startTime = System.nanoTime();
@@ -257,6 +258,11 @@ public class SpriteBatchTest implements RenderListener, InputListener {
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
 		renderMethod = (renderMethod + 1) % 2;
+		return false;
+	}
+
+	@Override public boolean needsGL20 () {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
