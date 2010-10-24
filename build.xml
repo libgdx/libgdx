@@ -12,7 +12,9 @@
 	<!-- property for NDK_HOME, you need to set this to
 	     the root directory of your Android NDK installation,
 		 e.g. c:\android-ndk or /opt/android-ndk -->
-	<property environment="env"/>
+	<!--<property environment="env"/>-->
+	
+	<property name="env.NDK_HOME" value="/opt/android-ndk/"/>
 	
 	<!-- libgdx version -->
 	<property name="version" value="0.71"/>
