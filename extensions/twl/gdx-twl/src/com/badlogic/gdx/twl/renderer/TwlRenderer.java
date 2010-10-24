@@ -23,7 +23,6 @@
 package com.badlogic.gdx.twl.renderer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -32,14 +31,13 @@ import java.net.URLStreamHandler;
 import java.util.Collection;
 import java.util.Map;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -67,6 +65,7 @@ public class TwlRenderer implements Renderer {
 	private final TintStack tintStateRoot = new TintStack();
 	private TintStack tintStack = tintStateRoot;
 	private final Color tempColor = new Color(1, 1, 1, 1);
+	private boolean rendering;
 	final SpriteBatch spriteBatch = new SpriteBatch();
 
 	public TwlRenderer () {
@@ -99,9 +98,11 @@ public class TwlRenderer implements Renderer {
 	public void startRenderering () {
 		tintStack = tintStateRoot;
 		spriteBatch.begin();
+		rendering = true;
 	}
 
 	public void endRendering () {
+		rendering = false;
 		spriteBatch.end();
 		if (hasScissor) {
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
@@ -110,6 +111,7 @@ public class TwlRenderer implements Renderer {
 	}
 
 	public void setClipRect (Rect rect) {
+		if (rendering) spriteBatch.renderMesh();
 		if (rect == null) {
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
@@ -206,21 +208,23 @@ public class TwlRenderer implements Renderer {
 		TwlRenderer renderer = new TwlRenderer();
 		GUI gui = new GUI(root, renderer, null);
 		File file = new File(themeFile);
-		final String themeRoot = file.getParent() + "/";
-		String themeFileName = file.getName();
+		final File themeRoot = file.getParentFile();
+		final String themeFileName = file.getName();
 		try {
 			URL themeURL = new URL("gdx-twl", "local", 80, themeFileName, new URLStreamHandler() {
-				protected URLConnection openConnection (final URL url) throws IOException {
-					final FileHandle fileHandle = Gdx.files.getFileHandle(themeRoot + url.getPath(), fileType);
+				protected URLConnection openConnection (URL url) throws IOException {
+					final String path = new File(themeRoot, url.getPath()).getPath();
+					final FileHandle fileHandle = Gdx.files.getFileHandle(path, fileType);
 					return new URLConnection(url) {
-						public void connect () throws IOException {
+						public void connect () {
 						}
 
-						public Object getContent () throws IOException {
+						public Object getContent () {
 							return fileHandle;
 						}
 
-						public InputStream getInputStream () throws IOException {
+						public InputStream getInputStream () {
+							if (!path.endsWith(".xml")) return null; // Only theme files are loaded through the URL.
 							return fileHandle.getInputStream();
 						}
 					};

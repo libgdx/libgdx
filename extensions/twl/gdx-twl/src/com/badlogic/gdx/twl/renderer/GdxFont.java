@@ -44,6 +44,8 @@ import de.matthiasmann.twl.utils.StateExpression;
  * @author Matthias Mann
  */
 class GdxFont implements Font {
+	static private final HAlignment[] gdxAlignment = HAlignment.values();
+
 	final TwlRenderer renderer;
 	final BitmapFont bitmapFont;
 	private final FontState[] fontStates;
@@ -82,7 +84,7 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		com.badlogic.gdx.graphics.Color color = renderer.getColor(fontState.color);
-		return bitmapFont.drawMultiLineText(renderer.spriteBatch, str, x, y, color, width, HAlignment.values()[align.ordinal()]);
+		return bitmapFont.drawMultiLineText(renderer.spriteBatch, str, x, y, color, width, gdxAlignment[align.ordinal()]);
 	}
 
 	public FontCache cacheText (FontCache cache, CharSequence str) {
@@ -100,7 +102,7 @@ class GdxFont implements Font {
 		if (cache == null) cache = new GdxFontCache();
 		BitmapFontCache bitmapCache = ((GdxFontCache)cache).bitmapCache;
 		bitmapFont.cacheMultiLineText(bitmapCache, str, 0, yOffset, com.badlogic.gdx.graphics.Color.WHITE, width,
-			HAlignment.values()[align.ordinal()]);
+			gdxAlignment[align.ordinal()]);
 		return cache;
 	}
 

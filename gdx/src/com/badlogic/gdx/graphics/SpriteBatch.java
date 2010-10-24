@@ -635,7 +635,7 @@ public class SpriteBatch {
 		idx += length;
 	}
 
-	protected void renderMesh () {
+	public void renderMesh () {
 		if (idx == 0) return;
 
 		renderCalls++;
