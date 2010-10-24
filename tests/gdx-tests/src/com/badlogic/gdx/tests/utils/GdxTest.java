@@ -1,8 +1,9 @@
 package com.badlogic.gdx.tests.utils;
 
+import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.RenderListener;
 
 public interface GdxTest extends RenderListener
 {
-	public boolean needsGL20( );
+	public boolean needsGL20( );	
 }
