@@ -26,6 +26,8 @@ public class MeshMultitextureTest implements GdxTest {
 
 	@Override public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
+		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glActiveTexture(GL10.GL_TEXTURE0);
 		tex1.bind();
