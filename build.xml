@@ -1,0 +1,143 @@
+<!-- 
+
+ libgdx distribution ant build file. Performs the compilation of the modules
+ gdx, gdx-backend-android, gdx-backend-desktop, gdx-backend-applet
+ and creates a distribution out of this mess. 
+
+-->
+<project name="gdx" default="all" basedir="." >
+
+	<description>libgdx distribution build file</description>
+	
+	<!-- property for NDK_HOME, you need to set this to
+	     the root directory of your Android NDK installation,
+		 e.g. c:\android-ndk or /opt/android-ndk -->
+	<property environment="env"/>
+	
+	<!-- libgdx version -->
+	<property name="version" value="0.71"/>
+	
+	<!-- output directory for distribution -->
+	<property name="stable" value="libgdx-${version}"/>
+	
+	<!-- clean output directories -->
+	<target name="clean">
+		<delete dir="${stable}"/>
+		<delete dir="gdx/bin"/>
+		<delete dir="backends/gdx-backend-desktop/bin"/>
+		<delete dir="backends/gdx-backend-applet/bin"/>
+		<delete dir="backends/gdx-backend-android/bin"/>
+	</target>
+	
+	<!-- init task, creates all necessary directories -->
+	<target name="init" depends="clean">
+		<mkdir dir="${stable}"/>
+		<mkdir dir="gdx/bin"/>
+		<mkdir dir="backends/gdx-backend-applet/bin"/>
+		<mkdir dir="backends/gdx-backend-android/bin"/>
+		<mkdir dir="backends/gdx-backend-desktop/bin"/>
+	</target>
+	
+	<!-- compiles the java code of all modules -->
+	<target name="compile" depends="init">
+		<!-- build gdx api -->
+		<javac srcdir="gdx/src" destdir="gdx/bin"/>
+		
+		<!-- build desktop backend -->
+		<javac srcdir="backends/gdx-backend-desktop/src" destdir="backends/gdx-backend-desktop/bin">
+			<classpath>
+				<pathelement location="gdx/bin"/>
+				<pathelement location="backends/gdx-backend-desktop/libs/gdx-dependencies-desktop.jar"/>
+			</classpath>
+		</javac>
+		
+		<!-- build android backend -->
+		<javac srcdir="backends/gdx-backend-android/src" destdir="backends/gdx-backend-android/bin">
+			<classpath>
+				<pathelement location="gdx/bin"/>
+				<pathelement location="backends/gdx-backend-android/libs/android-2.0.jar"/>
+			</classpath>
+		</javac>
+		
+		<!-- build applet backend -->
+		<javac srcdir="backends/gdx-backend-applet/src" destdir="backends/gdx-backend-applet/bin">
+			<classpath>
+				<pathElement location="gdx/bin"/>
+				<pathElement location="backends/gdx-backend-applet/libs/gdx-dependencies-applet.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- compiles the native code (for android only atm) -->
+	<target name="compile-native" depends="init">
+		<exec executable="make" dir="gdx">
+			<arg value="-f"/>			
+			<arg value="${env.NDK_HOME}/build/core/build-local.mk"/>
+			<arg value="clean"/>
+		</exec>
+		<exec executable="make" dir="gdx">
+			<arg value="-f"/>			
+			<arg value="${env.NDK_HOME}/build/core/build-local.mk"/>
+		</exec>
+	</target>
+	
+	<!-- builds the distribution directory, does not include the desktop libs 
+		for some reason excludes don't work so i have to delete the ndk directory first... -->
+	<target name="dist" depends="compile,compile-native">
+		<delete dir="gdx/bin/ndk"/>
+		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin"/>
+		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>
+		<jar destfile="${stable}/gdx-backend-desktop.jar" basedir="backends/gdx-backend-desktop/bin"/>
+		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin"/>
+		<jar destfile="${stable}/gdx-backend-applet.jar" basedir="backends/gdx-backend-applet/bin"/>
+		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false"/>
+		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false"/>
+		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so"/>
+		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so"/>
+		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so"/>		
+		<copy tofile="${stable}/gdx-dependencies-desktop.jar" file="backends/gdx-backend-desktop/libs/gdx-dependencies-desktop.jar"/>
+		<copy tofile="${stable}/gdx-dependencies-applet.jar" file="backends/gdx-backend-applet/libs/gdx-dependencies-applet.jar"/>		
+		<copy tofile="${stable}/README" file="gdx/dist/README"/>
+		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html"/>
+	</target>
+	
+	<!-- updates dependencies of hello-world, invaders and tests android-->
+	<target name="update-demos" depends="dist">
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-dependencies-desktop.jar" file="${stable}/gdx-dependencies-desktop.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
+		
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
+		
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-dependencies-desktop.jar" file="${stable}/gdx-dependencies-desktop.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
+		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
+		
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>		
+	</target>
+	
+	<!-- updates the native libs of the android test suite -->
+	<target name="update-android-tests" depends="dist">
+		<copy tofile="tests/gdx-tests-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
+		<copy tofile="tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
+		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
+	</target>
+	
+	<!-- do everything -->
+	<target name="all" depends="update-demos,update-android-tests">
+	</target>
+</project>
