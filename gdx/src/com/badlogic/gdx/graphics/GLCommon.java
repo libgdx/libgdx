@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
@@ -6,89 +7,92 @@ import java.nio.IntBuffer;
 /**
  * This interface defines methods common to GL10, GL11 and GL20.
  * @author mzechner
- *
+ * 
  */
-public interface GLCommon 
-{
-	public void glActiveTexture ( int texture );
+public interface GLCommon {
+	public void glActiveTexture (int texture);
 
-	public void glBindTexture ( int target, int texture );
-	
-	public void glBlendFunc ( int sfactor, int dfactor );
+	public void glBindTexture (int target, int texture);
 
-	public void glClear ( int mask );
+	public void glBlendFunc (int sfactor, int dfactor);
 
-	public void glClearColor ( float red, float green, float blue, float alpha );
-	
-	public void glClearDepthf ( float depth );
-	
-	public void glClearStencil ( int s );
+	public void glClear (int mask);
 
-	public void glColorMask ( boolean red, boolean green, boolean blue, boolean alpha );
+	public void glClearColor (float red, float green, float blue, float alpha);
 
-	public void glCompressedTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data );
+	public void glClearDepthf (float depth);
 
-	public void glCompressedTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data );
+	public void glClearStencil (int s);
 
-	public void glCopyTexImage2D ( int target, int level, int internalformat, int x, int y, int width, int height, int border );
+	public void glColorMask (boolean red, boolean green, boolean blue, boolean alpha);
 
-	public void glCopyTexSubImage2D ( int target, int level, int xoffset, int yoffset, int x, int y, int width, int height );
-	
-	public void glCullFace ( int mode );
+	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
+		int imageSize, Buffer data);
 
-	public void glDeleteTextures ( int n, IntBuffer textures );
+	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
+		int imageSize, Buffer data);
 
-	public void glDepthFunc ( int func );
+	public void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border);
 
-	public void glDepthMask ( boolean flag );
+	public void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height);
 
-	public void glDepthRangef ( float zNear, float zFar );
-	
-	public void glDisable ( int cap );
-	
-	public void glDrawArrays ( int mode, int first, int count );
+	public void glCullFace (int mode);
 
-	public void glDrawElements ( int mode, int count, int type, Buffer indices );
-	
-	public void glEnable ( int cap );
-	
-	public void glFinish (  );
+	public void glDeleteTextures (int n, IntBuffer textures);
 
-	public void glFlush (  );
-	
-	public void glFrontFace ( int mode );
+	public void glDepthFunc (int func);
 
-	public void glGenTextures ( int n, IntBuffer textures );
+	public void glDepthMask (boolean flag);
 
-	public int glGetError (  );
-	
-	public void glGetIntegerv ( int pname, IntBuffer params );
-	
-	public String glGetString ( int name );
-	
-	public void glHint ( int target, int mode );
+	public void glDepthRangef (float zNear, float zFar);
 
-	public void glLineWidth ( float width );
+	public void glDisable (int cap);
 
-	public void glPixelStorei ( int pname, int param );
+	public void glDrawArrays (int mode, int first, int count);
 
-	public void glPolygonOffset ( float factor, float units );
+	public void glDrawElements (int mode, int count, int type, Buffer indices);
 
-	public void glReadPixels ( int x, int y, int width, int height, int format, int type, Buffer pixels );
+	public void glEnable (int cap);
 
-	public void glScissor ( int x, int y, int width, int height );
+	public void glFinish ();
 
-	public void glStencilFunc ( int func, int ref, int mask );
+	public void glFlush ();
 
-	public void glStencilMask ( int mask );
+	public void glFrontFace (int mode);
 
-	public void glStencilOp ( int fail, int zfail, int zpass );
+	public void glGenTextures (int n, IntBuffer textures);
 
-	public void glTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels );
+	public int glGetError ();
 
-	public void glTexParameterf ( int target, int pname, float param );
+	public void glGetIntegerv (int pname, IntBuffer params);
 
-	public void glTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels );
+	public String glGetString (int name);
 
-	public void glViewport ( int x, int y, int width, int height );
+	public void glHint (int target, int mode);
+
+	public void glLineWidth (float width);
+
+	public void glPixelStorei (int pname, int param);
+
+	public void glPolygonOffset (float factor, float units);
+
+	public void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels);
+
+	public void glScissor (int x, int y, int width, int height);
+
+	public void glStencilFunc (int func, int ref, int mask);
+
+	public void glStencilMask (int mask);
+
+	public void glStencilOp (int fail, int zfail, int zpass);
+
+	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type,
+		Buffer pixels);
+
+	public void glTexParameterf (int target, int pname, float param);
+
+	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type,
+		Buffer pixels);
+
+	public void glViewport (int x, int y, int width, int height);
 }

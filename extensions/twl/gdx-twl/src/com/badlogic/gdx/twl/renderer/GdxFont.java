@@ -31,7 +31,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.BitmapFontCache;
-import com.badlogic.gdx.graphics.Texture;
 
 import de.matthiasmann.twl.Color;
 import de.matthiasmann.twl.renderer.AnimationState;

@@ -35,8 +35,7 @@ import com.badlogic.gdx.RenderListener;
 final class LwjglInput implements Input, RenderListener {
 	String text;
 	TextInputListener textListener;
-	@SuppressWarnings("unchecked")
-	private final ArrayList<InputListener> listeners = new ArrayList();
+	@SuppressWarnings("unchecked") private final ArrayList<InputListener> listeners = new ArrayList();
 
 	public void addInputListener (InputListener listener) {
 		listeners.add(listener);
@@ -76,13 +75,12 @@ final class LwjglInput implements Input, RenderListener {
 	}
 
 	public boolean isKeyPressed (int key) {
-		return Keyboard.isKeyDown(getKeyCodeReverse( key ));
+		return Keyboard.isKeyDown(getKeyCodeReverse(key));
 	}
 
 	public boolean isTouched () {
 		boolean button = Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2);
-		if( button ) 
-			System.out.println( "button!!");
+		if (button) System.out.println("button!!");
 		return button;
 	}
 
@@ -166,7 +164,7 @@ final class LwjglInput implements Input, RenderListener {
 			if (listeners.get(i).touchDragged(x, y, pointer)) return;
 	}
 
-	public static int getKeyCode(int keyCode) {
+	public static int getKeyCode (int keyCode) {
 		if (keyCode == Keyboard.KEY_0) return Input.Keys.KEYCODE_0;
 		if (keyCode == Keyboard.KEY_1) return Input.Keys.KEYCODE_1;
 		if (keyCode == Keyboard.KEY_2) return Input.Keys.KEYCODE_2;
@@ -225,8 +223,8 @@ final class LwjglInput implements Input, RenderListener {
 		if (keyCode == Keyboard.KEY_TAB) return Input.Keys.KEYCODE_TAB;
 		return Input.Keys.KEYCODE_UNKNOWN;
 	}
-	
-	public static int getKeyCodeReverse(int keyCode) {
+
+	public static int getKeyCodeReverse (int keyCode) {
 		if (keyCode == Input.Keys.KEYCODE_0) return Keyboard.KEY_0;
 		if (keyCode == Input.Keys.KEYCODE_1) return Keyboard.KEY_1;
 		if (keyCode == Input.Keys.KEYCODE_2) return Keyboard.KEY_2;
@@ -268,7 +266,7 @@ final class LwjglInput implements Input, RenderListener {
 		if (keyCode == Input.Keys.KEYCODE_BACKSLASH) return Keyboard.KEY_BACKSLASH;
 		if (keyCode == Input.Keys.KEYCODE_COMMA) return Keyboard.KEY_COMMA;
 		if (keyCode == Input.Keys.KEYCODE_DEL) return Keyboard.KEY_DELETE;
-		if (keyCode == Input.Keys.KEYCODE_DPAD_LEFT)return Keyboard.KEY_LEFT;
+		if (keyCode == Input.Keys.KEYCODE_DPAD_LEFT) return Keyboard.KEY_LEFT;
 		if (keyCode == Input.Keys.KEYCODE_DPAD_RIGHT) return Keyboard.KEY_RIGHT;
 		if (keyCode == Input.Keys.KEYCODE_DPAD_UP) return Keyboard.KEY_UP;
 		if (keyCode == Input.Keys.KEYCODE_DPAD_DOWN) return Keyboard.KEY_DOWN;

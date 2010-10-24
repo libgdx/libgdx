@@ -13,13 +13,11 @@
 
 package com.badlogic.gdx.backends.desktop;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -31,8 +29,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * I apologize for this class. It is a big fucking mess which can be attributed to the late hour
- * i created this piece of shit in. Please take my apologize. It is slow. It is ugly. It is aids.
+ * I apologize for this class. It is a big fucking mess which can be attributed to the late hour i created this piece of shit in.
+ * Please take my apologize. It is slow. It is ugly. It is aids.
  * 
  * @author badlogicgames@gmail.com
  * 
@@ -51,7 +49,7 @@ final class LwjglTexture implements Texture {
 	public static int textures = 0;
 
 	static private ByteBuffer imageBuffer;
-	
+
 	/**
 	 * Create a new texture
 	 */
@@ -59,8 +57,8 @@ final class LwjglTexture implements Texture {
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = minFilter == TextureFilter.MipMap;
-		BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap( file ).getNativePixmap();
-		loadMipMap( image );
+		BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
+		loadMipMap(image);
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -73,9 +71,9 @@ final class LwjglTexture implements Texture {
 		boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = minFilter == TextureFilter.MipMap;
-		BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR );
+		BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		loadMipMap(img);
-		this.draw( Gdx.graphics.newPixmap(image), 0, 0 );
+		this.draw(Gdx.graphics.newPixmap(image), 0, 0);
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -101,54 +99,49 @@ final class LwjglTexture implements Texture {
 		textures++;
 	}
 
-	private ByteBuffer toByteBuffer( BufferedImage image )
-	{
+	private ByteBuffer toByteBuffer (BufferedImage image) {
 		try {
-			imageBuffer = BitmapDecoder.decode( image );
+			imageBuffer = BitmapDecoder.decode(image);
 			return imageBuffer;
-		} catch (IOException e) 
-		{		
-			throw new GdxRuntimeException( "Couldn't decode image", e );
+		} catch (IOException e) {
+			throw new GdxRuntimeException("Couldn't decode image", e);
 		}
 	}
-	
-	private BufferedImage scaleDown( BufferedImage image )
-	{
-		BufferedImage scaled = new BufferedImage( image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR_PRE );
+
+	private BufferedImage scaleDown (BufferedImage image) {
+		BufferedImage scaled = new BufferedImage(image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR_PRE);
 		Graphics2D g = scaled.createGraphics();
-		g.drawImage( image, 0, 0, scaled.getWidth(), scaled.getHeight(), null ); //FIXME replace with something that looks actually like a scaled image...
+		g.drawImage(image, 0, 0, scaled.getWidth(), scaled.getHeight(), null); // FIXME replace with something that looks actually
+// like a scaled image...
 		g.dispose();
 		return scaled;
 	}
-	
-	private void loadMipMap( BufferedImage image )
-	{
+
+	private void loadMipMap (BufferedImage image) {
 		int level = 0;
 		int height = image.getHeight();
 		int width = image.getWidth();
 		texWidth = width;
 		texHeight = height;
 		textureID = GL11.glGenTextures();
-		GL11.glBindTexture( GL11.GL_TEXTURE_2D, textureID );		
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
 
-		while(height >= 1 || width >= 1 && level < 4 ) {
-			ByteBuffer imageBuffer = toByteBuffer( image );
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA8, width, height, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageBuffer);			
-			if(height == 1 || width == 1 || isMipMapped == false ) 
-			{
+		while (height >= 1 || width >= 1 && level < 4) {
+			ByteBuffer imageBuffer = toByteBuffer(image);
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA8, width, height, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE,
+				imageBuffer);
+			if (height == 1 || width == 1 || isMipMapped == false) {
 				break;
 			}
 
 			level++;
-			if( height > 1 )
-				height /= 2;
-			if( width > 1 )
-				width /= 2;
+			if (height > 1) height /= 2;
+			if (width > 1) width /= 2;
 
-			image = scaleDown( image );	
-		}		
+			image = scaleDown(image);
+		}
 	}
-	
+
 	private int getTextureFilter (TextureFilter filter) {
 		if (filter == TextureFilter.Linear)
 			return GL11.GL_LINEAR;
@@ -189,29 +182,24 @@ final class LwjglTexture implements Texture {
 	public void draw (Pixmap pixmap, int x, int y) {
 		if (isManaged) throw new GdxRuntimeException("Can't draw to a managed texture");
 		BufferedImage image = (BufferedImage)pixmap.getNativePixmap();
-		
+
 		int level = 0;
 		int height = image.getHeight();
 		int width = image.getWidth();
 		bind();
-		while(height >= 1 || width >= 1 && level < 4 ) {
-			ByteBuffer imageBuffer = toByteBuffer( image );
-			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, width, height, GL11.GL_RGBA,
-					GL11.GL_UNSIGNED_BYTE, imageBuffer);			
-			if(height == 1 || width == 1 || isMipMapped == false ) 
-			{
+		while (height >= 1 || width >= 1 && level < 4) {
+			ByteBuffer imageBuffer = toByteBuffer(image);
+			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
+			if (height == 1 || width == 1 || isMipMapped == false) {
 				break;
 			}
 
 			level++;
-			if( height > 1 )
-				height /= 2;
-			if( width > 1 )
-				width /= 2;
+			if (height > 1) height /= 2;
+			if (width > 1) width /= 2;
 
-			image = scaleDown( image );	
-		}	
-		
+			image = scaleDown(image);
+		}
 
 	}
 

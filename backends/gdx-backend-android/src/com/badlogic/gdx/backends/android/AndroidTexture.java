@@ -1,18 +1,16 @@
 /*******************************************************************************
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import java.nio.ByteBuffer;
@@ -27,8 +25,6 @@ import android.util.Log;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -36,18 +32,17 @@ import com.badlogic.gdx.graphics.Texture;
  * An implementation of {@link Texture} for Android
  * 
  * @author badlogicgames@gmail.com
- *
+ * 
  */
-final class AndroidTexture implements Texture
-{	
+final class AndroidTexture implements Texture {
 	/** list of currently active textures used to invalidate them in case the surface was lost **/
-	private static final ArrayList<AndroidTexture> textures = new ArrayList<AndroidTexture>( );
+	private static final ArrayList<AndroidTexture> textures = new ArrayList<AndroidTexture>();
 	/** the texture handle **/
 	private int textureHandle;
 	/** height in pixels of texture **/
 	private int texHeight;
 	/** width in pixels of texture **/
-	private int texWidth;	
+	private int texWidth;
 	/** whether this texture is managed **/
 	private final boolean isManaged;
 	/** the managed pixmap **/
@@ -61,9 +56,9 @@ final class AndroidTexture implements Texture
 	/** the u wrap **/
 	private final TextureWrap uWrap;
 	/** the v wrap **/
-	private final TextureWrap vWrap;		
+	private final TextureWrap vWrap;
 	/** invalidate flag **/
-	private boolean invalidated = false;	
+	private boolean invalidated = false;
 	/** file handle **/
 	private AndroidFileHandle file;
 
@@ -73,8 +68,8 @@ final class AndroidTexture implements Texture
 	 * @param gl
 	 * @param bitmap
 	 */
-	AndroidTexture( AndroidGraphics graphics, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap, boolean managed, AndroidFileHandle file )
-	{		
+	AndroidTexture (AndroidGraphics graphics, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
+		TextureWrap vWrap, boolean managed, AndroidFileHandle file) {
 		this.file = file;
 		this.isManaged = managed;
 		this.bitmap = image;
@@ -82,163 +77,140 @@ final class AndroidTexture implements Texture
 		this.magFilter = maxFilter;
 		this.uWrap = uWrap;
 		this.vWrap = vWrap;
-		if( image != null )
-		{
+		if (image != null) {
 			this.texWidth = image.getWidth();
-			this.texHeight = image.getHeight();	
+			this.texHeight = image.getHeight();
 		}
 
-		if( minFilter == TextureFilter.MipMap )
+		if (minFilter == TextureFilter.MipMap)
 			isMipMap = true;
 		else
 			isMipMap = false;
 
-		createTexture( );
-		buildMipmap( );					
-		Gdx.gl.glBindTexture( GL10.GL_TEXTURE_2D, 0 );
+		createTexture();
+		buildMipmap();
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 		bitmap = null;
 
-		if( isManaged )
-			textures.add( this );
-	}	
+		if (isManaged) textures.add(this);
+	}
 
-	private void rebuild( )
-	{
-		createTexture( );
-		buildMipmap( );
+	private void rebuild () {
+		createTexture();
+		buildMipmap();
 		invalidated = false;
 	}
 
-	private void createTexture( )
-	{
+	private void createTexture () {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());
 		IntBuffer intBuffer = buffer.asIntBuffer();
 		Gdx.gl.glGenTextures(1, intBuffer);
-		textureHandle = intBuffer.get(0);		
+		textureHandle = intBuffer.get(0);
 
-		Gdx.gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter( minFilter ) );
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter( magFilter ) );
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, getTextureWrap( uWrap ) );
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap( vWrap ) );	
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, textureHandle);
+		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
+		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
+		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
+		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 	}
 
-	private int getTextureFilter( TextureFilter filter )
-	{
-		if( filter == TextureFilter.Linear )
+	private int getTextureFilter (TextureFilter filter) {
+		if (filter == TextureFilter.Linear)
 			return GL10.GL_LINEAR;
+		else if (filter == TextureFilter.Nearest)
+			return GL10.GL_NEAREST;
 		else
-			if( filter == TextureFilter.Nearest )
-				return GL10.GL_NEAREST;
-			else
-				return GL10.GL_LINEAR_MIPMAP_NEAREST;
+			return GL10.GL_LINEAR_MIPMAP_NEAREST;
 	}
 
-	private int getTextureWrap( TextureWrap wrap )
-	{
-		if( wrap == TextureWrap.ClampToEdge )
+	private int getTextureWrap (TextureWrap wrap) {
+		if (wrap == TextureWrap.ClampToEdge)
 			return GL10.GL_CLAMP_TO_EDGE;
 		else
 			return GL10.GL_REPEAT;
 	}
 
-	private Bitmap loadBitmap( AndroidFileHandle file )
-	{
-		Pixmap pixmap = Gdx.graphics.newPixmap( file );
+	private Bitmap loadBitmap (AndroidFileHandle file) {
+		Pixmap pixmap = Gdx.graphics.newPixmap(file);
 		Bitmap image = (Bitmap)pixmap.getNativePixmap();
 		this.texWidth = image.getWidth();
-		this.texHeight = image.getHeight();			
+		this.texHeight = image.getHeight();
 		return (Bitmap)pixmap.getNativePixmap();
 	}
 
-	private static boolean isPowerOfTwo( int value )
-	{
-		return ((value!=0) && (value&(value-1))==0);
+	private static boolean isPowerOfTwo (int value) {
+		return ((value != 0) && (value & (value - 1)) == 0);
 	}
 
-	private void buildMipmap( ) 
-	{
-		Bitmap obitmap = null; 
-		if( file != null )
-			obitmap = loadBitmap( file );
+	private void buildMipmap () {
+		Bitmap obitmap = null;
+		if (file != null)
+			obitmap = loadBitmap(file);
 		else
 			obitmap = this.bitmap;
 		Bitmap bitmap = obitmap;
 
 		int level = 0;
 		int height = bitmap.getHeight();
-		int width = bitmap.getWidth();	      	       
-		Log.d( "texture", "creating texture mipmaps: " + bitmap.getWidth() + ", " + bitmap.getHeight() );
+		int width = bitmap.getWidth();
+		Log.d("texture", "creating texture mipmaps: " + bitmap.getWidth() + ", " + bitmap.getHeight());
 
-		if( !isPowerOfTwo( bitmap.getWidth() ) || !isPowerOfTwo( bitmap.getHeight() ) )
-			throw new GdxRuntimeException( "Dimensions have to be a power of two" );
+		if (!isPowerOfTwo(bitmap.getWidth()) || !isPowerOfTwo(bitmap.getHeight()))
+			throw new GdxRuntimeException("Dimensions have to be a power of two");
 
-		while(height >= 1 || width >= 1 && level < 4 ) {
-			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, level, bitmap, 0);			
-			if(height == 1 || width == 1 || isMipMap == false ) 
-			{
+		while (height >= 1 || width >= 1 && level < 4) {
+			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, level, bitmap, 0);
+			if (height == 1 || width == 1 || isMipMap == false) {
 				break;
 			}
 
 			level++;
-			if( height > 1 )
-				height /= 2;
-			if( width > 1 )
-				width /= 2;
+			if (height > 1) height /= 2;
+			if (width > 1) width /= 2;
 
 			Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, width, height, true);
-			if( level > 1 )
-				bitmap.recycle();
+			if (level > 1) bitmap.recycle();
 			bitmap = bitmap2;
-		}	
+		}
 
-		if( file != null )
-			obitmap.recycle();
+		if (file != null) obitmap.recycle();
 	}
 
-	public boolean isManaged( )
-	{
+	public boolean isManaged () {
 		return isManaged;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void draw( Pixmap bmp, int x, int y )
-	{
-		if( isManaged )
-			throw new GdxRuntimeException( "Can't draw to a managed texture!" );
+	public void draw (Pixmap bmp, int x, int y) {
+		if (isManaged) throw new GdxRuntimeException("Can't draw to a managed texture!");
 
-		if( isManaged && invalidated )
-			rebuild( );		
+		if (isManaged && invalidated) rebuild();
 
-		Gdx.gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, textureHandle);
 		Bitmap bitmap = (Bitmap)bmp.getNativePixmap();
 
 		int level = 0;
 		int height = bitmap.getHeight();
-		int width = bitmap.getWidth();	      	       					
+		int width = bitmap.getWidth();
 
-		while(height >= 1 || width >= 1 && level < 4 ) {
-			GLUtils.texSubImage2D( GL10.GL_TEXTURE_2D, level, x, y, bitmap );			
+		while (height >= 1 || width >= 1 && level < 4) {
+			GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, level, x, y, bitmap);
 
-			if(height == 1 || width == 1 || isMipMap == false ) 
-			{
+			if (height == 1 || width == 1 || isMipMap == false) {
 				break;
 			}
 
 			level++;
-			if( height > 1 )
-				height /= 2;
-			if( width > 1 )
-				width /= 2;
+			if (height > 1) height /= 2;
+			if (width > 1) width /= 2;
 
 			Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, width, height, true);
-			if( level > 1 )
-				bitmap.recycle();
+			if (level > 1) bitmap.recycle();
 			bitmap = bitmap2;
-		}	
+		}
 	}
 
 	static Texture lastTexture = null;
@@ -246,113 +218,99 @@ final class AndroidTexture implements Texture
 	/**
 	 * {@inheritDoc}
 	 */
-	public void bind(  )
-	{				
-		if( isManaged && invalidated )
-		{
-			rebuild( );
+	public void bind () {
+		if (isManaged && invalidated) {
+			rebuild();
 			lastTexture = null;
 		}
 
-		if( lastTexture != this )
-		{
+		if (lastTexture != this) {
 			lastTexture = this;
-			Gdx.gl.glBindTexture( GL10.GL_TEXTURE_2D, textureHandle );
+			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, textureHandle);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void dispose( )
-	{
-//		if( gl10 != null )
-//		{
-//			if( gl10 instanceof GL11 )
-//			{
-//				GL11 gl11 = (GL11)gl10;
-//				if( gl11.glIsTexture( textureHandle ) )
-//				{
-//					int[] textures = { textureHandle };
-//					gl10.glDeleteTextures( 1, textures, 0 );
-//				}
-//			}
-//			else
-//			{
-//				int[] textures = { textureHandle };
-//				gl10.glDeleteTextures( 1, textures, 0 );
-//			}
-//		}
-//		else
-//		{
-//			if( gl20.glIsTexture( textureHandle ) )
-//			{
-//				ByteBuffer buffer = ByteBuffer.allocateDirect(4);
-//				buffer.order(ByteOrder.nativeOrder());
-//				IntBuffer intBuffer = buffer.asIntBuffer();
-//				intBuffer.put(textureHandle);
-//				intBuffer.position(0);
-//				gl20.glDeleteTextures( 1, intBuffer);
-//			}
-//		}		
+	@Override public void dispose () {
+// if( gl10 != null )
+// {
+// if( gl10 instanceof GL11 )
+// {
+// GL11 gl11 = (GL11)gl10;
+// if( gl11.glIsTexture( textureHandle ) )
+// {
+// int[] textures = { textureHandle };
+// gl10.glDeleteTextures( 1, textures, 0 );
+// }
+// }
+// else
+// {
+// int[] textures = { textureHandle };
+// gl10.glDeleteTextures( 1, textures, 0 );
+// }
+// }
+// else
+// {
+// if( gl20.glIsTexture( textureHandle ) )
+// {
+// ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+// buffer.order(ByteOrder.nativeOrder());
+// IntBuffer intBuffer = buffer.asIntBuffer();
+// intBuffer.put(textureHandle);
+// intBuffer.position(0);
+// gl20.glDeleteTextures( 1, intBuffer);
+// }
+// }
 
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());
 		IntBuffer intBuffer = buffer.asIntBuffer();
 		intBuffer.put(textureHandle);
 		intBuffer.position(0);
-		Gdx.gl.glDeleteTextures( 1, intBuffer);
-		textureHandle = 0;				
-		if( bitmap != null )
-		{
+		Gdx.gl.glDeleteTextures(1, intBuffer);
+		textureHandle = 0;
+		if (bitmap != null) {
 			bitmap.recycle();
 			bitmap = null;
 		}
-		textures.remove( this );
+		textures.remove(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getHeight() {
+	@Override public int getHeight () {
 		return texHeight;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getWidth() {
+	@Override public int getWidth () {
 		return texWidth;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getTextureObjectHandle() 
-	{
+	@Override public int getTextureObjectHandle () {
 		return textureHandle;
 	}
 
-	public static void invalidateAllTextures( )
-	{
-		for( int i = 0; i < textures.size(); i++ )
-		{			
-			if( textures.get(i).isManaged )
-			{
+	public static void invalidateAllTextures () {
+		for (int i = 0; i < textures.size(); i++) {
+			if (textures.get(i).isManaged) {
 				AndroidTexture texture = textures.get(i);
 				texture.invalidated = true;
-				texture.rebuild( );				
+				texture.rebuild();
 			}
 		}
 		lastTexture = null;
 	}
 
-	public static void clearAllTextures( )
-	{
+	public static void clearAllTextures () {
 		textures.clear();
 		lastTexture = null;
 	}

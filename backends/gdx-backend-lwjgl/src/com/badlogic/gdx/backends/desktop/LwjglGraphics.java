@@ -24,14 +24,14 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
+import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -174,7 +174,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
 
-		if (time - frameStart >= 1000000000 ) {
+		if (time - frameStart >= 1000000000) {
 			fps = frames;
 			frames = 0;
 			frameStart = time;
@@ -219,8 +219,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		return fps;
 	}
 
-	@Override
-	public GLCommon getGLCommon() {
+	@Override public GLCommon getGLCommon () {
 		return gl;
 	}
 }

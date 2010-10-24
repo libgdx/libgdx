@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
@@ -12,157 +13,134 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 
-public class FillrateTest implements RenderListener, InputListener 
-{
+public class FillrateTest implements RenderListener, InputListener {
 	Texture texture;
 	Mesh mesh;
 	int numFills = 1;
 	long lastOut = System.nanoTime();
-	
+
 	int mode = 0;
 	float mean = 0;
 	float frames = 0;
 
-	@Override
-	public void surfaceCreated() 
-	{
-		if( texture == null )
-		{
-			Gdx.input.addInputListener( this );
-			texture = Gdx.graphics.newTexture( Gdx.files.getFileHandle( "data/badlogicsmall.jpg", FileType.Internal ),
-											   TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
-			
-			mesh = new Mesh( true, false, 4, 6, new VertexAttribute( VertexAttributes.Usage.Position, 2, "a_pos" ),
-														 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords" ) );
-			
-			float[] vertices = new float[4*4];
-			
+	@Override public void surfaceCreated () {
+		if (texture == null) {
+			Gdx.input.addInputListener(this);
+			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
+				TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+
+			mesh = new Mesh(true, false, 4, 6, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_pos"),
+				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+
+			float[] vertices = new float[4 * 4];
+
 			int idx = 0;
 			vertices[idx++] = -1;
 			vertices[idx++] = -1;
 			vertices[idx++] = 0;
 			vertices[idx++] = 0;
-			
+
 			vertices[idx++] = -1;
 			vertices[idx++] = 1;
 			vertices[idx++] = 0;
 			vertices[idx++] = 1;
-			
+
 			vertices[idx++] = 1;
 			vertices[idx++] = 1;
 			vertices[idx++] = 1;
 			vertices[idx++] = 1;
-			
+
 			vertices[idx++] = 1;
 			vertices[idx++] = -1;
 			vertices[idx++] = 1;
 			vertices[idx++] = 0;
-			
-			short[] indices = { 0, 1, 2, 2, 3, 0 };
-			mesh.setVertices( vertices );
-			mesh.setIndices( indices );
+
+			short[] indices = {0, 1, 2, 2, 3, 0};
+			mesh.setVertices(vertices);
+			mesh.setIndices(indices);
 		}
 	}
 
-	@Override
-	public void surfaceChanged(int width, int height) {
+	@Override public void surfaceChanged (int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override
-	public void render() 
-	{
-		Gdx.graphics.getGL10().glClear( GL10.GL_COLOR_BUFFER_BIT );
-		
-		if( mode == 3 )
-		{
-			Gdx.graphics.getGL10().glDisable( GL10.GL_BLEND );
-			Gdx.graphics.getGL10().glEnable( GL10.GL_ALPHA_TEST );
+	@Override public void render () {
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		if (mode == 3) {
+			Gdx.graphics.getGL10().glDisable(GL10.GL_BLEND);
+			Gdx.graphics.getGL10().glEnable(GL10.GL_ALPHA_TEST);
 		}
-		
-		if( mode == 2 )
-		{
-			Gdx.graphics.getGL10().glEnable( GL10.GL_BLEND );
-			Gdx.graphics.getGL10().glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );
+
+		if (mode == 2) {
+			Gdx.graphics.getGL10().glEnable(GL10.GL_BLEND);
+			Gdx.graphics.getGL10().glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		}
-		
-		if( mode >= 1)
-		{
-			Gdx.graphics.getGL10().glEnable( GL10.GL_TEXTURE_2D );
+
+		if (mode >= 1) {
+			Gdx.graphics.getGL10().glEnable(GL10.GL_TEXTURE_2D);
 			texture.bind();
 		}
-		
-		if( mode == 0 )
-		{
-			Gdx.graphics.getGL10().glDisable( GL10.GL_BLEND );
-			Gdx.graphics.getGL10().glDisable( GL10.GL_ALPHA_TEST );
-			Gdx.graphics.getGL10().glDisable( GL10.GL_TEXTURE_2D );
+
+		if (mode == 0) {
+			Gdx.graphics.getGL10().glDisable(GL10.GL_BLEND);
+			Gdx.graphics.getGL10().glDisable(GL10.GL_ALPHA_TEST);
+			Gdx.graphics.getGL10().glDisable(GL10.GL_TEXTURE_2D);
 		}
-		
-		Gdx.graphics.getGL10().glColor4f( 1, 1, 1, 0.01f );
-		
-		for( int i = 0; i < numFills; i++ )
-			mesh.render( GL10.GL_TRIANGLES );
-		
+
+		Gdx.graphics.getGL10().glColor4f(1, 1, 1, 0.01f);
+
+		for (int i = 0; i < numFills; i++)
+			mesh.render(GL10.GL_TRIANGLES);
+
 		mean += numFills;
 		frames++;
-		
-		if( Gdx.graphics.getDeltaTime() < 1 / 60f )
-			numFills++;
-		
-		if( System.nanoTime() - lastOut >= 1000000000 )
-		{
-			Gdx.app.log( "FillrateTest", "fills: " + mean / frames + ", fps: " + frames + ", mode" + mode );
+
+		if (Gdx.graphics.getDeltaTime() < 1 / 60f) numFills++;
+
+		if (System.nanoTime() - lastOut >= 1000000000) {
+			Gdx.app.log("FillrateTest", "fills: " + mean / frames + ", fps: " + frames + ", mode" + mode);
 			mean = 0;
 			frames = 0;
 			lastOut = System.nanoTime();
-			if( Gdx.graphics.getFramesPerSecond() < 60 )
-				numFills--;
+			if (Gdx.graphics.getFramesPerSecond() < 60) numFills--;
 		}
 	}
 
-	@Override
-	public void dispose() 
-	{
-		
+	@Override public void dispose () {
+
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
+	@Override public boolean keyDown (int keycode) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
+	@Override public boolean keyUp (int keycode) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean keyTyped(char character) {
+	@Override public boolean keyTyped (char character) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer) {
+	@Override public boolean touchDown (int x, int y, int pointer) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean touchUp(int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer) {
 		mode++;
-		if( mode > 3 )
-			mode = 0;
+		if (mode > 3) mode = 0;
 		numFills = 0;
 		return false;
 	}
 
-	@Override
-	public boolean touchDragged(int x, int y, int pointer) {
+	@Override public boolean touchDragged (int x, int y, int pointer) {
 		// TODO Auto-generated method stub
 		return false;
 	}

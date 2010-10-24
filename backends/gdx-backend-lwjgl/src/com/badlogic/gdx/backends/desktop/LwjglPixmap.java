@@ -20,10 +20,6 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
@@ -42,35 +38,34 @@ final class LwjglPixmap implements Pixmap {
 	LwjglPixmap (int width, int height, Pixmap.Format format) {
 		int internalformat = getInternalFormat(format);
 		pixmap = new BufferedImage(width, height, internalformat);
-		Graphics2D g = pixmap.createGraphics();		
+		Graphics2D g = pixmap.createGraphics();
 		g.setComposite(AlphaComposite.Clear);
-		g.setColor( new Color( 0, 0, 0, 0 ) );
+		g.setColor(new Color(0, 0, 0, 0));
 		g.fillRect(0, 0, pixmap.getWidth(), pixmap.getHeight());
 		g.dispose();
 		composite = AlphaComposite.SrcOver;
 	}
 
 	LwjglPixmap (BufferedImage image) {
-		pixmap = convert( image );
+		pixmap = convert(image);
 	}
 
-	private BufferedImage convert( BufferedImage image )
-	{
-		BufferedImage out = new BufferedImage( image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE );
-		Graphics2D g = out.createGraphics();		
+	private BufferedImage convert (BufferedImage image) {
+		BufferedImage out = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
+		Graphics2D g = out.createGraphics();
 		g.setComposite(AlphaComposite.Clear);
 		g.fillRect(0, 0, image.getWidth(), image.getHeight());
 		g.setComposite(AlphaComposite.SrcOver);
 		g.drawImage(image, 0, 0, null);
-		g.dispose();			
+		g.dispose();
 		return out;
 	}
-	
+
 	private int getInternalFormat (Pixmap.Format format) {
-//		if (format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565)
-			return BufferedImage.TYPE_4BYTE_ABGR;
-//		else
-//			return BufferedImage.TYPE_BYTE_GRAY;
+// if (format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565)
+		return BufferedImage.TYPE_4BYTE_ABGR;
+// else
+// return BufferedImage.TYPE_BYTE_GRAY;
 	}
 
 	public void drawCircle (int x, int y, int radius) {

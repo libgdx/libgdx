@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -5,16 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
-public class RotateTo implements Action
-{
-	static final Pool<RotateTo> pool = new Pool<RotateTo>( new PoolObjectFactory<RotateTo>() {
-		@Override
-		public RotateTo createObject() 
-		{
-			return new RotateTo( );
+public class RotateTo implements Action {
+	static final Pool<RotateTo> pool = new Pool<RotateTo>(new PoolObjectFactory<RotateTo>() {
+		@Override public RotateTo createObject () {
+			return new RotateTo();
 		}
-	}, 100 );
-	
+	}, 100);
+
 	private float rotation;
 	private float startRotation;;
 	private float deltaRotation;
@@ -23,19 +21,16 @@ public class RotateTo implements Action
 	private float taken = 0;
 	private Actor target;
 	private boolean done;
-	
-	public static RotateTo $( float rotation, float duration )
-	{
+
+	public static RotateTo $ (float rotation, float duration) {
 		RotateTo action = pool.newObject();
 		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
 		return action;
 	}
-	
-	@Override
-	public void setTarget(Actor actor) 
-	{
+
+	@Override public void setTarget (Actor actor) {
 		this.target = actor;
 		this.startRotation = target.rotation;
 		this.deltaRotation = rotation - target.rotation;
@@ -43,37 +38,28 @@ public class RotateTo implements Action
 		this.done = false;
 	}
 
-	@Override
-	public void act(float delta) 
-	{
+	@Override public void act (float delta) {
 		taken += delta;
-		if( taken >= duration )
-		{
+		if (taken >= duration) {
 			taken = duration;
 			target.rotation = rotation;
 			done = true;
 			return;
 		}
-		
+
 		float alpha = taken * invDuration;
 		target.rotation = startRotation + deltaRotation * alpha;
 	}
 
-	@Override
-	public boolean isDone() 
-	{
+	@Override public boolean isDone () {
 		return done;
 	}
-	
-	@Override
-	public void finish() 
-	{
-		pool.free( this );	
+
+	@Override public void finish () {
+		pool.free(this);
 	}
 
-	@Override
-	public Action copy() {
+	@Override public Action copy () {
 		return $(rotation, duration);
 	}
 }
-

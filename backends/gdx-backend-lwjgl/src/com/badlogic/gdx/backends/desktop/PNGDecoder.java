@@ -64,8 +64,7 @@ class PNGDecoder {
 	private static final int PLTE = 0x504C5445;
 	private static final int tRNS = 0x74524E53;
 	private static final int IDAT = 0x49444154;
-	@SuppressWarnings("unused")
-	private static final int IEND = 0x49454E44;
+	@SuppressWarnings("unused") private static final int IEND = 0x49454E44;
 
 	private static final byte COLOR_GREYSCALE = 0;
 	private static final byte COLOR_TRUECOLOR = 2;
@@ -546,7 +545,7 @@ class PNGDecoder {
 		}
 	}
 
-	private void unfilterUp (byte[] curLine, byte[] prevLine) {		
+	private void unfilterUp (byte[] curLine, byte[] prevLine) {
 		for (int i = 1, n = curLine.length; i < n; ++i) {
 			curLine[i] += prevLine[i];
 		}

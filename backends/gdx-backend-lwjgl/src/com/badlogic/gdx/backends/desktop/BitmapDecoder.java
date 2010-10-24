@@ -10,24 +10,19 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Hashtable;
 
-import javax.imageio.ImageIO;
-
 class BitmapDecoder {
-	private static final ColorModel rgbaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] {
-		8, 8, 8, 8}, true, false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+	private static final ColorModel rgbaColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+		new int[] {8, 8, 8, 8}, true, false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
 
 	private static int width, height;
 	private static ByteBuffer buffer;
 	private static BufferedImage tempImage;
 
-	@SuppressWarnings("unchecked")
-	public static ByteBuffer decode (BufferedImage image) throws IOException {
+	@SuppressWarnings("unchecked") public static ByteBuffer decode (BufferedImage image) throws IOException {
 		if (image == null) throw new IOException("Invalid image.");
 
 		width = image.getWidth();
@@ -45,7 +40,7 @@ class BitmapDecoder {
 		g.fillRect(0, 0, width, height);
 		g.setComposite(AlphaComposite.SrcOver);
 		g.drawImage(image, 0, 0, null);
-		g.dispose();			
+		g.dispose();
 
 		int bufferSize = width * height * 4;
 		if (buffer == null || buffer.capacity() < bufferSize)

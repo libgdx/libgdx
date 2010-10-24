@@ -83,13 +83,13 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 
 	public void glBufferData (int target, int size, Buffer data, int usage) {
 		if (data instanceof ByteBuffer)
-			GL15.glBufferData(target,(ByteBuffer)data, usage);
+			GL15.glBufferData(target, (ByteBuffer)data, usage);
 		else if (data instanceof IntBuffer)
-			GL15.glBufferData(target,(IntBuffer)data, usage);
+			GL15.glBufferData(target, (IntBuffer)data, usage);
 		else if (data instanceof FloatBuffer)
 			GL15.glBufferData(target, (FloatBuffer)data, usage);
 		else if (data instanceof DoubleBuffer)
-			GL15.glBufferData(target,(DoubleBuffer)data, usage);
+			GL15.glBufferData(target, (DoubleBuffer)data, usage);
 		else if (data instanceof ShortBuffer) //
 			GL15.glBufferData(target, (ShortBuffer)data, usage);
 	}
@@ -136,7 +136,7 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 	}
 
 	public void glGenBuffers (int n, int[] buffers, int offset) {
-		for( int i = offset; i < offset + n; i++ )
+		for (int i = offset; i < offset + n; i++)
 			buffers[offset] = GL15.glGenBuffers();
 	}
 
@@ -153,7 +153,8 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 	}
 
 	public void glGetBufferParameteriv (int target, int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");	}
+		throw new UnsupportedOperationException("not implemented");
+	}
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params) {
 		GL15.glGetBufferParameter(target, pname, params);

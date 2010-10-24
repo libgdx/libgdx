@@ -1,18 +1,16 @@
 /*******************************************************************************
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.desktop;
 
 import java.util.ArrayList;
@@ -35,161 +33,135 @@ import com.badlogic.gdx.files.FileHandle;
  * An implementation of the {@link Audio} interface for the desktop.
  * 
  * @author mzechner
- *
+ * 
  */
-final class JoglAudio implements Audio, Runnable
-{		
+final class JoglAudio implements Audio, Runnable {
 	/** the audio line for sound effects **/
 	private SourceDataLine line;
-	
-	/** The current buffers to play **/	
-	private final List<JoglSoundBuffer> buffers = new ArrayList<JoglSoundBuffer>( );
-	
+
+	/** The current buffers to play **/
+	private final List<JoglSoundBuffer> buffers = new ArrayList<JoglSoundBuffer>();
+
 	/** The sound effects thread **/
 	private Thread thread;
-	
+
 	/**
 	 * Helper class for playing back sound effects concurrently.
 	 * 
 	 * @author mzechner
-	 *
+	 * 
 	 */
-	class JoglSoundBuffer
-	{
+	class JoglSoundBuffer {
 		private final float[] samples;
 		private final AudioFormat format;
 		private final float volume;
 		private int writtenSamples = 0;
-		
-		public JoglSoundBuffer( JoglSound sound, float volume ) throws Exception
-		{			
-			samples = sound.getAudioData( );
+
+		public JoglSoundBuffer (JoglSound sound, float volume) throws Exception {
+			samples = sound.getAudioData();
 			format = sound.getAudioFormat();
 			this.volume = volume;
 		}
-		
+
 		/**
-		 * Writes the next numFrames frames to the line for playback 
+		 * Writes the next numFrames frames to the line for playback
 		 * @return whether playback is done or not.
 		 */
-		public boolean writeSamples( int numSamples, float[] buffer )
-		{
-			if( format.getChannels() == 1 )
-			{
-				int remainingSamples = Math.min( samples.length, writtenSamples + numSamples / 2 );
-				for( int i = writtenSamples, j = 0; i < remainingSamples; i++, j+=2 )
-				{
+		public boolean writeSamples (int numSamples, float[] buffer) {
+			if (format.getChannels() == 1) {
+				int remainingSamples = Math.min(samples.length, writtenSamples + numSamples / 2);
+				for (int i = writtenSamples, j = 0; i < remainingSamples; i++, j += 2) {
 					buffer[j] += samples[i] * volume;
-					buffer[j+1] += samples[i] * volume;
+					buffer[j + 1] += samples[i] * volume;
 					writtenSamples++;
 				}
-			}
-			else
-			{
-				int remainingSamples = Math.min( samples.length, writtenSamples + numSamples );
-				for( int i = writtenSamples, j = 0; i < remainingSamples; i+= 2, j+=2 )
-				{
+			} else {
+				int remainingSamples = Math.min(samples.length, writtenSamples + numSamples);
+				for (int i = writtenSamples, j = 0; i < remainingSamples; i += 2, j += 2) {
 					buffer[j] += samples[i] * volume;
-					buffer[j+1] += samples[i+1] * volume;
-					writtenSamples+=2;
-				}							
-			}	
-			
-			if( writtenSamples >= samples.length )
+					buffer[j + 1] += samples[i + 1] * volume;
+					writtenSamples += 2;
+				}
+			}
+
+			if (writtenSamples >= samples.length)
 				return false;
 			else
 				return true;
 		}
 	}
-	
-	JoglAudio( )
-	{
+
+	JoglAudio () {
 		try {
-			AudioFormat format = new AudioFormat( 44100.0f, 16, 2, true, false );
-			line = AudioSystem.getSourceDataLine( format );
+			AudioFormat format = new AudioFormat(44100.0f, 16, 2, true, false);
+			line = AudioSystem.getSourceDataLine(format);
 			line.open(format, 4410);
 			line.start();
-			thread = new Thread( this );		
-			thread.setDaemon( true );
+			thread = new Thread(this);
+			thread.setDaemon(true);
 			thread.start();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}			
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public AudioDevice newAudioDevice(boolean isMono) 
-	{	
-		return new JoglAudioDevice( isMono );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Music newMusic(FileHandle file) 
-	{	
-		try {			
-			JoglMusic music = new JoglMusic( ((JoglFileHandle)file) );			
-			return music;
-		} 
-		catch (Exception e) 
-		{
-			throw new GdxRuntimeException( "Couldn't create Music instance from file '" + file + "'", e );
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public Sound newSound(FileHandle file) {
-		try {			
-			JoglSound sound = new JoglSound( this, ((JoglFileHandle)file) );			
+	@Override public AudioDevice newAudioDevice (boolean isMono) {
+		return new JoglAudioDevice(isMono);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public Music newMusic (FileHandle file) {
+		try {
+			JoglMusic music = new JoglMusic(((JoglFileHandle)file));
+			return music;
+		} catch (Exception e) {
+			throw new GdxRuntimeException("Couldn't create Music instance from file '" + file + "'", e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public Sound newSound (FileHandle file) {
+		try {
+			JoglSound sound = new JoglSound(this, ((JoglFileHandle)file));
 			return sound;
 		} catch (Exception e) {
-			throw new GdxRuntimeException( "Couldn't create Sound instance from file '" + file + "'", e );
+			throw new GdxRuntimeException("Couldn't create Sound instance from file '" + file + "'", e);
 		}
 	}
 
-	protected void enqueueSound( JoglSound sound, float volume )
-	{
-		try
-		{
-			synchronized( this )
-			{				
-				buffers.add( new JoglSoundBuffer( sound, volume ) );
+	protected void enqueueSound (JoglSound sound, float volume) {
+		try {
+			synchronized (this) {
+				buffers.add(new JoglSoundBuffer(sound, volume));
 			}
-		}
-		catch( Exception ex )
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	
-	@Override
-	public void run() 
-	{	
-		
+
+	@Override public void run () {
+
 		int NUM_SAMPLES = 44100 * 2;
 		float[] buffer = new float[NUM_SAMPLES];
-		byte[] bytes = new byte[2 * NUM_SAMPLES];				
-		
-		while( true )
-		{			
-			int samplesToWrite = line.available() / 2;			
-						
-			if( samplesToWrite > 0 )
-			{
-				fillBuffer( buffer, bytes, samplesToWrite );
-				int writtenBytes = line.write(bytes, 0, samplesToWrite * 2 );
-				while( writtenBytes != samplesToWrite * 2 )
-					writtenBytes += line.write( bytes, writtenBytes, samplesToWrite - writtenBytes );			
+		byte[] bytes = new byte[2 * NUM_SAMPLES];
+
+		while (true) {
+			int samplesToWrite = line.available() / 2;
+
+			if (samplesToWrite > 0) {
+				fillBuffer(buffer, bytes, samplesToWrite);
+				int writtenBytes = line.write(bytes, 0, samplesToWrite * 2);
+				while (writtenBytes != samplesToWrite * 2)
+					writtenBytes += line.write(bytes, writtenBytes, samplesToWrite - writtenBytes);
 			}
-					
+
 			try {
 				Thread.sleep(5);
 			} catch (InterruptedException e) {
@@ -197,47 +169,38 @@ final class JoglAudio implements Audio, Runnable
 			}
 		}
 	}
-	
-	private void fillBuffer( float[] buffer, byte[] bytes, int samplesToWrite )
-	{
-		for( int i = 0; i < buffer.length; i++ )
+
+	private void fillBuffer (float[] buffer, byte[] bytes, int samplesToWrite) {
+		for (int i = 0; i < buffer.length; i++)
 			buffer[i] = 0.0f;
-		for( int i = 0; i < bytes.length; i++ )
+		for (int i = 0; i < bytes.length; i++)
 			bytes[i] = 0;
-		
+
 		int numBuffers = buffers.size();
-		synchronized( this )
-		{				
+		synchronized (this) {
 			Iterator<JoglSoundBuffer> bufferIter = buffers.iterator();
-			while( bufferIter.hasNext() )
-			{							
+			while (bufferIter.hasNext()) {
 				JoglSoundBuffer soundBuffer = bufferIter.next();
-				if( !soundBuffer.writeSamples(samplesToWrite, buffer) )
-					bufferIter.remove();
+				if (!soundBuffer.writeSamples(samplesToWrite, buffer)) bufferIter.remove();
 			}
-		}			
-		
-		if( numBuffers > 0 )
-		{			
-            for( int i = 0, j = 0; i < samplesToWrite; i++, j+=2 )
-            {
-            		float fValue = buffer[i];
-            		if( fValue > 1 )
-            			fValue = 1;
-            		if( fValue < -1 )
-            			fValue = -1;
-                    short value = (short)( fValue * Short.MAX_VALUE);		                    
-                    bytes[j] = (byte)(value | 0xff);
-                    bytes[j+1] = (byte)(value >> 8 );
-            }
-		}	
+		}
+
+		if (numBuffers > 0) {
+			for (int i = 0, j = 0; i < samplesToWrite; i++, j += 2) {
+				float fValue = buffer[i];
+				if (fValue > 1) fValue = 1;
+				if (fValue < -1) fValue = -1;
+				short value = (short)(fValue * Short.MAX_VALUE);
+				bytes[j] = (byte)(value | 0xff);
+				bytes[j + 1] = (byte)(value >> 8);
+			}
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public AudioRecorder newAudioRecoder(int samplingRate, boolean isMono) {
-		return new JoglAudioRecorder( samplingRate, isMono );
+	@Override public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
+		return new JoglAudioRecorder(samplingRate, isMono);
 	}
 }

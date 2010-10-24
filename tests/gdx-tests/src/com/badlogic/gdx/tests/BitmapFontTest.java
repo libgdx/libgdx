@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -40,11 +39,11 @@ public class BitmapFontTest implements RenderListener {
 				return false;
 			}
 		});
-		cache1 = font.newCache( );
-		cache2 = font.newCache( );
-		cache3 = font.newCache( );
-		cache4 = font.newCache( );
-		
+		cache1 = font.newCache();
+		cache2 = font.newCache();
+		cache3 = font.newCache();
+		cache4 = font.newCache();
+
 		font.cacheText(cache1, "(cached)", 10, 76, Color.WHITE);
 
 		String text = "Sphinx of black quartz,\njudge my vow.";

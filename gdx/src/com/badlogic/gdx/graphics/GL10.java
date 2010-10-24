@@ -1,19 +1,18 @@
 /*******************************************************************************
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
+
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -22,10 +21,9 @@ import java.nio.IntBuffer;
  * Interface wrapping all standard OpenGL ES 1.0 methods.
  * 
  * @author mzechner
- *
+ * 
  */
-public interface GL10 extends GLCommon
-{
+public interface GL10 extends GLCommon {
 	public static final int GL_OES_VERSION_1_0 = 1;
 	public static final int GL_OES_read_format = 1;
 	public static final int GL_OES_compressed_paletted_texture = 1;
@@ -62,7 +60,7 @@ public interface GL10 extends GLCommon
 	public static final int GL_SRC_ALPHA_SATURATE = 0x0308;
 	public static final int GL_FRONT = 0x0404;
 	public static final int GL_BACK = 0x0405;
-	public static final int GL_FRONT_AND_BACK = 0x0408;	
+	public static final int GL_FRONT_AND_BACK = 0x0408;
 	public static final int GL_FOG = 0x0B60;
 	public static final int GL_LIGHTING = 0x0B50;
 	public static final int GL_TEXTURE_2D = 0x0DE1;
@@ -269,169 +267,169 @@ public interface GL10 extends GLCommon
 	public static final int GL_LINE = 0x1B01;
 	public static final int GL_FILL = 0x1B02;
 
-	public void glAlphaFunc ( int func, float ref );
+	public void glAlphaFunc (int func, float ref);
 
-	public void glAlphaFuncx ( int func, int ref );
+	public void glAlphaFuncx (int func, int ref);
 
-	public void glClearColorx ( int red, int green, int blue, int alpha );
+	public void glClearColorx (int red, int green, int blue, int alpha);
 
-	public void glClearDepthx ( int depth );
+	public void glClearDepthx (int depth);
 
-	public void glClientActiveTexture ( int texture );
+	public void glClientActiveTexture (int texture);
 
-	public void glColor4f ( float red, float green, float blue, float alpha );
+	public void glColor4f (float red, float green, float blue, float alpha);
 
-	public void glColor4x ( int red, int green, int blue, int alpha );
+	public void glColor4x (int red, int green, int blue, int alpha);
 
-	public void glColorPointer ( int size, int type, int stride, Buffer pointer );
+	public void glColorPointer (int size, int type, int stride, Buffer pointer);
 
-	public void glDeleteTextures( int n, int[] textures, int offset );
+	public void glDeleteTextures (int n, int[] textures, int offset);
 
-	public void glDepthRangex ( int zNear, int zFar );
+	public void glDepthRangex (int zNear, int zFar);
 
-	public void glDisableClientState ( int array );
+	public void glDisableClientState (int array);
 
-	public void glEnableClientState ( int array );
+	public void glEnableClientState (int array);
 
-	public void glFogf ( int pname, float param );
+	public void glFogf (int pname, float param);
 
-	public void glFogfv ( int pname, float[] params, int offset );
-	
-	public void glFogfv ( int pname, FloatBuffer params );
+	public void glFogfv (int pname, float[] params, int offset);
 
-	public void glFogx ( int pname, int param );
+	public void glFogfv (int pname, FloatBuffer params);
 
-	public void glFogxv ( int pname, int[] params, int offset );
-	
-	public void glFogxv ( int pname, IntBuffer params );
+	public void glFogx (int pname, int param);
 
-	public void glFrustumf ( float left, float right, float bottom, float top, float zNear, float zFar );
+	public void glFogxv (int pname, int[] params, int offset);
 
-	public void glFrustumx ( int left, int right, int bottom, int top, int zNear, int zFar );
+	public void glFogxv (int pname, IntBuffer params);
 
-	public void glGenTextures ( int n, int[] textures, int offset );
+	public void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar);
 
-	public void glGetIntegerv ( int pname, int[] params, int offset );
+	public void glFrustumx (int left, int right, int bottom, int top, int zNear, int zFar);
 
-	public void glLightModelf ( int pname, float param );
+	public void glGenTextures (int n, int[] textures, int offset);
 
-	public void glLightModelfv ( int pname, float[] params, int offset );
-	
-	public void glLightModelfv ( int pname, FloatBuffer params );
+	public void glGetIntegerv (int pname, int[] params, int offset);
 
-	public void glLightModelx ( int pname, int param );
+	public void glLightModelf (int pname, float param);
 
-	public void glLightModelxv ( int pname, int[] params, int offset );
-	
-	public void glLightModelxv ( int pname, IntBuffer params );
+	public void glLightModelfv (int pname, float[] params, int offset);
 
-	public void glLightf ( int light, int pname, float param );
+	public void glLightModelfv (int pname, FloatBuffer params);
 
-	public void glLightfv ( int light, int pname, float[] params, int offset );
-	
-	public void glLightfv ( int light, int pname, FloatBuffer params );
+	public void glLightModelx (int pname, int param);
 
-	public void glLightx ( int light, int pname, int param );
+	public void glLightModelxv (int pname, int[] params, int offset);
 
-	public void glLightxv ( int light, int pname, int[] params, int offset );
-	
-	public void glLightxv ( int light, int pname, IntBuffer params );
+	public void glLightModelxv (int pname, IntBuffer params);
 
-	public void glLineWidthx ( int width );
+	public void glLightf (int light, int pname, float param);
 
-	public void glLoadIdentity (  );
+	public void glLightfv (int light, int pname, float[] params, int offset);
 
-	public void glLoadMatrixf ( float[] m, int offset );
-	
-	public void glLoadMatrixf ( FloatBuffer m );
+	public void glLightfv (int light, int pname, FloatBuffer params);
 
-	public void glLoadMatrixx( int[] m, int offset );
-	
-	public void glLoadMatrixx ( IntBuffer m );
+	public void glLightx (int light, int pname, int param);
 
-	public void glLogicOp ( int opcode );
+	public void glLightxv (int light, int pname, int[] params, int offset);
 
-	public void glMaterialf ( int face, int pname, float param );
+	public void glLightxv (int light, int pname, IntBuffer params);
 
-	public void glMaterialfv ( int face, int pname, float[] params, int offset );
-	
-	public void glMaterialfv ( int face, int pname, FloatBuffer params );
+	public void glLineWidthx (int width);
 
-	public void glMaterialx ( int face, int pname, int param );
+	public void glLoadIdentity ();
 
-	public void glMaterialxv ( int face, int pname, int[] params, int offset );
-	
-	public void glMaterialxv ( int face, int pname, IntBuffer params );
+	public void glLoadMatrixf (float[] m, int offset);
 
-	public void glMatrixMode ( int mode );
+	public void glLoadMatrixf (FloatBuffer m);
 
-	public void glMultMatrixf ( float[] m, int offset );
-	
-	public void glMultMatrixf ( FloatBuffer m );
+	public void glLoadMatrixx (int[] m, int offset);
 
-	public void glMultMatrixx ( int[] m, int offset );
-	
-	public void glMultMatrixx ( IntBuffer m );
+	public void glLoadMatrixx (IntBuffer m);
 
-	public void glMultiTexCoord4f ( int target, float s, float t, float r, float q );
+	public void glLogicOp (int opcode);
 
-	public void glMultiTexCoord4x ( int target, int s, int t, int r, int q );
+	public void glMaterialf (int face, int pname, float param);
 
-	public void glNormal3f ( float nx, float ny, float nz );
+	public void glMaterialfv (int face, int pname, float[] params, int offset);
 
-	public void glNormal3x ( int nx, int ny, int nz );
+	public void glMaterialfv (int face, int pname, FloatBuffer params);
 
-	public void glNormalPointer ( int type, int stride, Buffer pointer );
+	public void glMaterialx (int face, int pname, int param);
 
-	public void glOrthof ( float left, float right, float bottom, float top, float zNear, float zFar );
+	public void glMaterialxv (int face, int pname, int[] params, int offset);
 
-	public void glOrthox ( int left, int right, int bottom, int top, int zNear, int zFar );
+	public void glMaterialxv (int face, int pname, IntBuffer params);
 
-	public void glPointSize ( float size );
+	public void glMatrixMode (int mode);
 
-	public void glPointSizex ( int size );
+	public void glMultMatrixf (float[] m, int offset);
 
-	public void glPolygonOffsetx ( int factor, int units );
+	public void glMultMatrixf (FloatBuffer m);
 
-	public void glPopMatrix (  );
+	public void glMultMatrixx (int[] m, int offset);
 
-	public void glPushMatrix (  );
+	public void glMultMatrixx (IntBuffer m);
 
-	public void glRotatef ( float angle, float x, float y, float z );
+	public void glMultiTexCoord4f (int target, float s, float t, float r, float q);
 
-	public void glRotatex ( int angle, int x, int y, int z );
+	public void glMultiTexCoord4x (int target, int s, int t, int r, int q);
 
-	public void glSampleCoverage ( float value, boolean invert );
+	public void glNormal3f (float nx, float ny, float nz);
 
-	public void glSampleCoveragex ( int value, boolean invert );
+	public void glNormal3x (int nx, int ny, int nz);
 
-	public void glScalef ( float x, float y, float z );
+	public void glNormalPointer (int type, int stride, Buffer pointer);
 
-	public void glScalex ( int x, int y, int z );
+	public void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar);
 
-	public void glShadeModel ( int mode );
+	public void glOrthox (int left, int right, int bottom, int top, int zNear, int zFar);
 
-	public void glTexCoordPointer ( int size, int type, int stride, Buffer pointer );
+	public void glPointSize (float size);
 
-	public void glTexEnvf ( int target, int pname, float param );
+	public void glPointSizex (int size);
 
-	public void glTexEnvfv ( int target, int pname, float[] params, int offset );
-	
-	public void glTexEnvfv ( int target, int pname, FloatBuffer params );
+	public void glPolygonOffsetx (int factor, int units);
 
-	public void glTexEnvx ( int target, int pname, int param );
+	public void glPopMatrix ();
 
-	public void glTexEnvxv ( int target, int pname, int[] params, int offset );
-	
-	public void glTexEnvxv ( int target, int pname, IntBuffer params );
+	public void glPushMatrix ();
 
-	public void glTexParameterx ( int target, int pname, int param );
+	public void glRotatef (float angle, float x, float y, float z);
 
-	public void glTranslatef ( float x, float y, float z );
+	public void glRotatex (int angle, int x, int y, int z);
 
-	public void glTranslatex ( int x, int y, int z );
+	public void glSampleCoverage (float value, boolean invert);
 
-	public void glVertexPointer ( int size, int type, int stride, Buffer pointer );
+	public void glSampleCoveragex (int value, boolean invert);
 
-	public void glPolygonMode( int face, int mode );
+	public void glScalef (float x, float y, float z);
+
+	public void glScalex (int x, int y, int z);
+
+	public void glShadeModel (int mode);
+
+	public void glTexCoordPointer (int size, int type, int stride, Buffer pointer);
+
+	public void glTexEnvf (int target, int pname, float param);
+
+	public void glTexEnvfv (int target, int pname, float[] params, int offset);
+
+	public void glTexEnvfv (int target, int pname, FloatBuffer params);
+
+	public void glTexEnvx (int target, int pname, int param);
+
+	public void glTexEnvxv (int target, int pname, int[] params, int offset);
+
+	public void glTexEnvxv (int target, int pname, IntBuffer params);
+
+	public void glTexParameterx (int target, int pname, int param);
+
+	public void glTranslatef (float x, float y, float z);
+
+	public void glTranslatex (int x, int y, int z);
+
+	public void glVertexPointer (int size, int type, int stride, Buffer pointer);
+
+	public void glPolygonMode (int face, int mode);
 }

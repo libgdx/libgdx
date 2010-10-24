@@ -13,25 +13,35 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 /**
- * <p>A BitmapFont is used to load and render AngleCode bitmap font files. The AngleCode
- * bitmap font consists of 2 files, the .fnt file which must be saved with text encoding
- * (not xml or binary!) and the bitmap file holding the glyphs, usually in .png format.</p>
+ * <p>
+ * A BitmapFont is used to load and render AngleCode bitmap font files. The AngleCode bitmap font consists of 2 files, the .fnt
+ * file which must be saved with text encoding (not xml or binary!) and the bitmap file holding the glyphs, usually in .png
+ * format.
+ * </p>
  * 
- * <p>This implementation currently only supports a single glyph page.</p>
+ * <p>
+ * This implementation currently only supports a single glyph page.
+ * </p>
  * 
- * <p>To draw text with this class you need to call one of the draw() methods together with
- * a {@link SpriteBatch}. The SpriteBatch must be in rendering mode, that is, {@link SpriteBatch#begin()}
- * must have been called before drawing</p>
+ * <p>
+ * To draw text with this class you need to call one of the draw() methods together with a {@link SpriteBatch}. The SpriteBatch
+ * must be in rendering mode, that is, {@link SpriteBatch#begin()} must have been called before drawing
+ * </p>
  * 
- * <p>Additionally you can cache text in a {@link BitmapFontCache} for faster rendering of static text</p>
+ * <p>
+ * Additionally you can cache text in a {@link BitmapFontCache} for faster rendering of static text
+ * </p>
  * 
- * <p>A BitmapFont is managed. You need to call the {@link #dispose()} method when you no longer need it</p>
+ * <p>
+ * A BitmapFont is managed. You need to call the {@link #dispose()} method when you no longer need it
+ * </p>
  * 
- * <p>The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing
- * Matthias :)</p>
+ * <p>
+ * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing Matthias :)
+ * </p>
  * 
  * @author nathan.sweet
- *
+ * 
  */
 public class BitmapFont {
 	private static final int LOG2_PAGE_SIZE = 9;
@@ -46,9 +56,8 @@ public class BitmapFont {
 	private int ex;
 	private int capHeight;
 
-	/** 
-	 * Creates a new BitmapFont instance based on a .fnt file and
-	 * an image file holding the page with glyphs. Currently only 
+	/**
+	 * Creates a new BitmapFont instance based on a .fnt file and an image file holding the page with glyphs. Currently only
 	 * supports single page AngleCode fonts.
 	 * 
 	 * @param fontFile The font file
@@ -146,8 +155,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. You
-	 * can only call this between {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
+	 * Draws the given string at the given position with the given color. You can only call this between
+	 * {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
 	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
@@ -161,8 +170,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. You
-	 * can only call this between {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
+	 * Draws the given string at the given position with the given color. You can only call this between
+	 * {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
 	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
@@ -201,9 +210,9 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. The position coincides
-	 * with the top left corner of the first line's glyph. The method interprets new lines.
-	 * You can only call this between {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
+	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
+	 * first line's glyph. The method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
+	 * {@link SpriteBatch#end()}.
 	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
@@ -217,12 +226,15 @@ public class BitmapFont {
 	}
 
 	/**
-	 * <p>Draws the given string at the given position with the given color. The position coincides
-	 * with the top left corner of the first line's glyph. The method interprets new lines.
-	 * You can only call this between {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.</p>
-	 * <p>You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
-	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x + alignmentWidth).
-	 * The second parameter specifies the alignment itself.
+	 * <p>
+	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
+	 * first line's glyph. The method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
+	 * {@link SpriteBatch#end()}.
+	 * </p>
+	 * <p>
+	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
+	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
+	 * alignmentWidth). The second parameter specifies the alignment itself.
 	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
@@ -281,11 +293,10 @@ public class BitmapFont {
 	 * Creates a new {@link BitmapFontCache} to be used with {@link #cacheText()}.
 	 * @return The cache
 	 */
-	public BitmapFontCache newCache( )
-	{
-		return new BitmapFontCache( this.texture );
+	public BitmapFontCache newCache () {
+		return new BitmapFontCache(this.texture);
 	}
-	
+
 	/**
 	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
 	 * 
@@ -319,8 +330,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * The position coincides with the top left corner of the first line's glyph. The method interprets new lines.
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
 	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
@@ -333,11 +344,14 @@ public class BitmapFont {
 	}
 
 	/**
-	 * <p>Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position coincides
-	 * with the top left corner of the first line's glyph. The method interprets new lines.</p>
-	 * <p>You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
-	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x + alignmentWidth).
-	 * The second parameter specifies the alignment itself.
+	 * <p>
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
+	 * </p>
+	 * <p>
+	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
+	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
+	 * alignmentWidth). The second parameter specifies the alignment itself.
 	 * 
 	 * @param cache The cache
 	 * @param str The string
@@ -372,8 +386,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Computes the strings width 
-	 * @param str The string 
+	 * Computes the strings width
+	 * @param str The string
 	 * @return the width
 	 */
 	public int computeTextWidth (CharSequence str) {
@@ -382,7 +396,7 @@ public class BitmapFont {
 
 	/**
 	 * Computes the string with
-	 * @param str the string 
+	 * @param str the string
 	 * @param start the first character index
 	 * @param end the last character index (exclusive)
 	 * @return the string width
@@ -492,7 +506,7 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Frees all resources of this font. 
+	 * Frees all resources of this font.
 	 */
 	public void dispose () {
 		texture.dispose();

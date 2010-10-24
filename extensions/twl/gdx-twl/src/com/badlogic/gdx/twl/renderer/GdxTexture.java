@@ -22,8 +22,8 @@
 
 package com.badlogic.gdx.twl.renderer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -70,7 +70,7 @@ class GdxTexture implements Texture, Resource {
 	// BOZO
 	boolean bind (Color color) {
 		texture.bind();
-		//renderer.tintStack.setColor(color);
+		// renderer.tintStack.setColor(color);
 		return true;
 	}
 

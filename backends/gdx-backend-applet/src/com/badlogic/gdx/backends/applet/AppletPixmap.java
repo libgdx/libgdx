@@ -1,18 +1,16 @@
 /*******************************************************************************
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.applet;
 
 import java.awt.AlphaComposite;
@@ -25,219 +23,186 @@ import java.awt.image.BufferedImage;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
-
 /**
  * An implementation of Pixmap based on the java graphics framework.
  * 
  * @author badlogicgames@gmail.com
- *
+ * 
  */
-final class AppletPixmap implements Pixmap
-{
+final class AppletPixmap implements Pixmap {
 	BufferedImage pixmap;
 	Composite composite;
-	Color color = new Color( 0 );
+	Color color = new Color(0);
 	int strokeWidth = 1;
 
-	AppletPixmap( int width, int height, Pixmap.Format format )
-	{
-		int internalformat = getInternalFormat( format );
+	AppletPixmap (int width, int height, Pixmap.Format format) {
+		int internalformat = getInternalFormat(format);
 		pixmap = new BufferedImage(width, height, internalformat);
 		composite = AlphaComposite.Src;
 	}
-	
-	AppletPixmap(BufferedImage image) 
-	{
+
+	AppletPixmap (BufferedImage image) {
 		pixmap = image;
 	}
 
-	private int getInternalFormat( Pixmap.Format format )
-	{
-		if( format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565 )
+	private int getInternalFormat (Pixmap.Format format) {
+		if (format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565)
 			return BufferedImage.TYPE_4BYTE_ABGR;
 		else
 			return BufferedImage.TYPE_BYTE_GRAY;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void drawCircle(int x, int y, int radius) {
+	@Override public void drawCircle (int x, int y, int radius) {
 		Graphics2D g = (Graphics2D)pixmap.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g.setComposite( composite );
-		g.setColor( color );
-		g.setStroke( new BasicStroke( strokeWidth ) );
-		g.drawRect(x, y, radius * 2, radius * 2);		
+		g.setComposite(composite);
+		g.setColor(color);
+		g.setStroke(new BasicStroke(strokeWidth));
+		g.drawRect(x, y, radius * 2, radius * 2);
 		g.dispose();
-		
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void drawLine(int x, int y, int x2, int y2) {
-		Graphics2D g = (Graphics2D)pixmap.getGraphics();	
+	@Override public void drawLine (int x, int y, int x2, int y2) {
+		Graphics2D g = (Graphics2D)pixmap.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setComposite( composite );
-		g.setColor( color );
-		g.setStroke( new BasicStroke( strokeWidth ) );
-		g.drawLine(x, y, x2, y2);		
+		g.setComposite(composite);
+		g.setColor(color);
+		g.setStroke(new BasicStroke(strokeWidth));
+		g.drawLine(x, y, x2, y2);
 		g.dispose();
-		
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void drawRectangle(int x, int y, int width, int height) {
-		Graphics2D g = (Graphics2D)pixmap.getGraphics();		
+	@Override public void drawRectangle (int x, int y, int width, int height) {
+		Graphics2D g = (Graphics2D)pixmap.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setComposite( composite );
-		g.setColor( color );
-		g.setStroke( new BasicStroke( strokeWidth ) );
-		g.drawRect(x, y, width, height);		
+		g.setComposite(composite);
+		g.setColor(color);
+		g.setStroke(new BasicStroke(strokeWidth));
+		g.drawRect(x, y, width, height);
 		g.dispose();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void fill() 
-	{	
-		Graphics2D g = (Graphics2D)pixmap.getGraphics();	
+	@Override public void fill () {
+		Graphics2D g = (Graphics2D)pixmap.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setComposite( composite );
-		g.setColor( color );
-		g.fillRect( 0, 0, pixmap.getWidth(), pixmap.getHeight() );
+		g.setComposite(composite);
+		g.setColor(color);
+		g.fillRect(0, 0, pixmap.getWidth(), pixmap.getHeight());
 		g.dispose();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void fillCircle(int x, int y, int radius) 
-	{	
-		Graphics2D g = (Graphics2D)pixmap.getGraphics();	
+	@Override public void fillCircle (int x, int y, int radius) {
+		Graphics2D g = (Graphics2D)pixmap.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setComposite( composite );
-		g.setColor( color );		
-		g.fillOval( x, y, radius * 2, radius * 2);		
+		g.setComposite(composite);
+		g.setColor(color);
+		g.fillOval(x, y, radius * 2, radius * 2);
 		g.dispose();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void fillRectangle(int x, int y, int width, int height) 
-	{	
-		Graphics2D g = (Graphics2D)pixmap.getGraphics();	
+	@Override public void fillRectangle (int x, int y, int width, int height) {
+		Graphics2D g = (Graphics2D)pixmap.getGraphics();
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setComposite( composite );
-		g.setColor( color );
-		g.fillRect( x, y, width, height );
+		g.setComposite(composite);
+		g.setColor(color);
+		g.fillRect(x, y, width, height);
 		g.dispose();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public Object getNativePixmap() 
-	{	
+	@Override public Object getNativePixmap () {
 		return pixmap;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void setColor(float r, float g, float b, float a) 
-	{	
-		color = new Color( r, g, b, a );
+	@Override public void setColor (float r, float g, float b, float a) {
+		color = new Color(r, g, b, a);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void setStrokeWidth(int width) 
-	{	
+	@Override public void setStrokeWidth (int width) {
 		strokeWidth = width;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getPixel(int x, int y) 
-	{	
-		if( x < 0 || x >= pixmap.getWidth() )
-			return 0;
-		if( y < 0 || y >= pixmap.getHeight() )
-			return 0;
+	@Override public int getPixel (int x, int y) {
+		if (x < 0 || x >= pixmap.getWidth()) return 0;
+		if (y < 0 || y >= pixmap.getHeight()) return 0;
 		return pixmap.getRGB(x, y);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getHeight() {
+	@Override public int getHeight () {
 		return pixmap.getHeight();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getWidth() {
+	@Override public int getWidth () {
 		return pixmap.getWidth();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy, int width, int height) 
-	{
+	@Override public void drawPixmap (Pixmap pixmap, int x, int y, int srcx, int srcy, int width, int height) {
 		BufferedImage image = (BufferedImage)pixmap.getNativePixmap();
-				
+
 		Graphics2D g = (Graphics2D)this.pixmap.getGraphics();
-		g.setComposite( composite );
-		g.drawImage(image, x, y, x + width, y + height, 
-					 srcx, srcy, srcx + width, srcy + height, null);
+		g.setComposite(composite);
+		g.drawImage(image, x, y, x + width, y + height, srcx, srcy, srcx + width, srcy + height, null);
 		g.dispose();
-		
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void dispose() {
+	@Override public void dispose () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void getPixelRow(int[] pixels, int y) 
-	{		
-		for( int x = 0; x < pixmap.getWidth(); x++ )
-		{
+	@Override public void getPixelRow (int[] pixels, int y) {
+		for (int x = 0; x < pixmap.getWidth(); x++) {
 			pixels[x] = pixmap.getRGB(x, y);
 		}
-		
+
 	}
-	
+
 }

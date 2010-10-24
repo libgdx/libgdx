@@ -2,15 +2,17 @@
 package com.badlogic.gdx.graphics;
 
 /**
- * <p>A BitmapFontCache caches glyph geometry produced by a call to one of the
- * {@link BitmapFontCache#cacheText()} methods. It provides a fast way to
- * render static text.</p> 
+ * <p>
+ * A BitmapFontCache caches glyph geometry produced by a call to one of the {@link BitmapFontCache#cacheText()} methods. It
+ * provides a fast way to render static text.
+ * </p>
  * 
- * <p>The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing
- * Matthias :)</p>
+ * <p>
+ * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing Matthias :)
+ * </p>
  * 
  * @author nathan.sweet
- *
+ * 
  */
 public class BitmapFontCache {
 	private final Texture texture;
@@ -38,7 +40,7 @@ public class BitmapFontCache {
 
 	/**
 	 * Translates the text
-	 * @param xAmount the amount in x to move the text 
+	 * @param xAmount the amount in x to move the text
 	 * @param yAmount the amount in y to move the text
 	 */
 	public void translate (float xAmount, float yAmount) {
@@ -101,8 +103,8 @@ public class BitmapFontCache {
 	}
 
 	/**
-	 * Draws the contents of the given cache via a {@link SpriteBatch}. Must
-	 * be called between a {@link SpriteBatch#begin()}/{@link SpriteBatch#end()} pair.
+	 * Draws the contents of the given cache via a {@link SpriteBatch}. Must be called between a {@link SpriteBatch#begin()}/
+	 * {@link SpriteBatch#end()} pair.
 	 * @param spriteBatch the SpriteBatch.
 	 */
 	public void draw (SpriteBatch spriteBatch) {
@@ -115,7 +117,7 @@ public class BitmapFontCache {
 		idx = 0;
 
 		int vertexCount = glyphCount * 20;
-		if ( vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
+		if (vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
 	}
 
 	/**

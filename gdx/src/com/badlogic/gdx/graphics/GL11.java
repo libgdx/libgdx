@@ -1,31 +1,28 @@
 /*******************************************************************************
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
+
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 /**
- * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits 
- * all the methods from {@link GL10}. 
+ * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}.
  * @author mzechner
- *
+ * 
  */
-public interface GL11 extends GL10
-{
+public interface GL11 extends GL10 {
 	public static final int GL_OES_VERSION_1_0 = 1;
 	public static final int GL_MAX_ELEMENTS_VERTICES = 0x80E8;
 	public static final int GL_MAX_ELEMENTS_INDICES = 0x80E9;
@@ -154,140 +151,140 @@ public interface GL11 extends GL10
 	public static final int GL_OES_point_size_array = 1;
 	public static final int GL_OES_point_sprite = 1;
 
-	public void glClipPlanef( int plane, float[] equation, int offset );
-	
-	public void glClipPlanef ( int plane, FloatBuffer equation );
+	public void glClipPlanef (int plane, float[] equation, int offset);
 
-	public void glGetClipPlanef( int pname, float[] eqn, int offset );
-	
-	public void glGetClipPlanef ( int pname, FloatBuffer eqn );
+	public void glClipPlanef (int plane, FloatBuffer equation);
 
-	public void glGetFloatv( int pname, float[] params, int offset );
-	
-	public void glGetFloatv ( int pname, FloatBuffer params );
+	public void glGetClipPlanef (int pname, float[] eqn, int offset);
 
-	public void glGetLightfv ( int light, int pname, float[] params, int offset );
-	
-	public void glGetLightfv ( int light, int pname, FloatBuffer params );
-	
-	public void glGetMaterialfv ( int face, int pname, float[] params, int offset );
-	
-	public void glGetMaterialfv ( int face, int pname, FloatBuffer params );	
+	public void glGetClipPlanef (int pname, FloatBuffer eqn);
 
-	public void glGetTexParameterfv ( int target, int pname, float[] params, int offset );
-	
-	public void glGetTexParameterfv ( int target, int pname, FloatBuffer params );
+	public void glGetFloatv (int pname, float[] params, int offset);
 
-	public void glPointParameterf ( int pname, float param );
+	public void glGetFloatv (int pname, FloatBuffer params);
 
-	public void glPointParameterfv ( int pname, float[] params, int offset );
-	
-	public void glPointParameterfv ( int pname, FloatBuffer params );
+	public void glGetLightfv (int light, int pname, float[] params, int offset);
 
-	public void glTexParameterfv ( int target, int pname, float[] params, int offset );
-	
-	public void glTexParameterfv ( int target, int pname, FloatBuffer params );
+	public void glGetLightfv (int light, int pname, FloatBuffer params);
 
-	public void glBindBuffer ( int target, int buffer );
+	public void glGetMaterialfv (int face, int pname, float[] params, int offset);
 
-	public void glBufferData ( int target, int size, Buffer data, int usage );
+	public void glGetMaterialfv (int face, int pname, FloatBuffer params);
 
-	public void glBufferSubData ( int target, int offset, int size, Buffer data );
+	public void glGetTexParameterfv (int target, int pname, float[] params, int offset);
 
-	public void glClipPlanex ( int plane, int[] equation, int offset );
-	
-	public void glClipPlanex ( int plane, IntBuffer equation );
+	public void glGetTexParameterfv (int target, int pname, FloatBuffer params);
 
-	public void glColor4ub ( byte red, byte green, byte blue, byte alpha );
+	public void glPointParameterf (int pname, float param);
 
-	public void glDeleteBuffers ( int n, int[] buffers, int offset );
-	
-	public void glDeleteBuffers ( int n, IntBuffer buffers );
+	public void glPointParameterfv (int pname, float[] params, int offset);
 
-	public void glGetBooleanv ( int pname, boolean[] params, int offset );
-	
-	public void glGetBooleanv ( int pname, IntBuffer params );
+	public void glPointParameterfv (int pname, FloatBuffer params);
 
-	public void glGetBufferParameteriv ( int target, int pname, int[] params, int offset );
-	
-	public void glGetBufferParameteriv ( int target, int pname, IntBuffer params );
-	
-	public void glGetClipPlanex ( int pname, int[] eqn, int offset );
-	
-	public void glGetClipPlanex ( int pname, IntBuffer eqn );
+	public void glTexParameterfv (int target, int pname, float[] params, int offset);
 
-	public void glGenBuffers ( int n, int[] buffers, int offset );
-	
-	public void glGenBuffers ( int n, IntBuffer buffers );
+	public void glTexParameterfv (int target, int pname, FloatBuffer params);
 
-	public void glGetFixedv ( int pname, int[] params, int offset );
-	
-	public void glGetFixedv ( int pname, IntBuffer params );
+	public void glBindBuffer (int target, int buffer);
 
-	public void glGetLightxv ( int light, int pname, int[] params, int offset );
-	
-	public void glGetLightxv ( int light, int pname, IntBuffer params );
+	public void glBufferData (int target, int size, Buffer data, int usage);
 
-	public void glGetMaterialxv ( int face, int pname, int[] params, int offset );
-	
-	public void glGetMaterialxv ( int face, int pname, IntBuffer params );
+	public void glBufferSubData (int target, int offset, int size, Buffer data);
 
-	public void glGetPointerv ( int pname, Buffer[] params );
+	public void glClipPlanex (int plane, int[] equation, int offset);
 
-	public void glGetTexEnviv ( int env, int pname, int[] params, int offset );
-	
-	public void glGetTexEnviv ( int env, int pname, IntBuffer params );
+	public void glClipPlanex (int plane, IntBuffer equation);
 
-	public void glGetTexEnvxv ( int env, int pname, int[] params, int offset );
-	
-	public void glGetTexEnvxv ( int env, int pname, IntBuffer params );
+	public void glColor4ub (byte red, byte green, byte blue, byte alpha);
 
-	public void glGetTexParameteriv ( int target, int pname, int[] params, int offset );
-	
-	public void glGetTexParameteriv ( int target, int pname, IntBuffer params );
+	public void glDeleteBuffers (int n, int[] buffers, int offset);
 
-	public void glGetTexParameterxv ( int target, int pname, int[] params, int offset );
-	
-	public void glGetTexParameterxv ( int target, int pname, IntBuffer params );
+	public void glDeleteBuffers (int n, IntBuffer buffers);
 
-	public boolean glIsBuffer ( int buffer );
+	public void glGetBooleanv (int pname, boolean[] params, int offset);
 
-	public boolean glIsEnabled ( int cap );
+	public void glGetBooleanv (int pname, IntBuffer params);
 
-	public boolean glIsTexture ( int texture );
+	public void glGetBufferParameteriv (int target, int pname, int[] params, int offset);
 
-	public void glPointParameterx ( int pname, int param );
+	public void glGetBufferParameteriv (int target, int pname, IntBuffer params);
 
-	public void glPointParameterxv ( int pname, int[] params, int offset );
-	
-	public void glPointParameterxv ( int pname, IntBuffer params );
+	public void glGetClipPlanex (int pname, int[] eqn, int offset);
 
-	public void glTexEnvi ( int target, int pname, int param );
-	
-	public void glTexEnviv ( int target, int pname, int[] params, int offset );
-	
-	public void glTexEnviv ( int target, int pname, IntBuffer params );
+	public void glGetClipPlanex (int pname, IntBuffer eqn);
 
-	public void glTexParameteri ( int target, int pname, int param );
+	public void glGenBuffers (int n, int[] buffers, int offset);
 
-	public void glTexParameteriv ( int target, int pname, int[] params, int offset );
-	
-	public void glTexParameteriv ( int target, int pname, IntBuffer params );
+	public void glGenBuffers (int n, IntBuffer buffers);
 
-	public void glTexParameterxv ( int target, int pname, int[] params, int offset );
-	
-	public void glTexParameterxv ( int target, int pname, IntBuffer params );
+	public void glGetFixedv (int pname, int[] params, int offset);
 
-	public void glPointSizePointerOES ( int type, int stride, Buffer pointer );
-	
-	public void glVertexPointer( int size, int type, int stride, int pointer );
-	
-	public void glColorPointer( int size, int type, int stride, int pointer );
-	
-	public void glNormalPointer( int type, int stride, int pointer );
-	
-	public void glTexCoordPointer( int size, int type, int stride, int pointer );
-	
-	public void glDrawElements( int mode, int count, int type, int indices );
+	public void glGetFixedv (int pname, IntBuffer params);
+
+	public void glGetLightxv (int light, int pname, int[] params, int offset);
+
+	public void glGetLightxv (int light, int pname, IntBuffer params);
+
+	public void glGetMaterialxv (int face, int pname, int[] params, int offset);
+
+	public void glGetMaterialxv (int face, int pname, IntBuffer params);
+
+	public void glGetPointerv (int pname, Buffer[] params);
+
+	public void glGetTexEnviv (int env, int pname, int[] params, int offset);
+
+	public void glGetTexEnviv (int env, int pname, IntBuffer params);
+
+	public void glGetTexEnvxv (int env, int pname, int[] params, int offset);
+
+	public void glGetTexEnvxv (int env, int pname, IntBuffer params);
+
+	public void glGetTexParameteriv (int target, int pname, int[] params, int offset);
+
+	public void glGetTexParameteriv (int target, int pname, IntBuffer params);
+
+	public void glGetTexParameterxv (int target, int pname, int[] params, int offset);
+
+	public void glGetTexParameterxv (int target, int pname, IntBuffer params);
+
+	public boolean glIsBuffer (int buffer);
+
+	public boolean glIsEnabled (int cap);
+
+	public boolean glIsTexture (int texture);
+
+	public void glPointParameterx (int pname, int param);
+
+	public void glPointParameterxv (int pname, int[] params, int offset);
+
+	public void glPointParameterxv (int pname, IntBuffer params);
+
+	public void glTexEnvi (int target, int pname, int param);
+
+	public void glTexEnviv (int target, int pname, int[] params, int offset);
+
+	public void glTexEnviv (int target, int pname, IntBuffer params);
+
+	public void glTexParameteri (int target, int pname, int param);
+
+	public void glTexParameteriv (int target, int pname, int[] params, int offset);
+
+	public void glTexParameteriv (int target, int pname, IntBuffer params);
+
+	public void glTexParameterxv (int target, int pname, int[] params, int offset);
+
+	public void glTexParameterxv (int target, int pname, IntBuffer params);
+
+	public void glPointSizePointerOES (int type, int stride, Buffer pointer);
+
+	public void glVertexPointer (int size, int type, int stride, int pointer);
+
+	public void glColorPointer (int size, int type, int stride, int pointer);
+
+	public void glNormalPointer (int type, int stride, int pointer);
+
+	public void glTexCoordPointer (int size, int type, int stride, int pointer);
+
+	public void glDrawElements (int mode, int count, int type, int indices);
 
 }
