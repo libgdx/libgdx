@@ -23,7 +23,7 @@ import android.widget.ListView;
 import com.badlogic.gdx.box2d.TestCollection;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
-public class GDXTester extends ListActivity {
+public class AndroidTestStarter extends ListActivity {
 
 	@Override public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
