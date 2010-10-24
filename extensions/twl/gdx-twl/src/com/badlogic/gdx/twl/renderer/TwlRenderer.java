@@ -22,8 +22,12 @@
 
 package com.badlogic.gdx.twl.renderer;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.util.Collection;
 import java.util.Map;
 
@@ -177,7 +181,7 @@ public class TwlRenderer implements Renderer {
 		final TintStack previous;
 
 		public TintStack () {
-			super(0, 0, 0, 0);
+			super(1 / 255f, 1 / 255f, 1 / 255f, 1 / 255f);
 			this.previous = this;
 		}
 
@@ -196,11 +200,22 @@ public class TwlRenderer implements Renderer {
 		}
 	}
 
-	static public GUI createGUI (Widget root, FileHandle themeFile) {
+	static public GUI createGUI (Widget root, final FileHandle themeFile) {
 		TwlRenderer renderer = new TwlRenderer();
 		GUI gui = new GUI(root, renderer, null);
 		try {
-			URL themeURL = new URL("file", "", themeFile.toString());
+			URL themeURL = new URL("testenv", "local", 80, themeFile.toString(), new URLStreamHandler() {
+				protected URLConnection openConnection (URL url) throws IOException {
+					return new URLConnection(url) {
+						public void connect () throws IOException {
+						}
+
+						public InputStream getInputStream () throws IOException {
+							return themeFile.getInputStream();
+						}
+					};
+				}
+			});
 			gui.applyTheme(ThemeManager.createThemeManager(themeURL, renderer));
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading theme: " + themeFile, ex);

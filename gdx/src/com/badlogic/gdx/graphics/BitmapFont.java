@@ -351,7 +351,7 @@ public class BitmapFont {
 		return numLines * lineHeight;
 	}
 
-	private void addToCache (BitmapFontCache cache, CharSequence str, int x, int y, float color, int start, int end) {
+	private int addToCache (BitmapFontCache cache, CharSequence str, int x, int y, float color, int start, int end) {
 		Glyph lastGlyph = null;
 		while (start < end) {
 			lastGlyph = getGlyph(str.charAt(start++));
@@ -371,6 +371,7 @@ public class BitmapFont {
 				x += g.xadvance;
 			}
 		}
+		return x;
 	}
 
 	/**
@@ -407,8 +408,7 @@ public class BitmapFont {
 		final float color = tint.toFloatBits();
 		cache.reset(end - start);
 		y += yOffset;
-		addToCache(cache, str, x, y, color, start, end);
-		cache.width = x;
+		cache.width = addToCache(cache, str, x, y, color, start, end);
 		cache.height = lineHeight;
 	}
 
