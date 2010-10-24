@@ -11,11 +11,28 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.box2d;
+package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.tests.box2d.ApplyForce;
+import com.badlogic.gdx.tests.box2d.BodyTypes;
+import com.badlogic.gdx.tests.box2d.Box2DTest;
+import com.badlogic.gdx.tests.box2d.Bridge;
+import com.badlogic.gdx.tests.box2d.Cantilever;
+import com.badlogic.gdx.tests.box2d.Chain;
+import com.badlogic.gdx.tests.box2d.CharacterCollision;
+import com.badlogic.gdx.tests.box2d.CollisionFiltering;
+import com.badlogic.gdx.tests.box2d.ContinuousTest;
+import com.badlogic.gdx.tests.box2d.DebugRendererTest;
+import com.badlogic.gdx.tests.box2d.OneSidedPlatform;
+import com.badlogic.gdx.tests.box2d.Prismatic;
+import com.badlogic.gdx.tests.box2d.Pyramid;
+import com.badlogic.gdx.tests.box2d.SimpleTest;
+import com.badlogic.gdx.tests.box2d.SphereStack;
+import com.badlogic.gdx.tests.box2d.VaryingRestitution;
+import com.badlogic.gdx.tests.box2d.VerticalStack;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 
