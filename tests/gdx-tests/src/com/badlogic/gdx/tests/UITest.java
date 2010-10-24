@@ -61,14 +61,20 @@ public class UITest implements RenderListener, InputListener {
 			Image img1 = new Image("image1", new TextureRegion(badlogic, 0, 0, 256, 256));
 			img1.width = img1.height = 64;
 			img1.originX = img1.originY = 32;
-			img1.action(Sequence.$(FadeOut.$(1), FadeIn.$(1), Delay.$(MoveTo.$(100, 100, 1), 2), ScaleTo.$(0.5f, 0.5f, 1),
-				FadeOut.$(0.5f), Delay.$(Parallel.$(RotateTo.$(360, 1), FadeIn.$(1), ScaleTo.$(1, 1, 1)), 1)));
+			img1.action(Sequence.$(FadeOut.$(1), 
+										  FadeIn.$(1), 
+										  Delay.$(MoveTo.$(100, 100, 1), 2), ScaleTo.$(0.5f, 0.5f, 1),
+										  FadeOut.$(0.5f), 
+										  Delay.$(Parallel.$(RotateTo.$(360, 1), FadeIn.$(1), ScaleTo.$(1, 1, 1)), 1)));
 			ui.addActor(img1);
 
 			Image img2 = new Image("image2", new TextureRegion(badlogic, 0, 0, 256, 256));
 			img2.width = img2.height = 64;
 			img2.originX = img2.originY = 32;
-			img2.action(Repeat.$(Sequence.$(MoveBy.$(50, 0, 1), MoveBy.$(0, 50, 1), MoveBy.$(-50, 0, 1), MoveBy.$(0, -50, 1)), 3));
+			img2.action(Repeat.$(Sequence.$(MoveBy.$(50, 0, 1), 
+													  MoveBy.$(0, 50, 1), 
+													  MoveBy.$(-50, 0, 1), 
+													  MoveBy.$(0, -50, 1)), 3));
 			ui.addActor(img2);
 
 			Button button = new Button("button", atlas.getRegion("button"), atlas.getRegion("buttonDown"));
