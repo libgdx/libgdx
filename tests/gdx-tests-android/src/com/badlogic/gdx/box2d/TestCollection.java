@@ -21,6 +21,6 @@ public class TestCollection extends AndroidApplication {
 	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
 		initialize(false);
-		getGraphics().setRenderListener(new com.badlogic.gdx.tests.box2d.TestCollection());
+		getGraphics().setRenderListener(new com.badlogic.gdx.tests.Box2DTestCollection());
 	}
 }

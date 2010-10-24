@@ -18,6 +18,6 @@ import com.badlogic.gdx.backends.desktop.LwjglApplication;
 public class TestCollection {
 	public static void main (String[] argv) {
 		LwjglApplication app = new LwjglApplication("Simple Test", 480, 320, false);
-		app.getGraphics().setRenderListener(new com.badlogic.gdx.tests.box2d.TestCollection());
+		app.getGraphics().setRenderListener(new com.badlogic.gdx.tests.Box2DTestCollection());
 	}
 }
