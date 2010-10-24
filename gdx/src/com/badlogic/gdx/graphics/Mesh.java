@@ -393,6 +393,7 @@ public class Mesh {
 	 * @param indices the indices
 	 */
 	public void setIndices (short[] indices) {
+		this.indices.clear();
 		this.indices.put(indices);
 		this.indices.limit(indices.length);
 		this.indices.position(0);
