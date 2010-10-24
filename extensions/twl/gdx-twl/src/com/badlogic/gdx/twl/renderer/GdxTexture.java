@@ -24,6 +24,7 @@ package com.badlogic.gdx.twl.renderer;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -40,11 +41,10 @@ class GdxTexture implements Texture, Resource {
 	private final TwlRenderer renderer;
 	private final com.badlogic.gdx.graphics.Texture texture;
 
-	public GdxTexture (TwlRenderer renderer, String path) {
+	public GdxTexture (TwlRenderer renderer, FileHandle textureFile) {
 		this.renderer = renderer;
-		if (path.charAt(0) == '/') path = path.substring(1);
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(path, FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = Gdx.graphics.newTexture(textureFile, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
+			TextureWrap.ClampToEdge);
 	}
 
 	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled) {

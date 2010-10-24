@@ -38,7 +38,7 @@ public class TextAreaTest implements RenderListener {
 		layout.setHorizontalGroup(layout.createParallelGroup().addWidgets(scrollPane, fpsCounter));
 		layout.setVerticalGroup(layout.createSequentialGroup().addWidget(scrollPane).addGap(5).addWidget(fpsCounter).addGap(5));
 
-		gui = TwlRenderer.createGUI(layout, Gdx.files.getFileHandle("data/widgets.xml", FileType.Internal));
+		gui = TwlRenderer.createGUI(layout, "data/widgets.xml", FileType.Internal);
 
 		textArea.addCallback(new TextArea.Callback() {
 			Timer timer;

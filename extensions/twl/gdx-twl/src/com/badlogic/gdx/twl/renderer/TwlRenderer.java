@@ -22,6 +22,7 @@
 
 package com.badlogic.gdx.twl.renderer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
@@ -200,18 +202,26 @@ public class TwlRenderer implements Renderer {
 		}
 	}
 
-	static public GUI createGUI (Widget root, final FileHandle themeFile) {
+	static public GUI createGUI (Widget root, String themeFile, final FileType fileType) {
 		TwlRenderer renderer = new TwlRenderer();
 		GUI gui = new GUI(root, renderer, null);
+		File file = new File(themeFile);
+		final String themeRoot = file.getParent() + "/";
+		String themeFileName = file.getName();
 		try {
-			URL themeURL = new URL("testenv", "local", 80, themeFile.toString(), new URLStreamHandler() {
-				protected URLConnection openConnection (URL url) throws IOException {
+			URL themeURL = new URL("gdx-twl", "local", 80, themeFileName, new URLStreamHandler() {
+				protected URLConnection openConnection (final URL url) throws IOException {
+					final FileHandle fileHandle = Gdx.files.getFileHandle(themeRoot + url.getPath(), fileType);
 					return new URLConnection(url) {
 						public void connect () throws IOException {
 						}
 
+						public Object getContent () throws IOException {
+							return fileHandle;
+						}
+
 						public InputStream getInputStream () throws IOException {
-							return themeFile.getInputStream();
+							return fileHandle.getInputStream();
 						}
 					};
 				}

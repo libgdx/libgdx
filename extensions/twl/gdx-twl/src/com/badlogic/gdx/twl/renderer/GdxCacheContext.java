@@ -10,6 +10,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.GdxRuntimeException;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
 
 import de.matthiasmann.twl.renderer.CacheContext;
@@ -34,16 +35,8 @@ class GdxCacheContext implements CacheContext {
 		GdxTexture texture = textures.get(urlString);
 		if (texture == null) {
 			if (!valid) throw new IllegalStateException("CacheContext has been destroyed.");
-			String path;
-			try {
-				path = new File(url.toURI()).getPath();
-			} catch (Exception ex) {
-				path = new File(url.getPath()).getPath();
-			}
-			if (path.startsWith(File.separator)) path = path.substring(1);
-			int index = path.indexOf('!');
-			if (index != -1) path = path.substring(index + 1);
-			texture = new GdxTexture(renderer, path);
+			FileHandle textureFile = (FileHandle)url.getContent();
+			texture = new GdxTexture(renderer, textureFile);
 			textures.put(urlString, texture);
 		}
 		return texture;
@@ -53,17 +46,9 @@ class GdxCacheContext implements CacheContext {
 		String urlString = url.toExternalForm();
 		BitmapFont bitmapFont = fonts.get(urlString);
 		if (bitmapFont == null) {
-			String fontFile;
-			try {
-				fontFile = new File(url.toURI().getPath()).toString();
-			} catch (URISyntaxException ex) {
-				throw new GdxRuntimeException(ex);
-			}
-			if (fontFile.startsWith(File.separator)) fontFile = fontFile.substring(1);
-			String textureFile = fontFile.endsWith(".fnt") ? fontFile.substring(0, fontFile.length() - 3) + "png" : fontFile
-				+ ".png";
-			bitmapFont = new BitmapFont(Gdx.files.getFileHandle(fontFile, FileType.Internal), Gdx.files.getFileHandle(textureFile,
-				FileType.Internal), true);
+			FileHandle fontFile = (FileHandle)url.getContent();
+			FileHandle textureFile = (FileHandle)new URL(url, url.getPath().replace(".fnt", ".png")).getContent();
+			bitmapFont = new BitmapFont(fontFile, textureFile, true);
 			fonts.put(urlString, bitmapFont);
 		}
 		return bitmapFont;
@@ -84,5 +69,17 @@ class GdxCacheContext implements CacheContext {
 			fonts.clear();
 			valid = false;
 		}
+	}
+
+	private FileHandle urlToFileHandle (URL url) {
+		String relativePath;
+		try {
+			relativePath = new File(url.toURI()).getPath();
+		} catch (Exception ex) {
+			relativePath = new File(url.getPath()).getPath();
+		}
+		if (relativePath.startsWith(File.separator)) relativePath = relativePath.substring(1);
+		// BOZO - How to get the theme file to construct the full path?
+		return null;
 	}
 }
