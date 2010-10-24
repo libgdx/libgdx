@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  * <br>
  * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
  * @author Nathan Sweet <misc@n4te.com>
+ * @author Matthias Mann
  */
 public class BitmapFont {
 	private static final int LOG2_PAGE_SIZE = 9;
