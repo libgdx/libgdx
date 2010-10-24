@@ -33,6 +33,9 @@ import de.matthiasmann.twl.renderer.MouseCursor;
 import de.matthiasmann.twl.renderer.Resource;
 import de.matthiasmann.twl.renderer.Texture;
 
+/**
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 class GdxTexture implements Texture, Resource {
 	private final TwlRenderer renderer;
 	private final com.badlogic.gdx.graphics.Texture texture;

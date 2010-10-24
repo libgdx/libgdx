@@ -41,6 +41,7 @@ import de.matthiasmann.twl.utils.StateExpression;
 
 /**
  * @author Nathan Sweet <misc@n4te.com>
+ * @author Matthias Mann
  */
 class GdxFont implements Font {
 	final TwlRenderer renderer;

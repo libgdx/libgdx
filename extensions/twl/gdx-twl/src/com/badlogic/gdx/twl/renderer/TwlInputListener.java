@@ -6,6 +6,9 @@ import com.badlogic.gdx.RenderListener;
 
 import de.matthiasmann.twl.GUI;
 
+/**
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class TwlInputListener implements InputListener {
 	private final GUI gui;
 
