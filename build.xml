@@ -14,7 +14,7 @@
 		 e.g. c:\android-ndk or /opt/android-ndk -->
 	<!--<property environment="env"/>-->
 	
-	<property name="env.NDK_HOME" value="/opt/android-ndk"/>
+	<property name="env.NDK_HOME" value="/opt/android-ndk-rb4"/>
 	
 	<!-- libgdx version -->
 	<property name="version" value="0.71"/>
