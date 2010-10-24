@@ -13,42 +13,27 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 /**
- * <p>
- * A BitmapFont is used to load and render AngleCode bitmap font files. The AngleCode bitmap font consists of 2 files, the .fnt
- * file which must be saved with text encoding (not xml or binary!) and the bitmap file holding the glyphs, usually in .png
- * format.
- * </p>
- * 
- * <p>
- * This implementation currently only supports a single glyph page.
- * </p>
- * 
- * <p>
+ * Loads and renders AngleCode BMFont files. The bitmap font consists of 2 files: the .fnt file which must be saved with text
+ * encoding (not xml or binary!) and the bitmap file holding the glyphs, usually in .png format. <br>
+ * <br>
+ * This implementation currently only supports a single glyph page. <br>
+ * <br>
  * To draw text with this class you need to call one of the draw() methods together with a {@link SpriteBatch}. The SpriteBatch
- * must be in rendering mode, that is, {@link SpriteBatch#begin()} must have been called before drawing
- * </p>
- * 
- * <p>
- * Additionally you can cache text in a {@link BitmapFontCache} for faster rendering of static text
- * </p>
- * 
- * <p>
- * A BitmapFont is managed. You need to call the {@link #dispose()} method when you no longer need it
- * </p>
- * 
- * <p>
- * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing Matthias :)
- * </p>
- * 
- * @author nathan.sweet
- * 
+ * must be in rendering mode, that is, {@link SpriteBatch#begin()} must have been called before drawing <br>
+ * <br>
+ * Additionally you can cache text in a {@link BitmapFontCache} for faster rendering of static text. <br>
+ * <br>
+ * A BitmapFont is managed. You need to call the {@link #dispose()} method when you no longer need it. <br>
+ * <br>
+ * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public class BitmapFont {
 	private static final int LOG2_PAGE_SIZE = 9;
 	private static final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	private static final int PAGES = 0x10000 / PAGE_SIZE;
 
-	public final Texture texture;
+	private final Texture texture;
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
 	private int lineHeight;
 	private int baseLine;
@@ -59,9 +44,8 @@ public class BitmapFont {
 	/**
 	 * Creates a new BitmapFont instance based on a .fnt file and an image file holding the page with glyphs. Currently only
 	 * supports single page AngleCode fonts.
-	 * 
 	 * @param fontFile The font file
-	 * @param imageFile the image file
+	 * @param imageFile The image file
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile) {
 		texture = Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
@@ -157,11 +141,10 @@ public class BitmapFont {
 	/**
 	 * Draws the given string at the given position with the given color. You can only call this between
 	 * {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
-	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
 	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner.
+	 * @param y The y position of the left most character's top left corner
 	 * @param color The color
 	 * @return the width of the rendered string
 	 */
@@ -172,14 +155,13 @@ public class BitmapFont {
 	/**
 	 * Draws the given string at the given position with the given color. You can only call this between
 	 * {@link SpriteBatch#begin()}/{@link SpriteBatch#end()}.
-	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
 	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner.
+	 * @param y The y position of the left most character's top left corner
 	 * @param color The color
 	 * @param start the first character of the string to draw
-	 * @param the last character of the string to draw
+	 * @param end the last character of the string to draw
 	 * @return the width of the rendered string
 	 */
 	public int draw (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int start, int end) {
@@ -211,31 +193,27 @@ public class BitmapFont {
 
 	/**
 	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
-	 * first line's glyph. The method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
+	 * first line's glyph. This method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
 	 * {@link SpriteBatch#end()}.
-	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
 	 * @param y The y position of the left most character's top left corner of the first line
 	 * @param color The color
-	 * @return
+	 * @return The height of the rendered string
 	 */
 	public int drawMultiLineText (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color) {
 		return drawMultiLineText(spriteBatch, str, x, y, color, 0, HAlignment.LEFT);
 	}
 
 	/**
-	 * <p>
 	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
 	 * first line's glyph. The method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
-	 * {@link SpriteBatch#end()}.
-	 * </p>
-	 * <p>
+	 * {@link SpriteBatch#end()}. <br>
+	 * <br>
 	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
 	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
 	 * alignmentWidth). The second parameter specifies the alignment itself.
-	 * 
 	 * @param spriteBatch The {@link SpriteBatch} to use
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
@@ -243,18 +221,79 @@ public class BitmapFont {
 	 * @param color The color
 	 * @param alignmentWidth The alignment width
 	 * @param alignment The horizontal alignment
-	 * @return the height of the multiline text
+	 * @return The height of the multiline text
 	 */
 	public int drawMultiLineText (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int alignmentWidth,
 		HAlignment alignment) {
 		int start = 0;
 		int numLines = 0;
-		while (start < str.length()) {
+		int length = str.length();
+		while (start < length) {
 			int lineEnd = indexOf(str, '\n', start);
 			int xOffset = 0;
 			if (alignment != HAlignment.LEFT) {
 				int lineWidth = computeTextWidth(str, start, lineEnd);
 				xOffset = alignmentWidth - lineWidth;
+				if (alignment == HAlignment.CENTER) xOffset /= 2;
+			}
+			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
+			start = lineEnd + 1;
+			y -= lineHeight;
+			numLines++;
+		}
+		return numLines * lineHeight;
+	}
+
+	/**
+	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
+	 * first line's glyph. This method interprets new lines and causes the text to wrap at spaces based on the given
+	 * <code>wrapWidth</code>. You can only call this between {@link SpriteBatch#begin()}/ {@link SpriteBatch#end()}.
+	 * @param spriteBatch The {@link SpriteBatch} to use
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param color The color
+	 * @param wrapWidth The wrap width
+	 * @return the height of the rendered string
+	 */
+	public int drawWrappedText (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int wrapWidth) {
+		return drawWrappedText(spriteBatch, str, x, y, color, wrapWidth, HAlignment.LEFT);
+	}
+
+	/**
+	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
+	 * first line's glyph. This method interprets new lines and causes the text to wrap at spaces based on the given
+	 * <code>wrapWidth</code>. You can only call this between {@link SpriteBatch#begin()}/ {@link SpriteBatch#end()}.<br>
+	 * <br>
+	 * You can specify the horizontal alignment of the text within the <code>wrapWidth</code> by using the <code>alignment</code>
+	 * parameter.
+	 * @param spriteBatch The {@link SpriteBatch} to use
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param color The color
+	 * @param wrapWidth The wrap width
+	 * @return the height of the rendered string
+	 */
+	public int drawWrappedText (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int wrapWidth,
+		HAlignment alignment) {
+		int start = 0;
+		int numLines = 0;
+		int length = str.length();
+		while (start < length) {
+			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
+			if (lineEnd < length) {
+				while (lineEnd > start) {
+					char ch = str.charAt(lineEnd);
+					if (ch == ' ' || ch == '\n') break;
+					lineEnd--;
+				}
+			}
+			if (lineEnd == start) lineEnd++;
+			int xOffset = 0;
+			if (alignment != HAlignment.LEFT) {
+				int lineWidth = computeTextWidth(str, start, lineEnd);
+				xOffset = wrapWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
 			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
@@ -290,8 +329,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Creates a new {@link BitmapFontCache} to be used with {@link #cacheText()}.
-	 * @return The cache
+	 * Creates a new {@link BitmapFontCache} to be used with {@link #cacheText(BitmapFontCache, CharSequence, int, int, Color)}.
+	 * @return The new cache
 	 */
 	public BitmapFontCache newCache () {
 		return new BitmapFontCache(this.texture);
@@ -299,11 +338,10 @@ public class BitmapFont {
 
 	/**
 	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * 
 	 * @param cache The cache
 	 * @param str The string
 	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner.
+	 * @param y The y position of the left most character's top left corner
 	 * @param color The color
 	 */
 	public void cacheText (BitmapFontCache cache, CharSequence str, int x, int y, Color color) {
@@ -312,14 +350,13 @@ public class BitmapFont {
 
 	/**
 	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * 
 	 * @param cache The cache
 	 * @param str The string
 	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner.
+	 * @param y The y position of the left most character's top left corner
 	 * @param color The color
-	 * @param start the first character of the string to draw
-	 * @param the last character of the string to draw
+	 * @param start The first character of the string to draw
+	 * @param end The last character of the string to draw
 	 */
 	public void cacheText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int start, int end) {
 		cache.reset(end - start);
@@ -332,8 +369,7 @@ public class BitmapFont {
 	/**
 	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
 	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
-	 * 
-	 * @param spriteBatch The {@link SpriteBatch} to use
+	 * @param cache The cache
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
 	 * @param y The y position of the left most character's top left corner of the first line
@@ -344,15 +380,12 @@ public class BitmapFont {
 	}
 
 	/**
-	 * <p>
 	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
-	 * </p>
-	 * <p>
+	 * coincides with the top left corner of the first line's glyph. The method interprets new lines. <br>
+	 * <br>
 	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
 	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
 	 * alignmentWidth). The second parameter specifies the alignment itself.
-	 * 
 	 * @param cache The cache
 	 * @param str The string
 	 * @param x The x position of the left most character of the first line
@@ -361,8 +394,8 @@ public class BitmapFont {
 	 * @param alignmentWidth The alignment width
 	 * @param alignment The horizontal alignment
 	 */
-	public BitmapFontCache cacheMultiLineText (BitmapFontCache cache, CharSequence str, int x, int y, Color color,
-		int alignmentWidth, HAlignment alignment) {
+	public void cacheMultiLineText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int alignmentWidth,
+		HAlignment alignment) {
 		int length = str.length();
 		cache.reset(length);
 		int start = 0;
@@ -382,11 +415,70 @@ public class BitmapFont {
 		}
 		cache.width = alignmentWidth;
 		cache.height = start - y;
-		return cache;
 	}
 
 	/**
-	 * Computes the strings width
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
+	 * at spaces based on the given <code>wrapWidth</code>.
+	 * @param cache The cache
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param color The color
+	 * @param wrapWidth The wrap width
+	 */
+	public void cacheWrappedText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int wrapWidth) {
+		cacheWrappedText(cache, str, x, y, color, wrapWidth, HAlignment.LEFT);
+	}
+
+	/**
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
+	 * at spaces based on the given <code>wrapWidth</code>. <br>
+	 * <br>
+	 * You can specify the horizontal alignment of the text within the <code>wrapWidth</code> by using the <code>alignment</code>
+	 * parameter.
+	 * @param cache The cache
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param color The color
+	 * @param wrapWidth The wrap width
+	 */
+	public void cacheWrappedText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int wrapWidth,
+		HAlignment alignment) {
+		int length = str.length();
+		cache.reset(length);
+		int start = 0;
+		int numLines = 0;
+		while (start < length) {
+			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
+			if (lineEnd < length) {
+				while (lineEnd > start) {
+					char ch = str.charAt(lineEnd);
+					if (ch == ' ' || ch == '\n') break;
+					lineEnd--;
+				}
+			}
+			if (lineEnd == start) lineEnd++;
+			int xOffset = 0;
+			if (alignment != HAlignment.LEFT) {
+				int lineWidth = computeTextWidth(str, start, lineEnd);
+				xOffset = wrapWidth - lineWidth;
+				if (alignment == HAlignment.CENTER) xOffset /= 2;
+			}
+			addToCache(cache, str, x + xOffset, y, color, start, lineEnd);
+			start = lineEnd + 1;
+			y -= lineHeight;
+			numLines++;
+		}
+		cache.width = wrapWidth;
+		cache.height = start - y;
+	}
+
+	/**
+	 * Computes the width of the string.
 	 * @param str The string
 	 * @return the width
 	 */
@@ -395,11 +487,11 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Computes the string with
+	 * Computes the width of the string.
 	 * @param str the string
-	 * @param start the first character index
-	 * @param end the last character index (exclusive)
-	 * @return the string width
+	 * @param start The first character index
+	 * @param end The last character index (exclusive)
+	 * @return The string width
 	 */
 	public int computeTextWidth (CharSequence str, int start, int end) {
 		int width = 0;
@@ -426,10 +518,10 @@ public class BitmapFont {
 	/**
 	 * Returns the number of characters that can be rendered given the available width.
 	 * @param str The string
-	 * @param start the start index of the first character
-	 * @param end the index of the last character exclusive
+	 * @param start The start index of the first character
+	 * @param end The index of the last character (exclusive)
 	 * @param availableWidth the available width
-	 * @return the number of characters that fit into availableWdith
+	 * @return The number of characters that fit into availableWdith
 	 */
 	public int computeVisibleGlpyhs (CharSequence str, int start, int end, int availableWidth) {
 		int index = start;
@@ -449,14 +541,15 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Computes the maximum width of the multiline string
-	 * @param str the string
-	 * @return the maximum width
+	 * Computes the maximum width of the string, respecting newlines.
+	 * @param str The string
+	 * @return The maximum width
 	 */
 	public int computeMultiLineTextWidth (CharSequence str) {
 		int start = 0;
 		int width = 0;
-		while (start < str.length()) {
+		int length = str.length();
+		while (start < length) {
 			int lineEnd = indexOf(str, '\n', start);
 			int lineWidth = computeTextWidth(str, start, lineEnd);
 			width = Math.max(width, lineWidth);
@@ -466,41 +559,43 @@ public class BitmapFont {
 	}
 
 	/**
-	 * @return the glyph texture
+	 * @return The glyph texture
 	 */
 	public Texture getTexture () {
 		return texture;
 	}
 
 	/**
-	 * @return the base line offset
+	 * @return The baseline offset, which is the distance from the drawing position to the line that most glyphs sit on
 	 */
 	public int getBaseLine () {
 		return baseLine;
 	}
 
 	/**
-	 * @return the line height
+	 * @return The line height, which is the distance from one line of text to the next
 	 */
 	public int getLineHeight () {
 		return lineHeight;
 	}
 
 	/**
-	 * @return the width of the space character
+	 * @return The width of the space character
 	 */
 	public int getSpaceWidth () {
 		return spaceWidth;
 	}
 
-	public int getEM () {
-		return lineHeight;
-	}
-
-	public int getEX () {
+	/**
+	 * @return The x-height, which is the typical height of lowercase characters
+	 */
+	public int getXHeight () {
 		return ex;
 	}
 
+	/**
+	 * @return The cap height, which is the typical height of uppercase characters
+	 */
 	public int getCapHeight () {
 		return capHeight;
 	}

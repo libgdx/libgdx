@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
@@ -18,9 +19,10 @@ public class BitmapFontTest implements RenderListener {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private Sprite logoSprite;
-	private Color blue = new Color(0, 0, 1, 0.5f);
-	private BitmapFontCache cache1, cache2, cache3, cache4;
+	private Color red = new Color(1, 0, 0, 0.5f);
+	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
 	int renderMode;
+	private float alpha;
 
 	public void surfaceCreated () {
 		if (spriteBatch != null) return;
@@ -39,10 +41,12 @@ public class BitmapFontTest implements RenderListener {
 				return false;
 			}
 		});
+
 		cache1 = font.newCache();
 		cache2 = font.newCache();
 		cache3 = font.newCache();
 		cache4 = font.newCache();
+		cache5 = font.newCache();
 
 		font.cacheText(cache1, "(cached)", 10, 76, Color.WHITE);
 
@@ -50,16 +54,21 @@ public class BitmapFontTest implements RenderListener {
 		font.cacheMultiLineText(cache2, text, 5, 310, Color.RED, 470, BitmapFont.HAlignment.LEFT);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		font.cacheMultiLineText(cache3, text, 5, 210, blue, 470, BitmapFont.HAlignment.CENTER);
+		font.cacheMultiLineText(cache3, text, 5, 210, Color.BLUE, 470, BitmapFont.HAlignment.CENTER);
 
 		text = "Kerning: LYA moo";
 		font.cacheText(cache4, text, 210, 76, Color.WHITE, 0, text.length() - 3);
+
+		text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
+		font.cacheWrappedText(cache5, text, 0, 310, red, 480, HAlignment.CENTER);
 	}
 
 	public void surfaceChanged (int width, int height) {
 	}
 
 	public void render () {
+		alpha = (alpha + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
+
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
@@ -76,19 +85,29 @@ public class BitmapFontTest implements RenderListener {
 	}
 
 	private void renderNormal () {
+		String text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
+		red.a = alpha;
+		font.drawWrappedText(spriteBatch, text, 0, 310, red, 480, HAlignment.CENTER);
+		if (alpha > 0.66f) return;
+
 		font.draw(spriteBatch, "(normal)", 10, 76, Color.WHITE);
 
-		String text = "Sphinx of black quartz,\njudge my vow.";
+		text = "Sphinx of black quartz,\njudge my vow.";
 		font.drawMultiLineText(spriteBatch, text, 5, 310, Color.RED);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		font.drawMultiLineText(spriteBatch, text, 5, 210, blue, 470, BitmapFont.HAlignment.RIGHT);
+		font.drawMultiLineText(spriteBatch, text, 5, 210, Color.BLUE, 470, BitmapFont.HAlignment.RIGHT);
 
 		text = "Kerning: LYA moo";
 		font.draw(spriteBatch, text, 210, 76, Color.WHITE, 0, text.length() - 3);
 	}
 
 	private void renderCached () {
+		red.a = alpha;
+		cache5.setColor(red);
+		cache5.draw(spriteBatch);
+		if (alpha > 0.66f) return;
+
 		cache1.draw(spriteBatch);
 		cache2.draw(spriteBatch);
 		cache3.draw(spriteBatch);

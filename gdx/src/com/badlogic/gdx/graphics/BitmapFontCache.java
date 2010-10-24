@@ -2,17 +2,13 @@
 package com.badlogic.gdx.graphics;
 
 /**
- * <p>
- * A BitmapFontCache caches glyph geometry produced by a call to one of the {@link BitmapFontCache#cacheText()} methods. It
- * provides a fast way to render static text.
- * </p>
- * 
- * <p>
- * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing Matthias :)
- * </p>
- * 
- * @author nathan.sweet
- * 
+ * A BitmapFontCache caches glyph geometry produced by a call to one of the
+ * {@link BitmapFont#cacheText(BitmapFontCache, CharSequence, int, int, Color)} methods. It caches the glyph geometry, providing a
+ * fast way to render static text. <br>
+ * <br>
+ * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
+ * @author Nathan Sweet <misc@n4te.com>
+ * @author Matthias Mann
  */
 public class BitmapFontCache {
 	private final Texture texture;
@@ -30,18 +26,18 @@ public class BitmapFontCache {
 	}
 
 	/**
-	 * Sets the position of the text
-	 * @param x the x coordinate
-	 * @param y the y coodinate
+	 * Sets the position of the text, relative to the position when the cached text was created.
+	 * @param x The x coordinate
+	 * @param y The y coodinate
 	 */
 	public void setPosition (float x, float y) {
 		translate(x - this.x, y - this.y);
 	}
 
 	/**
-	 * Translates the text
-	 * @param xAmount the amount in x to move the text
-	 * @param yAmount the amount in y to move the text
+	 * Sets the position of the text, relative to its current position.
+	 * @param xAmount The amount in x to move the text
+	 * @param yAmount The amount in y to move the text
 	 */
 	public void translate (float xAmount, float yAmount) {
 		if (xAmount == 0 && yAmount == 0) return;
@@ -56,10 +52,23 @@ public class BitmapFontCache {
 
 	/**
 	 * Sets the tint color of the text.
-	 * @param tint the {@link Color}
+	 * @param tint The {@link Color}
 	 */
 	public void setColor (Color tint) {
 		final float color = tint.toFloatBits();
+		if (color == this.color) return;
+		this.color = color;
+		float[] vertices = this.vertices;
+		for (int i = 2, n = idx; i < n; i += 5)
+			vertices[i] = color;
+	}
+
+	/**
+	 * Sets the tint color of the text.
+	 */
+	public void setColor (float r, float g, float b, float a) {
+		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
+		float color = Float.intBitsToFloat(intBits);
 		if (color == this.color) return;
 		this.color = color;
 		float[] vertices = this.vertices;
@@ -103,9 +112,9 @@ public class BitmapFontCache {
 	}
 
 	/**
-	 * Draws the contents of the given cache via a {@link SpriteBatch}. Must be called between a {@link SpriteBatch#begin()}/
+	 * Draws the contents of the cache via a {@link SpriteBatch}. Must be called between a {@link SpriteBatch#begin()}/
 	 * {@link SpriteBatch#end()} pair.
-	 * @param spriteBatch the SpriteBatch.
+	 * @param spriteBatch The SpriteBatch
 	 */
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(texture, vertices, 0, idx);
@@ -121,28 +130,28 @@ public class BitmapFontCache {
 	}
 
 	/**
-	 * @return the width of the contained text
+	 * @return The width of the contained text
 	 */
 	public int getWidth () {
 		return width;
 	}
 
 	/**
-	 * @return the height of the contained text
+	 * @return The height of the contained text
 	 */
 	public int getHeight () {
 		return height;
 	}
 
 	/**
-	 * @return the x coordinate of the contained text
+	 * @return The x coordinate of the contained text, relative to the position when the cached text was created
 	 */
 	public float getX () {
 		return x;
 	}
 
 	/**
-	 * @return the y coordinate of the contained text
+	 * @return The y coordinate of the contained text, relative to the position when the cached text was created
 	 */
 	public float getY () {
 		return y;

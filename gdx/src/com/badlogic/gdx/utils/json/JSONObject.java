@@ -74,7 +74,7 @@ import java.util.TreeSet;
 	 * JSONObject.NULL is equivalent to the value that JavaScript calls null, whilst Java's null is equivalent to the value that
 	 * JavaScript calls undefined.
 	 */
-	private static final class Null {
+	static final class Null {
 
 		/**
 		 * There is only intended to be a single instance of the NULL object, so the clone method returns itself.
@@ -126,8 +126,6 @@ import java.util.TreeSet;
 	 * copied. Missing keys are ignored.
 	 * @param jo A JSONObject.
 	 * @param names An array of strings.
-	 * @throws JSONException
-	 * @exception JSONException If a value is a non-finite number or if a name is duplicated.
 	 */
 	public JSONObject (JSONObject jo, String[] names) {
 		this();
@@ -202,7 +200,6 @@ import java.util.TreeSet;
 	 * Construct a JSONObject from a Map.
 	 * 
 	 * @param map A map object that can be used to initialize the contents of the JSONObject.
-	 * @throws JSONException
 	 */
 	public JSONObject (Map map) {
 		this.map = new HashMap();
