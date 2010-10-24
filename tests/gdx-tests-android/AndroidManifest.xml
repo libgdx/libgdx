@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.badlogic.gdx"
+      package="com.badlogic.gdx.tests.android"
       android:versionCode="1"
       android:versionName="1.0">
 <application android:icon="@drawable/icon" android:label="@string/app_name"
@@ -13,8 +13,10 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		
+		<activity android:name=".GdxTestActivity" android:label="Gdx Test"/>
 
-		<activity android:name=".SimpleTest" android:label="Simple Test"/>
+		<!-- <activity android:name=".SimpleTest" android:label="Simple Test"/>
 		<activity android:name=".MeshRendererTest" android:label="MeshRenderer Test"/>
 		<activity android:name=".LifeCycleTest" android:label="Life Cycle Test"/>
 		<activity android:name=".VertexBufferObjectTest" android:label="Vertex Buffer Object Test"/>
@@ -53,7 +55,7 @@
 		<activity android:name=".FillrateTest" android:label="Fillrate Test"/>
 		<activity android:name=".AlphaTest" android:label="Alpha Test"/>
 		<activity android:name=".BitmapFontTest" android:label="BitmapFont Test"/>
-		<activity android:name=".BitmapFontFlipTest" android:label="BitmapFont Flip Test"/>
+		<activity android:name=".BitmapFontFlipTest" android:label="BitmapFont Flip Test"/>-->
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="5"/>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
