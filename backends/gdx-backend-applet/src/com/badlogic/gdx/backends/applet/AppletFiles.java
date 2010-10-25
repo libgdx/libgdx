@@ -31,7 +31,7 @@ final class AppletFiles implements Files {
 	 * {@inheritDoc}
 	 */
 	@Override public FileHandle getFileHandle (String filename, FileType type) {
-		if (type == FileType.Absolut || type == FileType.External)
+		if (type == FileType.Absolute || type == FileType.External)
 			return null;
 		else
 			return new AppletFileHandle(filename);
@@ -55,7 +55,7 @@ final class AppletFiles implements Files {
 	 * {@inheritDoc}
 	 */
 	@Override public InputStream readFile (String fileName, FileType type) {
-		if (type == FileType.Absolut || type == FileType.External)
+		if (type == FileType.Absolute || type == FileType.External)
 			return null;
 		else
 			return new AppletFileHandle(fileName).getInputStream();

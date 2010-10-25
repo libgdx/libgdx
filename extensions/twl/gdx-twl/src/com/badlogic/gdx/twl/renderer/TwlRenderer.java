@@ -111,7 +111,7 @@ public class TwlRenderer implements Renderer {
 	}
 
 	public void setClipRect (Rect rect) {
-		if (rendering) spriteBatch.renderMesh();
+		if (rendering) spriteBatch.flush();
 		if (rect == null) {
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;

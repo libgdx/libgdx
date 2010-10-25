@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.backends.desktop;
 
+import java.awt.Canvas;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -132,7 +133,7 @@ import com.badlogic.gdx.Version;
 		Gdx.audio = this.getAudio();
 		Gdx.files = this.getFiles();
 
-		new Thread("LWJGL") {
+		new Thread("LWJGL Application") {
 			public void run () {
 				try {
 					LwjglApplication.this.start();
@@ -161,15 +162,21 @@ import com.badlogic.gdx.Version;
 		}
 	}
 
+	public void setSize (int width, int height) {
+		this.width = width;
+		this.height = height;
+		for (RenderListener listener : listeners)
+			listener.surfaceChanged(getWidth(), getHeight());
+	}
+
 	void start () throws LWJGLException {
 		gameThread = Thread.currentThread();
 
 		setupDisplay();
 
-		for (RenderListener listener : listeners) {
+		for (RenderListener listener : listeners)
 			listener.surfaceCreated();
-			listener.surfaceChanged(getWidth(), getHeight());
-		}
+		setSize(width, height);
 		for (RenderListener listener : listeners)
 			listener.render();
 

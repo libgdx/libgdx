@@ -97,7 +97,7 @@ final class LwjglAudio implements Audio, Runnable {
 			line = AudioSystem.getSourceDataLine(format);
 			line.open(format, 4410);
 			line.start();
-			thread = new Thread(this);
+			thread = new Thread(this, "LWJGL Audio");
 			thread.setDaemon(true);
 			thread.start();
 		} catch (Exception e) {

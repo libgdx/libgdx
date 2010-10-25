@@ -39,7 +39,7 @@ final class JoglFiles implements Files {
 	 */
 	@Override public FileHandle getFileHandle (String filename, FileType type) {
 		File file = null;
-		if (type == FileType.Absolut || type == FileType.Internal)
+		if (type == FileType.Absolute || type == FileType.Internal)
 			file = new File(filename);
 		else
 			file = new File(this.externalPath + filename);
@@ -55,7 +55,7 @@ final class JoglFiles implements Files {
 	 */
 	@Override public String[] listDirectory (String directory, FileType type) {
 		File file = null;
-		if (type == FileType.Absolut || type == FileType.Internal)
+		if (type == FileType.Absolute || type == FileType.Internal)
 			file = new File(directory);
 		else
 			file = new File(this.externalPath + directory);
@@ -73,7 +73,7 @@ final class JoglFiles implements Files {
 
 		if (type == FileType.Internal) return false;
 
-		if (type == FileType.Absolut)
+		if (type == FileType.Absolute)
 			file = new File(directory);
 		else
 			file = new File(this.externalPath + directory);
@@ -86,7 +86,7 @@ final class JoglFiles implements Files {
 	@Override public InputStream readFile (String fileName, FileType type) {
 		File file = null;
 		InputStream in = null;
-		if (type == FileType.Absolut || type == FileType.Internal)
+		if (type == FileType.Absolute || type == FileType.Internal)
 			file = new File(fileName);
 		else
 			file = new File(this.externalPath + fileName);
@@ -109,7 +109,7 @@ final class JoglFiles implements Files {
 
 		if (type == FileType.Internal) return null;
 
-		if (type == FileType.Absolut)
+		if (type == FileType.Absolute)
 			file = new File(filename);
 		else
 			file = new File(this.externalPath + filename);

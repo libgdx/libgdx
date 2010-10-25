@@ -635,7 +635,14 @@ public class SpriteBatch {
 		idx += length;
 	}
 
-	public void renderMesh () {
+	/**
+	 * Causes any pending sprites to be rendered, without ending the SpriteBatch.
+	 */
+	public void flush () {
+		renderMesh();
+	}
+	
+	private void renderMesh () {
 		if (idx == 0) return;
 
 		renderCalls++;

@@ -52,7 +52,7 @@ public class LwjglMusic implements Music, Runnable {
 		ain.close();
 		ain = null;
 
-		thread = new Thread(this);
+		thread = new Thread(this, "LWJGL Music");
 		thread.setDaemon(true);
 		thread.start();
 	}

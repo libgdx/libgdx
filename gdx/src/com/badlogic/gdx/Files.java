@@ -39,7 +39,7 @@ public interface Files {
 	 * 
 	 */
 	public enum FileType {
-		Internal, External, Absolut
+		Internal, External, Absolute
 	}
 
 	/**

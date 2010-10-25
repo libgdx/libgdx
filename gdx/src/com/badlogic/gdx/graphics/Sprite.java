@@ -304,6 +304,10 @@ public class Sprite {
 		spriteBatch.draw(texture, vertices, 0, 20);
 	}
 
+	public void setTexture (Texture texture) {
+		this.texture = texture;
+	}
+
 	public Texture getTexture () {
 		return texture;
 	}

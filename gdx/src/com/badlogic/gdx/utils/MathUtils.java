@@ -9,9 +9,9 @@ package com.badlogic.gdx.utils;
  * Roquen on JavaGaming.org for random numbers.<br>
  */
 public class MathUtils {
-	static public final float PI = 3.1415926535897932384626433832795028841971f;
+	static public final float PI = 3.1415927f;
 
-	static private final int SIN_BITS = 14; // Adjust for accuracy.
+	static private final int SIN_BITS = 13; // Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
 	static private final int SIN_COUNT = SIN_MASK + 1;
 
@@ -85,17 +85,10 @@ public class MathUtils {
 				mul = 1;
 			add = 0;
 		}
-		float invDiv = 1 / (((x < y) ? y : x) * INV_ATAN2_DIM_MINUS_1);
+		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
 		int xi = (int)(x * invDiv);
 		int yi = (int)(y * invDiv);
 		return (atan2[yi * ATAN2_DIM + xi] + add) * mul;
-	}
-
-	// ---
-
-	static public final float sqrt (float value) {
-		// BOZO - Want to call android.util.FloatMath.sqrt, but then what to do for desktop?
-		return (float)Math.sqrt(value);
 	}
 
 	// ---
@@ -109,13 +102,13 @@ public class MathUtils {
 	static public final int random (int range) {
 		int seed = randomSeed * 1103515245 + 12345;
 		randomSeed = seed;
-		return ((seed >>> 15) * (range + 1)) >>> 17;
+		return (seed >>> 15) * (range + 1) >>> 17;
 	}
 
 	static public final int random (int start, int end) {
 		int seed = randomSeed * 1103515245 + 12345;
 		randomSeed = seed;
-		return (((seed >>> 15) * ((end - start) + 1)) >>> 17) + start;
+		return ((seed >>> 15) * (end - start + 1) >>> 17) + start;
 	}
 
 	static public final boolean randomBoolean () {
@@ -127,25 +120,25 @@ public class MathUtils {
 	static public final float random () {
 		int seed = randomSeed * 1103515245 + 12345;
 		randomSeed = seed;
-		return (seed >>> 8) * (1f / (1 << 24));
+		return (seed >>> 8) * 1f / (1 << 24);
 	}
 
 	static public final float random (float range) {
 		int seed = randomSeed * 1103515245 + 12345;
 		randomSeed = seed;
-		return (seed >>> 8) * (1f / (1 << 24)) * range;
+		return (seed >>> 8) * 1f / (1 << 24) * range;
 	}
 
 	static public final float random (float start, float end) {
 		int seed = randomSeed * 1103515245 + 12345;
 		randomSeed = seed;
-		return start + (seed >>> 8) * (1f / (1 << 24)) * (end - start);
+		return start + (seed >>> 8) * 1f / (1 << 24) * (end - start);
 	}
 
 	// ---
 
 	static public int nextPowerOfTwo (int value) {
-		return 1 << (32 - Integer.numberOfLeadingZeros(value - 1));
+		return 1 << 32 - Integer.numberOfLeadingZeros(value - 1);
 	}
 
 	// ---
