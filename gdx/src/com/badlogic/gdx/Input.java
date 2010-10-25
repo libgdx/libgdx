@@ -260,10 +260,21 @@ public interface Input {
 	public void getTextInput (TextInputListener listener, String title, String text);
 
 	/**
+	 * Sets the on-screen keyboard visible if available.
+	 * @param visible visible or not
+	 */
+	public void setOnscreenKeyboardVisible( boolean visible );
+	
+	/**
+	 * @return whether an on-screen keyboard is available or not
+	 */
+	public boolean supportsOnscreenKeyboard();
+	
+	/**
 	 * Returns whether multitouch is supported by the device. Note that this also includes the broken multitouch on the Droid or
 	 * Nexus One! This will only work correctly from Android version 2.1 onwards.
 	 * 
 	 * @return whether multitouch is supported
 	 */
-	public boolean supportsMultitouch ();
+	public boolean supportsMultitouch ();	
 }

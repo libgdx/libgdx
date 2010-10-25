@@ -283,4 +283,12 @@ final class LwjglInput implements Input, RenderListener {
 		if (keyCode == Input.Keys.KEYCODE_TAB) return Keyboard.KEY_TAB;
 		return Keyboard.KEY_NONE;
 	}
+
+	@Override public void setOnscreenKeyboardVisible (boolean visible) {
+		
+	}
+
+	@Override public boolean supportsOnscreenKeyboard () {
+		return false;
+	}
 }

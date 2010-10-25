@@ -146,4 +146,12 @@ final class AppletInput implements Input, RenderListener {
 		return false;
 	}
 
+	@Override public void setOnscreenKeyboardVisible (boolean visible) {
+		
+	}
+
+	@Override public boolean supportsOnscreenKeyboard () {
+		return false;
+	}
+
 }

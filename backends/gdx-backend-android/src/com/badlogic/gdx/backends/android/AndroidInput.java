@@ -340,4 +340,12 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	@Override public boolean supportsMultitouch () {
 		return hasMultitouch;
 	}
+
+	@Override public void setOnscreenKeyboardVisible (boolean visible) {
+		// FIXME
+	}
+
+	@Override public boolean supportsOnscreenKeyboard () {
+		return true;
+	}
 }

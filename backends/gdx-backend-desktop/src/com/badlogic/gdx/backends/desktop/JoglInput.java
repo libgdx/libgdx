@@ -145,4 +145,12 @@ final class JoglInput implements Input, RenderListener {
 	@Override public boolean supportsMultitouch () {
 		return false;
 	}
+
+	@Override public void setOnscreenKeyboardVisible (boolean visible) {
+		
+	}
+
+	@Override public boolean supportsOnscreenKeyboard () {
+		return false;
+	}
 }
