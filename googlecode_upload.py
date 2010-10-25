@@ -167,7 +167,8 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     user_name: Your Google account name.
     tries: How many attempts to make.
   """
-
+  print password
+  
   while tries > 0:
     if user_name is None:
       # Read username if not specified or loaded from svn config, or on
@@ -231,11 +232,11 @@ def main():
   else:
     labels = None
 
-  print options.password	
+  password = options.password;	
 	
   status, reason, url = upload_find_auth(file_path, options.project,
                                          options.summary, labels,
-                                         options.user, options.password)
+                                         options.user, password)
   if url:
     print 'The file was uploaded successfully.'
     print 'URL: %s' % url
