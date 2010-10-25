@@ -62,11 +62,13 @@ public class MainMenu implements Screen {
 		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		viewMatrix.setToOrtho2D(0, 0, 480, 320);
-		spriteBatch.begin(viewMatrix, transformMatrix);
+		spriteBatch.setProjectionMatrix(viewMatrix);
+		spriteBatch.setTransformMatrix(transformMatrix);
+		spriteBatch.begin();
 		spriteBatch.disableBlending();
-		spriteBatch.draw(background, 0, 320, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
+		spriteBatch.draw(background, 0, 0, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
 		spriteBatch.enableBlending();
-		spriteBatch.draw(logo, 0, 280, 480, 128, 0, 0, 512, 256, Color.WHITE, false, false);
+		spriteBatch.draw(logo, 0, 320-128, 480, 128, 0, 0, 512, 256, Color.WHITE, false, false);
 		String text = "Touch screen to start!";
 		float width = font.getStringWidth(text);
 		spriteBatch.drawText(font, text, 240 - width / 2, 128, Color.WHITE);

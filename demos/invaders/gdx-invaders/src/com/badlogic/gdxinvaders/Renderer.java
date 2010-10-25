@@ -190,14 +190,16 @@ public class Renderer {
 		gl.glDisable(GL10.GL_CULL_FACE);
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 
-		spriteBatch.begin(viewMatrix, transformMatrix);
+		spriteBatch.setProjectionMatrix(viewMatrix);
+		spriteBatch.setTransformMatrix(transformMatrix);
+		spriteBatch.begin();
 		if (simulation.ship.lives != lastLives || simulation.score != lastScore || simulation.wave != lastWave) {
 			status = "lives: " + simulation.ship.lives + " wave: " + simulation.wave + " score: " + simulation.score;
 			lastLives = simulation.ship.lives;
 			lastScore = simulation.score;
 			lastWave = simulation.wave;
 		}
-		spriteBatch.drawText(font, status, 0, 320, Color.WHITE);
+		spriteBatch.drawText(font, status, 0, 320-font.getLineHeight(), Color.WHITE);
 		spriteBatch.end();
 
 		invaderAngle += app.getGraphics().getDeltaTime() * 90;
@@ -206,9 +208,11 @@ public class Renderer {
 
 	private void renderBackground (GL10 gl) {
 		viewMatrix.setToOrtho2D(0, 0, 400, 320);
-		spriteBatch.begin(viewMatrix, transformMatrix);
+		spriteBatch.setProjectionMatrix(viewMatrix);
+		spriteBatch.setTransformMatrix(transformMatrix);
+		spriteBatch.begin();
 		spriteBatch.disableBlending();
-		spriteBatch.draw(backgroundTexture, 0, 320, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
+		spriteBatch.draw(backgroundTexture, 0, 0, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
 		spriteBatch.end();
 	}
 
