@@ -24,8 +24,8 @@ public class ParticleEffect {
 	private ArrayList<ParticleEmitter> emitters = new ArrayList();
 
 	public void start () {
-		for (ParticleEmitter particles : emitters)
-			particles.start();
+		for (ParticleEmitter emitter : emitters)
+			emitter.start();
 	}
 
 	public void draw (SpriteBatch spriteBatch, float delta) {

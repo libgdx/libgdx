@@ -67,12 +67,12 @@ class OptionsPanel extends EditorPanel {
 			}
 		});
 
-		ParticleEmitter particles = editor.getEmitter();
-		attachedCheckBox.setSelected(particles.isAttached());
-		continuousCheckbox.setSelected(particles.isContinuous());
-		alignedCheckbox.setSelected(particles.isAligned());
-		additiveCheckbox.setSelected(particles.isAdditive());
-		behindCheckbox.setSelected(particles.isBehind());
+		ParticleEmitter emitter = editor.getEmitter();
+		attachedCheckBox.setSelected(emitter.isAttached());
+		continuousCheckbox.setSelected(emitter.isContinuous());
+		alignedCheckbox.setSelected(emitter.isAligned());
+		additiveCheckbox.setSelected(emitter.isAdditive());
+		behindCheckbox.setSelected(emitter.isBehind());
 	}
 
 	private void initializeComponents () {

@@ -114,8 +114,8 @@ class EffectPanel extends JPanel {
 		lastDir = dir;
 		synchronized (editor.effect) {
 			int index = 0;
-			for (ParticleEmitter particles : editor.effect.getEmitters())
-				particles.setName((String)emitterTableModel.getValueAt(index++, 0));
+			for (ParticleEmitter emitter : editor.effect.getEmitters())
+				emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
 			try {
 				editor.effect.save(new File(dir, file));
 			} catch (Exception ex) {
@@ -150,9 +150,9 @@ class EffectPanel extends JPanel {
 			int insertIndex = editIndex + direction;
 			Object name = emitterTableModel.getValueAt(editIndex, 0);
 			emitterTableModel.removeRow(editIndex);
-			ParticleEmitter particles = emitters.remove(editIndex);
+			ParticleEmitter emitter = emitters.remove(editIndex);
 			emitterTableModel.insertRow(insertIndex, new Object[] {name});
-			emitters.add(insertIndex, particles);
+			emitters.add(insertIndex, emitter);
 			editIndex = insertIndex;
 		}
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
