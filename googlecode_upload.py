@@ -231,6 +231,8 @@ def main():
   else:
     labels = None
 
+  print options.password	
+	
   status, reason, url = upload_find_auth(file_path, options.project,
                                          options.summary, labels,
                                          options.user, options.password)
