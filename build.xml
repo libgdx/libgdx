@@ -127,6 +127,7 @@
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so"/>				
 		<copy tofile="${stable}/README" file="gdx/dist/README"/>
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html"/>
+		<zip destfile="${stable}.zip" basedir="${stable}"/>
 	</target>
 	
 	<!-- updates dependencies of hello-world, invaders and tests android-->
