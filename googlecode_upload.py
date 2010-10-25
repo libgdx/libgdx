@@ -167,7 +167,6 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     user_name: Your Google account name.
     tries: How many attempts to make.
   """
-  print 'password:' + password + ", user:" + user_name
   
   while tries > 0:
     if user_name is None:
@@ -190,6 +189,7 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     # credentials as of 2007-07-17.
     if status in [httplib.FORBIDDEN, httplib.UNAUTHORIZED]:
       # Rest for another try.
+      print "next try"
       user_name = password = None
       tries = tries - 1
     else:
