@@ -95,7 +95,7 @@
 	
 	<!-- builds the distribution directory, does not include the desktop libs 
 		for some reason excludes don't work so i have to delete the ndk directory first... -->
-	<target name="dist" depends="compile">
+	<target name="dist" depends="compile,compile-native">
 		<delete dir="gdx/bin/ndk"/>
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin"/>
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>
