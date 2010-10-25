@@ -291,4 +291,8 @@ final class LwjglInput implements Input, RenderListener {
 	@Override public boolean supportsOnscreenKeyboard () {
 		return false;
 	}
+	
+	@Override public void setCatchBackKey (boolean catchBack) {
+		
+	}
 }

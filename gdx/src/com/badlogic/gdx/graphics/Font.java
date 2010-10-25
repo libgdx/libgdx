@@ -159,6 +159,8 @@ public abstract class Font {
 	}
 
 	private Glyph createGlyph (char character) {
+		if( Character.isISOControl( character ) ) return null;
+		
 		Pixmap bitmap = getGlyphBitmap(character);
 		Rectangle rect = new Rectangle();
 		getGlyphBounds(character, rect);

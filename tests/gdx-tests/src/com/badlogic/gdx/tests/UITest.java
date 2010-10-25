@@ -1,16 +1,17 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureAtlas;
 import com.badlogic.gdx.graphics.TextureRegion;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -28,7 +29,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.actors.Label;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup;
+import com.badlogic.gdx.scenes.scene2d.actors.Button.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup.LinearGroupLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -37,16 +40,20 @@ public class UITest implements GdxTest, InputListener {
 	Texture badlogic;
 	TextureAtlas atlas;
 	Stage ui;
+	Font font;
 
 	@Override public void surfaceCreated () {
 		if (uiTexture == null) {
 			Gdx.input.addInputListener(this);
+			Gdx.input.setCatchBackKey( true );
 
+			font = Gdx.graphics.newFont( "Droid Sans", 20, FontStyle.Plain );
+			
 			uiTexture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/ui.png", FileType.Internal), TextureFilter.Linear,
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
 			badlogic = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
-				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);				
 
 			ui = new Stage(480, 320, false);
 			atlas = new TextureAtlas(uiTexture);
@@ -80,7 +87,18 @@ public class UITest implements GdxTest, InputListener {
 
 			Button button = new Button("button", atlas.getRegion("button"), atlas.getRegion("buttonDown"));
 			button.action(Forever.$(RotateBy.$(360, 4)));
-			ui.addActor(button);
+			button.clickListener = new ClickListener() {
+				
+				@Override public void clicked (Button button) {
+					if( Gdx.input.supportsOnscreenKeyboard() )
+						Gdx.input.setOnscreenKeyboardVisible( true );
+				}
+			};
+			ui.addActor(button);			
+			
+			Label label = new Label( "label", font, "text input: " );
+			label.x = 10; label.y = Gdx.graphics.getHeight() - 20;
+			ui.addActor(label);
 
 			LinearGroup linear = new LinearGroup("linear", 64, 32 * 3, LinearGroupLayout.Vertical);
 			linear.x = 200;
@@ -131,7 +149,13 @@ public class UITest implements GdxTest, InputListener {
 	}
 
 	@Override public boolean keyTyped (char character) {
-		// TODO Auto-generated method stub
+		Label label = ((Label)ui.findActor( "label" ));
+		if( character == '\b' ) {
+			if( label.text.length() > "text input: ".length() )
+				label.text = label.text.substring( 0, label.text.length()-1 ); 
+		} else {			
+			label.text += character;
+		}
 		return false;
 	}
 

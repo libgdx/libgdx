@@ -154,4 +154,7 @@ final class AppletInput implements Input, RenderListener {
 		return false;
 	}
 
+	@Override public void setCatchBackKey (boolean catchBack) {
+			
+	}
 }

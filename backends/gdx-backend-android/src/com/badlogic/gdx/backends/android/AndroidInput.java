@@ -29,6 +29,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.badlogic.gdx.Input;
@@ -82,6 +83,9 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 
 	/** touch handler sleep time in milliseconds **/
 	private int sleepTime = 0;
+	
+	/** what system keys to catch **/	
+	private boolean catchBack = false;	
 
 	/**
 	 * helper enum
@@ -305,9 +309,15 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 
 	@Override public boolean onKey (View v, int keyCode, KeyEvent event) {
 		synchronized (eventQueue) {
+			char character = (char)event.getUnicodeChar();
+			
+			// Android doesn't report a unicode char for back space. hrm...
+			if( keyCode == 67 )
+				character = '\b';
+			
 			if (event.getAction() == KeyEvent.ACTION_DOWN) {
 				Event ev = freeEvents.get(freeEventIndex++);
-				ev.set(EventType.KeyDown, 0, 0, 0, event.getKeyCode(), (char)event.getUnicodeChar());
+				ev.set(EventType.KeyDown, 0, 0, 0, event.getKeyCode(), character);
 				eventQueue.add(ev);
 				keys.add(event.getKeyCode());
 			}
@@ -315,15 +325,16 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 				keys.remove(event.getKeyCode());
 
 				Event ev = freeEvents.get(freeEventIndex++);
-				ev.set(EventType.KeyUp, 0, 0, 0, event.getKeyCode(), (char)event.getUnicodeChar());
+				ev.set(EventType.KeyUp, 0, 0, 0, event.getKeyCode(), character);
 				eventQueue.add(ev);
 
 				ev = freeEvents.get(freeEventIndex++);
-				ev.set(EventType.KeyTyped, 0, 0, 0, event.getKeyCode(), (char)event.getUnicodeChar());
+				ev.set(EventType.KeyTyped, 0, 0, 0, event.getKeyCode(), character);
 				eventQueue.add(ev);
 			}
 		}
-
+		
+		if( catchBack && keyCode == KeyEvent.KEYCODE_BACK ) return true;
 		return false;
 	}
 
@@ -342,10 +353,19 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener, Senso
 	}
 
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {
-		// FIXME
+		InputMethodManager manager = (InputMethodManager)app.getSystemService( Context.INPUT_METHOD_SERVICE );
+		if( visible ) {			
+			manager.showSoftInput( ((AndroidGraphics)app.getGraphics()).getView(), 0 );
+		} else {
+			manager.hideSoftInputFromWindow( ((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0 );		
+		}			
 	}
 
 	@Override public boolean supportsOnscreenKeyboard () {
 		return true;
+	}
+
+	@Override public void setCatchBackKey (boolean catchBack) {
+		this.catchBack = catchBack;		
 	}
 }

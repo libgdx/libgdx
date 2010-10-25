@@ -707,7 +707,8 @@ public class SpriteBatch {
 		for (int i = 0; i < len; i++) {
 			char c = text.charAt(i);
 			Glyph g = font.getGlyph(c);
-
+			if( g == null ) continue;
+			
 			final float fx = x;
 			final float fx2 = x + g.width;
 			final float fy2 = y + g.height;

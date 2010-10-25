@@ -53,7 +53,7 @@ public interface Input {
 	 */
 	public interface TextInputListener {
 		public void input (String text);
-	}
+	}	
 
 	/**
 	 * Keys.
@@ -277,4 +277,12 @@ public interface Input {
 	 * @return whether multitouch is supported
 	 */
 	public boolean supportsMultitouch ();	
+	
+	/**
+	 * Sets whether the BACK button on Android should be caught. This
+	 * will prevent the app from being paused. Will have no effect on the desktop.
+	 * 
+	 * @param catchBack whether to catch the back button
+	 */
+	public void setCatchBackKey( boolean catchBack );
 }
