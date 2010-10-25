@@ -167,7 +167,7 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     user_name: Your Google account name.
     tries: How many attempts to make.
   """
-  
+
   while tries > 0:
     if user_name is None:
       # Read username if not specified or loaded from svn config, or on
@@ -175,13 +175,13 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
       sys.stdout.write('Please enter your googlecode.com username: ')
       sys.stdout.flush()
       user_name = sys.stdin.readline().rstrip()
-    #if password is None:
+    if password is None:
       # Read password if not loaded from svn config, or on subsequent tries.
-    #  print 'Please enter your googlecode.com password.'
-    #  print '** Note that this is NOT your Gmail account password! **'
-    ##  print 'It is the password you use to access Subversion repositories,'
-    #  print 'and can be found here: http://code.google.com/hosting/settings'
-    #  password = getpass.getpass()
+      print 'Please enter your googlecode.com password.'
+      print '** Note that this is NOT your Gmail account password! **'
+      print 'It is the password you use to access Subversion repositories,'
+      print 'and can be found here: http://code.google.com/hosting/settings'
+      password = getpass.getpass()
 
     status, reason, url = upload(file_path, project_name, user_name, password,
                                  summary, labels)
@@ -189,7 +189,6 @@ def upload_find_auth(file_path, project_name, summary, labels=None,
     # credentials as of 2007-07-17.
     if status in [httplib.FORBIDDEN, httplib.UNAUTHORIZED]:
       # Rest for another try.
-      print "next try"
       user_name = password = None
       tries = tries - 1
     else:
@@ -232,11 +231,9 @@ def main():
   else:
     labels = None
 
-  password = options.password;	
-	
   status, reason, url = upload_find_auth(file_path, options.project,
                                          options.summary, labels,
-                                         options.user, password)
+                                         options.user, options.password)
   if url:
     print 'The file was uploaded successfully.'
     print 'URL: %s' % url
