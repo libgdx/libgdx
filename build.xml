@@ -16,11 +16,8 @@
 	
 	<property name="env.NDK_HOME" value="/opt/android-ndk-r4b"/>
 	
-	<!-- libgdx version -->
-	<property name="version" value="0.71"/>
-	
 	<!-- output directory for distribution -->
-	<property name="stable" value="libgdx-${version}-nightly"/>
+	<property name="stable" value="libgdx-nightly"/>
 	
 	<!-- clean output directories -->
 	<target name="clean">
