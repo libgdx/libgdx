@@ -20,7 +20,7 @@
 	<property name="version" value="0.71"/>
 	
 	<!-- output directory for distribution -->
-	<property name="stable" value="libgdx-${version}"/>
+	<property name="stable" value="libgdx-${version}-nightly"/>
 	
 	<!-- clean output directories -->
 	<target name="clean">
@@ -101,6 +101,7 @@
 		<copy tofile="${stable}/gdx-dependencies-applet.jar" file="backends/gdx-backend-applet/libs/gdx-dependencies-applet.jar"/>		
 		<copy tofile="${stable}/README" file="gdx/dist/README"/>
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html"/>
+		<zip destfile="${stable}.zip" basedir="${stable}"/>
 	</target>
 	
 	<!-- updates dependencies of hello-world, invaders and tests android-->
