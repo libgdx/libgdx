@@ -50,7 +50,7 @@ public class HelloWorld implements RenderListener {
 		textPosition.add(textDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(60));
 
 		spriteBatch.begin();
-		spriteBatch.draw(texture, centerX - texture.getWidth() / 2, centerY + texture.getHeight() / 2, 0, 0, texture.getWidth(),
+		spriteBatch.draw(texture, centerX - texture.getWidth() / 2, centerY - texture.getHeight() / 2, 0, 0, texture.getWidth(),
 			texture.getHeight(), Color.WHITE);
 		spriteBatch.drawText(font, "Hello World!", (int)textPosition.x, (int)textPosition.y, Color.RED);
 		spriteBatch.end();
