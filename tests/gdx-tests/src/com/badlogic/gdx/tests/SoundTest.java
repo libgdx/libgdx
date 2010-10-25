@@ -48,6 +48,7 @@ public class SoundTest implements GdxTest, InputListener {
 			Gdx.input.addInputListener(this);
 			sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
 
+//			music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
 			music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/cloudconnected.ogg", FileType.Internal));
 			music.play();
 			music.setLooping(true);
