@@ -833,12 +833,12 @@ public class ParticleEmitter {
 			return lowMin + (lowMax - lowMin) * MathUtils.random();
 		}
 
-		public void setLow (int value) {
+		public void setLow (float value) {
 			lowMin = value;
 			lowMax = value;
 		}
 
-		public void setLow (int min, int max) {
+		public void setLow (float min, float max) {
 			lowMin = min;
 			lowMax = max;
 		}
@@ -890,12 +890,12 @@ public class ParticleEmitter {
 			return highMin + (highMax - highMin) * MathUtils.random();
 		}
 
-		public void setHigh (int value) {
+		public void setHigh (float value) {
 			highMin = value;
 			highMax = value;
 		}
 
-		public void setHigh (int min, int max) {
+		public void setHigh (float min, float max) {
 			highMin = min;
 			highMax = max;
 		}

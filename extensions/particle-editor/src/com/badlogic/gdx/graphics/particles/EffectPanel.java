@@ -81,25 +81,27 @@ class EffectPanel extends JPanel {
 		final String dir = dialog.getDirectory();
 		if (dir == null || file == null || file.trim().length() == 0) return;
 		lastDir = dir;
-		synchronized (editor.effect) {
-			ParticleEffect effect = new ParticleEffect();
-			try {
+		ParticleEffect effect = new ParticleEffect();
+		try {
+			synchronized (editor.effect) {
 				effect.loadEmitters(Gdx.files.getFileHandle(new File(dir, file).getAbsolutePath(), FileType.Absolute));
 				editor.effect = effect;
 				emitterTableModel.getDataVector().removeAllElements();
 				editor.particleData.clear();
-			} catch (Exception ex) {
-				System.out.println("Error loading effect: " + new File(dir, file).getAbsolutePath());
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(editor, "Error opening effect.");
-				return;
 			}
+		} catch (Exception ex) {
+			System.out.println("Error loading effect: " + new File(dir, file).getAbsolutePath());
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(editor, "Error opening effect.");
+			return;
+		}
+		synchronized (editor.effect) {
 			for (ParticleEmitter emitter : effect.getEmitters()) {
 				emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 				emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 			}
+			editIndex = 0;
 		}
-		editIndex = 0;
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
 		editor.reloadRows();
 	}

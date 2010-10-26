@@ -127,6 +127,7 @@ public class ParticleEffect {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
+			imagePath = imagePath.replace('\\', '/');
 			imagePath = imagesDir + new File(imagePath).getName();
 			emitter.setTexture(Gdx.graphics.newTexture(Gdx.files.getFileHandle(imagePath, fileType), TextureFilter.Linear,
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));

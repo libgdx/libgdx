@@ -10,6 +10,8 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -46,7 +48,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix4;
 
-public class ParticleEditor extends JFrame implements RenderListener, InputListener {
+public class ParticleEditor extends JFrame {
 	LwjglApplication app;
 	Canvas glCanvas;
 	JPanel rowsPanel;
@@ -55,14 +57,6 @@ public class ParticleEditor extends JFrame implements RenderListener, InputListe
 
 	ParticleEffect effect = new ParticleEffect();
 	final HashMap<ParticleEmitter, ParticleData> particleData = new HashMap();
-	private float maxActiveTimer;
-	private int maxActive, lastMaxActive;
-	private boolean mouseDown;
-	private int activeCount;
-	private BitmapFont font;
-	private SpriteBatch spriteBatch;
-	private Sprite bgImage; // BOZO - Add setting background image to UI.
-	private int mouseX, mouseY;
 
 	public ParticleEditor () {
 		super("GDX Particle Editor");
@@ -82,7 +76,12 @@ public class ParticleEditor extends JFrame implements RenderListener, InputListe
 						super.setupDisplay();
 					}
 				};
-				app.getGraphics().setRenderListener(ParticleEditor.this);
+				app.getGraphics().setRenderListener(new Renderer());
+				addWindowListener(new WindowAdapter() {
+					public void windowClosed (WindowEvent event) {
+						app.stop();
+					}
+				});
 			}
 
 			public Dimension getMinimumSize () {
@@ -249,130 +248,145 @@ public class ParticleEditor extends JFrame implements RenderListener, InputListe
 		splitPane.setDividerLocation(325);
 	}
 
-	public void surfaceCreated () {
-		if (spriteBatch != null) return;
-		spriteBatch = new SpriteBatch();
+	class Renderer implements RenderListener, InputListener {
+		private float maxActiveTimer;
+		private int maxActive, lastMaxActive;
+		private boolean mouseDown;
+		private int activeCount;
+		private int mouseX, mouseY;
+		private BitmapFont font;
+		private SpriteBatch spriteBatch;
+		private Sprite bgImage; // BOZO - Add setting background image to UI.
 
-		font = new BitmapFont(Gdx.files.getFileHandle("data/default.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/default.png", FileType.Internal), true);
-		effectPanel.newEmitter("Untitled", true);
-		// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
+		public void surfaceCreated () {
+			if (spriteBatch != null) return;
+			spriteBatch = new SpriteBatch();
 
-		Gdx.input.addInputListener(this);
-	}
+			font = new BitmapFont(Gdx.files.getFileHandle("data/default.fnt", FileType.Internal), Gdx.files.getFileHandle(
+				"data/default.png", FileType.Internal), true);
+			effectPanel.newEmitter("Untitled", true);
+			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
 
-	public void surfaceChanged (int width, int height) {
-		int viewWidth = Gdx.graphics.getWidth();
-		int viewHeight = Gdx.graphics.getHeight();
-
-		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, viewWidth, viewHeight, 0, 0, 1));
-
-		synchronized (effect) {
-			effect.setPosition(viewWidth / 2, viewHeight / 2);
+			Gdx.input.addInputListener(this);
 		}
-	}
 
-	public void render () {
-		synchronized (effect) {
+		public void surfaceChanged (int width, int height) {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
-			if (viewWidth != glCanvas.getWidth() || viewHeight != glCanvas.getHeight()) {
-				viewWidth = Math.max(1, glCanvas.getWidth());
-				viewHeight = Math.max(1, glCanvas.getHeight());
-				app.setSize(viewWidth, viewHeight);
+
+			spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, viewWidth, viewHeight, 0, 0, 1));
+
+			synchronized (effect) {
+				effect.setPosition(viewWidth / 2, viewHeight / 2);
 			}
+		}
 
-			float delta = Gdx.graphics.getDeltaTime();
-
-			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-			spriteBatch.begin();
-			spriteBatch.enableBlending();
-			spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-			if (bgImage != null) {
-				bgImage.setPosition(viewWidth / 2 - bgImage.getWidth() / 2, viewHeight / 2 - bgImage.getHeight() / 2);
-				bgImage.draw(spriteBatch);
-			}
-
-			activeCount = 0;
-			for (ParticleEmitter emitter : effect.getEmitters()) {
-				if (emitter.getTexture() == null && emitter.getImagePath() != null) loadImage(emitter);
-				boolean enabled = isEnabled(emitter);
-				if (enabled) {
-					if (emitter.getTexture() != null) emitter.draw(spriteBatch, delta);
-					activeCount += emitter.getActiveCount();
+		public void render () {
+			synchronized (effect) {
+				int viewWidth = Gdx.graphics.getWidth();
+				int viewHeight = Gdx.graphics.getHeight();
+				if (viewWidth != glCanvas.getWidth() || viewHeight != glCanvas.getHeight()) {
+					viewWidth = Math.max(1, glCanvas.getWidth());
+					viewHeight = Math.max(1, glCanvas.getHeight());
+					app.setSize(viewWidth, viewHeight);
 				}
-			}
-			if (effect.isComplete()) effect.start();
 
-			maxActive = Math.max(maxActive, activeCount);
-			maxActiveTimer += delta;
-			if (maxActiveTimer > 3) {
-				maxActiveTimer = 0;
-				lastMaxActive = maxActive;
-				maxActive = 0;
-			}
+				float delta = Gdx.graphics.getDeltaTime();
 
-			if (mouseDown) {
-				// gl.drawLine(mouseX - 6, mouseY, mouseX + 5, mouseY);
-				// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
-			}
+				Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 10, Color.WHITE);
-			font.draw(spriteBatch, "Count: " + activeCount, 10, 30, Color.WHITE);
-			font.draw(spriteBatch, "Max: " + lastMaxActive, 10, 50, Color.WHITE);
-			font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 10, 70, Color.WHITE);
+				spriteBatch.begin();
+				spriteBatch.enableBlending();
+				spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-			spriteBatch.end();
-
-			// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight - 1);
-		}
-	}
-
-	private void loadImage (ParticleEmitter emitter) {
-		final String imagePath = emitter.getImagePath();
-		try {
-			emitter.setTexture(Gdx.graphics.newTexture(Gdx.files.getFileHandle(imagePath, FileType.Absolute), TextureFilter.Linear,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
-		} catch (GdxRuntimeException ex) {
-			EventQueue.invokeLater(new Runnable() {
-				public void run () {
-					JOptionPane.showMessageDialog(ParticleEditor.this, "Error loading image:\n" + imagePath);
+				if (bgImage != null) {
+					bgImage.setPosition(viewWidth / 2 - bgImage.getWidth() / 2, viewHeight / 2 - bgImage.getHeight() / 2);
+					bgImage.draw(spriteBatch);
 				}
-			});
-			emitter.setImagePath(null);
+
+				activeCount = 0;
+				for (ParticleEmitter emitter : effect.getEmitters()) {
+					if (emitter.getTexture() == null && emitter.getImagePath() != null) loadImage(emitter);
+					boolean enabled = isEnabled(emitter);
+					if (enabled) {
+						if (emitter.getTexture() != null) emitter.draw(spriteBatch, delta);
+						activeCount += emitter.getActiveCount();
+					}
+				}
+				if (effect.isComplete()) effect.start();
+
+				maxActive = Math.max(maxActive, activeCount);
+				maxActiveTimer += delta;
+				if (maxActiveTimer > 3) {
+					maxActiveTimer = 0;
+					lastMaxActive = maxActive;
+					maxActive = 0;
+				}
+
+				if (mouseDown) {
+					// gl.drawLine(mouseX - 6, mouseY, mouseX + 5, mouseY);
+					// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
+				}
+
+				font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 10, Color.WHITE);
+				font.draw(spriteBatch, "Count: " + activeCount, 10, 30, Color.WHITE);
+				font.draw(spriteBatch, "Max: " + lastMaxActive, 10, 50, Color.WHITE);
+				font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 10, 70, Color.WHITE);
+
+				spriteBatch.end();
+
+				// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight -
+// 1);
+			}
 		}
-	}
 
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	public boolean keyTyped (char character) {
-		return false;
-	}
-
-	public boolean touchDown (int x, int y, int pointer) {
-		synchronized (effect) {
-			effect.setPosition(x, y);
+		private void loadImage (ParticleEmitter emitter) {
+			final String imagePath = emitter.getImagePath();
+			try {
+				emitter.setTexture(Gdx.graphics.newTexture(Gdx.files.getFileHandle(imagePath, FileType.Absolute),
+					TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+			} catch (GdxRuntimeException ex) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run () {
+						JOptionPane.showMessageDialog(ParticleEditor.this, "Error loading image:\n" + imagePath);
+					}
+				});
+				emitter.setImagePath(null);
+			}
 		}
-		return false;
-	}
 
-	public boolean touchUp (int x, int y, int pointer) {
-		return false;
-	}
-
-	public boolean touchDragged (int x, int y, int pointer) {
-		synchronized (effect) {
-			effect.setPosition(x, y);
+		public boolean keyDown (int keycode) {
+			return false;
 		}
-		return false;
+
+		public boolean keyUp (int keycode) {
+			return false;
+		}
+
+		public boolean keyTyped (char character) {
+			return false;
+		}
+
+		public boolean touchDown (int x, int y, int pointer) {
+			synchronized (effect) {
+				effect.setPosition(x, y);
+			}
+			return false;
+		}
+
+		public boolean touchUp (int x, int y, int pointer) {
+			return false;
+		}
+
+		public boolean touchDragged (int x, int y, int pointer) {
+			synchronized (effect) {
+				effect.setPosition(x, y);
+			}
+			return false;
+		}
+
+		public void dispose () {
+		}
 	}
 
 	static class ParticleData {
@@ -391,6 +405,10 @@ public class ParticleEditor extends JFrame implements RenderListener, InputListe
 				break;
 			}
 		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run () {
+			}
+		});
 		new ParticleEditor();
 	}
 }
