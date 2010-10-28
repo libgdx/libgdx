@@ -75,7 +75,7 @@ public class TextAreaTest implements RenderListener {
 	}
 
 	public void surfaceChanged (int width, int height) {
-		gui.setSize();
+		TwlRenderer.updateSize(gui);
 	}
 
 	public void dispose () {

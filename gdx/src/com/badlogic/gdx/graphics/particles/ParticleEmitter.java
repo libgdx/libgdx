@@ -4,28 +4,33 @@ package com.badlogic.gdx.graphics.particles;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigInteger;
 import java.util.BitSet;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.MathUtils;
 
 // BOZO - Support point particles?
 // BOZO - Add a duplicate emitter button.
 
 public class ParticleEmitter {
+	static private final int UPDATE_SCALE = 1 << 0;
+	static private final int UPDATE_ANGLE = 1 << 1;
+	static private final int UPDATE_ROTATION = 1 << 2;
+	static private final int UPDATE_VELOCITY = 1 << 3;
+	static private final int UPDATE_WIND = 1 << 4;
+	static private final int UPDATE_GRAVITY = 1 << 5;
+	static private final int UPDATE_TINT = 1 << 6;
+
 	private RangedNumericValue delayValue = new RangedNumericValue();
 	private ScaledNumericValue lifeOffsetValue = new ScaledNumericValue();
 	private RangedNumericValue durationValue = new RangedNumericValue();
 	private ScaledNumericValue lifeValue = new ScaledNumericValue();
 	private ScaledNumericValue emissionValue = new ScaledNumericValue();
-	private ScaledNumericValue sizeValue = new ScaledNumericValue();
+	private ScaledNumericValue scaleValue = new ScaledNumericValue();
 	private ScaledNumericValue rotationValue = new ScaledNumericValue();
 	private ScaledNumericValue velocityValue = new ScaledNumericValue();
 	private ScaledNumericValue angleValue = new ScaledNumericValue();
@@ -50,6 +55,7 @@ public class ParticleEmitter {
 	private BitSet active;
 	private boolean firstUpdate;
 	private boolean flipX, flipY;
+	private int updateFlags;
 
 	private float emission, emissionDiff, emissionDelta;
 	private float lifeOffset, lifeOffsetDiff;
@@ -80,7 +86,7 @@ public class ParticleEmitter {
 
 		lifeValue.setHigh(1, 1);
 
-		sizeValue.setHigh(32, 32);
+		scaleValue.setHigh(32, 32);
 
 		rotationValue.setLow(1, 360);
 		rotationValue.setHigh(180, 180);
@@ -114,7 +120,7 @@ public class ParticleEmitter {
 		emissionValue.load(emitter.emissionValue);
 		lifeValue.load(emitter.lifeValue);
 		lifeOffsetValue.load(emitter.lifeOffsetValue);
-		sizeValue.load(emitter.sizeValue);
+		scaleValue.load(emitter.scaleValue);
 		rotationValue.load(emitter.rotationValue);
 		velocityValue.load(emitter.velocityValue);
 		angleValue.load(emitter.angleValue);
@@ -138,7 +144,7 @@ public class ParticleEmitter {
 		durationValue.setAlwaysActive(true);
 		emissionValue.setAlwaysActive(true);
 		lifeValue.setAlwaysActive(true);
-		sizeValue.setAlwaysActive(true);
+		scaleValue.setAlwaysActive(true);
 		transparencyValue.setAlwaysActive(true);
 		spawnShapeValue.setAlwaysActive(true);
 		spawnWidthValue.setAlwaysActive(true);
@@ -260,6 +266,15 @@ public class ParticleEmitter {
 		spawnHeight = (int)spawnHeightValue.newLowValue();
 		spawnHeightDiff = (int)spawnHeightValue.newHighValue();
 		if (!spawnHeightValue.isRelative()) spawnHeightDiff -= spawnHeight;
+
+		updateFlags = 0;
+		if (angleValue.active && angleValue.timeline.length > 1) updateFlags |= UPDATE_ANGLE;
+		if (velocityValue.active && velocityValue.active) updateFlags |= UPDATE_VELOCITY;
+		if (scaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
+		if (rotationValue.active && rotationValue.timeline.length > 1) updateFlags |= UPDATE_ROTATION;
+		if (windValue.active && windValue.timeline.length > 1) updateFlags |= UPDATE_WIND;
+		if (gravityValue.active && gravityValue.timeline.length > 1) updateFlags |= UPDATE_GRAVITY;
+		if (tintValue.timeline.length > 1) updateFlags |= UPDATE_TINT;
 	}
 
 	public void activateParticle (int index) {
@@ -270,6 +285,7 @@ public class ParticleEmitter {
 		}
 
 		float percent = durationTimer / (float)duration;
+		int updateFlags = this.updateFlags;
 
 		float offsetTime = lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent);
 		particle.life = particle.currentLife = life + lifeDiff * lifeValue.getScale(percent);
@@ -283,15 +299,19 @@ public class ParticleEmitter {
 		particle.angle = angleValue.newLowValue();
 		particle.angleDiff = angleValue.newHighValue();
 		if (!angleValue.isRelative()) particle.angleDiff -= particle.angle;
+		if ((updateFlags & UPDATE_ANGLE) == 0) particle.angle = particle.angle + particle.angleDiff * angleValue.getScale(0);
 
-		particle.size = sizeValue.newLowValue() / texture.getWidth();
-		particle.sizeDiff = sizeValue.newHighValue() / texture.getWidth();
-		if (!sizeValue.isRelative()) particle.sizeDiff -= particle.size;
+		particle.scale = scaleValue.newLowValue() / texture.getWidth();
+		particle.scaleDiff = scaleValue.newHighValue() / texture.getWidth();
+		if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scale;
+		if ((updateFlags & UPDATE_SCALE) == 0) particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
 
 		if (rotationValue.active) {
-			particle.rotation = particle.currentRotation = rotationValue.newLowValue();
+			particle.rotation = rotationValue.newLowValue();
 			particle.rotationDiff = rotationValue.newHighValue();
 			if (!rotationValue.isRelative()) particle.rotationDiff -= particle.rotation;
+			if ((updateFlags & UPDATE_ROTATION) == 0)
+				particle.setRotation(particle.rotation + particle.rotationDiff * rotationValue.getScale(0));
 		}
 
 		if (windValue.active) {
@@ -304,6 +324,15 @@ public class ParticleEmitter {
 			particle.gravity = gravityValue.newLowValue();
 			particle.gravityDiff = gravityValue.newHighValue();
 			if (!gravityValue.isRelative()) particle.gravityDiff -= particle.gravity;
+		}
+
+		if ((updateFlags & UPDATE_TINT) == 0) {
+			float[] color = particle.tint;
+			if (color == null) particle.tint = color = new float[3];
+			float[] temp = tintValue.getColor(0);
+			color[0] = temp[0];
+			color[1] = temp[1];
+			color[2] = temp[2];
 		}
 
 		particle.transparency = transparencyValue.newLowValue();
@@ -370,10 +399,7 @@ public class ParticleEmitter {
 		}
 		}
 
-		particle.setRotation(particle.currentRotation);
 		particle.setBounds(x - texture.getWidth() / 2, y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
-
-		updateParticle(index, offsetTime);
 	}
 
 	public boolean updateParticle (int index, float delta) {
@@ -383,36 +409,36 @@ public class ParticleEmitter {
 		particle.currentLife = life;
 
 		float percent = 1 - particle.currentLife / particle.life;
+		int updateFlags = this.updateFlags;
 
-		particle.setScale(particle.size + particle.sizeDiff * sizeValue.getScale(percent));
+		if ((updateFlags & UPDATE_SCALE) != 0)
+			particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(percent));
 
-		float angle = particle.angle + particle.angleDiff * angleValue.getScale(percent);
+		float angle = particle.angle;
+		if ((updateFlags & UPDATE_ANGLE) != 0) angle += particle.angleDiff * angleValue.getScale(percent);
 
-		if (rotationValue.active) {
+		if ((updateFlags & UPDATE_ROTATION) != 0) {
 			float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
 			if (aligned) rotation += angle;
-			rotation -= particle.currentRotation;
-			if (rotation != 0) {
-				particle.currentRotation += rotation;
-				particle.rotate(rotation);
-			}
+			if (rotation != 0) particle.setRotation(rotation);
 		}
 
-		if (velocityValue.active) {
+		if ((updateFlags & UPDATE_VELOCITY) != 0) {
 			float velocity = (particle.velocity + particle.velocityDiff * velocityValue.getScale(percent)) * delta;
-			float velocityX = velocity;
-			float velocityY = velocity;
-			if (angleValue.active) {
-				velocityX *= MathUtils.cosDeg(angle);
-				velocityY *= MathUtils.sinDeg(angle);
-			}
-			if (windValue.active) velocityX += (particle.wind + particle.windDiff * windValue.getScale(percent)) * delta;
-			if (gravityValue.active)
+			float velocityX = velocity * MathUtils.cosDeg(angle);
+			float velocityY = velocity * MathUtils.sinDeg(angle);
+			if ((updateFlags & UPDATE_WIND) != 0)
+				velocityX += (particle.wind + particle.windDiff * windValue.getScale(percent)) * delta;
+			if ((updateFlags & UPDATE_GRAVITY) != 0)
 				velocityY += (particle.gravity + particle.gravityDiff * gravityValue.getScale(percent)) * delta;
 			particle.translate(velocityX, velocityY);
 		}
 
-		float[] color = tintValue.getColor(percent);
+		float[] color;
+		if ((updateFlags & UPDATE_TINT) != 0)
+			color = tintValue.getColor(percent);
+		else
+			color = particle.tint;
 		particle.setColor(color[0], color[1], color[2],
 			particle.transparency + particle.transparencyDiff * transparencyValue.getScale(percent));
 
@@ -467,8 +493,8 @@ public class ParticleEmitter {
 		return lifeValue;
 	}
 
-	public ScaledNumericValue getSize () {
-		return sizeValue;
+	public ScaledNumericValue getScale () {
+		return scaleValue;
 	}
 
 	public ScaledNumericValue getRotation () {
@@ -651,8 +677,8 @@ public class ParticleEmitter {
 		spawnWidthValue.save(output);
 		output.write("- Spawn Height - \n");
 		spawnHeightValue.save(output);
-		output.write("- Size - \n");
-		sizeValue.save(output);
+		output.write("- Scale - \n");
+		scaleValue.save(output);
 		output.write("- Velocity - \n");
 		velocityValue.save(output);
 		output.write("- Angle - \n");
@@ -701,7 +727,7 @@ public class ParticleEmitter {
 		reader.readLine();
 		spawnHeightValue.load(reader);
 		reader.readLine();
-		sizeValue.load(reader);
+		scaleValue.load(reader);
 		reader.readLine();
 		velocityValue.load(reader);
 		reader.readLine();
@@ -744,13 +770,14 @@ public class ParticleEmitter {
 
 	static class Particle extends Sprite {
 		float life, currentLife;
-		float size, sizeDiff;
-		float rotation, currentRotation, rotationDiff;
+		float scale, scaleDiff;
+		float rotation, rotationDiff;
 		float velocity, velocityDiff;
 		float angle, angleDiff;
 		float transparency, transparencyDiff;
 		float wind, windDiff;
 		float gravity, gravityDiff;
+		float[] tint;
 
 		public Particle (Texture texture) {
 			super(texture);
@@ -882,7 +909,7 @@ public class ParticleEmitter {
 
 	static public class ScaledNumericValue extends RangedNumericValue {
 		private float[] scaling = {1};
-		private float[] timeline = {0};
+		float[] timeline = {0};
 		private float highMin, highMax;
 		private boolean relative;
 
@@ -1003,7 +1030,7 @@ public class ParticleEmitter {
 		static private float[] temp = new float[4];
 
 		private float[] colors = {1, 1, 1};
-		private float[] timeline = {0};
+		float[] timeline = {0};
 
 		public GradientColorValue () {
 			alwaysActive = true;

@@ -5,7 +5,7 @@ active: false
 lowMin: 1.0
 lowMax: 1.0
 - Count - 
-min: 10
+min: 0
 max: 1000
 - Emission - 
 lowMin: 0.0
@@ -55,7 +55,7 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-- Size - 
+- Scale - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 32.0
@@ -69,8 +69,8 @@ timeline0: 0.0
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: 80.0
-highMax: 80.0
+highMin: 120.0
+highMax: 120.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -123,149 +123,10 @@ aligned: false
 additive: true
 behind: false
 - Image Path -
-data/particle.png
+\Dev\libgdx\tests\gdx-tests-lwjgl\data/particle.png
 
 
 fire
-- Delay -
-active: false
-- Duration - 
-lowMin: 1.0
-lowMax: 1.0
-- Count - 
-min: 10
-max: 1000
-- Emission - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 10.0
-highMax: 10.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Life - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 0.7
-highMax: 1.3
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Life Offset - 
-active: false
-- X Offset - 
-active: false
-- Y Offset - 
-active: false
-- Spawn Shape - 
-shape: point
-- Spawn Width - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 0.0
-highMax: 0.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Spawn Height - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 0.0
-highMax: 0.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Size - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 80.0
-highMax: 80.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Velocity - 
-active: true
-lowMin: 0.0
-lowMax: 0.0
-highMin: 40.0
-highMax: 40.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Angle - 
-active: true
-lowMin: 0.0
-lowMax: 0.0
-highMin: 1.0
-highMax: 360.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
-timeline0: 0.0
-- Rotation - 
-active: true
-lowMin: 1.0
-lowMax: 360.0
-highMin: -180.0
-highMax: 180.0
-relative: true
-scalingCount: 2
-scaling0: 0.0
-scaling1: 1.0
-timelineCount: 2
-timeline0: 0.0
-timeline1: 1.0
-- Wind - 
-active: false
-- Gravity - 
-active: false
-- Tint - 
-colorsCount: 3
-colors0: 1.0
-colors1: 0.21176471
-colors2: 0.0
-timelineCount: 1
-timeline0: 0.0
-- Transparency - 
-lowMin: 0.0
-lowMax: 0.0
-highMin: 1.0
-highMax: 1.0
-relative: false
-scalingCount: 4
-scaling0: 0.0
-scaling1: 1.0
-scaling2: 1.0
-scaling3: 0.0
-timelineCount: 4
-timeline0: 0.0
-timeline1: 0.2
-timeline2: 0.6712329
-timeline3: 1.0
-- Options - 
-attached: true
-continuous: true
-aligned: false
-additive: true
-behind: false
-- Image Path -
-data\particle-fire.png
-
-
-stars
 - Delay -
 active: false
 - Duration - 
@@ -322,7 +183,144 @@ scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-- Size - 
+- Scale - 
+lowMin: 0.0
+lowMax: 0.0
+highMin: 80.0
+highMax: 80.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Velocity - 
+active: true
+lowMin: 0.0
+lowMax: 0.0
+highMin: 50.0
+highMax: 50.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Angle - 
+active: true
+lowMin: 0.0
+lowMax: 0.0
+highMin: 1.0
+highMax: 360.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Rotation - 
+active: true
+lowMin: 1.0
+lowMax: 360.0
+highMin: -180.0
+highMax: 180.0
+relative: true
+scalingCount: 2
+scaling0: 0.0
+scaling1: 1.0
+timelineCount: 2
+timeline0: 0.0
+timeline1: 1.0
+- Wind - 
+active: false
+- Gravity - 
+active: false
+- Tint - 
+colorsCount: 3
+colors0: 1.0
+colors1: 0.3372549
+colors2: 0.0
+timelineCount: 1
+timeline0: 0.0
+- Transparency - 
+lowMin: 0.0
+lowMax: 0.0
+highMin: 1.0
+highMax: 1.0
+relative: false
+scalingCount: 3
+scaling0: 1.0
+scaling1: 1.0
+scaling2: 0.0
+timelineCount: 3
+timeline0: 0.0
+timeline1: 0.6712329
+timeline2: 1.0
+- Options - 
+attached: true
+continuous: true
+aligned: false
+additive: true
+behind: false
+- Image Path -
+\Dev\libgdx\tests\gdx-tests-lwjgl\data/particle-fire.png
+
+
+stars
+- Delay -
+active: false
+- Duration - 
+lowMin: 1.0
+lowMax: 1.0
+- Count - 
+min: 0
+max: 1000
+- Emission - 
+lowMin: 0.0
+lowMax: 0.0
+highMin: 10.0
+highMax: 10.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Life - 
+lowMin: 0.0
+lowMax: 0.0
+highMin: 1.0
+highMax: 1.5
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Life Offset - 
+active: false
+- X Offset - 
+active: false
+- Y Offset - 
+active: false
+- Spawn Shape - 
+shape: point
+- Spawn Width - 
+lowMin: 0.0
+lowMax: 0.0
+highMin: 0.0
+highMax: 0.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Spawn Height - 
+lowMin: 0.0
+lowMax: 0.0
+highMin: 0.0
+highMax: 0.0
+relative: false
+scalingCount: 1
+scaling0: 1.0
+timelineCount: 1
+timeline0: 0.0
+- Scale - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 64.0
@@ -346,8 +344,8 @@ timeline5: 0.70547944
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: 80.0
-highMax: 80.0
+highMin: 100.0
+highMax: 120.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -355,21 +353,23 @@ timelineCount: 1
 timeline0: 0.0
 - Angle - 
 active: true
-lowMin: 0.0
-lowMax: 0.0
-highMin: 1.0
-highMax: 360.0
-relative: false
-scalingCount: 1
-scaling0: 1.0
-timelineCount: 1
+lowMin: 1.0
+lowMax: 360.0
+highMin: -180.0
+highMax: 180.0
+relative: true
+scalingCount: 2
+scaling0: 0.0
+scaling1: 1.0
+timelineCount: 2
 timeline0: 0.0
+timeline1: 0.51369864
 - Rotation - 
 active: true
 lowMin: 1.0
 lowMax: 360.0
-highMin: -90.0
-highMax: 89.0
+highMin: -360.0
+highMax: 360.0
 relative: true
 scalingCount: 2
 scaling0: 0.0
@@ -410,7 +410,7 @@ scaling3: 0.0
 scaling4: 1.0
 timelineCount: 5
 timeline0: 0.0
-timeline1: 0.25342464
+timeline1: 0.34246576
 timeline2: 0.74657536
 timeline3: 0.9315069
 timeline4: 1.0
@@ -421,7 +421,7 @@ aligned: false
 additive: true
 behind: false
 - Image Path -
-data\particle-star.png
+\Dev\libgdx\tests\gdx-tests-lwjgl\data/particle-star.png
 
 
 smoke
@@ -436,8 +436,8 @@ max: 1000
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 10.0
-highMax: 10.0
+highMin: 3.0
+highMax: 3.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -464,8 +464,8 @@ shape: square
 - Spawn Width - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 480.0
-highMax: 480.0
+highMin: 180.0
+highMax: 180.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -474,14 +474,14 @@ timeline0: 0.0
 - Spawn Height - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 320.0
-highMax: 320.0
+highMin: 110.0
+highMax: 110.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
 timelineCount: 1
 timeline0: 0.0
-- Size - 
+- Scale - 
 lowMin: 0.0
 lowMax: 0.0
 highMin: 256.0
@@ -493,10 +493,10 @@ timelineCount: 1
 timeline0: 0.0
 - Velocity - 
 active: true
-lowMin: 10.0
-lowMax: 10.0
-highMin: 0.0
-highMax: 0.0
+lowMin: -25.0
+lowMax: -25.0
+highMin: 25.0
+highMax: 25.0
 relative: false
 scalingCount: 2
 scaling0: 0.0
@@ -519,8 +519,8 @@ timeline0: 0.0
 active: true
 lowMin: 1.0
 lowMax: 360.0
-highMin: 3.0
-highMax: 10.0
+highMin: -30.0
+highMax: 30.0
 relative: true
 scalingCount: 2
 scaling0: 0.0
@@ -551,7 +551,7 @@ highMax: 1.0
 relative: false
 scalingCount: 3
 scaling0: 0.0
-scaling1: 0.2631579
+scaling1: 0.49122807
 scaling2: 0.0
 timelineCount: 3
 timeline0: 0.0
@@ -564,4 +564,4 @@ aligned: false
 additive: true
 behind: false
 - Image Path -
-data\particle-cloud.png
+\Dev\libgdx\tests\gdx-tests-lwjgl\data/particle-cloud.png

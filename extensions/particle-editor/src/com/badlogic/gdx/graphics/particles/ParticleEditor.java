@@ -115,7 +115,7 @@ public class ParticleEditor extends JFrame {
 					addRow(new SpawnPanel(emitter.getSpawnShape(), ParticleEditor.this));
 					addRow(new ScaledNumericPanel("Spawn Width", "Duration", emitter.getSpawnWidth()));
 					addRow(new ScaledNumericPanel("Spawn Height", "Duration", emitter.getSpawnHeight()));
-					addRow(new ScaledNumericPanel("Size", "Life", emitter.getSize()));
+					addRow(new ScaledNumericPanel("Size", "Life", emitter.getScale()));
 					addRow(new ScaledNumericPanel("Velocity", "Life", emitter.getVelocity()));
 					addRow(new ScaledNumericPanel("Angle", "Life", emitter.getAngle()));
 					addRow(new ScaledNumericPanel("Rotation", "Life", emitter.getRotation()));
@@ -274,7 +274,7 @@ public class ParticleEditor extends JFrame {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
 
-			spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, viewWidth, viewHeight, 0, 0, 1));
+			spriteBatch.getProjectionMatrix().setToOrtho(0, viewWidth, viewHeight, 0, 0, 1);
 
 			synchronized (effect) {
 				effect.setPosition(viewWidth / 2, viewHeight / 2);

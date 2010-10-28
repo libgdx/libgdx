@@ -54,7 +54,7 @@ public class LwjglTestStarter {
 	}
 
 	public static void main (String[] argv) {
-		JFrame frame = new JFrame("Gdx - LWJGL Test Launcher");
+		JFrame frame = new JFrame("GDX - LWJGL Test Launcher");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setContentPane(new TestList());
 		frame.pack();

@@ -19,26 +19,25 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.particles.ParticleEmitter;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ParticleEmitterTest implements GdxTest {
 	private SpriteBatch spriteBatch;
-	private BitmapFont font;
 	ParticleEffect effect;
 	int emitterIndex;
 	ArrayList<ParticleEmitter> emitters;
 	int particleCount = 10;
+	float fpsCounter;
 
 	public void surfaceCreated () {
 		if (spriteBatch != null) return;
 		spriteBatch = new SpriteBatch();
 
-		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/verdana39.png", FileType.Internal), false);
-
 		effect = new ParticleEffect();
 		effect.load(Gdx.files.getFileHandle("data/test.p", FileType.Internal), "data", FileType.Internal);
 		effect.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		// Of course, a ParticleEffect is normally just used, without messing around with its emitters.
 		emitters = new ArrayList(effect.getEmitters());
 		effect.getEmitters().clear();
 		effect.getEmitters().add(emitters.get(0));
@@ -72,32 +71,39 @@ public class ParticleEmitterTest implements GdxTest {
 					particleCount += 5;
 				else if (keycode == Input.Keys.KEYCODE_DPAD_DOWN)
 					particleCount -= 5;
-				else if (keycode == Input.Keys.KEYCODE_SPACE)
+				else if (keycode == Input.Keys.KEYCODE_SPACE) {
 					emitterIndex = (emitterIndex + 1) % emitters.size();
-				else
+					emitter = emitters.get(emitterIndex);
+					particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax());
+				} else
 					return false;
 				particleCount = Math.max(0, particleCount);
 				if (particleCount > emitter.getMaxParticleCount()) emitter.setMaxParticleCount(particleCount * 2);
 				emitter.getEmission().setHigh(particleCount / emitter.getLife().getHighMax());
 				effect.getEmitters().clear();
-				effect.getEmitters().add(emitters.get(emitterIndex));
+				effect.getEmitters().add(emitter);
 				return false;
 			}
 		});
 	}
 
 	public void surfaceChanged (int width, int height) {
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	public void render () {
+		float delta = Gdx.graphics.getDeltaTime();
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		effect.draw(spriteBatch, Gdx.graphics.getDeltaTime());
-		font.draw(spriteBatch, Gdx.graphics.getFramesPerSecond() + " fps", 5, 40, Color.WHITE);
-		int activeCount = emitters.get(emitterIndex).getActiveCount();
-		font.draw(spriteBatch, activeCount + "/" + particleCount + " particles", 5, Gdx.graphics.getHeight() - 5, Color.WHITE);
+		effect.draw(spriteBatch, delta);
 		spriteBatch.end();
+		fpsCounter += delta;
+		if (fpsCounter > 3) {
+			fpsCounter = 0;
+			int activeCount = emitters.get(emitterIndex).getActiveCount();
+			System.out.println(activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
+		}
 	}
 
 	public void dispose () {

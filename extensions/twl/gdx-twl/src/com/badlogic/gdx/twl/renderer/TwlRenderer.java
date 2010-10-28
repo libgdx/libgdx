@@ -69,7 +69,7 @@ public class TwlRenderer implements Renderer {
 	final SpriteBatch spriteBatch = new SpriteBatch();
 
 	public TwlRenderer () {
-		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1));
+		spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1);
 	}
 
 	public GdxCacheContext createNewCacheContext () {
@@ -202,6 +202,14 @@ public class TwlRenderer implements Renderer {
 			next.a = this.a * a;
 			return next;
 		}
+	}
+
+	static public void updateSize (GUI gui) {
+		Renderer renderer = gui.getRenderer();
+		if (!(renderer instanceof TwlRenderer)) throw new IllegalArgumentException("gui's renderer must be a TwlRenderer.");
+		((TwlRenderer)renderer).spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),
+			Gdx.graphics.getHeight());
+		gui.setSize();
 	}
 
 	static public GUI createGUI (Widget root, String themeFile, final FileType fileType) {

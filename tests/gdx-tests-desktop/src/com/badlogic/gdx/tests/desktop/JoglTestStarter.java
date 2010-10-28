@@ -56,7 +56,7 @@ public class JoglTestStarter {
 	}
 
 	public static void main (String[] argv) {
-		JFrame frame = new JFrame("Gdx - Jogl Test Launcher");
+		JFrame frame = new JFrame("GDX - Jogl Test Launcher");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setContentPane(new TestList());
 		frame.pack();

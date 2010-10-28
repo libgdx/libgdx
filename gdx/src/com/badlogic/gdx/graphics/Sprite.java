@@ -54,8 +54,8 @@ public class Sprite {
 	}
 
 	/**
-	 * Sets the size and position where the sprite will be drawn, before scaling and rotation are applied. If origin, rotation, or
-	 * scale are changed, it is slightly more efficient to set the bounds afterward.
+	 * Sets the size and position of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale
+	 * are changed, it is slightly more efficient to set the bounds afterward.
 	 */
 	public void setBounds (float x, float y, float width, float height) {
 		this.x = x;
@@ -84,8 +84,38 @@ public class Sprite {
 	}
 
 	/**
+	 * Sets the size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale are changed,
+	 * it is slightly more efficient to set the size afterward. If both position and size are to be changed, it is better to use
+	 * {@link #setBounds(float, float, float, float)}.
+	 */
+	public void setSize (float width, float height) {
+		this.width = width;
+		this.height = height;
+
+		if (dirty) return;
+
+		float x2 = x + width;
+		float y2 = y + height;
+		float[] vertices = this.vertices;
+		vertices[X1] = x;
+		vertices[Y1] = y;
+
+		vertices[X2] = x;
+		vertices[Y2] = y2;
+
+		vertices[X3] = x2;
+		vertices[Y3] = y2;
+
+		vertices[X4] = x2;
+		vertices[Y4] = y;
+
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
+	}
+
+	/**
 	 * Sets the position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
-	 * to set the position afterward.
+	 * to set the position afterward. If both position and size are to be changed, it is better to use
+	 * {@link #setBounds(float, float, float, float)}.
 	 */
 	public void setPosition (float x, float y) {
 		translate(x - this.x, y - this.y);
@@ -201,7 +231,6 @@ public class Sprite {
 	}
 
 	public void setColor (Color tint) {
-		this.color = tint;
 		float color = tint.toFloatBits();
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
@@ -211,10 +240,6 @@ public class Sprite {
 	}
 
 	public void setColor (float r, float g, float b, float a) {
-		color.r = r;
-		color.g = g;
-		color.b = b;
-		color.a = a;
 		int intBits = ((int)(255 * a) << 24) | //
 			((int)(255 * b) << 16) | //
 			((int)(255 * g) << 8) | //
@@ -348,7 +373,17 @@ public class Sprite {
 		return scaleY;
 	}
 
+	/**
+	 * Returns the color for this sprite. Changing the returned color will have no affect. {@link #setColor(Color)} or
+	 * {@link #setColor(float, float, float, float)} must be used.
+	 */
 	public Color getColor () {
+		int intBits = Float.floatToIntBits(vertices[C1]);
+		Color color = this.color;
+		color.r = (intBits & 0xff) / 255f;
+		color.g = (intBits >> 8 & 0xff) / 255f;
+		color.b = (intBits >> 16 & 0xff) / 255f;
+		color.a = (intBits >> 24) / 255f;
 		return color;
 	}
 
