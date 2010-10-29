@@ -62,7 +62,7 @@ public class WaterRipples implements GdxTest, InputListener {
 			curr = new float[WIDTH + 1][HEIGHT + 1];
 			intp = new float[WIDTH + 1][HEIGHT + 1];
 			vertices = new float[(WIDTH + 1) * (HEIGHT + 1) * 5];
-			mesh = new Mesh(false, false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(
+			mesh = new Mesh(false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(
 				VertexAttributes.Usage.Position, 3, "a_Position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2,
 				"a_texCoords"));
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/stones.jpg", FileType.Internal), TextureFilter.Linear,

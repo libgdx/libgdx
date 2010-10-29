@@ -18,7 +18,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 /**
- * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}.
+ * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}. Note that
+ * this excludes all fixed point methods!
  * @author mzechner
  * 
  */
@@ -191,10 +192,6 @@ public interface GL11 extends GL10 {
 
 	public void glBufferSubData (int target, int offset, int size, Buffer data);
 
-	public void glClipPlanex (int plane, int[] equation, int offset);
-
-	public void glClipPlanex (int plane, IntBuffer equation);
-
 	public void glColor4ub (byte red, byte green, byte blue, byte alpha);
 
 	public void glDeleteBuffers (int n, int[] buffers, int offset);
@@ -209,25 +206,9 @@ public interface GL11 extends GL10 {
 
 	public void glGetBufferParameteriv (int target, int pname, IntBuffer params);
 
-	public void glGetClipPlanex (int pname, int[] eqn, int offset);
-
-	public void glGetClipPlanex (int pname, IntBuffer eqn);
-
 	public void glGenBuffers (int n, int[] buffers, int offset);
 
 	public void glGenBuffers (int n, IntBuffer buffers);
-
-	public void glGetFixedv (int pname, int[] params, int offset);
-
-	public void glGetFixedv (int pname, IntBuffer params);
-
-	public void glGetLightxv (int light, int pname, int[] params, int offset);
-
-	public void glGetLightxv (int light, int pname, IntBuffer params);
-
-	public void glGetMaterialxv (int face, int pname, int[] params, int offset);
-
-	public void glGetMaterialxv (int face, int pname, IntBuffer params);
 
 	public void glGetPointerv (int pname, Buffer[] params);
 
@@ -235,29 +216,15 @@ public interface GL11 extends GL10 {
 
 	public void glGetTexEnviv (int env, int pname, IntBuffer params);
 
-	public void glGetTexEnvxv (int env, int pname, int[] params, int offset);
-
-	public void glGetTexEnvxv (int env, int pname, IntBuffer params);
-
 	public void glGetTexParameteriv (int target, int pname, int[] params, int offset);
 
 	public void glGetTexParameteriv (int target, int pname, IntBuffer params);
-
-	public void glGetTexParameterxv (int target, int pname, int[] params, int offset);
-
-	public void glGetTexParameterxv (int target, int pname, IntBuffer params);
 
 	public boolean glIsBuffer (int buffer);
 
 	public boolean glIsEnabled (int cap);
 
 	public boolean glIsTexture (int texture);
-
-	public void glPointParameterx (int pname, int param);
-
-	public void glPointParameterxv (int pname, int[] params, int offset);
-
-	public void glPointParameterxv (int pname, IntBuffer params);
 
 	public void glTexEnvi (int target, int pname, int param);
 
@@ -269,11 +236,7 @@ public interface GL11 extends GL10 {
 
 	public void glTexParameteriv (int target, int pname, int[] params, int offset);
 
-	public void glTexParameteriv (int target, int pname, IntBuffer params);
-
-	public void glTexParameterxv (int target, int pname, int[] params, int offset);
-
-	public void glTexParameterxv (int target, int pname, IntBuffer params);
+	public void glTexParameteriv (int target, int pname, IntBuffer params);	
 
 	public void glPointSizePointerOES (int type, int stride, Buffer pointer);
 
@@ -286,5 +249,4 @@ public interface GL11 extends GL10 {
 	public void glTexCoordPointer (int size, int type, int stride, int pointer);
 
 	public void glDrawElements (int mode, int count, int type, int indices);
-
 }

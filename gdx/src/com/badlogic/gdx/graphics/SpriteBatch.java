@@ -152,7 +152,7 @@ public class SpriteBatch {
 	 * @param size the batch size in number of sprites
 	 */
 	public SpriteBatch (int size) {
-		this.mesh = new Mesh(false, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"),
+		this.mesh = new Mesh(false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"),
 			new VertexAttribute(Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 

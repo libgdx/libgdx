@@ -59,7 +59,7 @@ public class MeshShaderTest implements GdxTest {
 				System.exit(0);
 			}
 
-			mesh = new Mesh(true, false, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 				Usage.Color, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
 			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0, 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0, 0, 0.5f, 0, 0, 0, 1,

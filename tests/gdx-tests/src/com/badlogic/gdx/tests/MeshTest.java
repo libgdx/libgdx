@@ -49,7 +49,7 @@ public class MeshTest implements GdxTest {
 
 	@Override public void surfaceCreated () {
 		if (mesh == null) {
-			mesh = new Mesh(true, false, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
 			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,

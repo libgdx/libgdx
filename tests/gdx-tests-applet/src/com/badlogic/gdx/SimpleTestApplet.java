@@ -50,7 +50,7 @@ public class SimpleTestApplet extends Applet implements RenderListener, InputLis
 		if (mesh == null) {
 			Gdx.input.addInputListener(this);
 
-			mesh = ModelLoader.loadObj(Gdx.files.readFile("data/cube.obj", FileType.Internal), true);
+			mesh = ModelLoader.loadObj(Gdx.files.readFile("data/cube.obj", FileType.Internal));
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpd", FileType.Internal), TextureFilter.MipMap,
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 

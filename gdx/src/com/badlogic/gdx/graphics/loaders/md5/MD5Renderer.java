@@ -30,7 +30,7 @@ public class MD5Renderer {
 			this.vertices[i] = model.meshes[i].createVertexArray();
 		}
 
-		this.mesh = new Mesh(false, false, maxVertices, maxIndices, new VertexAttribute(VertexAttributes.Usage.Position, 3,
+		this.mesh = new Mesh(false, maxVertices, maxIndices, new VertexAttribute(VertexAttributes.Usage.Position, 3,
 			"a_position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
 	}
 

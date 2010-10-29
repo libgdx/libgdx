@@ -27,14 +27,14 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
@@ -206,9 +206,9 @@ public final class AppletGraphics implements Graphics, RenderListener {
 			gl = gl20;
 		} else {
 			if (major == 1 && minor < 5) {
-				gl10 = new AppletGL10(graphicPanel.getGL(), allowFixedPoint);
+				gl10 = new AppletGL10(graphicPanel.getGL());
 			} else {
-				gl11 = new AppletGL11(graphicPanel.getGL(), allowFixedPoint);
+				gl11 = new AppletGL11(graphicPanel.getGL());
 				gl10 = gl11;
 			}
 			gl = gl10;

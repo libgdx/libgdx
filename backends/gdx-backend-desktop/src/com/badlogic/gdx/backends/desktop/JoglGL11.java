@@ -30,8 +30,6 @@ import com.badlogic.gdx.graphics.GL11;
  * 
  */
 public final class JoglGL11 extends JoglGL10 implements GL11 {
-	double tmpDouble[] = new double[1000];
-	float tmpFloat[] = new float[1000];
 
 	public JoglGL11 (GL gl) {
 		super(gl);
@@ -54,14 +52,6 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 	}
 
 	@Override public void glClipPlanef (int plane, FloatBuffer equation) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glClipPlanex (int plane, int[] equation, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glClipPlanex (int plane, IntBuffer equation) {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
@@ -109,22 +99,6 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	@Override public void glGetClipPlanex (int pname, int[] eqn, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetClipPlanex (int pname, IntBuffer eqn) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetFixedv (int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetFixedv (int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
 	@Override public void glGetFloatv (int pname, float[] params, int offset) {
 		gl.glGetFloatv(pname, params, offset);
 	}
@@ -140,15 +114,7 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 	@Override public void glGetLightfv (int light, int pname, FloatBuffer params) {
 		gl.glGetLightfv(light, pname, params);
 	}
-
-	@Override public void glGetLightxv (int light, int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetLightxv (int light, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
+	
 	@Override public void glGetMaterialfv (int face, int pname, float[] params, int offset) {
 		gl.glGetMaterialfv(face, pname, params, offset);
 	}
@@ -156,15 +122,7 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 	@Override public void glGetMaterialfv (int face, int pname, FloatBuffer params) {
 		gl.glGetMaterialfv(face, pname, params);
 	}
-
-	@Override public void glGetMaterialxv (int face, int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetMaterialxv (int face, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
+	
 	@Override public void glGetPointerv (int pname, Buffer[] params) {
 		throw new UnsupportedOperationException("not implemented");
 	}
@@ -175,14 +133,6 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override public void glGetTexEnviv (int env, int pname, IntBuffer params) {
 		gl.glGetTexEnviv(env, pname, params);
-	}
-
-	@Override public void glGetTexEnvxv (int env, int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetTexEnvxv (int env, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("not implemented");
 	}
 
 	@Override public void glGetTexParameterfv (int target, int pname, float[] params, int offset) {
@@ -199,14 +149,6 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override public void glGetTexParameteriv (int target, int pname, IntBuffer params) {
 		gl.glGetTexParameteriv(target, pname, params);
-	}
-
-	@Override public void glGetTexParameterxv (int target, int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	@Override public void glGetTexParameterxv (int target, int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("not implemented");
 	}
 
 	@Override public boolean glIsBuffer (int buffer) {
@@ -231,25 +173,6 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 
 	@Override public void glPointParameterfv (int pname, FloatBuffer params) {
 		gl.glPointParameterfv(pname, params);
-	}
-
-	@Override public void glPointParameterx (int pname, int param) {
-		gl.glPointParameterf(pname, FIXED_TO_FLOAT * param);
-	}
-
-	@Override public void glPointParameterxv (int pname, int[] params, int offset) {
-		if (tmpFloat.length < params.length) tmpFloat = new float[params.length];
-		for (int i = 0; i < params.length; i++)
-			tmpFloat[i] = FIXED_TO_FLOAT * params[i];
-		gl.glPointParameterfv(pname, tmpFloat, offset);
-	}
-
-	@Override public void glPointParameterxv (int pname, IntBuffer params) {
-		if (tmpFloat.length < params.capacity()) tmpFloat = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmpFloat[i] = FIXED_TO_FLOAT * params.get();
-		gl.glPointParameterfv(pname, tmpFloat, 0);
 	}
 
 	@Override public void glPointSizePointerOES (int type, int stride, Buffer pointer) {
@@ -288,38 +211,19 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 		gl.glTexParameteriv(target, pname, params);
 	}
 
-	@Override public void glTexParameterxv (int target, int pname, int[] params, int offset) {
-		if (tmpFloat.length < params.length) tmpFloat = new float[params.length];
-		for (int i = 0; i < params.length; i++)
-			tmpFloat[i] = params[i];
-		gl.glTexParameterfv(target, pname, tmpFloat, offset);
-	}
-
-	@Override public void glTexParameterxv (int target, int pname, IntBuffer params) {
-		if (tmpFloat.length < params.capacity()) tmpFloat = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmpFloat[i] = FIXED_TO_FLOAT * params.get();
-		gl.glTexParameterfv(target, pname, tmpFloat, 0);
-	}
-
 	@Override public void glColorPointer (int size, int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		gl.glColorPointer(size, type, stride, pointer);
 	}
 
 	@Override public void glNormalPointer (int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		gl.glNormalPointer(type, stride, pointer);
 	}
 
 	@Override public void glTexCoordPointer (int size, int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		gl.glTexCoordPointer(size, type, stride, pointer);
 	}
 
 	@Override public void glVertexPointer (int size, int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		gl.glVertexPointer(size, type, stride, pointer);
 	}
 

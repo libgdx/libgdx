@@ -35,12 +35,11 @@ public class ModelLoader {
 	 * Loads a Wavefront OBJ file from the given InputStream. The OBJ file must only contain triangulated meshes. Materials are
 	 * ignored.
 	 * 
-	 * @param in the InputStream
-	 * @param useFloats whether to use floats or fixed point
+	 * @param in the InputStream 
 	 * @return a Mesh holding the OBJ data or null in case something went wrong.
 	 */
-	public static Mesh loadObj (InputStream in, boolean useFloats) {
-		return ObjLoader.loadObj(in, useFloats);
+	public static Mesh loadObj (InputStream in) {
+		return ObjLoader.loadObj(in);
 	}
 
 	/**
@@ -49,12 +48,11 @@ public class ModelLoader {
 	 * information.
 	 * 
 	 * @param in the InputStream
-	 * @param useFloats whether to return a {@link FloatMesh} or a {@link FixedPointMesh}
 	 * @param start the start position as defined in the map
 	 * @return a Mesh holding the OCT data or null in case something went wrong.
 	 */
-	public static Mesh loadOct (InputStream in, boolean useFloats, Vector3 start) {
-		return OctLoader.loadOct(in, useFloats, start);
+	public static Mesh loadOct (InputStream in, Vector3 start) {
+		return OctLoader.loadOct(in, start);
 	}
 
 	/**
@@ -79,25 +77,17 @@ public class ModelLoader {
 				VertexAttribute attribute = new VertexAttribute(usage, numComponents, alias);
 				attributes.add(attribute);
 			}
-
-			boolean usesFixedPoint = din.readBoolean();
+			
 			int numVertices = din.readInt();
 			int numElements = din.readInt();
 			int numIndices = din.readInt();
 
-			Mesh mesh = new Mesh(true, usesFixedPoint, numVertices, numIndices, attributes.toArray(new VertexAttribute[0]));
-
-			if (usesFixedPoint) {
-				int[] vertices = new int[numElements];
-				for (int i = 0; i < numElements; i++)
-					vertices[i] = din.readInt();
-				mesh.setVertices(vertices);
-			} else {
-				float[] vertices = new float[numElements];
-				for (int i = 0; i < numElements; i++)
-					vertices[i] = din.readFloat();
-				mesh.setVertices(vertices);
-			}
+			Mesh mesh = new Mesh(true, numVertices, numIndices, attributes.toArray(new VertexAttribute[0]));
+			
+			float[] vertices = new float[numElements];
+			for (int i = 0; i < numElements; i++)
+				vertices[i] = din.readFloat();
+			mesh.setVertices(vertices);			
 
 			if (numIndices > 0) {
 				short[] indices = new short[numIndices];

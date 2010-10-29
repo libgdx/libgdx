@@ -35,55 +35,12 @@ import com.badlogic.gdx.graphics.GL10;
  * 
  */
 class LwjglGL10 implements GL10 {
-
-	protected final float FIXED_TO_FLOAT = 1 / 65536.0f;
-	private final FloatBuffer colorBuffer;
-	private final FloatBuffer normalBuffer;
-	private final FloatBuffer vertexBuffer;
-	private final FloatBuffer texCoordBuffer[] = new FloatBuffer[16];
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;
-	private int activeTexture = 0;
-
-	private float[] tmp = new float[1000];
 
 	public LwjglGL10 () {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(20000 * 4 * 4);
-		buffer.order(ByteOrder.nativeOrder());
-		colorBuffer = buffer.asFloatBuffer();
-
-		buffer = ByteBuffer.allocateDirect(20000 * 4 * 3);
-		buffer.order(ByteOrder.nativeOrder());
-		normalBuffer = buffer.asFloatBuffer();
-
-		buffer = ByteBuffer.allocateDirect(20000 * 4 * 4);
-		buffer.order(ByteOrder.nativeOrder());
-		vertexBuffer = buffer.asFloatBuffer();
-
-		for (int i = 0; i < texCoordBuffer.length; i++) {
-			buffer = ByteBuffer.allocateDirect(20000 * 4 * 4);
-			buffer.order(ByteOrder.nativeOrder());
-			texCoordBuffer[i] = buffer.asFloatBuffer();
-		}
-
 		tempInt = BufferUtils.createIntBuffer(8);
 		tempFloat = BufferUtils.createFloatBuffer(8);
-	}
-
-	protected final void convertFixedToFloatbuffer (Buffer source, FloatBuffer target, int stride) {
-		if (source instanceof IntBuffer || source instanceof ByteBuffer) {
-			IntBuffer buffer = source instanceof ByteBuffer ? ((ByteBuffer)source).asIntBuffer() : (IntBuffer)source;
-			if (stride % 4 != 0) throw new IllegalArgumentException("Can't cope with strides % 4 != 0 for IntBuffers");
-			target.clear();
-			for (int i = buffer.position(); i < buffer.limit(); i++) {
-				float value = FIXED_TO_FLOAT * buffer.get(i);
-				target.put(value);
-			}
-			target.flip();
-		} else {
-			throw new IllegalArgumentException("Can't cope with buffer of type " + source.getClass().getName()
-				+ ", only ByteBuffers and IntBuffers supported");
-		}
 	}
 
 	private IntBuffer toBuffer (int n, int[] src, int offset) {
@@ -125,11 +82,7 @@ class LwjglGL10 implements GL10 {
 	public final void glAlphaFunc (int func, float ref) {
 		GL11.glAlphaFunc(func, ref);
 	}
-
-	public final void glAlphaFuncx (int func, int ref) {
-		GL11.glAlphaFunc(func, FIXED_TO_FLOAT * ref);
-	}
-
+	
 	public final void glBindTexture (int target, int texture) {
 		GL11.glBindTexture(target, texture);
 	}
@@ -145,17 +98,9 @@ class LwjglGL10 implements GL10 {
 	public final void glClearColor (float red, float green, float blue, float alpha) {
 		GL11.glClearColor(red, green, blue, alpha);
 	}
-
-	public final void glClearColorx (int red, int green, int blue, int alpha) {
-		GL11.glClearColor(FIXED_TO_FLOAT * red, FIXED_TO_FLOAT * green, FIXED_TO_FLOAT * blue, FIXED_TO_FLOAT * alpha);
-	}
-
+	
 	public final void glClearDepthf (float depth) {
 		GL11.glClearDepth(depth);
-	}
-
-	public final void glClearDepthx (int depth) {
-		GL11.glClearDepth(FIXED_TO_FLOAT * depth);
 	}
 
 	public final void glClearStencil (int s) {
@@ -163,7 +108,6 @@ class LwjglGL10 implements GL10 {
 	}
 
 	public final void glClientActiveTexture (int texture) {
-		activeTexture = texture - GL10.GL_TEXTURE0;
 		try {
 			GL13.glClientActiveTexture(texture);
 		} catch (Throwable ex) {
@@ -174,31 +118,22 @@ class LwjglGL10 implements GL10 {
 	public final void glColor4f (float red, float green, float blue, float alpha) {
 		GL11.glColor4f(red, green, blue, alpha);
 	}
-
-	public final void glColor4x (int red, int green, int blue, int alpha) {
-		GL11.glColor4f(FIXED_TO_FLOAT * red, FIXED_TO_FLOAT * green, FIXED_TO_FLOAT * blue, FIXED_TO_FLOAT * alpha);
-	}
-
+	
 	public final void glColorMask (boolean red, boolean green, boolean blue, boolean alpha) {
 		GL11.glColorMask(red, green, blue, alpha);
 	}
 
 	public final void glColorPointer (int size, int type, int stride, Buffer pointer) {
-		if (type == GL10.GL_FIXED) {
-			convertFixedToFloatbuffer(pointer, colorBuffer, stride);
-			GL11.glColorPointer(size, stride, colorBuffer);
-		} else {
-			if (pointer instanceof FloatBuffer && type == GL10.GL_FLOAT)
-				GL11.glColorPointer(size, stride, (FloatBuffer)pointer);
-			else if (pointer instanceof ByteBuffer && type == GL10.GL_FLOAT)
-				GL11.glColorPointer(size, stride, ((ByteBuffer)pointer).asFloatBuffer()); // FIXME yes, that's why it sucks... GC will
+		if (pointer instanceof FloatBuffer && type == GL10.GL_FLOAT)
+			GL11.glColorPointer(size, stride, (FloatBuffer)pointer);
+		else if (pointer instanceof ByteBuffer && type == GL10.GL_FLOAT)
+			GL11.glColorPointer(size, stride, ((ByteBuffer)pointer).asFloatBuffer()); // FIXME yes, that's why it sucks... GC will
 // be happy.
-			else if (pointer instanceof ByteBuffer && type == GL10.GL_UNSIGNED_BYTE)
-				GL11.glColorPointer(size, true, stride, (ByteBuffer)pointer);
-			else
-				throw new GdxRuntimeException("Can't use " + pointer.getClass().getName()
-					+ " with this method, use FloatBuffer or ByteBuffer. blame LWJGL");
-		}
+		else if (pointer instanceof ByteBuffer && type == GL10.GL_UNSIGNED_BYTE)
+			GL11.glColorPointer(size, true, stride, (ByteBuffer)pointer);
+		else
+			throw new GdxRuntimeException("Can't use " + pointer.getClass().getName()
+				+ " with this method, use FloatBuffer or ByteBuffer. blame LWJGL");
 	}
 
 	public final void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
@@ -244,11 +179,7 @@ class LwjglGL10 implements GL10 {
 	public final void glDepthRangef (float zNear, float zFar) {
 		GL11.glDepthRange(zNear, zFar);
 	}
-
-	public final void glDepthRangex (int zNear, int zFar) {
-		GL11.glDepthRange(FIXED_TO_FLOAT * zNear, FIXED_TO_FLOAT * zFar);
-	}
-
+	
 	public final void glDisable (int cap) {
 		GL11.glDisable(cap);
 	}
@@ -297,29 +228,12 @@ class LwjglGL10 implements GL10 {
 		GL11.glFog(pname, params);
 	}
 
-	public final void glFogx (int pname, int param) {
-		GL11.glFogf(pname, FIXED_TO_FLOAT * param);
-	}
-
-	public final void glFogxv (int pname, IntBuffer params) {
-		if (tmp.length < params.capacity()) tmp = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * params.get();
-		glFogfv(pname, tmp, 0);
-	}
-
 	public final void glFrontFace (int mode) {
 		GL11.glFrontFace(mode);
 	}
 
 	public final void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar) {
 		GL11.glFrustum(left, right, bottom, top, zNear, zFar);
-	}
-
-	public final void glFrustumx (int left, int right, int bottom, int top, int zNear, int zFar) {
-		GL11.glFrustum(FIXED_TO_FLOAT * left, FIXED_TO_FLOAT * right, FIXED_TO_FLOAT * bottom, FIXED_TO_FLOAT * top, FIXED_TO_FLOAT
-			* zNear, FIXED_TO_FLOAT * zFar);
 	}
 
 	public final void glGenTextures (int n, IntBuffer textures) {
@@ -350,18 +264,6 @@ class LwjglGL10 implements GL10 {
 		GL11.glLightModel(pname, params);
 	}
 
-	public final void glLightModelx (int pname, int param) {
-		GL11.glLightModelf(pname, FIXED_TO_FLOAT * param);
-	}
-
-	public final void glLightModelxv (int pname, IntBuffer params) {
-		if (tmp.length < params.capacity()) tmp = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * params.get();
-		glLightModelfv(pname, tmp, 0);
-	}
-
 	public final void glLightf (int light, int pname, float param) {
 		GL11.glLightf(light, pname, param);
 	}
@@ -370,24 +272,8 @@ class LwjglGL10 implements GL10 {
 		GL11.glLight(light, pname, params);
 	}
 
-	public final void glLightx (int light, int pname, int param) {
-		GL11.glLightf(light, pname, FIXED_TO_FLOAT * param);
-	}
-
-	public final void glLightxv (int light, int pname, IntBuffer params) {
-		if (tmp.length < params.capacity()) tmp = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * params.get();
-		glLightfv(light, pname, tmp, 0);
-	}
-
 	public final void glLineWidth (float width) {
 		GL11.glLineWidth(width);
-	}
-
-	public final void glLineWidthx (int width) {
-		GL11.glLineWidth(FIXED_TO_FLOAT * width);
 	}
 
 	public final void glLoadIdentity () {
@@ -396,14 +282,6 @@ class LwjglGL10 implements GL10 {
 
 	public final void glLoadMatrixf (FloatBuffer m) {
 		GL11.glLoadMatrix(m);
-	}
-
-	public final void glLoadMatrixx (IntBuffer m) {
-		if (tmp.length < m.capacity()) tmp = new float[m.capacity()];
-		int i = 0;
-		while (m.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * m.get();
-		glLoadMatrixf(tmp, 0);
 	}
 
 	public final void glLogicOp (int opcode) {
@@ -418,18 +296,6 @@ class LwjglGL10 implements GL10 {
 		GL11.glMaterial(face, pname, params);
 	}
 
-	public final void glMaterialx (int face, int pname, int param) {
-		GL11.glMaterialf(face, pname, FIXED_TO_FLOAT * param);
-	}
-
-	public final void glMaterialxv (int face, int pname, IntBuffer params) {
-		if (tmp.length < params.capacity()) tmp = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * params.get();
-		glMaterialfv(face, pname, tmp, 0);
-	}
-
 	public final void glMatrixMode (int mode) {
 		GL11.glMatrixMode(mode);
 	}
@@ -438,54 +304,28 @@ class LwjglGL10 implements GL10 {
 		GL11.glMultMatrix(m);
 	}
 
-	public final void glMultMatrixx (IntBuffer m) {
-		if (tmp.length < m.capacity()) tmp = new float[m.capacity()];
-		int i = 0;
-		while (m.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * m.get();
-		glMultMatrixf(tmp, 0);
-	}
-
 	public final void glMultiTexCoord4f (int target, float s, float t, float r, float q) {
 		GL13.glMultiTexCoord4f(target, s, t, r, q);
-	}
-
-	public final void glMultiTexCoord4x (int target, int s, int t, int r, int q) {
-		GL13.glMultiTexCoord4f(target, FIXED_TO_FLOAT * s, FIXED_TO_FLOAT * t, FIXED_TO_FLOAT * r, FIXED_TO_FLOAT * q);
 	}
 
 	public final void glNormal3f (float nx, float ny, float nz) {
 		GL11.glNormal3f(nx, ny, nz);
 	}
 
-	public final void glNormal3x (int nx, int ny, int nz) {
-		GL11.glNormal3f(FIXED_TO_FLOAT * nx, FIXED_TO_FLOAT * ny, FIXED_TO_FLOAT * nz);
-	}
-
 	public final void glNormalPointer (int type, int stride, Buffer pointer) {
-		if (type == GL10.GL_FIXED) {
-			convertFixedToFloatbuffer(pointer, normalBuffer, stride);
-			GL11.glNormalPointer(stride, normalBuffer);
-		} else {
-			if (pointer instanceof FloatBuffer && type == GL11.GL_FLOAT)
-				GL11.glNormalPointer(stride, (FloatBuffer)pointer);
-			else if (pointer instanceof ByteBuffer && type == GL11.GL_FLOAT)
-				GL11.glNormalPointer(stride, ((ByteBuffer)pointer).asFloatBuffer());
-			else if (pointer instanceof ByteBuffer && type == GL11.GL_BYTE)
-				GL11.glNormalPointer(stride, (ByteBuffer)pointer);
-			else
-				throw new GdxRuntimeException("Can't use " + pointer.getClass().getName()
-					+ " with this method. GL10.GL_SHORT not supported. Use FloatBuffer instead. Blame LWJGL");
-		}
+		if (pointer instanceof FloatBuffer && type == GL11.GL_FLOAT)
+			GL11.glNormalPointer(stride, (FloatBuffer)pointer);
+		else if (pointer instanceof ByteBuffer && type == GL11.GL_FLOAT)
+			GL11.glNormalPointer(stride, ((ByteBuffer)pointer).asFloatBuffer());
+		else if (pointer instanceof ByteBuffer && type == GL11.GL_BYTE)
+			GL11.glNormalPointer(stride, (ByteBuffer)pointer);
+		else
+			throw new GdxRuntimeException("Can't use " + pointer.getClass().getName()
+				+ " with this method. GL10.GL_SHORT not supported. Use FloatBuffer instead. Blame LWJGL");
 	}
 
 	public final void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar) {
 		GL11.glOrtho(left, right, bottom, top, zNear, zFar);
-	}
-
-	public final void glOrthox (int left, int right, int bottom, int top, int zNear, int zFar) {
-		GL11.glOrtho(FIXED_TO_FLOAT * left, FIXED_TO_FLOAT * right, FIXED_TO_FLOAT * bottom, FIXED_TO_FLOAT * top, FIXED_TO_FLOAT
-			* zNear, FIXED_TO_FLOAT * zFar);
 	}
 
 	public final void glPixelStorei (int pname, int param) {
@@ -495,17 +335,9 @@ class LwjglGL10 implements GL10 {
 	public final void glPointSize (float size) {
 		GL11.glPointSize(size);
 	}
-
-	public final void glPointSizex (int size) {
-		GL11.glPointSize(FIXED_TO_FLOAT * size);
-	}
-
+	
 	public final void glPolygonOffset (float factor, float units) {
 		GL11.glPolygonOffset(factor, units);
-	}
-
-	public final void glPolygonOffsetx (int factor, int units) {
-		GL11.glPolygonOffset(FIXED_TO_FLOAT * factor, FIXED_TO_FLOAT * units);
 	}
 
 	public final void glPopMatrix () {
@@ -534,26 +366,14 @@ class LwjglGL10 implements GL10 {
 		GL11.glRotatef(angle, x, y, z);
 	}
 
-	public final void glRotatex (int angle, int x, int y, int z) {
-		GL11.glRotatef(FIXED_TO_FLOAT * angle, FIXED_TO_FLOAT * x, FIXED_TO_FLOAT * y, FIXED_TO_FLOAT * z);
-	}
-
 	public final void glSampleCoverage (float value, boolean invert) {
 		GL13.glSampleCoverage(value, invert);
-	}
-
-	public final void glSampleCoveragex (int value, boolean invert) {
-		GL13.glSampleCoverage(FIXED_TO_FLOAT * value, invert);
 	}
 
 	public final void glScalef (float x, float y, float z) {
 		GL11.glScalef(x, y, z);
 	}
-
-	public final void glScalex (int x, int y, int z) {
-		GL11.glScalef(FIXED_TO_FLOAT * x, FIXED_TO_FLOAT * y, FIXED_TO_FLOAT * z);
-	}
-
+	
 	public final void glScissor (int x, int y, int width, int height) {
 		GL11.glScissor(x, y, width, height);
 	}
@@ -575,10 +395,7 @@ class LwjglGL10 implements GL10 {
 	}
 
 	public final void glTexCoordPointer (int size, int type, int stride, Buffer pointer) {
-		if (type == GL10.GL_FIXED) {
-			convertFixedToFloatbuffer(pointer, texCoordBuffer[activeTexture], stride);
-			GL11.glTexCoordPointer(size, stride, texCoordBuffer[activeTexture]);
-		} else if (pointer instanceof ShortBuffer && type == GL10.GL_SHORT)
+		if (pointer instanceof ShortBuffer && type == GL10.GL_SHORT)
 			GL11.glTexCoordPointer(size, stride, (ShortBuffer)pointer);
 		else if (pointer instanceof ByteBuffer && type == GL10.GL_SHORT)
 			GL11.glTexCoordPointer(size, stride, ((ByteBuffer)pointer).asShortBuffer());
@@ -599,18 +416,6 @@ class LwjglGL10 implements GL10 {
 
 	public final void glTexEnvfv (int target, int pname, FloatBuffer params) {
 		GL11.glTexEnv(target, pname, params);
-	}
-
-	public final void glTexEnvx (int target, int pname, int param) {
-		GL11.glTexEnvf(target, pname, FIXED_TO_FLOAT * param);
-	}
-
-	public final void glTexEnvxv (int target, int pname, IntBuffer params) {
-		if (tmp.length < params.capacity()) tmp = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmp[i++] = FIXED_TO_FLOAT * params.get();
-		glTexEnvfv(target, pname, tmp, 0);
 	}
 
 	public final void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format,
@@ -635,10 +440,6 @@ class LwjglGL10 implements GL10 {
 		GL11.glTexParameterf(target, pname, param);
 	}
 
-	public final void glTexParameterx (int target, int pname, int param) {
-		GL11.glTexParameterf(target, pname, FIXED_TO_FLOAT * param);
-	}
-
 	public final void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
 		int type, Buffer pixels) {
 		if (pixels instanceof ByteBuffer)
@@ -661,15 +462,8 @@ class LwjglGL10 implements GL10 {
 		GL11.glTranslatef(x, y, z);
 	}
 
-	public final void glTranslatex (int x, int y, int z) {
-		GL11.glTranslatef(FIXED_TO_FLOAT * x, FIXED_TO_FLOAT * y, FIXED_TO_FLOAT * z);
-	}
-
 	public final void glVertexPointer (int size, int type, int stride, Buffer pointer) {
-		if (type == GL10.GL_FIXED) {
-			convertFixedToFloatbuffer(pointer, vertexBuffer, stride);
-			GL11.glVertexPointer(size, stride, vertexBuffer);
-		} else if (pointer instanceof FloatBuffer && type == GL10.GL_FLOAT)
+		if (pointer instanceof FloatBuffer && type == GL10.GL_FLOAT)
 			GL11.glVertexPointer(size, stride, ((FloatBuffer)pointer));
 		else if (pointer instanceof ByteBuffer && type == GL10.GL_FLOAT)
 			GL11.glVertexPointer(size, stride, ((ByteBuffer)pointer).asFloatBuffer());
@@ -690,13 +484,6 @@ class LwjglGL10 implements GL10 {
 		GL11.glFog(pname, toBuffer(params, offset));
 	}
 
-	public final void glFogxv (int pname, int[] params, int offset) {
-		if (params.length > tmp.length) tmp = new float[params.length];
-		for (int i = 0; i + offset < params.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
-		glFogfv(pname, tmp, 0);
-	}
-
 	public final void glGenTextures (int n, int[] textures, int offset) {
 		for (int i = offset; i < offset + n; i++)
 			textures[i] = GL11.glGenTextures();
@@ -710,66 +497,24 @@ class LwjglGL10 implements GL10 {
 		GL11.glLightModel(pname, toBuffer(params, offset));
 	}
 
-	public final void glLightModelxv (int pname, int[] params, int offset) {
-		if (params.length > tmp.length) tmp = new float[params.length];
-		for (int i = 0; i + offset < params.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
-		glLightModelfv(pname, tmp, 0);
-	}
-
 	public final void glLightfv (int light, int pname, float[] params, int offset) {
 		GL11.glLight(light, pname, toBuffer(params, offset));
-	}
-
-	public final void glLightxv (int light, int pname, int[] params, int offset) {
-		if (params.length > tmp.length) tmp = new float[params.length];
-		for (int i = 0; i + offset < params.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
-		glLightfv(light, pname, tmp, 0);
 	}
 
 	public final void glLoadMatrixf (float[] m, int offset) {
 		GL11.glLoadMatrix(toBuffer(m, offset));
 	}
 
-	public final void glLoadMatrixx (int[] m, int offset) {
-		if (m.length > tmp.length) tmp = new float[m.length];
-		for (int i = 0; i + offset < m.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * m[i + offset];
-		glLoadMatrixf(tmp, 0);
-	}
-
 	public final void glMaterialfv (int face, int pname, float[] params, int offset) {
 		GL11.glMaterial(face, pname, toBuffer(params, offset));
-	}
-
-	public final void glMaterialxv (int face, int pname, int[] params, int offset) {
-		if (params.length > tmp.length) tmp = new float[params.length];
-		for (int i = 0; i + offset < params.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
-		glMaterialfv(face, pname, tmp, 0);
 	}
 
 	public final void glMultMatrixf (float[] m, int offset) {
 		GL11.glMultMatrix(toBuffer(m, offset));
 	}
 
-	public final void glMultMatrixx (int[] m, int offset) {
-		if (m.length > tmp.length) tmp = new float[m.length];
-		for (int i = 0; i + offset < m.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * m[i + offset];
-		glMultMatrixf(tmp, 0);
-	}
-
 	public final void glTexEnvfv (int target, int pname, float[] params, int offset) {
 		glTexEnvf(target, pname, params[offset]);
-	}
-
-	public final void glTexEnvxv (int target, int pname, int[] params, int offset) {
-		if (params.length > tmp.length) tmp = new float[params.length];
-		for (int i = 0; i + offset < params.length; i++)
-			tmp[i] = FIXED_TO_FLOAT * params[i + offset];
-		glTexEnvfv(target, pname, tmp, 0);
 	}
 
 	public void glPolygonMode (int face, int mode) {

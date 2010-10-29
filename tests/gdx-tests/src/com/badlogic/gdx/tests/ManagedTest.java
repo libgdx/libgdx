@@ -31,7 +31,7 @@ public class ManagedTest implements GdxTest {
 
 	@Override public void surfaceCreated () {
 		if (mesh == null) {
-			mesh = new Mesh(true, false, 4, 4, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
+			mesh = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
 				Usage.TextureCoordinates, 2, "a_texCoord"));
 			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 0.5f, -0.5f, 1, 0, 0.5f, 0.5f, 1, 1, -0.5f, 0.5f, 0, 1});
 			mesh.setIndices(new short[] {0, 1, 2, 3});

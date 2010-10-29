@@ -58,7 +58,7 @@ public class MeshMultitextureTest implements GdxTest {
 		tex2 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 
-		mesh = new Mesh(true, false, 3, 0, new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_Color"), new VertexAttribute(
+		mesh = new Mesh(true, 3, 0, new VertexAttribute(VertexAttributes.Usage.Color, 4, "a_Color"), new VertexAttribute(
 			VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords1"), new VertexAttribute(
 			VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords2"), new VertexAttribute(VertexAttributes.Usage.Position, 3,
 			"a_Position"));

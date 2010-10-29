@@ -63,9 +63,6 @@ public class Mesh {
 	/** a view of the vertices buffer for manipulating floats **/
 	private final FloatBuffer verticesFloat;
 
-	/** a view of the vertices buffer for manipulating fixed point values **/
-	private final IntBuffer verticesFixed;
-
 	/** the direct short buffer that holds the indices **/
 	private final ShortBuffer indices;
 
@@ -84,9 +81,6 @@ public class Mesh {
 	/** static? **/
 	private final boolean isStatic;
 
-	/** fixed point? **/
-	private final boolean useFixedPoint;
-
 	/** whether this mesh was invalidated due to a context loss **/
 	private boolean invalidated = false;
 
@@ -102,17 +96,15 @@ public class Mesh {
 	/**
 	 * Creates a new Mesh with the given attributes.
 	 * 
-	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
-	 * @param useFixedPoint whether to use fixed point or floats
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations. 
 	 * @param maxVertices the maximum number of vertices this mesh can hold
 	 * @param maxIndices the maximum number of indices this mesh can hold
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate
 	 */
-	public Mesh (boolean isStatic, boolean useFixedPoint, int maxVertices, int maxIndices, VertexAttribute... attributes) {
+	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
 		this.managed = true;
-		this.isStatic = isStatic;
-		this.useFixedPoint = useFixedPoint;
+		this.isStatic = isStatic;		
 		this.maxVertices = maxVertices;
 		this.maxIndices = maxIndices;
 		this.attributes = new VertexAttributes(attributes);
@@ -134,23 +126,14 @@ public class Mesh {
 		if (isDirect) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(maxVertices * this.attributes.vertexSize);
 			buffer.order(ByteOrder.nativeOrder());
-			vertices = buffer;
-			verticesFixed = buffer.asIntBuffer();
+			vertices = buffer;			
 			verticesFloat = buffer.asFloatBuffer();
 			buffer = ByteBuffer.allocateDirect(maxIndices * 2);
 			buffer.order(ByteOrder.nativeOrder());
 			indices = buffer.asShortBuffer();
-		} else {
-
-			if (useFixedPoint) {
-				verticesFixed = IntBuffer.allocate(maxVertices * this.attributes.vertexSize / 4);
-				verticesFloat = null;
-				vertices = verticesFixed;
-			} else {
-				verticesFloat = FloatBuffer.allocate(maxVertices * this.attributes.vertexSize / 4);
-				verticesFixed = null;
-				vertices = verticesFloat;
-			}
+		} else {			
+			verticesFloat = FloatBuffer.allocate(maxVertices * this.attributes.vertexSize / 4);
+			vertices = verticesFloat;			
 			indices = ShortBuffer.allocate(maxIndices);
 		}
 
@@ -159,9 +142,6 @@ public class Mesh {
 	}
 
 	private void createBuffers () {
-		// FIXME this is a hack as there's no way to support fixed point VBOs
-		if (useFixedPoint && Gdx.graphics.getType() == GraphicsType.JoglGL) return;
-
 		if (!useVBO) return;
 
 		if (Gdx.graphics.isGL20Available())
@@ -301,9 +281,7 @@ public class Mesh {
 	 * 
 	 * @param vertices the vertices.
 	 */
-	public void setVertices (float[] vertices) {
-		if (useFixedPoint) throw new IllegalArgumentException("can't set float vertices for fixed point mesh");
-
+	public void setVertices (float[] vertices) {		
 		if (isDirect) {
 			BufferUtils.copy(vertices, this.vertices, vertices.length, 0);
 			this.verticesFloat.limit(this.vertices.limit() >> 2);
@@ -327,8 +305,6 @@ public class Mesh {
 	 * @param count the number of floats to use
 	 */
 	public void setVertices (float[] vertices, int offset, int count) {
-		if (useFixedPoint) throw new IllegalArgumentException("can't set float vertices for fixed point mesh");
-
 		if (isDirect) {
 			BufferUtils.copy(vertices, this.vertices, count, offset);
 			this.verticesFloat.limit(this.vertices.limit() >> 2);
@@ -340,50 +316,6 @@ public class Mesh {
 			this.verticesFloat.position(0);
 		}
 
-		dirty = true;
-	}
-
-	/**
-	 * Sets the vertices of this Mesh. The attributes are assumed to be given in fixed point format. If this mesh is configured to
-	 * use floats an IllegalArgumentException will be thrown.
-	 * 
-	 * @param vertices the vertices.
-	 */
-	public void setVertices (int[] vertices) {
-		if (!useFixedPoint) throw new IllegalArgumentException("can't set fixed point vertices for float mesh");
-
-		verticesFixed.clear();
-		verticesFixed.put(vertices);
-		verticesFixed.limit(vertices.length);
-		verticesFixed.position(0);
-
-		if (isDirect) {
-			this.vertices.limit(verticesFixed.limit() << 2);
-			this.vertices.position(0);
-		}
-		dirty = true;
-	}
-
-	/**
-	 * Sets the vertices of this Mesh. The attributes are assumed to be given in fixed point format. If this mesh is configured to
-	 * use floats an IllegalArgumentException will be thrown.
-	 * 
-	 * @param vertices the vertices.
-	 * @param offset the offset into the vertices array
-	 * @param count the number of floats to use
-	 */
-	public void setVertices (int[] vertices, int offset, int count) {
-		if (!useFixedPoint) throw new IllegalArgumentException("can't set fixed point vertices for float mesh");
-
-		verticesFixed.clear();
-		verticesFixed.put(vertices, offset, count);
-		verticesFixed.limit(count);
-		verticesFixed.position(0);
-
-		if (isDirect) {
-			this.vertices.limit(verticesFixed.limit() * 4);
-			this.vertices.position(0);
-		}
 		dirty = true;
 	}
 
@@ -468,7 +400,7 @@ public class Mesh {
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
 
 		int numAttributes = attributes.size();
-		int type = useFixedPoint ? GL11.GL_FIXED : GL11.GL_FLOAT;
+		int type = GL11.GL_FLOAT;
 		int textureUnit = 0;
 
 		for (int i = 0; i < numAttributes; i++) {
@@ -531,7 +463,7 @@ public class Mesh {
 		GL10 gl = Gdx.gl10;
 
 		int numAttributes = attributes.size();
-		int type = useFixedPoint ? GL11.GL_FIXED : GL11.GL_FLOAT;
+		int type = GL11.GL_FLOAT;
 		int textureUnit = 0;
 
 		for (int i = 0; i < numAttributes; i++) {
@@ -650,7 +582,7 @@ public class Mesh {
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
 
 		int numAttributes = attributes.size();
-		int type = useFixedPoint ? GL11.GL_FIXED : GL11.GL_FLOAT;
+		int type = GL11.GL_FLOAT;
 		int textureUnit = 0;
 
 		for (int i = 0; i < numAttributes; i++) {
@@ -749,13 +681,6 @@ public class Mesh {
 	}
 
 	/**
-	 * @return whether Q16 fixed point is used
-	 */
-	public boolean usesFixedPoint () {
-		return useFixedPoint;
-	}
-
-	/**
 	 * @return the maximum number of vertices this mesh can hold
 	 */
 	public int getMaxVertices () {
@@ -798,14 +723,6 @@ public class Mesh {
 	}
 
 	/**
-	 * @return the backing IntBuffer holding the vertices. Will be null if this is a floating point mesh. Does not have to be a
-	 *         direct buffer on Android!
-	 */
-	public IntBuffer getVerticesBufferFixed () {
-		return verticesFixed;
-	}
-
-	/**
 	 * @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
 	 */
 	public ShortBuffer getIndicesBuffer () {
@@ -817,21 +734,8 @@ public class Mesh {
 	 * @param vertices the destination array
 	 */
 	public void getVertices (float[] vertices) {
-		if (useFixedPoint) throw new IllegalArgumentException("can't get float vertices from fixed point mesh");
-
 		verticesFloat.get(vertices);
 		verticesFloat.position(0);
-	}
-
-	/**
-	 * Returns getNumVertices() vertices in the fixed point array
-	 * @param vertices the destination array
-	 */
-	public void getVertices (int[] vertices) {
-		if (!useFixedPoint) throw new IllegalArgumentException("can't get fixed point vertices from float mesh");
-
-		verticesFixed.get(vertices);
-		verticesFixed.position(0);
 	}
 
 	/**

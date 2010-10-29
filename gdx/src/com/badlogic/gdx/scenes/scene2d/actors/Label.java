@@ -8,8 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Label extends Actor {
 	public Font font;
-	public String text;
-	public final Color color = new Color(1, 1, 1, 1);
+	public String text;	
 
 	public Label (String name, Font font, String text) {
 		super(name);

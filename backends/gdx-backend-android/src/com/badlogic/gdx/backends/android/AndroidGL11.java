@@ -51,10 +51,6 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glClipPlanef(plane, equation);
 	}
 
-	@Override public void glClipPlanex (int plane, IntBuffer equation) {
-		gl.glClipPlanex(plane, equation);
-	}
-
 	@Override public void glColor4ub (byte red, byte green, byte blue, byte alpha) {
 		gl.glColor4ub(red, green, blue, alpha);
 	}
@@ -79,14 +75,6 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glGetClipPlanef(pname, eqn);
 	}
 
-	@Override public void glGetClipPlanex (int pname, IntBuffer eqn) {
-		gl.glGetClipPlanex(pname, eqn);
-	}
-
-	@Override public void glGetFixedv (int pname, IntBuffer params) {
-		gl.glGetFixedv(pname, params);
-	}
-
 	@Override public void glGetFloatv (int pname, FloatBuffer params) {
 		gl.glGetFloatv(pname, params);
 	}
@@ -95,16 +83,8 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glGetLightfv(light, pname, params);
 	}
 
-	@Override public void glGetLightxv (int light, int pname, IntBuffer params) {
-		gl.glGetLightxv(light, pname, params);
-	}
-
 	@Override public void glGetMaterialfv (int face, int pname, FloatBuffer params) {
 		gl.glGetMaterialfv(face, pname, params);
-	}
-
-	@Override public void glGetMaterialxv (int face, int pname, IntBuffer params) {
-		gl.glGetMaterialxv(face, pname, params);
 	}
 
 	@Override public void glGetPointerv (int pname, Buffer[] params) {
@@ -115,20 +95,12 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glGetTexEnviv(env, pname, params);
 	}
 
-	@Override public void glGetTexEnvxv (int env, int pname, IntBuffer params) {
-		gl.glGetTexEnvxv(env, pname, params);
-	}
-
 	@Override public void glGetTexParameterfv (int target, int pname, FloatBuffer params) {
 		gl.glGetTexParameterfv(target, pname, params);
 	}
 
 	@Override public void glGetTexParameteriv (int target, int pname, IntBuffer params) {
 		gl.glGetTexParameteriv(target, pname, params);
-	}
-
-	@Override public void glGetTexParameterxv (int target, int pname, IntBuffer params) {
-		gl.glGetTexParameterxv(target, pname, params);
 	}
 
 	@Override public boolean glIsBuffer (int buffer) {
@@ -149,14 +121,6 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 
 	@Override public void glPointParameterfv (int pname, FloatBuffer params) {
 		gl.glPointParameterfv(pname, params);
-	}
-
-	@Override public void glPointParameterx (int pname, int param) {
-		gl.glPointParameterx(pname, param);
-	}
-
-	@Override public void glPointParameterxv (int pname, IntBuffer params) {
-		gl.glPointParameterxv(pname, params);
 	}
 
 	@Override public void glPointSizePointerOES (int type, int stride, Buffer pointer) {
@@ -183,16 +147,8 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glTexParameteriv(target, pname, params);
 	}
 
-	@Override public void glTexParameterxv (int target, int pname, IntBuffer params) {
-		gl.glTexParameterxv(target, pname, params);
-	}
-
 	@Override public void glClipPlanef (int plane, float[] equation, int offset) {
 		gl.glClipPlanef(plane, equation, offset);
-	}
-
-	@Override public void glClipPlanex (int plane, int[] equation, int offset) {
-		gl.glClipPlanex(plane, equation, offset);
 	}
 
 	@Override public void glDeleteBuffers (int n, int[] buffers, int offset) {
@@ -215,14 +171,6 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glGetClipPlanef(pname, eqn, offset);
 	}
 
-	@Override public void glGetClipPlanex (int pname, int[] eqn, int offset) {
-		gl.glGetClipPlanex(pname, eqn, offset);
-	}
-
-	@Override public void glGetFixedv (int pname, int[] params, int offset) {
-		gl.glGetFixedv(pname, params, offset);
-	}
-
 	@Override public void glGetFloatv (int pname, float[] params, int offset) {
 		gl.glGetFloatv(pname, params, offset);
 	}
@@ -231,24 +179,12 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glGetLightfv(light, pname, params, offset);
 	}
 
-	@Override public void glGetLightxv (int light, int pname, int[] params, int offset) {
-		gl.glGetLightxv(light, pname, params, offset);
-	}
-
 	@Override public void glGetMaterialfv (int face, int pname, float[] params, int offset) {
 		gl.glGetMaterialfv(face, pname, params, offset);
 	}
 
-	@Override public void glGetMaterialxv (int face, int pname, int[] params, int offset) {
-		gl.glGetMaterialxv(face, pname, params, offset);
-	}
-
 	@Override public void glGetTexEnviv (int env, int pname, int[] params, int offset) {
 		gl.glGetTexEnviv(env, pname, params, offset);
-	}
-
-	@Override public void glGetTexEnvxv (int env, int pname, int[] params, int offset) {
-		gl.glGetTexEnvxv(env, pname, params, offset);
 	}
 
 	@Override public void glGetTexParameterfv (int target, int pname, float[] params, int offset) {
@@ -259,16 +195,8 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 		gl.glGetTexParameteriv(target, pname, params, offset);
 	}
 
-	@Override public void glGetTexParameterxv (int target, int pname, int[] params, int offset) {
-		gl.glGetTexParameterxv(target, pname, params, offset);
-	}
-
 	@Override public void glPointParameterfv (int pname, float[] params, int offset) {
 		gl.glPointParameterfv(pname, params, offset);
-	}
-
-	@Override public void glPointParameterxv (int pname, int[] params, int offset) {
-		gl.glPointParameterxv(pname, params, offset);
 	}
 
 	@Override public void glTexEnviv (int target, int pname, int[] params, int offset) {
@@ -281,10 +209,6 @@ final class AndroidGL11 extends AndroidGL10 implements GL11 {
 
 	@Override public void glTexParameteriv (int target, int pname, int[] params, int offset) {
 		gl.glTexParameteriv(target, pname, params, offset);
-	}
-
-	@Override public void glTexParameterxv (int target, int pname, int[] params, int offset) {
-		gl.glTexParameterxv(target, pname, params, offset);
 	}
 
 	@Override public void glColorPointer (int size, int type, int stride, int pointer) {

@@ -70,7 +70,7 @@ public class FrameBufferTest implements GdxTest {
 
 	@Override public void surfaceCreated () {
 		if (mesh == null) {
-			mesh = new Mesh(true, false, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(
+			mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(
 				Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 			float c1 = Color.toFloatBits(255, 0, 0, 255);
 			float c2 = Color.toFloatBits(255, 0, 0, 255);

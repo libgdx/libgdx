@@ -89,13 +89,13 @@ public class Pong implements GdxTest {
 		// texture coordinates or indices. Note that we use a fixed
 		// point Mesh here. The paddle has dimensions (10, 60).
 		//
-		paddleMesh = new Mesh(true, false, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
+		paddleMesh = new Mesh(true, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
 		paddleMesh.setVertices(new float[] {-5, -30, 5, -30, 5, 30, -5, 30});
 
 		//
 		// We do the same for the ball which has dimensions (10,10)
 		//
-		ballMesh = new Mesh(true, false, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
+		ballMesh = new Mesh(true, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"));
 		ballMesh.setVertices(new float[] {-5, -5, 5, -5, 5, 5, -5, 5});
 
 		//

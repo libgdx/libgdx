@@ -15,20 +15,20 @@ package com.badlogic.gdx;
 
 /**
  * <p>
- * An <code>Application<code> is the main class of your project. It manages the different
+ * An <code>Application<code> is the main class of your project. It sets up a window and rendering surfaces and manages the different
  * aspects of your application, namely {@link Graphics}, {@link Audio}, {@link Input}
  * and {@link Files}.
  * </p>
  * 
  * <p>
- * An application can either be a desktop application ({@link JoglApplication}), an applet ({@link AppletApplication} or and
+ * An application can either be a desktop application ({@link JoglApplication}, {@link LwjglApplication}), or an
  * Android application ({@link AndroidApplication}). Each application class has it's own startup and initialization methods.
  * Please refer to their documentation for more information.
  * </p>
  * 
  * <p>
  * {@link Graphics} offers you various methods to output visuals to the screen. This is achieved via OpenGL ES 1.0, 1.1 or 2.0
- * depending on what's available an the platform. On the desktop the features of OpenGL ES 2.0 are emulated via Jogl. On Android
+ * depending on what's available an the platform. On the desktop the features of OpenGL ES 2.0 are emulated via desktop OpenGL. On Android
  * the functionality of the Java OpenGL ES bindings is used. The Graphics object allows you to register a {@link RenderListener}
  * which will be called each time a new frame has to be drawn. This <code>RenderListener<code> usually 
  * houses you application logic.

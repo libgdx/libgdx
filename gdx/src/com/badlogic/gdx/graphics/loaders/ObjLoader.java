@@ -31,11 +31,10 @@ public class ObjLoader {
 	/**
 	 * Loads a Wavefront OBJ file from the given input stream.
 	 * 
-	 * @param in the InputStream
-	 * @param useFloats whether to return a FloatMesh or a FixedPointMesh
+	 * @param in the InputStream 
 	 * 
 	 */
-	public static Mesh loadObj (InputStream in, boolean useFloats) {
+	public static Mesh loadObj (InputStream in) {
 		String line = "";
 
 		try {
@@ -53,17 +52,16 @@ public class ObjLoader {
 		} catch (Exception ex) {
 			return null;
 		}
-		return loadObjFromString(line, useFloats);
+		return loadObjFromString(line);
 	}
 
 	/**
 	 * Loads a mesh from the given string in Wavefront OBJ format
 	 * 
 	 * @param obj The string
-	 * @param useFloats whether to return a FloatMesh or a FixedPointMesh
 	 * @return The Mesh
 	 */
-	public static Mesh loadObjFromString (String obj, boolean useFloats) {
+	public static Mesh loadObjFromString (String obj) {
 		String[] lines = obj.split("\n");
 		float[] vertices = new float[lines.length * 3];
 		float[] normals = new float[lines.length * 3];
@@ -166,11 +164,8 @@ public class ObjLoader {
 		if (numNormals > 0) attributes.add(new VertexAttribute(Usage.Normal, 3, "a_Normal"));
 		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, "a_TexCoord"));
 
-		mesh = new Mesh(true, !useFloats, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
-		if (useFloats)
-			mesh.setVertices(verts);
-		else
-			mesh.setVertices(convertToFixedPoint(verts));
+		mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));		
+		mesh.setVertices(verts);		
 		return mesh;
 	}
 

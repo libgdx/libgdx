@@ -39,7 +39,7 @@ final class AppletInputMultiplexer implements MouseListener, MouseMotionListener
 		MouseDown, MouseUp, MouseMoved, MouseDragged, KeyDown, KeyUp, KeyTyped
 	}
 
-	private class Event {
+	private static class Event {
 		public int x, y;
 		public int keycode;
 		public char keychar;

@@ -38,7 +38,7 @@ public class TerrainTest implements GdxTest {
 			for (int i = 3; i < len; i += 4)
 				chunk.vertices[i] = Color.toFloatBits(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255), 255);
 
-			mesh = new Mesh(true, false, chunk.vertices.length / 3, chunk.indices.length, new VertexAttribute(
+			mesh = new Mesh(true, chunk.vertices.length / 3, chunk.indices.length, new VertexAttribute(
 				VertexAttributes.Usage.Position, 3, "a_position"), new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4,
 				"a_color"));
 

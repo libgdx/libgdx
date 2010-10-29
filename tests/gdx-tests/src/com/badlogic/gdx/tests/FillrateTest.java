@@ -29,7 +29,7 @@ public class FillrateTest implements GdxTest, InputListener {
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
 				TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-			mesh = new Mesh(true, false, 4, 6, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_pos"),
+			mesh = new Mesh(true, 4, 6, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_pos"),
 				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
 
 			float[] vertices = new float[4 * 4];

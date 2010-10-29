@@ -46,26 +46,15 @@ public class ModelWriter {
 				dout.write(bytes);
 			}
 
-			// output whether this mesh uses fixed point or not.
-			dout.writeBoolean(mesh.usesFixedPoint());
-
 			// output the number of vertices and indices
 			dout.writeInt(mesh.getNumVertices());
 			dout.writeInt(mesh.getNumVertices() * mesh.getVertexSize() / 4);
 			dout.writeInt(mesh.getNumIndices());
 
-			// output vertices
-			if (mesh.usesFixedPoint()) {
-				int[] vertices = new int[mesh.getNumVertices() * mesh.getVertexSize() / 4];
-				mesh.getVertices(vertices);
-				for (int i = 0; i < vertices.length; i++)
-					dout.writeInt(vertices[i]);
-			} else {
-				float[] vertices = new float[mesh.getNumVertices() * mesh.getVertexSize() / 4];
-				mesh.getVertices(vertices);
-				for (int i = 0; i < vertices.length; i++)
-					dout.writeFloat(vertices[i]);
-			}
+			float[] vertices = new float[mesh.getNumVertices() * mesh.getVertexSize() / 4];
+			mesh.getVertices(vertices);
+			for (int i = 0; i < vertices.length; i++)
+				dout.writeFloat(vertices[i]);			
 
 			dout.flush();
 

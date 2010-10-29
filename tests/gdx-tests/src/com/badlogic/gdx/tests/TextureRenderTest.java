@@ -52,7 +52,7 @@ public class TextureRenderTest implements GdxTest {
 		rects = createRects();
 
 		if (this.mesh == null)
-			this.mesh = new Mesh(false, false, 6 * 4 * rects.size(), 0, new VertexAttribute(VertexAttributes.Usage.Position, 2,
+			this.mesh = new Mesh(false, 6 * 4 * rects.size(), 0, new VertexAttribute(VertexAttributes.Usage.Position, 2,
 				"a_position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoord"));
 
 		final float[] vertices = new float[rects.size() * 6 * 4];

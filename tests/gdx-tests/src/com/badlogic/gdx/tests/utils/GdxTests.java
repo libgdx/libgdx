@@ -11,8 +11,6 @@ import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.FillrateTest;
-import com.badlogic.gdx.tests.FixedPointMeshTest;
-import com.badlogic.gdx.tests.FixedPointTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
@@ -61,8 +59,6 @@ public class GdxTests
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		FillrateTest.class,
-		FixedPointMeshTest.class,
-		FixedPointTest.class,
 		FloatTest.class,
 		FrameBufferTest.class,
 		ImmediateModeRendererTest.class,

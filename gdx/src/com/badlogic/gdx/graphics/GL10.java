@@ -18,7 +18,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 /**
- * Interface wrapping all standard OpenGL ES 1.0 methods.
+ * Interface wrapping all standard OpenGL ES 1.0 methods. Note that this
+ * excludes and fixed point OpenGL ES 1.0 methods!
  * 
  * @author mzechner
  * 
@@ -151,7 +152,6 @@ public interface GL10 extends GLCommon {
 	public static final int GL_SHORT = 0x1402;
 	public static final int GL_UNSIGNED_SHORT = 0x1403;
 	public static final int GL_FLOAT = 0x1406;
-	public static final int GL_FIXED = 0x140C;
 	public static final int GL_CLEAR = 0x1500;
 	public static final int GL_AND = 0x1501;
 	public static final int GL_AND_REVERSE = 0x1502;
@@ -269,23 +269,13 @@ public interface GL10 extends GLCommon {
 
 	public void glAlphaFunc (int func, float ref);
 
-	public void glAlphaFuncx (int func, int ref);
-
-	public void glClearColorx (int red, int green, int blue, int alpha);
-
-	public void glClearDepthx (int depth);
-
 	public void glClientActiveTexture (int texture);
 
 	public void glColor4f (float red, float green, float blue, float alpha);
 
-	public void glColor4x (int red, int green, int blue, int alpha);
-
 	public void glColorPointer (int size, int type, int stride, Buffer pointer);
 
 	public void glDeleteTextures (int n, int[] textures, int offset);
-
-	public void glDepthRangex (int zNear, int zFar);
 
 	public void glDisableClientState (int array);
 
@@ -295,17 +285,9 @@ public interface GL10 extends GLCommon {
 
 	public void glFogfv (int pname, float[] params, int offset);
 
-	public void glFogfv (int pname, FloatBuffer params);
-
-	public void glFogx (int pname, int param);
-
-	public void glFogxv (int pname, int[] params, int offset);
-
-	public void glFogxv (int pname, IntBuffer params);
+	public void glFogfv (int pname, FloatBuffer params);	
 
 	public void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar);
-
-	public void glFrustumx (int left, int right, int bottom, int top, int zNear, int zFar);
 
 	public void glGenTextures (int n, int[] textures, int offset);
 
@@ -317,35 +299,17 @@ public interface GL10 extends GLCommon {
 
 	public void glLightModelfv (int pname, FloatBuffer params);
 
-	public void glLightModelx (int pname, int param);
-
-	public void glLightModelxv (int pname, int[] params, int offset);
-
-	public void glLightModelxv (int pname, IntBuffer params);
-
 	public void glLightf (int light, int pname, float param);
 
 	public void glLightfv (int light, int pname, float[] params, int offset);
 
 	public void glLightfv (int light, int pname, FloatBuffer params);
 
-	public void glLightx (int light, int pname, int param);
-
-	public void glLightxv (int light, int pname, int[] params, int offset);
-
-	public void glLightxv (int light, int pname, IntBuffer params);
-
-	public void glLineWidthx (int width);
-
 	public void glLoadIdentity ();
 
 	public void glLoadMatrixf (float[] m, int offset);
 
 	public void glLoadMatrixf (FloatBuffer m);
-
-	public void glLoadMatrixx (int[] m, int offset);
-
-	public void glLoadMatrixx (IntBuffer m);
 
 	public void glLogicOp (int opcode);
 
@@ -355,41 +319,21 @@ public interface GL10 extends GLCommon {
 
 	public void glMaterialfv (int face, int pname, FloatBuffer params);
 
-	public void glMaterialx (int face, int pname, int param);
-
-	public void glMaterialxv (int face, int pname, int[] params, int offset);
-
-	public void glMaterialxv (int face, int pname, IntBuffer params);
-
 	public void glMatrixMode (int mode);
 
 	public void glMultMatrixf (float[] m, int offset);
 
 	public void glMultMatrixf (FloatBuffer m);
 
-	public void glMultMatrixx (int[] m, int offset);
-
-	public void glMultMatrixx (IntBuffer m);
-
-	public void glMultiTexCoord4f (int target, float s, float t, float r, float q);
-
-	public void glMultiTexCoord4x (int target, int s, int t, int r, int q);
+	public void glMultiTexCoord4f (int target, float s, float t, float r, float q);	
 
 	public void glNormal3f (float nx, float ny, float nz);
-
-	public void glNormal3x (int nx, int ny, int nz);
 
 	public void glNormalPointer (int type, int stride, Buffer pointer);
 
 	public void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar);
 
-	public void glOrthox (int left, int right, int bottom, int top, int zNear, int zFar);
-
-	public void glPointSize (float size);
-
-	public void glPointSizex (int size);
-
-	public void glPolygonOffsetx (int factor, int units);
+	public void glPointSize (float size);	
 
 	public void glPopMatrix ();
 
@@ -397,15 +341,9 @@ public interface GL10 extends GLCommon {
 
 	public void glRotatef (float angle, float x, float y, float z);
 
-	public void glRotatex (int angle, int x, int y, int z);
-
 	public void glSampleCoverage (float value, boolean invert);
 
-	public void glSampleCoveragex (int value, boolean invert);
-
 	public void glScalef (float x, float y, float z);
-
-	public void glScalex (int x, int y, int z);
 
 	public void glShadeModel (int mode);
 
@@ -415,19 +353,9 @@ public interface GL10 extends GLCommon {
 
 	public void glTexEnvfv (int target, int pname, float[] params, int offset);
 
-	public void glTexEnvfv (int target, int pname, FloatBuffer params);
-
-	public void glTexEnvx (int target, int pname, int param);
-
-	public void glTexEnvxv (int target, int pname, int[] params, int offset);
-
-	public void glTexEnvxv (int target, int pname, IntBuffer params);
-
-	public void glTexParameterx (int target, int pname, int param);
+	public void glTexEnvfv (int target, int pname, FloatBuffer params);			
 
 	public void glTranslatef (float x, float y, float z);
-
-	public void glTranslatex (int x, int y, int z);
 
 	public void glVertexPointer (int size, int type, int stride, Buffer pointer);
 

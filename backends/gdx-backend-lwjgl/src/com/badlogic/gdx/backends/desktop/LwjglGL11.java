@@ -36,7 +36,6 @@ import com.badlogic.gdx.graphics.GL10;
  * 
  */
 public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
-	private float tmpFloat[] = new float[1000];
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;
 
@@ -115,14 +114,6 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	public void glClipPlanex (int plane, int[] equation, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	public void glClipPlanex (int plane, IntBuffer equation) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
 	public void glColor4ub (byte red, byte green, byte blue, byte alpha) {
 		throw new UnsupportedOperationException("not implemented");
 	}
@@ -165,14 +156,6 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 	}
 
 	public void glGetClipPlanef (int pname, FloatBuffer eqn) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	public void glGetClipPlanex (int pname, int[] eqn, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	public void glGetClipPlanex (int pname, IntBuffer eqn) {
 		throw new UnsupportedOperationException("not implemented");
 	}
 
@@ -292,18 +275,6 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 		GL14.glPointParameter(pname, params);
 	}
 
-	public void glPointParameterx (int pname, int param) {
-		GL14.glPointParameterf(pname, FIXED_TO_FLOAT * param);
-	}
-
-	public void glPointParameterxv (int pname, int[] params, int offset) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
-	public void glPointParameterxv (int pname, IntBuffer params) {
-		throw new UnsupportedOperationException("not implemented");
-	}
-
 	public void glPointSizePointerOES (int type, int stride, Buffer pointer) {
 		throw new UnsupportedOperationException("not implemented");
 	}
@@ -340,38 +311,19 @@ public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graph
 		GL11.glTexParameter(target, pname, params);
 	}
 
-	public void glTexParameterxv (int target, int pname, int[] params, int offset) {
-		if (tmpFloat.length < params.length) tmpFloat = new float[params.length];
-		for (int i = 0; i < params.length; i++)
-			tmpFloat[i] = params[i];
-		glTexParameterfv(target, pname, tmpFloat, offset);
-	}
-
-	public void glTexParameterxv (int target, int pname, IntBuffer params) {
-		if (tmpFloat.length < params.capacity()) tmpFloat = new float[params.capacity()];
-		int i = 0;
-		while (params.hasRemaining())
-			tmpFloat[i] = FIXED_TO_FLOAT * params.get();
-		glTexParameterfv(target, pname, tmpFloat, 0);
-	}
-
 	public void glColorPointer (int size, int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		GL11.glColorPointer(size, type, stride, pointer);
 	}
 
 	public void glNormalPointer (int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		GL11.glNormalPointer(type, stride, pointer);
 	}
 
 	public void glTexCoordPointer (int size, int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		GL11.glTexCoordPointer(size, type, stride, pointer);
 	}
 
 	public void glVertexPointer (int size, int type, int stride, int pointer) {
-		if (type == GL10.GL_FIXED) type = GL10.GL_FLOAT;
 		GL11.glVertexPointer(size, type, stride, pointer);
 	}
 

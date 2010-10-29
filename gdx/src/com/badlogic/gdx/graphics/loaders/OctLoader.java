@@ -45,7 +45,7 @@ public class OctLoader {
 		@SuppressWarnings("unused") public float nx, ny, nz, d;
 	}
 
-	public static Mesh loadOct (InputStream inputStream, boolean useFloats, Vector3 start) {
+	public static Mesh loadOct (InputStream inputStream, Vector3 start) {
 		LittleEndianInputStream in = new LittleEndianInputStream(new BufferedInputStream(inputStream));
 
 		try {
@@ -130,25 +130,14 @@ public class OctLoader {
 				}
 			}
 
-			Mesh m = new Mesh(true, !useFloats, numTriangles * 3, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
-				new VertexAttribute(Usage.Normal, 3, "a_position"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
-			if (useFloats)
-				m.setVertices(triangles);
-			else
-				m.setVertices(convertToFixedPoint(triangles));
+			Mesh m = new Mesh(true, numTriangles * 3, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
+				new VertexAttribute(Usage.Normal, 3, "a_position"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));			
+				m.setVertices(triangles);			
 
 			return m;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
-	}
-
-	private static int[] convertToFixedPoint (float[] fverts) {
-		int[] fpverts = new int[fverts.length];
-		for (int i = 0; i < fverts.length; i++)
-			fpverts[i] = (int)(fverts[i] * 65536);
-		;
-		return fpverts;
 	}
 }
