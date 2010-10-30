@@ -46,25 +46,25 @@ public class BitmapFontFlipTest implements GdxTest {
 			}
 		});
 
-		cache1 = font.newCache();
-		cache2 = font.newCache();
-		cache3 = font.newCache();
-		cache4 = font.newCache();
-		cache5 = font.newCache();
+		cache1 = new BitmapFontCache(font);
+		cache2 = new BitmapFontCache(font);
+		cache3 = new BitmapFontCache(font);
+		cache4 = new BitmapFontCache(font);
+		cache5 = new BitmapFontCache(font);
 
-		font.cacheText(cache1, "(cached)", 10, 320 - 76, Color.WHITE);
+		cache1.setText("(cached)", 10, 320 - 36, Color.WHITE);
 
 		String text = "Sphinx of black quartz,\njudge my vow.";
-		font.cacheMultiLineText(cache2, text, 5, 320 - 310, Color.RED);
+		cache2.setMultiLineText(text, 5, 320 - 270, Color.RED);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		font.cacheMultiLineText(cache3, text, 5, 320 - 210, Color.BLUE, 470, BitmapFont.HAlignment.CENTER);
+		cache3.setMultiLineText(text, 5, 320 - 170, Color.BLUE, 470, BitmapFont.HAlignment.CENTER);
 
 		text = "Kerning: LYA moo";
-		font.cacheText(cache4, text, 210, 320 - 76, Color.WHITE, 0, text.length() - 3);
+		cache4.setText(text, 210, 320 - 36, Color.WHITE, 0, text.length() - 3);
 
 		text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
-		font.cacheWrappedText(cache5, text, 0, 320 - 310, red, 480, HAlignment.CENTER);
+		cache5.setWrappedText(text, 0, 320 - 270, red, 480, HAlignment.CENTER);
 	}
 
 	public void surfaceChanged (int width, int height) {
@@ -91,20 +91,20 @@ public class BitmapFontFlipTest implements GdxTest {
 	private void renderNormal () {
 		String text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
 		red.a = alpha;
-		font.drawWrappedText(spriteBatch, text, 0, 320 - 310, red, 480, HAlignment.CENTER);
+		font.drawWrappedText(spriteBatch, text, 0, 320 - 270, red, 480, HAlignment.CENTER);
 
-		font.draw(spriteBatch, "(normal)", 10, 320 - 76, Color.WHITE);
+		font.draw(spriteBatch, "(normal)", 10, 320 - 36, Color.WHITE);
 
 		if (alpha > 0.6f) return;
 
 		text = "Sphinx of black quartz,\njudge my vow.";
-		font.drawMultiLineText(spriteBatch, text, 5, 320 - 310, Color.RED);
+		font.drawMultiLineText(spriteBatch, text, 5, 320 - 270, Color.RED);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		font.drawMultiLineText(spriteBatch, text, 5, 320 - 210, Color.BLUE, 470, BitmapFont.HAlignment.RIGHT);
+		font.drawMultiLineText(spriteBatch, text, 5, 320 - 170, Color.BLUE, 470, BitmapFont.HAlignment.RIGHT);
 
 		text = "Kerning: LYA moo";
-		font.draw(spriteBatch, text, 210, 320 - 76, Color.WHITE, 0, text.length() - 3);
+		font.draw(spriteBatch, text, 210, 320 - 36, Color.WHITE, 0, text.length() - 3);
 	}
 
 	private void renderCached () {
@@ -124,8 +124,7 @@ public class BitmapFontFlipTest implements GdxTest {
 	public void dispose () {
 	}
 
-	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
+	public boolean needsGL20 () {
 		return false;
 	}
 }

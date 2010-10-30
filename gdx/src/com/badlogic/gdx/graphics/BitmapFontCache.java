@@ -23,26 +23,25 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.graphics.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 
 /**
- * A BitmapFontCache caches glyph geometry produced by a call to one of the
- * {@link BitmapFont#cacheText(BitmapFontCache, CharSequence, int, int, Color)} methods. It caches the glyph geometry, providing a
- * fast way to render static text. <br>
+ * A BitmapFontCache caches glyph geometry for a BitmapFont, providing a fast way to render static text. <br>
  * <br>
  * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
  * @author Nathan Sweet <misc@n4te.com>
  * @author Matthias Mann
  */
 public class BitmapFontCache {
-	private final Texture texture;
+	private final BitmapFont font;
 	private float[] vertices;
 	private int idx;
 	int width, height;
 	private float x, y;
 	private float color;
 
-	BitmapFontCache (Texture texture) {
-		this.texture = texture;
+	public BitmapFontCache (BitmapFont font) {
+		this.font = font;
 	}
 
 	/**
@@ -96,6 +95,48 @@ public class BitmapFontCache {
 			vertices[i] = color;
 	}
 
+	/**
+	 * Draws the contents of the cache via a {@link SpriteBatch}. Must be called between a {@link SpriteBatch#begin()}/
+	 * {@link SpriteBatch#end()} pair.
+	 * @param spriteBatch The SpriteBatch
+	 */
+	public void draw (SpriteBatch spriteBatch) {
+		spriteBatch.draw(font.texture, vertices, 0, idx);
+	}
+
+	void reset (int glyphCount) {
+		x = 0;
+		y = 0;
+		idx = 0;
+
+		int vertexCount = glyphCount * 20;
+		if (vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
+	}
+
+	private int addToCache (CharSequence str, int x, int y, float color, int start, int end) {
+		BitmapFont font = this.font;
+		Glyph lastGlyph = null;
+		while (start < end) {
+			lastGlyph = font.getGlyph(str.charAt(start++));
+			if (lastGlyph != null) {
+				addGlyph(lastGlyph, x, y, color);
+				x += lastGlyph.xadvance;
+				break;
+			}
+		}
+		while (start < end) {
+			char ch = str.charAt(start++);
+			Glyph g = font.getGlyph(ch);
+			if (g != null) {
+				x += lastGlyph.getKerning(ch);
+				lastGlyph = g;
+				addGlyph(lastGlyph, x, y, color);
+				x += g.xadvance;
+			}
+		}
+		return x;
+	}
+
 	void addGlyph (Glyph glyph, float x, float y, float color) {
 		x += glyph.xoffset;
 		y += glyph.yoffset;
@@ -133,21 +174,150 @@ public class BitmapFontCache {
 	}
 
 	/**
-	 * Draws the contents of the cache via a {@link SpriteBatch}. Must be called between a {@link SpriteBatch#begin()}/
-	 * {@link SpriteBatch#end()} pair.
-	 * @param spriteBatch The SpriteBatch
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
+	 * @param str The string
+	 * @param x The x position of the left most character
+	 * @param y The y position of the left most character's top left corner
+	 * @param tint The color
 	 */
-	public void draw (SpriteBatch spriteBatch) {
-		spriteBatch.draw(texture, vertices, 0, idx);
+	public void setText (CharSequence str, int x, int y, Color tint) {
+		setText(str, x, y, tint, 0, str.length());
 	}
 
-	void reset (int glyphCount) {
-		x = 0;
-		y = 0;
-		idx = 0;
+	/**
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
+	 * @param str The string
+	 * @param x The x position of the left most character
+	 * @param y The y position of the left most character's top left corner
+	 * @param tint The color
+	 * @param start The first character of the string to draw
+	 * @param end The last character of the string to draw
+	 */
+	public void setText (CharSequence str, int x, int y, Color tint, int start, int end) {
+		final float color = tint.toFloatBits();
+		reset(end - start);
+		y += font.yOffset;
+		width = addToCache(str, x, y, color, start, end);
+		height = font.lineHeight;
+	}
 
-		int vertexCount = glyphCount * 20;
-		if (vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
+	/**
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param tint The color
+	 */
+	public void setMultiLineText (CharSequence str, int x, int y, Color tint) {
+		setMultiLineText(str, x, y, tint, 0, HAlignment.LEFT);
+	}
+
+	/**
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. The method interprets new lines. <br>
+	 * <br>
+	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
+	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
+	 * alignmentWidth). The second parameter specifies the alignment itself.
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param tint The color
+	 * @param alignmentWidth The alignment width
+	 * @param alignment The horizontal alignment
+	 */
+	public void setMultiLineText (CharSequence str, int x, int y, Color tint, int alignmentWidth, HAlignment alignment) {
+		BitmapFont font = this.font;
+
+		int length = str.length();
+		reset(length);
+
+		final float color = tint.toFloatBits();
+		y += font.yOffset;
+		int down = font.down;
+
+		int start = 0;
+		int numLines = 0;
+		while (start < length) {
+			int lineEnd = BitmapFont.indexOf(str, '\n', start);
+			int xOffset = 0;
+			if (alignment != HAlignment.LEFT) {
+				int lineWidth = font.computeTextWidth(str, start, lineEnd);
+				xOffset = alignmentWidth - lineWidth;
+				if (alignment == HAlignment.CENTER) xOffset /= 2;
+			}
+			addToCache(str, x + xOffset, y, color, start, lineEnd);
+			start = lineEnd + 1;
+			y += down;
+			numLines++;
+		}
+		width = alignmentWidth;
+		height = start - y;
+	}
+
+	/**
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
+	 * at spaces based on the given <code>wrapWidth</code>. The wrapped text is left aligned.
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param tint The color
+	 * @param wrapWidth The wrap width
+	 */
+	public void setWrappedText (CharSequence str, int x, int y, Color tint, int wrapWidth) {
+		setWrappedText(str, x, y, tint, wrapWidth, HAlignment.LEFT);
+	}
+
+	/**
+	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
+	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
+	 * at spaces based on the given <code>wrapWidth</code>. <br>
+	 * <br>
+	 * You can specify the horizontal alignment of the text within the <code>wrapWidth</code> by using the <code>alignment</code>
+	 * parameter.
+	 * @param str The string
+	 * @param x The x position of the left most character of the first line
+	 * @param y The y position of the left most character's top left corner of the first line
+	 * @param tint The color
+	 * @param wrapWidth The wrap width
+	 */
+	public void setWrappedText (CharSequence str, int x, int y, Color tint, int wrapWidth, HAlignment alignment) {
+		BitmapFont font = this.font;
+
+		int length = str.length();
+		reset(length);
+
+		final float color = tint.toFloatBits();
+		y += font.yOffset;
+		int down = font.down;
+
+		int start = 0;
+		int numLines = 0;
+		while (start < length) {
+			int lineEnd = start + font.computeVisibleGlpyhs(str, start, BitmapFont.indexOf(str, '\n', start), wrapWidth);
+			if (lineEnd < length) {
+				while (lineEnd > start) {
+					char ch = str.charAt(lineEnd);
+					if (ch == ' ' || ch == '\n') break;
+					lineEnd--;
+				}
+			}
+			if (lineEnd == start) lineEnd++;
+			int xOffset = 0;
+			if (alignment != HAlignment.LEFT) {
+				int lineWidth = font.computeTextWidth(str, start, lineEnd);
+				xOffset = wrapWidth - lineWidth;
+				if (alignment == HAlignment.CENTER) xOffset /= 2;
+			}
+			addToCache(str, x + xOffset, y, color, start, lineEnd);
+			start = lineEnd + 1;
+			y += down;
+			numLines++;
+		}
+		width = wrapWidth;
+		height = start - y;
 	}
 
 	/**

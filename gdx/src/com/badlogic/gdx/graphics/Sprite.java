@@ -27,14 +27,14 @@ public class Sprite {
 	private boolean dirty;
 
 	/**
-	 * Creates a sprite with both bounds and texture region equal to the size of the texture.
+	 * Creates a sprite with width, height, and texture region equal to the size of the texture.
 	 */
 	public Sprite (Texture texture) {
 		this(texture, 0, 0, texture.getWidth(), texture.getHeight());
 	}
 
 	/**
-	 * Creates a sprite with both bounds and texture region equal to the specified size. The texture region's upper left corner
+	 * Creates a sprite with width, height, and texture region equal to the specified size. The texture region's upper left corner
 	 * will be 0,0.
 	 */
 	public Sprite (Texture texture, int srcWidth, int srcHeight) {
@@ -42,7 +42,7 @@ public class Sprite {
 	}
 
 	/**
-	 * Creates a sprite with both bounds and texture region equal to the specified size.
+	 * Creates a sprite with width, height, and texture region equal to the specified size.
 	 */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
@@ -51,6 +51,15 @@ public class Sprite {
 		setColor(1, 1, 1, 1);
 		setBounds(0, 0, Math.abs(srcWidth), Math.abs(srcHeight));
 		setOrigin(width / 2, height / 2);
+	}
+
+	/**
+	 * Creates a sprite with width, height, and texture region equal to the specified size, relative to specified sprite's texture
+	 * region.
+	 */
+	public Sprite (Sprite parent, int srcX, int srcY, int srcWidth, int srcHeight) {
+		this(parent.texture, (int)(srcX + parent.vertices[U1] * parent.texture.getWidth()), (int)(srcY + parent.vertices[V2]
+			* parent.texture.getHeight()), srcWidth, srcHeight);
 	}
 
 	/**

@@ -55,15 +55,16 @@ public class BitmapFont {
 	private static final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	private static final int PAGES = 0x10000 / PAGE_SIZE;
 
-	private final Texture texture;
+	final Texture texture;
+	final int lineHeight;
+	final int yOffset;
+	final int down;
+
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private final int lineHeight;
 	private final int baseLine;
 	private final int spaceWidth;
 	private final int xHeight;
 	private final int capHeight;
-	private final int yOffset;
-	private final float down;
 
 	/**
 	 * Creates a new BitmapFont instance based on a .fnt file and an image file holding the page with glyphs. Currently only
@@ -122,7 +123,7 @@ public class BitmapFont {
 				glyph.xoffset = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
 				if (flip)
-					glyph.yoffset = Integer.parseInt(tokens.nextToken()) - lineHeight + baseLine;
+					glyph.yoffset = Integer.parseInt(tokens.nextToken());
 				else
 					glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
 				tokens.nextToken();
@@ -166,8 +167,8 @@ public class BitmapFont {
 			g = getGlyph('M');
 			capHeight = g != null ? g.height : 1;
 
-			yOffset = flip ? 0 : lineHeight - baseLine;
-			down = flip ? 1 : -1;
+			yOffset = flip ? -baseLine : baseLine;
+			down = flip ? lineHeight : -lineHeight;
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
 		} finally {
@@ -178,7 +179,7 @@ public class BitmapFont {
 		}
 	}
 
-	private Glyph getGlyph (char ch) {
+	Glyph getGlyph (char ch) {
 		Glyph[] page = glyphs[ch / PAGE_SIZE];
 		if (page != null) return page[ch & (PAGE_SIZE - 1)];
 		return null;
@@ -227,13 +228,12 @@ public class BitmapFont {
 		while (start < end) {
 			char ch = str.charAt(start++);
 			Glyph g = getGlyph(ch);
-			if (g != null) {
-				x += lastGlyph.getKerning(ch);
-				lastGlyph = g;
-				spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
-					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
-				x += g.xadvance;
-			}
+			if (g == null) continue;
+			x += lastGlyph.getKerning(ch);
+			lastGlyph = g;
+			spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height, lastGlyph.u,
+				lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
+			x += g.xadvance;
 		}
 		return x - startX;
 	}
@@ -272,6 +272,7 @@ public class BitmapFont {
 	 */
 	public int drawMultiLineText (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int alignmentWidth,
 		HAlignment alignment) {
+		int down = this.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
@@ -285,7 +286,7 @@ public class BitmapFont {
 			}
 			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
 			start = lineEnd + 1;
-			y += lineHeight * down;
+			y += down;
 			numLines++;
 		}
 		return numLines * lineHeight;
@@ -324,6 +325,7 @@ public class BitmapFont {
 	 */
 	public int drawWrappedText (SpriteBatch spriteBatch, CharSequence str, int x, int y, Color color, int wrapWidth,
 		HAlignment alignment) {
+		int down = this.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
@@ -345,186 +347,10 @@ public class BitmapFont {
 			}
 			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
 			start = lineEnd + 1;
-			y += lineHeight * down;
+			y += down;
 			numLines++;
 		}
 		return numLines * lineHeight;
-	}
-
-	private int addToCache (BitmapFontCache cache, CharSequence str, int x, int y, float color, int start, int end) {
-		Glyph lastGlyph = null;
-		while (start < end) {
-			lastGlyph = getGlyph(str.charAt(start++));
-			if (lastGlyph != null) {
-				cache.addGlyph(lastGlyph, x, y, color);
-				x += lastGlyph.xadvance;
-				break;
-			}
-		}
-		while (start < end) {
-			char ch = str.charAt(start++);
-			Glyph g = getGlyph(ch);
-			if (g != null) {
-				x += lastGlyph.getKerning(ch);
-				lastGlyph = g;
-				cache.addGlyph(lastGlyph, x, y, color);
-				x += g.xadvance;
-			}
-		}
-		return x;
-	}
-
-	/**
-	 * Creates a new {@link BitmapFontCache} to be used with {@link #cacheText(BitmapFontCache, CharSequence, int, int, Color)}.
-	 * @return The new cache
-	 */
-	public BitmapFontCache newCache () {
-		return new BitmapFontCache(texture);
-	}
-
-	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * @param cache The cache
-	 * @param str The string
-	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner
-	 * @param color The color
-	 */
-	public void cacheText (BitmapFontCache cache, CharSequence str, int x, int y, Color color) {
-		cacheText(cache, str, x, y, color, 0, str.length());
-	}
-
-	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * @param cache The cache
-	 * @param str The string
-	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner
-	 * @param tint The color
-	 * @param start The first character of the string to draw
-	 * @param end The last character of the string to draw
-	 */
-	public void cacheText (BitmapFontCache cache, CharSequence str, int x, int y, Color tint, int start, int end) {
-		final float color = tint.toFloatBits();
-		cache.reset(end - start);
-		y += yOffset;
-		cache.width = addToCache(cache, str, x, y, color, start, end);
-		cache.height = lineHeight;
-	}
-
-	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
-	 * @param cache The cache
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
-	 */
-	public void cacheMultiLineText (BitmapFontCache cache, CharSequence str, int x, int y, Color color) {
-		cacheMultiLineText(cache, str, x, y, color, 0, HAlignment.LEFT);
-	}
-
-	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. The method interprets new lines. <br>
-	 * <br>
-	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
-	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
-	 * alignmentWidth). The second parameter specifies the alignment itself.
-	 * @param cache The cache
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param tint The color
-	 * @param alignmentWidth The alignment width
-	 * @param alignment The horizontal alignment
-	 */
-	public void cacheMultiLineText (BitmapFontCache cache, CharSequence str, int x, int y, Color tint, int alignmentWidth,
-		HAlignment alignment) {
-		final float color = tint.toFloatBits();
-		y += yOffset;
-		int length = str.length();
-		cache.reset(length);
-		int start = 0;
-		int numLines = 0;
-		while (start < length) {
-			int lineEnd = indexOf(str, '\n', start);
-			int xOffset = 0;
-			if (alignment != HAlignment.LEFT) {
-				int lineWidth = computeTextWidth(str, start, lineEnd);
-				xOffset = alignmentWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset /= 2;
-			}
-			addToCache(cache, str, x + xOffset, y, color, start, lineEnd);
-			start = lineEnd + 1;
-			y += lineHeight * down;
-			numLines++;
-		}
-		cache.width = alignmentWidth;
-		cache.height = start - y;
-	}
-
-	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
-	 * at spaces based on the given <code>wrapWidth</code>. The wrapped text is left aligned.
-	 * @param cache The cache
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
-	 * @param wrapWidth The wrap width
-	 */
-	public void cacheWrappedText (BitmapFontCache cache, CharSequence str, int x, int y, Color color, int wrapWidth) {
-		cacheWrappedText(cache, str, x, y, color, wrapWidth, HAlignment.LEFT);
-	}
-
-	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
-	 * at spaces based on the given <code>wrapWidth</code>. <br>
-	 * <br>
-	 * You can specify the horizontal alignment of the text within the <code>wrapWidth</code> by using the <code>alignment</code>
-	 * parameter.
-	 * @param cache The cache
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param tint The color
-	 * @param wrapWidth The wrap width
-	 */
-	public void cacheWrappedText (BitmapFontCache cache, CharSequence str, int x, int y, Color tint, int wrapWidth,
-		HAlignment alignment) {
-		final float color = tint.toFloatBits();
-		y += yOffset;
-		int length = str.length();
-		cache.reset(length);
-		int start = 0;
-		int numLines = 0;
-		while (start < length) {
-			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
-			if (lineEnd < length) {
-				while (lineEnd > start) {
-					char ch = str.charAt(lineEnd);
-					if (ch == ' ' || ch == '\n') break;
-					lineEnd--;
-				}
-			}
-			if (lineEnd == start) lineEnd++;
-			int xOffset = 0;
-			if (alignment != HAlignment.LEFT) {
-				int lineWidth = computeTextWidth(str, start, lineEnd);
-				xOffset = wrapWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset /= 2;
-			}
-			addToCache(cache, str, x + xOffset, y, color, start, lineEnd);
-			start = lineEnd + 1;
-			y += lineHeight * down;
-			numLines++;
-		}
-		cache.width = wrapWidth;
-		cache.height = start - y;
 	}
 
 	/**
@@ -680,7 +506,7 @@ public class BitmapFont {
 		}
 	}
 
-	static private int indexOf (CharSequence text, char ch, int start) {
+	static int indexOf (CharSequence text, char ch, int start) {
 		final int n = text.length();
 		for (; start < n; start++)
 			if (text.charAt(start) == ch) return start;
