@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics;
+package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 
 /**

@@ -46,7 +46,7 @@ public interface InputListener {
 	public boolean keyTyped (char character);
 
 	/**
-	 * Called when the screen was touched or the mouse was pressed.
+	 * Called when the screen was touched or a mouse button was pressed.
 	 * 
 	 * @param x The x coordinate, origin is in the upper left corner
 	 * @param y The y coordinate, origin is in the upper left corner

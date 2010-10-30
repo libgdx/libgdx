@@ -14,6 +14,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
  * A single vertex attribute defined by its {@link Usage}, its number of components and its shader alias. The Usage is needed for
