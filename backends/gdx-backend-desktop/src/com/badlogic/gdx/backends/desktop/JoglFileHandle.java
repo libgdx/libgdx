@@ -53,4 +53,8 @@ public class JoglFileHandle implements FileHandle {
 	public String toString () {
 		return file.toString();
 	}
+
+	@Override public String getFileName() {
+		return file.toString();
+	}
 }

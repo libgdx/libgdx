@@ -25,5 +25,13 @@ import com.badlogic.gdx.Files;
  * 
  */
 public interface FileHandle {
+	/**
+	 * @return a new {@link InputStream} to the underlying file.
+	 */
 	public InputStream getInputStream ();
+	
+	/**
+	 * @return the file name.
+	 */
+	public String getFileName ();
 }
