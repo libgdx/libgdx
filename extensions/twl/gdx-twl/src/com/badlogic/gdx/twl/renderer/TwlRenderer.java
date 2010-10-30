@@ -207,8 +207,8 @@ public class TwlRenderer implements Renderer {
 	static public void updateSize (GUI gui) {
 		Renderer renderer = gui.getRenderer();
 		if (!(renderer instanceof TwlRenderer)) throw new IllegalArgumentException("gui's renderer must be a TwlRenderer.");
-		((TwlRenderer)renderer).spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),
-			Gdx.graphics.getHeight());
+		((TwlRenderer)renderer).spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+			0, 0, 1);
 		gui.setSize();
 	}
 

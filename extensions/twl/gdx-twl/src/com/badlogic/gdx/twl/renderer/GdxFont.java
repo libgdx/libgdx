@@ -93,16 +93,15 @@ class GdxFont implements Font {
 
 	public FontCache cacheText (FontCache cache, CharSequence str, int start, int end) {
 		if (cache == null) cache = new GdxFontCache();
-		BitmapFontCache bitmapCache = ((GdxFontCache)cache).bitmapCache;
-		bitmapFont.cacheText(bitmapCache, str, 0, yOffset, com.badlogic.gdx.graphics.Color.WHITE, start, end);
+		GdxFontCache bitmapCache = (GdxFontCache)cache;
+		bitmapCache.setText(str, 0, yOffset, com.badlogic.gdx.graphics.Color.WHITE, start, end);
 		return cache;
 	}
 
 	public FontCache cacheMultiLineText (FontCache cache, CharSequence str, int width, de.matthiasmann.twl.HAlignment align) {
 		if (cache == null) cache = new GdxFontCache();
-		BitmapFontCache bitmapCache = ((GdxFontCache)cache).bitmapCache;
-		bitmapFont.cacheMultiLineText(bitmapCache, str, 0, yOffset, com.badlogic.gdx.graphics.Color.WHITE, width,
-			gdxAlignment[align.ordinal()]);
+		GdxFontCache bitmapCache = (GdxFontCache)cache;
+		bitmapCache.setMultiLineText(str, 0, yOffset, com.badlogic.gdx.graphics.Color.WHITE, width, gdxAlignment[align.ordinal()]);
 		return cache;
 	}
 
@@ -172,26 +171,17 @@ class GdxFont implements Font {
 		}
 	}
 
-	private class GdxFontCache implements FontCache {
-		final BitmapFontCache bitmapCache;
-
+	private class GdxFontCache extends BitmapFontCache implements FontCache {
 		public GdxFontCache () {
-			bitmapCache = bitmapFont.newCache();
+			super(bitmapFont);
 		}
 
 		public void draw (AnimationState as, int x, int y) {
+			y += bitmapFont.getCapHeight();
 			GdxFont.FontState fontState = evalFontState(as);
-			bitmapCache.setColor(renderer.getColor(fontState.color));
-			bitmapCache.setPosition(x + fontState.offsetX, y + fontState.offsetY);
-			bitmapCache.draw(renderer.spriteBatch);
-		}
-
-		public int getWidth () {
-			return bitmapCache.getWidth();
-		}
-
-		public int getHeight () {
-			return bitmapCache.getHeight();
+			setColor(renderer.getColor(fontState.color));
+			setPosition(x + fontState.offsetX, y + fontState.offsetY);
+			draw(renderer.spriteBatch);
 		}
 
 		public void destroy () {
