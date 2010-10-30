@@ -18,7 +18,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An ImmediateModeRenderer allows you to perform immediate mode rendering as you were accustomed to in your desktop OpenGL

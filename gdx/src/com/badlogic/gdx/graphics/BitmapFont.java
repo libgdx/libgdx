@@ -28,10 +28,10 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Loads and renders AngleCode BMFont files. The bitmap font consists of 2 files: the .fnt file which must be saved with text

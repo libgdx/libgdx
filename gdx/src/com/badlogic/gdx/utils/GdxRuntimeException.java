@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx;
+package com.badlogic.gdx.utils;
 
 /**
  * Typed runtime exception used throughout libgdx

@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.GdxRuntimeException;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * A 3x3 column major matrix for 2D transforms.

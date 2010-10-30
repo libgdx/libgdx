@@ -18,6 +18,7 @@ import java.io.OutputStream;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * This interface encapsulates the access of internal, external and absolute files. Internal files are read-only and come with the

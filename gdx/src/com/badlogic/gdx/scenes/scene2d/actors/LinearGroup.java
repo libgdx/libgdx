@@ -1,9 +1,9 @@
 
 package com.badlogic.gdx.scenes.scene2d.actors;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LinearGroup extends BoundGroup {
 	public static enum LinearGroupLayout {
