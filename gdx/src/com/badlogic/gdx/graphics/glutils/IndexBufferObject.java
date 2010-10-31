@@ -20,13 +20,22 @@ import com.badlogic.gdx.utils.BufferUtils;
  * </p>
  * 
  * <p>
- * You can also use this to store indices for vertex arrays. Do not call {@link #bind()} or {@link #unbind()}
- * in this case but rather use {@link #getBuffer()} to use the buffer directly with 
- * glDrawElements.
+ * Uses indirect Buffers on Android 1.5/1.6 to fix GC invocation due to leaking
+ * PlatformAddress instances.
  * </p>
  * 
  * <p>
- * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
+ * You can also use this to store indices for vertex arrays. Do not call
+ * {@link #bind()} or {@link #unbind()} in this case but rather use
+ * {@link #getBuffer()} to use the buffer directly with glDrawElements. You must
+ * also create the IndexBufferObject with the second constructor and specify
+ * isDirect as true as glDrawElements in conjunction with vertex arrays needs
+ * direct buffers.
+ * </p>
+ * 
+ * <p>
+ * VertexBufferObjects must be disposed via the {@link #dispose()} method when
+ * no longer needed
  * </p>
  * 
  * @author mzechner
@@ -67,18 +76,42 @@ public class IndexBufferObject {
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
 	}
 
+	/**
+	 * Creates a new IndexBufferObject.
+	 * 
+	 * @param isStatic
+	 *            whether the index buffer is static
+	 * @param isDirect
+	 *            whether the underlying buffer should be direct or not
+	 * @param maxIndices
+	 *            the maximum number of indices this buffer can hold
+	 */
+	public IndexBufferObject(boolean isStatic, boolean isDirect, int maxIndices) {
+		if (!isDirect) {
+			byteBuffer = ByteBuffer.allocate(maxIndices * 2);
+			byteBuffer.order(ByteOrder.nativeOrder());
+			this.isDirect = false;
+		} else {
+			byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
+			byteBuffer.order(ByteOrder.nativeOrder());
+			this.isDirect = true;
+		}
+		buffer = byteBuffer.asShortBuffer();
+		bufferHandle = createBufferObject();
+		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
+	}
+
 	private int createBufferObject() {
 		if (Gdx.gl20 != null) {
 			Gdx.gl20.glGenBuffers(1, tmpHandle);
-			return tmpHandle.get(0);	
-		}
-		else if(Gdx.gl11 != null) {
+			return tmpHandle.get(0);
+		} else if (Gdx.gl11 != null) {
 			Gdx.gl11.glGenBuffers(1, tmpHandle);
 			return tmpHandle.get(0);
 		}
-		
+
 		return 0;
-	}	
+	}
 
 	/**
 	 * @return the number of indices currently stored in this buffer
@@ -128,7 +161,7 @@ public class IndexBufferObject {
 						.limit(), null, usage);
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
-			} else if (Gdx.gl11 != null){
+			} else if (Gdx.gl11 != null) {
 				GL20 gl = Gdx.gl20;
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), null, usage);
@@ -160,7 +193,7 @@ public class IndexBufferObject {
 		if (Gdx.gl11 != null) {
 			GL11 gl = Gdx.gl11;
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
-			if( isDirty ) {
+			if (isDirty) {
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), null, usage);
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
@@ -170,7 +203,7 @@ public class IndexBufferObject {
 		} else {
 			GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
-			if( isDirty ) {
+			if (isDirty) {
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), null, usage);
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
@@ -197,11 +230,11 @@ public class IndexBufferObject {
 	 * Invalidates the IndexBufferObject so a new OpenGL buffer handle is
 	 * created. Use this in case of a context loss.
 	 */
-	public void invalidate () {
+	public void invalidate() {
 		bufferHandle = createBufferObject();
 		isDirty = true;
 	}
-	
+
 	/**
 	 * Disposes this IndexBufferObject and all its associated OpenGL resources.
 	 */
@@ -213,7 +246,7 @@ public class IndexBufferObject {
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
-		} else if(Gdx.gl11 != null){
+		} else if (Gdx.gl11 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
 			GL11 gl = Gdx.gl11;
