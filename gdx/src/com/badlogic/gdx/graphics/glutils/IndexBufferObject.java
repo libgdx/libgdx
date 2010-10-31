@@ -20,6 +20,12 @@ import com.badlogic.gdx.utils.BufferUtils;
  * </p>
  * 
  * <p>
+ * You can also use this to store indices for vertex arrays. Do not call {@link #bind()} or {@link #unbind()}
+ * in this case but rather use {@link #getBuffer()} to use the buffer directly with 
+ * glDrawElements.
+ * </p>
+ * 
+ * <p>
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * 
@@ -62,12 +68,17 @@ public class IndexBufferObject {
 	}
 
 	private int createBufferObject() {
-		if (Gdx.gl20 != null)
+		if (Gdx.gl20 != null) {
 			Gdx.gl20.glGenBuffers(1, tmpHandle);
-		else
+			return tmpHandle.get(0);	
+		}
+		else if(Gdx.gl11 != null) {
 			Gdx.gl11.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);
-	}
+			return tmpHandle.get(0);
+		}
+		
+		return 0;
+	}	
 
 	/**
 	 * @return the number of indices currently stored in this buffer
@@ -117,7 +128,7 @@ public class IndexBufferObject {
 						.limit(), null, usage);
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
-			} else {
+			} else if (Gdx.gl11 != null){
 				GL20 gl = Gdx.gl20;
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), null, usage);
@@ -156,7 +167,7 @@ public class IndexBufferObject {
 						.limit(), byteBuffer, usage);
 				isDirty = false;
 			}
-		} else if (Gdx.gl20 != null) {
+		} else {
 			GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 			if( isDirty ) {
@@ -202,7 +213,7 @@ public class IndexBufferObject {
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 			gl.glDeleteBuffers(1, tmpHandle);
 			bufferHandle = 0;
-		} else {
+		} else if(Gdx.gl11 != null){
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
 			GL11 gl = Gdx.gl11;

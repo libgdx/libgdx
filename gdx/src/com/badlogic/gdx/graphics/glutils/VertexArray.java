@@ -32,7 +32,16 @@ public class VertexArray implements VertexData {
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;
 	final ByteBuffer byteBuffer;
+	boolean isBound = false;
 
+	/**
+	 * Constructs a new interleaved VertexArray
+	 * 
+	 * @param numVertices
+	 *            the maximum number of vertices
+	 * @param attributes
+	 *            the {@link VertexAttributes}
+	 */
 	public VertexArray(int numVertices, VertexAttribute... attributes) {
 		this.attributes = new VertexAttributes(attributes);
 		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize
@@ -41,30 +50,47 @@ public class VertexArray implements VertexData {
 		buffer = byteBuffer.asFloatBuffer();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void dispose() {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public FloatBuffer getBuffer() {
 		return buffer;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getNumVertices() {
 		return byteBuffer.limit() / attributes.vertexSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public int getNumMaxVertices() {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setVertices(float[] vertices, int offset, int count) {
 		BufferUtils.copy(vertices, byteBuffer, count, offset);
 		buffer.position(0);
 		buffer.limit(count);
+				
+		if( isBound ) bind();
 	}
 
 	@Override
@@ -116,6 +142,8 @@ public class VertexArray implements VertexData {
 						+ attribute.usage);
 			}
 		}
+		
+		isBound = true;
 	}
 
 	@Override
@@ -147,6 +175,8 @@ public class VertexArray implements VertexData {
 						+ attribute.usage);
 			}
 		}
+		
+		isBound = false;
 	}
 
 	@Override
