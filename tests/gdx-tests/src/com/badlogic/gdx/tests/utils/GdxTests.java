@@ -14,6 +14,8 @@ import com.badlogic.gdx.tests.FillrateTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
+import com.badlogic.gdx.tests.IndexBufferObjectClassTest;
+import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MD5Test;
@@ -64,6 +66,8 @@ public class GdxTests
 		FloatTest.class,
 		FrameBufferTest.class,
 		ImmediateModeRendererTest.class,
+		IndexBufferObjectClassTest.class,
+		IndexBufferObjectShaderTest.class,
 		InputTest.class,
 		LifeCycleTest.class,
 		ManagedTest.class,

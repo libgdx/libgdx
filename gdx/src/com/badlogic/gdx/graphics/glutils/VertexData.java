@@ -29,10 +29,16 @@ public interface VertexData {
 	public VertexAttributes getAttributes ();	
 	
 	/**
-	 * Sets the vertices of this VertexData, discarding the old vertex data. The
+	 * <p>Sets the vertices of this VertexData, discarding the old vertex data. The
 	 * count must equal the number of floats per vertex times the number of vertices to
 	 * be copied to this VertexData. The order of the vertex attributes must be the same
 	 * as specified at construction time via {@link VertexAttributes}.
+	 * </p>
+	 * 
+	 * <p>
+	 * This can be called in between calls to {@link #bind()} and {@link #unbind()}. The vertex
+	 * data will be updated instantly.
+	 * </p>
 	 * 
 	 * @param vertices the vertex data
 	 * @param offset the offset to start copying the data from
@@ -41,9 +47,11 @@ public interface VertexData {
 	public void setVertices (float[] vertices, int offset, int count);	
 	
 	/**
-	 * Returns the underlying FloatBuffer. If this is called an internal dirty
-	 * flag is set and the VertexData is reuploaded to OpenGL on the next bind. The
-	 * data is therefore considered dirty.
+	 * <p>
+	 * Returns the underlying FloatBuffer. If you modify the buffer contents they will be
+	 * uploaded on the next call to {@link #bind()}. If you need immediate uploading use 
+	 * {@link #setVertices(float[], int, int)}; 
+	 * </p>
 	 * 
 	 * @return the underlying FloatBuffer holding the vertex data.
 	 */

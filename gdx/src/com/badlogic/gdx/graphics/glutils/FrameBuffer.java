@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * <p>
  * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * texture by {@link FrameBuffer.getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
+ * texture by {@link FrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
  * 
  * <p>
@@ -72,7 +72,6 @@ public class FrameBuffer {
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
-	 * @param managed whether this framebuffer should be managed
 	 * @throws GdxRuntimeException in case the FraeBuffer could not be created
 	 */
 	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {

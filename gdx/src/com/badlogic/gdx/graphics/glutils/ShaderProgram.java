@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 
@@ -31,8 +32,8 @@ import com.badlogic.gdx.math.Matrix4;
  * </p>
  * 
  * <p>
- * After construction a ShaderProgram can be used to draw {@link Meshes} or sprites via a {@link SpriteBatch}. To make the GPU use
- * a specific ShaderProgram the programs {@link ShaderProgram.begin()} method must be used which effectively binds the program.
+ * After construction a ShaderProgram can be used to draw {@link Mesh} or sprites via a {@link SpriteBatch}. To make the GPU use
+ * a specific ShaderProgram the programs {@link ShaderProgram#begin()} method must be used which effectively binds the program.
  * </p>
  * 
  * <p>
@@ -40,11 +41,11 @@ import com.badlogic.gdx.math.Matrix4;
  * </p>
  * 
  * <p>
- * A ShaderProgram can be unbound with a call to {@link ShaderProgram.end()}
+ * A ShaderProgram can be unbound with a call to {@link ShaderProgram#end()}
  * </p>
  * 
  * <p>
- * A ShaderProgram must be disposed via a call to {@link ShaderProgram.dispose()} when it is no longer needed
+ * A ShaderProgram must be disposed via a call to {@link ShaderProgram#dispose()} when it is no longer needed
  * </p>
  * 
  * <p>
@@ -96,7 +97,6 @@ public class ShaderProgram {
 	/**
 	 * Construcs a new JOglShaderProgram and immediatly compiles it.
 	 * 
-	 * @param gl the GL20 instance
 	 * @param vertexShader the vertex shader
 	 * @param fragmentShader the fragment shader
 	 */
@@ -230,7 +230,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value the value
@@ -244,7 +244,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -259,7 +259,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -275,7 +275,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -292,7 +292,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value the value
@@ -306,7 +306,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -321,7 +321,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -337,7 +337,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform with the given name. Throws an IllegalArgumentException in case it is not called in between a {@link
-	 * begin()}/{@link end()} block.
+	 * #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the name of the uniform
 	 * @param value1 the first value
@@ -354,7 +354,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link begin()}/{@link end()} block.
+	 * {@link #begin()}/{@link #end()} block.
 	 * @param name the name of the uniform
 	 * @param matrix the matrix
 	 */
@@ -369,7 +369,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link begin()}/{@link end()} block.
+	 * {@link #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the attribute name
 	 * @param size the number of components, must be >= 1 and <= 4
@@ -388,7 +388,7 @@ public class ShaderProgram {
 
 	/**
 	 * Sets the vertex attribute with the given name. Throws an IllegalArgumentException in case it is not called in between a
-	 * {@link begin()}/{@link end()} block.
+	 * {@link #begin()}/{@link #end()} block.
 	 * 
 	 * @param name the attribute name
 	 * @param size the number of components, must be >= 1 and <= 4
@@ -408,7 +408,7 @@ public class ShaderProgram {
 
 	/**
 	 * Makes OpenGL ES 2.0 use this vertex and fragment shader pair. When you are done with this shader you have to call {@link
-	 * ShaderProgram.end()}.
+	 * ShaderProgram#end()}.
 	 */
 	public void begin () {
 		GL20 gl = Gdx.graphics.getGL20();
