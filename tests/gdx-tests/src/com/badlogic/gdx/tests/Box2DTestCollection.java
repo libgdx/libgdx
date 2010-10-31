@@ -15,6 +15,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.tests.box2d.ApplyForce;
 import com.badlogic.gdx.tests.box2d.BodyTypes;
@@ -33,10 +34,9 @@ import com.badlogic.gdx.tests.box2d.SimpleTest;
 import com.badlogic.gdx.tests.box2d.SphereStack;
 import com.badlogic.gdx.tests.box2d.VaryingRestitution;
 import com.badlogic.gdx.tests.box2d.VerticalStack;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class Box2DTestCollection implements RenderListener, InputListener {
+public class Box2DTestCollection implements GdxTest, InputListener {
 	private final Box2DTest[] tests = {new DebugRendererTest(), new CollisionFiltering(), new Chain(), new Bridge(),
 		new SphereStack(), new Cantilever(), new ApplyForce(), new ContinuousTest(), new Prismatic(), new CharacterCollision(),
 		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution()};
@@ -101,6 +101,12 @@ public class Box2DTestCollection implements RenderListener, InputListener {
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean needsGL20() {
 		// TODO Auto-generated method stub
 		return false;
 	}

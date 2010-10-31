@@ -29,7 +29,9 @@ public class VertexBufferObjectShaderTest implements GdxTest {
 
 	@Override
 	public void dispose() {
-
+		texture.dispose();
+		vbo.dispose();
+		shader.dispose();
 	}
 
 	@Override

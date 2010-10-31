@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class SpriteBatchShaderTest implements GdxTest {
-	int SPRITES = 500;
+	int SPRITES = 400;
 
 	long startTime = System.nanoTime();
 	int frames = 0;

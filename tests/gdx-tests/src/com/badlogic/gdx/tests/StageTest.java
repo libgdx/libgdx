@@ -179,8 +179,8 @@ public class StageTest implements GdxTest, InputListener {
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize(4);
 
-		((Label)ui.findActor("fps")).text = "fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() + ", groups "
-			+ stage.getGroups().size();
+//		((Label)ui.findActor("fps")).text = "fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() + ", groups "
+//			+ stage.getGroups().size();
 		ui.render();
 	}
 
