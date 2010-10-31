@@ -56,21 +56,23 @@ public class VertexBufferObjectClassTest implements GdxTest {
 
 	@Override
 	public void surfaceCreated() {
-		vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
-								new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"),
-								new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_Color" ));
-		float[] vertices = new float[]{ -1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f ),
-				  						 0,  1, 0.5f, 1.0f, Color.toFloatBits(0f, 1f, 0f, 1f ),
-				  						 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f ) };
-		vbo.setVertices(vertices, 0, vertices.length);
-		indices = BufferUtils.newShortBuffer(3);
-		indices.put( new short[] { 0, 1, 2 } );
-		indices.flip();
-		
 		if( texture == null ) {
+			vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
+									new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"),
+									new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_Color" ));
+			float[] vertices = new float[]{ -1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f ),
+					  						 0,  1, 0.5f, 1.0f, Color.toFloatBits(0f, 1f, 0f, 1f ),
+					  						 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f ) };
+			vbo.setVertices(vertices, 0, vertices.length);
+			indices = BufferUtils.newShortBuffer(3);
+			indices.put( new short[] { 0, 1, 2 } );
+			indices.flip();
+					 
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
 											  TextureFilter.Linear, TextureFilter.Linear, 
 											  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		}
+		else
+			vbo.invalidate(); 
 	}
 }
