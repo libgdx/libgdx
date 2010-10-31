@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.graphics.BitmapFont;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -45,7 +47,7 @@ public class Box2DTest implements GdxTest, InputListener {
 
 	/** a spritebatch and a font for text rendering **/
 	private SpriteBatch batch;
-//	private Font font;
+	private BitmapFont font;
 
 	/** our box2D world **/
 	private World world;
@@ -79,7 +81,7 @@ public class Box2DTest implements GdxTest, InputListener {
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
-//		font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+		font = new BitmapFont();
 
 		// next we create out physics world.
 		createPhysicsWorld();
@@ -203,8 +205,8 @@ public class Box2DTest implements GdxTest, InputListener {
 
 		// finally we render the time it took to update the world
 		batch.begin();
-//		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
-//			Gdx.graphics.getHeight(), Color.RED);
+		font.draw( batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
+				20, Color.RED);		
 		batch.end();
 	}
 

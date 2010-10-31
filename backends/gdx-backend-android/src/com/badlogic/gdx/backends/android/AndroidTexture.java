@@ -23,6 +23,7 @@ import android.opengl.GLUtils;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -60,7 +61,7 @@ final class AndroidTexture implements Texture {
 	/** invalidate flag **/
 	private boolean invalidated = false;
 	/** file handle **/
-	private AndroidFileHandle file;
+	private FileHandle file;
 
 	/**
 	 * Creates a new texture based on the given image
@@ -69,7 +70,7 @@ final class AndroidTexture implements Texture {
 	 * @param bitmap
 	 */
 	AndroidTexture (AndroidGraphics graphics, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
-		TextureWrap vWrap, boolean managed, AndroidFileHandle file) {
+		TextureWrap vWrap, boolean managed, FileHandle file) {
 		this.file = file;
 		this.isManaged = managed;
 		this.bitmap = image;
@@ -131,7 +132,7 @@ final class AndroidTexture implements Texture {
 			return GL10.GL_REPEAT;
 	}
 
-	private Bitmap loadBitmap (AndroidFileHandle file) {
+	private Bitmap loadBitmap (FileHandle file) {
 		Pixmap pixmap = Gdx.graphics.newPixmap(file);
 		Bitmap image = (Bitmap)pixmap.getNativePixmap();
 		this.texWidth = image.getWidth();

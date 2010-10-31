@@ -244,8 +244,6 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 * {@inheritDoc}
 	 */
 	@Override public Pixmap newPixmap (int width, int height, Format format) {
-		if (!isPowerOfTwo(width) || !isPowerOfTwo(height)) throw new GdxRuntimeException("Dimensions have to be a power of two");
-
 		return new AndroidPixmap(width, height, format);
 	}
 
@@ -253,13 +251,8 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 * {@inheritDoc}
 	 */
 	@Override public Pixmap newPixmap (InputStream in) {
-		Bitmap bitmap = BitmapFactory.decodeStream(in, null, null);
-
-		if (bitmap == null) throw new GdxRuntimeException("Couldn't load Pixmap from InputStream");
-
-		if (!isPowerOfTwo(bitmap.getWidth()) || !isPowerOfTwo(bitmap.getHeight()))
-			throw new GdxRuntimeException("Dimensions have to be a power of two");
-
+		Bitmap bitmap = BitmapFactory.decodeStream(in);
+		if (bitmap == null) throw new GdxRuntimeException("Couldn't load Pixmap from InputStream");	
 		return new AndroidPixmap(bitmap);
 	}
 
@@ -267,28 +260,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 * {@inheritDoc}
 	 */
 	@Override public Pixmap newPixmap (FileHandle file) {
-		AndroidFileHandle aHandle = (AndroidFileHandle)file;
-		Bitmap bitmap = null;
-
-		if (aHandle.isAsset()) {
-			InputStream in;
-			try {
-				in = aHandle.getAssetManager().open(aHandle.getFileName());
-				bitmap = BitmapFactory.decodeStream(in, null, null);
-				in.close();
-			} catch (IOException e) {
-				throw new GdxRuntimeException("Couldn't open Pixmap from file '" + file + "'", e);
-			}
-		} else {
-			bitmap = BitmapFactory.decodeFile(aHandle.getFileName());
-		}
-
-		if (bitmap == null) throw new GdxRuntimeException("Couldn't open Pixmap from file '" + file + "'");
-
-		if (!isPowerOfTwo(bitmap.getWidth()) || !isPowerOfTwo(bitmap.getHeight()))
-			throw new GdxRuntimeException("Dimensions have to be a power of two");
-
-		return new AndroidPixmap(bitmap);
+		return newPixmap(file.getInputStream());
 	}
 
 	/**
@@ -448,7 +420,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap) {
-		return new AndroidTexture(this, (Bitmap)null, minFilter, magFilter, uWrap, vWrap, true, (AndroidFileHandle)file);
+		return new AndroidTexture(this, (Bitmap)null, minFilter, magFilter, uWrap, vWrap, true, file);
 	}
 
 	public void clearManagedCaches () {

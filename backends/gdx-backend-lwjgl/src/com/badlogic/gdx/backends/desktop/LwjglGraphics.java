@@ -97,12 +97,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 	}
 
 	public Pixmap newPixmap (FileHandle file) {
-		try {
-			BufferedImage img = (BufferedImage)ImageIO.read(((LwjglFileHandle)file).getFile());
-			return new LwjglPixmap(img);
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Couldn't load Pixmap from file '" + file + "'", ex);
-		}
+		return newPixmap(file.getInputStream());
 	}
 
 	public Pixmap newPixmap (Object nativePixmap) {
