@@ -257,7 +257,7 @@ public class VertexBufferObject implements VertexData {
 		isBound = false;
 	}
 	
-	private void unbind(ShaderProgram shader) {
+	public void unbind(ShaderProgram shader) {
 		GL20 gl = Gdx.gl20;
 		int numAttributes = attributes.size();
 		for( int i = 0; i < numAttributes; i++ ) {

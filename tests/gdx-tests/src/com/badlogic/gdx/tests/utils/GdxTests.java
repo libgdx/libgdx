@@ -39,6 +39,7 @@ import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexArrayClassTest;
 import com.badlogic.gdx.tests.VertexArrayTest;
 import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
+import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.VertexBufferObjectTest;
 import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.WaterRipples;
@@ -90,6 +91,7 @@ public class GdxTests
 		VertexBufferObjectTest.class,
 		VertexArrayClassTest.class,
 		VertexBufferObjectClassTest.class,
+		VertexBufferObjectShaderTest.class,
 		VorbisTest.class,
 		WaterRipples.class
 	};
