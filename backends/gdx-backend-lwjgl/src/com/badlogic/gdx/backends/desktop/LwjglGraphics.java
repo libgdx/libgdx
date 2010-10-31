@@ -131,7 +131,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		TextureWrap vWrap) {
 		Pixmap pixmap = newPixmap(file);
 		if (!isPowerOfTwo(pixmap.getHeight()) || !isPowerOfTwo(pixmap.getWidth()))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two");
+			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file);
 
 		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
 	}
