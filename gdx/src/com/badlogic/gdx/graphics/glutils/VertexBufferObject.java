@@ -55,6 +55,7 @@ public class VertexBufferObject implements VertexData {
 	final boolean isStatic;
 	final int usage;
 	boolean isDirty=false;
+	boolean isBound = false;
 	
 	/**
 	 * Constructs a new interleaved VertexBufferObject. 
@@ -123,10 +124,24 @@ public class VertexBufferObject implements VertexData {
 			byteBuffer.position(0);
 			byteBuffer.limit(buffer.limit() << 2);
 		}
+		
+		if( isBound ) {			
+			if( Gdx.gl20 != null ) {
+				GL20 gl = Gdx.gl20;				
+				gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), null, usage);
+				gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);					
+			}
+			else {
+				GL11 gl = Gdx.gl11;				
+				gl.glBufferData(GL11.GL_ARRAY_BUFFER, byteBuffer.limit(), null, usage);
+				gl.glBufferData(GL11.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);					
+			}				
+			isDirty = false;
+		}
 	}
 
 	@Override
-	public void bind() {
+	public void bind() {		
 		GL11 gl = Gdx.gl11;
 		
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, bufferHandle);
@@ -179,6 +194,8 @@ public class VertexBufferObject implements VertexData {
 						+ attribute.usage);
 			}
 		}
+		
+		isBound = true;
 	}
 	
 	public void bind(ShaderProgram shader) {
@@ -203,10 +220,11 @@ public class VertexBufferObject implements VertexData {
 			}
 			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize, attribute.offset);
 		}
+		isBound = true;
 	}	
 	
 	@Override
-	public void unbind() {
+	public void unbind() {		
 		GL11 gl = Gdx.gl11;
 		int textureUnit = 0;
 		int numAttributes = attributes.size();
@@ -235,7 +253,8 @@ public class VertexBufferObject implements VertexData {
 				throw new GdxRuntimeException("unkown vertex attribute type: "
 						+ attribute.usage);
 			}
-		}
+		}		
+		isBound = false;
 	}
 	
 	private void unbind(ShaderProgram shader) {
@@ -246,6 +265,7 @@ public class VertexBufferObject implements VertexData {
 			shader.disableVertexAttribute(attribute.alias);
 		}
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
+		isBound = false;
 	}
 	
 	public void invalidate() {
