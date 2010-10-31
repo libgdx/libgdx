@@ -1,20 +1,17 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics.GraphicsType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.graphics.glutils.VertexArray;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
+import com.badlogic.gdx.graphics.glutils.VertexData;
 
 /**
  * <p>
@@ -47,53 +44,13 @@ import com.badlogic.gdx.utils.BufferUtils;
  */
 public class Mesh {
 	/** list of all meshes **/
-	private static final ArrayList<Mesh> meshes = new ArrayList<Mesh>();
+	static final ArrayList<Mesh> meshes = new ArrayList<Mesh>();	
 
-	/** the vertex attributes **/
-	private final VertexAttributes attributes;
-
-	/** the maximum number of vertices **/
-	private final int maxVertices;
-
-	/** the maximum number of indices **/
-	private final int maxIndices;
-
-	/** the direct byte buffer that holds the vertices **/
-	private final Buffer vertices;
-
-	/** a view of the vertices buffer for manipulating floats **/
-	private final FloatBuffer verticesFloat;
-
-	/** the direct short buffer that holds the indices **/
-	private final ShortBuffer indices;
-
-	/** the VBO handle **/
-	private int vertexBufferObjectHandle;
-
-	/** the IBO handle **/
-	private int indexBufferObjectHandle;
-
-	/** dirty flag **/
-	private boolean dirty = false;
-
-	/** managed? **/
-	private final boolean managed;
-
-	/** static? **/
-	private final boolean isStatic;
-
-	/** whether this mesh was invalidated due to a context loss **/
-	private boolean invalidated = false;
-
-	/** whether attempted to create buffer the first time **/
-	private boolean bufferCreatedFirstTime = false;
-
-	/** whether we use direct buffers or not **/
-	private final boolean isDirect;
-
-	/** whether VBOs are used or not **/
-	private final boolean useVBO;
-
+	final VertexData vertices;
+	final IndexBufferObject indices;
+	boolean autoBind = true;
+	final boolean isVertexArray;
+	
 	/**
 	 * Creates a new Mesh with the given attributes.
 	 * 
@@ -104,176 +61,16 @@ public class Mesh {
 	 *           normal or texture coordinate
 	 */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		this.managed = true;
-		this.isStatic = isStatic;		
-		this.maxVertices = maxVertices;
-		this.maxIndices = maxIndices;
-		this.attributes = new VertexAttributes(attributes);
-
-		if (Gdx.app.getType() != Application.ApplicationType.Android) {
-			useVBO = Gdx.graphics.isGL11Available() == true || Gdx.graphics.isGL20Available() == true;
-			isDirect = true;
-		} else {
-			useVBO = Gdx.graphics.isGL11Available() == true || Gdx.graphics.isGL20Available() == true;
-			if (useVBO) {
-//				if (Gdx.app.getVersion() < 5)
-//					isDirect = false;
-//				else
-					isDirect = true;
-			} else
-				isDirect = true;
+		if(Gdx.gl11 != null || Gdx.gl20 != null ) {
+			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObject(isStatic, maxIndices);
+			isVertexArray = false;
 		}
-
-		if (isDirect) {
-			ByteBuffer buffer = ByteBuffer.allocateDirect(maxVertices * this.attributes.vertexSize);
-			buffer.order(ByteOrder.nativeOrder());
-			vertices = buffer;			
-			verticesFloat = buffer.asFloatBuffer();
-			buffer = ByteBuffer.allocateDirect(maxIndices * 2);
-			buffer.order(ByteOrder.nativeOrder());
-			indices = buffer.asShortBuffer();
-		} else {			
-			verticesFloat = FloatBuffer.allocate(maxVertices * this.attributes.vertexSize / 4);
-			vertices = verticesFloat;			
-			indices = ShortBuffer.allocate(maxIndices);
-		}
-
-		bufferCreatedFirstTime = false;
-		if (managed) meshes.add(this);
-	}
-
-	private void createBuffers () {
-		if (!useVBO) return;
-
-		if (Gdx.graphics.isGL20Available())
-			constructBufferObjects(Gdx.graphics.getGL20());
-		else
-			constructBufferObjects(Gdx.graphics.getGL11());
-	}
-
-	private void constructBufferObjects (GL11 gl) {
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer handle = tmp.asIntBuffer();
-
-		gl.glGenBuffers(1, handle);
-		vertexBufferObjectHandle = handle.get(0);
-		int oldLimit = vertices.limit();
-		int oldPosition = vertices.position();
-		vertices.position(0);
-		vertices.limit(vertices.capacity());
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
-		gl.glBufferData(GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic ? GL11.GL_STATIC_DRAW
-			: GL11.GL_DYNAMIC_DRAW);
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-		vertices.position(oldPosition);
-		vertices.limit(oldLimit);
-
-		if (maxIndices > 0) {
-			gl.glGenBuffers(1, handle);
-			indexBufferObjectHandle = handle.get(0);
-			oldPosition = indices.position();
-			oldLimit = indices.limit();
-			indices.position(0);
-			indices.limit(indices.capacity());
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle);
-			gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic ? GL11.GL_STATIC_DRAW
-				: GL11.GL_DYNAMIC_DRAW);
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
-			indices.position(oldPosition);
-			indices.limit(oldLimit);
-		}
-
-		dirty = false;
-	}
-
-	private void constructBufferObjects (GL20 gl) {
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer handle = tmp.asIntBuffer();
-
-		gl.glGenBuffers(1, handle);
-		vertexBufferObjectHandle = handle.get(0);
-		int oldLimit = vertices.limit();
-		int oldPosition = vertices.position();
-		vertices.position(0);
-		vertices.limit(vertices.capacity());
-		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
-		gl.glBufferData(GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic ? GL20.GL_STATIC_DRAW
-			: GL20.GL_DYNAMIC_DRAW);
-		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-		vertices.position(oldPosition);
-		vertices.limit(oldLimit);
-
-		if (maxIndices > 0) {
-			gl.glGenBuffers(1, handle);
-			indexBufferObjectHandle = handle.get(0);
-			oldPosition = indices.position();
-			oldLimit = indices.limit();
-			indices.position(0);
-			indices.limit(indices.capacity());
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle);
-			gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic ? GL20.GL_STATIC_DRAW
-				: GL20.GL_DYNAMIC_DRAW);
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
-			indices.position(oldPosition);
-			indices.limit(oldLimit);
-		}
-
-		dirty = false;
-	}
-
-	private void fillBuffers () {
-		dirty = false;
-		if (Gdx.graphics.isGL11Available() == false && Gdx.graphics.isGL20Available() == false) return;
-
-		if (Gdx.graphics.isGL20Available())
-			fillBuffers(Gdx.graphics.getGL20());
-		else
-			fillBuffers(Gdx.graphics.getGL11());
-	}
-
-	private void fillBuffers (GL11 gl) {
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
-		// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
-		// Does not have a lot of impact on the Droid with 2.1 (2-3 frames for MD5Test) but still shitty.
-		if (Gdx.graphics.getType() == GraphicsType.AndroidGL)
-			gl.glBufferData(GL11.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic ? GL11.GL_STATIC_DRAW
-				: GL11.GL_DYNAMIC_DRAW);
-		else
-			gl.glBufferSubData(GL11.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices);
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
-
-		if (maxIndices > 0) {
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle);
-			// FIXME FUCK YOU QUALCOMM, your glBufferSubData is the slowest shit on earth...
-			if (Gdx.graphics.getType() == GraphicsType.AndroidGL)
-				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic ? GL11.GL_STATIC_DRAW
-					: GL11.GL_DYNAMIC_DRAW);
-			else
-				gl.glBufferSubData(GL11.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices);
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-	}
-
-	private void fillBuffers (GL20 gl) {
-		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
-		if (Gdx.graphics.getType() == GraphicsType.AndroidGL)
-			gl.glBufferData(GL20.GL_ARRAY_BUFFER, getNumVertices() * attributes.vertexSize, vertices, isStatic ? GL20.GL_STATIC_DRAW
-				: GL20.GL_DYNAMIC_DRAW);
-		else
-			gl.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, getNumVertices() * attributes.vertexSize, vertices);
-		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-
-		if (maxIndices > 0) {
-			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle);
-			if (Gdx.graphics.getType() == GraphicsType.AndroidGL)
-				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, isStatic ? GL20.GL_STATIC_DRAW
-					: GL20.GL_DYNAMIC_DRAW);
-			else
-				gl.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, indices.limit() * 2, indices);
-			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
+		else {
+			vertices = new VertexArray(maxVertices, attributes);
+			indices = new IndexBufferObject(maxIndices);
+			isVertexArray = true;
+		}		
 	}
 
 	/**
@@ -283,18 +80,7 @@ public class Mesh {
 	 * @param vertices the vertices.
 	 */
 	public void setVertices (float[] vertices) {		
-		if (isDirect) {
-			BufferUtils.copy(vertices, this.vertices, vertices.length, 0);
-			this.verticesFloat.limit(this.vertices.limit() >> 2);
-			this.verticesFloat.position(0);
-		} else {
-			this.verticesFloat.clear();
-			this.verticesFloat.put(vertices);
-			this.verticesFloat.limit(vertices.length);
-			this.verticesFloat.position(0);
-		}
-
-		dirty = true;
+		this.vertices.setVertices(vertices, 0, vertices.length);
 	}
 
 	/**
@@ -306,18 +92,7 @@ public class Mesh {
 	 * @param count the number of floats to use
 	 */
 	public void setVertices (float[] vertices, int offset, int count) {
-		if (isDirect) {
-			BufferUtils.copy(vertices, this.vertices, count, offset);
-			this.verticesFloat.limit(this.vertices.limit() >> 2);
-			this.verticesFloat.position(0);
-		} else {
-			this.verticesFloat.clear();
-			this.verticesFloat.put(vertices, offset, count);
-			this.verticesFloat.limit(count);
-			this.verticesFloat.position(0);
-		}
-
-		dirty = true;
+		this.vertices.setVertices(vertices, offset, count);
 	}
 
 	/**
@@ -326,34 +101,117 @@ public class Mesh {
 	 * @param indices the indices
 	 */
 	public void setIndices (short[] indices) {
-		this.indices.clear();
-		this.indices.put(indices);
-		this.indices.limit(indices.length);
-		this.indices.position(0);
-		dirty = true;
+		this.indices.setIndices(indices, 0, indices.length);
+	}
+	
+	/**
+	 * Sets the indices of this Mesh.
+	 * 
+	 * @param indices the indices
+	 * @param offset the offset into the indices array
+	 * @param count the number of indices to copy
+	 */
+	public void setIndices (short[] indices, int offset, int count) {
+		this.indices.setIndices(indices, offset, count);
 	}
 
 	/**
 	 * @return the number of defined indices
 	 */
 	public int getNumIndices () {
-		return indices.limit();
+		return indices.getNumIndices();
 	}
 
 	/**
 	 * @return the number of defined vertices
 	 */
 	public int getNumVertices () {
-		return vertices.limit() / attributes.vertexSize * (isDirect ? 1 : 4);
+		return vertices.getNumVertices();
+	}
+	
+	/**
+	 * @return the maximum number of vertices this mesh can hold
+	 */
+	public int getMaxVertices () {
+		return vertices.getNumMaxVertices();
+	}
+
+	/**
+	 * @return the maximum number of indices this mesh can hold
+	 */
+	public int getMaxIndices () {
+		return indices.getNumMaxIndices();
 	}
 
 	/**
 	 * @return the size of a single vertex in bytes
 	 */
 	public int getVertexSize () {
-		return attributes.vertexSize;
+		return vertices.getAttributes().vertexSize;
 	}
 
+	/**
+	 * Sets whether to bind the underlying {@link VertexArray} or
+	 * {@link VertexBufferObject} automatically on a call to one of the {@link #render(int)}
+	 * methods or not.
+	 * @param autoBind
+	 */
+	public void setAutoBind( boolean autoBind ) {
+		this.autoBind = autoBind;
+	}
+	
+	
+	/**
+	 * Binds the underlying {@link VertexArray}/{@link VertexBufferObject} and
+	 * {@link IndexBufferObject} if indices were given. Use this with OpenGL ES 1.x
+	 * and when auto-bind is disabled.
+	 */
+	public void bind () {
+		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
+		vertices.bind();
+		if( !isVertexArray && indices.getNumIndices() > 0 )
+			indices.bind();	
+	}
+
+	/**
+	 * Unbinds the underlying {@link VertexArray}/{@link VertexBufferObject} and
+	 * {@link IndexBufferObject} is indices were given. Use this with OpenGL ES 1.x
+	 * and when auto-bind is disabled.
+	 */
+	public void unbind () {
+		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
+		vertices.unbind();
+		if( !isVertexArray && indices.getNumIndices() > 0 )
+			indices.unbind();
+	}
+	
+	/**
+	 * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if
+	 * indices where given. Use this with OpenGL ES 2.0 and when auto-bind is disabled.
+	 * @param shader the shader (does not bind the shader)
+	 */
+	public void bind(ShaderProgram shader) {
+		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
+
+		((VertexBufferObject)vertices).bind(shader);
+		if( indices.getNumIndices() > 0 )
+			indices.bind();
+	}
+	
+	/**
+	 * Unbinds the underlying {@link VertexBufferObject} and
+	 * {@link IndexBufferObject} is indices were given. Use this with OpenGL ES 1.x
+	 * and when auto-bind is disabled.
+	 * @param shader the shader (does not unbind the shader)
+	 */
+	public void unbind (ShaderProgram shader) {
+		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
+
+		((VertexBufferObject)vertices).unbind(shader);
+		if( indices.getNumIndices() > 0 )
+			indices.unbind();
+	}
+	
 	/**
 	 * <p>
 	 * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
@@ -367,13 +225,13 @@ public class Mesh {
 	 * @param primitiveType the primitive type
 	 */
 	public void render (int primitiveType) {
-		render(primitiveType, 0, maxIndices > 0 ? getNumIndices() : getNumVertices());
+		render(primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices());
 	}
 
 	/**
 	 * <p>
-	 * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
-	 * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
+	 * Renders the mesh using the given primitive type. offset specifies the offset into vertex buffer and is ignored for the index
+	 * buffer. Count specifies the number of vertices or indices to use thus count /
 	 * #vertices per primitive primitives are rendered.
 	 * </p>
 	 * 
@@ -382,146 +240,34 @@ public class Mesh {
 	 * </p>
 	 * 
 	 * @param primitiveType the primitive type
-	 * @param offset the offset into the vertex or index buffer
+	 * @param offset the offset into the vertex buffer, ignored for indexed rendering
 	 * @param count number of vertices or indices to use
 	 */
 	public void render (int primitiveType, int offset, int count) {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-
-		checkManagedAndDirty();
-
-		if (vertexBufferObjectHandle != 0)
-			renderVBO(primitiveType, offset, count);
-		else
-			renderVA(primitiveType, offset, count);
-	}
-
-	private void renderVBO (int primitiveType, int offset, int count) {
-		GL11 gl = Gdx.graphics.getGL11();
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
-
-		int numAttributes = attributes.size();
-		int type = GL11.GL_FLOAT;
-		int textureUnit = 0;
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			if (attribute.usage == Usage.Position) {
-				gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				gl.glVertexPointer(attribute.numComponents, type, attributes.vertexSize, attribute.offset);
-				continue;
+	
+		if( autoBind )
+			bind();
+		
+		if( isVertexArray ) {
+			if( indices.getNumIndices() > 0 ) {
+				int oldPosition = indices.getBuffer().position();
+				indices.getBuffer().position(offset);
+				Gdx.gl10.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, indices.getBuffer());
+				indices.getBuffer().position(oldPosition);
 			}
-
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked) {
-				int colorType = type;
-				if (attribute.usage == Usage.ColorPacked) colorType = GL11.GL_UNSIGNED_BYTE;
-				gl.glEnableClientState(GL11.GL_COLOR_ARRAY);
-				gl.glColorPointer(attribute.numComponents, colorType, attributes.vertexSize, attribute.offset);
-				continue;
-			}
-
-			if (attribute.usage == Usage.Normal) {
-				gl.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-				gl.glNormalPointer(type, attributes.vertexSize, attribute.offset);
-				continue;
-			}
-
-			if (attribute.usage == Usage.TextureCoordinates) {
-				gl.glClientActiveTexture(GL11.GL_TEXTURE0 + textureUnit);
-				gl.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				gl.glTexCoordPointer(attribute.numComponents, type, attributes.vertexSize, attribute.offset);
-				textureUnit++;
-				continue;
-			}
+			else
+				Gdx.gl10.glDrawArrays( primitiveType, offset, count);			
+		}				
+		else {
+			if( indices.getNumIndices() > 0 )				
+				Gdx.gl11.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset);			
+			else
+				Gdx.gl11.glDrawArrays(primitiveType, offset, count);
 		}
-
-		if (maxIndices > 0) {
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle);
-			gl.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
-		} else {
-			gl.glDrawArrays(primitiveType, offset, count);
-		}
-
-		textureUnit--;
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked)
-				gl.glDisableClientState(GL11.GL_COLOR_ARRAY);
-			if (attribute.usage == Usage.Normal) gl.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-			if (attribute.usage == Usage.TextureCoordinates) {
-				gl.glClientActiveTexture(GL11.GL_TEXTURE0 + textureUnit);
-				gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				textureUnit--;
-			}
-		}
-
-		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-		if (maxIndices > 0) gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
-	private void renderVA (int primitiveType, int offset, int count) {
-		GL10 gl = Gdx.gl10;
-
-		int numAttributes = attributes.size();
-		int type = GL11.GL_FLOAT;
-		int textureUnit = 0;
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			if (attribute.usage == Usage.Position) {
-				gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-				vertices.position(attribute.offset);
-				gl.glVertexPointer(attribute.numComponents, type, attributes.vertexSize, vertices);
-				continue;
-			}
-
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked) {
-				int colorType = type;
-				if (attribute.usage == Usage.ColorPacked) colorType = GL11.GL_UNSIGNED_BYTE;
-				gl.glEnableClientState(GL11.GL_COLOR_ARRAY);
-				vertices.position(attribute.offset);
-				gl.glColorPointer(attribute.numComponents, colorType, attributes.vertexSize, vertices);
-				continue;
-			}
-
-			if (attribute.usage == Usage.Normal) {
-				gl.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-				vertices.position(attribute.offset);
-				gl.glNormalPointer(type, attributes.vertexSize, vertices);
-				continue;
-			}
-
-			if (attribute.usage == Usage.TextureCoordinates) {
-				gl.glClientActiveTexture(GL11.GL_TEXTURE0 + textureUnit);
-				gl.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				vertices.position(attribute.offset);
-				gl.glTexCoordPointer(attribute.numComponents, type, attributes.vertexSize, vertices);
-				textureUnit++;
-				continue;
-			}
-		}
-
-		if (maxIndices > 0)
-			gl.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, indices);
-		else
-			gl.glDrawArrays(primitiveType, offset, count);
-
-		textureUnit--;
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked)
-				gl.glDisableClientState(GL11.GL_COLOR_ARRAY);
-			if (attribute.usage == Usage.Normal) gl.glDisableClientState(GL11.GL_NORMAL_ARRAY);
-			if (attribute.usage == Usage.TextureCoordinates) {
-				// gl.glClientActiveTexture( GL11.GL_TEXTURE0 + textureUnit );
-				gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-				textureUnit--;
-			}
-		}
-
-		vertices.position(0);
+			
+		if( autoBind )
+			unbind();
 	}
 
 	/**
@@ -536,7 +282,7 @@ public class Mesh {
 	 * </p>
 	 * 
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram.begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
 	 * </p>
 	 * 
 	 * <p>
@@ -546,7 +292,7 @@ public class Mesh {
 	 * @param primitiveType the primitive type
 	 */
 	public void render (ShaderProgram shader, int primitiveType) {
-		render(shader, primitiveType, 0, maxIndices > 0 ? getNumIndices() : getNumVertices());
+		render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices());
 	}
 
 	/**
@@ -562,7 +308,7 @@ public class Mesh {
 	 * </p>
 	 * 
 	 * <p>
-	 * This method must only be called after the {@link ShaderProgram.begin()} method has been called!
+	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
 	 * </p>
 	 * 
 	 * <p>
@@ -577,123 +323,27 @@ public class Mesh {
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 
-		checkManagedAndDirty();
-
-		GL20 gl = Gdx.graphics.getGL20();
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vertexBufferObjectHandle);
-
-		int numAttributes = attributes.size();
-		int type = GL11.GL_FLOAT;
-		int textureUnit = 0;
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			shader.enableVertexAttribute(attribute.alias);
-			int colorType = type;
-			boolean normalize = false;
-			if (attribute.usage == Usage.ColorPacked) {
-				colorType = GL20.GL_UNSIGNED_BYTE;
-				normalize = true;
-			}
-			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize,
-				attribute.offset);
-		}
-
-		if (maxIndices > 0) {
-			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, indexBufferObjectHandle);
-			gl.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
-		} else {
-			gl.glDrawArrays(primitiveType, offset, count);
-		}
-
-		textureUnit--;
-
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			shader.disableVertexAttribute(attribute.alias);
-		}
-
-		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
-		if (maxIndices > 0) gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
-	private void checkManagedAndDirty () {
-		if (!bufferCreatedFirstTime) {
-			createBuffers();
-			bufferCreatedFirstTime = true;
-		}
-
-		if (vertexBufferObjectHandle == 0) return;
-
-		if (managed && invalidated || !bufferCreatedFirstTime) {
-			if (Gdx.graphics.isGL11Available()) {
-				createBuffers();
-				fillBuffers();
-			}
-			if (Gdx.graphics.isGL20Available()) {
-				createBuffers();
-				fillBuffers();
-			}
-		}
-
-		invalidated = false;
-		if (dirty) fillBuffers();
+		if( autoBind )
+			bind(shader);
+			
+		if( indices.getNumIndices() > 0 )				
+			Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset);			
+		else
+			Gdx.gl20.glDrawArrays(primitiveType, offset, count);		
+			
+		if( autoBind )
+			unbind(shader);
 	}
 
 	/**
 	 * Frees all resources associated with this Mesh
 	 */
 	public void dispose () {
-		meshes.remove(this);
-
-		if (Gdx.graphics.isGL11Available() == false && Gdx.graphics.isGL20Available() == false) return;
-
-		if (Gdx.graphics.isGL20Available())
-			dispose(Gdx.graphics.getGL20());
-		else
-			dispose(Gdx.graphics.getGL11());
+		meshes.remove(this);		
+		vertices.dispose();
+		indices.dispose();
 	}
-
-	private void dispose (GL11 gl) {
-		int handle[] = new int[1];
-		handle[0] = vertexBufferObjectHandle;
-		gl.glDeleteBuffers(1, handle, 0);
-
-		if (maxIndices > 0) {
-			handle[0] = indexBufferObjectHandle;
-			gl.glDeleteBuffers(1, handle, 0);
-		}
-	}
-
-	private void dispose (GL20 gl) {
-		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
-		tmp.order(ByteOrder.nativeOrder());
-		IntBuffer handle = tmp.asIntBuffer();
-		handle.put(vertexBufferObjectHandle);
-		handle.position(0);
-		gl.glDeleteBuffers(1, handle);
-
-		if (maxIndices > 0) {
-			handle.clear();
-			handle.put(indexBufferObjectHandle);
-			handle.position(0);
-			gl.glDeleteBuffers(1, handle);
-		}
-	}
-
-	/**
-	 * @return the maximum number of vertices this mesh can hold
-	 */
-	public int getMaxVertices () {
-		return maxVertices;
-	}
-
-	/**
-	 * @return the maximum number of indices this mesh can hold
-	 */
-	public int getMaxIndices () {
-		return maxIndices;
-	}
+	
 
 	/**
 	 * Returns the first {@link VertexAttribute} having the given {@link Usage}.
@@ -702,7 +352,9 @@ public class Mesh {
 	 * @return the VertexAttribute or null if no attribute with that usage was found.
 	 */
 	public VertexAttribute getVertexAttribute (int usage) {
-		for (int i = 0; i < attributes.size(); i++)
+		VertexAttributes attributes = vertices.getAttributes();
+		int len = attributes.size();
+		for (int i = 0; i < len; i++)
 			if (attributes.get(i).usage == usage) return attributes.get(i);
 
 		return null;
@@ -712,51 +364,34 @@ public class Mesh {
 	 * @return the vertex attributes of this Mesh
 	 */
 	public VertexAttributes getVertexAttributes () {
-		return attributes;
+		return vertices.getAttributes();
 	}
 
 	/**
-	 * @return the backing FloatBuffer holding the vertices. Will be null if this is a fixed point mesh. Does not have to be a
+	 * @return the backing FloatBuffer holding the vertices. Does not have to be a
 	 *         direct buffer on Android!
 	 */
-	public FloatBuffer getVerticesBufferFloat () {
-		return verticesFloat;
+	public FloatBuffer getVerticesBuffer () {
+		return vertices.getBuffer();
 	}
 
 	/**
 	 * @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
 	 */
 	public ShortBuffer getIndicesBuffer () {
-		return indices;
-	}
-
-	/**
-	 * Returns getNumVertices() vertices in the float array
-	 * @param vertices the destination array
-	 */
-	public void getVertices (float[] vertices) {
-		verticesFloat.get(vertices);
-		verticesFloat.position(0);
-	}
-
-	/**
-	 * Returns getNumIndices() indices in the short array
-	 * @param indices the destination array
-	 */
-	public void getIndices (short[] indices) {
-		this.indices.get(indices);
-		this.indices.position(0);
+		return indices.getBuffer();
 	}
 
 	/**
 	 * Invalidates all meshes so the next time they are rendered new VBO handles are generated.
 	 */
 	public static void invalidateAllMeshes () {
-		// FIXME, this is evil in the test environment. WE
 
 		for (int i = 0; i < meshes.size(); i++) {
-			meshes.get(i).invalidated = true;
-			meshes.get(i).checkManagedAndDirty();
+			if( meshes.get(i).vertices instanceof VertexBufferObject ) {			
+				((VertexBufferObject)meshes.get(i).vertices).invalidate();
+				meshes.get(i).indices.invalidate();
+			}
 		}
 	}
 
@@ -765,9 +400,5 @@ public class Mesh {
 	 */
 	public static void clearAllMeshes () {
 		meshes.clear();
-	}
-
-	public void setDirty () {
-		dirty = true;
 	}
 }

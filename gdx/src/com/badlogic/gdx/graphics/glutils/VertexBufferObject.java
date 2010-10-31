@@ -335,6 +335,7 @@ public class VertexBufferObject implements VertexData {
 		if (Gdx.gl20 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
+			tmpHandle.flip();
 			GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 			gl.glDeleteBuffers(1, tmpHandle);
@@ -342,6 +343,7 @@ public class VertexBufferObject implements VertexData {
 		} else {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
+			tmpHandle.flip();
 			GL11 gl = Gdx.gl11;
 			gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 			gl.glDeleteBuffers(1, tmpHandle);

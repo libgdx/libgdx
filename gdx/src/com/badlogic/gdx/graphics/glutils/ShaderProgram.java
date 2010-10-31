@@ -430,6 +430,7 @@ public class ShaderProgram {
 	 */
 	public void dispose () {
 		GL20 gl = Gdx.graphics.getGL20();
+		gl.glUseProgram(0);
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);

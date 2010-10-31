@@ -77,28 +77,19 @@ public class IndexBufferObject {
 	}
 
 	/**
-	 * Creates a new IndexBufferObject.
+	 * Creates a new IndexBufferObject to be used with vertex arrays.
 	 * 
-	 * @param isStatic
-	 *            whether the index buffer is static
-	 * @param isDirect
-	 *            whether the underlying buffer should be direct or not
 	 * @param maxIndices
 	 *            the maximum number of indices this buffer can hold
 	 */
-	public IndexBufferObject(boolean isStatic, boolean isDirect, int maxIndices) {
-		if (!isDirect) {
-			byteBuffer = ByteBuffer.allocate(maxIndices * 2);
-			byteBuffer.order(ByteOrder.nativeOrder());
-			this.isDirect = false;
-		} else {
-			byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
-			byteBuffer.order(ByteOrder.nativeOrder());
-			this.isDirect = true;
-		}
+	public IndexBufferObject(int maxIndices) {		
+		byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
+		byteBuffer.order(ByteOrder.nativeOrder());
+		this.isDirect = true;
+		
 		buffer = byteBuffer.asShortBuffer();
 		bufferHandle = createBufferObject();
-		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
+		usage = GL11.GL_STATIC_DRAW;
 	}
 
 	private int createBufferObject() {
@@ -242,6 +233,7 @@ public class IndexBufferObject {
 		if (Gdx.gl20 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
+			tmpHandle.flip();
 			GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 			gl.glDeleteBuffers(1, tmpHandle);
@@ -249,6 +241,7 @@ public class IndexBufferObject {
 		} else if (Gdx.gl11 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
+			tmpHandle.flip();
 			GL11 gl = Gdx.gl11;
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 			gl.glDeleteBuffers(1, tmpHandle);

@@ -154,6 +154,7 @@ public class SpriteBatch {
 	public SpriteBatch (int size) {
 		this.mesh = new Mesh(false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"),
 			new VertexAttribute(Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+		mesh.setAutoBind(false);
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		vertices = new float[size * SPRITE_SIZE];
@@ -199,8 +200,8 @@ public class SpriteBatch {
 	 * @param transform the transformation matrix.
 	 */
 	public void begin () {
-		renderCalls = 0;
-
+		renderCalls = 0;	
+		
 		if (Gdx.graphics.isGL20Available() == false) {
 			GL10 gl = Gdx.gl10;
 			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -216,6 +217,7 @@ public class SpriteBatch {
 			gl.glLoadMatrixf(projectionMatrix.val, 0);
 			gl.glMatrixMode(GL10.GL_MODELVIEW);
 			gl.glLoadMatrixf(transformMatrix.val, 0);
+			mesh.bind();
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
@@ -231,6 +233,7 @@ public class SpriteBatch {
 			shader.begin();
 			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
 			shader.setUniformi("u_texture", 0);
+			mesh.bind(shader);
 		}
 
 		idx = 0;
@@ -252,13 +255,15 @@ public class SpriteBatch {
 			gl.glDepthMask(true);
 			gl.glDisable(GL10.GL_BLEND);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
+			mesh.unbind();
 		} else {
 			shader.end();
 			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(true);
 			gl.glDisable(GL20.GL_BLEND);
 			gl.glDisable(GL20.GL_TEXTURE_2D);
-		}
+			mesh.unbind(shader);
+		}			
 	}
 
 	/**
