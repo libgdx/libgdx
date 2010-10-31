@@ -64,12 +64,12 @@ public class VertexBufferObject implements VertexData {
 		if( Gdx.app.getType() == ApplicationType.Android && Gdx.app.getVersion() < 5 ) {
 			byteBuffer = ByteBuffer.allocate(this.attributes.vertexSize * numVertices);
 			byteBuffer.order(ByteOrder.nativeOrder());
-			isDirect = true;
+			isDirect = false;
 		}
 		else {
 			byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
 			byteBuffer.order(ByteOrder.nativeOrder());
-			isDirect = false;
+			isDirect = true;
 		}		
 		buffer = byteBuffer.asFloatBuffer();
 		bufferHandle = createBufferObject();
