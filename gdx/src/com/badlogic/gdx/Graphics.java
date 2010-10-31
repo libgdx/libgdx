@@ -13,24 +13,24 @@
 
 package com.badlogic.gdx;
 
+import java.awt.Font;
 import java.io.InputStream;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * <p>
  * This interface encapsulates the communication with the graphics processor. It allows to retrieve {@link GL10}, {@link GL11} and
  * {@link GL20} instances depending on the available hardware and configuration of the {@link Application}. Additionally it
- * features methods to generate {@link Pixmap}s, {@link Font}s and {@link Texture}s. Note that ShaderPrograms only work when
+ * features methods to generate {@link Pixmap}s and {@link Texture}s. Note that ShaderPrograms only work when
  * OpenGL ES 2.0 is available and the <code>Application</code> was configured to use OpenGL ES 2.0.
  * </p>
  * 
@@ -177,34 +177,7 @@ public interface Graphics {
 	 * @return a new Pixmap
 	 * @throws GdxRuntimeException in case the pixmap could not be created
 	 */
-	public Pixmap newPixmap (Object nativePixmap);
-
-	/**
-	 * Creates a new {@link Font} from the given font name, the size and the style. The font is looked up by name in the system
-	 * fonts. In case no font with that name could be found a default font is returned. The Font has to be disposed once it's no
-	 * longer used via the {@link Font.dispose()} method. The font is managed automatically and will be recreated when the OpenGL
-	 * context is lost.
-	 * 
-	 * @param fontName the font name
-	 * @param size the size
-	 * @param style the {@link Font.FontStyle}
-	 * @return a new Font
-	 * @throws GdxRuntimeException in case the Font could not be created
-	 */
-	public Font newFont (String fontName, int size, Font.FontStyle style);
-
-	/**
-	 * Creates a new {@link Font} from the given file. The file must point to a true type font file. The Font has to be disposed
-	 * once it's no longer used via the {@link Font.dispose()} method. The font is managed automatically and will be recreated when
-	 * the OpenGL context is lost.
-	 * 
-	 * @param file the file to load the font from
-	 * @param size the size
-	 * @param style the {@link Font.FontStyle}
-	 * @return a new Font
-	 * @throws GdxRuntimeException in case the Font could not be created
-	 */
-	public Font newFont (FileHandle file, int size, Font.FontStyle style);
+	public Pixmap newPixmap (Object nativePixmap);	
 
 	/**
 	 * Creates a new {@link Texture} with the specified dimensions, minification and magnification filters and texture wraps in u

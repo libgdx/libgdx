@@ -14,7 +14,6 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
@@ -23,15 +22,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -84,24 +81,6 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 
 	public boolean isGL20Available () {
 		return gl20 != null;
-	}
-
-	public Font newFont (String fontName, int size, FontStyle style) {
-		return new LwjglFont(fontName, size, style);
-	}
-
-	public Font newFont (FileHandle file, int size, FontStyle style) {
-		LwjglFileHandle jHandle = (LwjglFileHandle)file;
-		InputStream in;
-		try {
-			in = new FileInputStream(jHandle.getFile());
-			LwjglFont font = new LwjglFont(in, size, style);
-			in.close();
-
-			return font;
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't load font from file '" + file + "'", e);
-		}
 	}
 
 	public Pixmap newPixmap (int width, int height, Format format) {

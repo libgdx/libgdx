@@ -24,16 +24,14 @@
 	<target name="clean">
 		<delete dir="${stable}"/>
 		<delete dir="gdx/bin"/>
-		<delete dir="backends/gdx-backend-desktop/bin"/>
-		<delete dir="backends/gdx-backend-applet/bin"/>
+		<delete dir="backends/gdx-backend-desktop/bin"/>		
 		<delete dir="backends/gdx-backend-android/bin"/>
 	</target>
 	
 	<!-- init task, creates all necessary directories -->
 	<target name="init" depends="clean">
 		<mkdir dir="${stable}"/>
-		<mkdir dir="gdx/bin"/>
-		<mkdir dir="backends/gdx-backend-applet/bin"/>
+		<mkdir dir="gdx/bin"/>		
 		<mkdir dir="backends/gdx-backend-android/bin"/>
 		<mkdir dir="backends/gdx-backend-desktop/bin"/>
 	</target>
@@ -64,20 +62,7 @@
 				<pathelement location="backends/dependencies/android-2.0.jar"/>
 			</classpath>
 		</javac>
-		
-		<!-- build applet backend -->
-		<javac srcdir="backends/gdx-backend-applet/src" destdir="backends/gdx-backend-applet/bin">
-			<classpath>
-				<pathElement location="gdx/bin"/>				
-				<pathelement location="backends/dependencies/gluegen-rt.jar"/>
-				<pathelement location="backends/dependencies/javazoom-spi.jar"/>
-				<pathelement location="backends/dependencies/jl1.0.1.jar"/>
-				<pathelement location="backends/dependencies/jogl-natives.jar"/>
-				<pathelement location="backends/dependencies/jogl.jar"/>
-				<pathelement location="backends/dependencies/jorbis.jar"/>
-				<pathelement location="backends/dependencies/tritonus-utils.jar"/>
-			</classpath>
-		</javac>
+				
 	</target>
 
 	<!-- compiles the native code (for android only atm) -->
@@ -108,17 +93,7 @@
 			<zipfileset src="backends/dependencies/jogl.jar"/>
 			<zipfileset src="backends/dependencies/jorbis.jar"/>
 			<zipfileset src="backends/dependencies/tritonus-utils.jar"/>
-		</jar>
-		<jar destfile="${stable}/gdx-backend-applet.jar">
-			<fileset dir="backends/gdx-backend-applet/bin"/>
-			<zipfileset src="backends/dependencies/gluegen-rt.jar"/>
-			<zipfileset src="backends/dependencies/javazoom-spi.jar"/>
-			<zipfileset src="backends/dependencies/jl1.0.1.jar"/>
-			<zipfileset src="backends/dependencies/jogl-natives.jar"/>
-			<zipfileset src="backends/dependencies/jogl.jar"/>
-			<zipfileset src="backends/dependencies/jorbis.jar"/>
-			<zipfileset src="backends/dependencies/tritonus-utils.jar"/>
-		</jar>
+		</jar>		
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin"/>
 		
 		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false"/>

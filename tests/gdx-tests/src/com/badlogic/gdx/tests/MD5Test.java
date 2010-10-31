@@ -1,13 +1,9 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
@@ -27,7 +23,7 @@ public class MD5Test implements GdxTest, InputListener {
 	MD5Joints skeleton;
 	MD5Renderer renderer;
 	SpriteBatch batch;
-	Font font;
+//	Font font;
 
 	@Override public void surfaceCreated () {
 		if (model == null) {
@@ -54,7 +50,7 @@ public class MD5Test implements GdxTest, InputListener {
 			camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 			batch = new SpriteBatch();
-			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+//			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 			Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			Gdx.input.addInputListener(this);
 		}
@@ -101,19 +97,19 @@ public class MD5Test implements GdxTest, InputListener {
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 // gl.glPolygonMode( GL10.GL_FRONT_AND_BACK, GL10.GL_FILL );
 		batch.begin();
-		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond() + (renderer.isJniUsed() ? ", jni" : ", java"), 10, 20,
-			Color.WHITE);
+//		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond() + (renderer.isJniUsed() ? ", jni" : ", java"), 10, 20,
+//			Color.WHITE);
 		batch.end();
 	}
 
 	@Override public void dispose () {
 		batch.dispose();
 		renderer.dispose();
-		font.dispose();
+//		font.dispose();
 
 		batch = null;
 		renderer = null;
-		font = null;
+//		font = null;
 
 		System.gc();
 

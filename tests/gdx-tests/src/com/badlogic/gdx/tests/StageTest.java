@@ -16,18 +16,15 @@ package com.badlogic.gdx.tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureRegion;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -45,7 +42,7 @@ public class StageTest implements GdxTest, InputListener {
 	Stage ui;
 	Texture texture;
 	Texture uiTexture;
-	Font font;
+//	Font font;
 
 	boolean rotateSprites = false;
 	boolean scaleSprites = false;
@@ -60,7 +57,7 @@ public class StageTest implements GdxTest, InputListener {
 			Gdx.input.addInputListener(this);
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
 				TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			font = Gdx.graphics.newFont("DroidSans", 12, FontStyle.Plain);
+//			font = Gdx.graphics.newFont("DroidSans", 12, FontStyle.Plain);
 
 			stage = new Stage(480, 320, true);
 
@@ -92,9 +89,9 @@ public class StageTest implements GdxTest, InputListener {
 			ui.addActor(rotate);
 			ui.addActor(scale);
 
-			Label fps = new Label("fps", font, "fps: 0");
-			fps.color.set(0, 1, 0, 1);
-			ui.addActor(fps);
+//			Label fps = new Label("fps", font, "fps: 0");
+//			fps.color.set(0, 1, 0, 1);
+//			ui.addActor(fps);
 
 			Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 			renderer = new ImmediateModeRenderer();

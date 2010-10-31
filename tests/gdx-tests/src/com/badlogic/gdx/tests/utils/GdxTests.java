@@ -33,7 +33,6 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
-import com.badlogic.gdx.tests.TextTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexArrayClassTest;
@@ -83,8 +82,7 @@ public class GdxTests
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
 		StageTest.class,
-		TerrainTest.class,
-		TextTest.class,
+		TerrainTest.class,		
 		TextureRenderTest.class,
 		UITest.class,
 		VertexArrayTest.class,		

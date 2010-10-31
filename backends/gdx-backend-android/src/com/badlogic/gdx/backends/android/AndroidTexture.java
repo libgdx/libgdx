@@ -234,36 +234,6 @@ final class AndroidTexture implements Texture {
 	 * {@inheritDoc}
 	 */
 	@Override public void dispose () {
-// if( gl10 != null )
-// {
-// if( gl10 instanceof GL11 )
-// {
-// GL11 gl11 = (GL11)gl10;
-// if( gl11.glIsTexture( textureHandle ) )
-// {
-// int[] textures = { textureHandle };
-// gl10.glDeleteTextures( 1, textures, 0 );
-// }
-// }
-// else
-// {
-// int[] textures = { textureHandle };
-// gl10.glDeleteTextures( 1, textures, 0 );
-// }
-// }
-// else
-// {
-// if( gl20.glIsTexture( textureHandle ) )
-// {
-// ByteBuffer buffer = ByteBuffer.allocateDirect(4);
-// buffer.order(ByteOrder.nativeOrder());
-// IntBuffer intBuffer = buffer.asIntBuffer();
-// intBuffer.put(textureHandle);
-// intBuffer.position(0);
-// gl20.glDeleteTextures( 1, intBuffer);
-// }
-// }
-
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());
 		IntBuffer intBuffer = buffer.asIntBuffer();

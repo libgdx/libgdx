@@ -14,7 +14,6 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Font.Glyph;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -680,73 +679,7 @@ public class SpriteBatch {
 			mesh.render(GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		}
 		idx = 0;
-	}
-
-	/**
-	 * Draws a text with its bounding box's top left corner at x,y using the given {@link Font}. This will ignore any newlines,
-	 * tabs and other special characters.
-	 * 
-	 * @param font the Font
-	 * @param text the text
-	 * @param x the x-coordinate of the strings bounding box's upper left corner
-	 * @param y the y-coordinate of the strings bounding box's upper left corner
-	 * @param tint the tint of the text
-	 */
-	public void drawText (Font font, String text, float x, float y, Color tint) {
-		if (!drawing) throw new IllegalStateException("you have to call SpriteBatch.begin() first");
-
-		if (font.getTexture() != lastTexture) {
-			renderMesh();
-			lastTexture = font.getTexture();
-		}
-
-		useTextBlend = true;
-
-		final float color = tint.toFloatBits();
-
-		int len = text.length();
-		for (int i = 0; i < len; i++) {
-			char c = text.charAt(i);
-			Glyph g = font.getGlyph(c);
-			if( g == null ) continue;
-			
-			final float fx = x;
-			final float fx2 = x + g.width;
-			final float fy2 = y + g.height;
-			final float u = g.u;
-			final float v = g.v + g.vHeight;
-			final float u2 = g.u + g.uWidth;
-			final float v2 = g.v;
-
-			vertices[idx++] = fx;
-			vertices[idx++] = y;
-			vertices[idx++] = color;
-			vertices[idx++] = u;
-			vertices[idx++] = v;
-
-			vertices[idx++] = fx;
-			vertices[idx++] = fy2;
-			vertices[idx++] = color;
-			vertices[idx++] = u;
-			vertices[idx++] = v2;
-
-			vertices[idx++] = fx2;
-			vertices[idx++] = fy2;
-			vertices[idx++] = color;
-			vertices[idx++] = u2;
-			vertices[idx++] = v2;
-
-			vertices[idx++] = fx2;
-			vertices[idx++] = y;
-			vertices[idx++] = color;
-			vertices[idx++] = u2;
-			vertices[idx++] = v;
-
-			x += g.advance;
-
-			if (idx == vertices.length) renderMesh();
-		}
-	}
+	}	
 
 	/**
 	 * Disables blending for drawing sprites. Does not disable blending for text rendering

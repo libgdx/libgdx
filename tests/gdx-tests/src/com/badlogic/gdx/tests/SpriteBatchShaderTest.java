@@ -13,18 +13,15 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -37,7 +34,7 @@ public class SpriteBatchShaderTest implements GdxTest {
 
 	Texture texture;
 	Texture texture2;
-	Font font;
+//	Font font;
 	SpriteBatch spriteBatch;
 	int coords[] = new int[SPRITES * 2];
 	int coords2[] = new int[SPRITES * 2];
@@ -78,9 +75,9 @@ public class SpriteBatchShaderTest implements GdxTest {
 		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
-		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
-		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
+//		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
+//		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
+//		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
 		drawText = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -119,7 +116,7 @@ public class SpriteBatchShaderTest implements GdxTest {
 		texture2 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 
-		if (font == null) font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
+//		if (font == null) font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
 
 		for (int i = 0; i < coords.length; i += 2) {
 			coords[i] = (int)(Math.random() * Gdx.graphics.getWidth());

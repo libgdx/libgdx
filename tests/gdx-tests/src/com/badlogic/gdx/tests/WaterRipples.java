@@ -3,22 +3,18 @@ package com.badlogic.gdx.tests;
 
 import java.util.Random;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
@@ -39,7 +35,7 @@ public class WaterRipples implements GdxTest, InputListener {
 	boolean initialized = false;
 	PerspectiveCamera camera;
 	SpriteBatch batch;
-	Font font;
+//	Font font;
 	Mesh mesh;
 	Texture texture;
 	Plane plane = new Plane(new Vector3(), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
@@ -73,7 +69,7 @@ public class WaterRipples implements GdxTest, InputListener {
 			initialized = true;
 
 			batch = new SpriteBatch();
-			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+//			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 
 			Gdx.input.addInputListener(this);
 		}
@@ -197,7 +193,7 @@ public class WaterRipples implements GdxTest, InputListener {
 		mesh.render(GL10.GL_TRIANGLES);
 
 		batch.begin();
-		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20, Color.WHITE);
+//		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20, Color.WHITE);
 		batch.end();
 	}
 

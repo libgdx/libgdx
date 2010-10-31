@@ -13,19 +13,16 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -38,7 +35,7 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 
 	Texture texture;
 	Texture texture2;
-	Font font;
+//	Font font;
 	SpriteBatch spriteBatch;
 	float sprites[] = new float[SPRITES * 6];
 	float sprites2[] = new float[SPRITES * 6];
@@ -98,10 +95,10 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
-		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
-		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
-		spriteBatch.drawText(font, "normal fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
+//		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
+//		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
+//		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
+//		spriteBatch.drawText(font, "normal fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
 		drawText = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -160,10 +157,10 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
-		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
-		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
-		spriteBatch.drawText(font, "Sprite fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
+//		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
+//		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
+//		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
+//		spriteBatch.drawText(font, "Sprite fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
 		drawText = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -199,7 +196,7 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 			TextureWrap.ClampToEdge);
 		pixmap.dispose();
 
-		font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
+//		font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
 
 		for (int i = 0; i < sprites.length; i += 6) {
 			sprites[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));

@@ -18,7 +18,6 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
@@ -29,15 +28,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
@@ -141,25 +138,7 @@ public final class JoglGraphics implements Graphics, RenderListener {
 	@Override public boolean isGL20Available () {
 		return gl20 != null;
 	}
-
-	@Override public Font newFont (String fontName, int size, FontStyle style) {
-		return new JoglFont(fontName, size, style);
-	}
-
-	@Override public Font newFont (FileHandle file, int size, FontStyle style) {
-		JoglFileHandle jHandle = (JoglFileHandle)file;
-		InputStream in;
-		try {
-			in = new FileInputStream(jHandle.getFile());
-			JoglFont font = new JoglFont(in, size, style);
-			in.close();
-
-			return font;
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't load font from file '" + file + "'", e);
-		}
-	}
-
+	
 	@Override public Pixmap newPixmap (int width, int height, Format format) {
 		return new JoglPixmap(width, height, format);
 	}

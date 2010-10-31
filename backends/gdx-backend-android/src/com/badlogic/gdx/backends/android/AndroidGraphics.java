@@ -34,16 +34,14 @@ import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
@@ -238,22 +236,6 @@ final class AndroidGraphics implements Graphics, Renderer {
 		return gl20 != null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Font newFont (String fontName, int size, FontStyle style) {
-		return new AndroidFont(this, fontName, size, style);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Font newFont (FileHandle file, int size, FontStyle style) {
-		AndroidFileHandle aHandle = (AndroidFileHandle)file;
-		AndroidFont font = new AndroidFont(this, aHandle.getAssetManager(), aHandle.getFileName(), size, style);
-		return font;
-	}
-
 	private static boolean isPowerOfTwo (int value) {
 		return ((value != 0) && (value & (value - 1)) == 0);
 	}
@@ -399,8 +381,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		Mesh.invalidateAllMeshes();
 		AndroidTexture.invalidateAllTextures();
 		ShaderProgram.invalidateAllShaderPrograms();
-		FrameBuffer.invalidateAllFrameBuffers();
-		Font.invalidateAllFonts();
+		FrameBuffer.invalidateAllFrameBuffers();		
 
 		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
@@ -474,8 +455,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		Mesh.clearAllMeshes();
 		AndroidTexture.clearAllTextures();
 		ShaderProgram.clearAllShaderPrograms();
-		FrameBuffer.clearAllFrameBuffers();
-		Font.clearAllFonts();
+		FrameBuffer.clearAllFrameBuffers();		
 	}
 
 	/**

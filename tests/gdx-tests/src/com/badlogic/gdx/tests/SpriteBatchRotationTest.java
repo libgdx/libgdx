@@ -21,8 +21,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,7 +31,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class SpriteBatchRotationTest implements GdxTest {
 	SpriteBatch spriteBatch;
 	Texture texture;
-	Font font;
+//	Font font;
 	float angle = 0;
 	float scale = 1;
 	float vScale = 1;
@@ -60,7 +58,7 @@ public class SpriteBatchRotationTest implements GdxTest {
 		spriteBatch.draw(texture, 160, 58, 0, 0, 32, 32, scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(),
 			Color.WHITE, false, false);
 
-		spriteBatch.drawText(font, "Test", 208, 10, Color.WHITE);
+//		spriteBatch.drawText(font, "Test", 208, 10, Color.WHITE);
 		spriteBatch.end();
 		Gdx.graphics.getGL10().glFlush();
 
@@ -99,7 +97,7 @@ public class SpriteBatchRotationTest implements GdxTest {
 			spriteBatch = new SpriteBatch();
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/test.png", FileType.Internal), TextureFilter.Linear,
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+//			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 			ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 			buffer.order(ByteOrder.nativeOrder());
 			pixelBuffer = buffer.asIntBuffer();

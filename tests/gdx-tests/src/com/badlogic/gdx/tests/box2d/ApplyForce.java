@@ -166,7 +166,7 @@ public class ApplyForce extends Box2DTest {
 
 		if (renderer.batch != null) {
 			renderer.batch.begin();
-			renderer.batch.drawText(renderer.font, "Keys (w), (a), (d) to fly", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE);
+//			renderer.batch.drawText(renderer.font, "Keys (w), (a), (d) to fly", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE);
 			renderer.batch.end();
 		}
 	}

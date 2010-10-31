@@ -13,20 +13,16 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -35,7 +31,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MeshShaderTest implements GdxTest {
 	SpriteBatch spriteBatch;
-	Font font;
+//	Font font;
 	ShaderProgram shader;
 	Mesh mesh;
 	Texture texture;
@@ -70,7 +66,7 @@ public class MeshShaderTest implements GdxTest {
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
 			spriteBatch = new SpriteBatch();
-			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+//			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 		}
 	}
 
@@ -93,7 +89,7 @@ public class MeshShaderTest implements GdxTest {
 		shader.end();
 
 		spriteBatch.begin();
-		spriteBatch.drawText(font, "This is a test", 100, 100, Color.RED);
+//		spriteBatch.drawText(font, "This is a test", 100, 100, Color.RED);
 		spriteBatch.end();
 	}
 

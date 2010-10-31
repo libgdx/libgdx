@@ -17,10 +17,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,7 +24,6 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -36,6 +31,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -49,7 +45,7 @@ public class Box2DTest implements GdxTest, InputListener {
 
 	/** a spritebatch and a font for text rendering **/
 	private SpriteBatch batch;
-	private Font font;
+//	private Font font;
 
 	/** our box2D world **/
 	private World world;
@@ -83,7 +79,7 @@ public class Box2DTest implements GdxTest, InputListener {
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
-		font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+//		font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 
 		// next we create out physics world.
 		createPhysicsWorld();
@@ -207,8 +203,8 @@ public class Box2DTest implements GdxTest, InputListener {
 
 		// finally we render the time it took to update the world
 		batch.begin();
-		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
-			Gdx.graphics.getHeight(), Color.RED);
+//		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
+//			Gdx.graphics.getHeight(), Color.RED);
 		batch.end();
 	}
 
