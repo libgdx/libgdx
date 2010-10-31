@@ -72,18 +72,18 @@ public class VertexBufferObject implements VertexData {
 			VertexAttribute... attributes) {
 		this.isStatic = isStatic;
 		this.attributes = new VertexAttributes(attributes);
-		if (Gdx.app.getType() == ApplicationType.Android
-				&& Gdx.app.getVersion() < 5) {
-			byteBuffer = ByteBuffer.allocate(this.attributes.vertexSize
-					* numVertices);
-			byteBuffer.order(ByteOrder.nativeOrder());
-			isDirect = false;
-		} else {
+//		if (Gdx.app.getType() == ApplicationType.Android
+//				&& Gdx.app.getVersion() < 5) {
+//			byteBuffer = ByteBuffer.allocate(this.attributes.vertexSize
+//					* numVertices);
+//			byteBuffer.order(ByteOrder.nativeOrder());
+//			isDirect = false;
+//		} else {
 			byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize
 					* numVertices);
 			byteBuffer.order(ByteOrder.nativeOrder());
 			isDirect = true;
-		}
+//		}
 		buffer = byteBuffer.asFloatBuffer();
 		bufferHandle = createBufferObject();
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
