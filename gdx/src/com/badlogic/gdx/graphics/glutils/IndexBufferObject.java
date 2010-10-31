@@ -13,9 +13,15 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
 
 /**
+ * <p>
  * In IndexBufferObject wraps OpenGL's index buffer functionality to be used in
  * conjunction with VBOs. This class can be seamlessly used with OpenGL ES 1.x
  * and 2.0.
+ * </p>
+ * 
+ * <p>
+ * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
+ * </p>
  * 
  * @author mzechner
  * 

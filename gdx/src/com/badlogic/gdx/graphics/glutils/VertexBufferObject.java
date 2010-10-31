@@ -38,6 +38,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * PlatformAddress instances.
  * </p>
  * 
+ * <p>
+ * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
+ * </p>
+ * 
  * @author mzechner
  * 
  */

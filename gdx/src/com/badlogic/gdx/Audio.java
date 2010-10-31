@@ -35,7 +35,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public interface Audio {
 	/**
 	 * Creates a new {@link AudioDevice} either in 44.1khz mono or stereo mode. The AudioDevice has to be disposed via its {@link
-	 * AudioDevice.dispose()} method when it is no longer used.
+	 * AudioDevice#dispose()} method when it is no longer used.
 	 * 
 	 * @param isMono whether the AudioDevice should be in mono or stereo mode
 	 * @return the AudioDevice
@@ -67,10 +67,9 @@ public interface Audio {
 	 * </p>
 	 * 
 	 * <p>
-	 * The Sound has to be disposed if it is no longer used via the {@link Sound.dispose()} method.
+	 * The Sound has to be disposed if it is no longer used via the {@link Sound#dispose()} method.
 	 * </p>
 	 * 
-	 * @param file the FileHandle to the audio file
 	 * @return the new Sound or null if the Sound could not be loaded
 	 * @throws GdxRuntimeException in case the sound could not be loaded
 	 */
@@ -78,7 +77,7 @@ public interface Audio {
 
 	/**
 	 * Creates a new {@link Music} instance which is used to playback a music stream from a file. Currently supported formats are
-	 * WAV, MP3 and OGG. The Music instance has to be disposed if it is no longer used via the {@link Music.dispose()} method.
+	 * WAV, MP3 and OGG. The Music instance has to be disposed if it is no longer used via the {@link Music#dispose()} method.
 	 * 
 	 * @param file the FileHandle
 	 * @return the new Music or null if the Music could not be loaded
