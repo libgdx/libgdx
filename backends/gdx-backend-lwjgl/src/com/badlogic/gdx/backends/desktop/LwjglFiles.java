@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Implementation for a desktop application of {@link Files}. Internal resources are relative to the application root directory,

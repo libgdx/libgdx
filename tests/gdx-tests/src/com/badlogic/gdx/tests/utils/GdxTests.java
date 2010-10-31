@@ -36,7 +36,9 @@ import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.UITest;
+import com.badlogic.gdx.tests.VertexArrayClassTest;
 import com.badlogic.gdx.tests.VertexArrayTest;
+import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
 import com.badlogic.gdx.tests.VertexBufferObjectTest;
 import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.WaterRipples;
@@ -84,8 +86,10 @@ public class GdxTests
 		TextTest.class,
 		TextureRenderTest.class,
 		UITest.class,
-		VertexArrayTest.class,
+		VertexArrayTest.class,		
 		VertexBufferObjectTest.class,
+		VertexArrayClassTest.class,
+		VertexBufferObjectClassTest.class,
 		VorbisTest.class,
 		WaterRipples.class
 	};

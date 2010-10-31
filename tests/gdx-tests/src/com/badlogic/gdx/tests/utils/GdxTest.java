@@ -1,7 +1,7 @@
 package com.badlogic.gdx.tests.utils;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public interface GdxTest extends RenderListener
 {

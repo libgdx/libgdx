@@ -35,7 +35,6 @@ import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.InputListener;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.LwjglApplication;
@@ -47,6 +46,7 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
 	LwjglApplication app;

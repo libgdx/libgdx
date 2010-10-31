@@ -17,8 +17,8 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Implementation of the {@link AudioDevice} interface for the desktop using Java Sound.

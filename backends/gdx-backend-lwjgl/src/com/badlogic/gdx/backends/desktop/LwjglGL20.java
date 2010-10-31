@@ -28,8 +28,8 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of the {@link GL20} interface based on Jogl. Note that Jogl shaders and OpenGL ES shaders will not be 100%

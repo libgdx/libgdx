@@ -84,9 +84,6 @@ public class ShaderProgram {
 	/** matrix float buffer **/
 	private final FloatBuffer matrix;
 
-	/** managed? **/
-	private final boolean managed;
-
 	/** vertex shader source **/
 	private final String vertexShaderSource;
 
@@ -108,7 +105,6 @@ public class ShaderProgram {
 		if (vertexShader == null) throw new IllegalArgumentException("vertex shader must not be null");
 		if (fragmentShader == null) throw new IllegalArgumentException("fragment shader must not be null");
 
-		this.managed = true;
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
 
@@ -117,7 +113,7 @@ public class ShaderProgram {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4 * 16);
 		buffer.order(ByteOrder.nativeOrder());
 		matrix = buffer.asFloatBuffer();
-		if (managed) shaders.add(this);
+		shaders.add(this);
 	}
 
 	/**
@@ -465,10 +461,10 @@ public class ShaderProgram {
 	}
 
 	private void checkManaged () {
-		if (!managed) return;
-
-		if (invalidated) compileShaders(vertexShaderSource, fragmentShaderSource);
-		invalidated = false;
+		if (invalidated) {
+			compileShaders(vertexShaderSource, fragmentShaderSource);
+			invalidated = false;
+		}		
 	}
 
 	/**

@@ -21,10 +21,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.Font;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of {@link Font} based on the java graphics framework.

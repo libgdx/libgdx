@@ -23,10 +23,10 @@ import android.opengl.GLUtils;
 import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of {@link Texture} for Android

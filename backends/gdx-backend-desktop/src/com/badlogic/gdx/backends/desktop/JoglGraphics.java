@@ -26,7 +26,6 @@ import javax.media.opengl.GL;
 import javax.swing.JFrame;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
@@ -42,6 +41,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of the {@link Graphics} interface based on Jogl.

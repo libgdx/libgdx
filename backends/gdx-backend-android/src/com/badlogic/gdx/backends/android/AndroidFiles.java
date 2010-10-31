@@ -24,8 +24,8 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of the {@link Files} interface for Android. External files are stored and accessed relative to

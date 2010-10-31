@@ -29,7 +29,6 @@ import android.view.Display;
 import android.view.View;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
@@ -50,6 +49,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of {@link Graphics} for Android.

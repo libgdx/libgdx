@@ -18,8 +18,8 @@ import java.io.InputStream;
 
 import android.content.res.AssetManager;
 
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * A {@link FileHandle} implementation for Android. Encapsulates assets and files on the external storage device.

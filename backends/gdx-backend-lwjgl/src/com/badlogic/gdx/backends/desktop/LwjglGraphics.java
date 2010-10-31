@@ -20,7 +20,6 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
@@ -35,6 +34,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of the {@link Graphics} interface based on Jogl.

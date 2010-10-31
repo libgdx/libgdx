@@ -9,9 +9,9 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.GdxRuntimeException;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.matthiasmann.twl.renderer.CacheContext;
 
