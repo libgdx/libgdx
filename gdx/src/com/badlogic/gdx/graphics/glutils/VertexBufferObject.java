@@ -27,6 +27,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </p>
  * 
  * <p>
+ * If you 
+ * </p>
+ * 
+ * <p>
  * In case OpenGL ES 2.0 is used in the application the data is bound via
  * glVertexAttribPointer() according to the attribute aliases specified via
  * {@link VertexAttributes} in the constructor.
