@@ -147,15 +147,11 @@ public class IndexBufferObject {
 
 		if (isBound) {
 			if (Gdx.gl11 != null) {
-				GL11 gl = Gdx.gl11;
-				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
-						.limit(), null, usage);
+				GL11 gl = Gdx.gl11;				
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
 			} else if (Gdx.gl11 != null) {
-				GL20 gl = Gdx.gl20;
-				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
-						.limit(), null, usage);
+				GL20 gl = Gdx.gl20;				
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
 			}
@@ -184,9 +180,7 @@ public class IndexBufferObject {
 		if (Gdx.gl11 != null) {
 			GL11 gl = Gdx.gl11;
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
-			if (isDirty) {
-				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
-						.limit(), null, usage);
+			if (isDirty) {				
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
 				isDirty = false;
@@ -194,9 +188,7 @@ public class IndexBufferObject {
 		} else {
 			GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
-			if (isDirty) {
-				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
-						.limit(), null, usage);
+			if (isDirty) {				
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
 				isDirty = false;
