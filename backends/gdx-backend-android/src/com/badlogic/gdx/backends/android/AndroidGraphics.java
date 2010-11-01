@@ -325,15 +325,15 @@ final class AndroidGraphics implements Graphics, Renderer {
 			this.gl = gl10;
 			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
 				String renderer = gl.glGetString(GL10.GL_RENDERER);
-				if (renderer.toLowerCase().contains("pixelflinger")) return;
-
-				if (android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220")
-					|| android.os.Build.MODEL.contains("Behold")) return;
+				if (!renderer.toLowerCase().contains("pixelflinger") &&
+				    !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220")
+					|| android.os.Build.MODEL.contains("Behold"))) {
 				gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
 				gl10 = gl11;
+				}
 			}
 		}
-
+		
 		Gdx.gl = this.gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
