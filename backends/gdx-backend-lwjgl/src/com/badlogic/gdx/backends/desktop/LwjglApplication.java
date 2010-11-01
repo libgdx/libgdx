@@ -46,6 +46,7 @@ public class LwjglApplication implements Application {
 	private void initialize() {
 		LwjglNativesLoader.load();
 		mainLoopThread = new Thread("LWJGL Application") {
+			@SuppressWarnings("synthetic-access")
 			public void run () {				
 				LwjglApplication.this.mainLoop();							
 			}
