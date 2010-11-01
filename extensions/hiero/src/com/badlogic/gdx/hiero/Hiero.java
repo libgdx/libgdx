@@ -1135,7 +1135,7 @@ public class Hiero extends JFrame {
 	class Renderer implements RenderListener {
 		private String sampleText;
 
-		public void surfaceCreated () {
+		public void created () {
 			glEnable(GL_SCISSOR_TEST);
 
 			glEnable(GL_TEXTURE_2D);
@@ -1151,7 +1151,7 @@ public class Hiero extends JFrame {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		public void surfaceChanged (int width, int height) {
+		public void resized (int width, int height) {
 			glViewport(0, 0, width, height);
 			glScissor(0, 0, width, height);
 
@@ -1263,16 +1263,16 @@ public class Hiero extends JFrame {
 	}
 
 	public static void main (String[] args) throws Exception {
-		LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
-		for (int i = 0, n = lookAndFeels.length; i < n; i++) {
-			if ("Nimbus".equals(lookAndFeels[i].getName())) {
-				try {
-					UIManager.setLookAndFeel(lookAndFeels[i].getClassName());
-				} catch (Throwable ignored) {
-				}
-				break;
-			}
-		}
+//		LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
+//		for (int i = 0, n = lookAndFeels.length; i < n; i++) {
+//			if ("Nimbus".equals(lookAndFeels[i].getName())) {
+//				try {
+//					UIManager.setLookAndFeel(lookAndFeels[i].getClassName());
+//				} catch (Throwable ignored) {
+//				}
+//				break;
+//			}
+//		}
 		new Hiero();
 	}
 }

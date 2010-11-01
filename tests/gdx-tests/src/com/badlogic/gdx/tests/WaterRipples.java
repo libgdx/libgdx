@@ -4,7 +4,7 @@ package com.badlogic.gdx.tests;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class WaterRipples implements GdxTest, InputListener {
+public class WaterRipples extends GdxTest implements InputProcessor {
 	static final short WIDTH = 50;
 	static final short HEIGHT = 50;
 	static final float INV_WIDTH = 1.0f / WIDTH;
@@ -45,34 +45,30 @@ public class WaterRipples implements GdxTest, InputListener {
 	float[][] intp;
 	float[] vertices;
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
+		
+		camera = new PerspectiveCamera();
+		camera.getPosition().set((WIDTH) / 2.0f, (HEIGHT) / 2.0f, WIDTH / 2.0f);
+		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
+		camera.setFov(90);
+		camera.setNear(0.1f);
+		camera.setFar(1000);
+		last = new float[WIDTH + 1][HEIGHT + 1];
+		curr = new float[WIDTH + 1][HEIGHT + 1];
+		intp = new float[WIDTH + 1][HEIGHT + 1];
+		vertices = new float[(WIDTH + 1) * (HEIGHT + 1) * 5];
+		mesh = new Mesh(false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(
+			VertexAttributes.Usage.Position, 3, "a_Position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2,
+			"a_texCoords"));
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/stones.jpg", FileType.Internal), TextureFilter.Linear,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-		if (!initialized) {
-			camera = new PerspectiveCamera();
-			camera.getPosition().set((WIDTH) / 2.0f, (HEIGHT) / 2.0f, WIDTH / 2.0f);
-			camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
-			camera.setFov(90);
-			camera.setNear(0.1f);
-			camera.setFar(1000);
-			last = new float[WIDTH + 1][HEIGHT + 1];
-			curr = new float[WIDTH + 1][HEIGHT + 1];
-			intp = new float[WIDTH + 1][HEIGHT + 1];
-			vertices = new float[(WIDTH + 1) * (HEIGHT + 1) * 5];
-			mesh = new Mesh(false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(
-				VertexAttributes.Usage.Position, 3, "a_Position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2,
-				"a_texCoords"));
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/stones.jpg", FileType.Internal), TextureFilter.Linear,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		createIndices();
+		updateVertices(curr);
+		initialized = true;
 
-			createIndices();
-			updateVertices(curr);
-			initialized = true;
-
-			batch = new SpriteBatch();
+		batch = new SpriteBatch();
 //			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
-
-			Gdx.input.addInputListener(this);
-		}
 	}
 
 	private void createIndices () {
@@ -195,10 +191,8 @@ public class WaterRipples implements GdxTest, InputListener {
 		batch.begin();
 //		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20, Color.WHITE);
 		batch.end();
-	}
-
-	@Override public void dispose () {
-
+		
+		Gdx.input.processEvents(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {
@@ -233,10 +227,6 @@ public class WaterRipples implements GdxTest, InputListener {
 // Intersector.intersectRayPlane( ray, plane, point );
 // touchWater( point );
 		return false;
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-
 	}
 
 	@Override public boolean needsGL20 () {

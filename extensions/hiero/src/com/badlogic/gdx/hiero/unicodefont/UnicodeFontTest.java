@@ -13,14 +13,14 @@ import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 public class UnicodeFontTest implements RenderListener {
 	private UnicodeFont unicodeFont;
 
-	public void surfaceCreated () {
+	public void created () {
 		unicodeFont = new UnicodeFont("c:/windows/fonts/arial.ttf", 48, false, false);
 		unicodeFont.getEffects().add(new ColorEffect(java.awt.Color.white));
 		// unicodeFont.addAsciiGlyphs();
 		// unicodeFont.loadGlyphs();
 	}
 
-	public void surfaceChanged (int width, int height) {
+	public void resized (int width, int height) {
 		glViewport(0, 0, width, height);
 		glScissor(0, 0, width, height);
 		glEnable(GL_SCISSOR_TEST);

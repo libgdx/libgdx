@@ -23,7 +23,7 @@ import de.matthiasmann.twl.textarea.Value;
 public class ButtonTest implements RenderListener {
 	GUI gui;
 
-	public void surfaceCreated () {
+	public void created () {
 		if (gui != null) return;
 
 		Button button = new Button("Click Me");
@@ -42,7 +42,7 @@ public class ButtonTest implements RenderListener {
 		gui.update();
 	}
 
-	public void surfaceChanged (int width, int height) {
+	public void resized (int width, int height) {
 		gui.setSize();
 	}
 

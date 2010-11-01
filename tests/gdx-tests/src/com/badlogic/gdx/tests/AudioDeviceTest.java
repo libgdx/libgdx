@@ -14,35 +14,14 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class AudioDeviceTest implements GdxTest {
+public class AudioDeviceTest extends GdxTest {
 	Thread thread;
 	boolean stop = false;
 
-	@Override public void dispose () {
-		stop = true;
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override public void render () {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		if (thread == null) {
 			final AudioDevice device = Gdx.app.getAudio().newAudioDevice(false);
 			thread = new Thread(new Runnable() {
@@ -66,6 +45,16 @@ public class AudioDeviceTest implements GdxTest {
 				}
 			});
 			thread.start();
+		}
+	}
+	
+	@Override public void destroy () {
+		stop = true;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

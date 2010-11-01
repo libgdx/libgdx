@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpriteBatchShaderTest implements GdxTest {
+public class SpriteBatchShaderTest extends GdxTest {
 	int SPRITES = 400;
 
 	long startTime = System.nanoTime();
@@ -43,10 +43,6 @@ public class SpriteBatchShaderTest implements GdxTest {
 
 	Mesh mesh;
 	float vertices[] = new float[SPRITES * 6 * (2 + 2 + 4)];
-
-	@Override public void dispose () {
-
-	}
 
 	@Override public void render () {
 		GL20 gl = Gdx.graphics.getGL20();
@@ -93,13 +89,8 @@ public class SpriteBatchShaderTest implements GdxTest {
 		frames++;
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public void surfaceCreated () {
-		if (spriteBatch == null) spriteBatch = new SpriteBatch();
-
+	@Override public void create () {
+		spriteBatch = new SpriteBatch();
 		Pixmap pixmap = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal));
 // pixmap.setColor( 0, 0, 0, 0 );
 // pixmap.fillCircle( 16, 16, 4 );

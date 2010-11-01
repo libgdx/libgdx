@@ -23,7 +23,8 @@ package com.badlogic.gdx;
  * <p>
  * An application can either be a desktop application ({@link JoglApplication}, {@link LwjglApplication}), or an
  * Android application ({@link AndroidApplication}). Each application class has it's own startup and initialization methods.
- * Please refer to their documentation for more information.
+ * Please refer to their documentation for more information. In any case you will have to specify an {@link ApplicationListener} that
+ * implements your program logic.
  * </p>
  * 
  * <p>
@@ -41,7 +42,7 @@ package com.badlogic.gdx;
  * 
  * <p>
  * {@link Input} offers you various methods to poll user input from the keyboard, touch screen, mouse and accelerometer.
- * Additionally you can register an {@link InputListener} which allows for event based input processing. The
+ * Additionally you can register an {@link InputProcessor} which allows for event based input processing. The
  * <code>InputListener</code> will be called in the rendering thread which will also call your <code>RenderListener</code>. This
  * way you don't have to care about thread synchronization when you process input events.
  * </p>
@@ -54,11 +55,6 @@ package com.badlogic.gdx;
  * are written to a users home directory. If you know what you do you can also specify absolute file names. This is not portable,
  * so take great care when using this feature.
  * </p>
- * 
- * <p>
- * Additionally an <code>Application</code> allows to set a {@link ApplicationListener} which will be invoked when the
- * <code>Application</code> is paused, resumed or closing. This can be used to save any state that needs saving. Note that the
- * <code>ApplicationListener<code> will not be called in the rendering thread. 
  * 
  * <p>
  * Generally you will have two projects for your application. The first one will be the 
@@ -127,11 +123,4 @@ public interface Application {
 	 * @return the Android API level on Android or 0 on the desktop.
 	 */
 	public int getVersion ();
-
-	/**
-	 * Sets the {@link ApplicationListener} that is called when the {@link Application} is paused, resumed or closing.
-	 * 
-	 * @param listener the ApplicationListener
-	 */
-	public void setApplicationListener (ApplicationListener listener);
 }

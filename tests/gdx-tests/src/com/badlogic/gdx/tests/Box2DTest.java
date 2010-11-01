@@ -16,7 +16,7 @@ package com.badlogic.gdx.tests;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -38,7 +38,7 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class Box2DTest implements GdxTest, InputListener {
+public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the camera **/
 	private OrthographicCamera camera;
 
@@ -64,7 +64,7 @@ public class Box2DTest implements GdxTest, InputListener {
 	/** a hit body **/
 	private Body hitBody = null;
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		// setup the camera. In Box2D we operate on a
 		// meter scale, pixels won't do it. So we use
 		// an orthographic camera with a viewport of
@@ -85,10 +85,6 @@ public class Box2DTest implements GdxTest, InputListener {
 
 		// next we create out physics world.
 		createPhysicsWorld();
-
-		// finally we register ourselfs as an InputListener so we
-		// can manipulate our world
-		Gdx.input.addInputListener(this);
 	}
 
 	private void createPhysicsWorld () {
@@ -208,6 +204,9 @@ public class Box2DTest implements GdxTest, InputListener {
 		font.draw( batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
 				20, Color.RED);		
 		batch.end();
+		
+		// process the input events
+		Gdx.input.processEvents(this);
 	}
 
 	private void renderBox (GL10 gl, Body body, float halfWidth, float halfHeight) {
@@ -310,17 +309,18 @@ public class Box2DTest implements GdxTest, InputListener {
 		return false;
 	}
 
+	@Override public void destroy () {
+		world.dispose();
+	}
+	
+	@Override public boolean needsGL20 () {
+		return false;
+	}
+	
 	// ---------------------------------------------------------------
 	// STUBS FOR UNIMPLEMENTED INTERFACE METHODS, NOTHING TO SEE HERE
 	// MOVE ALONG
 	// ---------------------------------------------------------------
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public void dispose () {
-		world.dispose();
-	}
 
 	@Override public boolean keyDown (int keycode) {
 		return false;
@@ -331,11 +331,6 @@ public class Box2DTest implements GdxTest, InputListener {
 	}
 
 	@Override public boolean keyUp (int keycode) {
-		return false;
-	}
-
-	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

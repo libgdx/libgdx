@@ -25,12 +25,12 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.files.FileHandle;
@@ -55,87 +55,28 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  */
 final class AndroidGraphics implements Graphics, Renderer {
-	/**
-	 * the gl surfaceview *
-	 */
-	protected final View view;
-
-	/**
-	 * the android input we have to call *
-	 */
-	private AndroidInput input;
-
-	/**
-	 * the render listener *
-	 */
-	protected RenderListener listener;
-
-	/**
-	 * width & height of the surface *
-	 */
-	protected int width;
-	protected int height;
-
-	/**
-	 * the app *
-	 */
-	protected AndroidApplication app;
-
-	/**
-	 * Common instance
-	 */
-	protected GLCommon gl;
-
-	/**
-	 * the GL10 instance *
-	 */
-	protected GL10 gl10;
-
-	/**
-	 * the GL11 instance *
-	 */
-	protected GL11 gl11;
-
-	/**
-	 * the GL20 instance *
-	 */
-	protected GL20 gl20;
-
-	/**
-	 * the last frame time *
-	 */
-	private long lastFrameTime = System.nanoTime();
-
-	/**
-	 * the deltaTime *
-	 */
-	private float deltaTime = 0;
-
-	/**
-	 * frame start time *
-	 */
+	final View view;
+	int width;
+	int height;
+	AndroidApplication app;
+	GLCommon gl;
+	GL10 gl10;
+	GL11 gl11;
+	GL20 gl20;
+	
+	private long lastFrameTime = System.nanoTime();	
+	private float deltaTime = 0;	
 	private long frameStart = System.nanoTime();
+	private int frames = 0;	
+	private int fps;	
+	private WindowedMean mean = new WindowedMean(5);		
 
-	/**
-	 * frame counter *
-	 */
-	private int frames = 0;
-
-	/**
-	 * last fps *
-	 */
-	private int fps;
-
-	/**
-	 * the deltaTime mean *
-	 */
-	private WindowedMean mean = new WindowedMean(5);
-
-	/**
-	 * whether to dispose the render listeners *
-	 */
-	private boolean dispose = false;
-
+	boolean created = false;
+	boolean running = false;
+	boolean pause = false;
+	boolean resume = false;
+	boolean destroy = false;	
+	
 	public AndroidGraphics (AndroidApplication activity, boolean useGL2IfAvailable) {
 		view = createGLSurfaceView(activity, useGL2IfAvailable);
 		this.app = activity;
@@ -158,15 +99,6 @@ final class AndroidGraphics implements Graphics, Renderer {
 			}
 		}
 
-	}
-
-	/**
-	 * This is a hack...
-	 * 
-	 * @param input
-	 */
-	protected void setInput (AndroidInput input) {
-		this.input = input;
 	}
 
 	private boolean checkGL20 () {
@@ -271,43 +203,6 @@ final class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void setRenderListener (RenderListener listener) {
-		synchronized (this) {
-			if (this.listener != null) this.listener.dispose();
-			this.listener = listener;
-		}
-	}
-
-	@Override public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
-		// calculate delta time
-		deltaTime = (System.nanoTime() - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = System.nanoTime();
-		mean.addValue(deltaTime);
-
-		// this is a hack so the events get processed synchronously.
-		if (input != null) input.update();
-
-		synchronized (this) {
-			if (listener != null) listener.render();
-		}
-
-		if (dispose) {
-			if (listener != null) listener.dispose();
-			listener = null;
-			dispose = false;
-		}
-
-		if (System.nanoTime() - frameStart > 1000000000) {
-			fps = frames;
-			frames = 0;
-			frameStart = System.nanoTime();
-		}
-		frames++;
-	}
-
-	/**
 	 * This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
 	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
 	 * Motorola CLIQ and the Samsung Behold II.
@@ -342,9 +237,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
 		this.width = width;
-		this.height = height;
-
-		if (listener != null) listener.surfaceChanged(width, height);
+		this.height = height;		
 	}
 
 	@Override public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
@@ -357,30 +250,99 @@ final class AndroidGraphics implements Graphics, Renderer {
 
 		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
-		this.height = display.getHeight();
-
-		if (listener != null) listener.surfaceCreated();
+		this.height = display.getHeight();		
 		mean = new WindowedMean(5);
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
+		
+		if( created == false ) {
+			app.listener.create();
+			created = true;
+			synchronized(this) {
+				running = true;
+			}
+		}
 	}
+	
+	Object synch = new Object();	
+	void resume () {
+		synchronized(synch) {
+			running = false;
+			resume = true;
+		}
+	}
+	
+	void pause () {
+		synchronized(synch) {
+			running = false;	
+			pause = true;
+		}
+		boolean cond = false;
+		while(!cond) {
+			synchronized(synch) {
+				cond = !pause;
+			}
+		}
+	}
+	
+	void destroy () {
+		synchronized(synch) {
+			running = false;
+			destroy = true;
+		}
+		boolean cond = false;
+		while(!cond) {
+			synchronized(synch) {
+				cond = !destroy;
+			}
+		}
+	}
+	
+	@Override public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
+		deltaTime = (System.nanoTime() - lastFrameTime) / 1000000000.0f;
+		lastFrameTime = System.nanoTime();
+		mean.addValue(deltaTime);			
+
+		synchronized(synch) {
+			if(running) {
+				app.listener.render();
+			}
+				
+			if(pause) {
+				app.listener.pause();
+				pause = false;		
+			}
+			
+			if(resume) {
+				app.listener.resume();
+				resume = false;
+				running = true;
+			}
+			
+			if(destroy) {			
+				app.listener.destroy();
+				destroy = false;
+			}
+		}
+		
+		Gdx.input.processEvents(null);
+		
+		if (System.nanoTime() - frameStart > 1000000000) {
+			fps = frames;
+			frames = 0;
+			frameStart = System.nanoTime();
+		}
+		frames++;
+	}
+	
+	
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override public float getDeltaTime () {
 		return mean.getMean() == 0 ? deltaTime : mean.getMean();
-	}
-
-	public void disposeRenderListener () {
-		dispose = true;
-		while (dispose) {
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-			}
-		}
 	}
 
 	/**
@@ -429,11 +391,8 @@ final class AndroidGraphics implements Graphics, Renderer {
 		ShaderProgram.clearAllShaderPrograms();
 		FrameBuffer.clearAllFrameBuffers();		
 	}
-
-	/**
-	 * @return the GLSurfaceView
-	 */
-	public View getView () {
+	
+	View getView () {
 		return view;
 	}
 
@@ -443,5 +402,4 @@ final class AndroidGraphics implements Graphics, Renderer {
 	@Override public GLCommon getGLCommon () {
 		return gl;
 	}
-
 }

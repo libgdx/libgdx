@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -28,7 +27,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class TextureRenderTest implements GdxTest {
+public class TextureRenderTest extends GdxTest {
 
 	private OrthographicCamera camera;
 	private Mesh mesh;
@@ -37,7 +36,7 @@ public class TextureRenderTest implements GdxTest {
 	private ArrayList<SimpleRect> rects = new ArrayList<SimpleRect>();
 	Color color = new Color(Color.GREEN);
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		camera = new OrthographicCamera();
 		camera.setViewport(480, 320);
 		camera.getPosition().set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
@@ -105,10 +104,6 @@ public class TextureRenderTest implements GdxTest {
 
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
 	@Override public void render () {
 
 		GL10 gl = Gdx.graphics.getGL10();
@@ -146,9 +141,6 @@ public class TextureRenderTest implements GdxTest {
 
 	}
 
-	@Override public void dispose () {
-
-	}
 
 	private ArrayList<SimpleRect> createRects () {
 		ArrayList<SimpleRect> l = new ArrayList<SimpleRect>();

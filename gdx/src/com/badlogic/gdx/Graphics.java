@@ -65,7 +65,7 @@ public interface Graphics {
 	}
 
 	/**
-	 * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link getGL11()} to access
+	 * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to access
 	 * OpenGL ES 1.1 functionality.
 	 * 
 	 * @return whether OpenGL ES 1.1 is available
@@ -73,14 +73,11 @@ public interface Graphics {
 	public boolean isGL11Available ();
 
 	/**
-	 * Returns whether OpenGL ES 2.0 is available. If it is you can get an instance of {@link GL20} via {@link getGL20()} to access
+	 * Returns whether OpenGL ES 2.0 is available. If it is you can get an instance of {@link GL20} via {@link #getGL20()} to access
 	 * OpenGL ES 2.0 functionality. Note that this functionality will only be available if you instructed the Application instance
 	 * to use OpenGL ES 2.0!
 	 * 
 	 * @return whether OpenGL ES 2.0 is available
-	 * 
-	 * @see DesktopApplication
-	 * @see AndroidApplication
 	 */
 	public boolean isGL20Available ();
 
@@ -130,16 +127,6 @@ public interface Graphics {
 	public int getFramesPerSecond ();
 
 	/**
-	 * Sets the {@link RenderListener}. The <code>RenderListener</code> will be called once the OpenGL surface has been setup to
-	 * give it an opportunity to create all its graphic resources like textures and meshes. After the setup is complete the
-	 * RenderListener will be called continuously to render new frames. When the {@link Application} is closing the RenderListener
-	 * will be called one last time to clean up.
-	 * 
-	 * @param listener the RenderListener
-	 */
-	public void setRenderListener (RenderListener listener);
-
-	/**
 	 * Creates a new {@link Pixmap} with the specified dimensions and format.
 	 * 
 	 * @param width the width in pixels
@@ -181,7 +168,7 @@ public interface Graphics {
 
 	/**
 	 * Creates a new {@link Texture} with the specified dimensions, minification and magnification filters and texture wraps in u
-	 * and v. The Texture has to be disposed via the {@link Texture.dispose()} methods once it is no longer used. The width and
+	 * and v. The Texture has to be disposed via the {@link Texture#dispose()} methods once it is no longer used. The width and
 	 * height of the texture have to be a power of two! Textures created via this method can not be managed and have to be
 	 * recreated manually when the OpenGL context is lost.
 	 * 
@@ -200,8 +187,8 @@ public interface Graphics {
 
 	/**
 	 * Creates a new {@link Texture} from the given {@link Pixmap} using the specified minification and magnification filter and
-	 * texture wraps in u and v. If the minification filter is specified as {@link Texture.TextureFilter.MipMap} mip maps will be
-	 * created automatically. The Texture has to be disposed via the {@link Texture.dispose()} methods once it is no longer used.
+	 * texture wraps in u and v. If the minification filter is specified as {@link Texture.TextureFilter#MipMap} mip maps will be
+	 * created automatically. The Texture has to be disposed via the {@link Texture#dispose()} methods once it is no longer used.
 	 * The Pixmap's width and height have to be a power of 2! Textures created via this method can not be managed and have to be
 	 * recreated manually when the OpenGL context is lost.
 	 * 
@@ -218,8 +205,8 @@ public interface Graphics {
 
 	/**
 	 * Creates a new {@link Texture} from the given {@link FileHandle} using the specified minification and magnification filter
-	 * and texture wraps in u and v. If the minification filter is specified as {@link Texture.TextureFilter.MipMap} mip maps will
-	 * be created automatically. The Texture has to be disposed via the {@link Texture.dispose()} methods once it is no longer
+	 * and texture wraps in u and v. If the minification filter is specified as {@link Texture.TextureFilter#MipMap} mip maps will
+	 * be created automatically. The Texture has to be disposed via the {@link Texture#dispose()} methods once it is no longer
 	 * used. The FileHandle must point to a valid Jpg, Bmp or Png file. The Pixmap's width and height have to be a power of 2!
 	 * Textures created via this method are managed and will be recreated automatically after the OpenGL context has been lost and
 	 * recreated.

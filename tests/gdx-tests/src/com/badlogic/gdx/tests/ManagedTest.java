@@ -13,32 +13,29 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ManagedTest implements GdxTest {
+public class ManagedTest extends GdxTest {
 	Mesh mesh;
 	Texture texture;
 
-	@Override public void surfaceCreated () {
-		if (mesh == null) {
-			mesh = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
-				Usage.TextureCoordinates, 2, "a_texCoord"));
-			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 0.5f, -0.5f, 1, 0, 0.5f, 0.5f, 1, 1, -0.5f, 0.5f, 0, 1});
-			mesh.setIndices(new short[] {0, 1, 2, 3});
+	@Override public void create () {
+		mesh = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
+			Usage.TextureCoordinates, 2, "a_texCoord"));
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 0.5f, -0.5f, 1, 0, 0.5f, 0.5f, 1, 1, -0.5f, 0.5f, 0, 1});
+		mesh.setIndices(new short[] {0, 1, 2, 3});
 
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		}
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
 	@Override public void render () {
@@ -52,16 +49,7 @@ public class ManagedTest implements GdxTest {
 		mesh.render(GL10.GL_TRIANGLE_FAN);
 	}
 
-	@Override public void dispose () {
-
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
+	@Override public boolean needsGL20 () {	
 		return false;
 	}
 

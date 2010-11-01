@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * <p>
@@ -177,6 +178,9 @@ public class IndexBufferObject {
 	 * Binds this IndexBufferObject for rendering with glDrawElements.
 	 */
 	public void bind() {
+		if( bufferHandle == 0 )
+			throw new GdxRuntimeException("buuh");
+		
 		if (Gdx.gl11 != null) {
 			GL11 gl = Gdx.gl11;
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);

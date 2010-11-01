@@ -13,19 +13,19 @@
 
 package com.badlogic.gdx.tests.box2d;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
@@ -35,7 +35,7 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
  * @author badlogicgames@gmail.com
  * 
  */
-public abstract class Box2DTest implements RenderListener, InputListener {
+public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	/** the camera **/
 	protected OrthographicCamera camera;
 
@@ -69,15 +69,10 @@ public abstract class Box2DTest implements RenderListener, InputListener {
 		camera.setMatrices();
 
 		// render the world using the debug renderer
-		renderer.render(world);
+		renderer.render(world);			
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		// setup the camera. In Box2D we operate on a
 		// meter scale, pixels won't do it. So we use
 		// an orthographic camera with a viewport of
@@ -100,17 +95,11 @@ public abstract class Box2DTest implements RenderListener, InputListener {
 		BodyDef bodyDef = new BodyDef();
 		groundBody = world.createBody(bodyDef);
 
-		// finally we register ourself as an InputListener so we
-		// can manipulate our world
-		Gdx.input.addInputListener(this);
-
 		// call abstract method to populate the world
 		createWorld(world);
 	}
 
-	@Override public void dispose () {
-		Gdx.input.removeInputListener(this);
-
+	@Override public void destroy () {		
 		renderer.dispose();
 		world.dispose();
 
@@ -200,5 +189,13 @@ public abstract class Box2DTest implements RenderListener, InputListener {
 			mouseJoint = null;
 		}
 		return false;
+	}
+	
+	public void pause() {
+		
+	}
+	
+	public void resume() {
+		
 	}
 }

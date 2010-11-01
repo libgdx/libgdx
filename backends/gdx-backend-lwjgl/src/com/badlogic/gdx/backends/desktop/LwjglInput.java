@@ -23,7 +23,7 @@ import org.lwjgl.input.Mouse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.RenderListener;
 
 /**
@@ -35,9 +35,9 @@ import com.badlogic.gdx.RenderListener;
 final class LwjglInput implements Input, RenderListener {
 	String text;
 	TextInputListener textListener;
-	@SuppressWarnings("unchecked") private final ArrayList<InputListener> listeners = new ArrayList();
+	@SuppressWarnings("unchecked") private final ArrayList<InputProcessor> listeners = new ArrayList();
 
-	public void addInputListener (InputListener listener) {
+	public void addInputListener (InputProcessor listener) {
 		listeners.add(listener);
 	}
 
@@ -84,7 +84,7 @@ final class LwjglInput implements Input, RenderListener {
 		return button;
 	}
 
-	public void removeInputListener (InputListener listener) {
+	public void removeInputListener (InputProcessor listener) {
 		listeners.remove(listener);
 	}
 
@@ -99,12 +99,12 @@ final class LwjglInput implements Input, RenderListener {
 		}
 	}
 
-	public void surfaceCreated () {
+	public void created () {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void surfaceChanged (int width, int height) {
+	public void resized (int width, int height) {
 		// TODO Auto-generated method stub
 
 	}

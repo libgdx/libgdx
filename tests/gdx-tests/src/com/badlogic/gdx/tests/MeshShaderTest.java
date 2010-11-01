@@ -29,55 +29,68 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MeshShaderTest implements GdxTest {
+public class MeshShaderTest extends GdxTest {
 	SpriteBatch spriteBatch;
-//	Font font;
+	// Font font;
 	ShaderProgram shader;
 	Mesh mesh;
 	Texture texture;
 	Matrix4 matrix = new Matrix4();
 
-	@Override public void surfaceCreated () {
-		if (shader == null) {
-			String vertexShader = "attribute vec4 a_position;    \n" + "attribute vec4 a_color;\n" + "attribute vec2 a_texCoords;\n"
-				+ "uniform mat4 u_worldView;\n" + "varying vec4 v_color;" + "varying vec2 v_texCoords;"
-				+ "void main()                  \n" + "{                            \n"
-				+ "   v_color = vec4(a_color.x, a_color.y, a_color.z, 1); \n" + "   v_texCoords = a_texCoords; \n"
-				+ "   gl_Position =  u_worldView * a_position;  \n" + "}                            \n";
-			String fragmentShader = "precision mediump float;\n" + "varying vec4 v_color;\n" + "varying vec2 v_texCoords;\n"
-				+ "uniform sampler2D u_texture;\n" + "void main()                                  \n"
+	@Override
+	public void create() {
+		String vertexShader = "attribute vec4 a_position;    \n"
+				+ "attribute vec4 a_color;\n" + "attribute vec2 a_texCoords;\n"
+				+ "uniform mat4 u_worldView;\n" + "varying vec4 v_color;"
+				+ "varying vec2 v_texCoords;"
+				+ "void main()                  \n"
+				+ "{                            \n"
+				+ "   v_color = vec4(a_color.x, a_color.y, a_color.z, 1); \n"
+				+ "   v_texCoords = a_texCoords; \n"
+				+ "   gl_Position =  u_worldView * a_position;  \n"
+				+ "}                            \n";
+		String fragmentShader = "precision mediump float;\n"
+				+ "varying vec4 v_color;\n"
+				+ "varying vec2 v_texCoords;\n"
+				+ "uniform sampler2D u_texture;\n"
+				+ "void main()                                  \n"
 				+ "{                                            \n"
-				+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" + "}";
+				+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n"
+				+ "}";
 
-			shader = new ShaderProgram(vertexShader, fragmentShader);
-			if (shader.isCompiled() == false) {
-				Gdx.app.log("ShaderTest", shader.getLog());
-				System.exit(0);
-			}
-
-			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
-				Usage.Color, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
-
-			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0, 0.5f, -0.5f, 0, 0, 1, 0, 1, 1, 0, 0, 0.5f, 0, 0, 0, 1,
-				1, 0.5f, 1});
-			mesh.setIndices(new short[] {0, 1, 2});
-
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-
-			spriteBatch = new SpriteBatch();
-//			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+		shader = new ShaderProgram(vertexShader, fragmentShader);
+		if (shader.isCompiled() == false) {
+			Gdx.app.log("ShaderTest", shader.getLog());
+			System.exit(0);
 		}
+
+		mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3,
+				"a_position"), new VertexAttribute(Usage.Color, 4, "a_color"),
+				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+
+		mesh.setVertices(new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0, 0.5f,
+				-0.5f, 0, 0, 1, 0, 1, 1, 0, 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 });
+		mesh.setIndices(new short[] { 0, 1, 2 });
+
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
+				"data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+				TextureFilter.Linear, TextureWrap.ClampToEdge,
+				TextureWrap.ClampToEdge);
+
+		spriteBatch = new SpriteBatch();
+		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 	}
 
 	Vector3 axis = new Vector3(0, 0, 1);
 	float angle = 0;
 
-	@Override public void render () {
+	@Override
+	public void render() {
 		angle += Gdx.graphics.getDeltaTime() * 45;
 		matrix.setToRotation(axis, angle);
 
-		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
 		Gdx.graphics.getGL20().glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
@@ -89,20 +102,12 @@ public class MeshShaderTest implements GdxTest {
 		shader.end();
 
 		spriteBatch.begin();
-//		spriteBatch.drawText(font, "This is a test", 100, 100, Color.RED);
+		// spriteBatch.drawText(font, "This is a test", 100, 100, Color.RED);
 		spriteBatch.end();
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public void dispose () {
-		Gdx.app.log("MeshShaderTEst", "disposed");
-	}
-
-	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
+	@Override
+	public boolean needsGL20() {	
 		return true;
 	}
 

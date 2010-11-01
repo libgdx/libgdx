@@ -7,7 +7,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.BitmapFontCache;
@@ -22,16 +22,17 @@ import com.badlogic.gdx.graphics.particles.ParticleEmitter;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ParticleEmitterTest implements GdxTest {
+public class ParticleEmitterTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	ParticleEffect effect;
 	int emitterIndex;
 	ArrayList<ParticleEmitter> emitters;
 	int particleCount = 10;
 	float fpsCounter;
+	InputProcessor inputProcessor;
 
-	public void surfaceCreated () {
-		if (spriteBatch != null) return;
+	@Override
+	public void create () {
 		spriteBatch = new SpriteBatch();
 
 		effect = new ParticleEffect();
@@ -42,7 +43,7 @@ public class ParticleEmitterTest implements GdxTest {
 		effect.getEmitters().clear();
 		effect.getEmitters().add(emitters.get(0));
 
-		Gdx.input.addInputListener(new InputListener() {
+		inputProcessor = new InputProcessor() {
 			public boolean touchUp (int x, int y, int pointer) {
 				return false;
 			}
@@ -84,14 +85,11 @@ public class ParticleEmitterTest implements GdxTest {
 				effect.getEmitters().add(emitter);
 				return false;
 			}
-		});
-	}
-
-	public void surfaceChanged (int width, int height) {
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		};
 	}
 
 	public void render () {
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		float delta = Gdx.graphics.getDeltaTime();
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -104,9 +102,8 @@ public class ParticleEmitterTest implements GdxTest {
 			int activeCount = emitters.get(emitterIndex).getActiveCount();
 			System.out.println(activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
 		}
-	}
-
-	public void dispose () {
+		
+		Gdx.input.processEvents(inputProcessor);
 	}
 
 	public boolean needsGL20 () {

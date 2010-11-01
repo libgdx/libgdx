@@ -14,28 +14,13 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class InputTest implements GdxTest, InputListener {
-	@Override public void dispose () {
-		// TODO Auto-generated method stub
-
-	}
+public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override public void render () {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceCreated () {
-		Gdx.input.addInputListener(this);
+		Gdx.input.processEvents(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {
@@ -69,7 +54,6 @@ public class InputTest implements GdxTest, InputListener {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

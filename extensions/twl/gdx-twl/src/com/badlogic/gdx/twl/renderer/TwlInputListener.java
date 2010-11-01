@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.twl.renderer;
 
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.RenderListener;
 
 import de.matthiasmann.twl.GUI;
@@ -9,7 +9,7 @@ import de.matthiasmann.twl.GUI;
 /**
  * @author Nathan Sweet <misc@n4te.com>
  */
-public class TwlInputListener implements InputListener {
+public class TwlInputListener implements InputProcessor {
 	private final GUI gui;
 
 	public TwlInputListener (GUI gui) {

@@ -3,6 +3,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.BitmapFontCache;
@@ -15,7 +16,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class BitmapFontTest implements GdxTest {
+public class BitmapFontTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private Sprite logoSprite;
@@ -23,8 +24,10 @@ public class BitmapFontTest implements GdxTest {
 	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
 	int renderMode;
 	private float alpha;
+	InputProcessor inputProcessor;
 
-	public void surfaceCreated () {
+	@Override
+	public void create () {
 		if (spriteBatch != null) return;
 		spriteBatch = new SpriteBatch();
 
@@ -35,12 +38,12 @@ public class BitmapFontTest implements GdxTest {
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
 			"data/verdana39.png", FileType.Internal), false);
 
-		Gdx.input.addInputListener(new InputAdapter() {
+		inputProcessor = new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer) {
 				renderMode = (renderMode + 1) % 2;
 				return false;
 			}
-		});
+		};
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);
@@ -63,9 +66,7 @@ public class BitmapFontTest implements GdxTest {
 		cache5.setWrappedText(text, 0, 270, red, 480, HAlignment.CENTER);
 	}
 
-	public void surfaceChanged (int width, int height) {
-	}
-
+	@Override
 	public void render () {
 		alpha = (alpha + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
@@ -82,6 +83,8 @@ public class BitmapFontTest implements GdxTest {
 			break;
 		}
 		spriteBatch.end();
+		
+		Gdx.input.processEvents(inputProcessor);
 	}
 
 	private void renderNormal () {
@@ -115,9 +118,6 @@ public class BitmapFontTest implements GdxTest {
 		cache2.draw(spriteBatch);
 		cache3.draw(spriteBatch);
 		cache4.draw(spriteBatch);
-	}
-
-	public void dispose () {
 	}
 
 	public boolean needsGL20 () {

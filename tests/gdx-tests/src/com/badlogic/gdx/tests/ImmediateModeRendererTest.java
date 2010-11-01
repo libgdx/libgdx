@@ -13,9 +13,8 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.Texture;
@@ -23,11 +22,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ImmediateModeRendererTest implements GdxTest {
+public class ImmediateModeRendererTest extends GdxTest {
 	ImmediateModeRenderer renderer;
 	Texture texture;
 
-	@Override public void dispose () {
+	@Override public void destroy () {
 		texture.dispose();
 	}
 
@@ -48,19 +47,13 @@ public class ImmediateModeRendererTest implements GdxTest {
 		renderer.end();
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		renderer = new ImmediateModeRenderer();
-
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

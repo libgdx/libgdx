@@ -16,7 +16,6 @@ public class GdxTestActivity extends AndroidApplication {
 		String testName = (String)extras.get("test");
 		
 		GdxTest test = GdxTests.newTest(testName);
-		initialize(test.needsGL20());
-		getGraphics().setRenderListener(test);
+		initialize(test, test.needsGL20());		
 	}
 }

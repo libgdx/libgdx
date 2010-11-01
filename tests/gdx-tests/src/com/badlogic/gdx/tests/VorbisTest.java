@@ -15,31 +15,15 @@ package com.badlogic.gdx.tests;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.io.VorbisDecoder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class VorbisTest implements GdxTest {
+public class VorbisTest extends GdxTest {
 
-	@Override public void dispose () {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void render () {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		VorbisDecoder decoder = null;
 		if (Gdx.app.getType() == ApplicationType.Android)
 			decoder = new VorbisDecoder("/sdcard/audio/schism.ogg");

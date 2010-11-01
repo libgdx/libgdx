@@ -166,7 +166,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 		this.width = width;
 		this.height = height;
 		for (RenderListener listener : listeners)
-			listener.surfaceChanged(getWidth(), getHeight());
+			listener.resized(getWidth(), getHeight());
 	}
 
 	void start () throws LWJGLException {
@@ -175,7 +175,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 		setupDisplay();
 
 		for (RenderListener listener : listeners)
-			listener.surfaceCreated();
+			listener.created();
 		setSize(width, height);
 		graphics.lastTime = System.nanoTime();
 		for (RenderListener listener : listeners)

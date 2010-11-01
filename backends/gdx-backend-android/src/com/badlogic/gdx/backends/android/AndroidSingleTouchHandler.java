@@ -15,8 +15,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.view.MotionEvent;
 
-import com.badlogic.gdx.backends.android.AndroidInput.Event;
-import com.badlogic.gdx.backends.android.AndroidInput.EventType;
+import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
 
 /**
  * Single touch handler for devices running <= 1.6
@@ -31,30 +30,33 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 		input.touchX[0] = x;
 		input.touchY[0] = y;
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			postTouchEvent(input, EventType.MouseDown, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, 0);
 			input.touched[0] = true;
 		}
 
 		if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			postTouchEvent(input, EventType.MouseDragged, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, 0);
 			input.touched[0] = true;
 		}
 		if (event.getAction() == MotionEvent.ACTION_UP) {
-			postTouchEvent(input, EventType.MouseUp, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0);
 			input.touched[0] = false;
 		}
 
 		if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-			postTouchEvent(input, EventType.MouseUp, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0);
 			input.touched[0] = false;
 		}
 	}
 
-	private void postTouchEvent (AndroidInput input, EventType type, int x, int y, int pointer) {
-		synchronized (input.eventQueue) {
-			Event ev = input.freeEvents.get(input.freeEventIndex++);
-			ev.set(type, x, y, pointer, 0, '\0');
-			input.eventQueue.add(ev);
-		}
+	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {		
+		synchronized (input) {
+			TouchEvent event = input.freeTouchEvents.newObject();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = type;			
+			input.touchEvents.add(event);					
+		}		
 	}
 }

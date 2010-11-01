@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class VertexBufferObjectShaderTest implements GdxTest {
+public class VertexBufferObjectShaderTest extends GdxTest {
 	Texture texture;
 	ShaderProgram shader;
 	VertexBufferObject vbo;
@@ -28,7 +28,7 @@ public class VertexBufferObjectShaderTest implements GdxTest {
 	}
 
 	@Override
-	public void dispose() {
+	public void destroy() {
 		texture.dispose();
 		vbo.dispose();
 		shader.dispose();
@@ -51,13 +51,7 @@ public class VertexBufferObjectShaderTest implements GdxTest {
 	}
 
 	@Override
-	public void surfaceChanged(int width, int height) {
-
-	}
-
-	@Override
-	public void surfaceCreated() {
-		if (texture == null) {
+	public void create() {
 			String vertexShader = "attribute vec4 a_position;    \n"
 					+ "attribute vec4 a_color;\n"
 					+ "attribute vec2 a_texCoords;\n"					
@@ -94,9 +88,12 @@ public class VertexBufferObjectShaderTest implements GdxTest {
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
 					"data/badlogic.jpg", FileType.Internal),
 					TextureFilter.Linear, TextureFilter.Linear,
-					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		} else
-			vbo.invalidate();
+					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);					
+	}
+	
+	@Override
+	public void resume() {
+		vbo.invalidate();
 	}
 
 }

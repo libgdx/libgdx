@@ -20,20 +20,8 @@ package com.badlogic.gdx;
  * </p>
  * 
  * <p>
- * Additionally one can register an {@link InputListener} with this module. The InputListener will then be called each time a key
- * is pressed or released or a touch event occures.
- * </p>
- * 
- * <p>
- * The InputListener will be called in the rendering thread of the graphics module to which a RenderListener is probably attached.
- * This means that one does not have to take precautions to guarantee thread safety. One can safely call graphics methods from
- * within the InputListener callbacks.
- * </p>
- * 
- * <p>
- * One or more InputListeners can be registered with the module. The events will then get passed to the InputListeners in the
- * order they have been registered with the module. If an InputListeners signals that it consumed the event the InputListeners
- * down the chain will not be invoked.
+ * Additionally one can process events with an {@link InputProcessor} with this module. Just pass in the InputListener to the
+ * {@link #processEvents(InputProcessor)} method in any thread you want.
  * </p>
  * 
  * <p>
@@ -165,21 +153,6 @@ public interface Input {
 	}
 
 	/**
-	 * Adds an {@link InputListener}. The order InputListeners are added is the same as the order in which they are called in case
-	 * of an event. If an input listener signals that it processed the event the event is not passed to the other listeners in the
-	 * chain.
-	 * 
-	 * @param listener the listener
-	 */
-	public void addInputListener (InputListener listener);
-
-	/**
-	 * Removes the {@link InputListener}.
-	 * @param listener the listener
-	 */
-	public void removeInputListener (InputListener listener);
-
-	/**
 	 * @return whether an accelerometer is available
 	 */
 	public boolean isAccelerometerAvailable ();
@@ -285,4 +258,13 @@ public interface Input {
 	 * @param catchBack whether to catch the back button
 	 */
 	public void setCatchBackKey( boolean catchBack );
+	
+	/**
+	 * Passes all events that happened since the last invocation of this
+	 * method to the provided InputListener. Make sure you call this method
+	 * each frame otherwise events will accumulate! 
+	 * 
+	 * @param listener the {@link InputProcessor} or null if you want to just discard of all events.
+	 */
+	public void processEvents(InputProcessor listener);
 }

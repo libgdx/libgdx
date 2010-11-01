@@ -12,12 +12,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.graphics.Color;
 
-public class WindowedTest extends AndroidApplication implements RenderListener {
+public class WindowedTest extends AndroidApplication implements ApplicationListener {
 	Color color = new Color(1, 1, 1, 1);
 
 	public void onCreate (Bundle bundle) {
@@ -29,15 +29,14 @@ public class WindowedTest extends AndroidApplication implements RenderListener {
 		Button b2 = new Button(this);
 		b2.setText("New Window");
 		b2.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-		View view = initializeForView(false, 16);
+		View view = initializeForView(this, false, 16);
 
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		layout.addView(b1);
 		layout.addView(b2);
 		layout.addView(view, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-
-		getGraphics().setRenderListener(this);
+		
 		setContentView(layout);
 
 		b1.setOnClickListener(new OnClickListener() {
@@ -66,15 +65,11 @@ public class WindowedTest extends AndroidApplication implements RenderListener {
 		Log.w("WindowedTest", "destroying");
 	}
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override public void render () {
 		Gdx.graphics.getGL10().glClearColor(color.r, color.g, color.g, color.a);
@@ -82,8 +77,20 @@ public class WindowedTest extends AndroidApplication implements RenderListener {
 
 	}
 
-	@Override public void dispose () {
+	@Override public void destroy () {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 }

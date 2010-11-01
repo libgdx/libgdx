@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class IndexBufferObjectClassTest implements GdxTest {
+public class IndexBufferObjectClassTest extends GdxTest {
 	Texture texture;
 	VertexBufferObject vbo;
 	IndexBufferObject ibo;	
@@ -26,7 +26,7 @@ public class IndexBufferObjectClassTest implements GdxTest {
 	}
 
 	@Override
-	public void dispose() {
+	public void destroy() {
 		texture.dispose();
 		vbo.dispose();
 		ibo.dispose();
@@ -48,13 +48,7 @@ public class IndexBufferObjectClassTest implements GdxTest {
 	}
 
 	@Override
-	public void surfaceChanged(int width, int height) {
-		
-	}
-
-	@Override
-	public void surfaceCreated() {
-		if( texture == null ) {
+	public void create() {		
 			vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
 									new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"),
 									new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_Color" ));
@@ -68,9 +62,12 @@ public class IndexBufferObjectClassTest implements GdxTest {
 					 
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
 											  TextureFilter.Linear, TextureFilter.Linear, 
-											  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		}
-		else
-			vbo.invalidate(); 
+											  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);					
+	}
+	
+	@Override
+	public void resume() {
+		vbo.invalidate(); 
+		ibo.invalidate();
 	}
 }

@@ -13,10 +13,9 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
@@ -26,7 +25,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class ObjTest implements GdxTest, InputListener {
+public class ObjTest extends GdxTest implements InputProcessor {
 	PerspectiveCamera cam;
 	Mesh mesh;
 	Texture texture;
@@ -35,28 +34,16 @@ public class ObjTest implements GdxTest, InputListener {
 	float[] lightColor = {1, 1, 1, 0};
 	float[] lightPosition = {2, 5, 10, 0};
 	float touchStartX = 0;
-	float touchStartY = 0;
+	float touchStartY = 0;	
 
-	long frameStart;
-	int frames = 0;
+	@Override public void create () {
+		mesh = ModelLoader.loadObj(Gdx.files.readFile("data/cube.obj", FileType.Internal));
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-	@Override public void surfaceCreated () {
-		if (mesh == null) {
-			Gdx.input.addInputListener(this);
-
-			mesh = ModelLoader.loadObj(Gdx.files.readFile("data/cube.obj", FileType.Internal));
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-
-			cam = new PerspectiveCamera();
-			cam.getPosition().set(2, 2, 2);
-			cam.getDirection().set(-1, -1, -1);
-		}
-		frameStart = System.nanoTime();
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-
+		cam = new PerspectiveCamera();
+		cam.getPosition().set(2, 2, 2);
+		cam.getDirection().set(-1, -1, -1);		
 	}
 
 	@Override public void render () {
@@ -79,18 +66,8 @@ public class ObjTest implements GdxTest, InputListener {
 		gl.glRotatef(angleX, 1, 0, 0);
 		texture.bind();
 		mesh.render(GL10.GL_TRIANGLES);
-
-		if (System.nanoTime() - frameStart > 1000000000) {
-			Gdx.app.log("Obj Test", "fps: " + frames);
-			frames = 0;
-			frameStart = System.nanoTime();
-		}
-
-		frames++;
-	}
-
-	@Override public void dispose () {
-
+		
+		Gdx.input.processEvents(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {

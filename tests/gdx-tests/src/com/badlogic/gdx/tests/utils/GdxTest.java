@@ -1,9 +1,13 @@
 package com.badlogic.gdx.tests.utils;
 
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.ApplicationListener;
 
-public interface GdxTest extends RenderListener
+public abstract class GdxTest implements ApplicationListener
 {
-	public boolean needsGL20( );	
+	public abstract boolean needsGL20( );	
+	public void create( ) { };
+	public void resume( ) { };
+	public void render( ) { };
+	public void pause( ) { };
+	public void destroy( ) { };
 }

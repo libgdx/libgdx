@@ -17,18 +17,13 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class VertexBufferObjectTest implements GdxTest {
+public class VertexBufferObjectTest extends GdxTest {
 	int vboHandle;
 	int vboIndexHandle;
-
-	@Override public void dispose () {
-
-	}
 
 	@Override public void render () {
 		GL11 gl = Gdx.graphics.getGL11();
@@ -48,7 +43,7 @@ public class VertexBufferObjectTest implements GdxTest {
 		gl.glDrawElements(GL11.GL_TRIANGLES, 3, GL11.GL_UNSIGNED_SHORT, 0);
 	}
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 
 		FloatBuffer vertices = BufferUtils.newFloatBuffer(3 * 7);
 		vertices.put(new float[] {-0.5f, -0.5f, 0, 1, 0, 0, 1, 0.5f, -0.5f, 0, 0, 1, 0, 1, 0.0f, 0.5f, 0, 0, 0, 1, 1});
@@ -71,10 +66,28 @@ public class VertexBufferObjectTest implements GdxTest {
 		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, 3 * 2, indices, GL11.GL_STATIC_DRAW);
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+	
+	public void resume() {
+		FloatBuffer vertices = BufferUtils.newFloatBuffer(3 * 7);
+		vertices.put(new float[] {-0.5f, -0.5f, 0, 1, 0, 0, 1, 0.5f, -0.5f, 0, 0, 1, 0, 1, 0.0f, 0.5f, 0, 0, 0, 1, 1});
+		vertices.flip();
 
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
+		GL11 gl = Gdx.graphics.getGL11();
+		int[] handle = new int[1];
+		gl.glGenBuffers(1, handle, 0);
+		vboHandle = handle[0];
+		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboHandle);
+		gl.glBufferData(GL11.GL_ARRAY_BUFFER, 3 * 7 * 4, vertices, GL11.GL_STATIC_DRAW);
+		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 
+		ShortBuffer indices = BufferUtils.newShortBuffer(3);
+		indices.put(new short[] {0, 1, 2});
+		indices.flip();
+		gl.glGenBuffers(1, handle, 0);
+		vboIndexHandle = handle[0];
+		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, vboIndexHandle);
+		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, 3 * 2, indices, GL11.GL_STATIC_DRAW);
+		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	@Override public boolean needsGL20 () {

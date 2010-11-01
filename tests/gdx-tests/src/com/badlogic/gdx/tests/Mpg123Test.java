@@ -16,31 +16,17 @@ package com.badlogic.gdx.tests;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.KissFFT;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class Mpg123Test implements GdxTest {
+public class Mpg123Test extends GdxTest {
 
-	@Override public void dispose () {
-		// TODO Auto-generated method stub
 
-	}
-
-	@Override public void render () {
-
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 // Thread thread = new Thread( new Runnable() {
 //
 // public void run( )
@@ -75,7 +61,6 @@ public class Mpg123Test implements GdxTest {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

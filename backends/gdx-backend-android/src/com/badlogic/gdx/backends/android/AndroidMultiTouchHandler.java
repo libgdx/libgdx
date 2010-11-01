@@ -15,8 +15,7 @@ package com.badlogic.gdx.backends.android;
 
 import android.view.MotionEvent;
 
-import com.badlogic.gdx.backends.android.AndroidInput.Event;
-import com.badlogic.gdx.backends.android.AndroidInput.EventType;
+import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
 
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
@@ -38,7 +37,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		case MotionEvent.ACTION_POINTER_DOWN:
 			x = (int)event.getX(pointerIndex);
 			y = (int)event.getY(pointerIndex);
-			postTouchEvent(input, EventType.MouseDown, x, y, pointerId);
+			postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, pointerId);
 			input.touchX[pointerId] = x;
 			input.touchY[pointerId] = y;
 			input.touched[pointerId] = true;
@@ -50,7 +49,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		case MotionEvent.ACTION_CANCEL:
 			x = (int)event.getX(pointerIndex);
 			y = (int)event.getY(pointerIndex);
-			postTouchEvent(input, EventType.MouseUp, x, y, pointerId);
+			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, pointerId);
 			input.touchX[pointerId] = x;
 			input.touchY[pointerId] = y;
 			input.touched[pointerId] = false;
@@ -63,7 +62,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				pointerId = event.getPointerId(pointerIndex);
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				postTouchEvent(input, EventType.MouseDragged, x, y, pointerId);
+				postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, pointerId);
 				input.touchX[pointerId] = x;
 				input.touchY[pointerId] = y;
 			}
@@ -71,11 +70,14 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		}
 	}
 
-	private void postTouchEvent (AndroidInput input, EventType type, int x, int y, int pointer) {
-		synchronized (input.eventQueue) {
-			Event ev = input.freeEvents.get(input.freeEventIndex++);
-			ev.set(type, x, y, pointer, 0, '\0');
-			input.eventQueue.add(ev);
+	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
+		synchronized (input) {
+			TouchEvent event = input.freeTouchEvents.newObject();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = type;			
+			input.touchEvents.add(event);					
 		}
 	}
 

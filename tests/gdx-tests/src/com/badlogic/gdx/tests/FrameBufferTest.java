@@ -30,16 +30,12 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class FrameBufferTest implements GdxTest {
+public class FrameBufferTest extends GdxTest {
 	FrameBuffer frameBuffer;
 	Mesh mesh;
 	ShaderProgram meshShader;
 	Texture texture;
 	SpriteBatch spriteBatch;
-
-	@Override public void dispose () {
-
-	}
 
 	@Override public void render () {
 		frameBuffer.begin();
@@ -64,29 +60,23 @@ public class FrameBufferTest implements GdxTest {
 		spriteBatch.end();
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
+	@Override public void create () {	
+		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(
+			Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+		float c1 = Color.toFloatBits(255, 0, 0, 255);
+		float c2 = Color.toFloatBits(255, 0, 0, 255);
+		;
+		float c3 = Color.toFloatBits(0, 0, 255, 255);
+		;
 
-	}
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, c1, 0, 0, 0.5f, -0.5f, 0, c2, 1, 0, 0, 0.5f, 0, c3, 0.5f, 1});
 
-	@Override public void surfaceCreated () {
-		if (mesh == null) {
-			mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(
-				Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
-			float c1 = Color.toFloatBits(255, 0, 0, 255);
-			float c2 = Color.toFloatBits(255, 0, 0, 255);
-			;
-			float c3 = Color.toFloatBits(0, 0, 255, 255);
-			;
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, c1, 0, 0, 0.5f, -0.5f, 0, c2, 1, 0, 0, 0.5f, 0, c3, 0.5f, 1});
-
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-
-			spriteBatch = new SpriteBatch();
-			frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true);
-			createShader(Gdx.graphics);
-		}
+		spriteBatch = new SpriteBatch();
+		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true);
+		createShader(Gdx.graphics);		
 	}
 
 	private void createShader (Graphics graphics) {
@@ -106,7 +96,6 @@ public class FrameBufferTest implements GdxTest {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

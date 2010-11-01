@@ -158,7 +158,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		frames++;
 	}
 
-	public void surfaceCreated () {
+	public void created () {
 		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		int major = Integer.parseInt("" + version.charAt(0));
 		int minor = Integer.parseInt("" + version.charAt(2));
@@ -187,7 +187,7 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		return deltaTime;
 	}
 
-	public void surfaceChanged (int width, int height) {
+	public void resized (int width, int height) {
 	}
 
 	public GraphicsType getType () {

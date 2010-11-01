@@ -13,27 +13,21 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MeshTest implements GdxTest {
+public class MeshTest extends GdxTest {
 	Mesh mesh;
 	Texture texture;
-
-	@Override public void dispose () {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override public void render () {
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -42,28 +36,19 @@ public class MeshTest implements GdxTest {
 		mesh.render(GL10.GL_TRIANGLES, 0, 3);
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
+	@Override public void create () {
+		mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+			Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
-	}
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,
+			Color.toFloatBits(0, 255, 0, 255), 1, 0, 0, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 0.5f, 1});
+		mesh.setIndices(new short[] {0, 1, 2});
 
-	@Override public void surfaceCreated () {
-		if (mesh == null) {
-			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
-				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
-
-			mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,
-				Color.toFloatBits(0, 255, 0, 255), 1, 0, 0, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 0.5f, 1});
-			mesh.setIndices(new short[] {0, 1, 2});
-
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		}
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);		
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 }

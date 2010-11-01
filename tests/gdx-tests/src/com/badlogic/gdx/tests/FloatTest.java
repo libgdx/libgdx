@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class FloatTest implements GdxTest {
+public class FloatTest extends GdxTest {
 
 	Texture tex;
 	Texture tex2;
@@ -35,7 +35,7 @@ public class FloatTest implements GdxTest {
 	float angle = 0;
 	float angleIncrement = 0.1f;
 
-	@Override public void dispose () {
+	@Override public void destroy () {
 		tex.dispose();
 		tex2.dispose();
 	}
@@ -75,7 +75,7 @@ public class FloatTest implements GdxTest {
 		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 3);
 	}
 
-	@Override public void surfaceCreated () {
+	private void init() {
 		if (tex != null) {
 			tex.dispose();
 			tex2.dispose();
@@ -110,10 +110,13 @@ public class FloatTest implements GdxTest {
 		tex2 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 	}
-
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
+	
+	@Override public void create () {
+		init();
+	}
+	
+	@Override public void resume() {
+		init();
 	}
 
 	@Override public boolean needsGL20 () {

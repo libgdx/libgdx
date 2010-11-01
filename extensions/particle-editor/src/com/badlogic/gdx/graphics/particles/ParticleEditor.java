@@ -35,7 +35,7 @@ import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.backends.desktop.LwjglApplication;
 import com.badlogic.gdx.graphics.BitmapFont;
@@ -248,7 +248,7 @@ public class ParticleEditor extends JFrame {
 		splitPane.setDividerLocation(325);
 	}
 
-	class Renderer implements RenderListener, InputListener {
+	class Renderer implements RenderListener, InputProcessor {
 		private float maxActiveTimer;
 		private int maxActive, lastMaxActive;
 		private boolean mouseDown;
@@ -258,7 +258,7 @@ public class ParticleEditor extends JFrame {
 		private SpriteBatch spriteBatch;
 		private Sprite bgImage; // BOZO - Add setting background image to UI.
 
-		public void surfaceCreated () {
+		public void created () {
 			if (spriteBatch != null) return;
 			spriteBatch = new SpriteBatch();
 
@@ -270,7 +270,7 @@ public class ParticleEditor extends JFrame {
 			Gdx.input.addInputListener(this);
 		}
 
-		public void surfaceChanged (int width, int height) {
+		public void resized (int width, int height) {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
 

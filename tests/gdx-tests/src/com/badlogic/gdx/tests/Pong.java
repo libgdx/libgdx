@@ -14,7 +14,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -31,7 +30,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
  * @author mzechner
  * 
  */
-public class Pong implements GdxTest {
+public class Pong extends GdxTest {
 	/** the camera **/
 	private OrthographicCamera camera;
 	/** the MeshRenderer for the paddles **/
@@ -68,11 +67,9 @@ public class Pong implements GdxTest {
 	 * Here we setup all the resources. A {@link MeshRenderer} for the paddles which we use for both, a MeshRenderer for the ball
 	 * and a {@link Text} for rendering the score.
 	 */
-	@Override public void surfaceCreated () {
-		if (camera == null) {
-			setupGraphics();
-			setupGame();
-		}
+	@Override public void create () {
+		setupGraphics();
+		setupGame();		
 	}
 
 	/**
@@ -125,10 +122,6 @@ public class Pong implements GdxTest {
 		ballDirection.set(-1, 0);
 	}
 
-	@Override public void dispose () {
-
-	}
-
 	@Override public void render () {
 		// we update the game state so things move.
 		updateGame();
@@ -173,7 +166,7 @@ public class Pong implements GdxTest {
 		spriteBatch.begin();
 //		spriteBatch.drawText(font, score, Gdx.graphics.getWidth() / 2 - font.getStringWidth(score) / 2, Gdx.graphics.getHeight()
 //			- font.getLineHeight(), Color.WHITE);
-		spriteBatch.end();
+		spriteBatch.end();		
 	}
 
 	/**
@@ -275,12 +268,7 @@ public class Pong implements GdxTest {
 		}
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

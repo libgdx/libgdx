@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class ManualBindTest implements GdxTest {
+public class ManualBindTest extends GdxTest {
 	int vboHandle;
 	int iboHandle;
 	ShortBuffer indices;
@@ -25,11 +25,6 @@ public class ManualBindTest implements GdxTest {
 	@Override
 	public boolean needsGL20() {
 		return false;
-	}
-
-	@Override
-	public void dispose() {
-		
 	}
 
 	@Override
@@ -43,8 +38,8 @@ public class ManualBindTest implements GdxTest {
 		gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
 		gl.glVertexPointer(2, GL11.GL_FLOAT, 5 * 4, 0);
 		
-		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 4, null, GL11.GL_DYNAMIC_DRAW);
-		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 4, indices, GL11.GL_DYNAMIC_DRAW);		
+		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, null, GL11.GL_DYNAMIC_DRAW);
+		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, indices.limit() * 2, indices, GL11.GL_DYNAMIC_DRAW);		
 		gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertices1.limit() * 4, null, GL11.GL_DYNAMIC_DRAW);
 		gl.glBufferData(GL11.GL_ARRAY_BUFFER, vertices1.limit() * 4, vertices1, GL11.GL_DYNAMIC_DRAW);									
 		gl.glDrawElements(GL11.GL_TRIANGLES, 12, GL11.GL_UNSIGNED_SHORT, 0);
@@ -58,13 +53,7 @@ public class ManualBindTest implements GdxTest {
 	}
 
 	@Override
-	public void surfaceChanged(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void surfaceCreated() {			
+	public void create() {			
 		GL11 gl = Gdx.graphics.getGL11();
 		IntBuffer handleBuf = BufferUtils.newIntBuffer(2);		
 		gl.glGenBuffers(2, handleBuf);
@@ -93,5 +82,4 @@ public class ManualBindTest implements GdxTest {
 								   -0.5f, 0, c, 1, 0 });
 		vertices2.flip();
 	}
-
 }

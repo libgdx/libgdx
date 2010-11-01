@@ -13,19 +13,15 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SimpleTest implements GdxTest, InputListener, ApplicationListener {
+public class SimpleTest extends GdxTest implements InputProcessor {
 	float r = 1, g = 0, b = 0;
 
-	@Override public void surfaceCreated () {
-		Gdx.input.addInputListener(this);
-		Gdx.app.setApplicationListener(this);
+	@Override public void create () {		
 		Gdx.app.log("Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created");
 	}
 
@@ -34,11 +30,9 @@ public class SimpleTest implements GdxTest, InputListener, ApplicationListener {
 
 		gl.glClearColor(r, g, b, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		Gdx.input.processEvents(this);
 
-	}
-
-	@Override public void dispose () {
-		Gdx.app.log("Simple Test", "Thread=" + Thread.currentThread().getId() + ", render listener disposed");
 	}
 
 	@Override public void destroy () {
@@ -83,11 +77,6 @@ public class SimpleTest implements GdxTest, InputListener, ApplicationListener {
 	}
 
 	@Override public void resume () {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
 		// TODO Auto-generated method stub
 
 	}

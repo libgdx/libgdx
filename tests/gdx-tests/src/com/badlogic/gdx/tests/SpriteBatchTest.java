@@ -14,7 +14,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpriteBatchTest implements GdxTest, InputListener {
+public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	int SPRITES = 400 / 2;
 
 	long startTime = System.nanoTime();
@@ -46,14 +46,13 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 	float SCALE_SPEED = -1;
 	int renderMethod = 0;
 
-	@Override public void dispose () {
-
-	}
 
 	@Override public void render () {
 		if (renderMethod == 0) renderNormal();
 		;
 		if (renderMethod == 1) renderSprites();
+		
+		Gdx.input.processEvents(this);
 	}
 
 	private void renderNormal () {
@@ -176,12 +175,8 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 		frames++;
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public void surfaceCreated () {
-		if (spriteBatch == null) spriteBatch = new SpriteBatch(1000);
+	@Override public void create () {
+		spriteBatch = new SpriteBatch(1000);
 
 		Pixmap pixmap = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal));
 		texture = Gdx.graphics.newUnmanagedTexture(32, 32, Format.RGB565, TextureFilter.Linear, TextureFilter.Linear,
@@ -224,8 +219,7 @@ public class SpriteBatchTest implements GdxTest, InputListener {
 			sprites3[i].setPosition(x, y);
 			sprites3[i].setOrigin(16, 16);
 		}
-
-		Gdx.input.addInputListener(this);
+	
 	}
 
 	@Override public boolean keyDown (int keycode) {

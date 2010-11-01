@@ -19,18 +19,13 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class VertexArrayTest implements GdxTest {
+public class VertexArrayTest extends GdxTest {
 	FloatBuffer vertices;
 	ShortBuffer indices;
 	final int BYTES_PER_VERTEX = (3 + 4) * 4;
-
-	@Override public void dispose () {
-
-	}
 
 	@Override public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
@@ -49,7 +44,7 @@ public class VertexArrayTest implements GdxTest {
 		gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);
 	}
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(BYTES_PER_VERTEX * 3);
 		buffer.order(ByteOrder.nativeOrder());
 		vertices = buffer.asFloatBuffer();
@@ -67,11 +62,6 @@ public class VertexArrayTest implements GdxTest {
 		indices = buffer.asShortBuffer();
 		indices.put(new short[] {0, 1, 2});
 		indices.flip();
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override public boolean needsGL20 () {

@@ -71,6 +71,8 @@ public class Mesh {
 			indices = new IndexBufferObject(maxIndices);
 			isVertexArray = true;
 		}		
+		
+		meshes.add(this);
 	}
 
 	/**

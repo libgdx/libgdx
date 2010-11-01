@@ -15,35 +15,44 @@ package com.badlogic.gdx;
 
 /**
  * <p>
- * An <code>ApplicationListener</code> is called when the {@link Application} is resumed, paused and destroyed. This allows you to
- * save any states you want to save. The methods are not called from within the rendering thread so care has to be taken. Do not
- * load or unload any Graphics related resources in the provided by this interface!
+ * An <code>ApplicationListener</code> is called when the {@link Application} is created, resumed, rendering, paused or destroyed. All
+ * methods are called in a thread that has the OpenGL context current. You can thus safely create and manipulate graphics resources.
  * </p>
  * 
  * <p>
  * The <code>ApplicationListener</code> interface follows the standard Android activity life-cycle and is emulated on the desktop
- * accordingly. The pause method will be called after the rendering thread has been paused. The resume method will be called
- * before the rendering thread has been started.
+ * accordingly.
+ * </p>
  * 
  * @author mzechner
  * 
  */
 public interface ApplicationListener {
 	/**
-	 * Called when the {@link Application} is paused. An Application is paused before it is destroyed or when a user pressed the
-	 * Home button on Android. This will not be called in the rendering thread. Instead the rendering thread will be paused before
-	 * this method is called.
+	 * Called when the {@link Application} is first created. 
+	 */
+	public void create ();		
+
+	/**
+	 * Called when the {@link Application} is resumed from a paused state. On
+	 * Android this happens when the activity gets focus again, on the desktop
+	 * that happens when the application is maximized from a minimzed state.
+	 */
+	public void resume ();
+	
+	/**
+	 * Called when the {@link Application} should render itself.
+	 */
+	public void render ();
+	
+	/**
+	 * Called when the {@link Application} is paused. An Application is paused before it is destroyed, when a user pressed the
+	 * Home button on Android or an incoming call happend or when a window on the desktop is minimized. 
 	 */
 	public void pause ();
 
 	/**
-	 * Called when the {@link Application} is resumed from a paused state or the Application was just created. This will not be
-	 * called in the rendering thread. Instead this callback will be first called, then the rendering thread will be resumed.
-	 */
-	public void resume ();
-
-	/**
-	 * Called when the {@link Application} is destroyed. This will not be called in the rendering thread.
+	 * Called when the {@link Application} is destroyed. Preceded by a call to {@link #pause()}.
 	 */
 	public void destroy ();
 }

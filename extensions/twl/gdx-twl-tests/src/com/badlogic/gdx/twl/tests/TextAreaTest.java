@@ -22,7 +22,7 @@ import de.matthiasmann.twl.textarea.Value;
 public class TextAreaTest implements RenderListener {
 	GUI gui;
 
-	public void surfaceCreated () {
+	public void created () {
 		if (gui != null) return;
 
 		final HTMLTextAreaModel htmlText = new HTMLTextAreaModel();
@@ -75,7 +75,7 @@ public class TextAreaTest implements RenderListener {
 		gui.update();
 	}
 
-	public void surfaceChanged (int width, int height) {
+	public void resized (int width, int height) {
 		TwlRenderer.updateSize(gui);
 	}
 

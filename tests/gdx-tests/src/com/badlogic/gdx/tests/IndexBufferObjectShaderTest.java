@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class IndexBufferObjectShaderTest implements GdxTest {
+public class IndexBufferObjectShaderTest extends GdxTest {
 	Texture texture;
 	ShaderProgram shader;
 	VertexBufferObject vbo;
@@ -27,7 +27,7 @@ public class IndexBufferObjectShaderTest implements GdxTest {
 	}
 
 	@Override
-	public void dispose() {
+	public void destroy() {
 		texture.dispose();
 		shader.dispose();
 		ibo.dispose();
@@ -35,6 +35,8 @@ public class IndexBufferObjectShaderTest implements GdxTest {
 
 	@Override
 	public void render() {
+//		System.out.println( "render");
+		
 		GL20 gl = Gdx.gl20;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -43,7 +45,7 @@ public class IndexBufferObjectShaderTest implements GdxTest {
 		shader.begin();
 		shader.setUniformi("u_texture", 0);
 		texture.bind();		
-		vbo.bind(shader);
+		vbo.bind(shader);		
 		ibo.bind();
 		gl.glDrawElements(GL20.GL_TRIANGLES, 3, GL20.GL_UNSIGNED_SHORT,	0);
 		ibo.unbind();
@@ -52,13 +54,7 @@ public class IndexBufferObjectShaderTest implements GdxTest {
 	}
 
 	@Override
-	public void surfaceChanged(int width, int height) {
-
-	}
-
-	@Override
-	public void surfaceCreated() {
-		if (texture == null) {
+	public void create() {		
 			String vertexShader = "attribute vec4 a_position;    \n"
 					+ "attribute vec4 a_color;\n"
 					+ "attribute vec2 a_texCoords;\n"					
@@ -96,8 +92,16 @@ public class IndexBufferObjectShaderTest implements GdxTest {
 					"data/badlogic.jpg", FileType.Internal),
 					TextureFilter.Linear, TextureFilter.Linear,
 					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		} else
-			vbo.invalidate();
+			
+//			System.out.println( "create");
+	}
+	
+	@Override
+	public void resume() {
+		vbo.invalidate();
+		ibo.invalidate();
+		
+//		System.out.println( "resume");
 	}
 
 }

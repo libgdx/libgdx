@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class VertexArrayClassTest implements GdxTest {
+public class VertexArrayClassTest extends GdxTest {
 	Texture texture;
 	VertexArray va;
 	ShortBuffer indices;
@@ -26,7 +26,7 @@ public class VertexArrayClassTest implements GdxTest {
 	}
 
 	@Override
-	public void dispose() {
+	public void destroy() {
 		texture.dispose();
 		va.dispose();
 	}
@@ -50,13 +50,9 @@ public class VertexArrayClassTest implements GdxTest {
 		va.unbind();
 	}
 
-	@Override
-	public void surfaceChanged(int width, int height) {
-		
-	}
 
 	@Override
-	public void surfaceCreated() {
+	public void create() {
 		va = new VertexArray(3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
 								new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"),
 								new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_Color" ));
@@ -67,11 +63,9 @@ public class VertexArrayClassTest implements GdxTest {
 		indices = BufferUtils.newShortBuffer(3);
 		indices.put( new short[] { 0, 1, 2 } );
 		indices.flip();
-		
-		if( texture == null ) {
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
-											  TextureFilter.Linear, TextureFilter.Linear, 
-											  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		}
+				
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
+										  TextureFilter.Linear, TextureFilter.Linear, 
+										  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);		
 	}
 }

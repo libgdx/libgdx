@@ -21,34 +21,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class AudioRecorderTest implements GdxTest, ApplicationListener {
+public class AudioRecorderTest extends GdxTest {
 	short[] samples = new short[1024 * 4];
 	AudioDevice device;
 	AudioRecorder recorder;
 	ImmediateModeRenderer renderer;
 
-	@Override public void dispose () {
-
-	}
-
-	@Override public void render () {
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-// float incX = 2.0f / samples.length;
-// float x = -1;
-// renderer.begin( GL10.GL_LINE_STRIP );
-// for( int i = 0; i < samples.length/100; i++, x+=incX )
-// renderer.vertex( x, samples[i] / (float)Short.MAX_VALUE, 0 );
-// renderer.end();
-	}
-
-	@Override public void surfaceChanged (int width, int height) {
-
-	}
-
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		device = Gdx.audio.newAudioDevice(true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
 		renderer = new ImmediateModeRenderer();
@@ -63,14 +42,20 @@ public class AudioRecorderTest implements GdxTest, ApplicationListener {
 			}
 		});
 		t.setDaemon(true);
-		t.start();
-
-		Gdx.app.setApplicationListener(this);
+		t.start();	
 	}
+	
+	@Override public void render () {
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-	@Override public void destroy () {
-		// TODO Auto-generated method stub
-
+// float incX = 2.0f / samples.length;
+// float x = -1;
+// renderer.begin( GL10.GL_LINE_STRIP );
+// for( int i = 0; i < samples.length/100; i++, x+=incX )
+// renderer.vertex( x, samples[i] / (float)Short.MAX_VALUE, 0 );
+// renderer.end();
 	}
 
 	@Override public void pause () {
@@ -84,7 +69,6 @@ public class AudioRecorderTest implements GdxTest, ApplicationListener {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

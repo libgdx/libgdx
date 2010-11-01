@@ -2,22 +2,18 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputListener;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class MultitouchTest implements GdxTest, InputListener {
+public class MultitouchTest extends GdxTest implements InputProcessor {
 	ImmediateModeRenderer renderer;
 	OrthographicCamera camera;
 
 	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE};
-
-	@Override public void dispose () {
-	}
 
 	@Override public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -40,21 +36,17 @@ public class MultitouchTest implements GdxTest, InputListener {
 		}
 
 		renderer.end();
+		
+		Gdx.input.processEvents(this);
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
 
-	}
-
-	@Override public void surfaceCreated () {
-		if (renderer == null) {
-			Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.supportsMultitouch());
-			Gdx.input.addInputListener(this); // only add this once...
-			renderer = new ImmediateModeRenderer();
-			camera = new OrthographicCamera();
-			camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			camera.getPosition().set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
-		}
+	@Override public void create () {		
+		Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.supportsMultitouch());
+		renderer = new ImmediateModeRenderer();
+		camera = new OrthographicCamera();
+		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.getPosition().set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);		
 	}
 
 	@Override public boolean keyDown (int keycode) {

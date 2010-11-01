@@ -1,7 +1,7 @@
 <!-- 
 
  libgdx distribution ant build file. Performs the compilation of the modules
- gdx, gdx-backend-android, gdx-backend-desktop
+ gdx, gdx-backend-android, gdx-backend-jogl
  and creates a distribution out of this mess. 
 
 -->
@@ -23,7 +23,7 @@
 	<target name="clean">
 		<delete dir="${stable}"/>
 		<delete dir="gdx/bin"/>
-		<delete dir="backends/gdx-backend-desktop/bin"/>		
+		<delete dir="backends/gdx-backend-jogl/bin"/>		
 		<delete dir="backends/gdx-backend-android/bin"/>
 	</target>
 	
@@ -32,7 +32,7 @@
 		<mkdir dir="${stable}"/>
 		<mkdir dir="gdx/bin"/>		
 		<mkdir dir="backends/gdx-backend-android/bin"/>
-		<mkdir dir="backends/gdx-backend-desktop/bin"/>
+		<mkdir dir="backends/gdx-backend-jogl/bin"/>
 	</target>
 	
 	<!-- compiles the java code of all modules -->
@@ -40,8 +40,8 @@
 		<!-- build gdx api -->
 		<javac srcdir="gdx/src" destdir="gdx/bin"/>
 		
-		<!-- build desktop backend -->
-		<javac srcdir="backends/gdx-backend-desktop/src" destdir="backends/gdx-backend-desktop/bin">
+		<!-- build jogl backend -->
+		<javac srcdir="backends/gdx-backend-jogl/src" destdir="backends/gdx-backend-jogl/bin">
 			<classpath>
 				<pathelement location="gdx/bin"/>
 				<pathelement location="backends/dependencies/gluegen-rt.jar"/>
@@ -82,8 +82,8 @@
 		<delete dir="gdx/bin/ndk"/>
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin"/>
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>
-		<jar destfile="${stable}/gdx-backend-desktop.jar">
-			<fileset dir="backends/gdx-backend-desktop/bin"/>
+		<jar destfile="${stable}/gdx-backend-jogl.jar">
+			<fileset dir="backends/gdx-backend-jogl/bin"/>
 			<zipfileset src="backends/dependencies/gluegen-rt.jar"/>
 			<zipfileset src="backends/dependencies/javazoom-spi.jar"/>
 			<zipfileset src="backends/dependencies/jl1.0.1.jar"/>
@@ -108,7 +108,7 @@
 	<target name="update-demos" depends="dist">
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar"/>
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
-		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar"/>
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
 		
@@ -120,7 +120,7 @@
 		
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar"/>
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
-		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-desktop.jar" file="${stable}/gdx-backend-desktop.jar"/>
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar"/>
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
 		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
 		
