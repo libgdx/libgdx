@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class UnicodeFont {
 	static private final int PAGES = MAX_GLYPH_CODE / PAGE_SIZE;
 
 	private Font font;
+	private FontMetrics metrics;
 	private String ttfFileRef;
 	private int ascent, descent, leading, spaceWidth;
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
@@ -51,6 +53,7 @@ public class UnicodeFont {
 	private Glyph missingGlyph;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
 	private final DisplayList emptyDisplayList = new DisplayList();
+	private boolean nativeRendering;
 
 	private boolean displayListCaching = true;
 	private int baseDisplayListID = -1;
@@ -131,7 +134,7 @@ public class UnicodeFont {
 		}
 		font = baseFont.deriveFont(attributes);
 
-		FontMetrics metrics = GlyphPage.scratchGraphics.getFontMetrics(font);
+		metrics = GlyphPage.scratchGraphics.getFontMetrics(font);
 		ascent = metrics.getAscent();
 		descent = metrics.getDescent();
 		leading = metrics.getLeading();
@@ -348,6 +351,7 @@ public class UnicodeFont {
 		int extraX = 0, extraY = ascent;
 		boolean startNewLine = false;
 		Texture lastBind = null;
+		int offsetX = 0;
 		for (int glyphIndex = 0, n = vector.getNumGlyphs(); glyphIndex < n; glyphIndex++) {
 			int charIndex = vector.getGlyphCharIndex(glyphIndex);
 			if (charIndex < startIndex) continue;
@@ -356,6 +360,7 @@ public class UnicodeFont {
 			int codePoint = text.codePointAt(charIndex);
 
 			Rectangle bounds = getGlyphBounds(vector, glyphIndex, codePoint);
+			bounds.x += offsetX;
 			Glyph glyph = getGlyph(vector.getGlyphCode(glyphIndex), codePoint, bounds, vector, glyphIndex);
 
 			if (startNewLine && codePoint != '\n') {
@@ -397,7 +402,8 @@ public class UnicodeFont {
 				extraY += getLineHeight();
 				lines++;
 				totalHeight = 0;
-			}
+			} else if (nativeRendering)
+				offsetX += bounds.width;
 		}
 		if (lastBind != null) GL11.glEnd();
 
@@ -455,7 +461,11 @@ public class UnicodeFont {
 	}
 
 	private Rectangle getGlyphBounds (GlyphVector vector, int index, int codePoint) {
-		Rectangle bounds = vector.getGlyphPixelBounds(index, GlyphPage.renderContext, 0, 0);
+		Rectangle bounds;
+		if (nativeRendering)
+			bounds = metrics.getStringBounds("" + (char)codePoint, GlyphPage.scratchGraphics).getBounds();
+		else
+			bounds = vector.getGlyphPixelBounds(index, GlyphPage.renderContext, 0, 0);
 		if (codePoint == ' ') bounds.width = spaceWidth;
 		return bounds;
 	}
@@ -724,6 +734,14 @@ public class UnicodeFont {
 	 */
 	public void setDisplayListCaching (boolean displayListCaching) {
 		this.displayListCaching = displayListCaching;
+	}
+
+	public void setNativeRendering (boolean nativeRendering) {
+		this.nativeRendering = nativeRendering;
+	}
+
+	public boolean getNativeRendering () {
+		return nativeRendering;
 	}
 
 	/**

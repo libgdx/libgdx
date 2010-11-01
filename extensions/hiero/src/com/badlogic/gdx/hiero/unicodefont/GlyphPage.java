@@ -2,6 +2,7 @@
 package com.badlogic.gdx.hiero.unicodefont;
 
 import java.awt.AlphaComposite;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
@@ -27,6 +28,7 @@ import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.hiero.unicodefont.effects.Effect;
 
 /**
@@ -139,10 +141,20 @@ public class GlyphPage {
 		scratchGraphics.setComposite(AlphaComposite.Clear);
 		scratchGraphics.fillRect(0, 0, MAX_GLYPH_SIZE, MAX_GLYPH_SIZE);
 		scratchGraphics.setComposite(AlphaComposite.SrcOver);
-		scratchGraphics.setColor(java.awt.Color.white);
-		for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();)
-			((Effect)iter.next()).draw(scratchImage, scratchGraphics, unicodeFont, glyph);
-		glyph.setShape(null); // The shape will never be needed again.
+		if (unicodeFont.getNativeRendering()) {
+			for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();) {
+				Effect effect = (Effect)iter.next();
+				if (effect instanceof ColorEffect) scratchGraphics.setColor(((ColorEffect)effect).getColor());
+			}
+			scratchGraphics.setColor(java.awt.Color.white);
+			scratchGraphics.setFont(unicodeFont.getFont());
+			scratchGraphics.drawString("" + (char)glyph.getCodePoint(), 0, unicodeFont.getAscent());
+		} else {
+			scratchGraphics.setColor(java.awt.Color.white);
+			for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();)
+				((Effect)iter.next()).draw(scratchImage, scratchGraphics, unicodeFont, glyph);
+			glyph.setShape(null); // The shape will never be needed again.
+		}
 
 		WritableRaster raster = scratchImage.getRaster();
 		int[] row = new int[width];

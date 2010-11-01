@@ -136,6 +136,8 @@ public class Hiero extends JFrame {
 	JSpinner padAdvanceYSpinner;
 	JCheckBox italicCheckBox;
 	JCheckBox boldCheckBox;
+	JRadioButton javaRadio;
+	JRadioButton nativeRadio;
 	JLabel glyphsTotalLabel;
 	JLabel glyphPagesTotalLabel;
 	JComboBox glyphPageHeightCombo;
@@ -156,7 +158,7 @@ public class Hiero extends JFrame {
 	File saveBmFontFile;
 
 	public Hiero () {
-		super("Hiero v2.0 - Bitmap Font Tool");
+		super("Hiero v3.0 - Bitmap Font Tool");
 		Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
 		splash.close();
@@ -262,6 +264,7 @@ public class Hiero extends JFrame {
 		unicodeFont.setPaddingAdvanceY(((Integer)padAdvanceYSpinner.getValue()).intValue());
 		unicodeFont.setGlyphPageWidth(((Integer)glyphPageWidthCombo.getSelectedItem()).intValue());
 		unicodeFont.setGlyphPageHeight(((Integer)glyphPageHeightCombo.getSelectedItem()).intValue());
+		unicodeFont.setNativeRendering(nativeRadio.isSelected());
 
 		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
 			EffectPanel panel = (EffectPanel)iter.next();
@@ -380,6 +383,8 @@ public class Hiero extends JFrame {
 		boldCheckBox.addActionListener(listener);
 		italicCheckBox.addActionListener(listener);
 		resetCacheButton.addActionListener(listener);
+		javaRadio.addActionListener(listener);
+		nativeRadio.addActionListener(listener);
 
 		sampleTextRadio.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent evt) {
@@ -610,9 +615,27 @@ public class Hiero extends JFrame {
 					GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 				browseButton.setMargin(new Insets(0, 0, 0, 0));
 			}
+			{
+				fontPanel.add(new JLabel("Rendering:"), new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST,
+					GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
+			}
+			{
+				javaRadio = new JRadioButton("Java");
+				fontPanel.add(javaRadio, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+					GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
+				javaRadio.setSelected(true);
+			}
+			{
+				nativeRadio = new JRadioButton("Native");
+				fontPanel.add(nativeRadio, new GridBagConstraints(2, 4, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
+					GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
+			}
 			ButtonGroup buttonGroup = new ButtonGroup();
 			buttonGroup.add(systemFontRadio);
 			buttonGroup.add(fontFileRadio);
+			buttonGroup = new ButtonGroup();
+			buttonGroup.add(javaRadio);
+			buttonGroup.add(nativeRadio);
 		}
 		{
 			JPanel samplePanel = new JPanel();
@@ -694,18 +717,18 @@ public class Hiero extends JFrame {
 						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 				}
 				{
-					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(256), new Integer(512),
-						new Integer(1024), new Integer(2048)}));
+					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
+						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
 					glyphCachePanel.add(glyphPageWidthCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
-					glyphPageWidthCombo.setSelectedIndex(1);
+					glyphPageWidthCombo.setSelectedIndex(4);
 				}
 				{
-					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(256), new Integer(512),
-						new Integer(1024), new Integer(2048)}));
+					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
+						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
 					glyphCachePanel.add(glyphPageHeightCombo, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
-					glyphPageHeightCombo.setSelectedIndex(1);
+					glyphPageHeightCombo.setSelectedIndex(4);
 				}
 				{
 					resetCacheButton = new JButton("Reset Cache");
@@ -1155,8 +1178,7 @@ public class Hiero extends JFrame {
 				newUnicodeFont = null;
 			}
 
-			// BOZO - Fix no effects.
-			if (unicodeFont.loadGlyphs(25)) {
+			if (!unicodeFont.getEffects().isEmpty() && unicodeFont.loadGlyphs(25)) {
 				glyphPageComboModel.removeAllElements();
 				int pageCount = unicodeFont.getGlyphPages().size();
 				int glyphCount = 0;
@@ -1188,14 +1210,14 @@ public class Hiero extends JFrame {
 			}
 
 			if (sampleTextRadio.isSelected()) {
-				GL11.glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
+				GL11.glClearColor(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
 					renderingBackgroundColor.a);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 				int offset = unicodeFont.getYOffset(sampleText);
 				if (offset > 0) offset = 0;
 				unicodeFont.drawString(0, -offset, sampleText, Color.WHITE, 0, sampleText.length());
 			} else {
-				GL11.glColor4f(1, 1, 1, 1);
+				GL11.glClearColor(1, 1, 1, 1);
 				GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 				unicodeFont.addGlyphs(sampleText);
 				// GL11.glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
@@ -1205,16 +1227,33 @@ public class Hiero extends JFrame {
 				List pages = unicodeFont.getGlyphPages();
 				if (index >= 0 && index < pages.size()) {
 					Texture texture = ((GlyphPage)pages.get(glyphPageCombo.getSelectedIndex())).getTexture();
-					GL11.glBegin(GL11.GL_QUADS);
-					GL11.glTexCoord2f(0, 0);
-					GL11.glVertex3f(0, 0, 0);
-					GL11.glTexCoord2f(0, 1);
-					GL11.glVertex3f(0, texture.getHeight(), 0);
-					GL11.glTexCoord2f(1, 1);
-					GL11.glVertex3f(texture.getWidth(), texture.getHeight(), 0);
-					GL11.glTexCoord2f(1, 0);
-					GL11.glVertex3f(texture.getWidth(), 0, 0);
-					GL11.glEnd();
+
+					glDisable(GL_TEXTURE_2D);
+					glColor4f(renderingBackgroundColor.r, renderingBackgroundColor.g, renderingBackgroundColor.b,
+						renderingBackgroundColor.a);
+					glBegin(GL_QUADS);
+					glVertex3f(0, 0, 0);
+					glVertex3f(0, texture.getHeight(), 0);
+					glVertex3f(texture.getWidth(), texture.getHeight(), 0);
+					glVertex3f(texture.getWidth(), 0, 0);
+					glEnd();
+					glEnable(GL_TEXTURE_2D);
+
+					texture.bind();
+					glColor4f(1, 1, 1, 1);
+					glBegin(GL_QUADS);
+					glTexCoord2f(0, 0);
+					glVertex3f(0, 0, 0);
+
+					glTexCoord2f(0, 1);
+					glVertex3f(0, texture.getHeight(), 0);
+
+					glTexCoord2f(1, 1);
+					glVertex3f(texture.getWidth(), texture.getHeight(), 0);
+
+					glTexCoord2f(1, 0);
+					glVertex3f(texture.getWidth(), 0, 0);
+					glEnd();
 				}
 			}
 		}

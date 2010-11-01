@@ -27,6 +27,7 @@ public class HieroSettings {
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
 	private final List effects = new ArrayList();
+	private boolean nativeRendering;
 
 	public HieroSettings () {
 	}
@@ -67,6 +68,8 @@ public class HieroSettings {
 					glyphPageWidth = Integer.parseInt(value);
 				} else if (name.equals("glyph.page.height")) {
 					glyphPageHeight = Integer.parseInt(value);
+				} else if (name.equals("glyph.native.rendering")) {
+					nativeRendering = Boolean.parseBoolean(value);
 				} else if (name.equals("effect.class")) {
 					try {
 						effects.add(Class.forName(value).newInstance());
@@ -261,6 +264,14 @@ public class HieroSettings {
 		return effects;
 	}
 
+	public boolean getNativeRendering () {
+		return nativeRendering;
+	}
+
+	public void setNativeRendering (boolean nativeRendering) {
+		this.nativeRendering = nativeRendering;
+	}
+
 	/**
 	 * Saves the settings to a file.
 	 * @throws IOException if the file could not be saved.
@@ -278,6 +289,7 @@ public class HieroSettings {
 		out.println("pad.advance.x=" + paddingAdvanceX);
 		out.println("pad.advance.y=" + paddingAdvanceY);
 		out.println();
+		out.println("glyph.native.rendering=" + nativeRendering);
 		out.println("glyph.page.width=" + glyphPageWidth);
 		out.println("glyph.page.height=" + glyphPageHeight);
 		out.println();
