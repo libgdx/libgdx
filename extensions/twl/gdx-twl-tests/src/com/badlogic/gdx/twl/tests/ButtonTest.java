@@ -1,29 +1,23 @@
 
 package com.badlogic.gdx.twl.tests;
 
-import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.twl.renderer.TwlInputListener;
 import com.badlogic.gdx.twl.renderer.TwlRenderer;
 
 import de.matthiasmann.twl.Button;
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.FPSCounter;
 import de.matthiasmann.twl.GUI;
-import de.matthiasmann.twl.ScrollPane;
-import de.matthiasmann.twl.TextArea;
-import de.matthiasmann.twl.Timer;
-import de.matthiasmann.twl.textarea.HTMLTextAreaModel;
-import de.matthiasmann.twl.textarea.Style;
-import de.matthiasmann.twl.textarea.StyleAttribute;
-import de.matthiasmann.twl.textarea.TextAreaModel.Element;
-import de.matthiasmann.twl.textarea.Value;
 
-public class ButtonTest implements RenderListener {
-	GUI gui;
+public class ButtonTest implements ApplicationListener {
+	GUI gui;	
+	TwlInputListener guiInputListener;
 
-	public void created () {
+	public void create () {
 		if (gui != null) return;
 
 		Button button = new Button("Click Me");
@@ -35,18 +29,36 @@ public class ButtonTest implements RenderListener {
 		layout.setVerticalGroup(layout.createSequentialGroup().addWidget(button).addGap(5).addWidget(fpsCounter).addGap(5));
 
 		gui = TwlRenderer.createGUI(layout, "data/widgets.xml", FileType.Internal);
+		gui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		guiInputListener = new TwlInputListener(gui);
 	}
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		gui.update();
-	}
-
-	public void resized (int width, int height) {
-		gui.setSize();
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);	
+		
+		Gdx.input.processEvents(guiInputListener);
+		gui.update();		
 	}
 
 	public void dispose () {
 		gui.destroy();
+	}	
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 }

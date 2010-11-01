@@ -13,14 +13,19 @@
 
 package com.badlogic.gdx.backends.desktop;
 
+import java.awt.Canvas;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.RenderListener;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -34,26 +39,31 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * An implementation of the {@link Graphics} interface based on Jogl.
+ * An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner
  */
-public final class LwjglGraphics implements Graphics, RenderListener {
-	private final LwjglApplication app;
-	private GLCommon gl;
-	private GL10 gl10;
-	private GL11 gl11;
-	private GL20 gl20;
-	private final boolean useGL2;
-	private float deltaTime = 0;
-	private long frameStart = 0;
-	private int frames = 0;
-	private int fps;
+public final class LwjglGraphics implements Graphics{	
+	GLCommon gl;
+	GL10 gl10;
+	GL11 gl11;
+	GL20 gl20;
+	final boolean useGL2;
+	float deltaTime = 0;
+	long frameStart = 0;
+	int frames = 0;
+	int fps;
+	long lastTime = System.nanoTime();
+	int width;
+	int height;
+	String title;
+	Canvas canvas;
 
-	long lastTime;
-
-	LwjglGraphics (final LwjglApplication application, String title, int width, int height, boolean useGL2IfAvailable) {
-		this.app = application;
+	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable, Canvas canvas) {		
 		useGL2 = useGL2IfAvailable;
+		this.title = title;
+		this.width = width;
+		this.height = height;
+		this.canvas = canvas;
 	}
 
 	public GL10 getGL10 () {
@@ -69,11 +79,11 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 	}
 
 	public int getHeight () {
-		return app.getHeight();
+		return height;
 	}
 
 	public int getWidth () {
-		return app.getWidth();
+		return width;
 	}
 
 	public boolean isGL11Available () {
@@ -135,17 +145,25 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file);
 
 		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
+	}	
+
+	public float getDeltaTime () {
+		return deltaTime;
 	}
 
-	public void setRenderListener (RenderListener listener) {
-		app.listeners.add(listener);
+	public GraphicsType getType () {
+		return GraphicsType.LWJGL;
 	}
 
-	public void dispose () {
-
+	public int getFramesPerSecond () {
+		return fps;
 	}
 
-	public void render () {
+	@Override public GLCommon getGLCommon () {
+		return gl;
+	}
+	
+	void updateTime () {
 		long time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;
 		lastTime = time;
@@ -157,8 +175,29 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		}
 		frames++;
 	}
+	
+	protected void setupDisplay () throws LWJGLException {
+		if(canvas!=null) Display.setParent(canvas);
+		Display.setDisplayMode(new DisplayMode(width, height));
+		Display.setFullscreen(false);
+		Display.setTitle(title);
+		int samples = 0;
+		try {
+			Display.create(new PixelFormat(8, 8, 0, samples));
+		} catch (Exception ex) {
+			Display.destroy();
+			try {
+				Display.create(new PixelFormat(8, 8, 0));
+			} catch (Exception ex2) {
+				Display.destroy();
+				Display.create(new PixelFormat());
+			}
+		}
+		
+		initiateGLInstances();
+	}
 
-	public void created () {
+	void initiateGLInstances () {
 		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		int major = Integer.parseInt("" + version.charAt(0));
 		int minor = Integer.parseInt("" + version.charAt(2));
@@ -181,24 +220,5 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-	}
-
-	public float getDeltaTime () {
-		return deltaTime;
-	}
-
-	public void resized (int width, int height) {
-	}
-
-	public GraphicsType getType () {
-		return GraphicsType.LWJGL;
-	}
-
-	public int getFramesPerSecond () {
-		return fps;
-	}
-
-	@Override public GLCommon getGLCommon () {
-		return gl;
 	}
 }

@@ -94,7 +94,7 @@ public final class JoglApplication implements Application {
 			
 			@Override
 			public void windowIconified(WindowEvent arg0) {			
-				graphics.pause();				
+				graphics.pause();								
 			}
 			
 			@Override

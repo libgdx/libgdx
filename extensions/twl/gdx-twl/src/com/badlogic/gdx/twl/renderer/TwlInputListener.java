@@ -2,7 +2,6 @@
 package com.badlogic.gdx.twl.renderer;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.RenderListener;
 
 import de.matthiasmann.twl.GUI;
 

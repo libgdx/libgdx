@@ -1,11 +1,10 @@
 
 package com.badlogic.gdx.twl.tests;
 
-import com.badlogic.gdx.backends.desktop.JoglApplication;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 public class TextAreaTestDesktop {
 	public static void main (String[] argv) {
-		JoglApplication app = new JoglApplication("Twl Test", 480, 320, false);
-		app.getGraphics().setRenderListener(new TextAreaTest());
+		new JoglApplication(new TextAreaTest(), "Twl Test", 480, 320, false);		
 	}
 }

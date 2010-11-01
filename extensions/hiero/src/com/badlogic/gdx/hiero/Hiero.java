@@ -1,7 +1,33 @@
 
 package com.badlogic.gdx.hiero;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_COORD_ARRAY;
+import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glClearDepth;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnableClientState;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glScissor;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -60,8 +86,6 @@ import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -70,15 +94,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
-import sun.rmi.runtime.Log;
-
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.desktop.LwjglApplicationNew;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -87,14 +107,13 @@ import com.badlogic.gdx.hiero.unicodefont.HieroSettings;
 import com.badlogic.gdx.hiero.unicodefont.UnicodeFont;
 import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.hiero.unicodefont.effects.ConfigurableEffect;
-import com.badlogic.gdx.hiero.unicodefont.effects.ConfigurableEffect.Value;
 import com.badlogic.gdx.hiero.unicodefont.effects.EffectUtil;
 import com.badlogic.gdx.hiero.unicodefont.effects.GradientEffect;
 import com.badlogic.gdx.hiero.unicodefont.effects.OutlineEffect;
 import com.badlogic.gdx.hiero.unicodefont.effects.OutlineWobbleEffect;
 import com.badlogic.gdx.hiero.unicodefont.effects.OutlineZigzagEffect;
 import com.badlogic.gdx.hiero.unicodefont.effects.ShadowEffect;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.hiero.unicodefont.effects.ConfigurableEffect.Value;
 
 /**
  * A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
@@ -105,7 +124,7 @@ public class Hiero extends JFrame {
 		+ "abcdefghijklmnopqrstuvwxyz\n1234567890\n" //
 		+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u007F";
 
-	LwjglApplication app;
+	LwjglApplicationNew app;
 	Canvas glCanvas;
 	volatile UnicodeFont newUnicodeFont;
 	UnicodeFont unicodeFont;
@@ -187,17 +206,8 @@ public class Hiero extends JFrame {
 
 			public final void addNotify () {
 				super.addNotify();
-				app = new LwjglApplication("Hiero", 200, 200, false) {
-					protected void setupDisplay () throws LWJGLException {
-						try {
-							Display.setParent(glCanvas);
-						} catch (LWJGLException ex) {
-							throw new GdxRuntimeException("Error setting display parent.", ex);
-						}
-						super.setupDisplay();
-					}
-				};
-				app.getGraphics().setRenderListener(new Renderer());
+				app = new LwjglApplicationNew(new Renderer(), "Hiero", 200, 200, false, glCanvas);
+				
 				addWindowListener(new WindowAdapter() {
 					public void windowClosed (WindowEvent event) {
 						app.stop();
@@ -1132,7 +1142,7 @@ public class Hiero extends JFrame {
 		}
 	}
 
-	class Renderer implements RenderListener {
+	class Renderer implements ApplicationListener {
 		private String sampleText;
 
 		public void created () {
@@ -1149,9 +1159,10 @@ public class Hiero extends JFrame {
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		}
 
-		public void resized (int width, int height) {
+			int width = Gdx.graphics.getWidth();
+			int height = Gdx.graphics.getHeight();
+			
 			glViewport(0, 0, width, height);
 			glScissor(0, 0, width, height);
 
@@ -1259,6 +1270,30 @@ public class Hiero extends JFrame {
 		}
 
 		public void dispose () {
+		}
+
+		@Override
+		public void create() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void destroy() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void pause() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void resume() {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

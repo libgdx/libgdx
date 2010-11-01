@@ -1,11 +1,10 @@
 
 package com.badlogic.gdx.twl.tests;
 
-import com.badlogic.gdx.backends.desktop.JoglApplication;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 public class ButtonTestDesktop {
 	public static void main (String[] argv) {
-		JoglApplication app = new JoglApplication("Button Test", 480, 320, false);
-		app.getGraphics().setRenderListener(new ButtonTest());
+		new JoglApplication(new ButtonTest(), "Button Test", 480, 320, false);
 	}
 }

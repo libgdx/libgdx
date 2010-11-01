@@ -14,6 +14,9 @@
 package com.badlogic.gdx.backends.desktop;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -24,7 +27,8 @@ import org.lwjgl.input.Mouse;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
 /**
  * An implementation of the {@link Input} interface hooking a Jogl panel for input.
@@ -32,15 +36,53 @@ import com.badlogic.gdx.RenderListener;
  * @author mzechner
  * 
  */
-final class LwjglInput implements Input, RenderListener {
-	String text;
-	TextInputListener textListener;
-	@SuppressWarnings("unchecked") private final ArrayList<InputProcessor> listeners = new ArrayList();
+final class LwjglInput implements Input {
+	class KeyEvent {
+		static final int KEY_DOWN = 0;
+		static final int KEY_UP = 1;
+		static final int KEY_TYPED = 2;
 
-	public void addInputListener (InputProcessor listener) {
-		listeners.add(listener);
+		int type;
+		int keyCode;
+		char keyChar;
 	}
 
+	class TouchEvent {
+		static final int TOUCH_DOWN = 0;
+		static final int TOUCH_UP = 1;
+		static final int TOUCH_DRAGGED = 2;
+
+		int type;
+		int x;
+		int y;
+		int pointer;
+	}
+
+	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(
+			new PoolObjectFactory<KeyEvent>() {
+
+				@Override
+				public KeyEvent createObject() {
+					return new KeyEvent();
+				}
+			}, 1000);
+
+	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(
+			new PoolObjectFactory<TouchEvent>() {
+
+				@Override
+				public TouchEvent createObject() {
+					return new TouchEvent();
+				}
+			}, 1000);
+
+	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
+	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
+	boolean mousePressed = false;
+	int mouseX = 0;
+	int mouseY = 0;
+	int pressedKeys = 0;
+	
 	public float getAccelerometerX () {
 		return 0;
 	}
@@ -56,8 +98,8 @@ final class LwjglInput implements Input, RenderListener {
 	public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {
-				LwjglInput.this.text = JOptionPane.showInputDialog(null, title, text);
-				if (LwjglInput.this.text != null) textListener = listener;
+				String output = JOptionPane.showInputDialog(null, title, text);
+				listener.input(output);
 			}
 		});
 	}
@@ -75,38 +117,15 @@ final class LwjglInput implements Input, RenderListener {
 	}
 
 	public boolean isKeyPressed (int key) {
-		return Keyboard.isKeyDown(getKeyCodeReverse(key));
+		if( key == Input.Keys.ANY_KEY )
+			return pressedKeys > 0;
+		else
+			return Keyboard.isKeyDown(getKeyCodeReverse(key));
 	}
 
 	public boolean isTouched () {
-		boolean button = Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2);
-		if (button) System.out.println("button!!");
+		boolean button = Mouse.isButtonDown(0) || Mouse.isButtonDown(1) || Mouse.isButtonDown(2);		
 		return button;
-	}
-
-	public void removeInputListener (InputProcessor listener) {
-		listeners.remove(listener);
-	}
-
-	public void dispose () {
-		listeners.clear();
-	}
-
-	public void render () {
-		if (textListener != null) {
-			textListener.input(text);
-			textListener = null;
-		}
-	}
-
-	public void created () {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void resized (int width, int height) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public int getX (int pointer) {
@@ -134,36 +153,56 @@ final class LwjglInput implements Input, RenderListener {
 		return false;
 	}
 
-	public void fireKeyDown (int keycode) {
-		for (int i = 0; i < listeners.size(); i++)
-			if (listeners.get(i).keyDown(keycode)) return;
+	@Override public void setOnscreenKeyboardVisible (boolean visible) {
+		
 	}
 
-	public void fireKeyUp (int keycode) {
-		for (int i = 0; i < listeners.size(); i++)
-			if (listeners.get(i).keyUp(keycode)) return;
+	@Override public boolean supportsOnscreenKeyboard () {
+		return false;
+	}
+	
+	@Override public void setCatchBackKey (boolean catchBack) {
+		
 	}
 
-	public void fireKeyTyped (char character) {
-		for (int i = 0; i < listeners.size(); i++)
-			if (listeners.get(i).keyTyped(character)) return;
+	@Override
+	public void processEvents(InputProcessor listener) {
+		synchronized(this) {
+			if(listener!=null) {						
+				for(KeyEvent e: keyEvents) {
+					switch(e.type) {
+					case KeyEvent.KEY_DOWN:
+						listener.keyDown(e.keyCode);
+						break;
+					case KeyEvent.KEY_UP:
+						listener.keyUp(e.keyCode);
+						break;
+					case KeyEvent.KEY_TYPED:
+						listener.keyTyped(e.keyChar);
+					}
+					freeKeyEvents.free(e);					
+				}					
+				
+				for(TouchEvent e: touchEvents) {
+					switch(e.type) {
+					case TouchEvent.TOUCH_DOWN:
+						listener.touchDown(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_UP:
+						listener.touchUp(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_DRAGGED:
+						listener.touchDragged(e.x, e.y, e.pointer);
+					}
+					freeTouchEvents.free(e);
+				}
+			}
+			
+			keyEvents.clear();
+			touchEvents.clear();
+		}
 	}
-
-	public void fireTouchDown (int x, int y, int pointer) {
-		for (int i = 0; i < listeners.size(); i++)
-			if (listeners.get(i).touchDown(x, y, pointer)) return;
-	}
-
-	public void fireTouchUp (int x, int y, int pointer) {
-		for (int i = 0; i < listeners.size(); i++)
-			if (listeners.get(i).touchUp(x, y, pointer)) return;
-	}
-
-	public void fireTouchDragged (int x, int y, int pointer) {
-		for (int i = 0; i < listeners.size(); i++)
-			if (listeners.get(i).touchDragged(x, y, pointer)) return;
-	}
-
+	
 	public static int getKeyCode (int keyCode) {
 		if (keyCode == Keyboard.KEY_0) return Input.Keys.KEYCODE_0;
 		if (keyCode == Keyboard.KEY_1) return Input.Keys.KEYCODE_1;
@@ -280,19 +319,99 @@ final class LwjglInput implements Input, RenderListener {
 		if (keyCode == Input.Keys.KEYCODE_SHIFT_RIGHT) return Keyboard.KEY_RSHIFT;
 		if (keyCode == Input.Keys.KEYCODE_SLASH) return Keyboard.KEY_SLASH;
 		if (keyCode == Input.Keys.KEYCODE_SPACE) return Keyboard.KEY_SPACE;
-		if (keyCode == Input.Keys.KEYCODE_TAB) return Keyboard.KEY_TAB;
+		if (keyCode == Input.Keys.KEYCODE_TAB) return Keyboard.KEY_TAB;		
 		return Keyboard.KEY_NONE;
 	}
 
-	@Override public void setOnscreenKeyboardVisible (boolean visible) {
-		
-	}
-
-	@Override public boolean supportsOnscreenKeyboard () {
-		return false;
+	public void update() {
+		updateMouse();
+		updateKeyboard();
 	}
 	
-	@Override public void setCatchBackKey (boolean catchBack) {
-		
+	void updateMouse() {
+		if (Mouse.isCreated()) {
+			int x = Mouse.getX();
+			int y = Gdx.graphics.getHeight() - Mouse.getY();
+			while (Mouse.next()) {
+				if (isButtonPressed()) {
+					if (mousePressed == false) {
+						mousePressed = true;
+						TouchEvent event = freeTouchEvents.newObject();
+						event.x = x;
+						event.y = y;
+						event.pointer = 0;
+						event.type = TouchEvent.TOUCH_DOWN;
+						touchEvents.add(event);		
+						mouseX = x;
+						mouseY = y;
+					} else {
+						if (mouseX != x || mouseY != y) {
+							TouchEvent event = freeTouchEvents.newObject();
+							event.x = x;
+							event.y = y;
+							event.pointer = 0;
+							event.type = TouchEvent.TOUCH_DRAGGED;
+							touchEvents.add(event);							
+							mouseX = x;
+							mouseY = y;
+						}
+					}
+				} else {
+					if (mousePressed == true) {
+						mouseX = x;
+						mouseY = y;
+						mousePressed = false;
+						TouchEvent event = freeTouchEvents.newObject();
+						event.x = x;
+						event.y = y;
+						event.pointer = 0;
+						event.type = TouchEvent.TOUCH_UP;
+						touchEvents.add(event);
+					}
+				}
+			}
+		}
+	}
+	
+	boolean isButtonPressed () {
+		for (int i = 0; i < Mouse.getButtonCount(); i++)
+			if (Mouse.isButtonDown(i)) return true;
+		return false;
+	}
+
+	
+	void updateKeyboard() {
+		if (Keyboard.isCreated()) {
+			while (Keyboard.next()) {
+				if (Keyboard.getEventKeyState()) {
+					int keyCode = getKeyCode(Keyboard.getEventKey());
+					char keyChar = Keyboard.getEventCharacter();
+					
+					KeyEvent event = freeKeyEvents.newObject();										
+					event.keyCode = keyCode;
+					event.keyChar = 0;
+					event.type = KeyEvent.KEY_DOWN;
+					keyEvents.add(event);
+					
+					event = freeKeyEvents.newObject();
+					event.keyCode = 0;
+					event.keyChar = keyChar;
+					event.type = KeyEvent.KEY_TYPED;
+					keyEvents.add(event);					
+					pressedKeys++;
+				}				
+				else {
+					int keyCode = LwjglInput.getKeyCode(Keyboard.getEventKey());					
+					
+					KeyEvent event = freeKeyEvents.newObject();
+					event.keyCode = keyCode;
+					event.keyChar = 0;
+					event.type = KeyEvent.KEY_UP;
+					keyEvents.add(event);
+					
+					pressedKeys--;
+				}
+			}
+		}			
 	}
 }

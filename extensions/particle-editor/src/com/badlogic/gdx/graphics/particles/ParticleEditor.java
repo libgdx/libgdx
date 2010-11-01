@@ -30,14 +30,11 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.CompoundBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-
-import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.desktop.LwjglApplicationNew;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -45,11 +42,10 @@ import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
-	LwjglApplication app;
+	LwjglApplicationNew app;
 	Canvas glCanvas;
 	JPanel rowsPanel;
 	EffectPanel effectPanel;
@@ -66,17 +62,7 @@ public class ParticleEditor extends JFrame {
 
 			public final void addNotify () {
 				super.addNotify();
-				app = new LwjglApplication("ParticleEditor", 200, 200, false) {
-					protected void setupDisplay () throws LWJGLException {
-						try {
-							Display.setParent(glCanvas);
-						} catch (LWJGLException ex) {
-							throw new GdxRuntimeException("Error setting display parent.", ex);
-						}
-						super.setupDisplay();
-					}
-				};
-				app.getGraphics().setRenderListener(new Renderer());
+				app = new LwjglApplicationNew(new Renderer(),"ParticleEditor", 200, 200, false, glCanvas);				
 				addWindowListener(new WindowAdapter() {
 					public void windowClosed (WindowEvent event) {
 						app.stop();
@@ -248,7 +234,7 @@ public class ParticleEditor extends JFrame {
 		splitPane.setDividerLocation(325);
 	}
 
-	class Renderer implements RenderListener, InputProcessor {
+	class Renderer implements ApplicationListener, InputProcessor {
 		private float maxActiveTimer;
 		private int maxActive, lastMaxActive;
 		private boolean mouseDown;
@@ -258,7 +244,7 @@ public class ParticleEditor extends JFrame {
 		private SpriteBatch spriteBatch;
 		private Sprite bgImage; // BOZO - Add setting background image to UI.
 
-		public void created () {
+		public void create () {
 			if (spriteBatch != null) return;
 			spriteBatch = new SpriteBatch();
 
@@ -267,10 +253,6 @@ public class ParticleEditor extends JFrame {
 			effectPanel.newEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
 
-			Gdx.input.addInputListener(this);
-		}
-
-		public void resized (int width, int height) {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
 
@@ -337,6 +319,7 @@ public class ParticleEditor extends JFrame {
 
 				// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight -
 // 1);
+				Gdx.input.processEvents(this);
 			}
 		}
 
@@ -386,6 +369,25 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public void dispose () {
+		}
+
+
+		@Override
+		public void destroy() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void pause() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void resume() {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 

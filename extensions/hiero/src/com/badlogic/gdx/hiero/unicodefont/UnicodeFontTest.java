@@ -1,26 +1,46 @@
 
 package com.badlogic.gdx.hiero.unicodefont;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_COORD_ARRAY;
+import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glClearDepth;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnableClientState;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glScissor;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import org.lwjgl.opengl.GL11;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.desktop.LwjglApplicationNew;
 import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 
-public class UnicodeFontTest implements RenderListener {
+public class UnicodeFontTest implements ApplicationListener {
 	private UnicodeFont unicodeFont;
 
-	public void created () {
+	public void create () {
 		unicodeFont = new UnicodeFont("c:/windows/fonts/arial.ttf", 48, false, false);
 		unicodeFont.getEffects().add(new ColorEffect(java.awt.Color.white));
-		// unicodeFont.addAsciiGlyphs();
-		// unicodeFont.loadGlyphs();
-	}
 
-	public void resized (int width, int height) {
+		int width = Gdx.graphics.getWidth();
+		int height = Gdx.graphics.getHeight();
+		
 		glViewport(0, 0, width, height);
 		glScissor(0, 0, width, height);
 		glEnable(GL_SCISSOR_TEST);
@@ -62,7 +82,24 @@ public class UnicodeFontTest implements RenderListener {
 	}
 
 	public static void main (String[] args) {
-		LwjglApplication app = new LwjglApplication("UnicodeFont Test", 800, 600, false);
-		app.getGraphics().setRenderListener(new UnicodeFontTest());
+		new LwjglApplicationNew(new UnicodeFontTest(), "UnicodeFont Test", 800, 600, false);		
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 }

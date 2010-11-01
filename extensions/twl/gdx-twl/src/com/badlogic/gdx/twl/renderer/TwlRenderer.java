@@ -241,8 +241,7 @@ public class TwlRenderer implements Renderer {
 			gui.applyTheme(ThemeManager.createThemeManager(themeURL, renderer));
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading theme: " + themeFile, ex);
-		}
-		Gdx.input.addInputListener(new TwlInputListener(gui));
+		}		
 		return gui;
 	}
 }

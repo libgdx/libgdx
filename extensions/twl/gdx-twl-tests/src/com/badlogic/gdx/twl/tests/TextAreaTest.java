@@ -1,10 +1,11 @@
 
 package com.badlogic.gdx.twl.tests;
 
-import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.twl.renderer.TwlInputListener;
 import com.badlogic.gdx.twl.renderer.TwlRenderer;
 
 import de.matthiasmann.twl.DialogLayout;
@@ -16,13 +17,14 @@ import de.matthiasmann.twl.Timer;
 import de.matthiasmann.twl.textarea.HTMLTextAreaModel;
 import de.matthiasmann.twl.textarea.Style;
 import de.matthiasmann.twl.textarea.StyleAttribute;
-import de.matthiasmann.twl.textarea.TextAreaModel.Element;
 import de.matthiasmann.twl.textarea.Value;
+import de.matthiasmann.twl.textarea.TextAreaModel.Element;
 
-public class TextAreaTest implements RenderListener {
+public class TextAreaTest implements ApplicationListener {
 	GUI gui;
+	TwlInputListener guiInputListener;
 
-	public void created () {
+	public void create () {
 		if (gui != null) return;
 
 		final HTMLTextAreaModel htmlText = new HTMLTextAreaModel();
@@ -68,18 +70,30 @@ public class TextAreaTest implements RenderListener {
 				speed = -speed;
 			}
 		});
+		
+		TwlRenderer.updateSize(gui);
+		guiInputListener = new TwlInputListener(gui);
 	}
 
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.input.processEvents(guiInputListener);
 		gui.update();
 	}
 
-	public void resized (int width, int height) {
-		TwlRenderer.updateSize(gui);
+	public void destroy () {
+		gui.destroy();
 	}
 
-	public void dispose () {
-		gui.destroy();
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 }
