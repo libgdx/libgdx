@@ -20,7 +20,6 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 public class TextAreaTest extends AndroidApplication {
 	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
-		initialize(false);
-		getGraphics().setRenderListener(new com.badlogic.gdx.twl.tests.TextAreaTest());
+		initialize(new com.badlogic.gdx.twl.tests.TextAreaTest(), false);		
 	}
 }
