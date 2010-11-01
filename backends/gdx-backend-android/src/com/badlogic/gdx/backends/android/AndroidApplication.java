@@ -133,12 +133,10 @@ public class AndroidApplication extends Activity implements Application {
 		return graphics.getView();
 	}
 
-	@Override protected void onPause () {	
-		Log.d("Test", "activity pause");
+	@Override protected void onPause () {			
 		graphics.pause();		
 		
-		if (isFinishing()) {			
-			Log.d("Test", "activity destroyed");
+		if (isFinishing()) {						
 			graphics.clearManagedCaches();
 			graphics.destroy();
 		}
@@ -164,8 +162,7 @@ public class AndroidApplication extends Activity implements Application {
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 		}			
 
-		if (audio != null) audio.resume();
-		Log.d("Test", "activity resume");
+		if (audio != null) audio.resume();		
 		if(!firstResume)
 			graphics.resume();
 		else
@@ -174,7 +171,6 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	@Override protected void onDestroy () {
-//		graphics.destroy();
 		audio.dispose();
 		super.onDestroy();
 	}
