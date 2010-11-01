@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.desktop.LwjglApplicationNew;
+import com.badlogic.gdx.backends.desktop.LwjglApplication;
 import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 
 public class UnicodeFontTest implements ApplicationListener {
@@ -82,7 +82,7 @@ public class UnicodeFontTest implements ApplicationListener {
 	}
 
 	public static void main (String[] args) {
-		new LwjglApplicationNew(new UnicodeFontTest(), "UnicodeFont Test", 800, 600, false);		
+		new LwjglApplication(new UnicodeFontTest(), "UnicodeFont Test", 800, 600, false);		
 	}
 
 	@Override

@@ -98,7 +98,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.desktop.LwjglApplicationNew;
+import com.badlogic.gdx.backends.desktop.LwjglApplication;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -124,7 +124,7 @@ public class Hiero extends JFrame {
 		+ "abcdefghijklmnopqrstuvwxyz\n1234567890\n" //
 		+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u007F";
 
-	LwjglApplicationNew app;
+	LwjglApplication app;
 	Canvas glCanvas;
 	volatile UnicodeFont newUnicodeFont;
 	UnicodeFont unicodeFont;
@@ -206,7 +206,7 @@ public class Hiero extends JFrame {
 
 			public final void addNotify () {
 				super.addNotify();
-				app = new LwjglApplicationNew(new Renderer(), "Hiero", 200, 200, false, glCanvas);
+				app = new LwjglApplication(new Renderer(), "Hiero", 200, 200, false, glCanvas);
 				
 				addWindowListener(new WindowAdapter() {
 					public void windowClosed (WindowEvent event) {

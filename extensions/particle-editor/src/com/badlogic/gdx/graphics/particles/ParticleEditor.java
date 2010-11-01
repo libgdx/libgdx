@@ -34,7 +34,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.desktop.LwjglApplicationNew;
+import com.badlogic.gdx.backends.desktop.LwjglApplication;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -45,7 +45,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
-	LwjglApplicationNew app;
+	LwjglApplication app;
 	Canvas glCanvas;
 	JPanel rowsPanel;
 	EffectPanel effectPanel;
@@ -62,7 +62,7 @@ public class ParticleEditor extends JFrame {
 
 			public final void addNotify () {
 				super.addNotify();
-				app = new LwjglApplicationNew(new Renderer(),"ParticleEditor", 200, 200, false, glCanvas);				
+				app = new LwjglApplication(new Renderer(),"ParticleEditor", 200, 200, false, glCanvas);				
 				addWindowListener(new WindowAdapter() {
 					public void windowClosed (WindowEvent event) {
 						app.stop();
