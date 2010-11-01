@@ -20,6 +20,7 @@ import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MD5Test;
 import com.badlogic.gdx.tests.ManagedTest;
+import com.badlogic.gdx.tests.ManualBindTest;
 import com.badlogic.gdx.tests.MeshMultitextureTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MeshTest;
@@ -71,6 +72,7 @@ public class GdxTests
 		InputTest.class,
 		LifeCycleTest.class,
 		ManagedTest.class,
+		ManualBindTest.class,
 		MD5Test.class,
 		MeshMultitextureTest.class,
 		MeshShaderTest.class,

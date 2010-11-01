@@ -25,7 +25,6 @@ public class AlphaTest implements GdxTest {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
-// batch.disableBlending();
 		batch.draw(texture, 0, 0, 256, 256, 0, 0, 256, 256, Color.WHITE, false, false);
 		batch.end();
 	}
@@ -37,7 +36,7 @@ public class AlphaTest implements GdxTest {
 
 	@Override public void surfaceCreated () {
 		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888);
-		pixmap.setColor(1, 0, 0, 0.7f);
+		pixmap.setColor(0, 1, 0, 0.7f);
 		pixmap.fill();
 
 		texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
