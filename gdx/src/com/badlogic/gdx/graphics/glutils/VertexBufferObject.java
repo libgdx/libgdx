@@ -271,9 +271,7 @@ public class VertexBufferObject implements VertexData {
 	public void unbind() {
 		GL11 gl = Gdx.gl11;
 		int textureUnit = 0;
-		int numAttributes = attributes.size();
-
-		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
+		int numAttributes = attributes.size();	
 
 		for (int i = 0; i < numAttributes; i++) {
 
@@ -298,6 +296,8 @@ public class VertexBufferObject implements VertexData {
 						+ attribute.usage);
 			}
 		}
+		
+		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
 		isBound = false;
 	}
 

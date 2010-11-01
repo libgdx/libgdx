@@ -150,15 +150,15 @@ public class Mesh {
 		return vertices.getAttributes().vertexSize;
 	}
 
-	/**
-	 * Sets whether to bind the underlying {@link VertexArray} or
-	 * {@link VertexBufferObject} automatically on a call to one of the {@link #render(int)}
-	 * methods or not.
-	 * @param autoBind
-	 */
-	public void setAutoBind( boolean autoBind ) {
-		this.autoBind = autoBind;
-	}
+//	/**
+//	 * Sets whether to bind the underlying {@link VertexArray} or
+//	 * {@link VertexBufferObject} automatically on a call to one of the {@link #render(int)}
+//	 * methods or not.
+//	 * @param autoBind
+//	 */
+//	public void setAutoBind( boolean autoBind ) {
+//		this.autoBind = autoBind;
+//	}
 	
 	
 	/**

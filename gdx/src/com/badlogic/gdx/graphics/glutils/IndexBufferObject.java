@@ -61,16 +61,16 @@ public class IndexBufferObject {
 	 *            the maximum number of indices this buffer can hold
 	 */
 	public IndexBufferObject(boolean isStatic, int maxIndices) {
-		if (Gdx.app.getType() == ApplicationType.Android
-				&& Gdx.app.getVersion() < 5) {
-			byteBuffer = ByteBuffer.allocate(maxIndices * 2);
-			byteBuffer.order(ByteOrder.nativeOrder());
-			isDirect = false;
-		} else {
+//		if (Gdx.app.getType() == ApplicationType.Android
+//				&& Gdx.app.getVersion() < 5) {
+//			byteBuffer = ByteBuffer.allocate(maxIndices * 2);
+//			byteBuffer.order(ByteOrder.nativeOrder());
+//			isDirect = false;
+//		} else {
 			byteBuffer = ByteBuffer.allocateDirect(maxIndices * 2);
 			byteBuffer.order(ByteOrder.nativeOrder());
 			isDirect = true;
-		}
+//		}
 		buffer = byteBuffer.asShortBuffer();
 		bufferHandle = createBufferObject();
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
