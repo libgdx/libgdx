@@ -147,7 +147,6 @@ public final class OrthographicCamera {
 	 */
 	public void update () {
 		proj.setToOrtho2D(0, 0, (viewportWidth * scale), (viewportHeight * scale), near, far);
-		model.idt();
 		model.setToTranslation(tmp.set((-position.x + (viewportWidth / 2) * scale), (-position.y + (viewportHeight / 2) * scale),
 			(-position.z)));
 		combined.set(proj);

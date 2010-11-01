@@ -200,6 +200,7 @@ public class SpriteBatch {
 	 * @param transform the transformation matrix.
 	 */
 	public void begin () {
+		if (drawing) throw new IllegalStateException("you have to call SpriteBatch.end() first");
 		renderCalls = 0;	
 		
 		if (Gdx.graphics.isGL20Available() == false) {
@@ -243,6 +244,7 @@ public class SpriteBatch {
 	 * Finishes off rendering of the last batch of sprites
 	 */
 	public void end () {
+		if (!drawing) throw new IllegalStateException("you have to call SpriteBatch.begin() first");
 		if (idx > 0) renderMesh();
 		lastTexture = null;
 		idx = 0;

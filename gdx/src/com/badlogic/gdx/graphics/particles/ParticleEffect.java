@@ -14,11 +14,10 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-// BOZO - Cache particle images? Or add hook to customize loading of particle images?
 
 public class ParticleEffect {
 	private ArrayList<ParticleEmitter> emitters = new ArrayList();
@@ -129,8 +128,12 @@ public class ParticleEffect {
 			if (imagePath == null) continue;
 			imagePath = imagePath.replace('\\', '/');
 			imagePath = imagesDir + new File(imagePath).getName();
-			emitter.setTexture(Gdx.graphics.newTexture(Gdx.files.getFileHandle(imagePath, fileType), TextureFilter.Linear,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+			emitter.setTexture(loadTexture(Gdx.files.getFileHandle(imagePath, fileType)));
 		}
+	}
+
+	protected Texture loadTexture (FileHandle file) {
+		return Gdx.graphics.newTexture(file, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
+			TextureWrap.ClampToEdge);
 	}
 }

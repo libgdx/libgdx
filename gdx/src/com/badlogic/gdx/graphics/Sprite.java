@@ -27,6 +27,13 @@ public class Sprite {
 	private boolean dirty;
 
 	/**
+	 * Creates an uninitialized sprite. The sprite will need a texture, texture region, bounds, and color set before it can be
+	 * drawn.
+	 */
+	public Sprite () {
+	}
+
+	/**
 	 * Creates a sprite with width, height, and texture region equal to the size of the texture.
 	 */
 	public Sprite (Texture texture) {
@@ -36,6 +43,8 @@ public class Sprite {
 	/**
 	 * Creates a sprite with width, height, and texture region equal to the specified size. The texture region's upper left corner
 	 * will be 0,0.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (Texture texture, int srcWidth, int srcHeight) {
 		this(texture, 0, 0, srcWidth, srcHeight);
@@ -43,19 +52,23 @@ public class Sprite {
 
 	/**
 	 * Creates a sprite with width, height, and texture region equal to the specified size.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
 		this.texture = texture;
 		setTextureRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
-		setBounds(0, 0, Math.abs(srcWidth), Math.abs(srcHeight));
+		setSize(Math.abs(srcWidth), Math.abs(srcHeight));
 		setOrigin(width / 2, height / 2);
 	}
 
 	/**
 	 * Creates a sprite with width, height, and texture region equal to the specified size, relative to specified sprite's texture
 	 * region.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (Sprite parent, int srcX, int srcY, int srcWidth, int srcHeight) {
 		this(parent.texture, (int)(srcX + parent.vertices[U1] * parent.texture.getWidth()), (int)(srcY + parent.vertices[V2]
@@ -63,8 +76,8 @@ public class Sprite {
 	}
 
 	/**
-	 * Sets the size and position of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale
-	 * are changed, it is slightly more efficient to set the bounds afterward.
+	 * Sets the position and size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale
+	 * are changed, it is slightly more efficient to set the bounds after those operations.
 	 */
 	public void setBounds (float x, float y, float width, float height) {
 		this.x = x;
@@ -94,8 +107,8 @@ public class Sprite {
 
 	/**
 	 * Sets the size of the sprite when drawn, before scaling and rotation are applied. If origin, rotation, or scale are changed,
-	 * it is slightly more efficient to set the size afterward. If both position and size are to be changed, it is better to use
-	 * {@link #setBounds(float, float, float, float)}.
+	 * it is slightly more efficient to set the size after those operations. If both position and size are to be changed, it is
+	 * better to use {@link #setBounds(float, float, float, float)}.
 	 */
 	public void setSize (float width, float height) {
 		this.width = width;
@@ -123,7 +136,7 @@ public class Sprite {
 
 	/**
 	 * Sets the position where the sprite will be drawn. If origin, rotation, or scale are changed, it is slightly more efficient
-	 * to set the position afterward. If both position and size are to be changed, it is better to use
+	 * to set the position after those operations. If both position and size are to be changed, it is better to use
 	 * {@link #setBounds(float, float, float, float)}.
 	 */
 	public void setPosition (float x, float y) {
@@ -132,7 +145,7 @@ public class Sprite {
 
 	/**
 	 * Sets the position relative to the current position where the sprite will be drawn. If origin, rotation, or scale are
-	 * changed, it is slightly more efficient to translate afterward.
+	 * changed, it is slightly more efficient to translate after those operations.
 	 */
 	public void translate (float xAmount, float yAmount) {
 		x += xAmount;
@@ -155,7 +168,9 @@ public class Sprite {
 	}
 
 	/**
-	 * Sets the texture coordinates in pixels to apply to the sprite.
+	 * Sets the texture coordinates in pixels to apply to the sprite. This resets calling {@link #flip(boolean, boolean)}.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public void setTextureRegion (int srcX, int srcY, int srcWidth, int srcHeight) {
 		float invTexWidth = 1.0f / texture.getWidth();
@@ -192,7 +207,7 @@ public class Sprite {
 	}
 
 	/**
-	 * Flips the texture.
+	 * Flips the current texture region.
 	 */
 	public void flip (boolean x, boolean y) {
 		float[] vertices = this.vertices;

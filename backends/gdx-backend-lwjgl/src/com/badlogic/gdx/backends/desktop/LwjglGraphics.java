@@ -44,11 +44,12 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 	private GL11 gl11;
 	private GL20 gl20;
 	private final boolean useGL2;
-	private long lastTime;
 	private float deltaTime = 0;
 	private long frameStart = 0;
 	private int frames = 0;
 	private int fps;
+
+	long lastTime;
 
 	LwjglGraphics (final LwjglApplication application, String title, int width, int height, boolean useGL2IfAvailable) {
 		this.app = application;
@@ -180,8 +181,6 @@ public final class LwjglGraphics implements Graphics, RenderListener {
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-
-		lastTime = System.nanoTime();
 	}
 
 	public float getDeltaTime () {

@@ -40,6 +40,31 @@ class EffectPanel extends JPanel {
 
 	public ParticleEmitter newEmitter (String name, boolean select) {
 		final ParticleEmitter emitter = new ParticleEmitter();
+
+		emitter.getDuration().setLow(3000, 3000);
+
+		emitter.getEmission().setHigh(10, 10);
+
+		emitter.getLife().setHigh(1000, 1000);
+
+		emitter.getScale().setHigh(32, 32);
+
+		emitter.getRotation().setLow(1, 360);
+		emitter.getRotation().setHigh(180, 180);
+		emitter.getRotation().setTimeline(new float[] {0, 1});
+		emitter.getRotation().setScaling(new float[] {0, 1});
+		emitter.getRotation().setRelative(true);
+
+		emitter.getAngle().setHigh(1, 360);
+		emitter.getAngle().setActive(true);
+
+		emitter.getVelocity().setHigh(80, 80);
+		emitter.getVelocity().setActive(true);
+
+		emitter.getTransparency().setHigh(1, 1);
+		emitter.getTransparency().setTimeline(new float[] {0, 0.2f, 0.8f, 1});
+		emitter.getTransparency().setScaling(new float[] {0, 1, 1, 0});
+
 		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(15);
 		emitter.setImagePath("data/particle.png");

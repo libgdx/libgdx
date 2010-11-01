@@ -4,7 +4,6 @@ package com.badlogic.gdx.graphics.particles;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
-import java.math.BigInteger;
 import java.util.BitSet;
 
 import com.badlogic.gdx.graphics.GL10;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.MathUtils;
 
-// BOZO - Support point particles?
+// BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.
 
 public class ParticleEmitter {
@@ -57,9 +56,9 @@ public class ParticleEmitter {
 	private boolean flipX, flipY;
 	private int updateFlags;
 
-	private float emission, emissionDiff, emissionDelta;
-	private float lifeOffset, lifeOffsetDiff;
-	private float life, lifeDiff;
+	private int emission, emissionDiff, emissionDelta;
+	private int lifeOffset, lifeOffsetDiff;
+	private int life, lifeDiff;
 	private int spawnWidth, spawnWidthDiff;
 	private int spawnHeight, spawnHeightDiff;
 	public float duration = 1, durationTimer;
@@ -72,37 +71,7 @@ public class ParticleEmitter {
 	private boolean additive = true;
 
 	public ParticleEmitter () {
-		this((Texture)null);
-	}
-
-	public ParticleEmitter (Texture texture) {
-		this.texture = texture;
-
 		initialize();
-
-		durationValue.setLow(3, 3);
-
-		emissionValue.setHigh(10, 10);
-
-		lifeValue.setHigh(1, 1);
-
-		scaleValue.setHigh(32, 32);
-
-		rotationValue.setLow(1, 360);
-		rotationValue.setHigh(180, 180);
-		rotationValue.setTimeline(new float[] {0, 1});
-		rotationValue.setScaling(new float[] {0, 1});
-		rotationValue.setRelative(true);
-
-		angleValue.setHigh(1, 360);
-		angleValue.setActive(true);
-
-		velocityValue.setHigh(80, 80);
-		velocityValue.setActive(true);
-
-		transparencyValue.setHigh(1, 1);
-		transparencyValue.setTimeline(new float[] {0, 0.2f, 0.8f, 1});
-		transparencyValue.setScaling(new float[] {0, 1, 1, 0});
 	}
 
 	public ParticleEmitter (BufferedReader reader) throws IOException {
@@ -182,6 +151,7 @@ public class ParticleEmitter {
 
 	public void draw (SpriteBatch spriteBatch, float delta) {
 		delta = Math.min(delta, 0.250f);
+		int deltaMillis = (int)(delta * 1000);
 
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
@@ -191,7 +161,7 @@ public class ParticleEmitter {
 		while (true) {
 			index = active.nextSetBit(index);
 			if (index == -1) break;
-			if (updateParticle(index, delta))
+			if (updateParticle(index, delta, deltaMillis))
 				particles[index].draw(spriteBatch);
 			else {
 				active.clear(index);
@@ -204,7 +174,7 @@ public class ParticleEmitter {
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
-			delayTimer += delta;
+			delayTimer += deltaMillis;
 			return;
 		}
 
@@ -214,16 +184,16 @@ public class ParticleEmitter {
 		}
 
 		if (durationTimer < duration)
-			durationTimer += delta;
+			durationTimer += deltaMillis;
 		else {
 			if (!continuous) return;
 			restart();
 		}
 
-		emissionDelta += delta;
+		emissionDelta += deltaMillis;
 		float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
 		if (emissionTime > 0) {
-			emissionTime = 1 / emissionTime;
+			emissionTime = 1000 / emissionTime;
 			if (emissionDelta >= emissionTime) {
 				int emitCount = (int)(emissionDelta / emissionTime);
 				emitCount = Math.min(emitCount, maxParticleCount - activeCount);
@@ -247,16 +217,16 @@ public class ParticleEmitter {
 		durationTimer -= duration;
 		duration = durationValue.newLowValue();
 
-		emission = emissionValue.newLowValue();
-		emissionDiff = emissionValue.newHighValue();
+		emission = (int)emissionValue.newLowValue();
+		emissionDiff = (int)emissionValue.newHighValue();
 		if (!emissionValue.isRelative()) emissionDiff -= emission;
 
-		life = lifeValue.newLowValue();
-		lifeDiff = lifeValue.newHighValue();
+		life = (int)lifeValue.newLowValue();
+		lifeDiff = (int)lifeValue.newHighValue();
 		if (!lifeValue.isRelative()) lifeDiff -= life;
 
-		lifeOffset = lifeOffsetValue.active ? lifeOffsetValue.newLowValue() : 0;
-		lifeOffsetDiff = lifeOffsetValue.newHighValue();
+		lifeOffset = lifeOffsetValue.active ? (int)lifeOffsetValue.newLowValue() : 0;
+		lifeOffsetDiff = (int)lifeOffsetValue.newHighValue();
 		if (!lifeOffsetValue.isRelative()) lifeOffsetDiff -= lifeOffset;
 
 		spawnWidth = (int)spawnWidthValue.newLowValue();
@@ -277,7 +247,7 @@ public class ParticleEmitter {
 		if (tintValue.timeline.length > 1) updateFlags |= UPDATE_TINT;
 	}
 
-	public void activateParticle (int index) {
+	private void activateParticle (int index) {
 		Particle particle = particles[index];
 		if (particle == null) {
 			particles[index] = particle = new Particle(texture);
@@ -288,7 +258,7 @@ public class ParticleEmitter {
 		int updateFlags = this.updateFlags;
 
 		float offsetTime = lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent);
-		particle.life = particle.currentLife = life + lifeDiff * lifeValue.getScale(percent);
+		particle.life = particle.currentLife = life + (int)(lifeDiff * lifeValue.getScale(percent));
 
 		if (velocityValue.active) {
 			particle.velocity = velocityValue.newLowValue();
@@ -299,7 +269,12 @@ public class ParticleEmitter {
 		particle.angle = angleValue.newLowValue();
 		particle.angleDiff = angleValue.newHighValue();
 		if (!angleValue.isRelative()) particle.angleDiff -= particle.angle;
-		if ((updateFlags & UPDATE_ANGLE) == 0) particle.angle = particle.angle + particle.angleDiff * angleValue.getScale(0);
+		if ((updateFlags & UPDATE_ANGLE) == 0) {
+			float angle = particle.angle + particle.angleDiff * angleValue.getScale(0);
+			particle.angle = angle;
+			particle.angleCos = MathUtils.cosDeg(angle);
+			particle.angleSin = MathUtils.sinDeg(angle);
+		}
 
 		particle.scale = scaleValue.newLowValue() / texture.getWidth();
 		particle.scaleDiff = scaleValue.newHighValue() / texture.getWidth();
@@ -402,36 +377,51 @@ public class ParticleEmitter {
 		particle.setBounds(x - texture.getWidth() / 2, y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
 	}
 
-	public boolean updateParticle (int index, float delta) {
+	private boolean updateParticle (int index, float delta, int deltaMillis) {
 		Particle particle = particles[index];
-		float life = particle.currentLife - delta;
+		int life = particle.currentLife - deltaMillis;
 		if (life <= 0) return false;
 		particle.currentLife = life;
 
-		float percent = 1 - particle.currentLife / particle.life;
+		float percent = 1 - particle.currentLife / (float)particle.life;
 		int updateFlags = this.updateFlags;
 
 		if ((updateFlags & UPDATE_SCALE) != 0)
 			particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(percent));
 
-		float angle = particle.angle;
-		if ((updateFlags & UPDATE_ANGLE) != 0) angle += particle.angleDiff * angleValue.getScale(percent);
-
-		if ((updateFlags & UPDATE_ROTATION) != 0) {
-			float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
-			if (aligned) rotation += angle;
-			if (rotation != 0) particle.setRotation(rotation);
-		}
-
 		if ((updateFlags & UPDATE_VELOCITY) != 0) {
 			float velocity = (particle.velocity + particle.velocityDiff * velocityValue.getScale(percent)) * delta;
-			float velocityX = velocity * MathUtils.cosDeg(angle);
-			float velocityY = velocity * MathUtils.sinDeg(angle);
+
+			float velocityX, velocityY;
+			if ((updateFlags & UPDATE_ANGLE) != 0) {
+				float angle = particle.angle += particle.angleDiff * angleValue.getScale(percent);
+				velocityX = velocity * MathUtils.cosDeg(angle);
+				velocityY = velocity * MathUtils.sinDeg(angle);
+				if ((updateFlags & UPDATE_ROTATION) != 0) {
+					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+					if (aligned) rotation += angle;
+					particle.setRotation(rotation);
+				}
+			} else {
+				velocityX = velocity * particle.angleCos;
+				velocityY = velocity * particle.angleSin;
+				if ((updateFlags & UPDATE_ROTATION) != 0) {
+					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
+					if (aligned) rotation += particle.angle;
+					particle.setRotation(rotation);
+				}
+			}
+
 			if ((updateFlags & UPDATE_WIND) != 0)
 				velocityX += (particle.wind + particle.windDiff * windValue.getScale(percent)) * delta;
+
 			if ((updateFlags & UPDATE_GRAVITY) != 0)
 				velocityY += (particle.gravity + particle.gravityDiff * gravityValue.getScale(percent)) * delta;
+
 			particle.translate(velocityX, velocityY);
+		} else {
+			if ((updateFlags & UPDATE_ROTATION) != 0)
+				particle.setRotation(particle.rotation + particle.rotationDiff * rotationValue.getScale(percent));
 		}
 
 		float[] color;
@@ -702,52 +692,57 @@ public class ParticleEmitter {
 	}
 
 	public void load (BufferedReader reader) throws IOException {
-		name = readString(reader, "name");
-		reader.readLine();
-		delayValue.load(reader);
-		reader.readLine();
-		durationValue.load(reader);
-		reader.readLine();
-		setMinParticleCount(readInt(reader, "minParticleCount"));
-		setMaxParticleCount(readInt(reader, "maxParticleCount"));
-		reader.readLine();
-		emissionValue.load(reader);
-		reader.readLine();
-		lifeValue.load(reader);
-		reader.readLine();
-		lifeOffsetValue.load(reader);
-		reader.readLine();
-		xOffsetValue.load(reader);
-		reader.readLine();
-		yOffsetValue.load(reader);
-		reader.readLine();
-		spawnShapeValue.load(reader);
-		reader.readLine();
-		spawnWidthValue.load(reader);
-		reader.readLine();
-		spawnHeightValue.load(reader);
-		reader.readLine();
-		scaleValue.load(reader);
-		reader.readLine();
-		velocityValue.load(reader);
-		reader.readLine();
-		angleValue.load(reader);
-		reader.readLine();
-		rotationValue.load(reader);
-		reader.readLine();
-		windValue.load(reader);
-		reader.readLine();
-		gravityValue.load(reader);
-		reader.readLine();
-		tintValue.load(reader);
-		reader.readLine();
-		transparencyValue.load(reader);
-		reader.readLine();
-		attached = readBoolean(reader, "attached");
-		continuous = readBoolean(reader, "continuous");
-		aligned = readBoolean(reader, "aligned");
-		additive = readBoolean(reader, "additive");
-		behind = readBoolean(reader, "behind");
+		try {
+			name = readString(reader, "name");
+			reader.readLine();
+			delayValue.load(reader);
+			reader.readLine();
+			durationValue.load(reader);
+			reader.readLine();
+			setMinParticleCount(readInt(reader, "minParticleCount"));
+			setMaxParticleCount(readInt(reader, "maxParticleCount"));
+			reader.readLine();
+			emissionValue.load(reader);
+			reader.readLine();
+			lifeValue.load(reader);
+			reader.readLine();
+			lifeOffsetValue.load(reader);
+			reader.readLine();
+			xOffsetValue.load(reader);
+			reader.readLine();
+			yOffsetValue.load(reader);
+			reader.readLine();
+			spawnShapeValue.load(reader);
+			reader.readLine();
+			spawnWidthValue.load(reader);
+			reader.readLine();
+			spawnHeightValue.load(reader);
+			reader.readLine();
+			scaleValue.load(reader);
+			reader.readLine();
+			velocityValue.load(reader);
+			reader.readLine();
+			angleValue.load(reader);
+			reader.readLine();
+			rotationValue.load(reader);
+			reader.readLine();
+			windValue.load(reader);
+			reader.readLine();
+			gravityValue.load(reader);
+			reader.readLine();
+			tintValue.load(reader);
+			reader.readLine();
+			transparencyValue.load(reader);
+			reader.readLine();
+			attached = readBoolean(reader, "attached");
+			continuous = readBoolean(reader, "continuous");
+			aligned = readBoolean(reader, "aligned");
+			additive = readBoolean(reader, "additive");
+			behind = readBoolean(reader, "behind");
+		} catch (RuntimeException ex) {
+			if (name == null) throw ex;
+			throw new RuntimeException("Error parsing emitter: " + name, ex);
+		}
 	}
 
 	static String readString (BufferedReader reader, String name) throws IOException {
@@ -769,11 +764,12 @@ public class ParticleEmitter {
 	}
 
 	static class Particle extends Sprite {
-		float life, currentLife;
+		int life, currentLife;
 		float scale, scaleDiff;
 		float rotation, rotationDiff;
 		float velocity, velocityDiff;
 		float angle, angleDiff;
+		float angleCos, angleSin;
 		float transparency, transparencyDiff;
 		float wind, windDiff;
 		float gravity, gravityDiff;

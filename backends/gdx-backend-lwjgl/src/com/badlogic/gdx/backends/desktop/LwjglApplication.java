@@ -177,6 +177,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 		for (RenderListener listener : listeners)
 			listener.surfaceCreated();
 		setSize(width, height);
+		graphics.lastTime = System.nanoTime();
 		for (RenderListener listener : listeners)
 			listener.render();
 

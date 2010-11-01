@@ -64,6 +64,7 @@ public class TextAreaTest implements RenderListener {
 				}
 				if (timer.isRunning()) return;
 				timer.start();
+				System.out.println();
 				speed = -speed;
 			}
 		});
