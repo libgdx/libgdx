@@ -9,10 +9,14 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,8 +26,13 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.hiero.unicodefont.GlyphPage;
 import com.badlogic.gdx.hiero.unicodefont.UnicodeFont;
@@ -141,6 +150,12 @@ public class BMFontUtil {
 		}
 		out.close();
 
+		int width = unicodeFont.getGlyphPageWidth();
+		int height = unicodeFont.getGlyphPageHeight();
+		IntBuffer buffer = BufferUtils.createIntBuffer(width * height);
+		BufferedImage pageImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		int[] row = new int[width];
+
 		pageIndex = 0;
 		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
 			GlyphPage page = (GlyphPage)pageIter.next();
@@ -149,24 +164,17 @@ public class BMFontUtil {
 				fileName = outputName + ".png";
 			else
 				fileName = outputName + (pageIndex + 1) + ".png";
-			File imageOutputFile = new File(outputDir, fileName);
-			FileOutputStream imageOutput = new FileOutputStream(imageOutputFile);
-			try {
-				// BOZO - Save texture to PNG.
-				// saveImage(page.getTexture(), "png", imageOutput, true);
-			} finally {
-				imageOutput.close();
+
+			page.getTexture().bind();
+			buffer.clear();
+			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, buffer);
+			WritableRaster raster = pageImage.getRaster();
+			for (int y = 0; y < height; y++) {
+				buffer.get(row);
+				raster.setDataElements(0, y, width, 1, row);
 			}
-			// Flip output image.
-			Image image = new ImageIcon(imageOutputFile.getAbsolutePath()).getImage();
-			BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-			Graphics g = bufferedImage.getGraphics();
-			g.drawImage(image, 0, 0, null);
-			AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-			tx.translate(0, -image.getHeight(null));
-			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-			bufferedImage = op.filter(bufferedImage, null);
-			ImageIO.write(bufferedImage, "png", imageOutputFile);
+			File imageOutputFile = new File(outputDir, fileName);
+			ImageIO.write(pageImage, "png", imageOutputFile);
 
 			pageIndex++;
 		}
