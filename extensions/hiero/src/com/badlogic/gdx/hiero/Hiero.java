@@ -203,6 +203,13 @@ public class Hiero extends JFrame {
 		effectsListModel.addElement(new ShadowEffect());
 		new EffectPanel(colorEffect);
 
+		addWindowListener(new WindowAdapter() {
+			public void windowClosed (WindowEvent event) {
+				System.exit(0);
+				// Gdx.app.quit();
+			}
+		});
+
 		setVisible(true);
 	}
 
@@ -1250,7 +1257,7 @@ public class Hiero extends JFrame {
 
 		@Override public void resume () {
 		}
-		
+
 		@Override public void dispose () {
 		}
 	}

@@ -33,6 +33,7 @@ import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 public class UnicodeFontTest implements ApplicationListener {
 	private UnicodeFont unicodeFont;
 
+	@Override
 	public void create() {
 		unicodeFont = new UnicodeFont("c:/windows/fonts/arial.ttf", 48, false,
 				false);
@@ -64,6 +65,7 @@ public class UnicodeFontTest implements ApplicationListener {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
+	@Override
 	public void render() {
 		GL11.glClear(GL_COLOR_BUFFER_BIT);
 
@@ -79,9 +81,6 @@ public class UnicodeFontTest implements ApplicationListener {
 		// \uD802\uDC02\uD802\uDC03\uD802\uDC12 == 0x10802, 0x10803, s0x10812
 	}
 
-	public void dispose() {
-	}
-
 	public static void main(String[] args) {
 		new LwjglApplication(new UnicodeFontTest(), "UnicodeFont Test", 800,
 				600, false);
@@ -89,19 +88,13 @@ public class UnicodeFontTest implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 }
