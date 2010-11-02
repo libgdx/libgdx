@@ -5,6 +5,5 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry kind="lib" path="libs/xpp3-1.1.4c.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/twl.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
