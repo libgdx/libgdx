@@ -88,7 +88,7 @@ public class UnicodeFontTest implements ApplicationListener {
 	}
 
 	@Override
-	public void destroy() {
+	public void dispose() {
 		// TODO Auto-generated method stub
 
 	}

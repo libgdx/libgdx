@@ -99,7 +99,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		createWorld(world);
 	}
 
-	@Override public void destroy () {		
+	@Override public void dispose () {		
 		renderer.dispose();
 		world.dispose();
 

@@ -18,7 +18,7 @@ public abstract class Game implements ApplicationListener {
 	}
 
 	@Override
-	public void destroy() {		
+	public void dispose() {		
 		screen.dispose();
 	}
 

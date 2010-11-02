@@ -26,7 +26,7 @@ public class ImmediateModeRendererTest extends GdxTest {
 	ImmediateModeRenderer renderer;
 	Texture texture;
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 		texture.dispose();
 	}
 

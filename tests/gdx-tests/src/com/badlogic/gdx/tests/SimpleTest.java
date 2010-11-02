@@ -35,7 +35,7 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 
 	}
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 		Gdx.app.log("Simple Test", "Thread=" + Thread.currentThread().getId() + ", application destroyed");
 	}
 

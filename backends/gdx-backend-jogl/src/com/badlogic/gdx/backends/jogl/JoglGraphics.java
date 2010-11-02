@@ -80,6 +80,6 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 
 	public void destroy() {		
 		canvas.getContext().makeCurrent();
-		listener.destroy();
+		listener.dispose();
 	}
 }

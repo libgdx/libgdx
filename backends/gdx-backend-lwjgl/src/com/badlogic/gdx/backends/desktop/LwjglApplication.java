@@ -89,7 +89,7 @@ public class LwjglApplication implements Application {
 		}
 		
 		listener.pause();
-		listener.destroy();
+		listener.dispose();
 		Display.destroy();
 	}
 	

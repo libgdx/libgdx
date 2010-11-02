@@ -48,7 +48,7 @@ public class AudioDeviceTest extends GdxTest {
 		}
 	}
 	
-	@Override public void destroy () {
+	@Override public void dispose () {
 		stop = true;
 		try {
 			thread.join();

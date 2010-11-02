@@ -25,7 +25,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
  */
 public class LifeCycleTest extends GdxTest {
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app destroyed");
 	}
 

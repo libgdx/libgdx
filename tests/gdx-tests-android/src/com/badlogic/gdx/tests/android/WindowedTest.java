@@ -77,7 +77,7 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 
 	}
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 		// TODO Auto-generated method stub
 
 	}

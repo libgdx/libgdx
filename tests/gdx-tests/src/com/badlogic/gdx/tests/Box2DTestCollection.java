@@ -62,7 +62,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 	@Override public boolean keyDown (int keycode) {
 		if (keycode == Keys.KEYCODE_SPACE) {
 			app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
-			tests[testIndex].destroy();
+			tests[testIndex].dispose();
 			testIndex++;
 			if (testIndex >= tests.length) testIndex = 0;
 			Box2DTest test = tests[testIndex];

@@ -346,7 +346,7 @@ public class ParticleEditor extends JFrame {
 		public void dispose () {
 		}
 
-		@Override public void destroy () {
+		@Override public void dispose () {
 			// TODO Auto-generated method stub
 
 		}

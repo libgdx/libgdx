@@ -62,5 +62,5 @@ public interface ApplicationListener {
 	/**
 	 * Called when the {@link Application} is destroyed. Preceded by a call to {@link #pause()}.
 	 */
-	public void destroy ();
+	public void dispose ();
 }

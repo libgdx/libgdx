@@ -322,7 +322,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 			}
 			
 			if(destroy) {			
-				app.listener.destroy();
+				app.listener.dispose();
 				destroy = false;
 			}
 		}

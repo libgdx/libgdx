@@ -26,7 +26,7 @@ public class IndexBufferObjectClassTest extends GdxTest {
 	}
 
 	@Override
-	public void destroy() {
+	public void dispose() {
 		texture.dispose();
 		vbo.dispose();
 		ibo.dispose();

@@ -10,5 +10,5 @@ public abstract class GdxTest implements ApplicationListener
 	public void render( ) { };
 	public void resize(int width, int height) { };
 	public void pause( ) { };
-	public void destroy( ) { };
+	public void dispose( ) { };
 }

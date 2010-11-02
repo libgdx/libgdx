@@ -27,7 +27,7 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 	}
 
 	@Override
-	public void destroy() {
+	public void dispose() {
 		texture.dispose();
 		shader.dispose();
 		ibo.dispose();

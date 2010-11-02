@@ -24,6 +24,7 @@ public class TextAreaTest implements ApplicationListener {
 	GUI gui;
 	TwlInputListener guiInputListener;
 
+	@Override
 	public void create () {
 		if (gui != null) return;
 
@@ -79,25 +80,23 @@ public class TextAreaTest implements ApplicationListener {
 		TwlRenderer.updateSize(gui);
 	}
 
+	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.input.processEvents(guiInputListener);
 		gui.update();
 	}
 
-	public void destroy () {
+	@Override
+	public void dispose () {
 		gui.destroy();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
 	}
 }

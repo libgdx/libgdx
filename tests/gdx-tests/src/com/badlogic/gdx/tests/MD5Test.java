@@ -106,7 +106,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 	}
 
 	@Override
-	public void destroy() {
+	public void dispose() {
 		batch.dispose();
 		renderer.dispose();
 		font.dispose();

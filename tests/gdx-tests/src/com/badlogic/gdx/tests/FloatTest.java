@@ -35,7 +35,7 @@ public class FloatTest extends GdxTest {
 	float angle = 0;
 	float angleIncrement = 0.1f;
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 		tex.dispose();
 		tex2.dispose();
 	}

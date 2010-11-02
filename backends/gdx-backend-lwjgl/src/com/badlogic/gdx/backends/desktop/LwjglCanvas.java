@@ -30,10 +30,8 @@ public class LwjglCanvas implements Application {
 	LwjglInput input;
 	final ApplicationListener listener;
 	Thread mainLoopThread;
-	boolean running = true;
 	Canvas canvas;
 	Timer timer = new Timer("LwjglCanvas Timer");
-	Runnable updateRunnable;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
@@ -114,7 +112,7 @@ public class LwjglCanvas implements Application {
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
-		updateRunnable = new Runnable() {
+		final Runnable runnable = new Runnable() {
 			int lastWidth = graphics.getWidth();
 			int lastHeight = graphics.getHeight();
 
@@ -138,7 +136,7 @@ public class LwjglCanvas implements Application {
 		timer.schedule(new TimerTask() {
 			public void run () {
 				try {
-					EventQueue.invokeAndWait(updateRunnable);
+					EventQueue.invokeAndWait(runnable);
 				} catch (Exception ex) {
 					throw new GdxRuntimeException(ex);
 				}
@@ -147,12 +145,11 @@ public class LwjglCanvas implements Application {
 	}
 
 	public void stop () {
-		running = false;
 		timer.cancel();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {
 				listener.pause();
-				listener.destroy();
+				listener.dispose();
 				Display.destroy();
 			}
 		});

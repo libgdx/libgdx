@@ -17,6 +17,7 @@ public class ButtonTest implements ApplicationListener {
 	GUI gui;	
 	TwlInputListener guiInputListener;
 
+	@Override
 	public void create () {
 		if (gui != null) return;
 
@@ -37,6 +38,7 @@ public class ButtonTest implements ApplicationListener {
 		gui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
 	}
 
+	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);	
 		
@@ -44,25 +46,16 @@ public class ButtonTest implements ApplicationListener {
 		gui.update();		
 	}
 
-	public void dispose () {
-		gui.destroy();
-	}	
-
 	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		
+	public void dispose() {
+		gui.destroy();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
 	}
 }

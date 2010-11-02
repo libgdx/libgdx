@@ -1251,7 +1251,7 @@ public class Hiero extends JFrame {
 		@Override public void resume () {
 		}
 		
-		@Override public void destroy () {
+		@Override public void dispose () {
 		}
 	}
 

@@ -177,7 +177,7 @@ public final class JoglApplication implements Application {
 			}
 			
 			@Override
-			public void destroy() {
+			public void dispose() {
 				System.out.println("destroy");				
 			}
 			

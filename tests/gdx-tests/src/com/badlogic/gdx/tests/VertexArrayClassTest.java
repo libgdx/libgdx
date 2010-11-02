@@ -26,7 +26,7 @@ public class VertexArrayClassTest extends GdxTest {
 	}
 
 	@Override
-	public void destroy() {
+	public void dispose() {
 		texture.dispose();
 		va.dispose();
 	}

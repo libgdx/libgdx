@@ -309,7 +309,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 		world.dispose();
 	}
 	
