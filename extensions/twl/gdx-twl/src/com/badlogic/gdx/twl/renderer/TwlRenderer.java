@@ -204,17 +204,11 @@ public class TwlRenderer implements Renderer {
 		}
 	}
 
-	static public void updateSize (GUI gui) {
-		Renderer renderer = gui.getRenderer();
-		if (!(renderer instanceof TwlRenderer)) throw new IllegalArgumentException("gui's renderer must be a TwlRenderer.");
-		((TwlRenderer)renderer).spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
-			0, 0, 1);
-		gui.setSize();
+	public void setSize () {
+		spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1);
 	}
 
-	static public GUI createGUI (Widget root, String themeFile, final FileType fileType) {
-		TwlRenderer renderer = new TwlRenderer();
-		GUI gui = new GUI(root, renderer, null);
+	public void applyTheme (GUI gui, String themeFile, final FileType fileType) {
 		File file = new File(themeFile);
 		final File themeRoot = file.getParentFile();
 		final String themeFileName = file.getName();
@@ -233,15 +227,14 @@ public class TwlRenderer implements Renderer {
 
 						public InputStream getInputStream () {
 							if (!path.endsWith(".xml")) return null; // Only theme files are loaded through the URL.
-							return fileHandle.getInputStream();
+							return fileHandle.readFile();
 						}
 					};
 				}
 			});
-			gui.applyTheme(ThemeManager.createThemeManager(themeURL, renderer));
+			gui.applyTheme(ThemeManager.createThemeManager(themeURL, this));
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading theme: " + themeFile, ex);
-		}		
-		return gui;
+		}
 	}
 }

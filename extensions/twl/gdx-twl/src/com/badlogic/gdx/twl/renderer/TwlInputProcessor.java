@@ -2,24 +2,27 @@
 package com.badlogic.gdx.twl.renderer;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.backends.desktop.LwjglInput;
 
 import de.matthiasmann.twl.GUI;
 
 /**
  * @author Nathan Sweet <misc@n4te.com>
  */
-public class TwlInputListener implements InputProcessor {
+public class TwlInputProcessor implements InputProcessor {
 	private final GUI gui;
 
-	public TwlInputListener (GUI gui) {
+	public TwlInputProcessor (GUI gui) {
 		this.gui = gui;
 	}
 
 	public boolean keyDown (int keycode) {
+		keycode = LwjglInput.getKeyCodeReverse(keycode);
 		return gui.handleKey(keycode, (char)0, true);
 	}
 
 	public boolean keyUp (int keycode) {
+		keycode = LwjglInput.getKeyCodeReverse(keycode);
 		return gui.handleKey(keycode, (char)0, false);
 	}
 

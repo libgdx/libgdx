@@ -5,7 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.twl.renderer.TwlInputListener;
+import com.badlogic.gdx.twl.renderer.TwlInputProcessor;
 import com.badlogic.gdx.twl.renderer.TwlRenderer;
 
 import de.matthiasmann.twl.DialogLayout;
@@ -22,10 +22,10 @@ import de.matthiasmann.twl.textarea.TextAreaModel.Element;
 
 public class TextAreaTest implements ApplicationListener {
 	GUI gui;
-	TwlInputListener guiInputListener;
+	TwlRenderer twl;
+	TwlInputProcessor guiInputListener;
 
-	@Override
-	public void create () {
+	@Override public void create () {
 		if (gui != null) return;
 
 		final HTMLTextAreaModel htmlText = new HTMLTextAreaModel();
@@ -41,7 +41,9 @@ public class TextAreaTest implements ApplicationListener {
 		layout.setHorizontalGroup(layout.createParallelGroup().addWidgets(scrollPane, fpsCounter));
 		layout.setVerticalGroup(layout.createSequentialGroup().addWidget(scrollPane).addGap(5).addWidget(fpsCounter).addGap(5));
 
-		gui = TwlRenderer.createGUI(layout, "data/widgets.xml", FileType.Internal);
+		twl = new TwlRenderer();
+		gui = new GUI(layout, twl, null);
+		twl.applyTheme(gui, "data/widgets.xml", FileType.Internal);
 
 		textArea.addCallback(new TextArea.Callback() {
 			Timer timer;
@@ -71,32 +73,28 @@ public class TextAreaTest implements ApplicationListener {
 				speed = -speed;
 			}
 		});
-		
-		guiInputListener = new TwlInputListener(gui);
-	}
-	
-	@Override
-	public void resize(int width, int height) {	
-		TwlRenderer.updateSize(gui);
+
+		guiInputListener = new TwlInputProcessor(gui);
 	}
 
-	@Override
-	public void render () {
+	@Override public void resize (int width, int height) {
+		gui.setSize();
+		twl.setSize();
+	}
+
+	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.input.processEvents(guiInputListener);
 		gui.update();
 	}
 
-	@Override
-	public void dispose () {
+	@Override public void dispose () {
 		gui.destroy();
 	}
 
-	@Override
-	public void pause() {
+	@Override public void pause () {
 	}
 
-	@Override
-	public void resume() {
+	@Override public void resume () {
 	}
 }

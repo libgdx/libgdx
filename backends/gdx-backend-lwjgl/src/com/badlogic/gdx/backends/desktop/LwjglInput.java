@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
  * @author mzechner
  * 
  */
-final class LwjglInput implements Input {
+public final class LwjglInput implements Input {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
