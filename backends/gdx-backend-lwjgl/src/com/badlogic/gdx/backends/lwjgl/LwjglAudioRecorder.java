@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com
  * 
  */
-class LwjglAudioRecorder implements AudioRecorder {
+final class LwjglAudioRecorder implements AudioRecorder {
 	/** the line we read the audio from **/
 	private TargetDataLine line;
 

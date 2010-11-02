@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.io.InputStream;
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-class LwjglNativesLoader {
+final class LwjglNativesLoader {
 	static void load() {
 		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
 		Version.loadLibrary();

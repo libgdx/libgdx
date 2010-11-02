@@ -99,8 +99,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
-import com.badlogic.gdx.backends.desktop.LwjglCanvas;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;

@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-class LwjglFileHandle implements FileHandle {
+final class LwjglFileHandle implements FileHandle {
 	/** the file **/
 	private final File file;
 	private final FileType type;

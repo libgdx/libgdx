@@ -21,7 +21,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -33,11 +33,12 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 /**
- * A PNGDecoder. The slick PNG decoder is based on this class :)
+ * Decodes A PNG directly a ByteBuffer.
  * 
  * @author Matthias Mann
+ * @author Nathan Sweet <misc@n4te.com> (minor edits to avoid allocation)
  */
-class PNGDecoder {
+final class PNGDecoder {
 	public enum Format {
 		ALPHA(1, true), LUMINANCE(1, false), LUMINANCE_ALPHA(2, true), RGB(3, false), RGBA(4, true), BGRA(4, true), ABGR(4, true);
 

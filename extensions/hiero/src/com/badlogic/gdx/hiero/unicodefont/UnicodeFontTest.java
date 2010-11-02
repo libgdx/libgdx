@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 
 public class UnicodeFontTest implements ApplicationListener {

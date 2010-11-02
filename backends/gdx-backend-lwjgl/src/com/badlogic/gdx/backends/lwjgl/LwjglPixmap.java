@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;

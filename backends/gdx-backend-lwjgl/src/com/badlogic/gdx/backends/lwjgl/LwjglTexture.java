@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -28,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.desktop.PNGDecoder.Format;
+import com.badlogic.gdx.backends.lwjgl.PNGDecoder.Format;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -56,7 +56,7 @@ final class LwjglTexture implements Texture {
 
 	static private ByteBuffer buffer;
 	static private IntBuffer intBuffer;
-	static private PNGDecoder pngDecoder = new PNGDecoder();
+	static private final PNGDecoder pngDecoder = new PNGDecoder();
 
 	/**
 	 * Create a new texture

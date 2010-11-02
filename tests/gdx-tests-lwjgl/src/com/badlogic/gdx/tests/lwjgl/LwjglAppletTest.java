@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
-import com.badlogic.gdx.backends.desktop.LwjglApplet;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplet;
 import com.badlogic.gdx.tests.Pong;
 
 public class LwjglAppletTest extends LwjglApplet {

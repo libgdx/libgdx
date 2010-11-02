@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +35,7 @@ import com.badlogic.gdx.audio.Sound;
  * @author mzechner
  * 
  */
-class LwjglSound implements Sound {
+final class LwjglSound implements Sound {
 	/** the audio format **/
 	private final AudioFormat format;
 

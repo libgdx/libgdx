@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.backends.desktop;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;

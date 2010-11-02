@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.twl.tests;
 
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class ButtonTestDesktop {
 	public static void main (String[] argv) {

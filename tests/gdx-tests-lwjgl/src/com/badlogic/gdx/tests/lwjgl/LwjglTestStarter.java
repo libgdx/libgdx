@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
