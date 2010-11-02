@@ -13,7 +13,7 @@
 
 package com.badlogic.gdxinvaders;
 
-import com.badlogic.gdx.backends.desktop.JoglApplication;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 /**
  * Entry point for desktop version of Gdx Invaders. Constructs a JoglApplication and registers the renderer.
@@ -22,7 +22,6 @@ import com.badlogic.gdx.backends.desktop.JoglApplication;
  */
 public class GdxInvadersDesktop {
 	public static void main (String[] argv) {
-		JoglApplication app = new JoglApplication("Gdx Invaders", 480, 320, false);
-		app.getGraphics().setRenderListener(new GdxInvaders());
+		new JoglApplication(new GdxInvaders(),"Gdx Invaders", 480, 320, false);		
 	}
 }

@@ -13,24 +13,24 @@
 
 package com.badlogic.gdxinvaders;
 
+import java.awt.Font;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.ModelLoader;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -68,7 +68,7 @@ public class Renderer {
 	/** the explosion texture **/
 	private Texture explosionTexture;
 	/** the font **/
-	private Font font;
+	private BitmapFont font;
 	/** the rotation angle of all invaders around y **/
 	private float invaderAngle = 0;
 	/** status string **/
@@ -90,19 +90,19 @@ public class Renderer {
 			spriteBatch = new SpriteBatch();
 
 			InputStream in = app.getFiles().readFile("data/ship.obj", FileType.Internal);
-			shipMesh = ModelLoader.loadObj(in, true);
+			shipMesh = ModelLoader.loadObj(in);
 			in.close();
 
 			in = app.getFiles().readFile("data/invader.obj", FileType.Internal);
-			invaderMesh = ModelLoader.loadObj(in, true);
+			invaderMesh = ModelLoader.loadObj(in);
 			in.close();
 
 			in = app.getFiles().readFile("data/block.obj", FileType.Internal);
-			blockMesh = ModelLoader.loadObj(in, true);
+			blockMesh = ModelLoader.loadObj(in);
 			in.close();
 
 			in = app.getFiles().readFile("data/shot.obj", FileType.Internal);
-			shotMesh = ModelLoader.loadObj(in, true);
+			shotMesh = ModelLoader.loadObj(in);
 			in.close();
 
 			shipTexture = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/ship.png", FileType.Internal),
@@ -114,7 +114,7 @@ public class Renderer {
 			explosionTexture = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/explode.png", FileType.Internal),
 				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-			explosionMesh = new Mesh(true, false, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
+			explosionMesh = new Mesh(true, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
 				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord"));
 
 			float[] vertices = new float[4 * 16 * (3 + 2)];
@@ -149,7 +149,7 @@ public class Renderer {
 
 			explosionMesh.setVertices(vertices);
 
-			font = app.getGraphics().newFont(app.getFiles().getFileHandle("data/font.ttf", FileType.Internal), 10, FontStyle.Plain);
+//			font = app.getGraphics().newFont(app.getFiles().getFileHandle("data/font.ttf", FileType.Internal), 10, FontStyle.Plain);
 
 			camera = new PerspectiveCamera();
 			camera.setFov(67);
@@ -199,7 +199,7 @@ public class Renderer {
 			lastScore = simulation.score;
 			lastWave = simulation.wave;
 		}
-		spriteBatch.drawText(font, status, 0, 320-font.getLineHeight(), Color.WHITE);
+//		spriteBatch.drawText(font, status, 0, 320-font.getLineHeight(), Color.WHITE);
 		spriteBatch.end();
 
 		invaderAngle += app.getGraphics().getDeltaTime() * 90;

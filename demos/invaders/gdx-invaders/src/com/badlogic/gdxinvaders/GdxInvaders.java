@@ -14,23 +14,23 @@
 package com.badlogic.gdxinvaders;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdxinvaders.screens.GameLoop;
 import com.badlogic.gdxinvaders.screens.GameOver;
 import com.badlogic.gdxinvaders.screens.MainMenu;
 import com.badlogic.gdxinvaders.screens.Screen;
 
-public class GdxInvaders implements RenderListener {
+public class GdxInvaders implements ApplicationListener {
 	/** flag indicating whether we were initialized already **/
 	private boolean isInitialized = false;
 
 	/** the current screen **/
 	private Screen screen;
 
-	@Override public void dispose () {
+	@Override public void destroy () {
 
 	}
 
@@ -65,11 +65,11 @@ public class GdxInvaders implements RenderListener {
 		}
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
+	@Override public void resize (int width, int height) {
 
 	}
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		if (!isInitialized) {
 			screen = new MainMenu(Gdx.app);
 			Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
@@ -77,5 +77,17 @@ public class GdxInvaders implements RenderListener {
 			music.play();
 			isInitialized = true;
 		}
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -11,7 +11,6 @@ public class GdxInvadersAndroid extends AndroidApplication {
 	@Override public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		initialize(false, 20);
-		getGraphics().setRenderListener(new GdxInvaders());
+		initialize(new GdxInvaders(),false, 20);		
 	}
 }
