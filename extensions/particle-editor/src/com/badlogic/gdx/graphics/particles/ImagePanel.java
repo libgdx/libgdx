@@ -11,10 +11,7 @@ import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import com.badlogic.gdx.graphics.particles.ParticleEmitter;
 
 class ImagePanel extends EditorPanel {
 	JLabel imageLabel;
@@ -40,16 +37,14 @@ class ImagePanel extends EditorPanel {
 					lastDir = dir;
 					try {
 						ImageIcon icon = new ImageIcon(new File(dir, file).toURI().toURL());
-						synchronized (editor.effect) {
-							final ParticleEmitter emitter = editor.getEmitter();
-							editor.setIcon(emitter, icon);
-							imageLabel.setIcon(icon);
-							widthLabel.setText("Width: " + icon.getIconWidth());
-							heightLabel.setText("Height: " + icon.getIconHeight());
-							revalidate();
-							emitter.setImagePath(new File(dir, file).getAbsolutePath());
-							emitter.setTexture(null);
-						}
+						final ParticleEmitter emitter = editor.getEmitter();
+						editor.setIcon(emitter, icon);
+						imageLabel.setIcon(icon);
+						widthLabel.setText("Width: " + icon.getIconWidth());
+						heightLabel.setText("Height: " + icon.getIconHeight());
+						revalidate();
+						emitter.setImagePath(new File(dir, file).getAbsolutePath());
+						emitter.setTexture(null);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}

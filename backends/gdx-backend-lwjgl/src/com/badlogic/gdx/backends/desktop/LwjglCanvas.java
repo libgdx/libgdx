@@ -53,8 +53,6 @@ public class LwjglCanvas implements Application {
 			}
 		};
 
-		canvas.setSize(100, 100);
-		canvas.setMinimumSize(new Dimension(2, 2));
 		graphics = new LwjglGraphics(canvas, useGL2);
 		audio = new LwjglAudio();
 		files = new LwjglFiles();

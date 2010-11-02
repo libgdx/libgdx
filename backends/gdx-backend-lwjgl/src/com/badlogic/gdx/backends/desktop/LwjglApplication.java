@@ -63,7 +63,8 @@ public class LwjglApplication implements Application {
 		
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();
-		
+
+		graphics.lastTime = System.nanoTime();
 		while(running && !Display.isCloseRequested()) {
 			graphics.updateTime();
 			input.update();

@@ -22,16 +22,14 @@ class CountPanel extends EditorPanel {
 		maxSpinner.setValue(editor.getEmitter().getMaxParticleCount());
 		maxSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-					editor.getEmitter().setMaxParticleCount((Integer)maxSpinner.getValue());
+				editor.getEmitter().setMaxParticleCount((Integer)maxSpinner.getValue());
 			}
 		});
 
 		minSpinner.setValue(editor.getEmitter().getMinParticleCount());
 		minSpinner.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				synchronized (editor.effect) {
-					editor.getEmitter().setMinParticleCount((Integer)minSpinner.getValue());
-				}
+				editor.getEmitter().setMinParticleCount((Integer)minSpinner.getValue());
 			}
 		});
 	}

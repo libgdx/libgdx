@@ -2,9 +2,7 @@
 package com.badlogic.gdx.graphics.particles;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -31,10 +29,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.desktop.LwjglApplication;
 import com.badlogic.gdx.backends.desktop.LwjglCanvas;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;

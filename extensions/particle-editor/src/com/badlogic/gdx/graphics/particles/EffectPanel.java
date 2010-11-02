@@ -68,16 +68,16 @@ class EffectPanel extends JPanel {
 		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(15);
 		emitter.setImagePath("data/particle.png");
-		synchronized (editor.effect) {
-			ArrayList<ParticleEmitter> emitters = editor.effect.getEmitters();
-			if (emitters.isEmpty())
-				emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-			else {
-				ParticleEmitter p = emitters.get(0);
-				emitter.setPosition(p.getX(), p.getY());
-			}
-			emitters.add(emitter);
+
+		ArrayList<ParticleEmitter> emitters = editor.effect.getEmitters();
+		if (emitters.isEmpty())
+			emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		else {
+			ParticleEmitter p = emitters.get(0);
+			emitter.setPosition(p.getX(), p.getY());
 		}
+		emitters.add(emitter);
+
 		emitterTableModel.addRow(new Object[] {name, true});
 		if (select) {
 			editor.reloadRows();
@@ -108,25 +108,21 @@ class EffectPanel extends JPanel {
 		lastDir = dir;
 		ParticleEffect effect = new ParticleEffect();
 		try {
-			synchronized (editor.effect) {
-				effect.loadEmitters(Gdx.files.getFileHandle(new File(dir, file).getAbsolutePath(), FileType.Absolute));
-				editor.effect = effect;
-				emitterTableModel.getDataVector().removeAllElements();
-				editor.particleData.clear();
-			}
+			effect.loadEmitters(Gdx.files.getFileHandle(new File(dir, file).getAbsolutePath(), FileType.Absolute));
+			editor.effect = effect;
+			emitterTableModel.getDataVector().removeAllElements();
+			editor.particleData.clear();
 		} catch (Exception ex) {
 			System.out.println("Error loading effect: " + new File(dir, file).getAbsolutePath());
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(editor, "Error opening effect.");
 			return;
 		}
-		synchronized (editor.effect) {
-			for (ParticleEmitter emitter : effect.getEmitters()) {
-				emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-				emitterTableModel.addRow(new Object[] {emitter.getName(), true});
-			}
-			editIndex = 0;
+		for (ParticleEmitter emitter : effect.getEmitters()) {
+			emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 		}
+		editIndex = 0;
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
 		editor.reloadRows();
 	}
@@ -139,57 +135,49 @@ class EffectPanel extends JPanel {
 		String dir = dialog.getDirectory();
 		if (dir == null || file == null || file.trim().length() == 0) return;
 		lastDir = dir;
-		synchronized (editor.effect) {
-			int index = 0;
-			for (ParticleEmitter emitter : editor.effect.getEmitters())
-				emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
-			try {
-				editor.effect.save(new File(dir, file));
-			} catch (Exception ex) {
-				System.out.println("Error saving effect: " + new File(dir, file).getAbsolutePath());
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(editor, "Error saving effect.");
-			}
+		int index = 0;
+		for (ParticleEmitter emitter : editor.effect.getEmitters())
+			emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
+		try {
+			editor.effect.save(new File(dir, file));
+		} catch (Exception ex) {
+			System.out.println("Error saving effect: " + new File(dir, file).getAbsolutePath());
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(editor, "Error saving effect.");
 		}
 	}
 
 	void deleteEmitter () {
-		synchronized (editor.effect) {
-			if (editor.effect.getEmitters().size() == 1) return;
-			int row = emitterTable.getSelectedRow();
-			if (row == -1) return;
-			if (row <= editIndex) {
-				int oldEditIndex = editIndex;
-				editIndex = Math.max(0, editIndex - 1);
-				if (oldEditIndex == row) editor.reloadRows();
-			}
-			editor.effect.getEmitters().remove(row);
-			emitterTableModel.removeRow(row);
+		if (editor.effect.getEmitters().size() == 1) return;
+		int row = emitterTable.getSelectedRow();
+		if (row == -1) return;
+		if (row <= editIndex) {
+			int oldEditIndex = editIndex;
+			editIndex = Math.max(0, editIndex - 1);
+			if (oldEditIndex == row) editor.reloadRows();
 		}
+		editor.effect.getEmitters().remove(row);
+		emitterTableModel.removeRow(row);
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
 	}
 
 	void move (int direction) {
 		if (direction < 0 && editIndex == 0) return;
-		synchronized (editor.effect) {
-			ArrayList<ParticleEmitter> emitters = editor.effect.getEmitters();
-			if (direction > 0 && editIndex == emitters.size() - 1) return;
-			int insertIndex = editIndex + direction;
-			Object name = emitterTableModel.getValueAt(editIndex, 0);
-			emitterTableModel.removeRow(editIndex);
-			ParticleEmitter emitter = emitters.remove(editIndex);
-			emitterTableModel.insertRow(insertIndex, new Object[] {name});
-			emitters.add(insertIndex, emitter);
-			editIndex = insertIndex;
-		}
+		ArrayList<ParticleEmitter> emitters = editor.effect.getEmitters();
+		if (direction > 0 && editIndex == emitters.size() - 1) return;
+		int insertIndex = editIndex + direction;
+		Object name = emitterTableModel.getValueAt(editIndex, 0);
+		emitterTableModel.removeRow(editIndex);
+		ParticleEmitter emitter = emitters.remove(editIndex);
+		emitterTableModel.insertRow(insertIndex, new Object[] {name});
+		emitters.add(insertIndex, emitter);
+		editIndex = insertIndex;
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
 	}
 
 	void emitterChecked (int index, boolean checked) {
-		synchronized (editor.effect) {
-			editor.setEnabled(editor.effect.getEmitters().get(index), checked);
-			editor.effect.start();
-		}
+		editor.setEnabled(editor.effect.getEmitters().get(index), checked);
+		editor.effect.start();
 	}
 
 	private void initializeComponents () {

@@ -12,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.particles.ParticleEmitter;
-
 class OptionsPanel extends EditorPanel {
 	JCheckBox attachedCheckBox;
 	JCheckBox continuousCheckbox;
@@ -28,42 +26,32 @@ class OptionsPanel extends EditorPanel {
 
 		attachedCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
-				synchronized (editor.effect) {
-					editor.getEmitter().setAttached(attachedCheckBox.isSelected());
-				}
+				editor.getEmitter().setAttached(attachedCheckBox.isSelected());
 			}
 		});
 
 		continuousCheckbox.setSelected(editor.getEmitter().isContinuous());
 		continuousCheckbox.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
-				synchronized (editor.effect) {
-					editor.getEmitter().setContinuous(continuousCheckbox.isSelected());
-				}
+				editor.getEmitter().setContinuous(continuousCheckbox.isSelected());
 			}
 		});
 
 		alignedCheckbox.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				synchronized (editor.effect) {
-					editor.getEmitter().setAligned(alignedCheckbox.isSelected());
-				}
+				editor.getEmitter().setAligned(alignedCheckbox.isSelected());
 			}
 		});
 
 		additiveCheckbox.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				synchronized (editor.effect) {
-					editor.getEmitter().setAdditive(additiveCheckbox.isSelected());
-				}
+				editor.getEmitter().setAdditive(additiveCheckbox.isSelected());
 			}
 		});
 
 		behindCheckbox.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				synchronized (editor.effect) {
-					editor.getEmitter().setBehind(behindCheckbox.isSelected());
-				}
+				editor.getEmitter().setBehind(behindCheckbox.isSelected());
 			}
 		});
 

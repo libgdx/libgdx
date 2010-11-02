@@ -136,8 +136,8 @@ class GradientPanel extends EditorPanel {
 	void updateColor () {
 		Color color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(), 1));
 		lightnessSlider.setColors(new Color[] {color, Color.black});
-		color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(), 1 - lightnessSlider
-			.getPercentage()));
+		color = new Color(Color.HSBtoRGB(hueSlider.getPercentage(), 1 - saturationSlider.getPercentage(),
+			1 - lightnessSlider.getPercentage()));
 		colorPanel.setBackground(color);
 		gradientEditor.setColor(color);
 
