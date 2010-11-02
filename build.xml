@@ -39,6 +39,8 @@
 	<target name="compile" depends="init">
 		<!-- build gdx api -->
 		<javac srcdir="gdx/src" destdir="gdx/bin"/>
+		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.png" file="gdx/src/com/badlogic/gdx/utils/arial-15.png"/>
+		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.fnt" file="gdx/src/com/badlogic/gdx/utils/arial-15.fnt"/>
 		
 		<!-- build jogl backend -->
 		<javac srcdir="backends/gdx-backend-jogl/src" destdir="backends/gdx-backend-jogl/bin">
