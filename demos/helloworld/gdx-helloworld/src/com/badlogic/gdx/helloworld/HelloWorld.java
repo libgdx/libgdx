@@ -13,12 +13,11 @@
 
 package com.badlogic.gdx.helloworld;
 
-import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.RenderListener;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Font;
-import com.badlogic.gdx.graphics.Font.FontStyle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,15 +25,15 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Vector2;
 
-public class HelloWorld implements RenderListener {
+public class HelloWorld implements ApplicationListener {
 	boolean initialized = false;
 	SpriteBatch spriteBatch;
 	Texture texture;
-	Font font;
+	BitmapFont font;
 	Vector2 textPosition = new Vector2(100, 100);
 	Vector2 textDirection = new Vector2(1, 1);
 
-	@Override public void dispose () {
+	@Override public void destroy () {
 
 	}
 
@@ -52,20 +51,30 @@ public class HelloWorld implements RenderListener {
 		spriteBatch.begin();
 		spriteBatch.draw(texture, centerX - texture.getWidth() / 2, centerY - texture.getHeight() / 2, 0, 0, texture.getWidth(),
 			texture.getHeight(), Color.WHITE);
-		spriteBatch.drawText(font, "Hello World!", (int)textPosition.x, (int)textPosition.y, Color.RED);
+		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y, Color.RED);		
 		spriteBatch.end();
 	}
 
-	@Override public void surfaceChanged (int width, int height) {
+	@Override public void resize (int width, int height) {
 
 	}
 
-	@Override public void surfaceCreated () {
+	@Override public void create () {
 		if (!initialized) {
-			font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
+			font = new BitmapFont();
 			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 			spriteBatch = new SpriteBatch();
 		}
+	}
+
+	@Override
+	public void pause() {
+		
+	}
+
+	@Override
+	public void resume() {
+		
 	}
 }
