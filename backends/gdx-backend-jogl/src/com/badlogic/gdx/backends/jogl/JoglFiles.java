@@ -47,7 +47,7 @@ final class JoglFiles implements Files {
 		if (file.exists() == false)
 			throw new GdxRuntimeException("File '" + filename + "' doesn't exist");
 		else
-			return new JoglFileHandle(file);
+			return new JoglFileHandle(file, type);
 	}
 
 	/**

@@ -84,7 +84,7 @@ final class AndroidAudio implements Audio {
 
 		if (aHandle.isAsset()) {
 			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetManager().openFd(aHandle.getFileName());
+				AssetFileDescriptor descriptor = aHandle.getAssetManager().openFd(aHandle.getPath());
 				mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
 				descriptor.close();
 				mediaPlayer.prepare();
@@ -96,7 +96,7 @@ final class AndroidAudio implements Audio {
 			}
 		} else {
 			try {
-				mediaPlayer.setDataSource(aHandle.getFileName());
+				mediaPlayer.setDataSource(aHandle.getPath());
 				mediaPlayer.prepare();
 				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
 				musics.add(music);
@@ -115,7 +115,7 @@ final class AndroidAudio implements Audio {
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 		if (aHandle.isAsset()) {
 			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetManager().openFd(aHandle.getFileName());
+				AssetFileDescriptor descriptor = aHandle.getAssetManager().openFd(aHandle.getPath());
 				AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
 				descriptor.close();
 				return sound;
@@ -124,7 +124,7 @@ final class AndroidAudio implements Audio {
 			}
 		} else {
 			try {
-				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.getFileName(), 1));
+				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.getPath(), 1));
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load Sound from file '" + file + "'", e);
 			}

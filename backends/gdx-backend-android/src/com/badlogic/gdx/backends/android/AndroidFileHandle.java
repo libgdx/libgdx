@@ -56,11 +56,11 @@ public class AndroidFileHandle implements FileHandle {
 	/**
 	 * @return the filename
 	 */
-	public String getFileName () {
+	public String getPath () {
 		return filename;
 	}
 
-	public InputStream getInputStream () {
+	public InputStream readFile () {
 		try {
 			return manager.open(filename);
 		} catch (IOException ex) {

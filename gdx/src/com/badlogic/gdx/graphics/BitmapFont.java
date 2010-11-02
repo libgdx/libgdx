@@ -82,23 +82,23 @@ public class BitmapFont {
 		
 		this(new FileHandle() {
 			@Override
-			public String getFileName() {
+			public String getPath() {
 				return "/com/badlogic/gdx/utils/arial-15.fnt";
 			}
 
 			@Override
-			public InputStream getInputStream() {
-				return BitmapFont.class.getResourceAsStream(getFileName());
+			public InputStream readFile() {
+				return BitmapFont.class.getResourceAsStream(getPath());
 			}
 		}, new FileHandle() {
 			@Override
-			public String getFileName() {
+			public String getPath() {
 				return "/com/badlogic/gdx/utils/arial-15.png";
 			}
 
 			@Override
-			public InputStream getInputStream() {
-				return BitmapFont.class.getResourceAsStream(getFileName());
+			public InputStream readFile() {
+				return BitmapFont.class.getResourceAsStream(getPath());
 			}
 		}, false);
 	}
@@ -124,7 +124,7 @@ public class BitmapFont {
 		float invTexHeight = 1.0f / texture.getHeight();
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				fontFile.getInputStream()), 512);
+				fontFile.readFile()), 512);
 		try {
 			reader.readLine(); // info
 

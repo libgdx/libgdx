@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -30,9 +31,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class LwjglFileHandle implements FileHandle {
 	/** the file **/
 	private final File file;
+	private final FileType type;
 
-	LwjglFileHandle (File file) {
+	LwjglFileHandle (File file, FileType type) {
 		this.file = file;
+		this.type = type;
 	}
 
 	/**
@@ -42,7 +45,11 @@ public class LwjglFileHandle implements FileHandle {
 		return file;
 	}
 
-	public InputStream getInputStream () {
+	public InputStream readFile () {
+		if (type == FileType.Internal) {
+			InputStream input = LwjglFileHandle.class.getResourceAsStream("/" + file);
+			if (input != null) return input;
+		}
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException ex) {
@@ -54,7 +61,7 @@ public class LwjglFileHandle implements FileHandle {
 		return file.toString();
 	}
 	
-	@Override public String getFileName() {
+	@Override public String getPath() {
 		return file.toString();
 	}
 }

@@ -205,7 +205,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	@Override
 	public Pixmap newPixmap(FileHandle file) {
-		return newPixmap(file.getInputStream());
+		return newPixmap(file.readFile());
 	}
 
 	@Override

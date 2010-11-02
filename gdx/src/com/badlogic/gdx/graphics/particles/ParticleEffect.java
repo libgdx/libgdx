@@ -95,7 +95,7 @@ public class ParticleEffect {
 	}
 
 	void loadEmitters (FileHandle file) {
-		InputStream input = file.getInputStream();
+		InputStream input = file.readFile();
 		if (input == null) throw new GdxRuntimeException("Effect file not found: " + file);
 		emitters.clear();
 		BufferedReader reader = null;

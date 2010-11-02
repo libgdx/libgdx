@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -30,9 +31,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class JoglFileHandle implements FileHandle {
 	/** the file **/
 	private final File file;
+	private final FileType type;
 
-	JoglFileHandle (File file) {
+	JoglFileHandle (File file, FileType type) {
 		this.file = file;
+		this.type = type;
 	}
 
 	/**
@@ -42,11 +45,15 @@ public class JoglFileHandle implements FileHandle {
 		return file;
 	}
 
-	public InputStream getInputStream () {
+	public InputStream readFile () {
+		if (type == FileType.Internal) {
+			InputStream input = JoglFileHandle.class.getResourceAsStream("/" + file);
+			if (input != null) return input;
+		}
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Error reading file: " + file);
+			throw new GdxRuntimeException("Error reading file: " + file, ex);
 		}
 	}
 
@@ -54,7 +61,7 @@ public class JoglFileHandle implements FileHandle {
 		return file.toString();
 	}
 
-	@Override public String getFileName() {
+	@Override public String getPath () {
 		return file.toString();
 	}
 }

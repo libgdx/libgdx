@@ -192,7 +192,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 * {@inheritDoc}
 	 */
 	@Override public Pixmap newPixmap (FileHandle file) {
-		return newPixmap(file.getInputStream());
+		return newPixmap(file.readFile());
 	}
 
 	/**

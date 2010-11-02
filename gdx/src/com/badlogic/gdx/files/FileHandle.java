@@ -16,6 +16,7 @@ package com.badlogic.gdx.files;
 import java.io.InputStream;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Files.FileType;
 
 /**
  * A file handle represents a system dependant representation of an internal or external file. FileHandles can only be created via
@@ -28,10 +29,10 @@ public interface FileHandle {
 	/**
 	 * @return a new {@link InputStream} to the underlying file.
 	 */
-	public InputStream getInputStream ();
+	public InputStream readFile ();
 	
 	/**
-	 * @return the file name.
+	 * @return the path to the file.
 	 */
-	public String getFileName ();
+	public String getPath ();
 }

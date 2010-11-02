@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public interface Files {
 	/**
 	 * Enum describing the three file types, internal, external and absolute. Internal files are located in the asset directory on
-	 * Android and are relative to the applications root directory on the desktop. External files are relative to the SD-card on
+	 * Android and are relative to the root of the classpath or application's root directory on the desktop. External files are relative to the SD-card on
 	 * Android and relative to the home directory of the current user on the Desktop. Absolute files are just that, absolute files
 	 * that can point anywhere.
 	 * @author mzechner

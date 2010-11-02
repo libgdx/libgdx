@@ -47,7 +47,7 @@ final class LwjglFiles implements Files {
 		if (file.exists() == false)
 			throw new GdxRuntimeException("File '" + filename + "' doesn't exist");
 		else
-			return new LwjglFileHandle(file);
+			return new LwjglFileHandle(file, type);
 	}
 
 	public String[] listDirectory (String directory, FileType type) {
