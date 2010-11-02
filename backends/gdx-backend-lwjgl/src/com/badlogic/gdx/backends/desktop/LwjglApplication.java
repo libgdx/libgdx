@@ -68,9 +68,17 @@ public class LwjglApplication implements Application {
 			graphics.updateTime();
 			input.update();
 			
-			if( lastWidth != graphics.getWidth() || lastHeight != graphics.getHeight() ) {
-				lastWidth = graphics.getWidth();
-				lastHeight = graphics.getHeight();
+			int width, height;
+			if (graphics.canvas != null) {
+				width = graphics.canvas.getWidth();
+				height = graphics.canvas.getHeight();
+			} else {
+				width = graphics.getWidth();
+				height = graphics.getHeight();
+			}
+			if( lastWidth != width || lastHeight != height ) {
+				lastWidth = width;
+				lastHeight = height;
 				listener.resize(lastWidth, lastHeight);
 			}
 			

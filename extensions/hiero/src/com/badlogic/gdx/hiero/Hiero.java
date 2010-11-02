@@ -126,8 +126,6 @@ public class Hiero extends JFrame {
 		+ "abcdefghijklmnopqrstuvwxyz\n1234567890\n" //
 		+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u007F";
 
-	LwjglApplication app;
-	Canvas glCanvas;
 	volatile UnicodeFont newUnicodeFont;
 	UnicodeFont unicodeFont;
 	Color renderingBackgroundColor = Color.BLACK;
@@ -183,9 +181,8 @@ public class Hiero extends JFrame {
 		Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
 		splash.close();
-		
-		LwjglCanvas lwjglCanvas = new LwjglCanvas(new Renderer(), false);
-		gamePanel.add(lwjglCanvas.getCanvas());
+
+		gamePanel.add(new LwjglCanvas(new Renderer(), false).getCanvas());
 
 		prefs = Preferences.userNodeForPackage(Hiero.class);
 		java.awt.Color backgroundColor = EffectUtil.fromString(prefs.get("background", "000000"));
@@ -1131,7 +1128,7 @@ public class Hiero extends JFrame {
 	class Renderer implements ApplicationListener {
 		private String sampleText;
 
-		public void created () {
+		@Override public void create () {
 			glEnable(GL_SCISSOR_TEST);
 
 			glEnable(GL_TEXTURE_2D);
@@ -1146,10 +1143,8 @@ public class Hiero extends JFrame {
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
-		
 
-		@Override
-		public void resize(int width, int height) {						
+		@Override public void resize (int width, int height) {
 			glViewport(0, 0, width, height);
 			glScissor(0, 0, width, height);
 
@@ -1157,17 +1152,12 @@ public class Hiero extends JFrame {
 			glLoadIdentity();
 			glOrtho(0, width, height, 0, 1, -1);
 			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();			
+			glLoadIdentity();
 		}
 
 		public void render () {
-			if (glCanvas == null) return;
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
-			if (viewWidth != glCanvas.getWidth() || viewHeight != glCanvas.getHeight()) {
-				viewWidth = Math.max(1, glCanvas.getWidth());
-				viewHeight = Math.max(1, glCanvas.getHeight());				
-			}
 
 			if (newUnicodeFont != null) {
 				if (unicodeFont != null) unicodeFont.destroy();
@@ -1255,50 +1245,31 @@ public class Hiero extends JFrame {
 			}
 		}
 
-		public void dispose () {
+		@Override public void pause () {
 		}
 
-		@Override
-		public void create() {
-			// TODO Auto-generated method stub
-			
+		@Override public void resume () {
 		}
-
-		@Override
-		public void destroy() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void pause() {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void resume() {
-			// TODO Auto-generated method stub
-			
+		
+		@Override public void destroy () {
 		}
 	}
 
 	public static void main (String[] args) throws Exception {
-//		LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
-//		for (int i = 0, n = lookAndFeels.length; i < n; i++) {
-//			if ("Nimbus".equals(lookAndFeels[i].getName())) {
-//				try {
-//					UIManager.setLookAndFeel(lookAndFeels[i].getClassName());
-//				} catch (Throwable ignored) {
-//				}
-//				break;
-//			}
-//		}
-		SwingUtilities.invokeLater( new Runnable() {
-			
-			@Override
-			public void run() {
-				new Hiero();				
+// LookAndFeelInfo[] lookAndFeels = UIManager.getInstalledLookAndFeels();
+// for (int i = 0, n = lookAndFeels.length; i < n; i++) {
+// if ("Nimbus".equals(lookAndFeels[i].getName())) {
+// try {
+// UIManager.setLookAndFeel(lookAndFeels[i].getClassName());
+// } catch (Throwable ignored) {
+// }
+// break;
+// }
+// }
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override public void run () {
+				new Hiero();
 			}
 		});
 	}

@@ -41,6 +41,9 @@ final class LwjglFiles implements Files {
 		else
 			file = new File(this.externalPath + filename);
 
+		// BOZO - Hack.
+		if (!file.exists()) file = new File("resources/" + filename); 
+		
 		if (file.exists() == false)
 			throw new GdxRuntimeException("File '" + filename + "' doesn't exist");
 		else

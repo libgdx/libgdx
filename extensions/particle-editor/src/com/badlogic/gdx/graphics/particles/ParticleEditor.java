@@ -35,6 +35,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.desktop.LwjglCanvas;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -45,8 +46,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
-	LwjglApplication app;
-	Canvas glCanvas;
+	LwjglCanvas lwjglCanvas;
 	JPanel rowsPanel;
 	EffectPanel effectPanel;
 	private JSplitPane splitPane;
@@ -57,23 +57,13 @@ public class ParticleEditor extends JFrame {
 	public ParticleEditor () {
 		super("GDX Particle Editor");
 
-		glCanvas = new Canvas() {
-			private final Dimension minSize = new Dimension();
-
-			public final void addNotify () {
-				super.addNotify();
-				app = new LwjglApplication(new Renderer(),"ParticleEditor", 200, 200, false, glCanvas);				
-				addWindowListener(new WindowAdapter() {
-					public void windowClosed (WindowEvent event) {
-						app.stop();
-					}
-				});
+		lwjglCanvas = new LwjglCanvas(new Renderer(), false);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosed (WindowEvent event) {
+				System.exit(0);
+				// Gdx.app.quit();
 			}
-
-			public Dimension getMinimumSize () {
-				return minSize;
-			}
-		};
+		});
 
 		initializeComponents();
 
@@ -87,32 +77,30 @@ public class ParticleEditor extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
 				rowsPanel.removeAll();
-				synchronized (effect) {
-					ParticleEmitter emitter = getEmitter();
-					addRow(new ImagePanel(ParticleEditor.this));
-					addRow(new RangedNumericPanel("Delay", emitter.getDelay()));
-					addRow(new RangedNumericPanel("Duration", emitter.getDuration()));
-					addRow(new CountPanel(ParticleEditor.this));
-					addRow(new ScaledNumericPanel("Emission", "Duration", emitter.getEmission()));
-					addRow(new ScaledNumericPanel("Life", "Duration", emitter.getLife()));
-					addRow(new ScaledNumericPanel("Life Offset", "Duration", emitter.getLifeOffset()));
-					addRow(new RangedNumericPanel("X Offset", emitter.getXOffsetValue()));
-					addRow(new RangedNumericPanel("Y Offset", emitter.getYOffsetValue()));
-					addRow(new SpawnPanel(emitter.getSpawnShape(), ParticleEditor.this));
-					addRow(new ScaledNumericPanel("Spawn Width", "Duration", emitter.getSpawnWidth()));
-					addRow(new ScaledNumericPanel("Spawn Height", "Duration", emitter.getSpawnHeight()));
-					addRow(new ScaledNumericPanel("Size", "Life", emitter.getScale()));
-					addRow(new ScaledNumericPanel("Velocity", "Life", emitter.getVelocity()));
-					addRow(new ScaledNumericPanel("Angle", "Life", emitter.getAngle()));
-					addRow(new ScaledNumericPanel("Rotation", "Life", emitter.getRotation()));
-					addRow(new ScaledNumericPanel("Wind", "Life", emitter.getWind()));
-					addRow(new ScaledNumericPanel("Gravity", "Life", emitter.getGravity()));
-					addRow(new GradientPanel("Tint", emitter.getTint()));
-					addRow(new PercentagePanel("Transparency", "Life", emitter.getTransparency()));
-					addRow(new OptionsPanel(ParticleEditor.this));
-					for (Component component : rowsPanel.getComponents())
-						if (component instanceof EditorPanel) ((EditorPanel)component).update(ParticleEditor.this);
-				}
+				ParticleEmitter emitter = getEmitter();
+				addRow(new ImagePanel(ParticleEditor.this));
+				addRow(new RangedNumericPanel("Delay", emitter.getDelay()));
+				addRow(new RangedNumericPanel("Duration", emitter.getDuration()));
+				addRow(new CountPanel(ParticleEditor.this));
+				addRow(new ScaledNumericPanel("Emission", "Duration", emitter.getEmission()));
+				addRow(new ScaledNumericPanel("Life", "Duration", emitter.getLife()));
+				addRow(new ScaledNumericPanel("Life Offset", "Duration", emitter.getLifeOffset()));
+				addRow(new RangedNumericPanel("X Offset", emitter.getXOffsetValue()));
+				addRow(new RangedNumericPanel("Y Offset", emitter.getYOffsetValue()));
+				addRow(new SpawnPanel(emitter.getSpawnShape(), ParticleEditor.this));
+				addRow(new ScaledNumericPanel("Spawn Width", "Duration", emitter.getSpawnWidth()));
+				addRow(new ScaledNumericPanel("Spawn Height", "Duration", emitter.getSpawnHeight()));
+				addRow(new ScaledNumericPanel("Size", "Life", emitter.getScale()));
+				addRow(new ScaledNumericPanel("Velocity", "Life", emitter.getVelocity()));
+				addRow(new ScaledNumericPanel("Angle", "Life", emitter.getAngle()));
+				addRow(new ScaledNumericPanel("Rotation", "Life", emitter.getRotation()));
+				addRow(new ScaledNumericPanel("Wind", "Life", emitter.getWind()));
+				addRow(new ScaledNumericPanel("Gravity", "Life", emitter.getGravity()));
+				addRow(new GradientPanel("Tint", emitter.getTint()));
+				addRow(new PercentagePanel("Transparency", "Life", emitter.getTransparency()));
+				addRow(new OptionsPanel(ParticleEditor.this));
+				for (Component component : rowsPanel.getComponents())
+					if (component instanceof EditorPanel) ((EditorPanel)component).update(ParticleEditor.this);
 				rowsPanel.repaint();
 			}
 		});
@@ -216,7 +204,7 @@ public class ParticleEditor extends JFrame {
 			{
 				JPanel spacer = new JPanel(new BorderLayout());
 				leftSplit.add(spacer, JSplitPane.TOP);
-				spacer.add(glCanvas);
+				spacer.add(lwjglCanvas.getCanvas());
 				spacer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
 			}
 			{
@@ -253,74 +241,65 @@ public class ParticleEditor extends JFrame {
 			effectPanel.newEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
 		}
-		
-		@Override
-		public void resize(int width, int height) {
+
+		@Override public void resize (int width, int height) {
 			Gdx.gl.glViewport(0, 0, width, height);
 			spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 
-			synchronized (effect) {
-				effect.setPosition(width / 2, height / 2);
-			}			
+			effect.setPosition(width / 2, height / 2);
 		}
 
 		public void render () {
-			synchronized (effect) {
-				int viewWidth = Gdx.graphics.getWidth();
-				int viewHeight = Gdx.graphics.getHeight();
-				if (viewWidth != glCanvas.getWidth() || viewHeight != glCanvas.getHeight()) {
-					viewWidth = Math.max(1, glCanvas.getWidth());
-					viewHeight = Math.max(1, glCanvas.getHeight());					
-				}
+			int viewWidth = Gdx.graphics.getWidth();
+			int viewHeight = Gdx.graphics.getHeight();
 
-				float delta = Gdx.graphics.getDeltaTime();
+			float delta = Gdx.graphics.getDeltaTime();
 
-				Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-				spriteBatch.begin();
-				spriteBatch.enableBlending();
-				spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+			spriteBatch.begin();
+			spriteBatch.enableBlending();
+			spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-				if (bgImage != null) {
-					bgImage.setPosition(viewWidth / 2 - bgImage.getWidth() / 2, viewHeight / 2 - bgImage.getHeight() / 2);
-					bgImage.draw(spriteBatch);
-				}
-
-				activeCount = 0;
-				for (ParticleEmitter emitter : effect.getEmitters()) {
-					if (emitter.getTexture() == null && emitter.getImagePath() != null) loadImage(emitter);
-					boolean enabled = isEnabled(emitter);
-					if (enabled) {
-						if (emitter.getTexture() != null) emitter.draw(spriteBatch, delta);
-						activeCount += emitter.getActiveCount();
-					}
-				}
-				if (effect.isComplete()) effect.start();
-
-				maxActive = Math.max(maxActive, activeCount);
-				maxActiveTimer += delta;
-				if (maxActiveTimer > 3) {
-					maxActiveTimer = 0;
-					lastMaxActive = maxActive;
-					maxActive = 0;
-				}
-
-				if (mouseDown) {
-					// gl.drawLine(mouseX - 6, mouseY, mouseX + 5, mouseY);
-					// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
-				}
-
-				font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 10, Color.WHITE);
-				font.draw(spriteBatch, "Count: " + activeCount, 10, 30, Color.WHITE);
-				font.draw(spriteBatch, "Max: " + lastMaxActive, 10, 50, Color.WHITE);
-				font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 10, 70, Color.WHITE);
-
-				spriteBatch.end();
-
-				// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight -
-// 1);
-				Gdx.input.processEvents(this);
+			if (bgImage != null) {
+				bgImage.setPosition(viewWidth / 2 - bgImage.getWidth() / 2, viewHeight / 2 - bgImage.getHeight() / 2);
+				bgImage.draw(spriteBatch);
 			}
+
+			activeCount = 0;
+			for (ParticleEmitter emitter : effect.getEmitters()) {
+				if (emitter.getTexture() == null && emitter.getImagePath() != null) loadImage(emitter);
+				boolean enabled = isEnabled(emitter);
+				if (enabled) {
+					if (emitter.getTexture() != null) emitter.draw(spriteBatch, delta);
+					activeCount += emitter.getActiveCount();
+				}
+			}
+			if (effect.isComplete()) effect.start();
+
+			maxActive = Math.max(maxActive, activeCount);
+			maxActiveTimer += delta;
+			if (maxActiveTimer > 3) {
+				maxActiveTimer = 0;
+				lastMaxActive = maxActive;
+				maxActive = 0;
+			}
+
+			if (mouseDown) {
+				// gl.drawLine(mouseX - 6, mouseY, mouseX + 5, mouseY);
+				// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
+			}
+
+			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 10, Color.WHITE);
+			font.draw(spriteBatch, "Count: " + activeCount, 10, 30, Color.WHITE);
+			font.draw(spriteBatch, "Max: " + lastMaxActive, 10, 50, Color.WHITE);
+			font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 10, 70, Color.WHITE);
+
+			spriteBatch.end();
+
+			// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight -
+// 1);
+			Gdx.input.processEvents(this);
 		}
 
 		private void loadImage (ParticleEmitter emitter) {
@@ -351,9 +330,7 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean touchDown (int x, int y, int pointer) {
-			synchronized (effect) {
-				effect.setPosition(x, y);
-			}
+			effect.setPosition(x, y);
 			return false;
 		}
 
@@ -362,32 +339,26 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean touchDragged (int x, int y, int pointer) {
-			synchronized (effect) {
-				effect.setPosition(x, y);
-			}
+			effect.setPosition(x, y);
 			return false;
 		}
 
 		public void dispose () {
 		}
 
-
-		@Override
-		public void destroy() {
+		@Override public void destroy () {
 			// TODO Auto-generated method stub
-			
+
 		}
 
-		@Override
-		public void pause() {
+		@Override public void pause () {
 			// TODO Auto-generated method stub
-			
+
 		}
 
-		@Override
-		public void resume() {
+		@Override public void resume () {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 
