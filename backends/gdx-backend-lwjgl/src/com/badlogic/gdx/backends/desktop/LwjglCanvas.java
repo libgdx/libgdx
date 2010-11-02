@@ -4,15 +4,10 @@ package com.badlogic.gdx.backends.desktop;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.swing.SwingUtilities;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -31,7 +26,7 @@ public class LwjglCanvas implements Application {
 	final ApplicationListener listener;
 	Thread mainLoopThread;
 	Canvas canvas;
-	Timer timer = new Timer("LwjglCanvas Timer");
+	boolean running = true;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
@@ -48,10 +43,16 @@ public class LwjglCanvas implements Application {
 				});
 			}
 
+			public final void removeNotify () {
+				stop();
+				super.removeNotify();
+			}
+
 			public Dimension getMinimumSize () {
 				return minSize;
 			}
 		};
+		canvas.setIgnoreRepaint(true);
 
 		graphics = new LwjglGraphics(canvas, useGL2);
 		audio = new LwjglAudio();
@@ -115,6 +116,7 @@ public class LwjglCanvas implements Application {
 			int lastHeight = graphics.getHeight();
 
 			public void run () {
+				if (!running) return;
 				graphics.updateTime();
 				input.update();
 
@@ -131,21 +133,24 @@ public class LwjglCanvas implements Application {
 			}
 		};
 
-		timer.schedule(new TimerTask() {
+		new Thread("LWJGL Canvas") {
 			public void run () {
-				try {
-					EventQueue.invokeAndWait(runnable);
-				} catch (Exception ex) {
-					throw new GdxRuntimeException(ex);
+				while (running && !Display.isCloseRequested()) {
+					try {
+						EventQueue.invokeAndWait(runnable);
+					} catch (Exception ex) {
+						throw new GdxRuntimeException(ex);
+					}
 				}
 			}
-		}, 0, 16);
+		}.start();
 	}
 
 	public void stop () {
-		timer.cancel();
-		SwingUtilities.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run () {
+				if (!running) return;
+				running = false;
 				listener.pause();
 				listener.dispose();
 				Display.destroy();

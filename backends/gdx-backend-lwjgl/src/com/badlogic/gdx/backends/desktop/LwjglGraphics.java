@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner
  */
-public final class LwjglGraphics implements Graphics{	
+public final class LwjglGraphics implements Graphics {
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -58,14 +58,14 @@ public final class LwjglGraphics implements Graphics{
 	String title;
 	Canvas canvas;
 
-	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable) {		
+	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable) {
 		useGL2 = useGL2IfAvailable;
 		this.title = title;
 		this.width = width;
-		this.height = height;		
+		this.height = height;
 	}
-	
-	LwjglGraphics(Canvas canvas, boolean useGL2IfAvailable) {
+
+	LwjglGraphics (Canvas canvas, boolean useGL2IfAvailable) {
 		useGL2 = useGL2IfAvailable;
 		this.title = "";
 		this.width = canvas.getWidth();
@@ -86,14 +86,14 @@ public final class LwjglGraphics implements Graphics{
 	}
 
 	public int getHeight () {
-		if(canvas!=null)
+		if (canvas != null)
 			return canvas.getHeight();
 		else
 			return height;
 	}
 
 	public int getWidth () {
-		if(canvas!=null)
+		if (canvas != null)
 			return canvas.getWidth();
 		else
 			return width;
@@ -158,7 +158,7 @@ public final class LwjglGraphics implements Graphics{
 			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file);
 
 		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
-	}	
+	}
 
 	public float getDeltaTime () {
 		return deltaTime;
@@ -175,7 +175,7 @@ public final class LwjglGraphics implements Graphics{
 	@Override public GLCommon getGLCommon () {
 		return gl;
 	}
-	
+
 	void updateTime () {
 		long time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;
@@ -188,14 +188,11 @@ public final class LwjglGraphics implements Graphics{
 		}
 		frames++;
 	}
-	
+
 	protected void setupDisplay () throws LWJGLException {
-		if(canvas!=null) {
+		if (canvas != null) {
 			Display.setParent(canvas);
-			Display.setDisplayMode(new DisplayMode(canvas.getWidth(), canvas.getHeight()));
-			Display.setFullscreen(false);
-		}
-		else {
+		} else {
 			Display.setDisplayMode(new DisplayMode(width, height));
 			Display.setFullscreen(false);
 			Display.setTitle(title);
@@ -212,7 +209,7 @@ public final class LwjglGraphics implements Graphics{
 				Display.create(new PixelFormat());
 			}
 		}
-		
+
 		initiateGLInstances();
 	}
 
