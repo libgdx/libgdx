@@ -1180,8 +1180,7 @@ public class Hiero extends JFrame {
 			int viewHeight = Gdx.graphics.getHeight();
 			if (viewWidth != glCanvas.getWidth() || viewHeight != glCanvas.getHeight()) {
 				viewWidth = Math.max(1, glCanvas.getWidth());
-				viewHeight = Math.max(1, glCanvas.getHeight());
-				app.setSize(viewWidth, viewHeight);
+				viewHeight = Math.max(1, glCanvas.getHeight());				
 			}
 
 			if (newUnicodeFont != null) {

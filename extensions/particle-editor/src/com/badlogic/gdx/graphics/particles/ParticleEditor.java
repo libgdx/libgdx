@@ -256,6 +256,7 @@ public class ParticleEditor extends JFrame {
 		
 		@Override
 		public void resize(int width, int height) {
+			Gdx.gl.glViewport(0, 0, width, height);
 			spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 
 			synchronized (effect) {
@@ -269,8 +270,7 @@ public class ParticleEditor extends JFrame {
 				int viewHeight = Gdx.graphics.getHeight();
 				if (viewWidth != glCanvas.getWidth() || viewHeight != glCanvas.getHeight()) {
 					viewWidth = Math.max(1, glCanvas.getWidth());
-					viewHeight = Math.max(1, glCanvas.getHeight());
-					app.setSize(viewWidth, viewHeight);
+					viewHeight = Math.max(1, glCanvas.getHeight());					
 				}
 
 				float delta = Gdx.graphics.getDeltaTime();
