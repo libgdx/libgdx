@@ -46,6 +46,14 @@ public interface ApplicationListener {
 	public void render ();
 	
 	/**
+	 * Called when the {@link Application} is resized. This can happen at any point during a non-paused state but
+	 * will never happen before a call to {@link #create()}.
+	 * @param width the new width in pixels
+	 * @param height the new height in pixels
+	 */
+	public void resize(int width, int height);
+	
+	/**
 	 * Called when the {@link Application} is paused. An Application is paused before it is destroyed, when a user pressed the
 	 * Home button on Android or an incoming call happend or when a window on the desktop is minimized. 
 	 */

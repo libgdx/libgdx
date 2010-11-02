@@ -185,6 +185,11 @@ public final class JoglApplication implements Application {
 			public void create() {
 				System.out.println("created");				
 			}
+
+			@Override
+			public void resize(int width, int height) {
+				System.out.println("resize");
+			}
 		};
 		
 		new JoglApplication(listener, "Jogl Application Test", 480, 320, false);
