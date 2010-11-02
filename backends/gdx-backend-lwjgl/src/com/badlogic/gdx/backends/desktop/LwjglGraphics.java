@@ -37,6 +37,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * An implementation of the {@link Graphics} interface based on Lwjgl.
@@ -128,13 +129,9 @@ public final class LwjglGraphics implements Graphics {
 		return new LwjglPixmap((BufferedImage)nativePixmap);
 	}
 
-	private static boolean isPowerOfTwo (int value) {
-		return ((value != 0) && (value & (value - 1)) == 0);
-	}
-
 	public Texture newUnmanagedTexture (int width, int height, Pixmap.Format format, TextureFilter minFilter,
 		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (!isPowerOfTwo(width) || !isPowerOfTwo(height))
+		if (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height))
 			throw new GdxRuntimeException("Texture dimensions must be a power of two");
 
 		if (format == Format.Alpha)
@@ -145,7 +142,7 @@ public final class LwjglGraphics implements Graphics {
 
 	public Texture newUnmanagedTexture (Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap) {
-		if (!isPowerOfTwo(pixmap.getHeight()) || !isPowerOfTwo(pixmap.getWidth()))
+		if (!MathUtils.isPowerOfTwo(pixmap.getHeight()) || !MathUtils.isPowerOfTwo(pixmap.getWidth()))
 			throw new GdxRuntimeException("Texture dimensions must be a power of two");
 
 		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
@@ -154,10 +151,10 @@ public final class LwjglGraphics implements Graphics {
 	public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap) {
 		Pixmap pixmap = newPixmap(file);
-		if (!isPowerOfTwo(pixmap.getHeight()) || !isPowerOfTwo(pixmap.getWidth()))
+		if (!MathUtils.isPowerOfTwo(pixmap.getHeight()) || !MathUtils.isPowerOfTwo(pixmap.getWidth()))
 			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file);
 
-		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
+		return new LwjglTexture(file, minFilter, magFilter, uWrap, vWrap, false);
 	}
 
 	public float getDeltaTime () {

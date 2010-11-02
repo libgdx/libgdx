@@ -15,14 +15,20 @@ package com.badlogic.gdx.backends.desktop;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.desktop.PNGDecoder.Format;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,17 +54,23 @@ final class LwjglTexture implements Texture {
 	/** global number of textures **/
 	public static int textures = 0;
 
-	static private ByteBuffer imageBuffer;
+	static private ByteBuffer buffer;
+	static private IntBuffer intBuffer;
+	static private PNGDecoder pngDecoder = new PNGDecoder();
 
 	/**
 	 * Create a new texture
 	 */
-	LwjglTexture (FileHandle file, InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
-		TextureWrap vWrap, boolean managed) {
+	LwjglTexture (FileHandle file, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
+		boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = minFilter == TextureFilter.MipMap;
-		BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
-		loadMipMap(image);
+		if (file.getPath().endsWith(".png"))
+			loadPNG(file);
+		else {
+			BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
+			loadMipMap(image);
+		}
 		bind();
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -99,13 +111,90 @@ final class LwjglTexture implements Texture {
 		textures++;
 	}
 
-	private ByteBuffer toByteBuffer (BufferedImage image) {
+	private void loadPNG (FileHandle file) {
 		try {
-			imageBuffer = BitmapDecoder.decode(image);
-			return imageBuffer;
-		} catch (IOException e) {
-			throw new GdxRuntimeException("Couldn't decode image", e);
+			pngDecoder.decodeHeader(file.readFile());
+			texWidth = pngDecoder.getWidth();
+			texHeight = pngDecoder.getHeight();
+			int stride = texWidth * 4;
+			int bufferSize = stride * texHeight;
+			if (buffer == null || buffer.capacity() < bufferSize)
+				buffer = BufferUtils.createByteBuffer(bufferSize);
+			else
+				buffer.clear();
+
+			Format pngFormat = pngDecoder.decideTextureFormat(PNGDecoder.Format.RGBA);
+			int glFormat, glInternalFormat;
+			switch (pngFormat) {
+			case ALPHA:
+				glFormat = GL11.GL_ALPHA;
+				glInternalFormat = GL11.GL_ALPHA8;
+				break;
+			case LUMINANCE:
+				glFormat = GL11.GL_LUMINANCE;
+				glInternalFormat = GL11.GL_LUMINANCE8;
+				break;
+			case LUMINANCE_ALPHA:
+				glFormat = GL11.GL_LUMINANCE_ALPHA;
+				glInternalFormat = GL11.GL_LUMINANCE8_ALPHA8;
+				break;
+			case RGB:
+				glFormat = GL11.GL_RGB;
+				glInternalFormat = GL11.GL_RGB8;
+				break;
+			case RGBA:
+				glFormat = GL11.GL_RGBA;
+				glInternalFormat = GL11.GL_RGBA8;
+				break;
+			case BGRA:
+				glFormat = GL12.GL_BGRA;
+				glInternalFormat = GL12.GL_BGRA;
+				break;
+			default:
+				throw new UnsupportedOperationException("PNG format not handled: " + pngFormat);
+			}
+			pngDecoder.decode(buffer, stride, pngFormat);
+			buffer.flip();
+
+			textureID = GL11.glGenTextures();
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, glInternalFormat, texWidth, texHeight, 0, glFormat, GL11.GL_UNSIGNED_BYTE,
+				buffer);
+			// FIXME - No mipmapping!
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error loading image file: " + file, ex);
 		}
+	}
+
+	private ByteBuffer toByteBuffer (BufferedImage image) {
+		int width = image.getWidth();
+		int height = image.getHeight();
+
+		int bufferSize = width * height * 4;
+		if (buffer == null || buffer.capacity() < bufferSize) {
+			buffer = ByteBuffer.allocateDirect(bufferSize);
+			ByteBuffer temp = buffer.slice();
+			temp.order(ByteOrder.LITTLE_ENDIAN);
+			intBuffer = temp.asIntBuffer();
+		} else {
+			buffer.clear();
+			intBuffer.clear();
+		}
+
+		Raster raster = image.getRaster();
+		if (image.getType() == BufferedImage.TYPE_INT_ARGB)
+			intBuffer.put(((DataBufferInt)raster.getDataBuffer()).getData(), 0, width * height);
+		else {
+			// Same as image.getRGB() without allocating a large int[].
+			ColorModel colorModel = image.getColorModel();
+			Object data = raster.getDataElements(0, 0, null);
+			for (int y = 0; y < height; y++)
+				for (int x = 0; x < width; x++)
+					intBuffer.put(colorModel.getRGB(raster.getDataElements(x, y, data)));
+		}
+
+		buffer.limit(intBuffer.position() * 4);
+		return buffer;
 	}
 
 	private BufferedImage scaleDown (BufferedImage image) {
@@ -189,7 +278,7 @@ final class LwjglTexture implements Texture {
 		bind();
 		while (height >= 1 || width >= 1 && level < 4) {
 			ByteBuffer imageBuffer = toByteBuffer(image);
-			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, width, height, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
+			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, width, height, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
 			if (height == 1 || width == 1 || isMipMapped == false) {
 				break;
 			}

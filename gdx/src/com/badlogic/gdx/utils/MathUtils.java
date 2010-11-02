@@ -141,6 +141,10 @@ public class MathUtils {
 		return 1 << 32 - Integer.numberOfLeadingZeros(value - 1);
 	}
 
+	static public boolean isPowerOfTwo (int value) {
+		return value != 0 && (value & value - 1) == 0;
+	}
+
 	// ---
 
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
