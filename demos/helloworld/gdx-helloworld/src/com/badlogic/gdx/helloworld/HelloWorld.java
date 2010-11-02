@@ -25,8 +25,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Vector2;
 
-public class HelloWorld implements ApplicationListener {
-	boolean initialized = false;
+public class HelloWorld implements ApplicationListener {	
 	SpriteBatch spriteBatch;
 	Texture texture;
 	BitmapFont font;
@@ -56,16 +55,15 @@ public class HelloWorld implements ApplicationListener {
 	}
 
 	@Override public void resize (int width, int height) {
-
+		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+		textPosition.set(0,0);
 	}
 
 	@Override public void create () {
-		if (!initialized) {
-			font = new BitmapFont();
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			spriteBatch = new SpriteBatch();
-		}
+		font = new BitmapFont();
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		spriteBatch = new SpriteBatch();
 	}
 
 	@Override
