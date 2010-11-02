@@ -35,7 +35,7 @@ import com.badlogic.gdx.graphics.GL10;
  * @author mzechner
  * 
  */
-public final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
+final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;
 

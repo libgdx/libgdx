@@ -26,7 +26,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.badlogic.gdx.audio.Music;
 
-public class LwjglMusic implements Music, Runnable {
+class LwjglMusic implements Music, Runnable {
 	private enum State {
 		Playing, Stopped, Paused
 	}

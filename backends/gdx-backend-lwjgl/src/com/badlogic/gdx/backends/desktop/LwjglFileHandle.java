@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-public class LwjglFileHandle implements FileHandle {
+class LwjglFileHandle implements FileHandle {
 	/** the file **/
 	private final File file;
 	private final FileType type;

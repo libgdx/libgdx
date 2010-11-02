@@ -35,7 +35,7 @@ import com.badlogic.gdx.audio.Sound;
  * @author mzechner
  * 
  */
-public class LwjglSound implements Sound {
+class LwjglSound implements Sound {
 	/** the audio format **/
 	private final AudioFormat format;
 

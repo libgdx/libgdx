@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com
  * 
  */
-public class LwjglAudioRecorder implements AudioRecorder {
+class LwjglAudioRecorder implements AudioRecorder {
 	/** the line we read the audio from **/
 	private TargetDataLine line;
 

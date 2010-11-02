@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.MathUtils;
  * An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner
  */
-public final class LwjglGraphics implements Graphics {
+final class LwjglGraphics implements Graphics {
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -186,7 +186,7 @@ public final class LwjglGraphics implements Graphics {
 		frames++;
 	}
 
-	protected void setupDisplay () throws LWJGLException {
+	void setupDisplay () throws LWJGLException {
 		if (canvas != null) {
 			Display.setParent(canvas);
 		} else {
@@ -210,7 +210,7 @@ public final class LwjglGraphics implements Graphics {
 		initiateGLInstances();
 	}
 
-	void initiateGLInstances () {
+	private void initiateGLInstances () {
 		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		int major = Integer.parseInt("" + version.charAt(0));
 		int minor = Integer.parseInt("" + version.charAt(2));

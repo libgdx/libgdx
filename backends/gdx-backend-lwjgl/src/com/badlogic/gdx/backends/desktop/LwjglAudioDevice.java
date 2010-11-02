@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-public final class LwjglAudioDevice implements AudioDevice {
+final class LwjglAudioDevice implements AudioDevice {
 	/** the audio line **/
 	private SourceDataLine line;
 
