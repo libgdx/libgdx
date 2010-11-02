@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.hiero.unicodefont;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
@@ -34,13 +33,14 @@ import com.badlogic.gdx.hiero.unicodefont.effects.ColorEffect;
 public class UnicodeFontTest implements ApplicationListener {
 	private UnicodeFont unicodeFont;
 
-	public void create () {
-		unicodeFont = new UnicodeFont("c:/windows/fonts/arial.ttf", 48, false, false);
+	public void create() {
+		unicodeFont = new UnicodeFont("c:/windows/fonts/arial.ttf", 48, false,
+				false);
 		unicodeFont.getEffects().add(new ColorEffect(java.awt.Color.white));
+	}
 
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-		
+	@Override
+	public void resize(int width, int height) {
 		glViewport(0, 0, width, height);
 		glScissor(0, 0, width, height);
 		glEnable(GL_SCISSOR_TEST);
@@ -64,7 +64,7 @@ public class UnicodeFontTest implements ApplicationListener {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	public void render () {
+	public void render() {
 		GL11.glClear(GL_COLOR_BUFFER_BIT);
 
 		unicodeFont.loadGlyphs(1);
@@ -75,31 +75,33 @@ public class UnicodeFontTest implements ApplicationListener {
 		unicodeFont.drawString(10, 330, text);
 
 		unicodeFont.addGlyphs("~!@!#!#$%___--");
-		// Cypriot Syllabary glyphs (Everson Mono font): \uD802\uDC02\uD802\uDC03\uD802\uDC12 == 0x10802, 0x10803, s0x10812
+		// Cypriot Syllabary glyphs (Everson Mono font):
+		// \uD802\uDC02\uD802\uDC03\uD802\uDC12 == 0x10802, 0x10803, s0x10812
 	}
 
-	public void dispose () {
+	public void dispose() {
 	}
 
-	public static void main (String[] args) {
-		new LwjglApplication(new UnicodeFontTest(), "UnicodeFont Test", 800, 600, false);		
+	public static void main(String[] args) {
+		new LwjglApplication(new UnicodeFontTest(), "UnicodeFont Test", 800,
+				600, false);
 	}
 
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

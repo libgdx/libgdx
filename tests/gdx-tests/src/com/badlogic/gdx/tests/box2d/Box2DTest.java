@@ -198,4 +198,8 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	public void resume() {
 		
 	}
+	
+	public void resize(int width, int height) {
+		
+	}
 }

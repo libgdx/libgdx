@@ -1159,10 +1159,11 @@ public class Hiero extends JFrame {
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+		
 
-			int width = Gdx.graphics.getWidth();
-			int height = Gdx.graphics.getHeight();
-			
+		@Override
+		public void resize(int width, int height) {						
 			glViewport(0, 0, width, height);
 			glScissor(0, 0, width, height);
 
@@ -1170,7 +1171,7 @@ public class Hiero extends JFrame {
 			glLoadIdentity();
 			glOrtho(0, width, height, 0, 1, -1);
 			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
+			glLoadIdentity();			
 		}
 
 		public void render () {

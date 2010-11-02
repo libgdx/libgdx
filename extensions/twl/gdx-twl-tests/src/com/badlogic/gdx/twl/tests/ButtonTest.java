@@ -28,9 +28,13 @@ public class ButtonTest implements ApplicationListener {
 		layout.setHorizontalGroup(layout.createParallelGroup().addWidgets(button, fpsCounter));
 		layout.setVerticalGroup(layout.createSequentialGroup().addWidget(button).addGap(5).addWidget(fpsCounter).addGap(5));
 
-		gui = TwlRenderer.createGUI(layout, "data/widgets.xml", FileType.Internal);
-		gui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gui = TwlRenderer.createGUI(layout, "data/widgets.xml", FileType.Internal);		
 		guiInputListener = new TwlInputListener(gui);
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		gui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
 	}
 
 	public void render () {

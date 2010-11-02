@@ -252,15 +252,15 @@ public class ParticleEditor extends JFrame {
 				"data/default.png", FileType.Internal), true);
 			effectPanel.newEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
-
-			int viewWidth = Gdx.graphics.getWidth();
-			int viewHeight = Gdx.graphics.getHeight();
-
-			spriteBatch.getProjectionMatrix().setToOrtho(0, viewWidth, viewHeight, 0, 0, 1);
+		}
+		
+		@Override
+		public void resize(int width, int height) {
+			spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 
 			synchronized (effect) {
-				effect.setPosition(viewWidth / 2, viewHeight / 2);
-			}
+				effect.setPosition(width / 2, height / 2);
+			}			
 		}
 
 		public void render () {

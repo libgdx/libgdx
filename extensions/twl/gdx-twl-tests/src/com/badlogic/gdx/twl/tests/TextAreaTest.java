@@ -71,8 +71,12 @@ public class TextAreaTest implements ApplicationListener {
 			}
 		});
 		
-		TwlRenderer.updateSize(gui);
 		guiInputListener = new TwlInputListener(gui);
+	}
+	
+	@Override
+	public void resize(int width, int height) {	
+		TwlRenderer.updateSize(gui);
 	}
 
 	public void render () {
