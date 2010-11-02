@@ -65,9 +65,19 @@ public class LwjglApplication implements Application {
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 		
+		int lastWidth = graphics.getWidth();
+		int lastHeight = graphics.getHeight();
+		
 		while(running && !Display.isCloseRequested()) {
 			graphics.updateTime();
 			input.update();
+			
+			if( lastWidth != graphics.getWidth() || lastHeight != graphics.getHeight() ) {
+				lastWidth = graphics.getWidth();
+				lastHeight = graphics.getHeight();
+				listener.resize(lastWidth, lastHeight);
+			}
+			
 			listener.render();
 			input.processEvents(null);
 			Display.update();
@@ -122,10 +132,4 @@ public class LwjglApplication implements Application {
 		catch(Exception ex) {			
 		}
 	}
-
-	public void setSize(int viewWidth, int viewHeight) {
-		graphics.width = viewWidth;
-		graphics.height = viewHeight;
-	}
-
 }
