@@ -24,12 +24,8 @@ public class LwjglApplication implements Application {
 	Thread mainLoopThread;
 	boolean running = true;
 	
-	public LwjglApplication(ApplicationListener listener, String title, int width, int height, boolean useGL2) {
-		this(listener, title, width, height, useGL2, null);
-	}
-	
-	public LwjglApplication(ApplicationListener listener, String title, int width, int height, boolean useGL2, Canvas canvas) {
-		graphics = new LwjglGraphics(title, width, height, useGL2, canvas);
+	public LwjglApplication(ApplicationListener listener, String title, int width, int height, boolean useGL2) {	
+		graphics = new LwjglGraphics(title, width, height, useGL2);
 		audio = new LwjglAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();

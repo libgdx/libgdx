@@ -86,6 +86,7 @@ import javax.swing.JWindow;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -99,6 +100,7 @@ import org.lwjgl.opengl.GL11;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.desktop.LwjglApplication;
+import com.badlogic.gdx.backends.desktop.LwjglCanvas;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -181,6 +183,9 @@ public class Hiero extends JFrame {
 		Splash splash = new Splash(this, "/splash.jpg", 2000);
 		initialize();
 		splash.close();
+		
+		LwjglCanvas lwjglCanvas = new LwjglCanvas(new Renderer(), false);
+		gamePanel.add(lwjglCanvas.getCanvas());
 
 		prefs = Preferences.userNodeForPackage(Hiero.class);
 		java.awt.Color backgroundColor = EffectUtil.fromString(prefs.get("background", "000000"));
@@ -200,25 +205,6 @@ public class Hiero extends JFrame {
 		effectsListModel.addElement(new OutlineZigzagEffect());
 		effectsListModel.addElement(new ShadowEffect());
 		new EffectPanel(colorEffect);
-
-		gamePanel.add(glCanvas = new Canvas() {
-			private final Dimension minSize = new Dimension();
-
-			public final void addNotify () {
-				super.addNotify();
-				app = new LwjglApplication(new Renderer(), "Hiero", 200, 200, false, glCanvas);
-				
-				addWindowListener(new WindowAdapter() {
-					public void windowClosed (WindowEvent event) {
-						app.stop();
-					}
-				});
-			}
-
-			public Dimension getMinimumSize () {
-				return minSize;
-			}
-		});
 
 		setVisible(true);
 	}
@@ -1308,6 +1294,12 @@ public class Hiero extends JFrame {
 //				break;
 //			}
 //		}
-		new Hiero();
+		SwingUtilities.invokeLater( new Runnable() {
+			
+			@Override
+			public void run() {
+				new Hiero();				
+			}
+		});
 	}
 }

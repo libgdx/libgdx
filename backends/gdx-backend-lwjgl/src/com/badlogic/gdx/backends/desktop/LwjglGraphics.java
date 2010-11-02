@@ -58,11 +58,18 @@ public final class LwjglGraphics implements Graphics{
 	String title;
 	Canvas canvas;
 
-	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable, Canvas canvas) {		
+	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable) {		
 		useGL2 = useGL2IfAvailable;
 		this.title = title;
 		this.width = width;
-		this.height = height;
+		this.height = height;		
+	}
+	
+	LwjglGraphics(Canvas canvas, boolean useGL2IfAvailable) {
+		useGL2 = useGL2IfAvailable;
+		this.title = "";
+		this.width = canvas.getWidth();
+		this.height = canvas.getHeight();
 		this.canvas = canvas;
 	}
 
@@ -79,11 +86,17 @@ public final class LwjglGraphics implements Graphics{
 	}
 
 	public int getHeight () {
-		return height;
+		if(canvas!=null)
+			return canvas.getHeight();
+		else
+			return height;
 	}
 
 	public int getWidth () {
-		return width;
+		if(canvas!=null)
+			return canvas.getWidth();
+		else
+			return width;
 	}
 
 	public boolean isGL11Available () {
@@ -177,10 +190,16 @@ public final class LwjglGraphics implements Graphics{
 	}
 	
 	protected void setupDisplay () throws LWJGLException {
-		if(canvas!=null) Display.setParent(canvas);
-		Display.setDisplayMode(new DisplayMode(width, height));
-		Display.setFullscreen(false);
-		Display.setTitle(title);
+		if(canvas!=null) {
+			Display.setParent(canvas);
+			Display.setDisplayMode(new DisplayMode(canvas.getWidth(), canvas.getHeight()));
+			Display.setFullscreen(false);
+		}
+		else {
+			Display.setDisplayMode(new DisplayMode(width, height));
+			Display.setFullscreen(false);
+			Display.setTitle(title);
+		}
 		int samples = 0;
 		try {
 			Display.create(new PixelFormat(8, 8, 0, samples));
