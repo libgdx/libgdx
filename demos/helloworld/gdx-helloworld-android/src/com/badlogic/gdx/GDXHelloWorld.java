@@ -21,7 +21,6 @@ import com.badlogic.gdx.helloworld.HelloWorld;
 public class GDXHelloWorld extends AndroidApplication {
 	@Override public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initialize(false);
-		getGraphics().setRenderListener(new HelloWorld());
+		initialize(new HelloWorld(), false);		
 	}
 }
