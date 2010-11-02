@@ -19,13 +19,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LwjglCanvas implements Application {
-	LwjglGraphics graphics;
-	LwjglAudio audio;
-	LwjglFiles files;
-	LwjglInput input;
+	final LwjglGraphics graphics;
+	final LwjglAudio audio;
+	final LwjglFiles files;
+	final LwjglInput input;
 	final ApplicationListener listener;
-	Thread mainLoopThread;
-	Canvas canvas;
+	final Canvas canvas;
 	boolean running = true;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {

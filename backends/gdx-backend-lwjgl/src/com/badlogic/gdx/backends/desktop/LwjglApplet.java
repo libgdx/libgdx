@@ -8,20 +8,30 @@ import java.awt.Canvas;
 import com.badlogic.gdx.ApplicationListener;
 
 public class LwjglApplet extends Applet {
-	private LwjglCanvas lwjglCanvas;
+	final Canvas canvas;
+	LwjglApplication app;
 
-	public LwjglApplet (ApplicationListener listener, boolean useGL2) {
-		lwjglCanvas = new LwjglCanvas(listener, useGL2);
-		Canvas canvas = lwjglCanvas.getCanvas();
+	public LwjglApplet (final ApplicationListener listener, final boolean useGL2) {
+		canvas = new Canvas() {
+			public final void addNotify () {
+				super.addNotify();
+				app = new LwjglApplication(listener, useGL2, canvas);
+			}
+
+			public final void removeNotify () {
+				app.stop();
+				super.removeNotify();
+			}
+		};
 		setLayout(new BorderLayout());
+		canvas.setIgnoreRepaint(true);
 		add(canvas);
 		canvas.setFocusable(true);
 		canvas.requestFocus();
-		setVisible(true);
 	}
 
 	public void destroy () {
-		remove(lwjglCanvas.getCanvas());
+		remove(canvas);
 		super.destroy();
 	}
 }
