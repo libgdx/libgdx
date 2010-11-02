@@ -238,6 +238,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 	@Override public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
 		this.width = width;
 		this.height = height;		
+		app.listener.resize(width, height);
 	}
 
 	@Override public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {

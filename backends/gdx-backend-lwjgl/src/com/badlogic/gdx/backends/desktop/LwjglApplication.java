@@ -63,6 +63,7 @@ public class LwjglApplication implements Application {
 		
 		Keyboard.enableRepeatEvents(true);
 		listener.create();
+		listener.resize(graphics.getWidth(), graphics.getHeight());
 		
 		while(running && !Display.isCloseRequested()) {
 			graphics.updateTime();
