@@ -4,6 +4,10 @@ package com.badlogic.gdx.twl;
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.Widget;
 
+/**
+ * Adds convenience methods to {@link DialogLayout}.
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class Layout extends DialogLayout {
 	public Layout () {
 		setTheme("");
@@ -24,6 +28,9 @@ public class Layout extends DialogLayout {
 			this.horizontal = horizontal;
 		}
 
+		/**
+		 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+		 */
 		public Group sequence (Object... widgets) {
 			DialogLayout.Group dialogGroup = createSequentialGroup();
 			if (horizontal)
@@ -33,6 +40,9 @@ public class Layout extends DialogLayout {
 			return new Group(null, dialogGroup).add(widgets);
 		}
 
+		/**
+		 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+		 */
 		public Group parallel (Object... widgets) {
 			DialogLayout.Group dialogGroup = createParallelGroup();
 			if (horizontal)
@@ -51,18 +61,27 @@ public class Layout extends DialogLayout {
 				this.dialogGroup = dialogGroup;
 			}
 
+			/**
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+			 */
 			public Group sequence (Object... widgets) {
 				DialogLayout.Group dialogGroup = createSequentialGroup();
 				this.dialogGroup.addGroup(dialogGroup);
 				return new Group(this, dialogGroup).add(widgets);
 			}
 
+			/**
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+			 */
 			public Group parallel (Object... widgets) {
 				DialogLayout.Group dialogGroup = createParallelGroup();
 				this.dialogGroup.addGroup(dialogGroup);
 				return new Group(this, dialogGroup).add(widgets);
 			}
 
+			/**
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+			 */
 			public Group add (Object... widgets) {
 				for (int i = 0, n = widgets.length; i < n; i++) {
 					Object object = widgets[i];

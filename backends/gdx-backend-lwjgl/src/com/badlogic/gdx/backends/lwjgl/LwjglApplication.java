@@ -16,6 +16,9 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * An OpenGL surface fullscreen or in a lightweight window.
+ */
 public class LwjglApplication implements Application {
 	LwjglGraphics graphics;
 	LwjglAudio audio;

@@ -18,6 +18,11 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
+ * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization.
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class LwjglCanvas implements Application {
 	final LwjglGraphics graphics;
 	final LwjglAudio audio;

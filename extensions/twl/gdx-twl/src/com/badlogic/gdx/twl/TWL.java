@@ -12,6 +12,7 @@ import java.net.URLStreamHandler;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.twl.renderer.GdxRenderer;
@@ -22,15 +23,38 @@ import de.matthiasmann.twl.GUI;
 import de.matthiasmann.twl.Widget;
 import de.matthiasmann.twl.theme.ThemeManager;
 
+/**
+ * Convenience class for using TWL. This provides all the basics sufficient for most UIs. TWL can be used without this class if
+ * more complex configurations are required (eg, multiple GUI instances).<br>
+ * <br>
+ * This class provides a single {@link GUI} instance with a root pane set to a widget that takes up the whole screen.
+ * {@link #setWidget(Widget)} puts a widget into the root pane, making it easy to layout your widgets using the whole screen.<br>
+ * <br>
+ * This class is relatively heavyweight because it loads a TWL theme. Generally only one instance should be created for an entire
+ * application. Use {@link #setWidget(Widget)} and {@link #clear()} to change the widgets displayed on various application
+ * screens.<br>
+ * <br>
+ * This class implements {@link InputProcessor} and the input methods return true if TWL handled an event. Generally you will want
+ * to use {@link InputMultiplexer} to avoid dispatching events that TWL handled to your application.<br>
+ * <br>
+ * If an instance of this call will no longer be used, {@link #dispose()} must be called to release resources.
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class TWL implements InputProcessor {
 	private final GdxRenderer renderer = new GdxRenderer();
 	private final GUI gui;
 
+	/**
+	 * Creates a new TWL instance with the specified theme file. The specified widget is added to the root pane.
+	 */
 	public TWL (String themeFile, FileType fileType, Widget widget) {
 		this(themeFile, fileType);
 		setWidget(widget);
 	}
 
+	/**
+	 * Creates a new TWL instance with the specified theme file.
+	 */
 	public TWL (String themeFile, FileType fileType) {
 		Widget root = new Widget() {
 			protected void layout () {
@@ -47,24 +71,32 @@ public class TWL implements InputProcessor {
 		}
 	}
 
-	public GdxRenderer getRenderer () {
-		return renderer;
-	}
-
+	/**
+	 * Returns the GUI instance, which is the root of the TWL UI hierachy and manages timing, inputs, etc.
+	 */
 	public GUI getGUI () {
 		return gui;
 	}
 
+	/**
+	 * Sets the widget in the GUI's root pane. By default the root pane takes up the whole screen.
+	 */
 	public void setWidget (Widget widget) {
 		Widget root = gui.getRootPane();
 		root.removeAllChildren();
 		root.add(widget);
 	}
 
+	/**
+	 * Removes all widgets from the GUI's root pane. This effectively means that no TWL UI will be drawn.
+	 */
 	public void clear () {
 		gui.getRootPane().removeAllChildren();
 	}
 
+	/**
+	 * Draws the TWL UI.
+	 */
 	public void render () {
 		GUI gui = this.gui;
 		int viewWidth = Gdx.graphics.getWidth();
@@ -174,6 +206,11 @@ public class TWL implements InputProcessor {
 		return Event.KEY_NONE;
 	}
 
+	/**
+	 * Returns a URL to a theme file, which can be used with
+	 * {@link ThemeManager#createThemeManager(URL, de.matthiasmann.twl.renderer.Renderer) ThemeManager} to create a theme for
+	 * {@link GUI#applyTheme(ThemeManager)}. This is only needed if not using the TWL class make use of TWL.
+	 */
 	static public URL getThemeURL (String themeFile, final FileType fileType) throws MalformedURLException {
 		File file = new File(themeFile);
 		final File themeRoot = file.getParentFile();

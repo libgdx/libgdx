@@ -3,11 +3,20 @@ package com.badlogic.gdx;
 
 import java.util.ArrayList;
 
+/**
+ * An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
+ * processor returns true, which indicates that the event was handled.
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class InputMultiplexer implements InputProcessor {
 	private ArrayList<InputProcessor> processors = new ArrayList(4);
 
 	public void addProcessor (InputProcessor processor) {
 		processors.add(processor);
+	}
+
+	public void removeProcessor (InputProcessor processor) {
+		processors.remove(processor);
 	}
 
 	public boolean keyDown (int keycode) {

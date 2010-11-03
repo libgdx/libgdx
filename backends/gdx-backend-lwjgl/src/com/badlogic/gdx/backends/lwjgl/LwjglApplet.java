@@ -7,6 +7,10 @@ import java.awt.Canvas;
 
 import com.badlogic.gdx.ApplicationListener;
 
+/**
+ * An OpenGL surface in an applet.
+ * @author Nathan Sweet <misc@n4te.com>
+ */
 public class LwjglApplet extends Applet {
 	final Canvas canvas;
 	LwjglApplication app;
