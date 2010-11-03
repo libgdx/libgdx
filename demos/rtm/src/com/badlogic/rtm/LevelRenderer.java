@@ -50,7 +50,7 @@ public class LevelRenderer implements ApplicationListener {
 	private void load () {
 		try {
 			tiles = Gdx.graphics.newTexture( Gdx.files.getFileHandle("data/tiles-3.png", FileType.Internal),
-														TextureFilter.MipMap, TextureFilter.Linear, 
+														TextureFilter.Nearest, TextureFilter.Nearest, 
 														TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
 			TextureAtlas atlas = new TextureAtlas(tiles);
@@ -213,27 +213,34 @@ public class LevelRenderer implements ApplicationListener {
 		if( Gdx.input.isKeyPressed(Keys.KEYCODE_A) )
 			angle -= 90 * delta;
 		if( Gdx.input.isKeyPressed(Keys.KEYCODE_D))
-			angle += 90 * delta;
-			
+			angle += 90 * delta;				
+
+		if( Gdx.input.isTouched() ) {
+			float x = Gdx.input.getX();
+			float y = Gdx.input.getY();
+			if( x > Gdx.graphics.getWidth() / 2 + Gdx.graphics.getWidth() / 4 )
+				angle += 90 * delta;
+			if( x < Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 4 )
+				angle -= 90 * delta;				
+			if( y > Gdx.graphics.getHeight() / 2 + Gdx.graphics.getHeight() / 4 )
+				camera.getPosition().add(camera.getDirection().tmp().mul(80*delta));				
+			if( y < Gdx.graphics.getHeight() / 2 - Gdx.graphics.getHeight() / 4 )
+				camera.getPosition().add(camera.getDirection().tmp().mul(-80*delta));				
+		}
+		
 		camera.getDirection().set((float)Math.cos(Math.toRadians(angle)), 0, (float)Math.sin(Math.toRadians(angle)));
 	}
 
 	@Override public void resize (int width, int height) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override public void pause () {
-		// TODO Auto-generated method stub
 		
 	}
 
-	@Override public void dispose () {
-		// TODO Auto-generated method stub
+	@Override
+	public void destroy() {
 		
-	}
-
-	public static void main(String[] argv) {
-		new JoglApplication(new LevelRenderer(), "RTM", 480, 320, false);
 	}
 }
