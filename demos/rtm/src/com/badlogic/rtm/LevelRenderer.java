@@ -50,7 +50,7 @@ public class LevelRenderer implements ApplicationListener {
 	private void load () {
 		try {
 			tiles = Gdx.graphics.newTexture( Gdx.files.getFileHandle("data/tiles-3.png", FileType.Internal),
-														TextureFilter.Nearest, TextureFilter.Nearest, 
+														TextureFilter.MipMap, TextureFilter.Nearest, 
 														TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
 			TextureAtlas atlas = new TextureAtlas(tiles);
