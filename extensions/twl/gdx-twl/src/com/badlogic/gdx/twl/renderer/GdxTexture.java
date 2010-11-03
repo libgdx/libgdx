@@ -38,10 +38,10 @@ import de.matthiasmann.twl.renderer.Texture;
  * @author Nathan Sweet <misc@n4te.com>
  */
 class GdxTexture implements Texture, Resource {
-	private final TwlRenderer renderer;
+	private final GdxRenderer renderer;
 	private final com.badlogic.gdx.graphics.Texture texture;
 
-	public GdxTexture (TwlRenderer renderer, FileHandle textureFile) {
+	public GdxTexture (GdxRenderer renderer, FileHandle textureFile) {
 		this.renderer = renderer;
 		texture = Gdx.graphics.newTexture(textureFile, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);

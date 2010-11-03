@@ -2,32 +2,27 @@
 package com.badlogic.gdx.twl.tests;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.twl.renderer.TwlInputProcessor;
-import com.badlogic.gdx.twl.renderer.TwlRenderer;
+import com.badlogic.gdx.twl.Layout;
+import com.badlogic.gdx.twl.TWL;
 
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.FPSCounter;
-import de.matthiasmann.twl.GUI;
 import de.matthiasmann.twl.ScrollPane;
 import de.matthiasmann.twl.TextArea;
 import de.matthiasmann.twl.Timer;
 import de.matthiasmann.twl.textarea.HTMLTextAreaModel;
 import de.matthiasmann.twl.textarea.Style;
 import de.matthiasmann.twl.textarea.StyleAttribute;
-import de.matthiasmann.twl.textarea.Value;
 import de.matthiasmann.twl.textarea.TextAreaModel.Element;
+import de.matthiasmann.twl.textarea.Value;
 
 public class TextAreaTest implements ApplicationListener {
-	GUI gui;
-	TwlRenderer twl;
-	TwlInputProcessor guiInputListener;
+	TWL twl;
 
 	@Override public void create () {
-		if (gui != null) return;
-
 		final HTMLTextAreaModel htmlText = new HTMLTextAreaModel();
 		TextArea textArea = new TextArea(htmlText);
 		htmlText
@@ -36,14 +31,11 @@ public class TextAreaTest implements ApplicationListener {
 		scrollPane.setFixed(ScrollPane.Fixed.HORIZONTAL);
 		FPSCounter fpsCounter = new FPSCounter(4, 2);
 
-		DialogLayout layout = new DialogLayout();
-		layout.setTheme("");
-		layout.setHorizontalGroup(layout.createParallelGroup().addWidgets(scrollPane, fpsCounter));
-		layout.setVerticalGroup(layout.createSequentialGroup().addWidget(scrollPane).addGap(5).addWidget(fpsCounter).addGap(5));
+		Layout layout = new Layout();
+		layout.horizontal().parallel(scrollPane, fpsCounter);
+		layout.vertical().sequence(scrollPane, 5, fpsCounter, 5);
 
-		twl = new TwlRenderer();
-		gui = new GUI(layout, twl, null);
-		twl.applyTheme(gui, "data/widgets.xml", FileType.Internal);
+		twl = new TWL("data/widgets.xml", FileType.Internal, layout);
 
 		textArea.addCallback(new TextArea.Callback() {
 			Timer timer;
@@ -52,7 +44,7 @@ public class TextAreaTest implements ApplicationListener {
 			public void handleLinkClicked (String href) {
 				final Element element = htmlText.getElementById("badlogic");
 				if (timer == null) {
-					timer = gui.createTimer();
+					timer = twl.getGUI().createTimer();
 					timer.setDelay(32);
 					timer.setContinuous(true);
 					timer.setCallback(new Runnable() {
@@ -73,23 +65,19 @@ public class TextAreaTest implements ApplicationListener {
 				speed = -speed;
 			}
 		});
-
-		guiInputListener = new TwlInputProcessor(gui);
 	}
 
 	@Override public void resize (int width, int height) {
-		gui.setSize();
-		twl.setSize();
 	}
 
 	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.input.processEvents(guiInputListener);
-		gui.update();
+		Gdx.input.processEvents(twl);
+		twl.render();
 	}
 
 	@Override public void dispose () {
-		gui.destroy();
+		twl.dispose();
 	}
 
 	@Override public void pause () {

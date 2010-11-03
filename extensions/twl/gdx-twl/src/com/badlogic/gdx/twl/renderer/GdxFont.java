@@ -46,12 +46,12 @@ import de.matthiasmann.twl.utils.StateExpression;
 class GdxFont implements Font {
 	static private final HAlignment[] gdxAlignment = HAlignment.values();
 
-	final TwlRenderer renderer;
+	final GdxRenderer renderer;
 	final BitmapFont bitmapFont;
 	private final FontState[] fontStates;
 	private final int yOffset;
 
-	public GdxFont (TwlRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
+	public GdxFont (GdxRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
 		this.bitmapFont = bitmapFont;
 		this.renderer = renderer;
 		yOffset = bitmapFont.getLineHeight() - bitmapFont.getBaseLine();

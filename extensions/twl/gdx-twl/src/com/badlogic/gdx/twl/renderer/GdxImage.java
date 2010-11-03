@@ -35,14 +35,14 @@ import de.matthiasmann.twl.renderer.SupportsDrawRepeat;
  * @author Matthias Mann
  */
 class GdxImage implements Image, SupportsDrawRepeat {
-	private final TwlRenderer renderer;
+	private final GdxRenderer renderer;
 	private final Sprite sprite;
 	private final Color tintColor;
 	private final int width;
 	private final int height;
 	private final boolean tile;
 
-	public GdxImage (TwlRenderer renderer, Texture texture, int srcX, int srcY, int srcWidth, int srcHeight, Color color,
+	public GdxImage (GdxRenderer renderer, Texture texture, int srcX, int srcY, int srcWidth, int srcHeight, Color color,
 		boolean tile) {
 		this.renderer = renderer;
 		width = Math.abs(srcWidth);

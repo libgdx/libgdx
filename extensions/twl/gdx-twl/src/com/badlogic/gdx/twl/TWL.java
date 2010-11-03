@@ -1,20 +1,85 @@
 
-package com.badlogic.gdx.twl.renderer;
+package com.badlogic.gdx.twl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.twl.renderer.GdxRenderer;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.matthiasmann.twl.Event;
 import de.matthiasmann.twl.GUI;
+import de.matthiasmann.twl.Widget;
+import de.matthiasmann.twl.theme.ThemeManager;
 
-/**
- * @author Nathan Sweet <misc@n4te.com>
- */
-public class TwlInputProcessor implements InputProcessor {
+public class TWL implements InputProcessor {
+	private final GdxRenderer renderer = new GdxRenderer();
 	private final GUI gui;
 
-	public TwlInputProcessor (GUI gui) {
-		this.gui = gui;
+	public TWL (String themeFile, FileType fileType, Widget widget) {
+		this(themeFile, fileType);
+		setWidget(widget);
+	}
+
+	public TWL (String themeFile, FileType fileType) {
+		Widget root = new Widget() {
+			protected void layout () {
+				layoutChildrenFullInnerArea();
+			}
+		};
+		root.setTheme("");
+
+		gui = new GUI(root, renderer, null);
+		try {
+			gui.applyTheme(ThemeManager.createThemeManager(getThemeURL(themeFile, fileType), renderer));
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error loading theme: " + themeFile + " (" + fileType + ")", ex);
+		}
+	}
+
+	public GdxRenderer getRenderer () {
+		return renderer;
+	}
+
+	public GUI getGUI () {
+		return gui;
+	}
+
+	public void setWidget (Widget widget) {
+		Widget root = gui.getRootPane();
+		root.removeAllChildren();
+		root.add(widget);
+	}
+
+	public void clear () {
+		gui.getRootPane().removeAllChildren();
+	}
+
+	public void render () {
+		GUI gui = this.gui;
+		int viewWidth = Gdx.graphics.getWidth();
+		int viewHeight = Gdx.graphics.getHeight();
+		if (renderer.getWidth() != viewWidth || renderer.getHeight() != viewHeight) {
+			renderer.setSize(viewWidth, viewHeight);
+			gui.setSize(viewWidth, viewHeight);
+		}
+		gui.updateTime();
+		gui.handleKeyRepeat();
+		gui.handleTooltips();
+		gui.updateTimers();
+		gui.invokeRunables();
+		gui.validateLayout();
+		gui.draw();
 	}
 
 	public boolean keyDown (int keycode) {
@@ -42,6 +107,11 @@ public class TwlInputProcessor implements InputProcessor {
 
 	public boolean touchDragged (int x, int y, int pointer) {
 		return gui.handleMouse(x, y, -1, true);
+	}
+
+	public void dispose () {
+		gui.destroy();
+		renderer.dispose();
 	}
 
 	static public int getTwlKeyCode (int gdxKeyCode) {
@@ -102,5 +172,29 @@ public class TwlInputProcessor implements InputProcessor {
 		if (gdxKeyCode == Input.Keys.KEYCODE_SPACE) return Event.KEY_SPACE;
 		if (gdxKeyCode == Input.Keys.KEYCODE_TAB) return Event.KEY_TAB;
 		return Event.KEY_NONE;
+	}
+
+	static public URL getThemeURL (String themeFile, final FileType fileType) throws MalformedURLException {
+		File file = new File(themeFile);
+		final File themeRoot = file.getParentFile();
+		return new URL("gdx-twl", "local", 80, file.getName(), new URLStreamHandler() {
+			protected URLConnection openConnection (URL url) throws IOException {
+				final String path = new File(themeRoot, url.getPath()).getPath();
+				final FileHandle fileHandle = Gdx.files.getFileHandle(path, fileType);
+				return new URLConnection(url) {
+					public void connect () {
+					}
+
+					public Object getContent () {
+						return fileHandle;
+					}
+
+					public InputStream getInputStream () {
+						if (!path.endsWith(".xml")) return null; // Only theme files are loaded through the URL.
+						return fileHandle.readFile();
+					}
+				};
+			}
+		});
 	}
 }

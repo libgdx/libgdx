@@ -19,12 +19,12 @@ import de.matthiasmann.twl.renderer.CacheContext;
  * @author Nathan Sweet <misc@n4te.com>
  */
 class GdxCacheContext implements CacheContext {
-	final TwlRenderer renderer;
+	final GdxRenderer renderer;
 	private final HashMap<String, GdxTexture> textures = new HashMap();
 	private final HashMap<String, BitmapFont> fonts = new HashMap();
 	private boolean valid = true;
 
-	GdxCacheContext (TwlRenderer renderer) {
+	GdxCacheContext (GdxRenderer renderer) {
 		this.renderer = renderer;
 	}
 

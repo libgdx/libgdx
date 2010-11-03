@@ -58,7 +58,7 @@ import de.matthiasmann.twl.theme.ThemeManager;
  * @author Nathan Sweet <misc@n4te.com>
  * @author Matthias Mann
  */
-public class TwlRenderer implements Renderer {
+public class GdxRenderer implements Renderer {
 	private int mouseX, mouseY;
 	private GdxCacheContext cacheContext;
 	private boolean hasScissor;
@@ -66,10 +66,19 @@ public class TwlRenderer implements Renderer {
 	private TintStack tintStack = tintStateRoot;
 	private final Color tempColor = new Color(1, 1, 1, 1);
 	private boolean rendering;
+	private int width, height;
 	final SpriteBatch spriteBatch = new SpriteBatch();
 
-	public TwlRenderer () {
+	public GdxRenderer () {
 		spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1);
+
+		Widget root = new Widget() {
+			protected void layout () {
+				layoutChildrenFullInnerArea();
+			}
+		};
+		root.setTheme("");
+		new GUI(root, this, null);
 	}
 
 	public GdxCacheContext createNewCacheContext () {
@@ -92,7 +101,7 @@ public class TwlRenderer implements Renderer {
 	}
 
 	public long getTimeMillis () {
-		return System.currentTimeMillis();
+		return System.nanoTime() / 1000000;
 	}
 
 	public void startRenderering () {
@@ -139,20 +148,26 @@ public class TwlRenderer implements Renderer {
 		return getActiveCacheContext().loadTexture(url);
 	}
 
-	public int getHeight () {
-		return Gdx.graphics.getHeight();
+	public int getWidth () {
+		return width;
 	}
 
-	public int getWidth () {
-		return Gdx.graphics.getWidth();
+	public int getHeight () {
+		return height;
+	}
+
+	public void setSize (int width, int height) {
+		this.width = width;
+		this.height = height;
+		spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 	}
 
 	public LineRenderer getLineRenderer () {
-		return null;
+		return null; // Unsupported.
 	}
 
 	public DynamicImage createDynamicImage (int width, int height) {
-		return null;
+		return null; // Unsupported.
 	}
 
 	public void setCursor (MouseCursor cursor) {
@@ -181,6 +196,14 @@ public class TwlRenderer implements Renderer {
 		return tempColor;
 	}
 
+	public void dispose () {
+		if (cacheContext != null) {
+			cacheContext.destroy();
+			cacheContext = null;
+		}
+		spriteBatch.dispose();
+	}
+
 	static private class TintStack extends Color {
 		final TintStack previous;
 
@@ -202,10 +225,6 @@ public class TwlRenderer implements Renderer {
 			next.a = this.a * a;
 			return next;
 		}
-	}
-
-	public void setSize () {
-		spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1);
 	}
 
 	public void applyTheme (GUI gui, String themeFile, final FileType fileType) {

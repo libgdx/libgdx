@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * An implementation of {@link Texture} for Android
@@ -140,10 +141,6 @@ final class AndroidTexture implements Texture {
 		return (Bitmap)pixmap.getNativePixmap();
 	}
 
-	private static boolean isPowerOfTwo (int value) {
-		return ((value != 0) && (value & (value - 1)) == 0);
-	}
-
 	private void buildMipmap () {
 		Bitmap obitmap = null;
 		if (file != null)
@@ -157,7 +154,7 @@ final class AndroidTexture implements Texture {
 		int width = bitmap.getWidth();
 		Log.d("texture", "creating texture mipmaps: " + bitmap.getWidth() + ", " + bitmap.getHeight());
 
-		if (!isPowerOfTwo(bitmap.getWidth()) || !isPowerOfTwo(bitmap.getHeight()))
+		if (!MathUtils.isPowerOfTwo(bitmap.getWidth()) || !MathUtils.isPowerOfTwo(bitmap.getHeight()))
 			throw new GdxRuntimeException("Dimensions have to be a power of two");
 
 		while (height >= 1 || width >= 1 && level < 4) {
