@@ -14,7 +14,7 @@
     </inputMapDef>
     <images file="badlogic.png">
         <area name="badlogic" xywh="*"/></images>
-    <images file="twllogo.png">
+    <images file="TWLLogo.png">
         <area name="twllogo" xywh="*"/></images>
     <images file="widgets.png">
         <area name="white" xywh="1,36,1,1"/>
