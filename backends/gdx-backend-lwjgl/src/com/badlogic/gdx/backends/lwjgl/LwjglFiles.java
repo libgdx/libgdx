@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -34,25 +35,19 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 final class LwjglFiles implements Files {
 	private final String externalPath = System.getProperty("user.home") + "/";
 
-	public FileHandle getFileHandle (String filename, FileType type) {
-		File file = null;
-		if (type == FileType.Absolute || type == FileType.Internal)
-			file = new File(filename);
-		else
-			file = new File(this.externalPath + filename);
+	public FileHandle getFileHandle (String fileName, FileType type) {
+		if (type == FileType.External) fileName = this.externalPath + fileName;
+		File file = new File(fileName);
 
-		if (file.exists() == false)
-			throw new GdxRuntimeException("File '" + filename + "' doesn't exist");
+		if (LwjglFileHandle.class.getResource("/" + fileName) == null && file.exists() == false)
+			throw new GdxRuntimeException("File '" + fileName + "' doesn't exist");
 		else
 			return new LwjglFileHandle(file, type);
 	}
 
 	public String[] listDirectory (String directory, FileType type) {
-		File file = null;
-		if (type == FileType.Absolute || type == FileType.Internal)
-			file = new File(directory);
-		else
-			file = new File(this.externalPath + directory);
+		if (type == FileType.External) directory = this.externalPath + directory;
+		File file = new File(directory);
 
 		if (file.exists() == false) throw new GdxRuntimeException("Directory '" + directory + "' does not exist");
 
@@ -60,10 +55,9 @@ final class LwjglFiles implements Files {
 	}
 
 	public boolean makeDirectory (String directory, FileType type) {
-		File file = null;
-
 		if (type == FileType.Internal) return false;
 
+		File file = null;
 		if (type == FileType.Absolute)
 			file = new File(directory);
 		else
@@ -72,39 +66,33 @@ final class LwjglFiles implements Files {
 	}
 
 	public InputStream readFile (String fileName, FileType type) {
-		File file = null;
-		InputStream in = null;
-		if (type == FileType.Absolute || type == FileType.Internal)
-			file = new File(fileName);
-		else
-			file = new File(this.externalPath + fileName);
-
-		try {
-			in = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			throw new GdxRuntimeException("File '" + file + "' does not exist");
+		if (type == FileType.External)
+			fileName = this.externalPath + fileName;
+		else if (type == FileType.Internal) {
+			InputStream input = LwjglFileHandle.class.getResourceAsStream("/" + fileName);
+			if (input != null) return input;
 		}
 
-		return in;
+		try {
+			return new FileInputStream(fileName);
+		} catch (FileNotFoundException ex) {
+			throw new GdxRuntimeException("Error reading file: " + fileName);
+		}
 	}
 
 	public OutputStream writeFile (String filename, FileType type) {
-		File file = null;
-		FileOutputStream out = null;
-
 		if (type == FileType.Internal) return null;
 
+		File file = null;
 		if (type == FileType.Absolute)
 			file = new File(filename);
 		else
 			file = new File(this.externalPath + filename);
 
 		try {
-			out = new FileOutputStream(file);
+			return new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
 			throw new GdxRuntimeException("File '" + file + "' does not exist");
 		}
-
-		return out;
 	}
 }
