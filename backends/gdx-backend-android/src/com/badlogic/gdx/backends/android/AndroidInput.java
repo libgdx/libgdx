@@ -97,7 +97,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 	private String text = null;
 	private TextInputListener textListener = null;
 	private Handler handle;
-	private final AndroidApplication app;
+	final AndroidApplication app;
 	private final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
 	private boolean catchBack = false;
@@ -156,7 +156,6 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 	public void getTextInput(final TextInputListener listener,
 			final String title, final String text) {
 		handle.post(new Runnable() {
-			@SuppressWarnings("synthetic-access")
 			public void run() {
 				AlertDialog.Builder alert = new AlertDialog.Builder(
 						AndroidInput.this.app);

@@ -73,7 +73,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
 		synchronized (input) {
 			TouchEvent event = input.freeTouchEvents.newObject();
-			event.pointer = 0;
+			event.pointer = pointer;
 			event.x = x;
 			event.y = y;
 			event.type = type;			

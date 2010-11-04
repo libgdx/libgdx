@@ -301,38 +301,41 @@ final class AndroidGraphics implements Graphics, Renderer {
 	}
 	
 	@Override public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
-		deltaTime = (System.nanoTime() - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = System.nanoTime();
+		long time = System.nanoTime();
+		deltaTime = (time - lastFrameTime) / 1000000000.0f;
+		lastFrameTime = time;
 		mean.addValue(deltaTime);			
 
-		synchronized(synch) {
-			if(running) {
-				app.listener.render();
+		synchronized (Gdx.input) {
+			synchronized (synch) {
+				if (running) {
+					app.listener.render();
+				}
+
+				if (pause) {
+					app.listener.pause();
+					pause = false;
+				}
+
+				if (resume) {
+					app.listener.resume();
+					resume = false;
+					running = true;
+				}
+
+				if (destroy) {
+					app.listener.dispose();
+					destroy = false;
+				}
 			}
-				
-			if(pause) {
-				app.listener.pause();
-				pause = false;		
-			}
-			
-			if(resume) {
-				app.listener.resume();
-				resume = false;
-				running = true;
-			}
-			
-			if(destroy) {			
-				app.listener.dispose();
-				destroy = false;
-			}
+
+			Gdx.input.processEvents(null);
 		}
 		
-		Gdx.input.processEvents(null);
-		
-		if (System.nanoTime() - frameStart > 1000000000) {
+		if (time - frameStart > 1000000000) {
 			fps = frames;
 			frames = 0;
-			frameStart = System.nanoTime();
+			frameStart = time;
 		}
 		frames++;
 	}
