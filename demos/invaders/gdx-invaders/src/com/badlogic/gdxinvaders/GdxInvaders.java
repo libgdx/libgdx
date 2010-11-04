@@ -30,7 +30,7 @@ public class GdxInvaders implements ApplicationListener {
 	/** the current screen **/
 	private Screen screen;
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 
 	}
 
