@@ -32,7 +32,7 @@ public class HelloWorld implements ApplicationListener {
 	Vector2 textPosition = new Vector2(100, 100);
 	Vector2 textDirection = new Vector2(1, 1);
 
-	@Override public void destroy () {
+	@Override public void dispose () {
 
 	}
 
