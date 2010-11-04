@@ -44,8 +44,6 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GL20 gl20;
 	
 	void initialize(String title, int width, int height, boolean useGL2) {
-		JoglNativesLoader.loadLibraries();
-
 		GLCapabilities caps = new GLCapabilities();
 		caps.setRedBits(8);
 		caps.setGreenBits(8);

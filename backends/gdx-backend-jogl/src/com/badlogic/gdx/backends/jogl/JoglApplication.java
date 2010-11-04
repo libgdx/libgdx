@@ -39,6 +39,7 @@ import com.badlogic.gdx.Version;
  */
 public final class JoglApplication implements Application {
 	static {
+		JoglNativesLoader.loadLibraries();
 		Version.loadLibrary();
 	}
 
