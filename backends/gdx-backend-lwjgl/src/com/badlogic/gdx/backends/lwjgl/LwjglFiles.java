@@ -40,7 +40,7 @@ final class LwjglFiles implements Files {
 		File file = new File(fileName);
 
 		if (LwjglFileHandle.class.getResource("/" + fileName) == null && file.exists() == false)
-			throw new GdxRuntimeException("File '" + fileName + "' doesn't exist");
+			throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
 		else
 			return new LwjglFileHandle(file, type);
 	}
@@ -49,7 +49,7 @@ final class LwjglFiles implements Files {
 		if (type == FileType.External) directory = this.externalPath + directory;
 		File file = new File(directory);
 
-		if (file.exists() == false) throw new GdxRuntimeException("Directory '" + directory + "' does not exist");
+		if (file.exists() == false) throw new GdxRuntimeException("Directory not found: " + directory + " (" + type + ")");
 
 		return file.list();
 	}
@@ -80,19 +80,19 @@ final class LwjglFiles implements Files {
 		}
 	}
 
-	public OutputStream writeFile (String filename, FileType type) {
+	public OutputStream writeFile (String fileName, FileType type) {
 		if (type == FileType.Internal) return null;
 
 		File file = null;
 		if (type == FileType.Absolute)
-			file = new File(filename);
+			file = new File(fileName);
 		else
-			file = new File(this.externalPath + filename);
+			file = new File(this.externalPath + fileName);
 
 		try {
 			return new FileOutputStream(file);
 		} catch (FileNotFoundException e) {
-			throw new GdxRuntimeException("File '" + file + "' does not exist");
+			throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
 		}
 	}
 }

@@ -113,9 +113,6 @@ public class SpriteBatch {
 	protected float invTexWidth = 0;
 	protected float invTexHeight = 0;
 
-	/** whether to use the blend mode for text or for sprites **/
-	protected boolean useTextBlend = false;
-
 	/** blend function src & target **/
 	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
 	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -301,8 +298,6 @@ public class SpriteBatch {
 			invTexHeight = 1.0f / texture.getHeight();
 		}
 
-		useTextBlend = false;
-
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
 		final float worldOriginY = y + originY;
@@ -453,8 +448,6 @@ public class SpriteBatch {
 			invTexHeight = 1.0f / texture.getHeight();
 		}
 
-		useTextBlend = false;
-
 		float u = srcX * invTexWidth;
 		float v = (srcY + srcHeight) * invTexHeight;
 		float u2 = (srcX + srcWidth) * invTexWidth;
@@ -527,8 +520,6 @@ public class SpriteBatch {
 			invTexHeight = 1.0f / texture.getHeight();
 		}
 
-		useTextBlend = false;
-
 		final float u = srcX * invTexWidth;
 		final float v = (srcY + srcHeight) * invTexHeight;
 		final float u2 = (srcX + srcWidth) * invTexWidth;
@@ -588,8 +579,6 @@ public class SpriteBatch {
 			invTexHeight = 1.0f / texture.getHeight();
 		}
 
-		useTextBlend = false;
-
 		final float fx2 = x + srcWidth;
 		final float fy2 = y + srcHeight;
 
@@ -630,8 +619,6 @@ public class SpriteBatch {
 			invTexHeight = 1.0f / texture.getHeight();
 		}
 
-		useTextBlend = false;
-
 		if (idx + length >= vertices.length) renderMesh();
 
 		System.arraycopy(spriteVertices, offset, vertices, idx, length);
@@ -654,11 +641,7 @@ public class SpriteBatch {
 		mesh.setVertices(vertices, 0, idx);
 
 		if (Gdx.graphics.isGL20Available()) {
-			if (useTextBlend) {
-				GL20 gl20 = Gdx.gl20;
-				gl20.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-				gl20.glEnable(GL20.GL_BLEND);
-			} else if (blendingDisabled) {
+			if (blendingDisabled) {
 				Gdx.gl20.glDisable(GL20.GL_BLEND);
 			} else {
 				GL20 gl20 = Gdx.gl20;
@@ -668,11 +651,7 @@ public class SpriteBatch {
 
 			mesh.render(shader, GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		} else {
-			if (useTextBlend) {
-				GL10 gl10 = Gdx.gl10;
-				gl10.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-				gl10.glEnable(GL10.GL_BLEND);
-			} else if (blendingDisabled) {
+			if (blendingDisabled) {
 				Gdx.gl10.glDisable(GL10.GL_BLEND);
 			} else {
 				GL10 gl10 = Gdx.gl10;
@@ -701,8 +680,7 @@ public class SpriteBatch {
 	}
 
 	/**
-	 * Sets the blending function to be used when rendering sprites. This will have no effect on the blend function used for text
-	 * rendering!
+	 * Sets the blending function to be used when rendering sprites.
 	 * 
 	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA

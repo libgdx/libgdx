@@ -58,7 +58,7 @@ final class AndroidFiles implements Files {
 		try {
 			in = new FileInputStream(sdcard + fileName);
 		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Couldn't open file '" + fileName + "'", ex);
+			throw new GdxRuntimeException("File not found: " + fileName + " (" + FileType.External + ")", ex);
 		}
 
 		return in;
@@ -69,7 +69,7 @@ final class AndroidFiles implements Files {
 		try {
 			in = assets.open(fileName);
 		} catch (Exception ex) {
-			throw new GdxRuntimeException("Couldn't load file '" + fileName + "'", ex);
+			throw new GdxRuntimeException("Unable to read file: " + fileName + " (" + FileType.Internal + ")", ex);
 		}
 
 		return in;
@@ -81,19 +81,19 @@ final class AndroidFiles implements Files {
 		try {
 			out = new FileOutputStream(sdcard + filename);
 		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Couldn't open file '" + filename + "'", ex);
+			throw new GdxRuntimeException("File not found: " + filename + " (" + FileType.External + ")", ex);
 		}
 
 		return out;
 	}
 
-	private InputStream readAbsolutFile (String filename) {
+	private InputStream readAbsoluteFile (String filename) {
 		FileInputStream in = null;
 
 		try {
 			in = new FileInputStream(filename);
 		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Couldn't open file '" + filename + "'", ex);
+			throw new GdxRuntimeException("File not found: " + filename + " (" + FileType.Absolute + ")", ex);
 		}
 
 		return in;
@@ -114,19 +114,19 @@ final class AndroidFiles implements Files {
 			}
 
 			if (!exists)
-				throw new GdxRuntimeException("Couldn't open file '" + filename + "'");
+				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")");
 			else
 				return new AndroidFileHandle(assets, filename);
 		}
 
 		if (type == FileType.External) {
 			if (new File(sdcard + filename).exists() == false)
-				throw new GdxRuntimeException("Couldn't open file '" + filename + "'");
+				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")");
 			else
 				return new AndroidFileHandle(null, sdcard + filename);
 		} else {
 			if (new File(filename).exists() == false)
-				throw new GdxRuntimeException("Couldn't open file '" + filename + "'");
+				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")");
 			else
 				return new AndroidFileHandle(null, filename);
 		}
@@ -140,18 +140,18 @@ final class AndroidFiles implements Files {
 			try {
 				return assets.list(directory);
 			} catch (Exception ex) {
-				throw new GdxRuntimeException("Couldn't open directory '" + directory + "'");
+				throw new GdxRuntimeException("Unable to open directory: " + directory);
 			}
 		}
 
 		if (type == FileType.External) {
 			if (new File(sdcard + directory).exists() == false)
-				throw new GdxRuntimeException("Couldn't open directory '" + directory + "'");
+				throw new GdxRuntimeException("Unable to open directory: " + directory);
 			else
 				return new File(sdcard + directory).list();
 		} else {
 			if (new File(directory).exists() == false)
-				throw new GdxRuntimeException("Couldn't open directory '" + directory + "'");
+				throw new GdxRuntimeException("Unable to open directory: " + directory);
 			else
 				return new File(directory).list();
 		}
@@ -177,7 +177,7 @@ final class AndroidFiles implements Files {
 		if (type == FileType.External)
 			return readExternalFile(fileName);
 		else
-			return readAbsolutFile(fileName);
+			return readAbsoluteFile(fileName);
 	}
 
 	/**
@@ -193,7 +193,7 @@ final class AndroidFiles implements Files {
 			try {
 				out = new FileOutputStream(filename);
 			} catch (FileNotFoundException ex) {
-				throw new GdxRuntimeException("Couldn't open file '" + filename + "'", ex);
+				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")", ex);
 			}
 
 			return out;

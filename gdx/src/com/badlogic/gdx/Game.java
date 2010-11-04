@@ -38,6 +38,7 @@ public abstract class Game implements ApplicationListener {
 		if (this.screen != null) this.screen.hide();
 		this.screen = screen;
 		screen.show();
+		screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	public Screen getScreen () {
