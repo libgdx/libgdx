@@ -80,11 +80,12 @@ public class TWL implements InputProcessor {
 
 	/**
 	 * Sets the widget in the GUI's root pane. By default the root pane takes up the whole screen.
+	 * @param widget If null, this method is equivalent to {@link #clear()}.
 	 */
 	public void setWidget (Widget widget) {
 		Widget root = gui.getRootPane();
 		root.removeAllChildren();
-		root.add(widget);
+		if (widget != null) root.add(widget);
 	}
 
 	/**
@@ -134,7 +135,9 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean touchUp (int x, int y, int pointer) {
-		return gui.handleMouse(x, y, pointer, false);
+		boolean handled = gui.handleMouse(x, y, pointer, false);
+		gui.handleMouse(-9999, -9999, -1, true);
+		return handled;
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
@@ -147,63 +150,65 @@ public class TWL implements InputProcessor {
 	}
 
 	static public int getTwlKeyCode (int gdxKeyCode) {
-		if (gdxKeyCode == Input.Keys.KEYCODE_0) return Event.KEY_0;
-		if (gdxKeyCode == Input.Keys.KEYCODE_1) return Event.KEY_1;
-		if (gdxKeyCode == Input.Keys.KEYCODE_2) return Event.KEY_2;
-		if (gdxKeyCode == Input.Keys.KEYCODE_3) return Event.KEY_3;
-		if (gdxKeyCode == Input.Keys.KEYCODE_4) return Event.KEY_4;
-		if (gdxKeyCode == Input.Keys.KEYCODE_5) return Event.KEY_5;
-		if (gdxKeyCode == Input.Keys.KEYCODE_6) return Event.KEY_6;
-		if (gdxKeyCode == Input.Keys.KEYCODE_7) return Event.KEY_7;
-		if (gdxKeyCode == Input.Keys.KEYCODE_8) return Event.KEY_8;
-		if (gdxKeyCode == Input.Keys.KEYCODE_9) return Event.KEY_9;
-		if (gdxKeyCode == Input.Keys.KEYCODE_A) return Event.KEY_A;
-		if (gdxKeyCode == Input.Keys.KEYCODE_B) return Event.KEY_B;
-		if (gdxKeyCode == Input.Keys.KEYCODE_C) return Event.KEY_C;
-		if (gdxKeyCode == Input.Keys.KEYCODE_D) return Event.KEY_D;
-		if (gdxKeyCode == Input.Keys.KEYCODE_E) return Event.KEY_E;
-		if (gdxKeyCode == Input.Keys.KEYCODE_F) return Event.KEY_F;
-		if (gdxKeyCode == Input.Keys.KEYCODE_G) return Event.KEY_G;
-		if (gdxKeyCode == Input.Keys.KEYCODE_H) return Event.KEY_H;
-		if (gdxKeyCode == Input.Keys.KEYCODE_I) return Event.KEY_I;
-		if (gdxKeyCode == Input.Keys.KEYCODE_J) return Event.KEY_J;
-		if (gdxKeyCode == Input.Keys.KEYCODE_K) return Event.KEY_K;
-		if (gdxKeyCode == Input.Keys.KEYCODE_L) return Event.KEY_L;
-		if (gdxKeyCode == Input.Keys.KEYCODE_M) return Event.KEY_M;
-		if (gdxKeyCode == Input.Keys.KEYCODE_N) return Event.KEY_N;
-		if (gdxKeyCode == Input.Keys.KEYCODE_O) return Event.KEY_O;
-		if (gdxKeyCode == Input.Keys.KEYCODE_P) return Event.KEY_P;
-		if (gdxKeyCode == Input.Keys.KEYCODE_Q) return Event.KEY_Q;
-		if (gdxKeyCode == Input.Keys.KEYCODE_R) return Event.KEY_R;
-		if (gdxKeyCode == Input.Keys.KEYCODE_S) return Event.KEY_S;
-		if (gdxKeyCode == Input.Keys.KEYCODE_T) return Event.KEY_T;
-		if (gdxKeyCode == Input.Keys.KEYCODE_U) return Event.KEY_U;
-		if (gdxKeyCode == Input.Keys.KEYCODE_V) return Event.KEY_V;
-		if (gdxKeyCode == Input.Keys.KEYCODE_W) return Event.KEY_W;
-		if (gdxKeyCode == Input.Keys.KEYCODE_X) return Event.KEY_X;
-		if (gdxKeyCode == Input.Keys.KEYCODE_Y) return Event.KEY_Y;
-		if (gdxKeyCode == Input.Keys.KEYCODE_Z) return Event.KEY_Z;
-		if (gdxKeyCode == Input.Keys.KEYCODE_ALT_LEFT) return Event.KEY_LMETA;
-		if (gdxKeyCode == Input.Keys.KEYCODE_ALT_RIGHT) return Event.KEY_RMETA;
-		if (gdxKeyCode == Input.Keys.KEYCODE_BACKSLASH) return Event.KEY_BACKSLASH;
-		if (gdxKeyCode == Input.Keys.KEYCODE_COMMA) return Event.KEY_COMMA;
-		if (gdxKeyCode == Input.Keys.KEYCODE_DEL) return Event.KEY_DELETE;
-		if (gdxKeyCode == Input.Keys.KEYCODE_DPAD_LEFT) return Event.KEY_LEFT;
-		if (gdxKeyCode == Input.Keys.KEYCODE_DPAD_RIGHT) return Event.KEY_RIGHT;
-		if (gdxKeyCode == Input.Keys.KEYCODE_DPAD_UP) return Event.KEY_UP;
-		if (gdxKeyCode == Input.Keys.KEYCODE_DPAD_DOWN) return Event.KEY_DOWN;
-		if (gdxKeyCode == Input.Keys.KEYCODE_ENTER) return Event.KEY_RETURN;
-		if (gdxKeyCode == Input.Keys.KEYCODE_HOME) return Event.KEY_HOME;
-		if (gdxKeyCode == Input.Keys.KEYCODE_MINUS) return Event.KEY_MINUS;
-		if (gdxKeyCode == Input.Keys.KEYCODE_PERIOD) return Event.KEY_PERIOD;
-		if (gdxKeyCode == Input.Keys.KEYCODE_PLUS) return Event.KEY_ADD;
-		if (gdxKeyCode == Input.Keys.KEYCODE_SEMICOLON) return Event.KEY_SEMICOLON;
-		if (gdxKeyCode == Input.Keys.KEYCODE_SHIFT_LEFT) return Event.KEY_LSHIFT;
-		if (gdxKeyCode == Input.Keys.KEYCODE_SHIFT_RIGHT) return Event.KEY_RSHIFT;
-		if (gdxKeyCode == Input.Keys.KEYCODE_SLASH) return Event.KEY_SLASH;
-		if (gdxKeyCode == Input.Keys.KEYCODE_SPACE) return Event.KEY_SPACE;
-		if (gdxKeyCode == Input.Keys.KEYCODE_TAB) return Event.KEY_TAB;
-		return Event.KEY_NONE;
+		switch (gdxKeyCode) {
+		case Input.Keys.KEYCODE_0: return Event.KEY_0;
+		case Input.Keys.KEYCODE_1: return Event.KEY_1;
+		case Input.Keys.KEYCODE_2: return Event.KEY_2;
+		case Input.Keys.KEYCODE_3: return Event.KEY_3;
+		case Input.Keys.KEYCODE_4: return Event.KEY_4;
+		case Input.Keys.KEYCODE_5: return Event.KEY_5;
+		case Input.Keys.KEYCODE_6: return Event.KEY_6;
+		case Input.Keys.KEYCODE_7: return Event.KEY_7;
+		case Input.Keys.KEYCODE_8: return Event.KEY_8;
+		case Input.Keys.KEYCODE_9: return Event.KEY_9;
+		case Input.Keys.KEYCODE_A: return Event.KEY_A;
+		case Input.Keys.KEYCODE_B: return Event.KEY_B;
+		case Input.Keys.KEYCODE_C: return Event.KEY_C;
+		case Input.Keys.KEYCODE_D: return Event.KEY_D;
+		case Input.Keys.KEYCODE_E: return Event.KEY_E;
+		case Input.Keys.KEYCODE_F: return Event.KEY_F;
+		case Input.Keys.KEYCODE_G: return Event.KEY_G;
+		case Input.Keys.KEYCODE_H: return Event.KEY_H;
+		case Input.Keys.KEYCODE_I: return Event.KEY_I;
+		case Input.Keys.KEYCODE_J: return Event.KEY_J;
+		case Input.Keys.KEYCODE_K: return Event.KEY_K;
+		case Input.Keys.KEYCODE_L: return Event.KEY_L;
+		case Input.Keys.KEYCODE_M: return Event.KEY_M;
+		case Input.Keys.KEYCODE_N: return Event.KEY_N;
+		case Input.Keys.KEYCODE_O: return Event.KEY_O;
+		case Input.Keys.KEYCODE_P: return Event.KEY_P;
+		case Input.Keys.KEYCODE_Q: return Event.KEY_Q;
+		case Input.Keys.KEYCODE_R: return Event.KEY_R;
+		case Input.Keys.KEYCODE_S: return Event.KEY_S;
+		case Input.Keys.KEYCODE_T: return Event.KEY_T;
+		case Input.Keys.KEYCODE_U: return Event.KEY_U;
+		case Input.Keys.KEYCODE_V: return Event.KEY_V;
+		case Input.Keys.KEYCODE_W: return Event.KEY_W;
+		case Input.Keys.KEYCODE_X: return Event.KEY_X;
+		case Input.Keys.KEYCODE_Y: return Event.KEY_Y;
+		case Input.Keys.KEYCODE_Z: return Event.KEY_Z;
+		case Input.Keys.KEYCODE_ALT_LEFT: return Event.KEY_LMETA;
+		case Input.Keys.KEYCODE_ALT_RIGHT: return Event.KEY_RMETA;
+		case Input.Keys.KEYCODE_BACKSLASH: return Event.KEY_BACKSLASH;
+		case Input.Keys.KEYCODE_COMMA: return Event.KEY_COMMA;
+		case Input.Keys.KEYCODE_DEL: return Event.KEY_DELETE;
+		case Input.Keys.KEYCODE_DPAD_LEFT: return Event.KEY_LEFT;
+		case Input.Keys.KEYCODE_DPAD_RIGHT: return Event.KEY_RIGHT;
+		case Input.Keys.KEYCODE_DPAD_UP: return Event.KEY_UP;
+		case Input.Keys.KEYCODE_DPAD_DOWN: return Event.KEY_DOWN;
+		case Input.Keys.KEYCODE_ENTER: return Event.KEY_RETURN;
+		case Input.Keys.KEYCODE_HOME: return Event.KEY_HOME;
+		case Input.Keys.KEYCODE_MINUS: return Event.KEY_MINUS;
+		case Input.Keys.KEYCODE_PERIOD: return Event.KEY_PERIOD;
+		case Input.Keys.KEYCODE_PLUS: return Event.KEY_ADD;
+		case Input.Keys.KEYCODE_SEMICOLON: return Event.KEY_SEMICOLON;
+		case Input.Keys.KEYCODE_SHIFT_LEFT: return Event.KEY_LSHIFT;
+		case Input.Keys.KEYCODE_SHIFT_RIGHT: return Event.KEY_RSHIFT;
+		case Input.Keys.KEYCODE_SLASH: return Event.KEY_SLASH;
+		case Input.Keys.KEYCODE_SPACE: return Event.KEY_SPACE;
+		case Input.Keys.KEYCODE_TAB: return Event.KEY_TAB;
+		default: return Event.KEY_NONE;
+		}
 	}
 
 	/**

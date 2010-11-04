@@ -8,7 +8,7 @@ package com.badlogic.gdx;
  * screen is set.
  */
 public abstract class Game implements ApplicationListener {
-	Screen screen;
+	private Screen screen;
 
 	@Override public void dispose () {
 		if (screen != null) screen.hide();
