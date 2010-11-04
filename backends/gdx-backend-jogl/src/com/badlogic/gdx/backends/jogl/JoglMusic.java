@@ -33,7 +33,7 @@ public class JoglMusic implements Music, Runnable {
 
 	private State state = State.Stopped;
 	private final Thread thread;
-	private final File file;
+	private final JoglFileHandle handle;
 	private AudioInputStream ain;
 	private final SourceDataLine line;
 	private final byte[] buffer;
@@ -41,7 +41,7 @@ public class JoglMusic implements Music, Runnable {
 	private boolean disposed = false;
 
 	public JoglMusic (JoglFileHandle handle) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-		this.file = handle.getFile();
+		this.handle = handle;
 
 		openAudioInputStream();
 		AudioFormat audioFormat = ain.getFormat();
@@ -58,7 +58,7 @@ public class JoglMusic implements Music, Runnable {
 	}
 
 	private void openAudioInputStream () throws UnsupportedAudioFileException, IOException {
-		ain = AudioSystem.getAudioInputStream(file);
+		ain = AudioSystem.getAudioInputStream(handle.readFile());
 		AudioFormat baseFormat = ain.getFormat();
 		AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16,
 			baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
