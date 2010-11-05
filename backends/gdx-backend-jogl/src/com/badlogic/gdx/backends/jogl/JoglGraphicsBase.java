@@ -71,7 +71,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		deltaTime = 0;
 		mean.clear();	
 		animator = new Animator(canvas);
-		animator.setRunAsFastAsPossible(true);
+//		animator.setRunAsFastAsPossible(true);
 		animator.start();
 	}
 
