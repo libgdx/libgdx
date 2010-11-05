@@ -36,10 +36,8 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.351061383" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
 								<option id="gnu.cpp.compiler.option.include.paths.342753884" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}\include\win32&quot;"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.717141589" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2 " valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.717141589" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2 -I&quot;${JAVA_HOME}/include&quot;  -I&quot;${JAVA_HOME}/include/win32&quot;" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.702080840" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool command="gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.debug.417875152" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.so.debug">
@@ -214,7 +212,7 @@
 						<parser enabled="true"/>
 					</scannerInfoProvider>
 				</profile>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -317,7 +315,7 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -729,8 +727,8 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.c.compiler.base.1743959266;cdt.managedbuild.tool.gnu.c.compiler.input.1445126993">
-					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470;cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981">
+					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
 							<openAction enabled="true" filePath=""/>
@@ -832,8 +830,8 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470;cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981">
-					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.c.compiler.base.1743959266;cdt.managedbuild.tool.gnu.c.compiler.input.1445126993">
+					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
 							<openAction enabled="true" filePath=""/>
@@ -1277,9 +1275,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.830161879" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool command="g++ -fPIC" id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1485838342" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.84440414" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}/include/linux&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.1289272877" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.732049915" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
@@ -1287,7 +1283,7 @@
 									<listOptionValue builtIn="false" value="FIXED_POINT"/>
 									<listOptionValue builtIn="false" value="CHECK_OVERFLOW"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.1796264297" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2 " valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.1796264297" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2  -I&quot;${JAVA_HOME}/include&quot;  -I&quot;${JAVA_HOME}/include/linux&quot;" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1255029881" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.2032860300" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
@@ -1423,7 +1419,7 @@
 						<parser enabled="true"/>
 					</scannerInfoProvider>
 				</profile>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -1526,7 +1522,7 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -1938,8 +1934,8 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.c.compiler.base.1743959266;cdt.managedbuild.tool.gnu.c.compiler.input.1445126993">
-					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470;cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981">
+					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
 							<openAction enabled="true" filePath=""/>
@@ -2041,8 +2037,8 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470;cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981">
-					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.c.compiler.base.1743959266;cdt.managedbuild.tool.gnu.c.compiler.input.1445126993">
+					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
 							<openAction enabled="true" filePath=""/>
@@ -2487,9 +2483,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.765344397" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool command="g++ -fPIC" id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.388757106" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/gdx/jni}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${JAVA_HOME}/include/linux&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.2141934059" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.188039067" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
@@ -2497,7 +2491,7 @@
 									<listOptionValue builtIn="false" value="FIXED_POINT"/>
 									<listOptionValue builtIn="false" value="CHECK_OVERFLOW"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.1127875013" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2 " valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.1127875013" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -I../jni/ -mfpmath=sse -msse2  -I&quot;${JAVA_HOME}/include&quot;  -I&quot;${JAVA_HOME}/include/linux&quot;" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.1743959266" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
@@ -2633,7 +2627,7 @@
 						<parser enabled="true"/>
 					</scannerInfoProvider>
 				</profile>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -2736,7 +2730,7 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.release.1695403954;cdt.managedbuild.config.gnu.mingw.so.release.1695403954.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.release.996309333;cdt.managedbuild.tool.gnu.cpp.compiler.input.2109098323">
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1412059085;cdt.managedbuild.config.gnu.mingw.so.debug.1412059085.1692805321;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.so.debug.1012897538;cdt.managedbuild.tool.gnu.cpp.compiler.input.1036499231">
 					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
@@ -3148,8 +3142,8 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.c.compiler.base.1743959266;cdt.managedbuild.tool.gnu.c.compiler.input.1445126993">
-					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470;cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981">
+					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
 							<openAction enabled="true" filePath=""/>
@@ -3251,8 +3245,8 @@
 						</scannerInfoProvider>
 					</profile>
 				</scannerConfigBuildInfo>
-				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1542016470;cdt.managedbuild.tool.gnu.cpp.compiler.input.1396366981">
-					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+				<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153;cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153.;cdt.managedbuild.tool.gnu.c.compiler.base.1743959266;cdt.managedbuild.tool.gnu.c.compiler.input.1445126993">
+					<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 					<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
 						<buildOutputProvider>
 							<openAction enabled="true" filePath=""/>
