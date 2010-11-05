@@ -105,8 +105,8 @@ public class Fixture {
 
 	public Filter getFilterData () {
 		jniGetFilterData(addr, tmp);
-		filter.categoryBits = tmp[0];
-		filter.maskBits = tmp[1];
+		filter.maskBits = tmp[0];
+		filter.categoryBits = tmp[1];
 		filter.groupIndex = tmp[2];
 		return filter;
 	}
