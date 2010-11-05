@@ -63,30 +63,35 @@ public final class JoglApplication implements Application {
 	 * @param useGL20IfAvailable wheter to use OpenGL 2.0 if it is available or not
 	 */	
 	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height, final boolean useGL20IfAvailable) {
-		try {
-			SwingUtilities.invokeAndWait( new Runnable() {
-				public void run() {					
-					JoglNativesLoader.loadLibraries();
-					graphics = new JoglGraphics(listener, title, width, height, useGL20IfAvailable);
-					input = new JoglInput(graphics.getCanvas());
-					audio = new JoglAudio();
-					files = new JoglFiles();
-			
-					Gdx.app = JoglApplication.this;
-					Gdx.graphics = JoglApplication.this.getGraphics();
-					Gdx.input = JoglApplication.this.getInput();
-					Gdx.audio = JoglApplication.this.getAudio();
-					Gdx.files = JoglApplication.this.getFiles();
-					
-					initialize(title, width, height);
-				}
-			});
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Creating window failed");
-		} 
+		if( !SwingUtilities.isEventDispatchThread() ) {
+			try {
+				SwingUtilities.invokeAndWait( new Runnable() {
+					public void run() {					
+						initialize(listener, title, width, height, useGL20IfAvailable);
+					}
+				});
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Creating window failed", e);
+			} 
+		}
+		else {
+			initialize(listener, title, width, height, useGL20IfAvailable);
+		}
 	}
 	
-	private void initialize(String title, int width, int height) {
+	private void initialize(ApplicationListener listener, String title, int width, int height, boolean useGL20) {
+		JoglNativesLoader.loadLibraries();
+		graphics = new JoglGraphics(listener, title, width, height, useGL20);
+		input = new JoglInput(graphics.getCanvas());
+		audio = new JoglAudio();
+		files = new JoglFiles();
+
+		Gdx.app = JoglApplication.this;
+		Gdx.graphics = JoglApplication.this.getGraphics();
+		Gdx.input = JoglApplication.this.getInput();
+		Gdx.audio = JoglApplication.this.getAudio();
+		Gdx.files = JoglApplication.this.getFiles();
+		
 		frame = new JFrame(title);
 		graphics.getCanvas().setPreferredSize(new Dimension(width, height));			
 		frame.setSize(width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
