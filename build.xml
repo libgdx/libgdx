@@ -98,6 +98,7 @@
 		
 		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false"/>
 		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false"/>
+		<copy tofile="${stable}/libgdx-64.so" file="gdx/linux64/libgdx-64.so" failonerror="false"/>		
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so"/>
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so"/>
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so"/>				
