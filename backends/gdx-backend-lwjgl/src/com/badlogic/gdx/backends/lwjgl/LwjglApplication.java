@@ -110,6 +110,7 @@ public class LwjglApplication implements Application {
 		listener.pause();
 		listener.dispose();
 		Display.destroy();
+		audio.dispose();
 	}
 
 	@Override public Audio getAudio () {

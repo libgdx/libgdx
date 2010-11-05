@@ -44,6 +44,8 @@ final class LwjglAudio implements Audio, Runnable {
 
 	/** The sound effects thread **/
 	private Thread thread;
+	
+	private volatile boolean run = false;
 
 	/**
 	 * Helper class for playing back sound effects concurrently.
@@ -143,7 +145,9 @@ final class LwjglAudio implements Audio, Runnable {
 		float[] buffer = new float[NUM_SAMPLES];
 		byte[] bytes = new byte[2 * NUM_SAMPLES];
 
-		while (true) {
+		run = true;
+		
+		while (run) {
 			int samplesToWrite = line.available() / 2;
 
 			if (samplesToWrite > 0) {
@@ -175,7 +179,6 @@ final class LwjglAudio implements Audio, Runnable {
 				if (!soundBuffer.writeSamples(samplesToWrite, buffer)) bufferIter.remove();
 			}
 		}
-
 		if (numBuffers > 0) {
 			for (int i = 0, j = 0; i < samplesToWrite; i++, j += 2) {
 				float fValue = buffer[i];
@@ -190,5 +193,13 @@ final class LwjglAudio implements Audio, Runnable {
 
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new LwjglAudioRecorder(samplingRate, isMono);
+	}
+	
+	void dispose ( ) {
+		run = false;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+		}
 	}
 }
