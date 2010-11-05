@@ -109,18 +109,19 @@ public final class JoglApplication implements Application {
 			
 			@Override
 			public void windowIconified(WindowEvent arg0) {			
-				graphics.pause();								
+//				graphics.pause();								
 			}
 			
 			@Override
 			public void windowDeiconified(WindowEvent arg0) {
-				graphics.resume();
+//				graphics.resume();
 			}		
 			
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				graphics.pause();				
 				graphics.destroy();
+				audio.dispose();
 				frame.remove(graphics.getCanvas());
 			}				
 		});

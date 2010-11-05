@@ -28,7 +28,7 @@ import com.sun.opengl.util.Animator;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GLCanvas canvas;
-	Animator animator;	
+	JoglAnimator animator;	
 	boolean useGL2;
 	long frameStart = System.nanoTime();
 	long lastFrameTime = System.nanoTime();
@@ -70,7 +70,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		lastFrameTime = frameStart;
 		deltaTime = 0;
 		mean.clear();	
-		animator = new Animator(canvas);
+		animator = new JoglAnimator(canvas);
 //		animator.setRunAsFastAsPossible(true);
 		animator.start();
 	}
@@ -88,7 +88,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		lastFrameTime = frameStart;
 		deltaTime = 0;
 		mean.clear();			
-		animator = new Animator(canvas);
+		animator = new JoglAnimator(canvas);
 		animator.setRunAsFastAsPossible(true);
 		animator.start();
 	}	

@@ -44,6 +44,8 @@ final class JoglAudio implements Audio, Runnable {
 
 	/** The sound effects thread **/
 	private Thread thread;
+	
+	private volatile boolean run = false;
 
 	/**
 	 * Helper class for playing back sound effects concurrently.
@@ -152,7 +154,9 @@ final class JoglAudio implements Audio, Runnable {
 		float[] buffer = new float[NUM_SAMPLES];
 		byte[] bytes = new byte[2 * NUM_SAMPLES];
 
-		while (true) {
+		run = true;
+		
+		while (run) {
 			int samplesToWrite = line.available() / 2;
 
 			if (samplesToWrite > 0) {
@@ -202,5 +206,13 @@ final class JoglAudio implements Audio, Runnable {
 	 */
 	@Override public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new JoglAudioRecorder(samplingRate, isMono);
+	}
+
+	void dispose() {
+		run = false;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+		}
 	}
 }
