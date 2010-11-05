@@ -240,7 +240,7 @@ public class LevelRenderer implements ApplicationListener {
 	}
 
 	@Override
-	public void destroy() {
+	public void dispose() {
 		
 	}
 }
