@@ -310,7 +310,7 @@ public class Renderer {
 		invaderTexture.dispose();
 		backgroundTexture.dispose();
 		explosionTexture.dispose();
-		font.dispose();
+//		font.dispose();
 		explosionMesh.dispose();
 		shipMesh.dispose();
 		invaderMesh.dispose();
