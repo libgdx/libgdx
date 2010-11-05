@@ -19,6 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -29,6 +30,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Version;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with
@@ -38,15 +40,14 @@ import com.badlogic.gdx.Version;
  * 
  */
 public final class JoglApplication implements Application {
-	static {
-		JoglNativesLoader.loadLibraries();
+	static {		
 		Version.loadLibrary();
 	}
 
-	final JoglGraphics graphics;	
-	final JoglInput input;	
-	final JoglFiles files;	
-	final JoglAudio audio;	
+	JoglGraphics graphics;	
+	JoglInput input;	
+	JoglFiles files;	
+	JoglAudio audio;	
 	JFrame frame;
 	
 
@@ -60,26 +61,34 @@ public final class JoglApplication implements Application {
 	 * @param width the width of the surface in pixels
 	 * @param height the height of the surface in pixels
 	 * @param useGL20IfAvailable wheter to use OpenGL 2.0 if it is available or not
-	 */
-	public JoglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL20IfAvailable) {
-		graphics = new JoglGraphics(listener, title, width, height, useGL20IfAvailable);
-		input = new JoglInput(graphics.getCanvas());
-		audio = new JoglAudio();
-		files = new JoglFiles();
-
-		Gdx.app = this;
-		Gdx.graphics = this.getGraphics();
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		
-		initialize(title, width, height);
+	 */	
+	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height, final boolean useGL20IfAvailable) {
+		try {
+			SwingUtilities.invokeAndWait( new Runnable() {
+				public void run() {					
+					JoglNativesLoader.loadLibraries();
+					graphics = new JoglGraphics(listener, title, width, height, useGL20IfAvailable);
+					input = new JoglInput(graphics.getCanvas());
+					audio = new JoglAudio();
+					files = new JoglFiles();
+			
+					Gdx.app = JoglApplication.this;
+					Gdx.graphics = JoglApplication.this.getGraphics();
+					Gdx.input = JoglApplication.this.getInput();
+					Gdx.audio = JoglApplication.this.getAudio();
+					Gdx.files = JoglApplication.this.getFiles();
+					
+					initialize(title, width, height);
+				}
+			});
+		} catch (Exception e) {
+			throw new GdxRuntimeException("Creating window failed");
+		} 
 	}
 	
 	private void initialize(String title, int width, int height) {
-		graphics.getCanvas().setPreferredSize(new Dimension(width, height));
-		
-		frame = new JFrame(title);		
+		frame = new JFrame(title);
+		graphics.getCanvas().setPreferredSize(new Dimension(width, height));			
 		frame.setSize(width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
 			+ height);
 		frame.add(graphics.getCanvas(), BorderLayout.CENTER);		
