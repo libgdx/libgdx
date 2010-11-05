@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+ * 	Copyright 2010 Mario Zechner (contact@badlogicgames.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -21,9 +21,20 @@ package com.badlogic.gdx;
  */
 public class Version {
 	/** the current version of libgdx in the major.minor format **/
-	public static String VERSION = "0.71";
+	public static String VERSION = "0.8";
 
 	public static void loadLibrary () {
-		System.loadLibrary("gdx");
+		String os = System.getProperty("os.name");
+		String arch = System.getProperty("os.arch");
+		
+		if (!arch.equals("amd64") || os.contains("Mac")) {
+			System.loadLibrary("gdx");
+		}
+		else {
+			if( arch.contains("Windows") ) 
+				throw new UnsupportedOperationException("Libgdx applications only work with 32-bit VMs on Windows at the moment!");
+			else
+				System.loadLibrary("gdx-64");
+		}
 	}
 }

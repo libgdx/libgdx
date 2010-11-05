@@ -1,4 +1,4 @@
-#Mon Sep 13 03:23:21 CEST 2010
+#Fri Nov 05 15:13:15 CET 2010
 eclipse.preferences.version=1
 environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085=
 environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/CWD/delimiter=;
@@ -9,3 +9,8 @@ environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/PWD/op
 environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/PWD/value=C\:\\Users\\mzechner\\workspace\\gdx\\bin\\win32
 environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/append=true
 environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1412059085/appendContributed=true
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153/JAVA_HOME/delimiter=\:
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153/JAVA_HOME/operation=replace
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153/JAVA_HOME/value=/usr/lib/jvm/java-6-sun-1.6.0.21
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153/append=true
+environment/project/cdt.managedbuild.config.gnu.mingw.so.debug.1865658470.366864153/appendContributed=true
