@@ -13,7 +13,7 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
 import javax.sound.sampled.AudioFormat;
@@ -58,7 +58,7 @@ final class LwjglMusic implements Music, Runnable {
 	}
 
 	private void openAudioInputStream () throws UnsupportedAudioFileException, IOException {
-		ain = AudioSystem.getAudioInputStream(handle.readFile());
+		ain = AudioSystem.getAudioInputStream(new BufferedInputStream(handle.readFile()));
 		AudioFormat baseFormat = ain.getFormat();
 		AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16,
 			baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
