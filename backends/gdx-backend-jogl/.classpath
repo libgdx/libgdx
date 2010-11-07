@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/gluegen-rt.jar"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/javazoom-spi.jar"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/jl1.0.1.jar"/>
@@ -10,5 +9,6 @@
 	<classpathentry exported="true" kind="lib" path="/dependencies/jogl.jar"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/jorbis.jar"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/tritonus-utils.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
