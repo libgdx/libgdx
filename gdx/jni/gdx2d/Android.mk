@@ -1,0 +1,1 @@
+GDX_SRC_FILES += gdx2d/gdx2d.c
