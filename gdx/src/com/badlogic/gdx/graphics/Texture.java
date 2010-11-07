@@ -13,27 +13,38 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Graphics;
+
 /**
  * <p>
  * A Texture wraps a standard OpenGL ES texture.
  * </p>
  * 
  * <p>
- * It is constructed by an {@link Graphics} via one of the {@link Graphics.newTexture()} methods.
+ * It is constructed by an {@link Graphics} via one of the following methods:
+ * <ul>
+ * <li>{@link Graphics#newTexture(com.badlogic.gdx.files.FileHandle, TextureFilter, TextureFilter, TextureWrap, TextureWrap)}</li>
+ * <li>{@link Graphics#newUnmanagedTexture(Pixmap, TextureFilter, TextureFilter, TextureWrap, TextureWrap)}</li>
+ * <li>{@link Graphics#newUnmanagedTexture(int, int, com.badlogic.gdx.graphics.Pixmap.Format, TextureFilter, TextureFilter, TextureWrap, TextureWrap)}</li>
+ * </ul>
  * </p>
  * 
  * <p>
- * A Texture can be managed. If the OpenGL context is lost all textures get invalidated. This happens when a user switches to
- * another application or receives an incoming call. Managed textures get reloaded automatically.
+ * A Texture can be managed. If the OpenGL context is lost all managed textures get
+ * invalidated. This happens when a user switches to another application or
+ * receives an incoming call. Managed textures get reloaded automatically.
  * </p>
  * 
  * <p>
- * A Texture has to be bound via the {@link Texture.bind()} method in order for it to be applied to geometry.
+ * A Texture has to be bound via the {@link Texture#bind()} method in order for
+ * it to be applied to geometry. The texture will be bound to the currently active
+ * texture unit specified via {@link GLCommon#glActiveTexture(int)}.
  * </p>
  * 
  * <p>
- * You can draw {@link Pixmap}s to a texture at any time. The changes will be automatically uploaded to texture memory. This is of
- * course not extremely fast so use it with care.
+ * You can draw {@link Pixmap}s to a texture at any time. The changes will be
+ * automatically uploaded to texture memory. This is of course not extremely
+ * fast so use it with care. It also only works with unmanaged textures.
  * </p>
  * 
  * <p>
@@ -46,6 +57,7 @@ package com.badlogic.gdx.graphics;
 public interface Texture {
 	/**
 	 * Texture filter enum featuring the 3 most used filters.
+	 * 
 	 * @author badlogicgames@gmail.com
 	 * 
 	 */
@@ -64,45 +76,50 @@ public interface Texture {
 	}
 
 	/**
-	 * Binds this texture. You have to enable texturing via {@link Application.enable( RenderState.Texturing )} in order for the
-	 * texture to actually be applied to geometry.
+	 * Binds this texture. The texture will be bound to the currently active
+	 * texture unit specified via {@link GLCommon#glActiveTexture(int)}.
 	 */
-	public void bind ();
+	public void bind();
 
 	/**
 	 * Draws the given {@link Pixmap} to the texture at position x, y.
+	 * No clipping is performed so you have to make sure that you
+	 * draw only inside the texture region.
 	 * 
-	 * @param pixmap The Pixmap
-	 * @param x The x coordinate in pixels
-	 * @param y The y coordinate in pixels
+	 * @param pixmap
+	 *            The Pixmap
+	 * @param x
+	 *            The x coordinate in pixels
+	 * @param y
+	 *            The y coordinate in pixels
 	 */
-	public void draw (Pixmap pixmap, int x, int y);
+	public void draw(Pixmap pixmap, int x, int y);
 
 	/**
 	 * 
 	 * @return the width of the texture in pixels
 	 */
-	public int getWidth ();
+	public int getWidth();
 
 	/**
 	 * 
 	 * @return the height of the texture in pixels
 	 */
-	public int getHeight ();
+	public int getHeight();
 
 	/**
 	 * @return whether this texture is managed or not.
 	 */
-	public boolean isManaged ();
+	public boolean isManaged();
 
 	/**
 	 * Disposes all resources associated with the texture
-	 * @return
 	 */
-	public void dispose ();
+	public void dispose();
 
 	/**
-	 * @return the OpenGL texture object handle so you can change texture parameters.
+	 * @return the OpenGL texture object handle so you can change texture
+	 *         parameters.
 	 */
-	public int getTextureObjectHandle ();
+	public int getTextureObjectHandle();
 }

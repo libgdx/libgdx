@@ -14,8 +14,10 @@
 package com.badlogic.gdx.graphics;
 
 /**
- * Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
- * its vertex structure. Vertex attributes have an order. The order is specified by the order they are added to this class.
+ * Instances of this class specify the vertex attributes of a mesh.
+ * VertexAttributes are used by {@link Mesh} instances to define its vertex
+ * structure. Vertex attributes have an order. The order is specified by the
+ * order they are added to this class.
  * 
  * @author mzechner
  * 
@@ -45,8 +47,9 @@ public final class VertexAttributes {
 	/**
 	 * Constructor, sets the vertex attributes in a specific order
 	 */
-	public VertexAttributes (VertexAttribute... attributes) {
-		if (attributes.length == 0) throw new IllegalArgumentException("attributes must be >= 1");
+	public VertexAttributes(VertexAttribute... attributes) {
+		if (attributes.length == 0)
+			throw new IllegalArgumentException("attributes must be >= 1");
 
 		VertexAttribute[] list = new VertexAttribute[attributes.length];
 		for (int i = 0; i < attributes.length; i++)
@@ -58,7 +61,7 @@ public final class VertexAttributes {
 		vertexSize = calculateOffsets();
 	}
 
-	private int calculateOffsets () {
+	private int calculateOffsets() {
 		int count = 0;
 		for (int i = 0; i < attributes.length; i++) {
 			VertexAttribute attribute = attributes[i];
@@ -72,7 +75,7 @@ public final class VertexAttributes {
 		return count;
 	}
 
-	private void checkValidity () {
+	private void checkValidity() {
 		boolean pos = false;
 		boolean cols = false;
 		boolean nors = false;
@@ -80,37 +83,49 @@ public final class VertexAttributes {
 		for (int i = 0; i < attributes.length; i++) {
 			VertexAttribute attribute = attributes[i];
 			if (attribute.usage == Usage.Position) {
-				if (pos) throw new IllegalArgumentException("two position attributes were specified");
+				if (pos)
+					throw new IllegalArgumentException(
+							"two position attributes were specified");
 				pos = true;
 			}
 
 			if (attribute.usage == Usage.Normal) {
-				if (nors) throw new IllegalArgumentException("two normal attributes were specified");
+				if (nors)
+					throw new IllegalArgumentException(
+							"two normal attributes were specified");
 			}
 
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked) {
-				if (attribute.numComponents != 4) throw new IllegalArgumentException("color attribute must have 4 components");
+			if (attribute.usage == Usage.Color
+					|| attribute.usage == Usage.ColorPacked) {
+				if (attribute.numComponents != 4)
+					throw new IllegalArgumentException(
+							"color attribute must have 4 components");
 
-				if (cols) throw new IllegalArgumentException("two color attributes were specified");
+				if (cols)
+					throw new IllegalArgumentException(
+							"two color attributes were specified");
 				cols = true;
 			}
 		}
 
-		if (pos == false) throw new IllegalArgumentException("no position attribute was specified");
+		if (pos == false)
+			throw new IllegalArgumentException(
+					"no position attribute was specified");
 	}
 
 	/**
 	 * @return the number of attributes
 	 */
-	public int size () {
+	public int size() {
 		return attributes.length;
 	}
 
 	/**
-	 * @param index the index
+	 * @param index
+	 *            the index
 	 * @return the VertexAttribute at the given index
 	 */
-	public VertexAttribute get (int index) {
+	public VertexAttribute get(int index) {
 		return attributes[index];
 	}
 }

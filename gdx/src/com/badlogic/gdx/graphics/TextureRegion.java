@@ -2,7 +2,9 @@
 package com.badlogic.gdx.graphics;
 
 /**
- * A TextureRegion defines a rectangular area in a texture given in pixels.
+ * A TextureRegion defines a rectangular area in a texture given in pixels. The
+ * coordinate system used has its origin in the upper left corner with the x-axis
+ * pointing to the left and the y axis pointing downwards.
  * 
  * @author mzechner
  * 

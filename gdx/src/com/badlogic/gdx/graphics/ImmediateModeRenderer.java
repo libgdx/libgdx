@@ -22,10 +22,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An ImmediateModeRenderer allows you to perform immediate mode rendering as you were accustomed to in your desktop OpenGL
- * environment. In order to draw something you first have to call {@link ImmediateModeRenderer.begin()} with the primitive type
+ * environment. In order to draw something you first have to call {@link ImmediateModeRenderer#begin(int)} with the primitive type
  * you want to render. Next you specify as many vertices as you want by first defining the vertex color, normal and texture
  * coordinates followed by the vertex position which finalizes the definition of a single vertex. When you are done specifying the
- * geometry you have to call {@link ImmediateModeRenderer.end()} to make the renderer render the geometry. Internally the renderer
+ * geometry you have to call {@link ImmediateModeRenderer#end()} to make the renderer render the geometry. Internally the renderer
  * uses vertex arrays to render the provided geometry. This is not the best performing way to do this so use this class only for
  * non performance critical low vertex count geometries while debugging.
  * 
@@ -69,7 +69,6 @@ public class ImmediateModeRenderer {
 
 	/**
 	 * Constructs a new ImmediateModeRenderer
-	 * @param gl
 	 */
 	public ImmediateModeRenderer () {
 		if (Gdx.graphics.isGL20Available())

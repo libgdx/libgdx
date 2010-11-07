@@ -79,7 +79,7 @@ public class BitmapFont {
 	 * the gdx jar file. This is here to get you up and running quickly.
 	 */
 	public BitmapFont() {
-		
+
 		this(new FileHandle() {
 			@Override
 			public String getPath() {

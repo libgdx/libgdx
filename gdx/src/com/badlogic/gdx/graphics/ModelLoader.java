@@ -24,82 +24,22 @@ import com.badlogic.gdx.graphics.loaders.OctLoader;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * A class for loading various model formats such as Wavefront OBJ or the Quake II MD2 format. Ties in all the loaders from the
- * loaders package.
+ * A class for loading various model formats such as Wavefront OBJ. Ties in all
+ * the loaders from the loaders package.
  * 
  * @author mzechner
  * 
  */
 public class ModelLoader {
 	/**
-	 * Loads a Wavefront OBJ file from the given InputStream. The OBJ file must only contain triangulated meshes. Materials are
-	 * ignored.
+	 * Loads a Wavefront OBJ file from the given InputStream. The OBJ file must
+	 * only contain triangulated meshes. Materials are ignored.
 	 * 
-	 * @param in the InputStream 
+	 * @param in
+	 *            the InputStream
 	 * @return a Mesh holding the OBJ data or null in case something went wrong.
 	 */
-	public static Mesh loadObj (InputStream in) {
+	public static Mesh loadObj(InputStream in) {
 		return ObjLoader.loadObj(in);
-	}
-
-	/**
-	 * Loads an OCT file as can be found in many of Paul Nettle's demo programs. See the source at
-	 * http://www.paulnettle.com/pub/FluidStudios/CollisionDetection/Fluid_Studios_Collision_Detection_Demo_and_Source.zip for more
-	 * information.
-	 * 
-	 * @param in the InputStream
-	 * @param start the start position as defined in the map
-	 * @return a Mesh holding the OCT data or null in case something went wrong.
-	 */
-	public static Mesh loadOct (InputStream in, Vector3 start) {
-		return OctLoader.loadOct(in, start);
-	}
-
-	/**
-	 * Loads a GDX3D file previously written with {@link ModelWriter.writeGdx3D}.
-	 * 
-	 * @param in the InputStream
-	 * @return a Mesh holding the Gdx3D data or null in case something went wrong.
-	 */
-	public static Mesh loadGdx3D (InputStream in) {
-		try {
-			DataInputStream din = new DataInputStream(new BufferedInputStream(in));
-			int numAttributes = din.readInt();
-			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
-			for (int i = 0; i < numAttributes; i++) {
-				int usage = din.readInt();
-				int numComponents = din.readInt();
-				int strlen = din.readInt();
-				byte[] bytes = new byte[strlen];
-				din.readFully(bytes);
-				String alias = new String(bytes, "UTF8");
-
-				VertexAttribute attribute = new VertexAttribute(usage, numComponents, alias);
-				attributes.add(attribute);
-			}
-			
-			int numVertices = din.readInt();
-			int numElements = din.readInt();
-			int numIndices = din.readInt();
-
-			Mesh mesh = new Mesh(true, numVertices, numIndices, attributes.toArray(new VertexAttribute[0]));
-			
-			float[] vertices = new float[numElements];
-			for (int i = 0; i < numElements; i++)
-				vertices[i] = din.readFloat();
-			mesh.setVertices(vertices);			
-
-			if (numIndices > 0) {
-				short[] indices = new short[numIndices];
-				for (int i = 0; i < numIndices; i++)
-					indices[i] = din.readShort();
-				mesh.setIndices(indices);
-			}
-
-			return mesh;
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			return null;
-		}
 	}
 }
