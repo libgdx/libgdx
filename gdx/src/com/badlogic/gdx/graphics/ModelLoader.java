@@ -13,15 +13,9 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.loaders.ObjLoader;
-import com.badlogic.gdx.graphics.loaders.OctLoader;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * A class for loading various model formats such as Wavefront OBJ. Ties in all
