@@ -156,6 +156,9 @@ public class GlyphPage {
 			glyph.setShape(null); // The shape will never be needed again.
 		}
 
+		width = Math.min(width, texture.getWidth());
+		height = Math.min(height, texture.getHeight());
+
 		WritableRaster raster = scratchImage.getRaster();
 		int[] row = new int[width];
 		for (int y = 0; y < height; y++) {
