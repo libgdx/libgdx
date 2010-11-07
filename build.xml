@@ -30,6 +30,7 @@
 	<!-- init task, creates all necessary directories -->
 	<target name="init" depends="clean">
 		<mkdir dir="${stable}"/>
+		<mkdir dir="${stable}/docs/api"/>
 		<mkdir dir="gdx/bin"/>		
 		<mkdir dir="backends/gdx-backend-android/bin"/>
 		<mkdir dir="backends/gdx-backend-jogl/bin"/>
@@ -78,9 +79,22 @@
 		</exec>
 	</target>
 	
+	<!-- generates the javadoc for the core api and the application implementations -->
+	<target name="docs" depends="init">
+		<javadoc destdir="${stable}/docs/api" author="true" version="true" use="true" windowtitle="Test API">
+			<fileset dir="gdx/src" defaultexcludes="yes">
+				<include name="com/badlogic/gdx/**" />
+				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
+				<exclude name="com/badlogic/gdx/utils/arial-15.png" />
+			</fileset>
+			<fileset dir="backends" includes="gdx-backend-jogl/src/com/badlogic/gdx/backends/jogl/JoglApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>			
+		</javadoc>
+	</target>
+	
 	<!-- builds the distribution directory, does not include the desktop libs 
 		for some reason excludes don't work so i have to delete the ndk directory first... -->
-	<target name="dist" depends="compile,compile-native">
+	<target name="dist" depends="compile,compile-native,docs">
 		<delete dir="gdx/bin/ndk"/>
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin"/>
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>

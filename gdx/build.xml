@@ -88,10 +88,8 @@
 				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
 				<exclude name="com/badlogic/gdx/utils/arial-15.png" />
 			</fileset>
-			<fileset dir="backends" defaultexcludes="yes">
-				<include name="gdx-backend-jogl/src/com/badlogic/gdx/backends/jogl/JoglApplication.java"/>				
-				<include name="gdx-backend-android/src/com/badlogic/gdx/backend/android/AndroidApplication.java"/>
-			</fileset>
+			<fileset dir="backends" includes="gdx-backend-jogl/src/com/badlogic/gdx/backends/jogl/JoglApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>			
 		</javadoc>
 	</target>
 
