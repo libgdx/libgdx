@@ -15,18 +15,23 @@ package com.badlogic.gdx;
 
 /**
  * <p>
- * Interface to the input facilities. This allows to poll the state of the keyboard, touch screen and accelerometer. On the
- * desktop the touch screen is replaced by mouse input, the accelerometer is of course not available.
+ * Interface to the input facilities. This allows to poll the state of the
+ * keyboard, touch screen and accelerometer. On the desktop the touch screen is
+ * replaced by mouse input, the accelerometer is of course not available.
  * </p>
  * 
  * <p>
- * Additionally one can process events with an {@link InputProcessor} with this module. Just pass in the InputListener to the
+ * Additionally one can process events with an {@link InputProcessor} with this
+ * module. Just pass in the InputListener to the
  * {@link #processEvents(InputProcessor)} method in any thread you want.
+ * Internally a buffer of events is stored. If you do not call
+ * {@link #processEvents(InputProcessor)} then the buffer will be cleared
+ * automatically each frame.
  * </p>
  * 
  * <p>
- * Keyboard keys are translated to the constants in {@link Keys} transparantely on all systems. Do not use system specific key
- * constants.
+ * Keyboard keys are translated to the constants in {@link Keys} transparantely
+ * on all systems. Do not use system specific key constants.
  * </p>
  * 
  * @author mzechner
@@ -34,19 +39,20 @@ package com.badlogic.gdx;
  */
 public interface Input {
 	/**
-	 * Callback interface for {@link Application.getTextInput()}
+	 * Callback interface for
+	 * {@link Input#getTextInput(TextInputListener, String, String)}
 	 * 
-	 * @author badlogicgames@gmail.com
+	 * @author mzechner
 	 * 
 	 */
 	public interface TextInputListener {
-		public void input (String text);
-	}	
+		public void input(String text);
+	}
 
 	/**
 	 * Keys.
 	 * 
-	 * @author badlogicgames@gmail.com
+	 * @author mzechner
 	 * 
 	 */
 	public class Keys {
@@ -155,116 +161,150 @@ public interface Input {
 	/**
 	 * @return whether an accelerometer is available
 	 */
-	public boolean isAccelerometerAvailable ();
+	public boolean isAccelerometerAvailable();
 
 	/**
-	 * @return The value of the accelerometer on its x-axis. ranges between [-10,10].
+	 * @return The value of the accelerometer on its x-axis. ranges between
+	 *         [-10,10].
 	 */
-	public float getAccelerometerX ();
+	public float getAccelerometerX();
 
 	/**
-	 * @return The value of the accelerometer on its y-axis. ranges between [-10,10].
+	 * @return The value of the accelerometer on its y-axis. ranges between
+	 *         [-10,10].
 	 */
-	public float getAccelerometerY ();
+	public float getAccelerometerY();
 
 	/**
-	 * @return The value of the accelerometer on its y-axis. ranges between [-10,10].
+	 * @return The value of the accelerometer on its y-axis. ranges between
+	 *         [-10,10].
 	 */
-	public float getAccelerometerZ ();
+	public float getAccelerometerZ();
 
 	/**
-	 * @return the last touch x coordinate in screen coordinates. The screen origin is the top left corner.
+	 * @return the last touch x coordinate in screen coordinates. The screen
+	 *         origin is the top left corner.
 	 */
-	public int getX ();
+	public int getX();
 
 	/**
-	 * Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
-	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
-	 * When two fingers are touched down and the first one is lifted the second one becomes the first one.
-	 * @param pointer the pointer id.
+	 * Returns the x coordinate in screen coordinates of the given pointer.
+	 * Pointers are indexed from 0 to n. The pointer id identifies the order in
+	 * which the fingers went down on the screen, e.g. 0 is the first finger, 1
+	 * is the second and so on. When two fingers are touched down and the first
+	 * one is lifted the second one keeps its index. If another finger is placed
+	 * on the touch screen the first free index will be used.
+	 * 
+	 * @param pointer
+	 *            the pointer id.
 	 * @return the x coordinate
 	 */
-	public int getX (int pointer);
+	public int getX(int pointer);
 
 	/**
-	 * @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner.
+	 * @return the last touch y coordinate in screen coordinates. The screen
+	 *         origin is the top left corner.
 	 */
-	public int getY ();
+	public int getY();
 
 	/**
-	 * Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
-	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
-	 * When two fingers are touched down and the first one is lifted the second one becomes the first one.
+	 * Returns the y coordinate in screen coordinates of the given pointer.
+	 * Pointers are indexed from 0 to n. The pointer id identifies the order in
+	 * which the fingers went down on the screen, e.g. 0 is the first finger, 1
+	 * is the second and so on. When two fingers are touched down and the first
+	 * one is lifted the second one keeps its index. If another finger is placed
+	 * on the touch screen the first free index will be used.
 	 * 
-	 * @param pointer the pointer id.
+	 * @param pointer
+	 *            the pointer id.
 	 * @return the y coordinate
 	 */
-	public int getY (int pointer);
+	public int getY(int pointer);
 
 	/**
 	 * @return whether the screen is currently touched.
 	 */
-	public boolean isTouched ();
+	public boolean isTouched();
 
 	/**
-	 * Whether the screen is currently touched by the pointer with the given index.
-	 * @param pointer the pointer
+	 * Whether the screen is currently touched by the pointer with the given
+	 * index. Pointers are indexed from 0 to n. The pointer id identifies the
+	 * order in which the fingers went down on the screen, e.g. 0 is the first
+	 * finger, 1 is the second and so on. When two fingers are touched down and
+	 * the first one is lifted the second one keeps its index. If another finger
+	 * is placed on the touch screen the first free index will be used.
+	 * 
+	 * @param pointer
+	 *            the pointer
 	 * @return whether the screen is touched by the pointer
 	 */
-	public boolean isTouched (int pointer);
+	public boolean isTouched(int pointer);
 
 	/**
 	 * Returns whether the key is pressed.
 	 * 
-	 * @param key The key code as found in {@link Input.Keys}.
+	 * @param key
+	 *            The key code as found in {@link Input.Keys}.
 	 * @return true or false.
 	 */
-	public boolean isKeyPressed (int key);
+	public boolean isKeyPressed(int key);
 
 	/**
-	 * System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
-	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called in the rendering
-	 * thread.
+	 * System dependent method to input a string of text. A dialog box will be
+	 * created with the given title and the given text as a message for the
+	 * user. Once the dialog has been closed the provided
+	 * {@link TextInputListener} will be called but not necessarily in the rendering
+	 * thread in which all the {@link ApplicationListener} methods are called. You
+	 * have to synchronize this yourself.
 	 * 
-	 * @param listener The TextInputListener.
-	 * @param title The title of the text input dialog.
-	 * @param text The message presented to the user.
+	 * @param listener
+	 *            The TextInputListener.
+	 * @param title
+	 *            The title of the text input dialog.
+	 * @param text
+	 *            The message presented to the user.
 	 */
-	public void getTextInput (TextInputListener listener, String title, String text);
+	public void getTextInput(TextInputListener listener, String title,
+			String text);
 
 	/**
 	 * Sets the on-screen keyboard visible if available.
-	 * @param visible visible or not
+	 * 
+	 * @param visible
+	 *            visible or not
 	 */
-	public void setOnscreenKeyboardVisible( boolean visible );
-	
+	public void setOnscreenKeyboardVisible(boolean visible);
+
 	/**
 	 * @return whether an on-screen keyboard is available or not
 	 */
 	public boolean supportsOnscreenKeyboard();
-	
+
 	/**
-	 * Returns whether multitouch is supported by the device. Note that this also includes the broken multitouch on the Droid or
-	 * Nexus One! This will only work correctly from Android version 2.1 onwards.
+	 * Returns whether multitouch is supported by the device. Note that this
+	 * also includes the "broken" multitouch on the Droid or Nexus One!
 	 * 
 	 * @return whether multitouch is supported
 	 */
-	public boolean supportsMultitouch ();	
-	
+	public boolean supportsMultitouch();
+
 	/**
-	 * Sets whether the BACK button on Android should be caught. This
-	 * will prevent the app from being paused. Will have no effect on the desktop.
+	 * Sets whether the BACK button on Android should be caught. This will
+	 * prevent the app from being paused. Will have no effect on the desktop.
 	 * 
-	 * @param catchBack whether to catch the back button
+	 * @param catchBack
+	 *            whether to catch the back button
 	 */
-	public void setCatchBackKey( boolean catchBack );
-	
+	public void setCatchBackKey(boolean catchBack);
+
 	/**
-	 * Passes all events that happened since the last invocation of this
-	 * method to the provided InputListener. Make sure you call this method
-	 * each frame otherwise events will accumulate! 
+	 * Passes all events that happened since the last invocation of this method
+	 * to the provided InputListener. Make sure you call this method each frame
+	 * otherwise events will accumulate!
 	 * 
-	 * @param listener the {@link InputProcessor} or null if you want to just discard of all events.
+	 * @param listener
+	 *            the {@link InputProcessor} or null if you want to just discard
+	 *            of all events.
 	 */
 	public void processEvents(InputProcessor listener);
 }
