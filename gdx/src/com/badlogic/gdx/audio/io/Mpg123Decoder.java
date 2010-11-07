@@ -92,22 +92,4 @@ public class Mpg123Decoder implements Decoder {
 	@Override public void dispose () {
 		closeFile(handle);
 	}
-
-// public static void main( String[] argv )
-// {
-// Mpg123Decoder decoder = new Mpg123Decoder( "data/threeofaperfectpair.mp3");
-// JoglAudioDevice device = new JoglAudioDevice( false );
-// ShortBuffer buffer = AudioTools.allocateShortBuffer( 1024, decoder.getNumChannels() );
-// short[] samples = new short[1024*decoder.getNumChannels()];
-//
-// System.out.println( "rate: " + decoder.getRate() + ", channels: " + decoder.getNumChannels() + ", length: " +
-// decoder.getLength() );
-//
-// while( decoder.readSamples( buffer ) > 0 )
-// {
-// buffer.get(samples);
-// device.writeSamples(samples, 0, 1024*2);
-// }
-// decoder.dispose();
-// }
 }

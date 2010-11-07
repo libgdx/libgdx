@@ -16,6 +16,11 @@ package com.badlogic.gdx.audio.analysis;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+/**
+ * A class for spectral analysis using native KissFFT
+ * @author mzechner
+ *
+ */
 public class KissFFT {
 	/** the pointer to the kiss fft object **/
 	private final long handle;

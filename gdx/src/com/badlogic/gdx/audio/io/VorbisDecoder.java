@@ -16,7 +16,7 @@ package com.badlogic.gdx.audio.io;
 import java.nio.ShortBuffer;
 
 /**
- * A {@link Decoder} implementation that decodes OGG Vorbis files using libvorbis and libogg
+ * A {@link Decoder} implementation that decodes OGG Vorbis files using tremor
  * @author mzechner
  * 
  */
@@ -91,24 +91,4 @@ public class VorbisDecoder implements Decoder {
 	private native int skipSamples (long handle, int numSamples);
 
 	private native void closeFile (long handle);
-
-// public static void main( String[] argv )
-// {
-// VorbisDecoder decoder = new VorbisDecoder( "data/cloudconnected.ogg" );
-// System.out.println( "channels: "+ decoder.getNumChannels() + ", rate: " + decoder.getRate() + ", length: " +
-// decoder.getLength() );;
-//
-// JoglAudioDevice device = new JoglAudioDevice( decoder.getNumChannels() == 2?false:true );
-// ShortBuffer samplesBuffer = AudioTools.allocateShortBuffer( 1024*10, 2 );
-// short[] samples = new short[samplesBuffer.capacity()];
-//
-// while( decoder.readSamples( samplesBuffer ) > 0 )
-// {
-// samplesBuffer.get(samples);
-// device.writeSamples( samples, 0, samples.length );
-// }
-//
-// decoder.dispose();
-// device.dispose();
-// }
 }
