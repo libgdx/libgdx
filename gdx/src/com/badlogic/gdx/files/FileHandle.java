@@ -19,8 +19,8 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 
 /**
- * A file handle represents a system dependant representation of an internal or external file. FileHandles can only be created via
- * a {@link Files} instance.
+ * A file handle represents a system dependent representation of an internal or
+ * external file. FileHandles can only be created via a {@link Files} instance.
  * 
  * @author mzechner
  * 
@@ -29,10 +29,10 @@ public interface FileHandle {
 	/**
 	 * @return a new {@link InputStream} to the underlying file.
 	 */
-	public InputStream readFile ();
-	
+	public InputStream readFile();
+
 	/**
 	 * @return the path to the file.
 	 */
-	public String getPath ();
+	public String getPath();
 }
