@@ -21,46 +21,56 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 
 /**
- * Encapsulates a view frustum based on clipping planes. Offers methods to perform culling of simple geometric objects like
- * points, spheres and {@link BoundingBox}es.
+ * Encapsulates a view frustum based on clipping planes. Offers methods to
+ * perform culling of simple geometric objects like points, spheres and
+ * {@link BoundingBox}es.
+ * 
  * @author badlogicgames@gmail.com
  * 
  */
 public final class Frustum {
 	private static final long serialVersionUID = -7082961504074610513L;
 	protected List<Plane> planes = new ArrayList<Plane>(6);
-	protected float near, far, fov, aspect, near_width, near_height, far_width, far_height, tang;
+	protected float near, far, fov, aspect, near_width, near_height, far_width,
+			far_height, tang;
 
 	/**
 	 * @return The list of {@link Plane}s that make up this frustum.
 	 */
-	public List<Plane> getPlanes () {
+	public List<Plane> getPlanes() {
 		return planes;
 	}
 
 	/**
 	 * Adds a new {@link Plane} to the frustum
-	 * @param plane The plane to add
+	 * 
+	 * @param plane
+	 *            The plane to add
 	 */
-	public void addPlane (Plane plane) {
+	public void addPlane(Plane plane) {
 		planes.add(plane);
 	}
 
 	/**
 	 * Sets the camera parameters.
 	 * 
-	 * @param fov The field of view in degrees
-	 * @param aspect The aspect ratio
-	 * @param near The near plane
-	 * @param far The far plane
+	 * @param fov
+	 *            The field of view in degrees
+	 * @param aspect
+	 *            The aspect ratio
+	 * @param near
+	 *            The near plane
+	 * @param far
+	 *            The far plane
 	 */
-	public void setCameraParameters (float fov, float aspect, float near, float far) {
+	public void setCameraParameters(float fov, float aspect, float near,
+			float far) {
 		this.near = near;
 		this.far = far;
 		this.aspect = aspect;
 		this.fov = fov;
 
-		tang = (float)Math.tan(Math.toRadians(fov * 0.5));
+		tang = (float) Math.tan(Math.toRadians(fov * 0.5));
 		this.near_height = near * tang;
 		this.near_width = this.near_height * aspect;
 		this.far_height = far * tang;
@@ -88,14 +98,18 @@ public final class Frustum {
 	static Vector3 far_center = new Vector3();
 
 	/**
-	 * Sets the camera orientation. This will add 6 planes for near, far, left, right, top and bottom of the frustum. Call
-	 * {@link Frustum.setCameraParameters} before calling this function.
+	 * Sets the camera orientation. This will add 6 planes for near, far, left,
+	 * right, top and bottom of the frustum. Call
+	 * {@link Frustum#setCameraParameters} before calling this function.
 	 * 
-	 * @param pos The camera position
-	 * @param dir The camera direction with unit length
-	 * @param up The camera up vector with unit length
+	 * @param pos
+	 *            The camera position
+	 * @param dir
+	 *            The camera direction with unit length
+	 * @param up
+	 *            The camera up vector with unit length
 	 */
-	public void setCameraOrientation (Vector3 pos, Vector3 dir, Vector3 up) {
+	public void setCameraOrientation(Vector3 pos, Vector3 dir, Vector3 up) {
 		X.set(0, 0, 0);
 		Y.set(0, 0, 0);
 		Z.set(0, 0, 0);
@@ -106,15 +120,23 @@ public final class Frustum {
 		near_center.set(pos.tmp().sub(tmp.set(Z).mul(near)));
 		far_center.set(pos.tmp().sub(tmp.set(Z).mul(far)));
 
-		near_tl.set(near_center.tmp().add(tmp.set(Y).mul(near_height)).sub(tmp2.set(X).mul(near_width)));
-		near_tr.set(near_center.tmp().add(tmp.set(Y).mul(near_height)).add(tmp2.set(X).mul(near_width)));
-		near_bl.set(near_center.tmp().sub(tmp.set(Y).mul(near_height)).sub(tmp2.set(X).mul(near_width)));
-		near_br.set(near_center.tmp().sub(tmp.set(Y).mul(near_height)).add(tmp2.set(X).mul(near_width)));
+		near_tl.set(near_center.tmp().add(tmp.set(Y).mul(near_height))
+				.sub(tmp2.set(X).mul(near_width)));
+		near_tr.set(near_center.tmp().add(tmp.set(Y).mul(near_height))
+				.add(tmp2.set(X).mul(near_width)));
+		near_bl.set(near_center.tmp().sub(tmp.set(Y).mul(near_height))
+				.sub(tmp2.set(X).mul(near_width)));
+		near_br.set(near_center.tmp().sub(tmp.set(Y).mul(near_height))
+				.add(tmp2.set(X).mul(near_width)));
 
-		far_tl.set(far_center.tmp().add(tmp.set(Y).mul(far_height)).sub(tmp2.set(X).mul(far_width)));
-		far_tr.set(far_center.tmp().add(tmp.set(Y).mul(far_height)).add(tmp2.set(X).mul(far_width)));
-		far_bl.set(far_center.tmp().sub(tmp.set(Y).mul(far_height)).sub(tmp2.set(X).mul(far_width)));
-		far_br.set(far_center.tmp().sub(tmp.set(Y).mul(far_height)).add(tmp2.set(X).mul(far_width)));
+		far_tl.set(far_center.tmp().add(tmp.set(Y).mul(far_height))
+				.sub(tmp2.set(X).mul(far_width)));
+		far_tr.set(far_center.tmp().add(tmp.set(Y).mul(far_height))
+				.add(tmp2.set(X).mul(far_width)));
+		far_bl.set(far_center.tmp().sub(tmp.set(Y).mul(far_height))
+				.sub(tmp2.set(X).mul(far_width)));
+		far_br.set(far_center.tmp().sub(tmp.set(Y).mul(far_height))
+				.add(tmp2.set(X).mul(far_width)));
 
 		if (planes.size() != 6) {
 			planes.clear();
@@ -135,7 +157,7 @@ public final class Frustum {
 		}
 	}
 
-	public String toString () {
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 
 		for (Plane plane : planes) {
@@ -150,13 +172,15 @@ public final class Frustum {
 	/**
 	 * Returns wheter the point is in the frustum.
 	 * 
-	 * @param point The point
+	 * @param point
+	 *            The point
 	 * @return Wheter the point is in the frustum.
 	 */
-	public boolean pointInFrustum (Vector3 point) {
+	public boolean pointInFrustum(Vector3 point) {
 		for (int i = 0; i < planes.size(); i++) {
 			PlaneSide result = planes.get(i).testPoint(point);
-			if (result == PlaneSide.Back) return false;
+			if (result == PlaneSide.Back)
+				return false;
 		}
 
 		return true;
@@ -165,27 +189,34 @@ public final class Frustum {
 	/**
 	 * Returns wheter the given sphere is in the frustum.
 	 * 
-	 * @param center The center of the sphere
-	 * @param radius The radius of the sphere
+	 * @param center
+	 *            The center of the sphere
+	 * @param radius
+	 *            The radius of the sphere
 	 * @return Wheter the sphere is in the frustum
 	 */
-	public boolean sphereInFrustum (Vector3 center, float radius) {
+	public boolean sphereInFrustum(Vector3 center, float radius) {
 		for (int i = 0; i < planes.size(); i++)
-			if (planes.get(i).distance(center) < -radius) return false;
+			if (planes.get(i).distance(center) < -radius)
+				return false;
 
 		return true;
 	}
 
 	/**
-	 * Returns wheter the given sphere is in the frustum not checking wheter it is behind the near and far clipping plane.
+	 * Returns wheter the given sphere is in the frustum not checking wheter it
+	 * is behind the near and far clipping plane.
 	 * 
-	 * @param center The center of the sphere
-	 * @param radius The radius of the sphere
+	 * @param center
+	 *            The center of the sphere
+	 * @param radius
+	 *            The radius of the sphere
 	 * @return Wheter the sphere is in the frustum
 	 */
-	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
+	public boolean sphereInFrustumWithoutNearFar(Vector3 center, float radius) {
 		for (int i = 0; i < planes.size(); i++)
-			if (planes.get(i).distance(center) < -radius) return false;
+			if (planes.get(i).distance(center) < -radius)
+				return false;
 
 		return true;
 	}
@@ -193,10 +224,11 @@ public final class Frustum {
 	/**
 	 * Returns wheter the given {@link BoundingBox} is in the frustum.
 	 * 
-	 * @param bounds The bounding box
+	 * @param bounds
+	 *            The bounding box
 	 * @return Wheter the bounding box is in the frustum
 	 */
-	public boolean boundsInFrustum (BoundingBox bounds) {
+	public boolean boundsInFrustum(BoundingBox bounds) {
 		Vector3[] corners = bounds.getCorners();
 		int len = corners.length;
 
@@ -204,31 +236,40 @@ public final class Frustum {
 			int out = 0;
 
 			for (int j = 0; j < len; j++)
-				if (planes.get(i).testPoint(corners[j]) == PlaneSide.Back) out++;
+				if (planes.get(i).testPoint(corners[j]) == PlaneSide.Back)
+					out++;
 
-			if (out == 8) return false;
+			if (out == 8)
+				return false;
 		}
 
 		return true;
 	}
 
+	Ray ray = new Ray(new Vector3(), new Vector3());
 	/**
-	 * Calculates the pick ray for the given window coordinates. Assumes the window coordinate system has it's y downwards. The
-	 * returned Ray is a member of this instance so don't reuse it outside this class.
+	 * Calculates the pick ray for the given window coordinates. Assumes the
+	 * window coordinate system has it's y downwards. The returned Ray is a
+	 * member of this instance so don't reuse it outside this class.
 	 * 
-	 * @param screen_width The window width in pixels
-	 * @param screen_height The window height in pixels
-	 * @param mouse_x The window x-coordinate
-	 * @param mouse_y The window y-coordinate
-	 * @param pos The camera position
-	 * @param direction The camera direction, having unit length
-	 * @param up The camera up vector, having unit length
+	 * @param screen_width
+	 *            The window width in pixels
+	 * @param screen_height
+	 *            The window height in pixels
+	 * @param mouse_x
+	 *            The window x-coordinate
+	 * @param mouse_y
+	 *            The window y-coordinate
+	 * @param pos
+	 *            The camera position
+	 * @param dir
+	 *            The camera direction, having unit length
+	 * @param up
+	 *            The camera up vector, having unit length
 	 * @return the picking ray.
 	 */
-	Ray ray = new Ray(new Vector3(), new Vector3());
-
-	public Ray calculatePickRay (float screen_width, float screen_height, float mouse_x, float mouse_y, Vector3 pos, Vector3 dir,
-		Vector3 up) {
+	public Ray calculatePickRay(float screen_width, float screen_height,
+			float mouse_x, float mouse_y, Vector3 pos, Vector3 dir, Vector3 up) {
 		float n_x = mouse_x - screen_width / 2.0f;
 		float n_y = mouse_y - screen_height / 2.0f;
 		n_x /= screen_width / 2.0f;
@@ -238,7 +279,8 @@ public final class Frustum {
 		X.set(up.tmp().crs(Z)).nor();
 		Y.set(Z.tmp().crs(X)).nor();
 		near_center.set(pos.tmp3().sub(Z.tmp2().mul(near)));
-		Vector3 near_point = X.tmp3().mul(near_width).mul(n_x).add(Y.tmp2().mul(near_height).mul(n_y));
+		Vector3 near_point = X.tmp3().mul(near_width).mul(n_x)
+				.add(Y.tmp2().mul(near_height).mul(n_y));
 		near_point.add(near_center);
 
 		return ray.set(near_point.tmp(), near_point.sub(pos).nor());

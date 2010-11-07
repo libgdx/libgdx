@@ -112,7 +112,7 @@ public final class Vector3 {
 	/**
 	 * NEVER EVER SAVE THIS REFERENCE!
 	 * 
-	 * @return
+	 * @return a temporary copy of this vector
 	 */
 	public Vector3 tmp () {
 		return tmp.set(this);
@@ -121,7 +121,7 @@ public final class Vector3 {
 	/**
 	 * NEVER EVER SAVE THIS REFERENCE!
 	 * 
-	 * @return
+	 * @return a temporary copy of this vector
 	 */
 	public Vector3 tmp2 () {
 		return tmp2.set(this);
@@ -130,7 +130,7 @@ public final class Vector3 {
 	/**
 	 * NEVER EVER SAVE THIS REFERENCE!
 	 * 
-	 * @return
+	 * @return a temporary copy of this vector
 	 */
 	Vector3 tmp3 () {
 		return tmp3.set(this);

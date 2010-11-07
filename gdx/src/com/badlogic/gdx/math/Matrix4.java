@@ -15,7 +15,7 @@ package com.badlogic.gdx.math;
 
 /**
  * Encapsulates a column major 4 by 4 matrix. You can access the linear array for use with OpenGL via the public
- * {@link Matrix4.val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
+ * {@link Matrix4#val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
  * 
  * @author badlogicgames@gmail.com
  * 
@@ -625,6 +625,9 @@ public final class Matrix4 {
 		return this;
 	}
 
+	static final Vector3 tmpVec = new Vector3();
+	static final Matrix4 tmpMat = new Matrix4();
+
 	/**
 	 * Sets this matrix to a look at matrix with the given position, target and up vector.
 	 * 
@@ -633,9 +636,6 @@ public final class Matrix4 {
 	 * @param up the up vector
 	 * @return this matrix
 	 */
-	static final Vector3 tmpVec = new Vector3();
-	static final Matrix4 tmpMat = new Matrix4();
-
 	public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
 		tmpVec.set(target).sub(position);
 		setToLookAt(tmpVec, up);
