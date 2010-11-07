@@ -16,7 +16,7 @@ package com.badlogic.gdx;
 /**
  * <p>
  * An
- * <code>Application<code> is the main entry point of your project. It sets up a window and 
+ * <code>Application</code> is the main entry point of your project. It sets up a window and 
  * rendering surface and manages the different aspects of your application, namely 
  * {@link Graphics}, {@link Audio}, {@link Input} and {@link Files}. Think of an Application 
  * being equivalent to a JFrame of Activity.
