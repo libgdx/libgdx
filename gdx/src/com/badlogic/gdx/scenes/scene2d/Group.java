@@ -54,6 +54,10 @@ public class Group extends Actor {
 	public Actor lastTouchedChild;
 	public Actor focusedActor = null;
 
+	/**
+	 * Creates a new Group with the given name.
+	 * @param name the name of the group
+	 */
 	public Group (String name) {
 		super(name);
 		this.transform = new Matrix3();
@@ -122,6 +126,14 @@ public class Group extends Actor {
 	static final Vector2 p = new Vector2();
 	static final Vector2 ref = new Vector2();
 
+	/**
+	 * Transforms the coordinates given in the child's parent coordinate system to the
+	 * child {@link Actor}'s coordinate system. 
+	 * @param child the child Actor
+	 * @param x the x-coordinate in the Group's coordinate system
+	 * @param y the y-coordinate in the Group's coordinate system
+	 * @param out the output {@link Vector2}
+	 */
 	public static void toChildCoordinates (Actor child, float x, float y, Vector2 out) {
 		if (child.rotation == 0) {
 			if (child.scaleX == 1 && child.scaleY == 1) {
@@ -294,6 +306,11 @@ public class Group extends Actor {
 		return null;
 	}
 
+	/**
+	 * Adds an {@link Actor} to this Group. The order Actors are added
+	 * is reversed for hit testing and rendering.
+	 * @param actor the Actor
+	 */
 	public void addActor (Actor actor) {
 		children.add(actor);
 		if (actor instanceof Group) groups.add((Group)actor);
@@ -301,12 +318,22 @@ public class Group extends Actor {
 		actor.parent = this;
 	}
 
+	/**
+	 * Removes an {@link Actor} from this Group. 
+	 * @param actor
+	 */
 	public void removeActor (Actor actor) {
 		children.remove(actor);
 		if (actor instanceof Group) groups.remove((Group)actor);
 		namesToActors.remove(actor.name);
 	}
 
+	/**
+	 * Finds the {@link Actor} with the given name in this Group and
+	 * its children.
+	 * @param name the name of the Actor
+	 * @return the Actor or null
+	 */
 	public Actor findActor (String name) {
 		Actor actor = namesToActors.get(name);
 		if (actor == null) {
@@ -320,14 +347,26 @@ public class Group extends Actor {
 		return actor;
 	}
 
+	/**
+	 * @return all child {@link Actor}s
+	 */
 	public List<Actor> getActors () {
 		return immutableChildren;
 	}
 
+	/**
+	 * @return all child {@link Group}s
+	 */
 	public List<Group> getGroups () {
 		return immutableGroups;
 	}
 
+	/**
+	 * Sets the focus to the given child {@link Actor}. All subsequent touch events
+	 * will be passed to this child Actor. To unset the focus simply pass null.
+	 * 
+	 * @param actor the Actor
+	 */
 	public void focus (Actor actor) {
 		focusedActor = actor;
 		if (parent != null) parent.focus(actor);

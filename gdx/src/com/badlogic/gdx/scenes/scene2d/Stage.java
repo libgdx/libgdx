@@ -16,26 +16,37 @@ package com.badlogic.gdx.scenes.scene2d;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 /**
  * <p>
- * A Stage is a container for StageObjects and handles distributing touch events, animating StageObjects and asking them to render
- * themselves.
+ * A Stage is a container for {@link Actor}s and handles distributing touch
+ * events, animating Actors and asking them to render themselves. A Stage
+ * is basically a 2D scenegraph with hierarchies of Actors.
  * </p>
  * 
  * <p>
- * A Stage object fills the whole screen. It has a width and height given in device independent pixels. It will create a
- * projection matrix that maps this viewport to the given real screen resolution. If the stretched attribute is set to true then
- * the viewport is enforced no matter the difference in aspect ratio between the stage object and the screen dimensions. In case
- * stretch is disabled then the viewport is extended in the bigger screen dimensions.
+ * A Stage object fills the whole screen. It has a width and height given in
+ * device independent pixels. It will create a projection matrix that maps this
+ * viewport to the given real screen resolution. If the stretched attribute is
+ * set to true then the viewport is enforced no matter the difference in aspect
+ * ratio between the stage object and the screen dimensions. In case stretch is
+ * disabled then the viewport is extended in the bigger screen dimensions.
  * </p>
+ * 
+ * <p>
+ * Actors have a z-order which is equal to the order they were inserted into this
+ * Stage. Actors inserted later will be drawn on top of Actors added earlier. The
+ * same is true for touch events that will get distributed to later Actors first.
+ * </p>
+ * 
  * @author mzechner
  * 
  */
-public class Stage {
+public class Stage extends InputAdapter {
 	private float width;
 	private float height;
 	private float centerX;
@@ -50,16 +61,21 @@ public class Stage {
 
 	/**
 	 * <p>
-	 * Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
-	 * dimensions the stage object will setup a projection matrix to guarantee a fixed coordinate system. If stretch is disabled
-	 * then the bigger dimension of the Stage will be increased to accomodate the actual device resolution.
+	 * Constructs a new Stage object with the given dimensions. If the device
+	 * resolution does not equal the Stage objects dimensions the stage object
+	 * will setup a projection matrix to guarantee a fixed coordinate system. If
+	 * stretch is disabled then the bigger dimension of the Stage will be
+	 * increased to accomodate the actual device resolution.
 	 * </p>
 	 * 
-	 * @param width the width of the viewport
-	 * @param height the height of the viewport
-	 * @param stretch whether to stretch the viewport to the real device resolution
+	 * @param width
+	 *            the width of the viewport
+	 * @param height
+	 *            the height of the viewport
+	 * @param stretch
+	 *            whether to stretch the viewport to the real device resolution
 	 */
-	public Stage (float width, float height, boolean stretch) {
+	public Stage(float width, float height, boolean stretch) {
 		this.width = width;
 		this.height = height;
 		this.stretch = stretch;
@@ -71,30 +87,36 @@ public class Stage {
 	}
 
 	/**
-	 * Sets the viewport dimensions in device independent pixels. If stretch is false and the viewport aspect ratio is not equal to
-	 * the device ratio then the bigger dimension of the viewport will be extended (device independent pixels stay quardatic
-	 * instead of getting stretched).
+	 * Sets the viewport dimensions in device independent pixels. If stretch is
+	 * false and the viewport aspect ratio is not equal to the device ratio then
+	 * the bigger dimension of the viewport will be extended (device independent
+	 * pixels stay quardatic instead of getting stretched).
 	 * 
-	 * @param width thew width of the viewport in device independent pixels
-	 * @param height the height of the viewport in device independent pixels
-	 * @param strech whether to stretch the viewport or not
+	 * @param width
+	 *            thew width of the viewport in device independent pixels
+	 * @param height
+	 *            the height of the viewport in device independent pixels
+	 * @param strech
+	 *            whether to stretch the viewport or not
 	 */
-	public void setViewport (float width, float height, boolean strech) {
-		// TODO implement stretch, adjust width or height
+	public void setViewport(float width, float height, boolean strech) {
 		if (!stretch) {
 			if (width > height) {
 				float toDeviceSpace = Gdx.graphics.getHeight() / height;
 				float toViewportSpace = height / Gdx.graphics.getHeight();
 
 				float deviceWidth = width * toDeviceSpace;
-				this.width = width + (Gdx.graphics.getWidth() - deviceWidth) * toViewportSpace;
+				this.width = width + (Gdx.graphics.getWidth() - deviceWidth)
+						* toViewportSpace;
 				this.height = height;
 			} else {
 				float toDeviceSpace = Gdx.graphics.getWidth() / width;
 				float toViewportSpace = width / Gdx.graphics.getWidth();
 
 				float deviceHeight = height * toDeviceSpace;
-				this.height = height + (Gdx.graphics.getHeight() - deviceHeight) * toViewportSpace;
+				this.height = height
+						+ (Gdx.graphics.getHeight() - deviceHeight)
+						* toViewportSpace;
 				this.width = width;
 			}
 		} else {
@@ -111,104 +133,149 @@ public class Stage {
 	/**
 	 * @return the width of the stage in dips
 	 */
-	public float width () {
+	public float width() {
 		return width;
 	}
 
 	/**
 	 * @return the height of the stage in dips
 	 */
-	public float height () {
+	public float height() {
 		return height;
 	}
 
 	/**
 	 * @return the x-coordinate of the left edge of the stage in dips
 	 */
-	public int left () {
+	public int left() {
 		return 0;
 	}
 
 	/**
 	 * @return the x-coordinate of the right edge of the stage in dips
 	 */
-	public float right () {
+	public float right() {
 		return width - 1;
 	}
 
 	/**
 	 * @return the y-coordinate of the top edge of the stage in dips
 	 */
-	public float top () {
+	public float top() {
 		return height - 1;
 	}
 
 	/**
 	 * @return the y-coordinate of the bottom edge of the stage in dips
 	 */
-	public float bottom () {
+	public float bottom() {
 		return 0;
 	}
 
 	/**
 	 * @return the center x-coordinate of the stage in dips
 	 */
-	public float centerX () {
+	public float centerX() {
 		return centerX;
 	}
 
 	/**
 	 * @return the center y-coordinate of the stage in dips
 	 */
-	public float centerY () {
+	public float centerY() {
 		return centerY;
 	}
 
 	/**
 	 * @return whether the stage is stretched
 	 */
-	public boolean isStretched () {
+	public boolean isStretched() {
 		return stretch;
 	}
 
-	public Actor findActor (String name) {
+	/**
+	 * Finds the {@link Actor} with the given name in the stage
+	 * hierarchy.
+	 * @param name
+	 * @return the Actor or null if it couldn't be found.
+	 */
+	public Actor findActor(String name) {
 		return root.findActor(name);
 	}
 
-	public List<Actor> getActors () {
+	/**
+	 * @return all top level {@link Actor}s
+	 */
+	public List<Actor> getActors() {
 		return root.getActors();
 	}
 
-	public List<Group> getGroups () {
+	/**
+	 * @return all top level {@link Group}s
+	 */
+	public List<Group> getGroups() {
 		return root.getGroups();
 	}
 
 	final Vector2 point = new Vector2();
 	final Vector2 coords = new Vector2();
 
-	public boolean touchDown (int x, int y, int pointer) {
+	/**
+	 * Call this to distribute a touch down event to the 
+	 * stage.
+	 * @param x the x coordinate of the touch in screen coordinates
+	 * @param y the y coordinate of the touch in screen coordinates
+	 * @param pointer the pointer index
+	 * @return whether an {@link Actor} in the scene processed the event or not
+	 */
+	public boolean touchDown(int x, int y, int pointer) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchDown(point.x, point.y, pointer);
 	}
-
-	public boolean touchUp (int x, int y, int pointer) {
+	
+	/**
+	 * Call this to distribute a touch Up event to the 
+	 * stage.
+	 * 
+	 * @param x the x coordinate of the touch in screen coordinates
+	 * @param y the y coordinate of the touch in screen coordinates
+	 * @param pointer the pointer index
+	 * @return whether an {@link Actor} in the scene processed the event or not
+	 */
+	public boolean touchUp(int x, int y, int pointer) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchUp(point.x, point.y, pointer);
 	}
 
-	public boolean touchDragged (int x, int y, int pointer) {
+	/**
+	 * Call this to distribute a touch dragged event to the 
+	 * stage.
+	 * @param x the x coordinate of the touch in screen coordinates
+	 * @param y the y coordinate of the touch in screen coordinates
+	 * @param pointer the pointer index
+	 * @return whether an {@link Actor} in the scene processed the event or not
+	 */
+	public boolean touchDragged(int x, int y, int pointer) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchDragged(point.x, point.y, pointer);
 	}
 
-	public void act (float delta) {
+	/**
+	 * Calls the {@link Actor#act(float)} method of all contained Actors. This will
+	 * advance any {@link Action}s active for an Actor.
+	 * @param delta the delta time in seconds since the last invocation
+	 */
+	public void act(float delta) {
 		root.act(delta);
 	}
 
-	public void render () {
+	/**
+	 * Renders the stage
+	 */
+	public void render() {
 		batch.setProjectionMatrix(projection);
 		batch.setTransformMatrix(identity);
 		batch.begin();
@@ -216,21 +283,31 @@ public class Stage {
 		batch.end();
 	}
 
-	public void dispose () {
+	/**
+	 * Disposes the stage
+	 */
+	public void dispose() {
 		batch.dispose();
 	}
 
-	public void addActor (Actor actor) {
+	/**
+	 * Adds an {@link Actor} to this stage
+	 * @param actor the Actor
+	 */
+	public void addActor(Actor actor) {
 		root.addActor(actor);
 	}
 
-	public String graphToString () {
+	/**
+	 * @return the Stage graph as a silly string
+	 */
+	public String graphToString() {
 		StringBuilder buffer = new StringBuilder();
 		graphToString(buffer, root, 0);
 		return buffer.toString();
 	}
 
-	private void graphToString (StringBuilder buffer, Actor actor, int level) {
+	private void graphToString(StringBuilder buffer, Actor actor, int level) {
 		for (int i = 0; i < level; i++)
 			buffer.append(' ');
 
@@ -238,32 +315,58 @@ public class Stage {
 		buffer.append("\n");
 
 		if (actor instanceof Group) {
-			Group group = (Group)actor;
+			Group group = (Group) actor;
 			for (int i = 0; i < group.getActors().size(); i++)
 				graphToString(buffer, group.getActors().get(i), level + 1);
 		}
 	}
 
-	public Group getRoot () {
+	/**
+	 * @return the root {@link Group} of this Stage. 
+	 */
+	public Group getRoot() {
 		return root;
 	}
 
-	public SpriteBatch getSpriteBatch () {
+	/**
+	 * @return the {@link SpriteBatch} offers its {@link Actor}s for rendering.
+	 */
+	public SpriteBatch getSpriteBatch() {
 		return batch;
 	}
 
-	public Actor getLastTouchedChild () {
+	/**
+	 * @return the {@link Actor} last hit by a touch event.
+	 */
+	public Actor getLastTouchedChild() {
 		return root.lastTouchedChild;
 	}
 
-	public Actor hit (float x, float y) {
+	/**
+	 * Returns the {@link Actor} intersecting with the point (x,y) in 
+	 * stage coordinates. Hit testing is performed in the order
+	 * the Actors were inserted into the Stage, last inserted Actors
+	 * being tested first. To get stage coordinates from screen coordinates use
+	 * {@link #toStageCoordinates(int, int, Vector2)}.
+	 * 
+	 * @param x the x-coordinate in screen coordinates
+	 * @param y the y-coordinate in screen cordinates
+	 * @return the hit Actor or null
+	 */
+	public Actor hit(float x, float y) {
 		Group.toChildCoordinates(root, x, y, point);
 		return root.hit(point.x, point.y);
 	}
 
-	public void toStageCoordinates (int x, int y, Vector2 out) {
+	/**
+	 * Transforms the given screen coordinates to stage coordinates
+	 * @param x the x-coordinate in screen coordinates
+	 * @param y the y-coordinate in screen coordinates
+	 * @param out the output {@link Vector2}.
+	 */
+	public void toStageCoordinates(int x, int y, Vector2 out) {
 		out.y = (Gdx.graphics.getHeight() - 1) - y;
-		out.x = (float)x / Gdx.graphics.getWidth() * width;
+		out.x = (float) x / Gdx.graphics.getWidth() * width;
 		out.y = out.y / Gdx.graphics.getHeight() * height;
 	}
 }

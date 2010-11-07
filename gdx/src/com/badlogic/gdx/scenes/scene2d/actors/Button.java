@@ -6,6 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+/**
+ * A simple Button {@link Actor}, useful for simple UIs
+ * 
+ * @author mzechner
+ *
+ */
 public class Button extends Actor {
 	public interface ClickListener {
 		public void clicked (Button button);
@@ -16,12 +22,23 @@ public class Button extends Actor {
 	public ClickListener clickListener;
 	private boolean pressed = false;
 
+	/**
+	 * Creates a new Button instance with the given name.
+	 * @param name the name 
+	 */
 	public Button (String name) {
 		super(name);
 		this.pressedRegion = new TextureRegion(null, 0, 0, 0, 0);
 		this.unpressedRegion = new TextureRegion(null, 0, 0, 0, 0);
 	}
 
+	/**
+	 * Creates a new Button instance with the given name, using
+	 * the complete supplied texture for displaying the pressed
+	 * and unpressed state of the button.
+	 * @param name the name
+	 * @param texture the {@link Texture}
+	 */
 	public Button (String name, Texture texture) {
 		super(name);
 		this.originX = texture.getWidth() / 2.0f;
