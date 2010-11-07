@@ -166,6 +166,7 @@ public class LongHashMap<T> {
 				return true;
 			}
 
+			@SuppressWarnings("synthetic-access")
 			private boolean loadNextEntry () {
 				while (true) {
 					currIndex++;

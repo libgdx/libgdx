@@ -163,6 +163,7 @@ public class IntHashMap<T> {
 				return true;
 			}
 
+			@SuppressWarnings("synthetic-access")
 			private boolean loadNextEntry () {
 				while (true) {
 					currIndex++;
