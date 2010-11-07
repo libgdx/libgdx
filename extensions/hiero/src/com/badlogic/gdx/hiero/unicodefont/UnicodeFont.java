@@ -402,8 +402,7 @@ public class UnicodeFont {
 				extraY += getLineHeight();
 				lines++;
 				totalHeight = 0;
-			} else if (nativeRendering)
-				offsetX += bounds.width;
+			} else if (nativeRendering) offsetX += bounds.width;
 		}
 		if (lastBind != null) GL11.glEnd();
 
@@ -462,9 +461,12 @@ public class UnicodeFont {
 
 	private Rectangle getGlyphBounds (GlyphVector vector, int index, int codePoint) {
 		Rectangle bounds;
-		if (nativeRendering)
-			bounds = metrics.getStringBounds("" + (char)codePoint, GlyphPage.scratchGraphics).getBounds();
-		else
+		if (nativeRendering) {
+			if (codePoint == '\n')
+				bounds = new Rectangle();
+			else
+				bounds = metrics.getStringBounds("" + (char)codePoint, GlyphPage.scratchGraphics).getBounds();
+		} else
 			bounds = vector.getGlyphPixelBounds(index, GlyphPage.renderContext, 0, 0);
 		if (codePoint == ' ') bounds.width = spaceWidth;
 		return bounds;

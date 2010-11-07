@@ -137,6 +137,7 @@ public class GlyphPage {
 	 * Loads a single glyph to the backing texture, if it fits.
 	 */
 	private void renderGlyph (Glyph glyph, int width, int height) {
+		System.out.println(glyph.getCodePoint());
 		// Draw the glyph to the scratch image using Java2D.
 		scratchGraphics.setComposite(AlphaComposite.Clear);
 		scratchGraphics.fillRect(0, 0, MAX_GLYPH_SIZE, MAX_GLYPH_SIZE);
