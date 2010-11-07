@@ -29,15 +29,21 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * <p>
- * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
- * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
- * texture by {@link FrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
+ * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper
+ * class which should cover most FBO uses. It will automatically create a
+ * texture for the color attachment and a renderbuffer for the depth buffer. You
+ * can get a hold of the texture by {@link FrameBuffer#getColorBufferTexture()}.
+ * This class will only work with OpenGL ES 2.0.
  * </p>
  * 
  * <p>
- * FrameBuffers can be managed. In case of an OpenGL context loss, which only happens on Android when a user switches to another
- * application or receives an incoming call, the framebuffer will be automatically recreated. This will essentially double the
- * size of the memory used so use this feature with care. Future versions will fix this and not eat up additional memory.
+ * FrameBuffers are managed. In case of an OpenGL context loss, which only
+ * happens on Android when a user switches to another application or receives an
+ * incoming call, the framebuffer will be automatically recreated.
+ * </p>
+ * 
+ * <p>
+ * A FrameBuffer must be disposed if it is no longer needed
  * </p>
  * 
  * @author mzechner
@@ -66,15 +72,22 @@ public class FrameBuffer {
 	private final Pixmap.Format format;
 
 	/**
-	 * Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
+	 * Creates a new FrameBuffer having the given dimensions and potentially a
+	 * depth buffer attached.
 	 * 
-	 * @param format the format of the color buffer
-	 * @param width the width of the framebuffer in pixels
-	 * @param height the height of the framebuffer in pixels
-	 * @param hasDepth whether to attach a depth buffer
-	 * @throws GdxRuntimeException in case the FraeBuffer could not be created
+	 * @param format
+	 *            the format of the color buffer
+	 * @param width
+	 *            the width of the framebuffer in pixels
+	 * @param height
+	 *            the height of the framebuffer in pixels
+	 * @param hasDepth
+	 *            whether to attach a depth buffer
+	 * @throws GdxRuntimeException
+	 *             in case the FraeBuffer could not be created
 	 */
-	public FrameBuffer (Pixmap.Format format, int width, int height, boolean hasDepth) {
+	public FrameBuffer(Pixmap.Format format, int width, int height,
+			boolean hasDepth) {
 		this.width = width;
 		this.height = height;
 		this.format = format;
@@ -83,9 +96,10 @@ public class FrameBuffer {
 		buffers.add(this);
 	}
 
-	private void build () {
-		colorTexture = Gdx.graphics.newUnmanagedTexture(width, height, format, TextureFilter.Linear, TextureFilter.Linear,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	private void build() {
+		colorTexture = Gdx.graphics.newUnmanagedTexture(width, height, format,
+				TextureFilter.Linear, TextureFilter.Linear,
+				TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		GL20 gl = Gdx.graphics.getGL20();
 
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
@@ -98,14 +112,20 @@ public class FrameBuffer {
 		gl.glGenRenderbuffers(1, handle);
 		depthbufferHandle = handle.get(0);
 
-		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
+		gl.glBindTexture(GL20.GL_TEXTURE_2D,
+				colorTexture.getTextureObjectHandle());
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
-		gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(), colorTexture.getHeight());
+		gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER,
+				GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(),
+				colorTexture.getHeight());
 
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
-		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
-			colorTexture.getTextureObjectHandle(), 0);
-		gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
+		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER,
+				GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
+				colorTexture.getTextureObjectHandle(), 0);
+		gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER,
+				GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER,
+				depthbufferHandle);
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
@@ -123,18 +143,21 @@ public class FrameBuffer {
 			gl.glDeleteFramebuffers(1, handle);
 
 			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
-				throw new IllegalStateException("frame buffer couldn't be constructed: incomplete attachment");
+				throw new IllegalStateException(
+						"frame buffer couldn't be constructed: incomplete attachment");
 			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS)
-				throw new IllegalStateException("frame buffer couldn't be constructed: incomplete dimensions");
+				throw new IllegalStateException(
+						"frame buffer couldn't be constructed: incomplete dimensions");
 			if (result == GL20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT)
-				throw new IllegalStateException("frame buffer couldn't be constructed: missing attachment");
+				throw new IllegalStateException(
+						"frame buffer couldn't be constructed: missing attachment");
 		}
 	}
 
 	/**
 	 * Releases all resources associated with the FrameBuffer.
 	 */
-	public void dispose () {
+	public void dispose() {
 		GL20 gl = Gdx.graphics.getGL20();
 
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);
@@ -156,53 +179,59 @@ public class FrameBuffer {
 	/**
 	 * Makes the frame buffer current so everything gets drawn to it.
 	 */
-	public void begin () {
-		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
-		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+	public void begin() {
+		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(),
+				colorTexture.getHeight());
+		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER,
+				framebufferHandle);
 	}
 
 	/**
-	 * Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on.
+	 * Unbinds the framebuffer, all drawing will be performed to the normal
+	 * framebuffer from here on.
 	 */
-	public void end () {
-		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	public void end() {
+		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, 0);
 	}
 
 	/**
-	 * Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
-	 * assumes that the texture attached to this buffer has already been rebuild! Use with care.
+	 * Invalidates all frame buffers. This can be used when the OpenGL context
+	 * is lost to rebuild all managed frame buffers. This assumes that the
+	 * texture attached to this buffer has already been rebuild! Use with care.
 	 */
-	public static void invalidateAllFrameBuffers () {
-		if (Gdx.graphics.getGL20() == null) return;
+	public static void invalidateAllFrameBuffers() {
+		if (Gdx.graphics.getGL20() == null)
+			return;
 
 		for (int i = 0; i < buffers.size(); i++) {
 			buffers.get(i).build();
 		}
 	}
 
-	public static void clearAllFrameBuffers () {
+	public static void clearAllFrameBuffers() {
 		buffers.clear();
 	}
 
 	/**
 	 * @return the color buffer texture
 	 */
-	public Texture getColorBufferTexture () {
+	public Texture getColorBufferTexture() {
 		return colorTexture;
 	}
 
 	/**
 	 * @return the height of the framebuffer in pixels
 	 */
-	public int getHeight () {
+	public int getHeight() {
 		return colorTexture.getHeight();
 	}
 
 	/**
 	 * @return the width of the framebuffer in pixels
 	 */
-	public int getWidth () {
+	public int getWidth() {
 		return colorTexture.getWidth();
 	}
 }
