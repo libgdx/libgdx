@@ -23,10 +23,10 @@ package com.badlogic.gdx;
  * </p>
  * 
  * <p>
- * An application can either be a desktop application ({@link JoglApplication},
- * {@link LwjglApplication} found in gdx-backends-jogl.jar and
+ * An application can either be a desktop application JoglApplication,
+ * LwjglApplication found in gdx-backends-jogl.jar and
  * gdx-backends-lwjgl.jar respectively), or an Android application
- * {@link AndroidApplication} found in gdx-backends-android.jar). Each
+ * AndroidApplication found in gdx-backends-android.jar). Each
  * application class has it's own startup and initialization methods. Please
  * refer to their documentation for more information.
  * </p>
