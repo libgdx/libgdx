@@ -14,6 +14,7 @@
 package com.badlogic.gdx;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
@@ -31,6 +32,8 @@ import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -285,6 +288,9 @@ public interface Graphics {
 	public Texture newTexture(FileHandle file, Texture.TextureFilter minFilter,
 			Texture.TextureFilter magFilter, Texture.TextureWrap uWrap,
 			Texture.TextureWrap vWrap);
+
+	public Texture newTexture (ByteBuffer buffer, Format format, int width, int height, TextureFilter minFilter,
+		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap);
 
 	/**
 	 * @return the {@link GraphicsType} of this Graphics instance
