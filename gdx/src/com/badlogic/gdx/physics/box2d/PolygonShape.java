@@ -93,13 +93,12 @@ public class PolygonShape extends Shape {
 
 	private native int jniGetVertexCount (long addr);
 
+	private static float[] verts = new float[2];
 	/**
 	 * Returns the vertex at the given position.
 	 * @param index the index of the vertex 0 <= index < getVertexCount( )
 	 * @param vertex vertex
 	 */
-	private static float[] verts = new float[2];
-
 	public void getVertex (int index, Vector2 vertex) {
 		jniGetVertex(addr, index, verts);
 		vertex.x = verts[0];

@@ -273,7 +273,7 @@ public class World {
 	/**
 	 * Call this after you are done with time steps to clear the forces. You normally call this after each call to Step, unless you
 	 * are performing sub-steps. By default, forces will be automatically cleared, so you don't need to call this function.
-	 * @see SetAutoClearForces
+	 * See {@link #setAutoClearForces(boolean)}
 	 */
 	public void clearForces () {
 		jniClearForces(addr);
@@ -389,7 +389,10 @@ public class World {
 	/**
 	 * Query the world for all fixtures that potentially overlap the provided AABB.
 	 * @param callback a user implemented callback class.
-	 * @param aabb the query box.
+	 * @param lowerX the x coordinate of the lower left corner
+	 * @param lowerY the y coordinate of the lower left corner
+	 * @param upperX the x coordinate of the upper right corner
+	 * @param upperY the y coordinate of the upper right corner
 	 */
 	public void QueryAABB (QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
 		queryCallback = callback;
@@ -465,9 +468,9 @@ public class World {
 	 * Internal method called from JNI in case a contact happens
 	 * @param fixtureA
 	 * @param fixtureB
-	 * @return
+	 * @return whether the things collided
 	 */
-	@SuppressWarnings("unused") private boolean contactFilter (long fixtureA, long fixtureB) {
+	private boolean contactFilter (long fixtureA, long fixtureB) {
 		if (contactFilter != null)
 			return contactFilter.shouldCollide(fixtures.get(fixtureA), fixtures.get(fixtureB));
 		else {
@@ -485,18 +488,18 @@ public class World {
 
 	private final Contact contact = new Contact(this, 0);
 
-	@SuppressWarnings("unused") private void beginContact (long contactAddr) {
+	private void beginContact (long contactAddr) {
 		contact.addr = contactAddr;
 		if (contactListener != null) contactListener.beginContact(contact);
 	}
 
-	@SuppressWarnings("unused") private void endContact (long contactAddr) {
+	private void endContact (long contactAddr) {
 		contact.addr = contactAddr;
 		contact.GetWorldManifold();
 		if (contactListener != null) contactListener.endContact(contact);
 	}
 
-	@SuppressWarnings("unused") private boolean reportFixture (long addr) {
+	private boolean reportFixture (long addr) {
 		if (queryCallback != null)
 			return queryCallback.reportFixture(fixtures.get(addr));
 		else

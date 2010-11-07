@@ -126,12 +126,11 @@ public class Body {
 
 	private native void jniGetTransform (long addr, float[] vals);
 
+	private final Vector2 position = new Vector2();
 	/**
 	 * Get the world body origin position.
 	 * @return the world position of the body's origin.
 	 */
-	private final Vector2 position = new Vector2();
-
 	public Vector2 getPosition () {
 		jniGetPosition(addr, tmp);
 		position.x = tmp[0];
@@ -285,12 +284,11 @@ public class Body {
 
 	private native float jniGetInertia (long addr);
 
+	private final MassData massData = new MassData();
 	/**
 	 * Get the mass data of the body.
 	 * @return a struct containing the mass, inertia and center of the body.
 	 */
-	private final MassData massData = new MassData();
-
 	public MassData getMassData () {
 		jniGetMassData(addr, tmp);
 		massData.mass = tmp[0];
@@ -305,7 +303,7 @@ public class Body {
 	/**
 	 * Set the mass properties to override the mass properties of the fixtures. Note that this changes the center of mass position.
 	 * Note that creating or destroying fixtures can also alter the mass. This function has no effect if the body isn't dynamic.
-	 * @param massData the mass properties.
+	 * @param data the mass properties.
 	 */
 	public void setMassData (MassData data) {
 		jniSetMassData(addr, data.mass, data.center.x, data.center.y, data.I);
@@ -323,13 +321,12 @@ public class Body {
 
 	private native void jniResetMassData (long addr);
 
+	private final Vector2 localPoint = new Vector2();
 	/**
 	 * Get the world coordinates of a point given the local coordinates.
 	 * @param localPoint a point on the body measured relative the the body's origin.
 	 * @return the same point expressed in world coordinates.
 	 */
-	private final Vector2 localPoint = new Vector2();
-
 	public Vector2 getWorldPoint (Vector2 localPoint) {
 		jniGetWorldPoint(addr, localPoint.x, localPoint.y, tmp);
 		this.localPoint.x = tmp[0];
@@ -339,13 +336,12 @@ public class Body {
 
 	private native void jniGetWorldPoint (long addr, float localPointX, float localPointY, float[] worldPoint);
 
+	private final Vector2 worldVector = new Vector2();
 	/**
 	 * Get the world coordinates of a vector given the local coordinates.
 	 * @param localVector a vector fixed in the body.
 	 * @return the same vector expressed in world coordinates.
 	 */
-	private final Vector2 worldVector = new Vector2();
-
 	public Vector2 getWorldVector (Vector2 localVector) {
 		jniGetWorldVector(addr, localVector.x, localVector.y, tmp);
 		worldVector.x = tmp[0];
@@ -355,13 +351,12 @@ public class Body {
 
 	private native void jniGetWorldVector (long addr, float localVectorX, float localVectorY, float[] worldVector);
 
+	public final Vector2 localPoint2 = new Vector2();
 	/**
 	 * Gets a local point relative to the body's origin given a world point.
-	 * @param a point in world coordinates.
+	 * @param worldPoint a point in world coordinates.
 	 * @return the corresponding local point relative to the body's origin.
 	 */
-	public final Vector2 localPoint2 = new Vector2();
-
 	public Vector2 getLocalPoint (Vector2 worldPoint) {
 		jniGetLocalPoint(addr, worldPoint.x, worldPoint.y, tmp);
 		localPoint2.x = tmp[0];
@@ -371,13 +366,12 @@ public class Body {
 
 	private native void jniGetLocalPoint (long addr, float worldPointX, float worldPointY, float[] localPoint);
 
+	public final Vector2 localVector = new Vector2();
 	/**
 	 * Gets a local vector given a world vector.
-	 * @param a vector in world coordinates.
+	 * @param worldVector a vector in world coordinates.
 	 * @return the corresponding local vector.
 	 */
-	public final Vector2 localVector = new Vector2();
-
 	public Vector2 getLocalVector (Vector2 worldVector) {
 		jniGetLocalVector(addr, worldVector.x, worldVector.y, tmp);
 		localVector.x = tmp[0];
@@ -387,13 +381,12 @@ public class Body {
 
 	private native void jniGetLocalVector (long addr, float worldVectorX, float worldVectorY, float[] worldVector);
 
+	public final Vector2 linVelWorld = new Vector2();
 	/**
 	 * Get the world linear velocity of a world point attached to this body.
-	 * @param a point in world coordinates.
+	 * @param worldPoint a point in world coordinates.
 	 * @return the world velocity of a point.
 	 */
-	public final Vector2 linVelWorld = new Vector2();
-
 	public Vector2 getLinearVelocityFromWorldPoint (Vector2 worldPoint) {
 		jniGetLinearVelocityFromWorldPoint(addr, worldPoint.x, worldPoint.y, tmp);
 		linVelWorld.x = tmp[0];
@@ -403,13 +396,12 @@ public class Body {
 
 	private native void jniGetLinearVelocityFromWorldPoint (long addr, float worldPointX, float worldPointY, float[] linVelWorld);
 
+	public final Vector2 linVelLoc = new Vector2();
 	/**
 	 * Get the world velocity of a local point.
-	 * @param a point in local coordinates.
+	 * @param localPoint a point in local coordinates.
 	 * @return the world velocity of a point.
 	 */
-	public final Vector2 linVelLoc = new Vector2();
-
 	public Vector2 getLinearVelocityFromLocalPoint (Vector2 localPoint) {
 		jniGetLinearVelocityFromLocalPoint(addr, localPoint.x, localPoint.y, tmp);
 		linVelLoc.x = tmp[0];
