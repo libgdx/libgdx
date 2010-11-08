@@ -16,6 +16,7 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.awt.Canvas;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
@@ -234,5 +235,12 @@ final class LwjglGraphics implements Graphics {
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
+	}
+
+	@Override
+	public Texture newTexture(ByteBuffer buffer, Format format, int width,
+			int height, TextureFilter minFilter, TextureFilter magFilter,
+			TextureWrap uWrap, TextureWrap vWrap) {
+		throw new GdxRuntimeException("not implemented");
 	}
 }

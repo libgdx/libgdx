@@ -15,6 +15,7 @@ package com.badlogic.gdx.backends.android;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -405,5 +406,12 @@ final class AndroidGraphics implements Graphics, Renderer {
 	 */
 	@Override public GLCommon getGLCommon () {
 		return gl;
+	}
+
+	@Override
+	public Texture newTexture(ByteBuffer buffer, Format format, int width,
+			int height, TextureFilter minFilter, TextureFilter magFilter,
+			TextureWrap uWrap, TextureWrap vWrap) {
+		throw new GdxRuntimeException("not implemented");
 	}
 }

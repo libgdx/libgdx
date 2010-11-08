@@ -1,12 +1,17 @@
 package com.badlogic.gdx.backends.jogl;
 
+import java.nio.ByteBuffer;
+
 import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLContext;
 import javax.media.opengl.GLEventListener;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -81,5 +86,12 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	public void destroy() {		
 		canvas.getContext().makeCurrent();
 		listener.dispose();
+	}
+
+	@Override
+	public Texture newTexture(ByteBuffer buffer, Format format, int width,
+			int height, TextureFilter minFilter, TextureFilter magFilter,
+			TextureWrap uWrap, TextureWrap vWrap) {
+		throw new GdxRuntimeException("not implemented");
 	}
 }
