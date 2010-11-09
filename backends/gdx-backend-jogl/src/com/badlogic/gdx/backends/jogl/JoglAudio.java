@@ -121,7 +121,7 @@ final class JoglAudio implements Audio, Runnable {
 		try {
 			JoglMusic music = new JoglMusic(((JoglFileHandle)file));
 			return music;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new GdxRuntimeException("Couldn't create Music instance from file '" + file + "'", e);
 		}
 	}

@@ -115,7 +115,7 @@ final class LwjglAudio implements Audio, Runnable {
 		try {
 			LwjglMusic music = new LwjglMusic(((LwjglFileHandle)file));
 			return music;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new GdxRuntimeException("Couldn't create Music instance from file '" + file + "'", e);
 		}
 	}
