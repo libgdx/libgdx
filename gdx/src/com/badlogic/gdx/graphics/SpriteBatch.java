@@ -73,7 +73,7 @@ public class SpriteBatch {
 	private static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
 	/** the mesh used to transfer the data to the GPU **/
-	private final Mesh mesh;
+	protected final Mesh mesh;
 
 	/** the transform to be applied to all sprites **/
 	protected final Matrix4 transformMatrix = new Matrix4();
