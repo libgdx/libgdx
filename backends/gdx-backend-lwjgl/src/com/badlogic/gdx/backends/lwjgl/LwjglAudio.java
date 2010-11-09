@@ -198,7 +198,10 @@ final class LwjglAudio implements Audio, Runnable {
 	void dispose ( ) {
 		run = false;
 		try {
-			thread.join();
+			if(thread != null)
+				thread.join();
+			if(line != null)
+				line.close();
 		} catch (InterruptedException e) {
 		}
 	}

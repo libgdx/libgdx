@@ -211,8 +211,12 @@ final class JoglAudio implements Audio, Runnable {
 	void dispose() {
 		run = false;
 		try {
-			thread.join();
-		} catch (InterruptedException e) {
+			if(thread != null)
+				thread.join();
+			if(line != null)
+				line.close();			
+		} 
+		catch (InterruptedException e) {
 		}
 	}
 }
