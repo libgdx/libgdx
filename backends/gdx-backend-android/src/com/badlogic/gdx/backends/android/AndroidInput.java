@@ -32,6 +32,7 @@ import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
@@ -308,7 +309,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 				event.type = KeyEvent.KEY_TYPED;
 				keyEvents.add(event);
 				
-				keys.remove(event.keyCode);
+				keys.remove(e.getKeyCode());
 			}
 		}
 
