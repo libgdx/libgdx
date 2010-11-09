@@ -3,7 +3,7 @@
       package="com.badlogic.rtm"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
         <activity android:name=".Rtm"
                   android:label="@string/app_name"
                   android:configChanges="keyboard|keyboardHidden|orientation">

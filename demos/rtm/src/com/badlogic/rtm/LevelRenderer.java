@@ -45,12 +45,13 @@ public class LevelRenderer implements ApplicationListener {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		load();
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 	}
 	
 	private void load () {
 		try {
 			tiles = Gdx.graphics.newTexture( Gdx.files.getFileHandle("data/tiles-3.png", FileType.Internal),
-														TextureFilter.MipMap, TextureFilter.Nearest, 
+														TextureFilter.MipMapLinearNearest, TextureFilter.Nearest, 
 														TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
 			TextureAtlas atlas = new TextureAtlas(tiles);
@@ -206,6 +207,10 @@ public class LevelRenderer implements ApplicationListener {
 	
 	private void processInput() {
 		float delta = Gdx.graphics.getDeltaTime();
+//		
+//		if (Gdx.input.isKeyPressed(Keys.ANY_KEY)==false)
+//			Gdx.app.log("RTM", "No key pressed");
+		
 		if( Gdx.input.isKeyPressed(Keys.KEYCODE_W) )
 			camera.getPosition().add(camera.getDirection().tmp().mul(80*delta));
 		if( Gdx.input.isKeyPressed(Keys.KEYCODE_S) )
