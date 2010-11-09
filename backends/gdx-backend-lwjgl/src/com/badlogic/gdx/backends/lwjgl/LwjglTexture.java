@@ -64,7 +64,7 @@ final class LwjglTexture implements Texture {
 	LwjglTexture (FileHandle file, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
-		this.isMipMapped = minFilter == TextureFilter.MipMap;
+		this.isMipMapped = TextureFilter.isMipMap(minFilter);
 		if (file.getPath().endsWith(".png"))
 			loadPNG(file);
 		else {
@@ -82,7 +82,7 @@ final class LwjglTexture implements Texture {
 	LwjglTexture (BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
-		this.isMipMapped = minFilter == TextureFilter.MipMap;
+		this.isMipMapped = TextureFilter.isMipMap(minFilter);
 		BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		loadMipMap(img);
 		this.draw(Gdx.graphics.newPixmap(image), 0, 0);
@@ -100,7 +100,7 @@ final class LwjglTexture implements Texture {
 	LwjglTexture (int width, int height, int format, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
-		this.isMipMapped = minFilter == TextureFilter.MipMap;
+		this.isMipMapped = TextureFilter.isMipMap(minFilter);
 		BufferedImage image = new BufferedImage(width, height, format);
 		loadMipMap(image);
 		bind();
@@ -236,6 +236,16 @@ final class LwjglTexture implements Texture {
 			return GL11.GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
 			return GL11.GL_NEAREST;
+		else if (filter == TextureFilter.MipMap)
+			return GL11.GL_LINEAR_MIPMAP_LINEAR;
+		else if (filter == TextureFilter.MipMapNearestNearest)
+			return GL11.GL_NEAREST_MIPMAP_NEAREST;
+		else if (filter == TextureFilter.MipMapNearestLinear)
+			return GL11.GL_NEAREST_MIPMAP_LINEAR;
+		else if (filter == TextureFilter.MipMapLinearNearest)
+			return GL11.GL_LINEAR_MIPMAP_NEAREST;
+		else if (filter == TextureFilter.MipMapLinearLinear)
+			return GL11.GL_LINEAR_MIPMAP_LINEAR;
 		else
 			return GL11.GL_LINEAR_MIPMAP_LINEAR;
 	}

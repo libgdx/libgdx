@@ -55,7 +55,7 @@ final class JoglTexture implements Texture {
 		this.isManaged = managed;
 		try {
 			BufferedImage image = ImageIO.read(in);
-			texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, minFilter == TextureFilter.MipMap ? true : false);
+			texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, TextureFilter.isMipMap(minFilter) ? true : false);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Couldn load Texture", ex);
 		}
@@ -74,7 +74,7 @@ final class JoglTexture implements Texture {
 	JoglTexture (BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
-		texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, minFilter == TextureFilter.MipMap ? true : false);
+		texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, TextureFilter.isMipMap(minFilter) ? true : false);
 		GL gl = GLContext.getCurrent().getGL();
 
 		bind();
@@ -96,7 +96,7 @@ final class JoglTexture implements Texture {
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
 		BufferedImage image = new BufferedImage(width, height, format);
-		texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, minFilter == TextureFilter.MipMap ? true : false);
+		texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, TextureFilter.isMipMap(minFilter) ? true : false);
 
 		GL gl = GLContext.getCurrent().getGL();
 
@@ -115,6 +115,16 @@ final class JoglTexture implements Texture {
 			return GL.GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
 			return GL.GL_NEAREST;
+		else if (filter == TextureFilter.MipMap)
+			return GL.GL_LINEAR_MIPMAP_LINEAR;
+		else if (filter == TextureFilter.MipMapNearestNearest)
+			return GL.GL_NEAREST_MIPMAP_NEAREST;
+		else if (filter == TextureFilter.MipMapNearestLinear)
+			return GL.GL_NEAREST_MIPMAP_LINEAR;
+		else if (filter == TextureFilter.MipMapLinearNearest)
+			return GL.GL_LINEAR_MIPMAP_NEAREST;
+		else if (filter == TextureFilter.MipMapLinearLinear)
+			return GL.GL_LINEAR_MIPMAP_LINEAR;
 		else
 			return GL.GL_LINEAR_MIPMAP_LINEAR;
 	}

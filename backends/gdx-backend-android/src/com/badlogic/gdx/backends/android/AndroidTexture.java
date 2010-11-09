@@ -19,6 +19,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;
+import android.opengl.GLES10;
 import android.opengl.GLUtils;
 import android.util.Log;
 
@@ -84,7 +85,7 @@ final class AndroidTexture implements Texture {
 			this.texHeight = image.getHeight();
 		}
 
-		if (minFilter == TextureFilter.MipMap)
+		if (TextureFilter.isMipMap(minFilter))
 			isMipMap = true;
 		else
 			isMipMap = false;
@@ -119,11 +120,21 @@ final class AndroidTexture implements Texture {
 
 	private int getTextureFilter (TextureFilter filter) {
 		if (filter == TextureFilter.Linear)
-			return GL10.GL_LINEAR;
+			return GLES10.GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
-			return GL10.GL_NEAREST;
+			return GLES10.GL_NEAREST;
+		else if (filter == TextureFilter.MipMap)
+			return GLES10.GL_NEAREST_MIPMAP_LINEAR;
+		else if (filter == TextureFilter.MipMapNearestNearest)
+			return GLES10.GL_NEAREST_MIPMAP_NEAREST;
+		else if (filter == TextureFilter.MipMapNearestLinear)
+			return GLES10.GL_NEAREST_MIPMAP_LINEAR;
+		else if (filter == TextureFilter.MipMapLinearNearest)
+			return GLES10.GL_LINEAR_MIPMAP_NEAREST;
+		else if (filter == TextureFilter.MipMapLinearLinear)
+			return GLES10.GL_LINEAR_MIPMAP_LINEAR;
 		else
-			return GL10.GL_LINEAR_MIPMAP_NEAREST;
+			return GLES10.GL_LINEAR_MIPMAP_LINEAR;
 	}
 
 	private int getTextureWrap (TextureWrap wrap) {

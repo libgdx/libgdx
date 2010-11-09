@@ -62,7 +62,11 @@ public interface Texture {
 	 * 
 	 */
 	public enum TextureFilter {
-		Nearest, Linear, MipMap
+		Nearest, Linear, MipMap, MipMapNearestNearest, MipMapLinearNearest, MipMapNearestLinear, MipMapLinearLinear;
+		
+		public static boolean isMipMap(TextureFilter filter) {
+			return filter != Nearest && filter != Linear;
+		}
 	}
 
 	/**
