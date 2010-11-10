@@ -57,7 +57,7 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer) {
-		sound.play();
+		sound.play(0.5f);
 		return false;
 	}
 

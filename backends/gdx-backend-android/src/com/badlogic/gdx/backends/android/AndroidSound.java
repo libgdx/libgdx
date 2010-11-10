@@ -38,8 +38,8 @@ final class AndroidSound implements Sound {
 	}
 
 	@Override public void play (float volume) {
-		int streamVolume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		soundPool.play(soundId, streamVolume * volume, streamVolume * volume, 1, 0, 1);
+//		int streamVolume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+		soundPool.play(soundId, volume, volume, 1, 0, 1);
 	}
 
 }
