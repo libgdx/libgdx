@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BitmapFontTest extends GdxTest {
@@ -31,12 +32,18 @@ public class BitmapFontTest extends GdxTest {
 		if (spriteBatch != null) return;
 		spriteBatch = new SpriteBatch();
 
+		Matrix4 transform = new Matrix4();		
+		transform.setToTranslation(0, Gdx.graphics.getHeight(), 0);
+		transform.mul(new Matrix4().setToScaling(1,-1,1));
+		spriteBatch.setTransformMatrix(transform);		
+		
 		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
 			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+		logoSprite.flip(false, true); 
 		logoSprite.setColor(1, 1, 1, 0.5f);
 
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/verdana39.png", FileType.Internal), false);
+			"data/verdana39.png", FileType.Internal), true);
 
 		inputProcessor = new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer) {
