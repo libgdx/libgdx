@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
@@ -290,7 +291,20 @@ public interface Graphics {
 			Texture.TextureWrap vWrap);
 
 	/**
+	 * Creates a new {@link Texture} that loads its data from the given {@link TextureData}. The texture is managed and the
+	 * TextureData may be asked to load the image data multiple times throughout the application's lifetime. If the minification
+	 * filter is specified as {@link Texture.TextureFilter#MipMap}, mipmaps will not be created automatically and must be handled
+	 * by the TextureData. The Texture must be disposed via the {@link Texture#dispose()} methods once it is no longer used.
+	 * Textures created via this method are managed and will be recreated automatically after the OpenGL context has been lost and
+	 * recreated.
+	 * @param textureData Loads the texture data into GL.
+	 * @throws GdxRuntimeException if the texture could not be created.
+	 */
+	public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
+		TextureWrap vWrap);
+
+	/**
 	 * @return the {@link GraphicsType} of this Graphics instance
 	 */
-	public GraphicsType getType();
+	public GraphicsType getType ();
 }

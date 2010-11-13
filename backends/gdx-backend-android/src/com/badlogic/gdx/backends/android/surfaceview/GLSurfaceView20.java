@@ -50,7 +50,7 @@ import android.util.Log;
  * red/green/blue/alpha channels bit depths). Failure to do so would result in an EGL_BAD_MATCH error.
  */
 public class GLSurfaceView20 extends GLSurfaceView {
-	private static String TAG = "GL2JNIView";
+	static String TAG = "GL2JNIView";
 	private static final boolean DEBUG = false;
 
 	public GLSurfaceView20 (Context context) {
@@ -89,7 +89,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		/* Set the renderer responsible for frame rendering */
 	}
 
-	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
+	static class ContextFactory implements GLSurfaceView.EGLContextFactory {
 		private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
@@ -106,7 +106,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		}
 	}
 
-	private static void checkEglError (String prompt, EGL10 egl) {
+	static void checkEglError (String prompt, EGL10 egl) {
 		int error;
 		while ((error = egl.eglGetError()) != EGL10.EGL_SUCCESS) {
 			Log.e(TAG, String.format("%s: EGL error: 0x%x", prompt, error));

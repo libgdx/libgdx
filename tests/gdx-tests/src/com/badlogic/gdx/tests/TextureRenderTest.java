@@ -157,7 +157,7 @@ public class TextureRenderTest extends GdxTest {
 		public float height;
 		public float width;
 
-		private SimpleRect (int index, float x, float y, float width, float height) {
+		SimpleRect (int index, float x, float y, float width, float height) {
 			this.index = index;
 			this.x = x;
 			this.y = y;

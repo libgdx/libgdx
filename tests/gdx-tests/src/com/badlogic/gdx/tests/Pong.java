@@ -64,8 +64,8 @@ public class Pong extends GdxTest {
 	private String score = "";
 
 	/**
-	 * Here we setup all the resources. A {@link MeshRenderer} for the paddles which we use for both, a MeshRenderer for the ball
-	 * and a {@link Text} for rendering the score.
+	 * Here we setup all the resources. A MeshRenderer for the paddles which we use for both, a MeshRenderer for the ball
+	 * and a Text for rendering the score.
 	 */
 	@Override public void create () {
 		setupGraphics();
@@ -74,7 +74,6 @@ public class Pong extends GdxTest {
 
 	/**
 	 * This method sets up all the graphics related stuff like the Meshes, the camera and the Font
-	 * @param app
 	 */
 	private void setupGraphics () {
 		//
@@ -171,8 +170,6 @@ public class Pong extends GdxTest {
 
 	/**
 	 * Updates the game state, moves the ball, checks for collisions or whether the ball has left the playfield.
-	 * 
-	 * @param deltaTime the time elapsed since the last frame
 	 */
 	private void updateGame () {
 		// the delta time so we can do frame independant time based movement

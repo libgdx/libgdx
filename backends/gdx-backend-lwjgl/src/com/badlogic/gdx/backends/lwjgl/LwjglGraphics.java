@@ -37,6 +37,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.MathUtils;
 
@@ -157,6 +158,11 @@ final class LwjglGraphics implements Graphics {
 				+ pixmap.getHeight() + ")");
 
 		return new LwjglTexture(file, minFilter, magFilter, uWrap, vWrap, false);
+	}
+
+	public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
+		TextureWrap vWrap) {
+		return new LwjglTexture(textureData, minFilter, magFilter, uWrap, vWrap);
 	}
 
 	public float getDeltaTime () {

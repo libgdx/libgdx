@@ -45,6 +45,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
@@ -388,6 +389,11 @@ final class AndroidGraphics implements Graphics, Renderer {
 	@Override public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap) {
 		return new AndroidTexture(this, (Bitmap)null, minFilter, magFilter, uWrap, vWrap, true, file);
+	}
+	
+	@Override public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
+		TextureWrap uWrap, TextureWrap vWrap) {
+		return new AndroidTexture(this, textureData, minFilter, magFilter, uWrap, vWrap);
 	}
 
 	public void clearManagedCaches () {

@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -255,5 +256,11 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 		return new JoglTexture((BufferedImage) pixmap.getNativePixmap(),
 				minFilter, magFilter, uWrap, vWrap, false);
+	}
+
+	@Override
+	public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
+		TextureWrap vWrap) {
+		return new JoglTexture(textureData, minFilter, magFilter, uWrap, vWrap);
 	}
 }

@@ -79,7 +79,7 @@ import android.view.SurfaceHolder;
  * typically they are called before setRenderer so that they take effect immediately.
  * <p>
  * <h4>Setting a Renderer</h4>
- * Finally, you must call {@link #setRenderer} to register a {@link Renderer}. The renderer is responsible for doing the actual
+ * Finally, you must call {@link #setRenderer} to register a Renderer. The renderer is responsible for doing the actual
  * OpenGL rendering.
  * <p>
  * <h3>Rendering Mode</h3>
@@ -469,7 +469,7 @@ public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Ca
 		void destroyContext (EGL10 egl, EGLDisplay display, EGLContext context);
 	}
 
-	private static class DefaultContextFactory implements EGLContextFactory {
+	static class DefaultContextFactory implements EGLContextFactory {
 
 		public EGLContext createContext (EGL10 egl, EGLDisplay display, EGLConfig config) {
 			return egl.eglCreateContext(display, config, EGL10.EGL_NO_CONTEXT, null);
@@ -492,7 +492,7 @@ public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Ca
 		void destroySurface (EGL10 egl, EGLDisplay display, EGLSurface surface);
 	}
 
-	private static class DefaultWindowSurfaceFactory implements EGLWindowSurfaceFactory {
+	static class DefaultWindowSurfaceFactory implements EGLWindowSurfaceFactory {
 
 		public EGLSurface createWindowSurface (EGL10 egl, EGLDisplay display, EGLConfig config, Object nativeWindow) {
 			return egl.eglCreateWindowSurface(display, config, nativeWindow, null);
@@ -631,7 +631,6 @@ public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Ca
 
 		/**
 		 * Initialize EGL for a given configuration spec.
-		 * @param configSpec
 		 */
 		public void start () {
 			/*
@@ -1074,7 +1073,7 @@ public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Ca
 		// Once the thread is started, all accesses to the following member
 		// variables are protected by the sGLThreadManager monitor
 		private boolean mShouldExit;
-		private boolean mExited;
+		boolean mExited;
 		private boolean mPaused;
 		private boolean mHasSurface;
 		private boolean mWaitingForSurface;
@@ -1128,7 +1127,7 @@ public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Ca
 		}
 	}
 
-	private static class GLThreadManager {
+	static class GLThreadManager {
 
 		public synchronized void threadExiting (GLThread thread) {
 			if (LOG_THREADS) {
@@ -1169,13 +1168,13 @@ public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Ca
 		private GLThread mEglOwner;
 	}
 
-	private static final GLThreadManager sGLThreadManager = new GLThreadManager();
-	private boolean mSizeChanged = true;
+	static final GLThreadManager sGLThreadManager = new GLThreadManager();
+	boolean mSizeChanged = true;
 
 	private GLThread mGLThread;
-	private EGLConfigChooser mEGLConfigChooser;
-	private EGLContextFactory mEGLContextFactory;
-	private EGLWindowSurfaceFactory mEGLWindowSurfaceFactory;
-	private GLWrapper mGLWrapper;
-	private int mDebugFlags;
+	EGLConfigChooser mEGLConfigChooser;
+	EGLContextFactory mEGLContextFactory;
+	EGLWindowSurfaceFactory mEGLWindowSurfaceFactory;
+	GLWrapper mGLWrapper;
+	int mDebugFlags;
 }

@@ -924,7 +924,7 @@ class GLLogWrapper extends GLWrapperBase {
 		}
 	}
 
-	private ByteBuffer toByteBuffer (int byteCount, Buffer input) {
+	ByteBuffer toByteBuffer (int byteCount, Buffer input) {
 		ByteBuffer result = null;
 		boolean convertWholeBuffer = (byteCount < 0);
 		if (input instanceof ByteBuffer) {

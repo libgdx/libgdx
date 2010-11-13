@@ -61,14 +61,14 @@ public class FFTTest {
 		return sum;
 	}
 
-	@SuppressWarnings("unused") private static float sum (FloatBuffer buffer) {
+	private static float sum (FloatBuffer buffer) {
 		float sum = 0;
 		for (int i = 1; i < SAMPLES / 2 + 1; i++)
 			sum += buffer.get(i) * 2 / SAMPLES;
 		return sum;
 	}
 
-	@SuppressWarnings("unused") private static void createFlat (float samples[], ShortBuffer shortSamples) {
+	private static void createFlat (float samples[], ShortBuffer shortSamples) {
 		for (int i = 0; i < samples.length; i++) {
 			samples[i] = 1;
 			shortSamples.put(Short.MAX_VALUE);

@@ -28,6 +28,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.MathUtils;
 
@@ -64,31 +65,26 @@ final class AndroidTexture implements Texture {
 	private boolean invalidated = false;
 	/** file handle **/
 	private FileHandle file;
+	private TextureData textureData;
 
 	/**
 	 * Creates a new texture based on the given image
-	 * 
-	 * @param gl
-	 * @param bitmap
 	 */
-	AndroidTexture (AndroidGraphics graphics, Bitmap image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
+	AndroidTexture (AndroidGraphics graphics, Bitmap image, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap, boolean managed, FileHandle file) {
 		this.file = file;
 		this.isManaged = managed;
 		this.bitmap = image;
 		this.minFilter = minFilter;
-		this.magFilter = maxFilter;
+		this.magFilter = magFilter;
 		this.uWrap = uWrap;
 		this.vWrap = vWrap;
+		isMipMap = TextureFilter.isMipMap(minFilter);
+
 		if (image != null) {
 			this.texWidth = image.getWidth();
 			this.texHeight = image.getHeight();
 		}
-
-		if (TextureFilter.isMipMap(minFilter))
-			isMipMap = true;
-		else
-			isMipMap = false;
 
 		createTexture();
 		buildMipmap();
@@ -98,9 +94,32 @@ final class AndroidTexture implements Texture {
 		if (isManaged) textures.add(this);
 	}
 
+	/**
+	 * Creates a managed texture that loads using the specified TextureData.
+	 */
+	AndroidTexture (AndroidGraphics graphics, TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
+		TextureWrap uWrap, TextureWrap vWrap) {
+		this.minFilter = minFilter;
+		this.magFilter = magFilter;
+		this.uWrap = uWrap;
+		this.vWrap = vWrap;
+		isMipMap = TextureFilter.isMipMap(minFilter);
+
+		createTexture();
+		textureData.load();
+		texWidth = textureData.getWidth();
+		texHeight = textureData.getHeight();
+
+		isManaged = true;
+		textures.add(this);
+	}
+
 	private void rebuild () {
 		createTexture();
-		buildMipmap();
+		if (textureData != null)
+			textureData.load();
+		else
+			buildMipmap();
 		invalidated = false;
 	}
 

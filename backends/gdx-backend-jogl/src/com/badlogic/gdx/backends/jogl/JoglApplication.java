@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with
- * apropriate parameters and then register {@link ApplicationListener}, {@link RenderListener} or {@link InputProcessor} instances.
+ * apropriate parameters and then register {@link ApplicationListener} or {@link InputProcessor} instances.
  * 
  * @author mzechner
  * 
@@ -53,8 +53,8 @@ public final class JoglApplication implements Application {
 
 	/**
 	 * Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication
-	 * will try to create an OpenGL 2.0 context which can then be used via {@link JoglApplication.getGraphics().getGL20()}. To query whether enabling OpenGL 2.0
-	 * was successful use the {@link JoglApplication.getGraphics().isGL20Available()} method.
+	 * will try to create an OpenGL 2.0 context which can then be used via JoglApplication.getGraphics().getGL20(). To query whether enabling OpenGL 2.0
+	 * was successful use the JoglApplication.getGraphics().isGL20Available() method.
 	 * 
 	 * @param listener the ApplicationListener implementing the program logic
 	 * @param title the title of the application
@@ -79,7 +79,7 @@ public final class JoglApplication implements Application {
 		}
 	}
 	
-	private void initialize(ApplicationListener listener, String title, int width, int height, boolean useGL20) {
+	void initialize(ApplicationListener listener, String title, int width, int height, boolean useGL20) {
 		JoglNativesLoader.loadLibraries();
 		graphics = new JoglGraphics(listener, title, width, height, useGL20);
 		input = new JoglInput(graphics.getCanvas());

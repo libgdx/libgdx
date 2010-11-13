@@ -47,9 +47,6 @@ final class AndroidPixmap implements Pixmap {
 		paint.setXfermode(new PorterDuffXfermode(Mode.SRC));
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public AndroidPixmap (Bitmap bitmap) {
 		pixmap = bitmap;
 

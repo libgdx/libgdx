@@ -15,13 +15,19 @@ package com.badlogic.gdx.backends.jogl;
 
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLContext;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
@@ -47,10 +53,8 @@ final class JoglTexture implements Texture {
 
 	/**
 	 * Create a new texture
-	 * 
-	 * @param textureID The GL texture ID
 	 */
-	JoglTexture (InputStream in, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
+	JoglTexture (InputStream in, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
 		try {
@@ -63,7 +67,7 @@ final class JoglTexture implements Texture {
 
 		bind();
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 		this.texWidth = texture.getWidth();
@@ -71,7 +75,7 @@ final class JoglTexture implements Texture {
 		textures++;
 	}
 
-	JoglTexture (BufferedImage image, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
+	JoglTexture (BufferedImage image, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
 		texture = com.sun.opengl.util.texture.TextureIO.newTexture(image, TextureFilter.isMipMap(minFilter) ? true : false);
@@ -79,7 +83,7 @@ final class JoglTexture implements Texture {
 
 		bind();
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 		this.texWidth = texture.getWidth();
@@ -89,10 +93,8 @@ final class JoglTexture implements Texture {
 
 	/**
 	 * Create a new texture
-	 * 
-	 * @param textureID The GL texture ID
 	 */
-	JoglTexture (int width, int height, int format, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
+	JoglTexture (int width, int height, int format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
 		BufferedImage image = new BufferedImage(width, height, format);
@@ -102,11 +104,35 @@ final class JoglTexture implements Texture {
 
 		bind();
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
-		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
 		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 		this.texWidth = texture.getWidth();
 		this.texHeight = texture.getHeight();
+		textures++;
+	}
+
+	public JoglTexture (com.badlogic.gdx.graphics.TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
+		TextureWrap uWrap, TextureWrap vWrap) {
+		this.isManaged = false;
+		GL gl = GLContext.getCurrent().getGL();
+		
+		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
+		buffer.order(ByteOrder.nativeOrder());
+		IntBuffer intBuffer = buffer.asIntBuffer();
+		gl.glGenTextures(1, intBuffer);
+		texture = com.sun.opengl.util.texture.TextureIO.newTexture(intBuffer.get(0));
+
+		bind();
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
+		gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
+
+		textureData.load();
+		texWidth = textureData.getWidth();
+		texHeight = textureData.getHeight();
+
 		textures++;
 	}
 

@@ -24,22 +24,22 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.PNGDecoder.Format;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * I apologize for this class. It is a big fucking mess which can be attributed to the late hour i created this piece of shit in.
- * Please take my apologize. It is slow. It is ugly. It is aids.
- * 
  * @author badlogicgames@gmail.com
- * 
+ * @author Nathan Sweet <misc@n4te.com>
  */
 final class LwjglTexture implements Texture {
 	/** height in pixels of texture **/
@@ -58,24 +58,23 @@ final class LwjglTexture implements Texture {
 	static private IntBuffer intBuffer;
 	static private final PNGDecoder pngDecoder = new PNGDecoder();
 
-	/**
-	 * Create a new texture
-	 */
 	LwjglTexture (FileHandle file, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = TextureFilter.isMipMap(minFilter);
-		if (file.getPath().endsWith(".png"))
+
+		if (!isMipMapped && file.getPath().endsWith(".png")) {
+			// Fast path.
 			loadPNG(file);
-		else {
+		} else {
 			BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
 			loadMipMap(image);
 		}
 		bind();
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 		textures++;
 	}
 
@@ -83,31 +82,49 @@ final class LwjglTexture implements Texture {
 		boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = TextureFilter.isMipMap(minFilter);
+
 		BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 		loadMipMap(img);
 		this.draw(Gdx.graphics.newPixmap(image), 0, 0);
 		bind();
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 		textures++;
 	}
 
-	/**
-	 * Create a new texture
-	 */
 	LwjglTexture (int width, int height, int format, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap,
 		TextureWrap vWrap, boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = TextureFilter.isMipMap(minFilter);
+
 		BufferedImage image = new BufferedImage(width, height, format);
 		loadMipMap(image);
 		bind();
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
+		textures++;
+	}
+
+	public LwjglTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
+		TextureWrap vWrap) {
+		isManaged = false;
+		this.isMipMapped = TextureFilter.isMipMap(minFilter);
+
+		textureID = glGenTextures();
+		bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
+
+		textureData.load();
+		texWidth = textureData.getWidth();
+		texHeight = textureData.getHeight();
+
 		textures++;
 	}
 
@@ -127,28 +144,28 @@ final class LwjglTexture implements Texture {
 			int glFormat, glInternalFormat;
 			switch (pngFormat) {
 			case ALPHA:
-				glFormat = GL11.GL_ALPHA;
-				glInternalFormat = GL11.GL_ALPHA8;
+				glFormat = GL_ALPHA;
+				glInternalFormat = GL_ALPHA8;
 				break;
 			case LUMINANCE:
-				glFormat = GL11.GL_LUMINANCE;
-				glInternalFormat = GL11.GL_LUMINANCE8;
+				glFormat = GL_LUMINANCE;
+				glInternalFormat = GL_LUMINANCE8;
 				break;
 			case LUMINANCE_ALPHA:
-				glFormat = GL11.GL_LUMINANCE_ALPHA;
-				glInternalFormat = GL11.GL_LUMINANCE8_ALPHA8;
+				glFormat = GL_LUMINANCE_ALPHA;
+				glInternalFormat = GL_LUMINANCE8_ALPHA8;
 				break;
 			case RGB:
-				glFormat = GL11.GL_RGB;
-				glInternalFormat = GL11.GL_RGB8;
+				glFormat = GL_RGB;
+				glInternalFormat = GL_RGB8;
 				break;
 			case RGBA:
-				glFormat = GL11.GL_RGBA;
-				glInternalFormat = GL11.GL_RGBA8;
+				glFormat = GL_RGBA;
+				glInternalFormat = GL_RGBA8;
 				break;
 			case BGRA:
-				glFormat = GL12.GL_BGRA;
-				glInternalFormat = GL12.GL_BGRA;
+				glFormat = GL_BGRA;
+				glInternalFormat = GL_BGRA;
 				break;
 			default:
 				throw new UnsupportedOperationException("PNG format not handled: " + pngFormat);
@@ -156,11 +173,9 @@ final class LwjglTexture implements Texture {
 			pngDecoder.decode(buffer, stride, pngFormat);
 			buffer.flip();
 
-			textureID = GL11.glGenTextures();
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, glInternalFormat, texWidth, texHeight, 0, glFormat, GL11.GL_UNSIGNED_BYTE,
-				buffer);
-			// FIXME - No mipmapping!
+			textureID = glGenTextures();
+			glBindTexture(GL_TEXTURE_2D, textureID);
+			glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texWidth, texHeight, 0, glFormat, GL_UNSIGNED_BYTE, buffer);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading image file: " + file, ex);
 		}
@@ -212,16 +227,13 @@ final class LwjglTexture implements Texture {
 		int width = image.getWidth();
 		texWidth = width;
 		texHeight = height;
-		textureID = GL11.glGenTextures();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+		textureID = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, textureID);
 
 		while (height >= 1 || width >= 1 && level < 4) {
 			ByteBuffer imageBuffer = toByteBuffer(image);
-			GL11.glTexImage2D(GL11.GL_TEXTURE_2D, level, GL11.GL_RGBA8, width, height, 0, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE,
-				imageBuffer);
-			if (height == 1 || width == 1 || isMipMapped == false) {
-				break;
-			}
+			glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageBuffer);
+			if (height == 1 || width == 1 || isMipMapped == false) break;
 
 			level++;
 			if (height > 1) height /= 2;
@@ -233,28 +245,28 @@ final class LwjglTexture implements Texture {
 
 	private int getTextureFilter (TextureFilter filter) {
 		if (filter == TextureFilter.Linear)
-			return GL11.GL_LINEAR;
+			return GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
-			return GL11.GL_NEAREST;
+			return GL_NEAREST;
 		else if (filter == TextureFilter.MipMap)
-			return GL11.GL_LINEAR_MIPMAP_LINEAR;
+			return GL_LINEAR_MIPMAP_LINEAR;
 		else if (filter == TextureFilter.MipMapNearestNearest)
-			return GL11.GL_NEAREST_MIPMAP_NEAREST;
+			return GL_NEAREST_MIPMAP_NEAREST;
 		else if (filter == TextureFilter.MipMapNearestLinear)
-			return GL11.GL_NEAREST_MIPMAP_LINEAR;
+			return GL_NEAREST_MIPMAP_LINEAR;
 		else if (filter == TextureFilter.MipMapLinearNearest)
-			return GL11.GL_LINEAR_MIPMAP_NEAREST;
+			return GL_LINEAR_MIPMAP_NEAREST;
 		else if (filter == TextureFilter.MipMapLinearLinear)
-			return GL11.GL_LINEAR_MIPMAP_LINEAR;
+			return GL_LINEAR_MIPMAP_LINEAR;
 		else
-			return GL11.GL_LINEAR_MIPMAP_LINEAR;
+			return GL_LINEAR_MIPMAP_LINEAR;
 	}
 
 	private int getTextureWrap (TextureWrap wrap) {
 		if (wrap == TextureWrap.ClampToEdge)
-			return GL11.GL_CLAMP;
+			return GL_CLAMP;
 		else
-			return GL11.GL_REPEAT;
+			return GL_REPEAT;
 	}
 
 	public boolean isManaged () {
@@ -262,11 +274,11 @@ final class LwjglTexture implements Texture {
 	}
 
 	public void bind () {
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 
 	public void dispose () {
-		GL11.glDeleteTextures(textureID);
+		glDeleteTextures(textureID);
 		textures--;
 	}
 
@@ -288,10 +300,8 @@ final class LwjglTexture implements Texture {
 		bind();
 		while (height >= 1 || width >= 1 && level < 4) {
 			ByteBuffer imageBuffer = toByteBuffer(image);
-			GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, level, x, y, width, height, GL12.GL_BGRA, GL11.GL_UNSIGNED_BYTE, imageBuffer);
-			if (height == 1 || width == 1 || isMipMapped == false) {
-				break;
-			}
+			glTexSubImage2D(GL_TEXTURE_2D, level, x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, imageBuffer);
+			if (height == 1 || width == 1 || isMipMapped == false) break;
 
 			level++;
 			if (height > 1) height /= 2;

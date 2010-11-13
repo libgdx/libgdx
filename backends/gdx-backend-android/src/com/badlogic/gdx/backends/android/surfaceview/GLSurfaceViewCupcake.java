@@ -572,7 +572,6 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 
 		/**
 		 * Initialize EGL for a given configuration spec.
-		 * @param configSpec
 		 */
 		public void start () {
 			/*
@@ -945,11 +944,11 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		private StringBuilder mBuilder = new StringBuilder();
 	}
 
-	private static final Semaphore sEglSemaphore = new Semaphore(1);
+	static final Semaphore sEglSemaphore = new Semaphore(1);
 
 	private GLThread mGLThread;
-	private EGLConfigChooser mEGLConfigChooser;
-	private GLWrapper mGLWrapper;
+	EGLConfigChooser mEGLConfigChooser;
+	GLWrapper mGLWrapper;
 	private int mDebugFlags;
 	private int mRenderMode;
 	private Renderer mRenderer;

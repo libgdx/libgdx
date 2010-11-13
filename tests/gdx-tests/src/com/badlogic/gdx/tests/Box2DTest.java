@@ -56,13 +56,13 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	private ArrayList<Body> boxes = new ArrayList<Body>();
 
 	/** our ground box **/
-	private Body groundBody;
+	Body groundBody;
 
 	/** our mouse joint **/
 	private MouseJoint mouseJoint = null;
 
 	/** a hit body **/
-	private Body hitBody = null;
+	Body hitBody = null;
 
 	@Override public void create () {
 		// setup the camera. In Box2D we operate on a

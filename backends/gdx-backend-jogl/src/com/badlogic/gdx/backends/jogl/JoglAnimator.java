@@ -62,19 +62,19 @@ import javax.media.opengl.*;
 */
 
 public class JoglAnimator {
-  private volatile ArrayList/*<GLAutoDrawable>*/ drawables = new ArrayList();
+  volatile ArrayList/*<GLAutoDrawable>*/ drawables = new ArrayList();
   private Runnable runnable;
-  private Thread thread;
-  private volatile boolean shouldStop;
+  Thread thread;
+  volatile boolean shouldStop;
   protected boolean ignoreExceptions;
   protected boolean printExceptions;
-  private boolean runAsFastAsPossible;
+  boolean runAsFastAsPossible;
 
   // For efficient rendering of Swing components, in particular when
   // they overlap one another
-  private List lightweights    = new ArrayList();
-  private Map  repaintManagers = new IdentityHashMap();
-  private Map  dirtyRegions    = new IdentityHashMap();
+  List lightweights    = new ArrayList();
+  Map  repaintManagers = new IdentityHashMap();
+  Map  dirtyRegions    = new IdentityHashMap();
 
   /** Creates a new, empty Animator. */
   public JoglAnimator() {
