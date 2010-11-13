@@ -23,42 +23,43 @@ final class LwjglNativesLoader {
 		if (os.contains("Linux")) loadLibrariesLinux(is64Bit);
 		if (os.contains("Mac")) loadLibrariesMac();
 
-		System.setProperty("org.lwjgl.librarypath", new File("").getAbsolutePath());
+		
+		System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
 	}
 
 	private static void loadLibrariesWindows (boolean is64Bit) {
 		String[] libNames = null;
 		if (is64Bit)
-			libNames = new String[] {"OpenAL64.dll", "lwjgl64.dll", "jinput-raw_64.dll", "jinput-dx8_64.dll"};
+			libNames = new String[] {"OpenAL64.dll", "lwjgl64.dll"};
 		else
-			libNames = new String[] {"OpenAL32.dll", "lwjgl.dll", "jinput-raw.dll", "jinput-dx8.dll"};
+			libNames = new String[] {"OpenAL32.dll", "lwjgl.dll"};
 
 		for (String libName : libNames)
-			loadLibrary(libName, "/native/windows/");
+			loadLibrary(libName, "/native/windows/", System.getProperty("java.io.tmpdir") + File.separator);
 	}
 
 	private static void loadLibrariesLinux (boolean is64Bit) {
 		String[] libNames = null;
 		if (is64Bit)
-			libNames = new String[] {"libopenal64.so", "liblwjgl64.so", "jinput-linux64.so",};
+			libNames = new String[] {"libopenal64.so", "liblwjgl64.so"};
 		else
-			libNames = new String[] {"libopenal.so", "liblwjgl.so", "jinput-linux.so",};
+			libNames = new String[] {"libopenal.so", "liblwjgl.so"};
 
 		for (String libName : libNames)
-			loadLibrary(libName, "/native/linux/");
+			loadLibrary(libName, "/native/linux/", System.getProperty("java.io.tmpdir") + File.separator);
 	}
 
 	private static void loadLibrariesMac () {
 		throw new GdxRuntimeException("loading native libs on Mac OS X not supported, mail contact@badlogicgames.com");
 	}
 
-	private static void loadLibrary (String libName, String classPath) {
+	private static void loadLibrary (String libName, String classPath, String outputPath) {
 		InputStream in = null;
 		BufferedOutputStream out = null;
 
 		try {
 			in = LwjglApplication.class.getResourceAsStream(classPath + libName);
-			out = new BufferedOutputStream(new FileOutputStream(libName));
+			out = new BufferedOutputStream(new FileOutputStream(outputPath + libName));
 			byte[] bytes = new byte[1024 * 4];
 			while (true) {
 				int read_bytes = in.read(bytes);
@@ -71,7 +72,7 @@ final class LwjglNativesLoader {
 			in.close();
 			in = null;
 		} catch (Throwable t) {
-			new GdxRuntimeException("Couldn't load lwjgl native, " + libName, t);
+			throw new GdxRuntimeException("Couldn't load lwjgl native, " + libName, t);
 		} finally {
 			if (out != null) try {
 				out.close();
