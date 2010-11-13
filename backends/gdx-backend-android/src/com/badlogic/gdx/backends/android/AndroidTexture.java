@@ -99,6 +99,7 @@ final class AndroidTexture implements Texture {
 	 */
 	AndroidTexture (AndroidGraphics graphics, TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
 		TextureWrap uWrap, TextureWrap vWrap) {
+		this.textureData = textureData;
 		this.minFilter = minFilter;
 		this.magFilter = magFilter;
 		this.uWrap = uWrap;
