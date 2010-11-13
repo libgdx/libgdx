@@ -15,6 +15,8 @@ package com.badlogic.gdx.backends.jogl;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -27,17 +29,17 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import com.badlogic.gdx.audio.Music;
 
 public class JoglMusic implements Music, Runnable {
-	private enum State {
-		Playing, Stopped, Paused
-	}
+	private final int Playing = 0;
+	private final int Stopped = 1;
+	private final int Paused = 2;
 
-	private State state = State.Stopped;
+	private AtomicInteger state = new AtomicInteger(Stopped);
 	private final Thread thread;
 	private final JoglFileHandle handle;
 	private AudioInputStream ain;
 	private final SourceDataLine line;
 	private final byte[] buffer;
-	private boolean looping = false;
+	private AtomicBoolean looping = new AtomicBoolean(false);
 	private boolean disposed = false;
 
 	public JoglMusic (JoglFileHandle handle) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
@@ -78,54 +80,27 @@ public class JoglMusic implements Music, Runnable {
 	}
 
 	@Override public boolean isLooping () {
-		return looping;
+		return looping.get();
 	}
 
 	@Override public boolean isPlaying () {
-		return state == State.Playing;
+		return state.get() == Playing;
 	}
 
 	@Override public void pause () {
-		synchronized (this) {
-			if (state == State.Playing) state = State.Paused;
-		}
+		state.compareAndSet(Playing, Paused);
 	}
 
 	@Override public void play () {
-		synchronized (this) {
-			if (state == State.Playing) return;
-
-			if (state == State.Paused) {
-				state = State.Playing;
-				return;
-			}
-
-			try {
-				openAudioInputStream();
-				state = State.Playing;
-			} catch (Exception e) {
-				state = State.Stopped;
-			}
-		}
+		state.set(Playing);
 	}
 
 	@Override public void stop () {
-		synchronized (this) {
-			if (state == State.Stopped) return;
-
-			state = State.Stopped;
-			line.flush();
-			try {
-				ain.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			ain = null;
-		}
+		state.set(Stopped);
 	}
 
 	@Override public void setLooping (boolean isLooping) {
-		looping = isLooping;
+		looping.set(isLooping);
 	}
 
 	@Override public void setVolume (float volume) {
@@ -144,44 +119,51 @@ public class JoglMusic implements Music, Runnable {
 		long readSamples = 0;
 
 		while (!disposed) {
-			synchronized (this) {
-				if (state == State.Playing) {
-					try {
-
-						readBytes = ain.read(buffer);
-
-						if (readBytes != -1) {
-							int writtenBytes = line.write(buffer, 0, readBytes);
-							while (writtenBytes != readBytes)
-								writtenBytes += line.write(buffer, writtenBytes, readBytes - writtenBytes);
-							readSamples += readBytes / ain.getFormat().getFrameSize();
-						} else {
-							System.out.println("samples: " + readSamples);
-							ain.close();
-							if (!isLooping())
-								state = State.Stopped;
-							else
-								openAudioInputStream();
-						}
-					} catch (Exception ex) {
-						try {
-							ain.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						line.close();
-						ex.printStackTrace();
-						state = State.Stopped;
-						return;
-					}
-				}
-
+			int curState = state.get();
+			if (curState == Playing) {
 				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					if (ain == null) openAudioInputStream();
+					readBytes = ain.read(buffer);
+
+					if (readBytes != -1) {
+						int writtenBytes = line.write(buffer, 0, readBytes);
+						while (writtenBytes != readBytes)
+							writtenBytes += line.write(buffer, writtenBytes, readBytes - writtenBytes);
+						readSamples += readBytes / ain.getFormat().getFrameSize();
+					} else {
+						System.out.println("samples: " + readSamples);
+						ain.close();
+						if (!isLooping()) state.set(Stopped);
+						else openAudioInputStream();
+					}
+				} catch (Exception ex) {
+					try {
+						ain.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					line.close();
+					ex.printStackTrace();
+					state.set(Stopped);
+					return;
+				}
+			}
+			else if (curState == Stopped && ain != null)
+			{
+				try {
+					ain.close();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				ain = null;
+				line.flush();
+			}
+
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
