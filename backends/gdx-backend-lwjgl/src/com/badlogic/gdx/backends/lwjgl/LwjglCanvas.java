@@ -36,7 +36,7 @@ public class LwjglCanvas implements Application {
 		LwjglNativesLoader.load();
 
 		canvas = new Canvas() {
-			private final Dimension minSize = new Dimension();
+			private final Dimension minSize = new Dimension(0, 0);
 
 			public final void addNotify () {
 				super.addNotify();
@@ -116,18 +116,20 @@ public class LwjglCanvas implements Application {
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
 		final Runnable runnable = new Runnable() {
-			int lastWidth = graphics.getWidth();
-			int lastHeight = graphics.getHeight();
+			int lastWidth = Math.max(1, graphics.getWidth());
+			int lastHeight = Math.max(1, graphics.getHeight());
 
 			public void run () {
 				if (!running) return;
 				graphics.updateTime();
 				input.update();
 
-				if (lastWidth != graphics.getWidth() || lastHeight != graphics.getHeight()) {
-					lastWidth = graphics.getWidth();
-					lastHeight = graphics.getHeight();
-					listener.resize(lastWidth, lastHeight);
+				int width = Math.max(1, graphics.getWidth());
+				int height = Math.max(1, graphics.getHeight());
+				if (lastWidth != width || lastHeight != height) {
+					lastWidth = width;
+					lastHeight = height;
+					listener.resize(width, height);
 				}
 
 				listener.render();
