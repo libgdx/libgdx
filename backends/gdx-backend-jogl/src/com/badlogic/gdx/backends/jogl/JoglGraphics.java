@@ -87,11 +87,4 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		canvas.getContext().makeCurrent();
 		listener.dispose();
 	}
-
-	@Override
-	public Texture newTexture(ByteBuffer buffer, Format format, int width,
-			int height, TextureFilter minFilter, TextureFilter magFilter,
-			TextureWrap uWrap, TextureWrap vWrap) {
-		throw new GdxRuntimeException("not implemented");
-	}
 }

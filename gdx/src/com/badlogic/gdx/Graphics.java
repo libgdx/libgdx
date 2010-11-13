@@ -289,9 +289,6 @@ public interface Graphics {
 			Texture.TextureFilter magFilter, Texture.TextureWrap uWrap,
 			Texture.TextureWrap vWrap);
 
-	public Texture newTexture (ByteBuffer buffer, Format format, int width, int height, TextureFilter minFilter,
-		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap);
-
 	/**
 	 * @return the {@link GraphicsType} of this Graphics instance
 	 */
