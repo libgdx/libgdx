@@ -224,8 +224,10 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 	@Override
 	public void processEvents(InputProcessor listener) {
 		synchronized(this) {
-			if(listener!=null) {						
-				for(KeyEvent e: keyEvents) {
+			if(listener!=null) {		
+				int len = keyEvents.size();
+				for(int i=0; i < len; i++) {
+					KeyEvent e = keyEvents.get(i);
 					switch(e.type) {
 					case KeyEvent.KEY_DOWN:
 						listener.keyDown(e.keyCode);
@@ -239,7 +241,9 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 					freeKeyEvents.free(e);
 				}					
 				
-				for(TouchEvent e: touchEvents) {
+				len = touchEvents.size();
+				for(int i=0; i < len; i++) {
+					TouchEvent e = touchEvents.get(i);
 					switch(e.type) {
 					case TouchEvent.TOUCH_DOWN:
 						listener.touchDown(e.x, e.y, e.pointer);
