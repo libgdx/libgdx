@@ -38,6 +38,7 @@ import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.UITest;
+import com.badlogic.gdx.tests.VBOVATest;
 import com.badlogic.gdx.tests.VertexArrayClassTest;
 import com.badlogic.gdx.tests.VertexArrayTest;
 import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
@@ -91,6 +92,7 @@ public class GdxTests
 		TerrainTest.class,		
 		TextureRenderTest.class,
 		UITest.class,
+		VBOVATest.class,
 		VertexArrayTest.class,		
 		VertexBufferObjectTest.class,
 		VertexArrayClassTest.class,

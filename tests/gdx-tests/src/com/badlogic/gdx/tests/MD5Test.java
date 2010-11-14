@@ -98,7 +98,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond()
-				+ (renderer.isJniUsed() ? ", jni" : ", java"), 10, 20,
+				+ (renderer.isJniUsed() ? ", jni" : ", java") + ", render time: " + renderTime + ", skin time: " + skinTime, 10, 20,
 				Color.WHITE);
 		batch.end();
 		
