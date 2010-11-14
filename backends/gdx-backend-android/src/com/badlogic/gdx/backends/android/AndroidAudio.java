@@ -13,17 +13,12 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
@@ -32,19 +27,23 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An implementation of the {@link Audio} interface for Android.
  * 
  * @author mzechner
  * 
  */
-final class AndroidAudio implements Audio {
+public final class AndroidAudio implements Audio {
 	private SoundPool soundPool;
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
 	protected final List<Boolean> wasPlaying = new ArrayList<Boolean>();
 
-	AndroidAudio (Activity context) {
+	public AndroidAudio (Activity context) {
 		soundPool = new SoundPool(16, AudioManager.STREAM_MUSIC, 100);
 		manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 		context.setVolumeControlStream(AudioManager.STREAM_MUSIC);

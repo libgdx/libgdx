@@ -13,50 +13,38 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import java.io.InputStream;
 
 /**
  * An implementation of {@link Graphics} for Android.
  * 
  * @author mzechner
  */
-final class AndroidGraphics implements Graphics, Renderer {
+public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
@@ -400,7 +388,7 @@ final class AndroidGraphics implements Graphics, Renderer {
 		FrameBuffer.clearAllFrameBuffers();		
 	}
 	
-	View getView () {
+	public View getView () {
 		return view;
 	}
 

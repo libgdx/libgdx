@@ -13,10 +13,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,12 +27,14 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -44,7 +42,7 @@ import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
  * @author mzechner
  * 
  */
-final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
+public final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 		SensorEventListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -103,7 +101,7 @@ final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
 	private int sleepTime = 0;
 	private boolean catchBack = false;
 
-	AndroidInput(AndroidApplication activity, View view, int sleepTime) {
+	public AndroidInput(AndroidApplication activity, View view, int sleepTime) {
 		view.setOnKeyListener(this);
 		view.setOnTouchListener(this);
 		view.setFocusable(true);

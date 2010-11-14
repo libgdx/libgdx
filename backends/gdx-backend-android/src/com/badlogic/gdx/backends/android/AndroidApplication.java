@@ -46,13 +46,13 @@ public class AndroidApplication extends Activity implements Application {
 		Version.loadLibrary();
 	}
 	
-	AndroidGraphics graphics;
-	AndroidInput input;
-	AndroidAudio audio;	
-	AndroidFiles files;
-	ApplicationListener listener;
-	Handler handler;
-	boolean firstResume = true;
+	protected AndroidGraphics graphics;
+	protected AndroidInput input;
+	protected AndroidAudio audio;	
+	protected AndroidFiles files;
+	protected ApplicationListener listener;
+	protected Handler handler;
+	protected boolean firstResume = true;
 
 	/**
 	 * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get input,
