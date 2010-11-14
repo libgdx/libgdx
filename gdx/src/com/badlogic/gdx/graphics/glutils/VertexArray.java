@@ -89,8 +89,6 @@ public class VertexArray implements VertexData {
 		BufferUtils.copy(vertices, byteBuffer, count, offset);
 		buffer.position(0);
 		buffer.limit(count);
-				
-		if( isBound ) bind();
 	}
 
 	@Override
