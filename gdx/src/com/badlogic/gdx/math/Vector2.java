@@ -167,8 +167,8 @@ public final class Vector2 {
 	 * @return the distance between this and the other vector
 	 */
 	public float dst (Vector2 v) {
-		float x_d = v.x - x;
-		float y_d = v.y - y;
+		final float x_d = v.x - x;
+		final float y_d = v.y - y;
 		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
 	}
 
@@ -178,8 +178,8 @@ public final class Vector2 {
 	 * @return the distance between this and the other vector
 	 */
 	public float dst (float x, float y) {
-		float x_d = x - this.x;
-		float y_d = y - this.y;
+		final float x_d = x - this.x;
+		final float y_d = y - this.y;
 		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
 	}
 
@@ -188,8 +188,8 @@ public final class Vector2 {
 	 * @return the squared distance between this and the other vector
 	 */
 	public float dst2 (Vector2 v) {
-		float x_d = v.x - x;
-		float y_d = v.y - y;
+		final float x_d = v.x - x;
+		final float y_d = v.y - y;
 		return x_d * x_d + y_d * y_d;
 	}
 
