@@ -308,31 +308,28 @@ final class AndroidGraphics implements Graphics, Renderer {
 		lastFrameTime = time;
 		mean.addValue(deltaTime);			
 
-		synchronized (Gdx.input) {
-			synchronized (synch) {
-				if (running) {
-					app.listener.render();
-				}
-
-				if (pause) {
-					app.listener.pause();
-					pause = false;
-				}
-
-				if (resume) {
-					app.listener.resume();
-					resume = false;
-					running = true;
-				}
-
-				if (destroy) {
-					app.listener.dispose();
-					destroy = false;
-				}
+		synchronized (synch) {
+			if (running) {
+				app.listener.render();
 			}
 
-			Gdx.input.processEvents(null);
+			if (pause) {
+				app.listener.pause();
+				pause = false;
+			}
+
+			if (resume) {
+				app.listener.resume();
+				resume = false;
+				running = true;
+			}
+
+			if (destroy) {
+				app.listener.dispose();
+				destroy = false;
+			}
 		}
+		Gdx.input.processEvents(null);	
 		
 		if (time - frameStart > 1000000000) {
 			fps = frames;
