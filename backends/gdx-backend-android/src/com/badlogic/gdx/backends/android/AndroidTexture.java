@@ -183,7 +183,6 @@ final class AndroidTexture implements Texture {
 		int level = 0;
 		int height = bitmap.getHeight();
 		int width = bitmap.getWidth();
-		Log.d("texture", "creating texture mipmaps: " + bitmap.getWidth() + ", " + bitmap.getHeight());
 
 		if (!MathUtils.isPowerOfTwo(bitmap.getWidth()) || !MathUtils.isPowerOfTwo(bitmap.getHeight()))
 			throw new GdxRuntimeException("Dimensions have to be a power of two");
@@ -197,6 +196,7 @@ final class AndroidTexture implements Texture {
 			level++;
 			if (height > 1) height /= 2;
 			if (width > 1) width /= 2;
+			Log.d("GDX", "Creating texture mipmap: " + width + ", " + height);
 
 			Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap, width, height, true);
 			if (level > 1) bitmap.recycle();

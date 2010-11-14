@@ -54,6 +54,8 @@ final class LwjglNativesLoader {
 	}
 
 	private static void loadLibrary (String libName, String classPath, String outputPath) {
+		if (new File(outputPath + libName).exists()) return;
+		
 		InputStream in = null;
 		BufferedOutputStream out = null;
 

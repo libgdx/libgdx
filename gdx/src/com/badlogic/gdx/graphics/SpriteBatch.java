@@ -704,9 +704,7 @@ public class SpriteBatch {
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		}
-
-		if (idx + length >= vertices.length)
+		} else if (idx + length >= vertices.length)
 			renderMesh();
 
 		System.arraycopy(spriteVertices, offset, vertices, idx, length);
