@@ -123,6 +123,8 @@ public class AndroidApplication extends Activity implements Application {
 		input = new AndroidInput(this, graphics.view, sleepTime);		
 		audio = new AndroidAudio(this);
 		files = new AndroidFiles(this.getAssets());
+		this.listener = listener;
+		this.handler = new Handler();
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
