@@ -13,19 +13,13 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.content.res.AssetManager;
 import android.os.Environment;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.*;
 
 /**
  * An implementation of the {@link Files} interface for Android. External files are stored and accessed relative to
@@ -34,14 +28,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-final class AndroidFiles implements Files {
+public class AndroidFiles implements Files {
 	/** external storage path **/
-	private final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
+	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 
 	/** asset manager **/
-	private final AssetManager assets;
+	protected final AssetManager assets;
 
-	AndroidFiles (AssetManager assets) {
+	public AndroidFiles (AssetManager assets) {
 		this.assets = assets;
 	}
 
