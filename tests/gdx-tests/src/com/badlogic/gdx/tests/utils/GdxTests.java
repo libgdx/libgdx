@@ -26,6 +26,7 @@ import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MeshTest;
 import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.MultitouchTest;
+import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -82,6 +83,7 @@ public class GdxTests
 		MeshTest.class,
 		Mpg123Test.class,
 		MultitouchTest.class,
+		MyFirstTriangle.class,
 		ObjTest.class,
 		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
