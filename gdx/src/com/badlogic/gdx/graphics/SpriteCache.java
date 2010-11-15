@@ -28,8 +28,9 @@ public class SpriteCache {
 	}
 
 	public SpriteCache (int size) {
-		this.mesh = new Mesh(true, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
+		mesh = new Mesh(true, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+		mesh.setAutoBind(false);
 
 		short[] indices = new short[size * 6];
 		int len = size * 6;
@@ -366,6 +367,8 @@ public class SpriteCache {
 			gl.glLoadMatrixf(projectionMatrix.val, 0);
 			gl.glMatrixMode(GL10.GL_MODELVIEW);
 			gl.glLoadMatrixf(transformMatrix.val, 0);
+			
+			mesh.bind();
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
@@ -381,6 +384,8 @@ public class SpriteCache {
 			shader.begin();
 			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
 			shader.setUniformi("u_texture", 0);
+
+			mesh.bind(shader);
 		}
 		drawing = true;
 	}
@@ -401,6 +406,7 @@ public class SpriteCache {
 			gl.glDisable(GL20.GL_BLEND);
 			gl.glDisable(GL20.GL_TEXTURE_2D);
 		}
+		mesh.unbind();
 	}
 
 	public void draw (Cache cache) {

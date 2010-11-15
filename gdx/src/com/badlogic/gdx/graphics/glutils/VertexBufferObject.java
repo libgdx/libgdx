@@ -118,7 +118,7 @@ public class VertexBufferObject implements VertexData {
 	 * {@inheritDoc}
 	 */
 	public int getNumMaxVertices() {
-		return byteBuffer.capacity() / attributes.vertexSize;
+		return buffer.capacity();
 	}
 
 	/**

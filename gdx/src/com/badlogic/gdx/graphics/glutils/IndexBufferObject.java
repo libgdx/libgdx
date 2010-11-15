@@ -73,6 +73,7 @@ public class IndexBufferObject {
 			isDirect = true;
 //		}
 		buffer = byteBuffer.asShortBuffer();
+		buffer.flip();
 		bufferHandle = createBufferObject();
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
 	}
