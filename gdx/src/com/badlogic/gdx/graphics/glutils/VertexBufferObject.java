@@ -85,6 +85,7 @@ public class VertexBufferObject implements VertexData {
 			isDirect = true;
 //		}
 		buffer = byteBuffer.asFloatBuffer();
+		buffer.flip();
 		bufferHandle = createBufferObject();
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
 	}
@@ -110,7 +111,7 @@ public class VertexBufferObject implements VertexData {
 	 */
 	@Override
 	public int getNumVertices() {
-		return byteBuffer.limit() / attributes.vertexSize;
+		return buffer.limit();
 	}
 
 	/**

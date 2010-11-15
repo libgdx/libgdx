@@ -18,6 +18,9 @@ import com.badlogic.gdx.utils.MathUtils;
  * @author Nathan Sweet <misc@n4te.com>
  */
 public class Sprite {
+	static final int VERTEX_SIZE = 2 + 1 + 2;
+	static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
+
 	Texture texture;
 	private float[] vertices = new float[20];
 	private float x, y;
@@ -366,7 +369,10 @@ public class Sprite {
 		dirty = true;
 	}
 
-	public void draw(SpriteBatch spriteBatch) {
+	/**
+	 * Returns the packed vertices, colors, and texture coordinates for this sprite.
+	 */
+	public float[] getVertices () {
 		if (dirty) {
 			dirty = false;
 
@@ -398,7 +404,11 @@ public class Sprite {
 			vertices[X4] = x1 + (x3 - x2);
 			vertices[Y4] = y3 - (y2 - y1);
 		}
-		spriteBatch.draw(texture, vertices, 0, 20);
+		return vertices;
+	}
+
+	public void draw(SpriteBatch spriteBatch) {
+		spriteBatch.draw(texture, getVertices(), 0, 20);
 	}
 
 	public void setTexture(Texture texture) {

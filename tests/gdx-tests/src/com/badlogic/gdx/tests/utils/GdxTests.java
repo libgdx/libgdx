@@ -35,6 +35,7 @@ import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchRotationTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchTest;
+import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
@@ -87,6 +88,7 @@ public class GdxTests
 		Pong.class,
 		SimpleTest.class,
 		SoundTest.class,
+		SpriteCacheTest.class,
 		SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,

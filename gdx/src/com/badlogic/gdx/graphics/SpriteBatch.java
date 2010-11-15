@@ -69,9 +69,6 @@ import com.badlogic.gdx.utils.MathUtils;
  * 
  */
 public class SpriteBatch {
-	private static final int VERTEX_SIZE = 2 + 1 + 2;
-	private static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
-
 	/** the mesh used to transfer the data to the GPU **/
 	protected final Mesh mesh;
 
@@ -148,7 +145,7 @@ public class SpriteBatch {
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
 
-		vertices = new float[size * SPRITE_SIZE];
+		vertices = new float[size * Sprite.SPRITE_SIZE];
 
 		short[] indices = new short[size * 6];
 		int len = size * 6;
@@ -338,7 +335,8 @@ public class SpriteBatch {
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		}
+		} else if (idx == vertices.length)
+			renderMesh();
 
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
@@ -456,9 +454,6 @@ public class SpriteBatch {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
-
-		if (idx == vertices.length)
-			renderMesh();
 	}
 
 	/**
@@ -506,7 +501,8 @@ public class SpriteBatch {
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		}
+		} else if (idx == vertices.length)
+			renderMesh();
 
 		float u = srcX * invTexWidth;
 		float v = (srcY + srcHeight) * invTexHeight;
@@ -552,9 +548,6 @@ public class SpriteBatch {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
-
-		if (idx == vertices.length)
-			renderMesh();
 	}
 
 	/**
@@ -591,7 +584,8 @@ public class SpriteBatch {
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		}
+		} else if (idx == vertices.length)
+			renderMesh();
 
 		final float u = srcX * invTexWidth;
 		final float v = (srcY + srcHeight) * invTexHeight;
@@ -625,9 +619,6 @@ public class SpriteBatch {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
-
-		if (idx == vertices.length)
-			renderMesh();
 	}
 
 	/**
@@ -660,7 +651,8 @@ public class SpriteBatch {
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		}
+		} else if (idx == vertices.length)
+			renderMesh();
 
 		final float fx2 = x + srcWidth;
 		final float fy2 = y + srcHeight;
@@ -688,9 +680,6 @@ public class SpriteBatch {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
-
-		if (idx == vertices.length)
-			renderMesh();
 	}
 
 	public void draw(Texture texture, float[] spriteVertices, int offset,
