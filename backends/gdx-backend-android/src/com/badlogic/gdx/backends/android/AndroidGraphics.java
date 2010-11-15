@@ -281,17 +281,15 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			synchronized(this) {
 				running = true;
 			}
-		}
-	}
-	
-	Object synch = new Object();	
-	void resume () {
-		synchronized(synch) {
+		} else {
+			app.listener.resume();
 			running = false;
 			resume = true;
 		}
+			
 	}
 	
+	Object synch = new Object();	
 	void pause () {
 		synchronized(synch) {
 			running = false;	
@@ -332,12 +330,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			if (pause) {
 				app.listener.pause();
 				pause = false;
-			}
-
-			if (resume) {
-				app.listener.resume();
-				resume = false;
-				running = true;
 			}
 
 			if (destroy) {

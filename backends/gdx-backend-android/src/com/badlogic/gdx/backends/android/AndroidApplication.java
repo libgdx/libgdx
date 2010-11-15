@@ -152,7 +152,8 @@ public class AndroidApplication extends Activity implements Application {
 		super.onPause();	
 	}
 
-	@Override protected void onResume () {		
+	@Override protected void onResume () {
+		super.onResume();
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -164,12 +165,8 @@ public class AndroidApplication extends Activity implements Application {
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 		}			
 
-		if (audio != null) audio.resume();		
-		if(!firstResume)
-			graphics.resume();
-		else
-			firstResume=false;
-		super.onResume();
+		if (audio != null) 
+			audio.resume();		
 	}
 
 	@Override protected void onDestroy () {
