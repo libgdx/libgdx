@@ -129,7 +129,7 @@ public class UITest extends GdxTest implements InputProcessor {
 		ui.addActor(linearh);
 
 		// Group.enableDebugging( "data/debug.png" );
-
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
@@ -138,8 +138,6 @@ public class UITest extends GdxTest implements InputProcessor {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		ui.act(Gdx.graphics.getDeltaTime());
 		ui.render();
-
-		Gdx.input.processEvents(this);
 	}
 
 	@Override

@@ -60,6 +60,8 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 		short[] indices = { 0, 1, 2, 2, 3, 0 };
 		mesh.setVertices(vertices);
 		mesh.setIndices(indices);
+		
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
@@ -108,8 +110,6 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 			if (Gdx.graphics.getFramesPerSecond() < 60)
 				numFills--;
 		}
-		
-		Gdx.input.processEvents(this);
 	}
 
 	@Override

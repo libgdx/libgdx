@@ -43,7 +43,8 @@ public class ObjTest extends GdxTest implements InputProcessor {
 
 		cam = new PerspectiveCamera();
 		cam.getPosition().set(2, 2, 2);
-		cam.getDirection().set(-1, -1, -1);		
+		cam.getDirection().set(-1, -1, -1);
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public void render () {
@@ -66,8 +67,6 @@ public class ObjTest extends GdxTest implements InputProcessor {
 		gl.glRotatef(angleX, 1, 0, 0);
 		texture.bind();
 		mesh.render(GL10.GL_TRIANGLES);
-		
-		Gdx.input.processEvents(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {

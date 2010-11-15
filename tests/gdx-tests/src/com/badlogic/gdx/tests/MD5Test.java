@@ -57,6 +57,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		font = new BitmapFont();
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
+		
+		Gdx.input.setInputProcessor(this);
 	}
 
 	float angle = 0;
@@ -101,8 +103,6 @@ public class MD5Test extends GdxTest implements InputProcessor {
 				+ (renderer.isJniUsed() ? ", jni" : ", java") + ", render time: " + renderTime + ", skin time: " + skinTime, 10, 20,
 				Color.WHITE);
 		batch.end();
-		
-		Gdx.input.processEvents(this);
 	}
 
 	@Override

@@ -48,6 +48,7 @@ public class BitmapFontFlipTest extends GdxTest {
 				return false;
 			}
 		};
+		Gdx.input.setInputProcessor(inputProcessor);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);
@@ -86,9 +87,7 @@ public class BitmapFontFlipTest extends GdxTest {
 			renderCached();
 			break;
 		}
-		spriteBatch.end();
-		
-		Gdx.input.processEvents(inputProcessor);
+		spriteBatch.end();			
 	}
 
 	private void renderNormal () {

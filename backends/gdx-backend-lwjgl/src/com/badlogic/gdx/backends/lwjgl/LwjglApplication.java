@@ -97,8 +97,8 @@ public class LwjglApplication implements Application {
 				}
 			}
 
+			((LwjglInput)Gdx.input).processEvents();
 			listener.render();
-			input.processEvents(null);
 			Display.update();
 			Display.sync(60);
 		}

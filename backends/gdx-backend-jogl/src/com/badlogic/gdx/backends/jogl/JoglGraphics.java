@@ -67,11 +67,10 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		synchronized (this) {
 			if (!paused) {
 				updateTimes();
+				((JoglInput)Gdx.input).processEvents();
 				listener.render();
 			}
-		}		
-		
-		Gdx.input.processEvents(null);
+		}					
 	}
 	
 	@Override

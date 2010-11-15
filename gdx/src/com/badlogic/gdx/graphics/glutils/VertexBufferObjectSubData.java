@@ -86,9 +86,9 @@ public class VertexBufferObjectSubData implements VertexData {
 //		}
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
 		buffer = byteBuffer.asFloatBuffer();
+		bufferHandle = createBufferObject();
 		buffer.flip();
 		byteBuffer.flip();
-		bufferHandle = createBufferObject();
 	}
 
 	private int createBufferObject() {

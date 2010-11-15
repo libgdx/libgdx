@@ -51,6 +51,8 @@ public class BitmapFontTest extends GdxTest {
 				return false;
 			}
 		};
+		
+		Gdx.input.setInputProcessor(inputProcessor);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);
@@ -90,8 +92,6 @@ public class BitmapFontTest extends GdxTest {
 			break;
 		}
 		spriteBatch.end();
-		
-		Gdx.input.processEvents(inputProcessor);
 	}
 
 	private void renderNormal () {

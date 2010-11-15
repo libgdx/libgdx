@@ -431,7 +431,7 @@ class LwjglGL10 implements GL10 {
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (FloatBuffer)pixels);
 		else if (pixels instanceof DoubleBuffer)
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (DoubleBuffer)pixels);
-		else
+		else		
 			throw new GdxRuntimeException("Can't use " + pixels.getClass().getName()
 				+ " with this method. Use ByteBuffer, ShortBuffer, IntBuffer, FloatBuffer or DoubleBuffer instead. Blame LWJGL");
 	}

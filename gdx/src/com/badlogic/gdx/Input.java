@@ -22,11 +22,8 @@ package com.badlogic.gdx;
  * 
  * <p>
  * Additionally one can process events with an {@link InputProcessor} with this
- * module. Just pass in the InputListener to the
- * {@link #processEvents(InputProcessor)} method in any thread you want.
- * Internally a buffer of events is stored. If you do not call
- * {@link #processEvents(InputProcessor)} then the buffer will be cleared
- * automatically each frame.
+ * module. You can set the InputProcessor via the {@link #setInputProcessor(InputProcessor)} method.
+ * It will be called before the {@link ApplicationListener#render()} method in each frame.
  * </p>
  * 
  * <p>
@@ -296,15 +293,13 @@ public interface Input {
 	 *            whether to catch the back button
 	 */
 	public void setCatchBackKey(boolean catchBack);
-
+	
 	/**
-	 * Passes all events that happened since the last invocation of this method
-	 * to the provided InputListener. Make sure you call this method each frame
-	 * otherwise events will accumulate!
+	 * Sets the {@link InputProcessor} that will receive all 
+	 * touch and key input events. It will be called before the 
+	 * {@link ApplicationListener#render()} method each frame.
 	 * 
-	 * @param listener
-	 *            the {@link InputProcessor} or null if you want to just discard
-	 *            of all events.
+	 * @param processor the InputProcessor
 	 */
-	public void processEvents(InputProcessor listener);
+	public void setInputProcessor(InputProcessor processor);
 }

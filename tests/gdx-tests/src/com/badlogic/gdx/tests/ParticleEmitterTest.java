@@ -86,7 +86,10 @@ public class ParticleEmitterTest extends GdxTest {
 				return false;
 			}
 		};
+		
+		Gdx.input.setInputProcessor(inputProcessor);
 	}
+	
 
 	public void render () {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -102,8 +105,6 @@ public class ParticleEmitterTest extends GdxTest {
 			int activeCount = emitters.get(emitterIndex).getActiveCount();
 			System.out.println(activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
 		}
-		
-		Gdx.input.processEvents(inputProcessor);
 	}
 
 	public boolean needsGL20 () {

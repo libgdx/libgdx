@@ -15,9 +15,9 @@ package com.badlogic.gdx;
 
 /**
  * An InputProcessor is used to receive input events from the keyboard and the touch
- * screen (mouse on the desktop). For this it has to be used in combination with
- * {@link Input#processEvents(InputProcessor)} method. The methods return a
- * boolean in case you want to write a multiplexing InputProcessor that has a
+ * screen (mouse on the desktop). For this it has to be registered with the {@link Input#setInputProcessor(InputProcessor)}
+ * method. It will be called each frame before the call to {@link ApplicationListener#render()}. 
+ * The methods return a* boolean in case you want to write a multiplexing InputProcessor that has a
  * chain of child processors that signal whether they processed the event. The
  * {@link InputMultiplexer} offers you exactly this functionality.
  * 

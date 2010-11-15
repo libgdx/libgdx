@@ -101,6 +101,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private int sleepTime = 0;
 	private boolean catchBack = false;
 
+	private InputProcessor processor;
+
 	public AndroidInput(AndroidApplication activity, View view, int sleepTime) {
 		view.setOnKeyListener(this);
 		view.setOnTouchListener(this);
@@ -219,22 +221,27 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return touched[0];
 	}
 	
-	@Override
-	public void processEvents(InputProcessor listener) {
+	public void setInputProcessor(InputProcessor processor) {
 		synchronized(this) {
-			if(listener!=null) {		
+			this.processor = processor;
+		}
+	}
+	
+	void processEvents() {
+		synchronized(this) {
+			if(processor!=null) {		
 				int len = keyEvents.size();
 				for(int i=0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
 					switch(e.type) {
 					case KeyEvent.KEY_DOWN:
-						listener.keyDown(e.keyCode);
+						processor.keyDown(e.keyCode);
 						break;
 					case KeyEvent.KEY_UP:
-						listener.keyUp(e.keyCode);
+						processor.keyUp(e.keyCode);
 						break;
 					case KeyEvent.KEY_TYPED:
-						listener.keyTyped(e.keyChar);
+						processor.keyTyped(e.keyChar);
 					}
 					freeKeyEvents.free(e);
 				}					
@@ -244,15 +251,25 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					TouchEvent e = touchEvents.get(i);
 					switch(e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						listener.touchDown(e.x, e.y, e.pointer);
+						processor.touchDown(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_UP:
-						listener.touchUp(e.x, e.y, e.pointer);
+						processor.touchUp(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
-						listener.touchDragged(e.x, e.y, e.pointer);
+						processor.touchDragged(e.x, e.y, e.pointer);
 					}
 					freeTouchEvents.free(e);
+				}
+			} else {
+				int len = touchEvents.size();
+				for(int i=0; i < len; i++) {
+					freeTouchEvents.free(touchEvents.get(i));
+				}
+			
+				len = keyEvents.size();
+				for(int i=0; i < len; i++) {
+					freeKeyEvents.free(keyEvents.get(i));
 				}
 			}
 			
@@ -269,9 +286,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			view.requestFocusFromTouch();
 			requestFocus = false;
 		}
-		synchronized (this) {
-			touchHandler.onTouch(event, this);
-		}
+		
+		// synchronized in handler.postTouchEvent()
+		touchHandler.onTouch(event, this);
+		
 		if (sleepTime != 0)
 			try {
 				Thread.sleep(sleepTime);

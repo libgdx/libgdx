@@ -85,6 +85,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we create out physics world.
 		createPhysicsWorld();
+		
+		// register ourselfs as an InputProcessor
+		Gdx.input.setInputProcessor(this);
 	}
 
 	private void createPhysicsWorld () {
@@ -203,10 +206,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		batch.begin();
 		font.draw( batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
 				20, Color.RED);		
-		batch.end();
-		
-		// process the input events
-		Gdx.input.processEvents(this);
+		batch.end();	
 	}
 
 	private void renderBox (GL10 gl, Body body, float halfWidth, float halfHeight) {

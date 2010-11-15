@@ -80,6 +80,8 @@ final class LwjglInput implements Input {
 	int mouseX = 0;
 	int mouseY = 0;
 	int pressedKeys = 0;
+
+	private InputProcessor processor;
 	
 	public float getAccelerometerX () {
 		return 0;
@@ -163,36 +165,49 @@ final class LwjglInput implements Input {
 		
 	}
 
-	@Override
-	public void processEvents(InputProcessor listener) {
+	void processEvents() {
 		synchronized(this) {
-			if(listener!=null) {						
-				for(KeyEvent e: keyEvents) {
+			if(processor!=null) {		
+				int len = keyEvents.size();
+				for(int i=0; i < len; i++) {
+					KeyEvent e = keyEvents.get(i);
 					switch(e.type) {
 					case KeyEvent.KEY_DOWN:
-						listener.keyDown(e.keyCode);
+						processor.keyDown(e.keyCode);
 						break;
 					case KeyEvent.KEY_UP:
-						listener.keyUp(e.keyCode);
+						processor.keyUp(e.keyCode);
 						break;
 					case KeyEvent.KEY_TYPED:
-						listener.keyTyped(e.keyChar);
+						processor.keyTyped(e.keyChar);
 					}
-					freeKeyEvents.free(e);					
+					freeKeyEvents.free(e);
 				}					
 				
-				for(TouchEvent e: touchEvents) {
+				len = touchEvents.size();
+				for(int i=0; i < len; i++) {
+					TouchEvent e = touchEvents.get(i);
 					switch(e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						listener.touchDown(e.x, e.y, e.pointer);
+						processor.touchDown(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_UP:
-						listener.touchUp(e.x, e.y, e.pointer);
+						processor.touchUp(e.x, e.y, e.pointer);
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
-						listener.touchDragged(e.x, e.y, e.pointer);
+						processor.touchDragged(e.x, e.y, e.pointer);
 					}
 					freeTouchEvents.free(e);
+				}
+			} else {
+				int len = touchEvents.size();
+				for(int i=0; i < len; i++) {
+					freeTouchEvents.free(touchEvents.get(i));
+				}
+				
+				len = keyEvents.size();
+				for(int i=0; i < len; i++) {
+					freeKeyEvents.free(keyEvents.get(i));
 				}
 			}
 			
@@ -415,5 +430,10 @@ final class LwjglInput implements Input {
 				}
 			}
 		}			
+	}
+
+	@Override
+	public void setInputProcessor(InputProcessor processor) {
+		this.processor = processor;
 	}
 }

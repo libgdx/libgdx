@@ -19,8 +19,11 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class InputTest extends GdxTest implements InputProcessor {
 
+	@Override public void create () {
+		Gdx.input.setInputProcessor(this);
+	}
+	
 	@Override public void render () {
-		Gdx.input.processEvents(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {
@@ -40,16 +43,22 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override public boolean touchDown (int x, int y, int pointer) {
 		Gdx.app.log("Input Test", "touch down: " + x + ", " + y);
+		long startTime = System.nanoTime();
+		while(System.nanoTime()-startTime < 1000000000 / 30);
 		return false;
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
 		Gdx.app.log("Input Test", "touch dragged: " + x + ", " + y);
+		long startTime = System.nanoTime();
+		while(System.nanoTime()-startTime < 1000000000 / 30);
 		return false;
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
 		Gdx.app.log("Input Test", "touch up: " + x + ", " + y);
+		long startTime = System.nanoTime();
+		while(System.nanoTime()-startTime < 1000000000 / 30);
 		return false;
 	}
 

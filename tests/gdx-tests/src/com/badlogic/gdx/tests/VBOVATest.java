@@ -25,7 +25,7 @@ public class VBOVATest extends GdxTest {
 	VertexData vertexBuffer;
 	float[] vertices;
 	short[] indices;
-	int mode = 0;
+	int mode = 1;
 	long startTime = 0;
 	int frames = 0;
 	boolean isStatic = false;

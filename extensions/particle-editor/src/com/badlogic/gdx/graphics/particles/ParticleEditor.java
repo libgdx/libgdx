@@ -237,6 +237,7 @@ public class ParticleEditor extends JFrame {
 				"data/default.png", FileType.Internal), true);
 			effectPanel.newEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
+			Gdx.input.setInputProcessor(this);
 		}
 
 		@Override public void resize (int width, int height) {
@@ -296,7 +297,6 @@ public class ParticleEditor extends JFrame {
 
 			// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight -
 // 1);
-			Gdx.input.processEvents(this);
 		}
 
 		private void loadImage (ParticleEmitter emitter) {

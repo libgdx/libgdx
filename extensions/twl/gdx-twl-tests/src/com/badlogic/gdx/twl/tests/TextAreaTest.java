@@ -65,6 +65,8 @@ public class TextAreaTest implements ApplicationListener {
 				speed = -speed;
 			}
 		});
+		
+		Gdx.input.setInputProcessor(twl);
 	}
 
 	@Override public void resize (int width, int height) {
@@ -72,7 +74,6 @@ public class TextAreaTest implements ApplicationListener {
 
 	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.input.processEvents(twl);
 		twl.render();
 	}
 

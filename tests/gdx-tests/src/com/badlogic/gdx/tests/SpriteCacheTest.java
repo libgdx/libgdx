@@ -43,8 +43,6 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		if (renderMethod == 0) renderNormal();
 		;
 		if (renderMethod == 1) renderSprites();
-
-		Gdx.input.processEvents(this);
 	}
 
 	private void renderNormal () {
@@ -182,6 +180,8 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 			spriteCache.add(sprites3[i]);
 		}
 		spritesCache = spriteCache.endCache();
+		
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {

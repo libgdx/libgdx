@@ -68,6 +68,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 		initialized = true;
 
 		batch = new SpriteBatch();
+		Gdx.input.setInputProcessor(this);
 //			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 	}
 
@@ -190,9 +191,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 
 		batch.begin();
 //		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20, Color.WHITE);
-		batch.end();
-		
-		Gdx.input.processEvents(this);
+		batch.end();		
 	}
 
 	@Override public boolean keyDown (int keycode) {

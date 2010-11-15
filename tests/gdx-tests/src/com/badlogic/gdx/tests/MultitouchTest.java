@@ -36,8 +36,6 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 		}
 
 		renderer.end();
-		
-		Gdx.input.processEvents(this);
 	}
 
 
@@ -46,7 +44,8 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 		renderer = new ImmediateModeRenderer();
 		camera = new OrthographicCamera();
 		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.getPosition().set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);		
+		camera.getPosition().set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {

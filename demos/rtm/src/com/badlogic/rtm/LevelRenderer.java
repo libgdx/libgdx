@@ -199,7 +199,7 @@ public class LevelRenderer implements ApplicationListener {
 		wallMesh.render(GL10.GL_TRIANGLES);
 		
 		batch.begin();
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 10, Color.RED);
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", delta:" + Gdx.graphics.getDeltaTime(), 10, 10, Color.WHITE);
 		batch.end();
 		
 		processInput();

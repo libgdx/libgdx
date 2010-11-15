@@ -26,7 +26,6 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	float volume = 1.0f;
 
 	@Override public void render () {		
-		Gdx.input.processEvents(this);
 	}
 
 
@@ -37,6 +36,7 @@ public class SoundTest extends GdxTest implements InputProcessor {
 			music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/cloudconnected.ogg", FileType.Internal));
 			music.play();
 			music.setLooping(true);
+			Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {

@@ -23,6 +23,7 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 
 	@Override public void create () {		
 		Gdx.app.log("Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created");
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public void render () {
@@ -30,9 +31,6 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 
 		gl.glClearColor(r, g, b, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		Gdx.input.processEvents(this);
-
 	}
 
 	@Override public void dispose () {

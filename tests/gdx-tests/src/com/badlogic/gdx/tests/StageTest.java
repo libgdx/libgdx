@@ -103,6 +103,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		renderer = new ImmediateModeRenderer();
+		Gdx.input.setInputProcessor(this);
 	}
 
 	private void fillGroup(Group group, Texture texture) {
@@ -190,9 +191,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		// Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
 		// ", groups "
 		// + stage.getGroups().size();
-		ui.render();
-		
-		Gdx.input.processEvents(this);
+		ui.render();		
 	}
 
 	@Override

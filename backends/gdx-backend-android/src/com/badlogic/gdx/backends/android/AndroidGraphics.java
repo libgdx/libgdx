@@ -63,31 +63,32 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
-	
-	private long lastFrameTime = System.nanoTime();	
-	private float deltaTime = 0;	
+
+	private long lastFrameTime = System.nanoTime();
+	private float deltaTime = 0;
 	private long frameStart = System.nanoTime();
-	private int frames = 0;	
-	private int fps;	
-	private WindowedMean mean = new WindowedMean(5);		
+	private int frames = 0;
+	private int fps;
+	private WindowedMean mean = new WindowedMean(5);
 
 	boolean created = false;
 	boolean running = false;
 	boolean pause = false;
 	boolean resume = false;
 	boolean destroy = false;
-	
+
 	private float ppiX = 0;
 	private float ppiY = 0;
 	private float ppcX = 0;
 	private float ppcY = 0;
-	
-	public AndroidGraphics (AndroidApplication activity, boolean useGL2IfAvailable) {
+
+	public AndroidGraphics(AndroidApplication activity,
+			boolean useGL2IfAvailable) {
 		view = createGLSurfaceView(activity, useGL2IfAvailable);
-		this.app = activity;			
+		this.app = activity;
 	}
 
-	private View createGLSurfaceView (Activity activity, boolean useGL2) {
+	private View createGLSurfaceView(Activity activity, boolean useGL2) {
 		if (useGL2 && checkGL20()) {
 			GLSurfaceView20 view = new GLSurfaceView20(activity);
 			view.setRenderer(this);
@@ -98,7 +99,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				view.setRenderer(this);
 				return view;
 			} else {
-				android.opengl.GLSurfaceView view = new android.opengl.GLSurfaceView(activity);
+				android.opengl.GLSurfaceView view = new android.opengl.GLSurfaceView(
+						activity);
 				view.setRenderer(this);
 				return view;
 			}
@@ -109,23 +111,24 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private void updatePpi() {
 		DisplayMetrics metrics = new DisplayMetrics();
 		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		
+
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
 		ppcX = metrics.xdpi / 2.54f;
 		ppcY = metrics.ydpi / 2.54f;
 	}
-	
-	private boolean checkGL20 () {
-		EGL10 egl = (EGL10)EGLContext.getEGL();
+
+	private boolean checkGL20() {
+		EGL10 egl = (EGL10) EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 
 		int[] version = new int[2];
 		egl.eglInitialize(display, version);
 
 		int EGL_OPENGL_ES2_BIT = 4;
-		int[] configAttribs = {EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4, EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE,
-			EGL_OPENGL_ES2_BIT, EGL10.EGL_NONE};
+		int[] configAttribs = { EGL10.EGL_RED_SIZE, 4, EGL10.EGL_GREEN_SIZE, 4,
+				EGL10.EGL_BLUE_SIZE, 4, EGL10.EGL_RENDERABLE_TYPE,
+				EGL_OPENGL_ES2_BIT, EGL10.EGL_NONE };
 
 		EGLConfig[] configs = new EGLConfig[10];
 		int[] num_config = new int[1];
@@ -137,95 +140,111 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public GL10 getGL10 () {
+	@Override
+	public GL10 getGL10() {
 		return gl10;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public GL11 getGL11 () {
+	@Override
+	public GL11 getGL11() {
 		return gl11;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public GL20 getGL20 () {
+	@Override
+	public GL20 getGL20() {
 		return gl20;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public int getHeight () {
+	@Override
+	public int getHeight() {
 		return height;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public int getWidth () {
+	@Override
+	public int getWidth() {
 		return width;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public boolean isGL11Available () {
+	@Override
+	public boolean isGL11Available() {
 		return gl11 != null;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public boolean isGL20Available () {
+	@Override
+	public boolean isGL20Available() {
 		return gl20 != null;
 	}
 
-	private static boolean isPowerOfTwo (int value) {
+	private static boolean isPowerOfTwo(int value) {
 		return ((value != 0) && (value & (value - 1)) == 0);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Pixmap newPixmap (int width, int height, Format format) {
+	@Override
+	public Pixmap newPixmap(int width, int height, Format format) {
 		return new AndroidPixmap(width, height, format);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Pixmap newPixmap (InputStream in) {
+	@Override
+	public Pixmap newPixmap(InputStream in) {
 		Bitmap bitmap = BitmapFactory.decodeStream(in);
-		if (bitmap == null) throw new GdxRuntimeException("Couldn't load Pixmap from InputStream");	
+		if (bitmap == null)
+			throw new GdxRuntimeException(
+					"Couldn't load Pixmap from InputStream");
 		return new AndroidPixmap(bitmap);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Pixmap newPixmap (FileHandle file) {
+	@Override
+	public Pixmap newPixmap(FileHandle file) {
 		return newPixmap(file.readFile());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Pixmap newPixmap (Object nativePixmap) {
-		return new AndroidPixmap((Bitmap)nativePixmap);
+	@Override
+	public Pixmap newPixmap(Object nativePixmap) {
+		return new AndroidPixmap((Bitmap) nativePixmap);
 	}
 
 	/**
-	 * This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
-	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
-	 * Motorola CLIQ and the Samsung Behold II.
+	 * This instantiates the GL10, GL11 and GL20 instances. Includes the check
+	 * for certain devices that pretend to support GL11 but fuck up vertex
+	 * buffer objects. This includes the pixelflinger which segfaults when
+	 * buffers are deleted as well as the Motorola CLIQ and the Samsung Behold
+	 * II.
 	 * 
 	 * @param gl
 	 */
-	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		if (gl10 != null || gl20 != null) return;
+	private void setupGL(javax.microedition.khronos.opengles.GL10 gl) {
+		if (gl10 != null || gl20 != null)
+			return;
 
 		if (view instanceof GLSurfaceView20) {
 			gl20 = new AndroidGL20();
@@ -235,97 +254,106 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			this.gl = gl10;
 			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
 				String renderer = gl.glGetString(GL10.GL_RENDERER);
-				if (!renderer.toLowerCase().contains("pixelflinger") &&
-				    !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220")
-					|| android.os.Build.MODEL.contains("Behold"))) {
-				gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
-				gl10 = gl11;
+				if (!renderer.toLowerCase().contains("pixelflinger")
+						&& !(android.os.Build.MODEL.equals("MB200")
+								|| android.os.Build.MODEL.equals("MB220") || android.os.Build.MODEL
+								.contains("Behold"))) {
+					gl11 = new AndroidGL11(
+							(javax.microedition.khronos.opengles.GL11) gl);
+					gl10 = gl11;
 				}
 			}
 		}
-		
+
 		Gdx.gl = this.gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
 	}
 
-	@Override public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
+	@Override
+	public void onSurfaceChanged(javax.microedition.khronos.opengles.GL10 gl,
+			int width, int height) {
 		this.width = width;
-		this.height = height;		
+		this.height = height;
 		updatePpi();
-		app.listener.resize(width, height);	
+		app.listener.resize(width, height);
 	}
 
-	@Override public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
+	@Override
+	public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl,
+			EGLConfig config) {
 		setupGL(gl);
-		
+
 		updatePpi();
-		
+
 		Mesh.invalidateAllMeshes();
 		AndroidTexture.invalidateAllTextures();
 		ShaderProgram.invalidateAllShaderPrograms();
-		FrameBuffer.invalidateAllFrameBuffers();		
+		FrameBuffer.invalidateAllFrameBuffers();
 
 		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
-		this.height = display.getHeight();		
+		this.height = display.getHeight();
 		mean = new WindowedMean(5);
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
-		
-		if( created == false ) {
+
+		if (created == false) {
 			app.listener.create();
 			created = true;
-			synchronized(this) {
+			synchronized (this) {
 				running = true;
 			}
 		}
 	}
-	
-	Object synch = new Object();	
-	void resume () {
-		synchronized(synch) {
+
+	Object synch = new Object();
+
+	void resume() {
+		synchronized (synch) {
 			running = false;
 			resume = true;
 		}
 	}
-	
-	void pause () {
-		synchronized(synch) {
-			running = false;	
+
+	void pause() {
+		synchronized (synch) {
+			running = false;
 			pause = true;
 		}
 		boolean cond = false;
-		while(!cond) {
-			synchronized(synch) {
+		while (!cond) {
+			synchronized (synch) {
 				cond = !pause;
 			}
 		}
 	}
-	
-	void destroy () {
-		synchronized(synch) {
+
+	void destroy() {
+		synchronized (synch) {
 			running = false;
 			destroy = true;
 		}
 		boolean cond = false;
-		while(!cond) {
-			synchronized(synch) {
+		while (!cond) {
+			synchronized (synch) {
 				cond = !destroy;
 			}
 		}
 	}
-	
-	@Override public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
+
+	@Override
+	public void onDrawFrame(javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		mean.addValue(deltaTime);			
-
+		mean.addValue(deltaTime);
+	
 		synchronized (synch) {
 			if (running) {
+				((AndroidInput)Gdx.input).processEvents();
 				app.listener.render();
 			}
 
@@ -345,7 +373,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				destroy = false;
 			}
 		}
-		Gdx.input.processEvents(null);	
 		
 		if (time - frameStart > 1000000000) {
 			fps = frames;
@@ -354,76 +381,91 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 		frames++;
 	}
-	
-	
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public float getDeltaTime () {
+	@Override
+	public float getDeltaTime() {
 		return mean.getMean() == 0 ? deltaTime : mean.getMean();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public GraphicsType getType () {
+	@Override
+	public GraphicsType getType() {
 		return GraphicsType.AndroidGL;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public int getFramesPerSecond () {
+	@Override
+	public int getFramesPerSecond() {
 		return fps;
 	}
 
-	@Override public Texture newUnmanagedTexture (int width, int height, Format format, TextureFilter minFilter,
-		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (!isPowerOfTwo(width) || !isPowerOfTwo(height)) throw new GdxRuntimeException("Dimensions have to be a power of two");
+	@Override
+	public Texture newUnmanagedTexture(int width, int height, Format format,
+			TextureFilter minFilter, TextureFilter magFilter,
+			TextureWrap uWrap, TextureWrap vWrap) {
+		if (!isPowerOfTwo(width) || !isPowerOfTwo(height))
+			throw new GdxRuntimeException(
+					"Dimensions have to be a power of two");
 
 		Bitmap.Config config = AndroidPixmap.getInternalFormat(format);
 		Bitmap bitmap = Bitmap.createBitmap(width, height, config);
 		Texture texture = null;
-		texture = new AndroidTexture(this, bitmap, minFilter, magFilter, uWrap, vWrap, false, null);
+		texture = new AndroidTexture(this, bitmap, minFilter, magFilter, uWrap,
+				vWrap, false, null);
 		bitmap.recycle();
 		return texture;
 	}
 
-	@Override public Texture newUnmanagedTexture (Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter,
-		TextureWrap uWrap, TextureWrap vWrap) {
+	@Override
+	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 
-		if (!isPowerOfTwo(pixmap.getWidth()) || !isPowerOfTwo(pixmap.getHeight()))
-			throw new GdxRuntimeException("Dimensions have to be a power of two");
+		if (!isPowerOfTwo(pixmap.getWidth())
+				|| !isPowerOfTwo(pixmap.getHeight()))
+			throw new GdxRuntimeException(
+					"Dimensions have to be a power of two");
 
-		return new AndroidTexture(this, (Bitmap)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
+		return new AndroidTexture(this, (Bitmap) pixmap.getNativePixmap(),
+				minFilter, magFilter, uWrap, vWrap, false, null);
 	}
 
-	@Override public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
-		TextureWrap vWrap) {
-		return new AndroidTexture(this, (Bitmap)null, minFilter, magFilter, uWrap, vWrap, true, file);
-	}
-	
-	@Override public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
-		TextureWrap uWrap, TextureWrap vWrap) {
-		return new AndroidTexture(this, textureData, minFilter, magFilter, uWrap, vWrap);
+	@Override
+	public Texture newTexture(FileHandle file, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+		return new AndroidTexture(this, (Bitmap) null, minFilter, magFilter,
+				uWrap, vWrap, true, file);
 	}
 
-	public void clearManagedCaches () {
+	@Override
+	public Texture newTexture(TextureData textureData, TextureFilter minFilter,
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+		return new AndroidTexture(this, textureData, minFilter, magFilter,
+				uWrap, vWrap);
+	}
+
+	public void clearManagedCaches() {
 		Mesh.clearAllMeshes();
 		AndroidTexture.clearAllTextures();
 		ShaderProgram.clearAllShaderPrograms();
-		FrameBuffer.clearAllFrameBuffers();		
+		FrameBuffer.clearAllFrameBuffers();
 	}
-	
-	public View getView () {
+
+	public View getView() {
 		return view;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public GLCommon getGLCommon () {
+	@Override
+	public GLCommon getGLCommon() {
 		return gl;
 	}
 

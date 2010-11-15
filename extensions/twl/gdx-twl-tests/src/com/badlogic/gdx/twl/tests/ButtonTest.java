@@ -29,6 +29,7 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 
 		input.addProcessor(twl);
 		input.addProcessor(this);
+		Gdx.input.setInputProcessor(input);
 	}
 
 	@Override public void resize (int width, int height) {
@@ -36,8 +37,6 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 
 	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		Gdx.input.processEvents(input);
 		twl.render();
 	}
 

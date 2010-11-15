@@ -50,9 +50,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	@Override public void render () {
 		if (renderMethod == 0) renderNormal();
 		;
-		if (renderMethod == 1) renderSprites();
-		
-		Gdx.input.processEvents(this);
+		if (renderMethod == 1) renderSprites();		
 	}
 
 	private void renderNormal () {
@@ -105,8 +103,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		end = (System.nanoTime() - start) / 1000000000.0f;
 
 		if (System.nanoTime() - startTime > 1000000000) {
-// Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
-// ", " + draw2 + ", " + drawText + ", " + end );
+ Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
+ ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -167,8 +165,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		end = (System.nanoTime() - start) / 1000000000.0f;
 
 		if (System.nanoTime() - startTime > 1000000000) {
-// Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
-// ", " + draw2 + ", " + drawText + ", " + end );
+ Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
+ ", " + draw2 + ", " + drawText + ", " + end );
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -220,6 +218,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			sprites3[i].setOrigin(16, 16);
 		}
 	
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {

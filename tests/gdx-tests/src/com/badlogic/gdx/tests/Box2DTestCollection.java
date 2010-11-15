@@ -48,7 +48,6 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 
 	@Override public void render () {
 		tests[testIndex].render();
-		Gdx.input.processEvents(this);
 	}
 
 	@Override public void create () {
@@ -57,6 +56,8 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 			Box2DTest test = tests[testIndex];
 			test.create();			
 		}
+		
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {
