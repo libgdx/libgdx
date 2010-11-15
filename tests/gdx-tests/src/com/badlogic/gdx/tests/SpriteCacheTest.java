@@ -168,6 +168,8 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 				false, false);
 		normalCache = spriteCache.endCache();
 
+		angle = -15;
+		
 		spriteCache.beginCache();
 		for (int i = SPRITES; i < SPRITES << 1; i++) {
 			sprites3[i].setRotation(angle);

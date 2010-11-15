@@ -77,13 +77,15 @@ public class SpriteCache {
 
 	public void beginCache () {
 		if (builder != null) throw new IllegalStateException("endCache must be called before begin.");
-		builder = new CacheBuidler(mesh.getNumVertices() / 6);
+		builder = new CacheBuidler(mesh.getNumVertices() / 2 * 6);
+		mesh.getVerticesBuffer().compact();
 	}
 
 	public Cache endCache () {
 		if (builder == null) throw new IllegalStateException("beginCache mustbe called before endCache.");
 		Cache cache = builder.finish();
 		builder = null;
+		mesh.getVerticesBuffer().flip();
 		return cache;
 	}
 
@@ -91,10 +93,7 @@ public class SpriteCache {
 		if (builder == null) throw new IllegalStateException("beginCache mustbe called before add.");
 		builder.add(texture, vertices.length / Sprite.SPRITE_SIZE);
 
-		FloatBuffer buffer = mesh.getVerticesBuffer();
-		buffer.compact();
-		buffer.put(vertices);
-		buffer.flip();
+		mesh.getVerticesBuffer().put(vertices);
 	}
 
 	public void add (Texture texture, float x, float y, int srcWidth, int srcHeight, float u, float v, float u2, float v2,
@@ -367,7 +366,7 @@ public class SpriteCache {
 			gl.glLoadMatrixf(projectionMatrix.val, 0);
 			gl.glMatrixMode(GL10.GL_MODELVIEW);
 			gl.glLoadMatrixf(transformMatrix.val, 0);
-			
+
 			mesh.bind();
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
@@ -417,17 +416,15 @@ public class SpriteCache {
 		int[] counts = cache.counts;
 		if (Gdx.graphics.isGL20Available()) {
 			for (int i = 0, n = textures.length; i < n; i++) {
-				Texture texture = textures[i];
 				int count = counts[i];
-				texture.bind();
+				textures[i].bind();
 				mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
 				offset += count;
 			}
 		} else {
 			for (int i = 0, n = textures.length; i < n; i++) {
-				Texture texture = textures[i];
 				int count = counts[i];
-				texture.bind();
+				textures[i].bind();
 				mesh.render(GL10.GL_TRIANGLES, offset, count);
 				offset += count;
 			}

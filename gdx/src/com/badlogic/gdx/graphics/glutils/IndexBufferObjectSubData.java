@@ -75,6 +75,7 @@ public class IndexBufferObjectSubData {
 		usage = isStatic ? GL11.GL_STATIC_DRAW : GL11.GL_DYNAMIC_DRAW;
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
+		byteBuffer.flip();
 		bufferHandle = createBufferObject();
 	}
 
@@ -91,6 +92,8 @@ public class IndexBufferObjectSubData {
 
 		usage = GL11.GL_STATIC_DRAW;
 		buffer = byteBuffer.asShortBuffer();
+		buffer.flip();
+		byteBuffer.flip();
 		bufferHandle = createBufferObject();
 	}
 
