@@ -91,9 +91,11 @@ final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL1
 			GL15.glBufferData(target, (DoubleBuffer)data, usage);
 		else if (data instanceof ShortBuffer) //
 			GL15.glBufferData(target, (ShortBuffer)data, usage);
+		else if (data == null )
+			GL15.glBufferData(target, size, usage);
 	}
 
-	public void glBufferSubData (int target, int offset, int size, Buffer data) {
+	public void glBufferSubData (int target, int offset, int size, Buffer data) {				
 		if (data instanceof ByteBuffer)
 			GL15.glBufferSubData(target, offset, (ByteBuffer)data);
 		else if (data instanceof IntBuffer)
