@@ -68,7 +68,7 @@ package com.badlogic.gdx;
  * <p>
  * {@link Input} offers you various methods to poll user input from the
  * keyboard, touch screen, mouse and accelerometer. Additionally you can
- * implement an {@link InputProcessor} and use it with {@link Input#processEvents(InputProcessor)}
+ * implement an {@link InputProcessor} and use it with {@link Input#setInputProcessor(InputProcessor)}
  * to receive input events.
  * </p>
  * 
