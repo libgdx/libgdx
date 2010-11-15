@@ -49,6 +49,7 @@ public class VertexArray implements VertexData {
 		byteBuffer.order(ByteOrder.nativeOrder());
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
+		byteBuffer.flip();
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class VertexArray implements VertexData {
 	 */
 	@Override
 	public int getNumVertices() {
-		return buffer.limit();
+		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
 	/**

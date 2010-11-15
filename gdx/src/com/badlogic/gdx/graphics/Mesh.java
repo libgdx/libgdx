@@ -74,7 +74,7 @@ public class Mesh {
 	 */
 	public Mesh(boolean isStatic, int maxVertices, int maxIndices,
 			VertexAttribute... attributes) {
-		if (isStatic && (Gdx.gl11 != null || Gdx.gl20 != null)) {
+		if (Gdx.gl20 != null || (isStatic && Gdx.gl11 != null)) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
 			isVertexArray = false;
