@@ -144,8 +144,8 @@ public class Group extends Actor {
 					out.x = (x - child.x) / child.scaleX;
 					out.y = (y - child.y) / child.scaleY;
 				} else {
-					out.x = x / child.scaleX - (child.x - child.originX);
-					out.y = x / child.scaleY - (child.y - child.originY);
+					out.x = (x - child.x - child.originX) / child.scaleX + child.originX;
+					out.y = (y - child.y - child.originY) / child.scaleY + child.originY;
 				}
 			}
 		} else {
