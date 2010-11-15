@@ -185,7 +185,8 @@ public class IndexBufferObject {
 		if (Gdx.gl11 != null) {
 			GL11 gl = Gdx.gl11;
 			gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
-			if (isDirty) {				
+			if (isDirty) {		
+				byteBuffer.limit(buffer.limit()*2);
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
 				isDirty = false;
@@ -194,6 +195,7 @@ public class IndexBufferObject {
 			GL20 gl = Gdx.gl20;
 			gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 			if (isDirty) {				
+				byteBuffer.limit(buffer.limit()*2);
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 						.limit(), byteBuffer, usage);
 				isDirty = false;

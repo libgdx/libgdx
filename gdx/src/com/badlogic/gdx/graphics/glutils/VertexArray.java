@@ -98,6 +98,8 @@ public class VertexArray implements VertexData {
 		int textureUnit = 0;
 		int numAttributes = attributes.size();
 
+		byteBuffer.limit(buffer.limit()*4);
+
 		for (int i = 0; i < numAttributes; i++) {
 			VertexAttribute attribute = attributes.get(i);
 
@@ -174,7 +176,7 @@ public class VertexArray implements VertexData {
 						+ attribute.usage);
 			}
 		}
-		
+		byteBuffer.position(0);
 		isBound = false;
 	}
 

@@ -179,6 +179,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
+			byteBuffer.limit(buffer.limit()*4);
 			gl.glBufferSubData(GL11.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 //			gl.glBufferData(GL11.GL_ARRAY_BUFFER, byteBuffer.limit(),
 //					byteBuffer, usage);
@@ -244,6 +245,7 @@ public class VertexBufferObjectSubData implements VertexData {
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
+			byteBuffer.limit(buffer.limit()*4);
 			gl.glBufferSubData(GL11.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 //			gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(),
 //					byteBuffer, usage);

@@ -197,6 +197,7 @@ public class IndexBufferObjectSubData {
 			if (isDirty) {				
 //				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 //						.limit(), byteBuffer, usage);
+				byteBuffer.limit(buffer.limit()*2);
 				gl.glBufferSubData(GL11.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 				isDirty = false;
 			}
@@ -206,6 +207,7 @@ public class IndexBufferObjectSubData {
 			if (isDirty) {				
 //				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 //						.limit(), byteBuffer, usage);
+				byteBuffer.limit(buffer.limit()*2);
 				gl.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 				isDirty = false;
 			}
