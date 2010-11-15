@@ -307,4 +307,24 @@ public interface Graphics {
 	 * @return the {@link GraphicsType} of this Graphics instance
 	 */
 	public GraphicsType getType ();
+	
+	/**
+	 * @return the pixels per inch on the x-axis
+	 */
+	public float getPpiX();
+	
+	/**
+	 * @return the pixels per inch on the y-axis
+	 */
+	public float getPpiY();
+	
+	/**
+	 * @return the pixels per centimeter on the x-axis
+	 */
+	public float getPpcX();
+	
+	/**	 
+	 * @return the pixels per centimeter on the y-axis.
+	 */
+	public float getPpcY();
 }

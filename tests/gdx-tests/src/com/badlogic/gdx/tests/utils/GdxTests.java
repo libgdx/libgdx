@@ -28,6 +28,7 @@ import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.ObjTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
+import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.Pong;
 import com.badlogic.gdx.tests.SimpleTest;
 import com.badlogic.gdx.tests.SoundTest;
@@ -82,6 +83,7 @@ public class GdxTests
 		MultitouchTest.class,
 		ObjTest.class,
 		ParticleEmitterTest.class,
+		PixelsPerInchTest.class,
 		Pong.class,
 		SimpleTest.class,
 		SoundTest.class,

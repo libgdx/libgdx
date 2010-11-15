@@ -13,31 +13,41 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.opengl.GLSurfaceView.Renderer;
-import android.view.Display;
-import android.view.View;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import java.io.InputStream;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-import java.io.InputStream;
+
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.opengl.GLSurfaceView.Renderer;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.View;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * An implementation of {@link Graphics} for Android.
@@ -65,11 +75,16 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	boolean running = false;
 	boolean pause = false;
 	boolean resume = false;
-	boolean destroy = false;	
+	boolean destroy = false;
+	
+	private float ppiX = 0;
+	private float ppiY = 0;
+	private float ppcX = 0;
+	private float ppcY = 0;
 	
 	public AndroidGraphics (AndroidApplication activity, boolean useGL2IfAvailable) {
 		view = createGLSurfaceView(activity, useGL2IfAvailable);
-		this.app = activity;
+		this.app = activity;			
 	}
 
 	private View createGLSurfaceView (Activity activity, boolean useGL2) {
@@ -91,6 +106,16 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	}
 
+	private void updatePpi() {
+		DisplayMetrics metrics = new DisplayMetrics();
+		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		
+		ppiX = metrics.xdpi;
+		ppiY = metrics.ydpi;
+		ppcX = metrics.xdpi / 2.54f;
+		ppcY = metrics.ydpi / 2.54f;
+	}
+	
 	private boolean checkGL20 () {
 		EGL10 egl = (EGL10)EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
@@ -228,12 +253,15 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
 		this.width = width;
 		this.height = height;		
-		app.listener.resize(width, height);
+		updatePpi();
+		app.listener.resize(width, height);	
 	}
 
 	@Override public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
 		setupGL(gl);
-
+		
+		updatePpi();
+		
 		Mesh.invalidateAllMeshes();
 		AndroidTexture.invalidateAllTextures();
 		ShaderProgram.invalidateAllShaderPrograms();
@@ -397,5 +425,25 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	 */
 	@Override public GLCommon getGLCommon () {
 		return gl;
+	}
+
+	@Override
+	public float getPpiX() {
+		return ppiX;
+	}
+
+	@Override
+	public float getPpiY() {
+		return ppiY;
+	}
+
+	@Override
+	public float getPpcX() {
+		return ppcX;
+	}
+
+	@Override
+	public float getPpcY() {
+		return ppcY;
 	}
 }

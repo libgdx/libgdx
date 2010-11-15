@@ -1,6 +1,6 @@
 package com.badlogic.gdx.backends.jogl;
 
-import java.nio.ByteBuffer;
+import java.awt.Toolkit;
 
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
@@ -8,10 +8,6 @@ import javax.media.opengl.GLEventListener;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -86,5 +82,25 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	public void destroy() {		
 		canvas.getContext().makeCurrent();
 		listener.dispose();
+	}
+
+	@Override
+	public float getPpiX() {
+		return Toolkit.getDefaultToolkit().getScreenResolution();
+	}
+
+	@Override
+	public float getPpiY() {
+		return Toolkit.getDefaultToolkit().getScreenResolution();
+	}
+
+	@Override
+	public float getPpcX() {
+		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+	}
+
+	@Override
+	public float getPpcY() {
+		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 }
