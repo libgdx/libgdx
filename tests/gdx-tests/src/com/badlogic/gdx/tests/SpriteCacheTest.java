@@ -157,24 +157,24 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		}
 
 		float scale = 1;
-		float angle = 0;
+		float angle = 15;
 
 		spriteCache.beginCache();
-		for (int i = 0; i < sprites.length; i += 6)
-			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
-				false, false);
 		for (int i = 0; i < sprites2.length; i += 6)
 			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+				false, false);
+		for (int i = 0; i < sprites.length; i += 6)
+			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
 				false, false);
 		normalCache = spriteCache.endCache();
 
 		spriteCache.beginCache();
-		for (int i = 0; i < SPRITES; i++) {
+		for (int i = SPRITES; i < SPRITES << 1; i++) {
 			sprites3[i].setRotation(angle);
 			sprites3[i].setScale(scale);
 			spriteCache.add(sprites3[i]);
 		}
-		for (int i = SPRITES; i < SPRITES << 1; i++) {
+		for (int i = 0; i < SPRITES; i++) {
 			sprites3[i].setRotation(angle);
 			sprites3[i].setScale(scale);
 			spriteCache.add(sprites3[i]);

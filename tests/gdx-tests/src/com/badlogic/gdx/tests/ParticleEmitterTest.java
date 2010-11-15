@@ -80,7 +80,7 @@ public class ParticleEmitterTest extends GdxTest {
 					return false;
 				particleCount = Math.max(0, particleCount);
 				if (particleCount > emitter.getMaxParticleCount()) emitter.setMaxParticleCount(particleCount * 2);
-				emitter.getEmission().setHigh(particleCount / emitter.getLife().getHighMax());
+				emitter.getEmission().setHigh(particleCount / emitter.getLife().getHighMax() * 1000);
 				effect.getEmitters().clear();
 				effect.getEmitters().add(emitter);
 				return false;

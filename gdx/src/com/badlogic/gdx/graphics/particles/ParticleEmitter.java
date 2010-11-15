@@ -374,7 +374,9 @@ public class ParticleEmitter {
 		}
 		}
 
-		particle.setBounds(x - texture.getWidth() / 2, y - texture.getHeight() / 2, texture.getWidth(), texture.getHeight());
+		int texWidth = texture.getWidth();
+		int texHeight = texture.getHeight();
+		particle.setBounds(x - texWidth / 2, y - texHeight / 2, texWidth, texHeight);
 	}
 
 	private boolean updateParticle (int index, float delta, int deltaMillis) {
@@ -453,6 +455,7 @@ public class ParticleEmitter {
 		this.y = y;
 	}
 
+	// BOZO - Should be setSprite.
 	public void setTexture (Texture texture) {
 		this.texture = texture;
 		if (texture == null) return;

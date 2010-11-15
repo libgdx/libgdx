@@ -2,8 +2,8 @@ simple
 - Delay -
 active: false
 - Duration - 
-lowMin: 1.0
-lowMax: 1.0
+lowMin: 1000.0
+lowMax: 1000.0
 - Count - 
 min: 0
 max: 1000
@@ -20,8 +20,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1.0
-highMax: 1.0
+highMin: 1000.0
+highMax: 1000.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -148,8 +148,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1.0
-highMax: 1.0
+highMin: 1000.0
+highMax: 1000.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -285,8 +285,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1.0
-highMax: 1.5
+highMin: 1000.0
+highMax: 1500.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -446,8 +446,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 3.0
-highMax: 3.0
+highMin: 3000.0
+highMax: 3000.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
