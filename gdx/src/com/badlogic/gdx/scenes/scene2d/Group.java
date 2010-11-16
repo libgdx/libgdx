@@ -346,6 +346,35 @@ public class Group extends Actor {
 
 		return actor;
 	}
+	
+	/**
+	 * Swap two actors' sort order by index.
+ 	 * 0 is lowest while getActors().size() - 1 is largest.
+	 * @param first first Actor index
+	 * @param second second Actor index
+	 * @return false if indices are out of bound.
+	 */
+	public boolean swapActor (int first, int second) {
+		int maxIndex = children.size();
+		if (first < 0 || first >= maxIndex) return false;
+		if (second < 0 || second >= maxIndex) return false;
+		Collections.swap(children, first, second);
+		return true;
+	}
+	
+	/**
+	 * Swap two actors' sort order by reference.
+	 * @param first first Actor
+	 * @param second second Actor
+	 * @return false if any of the Actors is not the child of this Group.
+	 */
+	public boolean swapActor (Actor first, Actor second) {
+		int firstIndex = children.indexOf(first);
+		int secondIndex = children.indexOf(second);
+		if (firstIndex == -1 || secondIndex == -1) return false;
+		Collections.swap(children, firstIndex, secondIndex);
+		return true;
+	}
 
 	/**
 	 * @return all child {@link Actor}s
