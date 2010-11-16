@@ -83,8 +83,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				}
 			}, 1000);
 
-	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
-	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
+	ArrayList<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
+	ArrayList<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	int[] touchX = new int[10];
 	int[] touchY = new int[10];
 	boolean[] touched = new boolean[10];
@@ -290,11 +290,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		// synchronized in handler.postTouchEvent()
 		touchHandler.onTouch(event, this);
 		
-		if (sleepTime != 0)
+		if (sleepTime != 0) {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 			}
+		}
 		return true;
 	}
 

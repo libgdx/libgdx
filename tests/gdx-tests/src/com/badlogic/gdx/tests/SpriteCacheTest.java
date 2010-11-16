@@ -36,7 +36,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	Texture texture;
 	Texture texture2;
 	SpriteCache spriteCache;
-	SpriteCache.Cache normalCache, spritesCache;
+	int normalCacheID, spriteCacheID;
 	int renderMethod = 0;
 
 	@Override public void render () {
@@ -59,7 +59,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		begin = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-		spriteCache.draw(normalCache);
+		spriteCache.draw(normalCacheID);
 		draw1 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -91,7 +91,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		begin = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-		spriteCache.draw(spritesCache);
+		spriteCache.draw(spriteCacheID);
 		draw1 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -164,7 +164,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < sprites.length; i += 6)
 			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
 				false, false);
-		normalCache = spriteCache.endCache();
+		normalCacheID = spriteCache.endCache();
 
 		angle = -15;
 		
@@ -179,7 +179,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 			sprites3[i].setScale(scale);
 			spriteCache.add(sprites3[i]);
 		}
-		spritesCache = spriteCache.endCache();
+		spriteCacheID = spriteCache.endCache();
 		
 		Gdx.input.setInputProcessor(this);
 	}

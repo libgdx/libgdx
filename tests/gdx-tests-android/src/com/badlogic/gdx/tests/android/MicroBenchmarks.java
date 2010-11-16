@@ -88,11 +88,11 @@ public class MicroBenchmarks extends Activity {
 		testThread.start();
 	}
 
-	private void tic () {
+	void tic () {
 		start = System.nanoTime();
 	}
 
-	private void toc (final String info) {
+	void toc (final String info) {
 		final float time = (System.nanoTime() - start) / 1000000000.0f;
 
 		tv.post(new Runnable() {

@@ -147,8 +147,8 @@ public class SpriteBatch {
 
 		vertices = new float[size * Sprite.SPRITE_SIZE];
 
-		short[] indices = new short[size * 6];
 		int len = size * 6;
+		short[] indices = new short[len];
 		short j = 0;
 		for (int i = 0; i < len; i += 6, j += 4) {
 			indices[i + 0] = (short) (j + 0);

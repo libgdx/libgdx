@@ -1,41 +1,86 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.MathUtils;
 
+/**
+ * Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
+ * later be used for drawing. The size, color, and texture region for each cached image cannot be modified. This information is
+ * stored in video memory and does not have to be sent to the GPU each time it is drawn.<br>
+ * <br>
+ * To cache {@link Sprite sprites} or {@link Texture textures}, first call {@link SpriteCache#beginCache()}, then call the
+ * appropriate add method to define the images. To complete the cache, call {@link SpriteCache#endCache()} and store the returned
+ * cache ID.<br>
+ * <br>
+ * To draw with SpriteCache, first call {@link #begin()}, then call {@link #draw(int)} with a cache ID. When SpriteCache drawing
+ * is complete, call {@link #end()}.<br>
+ * <br>
+ * By default, SpriteCache draws using screen coordinates and uses an x-axis pointing to the right, an y-axis pointing upwards and
+ * the origin is the bottom left corner of the screen. The default transformation and projection matrices can be changed. If the
+ * screen is {@link ApplicationListener#resize(int, int) resized}, the SpriteCache's matrices must be updated. For example:<br>
+ * <code>cache.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());</code><br>
+ * <br>
+ * SpriteCache is managed. If the OpenGL context is lost and the restored, all OpenGL resources a SpriteCache uses internally are
+ * restored.<br>
+ * <br>
+ * SpriteCache is a reasonably heavyweight object. Typically only one instance should be used for an entire application.<br>
+ * <br>
+ * SpriteCache works with OpenGL ES 1.x and 2.0. For 2.0, it uses its own custom shader to draw.<br>
+ * <br>
+ * SpriteCache must be disposed once it is no longer needed.
+ */
 public class SpriteCache {
 	static private final float[] tempVertices = new float[Sprite.SPRITE_SIZE];
 
-	final Mesh mesh;
-	boolean drawing = false;
+	private final Mesh mesh;
+	private boolean drawing;
 	private final Matrix4 transformMatrix = new Matrix4();
 	private final Matrix4 projectionMatrix = new Matrix4();
+	private ArrayList<Cache> caches = new ArrayList();
 
 	private final Matrix4 combinedMatrix = new Matrix4();
-	ShaderProgram shader;
+	private ShaderProgram shader;
 
-	private CacheBuidler builder;
+	private boolean caching;
+	private final ArrayList<Texture> textures = new ArrayList(8);
+	private final ArrayList<Integer> counts = new ArrayList(8);
+	private int offset;
 
+	/**
+	 * Creates a cache that can contain up to 1000 images.
+	 */
 	public SpriteCache () {
 		this(1000);
 	}
 
+	/**
+	 * Creates a cache with the specified size, using a default shader if OpenGL ES 2.0 is being used.
+	 * @param size The maximum number of images this cache can hold. The memory required to hold the images is allocated up front.
+	 */
 	public SpriteCache (int size) {
+		this(size, createDefaultShader());
+	}
+
+	/**
+	 * Creates a cache with the specified size and OpenGL ES 2.0 shader.
+	 * @param size The maximum number of images this cache can hold. The memory required to hold the images is allocated up front.
+	 */
+	public SpriteCache (int size, ShaderProgram shader) {
 		mesh = new Mesh(true, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		mesh.setAutoBind(false);
 
-		short[] indices = new short[size * 6];
-		int len = size * 6;
+		int length = size * 6;
+		short[] indices = new short[length];
 		short j = 0;
-		for (int i = 0; i < len; i += 6, j += 4) {
+		for (int i = 0; i < length; i += 6, j += 4) {
 			indices[i + 0] = (short)(j + 0);
 			indices[i + 1] = (short)(j + 1);
 			indices[i + 2] = (short)(j + 2);
@@ -46,56 +91,59 @@ public class SpriteCache {
 		mesh.setIndices(indices);
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		if (Gdx.graphics.isGL20Available()) createShader();
 	}
 
-	private void createShader () {
-		String vertexShader = "attribute vec4 a_position;\n" //
-			+ "attribute vec4 a_color;\n" //
-			+ "attribute vec2 a_texCoords;\n" //
-			+ "uniform mat4 u_projectionViewMatrix;\n" //
-			+ "varying vec4 v_color; \n" //
-			+ "varying vec2 v_texCoords;\n" //
-			+ "void main()\n" //
-			+ "{\n" //
-			+ "   v_color = a_color; \n" //
-			+ "   v_texCoords = a_texCoords; \n" //
-			+ "   gl_Position =  u_projectionViewMatrix * a_position;\n" //
-			+ "}";
-		String fragmentShader = "precision mediump float;\n" //
-			+ "varying vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords;\n" //
-			+ "uniform sampler2D u_texture;\n" //
-			+ "void main()\n" //
-			+ "{\n" //
-			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
-			+ "}";
-		shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
-	}
-
+	/**
+	 * Starts the definition of a new cache, allowing the add and {@link #endCache()} methods to be called.
+	 */
 	public void beginCache () {
-		if (builder != null) throw new IllegalStateException("endCache must be called before begin.");
-		builder = new CacheBuidler(mesh.getNumVertices() / 2 * 6);
+		if (caching) throw new IllegalStateException("endCache must be called before begin.");
+		caching = true;
+
+		offset = mesh.getNumVertices() / 2 * 6;
 		mesh.getVerticesBuffer().compact();
 	}
 
-	public Cache endCache () {
-		if (builder == null) throw new IllegalStateException("beginCache mustbe called before endCache.");
-		Cache cache = builder.finish();
-		builder = null;
+	/**
+	 * Ends the definition of a cache, returning the cache ID to be used with {@link #draw(int)}.
+	 */
+	public int endCache () {
+		if (!caching) throw new IllegalStateException("beginCache must be called before endCache.");
+		caching = false;
+
+		Cache cache = new Cache(offset, textures.toArray(new Texture[textures.size()]), new int[counts.size()]);
+		for (int i = 0, n = counts.size(); i < n; i++)
+			cache.counts[i] = counts.get(i);
+		caches.add(cache);
+
 		mesh.getVerticesBuffer().flip();
-		return cache;
+
+		textures.clear();
+		counts.clear();
+
+		return caches.size() - 1;
 	}
 
+	/**
+	 * Adds the specified image to the cache.
+	 */
 	public void add (Texture texture, float[] vertices, int offset, int length) {
-		if (builder == null) throw new IllegalStateException("beginCache mustbe called before add.");
-		builder.add(texture, vertices.length / Sprite.SPRITE_SIZE);
+		if (!caching) throw new IllegalStateException("beginCache must be called before add.");
+
+		int count = vertices.length / Sprite.SPRITE_SIZE * 6;
+		int lastIndex = textures.size() - 1;
+		if (lastIndex < 0 || textures.get(lastIndex) != texture) {
+			textures.add(texture);
+			counts.add(count);
+		} else
+			counts.set(lastIndex, counts.get(lastIndex) + count);
 
 		mesh.getVerticesBuffer().put(vertices);
 	}
 
+	/**
+	 * Adds the specified image to the cache.
+	 */
 	public void add (Texture texture, float x, float y, int srcWidth, int srcHeight, float u, float v, float u2, float v2,
 		float color) {
 		final float fx2 = x + srcWidth;
@@ -128,6 +176,9 @@ public class SpriteCache {
 		add(texture, tempVertices, 0, 20);
 	}
 
+	/**
+	 * Adds the specified image to the cache.
+	 */
 	public void add (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint) {
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();
@@ -167,6 +218,9 @@ public class SpriteCache {
 		add(texture, tempVertices, 0, 20);
 	}
 
+	/**
+	 * Adds the specified image to the cache.
+	 */
 	public void add (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth,
 		int srcHeight, Color tint, boolean flipX, boolean flipY) {
 
@@ -219,6 +273,9 @@ public class SpriteCache {
 		add(texture, tempVertices, 0, 20);
 	}
 
+	/**
+	 * Adds the specified image to the cache.
+	 */
 	public void add (Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY) {
 
@@ -344,10 +401,16 @@ public class SpriteCache {
 		add(texture, tempVertices, 0, 20);
 	}
 
+	/**
+	 * Adds the specified sprite to the cache.
+	 */
 	public void add (Sprite sprite) {
 		add(sprite.getTexture(), sprite.getVertices(), 0, 20);
 	}
 
+	/**
+	 * Prepares the OpenGL state for SpriteCache rendering.
+	 */
 	public void begin () {
 		if (drawing) throw new IllegalStateException("end must be called before begin.");
 
@@ -358,9 +421,7 @@ public class SpriteCache {
 			gl.glDisable(GL10.GL_DEPTH_TEST);
 			gl.glDisable(GL10.GL_CULL_FACE);
 			gl.glDepthMask(false);
-
 			gl.glEnable(GL10.GL_TEXTURE_2D);
-			// gl.glActiveTexture( GL10.GL_TEXTURE0 );
 
 			gl.glMatrixMode(GL10.GL_PROJECTION);
 			gl.glLoadMatrixf(projectionMatrix.val, 0);
@@ -376,9 +437,7 @@ public class SpriteCache {
 			gl.glDisable(GL20.GL_DEPTH_TEST);
 			gl.glDisable(GL20.GL_CULL_FACE);
 			gl.glDepthMask(false);
-
 			gl.glEnable(GL20.GL_TEXTURE_2D);
-			// gl.glActiveTexture( GL20.GL_TEXTURE0 );
 
 			shader.begin();
 			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
@@ -389,6 +448,9 @@ public class SpriteCache {
 		drawing = true;
 	}
 
+	/**
+	 * Completes rendering for this SpriteCache.f
+	 */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
@@ -408,9 +470,13 @@ public class SpriteCache {
 		mesh.unbind();
 	}
 
-	public void draw (Cache cache) {
+	/**
+	 * Draws all the images defined for the specified cache ID.
+	 */
+	public void draw (int cacheID) {
 		if (!drawing) throw new IllegalStateException("SpriteCache.begin must be called before draw.");
 
+		Cache cache = caches.get(cacheID);
 		int offset = cache.offset;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
@@ -431,6 +497,9 @@ public class SpriteCache {
 		}
 	}
 
+	/**
+	 * Releases all resources held by this SpriteCache.
+	 */
 	public void dispose () {
 		mesh.dispose();
 		if (shader != null) shader.dispose();
@@ -454,34 +523,7 @@ public class SpriteCache {
 		transformMatrix.set(transform);
 	}
 
-	private class CacheBuidler {
-		private final ArrayList<Texture> textures = new ArrayList(8);
-		private final ArrayList<Integer> counts = new ArrayList(8);
-		private final int offset;
-
-		CacheBuidler (int offset) {
-			this.offset = offset;
-		}
-
-		void add (Texture texture, int count) {
-			count *= 6;
-			int lastIndex = textures.size() - 1;
-			if (lastIndex < 0 || textures.get(lastIndex) != texture) {
-				textures.add(texture);
-				counts.add(count);
-			} else
-				counts.set(lastIndex, counts.get(lastIndex) + count);
-		}
-
-		Cache finish () {
-			Cache cache = new Cache(offset, textures.toArray(new Texture[textures.size()]), new int[counts.size()]);
-			for (int i = 0, n = counts.size(); i < n; i++)
-				cache.counts[i] = counts.get(i);
-			return cache;
-		}
-	}
-
-	public class Cache {
+	static private class Cache {
 		final int offset;
 		final Texture[] textures;
 		final int[] counts;
@@ -491,5 +533,32 @@ public class SpriteCache {
 			this.textures = textures;
 			this.counts = counts;
 		}
+	}
+
+	static ShaderProgram createDefaultShader () {
+		if (!Gdx.graphics.isGL20Available()) return null;
+		String vertexShader = "attribute vec4 a_position;\n" //
+			+ "attribute vec4 a_color;\n" //
+			+ "attribute vec2 a_texCoords;\n" //
+			+ "uniform mat4 u_projectionViewMatrix;\n" //
+			+ "varying vec4 v_color; \n" //
+			+ "varying vec2 v_texCoords;\n" //
+			+ "void main()\n" //
+			+ "{\n" //
+			+ "   v_color = a_color; \n" //
+			+ "   v_texCoords = a_texCoords; \n" //
+			+ "   gl_Position =  u_projectionViewMatrix * a_position;\n" //
+			+ "}";
+		String fragmentShader = "precision mediump float;\n" //
+			+ "varying vec4 v_color;\n" //
+			+ "varying vec2 v_texCoords;\n" //
+			+ "uniform sampler2D u_texture;\n" //
+			+ "void main()\n" //
+			+ "{\n" //
+			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
+			+ "}";
+		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
+		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
+		return shader;
 	}
 }
