@@ -10,6 +10,7 @@ import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
+import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FillrateTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
@@ -67,6 +68,7 @@ public class GdxTests
 		BitmapFontTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
+		FilesTest.class,
 		FillrateTest.class,
 		FloatTest.class,
 		FrameBufferTest.class,

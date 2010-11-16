@@ -161,4 +161,14 @@ public interface Files {
 	 *             if the file does not exist
 	 */
 	public FileHandle getFileHandle(String filename, FileType type);
+	
+	/**
+	 * @return the external storage path directory, e.g. /sdcard/ on Android or /home/mzechner/ on the desktop.
+	 */
+	public String getExternalStoragePath();
+	
+	/**
+	 * @return whether the external storage is available for file i/o
+	 */
+	public boolean isExternalStorageAvailable();
 }

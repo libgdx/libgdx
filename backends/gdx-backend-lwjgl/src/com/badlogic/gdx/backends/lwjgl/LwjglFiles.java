@@ -95,4 +95,14 @@ final class LwjglFiles implements Files {
 			throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
 		}
 	}
+
+	@Override
+	public String getExternalStoragePath() {
+		return externalPath;
+	}
+
+	@Override
+	public boolean isExternalStorageAvailable() {
+		return true;
+	}
 }

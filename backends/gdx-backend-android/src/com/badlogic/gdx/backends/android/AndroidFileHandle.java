@@ -13,16 +13,19 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import android.content.res.AssetManager;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * A {@link FileHandle} implementation for Android. Encapsulates assets and files on the external storage device.
+ * A {@link FileHandle} implementation for Android. Encapsulates assets and
+ * files on the external storage device.
  * 
  * @author mzechner
  * 
@@ -32,43 +35,47 @@ public class AndroidFileHandle implements FileHandle {
 	private final AssetManager manager;
 
 	/** the filename **/
-	private final String filename;
+	private final String filename;	
 
-	AndroidFileHandle (AssetManager manager, String filename) {
+	AndroidFileHandle(AssetManager manager, String filename) {
 		this.manager = manager;
-		this.filename = filename;
+		this.filename = filename;		
 	}
 
 	/**
 	 * @return whether this is an asset file or an external file
 	 */
-	public boolean isAsset () {
+	public boolean isAsset() {
 		return manager != null;
 	}
 
 	/**
 	 * @return the {@link AssetManager} or null
 	 */
-	public AssetManager getAssetManager () {
+	public AssetManager getAssetManager() {
 		return manager;
 	}
 
 	/**
 	 * @return the filename
 	 */
-	public String getPath () {
+	public String getPath() {
 		return filename;
 	}
 
-	public InputStream readFile () {
+	public InputStream readFile() {
 		try {
-			return manager.open(filename);
+			if (manager!=null) {
+				return manager.open(filename);
+			} else {
+				return new FileInputStream(filename);
+			}
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + filename);
 		}
 	}
 
-	public String toString () {
+	public String toString() {
 		return filename;
 	}
 }

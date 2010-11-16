@@ -193,4 +193,14 @@ public class AndroidFiles implements Files {
 			return out;
 		}
 	}
+
+	@Override
+	public String getExternalStoragePath() {
+		return sdcard;
+	}
+
+	@Override
+	public boolean isExternalStorageAvailable() {
+		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+	}
 }
