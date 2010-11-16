@@ -230,6 +230,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	void processEvents() {
 		synchronized(this) {
 			if(processor!=null) {		
+				InputProcessor processor = this.processor;
+
 				int len = keyEvents.size();
 				for(int i=0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
