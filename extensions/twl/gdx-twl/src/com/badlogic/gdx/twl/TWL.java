@@ -233,7 +233,7 @@ public class TWL implements InputProcessor {
 
 					public InputStream getInputStream () {
 						if (!path.endsWith(".xml")) return null; // Only theme files are loaded through the URL.
-						return fileHandle.readFile();
+						return fileHandle.read();
 					}
 				};
 			}

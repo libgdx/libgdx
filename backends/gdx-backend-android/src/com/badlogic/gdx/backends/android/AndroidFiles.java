@@ -13,13 +13,15 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.File;
+import java.io.InputStream;
+
 import android.content.res.AssetManager;
 import android.os.Environment;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.*;
 
 /**
  * An implementation of the {@link Files} interface for Android. External files are stored and accessed relative to
@@ -29,178 +31,50 @@ import java.io.*;
  * 
  */
 public class AndroidFiles implements Files {
-	/** external storage path **/
 	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
-
-	/** asset manager **/
 	protected final AssetManager assets;
 
 	public AndroidFiles (AssetManager assets) {
 		this.assets = assets;
 	}
 
-	/**
-	 * @return the asset manager.
-	 */
-	protected AssetManager getAssetManager () {
-		return assets;
-	}
-
-	private InputStream readExternalFile (String fileName) {
-		FileInputStream in = null;
-
-		try {
-			in = new FileInputStream(sdcard + fileName);
-		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("File not found: " + fileName + " (" + FileType.External + ")", ex);
-		}
-
-		return in;
-	}
-
-	private InputStream readInternalFile (String fileName) {
-		InputStream in = null;
-		try {
-			in = assets.open(fileName);
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Unable to read file: " + fileName + " (" + FileType.Internal + ")", ex);
-		}
-
-		return in;
-	}
-
-	private OutputStream writeExternalFile (String filename) {
-		FileOutputStream out = null;
-
-		try {
-			out = new FileOutputStream(sdcard + filename);
-		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("File not found: " + filename + " (" + FileType.External + ")", ex);
-		}
-
-		return out;
-	}
-
-	private InputStream readAbsoluteFile (String filename) {
-		FileInputStream in = null;
-
-		try {
-			in = new FileInputStream(filename);
-		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("File not found: " + filename + " (" + FileType.Absolute + ")", ex);
-		}
-
-		return in;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public FileHandle getFileHandle (String filename, FileType type) {
+	@Override public FileHandle getFileHandle (String fileName, FileType type) {
+		File file;
 		if (type == FileType.Internal) {
-			boolean exists = true;
-
-			try {
-				InputStream in = assets.open(filename);
-				in.close();
-			} catch (Exception ex) {
-				exists = false;
+			file = new File(fileName);
+			if (FileHandle.class.getResourceAsStream("/" + fileName) == null) {
+				try {
+					InputStream in = assets.open(fileName);
+					in.close();
+				} catch (Exception ignored) {
+				}
 			}
-
-			if (!exists)
-				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")");
-			else
-				return new AndroidFileHandle(assets, filename);
-		}
-
-		if (type == FileType.External) {
-			if (new File(sdcard + filename).exists() == false)
-				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")");
-			else
-				return new AndroidFileHandle(null, sdcard + filename);
 		} else {
-			if (new File(filename).exists() == false)
-				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")");
+			if (type == FileType.External)
+				file = new File(sdcard + fileName);
 			else
-				return new AndroidFileHandle(null, filename);
+				file = new File(fileName);
 		}
+		return new AndroidFileHandle(assets, file, type);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public String[] listDirectory (String directory, FileType type) {
-		if (type == FileType.Internal) {
-			try {
-				return assets.list(directory);
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Unable to open directory: " + directory);
-			}
-		}
-
-		if (type == FileType.External) {
-			if (new File(sdcard + directory).exists() == false)
-				throw new GdxRuntimeException("Unable to open directory: " + directory);
-			else
-				return new File(sdcard + directory).list();
-		} else {
-			if (new File(directory).exists() == false)
-				throw new GdxRuntimeException("Unable to open directory: " + directory);
-			else
-				return new File(directory).list();
-		}
+	@Override public FileHandle internal (String path) {
+		return getFileHandle(path, FileType.Internal);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public boolean makeDirectory (String directory, FileType type) {
-		if (type == FileType.Internal) return false;
-
-		if (type == FileType.External)
-			return new File(sdcard + directory).mkdirs();
-		else
-			return new File(directory).mkdirs();
+	@Override public FileHandle external (String path) {
+		return getFileHandle(path, FileType.External);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public InputStream readFile (String fileName, FileType type) {
-		if (type == FileType.Internal) return readInternalFile(fileName);
-		if (type == FileType.External)
-			return readExternalFile(fileName);
-		else
-			return readAbsoluteFile(fileName);
+	@Override public FileHandle absolute (String path) {
+		return getFileHandle(path, FileType.Absolute);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public OutputStream writeFile (String filename, FileType type) {
-		if (type == FileType.Internal) return null;
-		if (type == FileType.External)
-			return writeExternalFile(filename);
-		else {
-			FileOutputStream out = null;
-
-			try {
-				out = new FileOutputStream(filename);
-			} catch (FileNotFoundException ex) {
-				throw new GdxRuntimeException("File not found: " + filename + " (" + type + ")", ex);
-			}
-
-			return out;
-		}
-	}
-
-	@Override
-	public String getExternalStoragePath() {
+	@Override public String getExternalStoragePath () {
 		return sdcard;
 	}
 
-	@Override
-	public boolean isExternalStorageAvailable() {
+	@Override public boolean isExternalStorageAvailable () {
 		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 	}
 }

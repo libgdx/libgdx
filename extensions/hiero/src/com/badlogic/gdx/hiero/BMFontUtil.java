@@ -111,7 +111,7 @@ public class BMFontUtil {
 		else {
 			Kerning kerning = new Kerning();
 			try {
-				kerning.load(Gdx.files.readFile(ttfFileRef, FileType.Internal), font.getSize());
+				kerning.load(Gdx.files.internal(ttfFileRef).read(), font.getSize());
 			} catch (IOException ex) {
 				System.out.println("Unable to read kerning information from font: " + ttfFileRef);
 			}

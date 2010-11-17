@@ -36,7 +36,7 @@ public class ParticleEmitterTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 
 		effect = new ParticleEffect();
-		effect.load(Gdx.files.getFileHandle("data/test.p", FileType.Internal), "data", FileType.Internal);
+		effect.load(Gdx.files.internal("data/test.p"), Gdx.files.internal("data"));
 		effect.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		// Of course, a ParticleEffect is normally just used, without messing around with its emitters.
 		emitters = new ArrayList(effect.getEmitters());

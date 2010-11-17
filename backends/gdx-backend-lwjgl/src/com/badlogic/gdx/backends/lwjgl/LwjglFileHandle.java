@@ -16,52 +16,35 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * A {@link FileHandle} implementation for the desktop.
- * 
  * @author mzechner
- * 
+ * @author Nathan Sweet <misc@n4te.com>
  */
-final class LwjglFileHandle implements FileHandle {
-	/** the file **/
-	private final File file;
-	private final FileType type;
-
+final class LwjglFileHandle extends FileHandle {
 	LwjglFileHandle (File file, FileType type) {
-		this.file = file;
-		this.type = type;
+		super(file, type);
 	}
 
-	/**
-	 * @return the underlying {@link File}.
-	 */
-	public File getFile () {
-		return file;
+	public FileHandle child (String name) {
+		return new LwjglFileHandle(new File(file, name), type);
 	}
 
-	public InputStream readFile () {
-		if (type == FileType.Internal) {
-			InputStream input = LwjglFileHandle.class.getResourceAsStream("/" + file);
-			if (input != null) return input;
+	public FileHandle parent () {
+		File parent = file.getParentFile();
+		if (parent == null) {
+			if (type == FileType.Absolute)
+				parent = new File("/");
+			else
+				parent = new File(".");
 		}
-		try {
-			return new FileInputStream(file);
-		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Error reading file: " + file);
-		}
-	}
-
-	public String toString () {
-		return file.toString();
-	}
-	
-	@Override public String getPath() {
-		return file.toString();
+		return new LwjglFileHandle(parent, type);
 	}
 }

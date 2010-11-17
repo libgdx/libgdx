@@ -37,7 +37,7 @@ public class ObjTest extends GdxTest implements InputProcessor {
 	float touchStartY = 0;	
 
 	@Override public void create () {
-		mesh = ModelLoader.loadObj(Gdx.files.readFile("data/cube.obj", FileType.Internal));
+		mesh = ModelLoader.loadObj(Gdx.files.internal("data/cube.obj").read());
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 

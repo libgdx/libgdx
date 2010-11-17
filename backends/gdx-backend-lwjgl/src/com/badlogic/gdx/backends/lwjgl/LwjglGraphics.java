@@ -125,7 +125,7 @@ final class LwjglGraphics implements Graphics {
 	}
 
 	public Pixmap newPixmap (FileHandle file) {
-		return newPixmap(file.readFile());
+		return newPixmap(file.read());
 	}
 
 	public Pixmap newPixmap (Object nativePixmap) {

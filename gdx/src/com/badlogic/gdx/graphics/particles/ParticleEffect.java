@@ -89,14 +89,13 @@ public class ParticleEffect {
 		}
 	}
 
-	public void load (FileHandle effectFile, String imagesDir, FileType fileType) {
+	public void load (FileHandle effectFile, FileHandle imagesDir) {
 		loadEmitters(effectFile);
-		loadEmitterImages(imagesDir, fileType);
+		loadEmitterImages(imagesDir);
 	}
 
 	void loadEmitters (FileHandle file) {
-		InputStream input = file.readFile();
-		if (input == null) throw new GdxRuntimeException("Effect file not found: " + file);
+		InputStream input = file.read();
 		emitters.clear();
 		BufferedReader reader = null;
 		try {
@@ -119,16 +118,13 @@ public class ParticleEffect {
 		}
 	}
 
-	private void loadEmitterImages (String imagesDir, FileType fileType) {
-		imagesDir = imagesDir.replace('\\', '/');
-		if (!imagesDir.endsWith("/")) imagesDir += '/';
+	private void loadEmitterImages (FileHandle imagesDir) {
 		for (int i = 0, n = emitters.size(); i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
-			imagePath = imagePath.replace('\\', '/');
-			imagePath = imagesDir + new File(imagePath).getName();
-			emitter.setTexture(loadTexture(Gdx.files.getFileHandle(imagePath, fileType)));
+			String imageName = new File(imagePath).getName();
+			emitter.setTexture(loadTexture(imagesDir.child(imageName)));
 		}
 	}
 

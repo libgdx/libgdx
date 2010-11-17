@@ -27,23 +27,16 @@ public class BitmapFontTest extends GdxTest {
 	private float alpha;
 	InputProcessor inputProcessor;
 
-	@Override
-	public void create () {
+	@Override public void create () {
 		if (spriteBatch != null) return;
 		spriteBatch = new SpriteBatch();
 
-		Matrix4 transform = new Matrix4();		
-		transform.setToTranslation(0, Gdx.graphics.getHeight(), 0);
-		transform.mul(new Matrix4().setToScaling(1,-1,1));
-		spriteBatch.setTransformMatrix(transform);		
-		
 		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
 			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
-		logoSprite.flip(false, true); 
 		logoSprite.setColor(1, 1, 1, 0.5f);
 
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/verdana39.png", FileType.Internal), true);
+			"data/verdana39.png", FileType.Internal), false);
 
 		inputProcessor = new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer) {
@@ -51,7 +44,7 @@ public class BitmapFontTest extends GdxTest {
 				return false;
 			}
 		};
-		
+
 		Gdx.input.setInputProcessor(inputProcessor);
 
 		cache1 = new BitmapFontCache(font);
@@ -75,8 +68,7 @@ public class BitmapFontTest extends GdxTest {
 		cache5.setWrappedText(text, 0, 270, red, 480, HAlignment.CENTER);
 	}
 
-	@Override
-	public void render () {
+	@Override public void render () {
 		alpha = (alpha + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
 		GL10 gl = Gdx.graphics.getGL10();

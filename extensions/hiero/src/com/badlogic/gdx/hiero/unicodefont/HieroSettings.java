@@ -37,7 +37,7 @@ public class HieroSettings {
 	 */
 	public HieroSettings (String hieroFileRef) {
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.readFile(hieroFileRef, FileType.Absolute)));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.absolute(hieroFileRef).read()));
 			while (true) {
 				String line = reader.readLine();
 				if (line == null) break;

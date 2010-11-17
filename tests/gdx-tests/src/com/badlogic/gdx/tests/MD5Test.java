@@ -29,10 +29,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 	@Override
 	public void create() {
 		Gdx.app.log("MD5 Test", "created");
-		model = MD5Loader.loadModel(Gdx.files.readFile("data/zfat.md5mesh",
-				FileType.Internal));
-		anim = MD5Loader.loadAnimation(Gdx.files.readFile("data/walk1.md5anim",
-				FileType.Internal));
+		model = MD5Loader.loadModel(Gdx.files.internal("data/zfat.md5mesh").read());
+		anim = MD5Loader.loadAnimation(Gdx.files.internal("data/walk1.md5anim").read());
 		skeleton = new MD5Joints();
 		skeleton.joints = new float[anim.frames[0].joints.length];
 		animInfo = new MD5AnimationInfo(anim.frames.length,

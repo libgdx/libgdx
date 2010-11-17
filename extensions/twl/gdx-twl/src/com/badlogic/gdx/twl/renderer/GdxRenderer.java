@@ -226,34 +226,4 @@ public class GdxRenderer implements Renderer {
 			return next;
 		}
 	}
-
-	public void applyTheme (GUI gui, String themeFile, final FileType fileType) {
-		File file = new File(themeFile);
-		final File themeRoot = file.getParentFile();
-		final String themeFileName = file.getName();
-		try {
-			URL themeURL = new URL("gdx-twl", "local", 80, themeFileName, new URLStreamHandler() {
-				protected URLConnection openConnection (URL url) throws IOException {
-					final String path = new File(themeRoot, url.getPath()).getPath();
-					final FileHandle fileHandle = Gdx.files.getFileHandle(path, fileType);
-					return new URLConnection(url) {
-						public void connect () {
-						}
-
-						public Object getContent () {
-							return fileHandle;
-						}
-
-						public InputStream getInputStream () {
-							if (!path.endsWith(".xml")) return null; // Only theme files are loaded through the URL.
-							return fileHandle.readFile();
-						}
-					};
-				}
-			});
-			gui.applyTheme(ThemeManager.createThemeManager(themeURL, this));
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error loading theme: " + themeFile, ex);
-		}
-	}
 }

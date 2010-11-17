@@ -61,7 +61,7 @@ final class LwjglMusic implements Music, Runnable {
 	}
 
 	private void openAudioInputStream () throws UnsupportedAudioFileException, IOException {
-		ain = AudioSystem.getAudioInputStream(new BufferedInputStream(handle.readFile()));
+		ain = AudioSystem.getAudioInputStream(new BufferedInputStream(handle.read()));
 		AudioFormat baseFormat = ain.getFormat();
 		AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16,
 			baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);

@@ -13,162 +13,69 @@
 
 package com.badlogic.gdx;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * <p>This interface encapsulates the access of internal, external and absolute
- * files.</p> 
- * 
- * <p>
- * Internal files are read-only and are bundled with the application. On
- * Android internal files map to assets. On the desktop the classpath is first
- * searched for the file. If this fails the root directory of the application
- * is searched.
- * </p>
- * 
- * <p>
- * External files can be read and written to. On Android they are relative to
- * the SD-card, on the desktop they are relative to the user home directory.
- * </p>
- * 
- * <p>
- * Absolute files are just that, fully qualified filenames. To ensure
- * portability across platforms use absolute files only when absolutely
- * necessary.
- * </p>
- * 
+ * Provides standard access to the filesystem, classpath, Android SD card, and Android assets directory.
  * @author mzechner
- * 
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public interface Files {
 	/**
-	 * Enum describing the three file types, internal, external and absolute.
-	 * Internal files are located in the asset directory on Android and are
-	 * relative to the root of the classpath or application's root directory on
-	 * the desktop. External files are relative to the SD-card on Android and
-	 * relative to the home directory of the current user on the desktop.
-	 * Absolute files are just that, absolute files that can point anywhere.
-	 * 
+	 * Indicates how to resolve a path to a file.
 	 * @author mzechner
-	 * 
 	 */
 	public enum FileType {
-		Internal, External, Absolute
+		/**
+		 * Path relative to the root of the classpath, and if not found there, to the asset directory on Android or the
+		 * application's root directory on the desktop. Internal files are always readonly.
+		 */
+		Internal,
+
+		/**
+		 * Path relative to the root of the SD card on Android and to the home directory of the current user on the desktop.
+		 */
+		External,
+
+		/**
+		 * Path that is a fully qualified, absolute filesystem path. To ensure portability across platforms use absolute files only
+		 * when absolutely necessary.
+		 */
+		Absolute
 	}
 
 	/**
-	 * Returns an {@link InputStream} to the given file. If type is equal to
-	 * {@link FileType#Internal} an internal file will be opened. On Android
-	 * this is relative to the assets directory, on the desktop it is relative
-	 * to the applications classpath or if that fails to the root directory. If 
-	 * type is equal to {@link FileType#External} an external file will be opened. On Android
-	 * this is relative to the SD-card, on the desktop it is relative to the
-	 * current user's home directory. If type is equal to
-	 * {@link FileType#Absolute} the filename is interpreted as an absolute
-	 * filename.
-	 * 
-	 * @param fileName
-	 *            the name of the file to open.
-	 * @param type
-	 *            the type of file to open.
-	 * @return the InputStream
-	 * @throws GdxRuntimeException
-	 *             in case the file could not be opened.
+	 * Returns a handle representing a file or directory.
+	 * @param type Determines how the path is resolved.
+	 * @throws GdxRuntimeException if the type is internal and the file does not exist.
+	 * @see FileType
 	 */
-	public InputStream readFile(String fileName, FileType type);
+	public FileHandle getFileHandle (String path, FileType type);
 
 	/**
-	 * Returns and {@link OutputStream} to the given file. If the file does not
-	 * exist it is created. If the file exists it will be overwritten. If type
-	 * is equal to {@link FileType#Internal} an exception is thrown. If type is 
-	 * equal to {@link FileType#External} an external file will be opened. On Android this is relative to the
-	 * SD-card, on the desktop it is relative to the current user's home
-	 * directory. If type is equal to {@link FileType#Absolute} the filename is
-	 * interpreted as an absolute filename.
-	 * 
-	 * @param filename
-	 *            the name of the file to open
-	 * @param type
-	 *            the type of the file to open
-	 * @return the OutputStream
-	 * @throws GdxRuntimeException
-	 *             in case the file could not be opened or type equals {@link FileType#Internal}
+	 * Convenience method that returns an {@link FileType#Internal} file handle.
 	 */
-	public OutputStream writeFile(String filename, FileType type);
+	public FileHandle internal (String path);
 
 	/**
-	 * Creates a new directory or directory hierarchy on the external storage.
-	 * If the directory parameter contains sub folders and the parent folders
-	 * don't exist yet they will be created. If type is equal to
-	 * {@link FileType#Internal} false will be returned. If type is equal
-	 * to {@link FileType#External} an external directory will be created. On
-	 * Android this is relative to the SD-card, on the desktop it is relative to
-	 * the current user's home directory. If type is equal to
-	 * {@link FileType#Absolute} the directory is interpreted as an absolute
-	 * directory name.
-	 * 
-	 * @param directory
-	 *            the directory
-	 * @param type
-	 *            the type of the directory
-	 * @return true in case the directory could be created, false otherwise
+	 * Convenience method that returns an {@link FileType#External} file handle.
 	 */
-	public boolean makeDirectory(String directory, FileType type);
+	public FileHandle external (String path);
 
 	/**
-	 * Lists the files and directories in the given directory. If type is equal
-	 * to {@link FileType#Internal} an internal directory will be listed. On
-	 * Android this is relative to the assets directory, on the desktop it is
-	 * relative to the applications root directory. If type is equal to
-	 * {@link FileType#External} an external directory will be listed. On
-	 * Android this is relative to the SD-card, on the desktop it is relative to
-	 * the current user's home directory. If type is equal to
-	 * {@link FileType#Absolute} the filename is interpreted as an absolute
-	 * directory.
-	 * 
-	 * @param directory
-	 *            the directory
-	 * @param type
-	 *            the type of the directory
-	 * @return the files and directories in the given directory
-	 * @throws GdxRuntimeException
-	 *             if the directory does not exist
+	 * Convenience method that returns an {@link FileType#Absolute} file handle.
 	 */
-	public String[] listDirectory(String directory, FileType type);
+	public FileHandle absolute (String path);
 
 	/**
-	 * Returns a {@link FileHandle} object for a file. If type is equal to
-	 * {@link FileType#Internal} an internal file will be opened. On Android
-	 * this is relative to the assets directory, on the desktop it is relative
-	 * to the application's classpath or if that false to the root directory. If type is equal to
-	 * {@link FileType#External} an external file will be opened. On Android
-	 * this is relative to the SD-card, on the desktop it is relative to the
-	 * current user's home directory. If type is equal to
-	 * {@link FileType#Absolute} the filename is interpreted as an absolute
-	 * filename.
-	 * 
-	 * @param filename
-	 *            the name of the file
-	 * @param type
-	 *            the type of the file
-	 * @return the FileDescriptor or null if the descriptor could not be created
-	 * @throws GdxRuntimeException
-	 *             if the file does not exist
+	 * Returns the external storage path directory. This is the SD card on Android or the home directory of the current user on the
+	 * desktop.
 	 */
-	public FileHandle getFileHandle(String filename, FileType type);
-	
+	public String getExternalStoragePath ();
+
 	/**
-	 * @return the external storage path directory, e.g. /sdcard/ on Android or /home/mzechner/ on the desktop.
+	 * Returns true if the external storage is ready for file i/o.
 	 */
-	public String getExternalStoragePath();
-	
-	/**
-	 * @return whether the external storage is available for file i/o
-	 */
-	public boolean isExternalStorageAvailable();
+	public boolean isExternalStorageAvailable ();
 }

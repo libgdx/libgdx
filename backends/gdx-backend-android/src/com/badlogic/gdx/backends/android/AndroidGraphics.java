@@ -222,7 +222,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	 */
 	@Override
 	public Pixmap newPixmap(FileHandle file) {
-		return newPixmap(file.readFile());
+		return newPixmap(file.read());
 	}
 
 	/**

@@ -20,6 +20,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
@@ -81,9 +82,9 @@ public final class AndroidAudio implements Audio {
 
 		MediaPlayer mediaPlayer = new MediaPlayer();
 
-		if (aHandle.isAsset()) {
+		if (aHandle.type() == FileType.Internal) {
 			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetManager().openFd(aHandle.getPath());
+				AssetFileDescriptor descriptor = aHandle.assets.openFd(aHandle.path());
 				mediaPlayer.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
 				descriptor.close();
 				mediaPlayer.prepare();
@@ -91,17 +92,18 @@ public final class AndroidAudio implements Audio {
 				musics.add(music);
 				return music;
 			} catch (Exception ex) {
-				throw new GdxRuntimeException("Couldn't load Music from file '" + file + "'", ex);
+				throw new GdxRuntimeException("Error loading audio file: " + file
+					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
 			}
 		} else {
 			try {
-				mediaPlayer.setDataSource(aHandle.getPath());
+				mediaPlayer.setDataSource(aHandle.path());
 				mediaPlayer.prepare();
 				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
 				musics.add(music);
 				return music;
 			} catch (Exception ex) {
-				throw new GdxRuntimeException("Couldn't load music from file '" + file + "'", ex);
+				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
 
@@ -112,20 +114,21 @@ public final class AndroidAudio implements Audio {
 	 */
 	@Override public Sound newSound (FileHandle file) {
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
-		if (aHandle.isAsset()) {
+		if (aHandle.type() == FileType.Internal) {
 			try {
-				AssetFileDescriptor descriptor = aHandle.getAssetManager().openFd(aHandle.getPath());
+				AssetFileDescriptor descriptor = aHandle.assets.openFd(aHandle.path());
 				AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
 				descriptor.close();
 				return sound;
-			} catch (IOException e) {
-				throw new GdxRuntimeException("Couldn't load Sound from file '" + file + "'", e);
+			} catch (IOException ex) {
+				throw new GdxRuntimeException("Error loading audio file: " + file
+					+ "\nNote: Internal audio files must be placed in the assets directory.", ex);
 			}
 		} else {
 			try {
-				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.getPath(), 1));
-			} catch (Exception e) {
-				throw new GdxRuntimeException("Couldn't load Sound from file '" + file + "'", e);
+				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.path(), 1));
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
 	}

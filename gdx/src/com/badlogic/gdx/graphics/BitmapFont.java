@@ -23,7 +23,9 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.files.FileHandleStream;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -75,32 +77,12 @@ public class BitmapFont {
     private int capHeight;
 
     /**
-     * Creates a new BitmapFont using the default 14pt Arial font included in
+     * Creates a new BitmapFont using the default 15pt Arial font included in
      * the gdx jar file. This is here to get you up and running quickly.
      */
     public BitmapFont() {
-
-        this(new FileHandle() {
-            @Override
-            public String getPath() {
-                return "/com/badlogic/gdx/utils/arial-15.fnt";
-            }
-
-            @Override
-            public InputStream readFile() {
-                return BitmapFont.class.getResourceAsStream(getPath());
-            }
-        }, new FileHandle() {
-            @Override
-            public String getPath() {
-                return "/com/badlogic/gdx/utils/arial-15.png";
-            }
-
-            @Override
-            public InputStream readFile() {
-                return BitmapFont.class.getResourceAsStream(getPath());
-            }
-        }, false);
+		this(Gdx.files.internal("com/badlogic/gdx/utils/arial-15.fnt"),
+			Gdx.files.internal("com/badlogic/gdx/utils/arial-15.png"), false);
     }
 
     public BitmapFont(FileHandle fontFile, Texture texture, boolean flip) {
@@ -131,7 +113,7 @@ public class BitmapFont {
         float invTexWidth = 1.0f / texture.getWidth();
         float invTexHeight = 1.0f / texture.getHeight();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.readFile()), 512);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
         try {
             reader.readLine(); // info
 

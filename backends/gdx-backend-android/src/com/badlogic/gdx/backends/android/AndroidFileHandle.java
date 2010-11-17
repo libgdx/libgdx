@@ -13,9 +13,13 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.content.res.AssetManager;
 
@@ -24,58 +28,82 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * A {@link FileHandle} implementation for Android. Encapsulates assets and
- * files on the external storage device.
- * 
  * @author mzechner
- * 
+ * @author Nathan Sweet <misc@n4te.com>
  */
-public class AndroidFileHandle implements FileHandle {
-	/** the asset manager or null if this is an external file **/
-	private final AssetManager manager;
+public class AndroidFileHandle extends FileHandle {
+	// The asset manager, or null if this is an external file.
+	final AssetManager assets;
 
-	/** the filename **/
-	private final String filename;	
-
-	AndroidFileHandle(AssetManager manager, String filename) {
-		this.manager = manager;
-		this.filename = filename;		
+	AndroidFileHandle (AssetManager manager, File file, FileType type) {
+		super(file, type);
+		this.assets = manager;
 	}
 
-	/**
-	 * @return whether this is an asset file or an external file
-	 */
-	public boolean isAsset() {
-		return manager != null;
+	public FileHandle child (String name) {
+		return new AndroidFileHandle(assets, new File(file, name), type);
 	}
 
-	/**
-	 * @return the {@link AssetManager} or null
-	 */
-	public AssetManager getAssetManager() {
-		return manager;
-	}
-
-	/**
-	 * @return the filename
-	 */
-	public String getPath() {
-		return filename;
-	}
-
-	public InputStream readFile() {
-		try {
-			if (manager!=null) {
-				return manager.open(filename);
-			} else {
-				return new FileInputStream(filename);
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error reading file: " + filename);
+	public FileHandle parent () {
+		File parent = file.getParentFile();
+		if (parent == null) {
+			if (type == FileType.Absolute)
+				parent = new File("/");
+			else
+				parent = new File(".");
 		}
+		return new AndroidFileHandle(assets, parent, type);
 	}
 
-	public String toString() {
-		return filename;
+	public InputStream read () {
+		if (type == FileType.Internal) {
+			InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath());
+			if (input != null) return input;
+			try {
+				return assets.open(file.getPath());
+			} catch (IOException ex) {
+				throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
+			}
+		}
+		return super.read();
+	}
+
+	public FileHandle[] list () {
+		if (type == FileType.Internal) {
+			try {
+				String[] relativePaths = assets.list(file.getPath());
+				FileHandle[] handles = new FileHandle[relativePaths.length];
+				for (int i = 0, n = handles.length; i < n; i++)
+					handles[i] = new AndroidFileHandle(assets, new File(file, relativePaths[i]), type);
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error listing children: " + file + " (" + type + ")", ex);
+			}
+		}
+		return super.list();
+	}
+
+	public boolean isDirectory () {
+		if (type == FileType.Internal) {
+			try {
+				assets.list(file.getPath());
+				return true;
+			} catch (Exception ex) {
+				return false;
+			}
+		}
+		return super.isDirectory();
+	}
+
+	public boolean exists () {
+		if (type == FileType.Internal) {
+			try {
+				InputStream in = assets.open(file.getPath());
+				in.close();
+				return true;
+			} catch (Exception ex) {
+				return false;
+			}
+		}
+		return super.exists();
 	}
 }

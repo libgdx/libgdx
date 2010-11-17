@@ -63,7 +63,7 @@ final class LwjglTexture implements Texture {
 		this.isManaged = managed;
 		this.isMipMapped = TextureFilter.isMipMap(minFilter);
 
-		if (!isMipMapped && file.getPath().endsWith(".png")) {
+		if (!isMipMapped && file.path().endsWith(".png")) {
 			// Fast path.
 			loadPNG(file);
 		} else {
@@ -130,7 +130,7 @@ final class LwjglTexture implements Texture {
 
 	private void loadPNG (FileHandle file) {
 		try {
-			pngDecoder.decodeHeader(file.readFile());
+			pngDecoder.decodeHeader(file.read());
 			texWidth = pngDecoder.getWidth();
 			texHeight = pngDecoder.getHeight();
 			int stride = texWidth * 4;

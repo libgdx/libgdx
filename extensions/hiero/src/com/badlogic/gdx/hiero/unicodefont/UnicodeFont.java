@@ -772,7 +772,7 @@ public class UnicodeFont {
 	 */
 	static private Font createFont (String ttfFileRef) {
 		try {
-			return Font.createFont(Font.TRUETYPE_FONT, Gdx.files.readFile(ttfFileRef, FileType.Absolute));
+			return Font.createFont(Font.TRUETYPE_FONT, Gdx.files.absolute(ttfFileRef).read());
 		} catch (FontFormatException ex) {
 			throw new GdxRuntimeException("Invalid font: " + ttfFileRef, ex);
 		} catch (IOException ex) {
