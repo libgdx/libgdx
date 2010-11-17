@@ -45,12 +45,6 @@ public class PixmapBlendingTest extends GdxTest {
       pixD.drawPixmap(pixS1, 0, 0, 0, 0, 76, 76);   
       pixD.drawPixmap(pixS2, 0, 0, 0, 0, 76, 76);
       
-      try {
-		ImageIO.write(((BufferedImage)pixD.getNativePixmap()), ".png", new File("out.png"));
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-      
       logoSprite = new Sprite(Gdx.graphics.newUnmanagedTexture(pixD,
             TextureFilter.Nearest, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
          logoSprite.flip(false, true);                    
