@@ -47,6 +47,7 @@ final class LwjglPixmap implements Pixmap {
 	}
 
 	LwjglPixmap (BufferedImage image) {
+		if (image == null) throw new IllegalArgumentException("image cannot be null.");
 		pixmap = convert(image);
 	}
 
@@ -62,10 +63,7 @@ final class LwjglPixmap implements Pixmap {
 	}
 
 	private int getInternalFormat (Pixmap.Format format) {
-// if (format == Pixmap.Format.RGBA4444 || format == Pixmap.Format.RGBA8888 || format == Pixmap.Format.RGB565)
 		return BufferedImage.TYPE_4BYTE_ABGR;
-// else
-// return BufferedImage.TYPE_BYTE_GRAY;
 	}
 
 	public void drawCircle (int x, int y, int radius) {
