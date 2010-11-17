@@ -14,21 +14,19 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * @author mzechner
  * @author Nathan Sweet <misc@n4te.com>
  */
 final class LwjglFileHandle extends FileHandle {
+	LwjglFileHandle (String fileName, FileType type) {
+		super(fileName, type);
+	}
+
 	LwjglFileHandle (File file, FileType type) {
 		super(file, type);
 	}
@@ -40,7 +38,7 @@ final class LwjglFileHandle extends FileHandle {
 	public FileHandle parent () {
 		File parent = file.getParentFile();
 		if (parent == null) {
-			if (type == FileType.Absolute)
+			if (type == FileType.Classpath || type == FileType.Absolute)
 				parent = new File("/");
 			else
 				parent = new File(".");

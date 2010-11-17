@@ -13,11 +13,8 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.io.File;
-
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * @author mzechner
@@ -27,27 +24,23 @@ final class LwjglFiles implements Files {
 	private final String externalPath = System.getProperty("user.home") + "/";
 
 	@Override public FileHandle getFileHandle (String fileName, FileType type) {
-		File file;
-		if (type == FileType.External)
-			file = new File(this.externalPath + fileName);
-		else if (type == FileType.Internal) {
-			file = new File(fileName);
-			if (FileHandle.class.getResourceAsStream("/" + fileName) == null && !file.exists())
-				throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
-		}
-		return new LwjglFileHandle(new File(fileName), type);
+		return new LwjglFileHandle(fileName, type);
+	}
+
+	@Override public FileHandle classpath (String path) {
+		return new LwjglFileHandle(path, FileType.Classpath);
 	}
 
 	@Override public FileHandle internal (String path) {
-		return getFileHandle(path, FileType.Internal);
+		return new LwjglFileHandle(path, FileType.Internal);
 	}
 
 	@Override public FileHandle external (String path) {
-		return getFileHandle(path, FileType.External);
+		return new LwjglFileHandle(path, FileType.External);
 	}
 
 	@Override public FileHandle absolute (String path) {
-		return getFileHandle(path, FileType.Absolute);
+		return new LwjglFileHandle(path, FileType.Absolute);
 	}
 
 	@Override public String getExternalStoragePath () {

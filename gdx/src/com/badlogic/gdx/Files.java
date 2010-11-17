@@ -25,11 +25,19 @@ public interface Files {
 	/**
 	 * Indicates how to resolve a path to a file.
 	 * @author mzechner
+	 * @author Nathan Sweet <misc@n4te.com>
 	 */
 	public enum FileType {
 		/**
-		 * Path relative to the root of the classpath, and if not found there, to the asset directory on Android or the
-		 * application's root directory on the desktop. Internal files are always readonly.
+		 * Path relative to the root of the classpath. Classpath files are always readonly. Note that classpath files are not
+		 * compatible with some functionality on Android, such as {@link Audio#newSound(FileHandle)} and
+		 * {@link Audio#newMusic(FileHandle)}.
+		 */
+		Classpath,
+
+		/**
+		 * Path relative to the asset directory on Android and to the application's root directory on the desktop. Internal files
+		 * are always readonly.
 		 */
 		Internal,
 
@@ -40,18 +48,23 @@ public interface Files {
 
 		/**
 		 * Path that is a fully qualified, absolute filesystem path. To ensure portability across platforms use absolute files only
-		 * when absolutely necessary.
+		 * when absolutely (heh) necessary.
 		 */
-		Absolute
+		Absolute;
 	}
 
 	/**
 	 * Returns a handle representing a file or directory.
 	 * @param type Determines how the path is resolved.
-	 * @throws GdxRuntimeException if the type is internal and the file does not exist.
+	 * @throws GdxRuntimeException if the type is classpath or internal and the file does not exist.
 	 * @see FileType
 	 */
 	public FileHandle getFileHandle (String path, FileType type);
+
+	/**
+	 * Convenience method that returns a {@link FileType#Classpath} file handle.
+	 */
+	public FileHandle classpath (String path);
 
 	/**
 	 * Convenience method that returns an {@link FileType#Internal} file handle.
@@ -69,13 +82,14 @@ public interface Files {
 	public FileHandle absolute (String path);
 
 	/**
-	 * @return the external storage path directory. This is the SD card on Android or the home directory of the current user on the
-	 * desktop.
+	 * Returns the external storage path directory. This is the SD card on Android and the home directory of the current user on
+	 * the desktop.
 	 */
 	public String getExternalStoragePath ();
 
 	/**
-	 * @return true if the external storage is ready for file i/o.
+	 * Returns true if the external storage is ready for file IO. Eg, on Android, the SD card is not available when mounted for use
+	 * with a PC.
 	 */
 	public boolean isExternalStorageAvailable ();
 }

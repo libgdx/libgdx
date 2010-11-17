@@ -19,12 +19,14 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
- * A {@link FileHandle} implementation for the desktop.
- * 
  * @author mzechner
- * 
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public class JoglFileHandle extends FileHandle {
+	JoglFileHandle (String fileName, FileType type) {
+		super(fileName, type);
+	}
+
 	JoglFileHandle (File file, FileType type) {
 		super(file, type);
 	}
@@ -36,7 +38,7 @@ public class JoglFileHandle extends FileHandle {
 	public FileHandle parent () {
 		File parent = file.getParentFile();
 		if (parent == null) {
-			if (type == FileType.Absolute)
+			if (type == FileType.Classpath || type == FileType.Absolute)
 				parent = new File("/");
 			else
 				parent = new File(".");

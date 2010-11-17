@@ -13,45 +13,12 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * A FileHandle intended to be subclassed for the purpose of implemented {@link #read()} and/or {@link #write(boolean)}. Methods
- * that would modify a file instead throw UnsupportedOperationException.
+ * that would manipulate the file instead throw UnsupportedOperationException.
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public abstract class FileHandleStream extends FileHandle {
 	public FileHandleStream (String path) {
 		super(new File(path), FileType.Absolute);
-	}
-
-	public FileHandle child (String name) {
-		throw new UnsupportedOperationException();
-	}
-
-	public FileHandle parent () {
-		throw new UnsupportedOperationException();
-	}
-
-	public String path () {
-		return file.getPath();
-	}
-
-	public String name () {
-		return file.getName();
-	}
-
-	public String extension () {
-		String name = file.getName();
-		int dotIndex = name.lastIndexOf('.');
-		if (dotIndex == -1) return "";
-		return name.substring(dotIndex + 1);
-	}
-
-	public String nameWithoutExtension () {
-		String name = file.getName();
-		int dotIndex = name.lastIndexOf('.');
-		if (dotIndex == -1) return name;
-		return name.substring(0, dotIndex);
-	}
-
-	public FileType type () {
-		return type;
 	}
 
 	public boolean isDirectory () {
@@ -64,6 +31,14 @@ public abstract class FileHandleStream extends FileHandle {
 
 	public boolean exists () {
 		return true;
+	}
+
+	public FileHandle child (String name) {
+		throw new UnsupportedOperationException();
+	}
+
+	public FileHandle parent () {
+		throw new UnsupportedOperationException();
 	}
 
 	public InputStream read () {

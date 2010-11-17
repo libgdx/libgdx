@@ -81,8 +81,8 @@ public class BitmapFont {
      * the gdx jar file. This is here to get you up and running quickly.
      */
     public BitmapFont() {
-		this(Gdx.files.internal("com/badlogic/gdx/utils/arial-15.fnt"),
-			Gdx.files.internal("com/badlogic/gdx/utils/arial-15.png"), false);
+		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
+			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), false);
     }
 
     public BitmapFont(FileHandle fontFile, Texture texture, boolean flip) {

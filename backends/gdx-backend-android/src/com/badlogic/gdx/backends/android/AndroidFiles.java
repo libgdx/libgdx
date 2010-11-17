@@ -13,22 +13,15 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.io.File;
-import java.io.InputStream;
-
 import android.content.res.AssetManager;
 import android.os.Environment;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * An implementation of the {@link Files} interface for Android. External files are stored and accessed relative to
- * Environment.getExternalStorageDirectory().getAbsolutePath(). Internal files are accessed relative to the assets directory.
- * 
  * @author mzechner
- * 
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public class AndroidFiles implements Files {
 	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
@@ -38,36 +31,24 @@ public class AndroidFiles implements Files {
 		this.assets = assets;
 	}
 
-	@Override public FileHandle getFileHandle (String fileName, FileType type) {
-		File file;
-		if (type == FileType.Internal) {
-			file = new File(fileName);
-			if (FileHandle.class.getResourceAsStream("/" + fileName) == null) {
-				try {
-					InputStream in = assets.open(fileName);
-					in.close();
-				} catch (Exception ignored) {
-				}
-			}
-		} else {
-			if (type == FileType.External)
-				file = new File(sdcard + fileName);
-			else
-				file = new File(fileName);
-		}
-		return new AndroidFileHandle(assets, file, type);
+	@Override public FileHandle getFileHandle (String path, FileType type) {
+		return new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
+	}
+
+	@Override public FileHandle classpath (String path) {
+		return new AndroidFileHandle(null, path, FileType.Classpath);
 	}
 
 	@Override public FileHandle internal (String path) {
-		return getFileHandle(path, FileType.Internal);
+		return new AndroidFileHandle(assets, path, FileType.Internal);
 	}
 
 	@Override public FileHandle external (String path) {
-		return getFileHandle(path, FileType.External);
+		return new AndroidFileHandle(null, path, FileType.External);
 	}
 
 	@Override public FileHandle absolute (String path) {
-		return getFileHandle(path, FileType.Absolute);
+		return new AndroidFileHandle(null, path, FileType.Absolute);
 	}
 
 	@Override public String getExternalStoragePath () {
