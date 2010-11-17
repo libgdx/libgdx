@@ -29,7 +29,7 @@ import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
-import com.badlogic.gdx.tests.PixmapBlendingTesting;
+import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.SpriteSheetTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -92,7 +92,7 @@ public class GdxTests
 		SpriteSheetTest.class,
 		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
-		PixmapBlendingTesting.class,
+		PixmapBlendingTest.class,
 		Pong.class,
 		SimpleTest.class,
 		SoundTest.class,

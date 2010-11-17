@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class PixmapBlendingTesting extends GdxTest {
+public class PixmapBlendingTest extends GdxTest {
    private SpriteBatch spriteBatch;
    private Texture text;
    private Sprite logoSprite, test3, test4;
