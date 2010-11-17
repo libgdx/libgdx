@@ -62,7 +62,7 @@ public class LevelRenderer implements ApplicationListener {
 			float uSize = 62.0f / 256.0f;
 			float vSize = 62.0f / 256.0f;
 			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.readFile("data/level.map", FileType.Internal)));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.internal("data/level.map").read()));
 			String line = reader.readLine();
 			String tokens[] = line.split(",");
 			camera.getPosition().set(Float.parseFloat(tokens[0]), 0, Float.parseFloat(tokens[1]));
