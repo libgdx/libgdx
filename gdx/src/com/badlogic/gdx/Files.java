@@ -69,13 +69,13 @@ public interface Files {
 	public FileHandle absolute (String path);
 
 	/**
-	 * Returns the external storage path directory. This is the SD card on Android or the home directory of the current user on the
+	 * @return the external storage path directory. This is the SD card on Android or the home directory of the current user on the
 	 * desktop.
 	 */
 	public String getExternalStoragePath ();
 
 	/**
-	 * Returns true if the external storage is ready for file i/o.
+	 * @return true if the external storage is ready for file i/o.
 	 */
 	public boolean isExternalStorageAvailable ();
 }
