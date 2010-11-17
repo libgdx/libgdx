@@ -43,12 +43,15 @@ public class LwjglTestStarter {
 				@Override public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
-					new LwjglApplication(test,testName, 480, 320, test.needsGL20());					
+					new LwjglApplication(test, testName, 480, 320, test.needsGL20());
 				}
 			});
 
 			add(pane, BorderLayout.CENTER);
 			add(button, BorderLayout.SOUTH);
+
+			// GdxTest test = GdxTests.newTest("SpriteSheetTest");
+			// new LwjglApplication(test, "Test", 480, 320, test.needsGL20());
 		}
 	}
 
