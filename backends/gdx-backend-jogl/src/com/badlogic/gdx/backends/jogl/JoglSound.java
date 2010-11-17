@@ -50,7 +50,7 @@ public class JoglSound implements Sound {
 
 	public JoglSound (JoglAudio audio, JoglFileHandle file) throws UnsupportedAudioFileException, IOException {
 		this.audio = audio;
-		InputStream fin = new BufferedInputStream(file.readFile());
+		InputStream fin = new BufferedInputStream(file.read());
 		AudioInputStream ain = AudioSystem.getAudioInputStream(fin);
 		AudioFormat baseFormat = ain.getFormat();
 		AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16,

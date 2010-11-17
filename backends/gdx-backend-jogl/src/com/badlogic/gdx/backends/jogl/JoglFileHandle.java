@@ -14,13 +14,9 @@
 package com.badlogic.gdx.backends.jogl;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * A {@link FileHandle} implementation for the desktop.
@@ -28,40 +24,23 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-public class JoglFileHandle implements FileHandle {
-	/** the file **/
-	private final File file;
-	private final FileType type;
-
+public class JoglFileHandle extends FileHandle {
 	JoglFileHandle (File file, FileType type) {
-		this.file = file;
-		this.type = type;
+		super(file, type);
 	}
 
-	/**
-	 * @return the underlying {@link File}.
-	 */
-	public File getFile () {
-		return file;
+	public FileHandle child (String name) {
+		return new JoglFileHandle(new File(file, name), type);
 	}
 
-	public InputStream readFile () {
-		if (type == FileType.Internal) {
-			InputStream input = JoglFileHandle.class.getResourceAsStream("/" + file);
-			if (input != null) return input;
+	public FileHandle parent () {
+		File parent = file.getParentFile();
+		if (parent == null) {
+			if (type == FileType.Absolute)
+				parent = new File("/");
+			else
+				parent = new File(".");
 		}
-		try {
-			return new FileInputStream(file);
-		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Error reading file: " + file, ex);
-		}
-	}
-
-	public String toString () {
-		return file.toString();
-	}
-
-	@Override public String getPath () {
-		return file.toString();
+		return new JoglFileHandle(parent, type);
 	}
 }

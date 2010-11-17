@@ -13,11 +13,11 @@
 
 package com.badlogic.gdx.backends.jogl;
 
+import java.io.File;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.*;
 
 /**
  * Implementation for a desktop application of {@link Files}. Internal resources are relative to the application root directory,
@@ -29,75 +29,35 @@ import java.io.*;
 final class JoglFiles implements Files {
 	private final String externalPath = System.getProperty("user.home") + "/";
 
-	public FileHandle getFileHandle (String fileName, FileType type) {
-		if (type == FileType.External) fileName = this.externalPath + fileName;
-		File file = new File(fileName);
-
-		if (JoglFileHandle.class.getResource("/" + fileName) == null && file.exists() == false)
-			throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
-		else
-			return new JoglFileHandle(file, type);
-	}
-
-	public String[] listDirectory (String directory, FileType type) {
-		if (type == FileType.External) directory = this.externalPath + directory;
-		File file = new File(directory);
-
-		if (file.exists() == false) throw new GdxRuntimeException("Directory not found: " + directory + " (" + type + ")");
-
-		return file.list();
-	}
-
-	public boolean makeDirectory (String directory, FileType type) {
-		if (type == FileType.Internal) return false;
-
-		File file = null;
-		if (type == FileType.Absolute)
-			file = new File(directory);
-		else
-			file = new File(this.externalPath + directory);
-		return file.mkdirs();
-	}
-
-	public InputStream readFile (String fileName, FileType type) {
+	@Override public FileHandle getFileHandle (String fileName, FileType type) {
+		File file;
 		if (type == FileType.External)
-			fileName = this.externalPath + fileName;
-		else if (type == FileType.Internal) {
-            final String path = fileName.startsWith("/") ? fileName : "/" + fileName;
-            InputStream input = JoglFileHandle.class.getResourceAsStream(path);
-			if (input != null) return input;
-		}
-
-		try {
-			return new FileInputStream(fileName);
-		} catch (FileNotFoundException ex) {
-			throw new GdxRuntimeException("Error reading file: " + fileName);
-		}
-	}
-
-	public OutputStream writeFile (String fileName, FileType type) {
-		if (type == FileType.Internal) return null;
-
-		File file = null;
-		if (type == FileType.Absolute)
-			file = new File(fileName);
-		else
 			file = new File(this.externalPath + fileName);
-
-		try {
-			return new FileOutputStream(file);
-		} catch (FileNotFoundException e) {
-			throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
+		else if (type == FileType.Internal) {
+			file = new File(fileName);
+			if (FileHandle.class.getResourceAsStream("/" + fileName) == null && !file.exists())
+				throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
 		}
+		return new JoglFileHandle(new File(fileName), type);
 	}
 
-	@Override
-	public String getExternalStoragePath() {
+	@Override public FileHandle internal (String path) {
+		return getFileHandle(path, FileType.Internal);
+	}
+
+	@Override public FileHandle external (String path) {
+		return getFileHandle(path, FileType.External);
+	}
+
+	@Override public FileHandle absolute (String path) {
+		return getFileHandle(path, FileType.Absolute);
+	}
+
+	@Override public String getExternalStoragePath () {
 		return externalPath;
 	}
 
-	@Override
-	public boolean isExternalStorageAvailable() {
+	@Override public boolean isExternalStorageAvailable () {
 		return true;
 	}
 }
