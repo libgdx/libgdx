@@ -30,6 +30,7 @@ import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
+import com.badlogic.gdx.tests.SpritePerformanceTest;
 import com.badlogic.gdx.tests.SpriteSheetTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
@@ -89,7 +90,6 @@ public class GdxTests
 		MultitouchTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
-		SpriteSheetTest.class,
 		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
@@ -100,6 +100,8 @@ public class GdxTests
 		SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
+		SpritePerformanceTest.class,
+		SpriteSheetTest.class,
 		StageTest.class,
 		TerrainTest.class,		
 		TextureRenderTest.class,

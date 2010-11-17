@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-public class IndexBufferObject {
+public class IndexBufferObject implements IndexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
 	ShortBuffer buffer;

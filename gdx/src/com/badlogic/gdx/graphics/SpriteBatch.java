@@ -14,6 +14,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -119,7 +120,7 @@ public class SpriteBatch {
 	public SpriteBatch() {
 		this(1000);
 	}
-
+	
 	/**
 	 * <p>
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an
@@ -138,6 +139,52 @@ public class SpriteBatch {
 	 */
 	public SpriteBatch(int size) {
 		this.mesh = new Mesh(false, size * 4, size * 6, new VertexAttribute(
+				Usage.Position, 2, "a_position"), new VertexAttribute(
+				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
+				Usage.TextureCoordinates, 2, "a_texCoords"));
+
+		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
+
+		vertices = new float[size * Sprite.SPRITE_SIZE];
+
+		int len = size * 6;
+		short[] indices = new short[len];
+		short j = 0;
+		for (int i = 0; i < len; i += 6, j += 4) {
+			indices[i + 0] = (short) (j + 0);
+			indices[i + 1] = (short) (j + 1);
+			indices[i + 2] = (short) (j + 2);
+			indices[i + 3] = (short) (j + 2);
+			indices[i + 4] = (short) (j + 3);
+			indices[i + 5] = (short) (j + 0);
+		}
+		mesh.setIndices(indices);
+
+		if (Gdx.graphics.isGL20Available())
+			createShader();
+	}
+
+	/**
+	 * <p>
+	 * Constructs a new SpriteBatch. Sets the projection matrix to an
+	 * orthographic projection with y-axis point upwards, x-axis point to the
+	 * right and the origin being in the bottome left corner of the screen. The
+	 * projection will be pixel perfect with respect to the screen resolution.
+	 * </p>
+	 * 
+	 * <p>
+	 * The size parameter specifies the maximum size of a single batch in number
+	 * of sprites
+	 * </p>
+	 * 
+	 * @param size
+	 *            the batch size in number of sprites
+	 * @param type
+	 * 			  the {@link VertexDataType} of the mesh to be used. This is an expert function.
+	 */
+	public SpriteBatch(int size, VertexDataType type) {
+		this.mesh = new Mesh(type, false, size * 4, size * 6, new VertexAttribute(
 				Usage.Position, 2, "a_position"), new VertexAttribute(
 				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
 				Usage.TextureCoordinates, 2, "a_texCoords"));

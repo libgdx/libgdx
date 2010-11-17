@@ -458,13 +458,11 @@ public class SpriteCache {
 		if (Gdx.graphics.isGL20Available() == false) {
 			GL10 gl = Gdx.gl10;
 			gl.glDepthMask(true);
-			gl.glDisable(GL10.GL_BLEND);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
 		} else {
 			shader.end();
 			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(true);
-			gl.glDisable(GL20.GL_BLEND);
 			gl.glDisable(GL20.GL_TEXTURE_2D);
 		}
 		mesh.unbind();

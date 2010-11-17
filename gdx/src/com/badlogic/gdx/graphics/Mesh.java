@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
+import com.badlogic.gdx.graphics.glutils.IndexBufferObjectSubData;
+import com.badlogic.gdx.graphics.glutils.IndexData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
+import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.VertexData;
 
 /**
@@ -49,11 +52,15 @@ import com.badlogic.gdx.graphics.glutils.VertexData;
  * 
  */
 public class Mesh {
+	public enum VertexDataType {
+		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
+	}
+
 	/** list of all meshes **/
 	static final ArrayList<Mesh> meshes = new ArrayList<Mesh>();
 
 	final VertexData vertices;
-	final IndexBufferObject indices;
+	final IndexData indices;
 	boolean autoBind = true;
 	final boolean isVertexArray;
 
@@ -77,6 +84,43 @@ public class Mesh {
 		if (Gdx.gl20 != null || (isStatic && Gdx.gl11 != null)) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
+			isVertexArray = false;
+		} else {
+			vertices = new VertexArray(maxVertices, attributes);
+			indices = new IndexBufferObject(maxIndices);
+			isVertexArray = true;
+		}
+
+		meshes.add(this);
+	}
+
+	/**
+	 * Creates a new Mesh with the given attributes. This is an expert method
+	 * with no error checking. Use at your own risk.
+	 * 
+	 * @param type
+	 *            the {@link VertexDataType} to be used, VBO or VA.
+	 * @param isStatic
+	 *            whether this mesh is static or not. Allows for internal
+	 *            optimizations.
+	 * @param maxVertices
+	 *            the maximum number of vertices this mesh can hold
+	 * @param maxIndices
+	 *            the maximum number of indices this mesh can hold
+	 * @param attributes
+	 *            the {@link VertexAttribute}s. Each vertex attribute defines
+	 *            one property of a vertex such as position, normal or texture
+	 *            coordinate
+	 */
+	public Mesh(VertexDataType type, boolean isStatic, int maxVertices,
+			int maxIndices, VertexAttribute... attributes) {
+		if (type == VertexDataType.VertexBufferObject) {
+			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObject(isStatic, maxIndices);
+			isVertexArray = false;
+		} else if (type == VertexDataType.VertexBufferObjectSubData) {
+			vertices = new VertexBufferObjectSubData(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObjectSubData(isStatic, maxIndices);
 			isVertexArray = false;
 		} else {
 			vertices = new VertexArray(maxVertices, attributes);
@@ -178,12 +222,13 @@ public class Mesh {
 	 * Sets whether to bind the underlying {@link VertexArray} or
 	 * {@link VertexBufferObject} automatically on a call to one of the
 	 * {@link #render(int)} methods or not. Usually you want to use autobind.
-	 * Manual binding is an expert functionality. There is a driver bug
-	 * on the MSM720xa chips that will fuck up memory if you manipulate the
-	 * vertices and indices of a Mesh multiple times while it is bound. Keep 
-	 * this in mind.
+	 * Manual binding is an expert functionality. There is a driver bug on the
+	 * MSM720xa chips that will fuck up memory if you manipulate the vertices
+	 * and indices of a Mesh multiple times while it is bound. Keep this in
+	 * mind.
 	 * 
-	 * @param autoBind whether to autobind meshes.
+	 * @param autoBind
+	 *            whether to autobind meshes.
 	 */
 	public void setAutoBind(boolean autoBind) {
 		this.autoBind = autoBind;
