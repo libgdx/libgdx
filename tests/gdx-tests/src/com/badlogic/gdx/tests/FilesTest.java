@@ -105,6 +105,7 @@ public class FilesTest extends GdxTest {
 
 	private void testWriteRead (String path, FileType type) {
 		FileHandle handle = Gdx.files.getFileHandle(path, type);
+		handle.delete();
 		if (handle.exists()) fail();
 		if (handle.isDirectory()) fail();
 		if (handle.delete()) fail();

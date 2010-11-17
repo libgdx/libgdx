@@ -14,17 +14,13 @@
 package com.badlogic.gdx.backends.android;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import android.content.res.AssetManager;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -92,10 +88,18 @@ public class AndroidFileHandle extends FileHandle {
 	public FileHandle parent () {
 		File parent = file.getParentFile();
 		if (parent == null) {
-			if (type == FileType.Classpath || type == FileType.Absolute)
+			switch (type) {
+			case Classpath:
+			case Absolute:
 				parent = new File("/");
-			else
-				parent = new File(".");
+				break;
+			case Internal:
+				parent = new File("");
+				break;
+			case External:
+				parent = new File(Gdx.files.getExternalStoragePath());
+				break;
+			}
 		}
 		return new AndroidFileHandle(assets, parent, type);
 	}

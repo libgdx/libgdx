@@ -42,14 +42,14 @@ public abstract class FileHandle {
 		this.type = type;
 
 		switch (type) {
+		case Internal:
+			file = new File(fileName);
+			if (file.exists()) break;
+			// Fall through.
 		case Classpath:
 			if (FileHandle.class.getResourceAsStream("/" + fileName) == null)
 				throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
 			file = new File("/" + fileName);
-			break;
-		case Internal:
-			file = new File(fileName);
-			if (!file.exists()) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			break;
 		case External:
 			file = new File(Gdx.files.getExternalStoragePath() + fileName);
@@ -109,13 +109,11 @@ public abstract class FileHandle {
 	 *        {@link FileType#Internal} and the file doesn't exist, or if it could not be read.
 	 */
 	public InputStream read () {
-		if (type == FileType.Classpath) {
+		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
 			InputStream input = FileHandle.class.getResourceAsStream(file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;
 		}
-		if (type == FileType.Internal && !file.exists())
-			throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException ex) {
@@ -251,7 +249,7 @@ public abstract class FileHandle {
 	 * Returns the length in bytes of this file, or 0 if this file is a directory or does not exist.
 	 */
 	public long length () {
-		if (type == FileType.Classpath || type == FileType.Internal) {
+		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
 			try {
 				InputStream input = read();
 				long length = input.available();

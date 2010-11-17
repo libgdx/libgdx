@@ -36,8 +36,9 @@ public interface Files {
 		Classpath,
 
 		/**
-		 * Path relative to the asset directory on Android and to the application's root directory on the desktop. Internal files
-		 * are always readonly.
+		 * Path relative to the asset directory on Android and to the application's root directory on the desktop. On the desktop,
+		 * if the file is not, the classpath is then checked. This enables files to be found when using JWS or applets. Internal
+		 * files are always readonly.
 		 */
 		Internal,
 
