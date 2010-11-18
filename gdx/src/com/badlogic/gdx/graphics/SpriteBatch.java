@@ -109,6 +109,9 @@ public class SpriteBatch {
 
 	/** number of render calls **/
 	public int renderCalls = 0;
+	
+	/** the maximum number of sprites rendered in one batch so far **/
+	public int maxSpritesInBatch = 0;
 
 	/** whether blending is enabled or not **/
 	protected boolean blendingDisabled = false;
@@ -186,14 +189,12 @@ public class SpriteBatch {
 	 *            the batch size in number of sprites
 	 * @param buffers
 	 * 			  the number of buffers to use. only makes sense with VBOs. This is an expert function.
-	 * @param type
-	 * 			  the {@link VertexDataType} of the mesh to be used. This is an expert function.
 	 */
-	public SpriteBatch(int size, int buffers, VertexDataType type) {
+	public SpriteBatch(int size, int buffers) {
 		this.buffers = new Mesh[buffers];
 		
 		for( int i = 0; i < buffers; i++ ) {
-			this.buffers[i] = new Mesh(type, false, size * 4, size * 6, new VertexAttribute(
+			this.buffers[i] = new Mesh(false, size * 4, size * 6, new VertexAttribute(
 					Usage.Position, 2, "a_position"), new VertexAttribute(
 					Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
 					Usage.TextureCoordinates, 2, "a_texCoords"));
@@ -223,6 +224,7 @@ public class SpriteBatch {
 		if (Gdx.graphics.isGL20Available())
 			createShader();
 	}
+	
 
 	private void createShader() {
 		String vertexShader = "attribute vec4 a_position; \n"
@@ -797,6 +799,9 @@ public class SpriteBatch {
 			}
 			mesh.render(GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		}
+		int spritesInBatch = idx / 20 / 6;
+		if(spritesInBatch>maxSpritesInBatch)
+			spritesInBatch = maxSpritesInBatch;
 		idx = 0;
 		currBufferIdx++;
 		if(currBufferIdx == buffers.length) {

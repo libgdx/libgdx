@@ -3,6 +3,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.SpriteCache;
@@ -31,7 +32,9 @@ public class SpritePerformanceTest extends GdxTest {
 	public void create() {
 		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/badlogicsmall.jpg"), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		vaBatch = new SpriteBatch(1000);
-		vboBatch = new SpriteBatch(1000, 1, VertexDataType.VertexBufferObject);
+		Mesh.forceVBO=true;
+		vboBatch = new SpriteBatch(1000, 1);
+		Mesh.forceVBO=false;
 		cache = new SpriteCache();
 		
 		sprites = new Sprite[SPRITES];

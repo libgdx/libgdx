@@ -59,6 +59,9 @@ public class Mesh {
 	/** list of all meshes **/
 	static final ArrayList<Mesh> meshes = new ArrayList<Mesh>();
 
+	/** used for benchmarking **/
+	public static boolean forceVBO = false;
+	
 	final VertexData vertices;
 	final IndexData indices;
 	boolean autoBind = true;
@@ -81,7 +84,7 @@ public class Mesh {
 	 */
 	public Mesh(boolean isStatic, int maxVertices, int maxIndices,
 			VertexAttribute... attributes) {
-		if (Gdx.gl20 != null || (isStatic && Gdx.gl11 != null)) {
+		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO ) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
 			isVertexArray = false;
