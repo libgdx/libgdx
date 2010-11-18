@@ -67,12 +67,12 @@ public abstract class FileHandle {
 		this.type = type;
 
 		switch (type) {
+		case Internal:
+			if (file.exists()) break;
+			// Fall through.
 		case Classpath:
 			if (FileHandle.class.getResourceAsStream(file.getPath().replace('\\', '/')) == null)
 				throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
-			break;
-		case Internal:
-			if (!file.exists()) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			break;
 		}
 	}
@@ -153,7 +153,8 @@ public abstract class FileHandle {
 	}
 
 	/**
-	 * Returns true if this file is a directory. Always returns false for classpath files.
+	 * Returns true if this file is a directory. Always returns false for classpath files. On Android, an internal handle to an
+	 * empty directory will return false.
 	 */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
@@ -238,9 +239,12 @@ public abstract class FileHandle {
 
 	/**
 	 * Moves this file to the specified file, overwriting the file if it already exists.
-	 * @throw GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
+	 * @throw GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
+	 *        {@link FileType#Internal} file.
 	 */
 	public void moveTo (FileHandle dest) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot move a classpath file: " + file);
+		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
 		copyTo(dest);
 		delete();
 	}
@@ -272,11 +276,13 @@ public abstract class FileHandle {
 	static private boolean deleteDirectory (File file) {
 		if (file.exists()) {
 			File[] files = file.listFiles();
-			for (int i = 0, n = files.length; i < n; i++) {
-				if (files[i].isDirectory())
-					deleteDirectory(files[i]);
-				else
-					files[i].delete();
+			if (files != null) {
+				for (int i = 0, n = files.length; i < n; i++) {
+					if (files[i].isDirectory())
+						deleteDirectory(files[i]);
+					else
+						files[i].delete();
+				}
 			}
 		}
 		return file.delete();

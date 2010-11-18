@@ -43,11 +43,7 @@ public class AndroidFileHandle extends FileHandle {
 			file = new File("/" + fileName);
 			break;
 		case Internal:
-			try {
-				assets.open(fileName).close();
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("File not found: " + file + " (" + type + ")", ex);
-			}
+			ensureInternalFileExists(fileName);
 			file = new File(fileName);
 			break;
 		case External:
@@ -72,11 +68,7 @@ public class AndroidFileHandle extends FileHandle {
 				throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			break;
 		case Internal:
-			try {
-				assets.open(file.getPath()).close();
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("File not found: " + file + " (" + type + ")", ex);
-			}
+			ensureInternalFileExists(file.getPath());
 			break;
 		}
 	}
@@ -133,12 +125,24 @@ public class AndroidFileHandle extends FileHandle {
 	public boolean isDirectory () {
 		if (type == FileType.Internal) {
 			try {
-				assets.list(file.getPath());
-				return true;
-			} catch (Exception ex) {
+				return assets.list(file.getPath()).length > 0;
+			} catch (IOException ex) {
 				return false;
 			}
 		}
 		return super.isDirectory();
+	}
+
+	private void ensureInternalFileExists (String fileName) {
+		try {
+			assets.open(fileName).close(); // Check if file exists.
+		} catch (Exception ex) {
+			try {
+				if (assets.list(fileName).length == 0) // Try as directory.
+					throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")", ex);
+			} catch (Exception ex2) {
+				throw new GdxRuntimeException("Error locating file: " + fileName + " (" + type + ")", ex2);
+			}
+		}
 	}
 }
