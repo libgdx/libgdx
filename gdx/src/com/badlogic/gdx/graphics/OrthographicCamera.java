@@ -14,8 +14,6 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.OrthographicCamera.Side;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -263,6 +261,7 @@ public final class OrthographicCamera {
 	 * @return The world x-coordinate
 	 */
 	public float getScreenToWorldX(float screenX) {
+        screenX = screenX / Gdx.graphics.getWidth() * viewportWidth;
 		return (screenX * scale) - (viewportWidth * scale) / 2 + position.x;
 	}
 
@@ -285,6 +284,7 @@ public final class OrthographicCamera {
 	 * @return The world y-coordinate
 	 */
 	public float getScreenToWorldY(float screenY) {
+        screenY = screenY / Gdx.graphics.getHeight() * viewportHeight;
 		return ((viewportHeight - screenY - 1) * scale)
 				- (viewportHeight * scale) / 2 + position.y;
 	}
