@@ -31,7 +31,7 @@ public class SpritePerformanceTest extends GdxTest {
 	public void create() {
 		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/badlogicsmall.jpg"), TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		vaBatch = new SpriteBatch(1000);
-		vboBatch = new SpriteBatch(1000, VertexDataType.VertexBufferObject);
+		vboBatch = new SpriteBatch(1000, 1, VertexDataType.VertexBufferObject);
 		cache = new SpriteCache();
 		
 		sprites = new Sprite[SPRITES];

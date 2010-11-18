@@ -71,8 +71,10 @@ import com.badlogic.gdx.utils.MathUtils;
  */
 public class SpriteBatch {
 	/** the mesh used to transfer the data to the GPU **/
-	protected final Mesh mesh;
-
+	protected Mesh mesh;
+	protected Mesh[] buffers;
+	protected int currBufferIdx = 0;
+	
 	/** the transform to be applied to all sprites **/
 	protected final Matrix4 transformMatrix = new Matrix4();
 
@@ -138,10 +140,11 @@ public class SpriteBatch {
 	 *            the batch size in number of sprites
 	 */
 	public SpriteBatch(int size) {
-		this.mesh = new Mesh(false, size * 4, size * 6, new VertexAttribute(
+		this.buffers = new Mesh[1];
+		this.buffers[0] = new Mesh(false, size * 4, size * 6, new VertexAttribute(
 				Usage.Position, 2, "a_position"), new VertexAttribute(
 				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
-				Usage.TextureCoordinates, 2, "a_texCoords"));
+				Usage.TextureCoordinates, 2, "a_texCoords"));		
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
@@ -159,7 +162,8 @@ public class SpriteBatch {
 			indices[i + 4] = (short) (j + 3);
 			indices[i + 5] = (short) (j + 0);
 		}
-		mesh.setIndices(indices);
+		buffers[0].setIndices(indices);
+		mesh = buffers[0];
 
 		if (Gdx.graphics.isGL20Available())
 			createShader();
@@ -180,14 +184,20 @@ public class SpriteBatch {
 	 * 
 	 * @param size
 	 *            the batch size in number of sprites
+	 * @param buffers
+	 * 			  the number of buffers to use. only makes sense with VBOs. This is an expert function.
 	 * @param type
 	 * 			  the {@link VertexDataType} of the mesh to be used. This is an expert function.
 	 */
-	public SpriteBatch(int size, VertexDataType type) {
-		this.mesh = new Mesh(type, false, size * 4, size * 6, new VertexAttribute(
-				Usage.Position, 2, "a_position"), new VertexAttribute(
-				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
-				Usage.TextureCoordinates, 2, "a_texCoords"));
+	public SpriteBatch(int size, int buffers, VertexDataType type) {
+		this.buffers = new Mesh[buffers];
+		
+		for( int i = 0; i < buffers; i++ ) {
+			this.buffers[i] = new Mesh(type, false, size * 4, size * 6, new VertexAttribute(
+					Usage.Position, 2, "a_position"), new VertexAttribute(
+					Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
+					Usage.TextureCoordinates, 2, "a_texCoords"));
+		}
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
@@ -205,7 +215,10 @@ public class SpriteBatch {
 			indices[i + 4] = (short) (j + 3);
 			indices[i + 5] = (short) (j + 0);
 		}
-		mesh.setIndices(indices);
+		for(int i=0; i < buffers; i++) {
+			this.buffers[i].setIndices(indices);
+		}
+		mesh = this.buffers[0];
 
 		if (Gdx.graphics.isGL20Available())
 			createShader();
@@ -785,6 +798,11 @@ public class SpriteBatch {
 			mesh.render(GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		}
 		idx = 0;
+		currBufferIdx++;
+		if(currBufferIdx == buffers.length) {
+			currBufferIdx = 0;
+		}
+		mesh = buffers[currBufferIdx];
 	}
 
 	/**
@@ -822,7 +840,8 @@ public class SpriteBatch {
 	 * Disposes all resources associated with this SpriteBatch
 	 */
 	public void dispose() {
-		mesh.dispose();
+		for(int i=0; i < buffers.length; i++)
+			buffers[i].dispose();
 		if (shader != null)
 			shader.dispose();
 	}
