@@ -9,14 +9,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
-import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
 /**
  * Loads images from texture atlases created by SpriteSheetPacker.<br>
@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * A SpriteSheet must be disposed to free up the resources consumed by the backing textures.
  */
 public class SpriteSheet {
+	static private final String[] tuple = new String[2];
+
 	private final ArrayList<Texture> textures = new ArrayList(4);
 	private final PackedSprite[] images;
 
@@ -41,42 +43,57 @@ public class SpriteSheet {
 				else if (pageImage == null) {
 					FileHandle file = imagesDir.child(line);
 
-					// BOZO - Get filter from file?
-
-					String direction = reader.readLine();
-					TextureWrap wrapX = ClampToEdge;
-					TextureWrap wrapY = ClampToEdge;
+					String direction = readValue(reader);
+					TextureWrap repeatX = ClampToEdge;
+					TextureWrap repeatY = ClampToEdge;
 					if (direction.equals("x"))
-						wrapX = Repeat;
+						repeatX = Repeat;
 					else if (direction.equals("y"))
-						wrapY = Repeat;
+						repeatY = Repeat;
 					else if (direction.equals("xy")) {
-						wrapX = Repeat;
-						wrapY = Repeat;
+						repeatX = Repeat;
+						repeatY = Repeat;
 					}
 
-					Texture texture = Gdx.graphics.newTexture(file, Linear, Linear, ClampToEdge, ClampToEdge);
+					readTuple(reader);
+					TextureFilter min = TextureFilter.valueOf(tuple[0]);
+					TextureFilter max = TextureFilter.valueOf(tuple[1]);
+
+					Texture texture = Gdx.graphics.newTexture(file, min, max, repeatX, repeatY);
 					textures.add(texture);
 
 					pageImage = new Sprite(texture);
 				} else {
-					int left = Integer.parseInt(reader.readLine());
-					int top = Integer.parseInt(reader.readLine());
-					int width = Integer.parseInt(reader.readLine());
-					int height = Integer.parseInt(reader.readLine());
-					int offsetX = Integer.parseInt(reader.readLine());
-					int offsetY = Integer.parseInt(reader.readLine());
-					int originalWidth = Integer.parseInt(reader.readLine());
-					int originalHeight = Integer.parseInt(reader.readLine());
-					PackedSprite image = new PackedSprite(pageImage, left, top, width, height);
-					image.setPosition(offsetX, offsetY);
+					boolean rotate = Boolean.valueOf(readValue(reader));
+
+					readTuple(reader);
+					int left = Integer.parseInt(tuple[0]);
+					int top = Integer.parseInt(tuple[1]);
+
+					readTuple(reader);
+					int width = Integer.parseInt(tuple[0]);
+					int height = Integer.parseInt(tuple[1]);
+
+					PackedSprite image;
+					if (rotate) {
+						image = new PackedSprite(pageImage, left, top, height, width);
+						image.rotate90(true);
+					} else
+						image = new PackedSprite(pageImage, left, top, width, height);
 					image.name = line;
-					image.offsetX = offsetX;
-					image.offsetY = offsetY;
-					image.originalWidth = originalWidth;
-					image.originalHeight = originalHeight;
-					image.index = Integer.parseInt(reader.readLine());
+
+					readTuple(reader);
+					image.originalWidth = Integer.parseInt(tuple[0]);
+					image.originalHeight = Integer.parseInt(tuple[1]);
+
+					readTuple(reader);
+					image.offsetX = Integer.parseInt(tuple[0]);
+					image.offsetY = Integer.parseInt(tuple[1]);
+					image.setPosition(image.offsetX, image.offsetY);
+
+					image.index = Integer.parseInt(readValue(reader));
 					if (image.index == -1) image.index = Integer.MAX_VALUE;
+
 					sortedSprites.add(image);
 				}
 			}
@@ -134,6 +151,22 @@ public class SpriteSheet {
 			return image1.index - image2.index;
 		}
 	};
+
+	static private String readValue (BufferedReader reader) throws IOException {
+		String line = reader.readLine();
+		int colon = line.indexOf(':');
+		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
+		return line.substring(colon + 1).trim();
+	}
+
+	static private void readTuple (BufferedReader reader) throws IOException {
+		String line = reader.readLine();
+		int colon = line.indexOf(':');
+		int comma = line.indexOf(',');
+		if (colon == -1 || comma == -1 || comma < colon + 1) throw new GdxRuntimeException("Invalid line: " + line);
+		tuple[0] = line.substring(colon + 1, comma).trim();
+		tuple[1] = line.substring(comma + 1).trim();
+	}
 
 	/**
 	 * A sprite that provides additional information about the packed image it represents. A PackedSprite's position is relative to

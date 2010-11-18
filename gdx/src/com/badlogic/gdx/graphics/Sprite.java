@@ -349,8 +349,46 @@ public class Sprite {
 		dirty = true;
 	}
 
+	/**
+	 * Rotates this sprite 90 degrees. This rotation is unaffected by {@link #setRotation(float)} and {@link #rotate(float)}.
+	 */
+	public void rotate90 (boolean clockwise) {
+		float[] vertices = this.vertices;
+
+		float temp = width;
+		width = height;
+		height = temp;
+
+		temp = vertices[X1];
+		vertices[X1] = vertices[X4];
+		vertices[X4] = vertices[X3];
+		vertices[X3] = vertices[X2];
+		vertices[X2] = temp;
+		
+		temp = vertices[Y1];
+		vertices[Y1] = vertices[Y4];
+		vertices[Y4] = vertices[Y3];
+		vertices[Y3] = vertices[Y2];
+		vertices[Y2] = temp;
+
+		temp = vertices[V1];
+		vertices[V1] = vertices[V4];
+		vertices[V4] = vertices[V3];
+		vertices[V3] = vertices[V2];
+		vertices[V2] = temp;
+
+		temp = vertices[U1];
+		vertices[U1] = vertices[U4];
+		vertices[U4] = vertices[U3];
+		vertices[U3] = vertices[U2];
+		vertices[U2] = temp;
+
+		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
+	}
+
 	public void setScale(float scaleXY) {
-		this.scaleX = this.scaleY = scaleXY;
+		this.scaleX = scaleXY;
+		this.scaleY = scaleXY;
 		dirty = true;
 	}
 
@@ -381,28 +419,53 @@ public class Sprite {
 			float localY = -originY * scaleY;
 			float localX2 = (-originX + width) * scaleX;
 			float localY2 = (-originY + height) * scaleY;
-			float cos = MathUtils.cosDeg(rotation);
-			float sin = MathUtils.sinDeg(rotation);
+			if (scaleX != 1 || scaleY != 1) {
+				localX *= scaleX;
+				localY *= scaleY;
+				localX2 *= scaleX;
+				localY2 *= scaleY;
+			}
 			float worldOriginX = this.x + originX;
 			float worldOriginY = this.y + originY;
-
-			float x1 = localX * cos - localY * sin + worldOriginX;
-			float y1 = localY * cos + localX * sin + worldOriginY;
-			vertices[X1] = x1;
-			vertices[Y1] = y1;
-
-			float x2 = localX * cos - localY2 * sin + worldOriginX;
-			float y2 = localY2 * cos + localX * sin + worldOriginY;
-			vertices[X2] = x2;
-			vertices[Y2] = y2;
-
-			float x3 = localX2 * cos - localY2 * sin + worldOriginX;
-			float y3 = localY2 * cos + localX2 * sin + worldOriginY;
-			vertices[X3] = x3;
-			vertices[Y3] = y3;
-
-			vertices[X4] = x1 + (x3 - x2);
-			vertices[Y4] = y3 - (y2 - y1);
+			if (rotation != 0) {
+				float cos = MathUtils.cosDeg(rotation);
+				float sin = MathUtils.sinDeg(rotation);
+	
+				float x1 = localX * cos - localY * sin + worldOriginX;
+				float y1 = localY * cos + localX * sin + worldOriginY;
+				vertices[X1] = x1;
+				vertices[Y1] = y1;
+	
+				float x2 = localX * cos - localY2 * sin + worldOriginX;
+				float y2 = localY2 * cos + localX * sin + worldOriginY;
+				vertices[X2] = x2;
+				vertices[Y2] = y2;
+	
+				float x3 = localX2 * cos - localY2 * sin + worldOriginX;
+				float y3 = localY2 * cos + localX2 * sin + worldOriginY;
+				vertices[X3] = x3;
+				vertices[Y3] = y3;
+	
+				vertices[X4] = x1 + (x3 - x2);
+				vertices[Y4] = y3 - (y2 - y1);
+			} else {
+				float x1 = localX + worldOriginX;
+				float y1 = localY + worldOriginY;
+				float x2 = localX2 + worldOriginX;
+				float y2 = localY2 + worldOriginY;
+				
+				vertices[X1] = x1;
+				vertices[Y1] = y1;
+	
+				vertices[X2] = x1;
+				vertices[Y2] = y2;
+	
+				vertices[X3] = x2;
+				vertices[Y3] = y2;
+	
+				vertices[X4] = x2;
+				vertices[Y4] = y1;
+			}
 		}
 		return vertices;
 	}

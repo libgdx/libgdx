@@ -3,6 +3,7 @@ package com.badlogic.gdx.imagepacker;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.utils.MathUtils;
 
 public class SpriteSheetPacker {
@@ -37,6 +39,9 @@ public class SpriteSheetPacker {
 	private boolean pot = true;
 	private int padding = 0;
 	private boolean debug = false;
+	private boolean rotate = true;
+	private int maxWidth = 1024;
+	private int maxHeight = 1024;
 
 	public SpriteSheetPacker (File inputDir, Filter filter, Direction direction, File outputDir, File packFile) throws IOException {
 		this.inputDir = inputDir;
@@ -46,6 +51,7 @@ public class SpriteSheetPacker {
 		ArrayList<File> files = getFiles(inputDir, filter, direction);
 		if (files == null) return;
 
+		// Collect and squeeze images.
 		for (File file : files) {
 			if (file.isDirectory()) continue;
 			Image image = squeeze(file);
@@ -53,24 +59,16 @@ public class SpriteSheetPacker {
 		}
 		if (images.isEmpty()) return;
 
+		// Print image names.
 		System.out.println(inputDir);
 		if (filter != rgba8888) System.out.println("Format: " + filter.name);
 		if (direction != null) System.out.println("Direction: " + direction);
-		for (Image image : images)
-			System.out.println("Packing... " + image.file.getName());
-
-		Collections.sort(images, new Comparator<Image>() {
-			public int compare (Image image1, Image image2) {
-				return image1.getWidth() * image1.getHeight() - image2.getWidth() * image2.getHeight();
-			}
-		});
 
 		xPadding = images.size() > 1 && direction != Direction.x && direction != Direction.xy ? padding : 0;
 		yPadding = images.size() > 1 && direction != Direction.y && direction != Direction.xy ? padding : 0;
 
 		outputDir.mkdirs();
-		String prefix = inputDir.getParentFile().getName();
-
+		String prefix = inputDir.getName();
 		writer = new FileWriter(packFile, true);
 		try {
 			while (!images.isEmpty())
@@ -85,18 +83,19 @@ public class SpriteSheetPacker {
 	}
 
 	private void writePage (String prefix, File outputDir) throws IOException {
+		// Remove existing image pages in output dir.
 		int imageNumber = 1;
 		File outputFile = new File(outputDir, prefix + imageNumber + ".png");
 		while (outputFile.exists())
 			outputFile = new File(outputDir, prefix + ++imageNumber + ".png");
 
 		writer.write("\n" + prefix + imageNumber + ".png\n");
-		writer.write(direction + "\n");
+		writer.write("repeat: " + direction + "\n");
+		writer.write("filter: Linear,Linear\n"); // BOZO
 
-		// Try reasonably hard to find the smallest size that is also the smallest POT.
+		// Try reasonably hard to pack images into the smallest POT size.
 		Comparator bestComparator = null;
 		Comparator secondBestComparator = imageComparators.get(0);
-		int maxWidth = 1024, maxHeight = 1024;
 		int bestWidth = 99999, bestHeight = 99999;
 		int secondBestWidth = 99999, secondBestHeight = 99999;
 		int bestUsedPixels = 0;
@@ -106,14 +105,16 @@ public class SpriteSheetPacker {
 		while (true) {
 			if (width > maxWidth && height > maxHeight) break;
 			for (Comparator comparator : imageComparators) {
+				// Pack as many images as possible, sorting the images different ways.
 				Collections.sort(images, comparator);
-
 				int usedPixels = insert(null, new ArrayList(images), width, height);
+				// Store the best pack, in case not all images fit on the max texture size.
 				if (usedPixels > bestUsedPixels) {
 					secondBestComparator = comparator;
 					secondBestWidth = width;
 					secondBestHeight = height;
 				}
+				// If all images fit and this sort is the best so far, take note.
 				if (usedPixels == -1) {
 					if (width * height < bestWidth * bestHeight) {
 						bestComparator = comparator;
@@ -124,6 +125,7 @@ public class SpriteSheetPacker {
 			}
 			if (bestComparator != null) break;
 			if (pot) {
+				// 64,64 then 64,128 then 128,64 then 128,128 then 128,256 etc.
 				if (i % 3 == 0) {
 					width *= 2;
 					i++;
@@ -136,6 +138,7 @@ public class SpriteSheetPacker {
 					i++;
 				}
 			} else {
+				// 64-127,64 then 64,64-127 then 128-255,128 then 128,128-255 etc.
 				if (i % 3 == 0) {
 					width++;
 					grownPixels++;
@@ -171,7 +174,6 @@ public class SpriteSheetPacker {
 		}
 		width = bestWidth;
 		height = bestHeight;
-
 		if (pot) {
 			width = MathUtils.nextPowerOfTwo(width);
 			height = MathUtils.nextPowerOfTwo(height);
@@ -197,16 +199,37 @@ public class SpriteSheetPacker {
 		int usedPixels = 0;
 		for (int i = images.size() - 1; i >= 0; i--) {
 			Image image = images.get(i);
-			Node node = root.insert(image, canvas);
-			if (node == null) continue;
+			Node node = root.insert(image, canvas, false);
+			if (node == null) {
+				if (rotate) node = root.insert(image, canvas, true);
+				if (node == null) continue;
+			}
 			usedPixels += image.getWidth() * image.getHeight();
 			images.remove(i);
 			if (canvas != null) {
-				Graphics g = canvas.getGraphics();
+				System.out.println("Packing... " + image.file.getName());
+				Graphics2D g = (Graphics2D)canvas.getGraphics();
+				if (image.rotate) {
+					g.translate(node.left, node.top);
+					g.rotate(-90 * MathUtils.degreesToRadians);
+					g.translate(-node.left, -node.top);
+					g.translate(-image.getWidth(), 0);
+				}
 				g.drawImage(image, node.left, node.top, null);
+				if (image.rotate) {
+					g.translate(image.getWidth(), 0);
+					g.translate(node.left, node.top);
+					g.rotate(90 * MathUtils.degreesToRadians);
+					g.translate(-node.left, -node.top);
+				}
 				if (debug) {
 					g.setColor(Color.magenta);
-					g.drawRect(node.left, node.top, image.getWidth() - 1, image.getHeight() - 1);
+					int imageWidth = image.getWidth();
+					int imageHeight = image.getHeight();
+					if (image.rotate)
+						g.drawRect(node.left, node.top, imageHeight - 1, imageWidth - 1);
+					else
+						g.drawRect(node.left, node.top, imageWidth - 1, imageHeight - 1);
 				}
 			}
 		}
@@ -285,18 +308,26 @@ public class SpriteSheetPacker {
 			this.height = height;
 		}
 
-		public Node insert (Image image, BufferedImage canvas) throws IOException {
+		public Node insert (Image image, BufferedImage canvas, boolean rotate) throws IOException {
 			if (this.image != null) return null;
 			if (child1 != null) {
-				Node newNode = child1.insert(image, canvas);
+				Node newNode = child1.insert(image, canvas, rotate);
 				if (newNode != null) return newNode;
-				return child2.insert(image, canvas);
+				return child2.insert(image, canvas, rotate);
 			}
-			int neededWidth = image.getWidth() + xPadding;
-			int neededHeight = image.getHeight() + yPadding;
+			int imageWidth = image.getWidth();
+			int imageHeight = image.getHeight();
+			if (rotate) {
+				int temp = imageWidth;
+				imageWidth = imageHeight;
+				imageHeight = temp;
+			}
+			int neededWidth = imageWidth + xPadding;
+			int neededHeight = imageHeight + yPadding;
 			if (neededWidth > width || neededHeight > height) return null;
 			if (neededWidth == width && neededHeight == height) {
 				this.image = image;
+				image.rotate = rotate;
 				write(canvas);
 				return this;
 			}
@@ -309,7 +340,7 @@ public class SpriteSheetPacker {
 				child1 = new Node(left, top, width, neededHeight);
 				child2 = new Node(left, top + neededHeight, width, height - neededHeight);
 			}
-			return child1.insert(image, canvas);
+			return child1.insert(image, canvas, rotate);
 		}
 
 		private void write (BufferedImage canvas) throws IOException {
@@ -325,20 +356,17 @@ public class SpriteSheetPacker {
 			if (imageName.endsWith("_pre")) imageName = imageName.substring(0, imageName.length() - 2);
 
 			writer.write(imageName.replace("\\", "/") + "\n");
-			writer.write(left + "\n");
-			writer.write(top + "\n");
-			writer.write(image.getWidth() + "\n");
-			writer.write(image.getHeight() + "\n");
-			writer.write(image.offsetX + "\n");
-			writer.write(image.offsetY + "\n");
-			writer.write(image.originalWidth + "\n");
-			writer.write(image.originalHeight + "\n");
+			writer.write("  rotate: " + image.rotate + "\n");
+			writer.write("  xy: " + left + ", " + top + "\n");
+			writer.write("  size: " + image.getWidth() + ", " + image.getHeight() + "\n");
+			writer.write("  orig: " + image.originalWidth + ", " + image.originalHeight + "\n");
+			writer.write("  offset: " + image.offsetX + ", " + image.offsetY + "\n");
 
 			Matcher matcher = numberedImagePattern.matcher(imageName);
 			if (matcher.matches())
-				writer.write(Integer.parseInt(matcher.group(1)) + "\n");
+				writer.write("offset: " + Integer.parseInt(matcher.group(1)) + "\n");
 			else
-				writer.write("0\n");
+				writer.write("offset: 0\n");
 		}
 	}
 
@@ -346,6 +374,7 @@ public class SpriteSheetPacker {
 		final File file;
 		final int offsetX, offsetY;
 		final int originalWidth, originalHeight;
+		boolean rotate;
 
 		public Image (File file, BufferedImage src, int left, int top, int newWidth, int newHeight) {
 			super(src.getColorModel(), src.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null), src
@@ -444,7 +473,7 @@ public class SpriteSheetPacker {
 
 	static private void process (File inputDir, File outputDir, File packFile) throws Exception {
 		if (outputDir.exists()) {
-			String prefix = inputDir.getParentFile().getName();
+			String prefix = inputDir.getName();
 			for (File file : outputDir.listFiles())
 				if (file.getName().startsWith(prefix)) file.delete();
 		}
@@ -475,6 +504,6 @@ public class SpriteSheetPacker {
 	}
 
 	public static void main (String[] args) throws Exception {
-		process("C:/Dev/libgdx/tests/gdx-tests-lwjgl/data/New folder", "c:/temp/pack-out");
+		process("c:/temp/pack-in", "c:/temp/pack-out");
 	}
 }

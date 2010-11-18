@@ -137,12 +137,13 @@ public class AndroidFileHandle extends FileHandle {
 		try {
 			assets.open(fileName).close(); // Check if file exists.
 		} catch (Exception ex) {
+			int count;
 			try {
-				if (assets.list(fileName).length == 0) // Try as directory.
-					throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")", ex);
+				count = assets.list(fileName).length; // Try as directory.
 			} catch (Exception ex2) {
 				throw new GdxRuntimeException("Error locating file: " + fileName + " (" + type + ")", ex2);
 			}
+			if (count == 0) throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")", ex);
 		}
 	}
 }

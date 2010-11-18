@@ -123,7 +123,7 @@ public class ParticleEffect {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
-			String imageName = new File(imagePath).getName();
+			String imageName = new File(imagePath.replace('\\', '/')).getName();
 			emitter.setTexture(loadTexture(imagesDir.child(imageName)));
 		}
 	}
