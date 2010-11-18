@@ -504,6 +504,11 @@ public class SpriteSheetPacker {
 	}
 
 	public static void main (String[] args) throws Exception {
-		process("c:/temp/pack-in", "c:/temp/pack-out");
+		if (args.length != 2) {
+			System.out.println("Usage: INPUTDIR OUTPUTDIR");
+			return;
+		}
+		process(args[0], args[1]);
+		// process("c:/temp/pack-in", "c:/temp/pack-out");
 	}
 }
