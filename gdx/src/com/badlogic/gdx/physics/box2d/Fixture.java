@@ -25,6 +25,9 @@ public class Fixture {
 
 	/** the shape, initialized lazy **/
 	protected Shape shape;
+	
+	/** user specified data **/
+	protected Object userData;
 
 	/**
 	 * Constructs a new fixture
@@ -213,4 +216,18 @@ public class Fixture {
 // /// If you need a more accurate AABB, compute it using the shape and
 // /// the body transform.
 // const b2AABB& GetAABB() const;
+	
+	/**
+	 * Sets custom user data.
+	 */
+	public void setUserData(Object userData) {
+		this.userData = userData;
+	}
+	
+	/**
+	 * @return custom user data
+	 */
+	public Object getUserData() {
+		return userData;
+	}
 }
