@@ -49,12 +49,14 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 		}
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {		
-		TouchEvent event = input.freeTouchEvents.newObject();
-		event.pointer = 0;
-		event.x = x;
-		event.y = y;
-		event.type = type;			
-		input.touchEvents.add(event);					
+	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {	
+		synchronized (input) {
+			TouchEvent event = input.freeTouchEvents.newObject();
+			event.pointer = 0;
+			event.x = x;
+			event.y = y;
+			event.type = type;			
+			input.touchEvents.add(event);					
+		}
 	}
 }
