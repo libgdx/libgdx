@@ -21,7 +21,7 @@ package com.badlogic.gdx;
  */
 public class Version {
 	/** the current version of libgdx in the major.minor format **/
-	public static String VERSION = "0.8";
+	public static String VERSION = "0.81";
 
 	public static void loadLibrary () {
 		String os = System.getProperty("os.name");
