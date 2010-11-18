@@ -56,7 +56,7 @@ import com.badlogic.gdx.Graphics;
  */
 public interface Texture {
 	/**
-	 * Texture filter enum featuring the 3 most used filters.
+	 * Texture filter enum
 	 * 
 	 * @author badlogicgames@gmail.com
 	 * 

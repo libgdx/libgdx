@@ -14,44 +14,45 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.utils.MathUtils;
 
 public class SpriteSheetPacker {
 	static Pattern numberedImagePattern = Pattern.compile(".*?(\\d+)");
 
-	private ArrayList<Image> images = new ArrayList();
+	ArrayList<Image> images = new ArrayList();
 	FileWriter writer;
 	final File inputDir;
-	private int uncompressedSize, compressedSize;
-	final Direction direction;
+	int uncompressedSize, compressedSize;
 	int xPadding, yPadding;
-	private final Filter filter;
+	final Filter filter;
+	int minWidth, minHeight;
+	int maxWidth, maxHeight;
+	final Settings settings;
 
-	// User configurable settings:
-	private int alphaThreshold = 11;
-	private boolean pot = true;
-	private int padding = 0;
-	private boolean debug = false;
-	private boolean rotate = true;
-	private int maxWidth = 1024;
-	private int maxHeight = 1024;
-
-	public SpriteSheetPacker (File inputDir, Filter filter, Direction direction, File outputDir, File packFile) throws IOException {
+	public SpriteSheetPacker (Settings settings, File inputDir, Filter filter, File outputDir, File packFile) throws IOException {
+		this.settings = settings;
 		this.inputDir = inputDir;
 		this.filter = filter;
-		this.direction = direction;
 
-		ArrayList<File> files = getFiles(inputDir, filter, direction);
-		if (files == null) return;
+		minWidth = filter.width != -1 ? filter.width : settings.minWidth;
+		minHeight = filter.height != -1 ? filter.height : settings.minHeight;
+		maxWidth = filter.width != -1 ? filter.width : settings.maxWidth;
+		maxHeight = filter.height != -1 ? filter.height : settings.maxHeight;
+		xPadding = images.size() > 1 && filter.direction != Direction.x && filter.direction != Direction.xy ? settings.padding : 0;
+		yPadding = images.size() > 1 && filter.direction != Direction.y && filter.direction != Direction.xy ? settings.padding : 0;
 
 		// Collect and squeeze images.
+		File[] files = inputDir.listFiles(filter);
+		if (files == null) return;
 		for (File file : files) {
 			if (file.isDirectory()) continue;
 			Image image = squeeze(file);
@@ -59,13 +60,16 @@ public class SpriteSheetPacker {
 		}
 		if (images.isEmpty()) return;
 
-		// Print image names.
 		System.out.println(inputDir);
-		if (filter != rgba8888) System.out.println("Format: " + filter.name);
-		if (direction != null) System.out.println("Direction: " + direction);
-
-		xPadding = images.size() > 1 && direction != Direction.x && direction != Direction.xy ? padding : 0;
-		yPadding = images.size() > 1 && direction != Direction.y && direction != Direction.xy ? padding : 0;
+		if (filter.format != null)
+			System.out.println("Format: " + filter.format);
+		else
+			System.out.println("Format: " + settings.defaultFormat + " (default)");
+		if (filter.minFilter != null && filter.magFilter != null)
+			System.out.println("Filter: " + filter.minFilter + ", " + filter.magFilter);
+		else
+			System.out.println("Filter: " + settings.defaultFilterMin + ", " + settings.defaultFilterMag + " (default)");
+		if (filter.direction != Direction.none) System.out.println("Repeat: " + filter.direction);
 
 		outputDir.mkdirs();
 		String prefix = inputDir.getName();
@@ -90,8 +94,19 @@ public class SpriteSheetPacker {
 			outputFile = new File(outputDir, prefix + ++imageNumber + ".png");
 
 		writer.write("\n" + prefix + imageNumber + ".png\n");
-		writer.write("repeat: " + direction + "\n");
-		writer.write("filter: Linear,Linear\n"); // BOZO
+		Format format;
+		if (filter.format != null) {
+			writer.write("format: " + filter.format + "\n");
+			format = filter.format;
+		} else {
+			writer.write("format: " + settings.defaultFormat + "\n");
+			format = settings.defaultFormat;
+		}
+		if (filter.minFilter == null || filter.magFilter == null)
+			writer.write("filter: " + settings.defaultFilterMin + "," + settings.defaultFilterMag + "\n");
+		else
+			writer.write("filter: " + filter.minFilter + "," + filter.magFilter + "\n");
+		writer.write("repeat: " + filter.direction + "\n");
 
 		// Try reasonably hard to pack images into the smallest POT size.
 		Comparator bestComparator = null;
@@ -99,7 +114,7 @@ public class SpriteSheetPacker {
 		int bestWidth = 99999, bestHeight = 99999;
 		int secondBestWidth = 99999, secondBestHeight = 99999;
 		int bestUsedPixels = 0;
-		int width = 64, height = 64;
+		int width = minWidth, height = minHeight;
 		int grownPixels = 0, grownPixels2 = 0;
 		int i = 0, ii = 0;
 		while (true) {
@@ -124,7 +139,7 @@ public class SpriteSheetPacker {
 				}
 			}
 			if (bestComparator != null) break;
-			if (pot) {
+			if (settings.pot) {
 				// 64,64 then 64,128 then 128,64 then 128,128 then 128,256 etc.
 				if (i % 3 == 0) {
 					width *= 2;
@@ -174,12 +189,27 @@ public class SpriteSheetPacker {
 		}
 		width = bestWidth;
 		height = bestHeight;
-		if (pot) {
+		if (settings.pot) {
 			width = MathUtils.nextPowerOfTwo(width);
 			height = MathUtils.nextPowerOfTwo(height);
 		}
 
-		BufferedImage canvas = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		int type;
+		switch (format) {
+		case RGBA8888:
+		case RGBA4444:
+			type = BufferedImage.TYPE_INT_ARGB;
+			break;
+		case RGB565:
+			type = BufferedImage.TYPE_INT_RGB;
+			break;
+		case Alpha:
+			type = BufferedImage.TYPE_BYTE_GRAY;
+			break;
+		default:
+			throw new RuntimeException();
+		}
+		BufferedImage canvas = new BufferedImage(width, height, type);
 		insert(canvas, images, bestWidth, bestHeight);
 		System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 		ImageIO.write(canvas, "png", outputFile);
@@ -187,21 +217,21 @@ public class SpriteSheetPacker {
 	}
 
 	private int insert (BufferedImage canvas, ArrayList<Image> images, int width, int height) throws IOException {
-		if (debug && canvas != null) {
+		if (settings.debug && canvas != null) {
 			Graphics g = canvas.getGraphics();
 			g.setColor(Color.green);
 			g.drawRect(0, 0, width - 1, height - 1);
 		}
 		// Pretend image is larger so padding on right and bottom edges is ignored.
-		if (direction != Direction.x && direction != Direction.xy) width += xPadding;
-		if (direction != Direction.y && direction != Direction.xy) height += yPadding;
+		if (filter.direction != Direction.x && filter.direction != Direction.xy) width += xPadding;
+		if (filter.direction != Direction.y && filter.direction != Direction.xy) height += yPadding;
 		Node root = new Node(0, 0, width, height);
 		int usedPixels = 0;
 		for (int i = images.size() - 1; i >= 0; i--) {
 			Image image = images.get(i);
 			Node node = root.insert(image, canvas, false);
 			if (node == null) {
-				if (rotate) node = root.insert(image, canvas, true);
+				if (settings.rotate) node = root.insert(image, canvas, true);
 				if (node == null) continue;
 			}
 			usedPixels += image.getWidth() * image.getHeight();
@@ -222,7 +252,7 @@ public class SpriteSheetPacker {
 					g.rotate(90 * MathUtils.degreesToRadians);
 					g.translate(-node.left, -node.top);
 				}
-				if (debug) {
+				if (settings.debug) {
 					g.setColor(Color.magenta);
 					int imageWidth = image.getWidth();
 					int imageHeight = image.getHeight();
@@ -239,53 +269,58 @@ public class SpriteSheetPacker {
 	private Image squeeze (File file) throws IOException {
 		BufferedImage source = ImageIO.read(file);
 		if (source == null) return null;
+		if (!filter.accept(source)) return null;
 		uncompressedSize += source.getWidth() * source.getHeight();
 		WritableRaster alphaRaster = source.getAlphaRaster();
 		if (alphaRaster == null) return new Image(file, source, 0, 0, source.getWidth(), source.getHeight());
 		final byte[] a = new byte[1];
 		int top = 0;
-		outer:
-		for (int y = 0; y < source.getHeight(); y++) {
-			for (int x = 0; x < source.getWidth(); x++) {
-				alphaRaster.getDataElements(x, y, a);
-				int alpha = a[0];
-				if (alpha < 0) alpha += 256;
-				if (alpha > alphaThreshold) break outer;
+		int bottom = source.getHeight();
+		if (filter.direction != Direction.y && filter.direction != Direction.xy) {
+			outer:
+			for (int y = 0; y < source.getHeight(); y++) {
+				for (int x = 0; x < source.getWidth(); x++) {
+					alphaRaster.getDataElements(x, y, a);
+					int alpha = a[0];
+					if (alpha < 0) alpha += 256;
+					if (alpha > settings.alphaThreshold) break outer;
+				}
+				top++;
 			}
-			top++;
-		}
-		int bottom = source.getHeight() - 1;
-		outer:
-		for (int y = source.getHeight(); --y >= top;) {
-			for (int x = 0; x < source.getWidth(); x++) {
-				alphaRaster.getDataElements(x, y, a);
-				int alpha = a[0];
-				if (alpha < 0) alpha += 256;
-				if (alpha > alphaThreshold) break outer;
+			outer:
+			for (int y = source.getHeight(); --y >= top;) {
+				for (int x = 0; x < source.getWidth(); x++) {
+					alphaRaster.getDataElements(x, y, a);
+					int alpha = a[0];
+					if (alpha < 0) alpha += 256;
+					if (alpha > settings.alphaThreshold) break outer;
+				}
+				bottom--;
 			}
-			bottom--;
 		}
 		int left = 0;
-		outer:
-		for (int x = 0; x < source.getWidth(); x++) {
-			for (int y = top; y <= bottom; y++) {
-				alphaRaster.getDataElements(x, y, a);
-				int alpha = a[0];
-				if (alpha < 0) alpha += 256;
-				if (alpha > alphaThreshold) break outer;
+		int right = source.getWidth();
+		if (filter.direction != Direction.x && filter.direction != Direction.xy) {
+			outer:
+			for (int x = 0; x < source.getWidth(); x++) {
+				for (int y = top; y <= bottom; y++) {
+					alphaRaster.getDataElements(x, y, a);
+					int alpha = a[0];
+					if (alpha < 0) alpha += 256;
+					if (alpha > settings.alphaThreshold) break outer;
+				}
+				left++;
 			}
-			left++;
-		}
-		int right = source.getWidth() - 1;
-		outer:
-		for (int x = source.getWidth(); --x >= left;) {
-			for (int y = top; y <= bottom; y++) {
-				alphaRaster.getDataElements(x, y, a);
-				int alpha = a[0];
-				if (alpha < 0) alpha += 256;
-				if (alpha > alphaThreshold) break outer;
+			outer:
+			for (int x = source.getWidth(); --x >= left;) {
+				for (int y = top; y <= bottom; y++) {
+					alphaRaster.getDataElements(x, y, a);
+					int alpha = a[0];
+					if (alpha < 0) alpha += 256;
+					if (alpha > settings.alphaThreshold) break outer;
+				}
+				right--;
 			}
-			right--;
 		}
 		int newWidth = right - left;
 		int newHeight = bottom - top;
@@ -308,6 +343,9 @@ public class SpriteSheetPacker {
 			this.height = height;
 		}
 
+		/**
+		 * Returns true if the image was inserted. If canvas != null, an entry is written to the pack file.
+		 */
 		public Node insert (Image image, BufferedImage canvas, boolean rotate) throws IOException {
 			if (this.image != null) return null;
 			if (child1 != null) {
@@ -350,10 +388,10 @@ public class SpriteSheetPacker {
 			if (imageName.startsWith("/") || imageName.startsWith("\\")) imageName = imageName.substring(1);
 			int dotIndex = imageName.lastIndexOf('.');
 			if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
-			if (imageName.endsWith("_4444")) imageName = imageName.substring(0, imageName.length() - 5);
-			if (imageName.endsWith("_565")) imageName = imageName.substring(0, imageName.length() - 4);
-			if (imageName.endsWith("_a")) imageName = imageName.substring(0, imageName.length() - 2);
-			if (imageName.endsWith("_pre")) imageName = imageName.substring(0, imageName.length() - 2);
+			imageName = imageName.replace("_" + filter.format, "");
+			imageName = imageName.replace("_" + filter.direction, "");
+			imageName = imageName.replace("_" + filterToAbbrev.get(filter.minFilter) + "," + filterToAbbrev.get(filter.magFilter),
+				"");
 
 			writer.write(imageName.replace("\\", "/") + "\n");
 			writer.write("  rotate: " + image.rotate + "\n");
@@ -364,9 +402,9 @@ public class SpriteSheetPacker {
 
 			Matcher matcher = numberedImagePattern.matcher(imageName);
 			if (matcher.matches())
-				writer.write("offset: " + Integer.parseInt(matcher.group(1)) + "\n");
+				writer.write("  index: " + Integer.parseInt(matcher.group(1)) + "\n");
 			else
-				writer.write("offset: 0\n");
+				writer.write("  index: 0\n");
 		}
 	}
 
@@ -414,32 +452,73 @@ public class SpriteSheetPacker {
 		});
 	}
 
-	static private Filter rgba8888 = new Filter("RGBA8888") {
-		public boolean accept (File dir, String name) {
-			return !name.endsWith("_4444") && !name.endsWith("_565") && !name.endsWith("_a");
-		}
-	};
-	static private Filter rgba4444 = new Filter("RGBA4444") {
-		public boolean accept (File dir, String name) {
-			return name.endsWith("_4444");
-		}
-	};
-	static private Filter rgb565 = new Filter("RGB565") {
-		public boolean accept (File dir, String name) {
-			return name.endsWith("_565");
-		}
-	};
-	static private Filter alpha = new Filter("Alpha") {
-		public boolean accept (File dir, String name) {
-			return name.endsWith("_a");
-		}
-	};
+	static private class Filter implements FilenameFilter {
+		Direction direction;
+		Format format;
+		TextureFilter minFilter;
+		TextureFilter magFilter;
+		int width = -1;
+		int height = -1;
+		Settings settings;
 
-	static abstract private class Filter implements FilenameFilter {
-		String name;
+		public Filter (Settings settings, Direction direction, Format format, int width, int height, TextureFilter minFilter,
+			TextureFilter magFilter) {
+			this.settings = settings;
+			this.direction = direction;
+			this.format = format;
+			this.width = width;
+			this.height = height;
+			this.minFilter = minFilter;
+			this.magFilter = magFilter;
+		}
 
-		public Filter (String name) {
-			this.name = name;
+		public boolean accept (File dir, String name) {
+			switch (direction) {
+			case none:
+				if (name.contains("_x") || name.contains("_y")) return false;
+				break;
+			case x:
+				if (!name.contains("_x") || name.contains("_xy")) return false;
+				break;
+			case y:
+				if (!name.contains("_y") || name.contains("_xy")) return false;
+				break;
+			case xy:
+				if (!name.contains("_xy")) return false;
+				break;
+			}
+
+			if (format != null) {
+				if (!name.contains("_" + formatToAbbrev.get(format))) return false;
+			} else {
+				// Return if name has a format.
+				for (String f : formatToAbbrev.values())
+					if (name.contains("_" + f)) return false;
+			}
+
+			if (minFilter != null && magFilter != null) {
+				if (!name.contains("_" + filterToAbbrev.get(minFilter) + "," + filterToAbbrev.get(magFilter) + ".")
+					&& !name.contains("_" + filterToAbbrev.get(minFilter) + "," + filterToAbbrev.get(magFilter) + "_")) return false;
+			} else {
+				// Return if the name has a filter.
+				for (String f : filterToAbbrev.values()) {
+					String tag = "_" + f + ",";
+					int tagIndex = name.indexOf(tag);
+					if (tagIndex != -1) {
+						String rest = name.substring(tagIndex + tag.length());
+						for (String f2 : filterToAbbrev.values())
+							if (rest.startsWith(f2 + ".") || rest.startsWith(f2 + "_")) return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		public boolean accept (BufferedImage image) {
+			if (width != -1 && image.getWidth() != width) return false;
+			if (height != -1 && image.getHeight() != height) return false;
+			return true;
 		}
 	}
 
@@ -447,68 +526,119 @@ public class SpriteSheetPacker {
 		x, y, xy, none
 	}
 
-	static private ArrayList<File> getFiles (File inputDir, Filter filter, Direction direction) {
-		ArrayList<File> files = new ArrayList();
-		files.addAll(Arrays.asList(inputDir.listFiles(filter)));
-		for (Iterator<File> iter = files.iterator(); iter.hasNext();) {
-			File file = iter.next();
-			String name = file.getName();
-			switch (direction) {
-			case none:
-				if (name.contains("_x") || name.contains("_y")) iter.remove();
-				break;
-			case x:
-				if (!name.contains("_x") || name.contains("_xy")) iter.remove();
-				break;
-			case y:
-				if (!name.contains("_y")) iter.remove();
-				break;
-			case xy:
-				if (!name.contains("_xy")) iter.remove();
-				break;
-			}
-		}
-		return files;
+	static final HashMap<TextureFilter, String> filterToAbbrev = new HashMap();
+	static {
+		filterToAbbrev.put(TextureFilter.Linear, "l");
+		filterToAbbrev.put(TextureFilter.Nearest, "n");
+		filterToAbbrev.put(TextureFilter.MipMap, "m");
+		filterToAbbrev.put(TextureFilter.MipMapLinearLinear, "mll");
+		filterToAbbrev.put(TextureFilter.MipMapLinearNearest, "mln");
+		filterToAbbrev.put(TextureFilter.MipMapNearestLinear, "mnl");
+		filterToAbbrev.put(TextureFilter.MipMapNearestNearest, "mnn");
 	}
 
-	static private void process (File inputDir, File outputDir, File packFile) throws Exception {
+	static final HashMap<Format, String> formatToAbbrev = new HashMap();
+	static {
+		formatToAbbrev.put(Format.RGBA8888, "8888");
+		formatToAbbrev.put(Format.RGBA4444, "4444");
+		formatToAbbrev.put(Format.RGB565, "565");
+		formatToAbbrev.put(Format.Alpha, "a");
+	}
+
+	static class Settings {
+		public Format defaultFormat = Format.RGBA8888;
+		public TextureFilter defaultFilterMin = TextureFilter.Linear;
+		public TextureFilter defaultFilterMag = TextureFilter.Linear;
+		public int alphaThreshold = 9;
+		public boolean pot = true;
+		public int padding = 0;
+		public boolean debug = false;
+		public boolean rotate = true;
+		public int minWidth = 64;
+		public int minHeight = 64;
+		public int maxWidth = 1024;
+		public int maxHeight = 1024;
+	}
+
+	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws Exception {
+		// Clean existing page images.
 		if (outputDir.exists()) {
 			String prefix = inputDir.getName();
 			for (File file : outputDir.listFiles())
 				if (file.getName().startsWith(prefix)) file.delete();
 		}
 
-		Direction[] directions = Direction.values();
-		for (int i = 0; i < directions.length; i++) {
-			Direction direction = directions[i];
-			new SpriteSheetPacker(inputDir, rgba8888, direction, outputDir, packFile);
-			new SpriteSheetPacker(inputDir, rgba4444, direction, outputDir, packFile);
-			new SpriteSheetPacker(inputDir, rgb565, direction, outputDir, packFile);
-			new SpriteSheetPacker(inputDir, alpha, direction, outputDir, packFile);
+		// Just check all combinations, because we are extremely lazy.
+		ArrayList<TextureFilter> filters = new ArrayList();
+		filters.add(null);
+		filters.addAll(Arrays.asList(TextureFilter.values()));
+		ArrayList<Format> formats = new ArrayList();
+		formats.add(null);
+		formats.addAll(Arrays.asList(Format.values()));
+		for (int i = 0, n = formats.size(); i < n; i++) {
+			Format format = formats.get(i);
+			for (int ii = 0, nn = filters.size(); ii < nn; ii++) {
+				TextureFilter min = filters.get(ii);
+				for (int iii = ii; iii < nn; iii++) {
+					TextureFilter mag = filters.get(iii);
+					if ((min == null && mag != null) || (min != null && mag == null)) continue;
+
+					Filter filter = new Filter(settings, Direction.none, format, -1, -1, min, mag);
+					new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+
+					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
+						filter = new Filter(settings, Direction.x, format, width, -1, min, mag);
+						new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+					}
+
+					for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
+						filter = new Filter(settings, Direction.y, format, -1, height, min, mag);
+						new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+					}
+
+					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
+						for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
+							filter = new Filter(settings, Direction.xy, format, width, height, min, mag);
+							new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+						}
+					}
+				}
+			}
 		}
+
+		// Process subdirectories.
 		File[] files = inputDir.listFiles();
 		if (files == null) return;
 		for (File file : files)
-			if (file.isDirectory()) process(file, new File(outputDir, file.getName()), packFile);
+			if (file.isDirectory()) process(settings, file, new File(outputDir, file.getName()), packFile);
 	}
 
-	static public void process (String inputDir, String outputDir) throws Exception {
-		File input = new File(inputDir);
-		if (!input.isDirectory()) {
-			System.out.println("Not a directory: " + input);
+	static public void process (Settings settings, String input, String output) throws Exception {
+		File inputDir = new File(input);
+		File outputDir = new File(output);
+
+		if (!inputDir.isDirectory()) {
+			System.out.println("Not a directory: " + inputDir);
 			return;
 		}
+
+		// Clean pack file.
 		File packFile = new File(outputDir, "pack");
 		packFile.delete();
-		process(new File(inputDir), new File(outputDir), packFile);
+
+		process(settings, inputDir, outputDir, packFile);
 	}
 
 	public static void main (String[] args) throws Exception {
+		String input, output;
 		if (args.length != 2) {
 			System.out.println("Usage: INPUTDIR OUTPUTDIR");
 			return;
 		}
-		process(args[0], args[1]);
-		// process("c:/temp/pack-in", "c:/temp/pack-out");
+		input = args[0];
+		output = args[1];
+		// input = "c:/temp/pack-in";
+		// output = "c:/temp/pack-out";
+		process(new Settings(), input, output);
 	}
 }

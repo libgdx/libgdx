@@ -1,43 +1,26 @@
 
-data1.png
-none
-badlogic
-0
-0
-256
-256
-0
-0
-256
-256
-0
-particle-fire
-256
-0
-127
-122
-0
-0
-128
-128
-0
+pack-in1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+badlogicslice
+  rotate: true
+  xy: 0, 0
+  size: 41, 300
+  orig: 41, 300
+  offset: 0, 0
+  index: 0
 particle-star
-383
-0
-63
-63
-0
-0
-64
-64
-0
+  rotate: false
+  xy: 0, 41
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 0
 badlogicsmall
-383
-63
-32
-32
-0
-0
-32
-32
-0
+  rotate: false
+  xy: 300, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0

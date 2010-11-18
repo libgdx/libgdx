@@ -1,25 +1,26 @@
 
-pack1.png
-  repeat: none
-  filter: Linear,Linear
+pack-in1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
 badlogicslice
   rotate: true
   xy: 0, 0
   size: 41, 300
   orig: 41, 300
   offset: 0, 0
-  offset: 0
+  index: 0
 particle-star
   rotate: false
   xy: 0, 41
-  size: 63, 63
+  size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  offset: 0
+  index: 0
 badlogicsmall
   rotate: false
   xy: 300, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
-  offset: 0
+  index: 0

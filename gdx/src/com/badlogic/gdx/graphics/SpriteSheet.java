@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -43,6 +44,13 @@ public class SpriteSheet {
 				else if (pageImage == null) {
 					FileHandle file = imagesDir.child(line);
 
+					// FIXME - Actually load in the requested format.
+					Format format = Format.valueOf(readValue(reader));
+
+					readTuple(reader);
+					TextureFilter min = TextureFilter.valueOf(tuple[0]);
+					TextureFilter max = TextureFilter.valueOf(tuple[1]);
+
 					String direction = readValue(reader);
 					TextureWrap repeatX = ClampToEdge;
 					TextureWrap repeatY = ClampToEdge;
@@ -54,10 +62,6 @@ public class SpriteSheet {
 						repeatX = Repeat;
 						repeatY = Repeat;
 					}
-
-					readTuple(reader);
-					TextureFilter min = TextureFilter.valueOf(tuple[0]);
-					TextureFilter max = TextureFilter.valueOf(tuple[1]);
 
 					Texture texture = Gdx.graphics.newTexture(file, min, max, repeatX, repeatY);
 					textures.add(texture);
