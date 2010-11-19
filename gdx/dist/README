@@ -18,82 +18,99 @@ gdx-helloworld
        - >libgdx.so
 	-> armeabi-v7a/
 	   - >libgdx.so
-    -> gdx-sources.jar
+	-> docs/
+	   - > index.html and other files containing the Java Doc.
     -> gdx.jar
     -> gdx-backend-android.jar
-    -> gdx-backend-applet.jar
-    -> gdx-backend-desktop.jar
-    -> gdx-dependencies-applet.jar
-    -> gdx-dependencies-desktop.jar
+    -> gdx-backend-jogl.jar
+    -> gdx-sources.jar   
     -> gdx.dll
     -> libgdx.so
+    -> libgdx-64.so
     -> README
     
 Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
 "Java Build Path" to the left in the new dialog and then click the Libraries tab. In the libraries tab 
-click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-backend-desktop.jar and gdx-dependencies-desktop.jar. Now you have 
+click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-backend-jogl.jar Now you have 
 added all that's needed for the Java desktop project to compile. 
 
 Create a new package in the "src/" folder of the gdx-helloworld project, say "com.badlogic.helloworld" 
 and create a new class called "HelloWorld" in this package. Here's the source to put into this class:
 
 =========== CODE ===========
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.RenderListener;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+package com.badlogic.helloworld;
+import com.badlogic.gdx.ApplicationListener;
 
-
-public class HelloWorld implements RenderListener 
+public class HelloWorld implements ApplicationListener 
 {
-	public static void main( String[] argv )
-	{
-		JoglApplication app = new JoglApplication( "Hello World", 480, 320 );
-		app.getGraphics().setRenderListener( new HelloWorld() );
-	}
-
 	@Override
-	public void surfaceCreated( ) 
-	{	
+	public void resume() {
 		
 	}
 	
 	@Override
-	public void surfaceChanged(int width, int height)
-	{
-	}
-	
-	@Override
-	public void render( ) 
-	{	
+	public void resize(int width, int height) {
 		
 	}
 	
-
 	@Override
-	public void dispose( ) 
-	{	
+	public void render() {
+	
+	}
+	
+	@Override
+	public void pause() {
 		
+	}
+	
+	@Override
+	public void dispose() {
+		
+	}
+	
+	@Override
+	public void create() {
+	
 	}
 }
 =========== CODE ===========
 
-That's the most basic gdx app you can write. To start this app create a new run configuration 
+Next we need to create a start class that will actually execute the above application on the desktop. Create
+a new Java class in the same package called "HelloWorldDesktop": 
+=========== CODE ===========
+package com.badlogic.helloworld;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
+
+public class HelloWorldDesktop {
+	public static void main(String[] argv) {
+		new JoglApplication(new HelloWorld(), "Hello World", 480, 320, false);
+	}
+}
+
+To start this app create a new run configuration for "HelloWorldDesktop" 
 with the VM arguments -Djava.library.path=libs/. If you omit this you will get an UnsatisfiedLinkError 
 as the libgdx.so/gdx.dll shared libraries can not be found by the VM otherwise. If you run the
 example you will see a black screen. Congratulations, you just wrote your first gdx app!
 
 2) Setting up the Android project
 Now we want the above HelloWorld class to run on Android. For this we create a new Android project
-and call it let's say gdx-helloworld-android. Specify Android 1.5 as the target platform.
-As an activity name chose for example GDXHelloWorld.
+and call it let's say gdx-helloworld-android. Specify Android 1.5 as the target platform. Specify 3
+as the minimum SDK version. As an activity name chose for example HelloWorldAndroid. As a package name
+use "com.badlogic.helloworld".
+
+In the manifset file make sure you have this:
+
+<uses-sdk minSdkVersion="3" targetSdkVersion="8"/>
+
+This will ensure that you can run on all Android versions to date (1.5 - 2.2). 
  
 Also copy over the contents of this zip file to a folder called "libs/" in your Android project. Note that you
 only need to copy a subset of the files! Here's how your android project should look like now:
 
 gdx-helloworld-android
  -> src/
-    -> com.badlogic.gdx/
-       -> GDXHelloWorld.java
+    -> com.badlogic.helloworld/
+       -> HelloWorldAndroid.java
  -> gen/
  -> Android 1.5
  -> assets/
@@ -105,22 +122,20 @@ gdx-helloworld-android
 	   - >libgdx.so    
     -> gdx.jar
     -> gdx-backend-android.jar        
-    -> README
  -> res/
  -> AndroidManifset.xml
  -> default.properties
  
  Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
-project in the project tab and the gdx.jar and gdx-backend-android.jar in the Libraries tab. You don't have to add the other
+project in the project tab and the gdx.jar and gdx-backend-android.jar in the Libraries tab. You don't have to add the gdx-backend-jogl.jar
 jars as those are only needed for the desktop Java version. 
 
-Now open the GDXHelloWorld.java file and paste the following code in:
+Now open the HelloWorldAndroid.java file and paste the following code in:
 
 =========== CODE ===========
-package com.badlogic.gdx;
+package com.badlogic.helloworld;
 
 import android.os.Bundle;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.helloworld.HelloWorld;
 
@@ -129,8 +144,7 @@ public class GDXHelloWorld extends AndroidApplication
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initialize( false );        
-        getGraphics().setRenderListener( new HelloWorld() );
+        initialize(new HelloWorld(), false);        
     }
 }
 =========== CODE ===========  
@@ -143,11 +157,11 @@ to the <activity> tag. Your manifest should look something like this then:
 
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.badlogic.gdx"
+      package="com.badlogic.helloworld"
       android:versionCode="1"
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".GDXHelloWorld"
+        <activity android:name=".HelloWorldAndroid"
                   android:label="@string/app_name"
                   android:configChanges="keyboard|keyboardHidden|orientation">
             <intent-filter>
@@ -157,7 +171,7 @@ to the <activity> tag. Your manifest should look something like this then:
         </activity>
 
     </application>
-    <uses-sdk android:minSdkVersion="3" />
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8"/>
 
 </manifest> 
 
