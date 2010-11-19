@@ -770,7 +770,7 @@ public class SpriteBatch {
 		renderMesh();
 	}
 
-	private void renderMesh() {
+	protected void renderMesh() {
 		if (idx == 0)
 			return;
 
