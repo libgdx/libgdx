@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -230,7 +229,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	void processEvents() {
 		synchronized(this) {
 			if(processor!=null) {		
-				InputProcessor processor = this.processor;
+				final InputProcessor processor = this.processor;
 
 				int len = keyEvents.size();
 				for(int i=0; i < len; i++) {
