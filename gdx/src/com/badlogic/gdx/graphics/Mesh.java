@@ -364,7 +364,7 @@ public class Mesh {
 		} else {
 			if (indices.getNumIndices() > 0)
 				Gdx.gl11.glDrawElements(primitiveType, count,
-						GL10.GL_UNSIGNED_SHORT, offset);
+						GL10.GL_UNSIGNED_SHORT, offset * 2);
 			else
 				Gdx.gl11.glDrawArrays(primitiveType, offset, count);
 		}
@@ -453,7 +453,7 @@ public class Mesh {
 
 		if (indices.getNumIndices() > 0)
 			Gdx.gl20.glDrawElements(primitiveType, count,
-					GL10.GL_UNSIGNED_SHORT, offset);
+					GL10.GL_UNSIGNED_SHORT, offset * 2);
 		else
 			Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 
