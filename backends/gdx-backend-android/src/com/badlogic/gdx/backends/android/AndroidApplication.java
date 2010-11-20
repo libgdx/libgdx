@@ -16,6 +16,7 @@ package com.badlogic.gdx.backends.android;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -224,5 +225,15 @@ public class AndroidApplication extends Activity implements Application {
 	 */
 	@Override public int getVersion () {
 		return Build.VERSION.SDK.charAt(0) - '0';
+	}
+	
+	@Override
+	public long getJavaHeap() {
+		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+	}
+
+	@Override
+	public long getNativeHeap() {
+		return Debug.getNativeHeapAllocatedSize();
 	}
 }

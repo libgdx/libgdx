@@ -210,4 +210,14 @@ public final class JoglApplication implements Application {
 		
 		new JoglApplication(listener, "Jogl Application Test", 480, 320, false);
 	}
+
+	@Override
+	public long getJavaHeap() {
+		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+	}
+
+	@Override
+	public long getNativeHeap() {
+		return getJavaHeap();
+	}
 }

@@ -146,4 +146,14 @@ public interface Application {
 	 * @return the Android API level on Android or 0 on the desktop.
 	 */
 	public int getVersion();
+
+	/**	 
+	 * @return the Java heap memory use in bytes
+	 */
+	public long getJavaHeap();
+
+	/**
+	 * @return the Native heap memory use in bytes
+	 */
+	public long getNativeHeap();
 }
