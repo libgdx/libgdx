@@ -33,16 +33,18 @@ public class MeshTest extends GdxTest {
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.graphics.getGL10().glEnable(GL10.GL_TEXTURE_2D);
 		texture.bind();
-		mesh.render(GL10.GL_TRIANGLES, 0, 3);
+		mesh.render(GL10.GL_TRIANGLES, 3, 3);
 	}
 
 	@Override public void create () {
-		mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
 			Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
-		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,
-			Color.toFloatBits(0, 255, 0, 255), 1, 0, 0, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 0.5f, 1});
-		mesh.setIndices(new short[] {0, 1, 2});
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 
+									  0.5f, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 1, 0, 
+									  0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1,
+									  -0.5f, 0.5f, 0, Color.toFloatBits(255, 255, 255, 255), 0, 1});
+		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);		
