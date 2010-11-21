@@ -19,6 +19,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
+// BOZO - Load on the fly feature.
+
 /**
  * Loads images from texture atlases created by SpriteSheetPacker.<br>
  * <br>
@@ -29,6 +31,14 @@ public class SpriteSheet {
 
 	private final ArrayList<Texture> textures = new ArrayList(4);
 	private final PackedSprite[] images;
+
+	public SpriteSheet (FileHandle imagesDir) {
+		this(imagesDir.child("pack"), imagesDir);
+	}
+
+	public SpriteSheet (FileHandle imagesDir, boolean flip) {
+		this(imagesDir.child("pack"), imagesDir, flip);
+	}
 
 	public SpriteSheet (FileHandle packFile, FileHandle imagesDir) {
 		this(packFile, imagesDir, false);
@@ -82,6 +92,16 @@ public class SpriteSheet {
 					int width = Integer.parseInt(tuple[0]);
 					int height = Integer.parseInt(tuple[1]);
 
+					if (flip) {
+						if (rotate) {
+							left += height;
+							height = -height;
+						} else {
+							top += height;
+							height = -height;
+						}
+					}
+
 					PackedSprite sprite;
 					if (rotate) {
 						sprite = new PackedSprite(pageImage, left, top, height, width);
@@ -102,7 +122,6 @@ public class SpriteSheet {
 					sprite.index = Integer.parseInt(readValue(reader));
 					if (sprite.index == -1) sprite.index = Integer.MAX_VALUE;
 
-					if (flip) sprite.flip(false, true);
 					sortedSprites.add(sprite);
 				}
 			}
@@ -191,7 +210,6 @@ public class SpriteSheet {
 			super(image, textureLeft, textureTop, textureRight, textureBottom);
 		}
 
-		// BOZO - Test offset works and flip is handled.
 		public void setPosition (float x, float y) {
 			super.setPosition(x + offsetX, y + offsetY);
 		}
@@ -202,6 +220,29 @@ public class SpriteSheet {
 
 		public void setOrigin (float originX, float originY) {
 			super.setOrigin(originX + offsetX, originY + offsetY);
+		}
+
+		public float getX () {
+			return super.getX() - offsetX;
+		}
+
+		public float getY () {
+			return super.getY() - offsetY;
+		}
+
+		// BOZO - Test flip works.
+		public void flip (boolean x, boolean y) {
+			super.flip(x, y);
+			if (x) {
+				float xPosition = getX();
+				offsetX = (int)(originalWidth - offsetX - getWidth());
+				setPosition(xPosition, getY());
+			}
+			if (y) {
+				float yPosition = getY();
+				offsetY = (int)(originalHeight - offsetY - getHeight());
+				setPosition(getX(), yPosition);
+			}
 		}
 
 		/**
