@@ -44,7 +44,7 @@ class ImagePanel extends EditorPanel {
 						heightLabel.setText("Height: " + icon.getIconHeight());
 						revalidate();
 						emitter.setImagePath(new File(dir, file).getAbsolutePath());
-						emitter.setTexture(null);
+						emitter.setSprite(null);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}

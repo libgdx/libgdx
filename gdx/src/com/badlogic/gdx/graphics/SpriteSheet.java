@@ -31,6 +31,10 @@ public class SpriteSheet {
 	private final PackedSprite[] images;
 
 	public SpriteSheet (FileHandle packFile, FileHandle imagesDir) {
+		this(packFile, imagesDir, false);
+	}
+
+	public SpriteSheet (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 		PriorityQueue<PackedSprite> sortedSprites = new PriorityQueue(16, indexComparator);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
@@ -78,27 +82,28 @@ public class SpriteSheet {
 					int width = Integer.parseInt(tuple[0]);
 					int height = Integer.parseInt(tuple[1]);
 
-					PackedSprite image;
+					PackedSprite sprite;
 					if (rotate) {
-						image = new PackedSprite(pageImage, left, top, height, width);
-						image.rotate90(true);
+						sprite = new PackedSprite(pageImage, left, top, height, width);
+						sprite.rotate90(true);
 					} else
-						image = new PackedSprite(pageImage, left, top, width, height);
-					image.name = line;
+						sprite = new PackedSprite(pageImage, left, top, width, height);
+					sprite.name = line;
 
 					readTuple(reader);
-					image.originalWidth = Integer.parseInt(tuple[0]);
-					image.originalHeight = Integer.parseInt(tuple[1]);
+					sprite.originalWidth = Integer.parseInt(tuple[0]);
+					sprite.originalHeight = Integer.parseInt(tuple[1]);
 
 					readTuple(reader);
-					image.offsetX = Integer.parseInt(tuple[0]);
-					image.offsetY = Integer.parseInt(tuple[1]);
-					image.setPosition(image.offsetX, image.offsetY);
+					sprite.offsetX = Integer.parseInt(tuple[0]);
+					sprite.offsetY = Integer.parseInt(tuple[1]);
+					sprite.setPosition(sprite.offsetX, sprite.offsetY);
 
-					image.index = Integer.parseInt(readValue(reader));
-					if (image.index == -1) image.index = Integer.MAX_VALUE;
+					sprite.index = Integer.parseInt(readValue(reader));
+					if (sprite.index == -1) sprite.index = Integer.MAX_VALUE;
 
-					sortedSprites.add(image);
+					if (flip) sprite.flip(false, true);
+					sortedSprites.add(sprite);
 				}
 			}
 		} catch (IOException ex) {
@@ -193,6 +198,10 @@ public class SpriteSheet {
 
 		public void setBounds (float x, float y, float width, float height) {
 			super.setBounds(x + offsetX, y + offsetY, width, height);
+		}
+
+		public void setOrigin (float originX, float originY) {
+			super.setOrigin(originX + offsetX, originY + offsetY);
 		}
 
 		/**

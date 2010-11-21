@@ -33,6 +33,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -150,6 +151,7 @@ public class ParticleEditor extends JFrame {
 		ParticleData data = particleData.get(emitter);
 		if (data == null) particleData.put(emitter, data = new ParticleData());
 		data.enabled = enabled;
+		emitter.reset();
 	}
 
 	public boolean isEnabled (ParticleEmitter emitter) {
@@ -265,15 +267,18 @@ public class ParticleEditor extends JFrame {
 			}
 
 			activeCount = 0;
+			boolean complete = true;
 			for (ParticleEmitter emitter : effect.getEmitters()) {
-				if (emitter.getTexture() == null && emitter.getImagePath() != null) loadImage(emitter);
+				if (emitter.getSprite() == null && emitter.getImagePath() != null) loadImage(emitter);
 				boolean enabled = isEnabled(emitter);
 				if (enabled) {
-					if (emitter.getTexture() != null) emitter.draw(spriteBatch, delta);
+					if (emitter.getSprite() != null) emitter.draw(spriteBatch, delta);
 					activeCount += emitter.getActiveCount();
+					if (emitter.isContinuous()) complete = false;
+					if (!emitter.isComplete()) complete = false;
 				}
 			}
-			if (effect.isComplete()) effect.start();
+			if (complete) effect.start();
 
 			maxActive = Math.max(maxActive, activeCount);
 			maxActiveTimer += delta;
@@ -296,15 +301,22 @@ public class ParticleEditor extends JFrame {
 			spriteBatch.end();
 
 			// gl.drawLine((int)(viewWidth * getCurrentParticles().getPercentComplete()), viewHeight - 1, viewWidth, viewHeight -
-// 1);
+			// 1);
 		}
 
 		private void loadImage (ParticleEmitter emitter) {
 			final String imagePath = emitter.getImagePath();
+			String imageName = new File(imagePath.replace('\\', '/')).getName();
 			try {
-				emitter.setTexture(Gdx.graphics.newTexture(Gdx.files.getFileHandle(imagePath, FileType.Absolute),
-					TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+				FileHandle file;
+				if (imagePath.equals("particle.png"))
+					file = Gdx.files.classpath(imagePath);
+				else
+					file = Gdx.files.absolute(imagePath);
+				emitter.setSprite(new Sprite(Gdx.graphics.newTexture(file, TextureFilter.Linear, TextureFilter.Linear,
+					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge)));
 			} catch (GdxRuntimeException ex) {
+				ex.printStackTrace();
 				EventQueue.invokeLater(new Runnable() {
 					public void run () {
 						JOptionPane.showMessageDialog(ParticleEditor.this, "Error loading image:\n" + imagePath);

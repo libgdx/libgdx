@@ -10,10 +10,12 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.SpriteSheet;
+import com.badlogic.gdx.graphics.SpriteSheet.PackedSprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -94,8 +96,13 @@ public class ParticleEffect {
 		loadEmitterImages(imagesDir);
 	}
 
-	void loadEmitters (FileHandle file) {
-		InputStream input = file.read();
+	public void load (FileHandle effectFile, SpriteSheet spriteSheet) {
+		loadEmitters(effectFile);
+		loadEmitterImages(spriteSheet);
+	}
+
+	public void loadEmitters (FileHandle effectFile) {
+		InputStream input = effectFile.read();
 		emitters.clear();
 		BufferedReader reader = null;
 		try {
@@ -103,13 +110,13 @@ public class ParticleEffect {
 			while (true) {
 				ParticleEmitter emitter = new ParticleEmitter(reader);
 				reader.readLine();
-				emitter.setImagePath(ParticleEmitter.readString(reader, "Image Path"));
+				emitter.setImagePath(reader.readLine());
 				emitters.add(emitter);
 				if (reader.readLine() == null) break;
 				if (reader.readLine() == null) break;
 			}
 		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error loading effect: " + file, ex);
+			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
 		} finally {
 			try {
 				if (reader != null) reader.close();
@@ -118,13 +125,27 @@ public class ParticleEffect {
 		}
 	}
 
-	private void loadEmitterImages (FileHandle imagesDir) {
+	public void loadEmitterImages (SpriteSheet spriteSheet) {
 		for (int i = 0, n = emitters.size(); i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
-			emitter.setTexture(loadTexture(imagesDir.child(imageName)));
+			int lastDotIndex = imageName.lastIndexOf('.');
+			if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
+			Sprite sprite = spriteSheet.get(imageName);
+			if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
+			emitter.setSprite(sprite);
+		}
+	}
+
+	public void loadEmitterImages (FileHandle imagesDir) {
+		for (int i = 0, n = emitters.size(); i < n; i++) {
+			ParticleEmitter emitter = emitters.get(i);
+			String imagePath = emitter.getImagePath();
+			if (imagePath == null) continue;
+			String imageName = new File(imagePath.replace('\\', '/')).getName();
+			emitter.setSprite(new Sprite(loadTexture(imagesDir.child(imageName))));
 		}
 	}
 

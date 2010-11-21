@@ -108,7 +108,7 @@ class EffectPanel extends JPanel {
 		lastDir = dir;
 		ParticleEffect effect = new ParticleEffect();
 		try {
-			effect.loadEmitters(Gdx.files.getFileHandle(new File(dir, file).getAbsolutePath(), FileType.Absolute));
+			effect.loadEmitters(Gdx.files.absolute(new File(dir, file).getAbsolutePath()));
 			editor.effect = effect;
 			emitterTableModel.getDataVector().removeAllElements();
 			editor.particleData.clear();

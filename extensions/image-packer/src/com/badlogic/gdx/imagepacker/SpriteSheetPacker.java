@@ -43,13 +43,6 @@ public class SpriteSheetPacker {
 		this.inputDir = inputDir;
 		this.filter = filter;
 
-		minWidth = filter.width != -1 ? filter.width : settings.minWidth;
-		minHeight = filter.height != -1 ? filter.height : settings.minHeight;
-		maxWidth = filter.width != -1 ? filter.width : settings.maxWidth;
-		maxHeight = filter.height != -1 ? filter.height : settings.maxHeight;
-		xPadding = images.size() > 1 && filter.direction != Direction.x && filter.direction != Direction.xy ? settings.padding : 0;
-		yPadding = images.size() > 1 && filter.direction != Direction.y && filter.direction != Direction.xy ? settings.padding : 0;
-
 		// Collect and squeeze images.
 		File[] files = inputDir.listFiles(filter);
 		if (files == null) return;
@@ -59,6 +52,13 @@ public class SpriteSheetPacker {
 			if (image != null) images.add(image);
 		}
 		if (images.isEmpty()) return;
+
+		minWidth = filter.width != -1 ? filter.width : settings.minWidth;
+		minHeight = filter.height != -1 ? filter.height : settings.minHeight;
+		maxWidth = filter.width != -1 ? filter.width : settings.maxWidth;
+		maxHeight = filter.height != -1 ? filter.height : settings.maxHeight;
+		xPadding = images.size() > 1 && !filter.direction.isX() ? settings.padding : 0;
+		yPadding = images.size() > 1 && !filter.direction.isY() ? settings.padding : 0;
 
 		System.out.println(inputDir);
 		if (filter.format != null)
@@ -87,27 +87,6 @@ public class SpriteSheetPacker {
 	}
 
 	private void writePage (String prefix, File outputDir) throws IOException {
-		// Remove existing image pages in output dir.
-		int imageNumber = 1;
-		File outputFile = new File(outputDir, prefix + imageNumber + ".png");
-		while (outputFile.exists())
-			outputFile = new File(outputDir, prefix + ++imageNumber + ".png");
-
-		writer.write("\n" + prefix + imageNumber + ".png\n");
-		Format format;
-		if (filter.format != null) {
-			writer.write("format: " + filter.format + "\n");
-			format = filter.format;
-		} else {
-			writer.write("format: " + settings.defaultFormat + "\n");
-			format = settings.defaultFormat;
-		}
-		if (filter.minFilter == null || filter.magFilter == null)
-			writer.write("filter: " + settings.defaultFilterMin + "," + settings.defaultFilterMag + "\n");
-		else
-			writer.write("filter: " + filter.minFilter + "," + filter.magFilter + "\n");
-		writer.write("repeat: " + filter.direction + "\n");
-
 		// Try reasonably hard to pack images into the smallest POT size.
 		Comparator bestComparator = null;
 		Comparator secondBestComparator = imageComparators.get(0);
@@ -118,7 +97,6 @@ public class SpriteSheetPacker {
 		int grownPixels = 0, grownPixels2 = 0;
 		int i = 0, ii = 0;
 		while (true) {
-			if (width > maxWidth && height > maxHeight) break;
 			for (Comparator comparator : imageComparators) {
 				// Pack as many images as possible, sorting the images different ways.
 				Collections.sort(images, comparator);
@@ -138,19 +116,17 @@ public class SpriteSheetPacker {
 					}
 				}
 			}
+			if (width == maxWidth && height == maxHeight) break;
 			if (bestComparator != null) break;
 			if (settings.pot) {
-				// 64,64 then 64,128 then 128,64 then 128,128 then 128,256 etc.
-				if (i % 3 == 0) {
-					width *= 2;
-					i++;
-				} else if (i % 3 == 1) {
-					width /= 2;
+				// 64,64 then 64,128 then 64,256 etc then 128,64 then 128,128 then 128,256 etc.
+				grownPixels += width;
+				width *= 2;
+				if (width > maxWidth) {
+					width -= grownPixels;
+					grownPixels = 0;
 					height *= 2;
-					i++;
-				} else {
 					width *= 2;
-					i++;
 				}
 			} else {
 				// 64-127,64 then 64,64-127 then 128-255,128 then 128,128-255 etc.
@@ -179,6 +155,8 @@ public class SpriteSheetPacker {
 					i++;
 				}
 			}
+			width = Math.min(maxWidth, width);
+			height = Math.min(maxHeight, height);
 		}
 		if (bestComparator != null) {
 			Collections.sort(images, bestComparator);
@@ -195,7 +173,7 @@ public class SpriteSheetPacker {
 		}
 
 		int type;
-		switch (format) {
+		switch (filter.format != null ? filter.format : settings.defaultFormat) {
 		case RGBA8888:
 		case RGBA4444:
 			type = BufferedImage.TYPE_INT_ARGB;
@@ -209,6 +187,27 @@ public class SpriteSheetPacker {
 		default:
 			throw new RuntimeException();
 		}
+
+		int imageNumber = 1;
+		File outputFile = new File(outputDir, prefix + imageNumber + ".png");
+		while (outputFile.exists())
+			outputFile = new File(outputDir, prefix + ++imageNumber + ".png");
+
+		writer.write("\n" + outputFile.getName() + "\n");
+		Format format;
+		if (filter.format != null) {
+			writer.write("format: " + filter.format + "\n");
+			format = filter.format;
+		} else {
+			writer.write("format: " + settings.defaultFormat + "\n");
+			format = settings.defaultFormat;
+		}
+		if (filter.minFilter == null || filter.magFilter == null)
+			writer.write("filter: " + settings.defaultFilterMin + "," + settings.defaultFilterMag + "\n");
+		else
+			writer.write("filter: " + filter.minFilter + "," + filter.magFilter + "\n");
+		writer.write("repeat: " + filter.direction + "\n");
+
 		BufferedImage canvas = new BufferedImage(width, height, type);
 		insert(canvas, images, bestWidth, bestHeight);
 		System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
@@ -223,8 +222,8 @@ public class SpriteSheetPacker {
 			g.drawRect(0, 0, width - 1, height - 1);
 		}
 		// Pretend image is larger so padding on right and bottom edges is ignored.
-		if (filter.direction != Direction.x && filter.direction != Direction.xy) width += xPadding;
-		if (filter.direction != Direction.y && filter.direction != Direction.xy) height += yPadding;
+		if (!filter.direction.isX()) width += xPadding;
+		if (!filter.direction.isY()) height += yPadding;
 		Node root = new Node(0, 0, width, height);
 		int usedPixels = 0;
 		for (int i = images.size() - 1; i >= 0; i--) {
@@ -276,7 +275,7 @@ public class SpriteSheetPacker {
 		final byte[] a = new byte[1];
 		int top = 0;
 		int bottom = source.getHeight();
-		if (filter.direction != Direction.y && filter.direction != Direction.xy) {
+		if (!filter.direction.isY()) {
 			outer:
 			for (int y = 0; y < source.getHeight(); y++) {
 				for (int x = 0; x < source.getWidth(); x++) {
@@ -300,10 +299,10 @@ public class SpriteSheetPacker {
 		}
 		int left = 0;
 		int right = source.getWidth();
-		if (filter.direction != Direction.x && filter.direction != Direction.xy) {
+		if (!filter.direction.isX()) {
 			outer:
 			for (int x = 0; x < source.getWidth(); x++) {
-				for (int y = top; y <= bottom; y++) {
+				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
 					if (alpha < 0) alpha += 256;
@@ -313,7 +312,7 @@ public class SpriteSheetPacker {
 			}
 			outer:
 			for (int x = source.getWidth(); --x >= left;) {
-				for (int y = top; y <= bottom; y++) {
+				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
 					if (alpha < 0) alpha += 256;
@@ -388,7 +387,7 @@ public class SpriteSheetPacker {
 			if (imageName.startsWith("/") || imageName.startsWith("\\")) imageName = imageName.substring(1);
 			int dotIndex = imageName.lastIndexOf('.');
 			if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
-			imageName = imageName.replace("_" + filter.format, "");
+			imageName = imageName.replace("_" + formatToAbbrev.get(filter.format), "");
 			imageName = imageName.replace("_" + filter.direction, "");
 			imageName = imageName.replace("_" + filterToAbbrev.get(filter.minFilter) + "," + filterToAbbrev.get(filter.magFilter),
 				"");
@@ -461,9 +460,7 @@ public class SpriteSheetPacker {
 		int height = -1;
 		Settings settings;
 
-		public Filter (Settings settings, Direction direction, Format format, int width, int height, TextureFilter minFilter,
-			TextureFilter magFilter) {
-			this.settings = settings;
+		public Filter (Direction direction, Format format, int width, int height, TextureFilter minFilter, TextureFilter magFilter) {
 			this.direction = direction;
 			this.format = format;
 			this.width = width;
@@ -523,7 +520,15 @@ public class SpriteSheetPacker {
 	}
 
 	static private enum Direction {
-		x, y, xy, none
+		x, y, xy, none;
+
+		public boolean isX () {
+			return this == x || this == xy;
+		}
+
+		public boolean isY () {
+			return this == y || this == xy;
+		}
 	}
 
 	static final HashMap<TextureFilter, String> filterToAbbrev = new HashMap();
@@ -561,6 +566,8 @@ public class SpriteSheetPacker {
 	}
 
 	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws Exception {
+		if (inputDir.getName().startsWith(".")) return;
+
 		// Clean existing page images.
 		if (outputDir.exists()) {
 			String prefix = inputDir.getName();
@@ -583,22 +590,22 @@ public class SpriteSheetPacker {
 					TextureFilter mag = filters.get(iii);
 					if ((min == null && mag != null) || (min != null && mag == null)) continue;
 
-					Filter filter = new Filter(settings, Direction.none, format, -1, -1, min, mag);
+					Filter filter = new Filter(Direction.none, format, -1, -1, min, mag);
 					new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
 
 					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
-						filter = new Filter(settings, Direction.x, format, width, -1, min, mag);
+						filter = new Filter(Direction.x, format, width, -1, min, mag);
 						new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
 					}
 
 					for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
-						filter = new Filter(settings, Direction.y, format, -1, height, min, mag);
+						filter = new Filter(Direction.y, format, -1, height, min, mag);
 						new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
 					}
 
 					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
 						for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
-							filter = new Filter(settings, Direction.xy, format, width, height, min, mag);
+							filter = new Filter(Direction.xy, format, width, height, min, mag);
 							new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
 						}
 					}
@@ -610,7 +617,7 @@ public class SpriteSheetPacker {
 		File[] files = inputDir.listFiles();
 		if (files == null) return;
 		for (File file : files)
-			if (file.isDirectory()) process(settings, file, new File(outputDir, file.getName()), packFile);
+			if (file.isDirectory()) process(settings, file, outputDir, packFile);
 	}
 
 	static public void process (Settings settings, String input, String output) throws Exception {
@@ -637,8 +644,7 @@ public class SpriteSheetPacker {
 		}
 		input = args[0];
 		output = args[1];
-		// input = "c:/temp/pack-in";
-		// output = "c:/temp/pack-out";
-		process(new Settings(), input, output);
+		Settings settings = new Settings();
+		process(settings, input, output);
 	}
 }

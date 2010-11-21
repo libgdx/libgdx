@@ -43,10 +43,9 @@ public class ParticleEmitter {
 	private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
 	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
 
-	private Texture texture;
+	private Sprite sprite;
 	private Particle[] particles;
 	private int minParticleCount, maxParticleCount = 4;
-	private float imageAspectRatio;
 	private int x, y;
 	private String name;
 	private String imagePath;
@@ -80,8 +79,7 @@ public class ParticleEmitter {
 	}
 
 	public ParticleEmitter (ParticleEmitter emitter) {
-		texture = emitter.texture;
-		imageAspectRatio = emitter.imageAspectRatio;
+		sprite = emitter.sprite;
 		setMaxParticleCount(emitter.maxParticleCount);
 		minParticleCount = emitter.minParticleCount;
 		delayValue.load(emitter.delayValue);
@@ -210,6 +208,12 @@ public class ParticleEmitter {
 		restart();
 	}
 
+	public void reset () {
+		emissionDelta = 0;
+		durationTimer = 0;
+		start();
+	}
+
 	private void restart () {
 		delay = delayValue.active ? delayValue.newLowValue() : 0;
 		delayTimer = 0;
@@ -242,15 +246,15 @@ public class ParticleEmitter {
 		if (velocityValue.active && velocityValue.active) updateFlags |= UPDATE_VELOCITY;
 		if (scaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
 		if (rotationValue.active && rotationValue.timeline.length > 1) updateFlags |= UPDATE_ROTATION;
-		if (windValue.active && windValue.timeline.length > 1) updateFlags |= UPDATE_WIND;
-		if (gravityValue.active && gravityValue.timeline.length > 1) updateFlags |= UPDATE_GRAVITY;
+		if (windValue.active) updateFlags |= UPDATE_WIND;
+		if (gravityValue.active) updateFlags |= UPDATE_GRAVITY;
 		if (tintValue.timeline.length > 1) updateFlags |= UPDATE_TINT;
 	}
 
 	private void activateParticle (int index) {
 		Particle particle = particles[index];
 		if (particle == null) {
-			particles[index] = particle = new Particle(texture);
+			particles[index] = particle = new Particle(sprite);
 			particle.flip(flipX, flipY);
 		}
 
@@ -269,15 +273,16 @@ public class ParticleEmitter {
 		particle.angle = angleValue.newLowValue();
 		particle.angleDiff = angleValue.newHighValue();
 		if (!angleValue.isRelative()) particle.angleDiff -= particle.angle;
+		float angle = 0;
 		if ((updateFlags & UPDATE_ANGLE) == 0) {
-			float angle = particle.angle + particle.angleDiff * angleValue.getScale(0);
+			angle = particle.angle + particle.angleDiff * angleValue.getScale(0);
 			particle.angle = angle;
 			particle.angleCos = MathUtils.cosDeg(angle);
 			particle.angleSin = MathUtils.sinDeg(angle);
 		}
 
-		particle.scale = scaleValue.newLowValue() / texture.getWidth();
-		particle.scaleDiff = scaleValue.newHighValue() / texture.getWidth();
+		particle.scale = scaleValue.newLowValue() / sprite.getWidth();
+		particle.scaleDiff = scaleValue.newHighValue() / sprite.getWidth();
 		if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scale;
 		if ((updateFlags & UPDATE_SCALE) == 0) particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
 
@@ -285,8 +290,11 @@ public class ParticleEmitter {
 			particle.rotation = rotationValue.newLowValue();
 			particle.rotationDiff = rotationValue.newHighValue();
 			if (!rotationValue.isRelative()) particle.rotationDiff -= particle.rotation;
-			if ((updateFlags & UPDATE_ROTATION) == 0)
-				particle.setRotation(particle.rotation + particle.rotationDiff * rotationValue.getScale(0));
+			if ((updateFlags & UPDATE_ROTATION) == 0) {
+				float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(0);
+				if (aligned) rotation += angle;
+				particle.setRotation(rotation);
+			}
 		}
 
 		if (windValue.active) {
@@ -334,20 +342,20 @@ public class ParticleEmitter {
 			if (radiusX == 0 || radiusY == 0) break;
 			float scaleY = radiusX / (float)radiusY;
 			if (spawnShapeValue.edges) {
-				float angle;
+				float spawnAngle;
 				switch (spawnShapeValue.side) {
 				case top:
-					angle = -MathUtils.random(179f);
+					spawnAngle = -MathUtils.random(179f);
 					break;
 				case bottom:
-					angle = MathUtils.random(179f);
+					spawnAngle = MathUtils.random(179f);
 					break;
 				default:
-					angle = MathUtils.random(360f);
+					spawnAngle = MathUtils.random(360f);
 					break;
 				}
-				x += MathUtils.cosDeg(angle) * radiusX;
-				y += MathUtils.sinDeg(angle) * radiusX / scaleY;
+				x += MathUtils.cosDeg(spawnAngle) * radiusX;
+				y += MathUtils.sinDeg(spawnAngle) * radiusX / scaleY;
 			} else {
 				int radius2 = radiusX * radiusX;
 				while (true) {
@@ -374,9 +382,9 @@ public class ParticleEmitter {
 		}
 		}
 
-		int texWidth = texture.getWidth();
-		int texHeight = texture.getHeight();
-		particle.setBounds(x - texWidth / 2, y - texHeight / 2, texWidth, texHeight);
+		float spriteWidth = sprite.getWidth();
+		float spriteHeight = sprite.getHeight();
+		particle.setBounds(x - spriteWidth / 2, y - spriteHeight / 2, spriteWidth, spriteHeight);
 	}
 
 	private boolean updateParticle (int index, float delta, int deltaMillis) {
@@ -407,7 +415,7 @@ public class ParticleEmitter {
 			} else {
 				velocityX = velocity * particle.angleCos;
 				velocityY = velocity * particle.angleSin;
-				if ((updateFlags & UPDATE_ROTATION) != 0) {
+				if (aligned || (updateFlags & UPDATE_ROTATION) != 0) {
 					float rotation = particle.rotation + particle.rotationDiff * rotationValue.getScale(percent);
 					if (aligned) rotation += particle.angle;
 					particle.setRotation(rotation);
@@ -455,13 +463,12 @@ public class ParticleEmitter {
 		this.y = y;
 	}
 
-	// BOZO - Should be setSprite.
-	public void setTexture (Texture texture) {
-		this.texture = texture;
-		if (texture == null) return;
-		imageAspectRatio = texture.getHeight() / (float)texture.getWidth();
-		float originX = texture.getWidth() / 2;
-		float originY = texture.getHeight() / 2;
+	public void setSprite (Sprite sprite) {
+		this.sprite = sprite;
+		if (sprite == null) return;
+		float originX = sprite.getOriginX();
+		float originY = sprite.getOriginY();
+		Texture texture = sprite.getTexture();
 		for (int i = 0, n = particles.length; i < n; i++) {
 			Particle particle = particles[i];
 			if (particle == null) break;
@@ -470,8 +477,8 @@ public class ParticleEmitter {
 		}
 	}
 
-	public Texture getTexture () {
-		return texture;
+	public Sprite getSprite () {
+		return sprite;
 	}
 
 	public String getName () {
@@ -778,8 +785,8 @@ public class ParticleEmitter {
 		float gravity, gravityDiff;
 		float[] tint;
 
-		public Particle (Texture texture) {
-			super(texture);
+		public Particle (Sprite sprite) {
+			super(sprite);
 		}
 	}
 

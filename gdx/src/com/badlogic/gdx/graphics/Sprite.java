@@ -21,14 +21,14 @@ public class Sprite {
 	static final int VERTEX_SIZE = 2 + 1 + 2;
 	static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-	Texture texture;
-	private float[] vertices = new float[20];
+	private Texture texture;
+	private final float[] vertices = new float[20];
 	private float x, y;
 	private float width, height;
 	private float originX, originY;
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
-	private Color color = new Color(1, 1, 1, 1);
+	private final Color color = new Color(1, 1, 1, 1);
 	private boolean dirty;
 
 	/**
@@ -98,6 +98,26 @@ public class Sprite {
 		this(parent.texture, (int) (srcX + parent.vertices[U1]
 				* parent.texture.getWidth()), (int) (srcY + parent.vertices[V2]
 				* parent.texture.getHeight()), srcWidth, srcHeight);
+	}
+
+	/**
+	 * Creates a sprite that is a copy in every way of the specified sprite.
+	 */
+	public Sprite (Sprite sprite) {
+		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
+		texture = sprite.texture;
+		System.arraycopy(sprite.vertices, 0, vertices, 0, 20);
+		x = sprite.x;
+		y = sprite.y;
+		width = sprite.width;
+		height = sprite.height;
+		originX = sprite.originX;
+		originY = sprite.originY;
+		rotation = sprite.rotation;
+		scaleX = sprite.scaleX;
+		scaleY = sprite.scaleY;
+		color.set(sprite.color);
+		dirty = sprite.dirty;
 	}
 
 	/**
@@ -415,18 +435,18 @@ public class Sprite {
 			dirty = false;
 
 			float[] vertices = this.vertices;
-			float localX = -originX * scaleX;
-			float localY = -originY * scaleY;
-			float localX2 = (-originX + width) * scaleX;
-			float localY2 = (-originY + height) * scaleY;
+			float localX = -originX;
+			float localY = -originY;
+			float localX2 = localX + width;
+			float localY2 = localY + height;
+			float worldOriginX = this.x - localX;
+			float worldOriginY = this.y - localY;
 			if (scaleX != 1 || scaleY != 1) {
 				localX *= scaleX;
 				localY *= scaleY;
 				localX2 *= scaleX;
 				localY2 *= scaleY;
 			}
-			float worldOriginX = this.x + originX;
-			float worldOriginY = this.y + originY;
 			if (rotation != 0) {
 				float cos = MathUtils.cosDeg(rotation);
 				float sin = MathUtils.sinDeg(rotation);
