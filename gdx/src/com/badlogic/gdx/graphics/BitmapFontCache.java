@@ -119,7 +119,7 @@ public class BitmapFontCache {
 	 *            The SpriteBatch
 	 */
 	public void draw(SpriteBatch spriteBatch) {
-		spriteBatch.draw(font.texture, vertices, 0, idx);
+		spriteBatch.draw(font.getSprite().getTexture(), vertices, 0, idx);
 	}
 
 	void reset(int glyphCount) {

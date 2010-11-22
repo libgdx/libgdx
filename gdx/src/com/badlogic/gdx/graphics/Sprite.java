@@ -538,6 +538,22 @@ public class Sprite {
 		return scaleY;
 	}
 
+	public float getTextureRegionX () {
+		return vertices[U1];
+	}
+	
+	public float getTextureRegionY () {
+		return vertices[V1];
+	}
+	
+	public float getTextureRegionWidth () {
+		return vertices[U3] - vertices[U1];
+	}
+	
+	public float getTextureRegionHeight () {
+		return vertices[V1] - vertices[V2];
+	}
+
 	/**
 	 * Returns the color for this sprite. Changing the returned color will have
 	 * no affect. {@link #setColor(Color)} or

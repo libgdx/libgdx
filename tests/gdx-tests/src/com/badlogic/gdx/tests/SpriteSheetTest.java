@@ -16,7 +16,7 @@ public class SpriteSheetTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 
-		spriteSheet = new SpriteSheet(Gdx.files.internal("data/pack"), Gdx.files.internal("data"));
+		spriteSheet = new SpriteSheet(Gdx.files.internal("data"));
 		badlogic = spriteSheet.get("badlogicslice");
 		badlogicSmall = spriteSheet.get("badlogicsmall");
 		star = spriteSheet.get("particle-star");
