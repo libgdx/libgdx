@@ -536,30 +536,31 @@ public class SpriteCache {
 		if (!drawing) throw new IllegalStateException("SpriteCache.begin must be called before draw.");
 
 		Cache cache = caches.get(cacheID);
-		offset += cache.offset;
+		offset = offset * 12 + cache.offset;
+		length *= 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
 		if (Gdx.graphics.isGL20Available()) {
 			for (int i = 0, n = textures.length; i < n; i++) {
+				textures[i].bind();
 				int count = counts[i];
 				if (count > length) {
 					i = n;
 					count = length;
 				} else
 					length -= count;
-				textures[i].bind();
 				mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
 				offset += count;
 			}
 		} else {
 			for (int i = 0, n = textures.length; i < n; i++) {
+				textures[i].bind();
 				int count = counts[i];
 				if (count > length) {
 					i = n;
 					count = length;
 				} else
 					length -= count;
-				textures[i].bind();
 				mesh.render(GL10.GL_TRIANGLES, offset, count);
 				offset += count;
 			}
