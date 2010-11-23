@@ -90,8 +90,13 @@ public class BitmapFont {
 			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), false);
     }
 
-    public BitmapFont(FileHandle fontFile, Sprite sprite) {
-        init(fontFile, sprite, false);
+	/**
+	 * Creates a new BitmapFont with the glyphs relative to the specified sprite.
+	 * @param sprite The sprite containing the glyphs. It must NOT be flipped.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 */
+    public BitmapFont(FileHandle fontFile, Sprite sprite, boolean flip) {
+        init(fontFile, sprite, flip);
     }
 
     /**
@@ -114,8 +119,8 @@ public class BitmapFont {
 
     private void init(FileHandle fontFile, Sprite sprite, boolean flip) {
         this.sprite = sprite;
-        float invTexWidth = 1.0f / sprite.getWidth();
-        float invTexHeight = 1.0f / sprite.getHeight();
+        float invTexWidth = 1.0f / sprite.getTexture().getWidth();
+        float invTexHeight = 1.0f / sprite.getTexture().getHeight();
         float uSprite = sprite.getTextureRegionX();
         float vSprite = sprite.getTextureRegionY();
         float u2Sprite = uSprite + sprite.getTextureRegionWidth();
@@ -182,11 +187,11 @@ public class BitmapFont {
                 glyph.u = uSprite + srcX * invTexWidth;
                 glyph.u2 = uSprite + (srcX + glyph.width) * invTexWidth;
                 if (flip) {
-                    glyph.v =  srcY * invTexHeight;
-                    glyph.v2 = (srcY + glyph.height) * invTexHeight;
+                    glyph.v = vSprite + srcY * invTexHeight;
+                    glyph.v2 = vSprite + (srcY + glyph.height) * invTexHeight;
                 } else {
-                    glyph.v2 =  srcY * invTexHeight;
-                    glyph.v =  (srcY + glyph.height) * invTexHeight;
+                    glyph.v2 = vSprite + srcY * invTexHeight;
+                    glyph.v = vSprite + (srcY + glyph.height) * invTexHeight;
                 }
             }
 

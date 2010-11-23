@@ -15,6 +15,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -26,6 +27,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.MathUtils;
 
 public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	int SPRITES = 400 / 2;
@@ -38,6 +40,10 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	SpriteCache spriteCache;
 	int normalCacheID, spriteCacheID;
 	int renderMethod = 0;
+
+	private float[] sprites;
+
+	private float[] sprites2;
 
 	@Override public void render () {
 		if (renderMethod == 0) renderNormal();
@@ -123,8 +129,8 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 			TextureWrap.ClampToEdge);
 		pixmap.dispose();
 
-		float sprites[] = new float[SPRITES * 6];
-		float sprites2[] = new float[SPRITES * 6];
+		sprites = new float[SPRITES * 6];
+		sprites2 = new float[SPRITES * 6];
 		Sprite[] sprites3 = new Sprite[SPRITES * 2];
 
 		for (int i = 0; i < sprites.length; i += 6) {
@@ -185,6 +191,17 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean keyDown (int keycode) {
+		if (keycode != Input.Keys.KEYCODE_SPACE) return false;
+		float scale = MathUtils.random(0.75f, 1.25f);
+		float angle = MathUtils.random(1, 360);
+		spriteCache.beginCache(normalCacheID);
+		for (int i = 0; i < sprites2.length; i += 6)
+			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+				false, false);
+		for (int i = 0; i < sprites.length; i += 6)
+			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+				false, false);
+		spriteCache.endCache();
 		return false;
 	}
 

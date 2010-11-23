@@ -230,7 +230,6 @@ public class SpriteSheet {
 			return super.getY() - offsetY;
 		}
 
-		// BOZO - Test flip works.
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
 			if (x) {
@@ -263,23 +262,30 @@ public class SpriteSheet {
 			return index;
 		}
 
+		/**
+		 * The width of the image, before whitespace was removed for packing.
+		 */
 		public int getOriginalWidth () {
 			return originalWidth;
 		}
 
+		/**
+		 * The height of the image, before whitespace was removed for packing.
+		 */
 		public int getOriginalHeight () {
 			return originalHeight;
 		}
 
 		/**
-		 * The offset from the left of the original image to the left of the packed image, after whitespace has been removed.
+		 * The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing.
 		 */
 		public int getOffsetX () {
 			return offsetX;
 		}
 
 		/**
-		 * The offset from the bottom of the original image to the bottom of the packed image, after whitespace has been removed.
+		 * The offset from the bottom of the original image to the bottom of the packed image, after whitespace was removed for
+		 * packing.
 		 */
 		public int getOffsetY () {
 			return offsetY;

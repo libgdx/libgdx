@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.MathUtils;
 
 /**
@@ -48,10 +50,9 @@ public class SpriteCache {
 	private final Matrix4 combinedMatrix = new Matrix4();
 	private ShaderProgram shader;
 
-	private boolean caching;
+	private Cache currentCache;
 	private final ArrayList<Texture> textures = new ArrayList(8);
 	private final ArrayList<Integer> counts = new ArrayList(8);
-	private int offset;
 
 	/**
 	 * Creates a cache that can contain up to 1000 images.
@@ -97,27 +98,60 @@ public class SpriteCache {
 	 * Starts the definition of a new cache, allowing the add and {@link #endCache()} methods to be called.
 	 */
 	public void beginCache () {
-		if (caching) throw new IllegalStateException("endCache must be called before begin.");
-		caching = true;
-
-		offset = mesh.getNumVertices() / 2 * 6;
+		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
+		currentCache = new Cache(caches.size(), mesh.getNumVertices() / 2 * 6);
+		caches.add(currentCache);
 		mesh.getVerticesBuffer().compact();
+	}
+
+	/**
+	 * Starts the redefinition of an existing cache, allowing the add and {@link #endCache()} methods to be called. The cache
+	 * cannot have more entries added to it than when it was first created.
+	 */
+	public void beginCache (int cacheID) {
+		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
+		currentCache = caches.get(cacheID);
+		mesh.getVerticesBuffer().position(currentCache.offset);
 	}
 
 	/**
 	 * Ends the definition of a cache, returning the cache ID to be used with {@link #draw(int)}.
 	 */
 	public int endCache () {
-		if (!caching) throw new IllegalStateException("beginCache must be called before endCache.");
-		caching = false;
+		if (currentCache == null) throw new IllegalStateException("beginCache must be called before endCache.");
 
-		Cache cache = new Cache(offset, textures.toArray(new Texture[textures.size()]), new int[counts.size()]);
-		for (int i = 0, n = counts.size(); i < n; i++)
-			cache.counts[i] = counts.get(i);
-		caches.add(cache);
+		Cache cache = currentCache;
+		int cacheCount = mesh.getVerticesBuffer().position() - cache.offset;
+		if (cache.textures == null) {
+			// New cache.
+			cache.maxCount = cacheCount;
+			cache.textures = textures.toArray(new Texture[textures.size()]);
+			cache.counts = new int[counts.size()];
+			for (int i = 0, n = counts.size(); i < n; i++)
+				cache.counts[i] = counts.get(i);
 
-		mesh.getVerticesBuffer().flip();
+			mesh.getVerticesBuffer().flip();
+		} else {
+			// Redefine existing cache.
+			if (cacheCount > cache.maxCount)
+				throw new GdxRuntimeException("Cannot redefine a cache with more entries than when it was first created: "
+					+ cacheCount + " (" + cache.maxCount + " max)");
 
+			if (cache.textures.length < textures.size()) cache.textures = new Texture[textures.size()];
+			for (int i = 0, n = textures.size(); i < n; i++)
+				cache.textures[i] = textures.get(i);
+
+			if (cache.counts.length < counts.size()) cache.counts = new int[counts.size()];
+			for (int i = 0, n = counts.size(); i < n; i++)
+				cache.counts[i] = counts.get(i);
+
+			FloatBuffer vertices = mesh.getVerticesBuffer();
+			vertices.position(0);
+			Cache lastCache = caches.get(caches.size() - 1);
+			vertices.limit(lastCache.offset + lastCache.maxCount);
+		}
+
+		currentCache = null;
 		textures.clear();
 		counts.clear();
 
@@ -128,7 +162,7 @@ public class SpriteCache {
 	 * Adds the specified image to the cache.
 	 */
 	public void add (Texture texture, float[] vertices, int offset, int length) {
-		if (!caching) throw new IllegalStateException("beginCache must be called before add.");
+		if (currentCache == null) throw new IllegalStateException("beginCache must be called before add.");
 
 		int count = vertices.length / Sprite.SPRITE_SIZE * 6;
 		int lastIndex = textures.size() - 1;
@@ -522,14 +556,15 @@ public class SpriteCache {
 	}
 
 	static private class Cache {
+		final int id;
 		final int offset;
-		final Texture[] textures;
-		final int[] counts;
+		int maxCount;
+		Texture[] textures;
+		int[] counts;
 
-		Cache (int offset, Texture[] textures, int[] counts) {
+		public Cache (int id, int offset) {
+			this.id = id;
 			this.offset = offset;
-			this.textures = textures;
-			this.counts = counts;
 		}
 	}
 

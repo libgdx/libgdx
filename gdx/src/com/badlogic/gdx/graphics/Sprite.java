@@ -494,6 +494,9 @@ public class Sprite {
 		spriteBatch.draw(texture, getVertices(), 0, 20);
 	}
 
+	/**
+	 * Sets the sprite's texture. The texture region is unaffected.
+	 */
 	public void setTexture(Texture texture) {
 		this.texture = texture;
 	}
@@ -543,7 +546,7 @@ public class Sprite {
 	}
 	
 	public float getTextureRegionY () {
-		return vertices[V1];
+		return vertices[V2];
 	}
 	
 	public float getTextureRegionWidth () {
@@ -551,7 +554,7 @@ public class Sprite {
 	}
 	
 	public float getTextureRegionHeight () {
-		return vertices[V1] - vertices[V2];
+		return vertices[V2] - vertices[V1];
 	}
 
 	/**
