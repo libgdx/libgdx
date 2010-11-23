@@ -155,7 +155,7 @@ public class SpriteCache {
 		textures.clear();
 		counts.clear();
 
-		return caches.size() - 1;
+		return cache.id;
 	}
 
 	/**
@@ -522,6 +522,43 @@ public class SpriteCache {
 		} else {
 			for (int i = 0, n = textures.length; i < n; i++) {
 				int count = counts[i];
+				textures[i].bind();
+				mesh.render(GL10.GL_TRIANGLES, offset, count);
+				offset += count;
+			}
+		}
+	}
+
+	/**
+	 * Draws the specified images defined for the specified cache ID.
+	 */
+	public void draw (int cacheID, int offset, int length) {
+		if (!drawing) throw new IllegalStateException("SpriteCache.begin must be called before draw.");
+
+		Cache cache = caches.get(cacheID);
+		offset += cache.offset;
+		Texture[] textures = cache.textures;
+		int[] counts = cache.counts;
+		if (Gdx.graphics.isGL20Available()) {
+			for (int i = 0, n = textures.length; i < n; i++) {
+				int count = counts[i];
+				if (count > length) {
+					i = n;
+					count = length;
+				} else
+					length -= count;
+				textures[i].bind();
+				mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
+				offset += count;
+			}
+		} else {
+			for (int i = 0, n = textures.length; i < n; i++) {
+				int count = counts[i];
+				if (count > length) {
+					i = n;
+					count = length;
+				} else
+					length -= count;
 				textures[i].bind();
 				mesh.render(GL10.GL_TRIANGLES, offset, count);
 				offset += count;
