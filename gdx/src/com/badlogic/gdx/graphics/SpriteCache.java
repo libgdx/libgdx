@@ -118,12 +118,17 @@ public class SpriteCache {
 	}
 
 	/**
-	 * Starts the redefinition of an existing cache, allowing the add and {@link #endCache()} methods to be called. The cache
-	 * cannot have more entries added to it than when it was first created. To do that, use {@link #clear()} and then
-	 * {@link #begin()}.
+	 * Starts the redefinition of an existing cache, allowing the add and {@link #endCache()} methods to be called. If this is not
+	 * the last cache created, it cannot have more entries added to it than when it was first created. To do that, use
+	 * {@link #clear()} and then {@link #begin()}.
 	 */
 	public void beginCache (int cacheID) {
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
+		if (cacheID == caches.size() - 1) {
+			caches.remove(cacheID);
+			beginCache();
+			return;
+		}
 		currentCache = caches.get(cacheID);
 		mesh.getVerticesBuffer().position(currentCache.offset);
 	}
@@ -147,9 +152,11 @@ public class SpriteCache {
 			mesh.getVerticesBuffer().flip();
 		} else {
 			// Redefine existing cache.
-			if (cacheCount > cache.maxCount)
-				throw new GdxRuntimeException("Cannot redefine a cache with more entries than when it was first created: "
-					+ cacheCount + " (" + cache.maxCount + " max)");
+			if (cacheCount > cache.maxCount) {
+				throw new GdxRuntimeException(
+					"If a cache is not the last created, it cannot be redefined with more entries than when it was first created: "
+						+ cacheCount + " (" + cache.maxCount + " max)");
+			}
 
 			if (cache.textures.length < textures.size()) cache.textures = new Texture[textures.size()];
 			for (int i = 0, n = textures.size(); i < n; i++)
