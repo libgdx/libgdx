@@ -29,11 +29,9 @@ import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
-import com.badlogic.gdx.tests.PixmapBlendingTest;
-import com.badlogic.gdx.tests.SpritePerformanceTest;
-import com.badlogic.gdx.tests.SpriteSheetTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
+import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.Pong;
 import com.badlogic.gdx.tests.SimpleTest;
 import com.badlogic.gdx.tests.SoundTest;
@@ -41,6 +39,9 @@ import com.badlogic.gdx.tests.SpriteBatchRotationTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
+import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
+import com.badlogic.gdx.tests.SpritePerformanceTest;
+import com.badlogic.gdx.tests.SpriteSheetTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
@@ -97,6 +98,7 @@ public class GdxTests
 		SimpleTest.class,
 		SoundTest.class,
 		SpriteCacheTest.class,
+		SpriteCacheOffsetTest.class,
 		SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class,
 		SpriteBatchTest.class,
