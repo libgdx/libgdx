@@ -114,7 +114,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public void create () {
-		spriteCache = new SpriteCache(1000);
+		spriteCache = new SpriteCache(1000, true);
 
 		Pixmap pixmap = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal));
 		texture = Gdx.graphics.newUnmanagedTexture(32, 32, Format.RGB565, TextureFilter.Linear, TextureFilter.Linear,

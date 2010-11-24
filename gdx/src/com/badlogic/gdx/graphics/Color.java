@@ -198,6 +198,10 @@ public class Color {
 		return result;
 	}
 
+	public String toString () {
+		return Integer.toHexString(toIntBits());
+	}
+
 	/**
 	 * Packs the four color components which should be in the range 0-255 into a
 	 * 32-bit integer and then converts it to a float. Note that no range

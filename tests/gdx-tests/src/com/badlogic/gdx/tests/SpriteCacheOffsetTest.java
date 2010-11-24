@@ -34,7 +34,7 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 			ClampToEdge, ClampToEdge));
 		sprite.setSize(tileSize, tileSize);
 
-		cache = new SpriteCache(1000);
+		cache = new SpriteCache(1000, false);
 		for (int y = 0; y < tileMapHeight; y++) {
 			cache.beginCache();
 			for (int x = 0; x < tileMapWidth; x++) {
