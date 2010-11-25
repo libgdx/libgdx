@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.MathUtils;
  * An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner
  */
-final class LwjglGraphics implements Graphics {
+public final class LwjglGraphics implements Graphics {
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -61,6 +61,7 @@ final class LwjglGraphics implements Graphics {
 	int height;
 	String title;
 	Canvas canvas;
+	boolean enforcePotImages = true;
 
 	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable) {
 		useGL2 = useGL2IfAvailable;
@@ -153,10 +154,12 @@ final class LwjglGraphics implements Graphics {
 
 	public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap) {
-		Pixmap pixmap = newPixmap(file);
-		if (!MathUtils.isPowerOfTwo(pixmap.getHeight()) || !MathUtils.isPowerOfTwo(pixmap.getWidth()))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file + " (" + pixmap.getWidth() + "x"
-				+ pixmap.getHeight() + ")");
+		if (enforcePotImages) {
+			Pixmap pixmap = newPixmap(file);
+			if (!MathUtils.isPowerOfTwo(pixmap.getHeight()) || !MathUtils.isPowerOfTwo(pixmap.getWidth()))
+				throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file + " (" + pixmap.getWidth() + "x"
+					+ pixmap.getHeight() + ")");
+		}
 
 		return new LwjglTexture(file, minFilter, magFilter, uWrap, vWrap, false);
 	}
@@ -262,5 +265,9 @@ final class LwjglGraphics implements Graphics {
 	@Override
 	public float getPpcY() {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+	}
+
+	public void setEnforcePotImages (boolean enforcePotImages) {
+		this.enforcePotImages = enforcePotImages;
 	}
 }
