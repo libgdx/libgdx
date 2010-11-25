@@ -67,7 +67,7 @@ class EffectPanel extends JPanel {
 
 		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(15);
-		emitter.setImagePath("data/particle.png");
+		emitter.setImagePath("particle.png");
 
 		ArrayList<ParticleEmitter> emitters = editor.effect.getEmitters();
 		if (emitters.isEmpty())

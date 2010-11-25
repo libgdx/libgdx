@@ -239,8 +239,8 @@ public class ParticleEditor extends JFrame {
 
 			spriteBatch = new SpriteBatch();
 
-			font = new BitmapFont(Gdx.files.getFileHandle("data/default.fnt", FileType.Internal), Gdx.files.getFileHandle(
-				"data/default.png", FileType.Internal), true);
+			font = new BitmapFont(Gdx.files.getFileHandle("default.fnt", FileType.Internal), Gdx.files.getFileHandle(
+				"default.png", FileType.Internal), true);
 			effectPanel.newEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
 			Gdx.input.setInputProcessor(this);
