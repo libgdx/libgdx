@@ -36,8 +36,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-// BOZO - BitmapFont could take a sprite, so multiple fonts could be packed.
-
 /**
  * Loads and renders AngleCode BMFont files. The bitmap font consists of 2
  * files: the .fnt file which must be saved with text encoding (not xml or

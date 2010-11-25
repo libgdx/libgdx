@@ -54,7 +54,7 @@ public class ParticleEditor extends JFrame {
 	final HashMap<ParticleEmitter, ParticleData> particleData = new HashMap();
 
 	public ParticleEditor () {
-		super("GDX Particle Editor");
+		super("Particle Editor");
 
 		lwjglCanvas = new LwjglCanvas(new Renderer(), false);
 		addWindowListener(new WindowAdapter() {
