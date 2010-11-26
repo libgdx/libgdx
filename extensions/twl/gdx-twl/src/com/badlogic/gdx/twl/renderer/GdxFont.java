@@ -54,7 +54,7 @@ class GdxFont implements Font {
 	public GdxFont (GdxRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
 		this.bitmapFont = bitmapFont;
 		this.renderer = renderer;
-		yOffset = bitmapFont.getLineHeight() - bitmapFont.getBaseLine();
+		yOffset = bitmapFont.getLineHeight() - bitmapFont.getCapHeight() - bitmapFont.getBaseLine();
 
 		ArrayList<FontState> states = new ArrayList<FontState>();
 		for (FontParameter p : condParams) {
@@ -75,7 +75,7 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		com.badlogic.gdx.graphics.Color color = renderer.getColor(fontState.color);
-		return bitmapFont.draw(renderer.spriteBatch, str, x, y, color, start, end);
+		return (int)bitmapFont.draw(renderer.spriteBatch, str, x, y, color, start, end);
 	}
 
 	public int drawMultiLineText (AnimationState as, int x, int y, CharSequence str, int width,
@@ -84,7 +84,7 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		com.badlogic.gdx.graphics.Color color = renderer.getColor(fontState.color);
-		return bitmapFont.drawMultiLineText(renderer.spriteBatch, str, x, y, color, width, gdxAlignment[align.ordinal()]);
+		return bitmapFont.drawMultiLine(renderer.spriteBatch, str, x, y, color, width, gdxAlignment[align.ordinal()]);
 	}
 
 	public FontCache cacheText (FontCache cache, CharSequence str) {
@@ -130,15 +130,15 @@ class GdxFont implements Font {
 	}
 
 	public int computeMultiLineTextWidth (CharSequence str) {
-		return bitmapFont.computeMultiLineTextWidth(str);
+		return bitmapFont.getMultiLineBounds(str).width;
 	}
 
 	public int computeTextWidth (CharSequence str) {
-		return bitmapFont.computeTextWidth(str);
+		return bitmapFont.getBounds(str).width;
 	}
 
 	public int computeTextWidth (CharSequence str, int start, int end) {
-		return bitmapFont.computeTextWidth(str, start, end);
+		return bitmapFont.getBounds(str, start, end).width;
 	}
 
 	public int computeVisibleGlpyhs (CharSequence str, int start, int end, int width) {

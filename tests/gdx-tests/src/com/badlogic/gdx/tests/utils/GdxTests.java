@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.AudioRecorderTest;
+import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.Box2DTest;
@@ -38,8 +39,8 @@ import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SpriteBatchRotationTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchTest;
-import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
+import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.SpritePerformanceTest;
 import com.badlogic.gdx.tests.SpriteSheetTest;
 import com.badlogic.gdx.tests.StageTest;
@@ -68,6 +69,7 @@ public class GdxTests
 		AlphaTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
+		BitmapFontAlignmentTest.class,
 		BitmapFontFlipTest.class,
 		BitmapFontTest.class,
 		Box2DTest.class,

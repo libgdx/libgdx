@@ -29,7 +29,6 @@ public class BitmapFontFlipTest extends GdxTest {
 
 	@Override
 	public void create () {
-		if (spriteBatch != null) return;
 		spriteBatch = new SpriteBatch();
 		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1));
 
@@ -56,19 +55,19 @@ public class BitmapFontFlipTest extends GdxTest {
 		cache4 = new BitmapFontCache(font);
 		cache5 = new BitmapFontCache(font);
 
-		cache1.setText("(cached)", 10, 320 - 36, Color.WHITE);
+		cache1.setText("(cached)", 10, 320 - 66, Color.WHITE);
 
 		String text = "Sphinx of black quartz,\njudge my vow.";
-		cache2.setMultiLineText(text, 5, 320 - 270, Color.RED);
+		cache2.setMultiLineText(text, 5, 320 - 300, Color.RED);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		cache3.setMultiLineText(text, 5, 320 - 170, Color.BLUE, 470, BitmapFont.HAlignment.CENTER);
+		cache3.setMultiLineText(text, 5, 320 - 200, Color.BLUE, 470, BitmapFont.HAlignment.CENTER);
 
 		text = "Kerning: LYA moo";
-		cache4.setText(text, 210, 320 - 36, Color.WHITE, 0, text.length() - 3);
+		cache4.setText(text, 210, 320 - 66, Color.WHITE, 0, text.length() - 3);
 
 		text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
-		cache5.setWrappedText(text, 0, 320 - 270, red, 480, HAlignment.CENTER);
+		cache5.setWrappedText(text, 0, 320 - 300, red, 480, HAlignment.CENTER);
 	}
 
 	@Override
@@ -93,20 +92,20 @@ public class BitmapFontFlipTest extends GdxTest {
 	private void renderNormal () {
 		String text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
 		red.a = alpha;
-		font.drawWrappedText(spriteBatch, text, 0, 320 - 270, red, 480, HAlignment.CENTER);
+		font.drawWrapped(spriteBatch, text, 0, 320 - 300, red, 480, HAlignment.CENTER);
 
-		font.draw(spriteBatch, "(normal)", 10, 320 - 36, Color.WHITE);
+		font.draw(spriteBatch, "(normal)", 10, 320 - 66, Color.WHITE);
 
 		if (alpha > 0.6f) return;
 
 		text = "Sphinx of black quartz,\njudge my vow.";
-		font.drawMultiLineText(spriteBatch, text, 5, 320 - 270, Color.RED);
+		font.drawMultiLine(spriteBatch, text, 5, 320 - 300, Color.RED);
 
 		text = "How quickly\ndaft jumping zebras vex.";
-		font.drawMultiLineText(spriteBatch, text, 5, 320 - 170, Color.BLUE, 470, BitmapFont.HAlignment.RIGHT);
+		font.drawMultiLine(spriteBatch, text, 5, 320 - 200, Color.BLUE, 470, BitmapFont.HAlignment.RIGHT);
 
 		text = "Kerning: LYA moo";
-		font.draw(spriteBatch, text, 210, 320 - 36, Color.WHITE, 0, text.length() - 3);
+		font.draw(spriteBatch, text, 210, 320 - 66, Color.WHITE, 0, text.length() - 3);
 	}
 
 	private void renderCached () {

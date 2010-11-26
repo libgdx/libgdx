@@ -46,7 +46,7 @@ public class ParticleEmitter {
 	private Sprite sprite;
 	private Particle[] particles;
 	private int minParticleCount, maxParticleCount = 4;
-	private int x, y;
+	private float x, y;
 	private String name;
 	private String imagePath;
 	private int activeCount;
@@ -322,9 +322,9 @@ public class ParticleEmitter {
 		particle.transparencyDiff = transparencyValue.newHighValue() - particle.transparency;
 
 		// Spawn.
-		int x = this.x;
+		float x = this.x;
 		if (xOffsetValue.active) x += (int)xOffsetValue.newLowValue();
-		int y = this.y;
+		float y = this.y;
 		if (yOffsetValue.active) y += (int)yOffsetValue.newLowValue();
 		switch (spawnShapeValue.shape) {
 		case square: {
@@ -445,10 +445,10 @@ public class ParticleEmitter {
 		return true;
 	}
 
-	public void setPosition (int x, int y) {
+	public void setPosition (float x, float y) {
 		if (attached) {
-			int xAmount = x - this.x;
-			int yAmount = y - this.y;
+			float xAmount = x - this.x;
+			float yAmount = y - this.y;
 			BitSet active = this.active;
 			int index = 0;
 			while (true) {
@@ -623,11 +623,11 @@ public class ParticleEmitter {
 		return Math.min(1, durationTimer / (float)duration);
 	}
 
-	public int getX () {
+	public float getX () {
 		return x;
 	}
 
-	public int getY () {
+	public float getY () {
 		return y;
 	}
 
