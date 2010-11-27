@@ -4,17 +4,19 @@ package com.badlogic.gdx.utils;
 import java.util.Iterator;
 
 /**
- * An long to object hashmap, taken from Amarena2D (thanks Christoph :p).
- * 
+ * An unordered map that uses long keys. Avoids the boxing that occurs with HashMap<Long, T>.
+ * @author Nathan Sweet <misc@n4te.com>
  * @author christop widulle
- * 
- * @param <T>
  */
 public class LongHashMap<T> {
+	public int size;
 
-	private Entry[] table;
+	Entry[] table;
 	private float loadFactor;
-	private int size, mask, capacity, threshold;
+	private int mask, capacity, threshold;
+	private Entries entries;
+	private Values values;
+	private Keys keys;
 
 	public LongHashMap () {
 		this(16, 0.75f);
@@ -28,16 +30,74 @@ public class LongHashMap<T> {
 		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large.");
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be greater than zero.");
 		if (loadFactor <= 0) throw new IllegalArgumentException("initialCapacity must be greater than zero.");
-		capacity = 1;
-		while (capacity < initialCapacity) {
-			capacity <<= 1;
-		}
+		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
 		this.loadFactor = loadFactor;
-		this.threshold = (int)(capacity * loadFactor);
-		this.table = new Entry[capacity];
-		this.mask = capacity - 1;
+		threshold = (int)(capacity * loadFactor);
+		table = new Entry[capacity];
+		mask = capacity - 1;
 	}
 
+	public T put (long key, T value) {
+		int index = (int)(key & mask);
+		for (Entry e = table[index]; e != null; e = e.next) {
+			if (e.key != key) continue;
+			// Key already exists.
+			Object oldValue = e.value;
+			e.value = value;
+			return (T)oldValue;
+		}
+		table[index] = new Entry(key, value, table[index]);
+		if (size++ >= threshold) resize(2 * capacity);
+		return null;
+	}
+
+	public T get (long key) {
+		int index = (int)(key & mask);
+		for (Entry e = table[index]; e != null; e = e.next)
+			if (e.key == key) return (T)e.value;
+		return null;
+	}
+
+	/**
+	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is reused each
+	 * time this method is called.
+	 */
+	public Iterator entries () {
+		if (entries == null)
+			entries = new Entries();
+		else
+			entries.reset();
+		return entries;
+	}
+
+	/**
+	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is reused each time
+	 * this method is called.
+	 */
+	public Iterator values () {
+		if (values == null)
+			values = new Values();
+		else
+			values.reset();
+		return values;
+	}
+
+	/**
+	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is reused each time
+	 * this method is called.
+	 */
+	public Keys keys () {
+		if (keys == null)
+			keys = new Keys();
+		else
+			keys.reset();
+		return keys;
+	}
+
+	/**
+	 * Returns true if the specified value is in the map. Note this traverses the entire map and calls equals on every value, which
+	 * may be an expensive operation.
+	 */
 	public boolean containsValue (Object value) {
 		Entry[] table = this.table;
 		for (int i = table.length; i-- > 0;)
@@ -47,57 +107,13 @@ public class LongHashMap<T> {
 	}
 
 	public boolean containsKey (long key) {
-		int index = ((int)key) & mask;
+		int index = (int)(key & mask);
 		for (Entry e = table[index]; e != null; e = e.next)
 			if (e.key == key) return true;
 		return false;
 	}
 
-	@SuppressWarnings("unchecked") public T get (long key) {
-		int index = (int)(key & mask);
-		for (Entry e = table[index]; e != null; e = e.next)
-			if (e.key == key) return (T)e.value;
-		return null;
-	}
-
-	@SuppressWarnings("unchecked") public T put (long key, T value) {
-		int index = (int)(key & mask);
-		// Check if key already exists.
-		for (Entry e = table[index]; e != null; e = e.next) {
-			if (e.key != key) continue;
-			Object oldValue = e.value;
-			e.value = value;
-			return (T)oldValue;
-		}
-		table[index] = new Entry(key, value, table[index]);
-		if (size++ >= threshold) {
-			// Rehash.
-			int newCapacity = 2 * capacity;
-			Entry[] newTable = new Entry[newCapacity];
-			Entry[] src = table;
-			int bucketmask = newCapacity - 1;
-			for (int j = 0; j < src.length; j++) {
-				Entry e = src[j];
-				if (e != null) {
-					src[j] = null;
-					do {
-						Entry next = e.next;
-						index = (int)(e.key & bucketmask);
-						e.next = newTable[index];
-						newTable[index] = e;
-						e = next;
-					} while (e != null);
-				}
-			}
-			table = newTable;
-			capacity = newCapacity;
-			threshold = (int)(newCapacity * loadFactor);
-			mask = capacity - 1;
-		}
-		return null;
-	}
-
-	@SuppressWarnings("unchecked") public T remove (long key) {
+	public T remove (long key) {
 		int index = (int)(key & mask);
 		Entry prev = table[index];
 		Entry e = prev;
@@ -105,21 +121,16 @@ public class LongHashMap<T> {
 			Entry next = e.next;
 			if (e.key == key) {
 				size--;
-				if (prev == e) {
+				if (prev == e)
 					table[index] = next;
-				} else {
+				else
 					prev.next = next;
-				}
 				return (T)e.value;
 			}
 			prev = e;
 			e = next;
 		}
 		return null;
-	}
-
-	public int size () {
-		return size;
 	}
 
 	public void clear () {
@@ -129,76 +140,184 @@ public class LongHashMap<T> {
 		size = 0;
 	}
 
-	static class Entry {
-		final long key;
-		Object value;
+	/**
+	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	 * items to avoid multiple backing array resizes.
+	 */
+	public void ensureCapacity (int additionalCapacity) {
+		int sizeNeeded = size + additionalCapacity;
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo(sizeNeeded));
+	}
+
+	private void resize (int newSize) {
+		Entry[] newTable = new Entry[newSize];
+		Entry[] table = this.table;
+		int bucketmask = newSize - 1;
+		for (int i = 0; i < table.length; i++) {
+			Entry entry = table[i];
+			if (entry != null) {
+				table[i] = null;
+				do {
+					Entry next = entry.next;
+					int index = (int)(entry.key & bucketmask);
+					entry.next = newTable[index];
+					newTable[index] = entry;
+					entry = next;
+				} while (entry != null);
+			}
+		}
+		this.table = newTable;
+		capacity = newSize;
+		threshold = (int)(newSize * loadFactor);
+		mask = capacity - 1;
+	}
+
+	public String toString () {
+		if (size == 0) return "[]";
+		StringBuilder buffer = new StringBuilder(32);
+		buffer.append('[');
+		Entry[] table = this.table;
+		int i = table.length;
+		while (i-- > 0) {
+			Entry e = table[i];
+			if (e == null) continue;
+			buffer.append(e.key);
+			buffer.append('=');
+			buffer.append(e.value);
+			for (e = e.next; e != null; e = e.next) {
+				buffer.append(", ");
+				buffer.append(e.key);
+				buffer.append('=');
+				buffer.append(e.value);
+			}
+			break;
+		}
+		while (i-- > 0) {
+			for (Entry e = table[i]; e != null; e = e.next) {
+				buffer.append(", ");
+				buffer.append(e.key);
+				buffer.append('=');
+				buffer.append(e.value);
+			}
+		}
+		buffer.append(']');
+		return buffer.toString();
+	}
+
+	class Entries implements Iterator {
+		private int index = -1;
+		Entry<T> entry = null;
+
+		public boolean hasNext () {
+			if (entry != null && entry.next != null) {
+				entry = entry.next;
+				return true;
+			}
+			while (true) {
+				index++;
+				if (index >= table.length) return false;
+				if (table[index] == null) continue;
+				entry = table[index];
+				return true;
+			}
+		}
+
+		public Object next () {
+			return entry;
+		}
+
+		public void remove () {
+			Entry prev = table[index];
+			Entry e = prev;
+			while (e != null) {
+				Entry next = e.next;
+				if (e == entry) {
+					size--;
+					if (prev == e)
+						table[index] = next;
+					else
+						prev.next = next;
+					return;
+				}
+				prev = e;
+				e = next;
+			}
+		}
+
+		void reset () {
+			index = -1;
+			entry = null;
+		}
+	}
+
+	class Values extends Entries {
+		public T next () {
+			return entry.value;
+		}
+	}
+
+	class Keys {
+		private int index = -1;
+		Entry<T> entry = null;
+
+		public boolean hasNext () {
+			if (entry != null && entry.next != null) {
+				entry = entry.next;
+				return true;
+			}
+			while (true) {
+				index++;
+				if (index >= table.length) return false;
+				if (table[index] == null) continue;
+				entry = table[index];
+				return true;
+			}
+		}
+
+		public long next () {
+			return entry.key;
+		}
+
+		public void remove () {
+			Entry prev = table[index];
+			Entry e = prev;
+			while (e != null) {
+				Entry next = e.next;
+				if (e == entry) {
+					size--;
+					if (prev == e)
+						table[index] = next;
+					else
+						prev.next = next;
+					return;
+				}
+				prev = e;
+				e = next;
+			}
+		}
+
+		void reset () {
+			index = -1;
+			entry = null;
+		}
+	}
+
+	/**
+	 * An entry in the map. The value may be changed directly.
+	 */
+	static public class Entry<T> {
+		public final long key;
+		public T value;
 		Entry next;
 
-		Entry (long k, Object v, Entry n) {
+		Entry (long k, T v, Entry n) {
 			key = k;
 			value = v;
 			next = n;
 		}
-	}
 
-	EntryIterable iterable = new EntryIterable();
-
-	public Iterable<T> values () {
-		iterable.reset();
-		return iterable;
-	}
-
-	class EntryIterable implements Iterable<T> {
-		int currIndex = -1;
-		Entry currEntry = null;
-
-		Iterator<T> iter = new Iterator<T>() {
-			@Override public boolean hasNext () {
-				if (currEntry == null) {
-					if (!loadNextEntry()) return false;
-				} else {
-					if (currEntry.next == null) {
-						if (loadNextEntry() == false) return false;
-					} else
-						currEntry = currEntry.next;
-				}
-
-				return true;
-			}
-
-			@SuppressWarnings("synthetic-access")
-			private boolean loadNextEntry () {
-				while (true) {
-					currIndex++;
-					if (currIndex >= table.length) return false;
-
-					if (table[currIndex] == null)
-						continue;
-					else {
-						currEntry = table[currIndex];
-						return true;
-					}
-				}
-			}
-
-			@SuppressWarnings("unchecked") @Override public T next () {
-				return (T)currEntry.value;
-			}
-
-			@Override public void remove () {
-				throw new UnsupportedOperationException("not implemented");
-			}
-
-		};
-
-		public void reset () {
-			currIndex = -1;
-			currEntry = null;
+		public String toString () {
+			return key + "=" + value;
 		}
-
-		@Override public Iterator<T> iterator () {
-			return iter;
-		}
-
 	}
 }

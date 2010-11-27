@@ -14,6 +14,7 @@
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -445,14 +446,14 @@ public class World {
 	/**
 	 * @return all bodies currently in the simulation
 	 */
-	public Iterable<Body> getBodies () {
+	public Iterator<Body> getBodies () {
 		return bodies.values();
 	}
 
 	/**
 	 * @return all joints currently in the simulation
 	 */
-	public Iterable<Joint> getJoints () {
+	public Iterator<Joint> getJoints () {
 		return joints.values();
 	}
 

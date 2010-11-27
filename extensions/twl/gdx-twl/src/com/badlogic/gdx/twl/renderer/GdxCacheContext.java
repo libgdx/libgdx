@@ -28,8 +28,6 @@ class GdxCacheContext implements CacheContext {
 		this.renderer = renderer;
 	}
 
-	// BOZO - This URL stuff sucks. Look at URLStreamHandler.
-
 	GdxTexture loadTexture (URL url) throws IOException {
 		String urlString = url.toString();
 		GdxTexture texture = textures.get(urlString);
@@ -69,17 +67,5 @@ class GdxCacheContext implements CacheContext {
 			fonts.clear();
 			valid = false;
 		}
-	}
-
-	private FileHandle urlToFileHandle (URL url) {
-		String relativePath;
-		try {
-			relativePath = new File(url.toURI()).getPath();
-		} catch (Exception ex) {
-			relativePath = new File(url.getPath()).getPath();
-		}
-		if (relativePath.startsWith(File.separator)) relativePath = relativePath.substring(1);
-		// BOZO - How to get the theme file to construct the full path?
-		return null;
 	}
 }
