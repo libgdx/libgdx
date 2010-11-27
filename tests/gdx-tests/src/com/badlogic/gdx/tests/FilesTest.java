@@ -264,7 +264,7 @@ public class FilesTest extends GdxTest {
 	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20, Color.WHITE);
+		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
 	}
 

@@ -24,21 +24,21 @@ package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.graphics.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.BitmapFont.TextBounds;
 
 /**
- * A BitmapFontCache caches glyph geometry for a BitmapFont, providing a fast way to render static text. <br>
- * <br>
- * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
+ * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
+ * of each glyph each frame.
  * @author Nathan Sweet <misc@n4te.com>
  * @author Matthias Mann
  */
 public class BitmapFontCache {
 	private final BitmapFont font;
-	private float[] vertices;
+	private float[] vertices = new float[0];
 	private int idx;
-	int width, height;
 	private float x, y;
-	private float color;
+	private float color = Color.WHITE.toFloatBits();
+	private final TextBounds textBounds = new TextBounds();
 
 	public BitmapFontCache (BitmapFont font) {
 		this.font = font;
@@ -69,10 +69,6 @@ public class BitmapFontCache {
 		}
 	}
 
-	/**
-	 * Sets the tint color of the text.
-	 * @param tint The {@link Color}
-	 */
 	public void setColor (Color tint) {
 		final float color = tint.toFloatBits();
 		if (color == this.color) return;
@@ -82,9 +78,6 @@ public class BitmapFontCache {
 			vertices[i] = color;
 	}
 
-	/**
-	 * Sets the tint color of the text.
-	 */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = Float.intBitsToFloat(intBits);
@@ -95,16 +88,11 @@ public class BitmapFontCache {
 			vertices[i] = color;
 	}
 
-	/**
-	 * Draws the contents of the cache via a {@link SpriteBatch}. Must be called between a {@link SpriteBatch#begin()}/
-	 * {@link SpriteBatch#end()} pair.
-	 * @param spriteBatch The SpriteBatch
-	 */
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(font.getSprite().getTexture(), vertices, 0, idx);
 	}
 
-	void reset (int glyphCount) {
+	private void reset (int glyphCount) {
 		x = 0;
 		y = 0;
 		idx = 0;
@@ -113,14 +101,14 @@ public class BitmapFontCache {
 		if (vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
 	}
 
-	private int addToCache (CharSequence str, float x, float y, float color, int start, int end) {
+	private int addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
 		while (start < end) {
 			lastGlyph = font.getGlyph(str.charAt(start++));
 			if (lastGlyph != null) {
-				addGlyph(lastGlyph, x, y, color);
+				addGlyph(lastGlyph, x, y);
 				x += lastGlyph.xadvance;
 				break;
 			}
@@ -131,14 +119,14 @@ public class BitmapFontCache {
 			if (g != null) {
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
-				addGlyph(lastGlyph, x, y, color);
+				addGlyph(lastGlyph, x, y);
 				x += g.xadvance;
 			}
 		}
 		return (int)(x - startX);
 	}
 
-	void addGlyph (Glyph glyph, float x, float y, float color) {
+	private void addGlyph (Glyph glyph, float x, float y) {
 		x += glyph.xoffset;
 		y += glyph.yoffset;
 		final float x2 = x + glyph.width;
@@ -175,66 +163,54 @@ public class BitmapFontCache {
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * @param str The string
-	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner
-	 * @param tint The color
+	 * Caches a string with the specified position.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline).
 	 */
-	public void setText (CharSequence str, float x, float y, Color tint) {
-		setText(str, x, y, tint, 0, str.length());
+	public TextBounds setText (CharSequence str, float x, float y) {
+		return setText(str, x, y, 0, str.length());
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}.
-	 * @param str The string
-	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner
-	 * @param tint The color
-	 * @param start The first character of the string to draw
-	 * @param end The last character of the string to draw
+	 * Caches a substring with the specified position.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @param start The first character of the string to draw.
+	 * @param end The last character of the string to draw (exclusive).
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline).
 	 */
-	public void setText (CharSequence str, float x, float y, Color tint, int start, int end) {
-		final float color = tint.toFloatBits();
+	public TextBounds setText (CharSequence str, float x, float y, int start, int end) {
 		reset(end - start);
 		y += font.yOffset;
-		width = addToCache(str, x, y, color, start, end);
-		height = font.capHeight;
+		textBounds.width = addToCache(str, x, y, start, end);
+		textBounds.height = font.capHeight;
+		return textBounds;
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. The method interprets new lines.
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param tint The color
+	 * Caches a string, which may contain newlines (\n), with the specified position.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
 	 */
-	public void setMultiLineText (CharSequence str, float x, float y, Color tint) {
-		setMultiLineText(str, x, y, tint, 0, HAlignment.LEFT);
+	public TextBounds setMultiLineText (CharSequence str, float x, float y) {
+		return setMultiLineText(str, x, y, 0, HAlignment.LEFT);
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. The method interprets new lines. <br>
-	 * <br>
-	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
-	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
-	 * alignmentWidth). The second parameter specifies the alignment itself.
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param tint The color
-	 * @param alignmentWidth The alignment width
-	 * @param alignment The horizontal alignment
+	 * Caches a string, which may contain newlines (\n), with the specified position and alignment. Each line is aligned
+	 * horizontally within a rectangle of the specified width.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
 	 */
-	public void setMultiLineText (CharSequence str, float x, float y, Color tint, float alignmentWidth, HAlignment alignment) {
+	public TextBounds setMultiLineText (CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
 		BitmapFont font = this.font;
 
 		int length = str.length();
 		reset(length);
 
-		final float color = tint.toFloatBits();
 		y += font.yOffset;
 		int down = font.down;
 
@@ -250,50 +226,41 @@ public class BitmapFontCache {
 				xOffset = alignmentWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			int lineWidth = addToCache(str, x + xOffset, y, color, start, lineEnd);
+			int lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
 		}
-		width = maxWidth;
-		height = font.capHeight + (numLines - 1) * font.lineHeight;
+		textBounds.width = maxWidth;
+		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
+		return textBounds;
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
-	 * at spaces based on the given <code>wrapWidth</code>. The wrapped text is left aligned.
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param tint The color
-	 * @param wrapWidth The wrap width
+	 * Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
+	 * within a rectangle of the specified width.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
 	 */
-	public void setWrappedText (CharSequence str, float x, float y, Color tint, float wrapWidth) {
-		setWrappedText(str, x, y, tint, wrapWidth, HAlignment.LEFT);
+	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth) {
+		return setWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
 	}
 
 	/**
-	 * Caches the given string at the given position with the given color in the provided {@link BitmapFontCache}. The position
-	 * coincides with the top left corner of the first line's glyph. This method interprets new lines and causes the text to wrap
-	 * at spaces based on the given <code>wrapWidth</code>. <br>
-	 * <br>
-	 * You can specify the horizontal alignment of the text within the <code>wrapWidth</code> by using the <code>alignment</code>
-	 * parameter.
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param tint The color
-	 * @param wrapWidth The wrap width
+	 * Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
+	 * within a rectangle of the specified width, and aligned horizontally within that rectangle.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
 	 */
-	public void setWrappedText (CharSequence str, float x, float y, Color tint, float wrapWidth, HAlignment alignment) {
+	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
 		BitmapFont font = this.font;
 
 		int length = str.length();
 		reset(length);
 
-		final float color = tint.toFloatBits();
 		y += font.yOffset;
 		int down = font.down;
 
@@ -316,39 +283,34 @@ public class BitmapFontCache {
 				xOffset = wrapWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			int lineWidth = addToCache(str, x + xOffset, y, color, start, lineEnd);
+			int lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
 		}
-		width = maxWidth;
-		height = font.capHeight + (numLines - 1) * font.lineHeight;
+		textBounds.width = maxWidth;
+		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
+		return textBounds;
 	}
 
 	/**
-	 * @return The width of the contained text
+	 * Returns the size of the cached string. The height is the distance from the top of most capital letters in the font (the
+	 * {@link BitmapFont#getCapHeight() cap height}) to the baseline of the last line of text.
 	 */
-	public int getWidth () {
-		return width;
+	public TextBounds getBounds () {
+		return textBounds;
 	}
 
 	/**
-	 * @return The height of the contained text
-	 */
-	public int getHeight () {
-		return height;
-	}
-
-	/**
-	 * @return The x coordinate of the contained text, relative to the position when the cached text was created
+	 * Returns the x position of the cached string, relative to the position when the string was cached.
 	 */
 	public float getX () {
 		return x;
 	}
 
 	/**
-	 * @return The y coordinate of the contained text, relative to the position when the cached text was created
+	 * Returns the y position of the cached string, relative to the position when the string was cached.
 	 */
 	public float getY () {
 		return y;

@@ -22,36 +22,30 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.files.FileHandleStream;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-
 /**
- * Loads and renders AngleCode BMFont files. The bitmap font consists of 2 files: the .fnt file which must be saved with text
- * encoding (not xml or binary!) and the bitmap file holding the glyphs, usually in .png format.<br>
+ * Renders bitmap fonts. The bitmap font consists of 2 files: an image file (or {@link Sprite}) containing the glyphs and a file
+ * in the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
+ * supported.<br>
  * <br>
- * This implementation currently only supports a single glyph page.<br>
+ * Text is drawn using a {@link SpriteBatch}. Text can be cached in a {@link BitmapFontCache} for faster rendering of static text,
+ * which saves needing to compute the location of each glyph each frame.<br>
  * <br>
- * To draw text with this class you need to call one of the draw() methods together with a {@link SpriteBatch}. The SpriteBatch
- * must be in rendering mode, that is, {@link SpriteBatch#begin()} must have been called before drawing.<br>
+ * * The texture for a BitmapFont loaded from a file is managed. {@link #dispose()} must be called to free the texture when no
+ * longer needed. A BitmapFont loaded using a sprite is managed if the sprite's texture is managed. Disposing the BitmapFont
+ * disposes the sprite's texture, which may not be desirable if the texture is still being used elsewhere.<br>
  * <br>
- * Text can be cached in a {@link BitmapFontCache} for faster rendering of static text. <br>
- * <br>
- * A BitmapFont loaded from a file is managed. {@link #dispose()} must be called to free the backing texture when no longer
- * needed. A BitmapFont loaded using a sprite is managed if the sprite's texture is managed. Disposing the BitmapFont disposes the
- * sprite's texture, which may not be desirable if the texture is still being used elsewhere.<br>
- * <br>
- * The code is heavily based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
+ * The code is based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
  * @author Nathan Sweet <misc@n4te.com>
  * @author Matthias Mann
  */
@@ -67,14 +61,14 @@ public class BitmapFont {
 	int down;
 
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private int baseLine;
 	private int spaceWidth;
 	private int xHeight;
 	private final TextBounds textBounds = new TextBounds();
+	private float color = Color.WHITE.toFloatBits();
 
 	/**
-	 * Creates a new BitmapFont using the default 15pt Arial font included in the gdx jar file. This is here to get you up and
-	 * running quickly.
+	 * Creates a new BitmapFont using the default 15pt Arial font included in the libgdx jar file. This is convenient to easy
+	 * display some text without bothering with generating a bitmap font.
 	 */
 	public BitmapFont () {
 		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
@@ -83,7 +77,8 @@ public class BitmapFont {
 
 	/**
 	 * Creates a new BitmapFont with the glyphs relative to the specified sprite.
-	 * @param sprite The sprite containing the glyphs. It must NOT be flipped.
+	 * @param sprite The sprite containing the glyphs. The glyphs must be relative to the lower left corner (ie, the sprite should
+	 *           not be flipped).
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, Sprite sprite, boolean flip) {
@@ -91,10 +86,7 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Creates a new BitmapFont instance based on a .fnt file and an image file holding the page with glyphs. Currently only
-	 * supports single page AngleCode fonts.
-	 * @param fontFile The font file
-	 * @param imageFile The image file
+	 * Creates a new BitmapFont instance based on a BMFont file and an image file holding the page with glyphs.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
@@ -109,9 +101,6 @@ public class BitmapFont {
 		float invTexHeight = 1.0f / sprite.getTexture().getHeight();
 		float uSprite = sprite.getTextureRegionX();
 		float vSprite = sprite.getTextureRegionY();
-		float u2Sprite = uSprite + sprite.getTextureRegionWidth();
-		float v2Sprite = vSprite + sprite.getTextureRegionHeight();
-
 		BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 		try {
 			reader.readLine(); // info
@@ -123,7 +112,7 @@ public class BitmapFont {
 			lineHeight = Integer.parseInt(common[1].substring(11));
 
 			if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-			baseLine = Integer.parseInt(common[2].substring(5));
+			int baseLine = Integer.parseInt(common[2].substring(5));
 
 			reader.readLine(); // page
 			while (true) {
@@ -141,7 +130,7 @@ public class BitmapFont {
 				if (ch <= Character.MAX_VALUE) {
 					Glyph[] page = glyphs[ch / PAGE_SIZE];
 					if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
-					page[ch & (PAGE_SIZE - 1)] = glyph;
+					page[ch & PAGE_SIZE - 1] = glyph;
 				} else
 					continue;
 				tokens.nextToken();
@@ -149,7 +138,7 @@ public class BitmapFont {
 				tokens.nextToken();
 				float srcY = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
-				glyph.width = (Integer.parseInt(tokens.nextToken()));
+				glyph.width = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
 				glyph.height = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
@@ -192,7 +181,7 @@ public class BitmapFont {
 			}
 
 			Glyph g = getGlyph(' ');
-			spaceWidth = (g != null) ? g.xadvance + g.width : 1;
+			spaceWidth = g != null ? g.xadvance + g.width : 1;
 
 			g = getGlyph('x');
 			xHeight = g != null ? g.height : 1;
@@ -218,39 +207,32 @@ public class BitmapFont {
 
 	Glyph getGlyph (char ch) {
 		Glyph[] page = glyphs[ch / PAGE_SIZE];
-		if (page != null) return page[ch & (PAGE_SIZE - 1)];
+		if (page != null) return page[ch & PAGE_SIZE - 1];
 		return null;
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. You can only call this between
-	 * {@link SpriteBatch#begin()}/ {@link SpriteBatch#end()}.
-	 * @param spriteBatch The {@link SpriteBatch} to use
-	 * @param str The string
-	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner
-	 * @param color The color
-	 * @return the width of the rendered string
+	 * Draws a string at the specified position and color.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
+	 * @return The bounds of the rendered string (the height is the distance from y to the baseline). Note the same TextBounds
+	 *         instance is used for all methods that return TextBounds.
 	 */
-	public int draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, Color color) {
-		return draw(spriteBatch, str, x, y, color, 0, str.length());
+	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y) {
+		return draw(spriteBatch, str, x, y, 0, str.length());
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. You can only call this between
-	 * {@link SpriteBatch#begin()}/ {@link SpriteBatch#end()}.
-	 * @param spriteBatch The {@link SpriteBatch} to use
-	 * @param str The string
-	 * @param x The x position of the left most character
-	 * @param y The y position of the left most character's top left corner
-	 * @param tint The color
-	 * @param start the first character of the string to draw
-	 * @param end the last character of the string to draw
-	 * @return the width of the rendered string
+	 * Draws a substring at the specified position.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
+	 * @param start The first character of the string to draw.
+	 * @param end The last character of the string to draw (exclusive).
+	 * @return The bounds of the rendered string (the height is the distance from y to the baseline). Note the same TextBounds
+	 *         instance is used for all methods that return TextBounds.
 	 */
-	public int draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, Color tint, int start, int end) {
+	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
 		final Texture texture = sprite.getTexture();
-		final float color = tint.toFloatBits();
 		y += yOffset;
 		float startX = x;
 		Glyph lastGlyph = null;
@@ -273,47 +255,37 @@ public class BitmapFont {
 				lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
 			x += g.xadvance;
 		}
-		return (int)(x - startX);
+		textBounds.width = (int)(x - startX);
+		textBounds.height = capHeight;
+		return textBounds;
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
-	 * first line's glyph. This method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
-	 * {@link SpriteBatch#end()}.
-	 * @param spriteBatch The {@link SpriteBatch} to use
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
-	 * @return The height of the rendered string
+	 * Draws a string, which may contain newlines (\n), at the specified position.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
+	 * @return The bounds of the rendered string (the height is the distance from y to the baseline of the last line). Note the
+	 *         same TextBounds instance is used for all methods that return TextBounds.
 	 */
-	public int drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, Color color) {
-		return drawMultiLine(spriteBatch, str, x, y, color, 0, HAlignment.LEFT);
+	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y) {
+		return drawMultiLine(spriteBatch, str, x, y, 0, HAlignment.LEFT);
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
-	 * first line's glyph. The method interprets new lines. You can only call this between {@link SpriteBatch#begin()}/
-	 * {@link SpriteBatch#end()}. <br>
-	 * <br>
-	 * You can specify the horizontal alignment of the text with the <code>alignmentWidth</code> and <code>alignment</code>
-	 * parameters. The first parameter specifies the width of the rectangle the text should be aligned in (x to x +
-	 * alignmentWidth). The second parameter specifies the alignment itself.
-	 * @param spriteBatch The {@link SpriteBatch} to use
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
-	 * @param alignmentWidth The alignment width
-	 * @param alignment The horizontal alignment
-	 * @return The height of the multiline text
+	 * Draws a string, which may contain newlines (\n), at the specified position and alignment. Each line is aligned horizontally
+	 * within a rectangle of the specified width.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
+	 * @return The bounds of the rendered string (the height is the distance from y to the baseline of the last line). Note the
+	 *         same TextBounds instance is used for all methods that return TextBounds.
 	 */
-	public int drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, Color color, float alignmentWidth,
+	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
 		HAlignment alignment) {
 		int down = this.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
+		int maxWidth = 0;
 		while (start < length) {
 			int lineEnd = indexOf(str, '\n', start);
 			float xOffset = 0;
@@ -322,51 +294,44 @@ public class BitmapFont {
 				xOffset = alignmentWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
+			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
+			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
 		}
-		return capHeight + (numLines - 1) * lineHeight;
+		textBounds.width = maxWidth;
+		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		return textBounds;
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
-	 * first line's glyph. This method interprets new lines and causes the text to wrap at spaces based on the given
-	 * <code>wrapWidth</code>. You can only call this between {@link SpriteBatch#begin()}/ {@link SpriteBatch#end()}.
-	 * @param spriteBatch The {@link SpriteBatch} to use
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
-	 * @param wrapWidth The wrap width
-	 * @return the height of the rendered string
+	 * Draws a string, which may contain newlines (\n), with the specified position and color. Each line is automatically wrapped
+	 * to keep it within a rectangle of the specified width.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
+	 * @return The bounds of the rendered string (the height is the distance from y to the baseline of the last line). Note the
+	 *         same TextBounds instance is used for all methods that return TextBounds.
 	 */
-	public int drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, Color color, float wrapWidth) {
-		return drawWrapped(spriteBatch, str, x, y, color, wrapWidth, HAlignment.LEFT);
+	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth) {
+		return drawWrapped(spriteBatch, str, x, y, wrapWidth, HAlignment.LEFT);
 	}
 
 	/**
-	 * Draws the given string at the given position with the given color. The position coincides with the top left corner of the
-	 * first line's glyph. This method interprets new lines and causes the text to wrap at spaces based on the given
-	 * <code>wrapWidth</code>. You can only call this between {@link SpriteBatch#begin()}/ {@link SpriteBatch#end()}.<br>
-	 * <br>
-	 * You can specify the horizontal alignment of the text within the <code>wrapWidth</code> by using the <code>alignment</code>
-	 * parameter.
-	 * @param spriteBatch The {@link SpriteBatch} to use
-	 * @param str The string
-	 * @param x The x position of the left most character of the first line
-	 * @param y The y position of the left most character's top left corner of the first line
-	 * @param color The color
-	 * @param wrapWidth The wrap width
-	 * @return the height of the rendered string
+	 * Draws a string, which may contain newlines (\n), with the specified position and color. Each line is automatically wrapped
+	 * to keep it within a rectangle of the specified width, and aligned horizontally within that rectangle.
+	 * @param x The x position for the left most character.
+	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
+	 * @return The bounds of the rendered string (the height is the distance from y to the baseline of the last line). Note the
+	 *         same TextBounds instance is used for all methods that return TextBounds.
 	 */
-	public int drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, Color color, float wrapWidth,
+	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
 		int down = this.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
+		int maxWidth = 0;
 		while (start < length) {
 			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
 			if (lineEnd < length) {
@@ -383,29 +348,32 @@ public class BitmapFont {
 				xOffset = wrapWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			draw(spriteBatch, str, x + xOffset, y, color, start, lineEnd);
+			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
+			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
 		}
-		return capHeight + (numLines - 1) * lineHeight;
+		textBounds.width = maxWidth;
+		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		return textBounds;
 	}
 
 	/**
-	 * Computes the width of the string.
-	 * @param str The string
-	 * @return the width
+	 * Returns the size of the specified string. The height is the distance from the top of most capital letters in the font (the
+	 * {@link #getCapHeight() cap height}) to the baseline. Note the same TextBounds instance is used for all methods that return
+	 * TextBounds.
 	 */
 	public TextBounds getBounds (CharSequence str) {
 		return getBounds(str, 0, str.length());
 	}
 
 	/**
-	 * Computes the width of the string.
-	 * @param str the string
-	 * @param start The first character index
-	 * @param end The last character index (exclusive)
-	 * @return The string width
+	 * Returns the size of the specified substring. The height is the distance from the top of most capital letters in the font
+	 * (the {@link #getCapHeight() cap height}) to the baseline. Note the same TextBounds instance is used for all methods that
+	 * return TextBounds.
+	 * @param start The first character of the string.
+	 * @param end The last character of the string (exclusive).
 	 */
 	public TextBounds getBounds (CharSequence str, int start, int end) {
 		int width = 0;
@@ -432,9 +400,9 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Computes the maximum width of the string, respecting newlines.
-	 * @param str The string
-	 * @return The maximum width
+	 * Returns the size of the specified string, which may contain newlines. The height is the distance from the top of most
+	 * capital letters in the font (the {@link #getCapHeight() cap height}) to the baseline of the last line of text. Note the same
+	 * TextBounds instance is used for all methods that return TextBounds.
 	 */
 	public TextBounds getMultiLineBounds (CharSequence str) {
 		int start = 0;
@@ -453,6 +421,12 @@ public class BitmapFont {
 		return textBounds;
 	}
 
+	/**
+	 * Returns the size of the specified string, which may contain newlines and is wrapped to keep it within a rectangle of the
+	 * specified width. The height is the distance from the top of most capital letters in the font (the {@link #getCapHeight() cap
+	 * height}) to the baseline of the last line of text. Note the same TextBounds instance is used for all methods that return
+	 * TextBounds.
+	 */
 	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth) {
 		int start = 0;
 		int maxWidth = 0;
@@ -479,12 +453,9 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Returns the number of characters that can be rendered given the available width.
-	 * @param str The string
-	 * @param start The start index of the first character
-	 * @param end The index of the last character (exclusive)
-	 * @param availableWidth the available width
-	 * @return The number of characters that fit into availableWdith
+	 * Returns the number of glyphs from the substring that can be rendered in the specified width.
+	 * @param start The first character of the string.
+	 * @param end The last character of the string (exclusive).
 	 */
 	public int computeVisibleGlpyhs (CharSequence str, int start, int end, float availableWidth) {
 		int index = start;
@@ -503,43 +474,43 @@ public class BitmapFont {
 		return index - start;
 	}
 
-	/**
-	 * @return The glyph sprite
-	 */
+	public void setColor (Color tint) {
+		this.color = tint.toFloatBits();
+	}
+
+	public void setColor (float r, float g, float b, float a) {
+		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
+		color = Float.intBitsToFloat(intBits);
+	}
+
 	public Sprite getSprite () {
 		return sprite;
 	}
 
 	/**
-	 * @return The baseline offset, which is the distance from the drawing position to the line that most glyphs sit on
-	 */
-	public int getBaseLine () {
-		return baseLine;
-	}
-
-	/**
-	 * @return The line height, which is the distance from one line of text to the next
+	 * Returns the line height, which is the distance from one line of text to the next.
 	 */
 	public int getLineHeight () {
 		return lineHeight;
 	}
 
 	/**
-	 * @return The width of the space character
+	 * Returns the width of the space character.
 	 */
 	public int getSpaceWidth () {
 		return spaceWidth;
 	}
 
 	/**
-	 * @return The x-height, which is the typical height of lowercase characters
+	 * Returns the x-height, which is the distance from the top of most lowercase characters to the basline.
 	 */
 	public int getXHeight () {
 		return xHeight;
 	}
 
 	/**
-	 * @return The cap height, which is the typical height of uppercase characters
+	 * Returns the cap height, which is the distance from the top of most uppercase characters to the basline. Since the drawing
+	 * position is the cap height of the first line, the cap height can be used to get the location of the baseline.
 	 */
 	public int getCapHeight () {
 		return capHeight;
@@ -562,7 +533,7 @@ public class BitmapFont {
 		int getKerning (char ch) {
 			if (kerning != null) {
 				byte[] page = kerning[ch >>> LOG2_PAGE_SIZE];
-				if (page != null) return page[ch & (PAGE_SIZE - 1)];
+				if (page != null) return page[ch & PAGE_SIZE - 1];
 			}
 			return 0;
 		}
@@ -571,7 +542,7 @@ public class BitmapFont {
 			if (kerning == null) kerning = new byte[PAGES][];
 			byte[] page = kerning[ch >>> LOG2_PAGE_SIZE];
 			if (page == null) kerning[ch >>> LOG2_PAGE_SIZE] = page = new byte[PAGE_SIZE];
-			page[ch & (PAGE_SIZE - 1)] = (byte)value;
+			page[ch & PAGE_SIZE - 1] = (byte)value;
 		}
 	}
 

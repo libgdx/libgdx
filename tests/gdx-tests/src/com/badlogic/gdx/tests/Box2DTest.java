@@ -82,6 +82,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
 		font = new BitmapFont();
+		font.setColor(Color.RED);
 
 		// next we create out physics world.
 		createPhysicsWorld();
@@ -205,7 +206,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// finally we render the time it took to update the world
 		batch.begin();
 		font.draw( batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
-				20, Color.RED);		
+				20);		
 		batch.end();	
 	}
 
