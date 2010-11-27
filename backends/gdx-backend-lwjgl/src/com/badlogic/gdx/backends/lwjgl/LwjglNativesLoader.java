@@ -24,7 +24,7 @@ final class LwjglNativesLoader {
 		if (os.contains("Mac")) loadLibrariesMac();
 
 		
-		System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
+		//System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
 	}
 
 	private static void loadLibrariesWindows (boolean is64Bit) {
@@ -74,7 +74,7 @@ final class LwjglNativesLoader {
 			in.close();
 			in = null;
 		} catch (Throwable t) {
-			throw new GdxRuntimeException("Couldn't load lwjgl native, " + libName, t);
+			//throw new GdxRuntimeException("Couldn't load lwjgl native, " + libName, t);
 		} finally {
 			if (out != null) try {
 				out.close();
