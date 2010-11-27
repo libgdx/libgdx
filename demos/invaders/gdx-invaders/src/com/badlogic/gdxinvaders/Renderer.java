@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.BitmapFont;
@@ -89,29 +90,29 @@ public class Renderer {
 		try {
 			spriteBatch = new SpriteBatch();
 
-			InputStream in = app.getFiles().readFile("data/ship.obj", FileType.Internal);
+			InputStream in = Gdx.files.internal("data/ship.obj").read();
 			shipMesh = ModelLoader.loadObj(in);
 			in.close();
 
-			in = app.getFiles().readFile("data/invader.obj", FileType.Internal);
+			in = Gdx.files.internal("data/invader.obj").read();
 			invaderMesh = ModelLoader.loadObj(in);
 			in.close();
 
-			in = app.getFiles().readFile("data/block.obj", FileType.Internal);
+			in = Gdx.files.internal("data/block.obj").read();
 			blockMesh = ModelLoader.loadObj(in);
 			in.close();
 
-			in = app.getFiles().readFile("data/shot.obj", FileType.Internal);
+			in = Gdx.files.internal("data/shot.obj").read();
 			shotMesh = ModelLoader.loadObj(in);
 			in.close();
 
-			shipTexture = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/ship.png", FileType.Internal),
+			shipTexture = app.getGraphics().newTexture(Gdx.files.internal("data/ship.png"),
 				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			invaderTexture = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/invader.png", FileType.Internal),
+			invaderTexture = app.getGraphics().newTexture(Gdx.files.internal("data/invader.png"),
 				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			backgroundTexture = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/planet.jpg", FileType.Internal),
+			backgroundTexture = app.getGraphics().newTexture(Gdx.files.internal("data/planet.jpg"),
 				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			explosionTexture = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/explode.png", FileType.Internal),
+			explosionTexture = app.getGraphics().newTexture(Gdx.files.internal("data/explode.png"),
 				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
 			explosionMesh = new Mesh(true, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"),

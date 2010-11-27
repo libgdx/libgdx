@@ -50,7 +50,7 @@ public class HelloWorld implements ApplicationListener {
 		spriteBatch.begin();
 		spriteBatch.draw(texture, centerX - texture.getWidth() / 2, centerY - texture.getHeight() / 2, 0, 0, texture.getWidth(),
 			texture.getHeight(), Color.WHITE);
-		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y, Color.RED);		
+		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y);		
 		spriteBatch.end();
 	}
 
@@ -61,6 +61,7 @@ public class HelloWorld implements ApplicationListener {
 
 	@Override public void create () {
 		font = new BitmapFont();
+		font.setColor(Color.RED);
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		spriteBatch = new SpriteBatch();
