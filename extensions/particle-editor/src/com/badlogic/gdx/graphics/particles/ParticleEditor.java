@@ -297,10 +297,10 @@ public class ParticleEditor extends JFrame {
 				// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
 			}
 
-			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 10);
-			font.draw(spriteBatch, "Count: " + activeCount, 10, 30);
-			font.draw(spriteBatch, "Max: " + lastMaxActive, 10, 50);
-			font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 10, 70);
+			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, 15);
+			font.draw(spriteBatch, "Count: " + activeCount, 5, 35);
+			font.draw(spriteBatch, "Max: " + lastMaxActive, 5, 55);
+			font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 5, 75);
 
 			spriteBatch.end();
 
