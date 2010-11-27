@@ -1,11 +1,5 @@
-
-package com.badlogic.gdx.utils.json;
-
-import java.io.IOException;
-import java.io.Writer;
-
 /*
- * Copyright (c) 2006 JSON.org
+ * Copyright (c) 2002 JSON.org
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -21,6 +15,10 @@ import java.io.Writer;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
  * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.badlogic.gdx.utils.json;
+
+import java.io.IOException;
+import java.io.Writer;
 
 /**
  * JSONWriter provides a quick and convenient way of producing JSON text. The texts produced strictly conform to JSON syntax

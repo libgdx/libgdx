@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com)
+/*
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -9,8 +9,7 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
- ******************************************************************************/
-
+ */
 package com.badlogic.gdx.scenes.scene2d;
 
 import java.util.ArrayList;
@@ -40,16 +39,16 @@ public class Group extends Actor {
 	public static Texture debugTexture;
 	public static boolean debug = false;
 
-	private final Matrix4 tmp4 = new Matrix4();
-	private final Matrix4 oldBatchTransform = new Matrix4();
-	private final Matrix3 transform;
-	private final Matrix3 scenetransform = new Matrix3();
+	protected final Matrix4 tmp4 = new Matrix4();
+	protected final Matrix4 oldBatchTransform = new Matrix4();
+	protected final Matrix3 transform;
+	protected final Matrix3 scenetransform = new Matrix3();
 
-	private final List<Actor> children; // TODO O(n) delete, baaad.
-	private final List<Actor> immutableChildren;
-	private final List<Group> groups; // TODO O(n) delete, baad.
-	private final List<Group> immutableGroups;
-	private final Map<String, Actor> namesToActors;
+	protected final List<Actor> children; // TODO O(n) delete, baaad.
+	protected final List<Actor> immutableChildren;
+	protected final List<Group> groups; // TODO O(n) delete, baad.
+	protected final List<Group> immutableGroups;
+	protected final Map<String, Actor> namesToActors;
 
 	public Actor lastTouchedChild;
 	public Actor focusedActor = null;
@@ -68,7 +67,7 @@ public class Group extends Actor {
 		this.namesToActors = new HashMap<String, Actor>();
 	}
 
-	private void updateTransform () {
+	protected void updateTransform () {
 		transform.idt();
 		if (originX != 0 || originY != 0) transform.setToTranslation(originX, originY);
 		if (rotation != 0) transform.mul(scenetransform.setToRotation(rotation));

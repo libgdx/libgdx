@@ -1,11 +1,3 @@
-
-package com.badlogic.gdx.utils.json;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
 /*
  * Copyright (c) 2002 JSON.org
  * 
@@ -23,6 +15,12 @@ import java.io.StringReader;
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
  * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.badlogic.gdx.utils.json;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * A JSONTokener takes a source string and extracts characters and tokens from it. It is used by the JSONObject and JSONArray
