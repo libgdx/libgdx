@@ -17,15 +17,33 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 final class LwjglNativesLoader {
-	static void load() {
+	public static boolean load = true;
+	
+	static {
+		try {
+		       Method method =
+		Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup",
+		new Class[] {String.class});
+		       method.invoke(null, "javax.jnlp.PersistenceService");
+		       load = false;
+		} catch (Throwable ex) {
+		       load = true;
+		}			
+	}		
+	
+	static void load() {				
 		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
 		Version.loadLibrary();
 
+		if(!load)
+			return;
+		
 		String os = System.getProperty("os.name");
 		String arch = System.getProperty("os.arch");
 		boolean is64Bit = false;
@@ -36,8 +54,7 @@ final class LwjglNativesLoader {
 		if (os.contains("Linux")) loadLibrariesLinux(is64Bit);
 		if (os.contains("Mac")) loadLibrariesMac();
 
-		
-		//System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
+		System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
 	}
 
 	private static void loadLibrariesWindows (boolean is64Bit) {

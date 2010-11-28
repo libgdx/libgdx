@@ -8,7 +8,7 @@
 	<classpathentry exported="true" kind="lib" path="/dependencies/lwjgl-debug.jar"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/lwjgl-natives.jar"/>
 	<classpathentry exported="true" kind="lib" path="/dependencies/lwjgl.jar"/>
-	<classpathentry kind="lib" path="/dependencies/javazoom-spi.jar"/>
-	<classpathentry kind="lib" path="/dependencies/tritonus-utils.jar"/>
+	<classpathentry exported="true" kind="lib" path="/dependencies/javazoom-spi.jar"/>
+	<classpathentry exported="true" kind="lib" path="/dependencies/tritonus-utils.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

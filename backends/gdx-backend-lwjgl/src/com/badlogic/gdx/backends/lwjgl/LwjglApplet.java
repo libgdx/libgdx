@@ -28,6 +28,7 @@ public class LwjglApplet extends Applet {
 	LwjglApplication app;
 
 	public LwjglApplet (final ApplicationListener listener, final boolean useGL2) {
+		LwjglNativesLoader.load = false;
 		canvas = new Canvas() {
 			public final void addNotify () {
 				super.addNotify();
