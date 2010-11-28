@@ -9,7 +9,7 @@ GDX_SRC_FILES := AudioTools.cpp \
 
 include $(LOCAL_PATH)/Box2D/Android.mk
 include $(LOCAL_PATH)/kissfft/Android.mk
-include $(LOCAL_PATH)/mpg123/Android.mk
+#include $(LOCAL_PATH)/mpg123/Android.mk
 include $(LOCAL_PATH)/vorbis/Android.mk	
 include $(LOCAL_PATH)/gdx2d/Android.mk				 
 
