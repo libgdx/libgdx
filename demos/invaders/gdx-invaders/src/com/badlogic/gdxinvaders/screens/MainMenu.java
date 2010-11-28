@@ -14,11 +14,14 @@
 package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix4;
@@ -38,7 +41,7 @@ public class MainMenu implements Screen {
 	/** the logo texture **/
 	private final Texture logo;
 	/** the font **/
-//	private final Font font;
+	private final BitmapFont font;
 	/** is done flag **/
 	private boolean isDone = false;
 	/** view & transform matrix **/
@@ -53,7 +56,7 @@ public class MainMenu implements Screen {
 		logo = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/title.png", FileType.Internal),
 			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-//		font = app.getGraphics().newFont(app.getFiles().getFileHandle("data/font.ttf", FileType.Internal), 16, FontStyle.Plain);
+		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);
 	}
 
 	@Override public void render (Application app) {
@@ -67,9 +70,10 @@ public class MainMenu implements Screen {
 		spriteBatch.draw(background, 0, 0, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
 		spriteBatch.enableBlending();
 		spriteBatch.draw(logo, 0, 320-128, 480, 128, 0, 0, 512, 256, Color.WHITE, false, false);
+		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		String text = "Touch screen to start!";
-//		float width = font.getStringWidth(text);
-//		spriteBatch.drawText(font, text, 240 - width / 2, 128, Color.WHITE);
+		int width = font.getBounds(text).width;	
+		font.draw(spriteBatch, text, 240 - width / 2, 128);
 		spriteBatch.end();
 	}
 
@@ -85,6 +89,6 @@ public class MainMenu implements Screen {
 		spriteBatch.dispose();
 		background.dispose();
 		logo.dispose();
-//		font.dispose();
+		font.dispose();
 	}
 }

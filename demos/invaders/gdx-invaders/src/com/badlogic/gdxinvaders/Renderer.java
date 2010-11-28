@@ -149,8 +149,7 @@ public class Renderer {
 			}
 
 			explosionMesh.setVertices(vertices);
-
-//			font = app.getGraphics().newFont(app.getFiles().getFileHandle("data/font.ttf", FileType.Internal), 10, FontStyle.Plain);
+			font = new BitmapFont(Gdx.files.internal("data/font10.fnt"), Gdx.files.internal("data/font10.png"), false);
 
 			camera = new PerspectiveCamera();
 			camera.setFov(67);
@@ -200,7 +199,9 @@ public class Renderer {
 			lastScore = simulation.score;
 			lastWave = simulation.wave;
 		}
-//		spriteBatch.drawText(font, status, 0, 320-font.getLineHeight(), Color.WHITE);
+		spriteBatch.enableBlending();
+		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		font.draw(spriteBatch, status, 0, 320);		
 		spriteBatch.end();
 
 		invaderAngle += app.getGraphics().getDeltaTime() * 90;
@@ -311,7 +312,7 @@ public class Renderer {
 		invaderTexture.dispose();
 		backgroundTexture.dispose();
 		explosionTexture.dispose();
-//		font.dispose();
+		font.dispose();
 		explosionMesh.dispose();
 		shipMesh.dispose();
 		invaderMesh.dispose();

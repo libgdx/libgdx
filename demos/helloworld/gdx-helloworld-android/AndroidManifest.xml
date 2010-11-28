@@ -19,7 +19,7 @@
       android:versionCode="1"
       android:versionName="1.0">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".GDXHelloWorld"
+        <activity android:name=".HelloWorldAndroid"
                   android:label="@string/app_name"
                   android:configChanges="keyboard|keyboardHidden|orientation">
             <intent-filter>

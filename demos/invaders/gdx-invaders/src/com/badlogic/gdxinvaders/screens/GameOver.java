@@ -14,11 +14,15 @@
 package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix4;
@@ -38,7 +42,7 @@ public class GameOver implements Screen {
 	/** the logo texture **/
 	private final Texture logo;
 	/** the font **/
-//	private final Font font;
+	private final BitmapFont font;
 	/** is done flag **/
 	private boolean isDone = false;
 	/** view & transform matrix **/
@@ -53,14 +57,14 @@ public class GameOver implements Screen {
 		logo = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/title.png", FileType.Internal),
 			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-//		font = app.getGraphics().newFont(app.getFiles().getFileHandle("data/font.ttf", FileType.Internal), 16, FontStyle.Plain);
+		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);
 	}
 
 	@Override public void dispose () {
 		spriteBatch.dispose();
 		background.dispose();
 		logo.dispose();
-//		font.dispose();
+		font.dispose();
 	}
 
 	@Override public boolean isDone () {
@@ -78,12 +82,10 @@ public class GameOver implements Screen {
 		spriteBatch.draw(background, 0, 0, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
 		spriteBatch.enableBlending();
 		spriteBatch.draw(logo, 0, 320-128, 480, 128, 0, 256, 512, 256, Color.WHITE, false, false);
-		String text = "It's the end my friend.";
-//		float width = font.getStringWidth(text);
-//		spriteBatch.drawText(font, text, 240 - width / 2, 128, Color.WHITE);
-		text = "Touch to continue!";
-//		width = font.getStringWidth(text);
-//		spriteBatch.drawText(font, text, 240 - width / 2, 100, Color.WHITE);
+		String text = "It is the end my friend.\nTouch to continue!";
+		TextBounds bounds = font.getMultiLineBounds(text);
+		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		font.drawMultiLine(spriteBatch, text, 0, 160 + bounds.height / 2, 480, HAlignment.CENTER);		
 		spriteBatch.end();
 	}
 
