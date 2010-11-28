@@ -171,6 +171,7 @@
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>		
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi-v7a/libandroidgl20.so"/>
 	</target>
 	
 	<!-- updates the native libs of the android test suite -->
