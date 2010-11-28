@@ -36,7 +36,6 @@ public class BitmapFontTest extends GdxTest {
 	private Color red = new Color(1, 0, 0, 1);
 	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
 	int renderMode;
-	InputProcessor inputProcessor;
 
 	@Override public void create () {
 		Gdx.input.setInputProcessor(new InputAdapter() {
@@ -54,15 +53,6 @@ public class BitmapFontTest extends GdxTest {
 
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
 			"data/verdana39.png", FileType.Internal), false);
-
-		inputProcessor = new InputAdapter() {
-			public boolean touchDown (int x, int y, int pointer) {
-				renderMode = (renderMode + 1) % 2;
-				return false;
-			}
-		};
-
-		Gdx.input.setInputProcessor(inputProcessor);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);

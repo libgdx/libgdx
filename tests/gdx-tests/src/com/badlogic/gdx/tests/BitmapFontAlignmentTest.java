@@ -38,6 +38,13 @@ public class BitmapFontAlignmentTest extends GdxTest {
 	int renderMode;
 
 	@Override public void create () {
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			public boolean touchDown (int x, int y, int pointer) {
+				renderMode = (renderMode + 1) % 6;
+				return false;
+			}
+		});
+
 		spriteBatch = new SpriteBatch();
 
 		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
@@ -48,13 +55,6 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
 			"data/verdana39.png", FileType.Internal), false);
 		cache = new BitmapFontCache(font);
-
-		Gdx.input.setInputProcessor(new InputAdapter() {
-			public boolean touchDown (int x, int y, int pointer) {
-				renderMode = (renderMode + 1) % 6;
-				return false;
-			}
-		});
 	}
 
 	@Override public void render () {

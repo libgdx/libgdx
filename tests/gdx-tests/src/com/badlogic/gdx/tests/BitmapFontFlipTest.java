@@ -36,9 +36,15 @@ public class BitmapFontFlipTest extends GdxTest {
 	private Color red = new Color(1, 0, 0, 0.5f);
 	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
 	int renderMode;
-	private InputProcessor inputProcessor;
 
 	@Override public void create () {
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			public boolean touchDown (int x, int y, int pointer) {
+				renderMode = (renderMode + 1) % 2;
+				return false;
+			}
+		});
+
 		spriteBatch = new SpriteBatch();
 		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1));
 
@@ -50,14 +56,6 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
 			"data/verdana39.png", FileType.Internal), true);
-
-		inputProcessor = new InputAdapter() {
-			public boolean touchDown (int x, int y, int pointer) {
-				renderMode = (renderMode + 1) % 2;
-				return false;
-			}
-		};
-		Gdx.input.setInputProcessor(inputProcessor);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);
