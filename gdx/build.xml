@@ -25,7 +25,8 @@
 		<delete dir="gdx/bin" />
 		<delete dir="backends/gdx-backend-jogl/bin" />
 		<delete dir="backends/gdx-backend-lwjgl/bin" />
-		<delete dir="backends/gdx-backend-android/bin" />		
+		<delete dir="backends/gdx-backend-android/bin" />	
+		<delete dir="extensions/twl/gdx-twl/bin"/>
 	</target>
 
 	<!-- init task, creates all necessary directories -->
@@ -35,7 +36,8 @@
 		<mkdir dir="gdx/bin" />
 		<mkdir dir="backends/gdx-backend-jogl/bin" />
 		<mkdir dir="backends/gdx-backend-lwjgl/bin" />
-		<mkdir dir="backends/gdx-backend-android/bin" />		
+		<mkdir dir="backends/gdx-backend-android/bin" />
+		<mkdir dir="extensions/twl/gdx-twl/bin"/>
 	</target>
 
 	<!-- compiles the java code of all modules -->
@@ -84,7 +86,7 @@
 		<javac srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
-				<pathelement location="extensions/twl/gdx-twl/libs/twl.jar" />
+				<pathelement location="extensions/twl/gdx-twl/libs/twl-android.jar" />
 				<pathelement location="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
 			</classpath>
 		</javac>
@@ -149,7 +151,7 @@
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin" />
 		<jar destfile="${stable}/gdx-twl.jar">
 			<fileset dir="extensions/twl/gdx-twl/bin" />
-			<zipfileset src="extensions/twl/gdx-twl/libs/twl.jar" />
+			<zipfileset src="extensions/twl/gdx-twl/libs/twl-android.jar" />
 			<zipfileset src="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
 		</jar>
 
@@ -171,18 +173,21 @@
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false" />
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx-64.so" file="${stable}/libgdx-64.so" failonerror="false" />
 
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false" />
+		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx-64.so" file="${stable}/libgdx-64.so" failonerror="false" />
 
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar" />
