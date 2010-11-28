@@ -4,8 +4,8 @@ include $(CLEAR_VARS)
 GDX_CFLAGS 	  := -O2 -Wall
 GDX_SRC_FILES := AudioTools.cpp \
 				 BufferUtils.cpp \
-				 MD5Jni.cpp \
-				 Mpg123Decoder.cpp
+				 MD5Jni.cpp
+#				 Mpg123Decoder.cpp
 
 include $(LOCAL_PATH)/Box2D/Android.mk
 include $(LOCAL_PATH)/kissfft/Android.mk
