@@ -5,7 +5,7 @@
  and creates a distribution out of this mess. 
 
 -->
-<project name="gdx" default="all" basedir="." >
+<project name="gdx" default="dist" basedir="." >
 
 	<description>libgdx distribution build file</description>
 	
@@ -26,6 +26,7 @@
 		<delete dir="backends/gdx-backend-jogl/bin"/>		
 		<delete dir="backends/gdx-backend-lwjgl/bin"/>		
 		<delete dir="backends/gdx-backend-android/bin"/>
+		<delete dir="extensions/twl/gdx-twl/bin"/>
 	</target>
 	
 	<!-- init task, creates all necessary directories -->
@@ -36,6 +37,7 @@
 		<mkdir dir="backends/gdx-backend-android/bin"/>
 		<mkdir dir="backends/gdx-backend-jogl/bin"/>
 		<mkdir dir="backends/gdx-backend-lwjgl/bin"/>
+		<mkdir dir="extensions/twl/gdx-twl/bin"/>
 	</target>
 	
 	<!-- compiles the java code of all modules -->
