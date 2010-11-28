@@ -14,7 +14,7 @@
 	<property environment="env" />
 
 	<!-- libgdx version -->
-	<property name="version" value="0.8" />
+	<property name="version" value="0.81" />
 
 	<!-- output directory for distribution -->
 	<property name="stable" value="libgdx-${version}" />
@@ -24,7 +24,8 @@
 		<delete dir="${stable}" />
 		<delete dir="gdx/bin" />
 		<delete dir="backends/gdx-backend-jogl/bin" />
-		<delete dir="backends/gdx-backend-android/bin" />
+		<delete dir="backends/gdx-backend-lwjgl/bin" />
+		<delete dir="backends/gdx-backend-android/bin" />		
 	</target>
 
 	<!-- init task, creates all necessary directories -->
@@ -32,8 +33,9 @@
 		<mkdir dir="${stable}" />
 		<mkdir dir="${stable}/docs/api"/>
 		<mkdir dir="gdx/bin" />
-		<mkdir dir="backends/gdx-backend-android/bin" />
 		<mkdir dir="backends/gdx-backend-jogl/bin" />
+		<mkdir dir="backends/gdx-backend-lwjgl/bin" />
+		<mkdir dir="backends/gdx-backend-android/bin" />		
 	</target>
 
 	<!-- compiles the java code of all modules -->
@@ -56,12 +58,34 @@
 				<pathelement location="backends/dependencies/tritonus-utils.jar" />
 			</classpath>
 		</javac>
+		
+		<!-- build lwjgl backend -->
+		<javac srcdir="backends/gdx-backend-lwjgl/src" destdir="backends/gdx-backend-lwjgl/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<pathelement location="backends/dependencies/lwjgl.jar" />
+				<pathelement location="backends/dependencies/lwjgl-natives.jar" />
+				<pathelement location="backends/dependencies/javazoom-spi.jar" />
+				<pathelement location="backends/dependencies/jl1.0.1.jar" />
+				<pathelement location="backends/dependencies/jorbis.jar" />
+				<pathelement location="backends/dependencies/tritonus-utils.jar" />
+			</classpath>
+		</javac>
 
 		<!-- build android backend -->
 		<javac srcdir="backends/gdx-backend-android/src" destdir="backends/gdx-backend-android/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
 				<pathelement location="backends/dependencies/android-2.0.jar" />
+			</classpath>
+		</javac>
+		
+		<!-- build twl extensions -->
+		<javac srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<pathelement location="extensions/twl/gdx-twl/libs/twl.jar" />
+				<pathelement location="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
 			</classpath>
 		</javac>
 
@@ -82,14 +106,17 @@
 
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="init">
-		<javadoc destdir="${stable}/docs/api" author="true" version="true" use="true" windowtitle="Test API">
+		<javadoc destdir="${stable}/docs/api" author="true" version="true" use="true" windowtitle="Libgdx API">
 			<fileset dir="gdx/src" defaultexcludes="yes">
 				<include name="com/badlogic/gdx/**" />
 				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
 				<exclude name="com/badlogic/gdx/utils/arial-15.png" />
 			</fileset>
 			<fileset dir="backends" includes="gdx-backend-jogl/src/com/badlogic/gdx/backends/jogl/JoglApplication.java"/>
-			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>			
+			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
+			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
+			<fileset dir="extensions/twl/" includes="gdx-twl/src/com/badlogic/gdx/twl/TWL.java"/>
 		</javadoc>
 	</target>
 
@@ -110,7 +137,21 @@
 			<zipfileset src="backends/dependencies/jorbis.jar" />
 			<zipfileset src="backends/dependencies/tritonus-utils.jar" />
 		</jar>
+		<jar destfile="${stable}/gdx-backend-lwjgl.jar">
+			<fileset dir="backends/gdx-backend-lwjgl/bin" />
+			<zipfileset src="backends/dependencies/lwjgl.jar" />
+			<zipfileset src="backends/dependencies/lwjgl-natives.jar" />
+			<zipfileset src="backends/dependencies/javazoom-spi.jar" />
+			<zipfileset src="backends/dependencies/jl1.0.1.jar" />
+			<zipfileset src="backends/dependencies/jorbis.jar" />
+			<zipfileset src="backends/dependencies/tritonus-utils.jar" />
+		</jar>
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin" />
+		<jar destfile="${stable}/gdx-twl.jar">
+			<fileset dir="extensions/twl/gdx-twl/bin" />
+			<zipfileset src="extensions/twl/gdx-twl/libs/twl.jar" />
+			<zipfileset src="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
+		</jar>
 
 		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false" />
 		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false" />
@@ -118,6 +159,7 @@
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so" />
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so" />
+		<copy tofile="${stable}/armeabi-v7a/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
 		<copy tofile="${stable}/README" file="gdx/dist/README" />
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html" />
 	</target>
@@ -154,6 +196,7 @@
 		<copy tofile="tests/gdx-tests-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
 		<copy tofile="tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
+		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 	</target>
 
 	<!-- do everything -->

@@ -17,12 +17,15 @@ gdx-helloworld
        - >libandroidgl20.so
        - >libgdx.so
 	-> armeabi-v7a/
+	   - >libandroidgl20.so
 	   - >libgdx.so
 	-> docs/
 	   - > index.html and other files containing the Java Doc.
     -> gdx.jar
     -> gdx-backend-android.jar
     -> gdx-backend-jogl.jar
+    -> gdx-backend-lwjgl.jar
+    -> gdx-twl.jar
     -> gdx-sources.jar   
     -> gdx.dll
     -> libgdx.so
@@ -119,6 +122,7 @@ gdx-helloworld-android
        -> libandroidgl20.so
        -> libgdx.so
 	-> armeabi-v7a/
+	   - >libandroidgl20.so
 	   - >libgdx.so    
     -> gdx.jar
     -> gdx-backend-android.jar        
