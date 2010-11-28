@@ -78,6 +78,15 @@
 				<pathelement location="backends/dependencies/android-2.0.jar"/>
 			</classpath>
 		</javac>		
+		
+		<!-- build twl extensions -->
+		<javac srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<pathelement location="extensions/twl/gdx-twl/libs/twl-android.jar" />
+				<pathelement location="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
+			</classpath>
+		</javac>
 	</target>
 
 	<!-- compiles the native code (for android only atm) -->
@@ -105,7 +114,8 @@
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglCanvas.java"/>
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
-			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>			
+			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
+			<fileset dir="extensions/twl/" includes="gdx-twl/src/com/badlogic/gdx/twl/TWL.java"/>
 		</javadoc>
 	</target>
 	
@@ -134,6 +144,11 @@
 			<zipfileset src="backends/dependencies/tritonus-utils.jar"/>
 		</jar>
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin"/>
+		<jar destfile="${stable}/gdx-twl.jar">
+			<fileset dir="extensions/twl/gdx-twl/bin" />
+			<zipfileset src="extensions/twl/gdx-twl/libs/twl-android.jar" />
+			<zipfileset src="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
+		</jar>
 		
 		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false"/>
 		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false"/>
@@ -144,44 +159,5 @@
 		<copy tofile="${stable}/README" file="gdx/dist/README"/>
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html"/>
 		<zip destfile="libgdx-nightly.zip" basedir="${stable}"/>
-	</target>
-	
-	<!-- updates dependencies of hello-world, invaders and tests android-->
-	<target name="update-demos" depends="dist">
-		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar"/>
-		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
-		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar"/>
-		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
-		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
-		
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar"/>
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
-		
-		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar"/>
-		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar"/>
-		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar"/>
-		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false"/>
-		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false"/>
-		
-		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar"/>
-		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar"/>
-		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
-		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
-		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>		
-		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi-v7a/libandroidgl20.so"/>
-	</target>
-	
-	<!-- updates the native libs of the android test suite -->
-	<target name="update-android-tests" depends="dist">
-		<copy tofile="tests/gdx-tests-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so"/>
-		<copy tofile="tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so"/>
-		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
-	</target>
-	
-	<!-- do everything -->
-	<target name="all" depends="update-demos,update-android-tests">
-	</target>
+	</target>	
 </project>
