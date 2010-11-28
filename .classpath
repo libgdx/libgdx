@@ -7,7 +7,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-twl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-twl-tests"/>
-	<classpathentry kind="lib" path="/gdx-twl/libs/twl.jar"/>
 	<classpathentry kind="lib" path="/gdx-twl/libs/xpp3-1.1.4c.jar"/>
+	<classpathentry kind="lib" path="/gdx-twl/libs/twl-android.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
