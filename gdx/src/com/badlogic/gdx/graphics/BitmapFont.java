@@ -50,9 +50,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Matthias Mann
  */
 public class BitmapFont {
-	private static final int LOG2_PAGE_SIZE = 9;
-	private static final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
-	private static final int PAGES = 0x10000 / PAGE_SIZE;
+	static private final int LOG2_PAGE_SIZE = 9;
+	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
+	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
 	Sprite sprite;
 	int lineHeight;
@@ -334,14 +334,24 @@ public class BitmapFont {
 		int maxWidth = 0;
 		while (start < length) {
 			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
+			int nextLineStart;
 			if (lineEnd < length) {
+				int originalLineEnd = lineEnd;
 				while (lineEnd > start) {
 					char ch = str.charAt(lineEnd);
 					if (ch == ' ' || ch == '\n') break;
 					lineEnd--;
 				}
+				if (lineEnd == start) {
+					lineEnd = originalLineEnd;
+					if (lineEnd == start) lineEnd++;
+					nextLineStart = lineEnd;
+				} else
+					nextLineStart = lineEnd + 1; // Eat space or newline.
+			} else {
+				if (lineEnd == start) lineEnd++;
+				nextLineStart = length;
 			}
-			if (lineEnd == start) lineEnd++;
 			float xOffset = 0;
 			if (alignment != HAlignment.LEFT) {
 				int lineWidth = getBounds(str, start, lineEnd).width;
@@ -350,7 +360,7 @@ public class BitmapFont {
 			}
 			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
-			start = lineEnd + 1;
+			start = nextLineStart;
 			y += down;
 			numLines++;
 		}
@@ -429,22 +439,33 @@ public class BitmapFont {
 	 */
 	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth) {
 		int start = 0;
-		int maxWidth = 0;
 		int numLines = 0;
 		int length = str.length();
+		int maxWidth = 0;
 		while (start < length) {
 			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
+			int nextLineStart;
 			if (lineEnd < length) {
+				int originalLineEnd = lineEnd;
 				while (lineEnd > start) {
 					char ch = str.charAt(lineEnd);
 					if (ch == ' ' || ch == '\n') break;
 					lineEnd--;
 				}
+				if (lineEnd == start) {
+					lineEnd = originalLineEnd;
+					if (lineEnd == start) lineEnd++;
+					nextLineStart = lineEnd;
+				} else
+					nextLineStart = lineEnd + 1; // Eat space or newline.
+			} else {
+				if (lineEnd == start) lineEnd++;
+				nextLineStart = length;
 			}
-			if (lineEnd == start) lineEnd++;
+			float xOffset = 0;
 			int lineWidth = getBounds(str, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
-			start = lineEnd + 1;
+			start = nextLineStart;
 			numLines++;
 		}
 		textBounds.width = maxWidth;

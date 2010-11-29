@@ -74,7 +74,7 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 	}
 
 	public boolean touchDown (int x, int y, int pointer) {
-		System.out.println("Not handled by TWL!");
+		System.out.println("This touch made it through and was not handled by TWL.");
 		return false;
 	}
 
