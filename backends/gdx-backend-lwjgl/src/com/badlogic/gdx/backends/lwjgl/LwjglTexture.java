@@ -134,11 +134,7 @@ final class LwjglTexture implements Texture {
 			texWidth = pngDecoder.getWidth();
 			texHeight = pngDecoder.getHeight();
 			int stride = texWidth * 4;
-			int bufferSize = stride * texHeight;
-			if (buffer == null || buffer.capacity() < bufferSize)
-				buffer = BufferUtils.createByteBuffer(bufferSize);
-			else
-				buffer.clear();
+			ensureBufferSize(stride * texHeight);
 
 			Format pngFormat = pngDecoder.decideTextureFormat(PNGDecoder.Format.RGBA);
 			int glFormat, glInternalFormat;
@@ -184,17 +180,7 @@ final class LwjglTexture implements Texture {
 	private ByteBuffer toByteBuffer (BufferedImage image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
-
-		int bufferSize = width * height * 4;
-		if (buffer == null || buffer.capacity() < bufferSize) {
-			buffer = ByteBuffer.allocateDirect(bufferSize);
-			ByteBuffer temp = buffer.slice();
-			temp.order(ByteOrder.LITTLE_ENDIAN);
-			intBuffer = temp.asIntBuffer();
-		} else {
-			buffer.clear();
-			intBuffer.clear();
-		}
+		ensureBufferSize(width * height * 4);
 
 		Raster raster = image.getRaster();
 		if (image.getType() == BufferedImage.TYPE_INT_ARGB)
@@ -212,11 +198,23 @@ final class LwjglTexture implements Texture {
 		return buffer;
 	}
 
+	private void ensureBufferSize (int size) {
+		if (buffer == null || buffer.capacity() < size) {
+			buffer = BufferUtils.createByteBuffer(size);
+			ByteBuffer temp = buffer.slice();
+			temp.order(ByteOrder.LITTLE_ENDIAN);
+			intBuffer = temp.asIntBuffer();
+		} else {
+			buffer.clear();
+			intBuffer.clear();
+		}
+	}
+
 	private BufferedImage scaleDown (BufferedImage image) {
 		BufferedImage scaled = new BufferedImage(image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR_PRE);
 		Graphics2D g = scaled.createGraphics();
-		g.drawImage(image, 0, 0, scaled.getWidth(), scaled.getHeight(), null); // FIXME replace with something that looks actually
-// like a scaled image...
+		// FIXME replace with something that looks actually like a scaled image...
+		g.drawImage(image, 0, 0, scaled.getWidth(), scaled.getHeight(), null);
 		g.dispose();
 		return scaled;
 	}
