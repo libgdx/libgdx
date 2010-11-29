@@ -67,8 +67,8 @@ public class BitmapFont {
 	private float color = Color.WHITE.toFloatBits();
 
 	/**
-	 * Creates a new BitmapFont using the default 15pt Arial font included in the libgdx jar file. This is convenient to easy
-	 * display some text without bothering with generating a bitmap font.
+	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
+	 * text without bothering with generating a bitmap font.
 	 */
 	public BitmapFont () {
 		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
@@ -76,7 +76,7 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Creates a new BitmapFont with the glyphs relative to the specified sprite.
+	 * Creates a BitmapFont with the glyphs relative to the specified sprite.
 	 * @param sprite The sprite containing the glyphs. The glyphs must be relative to the lower left corner (ie, the sprite should
 	 *           not be flipped).
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
@@ -86,7 +86,17 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Creates a new BitmapFont instance based on a BMFont file and an image file holding the page with glyphs.
+	 * Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
+	 * same directory.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 */
+	public BitmapFont (FileHandle fontFile, boolean flip) {
+		init(fontFile, null, flip);
+	}
+
+	/**
+	 * Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
+	 * ignored.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
@@ -96,11 +106,6 @@ public class BitmapFont {
 	}
 
 	private void init (FileHandle fontFile, Sprite sprite, boolean flip) {
-		this.sprite = sprite;
-		float invTexWidth = 1.0f / sprite.getTexture().getWidth();
-		float invTexHeight = 1.0f / sprite.getTexture().getHeight();
-		float uSprite = sprite.getTextureRegionX();
-		float vSprite = sprite.getTextureRegionY();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 		try {
 			reader.readLine(); // info
@@ -114,7 +119,22 @@ public class BitmapFont {
 			if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 			int baseLine = Integer.parseInt(common[2].substring(5));
 
-			reader.readLine(); // page
+			if (sprite != null)
+				reader.readLine(); // page
+			else {
+				String[] page = reader.readLine().split(" ", 4);
+				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				FileHandle imageFile = fontFile.parent().child(page[2].substring(5));
+				sprite = new Sprite(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
+					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+			}
+
+			this.sprite = sprite;
+			float invTexWidth = 1.0f / sprite.getTexture().getWidth();
+			float invTexHeight = 1.0f / sprite.getTexture().getHeight();
+			float uSprite = sprite.getTextureRegionX();
+			float vSprite = sprite.getTextureRegionY();
+
 			while (true) {
 				String line = reader.readLine();
 				if (line == null) break;
