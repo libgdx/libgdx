@@ -17,6 +17,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -173,23 +174,20 @@ public class ImmediateModeRenderer {
 		GL10 gl = Gdx.gl10;
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		positionsBuffer.clear();
-		positionsBuffer.put(positions, 0, idxPos);
-		positionsBuffer.flip();
+		BufferUtils.copy(positions, positionsBuffer, idxPos, 0);		
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, positionsBuffer);
 
 		if (colorsDefined) {
 			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 			colorsBuffer.clear();
-			colorsBuffer.put(colors, 0, idxCols);
-			colorsBuffer.flip();
+			BufferUtils.copy(colors, colorsBuffer, idxCols, 0);		
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorsBuffer);
 		}
 
 		if (normalsDefined) {
 			gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 			normalsBuffer.clear();
-			normalsBuffer.put(normals, 0, idxNors);
-			normalsBuffer.flip();
+			BufferUtils.copy(normals, normalsBuffer, idxNors, 0);		
 			gl.glNormalPointer(GL10.GL_FLOAT, 0, normalsBuffer);
 		}
 
@@ -197,8 +195,7 @@ public class ImmediateModeRenderer {
 			gl.glClientActiveTexture(GL10.GL_TEXTURE0);
 			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			texCoordsBuffer.clear();
-			texCoordsBuffer.put(texCoords, 0, idxTexCoords);
-			texCoordsBuffer.flip();
+			BufferUtils.copy(texCoords, texCoordsBuffer, idxTexCoords, 0);		
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texCoordsBuffer);
 		}
 
