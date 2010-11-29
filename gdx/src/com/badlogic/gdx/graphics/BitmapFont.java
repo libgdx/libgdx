@@ -57,7 +57,7 @@ public class BitmapFont {
 	Sprite sprite;
 	int lineHeight;
 	int capHeight;
-	int yOffset;
+	int ascent;
 	int down;
 
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
@@ -189,10 +189,10 @@ public class BitmapFont {
 			g = getGlyph('M');
 			capHeight = g != null ? g.height : 1;
 
-			yOffset = baseLine - capHeight;
+			ascent = baseLine - capHeight;
 			down = -lineHeight;
 			if (flip) {
-				yOffset = -yOffset;
+				ascent = -ascent;
 				down = -down;
 			}
 		} catch (Exception ex) {
@@ -233,7 +233,7 @@ public class BitmapFont {
 	 */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
 		final Texture texture = sprite.getTexture();
-		y += yOffset;
+		y += ascent;
 		float startX = x;
 		Glyph lastGlyph = null;
 		while (start < end) {
@@ -535,6 +535,13 @@ public class BitmapFont {
 	 */
 	public int getCapHeight () {
 		return capHeight;
+	}
+
+	/**
+	 * Returns the ascent, which is the distance from the cap height to the top of the tallest glyph.
+	 */
+	public int getAscent () {
+		return ascent;
 	}
 
 	/**

@@ -182,7 +182,7 @@ public class BitmapFontCache {
 	 */
 	public TextBounds setText (CharSequence str, float x, float y, int start, int end) {
 		reset(end - start);
-		y += font.yOffset;
+		y += font.ascent;
 		textBounds.width = addToCache(str, x, y, start, end);
 		textBounds.height = font.capHeight;
 		return textBounds;
@@ -211,7 +211,7 @@ public class BitmapFontCache {
 		int length = str.length();
 		reset(length);
 
-		y += font.yOffset;
+		y += font.ascent;
 		int down = font.down;
 
 		int maxWidth = 0;
@@ -261,7 +261,7 @@ public class BitmapFontCache {
 		int length = str.length();
 		reset(length);
 
-		y += font.yOffset;
+		y += font.ascent;
 		int down = font.down;
 
 		int maxWidth = 0;

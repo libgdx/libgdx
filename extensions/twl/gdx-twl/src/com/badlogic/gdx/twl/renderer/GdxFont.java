@@ -54,7 +54,7 @@ class GdxFont implements Font {
 	public GdxFont (GdxRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
 		this.bitmapFont = bitmapFont;
 		this.renderer = renderer;
-		yOffset = -bitmapFont.getCapHeight();
+		yOffset = -bitmapFont.getAscent();
 
 		ArrayList<FontState> states = new ArrayList<FontState>();
 		for (FontParameter p : condParams) {
@@ -179,7 +179,6 @@ class GdxFont implements Font {
 		}
 
 		public void draw (AnimationState as, int x, int y) {
-			y += bitmapFont.getCapHeight();
 			GdxFont.FontState fontState = evalFontState(as);
 			setColor(renderer.getColor(fontState.color));
 			setPosition(x + fontState.offsetX, y + fontState.offsetY);
