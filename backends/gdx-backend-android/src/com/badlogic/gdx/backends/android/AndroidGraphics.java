@@ -71,11 +71,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private int fps;
 	private WindowedMean mean = new WindowedMean(5);
 
-	boolean created = false;
-	boolean running = false;
-	boolean pause = false;
-	boolean resume = false;
-	boolean destroy = false;
+	volatile boolean created = false;
+	volatile boolean running = false;
+	volatile boolean pause = false;
+	volatile boolean resume = false;
+	volatile boolean destroy = false;
 
 	private float ppiX = 0;
 	private float ppiY = 0;
@@ -319,16 +319,15 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	void pause() {
+		long startTime = System.nanoTime();
 		synchronized (synch) {
 			running = false;
 			pause = true;
 		}
-		boolean cond = false;
-		while (!cond) {
-			synchronized (synch) {
-				cond = !pause;
-			}
-		}
+		Gdx.app.log("AndroidGraphics", "synch took: " + (System.nanoTime()-startTime)/1000000000.0f);
+		startTime = System.nanoTime();
+		while (pause); // busy wait. ya, nasty...		
+		Gdx.app.log("AndroidGraphics", "wait took: " + (System.nanoTime()-startTime)/1000000000.0f);
 	}
 
 	void destroy() {
@@ -351,28 +350,47 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		lastFrameTime = time;
 		mean.addValue(deltaTime);
 	
-		synchronized (synch) {
-			if (running) {
-				((AndroidInput)Gdx.input).processEvents();
-				app.listener.render();
+		boolean lrunning = false;
+		boolean lpause = false;
+		boolean ldestroy = false;
+		boolean lresume = false;
+		
+		synchronized(synch) {
+			lrunning = running;
+			lpause = pause;
+			ldestroy = destroy;
+			lresume = resume;
+			
+			if (pause) {			
+				pause = false;			
 			}
-
-			if (pause) {
-				app.listener.pause();
-				pause = false;
-			}
-
-			if (resume) {
-				app.listener.resume();
-				resume = false;
-				running = true;
-			}
-
-			if (destroy) {
-				app.listener.dispose();
+			
+			if (destroy) {				
 				destroy = false;
 			}
+
+			if (resume) {				
+				resume = false;
+				running = true;
+			}		
 		}
+				
+		if (lrunning) {
+			((AndroidInput)Gdx.input).processEvents();
+			app.listener.render();
+		}
+
+		if (lpause) {
+			app.listener.pause();
+		}
+
+		if (lresume) {
+			app.listener.resume();
+		}
+
+		if (ldestroy) {
+			app.listener.dispose();
+		}		
 		
 		if (time - frameStart > 1000000000) {
 			fps = frames;
