@@ -106,7 +106,29 @@
 	
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="init">
-		<javadoc destdir="${stable}/docs/api" author="true" version="true" use="true" windowtitle="Test API">
+		<javadoc destdir="${stable}/docs/api" author="true" version="true" use="true"
+		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API">
+			<header><![CDATA[
+				libgdx API
+				<style>
+				body, td, th { font-family:Helvetica, Tahoma, Arial, sans-serif; font-size:10pt }
+				pre, code, tt { font-size:9pt; font-family:Lucida Console, Courier New, sans-serif }
+				h1, h2, h3, .FrameTitleFont, .FrameHeadingFont, .TableHeadingColor font { font-size:105%;  font-weight:bold }
+				.TableHeadingColor { background:#EEEEFF; }
+				a { text-decoration:none }
+				a:hover { text-decoration:underline }
+				a:link, a:visited { color:blue }
+				table { border:0px }
+				.TableRowColor td:first-child { border-left:1px solid black }
+				.TableRowColor td { border:0px; border-bottom:1px solid black; border-right:1px solid black }
+				hr { border:0px; border-bottom:1px solid #333366; }
+				</style>
+			]]></header>
+			<bottom><![CDATA[
+				<div style="font-size:9pt"><i>
+				Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+				</i></div>
+			]]></bottom>
 			<fileset dir="gdx/src" defaultexcludes="yes">
 				<include name="com/badlogic/gdx/**" />
 				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
