@@ -313,21 +313,17 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	void resume() {
 		synchronized (synch) {
-			running = false;
+			running = true;
 			resume = true;
 		}
 	}
 
 	void pause() {
-		long startTime = System.nanoTime();
 		synchronized (synch) {
 			running = false;
 			pause = true;
 		}
-		Gdx.app.log("AndroidGraphics", "synch took: " + (System.nanoTime()-startTime)/1000000000.0f);
-		startTime = System.nanoTime();
 		while (pause); // busy wait. ya, nasty...		
-		Gdx.app.log("AndroidGraphics", "wait took: " + (System.nanoTime()-startTime)/1000000000.0f);
 	}
 
 	void destroy() {
@@ -335,12 +331,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			running = false;
 			destroy = true;
 		}
-		boolean cond = false;
-		while (!cond) {
-			synchronized (synch) {
-				cond = !destroy;
-			}
-		}
+		while (destroy);
 	}
 
 	@Override
@@ -361,35 +352,37 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			ldestroy = destroy;
 			lresume = resume;
 			
+			if (resume) {				
+				resume = false;
+			}
+			
 			if (pause) {			
 				pause = false;			
 			}
 			
 			if (destroy) {				
 				destroy = false;
-			}
-
-			if (resume) {				
-				resume = false;
-				running = true;
-			}		
+			}			
 		}
-				
+		
+		if (lresume) {
+			app.listener.resume();
+			Gdx.app.log("AndroidGraphics", "resumed");
+		}
+		
 		if (lrunning) {
 			((AndroidInput)Gdx.input).processEvents();
 			app.listener.render();
 		}
 
-		if (lpause) {
+		if (lpause) {			
 			app.listener.pause();
-		}
-
-		if (lresume) {
-			app.listener.resume();
+			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
 		if (ldestroy) {
 			app.listener.dispose();
+			Gdx.app.log("AndroidGraphics", "destroyed");
 		}		
 		
 		if (time - frameStart > 1000000000) {
