@@ -88,7 +88,7 @@ public class GdxTests
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		FilesTest.class,
-		FillrateTest.class,
+		//FillrateTest.class,
 		FloatTest.class,
 		FrameBufferTest.class,
 		ImmediateModeRendererTest.class,
@@ -102,7 +102,7 @@ public class GdxTests
 		MeshMultitextureTest.class,
 		MeshShaderTest.class,
 		MeshTest.class,
-		Mpg123Test.class,
+		//Mpg123Test.class,
 		MultitouchTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
@@ -129,7 +129,7 @@ public class GdxTests
 		VertexArrayClassTest.class,
 		VertexBufferObjectClassTest.class,
 		VertexBufferObjectShaderTest.class,
-		VorbisTest.class,
+		//VorbisTest.class,
 		WaterRipples.class
 	};
 	
