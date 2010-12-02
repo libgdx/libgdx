@@ -15,6 +15,7 @@ package com.badlogic.gdx.backends.android;
 
 import java.io.InputStream;
 
+import javax.microedition.khronos.egl.EGL;
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -269,6 +270,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
+		
+		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
+		Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
+		Gdx.app.log("AndroidGraphics", "OGL version: " + gl.glGetString(GL10.GL_VERSION));
+		Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
 	}
 
 	@Override
@@ -284,7 +290,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public void onSurfaceCreated(javax.microedition.khronos.opengles.GL10 gl,
 			EGLConfig config) {
 		setupGL(gl);
-
+		logConfig(config);
 		updatePpi();
 
 		Mesh.invalidateAllMeshes();
@@ -307,6 +313,29 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				running = true;
 			}
 		}
+	}
+	
+	private void logConfig(EGLConfig config) {
+		EGL10 egl = (EGL10)EGLContext.getEGL();	
+		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+		int r = getAttrib(egl, display, config, EGL10.EGL_RED_SIZE, 0);
+		int g = getAttrib(egl, display, config, EGL10.EGL_GREEN_SIZE, 0);
+		int b = getAttrib(egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
+		int a = getAttrib(egl, display, config, EGL10.EGL_ALPHA_SIZE, 0);
+		int d = getAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
+		int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);
+		
+		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
+		Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
+		Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
+	}
+	
+	int[] value = new int[1];
+	private int getAttrib(EGL10 egl, EGLDisplay display, EGLConfig config, int attrib, int defValue ) {
+		if (egl.eglGetConfigAttrib(display, config, attrib, value)) {
+			return value[0];
+		}
+		return defValue;
 	}
 
 	Object synch = new Object();
