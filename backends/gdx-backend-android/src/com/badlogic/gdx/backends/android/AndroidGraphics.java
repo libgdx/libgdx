@@ -322,16 +322,27 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		synchronized (synch) {
 			running = false;
 			pause = true;
+			while (pause) {
+				try {
+					synch.wait();
+				} catch (InterruptedException ignored) {
+				}
+			}
 		}
-		while (pause); // busy wait. ya, nasty...		
 	}
 
 	void destroy() {
 		synchronized (synch) {
 			running = false;
 			destroy = true;
+		
+			while (destroy) {
+				try {
+					synch.wait();
+				} catch(InterruptedException ex) {				
+				}
+			}
 		}
-		while (destroy);
 	}
 
 	@Override
@@ -340,42 +351,44 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
 		mean.addValue(deltaTime);
-	
+
 		boolean lrunning = false;
 		boolean lpause = false;
 		boolean ldestroy = false;
 		boolean lresume = false;
-		
-		synchronized(synch) {
+
+		synchronized (synch) {
 			lrunning = running;
 			lpause = pause;
 			ldestroy = destroy;
 			lresume = resume;
-			
-			if (resume) {				
+
+			if (resume) {
 				resume = false;
 			}
-			
-			if (pause) {			
-				pause = false;			
+
+			if (pause) {
+				pause = false;
+				synch.notifyAll();
 			}
-			
-			if (destroy) {				
+
+			if (destroy) {
 				destroy = false;
-			}			
+				synch.notifyAll();
+			}
 		}
-		
+
 		if (lresume) {
 			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
-		
+
 		if (lrunning) {
-			((AndroidInput)Gdx.input).processEvents();
+			app.input.processEvents();
 			app.listener.render();
 		}
 
-		if (lpause) {			
+		if (lpause) {
 			app.listener.pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
@@ -383,8 +396,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		if (ldestroy) {
 			app.listener.dispose();
 			Gdx.app.log("AndroidGraphics", "destroyed");
-		}		
-		
+		}
+
 		if (time - frameStart > 1000000000) {
 			fps = frames;
 			frames = 0;
