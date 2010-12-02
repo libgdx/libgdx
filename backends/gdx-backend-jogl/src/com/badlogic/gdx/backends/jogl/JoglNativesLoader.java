@@ -35,7 +35,8 @@ public class JoglNativesLoader {
 		com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
 		// By wkien: On some systems (read: mine) jogl_awt would not find its
 		// dependency jawt if not loaded before
-//		System.loadLibrary("jawt");
+		if(System.getProperty("os.name").contains("Windows"))
+			System.loadLibrary("jawt");
 		loadLibrary("gluegen-rt");
 		loadLibrary("jogl_awt");
 		loadLibrary("jogl");
