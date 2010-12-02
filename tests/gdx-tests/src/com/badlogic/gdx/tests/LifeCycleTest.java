@@ -42,10 +42,8 @@ public class LifeCycleTest extends GdxTest {
 		try {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
 	}	
 
 	@Override public void create () {

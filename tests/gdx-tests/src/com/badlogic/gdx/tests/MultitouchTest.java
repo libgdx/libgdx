@@ -24,6 +24,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class MultitouchTest extends GdxTest implements InputProcessor {
 	ImmediateModeRenderer renderer;
 	OrthographicCamera camera;
+	long startTime = System.nanoTime();
 
 	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE};
 
@@ -48,6 +49,11 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 		}
 
 		renderer.end();
+		
+		if(System.nanoTime()-startTime > 1000000000l) {
+			Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
+			startTime = System.nanoTime();
+		}
 	}
 
 
@@ -73,17 +79,17 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer) {
-		Gdx.app.log("Multitouch", "down: " + pointer);
+//		Gdx.app.log("Multitouch", "down: " + pointer);
 		return false;
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
-		Gdx.app.log("Multitouch", "drag: " + pointer);
+//		Gdx.app.log("Multitouch", "drag: " + pointer);
 		return false;
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
-		Gdx.app.log("Multitouch", "up: " + pointer);
+//		Gdx.app.log("Multitouch", "up: " + pointer);
 		return false;
 	}
 
