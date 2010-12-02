@@ -162,6 +162,7 @@
 		<jar destfile="${stable}/gdx-backend-lwjgl.jar">
 			<fileset dir="backends/gdx-backend-lwjgl/bin"/>
 			<zipfileset src="backends/dependencies/lwjgl.jar"/>
+			<zipfileset src="backends/dependencies/lwjgl-natives.jar"/>
 			<zipfileset src="backends/dependencies/javazoom-spi.jar"/>
 			<zipfileset src="backends/dependencies/jl1.0.1.jar"/>
 			<zipfileset src="backends/dependencies/jorbis.jar"/>
