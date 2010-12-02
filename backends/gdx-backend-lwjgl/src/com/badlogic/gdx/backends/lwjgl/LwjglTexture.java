@@ -14,6 +14,7 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.DataBufferInt;
@@ -24,18 +25,17 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.PNGDecoder.Format;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
 
 /**
  * @author badlogicgames@gmail.com
@@ -213,7 +213,7 @@ final class LwjglTexture implements Texture {
 	private BufferedImage scaleDown (BufferedImage image) {
 		BufferedImage scaled = new BufferedImage(image.getWidth() / 2, image.getHeight() / 2, BufferedImage.TYPE_4BYTE_ABGR_PRE);
 		Graphics2D g = scaled.createGraphics();
-		// FIXME replace with something that looks actually like a scaled image...
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		g.drawImage(image, 0, 0, scaled.getWidth(), scaled.getHeight(), null);
 		g.dispose();
 		return scaled;
