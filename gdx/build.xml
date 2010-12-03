@@ -158,6 +158,7 @@
 		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false" />
 		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false" />
 		<copy tofile="${stable}/libgdx-64.so" file="gdx/linux64/libgdx-64.so" failonerror="false" />
+		<copy tofile="${stable}/libgdx.dylib" file="gdx/mac/libgdx.dylib" failonerror="false" />
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so" />
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so" />
@@ -174,13 +175,14 @@
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx-64.so" file="${stable}/libgdx-64.so" failonerror="false" />
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/libgdx.dylib" file="${stable}/libgdx.dylib" failonerror="false" />
 
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar" />
@@ -188,12 +190,14 @@
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.dll" file="${stable}/gdx.dll" failonerror="false" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx.so" file="${stable}/libgdx.so" failonerror="false" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx-64.so" file="${stable}/libgdx-64.so" failonerror="false" />
-
+		<copy tofile="demos/invaders/gdx-invaders/libs/libgdx.dylib" file="${stable}/libgdx.dylib" failonerror="false" />
+		
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
+		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 	</target>
 
 	<!-- updates the native libs of the android test suite -->
