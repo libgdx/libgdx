@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.FloatBuffer;
@@ -555,6 +556,196 @@ public class SpriteCache {
 			tempVertices[28] = u;
 			tempVertices[29] = v;
 			add(texture, tempVertices, 0, 30);
+		}
+	}
+
+	public void draw (TextureRegion region, float x, float y, Color tint) {
+		draw(region, x, y, region.getWidth(), region.getHeight(), tint);
+	}
+
+	public void draw (TextureRegion region, float x, float y, float width, float height, Color tint) {
+		final float fx2 = x + width;
+		final float fy2 = y + height;
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
+		final float color = tint.toFloatBits();
+
+		tempVertices[0] = x;
+		tempVertices[1] = y;
+		tempVertices[2] = color;
+		tempVertices[3] = u;
+		tempVertices[4] = v;
+
+		tempVertices[5] = x;
+		tempVertices[6] = fy2;
+		tempVertices[7] = color;
+		tempVertices[8] = u;
+		tempVertices[9] = v2;
+
+		tempVertices[10] = fx2;
+		tempVertices[11] = fy2;
+		tempVertices[12] = color;
+		tempVertices[13] = u2;
+		tempVertices[14] = v2;
+
+		if (mesh.getNumIndices() > 0) {
+			tempVertices[15] = fx2;
+			tempVertices[16] = y;
+			tempVertices[17] = color;
+			tempVertices[18] = u2;
+			tempVertices[19] = v;
+			add(region.texture, tempVertices, 0, 20);
+		} else {
+			tempVertices[15] = fx2;
+			tempVertices[16] = fy2;
+			tempVertices[17] = color;
+			tempVertices[18] = u2;
+			tempVertices[19] = v2;
+
+			tempVertices[20] = fx2;
+			tempVertices[21] = y;
+			tempVertices[22] = color;
+			tempVertices[23] = u2;
+			tempVertices[24] = v;
+
+			tempVertices[25] = x;
+			tempVertices[26] = y;
+			tempVertices[27] = color;
+			tempVertices[28] = u;
+			tempVertices[29] = v;
+			add(region.texture, tempVertices, 0, 30);
+		}
+	}
+
+	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
+		float scaleX, float scaleY, float rotation, Color tint) {
+
+		// bottom left and top right corner points relative to origin
+		final float worldOriginX = x + originX;
+		final float worldOriginY = y + originY;
+		float fx = -originX;
+		float fy = -originY;
+		float fx2 = width - originX;
+		float fy2 = height - originY;
+
+		// scale
+		if (scaleX != 1 || scaleY != 1) {
+			fx *= scaleX;
+			fy *= scaleY;
+			fx2 *= scaleX;
+			fy2 *= scaleY;
+		}
+
+		// construct corner points, start from top left and go counter clockwise
+		final float p1x = fx;
+		final float p1y = fy;
+		final float p2x = fx;
+		final float p2y = fy2;
+		final float p3x = fx2;
+		final float p3y = fy2;
+		final float p4x = fx2;
+		final float p4y = fy;
+
+		float x1;
+		float y1;
+		float x2;
+		float y2;
+		float x3;
+		float y3;
+		float x4;
+		float y4;
+
+		// rotate
+		if (rotation != 0) {
+			final float cos = MathUtils.cosDeg(rotation);
+			final float sin = MathUtils.sinDeg(rotation);
+
+			x1 = cos * p1x - sin * p1y;
+			y1 = sin * p1x + cos * p1y;
+
+			x2 = cos * p2x - sin * p2y;
+			y2 = sin * p2x + cos * p2y;
+
+			x3 = cos * p3x - sin * p3y;
+			y3 = sin * p3x + cos * p3y;
+
+			x4 = x1 + (x3 - x2);
+			y4 = y3 - (y2 - y1);
+		} else {
+			x1 = p1x;
+			y1 = p1y;
+
+			x2 = p2x;
+			y2 = p2y;
+
+			x3 = p3x;
+			y3 = p3y;
+
+			x4 = p4x;
+			y4 = p4y;
+		}
+
+		x1 += worldOriginX;
+		y1 += worldOriginY;
+		x2 += worldOriginX;
+		y2 += worldOriginY;
+		x3 += worldOriginX;
+		y3 += worldOriginY;
+		x4 += worldOriginX;
+		y4 += worldOriginY;
+
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
+		final float color = tint.toFloatBits();
+
+		tempVertices[0] = x1;
+		tempVertices[1] = y1;
+		tempVertices[2] = color;
+		tempVertices[3] = u;
+		tempVertices[4] = v;
+
+		tempVertices[5] = x2;
+		tempVertices[6] = y2;
+		tempVertices[7] = color;
+		tempVertices[8] = u;
+		tempVertices[9] = v2;
+
+		tempVertices[10] = x3;
+		tempVertices[11] = y3;
+		tempVertices[12] = color;
+		tempVertices[13] = u2;
+		tempVertices[14] = v2;
+
+		if (mesh.getNumIndices() > 0) {
+			tempVertices[15] = x4;
+			tempVertices[16] = y4;
+			tempVertices[17] = color;
+			tempVertices[18] = u2;
+			tempVertices[19] = v;
+			add(region.texture, tempVertices, 0, 20);
+		} else {
+			tempVertices[15] = x3;
+			tempVertices[16] = y3;
+			tempVertices[17] = color;
+			tempVertices[18] = u2;
+			tempVertices[19] = v2;
+
+			tempVertices[20] = x4;
+			tempVertices[21] = y4;
+			tempVertices[22] = color;
+			tempVertices[23] = u2;
+			tempVertices[24] = v;
+
+			tempVertices[25] = x1;
+			tempVertices[26] = y1;
+			tempVertices[27] = color;
+			tempVertices[28] = u;
+			tempVertices[29] = v;
+			add(region.texture, tempVertices, 0, 30);
 		}
 	}
 

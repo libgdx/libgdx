@@ -34,16 +34,16 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Renders bitmap fonts. The font consists of 2 files: an image file (or {@link Sprite}) containing the glyphs and a file in the
- * AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
+ * Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
+ * the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
  * supported.<br>
  * <br>
  * Text is drawn using a {@link SpriteBatch}. Text can be cached in a {@link BitmapFontCache} for faster rendering of static text,
  * which saves needing to compute the location of each glyph each frame.<br>
  * <br>
  * * The texture for a BitmapFont loaded from a file is managed. {@link #dispose()} must be called to free the texture when no
- * longer needed. A BitmapFont loaded using a sprite is managed if the sprite's texture is managed. Disposing the BitmapFont
- * disposes the sprite's texture, which may not be desirable if the texture is still being used elsewhere.<br>
+ * longer needed. A BitmapFont loaded using a {@link TextureRegion} is managed if the region's texture is managed. Disposing the
+ * BitmapFont disposes the region's texture, which may not be desirable if the texture is still being used elsewhere.<br>
  * <br>
  * The code is based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
  * @author Nathan Sweet <misc@n4te.com>
@@ -54,7 +54,7 @@ public class BitmapFont {
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
-	Sprite sprite;
+	TextureRegion region;
 	int lineHeight;
 	int capHeight;
 	int ascent;
@@ -65,6 +65,7 @@ public class BitmapFont {
 	private int xHeight;
 	private final TextBounds textBounds = new TextBounds();
 	private float color = Color.WHITE.toFloatBits();
+	private Color tempColor;
 
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
@@ -76,13 +77,13 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Creates a BitmapFont with the glyphs relative to the specified sprite.
-	 * @param sprite The sprite containing the glyphs. The glyphs must be relative to the lower left corner (ie, the sprite should
-	 *           not be flipped).
+	 * Creates a BitmapFont with the glyphs relative to the specified region.
+	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
+	 *           should not be flipped).
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
-	public BitmapFont (FileHandle fontFile, Sprite sprite, boolean flip) {
-		init(fontFile, sprite, flip);
+	public BitmapFont (FileHandle fontFile, TextureRegion region, boolean flip) {
+		init(fontFile, region, flip);
 	}
 
 	/**
@@ -100,12 +101,12 @@ public class BitmapFont {
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
-		sprite = new Sprite(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge));
-		init(fontFile, sprite, flip);
+		region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
+			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+		init(fontFile, region, flip);
 	}
 
-	private void init (FileHandle fontFile, Sprite sprite, boolean flip) {
+	private void init (FileHandle fontFile, TextureRegion region, boolean flip) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 		try {
 			reader.readLine(); // info
@@ -119,21 +120,21 @@ public class BitmapFont {
 			if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 			int baseLine = Integer.parseInt(common[2].substring(5));
 
-			if (sprite != null)
+			if (region != null)
 				reader.readLine(); // page
 			else {
 				String[] page = reader.readLine().split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				FileHandle imageFile = fontFile.parent().child(page[2].substring(5));
-				sprite = new Sprite(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
+				region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
 					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
 			}
 
-			this.sprite = sprite;
-			float invTexWidth = 1.0f / sprite.getTexture().getWidth();
-			float invTexHeight = 1.0f / sprite.getTexture().getHeight();
-			float uSprite = sprite.getTextureRegionX();
-			float vSprite = sprite.getTextureRegionY();
+			this.region = region;
+			float invTexWidth = 1.0f / region.getTexture().getWidth();
+			float invTexHeight = 1.0f / region.getTexture().getHeight();
+			float u = region.getU();
+			float v = region.getV();
 
 			while (true) {
 				String line = reader.readLine();
@@ -171,14 +172,14 @@ public class BitmapFont {
 				tokens.nextToken();
 				glyph.xadvance = Integer.parseInt(tokens.nextToken());
 
-				glyph.u = uSprite + srcX * invTexWidth;
-				glyph.u2 = uSprite + (srcX + glyph.width) * invTexWidth;
+				glyph.u = u + srcX * invTexWidth;
+				glyph.u2 = u + (srcX + glyph.width) * invTexWidth;
 				if (flip) {
-					glyph.v = vSprite + srcY * invTexHeight;
-					glyph.v2 = vSprite + (srcY + glyph.height) * invTexHeight;
+					glyph.v = v + srcY * invTexHeight;
+					glyph.v2 = v + (srcY + glyph.height) * invTexHeight;
 				} else {
-					glyph.v2 = vSprite + srcY * invTexHeight;
-					glyph.v = vSprite + (srcY + glyph.height) * invTexHeight;
+					glyph.v2 = v + srcY * invTexHeight;
+					glyph.v = v + (srcY + glyph.height) * invTexHeight;
 				}
 			}
 
@@ -252,7 +253,7 @@ public class BitmapFont {
 	 *         instance is used for all methods that return TextBounds.
 	 */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
-		final Texture texture = sprite.getTexture();
+		final Texture texture = region.getTexture();
 		y += ascent;
 		float startX = x;
 		Glyph lastGlyph = null;
@@ -524,8 +525,22 @@ public class BitmapFont {
 		color = Float.intBitsToFloat(intBits);
 	}
 
-	public Sprite getSprite () {
-		return sprite;
+	/**
+	 * Returns the color of this font. Changing the returned color will have no affect, {@link #setColor(Color)} or
+	 * {@link #setColor(float, float, float, float)} must be used.
+	 */
+	public Color getColor () {
+		int intBits = Float.floatToRawIntBits(color);
+		Color color = this.tempColor;
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
+
+	public TextureRegion getTextureRegion () {
+		return region;
 	}
 
 	/**
@@ -565,10 +580,10 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Disposes the texture used by this BitmapFont's sprite.
+	 * Disposes the texture used by this BitmapFont's region.
 	 */
 	public void dispose () {
-		sprite.getTexture().dispose();
+		region.getTexture().dispose();
 	}
 
 	static class Glyph {

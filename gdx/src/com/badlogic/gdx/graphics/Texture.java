@@ -12,6 +12,7 @@
  */
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 
 /**
@@ -125,4 +126,6 @@ public interface Texture {
 	 *         parameters.
 	 */
 	public int getTextureObjectHandle();
+
+	public void setWrap (TextureWrap x, TextureWrap y);
 }

@@ -313,4 +313,10 @@ final class LwjglTexture implements Texture {
 	public int getTextureObjectHandle () {
 		return textureID;
 	}
+
+	public void setWrap (TextureWrap x, TextureWrap y) {
+		bind();
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, x == TextureWrap.Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, y == TextureWrap.Repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	}
 }

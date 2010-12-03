@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.files;
 
 import java.io.File;
@@ -116,6 +117,8 @@ public abstract class FileHandle {
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException ex) {
+			if (file.isDirectory())
+				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
 		}
 	}
@@ -132,6 +135,8 @@ public abstract class FileHandle {
 		try {
 			return new FileOutputStream(file, append);
 		} catch (FileNotFoundException ex) {
+			if (file.isDirectory())
+				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		}
 	}

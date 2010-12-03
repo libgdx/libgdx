@@ -10,9 +10,9 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.MathUtils;
 
 /**
@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.MathUtils;
  * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed. The
  * origin is given relative to the bottom left corner of the Sprite, its position. Texture information is given as pixels and is
  * always relative to texture space.
- * 
  * @author mzechner
  * @author Nathan Sweet <misc@n4te.com>
  */
@@ -30,14 +29,14 @@ public class Sprite {
 	static final int VERTEX_SIZE = 2 + 1 + 2;
 	static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-	private Texture texture;
-	private final float[] vertices = new float[20];
+	private final SpriteTextureRegion region = new SpriteTextureRegion();
+	final float[] vertices = new float[20];
+	private final Color color = new Color(1, 1, 1, 1);
 	private float x, y;
-	private float width, height;
+	float width, height;
 	private float originX, originY;
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
-	private final Color color = new Color(1, 1, 1, 1);
 	private boolean dirty;
 
 	/**
@@ -56,9 +55,7 @@ public class Sprite {
 
 	/**
 	 * Creates a sprite with width, height, and texture region equal to the specified size. The texture region's upper left corner
-	 * will be 0,0.
-	 * 
-	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * will be 0,0. * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (Texture texture, int srcWidth, int srcHeight) {
@@ -66,39 +63,51 @@ public class Sprite {
 	}
 
 	/**
-	 * Creates a sprite with width, height, and texture region equal to the specified size.
-	 * 
-	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * Creates a sprite with width, height, and texture region equal to the specified size. * @param srcWidth The width of the
+	 * texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
-		this.texture = texture;
-		setTextureRegion(srcX, srcY, srcWidth, srcHeight);
+		region.texture = texture;
+		region.set(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
 		setSize(Math.abs(srcWidth), Math.abs(srcHeight));
 		setOrigin(width / 2, height / 2);
 	}
 
+	public Sprite (TextureRegion region) {
+		this.region.texture = region.texture;
+		this.region.set(region);
+		setColor(1, 1, 1, 1);
+		setSize(Math.abs(region.getWidth()), Math.abs(region.getHeight()));
+		setOrigin(width / 2, height / 2);
+	}
+
 	/**
 	 * Creates a sprite with width, height, and texture region equal to the specified size, relative to specified sprite's texture
-	 * region.
-	 * 
-	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * region. * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
-	public Sprite (Sprite parent, int srcX, int srcY, int srcWidth, int srcHeight) {
-		this(parent.texture, (int)(srcX + parent.vertices[U1] * parent.texture.getWidth()), (int)(srcY + parent.vertices[V2]
-			* parent.texture.getHeight()), srcWidth, srcHeight);
+	public Sprite (TextureRegion region, int srcX, int srcY, int srcWidth, int srcHeight) {
+		this.region.texture = region.texture;
+		this.region.set(region, srcX, srcY, srcWidth, srcHeight);
+		setColor(1, 1, 1, 1);
+		setSize(Math.abs(region.getWidth()), Math.abs(region.getHeight()));
+		setOrigin(width / 2, height / 2);
 	}
 
 	/**
 	 * Creates a sprite that is a copy in every way of the specified sprite.
 	 */
 	public Sprite (Sprite sprite) {
+		set(sprite);
+	}
+
+	public void set (Sprite sprite) {
 		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
-		texture = sprite.texture;
-		System.arraycopy(sprite.vertices, 0, vertices, 0, 20);
+		System.arraycopy(sprite.vertices, 0, vertices, 0, SPRITE_SIZE);
+		region.texture = sprite.region.texture;
 		x = sprite.x;
 		y = sprite.y;
 		width = sprite.width;
@@ -204,96 +213,6 @@ public class Sprite {
 		vertices[Y4] += yAmount;
 	}
 
-	/**
-	 * Sets the texture coordinates in pixels to apply to the sprite. This resets calling {@link #flip(boolean, boolean)}.
-	 * 
-	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
-	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
-	 */
-	public void setTextureRegion (int srcX, int srcY, int srcWidth, int srcHeight) {
-		float invTexWidth = 1.0f / texture.getWidth();
-		float invTexHeight = 1.0f / texture.getHeight();
-		float u = srcX * invTexWidth;
-		float v = (srcY + srcHeight) * invTexHeight;
-		float u2 = (srcX + srcWidth) * invTexWidth;
-		float v2 = srcY * invTexHeight;
-
-		float[] vertices = this.vertices;
-		vertices[U1] = u;
-		vertices[V1] = v;
-
-		vertices[U2] = u;
-		vertices[V2] = v2;
-
-		vertices[U3] = u2;
-		vertices[V3] = v2;
-
-		vertices[U4] = u2;
-		vertices[V4] = v;
-	}
-
-	/**
-	 * Sets whether the texture will be repeated or stetched. The default is stretched.
-	 * 
-	 * @param x If true, the texture will be repeated.
-	 * @param y If true, the texture will be repeated.
-	 */
-	public void setTextureRepeat (boolean x, boolean y) {
-		texture.bind();
-		GL10 gl = Gdx.gl10;
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
-	}
-
-	/**
-	 * Flips the current texture region.
-	 */
-	public void flip (boolean x, boolean y) {
-		float[] vertices = this.vertices;
-		if (x) {
-			float u = vertices[U1];
-			float u2 = vertices[U3];
-			vertices[U1] = u2;
-			vertices[U2] = u2;
-			vertices[U3] = u;
-			vertices[U4] = u;
-		}
-		if (y) {
-			float v = vertices[V1];
-			float v2 = vertices[V3];
-			vertices[V1] = v2;
-			vertices[V2] = v;
-			vertices[V3] = v;
-			vertices[V4] = v2;
-		}
-	}
-
-	/**
-	 * Offsets the texture region relative to the current texture region.
-	 * 
-	 * @param xAmount The percentage to offset horizontally.
-	 * @param yAmount The percentage to offset vertically.
-	 */
-	public void scrollTexture (float xAmount, float yAmount) {
-		float[] vertices = this.vertices;
-		if (xAmount != 0) {
-			float u = (vertices[U1] + xAmount) % 1;
-			float u2 = u + width / texture.getWidth();
-			vertices[U1] = u;
-			vertices[U2] = u;
-			vertices[U3] = u2;
-			vertices[U4] = u2;
-		}
-		if (yAmount != 0) {
-			float v = (vertices[V1] + yAmount) % 1;
-			float v2 = v + height / texture.getHeight();
-			vertices[V1] = v;
-			vertices[V2] = v2;
-			vertices[V3] = v2;
-			vertices[V4] = v;
-		}
-	}
-
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
 		float[] vertices = this.vertices;
@@ -336,40 +255,37 @@ public class Sprite {
 	}
 
 	/**
-	 * Rotates this sprite 90 degrees. This rotation is unaffected by {@link #setRotation(float)} and {@link #rotate(float)}.
+	 * Rotates this sprite 90 degrees in-place by rotating the texture coordinates. This rotation is unaffected by
+	 * {@link #setRotation(float)} and {@link #rotate(float)}.
 	 */
 	public void rotate90 (boolean clockwise) {
 		float[] vertices = this.vertices;
 
-		float temp = width;
-		width = height;
-		height = temp;
+		if (clockwise) {
+			float temp = vertices[V1];
+			vertices[V1] = vertices[V4];
+			vertices[V4] = vertices[V3];
+			vertices[V3] = vertices[V2];
+			vertices[V2] = temp;
 
-		temp = vertices[X1];
-		vertices[X1] = vertices[X4];
-		vertices[X4] = vertices[X3];
-		vertices[X3] = vertices[X2];
-		vertices[X2] = temp;
+			temp = vertices[U1];
+			vertices[U1] = vertices[U4];
+			vertices[U4] = vertices[U3];
+			vertices[U3] = vertices[U2];
+			vertices[U2] = temp;
+		} else {
+			float temp = vertices[V1];
+			vertices[V1] = vertices[V2];
+			vertices[V2] = vertices[V3];
+			vertices[V3] = vertices[V4];
+			vertices[V4] = temp;
 
-		temp = vertices[Y1];
-		vertices[Y1] = vertices[Y4];
-		vertices[Y4] = vertices[Y3];
-		vertices[Y3] = vertices[Y2];
-		vertices[Y2] = temp;
-
-		temp = vertices[V1];
-		vertices[V1] = vertices[V4];
-		vertices[V4] = vertices[V3];
-		vertices[V3] = vertices[V2];
-		vertices[V2] = temp;
-
-		temp = vertices[U1];
-		vertices[U1] = vertices[U4];
-		vertices[U4] = vertices[U3];
-		vertices[U3] = vertices[U2];
-		vertices[U2] = temp;
-
-		if (rotation != 0 || scaleX != 1 || scaleY != 1) dirty = true;
+			temp = vertices[U1];
+			vertices[U1] = vertices[U2];
+			vertices[U2] = vertices[U3];
+			vertices[U3] = vertices[U4];
+			vertices[U4] = temp;
+		}
 	}
 
 	public void setScale (float scaleXY) {
@@ -465,18 +381,7 @@ public class Sprite {
 	}
 
 	public void draw (SpriteBatch spriteBatch) {
-		spriteBatch.draw(texture, getVertices(), 0, 20);
-	}
-
-	/**
-	 * Sets the sprite's texture. The texture region is unaffected.
-	 */
-	public void setTexture (Texture texture) {
-		this.texture = texture;
-	}
-
-	public Texture getTexture () {
-		return texture;
+		spriteBatch.draw(region.texture, getVertices(), 0, SPRITE_SIZE);
 	}
 
 	public float getX () {
@@ -515,35 +420,120 @@ public class Sprite {
 		return scaleY;
 	}
 
-	public float getTextureRegionX () {
-		return vertices[U1];
+	public TextureRegion getTextureRegion () {
+		return region;
 	}
 
-	public float getTextureRegionY () {
-		return vertices[V2];
-	}
-
-	public float getTextureRegionWidth () {
-		return vertices[U3] - vertices[U1];
-	}
-
-	public float getTextureRegionHeight () {
-		return vertices[V2] - vertices[V1];
+	public Texture getTexture () {
+		return region.texture;
 	}
 
 	/**
-	 * Returns the color for this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
+	 * Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
 	 * {@link #setColor(float, float, float, float)} must be used.
 	 */
 	public Color getColor () {
 		float floatBits = vertices[C1];
-		int intBits = Float.isNaN(floatBits) ? -1 : Float.floatToIntBits(vertices[C1]);
+		int intBits = Float.floatToRawIntBits(vertices[C1]);
 		Color color = this.color;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;
 		color.b = ((intBits >>> 16) & 0xff) / 255f;
 		color.a = ((intBits >>> 24) & 0xff) / 255f;
 		return color;
+	}
+
+	class SpriteTextureRegion extends TextureRegion {
+		public void set (float u, float v, float u2, float v2) {
+			float[] vertices = Sprite.this.vertices;
+			vertices[U1] = u;
+			vertices[V1] = v2;
+
+			vertices[U2] = u;
+			vertices[V2] = v;
+
+			vertices[U3] = u2;
+			vertices[V3] = v;
+
+			vertices[U4] = u2;
+			vertices[V4] = v2;
+		}
+
+		public void setU (float u) {
+			vertices[U1] = u;
+			vertices[U2] = u;
+		}
+
+		public void setV (float v) {
+			vertices[V2] = v;
+			vertices[V3] = v;
+		}
+
+		public void setU2 (float u2) {
+			vertices[U3] = u2;
+			vertices[U4] = u2;
+		}
+
+		public void setV2 (float v2) {
+			vertices[V1] = v2;
+			vertices[V4] = v2;
+		}
+
+		public float getU () {
+			return vertices[U1];
+		}
+
+		public float getV () {
+			return vertices[V2];
+		}
+
+		public float getU2 () {
+			return vertices[U3];
+		}
+
+		public float getV2 () {
+			return vertices[V1];
+		}
+
+		public void flip (boolean x, boolean y) {
+			float[] vertices = Sprite.this.vertices;
+			if (x) {
+				float u = vertices[U1];
+				float u2 = vertices[U3];
+				vertices[U1] = u2;
+				vertices[U2] = u2;
+				vertices[U3] = u;
+				vertices[U4] = u;
+			}
+			if (y) {
+				float v = vertices[V2];
+				float v2 = vertices[V1];
+				vertices[V1] = v;
+				vertices[V2] = v2;
+				vertices[V3] = v2;
+				vertices[V4] = v;
+			}
+		}
+
+		public void scroll (float xAmount, float yAmount) {
+			float[] vertices = Sprite.this.vertices;
+			if (xAmount != 0) {
+				float u = (vertices[U1] + xAmount) % 1;
+				float u2 = u + width / texture.getWidth();
+				vertices[U1] = u;
+				vertices[U2] = u;
+				vertices[U3] = u2;
+				vertices[U4] = u2;
+			}
+			if (yAmount != 0) {
+				float v = (vertices[V2] + yAmount) % 1;
+				float v2 = v + height / texture.getHeight();
+				vertices[V1] = v2;
+				vertices[V2] = v;
+				vertices[V3] = v;
+				vertices[V4] = v2;
+			}
+		}
 	}
 
 	static private final int X1 = 0;

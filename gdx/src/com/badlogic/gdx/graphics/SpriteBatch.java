@@ -312,7 +312,7 @@ public class SpriteBatch {
 	public void end() {
 		if (!drawing)
 			throw new IllegalStateException(
-					"you have to call SpriteBatch.begin() first");
+					"SpriteBatch.begin must be called before end.");
 		if (idx > 0)
 			renderMesh();
 		lastTexture = null;
@@ -389,7 +389,7 @@ public class SpriteBatch {
 			int srcHeight, Color tint, boolean flipX, boolean flipY) {
 		if (!drawing)
 			throw new IllegalStateException(
-					"you have to call SpriteBatch.begin() first");
+					"SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
 			renderMesh();
@@ -555,7 +555,7 @@ public class SpriteBatch {
 			Color tint, boolean flipX, boolean flipY) {
 		if (!drawing)
 			throw new IllegalStateException(
-					"you have to call SpriteBatch.begin() first");
+					"SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
 			renderMesh();
@@ -638,7 +638,7 @@ public class SpriteBatch {
 			int srcWidth, int srcHeight, Color tint) {
 		if (!drawing)
 			throw new IllegalStateException(
-					"you have to call SpriteBatch.begin() first");
+					"SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
 			renderMesh();
@@ -694,18 +694,18 @@ public class SpriteBatch {
 	 *            the x-coordinate in screen space
 	 * @param y
 	 *            the y-coordinate in screen space
-	 * @param srcWidth
-	 *            the source with in texels
-	 * @param srcHeight
-	 *            the source height in texels
+	 * @param width
+	 *            the width in pixels
+	 * @param height
+	 *            the height in pixels
 	 * @param color
 	 *            the tint Color
 	 */
-	public void draw(Texture texture, float x, float y, int srcWidth,
-			int srcHeight, float u, float v, float u2, float v2, float color) {
+	public void draw(Texture texture, float x, float y, float width,
+		float height, float u, float v, float u2, float v2, float color) {
 		if (!drawing)
 			throw new IllegalStateException(
-					"you have to call SpriteBatch.begin() first");
+					"SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
 			renderMesh();
@@ -715,8 +715,8 @@ public class SpriteBatch {
 		} else if (idx == vertices.length)
 			renderMesh();
 
-		final float fx2 = x + srcWidth;
-		final float fy2 = y + srcHeight;
+		final float fx2 = x + width;
+		final float fy2 = y + height;
 
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -747,7 +747,7 @@ public class SpriteBatch {
 			int length) {
 		if (!drawing)
 			throw new IllegalStateException(
-					"you have to call SpriteBatch.begin() first");
+					"SpriteBatch.begin must be called before draw.");
 
 		if (texture != lastTexture) {
 			renderMesh();
@@ -759,6 +759,173 @@ public class SpriteBatch {
 
 		System.arraycopy(spriteVertices, offset, vertices, idx, length);
 		idx += length;
+	}
+
+	public void draw (TextureRegion region, float x, float y, Color tint) {
+		draw(region, x, y, region.getWidth(), region.getHeight(), tint);
+	}
+
+	public void draw (TextureRegion region, float x, float y, float width, float height, Color tint) {
+		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+		Texture texture = region.texture;
+		if (texture != lastTexture) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1f / texture.getWidth();
+			invTexHeight = 1f / texture.getHeight();
+		} else if (idx == vertices.length) //
+			renderMesh();
+
+		final float fx2 = x + width;
+		final float fy2 = y + height;
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
+		final float color = tint.toFloatBits();
+
+		vertices[idx++] = x;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v;
+
+		vertices[idx++] = x;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v;
+	}
+
+	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
+		float scaleX, float scaleY, float rotation, Color tint) {
+		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+		Texture texture = region.texture;
+		if (texture != lastTexture) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1f / texture.getWidth();
+			invTexHeight = 1f / texture.getHeight();
+		} else if (idx == vertices.length) //
+			renderMesh();
+
+		// bottom left and top right corner points relative to origin
+		final float worldOriginX = x + originX;
+		final float worldOriginY = y + originY;
+		float fx = -originX;
+		float fy = -originY;
+		float fx2 = width - originX;
+		float fy2 = height - originY;
+
+		// scale
+		if (scaleX != 1 || scaleY != 1) {
+			fx *= scaleX;
+			fy *= scaleY;
+			fx2 *= scaleX;
+			fy2 *= scaleY;
+		}
+
+		// construct corner points, start from top left and go counter clockwise
+		final float p1x = fx;
+		final float p1y = fy;
+		final float p2x = fx;
+		final float p2y = fy2;
+		final float p3x = fx2;
+		final float p3y = fy2;
+		final float p4x = fx2;
+		final float p4y = fy;
+
+		float x1;
+		float y1;
+		float x2;
+		float y2;
+		float x3;
+		float y3;
+		float x4;
+		float y4;
+
+		// rotate
+		if (rotation != 0) {
+			final float cos = MathUtils.cosDeg(rotation);
+			final float sin = MathUtils.sinDeg(rotation);
+
+			x1 = cos * p1x - sin * p1y;
+			y1 = sin * p1x + cos * p1y;
+
+			x2 = cos * p2x - sin * p2y;
+			y2 = sin * p2x + cos * p2y;
+
+			x3 = cos * p3x - sin * p3y;
+			y3 = sin * p3x + cos * p3y;
+
+			x4 = x1 + (x3 - x2);
+			y4 = y3 - (y2 - y1);
+		} else {
+			x1 = p1x;
+			y1 = p1y;
+
+			x2 = p2x;
+			y2 = p2y;
+
+			x3 = p3x;
+			y3 = p3y;
+
+			x4 = p4x;
+			y4 = p4y;
+		}
+
+		x1 += worldOriginX;
+		y1 += worldOriginY;
+		x2 += worldOriginX;
+		y2 += worldOriginY;
+		x3 += worldOriginX;
+		y3 += worldOriginY;
+		x4 += worldOriginX;
+		y4 += worldOriginY;
+
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
+		final float color = tint.toFloatBits();
+
+		vertices[idx++] = x1;
+		vertices[idx++] = y1;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v;
+
+		vertices[idx++] = x2;
+		vertices[idx++] = y2;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = x3;
+		vertices[idx++] = y3;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = x4;
+		vertices[idx++] = y4;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v;
 	}
 
 	/**

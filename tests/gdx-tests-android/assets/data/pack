@@ -4,22 +4,29 @@ format: RGBA8888
 filter: Linear,Linear
 repeat: none
 badlogicslice
-  rotate: true
+  rotate: false
   xy: 0, 0
-  size: 41, 300
-  orig: 41, 300
+  size: 41, 236
+  orig: 41, 236
   offset: 0, 0
   index: 0
 particle-star
   rotate: false
-  xy: 0, 41
+  xy: 42, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: 0
+font
+  rotate: false
+  xy: 107, 0
+  size: 252, 53
+  orig: 256, 256
+  offset: 0, 0
+  index: 0
 badlogicsmall
   rotate: false
-  xy: 300, 0
+  xy: 42, 65
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

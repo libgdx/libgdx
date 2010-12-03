@@ -22,7 +22,7 @@ public class Image extends Actor {
 
 	public Image (String name) {
 		super(name);
-		this.region = new TextureRegion(null, 0, 0, 0, 0);
+		this.region = new TextureRegion();
 	}
 
 	public Image (String name, Texture texture) {
@@ -31,25 +31,24 @@ public class Image extends Actor {
 		this.originY = texture.getHeight() / 2.0f;
 		this.width = texture.getWidth();
 		this.height = texture.getHeight();
-		this.region = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
+		this.region = new TextureRegion(texture);
 	}
 
 	public Image (String name, TextureRegion region) {
 		super(name);
-		this.originX = region.width / 2.0f;
-		this.originY = region.height / 2.0f;
-		this.width = region.width;
-		this.height = region.height;
-		this.region = new TextureRegion(region.texture, region.x, region.y, region.width, region.height);
+		width = region.getWidth();
+		height = region.getHeight();
+		originX = width / 2.0f;
+		originY = height / 2.0f;
+		this.region = new TextureRegion(region);
 	}
 
 	@Override protected void render (SpriteBatch batch) {
-		if (region.texture != null) {
+		if (region.getTexture() != null) {
 			if (scaleX == 0 && scaleY == 0 && rotation == 0)
-				batch.draw(region.texture, x, y, width, height, region.x, region.y, region.width, region.height, color, false, false);
+				batch.draw(region, x, y, width, height, color);
 			else
-				batch.draw(region.texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, region.x, region.y,
-					region.width, region.height, color, false, false);
+				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, color);
 		}
 	}
 

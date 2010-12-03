@@ -313,4 +313,12 @@ final class AndroidTexture implements Texture {
 		textures.clear();
 		lastTexture = null;
 	}
+	
+	@Override public void setWrap (TextureWrap x, TextureWrap y) {
+		bind();
+		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x == TextureWrap.Repeat ? GL10.GL_REPEAT
+			: GL10.GL_CLAMP_TO_EDGE);
+		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y == TextureWrap.Repeat ? GL10.GL_REPEAT
+			: GL10.GL_CLAMP_TO_EDGE);
+	}
 }

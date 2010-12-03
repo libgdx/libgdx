@@ -50,7 +50,7 @@ class GdxImage implements Image, SupportsDrawRepeat {
 		this.tintColor = color == null ? Color.WHITE : color;
 		this.tile = tile;
 		sprite = new Sprite(texture, srcX, srcY, srcWidth, srcHeight);
-		sprite.flip(false, true);
+		sprite.getTextureRegion().flip(false, true);
 	}
 
 	public GdxImage (GdxImage image, Color tintColor) {

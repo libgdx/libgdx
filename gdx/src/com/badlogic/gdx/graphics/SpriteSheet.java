@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 import java.io.BufferedReader;
@@ -207,6 +208,8 @@ public class SpriteSheet {
 		tuple[1] = line.substring(comma + 1).trim();
 	}
 
+	// BOZO - Use texture regions.
+
 	/**
 	 * A sprite that provides additional information about the packed image it represents. A PackedSprite's position is relative to
 	 * the bottom left of the original image, before whitespace was removed for packing.
@@ -218,7 +221,7 @@ public class SpriteSheet {
 		int originalWidth, originalHeight;
 
 		PackedSprite (Sprite image, int textureLeft, int textureTop, int textureRight, int textureBottom) {
-			super(image, textureLeft, textureTop, textureRight, textureBottom);
+			super(image.getTextureRegion(), textureLeft, textureTop, textureRight, textureBottom);
 		}
 
 		public void setPosition (float x, float y) {
@@ -242,7 +245,7 @@ public class SpriteSheet {
 		}
 
 		public void flip (boolean x, boolean y) {
-			super.flip(x, y);
+			getTextureRegion().flip(x, y);
 			if (x) {
 				float xPosition = getX();
 				offsetX = (int)(originalWidth - offsetX - getWidth());

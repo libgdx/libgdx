@@ -42,7 +42,7 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 				cache.add(sprite);
 			}
 			cache.endCache();
-			sprite.rotate(90);
+			sprite.rotate90(true);
 		}
 	}
 

@@ -39,8 +39,8 @@ public class Button extends Actor {
 	 */
 	public Button (String name) {
 		super(name);
-		this.pressedRegion = new TextureRegion(null, 0, 0, 0, 0);
-		this.unpressedRegion = new TextureRegion(null, 0, 0, 0, 0);
+		this.pressedRegion = new TextureRegion();
+		this.unpressedRegion = new TextureRegion();
 	}
 
 	/**
@@ -52,12 +52,12 @@ public class Button extends Actor {
 	 */
 	public Button (String name, Texture texture) {
 		super(name);
-		this.originX = texture.getWidth() / 2.0f;
-		this.originY = texture.getHeight() / 2.0f;
-		this.width = texture.getWidth();
-		this.height = texture.getHeight();
-		this.pressedRegion = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
-		this.unpressedRegion = new TextureRegion(texture, 0, 0, texture.getWidth(), texture.getHeight());
+		originX = texture.getWidth() / 2.0f;
+		originY = texture.getHeight() / 2.0f;
+		width = texture.getWidth();
+		height = texture.getHeight();
+		pressedRegion = new TextureRegion(texture);
+		unpressedRegion = new TextureRegion(texture);
 	}
 
 	public Button (String name, TextureRegion region) {
@@ -66,26 +66,22 @@ public class Button extends Actor {
 
 	public Button (String name, TextureRegion unpressedRegion, TextureRegion pressedRegion) {
 		super(name);
-		this.originX = unpressedRegion.width / 2.0f;
-		this.originY = unpressedRegion.height / 2.0f;
-		this.width = unpressedRegion.width;
-		this.height = unpressedRegion.height;
-		this.unpressedRegion = new TextureRegion(unpressedRegion.texture, unpressedRegion.x, unpressedRegion.y,
-			unpressedRegion.width, unpressedRegion.height);
-		this.pressedRegion = new TextureRegion(pressedRegion.texture, pressedRegion.x, pressedRegion.y, pressedRegion.width,
-			pressedRegion.height);
-
+		width = unpressedRegion.getWidth();
+		height = unpressedRegion.getHeight();
+		originX = width / 2.0f;
+		originY = height / 2.0f;
+		this.unpressedRegion = new TextureRegion(unpressedRegion);
+		this.pressedRegion = new TextureRegion(pressedRegion);
 	}
 
 	@Override protected void render (SpriteBatch batch) {
 		TextureRegion region = pressed ? pressedRegion : unpressedRegion;
 
-		if (region.texture != null) {
+		if (region.getTexture() != null) {
 			if (scaleX == 0 && scaleY == 0 && rotation == 0)
-				batch.draw(region.texture, x, y, width, height, region.x, region.y, region.width, region.height, color, false, false);
+				batch.draw(region, x, y, width, height, color);
 			else
-				batch.draw(region.texture, x, y, originX, originY, width, height, scaleX, scaleY, rotation, region.x, region.y,
-					region.width, region.height, color, false, false);
+				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, color);
 		}
 	}
 

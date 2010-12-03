@@ -14,6 +14,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteSheet;
 import com.badlogic.gdx.graphics.Sprite;
@@ -24,6 +25,7 @@ public class SpriteSheetTest extends GdxTest {
 	SpriteBatch batch;
 	Sprite badlogic, badlogicSmall, star;
 	SpriteSheet spriteSheet;
+	BitmapFont font;
 
 	public void create () {
 		batch = new SpriteBatch();
@@ -37,6 +39,8 @@ public class SpriteSheetTest extends GdxTest {
 		badlogicSmall.setPosition(10, 10);
 		star.setPosition(10, 70);
 
+		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), spriteSheet.get("font").getTextureRegion(), false);
+
 		Gdx.gl.glClearColor(0, 1, 0, 1);
 	}
 
@@ -46,6 +50,7 @@ public class SpriteSheetTest extends GdxTest {
 		badlogicSmall.draw(batch);
 		badlogic.draw(batch);
 		star.draw(batch);
+		font.draw(batch, "This font was packed!", 26, 65);
 		batch.end();
 	}
 

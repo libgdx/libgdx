@@ -33,50 +33,47 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class PixmapBlendingTest extends GdxTest {
-   private SpriteBatch spriteBatch;
-   private Texture text;
-   private Sprite logoSprite, test3, test4;
-   private Pixmap pixD, pixS1, pixS2;
-   
-   InputProcessor inputProcessor;
-   
-   @Override
-   public void create () {
-      if (spriteBatch != null) return;
-      spriteBatch = new SpriteBatch();
+	private SpriteBatch spriteBatch;
+	private Texture text;
+	private Sprite logoSprite, test3, test4;
+	private Pixmap pixD, pixS1, pixS2;
 
-      Matrix4 transform = new Matrix4();      
-      transform.setToTranslation(0, Gdx.graphics.getHeight(), 0);
-      transform.mul(new Matrix4().setToScaling(1,-1,1));
-      spriteBatch.setTransformMatrix(transform);      
+	InputProcessor inputProcessor;
 
-      
-      pixS1 = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/test4.png", Files.FileType.Internal));
-      pixS2 = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/test3.png", Files.FileType.Internal));
-      pixD = Gdx.graphics.newPixmap(64, 128,Pixmap.Format.RGBA8888);
-                  
-      pixD.drawPixmap(pixS1, 0, 0, 0, 0, 76, 76);   
-      pixD.drawPixmap(pixS2, 0, 0, 0, 0, 76, 76);
-      
-      logoSprite = new Sprite(Gdx.graphics.newUnmanagedTexture(pixD,
-            TextureFilter.Nearest, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
-         logoSprite.flip(false, true);                    
-      }
+	@Override public void create () {
+		if (spriteBatch != null) return;
+		spriteBatch = new SpriteBatch();
 
-   @Override
-   public void render () {
-      
-      GL10 gl = Gdx.graphics.getGL10();
-      gl.glClearColor(0,1,0,1);
-      gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-            
-      spriteBatch.begin();            
-      logoSprite.draw(spriteBatch);
-      spriteBatch.end();
-      
-   }
+		Matrix4 transform = new Matrix4();
+		transform.setToTranslation(0, Gdx.graphics.getHeight(), 0);
+		transform.mul(new Matrix4().setToScaling(1, -1, 1));
+		spriteBatch.setTransformMatrix(transform);
 
-public boolean needsGL20 () {
-   return false;
-}
+		pixS1 = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/test4.png", Files.FileType.Internal));
+		pixS2 = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/test3.png", Files.FileType.Internal));
+		pixD = Gdx.graphics.newPixmap(64, 128, Pixmap.Format.RGBA8888);
+
+		pixD.drawPixmap(pixS1, 0, 0, 0, 0, 76, 76);
+		pixD.drawPixmap(pixS2, 0, 0, 0, 0, 76, 76);
+
+		logoSprite = new Sprite(Gdx.graphics.newUnmanagedTexture(pixD, TextureFilter.Nearest, TextureFilter.Linear,
+			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+		logoSprite.getTextureRegion().flip(false, true);
+	}
+
+	@Override public void render () {
+
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glClearColor(0, 1, 0, 1);
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		spriteBatch.begin();
+		logoSprite.draw(spriteBatch);
+		spriteBatch.end();
+
+	}
+
+	public boolean needsGL20 () {
+		return false;
+	}
 }
