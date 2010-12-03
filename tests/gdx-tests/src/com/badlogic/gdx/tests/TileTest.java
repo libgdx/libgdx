@@ -38,7 +38,7 @@ public class TileTest extends GdxTest {
 	public void create() {
 		cam = new OrthographicCamera();
 		cam.setViewport(480, 320);
-		cam.getPosition().set(WIDTH*32/2, HEIGHT/2,0);		
+		cam.getPosition().set(WIDTH*32/2, HEIGHT*32/2,0);		
 		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/tiles.png"), TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		
 		for(int i = 0; i < LAYERS; i++) {
