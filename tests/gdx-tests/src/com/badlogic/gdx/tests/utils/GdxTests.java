@@ -25,7 +25,6 @@ import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.FilesTest;
-import com.badlogic.gdx.tests.FillrateTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
@@ -39,7 +38,6 @@ import com.badlogic.gdx.tests.ManualBindTest;
 import com.badlogic.gdx.tests.MeshMultitextureTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MeshTest;
-import com.badlogic.gdx.tests.Mpg123Test;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
@@ -59,6 +57,7 @@ import com.badlogic.gdx.tests.SpriteSheetTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
+import com.badlogic.gdx.tests.TileTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VBOVATest;
 import com.badlogic.gdx.tests.VertexArrayClassTest;
@@ -66,7 +65,6 @@ import com.badlogic.gdx.tests.VertexArrayTest;
 import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.VertexBufferObjectTest;
-import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.WaterRipples;
 
 /**
@@ -122,6 +120,7 @@ public class GdxTests
 		StageTest.class,
 		TerrainTest.class,		
 		TextureRenderTest.class,
+		TileTest.class,
 		UITest.class,
 		VBOVATest.class,
 		VertexArrayTest.class,		
