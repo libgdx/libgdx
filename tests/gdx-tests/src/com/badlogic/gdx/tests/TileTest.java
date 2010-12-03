@@ -12,6 +12,8 @@
  */
 package com.badlogic.gdx.tests;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -41,13 +43,16 @@ public class TileTest extends GdxTest {
 		cam.getPosition().set(WIDTH*32/2, HEIGHT*32/2,0);		
 		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/tiles.png"), TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		
+		Random rand = new Random();
 		for(int i = 0; i < LAYERS; i++) {
 			caches[i] = new SpriteCache();
 			SpriteCache cache = caches[i];
 			cache.beginCache();
 			for(int y = 0; y < HEIGHT; y++) {
 				for(int x = 0; x < WIDTH; x++) {
-					cache.add(texture, x << 5, y << 5, 1, 1, 32, 32, Color.WHITE);
+					int tileX = rand.nextInt(5);
+					int tileY = rand.nextInt(5);
+					cache.add(texture, x << 5, y << 5, 1 + tileX * 33, 1 + tileY * 33, 32, 32, Color.WHITE);
 				}
 			}	
 			layers[i] = cache.endCache();
