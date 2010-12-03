@@ -23,7 +23,7 @@ import com.sun.opengl.impl.NativeLibLoader;
 
 public class JoglNativesLoader {
 	static boolean nativesLoaded = false;
-	
+
 	/**
 	 * loads the necessary libraries depending on the operating system
 	 */
@@ -35,8 +35,17 @@ public class JoglNativesLoader {
 		com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
 		// By wkien: On some systems (read: mine) jogl_awt would not find its
 		// dependency jawt if not loaded before
-		if(System.getProperty("os.name").contains("Windows"))
-			System.loadLibrary("jawt");
+		if (System.getProperty("os.name", "").contains("Windows")
+				&& !System.getProperty("libgdx.nojawtpreloading", "false")
+						.contains("true")) {
+			try {
+				System.loadLibrary("jawt");
+			} catch (Exception ex) {
+				System.err
+						.println("WARNING: Unable to load native jawt library: '"
+								+ ex.getMessage() + "'");
+			}
+		}
 		loadLibrary("gluegen-rt");
 		loadLibrary("jogl_awt");
 		loadLibrary("jogl");
