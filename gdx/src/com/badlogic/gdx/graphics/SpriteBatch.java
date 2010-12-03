@@ -966,8 +966,7 @@ public class SpriteBatch {
 			mesh.render(GL10.GL_TRIANGLES, 0, idx / 20 * 6);
 		}
 		int spritesInBatch = idx / 20 / 6;
-		if(spritesInBatch>maxSpritesInBatch)
-			spritesInBatch = maxSpritesInBatch;
+		if (spritesInBatch > maxSpritesInBatch) spritesInBatch = maxSpritesInBatch;
 		idx = 0;
 		currBufferIdx++;
 		if(currBufferIdx == buffers.length) {
