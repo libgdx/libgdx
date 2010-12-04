@@ -25,9 +25,9 @@ gdx-helloworld
     -> gdx-backend-android.jar
     -> gdx-backend-jogl.jar
     -> gdx-backend-lwjgl.jar
+    -> gdx-natives.jar
     -> gdx-twl.jar
-    -> gdx-sources.jar   
-	-> gdx-natives.jar
+    -> gdx-sources.jar   	
     -> README
     
 Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
