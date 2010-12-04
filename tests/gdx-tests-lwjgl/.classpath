@@ -9,5 +9,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
+	<classpathentry kind="lib" path="/dependencies/gdx-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
