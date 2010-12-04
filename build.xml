@@ -143,9 +143,18 @@
 		</javadoc>
 	</target>
 	
+	<target name="packnatives" depends="init">
+	<jar destfile="${stable}/gdx-natives.jar">
+		<fileset dir="gdx/windows" includes="gdx.dll"/>
+		<fileset dir="gdx/linux" includes="libgdx.so"/>
+		<fileset dir="gdx/linux64" includes="libgdx-64.so"/>
+		<fileset dir="gdx/mac" includes="libgdx.dylib"/>
+	</jar>
+	</target>
+	
 	<!-- builds the distribution directory, does not include the desktop libs 
 		for some reason excludes don't work so i have to delete the ndk directory first... -->
-	<target name="dist" depends="compile,compile-native,docs">
+	<target name="dist" depends="compile,compile-native,docs,packnatives">
 		<delete dir="gdx/bin/ndk"/>
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin"/>
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src"/>
@@ -174,11 +183,7 @@
 			<zipfileset src="extensions/twl/gdx-twl/libs/twl-android.jar" />
 			<zipfileset src="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
 		</jar>
-		
-		<copy tofile="${stable}/gdx.dll" file="gdx/windows/gdx.dll" failonerror="false"/>
-		<copy tofile="${stable}/libgdx.so" file="gdx/linux/libgdx.so" failonerror="false"/>
-		<copy tofile="${stable}/libgdx-64.so" file="gdx/linux64/libgdx-64.so" failonerror="false"/>		
-		<copy tofile="${stable}/libgdx.dylib" file="gdx/mac/libgdx.dylib" failonerror="false"/>
+				
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so"/>
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so"/>
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so"/>		
