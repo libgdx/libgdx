@@ -12,6 +12,8 @@
  */
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.utils.GdxNativesLoader;
+
 /**
  * The version of libgdx
  * 
@@ -23,6 +25,9 @@ public class Version {
 	public static String VERSION = "0.81";
 
 	public static void loadLibrary () {
+		if(GdxNativesLoader.loadLibraries())
+			return;
+		
 		String os = System.getProperty("os.name");
 		String arch = System.getProperty("os.arch");
 		
