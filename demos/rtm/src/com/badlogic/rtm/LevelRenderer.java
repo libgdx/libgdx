@@ -109,8 +109,8 @@ public class LevelRenderer implements ApplicationListener {
 				int type = Integer.parseInt(reader.readLine());
 				String textureId = reader.readLine();
 				TextureRegion region = atlas.getRegion(textureId);
-				float u = region.x / 256.0f;
-				float v = region.y / 256.0f;
+				float u = region.getX() / 256.0f;
+				float v = region.getY() / 256.0f;
 				
 				floorVertices[j-2] = u + uSize;
 				floorVertices[j-1] = v;
@@ -148,8 +148,8 @@ public class LevelRenderer implements ApplicationListener {
 					int type = Integer.parseInt(reader.readLine());
 					String textureId = reader.readLine();
 					TextureRegion region = atlas.getRegion(textureId);
-					float u = region.x / 256.0f;
-					float v = region.y / 256.0f;
+					float u = region.getX() / 256.0f;
+					float v = region.getY() / 256.0f;
 					
 					wallVertices[j-2] = u + uSize;
 					wallVertices[j-1] = v;
@@ -212,7 +212,8 @@ public class LevelRenderer implements ApplicationListener {
 		wallMesh.render(GL10.GL_TRIANGLES);
 		
 		batch.begin();
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", delta:" + Gdx.graphics.getDeltaTime(), 10, 10);
+		batch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", delta:" + Gdx.graphics.getDeltaTime(), 10, 25);
 		batch.end();
 		
 		processInput();
