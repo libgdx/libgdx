@@ -145,7 +145,7 @@ public class SpriteBatch {
 	 */
 	public SpriteBatch(int size) {
 		this.buffers = new Mesh[1];
-		this.buffers[0] = new Mesh(false, size * 4, size * 6, new VertexAttribute(
+		this.buffers[0] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(
 				Usage.Position, 2, "a_position"), new VertexAttribute(
 				Usage.ColorPacked, 4, "a_color"), new VertexAttribute(
 				Usage.TextureCoordinates, 2, "a_texCoords"));		
