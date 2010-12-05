@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.imagepacker;
 
 import java.awt.Color;
@@ -26,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +36,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.utils.MathUtils;
 
-public class SpriteSheetPacker {
+public class TexturePacker {
 	static Pattern numberedImagePattern = Pattern.compile(".*?(\\d+)");
 
 	ArrayList<Image> images = new ArrayList();
@@ -49,7 +49,7 @@ public class SpriteSheetPacker {
 	int maxWidth, maxHeight;
 	final Settings settings;
 
-	public SpriteSheetPacker (Settings settings, File inputDir, Filter filter, File outputDir, File packFile) throws IOException {
+	public TexturePacker (Settings settings, File inputDir, Filter filter, File outputDir, File packFile) throws IOException {
 		this.settings = settings;
 		this.inputDir = inputDir;
 		this.filter = filter;
@@ -569,7 +569,7 @@ public class SpriteSheetPacker {
 		public boolean pot = true;
 		public int padding = 0;
 		public boolean debug = false;
-		public boolean rotate = true;
+		public boolean rotate = false;
 		public int minWidth = 64;
 		public int minHeight = 64;
 		public int maxWidth = 1024;
@@ -602,22 +602,22 @@ public class SpriteSheetPacker {
 					if ((min == null && mag != null) || (min != null && mag == null)) continue;
 
 					Filter filter = new Filter(Direction.none, format, -1, -1, min, mag);
-					new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+					new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 
 					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
 						filter = new Filter(Direction.x, format, width, -1, min, mag);
-						new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+						new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 					}
 
 					for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
 						filter = new Filter(Direction.y, format, -1, height, min, mag);
-						new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+						new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 					}
 
 					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
 						for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
 							filter = new Filter(Direction.xy, format, width, height, min, mag);
-							new SpriteSheetPacker(settings, inputDir, filter, outputDir, packFile);
+							new TexturePacker(settings, inputDir, filter, outputDir, packFile);
 						}
 					}
 				}
@@ -649,13 +649,27 @@ public class SpriteSheetPacker {
 
 	public static void main (String[] args) throws Exception {
 		String input, output;
-		if (args.length != 2) {
-			System.out.println("Usage: INPUTDIR OUTPUTDIR");
-			return;
-		}
-		input = args[0];
-		output = args[1];
+		// if (args.length != 2) {
+		// System.out.println("Usage: INPUTDIR OUTPUTDIR");
+		// return;
+		// }
+		// input = args[0];
+		// output = args[1];
 		Settings settings = new Settings();
+		settings.padding = 1;
+		input = "C:/temp/pack-in";
+		output = "C:/temp/pack-out";
+		process(settings, input, output);
+
+		if (true) return;
+
+		settings = new Settings();
+		settings.padding = 1;
+		input = "C:/Dev/arcanetactics/arcanetactics/misc/unpacked/game";
+		output = "C:/Dev/arcanetactics/arcanetactics/assets/game";
+		process(settings, input, output);
+		input = "C:/Dev/arcanetactics/arcanetactics/misc/unpacked/mainmenu";
+		output = "C:/Dev/arcanetactics/arcanetactics/assets/mainmenu";
 		process(settings, input, output);
 	}
 }

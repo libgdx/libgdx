@@ -76,6 +76,7 @@ public class Sprite {
 		setOrigin(width / 2, height / 2);
 	}
 
+	// Note the region is copied.
 	public Sprite (TextureRegion region) {
 		this.region.texture = region.texture;
 		this.region.set(region);

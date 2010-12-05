@@ -76,12 +76,12 @@ public class Button extends Actor {
 
 	@Override protected void render (SpriteBatch batch) {
 		TextureRegion region = pressed ? pressedRegion : unpressedRegion;
-
+		batch.setColor(color);
 		if (region.getTexture() != null) {
 			if (scaleX == 0 && scaleY == 0 && rotation == 0)
-				batch.draw(region, x, y, width, height, color);
+				batch.draw(region, x, y, width, height);
 			else
-				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation, color);
+				batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 		}
 	}
 

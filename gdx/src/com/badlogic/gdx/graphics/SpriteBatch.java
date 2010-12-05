@@ -115,6 +115,8 @@ public class SpriteBatch {
 	/** whether blending is enabled or not **/
 	protected boolean blendingDisabled = false;
 
+	private float color = Color.WHITE.toFloatBits();
+
 	/**
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an
 	 * orthographic projection with y-axis point upwards, x-axis point to the
@@ -334,6 +336,29 @@ public class SpriteBatch {
 	}
 
 	/**
+	 * Sets the color used to tint images when they are added to the SpriteBatch. Default is {@link Color#WHITE}.
+	 */
+	public void setColor (Color tint) {
+		color = tint.toFloatBits();
+	}
+
+	/**
+	 * @see #setColor(Color)
+	 */
+	public void setColor (float r, float g, float b, float a) {
+		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
+		color = Float.intBitsToFloat(intBits);
+	}
+	
+	/**
+	 * @see #setColor(Color)
+	 * @see Color#toFloatBits()
+	 */
+	public void setColor (float color) {
+		this.color = color;
+	}
+
+	/**
 	 * Draws a rectangle with the top left corner at x,y having the given width
 	 * and height in pixels. The rectangle is offset by originX, originY
 	 * relative to the origin. Scale specifies the scaling factor by which the
@@ -376,8 +401,6 @@ public class SpriteBatch {
 	 *            the source with in texels
 	 * @param srcHeight
 	 *            the source height in texels
-	 * @param tint
-	 *            the tint Color
 	 * @param flipX
 	 *            whether to flip the sprite horizontally
 	 * @param flipY
@@ -386,7 +409,7 @@ public class SpriteBatch {
 	public void draw(Texture texture, float x, float y, float originX,
 			float originY, float width, float height, float scaleX,
 			float scaleY, float rotation, int srcX, int srcY, int srcWidth,
-			int srcHeight, Color tint, boolean flipX, boolean flipY) {
+			int srcHeight, boolean flipX, boolean flipY) {
 		if (!drawing)
 			throw new IllegalStateException(
 					"SpriteBatch.begin must be called before draw.");
@@ -490,8 +513,6 @@ public class SpriteBatch {
 			v2 = tmp;
 		}
 
-		final float color = tint.toFloatBits();
-
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
@@ -521,7 +542,7 @@ public class SpriteBatch {
 	 * Draws a rectangle with the top left corner at x,y having the given width
 	 * and height in pixels. The portion of the {@link Texture} given by srcX,
 	 * srcY and srcWidth, srcHeight is used. These coordinates and sizes are
-	 * given in texels. The rectangle will have the given tint {@link Color}.
+	 * given in texels. 
 	 * FlipX and flipY specify whether the texture portion should be fliped
 	 * horizontally or vertically.
 	 * 
@@ -543,16 +564,13 @@ public class SpriteBatch {
 	 *            the source with in texels
 	 * @param srcHeight
 	 *            the source height in texels
-	 * @param tint
-	 *            the tint Color
 	 * @param flipX
 	 *            whether to flip the sprite horizontally
 	 * @param flipY
 	 *            whether to flip the sprite vertically
 	 */
 	public void draw(Texture texture, float x, float y, float width,
-			float height, int srcX, int srcY, int srcWidth, int srcHeight,
-			Color tint, boolean flipX, boolean flipY) {
+			float height, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
 		if (!drawing)
 			throw new IllegalStateException(
 					"SpriteBatch.begin must be called before draw.");
@@ -584,8 +602,6 @@ public class SpriteBatch {
 			v2 = tmp;
 		}
 
-		final float color = tint.toFloatBits();
-
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -615,7 +631,7 @@ public class SpriteBatch {
 	 * Draws a rectangle with the top left corner at x,y having the given width
 	 * and height in pixels. The portion of the {@link Texture} given by srcX,
 	 * srcY and srcWidth, srcHeight are used. These coordinates and sizes are
-	 * given in texels. The rectangle will have the given tint {@link Color}.
+	 * given in texels.
 	 * 
 	 * @param texture
 	 *            the Texture
@@ -631,11 +647,9 @@ public class SpriteBatch {
 	 *            the source with in texels
 	 * @param srcHeight
 	 *            the source height in texels
-	 * @param tint
-	 *            the tint Color
 	 */
 	public void draw(Texture texture, float x, float y, int srcX, int srcY,
-			int srcWidth, int srcHeight, Color tint) {
+			int srcWidth, int srcHeight) {
 		if (!drawing)
 			throw new IllegalStateException(
 					"SpriteBatch.begin must be called before draw.");
@@ -654,8 +668,6 @@ public class SpriteBatch {
 		final float v2 = srcY * invTexHeight;
 		final float fx2 = x + srcWidth;
 		final float fy2 = y + srcHeight;
-
-		final float color = tint.toFloatBits();
 
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -698,11 +710,9 @@ public class SpriteBatch {
 	 *            the width in pixels
 	 * @param height
 	 *            the height in pixels
-	 * @param color
-	 *            the tint Color
 	 */
 	public void draw(Texture texture, float x, float y, float width,
-		float height, float u, float v, float u2, float v2, float color) {
+		float height, float u, float v, float u2, float v2) {
 		if (!drawing)
 			throw new IllegalStateException(
 					"SpriteBatch.begin must be called before draw.");
@@ -761,11 +771,11 @@ public class SpriteBatch {
 		idx += length;
 	}
 
-	public void draw (TextureRegion region, float x, float y, Color tint) {
-		draw(region, x, y, region.getWidth(), region.getHeight(), tint);
+	public void draw (TextureRegion region, float x, float y) {
+		draw(region, x, y, region.getWidth(), region.getHeight());
 	}
 
-	public void draw (TextureRegion region, float x, float y, float width, float height, Color tint) {
+	public void draw (TextureRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		Texture texture = region.texture;
@@ -779,11 +789,10 @@ public class SpriteBatch {
 
 		final float fx2 = x + width;
 		final float fy2 = y + height;
-		final float u = region.u;
-		final float v = region.v2;
-		final float u2 = region.u2;
-		final float v2 = region.v;
-		final float color = tint.toFloatBits();
+		final float u = region.getU();
+		final float v = region.getV2();
+		final float u2 = region.getU2();
+		final float v2 = region.getV();
 
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -811,7 +820,7 @@ public class SpriteBatch {
 	}
 
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
-		float scaleX, float scaleY, float rotation, Color tint) {
+		float scaleX, float scaleY, float rotation) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
 		Texture texture = region.texture;
@@ -897,11 +906,10 @@ public class SpriteBatch {
 		x4 += worldOriginX;
 		y4 += worldOriginY;
 
-		final float u = region.u;
-		final float v = region.v2;
-		final float u2 = region.u2;
-		final float v2 = region.v;
-		final float color = tint.toFloatBits();
+		final float u = region.getU();
+		final float v = region.getV2();
+		final float u2 = region.getU2();
+		final float v2 = region.getV();
 
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;

@@ -62,12 +62,13 @@ public class SpriteBatchShaderTest extends GdxTest {
 		int len = coords.length;
 		start = System.nanoTime();
 		for (int i = 0; i < len; i += 2)
-			spriteBatch.draw(texture, coords[i], coords[i + 1], 0, 0, 32, 32, Color.WHITE);
+			spriteBatch.draw(texture, coords[i], coords[i + 1], 0, 0, 32, 32);
 		draw1 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
+		spriteBatch.setColor(col);
 		for (int i = 0; i < coords2.length; i += 2)
-			spriteBatch.draw(texture2, coords2[i], coords2[i + 1], 0, 0, 32, 32, col);
+			spriteBatch.draw(texture2, coords2[i], coords2[i + 1], 0, 0, 32, 32);
 		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();

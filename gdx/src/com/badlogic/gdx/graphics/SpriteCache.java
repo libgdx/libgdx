@@ -566,10 +566,10 @@ public class SpriteCache {
 	public void draw (TextureRegion region, float x, float y, float width, float height, Color tint) {
 		final float fx2 = x + width;
 		final float fy2 = y + height;
-		final float u = region.u;
-		final float v = region.v2;
-		final float u2 = region.u2;
-		final float v2 = region.v;
+		final float u = region.getU();
+		final float v = region.getV2();
+		final float u2 = region.getU2();
+		final float v2 = region.getV();
 		final float color = tint.toFloatBits();
 
 		tempVertices[0] = x;
@@ -696,10 +696,10 @@ public class SpriteCache {
 		x4 += worldOriginX;
 		y4 += worldOriginY;
 
-		final float u = region.u;
-		final float v = region.v2;
-		final float u2 = region.u2;
-		final float v2 = region.v;
+		final float u = region.getU();
+		final float v = region.getV2();
+		final float u2 = region.getU2();
+		final float v2 = region.getV();
 		final float color = tint.toFloatBits();
 
 		tempVertices[0] = x1;

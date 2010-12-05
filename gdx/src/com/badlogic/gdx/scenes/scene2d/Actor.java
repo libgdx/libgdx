@@ -63,7 +63,7 @@ import com.badlogic.gdx.utils.PooledLinkedList;
  * An Actor might render itself when its {@link #render(SpriteBatch)} method is
  * called. The projection and transform matrices are setup so that an Actor can
  * simply call the
- * {@link SpriteBatch#draw(com.badlogic.gdx.graphics.Texture, float, float, float, float, float, float, float, float, float, int, int, int, int, Color, boolean, boolean)}
+ * {@link SpriteBatch#draw(com.badlogic.gdx.graphics.Texture, float, float, float, float, float, float, float, float, float, int, int, int, int, boolean, boolean)}
  * method to render himself. Using a {@link Sprite} instance is also an option.
  * An Actor might decide to not render itself at all or chose another way to
  * render itself. For the later it has to call {@link SpriteBatch#end()} first,

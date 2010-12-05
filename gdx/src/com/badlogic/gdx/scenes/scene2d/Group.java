@@ -102,7 +102,7 @@ public class Group extends Actor {
 
 		if (debug && debugTexture != null && parent != null)
 			batch.draw(debugTexture, x, y, originX, originY, width == 0 ? 200 : width, height == 0 ? 200 : height, scaleX, scaleY,
-				rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), Color.WHITE, false, false);
+				rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), false, false);
 
 		batch.end();
 		oldBatchTransform.set(batch.getTransformMatrix());

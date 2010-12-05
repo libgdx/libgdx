@@ -56,7 +56,7 @@ public class FrameBufferTest extends GdxTest {
 
 		spriteBatch.begin();
 		spriteBatch.draw(frameBuffer.getColorBufferTexture(), 0, 0, 256, 256, 0, 0, frameBuffer.getColorBufferTexture().getWidth(),
-			frameBuffer.getColorBufferTexture().getHeight(), Color.WHITE, false, true);
+			frameBuffer.getColorBufferTexture().getHeight(), false, true);
 		spriteBatch.end();
 	}
 

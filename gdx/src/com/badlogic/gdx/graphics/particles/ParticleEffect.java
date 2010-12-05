@@ -25,8 +25,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.SpriteSheet;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureAtlas;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -106,9 +106,9 @@ public class ParticleEffect {
 		loadEmitterImages(imagesDir);
 	}
 
-	public void load (FileHandle effectFile, SpriteSheet spriteSheet) {
+	public void load (FileHandle effectFile, TextureAtlas atlas) {
 		loadEmitters(effectFile);
-		loadEmitterImages(spriteSheet);
+		loadEmitterImages(atlas);
 	}
 
 	public void loadEmitters (FileHandle effectFile) {
@@ -135,7 +135,7 @@ public class ParticleEffect {
 		}
 	}
 
-	public void loadEmitterImages (SpriteSheet spriteSheet) {
+	public void loadEmitterImages (TextureAtlas atlas) {
 		for (int i = 0, n = emitters.size(); i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
@@ -143,7 +143,7 @@ public class ParticleEffect {
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
 			int lastDotIndex = imageName.lastIndexOf('.');
 			if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
-			Sprite sprite = spriteSheet.get(imageName);
+			Sprite sprite = atlas.getSprite(imageName);
 			if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
 			emitter.setSprite(sprite);
 		}

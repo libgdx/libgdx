@@ -20,8 +20,8 @@ package com.badlogic.gdx.graphics;
  */
 public class TextureRegion {
 	Texture texture;
-	float u, v;
-	float u2, v2;
+	private float u, v;
+	private float u2, v2;
 
 	public TextureRegion () {
 	}

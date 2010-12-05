@@ -16,30 +16,30 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.SpriteSheet;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.TextureAtlas;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SpriteSheetTest extends GdxTest {
+public class TextureAtlasTest extends GdxTest {
 	SpriteBatch batch;
 	Sprite badlogic, badlogicSmall, star;
-	SpriteSheet spriteSheet;
+	TextureAtlas atlas;
 	BitmapFont font;
 
 	public void create () {
 		batch = new SpriteBatch();
 
-		spriteSheet = new SpriteSheet(Gdx.files.internal("data"));
-		badlogic = spriteSheet.get("badlogicslice");
-		badlogicSmall = spriteSheet.get("badlogicsmall");
-		star = spriteSheet.get("particle-star");
+		atlas = new TextureAtlas(Gdx.files.internal("data"));
+		badlogic = atlas.getSprite("badlogicslice");
+		badlogicSmall = atlas.getSprite("badlogicsmall");
+		star = atlas.getSprite("particle-star");
 
 		badlogic.setPosition(50, 50);
 		badlogicSmall.setPosition(10, 10);
 		star.setPosition(10, 70);
 
-		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), spriteSheet.get("font").getTextureRegion(), false);
+		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), atlas.getRegion("font"), false);
 
 		Gdx.gl.glClearColor(0, 1, 0, 1);
 	}
@@ -49,6 +49,7 @@ public class SpriteSheetTest extends GdxTest {
 		batch.begin();
 		badlogicSmall.draw(batch);
 		badlogic.draw(batch);
+		badlogic.getHeight();
 		star.draw(batch);
 		font.draw(batch, "This font was packed!", 26, 65);
 		batch.end();
@@ -64,7 +65,7 @@ public class SpriteSheetTest extends GdxTest {
 	}
 
 	public void dispose () {
-		spriteSheet.dispose();
+		atlas.dispose();
 	}
 
 	public boolean needsGL20 () {

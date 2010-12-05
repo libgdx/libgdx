@@ -253,6 +253,7 @@ public class BitmapFont {
 	 *         instance is used for all methods that return TextBounds.
 	 */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
+		spriteBatch.setColor(color);
 		final Texture texture = region.getTexture();
 		y += ascent;
 		float startX = x;
@@ -261,7 +262,7 @@ public class BitmapFont {
 			lastGlyph = getGlyph(str.charAt(start++));
 			if (lastGlyph != null) {
 				spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
-					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
+					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				x += lastGlyph.xadvance;
 				break;
 			}
@@ -273,7 +274,7 @@ public class BitmapFont {
 			x += lastGlyph.getKerning(ch);
 			lastGlyph = g;
 			spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height, lastGlyph.u,
-				lastGlyph.v, lastGlyph.u2, lastGlyph.v2, color);
+				lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 			x += g.xadvance;
 		}
 		textBounds.width = (int)(x - startX);
