@@ -53,9 +53,9 @@ import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.SpritePerformanceTest;
-import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
+import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.TileTest;
 import com.badlogic.gdx.tests.UITest;
@@ -66,6 +66,9 @@ import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.VertexBufferObjectTest;
 import com.badlogic.gdx.tests.WaterRipples;
+import com.badlogic.gdx.tests.gles2.HelloTriangle;
+import com.badlogic.gdx.tests.gles2.MipMap2D;
+import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 
 /**
  * List of GdxTest classes. To be used by the test launchers.
@@ -129,7 +132,10 @@ public class GdxTests
 		VertexBufferObjectClassTest.class,
 		VertexBufferObjectShaderTest.class,
 		//VorbisTest.class,
-		WaterRipples.class
+		WaterRipples.class,
+		HelloTriangle.class,
+		MipMap2D.class,
+		SimpleVertexShader.class
 	};
 	
 	public static String[] getNames () {
