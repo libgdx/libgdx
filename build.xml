@@ -146,6 +146,7 @@
 	<target name="packnatives" depends="init">
 	<jar destfile="${stable}/gdx-natives.jar">
 		<fileset dir="gdx/windows" includes="gdx.dll"/>
+		<fileset dir="gdx/windows64" includes="gdx-64.dll"/>
 		<fileset dir="gdx/linux" includes="libgdx.so"/>
 		<fileset dir="gdx/linux64" includes="libgdx-64.so"/>
 		<fileset dir="gdx/mac" includes="libgdx.dylib"/>
