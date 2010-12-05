@@ -8,7 +8,7 @@
 	<property name="jni-platform" value="win32"/>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="g++"/>
+	<property name="g++" value="mingw32-g++"/>
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
@@ -17,7 +17,7 @@
 	</fileset>
 	
 	<!-- define gcc compiler, options and files to compile -->
-	<property name="gcc" value="x86_64-w64-mingw32-gcc"/>	
+	<property name="gcc" value="mingw32-g++"/>	
 	<property name="gcc-opts" value="${g++-opts}"/>
 	<fileset id="gcc-files" dir="./">		
 		<include name="**/*.c"/>				
@@ -25,7 +25,7 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="g++"/>
+	<property name="linker" value="mingw32-g++"/>
 	<property name="linker-opts" value="-Wl,--kill-at -shared"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
