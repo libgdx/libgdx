@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.TextureAtlas;
+import com.badlogic.gdx.graphics.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TextureAtlasTest extends GdxTest {
@@ -31,12 +32,19 @@ public class TextureAtlasTest extends GdxTest {
 		batch = new SpriteBatch();
 
 		atlas = new TextureAtlas(Gdx.files.internal("data"));
-		badlogic = atlas.getSprite("badlogicslice");
-		badlogicSmall = atlas.getSprite("badlogicsmall");
-		star = atlas.getSprite("particle-star");
 
+		badlogic = atlas.getSprite("badlogicslice");
 		badlogic.setPosition(50, 50);
+
+		badlogicSmall = atlas.getSprite("badlogicsmall");
 		badlogicSmall.setPosition(10, 10);
+		badlogicSmall.getTextureRegion().flip(true, true);
+
+		AtlasRegion region = atlas.getRegion("badlogicsmall");
+		System.out.println("badlogicSmall original size: " + region.getOriginalWidth() + ", " + region.getOriginalHeight());
+		System.out.println("badlogicSmall packed size: " + region.getPackedWidth() + ", " + region.getPackedHeight());
+
+		star = atlas.getSprite("particle-star");
 		star.setPosition(10, 70);
 
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), atlas.getRegion("font"), false);
@@ -47,11 +55,10 @@ public class TextureAtlasTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		badlogicSmall.draw(batch);
 		badlogic.draw(batch);
-		badlogic.getHeight();
 		star.draw(batch);
 		font.draw(batch, "This font was packed!", 26, 65);
+		badlogicSmall.draw(batch);
 		batch.end();
 	}
 

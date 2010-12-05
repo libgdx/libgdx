@@ -37,7 +37,7 @@ public class Sprite {
 	private float originX, originY;
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
-	private boolean dirty;
+	private boolean dirty = true;
 
 	/**
 	 * Creates an uninitialized sprite. The sprite will need a texture, texture region, bounds, and color set before it can be
@@ -78,7 +78,6 @@ public class Sprite {
 
 	// Note the region is copied.
 	public Sprite (TextureRegion region) {
-		this.region.texture = region.texture;
 		this.region.set(region);
 		setColor(1, 1, 1, 1);
 		setSize(Math.abs(region.getWidth()), Math.abs(region.getHeight()));
@@ -286,6 +285,26 @@ public class Sprite {
 			vertices[U2] = vertices[U3];
 			vertices[U3] = vertices[U4];
 			vertices[U4] = temp;
+		}
+	}
+
+	protected void flip (boolean x, boolean y) {
+		float[] vertices = Sprite.this.vertices;
+		if (x) {
+			float u = vertices[U1];
+			float u2 = vertices[U3];
+			vertices[U1] = u2;
+			vertices[U2] = u2;
+			vertices[U3] = u;
+			vertices[U4] = u;
+		}
+		if (y) {
+			float v = vertices[V2];
+			float v2 = vertices[V1];
+			vertices[V1] = v;
+			vertices[V2] = v2;
+			vertices[V3] = v2;
+			vertices[V4] = v;
 		}
 	}
 
@@ -497,23 +516,7 @@ public class Sprite {
 		}
 
 		public void flip (boolean x, boolean y) {
-			float[] vertices = Sprite.this.vertices;
-			if (x) {
-				float u = vertices[U1];
-				float u2 = vertices[U3];
-				vertices[U1] = u2;
-				vertices[U2] = u2;
-				vertices[U3] = u;
-				vertices[U4] = u;
-			}
-			if (y) {
-				float v = vertices[V2];
-				float v2 = vertices[V1];
-				vertices[V1] = v;
-				vertices[V2] = v2;
-				vertices[V3] = v2;
-				vertices[V4] = v;
-			}
+			Sprite.this.flip(x, y);
 		}
 
 		public void scroll (float xAmount, float yAmount) {

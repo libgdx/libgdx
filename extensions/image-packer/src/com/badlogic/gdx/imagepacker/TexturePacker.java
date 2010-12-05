@@ -649,27 +649,11 @@ public class TexturePacker {
 
 	public static void main (String[] args) throws Exception {
 		String input, output;
-		// if (args.length != 2) {
-		// System.out.println("Usage: INPUTDIR OUTPUTDIR");
-		// return;
-		// }
-		// input = args[0];
-		// output = args[1];
-		Settings settings = new Settings();
-		settings.padding = 1;
-		input = "C:/temp/pack-in";
-		output = "C:/temp/pack-out";
-		process(settings, input, output);
-
-		if (true) return;
-
-		settings = new Settings();
-		settings.padding = 1;
-		input = "C:/Dev/arcanetactics/arcanetactics/misc/unpacked/game";
-		output = "C:/Dev/arcanetactics/arcanetactics/assets/game";
-		process(settings, input, output);
-		input = "C:/Dev/arcanetactics/arcanetactics/misc/unpacked/mainmenu";
-		output = "C:/Dev/arcanetactics/arcanetactics/assets/mainmenu";
-		process(settings, input, output);
+		if (args.length != 2) {
+			System.out.println("Usage: INPUTDIR OUTPUTDIR");
+			return;
+		}
+		input = args[0];
+		output = args[1];
 	}
 }

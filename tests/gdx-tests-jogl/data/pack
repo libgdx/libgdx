@@ -28,6 +28,6 @@ badlogicsmall
   rotate: false
   xy: 42, 65
   size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
+  orig: 256, 256
+  offset: 32, 32
   index: 0

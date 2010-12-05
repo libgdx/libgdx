@@ -310,13 +310,20 @@ public class TextureAtlas {
 		AtlasSprite (AtlasRegion region) {
 			this.region = region;
 			getTextureRegion().set(region);
+
 			if (region.rotate) rotate90(true);
 
 			translate(region.offsetX, region.offsetY);
 
-			super.setSize(region.getWidth(), region.getHeight());
-			widthScale = region.packedWidth / region.originalWidth;
-			heightScale = region.packedHeight / region.originalHeight;
+			int width = region.getWidth();
+			int height = region.getHeight();
+			super.setSize(width, height);
+			setOrigin(width / 2, height / 2);
+
+			setColor(1, 1, 1, 1);
+
+			widthScale = region.packedWidth / (float)region.originalWidth;
+			heightScale = region.packedHeight / (float)region.originalHeight;
 		}
 
 		public void setPosition (float x, float y) {
@@ -358,6 +365,16 @@ public class TextureAtlas {
 			super.scale(amount);
 			region.offsetX = unscaledOffsetX * getScaleX();
 			region.offsetY = unscaledOffsetY * getScaleY();
+		}
+
+		public void flip (boolean x, boolean y) {
+			super.flip(x, y);
+			// Update x and y offsets.
+			float oldOffsetX = region.offsetX;
+			float oldOffsetY = region.offsetY;
+			region.flip(x, y);
+			// Update verices with new offsets.
+			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
 		}
 
 		public float getWidth () {
