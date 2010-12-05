@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.OrthoCamController;
 
 public class TileTest extends GdxTest {
 	static final int LAYERS = 5;
@@ -30,17 +31,22 @@ public class TileTest extends GdxTest {
 	static final int WIDTH = 15;
 	static final int HEIGHT = 10;
 	static final int TILES_PER_LAYER = WIDTH * HEIGHT;
+	
 	SpriteCache[] caches = new SpriteCache[LAYERS];
 	Texture texture;
 	int[] layers = new int[LAYERS];
 	OrthographicCamera cam;
+	OrthoCamController camController;
 	long startTime = System.nanoTime();
 	
 	@Override
 	public void create() {
 		cam = new OrthographicCamera();
 		cam.setViewport(480, 320);
-		cam.getPosition().set(WIDTH*32/2, HEIGHT*32/2,0);		
+		cam.getPosition().set(WIDTH*32/2, HEIGHT*32/2,0);
+		camController = new OrthoCamController(cam);
+		Gdx.input.setInputProcessor(camController);
+		
 		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/tiles.png"), TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		
 		Random rand = new Random();
@@ -67,6 +73,7 @@ public class TileTest extends GdxTest {
 		cam.update();
 		
 		gl.glEnable(GL10.GL_BLEND);
+		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		for(int i=0; i < LAYERS; i++) {
 			SpriteCache cache = caches[i];			
 			cache.setProjectionMatrix(cam.getCombinedMatrix());
