@@ -440,7 +440,7 @@ public class Sprite {
 		return scaleY;
 	}
 
-	public TextureRegion getTextureRegion () {
+	public TextureRegion getRegion () {
 		return region;
 	}
 

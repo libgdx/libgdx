@@ -50,7 +50,7 @@ public class BitmapFontFlipTest extends GdxTest {
 
 		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
 			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
-		logoSprite.getTextureRegion().flip(false, true);
+		logoSprite.getRegion().flip(false, true);
 		logoSprite.setPosition(0, 320 - 256);
 		logoSprite.setColor(1, 1, 1, 0.5f);
 

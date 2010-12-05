@@ -58,7 +58,7 @@ public class PixmapBlendingTest extends GdxTest {
 
 		logoSprite = new Sprite(Gdx.graphics.newUnmanagedTexture(pixD, TextureFilter.Nearest, TextureFilter.Linear,
 			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
-		logoSprite.getTextureRegion().flip(false, true);
+		logoSprite.getRegion().flip(false, true);
 	}
 
 	@Override public void render () {

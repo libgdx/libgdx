@@ -305,8 +305,8 @@ public class TextureAtlas {
 			widthScale = region.packedWidth / (float)region.originalWidth;
 			heightScale = region.packedHeight / (float)region.originalHeight;
 
-			getTextureRegion().texture = region.texture;
-			getTextureRegion().set(region.getX(), region.getY(), region.getWidth(), region.getHeight());
+			getRegion().texture = region.texture;
+			getRegion().set(region.getX(), region.getY(), region.getWidth(), region.getHeight());
 			if (region.rotate) rotate90(true);
 
 			setOrigin(region.originalWidth / 2, region.originalHeight / 2);

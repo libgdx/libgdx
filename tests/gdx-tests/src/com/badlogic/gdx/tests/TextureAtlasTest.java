@@ -38,7 +38,7 @@ public class TextureAtlasTest extends GdxTest {
 
 		badlogicSmall = atlas.getSprite("badlogicsmall");
 		badlogicSmall.setPosition(10, 10);
-		badlogicSmall.getTextureRegion().flip(true, true);
+		badlogicSmall.getRegion().flip(true, true);
 
 		AtlasRegion region = atlas.getRegion("badlogicsmall");
 		System.out.println("badlogicSmall original size: " + region.getOriginalWidth() + ", " + region.getOriginalHeight());
