@@ -35,10 +35,7 @@ public class Version {
 			System.loadLibrary("gdx");
 		}
 		else {
-			if( arch.contains("Windows") ) 
-				throw new UnsupportedOperationException("Libgdx applications only work with 32-bit VMs on Windows at the moment!");
-			else
-				System.loadLibrary("gdx-64");
+			System.loadLibrary("gdx-64");
 		}
 	}
 }

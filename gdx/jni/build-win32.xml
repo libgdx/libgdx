@@ -3,12 +3,12 @@
 	<property environment="env"/>	
 	
 	<!-- defined build directory where object files and shared lib will be placed in -->
-	<property name="builddir" value="../windows64"/>
-	<property name="libname" value="gdx-64.dll"/>
+	<property name="builddir" value="../windows"/>
+	<property name="libname" value="gdx.dll"/>
 	<property name="jni-platform" value="win32"/>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="x86_64-w64-mingw32-g++"/>
+	<property name="g++" value="g++"/>
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
@@ -25,7 +25,7 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="x86_64-w64-mingw32-g++"/>
+	<property name="linker" value="g++"/>
 	<property name="linker-opts" value="-Wl,--kill-at -shared"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
@@ -69,8 +69,8 @@
 
 	<!-- links the shared library based on the previously compiled object files -->
 	<target name="link" depends="compile">
-		<exec executable="${linker}" dir="./">
-		<arg line="${linker-opts} -o ${builddir}/${libname} ${builddir}/*.o"/>
+		<exec executable="${linker}" dir="${builddir}">
+		<arg line="${linker-opts} -o ${libname} *.o"/>
 		</exec>	
 	</target>
 </project>

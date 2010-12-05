@@ -8,7 +8,7 @@
 	<property name="jni-platform" value="win32"/>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="x86_64-w64-mingw32-g++"/>
+	<property name="g++" value="x86_64-w64-mingw32-g++.exe"/>
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
@@ -26,7 +26,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="x86_64-w64-mingw32-g++"/>
-	<property name="linker-opts" value="-Wl,--kill-at -shared"/>
+	<property name="linker-opts" value="-Wl,--kill-at -shared -static-libgcc -static-libstdc++"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -41,7 +41,7 @@
 			<arg line="${g++-opts}"/>
 			<arg value="-I${env.JAVA_HOME}/include"/>
 			<arg value="-I${env.JAVA_HOME}/include/${jni-platform}"/>
-			<arg value="-I./"/>
+			<arg value="-I."/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -55,7 +55,7 @@
 			<arg line="${gcc-opts}"/>
 			<arg value="-I${env.JAVA_HOME}/include"/>
 			<arg value="-I${env.JAVA_HOME}/include/${jni-platform}"/>
-			<arg value="-I./"/>
+			<arg value="-I."/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -67,10 +67,15 @@
 		</apply>
 	</target>	
 
-	<!-- links the shared library based on the previously compiled object files -->
+	<!-- links the shared library based on the previously compiled object files -->	
 	<target name="link" depends="compile">
-		<exec executable="${linker}" dir="./">
-		<arg line="${linker-opts} -o ${builddir}/${libname} ${builddir}/*.o"/>
+	    <fileset dir="${builddir}" id="object-files">
+			<include name="*.o"/>
+		</fileset>  
+		<pathconvert pathsep=" " property="objs" refid="object-files"/>		
+	
+		<exec executable="${linker}" dir="${builddir}">
+		<arg line="${linker-opts} -o ${libname} ${objs}"/>
 		</exec>	
-	</target>
+	</target>	
 </project>
