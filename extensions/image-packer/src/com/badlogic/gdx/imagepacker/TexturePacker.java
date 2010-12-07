@@ -144,7 +144,6 @@ public class TexturePacker {
 					}
 				}
 			}
-			System.out.println(width + "x" + height);
 			if (width == maxWidth && height == maxHeight) break;
 			if (bestComparator != null) break;
 			if (settings.pot) {
