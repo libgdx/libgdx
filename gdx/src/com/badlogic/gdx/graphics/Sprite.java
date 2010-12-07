@@ -476,10 +476,13 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void flip (boolean x, boolean y) {
+		super.flip(x, y);
 		float[] vertices = Sprite.this.vertices;
 		if (x) {
 			float u = vertices[U1];
 			float u2 = vertices[U3];
+			this.u = u;
+			this.u2 = u2;
 			vertices[U1] = u2;
 			vertices[U2] = u2;
 			vertices[U3] = u;
@@ -488,6 +491,8 @@ public class Sprite extends TextureRegion {
 		if (y) {
 			float v = vertices[V2];
 			float v2 = vertices[V1];
+			this.v = v;
+			this.v2 = v2;
 			vertices[V1] = v;
 			vertices[V2] = v2;
 			vertices[V3] = v2;
@@ -500,6 +505,8 @@ public class Sprite extends TextureRegion {
 		if (xAmount != 0) {
 			float u = (vertices[U1] + xAmount) % 1;
 			float u2 = u + width / texture.getWidth();
+			this.u = u;
+			this.u2 = u2;
 			vertices[U1] = u;
 			vertices[U2] = u;
 			vertices[U3] = u2;
@@ -508,6 +515,8 @@ public class Sprite extends TextureRegion {
 		if (yAmount != 0) {
 			float v = (vertices[V2] + yAmount) % 1;
 			float v2 = v + height / texture.getHeight();
+			this.v = v;
+			this.v2 = v2;
 			vertices[V1] = v2;
 			vertices[V2] = v;
 			vertices[V3] = v;
