@@ -112,15 +112,17 @@ public class FilesTest extends GdxTest {
 		}
 
 		try {
+			testClasspath();
 			testInternal();
 			testExternal();
+			testAbsolute();
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 
 	private void testClasspath () throws IOException {
-		FileHandle handle = Gdx.files.internal("com/badlogic/gdx/tests/FilesTest.class");
+		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/tests/FilesTest.class");
 		if (!handle.exists()) fail();
 		if (handle.isDirectory()) fail();
 		try {
@@ -128,34 +130,29 @@ public class FilesTest extends GdxTest {
 			fail();
 		} catch (Exception expected) {
 		}
-		if (handle.list().length != 0) fail();
+		try {
+			handle.list();
+			fail();
+		} catch (Exception expected) {
+		}
 		if (!handle.parent().exists()) fail();
 		try {
 			handle.read().close();
 			fail();
 		} catch (Exception ignored) {
 		}
-		FileHandle dir = Gdx.files.internal("data");
-		if (!dir.path().equals("data")) fail();
+		FileHandle dir = Gdx.files.classpath("com/badlogic/gdx/tests");
+		if (!dir.path().replace('\\', '/').equals("/com/badlogic/gdx/tests")) fail();
 		if (!dir.exists()) fail();
-		if (!dir.isDirectory()) fail();
-		if (dir.list().length == 0) fail();
-		FileHandle child = dir.child("badlogic.jpg");
-		if (!child.name().equals("badlogic.jpg")) fail();
-		if (!child.nameWithoutExtension().equals("badlogic")) fail();
-		if (!child.extension().equals("jpg")) fail();
+		if (dir.isDirectory()) fail();
+		FileHandle child = dir.child("FilesTest.class");
+		if (!child.name().equals("FilesTest.class")) fail();
+		if (!child.nameWithoutExtension().equals("FilesTest")) fail();
+		if (!child.extension().equals("class")) fail();
 		if (!child.parent().exists()) fail();
-		FileHandle copy = Gdx.files.external("badlogic.jpg-copy");
-		copy.delete();
-		if (copy.exists()) fail();
-		handle.copyTo(copy);
-		if (!copy.exists()) fail();
-		if (copy.length() != 68465) fail();
-		copy.delete();
-		if (copy.exists()) fail();
 		InputStream input = handle.read();
 		byte[] bytes = new byte[70000];
-		if (input.read(bytes) != 68465) fail();
+		if (input.read(bytes) != handle.length()) fail();
 		input.close();
 	}
 
@@ -237,6 +234,76 @@ public class FilesTest extends GdxTest {
 		if (!copy.exists()) fail();
 		if (copy.length() != 3) fail();
 		FileHandle move = Gdx.files.external(path + "-move");
+		move.delete();
+		if (move.exists()) fail();
+		copy.moveTo(move);
+		if (!move.exists()) fail();
+		if (move.length() != 3) fail();
+		move.deleteDirectory();
+		if (move.exists()) fail();
+		InputStream input = handle.read();
+		byte[] bytes = new byte[6];
+		if (input.read(bytes) != 3) fail();
+		input.close();
+		if (!new String(bytes, 0, 3).equals("moo")) fail();
+		output = handle.write(true);
+		output.write("cow".getBytes());
+		output.close();
+		if (handle.length() != 6) fail();
+		input = handle.read();
+		if (input.read(bytes) != 6) fail();
+		input.close();
+		if (!new String(bytes, 0, 6).equals("moocow")) fail();
+		if (handle.isDirectory()) fail();
+		if (handle.list().length != 0) fail();
+		if (!handle.name().equals("meow")) fail();
+		if (!handle.nameWithoutExtension().equals("meow")) fail();
+		if (!handle.extension().equals("")) fail();
+		handle.deleteDirectory();
+		if (handle.exists()) fail();
+		if (handle.isDirectory()) fail();
+		handle.delete();
+		handle.deleteDirectory();
+	}
+
+	private void testAbsolute () throws IOException {
+		String path = new File("meow").getAbsolutePath();
+		FileHandle handle = Gdx.files.absolute(path);
+		handle.delete();
+		if (handle.exists()) fail();
+		if (handle.isDirectory()) fail();
+		if (handle.delete()) fail();
+		if (handle.list().length != 0) fail();
+		if (handle.child("meow").exists()) fail();
+		if (!handle.parent().exists()) fail();
+		try {
+			handle.read().close();
+			fail();
+		} catch (Exception ignored) {
+		}
+		handle.mkdirs();
+		if (!handle.exists()) fail();
+		if (!handle.isDirectory()) fail();
+		if (handle.list().length != 0) fail();
+		handle.child("meow").mkdirs();
+		if (handle.list().length != 1) fail();
+		FileHandle child = handle.list()[0];
+		if (!child.name().equals("meow")) fail();
+		if (!child.parent().exists()) fail();
+		if (!handle.deleteDirectory()) fail();
+		if (handle.exists()) fail();
+		OutputStream output = handle.write(false);
+		output.write("moo".getBytes());
+		output.close();
+		if (!handle.exists()) fail();
+		if (handle.length() != 3) fail();
+		FileHandle copy = Gdx.files.absolute(path + "-copy");
+		copy.delete();
+		if (copy.exists()) fail();
+		handle.copyTo(copy);
+		if (!copy.exists()) fail();
+		if (copy.length() != 3) fail();
+		FileHandle move = Gdx.files.absolute(path + "-move");
 		move.delete();
 		if (move.exists()) fail();
 		copy.moveTo(move);

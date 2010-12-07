@@ -67,17 +67,17 @@ public interface Files {
 	public FileHandle classpath (String path);
 
 	/**
-	 * Convenience method that returns an {@link FileType#Internal} file handle.
+	 * Convenience method that returns a {@link FileType#Internal} file handle.
 	 */
 	public FileHandle internal (String path);
 
 	/**
-	 * Convenience method that returns an {@link FileType#External} file handle.
+	 * Convenience method that returns a {@link FileType#External} file handle.
 	 */
 	public FileHandle external (String path);
 
 	/**
-	 * Convenience method that returns an {@link FileType#Absolute} file handle.
+	 * Convenience method that returns a {@link FileType#Absolute} file handle.
 	 */
 	public FileHandle absolute (String path);
 
