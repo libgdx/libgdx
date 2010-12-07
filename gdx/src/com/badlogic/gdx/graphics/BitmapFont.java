@@ -65,7 +65,7 @@ public class BitmapFont {
 	private int xHeight;
 	private final TextBounds textBounds = new TextBounds();
 	private float color = Color.WHITE.toFloatBits();
-	private Color tempColor;
+	private Color tempColor = new Color(1, 1, 1, 1);
 
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
@@ -133,8 +133,8 @@ public class BitmapFont {
 			this.region = region;
 			float invTexWidth = 1.0f / region.getTexture().getWidth();
 			float invTexHeight = 1.0f / region.getTexture().getHeight();
-			float u = region.getU();
-			float v = region.getV();
+			float u = region.u;
+			float v = region.v;
 
 			while (true) {
 				String line = reader.readLine();

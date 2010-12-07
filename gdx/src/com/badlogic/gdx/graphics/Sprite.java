@@ -20,16 +20,14 @@ import com.badlogic.gdx.utils.MathUtils;
  * and a size given as width and height. The position is relative to the origin of the coordinate system specified via
  * {@link SpriteBatch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
  * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed. The
- * origin is given relative to the bottom left corner of the Sprite, its position. Texture information is given as pixels and is
- * always relative to texture space.
+ * origin is given relative to the bottom left corner of the Sprite, its position.
  * @author mzechner
  * @author Nathan Sweet <misc@n4te.com>
  */
-public class Sprite {
+public class Sprite extends TextureRegion {
 	static final int VERTEX_SIZE = 2 + 1 + 2;
 	static final int SPRITE_SIZE = 4 * VERTEX_SIZE;
 
-	private final SpriteTextureRegion region = new SpriteTextureRegion();
 	final float[] vertices = new float[20];
 	private final Color color = new Color(1, 1, 1, 1);
 	private float x, y;
@@ -69,8 +67,8 @@ public class Sprite {
 	 */
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
-		region.texture = texture;
-		region.set(srcX, srcY, srcWidth, srcHeight);
+		this.texture = texture;
+		setRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
 		setSize(Math.abs(srcWidth), Math.abs(srcHeight));
 		setOrigin(width / 2, height / 2);
@@ -78,9 +76,9 @@ public class Sprite {
 
 	// Note the region is copied.
 	public Sprite (TextureRegion region) {
-		this.region.set(region);
+		setRegion(region);
 		setColor(1, 1, 1, 1);
-		setSize(Math.abs(region.getWidth()), Math.abs(region.getHeight()));
+		setSize(Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 		setOrigin(width / 2, height / 2);
 	}
 
@@ -90,10 +88,9 @@ public class Sprite {
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (TextureRegion region, int srcX, int srcY, int srcWidth, int srcHeight) {
-		this.region.texture = region.texture;
-		this.region.set(region, srcX, srcY, srcWidth, srcHeight);
+		setRegion(region, srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
-		setSize(Math.abs(region.getWidth()), Math.abs(region.getHeight()));
+		setSize(Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 		setOrigin(width / 2, height / 2);
 	}
 
@@ -107,7 +104,7 @@ public class Sprite {
 	public void set (Sprite sprite) {
 		if (sprite == null) throw new IllegalArgumentException("sprite cannot be null.");
 		System.arraycopy(sprite.vertices, 0, vertices, 0, SPRITE_SIZE);
-		region.texture = sprite.region.texture;
+		texture = sprite.texture;
 		x = sprite.x;
 		y = sprite.y;
 		width = sprite.width;
@@ -117,7 +114,6 @@ public class Sprite {
 		rotation = sprite.rotation;
 		scaleX = sprite.scaleX;
 		scaleY = sprite.scaleY;
-		color.set(sprite.color);
 		dirty = sprite.dirty;
 	}
 
@@ -224,7 +220,7 @@ public class Sprite {
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = Float.intBitsToFloat(intBits);
+		float color = Float.intBitsToFloat(intBits & 0xfeffffff);
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -285,26 +281,6 @@ public class Sprite {
 			vertices[U2] = vertices[U3];
 			vertices[U3] = vertices[U4];
 			vertices[U4] = temp;
-		}
-	}
-
-	protected void flip (boolean x, boolean y) {
-		float[] vertices = Sprite.this.vertices;
-		if (x) {
-			float u = vertices[U1];
-			float u2 = vertices[U3];
-			vertices[U1] = u2;
-			vertices[U2] = u2;
-			vertices[U3] = u;
-			vertices[U4] = u;
-		}
-		if (y) {
-			float v = vertices[V2];
-			float v2 = vertices[V1];
-			vertices[V1] = v;
-			vertices[V2] = v2;
-			vertices[V3] = v2;
-			vertices[V4] = v;
 		}
 	}
 
@@ -401,7 +377,7 @@ public class Sprite {
 	}
 
 	public void draw (SpriteBatch spriteBatch) {
-		spriteBatch.draw(region.texture, getVertices(), 0, SPRITE_SIZE);
+		spriteBatch.draw(texture, getVertices(), 0, SPRITE_SIZE);
 	}
 
 	public float getX () {
@@ -440,14 +416,6 @@ public class Sprite {
 		return scaleY;
 	}
 
-	public TextureRegion getRegion () {
-		return region;
-	}
-
-	public Texture getTexture () {
-		return region.texture;
-	}
-
 	/**
 	 * Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
 	 * {@link #setColor(float, float, float, float)} must be used.
@@ -463,80 +431,87 @@ public class Sprite {
 		return color;
 	}
 
-	class SpriteTextureRegion extends TextureRegion {
-		public void set (float u, float v, float u2, float v2) {
-			float[] vertices = Sprite.this.vertices;
+	public void setRegion (float u, float v, float u2, float v2) {
+		this.u = u;
+		this.v = v;
+		this.u2 = u2;
+		this.v2 = v2;
+
+		float[] vertices = Sprite.this.vertices;
+		vertices[U1] = u;
+		vertices[V1] = v2;
+
+		vertices[U2] = u;
+		vertices[V2] = v;
+
+		vertices[U3] = u2;
+		vertices[V3] = v;
+
+		vertices[U4] = u2;
+		vertices[V4] = v2;
+	}
+
+	public void setU (float u) {
+		this.u = u;
+		vertices[U1] = u;
+		vertices[U2] = u;
+	}
+
+	public void setV (float v) {
+		this.v = v;
+		vertices[V2] = v;
+		vertices[V3] = v;
+	}
+
+	public void setU2 (float u2) {
+		this.u2 = u2;
+		vertices[U3] = u2;
+		vertices[U4] = u2;
+	}
+
+	public void setV2 (float v2) {
+		this.v2 = v2;
+		vertices[V1] = v2;
+		vertices[V4] = v2;
+	}
+
+	public void flip (boolean x, boolean y) {
+		float[] vertices = Sprite.this.vertices;
+		if (x) {
+			float u = vertices[U1];
+			float u2 = vertices[U3];
+			vertices[U1] = u2;
+			vertices[U2] = u2;
+			vertices[U3] = u;
+			vertices[U4] = u;
+		}
+		if (y) {
+			float v = vertices[V2];
+			float v2 = vertices[V1];
+			vertices[V1] = v;
+			vertices[V2] = v2;
+			vertices[V3] = v2;
+			vertices[V4] = v;
+		}
+	}
+
+	public void scroll (float xAmount, float yAmount) {
+		float[] vertices = Sprite.this.vertices;
+		if (xAmount != 0) {
+			float u = (vertices[U1] + xAmount) % 1;
+			float u2 = u + width / texture.getWidth();
 			vertices[U1] = u;
-			vertices[V1] = v2;
-
 			vertices[U2] = u;
-			vertices[V2] = v;
-
-			vertices[U3] = u2;
-			vertices[V3] = v;
-
-			vertices[U4] = u2;
-			vertices[V4] = v2;
-		}
-
-		public void setU (float u) {
-			vertices[U1] = u;
-			vertices[U2] = u;
-		}
-
-		public void setV (float v) {
-			vertices[V2] = v;
-			vertices[V3] = v;
-		}
-
-		public void setU2 (float u2) {
 			vertices[U3] = u2;
 			vertices[U4] = u2;
 		}
-
-		public void setV2 (float v2) {
+		if (yAmount != 0) {
+			float v = (vertices[V2] + yAmount) % 1;
+			float v2 = v + height / texture.getHeight();
 			vertices[V1] = v2;
+			vertices[V2] = v;
+			vertices[V3] = v;
 			vertices[V4] = v2;
-		}
-
-		public float getU () {
-			return vertices[U1];
-		}
-
-		public float getV () {
-			return vertices[V2];
-		}
-
-		public float getU2 () {
-			return vertices[U3];
-		}
-
-		public float getV2 () {
-			return vertices[V1];
-		}
-
-		public void flip (boolean x, boolean y) {
-			Sprite.this.flip(x, y);
-		}
-
-		public void scroll (float xAmount, float yAmount) {
-			float[] vertices = Sprite.this.vertices;
-			if (xAmount != 0) {
-				float u = (vertices[U1] + xAmount) % 1;
-				float u2 = u + width / texture.getWidth();
-				vertices[U1] = u;
-				vertices[U2] = u;
-				vertices[U3] = u2;
-				vertices[U4] = u2;
-			}
-			if (yAmount != 0) {
-				float v = (vertices[V2] + yAmount) % 1;
-				float v2 = v + height / texture.getHeight();
-				vertices[V1] = v2;
-				vertices[V2] = v;
-				vertices[V3] = v;
-				vertices[V4] = v2;
-			}
 		}
 	}
 

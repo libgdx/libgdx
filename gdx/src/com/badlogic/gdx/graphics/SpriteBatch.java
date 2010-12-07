@@ -69,53 +69,37 @@ import com.badlogic.gdx.utils.MathUtils;
  * 
  */
 public class SpriteBatch {
-	/** the mesh used to transfer the data to the GPU **/
-	protected Mesh mesh;
-	protected Mesh[] buffers;
-	protected int currBufferIdx = 0;
+	private Mesh mesh;
+	private Mesh[] buffers;
+
+	private Texture lastTexture = null;
+	private float invTexWidth = 0;
+	private float invTexHeight = 0;
+
+	private int idx = 0;
+	private int currBufferIdx = 0;
+	private final float[] vertices;
 	
-	/** the transform to be applied to all sprites **/
-	protected final Matrix4 transformMatrix = new Matrix4();
+	private final Matrix4 transformMatrix = new Matrix4();
+	private final Matrix4 projectionMatrix = new Matrix4();
+	private final Matrix4 combinedMatrix = new Matrix4();
 
-	/** the view matrix holding the orthogonal projection **/
-	protected final Matrix4 projectionMatrix = new Matrix4();
-
-	/** the combined transform and view matrix **/
-	protected final Matrix4 combinedMatrix = new Matrix4();
-
-	/** the vertex storage **/
-	protected final float[] vertices;
-
-	/** last texture **/
-	protected Texture lastTexture = null;
-
-	/** current index into vertices **/
-	protected int idx = 0;
-
-	/** drawing flag **/
-	protected boolean drawing = false;
-
-	/** inverse texture width and height **/
-	protected float invTexWidth = 0;
-	protected float invTexHeight = 0;
-
-	/** blend function src & target **/
+	private boolean drawing = false;
+	
+	private boolean blendingDisabled = false;
 	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
 	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
+	
+	private ShaderProgram shader;
 
-	/** the shader for opengl 2.0 **/
-	protected ShaderProgram shader;
+	private float color = Color.WHITE.toFloatBits();
+	private Color tempColor = new Color(1, 1, 1, 1);
 
 	/** number of render calls **/
 	public int renderCalls = 0;
 	
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxSpritesInBatch = 0;
-
-	/** whether blending is enabled or not **/
-	protected boolean blendingDisabled = false;
-
-	private float color = Color.WHITE.toFloatBits();
 
 	/**
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an
@@ -347,7 +331,7 @@ public class SpriteBatch {
 	 */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = Float.intBitsToFloat(intBits);
+		color = Float.intBitsToFloat(intBits & 0xfeffffff);
 	}
 	
 	/**
@@ -358,6 +342,16 @@ public class SpriteBatch {
 		this.color = color;
 	}
 
+	public Color getColor () {
+		int intBits = Float.floatToRawIntBits(color);
+		Color color = this.tempColor;
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
+	
 	/**
 	 * Draws a rectangle with the top left corner at x,y having the given width
 	 * and height in pixels. The rectangle is offset by originX, originY
@@ -753,6 +747,53 @@ public class SpriteBatch {
 		vertices[idx++] = v;
 	}
 
+	/**
+	 * Draws a rectangle with the top left corner at x,y having the width and height of the texture.
+	 * @param texture the Texture
+	 * @param x the x-coordinate in screen space
+	 * @param y the y-coordinate in screen space
+	 */
+	public void draw(Texture texture, float x, float y) {
+		if (!drawing)
+			throw new IllegalStateException(
+					"SpriteBatch.begin must be called before draw.");
+
+		if (texture != lastTexture) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1.0f / texture.getWidth();
+			invTexHeight = 1.0f / texture.getHeight();
+		} else if (idx == vertices.length)
+			renderMesh();
+
+		final float fx2 = x + texture.getWidth();
+		final float fy2 = y + texture.getHeight();
+
+		vertices[idx++] = x;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = 0;
+		vertices[idx++] = 1;
+
+		vertices[idx++] = x;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = 0;
+		vertices[idx++] = 0;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = 1;
+		vertices[idx++] = 0;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = 1;
+		vertices[idx++] = 1;
+	}
+
 	public void draw(Texture texture, float[] spriteVertices, int offset,
 			int length) {
 		if (!drawing)
@@ -772,7 +813,7 @@ public class SpriteBatch {
 	}
 
 	public void draw (TextureRegion region, float x, float y) {
-		draw(region, x, y, region.getWidth(), region.getHeight());
+		draw(region, x, y, region.getRegionWidth(), region.getRegionHeight());
 	}
 
 	public void draw (TextureRegion region, float x, float y, float width, float height) {
@@ -789,10 +830,10 @@ public class SpriteBatch {
 
 		final float fx2 = x + width;
 		final float fy2 = y + height;
-		final float u = region.getU();
-		final float v = region.getV2();
-		final float u2 = region.getU2();
-		final float v2 = region.getV();
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
 
 		vertices[idx++] = x;
 		vertices[idx++] = y;
@@ -906,10 +947,10 @@ public class SpriteBatch {
 		x4 += worldOriginX;
 		y4 += worldOriginY;
 
-		final float u = region.getU();
-		final float v = region.getV2();
-		final float u2 = region.getU2();
-		final float v2 = region.getV();
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
 
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
@@ -944,7 +985,7 @@ public class SpriteBatch {
 		renderMesh();
 	}
 
-	protected void renderMesh() {
+	private void renderMesh() {
 		if (idx == 0)
 			return;
 

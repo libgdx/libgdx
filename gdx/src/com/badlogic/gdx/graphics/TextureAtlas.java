@@ -34,6 +34,7 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
  * Loads images from texture atlases created by TexturePacker.<br>
  * <br>
  * A TextureAtlas must be disposed to free up the resources consumed by the backing textures.
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public class TextureAtlas {
 	static private final String[] tuple = new String[2];
@@ -155,7 +156,7 @@ public class TextureAtlas {
 	public List<AtlasRegion> getRegions (String name) {
 		ArrayList<AtlasRegion> matched = new ArrayList();
 		for (int i = 0, n = regions.length; i < n; i++)
-			if (regions[i].name.equals(name)) matched.add(regions[i]);
+			if (regions[i].name.equals(name)) matched.add(new AtlasRegion(regions[i]));
 		return matched;
 	}
 
@@ -221,6 +222,12 @@ public class TextureAtlas {
 			super(texture, x, y, width, height);
 			packedWidth = width;
 			packedHeight = height;
+		}
+
+		AtlasRegion (AtlasRegion region) {
+			setRegion(region);
+			packedWidth = region.packedWidth;
+			packedHeight = region.packedHeight;
 		}
 
 		public void flip (boolean x, boolean y) {
@@ -297,20 +304,13 @@ public class TextureAtlas {
 	 */
 	static class AtlasSprite extends Sprite {
 		final AtlasRegion region;
-		final float widthScale, heightScale;
 
 		AtlasSprite (AtlasRegion region) {
 			this.region = region;
-
-			widthScale = region.packedWidth / (float)region.originalWidth;
-			heightScale = region.packedHeight / (float)region.originalHeight;
-
-			getRegion().texture = region.texture;
-			getRegion().set(region.getX(), region.getY(), region.getWidth(), region.getHeight());
+			setRegion(region);
 			if (region.rotate) rotate90(true);
-
 			setOrigin(region.originalWidth / 2, region.originalHeight / 2);
-			super.setBounds(region.offsetX, region.offsetY, Math.abs(region.getWidth()), Math.abs(region.getHeight()));
+			super.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 			setColor(1, 1, 1, 1);
 		}
 
@@ -319,58 +319,22 @@ public class TextureAtlas {
 		}
 
 		public void setBounds (float x, float y, float width, float height) {
-			AtlasRegion region = this.region;
-			region.offsetX *= width / getWidth();
-			region.offsetY *= height / getHeight();
-			super.setBounds(x + region.offsetX, y + region.offsetY, width * widthScale, height * heightScale);
-		}
-
-		public void setSize (float width, float height) {
-			region.offsetX *= width / getWidth();
-			region.offsetY *= height / getHeight();
-			super.setSize(width * widthScale, height * heightScale);
+			super.setBounds(x + region.offsetX, y + region.offsetY, width, height);
 		}
 
 		public void setOrigin (float originX, float originY) {
 			super.setOrigin(originX + region.offsetX, originY + region.offsetY);
 		}
 
-		public void setScale (float scaleXY) {
-			super.setScale(scaleXY);
-			region.offsetX *= scaleXY;
-			region.offsetY *= scaleXY;
-		}
-
-		public void setScale (float scaleX, float scaleY) {
-			super.setScale(scaleX, scaleY);
-			region.offsetX *= scaleX;
-			region.offsetY *= scaleY;
-		}
-
-		public void scale (float amount) {
-			float unscaledOffsetX = region.offsetX / getScaleX();
-			float unscaledOffsetY = region.offsetY / getScaleY();
-			super.scale(amount);
-			region.offsetX = unscaledOffsetX * getScaleX();
-			region.offsetY = unscaledOffsetY * getScaleY();
-		}
-
 		public void flip (boolean x, boolean y) {
+			// Flip texture.
 			super.flip(x, y);
 			// Update x and y offsets.
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
 			region.flip(x, y);
-			// Update vertices with new offsets.
+			// Update position with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
-		}
-
-		public float getWidth () {
-			return super.getWidth() / widthScale;
-		}
-
-		public float getHeight () {
-			return super.getHeight() / heightScale;
 		}
 
 		public float getX () {

@@ -17,41 +17,42 @@ package com.badlogic.gdx.graphics;
  * A TextureRegion defines a rectangular area in a texture given in pixels. The coordinate system used has its origin in the upper
  * left corner with the x-axis pointing to the left and the y axis pointing downwards.
  * @author mzechner
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public class TextureRegion {
 	Texture texture;
-	private float u, v;
-	private float u2, v2;
+	float u, v;
+	float u2, v2;
 
 	public TextureRegion () {
 	}
 
 	public TextureRegion (Texture texture) {
 		this.texture = texture;
-		set(0, 0, texture.getWidth(), texture.getHeight());
+		setRegion(0, 0, texture.getWidth(), texture.getHeight());
 	}
 
 	public TextureRegion (Texture texture, int x, int y, int width, int height) {
 		this.texture = texture;
-		set(x, y, width, height);
+		setRegion(x, y, width, height);
 	}
 
 	public TextureRegion (Texture texture, float u, float v, float u2, float v2) {
 		this.texture = texture;
-		set(u, v, u2, v2);
+		setRegion(u, v, u2, v2);
 	}
 
 	public TextureRegion (TextureRegion region) {
-		set(region);
+		setRegion(region);
 	}
 
 	public TextureRegion (TextureRegion region, int x, int y, int width, int height) {
-		set(region, x, y, width, height);
+		setRegion(region, x, y, width, height);
 	}
 
-	public void set (Texture texture) {
+	public void setRegion (Texture texture) {
 		this.texture = texture;
-		set(0, 0, texture.getWidth(), texture.getHeight());
+		setRegion(0, 0, texture.getWidth(), texture.getHeight());
 	}
 
 	/**
@@ -60,27 +61,27 @@ public class TextureRegion {
 	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
-	public void set (int x, int y, int width, int height) {
+	public void setRegion (int x, int y, int width, int height) {
 		float invTexWidth = 1f / texture.getWidth();
 		float invTexHeight = 1f / texture.getHeight();
-		set(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
+		setRegion(x * invTexWidth, y * invTexHeight, (x + width) * invTexWidth, (y + height) * invTexHeight);
 	}
 
-	public void set (float u, float v, float u2, float v2) {
+	public void setRegion (float u, float v, float u2, float v2) {
 		this.u = u;
 		this.v = v;
 		this.u2 = u2;
 		this.v2 = v2;
 	}
 
-	public void set (TextureRegion region) {
+	public void setRegion (TextureRegion region) {
 		texture = region.texture;
-		set(region.u, region.v, region.u2, region.v2);
+		setRegion(region.u, region.v, region.u2, region.v2);
 	}
 
-	public void set (TextureRegion region, int x, int y, int width, int height) {
+	public void setRegion (TextureRegion region, int x, int y, int width, int height) {
 		texture = region.texture;
-		set(region.getX() + x, region.getY() + y, width, height);
+		setRegion(region.getRegionX() + x, region.getRegionY() + y, width, height);
 	}
 
 	public Texture getTexture () {
@@ -123,41 +124,41 @@ public class TextureRegion {
 		this.v2 = v2;
 	}
 
-	public int getX () {
-		return (int)(getU() * texture.getWidth());
+	public int getRegionX () {
+		return (int)(u * texture.getWidth());
 	}
 
-	public void setX (int x) {
+	public void setRegionX (int x) {
 		setU(x / (float)texture.getWidth());
 	}
 
-	public int getY () {
+	public int getRegionY () {
 		return (int)(getV() * texture.getHeight());
 	}
 
-	public void setY (int y) {
+	public void setRegionY (int y) {
 		setV(y / texture.getHeight());
 	}
 
 	/**
 	 * Returns the region's width in pixels. May be negative if the texture region is flipped horizontally.
 	 */
-	public int getWidth () {
-		return (int)((getU2() - getU()) * texture.getWidth());
+	public int getRegionWidth () {
+		return (int)((v - u) * texture.getWidth());
 	}
 
-	public void setWidth (int width) {
-		setU2(getU() + width / (float)texture.getWidth());
+	public void setRegionWidth (int width) {
+		setU2(u + width / (float)texture.getWidth());
 	}
 
 	/**
 	 * Returns the region's height in pixels. May be negative if the texture region is flipped horizontally.
 	 */
-	public int getHeight () {
+	public int getRegionHeight () {
 		return (int)((getV2() - getV()) * texture.getHeight());
 	}
 
-	public void setHeight (int height) {
+	public void setRegionHeight (int height) {
 		setV2(getV() + height / (float)texture.getHeight());
 	}
 

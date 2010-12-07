@@ -66,8 +66,8 @@ public class Button extends Actor {
 
 	public Button (String name, TextureRegion unpressedRegion, TextureRegion pressedRegion) {
 		super(name);
-		width = unpressedRegion.getWidth();
-		height = unpressedRegion.getHeight();
+		width = unpressedRegion.getRegionWidth();
+		height = unpressedRegion.getRegionHeight();
 		originX = width / 2.0f;
 		originY = height / 2.0f;
 		this.unpressedRegion = new TextureRegion(unpressedRegion);

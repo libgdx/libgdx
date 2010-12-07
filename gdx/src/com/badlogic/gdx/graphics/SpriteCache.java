@@ -54,6 +54,7 @@ import static com.badlogic.gdx.graphics.Sprite.*;
  * SpriteCache works with OpenGL ES 1.x and 2.0. For 2.0, it uses its own custom shader to draw.<br>
  * <br>
  * SpriteCache must be disposed once it is no longer needed.
+ * @author Nathan Sweet <misc@n4te.com>
  */
 public class SpriteCache {
 	static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
@@ -70,6 +71,9 @@ public class SpriteCache {
 	private Cache currentCache;
 	private final ArrayList<Texture> textures = new ArrayList(8);
 	private final ArrayList<Integer> counts = new ArrayList(8);
+
+	private float color = Color.WHITE.toFloatBits();
+	private Color tempColor = new Color(1, 1, 1, 1);
 
 	/**
 	 * Creates a cache that uses indexed geometry and can contain up to 1000 images.
@@ -116,6 +120,39 @@ public class SpriteCache {
 		}
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
+	/**
+	 * Sets the color used to tint images when they are added to the SpriteBatch. Default is {@link Color#WHITE}.
+	 */
+	public void setColor (Color tint) {
+		color = tint.toFloatBits();
+	}
+
+	/**
+	 * @see #setColor(Color)
+	 */
+	public void setColor (float r, float g, float b, float a) {
+		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
+		color = Float.intBitsToFloat(intBits & 0xfeffffff);
+	}
+
+	/**
+	 * @see #setColor(Color)
+	 * @see Color#toFloatBits()
+	 */
+	public void setColor (float color) {
+		this.color = color;
+	}
+
+	public Color getColor () {
+		int intBits = Float.floatToRawIntBits(color);
+		Color color = this.tempColor;
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
 	}
 
 	/**
@@ -222,6 +259,60 @@ public class SpriteCache {
 	/**
 	 * Adds the specified image to the cache.
 	 */
+	public void add (Texture texture, float x, float y) {
+		final float fx2 = x + texture.getWidth();
+		final float fy2 = y + texture.getHeight();
+
+		tempVertices[0] = x;
+		tempVertices[1] = y;
+		tempVertices[2] = color;
+		tempVertices[3] = 0;
+		tempVertices[4] = 1;
+
+		tempVertices[5] = x;
+		tempVertices[6] = fy2;
+		tempVertices[7] = color;
+		tempVertices[8] = 0;
+		tempVertices[9] = 0;
+
+		tempVertices[10] = fx2;
+		tempVertices[11] = fy2;
+		tempVertices[12] = color;
+		tempVertices[13] = 1;
+		tempVertices[14] = 0;
+
+		if (mesh.getNumIndices() > 0) {
+			tempVertices[15] = fx2;
+			tempVertices[16] = y;
+			tempVertices[17] = color;
+			tempVertices[18] = 1;
+			tempVertices[19] = 1;
+			add(texture, tempVertices, 0, 20);
+		} else {
+			tempVertices[15] = fx2;
+			tempVertices[16] = fy2;
+			tempVertices[17] = color;
+			tempVertices[18] = 1;
+			tempVertices[19] = 0;
+
+			tempVertices[20] = fx2;
+			tempVertices[21] = y;
+			tempVertices[22] = color;
+			tempVertices[23] = 1;
+			tempVertices[24] = 1;
+
+			tempVertices[25] = x;
+			tempVertices[26] = y;
+			tempVertices[27] = color;
+			tempVertices[28] = 0;
+			tempVertices[29] = 1;
+			add(texture, tempVertices, 0, 30);
+		}
+	}
+	
+	/**
+	 * Adds the specified image to the cache.
+	 */
 	public void add (Texture texture, float x, float y, int srcWidth, int srcHeight, float u, float v, float u2, float v2,
 		float color) {
 		final float fx2 = x + srcWidth;
@@ -277,7 +368,7 @@ public class SpriteCache {
 	/**
 	 * Adds the specified image to the cache.
 	 */
-	public void add (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight, Color tint) {
+	public void add (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight) {
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();
 		final float u = srcX * invTexWidth;
@@ -286,8 +377,6 @@ public class SpriteCache {
 		final float v2 = srcY * invTexHeight;
 		final float fx2 = x + srcWidth;
 		final float fy2 = y + srcHeight;
-
-		final float color = tint.toFloatBits();
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
@@ -340,7 +429,7 @@ public class SpriteCache {
 	 * Adds the specified image to the cache.
 	 */
 	public void add (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth,
-		int srcHeight, Color tint, boolean flipX, boolean flipY) {
+		int srcHeight, boolean flipX, boolean flipY) {
 
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();
@@ -361,8 +450,6 @@ public class SpriteCache {
 			v = v2;
 			v2 = tmp;
 		}
-
-		final float color = tint.toFloatBits();
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
@@ -415,7 +502,7 @@ public class SpriteCache {
 	 * Adds the specified image to the cache.
 	 */
 	public void add (Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX,
-		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, Color tint, boolean flipX, boolean flipY) {
+		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
 
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
@@ -510,8 +597,6 @@ public class SpriteCache {
 			v2 = tmp;
 		}
 
-		final float color = tint.toFloatBits();
-
 		tempVertices[0] = x1;
 		tempVertices[1] = y1;
 		tempVertices[2] = color;
@@ -559,18 +644,17 @@ public class SpriteCache {
 		}
 	}
 
-	public void draw (TextureRegion region, float x, float y, Color tint) {
-		draw(region, x, y, region.getWidth(), region.getHeight(), tint);
+	public void add (TextureRegion region, float x, float y) {
+		add(region, x, y, region.getRegionWidth(), region.getRegionHeight());
 	}
 
-	public void draw (TextureRegion region, float x, float y, float width, float height, Color tint) {
+	public void add (TextureRegion region, float x, float y, float width, float height) {
 		final float fx2 = x + width;
 		final float fy2 = y + height;
-		final float u = region.getU();
-		final float v = region.getV2();
-		final float u2 = region.getU2();
-		final float v2 = region.getV();
-		final float color = tint.toFloatBits();
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
 
 		tempVertices[0] = x;
 		tempVertices[1] = y;
@@ -619,8 +703,8 @@ public class SpriteCache {
 		}
 	}
 
-	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
-		float scaleX, float scaleY, float rotation, Color tint) {
+	public void add (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
+		float scaleX, float scaleY, float rotation) {
 
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
@@ -696,11 +780,10 @@ public class SpriteCache {
 		x4 += worldOriginX;
 		y4 += worldOriginY;
 
-		final float u = region.getU();
-		final float v = region.getV2();
-		final float u2 = region.getU2();
-		final float v2 = region.getV();
-		final float color = tint.toFloatBits();
+		final float u = region.u;
+		final float v = region.v2;
+		final float u2 = region.u2;
+		final float v2 = region.v;
 
 		tempVertices[0] = x1;
 		tempVertices[1] = y1;

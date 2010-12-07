@@ -266,7 +266,7 @@ public class ParticleEmitter {
 		Particle particle = particles[index];
 		if (particle == null) {
 			particles[index] = particle = new Particle(sprite);
-			particle.getRegion().flip(flipX, flipY);
+			particle.flip(flipX, flipY);
 		}
 
 		float percent = durationTimer / (float)duration;
@@ -483,7 +483,7 @@ public class ParticleEmitter {
 		for (int i = 0, n = particles.length; i < n; i++) {
 			Particle particle = particles[i];
 			if (particle == null) break;
-			particle.getRegion().setTexture(texture);
+			particle.setTexture(texture);
 			particle.setOrigin(originX, originY);
 		}
 	}
