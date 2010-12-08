@@ -50,11 +50,13 @@ public class IntArray {
 	}
 
 	public void add (int value) {
+		int[] items = this.items;
 		if (size == items.length) resize((int)(size * 1.75f));
 		items[size++] = value;
 	}
 
 	public void addAll (IntArray array) {
+		int[] items = this.items;
 		int sizeNeeded = size + array.size;
 		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
 		System.arraycopy(array.items, 0, items, size, array.size);
@@ -62,6 +64,7 @@ public class IntArray {
 	}
 
 	public void addAll (IntBag bag) {
+		int[] items = this.items;
 		int sizeNeeded = size + bag.size;
 		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
 		System.arraycopy(bag.items, 0, items, size, bag.size);
@@ -74,6 +77,7 @@ public class IntArray {
 	}
 
 	public void insert (int index, int value) {
+		int[] items = this.items;
 		if (size == items.length) resize((int)(size * 1.75f));
 		System.arraycopy(items, index, items, index + 1, size - index);
 		size++;
@@ -114,9 +118,29 @@ public class IntArray {
 	public void removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
-		if (index == size) return;
-		if (index > 0) System.arraycopy(items, 0, items, 0, index);
-		System.arraycopy(items, index + 1, items, index, size);
+		if (index < size) {
+			int[] items = this.items;
+			System.arraycopy(items, index + 1, items, index, size);
+		}
+	}
+
+	/**
+	 * Removes and returns the last item.
+	 */
+	public int pop () {
+		return items[--size];
+	}
+
+	/**
+	 * Removes and returns the specified item.
+	 */
+	public int pop (int index) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		int[] items = this.items;
+		int value = items[index];
+		size--;
+		if (index < size) System.arraycopy(items, index + 1, items, index, size);
+		return value;
 	}
 
 	public void clear () {
@@ -143,8 +167,9 @@ public class IntArray {
 
 	private void resize (int newSize) {
 		int[] newItems = new int[Math.max(newSize, 8)];
+		int[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
-		items = newItems;
+		this.items = newItems;
 	}
 
 	public String toString () {

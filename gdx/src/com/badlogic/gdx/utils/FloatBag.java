@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.utils;
 
 /**
@@ -91,13 +92,30 @@ public class FloatBag {
 		return false;
 	}
 
-	public float removeIndex (int index) {
+	public void removeIndex (int index) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		size--;
+		float[] items = this.items;
+		items[index] = items[size];
+	}
+
+	/**
+	 * Removes and returns the last item.
+	 */
+	public float pop () {
+		return items[--size];
+	}
+
+	/**
+	 * Removes and returns the specified item.
+	 */
+	public float pop (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		float[] items = this.items;
-		float took = items[index];
+		float value = items[index];
 		size--;
 		items[index] = items[size];
-		return took;
+		return value;
 	}
 
 	public void clear () {
@@ -124,8 +142,9 @@ public class FloatBag {
 
 	private void resize (int newSize) {
 		float[] newItems = new float[Math.max(newSize, 8)];
+		float[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
-		items = newItems;
+		this.items = newItems;
 	}
 
 	public String toString () {

@@ -114,9 +114,29 @@ public class FloatArray {
 	public void removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
-		if (index == size) return;
-		if (index > 0) System.arraycopy(items, 0, items, 0, index);
-		System.arraycopy(items, index + 1, items, index, size);
+		if (index < size) {
+			float[] items = this.items;
+			System.arraycopy(items, index + 1, items, index, size);
+		}
+	}
+
+	/**
+	 * Removes and returns the last item.
+	 */
+	public float pop () {
+		return items[--size];
+	}
+
+	/**
+	 * Removes and returns the specified item.
+	 */
+	public float pop (int index) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		float[] items = this.items;
+		float value = items[index];
+		size--;
+		if (index < size) System.arraycopy(items, index + 1, items, index, size);
+		return value;
 	}
 
 	public void clear () {

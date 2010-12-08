@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.utils;
 
 /**
@@ -91,13 +92,30 @@ public class LongBag {
 		return false;
 	}
 
-	public long removeIndex (int index) {
+	public void removeIndex (int index) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		size--;
+		long[] items = this.items;
+		items[index] = items[size];
+	}
+
+	/**
+	 * Removes and returns the last item.
+	 */
+	public long pop () {
+		return items[--size];
+	}
+
+	/**
+	 * Removes and returns the specified item.
+	 */
+	public long pop (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		long[] items = this.items;
-		long took = items[index];
+		long value = items[index];
 		size--;
 		items[index] = items[size];
-		return took;
+		return value;
 	}
 
 	public void clear () {
@@ -124,8 +142,9 @@ public class LongBag {
 
 	private void resize (int newSize) {
 		long[] newItems = new long[Math.max(newSize, 8)];
+		long[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
-		items = newItems;
+		this.items = newItems;
 	}
 
 	public String toString () {
