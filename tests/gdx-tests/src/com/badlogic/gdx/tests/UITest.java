@@ -96,7 +96,7 @@ public class UITest extends GdxTest implements InputProcessor {
 		ui.addActor(img2);
 
 		Button button = new Button("button", buttonRegion, buttonDownRegion);
-		button.action(Forever.$(RotateBy.$(360, 4)));
+		button.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)), Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))));
 		button.clickListener = new ClickListener() {
 
 			@Override
