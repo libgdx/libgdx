@@ -368,11 +368,13 @@ public class Mesh {
 			if (indices.getNumIndices() > 0) {
 				ShortBuffer buffer = indices.getBuffer();
 				int oldPosition = buffer.position();
+				int oldLimit = buffer.limit();
 				buffer.position(offset);
 				buffer.limit(offset + count);
 				Gdx.gl10.glDrawElements(primitiveType, count,
 						GL10.GL_UNSIGNED_SHORT, buffer);
 				buffer.position(oldPosition);
+				buffer.limit(oldLimit);
 			} else
 				Gdx.gl10.glDrawArrays(primitiveType, offset, count);
 		} else {
