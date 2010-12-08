@@ -356,11 +356,11 @@ public class SpriteBatch {
 	 * Draws a rectangle with the top left corner at x,y having the given width
 	 * and height in pixels. The rectangle is offset by originX, originY
 	 * relative to the origin. Scale specifies the scaling factor by which the
-	 * rectangle should be scaled around originX,originY. Rotation specifies the
+	 * rectangle should be scaled around originX, originY. Rotation specifies the
 	 * angle of counter clockwise rotation of the rectangle around originX,
 	 * originY. The portion of the {@link Texture} given by srcX, srcY and
 	 * srcWidth, srcHeight is used. These coordinates and sizes are given in
-	 * texels. The rectangle will have the given tint {@link Color}. FlipX and
+	 * texels. FlipX and
 	 * flipY specify whether the texture portion should be fliped horizontally
 	 * or vertically.
 	 * 
@@ -794,6 +794,10 @@ public class SpriteBatch {
 		vertices[idx++] = 1;
 	}
 
+	/**
+	 * Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
+	 * u, v.
+	 */
 	public void draw(Texture texture, float[] spriteVertices, int offset,
 			int length) {
 		if (!drawing)
@@ -812,10 +816,16 @@ public class SpriteBatch {
 		idx += length;
 	}
 
+	/**
+	 * Draws a rectangle with the top left corner at x,y having the width and height of the region.
+	 */
 	public void draw (TextureRegion region, float x, float y) {
 		draw(region, x, y, region.getRegionWidth(), region.getRegionHeight());
 	}
 
+	/**
+	 * Draws a rectangle with the top left corner at x,y and stretching the region to cover the given width and height.
+	 */
 	public void draw (TextureRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -860,6 +870,12 @@ public class SpriteBatch {
 		vertices[idx++] = v;
 	}
 
+	/**
+	 * Draws a rectangle with the top left corner at x,y and stretching the region to cover the given width and height. The
+	 * rectangle is offset by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle
+	 * should be scaled around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around
+	 * originX, originY.
+	 */
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -990,6 +1006,8 @@ public class SpriteBatch {
 			return;
 
 		renderCalls++;
+		int spritesInBatch = idx / 20;
+		if (spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
 
 		lastTexture.bind();
 		mesh.setVertices(vertices, 0, idx);
@@ -1003,7 +1021,7 @@ public class SpriteBatch {
 				gl20.glBlendFunc(blendSrcFunc, blendDstFunc);
 			}
 
-			mesh.render(shader, GL10.GL_TRIANGLES, 0, idx / 20 * 6);
+			mesh.render(shader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 		} else {
 			if (blendingDisabled) {
 				Gdx.gl10.glDisable(GL10.GL_BLEND);
@@ -1012,15 +1030,12 @@ public class SpriteBatch {
 				gl10.glEnable(GL10.GL_BLEND);
 				gl10.glBlendFunc(blendSrcFunc, blendDstFunc);
 			}
-			mesh.render(GL10.GL_TRIANGLES, 0, idx / 20 * 6);
+			mesh.render(GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 		}
-		int spritesInBatch = idx / 20 / 6;
-		if (spritesInBatch > maxSpritesInBatch) spritesInBatch = maxSpritesInBatch;
+		
 		idx = 0;
 		currBufferIdx++;
-		if(currBufferIdx == buffers.length) {
-			currBufferIdx = 0;
-		}
+		if (currBufferIdx == buffers.length) currBufferIdx = 0;
 		mesh = buffers[currBufferIdx];
 	}
 

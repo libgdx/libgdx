@@ -87,7 +87,7 @@ public class ParticleEmitterTest extends GdxTest {
 				else if (keycode == Input.Keys.KEYCODE_SPACE) {
 					emitterIndex = (emitterIndex + 1) % emitters.size();
 					emitter = emitters.get(emitterIndex);
-					particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax());
+					particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax() / 1000f);
 				} else
 					return false;
 				particleCount = Math.max(0, particleCount);

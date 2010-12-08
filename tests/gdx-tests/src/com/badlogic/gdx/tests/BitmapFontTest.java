@@ -15,25 +15,23 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.BitmapFont;
+import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.BitmapFontCache;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
+
+import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
 public class BitmapFontTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private Sprite logoSprite;
-	private Color red = new Color(1, 0, 0, 1);
+	private Color red = new Color(1, 0, 0, 0);
 	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
 	int renderMode;
 
@@ -47,12 +45,11 @@ public class BitmapFontTest extends GdxTest {
 
 		spriteBatch = new SpriteBatch();
 
-		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
-			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.internal("data/badlogic.jpg"), Linear, Linear, ClampToEdge,
+			ClampToEdge));
 		logoSprite.setColor(1, 1, 1, 0.5f);
 
-		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/verdana39.png", FileType.Internal), false);
+		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), false);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);
@@ -68,7 +65,7 @@ public class BitmapFontTest extends GdxTest {
 
 		text = "How quickly\ndaft jumping zebras vex.";
 		cache3.setColor(Color.BLUE);
-		cache3.setMultiLineText(text, 5, 200, 470, BitmapFont.HAlignment.CENTER);
+		cache3.setMultiLineText(text, 5, 200, 470, HAlignment.CENTER);
 
 		text = "Kerning: LYA moo";
 		cache4.setText(text, 210, 66, 0, text.length() - 3);
@@ -112,7 +109,7 @@ public class BitmapFontTest extends GdxTest {
 
 		text = "How quickly\ndaft jumping zebras vex.";
 		font.setColor(Color.BLUE);
-		font.drawMultiLine(spriteBatch, text, 5, 200, 470, BitmapFont.HAlignment.RIGHT);
+		font.drawMultiLine(spriteBatch, text, 5, 200, 470, HAlignment.RIGHT);
 
 		text = "Kerning: LYA moo";
 		font.setColor(Color.WHITE);

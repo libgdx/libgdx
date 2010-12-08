@@ -41,8 +41,8 @@ public class TextureAtlasTest extends GdxTest {
 		badlogicSmall.flip(true, true);
 
 		AtlasRegion region = atlas.getRegion("badlogicsmall");
-		System.out.println("badlogicSmall original size: " + region.getOriginalWidth() + ", " + region.getOriginalHeight());
-		System.out.println("badlogicSmall packed size: " + region.getPackedWidth() + ", " + region.getPackedHeight());
+		System.out.println("badlogicSmall original size: " + region.originalWidth + ", " + region.originalHeight);
+		System.out.println("badlogicSmall packed size: " + region.packedWidth + ", " + region.packedHeight);
 
 		star = atlas.getSprite("particle-star");
 		star.setPosition(10, 70);

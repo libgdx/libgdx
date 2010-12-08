@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -39,13 +40,27 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 public class TextureAtlas {
 	static private final String[] tuple = new String[2];
 
-	private final ArrayList<Texture> textures = new ArrayList(4);
-	private final AtlasRegion[] regions;
+	private final HashSet<Texture> textures = new HashSet(4);
+	private final ArrayList<AtlasRegion> regions;
 
+	/**
+	 * Creates an empty atlas to which regions can be added.
+	 */
+	public TextureAtlas () {
+		regions = new ArrayList();
+	}
+
+	/**
+	 * Loads a pack file named "pack" in the specified directory and also looks there for page images named in the pack file.
+	 */
 	public TextureAtlas (FileHandle imagesDir) {
 		this(imagesDir.child("pack"), imagesDir);
 	}
 
+	/**
+	 * @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @see #TextureAtlas(FileHandle)
+	 */
 	public TextureAtlas (FileHandle imagesDir, boolean flip) {
 		this(imagesDir.child("pack"), imagesDir, flip);
 	}
@@ -54,6 +69,9 @@ public class TextureAtlas {
 		this(packFile, imagesDir, false);
 	}
 
+	/**
+	 * @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 */
 	public TextureAtlas (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 		PriorityQueue<AtlasRegion> sortedRegions = new PriorityQueue(16, indexComparator);
 
@@ -130,46 +148,100 @@ public class TextureAtlas {
 		}
 
 		int n = sortedRegions.size();
-		regions = new AtlasRegion[n];
+		regions = new ArrayList(n);
 		for (int i = 0; i < n; i++)
-			regions[i] = sortedRegions.poll();
+			regions.add(sortedRegions.poll());
 	}
 
 	/**
-	 * Returns the first sprite found with the specified name.<br>
-	 * <br>
-	 * This method uses string comparison to find the sprite, so the result should be cached rather than calling this method every
-	 * frame.
+	 * Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed.
+	 */
+	public AtlasRegion addRegion (String name, Texture texture, int x, int y, int width, int height) {
+		textures.add(texture);
+		AtlasRegion region = new AtlasRegion(texture, x, y, width, height);
+		region.name = name;
+		region.originalWidth = width;
+		region.originalHeight = height;
+		region.index = Integer.MAX_VALUE;
+		regions.add(region);
+		return region;
+	}
+
+	/**
+	 * Adds a region to the atlas. The texture for the specified region will be disposed when the atlas is disposed.
+	 */
+	public AtlasRegion addRegion (String name, TextureRegion textureRegion) {
+		return addRegion(name, textureRegion.texture, textureRegion.getRegionX(), textureRegion.getRegionY(),
+			textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+	}
+
+	/**
+	 * Returns all regions in the atlas.
+	 */
+	public List<AtlasRegion> getRegions () {
+		return regions;
+	}
+
+	/**
+	 * Returns the first region found with the specified name. This method uses string comparison to find the region, so the result
+	 * should be cached rather than calling this method multiple times.
+	 * @return The region, or null.
 	 */
 	public AtlasRegion getRegion (String name) {
-		for (int i = 0, n = regions.length; i < n; i++)
-			if (regions[i].name.equals(name)) return regions[i];
+		for (int i = 0, n = regions.size(); i < n; i++)
+			if (regions.get(i).name.equals(name)) return regions.get(i);
 		return null;
 	}
 
 	/**
-	 * Returns all sprites found with the specified name, ordered by smallest to largest {@link AtlasRegion#getIndex() index}.<br>
-	 * <br>
-	 * This method uses string comparison to find the sprite, so the result should be cached rather than calling this method every
-	 * frame.
+	 * Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
+	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple times.
 	 */
 	public List<AtlasRegion> getRegions (String name) {
 		ArrayList<AtlasRegion> matched = new ArrayList();
-		for (int i = 0, n = regions.length; i < n; i++)
-			if (regions[i].name.equals(name)) matched.add(new AtlasRegion(regions[i]));
+		for (int i = 0, n = regions.size(); i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.name.equals(name)) matched.add(new AtlasRegion(region));
+		}
 		return matched;
 	}
 
+	/**
+	 * Returns all regions in the atlas as sprites. This method creates a new sprite for each region, so the result should be
+	 * stored rather than calling this method multiple times.
+	 * @see #getSprite(String)
+	 */
+	public List<Sprite> getSprites () {
+		ArrayList sprites = new ArrayList(regions.size());
+		for (int i = 0, n = regions.size(); i < n; i++)
+			sprites.add(newSprite(regions.get(i)));
+		return sprites;
+	}
+
+	/**
+	 * Returns the first region found with the specified name as a sprite. If whitespace was stripped from the region when it was
+	 * packed, the sprite is automatically positioned as if whitespace had not been stripped. This method uses string comparison to
+	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
+	 * @return The sprite, or null.
+	 */
 	public Sprite getSprite (String name) {
-		for (int i = 0, n = regions.length; i < n; i++)
-			if (regions[i].name.equals(name)) return newSprite(regions[i]);
+		for (int i = 0, n = regions.size(); i < n; i++)
+			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
 		return null;
 	}
 
+	/**
+	 * Returns all regions with the specified name as sprites, ordered by smallest to largest {@link AtlasRegion#index index}. This
+	 * method uses string comparison to find the regions and constructs new sprites, so the result should be cached rather than
+	 * calling this method multiple times.
+	 * @see #getSprite(String)
+	 */
 	public List<Sprite> getSprites (String name) {
 		ArrayList<Sprite> matched = new ArrayList();
-		for (int i = 0, n = regions.length; i < n; i++)
-			if (regions[i].name.equals(name)) matched.add(newSprite(regions[i]));
+		for (int i = 0, n = regions.size(); i < n; i++) {
+			AtlasRegion region = regions.get(i);
+			if (region.name.equals(name)) matched.add(newSprite(region));
+		}
 		return matched;
 	}
 
@@ -183,8 +255,8 @@ public class TextureAtlas {
 	 * and Sprites, which should no longer be used after calling dispose.
 	 */
 	public void dispose () {
-		for (int i = 0, n = textures.size(); i < n; i++)
-			textures.get(i).dispose();
+		for (Texture texture : textures)
+			texture.dispose();
 		textures.clear();
 	}
 
@@ -210,13 +282,60 @@ public class TextureAtlas {
 		tuple[1] = line.substring(comma + 1).trim();
 	}
 
+	/**
+	 * Describes the region of a packed image and provides extra information, such as the original image size before any whitespace
+	 * was stripped.
+	 */
 	static public class AtlasRegion extends TextureRegion {
-		int index;
-		String name;
-		float offsetX, offsetY;
-		int packedWidth, packedHeight;
-		int originalWidth, originalHeight;
-		boolean rotate;
+		/**
+		 * The number at the end of the original image file name, or Integer.MAX_VALUE if none.<br>
+		 * <br>
+		 * When sprites are packed, if the original file name ends with a number, it is stored as the index and is not considered as
+		 * part of the sprite's name. This is useful for keeping animation frames in order.
+		 * @see TextureAtlas#getRegions(String)
+		 */
+		public int index;
+
+		/**
+		 * The name of the original image file, with any trailing numbers or special flags removed.
+		 */
+		public String name;
+
+		/**
+		 * The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing.
+		 */
+		public float offsetX;
+
+		/**
+		 * The offset from the bottom of the original image to the bottom of the packed image, after whitespace was removed for
+		 * packing.
+		 */
+		public float offsetY;
+
+		/**
+		 * The width of the image, after whitespace was removed for packing.
+		 */
+		public int packedWidth;
+
+		/**
+		 * The height of the image, after whitespace was removed for packing.
+		 */
+		public int packedHeight;
+
+		/**
+		 * The width of the image, before whitespace was removed for packing.
+		 */
+		public int originalWidth;
+
+		/**
+		 * The height of the image, before whitespace was removed for packing.
+		 */
+		public int originalHeight;
+
+		/**
+		 * If true, the region has been rotated 90 degrees counter clockwise.
+		 */
+		public boolean rotate;
 
 		AtlasRegion (Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);
@@ -235,77 +354,12 @@ public class TextureAtlas {
 			if (x) offsetX = originalWidth - offsetX - packedWidth;
 			if (y) offsetY = originalHeight - offsetY - packedHeight;
 		}
-
-		/**
-		 * The name of the original image file, with any trailing numbers or special flags removed.
-		 */
-		public String getName () {
-			return name;
-		}
-
-		/**
-		 * The number at the end of the original image file name, or Integer.MAX_VALUE if none.<br>
-		 * <br>
-		 * When sprites are packed, if the original file name ends with a number, it is stored as the index and is not considered as
-		 * part of the sprite's name. This is useful for keeping animation frames in order.
-		 * @see TextureAtlas#getRegions(String)
-		 */
-		public int getIndex () {
-			return index;
-		}
-
-		/**
-		 * The width of the image, after whitespace was removed for packing.
-		 */
-		public int getPackedWidth () {
-			return packedWidth;
-		}
-
-		/**
-		 * The height of the image, after whitespace was removed for packing.
-		 */
-		public int getPackedHeight () {
-			return packedHeight;
-		}
-
-		/**
-		 * The width of the image, before whitespace was removed for packing.
-		 */
-		public int getOriginalWidth () {
-			return originalWidth;
-		}
-
-		/**
-		 * The height of the image, before whitespace was removed for packing.
-		 */
-		public int getOriginalHeight () {
-			return originalHeight;
-		}
-
-		/**
-		 * The offset from the left of the original image to the left of the packed image, after whitespace was removed for packing.
-		 */
-		public float getOffsetX () {
-			return offsetX;
-		}
-
-		/**
-		 * The offset from the bottom of the original image to the bottom of the packed image, after whitespace was removed for
-		 * packing.
-		 */
-		public float getOffsetY () {
-			return offsetY;
-		}
 	}
 
-	/**
-	 * A sprite that provides additional information about the packed image it represents. An AtlasSprite's position is relative to
-	 * the bottom left of the original image, before whitespace was removed for packing.
-	 */
-	static class AtlasSprite extends Sprite {
+	static private class AtlasSprite extends Sprite {
 		final AtlasRegion region;
 
-		AtlasSprite (AtlasRegion region) {
+		public AtlasSprite (AtlasRegion region) {
 			this.region = region;
 			setRegion(region);
 			if (region.rotate) rotate90(true);
@@ -329,10 +383,12 @@ public class TextureAtlas {
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
 			super.flip(x, y);
-			// Update x and y offsets.
+
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
+			// Update x and y offsets.
 			region.flip(x, y);
+
 			// Update position with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
 		}

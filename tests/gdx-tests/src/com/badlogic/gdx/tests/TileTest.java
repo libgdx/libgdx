@@ -58,7 +58,7 @@ public class TileTest extends GdxTest {
 				for(int x = 0; x < WIDTH; x++) {
 					int tileX = rand.nextInt(5);
 					int tileY = rand.nextInt(5);
-					cache.add(texture, x << 5, y << 5, 1 + tileX * 33, 1 + tileY * 33, 32, 32, Color.WHITE);
+					cache.add(texture, x << 5, y << 5, 1 + tileX * 33, 1 + tileY * 33, 32, 32);
 				}
 			}	
 			layers[i] = cache.endCache();

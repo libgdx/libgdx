@@ -292,8 +292,9 @@ public class ParticleEmitter {
 			particle.angleSin = MathUtils.sinDeg(angle);
 		}
 
-		particle.scale = scaleValue.newLowValue() / sprite.getWidth();
-		particle.scaleDiff = scaleValue.newHighValue() / sprite.getWidth();
+		float spriteWidth = sprite.getWidth();
+		particle.scale = scaleValue.newLowValue() / spriteWidth;
+		particle.scaleDiff = scaleValue.newHighValue() / spriteWidth;
 		if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scale;
 		if ((updateFlags & UPDATE_SCALE) == 0) particle.setScale(particle.scale + particle.scaleDiff * scaleValue.getScale(0));
 
@@ -393,7 +394,6 @@ public class ParticleEmitter {
 		}
 		}
 
-		float spriteWidth = sprite.getWidth();
 		float spriteHeight = sprite.getHeight();
 		particle.setBounds(x - spriteWidth / 2, y - spriteHeight / 2, spriteWidth, spriteHeight);
 	}

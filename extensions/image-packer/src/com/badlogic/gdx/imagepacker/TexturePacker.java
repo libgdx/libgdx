@@ -593,7 +593,7 @@ public class TexturePacker {
 		formatToAbbrev.put(Format.Alpha, "a");
 	}
 
-	static class Settings {
+	static public class Settings {
 		public Format defaultFormat = Format.RGBA8888;
 		public TextureFilter defaultFilterMin = TextureFilter.Linear;
 		public TextureFilter defaultFilterMag = TextureFilter.Linear;

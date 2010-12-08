@@ -57,7 +57,7 @@ public class IsometricTileTest extends GdxTest {
 				for(int y=0; y < HEIGHT; y++) {								
 					int tileX = colX - y * TILE_WIDTH / 2;
 					int tileY = colY - y * TILE_HEIGHT_DIAMOND / 2;
-					cache.add(texture, tileX, tileY, rand.nextInt(2) * 54, 0,TILE_WIDTH, TILE_HEIGHT, Color.WHITE);				
+					cache.add(texture, tileX, tileY, rand.nextInt(2) * 54, 0,TILE_WIDTH, TILE_HEIGHT);				
 				}
 				colX += TILE_WIDTH / 2;
 				colY -= TILE_HEIGHT_DIAMOND / 2;

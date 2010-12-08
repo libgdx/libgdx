@@ -123,7 +123,7 @@ public class SpriteCache {
 	}
 
 	/**
-	 * Sets the color used to tint images when they are added to the SpriteBatch. Default is {@link Color#WHITE}.
+	 * Sets the color used to tint images when they are added to the SpriteCache. Default is {@link Color#WHITE}.
 	 */
 	public void setColor (Color tint) {
 		color = tint.toFloatBits();
@@ -257,7 +257,7 @@ public class SpriteCache {
 	}
 
 	/**
-	 * Adds the specified image to the cache.
+	 * Adds the specified texture to the cache.
 	 */
 	public void add (Texture texture, float x, float y) {
 		final float fx2 = x + texture.getWidth();
@@ -311,7 +311,7 @@ public class SpriteCache {
 	}
 	
 	/**
-	 * Adds the specified image to the cache.
+	 * Adds the specified texture to the cache.
 	 */
 	public void add (Texture texture, float x, float y, int srcWidth, int srcHeight, float u, float v, float u2, float v2,
 		float color) {
@@ -366,7 +366,7 @@ public class SpriteCache {
 	}
 
 	/**
-	 * Adds the specified image to the cache.
+	 * Adds the specified texture to the cache.
 	 */
 	public void add (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight) {
 		float invTexWidth = 1.0f / texture.getWidth();
@@ -426,7 +426,7 @@ public class SpriteCache {
 	}
 
 	/**
-	 * Adds the specified image to the cache.
+	 * Adds the specified texture to the cache.
 	 */
 	public void add (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth,
 		int srcHeight, boolean flipX, boolean flipY) {
@@ -499,7 +499,7 @@ public class SpriteCache {
 	}
 
 	/**
-	 * Adds the specified image to the cache.
+	 * Adds the specified texture to the cache.
 	 */
 	public void add (Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
@@ -644,10 +644,16 @@ public class SpriteCache {
 		}
 	}
 
+	/**
+	 * Adds the specified region to the cache.
+	 */
 	public void add (TextureRegion region, float x, float y) {
 		add(region, x, y, region.getRegionWidth(), region.getRegionHeight());
 	}
 
+	/**
+	 * Adds the specified region to the cache.
+	 */
 	public void add (TextureRegion region, float x, float y, float width, float height) {
 		final float fx2 = x + width;
 		final float fy2 = y + height;
@@ -703,6 +709,9 @@ public class SpriteCache {
 		}
 	}
 
+	/**
+	 * Adds the specified region to the cache.
+	 */
 	public void add (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation) {
 

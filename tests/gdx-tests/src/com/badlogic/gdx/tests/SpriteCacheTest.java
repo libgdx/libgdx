@@ -165,10 +165,10 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 
 		spriteCache.beginCache();
 		for (int i = 0; i < sprites2.length; i += 6)
-			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
 				false, false);
 		for (int i = 0; i < sprites.length; i += 6)
-			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
 				false, false);
 		normalCacheID = spriteCache.endCache();
 
@@ -196,10 +196,10 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		float angle = MathUtils.random(1, 360);
 		spriteCache.beginCache(normalCacheID);
 		for (int i = 0; i < sprites2.length; i += 6)
-			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
 				false, false);
 		for (int i = 0; i < sprites.length; i += 6)
-			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, Color.WHITE,
+			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
 				false, false);
 		spriteCache.endCache();
 		return false;

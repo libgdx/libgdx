@@ -33,7 +33,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private Sprite logoSprite;
-	private Color red = new Color(1, 0, 0, 0.5f);
+	private Color red = new Color(1, 0, 0, 0);
 	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
 	int renderMode;
 
