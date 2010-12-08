@@ -349,6 +349,10 @@ public class TextureAtlas {
 			packedHeight = region.packedHeight;
 		}
 
+		/**
+		 * Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for
+		 * packing.
+		 */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
 			if (x) offsetX = originalWidth - offsetX - packedWidth;
