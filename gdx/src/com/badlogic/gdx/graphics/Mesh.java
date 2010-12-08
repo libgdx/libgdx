@@ -366,11 +366,13 @@ public class Mesh {
 
 		if (isVertexArray) {
 			if (indices.getNumIndices() > 0) {
-				int oldPosition = indices.getBuffer().position();
-				indices.getBuffer().position(offset);
+				ShortBuffer buffer = indices.getBuffer();
+				int oldPosition = buffer.position();
+				buffer.position(offset);
+				buffer.limit(offset + count);
 				Gdx.gl10.glDrawElements(primitiveType, count,
-						GL10.GL_UNSIGNED_SHORT, indices.getBuffer());
-				indices.getBuffer().position(oldPosition);
+						GL10.GL_UNSIGNED_SHORT, buffer);
+				buffer.position(oldPosition);
 			} else
 				Gdx.gl10.glDrawArrays(primitiveType, offset, count);
 		} else {
