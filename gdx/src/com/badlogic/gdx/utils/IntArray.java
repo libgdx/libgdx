@@ -118,10 +118,8 @@ public class IntArray {
 	public void removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
-		if (index < size) {
-			int[] items = this.items;
-			System.arraycopy(items, index + 1, items, index, size);
-		}
+		int[] items = this.items;
+		System.arraycopy(items, index + 1, items, index, size - index);
 	}
 
 	/**
@@ -139,7 +137,7 @@ public class IntArray {
 		int[] items = this.items;
 		int value = items[index];
 		size--;
-		if (index < size) System.arraycopy(items, index + 1, items, index, size);
+		System.arraycopy(items, index + 1, items, index, size - index);
 		return value;
 	}
 

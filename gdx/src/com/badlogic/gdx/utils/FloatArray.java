@@ -114,10 +114,8 @@ public class FloatArray {
 	public void removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
-		if (index < size) {
-			float[] items = this.items;
-			System.arraycopy(items, index + 1, items, index, size);
-		}
+		float[] items = this.items;
+		System.arraycopy(items, index + 1, items, index, size - index);
 	}
 
 	/**
@@ -135,7 +133,7 @@ public class FloatArray {
 		float[] items = this.items;
 		float value = items[index];
 		size--;
-		if (index < size) System.arraycopy(items, index + 1, items, index, size);
+		System.arraycopy(items, index + 1, items, index, size - index);
 		return value;
 	}
 
