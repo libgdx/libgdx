@@ -235,8 +235,8 @@ public final class Intersector {
 	 * @param plane
 	 *            The plane
 	 * @param intersection
-	 *            The vector the intersection point is written to
-	 * @return Wheter an intersection is present.
+	 *            The vector the intersection point is written to (optional)
+	 * @return Whether an intersection is present.
 	 */
 	public static boolean intersectRayPlane(Ray ray, Plane plane,
 			Vector3 intersection) {
@@ -247,10 +247,12 @@ public final class Intersector {
 			if (t < 0)
 				return false;
 
-			intersection.set(ray.origin).add(ray.direction.tmp().mul(t));
+			if (intersection != null)
+				intersection.set(ray.origin).add(ray.direction.tmp().mul(t));
 			return true;
 		} else if (plane.testPoint(ray.origin) == Plane.PlaneSide.OnPlane) {
-			intersection.set(ray.origin);
+			if (intersection != null)
+				intersection.set(ray.origin);
 			return true;
 		} else
 			return false;
@@ -272,7 +274,7 @@ public final class Intersector {
 	 * @param t3
 	 *            The third vertex of the triangle
 	 * @param intersection
-	 *            The intersection point
+	 *            The intersection point (optional)
 	 * @return True in case an intersection is present.
 	 */
 	public static boolean intersectRayTriangle(Ray ray, Vector3 t1, Vector3 t2,
@@ -299,7 +301,8 @@ public final class Intersector {
 		float v = (dot00 * dot12 - dot01 * dot02) / denom;
 
 		if (u >= 0 && v >= 0 && u + v <= 1) {
-			intersection.set(i);
+			if(intersection != null)
+				intersection.set(i);
 			return true;
 		} else {
 			return false;
@@ -320,8 +323,8 @@ public final class Intersector {
 	 * @param radius
 	 *            The radius of the sphere
 	 * @param intersection
-	 *            The intersection point
-	 * @return Wheter an interesection is present.
+	 *            The intersection point (optional)
+	 * @return Whether an intersection is present.
 	 */
 	public static boolean intersectRaySphere(Ray ray, Vector3 center,
 			float radius, Vector3 intersection) {
@@ -448,10 +451,10 @@ public final class Intersector {
 	 * @param ray
 	 *            The ray
 	 * @param triangles
-	 *            The triangles, each succesive 3 elements from a vertex
+	 *            The triangles, each successive 3 elements from a vertex
 	 * @param intersection
-	 *            The nearest intersection point
-	 * @return Wheter the ray and the triangles intersect.
+	 *            The nearest intersection point (optional)
+	 * @return Whether the ray and the triangles intersect.
 	 */
 	public static boolean intersectRayTriangles(Ray ray, float[] triangles,
 			Vector3 intersection) {
@@ -502,8 +505,8 @@ public final class Intersector {
 	 * @param vertexSize
 	 *            the size of a vertex in floats
 	 * @param intersection
-	 *            The nearest intersection point
-	 * @return Wheter the ray and the triangles intersect.
+	 *            The nearest intersection point (optional)
+	 * @return Whether the ray and the triangles intersect.
 	 */
 	public static boolean intersectRayTriangles(Ray ray, float[] vertices,
 			short[] indices, int vertexSize, Vector3 intersection) {
@@ -553,8 +556,8 @@ public final class Intersector {
 	 * @param triangles
 	 *            The triangles
 	 * @param intersection
-	 *            The nearest intersection point
-	 * @return Wheter the ray and the triangles intersect.
+	 *            The nearest intersection point (optional)
+	 * @return Whether the ray and the triangles intersect.
 	 */
 	public static boolean intersectRayTriangles(Ray ray,
 			List<Vector3> triangles, Vector3 intersection) {
@@ -616,7 +619,7 @@ public final class Intersector {
 	 *            The second point of the second line
 	 * @param intersection
 	 *            The intersection point
-	 * @return Wheter the two lines intersect
+	 * @return Whether the two lines intersect
 	 */
 	public static boolean intersectLines(Vector2 p1, Vector2 p2, Vector2 p3,
 			Vector2 p4, Vector2 intersection) {
@@ -648,8 +651,8 @@ public final class Intersector {
 	 * @param p4
 	 *            The second point of the second line segment
 	 * @param intersection
-	 *            The intersection point
-	 * @return Wheter the two line segments intersect
+	 *            The intersection point (optional)
+	 * @return Whether the two line segments intersect
 	 */
 	public static boolean intersectSegments(Vector2 p1, Vector2 p2, Vector2 p3,
 			Vector2 p4, Vector2 intersection) {
@@ -667,7 +670,8 @@ public final class Intersector {
 		if (ub < 0 || ub > 1)
 			return false;
 
-		intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		if (intersection != null)
+			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
 		return true;
 	}
 
