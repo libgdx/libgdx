@@ -60,7 +60,7 @@ public class Sequence implements Action {
 	}
 
 	@Override public boolean isDone () {
-		return currAction == actions.size();
+		return currAction >= actions.size();
 	}
 
 	@Override public void finish () {

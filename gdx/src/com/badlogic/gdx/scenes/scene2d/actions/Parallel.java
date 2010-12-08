@@ -47,7 +47,8 @@ public class Parallel implements Action {
 	@Override public void act (float delta) {
 		int len = actions.size();
 		for (int i = 0; i < len; i++)
-			actions.get(i).act(delta);
+			if(!actions.get(i).isDone())
+				actions.get(i).act(delta);
 	}
 
 	@Override public boolean isDone () {
