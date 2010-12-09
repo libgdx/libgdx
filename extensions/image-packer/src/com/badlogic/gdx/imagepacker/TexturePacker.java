@@ -37,7 +37,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.utils.MathUtils;
 
 public class TexturePacker {
-	static Pattern numberedImagePattern = Pattern.compile("(.*?[^-])(\\d+)");
+	static Pattern indexPattern = Pattern.compile(".+_(\\d+)(_.*|$)");
 
 	ArrayList<Image> images = new ArrayList();
 	FileWriter writer;
@@ -427,18 +427,14 @@ public class TexturePacker {
 			if (canvas == null) return;
 
 			String imageName = image.name;
-			imageName = imageName.replace("_" + formatToAbbrev.get(filter.format), "");
-			imageName = imageName.replace("_" + filter.direction, "");
-			imageName = imageName.replace("_" + filterToAbbrev.get(filter.minFilter) + "," + filterToAbbrev.get(filter.magFilter),
-				"");
 			imageName = imageName.replace("\\", "/");
 
-			Matcher matcher = numberedImagePattern.matcher(imageName);
+			Matcher matcher = indexPattern.matcher(imageName);
 			int index = -1;
-			if (matcher.matches()) {
-				imageName = matcher.group(1);
-				index = Integer.parseInt(matcher.group(2));
-			}
+			if (matcher.matches()) index = Integer.parseInt(matcher.group(1));
+
+			int underscoreIndex = imageName.indexOf('_');
+			if (underscoreIndex != -1) imageName = imageName.substring(0, underscoreIndex);
 
 			writer.write(imageName + "\n");
 			writer.write("  rotate: " + image.rotate + "\n");
@@ -587,9 +583,9 @@ public class TexturePacker {
 
 	static final HashMap<Format, String> formatToAbbrev = new HashMap();
 	static {
-		formatToAbbrev.put(Format.RGBA8888, "8888");
-		formatToAbbrev.put(Format.RGBA4444, "4444");
-		formatToAbbrev.put(Format.RGB565, "565");
+		formatToAbbrev.put(Format.RGBA8888, "rgba8");
+		formatToAbbrev.put(Format.RGBA4444, "rgba4");
+		formatToAbbrev.put(Format.RGB565, "rgb565");
 		formatToAbbrev.put(Format.Alpha, "a");
 	}
 
@@ -597,7 +593,7 @@ public class TexturePacker {
 		public Format defaultFormat = Format.RGBA8888;
 		public TextureFilter defaultFilterMin = TextureFilter.Linear;
 		public TextureFilter defaultFilterMag = TextureFilter.Linear;
-		public int alphaThreshold = 9;
+		public int alphaThreshold = 0;
 		public boolean pot = true;
 		public int padding = 0;
 		public boolean debug = false;
