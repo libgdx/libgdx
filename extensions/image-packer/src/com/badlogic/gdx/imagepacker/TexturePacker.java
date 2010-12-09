@@ -37,7 +37,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.utils.MathUtils;
 
 public class TexturePacker {
-	static Pattern numberedImagePattern = Pattern.compile("(.*?)(\\d+)");
+	static Pattern numberedImagePattern = Pattern.compile("(.*?[^-])(\\d+)");
 
 	ArrayList<Image> images = new ArrayList();
 	FileWriter writer;
@@ -48,7 +48,7 @@ public class TexturePacker {
 	int maxWidth, maxHeight;
 	final Settings settings;
 
-	public TexturePacker (Settings settings) throws IOException {
+	public TexturePacker (Settings settings) {
 		this.settings = settings;
 		this.filter = new Filter(Direction.none, null, -1, -1, null, null);
 	}
@@ -602,13 +602,13 @@ public class TexturePacker {
 		public int padding = 0;
 		public boolean debug = false;
 		public boolean rotate = false;
-		public int minWidth = 64;
-		public int minHeight = 64;
+		public int minWidth = 16;
+		public int minHeight = 16;
 		public int maxWidth = 1024;
 		public int maxHeight = 1024;
 	}
 
-	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws Exception {
+	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws IOException {
 		if (inputDir.getName().startsWith(".")) return;
 
 		// Clean existing page images.
@@ -663,7 +663,7 @@ public class TexturePacker {
 			if (file.isDirectory()) process(settings, file, outputDir, packFile);
 	}
 
-	static public void process (Settings settings, String input, String output) throws Exception {
+	static public void process (Settings settings, String input, String output) throws IOException {
 		File inputDir = new File(input);
 		File outputDir = new File(output);
 
@@ -679,7 +679,7 @@ public class TexturePacker {
 		process(settings, inputDir, outputDir, packFile);
 	}
 
-	public static void main (String[] args) throws Exception {
+	static public void main (String[] args) throws Exception {
 		String input, output;
 		if (args.length != 2) {
 			System.out.println("Usage: INPUTDIR OUTPUTDIR");

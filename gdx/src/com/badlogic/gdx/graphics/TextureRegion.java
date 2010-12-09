@@ -204,7 +204,7 @@ public class TextureRegion {
 	 * Offsets the region relative to the current region. Generally the region's size should be the entire size of the texture in
 	 * the direction(s) it is scrolled.
 	 * @param xAmount The percentage to offset horizontally.
-	 * @param yAmount The percentage to offset vertically.
+	 * @param yAmount The percentage to offset vertically. This is done in texture space, so up is negative.
 	 */
 	public void scroll (float xAmount, float yAmount) {
 		if (xAmount != 0) {
