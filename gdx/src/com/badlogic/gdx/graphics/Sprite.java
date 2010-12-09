@@ -334,7 +334,7 @@ public class Sprite extends TextureRegion {
 				final float localYSin = localY * sin;
 				final float localX2Cos = localX2 * cos;
 				final float localX2Sin = localX2 * sin;
-				final float localY2Cos = localX2 * cos;
+				final float localY2Cos = localY2 * cos;
 				final float localY2Sin = localY2 * sin;
 
 				final float x1 = localXCos - localYSin + worldOriginX;
