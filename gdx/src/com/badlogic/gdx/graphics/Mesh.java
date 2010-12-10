@@ -129,6 +129,9 @@ public class Mesh {
 	 */
 	public Mesh(VertexDataType type, boolean isStatic, int maxVertices,
 			int maxIndices, VertexAttribute... attributes) {
+		if(type == VertexDataType.VertexArray && Gdx.graphics.isGL20Available())
+			type = VertexDataType.VertexBufferObject;
+		
 		if (type == VertexDataType.VertexBufferObject) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
