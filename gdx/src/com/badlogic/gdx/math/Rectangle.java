@@ -17,9 +17,9 @@ package com.badlogic.gdx.math;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Rectangle {
-	private float x, y;
-	private float width, height;
+public class Rectangle {
+	public float x, y;
+	public float width, height;
 
 	/**
 	 * Constructs a new rectangle with all values set to zero
