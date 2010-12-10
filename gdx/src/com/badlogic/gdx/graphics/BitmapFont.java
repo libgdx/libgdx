@@ -233,7 +233,7 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Draws a string at the specified position and color.
+	 * Draws a string at the specified position.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
 	 * @return The bounds of the rendered string (the height is the distance from y to the baseline). Note the same TextBounds
@@ -328,8 +328,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Draws a string, which may contain newlines (\n), with the specified position and color. Each line is automatically wrapped
-	 * to keep it within a rectangle of the specified width.
+	 * Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
+	 * within a rectangle of the specified width.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
 	 * @return The bounds of the rendered string (the height is the distance from y to the baseline of the last line). Note the
@@ -340,8 +340,8 @@ public class BitmapFont {
 	}
 
 	/**
-	 * Draws a string, which may contain newlines (\n), with the specified position and color. Each line is automatically wrapped
-	 * to keep it within a rectangle of the specified width, and aligned horizontally within that rectangle.
+	 * Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
+	 * within a rectangle of the specified width, and aligned horizontally within that rectangle.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link #getCapHeight() cap height}).
 	 * @return The bounds of the rendered string (the height is the distance from y to the baseline of the last line). Note the
