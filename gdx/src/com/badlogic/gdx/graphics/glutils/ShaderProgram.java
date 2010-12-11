@@ -22,7 +22,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
@@ -422,13 +422,64 @@ public class ShaderProgram {
 	 *            the matrix
 	 */
 	public void setUniformMatrix(String name, Matrix4 matrix) {
+		setUniformMatrix(name, matrix, false);		
+	}
+	
+	/**
+	 * Sets the uniform matrix with the given name. Throws an
+	 * IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param matrix
+	 *            the matrix
+	 * @param transpose
+	 * 			  whether the matrix shouls be transposed
+	 */
+	public void setUniformMatrix(String name, Matrix4 matrix, boolean transpose) {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
 		int location = fetchUniformLocation(name);
 		this.matrix.put(matrix.val);
 		this.matrix.position(0);
-		gl.glUniformMatrix4fv(location, 1, false, this.matrix);
+		gl.glUniformMatrix4fv(location, 1, transpose, this.matrix);		
 	}
+	
+	/**
+	 * Sets the uniform matrix with the given name. Throws an
+	 * IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param matrix
+	 *            the matrix
+	 */
+	public void setUniformMatrix(String name, Matrix3 matrix) {
+		setUniformMatrix(name, matrix, false);
+	}
+	
+	/**
+	 * Sets the uniform matrix with the given name. Throws an
+	 * IllegalArgumentException in case it is not called in between a
+	 * {@link #begin()}/{@link #end()} block.
+	 * 
+	 * @param name
+	 *            the name of the uniform
+	 * @param matrix
+	 *            the matrix
+	 * @param transpose
+	 * 			  whether the uniform matrix should be transposed           
+	 */
+	public void setUniformMatrix(String name, Matrix3 matrix, boolean transpose) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		this.matrix.put(matrix.getValues());
+		this.matrix.position(0);
+		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);		
+	}	
 
 	/**
 	 * Sets the vertex attribute with the given name. Throws an
