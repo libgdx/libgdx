@@ -78,10 +78,11 @@ public class GdxNativesLoader {
 		BufferedOutputStream out = null;
 
 		try {
+			String tmpName = System.nanoTime() + libName;
 			in = GdxNativesLoader.class
 					.getResourceAsStream(classPath + libName);
 			out = new BufferedOutputStream(new FileOutputStream(outputPath
-					+ libName));
+					+ tmpName));
 			byte[] bytes = new byte[1024 * 4];
 			while (true) {
 				int read_bytes = in.read(bytes);
@@ -94,7 +95,7 @@ public class GdxNativesLoader {
 			out = null;
 			in.close();
 			in = null;
-			System.load(outputPath + libName);
+			System.load(outputPath + tmpName);
 			return true;
 		} catch (Throwable t) {
 			System.err.println("GdxNativesLoader: Couldn't unpack and load native '" + libName + "'");
