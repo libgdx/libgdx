@@ -29,7 +29,7 @@ public class OrthoCamBorderTest extends GdxTest {
 	static final int WIDTH = 480;
 	static final int HEIGHT = 320;	
 	OrthographicCamera cam;
-	Rectangle viewport;
+	Rectangle glViewport;
 	Mesh mesh;
 	
 	public void create() {
@@ -45,10 +45,10 @@ public class OrthoCamBorderTest extends GdxTest {
 		cam.setViewport(WIDTH, HEIGHT);
 		cam.getPosition().set(WIDTH / 2, HEIGHT / 2, 0);
 		
-		viewport = calculateViewport(WIDTH, HEIGHT);
+		glViewport = calculateGLViewport(WIDTH, HEIGHT);
 	}
 	
-	private Rectangle calculateViewport(int desiredWidth, int desiredHeight) {
+	private Rectangle calculateGLViewport(int desiredWidth, int desiredHeight) {
 		Rectangle viewport = new Rectangle();
 		if(Gdx.graphics.getWidth() > Gdx.graphics.getHeight()) {
 			float aspect = (float)Gdx.graphics.getHeight() / HEIGHT;
@@ -67,13 +67,13 @@ public class OrthoCamBorderTest extends GdxTest {
 	}	
 	
 	public void resize(int width, int height) {
-		viewport = calculateViewport(WIDTH, HEIGHT);
+		glViewport = calculateGLViewport(WIDTH, HEIGHT);
 	}
 	
 	public void render() {
 		GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		gl.glViewport((int)viewport.x, (int)viewport.y, (int)viewport.width, (int)viewport.height);
+		gl.glViewport((int)glViewport.x, (int)glViewport.y, (int)glViewport.width, (int)glViewport.height);
 		
 		cam.setMatrices();
 		mesh.render(GL10.GL_TRIANGLES);
