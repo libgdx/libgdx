@@ -43,7 +43,7 @@ import com.badlogic.gdx.tests.MeshTest;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
-import com.badlogic.gdx.tests.OrthoCamTest;
+import com.badlogic.gdx.tests.OrthoCamBorderTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
@@ -112,7 +112,7 @@ public class GdxTests
 		MultitouchTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
-		OrthoCamTest.class,
+		OrthoCamBorderTest.class,
 		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,

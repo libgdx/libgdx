@@ -20,7 +20,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class OrthoCamTest extends GdxTest {
+public class OrthoCamBorderTest extends GdxTest {
 
 	@Override public boolean needsGL20 () {
 		return false;
