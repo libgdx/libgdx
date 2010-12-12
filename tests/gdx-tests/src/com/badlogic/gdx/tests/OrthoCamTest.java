@@ -1,3 +1,14 @@
+/* Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -15,8 +26,8 @@ public class OrthoCamTest extends GdxTest {
 		return false;
 	}
 
-	static final int WIDTH = 320;
-	static final int HEIGHT = 480;	
+	static final int WIDTH = 480;
+	static final int HEIGHT = 320;	
 	OrthographicCamera cam;
 	Rectangle viewport;
 	Mesh mesh;
@@ -34,11 +45,11 @@ public class OrthoCamTest extends GdxTest {
 		cam.setViewport(WIDTH, HEIGHT);
 		cam.getPosition().set(WIDTH / 2, HEIGHT / 2, 0);
 		
-		calculateViewport();
+		viewport = calculateViewport(WIDTH, HEIGHT);
 	}
 	
-	private void calculateViewport() {
-		viewport = new Rectangle();
+	private Rectangle calculateViewport(int desiredWidth, int desiredHeight) {
+		Rectangle viewport = new Rectangle();
 		if(Gdx.graphics.getWidth() > Gdx.graphics.getHeight()) {
 			float aspect = (float)Gdx.graphics.getHeight() / HEIGHT;
 			viewport.width = WIDTH * aspect;
@@ -51,11 +62,12 @@ public class OrthoCamTest extends GdxTest {
 			viewport.height = HEIGHT * aspect;
 			viewport.x = 0;
 			viewport.y = Gdx.graphics.getHeight() / 2 - viewport.height / 2;					
-		}	
+		}			
+		return viewport;
 	}	
 	
 	public void resize(int width, int height) {
-		calculateViewport();
+		viewport = calculateViewport(WIDTH, HEIGHT);
 	}
 	
 	public void render() {
