@@ -19,7 +19,6 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;
-import android.opengl.GLES10;
 import android.opengl.GLUtils;
 import android.util.Log;
 
@@ -138,23 +137,24 @@ final class AndroidTexture implements Texture {
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 	}
 
-	private int getTextureFilter (TextureFilter filter) {
+	private int getTextureFilter (TextureFilter filter) {		
+		
 		if (filter == TextureFilter.Linear)
-			return GLES10.GL_LINEAR;
+			return GL10.GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
-			return GLES10.GL_NEAREST;
+			return GL10.GL_NEAREST;
 		else if (filter == TextureFilter.MipMap)
-			return GLES10.GL_NEAREST_MIPMAP_LINEAR;
+			return GL10.GL_NEAREST_MIPMAP_LINEAR;
 		else if (filter == TextureFilter.MipMapNearestNearest)
-			return GLES10.GL_NEAREST_MIPMAP_NEAREST;
+			return GL10.GL_NEAREST_MIPMAP_NEAREST;
 		else if (filter == TextureFilter.MipMapNearestLinear)
-			return GLES10.GL_NEAREST_MIPMAP_LINEAR;
+			return GL10.GL_NEAREST_MIPMAP_LINEAR;
 		else if (filter == TextureFilter.MipMapLinearNearest)
-			return GLES10.GL_LINEAR_MIPMAP_NEAREST;
+			return GL10.GL_LINEAR_MIPMAP_NEAREST;
 		else if (filter == TextureFilter.MipMapLinearLinear)
-			return GLES10.GL_LINEAR_MIPMAP_LINEAR;
+			return GL10.GL_LINEAR_MIPMAP_LINEAR;
 		else
-			return GLES10.GL_LINEAR_MIPMAP_LINEAR;
+			return GL10.GL_LINEAR_MIPMAP_LINEAR;
 	}
 
 	private int getTextureWrap (TextureWrap wrap) {
