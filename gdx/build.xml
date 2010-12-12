@@ -165,8 +165,10 @@
 		</jar>
 
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so" />
+		<!--<copy tofile="${stable}/armeabi/libmpg123.so" file="gdx/libs/armeabi/libmpg123.so" />-->
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so" />
+		<!--<copy tofile="${stable}/armeabi-v7a/libmpg123.so" file="gdx/libs/armeabi-v7a/libmpg123.so" />-->
 		<copy tofile="${stable}/armeabi-v7a/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
 		<copy tofile="${stable}/README" file="gdx/dist/README" />
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html" />
@@ -182,8 +184,10 @@
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
+		<!--<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libmpg123.so" file="${stable}/armeabi/libmpg123.so" />-->
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
-		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
+		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so"/>
+		<!-- <copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libmpg123.so" file="${stable}/armeabi-v7a/libmpg123.so" />-->
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/armeabi-v7a/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar" />
@@ -194,16 +198,20 @@
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx-backend-android.jar" file="${stable}/gdx-backend-android.jar" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
+		<!-- <copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libmpg123.so" file="${stable}/armeabi/libmpg123.so" /> -->
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
+		<!-- <copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libmpg123.so" file="${stable}/armeabi-v7a/libmpg123.so" /> -->
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/armeabi-v7a/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 	</target>
 
 	<!-- updates the native libs of the android test suite -->
 	<target name="update-android-tests" depends="dist">
 		<copy tofile="tests/gdx-tests-android/libs/armeabi/libgdx.so" file="${stable}/armeabi/libgdx.so" />
+		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi/libmpg123.so" file="${stable}/armeabi/libmpg123.so" /> -->
 		<copy tofile="tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="${stable}/armeabi-v7a/libgdx.so" />
+		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libmpg123.so" file="${stable}/armeabi-v7a/libmpg123.so" /> -->
 		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libandroidgl20.so" file="${stable}/armeabi/libandroidgl20.so" />
 	</target>
 

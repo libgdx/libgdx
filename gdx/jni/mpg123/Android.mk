@@ -1,4 +1,8 @@
-GDX_SRC_FILES += mpg123/equalizer.c \
+LOCAL_MODULE    := libmpg123
+LOCAL_ARM_MODE  := arm
+LOCAL_CFLAGS    := -O2 -Wall
+
+LOCAL_SRC_FILES = mpg123/equalizer.c \
 				 mpg123/index.c \
 				 mpg123/layer2.c \
 				 mpg123/synth.c \
@@ -15,3 +19,5 @@ GDX_SRC_FILES += mpg123/equalizer.c \
 				 mpg123/synth_arm.S \
 				 mpg123/tabinit.c \
 				 mpg123/id3.c
+
+include $(BUILD_SHARED_LIBRARY)
