@@ -139,8 +139,7 @@ public class GdxTests
 		VertexBufferObjectShaderTest.class,
 		//VorbisTest.class,
 		WaterRipples.class,
-		HelloTriangle.class,
-		MipMap2D.class,
+		HelloTriangle.class,		
 		SimpleVertexShader.class
 	};
 	
