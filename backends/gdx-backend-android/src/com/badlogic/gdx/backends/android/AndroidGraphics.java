@@ -24,7 +24,9 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -90,23 +92,49 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	private View createGLSurfaceView(Activity activity, boolean useGL2) {
+		EGLConfigChooser configChooser = getEglConfigChooser();
+		
 		if (useGL2 && checkGL20()) {
 			GLSurfaceView20 view = new GLSurfaceView20(activity);
 			view.setRenderer(this);
+			if(configChooser != null)
+				view.setEGLConfigChooser(configChooser);
 			return view;
 		} else {
 			if (Integer.parseInt(android.os.Build.VERSION.SDK) <= 4) {
 				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity);
 				view.setRenderer(this);
+				if(configChooser != null)
+					view.setEGLConfigChooser(configChooser);
 				return view;
 			} else {
 				android.opengl.GLSurfaceView view = new android.opengl.GLSurfaceView(
 						activity);
 				view.setRenderer(this);
+				if(configChooser != null)
+					view.setEGLConfigChooser(configChooser);
 				return view;
 			}
 		}
-
+	}
+	
+	private EGLConfigChooser getEglConfigChooser() {
+		if(!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
+			return null;
+		else
+			return new android.opengl.GLSurfaceView.EGLConfigChooser() {
+	
+				public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
+	
+					// Ensure that we get a 16bit depth-buffer. Otherwise, we'll fall
+					// back to Pixelflinger on some device (read: Samsung I7500)
+					int[] attributes = new int[] { EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE };
+					EGLConfig[] configs = new EGLConfig[1];
+					int[] result = new int[1];
+					egl.eglChooseConfig(display, attributes, configs, 1, result);
+					return configs[0];
+				}
+			};
 	}
 
 	private void updatePpi() {
