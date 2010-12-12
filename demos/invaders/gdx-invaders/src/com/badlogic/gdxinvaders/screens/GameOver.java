@@ -79,9 +79,10 @@ public class GameOver implements Screen {
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
 		spriteBatch.disableBlending();
-		spriteBatch.draw(background, 0, 0, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
+		spriteBatch.setColor(Color.WHITE);
+		spriteBatch.draw(background, 0, 0, 480, 320, 0, 0, 512, 512, false, false);
 		spriteBatch.enableBlending();
-		spriteBatch.draw(logo, 0, 320-128, 480, 128, 0, 256, 512, 256, Color.WHITE, false, false);
+		spriteBatch.draw(logo, 0, 320-128, 480, 128, 0, 256, 512, 256, false, false);
 		String text = "It is the end my friend.\nTouch to continue!";
 		TextBounds bounds = font.getMultiLineBounds(text);
 		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);

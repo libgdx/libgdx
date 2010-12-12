@@ -214,7 +214,8 @@ public class Renderer {
 		spriteBatch.setTransformMatrix(transformMatrix);
 		spriteBatch.begin();
 		spriteBatch.disableBlending();
-		spriteBatch.draw(backgroundTexture, 0, 0, 480, 320, 0, 0, 512, 512, Color.WHITE, false, false);
+		spriteBatch.setColor(Color.WHITE);
+		spriteBatch.draw(backgroundTexture, 0, 0, 480, 320, 0, 0, 512, 512, false, false);
 		spriteBatch.end();
 	}
 

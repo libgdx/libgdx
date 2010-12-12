@@ -48,8 +48,9 @@ public class HelloWorld implements ApplicationListener {
 		textPosition.add(textDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(60));
 
 		spriteBatch.begin();
+		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.draw(texture, centerX - texture.getWidth() / 2, centerY - texture.getHeight() / 2, 0, 0, texture.getWidth(),
-			texture.getHeight(), Color.WHITE);
+			texture.getHeight());
 		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y);		
 		spriteBatch.end();
