@@ -22,6 +22,7 @@ import com.badlogic.gdx.tests.AudioRecorderTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
+import com.badlogic.gdx.tests.BobTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.FilesTest;
@@ -42,6 +43,7 @@ import com.badlogic.gdx.tests.MeshTest;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
+import com.badlogic.gdx.tests.OrthoCamTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
@@ -87,6 +89,7 @@ public class GdxTests
 		BitmapFontAlignmentTest.class,
 		BitmapFontFlipTest.class,
 		BitmapFontTest.class,
+		BobTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		FilesTest.class,
@@ -109,6 +112,7 @@ public class GdxTests
 		MultitouchTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
+		OrthoCamTest.class,
 		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,

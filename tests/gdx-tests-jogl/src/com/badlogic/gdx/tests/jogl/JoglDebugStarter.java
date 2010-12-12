@@ -18,6 +18,6 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 public class JoglDebugStarter {
 	
 	public static void main( String[] argv ) {
-		new JoglApplication( new com.badlogic.gdx.tests.IsometricTileTest(), "Debug Test", 960, 640, false );		
+		new JoglApplication( new com.badlogic.gdx.tests.OrthoCamTest(), "Debug Test", 600, 320, false );		
 	}
 }
