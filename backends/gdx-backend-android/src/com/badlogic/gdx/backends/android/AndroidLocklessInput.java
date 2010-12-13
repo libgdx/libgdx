@@ -236,7 +236,7 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		} else {
 			TouchEvent e = null;
 			while ((e = touchEvents.poll()) != null) {
-				Log.d("AndroidInput", "lockless touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
+//				Log.d("AndroidInput", "lockless touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
 				freeTouchEvents.put(e);
 			}
 
