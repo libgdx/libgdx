@@ -172,44 +172,7 @@ public final class JoglApplication implements Application {
 
 	@Override public int getVersion () {
 		return 0;
-	}
-
-	public static void main(String[] argv) {
-		ApplicationListener listener = new ApplicationListener() {
-			
-			@Override
-			public void resume() {
-				System.out.println("resumed");
-			}
-			
-			@Override
-			public void render() {
-				System.out.println("render");				
-			}
-			
-			@Override
-			public void pause() {
-				System.out.println("paused");				
-			}
-			
-			@Override
-			public void dispose() {
-				System.out.println("destroy");				
-			}
-			
-			@Override
-			public void create() {
-				System.out.println("created");				
-			}
-
-			@Override
-			public void resize(int width, int height) {
-				System.out.println("resize");
-			}
-		};
-		
-		new JoglApplication(listener, "Jogl Application Test", 480, 320, false);
-	}
+	}	
 
 	@Override
 	public long getJavaHeap() {
