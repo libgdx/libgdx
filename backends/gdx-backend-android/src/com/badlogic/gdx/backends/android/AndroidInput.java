@@ -21,6 +21,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
@@ -48,6 +49,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		static final int KEY_UP = 1;
 		static final int KEY_TYPED = 2;
 
+		long timeStamp;
 		int type;
 		int keyCode;
 		char keyChar;
@@ -58,6 +60,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
 
+		long timeStamp;
 		int type;
 		int x;
 		int y;
@@ -265,7 +268,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			} else {
 				int len = touchEvents.size();
 				for(int i=0; i < len; i++) {
-					freeTouchEvents.free(touchEvents.get(i));
+					TouchEvent e = touchEvents.get(i);
+//					Log.d("AndroidInput", "synch touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
+					freeTouchEvents.free(e);
 				}
 			
 				len = keyEvents.size();

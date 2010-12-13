@@ -13,9 +13,10 @@
 
 package com.badlogic.gdx.backends.android;
 
+import com.badlogic.gdx.backends.android.AndroidLocklessInput.TouchEvent;
+
 import android.view.MotionEvent;
 
-import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
 
 /**
  * Single touch handler for devices running <= 1.6
@@ -23,8 +24,8 @@ import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
  * @author badlogicgames@gmail.com
  * 
  */
-public class AndroidSingleTouchHandler implements AndroidTouchHandler {
-	public void onTouch (MotionEvent event, AndroidInput input) {
+public class AndroidLocklessSingleTouchHandler implements AndroidLocklessTouchHandler {
+	public void onTouch (MotionEvent event, AndroidLocklessInput input) {
 		int x = (int)event.getX();
 		int y = (int)event.getY();
 		input.touchX[0] = x;
@@ -49,16 +50,15 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 		}
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
-		long timeStamp = System.nanoTime();
-		synchronized (input) {
-			TouchEvent event = input.freeTouchEvents.newObject();
-			event.timeStamp = timeStamp;
+	private void postTouchEvent (AndroidLocklessInput input, int type, int x, int y, int pointer) {	
+			TouchEvent event = input.freeTouchEvents.poll();
+			if(event == null)
+				event = new TouchEvent();
+			event.timeStamp = System.nanoTime();
 			event.pointer = 0;
 			event.x = x;
 			event.y = y;
 			event.type = type;			
-			input.touchEvents.add(event);					
-		}
+			input.touchEvents.put(event);					
 	}
 }

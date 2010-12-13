@@ -15,7 +15,8 @@ package com.badlogic.gdx.backends.android;
 
 import android.view.MotionEvent;
 
-import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
+import com.badlogic.gdx.backends.android.AndroidLocklessInput.TouchEvent;
+
 
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
@@ -24,13 +25,13 @@ import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
  * @author badlogicgames@gmail.com
  * 
  */
-public class AndroidMultiTouchHandler implements AndroidTouchHandler {
-	public void onTouch (MotionEvent event, AndroidInput input) {
+public class AndroidLocklessMultiTouchHandler implements AndroidLocklessTouchHandler {
+	public void onTouch (MotionEvent event, AndroidLocklessInput input) {
 		final int action = event.getAction() & MotionEvent.ACTION_MASK;
 		int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 		int pointerId = event.getPointerId(pointerIndex);
 
-		int x = 0, y = 0;
+		int x = 0, y = 0;	
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
@@ -70,17 +71,16 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		}
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
-		long timeStamp = System.nanoTime();
-		synchronized (input) {
-			TouchEvent event = input.freeTouchEvents.newObject();
-			event.timeStamp = timeStamp;
-			event.pointer = pointer;
-			event.x = x;
-			event.y = y;
-			event.type = type;			
-			input.touchEvents.add(event);					
-		}
+	private void postTouchEvent (AndroidLocklessInput input, int type, int x, int y, int pointer) {
+		TouchEvent event = input.freeTouchEvents.poll();
+		if(event == null)
+			event = new TouchEvent();
+		event.timeStamp = System.nanoTime();
+		event.pointer = pointer;
+		event.x = x;
+		event.y = y;
+		event.type = type;			
+		input.touchEvents.put(event);					
 	}
 
 	public boolean supportsMultitouch (AndroidApplication activity) {
