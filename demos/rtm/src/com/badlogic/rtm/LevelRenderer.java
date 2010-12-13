@@ -67,7 +67,7 @@ public class LevelRenderer implements ApplicationListener {
 														TextureFilter.MipMapLinearNearest, TextureFilter.Nearest, 
 														TextureWrap.ClampToEdge, TextureWrap.ClampToEdge );
 			
-			TextureAtlas atlas = new TextureAtlas(tiles);
+			TextureAtlas atlas = new TextureAtlas();
 			for( int i = 0; i < 12; i++ ) {
 				TextureRegion region = new TextureRegion(tiles, i % 4 * 64 + 1, i / 4 * 64 + 1, 64, 64);
 				atlas.addRegion("" + i, region);
@@ -109,8 +109,8 @@ public class LevelRenderer implements ApplicationListener {
 				int type = Integer.parseInt(reader.readLine());
 				String textureId = reader.readLine();
 				TextureRegion region = atlas.getRegion(textureId);
-				float u = region.getX() / 256.0f;
-				float v = region.getY() / 256.0f;
+				float u = region.getU();
+				float v = region.getV();
 				
 				floorVertices[j-2] = u + uSize;
 				floorVertices[j-1] = v;
@@ -148,8 +148,8 @@ public class LevelRenderer implements ApplicationListener {
 					int type = Integer.parseInt(reader.readLine());
 					String textureId = reader.readLine();
 					TextureRegion region = atlas.getRegion(textureId);
-					float u = region.getX() / 256.0f;
-					float v = region.getY() / 256.0f;
+					float u = region.getU();
+					float v = region.getV();
 					
 					wallVertices[j-2] = u + uSize;
 					wallVertices[j-1] = v;
