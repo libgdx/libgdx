@@ -80,7 +80,7 @@ public interface Graphics {
 	 * 
 	 */
 	public enum GraphicsType {
-		AndroidGL, JoglGL, LWJGL
+		AndroidGL, JoglGL, LWJGL, Angle
 	}
 
 	/**
