@@ -17,21 +17,37 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * An unordered, resizable array that reuses element instances. Avoids allocation by keeping elements around when they are removed
- * and reusing them when an element is added. Avoids a memory copy when removing elements (the last element is moved to the
- * removed element's position).
+ * An unordered, resizable array that reuses element instances
+ * @see Bag
  * @author Nathan Sweet <misc@n4te.com>
  */
 abstract public class BagPool<T> {
-	public Object[] items;
+	public T[] items;
 	public int size;
 
+	/**
+	 * Creates a new bag with an initial capacity of 16.
+	 */
 	public BagPool () {
 		this(16);
 	}
 
 	public BagPool (int capacity) {
-		items = new Object[capacity];
+		items = (T[])new Object[capacity];
+	}
+
+	/**
+	 * Creates a new bag with an initial capacity of 16 and {@link #items} of the specified type.
+	 */
+	public BagPool (Class<T> arrayType) {
+		this(arrayType, 16);
+	}
+
+	/**
+	 * Creates a new bag with {@link #items} of the specified type.
+	 */
+	public BagPool (Class<T> arrayType, int capacity) {
+		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
 	}
 
 	abstract protected T newObject ();
@@ -43,7 +59,7 @@ abstract public class BagPool<T> {
 			items[size++] = item;
 			return item;
 		}
-		T item = (T)items[size];
+		T item = items[size];
 		if (item == null) item = newObject();
 		items[size++] = item;
 		return item;
@@ -51,7 +67,7 @@ abstract public class BagPool<T> {
 
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		return (T)items[index];
+		return items[index];
 	}
 
 	public boolean contains (T value) {
@@ -92,7 +108,7 @@ abstract public class BagPool<T> {
 	 * Removes and returns the last item.
 	 */
 	public T pop () {
-		return (T)items[--size];
+		return items[--size];
 	}
 
 	/**
@@ -131,24 +147,24 @@ abstract public class BagPool<T> {
 	}
 
 	private void resize (int newSize) {
-		Object[] newItems = new Object[Math.max(newSize, 8)];
-		Object[] items = this.items;
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), Math.max(newSize, 8));
+		T[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
-		this.items = (T[])newItems;
+		this.items = newItems;
 	}
 
 	/**
 	 * Sorts the bag, which will stay ordered until an element is removed.
 	 */
 	public void sort (Comparator<T> comparator) {
-		Arrays.sort((T[])items, 0, size, comparator);
+		Arrays.sort(items, 0, size, comparator);
 	}
 
 	/**
 	 * Sorts the bag, which will stay ordered until an element is removed.
 	 */
 	public void sort () {
-		Arrays.sort((T[])items, 0, size);
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

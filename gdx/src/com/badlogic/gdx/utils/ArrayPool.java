@@ -26,19 +26,38 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * An ordered, resizable long array. Avoids the boxing that occurs with ArrayList<Long>.
+ * An ordered, resizable array that reuses element instances.
+ * @see Array
  * @author Nathan Sweet <misc@n4te.com>
+ * @author Matthias Mann
  */
 abstract public class ArrayPool<T> {
-	public Object[] items;
+	public T[] items;
 	public int size;
 
+	/**
+	 * Creates a new array with an initial capacity of 16.
+	 */
 	public ArrayPool () {
 		this(16);
 	}
 
 	public ArrayPool (int capacity) {
-		this.items = new Object[capacity];
+		this.items = (T[])new Object[capacity];
+	}
+
+	/**
+	 * Creates a new array with an initial capacity of 16 and {@link #items} of the specified type.
+	 */
+	public ArrayPool (Class<T> arrayType) {
+		this(arrayType, 16);
+	}
+
+	/**
+	 * Creates a new array with {@link #items} of the specified type.
+	 */
+	public ArrayPool (Class<T> arrayType, int capacity) {
+		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
 	}
 
 	abstract protected T newObject ();
@@ -50,7 +69,7 @@ abstract public class ArrayPool<T> {
 			items[size++] = item;
 			return item;
 		}
-		T item = (T)items[size];
+		T item = items[size];
 		if (item == null) item = newObject();
 		items[size++] = item;
 		return item;
@@ -63,7 +82,7 @@ abstract public class ArrayPool<T> {
 			items[size++] = item;
 			return item;
 		}
-		T item = (T)items[size];
+		T item = items[size];
 		if (item == null) item = newObject();
 		System.arraycopy(items, index, items, index + 1, size - index);
 		size++;
@@ -73,7 +92,7 @@ abstract public class ArrayPool<T> {
 
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		return (T)items[index];
+		return items[index];
 	}
 
 	public boolean contains (T value) {
@@ -115,7 +134,7 @@ abstract public class ArrayPool<T> {
 	 * Removes and returns the last item.
 	 */
 	public T pop () {
-		return (T)items[--size];
+		return items[--size];
 	}
 
 	/**
@@ -154,17 +173,17 @@ abstract public class ArrayPool<T> {
 	}
 
 	private void resize (int newSize) {
-		Object[] newItems = new Object[Math.max(newSize, 8)];
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), Math.max(newSize, 8));
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
 	}
 
 	public void sort (Comparator<T> comparator) {
-		Arrays.sort((T[])items, 0, size, comparator);
+		Arrays.sort(items, 0, size, comparator);
 	}
 
 	public void sort () {
-		Arrays.sort((T[])items, 0, size);
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

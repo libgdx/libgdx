@@ -23,29 +23,45 @@ import java.util.Comparator;
  * @author Nathan Sweet <misc@n4te.com>
  */
 public class Bag<T> {
-	public Object[] items;
+	public T[] items;
 	public int size;
 
+	/**
+	 * Creates a new bag with an initial capacity of 16.
+	 */
 	public Bag () {
 		this(16);
 	}
 
 	public Bag (int capacity) {
-		items = new Object[capacity];
+		items = (T[])new Object[capacity];
+	}
+
+	/**
+	 * Creates a new bag with an initial capacity of 16 and {@link #items} of the specified type.
+	 */
+	public Bag (Class<T> arrayType) {
+		this(arrayType, 16);
+	}
+
+	/**
+	 * Creates a new bag with {@link #items} of the specified type.
+	 */
+	public Bag (Class<T> arrayType, int capacity) {
+		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
 	}
 
 	public Bag (Bag bag) {
+		this((Class<T>)bag.items.getClass().getComponentType(), bag.size);
 		size = bag.size;
-		items = new Object[size];
 		System.arraycopy(bag.items, 0, items, 0, size);
 	}
 
-	// BOZO
-// public Bag (LongArray array) {
-// size = array.size;
-// items = new Object[size];
-// System.arraycopy(array.items, 0, items, 0, size);
-// }
+	public Bag (Array array) {
+		this((Class<T>)array.items.getClass().getComponentType(), array.size);
+		size = array.size;
+		System.arraycopy(array.items, 0, items, 0, size);
+	}
 
 	public void add (T value) {
 		if (size == items.length) resize((int)(size * 1.75f));
@@ -59,17 +75,16 @@ public class Bag<T> {
 		size += bag.size;
 	}
 
-	// BOZO
-// public void addAll (LongArray array) {
-// int sizeNeeded = size + array.size;
-// if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
-// System.arraycopy(array.items, 0, items, size, array.size);
-// size += array.size;
-// }
+	public void addAll (Array array) {
+		int sizeNeeded = size + array.size;
+		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
+		System.arraycopy(array.items, 0, items, size, array.size);
+		size += array.size;
+	}
 
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		return (T)items[index];
+		return items[index];
 	}
 
 	public boolean contains (T value) {
@@ -109,7 +124,7 @@ public class Bag<T> {
 	 * Removes and returns the last item.
 	 */
 	public T pop () {
-		return (T)items[--size];
+		return items[--size];
 	}
 
 	/**
@@ -147,8 +162,8 @@ public class Bag<T> {
 	}
 
 	private void resize (int newSize) {
-		Object[] newItems = new Object[Math.max(newSize, 8)];
-		Object[] items = this.items;
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), Math.max(newSize, 8));
+		T[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
 	}
@@ -157,14 +172,14 @@ public class Bag<T> {
 	 * Sorts the bag, which will stay ordered until an element is removed.
 	 */
 	public void sort (Comparator<T> comparator) {
-		Arrays.sort((T[])items, 0, size, comparator);
+		Arrays.sort(items, 0, size, comparator);
 	}
 
 	/**
 	 * Sorts the bag, which will stay ordered until an element is removed.
 	 */
 	public void sort () {
-		Arrays.sort((T[])items, 0, size);
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

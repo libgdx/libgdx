@@ -27,30 +27,49 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * An ordered, resizable array. There isn't a huge reason to use this over {@link ArrayList}, though this class is very slightly
- * more efficient. ArrayList does an extra method call for get/add and increments a "modCount" on add. This class also exposes the
- * size and underlying items array.
- * @author Matthias Mann
+ * An ordered, resizable array. This class is very slightly more efficient than {@link ArrayList} (which does an extra method call
+ * for get/add and increments a "modCount" on add) and exposes the size and underlying items array, which can be typed rather than
+ * Object[].
  * @author Nathan Sweet <misc@n4te.com>
+ * @author Matthias Mann
  */
 public class Array<T> {
-	public Object[] items;
+	public T[] items;
 	public int size;
 
+	/**
+	 * Creates a new array with an initial capacity of 16.
+	 */
 	public Array () {
 		this(16);
 	}
 
 	public Array (int capacity) {
-		this.items = new Object[capacity];
+		this.items = (T[])new Object[capacity];
 	}
 
-	public Array (Array array) {
+	/**
+	 * Creates a new array with an initial capacity of 16 and {@link #items} of the specified type.
+	 */
+	public Array (Class<T> arrayType) {
+		this(arrayType, 16);
+	}
+
+	/**
+	 * Creates a new array with {@link #items} of the specified type.
+	 */
+	public Array (Class<T> arrayType, int capacity) {
+		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
+	}
+
+	public Array (Array<T> array) {
+		this((Class<T>)array.items.getClass().getComponentType(), array.size);
 		size = array.size;
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
 
-	public Array (Bag bag) {
+	public Array (Bag<T> bag) {
+		this((Class<T>)bag.items.getClass().getComponentType(), bag.size);
 		size = bag.size;
 		System.arraycopy(bag.items, 0, items, 0, size);
 	}
@@ -92,7 +111,7 @@ public class Array<T> {
 
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		return (T)items[index];
+		return items[index];
 	}
 
 	public boolean contains (T value) {
@@ -132,7 +151,7 @@ public class Array<T> {
 	 * Removes and returns the last item.
 	 */
 	public T pop () {
-		return (T)items[--size];
+		return items[--size];
 	}
 
 	/**
@@ -170,17 +189,17 @@ public class Array<T> {
 	}
 
 	private void resize (int newSize) {
-		Object[] newItems = new Object[Math.max(newSize, 8)];
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), Math.max(newSize, 8));
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
 	}
 
 	public void sort (Comparator<T> comparator) {
-		Arrays.sort((T[])items, 0, size, comparator);
+		Arrays.sort(items, 0, size, comparator);
 	}
 
 	public void sort () {
-		Arrays.sort((T[])items, 0, size);
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {
