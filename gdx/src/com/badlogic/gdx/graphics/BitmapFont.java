@@ -125,7 +125,8 @@ public class BitmapFont {
 			else {
 				String[] page = reader.readLine().split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				FileHandle imageFile = fontFile.parent().child(page[2].substring(5));
+				String imgFilename = page[2].substring(6, page[2].length()-1);
+				FileHandle imageFile = fontFile.parent().child(imgFilename);
 				region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
 					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
 			}
