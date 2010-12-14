@@ -232,7 +232,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	public Texture newUnmanagedTexture(int width, int height,
 			Pixmap.Format format, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (!isPowerOfTwo(width) || !isPowerOfTwo(height))
+		if (gl!=gl20 && (!isPowerOfTwo(width) || !isPowerOfTwo(height)))
 			throw new GdxRuntimeException(
 					"Texture dimensions must be a power of two");
 
@@ -248,8 +248,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	@Override
 	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (!isPowerOfTwo(pixmap.getHeight())
-				|| !isPowerOfTwo(pixmap.getWidth()))
+		if (gl!=gl20 && (!isPowerOfTwo(pixmap.getWidth()) || !isPowerOfTwo(pixmap.getHeight())))
 			throw new GdxRuntimeException(
 					"Texture dimensions must be a power of two");
 
@@ -261,8 +260,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	public Texture newTexture(FileHandle file, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 		Pixmap pixmap = newPixmap(file);
-		if (!isPowerOfTwo(pixmap.getHeight())
-				|| !isPowerOfTwo(pixmap.getWidth()))
+		if (gl!=gl20 && (!isPowerOfTwo(pixmap.getWidth()) || !isPowerOfTwo(pixmap.getHeight())))
 			throw new GdxRuntimeException(
 					"Texture dimensions must be a power of two");
 

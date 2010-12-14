@@ -127,10 +127,6 @@ public class AngleGraphics implements Graphics {
 	public Texture newUnmanagedTexture(int width, int height, Format format,
 			TextureFilter minFilter, TextureFilter magFilter,
 			TextureWrap uWrap, TextureWrap vWrap) {
-		if (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height))
-			throw new GdxRuntimeException(
-					"Texture dimensions must be a power of two: " + width + "x"
-							+ height);
 
 		if (format == Format.Alpha)
 			return new AngleTexture(width, height,
@@ -144,12 +140,7 @@ public class AngleGraphics implements Graphics {
 
 	@Override
 	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
-			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (!MathUtils.isPowerOfTwo(pixmap.getHeight())
-				|| !MathUtils.isPowerOfTwo(pixmap.getWidth()))
-			throw new GdxRuntimeException(
-					"Texture dimensions must be a power of two: " + width + "x"
-							+ height);
+			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {	
 
 		return new AngleTexture((BufferedImage) pixmap.getNativePixmap(),
 				minFilter, magFilter, uWrap, vWrap, false);
@@ -158,11 +149,7 @@ public class AngleGraphics implements Graphics {
 	@Override
 	public Texture newTexture(FileHandle file, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {		
-		Pixmap pixmap = newPixmap(file);
-		if (!MathUtils.isPowerOfTwo(pixmap.getHeight()) || !MathUtils.isPowerOfTwo(pixmap.getWidth()))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file + " (" + pixmap.getWidth() + "x"
-				+ pixmap.getHeight() + ")");		
-
+		
 		return new AngleTexture(file, minFilter, magFilter, uWrap, vWrap, false);
 	}
 

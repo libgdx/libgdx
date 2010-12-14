@@ -83,6 +83,9 @@ final class AndroidTexture implements Texture {
 		if (image != null) {
 			this.texWidth = image.getWidth();
 			this.texHeight = image.getHeight();
+			
+			if (Gdx.gl!=Gdx.gl20 && (!MathUtils.isPowerOfTwo(image.getWidth()) || !MathUtils.isPowerOfTwo(image.getHeight())))
+				throw new GdxRuntimeException("texture must have power of two size");
 		}
 
 		createTexture();

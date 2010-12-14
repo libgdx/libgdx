@@ -51,6 +51,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * An implementation of {@link Graphics} for Android.
@@ -491,9 +492,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public Texture newUnmanagedTexture(int width, int height, Format format,
 			TextureFilter minFilter, TextureFilter magFilter,
 			TextureWrap uWrap, TextureWrap vWrap) {
-		if (!isPowerOfTwo(width) || !isPowerOfTwo(height))
-			throw new GdxRuntimeException(
-					"Dimensions have to be a power of two");
+		if (gl!=gl20 && (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)))
+			throw new GdxRuntimeException("Dimensions have to be a power of two");
 
 		Bitmap.Config config = AndroidPixmap.getInternalFormat(format);
 		Bitmap bitmap = Bitmap.createBitmap(width, height, config);
@@ -508,10 +508,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
 			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 
-		if (!isPowerOfTwo(pixmap.getWidth())
-				|| !isPowerOfTwo(pixmap.getHeight()))
-			throw new GdxRuntimeException(
-					"Dimensions have to be a power of two");
+		if (gl!=gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
+			throw new GdxRuntimeException("Dimensions have to be a power of two");
 
 		return new AndroidTexture(this, (Bitmap) pixmap.getNativePixmap(),
 				minFilter, magFilter, uWrap, vWrap, false, null);
