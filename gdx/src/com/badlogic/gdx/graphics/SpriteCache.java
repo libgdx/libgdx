@@ -909,13 +909,14 @@ public class SpriteCache {
 			GL10 gl = Gdx.gl10;
 			gl.glDepthMask(true);
 			gl.glDisable(GL10.GL_TEXTURE_2D);
+			mesh.unbind();
 		} else {
 			shader.end();
 			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(true);
 			gl.glDisable(GL20.GL_TEXTURE_2D);
+			mesh.unbind(shader);
 		}
-		mesh.unbind();
 	}
 
 	/**
