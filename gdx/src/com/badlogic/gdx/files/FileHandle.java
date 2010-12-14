@@ -40,41 +40,12 @@ public abstract class FileHandle {
 
 	protected FileHandle (String fileName, FileType type) {
 		this.type = type;
-
-		switch (type) {
-		case Internal:
-			file = new File(fileName);
-			if (file.exists()) break;
-			// Fall through.
-		case Classpath:
-			if (FileHandle.class.getResourceAsStream("/" + fileName) == null)
-				throw new GdxRuntimeException("File not found: " + fileName + " (" + type + ")");
-			file = new File("/" + fileName);
-			break;
-		case External:
-			file = new File(Gdx.files.getExternalStoragePath() + fileName);
-			break;
-		case Absolute:
-			file = new File(fileName);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown type: " + type);
-		}
+		file = new File(fileName);
 	}
 
 	protected FileHandle (File file, FileType type) {
 		this.file = file;
 		this.type = type;
-
-		switch (type) {
-		case Internal:
-			if (file.exists()) break;
-			// Fall through.
-		case Classpath:
-			if (FileHandle.class.getResourceAsStream(file.getPath().replace('\\', '/')) == null)
-				throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
-			break;
-		}
 	}
 
 	public String path () {
@@ -103,6 +74,11 @@ public abstract class FileHandle {
 		return type;
 	}
 
+	private File file () {
+		if (type == FileType.External) return new File(Gdx.files.getExternalStoragePath(), file.getPath());
+		return file;
+	}
+
 	/**
 	 * Returns a stream for reading this file.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
@@ -110,14 +86,14 @@ public abstract class FileHandle {
 	 */
 	public InputStream read () {
 		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
-			InputStream input = FileHandle.class.getResourceAsStream(file.getPath().replace('\\', '/'));
+			InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;
 		}
 		try {
-			return new FileInputStream(file);
+			return new FileInputStream(file());
 		} catch (FileNotFoundException ex) {
-			if (file.isDirectory())
+			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
 		}
@@ -133,9 +109,9 @@ public abstract class FileHandle {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
 		try {
-			return new FileOutputStream(file, append);
+			return new FileOutputStream(file(), append);
 		} catch (FileNotFoundException ex) {
-			if (file.isDirectory())
+			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		}
@@ -148,7 +124,7 @@ public abstract class FileHandle {
 	 */
 	public FileHandle[] list () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
-		String[] relativePaths = file.list();
+		String[] relativePaths = file().list();
 		if (relativePaths == null) return new FileHandle[0];
 		FileHandle[] handles = new FileHandle[relativePaths.length];
 		for (int i = 0, n = relativePaths.length; i < n; i++)
@@ -162,7 +138,7 @@ public abstract class FileHandle {
 	 */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
-		return file.isDirectory();
+		return file().isDirectory();
 
 	}
 
@@ -181,13 +157,21 @@ public abstract class FileHandle {
 	public void mkdirs () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot mkdirs with a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot mkdirs with an internal file: " + file);
-		file.mkdirs();
+		file().mkdirs();
 	}
 
+	/**
+	 * Returns true if the file exists. On Android, a classpath handle to a directory will always return false.
+	 */
 	public boolean exists () {
-		// Classpath and internal FileHandles can't be created unless they exist.
-		if (type == FileType.Classpath || type == FileType.Internal) return true;
-		return file.exists();
+		switch (type) {
+		case Internal:
+			if (file.exists()) return true;
+			// Fall through.
+		case Classpath:
+			return FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/')) != null;
+		}
+		return file().exists();
 	}
 
 	/**
@@ -197,7 +181,7 @@ public abstract class FileHandle {
 	public boolean delete () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot delete a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot delete an internal file: " + file);
-		return file.delete();
+		return file().delete();
 	}
 
 	/**
@@ -207,7 +191,7 @@ public abstract class FileHandle {
 	public boolean deleteDirectory () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot delete a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot delete an internal file: " + file);
-		return deleteDirectory(file);
+		return deleteDirectory(file());
 	}
 
 	/**
@@ -270,7 +254,7 @@ public abstract class FileHandle {
 			}
 			return 0;
 		}
-		return file.length();
+		return file().length();
 	}
 
 	public String toString () {

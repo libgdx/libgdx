@@ -39,18 +39,10 @@ public class JoglFileHandle extends FileHandle {
 	public FileHandle parent () {
 		File parent = file.getParentFile();
 		if (parent == null) {
-			switch (type) {
-			case Classpath:
-			case Absolute:
+			if (type == FileType.Absolute)
 				parent = new File("/");
-				break;
-			case Internal:
+			else
 				parent = new File("");
-				break;
-			case External:
-				parent = new File(Gdx.files.getExternalStoragePath());
-				break;
-			}
 		}
 		return new JoglFileHandle(parent, type);
 	}

@@ -122,7 +122,7 @@ public class FilesTest extends GdxTest {
 	}
 
 	private void testClasspath () throws IOException {
-		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/tests/FilesTest.class");
+		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png");
 		if (!handle.exists()) fail();
 		if (handle.isDirectory()) fail();
 		try {
@@ -135,21 +135,17 @@ public class FilesTest extends GdxTest {
 			fail();
 		} catch (Exception expected) {
 		}
-		if (!handle.parent().exists()) fail();
 		try {
 			handle.read().close();
 			fail();
 		} catch (Exception ignored) {
 		}
-		FileHandle dir = Gdx.files.classpath("com/badlogic/gdx/tests");
-		if (!dir.path().replace('\\', '/').equals("/com/badlogic/gdx/tests")) fail();
-		if (!dir.exists()) fail();
+		FileHandle dir = Gdx.files.classpath("com/badlogic/gdx/utils");
 		if (dir.isDirectory()) fail();
-		FileHandle child = dir.child("FilesTest.class");
-		if (!child.name().equals("FilesTest.class")) fail();
-		if (!child.nameWithoutExtension().equals("FilesTest")) fail();
-		if (!child.extension().equals("class")) fail();
-		if (!child.parent().exists()) fail();
+		FileHandle child = dir.child("arial-15.fnt");
+		if (!child.name().equals("arial-15.fnt")) fail();
+		if (!child.nameWithoutExtension().equals("arial-15")) fail();
+		if (!child.extension().equals("fnt")) fail();
 		InputStream input = handle.read();
 		byte[] bytes = new byte[70000];
 		if (input.read(bytes) != handle.length()) fail();
@@ -267,7 +263,7 @@ public class FilesTest extends GdxTest {
 	}
 
 	private void testAbsolute () throws IOException {
-		String path = new File("meow").getAbsolutePath();
+		String path = new File(Gdx.files.getExternalStoragePath(), "meow").getAbsolutePath();
 		FileHandle handle = Gdx.files.absolute(path);
 		handle.delete();
 		if (handle.exists()) fail();
