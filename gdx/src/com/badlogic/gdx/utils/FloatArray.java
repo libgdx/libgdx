@@ -74,7 +74,11 @@ public class FloatArray {
 	}
 
 	public void insert (int index, float value) {
-		if (size == items.length) resize((int)(size * 1.75f));
+		if (size == items.length) {
+			resize((int)(size * 1.75f));
+			items[size++] = value;
+			return;
+		}
 		System.arraycopy(items, index, items, index + 1, size - index);
 		size++;
 		items[index] = value;
@@ -126,7 +130,7 @@ public class FloatArray {
 	}
 
 	/**
-	 * Removes and returns the specified item.
+	 * Removes and returns the item at the specified index.
 	 */
 	public float pop (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));

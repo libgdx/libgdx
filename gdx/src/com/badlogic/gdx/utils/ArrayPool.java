@@ -24,88 +24,72 @@ package com.badlogic.gdx.utils;
 
 /**
  * An ordered, resizable long array. Avoids the boxing that occurs with ArrayList<Long>.
- * @author Matthias Mann
  * @author Nathan Sweet <misc@n4te.com>
  */
-public class LongArray {
-	public long[] items;
+abstract public class ArrayPool<T> {
+	public Object[] items;
 	public int size;
 
-	public LongArray () {
+	public ArrayPool () {
 		this(16);
 	}
 
-	public LongArray (int capacity) {
-		this.items = new long[capacity];
+	public ArrayPool (int capacity) {
+		this.items = new Object[capacity];
 	}
 
-	public LongArray (LongArray array) {
-		size = array.size;
-		System.arraycopy(array.items, 0, items, 0, size);
-	}
+	abstract protected T newObject ();
 
-	public LongArray (LongBag bag) {
-		size = bag.size;
-		System.arraycopy(bag.items, 0, items, 0, size);
-	}
-
-	public void add (long value) {
-		if (size == items.length) resize((int)(size * 1.75f));
-		items[size++] = value;
-	}
-
-	public void addAll (LongArray array) {
-		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
-		System.arraycopy(array.items, 0, items, size, array.size);
-		size = sizeNeeded;
-	}
-
-	public void addAll (LongBag bag) {
-		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
-		System.arraycopy(bag.items, 0, items, size, bag.size);
-		size = sizeNeeded;
-	}
-
-	public void set (int index, long value) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		items[index] = value;
-	}
-
-	public void insert (int index, long value) {
+	public T add () {
 		if (size == items.length) {
 			resize((int)(size * 1.75f));
-			items[size++] = value;
-			return;
+			T item = newObject();
+			items[size++] = item;
+			return item;
 		}
+		T item = (T)items[size];
+		if (item == null) item = newObject();
+		items[size++] = item;
+		return item;
+	}
+
+	public T insert (int index) {
+		if (size == items.length) {
+			resize((int)(size * 1.75f));
+			T item = newObject();
+			items[size++] = item;
+			return item;
+		}
+		T item = (T)items[size];
+		if (item == null) item = newObject();
 		System.arraycopy(items, index, items, index + 1, size - index);
 		size++;
-		items[index] = value;
+		items[index] = item;
+		return item;
 	}
 
-	public long get (int index) {
+	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		return items[index];
+		return (T)items[index];
 	}
 
-	public boolean contains (long value) {
-		long[] items = this.items;
+	public boolean contains (T value) {
+		Object[] items = this.items;
 		int i = size - 1;
 		while (i >= 0)
 			if (items[i--] == value) return true;
 		return false;
 	}
 
-	public int indexOf (long value) {
-		long[] items = this.items;
+	public int indexOf (T value) {
+		Object[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 			if (items[i] == value) return i;
 		return -1;
 	}
 
-	public boolean removeValue (long value) {
-		long[] items = this.items;
+	public boolean removeValue (T value) {
+		Object[] items = this.items;
 		for (int i = 0, n = size; i < n; i++) {
 			if (items[i] == value) {
 				removeIndex(i);
@@ -118,27 +102,30 @@ public class LongArray {
 	public void removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
-		long[] items = this.items;
+		Object[] items = this.items;
+		T old = (T)items[index];
 		System.arraycopy(items, index + 1, items, index, size - index);
+		items[size] = old;
 	}
 
 	/**
 	 * Removes and returns the last item.
 	 */
-	public long pop () {
-		return items[--size];
+	public T pop () {
+		return (T)items[--size];
 	}
 
 	/**
 	 * Removes and returns the item at the specified index.
 	 */
-	public long pop (int index) {
+	public T pop (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		long[] items = this.items;
-		long value = items[index];
 		size--;
+		Object[] items = this.items;
+		T old = (T)items[index];
 		System.arraycopy(items, index + 1, items, index, size - index);
-		return value;
+		items[size] = old;
+		return old;
 	}
 
 	public void clear () {
@@ -164,14 +151,14 @@ public class LongArray {
 	}
 
 	private void resize (int newSize) {
-		long[] newItems = new long[Math.max(newSize, 8)];
+		Object[] newItems = new Object[Math.max(newSize, 8)];
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
 	}
 
 	public String toString () {
 		if (size == 0) return "[]";
-		long[] items = this.items;
+		Object[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
 		buffer.append(items[0]);

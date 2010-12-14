@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
@@ -73,7 +74,7 @@ public class IntHashMap<T> {
 	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is reused each
 	 * time this method is called.
 	 */
-	public Iterator entries () {
+	public IterableIterator<Entry<T>> entries () {
 		if (entries == null)
 			entries = new Entries();
 		else
@@ -85,7 +86,7 @@ public class IntHashMap<T> {
 	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is reused each time
 	 * this method is called.
 	 */
-	public Iterator values () {
+	public IterableIterator<T> values () {
 		if (values == null)
 			values = new Values();
 		else
@@ -215,7 +216,7 @@ public class IntHashMap<T> {
 		return buffer.toString();
 	}
 
-	class Entries implements Iterator {
+	class Entries implements IterableIterator {
 		private int index = -1;
 		Entry<T> entry = null;
 
@@ -259,6 +260,10 @@ public class IntHashMap<T> {
 			index = -1;
 			entry = null;
 		}
+
+		public Iterator iterator () {
+			return this;
+		}
 	}
 
 	class Values extends Entries {
@@ -267,7 +272,7 @@ public class IntHashMap<T> {
 		}
 	}
 
-	class Keys {
+	public class Keys {
 		private int index = -1;
 		Entry<T> entry = null;
 

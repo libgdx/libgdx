@@ -69,6 +69,7 @@ public class LongBag {
 
 	public boolean contains (long value) {
 		int i = size - 1;
+		long[] items = this.items;
 		while (i >= 0)
 			if (items[i--] == value) return true;
 		return false;
@@ -107,7 +108,7 @@ public class LongBag {
 	}
 
 	/**
-	 * Removes and returns the specified item.
+	 * Removes and returns the item at the specified index.
 	 */
 	public long pop (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
