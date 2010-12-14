@@ -428,7 +428,7 @@ public final class Matrix4 {
 	 * @return This matrix for chaining
 	 */
 	public Matrix4 setToOrtho2D (float x, float y, float width, float height) {
-		setToOrtho(0, width, 0, height, 0, 1);
+		setToOrtho(x, x + width, y, y + height, 0, 1);
 		return this;
 	}
 
@@ -445,7 +445,7 @@ public final class Matrix4 {
 	 * @return This matrix for chaining
 	 */
 	public Matrix4 setToOrtho2D (float x, float y, float width, float height, float near, float far) {
-		setToOrtho(0, width, 0, height, near, far);
+		setToOrtho(x, x + width, y, y + height, near, far);
 		return this;
 	}
 
