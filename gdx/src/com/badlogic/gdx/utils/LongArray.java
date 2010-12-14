@@ -22,6 +22,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /**
  * An ordered, resizable long array. Avoids the boxing that occurs with ArrayList<Long>.
  * @author Matthias Mann
@@ -167,6 +169,10 @@ public class LongArray {
 		long[] newItems = new long[Math.max(newSize, 8)];
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
+	}
+
+	public void sort () {
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

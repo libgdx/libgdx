@@ -13,6 +13,9 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * An unordered, resizable array that reuses element instances. Avoids allocation by keeping elements around when they are removed
  * and reusing them when an element is added. Avoids a memory copy when removing elements (the last element is moved to the
@@ -132,6 +135,20 @@ abstract public class BagPool<T> {
 		Object[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = (T[])newItems;
+	}
+
+	/**
+	 * Sorts the bag, which will stay ordered until an element is removed.
+	 */
+	public void sort (Comparator<T> comparator) {
+		Arrays.sort((T[])items, 0, size, comparator);
+	}
+
+	/**
+	 * Sorts the bag, which will stay ordered until an element is removed.
+	 */
+	public void sort () {
+		Arrays.sort((T[])items, 0, size);
 	}
 
 	public String toString () {

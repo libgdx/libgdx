@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /**
  * An unordered, resizable int array. Avoids the boxing that occurs with ArrayList<Integer>. Avoids a memory copy when removing
  * elements (the last element is moved to the removed element's position).
@@ -146,6 +148,13 @@ public class IntBag {
 		int[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
+	}
+
+	/**
+	 * Sorts the bag, which will stay ordered until an element is removed.
+	 */
+	public void sort () {
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

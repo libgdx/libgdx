@@ -22,6 +22,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /**
  * An ordered, resizable int array. Avoids the boxing that occurs with ArrayList<Integer>.
  * @author Matthias Mann
@@ -172,6 +174,10 @@ public class IntArray {
 		int[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
+	}
+
+	public void sort () {
+		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

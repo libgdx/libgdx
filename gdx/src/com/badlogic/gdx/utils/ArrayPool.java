@@ -22,6 +22,9 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * An ordered, resizable long array. Avoids the boxing that occurs with ArrayList<Long>.
  * @author Nathan Sweet <misc@n4te.com>
@@ -154,6 +157,14 @@ abstract public class ArrayPool<T> {
 		Object[] newItems = new Object[Math.max(newSize, 8)];
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
+	}
+
+	public void sort (Comparator<T> comparator) {
+		Arrays.sort((T[])items, 0, size, comparator);
+	}
+
+	public void sort () {
+		Arrays.sort((T[])items, 0, size);
 	}
 
 	public String toString () {

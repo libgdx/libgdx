@@ -23,6 +23,8 @@
 package com.badlogic.gdx.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * An ordered, resizable array. There isn't a huge reason to use this over {@link ArrayList}, though this class is very slightly
@@ -171,6 +173,14 @@ public class Array<T> {
 		Object[] newItems = new Object[Math.max(newSize, 8)];
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
+	}
+
+	public void sort (Comparator<T> comparator) {
+		Arrays.sort((T[])items, 0, size, comparator);
+	}
+
+	public void sort () {
+		Arrays.sort((T[])items, 0, size);
 	}
 
 	public String toString () {
