@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2008-2010, Matthias Mann
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com) Copyright (c) 2008-2010,
+ * Matthias Mann
  * 
  * All rights reserved.
  * 
@@ -25,17 +26,21 @@ package com.badlogic.gdx.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * An ordered, resizable array. This class is very slightly more efficient than {@link ArrayList} (which does an extra method call
- * for get/add and increments a "modCount" on add) and exposes the size and underlying items array, which can be typed rather than
- * Object[].
+ * for get/add and increments a "modCount" on add) and exposes the size and underlying {@link #items} array. The items array can
+ * be typed, which facilitates System.arraycopy.
  * @author Nathan Sweet <misc@n4te.com>
  * @author Matthias Mann
  */
-public class Array<T> {
+public class Array<T> implements Iterable<T> {
 	public T[] items;
 	public int size;
+
+	private ItemIterator iterator;
 
 	/**
 	 * Creates a new array with an initial capacity of 16.
@@ -75,20 +80,20 @@ public class Array<T> {
 	}
 
 	public void add (T value) {
-		if (size == items.length) resize((int)(size * 1.75f));
+		if (size == items.length) resize((int)(size * 1.75f), false);
 		items[size++] = value;
 	}
 
 	public void addAll (Array array) {
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
+		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size = sizeNeeded;
 	}
 
 	public void addAll (Bag bag) {
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
+		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size = sizeNeeded;
 	}
@@ -100,7 +105,7 @@ public class Array<T> {
 
 	public void insert (int index, T value) {
 		if (size == items.length) {
-			resize((int)(size * 1.75f));
+			resize((int)(size * 1.75f), false);
 			items[size++] = value;
 			return;
 		}
@@ -175,8 +180,7 @@ public class Array<T> {
 	 * been removed, or if it is known the more items will not be added.
 	 */
 	public void shrink () {
-		if (items.length <= 8) return;
-		resize(size);
+		resize(size, true);
 	}
 
 	/**
@@ -185,13 +189,15 @@ public class Array<T> {
 	 */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(sizeNeeded);
+		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize) {
-		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), Math.max(newSize, 8));
+	private void resize (int newSize, boolean exact) {
+		if (!exact && newSize < 8) newSize = 8;
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
+		T[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
-		items = newItems;
+		this.items = newItems;
 	}
 
 	public void sort (Comparator<T> comparator) {
@@ -200,6 +206,16 @@ public class Array<T> {
 
 	public void sort () {
 		Arrays.sort(items, 0, size);
+	}
+
+	/**
+	 * Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is reused each
+	 * time this method is called.
+	 */
+	public Iterator<T> iterator () {
+		if (iterator == null) iterator = new ItemIterator();
+		iterator.index = 0;
+		return iterator;
 	}
 
 	public String toString () {
@@ -214,5 +230,23 @@ public class Array<T> {
 		}
 		buffer.append(']');
 		return buffer.toString();
+	}
+
+	class ItemIterator implements Iterator<T> {
+		int index;
+
+		public boolean hasNext () {
+			return index < size;
+		}
+
+		public T next () {
+			if (index >= size) throw new NoSuchElementException(String.valueOf(index));
+			return items[index++];
+		}
+
+		public void remove () {
+			index--;
+			removeIndex(index);
+		}
 	}
 }

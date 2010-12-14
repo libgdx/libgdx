@@ -15,15 +15,20 @@ package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * An unordered, resizable array that reuses element instances
  * @see Bag
+ * @author Riven
  * @author Nathan Sweet <misc@n4te.com>
  */
 abstract public class BagPool<T> {
 	public T[] items;
 	public int size;
+
+	private ItemIterator iterator;
 
 	/**
 	 * Creates a new bag with an initial capacity of 16.
@@ -54,7 +59,7 @@ abstract public class BagPool<T> {
 
 	public T add () {
 		if (size == items.length) {
-			resize((int)(size * 1.75f));
+			resize((int)(size * 1.75f), false);
 			T item = newObject();
 			items[size++] = item;
 			return item;
@@ -133,8 +138,7 @@ abstract public class BagPool<T> {
 	 * been removed, or if it is known the more items will not be added.
 	 */
 	public void shrink () {
-		if (items.length <= 8) return;
-		resize(size);
+		resize(size, true);
 	}
 
 	/**
@@ -143,11 +147,12 @@ abstract public class BagPool<T> {
 	 */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(sizeNeeded);
+		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize) {
-		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), Math.max(newSize, 8));
+	private void resize (int newSize, boolean exact) {
+		if (!exact && newSize < 8) newSize = 8;
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
 		T[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
@@ -167,6 +172,16 @@ abstract public class BagPool<T> {
 		Arrays.sort(items, 0, size);
 	}
 
+	/**
+	 * Returns an iterator for the items in the bag. Remove is supported. Note that the same iterator instance is reused each time
+	 * this method is called.
+	 */
+	public Iterator<T> iterator () {
+		if (iterator == null) iterator = new ItemIterator();
+		iterator.index = 0;
+		return iterator;
+	}
+
 	public String toString () {
 		if (size == 0) return "[]";
 		Object[] items = this.items;
@@ -179,5 +194,23 @@ abstract public class BagPool<T> {
 		}
 		buffer.append(']');
 		return buffer.toString();
+	}
+
+	class ItemIterator implements Iterator<T> {
+		int index;
+
+		public boolean hasNext () {
+			return index < size;
+		}
+
+		public T next () {
+			if (index >= size) throw new NoSuchElementException(String.valueOf(index));
+			return items[index++];
+		}
+
+		public void remove () {
+			index--;
+			removeIndex(index);
+		}
 	}
 }

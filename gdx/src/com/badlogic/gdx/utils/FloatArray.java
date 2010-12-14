@@ -1,4 +1,5 @@
 /*
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
  * Copyright (c) 2008-2010, Matthias Mann
  * 
  * All rights reserved.
@@ -52,20 +53,20 @@ public class FloatArray {
 	}
 
 	public void add (float value) {
-		if (size == items.length) resize((int)(size * 1.75f));
+		if (size == items.length) resize((int)(size * 1.75f), false);
 		items[size++] = value;
 	}
 
 	public void addAll (FloatArray array) {
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
+		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size = sizeNeeded;
 	}
 
 	public void addAll (FloatBag bag) {
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f));
+		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size = sizeNeeded;
 	}
@@ -77,7 +78,7 @@ public class FloatArray {
 
 	public void insert (int index, float value) {
 		if (size == items.length) {
-			resize((int)(size * 1.75f));
+			resize((int)(size * 1.75f), false);
 			items[size++] = value;
 			return;
 		}
@@ -152,8 +153,7 @@ public class FloatArray {
 	 * been removed, or if it is known the more items will not be added.
 	 */
 	public void shrink () {
-		if (items.length <= 8) return;
-		resize(size);
+		resize(size, true);
 	}
 
 	/**
@@ -162,11 +162,12 @@ public class FloatArray {
 	 */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(sizeNeeded);
+		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize) {
-		float[] newItems = new float[Math.max(newSize, 8)];
+	private void resize (int newSize, boolean exact) {
+		if (!exact && newSize < 8) newSize = 8;
+		float[] newItems = new float[newSize];
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		items = newItems;
 	}
