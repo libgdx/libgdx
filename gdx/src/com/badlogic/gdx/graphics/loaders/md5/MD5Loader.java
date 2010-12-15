@@ -169,9 +169,12 @@ public class MD5Loader {
 							mesh.vertices[idx++] = parseFloat( tokens.get(4) ); // t
 							mesh.vertices[idx++] = parseFloat( tokens.get(6) ); // start
 							mesh.vertices[idx++] = parseFloat( tokens.get(7) ); // count
-							mesh.vertices[idx++] = 0.f;
-							mesh.vertices[idx++] = 0.f;
-							mesh.vertices[idx++] = 0.f;
+							if(allocateNormals)
+							{
+								mesh.vertices[idx++] = 0.f;
+								mesh.vertices[idx++] = 0.f;
+								mesh.vertices[idx++] = 0.f;
+							}
 						}
 						if( tokens.get(0).equals( "tri" ) )
 						{							
