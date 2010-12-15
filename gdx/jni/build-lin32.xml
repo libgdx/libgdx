@@ -9,7 +9,8 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -fPic"/>
+	<!-- should probably contain -fPic but we use gcc 4.4.1 to compile those binaries -->
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
@@ -69,8 +70,11 @@
 
 	<!-- links the shared library based on the previously compiled object files -->
 	<target name="link" depends="compile">
-		<exec executable="${linker}" dir="${builddir}">
-		<arg line="${linker-opts} -o ${libname} *.o"/>
+		<exec executable="${linker}" vmlauncher="false">
+		<arg value="${linker-opts}"/>
+		<arg value="-o"/>
+		<arg value="${libname}"/>		
+		<arg value="*.o"/>
 		</exec>	
 	</target>
 </project>
