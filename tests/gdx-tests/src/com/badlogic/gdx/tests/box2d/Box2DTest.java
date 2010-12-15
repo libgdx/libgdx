@@ -21,11 +21,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
@@ -110,17 +110,14 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	}
 
 	@Override public boolean keyDown (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyTyped (char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyUp (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

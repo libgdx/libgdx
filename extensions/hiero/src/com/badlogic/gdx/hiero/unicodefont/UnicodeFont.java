@@ -7,7 +7,6 @@ import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
-import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -21,10 +20,8 @@ import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -33,7 +30,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * For efficiency, glyphs are packed on to textures. Glyphs can be loaded to the textures on the fly, when they are first needed
  * for display. However, it is best to load the glyphs that are known to be needed at startup.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class UnicodeFont {
 	static private final int DISPLAY_LIST_CACHE_SIZE = 200;

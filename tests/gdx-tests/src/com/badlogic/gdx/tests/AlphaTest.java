@@ -14,19 +14,18 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class AlphaTest extends GdxTest {
 	SpriteBatch batch;
-	Texture texture;	
+	Texture texture;
 
 	@Override public void create () {
 		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888);
@@ -37,7 +36,7 @@ public class AlphaTest extends GdxTest {
 			TextureWrap.ClampToEdge);
 		batch = new SpriteBatch();
 	}
-	
+
 	@Override public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 

@@ -16,26 +16,25 @@ package com.badlogic.gdx.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureRegion;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
-import com.badlogic.gdx.scenes.scene2d.actors.Label;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class StageTest extends GdxTest implements InputProcessor {
 	private static final int NUM_GROUPS = 5;
-	private static final int NUM_SPRITES = (int) Math.sqrt(400 / NUM_GROUPS);
+	private static final int NUM_SPRITES = (int)Math.sqrt(400 / NUM_GROUPS);
 	private static final float SPACING = 5;
 	ImmediateModeRenderer renderer;
 	Stage stage;
@@ -52,12 +51,9 @@ public class StageTest extends GdxTest implements InputProcessor {
 	float scale = 1;
 	float vScale = 1;
 
-	@Override
-	public void create() {
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
-				"data/badlogicsmall.jpg", FileType.Internal),
-				TextureFilter.Linear, TextureFilter.Linear,
-				TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	@Override public void create () {
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
+			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		// font = Gdx.graphics.newFont("DroidSans", 12, FontStyle.Plain);
 
 		stage = new Stage(480, 320, true);
@@ -65,10 +61,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 		float loc = (NUM_SPRITES * (32 + SPACING) - SPACING) / 2;
 		for (int i = 0; i < NUM_GROUPS; i++) {
 			Group group = new Group("group" + i);
-			group.x = (float) Math.random()
-					* (stage.width() - NUM_SPRITES * (32 + SPACING));
-			group.y = (float) Math.random()
-					* (stage.height() - NUM_SPRITES * (32 + SPACING));
+			group.x = (float)Math.random() * (stage.width() - NUM_SPRITES * (32 + SPACING));
+			group.y = (float)Math.random() * (stage.height() - NUM_SPRITES * (32 + SPACING));
 			group.originX = loc;
 			group.originY = loc;
 
@@ -76,20 +70,15 @@ public class StageTest extends GdxTest implements InputProcessor {
 			stage.addActor(group);
 		}
 
-		uiTexture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
-				"data/ui.png", FileType.Internal), TextureFilter.Linear,
-				TextureFilter.Linear, TextureWrap.ClampToEdge,
-				TextureWrap.ClampToEdge);
+		uiTexture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/ui.png", FileType.Internal), TextureFilter.Linear,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		ui = new Stage(480, 320, false);
-		Image blend = new Image("blend button", new TextureRegion(uiTexture, 0,
-				0, 64, 32));
+		Image blend = new Image("blend button", new TextureRegion(uiTexture, 0, 0, 64, 32));
 		blend.y = ui.height() - 32;
-		Image rotate = new Image("rotate button", new TextureRegion(uiTexture,
-				64, 0, 64, 32));
+		Image rotate = new Image("rotate button", new TextureRegion(uiTexture, 64, 0, 64, 32));
 		rotate.y = blend.y;
 		rotate.x = 64;
-		Image scale = new Image("scale button", new TextureRegion(uiTexture,
-				64, 32, 64, 32));
+		Image scale = new Image("scale button", new TextureRegion(uiTexture, 64, 32, 64, 32));
 		scale.y = blend.y;
 		scale.x = 128;
 
@@ -106,7 +95,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	private void fillGroup(Group group, Texture texture) {
+	private void fillGroup (Group group, Texture texture) {
 		float advance = 32 + SPACING;
 		for (int y = 0; y < NUM_SPRITES * advance; y += advance)
 			for (int x = 0; x < NUM_SPRITES * advance; x += advance) {
@@ -120,8 +109,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 			}
 	}
 
-	@Override
-	public void render() {
+	@Override public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
@@ -133,16 +121,14 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 			if (actor != null)
 				if (actor instanceof Image)
-					((Image) actor).color.set((float) Math.random(),
-							(float) Math.random(), (float) Math.random(),
-							0.5f + 0.5f * (float) Math.random());
+					((Image)actor).color.set((float)Math.random(), (float)Math.random(), (float)Math.random(),
+						0.5f + 0.5f * (float)Math.random());
 		}
 
 		int len = stage.getGroups().size();
 		for (int i = 0; i < len; i++)
 			if (rotateSprites)
-				stage.getGroups().get(i).rotation += Gdx.graphics
-						.getDeltaTime();
+				stage.getGroups().get(i).rotation += Gdx.graphics.getDeltaTime();
 			else
 				stage.getGroups().get(i).rotation = 0;
 
@@ -181,8 +167,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < len; i++) {
 			renderer.color(1, 0, 0, 1);
 			Group group = stage.getRoot().getGroups().get(i);
-			renderer
-					.vertex(group.x + group.originX, group.y + group.originY, 0);
+			renderer.vertex(group.x + group.originX, group.y + group.originY, 0);
 		}
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize(4);
@@ -191,59 +176,45 @@ public class StageTest extends GdxTest implements InputProcessor {
 		// Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
 		// ", groups "
 		// + stage.getGroups().size();
-		ui.render();		
+		ui.render();
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer) {
+	@Override public boolean touchDown (int x, int y, int pointer) {
 		boolean touched = ui.touchDown(x, y, pointer);
 		if (touched) {
 			Actor hitActor = ui.getLastTouchedChild();
-			if (hitActor == null)
-				return touched;
-			if (hitActor.name.startsWith("blend"))
-				if (stage.getSpriteBatch().isBlendingEnabled())
-					stage.getSpriteBatch().disableBlending();
-				else
-					stage.getSpriteBatch().enableBlending();
-			if (hitActor.name.startsWith("rotate"))
-				rotateSprites = !rotateSprites;
-			if (hitActor.name.startsWith("scale"))
-				scaleSprites = !scaleSprites;
+			if (hitActor == null) return touched;
+			if (hitActor.name.startsWith("blend")) if (stage.getSpriteBatch().isBlendingEnabled())
+				stage.getSpriteBatch().disableBlending();
+			else
+				stage.getSpriteBatch().enableBlending();
+			if (hitActor.name.startsWith("rotate")) rotateSprites = !rotateSprites;
+			if (hitActor.name.startsWith("scale")) scaleSprites = !scaleSprites;
 		}
 		return touched;
 	}
 
-	@Override
-	public boolean touchUp(int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override
-	public boolean touchDragged(int x, int y, int pointer) {
+	@Override public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-
-	@Override
-	public boolean keyDown(int keycode) {
+	@Override public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override
-	public boolean keyTyped(char character) {
+	@Override public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override
-	public boolean needsGL20() {
-		// TODO Auto-generated method stub
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 }

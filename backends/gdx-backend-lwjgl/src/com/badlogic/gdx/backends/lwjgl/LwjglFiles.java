@@ -18,7 +18,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 final class LwjglFiles implements Files {
 	private final String externalPath = System.getProperty("user.home") + "/";

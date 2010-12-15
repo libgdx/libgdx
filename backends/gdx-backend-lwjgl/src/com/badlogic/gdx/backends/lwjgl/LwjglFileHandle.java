@@ -16,12 +16,11 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.io.File;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 final class LwjglFileHandle extends FileHandle {
 	LwjglFileHandle (String fileName, FileType type) {

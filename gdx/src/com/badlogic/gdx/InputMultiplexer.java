@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 /**
  * An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
  * processor returns true, which indicates that the event was handled.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class InputMultiplexer implements InputProcessor {
 	private ArrayList<InputProcessor> processors = new ArrayList(4);

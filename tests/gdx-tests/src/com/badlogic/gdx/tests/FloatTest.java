@@ -20,8 +20,8 @@ import java.nio.FloatBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -75,7 +75,7 @@ public class FloatTest extends GdxTest {
 		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 3);
 	}
 
-	private void init() {
+	private void init () {
 		if (tex != null) {
 			tex.dispose();
 			tex2.dispose();
@@ -110,17 +110,16 @@ public class FloatTest extends GdxTest {
 		tex2 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 	}
-	
+
 	@Override public void create () {
 		init();
 	}
-	
-	@Override public void resume() {
+
+	@Override public void resume () {
 		init();
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

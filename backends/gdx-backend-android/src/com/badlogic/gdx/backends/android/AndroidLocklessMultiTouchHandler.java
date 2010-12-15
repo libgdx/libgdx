@@ -17,7 +17,6 @@ import android.view.MotionEvent;
 
 import com.badlogic.gdx.backends.android.AndroidLocklessInput.TouchEvent;
 
-
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
  * pointers.
@@ -31,7 +30,7 @@ public class AndroidLocklessMultiTouchHandler implements AndroidLocklessTouchHan
 		int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 		int pointerId = event.getPointerId(pointerIndex);
 
-		int x = 0, y = 0;	
+		int x = 0, y = 0;
 
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
@@ -73,14 +72,13 @@ public class AndroidLocklessMultiTouchHandler implements AndroidLocklessTouchHan
 
 	private void postTouchEvent (AndroidLocklessInput input, int type, int x, int y, int pointer) {
 		TouchEvent event = input.freeTouchEvents.poll();
-		if(event == null)
-			event = new TouchEvent();
+		if (event == null) event = new TouchEvent();
 		event.timeStamp = System.nanoTime();
 		event.pointer = pointer;
 		event.x = x;
 		event.y = y;
-		event.type = type;			
-		input.touchEvents.put(event);					
+		event.type = type;
+		input.touchEvents.put(event);
 	}
 
 	public boolean supportsMultitouch (AndroidApplication activity) {

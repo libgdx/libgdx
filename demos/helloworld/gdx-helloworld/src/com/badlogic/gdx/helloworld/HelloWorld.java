@@ -14,8 +14,8 @@
 package com.badlogic.gdx.helloworld;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Vector2;
 
-public class HelloWorld implements ApplicationListener {	
+public class HelloWorld implements ApplicationListener {
 	SpriteBatch spriteBatch;
 	Texture texture;
 	BitmapFont font;
@@ -52,13 +52,13 @@ public class HelloWorld implements ApplicationListener {
 		spriteBatch.draw(texture, centerX - texture.getWidth() / 2, centerY - texture.getHeight() / 2, 0, 0, texture.getWidth(),
 			texture.getHeight());
 		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y);		
+		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y);
 		spriteBatch.end();
 	}
 
 	@Override public void resize (int width, int height) {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
-		textPosition.set(0,0);
+		textPosition.set(0, 0);
 	}
 
 	@Override public void create () {
@@ -69,13 +69,11 @@ public class HelloWorld implements ApplicationListener {
 		spriteBatch = new SpriteBatch();
 	}
 
-	@Override
-	public void pause() {
-		
+	@Override public void pause () {
+
 	}
 
-	@Override
-	public void resume() {
-		
+	@Override public void resume () {
+
 	}
 }

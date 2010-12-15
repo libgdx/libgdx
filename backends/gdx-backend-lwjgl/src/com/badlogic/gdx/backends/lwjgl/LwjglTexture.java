@@ -39,7 +39,7 @@ import static org.lwjgl.opengl.GL12.*;
 
 /**
  * @author badlogicgames@gmail.com
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 final class LwjglTexture implements Texture {
 	/** height in pixels of texture **/

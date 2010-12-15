@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * BitmapFont disposes the region's texture, which may not be desirable if the texture is still being used elsewhere.<br>
  * <br>
  * The code is based on Matthias Mann's TWL BitmapFont class. Thanks for sharing, Matthias! :)
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author Matthias Mann
  */
 public class BitmapFont {
@@ -125,7 +125,7 @@ public class BitmapFont {
 			else {
 				String[] page = reader.readLine().split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				String imgFilename = page[2].substring(6, page[2].length()-1);
+				String imgFilename = page[2].substring(6, page[2].length() - 1);
 				FileHandle imageFile = fontFile.parent().child(imgFilename);
 				region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
 					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));

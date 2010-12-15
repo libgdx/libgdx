@@ -13,6 +13,9 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,20 +24,17 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -42,8 +42,7 @@ import java.util.HashSet;
  * @author mzechner
  * 
  */
-public final class AndroidInput implements Input, OnKeyListener, OnTouchListener,
-		SensorEventListener {
+public final class AndroidInput implements Input, OnKeyListener, OnTouchListener, SensorEventListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -67,23 +66,19 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		int pointer;
 	}
 
-	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(
-			new PoolObjectFactory<KeyEvent>() {
+	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(new PoolObjectFactory<KeyEvent>() {
 
-				@Override
-				public KeyEvent createObject() {
-					return new KeyEvent();
-				}
-			}, 1000);
+		@Override public KeyEvent createObject () {
+			return new KeyEvent();
+		}
+	}, 1000);
 
-	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(
-			new PoolObjectFactory<TouchEvent>() {
+	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(new PoolObjectFactory<TouchEvent>() {
 
-				@Override
-				public TouchEvent createObject() {
-					return new TouchEvent();
-				}
-			}, 1000);
+		@Override public TouchEvent createObject () {
+			return new TouchEvent();
+		}
+	}, 1000);
 
 	ArrayList<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	ArrayList<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
@@ -105,7 +100,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	private InputProcessor processor;
 
-	public AndroidInput(AndroidApplication activity, View view, int sleepTime) {
+	public AndroidInput (AndroidApplication activity, View view, int sleepTime) {
 		view.setOnKeyListener(this);
 		view.setOnTouchListener(this);
 		view.setFocusable(true);
@@ -113,15 +108,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		view.requestFocus();
 		view.requestFocusFromTouch();
 
-		manager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+		manager = (SensorManager)activity.getSystemService(Context.SENSOR_SERVICE);
 		if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
 			accelerometerAvailable = false;
-		}
-		else {
-			Sensor accelerometer = manager.getSensorList(
-					Sensor.TYPE_ACCELEROMETER).get(0);
-			if (!manager.registerListener(this, accelerometer,
-					SensorManager.SENSOR_DELAY_GAME))
+		} else {
+			Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+			if (!manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME))
 				accelerometerAvailable = false;
 			else
 				accelerometerAvailable = true;
@@ -136,80 +128,65 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		else
 			touchHandler = new AndroidSingleTouchHandler();
 		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler
-				&& ((AndroidMultiTouchHandler)touchHandler)
-						.supportsMultitouch(activity);
+			&& ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
 	}
 
-	@Override
-	public float getAccelerometerX() {
+	@Override public float getAccelerometerX () {
 		return accelerometerValues[0];
 	}
 
-	@Override
-	public float getAccelerometerY() {
+	@Override public float getAccelerometerY () {
 		return accelerometerValues[1];
 	}
 
-	@Override
-	public float getAccelerometerZ() {
+	@Override public float getAccelerometerZ () {
 		return accelerometerValues[2];
 	}
 
-	@Override
-	public void getTextInput(final TextInputListener listener,
-			final String title, final String text) {
+	@Override public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		handle.post(new Runnable() {
-			public void run() {
-				AlertDialog.Builder alert = new AlertDialog.Builder(
-						AndroidInput.this.app);
+			public void run () {
+				AlertDialog.Builder alert = new AlertDialog.Builder(AndroidInput.this.app);
 				alert.setTitle(title);
 				final EditText input = new EditText(AndroidInput.this.app);
 				input.setText(text);
 				input.setSingleLine();
 				alert.setView(input);
-				alert.setPositiveButton("Ok",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								listener.input(input.getText().toString());
-							}
-						});
+				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					public void onClick (DialogInterface dialog, int whichButton) {
+						listener.input(input.getText().toString());
+					}
+				});
 				alert.show();
 			}
 		});
 	}
 
-	@Override
-	public int getX() {
+	@Override public int getX () {
 		return touchX[0];
 	}
 
-	@Override
-	public int getY() {
+	@Override public int getY () {
 		return touchY[0];
 	}
 
-	@Override
-	public int getX(int pointer) {
+	@Override public int getX (int pointer) {
 		return touchX[pointer];
 	}
 
-	@Override
-	public int getY(int pointer) {
+	@Override public int getY (int pointer) {
 		return touchY[pointer];
 	}
 
-	public boolean isTouched(int pointer) {
+	public boolean isTouched (int pointer) {
 		return touched[pointer];
 	}
 
-	@Override
-	public boolean isAccelerometerAvailable() {
+	@Override public boolean isAccelerometerAvailable () {
 		return accelerometerAvailable;
 	}
 
-	@Override
-	public boolean isKeyPressed(int key) {
+	@Override public boolean isKeyPressed (int key) {
 		synchronized (this) {
 			if (key == Input.Keys.ANY_KEY)
 				return keys.size() > 0;
@@ -218,26 +195,25 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override
-	public boolean isTouched() {
+	@Override public boolean isTouched () {
 		return touched[0];
 	}
-	
-	public void setInputProcessor(InputProcessor processor) {
-		synchronized(this) {
+
+	public void setInputProcessor (InputProcessor processor) {
+		synchronized (this) {
 			this.processor = processor;
 		}
 	}
-	
-	void processEvents() {
-		synchronized(this) {
-			if(processor!=null) {		
+
+	void processEvents () {
+		synchronized (this) {
+			if (processor != null) {
 				final InputProcessor processor = this.processor;
 
 				int len = keyEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
-					switch(e.type) {
+					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
 						break;
@@ -248,12 +224,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 						processor.keyTyped(e.keyChar);
 					}
 					freeKeyEvents.free(e);
-				}					
-				
+				}
+
 				len = touchEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
-					switch(e.type) {
+					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer);
 						break;
@@ -267,35 +243,35 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				}
 			} else {
 				int len = touchEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
-//					Log.d("AndroidInput", "synch touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
+// Log.d("AndroidInput", "synch touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
 					freeTouchEvents.free(e);
 				}
-			
+
 				len = keyEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					freeKeyEvents.free(keyEvents.get(i));
 				}
 			}
-			
+
 			keyEvents.clear();
 			touchEvents.clear();
 		}
 	}
 
 	boolean requestFocus = true;
-	@Override
-	public boolean onTouch(View view, MotionEvent event) {
+
+	@Override public boolean onTouch (View view, MotionEvent event) {
 		if (requestFocus) {
 			view.requestFocus();
 			view.requestFocusFromTouch();
 			requestFocus = false;
 		}
-		
+
 		// synchronized in handler.postTouchEvent()
 		touchHandler.onTouch(event, this);
-		
+
 		if (sleepTime != 0) {
 			try {
 				Thread.sleep(sleepTime);
@@ -305,13 +281,11 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return true;
 	}
 
-	@Override
-	public boolean onKey(View v, int keyCode, android.view.KeyEvent e) {
+	@Override public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
 		synchronized (this) {
-			char character = (char) e.getUnicodeChar();
+			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
-			if (keyCode == 67)
-				character = '\b';
+			if (keyCode == 67) character = '\b';
 
 			KeyEvent event = null;
 			switch (e.getAction()) {
@@ -328,61 +302,50 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_UP;
-				keyEvents.add(event);				
+				keyEvents.add(event);
 
 				event = freeKeyEvents.newObject();
 				event.keyChar = character;
 				event.keyCode = 0;
 				event.type = KeyEvent.KEY_TYPED;
 				keyEvents.add(event);
-				
+
 				keys.remove(e.getKeyCode());
 			}
 		}
 
-		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK)
-			return true;
+		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
 		return false;
 	}
 
-	@Override
-	public void onAccuracyChanged(Sensor arg0, int arg1) {
+	@Override public void onAccuracyChanged (Sensor arg0, int arg1) {
 
 	}
 
-	@Override
-	public void onSensorChanged(SensorEvent event) {
+	@Override public void onSensorChanged (SensorEvent event) {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			System.arraycopy(event.values, 0, accelerometerValues, 0,
-					accelerometerValues.length);
+			System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
 		}
 	}
 
-	@Override
-	public boolean supportsMultitouch() {
+	@Override public boolean supportsMultitouch () {
 		return hasMultitouch;
 	}
 
-	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
-		InputMethodManager manager = (InputMethodManager) app
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
+	@Override public void setOnscreenKeyboardVisible (boolean visible) {
+		InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
 		if (visible) {
-			manager.showSoftInput(((AndroidGraphics) app.getGraphics())
-					.getView(), 0);
+			manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);
 		} else {
-			manager.hideSoftInputFromWindow(((AndroidGraphics) app
-					.getGraphics()).getView().getWindowToken(), 0);
+			manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
 		}
 	}
 
-	@Override
-	public boolean supportsOnscreenKeyboard() {
+	@Override public boolean supportsOnscreenKeyboard () {
 		return true;
 	}
 
-	@Override
-	public void setCatchBackKey(boolean catchBack) {
+	@Override public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
 	}
 }

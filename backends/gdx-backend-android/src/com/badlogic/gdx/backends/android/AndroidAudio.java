@@ -13,12 +13,17 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -27,10 +32,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An implementation of the {@link Audio} interface for Android.

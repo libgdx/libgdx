@@ -26,10 +26,10 @@ import com.badlogic.gdx.graphics.GL10;
  * 
  */
 class JoglGL10 implements GL10 {
-	protected final javax.media.opengl.GL gl;	
+	protected final javax.media.opengl.GL gl;
 
 	public JoglGL10 (javax.media.opengl.GL gl) {
-		this.gl = gl;	
+		this.gl = gl;
 	}
 
 	@Override public final void glActiveTexture (int texture) {
@@ -79,7 +79,7 @@ class JoglGL10 implements GL10 {
 	@Override public final void glColorMask (boolean red, boolean green, boolean blue, boolean alpha) {
 		gl.glColorMask(red, green, blue, alpha);
 	}
-	
+
 	@Override public final void glColorPointer (int size, int type, int stride, Buffer pointer) {
 		gl.glColorPointer(size, type, stride, pointer);
 	}
@@ -123,7 +123,7 @@ class JoglGL10 implements GL10 {
 	@Override public final void glDepthRangef (float zNear, float zFar) {
 		gl.glDepthRange(zNear, zFar);
 	}
-	
+
 	@Override public final void glDisable (int cap) {
 		gl.glDisable(cap);
 	}
@@ -248,7 +248,6 @@ class JoglGL10 implements GL10 {
 	@Override public final void glNormal3f (float nx, float ny, float nz) {
 		gl.glNormal3f(nx, ny, nz);
 	}
-
 
 	@Override public final void glNormalPointer (int type, int stride, Buffer pointer) {
 		gl.glNormalPointer(type, stride, pointer);

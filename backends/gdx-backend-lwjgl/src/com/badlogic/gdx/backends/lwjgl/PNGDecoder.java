@@ -36,7 +36,7 @@ import java.util.zip.Inflater;
  * Decodes A PNG directly a ByteBuffer.
  * 
  * @author Matthias Mann
- * @author Nathan Sweet <misc@n4te.com> (minor edits to avoid allocation)
+ * @author Nathan Sweet (minor edits to avoid allocation)
  */
 final class PNGDecoder {
 	public enum Format {

@@ -113,7 +113,7 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 	@Override public void glGetLightfv (int light, int pname, FloatBuffer params) {
 		gl.glGetLightfv(light, pname, params);
 	}
-	
+
 	@Override public void glGetMaterialfv (int face, int pname, float[] params, int offset) {
 		gl.glGetMaterialfv(face, pname, params, offset);
 	}
@@ -121,7 +121,7 @@ public final class JoglGL11 extends JoglGL10 implements GL11 {
 	@Override public void glGetMaterialfv (int face, int pname, FloatBuffer params) {
 		gl.glGetMaterialfv(face, pname, params);
 	}
-	
+
 	@Override public void glGetPointerv (int pname, Buffer[] params) {
 		throw new UnsupportedOperationException("not implemented");
 	}

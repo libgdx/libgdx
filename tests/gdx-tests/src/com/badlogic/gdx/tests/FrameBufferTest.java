@@ -13,18 +13,18 @@
 
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -60,9 +60,9 @@ public class FrameBufferTest extends GdxTest {
 		spriteBatch.end();
 	}
 
-	@Override public void create () {	
-		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(
-			Usage.ColorPacked, 4, "a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+	@Override public void create () {
+		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(Usage.ColorPacked, 4,
+			"a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		float c1 = Color.toFloatBits(255, 0, 0, 255);
 		float c2 = Color.toFloatBits(255, 0, 0, 255);
 		;
@@ -76,7 +76,7 @@ public class FrameBufferTest extends GdxTest {
 
 		spriteBatch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true);
-		createShader(Gdx.graphics);		
+		createShader(Gdx.graphics);
 	}
 
 	private void createShader (Graphics graphics) {

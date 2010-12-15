@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.BitmapFontCache;
@@ -40,7 +39,7 @@ import de.matthiasmann.twl.renderer.FontParameter;
 import de.matthiasmann.twl.utils.StateExpression;
 
 /**
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author Matthias Mann
  */
 class GdxFont implements Font {
@@ -188,7 +187,7 @@ class GdxFont implements Font {
 		public int getWidth () {
 			return getBounds().width;
 		}
-		
+
 		public int getHeight () {
 			return getBounds().height;
 		}

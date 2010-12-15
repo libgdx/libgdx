@@ -19,7 +19,7 @@ import java.util.Arrays;
  * An unordered, resizable long array. Avoids the boxing that occurs with ArrayList<Float>. Avoids a memory copy when removing
  * elements (the last element is moved to the removed element's position).
  * @author Riven
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class LongBag {
 	public long[] items;

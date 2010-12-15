@@ -16,15 +16,14 @@ package com.badlogic.gdx.tests;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.KissFFT;
 import com.badlogic.gdx.audio.io.Mpg123Decoder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Mpg123Test extends GdxTest {
-
 
 	@Override public void create () {
 // Thread thread = new Thread( new Runnable() {

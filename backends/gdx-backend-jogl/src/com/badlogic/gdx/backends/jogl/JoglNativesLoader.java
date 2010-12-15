@@ -27,23 +27,19 @@ public class JoglNativesLoader {
 	/**
 	 * loads the necessary libraries depending on the operating system
 	 */
-	static void loadLibraries() {
-		if (nativesLoaded)
-			return;
+	static void loadLibraries () {
+		if (nativesLoaded) return;
 
 		NativeLibLoader.disableLoading();
 		com.sun.gluegen.runtime.NativeLibLoader.disableLoading();
 		// By wkien: On some systems (read: mine) jogl_awt would not find its
 		// dependency jawt if not loaded before
 		if (System.getProperty("os.name", "").contains("Windows")
-				&& !System.getProperty("libgdx.nojawtpreloading", "false")
-						.contains("true")) {
+			&& !System.getProperty("libgdx.nojawtpreloading", "false").contains("true")) {
 			try {
 				System.loadLibrary("jawt");
 			} catch (Exception ex) {
-				System.err
-						.println("WARNING: Unable to load native jawt library: '"
-								+ ex.getMessage() + "'");
+				System.err.println("WARNING: Unable to load native jawt library: '" + ex.getMessage() + "'");
 			}
 		}
 		loadLibrary("gluegen-rt");
@@ -54,13 +50,11 @@ public class JoglNativesLoader {
 	}
 
 	/**
-	 * helper method to load a specific library in an operation system dependant
-	 * manner
+	 * helper method to load a specific library in an operation system dependant manner
 	 * 
-	 * @param resource
-	 *            the name of the resource
+	 * @param resource the name of the resource
 	 */
-	private static void loadLibrary(String resource) {
+	private static void loadLibrary (String resource) {
 		String package_path = "/javax/media/";
 		String library = "";
 
@@ -86,22 +80,16 @@ public class JoglNativesLoader {
 			library = "lib" + resource + ".jnilib";
 		}
 
-		String so = System.getProperty("java.io.tmpdir") + "/"
-				+ System.nanoTime() + library;
-		InputStream in = JoglGraphics.class.getResourceAsStream(package_path
-				+ library);
-		if (in == null)
-			throw new RuntimeException("couldn't find " + library
-					+ " in jar file.");
+		String so = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime() + library;
+		InputStream in = JoglGraphics.class.getResourceAsStream(package_path + library);
+		if (in == null) throw new RuntimeException("couldn't find " + library + " in jar file.");
 
 		try {
-			BufferedOutputStream out = new BufferedOutputStream(
-					new FileOutputStream(so));
+			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(so));
 			byte[] bytes = new byte[1024 * 4];
 			while (true) {
 				int read_bytes = in.read(bytes);
-				if (read_bytes == -1)
-					break;
+				if (read_bytes == -1) break;
 
 				out.write(bytes, 0, read_bytes);
 			}
@@ -109,11 +97,9 @@ public class JoglNativesLoader {
 			in.close();
 			System.load(so);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("couldn't write " + library
-					+ " to temporary file " + so);
+			throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
 		} catch (IOException e) {
-			throw new RuntimeException("couldn't write " + library
-					+ " to temporary file " + so);
+			throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
 		}
 	}
 }

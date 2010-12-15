@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.backends.angle;
 
 import java.util.ArrayList;
@@ -48,23 +49,19 @@ public class AngleInput implements Input {
 		int pointer;
 	}
 
-	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(
-			new PoolObjectFactory<KeyEvent>() {
+	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(new PoolObjectFactory<KeyEvent>() {
 
-				@Override
-				public KeyEvent createObject() {
-					return new KeyEvent();
-				}
-			}, 1000);
+		@Override public KeyEvent createObject () {
+			return new KeyEvent();
+		}
+	}, 1000);
 
-	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(
-			new PoolObjectFactory<TouchEvent>() {
+	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(new PoolObjectFactory<TouchEvent>() {
 
-				@Override
-				public TouchEvent createObject() {
-					return new TouchEvent();
-				}
-			}, 1000);
+		@Override public TouchEvent createObject () {
+			return new TouchEvent();
+		}
+	}, 1000);
 
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
@@ -74,7 +71,7 @@ public class AngleInput implements Input {
 	HashSet<Integer> pressedKeys = new HashSet<Integer>();
 
 	private InputProcessor processor;
-	
+
 	public float getAccelerometerX () {
 		return 0;
 	}
@@ -116,7 +113,7 @@ public class AngleInput implements Input {
 	}
 
 	public boolean isTouched () {
-		// FIXME		
+		// FIXME
 		return false;
 	}
 
@@ -146,25 +143,25 @@ public class AngleInput implements Input {
 	}
 
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {
-		
+
 	}
 
 	@Override public boolean supportsOnscreenKeyboard () {
 		return false;
 	}
-	
+
 	@Override public void setCatchBackKey (boolean catchBack) {
-		
+
 	}
 
-	void processEvents() {
-		synchronized(this) {
-			if(processor!=null) {	
+	void processEvents () {
+		synchronized (this) {
+			if (processor != null) {
 				InputProcessor processor = this.processor;
 				int len = keyEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
-					switch(e.type) {
+					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
 						break;
@@ -175,12 +172,12 @@ public class AngleInput implements Input {
 						processor.keyTyped(e.keyChar);
 					}
 					freeKeyEvents.free(e);
-				}					
-				
+				}
+
 				len = touchEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
-					switch(e.type) {
+					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer);
 						break;
@@ -194,38 +191,36 @@ public class AngleInput implements Input {
 				}
 			} else {
 				int len = touchEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					freeTouchEvents.free(touchEvents.get(i));
 				}
-				
+
 				len = keyEvents.size();
-				for(int i=0; i < len; i++) {
+				for (int i = 0; i < len; i++) {
 					freeKeyEvents.free(keyEvents.get(i));
 				}
 			}
-			
+
 			keyEvents.clear();
 			touchEvents.clear();
 		}
-	}	
-	
-	
-	boolean isButtonPressed () { 
+	}
+
+	boolean isButtonPressed () {
 		return mousePressed;
 	}
 
-	@Override
-	public void setInputProcessor(InputProcessor processor) {
+	@Override public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}
 
-	void registerKeyEvent(int action, int key, int uniCode) {
-		synchronized(this) {
+	void registerKeyEvent (int action, int key, int uniCode) {
+		synchronized (this) {
 			KeyEvent event = freeKeyEvents.newObject();
 			event.keyChar = (char)uniCode;
-			event.keyCode = translateKey(key);			
-			
-			switch(action) {
+			event.keyCode = translateKey(key);
+
+			switch (action) {
 			case ESLoop.ES_KEY_DOWN:
 				event.type = KeyEvent.KEY_DOWN;
 				break;
@@ -236,36 +231,35 @@ public class AngleInput implements Input {
 				event.type = KeyEvent.KEY_TYPED;
 				break;
 			}
-			
+
 			keyEvents.add(event);
-		}		
+		}
 	}
 
-	void registerMouseEvent(int action, int x, int y, int button) {
-		if(button != 1)
-			return;
-		
-		synchronized(this) {
+	void registerMouseEvent (int action, int x, int y, int button) {
+		if (button != 1) return;
+
+		synchronized (this) {
 			TouchEvent event = freeTouchEvents.newObject();
 			event.x = x;
 			event.y = y;
 			event.pointer = 0;
-			
-			switch(action) {
+
+			switch (action) {
 			case ESLoop.ES_MOUSE_DOWN:
 				event.type = TouchEvent.TOUCH_DOWN;
 				break;
 			case ESLoop.ES_MOUSE_UP:
 				event.type = TouchEvent.TOUCH_UP;
 				break;
-			case ESLoop.ES_MOUSE_MOVE:				
+			case ESLoop.ES_MOUSE_MOVE:
 				event.type = TouchEvent.TOUCH_DRAGGED;
 				break;
 			}
-		}		
+		}
 	}
-	
-	int translateKey(int keyCode) {
+
+	int translateKey (int keyCode) {
 		// FIXME
 		return keyCode;
 	}

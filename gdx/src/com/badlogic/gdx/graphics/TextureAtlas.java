@@ -35,7 +35,7 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
  * Loads images from texture atlases created by TexturePacker.<br>
  * <br>
  * A TextureAtlas must be disposed to free up the resources consumed by the backing textures.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class TextureAtlas {
 	static private final String[] tuple = new String[2];

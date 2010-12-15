@@ -10,14 +10,14 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx;
 
 /**
- * An adapter class for {@link InputProcessor}. You can derive from this
- * and only override what you are interested in.
+ * An adapter class for {@link InputProcessor}. You can derive from this and only override what you are interested in.
  * 
  * @author mzechner
- *
+ * 
  */
 public class InputAdapter implements InputProcessor {
 	public boolean keyDown (int keycode) {

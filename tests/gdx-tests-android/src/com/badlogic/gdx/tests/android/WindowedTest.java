@@ -48,7 +48,7 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 		layout.addView(b1);
 		layout.addView(b2);
 		layout.addView(view, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-		
+
 		setContentView(layout);
 
 		b1.setOnClickListener(new OnClickListener() {
@@ -78,10 +78,7 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 	}
 
 	@Override public void create () {
-		// TODO Auto-generated method stub
-
 	}
-
 
 	@Override public void render () {
 		Gdx.graphics.getGL10().glClearColor(color.r, color.g, color.g, color.a);
@@ -90,25 +87,14 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 	}
 
 	@Override public void dispose () {
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
+	@Override public void pause () {
 	}
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
+	@Override public void resume () {
 	}
 
-	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
+	@Override public void resize (int width, int height) {
 	}
 }

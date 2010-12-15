@@ -1,5 +1,6 @@
 /*
  * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * 
  * Copyright (c) 2008-2010, Matthias Mann
  * 
  * All rights reserved.
@@ -28,7 +29,7 @@ import java.util.Arrays;
 /**
  * An ordered, resizable long array. Avoids the boxing that occurs with ArrayList<Long>.
  * @author Matthias Mann
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class LongArray {
 	public long[] items;

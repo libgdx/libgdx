@@ -14,7 +14,6 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -38,7 +37,7 @@ public class Pong extends GdxTest {
 	/** the MeshRenderer for the ball **/
 	private Mesh ballMesh;
 	/** the Font **/
-//	private Font font;
+// private Font font;
 	/** sprite batch **/
 	private SpriteBatch spriteBatch;
 
@@ -64,12 +63,12 @@ public class Pong extends GdxTest {
 	private String score = "";
 
 	/**
-	 * Here we setup all the resources. A MeshRenderer for the paddles which we use for both, a MeshRenderer for the ball
-	 * and a Text for rendering the score.
+	 * Here we setup all the resources. A MeshRenderer for the paddles which we use for both, a MeshRenderer for the ball and a
+	 * Text for rendering the score.
 	 */
 	@Override public void create () {
 		setupGraphics();
-		setupGame();		
+		setupGame();
 	}
 
 	/**
@@ -96,7 +95,7 @@ public class Pong extends GdxTest {
 		// We construct a new font from a system font. We assume
 		// Arial is installed on both the desktop and Android.
 		//
-//		font = Gdx.graphics.newFont("Arial", 30, FontStyle.Plain);
+// font = Gdx.graphics.newFont("Arial", 30, FontStyle.Plain);
 		score = "0 : 0";
 		spriteBatch = new SpriteBatch();
 
@@ -163,9 +162,9 @@ public class Pong extends GdxTest {
 		// For text to be transparent we have to enable blending and texturing.
 		// We could setup blending once but i'm lazy :)
 		spriteBatch.begin();
-//		spriteBatch.drawText(font, score, Gdx.graphics.getWidth() / 2 - font.getStringWidth(score) / 2, Gdx.graphics.getHeight()
-//			- font.getLineHeight(), Color.WHITE);
-		spriteBatch.end();		
+// spriteBatch.drawText(font, score, Gdx.graphics.getWidth() / 2 - font.getStringWidth(score) / 2, Gdx.graphics.getHeight()
+// - font.getLineHeight(), Color.WHITE);
+		spriteBatch.end();
 	}
 
 	/**

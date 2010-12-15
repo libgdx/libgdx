@@ -13,15 +13,15 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -37,17 +37,16 @@ public class MeshTest extends GdxTest {
 	}
 
 	@Override public void create () {
-		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
-			Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
+			"a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
-		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 
-									  0.5f, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 1, 0, 
-									  0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1,
-									  -0.5f, 0.5f, 0, Color.toFloatBits(255, 255, 255, 255), 0, 1});
+		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,
+			Color.toFloatBits(0, 255, 0, 255), 1, 0, 0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1, -0.5f, 0.5f, 0,
+			Color.toFloatBits(255, 255, 255, 255), 0, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);		
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
 
 	@Override public boolean needsGL20 () {

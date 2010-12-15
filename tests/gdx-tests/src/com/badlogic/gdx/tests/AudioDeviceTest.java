@@ -47,19 +47,17 @@ public class AudioDeviceTest extends GdxTest {
 			thread.start();
 		}
 	}
-	
+
 	@Override public void dispose () {
 		stop = true;
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

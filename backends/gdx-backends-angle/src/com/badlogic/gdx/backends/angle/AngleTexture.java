@@ -119,7 +119,7 @@ final class AngleTexture implements Texture {
 		IntBuffer buffer = BufferUtils.newIntBuffer(1);
 		gl.glGenTextures(1, buffer);
 		textureID = buffer.get(0);
-		bind();		
+		bind();
 		gl.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		gl.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
 		gl.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, getTextureWrap(uWrap));
@@ -163,10 +163,10 @@ final class AngleTexture implements Texture {
 				glFormat = GL10.GL_RGBA;
 				glInternalFormat = GL10.GL_RGBA;
 				break;
-//			case BGRA:
-//				glFormat = GL10.GL_BGRA;
-//				glInternalFormat = GL10.GL_BGRA;
-//				break;
+// case BGRA:
+// glFormat = GL10.GL_BGRA;
+// glInternalFormat = GL10.GL_BGRA;
+// break;
 			default:
 				throw new UnsupportedOperationException("PNG format not handled: " + pngFormat);
 			}
@@ -176,7 +176,7 @@ final class AngleTexture implements Texture {
 			GL20 gl = Gdx.graphics.getGL20();
 			IntBuffer buffer = BufferUtils.newIntBuffer(1);
 			gl.glGenTextures(1, buffer);
-			textureID = buffer.get(0);			
+			textureID = buffer.get(0);
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, textureID);
 			gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, glInternalFormat, texWidth, texHeight, 0, glFormat, GL10.GL_UNSIGNED_BYTE, buffer);
 		} catch (IOException ex) {
@@ -235,12 +235,13 @@ final class AngleTexture implements Texture {
 		GL20 gl = Gdx.graphics.getGL20();
 		IntBuffer buffer = BufferUtils.newIntBuffer(1);
 		gl.glGenTextures(1, buffer);
-		textureID = buffer.get(0);		
+		textureID = buffer.get(0);
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textureID);
 
 		while (height >= 1 || width >= 1 && level < 4) {
 			ByteBuffer imageBuffer = toByteBuffer(image);
-			gl.glTexImage2D(GL10.GL_TEXTURE_2D, level, GL10.GL_RGBA, width, height, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, imageBuffer);
+			gl.glTexImage2D(GL10.GL_TEXTURE_2D, level, GL10.GL_RGBA, width, height, 0, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE,
+				imageBuffer);
 			if (height == 1 || width == 1 || isMipMapped == false) break;
 
 			level++;
@@ -333,7 +334,9 @@ final class AngleTexture implements Texture {
 	public void setWrap (TextureWrap x, TextureWrap y) {
 		bind();
 		GL20 gl = Gdx.graphics.getGL20();
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x == TextureWrap.Repeat ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y == TextureWrap.Repeat ? GL10.GL_REPEAT : GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x == TextureWrap.Repeat ? GL10.GL_REPEAT
+			: GL10.GL_CLAMP_TO_EDGE);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, y == TextureWrap.Repeat ? GL10.GL_REPEAT
+			: GL10.GL_CLAMP_TO_EDGE);
 	}
 }

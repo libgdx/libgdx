@@ -17,9 +17,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
@@ -36,30 +35,20 @@ public class SpriteBatchRotationTest extends GdxTest {
 	float vScale = 1;
 	IntBuffer pixelBuffer;
 
-	@Override
-	public void render() {
+	@Override public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0,
-				texture.getWidth(), texture.getHeight(), false,
-				false);
-		spriteBatch.draw(texture, 64, 10, 32, 32, 0, 0, texture.getWidth(),
-				texture.getHeight(), false, false);
-		spriteBatch.draw(texture, 112, 10, 0, 0, texture.getWidth(), texture
-				.getHeight());
+		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+		spriteBatch.draw(texture, 64, 10, 32, 32, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+		spriteBatch.draw(texture, 112, 10, 0, 0, texture.getWidth(), texture.getHeight());
 
-		spriteBatch.draw(texture, 16, 58, 16, 16, 32, 32, 1, 1, angle, 0, 0,
-				texture.getWidth(), texture.getHeight(), false,
-				false);
-		spriteBatch.draw(texture, 64, 58, 16, 16, 32, 32, scale, scale, 0, 0,
-				0, texture.getWidth(), texture.getHeight(), false,
-				false);
-		spriteBatch.draw(texture, 112, 58, 16, 16, 32, 32, scale, scale, angle,
-				0, 0, texture.getWidth(), texture.getHeight(),
-				false, false);
-		spriteBatch.draw(texture, 160, 58, 0, 0, 32, 32, scale, scale, angle,
-				0, 0, texture.getWidth(), texture.getHeight(),
-				false, false);
+		spriteBatch.draw(texture, 16, 58, 16, 16, 32, 32, 1, 1, angle, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+		spriteBatch.draw(texture, 64, 58, 16, 16, 32, 32, scale, scale, 0, 0, 0, texture.getWidth(), texture.getHeight(), false,
+			false);
+		spriteBatch.draw(texture, 112, 58, 16, 16, 32, 32, scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(),
+			false, false);
+		spriteBatch.draw(texture, 160, 58, 0, 0, 32, 32, scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), false,
+			false);
 
 		// spriteBatch.drawText(font, "Test", 208, 10, Color.WHITE);
 		spriteBatch.end();
@@ -94,13 +83,10 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	}
 
-	@Override
-	public void create() {
+	@Override public void create () {
 		spriteBatch = new SpriteBatch();
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
-				"data/test.png", FileType.Internal), TextureFilter.Linear,
-				TextureFilter.Linear, TextureWrap.ClampToEdge,
-				TextureWrap.ClampToEdge);
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/test.png", FileType.Internal), TextureFilter.Linear,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());
@@ -108,9 +94,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	}
 
-	@Override
-	public boolean needsGL20() {
-		// TODO Auto-generated method stub
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 }

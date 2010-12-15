@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -33,7 +34,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -86,7 +86,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we create out physics world.
 		createPhysicsWorld();
-		
+
 		// register ourselfs as an InputProcessor
 		Gdx.input.setInputProcessor(this);
 	}
@@ -205,9 +205,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// finally we render the time it took to update the world
 		batch.begin();
-		font.draw( batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0,
-				20);		
-		batch.end();	
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0, 20);
+		batch.end();
 	}
 
 	private void renderBox (GL10 gl, Body body, float halfWidth, float halfHeight) {
@@ -313,11 +312,11 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	@Override public void dispose () {
 		world.dispose();
 	}
-	
+
 	@Override public boolean needsGL20 () {
 		return false;
 	}
-	
+
 	// ---------------------------------------------------------------
 	// STUBS FOR UNIMPLEMENTED INTERFACE METHODS, NOTHING TO SEE HERE
 	// MOVE ALONG

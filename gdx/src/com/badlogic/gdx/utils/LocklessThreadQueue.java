@@ -10,29 +10,23 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
-
 /**
- * A specialized lockless thread queue class template
- * for doing single direction message passing from one
- * thread to another.
+ * A specialized lockless thread queue class template for doing single direction message passing from one thread to another.
  * 
- * This queue class does NOT use the Synchronized method. However
- * it is designed with atomic queue passing which makes it
- * very nice for non blocking event passing.
+ * This queue class does NOT use the Synchronized method. However it is designed with atomic queue passing which makes it very
+ * nice for non blocking event passing.
  * 
- * This queue class keeps a fixed sized queue buffer which must be
- * defined during initialization. If the queue buffer gets filled
+ * This queue class keeps a fixed sized queue buffer which must be defined during initialization. If the queue buffer gets filled
  * up, any new queue request will get dropped.
- *  
- * This queue class also handles object pooling such that no extra allocation
- * will be used. This prevents bad GC trashing.
+ * 
+ * This queue class also handles object pooling such that no extra allocation will be used. This prevents bad GC trashing.
  */
 public class LocklessThreadQueue<T> {
 	/**
@@ -59,8 +53,7 @@ public class LocklessThreadQueue<T> {
 		head = new AtomicInteger(0);
 		tail = new AtomicInteger(size + 1);
 
-		for (int i = 0; i < queueSize; ++i)
-		{
+		for (int i = 0; i < queueSize; ++i) {
 			queueBuffer.add(factory.createObject());
 		}
 	}
@@ -74,9 +67,8 @@ public class LocklessThreadQueue<T> {
 	}
 
 	/**
-	 * Push the next available object to the queue.
-	 * This must be called after prepare is called for preparation.
-	 * If it prepare() was not called, this will simply push the object unchanged from it's last queued state.
+	 * Push the next available object to the queue. This must be called after prepare is called for preparation. If it prepare()
+	 * was not called, this will simply push the object unchanged from it's last queued state.
 	 */
 	public void push () {
 		int nextHead = (head.get() + 1) % queueSize;
@@ -85,8 +77,8 @@ public class LocklessThreadQueue<T> {
 	}
 
 	/** Returns null or the next queued object in the queue list */
-	public T pop() {
-		int nextTail = (tail.get() + 1) % queueSize; 
+	public T pop () {
+		int nextTail = (tail.get() + 1) % queueSize;
 		if (head.get() == nextTail) return null;
 		T object = queueBuffer.get(nextTail);
 		tail.set(nextTail);

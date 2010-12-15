@@ -10,13 +10,14 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
 /**
- * A simple linked list that pools its nodes. This is a highly specialized class
- * used in a couple of 2D scene graph classes. I wouldn't use it if i was you :)
+ * A simple linked list that pools its nodes. This is a highly specialized class used in a couple of 2D scene graph classes. I
+ * wouldn't use it if i was you :)
  * 
  * @author mzechner
  * 
@@ -36,18 +37,16 @@ public class PooledLinkedList<T> {
 
 	private final Pool<Item<T>> pool;
 
-	public PooledLinkedList(int maxPoolSize) {
-		this.pool = new Pool<PooledLinkedList.Item<T>>(
-				new PoolObjectFactory<PooledLinkedList.Item<T>>() {
+	public PooledLinkedList (int maxPoolSize) {
+		this.pool = new Pool<PooledLinkedList.Item<T>>(new PoolObjectFactory<PooledLinkedList.Item<T>>() {
 
-					@Override
-					public PooledLinkedList.Item<T> createObject() {
-						return new Item<T>();
-					}
-				}, maxPoolSize);
+			@Override public PooledLinkedList.Item<T> createObject () {
+				return new Item<T>();
+			}
+		}, maxPoolSize);
 	}
 
-	public void add(T object) {
+	public void add (T object) {
 		Item<T> item = pool.newObject();
 		item.payload = object;
 		item.next = null;
@@ -69,7 +68,7 @@ public class PooledLinkedList<T> {
 	/**
 	 * Starts iterating over the lists items
 	 */
-	public void iter() {
+	public void iter () {
 		iter = head;
 	}
 
@@ -78,9 +77,8 @@ public class PooledLinkedList<T> {
 	 * 
 	 * @return the next item in the list or null if there are no more items
 	 */
-	public T next() {
-		if (iter == null)
-			return null;
+	public T next () {
+		if (iter == null) return null;
 
 		T payload = iter.payload;
 		curr = iter;
@@ -91,9 +89,8 @@ public class PooledLinkedList<T> {
 	/**
 	 * Removs the current list item based on the iterator position.
 	 */
-	public void remove() {
-		if (curr == null)
-			return;
+	public void remove () {
+		if (curr == null) return;
 
 		size--;
 		pool.free(curr);
@@ -125,7 +122,7 @@ public class PooledLinkedList<T> {
 		n.prev = p;
 	}
 
-	public static void main(String[] argv) {
+	public static void main (String[] argv) {
 		PooledLinkedList<Integer> list = new PooledLinkedList<Integer>(10);
 
 		list.add(1);
@@ -155,7 +152,7 @@ public class PooledLinkedList<T> {
 		list.remove();
 	}
 
-	public void clear() {
+	public void clear () {
 		iter();
 		T v = null;
 		while ((v = next()) != null)

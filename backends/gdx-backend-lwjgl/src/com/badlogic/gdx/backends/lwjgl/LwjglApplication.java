@@ -156,14 +156,12 @@ public class LwjglApplication implements Application {
 		} catch (Exception ex) {
 		}
 	}
-	
-	@Override
-	public long getJavaHeap() {
+
+	@Override public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override
-	public long getNativeHeap() {
+	@Override public long getNativeHeap () {
 		return getJavaHeap();
 	}
 }

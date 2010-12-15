@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.utils;
 
 import java.io.BufferedOutputStream;
@@ -23,20 +24,18 @@ public class GdxNativesLoader {
 	/**
 	 * loads the necessary libraries depending on the operating system
 	 */
-	public static boolean loadLibraries() {
-		if (nativesLoaded)
-			return true;
+	public static boolean loadLibraries () {
+		if (nativesLoaded) return true;
 		String os = System.getProperty("os.name");
 		String arch = System.getProperty("os.arch");
 		boolean is64Bit = false;
 
-		if (arch.equals("amd64"))
-			is64Bit = true;
-		
+		if (arch.equals("amd64")) is64Bit = true;
+
 		String prefix = getLibraryPrefix();
 		String suffix = getLibrarySuffix();
-		String libName = prefix + "gdx" + (is64Bit?"-64":"") + suffix;
-		if(!loadLibrary(libName, "/", System.getProperty("java.io.tmpdir") + File.separator)) {
+		String libName = prefix + "gdx" + (is64Bit ? "-64" : "") + suffix;
+		if (!loadLibrary(libName, "/", System.getProperty("java.io.tmpdir") + File.separator)) {
 			return false;
 		} else {
 			nativesLoaded = true;
@@ -44,50 +43,43 @@ public class GdxNativesLoader {
 		}
 	}
 
-	public static String getLibraryPrefix() {
+	public static String getLibraryPrefix () {
 		String os = System.getProperty("os.name");
-		
-		if(os.contains("Windows")) 
+
+		if (os.contains("Windows"))
 			return "";
 		else
 			return "lib";
 	}
-	
-	public static String getLibrarySuffix() {
+
+	public static String getLibrarySuffix () {
 		String os = System.getProperty("os.name");
-		if(os.contains("Windows"))
-			return ".dll";
-		if(os.contains("Linux"))
-			return ".so";
-		if(os.contains("Mac"))
-			return ".dylib";
+		if (os.contains("Windows")) return ".dll";
+		if (os.contains("Linux")) return ".so";
+		if (os.contains("Mac")) return ".dylib";
 		return "";
 	}
-	
-	public static boolean is64Bit() {
+
+	public static boolean is64Bit () {
 		String arch = System.getProperty("os.arch");
 		return arch.toLowerCase().contains("amd64");
 	}
-	
-	public static boolean loadLibrary(String libName, String classPath,
-			String outputPath) {
-//		if (new File(outputPath + libName).exists())
-//			return true;
+
+	public static boolean loadLibrary (String libName, String classPath, String outputPath) {
+// if (new File(outputPath + libName).exists())
+// return true;
 
 		InputStream in = null;
 		BufferedOutputStream out = null;
 
 		try {
 			String tmpName = System.nanoTime() + libName;
-			in = GdxNativesLoader.class
-					.getResourceAsStream(classPath + libName);
-			out = new BufferedOutputStream(new FileOutputStream(outputPath
-					+ tmpName));
+			in = GdxNativesLoader.class.getResourceAsStream(classPath + libName);
+			out = new BufferedOutputStream(new FileOutputStream(outputPath + tmpName));
 			byte[] bytes = new byte[1024 * 4];
 			while (true) {
 				int read_bytes = in.read(bytes);
-				if (read_bytes == -1)
-					break;
+				if (read_bytes == -1) break;
 
 				out.write(bytes, 0, read_bytes);
 			}
@@ -101,17 +93,15 @@ public class GdxNativesLoader {
 			System.err.println("GdxNativesLoader: Couldn't unpack and load native '" + libName + "'");
 			return false;
 		} finally {
-			if (out != null)
-				try {
-					out.close();
-				} catch (Exception ex) {
-				}
+			if (out != null) try {
+				out.close();
+			} catch (Exception ex) {
+			}
 			;
-			if (in != null)
-				try {
-					in.close();
-				} catch (Exception ex) {
-				}
+			if (in != null) try {
+				in.close();
+			} catch (Exception ex) {
+			}
 		}
 	}
 }

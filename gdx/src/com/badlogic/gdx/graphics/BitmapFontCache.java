@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.BitmapFont.TextBounds;
 /**
  * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
  * of each glyph each frame.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author Matthias Mann
  */
 public class BitmapFontCache {

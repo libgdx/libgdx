@@ -70,7 +70,6 @@ import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.VertexBufferObjectTest;
 import com.badlogic.gdx.tests.WaterRipples;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
-import com.badlogic.gdx.tests.gles2.MipMap2D;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 
 /**

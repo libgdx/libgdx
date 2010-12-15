@@ -15,7 +15,6 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -82,7 +81,7 @@ class LwjglGL10 implements GL10 {
 	public final void glAlphaFunc (int func, float ref) {
 		GL11.glAlphaFunc(func, ref);
 	}
-	
+
 	public final void glBindTexture (int target, int texture) {
 		GL11.glBindTexture(target, texture);
 	}
@@ -98,7 +97,7 @@ class LwjglGL10 implements GL10 {
 	public final void glClearColor (float red, float green, float blue, float alpha) {
 		GL11.glClearColor(red, green, blue, alpha);
 	}
-	
+
 	public final void glClearDepthf (float depth) {
 		GL11.glClearDepth(depth);
 	}
@@ -118,7 +117,7 @@ class LwjglGL10 implements GL10 {
 	public final void glColor4f (float red, float green, float blue, float alpha) {
 		GL11.glColor4f(red, green, blue, alpha);
 	}
-	
+
 	public final void glColorMask (boolean red, boolean green, boolean blue, boolean alpha) {
 		GL11.glColorMask(red, green, blue, alpha);
 	}
@@ -179,7 +178,7 @@ class LwjglGL10 implements GL10 {
 	public final void glDepthRangef (float zNear, float zFar) {
 		GL11.glDepthRange(zNear, zFar);
 	}
-	
+
 	public final void glDisable (int cap) {
 		GL11.glDisable(cap);
 	}
@@ -335,7 +334,7 @@ class LwjglGL10 implements GL10 {
 	public final void glPointSize (float size) {
 		GL11.glPointSize(size);
 	}
-	
+
 	public final void glPolygonOffset (float factor, float units) {
 		GL11.glPolygonOffset(factor, units);
 	}
@@ -373,7 +372,7 @@ class LwjglGL10 implements GL10 {
 	public final void glScalef (float x, float y, float z) {
 		GL11.glScalef(x, y, z);
 	}
-	
+
 	public final void glScissor (int x, int y, int width, int height) {
 		GL11.glScissor(x, y, width, height);
 	}
@@ -431,7 +430,7 @@ class LwjglGL10 implements GL10 {
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (FloatBuffer)pixels);
 		else if (pixels instanceof DoubleBuffer)
 			GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (DoubleBuffer)pixels);
-		else		
+		else
 			throw new GdxRuntimeException("Can't use " + pixels.getClass().getName()
 				+ " with this method. Use ByteBuffer, ShortBuffer, IntBuffer, FloatBuffer or DoubleBuffer instead. Blame LWJGL");
 	}

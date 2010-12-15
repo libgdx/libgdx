@@ -21,7 +21,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class SimpleTest extends GdxTest implements InputProcessor {
 	float r = 1, g = 0, b = 0;
 
-	@Override public void create () {		
+	@Override public void create () {
 		Gdx.app.log("Simple Test", "Thread=" + Thread.currentThread().getId() + ", surface created");
 		Gdx.input.setInputProcessor(this);
 	}
@@ -38,27 +38,22 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean keyDown (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyTyped (char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyUp (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -70,17 +65,12 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public void pause () {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override public void resume () {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

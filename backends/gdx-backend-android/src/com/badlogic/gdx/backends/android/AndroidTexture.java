@@ -83,8 +83,8 @@ final class AndroidTexture implements Texture {
 		if (image != null) {
 			this.texWidth = image.getWidth();
 			this.texHeight = image.getHeight();
-			
-			if (Gdx.gl!=Gdx.gl20 && (!MathUtils.isPowerOfTwo(image.getWidth()) || !MathUtils.isPowerOfTwo(image.getHeight())))
+
+			if (Gdx.gl != Gdx.gl20 && (!MathUtils.isPowerOfTwo(image.getWidth()) || !MathUtils.isPowerOfTwo(image.getHeight())))
 				throw new GdxRuntimeException("texture must have power of two size");
 		}
 
@@ -140,8 +140,8 @@ final class AndroidTexture implements Texture {
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, getTextureWrap(vWrap));
 	}
 
-	private int getTextureFilter (TextureFilter filter) {		
-		
+	private int getTextureFilter (TextureFilter filter) {
+
 		if (filter == TextureFilter.Linear)
 			return GL10.GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
@@ -316,7 +316,7 @@ final class AndroidTexture implements Texture {
 		textures.clear();
 		lastTexture = null;
 	}
-	
+
 	@Override public void setWrap (TextureWrap x, TextureWrap y) {
 		bind();
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, x == TextureWrap.Repeat ? GL10.GL_REPEAT

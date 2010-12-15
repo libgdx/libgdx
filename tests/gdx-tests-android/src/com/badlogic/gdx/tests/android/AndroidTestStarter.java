@@ -37,9 +37,8 @@ public class AndroidTestStarter extends ListActivity {
 
 		Bundle bundle = new Bundle();
 		bundle.putString("test", testName);
-		Intent intent = new Intent(this,GdxTestActivity.class);
+		Intent intent = new Intent(this, GdxTestActivity.class);
 		intent.putExtras(bundle);
-		
 
 		startActivity(intent);
 	}

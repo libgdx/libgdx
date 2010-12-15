@@ -57,8 +57,8 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 			event.pointer = 0;
 			event.x = x;
 			event.y = y;
-			event.type = type;			
-			input.touchEvents.add(event);					
+			event.type = type;
+			input.touchEvents.add(event);
 		}
 	}
 }

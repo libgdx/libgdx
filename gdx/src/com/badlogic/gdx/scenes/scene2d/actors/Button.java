@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.scenes.scene2d.actors;
 
 import com.badlogic.gdx.graphics.SpriteBatch;
@@ -21,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * A simple Button {@link Actor}, useful for simple UIs
  * 
  * @author mzechner
- *
+ * 
  */
 public class Button extends Actor {
 	public interface ClickListener {
@@ -35,7 +36,7 @@ public class Button extends Actor {
 
 	/**
 	 * Creates a new Button instance with the given name.
-	 * @param name the name 
+	 * @param name the name
 	 */
 	public Button (String name) {
 		super(name);
@@ -44,9 +45,8 @@ public class Button extends Actor {
 	}
 
 	/**
-	 * Creates a new Button instance with the given name, using
-	 * the complete supplied texture for displaying the pressed
-	 * and unpressed state of the button.
+	 * Creates a new Button instance with the given name, using the complete supplied texture for displaying the pressed and
+	 * unpressed state of the button.
 	 * @param name the name
 	 * @param texture the {@link Texture}
 	 */

@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.scenes.scene2d;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.Map;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -126,8 +126,7 @@ public class Group extends Actor {
 	static final Vector2 ref = new Vector2();
 
 	/**
-	 * Transforms the coordinates given in the child's parent coordinate system to the
-	 * child {@link Actor}'s coordinate system. 
+	 * Transforms the coordinates given in the child's parent coordinate system to the child {@link Actor}'s coordinate system.
 	 * @param child the child Actor
 	 * @param x the x-coordinate in the Group's coordinate system
 	 * @param y the y-coordinate in the Group's coordinate system
@@ -306,8 +305,7 @@ public class Group extends Actor {
 	}
 
 	/**
-	 * Adds an {@link Actor} to this Group. The order Actors are added
-	 * is reversed for hit testing and rendering.
+	 * Adds an {@link Actor} to this Group. The order Actors are added is reversed for hit testing and rendering.
 	 * @param actor the Actor
 	 */
 	public void addActor (Actor actor) {
@@ -318,7 +316,7 @@ public class Group extends Actor {
 	}
 
 	/**
-	 * Removes an {@link Actor} from this Group. 
+	 * Removes an {@link Actor} from this Group.
 	 * @param actor
 	 */
 	public void removeActor (Actor actor) {
@@ -328,8 +326,7 @@ public class Group extends Actor {
 	}
 
 	/**
-	 * Finds the {@link Actor} with the given name in this Group and
-	 * its children.
+	 * Finds the {@link Actor} with the given name in this Group and its children.
 	 * @param name the name of the Actor
 	 * @return the Actor or null
 	 */
@@ -345,10 +342,9 @@ public class Group extends Actor {
 
 		return actor;
 	}
-	
+
 	/**
-	 * Swap two actors' sort order by index.
- 	 * 0 is lowest while getActors().size() - 1 is largest.
+	 * Swap two actors' sort order by index. 0 is lowest while getActors().size() - 1 is largest.
 	 * @param first first Actor index
 	 * @param second second Actor index
 	 * @return false if indices are out of bound.
@@ -360,7 +356,7 @@ public class Group extends Actor {
 		Collections.swap(children, first, second);
 		return true;
 	}
-	
+
 	/**
 	 * Swap two actors' sort order by reference.
 	 * @param first first Actor
@@ -390,8 +386,8 @@ public class Group extends Actor {
 	}
 
 	/**
-	 * Sets the focus to the given child {@link Actor}. All subsequent touch events
-	 * will be passed to this child Actor. To unset the focus simply pass null.
+	 * Sets the focus to the given child {@link Actor}. All subsequent touch events will be passed to this child Actor. To unset
+	 * the focus simply pass null.
 	 * 
 	 * @param actor the Actor
 	 */

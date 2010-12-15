@@ -10,24 +10,20 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.twl.renderer;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.matthiasmann.twl.renderer.CacheContext;
 
 /**
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 class GdxCacheContext implements CacheContext {
 	final GdxRenderer renderer;

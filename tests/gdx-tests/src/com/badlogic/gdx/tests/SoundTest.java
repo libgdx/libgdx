@@ -13,9 +13,9 @@
 
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -25,18 +25,17 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	Music music;
 	float volume = 1.0f;
 
-	@Override public void render () {		
+	@Override public void render () {
 	}
 
+	@Override public void create () {
+		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
 
-	@Override public void create () {		
-			sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
-
-//			music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
-			music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/cloudconnected.ogg", FileType.Internal));
-			music.play();
-			music.setLooping(true);
-			Gdx.input.setInputProcessor(this);
+// music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
+		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/cloudconnected.ogg", FileType.Internal));
+		music.play();
+		music.setLooping(true);
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {
@@ -62,7 +61,6 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -71,7 +69,6 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

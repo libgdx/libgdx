@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public abstract class FileHandle {
 	protected File file;

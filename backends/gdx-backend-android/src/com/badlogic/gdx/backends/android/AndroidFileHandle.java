@@ -20,13 +20,12 @@ import java.io.InputStream;
 import android.content.res.AssetManager;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class AndroidFileHandle extends FileHandle {
 	// The asset manager, or null if this is not an internal file.

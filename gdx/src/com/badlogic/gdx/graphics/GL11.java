@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
@@ -17,8 +18,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 /**
- * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}. Note that
- * this excludes all fixed point methods!
+ * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}. Note that this
+ * excludes all fixed point methods!
  * @author mzechner
  * 
  */
@@ -235,7 +236,7 @@ public interface GL11 extends GL10 {
 
 	public void glTexParameteriv (int target, int pname, int[] params, int offset);
 
-	public void glTexParameteriv (int target, int pname, IntBuffer params);	
+	public void glTexParameteriv (int target, int pname, IntBuffer params);
 
 	public void glPointSizePointerOES (int type, int stride, Buffer pointer);
 

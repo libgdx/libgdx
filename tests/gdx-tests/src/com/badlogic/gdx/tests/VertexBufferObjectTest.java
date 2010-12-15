@@ -66,8 +66,8 @@ public class VertexBufferObjectTest extends GdxTest {
 		gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, 3 * 2, indices, GL11.GL_STATIC_DRAW);
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-	
-	public void resume() {
+
+	public void resume () {
 		FloatBuffer vertices = BufferUtils.newFloatBuffer(3 * 7);
 		vertices.put(new float[] {-0.5f, -0.5f, 0, 1, 0, 0, 1, 0.5f, -0.5f, 0, 0, 1, 0, 1, 0.0f, 0.5f, 0, 0, 0, 1, 1});
 		vertices.flip();
@@ -91,7 +91,6 @@ public class VertexBufferObjectTest extends GdxTest {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

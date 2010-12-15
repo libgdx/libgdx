@@ -13,16 +13,15 @@
 
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -35,7 +34,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 
 	Texture texture;
 	Texture texture2;
-//	Font font;
+// Font font;
 	SpriteBatch spriteBatch;
 	float sprites[] = new float[SPRITES * 6];
 	float sprites2[] = new float[SPRITES * 6];
@@ -46,11 +45,10 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	float SCALE_SPEED = -1;
 	int renderMethod = 0;
 
-
 	@Override public void render () {
 		if (renderMethod == 0) renderNormal();
 		;
-		if (renderMethod == 1) renderSprites();		
+		if (renderMethod == 1) renderSprites();
 	}
 
 	private void renderNormal () {
@@ -81,21 +79,20 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 
 		start = System.nanoTime();
 		for (int i = 0; i < sprites.length; i += 6)
-			spriteBatch.draw(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
-				false, false);
+			spriteBatch.draw(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
 		draw1 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
 		for (int i = 0; i < sprites2.length; i += 6)
-			spriteBatch.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
-				false, false);
+			spriteBatch
+				.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
 		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-//		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
-//		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
-//		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
-//		spriteBatch.drawText(font, "normal fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
+// spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
+// spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
+// spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
+// spriteBatch.drawText(font, "normal fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
 		drawText = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -103,8 +100,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		end = (System.nanoTime() - start) / 1000000000.0f;
 
 		if (System.nanoTime() - startTime > 1000000000) {
- Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
- ", " + draw2 + ", " + drawText + ", " + end );
+			Gdx.app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
+				+ ", " + draw2 + ", " + drawText + ", " + end);
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -154,10 +151,10 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
-//		spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
-//		spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
-//		spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
-//		spriteBatch.drawText(font, "Sprite fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
+// spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
+// spriteBatch.drawText(font, "and another this is a test", 200, 100, Color.WHITE);
+// spriteBatch.drawText(font, "all hail and another this is a test", 200, 200, Color.WHITE);
+// spriteBatch.drawText(font, "Sprite fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30, Color.RED);
 		drawText = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
@@ -165,8 +162,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		end = (System.nanoTime() - start) / 1000000000.0f;
 
 		if (System.nanoTime() - startTime > 1000000000) {
- Gdx.app.log( "SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1 +
- ", " + draw2 + ", " + drawText + ", " + end );
+			Gdx.app.log("SpriteBatch", "fps: " + frames + ", render calls: " + spriteBatch.renderCalls + ", " + begin + ", " + draw1
+				+ ", " + draw2 + ", " + drawText + ", " + end);
 			frames = 0;
 			startTime = System.nanoTime();
 		}
@@ -189,7 +186,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			TextureWrap.ClampToEdge);
 		pixmap.dispose();
 
-//		font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
+// font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
 
 		for (int i = 0; i < sprites.length; i += 6) {
 			sprites[i] = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
@@ -217,32 +214,27 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			sprites3[i].setPosition(x, y);
 			sprites3[i].setOrigin(16, 16);
 		}
-	
+
 		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override public boolean keyDown (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyTyped (char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyUp (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -252,7 +244,6 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.backends.angle;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ final class AngleAudio implements Audio, Runnable {
 
 	/** The sound effects thread **/
 	private Thread thread;
-	
+
 	private volatile boolean run = false;
 
 	/**
@@ -145,7 +146,7 @@ final class AngleAudio implements Audio, Runnable {
 		byte[] bytes = new byte[2 * NUM_SAMPLES];
 
 		run = true;
-		
+
 		while (run) {
 			int samplesToWrite = line.available() / 2;
 
@@ -193,14 +194,12 @@ final class AngleAudio implements Audio, Runnable {
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new AngleAudioRecorder(samplingRate, isMono);
 	}
-	
-	void dispose ( ) {
+
+	void dispose () {
 		run = false;
 		try {
-			if(thread != null)
-				thread.join();
-			if(line != null)
-				line.close();
+			if (thread != null) thread.join();
+			if (line != null) line.close();
 		} catch (InterruptedException e) {
 		}
 	}

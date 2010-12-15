@@ -54,7 +54,7 @@ import static com.badlogic.gdx.graphics.Sprite.*;
  * SpriteCache works with OpenGL ES 1.x and 2.0. For 2.0, it uses its own custom shader to draw.<br>
  * <br>
  * SpriteCache must be disposed once it is no longer needed.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class SpriteCache {
 	static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
@@ -309,7 +309,7 @@ public class SpriteCache {
 			add(texture, tempVertices, 0, 30);
 		}
 	}
-	
+
 	/**
 	 * Adds the specified texture to the cache.
 	 */

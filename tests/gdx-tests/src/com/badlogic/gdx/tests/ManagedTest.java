@@ -13,14 +13,14 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -49,7 +49,7 @@ public class ManagedTest extends GdxTest {
 		mesh.render(GL10.GL_TRIANGLE_FAN);
 	}
 
-	@Override public boolean needsGL20 () {	
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 

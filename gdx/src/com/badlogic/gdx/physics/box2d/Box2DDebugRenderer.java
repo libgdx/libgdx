@@ -10,13 +10,12 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.badlogic.gdx.physics.box2d;
 
+package com.badlogic.gdx.physics.box2d;
 
 import java.util.Iterator;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
@@ -34,7 +33,7 @@ public class Box2DDebugRenderer {
 
 	/** a spritebatch and a font for text rendering **/
 	public SpriteBatch batch;
-//	public Font font;
+// public Font font;
 
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[100];
@@ -45,7 +44,7 @@ public class Box2DDebugRenderer {
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
-//		font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 
 		// initialize vertices array
 		for (int i = 0; i < vertices.length; i++)
@@ -192,6 +191,6 @@ public class Box2DDebugRenderer {
 
 	public void dispose () {
 		batch.dispose();
-//		font.dispose();
+// font.dispose();
 	}
 }

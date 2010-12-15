@@ -10,14 +10,14 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.math;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Encapsulates a catmull rom spline with n control points, n >= 4. For more
- * information on this type of spline see
+ * Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this type of spline see
  * http://www.mvps.org/directx/articles/catmull/.
  * 
  * @author badlogicgames@gmail.com
@@ -33,35 +33,30 @@ public final class CatmullRomSpline {
 	/**
 	 * Adds a new control point
 	 * 
-	 * @param point
-	 *            the point
+	 * @param point the point
 	 */
-	public void add(Vector3 point) {
+	public void add (Vector3 point) {
 		controlPoints.add(point);
 	}
 
 	/**
 	 * @return all control points
 	 */
-	public List<Vector3> getControlPoints() {
+	public List<Vector3> getControlPoints () {
 		return controlPoints;
 	}
 
 	/**
-	 * Returns a path, between every two control points numPoints are generated
-	 * and the control points themselves are added too. The first and the last
-	 * controlpoint are omitted. if there's less than 4 controlpoints an empty
-	 * path is returned.
+	 * Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
+	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
 	 * 
-	 * @param numPoints
-	 *            number of points returned for a segment
+	 * @param numPoints number of points returned for a segment
 	 * @return the path
 	 */
-	public List<Vector3> getPath(int numPoints) {
+	public List<Vector3> getPath (int numPoints) {
 		ArrayList<Vector3> points = new ArrayList<Vector3>();
 
-		if (controlPoints.size() < 4)
-			return points;
+		if (controlPoints.size() < 4) return points;
 
 		Vector3 T1 = new Vector3();
 		Vector3 T2 = new Vector3();
@@ -71,18 +66,16 @@ public final class CatmullRomSpline {
 			float increment = 1.0f / (numPoints + 1);
 			float t = increment;
 
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1))
-					.mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i))
-					.mul(0.5f);
+			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
+			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
 
 			for (int j = 0; j < numPoints; j++) {
 				float h1 = 2 * t * t * t - 3 * t * t + 1; // calculate basis
-															// function 1
+				// function 1
 				float h2 = -2 * t * t * t + 3 * t * t; // calculate basis
-														// function 2
+				// function 2
 				float h3 = t * t * t - 2 * t * t + t; // calculate basis
-														// function 3
+				// function 3
 				float h4 = t * t * t - t * t; // calculate basis function 4
 
 				Vector3 point = new Vector3(controlPoints.get(i)).mul(h1);
@@ -94,8 +87,7 @@ public final class CatmullRomSpline {
 			}
 		}
 
-		if (controlPoints.size() >= 4)
-			points.add(controlPoints.get(controlPoints.size() - 2));
+		if (controlPoints.size() >= 4) points.add(controlPoints.get(controlPoints.size() - 2));
 
 		return points;
 	}
@@ -103,15 +95,13 @@ public final class CatmullRomSpline {
 	/**
 	 * Returns all tangents for the points in a path. Same semantics as getPath.
 	 * 
-	 * @param numPoints
-	 *            number of points returned for a segment
+	 * @param numPoints number of points returned for a segment
 	 * @return the tangents of the points in the path
 	 */
-	public List<Vector3> getTangents(int numPoints) {
+	public List<Vector3> getTangents (int numPoints) {
 		ArrayList<Vector3> tangents = new ArrayList<Vector3>();
 
-		if (controlPoints.size() < 4)
-			return tangents;
+		if (controlPoints.size() < 4) return tangents;
 
 		Vector3 T1 = new Vector3();
 		Vector3 T2 = new Vector3();
@@ -120,10 +110,8 @@ public final class CatmullRomSpline {
 			float increment = 1.0f / (numPoints + 1);
 			float t = increment;
 
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1))
-					.mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i))
-					.mul(0.5f);
+			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
+			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
 
 			tangents.add(new Vector3(T1).nor());
 
@@ -143,27 +131,23 @@ public final class CatmullRomSpline {
 		}
 
 		if (controlPoints.size() >= 4)
-			tangents.add(T1.set(controlPoints.get(controlPoints.size() - 1))
-					.sub(controlPoints.get(controlPoints.size() - 3)).mul(0.5f)
-					.cpy().nor());
+			tangents.add(T1.set(controlPoints.get(controlPoints.size() - 1)).sub(controlPoints.get(controlPoints.size() - 3))
+				.mul(0.5f).cpy().nor());
 
 		return tangents;
 	}
 
 	/**
-	 * Returns all tangent's normals in 2D space for the points in a path. The
-	 * controlpoints have to lie in the x/y plane for this to work. Same
-	 * semantics as getPath.
+	 * Returns all tangent's normals in 2D space for the points in a path. The controlpoints have to lie in the x/y plane for this
+	 * to work. Same semantics as getPath.
 	 * 
-	 * @param numPoints
-	 *            number of points returned for a segment
+	 * @param numPoints number of points returned for a segment
 	 * @return the tangents of the points in the path
 	 */
-	public List<Vector3> getTangentNormals2D(int numPoints) {
+	public List<Vector3> getTangentNormals2D (int numPoints) {
 		ArrayList<Vector3> tangents = new ArrayList<Vector3>();
 
-		if (controlPoints.size() < 4)
-			return tangents;
+		if (controlPoints.size() < 4) return tangents;
 
 		Vector3 T1 = new Vector3();
 		Vector3 T2 = new Vector3();
@@ -172,10 +156,8 @@ public final class CatmullRomSpline {
 			float increment = 1.0f / (numPoints + 1);
 			float t = increment;
 
-			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1))
-					.mul(0.5f);
-			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i))
-					.mul(0.5f);
+			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
+			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
 
 			Vector3 normal = new Vector3(T1).nor();
 			float x = normal.x;
@@ -206,16 +188,13 @@ public final class CatmullRomSpline {
 	}
 
 	/**
-	 * Returns the tangent's normals using the tangent and provided up vector
-	 * doing a cross product.
+	 * Returns the tangent's normals using the tangent and provided up vector doing a cross product.
 	 * 
-	 * @param numPoints
-	 *            number of points per segment
-	 * @param up
-	 *            up vector
+	 * @param numPoints number of points per segment
+	 * @param up up vector
 	 * @return a list of tangent normals
 	 */
-	public List<Vector3> getTangentNormals(int numPoints, Vector3 up) {
+	public List<Vector3> getTangentNormals (int numPoints, Vector3 up) {
 		List<Vector3> tangents = getTangents(numPoints);
 		ArrayList<Vector3> normals = new ArrayList<Vector3>();
 
@@ -225,7 +204,7 @@ public final class CatmullRomSpline {
 		return normals;
 	}
 
-	public List<Vector3> getTangentNormals(int numPoints, List<Vector3> up) {
+	public List<Vector3> getTangentNormals (int numPoints, List<Vector3> up) {
 		List<Vector3> tangents = getTangents(numPoints);
 		ArrayList<Vector3> normals = new ArrayList<Vector3>();
 

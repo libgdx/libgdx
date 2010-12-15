@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.MathUtils;
  * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed. The
  * origin is given relative to the bottom left corner of the Sprite, its position.
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class Sprite extends TextureRegion {
 	static final int VERTEX_SIZE = 2 + 1 + 2;

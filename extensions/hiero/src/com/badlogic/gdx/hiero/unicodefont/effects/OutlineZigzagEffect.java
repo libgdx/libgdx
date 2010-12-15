@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * @author Jerry Huxtable
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class OutlineZigzagEffect extends OutlineEffect {
 	float amplitude = 1;

@@ -22,24 +22,16 @@
 
 package com.badlogic.gdx.twl.renderer;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
 import java.util.Collection;
 import java.util.Map;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import de.matthiasmann.twl.GUI;
 import de.matthiasmann.twl.Rect;
@@ -52,10 +44,9 @@ import de.matthiasmann.twl.renderer.LineRenderer;
 import de.matthiasmann.twl.renderer.MouseCursor;
 import de.matthiasmann.twl.renderer.Renderer;
 import de.matthiasmann.twl.renderer.Texture;
-import de.matthiasmann.twl.theme.ThemeManager;
 
 /**
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author Matthias Mann
  */
 public class GdxRenderer implements Renderer {

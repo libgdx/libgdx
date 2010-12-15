@@ -13,7 +13,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import android.app.AlertDialog;
@@ -24,7 +23,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
@@ -35,8 +33,6 @@ import android.widget.EditText;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.AtomicQueue;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -68,11 +64,11 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		int pointer;
 	}
 
-	AtomicQueue<KeyEvent> keyEvents = new AtomicQueue<KeyEvent>();
-	AtomicQueue<KeyEvent> freeKeyEvents = new AtomicQueue<KeyEvent>();
+	AtomicQueue<KeyEvent> keyEvents = new AtomicQueue<KeyEvent>(64);
+	AtomicQueue<KeyEvent> freeKeyEvents = new AtomicQueue<KeyEvent>(64);
 
-	AtomicQueue<TouchEvent> touchEvents = new AtomicQueue<TouchEvent>();
-	AtomicQueue<TouchEvent> freeTouchEvents = new AtomicQueue<TouchEvent>();
+	AtomicQueue<TouchEvent> touchEvents = new AtomicQueue<TouchEvent>(64);
+	AtomicQueue<TouchEvent> freeTouchEvents = new AtomicQueue<TouchEvent>(64);
 
 	int[] touchX = new int[10];
 	int[] touchY = new int[10];
@@ -236,7 +232,7 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		} else {
 			TouchEvent e = null;
 			while ((e = touchEvents.poll()) != null) {
-//				Log.d("AndroidInput", "lockless touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
+// Log.d("AndroidInput", "lockless touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
 				freeTouchEvents.put(e);
 			}
 
@@ -281,7 +277,7 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 			event.keyCode = e.getKeyCode();
 			event.type = KeyEvent.KEY_DOWN;
 			keyEvents.put(event);
-			synchronized(this) {
+			synchronized (this) {
 				keys.add(event.keyCode);
 			}
 			break;
@@ -300,7 +296,7 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 			event.type = KeyEvent.KEY_TYPED;
 			keyEvents.put(event);
 
-			synchronized(this) {
+			synchronized (this) {
 				keys.remove(e.getKeyCode());
 			}
 		}

@@ -13,7 +13,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
@@ -42,9 +41,9 @@ public class AudioRecorderTest extends GdxTest {
 			}
 		});
 		t.setDaemon(true);
-		t.start();	
+		t.start();
 	}
-	
+
 	@Override public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

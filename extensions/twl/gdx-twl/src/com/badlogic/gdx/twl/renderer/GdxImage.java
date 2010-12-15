@@ -31,7 +31,7 @@ import de.matthiasmann.twl.renderer.Image;
 import de.matthiasmann.twl.renderer.SupportsDrawRepeat;
 
 /**
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author Matthias Mann
  */
 class GdxImage implements Image, SupportsDrawRepeat {

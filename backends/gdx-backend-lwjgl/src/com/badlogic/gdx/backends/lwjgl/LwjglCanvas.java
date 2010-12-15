@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /**
  * An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
  * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class LwjglCanvas implements Application {
 	final LwjglGraphics graphics;
@@ -174,14 +174,12 @@ public class LwjglCanvas implements Application {
 			}
 		});
 	}
-	
-	@Override
-	public long getJavaHeap() {
+
+	@Override public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override
-	public long getNativeHeap() {
+	@Override public long getNativeHeap () {
 		return getJavaHeap();
 	}
 }

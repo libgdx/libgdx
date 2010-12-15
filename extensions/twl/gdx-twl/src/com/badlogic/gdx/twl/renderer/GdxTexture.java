@@ -22,7 +22,6 @@
 
 package com.badlogic.gdx.twl.renderer;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -35,7 +34,7 @@ import de.matthiasmann.twl.renderer.Resource;
 import de.matthiasmann.twl.renderer.Texture;
 
 /**
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 class GdxTexture implements Texture, Resource {
 	private final GdxRenderer renderer;

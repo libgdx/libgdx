@@ -14,7 +14,7 @@ import com.badlogic.gdx.hiero.unicodefont.UnicodeFont;
 
 /**
  * Paints glyphs with a gradient fill.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class GradientEffect implements ConfigurableEffect {
 	private Color topColor = Color.cyan, bottomColor = Color.blue;

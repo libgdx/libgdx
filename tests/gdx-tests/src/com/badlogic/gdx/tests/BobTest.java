@@ -1,4 +1,5 @@
-/* Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+/*
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -9,18 +10,18 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -35,10 +36,9 @@ public class BobTest extends GdxTest {
 	Mesh bobModel;
 	Bob[] bobs;
 
-	public void create() {				
-		bobTexture = Gdx.graphics.newTexture(Gdx.files.internal("data/bobargb8888-32x32.png"),
-														 TextureFilter.Nearest, TextureFilter.Nearest, 
-														 TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	public void create () {
+		bobTexture = Gdx.graphics.newTexture(Gdx.files.internal("data/bobargb8888-32x32.png"), TextureFilter.Nearest,
+			TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
 		bobModel = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_pos"), new VertexAttribute(
 			Usage.TextureCoordinates, 2, "a_tex"));
@@ -52,14 +52,13 @@ public class BobTest extends GdxTest {
 		}
 	}
 
-
 	@Override public void render () {
 		float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.1f);
 		for (int i = 0; i < NUM_BOBS; i++) {
 			bobs[i].update(deltaTime);
 		}
-				
-		GL10 gl = Gdx.gl10;			
+
+		GL10 gl = Gdx.gl10;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClearColor(1, 0, 0, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -68,12 +67,12 @@ public class BobTest extends GdxTest {
 		gl.glOrthof(0, 320, 0, 480, 1, -1);
 
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		
+
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		
+
 		gl.glEnable(GL10.GL_TEXTURE_2D);
-		bobTexture.bind();		
+		bobTexture.bind();
 
 		bobModel.bind();
 		for (int i = 0; i < NUM_BOBS; i++) {

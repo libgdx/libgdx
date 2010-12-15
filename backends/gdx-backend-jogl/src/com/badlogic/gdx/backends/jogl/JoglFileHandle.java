@@ -16,12 +16,11 @@ package com.badlogic.gdx.backends.jogl;
 import java.io.File;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class JoglFileHandle extends FileHandle {
 	JoglFileHandle (String fileName, FileType type) {

@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.backends.angle;
 
 import java.nio.Buffer;
@@ -18,300 +19,302 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
 
-public class AngleGLES0 implements GL20
-{
-	static
-	{				
-		init( );
-	}	
-	
-	private static native void init( );	
-	
-	public native void glActiveTexture ( int texture );
+public class AngleGLES0 implements GL20 {
+	static {
+		init();
+	}
 
-	public native void glAttachShader ( int program, int shader );
+	private static native void init ();
 
-	public native void glBindAttribLocation ( int program, int index, String name );
+	public native void glActiveTexture (int texture);
 
-	public native void glBindBuffer ( int target, int buffer );
+	public native void glAttachShader (int program, int shader);
 
-	public native void glBindFramebuffer ( int target, int framebuffer );
+	public native void glBindAttribLocation (int program, int index, String name);
 
-	public native void glBindRenderbuffer ( int target, int renderbuffer );
+	public native void glBindBuffer (int target, int buffer);
 
-	public native void glBindTexture ( int target, int texture );
+	public native void glBindFramebuffer (int target, int framebuffer);
 
-	public native void glBlendColor ( float red, float green, float blue, float alpha );
+	public native void glBindRenderbuffer (int target, int renderbuffer);
 
-	public native void glBlendEquation (  int mode  );
+	public native void glBindTexture (int target, int texture);
 
-	public native void glBlendEquationSeparate ( int modeRGB, int modeAlpha );
+	public native void glBlendColor (float red, float green, float blue, float alpha);
 
-	public native void glBlendFunc ( int sfactor, int dfactor );
+	public native void glBlendEquation (int mode);
 
-	public native void glBlendFuncSeparate ( int srcRGB, int dstRGB, int srcAlpha, int dstAlpha );
+	public native void glBlendEquationSeparate (int modeRGB, int modeAlpha);
 
-	public native void glBufferData ( int target, int size, Buffer data, int usage );
+	public native void glBlendFunc (int sfactor, int dfactor);
 
-	public native void glBufferSubData ( int target, int offset, int size, Buffer data );
+	public native void glBlendFuncSeparate (int srcRGB, int dstRGB, int srcAlpha, int dstAlpha);
 
-	public native int glCheckFramebufferStatus ( int target );
+	public native void glBufferData (int target, int size, Buffer data, int usage);
 
-	public native void glClear ( int mask );
+	public native void glBufferSubData (int target, int offset, int size, Buffer data);
 
-	public native void glClearColor ( float red, float green, float blue, float alpha );
+	public native int glCheckFramebufferStatus (int target);
 
-	public native void glClearDepthf ( float depth );
+	public native void glClear (int mask);
 
-	public native void glClearStencil ( int s );
+	public native void glClearColor (float red, float green, float blue, float alpha);
 
-	public native void glColorMask ( boolean red, boolean green, boolean blue, boolean alpha );
+	public native void glClearDepthf (float depth);
 
-	public native void glCompileShader ( int shader );
+	public native void glClearStencil (int s);
 
-	public native void glCompressedTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int imageSize, Buffer data );
+	public native void glColorMask (boolean red, boolean green, boolean blue, boolean alpha);
 
-	public native void glCompressedTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int imageSize, Buffer data );
+	public native void glCompileShader (int shader);
 
-	public native void glCopyTexImage2D ( int target, int level, int internalformat, int x, int y, int width, int height, int border );
+	public native void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
+		int imageSize, Buffer data);
 
-	public native void glCopyTexSubImage2D ( int target, int level, int xoffset, int yoffset, int x, int y, int width, int height );
+	public native void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height,
+		int format, int imageSize, Buffer data);
 
-	public native int glCreateProgram (  );
+	public native void glCopyTexImage2D (int target, int level, int internalformat, int x, int y, int width, int height, int border);
 
-	public native int glCreateShader ( int type );
+	public native void glCopyTexSubImage2D (int target, int level, int xoffset, int yoffset, int x, int y, int width, int height);
 
-	public native void glCullFace ( int mode );
+	public native int glCreateProgram ();
 
-	public native void glDeleteBuffers ( int n, IntBuffer buffers );
+	public native int glCreateShader (int type);
 
-	public native void glDeleteFramebuffers ( int n, IntBuffer framebuffers );
+	public native void glCullFace (int mode);
 
-	public native void glDeleteProgram ( int program );
+	public native void glDeleteBuffers (int n, IntBuffer buffers);
 
-	public native void glDeleteRenderbuffers ( int n, IntBuffer renderbuffers );
+	public native void glDeleteFramebuffers (int n, IntBuffer framebuffers);
 
-	public native void glDeleteShader ( int shader );
+	public native void glDeleteProgram (int program);
 
-	public native void glDeleteTextures ( int n, IntBuffer textures );
+	public native void glDeleteRenderbuffers (int n, IntBuffer renderbuffers);
 
-	public native void glDepthFunc ( int func );
+	public native void glDeleteShader (int shader);
 
-	public native void glDepthMask ( boolean flag );
+	public native void glDeleteTextures (int n, IntBuffer textures);
 
-	public native void glDepthRangef ( float zNear, float zFar );
+	public native void glDepthFunc (int func);
 
-	public native void glDetachShader ( int program, int shader );
+	public native void glDepthMask (boolean flag);
 
-	public native void glDisable ( int cap );
+	public native void glDepthRangef (float zNear, float zFar);
 
-	public native void glDisableVertexAttribArray ( int index );
+	public native void glDetachShader (int program, int shader);
 
-	public native void glDrawArrays ( int mode, int first, int count );
+	public native void glDisable (int cap);
 
-	public native void glDrawElements ( int mode, int count, int type, Buffer indices );
-	
-	public native void glDrawElements ( int mode, int count, int type, int indices );
+	public native void glDisableVertexAttribArray (int index);
 
-	public native void glEnable ( int cap );
+	public native void glDrawArrays (int mode, int first, int count);
 
-	public native void glEnableVertexAttribArray ( int index );
+	public native void glDrawElements (int mode, int count, int type, Buffer indices);
 
-	public native void glFinish (  );
+	public native void glDrawElements (int mode, int count, int type, int indices);
 
-	public native void glFlush (  );
+	public native void glEnable (int cap);
 
-	public native void glFramebufferRenderbuffer ( int target, int attachment, int renderbuffertarget, int renderbuffer );
+	public native void glEnableVertexAttribArray (int index);
 
-	public native void glFramebufferTexture2D ( int target, int attachment, int textarget, int texture, int level );
+	public native void glFinish ();
 
-	public native void glFrontFace ( int mode );
+	public native void glFlush ();
 
-	public native void glGenBuffers ( int n, IntBuffer buffers );
+	public native void glFramebufferRenderbuffer (int target, int attachment, int renderbuffertarget, int renderbuffer);
 
-	public native void glGenerateMipmap ( int target );
+	public native void glFramebufferTexture2D (int target, int attachment, int textarget, int texture, int level);
 
-	public native void glGenFramebuffers ( int n, IntBuffer framebuffers );
+	public native void glFrontFace (int mode);
 
-	public native void glGenRenderbuffers ( int n, IntBuffer renderbuffers );
+	public native void glGenBuffers (int n, IntBuffer buffers);
 
-	public native void glGenTextures ( int n, IntBuffer textures );
+	public native void glGenerateMipmap (int target);
 
-	public native String glGetActiveAttrib ( int program, int index, IntBuffer size, Buffer type );
+	public native void glGenFramebuffers (int n, IntBuffer framebuffers);
 
-	public native String glGetActiveUniform ( int program, int index, IntBuffer size, Buffer type );
+	public native void glGenRenderbuffers (int n, IntBuffer renderbuffers);
 
-	public native void glGetAttachedShaders ( int program, int maxcount, Buffer count, IntBuffer shaders );
+	public native void glGenTextures (int n, IntBuffer textures);
 
-	public native int glGetAttribLocation ( int program, String name );
+	public native String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type);
 
-	public native void glGetBooleanv ( int pname, Buffer params );
+	public native String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type);
 
-	public native void glGetBufferParameteriv ( int target, int pname, IntBuffer params );
+	public native void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders);
 
-	public native int glGetError (  );
+	public native int glGetAttribLocation (int program, String name);
 
-	public native void glGetFloatv ( int pname, FloatBuffer params );
+	public native void glGetBooleanv (int pname, Buffer params);
 
-	public native void glGetFramebufferAttachmentParameteriv ( int target, int attachment, int pname, IntBuffer params );
+	public native void glGetBufferParameteriv (int target, int pname, IntBuffer params);
 
-	public native void glGetIntegerv ( int pname, IntBuffer params );
+	public native int glGetError ();
 
-	public native void glGetProgramiv ( int program, int pname, IntBuffer params );
+	public native void glGetFloatv (int pname, FloatBuffer params);
 
-	public native String glGetProgramInfoLog ( int program );
+	public native void glGetFramebufferAttachmentParameteriv (int target, int attachment, int pname, IntBuffer params);
 
-	public native void glGetRenderbufferParameteriv ( int target, int pname, IntBuffer params );
+	public native void glGetIntegerv (int pname, IntBuffer params);
 
-	public native void glGetShaderiv ( int shader, int pname, IntBuffer params );
+	public native void glGetProgramiv (int program, int pname, IntBuffer params);
 
-	public native String glGetShaderInfoLog ( int shader );
+	public native String glGetProgramInfoLog (int program);
 
-	public native void glGetShaderPrecisionFormat ( int shadertype, int precisiontype, IntBuffer range, IntBuffer precision );
+	public native void glGetRenderbufferParameteriv (int target, int pname, IntBuffer params);
 
-	public native void glGetShaderSource ( int shader, int bufsize, Buffer length, String source );
+	public native void glGetShaderiv (int shader, int pname, IntBuffer params);
 
-	public native String glGetString ( int name );
+	public native String glGetShaderInfoLog (int shader);
 
-	public native void glGetTexParameterfv ( int target, int pname, FloatBuffer params );
+	public native void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision);
 
-	public native void glGetTexParameteriv ( int target, int pname, IntBuffer params );
+	public native void glGetShaderSource (int shader, int bufsize, Buffer length, String source);
 
-	public native void glGetUniformfv ( int program, int location, FloatBuffer params );
+	public native String glGetString (int name);
 
-	public native void glGetUniformiv ( int program, int location, IntBuffer params );
+	public native void glGetTexParameterfv (int target, int pname, FloatBuffer params);
 
-	public native int glGetUniformLocation ( int program, String name );
+	public native void glGetTexParameteriv (int target, int pname, IntBuffer params);
 
-	public native void glGetVertexAttribfv ( int index, int pname, FloatBuffer params );
+	public native void glGetUniformfv (int program, int location, FloatBuffer params);
 
-	public native void glGetVertexAttribiv ( int index, int pname, IntBuffer params );
+	public native void glGetUniformiv (int program, int location, IntBuffer params);
 
-	public native void glGetVertexAttribPointerv ( int index, int pname, Buffer pointer );
+	public native int glGetUniformLocation (int program, String name);
 
-	public native void glHint ( int target, int mode );
+	public native void glGetVertexAttribfv (int index, int pname, FloatBuffer params);
 
-	public native boolean glIsBuffer ( int buffer );
+	public native void glGetVertexAttribiv (int index, int pname, IntBuffer params);
 
-	public native boolean glIsEnabled ( int cap );
+	public native void glGetVertexAttribPointerv (int index, int pname, Buffer pointer);
 
-	public native boolean glIsFramebuffer ( int framebuffer );
+	public native void glHint (int target, int mode);
 
-	public native boolean glIsProgram ( int program );
+	public native boolean glIsBuffer (int buffer);
 
-	public native boolean glIsRenderbuffer ( int renderbuffer );
+	public native boolean glIsEnabled (int cap);
 
-	public native boolean glIsShader ( int shader );
+	public native boolean glIsFramebuffer (int framebuffer);
 
-	public native boolean glIsTexture ( int texture );
+	public native boolean glIsProgram (int program);
 
-	public native void glLineWidth ( float width );
+	public native boolean glIsRenderbuffer (int renderbuffer);
 
-	public native void glLinkProgram ( int program );
+	public native boolean glIsShader (int shader);
 
-	public native void glPixelStorei ( int pname, int param );
+	public native boolean glIsTexture (int texture);
 
-	public native void glPolygonOffset ( float factor, float units );
+	public native void glLineWidth (float width);
 
-	public native void glReadPixels ( int x, int y, int width, int height, int format, int type, Buffer pixels );
+	public native void glLinkProgram (int program);
 
-	public native void glReleaseShaderCompiler (  );
+	public native void glPixelStorei (int pname, int param);
 
-	public native void glRenderbufferStorage ( int target, int internalformat, int width, int height );
+	public native void glPolygonOffset (float factor, float units);
 
-	public native void glSampleCoverage ( float value, boolean invert );
+	public native void glReadPixels (int x, int y, int width, int height, int format, int type, Buffer pixels);
 
-	public native void glScissor ( int x, int y, int width, int height );
+	public native void glReleaseShaderCompiler ();
 
-	public native void glShaderBinary ( int n, IntBuffer shaders, int binaryformat, Buffer binary, int length );
+	public native void glRenderbufferStorage (int target, int internalformat, int width, int height);
 
-	public native void glShaderSource ( int shader, String string );
+	public native void glSampleCoverage (float value, boolean invert);
 
-	public native void glStencilFunc ( int func, int ref, int mask );
+	public native void glScissor (int x, int y, int width, int height);
 
-	public native void glStencilFuncSeparate ( int face, int func, int ref, int mask );
+	public native void glShaderBinary (int n, IntBuffer shaders, int binaryformat, Buffer binary, int length);
 
-	public native void glStencilMask ( int mask );
+	public native void glShaderSource (int shader, String string);
 
-	public native void glStencilMaskSeparate ( int face, int mask );
+	public native void glStencilFunc (int func, int ref, int mask);
 
-	public native void glStencilOp ( int fail, int zfail, int zpass );
+	public native void glStencilFuncSeparate (int face, int func, int ref, int mask);
 
-	public native void glStencilOpSeparate ( int face, int fail, int zfail, int zpass );
+	public native void glStencilMask (int mask);
 
-	public native void glTexImage2D ( int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels );
+	public native void glStencilMaskSeparate (int face, int mask);
 
-	public native void glTexParameterf ( int target, int pname, float param );
+	public native void glStencilOp (int fail, int zfail, int zpass);
 
-	public native void glTexParameterfv ( int target, int pname, FloatBuffer params );
+	public native void glStencilOpSeparate (int face, int fail, int zfail, int zpass);
 
-	public native void glTexParameteri ( int target, int pname, int param );
+	public native void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format,
+		int type, Buffer pixels);
 
-	public native void glTexParameteriv ( int target, int pname, IntBuffer params );
+	public native void glTexParameterf (int target, int pname, float param);
 
-	public native void glTexSubImage2D ( int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, Buffer pixels );
+	public native void glTexParameterfv (int target, int pname, FloatBuffer params);
 
-	public native void glUniform1f ( int location, float x );
+	public native void glTexParameteri (int target, int pname, int param);
 
-	public native void glUniform1fv ( int location, int count, FloatBuffer v );
+	public native void glTexParameteriv (int target, int pname, IntBuffer params);
 
-	public native void glUniform1i ( int location, int x );
+	public native void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
+		int type, Buffer pixels);
 
-	public native void glUniform1iv ( int location, int count, IntBuffer v );
+	public native void glUniform1f (int location, float x);
 
-	public native void glUniform2f ( int location, float x, float y );
+	public native void glUniform1fv (int location, int count, FloatBuffer v);
 
-	public native void glUniform2fv ( int location, int count, FloatBuffer v );
+	public native void glUniform1i (int location, int x);
 
-	public native void glUniform2i ( int location, int x, int y );
+	public native void glUniform1iv (int location, int count, IntBuffer v);
 
-	public native void glUniform2iv ( int location, int count, IntBuffer v );
+	public native void glUniform2f (int location, float x, float y);
 
-	public native void glUniform3f ( int location, float x, float y, float z );
+	public native void glUniform2fv (int location, int count, FloatBuffer v);
 
-	public native void glUniform3fv ( int location, int count, FloatBuffer v );
+	public native void glUniform2i (int location, int x, int y);
 
-	public native void glUniform3i ( int location, int x, int y, int z );
+	public native void glUniform2iv (int location, int count, IntBuffer v);
 
-	public native void glUniform3iv ( int location, int count, IntBuffer v );
+	public native void glUniform3f (int location, float x, float y, float z);
 
-	public native void glUniform4f ( int location, float x, float y, float z, float w );
+	public native void glUniform3fv (int location, int count, FloatBuffer v);
 
-	public native void glUniform4fv ( int location, int count, FloatBuffer v );
+	public native void glUniform3i (int location, int x, int y, int z);
 
-	public native void glUniform4i ( int location, int x, int y, int z, int w );
+	public native void glUniform3iv (int location, int count, IntBuffer v);
 
-	public native void glUniform4iv ( int location, int count, IntBuffer v );
+	public native void glUniform4f (int location, float x, float y, float z, float w);
 
-	public native void glUniformMatrix2fv ( int location, int count, boolean transpose, FloatBuffer value );
+	public native void glUniform4fv (int location, int count, FloatBuffer v);
 
-	public native void glUniformMatrix3fv ( int location, int count, boolean transpose, FloatBuffer value );
+	public native void glUniform4i (int location, int x, int y, int z, int w);
 
-	public native void glUniformMatrix4fv ( int location, int count, boolean transpose, FloatBuffer value );
+	public native void glUniform4iv (int location, int count, IntBuffer v);
 
-	public native void glUseProgram ( int program );
+	public native void glUniformMatrix2fv (int location, int count, boolean transpose, FloatBuffer value);
 
-	public native void glValidateProgram ( int program );
+	public native void glUniformMatrix3fv (int location, int count, boolean transpose, FloatBuffer value);
 
-	public native void glVertexAttrib1f ( int indx, float x );
+	public native void glUniformMatrix4fv (int location, int count, boolean transpose, FloatBuffer value);
 
-	public native void glVertexAttrib1fv ( int indx, FloatBuffer values );
+	public native void glUseProgram (int program);
 
-	public native void glVertexAttrib2f ( int indx, float x, float y );
+	public native void glValidateProgram (int program);
 
-	public native void glVertexAttrib2fv ( int indx, FloatBuffer values );
+	public native void glVertexAttrib1f (int indx, float x);
 
-	public native void glVertexAttrib3f ( int indx, float x, float y, float z );
+	public native void glVertexAttrib1fv (int indx, FloatBuffer values);
 
-	public native void glVertexAttrib3fv ( int indx, FloatBuffer values );
+	public native void glVertexAttrib2f (int indx, float x, float y);
 
-	public native void glVertexAttrib4f ( int indx, float x, float y, float z, float w );
+	public native void glVertexAttrib2fv (int indx, FloatBuffer values);
 
-	public native void glVertexAttrib4fv ( int indx, FloatBuffer values );
+	public native void glVertexAttrib3f (int indx, float x, float y, float z);
 
-	public native void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, Buffer ptr );
-	
-	public native void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, int ptr );
+	public native void glVertexAttrib3fv (int indx, FloatBuffer values);
 
-	public native void glViewport ( int x, int y, int width, int height );
+	public native void glVertexAttrib4f (int indx, float x, float y, float z, float w);
+
+	public native void glVertexAttrib4fv (int indx, FloatBuffer values);
+
+	public native void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, Buffer ptr);
+
+	public native void glVertexAttribPointer (int indx, int size, int type, boolean normalized, int stride, int ptr);
+
+	public native void glViewport (int x, int y, int width, int height);
 }

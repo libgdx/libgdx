@@ -15,18 +15,18 @@ package com.badlogic.gdx.tests;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
@@ -47,7 +47,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	boolean initialized = false;
 	PerspectiveCamera camera;
 	SpriteBatch batch;
-//	Font font;
+// Font font;
 	Mesh mesh;
 	Texture texture;
 	Plane plane = new Plane(new Vector3(), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
@@ -58,7 +58,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	float[] vertices;
 
 	@Override public void create () {
-		
+
 		camera = new PerspectiveCamera();
 		camera.getPosition().set((WIDTH) / 2.0f, (HEIGHT) / 2.0f, WIDTH / 2.0f);
 		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
@@ -69,9 +69,8 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 		curr = new float[WIDTH + 1][HEIGHT + 1];
 		intp = new float[WIDTH + 1][HEIGHT + 1];
 		vertices = new float[(WIDTH + 1) * (HEIGHT + 1) * 5];
-		mesh = new Mesh(false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(
-			VertexAttributes.Usage.Position, 3, "a_Position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2,
-			"a_texCoords"));
+		mesh = new Mesh(false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(VertexAttributes.Usage.Position,
+			3, "a_Position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/stones.jpg", FileType.Internal), TextureFilter.Linear,
 			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
@@ -81,7 +80,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 
 		batch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
-//			font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
+// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 	}
 
 	private void createIndices () {
@@ -202,22 +201,19 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 		mesh.render(GL10.GL_TRIANGLES);
 
 		batch.begin();
-//		batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20, Color.WHITE);
-		batch.end();		
+// batch.drawText(font, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20, Color.WHITE);
+		batch.end();
 	}
 
 	@Override public boolean keyDown (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyUp (int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean keyTyped (char character) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -229,7 +225,6 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -241,7 +236,6 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

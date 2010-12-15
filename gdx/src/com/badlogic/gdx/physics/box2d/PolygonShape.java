@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
@@ -93,6 +94,7 @@ public class PolygonShape extends Shape {
 	private native int jniGetVertexCount (long addr);
 
 	private static float[] verts = new float[2];
+
 	/**
 	 * Returns the vertex at the given position.
 	 * @param index the index of the vertex 0 <= index < getVertexCount( )

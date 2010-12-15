@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.hiero;
 
 import java.awt.font.GlyphVector;
@@ -30,7 +31,7 @@ import java.util.Map.Entry;
  * 
  * Thanks to the Apache FOP project for their inspiring work!
  * 
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 class Kerning {
 	private Map values = Collections.EMPTY_MAP;

@@ -10,12 +10,13 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.tests.angle;
 
 import com.badlogic.gdx.backends.angle.AngleApplication;
 
 public class AngleDebugStarter {
-	public static void main(String[] argv) {
+	public static void main (String[] argv) {
 		new AngleApplication(new com.badlogic.gdx.tests.VertexBufferObjectShaderTest(), "Angle Test", 480, 320, false);
 	}
 }

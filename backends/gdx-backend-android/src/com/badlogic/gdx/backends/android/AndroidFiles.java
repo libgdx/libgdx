@@ -21,7 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class AndroidFiles implements Files {
 	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";

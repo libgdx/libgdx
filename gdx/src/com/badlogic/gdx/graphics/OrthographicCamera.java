@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
@@ -19,16 +20,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
 /**
- * An orthographic camera having a position and a scale value for zooming. Looks
- * at one of the sides given in the {@link Side} enums, default is front,
- * looking along the z-Axis. Generally you will want to alter the camera's scale
- * and position and then set its matrices via a call to
- * {@link OrthographicCamera#setMatrices()} to set the OpenGL perspective and
- * modelview matrices. You can get a picking ray via a call to {@link
- * OrthographicCamera#getPickRay(int, int)} . For OpenGL ES 2.0 you can get the matrices
- * via {@link OrthographicCamera#getCombinedMatrix()} to set them as a uniform.
- * For this you have to call {@link OrthographicCamera#update()} before you
- * retrieve the matrices.
+ * An orthographic camera having a position and a scale value for zooming. Looks at one of the sides given in the {@link Side}
+ * enums, default is front, looking along the z-Axis. Generally you will want to alter the camera's scale and position and then
+ * set its matrices via a call to {@link OrthographicCamera#setMatrices()} to set the OpenGL perspective and modelview matrices.
+ * You can get a picking ray via a call to {@link OrthographicCamera#getPickRay(int, int)} . For OpenGL ES 2.0 you can get the
+ * matrices via {@link OrthographicCamera#getCombinedMatrix()} to set them as a uniform. For this you have to call
+ * {@link OrthographicCamera#update()} before you retrieve the matrices.
  * 
  * @author badlogicgames@gmail.com
  * 
@@ -57,24 +54,23 @@ public final class OrthographicCamera {
 	/**
 	 * Constructor, sets side to {@link Side#FRONT}
 	 */
-	public OrthographicCamera() {
+	public OrthographicCamera () {
 		setSide(Side.FRONT);
 	}
 
 	/**
 	 * @return Which side the camera looks at
 	 */
-	public Side getSide() {
+	public Side getSide () {
 		return side;
 	}
 
 	/**
 	 * Sets the side the camera looks at.
 	 * 
-	 * @param side
-	 *            The side.
+	 * @param side The side.
 	 */
-	public void setSide(Side side) {
+	public void setSide (Side side) {
 		this.side = side;
 		calculateRotationMatrix();
 	}
@@ -82,68 +78,63 @@ public final class OrthographicCamera {
 	/**
 	 * @return The near plane.
 	 */
-	public float getNear() {
+	public float getNear () {
 		return near;
 	}
 
 	/**
 	 * Sets the near plane.
 	 * 
-	 * @param near
-	 *            The near plane
+	 * @param near The near plane
 	 */
-	public void setNear(float near) {
+	public void setNear (float near) {
 		this.near = near;
 	}
 
 	/**
 	 * @return The far plane.
 	 */
-	public float getFar() {
+	public float getFar () {
 		return far;
 	}
 
 	/**
 	 * Sets the far plane
 	 * 
-	 * @param far
-	 *            the far plane
+	 * @param far the far plane
 	 */
-	public void setFar(float far) {
+	public void setFar (float far) {
 		this.far = far;
 	}
 
 	/**
 	 * @return The scale
 	 */
-	public float getScale() {
+	public float getScale () {
 		return scale;
 	}
 
 	/**
-	 * @param scale
-	 *            Sets the scale
+	 * @param scale Sets the scale
 	 */
-	public void setScale(float scale) {
+	public void setScale (float scale) {
 		this.scale = scale;
 	}
 
 	/**
 	 * @return The position
 	 */
-	public Vector3 getPosition() {
+	public Vector3 getPosition () {
 		return position;
 	}
 
 	/**
 	 * Sets the viewport
 	 * 
-	 * @param width
-	 *            The viewport width in pixels
-	 * @param height
-	 *            The viewport height in pixels
+	 * @param width The viewport width in pixels
+	 * @param height The viewport height in pixels
 	 */
-	public void setViewport(float width, float height) {
+	public void setViewport (float width, float height) {
 		this.viewportWidth = width;
 		this.viewportHeight = height;
 	}
@@ -151,27 +142,24 @@ public final class OrthographicCamera {
 	Vector3 tmp = new Vector3();
 
 	/**
-	 * Updates the frustum as well as the matrices of the camera based on the
-	 * near and far plane, the position, the side and the scale.
+	 * Updates the frustum as well as the matrices of the camera based on the near and far plane, the position, the side and the
+	 * scale.
 	 */
-	public void update() {
-		proj.setToOrtho2D(0, 0, (viewportWidth * scale),
-				(viewportHeight * scale), near, far);
-		model.setToTranslation(tmp.set((-position.x + (viewportWidth / 2)
-				* scale), (-position.y + (viewportHeight / 2) * scale),
-				(-position.z)));
+	public void update () {
+		proj.setToOrtho2D(0, 0, (viewportWidth * scale), (viewportHeight * scale), near, far);
+		model.setToTranslation(tmp.set((-position.x + (viewportWidth / 2) * scale), (-position.y + (viewportHeight / 2) * scale),
+			(-position.z)));
 		combined.set(proj);
 		combined.mul(model);
 		combined.mul(rotationMatrix);
 	}
 
 	/**
-	 * Sets the projection matrix that also incorporates the camera's scale and
-	 * position and loads an identity to the model view matrix of OpenGL ES 1.x.
-	 * The current matrices get overwritten. The matrix mode will be left in the
-	 * model view state after a call to this.
+	 * Sets the projection matrix that also incorporates the camera's scale and position and loads an identity to the model view
+	 * matrix of OpenGL ES 1.x. The current matrices get overwritten. The matrix mode will be left in the model view state after a
+	 * call to this.
 	 */
-	public void setMatrices() {
+	public void setMatrices () {
 		update();
 		GL10 gl = Gdx.gl10;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
@@ -180,7 +168,7 @@ public final class OrthographicCamera {
 		gl.glLoadIdentity();
 	}
 
-	private Matrix4 calculateRotationMatrix() {
+	private Matrix4 calculateRotationMatrix () {
 		float rotation = 0;
 		if (side == Side.FRONT) {
 			direction.set(0, 0, -1);
@@ -217,104 +205,86 @@ public final class OrthographicCamera {
 	}
 
 	/**
-	 * Calculates the world coordinates of the given screen coordinates and
-	 * stores the result in world
+	 * Calculates the world coordinates of the given screen coordinates and stores the result in world
 	 * 
-	 * @param screenX
-	 *            the x-coordinate of the screen position
-	 * @param screenY
-	 *            the y-coordinate of the screen position
-	 * @param world
-	 *            the vector to store the result in
+	 * @param screenX the x-coordinate of the screen position
+	 * @param screenY the y-coordinate of the screen position
+	 * @param world the vector to store the result in
 	 */
-	public void getScreenToWorld(float screenX, float screenY, Vector2 world) {
+	public void getScreenToWorld (float screenX, float screenY, Vector2 world) {
 		screenX = screenX / Gdx.graphics.getWidth() * viewportWidth;
 		screenY = screenY / Gdx.graphics.getHeight() * viewportHeight;
 
-		world.set((screenX * scale) - (viewportWidth * scale) / 2 + position.x,
-				((viewportHeight - screenY) * scale) - (viewportHeight * scale)
-						/ 2 + position.y);
+		world.set((screenX * scale) - (viewportWidth * scale) / 2 + position.x, ((viewportHeight - screenY) * scale)
+			- (viewportHeight * scale) / 2 + position.y);
 	}
 
 	/**
 	 * Calculates the screen coordinates of the given world coordinates
 	 * 
-	 * @param worldX
-	 *            world x-coordinate
-	 * @param worldY
-	 *            world y-coordinate
-	 * @param screen
-	 *            the screen coordinates get stored here
+	 * @param worldX world x-coordinate
+	 * @param worldY world y-coordinate
+	 * @param screen the screen coordinates get stored here
 	 */
-	public void getWorldToScreen(float worldX, float worldY, Vector2 screen) {
-		screen.x = (int) ((worldX + (viewportWidth * scale) / 2 - position.x) / scale);
-		screen.y = (int) (-(-worldY + (viewportHeight * scale) / 2 + position.y - viewportHeight
-				* scale) / scale);
+	public void getWorldToScreen (float worldX, float worldY, Vector2 screen) {
+		screen.x = (int)((worldX + (viewportWidth * scale) / 2 - position.x) / scale);
+		screen.y = (int)(-(-worldY + (viewportHeight * scale) / 2 + position.y - viewportHeight * scale) / scale);
 	}
 
 	/**
 	 * Returns the given screen x-coordinates as a world x-coordinate
 	 * 
-	 * @param screenX
-	 *            The screen x-coordinate
+	 * @param screenX The screen x-coordinate
 	 * @return The world x-coordinate
 	 */
-	public float getScreenToWorldX(float screenX) {
-        screenX = screenX / Gdx.graphics.getWidth() * viewportWidth;
+	public float getScreenToWorldX (float screenX) {
+		screenX = screenX / Gdx.graphics.getWidth() * viewportWidth;
 		return (screenX * scale) - (viewportWidth * scale) / 2 + position.x;
 	}
 
 	/**
 	 * Returns the given world x-coordinate as a screen x-coordinate
 	 * 
-	 * @param worldX
-	 *            The world x-coordinate
+	 * @param worldX The world x-coordinate
 	 * @return The screen x-coordinate
 	 */
-	public int getWorldToScreenX(float worldX) {
-		return (int) ((worldX + (viewportWidth * scale) / 2 - position.x) / scale);
+	public int getWorldToScreenX (float worldX) {
+		return (int)((worldX + (viewportWidth * scale) / 2 - position.x) / scale);
 	}
 
 	/**
 	 * Returns the given screen y-coordinates as a world y-coordinate
 	 * 
-	 * @param screenY
-	 *            The screen y-coordinate
+	 * @param screenY The screen y-coordinate
 	 * @return The world y-coordinate
 	 */
-	public float getScreenToWorldY(float screenY) {
-        screenY = screenY / Gdx.graphics.getHeight() * viewportHeight;
-		return ((viewportHeight - screenY - 1) * scale)
-				- (viewportHeight * scale) / 2 + position.y;
+	public float getScreenToWorldY (float screenY) {
+		screenY = screenY / Gdx.graphics.getHeight() * viewportHeight;
+		return ((viewportHeight - screenY - 1) * scale) - (viewportHeight * scale) / 2 + position.y;
 	}
 
 	/**
 	 * Returns the given world y-coordinate as a screen x-coordinate
 	 * 
-	 * @param worldY
-	 *            The world y-coordinate
+	 * @param worldY The world y-coordinate
 	 * @return The screen y-coordinate
 	 */
-	public int getWorldToScreenY(float worldY) {
-		return (int) (-(-worldY + (viewportHeight * scale) / 2 + position.y - viewportHeight
-				* scale) / scale);
+	public int getWorldToScreenY (float worldY) {
+		return (int)(-(-worldY + (viewportHeight * scale) / 2 + position.y - viewportHeight * scale) / scale);
 	}
 
 	Ray ray = new Ray(new Vector3(), new Vector3());
 	Vector3 tmp2 = new Vector3();
 
 	/**
-	 * Returns a ray in world space form the given screen coordinates. This can
-	 * be used for picking. The returned Ray is an internal member of this class
-	 * to reduce memory allocations. Do not reuse it outside of this class.
+	 * Returns a ray in world space form the given screen coordinates. This can be used for picking. The returned Ray is an
+	 * internal member of this class to reduce memory allocations. Do not reuse it outside of this class.
 	 * 
-	 * @param screenX
-	 *            The screen x-coordinate
-	 * @param screenY
-	 *            The screen y-coordinate
+	 * @param screenX The screen x-coordinate
+	 * @param screenY The screen y-coordinate
 	 * @return The picking ray.
 	 */
-	public Ray getPickRay(int screenX, int screenY) {
+	public Ray getPickRay (int screenX, int screenY) {
 		float x = getScreenToWorldX(screenX);
 		float y = getScreenToWorldY(screenY);
 
@@ -323,14 +293,13 @@ public final class OrthographicCamera {
 		} else if (side == Side.BOTTOM) {
 			return ray.set(x, 1000 / 2, y, 0, 1, 0);
 		} else
-			return ray.set(tmp2.set(x, y, 10000 / 2).mul(rotationMatrix), tmp
-					.set(0, 0, -1).mul(rotationMatrix));
+			return ray.set(tmp2.set(x, y, 10000 / 2).mul(rotationMatrix), tmp.set(0, 0, -1).mul(rotationMatrix));
 	}
 
 	/**
 	 * @return The combined matrix.
 	 */
-	public Matrix4 getCombinedMatrix() {
+	public Matrix4 getCombinedMatrix () {
 		return combined;
 	}
 }

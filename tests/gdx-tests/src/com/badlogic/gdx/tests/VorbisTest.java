@@ -15,8 +15,8 @@ package com.badlogic.gdx.tests;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.io.VorbisDecoder;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -44,7 +44,6 @@ public class VorbisTest extends GdxTest {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -43,15 +43,15 @@ public class LifeCycleTest extends GdxTest {
 			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}		
-	}	
+		}
+	}
 
 	@Override public void create () {
-		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app created: " + Gdx.graphics.getWidth()
-			+ "x" + Gdx.graphics.getHeight());		
+		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app created: " + Gdx.graphics.getWidth() + "x"
+			+ Gdx.graphics.getHeight());
 	}
-	
-	@Override public void resize(int width, int height) {
+
+	@Override public void resize (int width, int height) {
 		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app resized");
 	}
 

@@ -15,9 +15,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.BitmapFont;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.SpriteBatch;
@@ -39,15 +37,13 @@ public class MD5Test extends GdxTest implements InputProcessor {
 	SpriteBatch batch;
 	BitmapFont font;
 
-	@Override
-	public void create() {
+	@Override public void create () {
 		Gdx.app.log("MD5 Test", "created");
 		model = MD5Loader.loadModel(Gdx.files.internal("data/zfat.md5mesh").read());
 		anim = MD5Loader.loadAnimation(Gdx.files.internal("data/walk1.md5anim").read());
 		skeleton = new MD5Joints();
 		skeleton.joints = new float[anim.frames[0].joints.length];
-		animInfo = new MD5AnimationInfo(anim.frames.length,
-				anim.secondsPerFrame);
+		animInfo = new MD5AnimationInfo(anim.frames.length, anim.secondsPerFrame);
 		renderer = new MD5Renderer(model, true);
 		renderer.setSkeleton(model.baseSkeleton);
 
@@ -66,16 +62,14 @@ public class MD5Test extends GdxTest implements InputProcessor {
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(),
-				Gdx.graphics.getHeight());
-		
+		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 		Gdx.input.setInputProcessor(this);
 	}
 
 	float angle = 0;
 
-	@Override	
-	public void render() {
+	@Override public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
@@ -96,9 +90,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 			gl.glRotatef(-90, 1, 0, 0);
 
 			start = System.nanoTime();
-			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()],
-					anim.frames[animInfo.getNextFrame()], skeleton, animInfo
-							.getInterpolation());
+			MD5Animation.interpolate(anim.frames[animInfo.getCurrentFrame()], anim.frames[animInfo.getNextFrame()], skeleton,
+				animInfo.getInterpolation());
 			renderer.setSkeleton(skeleton);
 			skinTime = (System.nanoTime() - start) / 1000000000.0f;
 
@@ -110,13 +103,12 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 
 		batch.begin();
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond()
-				+ (renderer.isJniUsed() ? ", jni" : ", java") + ", render time: " + renderTime + ", skin time: " + skinTime, 10, 20);
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + (renderer.isJniUsed() ? ", jni" : ", java")
+			+ ", render time: " + renderTime + ", skin time: " + skinTime, 10, 20);
 		batch.end();
 	}
 
-	@Override
-	public void dispose() {
+	@Override public void dispose () {
 		batch.dispose();
 		renderer.dispose();
 		font.dispose();
@@ -128,45 +120,32 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		System.gc();
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
+	@Override public boolean touchDown (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override
-	public boolean touchDragged(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
+	@Override public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override
-	public boolean touchUp(int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer) {
 		renderer.setUseJni(!renderer.isJniUsed());
 		return false;
 	}
 
-	@Override
-	public boolean needsGL20() {
-		// TODO Auto-generated method stub
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 

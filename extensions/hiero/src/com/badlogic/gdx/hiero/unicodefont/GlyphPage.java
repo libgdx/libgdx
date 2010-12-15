@@ -2,7 +2,6 @@
 package com.badlogic.gdx.hiero.unicodefont;
 
 import java.awt.AlphaComposite;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
@@ -16,15 +15,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.swing.Renderer;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -33,7 +28,7 @@ import com.badlogic.gdx.hiero.unicodefont.effects.Effect;
 
 /**
  * Stores a number of glyphs on a single texture.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class GlyphPage {
 	private final UnicodeFont unicodeFont;

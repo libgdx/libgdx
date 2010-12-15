@@ -119,7 +119,6 @@ public class SpriteBatchShaderTest extends GdxTest {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return true;
 	}
 

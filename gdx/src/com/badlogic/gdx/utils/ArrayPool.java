@@ -1,6 +1,7 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com) Copyright (c) 2008-2010,
- * Matthias Mann
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * 
+ * Copyright (c) 2008-2010, Matthias Mann
  * 
  * All rights reserved.
  * 
@@ -31,7 +32,7 @@ import java.util.NoSuchElementException;
 /**
  * An ordered, resizable array that reuses element instances.
  * @see Array
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author Matthias Mann
  */
 abstract public class ArrayPool<T> {
@@ -100,27 +101,46 @@ abstract public class ArrayPool<T> {
 		return items[index];
 	}
 
-	public boolean contains (T value) {
+	public boolean contains (T value, boolean identity) {
 		Object[] items = this.items;
 		int i = size - 1;
-		while (i >= 0)
-			if (items[i--] == value) return true;
+		if (identity || value == null) {
+			while (i >= 0)
+				if (items[i--] == value) return true;
+		} else {
+			while (i >= 0)
+				if (value.equals(items[i--])) return true;
+		}
 		return false;
 	}
 
-	public int indexOf (T value) {
+	public int indexOf (T value, boolean identity) {
 		Object[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
-			if (items[i] == value) return i;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++)
+				if (items[i] == value) return i;
+		} else {
+			for (int i = 0, n = size; i < n; i++)
+				if (value.equals(items[i])) return i;
+		}
 		return -1;
 	}
 
-	public boolean removeValue (T value) {
+	public boolean removeValue (T value, boolean identity) {
 		Object[] items = this.items;
-		for (int i = 0, n = size; i < n; i++) {
-			if (items[i] == value) {
-				removeIndex(i);
-				return true;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (items[i] == value) {
+					removeIndex(i);
+					return true;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (value.equals(items[i])) {
+					removeIndex(i);
+					return true;
+				}
 			}
 		}
 		return false;

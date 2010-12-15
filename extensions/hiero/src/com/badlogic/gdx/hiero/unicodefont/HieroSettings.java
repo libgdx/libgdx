@@ -8,18 +8,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.hiero.unicodefont.effects.ConfigurableEffect;
-import com.badlogic.gdx.hiero.unicodefont.effects.ConfigurableEffect.Value;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Holds the settings needed to configure a UnicodeFont.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class HieroSettings {
 	private int fontSize = 12;
@@ -79,16 +75,16 @@ public class HieroSettings {
 				} else if (name.startsWith("effect.")) {
 					// Set an effect value on the last added effect.
 					name = name.substring(7);
-					ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
-					List values = effect.getValues();
-					for (Iterator iter = values.iterator(); iter.hasNext();) {
-						Value effectValue = (Value)iter.next();
-						if (effectValue.getName().equals(name)) {
-							effectValue.setString(value);
-							break;
-						}
-					}
-					effect.setValues(values);
+					// ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
+					// List values = effect.getValues();
+					// for (Iterator iter = values.iterator(); iter.hasNext();) {
+					// Value effectValue = (Value)iter.next();
+					// if (effectValue.getName().equals(name)) {
+					// effectValue.setString(value);
+					// break;
+					// }
+					// }
+					// effect.setValues(values);
 				}
 			}
 			reader.close();
@@ -293,15 +289,15 @@ public class HieroSettings {
 		out.println("glyph.page.width=" + glyphPageWidth);
 		out.println("glyph.page.height=" + glyphPageHeight);
 		out.println();
-		for (Iterator iter = effects.iterator(); iter.hasNext();) {
-			ConfigurableEffect effect = (ConfigurableEffect)iter.next();
-			out.println("effect.class=" + effect.getClass().getName());
-			for (Iterator iter2 = effect.getValues().iterator(); iter2.hasNext();) {
-				Value value = (Value)iter2.next();
-				out.println("effect." + value.getName() + "=" + value.getString());
-			}
-			out.println();
-		}
+		// for (Iterator iter = effects.iterator(); iter.hasNext();) {
+		// ConfigurableEffect effect = (ConfigurableEffect)iter.next();
+		// out.println("effect.class=" + effect.getClass().getName());
+		// for (Iterator iter2 = effect.getValues().iterator(); iter2.hasNext();) {
+		// Value value = (Value)iter2.next();
+		// out.println("effect." + value.getName() + "=" + value.getString());
+		// }
+		// out.println();
+		// }
 		out.close();
 	}
 }

@@ -79,8 +79,8 @@ import android.view.SurfaceHolder;
  * typically they are called before setRenderer so that they take effect immediately.
  * <p>
  * <h4>Setting a Renderer</h4>
- * Finally, you must call {@link #setRenderer} to register a Renderer. The renderer is responsible for doing the actual
- * OpenGL rendering.
+ * Finally, you must call {@link #setRenderer} to register a Renderer. The renderer is responsible for doing the actual OpenGL
+ * rendering.
  * <p>
  * <h3>Rendering Mode</h3>
  * Once the renderer is set, you can control whether the renderer draws continuously or on-demand by calling
@@ -122,6 +122,8 @@ import android.view.SurfaceHolder;
  * 		return super.onKeyDown(keyCode, event);
  * 	}
  * }
+ * 
+ * 
  * 
  * </pre>
  * 

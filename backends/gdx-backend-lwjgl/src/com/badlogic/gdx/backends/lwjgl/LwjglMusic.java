@@ -134,8 +134,10 @@ final class LwjglMusic implements Music, Runnable {
 					} else {
 						System.out.println("samples: " + readSamples);
 						ain.close();
-						if (!isLooping()) state.set(Stopped);
-						else openAudioInputStream();
+						if (!isLooping())
+							state.set(Stopped);
+						else
+							openAudioInputStream();
 					}
 				} catch (Exception ex) {
 					try {
@@ -148,9 +150,7 @@ final class LwjglMusic implements Music, Runnable {
 					state.set(Stopped);
 					return;
 				}
-			}
-			else if (curState == Stopped && ain != null)
-			{
+			} else if (curState == Stopped && ain != null) {
 				try {
 					ain.close();
 				} catch (IOException e) {
@@ -163,7 +163,6 @@ final class LwjglMusic implements Music, Runnable {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

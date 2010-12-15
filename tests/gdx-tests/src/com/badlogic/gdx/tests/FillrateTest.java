@@ -13,16 +13,16 @@
 
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class FillrateTest extends GdxTest implements InputProcessor {
@@ -35,17 +35,12 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 	float mean = 0;
 	float frames = 0;
 
-	@Override
-	public void create() {
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
-				"data/badlogicsmall.jpg", FileType.Internal),
-				TextureFilter.Linear, TextureFilter.Linear,
-				TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+	@Override public void create () {
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
+			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
-		mesh = new Mesh(true, 4, 6, new VertexAttribute(
-				VertexAttributes.Usage.Position, 2, "a_pos"),
-				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates,
-						2, "a_texCoords"));
+		mesh = new Mesh(true, 4, 6, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_pos"), new VertexAttribute(
+			VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
 
 		float[] vertices = new float[4 * 4];
 
@@ -70,15 +65,14 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 		vertices[idx++] = 1;
 		vertices[idx++] = 0;
 
-		short[] indices = { 0, 1, 2, 2, 3, 0 };
+		short[] indices = {0, 1, 2, 2, 3, 0};
 		mesh.setVertices(vertices);
 		mesh.setIndices(indices);
-		
+
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override
-	public void render() {
+	@Override public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (mode == 3) {
@@ -88,8 +82,7 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 
 		if (mode == 2) {
 			Gdx.graphics.getGL10().glEnable(GL10.GL_BLEND);
-			Gdx.graphics.getGL10().glBlendFunc(GL10.GL_SRC_ALPHA,
-					GL10.GL_ONE_MINUS_SRC_ALPHA);
+			Gdx.graphics.getGL10().glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		if (mode >= 1) {
@@ -111,62 +104,45 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 		mean += numFills;
 		frames++;
 
-		if (Gdx.graphics.getDeltaTime() < 1 / 60f)
-			numFills++;
+		if (Gdx.graphics.getDeltaTime() < 1 / 60f) numFills++;
 
 		if (System.nanoTime() - lastOut >= 1000000000) {
-			Gdx.app.log("FillrateTest", "fills: " + mean / frames + ", fps: "
-					+ frames + ", mode" + mode);
+			Gdx.app.log("FillrateTest", "fills: " + mean / frames + ", fps: " + frames + ", mode" + mode);
 			mean = 0;
 			frames = 0;
 			lastOut = System.nanoTime();
-			if (Gdx.graphics.getFramesPerSecond() < 60)
-				numFills--;
+			if (Gdx.graphics.getFramesPerSecond() < 60) numFills--;
 		}
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
+	@Override public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override
-	public boolean touchDown(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
+	@Override public boolean touchDown (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override
-	public boolean touchUp(int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer) {
 		mode++;
-		if (mode > 3)
-			mode = 0;
+		if (mode > 3) mode = 0;
 		numFills = 0;
 		return false;
 	}
 
-	@Override
-	public boolean touchDragged(int x, int y, int pointer) {
-		// TODO Auto-generated method stub
+	@Override public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override
-	public boolean needsGL20() {
-		// TODO Auto-generated method stub
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 }

@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics.loaders;
 
 import java.io.BufferedReader;
@@ -30,7 +31,7 @@ public class ObjLoader {
 	/**
 	 * Loads a Wavefront OBJ file from the given input stream.
 	 * 
-	 * @param in the InputStream 
+	 * @param in the InputStream
 	 * 
 	 */
 	public static Mesh loadObj (InputStream in) {
@@ -163,8 +164,8 @@ public class ObjLoader {
 		if (numNormals > 0) attributes.add(new VertexAttribute(Usage.Normal, 3, "a_Normal"));
 		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, "a_TexCoord"));
 
-		mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));		
-		mesh.setVertices(verts);		
+		mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
+		mesh.setVertices(verts);
 		return mesh;
 	}
 

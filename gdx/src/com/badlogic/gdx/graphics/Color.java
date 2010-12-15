@@ -10,11 +10,12 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 /**
- * A color class, holding the r, g, b and alpha component as floats in the range
- * [0,1]. All methods perform clamping on the internal values after execution.
+ * A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
+ * internal values after execution.
  * 
  * @author mzechner
  * 
@@ -32,16 +33,12 @@ public class Color {
 	/**
 	 * Constructor, sets the components of the color
 	 * 
-	 * @param r
-	 *            the red component
-	 * @param g
-	 *            the green component
-	 * @param b
-	 *            the blue component
-	 * @param a
-	 *            the alpha component
+	 * @param r the red component
+	 * @param g the green component
+	 * @param b the blue component
+	 * @param a the alpha component
 	 */
-	public Color(float r, float g, float b, float a) {
+	public Color (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
@@ -52,20 +49,18 @@ public class Color {
 	/**
 	 * Constructs a new color using the given color
 	 * 
-	 * @param color
-	 *            the color
+	 * @param color the color
 	 */
-	public Color(Color color) {
+	public Color (Color color) {
 		set(color);
 	}
 
 	/**
 	 * Sets this color to the given color.
 	 * 
-	 * @param color
-	 *            the Color
+	 * @param color the Color
 	 */
-	public Color set(Color color) {
+	public Color set (Color color) {
 		this.r = color.r;
 		this.g = color.g;
 		this.b = color.b;
@@ -77,11 +72,10 @@ public class Color {
 	/**
 	 * Multiplies the this color and the given color
 	 * 
-	 * @param color
-	 *            the color
+	 * @param color the color
 	 * @return this color.
 	 */
-	public Color mul(Color color) {
+	public Color mul (Color color) {
 		this.r *= color.r;
 		this.g *= color.g;
 		this.b *= color.b;
@@ -93,11 +87,10 @@ public class Color {
 	/**
 	 * Multiplies all components of this Color with the given value.
 	 * 
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 * @return this color
 	 */
-	public Color mul(float value) {
+	public Color mul (float value) {
 		this.r *= value;
 		this.g *= value;
 		this.b *= value;
@@ -109,11 +102,10 @@ public class Color {
 	/**
 	 * Adds the given color to this color.
 	 * 
-	 * @param color
-	 *            the color
+	 * @param color the color
 	 * @return this color
 	 */
-	public Color add(Color color) {
+	public Color add (Color color) {
 		this.r += color.r;
 		this.g += color.g;
 		this.b += color.b;
@@ -125,11 +117,10 @@ public class Color {
 	/**
 	 * Subtracts the given color from this color
 	 * 
-	 * @param color
-	 *            the color
+	 * @param color the color
 	 * @return this color
 	 */
-	public Color sub(Color color) {
+	public Color sub (Color color) {
 		this.r -= color.r;
 		this.g -= color.g;
 		this.b -= color.b;
@@ -138,58 +129,46 @@ public class Color {
 		return this;
 	}
 
-	public void clamp() {
+	public void clamp () {
 		if (r < 0)
 			r = 0;
-		else if (r > 1)
-			r = 1;
+		else if (r > 1) r = 1;
 
 		if (g < 0)
 			g = 0;
-		else if (g > 1)
-			g = 1;
+		else if (g > 1) g = 1;
 
 		if (b < 0)
 			b = 0;
-		else if (b > 1)
-			b = 1;
+		else if (b > 1) b = 1;
 
 		if (a < 0)
 			a = 0;
-		else if (a > 1)
-			a = 1;
+		else if (a > 1) a = 1;
 	}
 
-	public void set(float r, float g, float b, float a) {
+	public void set (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		this.a = a;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
+	@Override public boolean equals (Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-		Color color = (Color) o;
+		Color color = (Color)o;
 
-		if (Float.compare(color.a, a) != 0)
-			return false;
-		if (Float.compare(color.b, b) != 0)
-			return false;
-		if (Float.compare(color.g, g) != 0)
-			return false;
-		if (Float.compare(color.r, r) != 0)
-			return false;
+		if (Float.compare(color.a, a) != 0) return false;
+		if (Float.compare(color.b, b) != 0) return false;
+		if (Float.compare(color.g, g) != 0) return false;
+		if (Float.compare(color.r, r) != 0) return false;
 
 		return true;
 	}
 
-	@Override
-	public int hashCode() {
+	@Override public int hashCode () {
 		int result = (r != +0.0f ? Float.floatToIntBits(r) : 0);
 		result = 31 * result + (g != +0.0f ? Float.floatToIntBits(g) : 0);
 		result = 31 * result + (b != +0.0f ? Float.floatToIntBits(b) : 0);
@@ -202,54 +181,43 @@ public class Color {
 	}
 
 	/**
-	 * Packs the four color components which should be in the range 0-255 into a
-	 * 32-bit integer and then converts it to a float. Note that no range
-	 * checking is performed for higher performance.
+	 * Packs the four color components which should be in the range 0-255 into a 32-bit integer and then converts it to a float.
+	 * Note that no range checking is performed for higher performance.
 	 * 
-	 * @param r
-	 *            the red component, 0 - 255
-	 * @param g
-	 *            the green component, 0 - 255
-	 * @param b
-	 *            the blue component, 0 - 255
-	 * @param a
-	 *            the alpha component, 0 - 255
+	 * @param r the red component, 0 - 255
+	 * @param g the green component, 0 - 255
+	 * @param b the blue component, 0 - 255
+	 * @param a the alpha component, 0 - 255
 	 * @return the packed color as a float
 	 */
-	public static float toFloatBits(int r, int g, int b, int a) {
+	public static float toFloatBits (int r, int g, int b, int a) {
 		int color = (a << 24) | (b << 16) | (g << 8) | r;
 		float floatColor = Float.intBitsToFloat(color & 0xfeffffff);
 		return floatColor;
 	}
 
 	/**
-	 * Packs the four color components which should be in the range 0-255 into a
-	 * 32-bit. Note that no range checking is performed for higher performance.
+	 * Packs the four color components which should be in the range 0-255 into a 32-bit. Note that no range checking is performed
+	 * for higher performance.
 	 * 
-	 * @param r
-	 *            the red component, 0 - 255
-	 * @param g
-	 *            the green component, 0 - 255
-	 * @param b
-	 *            the blue component, 0 - 255
-	 * @param a
-	 *            the alpha component, 0 - 255
+	 * @param r the red component, 0 - 255
+	 * @param g the green component, 0 - 255
+	 * @param b the blue component, 0 - 255
+	 * @param a the alpha component, 0 - 255
 	 * @return the packed color as a 32-bit int
 	 */
-	public static float toIntBits(int r, int g, int b, int a) {
+	public static float toIntBits (int r, int g, int b, int a) {
 		return (a << 24) | (b << 16) | (g << 8) | r;
 
 	}
 
 	/**
-	 * Packs the 4 components of this color into a 32-bit int and returns it as
-	 * a float.
+	 * Packs the 4 components of this color into a 32-bit int and returns it as a float.
 	 * 
 	 * @return the packed color as a 32-bit float
 	 */
-	public float toFloatBits() {
-		int color = ((int) (255 * a) << 24) | ((int) (255 * b) << 16)
-				| ((int) (255 * g) << 8) | ((int) (255 * r));
+	public float toFloatBits () {
+		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return Float.intBitsToFloat(color & 0xfeffffff);
 	}
 
@@ -258,21 +226,18 @@ public class Color {
 	 * 
 	 * @return the packed color as a 32-bit int.
 	 */
-	public int toIntBits() {
-		int color = ((int) (255 * a) << 24) | ((int) (255 * b) << 16)
-				| ((int) (255 * g) << 8) | ((int) (255 * r));
+	public int toIntBits () {
+		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return color;
 	}
 
 	/**
-	 * Packs the 4 components of this color into a 32-bit int and returns it as
-	 * a float.
+	 * Packs the 4 components of this color into a 32-bit int and returns it as a float.
 	 * 
 	 * @return the packed color as a 32-bit float
 	 */
-	public static float toFloatBits(float r, float g, float b, float a) {
-		int color = ((int) (255 * a) << 24) | ((int) (255 * b) << 16)
-				| ((int) (255 * g) << 8) | ((int) (255 * r));
+	public static float toFloatBits (float r, float g, float b, float a) {
+		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return Float.intBitsToFloat(color & 0xfeffffff);
 	}
 }

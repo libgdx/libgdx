@@ -25,7 +25,6 @@ import javax.media.opengl.GLContext;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.sun.opengl.util.texture.TextureData;
 import com.sun.opengl.util.texture.TextureIO;
@@ -114,7 +113,7 @@ final class JoglTexture implements Texture {
 		TextureWrap uWrap, TextureWrap vWrap) {
 		this.isManaged = false;
 		GL gl = GLContext.getCurrent().getGL();
-		
+
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());
 		IntBuffer intBuffer = buffer.asIntBuffer();
@@ -209,7 +208,7 @@ final class JoglTexture implements Texture {
 	@Override public int getTextureObjectHandle () {
 		return texture.getTextureObject();
 	}
-	
+
 	@Override public void setWrap (TextureWrap x, TextureWrap y) {
 		bind();
 		GL gl = GLContext.getCurrent().getGL();

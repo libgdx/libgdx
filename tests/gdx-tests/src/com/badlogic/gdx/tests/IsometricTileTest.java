@@ -4,7 +4,6 @@ package com.badlogic.gdx.tests;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,7 +26,7 @@ public class IsometricTileTest extends GdxTest {
 	static final int BOUND_Y = HEIGHT * TILE_HEIGHT_DIAMOND / 2 + WIDTH * TILE_HEIGHT_DIAMOND / 2;
 
 	Texture texture;
-	SpriteCache[] caches = new SpriteCache[LAYERS];	
+	SpriteCache[] caches = new SpriteCache[LAYERS];
 	int[] layers = new int[LAYERS];
 	OrthographicCamera cam;
 	OrthoCamController camController;
@@ -41,23 +40,22 @@ public class IsometricTileTest extends GdxTest {
 		Gdx.input.setInputProcessor(camController);
 
 		renderer = new ImmediateModeRenderer();
-		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/isotile.png"), 
-													 TextureFilter.Nearest, TextureFilter.Nearest,
-													 TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/isotile.png"), TextureFilter.Nearest, TextureFilter.Nearest,
+			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 
 		Random rand = new Random();
 		for (int i = 0; i < LAYERS; i++) {
 			caches[i] = new SpriteCache();
 			SpriteCache cache = caches[i];
 			cache.beginCache();
-					
+
 			int colX = HEIGHT * TILE_WIDTH / 2 - TILE_WIDTH / 2;
 			int colY = BOUND_Y - TILE_HEIGHT_DIAMOND;
-			for(int x=0; x < WIDTH; x++) {						
-				for(int y=0; y < HEIGHT; y++) {								
+			for (int x = 0; x < WIDTH; x++) {
+				for (int y = 0; y < HEIGHT; y++) {
 					int tileX = colX - y * TILE_WIDTH / 2;
 					int tileY = colY - y * TILE_HEIGHT_DIAMOND / 2;
-					cache.add(texture, tileX, tileY, rand.nextInt(2) * 54, 0,TILE_WIDTH, TILE_HEIGHT);				
+					cache.add(texture, tileX, tileY, rand.nextInt(2) * 54, 0, TILE_WIDTH, TILE_HEIGHT);
 				}
 				colX += TILE_WIDTH / 2;
 				colY -= TILE_HEIGHT_DIAMOND / 2;
@@ -82,27 +80,27 @@ public class IsometricTileTest extends GdxTest {
 			cache.draw(layers[i]);
 			cache.end();
 		}
-		
+
 		renderer.begin(GL10.GL_LINES);
 		renderer.color(1, 0, 0, 1);
-		renderer.vertex(0,0,0);
+		renderer.vertex(0, 0, 0);
 		renderer.color(1, 0, 0, 1);
-		renderer.vertex(500,0,0);
+		renderer.vertex(500, 0, 0);
 		renderer.color(0, 1, 0, 1);
-		renderer.vertex(0,0,0);
+		renderer.vertex(0, 0, 0);
 		renderer.color(0, 1, 0, 1);
-		renderer.vertex(0,500,0);
-		
+		renderer.vertex(0, 500, 0);
+
 		renderer.color(0, 0, 1, 1);
-		renderer.vertex(0,BOUND_Y,0);
+		renderer.vertex(0, BOUND_Y, 0);
 		renderer.color(0, 0, 1, 1);
-		renderer.vertex(BOUND_X,BOUND_Y,0);
-		
+		renderer.vertex(BOUND_X, BOUND_Y, 0);
+
 		renderer.color(0, 0, 1, 1);
-		renderer.vertex(BOUND_X,0,0);
+		renderer.vertex(BOUND_X, 0, 0);
 		renderer.color(0, 0, 1, 1);
-		renderer.vertex(BOUND_X,BOUND_Y,0);
-		
+		renderer.vertex(BOUND_X, BOUND_Y, 0);
+
 		renderer.end();
 	}
 

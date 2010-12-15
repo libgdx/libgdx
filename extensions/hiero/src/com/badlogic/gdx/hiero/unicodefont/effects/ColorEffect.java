@@ -13,7 +13,7 @@ import com.badlogic.gdx.hiero.unicodefont.UnicodeFont;
 
 /**
  * Makes glyphs a solid color.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class ColorEffect implements ConfigurableEffect {
 	private Color color = Color.white;

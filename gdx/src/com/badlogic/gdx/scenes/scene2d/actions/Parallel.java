@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import java.util.ArrayList;
@@ -47,8 +48,7 @@ public class Parallel implements Action {
 	@Override public void act (float delta) {
 		int len = actions.size();
 		for (int i = 0; i < len; i++)
-			if(!actions.get(i).isDone())
-				actions.get(i).act(delta);
+			if (!actions.get(i).isDone()) actions.get(i).act(delta);
 	}
 
 	@Override public boolean isDone () {

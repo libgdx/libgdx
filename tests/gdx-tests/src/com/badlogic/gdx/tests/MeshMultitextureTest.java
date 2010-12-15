@@ -17,12 +17,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MeshMultitextureTest extends GdxTest {
@@ -32,8 +32,8 @@ public class MeshMultitextureTest extends GdxTest {
 
 	@Override public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
-		gl.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
-		gl.glClear( GL10.GL_COLOR_BUFFER_BIT );
+		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glActiveTexture(GL10.GL_TEXTURE0);
 		tex1.bind();
@@ -53,11 +53,11 @@ public class MeshMultitextureTest extends GdxTest {
 		0, 1, 0, 1, 1, 1, 1, 1, 0.5f, -0.5f, 0,
 
 		0, 0, 1, 1, 0.5f, 0, 0.5f, 0, 0, 0.5f, 0,});
-		
+
 		initUnmanaged();
 	}
-	
-	void initUnmanaged() {
+
+	void initUnmanaged () {
 		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.fill();
@@ -77,8 +77,8 @@ public class MeshMultitextureTest extends GdxTest {
 			TextureWrap.ClampToEdge);
 		pixmap.dispose();
 	}
-	
-	public void resume() {
+
+	public void resume () {
 		initUnmanaged();
 	}
 

@@ -40,46 +40,45 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  */
 public final class JoglApplication implements Application {
-	static {		
+	static {
 		Version.loadLibrary();
 	}
 
-	JoglGraphics graphics;	
-	JoglInput input;	
-	JoglFiles files;	
-	JoglAudio audio;	
+	JoglGraphics graphics;
+	JoglInput input;
+	JoglFiles files;
+	JoglAudio audio;
 	JFrame frame;
-	
 
 	/**
 	 * Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication
-	 * will try to create an OpenGL 2.0 context which can then be used via JoglApplication.getGraphics().getGL20(). To query whether enabling OpenGL 2.0
-	 * was successful use the JoglApplication.getGraphics().isGL20Available() method.
+	 * will try to create an OpenGL 2.0 context which can then be used via JoglApplication.getGraphics().getGL20(). To query
+	 * whether enabling OpenGL 2.0 was successful use the JoglApplication.getGraphics().isGL20Available() method.
 	 * 
 	 * @param listener the ApplicationListener implementing the program logic
 	 * @param title the title of the application
 	 * @param width the width of the surface in pixels
 	 * @param height the height of the surface in pixels
 	 * @param useGL20IfAvailable wheter to use OpenGL 2.0 if it is available or not
-	 */	
-	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height, final boolean useGL20IfAvailable) {
-		if( !SwingUtilities.isEventDispatchThread() ) {
+	 */
+	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height,
+		final boolean useGL20IfAvailable) {
+		if (!SwingUtilities.isEventDispatchThread()) {
 			try {
-				SwingUtilities.invokeAndWait( new Runnable() {
-					public void run() {					
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run () {
 						initialize(listener, title, width, height, useGL20IfAvailable);
 					}
 				});
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Creating window failed", e);
-			} 
-		}
-		else {
+			}
+		} else {
 			initialize(listener, title, width, height, useGL20IfAvailable);
 		}
 	}
-	
-	void initialize(ApplicationListener listener, String title, int width, int height, boolean useGL20) {
+
+	void initialize (ApplicationListener listener, String title, int width, int height, boolean useGL20) {
 		JoglNativesLoader.loadLibraries();
 		graphics = new JoglGraphics(listener, title, width, height, useGL20);
 		input = new JoglInput(graphics.getCanvas());
@@ -91,41 +90,37 @@ public final class JoglApplication implements Application {
 		Gdx.input = JoglApplication.this.getInput();
 		Gdx.audio = JoglApplication.this.getAudio();
 		Gdx.files = JoglApplication.this.getFiles();
-		
+
 		frame = new JFrame(title);
-		graphics.getCanvas().setPreferredSize(new Dimension(width, height));			
+		graphics.getCanvas().setPreferredSize(new Dimension(width, height));
 		frame.setSize(width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
 			+ height);
-		frame.add(graphics.getCanvas(), BorderLayout.CENTER);		
+		frame.add(graphics.getCanvas(), BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
-		
-		frame.addWindowListener( new WindowAdapter() {		
-			@Override
-			public void windowOpened(WindowEvent arg0) {
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override public void windowOpened (WindowEvent arg0) {
 				graphics.getCanvas().requestFocus();
-				graphics.getCanvas().requestFocusInWindow();				
+				graphics.getCanvas().requestFocusInWindow();
 			}
-			
-			@Override
-			public void windowIconified(WindowEvent arg0) {			
-//				graphics.pause();								
+
+			@Override public void windowIconified (WindowEvent arg0) {
+// graphics.pause();
 			}
-			
-			@Override
-			public void windowDeiconified(WindowEvent arg0) {
-//				graphics.resume();
-			}		
-			
-			@Override
-			public void windowClosing(WindowEvent arg0) {
-				graphics.pause();				
+
+			@Override public void windowDeiconified (WindowEvent arg0) {
+// graphics.resume();
+			}
+
+			@Override public void windowClosing (WindowEvent arg0) {
+				graphics.pause();
 				graphics.destroy();
 				audio.dispose();
 				frame.remove(graphics.getCanvas());
-			}				
+			}
 		});
-		
+
 		frame.pack();
 		frame.setVisible(true);
 		graphics.create();
@@ -172,15 +167,13 @@ public final class JoglApplication implements Application {
 
 	@Override public int getVersion () {
 		return 0;
-	}	
+	}
 
-	@Override
-	public long getJavaHeap() {
+	@Override public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override
-	public long getNativeHeap() {
+	@Override public long getNativeHeap () {
 		return getJavaHeap();
 	}
 }

@@ -50,7 +50,7 @@ final class JoglPixmap implements Pixmap {
 		if (image == null) throw new IllegalArgumentException("image cannot be null.");
 		pixmap = convert(image);
 	}
-	
+
 	private BufferedImage convert (BufferedImage image) {
 		BufferedImage out = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB_PRE);
 		Graphics2D g = out.createGraphics();
@@ -63,7 +63,7 @@ final class JoglPixmap implements Pixmap {
 	}
 
 	private int getInternalFormat (Pixmap.Format format) {
-			return BufferedImage.TYPE_4BYTE_ABGR;
+		return BufferedImage.TYPE_4BYTE_ABGR;
 	}
 
 	/**
@@ -205,8 +205,6 @@ final class JoglPixmap implements Pixmap {
 	 * {@inheritDoc}
 	 */
 	@Override public void dispose () {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

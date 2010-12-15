@@ -49,15 +49,14 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 		}
 
 		renderer.end();
-		
-		if(System.nanoTime()-startTime > 1000000000l) {
+
+		if (System.nanoTime() - startTime > 1000000000l) {
 			Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
 			startTime = System.nanoTime();
 		}
 	}
 
-
-	@Override public void create () {		
+	@Override public void create () {
 		Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.supportsMultitouch());
 		renderer = new ImmediateModeRenderer();
 		camera = new OrthographicCamera();
@@ -79,22 +78,21 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer) {
-//		Gdx.app.log("Multitouch", "down: " + pointer);
+// Gdx.app.log("Multitouch", "down: " + pointer);
 		return false;
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
-//		Gdx.app.log("Multitouch", "drag: " + pointer);
+// Gdx.app.log("Multitouch", "drag: " + pointer);
 		return false;
 	}
 
 	@Override public boolean touchUp (int x, int y, int pointer) {
-//		Gdx.app.log("Multitouch", "up: " + pointer);
+// Gdx.app.log("Multitouch", "up: " + pointer);
 		return false;
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

@@ -17,7 +17,6 @@ import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
@@ -34,8 +33,8 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
@@ -135,7 +134,7 @@ public final class LwjglGraphics implements Graphics {
 
 	public Texture newUnmanagedTexture (int width, int height, Pixmap.Format format, TextureFilter minFilter,
 		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (gl!=gl20 && (!MathUtils.isPowerOfTwo(height) || !MathUtils.isPowerOfTwo(height)))
+		if (gl != gl20 && (!MathUtils.isPowerOfTwo(height) || !MathUtils.isPowerOfTwo(height)))
 			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + width + "x" + height);
 
 		if (format == Format.Alpha)
@@ -146,7 +145,7 @@ public final class LwjglGraphics implements Graphics {
 
 	public Texture newUnmanagedTexture (Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
 		TextureWrap vWrap) {
-		if (gl!=gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
+		if (gl != gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
 			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + width + "x" + height);
 
 		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
@@ -156,7 +155,7 @@ public final class LwjglGraphics implements Graphics {
 		TextureWrap vWrap) {
 		if (enforcePotImages) {
 			Pixmap pixmap = newPixmap(file);
-			if (gl!=gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
+			if (gl != gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
 				throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file + " (" + pixmap.getWidth() + "x"
 					+ pixmap.getHeight() + ")");
 		}
@@ -247,23 +246,19 @@ public final class LwjglGraphics implements Graphics {
 		Gdx.gl20 = gl20;
 	}
 
-	@Override
-	public float getPpiX() {
+	@Override public float getPpiX () {
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
-	@Override
-	public float getPpiY() {
+	@Override public float getPpiY () {
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
-	@Override
-	public float getPpcX() {
+	@Override public float getPpcX () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 
-	@Override
-	public float getPpcY() {
+	@Override public float getPpcY () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 

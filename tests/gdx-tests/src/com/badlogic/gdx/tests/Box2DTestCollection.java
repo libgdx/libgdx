@@ -15,8 +15,8 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.tests.box2d.ApplyForce;
 import com.badlogic.gdx.tests.box2d.BodyTypes;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
@@ -45,7 +45,6 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 
 	private Application app = null;
 
-
 	@Override public void render () {
 		tests[testIndex].render();
 	}
@@ -54,9 +53,9 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 		if (this.app == null) {
 			this.app = Gdx.app;
 			Box2DTest test = tests[testIndex];
-			test.create();			
+			test.create();
 		}
-		
+
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -69,10 +68,9 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 			Box2DTest test = tests[testIndex];
 			test.create();
 			app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName());
-		}
-		else {
+		} else {
 			tests[testIndex].keyDown(keycode);
-		}			
+		}
 
 		return false;
 	}
@@ -102,8 +100,7 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override
-	public boolean needsGL20() {
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 }

@@ -23,11 +23,11 @@ public class GdxTestActivity extends AndroidApplication {
 
 	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
-		
+
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("test");
-		
+
 		GdxTest test = GdxTests.newTest(testName);
-		initialize(test, test.needsGL20());		
+		initialize(test, test.needsGL20());
 	}
 }

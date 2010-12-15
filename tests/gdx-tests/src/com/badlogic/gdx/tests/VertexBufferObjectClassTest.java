@@ -15,15 +15,15 @@ package com.badlogic.gdx.tests;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -32,57 +32,50 @@ public class VertexBufferObjectClassTest extends GdxTest {
 	Texture texture;
 	VertexBufferObject vbo;
 	ShortBuffer indices;
-	
-	@Override
-	public boolean needsGL20() {
+
+	@Override public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override
-	public void dispose() {
+	@Override public void dispose () {
 		texture.dispose();
-		vbo.dispose();		
+		vbo.dispose();
 	}
 
-	@Override
-	public void render() {
-		GL10 gl = Gdx.gl10;		
+	@Override public void render () {
+		GL10 gl = Gdx.gl10;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		texture.bind();
 		vbo.bind();
 		gl.glDrawArrays(GL10.GL_TRIANGLES, 0, 3);
-		
+
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glPushMatrix();
-		gl.glTranslatef( 0.5f, 0.5f, 0);
-		gl.glDrawElements(GL10.GL_TRIANGLES,3,GL10.GL_UNSIGNED_SHORT,indices);
+		gl.glTranslatef(0.5f, 0.5f, 0);
+		gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);
 		gl.glPopMatrix();
 		vbo.unbind();
 	}
 
-	@Override
-	public void create() {		
-			vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
-									new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"),
-									new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_Color" ));
-			float[] vertices = new float[]{ -1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f ),
-					  						 0,  1, 0.5f, 1.0f, Color.toFloatBits(0f, 1f, 0f, 1f ),
-					  						 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f ) };
-			vbo.setVertices(vertices, 0, vertices.length);
-			indices = BufferUtils.newShortBuffer(3);
-			indices.put( new short[] { 0, 1, 2 } );
-			indices.flip();
-					 
-			texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
-											  TextureFilter.Linear, TextureFilter.Linear, 							
-											  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge); 
+	@Override public void create () {
+		vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
+			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"), new VertexAttribute(
+				VertexAttributes.Usage.ColorPacked, 4, "a_Color"));
+		float[] vertices = new float[] {-1, -1, 0, 0, Color.toFloatBits(1f, 0f, 0f, 1f), 0, 1, 0.5f, 1.0f,
+			Color.toFloatBits(0f, 1f, 0f, 1f), 1, -1, 1, 0, Color.toFloatBits(0f, 0f, 1f, 1f)};
+		vbo.setVertices(vertices, 0, vertices.length);
+		indices = BufferUtils.newShortBuffer(3);
+		indices.put(new short[] {0, 1, 2});
+		indices.flip();
+
+		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.Linear,
+			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 	}
-	
-	@Override
-	public void resume() {
+
+	@Override public void resume () {
 		vbo.invalidate();
 	}
 }

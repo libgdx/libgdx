@@ -6,12 +6,11 @@ import java.awt.Shape;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 
-import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Represents the glyph in a font for a unicode codepoint.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class Glyph {
 	private int codePoint;

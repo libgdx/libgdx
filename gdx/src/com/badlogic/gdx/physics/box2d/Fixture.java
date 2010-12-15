@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +25,7 @@ public class Fixture {
 
 	/** the shape, initialized lazy **/
 	protected Shape shape;
-	
+
 	/** user specified data **/
 	protected Object userData;
 
@@ -215,18 +216,18 @@ public class Fixture {
 // /// If you need a more accurate AABB, compute it using the shape and
 // /// the body transform.
 // const b2AABB& GetAABB() const;
-	
+
 	/**
 	 * Sets custom user data.
 	 */
-	public void setUserData(Object userData) {
+	public void setUserData (Object userData) {
 		this.userData = userData;
 	}
-	
+
 	/**
 	 * @return custom user data
 	 */
-	public Object getUserData() {
+	public Object getUserData () {
 		return userData;
 	}
 }

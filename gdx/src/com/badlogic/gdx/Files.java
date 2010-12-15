@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -18,13 +19,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /**
  * Provides standard access to the filesystem, classpath, Android SD card, and Android assets directory.
  * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public interface Files {
 	/**
 	 * Indicates how to resolve a path to a file.
 	 * @author mzechner
-	 * @author Nathan Sweet <misc@n4te.com>
+	 * @author Nathan Sweet
 	 */
 	public enum FileType {
 		/**

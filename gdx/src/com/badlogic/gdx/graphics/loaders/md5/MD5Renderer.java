@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics.loaders.md5;
 
 import com.badlogic.gdx.graphics.GL10;
@@ -41,8 +42,8 @@ public class MD5Renderer {
 			this.vertices[i] = model.meshes[i].createVertexArray();
 		}
 
-		this.mesh = new Mesh(false, maxVertices, maxIndices, new VertexAttribute(VertexAttributes.Usage.Position, 3,
-			"a_position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+		this.mesh = new Mesh(false, maxVertices, maxIndices, new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
+			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
 	}
 
 	public void setSkeleton (MD5Joints skeleton) {

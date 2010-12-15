@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.ByteBuffer;
@@ -174,20 +175,20 @@ public class ImmediateModeRenderer {
 		GL10 gl = Gdx.gl10;
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		positionsBuffer.clear();
-		BufferUtils.copy(positions, positionsBuffer, idxPos, 0);		
+		BufferUtils.copy(positions, positionsBuffer, idxPos, 0);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, positionsBuffer);
 
 		if (colorsDefined) {
 			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 			colorsBuffer.clear();
-			BufferUtils.copy(colors, colorsBuffer, idxCols, 0);		
+			BufferUtils.copy(colors, colorsBuffer, idxCols, 0);
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorsBuffer);
 		}
 
 		if (normalsDefined) {
 			gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 			normalsBuffer.clear();
-			BufferUtils.copy(normals, normalsBuffer, idxNors, 0);		
+			BufferUtils.copy(normals, normalsBuffer, idxNors, 0);
 			gl.glNormalPointer(GL10.GL_FLOAT, 0, normalsBuffer);
 		}
 
@@ -195,7 +196,7 @@ public class ImmediateModeRenderer {
 			gl.glClientActiveTexture(GL10.GL_TEXTURE0);
 			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			texCoordsBuffer.clear();
-			BufferUtils.copy(texCoords, texCoordsBuffer, idxTexCoords, 0);		
+			BufferUtils.copy(texCoords, texCoordsBuffer, idxTexCoords, 0);
 			gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texCoordsBuffer);
 		}
 

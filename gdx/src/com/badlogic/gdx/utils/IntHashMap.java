@@ -17,7 +17,7 @@ import java.util.Iterator;
 
 /**
  * An unordered map that uses int keys. Avoids the boxing that occurs with HashMap<Integer, T>.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  * @author christop widulle
  */
 public class IntHashMap<T> {
@@ -107,14 +107,20 @@ public class IntHashMap<T> {
 	}
 
 	/**
-	 * Returns true if the specified value is in the map. Note this traverses the entire map and calls equals on every value, which
-	 * may be an expensive operation.
+	 * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
+	 * an expensive operation.
 	 */
-	public boolean containsValue (Object value) {
+	public boolean containsValue (Object value, boolean identity) {
 		Entry[] table = this.table;
-		for (int i = table.length; i-- > 0;)
-			for (Entry e = table[i]; e != null; e = e.next)
-				if (e.value.equals(value)) return true;
+		if (identity || value == null) {
+			for (int i = table.length; i-- > 0;)
+				for (Entry e = table[i]; e != null; e = e.next)
+					if (e.value == value) return true;
+		} else {
+			for (int i = table.length; i-- > 0;)
+				for (Entry e = table[i]; e != null; e = e.next)
+					if (value.equals(e.value)) return true;
+		}
 		return false;
 	}
 

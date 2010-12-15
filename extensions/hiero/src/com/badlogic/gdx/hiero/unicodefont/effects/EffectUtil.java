@@ -32,7 +32,7 @@ import com.badlogic.gdx.hiero.unicodefont.effects.ConfigurableEffect.Value;
 
 /**
  * Provides utility methods for effects.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class EffectUtil {
 	static private BufferedImage scratchImage = new BufferedImage(GlyphPage.MAX_GLYPH_SIZE, GlyphPage.MAX_GLYPH_SIZE,
@@ -171,8 +171,8 @@ public class EffectUtil {
 	 */
 	static public Color fromString (String rgb) {
 		if (rgb == null || rgb.length() != 6) return Color.white;
-		return new Color(Integer.parseInt(rgb.substring(0, 2), 16), Integer.parseInt(rgb.substring(2, 4), 16), Integer.parseInt(rgb
-			.substring(4, 6), 16));
+		return new Color(Integer.parseInt(rgb.substring(0, 2), 16), Integer.parseInt(rgb.substring(2, 4), 16), Integer.parseInt(
+			rgb.substring(4, 6), 16));
 	}
 
 	/**

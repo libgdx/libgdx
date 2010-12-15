@@ -24,26 +24,23 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 final class LwjglNativesLoader {
 	public static boolean load = true;
-	
+
 	static {
 		try {
-		       Method method =
-		Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup",
-		new Class[] {String.class});
-		       method.invoke(null, "javax.jnlp.PersistenceService");
-		       load = false;
+			Method method = Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup", new Class[] {String.class});
+			method.invoke(null, "javax.jnlp.PersistenceService");
+			load = false;
 		} catch (Throwable ex) {
-		       load = true;
-		}			
-	}		
-	
-	static void load() {				
+			load = true;
+		}
+	}
+
+	static void load () {
 		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
 		Version.loadLibrary();
 
-		if(!load)
-			return;
-		
+		if (!load) return;
+
 		String os = System.getProperty("os.name");
 		String arch = System.getProperty("os.arch");
 		boolean is64Bit = false;
@@ -85,7 +82,7 @@ final class LwjglNativesLoader {
 
 	private static void loadLibrary (String libName, String classPath, String outputPath) {
 		if (new File(outputPath + libName).exists()) return;
-		
+
 		InputStream in = null;
 		BufferedOutputStream out = null;
 
@@ -104,7 +101,7 @@ final class LwjglNativesLoader {
 			in.close();
 			in = null;
 		} catch (Throwable t) {
-			//throw new GdxRuntimeException("Couldn't load lwjgl native, " + libName, t);
+			// throw new GdxRuntimeException("Couldn't load lwjgl native, " + libName, t);
 		} finally {
 			if (out != null) try {
 				out.close();

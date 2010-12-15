@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.backends.angle;
 
 import java.awt.Toolkit;
@@ -31,7 +32,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.MathUtils;
 
 public class AngleGraphics implements Graphics {
 	GL20 gl;
@@ -42,148 +42,118 @@ public class AngleGraphics implements Graphics {
 	int fps;
 	int frames;
 	float deltaTime = 0;
-	
-	AngleGraphics(int width, int height) {
+
+	AngleGraphics (int width, int height) {
 		gl = new AngleGLES20();
 	}
-	
-	@Override
-	public boolean isGL11Available() {
+
+	@Override public boolean isGL11Available () {
 		return false;
 	}
 
-	@Override
-	public boolean isGL20Available() {
+	@Override public boolean isGL20Available () {
 		return true;
 	}
 
-	@Override
-	public GLCommon getGLCommon() {
+	@Override public GLCommon getGLCommon () {
 		return gl;
 	}
 
-	@Override
-	public GL10 getGL10() {
+	@Override public GL10 getGL10 () {
 		return null;
 	}
 
-	@Override
-	public GL11 getGL11() {
+	@Override public GL11 getGL11 () {
 		return null;
 	}
 
-	@Override
-	public GL20 getGL20() {
+	@Override public GL20 getGL20 () {
 		return gl;
 	}
 
-	@Override
-	public int getWidth() {
+	@Override public int getWidth () {
 		return width;
 	}
 
-	@Override
-	public int getHeight() {
+	@Override public int getHeight () {
 		return height;
 	}
 
-	@Override
-	public float getDeltaTime() {
+	@Override public float getDeltaTime () {
 		return deltaTime;
 	}
 
-	@Override
-	public int getFramesPerSecond() {
+	@Override public int getFramesPerSecond () {
 		return fps;
 	}
 
-	@Override
-	public Pixmap newPixmap(int width, int height, Format format) {
+	@Override public Pixmap newPixmap (int width, int height, Format format) {
 		return new AnglePixmap(width, height, format);
 	}
 
-	@Override
-	public Pixmap newPixmap(InputStream in) {
+	@Override public Pixmap newPixmap (InputStream in) {
 		try {
-			BufferedImage img = (BufferedImage) ImageIO.read(in);
+			BufferedImage img = (BufferedImage)ImageIO.read(in);
 			return new AnglePixmap(img);
 		} catch (Exception ex) {
-			throw new GdxRuntimeException(
-					"Couldn't load Pixmap from InputStream", ex);
+			throw new GdxRuntimeException("Couldn't load Pixmap from InputStream", ex);
 		}
 	}
 
-	@Override
-	public Pixmap newPixmap(FileHandle file) {
+	@Override public Pixmap newPixmap (FileHandle file) {
 		return newPixmap(file.read());
 	}
 
-	@Override
-	public Pixmap newPixmap(Object nativePixmap) {
-		return new AnglePixmap((BufferedImage) nativePixmap);
+	@Override public Pixmap newPixmap (Object nativePixmap) {
+		return new AnglePixmap((BufferedImage)nativePixmap);
 	}
 
-	@Override
-	public Texture newUnmanagedTexture(int width, int height, Format format,
-			TextureFilter minFilter, TextureFilter magFilter,
-			TextureWrap uWrap, TextureWrap vWrap) {
+	@Override public Texture newUnmanagedTexture (int width, int height, Format format, TextureFilter minFilter,
+		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 
 		if (format == Format.Alpha)
-			return new AngleTexture(width, height,
-					BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap,
-					vWrap, false);
+			return new AngleTexture(width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, false);
 		else
-			return new AngleTexture(width, height,
-					BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap,
-					vWrap, false);
+			return new AngleTexture(width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, false);
 	}
 
-	@Override
-	public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter,
-			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {	
+	@Override public Texture newUnmanagedTexture (Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter,
+		TextureWrap uWrap, TextureWrap vWrap) {
 
-		return new AngleTexture((BufferedImage) pixmap.getNativePixmap(),
-				minFilter, magFilter, uWrap, vWrap, false);
+		return new AngleTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
 	}
 
-	@Override
-	public Texture newTexture(FileHandle file, TextureFilter minFilter,
-			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {		
-		
+	@Override public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
+		TextureWrap vWrap) {
+
 		return new AngleTexture(file, minFilter, magFilter, uWrap, vWrap, false);
 	}
 
-	@Override
-	public Texture newTexture(TextureData textureData, TextureFilter minFilter,
-			TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+	@Override public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
+		TextureWrap uWrap, TextureWrap vWrap) {
 		return new AngleTexture(textureData, minFilter, magFilter, uWrap, vWrap);
 	}
 
-	@Override
-	public GraphicsType getType() {
+	@Override public GraphicsType getType () {
 		return GraphicsType.Angle;
 	}
 
-	@Override
-	public float getPpiX() {
+	@Override public float getPpiX () {
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
-	@Override
-	public float getPpiY() {
+	@Override public float getPpiY () {
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
-	@Override
-	public float getPpcX() {
+	@Override public float getPpcX () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 
-	@Override
-	public float getPpcY() {
+	@Override public float getPpcY () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
-	
+
 	void updateTime () {
 		long time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;

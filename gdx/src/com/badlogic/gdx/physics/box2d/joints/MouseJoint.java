@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.physics.box2d.joints;
 
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +25,6 @@ import com.badlogic.gdx.physics.box2d.World;
 public class MouseJoint extends Joint {
 	public MouseJoint (World world, long addr) {
 		super(world, addr);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

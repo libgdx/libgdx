@@ -1,6 +1,8 @@
+
 package com.dozingcatsoftware.bouncy;
 
-/** Simple class to hold a message displayed in the ScoreView above the game field.
+/**
+ * Simple class to hold a message displayed in the ScoreView above the game field.
  */
 
 public class GameMessage {

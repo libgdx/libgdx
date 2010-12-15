@@ -15,23 +15,13 @@ package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.BitmapFont;
-import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.BitmapFontCache;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.particles.ParticleEmitter;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ParticleEmitterTest extends GdxTest {
@@ -43,8 +33,7 @@ public class ParticleEmitterTest extends GdxTest {
 	float fpsCounter;
 	InputProcessor inputProcessor;
 
-	@Override
-	public void create () {
+	@Override public void create () {
 		spriteBatch = new SpriteBatch();
 
 		effect = new ParticleEffect();
@@ -98,10 +87,9 @@ public class ParticleEmitterTest extends GdxTest {
 				return false;
 			}
 		};
-		
+
 		Gdx.input.setInputProcessor(inputProcessor);
 	}
-	
 
 	public void render () {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

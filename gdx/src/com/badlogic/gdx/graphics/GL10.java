@@ -10,15 +10,14 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 /**
- * Interface wrapping all standard OpenGL ES 1.0 methods. Note that this
- * excludes and fixed point OpenGL ES 1.0 methods!
+ * Interface wrapping all standard OpenGL ES 1.0 methods. Note that this excludes and fixed point OpenGL ES 1.0 methods!
  * 
  * @author mzechner
  * 
@@ -284,7 +283,7 @@ public interface GL10 extends GLCommon {
 
 	public void glFogfv (int pname, float[] params, int offset);
 
-	public void glFogfv (int pname, FloatBuffer params);	
+	public void glFogfv (int pname, FloatBuffer params);
 
 	public void glFrustumf (float left, float right, float bottom, float top, float zNear, float zFar);
 
@@ -324,7 +323,7 @@ public interface GL10 extends GLCommon {
 
 	public void glMultMatrixf (FloatBuffer m);
 
-	public void glMultiTexCoord4f (int target, float s, float t, float r, float q);	
+	public void glMultiTexCoord4f (int target, float s, float t, float r, float q);
 
 	public void glNormal3f (float nx, float ny, float nz);
 
@@ -332,7 +331,7 @@ public interface GL10 extends GLCommon {
 
 	public void glOrthof (float left, float right, float bottom, float top, float zNear, float zFar);
 
-	public void glPointSize (float size);	
+	public void glPointSize (float size);
 
 	public void glPopMatrix ();
 
@@ -352,7 +351,7 @@ public interface GL10 extends GLCommon {
 
 	public void glTexEnvfv (int target, int pname, float[] params, int offset);
 
-	public void glTexEnvfv (int target, int pname, FloatBuffer params);			
+	public void glTexEnvfv (int target, int pname, FloatBuffer params);
 
 	public void glTranslatef (float x, float y, float z);
 

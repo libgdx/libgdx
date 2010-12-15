@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.audio.analysis;
 
 import java.nio.FloatBuffer;
@@ -18,7 +19,7 @@ import java.nio.ShortBuffer;
 /**
  * A class for spectral analysis using native KissFFT
  * @author mzechner
- *
+ * 
  */
 public class KissFFT {
 	/** the pointer to the kiss fft object **/

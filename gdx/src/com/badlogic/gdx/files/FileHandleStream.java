@@ -10,22 +10,19 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.files;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * A FileHandle intended to be subclassed for the purpose of implemented {@link #read()} and/or {@link #write(boolean)}. Methods
  * that would manipulate the file instead throw UnsupportedOperationException.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public abstract class FileHandleStream extends FileHandle {
 	public FileHandleStream (String path) {

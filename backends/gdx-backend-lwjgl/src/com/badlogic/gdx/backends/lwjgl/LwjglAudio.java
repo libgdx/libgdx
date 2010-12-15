@@ -44,7 +44,7 @@ final class LwjglAudio implements Audio, Runnable {
 
 	/** The sound effects thread **/
 	private Thread thread;
-	
+
 	private volatile boolean run = false;
 
 	/**
@@ -146,7 +146,7 @@ final class LwjglAudio implements Audio, Runnable {
 		byte[] bytes = new byte[2 * NUM_SAMPLES];
 
 		run = true;
-		
+
 		while (run) {
 			int samplesToWrite = line.available() / 2;
 
@@ -194,14 +194,12 @@ final class LwjglAudio implements Audio, Runnable {
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new LwjglAudioRecorder(samplingRate, isMono);
 	}
-	
-	void dispose ( ) {
+
+	void dispose () {
 		run = false;
 		try {
-			if(thread != null)
-				thread.join();
-			if(line != null)
-				line.close();
+			if (thread != null) thread.join();
+			if (line != null) line.close();
 		} catch (InterruptedException e) {
 		}
 	}

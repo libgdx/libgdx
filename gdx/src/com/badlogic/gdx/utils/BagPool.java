@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  * An unordered, resizable array that reuses element instances
  * @see Bag
  * @author Riven
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 abstract public class BagPool<T> {
 	public T[] items;
@@ -75,26 +75,46 @@ abstract public class BagPool<T> {
 		return items[index];
 	}
 
-	public boolean contains (T value) {
+	public boolean contains (T value, boolean identity) {
+		Object[] items = this.items;
 		int i = size - 1;
-		while (i >= 0)
-			if (items[i--] == value) return true;
+		if (identity || value == null) {
+			while (i >= 0)
+				if (items[i--] == value) return true;
+		} else {
+			while (i >= 0)
+				if (value.equals(items[i--])) return true;
+		}
 		return false;
 	}
 
-	public int indexOf (T value) {
+	public int indexOf (T value, boolean identity) {
 		Object[] items = this.items;
-		for (int i = 0, n = size; i < n; i++)
-			if (items[i] == value) return i;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++)
+				if (items[i] == value) return i;
+		} else {
+			for (int i = 0, n = size; i < n; i++)
+				if (value.equals(items[i])) return i;
+		}
 		return -1;
 	}
 
-	public boolean removeValue (T value) {
+	public boolean removeValue (T value, boolean identity) {
 		Object[] items = this.items;
-		for (int i = 0, n = size; i < n; i++) {
-			if (items[i] == value) {
-				removeIndex(i);
-				return true;
+		if (identity || value == null) {
+			for (int i = 0, n = size; i < n; i++) {
+				if (items[i] == value) {
+					removeIndex(i);
+					return true;
+				}
+			}
+		} else {
+			for (int i = 0, n = size; i < n; i++) {
+				if (value.equals(items[i])) {
+					removeIndex(i);
+					return true;
+				}
 			}
 		}
 		return false;

@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.ArrayList;
@@ -272,8 +273,8 @@ public class World {
 
 	/**
 	 * Call this after you are done with time steps to clear the forces. You normally call this after each call to Step, unless you
-	 * are performing sub-steps. By default, forces will be automatically cleared, so you don't need to call this function.
-	 * See {@link #setAutoClearForces(boolean)}
+	 * are performing sub-steps. By default, forces will be automatically cleared, so you don't need to call this function. See
+	 * {@link #setAutoClearForces(boolean)}
 	 */
 	public void clearForces () {
 		jniClearForces(addr);

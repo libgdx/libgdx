@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.twl.tests;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -19,7 +20,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.twl.Layout;
 import com.badlogic.gdx.twl.TWL;
 
-import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.FPSCounter;
 import de.matthiasmann.twl.ScrollPane;
 import de.matthiasmann.twl.TextArea;
@@ -76,7 +76,7 @@ public class TextAreaTest implements ApplicationListener {
 				speed = -speed;
 			}
 		});
-		
+
 		Gdx.input.setInputProcessor(twl);
 	}
 

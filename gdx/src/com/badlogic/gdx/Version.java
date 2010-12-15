@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -25,16 +26,14 @@ public class Version {
 	public static String VERSION = "0.81";
 
 	public static void loadLibrary () {
-		if(GdxNativesLoader.loadLibraries())
-			return;
-		
+		if (GdxNativesLoader.loadLibraries()) return;
+
 		String os = System.getProperty("os.name");
 		String arch = System.getProperty("os.arch");
-		
+
 		if (!arch.equals("amd64") || os.contains("Mac")) {
 			System.loadLibrary("gdx");
-		}
-		else {
+		} else {
 			System.loadLibrary("gdx-64");
 		}
 	}

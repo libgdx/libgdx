@@ -17,7 +17,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -165,15 +164,13 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 
 		spriteCache.beginCache();
 		for (int i = 0; i < sprites2.length; i += 6)
-			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
-				false, false);
+			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
 		for (int i = 0; i < sprites.length; i += 6)
-			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
-				false, false);
+			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
 		normalCacheID = spriteCache.endCache();
 
 		angle = -15;
-		
+
 		spriteCache.beginCache();
 		for (int i = SPRITES; i < SPRITES << 1; i++) {
 			sprites3[i].setRotation(angle);
@@ -186,7 +183,7 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 			spriteCache.add(sprites3[i]);
 		}
 		spriteCacheID = spriteCache.endCache();
-		
+
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -196,11 +193,9 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		float angle = MathUtils.random(1, 360);
 		spriteCache.beginCache(normalCacheID);
 		for (int i = 0; i < sprites2.length; i += 6)
-			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
-				false, false);
+			spriteCache.add(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
 		for (int i = 0; i < sprites.length; i += 6)
-			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32,
-				false, false);
+			spriteCache.add(texture, sprites[i], sprites[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
 		spriteCache.endCache();
 		return false;
 	}

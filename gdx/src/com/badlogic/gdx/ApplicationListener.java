@@ -15,15 +15,14 @@ package com.badlogic.gdx;
 
 /**
  * <p>
- * An <code>ApplicationListener</code> is called when the {@link Application} is
- * created, resumed, rendering, paused or destroyed. All methods are called in a
- * thread that has the OpenGL context current. You can thus safely create and
- * manipulate graphics resources.
+ * An <code>ApplicationListener</code> is called when the {@link Application} is created, resumed, rendering, paused or destroyed.
+ * All methods are called in a thread that has the OpenGL context current. You can thus safely create and manipulate graphics
+ * resources.
  * </p>
  * 
  * <p>
- * The <code>ApplicationListener</code> interface follows the standard Android
- * activity life-cycle and is emulated on the desktop accordingly.
+ * The <code>ApplicationListener</code> interface follows the standard Android activity life-cycle and is emulated on the desktop
+ * accordingly.
  * </p>
  * 
  * @author mzechner
@@ -33,43 +32,37 @@ public interface ApplicationListener {
 	/**
 	 * Called when the {@link Application} is first created.
 	 */
-	public void create();
+	public void create ();
 
 	/**
-	 * Called when the {@link Application} is resumed from a paused state. On
-	 * Android this happens when the activity gets focus again. On the desktop
-	 * this method will never be called.
+	 * Called when the {@link Application} is resumed from a paused state. On Android this happens when the activity gets focus
+	 * again. On the desktop this method will never be called.
 	 */
-	public void resume();
+	public void resume ();
 
 	/**
 	 * Called when the {@link Application} should render itself.
 	 */
-	public void render();
+	public void render ();
 
 	/**
-	 * Called when the {@link Application} is resized. This can happen at any
-	 * point during a non-paused state but will never happen before a call to
-	 * {@link #create()}.
+	 * Called when the {@link Application} is resized. This can happen at any point during a non-paused state but will never happen
+	 * before a call to {@link #create()}.
 	 * 
-	 * @param width
-	 *            the new width in pixels
-	 * @param height
-	 *            the new height in pixels
+	 * @param width the new width in pixels
+	 * @param height the new height in pixels
 	 */
-	public void resize(int width, int height);
+	public void resize (int width, int height);
 
 	/**
-	 * Called when the {@link Application} is paused. An Application is paused
-	 * before it is destroyed, when a user pressed the Home button on Android or
-	 * an incoming call happend. On the desktop this will only be called immediately
-	 * before {@link #dispose()} is called.
+	 * Called when the {@link Application} is paused. An Application is paused before it is destroyed, when a user pressed the Home
+	 * button on Android or an incoming call happend. On the desktop this will only be called immediately before {@link #dispose()}
+	 * is called.
 	 */
-	public void pause();
+	public void pause ();
 
 	/**
-	 * Called when the {@link Application} is destroyed. Preceded by a call to
-	 * {@link #pause()}.
+	 * Called when the {@link Application} is destroyed. Preceded by a call to {@link #pause()}.
 	 */
-	public void dispose();
+	public void dispose ();
 }

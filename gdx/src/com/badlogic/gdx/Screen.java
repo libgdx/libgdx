@@ -10,12 +10,12 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx;
 
 /**
  * <p>
- * Represents one of many application screens, such as a main
- * menu, a settings menu, the game screen and so on.
+ * Represents one of many application screens, such as a main menu, a settings menu, the game screen and so on.
  * </p>
  * <p>
  * Note that {@link #dispose()} is not called automatically.

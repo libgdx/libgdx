@@ -141,7 +141,6 @@ public class TextureRenderTest extends GdxTest {
 
 	}
 
-
 	private ArrayList<SimpleRect> createRects () {
 		ArrayList<SimpleRect> l = new ArrayList<SimpleRect>();
 		l.add(new SimpleRect(0, 10, 0, 50, 50));
@@ -167,7 +166,6 @@ public class TextureRenderTest extends GdxTest {
 	}
 
 	@Override public boolean needsGL20 () {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

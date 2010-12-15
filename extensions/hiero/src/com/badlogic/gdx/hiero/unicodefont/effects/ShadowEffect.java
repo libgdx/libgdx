@@ -17,7 +17,7 @@ import com.badlogic.gdx.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.hiero.unicodefont.UnicodeFont;
 
 /**
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public class ShadowEffect implements ConfigurableEffect {
 	/** The numberof kernels to apply */

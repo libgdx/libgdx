@@ -10,6 +10,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 package com.badlogic.gdx.tests.angle;
 
 import java.awt.BorderLayout;
@@ -38,13 +39,12 @@ public class AngleTestStarter {
 			setLayout(new BorderLayout());
 
 			List<String> tests = new ArrayList<String>();
-			
-			for(String name: GdxTests.getNames()) {
+
+			for (String name : GdxTests.getNames()) {
 				GdxTest test = GdxTests.newTest(name);
-				if(test != null && test.needsGL20())
-					tests.add(name);
+				if (test != null && test.needsGL20()) tests.add(name);
 			}
-			
+
 			final JList list = new JList(tests.toArray());
 			final JButton button = new JButton("Run Test");
 			JScrollPane pane = new JScrollPane(list);
@@ -64,7 +64,7 @@ public class AngleTestStarter {
 				@Override public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
-					new AngleApplication(test, testName, 480, 320, false);					
+					new AngleApplication(test, testName, 480, 320, false);
 				}
 			});
 

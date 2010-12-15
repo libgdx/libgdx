@@ -9,7 +9,7 @@ import com.badlogic.gdx.hiero.unicodefont.UnicodeFont;
 
 /**
  * A graphical effect that is applied to glyphs in a {@link UnicodeFont}.
- * @author Nathan Sweet <misc@n4te.com>
+ * @author Nathan Sweet
  */
 public interface Effect {
 	/**
