@@ -103,7 +103,7 @@ public class GdxTests
 		LifeCycleTest.class,
 		ManagedTest.class,
 		ManualBindTest.class,
-		//MD5Test.class,
+		MD5Test.class,
 		MeshMultitextureTest.class,
 		MeshShaderTest.class,
 		MeshTest.class,
