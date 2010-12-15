@@ -13,16 +13,18 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -45,7 +47,7 @@ public class MeshShaderTest extends GdxTest {
 				+ "varying vec2 v_texCoords;"
 				+ "void main()                  \n"
 				+ "{                            \n"
-				+ "   v_color = vec4(a_color.x, a_color.y, a_color.z, 1); \n"
+				+ "   v_color = vec4(1, 1, 1, 1); \n"
 				+ "   v_texCoords = a_texCoords; \n"
 				+ "   gl_Position =  u_worldView * a_position;  \n"
 				+ "}                            \n";
@@ -64,16 +66,26 @@ public class MeshShaderTest extends GdxTest {
 			System.exit(0);
 		}
 
-		mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3,
+		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3,
 				"a_position"), new VertexAttribute(Usage.Color, 4, "a_color"),
 				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
-		mesh.setVertices(new float[] { -0.5f, -0.5f, 0, 1, 0, 0, 1, 0, 0, 0.5f,
-				-0.5f, 0, 0, 1, 0, 1, 1, 0, 0, 0.5f, 0, 0, 0, 1, 1, 0.5f, 1 });
-		mesh.setIndices(new short[] { 0, 1, 2 });
+		mesh.setVertices(new float[] { -0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 1,
+										0.5f, -0.5f, 0, 1, 1, 1, 1, 1, 1,
+										0.5f,  0.5f, 0, 1, 1, 1, 1, 1, 0,
+									   -0.5f,  0.5f, 0, 1, 1, 1, 1, 0, 0});
+		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 
+
+		Pixmap pixmap = Gdx.graphics.newPixmap(2, 1, Format.RGBA8888);
+//		pixmap.drawPixel(0, 0, 0xffff0000);
+//		pixmap.drawPixel(1, 0, 0xff00ff00);
+//		pixmap.drawPixel(0, 1, 0xff0000ff);
+//		pixmap.drawPixel(0, 0, 0xffff00ff);
+//		pixmap.drawPixel(1, 0, 0xffffff00);
+//		texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
-				"data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
+				"data/bobrgb888-32x32.png", FileType.Internal), TextureFilter.MipMap,
 				TextureFilter.Linear, TextureWrap.ClampToEdge,
 				TextureWrap.ClampToEdge);
 
@@ -94,6 +106,8 @@ public class MeshShaderTest extends GdxTest {
 		Gdx.graphics.getGL20().glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
+		Gdx.graphics.getGL20().glEnable(GL10.GL_BLEND);
+		Gdx.graphics.getGL20().glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		texture.bind();
 		shader.begin();
 		shader.setUniformMatrix("u_worldView", matrix);

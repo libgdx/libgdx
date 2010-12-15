@@ -155,4 +155,13 @@ public interface Pixmap {
 	 * Releases all resources associated with this Pixmap.
 	 */
 	public void dispose ();
+
+	/**
+	 * Draws a pixel at the given location
+	 * 
+	 * @param x the x-coordinate
+	 * @param y the y-coordinate
+	 * @param color the color, ARGB8888
+	 */
+	public void drawPixel(int x, int y, int color);
 }

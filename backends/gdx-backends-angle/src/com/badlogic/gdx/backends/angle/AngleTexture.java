@@ -61,13 +61,9 @@ final class AngleTexture implements Texture {
 		this.isManaged = managed;
 		this.isMipMapped = TextureFilter.isMipMap(minFilter);
 
-		if (!isMipMapped && file.path().endsWith(".png")) {
-			// Fast path.
-			loadPNG(file);
-		} else {
-			BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
-			loadMipMap(image);
-		}
+		BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
+		loadMipMap(image);
+
 		bind();
 		GL20 gl = Gdx.graphics.getGL20();
 		gl.glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
@@ -140,7 +136,7 @@ final class AngleTexture implements Texture {
 			int stride = texWidth * 4;
 			ensureBufferSize(stride * texHeight);
 
-			Format pngFormat = pngDecoder.decideTextureFormat(PNGDecoder.Format.RGBA);
+			Format pngFormat = pngDecoder.decideTextureFormat(PNGDecoder.Format.BGRA);
 			int glFormat, glInternalFormat;
 			switch (pngFormat) {
 			case ALPHA:
@@ -190,15 +186,28 @@ final class AngleTexture implements Texture {
 		ensureBufferSize(width * height * 4);
 
 		Raster raster = image.getRaster();
-		if (image.getType() == BufferedImage.TYPE_INT_ARGB)
-			intBuffer.put(((DataBufferInt)raster.getDataBuffer()).getData(), 0, width * height);
+		if (image.getType() == BufferedImage.TYPE_INT_ARGB ||
+			image.getType() == BufferedImage.TYPE_INT_ARGB_PRE) {
+			int[] pixels = ((DataBufferInt)raster.getDataBuffer()).getData();
+			for(int i = 0; i < pixels.length; i++) {
+				int col = pixels[i];
+				col = ((col & 0xffffff) << 8) |
+				      ((col & 0xff000000) >>> 24);
+				pixels[i] = col;
+			}
+			intBuffer.put(pixels, 0, width * height);
+		}
 		else {
 			// Same as image.getRGB() without allocating a large int[].
 			ColorModel colorModel = image.getColorModel();
 			Object data = raster.getDataElements(0, 0, null);
 			for (int y = 0; y < height; y++)
-				for (int x = 0; x < width; x++)
-					intBuffer.put(colorModel.getRGB(raster.getDataElements(x, y, data)));
+				for (int x = 0; x < width; x++) {
+					int col = colorModel.getRGB(raster.getDataElements(x, y, data));
+					col = ((col & 0xffffff) << 8) |
+				      	  ((col & 0xff000000) >>> 24);
+					intBuffer.put(col);
+				}
 		}
 
 		buffer.limit(intBuffer.position() * 4);
@@ -209,7 +218,7 @@ final class AngleTexture implements Texture {
 		if (buffer == null || buffer.capacity() < size) {
 			buffer = BufferUtils.newByteBuffer(size);
 			ByteBuffer temp = buffer.slice();
-			temp.order(ByteOrder.LITTLE_ENDIAN);
+			temp.order(ByteOrder.BIG_ENDIAN);
 			intBuffer = temp.asIntBuffer();
 		} else {
 			buffer.clear();
@@ -226,7 +235,7 @@ final class AngleTexture implements Texture {
 		return scaled;
 	}
 
-	private void loadMipMap (BufferedImage image) {
+	private void loadMipMap (BufferedImage image) {		
 		int level = 0;
 		int height = image.getHeight();
 		int width = image.getWidth();

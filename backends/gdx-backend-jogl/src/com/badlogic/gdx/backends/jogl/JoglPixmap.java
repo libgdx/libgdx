@@ -217,4 +217,11 @@ final class JoglPixmap implements Pixmap {
 
 	}
 
+	@Override
+	public void drawPixel(int x, int y, int color) {
+		Graphics2D g = pixmap.createGraphics();
+		g.setColor(new Color(color, true));
+		g.drawRect(x, y, 1, 1);
+		g.dispose();
+	}
 }

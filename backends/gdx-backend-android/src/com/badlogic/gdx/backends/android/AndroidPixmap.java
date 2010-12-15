@@ -196,4 +196,9 @@ final class AndroidPixmap implements Pixmap {
 		pixmap.getPixels(pixels, 0, pixmap.getWidth(), 0, y, pixmap.getWidth(), 1);
 	}
 
+	@Override
+	public void drawPixel(int x, int y, int color) {
+		pixmap.setPixel(x, y, color);
+	}
+
 }
