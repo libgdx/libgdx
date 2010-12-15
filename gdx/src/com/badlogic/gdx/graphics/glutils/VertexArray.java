@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Dave Clayton (contact@redskyforge.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * This class does not support shaders and for that matter OpenGL ES 2.0. For this {@link VertexBufferObject}s are needed.
  * </p>
  * 
- * @author mzechner
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>
  * 
  */
 public class VertexArray implements VertexData {
@@ -48,11 +48,25 @@ public class VertexArray implements VertexData {
 	/**
 	 * Constructs a new interleaved VertexArray
 	 * 
-	 * @param numVertices the maximum number of vertices
-	 * @param attributes the {@link VertexAttributes}
+	 * @param numVertices
+	 *            the maximum number of vertices
+	 * @param attributes
+	 *            the {@link VertexAttribute}s
 	 */
-	public VertexArray (int numVertices, VertexAttribute... attributes) {
-		this.attributes = new VertexAttributes(attributes);
+	public VertexArray(int numVertices, VertexAttribute... attributes) {
+		this(numVertices, new VertexAttributes(attributes));
+	}
+	
+	/**
+	 * Constructs a new interleaved VertexArray
+	 * 
+	 * @param numVertices
+	 *            the maximum number of vertices
+	 * @param attributes
+	 *            the {@link VertexAttributes}
+	 */
+	public VertexArray(int numVertices, VertexAttributes attributes) {
+		this.attributes = attributes;
 		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
 		byteBuffer.order(ByteOrder.nativeOrder());
 		buffer = byteBuffer.asFloatBuffer();

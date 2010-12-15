@@ -160,4 +160,9 @@ public class MD5Quaternion {
 		return String.format("%.4f", x) + ", " + String.format("%.4f", y) + ", " + String.format("%.4f", z) + ", "
 			+ String.format("%.4f", w);
 	}
+
+	public void invert() {
+		float d = x*x + y*y + z*z + w*w;
+		x = x/d; y = y/d; z = z/d; w = w/d;
+	}
 }

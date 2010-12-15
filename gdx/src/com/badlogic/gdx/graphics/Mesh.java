@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Dave Clayton (contact@redskyforge.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -53,7 +53,7 @@ import com.badlogic.gdx.graphics.glutils.VertexData;
  * Meshes can be used with either OpenGL ES 1.x or OpenGL ES 2.0.
  * </p>
  * 
- * @author mzechner
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>
  * 
  * 
  */
@@ -84,6 +84,36 @@ public class Mesh {
 	 */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
 		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
+			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+			indices = new IndexBufferObject(isStatic, maxIndices);
+			isVertexArray = false;
+		} else {
+			vertices = new VertexArray(maxVertices, attributes);
+			indices = new IndexBufferObject(maxIndices);
+			isVertexArray = true;
+		}
+
+		meshes.add(this);
+	}
+	
+	/**
+	 * Creates a new Mesh with the given attributes.
+	 * 
+	 * @param isStatic
+	 *            whether this mesh is static or not. Allows for internal
+	 *            optimizations.
+	 * @param maxVertices
+	 *            the maximum number of vertices this mesh can hold
+	 * @param maxIndices
+	 *            the maximum number of indices this mesh can hold
+	 * @param attributes
+	 *            the {@link VertexAttributes}. Each vertex attribute defines
+	 *            one property of a vertex such as position, normal or texture
+	 *            coordinate
+	 */
+	public Mesh(boolean isStatic, int maxVertices, int maxIndices,
+			VertexAttributes attributes) {
+		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO ) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
 			isVertexArray = false;

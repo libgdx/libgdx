@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Dave Clayton (contact@redskyforge.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -13,6 +13,14 @@
 
 package com.badlogic.gdx.graphics.loaders.md5;
 
+/**
+ * Represents an MD5 (Doom 3) skinned model.
+ * Note: The normal interpolation implementation is experimental. Using it will incur a greater CPU overhead, and correct normals
+ * for dynamically lit models are not guaranteed at this time. Expert contribution for this code is encouraged, please email
+ * Dave if you're interested in helping.
+ * @author Mario Zechner <contact@badlogicgames.com>, Nathan Sweet <admin@esotericsoftware.com>, Dave Clayton <contact@redskyforge.com>
+ *
+ */
 public class MD5Model {
 	public int numJoints;
 	public MD5Joints baseSkeleton;

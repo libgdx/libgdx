@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Dave Clayton (contact@redskyforge.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -13,14 +13,21 @@
 
 package com.badlogic.gdx.graphics.loaders.md5;
 
+import com.badlogic.gdx.graphics.animation.Animation;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-public class MD5Animation {
+/**
+ * Represents an MD5 (Doom 3) skeletal animation. 
+ * @author Mario Zechner <contact@badlogicgames.com>, Nathan Sweet <admin@esotericsoftware.com>, Dave Clayton <contact@redskyforge.com>
+ *
+ */
+public class MD5Animation extends Animation {
 	public int frameRate;
 	public float secondsPerFrame;
 
 	public MD5Joints[] frames;
 	public BoundingBox[] bounds;
+	public String name;
 
 	static MD5Quaternion jointAOrient = new MD5Quaternion();
 	static MD5Quaternion jointBOrient = new MD5Quaternion();
@@ -58,5 +65,15 @@ public class MD5Animation {
 			skeletonOut.joints[idx + 6] = jointAOrient.z;
 			skeletonOut.joints[idx + 7] = jointAOrient.w;
 		}
+	}
+
+	@Override
+	public float getLength() {
+		return frames.length*secondsPerFrame;
+	}
+
+	@Override
+	public int getNumFrames() {
+		return frames.length;
 	}
 }

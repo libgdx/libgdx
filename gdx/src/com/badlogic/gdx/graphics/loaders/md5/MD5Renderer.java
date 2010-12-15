@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Dave Clayton (contact@redskyforge.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -13,24 +13,55 @@
 
 package com.badlogic.gdx.graphics.loaders.md5;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Material;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * The MD5Renderer draws the current frame of an animated MD5 model. It also calculates the bounding box using the resulting interpolated vertex data. 
+ * @author Mario Zechner <contact@badlogicgames.com>, Nathan Sweet <admin@esotericsoftware.com>, Dave Clayton <contact@redskyforge.com>
+ *
+ */
 public class MD5Renderer {
 	private final MD5Model model;
 	private final Mesh mesh;
 	private final short[][] indices;
 	private final float[][] vertices;
 	private boolean useJni;
+	private boolean useNormals;
+	private BoundingBox mBBox = new BoundingBox();
+	
+	public BoundingBox getBBox() { return mBBox; }
+	public float[] getVertices(int idx) { return vertices[idx]; }
+	public short[] getIndices(int idx) { return indices[idx]; }
+	public Mesh getMesh() { return mesh; }
 
-	public MD5Renderer (MD5Model model, boolean useJni) {
+	/**
+	 * Constructs an MD5Renderer. Normals are required for dynamic lighting. Note that there is currently no JNI implementation
+	 * supporting normal animation, so if you require normals you must use the Java implementation. On >=2.2 phones JNI is not
+	 * much faster anyway.
+	 * @param model
+	 *           The MD5 model this renderer will draw.
+	 * @param useNormals
+	 *           Whether to interpolate the model's normals as well as its vertices.
+	 * @param useJni
+	 *           Whether to use the JNI implementation or not.
+	 */
+	public MD5Renderer (MD5Model model, boolean useNormals, boolean useJni) {
+		if(useJni && useNormals)
+			throw new GdxRuntimeException("JNI with normals is currently unsupported.");
 		int maxVertices = 0;
 		int maxIndices = 0;
+		int stride = useNormals ? 8 : 5;
 
 		this.model = model;
 		this.useJni = useJni;
+		this.useNormals = useNormals;
 		this.indices = new short[model.meshes.length][];
 		this.vertices = new float[model.meshes.length][];
 
@@ -39,25 +70,59 @@ public class MD5Renderer {
 			if (maxIndices < model.meshes[i].numTriangles * 3) maxIndices = model.meshes[i].numTriangles * 3;
 
 			this.indices[i] = model.meshes[i].getIndices();
-			this.vertices[i] = model.meshes[i].createVertexArray();
+			this.vertices[i] = model.meshes[i].createVertexArray(stride);
 		}
 
-		this.mesh = new Mesh(false, maxVertices, maxIndices, new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
-			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+		if(useNormals)
+		{
+			this.mesh = new Mesh( false, maxVertices, maxIndices, 
+				     new VertexAttribute( VertexAttributes.Usage.Position, 3, "a_position" ), 
+					 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords" ),
+					 new VertexAttribute( VertexAttributes.Usage.Normal, 3, "a_normal" ) );	
+		}
+		else
+		{
+			this.mesh = new Mesh(false, maxVertices, maxIndices,
+					new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
+					new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+		}
 	}
 
 	public void setSkeleton (MD5Joints skeleton) {
-		for (int i = 0; i < model.meshes.length; i++) {
+		mBBox.clr();
+		for( int i = 0; i < model.meshes.length; i++ ) {
 			MD5Mesh mesh = model.meshes[i];
-			if (useJni)
+			
+			if( useJni )
+			{
 				mesh.calculateVerticesJni(skeleton, vertices[i]);
+			}
 			else
-				mesh.calculateVertices(skeleton, vertices[i]);
+			{
+				if(useNormals)
+				{
+					mesh.calculateVerticesN(skeleton, vertices[i], mBBox );
+				}
+				else
+				{
+					mesh.calculateVertices(skeleton, vertices[i], mBBox);
+				}
+			}
+			
 		}
 	}
 
 	public void setUseJni (boolean useJni) {
 		this.useJni = useJni;
+	}
+	
+	public void calculateNormals( MD5Joints bindPoseSkeleton )
+	{
+		for(int i = 0; i < model.meshes.length; i++ )
+		{
+			MD5Mesh mesh = model.meshes[i];
+			mesh.calculateNormalsBind(bindPoseSkeleton, vertices[i]);
+		}
 	}
 
 	public void render () {
@@ -65,6 +130,25 @@ public class MD5Renderer {
 			this.mesh.setIndices(indices[i]);
 			this.mesh.setVertices(vertices[i]);
 			this.mesh.render(GL10.GL_TRIANGLES, 0, indices[i].length);
+		}
+	}
+	
+	public void render( Material[] materials )
+	{
+		for( int i = 0; i < model.meshes.length; i++ )
+		{
+			if(materials[i] != null)
+			{
+				if(materials[i].Texture != null)
+				{
+					materials[i].Texture.bind();
+				}
+				materials[i].set(GL10.GL_FRONT);
+			}
+				
+			this.mesh.setIndices( indices[i] );
+			this.mesh.setVertices( vertices[i] );
+			this.mesh.render( GL10.GL_TRIANGLES, 0, indices[i].length );
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Dave Clayton (contact@redskyforge.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -51,7 +51,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * 
- * @author mzechner
+ * @author mzechner, Dave Clayton <contact@redskyforge.com>
  * 
  */
 public class VertexBufferObject implements VertexData {
@@ -75,19 +75,27 @@ public class VertexBufferObject implements VertexData {
 	 * @param attributes the {@link VertexAttribute}s.
 	 */
 	public VertexBufferObject (boolean isStatic, int numVertices, VertexAttribute... attributes) {
+		this(isStatic, numVertices, new VertexAttributes(attributes));
+	}
+	
+	/**
+	 * Constructs a new interleaved VertexBufferObject.
+	 * 
+	 * @param isStatic
+	 *            whether the vertex data is static.
+	 * @param numVertices
+	 *            the maximum number of vertices
+	 * @param attributes
+	 *            the {@link VertexAttributes}.
+	 */
+	public VertexBufferObject(boolean isStatic, int numVertices, VertexAttributes attributes)
+	{
 		this.isStatic = isStatic;
-		this.attributes = new VertexAttributes(attributes);
-// if (Gdx.app.getType() == ApplicationType.Android
-// && Gdx.app.getVersion() < 5) {
-// byteBuffer = ByteBuffer.allocate(this.attributes.vertexSize
-// * numVertices);
-// byteBuffer.order(ByteOrder.nativeOrder());
-// isDirect = false;
-// } else {
+		this.attributes = attributes;
+
 		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
 		byteBuffer.order(ByteOrder.nativeOrder());
 		isDirect = true;
-// }
 		buffer = byteBuffer.asFloatBuffer();
 		buffer.flip();
 		byteBuffer.flip();
