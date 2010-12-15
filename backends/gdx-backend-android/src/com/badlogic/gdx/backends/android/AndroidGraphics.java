@@ -95,19 +95,19 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 		if (useGL2 && checkGL20()) {
 			GLSurfaceView20 view = new GLSurfaceView20(activity);
-			view.setRenderer(this);
 			if (configChooser != null) view.setEGLConfigChooser(configChooser);
+			view.setRenderer(this);			
 			return view;
 		} else {
 			if (Integer.parseInt(android.os.Build.VERSION.SDK) <= 4) {
 				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity);
-				view.setRenderer(this);
 				if (configChooser != null) view.setEGLConfigChooser(configChooser);
+				view.setRenderer(this);
 				return view;
 			} else {
 				android.opengl.GLSurfaceView view = new android.opengl.GLSurfaceView(activity);
-				view.setRenderer(this);
 				if (configChooser != null) view.setEGLConfigChooser(configChooser);
+				view.setRenderer(this);				
 				return view;
 			}
 		}
