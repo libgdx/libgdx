@@ -1,3 +1,4 @@
+<!-- this can be used on 64-bit or 32-bit flavors of Lunix. Just install gcc and g++ multilibs for your compiler version -->
 <project name="gdx-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
@@ -10,7 +11,7 @@
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="g++"/>
 	<!-- should probably contain -fPic but we use gcc 4.4.1 to compile those binaries -->
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m32"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m32 -fPIC"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
@@ -27,7 +28,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="g++"/>
-	<property name="linker-opts" value="-shared"/>
+	<property name="linker-opts" value="-shared -m32"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -71,9 +72,9 @@
 	<!-- links the shared library based on the previously compiled object files -->
 	<target name="link" depends="compile">
 		<apply failonerror="true" executable="${linker}" parallel="true" dir="${builddir}">
-			<arg value="${linker-opts}"/>
+			<arg line="${linker-opts}"/>
 			<arg value="-o"/>
-			<arg path="${libname}"/>		
+			<arg path="${builddir}/${libname}"/>		
 			<fileset dir="${builddir}">
 				<patternset>
 					<include name="**/*.o"/>

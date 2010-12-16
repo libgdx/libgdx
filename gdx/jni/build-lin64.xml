@@ -1,3 +1,4 @@
+<!-- this can be used on 64-bit or 32-bit flavors of Lunix. Just install gcc
 <project name="gdx-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
@@ -9,8 +10,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="g++"/>
-	<!-- should probably contain -fPic but we use gcc 4.4.1 to compile those binaries -->
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m64"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m64 -fPIC"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
