@@ -10,7 +10,7 @@
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="g++"/>
 	<!-- should probably contain -fPic but we use gcc 4.4.1 to compile those binaries -->
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m64"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
@@ -18,7 +18,7 @@
 	</fileset>
 	
 	<!-- define gcc compiler, options and files to compile -->
-	<property name="gcc" value="g++"/>	
+	<property name="gcc" value="gcc"/>	
 	<property name="gcc-opts" value="${g++-opts}"/>
 	<fileset id="gcc-files" dir="./">		
 		<include name="**/*.c"/>				
@@ -70,11 +70,15 @@
 
 	<!-- links the shared library based on the previously compiled object files -->
 	<target name="link" depends="compile">
-		<exec executable="${linker}" vmlauncher="false">
-		<arg value="${linker-opts}"/>
-		<arg value="-o"/>
-		<arg value="${libname}"/>		
-		<arg value="*.o"/>
-		</exec>	
+		<apply failonerror="true" executable="${linker}" parallel="true">
+			<arg value="${linker-opts}"/>
+			<arg value="-o"/>
+			<arg path="${builddir}/${libname}"/>		
+			<fileset dir="${builddir}">
+				<patternset>
+					<include name="**/*.o"/>
+				</patternset>
+			</fileset>
+		</apply>
 	</target>
 </project>
