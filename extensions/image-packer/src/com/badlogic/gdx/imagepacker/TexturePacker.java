@@ -272,21 +272,33 @@ public class TexturePacker {
 		int usedPixels = 0;
 		for (int i = images.size() - 1; i >= 0; i--) {
 			Image image = images.get(i);
-			Node node = root.insert(image, canvas, false);
+			Node node = root.insert(image, false);
 			if (node == null) {
-				if (settings.rotate) node = root.insert(image, canvas, true);
+				if (settings.rotate) node = root.insert(image, true);
 				if (node == null) continue;
 			}
 			usedPixels += image.getWidth() * image.getHeight();
 			images.remove(i);
 			if (canvas != null) {
 				System.out.println("Packing... " + image.name);
+				node.writePackEntry();
 				Graphics2D g = (Graphics2D)canvas.getGraphics();
 				if (image.rotate) {
 					g.translate(node.left, node.top);
 					g.rotate(-90 * MathUtils.degreesToRadians);
 					g.translate(-node.left, -node.top);
 					g.translate(-image.getWidth(), 0);
+				}
+				if (settings.duplicatePadding) {
+					int amount = settings.padding / 2;
+					int imageWidth = image.getWidth();
+					int imageHeight = image.getHeight();
+					g.drawImage(image, node.left, node.top - amount, node.left + imageWidth, node.top, 0, 0, imageWidth, 1, null);
+					g.drawImage(image, node.left, node.top + imageHeight, node.left + imageWidth, node.top + imageHeight + amount, 0,
+						imageHeight - 1, imageWidth, imageHeight, null);
+					g.drawImage(image, node.left - amount, node.top, node.left, node.top + imageHeight, 0, 0, 1, imageHeight, null);
+					g.drawImage(image, node.left + imageWidth, node.top, node.left + imageWidth + amount, node.top + imageHeight,
+						imageWidth - 1, 0, imageWidth, imageHeight, null);
 				}
 				g.drawImage(image, node.left, node.top, null);
 				if (image.rotate) {
@@ -374,7 +386,7 @@ public class TexturePacker {
 	}
 
 	private class Node {
-		final int left, top, width, height;
+		int left, top, width, height;
 		Node child1, child2;
 		Image image;
 
@@ -388,12 +400,12 @@ public class TexturePacker {
 		/**
 		 * Returns true if the image was inserted. If canvas != null, an entry is written to the pack file.
 		 */
-		public Node insert (Image image, BufferedImage canvas, boolean rotate) throws IOException {
+		public Node insert (Image image, boolean rotate) throws IOException {
 			if (this.image != null) return null;
 			if (child1 != null) {
-				Node newNode = child1.insert(image, canvas, rotate);
+				Node newNode = child1.insert(image, rotate);
 				if (newNode != null) return newNode;
-				return child2.insert(image, canvas, rotate);
+				return child2.insert(image, rotate);
 			}
 			int imageWidth = image.getWidth();
 			int imageHeight = image.getHeight();
@@ -408,7 +420,6 @@ public class TexturePacker {
 			if (neededWidth == width && neededHeight == height) {
 				this.image = image;
 				image.rotate = rotate;
-				write(canvas);
 				return this;
 			}
 			int dw = width - neededWidth;
@@ -420,12 +431,10 @@ public class TexturePacker {
 				child1 = new Node(left, top, width, neededHeight);
 				child2 = new Node(left, top + neededHeight, width, height - neededHeight);
 			}
-			return child1.insert(image, canvas, rotate);
+			return child1.insert(image, rotate);
 		}
 
-		private void write (BufferedImage canvas) throws IOException {
-			if (canvas == null) return;
-
+		void writePackEntry () throws IOException {
 			String imageName = image.name;
 			imageName = imageName.replace("\\", "/");
 
@@ -595,7 +604,8 @@ public class TexturePacker {
 		public TextureFilter defaultFilterMag = TextureFilter.Linear;
 		public int alphaThreshold = 0;
 		public boolean pot = true;
-		public int padding = 0;
+		public int padding = 1;
+		public boolean duplicatePadding;
 		public boolean debug = false;
 		public boolean rotate = false;
 		public int minWidth = 16;
