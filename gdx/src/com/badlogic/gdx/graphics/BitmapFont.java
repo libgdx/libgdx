@@ -264,7 +264,9 @@ public class BitmapFont {
 			while (start < end) {
 				lastGlyph = getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
+					spriteBatch.draw(texture, //
+						x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
+						lastGlyph.width, lastGlyph.height, //
 						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					x += lastGlyph.xadvance;
 					break;
@@ -276,7 +278,9 @@ public class BitmapFont {
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
-				spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
+				spriteBatch.draw(texture, //
+					x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
+					lastGlyph.width, lastGlyph.height, //
 					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				x += g.xadvance;
 			}
@@ -285,8 +289,12 @@ public class BitmapFont {
 			while (start < end) {
 				lastGlyph = getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					spriteBatch.draw(texture, x + lastGlyph.xoffset * scaleX, y + lastGlyph.yoffset * scaleY,
-						lastGlyph.width * scaleX, lastGlyph.height * scaleY, lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					spriteBatch.draw(texture, //
+						x + lastGlyph.xoffset * scaleX, //
+						y + lastGlyph.yoffset * scaleY, //
+						lastGlyph.width * scaleX, //
+						lastGlyph.height * scaleY, //
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					x += lastGlyph.xadvance * scaleX;
 					break;
 				}
@@ -297,8 +305,12 @@ public class BitmapFont {
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch) * scaleX;
 				lastGlyph = g;
-				spriteBatch.draw(texture, x + lastGlyph.xoffset * scaleX, y + lastGlyph.yoffset * scaleY, lastGlyph.width * scaleX,
-					lastGlyph.height * scaleY, lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				spriteBatch.draw(texture, //
+					x + lastGlyph.xoffset * scaleX, //
+					y + lastGlyph.yoffset * scaleY, //
+					lastGlyph.width * scaleX, //
+					lastGlyph.height * scaleY, //
+					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				x += g.xadvance * scaleX;
 			}
 		}

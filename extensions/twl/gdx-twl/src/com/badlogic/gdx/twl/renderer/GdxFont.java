@@ -48,7 +48,7 @@ class GdxFont implements Font {
 	final GdxRenderer renderer;
 	final BitmapFont bitmapFont;
 	private final FontState[] fontStates;
-	private final int yOffset;
+	private final float yOffset;
 
 	public GdxFont (GdxRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
 		this.bitmapFont = bitmapFont;
@@ -111,23 +111,23 @@ class GdxFont implements Font {
 	}
 
 	public int getBaseLine () {
-		return bitmapFont.getCapHeight();
+		return (int)bitmapFont.getCapHeight();
 	}
 
 	public int getLineHeight () {
-		return bitmapFont.getLineHeight();
+		return (int)bitmapFont.getLineHeight();
 	}
 
 	public int getSpaceWidth () {
-		return bitmapFont.getSpaceWidth();
+		return (int)bitmapFont.getSpaceWidth();
 	}
 
 	public int getEM () {
-		return bitmapFont.getLineHeight();
+		return (int)bitmapFont.getLineHeight();
 	}
 
 	public int getEX () {
-		return bitmapFont.getXHeight();
+		return (int)bitmapFont.getXHeight();
 	}
 
 	public int computeMultiLineTextWidth (CharSequence str) {

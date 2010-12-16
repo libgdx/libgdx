@@ -129,7 +129,10 @@ public class BitmapFontCache {
 			while (start < end) {
 				lastGlyph = font.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					addGlyph(lastGlyph, x + lastGlyph.xoffset * scaleX, y + lastGlyph.yoffset * scaleY, lastGlyph.width * scaleX,
+					addGlyph(lastGlyph, //
+						x + lastGlyph.xoffset * scaleX, //
+						y + lastGlyph.yoffset * scaleY, //
+						lastGlyph.width * scaleX, //
 						lastGlyph.height * scaleY);
 					x += lastGlyph.xadvance * scaleX;
 					break;
@@ -141,7 +144,11 @@ public class BitmapFontCache {
 				if (g != null) {
 					x += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
-					addGlyph(lastGlyph, x + g.xoffset * scaleX, y + g.yoffset * scaleY, g.width * scaleX, g.height * scaleY);
+					addGlyph(lastGlyph, //
+						x + g.xoffset * scaleX, //
+						y + g.yoffset * scaleY, //
+						g.width * scaleX, //
+						g.height * scaleY);
 					x += g.xadvance * scaleX;
 				}
 			}
