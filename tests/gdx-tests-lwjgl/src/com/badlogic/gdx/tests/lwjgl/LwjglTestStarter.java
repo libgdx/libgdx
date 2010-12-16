@@ -62,8 +62,8 @@ public class LwjglTestStarter {
 			add(pane, BorderLayout.CENTER);
 			add(button, BorderLayout.SOUTH);
 
-			GdxTest test = GdxTests.newTest("FilesTest");
-			new LwjglApplication(test, "Test", 480, 320, test.needsGL20());
+			// GdxTest test = GdxTests.newTest("BitmapFontFlipTest");
+			// new LwjglApplication(test, "Test", 480, 320, test.needsGL20());
 		}
 	}
 

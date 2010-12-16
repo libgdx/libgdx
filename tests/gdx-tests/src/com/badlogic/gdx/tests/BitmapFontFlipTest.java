@@ -34,12 +34,13 @@ public class BitmapFontFlipTest extends GdxTest {
 	private Sprite logoSprite;
 	private Color red = new Color(1, 0, 0, 0);
 	private BitmapFontCache cache1, cache2, cache3, cache4, cache5;
+	private BitmapFontCache cacheScaled1, cacheScaled2, cacheScaled3, cacheScaled4, cacheScaled5;
 	int renderMode;
 
 	@Override public void create () {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer) {
-				renderMode = (renderMode + 1) % 2;
+				renderMode = (renderMode + 1) % 4;
 				return false;
 			}
 		});
@@ -61,8 +62,20 @@ public class BitmapFontFlipTest extends GdxTest {
 		cache3 = new BitmapFontCache(font);
 		cache4 = new BitmapFontCache(font);
 		cache5 = new BitmapFontCache(font);
+		createCaches("cached", cache1, cache2, cache3, cache4, cache5);
 
-		cache1.setText("(cached)", 10, 320 - 66);
+		font.setScale(1.33f);
+		cacheScaled1 = new BitmapFontCache(font);
+		cacheScaled2 = new BitmapFontCache(font);
+		cacheScaled3 = new BitmapFontCache(font);
+		cacheScaled4 = new BitmapFontCache(font);
+		cacheScaled5 = new BitmapFontCache(font);
+		createCaches("cache scaled", cacheScaled1, cacheScaled2, cacheScaled3, cacheScaled4, cacheScaled5);
+	}
+
+	private void createCaches (String type, BitmapFontCache cache1, BitmapFontCache cache2, BitmapFontCache cache3,
+		BitmapFontCache cache4, BitmapFontCache cache5) {
+		cache1.setText("(" + type + ")", 10, 320 - 66);
 
 		String text = "Sphinx of black quartz,\njudge my vow.";
 		cache2.setColor(Color.RED);
@@ -89,22 +102,32 @@ public class BitmapFontFlipTest extends GdxTest {
 		logoSprite.draw(spriteBatch);
 		switch (renderMode) {
 		case 0:
-			renderNormal();
+			font.setScale(1);
+			renderNormal("normal");
 			break;
 		case 1:
+			font.setScale(1);
 			renderCached();
+			break;
+		case 2:
+			font.setScale(red.a + 0.5f);
+			renderNormal("normal scaled");
+			break;
+		case 3:
+			font.setScale(1);
+			renderCachedScaled();
 			break;
 		}
 		spriteBatch.end();
 	}
 
-	private void renderNormal () {
+	private void renderNormal (String type) {
 		String text = "Forsaking monastic tradition, twelve jovial friars gave\nup their vocation for a questionable existence on the flying trapeze.";
 		font.setColor(red);
 		font.drawWrapped(spriteBatch, text, 0, 320 - 300, 480, HAlignment.CENTER);
 
 		font.setColor(Color.WHITE);
-		font.draw(spriteBatch, "(normal)", 10, 320 - 66);
+		font.draw(spriteBatch, "(" + type + ")", 10, 320 - 66);
 
 		if (red.a > 0.6f) return;
 
@@ -132,6 +155,19 @@ public class BitmapFontFlipTest extends GdxTest {
 		cache2.draw(spriteBatch);
 		cache3.draw(spriteBatch);
 		cache4.draw(spriteBatch);
+	}
+
+	private void renderCachedScaled () {
+		cacheScaled5.setColor(red);
+		cacheScaled5.draw(spriteBatch);
+
+		cacheScaled1.draw(spriteBatch);
+
+		if (red.a > 0.6f) return;
+
+		cacheScaled2.draw(spriteBatch);
+		cacheScaled3.draw(spriteBatch);
+		cacheScaled4.draw(spriteBatch);
 	}
 
 	public boolean needsGL20 () {

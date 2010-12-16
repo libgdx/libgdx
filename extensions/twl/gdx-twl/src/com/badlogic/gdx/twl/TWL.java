@@ -153,7 +153,8 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
-		return gui.handleMouse(x, y, -1, true);
+		gui.handleMouse(x, y, -1, true);
+		return false;
 	}
 
 	public void dispose () {

@@ -55,14 +55,15 @@ public class BitmapFont {
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
 	TextureRegion region;
-	int lineHeight;
-	int capHeight;
-	int ascent;
-	int down;
+	float lineHeight;
+	float capHeight;
+	float ascent;
+	float down;
+	float scaleX = 1, scaleY = 1;
 
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private int spaceWidth;
-	private int xHeight;
+	private float spaceWidth;
+	private float xHeight;
 	private final TextBounds textBounds = new TextBounds();
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
@@ -259,27 +260,50 @@ public class BitmapFont {
 		y += ascent;
 		float startX = x;
 		Glyph lastGlyph = null;
-		while (start < end) {
-			lastGlyph = getGlyph(str.charAt(start++));
-			if (lastGlyph != null) {
+		if (scaleX == 1 && scaleY == 1) {
+			while (start < end) {
+				lastGlyph = getGlyph(str.charAt(start++));
+				if (lastGlyph != null) {
+					spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					x += lastGlyph.xadvance;
+					break;
+				}
+			}
+			while (start < end) {
+				char ch = str.charAt(start++);
+				Glyph g = getGlyph(ch);
+				if (g == null) continue;
+				x += lastGlyph.getKerning(ch);
+				lastGlyph = g;
 				spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height,
 					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
-				x += lastGlyph.xadvance;
-				break;
+				x += g.xadvance;
+			}
+		} else {
+			float scaleX = this.scaleX, scaleY = this.scaleY;
+			while (start < end) {
+				lastGlyph = getGlyph(str.charAt(start++));
+				if (lastGlyph != null) {
+					spriteBatch.draw(texture, x + lastGlyph.xoffset * scaleX, y + lastGlyph.yoffset * scaleY,
+						lastGlyph.width * scaleX, lastGlyph.height * scaleY, lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					x += lastGlyph.xadvance * scaleX;
+					break;
+				}
+			}
+			while (start < end) {
+				char ch = str.charAt(start++);
+				Glyph g = getGlyph(ch);
+				if (g == null) continue;
+				x += lastGlyph.getKerning(ch) * scaleX;
+				lastGlyph = g;
+				spriteBatch.draw(texture, x + lastGlyph.xoffset * scaleX, y + lastGlyph.yoffset * scaleY, lastGlyph.width * scaleX,
+					lastGlyph.height * scaleY, lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				x += g.xadvance * scaleX;
 			}
 		}
-		while (start < end) {
-			char ch = str.charAt(start++);
-			Glyph g = getGlyph(ch);
-			if (g == null) continue;
-			x += lastGlyph.getKerning(ch);
-			lastGlyph = g;
-			spriteBatch.draw(texture, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height, lastGlyph.u,
-				lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
-			x += g.xadvance;
-		}
 		textBounds.width = (int)(x - startX);
-		textBounds.height = capHeight;
+		textBounds.height = (int)capHeight;
 		return textBounds;
 	}
 
@@ -304,7 +328,7 @@ public class BitmapFont {
 	 */
 	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
 		HAlignment alignment) {
-		int down = this.down;
+		float down = this.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
@@ -324,7 +348,7 @@ public class BitmapFont {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
 	}
 
@@ -350,7 +374,7 @@ public class BitmapFont {
 	 */
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
-		int down = this.down;
+		float down = this.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
@@ -388,7 +412,7 @@ public class BitmapFont {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
 	}
 
@@ -427,8 +451,8 @@ public class BitmapFont {
 				width += g.xadvance;
 			}
 		}
-		textBounds.width = width;
-		textBounds.height = capHeight;
+		textBounds.width = (int)(width * scaleX);
+		textBounds.height = (int)capHeight;
 		return textBounds;
 	}
 
@@ -450,7 +474,7 @@ public class BitmapFont {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
 	}
 
@@ -485,14 +509,13 @@ public class BitmapFont {
 				if (lineEnd == start) lineEnd++;
 				nextLineStart = length;
 			}
-			float xOffset = 0;
 			int lineWidth = getBounds(str, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = nextLineStart;
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
 	}
 
@@ -505,14 +528,28 @@ public class BitmapFont {
 		int index = start;
 		int width = 0;
 		Glyph lastGlyph = null;
-		for (; index < end; index++) {
-			char ch = str.charAt(index);
-			Glyph g = getGlyph(ch);
-			if (g != null) {
-				if (lastGlyph != null) width += lastGlyph.getKerning(ch);
-				lastGlyph = g;
-				if (width + g.width + g.xoffset > availableWidth) break;
-				width += g.xadvance;
+		if (scaleX == 1) {
+			for (; index < end; index++) {
+				char ch = str.charAt(index);
+				Glyph g = getGlyph(ch);
+				if (g != null) {
+					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
+					lastGlyph = g;
+					if (width + g.width + g.xoffset > availableWidth) break;
+					width += g.xadvance;
+				}
+			}
+		} else {
+			float scaleX = this.scaleX;
+			for (; index < end; index++) {
+				char ch = str.charAt(index);
+				Glyph g = getGlyph(ch);
+				if (g != null) {
+					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
+					lastGlyph = g;
+					if (width + (g.width + g.xoffset) * scaleX > availableWidth) break;
+					width += g.xadvance * scaleX;
+				}
 			}
 		}
 		return index - start;
@@ -541,6 +578,35 @@ public class BitmapFont {
 		return color;
 	}
 
+	public void setScale (float scaleX, float scaleY) {
+		spaceWidth = spaceWidth / this.scaleX * scaleX;
+		xHeight = xHeight / this.scaleY * scaleY;
+		capHeight = capHeight / this.scaleY * scaleY;
+		ascent = ascent / this.scaleY * scaleY;
+		down = down / this.scaleY * scaleY;
+		this.scaleX = scaleX;
+		this.scaleY = scaleY;
+	}
+
+	public void setScale (float scaleXY) {
+		setScale(scaleXY, scaleXY);
+	}
+
+	/**
+	 * Sets the font's scale relative to the current scale.
+	 */
+	public void scale (float amount) {
+		setScale(scaleX + amount, scaleY + amount);
+	}
+
+	public float getScaleX () {
+		return scaleX;
+	}
+
+	public float getScaleY () {
+		return scaleY;
+	}
+
 	public TextureRegion getRegion () {
 		return region;
 	}
@@ -548,21 +614,21 @@ public class BitmapFont {
 	/**
 	 * Returns the line height, which is the distance from one line of text to the next.
 	 */
-	public int getLineHeight () {
+	public float getLineHeight () {
 		return lineHeight;
 	}
 
 	/**
 	 * Returns the width of the space character.
 	 */
-	public int getSpaceWidth () {
+	public float getSpaceWidth () {
 		return spaceWidth;
 	}
 
 	/**
 	 * Returns the x-height, which is the distance from the top of most lowercase characters to the basline.
 	 */
-	public int getXHeight () {
+	public float getXHeight () {
 		return xHeight;
 	}
 
@@ -570,14 +636,14 @@ public class BitmapFont {
 	 * Returns the cap height, which is the distance from the top of most uppercase characters to the basline. Since the drawing
 	 * position is the cap height of the first line, the cap height can be used to get the location of the baseline.
 	 */
-	public int getCapHeight () {
+	public float getCapHeight () {
 		return capHeight;
 	}
 
 	/**
 	 * Returns the ascent, which is the distance from the cap height to the top of the tallest glyph.
 	 */
-	public int getAscent () {
+	public float getAscent () {
 		return ascent;
 	}
 

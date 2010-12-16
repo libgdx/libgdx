@@ -105,32 +105,53 @@ public class BitmapFontCache {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
-		while (start < end) {
-			lastGlyph = font.getGlyph(str.charAt(start++));
-			if (lastGlyph != null) {
-				addGlyph(lastGlyph, x, y);
-				x += lastGlyph.xadvance;
-				break;
+		if (font.scaleX == 1 && font.scaleY == 1) {
+			while (start < end) {
+				lastGlyph = font.getGlyph(str.charAt(start++));
+				if (lastGlyph != null) {
+					addGlyph(lastGlyph, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height);
+					x += lastGlyph.xadvance;
+					break;
+				}
 			}
-		}
-		while (start < end) {
-			char ch = str.charAt(start++);
-			Glyph g = font.getGlyph(ch);
-			if (g != null) {
-				x += lastGlyph.getKerning(ch);
-				lastGlyph = g;
-				addGlyph(lastGlyph, x, y);
-				x += g.xadvance;
+			while (start < end) {
+				char ch = str.charAt(start++);
+				Glyph g = font.getGlyph(ch);
+				if (g != null) {
+					x += lastGlyph.getKerning(ch);
+					lastGlyph = g;
+					addGlyph(lastGlyph, x + g.xoffset, y + g.yoffset, g.width, g.height);
+					x += g.xadvance;
+				}
+			}
+		} else {
+			float scaleX = font.scaleX, scaleY = font.scaleY;
+			while (start < end) {
+				lastGlyph = font.getGlyph(str.charAt(start++));
+				if (lastGlyph != null) {
+					addGlyph(lastGlyph, x + lastGlyph.xoffset * scaleX, y + lastGlyph.yoffset * scaleY, lastGlyph.width * scaleX,
+						lastGlyph.height * scaleY);
+					x += lastGlyph.xadvance * scaleX;
+					break;
+				}
+			}
+			while (start < end) {
+				char ch = str.charAt(start++);
+				Glyph g = font.getGlyph(ch);
+				if (g != null) {
+					x += lastGlyph.getKerning(ch) * scaleX;
+					lastGlyph = g;
+					addGlyph(lastGlyph, x + g.xoffset * scaleX, y + g.yoffset * scaleY, g.width * scaleX, g.height * scaleY);
+					x += g.xadvance * scaleX;
+				}
 			}
 		}
 		return (int)(x - startX);
 	}
 
-	private void addGlyph (Glyph glyph, float x, float y) {
-		x += glyph.xoffset;
-		y += glyph.yoffset;
-		final float x2 = x + glyph.width;
-		final float y2 = y + glyph.height;
+	private void addGlyph (Glyph glyph, float x, float y, float width, float height) {
+		final float x2 = x + width;
+		final float y2 = y + height;
 		final float u = glyph.u;
 		final float u2 = glyph.u2;
 		final float v = glyph.v;
@@ -184,7 +205,7 @@ public class BitmapFontCache {
 		reset(end - start);
 		y += font.ascent;
 		textBounds.width = addToCache(str, x, y, start, end);
-		textBounds.height = font.capHeight;
+		textBounds.height = (int)font.capHeight;
 		return textBounds;
 	}
 
@@ -212,7 +233,7 @@ public class BitmapFontCache {
 		reset(length);
 
 		y += font.ascent;
-		int down = font.down;
+		float down = font.down;
 
 		int maxWidth = 0;
 		float startY = y;
@@ -233,7 +254,7 @@ public class BitmapFontCache {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
+		textBounds.height = (int)(font.capHeight + (numLines - 1) * font.lineHeight);
 		return textBounds;
 	}
 
@@ -262,7 +283,7 @@ public class BitmapFontCache {
 		reset(length);
 
 		y += font.ascent;
-		int down = font.down;
+		float down = font.down;
 
 		int maxWidth = 0;
 		int start = 0;
@@ -290,7 +311,7 @@ public class BitmapFontCache {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
+		textBounds.height = (int)(font.capHeight + (numLines - 1) * font.lineHeight);
 		return textBounds;
 	}
 

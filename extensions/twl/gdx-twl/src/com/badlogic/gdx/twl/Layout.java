@@ -120,7 +120,10 @@ public class Layout extends DialogLayout {
 			}
 
 			public Group gap (int size) {
-				dialogGroup.addGap(size);
+				if (size == 0)
+					dialogGroup.addGap();
+				else
+					dialogGroup.addGap(size);
 				return this;
 			}
 
