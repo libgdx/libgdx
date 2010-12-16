@@ -41,8 +41,8 @@
 	<target name="compile">
 		<apply failonerror="true" executable="${g++}" dest="${builddir}" verbose="true">
 			<arg line="${g++-opts}"/>
-			<arg value="-I${env.JAVA_HOME}/include"/>
-			<arg value="-I${env.JAVA_HOME}/include/${jni-platform}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
 			<arg value="-I./"/>
 			<srcfile/>
 			<arg value="-o"/>
@@ -55,8 +55,8 @@
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${builddir}" verbose="true">
 			<arg line="${gcc-opts}"/>
-			<arg value="-I${env.JAVA_HOME}/include"/>
-			<arg value="-I${env.JAVA_HOME}/include/${jni-platform}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
 			<arg value="-I./"/>
 			<srcfile/>
 			<arg value="-o"/>

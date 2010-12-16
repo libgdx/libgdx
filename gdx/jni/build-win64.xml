@@ -1,15 +1,23 @@
+<!-- install the package gcc-mingw32 on ubuntu and away you go. Oh and put that in /usr/bin/
+  
+     http://files.quickmediasolutions.com/amd64-mingw32msvc-g++.tar.bz2
+
+     will only run on a 64-bit Ubuntu 10.10 flavor though :p (Ya nasty nasty...)
+-->
 <project name="gdx-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
-	
+
+	<property name="prefix" value="x86_64-linux-gnu-"/>	
+
 	<!-- defined build directory where object files and shared lib will be placed in -->
 	<property name="builddir" value="../windows64"/>
 	<property name="libname" value="gdx-64.dll"/>
 	<property name="jni-platform" value="win32"/>
 	
 	<!-- define g++ compiler, options and files to compile -->
-	<property name="g++" value="x86_64-w64-mingw32-g++.exe"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0"/>
+	<property name="g++" value="${prefix}g++"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m64"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
@@ -17,7 +25,7 @@
 	</fileset>
 	
 	<!-- define gcc compiler, options and files to compile -->
-	<property name="gcc" value="x86_64-w64-mingw32-gcc"/>	
+	<property name="gcc" value="${prefix}gcc"/>	
 	<property name="gcc-opts" value="${g++-opts}"/>
 	<fileset id="gcc-files" dir="./">		
 		<include name="**/*.c"/>				
@@ -25,7 +33,7 @@
 	</fileset>
 
 	<!-- define linker and options -->
-	<property name="linker" value="x86_64-w64-mingw32-g++"/>
+	<property name="linker" value="${prefix}g++"/>
 	<property name="linker-opts" value="-Wl,--kill-at -shared -static-libgcc -static-libstdc++"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
@@ -39,9 +47,9 @@
 	<target name="compile">
 		<apply failonerror="true" executable="${g++}" dest="${builddir}" verbose="true">
 			<arg line="${g++-opts}"/>
-			<arg value="-I${env.JAVA_HOME}/include"/>
-			<arg value="-I${env.JAVA_HOME}/include/${jni-platform}"/>
-			<arg value="-I."/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
+			<arg value="-I./"/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -53,9 +61,9 @@
 		</apply>
 		<apply failonerror="true" executable="${gcc}" dest="${builddir}" verbose="true">
 			<arg line="${gcc-opts}"/>
-			<arg value="-I${env.JAVA_HOME}/include"/>
-			<arg value="-I${env.JAVA_HOME}/include/${jni-platform}"/>
-			<arg value="-I."/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
+			<arg value="-I./"/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -69,13 +77,15 @@
 
 	<!-- links the shared library based on the previously compiled object files -->	
 	<target name="link" depends="compile">
-	    <fileset dir="${builddir}" id="object-files">
-			<include name="*.o"/>
-		</fileset>  
-		<pathconvert pathsep=" " property="objs" refid="object-files"/>		
-	
-		<exec executable="${linker}" dir="${builddir}">
-		<arg line="${linker-opts} -o ${libname} ${objs}"/>
-		</exec>	
+		<apply failonerror="true" executable="${linker}" parallel="true" dir="${builddir}">
+			<arg line="${linker-opts}"/>
+			<arg value="-o"/>
+			<arg path="${builddir}/${libname}"/>		
+			<fileset dir="${builddir}">
+				<patternset>
+					<include name="**/*.o"/>
+				</patternset>
+			</fileset>
+		</apply>
 	</target>	
 </project>
