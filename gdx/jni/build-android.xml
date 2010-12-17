@@ -1,0 +1,13 @@
+<project name="gdx-natives" basedir="." default="compile-natives">
+	<property environment="env" />
+
+	<target name="clean">
+		<exec executable="${env.NDK_HOME}/ndk-build" dir="../">
+			<arg value="clean"/>
+		</exec>
+	</target>
+
+	<target name="compile-natives">
+		<exec executable="${env.NDK_HOME}/ndk-build" dir="../"/>
+	</target>
+</project>

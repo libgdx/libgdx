@@ -1,0 +1,820 @@
+Apache Ant version 1.8.1 compiled on April 30 2010
+Buildfile: /home/mzechner/workspace/libgdx/gdx/jni/build-win64.xml
+Detected Java version: 1.6 in: /usr/lib/jvm/java-6-sun-1.6.0.21/jre
+Detected OS: Linux
+parsing buildfile /home/mzechner/workspace/libgdx/gdx/jni/build-win64.xml with URI = file:/home/mzechner/workspace/libgdx/gdx/jni/build-win64.xml
+Project base dir set to: /home/mzechner/workspace/libgdx/gdx/jni
+parsing buildfile jar:file:/home/mzechner/ant/lib/ant.jar!/org/apache/tools/ant/antlib.xml with URI = jar:file:/home/mzechner/ant/lib/ant.jar!/org/apache/tools/ant/antlib.xml from a zip file
+ [property] Loading Environment env.
+Build sequence for target(s) `link' is [compile, link]
+Complete build sequence is [compile, link, clean, ]
+
+compile:
+    [apply] Current OS is Linux
+    [apply] AudioTools.cpp added as AudioTools.o doesn't exist.
+    [apply] Box2D/Body.cpp added as Body.o doesn't exist.
+    [apply] Box2D/CircleShape.cpp added as CircleShape.o doesn't exist.
+    [apply] Box2D/Collision/Shapes/b2CircleShape.cpp added as b2CircleShape.o doesn't exist.
+    [apply] Box2D/Collision/Shapes/b2PolygonShape.cpp added as b2PolygonShape.o doesn't exist.
+    [apply] Box2D/Collision/b2BroadPhase.cpp added as b2BroadPhase.o doesn't exist.
+    [apply] Box2D/Collision/b2CollideCircle.cpp added as b2CollideCircle.o doesn't exist.
+    [apply] Box2D/Collision/b2CollidePolygon.cpp added as b2CollidePolygon.o doesn't exist.
+    [apply] Box2D/Collision/b2Collision.cpp added as b2Collision.o doesn't exist.
+    [apply] Box2D/Collision/b2Distance.cpp added as b2Distance.o doesn't exist.
+    [apply] Box2D/Collision/b2DynamicTree.cpp added as b2DynamicTree.o doesn't exist.
+    [apply] Box2D/Collision/b2TimeOfImpact.cpp added as b2TimeOfImpact.o doesn't exist.
+    [apply] Box2D/Common/b2BlockAllocator.cpp added as b2BlockAllocator.o doesn't exist.
+    [apply] Box2D/Common/b2Math.cpp added as b2Math.o doesn't exist.
+    [apply] Box2D/Common/b2Settings.cpp added as b2Settings.o doesn't exist.
+    [apply] Box2D/Common/b2StackAllocator.cpp added as b2StackAllocator.o doesn't exist.
+    [apply] Box2D/Contact.cpp added as Contact.o doesn't exist.
+    [apply] Box2D/DistanceJoint.cpp added as DistanceJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Contacts/b2CircleContact.cpp added as b2CircleContact.o doesn't exist.
+    [apply] Box2D/Dynamics/Contacts/b2Contact.cpp added as b2Contact.o doesn't exist.
+    [apply] Box2D/Dynamics/Contacts/b2ContactSolver.cpp added as b2ContactSolver.o doesn't exist.
+    [apply] Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.cpp added as b2PolygonAndCircleContact.o doesn't exist.
+    [apply] Box2D/Dynamics/Contacts/b2PolygonContact.cpp added as b2PolygonContact.o doesn't exist.
+    [apply] Box2D/Dynamics/Contacts/b2TOISolver.cpp added as b2TOISolver.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2DistanceJoint.cpp added as b2DistanceJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2FrictionJoint.cpp added as b2FrictionJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2GearJoint.cpp added as b2GearJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2Joint.cpp added as b2Joint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2LineJoint.cpp added as b2LineJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2MouseJoint.cpp added as b2MouseJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2PrismaticJoint.cpp added as b2PrismaticJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2PulleyJoint.cpp added as b2PulleyJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2RevoluteJoint.cpp added as b2RevoluteJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/Joints/b2WeldJoint.cpp added as b2WeldJoint.o doesn't exist.
+    [apply] Box2D/Dynamics/b2Body.cpp added as b2Body.o doesn't exist.
+    [apply] Box2D/Dynamics/b2ContactManager.cpp added as b2ContactManager.o doesn't exist.
+    [apply] Box2D/Dynamics/b2Fixture.cpp added as b2Fixture.o doesn't exist.
+    [apply] Box2D/Dynamics/b2Island.cpp added as b2Island.o doesn't exist.
+    [apply] Box2D/Dynamics/b2World.cpp added as b2World.o doesn't exist.
+    [apply] Box2D/Dynamics/b2WorldCallbacks.cpp added as b2WorldCallbacks.o doesn't exist.
+    [apply] Box2D/Fixture.cpp added as Fixture.o doesn't exist.
+    [apply] Box2D/FrictionJoint.cpp added as FrictionJoint.o doesn't exist.
+    [apply] Box2D/GearJoint.cpp added as GearJoint.o doesn't exist.
+    [apply] Box2D/Joint.cpp added as Joint.o doesn't exist.
+    [apply] Box2D/LineJoint.cpp added as LineJoint.o doesn't exist.
+    [apply] Box2D/MouseJoint.cpp added as MouseJoint.o doesn't exist.
+    [apply] Box2D/PolygonShape.cpp added as PolygonShape.o doesn't exist.
+    [apply] Box2D/PrismaticJoint.cpp added as PrismaticJoint.o doesn't exist.
+    [apply] Box2D/PulleyJoint.cpp added as PulleyJoint.o doesn't exist.
+    [apply] Box2D/RevoluteJoint.cpp added as RevoluteJoint.o doesn't exist.
+    [apply] Box2D/Shape.cpp added as Shape.o doesn't exist.
+    [apply] Box2D/World.cpp added as World.o doesn't exist.
+    [apply] BufferUtils.cpp added as BufferUtils.o doesn't exist.
+    [apply] MD5Jni.cpp added as MD5Jni.o doesn't exist.
+    [apply] kissfft/KissFFT.cpp added as KissFFT.o doesn't exist.
+    [apply] vorbis/VorbisDecoder.cpp added as VorbisDecoder.o doesn't exist.
+    [apply] Executing 'x86_64-linux-gnu-g++' with arguments:
+    [apply] '-c'
+    [apply] '-Wall'
+    [apply] '-O2'
+    [apply] '-mfpmath=sse'
+    [apply] '-msse2'
+    [apply] '-DFIXED_POINT'
+    [apply] '-fmessage-length=0'
+    [apply] '-m64'
+    [apply] '-Ijni-headers'
+    [apply] '-Ijni-headers/win32'
+    [apply] '-I./'
+    [apply] '/home/mzechner/workspace/libgdx/gdx/jni/AudioTools.cpp'
+    [apply] '-o'
+    [apply] '/home/mzechner/workspace/libgdx/gdx/windows64/AudioTools.o'
+    [apply] 
+    [apply] The ' characters around the executable and arguments are
+    [apply] not part of the command.
+    [apply] In file included from /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.h:17,
+    [apply]                  from /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.cpp:13:
+    [apply] jni-headers/jni.h:202: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:204: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:207: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:210: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:212: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:215: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:218: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:220: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:223: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:226: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:228: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:230: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:232: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:234: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:236: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:239: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:241: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:244: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:246: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:248: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:250: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:252: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:254: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:257: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:259: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:261: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:263: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:266: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:268: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:271: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:274: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:276: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:278: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:281: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:283: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:285: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:288: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:290: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:292: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:295: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:297: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:299: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:302: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:304: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:306: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:309: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:311: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:313: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:316: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:318: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:320: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:323: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:325: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:327: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:330: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:332: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:334: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:337: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:339: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:341: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:344: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:346: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:349: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:353: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:355: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:358: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:362: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:364: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:367: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:371: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:373: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:376: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:380: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:382: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:385: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:389: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:391: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:394: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:398: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:400: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:403: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:407: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:409: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:412: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:416: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:418: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:421: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:425: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:427: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:430: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:434: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:437: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:439: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:441: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:443: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:445: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:447: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:449: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:451: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:453: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:456: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:458: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:460: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:462: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:464: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:466: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:468: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:470: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:472: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:475: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:478: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:480: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:482: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:485: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:487: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:489: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:492: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:494: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:496: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:499: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:501: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:503: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:506: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:508: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:510: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:513: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:515: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:517: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:520: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:522: error
+    [apply] : expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:524: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:527: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:529: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:531: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:534: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:536: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:538: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:541: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:543: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:545: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:548: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:550: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:552: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:554: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:556: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:558: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:560: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:562: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:564: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:566: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:569: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:571: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:573: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:575: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:577: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:579: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:581: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:583: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:585: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:588: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:590: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:592: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:592: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:594: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:597: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:599: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:601: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:601: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:603: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:607: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:610: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:612: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:614: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:617: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:619: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:621: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:623: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:625: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:627: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:629: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:631: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:634: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:634: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:636: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:636: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:638: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:638: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:640: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:640: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:642: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:642: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:644: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:644: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:646: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:646: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:648: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:648: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:651: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:653: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:655: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:657: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:659: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:661: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:663: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:665: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:668: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:670: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:672: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:674: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:676: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:678: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:680: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:682: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:685: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:687: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:689: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:691: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:693: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:695: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:697: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:699: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:702: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:705: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:708: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:710: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:713: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:716: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:718: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:721: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:721: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:723: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:726: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:726: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:728: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:731: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:733: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:736: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:739: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:741: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:741: error: expected ‘;’ before ‘*’ token
+    [apply] jni-headers/jni.h:743: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:748: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::GetVersion()’:
+    [apply] jni-headers/jni.h:769: error: ‘const struct JNINativeInterface_’ has no member named ‘GetVersion’
+    [apply] jni-headers/jni.h: In member function ‘_jclass* JNIEnv_::DefineClass(const char*, _jobject*, const jbyte*, jsize)’:
+    [apply] jni-headers/jni.h:773: error: ‘const struct JNINativeInterface_’ has no member named ‘DefineClass’
+    [apply] jni-headers/jni.h: In member function ‘_jclass* JNIEnv_::FindClass(const char*)’:
+    [apply] jni-headers/jni.h:776: error: ‘const struct JNINativeInterface_’ has no member named ‘FindClass’
+    [apply] jni-headers/jni.h: In member function ‘_jmethodID* JNIEnv_::FromReflectedMethod(_jobject*)’:
+    [apply] jni-headers/jni.h:779: error: ‘const struct JNINativeInterface_’ has no member named ‘FromReflectedMethod’
+    [apply] jni-headers/jni.h: In member function ‘_jfieldID* JNIEnv_::FromReflectedField(_jobject*)’:
+    [apply] jni-headers/jni.h:782: error: ‘const struct JNINativeInterface_’ has no member named ‘FromReflectedField’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::ToReflectedMethod(_jclass*, _jmethodID*, jboolean)’:
+    [apply] jni-headers/jni.h:786: error: ‘const struct JNINativeInterface_’ has no member named ‘ToReflectedMethod’
+    [apply] jni-headers/jni.h: In member function ‘_jclass* JNIEnv_::GetSuperclass(_jclass*)’:
+    [apply] jni-headers/jni.h:790: error: ‘const struct JNINativeInterface_’ has no member named ‘GetSuperclass’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::IsAssignableFrom(_jclass*, _jclass*)’:
+    [apply] jni-headers/jni.h:793: error: ‘const struct JNINativeInterface_’ has no member named ‘IsAssignableFrom’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::ToReflectedField(_jclass*, _jfieldID*, jboolean)’:
+    [apply] jni-headers/jni.h:797: error: ‘const struct JNINativeInterface_’ has no member named ‘ToReflectedField’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::Throw(_jthrowable*)’:
+    [apply] jni-headers/jni.h:801: error: ‘const struct JNINativeInterface_’ has no member named ‘Throw’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::ThrowNew(_jclass*, const char*)’:
+    [apply] jni-headers/jni.h:804: error: ‘const struct JNINativeInterface_’ has no member named ‘ThrowNew’
+    [apply] jni-headers/jni.h: In member function ‘_jthrowable* JNIEnv_::ExceptionOccurred()’:
+    [apply] jni-headers/jni.h:807: error: ‘const struct JNINativeInterface_’ has no member named ‘ExceptionOccurred’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ExceptionDescribe()’:
+    [apply] jni-headers/jni.h:810: error: ‘const struct JNINativeInterface_’ has no member named ‘ExceptionDescribe’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ExceptionClear()’:
+    [apply] jni-headers/jni.h:813: error: ‘const struct JNINativeInterface_’ has no member named ‘ExceptionClear’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::FatalError(const char*)’:
+    [apply] jni-headers/jni.h:816: error: ‘const struct JNINativeInterface_’ has no member named ‘FatalError’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::PushLocalFrame(jint)’:
+    [apply] jni-headers/jni.h:820: error: ‘const struct JNINativeInterface_’ has no member named ‘PushLocalFrame’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::PopLocalFrame(_jobject*)’:
+    [apply] jni-headers/jni.h:823: error: ‘const struct JNINativeInterface_’ has no member named ‘PopLocalFrame’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewGlobalRef(_jobject*)’:
+    [apply] jni-headers/jni.h:827: error: ‘const struct JNINativeInterface_’ has no member named ‘NewGlobalRef’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::DeleteGlobalRef(_jobject*)’:
+    [apply] jni-headers/jni.h:830: error: ‘const struct JNINativeInterface_’ has no member named ‘DeleteGlobalRef’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::DeleteLocalRef(_jobject*)’:
+    [apply] jni-headers/jni.h:833: error: ‘const struct JNINativeInterface_’ has no member named ‘DeleteLocalRef’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::IsSameObject(_jobject*, _jobject*)’:
+    [apply] jni-headers/jni.h:837: error: ‘const struct JNINativeInterface_’ has no member named ‘IsSameObject’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewLocalRef(_jobject*)’:
+    [apply] jni-headers/jni.h:841: error: ‘const struct JNINativeInterface_’ has no member named ‘NewLocalRef’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::EnsureLocalCapacity(jint)’:
+    [apply] jni-headers/jni.h:844: error: ‘const struct JNINativeInterface_’ has no member named ‘EnsureLocalCapacity’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::AllocObject(_jclass*)’:
+    [apply] jni-headers/jni.h:848: error: ‘const struct JNINativeInterface_’ has no member named ‘AllocObject’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewObject(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:854: error: ‘const struct JNINativeInterface_’ has no member named ‘NewObjectV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewObjectV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:860: error: ‘const struct JNINativeInterface_’ has no member named ‘NewObjectV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewObjectA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:864: error: ‘const struct JNINativeInterface_’ has no member named ‘NewObjectA’
+    [apply] jni-headers/jni.h: In member function ‘_jclass* JNIEnv_::GetObjectClass(_jobject*)’:
+    [apply] jni-headers/jni.h:868: error: ‘const struct JNINativeInterface_’ has no member named ‘GetObjectClass’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::IsInstanceOf(_jobject*, _jclass*)’:
+    [apply] jni-headers/jni.h:871: error: ‘const struct JNINativeInterface_’ has no member named ‘IsInstanceOf’
+    [apply] jni-headers/jni.h: In member function ‘_jmethodID* JNIEnv_::GetMethodID(_jclass*, const char*, const char*)’:
+    [apply] jni-headers/jni.h:876: error: ‘const struct JNINativeInterface_’ has no member named ‘GetMethodID’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallObjectMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:883: error: ‘const struct JNINativeInterface_’ has no member named ‘CallObjectMethodV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallObjectMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:889: error: ‘const struct JNINativeInterface_’ has no member named ‘CallObjectMethodV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallObjectMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:893: error: ‘const struct JNINativeInterface_’ has no member named ‘CallObjectMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallBooleanMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:901: error: ‘const struct JNINativeInterface_’ has no member named ‘CallBooleanMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallBooleanMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:907: error: ‘const struct JNINativeInterface_’ has no member named ‘CallBooleanMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallBooleanMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:911: error: ‘const struct JNINativeInterface_’ has no member named ‘CallBooleanMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallByteMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:918: error: ‘const struct JNINativeInterface_’ has no member named ‘CallByteMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallByteMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:924: error: ‘const struct JNINativeInterface_’ has no member named ‘CallByteMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallByteMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:928: error: ‘const struct JNINativeInterface_’ has no member named ‘CallByteMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallCharMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:935: error: ‘const struct JNINativeInterface_’ has no member named ‘CallCharMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallCharMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:941: error: ‘const struct JNINativeInterface_’ has no member named ‘CallCharMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallCharMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:945: error: ‘const struct JNINativeInterface_’ has no member named ‘CallCharMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallShortMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:952: error: ‘const struct JNINativeInterface_’ has no member named ‘CallShortMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallShortMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:958: error: ‘const struct JNINativeInterface_’ has no member named ‘CallShortMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallShortMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:962: error: ‘const struct JNINativeInterface_’ has no member named ‘CallShortMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallIntMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:969: error: ‘const struct JNINativeInterface_’ has no member named ‘CallIntMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallIntMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:975: error: ‘const struct JNINativeInterface_’ has no member named ‘CallIntMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallIntMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:979: error: ‘const struct JNINativeInterface_’ has no member named ‘CallIntMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallLongMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:986: error: ‘const struct JNINativeInterface_’ has no member named ‘CallLongMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallLongMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:992: error: ‘const struct JNINativeInterface_’ has no member named ‘CallLongMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallLongMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:996: error: ‘const struct JNINativeInterface_’ has no member named ‘CallLongMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallFloatMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1003: error: ‘const struct JNINativeInterface_’ has no member named ‘CallFloatMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallFloatMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1009: error: ‘const struct JNINativeInterface_’ has no member named ‘CallFloatMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallFloatMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1013: error: ‘const struct JNINativeInterface_’ has no member named ‘CallFloatMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallDoubleMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1020: error: ‘const struct JNINativeInterface_’ has no member named ‘CallDoubleMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallDoubleMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1026: error: ‘const struct JNINativeInterface_’ has no member named ‘CallDoubleMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallDoubleMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1030: error: ‘const struct JNINativeInterface_’ has no member named ‘CallDoubleMethodA’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallVoidMethod(_jobject*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1036: error: ‘const struct JNINativeInterface_’ has no member named ‘CallVoidMethodV’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallVoidMethodV(_jobject*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1041: error: ‘const struct JNINativeInterface_’ has no member named ‘CallVoidMethodV’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallVoidMethodA(_jobject*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1045: error: ‘const struct JNINativeInterface_’ has no member named ‘CallVoidMethodA’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallNonvirtualObjectMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1053: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualObjectMethodV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallNonvirtualObjectMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1060: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualObjectMethodV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallNonvirtualObjectMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1065: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualObjectMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallNonvirtualBooleanMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1074: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualBooleanMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallNonvirtualBooleanMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1081: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualBooleanMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallNonvirtualBooleanMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1086: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualBooleanMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallNonvirtualByteMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1095: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualByteMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallNonvirtualByteMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1102: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualByteMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallNonvirtualByteMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1107: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualByteMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallNonvirtualCharMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1116: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualCharMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallNonvirtualCharMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1123: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualCharMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallNonvirtualCharMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1128: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualCharMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallNonvirtualShortMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1137: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualShortMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallNonvirtualShortMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1144: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualShortMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallNonvirtualShortMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1149: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualShortMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallNonvirtualIntMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1158: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualIntMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallNonvirtualIntMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1165: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualIntMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallNonvirtualIntMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1170: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualIntMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallNonvirtualLongMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1179: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualLongMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallNonvirtualLongMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1186: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualLongMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallNonvirtualLongMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1191: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualLongMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallNonvirtualFloatMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1200: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualFloatMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallNonvirtualFloatMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1208: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualFloatMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallNonvirtualFloatMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1214: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualFloatMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallNonvirtualDoubleMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1223: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualDoubleMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallNonvirtualDoubleMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1231: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualDoubleMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallNonvirtualDoubleMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1237: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualDoubleMethodA’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallNonvirtualVoidMethod(_jobject*, _jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1245: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualVoidMethodV’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallNonvirtualVoidMethodV(_jobject*, _jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1251: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualVoidMethodV’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallNonvirtualVoidMethodA(_jobject*, _jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1256: error: ‘const struct JNINativeInterface_’ has no member named ‘CallNonvirtualVoidMethodA’
+    [apply] jni-headers/jni.h: In member function ‘_jfieldID* JNIEnv_::GetFieldID(_jclass*, const char*, const char*)’:
+    [apply] jni-headers/jni.h:1261: error: ‘const struct JNINativeInterface_’ has no member named ‘GetFieldID’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::GetObjectField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1265: error: ‘const struct JNINativeInterface_’ has no member named ‘GetObjectField’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::GetBooleanField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1268: error: ‘const struct JNINativeInterface_’ has no member named ‘GetBooleanField’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::GetByteField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1271: error: ‘const struct JNINativeInterface_’ has no member named ‘GetByteField’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::GetCharField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1274: error: ‘const struct JNINativeInterface_’ has no member named ‘GetCharField’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::GetShortField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1277: error: ‘const struct JNINativeInterface_’ has no member named ‘GetShortField’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::GetIntField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1280: error: ‘const struct JNINativeInterface_’ has no member named ‘GetIntField’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::GetLongField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1283: error: ‘const struct JNINativeInterface_’ has no member named ‘GetLongField’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::GetFloatField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1286: error: ‘const struct JNINativeInterface_’ has no member named ‘GetFloatField’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::GetDoubleField(_jobject*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1289: error: ‘const struct JNINativeInterface_’ has no member named ‘GetDoubleField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetObjectField(_jobject*, _jfieldID*, _jobject*)’:
+    [apply] jni-headers/jni.h:1293: error: ‘const struct JNINativeInterface_’ has no member named ‘SetObjectField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetBooleanField(_jobject*, _jfieldID*, jboolean)’:
+    [apply] jni-headers/jni.h:1297: error: ‘const struct JNINativeInterface_’ has no member named ‘SetBooleanField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetByteField(_jobject*, _jfieldID*, jbyte)’:
+    [apply] jni-headers/jni.h:1301: error: ‘const struct JNINativeInterface_’ has no member named ‘SetByteField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetCharField(_jobject*, _jfieldID*, jchar)’:
+    [apply] jni-headers/jni.h:1305: error: ‘const struct JNINativeInterface_’ has no member named ‘SetCharField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetShortField(_jobject*, _jfieldID*, jshort)’:
+    [apply] jni-headers/jni.h:1309: error: ‘const struct JNINativeInterface_’ has no member named ‘SetShortField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetIntField(_jobject*, _jfieldID*, jint)’:
+    [apply] jni-headers/jni.h:1313: error: ‘const struct JNINativeInterface_’ has no member named ‘SetIntField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetLongField(_jobject*, _jfieldID*, jlong)’:
+    [apply] jni-headers/jni.h:1317: error: ‘const struct JNINativeInterface_’ has no member named ‘SetLongField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetFloatField(_jobject*, _jfieldID*, jfloat)’:
+    [apply] jni-headers/jni.h:1321: error: ‘const struct JNINativeInterface_’ has no member named ‘SetFloatField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetDoubleField(_jobject*, _jfieldID*, jdouble)’:
+    [apply] jni-headers/jni.h:1325: error: ‘const struct JNINativeInterface_’ has no member named ‘SetDoubleField’
+    [apply] jni-headers/jni.h: In member function ‘_jmethodID* JNIEnv_::GetStaticMethodID(_jclass*, const char*, const char*)’:
+    [apply] jni-headers/jni.h:1330: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticMethodID’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallStaticObjectMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1338: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticObjectMethodV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallStaticObjectMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1344: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticObjectMethodV’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::CallStaticObjectMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1348: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticObjectMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallStaticBooleanMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1356: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticBooleanMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallStaticBooleanMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1362: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticBooleanMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::CallStaticBooleanMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1366: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticBooleanMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallStaticByteMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1374: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticByteMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallStaticByteMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1380: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticByteMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::CallStaticByteMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1384: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticByteMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallStaticCharMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1392: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticCharMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallStaticCharMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1398: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticCharMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::CallStaticCharMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1402: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticCharMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallStaticShortMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1410: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticShortMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallStaticShortMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1416: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticShortMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::CallStaticShortMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1420: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticShortMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallStaticIntMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1428: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticIntMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallStaticIntMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1434: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticIntMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::CallStaticIntMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1438: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticIntMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallStaticLongMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1446: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticLongMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallStaticLongMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1452: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticLongMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::CallStaticLongMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1456: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticLongMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallStaticFloatMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1464: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticFloatMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallStaticFloatMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1470: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticFloatMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::CallStaticFloatMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1474: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticFloatMethodA’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallStaticDoubleMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1482: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticDoubleMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallStaticDoubleMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1488: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticDoubleMethodV’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::CallStaticDoubleMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1492: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticDoubleMethodA’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallStaticVoidMethod(_jclass*, _jmethodID*, ...)’:
+    [apply] jni-headers/jni.h:1498: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticVoidMethodV’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallStaticVoidMethodV(_jclass*, _jmethodID*, __va_list_tag*)’:
+    [apply] jni-headers/jni.h:1503: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticVoidMethodV’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::CallStaticVoidMethodA(_jclass*, _jmethodID*, const jvalue*)’:
+    [apply] jni-headers/jni.h:1507: error: ‘const struct JNINativeInterface_’ has no member named ‘CallStaticVoidMethodA’
+    [apply] jni-headers/jni.h: In member function ‘_jfieldID* JNIEnv_::GetStaticFieldID(_jclass*, const char*, const char*)’:
+    [apply] jni-headers/jni.h:1512: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticFieldID’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::GetStaticObjectField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1515: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticObjectField’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::GetStaticBooleanField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1518: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticBooleanField’
+    [apply] jni-headers/jni.h: In member function ‘jbyte JNIEnv_::GetStaticByteField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1521: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticByteField’
+    [apply] jni-headers/jni.h: In member function ‘jchar JNIEnv_::GetStaticCharField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1524: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticCharField’
+    [apply] jni-headers/jni.h: In member function ‘jshort JNIEnv_::GetStaticShortField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1527: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticShortField’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::GetStaticIntField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1530: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticIntField’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::GetStaticLongField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1533: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticLongField’
+    [apply] jni-headers/jni.h: In member function ‘jfloat JNIEnv_::GetStaticFloatField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1536: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticFloatField’
+    [apply] jni-headers/jni.h: In member function ‘jdouble JNIEnv_::GetStaticDoubleField(_jclass*, _jfieldID*)’:
+    [apply] jni-headers/jni.h:1539: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStaticDoubleField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticObjectField(_jclass*, _jfieldID*, _jobject*)’:
+    [apply] jni-headers/jni.h:1544: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticObjectField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticBooleanField(_jclass*, _jfieldID*, jboolean)’:
+    [apply] jni-headers/jni.h:1548: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticBooleanField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticByteField(_jclass*, _jfieldID*, jbyte)’:
+    [apply] jni-headers/jni.h:1552: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticByteField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticCharField(_jclass*, _jfieldID*, jchar)’:
+    [apply] jni-headers/jni.h:1556: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticCharField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticShortField(_jclass*, _jfieldID*, jshort)’:
+    [apply] jni-headers/jni.h:1560: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticShortField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticIntField(_jclass*, _jfieldID*, jint)’:
+    [apply] jni-headers/jni.h:1564: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticIntField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticLongField(_jclass*, _jfieldID*, jlong)’:
+    [apply] jni-headers/jni.h:1568: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticLongField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticFloatField(_jclass*, _jfieldID*, jfloat)’:
+    [apply] jni-headers/jni.h:1572: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticFloatField’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetStaticDoubleField(_jclass*, _jfieldID*, jdouble)’:
+    [apply] jni-headers/jni.h:1576: error: ‘const struct JNINativeInterface_’ has no member named ‘SetStaticDoubleField’
+    [apply] jni-headers/jni.h: In member function ‘_jstring* JNIEnv_::NewString(const jchar*, jsize)’:
+    [apply] jni-headers/jni.h:1580: error: ‘const struct JNINativeInterface_’ has no member named ‘NewString’
+    [apply] jni-headers/jni.h: In member function ‘jsize JNIEnv_::GetStringLength(_jstring*)’:
+    [apply] jni-headers/jni.h:1583: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringLength’
+    [apply] jni-headers/jni.h: In member function ‘const jchar* JNIEnv_::GetStringChars(_jstring*, jboolean*)’:
+    [apply] jni-headers/jni.h:1586: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringChars’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseStringChars(_jstring*, const jchar*)’:
+    [apply] jni-headers/jni.h:1589: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseStringChars’
+    [apply] jni-headers/jni.h: In member function ‘_jstring* JNIEnv_::NewStringUTF(const char*)’:
+    [apply] jni-headers/jni.h:1593: error: ‘const struct JNINativeInterface_’ has no member named ‘NewStringUTF’
+    [apply] jni-headers/jni.h: In member function ‘jsize JNIEnv_::GetStringUTFLength(_jstring*)’:
+    [apply] jni-headers/jni.h:1596: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringUTFLength’
+    [apply] jni-headers/jni.h: In member function ‘const char* JNIEnv_::GetStringUTFChars(_jstring*, jboolean*)’:
+    [apply] jni-headers/jni.h:1599: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringUTFChars’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseStringUTFChars(_jstring*, const char*)’:
+    [apply] jni-headers/jni.h:1602: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseStringUTFChars’
+    [apply] jni-headers/jni.h: In member function ‘jsize JNIEnv_::GetArrayLength(_jarray*)’:
+    [apply] jni-headers/jni.h:1606: error: ‘const struct JNINativeInterface_’ has no member named ‘GetArrayLength’
+    [apply] jni-headers/jni.h: In member function ‘_jobjectArray* JNIEnv_::NewObjectArray(jsize, _jclass*, _jobject*)’:
+    [apply] jni-headers/jni.h:1611: error: ‘const struct JNINativeInterface_’ has no member named ‘NewObjectArray’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::GetObjectArrayElement(_jobjectArray*, jsize)’:
+    [apply] jni-headers/jni.h:1614: error: ‘const struct JNINativeInterface_’ has no member named ‘GetObjectArrayElement’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetObjectArrayElement(_jobjectArray*, jsize, _jobject*)’:
+    [apply] jni-headers/jni.h:1618: error: ‘const struct JNINativeInterface_’ has no member named ‘SetObjectArrayElement’
+    [apply] jni-headers/jni.h: In member function ‘_jbooleanArray* JNIEnv_::NewBooleanArray(jsize)’:
+    [apply] jni-headers/jni.h:1622: error: ‘const struct JNINativeInterface_’ has no member named ‘NewBooleanArray’
+    [apply] jni-headers/jni.h: In member function ‘_jbyteArray* JNIEnv_::NewByteArray(jsize)’:
+    [apply] jni-headers/jni.h:1625: error: ‘const struct JNINativeInterface_’ has no member named ‘NewByteArray’
+    [apply] jni-headers/jni.h: In member function ‘_jcharArray* JNIEnv_::NewCharArray(jsize)’:
+    [apply] jni-headers/jni.h:1628: error: ‘const struct JNINativeInterface_’ has no member named ‘NewCharArray’
+    [apply] jni-headers/jni.h: In member function ‘_jshortArray* JNIEnv_::NewShortArray(jsize)’:
+    [apply] jni-headers/jni.h:1631: error: ‘const struct JNINativeInterface_’ has no member named ‘NewShortArray’
+    [apply] jni-headers/jni.h: In member function ‘_jintArray* JNIEnv_::NewIntArray(jsize)’:
+    [apply] jni-headers/jni.h:1634: error: ‘const struct JNINativeInterface_’ has no member named ‘NewIntArray’
+    [apply] jni-headers/jni.h: In member function ‘_jlongArray* JNIEnv_::NewLongArray(jsize)’:
+    [apply] jni-headers/jni.h:1637: error: ‘const struct JNINativeInterface_’ has no member named ‘NewLongArray’
+    [apply] jni-headers/jni.h: In member function ‘_jfloatArray* JNIEnv_::NewFloatArray(jsize)’:
+    [apply] jni-headers/jni.h:1640: error: ‘const struct JNINativeInterface_’ has no member named ‘NewFloatArray’
+    [apply] jni-headers/jni.h: In member function ‘_jdoubleArray* JNIEnv_::NewDoubleArray(jsize)’:
+    [apply] jni-headers/jni.h:1643: error: ‘const struct JNINativeInterface_’ has no member named ‘NewDoubleArray’
+    [apply] jni-headers/jni.h: In member function ‘jboolean* JNIEnv_::GetBooleanArrayElements(_jbooleanArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1647: error: ‘const struct JNINativeInterface_’ has no member named ‘GetBooleanArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jbyte* JNIEnv_::GetByteArrayElements(_jbyteArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1650: error: ‘const struct JNINativeInterface_’ has no member named ‘GetByteArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jchar* JNIEnv_::GetCharArrayElements(_jcharArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1653: error: ‘const struct JNINativeInterface_’ has no member named ‘GetCharArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jshort* JNIEnv_::GetShortArrayElements(_jshortArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1656: error: ‘const struct JNINativeInterface_’ has no member named ‘GetShortArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jint* JNIEnv_::GetIntArrayElements(_jintArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1659: error: ‘const struct JNINativeInterface_’ has no member named ‘GetIntArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jlong* JNIEnv_::GetLongArrayElements(_jlongArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1662: error: ‘const struct JNINativeInterface_’ has no member named ‘GetLongArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jfloat* JNIEnv_::GetFloatArrayElements(_jfloatArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1665: error: ‘const struct JNINativeInterface_’ has no member named ‘GetFloatArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘jdouble* JNIEnv_::GetDoubleArrayElements(_jdoubleArray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1668: error: ‘const struct JNINativeInterface_’ has no member named ‘GetDoubleArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseBooleanArrayElements(_jbooleanArray*, jboolean*, jint)’:
+    [apply] jni-headers/jni.h:1674: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseBooleanArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseByteArrayElements(_jbyteArray*, jbyte*, jint)’:
+    [apply] jni-headers/jni.h:1679: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseByteArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseCharArrayElements(_jcharArray*, jchar*, jint)’:
+    [apply] jni-headers/jni.h:1684: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseCharArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseShortArrayElements(_jshortArray*, jshort*, jint)’:
+    [apply] jni-headers/jni.h:1689: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseShortArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseIntArrayElements(_jintArray*, jint*, jint)’:
+    [apply] jni-headers/jni.h:1694: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseIntArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseLongArrayElements(_jlongArray*, jlong*, jint)’:
+    [apply] jni-headers/jni.h:1699: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseLongArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseFloatArrayElements(_jfloatArray*, jfloat*, jint)’:
+    [apply] jni-headers/jni.h:1704: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseFloatArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseDoubleArrayElements(_jdoubleArray*, jdouble*, jint)’:
+    [apply] jni-headers/jni.h:1709: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseDoubleArrayElements’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetBooleanArrayRegion(_jbooleanArray*, jsize, jsize, jboolean*)’:
+    [apply] jni-headers/jni.h:1714: error: ‘const struct JNINativeInterface_’ has no member named ‘GetBooleanArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetByteArrayRegion(_jbyteArray*, jsize, jsize, jbyte*)’:
+    [apply] jni-headers/jni.h:1718: error: ‘const struct JNINativeInterface_’ has no member named ‘GetByteArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetCharArrayRegion(_jcharArray*, jsize, jsize, jchar*)’:
+    [apply] jni-headers/jni.h:1722: error: ‘const struct JNINativeInterface_’ has no member named ‘GetCharArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetShortArrayRegion(_jshortArray*, jsize, jsize, jshort*)’:
+    [apply] jni-headers/jni.h:1726: error: ‘const struct JNINativeInterface_’ has no member named ‘GetShortArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetIntArrayRegion(_jintArray*, jsize, jsize, jint*)’:
+    [apply] jni-headers/jni.h:1730: error: ‘const struct JNINativeInterface_’ has no member named ‘GetIntArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetLongArrayRegion(_jlongArray*, jsize, jsize, jlong*)’:
+    [apply] jni-headers/jni.h:1734: error: ‘const struct JNINativeInterface_’ has no member named ‘GetLongArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetFloatArrayRegion(_jfloatArray*, jsize, jsize, jfloat*)’:
+    [apply] jni-headers/jni.h:1738: error: ‘const struct JNINativeInterface_’ has no member named ‘GetFloatArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetDoubleArrayRegion(_jdoubleArray*, jsize, jsize, jdouble*)’:
+    [apply] jni-headers/jni.h:1742: error: ‘const struct JNINativeInterface_’ has no member named ‘GetDoubleArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetBooleanArrayRegion(_jbooleanArray*, jsize, jsize, const jboolean*)’:
+    [apply] jni-headers/jni.h:1747: error: ‘const struct JNINativeInterface_’ has no member named ‘SetBooleanArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetByteArrayRegion(_jbyteArray*, jsize, jsize, const jbyte*)’:
+    [apply] jni-headers/jni.h:1751: error: ‘const struct JNINativeInterface_’ has no member named ‘SetByteArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetCharArrayRegion(_jcharArray*, jsize, jsize, const jchar*)’:
+    [apply] jni-headers/jni.h:1755: error: ‘const struct JNINativeInterface_’ has no member named ‘SetCharArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetShortArrayRegion(_jshortArray*, jsize, jsize, const jshort*)’:
+    [apply] jni-headers/jni.h:1759: error: ‘const struct JNINativeInterface_’ has no member named ‘SetShortArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetIntArrayRegion(_jintArray*, jsize, jsize, const jint*)’:
+    [apply] jni-headers/jni.h:1763: error: ‘const struct JNINativeInterface_’ has no member named ‘SetIntArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetLongArrayRegion(_jlongArray*, jsize, jsize, const jlong*)’:
+    [apply] jni-headers/jni.h:1767: error: ‘const struct JNINativeInterface_’ has no member named ‘SetLongArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetFloatArrayRegion(_jfloatArray*, jsize, jsize, const jfloat*)’:
+    [apply] jni-headers/jni.h:1771: error: ‘const struct JNINativeInterface_’ has no member named ‘SetFloatArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::SetDoubleArrayRegion(_jdoubleArray*, jsize, jsize, const jdouble*)’:
+    [apply] jni-headers/jni.h:1775: error: ‘const struct JNINativeInterface_’ has no member named ‘SetDoubleArrayRegion’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::RegisterNatives(_jclass*, const JNINativeMethod*, jint)’:
+    [apply] jni-headers/jni.h:1780: error: ‘const struct JNINativeInterface_’ has no member named ‘RegisterNatives’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::UnregisterNatives(_jclass*)’:
+    [apply] jni-headers/jni.h:1783: error: ‘const struct JNINativeInterface_’ has no member named ‘UnregisterNatives’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::MonitorEnter(_jobject*)’:
+    [apply] jni-headers/jni.h:1787: error: ‘const struct JNINativeInterface_’ has no member named ‘MonitorEnter’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::MonitorExit(_jobject*)’:
+    [apply] jni-headers/jni.h:1790: error: ‘const struct JNINativeInterface_’ has no member named ‘MonitorExit’
+    [apply] jni-headers/jni.h: In member function ‘jint JNIEnv_::GetJavaVM(JavaVM**)’:
+    [apply] jni-headers/jni.h:1794: error: ‘const struct JNINativeInterface_’ has no member named ‘GetJavaVM’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetStringRegion(_jstring*, jsize, jsize, jchar*)’:
+    [apply] jni-headers/jni.h:1798: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringRegion’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::GetStringUTFRegion(_jstring*, jsize, jsize, char*)’:
+    [apply] jni-headers/jni.h:1801: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringUTFRegion’
+    [apply] jni-headers/jni.h: In member function ‘void* JNIEnv_::GetPrimitiveArrayCritical(_jarray*, jboolean*)’:
+    [apply] jni-headers/jni.h:1805: error: ‘const struct JNINativeInterface_’ has no member named ‘GetPrimitiveArrayCritical’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleasePrimitiveArrayCritical(_jarray*, void*, jint)’:
+    [apply] jni-headers/jni.h:1808: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleasePrimitiveArrayCritical’
+    [apply] jni-headers/jni.h: In member function ‘const jchar* JNIEnv_::GetStringCritical(_jstring*, jboolean*)’:
+    [apply] jni-headers/jni.h:1812: error: ‘const struct JNINativeInterface_’ has no member named ‘GetStringCritical’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::ReleaseStringCritical(_jstring*, const jchar*)’:
+    [apply] jni-headers/jni.h:1815: error: ‘const struct JNINativeInterface_’ has no member named ‘ReleaseStringCritical’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewWeakGlobalRef(_jobject*)’:
+    [apply] jni-headers/jni.h:1819: error: ‘const struct JNINativeInterface_’ has no member named ‘NewWeakGlobalRef’
+    [apply] jni-headers/jni.h: In member function ‘void JNIEnv_::DeleteWeakGlobalRef(_jobject*)’:
+    [apply] jni-headers/jni.h:1822: error: ‘const struct JNINativeInterface_’ has no member named ‘DeleteWeakGlobalRef’
+    [apply] jni-headers/jni.h: In member function ‘jboolean JNIEnv_::ExceptionCheck()’:
+    [apply] jni-headers/jni.h:1826: error: ‘const struct JNINativeInterface_’ has no member named ‘ExceptionCheck’
+    [apply] jni-headers/jni.h: In member function ‘_jobject* JNIEnv_::NewDirectByteBuffer(void*, jlong)’:
+    [apply] jni-headers/jni.h:1830: error: ‘const struct JNINativeInterface_’ has no member named ‘NewDirectByteBuffer’
+    [apply] jni-headers/jni.h: In member function ‘void* JNIEnv_::GetDirectBufferAddress(_jobject*)’:
+    [apply] jni-headers/jni.h:1833: error: ‘const struct JNINativeInterface_’ has no member named ‘GetDirectBufferAddress’
+    [apply] jni-headers/jni.h: In member function ‘jlong JNIEnv_::GetDirectBufferCapacity(_jobject*)’:
+    [apply] jni-headers/jni.h:1836: error: ‘const struct JNINativeInterface_’ has no member named ‘GetDirectBufferCapacity’
+    [apply] jni-headers/jni.h: In member function ‘jobjectRefType JNIEnv_::GetObjectRefType(_jobject*)’:
+    [apply] jni-headers/jni.h:1839: error: ‘const struct JNINativeInterface_’ has no member named ‘GetObjectRefType’
+    [apply] jni-headers/jni.h: At global scope:
+    [apply] jni-headers/jni.h:1877: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:1879: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:1881: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:1883: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h:1885: error: expected ‘)’ before ‘*’ token
+    [apply] jni-headers/jni.h: In member function ‘jint JavaVM_::DestroyJavaVM()’:
+    [apply] jni-headers/jni.h:1893: error: ‘const struct JNIInvokeInterface_’ has no member named ‘DestroyJavaVM’
+    [apply] jni-headers/jni.h: In member function ‘jint JavaVM_::AttachCurrentThread(void**, void*)’:
+    [apply] jni-headers/jni.h:1896: error: ‘const struct JNIInvokeInterface_’ has no member named ‘AttachCurrentThread’
+    [apply] jni-headers/jni.h: In member function ‘jint JavaVM_::DetachCurrentThread()’:
+    [apply] jni-headers/jni.h:1899: error: ‘const struct JNIInvokeInterface_’ has no member named ‘DetachCurrentThread’
+    [apply] jni-headers/jni.h: In member function ‘jint JavaVM_::GetEnv(void**, jint)’:
+    [apply] jni-headers/jni.h:1903: error: ‘const struct JNIInvokeInterface_’ has no member named ‘GetEnv’
+    [apply] jni-headers/jni.h: In member function ‘jint JavaVM_::AttachCurrentThreadAsDaemon(void**, void*)’:
+    [apply] jni-headers/jni.h:1906: error: ‘const struct JNIInvokeInterface_’ has no member named ‘AttachCurrentThreadAsDaemon’
+    [apply] jni-headers/jni.h: At global scope:
+    [apply] jni-headers/jni.h:1916: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] jni-headers/jni.h:1919: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] jni-headers/jni.h:1922: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] jni-headers/jni.h:1926: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] jni-headers/jni.h:1929: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] In file included from /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.cpp:13:
+    [apply] /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.h:30: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.h:38: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.h:46: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] In file included from /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.cpp:13:
+    [apply] /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.h:54: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.h:62: error: expected constructor, destructor, or type conversion before ‘(’ token
+    [apply] /home/mzechner/workspace/libgdx/gdx/jni/AudioTools.cpp:17: error: expected constructor, destructor, or type conversion before ‘(’ token

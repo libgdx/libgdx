@@ -1,6 +1,3 @@
-<!-- This is meant to be compiled via the toolchain of the 
-     gcc-mingw32 package you can fetch from the Ubuntu Maverick default repos 
--->
 <project name="gdx-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	

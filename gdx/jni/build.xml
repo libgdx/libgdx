@@ -1,0 +1,25 @@
+<project name="gdx-natives" basedir="." default="compile-natives">
+	<target name="clean">
+		<ant antfile="build-win32.xml" target="clean"/>
+		<ant antfile="build-win64.xml" target="clean"/>
+		<ant antfile="build-lin32.xml" target="clean"/>
+		<ant antfile="build-lin64.xml" target="clean"/>
+		<ant antfile="build-android.xml" target="clean"/>
+	</target>
+	
+	<target name="compile-natives">
+		<ant antfile="build-win32.xml"/>
+		<ant antfile="build-win64.xml"/>
+		<ant antfile="build-lin32.xml"/>
+		<ant antfile="build-lin64.xml"/>
+		<ant antfile="build-android.xml"/>
+
+		<jar destfile="../../backends/dependencies/gdx-natives.jar">
+			<fileset dir="../windows" includes="gdx.dll"/>
+			<fileset dir="../windows64" includes="gdx-64.dll"/>
+			<fileset dir="../linux" includes="libgdx.so"/>
+			<fileset dir="../linux64" includes="libgdx-64.so"/>
+			<fileset dir="../mac" includes="libgdx.dylib"/>
+		</jar>
+	</target>
+</project>

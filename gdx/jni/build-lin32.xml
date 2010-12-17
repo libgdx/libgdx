@@ -1,4 +1,3 @@
-<!-- this can be used on 64-bit or 32-bit flavors of Lunix. Just install gcc and g++ multilibs for your compiler version -->
 <project name="gdx-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
