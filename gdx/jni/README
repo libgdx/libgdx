@@ -1,3 +1,5 @@
+=== BUILDING FOR WINDOWS & LINUX ===
+
 This folder contains 4 ant files responsible for building the gdx shared libs for win32, win64, lin32 and lin64. They are
 intended to be used with ant >= 1.8.1 as well as the common multilib gcc toolchain for linux (x86 and x86_64 targets) and
 the mingw w64 linux port (http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Automated%20Builds/mingw-w64-bin_i686-linux_20101216.tar.bz2/download).
@@ -24,3 +26,7 @@ Why the separate ant files? Cause i like copy & pasting... I'll write a more gen
 as time permits. 
 
 MacOSX lovers, i'm afraid you are shit out of luck. Seems like Apple doesn't want people to write software for the super awesome OS. 
+
+=== BUILDING FOR ANDROID === 
+Just invoke the ndk-build command in the gdx/jni directory. The libraries will be put in gdx/libs/armeabi and gdx/libs/armeabi-v7a.
+
