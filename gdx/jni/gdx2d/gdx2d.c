@@ -12,6 +12,7 @@
  */
 #include "gdx2d.h"
 #define STB_TRUETYPE_IMPLEMENTATION
+#define STBI_HEADER_FILE_ONLY
 #define STBI_NO_FAILURE_STRINGS
 #include "stb_image.c"
 #include "stb_truetype.h"
