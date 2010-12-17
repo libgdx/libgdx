@@ -71,6 +71,7 @@
 	<target name="link" depends="compile">
 		<apply failonerror="true" executable="${linker}" parallel="true">
 			<arg value="${linker-opts}"/>
+			<arg value="-m64"/>
 			<arg value="-o"/>
 			<arg path="${builddir}/${libname}"/>		
 			<fileset dir="${builddir}">
