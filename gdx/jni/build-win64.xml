@@ -1,14 +1,8 @@
-<!-- install the package gcc-mingw32 on ubuntu and away you go. Oh and put that in /usr/bin/
-  
-     http://files.quickmediasolutions.com/amd64-mingw32msvc-g++.tar.bz2
-
-     will only run on a 64-bit Ubuntu 10.10 flavor though :p (Ya nasty nasty...)
--->
 <project name="gdx-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
 
-	<property name="prefix" value="x86_64-linux-gnu-"/>	
+	<property name="prefix" value="x86_64-w64-mingw32-"/>	
 
 	<!-- defined build directory where object files and shared lib will be placed in -->
 	<property name="builddir" value="../windows64"/>
