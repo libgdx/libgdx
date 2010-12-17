@@ -4,7 +4,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-GDX_CFLAGS 	  := -O2 -Wall
+GDX_CFLAGS 	  := -O2 -Wall -D__ANDROID__
 GDX_SRC_FILES := AudioTools.cpp \
 				 BufferUtils.cpp \
 				 MD5Jni.cpp

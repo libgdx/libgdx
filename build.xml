@@ -14,7 +14,7 @@
 		 e.g. c:\android-ndk or /opt/android-ndk -->
 	<!--<property environment="env"/>-->
 	
-	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
+	<property name="env.NDK_HOME" value="/opt/android-ndk-r4"/>
 	
 	<!-- output directory for distribution -->
 	<property name="stable" value="target"/>
