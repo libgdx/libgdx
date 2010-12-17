@@ -100,9 +100,8 @@ public class Gdx2DPixmap {
 	
 	private void drawPixmap(Gdx2DPixmap src, 
 							int srcX, int srcY, int srcWidth, int srcHeight, 
-							int dstX, int dstY, int dstWidth, int dstHeight, 
-							int blend, int scale) {
-		drawPixmap(src.basePtr, basePtr, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, blend, scale);
+							int dstX, int dstY, int dstWidth, int dstHeight) {
+		drawPixmap(src.basePtr, basePtr, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
 	}
 	
 	
@@ -132,5 +131,8 @@ public class Gdx2DPixmap {
 	private static native void drawCircle(long pixmap, int x, int y, int radius, int color);
 	private static native void fillRect(long pixmap, int x, int y, int width, int height, int color);
 	private static native void fillCircle(long pixmap, int x, int y, int radius, int color);
-	private static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight, int blend, int scale);
+	private static native void drawPixmap(long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX, int dstY, int dstWidth, int dstHeight);
+	
+	public static native void setBlend(int blend);
+	public static native void setScale(int scale);
 }

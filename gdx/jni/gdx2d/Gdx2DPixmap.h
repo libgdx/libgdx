@@ -98,10 +98,26 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_Gdx2DPixmap_fillCircle
 /*
  * Class:     com_badlogic_gdx_graphics_Gdx2DPixmap
  * Method:    drawPixmap
- * Signature: (JJIIIIIIIIII)V
+ * Signature: (JJIIIIIIII)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_Gdx2DPixmap_drawPixmap
-  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint, jint, jint);
+  (JNIEnv *, jclass, jlong, jlong, jint, jint, jint, jint, jint, jint, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_Gdx2DPixmap
+ * Method:    setBlend
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_Gdx2DPixmap_setBlend
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_Gdx2DPixmap
+ * Method:    setScale
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_Gdx2DPixmap_setScale
+  (JNIEnv *, jclass, jint);
 
 #ifdef __cplusplus
 }

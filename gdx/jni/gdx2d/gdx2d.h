@@ -45,32 +45,31 @@ extern "C" {
  * the dimensions and the format of the pixmap.
  * the format is one of the GDX2D_FORMAT_XXX constants.
  */
-struct {
+typedef struct {
 	int width;
 	int height;
 	int format;
 	const char* pixels;
-} gdx2d_pixmap_struct;
-typedef struct gdx2d_pixmap_struct gdx2d_pixmap;
+} gdx2d_pixmap;
 
+extern gdx2d_pixmap* gdx2d_load (const char *buffer, int len, int req_format);
+extern gdx2d_pixmap* gdx2d_new  (int width, int height, int format);
+extern void 		 gdx2d_free (const gdx2d_pixmap* pixmap);
 
-gdx2d_pixmap* 	gdx2d_load_buffer	(const char *buffer, int len, int req_format);
-gdx2d_pixmap* 	gdx2d_load_file 	(const char *filename, int req_format);
-gdx2d_pixmap*	gdx2d_new			(int width, int height, int format);
-void 			gdx2d_free			(const gdx2d_pixmap* pixmap);
+extern void gdx2d_set_blend	  (int blend);
+extern void gdx2d_set_scale	  (int scale);
 
-void gdx2d_clear		(const gdx2d_pixmap* pixmap, int col);
-void gdx2d_set_pixel	(const gdx2d_pixmap* pixmap, int x, int y, int col);
-void gdx2d_draw_line	(const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, int col);
-void gdx2d_draw_rect	(const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col);
-void gdx2d_draw_circle	(const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
-void gdx2d_fill_rect	(const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
-void gdx2d_fill_circle	(const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
-void gdx2d_draw_pixmap	(const gdx2d_pixmap* src_pixmap,
-						 const gdx2d_pixmap* dst_pixmap,
-						 int src_x, int src_y, int src_width, int src_height,
-						 int dst_x, int dst_y, int dst_width, int dst_height,
-						 int blend, int scale);
+extern void gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, int col);
+extern void gdx2d_set_pixel   (const gdx2d_pixmap* pixmap, int x, int y, int col);
+extern void gdx2d_draw_line   (const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, int col);
+extern void gdx2d_draw_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col);
+extern void gdx2d_draw_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
+extern void gdx2d_fill_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col);
+extern void gdx2d_fill_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
+extern void gdx2d_draw_pixmap (const gdx2d_pixmap* src_pixmap,
+							   const gdx2d_pixmap* dst_pixmap,
+							   int src_x, int src_y, int src_width, int src_height,
+							   int dst_x, int dst_y, int dst_width, int dst_height);
 
 #ifdef __cplusplus
 }
