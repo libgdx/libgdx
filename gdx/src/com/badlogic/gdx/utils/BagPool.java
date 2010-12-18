@@ -59,9 +59,8 @@ abstract public class BagPool<T> {
 
 	public T add () {
 		if (size == items.length) {
-			resize((int)(size * 1.75f), false);
 			T item = newObject();
-			items[size++] = item;
+			resize((int)(size * 1.75f), false)[size++] = item;
 			return item;
 		}
 		T item = items[size];
@@ -170,12 +169,13 @@ abstract public class BagPool<T> {
 		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize, boolean exact) {
+	private T[] resize (int newSize, boolean exact) {
 		if (!exact && newSize < 8) newSize = 8;
-		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
 		T[] items = this.items;
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
+		return newItems;
 	}
 
 	/**

@@ -46,20 +46,23 @@ public class LongBag {
 	}
 
 	public void add (long value) {
-		if (size == items.length) resize((int)(size * 1.75f), false);
+		long[] items = this.items;
+		if (size == items.length) items = resize((int)(size * 1.75f), false);
 		items[size++] = value;
 	}
 
 	public void addAll (LongBag bag) {
+		long[] items = this.items;
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size += bag.size;
 	}
 
 	public void addAll (LongArray array) {
+		long[] items = this.items;
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
 	}
@@ -142,12 +145,13 @@ public class LongBag {
 		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize, boolean exact) {
+	private long[] resize (int newSize, boolean exact) {
 		if (!exact && newSize < 8) newSize = 8;
 		long[] newItems = new long[newSize];
 		long[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
+		return newItems;
 	}
 
 	/**

@@ -81,20 +81,23 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void add (T value) {
-		if (size == items.length) resize((int)(size * 1.75f), false);
+		T[] items = this.items;
+		if (size == items.length) items = resize((int)(size * 1.75f), false);
 		items[size++] = value;
 	}
 
 	public void addAll (Array array) {
+		T[] items = this.items;
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size = sizeNeeded;
 	}
 
 	public void addAll (Bag bag) {
+		T[] items = this.items;
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size = sizeNeeded;
 	}
@@ -105,9 +108,9 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void insert (int index, T value) {
+		T[] items = this.items;
 		if (size == items.length) {
-			resize((int)(size * 1.75f), false);
-			items[size++] = value;
+			resize((int)(size * 1.75f), false)[size++] = value;
 			return;
 		}
 		System.arraycopy(items, index, items, index + 1, size - index);
@@ -212,12 +215,13 @@ public class Array<T> implements Iterable<T> {
 		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize, boolean exact) {
+	private T[] resize (int newSize, boolean exact) {
 		if (!exact && newSize < 8) newSize = 8;
-		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
 		T[] items = this.items;
+		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
+		return newItems;
 	}
 
 	public void sort (Comparator<T> comparator) {

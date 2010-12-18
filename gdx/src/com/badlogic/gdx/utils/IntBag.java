@@ -46,20 +46,23 @@ public class IntBag {
 	}
 
 	public void add (int value) {
-		if (size == items.length) resize((int)(size * 1.75f), false);
+		int[] items = this.items;
+		if (size == items.length) items = resize((int)(size * 1.75f), false);
 		items[size++] = value;
 	}
 
 	public void addAll (IntBag bag) {
+		int[] items = this.items;
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size += bag.size;
 	}
 
 	public void addAll (IntArray array) {
+		int[] items = this.items;
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
 	}
@@ -142,12 +145,13 @@ public class IntBag {
 		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
 	}
 
-	private void resize (int newSize, boolean exact) {
+	private int[] resize (int newSize, boolean exact) {
 		if (!exact && newSize < 8) newSize = 8;
 		int[] newItems = new int[newSize];
 		int[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
+		return newItems;
 	}
 
 	/**
