@@ -255,6 +255,7 @@ public class BitmapFont {
 	 *         instance is used for all methods that return TextBounds.
 	 */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
+		float batchColor = spriteBatch.getColor().toFloatBits();
 		spriteBatch.setColor(color);
 		final Texture texture = region.getTexture();
 		y += ascent;
@@ -314,6 +315,7 @@ public class BitmapFont {
 				x += g.xadvance * scaleX;
 			}
 		}
+		spriteBatch.setColor(batchColor);		
 		textBounds.width = (int)(x - startX);
 		textBounds.height = (int)capHeight;
 		return textBounds;
@@ -340,6 +342,7 @@ public class BitmapFont {
 	 */
 	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
 		HAlignment alignment) {
+		float batchColor = spriteBatch.getColor().toFloatBits();
 		float down = this.down;
 		int start = 0;
 		int numLines = 0;
@@ -359,6 +362,8 @@ public class BitmapFont {
 			y += down;
 			numLines++;
 		}
+		spriteBatch.setColor(batchColor);
+		
 		textBounds.width = maxWidth;
 		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
@@ -386,6 +391,7 @@ public class BitmapFont {
 	 */
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
+		float batchColor = spriteBatch.getColor().toFloatBits();
 		float down = this.down;
 		int start = 0;
 		int numLines = 0;
@@ -423,6 +429,7 @@ public class BitmapFont {
 			y += down;
 			numLines++;
 		}
+		spriteBatch.setColor(batchColor);		
 		textBounds.width = maxWidth;
 		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
