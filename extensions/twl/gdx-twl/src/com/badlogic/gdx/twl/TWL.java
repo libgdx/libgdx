@@ -74,10 +74,6 @@ public class TWL implements InputProcessor {
 			protected void layout () {
 				layoutChildrenFullInnerArea();
 			}
-
-			protected boolean handleEvent (Event evt) {
-				return false;
-			}
 		};
 		root.setTheme("");
 
@@ -148,6 +144,7 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean touchDown (int x, int y, int pointer) {
+		if (pointer != 0) return false;
 		if (!mouseDown) lastPressConsumed = false; // Only the first button down counts.
 		mouseDown = true;
 		if (ignoreMouse) return false;
@@ -157,6 +154,7 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean touchUp (int x, int y, int pointer) {
+		if (pointer != 0) return false;
 		mouseDown = false;
 		if (ignoreMouse) {
 			ignoreMouse = false;
@@ -168,6 +166,7 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
+		if (pointer != 0) return false;
 		if (mouseDown && !lastPressConsumed) {
 			ignoreMouse = true;
 			gui.clearMouseState();
