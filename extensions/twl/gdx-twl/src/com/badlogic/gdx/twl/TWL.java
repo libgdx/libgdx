@@ -72,6 +72,10 @@ public class TWL implements InputProcessor {
 			protected void layout () {
 				layoutChildrenFullInnerArea();
 			}
+
+			protected boolean handleEvent (Event evt) {
+				return false;
+			}
 		};
 		root.setTheme("");
 
@@ -153,8 +157,9 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
-		gui.handleMouse(x, y, -1, true);
-		return false;
+		boolean handled = gui.handleMouse(x, y, -1, true);
+		System.out.println(handled);
+		return handled;
 	}
 
 	public void dispose () {
