@@ -151,7 +151,7 @@ public class TWL implements InputProcessor {
 		if (!mouseDown) lastPressConsumed = false; // Only the first button down counts.
 		mouseDown = true;
 		if (ignoreMouse) return false;
-		boolean handled = gui.handleMouse(x, y, pointer, true);
+		boolean handled = gui.handleMouse(x, y, 0, true);
 		if (handled) lastPressConsumed = true;
 		return handled;
 	}
@@ -162,7 +162,7 @@ public class TWL implements InputProcessor {
 			ignoreMouse = false;
 			return false;
 		}
-		boolean handled = gui.handleMouse(x, y, pointer, false);
+		boolean handled = gui.handleMouse(x, y, 0, false);
 		gui.handleMouse(-9999, -9999, -1, false);
 		return handled;
 	}
