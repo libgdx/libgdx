@@ -82,7 +82,10 @@ public class IntArray {
 
 	public void insert (int index, int value) {
 		int[] items = this.items;
-		if (size == items.length) resize((int)(size * 1.75f), false)[size++] = value;
+		if (size == items.length) {
+			resize((int)(size * 1.75f), false)[size++] = value;
+			return;
+		}
 		System.arraycopy(items, index, items, index + 1, size - index);
 		size++;
 		items[index] = value;
@@ -182,7 +185,7 @@ public class IntArray {
 	public String toString () {
 		if (size == 0) return "[]";
 		int[] items = this.items;
-		StringBuilder buffer = new StringBuilder(32);
+		StringBuilder buffer = new StringBuilder(size * 4);
 		buffer.append('[');
 		buffer.append(items[0]);
 		for (int i = 1; i < size; i++) {
