@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
  * @author Nathan Sweet
  * @author Matthias Mann
  */
-abstract public class ArrayPool<T> {
+abstract public class ArrayPool<T> implements Iterable<T> {
 	public T[] items;
 	public int size;
 

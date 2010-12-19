@@ -56,6 +56,8 @@ public class TWL implements InputProcessor {
 	private final GdxRenderer renderer = new GdxRenderer();
 	private final GUI gui;
 
+	private boolean mouseDown, ignoreMouse, lastPressConsumed;
+
 	/**
 	 * Creates a new TWL instance with the specified theme file. The specified widget is added to the root pane.
 	 */
@@ -142,24 +144,36 @@ public class TWL implements InputProcessor {
 	}
 
 	public boolean keyTyped (char character) {
-		boolean handled = gui.handleKey(0, character, true);
-		return gui.handleKey(0, character, false) || handled;
+		return gui.handleKey(0, character, true);
 	}
 
 	public boolean touchDown (int x, int y, int pointer) {
-		return gui.handleMouse(x, y, pointer, true);
+		if (!mouseDown) lastPressConsumed = false; // Only the first button down counts.
+		mouseDown = true;
+		if (ignoreMouse) return false;
+		boolean handled = gui.handleMouse(x, y, pointer, true);
+		if (handled) lastPressConsumed = true;
+		return handled;
 	}
 
 	public boolean touchUp (int x, int y, int pointer) {
+		mouseDown = false;
+		if (ignoreMouse) {
+			ignoreMouse = false;
+			return false;
+		}
 		boolean handled = gui.handleMouse(x, y, pointer, false);
-		gui.handleMouse(-9999, -9999, -1, true);
+		gui.handleMouse(-9999, -9999, -1, false);
 		return handled;
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
-		boolean handled = gui.handleMouse(x, y, -1, true);
-		System.out.println(handled);
-		return handled;
+		if (mouseDown && !lastPressConsumed) {
+			ignoreMouse = true;
+			gui.clearMouseState();
+			return false;
+		}
+		return gui.handleMouse(x, y, -1, true);
 	}
 
 	public void dispose () {
@@ -281,15 +295,14 @@ public class TWL implements InputProcessor {
 			return Event.KEY_SPACE;
 		case Keys.KEYCODE_TAB:
 			return Event.KEY_TAB;
-		default:
-			return Event.KEY_NONE;
 		}
+		return Event.KEY_NONE;
 	}
 
 	/**
 	 * Returns a URL to a theme file, which can be used with
 	 * {@link ThemeManager#createThemeManager(URL, de.matthiasmann.twl.renderer.Renderer) ThemeManager} to create a theme for
-	 * {@link GUI#applyTheme(ThemeManager)}. This is only needed if not using the TWL class make use of TWL.
+	 * {@link GUI#applyTheme(ThemeManager)}. This is only needed if not using the {@link TWL} class to make use of TWL.
 	 */
 	static public URL getThemeURL (String themeFile, final FileType fileType) throws MalformedURLException {
 		File file = new File(themeFile);

@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
  * @author Riven
  * @author Nathan Sweet
  */
-public class Bag<T> {
+public class Bag<T> implements Iterable<T> {
 	public T[] items;
 	public int size;
 
