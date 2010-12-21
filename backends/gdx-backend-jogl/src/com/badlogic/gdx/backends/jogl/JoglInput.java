@@ -365,6 +365,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 		if (keyCode == java.awt.event.KeyEvent.VK_SLASH) return Input.Keys.KEYCODE_SLASH;
 		if (keyCode == java.awt.event.KeyEvent.VK_SPACE) return Input.Keys.KEYCODE_SPACE;
 		if (keyCode == java.awt.event.KeyEvent.VK_TAB) return Input.Keys.KEYCODE_TAB;
+		if (keyCode == java.awt.event.KeyEvent.VK_BACK_SPACE) return Input.Keys.KEYCODE_DEL;
 
 		return Input.Keys.KEYCODE_UNKNOWN;
 	}
