@@ -161,7 +161,7 @@ public class MathUtils {
 
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
 	static private final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
-	static private final double BIG_ENOUGH_CEIL = BIG_ENOUGH_INT + 0.5;
+	static private final double BIG_ENOUGH_CEIL = BIG_ENOUGH_INT + 0.99999999;
 
 	static public int floor (float x) {
 		return (int)(x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
