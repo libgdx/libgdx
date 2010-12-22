@@ -21,6 +21,27 @@ static jmethodID shouldCollideID = 0;
 static jmethodID beginContactID = 0;
 static jmethodID endContactID = 0;
 static jmethodID reportFixtureID = 0;
+static jmethodID reportRayFixtureID = 0;
+
+class CustomRayCastCallback: public b2RayCastCallback
+{
+private:
+	JNIEnv* env;
+	jobject obj;
+
+public:
+	CustomRayCastCallback( JNIEnv *env, jobject obj )
+	{
+		this->env = env;
+		this->obj = obj;
+	}
+
+	virtual float32 ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
+	{
+		return env->CallFloatMethod(obj, reportRayFixtureID, (jlong)fixture, (jfloat)point.x, (jfloat)point.y,
+																(jfloat)normal.x, (jfloat)normal.y, (jfloat)fraction );
+	}
+};
 
 class CustomContactFilter: public b2ContactFilter
 {
@@ -103,6 +124,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_newWorld
 	beginContactID = env->GetMethodID(worldClass, "beginContact", "(J)V" );
 	endContactID = env->GetMethodID( worldClass, "endContact", "(J)V" );
 	reportFixtureID = env->GetMethodID(worldClass, "reportFixture", "(J)Z" );
+	reportRayFixtureID = env->GetMethodID(worldClass, "reportRayFixture", "(JFFFFF)F" );
 	shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
 
 	b2World* world = new b2World( b2Vec2( gravityX, gravityY ), doSleep );
@@ -653,4 +675,18 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDispose
 {
 	b2World* world = (b2World*)(addr);
 	delete world;
+}
+
+/*
+ * Class:			com_badlogic_gdx_physics_box2d_World
+ * Method:		jniRayCast
+ * Signature:	(JFFFF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast
+	(JNIEnv *env, jobject obj, jlong addr, jfloat aX, jfloat aY, jfloat bX, jfloat bY)
+{
+	b2World *world = (b2World*)addr;
+
+	CustomRayCastCallback callback( env, obj );	
+	world->RayCast( &callback, b2Vec2(aX,aY), b2Vec2(bX,bY) );
 }

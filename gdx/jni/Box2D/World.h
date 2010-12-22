@@ -254,6 +254,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniGetContactLi
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDispose
   (JNIEnv *, jobject, jlong);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniQueryAABB
+ * Signature: (JFFFF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
+
 #ifdef __cplusplus
 }
 #endif

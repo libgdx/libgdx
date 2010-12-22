@@ -64,6 +64,33 @@ public class World {
 	protected ContactListener contactListener = null;
 
 	/**
+	 * Ray-cast the world for all fixtures in the path of the ray.
+	 * The ray-cast ignores shapes that contain the starting point.
+	 * @param callback a user implemented callback class.
+	 * @param point1 the ray starting point
+	 * @param point2 the ray ending point
+	 */
+	public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2)
+	{
+		rayCastCallback = callback;
+		jniRayCast(addr, point1.x, point1.y, point2.x, point2.y);
+	}
+	
+	private RayCastCallback rayCastCallback = null;
+	
+	private native void jniRayCast (long addr, float aX, float aY, float bX, float bY);
+
+	private Vector2 rayPoint = new Vector2();
+	private Vector2 rayNormal = new Vector2();
+	
+	private float reportRayFixture (long addr, float pX, float pY, float nX, float nY, float fraction) {
+			if (rayCastCallback != null)
+				return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint.set(pX, pY), rayNormal.set(nX, nY), fraction);
+			else
+				return 0.0f;
+	}
+	
+	/**
 	 * Construct a world object.
 	 * @param gravity the world gravity vector.
 	 * @param doSleep improve performance by not simulating inactive bodies.
