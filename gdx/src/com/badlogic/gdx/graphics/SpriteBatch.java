@@ -85,7 +85,7 @@ public class SpriteBatch {
 
 	private ShaderProgram shader;
 
-	private float color = Color.WHITE.toFloatBits();
+	float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 
 	/** number of render calls **/
