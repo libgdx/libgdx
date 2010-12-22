@@ -74,7 +74,7 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		bitmapFont.setColor(renderer.getColor(fontState.color));
-		return bitmapFont.draw(renderer.spriteBatch, str, x, y, start, end).width;
+		return bitmapFont.draw(renderer.batch, str, x, y, start, end).width;
 	}
 
 	public int drawMultiLineText (AnimationState as, int x, int y, CharSequence str, int width,
@@ -83,7 +83,7 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		bitmapFont.setColor(renderer.getColor(fontState.color));
-		return bitmapFont.drawMultiLine(renderer.spriteBatch, str, x, y, width, gdxAlignment[align.ordinal()]).width;
+		return bitmapFont.drawMultiLine(renderer.batch, str, x, y, width, gdxAlignment[align.ordinal()]).width;
 	}
 
 	public FontCache cacheText (FontCache cache, CharSequence str) {
@@ -181,7 +181,7 @@ class GdxFont implements Font {
 			GdxFont.FontState fontState = evalFontState(as);
 			setColor(renderer.getColor(fontState.color));
 			setPosition(x + fontState.offsetX, y + fontState.offsetY);
-			draw(renderer.spriteBatch);
+			draw(renderer.batch);
 		}
 
 		public int getWidth () {

@@ -25,6 +25,10 @@ public class Layout extends DialogLayout {
 		setTheme("");
 	}
 
+	public Layout (String theme) {
+		setTheme(theme);
+	}
+
 	public Direction horizontal () {
 		return new Direction(true);
 	}

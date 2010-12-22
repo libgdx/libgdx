@@ -84,13 +84,14 @@ public class Sprite extends TextureRegion {
 
 	/**
 	 * Creates a sprite with width, height, and texture region equal to the specified size, relative to specified sprite's texture
-	 * region. * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * region.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn.
 	 */
 	public Sprite (TextureRegion region, int srcX, int srcY, int srcWidth, int srcHeight) {
 		setRegion(region, srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
-		setSize(Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
+		setSize(Math.abs(srcWidth), Math.abs(srcHeight));
 		setOrigin(width / 2, height / 2);
 	}
 

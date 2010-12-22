@@ -27,6 +27,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.twl.renderer.GdxRenderer;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -53,26 +54,32 @@ import de.matthiasmann.twl.theme.ThemeManager;
  * @author Nathan Sweet
  */
 public class TWL implements InputProcessor {
-	private final GdxRenderer renderer = new GdxRenderer();
+	private final GdxRenderer renderer;
 	private final GUI gui;
 
 	private boolean mouseDown, ignoreMouse, lastPressConsumed;
+	public Widget root;
 
 	/**
 	 * Creates a new TWL instance with the specified theme file. The specified widget is added to the root pane.
 	 */
-	public TWL (String themeFile, FileType fileType, Widget widget) {
-		this(themeFile, fileType);
+	public TWL (SpriteBatch batch, String themeFile, FileType fileType, Widget widget) {
+		this(batch, themeFile, fileType);
 		setWidget(widget);
 	}
 
 	/**
 	 * Creates a new TWL instance with the specified theme file.
 	 */
-	public TWL (String themeFile, FileType fileType) {
-		Widget root = new Widget() {
+	public TWL (SpriteBatch batch, String themeFile, FileType fileType) {
+		renderer = new GdxRenderer(batch);
+
+		root = new Widget() {
 			protected void layout () {
-				layoutChildrenFullInnerArea();
+				int width = getInnerWidth();
+				int height = getInnerHeight();
+				for (int i = 0, n = getNumChildren(); i < n; i++)
+					getChild(i).setSize(width, height);
 			}
 		};
 		root.setTheme("");

@@ -31,6 +31,7 @@ public class MathUtils {
 	static private final float degFull = 360;
 	static private final float radToIndex = SIN_COUNT / radFull;
 	static private final float degToIndex = SIN_COUNT / degFull;
+
 	static public final float radiansToDegrees = 180f / PI;
 	static public final float degreesToRadians = PI / 180;
 
@@ -161,13 +162,54 @@ public class MathUtils {
 
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
 	static private final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
-	static private final double BIG_ENOUGH_CEIL = BIG_ENOUGH_INT + 0.99999999;
+	static private final double CEIL = 0.9999999;
+	static private final double BIG_ENOUGH_CEIL = Double.longBitsToDouble(Double.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+	static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
 
+	/**
+	 * Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from
+	 * -(2^14) to (Float.MAX_VALUE - 2^14).
+	 */
 	static public int floor (float x) {
 		return (int)(x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
 	}
 
+	/**
+	 * Returns the largest integer less than or equal to the specified float. This method will only properly floor floats that are
+	 * positive. Note this method simply casts the float to int.
+	 */
+	static public int floorPositive (float x) {
+		return (int)x;
+	}
+
+	/**
+	 * Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
+	 * -(2^14) to (Float.MAX_VALUE - 2^14).
+	 */
 	static public int ceil (float x) {
 		return (int)(x + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
+	}
+
+	/**
+	 * Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that
+	 * are positive.
+	 */
+	static public int ceilPositive (float x) {
+		return (int)(x + CEIL);
+	}
+
+	/**
+	 * Returns the closest integer to the specified float. This method will only properly round floats from -(2^14) to
+	 * (Float.MAX_VALUE - 2^14).
+	 */
+	static public int round (float x) {
+		return (int)(x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
+	}
+
+	/**
+	 * Returns the closest integer to the specified float. This method will only properly round floats that are positive.
+	 */
+	static public int roundPositive (float x) {
+		return (int)(x + 0.5f);
 	}
 }

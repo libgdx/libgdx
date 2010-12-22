@@ -19,6 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.twl.Layout;
 import com.badlogic.gdx.twl.TWL;
 
@@ -37,7 +38,8 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 		layout.horizontal().sequence(0).parallel(button, fpsCounter).end().gap();
 		layout.vertical().sequence(0, button, 5, fpsCounter, 0);
 
-		twl = new TWL("data/widgets.xml", FileType.Internal, layout);
+		SpriteBatch batch = new SpriteBatch();
+		twl = new TWL(batch, "data/widgets.xml", FileType.Internal, layout);
 
 		input.addProcessor(twl);
 		input.addProcessor(this);

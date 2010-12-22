@@ -112,7 +112,9 @@ public class BitmapFont {
 		try {
 			reader.readLine(); // info
 
-			String[] common = reader.readLine().split(" ", 4);
+			String line = reader.readLine();
+			if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+			String[] common = line.split(" ", 4);
 			if (common.length < 4) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 
 			if (!common[1].startsWith("lineHeight=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
@@ -124,7 +126,9 @@ public class BitmapFont {
 			if (region != null)
 				reader.readLine(); // page
 			else {
-				String[] page = reader.readLine().split(" ", 4);
+				line = reader.readLine();
+				if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				String[] page = line.split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				String imgFilename = page[2].substring(6, page[2].length() - 1);
 				FileHandle imageFile = fontFile.parent().child(imgFilename);
@@ -139,7 +143,7 @@ public class BitmapFont {
 			float v = region.v;
 
 			while (true) {
-				String line = reader.readLine();
+				line = reader.readLine();
 				if (line == null) break;
 				if (line.startsWith("kernings ")) break;
 				if (!line.startsWith("char ")) continue;
@@ -157,9 +161,9 @@ public class BitmapFont {
 				} else
 					continue;
 				tokens.nextToken();
-				float srcX = Integer.parseInt(tokens.nextToken());
+				int srcX = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
-				float srcY = Integer.parseInt(tokens.nextToken());
+				int srcY = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
 				glyph.width = Integer.parseInt(tokens.nextToken());
 				tokens.nextToken();
@@ -186,7 +190,7 @@ public class BitmapFont {
 			}
 
 			while (true) {
-				String line = reader.readLine();
+				line = reader.readLine();
 				if (line == null) break;
 				if (!line.startsWith("kerning ")) break;
 
@@ -255,7 +259,7 @@ public class BitmapFont {
 	 *         instance is used for all methods that return TextBounds.
 	 */
 	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
-		float batchColor = spriteBatch.getColor().toFloatBits();
+		float batchColor = spriteBatch.color;
 		spriteBatch.setColor(color);
 		final Texture texture = region.getTexture();
 		y += ascent;
@@ -342,7 +346,7 @@ public class BitmapFont {
 	 */
 	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
 		HAlignment alignment) {
-		float batchColor = spriteBatch.getColor().toFloatBits();
+		float batchColor = spriteBatch.color;
 		float down = this.down;
 		int start = 0;
 		int numLines = 0;
@@ -391,7 +395,7 @@ public class BitmapFont {
 	 */
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
-		float batchColor = spriteBatch.getColor().toFloatBits();
+		float batchColor = spriteBatch.color;
 		float down = this.down;
 		int start = 0;
 		int numLines = 0;

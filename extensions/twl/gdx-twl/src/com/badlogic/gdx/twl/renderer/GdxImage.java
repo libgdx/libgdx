@@ -68,7 +68,7 @@ class GdxImage implements Image, SupportsDrawRepeat {
 			drawTiled(x, y, width, height);
 		} else {
 			sprite.setBounds(x, y, width, height);
-			sprite.draw(renderer.spriteBatch);
+			sprite.draw(renderer.batch);
 		}
 	}
 
@@ -78,7 +78,7 @@ class GdxImage implements Image, SupportsDrawRepeat {
 			drawTiled(x, y, width, height);
 		} else {
 			sprite.setBounds(x, y, width, height);
-			sprite.draw(renderer.spriteBatch);
+			sprite.draw(renderer.batch);
 		}
 	}
 
@@ -99,7 +99,7 @@ class GdxImage implements Image, SupportsDrawRepeat {
 			while (xi < repeatCountX) {
 				int nx = ++xi * width / repeatCountX;
 				sprite.setBounds(x + cx, y, nx - cx, rowHeight);
-				sprite.draw(renderer.spriteBatch);
+				sprite.draw(renderer.batch);
 				cx = nx;
 			}
 
@@ -117,7 +117,7 @@ class GdxImage implements Image, SupportsDrawRepeat {
 			int cntX = repeatCountX;
 			while (cntX-- > 0) {
 				sprite.setBounds(curX, y, w, h);
-				sprite.draw(renderer.spriteBatch);
+				sprite.draw(renderer.batch);
 				curX += w;
 			}
 			y += h;
@@ -151,7 +151,7 @@ class GdxImage implements Image, SupportsDrawRepeat {
 			while (cx-- > 0) {
 				int x1 = x0 + width;
 				sprite.setBounds(x0, y, x1, y1);
-				sprite.draw(renderer.spriteBatch);
+				sprite.draw(renderer.batch);
 				x0 = x1;
 			}
 			y = y1;

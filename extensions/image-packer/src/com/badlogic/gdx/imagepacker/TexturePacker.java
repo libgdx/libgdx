@@ -104,7 +104,7 @@ public class TexturePacker {
 		writer = new FileWriter(packFile, true);
 		try {
 			while (!images.isEmpty())
-				writePage(prefix, outputDir);
+				if (!writePage(prefix, outputDir)) break;
 			if (writer != null) {
 				System.out.println("Pixels eliminated: " + (1 - compressedSize / (float)uncompressedSize) * 100 + "%");
 				System.out.println();
@@ -114,7 +114,7 @@ public class TexturePacker {
 		}
 	}
 
-	private void writePage (String prefix, File outputDir) throws IOException {
+	private boolean writePage (String prefix, File outputDir) throws IOException {
 		// Try reasonably hard to pack images into the smallest POT size.
 		Comparator bestComparator = null;
 		Comparator secondBestComparator = imageComparators.get(0);
@@ -215,6 +215,10 @@ public class TexturePacker {
 			width = MathUtils.nextPowerOfTwo(width);
 			height = MathUtils.nextPowerOfTwo(height);
 		}
+		if (width > maxWidth || height > maxHeight) {
+			System.out.println("ERROR: Images do not fit on max size: " + maxWidth + "x" + maxHeight);
+			return false;
+		}
 
 		int type;
 		switch (filter.format != null ? filter.format : settings.defaultFormat) {
@@ -257,6 +261,7 @@ public class TexturePacker {
 		System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 		ImageIO.write(canvas, "png", outputFile);
 		compressedSize += canvas.getWidth() * canvas.getHeight();
+		return true;
 	}
 
 	private int insert (BufferedImage canvas, ArrayList<Image> images, int width, int height) throws IOException {

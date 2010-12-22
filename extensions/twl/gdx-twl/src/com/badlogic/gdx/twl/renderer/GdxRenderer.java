@@ -58,10 +58,10 @@ public class GdxRenderer implements Renderer {
 	private final Color tempColor = new Color(1, 1, 1, 1);
 	private boolean rendering;
 	private int width, height;
-	final SpriteBatch spriteBatch = new SpriteBatch();
+	final SpriteBatch batch;
 
-	public GdxRenderer () {
-		spriteBatch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1);
+	public GdxRenderer (SpriteBatch batch) {
+		this.batch = batch;
 
 		Widget root = new Widget() {
 			protected void layout () {
@@ -97,13 +97,13 @@ public class GdxRenderer implements Renderer {
 
 	public void startRenderering () {
 		tintStack = tintStateRoot;
-		spriteBatch.begin();
+		batch.begin();
 		rendering = true;
 	}
 
 	public void endRendering () {
 		rendering = false;
-		spriteBatch.end();
+		batch.end();
 		if (hasScissor) {
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
@@ -111,7 +111,7 @@ public class GdxRenderer implements Renderer {
 	}
 
 	public void setClipRect (Rect rect) {
-		if (rendering) spriteBatch.flush();
+		if (rendering) batch.flush();
 		if (rect == null) {
 			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
 			hasScissor = false;
@@ -150,7 +150,7 @@ public class GdxRenderer implements Renderer {
 	public void setSize (int width, int height) {
 		this.width = width;
 		this.height = height;
-		spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
+		batch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 	}
 
 	public LineRenderer getLineRenderer () {
@@ -192,7 +192,7 @@ public class GdxRenderer implements Renderer {
 			cacheContext.destroy();
 			cacheContext = null;
 		}
-		spriteBatch.dispose();
+		batch.dispose();
 	}
 
 	static private class TintStack extends Color {

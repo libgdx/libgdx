@@ -17,6 +17,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.twl.Layout;
 import com.badlogic.gdx.twl.TWL;
 
@@ -46,7 +47,8 @@ public class TextAreaTest implements ApplicationListener {
 		layout.horizontal().parallel(scrollPane, fpsCounter);
 		layout.vertical().sequence(scrollPane, 5, fpsCounter, 5);
 
-		twl = new TWL("data/widgets.xml", FileType.Internal, layout);
+		SpriteBatch batch = new SpriteBatch();
+		twl = new TWL(batch, "data/widgets.xml", FileType.Internal, layout);
 
 		textArea.addCallback(new TextArea.Callback() {
 			Timer timer;
