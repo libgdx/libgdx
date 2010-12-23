@@ -31,9 +31,9 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An ordered, resizable array. This class is very slightly more efficient than {@link ArrayList} (which does an extra method call
- * for get/add and increments a "modCount" on add) and exposes the size and underlying {@link #items} array. The items array can
- * be typed, which facilitates System.arraycopy.
+ * An ordered, resizable array of objects. This class is very slightly more efficient than {@link ArrayList} (which does an extra
+ * method call for get/add and increments a "modCount" on add) and exposes the size and underlying {@link #items} array. The items
+ * array can be typed, which facilitates System.arraycopy.
  * @author Nathan Sweet
  * @author Matthias Mann
  */
@@ -222,14 +222,6 @@ public class Array<T> implements Iterable<T> {
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
 		return newItems;
-	}
-
-	public void sort (Comparator<T> comparator) {
-		Arrays.sort(items, 0, size, comparator);
-	}
-
-	public void sort () {
-		Arrays.sort(items, 0, size);
 	}
 
 	/**

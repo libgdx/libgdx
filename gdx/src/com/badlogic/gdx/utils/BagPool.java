@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An unordered, resizable array that reuses element instances
+ * An unordered, resizable array of objects that reuses element instances.
  * @see Bag
  * @author Riven
  * @author Nathan Sweet

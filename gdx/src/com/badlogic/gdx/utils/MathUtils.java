@@ -151,7 +151,14 @@ public class MathUtils {
 	// ---
 
 	static public int nextPowerOfTwo (int value) {
-		return 1 << 32 - Integer.numberOfLeadingZeros(value - 1);
+		if (value == 0) return 1;
+		if ((value & value - 1) == 0) return value;
+		value |= value >> 1;
+		value |= value >> 2;
+		value |= value >> 4;
+		value |= value >> 8;
+		value |= value >> 16;
+		return value + 1;
 	}
 
 	static public boolean isPowerOfTwo (int value) {

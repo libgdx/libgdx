@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An ordered, resizable array that reuses element instances.
+ * An ordered, resizable array of objects that reuses element instances.
  * @see Array
  * @author Nathan Sweet
  * @author Matthias Mann
@@ -202,14 +202,6 @@ abstract public class ArrayPool<T> implements Iterable<T> {
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
 		return newItems;
-	}
-
-	public void sort (Comparator<T> comparator) {
-		Arrays.sort(items, 0, size, comparator);
-	}
-
-	public void sort () {
-		Arrays.sort(items, 0, size);
 	}
 
 	/**

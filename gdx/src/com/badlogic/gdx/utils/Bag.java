@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An unordered, resizable array. Avoids a memory copy when removing elements (the last element is moved to the removed element's
+ * An unordered, resizable array of objects. Avoids a memory copy when removing elements (the last element is moved to the removed element's
  * position).
  * @author Riven
  * @author Nathan Sweet

@@ -317,8 +317,7 @@ public class TextureAtlas {
 	}
 
 	/**
-	 * Describes the region of a packed image and provides extra information, such as the original image size before any whitespace
-	 * was stripped.
+	 * Describes the region of a packed image and provides information about the original image before it was packed.
 	 */
 	static public class AtlasRegion extends TextureRegion {
 		/**
@@ -331,7 +330,8 @@ public class TextureAtlas {
 		public int index;
 
 		/**
-		 * The name of the original image file, with any trailing numbers or special flags removed.
+		 * The name of the original image file, up to the first underscore. Underscores denote special instructions to the texture
+		 * packer.
 		 */
 		public String name;
 

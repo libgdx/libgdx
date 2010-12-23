@@ -605,8 +605,8 @@ public class TexturePacker {
 
 	static public class Settings {
 		public Format defaultFormat = Format.RGBA8888;
-		public TextureFilter defaultFilterMin = TextureFilter.Linear;
-		public TextureFilter defaultFilterMag = TextureFilter.Linear;
+		public TextureFilter defaultFilterMin = TextureFilter.Nearest;
+		public TextureFilter defaultFilterMag = TextureFilter.Nearest;
 		public int alphaThreshold = 0;
 		public boolean pot = true;
 		public int padding = 1;
