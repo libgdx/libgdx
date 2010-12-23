@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.tests.AlphaTest;
+import com.badlogic.gdx.tests.AtlasIssueTest;
+import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.AudioRecorderTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
@@ -83,6 +85,8 @@ public class GdxTests
 {
 	public static final Class[] tests = {
 		AlphaTest.class,
+		AtlasIssueTest.class,
+		FilterPerformanceTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,
 		BitmapFontAlignmentTest.class,
