@@ -23,8 +23,8 @@ public abstract class Animator {
 	protected float mAnimPos = 0.f;
 	protected float mAnimLen = 0.f;
 	protected boolean mAnimLoop = false;
-	protected int mCurrentFrameIdx = 0;
-	protected int mNextFrameIdx = 0;
+	protected int mCurrentFrameIdx = -1;
+	protected int mNextFrameIdx = -1;
 	protected float mFrameDelta = 0.f;
 	protected Animation mCurrentAnim = null;
 	
@@ -44,8 +44,8 @@ public abstract class Animator {
 		{
 			mAnimLen = mCurrentAnim.getLength(); 
 			mAnimPos = mFrameDelta = 0.f;
-			mCurrentFrameIdx = 0;
-			mNextFrameIdx = 1;
+			mCurrentFrameIdx = -1;
+			mNextFrameIdx = -1;
 		}	
 	}
 	
@@ -87,8 +87,6 @@ public abstract class Animator {
 			
 			if(currentFrameIdx != mCurrentFrameIdx)
 			{
-				int nextFrame = 0;
-				
 				if(currentFrameIdx < numFrames-1)
 				{
 					mNextFrameIdx = currentFrameIdx+1;
