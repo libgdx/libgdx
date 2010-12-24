@@ -17,9 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
@@ -27,7 +25,6 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.PNGDecoder.Format;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -56,20 +53,14 @@ final class LwjglTexture implements Texture {
 
 	static private ByteBuffer buffer;
 	static private IntBuffer intBuffer;
-	static private final PNGDecoder pngDecoder = new PNGDecoder();
 
 	LwjglTexture (FileHandle file, TextureFilter minFilter, TextureFilter maxFilter, TextureWrap uWrap, TextureWrap vWrap,
 		boolean managed) {
 		this.isManaged = managed;
 		this.isMipMapped = TextureFilter.isMipMap(minFilter);
 
-		if (!isMipMapped && file.path().endsWith(".png")) {
-			// Fast path.
-			loadPNG(file);
-		} else {
-			BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
-			loadMipMap(image);
-		}
+		BufferedImage image = (BufferedImage)Gdx.graphics.newPixmap(file).getNativePixmap();
+		loadMipMap(image);
 		bind();
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, getTextureFilter(minFilter));
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, getTextureFilter(maxFilter));
@@ -128,70 +119,28 @@ final class LwjglTexture implements Texture {
 		textures++;
 	}
 
-	private void loadPNG (FileHandle file) {
-		try {
-			pngDecoder.decodeHeader(file.read());
-			texWidth = pngDecoder.getWidth();
-			texHeight = pngDecoder.getHeight();
-			int stride = texWidth * 4;
-			ensureBufferSize(stride * texHeight);
-
-			Format pngFormat = pngDecoder.decideTextureFormat(PNGDecoder.Format.RGBA);
-			int glFormat, glInternalFormat;
-			switch (pngFormat) {
-			case ALPHA:
-				glFormat = GL_ALPHA;
-				glInternalFormat = GL_ALPHA8;
-				break;
-			case LUMINANCE:
-				glFormat = GL_LUMINANCE;
-				glInternalFormat = GL_LUMINANCE8;
-				break;
-			case LUMINANCE_ALPHA:
-				glFormat = GL_LUMINANCE_ALPHA;
-				glInternalFormat = GL_LUMINANCE8_ALPHA8;
-				break;
-			case RGB:
-				glFormat = GL_RGB;
-				glInternalFormat = GL_RGB8;
-				break;
-			case RGBA:
-				glFormat = GL_RGBA;
-				glInternalFormat = GL_RGBA8;
-				break;
-			case BGRA:
-				glFormat = GL_BGRA;
-				glInternalFormat = GL_BGRA;
-				break;
-			default:
-				throw new UnsupportedOperationException("PNG format not handled: " + pngFormat);
-			}
-			pngDecoder.decode(buffer, stride, pngFormat);
-			buffer.flip();
-
-			textureID = glGenTextures();
-			glBindTexture(GL_TEXTURE_2D, textureID);
-			glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texWidth, texHeight, 0, glFormat, GL_UNSIGNED_BYTE, buffer);
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error loading image file: " + file, ex);
-		}
-	}
-
 	private ByteBuffer toByteBuffer (BufferedImage image) {
 		int width = image.getWidth();
 		int height = image.getHeight();
 		ensureBufferSize(width * height * 4);
 
 		Raster raster = image.getRaster();
-		if (image.getType() == BufferedImage.TYPE_INT_ARGB)
-			intBuffer.put(((DataBufferInt)raster.getDataBuffer()).getData(), 0, width * height);
-		else {
-			// Same as image.getRGB() without allocating a large int[].
-			ColorModel colorModel = image.getColorModel();
-			Object data = raster.getDataElements(0, 0, null);
-			for (int y = 0; y < height; y++)
-				for (int x = 0; x < width; x++)
-					intBuffer.put(colorModel.getRGB(raster.getDataElements(x, y, data)));
+		ColorModel colorModel = image.getColorModel();
+		Object data = raster.getDataElements(0, 0, null);
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				int rgba = colorModel.getRGB(raster.getDataElements(x, y, data));
+				int a = (rgba >> 24) & 0xFF;
+				int r = (rgba >> 16) & 0xFF;
+				int g = (rgba >> 8) & 0xFF;
+				int b = rgba & 0xFF;
+				rgba = a << 24;
+				float alpha = a / 255f;
+				rgba |= ((int)(r * alpha)) << 16;
+				rgba |= ((int)(g * alpha)) << 8;
+				rgba |= (int)(b * alpha);
+				intBuffer.put(rgba);
+			}
 		}
 
 		buffer.limit(intBuffer.position() * 4);
