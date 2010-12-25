@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  * Callback class for ray casts.
- * @see World#RayCast(RayCastCallback, Vector2, Vector2)
+ * @see World#rayCast(RayCastCallback, Vector2, Vector2)
  * @author mzechner
  *
  */
