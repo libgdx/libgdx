@@ -52,7 +52,7 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
 		long timeStamp = System.nanoTime();
 		synchronized (input) {
-			TouchEvent event = input.freeTouchEvents.newObject();
+			TouchEvent event = input.usedTouchEvents.add();
 			event.timeStamp = timeStamp;
 			event.pointer = 0;
 			event.x = x;

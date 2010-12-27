@@ -15,15 +15,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class RotateBy implements Action {
-	static final Pool<RotateBy> pool = new Pool<RotateBy>(new PoolObjectFactory<RotateBy>() {
-		@Override public RotateBy createObject () {
+	static final BagPool<RotateBy> pool = new BagPool<RotateBy>(4, 100) {
+		protected RotateBy newObject () {
 			return new RotateBy();
 		}
-	}, 100);
+	};
 
 	protected float rotation;
 	protected float startRotation;;
@@ -35,7 +34,7 @@ public class RotateBy implements Action {
 	protected boolean done;
 
 	public static RotateBy $ (float rotation, float duration) {
-		RotateBy action = pool.newObject();
+		RotateBy action = pool.add();
 		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
@@ -67,7 +66,7 @@ public class RotateBy implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 	}
 
 	@Override public Action copy () {

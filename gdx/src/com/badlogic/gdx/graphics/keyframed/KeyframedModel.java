@@ -14,19 +14,18 @@ package com.badlogic.gdx.graphics.keyframed;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.HashMap;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Material;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.graphics.animation.Animator;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Animator;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * An animated model with {@link KeyframeAnimation}s. Currently the animations can only be instanced from an {@link MD5Animation}.
@@ -38,7 +37,7 @@ import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
 public class KeyframedModel {
 	
 	private Material[] mMaterials;
-	private HashMap<String, KeyframeAnimation> mAnimations = new HashMap<String, KeyframeAnimation>();
+	private ObjectMap<String, KeyframeAnimation> mAnimations = new ObjectMap<String, KeyframeAnimation>();
 	private KeyframeAnimator mAnimator = null;
 	private Mesh[] mTarget = null;
 	private int mNumMeshes = 0;

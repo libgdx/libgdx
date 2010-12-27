@@ -13,8 +13,6 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
-
 /**
  * A simple linked list that pools its nodes. This is a highly specialized class used in a couple of 2D scene graph classes. I
  * wouldn't use it if i was you :)
@@ -35,19 +33,18 @@ public class PooledLinkedList<T> {
 	private Item<T> curr;
 	private int size = 0;
 
-	private final Pool<Item<T>> pool;
+	private final BagPool<Item<T>> pool;
 
 	public PooledLinkedList (int maxPoolSize) {
-		this.pool = new Pool<PooledLinkedList.Item<T>>(new PoolObjectFactory<PooledLinkedList.Item<T>>() {
-
-			@Override public PooledLinkedList.Item<T> createObject () {
+		this.pool = new BagPool<PooledLinkedList.Item<T>>(16, maxPoolSize) {
+			protected Item<T> newObject () {
 				return new Item<T>();
 			}
-		}, maxPoolSize);
+		};
 	}
 
 	public void add (T object) {
-		Item<T> item = pool.newObject();
+		Item<T> item = pool.add();
 		item.payload = object;
 		item.next = null;
 		item.prev = null;
@@ -93,7 +90,7 @@ public class PooledLinkedList<T> {
 		if (curr == null) return;
 
 		size--;
-		pool.free(curr);
+		pool.removeValue(curr, true);
 
 		Item<T> c = curr;
 		Item<T> n = curr.next;

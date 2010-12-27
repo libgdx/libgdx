@@ -44,7 +44,7 @@ public class FilterPerformanceTest extends GdxTest {
 	String[] filterNames = { "nearest", "linear", "nearest mipmap nearest", "linear mipmap nearest", "linear mipmap linear" };
 	
 	private void setTextureFilter (int filter) {
-		atlas.getRegion("map").getTexture().bind();
+		atlas.findRegion("map").getTexture().bind();
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, filters[filter]);
 		texture.bind();
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, filters[filter]);
@@ -66,7 +66,7 @@ public class FilterPerformanceTest extends GdxTest {
 		setTextureFilter(0);
 		setModeString();
 
-		sprite = atlas.getSprite("map");
+		sprite = atlas.createSprite("map");
 		sprite2 = new Sprite(texture, 0, 0, 855, 480);
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);	
 

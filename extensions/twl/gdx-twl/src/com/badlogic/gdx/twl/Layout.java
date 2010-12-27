@@ -14,6 +14,7 @@
 package com.badlogic.gdx.twl;
 
 import de.matthiasmann.twl.DialogLayout;
+import de.matthiasmann.twl.Event;
 import de.matthiasmann.twl.Widget;
 
 /**
@@ -21,12 +22,27 @@ import de.matthiasmann.twl.Widget;
  * @author Nathan Sweet
  */
 public class Layout extends DialogLayout {
+	private boolean eatEvents;
+
 	public Layout () {
 		setTheme("");
 	}
 
 	public Layout (String theme) {
 		setTheme(theme);
+	}
+
+	public Layout (boolean eatEvents) {
+		this.eatEvents = eatEvents;
+	}
+
+	public Layout (String theme, boolean eatEvents) {
+		setTheme(theme);
+		this.eatEvents = eatEvents;
+	}
+
+	protected boolean handleEvent (Event evt) {
+		return eatEvents;
 	}
 
 	public Direction horizontal () {

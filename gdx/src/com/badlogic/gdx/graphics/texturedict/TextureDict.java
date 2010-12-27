@@ -12,15 +12,13 @@
  */
 package com.badlogic.gdx.graphics.texturedict;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
 * <p>
@@ -34,7 +32,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 */
 public class TextureDict {
 	
-	private static HashMap<String, TextureRef> sDictionary = new HashMap<String, TextureRef>();
+	private static ObjectMap<String, TextureRef> sDictionary = new ObjectMap<String, TextureRef>();
 
 	/**
 	 * Loads a new texture into the dictionary as a reference counted {@link TextureRef}.

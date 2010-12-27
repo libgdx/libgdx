@@ -15,15 +15,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class Repeat implements Action {
-	static final Pool<Repeat> pool = new Pool<Repeat>(new PoolObjectFactory<Repeat>() {
-		@Override public Repeat createObject () {
+	static final BagPool<Repeat> pool = new BagPool<Repeat>(4, 100) {
+		protected Repeat newObject () {
 			return new Repeat();
 		}
-	}, 100);
+	};
 
 	protected Action action;
 	protected Actor target;
@@ -31,7 +30,7 @@ public class Repeat implements Action {
 	protected int finishedTimes;
 
 	public static Repeat $ (Action action, int times) {
-		Repeat repeat = pool.newObject();
+		Repeat repeat = pool.add();
 		repeat.action = action;
 		repeat.times = times;
 		repeat.finishedTimes = 0;
@@ -61,7 +60,7 @@ public class Repeat implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 		action.finish();
 	}
 

@@ -186,7 +186,7 @@ public class TextureAtlas {
 	 * should be cached rather than calling this method multiple times.
 	 * @return The region, or null.
 	 */
-	public AtlasRegion getRegion (String name) {
+	public AtlasRegion findRegion (String name) {
 		for (int i = 0, n = regions.size(); i < n; i++)
 			if (regions.get(i).name.equals(name)) return regions.get(i);
 		return null;
@@ -197,7 +197,7 @@ public class TextureAtlas {
 	 * the result should be cached rather than calling this method multiple times.
 	 * @return The region, or null.
 	 */
-	public AtlasRegion getRegion (String name, int index) {
+	public AtlasRegion findRegion (String name, int index) {
 		for (int i = 0, n = regions.size(); i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (!region.name.equals(name)) continue;
@@ -211,7 +211,7 @@ public class TextureAtlas {
 	 * Returns all regions with the specified name, ordered by smallest to largest {@link AtlasRegion#index index}. This method
 	 * uses string comparison to find the regions, so the result should be cached rather than calling this method multiple times.
 	 */
-	public List<AtlasRegion> getRegions (String name) {
+	public List<AtlasRegion> findRegions (String name) {
 		ArrayList<AtlasRegion> matched = new ArrayList();
 		for (int i = 0, n = regions.size(); i < n; i++) {
 			AtlasRegion region = regions.get(i);
@@ -223,9 +223,9 @@ public class TextureAtlas {
 	/**
 	 * Returns all regions in the atlas as sprites. This method creates a new sprite for each region, so the result should be
 	 * stored rather than calling this method multiple times.
-	 * @see #getSprite(String)
+	 * @see #createSprite(String)
 	 */
-	public List<Sprite> getSprites () {
+	public List<Sprite> createSprites () {
 		ArrayList sprites = new ArrayList(regions.size());
 		for (int i = 0, n = regions.size(); i < n; i++)
 			sprites.add(newSprite(regions.get(i)));
@@ -238,7 +238,7 @@ public class TextureAtlas {
 	 * find the region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
 	 * @return The sprite, or null.
 	 */
-	public Sprite getSprite (String name) {
+	public Sprite createSprite (String name) {
 		for (int i = 0, n = regions.size(); i < n; i++)
 			if (regions.get(i).name.equals(name)) return newSprite(regions.get(i));
 		return null;
@@ -248,9 +248,9 @@ public class TextureAtlas {
 	 * Returns the first region found with the specified name and index as a sprite. This method uses string comparison to find the
 	 * region and constructs a new sprite, so the result should be cached rather than calling this method multiple times.
 	 * @return The sprite, or null.
-	 * @see #getSprite(String)
+	 * @see #createSprite(String)
 	 */
-	public Sprite getSprite (String name, int index) {
+	public Sprite createSprite (String name, int index) {
 		for (int i = 0, n = regions.size(); i < n; i++) {
 			AtlasRegion region = regions.get(i);
 			if (!region.name.equals(name)) continue;
@@ -264,9 +264,9 @@ public class TextureAtlas {
 	 * Returns all regions with the specified name as sprites, ordered by smallest to largest {@link AtlasRegion#index index}. This
 	 * method uses string comparison to find the regions and constructs new sprites, so the result should be cached rather than
 	 * calling this method multiple times.
-	 * @see #getSprite(String)
+	 * @see #createSprite(String)
 	 */
-	public List<Sprite> getSprites (String name) {
+	public List<Sprite> createSprites (String name) {
 		ArrayList<Sprite> matched = new ArrayList();
 		for (int i = 0, n = regions.size(); i < n; i++) {
 			AtlasRegion region = regions.get(i);
@@ -325,7 +325,7 @@ public class TextureAtlas {
 		 * <br>
 		 * When sprites are packed, if the original file name ends with a number, it is stored as the index and is not considered as
 		 * part of the sprite's name. This is useful for keeping animation frames in order.
-		 * @see TextureAtlas#getRegions(String)
+		 * @see TextureAtlas#findRegions(String)
 		 */
 		public int index;
 

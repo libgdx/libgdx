@@ -38,6 +38,7 @@ import java.util.NoSuchElementException;
 abstract public class ArrayPool<T> implements Iterable<T> {
 	public T[] items;
 	public int size;
+	public final int max;
 
 	private ItemIterator iterator;
 
@@ -49,6 +50,14 @@ abstract public class ArrayPool<T> implements Iterable<T> {
 	}
 
 	public ArrayPool (int capacity) {
+		this(capacity, -1);
+	}
+
+	/**
+	 * @param max The maximum size of this pool. See {@link #add()}.
+	 */
+	public ArrayPool (int capacity, int max) {
+		this.max = max;
 		this.items = (T[])new Object[capacity];
 	}
 
@@ -63,12 +72,27 @@ abstract public class ArrayPool<T> implements Iterable<T> {
 	 * Creates a new array with {@link #items} of the specified type.
 	 */
 	public ArrayPool (Class<T> arrayType, int capacity) {
+		this(arrayType, capacity, -1);
+	}
+
+	/**
+	 * Creates a new array with {@link #items} of the specified type.
+	 * @param max The maximum size of this pool. See {@link #add()}.
+	 */
+	public ArrayPool (Class<T> arrayType, int capacity, int max) {
+		this.max = max;
 		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
 	}
 
 	abstract protected T newObject ();
 
+	/**
+	 * Returns an object from this pool. The object may be new (from {@link #newObject()}) or reused (previously
+	 * {@link #removeValue(Object, boolean) removed} from the pool). If this pool already contains {@link #max} objects, a new
+	 * object is returned, but it is not added to the pool (it will be garbage collected).
+	 */
 	public T add () {
+		if (size == max) return newObject();
 		T[] items = this.items;
 		if (size == items.length) {
 			T item = newObject();

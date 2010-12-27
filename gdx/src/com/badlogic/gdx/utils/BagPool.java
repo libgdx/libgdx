@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 abstract public class BagPool<T> implements Iterable<T> {
 	public T[] items;
 	public int size;
+	public final int max;
 
 	private ItemIterator iterator;
 
@@ -38,6 +39,14 @@ abstract public class BagPool<T> implements Iterable<T> {
 	}
 
 	public BagPool (int capacity) {
+		this(capacity, -1);
+	}
+
+	/**
+	 * @param max The maximum size of this pool. See {@link #add()}.
+	 */
+	public BagPool (int capacity, int max) {
+		this.max = max;
 		items = (T[])new Object[capacity];
 	}
 
@@ -52,12 +61,27 @@ abstract public class BagPool<T> implements Iterable<T> {
 	 * Creates a new bag with {@link #items} of the specified type.
 	 */
 	public BagPool (Class<T> arrayType, int capacity) {
+		this(arrayType, capacity, -1);
+	}
+
+	/**
+	 * Creates a new bag with {@link #items} of the specified type.
+	 * @param max The maximum size of this pool. See {@link #add()}.
+	 */
+	public BagPool (Class<T> arrayType, int capacity, int max) {
+		this.max = max;
 		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
 	}
 
 	abstract protected T newObject ();
 
+	/**
+	 * Returns an object from this pool. The object may be new (from {@link #newObject()}) or reused (previously
+	 * {@link #removeValue(Object, boolean) removed} from the pool). If this pool already contains {@link #max} objects, a new
+	 * object is returned, but it is not added to the pool (it will be garbage collected).
+	 */
 	public T add () {
+		if (size == max) return newObject();
 		if (size == items.length) {
 			T item = newObject();
 			resize((int)(size * 1.75f), false)[size++] = item;

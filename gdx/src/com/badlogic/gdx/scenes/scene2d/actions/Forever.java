@@ -15,21 +15,20 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class Forever implements Action {
-	static final Pool<Forever> pool = new Pool<Forever>(new PoolObjectFactory<Forever>() {
-		@Override public Forever createObject () {
+	static final BagPool<Forever> pool = new BagPool<Forever>(4, 100) {
+		protected Forever newObject () {
 			return new Forever();
 		}
-	}, 100);
+	};
 
 	protected Action action;
 	protected Actor target;
 
 	public static Forever $ (Action action) {
-		Forever forever = pool.newObject();
+		Forever forever = pool.add();
 		forever.action = action;
 		return forever;
 	}
@@ -54,7 +53,7 @@ public class Forever implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 		action.finish();
 	}
 

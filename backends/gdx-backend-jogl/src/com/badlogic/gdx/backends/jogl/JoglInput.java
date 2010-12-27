@@ -28,8 +28,7 @@ import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class JoglInput implements Input, MouseMotionListener, MouseListener, KeyListener {
 	class KeyEvent {
@@ -53,19 +52,17 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 		int pointer;
 	}
 
-	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(new PoolObjectFactory<KeyEvent>() {
-
-		@Override public KeyEvent createObject () {
+	BagPool<KeyEvent> usedKeyEvents = new BagPool<KeyEvent>(16, 1000) {
+		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
-	}, 1000);
+	};
 
-	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(new PoolObjectFactory<TouchEvent>() {
-
-		@Override public TouchEvent createObject () {
+	BagPool<TouchEvent> usedTouchEvents = new BagPool<TouchEvent>(16, 1000) {
+		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
-	}, 1000);
+	};
 
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
@@ -167,7 +164,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					freeKeyEvents.free(e);
+					usedKeyEvents.removeValue(e, true);
 				}
 
 				len = touchEvents.size();
@@ -183,17 +180,17 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					freeTouchEvents.free(e);
+					usedTouchEvents.removeValue(e, true);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					freeTouchEvents.free(touchEvents.get(i));
+					usedTouchEvents.removeValue(touchEvents.get(i), true);
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					freeKeyEvents.free(keyEvents.get(i));
+					usedKeyEvents.removeValue(keyEvents.get(i), true);
 				}
 			}
 
@@ -220,7 +217,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void mouseDragged (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = freeTouchEvents.newObject();
+			TouchEvent event = usedTouchEvents.add();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
@@ -249,7 +246,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void mousePressed (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = freeTouchEvents.newObject();
+			TouchEvent event = usedTouchEvents.add();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
@@ -264,7 +261,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void mouseReleased (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = freeTouchEvents.newObject();
+			TouchEvent event = usedTouchEvents.add();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
@@ -279,7 +276,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void keyPressed (java.awt.event.KeyEvent e) {
 		synchronized (this) {
-			KeyEvent event = freeKeyEvents.newObject();
+			KeyEvent event = usedKeyEvents.add();
 			event.keyChar = 0;
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_DOWN;
@@ -290,7 +287,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void keyReleased (java.awt.event.KeyEvent e) {
 		synchronized (this) {
-			KeyEvent event = freeKeyEvents.newObject();
+			KeyEvent event = usedKeyEvents.add();
 			event.keyChar = 0;
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_UP;
@@ -301,7 +298,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void keyTyped (java.awt.event.KeyEvent e) {
 		synchronized (this) {
-			KeyEvent event = freeKeyEvents.newObject();
+			KeyEvent event = usedKeyEvents.add();
 			event.keyChar = e.getKeyChar();
 			event.keyCode = 0;
 			event.type = KeyEvent.KEY_TYPED;

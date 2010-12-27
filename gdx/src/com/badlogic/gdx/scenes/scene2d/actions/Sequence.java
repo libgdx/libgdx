@@ -18,22 +18,21 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class Sequence implements Action {
-	static final Pool<Sequence> pool = new Pool<Sequence>(new PoolObjectFactory<Sequence>() {
-		@Override public Sequence createObject () {
+	static final BagPool<Sequence> pool = new BagPool<Sequence>(4, 100) {
+		protected Sequence newObject () {
 			return new Sequence();
 		}
-	}, 100);
+	};
 
 	protected final List<Action> actions = new ArrayList<Action>();
 	protected Actor target;
 	protected int currAction = 0;
 
 	public static Sequence $ (Action... actions) {
-		Sequence action = pool.newObject();
+		Sequence action = pool.add();
 		action.actions.clear();
 		int len = actions.length;
 		for (int i = 0; i < len; i++)
@@ -65,14 +64,14 @@ public class Sequence implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 		int len = 0;
 		for (int i = 0; i < len; i++)
 			actions.get(i).finish();
 	}
 
 	@Override public Action copy () {
-		Sequence action = pool.newObject();
+		Sequence action = pool.add();
 		action.actions.clear();
 		int len = actions.size();
 		for (int i = 0; i < len; i++)

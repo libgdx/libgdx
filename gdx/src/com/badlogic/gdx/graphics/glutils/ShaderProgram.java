@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * <p>
@@ -68,10 +69,10 @@ public class ShaderProgram {
 	private boolean isCompiled;
 
 	/** uniform lookup **/
-	private final HashMap<String, Integer> uniforms = new HashMap<String, Integer>();
+	private final ObjectMap<String, Integer> uniforms = new ObjectMap<String, Integer>();
 
 	/** attribute lookup **/
-	private final HashMap<String, Integer> attributes = new HashMap<String, Integer>();
+	private final ObjectMap<String, Integer> attributes = new ObjectMap<String, Integer>();
 
 	/** program handle **/
 	private int program;

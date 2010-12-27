@@ -15,22 +15,21 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class Delay implements Action {
-	static final Pool<Delay> pool = new Pool<Delay>(new PoolObjectFactory<Delay>() {
-		@Override public Delay createObject () {
+	static final BagPool<Delay> pool = new BagPool<Delay>(4, 100) {
+		protected Delay newObject () {
 			return new Delay();
 		}
-	}, 100);
+	};
 
 	protected float taken;
 	protected float duration;
 	protected Action action;
 
 	public static Delay $ (Action action, float duration) {
-		Delay delay = pool.newObject();
+		Delay delay = pool.add();
 		delay.duration = duration;
 		delay.action = action;
 		return delay;
@@ -51,7 +50,7 @@ public class Delay implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 	}
 
 	@Override public Action copy () {

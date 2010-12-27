@@ -37,7 +37,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
-import com.badlogic.gdx.utils.LongHashMap;
+import com.badlogic.gdx.utils.LongMap;
 
 /**
  * The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
@@ -49,13 +49,13 @@ public class World {
 	private final long addr;
 
 	/** all known bodies **/
-	protected final LongHashMap<Body> bodies = new LongHashMap<Body>(100);
+	protected final LongMap<Body> bodies = new LongMap<Body>(100);
 
 	/** all known fixtures **/
-	protected final LongHashMap<Fixture> fixtures = new LongHashMap<Fixture>(100);
+	protected final LongMap<Fixture> fixtures = new LongMap<Fixture>(100);
 
 	/** all known joints **/
-	protected final LongHashMap<Joint> joints = new LongHashMap<Joint>(100);
+	protected final LongMap<Joint> joints = new LongMap<Joint>(100);
 
 	/** Contact filter **/
 	protected ContactFilter contactFilter = null;

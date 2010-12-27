@@ -33,21 +33,21 @@ public class TextureAtlasTest extends GdxTest {
 
 		atlas = new TextureAtlas(Gdx.files.internal("data"));
 
-		badlogic = atlas.getSprite("badlogicslice");
+		badlogic = atlas.createSprite("badlogicslice");
 		badlogic.setPosition(50, 50);
 
-		badlogicSmall = atlas.getSprite("badlogicsmall");
+		badlogicSmall = atlas.createSprite("badlogicsmall");
 		badlogicSmall.setPosition(10, 10);
 		badlogicSmall.flip(true, true);
 
-		AtlasRegion region = atlas.getRegion("badlogicsmall");
+		AtlasRegion region = atlas.findRegion("badlogicsmall");
 		System.out.println("badlogicSmall original size: " + region.originalWidth + ", " + region.originalHeight);
 		System.out.println("badlogicSmall packed size: " + region.packedWidth + ", " + region.packedHeight);
 
-		star = atlas.getSprite("particle-star");
+		star = atlas.createSprite("particle-star");
 		star.setPosition(10, 70);
 
-		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), atlas.getRegion("font"), false);
+		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), atlas.findRegion("font"), false);
 
 		Gdx.gl.glClearColor(0, 1, 0, 1);
 	}

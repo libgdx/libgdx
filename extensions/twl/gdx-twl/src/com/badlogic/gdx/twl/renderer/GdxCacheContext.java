@@ -15,10 +15,10 @@ package com.badlogic.gdx.twl.renderer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.BitmapFont;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import de.matthiasmann.twl.renderer.CacheContext;
 
@@ -27,8 +27,8 @@ import de.matthiasmann.twl.renderer.CacheContext;
  */
 class GdxCacheContext implements CacheContext {
 	final GdxRenderer renderer;
-	private final HashMap<String, GdxTexture> textures = new HashMap();
-	private final HashMap<String, BitmapFont> fonts = new HashMap();
+	private final ObjectMap<String, GdxTexture> textures = new ObjectMap();
+	private final ObjectMap<String, BitmapFont> fonts = new ObjectMap();
 	private boolean valid = true;
 
 	GdxCacheContext (GdxRenderer renderer) {

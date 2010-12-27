@@ -33,8 +33,7 @@ import android.widget.EditText;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -66,19 +65,17 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		int pointer;
 	}
 
-	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(new PoolObjectFactory<KeyEvent>() {
-
-		@Override public KeyEvent createObject () {
+	BagPool<KeyEvent> usedKeyEvents = new BagPool<KeyEvent>(16, 1000) {
+		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
-	}, 1000);
+	};
 
-	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(new PoolObjectFactory<TouchEvent>() {
-
-		@Override public TouchEvent createObject () {
+	BagPool<TouchEvent> usedTouchEvents = new BagPool<TouchEvent>(16, 1000) {
+		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
-	}, 1000);
+	};
 
 	ArrayList<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	ArrayList<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
@@ -223,7 +220,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					freeKeyEvents.free(e);
+					usedKeyEvents.removeValue(e, true);
 				}
 
 				len = touchEvents.size();
@@ -239,19 +236,19 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					freeTouchEvents.free(e);
+					usedTouchEvents.removeValue(e, true);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
 // Log.d("AndroidInput", "synch touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
-					freeTouchEvents.free(e);
+					usedTouchEvents.removeValue(e, true);
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					freeKeyEvents.free(keyEvents.get(i));
+					usedKeyEvents.removeValue(keyEvents.get(i), true);
 				}
 			}
 
@@ -290,7 +287,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			KeyEvent event = null;
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
-				event = freeKeyEvents.newObject();
+				event = usedKeyEvents.add();
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_DOWN;
@@ -298,13 +295,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				keys.add(event.keyCode);
 				break;
 			case android.view.KeyEvent.ACTION_UP:
-				event = freeKeyEvents.newObject();
+				event = usedKeyEvents.add();
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_UP;
 				keyEvents.add(event);
 
-				event = freeKeyEvents.newObject();
+				event = usedKeyEvents.add();
 				event.keyChar = character;
 				event.keyCode = 0;
 				event.type = KeyEvent.KEY_TYPED;

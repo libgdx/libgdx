@@ -104,7 +104,7 @@ public class LevelRenderer implements ApplicationListener {
 
 				int type = Integer.parseInt(reader.readLine());
 				String textureId = reader.readLine();
-				TextureRegion region = atlas.getRegion(textureId);
+				TextureRegion region = atlas.findRegion(textureId);
 				float u = region.getU();
 				float v = region.getV();
 
@@ -142,7 +142,7 @@ public class LevelRenderer implements ApplicationListener {
 
 					int type = Integer.parseInt(reader.readLine());
 					String textureId = reader.readLine();
-					TextureRegion region = atlas.getRegion(textureId);
+					TextureRegion region = atlas.findRegion(textureId);
 					float u = region.getU();
 					float v = region.getV();
 

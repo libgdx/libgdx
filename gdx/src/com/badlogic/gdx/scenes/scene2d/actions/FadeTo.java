@@ -15,15 +15,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class FadeTo implements Action {
-	static final Pool<FadeTo> pool = new Pool<FadeTo>(new PoolObjectFactory<FadeTo>() {
-		@Override public FadeTo createObject () {
+	static final BagPool<FadeTo> pool = new BagPool<FadeTo>(4, 100) {
+		protected FadeTo newObject () {
 			return new FadeTo();
 		}
-	}, 100);
+	};
 
 	protected float toAlpha = 0;
 	protected float startAlpha;
@@ -35,7 +34,7 @@ public class FadeTo implements Action {
 	protected boolean done;
 
 	public static FadeTo $ (float alpha, float duration) {
-		FadeTo action = pool.newObject();
+		FadeTo action = pool.add();
 		if (alpha < 0) alpha = 0;
 		if (alpha > 1) alpha = 1;
 		action.toAlpha = alpha;
@@ -68,7 +67,7 @@ public class FadeTo implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 	}
 
 	@Override public Action copy () {

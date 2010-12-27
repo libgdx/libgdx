@@ -15,9 +15,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -28,6 +26,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * A group is an Actor that contains other Actors (also other Groups which are Actors).
@@ -48,7 +47,7 @@ public class Group extends Actor {
 	protected final List<Actor> immutableChildren;
 	protected final List<Group> groups; // TODO O(n) delete, baad.
 	protected final List<Group> immutableGroups;
-	protected final Map<String, Actor> namesToActors;
+	protected final ObjectMap<String, Actor> namesToActors;
 
 	public Actor lastTouchedChild;
 	public Actor focusedActor = null;
@@ -64,7 +63,7 @@ public class Group extends Actor {
 		this.immutableChildren = Collections.unmodifiableList(this.children);
 		this.groups = new ArrayList<Group>();
 		this.immutableGroups = Collections.unmodifiableList(this.groups);
-		this.namesToActors = new HashMap<String, Actor>();
+		this.namesToActors = new ObjectMap<String, Actor>();
 	}
 
 	protected void updateTransform () {

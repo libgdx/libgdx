@@ -25,8 +25,7 @@ import org.lwjgl.input.Mouse;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 /**
  * An implementation of the {@link Input} interface hooking a Jogl panel for input.
@@ -56,19 +55,17 @@ final class LwjglInput implements Input {
 		int pointer;
 	}
 
-	Pool<KeyEvent> freeKeyEvents = new Pool<KeyEvent>(new PoolObjectFactory<KeyEvent>() {
-
-		@Override public KeyEvent createObject () {
+	BagPool<KeyEvent> usedKeyEvents = new BagPool<KeyEvent>(16, 1000) {
+		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
-	}, 1000);
+	};
 
-	Pool<TouchEvent> freeTouchEvents = new Pool<TouchEvent>(new PoolObjectFactory<TouchEvent>() {
-
-		@Override public TouchEvent createObject () {
+	BagPool<TouchEvent> usedTouchEvents = new BagPool<TouchEvent>(16, 1000) {
+		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
-	}, 1000);
+	};
 
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
@@ -178,7 +175,7 @@ final class LwjglInput implements Input {
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					freeKeyEvents.free(e);
+					usedKeyEvents.removeValue(e, true);
 				}
 
 				len = touchEvents.size();
@@ -194,17 +191,17 @@ final class LwjglInput implements Input {
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					freeTouchEvents.free(e);
+					usedTouchEvents.removeValue(e, true);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					freeTouchEvents.free(touchEvents.get(i));
+					usedTouchEvents.removeValue(touchEvents.get(i), true);
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					freeKeyEvents.free(keyEvents.get(i));
+					usedKeyEvents.removeValue(keyEvents.get(i), true);
 				}
 			}
 
@@ -464,7 +461,7 @@ final class LwjglInput implements Input {
 				if (isButtonPressed()) {
 					if (mousePressed == false) {
 						mousePressed = true;
-						TouchEvent event = freeTouchEvents.newObject();
+						TouchEvent event = usedTouchEvents.add();
 						event.x = x;
 						event.y = y;
 						event.pointer = 0;
@@ -474,7 +471,7 @@ final class LwjglInput implements Input {
 						mouseY = y;
 					} else {
 						if (mouseX != x || mouseY != y) {
-							TouchEvent event = freeTouchEvents.newObject();
+							TouchEvent event = usedTouchEvents.add();
 							event.x = x;
 							event.y = y;
 							event.pointer = 0;
@@ -489,7 +486,7 @@ final class LwjglInput implements Input {
 						mouseX = x;
 						mouseY = y;
 						mousePressed = false;
-						TouchEvent event = freeTouchEvents.newObject();
+						TouchEvent event = usedTouchEvents.add();
 						event.x = x;
 						event.y = y;
 						event.pointer = 0;
@@ -514,13 +511,13 @@ final class LwjglInput implements Input {
 					int keyCode = getGdxKeyCode(Keyboard.getEventKey());
 					char keyChar = Keyboard.getEventCharacter();
 
-					KeyEvent event = freeKeyEvents.newObject();
+					KeyEvent event = usedKeyEvents.add();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_DOWN;
 					keyEvents.add(event);
 
-					event = freeKeyEvents.newObject();
+					event = usedKeyEvents.add();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
@@ -529,7 +526,7 @@ final class LwjglInput implements Input {
 				} else {
 					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
 
-					KeyEvent event = freeKeyEvents.newObject();
+					KeyEvent event = usedKeyEvents.add();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_UP;

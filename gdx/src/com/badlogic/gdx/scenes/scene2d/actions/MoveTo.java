@@ -15,15 +15,14 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.PoolObjectFactory;
+import com.badlogic.gdx.utils.BagPool;
 
 public class MoveTo implements Action {
-	static final Pool<MoveTo> pool = new Pool<MoveTo>(new PoolObjectFactory<MoveTo>() {
-		@Override public MoveTo createObject () {
+	static final BagPool<MoveTo> pool = new BagPool<MoveTo>(4, 100) {
+		protected MoveTo newObject () {
 			return new MoveTo();
 		}
-	}, 100);
+	};
 
 	protected float x;
 	protected float y;
@@ -38,7 +37,7 @@ public class MoveTo implements Action {
 	protected boolean done;
 
 	public static MoveTo $ (float x, float y, float duration) {
-		MoveTo action = pool.newObject();
+		MoveTo action = pool.add();
 		action.x = x;
 		action.y = y;
 		action.duration = duration;
@@ -73,7 +72,7 @@ public class MoveTo implements Action {
 	}
 
 	@Override public void finish () {
-		pool.free(this);
+		pool.removeValue(this, true);
 	}
 
 	@Override public Action copy () {
