@@ -15,6 +15,7 @@ package com.badlogic.gdx.graphics;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 /**
@@ -23,10 +24,10 @@ import java.nio.ByteBuffer;
  *
  */
 public class Gdx2DPixmap {
-	static final int GDX2D_FORMAT_ALPHA = 1;
-	static final int GDX2D_FORMAT_ALPHA_LUMINANCE = 2;
-	static final int GDX2D_FORMAT_RGB = 3;
-	static final int GDX2D_FORMAT_RGBA = 4;
+	public static final int GDX2D_FORMAT_ALPHA = 1;
+	public static final int GDX2D_FORMAT_ALPHA_LUMINANCE = 2;
+	public static final int GDX2D_FORMAT_RGB = 3;
+	public static final int GDX2D_FORMAT_RGBA = 4;
 	
 	final long basePtr;
 	final int width;
@@ -35,7 +36,7 @@ public class Gdx2DPixmap {
 	final ByteBuffer pixelPtr;
 	static final long[] nativeData = new long[4];
 	
-	private Gdx2DPixmap(InputStream in, int requestedFormat) throws IOException {
+	public Gdx2DPixmap(InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
 		int readBytes = 0;
@@ -55,7 +56,7 @@ public class Gdx2DPixmap {
 		format = (int)nativeData[3];		
 	}
 	
-	private Gdx2DPixmap(int width, int height, int format) throws IllegalArgumentException {
+	public Gdx2DPixmap(int width, int height, int format) throws IllegalArgumentException {
 		pixelPtr = newPixmap(nativeData, width, height, format);
 		if(pixelPtr == null)
 			throw new IllegalArgumentException("couldn't load pixmap");
@@ -119,7 +120,7 @@ public class Gdx2DPixmap {
 		} catch(IllegalArgumentException e) {
 			return null;
 		}
-	}
+	}	
 	
 	private static native ByteBuffer load(long[] nativeData, byte[] buffer, int len, int requestedFormat);
 	private static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format);
@@ -135,4 +136,20 @@ public class Gdx2DPixmap {
 	
 	public static native void setBlend(int blend);
 	public static native void setScale(int scale);
+
+	public ByteBuffer getPixels () {
+		return pixelPtr;
+	}
+
+	public int getHeight () {
+		return height;
+	}
+	
+	public int getWidth () {
+		return width;
+	}
+	
+	public int getFormat() {
+		return format;
+	}
 }

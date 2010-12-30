@@ -13,6 +13,8 @@
 #ifndef __GDX2D__
 #define __GDX2D__
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,23 +51,23 @@ typedef struct {
 	int width;
 	int height;
 	int format;
-	const char* pixels;
+	const unsigned char* pixels;
 } gdx2d_pixmap;
 
-extern gdx2d_pixmap* gdx2d_load (const char *buffer, int len, int req_format);
+extern gdx2d_pixmap* gdx2d_load (const unsigned char *buffer, int len, int req_format);
 extern gdx2d_pixmap* gdx2d_new  (int width, int height, int format);
 extern void 		 gdx2d_free (const gdx2d_pixmap* pixmap);
 
 extern void gdx2d_set_blend	  (int blend);
 extern void gdx2d_set_scale	  (int scale);
 
-extern void gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, int col);
-extern void gdx2d_set_pixel   (const gdx2d_pixmap* pixmap, int x, int y, int col);
-extern void gdx2d_draw_line   (const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, int col);
-extern void gdx2d_draw_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col);
-extern void gdx2d_draw_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
-extern void gdx2d_fill_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col);
-extern void gdx2d_fill_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, int col);
+extern void gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, uint32_t col);
+extern void gdx2d_set_pixel   (const gdx2d_pixmap* pixmap, int x, int y, uint32_t col);
+extern void gdx2d_draw_line   (const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, uint32_t col);
+extern void gdx2d_draw_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, uint32_t col);
+extern void gdx2d_draw_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, uint32_t col);
+extern void gdx2d_fill_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, uint32_t col);
+extern void gdx2d_fill_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, uint32_t col);
 extern void gdx2d_draw_pixmap (const gdx2d_pixmap* src_pixmap,
 							   const gdx2d_pixmap* dst_pixmap,
 							   int src_x, int src_y, int src_width, int src_height,

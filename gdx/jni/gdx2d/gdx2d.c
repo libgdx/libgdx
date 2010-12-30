@@ -20,9 +20,9 @@
 static int gdx2d_blend = GDX2D_BLEND_NONE;
 static int gdx2d_scale = GDX2D_SCALE_NEAREST;
 
-gdx2d_pixmap* gdx2d_load(const char *buffer, int len, int req_format) {
+gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, int len, int req_format) {
 	int width, height, format;
-	const char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, req_format);
+	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, req_format);
 	if(pixels == NULL)
 		return NULL;
 
@@ -39,7 +39,7 @@ gdx2d_pixmap* gdx2d_new(int width, int height, int format) {
 	pixmap->width = width;
 	pixmap->height = height;
 	pixmap->format = format;
-	pixmap->pixels = (char*)malloc(width * height * format);
+	pixmap->pixels = (unsigned char*)malloc(width * height * format);
 	return pixmap;
 }
 void gdx2d_free(const gdx2d_pixmap* pixmap) {
@@ -55,31 +55,31 @@ void gdx2d_set_scale (int scale) {
 	gdx2d_scale = scale;
 }
 
-void gdx2d_clear(const gdx2d_pixmap* pixmap, int col) {
+void gdx2d_clear(const gdx2d_pixmap* pixmap, uint32_t col) {
+	
+}
+
+void gdx2d_set_pixel(const gdx2d_pixmap* pixmap, int x, int y, uint32_t col) {
 
 }
 
-void gdx2d_set_pixel(const gdx2d_pixmap* pixmap, int x, int y, int col) {
+void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, uint32_t col) {
 
 }
 
-void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, int col) {
+void gdx2d_draw_rect(const gdx2d_pixmap* pixmap, int x, int y, int width, int height, uint32_t col) {
 
 }
 
-void gdx2d_draw_rect(const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col) {
+void gdx2d_draw_circle(const gdx2d_pixmap* pixmap, int x, int y, int radius, uint32_t col) {
 
 }
 
-void gdx2d_draw_circle(const gdx2d_pixmap* pixmap, int x, int y, int radius, int col) {
+void gdx2d_fill_rect(const gdx2d_pixmap* pixmap, int x, int y, int width, int height, uint32_t col) {
 
 }
 
-void gdx2d_fill_rect(const gdx2d_pixmap* pixmap, int x, int y, int width, int height, int col) {
-
-}
-
-void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int x, int y, int radius, int col) {
+void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int x, int y, int radius, uint32_t col) {
 
 }
 
