@@ -165,21 +165,32 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 */
 	public final static int DEBUG_LOG_GL_CALLS = 2;
 
+     final ResolutionStrategy resolutionStrategy;
+
 	/**
 	 * Standard View constructor. In order to render something, you must call {@link #setRenderer} to register a renderer.
 	 */
-	public GLSurfaceViewCupcake (Context context) {
+	public GLSurfaceViewCupcake (Context context, ResolutionStrategy resolutionStrategy) {
 		super(context);
+        this.resolutionStrategy = resolutionStrategy;
 		init();
 	}
 
 	/**
 	 * Standard View constructor. In order to render something, you must call {@link #setRenderer} to register a renderer.
 	 */
-	public GLSurfaceViewCupcake (Context context, AttributeSet attrs) {
+	public GLSurfaceViewCupcake (Context context, AttributeSet attrs, ResolutionStrategy resolutionStrategy) {
 		super(context, attrs);
+         this.resolutionStrategy = resolutionStrategy;
 		init();
 	}
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(measures.width, measures.height);
+    }
 
 	private void init () {
 		// Install a SurfaceHolder.Callback so we get notified when the

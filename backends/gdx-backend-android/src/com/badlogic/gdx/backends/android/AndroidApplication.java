@@ -19,10 +19,12 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import android.widget.FrameLayout;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -31,206 +33,229 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Version;
+import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
+import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 
 /**
  * An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
- * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener,boolean)} method specifying the
+ * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener, boolean)} method specifying the
  * configuration for the GLSurfaceView.
- * 
+ *
  * @author mzechner
  */
 public class AndroidApplication extends Activity implements Application {
 
-	static {
-		Version.loadLibrary();
-	}
+    static {
+        Version.loadLibrary();
+    }
 
-	protected AndroidGraphics graphics;
-	protected AndroidInput input;
-	protected AndroidAudio audio;
-	protected AndroidFiles files;
-	protected ApplicationListener listener;
-	protected Handler handler;
-	protected boolean firstResume = true;
+    protected AndroidGraphics graphics;
+    protected AndroidInput input;
+    protected AndroidAudio audio;
+    protected AndroidFiles files;
+    protected ApplicationListener listener;
+    protected Handler handler;
+    protected boolean firstResume = true;
 
-	/**
-	 * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Sleep time in touch event handler is 0, so no sleeping is performed.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
-	 */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
-		initialize(listener, useGL2IfAvailable, 0);
-	}
+    /**
+     * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
+     * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
+     * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
+     * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
+     * {@link Graphics#isGL20Available()} method. Sleep time in touch event handler is 0, so no sleeping is performed.
+     *
+     * @param listener          the {@link ApplicationListener} implementing the program logic
+     * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
+     */
+    public void initialize(ApplicationListener listener, boolean useGL2IfAvailable) {
+        initialize(listener, useGL2IfAvailable, new FillResolutionStrategy(), 0);
+    }
 
-	/**
-	 * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. sleepTime specifies the number of milliseconds to sleep in the touch event
-	 * handler. This may be used on <= 1.6 Android devices. Note that it will not solve the CPU usage problem of the event handler
-	 * of the Android system. Things will still slow down.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
-	 * @param sleepTime specifies the number of milliseconds to sleep in the touch event handler
-	 */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable, int sleepTime) {
-		graphics = new AndroidGraphics(this, useGL2IfAvailable);
-		input = new AndroidInput(this, graphics.view, sleepTime);
-		audio = new AndroidAudio(this);
-		files = new AndroidFiles(this.getAssets());
-		this.listener = listener;
-		this.handler = new Handler();
+    /**
+     * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
+     * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
+     * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
+     * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
+     * {@link Graphics#isGL20Available()} method. sleepTime specifies the number of milliseconds to sleep in the touch event
+     * handler. This may be used on <= 1.6 Android devices. Note that it will not solve the CPU usage problem of the event handler
+     * of the Android system. Things will still slow down.
+     *
+     * @param listener          the {@link ApplicationListener} implementing the program logic
+     * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
+     * @param sleepTime         specifies the number of milliseconds to sleep in the touch event handler
+     */
+    public void initialize(ApplicationListener listener, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy, int sleepTime) {
+        graphics = new AndroidGraphics(this, useGL2IfAvailable, resolutionStrategy);
+        input = new AndroidInput(this, graphics.view, sleepTime);
+        audio = new AndroidAudio(this);
+        files = new AndroidFiles(this.getAssets());
+        this.listener = listener;
+        this.handler = new Handler();
 
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
+        Gdx.app = this;
+        Gdx.input = this.getInput();
+        Gdx.audio = this.getAudio();
+        Gdx.files = this.getFiles();
+        Gdx.graphics = this.getGraphics();
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(graphics.getView());
-	}
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        setContentView(graphics.getView(), createLayoutParams());
+    }
 
-	/**
-	 * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. sleepTime specifies the number of milliseconds to sleep in the touch event
-	 * handler. This may be used on <= 1.6 Android devices. Note that it will not solve the CPU usage problem of the event handler
-	 * of the Android system. Things will still slow down.
-	 * 
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
-	 * @param sleepTime specifies the number of milliseconds to sleep in the touch event handler
-	 * @return the GLSurfaceView of the application
-	 */
-	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable, int sleepTime) {
-		graphics = new AndroidGraphics(this, useGL2IfAvailable);
-		input = new AndroidInput(this, graphics.view, sleepTime);
-		audio = new AndroidAudio(this);
-		files = new AndroidFiles(this.getAssets());
-		this.listener = listener;
-		this.handler = new Handler();
+    protected FrameLayout.LayoutParams createLayoutParams() {
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.FILL_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+        return layoutParams;
+    }
 
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
+    /**
+     * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
+     * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
+     * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
+     * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
+     * {@link Graphics#isGL20Available()} method. sleepTime specifies the number of milliseconds to sleep in the touch event
+     * handler. This may be used on <= 1.6 Android devices. Note that it will not solve the CPU usage problem of the event handler
+     * of the Android system. Things will still slow down.
+     * <p/>
+     * Note: you have to add the returned view to your layout!
+     *
+     * @param listener          the {@link ApplicationListener} implementing the program logic
+     * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
+     * @param sleepTime         specifies the number of milliseconds to sleep in the touch event handler
+     * @return the GLSurfaceView of the application
+     */
+    public View initializeForView(ApplicationListener listener, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy, int sleepTime) {
+        graphics = new AndroidGraphics(this, useGL2IfAvailable, resolutionStrategy);
+        input = new AndroidInput(this, graphics.view, sleepTime);
+        audio = new AndroidAudio(this);
+        files = new AndroidFiles(this.getAssets());
+        this.listener = listener;
+        this.handler = new Handler();
 
-		return graphics.getView();
-	}
+        Gdx.app = this;
+        Gdx.input = this.getInput();
+        Gdx.audio = this.getAudio();
+        Gdx.files = this.getFiles();
+        Gdx.graphics = this.getGraphics();
 
-	@Override protected void onPause () {
-		graphics.pause();
+        return graphics.getView();
+    }
 
-		if (isFinishing()) {
-			graphics.clearManagedCaches();
-			graphics.destroy();
-		}
+    @Override
+    protected void onPause() {
+        graphics.pause();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
-		}
+        if (isFinishing()) {
+            graphics.clearManagedCaches();
+            graphics.destroy();
+        }
 
-		if (audio != null) audio.pause();
-		super.onPause();
-	}
+        if (graphics != null && graphics.view != null) {
+            if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onPause();
+            if (graphics.view instanceof android.opengl.GLSurfaceView)
+                ((android.opengl.GLSurfaceView) graphics.view).onPause();
+        }
 
-	@Override protected void onResume () {
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
+        if (audio != null) audio.pause();
+        super.onPause();
+    }
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
-		}
+    @Override
+    protected void onResume() {
+        Gdx.app = this;
+        Gdx.input = this.getInput();
+        Gdx.audio = this.getAudio();
+        Gdx.files = this.getFiles();
+        Gdx.graphics = this.getGraphics();
 
-		if (audio != null) audio.resume();
-		if (!firstResume)
-			graphics.resume();
-		else
-			firstResume = false;
-		super.onResume();
-	}
+        if (graphics != null && graphics.view != null) {
+            if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onResume();
+            if (graphics.view instanceof android.opengl.GLSurfaceView)
+                ((android.opengl.GLSurfaceView) graphics.view).onResume();
+        }
 
-	@Override protected void onDestroy () {
-		audio.dispose();
-		super.onDestroy();
-	}
+        if (audio != null) audio.resume();
+        if (!firstResume)
+            graphics.resume();
+        else
+            firstResume = false;
+        super.onResume();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Audio getAudio () {
-		return audio;
-	}
+    @Override
+    protected void onDestroy() {
+        audio.dispose();
+        super.onDestroy();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Files getFiles () {
-		return files;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Audio getAudio() {
+        return audio;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Graphics getGraphics () {
-		return graphics;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Files getFiles() {
+        return files;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Input getInput () {
-		return input;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Graphics getGraphics() {
+        return graphics;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void log (String tag, String message) {
-		Log.d(tag, message);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Input getInput() {
+        return input;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public ApplicationType getType () {
-		return ApplicationType.Android;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void log(String tag, String message) {
+        Log.d(tag, message);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getVersion () {
-		return Build.VERSION.SDK.charAt(0) - '0';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ApplicationType getType() {
+        return ApplicationType.Android;
+    }
 
-	@Override public long getJavaHeap () {
-		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getVersion() {
+        return Build.VERSION.SDK.charAt(0) - '0';
+    }
 
-	@Override public long getNativeHeap () {
-		return Debug.getNativeHeapAllocatedSize();
-	}
+    @Override
+    public long getJavaHeap() {
+        return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+    }
+
+    @Override
+    public long getNativeHeap() {
+        return Debug.getNativeHeapAllocatedSize();
+    }
 }
