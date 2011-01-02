@@ -8,9 +8,9 @@
  */
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_Gdx2DPixmap_load
   (JNIEnv *env, jclass, jlongArray nativeData, jbyteArray buffer, jint len, jint req_format) {
-	char* p_buffer = (char*)env->GetPrimitiveArrayCritical(buffer, 0);
+	const unsigned char* p_buffer = (const char*)env->GetPrimitiveArrayCritical(buffer, 0);
 	gdx2d_pixmap* pixmap = gdx2d_load(p_buffer, len, req_format);
-	env->ReleasePrimitiveArrayCritical(buffer, p_buffer, 0);
+	env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 
 	if(pixmap==0)
 		return 0;
