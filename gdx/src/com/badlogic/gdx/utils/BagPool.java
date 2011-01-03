@@ -13,23 +13,14 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 /**
- * An unordered, resizable array of objects that reuses element instances.
- * @see Bag
- * @author Riven
+ * An unordered, resizable array of objects that reuses element instances. The {@link #add()} method adds objects to the pool. The
+ * objects are created by {@link #newObject()}. Any other methods that would add objects to the pool are not supported. When an
+ * object is removed from the pool, a reference to it is retained for reuse.
  * @author Nathan Sweet
  */
-abstract public class BagPool<T> implements Iterable<T> {
-	public T[] items;
-	public int size;
+abstract public class BagPool<T> extends Bag<T> {
 	public final int max;
-
-	private ItemIterator iterator;
 
 	/**
 	 * Creates a new bag with an initial capacity of 16.
@@ -43,7 +34,7 @@ abstract public class BagPool<T> implements Iterable<T> {
 	}
 
 	/**
-	 * @param max The maximum size of this pool. See {@link #add()}.
+	 * @param max The maximum size of this pool. -1 for no max size. See {@link #add()}.
 	 */
 	public BagPool (int capacity, int max) {
 		this.max = max;
@@ -66,7 +57,7 @@ abstract public class BagPool<T> implements Iterable<T> {
 
 	/**
 	 * Creates a new bag with {@link #items} of the specified type.
-	 * @param max The maximum size of this pool. See {@link #add()}.
+	 * @param max The maximum size of this pool. -1 for no max size. See {@link #add()}.
 	 */
 	public BagPool (Class<T> arrayType, int capacity, int max) {
 		this.max = max;
@@ -78,69 +69,19 @@ abstract public class BagPool<T> implements Iterable<T> {
 	/**
 	 * Returns an object from this pool. The object may be new (from {@link #newObject()}) or reused (previously
 	 * {@link #removeValue(Object, boolean) removed} from the pool). If this pool already contains {@link #max} objects, a new
-	 * object is returned, but it is not added to the pool (it will be garbage collected).
+	 * object is returned, but it is not added to the pool (it will be garbage collected when removed).
 	 */
 	public T add () {
 		if (size == max) return newObject();
 		if (size == items.length) {
 			T item = newObject();
-			resize((int)(size * 1.75f), false)[size++] = item;
+			resize(Math.max(8, (int)(size * 1.75f)))[size++] = item;
 			return item;
 		}
 		T item = items[size];
 		if (item == null) item = newObject();
 		items[size++] = item;
 		return item;
-	}
-
-	public T get (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		return items[index];
-	}
-
-	public boolean contains (T value, boolean identity) {
-		Object[] items = this.items;
-		int i = size - 1;
-		if (identity || value == null) {
-			while (i >= 0)
-				if (items[i--] == value) return true;
-		} else {
-			while (i >= 0)
-				if (value.equals(items[i--])) return true;
-		}
-		return false;
-	}
-
-	public int indexOf (T value, boolean identity) {
-		Object[] items = this.items;
-		if (identity || value == null) {
-			for (int i = 0, n = size; i < n; i++)
-				if (items[i] == value) return i;
-		} else {
-			for (int i = 0, n = size; i < n; i++)
-				if (value.equals(items[i])) return i;
-		}
-		return -1;
-	}
-
-	public boolean removeValue (T value, boolean identity) {
-		Object[] items = this.items;
-		if (identity || value == null) {
-			for (int i = 0, n = size; i < n; i++) {
-				if (items[i] == value) {
-					removeIndex(i);
-					return true;
-				}
-			}
-		} else {
-			for (int i = 0, n = size; i < n; i++) {
-				if (value.equals(items[i])) {
-					removeIndex(i);
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	public void removeIndex (int index) {
@@ -150,13 +91,6 @@ abstract public class BagPool<T> implements Iterable<T> {
 		T old = (T)items[index];
 		items[index] = items[size];
 		items[size] = old;
-	}
-
-	/**
-	 * Removes and returns the last item.
-	 */
-	public T pop () {
-		return items[--size];
 	}
 
 	/**
@@ -172,89 +106,38 @@ abstract public class BagPool<T> implements Iterable<T> {
 		return value;
 	}
 
-	public void clear () {
-		size = 0;
+	/**
+	 * Not supported for a pool. Use {@link #add()}.
+	 */
+	public void add (T value) {
+		throw new UnsupportedOperationException("Not supported for a pool.");
 	}
 
 	/**
-	 * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known the more items will not be added.
+	 * Not supported for a pool. Use {@link #add()}.
 	 */
-	public void shrink () {
-		resize(size, true);
+	public void addAll (Bag bag) {
+		throw new UnsupportedOperationException("Not supported for a pool.");
 	}
 
 	/**
-	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
+	 * Not supported for a pool. Use {@link #add()}.
 	 */
-	public void ensureCapacity (int additionalCapacity) {
-		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
-	}
-
-	private T[] resize (int newSize, boolean exact) {
-		if (!exact && newSize < 8) newSize = 8;
-		T[] items = this.items;
-		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
-		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
-		this.items = newItems;
-		return newItems;
+	public void addAll (Array array) {
+		throw new UnsupportedOperationException("Not supported for a pool.");
 	}
 
 	/**
-	 * Sorts the bag, which will stay ordered until an element is removed.
+	 * Not supported for a pool. Use {@link #add()}.
 	 */
-	public void sort (Comparator<T> comparator) {
-		Arrays.sort(items, 0, size, comparator);
+	public void set (int index, T value) {
+		throw new UnsupportedOperationException("Not supported for a pool.");
 	}
 
 	/**
-	 * Sorts the bag, which will stay ordered until an element is removed.
+	 * Not supported for a pool. Use {@link #add()}.
 	 */
-	public void sort () {
-		Arrays.sort(items, 0, size);
-	}
-
-	/**
-	 * Returns an iterator for the items in the bag. Remove is supported. Note that the same iterator instance is reused each time
-	 * this method is called.
-	 */
-	public Iterator<T> iterator () {
-		if (iterator == null) iterator = new ItemIterator();
-		iterator.index = 0;
-		return iterator;
-	}
-
-	public String toString () {
-		if (size == 0) return "[]";
-		Object[] items = this.items;
-		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('[');
-		buffer.append(items[0]);
-		for (int i = 1; i < size; i++) {
-			buffer.append(", ");
-			buffer.append(items[i]);
-		}
-		buffer.append(']');
-		return buffer.toString();
-	}
-
-	class ItemIterator implements Iterator<T> {
-		int index;
-
-		public boolean hasNext () {
-			return index < size;
-		}
-
-		public T next () {
-			if (index >= size) throw new NoSuchElementException(String.valueOf(index));
-			return items[index++];
-		}
-
-		public void remove () {
-			index--;
-			removeIndex(index);
-		}
+	public void insert (int index, T value) {
+		throw new UnsupportedOperationException("Not supported for a pool.");
 	}
 }

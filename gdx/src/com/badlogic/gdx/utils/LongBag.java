@@ -13,12 +13,9 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Arrays;
-
 /**
  * An unordered, resizable long array. Avoids the boxing that occurs with ArrayList<Float>. Avoids a memory copy when removing
  * elements (the last element is moved to the removed element's position).
- * @author Riven
  * @author Nathan Sweet
  */
 public class LongBag {
@@ -47,14 +44,14 @@ public class LongBag {
 
 	public void add (long value) {
 		long[] items = this.items;
-		if (size == items.length) items = resize((int)(size * 1.75f), false);
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size++] = value;
 	}
 
 	public void addAll (LongBag bag) {
 		long[] items = this.items;
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size += bag.size;
 	}
@@ -62,7 +59,7 @@ public class LongBag {
 	public void addAll (LongArray array) {
 		long[] items = this.items;
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
 	}
@@ -70,6 +67,11 @@ public class LongBag {
 	public long get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
+	}
+
+	public void set (int index, long value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] = value;
 	}
 
 	public boolean contains (long value) {
@@ -133,7 +135,7 @@ public class LongBag {
 	 * been removed, or if it is known the more items will not be added.
 	 */
 	public void shrink () {
-		resize(size, true);
+		resize(size);
 	}
 
 	/**
@@ -142,23 +144,15 @@ public class LongBag {
 	 */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
+		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
 	}
 
-	private long[] resize (int newSize, boolean exact) {
-		if (!exact && newSize < 8) newSize = 8;
+	protected long[] resize (int newSize) {
 		long[] newItems = new long[newSize];
 		long[] items = this.items;
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
 		this.items = newItems;
 		return newItems;
-	}
-
-	/**
-	 * Sorts the bag, which will stay ordered until an element is removed.
-	 */
-	public void sort () {
-		Arrays.sort(items, 0, size);
 	}
 
 	public String toString () {

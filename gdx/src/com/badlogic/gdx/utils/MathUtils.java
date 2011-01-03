@@ -13,12 +13,12 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Random;
+
 /**
- * Utility and fast math functions.
- * 
- * Thanks to:<br>
- * Riven on JavaGaming.org for sin/cos/atan2/floor/ceil.<br>
- * Roquen on JavaGaming.org for random numbers.<br>
+ * Utility and fast math functions.<br>
+ * <br>
+ * Thanks to Riven on JavaGaming.org for sin/cos/atan2/floor/ceil.<br>
  */
 public class MathUtils {
 	static public final float PI = 3.1415927f;
@@ -106,46 +106,33 @@ public class MathUtils {
 
 	// ---
 
-	static private int randomSeed = (int)System.currentTimeMillis();
+	static public Random random = new Random();
 
 	/**
 	 * Returns a random number between 0 (inclusive) and the specified value (inclusive).
-	 * @param range Must be >= 0.
 	 */
 	static public final int random (int range) {
-		int seed = randomSeed * 1103515245 + 12345;
-		randomSeed = seed;
-		return (seed >>> 15) * (range + 1) >>> 17;
+		return random.nextInt(range + 1);
 	}
 
 	static public final int random (int start, int end) {
-		int seed = randomSeed * 1103515245 + 12345;
-		randomSeed = seed;
-		return ((seed >>> 15) * (end - start + 1) >>> 17) + start;
+		return start + random.nextInt(end - start + 1);
 	}
 
 	static public final boolean randomBoolean () {
-		int seed = randomSeed * 1103515245 + 12345;
-		randomSeed = seed;
-		return seed > 0;
+		return random.nextBoolean();
 	}
 
 	static public final float random () {
-		int seed = randomSeed * 1103515245 + 12345;
-		randomSeed = seed;
-		return (seed >>> 8) * 1f / (1 << 24);
+		return random.nextFloat();
 	}
 
 	static public final float random (float range) {
-		int seed = randomSeed * 1103515245 + 12345;
-		randomSeed = seed;
-		return (seed >>> 8) * 1f / (1 << 24) * range;
+		return random.nextFloat() * range;
 	}
 
 	static public final float random (float start, float end) {
-		int seed = randomSeed * 1103515245 + 12345;
-		randomSeed = seed;
-		return start + (seed >>> 8) * 1f / (1 << 24) * (end - start);
+		return start + random.nextFloat() * (end - start);
 	}
 
 	// ---

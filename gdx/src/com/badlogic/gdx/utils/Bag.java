@@ -13,15 +13,12 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An unordered, resizable array of objects. Avoids a memory copy when removing elements (the last element is moved to the removed element's
- * position).
- * @author Riven
+ * An unordered, resizable array of objects. Avoids a memory copy when removing elements (the last element is moved to the removed
+ * element's position).
  * @author Nathan Sweet
  */
 public class Bag<T> implements Iterable<T> {
@@ -69,14 +66,14 @@ public class Bag<T> implements Iterable<T> {
 
 	public void add (T value) {
 		T[] items = this.items;
-		if (size == items.length) items = resize((int)(size * 1.75f), false);
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size++] = value;
 	}
 
 	public void addAll (Bag bag) {
 		T[] items = this.items;
 		int sizeNeeded = size + bag.size;
-		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(bag.items, 0, items, size, bag.size);
 		size += bag.size;
 	}
@@ -84,7 +81,7 @@ public class Bag<T> implements Iterable<T> {
 	public void addAll (Array array) {
 		T[] items = this.items;
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) items = resize((int)(sizeNeeded * 1.75f), false);
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
 	}
@@ -92,6 +89,11 @@ public class Bag<T> implements Iterable<T> {
 	public T get (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
+	}
+
+	public void set (int index, T value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] = value;
 	}
 
 	public boolean contains (T value, boolean identity) {
@@ -174,7 +176,7 @@ public class Bag<T> implements Iterable<T> {
 	 * been removed, or if it is known the more items will not be added.
 	 */
 	public void shrink () {
-		resize(size, true);
+		resize(size);
 	}
 
 	/**
@@ -183,11 +185,10 @@ public class Bag<T> implements Iterable<T> {
 	 */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(sizeNeeded, false);
+		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
 	}
 
-	private T[] resize (int newSize, boolean exact) {
-		if (!exact && newSize < 8) newSize = 8;
+	protected T[] resize (int newSize) {
 		T[] items = this.items;
 		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
 		System.arraycopy(items, 0, newItems, 0, Math.min(items.length, newItems.length));
@@ -196,22 +197,8 @@ public class Bag<T> implements Iterable<T> {
 	}
 
 	/**
-	 * Sorts the bag, which will stay ordered until an element is removed.
-	 */
-	public void sort (Comparator<T> comparator) {
-		Arrays.sort(items, 0, size, comparator);
-	}
-
-	/**
-	 * Sorts the bag, which will stay ordered until an element is removed.
-	 */
-	public void sort () {
-		Arrays.sort(items, 0, size);
-	}
-
-	/**
-	 * Returns an iterator for the items in the bag. Remove is supported. Note that the same iterator instance is reused each time
-	 * this method is called.
+	 * Returns an iterator for the items in the bag. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called.
 	 */
 	public Iterator<T> iterator () {
 		if (iterator == null) iterator = new ItemIterator();
