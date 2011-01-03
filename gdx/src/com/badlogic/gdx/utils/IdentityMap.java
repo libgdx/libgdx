@@ -20,8 +20,9 @@ import java.util.Random;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /**
- * An unordered map that uses int keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small stash
- * for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
+ * An unordered map that uses identity comparison. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
+ * small stash for problematic keys. Null keys are not allowed. Null values are allowed. No allocation is done except when growing
+ * the table size. <br>
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
@@ -88,6 +89,8 @@ public class IdentityMap<K, V> {
 	}
 
 	public V put (K key, V value) {
+		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+
 		// Check for existing keys.
 		int hashCode = System.identityHashCode(key);
 		int index1 = hashCode & mask;
