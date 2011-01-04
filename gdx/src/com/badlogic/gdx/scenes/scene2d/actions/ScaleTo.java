@@ -15,10 +15,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class ScaleTo implements Action {
-	static final BagPool<ScaleTo> pool = new BagPool<ScaleTo>(4, 100) {
+	static final Pool<ScaleTo> pool = new Pool<ScaleTo>(false, 4, 100) {
 		protected ScaleTo newObject () {
 			return new ScaleTo();
 		}

@@ -15,10 +15,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class Delay implements Action {
-	static final BagPool<Delay> pool = new BagPool<Delay>(4, 100) {
+	static final Pool<Delay> pool = new Pool<Delay>(false, 4, 100) {
 		protected Delay newObject () {
 			return new Delay();
 		}

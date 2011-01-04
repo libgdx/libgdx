@@ -33,7 +33,7 @@ import android.widget.EditText;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * An implementation of the {@link Input} interface for Android.
@@ -65,13 +65,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		int pointer;
 	}
 
-	BagPool<KeyEvent> usedKeyEvents = new BagPool<KeyEvent>(16, 1000) {
+	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(false, 16, 1000) {
 		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
 	};
 
-	BagPool<TouchEvent> usedTouchEvents = new BagPool<TouchEvent>(16, 1000) {
+	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(false, 16, 1000) {
 		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}

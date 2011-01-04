@@ -13,7 +13,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Bag;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 
@@ -30,7 +30,7 @@ public class OpenALAudio implements Audio {
 
 	private int[] streams;
 
-	Bag<OpenALMusic> music = new Bag(OpenALMusic.class, 1);
+	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 
 	public OpenALAudio (int simultaneousStreams) {
 		try {
@@ -39,7 +39,7 @@ public class OpenALAudio implements Audio {
 			throw new GdxRuntimeException("Error initializing OpenAL.", ex);
 		}
 
-		IntArray streams = new IntArray(simultaneousStreams);
+		IntArray streams = new IntArray(false, simultaneousStreams);
 		for (int i = 0; i < simultaneousStreams; i++) {
 			int streamID = alGenSources();
 			if (alGetError() != AL_NO_ERROR) break;

@@ -15,10 +15,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class Forever implements Action {
-	static final BagPool<Forever> pool = new BagPool<Forever>(4, 100) {
+	static final Pool<Forever> pool = new Pool<Forever>(false, 4, 100) {
 		protected Forever newObject () {
 			return new Forever();
 		}

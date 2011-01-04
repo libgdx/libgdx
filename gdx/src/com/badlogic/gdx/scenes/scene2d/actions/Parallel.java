@@ -18,10 +18,10 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class Parallel implements Action {
-	static final BagPool<Parallel> pool = new BagPool<Parallel>(4, 100) {
+	static final Pool<Parallel> pool = new Pool<Parallel>(false, 4, 100) {
 		protected Parallel newObject () {
 			return new Parallel();
 		}

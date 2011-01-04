@@ -33,10 +33,10 @@ public class PooledLinkedList<T> {
 	private Item<T> curr;
 	private int size = 0;
 
-	private final BagPool<Item<T>> pool;
+	private final Pool<Item<T>> pool;
 
 	public PooledLinkedList (int maxPoolSize) {
-		this.pool = new BagPool<PooledLinkedList.Item<T>>(16, maxPoolSize) {
+		this.pool = new Pool<Item<T>>(false, 16, maxPoolSize) {
 			protected Item<T> newObject () {
 				return new Item<T>();
 			}

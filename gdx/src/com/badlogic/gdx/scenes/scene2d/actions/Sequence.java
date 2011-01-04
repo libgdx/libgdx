@@ -18,10 +18,10 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class Sequence implements Action {
-	static final BagPool<Sequence> pool = new BagPool<Sequence>(4, 100) {
+	static final Pool<Sequence> pool = new Pool<Sequence>(false, 4, 100) {
 		protected Sequence newObject () {
 			return new Sequence();
 		}

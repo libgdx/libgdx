@@ -608,7 +608,7 @@ public class IdentityMap<K, V> {
 		 * Returns a new array containing the remaining values.
 		 */
 		public Array<V> toArray () {
-			Array array = new Array(map.size);
+			Array array = new Array(true, map.size);
 			while (hasNext)
 				array.add(next());
 			return array;
@@ -639,7 +639,7 @@ public class IdentityMap<K, V> {
 		 * Returns a new array containing the remaining keys.
 		 */
 		public Array<K> toArray () {
-			Array array = new Array(map.size);
+			Array array = new Array(true, map.size);
 			while (hasNext)
 				array.add(next());
 			return array;

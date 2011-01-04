@@ -656,7 +656,7 @@ public class IntMap<V> {
 		 * Returns a new array containing the remaining values.
 		 */
 		public Array<V> toArray () {
-			Array array = new Array(map.size);
+			Array array = new Array(true, map.size);
 			while (hasNext)
 				array.add(next());
 			return array;
@@ -679,7 +679,7 @@ public class IntMap<V> {
 		 * Returns a new array containing the remaining values.
 		 */
 		public IntArray toArray () {
-			IntArray array = new IntArray(map.size);
+			IntArray array = new IntArray(true, map.size);
 			while (hasNext)
 				array.add(next());
 			return array;

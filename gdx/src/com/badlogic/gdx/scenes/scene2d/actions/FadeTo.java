@@ -15,10 +15,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class FadeTo implements Action {
-	static final BagPool<FadeTo> pool = new BagPool<FadeTo>(4, 100) {
+	static final Pool<FadeTo> pool = new Pool<FadeTo>(false, 4, 100) {
 		protected FadeTo newObject () {
 			return new FadeTo();
 		}

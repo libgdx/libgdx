@@ -15,10 +15,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.BagPool;
+import com.badlogic.gdx.utils.Pool;
 
 public class RotateTo implements Action {
-	static final BagPool<RotateTo> pool = new BagPool<RotateTo>(4, 100) {
+	static final Pool<RotateTo> pool = new Pool<RotateTo>(false, 4, 100) {
 		protected RotateTo newObject () {
 			return new RotateTo();
 		}
