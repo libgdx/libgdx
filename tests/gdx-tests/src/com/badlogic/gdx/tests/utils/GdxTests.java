@@ -18,7 +18,6 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
-import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.AudioRecorderTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
@@ -28,8 +27,10 @@ import com.badlogic.gdx.tests.BobTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.FilesTest;
+import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
+import com.badlogic.gdx.tests.Gdx2DTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
 import com.badlogic.gdx.tests.IndexBufferObjectClassTest;
 import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
@@ -84,6 +85,7 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 public class GdxTests 
 {
 	public static final Class[] tests = {
+		Gdx2DTest.class,
 		AlphaTest.class,
 		AtlasIssueTest.class,
 		FilterPerformanceTest.class,
