@@ -11,6 +11,7 @@ MUSTS for 0.9
 - Scaling bitmap fonts as per http://code.google.com/p/libgdx/issues/detail?id=77
 - Rework camera classes, Not happy With the distinction at the moment, should be merged and have a flag/mode -> ortho,perspective
 - Proper fullscreen support for Lwjgl and Jogl backends, only Angle backend supports it atm
+- http://code.google.com/p/libgdx/issues/list, fix all these defects 
 
 NICE TO HAVES 0.9
 - Loaders for new 3D formats (MD2, MD5, Obj, Cal3D, Ogre)
