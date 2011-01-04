@@ -76,8 +76,10 @@ final class LwjglNativesLoader {
 			loadLibrary(libName, "/native/linux/", System.getProperty("java.io.tmpdir") + File.separator);
 	}
 
-	private static void loadLibrariesMac () {
-		throw new GdxRuntimeException("loading native libs on Mac OS X not supported, mail contact@badlogicgames.com");
+	private static void loadLibrariesMac () {		
+		String[] libNames = new String[] {"libopenal.dylib", "liblwjgl.jnilib"};
+		for (String libName : libNames)
+			 loadLibrary(libName, "/native/macosx/", System.getProperty("java.io.tmpdir") + File.separator);
 	}
 
 	private static void loadLibrary (String libName, String classPath, String outputPath) {
