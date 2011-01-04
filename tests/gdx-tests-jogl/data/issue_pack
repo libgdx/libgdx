@@ -1,7 +1,7 @@
 
 resource1.png
 format: RGBA8888
-filter: MipMap,Nearest
+filter: Linear,Nearest
 repeat: none
 map
   rotate: false
