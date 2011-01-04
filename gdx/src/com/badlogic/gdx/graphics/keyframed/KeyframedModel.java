@@ -14,6 +14,8 @@ package com.badlogic.gdx.graphics.keyframed;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Material;
@@ -22,8 +24,11 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.animation.Animator;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Animator;
+import com.badlogic.gdx.graphics.loaders.md5.MD5Joints;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -41,6 +46,7 @@ public class KeyframedModel {
 	private KeyframeAnimator mAnimator = null;
 	private Mesh[] mTarget = null;
 	private int mNumMeshes = 0;
+	private ArrayList<String> mTaggedJointNames = new ArrayList<String>();
 	
 	/**
 	 * Gets the {@link KeyframeAnimator} for this model.
@@ -70,6 +76,16 @@ public class KeyframedModel {
 		{
 			mMaterials[i] = mats[i];
 		}
+	}
+	
+	/**
+	 * Sets the tagged joints for this model's animations. Tagged joints have their data preserved post-sampling.
+	 * @param joints
+	 *           An array of joint names.
+	 */
+	public void setTaggedJoints(ArrayList<String> joints)
+	{
+		mTaggedJointNames = joints;
 	}
 
 	//TODO: Split this out to an MD5toKeyframe loader in com.badlogic.gdx.graphics.loaders
@@ -115,6 +131,11 @@ public class KeyframedModel {
 			Keyframe k = new Keyframe();
 			k.Vertices = new float[mNumMeshes][];
 			k.Indices = new short[mNumMeshes][];
+			if(mTaggedJointNames.size() > 0)
+			{
+				k.TaggedJointPos = new Vector3[mTaggedJointNames.size()];
+				k.TaggedJoint = new Quaternion[mTaggedJointNames.size()];
+			}
 			
 			for(int m=0; m<mNumMeshes; m++)
 			{
@@ -130,11 +151,37 @@ public class KeyframedModel {
 				if(mTarget[m] == null)
 				{
 					mAnimator.setKeyframeDimensions(m, numVertices, numIndices);
+					mAnimator.setNumTaggedJoints(mTaggedJointNames.size());
 
 					VertexAttributes attribs = renderer.getMesh().getVertexAttributes();
 					mTarget[m] = new Mesh(false, numVertices, numIndices, attribs);
 					if(mTarget[m].getVertexSize()/4 != KeyframeAnimator.sStride)
 						throw new GdxRuntimeException("Mesh vertexattributes != 8 - is this a valid MD5 source mesh?");
+				}
+			}
+			
+			//store tagged joints.
+			MD5Joints skel = animator.getSkeleton();
+			for(int tj=0; tj<mTaggedJointNames.size(); tj++)
+			{
+				String name = mTaggedJointNames.get(tj);
+				for(int j=0; j<skel.numJoints; j++)
+				{
+					if(name.equals(skel.names[j]))
+					{
+						int idx = j*8;
+						float p = skel.joints[idx];
+						float x = skel.joints[idx+1];
+						float y = skel.joints[idx+2];
+						float z = skel.joints[idx+3];
+						k.TaggedJointPos[tj] = new Vector3(x, y, z);
+						float qx = skel.joints[idx+4];
+						float qy = skel.joints[idx+5];
+						float qz = skel.joints[idx+6];
+						float qw = skel.joints[idx+7];
+						k.TaggedJoint[tj] = new Quaternion(qx, qy, qz, qw);
+						break;
+					}
 				}
 			}
 			
@@ -147,6 +194,16 @@ public class KeyframedModel {
 		
 		//Gdx.app.log("Loader", "Added animation "+animation.name+" to keyframes ("+i+" keyframes generated)");
 		mAnimations.put(animKey, a);
+	}
+	
+	public void getJointData(int tagIndex, Vector3 pos, Quaternion orient)
+	{
+		Keyframe kf = mAnimator.getInterpolatedKeyframe();
+		pos.set(kf.TaggedJointPos[tagIndex]);
+		orient.x = kf.TaggedJoint[tagIndex].x;
+		orient.y = kf.TaggedJoint[tagIndex].y;
+		orient.z = kf.TaggedJoint[tagIndex].z;
+		orient.w = kf.TaggedJoint[tagIndex].w;
 	}
 	
 	/**

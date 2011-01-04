@@ -12,6 +12,9 @@
  */
 package com.badlogic.gdx.graphics.keyframed;
 
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
+
 /**
  * Container for the geometry of a single animation keyframe.
  * 
@@ -23,4 +26,7 @@ public class Keyframe {
 	public short[][] Indices = null;
 	public boolean IndicesSet = false;
 	public boolean IndicesSent = false;
+	
+	public Vector3[] TaggedJointPos = null;
+	public Quaternion[] TaggedJoint = null;
 }

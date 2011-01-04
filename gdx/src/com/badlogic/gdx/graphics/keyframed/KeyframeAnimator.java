@@ -12,8 +12,12 @@
  */
 package com.badlogic.gdx.graphics.keyframed;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.animation.Animator;
 import com.badlogic.gdx.graphics.loaders.md5.MD5Animation;
+import com.badlogic.gdx.graphics.loaders.md5.MD5Quaternion;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * An animation controller for keyframed animations.
@@ -70,11 +74,30 @@ public class KeyframeAnimator extends Animator {
 		R.Indices[idx] = new short[numIndices];
 	}
 	
+	/**
+	 * Set the number of tagged joints for allocation
+	 * @param num
+	 */
+	public void setNumTaggedJoints(int num)
+	{
+		// allocate space for joint data in the result keyframe
+		R.TaggedJointPos = new Vector3[num];
+		for(int i=0; i<num; i++)
+			R.TaggedJointPos[i] = new Vector3();
+		R.TaggedJoint = new Quaternion[num];
+		for(int i=0; i<num; i++)
+			R.TaggedJoint[i] = new Quaternion(0,0,0,0);
+	}
+	
 	@Override
 	protected void setInterpolationFrames() {
 		A = ((KeyframeAnimation)mCurrentAnim).mKeyframes[mCurrentFrameIdx];
 		B = ((KeyframeAnimation)mCurrentAnim).mKeyframes[mNextFrameIdx];
 	}
+
+
+	static MD5Quaternion jointAOrient = new MD5Quaternion();
+	static MD5Quaternion jointBOrient = new MD5Quaternion();
 
 	//TODO: Optimise further if possible - this is the CPU bottleneck for animation
 	@Override
@@ -128,6 +151,37 @@ public class KeyframeAnimator extends Animator {
 			}
 		}
 		R.IndicesSet = true;
+		
+		//interpolate any tagged joints
+		for(int tj = 0; tj<A.TaggedJoint.length; tj++)
+		{
+			//position
+			float PAX = A.TaggedJointPos[tj].x;
+			float PAY = A.TaggedJointPos[tj].y;
+			float PAZ = A.TaggedJointPos[tj].z;
+			float PBX = B.TaggedJointPos[tj].x;
+			float PBY = B.TaggedJointPos[tj].y;
+			float PBZ = B.TaggedJointPos[tj].z;
+
+			R.TaggedJointPos[tj].x = PAX + (PBX - PAX)*t;
+			R.TaggedJointPos[tj].y = PAY + (PBY - PAY)*t;
+			R.TaggedJointPos[tj].z = PAZ + (PBZ - PAZ)*t;
+			
+			//orientation
+			jointAOrient.x = A.TaggedJoint[tj].x;
+			jointAOrient.y = A.TaggedJoint[tj].y;
+			jointAOrient.z = A.TaggedJoint[tj].z;
+			jointAOrient.w = A.TaggedJoint[tj].w;
+			jointBOrient.x = B.TaggedJoint[tj].x;
+			jointBOrient.y = B.TaggedJoint[tj].y;
+			jointBOrient.z = B.TaggedJoint[tj].z;
+			jointBOrient.w = B.TaggedJoint[tj].w;
+			jointAOrient.slerp(jointBOrient, t);
+			R.TaggedJoint[tj].x = jointAOrient.x;
+			R.TaggedJoint[tj].y = jointAOrient.y;
+			R.TaggedJoint[tj].z = jointAOrient.z;
+			R.TaggedJoint[tj].w = jointAOrient.w;
+		}
 	}
 
 	/**

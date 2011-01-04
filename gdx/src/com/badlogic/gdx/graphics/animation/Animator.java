@@ -40,12 +40,13 @@ public abstract class Animator {
 		mCurrentAnim = anim;
 		mAnimLoop = loop;
 
+		mAnimPos = mFrameDelta = 0.f;
+		mCurrentFrameIdx = -1;
+		mNextFrameIdx = -1;
+
 		if(mCurrentAnim != null)
 		{
 			mAnimLen = mCurrentAnim.getLength(); 
-			mAnimPos = mFrameDelta = 0.f;
-			mCurrentFrameIdx = -1;
-			mNextFrameIdx = -1;
 		}	
 	}
 	
@@ -106,7 +107,7 @@ public abstract class Animator {
 				mFrameDelta = 0.f;
 				mCurrentFrameIdx = currentFrameIdx;
 			}
-	
+
 			mFrameDelta += dt;
 			
 			setInterpolationFrames();
