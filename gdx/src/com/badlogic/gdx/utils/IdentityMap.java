@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-
 /**
  * An unordered map that uses identity comparison. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
  * small stash for problematic keys. Null keys are not allowed. Null values are allowed. No allocation is done except when growing
@@ -274,11 +272,11 @@ public class IdentityMap<K, V> {
 	public V get (K key) {
 		int hashCode = System.identityHashCode(key);
 		int index = hashCode & mask;
-		if (keyTable[index] != key) {
+		if (!key.equals(keyTable[index])) {
 			index = hash2(hashCode);
-			if (keyTable[index] != key) {
+			if (!key.equals(keyTable[index])) {
 				index = hash3(hashCode);
-				if (keyTable[index] != key) return getStash(key);
+				if (!key.equals(keyTable[index])) return getStash(key);
 			}
 		}
 		return valueTable[index];
@@ -382,11 +380,11 @@ public class IdentityMap<K, V> {
 	public boolean containsKey (K key) {
 		int hashCode = System.identityHashCode(key);
 		int index = hashCode & mask;
-		if (keyTable[index] != key) {
+		if (!key.equals(keyTable[index])) {
 			index = hash2(hashCode);
-			if (keyTable[index] != key) {
+			if (!key.equals(keyTable[index])) {
 				index = hash3(hashCode);
-				if (keyTable[index] != key) return containsKeyStash(key);
+				if (!key.equals(keyTable[index])) return containsKeyStash(key);
 			}
 		}
 		return true;
@@ -527,7 +525,7 @@ public class IdentityMap<K, V> {
 
 		public void reset () {
 			currentIndex = -1;
-			nextIndex = 0;
+			nextIndex = -1;
 			findNextIndex();
 		}
 

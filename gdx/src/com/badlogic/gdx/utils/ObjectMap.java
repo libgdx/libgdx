@@ -276,11 +276,11 @@ public class ObjectMap<K, V> {
 	public V get (K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
-		if (keyTable[index] != key) {
+		if (!key.equals(keyTable[index])) {
 			index = hash2(hashCode);
-			if (keyTable[index] != key) {
+			if (!key.equals(keyTable[index])) {
 				index = hash3(hashCode);
-				if (keyTable[index] != key) return getStash(key);
+				if (!key.equals(keyTable[index])) return getStash(key);
 			}
 		}
 		return valueTable[index];
@@ -384,11 +384,11 @@ public class ObjectMap<K, V> {
 	public boolean containsKey (K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
-		if (keyTable[index] != key) {
+		if (!key.equals(keyTable[index])) {
 			index = hash2(hashCode);
-			if (keyTable[index] != key) {
+			if (!key.equals(keyTable[index])) {
 				index = hash3(hashCode);
-				if (keyTable[index] != key) return containsKeyStash(key);
+				if (!key.equals(keyTable[index])) return containsKeyStash(key);
 			}
 		}
 		return true;
@@ -529,7 +529,7 @@ public class ObjectMap<K, V> {
 
 		public void reset () {
 			currentIndex = -1;
-			nextIndex = 0;
+			nextIndex = -1;
 			findNextIndex();
 		}
 
