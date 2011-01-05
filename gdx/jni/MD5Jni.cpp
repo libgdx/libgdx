@@ -12,7 +12,7 @@
  */
 #include <MD5Jni.h>
 
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_loaders_md5_MD5Jni_calculateVertices
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g3d_loaders_md5_MD5Jni_calculateVertices
   (JNIEnv *env, jclass, jfloatArray skeleton, jfloatArray weights, jfloatArray verticesIn, jfloatArray verticesOut, jint numVertices )
 {
 	float* pSkeleton = (float*)env->GetPrimitiveArrayCritical(skeleton, 0);

@@ -2,7 +2,7 @@
 package com.dozingcatsoftware.bouncy;
 
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 
 public class GLFieldRenderer implements IFieldRenderer {
 	static final int CIRCLE_VERTICES = 10;

@@ -22,8 +22,8 @@
 
 package com.badlogic.gdx.twl.renderer;
 
-import com.badlogic.gdx.graphics.Sprite;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import de.matthiasmann.twl.Color;
 import de.matthiasmann.twl.renderer.AnimationState;

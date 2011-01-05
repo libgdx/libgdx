@@ -12,7 +12,7 @@ extern "C" {
  * Method:    calculateVertices
  * Signature: ([F[F[F[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_loaders_md5_MD5Jni_calculateVertices
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g3d_loaders_md5_MD5Jni_calculateVertices
   (JNIEnv *, jclass, jfloatArray, jfloatArray, jfloatArray, jfloatArray, jint);
 
 #ifdef __cplusplus

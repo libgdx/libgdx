@@ -19,9 +19,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.particles.ParticleEffect;
-import com.badlogic.gdx.graphics.particles.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ParticleEmitterTest extends GdxTest {

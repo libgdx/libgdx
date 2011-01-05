@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+
 class ImagePanel extends EditorPanel {
 	JLabel imageLabel;
 	JLabel widthLabel;

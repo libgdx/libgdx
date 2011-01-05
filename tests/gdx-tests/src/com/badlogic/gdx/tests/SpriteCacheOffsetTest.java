@@ -16,8 +16,8 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Sprite;
-import com.badlogic.gdx.graphics.SpriteCache;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;

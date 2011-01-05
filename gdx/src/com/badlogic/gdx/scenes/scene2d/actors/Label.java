@@ -13,7 +13,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.actors;
 
-import com.badlogic.gdx.graphics.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Label extends Actor {

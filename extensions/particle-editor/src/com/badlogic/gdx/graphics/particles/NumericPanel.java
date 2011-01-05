@@ -11,7 +11,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.particles.ParticleEmitter.NumericValue;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter.NumericValue;
 
 class NumericPanel extends EditorPanel {
 	private final NumericValue value;

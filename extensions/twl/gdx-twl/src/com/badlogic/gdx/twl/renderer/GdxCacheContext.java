@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import de.matthiasmann.twl.renderer.CacheContext;

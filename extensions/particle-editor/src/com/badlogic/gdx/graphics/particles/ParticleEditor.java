@@ -35,12 +35,14 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Sprite;
-import com.badlogic.gdx.graphics.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {

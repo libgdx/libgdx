@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.BitmapFont;
-import com.badlogic.gdx.graphics.BitmapFont.HAlignment;
-import com.badlogic.gdx.graphics.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 
 import de.matthiasmann.twl.Color;
 import de.matthiasmann.twl.renderer.AnimationState;

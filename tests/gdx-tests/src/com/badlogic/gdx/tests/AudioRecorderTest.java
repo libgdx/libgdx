@@ -17,7 +17,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class AudioRecorderTest extends GdxTest {

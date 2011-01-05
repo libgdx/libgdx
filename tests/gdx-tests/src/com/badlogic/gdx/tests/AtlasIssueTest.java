@@ -15,12 +15,12 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Sprite;
-import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.TextureAtlas;
-import com.badlogic.gdx.graphics.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 

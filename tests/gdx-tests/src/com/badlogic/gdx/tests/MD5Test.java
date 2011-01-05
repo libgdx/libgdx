@@ -15,16 +15,16 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.BitmapFont;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.SpriteBatch;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Animation;
-import com.badlogic.gdx.graphics.loaders.md5.MD5AnimationInfo;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Joints;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Loader;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Model;
-import com.badlogic.gdx.graphics.loaders.md5.MD5Renderer;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animation;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5AnimationInfo;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Joints;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Loader;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Model;
+import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Renderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MD5Test extends GdxTest implements InputProcessor {

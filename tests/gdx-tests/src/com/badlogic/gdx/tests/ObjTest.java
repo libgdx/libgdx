@@ -18,11 +18,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.ModelLoader;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ObjTest extends GdxTest implements InputProcessor {

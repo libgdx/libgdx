@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+
 class OptionsPanel extends EditorPanel {
 	JCheckBox attachedCheckBox;
 	JCheckBox continuousCheckbox;
