@@ -1,6 +1,5 @@
 TODO (in order of priority)
 MUSTS for 0.9
-- refactor graphics package according to http://pastebin.com/GkLe61zc (remember the JNI portions as well)
 - add int button to touch event handlers in InputListener. See http://www.badlogicgames.com/wordpress/?p=1391
 - First iteration of gdx2d/Gdx2DPixmap (see current stubs, loading works already), refactoring of Texture and Pixmap accordingly. No more Graphics.newXXX. Think about where managed textures will get reloaded.
 - Rewrite the Audio backend http://code.google.com/p/libgdx/issues/detail?id=56, Nate mostly did this already, MP3 decoder missing as of yet.
