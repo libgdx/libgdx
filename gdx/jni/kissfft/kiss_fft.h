@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#if !defined(__APPLE__)
 #include <malloc.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
