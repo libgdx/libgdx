@@ -313,7 +313,48 @@ public class Group extends Actor {
 		namesToActors.put(actor.name, actor);
 		actor.parent = this;
 	}
+	
+	/**
+	 * Adds an {@link Actor} at the given index in the group. The first Actor added will be at
+	 * index 0 and so on. Throws an IndexOutOfBoundsException in case the index is invalid.
+	 * @param index the index to add the actor at.
+	 */
+	public void addActorAt(int index, Actor actor) {
+		children.add(index, actor);
+		if(actor instanceof Group)groups.add((Group)actor);
+		namesToActors.put(actor.name, actor);
+		actor.parent = this;		
+	}
+	
+	/**
+	 * Adds an {@link Actor} before the given Actor. 
+	 * @param actorBefore the Actor to add the other actor in front of
+	 * @param actor the Actor to add
+	 */
+	public void addActorBefore(Actor actorBefore, Actor actor) {
+		int index = children.indexOf(actorBefore);		
+		children.add(index, actor);
+		if(actor instanceof Group)groups.add((Group)actor);
+		namesToActors.put(actor.name, actor);
+		actor.parent = this;		
+	}
 
+	/**
+	 * Adds an {@link Actor} after the given Actor. 
+	 * @param actorAfter the Actor to add the other Actor behind
+	 * @param actor the Actor to add
+	 */
+	public void addActorAfter(Actor actorAfter, Actor actor) {
+		int index = children.indexOf(actorAfter);
+		if(index == children.size())			
+			children.add(actor);
+		else
+			children.add(index+1, actor);
+		if(actor instanceof Group)groups.add((Group)actor);
+		namesToActors.put(actor.name, actor);
+		actor.parent = this;		
+	}
+	
 	/**
 	 * Removes an {@link Actor} from this Group.
 	 * @param actor
