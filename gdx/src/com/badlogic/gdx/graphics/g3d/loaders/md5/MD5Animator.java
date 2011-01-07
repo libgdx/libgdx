@@ -12,12 +12,8 @@
  */
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.graphics.g3d.Animation;
 import com.badlogic.gdx.graphics.g3d.Animator;
-import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animation;
-import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Joints;
 
 /**
  * An animation controller for MD5 (Doom 3) animations.

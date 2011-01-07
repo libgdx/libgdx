@@ -15,7 +15,6 @@ package com.badlogic.gdx.graphics.g3d.keyframed;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -119,7 +118,7 @@ public class KeyframedModel {
 		}
 		
 		KeyframeAnimation a = new KeyframeAnimation(animation.name, numSamples, len);
-		
+
 		animator.update(0);
 		renderer.setSkeleton(animator.getSkeleton());
 
@@ -279,5 +278,16 @@ public class KeyframedModel {
 			}
 			mTarget[i].render(GL10.GL_TRIANGLES, 0, mTarget[i].getNumIndices());
 		}
+	}
+
+	/**
+	 * Sets the specified mesh's visibility (MD5 models typically consist of a number of meshes).
+	 * @param idx
+	 *          the mesh's index (same order as found in the .md5mesh file)
+	 * @param visible
+	 *          whether the mesh should be drawn or not
+	 */
+	public void setMeshVisible(int idx, boolean visible) {
+		mTarget[idx].setVisible(visible);
 	}
 }

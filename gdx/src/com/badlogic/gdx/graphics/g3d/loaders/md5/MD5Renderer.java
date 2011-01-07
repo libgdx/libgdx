@@ -13,7 +13,6 @@
 
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;

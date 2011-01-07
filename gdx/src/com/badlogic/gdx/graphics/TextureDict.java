@@ -12,8 +12,8 @@
  */
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -49,10 +49,10 @@ public class TextureDict {
 	 * Loads a new texture into the dictionary as a reference counted {@link TextureRef}.
 	 * @param path
 	 *          the path to the texture image.
-	 * @param near
-	 *          near {@link TextureFilter}.
-	 * @param far
-	 *          far {@link TextureFilter}.
+	 * @param minFilter
+	 *          minFilter {@link TextureFilter}.
+	 * @param magFilter
+	 *          magFilter {@link TextureFilter}.
 	 * @param uwrap
 	 *          u-wrapping.
 	 * @param vwrap
@@ -60,7 +60,7 @@ public class TextureDict {
 	 * @return the {@TextureRef} representing the texture.
 	 */
 	public static TextureRef loadTexture(String path,
-			TextureFilter near, TextureFilter far, TextureWrap uwrap, TextureWrap vwrap)
+			TextureFilter minFilter, TextureFilter magFilter, TextureWrap uwrap, TextureWrap vwrap)
 	{
 		if(sDictionary.containsKey(path))
 		{
@@ -71,7 +71,7 @@ public class TextureDict {
 		// load new texture
 		FileHandle texFile = Gdx.app.getFiles().getFileHandle(path, FileType.Internal);
 		Texture newTex = Gdx.graphics.newTexture(texFile,
-			near, far, uwrap, vwrap);
+				minFilter, magFilter, uwrap, vwrap);
 		TextureRef ref = new TextureRef(path, newTex);
 		sDictionary.put(path, ref);
 		return ref;

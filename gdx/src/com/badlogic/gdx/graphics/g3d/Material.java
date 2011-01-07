@@ -38,6 +38,8 @@ public class Material {
 	public Color Diffuse = null;
 	public Color Specular = null;
 	public Color Emissive = null;
+	public int BlendSourceFactor = 0;
+	public int BlendDestFactor = 0;
 	private static final float tmp[] = new float[4];
 	
 	/**
@@ -77,6 +79,16 @@ public class Material {
 			setTmpArray(Diffuse.r, Diffuse.g, Diffuse.b, Diffuse.a);
 			gl.glMaterialfv(face, GL10.GL_DIFFUSE, tmp, 0);
 		}
+
+		if(BlendSourceFactor > 0)
+		{
+			gl.glBlendFunc(BlendSourceFactor, BlendDestFactor);
+			gl.glEnable(GL10.GL_BLEND);
+		}
+		else
+		{
+			gl.glDisable(GL10.GL_BLEND);
+		}
 	}
 	
 	/**
@@ -107,6 +119,8 @@ public class Material {
 			float a = i.readFloat();
 			Diffuse = new Color(r, g, b, a);
 		}
+		BlendSourceFactor = i.readInt();
+		BlendDestFactor = i.readInt();
 		return true;
 	}
 	
@@ -139,6 +153,8 @@ public class Material {
 			o.writeFloat(Diffuse.b);
 			o.writeFloat(Diffuse.a);
 		}
+		o.writeInt(BlendSourceFactor);
+		o.writeInt(BlendDestFactor);
 		return true;
 	}
 }
