@@ -35,7 +35,9 @@ public class MipMap2D extends GdxTest {
 	      "   v_texCoord = a_texCoord;  \n" +
 	      "}                            \n";
 		String fragmentShader = 
-			"precision mediump float;                            \n" +
+			"#ifdef GL_ES\n"
+			+ "precision mediump float;\n"
+			+ "#endif\n" +
 	      "varying vec2 v_texCoord;                            \n" +
 	      "uniform sampler2D s_texture;                        \n" +
 	      "void main()                                         \n" +

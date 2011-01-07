@@ -161,7 +161,12 @@ public class GdxTests
 			return (GdxTest)clazz.newInstance();
 		}
 		catch( Exception ex ) {
-			return null;
+			try {
+				Class clazz = Class.forName("com.badlogic.gdx.tests.gles2." + testName);
+				return (GdxTest)clazz.newInstance();
+			} catch(Exception e) {
+				return null;
+			}
 		}		
 	}
 }

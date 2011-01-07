@@ -33,7 +33,9 @@ public class SimpleVertexShader extends GdxTest {
 	      "   gl_Position = u_mvpMatrix * a_position;  \n" +
 	      "}                            \n";
 		String fragmentShader =		
-			"precision mediump float;\n" +
+			"#ifdef GL_ES\n"
+			+ "precision mediump float;\n"
+			+ "#endif\n" +
 		    "void main()                                  \n" +		
 		    "{                                            \n" +
 		    "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n" +

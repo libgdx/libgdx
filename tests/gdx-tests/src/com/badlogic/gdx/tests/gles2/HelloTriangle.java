@@ -26,7 +26,9 @@ public class HelloTriangle extends GdxTest {
 		      "   gl_Position = vPosition;  \n" +
 		      "}                            \n";
 		String fragmentShader =		
-			"precision mediump float;\n" +
+			"#ifdef GL_ES\n"
+			+ "precision mediump float;\n"
+			+ "#endif\b" +
 		    "void main()                                  \n" +		
 		    "{                                            \n" +
 		    "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n" +
