@@ -56,8 +56,10 @@ public abstract class Action {
 	/**
 	 * Sets the listener to be invoked when the action is finished.
 	 * @param listener
+	 * @return this
 	 */
-	public void setCompletionListener(OnActionCompleted listener) {
+	public Action setCompletionListener(OnActionCompleted listener) {
 		this.listener = listener;
+		return this;
 	}
 }
