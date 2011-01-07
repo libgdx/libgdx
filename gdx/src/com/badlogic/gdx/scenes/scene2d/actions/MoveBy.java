@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class MoveBy extends Action {
-	static final Pool<MoveBy> pool = new Pool<MoveBy>(false, 4, 100) {
+	static final Pool<MoveBy> pool = new Pool<MoveBy>(4, 100) {
 		protected MoveBy newObject () {
 			return new MoveBy();
 		}
@@ -37,7 +37,7 @@ public class MoveBy extends Action {
 	protected boolean done;
 
 	public static MoveBy $ (float x, float y, float duration) {
-		MoveBy action = pool.add();
+		MoveBy action = pool.obtain();
 		action.x = x;
 		action.y = y;
 		action.duration = duration;
@@ -72,7 +72,7 @@ public class MoveBy extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		if(listener != null)
 			listener.completed(this);
 	}

@@ -14,35 +14,23 @@
 package com.badlogic.gdx.utils;
 
 /**
- * An ordered, resizable array of objects that reuses element instances. The {@link #add()} and {@link #insert(int)} methods add
- * objects to the pool. The objects are created by {@link #newObject()}. Any other methods that would add objects to the pool are
- * not supported. When an object is removed from the pool, a reference to it is retained for reuse.
+ * A pool of objects that can be resused to avoid allocation.
  * @author Nathan Sweet
  */
-abstract public class Pool<T> extends Array<T> {
+abstract public class Pool<T> {
 	public final int max;
 
-	public Pool (boolean ordered, int capacity) {
-		this(ordered, capacity, -1);
+	private final Array<T> freeObjects;
+
+	public Pool (int initialCapacity) {
+		this(initialCapacity, Integer.MAX_VALUE);
 	}
 
 	/**
-	 * @param max The maximum size of this pool. -1 for no max size. See {@link #add()}.
+	 * @param max The maximum number of free objects to store in this pool.
 	 */
-	public Pool (boolean ordered, int capacity, int max) {
-		super(ordered, capacity);
-		this.max = max;
-	}
-
-	public Pool (boolean ordered, int capacity, Class<T> arrayType) {
-		this(ordered, capacity, arrayType, -1);
-	}
-
-	/**
-	 * @param max The maximum size of this pool. -1 for no max size. See {@link #add()}.
-	 */
-	public Pool (boolean ordered, int capacity, Class<T> arrayType, int max) {
-		super(ordered, capacity, arrayType);
+	public Pool (int initialCapacity, int max) {
+		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
 	}
 
@@ -50,84 +38,26 @@ abstract public class Pool<T> extends Array<T> {
 
 	/**
 	 * Returns an object from this pool. The object may be new (from {@link #newObject()}) or reused (previously
-	 * {@link #removeValue(Object, boolean) removed} from the pool). If this pool already contains {@link #max} objects, a new
-	 * object is returned, but it is not added to the pool (it will be garbage collected when removed).
+	 * {@link #free(Object) freed}).
 	 */
-	public T add () {
-		if (size == max) return newObject();
-		T[] items = this.items;
-		if (size == items.length) {
-			T item = newObject();
-			resize(Math.max(8, (int)(size * 1.75f)))[size++] = item;
-			return item;
-		}
-		T item = items[size];
-		if (item == null) item = newObject();
-		items[size++] = item;
-		return item;
-	}
-
-	public T insert (int index) {
-		if (size == items.length) {
-			T item = newObject();
-			resize(Math.max(8, (int)(size * 1.75f)))[size++] = item;
-			return item;
-		}
-		T item = items[size];
-		if (item == null) item = newObject();
-		System.arraycopy(items, index, items, index + 1, size - index);
-		size++;
-		items[index] = item;
-		return item;
-	}
-
-	public void removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		size--;
-		Object[] items = this.items;
-		T old = (T)items[index];
-		System.arraycopy(items, index + 1, items, index, size - index);
-		items[size] = old;
+	public T obtain () {
+		return freeObjects.size == 0 ? newObject() : freeObjects.pop();
 	}
 
 	/**
-	 * Removes and returns the item at the specified index.
+	 * Puts the specified object in the pool, making it eligible to be returned by {@link #obtain()}. If the pool already contains
+	 * {@link #max} free objects, the specified object is ignored.
 	 */
-	public T pop (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		size--;
-		Object[] items = this.items;
-		T old = (T)items[index];
-		System.arraycopy(items, index + 1, items, index, size - index);
-		items[size] = old;
-		return old;
+	public void free (T object) {
+		if (freeObjects.size < max) freeObjects.add(object);
 	}
 
 	/**
-	 * Not supported for a pool. Use {@link #add()}.
+	 * Puts the specified objects in the pool.
+	 * @see #free(Object)
 	 */
-	public void add (T value) {
-		throw new UnsupportedOperationException("Not supported for a pool.");
-	}
-
-	/**
-	 * Not supported for a pool. Use {@link #add()}.
-	 */
-	public void addAll (Array array) {
-		throw new UnsupportedOperationException("Not supported for a pool.");
-	}
-
-	/**
-	 * Not supported for a pool. Use {@link #add()}.
-	 */
-	public void set (int index, T value) {
-		throw new UnsupportedOperationException("Not supported for a pool.");
-	}
-
-	/**
-	 * Not supported for a pool. Use {@link #add()}.
-	 */
-	public void insert (int index, T value) {
-		throw new UnsupportedOperationException("Not supported for a pool.");
+	public void free (Array<T> objects) {
+		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++)
+			freeObjects.add(objects.get(i));
 	}
 }

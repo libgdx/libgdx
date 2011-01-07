@@ -21,14 +21,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class Parallel extends Action {
-	static final Pool<Parallel> pool = new Pool<Parallel>(false, 4, 100) {
+	static final Pool<Parallel> pool = new Pool<Parallel>(4, 100) {
 		protected Parallel newObject () {
 			return new Parallel();
 		}
 	};
 
 	public static Parallel $ (Action... actions) {
-		Parallel action = pool.add();
+		Parallel action = pool.obtain();
 		action.actions.clear();
 		if(action.finished == null || action.finished.length < actions.length) 
 			action.finished = new boolean[actions.length];
@@ -69,7 +69,7 @@ public class Parallel extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		int len = 0;
 		for (int i = 0; i < len; i++) {
 			if(!finished[i])
@@ -80,7 +80,7 @@ public class Parallel extends Action {
 	}
 
 	@Override public Action copy () {
-		Parallel action = pool.add();
+		Parallel action = pool.obtain();
 		action.actions.clear();
 		int len = actions.size();
 		for(int i = 0; i < len; i++)

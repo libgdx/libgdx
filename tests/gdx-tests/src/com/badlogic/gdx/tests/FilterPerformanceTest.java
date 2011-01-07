@@ -43,14 +43,14 @@ public class FilterPerformanceTest extends GdxTest {
 						  GL10.GL_LINEAR_MIPMAP_LINEAR};
 	String[] filterNames = { "nearest", "linear", "nearest mipmap nearest", "linear mipmap nearest", "linear mipmap linear" };
 	
-	private void setTextureFilter (int filter) {
+	void setTextureFilter (int filter) {
 		atlas.findRegion("map").getTexture().bind();
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, filters[filter]);
 		texture.bind();
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, filters[filter]);
 	}
 	
-	private void setModeString() { 
+	void setModeString() { 
 		modeString = (mode%2==0?"Sprite":"Atlas") + " " + filterNames[mode/2];
 	}
 	

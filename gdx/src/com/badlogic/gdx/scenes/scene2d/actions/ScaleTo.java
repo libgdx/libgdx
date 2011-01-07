@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class ScaleTo extends Action {
-	static final Pool<ScaleTo> pool = new Pool<ScaleTo>(false, 4, 100) {
+	static final Pool<ScaleTo> pool = new Pool<ScaleTo>(4, 100) {
 		protected ScaleTo newObject () {
 			return new ScaleTo();
 		}
@@ -37,7 +37,7 @@ public class ScaleTo extends Action {
 	protected boolean done;
 
 	public static ScaleTo $ (float scaleX, float scaleY, float duration) {
-		ScaleTo action = pool.add();
+		ScaleTo action = pool.obtain();
 		action.scaleX = scaleX;
 		action.scaleY = scaleY;
 		action.duration = duration;
@@ -75,7 +75,7 @@ public class ScaleTo extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		if(listener != null)
 			listener.completed(this);
 	}

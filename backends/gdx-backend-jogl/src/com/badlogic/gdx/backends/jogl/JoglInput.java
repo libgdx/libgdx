@@ -52,13 +52,13 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 		int pointer;
 	}
 
-	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(false, 16, 1000) {
+	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
 	};
 
-	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(false, 16, 1000) {
+	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000) {
 		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
@@ -164,7 +164,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					usedKeyEvents.removeValue(e, true);
+					usedKeyEvents.free(e);
 				}
 
 				len = touchEvents.size();
@@ -180,17 +180,17 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					usedTouchEvents.removeValue(e, true);
+					usedTouchEvents.free(e);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedTouchEvents.removeValue(touchEvents.get(i), true);
+					usedTouchEvents.free(touchEvents.get(i));
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedKeyEvents.removeValue(keyEvents.get(i), true);
+					usedKeyEvents.free(keyEvents.get(i));
 				}
 			}
 
@@ -217,7 +217,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void mouseDragged (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = usedTouchEvents.add();
+			TouchEvent event = usedTouchEvents.obtain();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
@@ -246,7 +246,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void mousePressed (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = usedTouchEvents.add();
+			TouchEvent event = usedTouchEvents.obtain();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
@@ -261,7 +261,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void mouseReleased (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = usedTouchEvents.add();
+			TouchEvent event = usedTouchEvents.obtain();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
@@ -276,7 +276,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void keyPressed (java.awt.event.KeyEvent e) {
 		synchronized (this) {
-			KeyEvent event = usedKeyEvents.add();
+			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = 0;
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_DOWN;
@@ -287,7 +287,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void keyReleased (java.awt.event.KeyEvent e) {
 		synchronized (this) {
-			KeyEvent event = usedKeyEvents.add();
+			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = 0;
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_UP;
@@ -298,7 +298,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 	@Override public void keyTyped (java.awt.event.KeyEvent e) {
 		synchronized (this) {
-			KeyEvent event = usedKeyEvents.add();
+			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = e.getKeyChar();
 			event.keyCode = 0;
 			event.type = KeyEvent.KEY_TYPED;

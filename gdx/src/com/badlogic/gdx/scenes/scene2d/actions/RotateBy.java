@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class RotateBy extends Action {
-	static final Pool<RotateBy> pool = new Pool<RotateBy>(false, 4, 100) {
+	static final Pool<RotateBy> pool = new Pool<RotateBy>(4, 100) {
 		protected RotateBy newObject () {
 			return new RotateBy();
 		}
@@ -34,7 +34,7 @@ public class RotateBy extends Action {
 	protected boolean done;
 
 	public static RotateBy $ (float rotation, float duration) {
-		RotateBy action = pool.add();
+		RotateBy action = pool.obtain();
 		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
@@ -66,7 +66,7 @@ public class RotateBy extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		if(listener != null)
 			listener.completed(this);
 	}

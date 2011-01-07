@@ -55,13 +55,13 @@ final class LwjglInput implements Input {
 		int pointer;
 	}
 
-	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(false, 16, 1000) {
+	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
 	};
 
-	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(false, 16, 1000) {
+	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000) {
 		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
@@ -175,7 +175,7 @@ final class LwjglInput implements Input {
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					usedKeyEvents.removeValue(e, true);
+					usedKeyEvents.free(e);
 				}
 
 				len = touchEvents.size();
@@ -191,17 +191,17 @@ final class LwjglInput implements Input {
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					usedTouchEvents.removeValue(e, true);
+					usedTouchEvents.free(e);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedTouchEvents.removeValue(touchEvents.get(i), true);
+					usedTouchEvents.free(touchEvents.get(i));
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedKeyEvents.removeValue(keyEvents.get(i), true);
+					usedKeyEvents.free(keyEvents.get(i));
 				}
 			}
 
@@ -461,7 +461,7 @@ final class LwjglInput implements Input {
 				if (isButtonPressed()) {
 					if (mousePressed == false) {
 						mousePressed = true;
-						TouchEvent event = usedTouchEvents.add();
+						TouchEvent event = usedTouchEvents.obtain();
 						event.x = x;
 						event.y = y;
 						event.pointer = 0;
@@ -471,7 +471,7 @@ final class LwjglInput implements Input {
 						mouseY = y;
 					} else {
 						if (mouseX != x || mouseY != y) {
-							TouchEvent event = usedTouchEvents.add();
+							TouchEvent event = usedTouchEvents.obtain();
 							event.x = x;
 							event.y = y;
 							event.pointer = 0;
@@ -486,7 +486,7 @@ final class LwjglInput implements Input {
 						mouseX = x;
 						mouseY = y;
 						mousePressed = false;
-						TouchEvent event = usedTouchEvents.add();
+						TouchEvent event = usedTouchEvents.obtain();
 						event.x = x;
 						event.y = y;
 						event.pointer = 0;
@@ -511,13 +511,13 @@ final class LwjglInput implements Input {
 					int keyCode = getGdxKeyCode(Keyboard.getEventKey());
 					char keyChar = Keyboard.getEventCharacter();
 
-					KeyEvent event = usedKeyEvents.add();
+					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_DOWN;
 					keyEvents.add(event);
 
-					event = usedKeyEvents.add();
+					event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
@@ -526,7 +526,7 @@ final class LwjglInput implements Input {
 				} else {
 					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
 
-					KeyEvent event = usedKeyEvents.add();
+					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_UP;

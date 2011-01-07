@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class FadeIn extends Action {
-	static final Pool<FadeIn> pool = new Pool<FadeIn>(false, 4, 100) {
+	static final Pool<FadeIn> pool = new Pool<FadeIn>(4, 100) {
 		protected FadeIn newObject () {
 			return new FadeIn();
 		}
@@ -33,7 +33,7 @@ public class FadeIn extends Action {
 	protected boolean done;
 
 	public static FadeIn $ (float duration) {
-		FadeIn action = pool.add();
+		FadeIn action = pool.obtain();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
 		return action;
@@ -64,7 +64,7 @@ public class FadeIn extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		if(listener != null)
 			listener.completed(this);
 	}

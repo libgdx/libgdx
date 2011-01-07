@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class Repeat extends Action {
-	static final Pool<Repeat> pool = new Pool<Repeat>(false, 4, 100) {
+	static final Pool<Repeat> pool = new Pool<Repeat>(4, 100) {
 		protected Repeat newObject () {
 			return new Repeat();
 		}
@@ -30,7 +30,7 @@ public class Repeat extends Action {
 	protected int finishedTimes;
 
 	public static Repeat $ (Action action, int times) {
-		Repeat repeat = pool.add();
+		Repeat repeat = pool.obtain();
 		repeat.action = action;
 		repeat.times = times;
 		repeat.finishedTimes = 0;
@@ -60,7 +60,7 @@ public class Repeat extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		action.finish();
 		if(listener != null)
 			listener.completed(this);

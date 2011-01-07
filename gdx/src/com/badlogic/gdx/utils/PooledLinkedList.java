@@ -36,7 +36,7 @@ public class PooledLinkedList<T> {
 	private final Pool<Item<T>> pool;
 
 	public PooledLinkedList (int maxPoolSize) {
-		this.pool = new Pool<Item<T>>(false, 16, maxPoolSize) {
+		this.pool = new Pool<Item<T>>(16, maxPoolSize) {
 			protected Item<T> newObject () {
 				return new Item<T>();
 			}
@@ -44,7 +44,7 @@ public class PooledLinkedList<T> {
 	}
 
 	public void add (T object) {
-		Item<T> item = pool.add();
+		Item<T> item = pool.obtain();
 		item.payload = object;
 		item.next = null;
 		item.prev = null;
@@ -90,7 +90,7 @@ public class PooledLinkedList<T> {
 		if (curr == null) return;
 
 		size--;
-		pool.removeValue(curr, true);
+		pool.free(curr);
 
 		Item<T> c = curr;
 		Item<T> n = curr.next;

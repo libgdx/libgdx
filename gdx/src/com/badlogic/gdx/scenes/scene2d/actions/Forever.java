@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class Forever extends Action {
-	static final Pool<Forever> pool = new Pool<Forever>(false, 4, 100) {
+	static final Pool<Forever> pool = new Pool<Forever>(4, 100) {
 		protected Forever newObject () {
 			return new Forever();
 		}
@@ -28,7 +28,7 @@ public class Forever extends Action {
 	protected Actor target;
 
 	public static Forever $ (Action action) {
-		Forever forever = pool.add();
+		Forever forever = pool.obtain();
 		forever.action = action;
 		return forever;
 	}
@@ -53,7 +53,7 @@ public class Forever extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		action.finish();
 		if(listener != null)
 			listener.completed(this);

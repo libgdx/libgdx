@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class FadeTo extends Action {
-	static final Pool<FadeTo> pool = new Pool<FadeTo>(false, 4, 100) {
+	static final Pool<FadeTo> pool = new Pool<FadeTo>(4, 100) {
 		protected FadeTo newObject () {
 			return new FadeTo();
 		}
@@ -34,7 +34,7 @@ public class FadeTo extends Action {
 	protected boolean done;
 
 	public static FadeTo $ (float alpha, float duration) {
-		FadeTo action = pool.add();
+		FadeTo action = pool.obtain();
 		if (alpha < 0) alpha = 0;
 		if (alpha > 1) alpha = 1;
 		action.toAlpha = alpha;
@@ -67,7 +67,7 @@ public class FadeTo extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		if(listener != null)
 			listener.completed(this);
 	}

@@ -48,13 +48,13 @@ public class AngleInput implements Input {
 		int pointer;
 	}
 
-	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(false, 16, 1000) {
+	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
 	};
 
-	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(false, 16, 1000) {
+	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000) {
 		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
@@ -168,7 +168,7 @@ public class AngleInput implements Input {
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					usedKeyEvents.removeValue(e, true);
+					usedKeyEvents.free(e);
 				}
 
 				len = touchEvents.size();
@@ -184,17 +184,17 @@ public class AngleInput implements Input {
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					usedTouchEvents.removeValue(e, true);
+					usedTouchEvents.free(e);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedTouchEvents.removeValue(touchEvents.get(i), true);
+					usedTouchEvents.free(touchEvents.get(i));
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedKeyEvents.removeValue(keyEvents.get(i), true);
+					usedKeyEvents.free(keyEvents.get(i));
 				}
 			}
 
@@ -213,7 +213,7 @@ public class AngleInput implements Input {
 
 	void registerKeyEvent (int action, int key, int uniCode) {
 		synchronized (this) {
-			KeyEvent event = usedKeyEvents.add();
+			KeyEvent event = usedKeyEvents.obtain();
 			event.keyChar = (char)uniCode;
 			event.keyCode = translateKey(key);
 
@@ -237,7 +237,7 @@ public class AngleInput implements Input {
 		if (button != 1) return;
 
 		synchronized (this) {
-			TouchEvent event = usedTouchEvents.add();
+			TouchEvent event = usedTouchEvents.obtain();
 			event.x = x;
 			event.y = y;
 			event.pointer = 0;

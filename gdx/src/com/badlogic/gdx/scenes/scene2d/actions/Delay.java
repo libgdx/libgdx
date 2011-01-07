@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
 public class Delay extends Action {
-	static final Pool<Delay> pool = new Pool<Delay>(false, 4, 100) {
+	static final Pool<Delay> pool = new Pool<Delay>(4, 100) {
 		protected Delay newObject () {
 			return new Delay();
 		}
@@ -29,7 +29,7 @@ public class Delay extends Action {
 	protected Action action;
 
 	public static Delay $ (Action action, float duration) {
-		Delay delay = pool.add();
+		Delay delay = pool.obtain();
 		delay.duration = duration;
 		delay.action = action;
 		return delay;
@@ -50,7 +50,7 @@ public class Delay extends Action {
 	}
 
 	@Override public void finish () {
-		pool.removeValue(this, true);
+		pool.free(this);
 		if(listener != null)
 			listener.completed(this);
 	}

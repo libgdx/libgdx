@@ -34,11 +34,6 @@ public class Sort {
 		comparableTimSort.doSort(a.items, 0, a.size);
 	}
 
-	public <T> void sort (Pool<T> a) {
-		if (comparableTimSort == null) comparableTimSort = new ComparableTimSort();
-		comparableTimSort.doSort(a.items, 0, a.size);
-	}
-
 	public <T> void sort (T[] a) {
 		if (comparableTimSort == null) comparableTimSort = new ComparableTimSort();
 		comparableTimSort.doSort(a, 0, a.length);
@@ -50,11 +45,6 @@ public class Sort {
 	}
 
 	public <T> void sort (Array<T> a, Comparator<T> c) {
-		if (timSort == null) timSort = new TimSort();
-		timSort.doSort(a.items, c, 0, a.size);
-	}
-
-	public <T> void sort (Pool<T> a, Comparator<T> c) {
 		if (timSort == null) timSort = new TimSort();
 		timSort.doSort(a.items, c, 0, a.size);
 	}
