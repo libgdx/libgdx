@@ -30,6 +30,8 @@ public class Parallel extends Action {
 	public static Parallel $ (Action... actions) {
 		Parallel action = pool.add();
 		action.actions.clear();
+		if(action.finished == null || action.finished.length < actions.length) 
+			action.finished = new boolean[actions.length];
 		int len = actions.length;
 		for (int i = 0; i < len; i++)
 			action.actions.add(actions[i]);
@@ -37,6 +39,7 @@ public class Parallel extends Action {
 	}
 
 	protected final List<Action> actions = new ArrayList<Action>();
+	protected boolean[] finished;
 
 	@Override public void setTarget (Actor actor) {
 		int len = actions.size();
@@ -46,8 +49,16 @@ public class Parallel extends Action {
 
 	@Override public void act (float delta) {
 		int len = actions.size();
-		for (int i = 0; i < len; i++)
-			if (!actions.get(i).isDone()) actions.get(i).act(delta);
+		for (int i = 0; i < len; i++) {
+			if (!actions.get(i).isDone()) {
+				actions.get(i).act(delta);
+			} else {
+				if(!finished[i]) {
+					actions.get(i).finish();
+					finished[i] = true;
+				}
+			}
+		}
 	}
 
 	@Override public boolean isDone () {
@@ -60,8 +71,10 @@ public class Parallel extends Action {
 	@Override public void finish () {
 		pool.removeValue(this, true);
 		int len = 0;
-		for (int i = 0; i < len; i++)
-			actions.get(i).finish();
+		for (int i = 0; i < len; i++) {
+			if(!finished[i])
+				actions.get(i).finish();
+		}
 		if(listener != null)
 			listener.completed(this);
 	}
@@ -70,6 +83,9 @@ public class Parallel extends Action {
 		Parallel action = pool.add();
 		action.actions.clear();
 		int len = actions.size();
+		for(int i = 0; i < len; i++)
+			action.finished[i] = false;
+		len = actions.size();
 		for (int i = 0; i < len; i++)
 			action.actions.add(actions.get(i).copy());
 		return action;

@@ -54,6 +54,7 @@ public class Sequence extends Action {
 
 		actions.get(currAction).act(delta);
 		if (actions.get(currAction).isDone()) {
+			actions.get(currAction).finish();
 			currAction++;
 			if (currAction < actions.size()) actions.get(currAction).setTarget(target);
 		}
@@ -65,9 +66,7 @@ public class Sequence extends Action {
 
 	@Override public void finish () {
 		pool.removeValue(this, true);
-		int len = 0;
-		for (int i = 0; i < len; i++)
-			actions.get(i).finish();
+		int len = 0;		
 		if(listener != null)
 			listener.completed(this);
 	}
