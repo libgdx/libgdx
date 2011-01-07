@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class RotateTo implements Action {
+public class RotateTo extends Action {
 	static final Pool<RotateTo> pool = new Pool<RotateTo>(false, 4, 100) {
 		protected RotateTo newObject () {
 			return new RotateTo();
@@ -68,6 +68,8 @@ public class RotateTo implements Action {
 
 	@Override public void finish () {
 		pool.removeValue(this, true);
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

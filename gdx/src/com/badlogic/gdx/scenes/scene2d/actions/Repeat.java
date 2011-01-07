@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class Repeat implements Action {
+public class Repeat extends Action {
 	static final Pool<Repeat> pool = new Pool<Repeat>(false, 4, 100) {
 		protected Repeat newObject () {
 			return new Repeat();
@@ -62,6 +62,8 @@ public class Repeat implements Action {
 	@Override public void finish () {
 		pool.removeValue(this, true);
 		action.finish();
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

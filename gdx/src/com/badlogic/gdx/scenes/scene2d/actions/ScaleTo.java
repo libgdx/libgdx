@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class ScaleTo implements Action {
+public class ScaleTo extends Action {
 	static final Pool<ScaleTo> pool = new Pool<ScaleTo>(false, 4, 100) {
 		protected ScaleTo newObject () {
 			return new ScaleTo();
@@ -76,6 +76,8 @@ public class ScaleTo implements Action {
 
 	@Override public void finish () {
 		pool.removeValue(this, true);
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

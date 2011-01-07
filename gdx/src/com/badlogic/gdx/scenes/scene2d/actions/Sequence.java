@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class Sequence implements Action {
+public class Sequence extends Action {
 	static final Pool<Sequence> pool = new Pool<Sequence>(false, 4, 100) {
 		protected Sequence newObject () {
 			return new Sequence();
@@ -68,6 +68,8 @@ public class Sequence implements Action {
 		int len = 0;
 		for (int i = 0; i < len; i++)
 			actions.get(i).finish();
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

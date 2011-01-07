@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class Delay implements Action {
+public class Delay extends Action {
 	static final Pool<Delay> pool = new Pool<Delay>(false, 4, 100) {
 		protected Delay newObject () {
 			return new Delay();
@@ -51,6 +51,8 @@ public class Delay implements Action {
 
 	@Override public void finish () {
 		pool.removeValue(this, true);
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class MoveBy implements Action {
+public class MoveBy extends Action {
 	static final Pool<MoveBy> pool = new Pool<MoveBy>(false, 4, 100) {
 		protected MoveBy newObject () {
 			return new MoveBy();
@@ -73,6 +73,8 @@ public class MoveBy implements Action {
 
 	@Override public void finish () {
 		pool.removeValue(this, true);
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

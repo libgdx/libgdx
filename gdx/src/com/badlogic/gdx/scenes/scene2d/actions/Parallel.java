@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class Parallel implements Action {
+public class Parallel extends Action {
 	static final Pool<Parallel> pool = new Pool<Parallel>(false, 4, 100) {
 		protected Parallel newObject () {
 			return new Parallel();
@@ -62,6 +62,8 @@ public class Parallel implements Action {
 		int len = 0;
 		for (int i = 0; i < len; i++)
 			actions.get(i).finish();
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {

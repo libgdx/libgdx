@@ -19,35 +19,45 @@ package com.badlogic.gdx.scenes.scene2d;
  * @author mzechner
  * 
  */
-public interface Action {
+public abstract class Action {
+	protected OnActionCompleted listener = null;
+	
 	/**
 	 * Sets the {@link Actor} of this action. Will be called when the Action is added to an Actor via {@link Actor#action(Action)}
 	 * before any other call to this interface.
 	 * 
 	 * @param actor the actor.
 	 */
-	public void setTarget (Actor actor);
+	public abstract void setTarget (Actor actor);
 
 	/**
 	 * Apply the action.
 	 * 
 	 * @param delta delta time in seconds
 	 */
-	public void act (float delta);
+	public abstract void act (float delta);
 
 	/**
 	 * @return whether the action is done or not
 	 */
-	public boolean isDone ();
+	public abstract boolean isDone ();
 
 	/**
 	 * Called by the owner of the action when it can release all its resources, e.g. put itself back into a pool.
 	 */
-	public void finish ();
+	public abstract void finish ();
 
 	/**
 	 * Creates a copy of this action. The action must be in a state independent of the original and one must be able to call
 	 * {@link #setTarget(Actor)} on it without any side effects.
 	 */
-	public Action copy ();
+	public abstract Action copy ();
+	
+	/**
+	 * Sets the listener to be invoked when the action is finished.
+	 * @param listener
+	 */
+	public void setCompletionListener(OnActionCompleted listener) {
+		this.listener = listener;
+	}
 }

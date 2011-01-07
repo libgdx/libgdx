@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Pool;
 
-public class Forever implements Action {
+public class Forever extends Action {
 	static final Pool<Forever> pool = new Pool<Forever>(false, 4, 100) {
 		protected Forever newObject () {
 			return new Forever();
@@ -55,6 +55,8 @@ public class Forever implements Action {
 	@Override public void finish () {
 		pool.removeValue(this, true);
 		action.finish();
+		if(listener != null)
+			listener.completed(this);
 	}
 
 	@Override public Action copy () {
