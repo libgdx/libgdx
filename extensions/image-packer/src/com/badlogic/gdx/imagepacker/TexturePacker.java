@@ -18,17 +18,25 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 
 import javax.imageio.ImageIO;
 
@@ -617,6 +625,9 @@ public class TexturePacker {
 		public int minHeight = 16;
 		public int maxWidth = 1024;
 		public int maxHeight = 1024;
+		public boolean incremental;
+
+		HashMap<String, Long> crcs = new HashMap();
 	}
 
 	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws IOException {
@@ -627,6 +638,33 @@ public class TexturePacker {
 			String prefix = inputDir.getName();
 			for (File file : outputDir.listFiles())
 				if (file.getName().startsWith(prefix)) file.delete();
+		}
+
+		// Abort if nothing has changed.
+		if (settings.incremental) {
+			File[] files = inputDir.listFiles();
+			if (files == null) return;
+			boolean noneHaveChanged = true;
+			int childCountNow = 0;
+			for (File file : files) {
+				if (file.isDirectory()) continue;
+				String path = file.getAbsolutePath();
+				Long crcOld = settings.crcs.get(path);
+				long crcNow = crc(file);
+				if (crcOld == null || crcOld != crcNow) noneHaveChanged = false;
+				settings.crcs.put(path, crcNow);
+				childCountNow++;
+			}
+			String path = inputDir.getAbsolutePath();
+			Long childCountOld = settings.crcs.get(path);
+			if (childCountOld == null || childCountNow != childCountOld) noneHaveChanged = false;
+			settings.crcs.put(path, (long)childCountNow);
+			if (noneHaveChanged) {
+				System.out.println(inputDir);
+				System.out.println("Skipping unchanged directory.");
+				System.out.println();
+				return;
+			}
 		}
 
 		// Just check all combinations, because we are extremely lazy.
@@ -687,7 +725,62 @@ public class TexturePacker {
 		File packFile = new File(outputDir, "pack");
 		packFile.delete();
 
+		// Load incremental data.
+		File incrmentalFile = null;
+		if (settings.incremental) {
+			settings.crcs.clear();
+			incrmentalFile = new File(System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath()));
+			if (incrmentalFile.exists()) {
+				BufferedReader reader = new BufferedReader(new FileReader(incrmentalFile));
+				while (true) {
+					String path = reader.readLine();
+					if (path == null) break;
+					String crc = reader.readLine();
+					if (crc == null) break;
+					settings.crcs.put(path, Long.parseLong(crc));
+				}
+				reader.close();
+			}
+		}
+
 		process(settings, inputDir, outputDir, packFile);
+
+		if (settings.incremental) {
+			incrmentalFile.getParentFile().mkdirs();
+			FileWriter writer = new FileWriter(incrmentalFile);
+			for (Entry<String, Long> entry : settings.crcs.entrySet()) {
+				writer.write(entry.getKey() + "\n");
+				writer.write(entry.getValue() + "\n");
+			}
+			writer.close();
+		}
+	}
+
+	static private String hash (String value) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA1");
+			digest.update(value.getBytes());
+			return new BigInteger(1, digest.digest()).toString(16);
+		} catch (NoSuchAlgorithmException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	static private long crc (File file) {
+		try {
+			FileInputStream input = new FileInputStream(file);
+			byte[] buffer = new byte[4096];
+			CRC32 crc32 = new CRC32();
+			while (true) {
+				int length = input.read(buffer);
+				if (length == -1) break;
+				crc32.update(buffer, 0, length);
+			}
+			input.close();
+			return crc32.getValue();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	static public void main (String[] args) throws Exception {
