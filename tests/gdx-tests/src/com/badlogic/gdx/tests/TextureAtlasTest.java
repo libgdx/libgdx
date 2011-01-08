@@ -31,7 +31,7 @@ public class TextureAtlasTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 
-		atlas = new TextureAtlas(Gdx.files.internal("data"));
+		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 
 		badlogic = atlas.createSprite("badlogicslice");
 		badlogic.setPosition(50, 50);

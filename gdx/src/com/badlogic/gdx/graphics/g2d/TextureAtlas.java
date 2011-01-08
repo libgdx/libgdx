@@ -24,9 +24,8 @@ import java.util.PriorityQueue;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -53,18 +52,18 @@ public class TextureAtlas {
 	}
 
 	/**
-	 * Loads a pack file named "pack" in the specified directory and also looks there for page images named in the pack file.
+	 * Loads the specified pack file, using the parent directory of the pack file to find the page images.
 	 */
-	public TextureAtlas (FileHandle imagesDir) {
-		this(imagesDir.child("pack"), imagesDir);
+	public TextureAtlas (FileHandle packFile) {
+		this(packFile, packFile.parent());
 	}
 
 	/**
 	 * @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 * @see #TextureAtlas(FileHandle)
 	 */
-	public TextureAtlas (FileHandle imagesDir, boolean flip) {
-		this(imagesDir.child("pack"), imagesDir, flip);
+	public TextureAtlas (FileHandle packFile, boolean flip) {
+		this(packFile, packFile.parent(), flip);
 	}
 
 	public TextureAtlas (FileHandle packFile, FileHandle imagesDir) {

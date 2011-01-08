@@ -65,13 +65,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		int pointer;
 	}
 
-	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(false, 16, 1000) {
+	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
 			return new KeyEvent();
 		}
 	};
 
-	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(false, 16, 1000) {
+	Pool<TouchEvent> usedTouchEvents = new Pool<TouchEvent>(16, 1000) {
 		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
@@ -220,7 +220,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					case KeyEvent.KEY_TYPED:
 						processor.keyTyped(e.keyChar);
 					}
-					usedKeyEvents.removeValue(e, true);
+					usedKeyEvents.free(e);
 				}
 
 				len = touchEvents.size();
@@ -236,19 +236,19 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
 					}
-					usedTouchEvents.removeValue(e, true);
+					usedTouchEvents.free(e);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
 // Log.d("AndroidInput", "synch touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
-					usedTouchEvents.removeValue(e, true);
+					usedTouchEvents.free(e);
 				}
 
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedKeyEvents.removeValue(keyEvents.get(i), true);
+					usedKeyEvents.free(keyEvents.get(i));
 				}
 			}
 
@@ -287,7 +287,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			KeyEvent event = null;
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
-				event = usedKeyEvents.add();
+				event = usedKeyEvents.obtain();
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_DOWN;
@@ -295,13 +295,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				keys.add(event.keyCode);
 				break;
 			case android.view.KeyEvent.ACTION_UP:
-				event = usedKeyEvents.add();
+				event = usedKeyEvents.obtain();
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_UP;
 				keyEvents.add(event);
 
-				event = usedKeyEvents.add();
+				event = usedKeyEvents.obtain();
 				event.keyChar = character;
 				event.keyCode = 0;
 				event.type = KeyEvent.KEY_TYPED;
