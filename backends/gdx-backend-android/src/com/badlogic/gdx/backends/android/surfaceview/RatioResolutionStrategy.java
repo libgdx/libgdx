@@ -2,6 +2,9 @@ package com.badlogic.gdx.backends.android.surfaceview;
 
 import android.view.View;
 
+/**
+ * This {@link ResolutionStrategy} will keep a given aspect ratio and strech the GLSurfaceView to the maximum available screen size.
+ */
 public class RatioResolutionStrategy implements ResolutionStrategy {
 
     private final float ratio;

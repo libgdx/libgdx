@@ -1,5 +1,8 @@
 package com.badlogic.gdx.backends.android.surfaceview;
 
+/**
+ * 
+ */
 public class FixedResolutionStrategy implements ResolutionStrategy {
 
     private final int width;

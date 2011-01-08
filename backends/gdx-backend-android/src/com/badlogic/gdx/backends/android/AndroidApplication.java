@@ -85,6 +85,7 @@ public class AndroidApplication extends Activity implements Application {
      *
      * @param listener          the {@link ApplicationListener} implementing the program logic
      * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
+     * @param resolutionStrategy will position and size the GLSurfaceView by the given strategy
      * @param sleepTime         specifies the number of milliseconds to sleep in the touch event handler
      */
     public void initialize(ApplicationListener listener, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy, int sleepTime) {
@@ -126,6 +127,7 @@ public class AndroidApplication extends Activity implements Application {
      *
      * @param listener          the {@link ApplicationListener} implementing the program logic
      * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
+     * @param resolutionStrategy will position and size the GLSurfaceView by the given strategy
      * @param sleepTime         specifies the number of milliseconds to sleep in the touch event handler
      * @return the GLSurfaceView of the application
      */
