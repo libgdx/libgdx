@@ -5,5 +5,9 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl"/>
+	<classpathentry kind="lib" path="lib/hiero4/JavaFreeType.jar"/>
+	<classpathentry kind="lib" path="lib/hiero4/jna.jar"/>
+	<classpathentry kind="lib" path="lib/hiero4/TWLThemeEditor.jar"/>
+	<classpathentry kind="lib" path="lib/hiero4/xpp3-1.1.4c.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
