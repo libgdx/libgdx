@@ -148,9 +148,9 @@ public class ShadowEffect implements ConfigurableEffect {
 		List values = new ArrayList();
 		values.add(EffectUtil.colorValue("Color", color));
 		values.add(EffectUtil.floatValue("Opacity", opacity, 0, 1, "This setting sets the translucency of the shadow."));
-		values.add(EffectUtil.floatValue("X distance", xDistance, 0, 99, "This setting is the amount of pixels to offset the "
+		values.add(EffectUtil.floatValue("X distance", xDistance, -99, 99, "This setting is the amount of pixels to offset the "
 			+ "shadow on the x axis. The glyphs will need padding so the shadow doesn't get clipped."));
-		values.add(EffectUtil.floatValue("Y distance", yDistance, 0, 99, "This setting is the amount of pixels to offset the "
+		values.add(EffectUtil.floatValue("Y distance", yDistance, -99, 99, "This setting is the amount of pixels to offset the "
 			+ "shadow on the y axis. The glyphs will need padding so the shadow doesn't get clipped."));
 
 		List options = new ArrayList();
