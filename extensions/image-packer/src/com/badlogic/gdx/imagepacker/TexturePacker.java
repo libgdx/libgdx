@@ -628,19 +628,14 @@ public class TexturePacker {
 		public boolean incremental;
 
 		HashMap<String, Long> crcs = new HashMap();
+		HashMap<String, String> packSections = new HashMap();
 	}
 
 	static private void process (Settings settings, File inputDir, File outputDir, File packFile) throws IOException {
 		if (inputDir.getName().startsWith(".")) return;
 
-		// Clean existing page images.
-		if (outputDir.exists()) {
-			String prefix = inputDir.getName();
-			for (File file : outputDir.listFiles())
-				if (file.getName().startsWith(prefix)) file.delete();
-		}
-
 		// Abort if nothing has changed.
+		boolean skip = false;
 		if (settings.incremental) {
 			File[] files = inputDir.listFiles();
 			if (files == null) return;
@@ -655,50 +650,78 @@ public class TexturePacker {
 				settings.crcs.put(path, crcNow);
 				childCountNow++;
 			}
+
 			String path = inputDir.getAbsolutePath();
 			Long childCountOld = settings.crcs.get(path);
 			if (childCountOld == null || childCountNow != childCountOld) noneHaveChanged = false;
 			settings.crcs.put(path, (long)childCountNow);
-			if (noneHaveChanged) {
+
+			if (outputDir.exists()) {
+				boolean foundPage = false;
+				String prefix = inputDir.getName();
+				for (File file : outputDir.listFiles()) {
+					if (file.getName().startsWith(prefix)) {
+						foundPage = true;
+						break;
+					}
+				}
+				if (!foundPage) noneHaveChanged = false;
+			}
+
+			String section = settings.packSections.get(inputDir.getName());
+			if (noneHaveChanged && section != null) {
+				FileWriter writer = new FileWriter(packFile, true);
+				writer.append(section);
+				writer.close();
+
 				System.out.println(inputDir);
 				System.out.println("Skipping unchanged directory.");
 				System.out.println();
-				return;
+				skip = true;
 			}
 		}
 
-		// Just check all combinations, because we are extremely lazy.
-		ArrayList<TextureFilter> filters = new ArrayList();
-		filters.add(null);
-		filters.addAll(Arrays.asList(TextureFilter.values()));
-		ArrayList<Format> formats = new ArrayList();
-		formats.add(null);
-		formats.addAll(Arrays.asList(Format.values()));
-		for (int i = 0, n = formats.size(); i < n; i++) {
-			Format format = formats.get(i);
-			for (int ii = 0, nn = filters.size(); ii < nn; ii++) {
-				TextureFilter min = filters.get(ii);
-				for (int iii = ii; iii < nn; iii++) {
-					TextureFilter mag = filters.get(iii);
-					if ((min == null && mag != null) || (min != null && mag == null)) continue;
+		if (!skip) {
+			// Clean existing page images.
+			if (outputDir.exists()) {
+				String prefix = inputDir.getName();
+				for (File file : outputDir.listFiles())
+					if (file.getName().startsWith(prefix)) file.delete();
+			}
 
-					Filter filter = new Filter(Direction.none, format, -1, -1, min, mag);
-					new TexturePacker(settings, inputDir, filter, outputDir, packFile);
+			// Just check all combinations, because we are extremely lazy.
+			ArrayList<TextureFilter> filters = new ArrayList();
+			filters.add(null);
+			filters.addAll(Arrays.asList(TextureFilter.values()));
+			ArrayList<Format> formats = new ArrayList();
+			formats.add(null);
+			formats.addAll(Arrays.asList(Format.values()));
+			for (int i = 0, n = formats.size(); i < n; i++) {
+				Format format = formats.get(i);
+				for (int ii = 0, nn = filters.size(); ii < nn; ii++) {
+					TextureFilter min = filters.get(ii);
+					for (int iii = ii; iii < nn; iii++) {
+						TextureFilter mag = filters.get(iii);
+						if ((min == null && mag != null) || (min != null && mag == null)) continue;
 
-					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
-						filter = new Filter(Direction.x, format, width, -1, min, mag);
+						Filter filter = new Filter(Direction.none, format, -1, -1, min, mag);
 						new TexturePacker(settings, inputDir, filter, outputDir, packFile);
-					}
 
-					for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
-						filter = new Filter(Direction.y, format, -1, height, min, mag);
-						new TexturePacker(settings, inputDir, filter, outputDir, packFile);
-					}
-
-					for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
-						for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
-							filter = new Filter(Direction.xy, format, width, height, min, mag);
+						for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
+							filter = new Filter(Direction.x, format, width, -1, min, mag);
 							new TexturePacker(settings, inputDir, filter, outputDir, packFile);
+						}
+
+						for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
+							filter = new Filter(Direction.y, format, -1, height, min, mag);
+							new TexturePacker(settings, inputDir, filter, outputDir, packFile);
+						}
+
+						for (int width = settings.minWidth; width <= settings.maxWidth; width <<= 1) {
+							for (int height = settings.minHeight; height <= settings.maxHeight; height <<= 1) {
+								filter = new Filter(Direction.xy, format, width, height, min, mag);
+								new TexturePacker(settings, inputDir, filter, outputDir, packFile);
+							}
 						}
 					}
 				}
@@ -721,11 +744,9 @@ public class TexturePacker {
 			return;
 		}
 
-		// Clean pack file.
 		File packFile = new File(outputDir, "pack");
-		packFile.delete();
 
-		// Load incremental data.
+		// Load incremental file.
 		File incrmentalFile = null;
 		if (settings.incremental) {
 			settings.crcs.clear();
@@ -741,10 +762,41 @@ public class TexturePacker {
 				}
 				reader.close();
 			}
+
+			// Store the pack file text for each section.
+			BufferedReader reader = new BufferedReader(new FileReader(packFile));
+			StringBuilder buffer = new StringBuilder(2048);
+			while (true) {
+				String imageName = reader.readLine();
+				if (imageName == null) break;
+				if (imageName.length() == 0) continue;
+
+				String pageName = imageName.replaceAll("\\d+.png$", "");
+				String section = settings.packSections.get(pageName);
+				if (section != null) buffer.append(section);
+
+				// buffer.append("****start\n");
+				buffer.append('\n');
+				buffer.append(imageName);
+				buffer.append('\n');
+				while (true) {
+					String line = reader.readLine();
+					if (line == null || line.length() == 0) break;
+					buffer.append(line);
+					buffer.append('\n');
+				}
+				settings.packSections.put(pageName, buffer.toString());
+				buffer.setLength(0);
+			}
+			reader.close();
 		}
+
+		// Clean pack file.
+		packFile.delete();
 
 		process(settings, inputDir, outputDir, packFile);
 
+		// Write incrmental file.
 		if (settings.incremental) {
 			incrmentalFile.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(incrmentalFile);
