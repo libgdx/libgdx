@@ -58,13 +58,21 @@ public class OpenALAudio implements Audio {
 
 	public OpenALSound newSound (FileHandle file) {
 		String extension = file.extension();
-		if (extension.equals("ogg")) return new OggSound(this, file);
+		if (extension.equals("ogg")) {
+			return new OggSound(this, file);
+		} else if (extension.equals("mp3")) {
+			return new Mp3Sound(this, file);
+		}
 		throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 	}
 
 	public OpenALMusic newMusic (FileHandle file) {
 		String extension = file.extension();
-		if (extension.equals("ogg")) return new OggMusic(this, file);
+		if (extension.equals("ogg")) {
+			return new OggMusic(this, file);
+		} else if (extension.equals("mp3")) {
+			return new Mp3Music(this, file);
+		}
 		throw new GdxRuntimeException("Unknown file extension for music: " + file);
 	}
 
