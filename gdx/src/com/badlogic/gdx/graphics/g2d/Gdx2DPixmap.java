@@ -15,8 +15,10 @@ package com.badlogic.gdx.graphics.g2d;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
+
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Experimental. Do not use!
@@ -25,9 +27,11 @@ import java.nio.ByteBuffer;
  */
 public class Gdx2DPixmap {
 	public static final int GDX2D_FORMAT_ALPHA = 1;
-	public static final int GDX2D_FORMAT_ALPHA_LUMINANCE = 2;
-	public static final int GDX2D_FORMAT_RGB = 3;
-	public static final int GDX2D_FORMAT_RGBA = 4;
+	public static final int GDX2D_FORMAT_LUMINANCE_ALPHA = 2;
+	public static final int GDX2D_FORMAT_RGB888 = 3;
+	public static final int GDX2D_FORMAT_RGBA8888 = 4;
+	public static final int GDX2D_FORMAT_RGB565 = 5;
+	public static final int GDX2D_FORMAT_RGBA4444 = 6;
 	
 	final long basePtr;
 	final int width;
@@ -79,6 +83,10 @@ public class Gdx2DPixmap {
 		setPixel(basePtr, x, y, color);
 	}
 	
+	public int getPixel(int x, int y) {
+		return getPixel(basePtr, x, y);
+	}
+	
 	public void drawLine(int x, int y, int x2, int y2, int color) {
 		drawLine(basePtr, x, y, x2, y2, color);
 	}
@@ -92,11 +100,11 @@ public class Gdx2DPixmap {
 	}
 	
 	public void fillRect(int x, int y, int width, int height, int color) {
-		drawRect(basePtr, x, y, width, height, color);
+		fillRect(basePtr, x, y, width, height, color);
 	}
 	
 	public void fillCircle(int x, int y, int radius, int color) {
-		drawCircle(basePtr, x, y, radius, color);
+		fillCircle(basePtr, x, y, radius, color);
 	}
 	
 	private void drawPixmap(Gdx2DPixmap src, 
@@ -127,6 +135,7 @@ public class Gdx2DPixmap {
 	private static native void free(long basePtr);
 	private static native void clear(long pixmap, int color);
 	private static native void setPixel(long pixmap, int x, int y, int color);
+	private static native int  getPixel(long pixmap, int x, int y);
 	private static native void drawLine(long pixmap, int x, int y, int x2, int y2, int color);
 	private static native void drawRect(long pixmap, int x, int y, int width, int height, int color);
 	private static native void drawCircle(long pixmap, int x, int y, int radius, int color);
@@ -151,5 +160,61 @@ public class Gdx2DPixmap {
 	
 	public int getFormat() {
 		return format;
+	}
+	
+	public int getGLInternalFormat() {
+		switch(format) {
+		case GDX2D_FORMAT_ALPHA:
+			return GL10.GL_ALPHA;
+		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+			return GL10.GL_LUMINANCE_ALPHA;
+		case GDX2D_FORMAT_RGB888:
+		case GDX2D_FORMAT_RGB565:
+			return GL10.GL_RGB;
+		case GDX2D_FORMAT_RGBA8888:
+		case GDX2D_FORMAT_RGBA4444:
+			return GL10.GL_RGBA;
+		default:
+			throw new GdxRuntimeException("unknown format: " + format);
+		}
+	}	
+	
+	public int getGLFormat() {
+		return getGLInternalFormat();
+	}
+	
+	public int getGLType() {
+		switch(format) {
+		case GDX2D_FORMAT_ALPHA:			
+		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+		case GDX2D_FORMAT_RGB888:
+		case GDX2D_FORMAT_RGBA8888:
+			return GL10.GL_UNSIGNED_BYTE;
+		case GDX2D_FORMAT_RGB565:
+			return GL10.GL_UNSIGNED_SHORT_5_6_5;
+		case GDX2D_FORMAT_RGBA4444:
+			return GL10.GL_UNSIGNED_SHORT_4_4_4_4;
+		default:
+				throw new GdxRuntimeException("unknown format: " + format);
+		}
+	}
+
+	public String getFormatString () {
+		switch(format) {
+		case GDX2D_FORMAT_ALPHA:			
+			return "alpha";
+		case GDX2D_FORMAT_LUMINANCE_ALPHA:
+			return "luminance alpha";
+		case GDX2D_FORMAT_RGB888:
+			return "rgb888";
+		case GDX2D_FORMAT_RGBA8888:
+			return "rgba8888";		
+		case GDX2D_FORMAT_RGB565:
+			return "rgb565";
+		case GDX2D_FORMAT_RGBA4444:
+			return "rgba4444";
+		default:
+			return "unknown";
+		}
 	}
 }

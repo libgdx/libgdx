@@ -240,4 +240,28 @@ public class Color {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return Float.intBitsToFloat(color & 0xfeffffff);
 	}
+	
+	public static int alpha(float alpha) {
+		return (int)(alpha * 255.0f);
+	}
+	
+	public static int luminanceAlpha(float luminance, float alpha) {
+		return ((int)(luminance *  255.0f) << 8) | (int)(alpha * 255);
+	}
+	
+	public static int rgb565(float r, float g, float b) {
+		return ((int)(r * 31) << 11) | ((int)(g * 63) << 5) | (int)(b * 31);
+	}
+	
+	public static int rgba4444(float r, float g, float b, float a) {
+		return ((int)(r*15) << 12) | ((int)(g*15) << 8) | ((int)(b*15) << 4) | (int)(a*15);
+	}
+
+	public static int rgb888 (float r, float g, float b) {
+		return ((int)(r*255) << 16) | ((int)(g*255) << 8) | (int)(b*255);
+	}
+	
+	public static int rgba8888(float r, float g, float b, float a) {
+		return ((int)(r*255) << 24) | ((int)(g*255) << 16) | ((int)(b*255) << 8) | (int)(a*255);
+	}
 }

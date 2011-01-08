@@ -78,6 +78,11 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setPixel
 	gdx2d_set_pixel((gdx2d_pixmap*)pixmap, x, y, color);
 }
 
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getPixel
+(JNIEnv *, jclass, jlong pixmap, jint x, jint y) {
+	return gdx2d_get_pixel((gdx2d_pixmap*)pixmap, x, y);
+}
+
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
  * Method:    drawLine

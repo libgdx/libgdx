@@ -23,12 +23,18 @@ extern "C" {
  * pixmap formats, components are laid out in memory
  * in the order they appear in the constant name. E.g.
  * GDX_FORMAT_RGB => pixmap[0] = r, pixmap[1] = g, pixmap[2] = b.
- * Components are 8-bit each.
+ * Components are 8-bit each except for RGB565 and RGBA4444 which
+ * take up two bytes each. The order of bytes is machine dependent
+ * within a short the high order byte holds r and the first half of g
+ * the low order byte holds the lower half of g and b as well as a
+ * if the format is RGBA4444
  */
 #define GDX2D_FORMAT_ALPHA 				1
-#define GDX2D_FORMAT_ALPHA_LUMINANCE 	2
-#define GDX2D_FORMAT_RGB 				3
-#define GDX2D_FORMAT_RGBA 				4
+#define GDX2D_FORMAT_LUMINANCE_ALPHA 	2
+#define GDX2D_FORMAT_RGB888 			3
+#define GDX2D_FORMAT_RGBA8888			4
+#define GDX2D_FORMAT_RGB565				5
+#define GDX2D_FORMAT_RGBA4444			6
 
 /**
  * blending modes, to be extended
@@ -48,31 +54,31 @@ extern "C" {
  * the format is one of the GDX2D_FORMAT_XXX constants.
  */
 typedef struct {
-	int width;
-	int height;
-	int format;
+	uint32_t width;
+	uint32_t height;
+	uint32_t format;
 	const unsigned char* pixels;
 } gdx2d_pixmap;
 
-extern gdx2d_pixmap* gdx2d_load (const unsigned char *buffer, int len, int req_format);
-extern gdx2d_pixmap* gdx2d_new  (int width, int height, int format);
+extern gdx2d_pixmap* gdx2d_load (const unsigned char *buffer, uint32_t len, uint32_t req_format);
+extern gdx2d_pixmap* gdx2d_new  (uint32_t width, uint32_t height, uint32_t format);
 extern void 		 gdx2d_free (const gdx2d_pixmap* pixmap);
 
-extern void gdx2d_set_blend	  (int blend);
-extern void gdx2d_set_scale	  (int scale);
+extern void gdx2d_set_blend	  (uint32_t blend);
+extern void gdx2d_set_scale	  (uint32_t scale);
 
-extern void gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, uint32_t col);
-extern void gdx2d_set_pixel   (const gdx2d_pixmap* pixmap, int x, int y, uint32_t col);
-extern void gdx2d_draw_line   (const gdx2d_pixmap* pixmap, int x, int y, int x2, int y2, uint32_t col);
-extern void gdx2d_draw_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, uint32_t col);
-extern void gdx2d_draw_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, uint32_t col);
-extern void gdx2d_fill_rect   (const gdx2d_pixmap* pixmap, int x, int y, int width, int height, uint32_t col);
-extern void gdx2d_fill_circle (const gdx2d_pixmap* pixmap, int x, int y, int radius, uint32_t col);
-extern void gdx2d_draw_pixmap (const gdx2d_pixmap* src_pixmap,
-							   const gdx2d_pixmap* dst_pixmap,
-							   int src_x, int src_y, int src_width, int src_height,
-							   int dst_x, int dst_y, int dst_width, int dst_height);
-
+extern void		gdx2d_clear	   	  (const gdx2d_pixmap* pixmap, uint32_t col);
+extern void		gdx2d_set_pixel   (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t col);
+extern uint32_t gdx2d_get_pixel	  (const gdx2d_pixmap* pixmap, int32_t x, int32_t y);
+extern void		gdx2d_draw_line   (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, int32_t x2, int32_t y2, uint32_t col);
+extern void		gdx2d_draw_rect   (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col);
+extern void		gdx2d_draw_circle (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t radius, uint32_t col);
+extern void		gdx2d_fill_rect   (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t width, uint32_t height, uint32_t col);
+extern void		gdx2d_fill_circle (const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t radius, uint32_t col);
+extern void		gdx2d_draw_pixmap (const gdx2d_pixmap* src_pixmap,
+								   const gdx2d_pixmap* dst_pixmap,
+								   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
+								   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height);
 #ifdef __cplusplus
 }
 #endif

@@ -9,12 +9,16 @@ extern "C" {
 #endif
 #undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_ALPHA
 #define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_ALPHA 1L
-#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_ALPHA_LUMINANCE
-#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_ALPHA_LUMINANCE 2L
-#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB
-#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB 3L
-#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA
-#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA 4L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_LUMINANCE_ALPHA
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_LUMINANCE_ALPHA 2L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB888
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB888 3L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA8888
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA8888 4L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB565
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB565 5L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA4444
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA4444 6L
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
  * Method:    load
@@ -54,6 +58,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_clear
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setPixel
   (JNIEnv *, jclass, jlong, jint, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
+ * Method:    getPixel
+ * Signature: (JII)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getPixel
+  (JNIEnv *, jclass, jlong, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
