@@ -62,8 +62,10 @@ public class BMFontUtil {
 		int pageWidth = unicodeFont.getGlyphPageWidth();
 		int pageHeight = unicodeFont.getGlyphPageHeight();
 		out.println("info face=\"" + font.getFontName() + "\" size=" + font.getSize() + " bold=" + (font.isBold() ? 1 : 0)
-			+ " italic=" + (font.isItalic() ? 1 : 0)
-			+ " charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1");
+			+ " italic=" + (font.isItalic() ? 1 : 0) + " charset=\"\" unicode=0 stretchH=100 smooth=1 aa=1 padding="
+			+ unicodeFont.getPaddingTop() + "," + unicodeFont.getPaddingLeft() + "," + unicodeFont.getPaddingBottom() + ","
+			+ unicodeFont.getPaddingRight() + " spacing=" + unicodeFont.getPaddingAdvanceX() + ","
+			+ unicodeFont.getPaddingAdvanceY());
 		out.println("common lineHeight=" + unicodeFont.getLineHeight() + " base=" + unicodeFont.getAscent() + " scaleW="
 			+ pageWidth + " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
 
