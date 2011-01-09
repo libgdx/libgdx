@@ -101,6 +101,7 @@ public class VBOVATest extends GdxTest {
 		}
 
 		for (int i = 0; i < 5; i++) {
+			if (!isStatic) vertexBuffer.setVertices(vertices, 0, vertices.length);
 			vertexBuffer.bind();
 			if (mode == 3) {
 				ibo.bind();
@@ -112,9 +113,7 @@ public class VBOVATest extends GdxTest {
 			}
 			if (mode == 5) {
 				vaibo.setIndices(indices, 0, indices.length);
-			}
-
-			if (!isStatic) vertexBuffer.setVertices(vertices, 0, vertices.length);
+			}		
 
 			if (mode <= 2) {
 				Gdx.gl11.glDrawArrays(GL11.GL_TRIANGLES, 0, TRIANGLES * 3);
