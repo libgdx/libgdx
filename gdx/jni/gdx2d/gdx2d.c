@@ -101,12 +101,6 @@ inline void set_pixel_RGBA8888(unsigned char *pixel_addr, uint32_t color) {
 								((color & 0xff00) << 8) |
 								((color & 0xff) << 24);
 	} else {		
-		/*uint32_t colora = 0xFFFFFF; // a color
-		uint32_t colorb = 0xFF007F; // other color
-		uint32_t rb = (colora & 0xFF00FF) + (alpha * (colorb & 0xFF00FF));
-		uint32_t g = (colora & 0x00FF00) + (alpha * (colorb & 0x00FF00));
-		return (rb & 0xFF00FF) + (g & 0x00FF00);*/
-
 		uint32_t src_r = (color & 0xff000000) >> 24;
 		uint32_t src_g = (color & 0xff0000) >> 16;
 		uint32_t src_b = (color & 0xff00) >> 8;
@@ -138,14 +132,14 @@ inline void set_pixel_RGBA4444(unsigned char *pixel_addr, uint32_t color) {
 		*(uint16_t*)pixel_addr = (uint16_t)(color);
 	} else {
 		uint16_t src_a = color & 0xf;
-		uint16_t src_r = (color & 0xf0) >> 4;
+		uint16_t src_r = (color & 0xf000) >> 12;
 		uint16_t src_g = (color & 0xf00) >> 8;
-		uint16_t src_b = (color & 0xf000) >> 12;
+		uint16_t src_b = (color & 0xf0) >> 4;
 
 		uint16_t dst = *(uint16_t*)pixel_addr;
-		uint16_t dst_r = (dst & 0xf0) >> 4;
+		uint16_t dst_r = (dst & 0xf000) >> 12;
 		uint16_t dst_g = (dst & 0xf00) >> 8;
-		uint16_t dst_b = (dst & 0xf000) >> 12;
+		uint16_t dst_b = (dst & 0xf0) >> 4;
 
 		uint16_t src_one_minus_a = 15 - src_a;
 		dst_r = (src_a * src_r + src_one_minus_a * dst_r) / 15;
