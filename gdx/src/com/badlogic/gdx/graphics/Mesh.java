@@ -178,6 +178,20 @@ public class Mesh {
 	public void setVertices (float[] vertices, int offset, int count) {
 		this.vertices.setVertices(vertices, offset, count);
 	}
+	
+	/**
+	 * Copies the vertices from the Mesh to the float array. The float 
+	 * array must be large enough to hold all the Mesh's vertices.
+	 * @param vertices the array to copy the vertices to
+	 */
+	public void getVertices(float[] vertices) {
+		if(vertices.length < getNumVertices() * getVertexSize() / 4)
+			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs " + getNumVertices() * getVertexSize() / 4);
+		int pos = getVerticesBuffer().position();		
+		getVerticesBuffer().position(0);
+		getVerticesBuffer().get(vertices, 0, getNumVertices() * getVertexSize() / 4);
+		getVerticesBuffer().position(pos);
+	}
 
 	/**
 	 * Sets the indices of this Mesh
@@ -197,6 +211,20 @@ public class Mesh {
 	 */
 	public void setIndices (short[] indices, int offset, int count) {
 		this.indices.setIndices(indices, offset, count);
+	}
+	
+	/**
+	 * Copies the indices from the Mesh to the short array. The short 
+	 * array must be large enough to hold all the Mesh's indices.
+	 * @param indices the array to copy the indices to
+	 */
+	public void getIndices(short[] indices) {
+		if(indices.length < getNumIndices())
+			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " floats, needs " + getNumIndices());
+		int pos = getIndicesBuffer().position();		
+		getIndicesBuffer().position(0);
+		getIndicesBuffer().get(indices, 0, getNumIndices());
+		getIndicesBuffer().position(pos);
 	}
 
 	/**
