@@ -1045,7 +1045,9 @@ public class SpriteCache {
 			+ "   v_texCoords = a_texCoords; \n" //
 			+ "   gl_Position =  u_projectionViewMatrix * a_position;\n" //
 			+ "}";
-		String fragmentShader = "precision mediump float;\n" //
+		String fragmentShader = "#ifdef GL_ES\n" //
+			+ "precision mediump float;\n" //
+			+ "#endif\n" //
 			+ "varying vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
 			+ "uniform sampler2D u_texture;\n" //

@@ -37,8 +37,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  */
 public class ImmediateModeRenderer {
-	private static final int MAX_VERTICES = 2000 * 3;
-
 	/** the primitive type **/
 	private int primitiveType;
 
@@ -64,26 +62,28 @@ public class ImmediateModeRenderer {
 	private int idxNors = 0;
 	private int idxTexCoords = 0;
 
-	/** which attributes have been defined **/
-	private boolean colorsDefined = false;
-	private boolean normalsDefined = false;
-	private boolean texCoordsDefined = false;
-
 	/**
 	 * Constructs a new ImmediateModeRenderer
 	 */
 	public ImmediateModeRenderer () {
+		this(2000);
+	}
+
+	/**
+	 * Constructs a new ImmediateModeRenderer
+	 */
+	public ImmediateModeRenderer (int maxVertices) {
 		if (Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("ImmediateModeRenderer can only be used with OpenGL ES 1.0/1.1");
 
-		this.positions = new float[3 * MAX_VERTICES];
-		this.positionsBuffer = allocateBuffer(3 * MAX_VERTICES);
-		this.colors = new float[4 * MAX_VERTICES];
-		this.colorsBuffer = allocateBuffer(4 * MAX_VERTICES);
-		this.normals = new float[3 * MAX_VERTICES];
-		this.normalsBuffer = allocateBuffer(3 * MAX_VERTICES);
-		this.texCoords = new float[2 * MAX_VERTICES];
-		this.texCoordsBuffer = allocateBuffer(2 * MAX_VERTICES);
+		this.positions = new float[3 * maxVertices];
+		this.positionsBuffer = allocateBuffer(3 * maxVertices);
+		this.colors = new float[4 * maxVertices];
+		this.colorsBuffer = allocateBuffer(4 * maxVertices);
+		this.normals = new float[3 * maxVertices];
+		this.normalsBuffer = allocateBuffer(3 * maxVertices);
+		this.texCoords = new float[2 * maxVertices];
+		this.texCoordsBuffer = allocateBuffer(2 * maxVertices);
 	}
 
 	private FloatBuffer allocateBuffer (int numFloats) {
@@ -104,10 +104,6 @@ public class ImmediateModeRenderer {
 		idxCols = 0;
 		idxNors = 0;
 		idxTexCoords = 0;
-
-		colorsDefined = false;
-		normalsDefined = false;
-		texCoordsDefined = false;
 	}
 
 	/**
@@ -122,7 +118,6 @@ public class ImmediateModeRenderer {
 		colors[idxCols + 1] = g;
 		colors[idxCols + 2] = b;
 		colors[idxCols + 3] = a;
-		colorsDefined = true;
 	}
 
 	/**
@@ -135,7 +130,6 @@ public class ImmediateModeRenderer {
 		normals[idxNors] = x;
 		normals[idxNors + 1] = y;
 		normals[idxNors + 2] = z;
-		normalsDefined = true;
 	}
 
 	/**
@@ -146,7 +140,6 @@ public class ImmediateModeRenderer {
 	public void texCoord (float u, float v) {
 		texCoords[idxTexCoords] = u;
 		texCoords[idxTexCoords + 1] = v;
-		texCoordsDefined = true;
 	}
 
 	/**
@@ -179,21 +172,21 @@ public class ImmediateModeRenderer {
 		BufferUtils.copy(positions, positionsBuffer, idxPos, 0);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, positionsBuffer);
 
-		if (colorsDefined) {
+		if (idxCols > 0) {
 			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 			colorsBuffer.clear();
 			BufferUtils.copy(colors, colorsBuffer, idxCols, 0);
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorsBuffer);
 		}
 
-		if (normalsDefined) {
+		if (idxNors > 0) {
 			gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 			normalsBuffer.clear();
 			BufferUtils.copy(normals, normalsBuffer, idxNors, 0);
 			gl.glNormalPointer(GL10.GL_FLOAT, 0, normalsBuffer);
 		}
 
-		if (texCoordsDefined) {
+		if (idxTexCoords > 0) {
 			gl.glClientActiveTexture(GL10.GL_TEXTURE0);
 			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			texCoordsBuffer.clear();
@@ -203,8 +196,8 @@ public class ImmediateModeRenderer {
 
 		gl.glDrawArrays(primitiveType, 0, idxPos / 3);
 
-		if (colorsDefined) gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-		if (normalsDefined) gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-		if (texCoordsDefined) gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		if (idxCols > 0) gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+		if (idxNors > 0) gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
+		if (idxTexCoords > 0) gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 }
