@@ -101,25 +101,20 @@ inline void set_pixel_RGBA8888(unsigned char *pixel_addr, uint32_t color) {
 								((color & 0xff00) << 8) |
 								((color & 0xff) << 24);
 	} else {		
-		uint32_t src_r = (color & 0xff000000) >> 24;
-		uint32_t src_g = (color & 0xff0000) >> 16;
-		uint32_t src_b = (color & 0xff00) >> 8;
-		uint32_t src_a = (color & 0xff);
+		int32_t src_r = (color & 0xff000000) >> 24;
+		int32_t src_g = (color & 0xff0000) >> 16;
+		int32_t src_b = (color & 0xff00) >> 8;
+		int32_t src_a = (color & 0xff);
 		
-		uint32_t dst = *(uint32_t*)pixel_addr;		
-		uint32_t dst_r = (dst & 0xff);
-		uint32_t dst_g = (dst & 0xff00) >> 8;
-		uint32_t dst_b = (dst & 0xff0000) >> 16;
-		uint32_t dst_a = (dst & 0xff000000) >> 24;
-
-		uint32_t src_one_minus_a = 255 - src_a;		
-		dst_r = (src_a * src_r + src_one_minus_a * dst_r) / 255;
-		dst_g = (src_a * src_g + src_one_minus_a * dst_g) / 255;
-		dst_b = (src_a * src_b + src_one_minus_a * dst_b) / 255;
-		if(dst_r > 255) dst_r = 255;
-		if(dst_g > 255) dst_g = 255;
-		if(dst_b > 255) dst_b = 255;
-		*(uint32_t*)pixel_addr = (dst_r & 0xff) | ((dst_g & 0xff) << 8) | ((dst_b & 0xff) << 16) | ((src_a & 0xff) << 24);		
+		int32_t dst = *(uint32_t*)pixel_addr;		
+		int32_t dst_r = (dst & 0xff);
+		int32_t dst_g = (dst & 0xff00) >> 8;
+		int32_t dst_b = (dst & 0xff0000) >> 16;
+			
+		dst_r = dst_r + src_a * (src_r - dst_r) / 255;
+		dst_g = dst_g + src_a * (src_g - dst_g) / 255;
+		dst_b = dst_b + src_a * (src_b - dst_b) / 255;
+		*(uint32_t*)pixel_addr = (uint32_t)(dst_r | (dst_g << 8) | (dst_b << 16) | (src_a << 24));		
 	}	
 }
 
@@ -140,15 +135,11 @@ inline void set_pixel_RGBA4444(unsigned char *pixel_addr, uint32_t color) {
 		uint16_t dst_r = (dst & 0xf000) >> 12;
 		uint16_t dst_g = (dst & 0xf00) >> 8;
 		uint16_t dst_b = (dst & 0xf0) >> 4;
-
-		uint16_t src_one_minus_a = 15 - src_a;
-		dst_r = (src_a * src_r + src_one_minus_a * dst_r) / 15;
-		dst_g = (src_a * src_g + src_one_minus_a * dst_g) / 15;
-		dst_b = (src_a * src_b + src_one_minus_a * dst_b) / 15;
-		if(dst_r > 15) dst_r = 15;
-		if(dst_g > 15) dst_g = 15;
-		if(dst_b > 15) dst_b = 15;
-		*(uint16_t*)pixel_addr = (uint16_t)(((dst_r & 0xf) << 12) | ((dst_g & 0xf) << 8) | ((dst_b & 0xf) << 4) | (src_a & 0xf));		
+		
+		dst_r = dst_r + src_a * (src_r - dst_r) / 15;
+		dst_g = dst_g + src_a * (src_g - dst_g) / 15;
+		dst_b = dst_b + src_a * (src_b - dst_b) / 15;
+		*(uint16_t*)pixel_addr = (uint16_t)((dst_r << 12) | (dst_g << 8) | (dst_b << 4) | src_a);		
 	}
 }
 
@@ -617,8 +608,38 @@ void blit_same_size_blend(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* ds
 						  uint32_t width, uint32_t height) {
 }
 
+void blit(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
+					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
+}
+
+void blit_blend(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+				int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
+				int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
+}
+
 void gdx2d_draw_pixmap(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
 					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
-
+	if(src_width == dst_width && src_height == dst_height) {
+		if(gdx2d_blend) {
+			if(src_pixmap->format && dst_pixmap->format) {
+				blit_same_format_and_size_blend(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
+			} else {
+				blit_same_size_blend(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
+			}
+		} else {
+			if(src_pixmap->format && dst_pixmap->format) {
+				blit_same_format_and_size(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
+			} else {
+				blit_same_size(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
+			}
+		}
+	} else {
+		if(gdx2d_blend) {
+			blit_blend(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
+		} else {
+			blit(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
+		}
+	}
 }

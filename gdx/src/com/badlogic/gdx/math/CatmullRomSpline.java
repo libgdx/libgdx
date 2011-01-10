@@ -29,6 +29,8 @@ public final class CatmullRomSpline {
 	 */
 	private static final long serialVersionUID = -3290464799289771451L;
 	private List<Vector3> controlPoints = new ArrayList<Vector3>();
+	Vector3 T1 = new Vector3();
+	Vector3 T2 = new Vector3();
 
 	/**
 	 * Adds a new control point
@@ -90,6 +92,46 @@ public final class CatmullRomSpline {
 		if (controlPoints.size() >= 4) points.add(controlPoints.get(controlPoints.size() - 2));
 
 		return points;
+	}
+	
+	/**
+	 * Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
+	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
+	 * 
+	 * @param points the array of Vector3 instances to store the path in
+	 * @param numPoints number of points returned for a segment
+	 * @return the path
+	 */	
+	public void getPath (Vector3[] points, int numPoints) {		
+		int idx = 0;
+		if (controlPoints.size() < 4) return;	
+
+		for (int i = 1; i <= controlPoints.size() - 3; i++) {
+			points[idx++].set(controlPoints.get(i));
+			float increment = 1.0f / (numPoints + 1);
+			float t = increment;
+
+			T1.set(controlPoints.get(i + 1)).sub(controlPoints.get(i - 1)).mul(0.5f);
+			T2.set(controlPoints.get(i + 2)).sub(controlPoints.get(i)).mul(0.5f);
+
+			for (int j = 0; j < numPoints; j++) {
+				float h1 = 2 * t * t * t - 3 * t * t + 1; // calculate basis
+				// function 1
+				float h2 = -2 * t * t * t + 3 * t * t; // calculate basis
+				// function 2
+				float h3 = t * t * t - 2 * t * t + t; // calculate basis
+				// function 3
+				float h4 = t * t * t - t * t; // calculate basis function 4
+
+				Vector3 point = points[idx++].set(controlPoints.get(i)).mul(h1);
+				point.add(controlPoints.get(i + 1).tmp().mul(h2));
+				point.add(T1.tmp().mul(h3));
+				point.add(T2.tmp().mul(h4));				
+				t += increment;
+			}
+		}
+
+		points[idx].set(controlPoints.get(controlPoints.size() - 2));	
 	}
 
 	/**
