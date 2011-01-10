@@ -20,6 +20,7 @@ import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.AudioRecorderTest;
+import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SplineTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
@@ -86,9 +87,10 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 public class GdxTests 
 {
 	public static final Class[] tests = {
-		Gdx2DTest.class,		
-		AlphaTest.class,
+		Gdx2DTest.class,				
+		ShaderMultitextureTest.class,
 		SplineTest.class,
+		AlphaTest.class,	
 		AtlasIssueTest.class,		
 		FilterPerformanceTest.class,
 		AudioDeviceTest.class,
