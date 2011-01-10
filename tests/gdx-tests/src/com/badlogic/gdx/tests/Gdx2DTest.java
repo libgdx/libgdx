@@ -98,8 +98,8 @@ public class Gdx2DTest extends GdxTest {
 		
 		rgba8888.clear(Color.rgba8888(1, 0, 0, 0.5f));
 		rgba8888.setPixel(16, 16, Color.rgba8888(0, 0, 1, 1));
-		//if(rgba8888.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgba8888 error");
-		//if(rgba8888.getPixel(15, 16) != Color.rgba8888(1, 0, 0, 0.5f)) throw new RuntimeException("rgba8888 error");
+		if(rgba8888.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgba8888 error");
+		if(rgba8888.getPixel(15, 16) != Color.rgba8888(1, 0, 0, 0.5f)) throw new RuntimeException("rgba8888 error");
 		rgba8888.drawLine(0,0,31,31,Color.rgba8888(0, 1, 0, 1));
 		rgba8888.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 0, 1));
 		rgba8888.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 1));
@@ -116,7 +116,7 @@ public class Gdx2DTest extends GdxTest {
 			final int RUNS = 1000;
 			long startTime = System.nanoTime();		
 			for(int i = 0; i < RUNS; i++) {
-				gdxPixmap.clear(0xffffffff);
+//				gdxPixmap.clear(0xffffffff);
 				gdxPixmap.drawLine((int)(rand.nextFloat()*256), ((int)rand.nextFloat()*256), 
 										 (int)(rand.nextFloat()*256), ((int)rand.nextFloat()*256), 0xffffffff);
 				gdxPixmap.drawCircle(((int)rand.nextFloat()*256), ((int)rand.nextFloat()*256), ((int)rand.nextFloat() * 128), 0xffffffff);
@@ -132,7 +132,7 @@ public class Gdx2DTest extends GdxTest {
 			startTime = System.nanoTime();		
 			for(int i = 0; i < RUNS; i++) {
 				pixmap.setColor(1, 1, 1, 1);
-				pixmap.fill();
+//				pixmap.fill();
 				pixmap.setColor(1, 1, 1, 1);
 				pixmap.drawLine((int)(rand2.nextFloat()*256), ((int)rand2.nextFloat()*256), 
 										 (int)(rand2.nextFloat()*256), ((int)rand2.nextFloat()*256));
