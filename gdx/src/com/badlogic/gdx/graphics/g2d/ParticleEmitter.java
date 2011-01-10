@@ -64,6 +64,7 @@ public class ParticleEmitter {
 	private boolean firstUpdate;
 	private boolean flipX, flipY;
 	private int updateFlags;
+	private boolean allowCompletion;
 
 	private int emission, emissionDiff, emissionDelta;
 	private int lifeOffset, lifeOffsetDiff;
@@ -194,7 +195,7 @@ public class ParticleEmitter {
 		if (durationTimer < duration)
 			durationTimer += deltaMillis;
 		else {
-			if (!continuous) return;
+			if (!continuous || allowCompletion) return;
 			restart();
 		}
 
@@ -215,6 +216,7 @@ public class ParticleEmitter {
 
 	public void start () {
 		firstUpdate = true;
+		allowCompletion = false;
 		restart();
 	}
 
@@ -485,6 +487,15 @@ public class ParticleEmitter {
 			particle.setTexture(texture);
 			particle.setOrigin(originX, originY);
 		}
+	}
+
+	/**
+	 * Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
+	 * to stop smoothly.
+	 */
+	public void allowCompletion () {
+		allowCompletion = true;
+		durationTimer = duration;
 	}
 
 	public Sprite getSprite () {

@@ -104,7 +104,7 @@ public class BitmapFont {
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
-		region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
+		region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Nearest, TextureFilter.Nearest,
 			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
 		init(fontFile, region, flip);
 	}
@@ -134,7 +134,7 @@ public class BitmapFont {
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				String imgFilename = page[2].substring(6, page[2].length() - 1);
 				FileHandle imageFile = fontFile.parent().child(imgFilename);
-				region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Linear, TextureFilter.Linear,
+				region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Nearest, TextureFilter.Nearest,
 					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
 			}
 
@@ -321,7 +321,7 @@ public class BitmapFont {
 				x += g.xadvance * scaleX;
 			}
 		}
-		spriteBatch.setColor(batchColor);		
+		spriteBatch.setColor(batchColor);
 		textBounds.width = (int)(x - startX);
 		textBounds.height = (int)capHeight;
 		return textBounds;
@@ -369,7 +369,7 @@ public class BitmapFont {
 			numLines++;
 		}
 		spriteBatch.setColor(batchColor);
-		
+
 		textBounds.width = maxWidth;
 		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;
@@ -435,7 +435,7 @@ public class BitmapFont {
 			y += down;
 			numLines++;
 		}
-		spriteBatch.setColor(batchColor);		
+		spriteBatch.setColor(batchColor);
 		textBounds.width = maxWidth;
 		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
 		return textBounds;

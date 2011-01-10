@@ -478,6 +478,7 @@ public class Hiero extends JFrame {
 				dialog.setVisible(true);
 				String fileName = dialog.getFile();
 				if (fileName == null) return;
+				if (!fileName.endsWith(".hiero")) fileName += ".hiero";
 				File file = new File(dialog.getDirectory(), fileName);
 				try {
 					save(file);

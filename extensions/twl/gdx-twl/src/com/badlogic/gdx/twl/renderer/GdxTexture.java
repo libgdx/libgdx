@@ -42,7 +42,7 @@ class GdxTexture implements Texture, Resource {
 
 	public GdxTexture (GdxRenderer renderer, FileHandle textureFile) {
 		this.renderer = renderer;
-		texture = Gdx.graphics.newTexture(textureFile, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
+		texture = Gdx.graphics.newTexture(textureFile, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 	}
 

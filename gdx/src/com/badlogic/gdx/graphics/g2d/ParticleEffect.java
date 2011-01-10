@@ -33,8 +33,8 @@ public class ParticleEffect {
 	private ArrayList<ParticleEmitter> emitters = new ArrayList();
 
 	public void start () {
-		for (ParticleEmitter emitter : emitters)
-			emitter.start();
+		for (int i = 0, n = emitters.size(); i < n; i++)
+			emitters.get(i).start();
 	}
 
 	public void draw (SpriteBatch spriteBatch, float delta) {
@@ -43,11 +43,8 @@ public class ParticleEffect {
 	}
 
 	public void allowCompletion () {
-		for (int i = 0, n = emitters.size(); i < n; i++) {
-			ParticleEmitter emitter = emitters.get(i);
-			emitter.setContinuous(false);
-			emitter.durationTimer = emitter.duration;
-		}
+		for (int i = 0, n = emitters.size(); i < n; i++)
+			emitters.get(i).allowCompletion();
 	}
 
 	public boolean isComplete () {
@@ -158,7 +155,7 @@ public class ParticleEffect {
 	}
 
 	protected Texture loadTexture (FileHandle file) {
-		return Gdx.graphics.newTexture(file, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
+		return Gdx.graphics.newTexture(file, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
 			TextureWrap.ClampToEdge);
 	}
 }

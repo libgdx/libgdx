@@ -318,7 +318,7 @@ public class ParticleEditor extends JFrame {
 					file = Gdx.files.classpath(imagePath);
 				else
 					file = Gdx.files.absolute(imagePath);
-				emitter.setSprite(new Sprite(Gdx.graphics.newTexture(file, TextureFilter.Linear, TextureFilter.Linear,
+				emitter.setSprite(new Sprite(Gdx.graphics.newTexture(file, TextureFilter.Nearest, TextureFilter.Nearest,
 					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge)));
 			} catch (GdxRuntimeException ex) {
 				ex.printStackTrace();
