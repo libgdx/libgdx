@@ -26,6 +26,20 @@ public class LongArray {
 	public boolean ordered;
 
 	/**
+	 * Creates an ordered array with a capacity of 16.
+	 */
+	public LongArray () {
+		this(false, 16);
+	}
+
+	/**
+	 * Creates an ordered array with the specified capacity.
+	 */
+	public LongArray (int capacity) {
+		this(false, capacity);
+	}
+
+	/**
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
@@ -174,6 +188,15 @@ public class LongArray {
 
 	public void sort () {
 		Arrays.sort(items, 0, size);
+	}
+
+	public void reverse () {
+		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
+			int ii = lastIndex - i;
+			long temp = items[i];
+			items[i] = items[ii];
+			items[ii] = temp;
+		}
 	}
 
 	public String toString () {

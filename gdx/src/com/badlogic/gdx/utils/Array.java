@@ -30,6 +30,20 @@ public class Array<T> implements Iterable<T> {
 	private ItemIterator iterator;
 
 	/**
+	 * Creates an ordered array with a capacity of 16.
+	 */
+	public Array () {
+		this(false, 16);
+	}
+
+	/**
+	 * Creates an ordered array with the specified capacity.
+	 */
+	public Array (int capacity) {
+		this(false, capacity);
+	}
+
+	/**
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
@@ -217,6 +231,15 @@ public class Array<T> implements Iterable<T> {
 	 */
 	public void sort (Comparator<T> comparator) {
 		Sort.instance().sort(items, comparator, 0, size);
+	}
+
+	public void reverse () {
+		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
+			int ii = lastIndex - i;
+			T temp = items[i];
+			items[i] = items[ii];
+			items[ii] = temp;
+		}
 	}
 
 	/**
