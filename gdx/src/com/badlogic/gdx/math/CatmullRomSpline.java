@@ -100,7 +100,6 @@ public final class CatmullRomSpline {
 	 * 
 	 * @param points the array of Vector3 instances to store the path in
 	 * @param numPoints number of points returned for a segment
-	 * @return the path
 	 */	
 	public void getPath (Vector3[] points, int numPoints) {		
 		int idx = 0;
