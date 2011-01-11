@@ -347,4 +347,11 @@ public class Stage extends InputAdapter {
 		out.x = (float)x / Gdx.graphics.getWidth() * width;
 		out.y = out.y / Gdx.graphics.getHeight() * height;
 	}
+	
+	/**
+	 * Clears this stage, removing all {@link Actor}s and {@link Group}s.
+	 */
+	public void clear() {
+		root.clear();
+	}
 }

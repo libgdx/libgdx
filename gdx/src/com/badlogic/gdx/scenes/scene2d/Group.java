@@ -446,4 +446,13 @@ public class Group extends Actor {
 		if (debugTexture != null) debugTexture.dispose();
 		debug = false;
 	}
+
+	/**
+	 * Clears this Group, removing all contained {@link Actor}s.
+	 */
+	public void clear () {
+		this.children.clear();
+		this.groups.clear();
+		this.namesToActors.clear();		
+	}
 }
