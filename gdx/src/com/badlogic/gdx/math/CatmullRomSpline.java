@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +24,7 @@ import java.util.List;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class CatmullRomSpline {
-	/**
-	 * 
-	 */
+public class CatmullRomSpline implements Serializable {
 	private static final long serialVersionUID = -3290464799289771451L;
 	private List<Vector3> controlPoints = new ArrayList<Vector3>();
 	Vector3 T1 = new Vector3();

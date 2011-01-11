@@ -13,13 +13,15 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
+
 /**
  * A plane defined via a unit length normal and the distance from the origin, as you learned in your math class.
  * 
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Plane {
+public class Plane implements Serializable {
 	/**
 	 * Enum specifying on which side a point lies respective to the plane and it's normal. {@link PlaneSide#Front} is the side to
 	 * which the normal points.

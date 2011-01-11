@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import com.badlogic.gdx.math.collision.Ray;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Frustum {
+public class Frustum implements Serializable {
 	private static final long serialVersionUID = -7082961504074610513L;
 	protected List<Plane> planes = new ArrayList<Plane>(6);
 	protected float near, far, fov, aspect, near_width, near_height, far_width, far_height, tang;

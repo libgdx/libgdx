@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.math.collision;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -22,7 +24,7 @@ import com.badlogic.gdx.math.Vector3;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Ray {
+public class Ray implements Serializable {
 	public final Vector3 origin = new Vector3();
 	public final Vector3 direction = new Vector3();
 

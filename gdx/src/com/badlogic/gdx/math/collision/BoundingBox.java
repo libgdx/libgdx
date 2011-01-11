@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.math.collision;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.badlogic.gdx.math.Matrix4;
@@ -25,7 +26,7 @@ import com.badlogic.gdx.math.Vector3;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class BoundingBox {
+public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = -1286036817192127343L;
 	final Vector3 crn[] = new Vector3[8];
 	public final Vector3 min = new Vector3();

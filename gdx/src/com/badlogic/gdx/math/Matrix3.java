@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -21,7 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-public class Matrix3 {
+public class Matrix3 implements Serializable {
 	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
 	float[] vals = new float[9];
 

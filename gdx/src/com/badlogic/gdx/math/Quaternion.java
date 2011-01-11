@@ -21,7 +21,7 @@ import java.io.Serializable;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Quaternion implements Serializable {
+public class Quaternion implements Serializable {
 	private static final long serialVersionUID = -7661875440774897168L;
 	public float x;
 	public float y;

@@ -13,13 +13,15 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates a 3D vector. Allows chaining operations by returning a reference to it self in all modification methods.
  * 
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Vector3 {
+public class Vector3 implements Serializable {
 	private static final long serialVersionUID = 3840054589595372522L;
 	/** the x-component of this vector **/
 	public float x;

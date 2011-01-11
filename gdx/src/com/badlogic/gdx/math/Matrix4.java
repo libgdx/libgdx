@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates a column major 4 by 4 matrix. You can access the linear array for use with OpenGL via the public
  * {@link Matrix4#val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
@@ -20,7 +22,7 @@ package com.badlogic.gdx.math;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Matrix4 {
+public class Matrix4 implements Serializable {
 	private static final long serialVersionUID = -2717655254359579617L;
 	public static final int M00 = 0;// 0;
 	public static final int M01 = 4;// 1;

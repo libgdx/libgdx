@@ -13,12 +13,14 @@
 
 package com.badlogic.gdx.math;
 
+import java.io.Serializable;
+
 /**
  * Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
  * @author badlogicgames@gmail.com
  * 
  */
-public class Rectangle {
+public class Rectangle implements Serializable {
 	public float x, y;
 	public float width, height;
 

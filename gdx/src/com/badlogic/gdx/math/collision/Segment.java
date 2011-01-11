@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.math.collision;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -21,7 +23,7 @@ import com.badlogic.gdx.math.Vector3;
  * @author mzechner
  * 
  */
-public class Segment {
+public class Segment implements Serializable {
 	/** the starting position **/
 	public final Vector3 a = new Vector3();
 

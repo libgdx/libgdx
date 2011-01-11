@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.math.collision;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -21,7 +23,7 @@ import com.badlogic.gdx.math.Vector3;
  * @author badlogicgames@gmail.com
  * 
  */
-public final class Sphere {
+public class Sphere implements Serializable {
 	/** the radius of the sphere **/
 	public float radius;
 	/** the center of the sphere **/
