@@ -87,10 +87,7 @@ public class FloatArray {
 
 	public void insert (int index, float value) {
 		float[] items = this.items;
-		if (size == items.length) {
-			resize(Math.max(8, (int)(size * 1.75f)))[size++] = value;
-			return;
-		}
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
 			System.arraycopy(items, index, items, index + 1, size - index);
 		else
@@ -193,6 +190,15 @@ public class FloatArray {
 	public void reverse () {
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
+			float temp = items[i];
+			items[i] = items[ii];
+			items[ii] = temp;
+		}
+	}
+
+	public void shuffle () {
+		for (int i = size - 1; i >= 0; i--) {
+			int ii = MathUtils.random(i);
 			float temp = items[i];
 			items[i] = items[ii];
 			items[ii] = temp;

@@ -13,9 +13,14 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Random;
+
+import com.badlogic.gdx.utils.ObjectMap.Entries;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -27,20 +32,20 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	private ItemIterator iterator;
+	private ArrayIterator iterator;
 
 	/**
 	 * Creates an ordered array with a capacity of 16.
 	 */
 	public Array () {
-		this(false, 16);
+		this(true, 16);
 	}
 
 	/**
 	 * Creates an ordered array with the specified capacity.
 	 */
 	public Array (int capacity) {
-		this(false, capacity);
+		this(true, capacity);
 	}
 
 	/**
@@ -100,10 +105,7 @@ public class Array<T> implements Iterable<T> {
 
 	public void insert (int index, T value) {
 		T[] items = this.items;
-		if (size == items.length) {
-			resize(Math.max(8, (int)(size * 1.75f)))[size++] = value;
-			return;
-		}
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
 			System.arraycopy(items, index, items, index + 1, size - index);
 		else
@@ -242,12 +244,21 @@ public class Array<T> implements Iterable<T> {
 		}
 	}
 
+	public void shuffle () {
+		for (int i = size - 1; i >= 0; i--) {
+			int ii = MathUtils.random(i);
+			T temp = items[i];
+			items[i] = items[ii];
+			items[ii] = temp;
+		}
+	}
+
 	/**
 	 * Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called.
+	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration.
 	 */
 	public Iterator<T> iterator () {
-		if (iterator == null) iterator = new ItemIterator();
+		if (iterator == null) iterator = new ArrayIterator(this);
 		iterator.index = 0;
 		return iterator;
 	}
@@ -266,21 +277,26 @@ public class Array<T> implements Iterable<T> {
 		return buffer.toString();
 	}
 
-	class ItemIterator implements Iterator<T> {
+	static public class ArrayIterator<T> implements Iterator<T> {
+		private final Array<T> array;
 		int index;
 
+		public ArrayIterator (Array<T> array) {
+			this.array = array;
+		}
+
 		public boolean hasNext () {
-			return index < size;
+			return index < array.size;
 		}
 
 		public T next () {
-			if (index >= size) throw new NoSuchElementException(String.valueOf(index));
-			return items[index++];
+			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
+			return array.items[index++];
 		}
 
 		public void remove () {
 			index--;
-			removeIndex(index);
+			array.removeIndex(index);
 		}
 	}
 }

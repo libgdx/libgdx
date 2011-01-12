@@ -22,6 +22,16 @@ abstract public class Pool<T> {
 
 	private final Array<T> freeObjects;
 
+	/**
+	 * Creates a pool with an initial capacity of 16 and no maximum.
+	 */
+	public Pool () {
+		this(16, Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Creates a pool with the specified initial capacity and no maximum.
+	 */
 	public Pool (int initialCapacity) {
 		this(initialCapacity, Integer.MAX_VALUE);
 	}

@@ -46,7 +46,6 @@ public class IntMap<V> {
 	private int hashShift, mask, threshold;
 	private int stashCapacity;
 	private int pushIterations;
-	private Random random = new Random();
 
 	private Entries entries;
 	private Values values;
@@ -75,7 +74,7 @@ public class IntMap<V> {
 	public IntMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		if (capacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
-		capacity = nextPowerOfTwo(initialCapacity);
+		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
@@ -207,7 +206,7 @@ public class IntMap<V> {
 		int i = 0, pushIterations = this.pushIterations;
 		do {
 			// Replace the key and value for one of the hashes.
-			switch (random.nextInt(3)) {
+			switch (MathUtils.random(2)) {
 			case 0:
 				evictedKey = key1;
 				evictedValue = valueTable[index1];
@@ -434,7 +433,7 @@ public class IntMap<V> {
 	 */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= threshold) resize(nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
+		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
 	}
 
 	private void resize (int newSize) {
@@ -500,7 +499,7 @@ public class IntMap<V> {
 
 	/**
 	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for multithreaded interation.
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
 	 */
 	public Entries<V> entries () {
 		if (entries == null)
@@ -512,7 +511,7 @@ public class IntMap<V> {
 
 	/**
 	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for multithreaded interation.
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
 	 */
 	public Values<V> values () {
 		if (values == null)
@@ -524,7 +523,7 @@ public class IntMap<V> {
 
 	/**
 	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for multithreaded interation.
+	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
 	 */
 	public Keys keys () {
 		if (keys == null)
@@ -684,16 +683,5 @@ public class IntMap<V> {
 				array.add(next());
 			return array;
 		}
-	}
-
-	static private int nextPowerOfTwo (int value) {
-		if (value == 0) return 1;
-		if ((value & value - 1) == 0) return value;
-		value |= value >> 1;
-		value |= value >> 2;
-		value |= value >> 4;
-		value |= value >> 8;
-		value |= value >> 16;
-		return value + 1;
 	}
 }
