@@ -30,6 +30,10 @@ package com.badlogic.gdx;
  * constants.
  * </p>
  * 
+ * <p>
+ * The class also offers methods to let the phone vibrate as well as getting compass readings.
+ * </p>
+ * 
  * @author mzechner
  * 
  */
@@ -303,7 +307,7 @@ public interface Input {
 	 * Vibrate with a given pattern.
 	 * Pass in an array of ints that are the times at which to turn on or off the vibrator. The first one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index into the pattern at which to start the repeat.
 	 * @param pattern an array of longs of times to turn the vibrator on or off.
-	 * @param the index into pattern at which to repeat, or -1 if you don't want to repeat.
+	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat.
 	 */
 	public void vibrate (long[] pattern, int repeat);
 	
@@ -312,6 +316,36 @@ public interface Input {
 	 */
 	public void cancelVibrate();
 
+	/**
+	 * @return whether a compass is available.
+	 */
+	public boolean supportsCompass();
+	
+	/**
+	 * The azimuth is the angle of the device's orientation around the z-axis. The
+	 * positive z-axis points towards the earths center.
+	 * 
+	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 * @return the azimuth in degrees
+	 */
+	public float getAzimuth();
+	
+	/** 
+	 * The pitch is the angle of the device's orientation around the x-axis. The
+	 * positive x-axis roughly points to the west and is orthogonal to the z- and y-axis.
+	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 * @return the pitch in degrees
+	 */
+	public float getPitch();
+	
+	/**
+	 * The roll is the angle of the device's orientation around the y-axis. The
+	 * positive y-axis points to the magnetic north pole of the earth.
+	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 * @return the roll in degrees
+	 */
+	public float getRoll();	
+	
 	/**
 	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
 	 * on the desktop.

@@ -14,7 +14,10 @@
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".GdxTestActivity" android:label="Gdx Test"/>
+		<activity android:name=".GdxTestActivity" 
+				  android:label="Gdx Test"
+				  android:configChanges="keyboard|keyboardHidden|orientation"
+				  android:screenOrientation="landscape"/>
 
 		<!-- <activity android:name=".SimpleTest" android:label="Simple Test"/>
 		<activity android:name=".MeshRendererTest" android:label="MeshRenderer Test"/>

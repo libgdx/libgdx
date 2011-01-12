@@ -589,4 +589,20 @@ final class LwjglInput implements Input {
 
 	@Override public void cancelVibrate () {
 	}
+
+	@Override public boolean supportsCompass () {
+		return false;
+	}
+
+	@Override public float getAzimuth () {
+		return 0;
+	}
+
+	@Override public float getPitch () {
+		return 0;
+	}
+
+	@Override public float getRoll () {
+		return 0;
+	}
 }

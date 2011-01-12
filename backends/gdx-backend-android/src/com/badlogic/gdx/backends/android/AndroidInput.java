@@ -96,6 +96,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private int sleepTime = 0;
 	private boolean catchBack = false;
 	private final Vibrator vibrator;
+	private final boolean compassAvailable;
+	private final float[] magneticFieldValues = new float[3];
+	private float azimuth = 0;
+	private float pitch = 0;
+	private float roll = 0;
+	private float inclination = 0;
 	private boolean justTouched = false;
 
 	private InputProcessor processor;
@@ -131,6 +137,17 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			&& ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
 
 		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
+		
+		Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		if(sensor != null) {
+			compassAvailable = accelerometerAvailable;
+			if(compassAvailable) {
+				manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+			}
+		} else {
+			compassAvailable = false;
+		}
+		
 	}
 
 	@Override public float getAccelerometerX () {
@@ -331,6 +348,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
 		}
+		if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+			System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
+		}
 	}
 
 	@Override public boolean supportsMultitouch () {
@@ -379,5 +399,44 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			return isTouched();
 		else
 			return false;
+	}
+
+	@Override public boolean supportsCompass () {		
+		return compassAvailable;
+	}
+
+	final float[] R = new float[9];	
+	final float[] orientation = new float[3];
+	private void updateOrientation() {
+		if(SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
+			SensorManager.getOrientation(R, orientation);
+			azimuth = (float)Math.toDegrees(orientation[0]);
+			pitch = (float)Math.toDegrees(orientation[1]);
+			roll = (float)Math.toDegrees(orientation[2]);			
+		}
+	}
+	
+	@Override public float getAzimuth () {
+		if(!compassAvailable)
+			return 0;
+		
+		updateOrientation();
+		return azimuth;
+	}
+
+	@Override public float getPitch () {
+		if(!compassAvailable)
+			return 0;
+		
+		updateOrientation();
+		return pitch;
+	}
+
+	@Override public float getRoll () {
+		if(!compassAvailable)
+			return 0;
+		
+		updateOrientation();
+		return roll;
 	}
 }

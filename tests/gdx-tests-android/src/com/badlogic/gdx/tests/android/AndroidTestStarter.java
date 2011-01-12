@@ -13,6 +13,12 @@
 
 package com.badlogic.gdx.tests.android;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.tests.MatrixTest;
+import com.badlogic.gdx.tests.WindowedTest;
+import com.badlogic.gdx.tests.utils.GdxTests;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,13 +26,16 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.badlogic.gdx.tests.utils.GdxTests;
-
 public class AndroidTestStarter extends ListActivity {
 
 	@Override public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, GdxTests.getNames()));
+		ArrayList<String> testNames = new ArrayList<String>();
+		for(String name: GdxTests.getNames()) {
+			testNames.add(name);
+		}		
+		testNames.add(MatrixTest.class.getSimpleName());
+		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames.toArray(new String[0])));
 	}
 
 	protected void onListItemClick (ListView l, View v, int position, long id) {

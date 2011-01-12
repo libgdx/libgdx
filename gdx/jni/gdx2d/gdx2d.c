@@ -584,28 +584,10 @@ void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, uint3
 	}
 }
 
-void blit_same_format_and_size_blend(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
+void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
 						 			 int32_t src_x, int32_t src_y, 
 									 int32_t dst_x, int32_t dst_y, 
 									 uint32_t width, uint32_t height) {
-}
-
-void blit_same_format_and_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
-						 	   int32_t src_x, int32_t src_y, 
-							   int32_t dst_x, int32_t dst_y, 
-							   uint32_t width, uint32_t height) {
-}
-
-void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
-					int32_t src_x, int32_t src_y, 
-					int32_t dst_x, int32_t dst_y, 
-					uint32_t width, uint32_t height) {
-}
-
-void blit_same_size_blend(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
-						  int32_t src_x, int32_t src_y, 
-						  int32_t dst_x, int32_t dst_y, 
-						  uint32_t width, uint32_t height) {
 }
 
 void blit(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
@@ -613,33 +595,12 @@ void blit(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
 }
 
-void blit_blend(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
-				int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
-				int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
-}
-
 void gdx2d_draw_pixmap(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
 					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
 	if(src_width == dst_width && src_height == dst_height) {
-		if(gdx2d_blend) {
-			if(src_pixmap->format && dst_pixmap->format) {
-				blit_same_format_and_size_blend(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
-			} else {
-				blit_same_size_blend(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
-			}
-		} else {
-			if(src_pixmap->format && dst_pixmap->format) {
-				blit_same_format_and_size(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
-			} else {
-				blit_same_size(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
-			}
-		}
+		blit_same_size(src_pixmap, dst_pixmap, src_x, src_y, dst_x, dst_y, src_width, src_height);
 	} else {
-		if(gdx2d_blend) {
-			blit_blend(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
-		} else {
-			blit(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
-		}
+		blit(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
 	}
 }

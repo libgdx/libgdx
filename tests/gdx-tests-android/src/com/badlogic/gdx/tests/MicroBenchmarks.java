@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.badlogic.gdx.tests.android;
+package com.badlogic.gdx.tests;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
