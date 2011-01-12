@@ -1,0 +1,229 @@
+
+alignment test1.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+alignment test
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 32
+alignment test
+  rotate: false
+  xy: 66, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 31
+alignment test
+  rotate: false
+  xy: 132, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 30
+alignment test
+  rotate: false
+  xy: 0, 66
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 29
+alignment test
+  rotate: false
+  xy: 66, 66
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 28
+alignment test
+  rotate: false
+  xy: 132, 66
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 27
+alignment test
+  rotate: false
+  xy: 0, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 26
+alignment test
+  rotate: false
+  xy: 66, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 25
+alignment test
+  rotate: false
+  xy: 132, 132
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 24
+alignment test
+  rotate: false
+  xy: 0, 198
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 23
+alignment test
+  rotate: false
+  xy: 66, 198
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 22
+alignment test
+  rotate: false
+  xy: 132, 198
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 21
+alignment test
+  rotate: false
+  xy: 0, 264
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 20
+alignment test
+  rotate: false
+  xy: 0, 330
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+alignment test
+  rotate: false
+  xy: 0, 396
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 19
+alignment test
+  rotate: false
+  xy: 66, 264
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 18
+alignment test
+  rotate: false
+  xy: 132, 264
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 17
+alignment test
+  rotate: false
+  xy: 198, 0
+  size: 56, 64
+  orig: 64, 64
+  offset: 8, 0
+  index: 12
+alignment test
+  rotate: false
+  xy: 198, 66
+  size: 56, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 10
+alignment test
+  rotate: false
+  xy: 198, 132
+  size: 48, 64
+  orig: 64, 64
+  offset: 8, 0
+  index: 2
+alignment test
+  rotate: false
+  xy: 198, 198
+  size: 40, 64
+  orig: 64, 64
+  offset: 12, 0
+  index: 15
+alignment test
+  rotate: false
+  xy: 66, 330
+  size: 64, 56
+  orig: 64, 64
+  offset: 0, 0
+  index: 11
+alignment test
+  rotate: false
+  xy: 132, 330
+  size: 64, 56
+  orig: 64, 64
+  offset: 0, 8
+  index: 9
+alignment test
+  rotate: false
+  xy: 198, 264
+  size: 56, 56
+  orig: 64, 64
+  offset: 8, 0
+  index: 8
+alignment test
+  rotate: false
+  xy: 198, 330
+  size: 56, 56
+  orig: 64, 64
+  offset: 0, 0
+  index: 7
+alignment test
+  rotate: false
+  xy: 66, 388
+  size: 56, 56
+  orig: 64, 64
+  offset: 0, 8
+  index: 6
+alignment test
+  rotate: false
+  xy: 66, 446
+  size: 56, 56
+  orig: 64, 64
+  offset: 8, 8
+  index: 5
+alignment test
+  rotate: false
+  xy: 0, 462
+  size: 64, 48
+  orig: 64, 64
+  offset: 0, 8
+  index: 1
+alignment test
+  rotate: false
+  xy: 124, 388
+  size: 48, 48
+  orig: 64, 64
+  offset: 8, 8
+  index: 4
+alignment test
+  rotate: false
+  xy: 124, 438
+  size: 40, 41
+  orig: 64, 64
+  offset: 20, 19
+  index: 13
+alignment test
+  rotate: false
+  xy: 174, 388
+  size: 64, 40
+  orig: 64, 64
+  offset: 0, 12
+  index: 14
+alignment test
+  rotate: false
+  xy: 240, 198
+  size: 12, 16
+  orig: 64, 64
+  offset: 2, 0
+  index: 16

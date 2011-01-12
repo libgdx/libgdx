@@ -66,6 +66,7 @@ import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.TileTest;
+import com.badlogic.gdx.tests.TiledMapTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VBOVATest;
 import com.badlogic.gdx.tests.VertexArrayClassTest;
@@ -138,6 +139,7 @@ public class GdxTests
 		TerrainTest.class,		
 		TextureAtlasTest.class,
 		TextureRenderTest.class,
+		TiledMapTest.class,
 		TileTest.class,
 		UITest.class,
 		VBOVATest.class,
