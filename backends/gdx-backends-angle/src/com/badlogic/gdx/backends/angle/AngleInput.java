@@ -41,10 +41,14 @@ public class AngleInput implements Input {
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
+		static final int TOUCH_MOVED = 3;
+		static final int TOUCH_SCROLL = 4;
 
 		int type;
 		int x;
 		int y;
+		int button;
+		int scrollAmount;
 		int pointer;
 	}
 
@@ -63,6 +67,7 @@ public class AngleInput implements Input {
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	boolean mousePressed = false;
+	boolean justTouched = false;
 	int mouseX = 0;
 	int mouseY = 0;
 	HashSet<Integer> pressedKeys = new HashSet<Integer>();
@@ -96,8 +101,7 @@ public class AngleInput implements Input {
 	}
 
 	public int getY () {
-		// FIXME
-		return 0;
+		return mouseX;
 	}
 
 	public boolean isAccelerometerAvailable () {
@@ -105,13 +109,14 @@ public class AngleInput implements Input {
 	}
 
 	public boolean isKeyPressed (int key) {
-		// FIXME
-		return false;
+		if(key == Keys.ANY_KEY)
+			return pressedKeys.size() > 0;
+		else
+			return pressedKeys.contains(key);
 	}
 
 	public boolean isTouched () {
-		// FIXME
-		return false;
+		return mousePressed = true;
 	}
 
 	public int getX (int pointer) {
@@ -153,6 +158,8 @@ public class AngleInput implements Input {
 
 	void processEvents () {
 		synchronized (this) {
+			justTouched = false;
+			
 			if (processor != null) {
 				InputProcessor processor = this.processor;
 				int len = keyEvents.size();
@@ -176,20 +183,31 @@ public class AngleInput implements Input {
 					TouchEvent e = touchEvents.get(i);
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						processor.touchDown(e.x, e.y, e.pointer);
+						processor.touchDown(e.x, e.y, e.pointer, e.button);
+						justTouched = true;
 						break;
 					case TouchEvent.TOUCH_UP:
-						processor.touchUp(e.x, e.y, e.pointer);
+						processor.touchUp(e.x, e.y, e.pointer, e.button);
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_MOVED:
+						processor.touchMoved(e.x, e.y);
+						break;
+					case TouchEvent.TOUCH_SCROLL:
+						processor.scrolled(e.scrollAmount);
+						break;
 					}
 					usedTouchEvents.free(e);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedTouchEvents.free(touchEvents.get(i));
+					TouchEvent event = touchEvents.get(i);
+					if(event.type == TouchEvent.TOUCH_DOWN);
+						justTouched = true;
+					usedTouchEvents.free(event);
 				}
 
 				len = keyEvents.size();
@@ -234,8 +252,6 @@ public class AngleInput implements Input {
 	}
 
 	void registerMouseEvent (int action, int x, int y, int button) {
-		if (button != 1) return;
-
 		synchronized (this) {
 			TouchEvent event = usedTouchEvents.obtain();
 			event.x = x;
@@ -245,19 +261,39 @@ public class AngleInput implements Input {
 			switch (action) {
 			case ESLoop.ES_MOUSE_DOWN:
 				event.type = TouchEvent.TOUCH_DOWN;
+				mousePressed = true;
 				break;
 			case ESLoop.ES_MOUSE_UP:
 				event.type = TouchEvent.TOUCH_UP;
+				mousePressed = true;
 				break;
 			case ESLoop.ES_MOUSE_MOVE:
 				event.type = TouchEvent.TOUCH_DRAGGED;
 				break;
 			}
+			
+			touchEvents.add(event);
 		}
 	}
 
 	int translateKey (int keyCode) {
 		// FIXME
 		return keyCode;
+	}
+
+	@Override public boolean supportsVibrator () {
+		return false;
+	}
+
+	@Override public void vibrate (int milliseconds) {
+		
+	}
+
+	@Override public boolean justTouched () {
+		return justTouched;
+	}
+
+	@Override public boolean isButtonPressed (int button) {
+		return false;
 	}
 }

@@ -210,7 +210,7 @@ public class Stage extends InputAdapter {
 	 * @param pointer the pointer index
 	 * @return whether an {@link Actor} in the scene processed the event or not
 	 */
-	public boolean touchDown (int x, int y, int pointer) {
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchDown(point.x, point.y, pointer);
@@ -224,7 +224,7 @@ public class Stage extends InputAdapter {
 	 * @param pointer the pointer index
 	 * @return whether an {@link Actor} in the scene processed the event or not
 	 */
-	public boolean touchUp (int x, int y, int pointer) {
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchUp(point.x, point.y, pointer);

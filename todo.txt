@@ -1,13 +1,11 @@
 TODO (in order of priority)
 MUSTS for 0.9
-- add int button to touch event handlers in InputListener. See http://www.badlogicgames.com/wordpress/?p=1391
+- fix up angle input handling.
 - First iteration of gdx2d/Gdx2DPixmap (see current stubs, loading works already), refactoring of Texture and Pixmap accordingly. No more Graphics.newXXX. Think about where managed textures will get reloaded.
 - Rewrite the Audio backend http://code.google.com/p/libgdx/issues/detail?id=56, Nate mostly did this already, MP3 decoder missing as of yet.
 - Z-ordering of sprites, maybe via z-buffer. If we do it it must be done before AnimatedSprite
 - AnimatedSprite
 - Implementing Matrix3.inv()
-- Additions proposed by Hovox to Actor (see http://code.google.com/p/libgdx/issues/detail?id=74)
-- Scaling bitmap fonts as per http://code.google.com/p/libgdx/issues/detail?id=77
 - Rework camera classes, Not happy With the distinction at the moment, should be merged and have a flag/mode -> ortho,perspective
 - Proper fullscreen support for Lwjgl and Jogl backends, only Angle backend supports it atm
 - http://code.google.com/p/libgdx/issues/list, fix all these defects 

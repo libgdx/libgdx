@@ -179,8 +179,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 		ui.render();
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
-		boolean touched = ui.touchDown(x, y, pointer);
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+		boolean touched = ui.touchDown(x, y, pointer, button);
 		if (touched) {
 			Actor hitActor = ui.getLastTouchedChild();
 			if (hitActor == null) return touched;
@@ -194,7 +194,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		return touched;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
 		return false;
 	}
 
@@ -215,6 +215,16 @@ public class StageTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean needsGL20 () {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

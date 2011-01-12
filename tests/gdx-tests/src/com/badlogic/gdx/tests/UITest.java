@@ -149,15 +149,15 @@ public class UITest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
-		ui.touchDown(x, y, pointer);
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+		ui.touchDown(x, y, pointer, button);
 		return false;
 	}
 
 	Vector2 point = new Vector2();
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
-		if (!ui.touchUp(x, y, pointer)) {
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+		if (!ui.touchUp(x, y, pointer, button)) {
 			Actor actor = ui.findActor("image1");
 			if (actor != null) {
 				ui.toStageCoordinates(x, y, point);
@@ -179,6 +179,14 @@ public class UITest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean needsGL20 () {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 }

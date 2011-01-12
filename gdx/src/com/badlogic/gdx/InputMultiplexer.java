@@ -49,21 +49,33 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
-	public boolean touchDown (int x, int y, int pointer) {
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		for (int i = 0, n = processors.size(); i < n; i++)
-			if (processors.get(i).touchDown(x, y, pointer)) return true;
+			if (processors.get(i).touchDown(x, y, pointer, button)) return true;
 		return false;
 	}
 
-	public boolean touchUp (int x, int y, int pointer) {
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		for (int i = 0, n = processors.size(); i < n; i++)
-			if (processors.get(i).touchUp(x, y, pointer)) return true;
+			if (processors.get(i).touchUp(x, y, pointer, button)) return true;
 		return false;
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
 		for (int i = 0, n = processors.size(); i < n; i++)
 			if (processors.get(i).touchDragged(x, y, pointer)) return true;
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		for (int i = 0, n = processors.size(); i < n; i++)
+			if (processors.get(i).touchMoved(x, y)) return true;
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
+		for (int i = 0, n = processors.size(); i < n; i++)
+			if (processors.get(i).scrolled(amount)) return true;
 		return false;
 	}
 }

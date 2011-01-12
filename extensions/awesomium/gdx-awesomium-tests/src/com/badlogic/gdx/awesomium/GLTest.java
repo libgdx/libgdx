@@ -76,14 +76,14 @@ public class GLTest implements ApplicationListener {
 				if(point.y > 511) point.y = 511;				
 			}
 
-			@Override public boolean touchDown (int x, int y, int pointer) {
+			@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
 				calculatePoint(x, y);
 				webView.injectMouseMove((int)point.x, (int)point.y);
 				webView.injectMouseDown(MouseButton.Left);
 				return false;
 			}
 
-			@Override public boolean touchUp (int x, int y, int pointer) {
+			@Override public boolean touchUp (int x, int y, int pointer, int button) {
 				calculatePoint(x, y);
 				webView.injectMouseMove((int)point.x, (int)point.y);
 				webView.injectMouseUp(MouseButton.Left);

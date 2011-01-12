@@ -256,7 +256,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		}
 	};
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
+	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
 		// translate the mouse coordinates to world coordinates
 		camera.getScreenToWorld(x, y, testPoint);
 		// ask the world which bodies are within the given
@@ -300,7 +300,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
 		// if a mouse joint exists we simply destroy it
 		if (mouseJoint != null) {
 			world.destroyJoint(mouseJoint);
@@ -331,6 +331,14 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean keyUp (int keycode) {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 }

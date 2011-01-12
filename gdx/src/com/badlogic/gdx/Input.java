@@ -45,6 +45,17 @@ public interface Input {
 	}
 
 	/**
+	 * Mouse buttons.
+	 * @author mzechner
+	 * 
+	 */
+	public class Buttons {
+		public static final int LEFT = 0;
+		public static final int RIGHT = 1;
+		public static final int MIDDLE = 2;
+	}
+
+	/**
 	 * Keys.
 	 * 
 	 * @author mzechner
@@ -211,6 +222,11 @@ public interface Input {
 	public boolean isTouched ();
 
 	/**
+	 * @return whether a new touch down event just occured.
+	 */
+	public boolean justTouched ();
+
+	/**
 	 * Whether the screen is currently touched by the pointer with the given index. Pointers are indexed from 0 to n. The pointer
 	 * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
@@ -220,6 +236,14 @@ public interface Input {
 	 * @return whether the screen is touched by the pointer
 	 */
 	public boolean isTouched (int pointer);
+
+	/**
+	 * Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
+	 * constant is meaningful.
+	 * @param button the button to check.
+	 * @return whether the button is down or not.
+	 */
+	public boolean isButtonPressed (int button);
 
 	/**
 	 * Returns whether the key is pressed.
@@ -260,6 +284,20 @@ public interface Input {
 	 * @return whether multitouch is supported
 	 */
 	public boolean supportsMultitouch ();
+
+	/**
+	 * Retuns whether the system has a vibrator. Yeah, L.O.L.
+	 * @return whether a vibrator is present or not
+	 */
+	public boolean supportsVibrator ();
+
+	/**
+	 * Vibrates for the given amount of time. Note that you'll need the permission
+	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
+	 * 
+	 * @param milliseconds the number of milliseconds to vibrate.
+	 */
+	public void vibrate (int milliseconds);
 
 	/**
 	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect

@@ -24,6 +24,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
@@ -94,6 +95,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
 	private boolean catchBack = false;
+	private final Vibrator vibrator;
+	private boolean justTouched = false;
 
 	private InputProcessor processor;
 
@@ -126,6 +129,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			touchHandler = new AndroidSingleTouchHandler();
 		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler
 			&& ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
+
+		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	@Override public float getAccelerometerX () {
@@ -204,6 +209,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	void processEvents () {
 		synchronized (this) {
+			justTouched = false;
+
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
 
@@ -228,10 +235,11 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					TouchEvent e = touchEvents.get(i);
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						processor.touchDown(e.x, e.y, e.pointer);
+						processor.touchDown(e.x, e.y, e.pointer, Buttons.LEFT);
+						justTouched = true;
 						break;
 					case TouchEvent.TOUCH_UP:
-						processor.touchUp(e.x, e.y, e.pointer);
+						processor.touchUp(e.x, e.y, e.pointer, Buttons.LEFT);
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
@@ -242,7 +250,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
-// Log.d("AndroidInput", "synch touch: " + (System.nanoTime() - e.timeStamp) / 1000000.0f);
+					if (e.type == TouchEvent.TOUCH_DOWN) justTouched = true;
 					usedTouchEvents.free(e);
 				}
 
@@ -344,5 +352,24 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
+	}
+
+	@Override public boolean supportsVibrator () {
+		return true;
+	}
+
+	@Override public void vibrate (int milliseconds) {
+		vibrator.vibrate(milliseconds);
+	}
+
+	@Override public boolean justTouched () {
+		return justTouched;
+	}
+
+	@Override public boolean isButtonPressed (int button) {
+		if (button == Buttons.LEFT)
+			return isTouched();
+		else
+			return false;
 	}
 }

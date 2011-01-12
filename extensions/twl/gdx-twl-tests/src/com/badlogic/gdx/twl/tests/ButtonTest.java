@@ -76,16 +76,24 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 		return false;
 	}
 
-	public boolean touchDown (int x, int y, int pointer) {
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		System.out.println("This touch made it through and was not handled by TWL.");
 		return false;
 	}
 
-	public boolean touchUp (int x, int y, int pointer) {
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		return false;
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 }

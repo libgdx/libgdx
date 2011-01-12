@@ -85,8 +85,8 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
-		tests[testIndex].touchDown(x, y, pointer);
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+		tests[testIndex].touchDown(x, y, pointer, button);
 		return false;
 	}
 
@@ -95,12 +95,20 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
-		tests[testIndex].touchUp(x, y, pointer);
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+		tests[testIndex].touchUp(x, y, pointer, button);
 		return false;
 	}
 
 	@Override public boolean needsGL20 () {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 }

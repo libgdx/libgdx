@@ -343,12 +343,12 @@ public class ParticleEditor extends JFrame {
 			return false;
 		}
 
-		public boolean touchDown (int x, int y, int pointer) {
+		public boolean touchDown (int x, int y, int pointer, int newParam) {
 			effect.setPosition(x, y);
 			return false;
 		}
 
-		public boolean touchUp (int x, int y, int pointer) {
+		public boolean touchUp (int x, int y, int pointer, int button) {
 			return false;
 		}
 
@@ -364,6 +364,14 @@ public class ParticleEditor extends JFrame {
 		}
 
 		@Override public void resume () {
+		}
+
+		@Override public boolean touchMoved (int x, int y) {
+			return false;
+		}
+
+		@Override public boolean scrolled (int amount) {
+			return false;
 		}
 	}
 

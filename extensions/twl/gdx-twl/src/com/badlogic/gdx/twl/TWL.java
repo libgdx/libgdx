@@ -150,7 +150,7 @@ public class TWL implements InputProcessor {
 		return gui.handleKey(0, character, true);
 	}
 
-	public boolean touchDown (int x, int y, int pointer) {
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		if (pointer != 0) return false;
 		if (!mouseDown) lastPressConsumed = false; // Only the first button down counts.
 		mouseDown = true;
@@ -160,7 +160,7 @@ public class TWL implements InputProcessor {
 		return handled;
 	}
 
-	public boolean touchUp (int x, int y, int pointer) {
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		if (pointer != 0) return false;
 		mouseDown = false;
 		if (ignoreMouse) {
@@ -332,5 +332,15 @@ public class TWL implements InputProcessor {
 				};
 			}
 		});
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		// FIXME
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
+		// FIXME
+		return false;
 	}
 }

@@ -27,6 +27,7 @@ final class LwjglNativesLoader {
 
 	static {
 		try {
+			System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
 			Method method = Class.forName("javax.jnlp.ServiceManager").getDeclaredMethod("lookup", new Class[] {String.class});
 			method.invoke(null, "javax.jnlp.PersistenceService");
 			load = false;
@@ -35,8 +36,7 @@ final class LwjglNativesLoader {
 		}
 	}
 
-	static void load () {
-		System.setProperty("org.lwjgl.input.Mouse.allowNegativeMouseCoords", "true");
+	static void load () {		
 		Version.loadLibrary();
 
 		if (!load) return;

@@ -17,6 +17,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +32,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
 
-public class JoglInput implements Input, MouseMotionListener, MouseListener, KeyListener {
+public class JoglInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -45,11 +47,15 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
+		static final int TOUCH_MOVED = 3;
+		static final int TOUCH_SCROLLED = 4;
 
 		int type;
 		int x;
 		int y;
 		int pointer;
+		int button;
+		int scrollAmount;
 	}
 
 	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
@@ -69,14 +75,16 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 	int touchX = 0;
 	int touchY = 0;
 	boolean touchDown = false;
+	boolean justTouched = false;
 	Set<Integer> keys = new HashSet<Integer>();
-
-	private InputProcessor processor;
+	Set<Integer> pressedButtons = new HashSet<Integer>();
+	InputProcessor processor;
 
 	public JoglInput (GLCanvas canvas) {
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
-		canvas.addKeyListener(this);
+		canvas.addMouseWheelListener(this);
+		canvas.addKeyListener(this);		
 	}
 
 	@Override public float getAccelerometerX () {
@@ -146,8 +154,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 			return false;
 	}
 
-	void processEvents () {
+	void processEvents () {		
 		synchronized (this) {
+			justTouched = false;
+			
 			if (processor != null) {
 				InputProcessor processor = this.processor;
 
@@ -172,20 +182,31 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 					TouchEvent e = touchEvents.get(i);
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						processor.touchDown(e.x, e.y, e.pointer);
+						processor.touchDown(e.x, e.y, e.pointer, e.button);						
+						justTouched = true;						
 						break;
 					case TouchEvent.TOUCH_UP:
-						processor.touchUp(e.x, e.y, e.pointer);
+						processor.touchUp(e.x, e.y, e.pointer, e.button);						
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_MOVED:
+						processor.touchMoved(e.x, e.y);
+						break;
+					case TouchEvent.TOUCH_SCROLLED:
+						processor.scrolled(e.scrollAmount);
+						break;
 					}
 					usedTouchEvents.free(e);
 				}
 			} else {
 				int len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
-					usedTouchEvents.free(touchEvents.get(i));
+					TouchEvent event = touchEvents.get(i);
+					if(event.type == TouchEvent.TOUCH_DOWN)
+						justTouched = true;																
+					usedTouchEvents.free(event);
 				}
 
 				len = keyEvents.size();
@@ -196,7 +217,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 
 			keyEvents.clear();
 			touchEvents.clear();
-		}
+		}		
 	}
 
 	@Override public void setCatchBackKey (boolean catchBack) {
@@ -225,13 +246,22 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 			touchEvents.add(event);
 
 			touchX = event.x;
-			touchY = event.y;
-			touchDown = true;
+			touchY = event.y;			
 		}
 	}
 
-	@Override public void mouseMoved (MouseEvent arg0) {
+	@Override public void mouseMoved (MouseEvent e) {
+		synchronized (this) {
+			TouchEvent event = usedTouchEvents.obtain();
+			event.pointer = 0;
+			event.x = e.getX();
+			event.y = e.getY();
+			event.type = TouchEvent.TOUCH_MOVED;
+			touchEvents.add(event);
 
+			touchX = event.x;
+			touchY = event.y;			
+		}
 	}
 
 	@Override public void mouseClicked (MouseEvent arg0) {
@@ -244,18 +274,30 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 	@Override public void mouseExited (MouseEvent arg0) {
 	}
 
-	@Override public void mousePressed (MouseEvent e) {
+	private int toGdxButton(int swingButton) {
+		if(swingButton == MouseEvent.BUTTON1)
+			return Buttons.LEFT;
+		if(swingButton == MouseEvent.BUTTON2)
+			return Buttons.MIDDLE;
+		if(swingButton == MouseEvent.BUTTON3)
+			return Buttons.RIGHT;
+		return Buttons.LEFT;
+	}
+	
+	@Override public void mousePressed (MouseEvent e) {	
 		synchronized (this) {
 			TouchEvent event = usedTouchEvents.obtain();
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
 			event.type = TouchEvent.TOUCH_DOWN;
+			event.button = toGdxButton(e.getButton());
 			touchEvents.add(event);
 
 			touchX = event.x;
-			touchY = event.y;
+			touchY = event.y;		
 			touchDown = true;
+			pressedButtons.add(event.button);
 		}
 	}
 
@@ -265,12 +307,23 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
+			event.button = toGdxButton(e.getButton());
 			event.type = TouchEvent.TOUCH_UP;
-			touchEvents.add(event);
+			touchEvents.add(event);			
 
 			touchX = event.x;
-			touchY = event.y;
-			touchDown = false;
+			touchY = event.y;			
+			pressedButtons.remove(event.button);
+		}
+	}
+	
+	@Override public void mouseWheelMoved (MouseWheelEvent e) {
+		synchronized (this) {
+			TouchEvent event = usedTouchEvents.obtain();
+			event.pointer = 0;			
+			event.type = TouchEvent.TOUCH_SCROLLED;
+			event.scrollAmount = e.getWheelRotation();
+			touchEvents.add(event);	
 		}
 	}
 
@@ -292,7 +345,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_UP;
 			keyEvents.add(event);
-			keys.remove(event.keyCode);
+			keys.remove(event.keyCode);			
 		}
 	}
 
@@ -371,5 +424,20 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Key
 		synchronized (this) {
 			this.processor = processor;
 		}
+	}
+
+	@Override public boolean supportsVibrator () {
+		return false;
+	}
+
+	@Override public void vibrate (int milliseconds) {
+	}
+
+	@Override public boolean justTouched () {
+		return justTouched;
+	}
+
+	@Override public boolean isButtonPressed (int button) {
+		return pressedButtons.contains(button);
 	}
 }

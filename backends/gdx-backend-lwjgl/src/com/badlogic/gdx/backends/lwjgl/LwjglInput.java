@@ -14,7 +14,9 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -48,10 +50,14 @@ final class LwjglInput implements Input {
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
+		static final int TOUCH_SCROLLED = 3;
+		static final int TOUCH_MOVED = 4;
 
 		int type;
 		int x;
 		int y;
+		int scrollAmount;
+		int button;
 		int pointer;
 	}
 
@@ -72,9 +78,11 @@ final class LwjglInput implements Input {
 	boolean mousePressed = false;
 	int mouseX = 0;
 	int mouseY = 0;
-	int pressedKeys = 0;
-
-	private InputProcessor processor;
+	int pressedKeys = 0;	
+	boolean justTouched = false;
+	Set<Integer> pressedButtons = new HashSet<Integer>();
+	InputProcessor processor;
+	
 
 	public float getAccelerometerX () {
 		return 0;
@@ -183,13 +191,19 @@ final class LwjglInput implements Input {
 					TouchEvent e = touchEvents.get(i);
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
-						processor.touchDown(e.x, e.y, e.pointer);
+						processor.touchDown(e.x, e.y, e.pointer, e.button);
 						break;
 					case TouchEvent.TOUCH_UP:
-						processor.touchUp(e.x, e.y, e.pointer);
+						processor.touchUp(e.x, e.y, e.pointer, e.button);
 						break;
 					case TouchEvent.TOUCH_DRAGGED:
 						processor.touchDragged(e.x, e.y, e.pointer);
+						break;
+					case TouchEvent.TOUCH_MOVED:
+						processor.touchMoved(e.x, e.y);
+						break;
+					case TouchEvent.TOUCH_SCROLLED:
+						processor.scrolled(e.scrollAmount);
 					}
 					usedTouchEvents.free(e);
 				}
@@ -453,55 +467,58 @@ final class LwjglInput implements Input {
 		updateKeyboard();
 	}
 
+	private int toGdxButton(int button) {
+		if(button == 0)
+			return Buttons.LEFT;
+		if(button == 1)
+			return Buttons.RIGHT;
+		if(button == 2)
+			return Buttons.MIDDLE;
+		return Buttons.LEFT;
+			
+	}
+	
 	void updateMouse () {
+		justTouched = false;
 		if (Mouse.isCreated()) {
-			int x = Mouse.getX();
-			int y = Gdx.graphics.getHeight() - Mouse.getY();
 			while (Mouse.next()) {
-				if (isButtonPressed()) {
-					if (mousePressed == false) {
-						mousePressed = true;
-						TouchEvent event = usedTouchEvents.obtain();
-						event.x = x;
-						event.y = y;
-						event.pointer = 0;
-						event.type = TouchEvent.TOUCH_DOWN;
-						touchEvents.add(event);
-						mouseX = x;
-						mouseY = y;
+				int x = Mouse.getEventX();
+				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
+				int button = Mouse.getEventButton();
+				
+				TouchEvent event = usedTouchEvents.obtain();
+				event.x = x;
+				event.y = y;
+				event.button = toGdxButton(button);
+				event.pointer = 0;
+				
+				// could be drag, scroll or move
+				if(button == -1) {
+					if(Mouse.getEventDWheel() != 0) {
+						event.type = TouchEvent.TOUCH_SCROLLED;
+						event.scrollAmount = (int)-Math.signum(Mouse.getEventDWheel());
+					} else if(pressedButtons .size() > 0) {									
+						event.type = TouchEvent.TOUCH_DRAGGED;						
 					} else {
-						if (mouseX != x || mouseY != y) {
-							TouchEvent event = usedTouchEvents.obtain();
-							event.x = x;
-							event.y = y;
-							event.pointer = 0;
-							event.type = TouchEvent.TOUCH_DRAGGED;
-							touchEvents.add(event);
-							mouseX = x;
-							mouseY = y;
-						}
+						event.type = TouchEvent.TOUCH_MOVED;
 					}
 				} else {
-					if (mousePressed == true) {
-						mouseX = x;
-						mouseY = y;
-						mousePressed = false;
-						TouchEvent event = usedTouchEvents.obtain();
-						event.x = x;
-						event.y = y;
-						event.pointer = 0;
+					// nope, it's a down or up event.
+					if(Mouse.getEventButtonState()) {
+						event.type = TouchEvent.TOUCH_DOWN;
+						pressedButtons.add(event.button);
+						justTouched = true;
+					} else {
 						event.type = TouchEvent.TOUCH_UP;
-						touchEvents.add(event);
+						pressedButtons.remove(event.button);
 					}
 				}
+				
+				touchEvents.add(event);
+				mouseX = event.x;
+				mouseY = event.y;
 			}
 		}
-	}
-
-	boolean isButtonPressed () {
-		for (int i = 0; i < Mouse.getButtonCount(); i++)
-			if (Mouse.isButtonDown(i)) return true;
-		return false;
 	}
 
 	void updateKeyboard () {
@@ -540,5 +557,30 @@ final class LwjglInput implements Input {
 
 	@Override public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
+	}
+
+	@Override public boolean supportsVibrator () {
+		return false;
+	}
+
+	@Override public void vibrate (int milliseconds) {
+	}
+
+	@Override public boolean justTouched () {
+		return justTouched;
+	}
+	
+	private int toLwjglButton(int button) {
+		if(button == Buttons.LEFT)
+			return 0;
+		if(button == Buttons.RIGHT)
+			return 1;
+		if(button == Buttons.MIDDLE)
+			return 2;
+		return 0;
+	}
+
+	@Override public boolean isButtonPressed (int button) {
+		return Mouse.isButtonDown(toLwjglButton(button));
 	}
 }

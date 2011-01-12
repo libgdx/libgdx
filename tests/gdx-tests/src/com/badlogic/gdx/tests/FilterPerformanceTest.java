@@ -71,7 +71,7 @@ public class FilterPerformanceTest extends GdxTest {
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);	
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
-			public boolean touchDown (int x, int y, int pointer) {
+			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				mode++;
 				if (mode == filters.length * 2) mode = 0;
 				setTextureFilter(mode / 2);

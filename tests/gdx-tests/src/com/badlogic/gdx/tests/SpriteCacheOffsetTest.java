@@ -66,11 +66,11 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	public boolean touchDown (int x, int y, int pointer) {
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
-	public boolean touchUp (int x, int y, int pointer) {
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		return false;
 	}
 
@@ -79,6 +79,14 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 	}
 
 	public boolean needsGL20 () {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 }

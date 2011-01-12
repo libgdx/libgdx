@@ -25,7 +25,7 @@ public class OrthoCamController extends InputAdapter {
 		return false;
 	}
 	
-	@Override public boolean touchUp(int x, int y, int pointer) {
+	@Override public boolean touchUp(int x, int y, int pointer, int button) {
 		last.set(-1, -1);
 		return false;
 	}

@@ -20,8 +20,6 @@ import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.AudioRecorderTest;
-import com.badlogic.gdx.tests.ShaderMultitextureTest;
-import com.badlogic.gdx.tests.SplineTest;
 import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
@@ -53,8 +51,10 @@ import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.Pong;
+import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SimpleTest;
 import com.badlogic.gdx.tests.SoundTest;
+import com.badlogic.gdx.tests.SplineTest;
 import com.badlogic.gdx.tests.SpriteBatchRotationTest;
 import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteBatchTest;
@@ -74,6 +74,7 @@ import com.badlogic.gdx.tests.VertexArrayTest;
 import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.VertexBufferObjectTest;
+import com.badlogic.gdx.tests.VibratorTest;
 import com.badlogic.gdx.tests.WaterRipples;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
@@ -88,9 +89,10 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 public class GdxTests 
 {
 	public static final Class[] tests = {
+		VibratorTest.class,
 		Gdx2DTest.class,				
 		ShaderMultitextureTest.class,
-		SplineTest.class,
+		SplineTest.class,		
 		AlphaTest.class,	
 		AtlasIssueTest.class,		
 		FilterPerformanceTest.class,

@@ -230,7 +230,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
+	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
@@ -238,12 +238,20 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
 		renderMethod = (renderMethod + 1) % 2;
 		return false;
 	}
 
 	@Override public boolean needsGL20 () {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 

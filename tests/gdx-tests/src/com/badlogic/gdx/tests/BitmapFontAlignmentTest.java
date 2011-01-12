@@ -38,7 +38,7 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 	@Override public void create () {
 		Gdx.input.setInputProcessor(new InputAdapter() {
-			public boolean touchDown (int x, int y, int pointer) {
+			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				renderMode = (renderMode + 1) % 6;
 				return false;
 			}

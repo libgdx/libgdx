@@ -15,6 +15,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class InputTest extends GdxTest implements InputProcessor {
@@ -24,6 +25,11 @@ public class InputTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public void render () {
+		if(Gdx.input.justTouched()) {
+			Gdx.app.log("Input Test", "just touched, button: " + (Gdx.input.isButtonPressed(Buttons.LEFT)?"left ":"")
+																 + (Gdx.input.isButtonPressed(Buttons.MIDDLE)?"middle ":"")																 
+																 + (Gdx.input.isButtonPressed(Buttons.RIGHT)?"right":""));
+		}
 	}
 
 	@Override public boolean keyDown (int keycode) {
@@ -40,33 +46,43 @@ public class InputTest extends GdxTest implements InputProcessor {
 		Gdx.app.log("Input Test", "key up: " + keycode);
 		return false;
 	}
-
-	@Override public boolean touchDown (int x, int y, int pointer) {
-		Gdx.app.log("Input Test", "touch down: " + x + ", " + y);
-		long startTime = System.nanoTime();
-		while (System.nanoTime() - startTime < 1000000000 / 30)
-			;
+	
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+		Gdx.app.log("Input Test", "touch down: " + x + ", " + y + ", button: " + getButtonString(button));		
 		return false;
 	}
 
 	@Override public boolean touchDragged (int x, int y, int pointer) {
-		Gdx.app.log("Input Test", "touch dragged: " + x + ", " + y);
-		long startTime = System.nanoTime();
-		while (System.nanoTime() - startTime < 1000000000 / 30)
-			;
+		Gdx.app.log("Input Test", "touch dragged: " + x + ", " + y + ", pointer: " + pointer);		
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
-		Gdx.app.log("Input Test", "touch up: " + x + ", " + y);
-		long startTime = System.nanoTime();
-		while (System.nanoTime() - startTime < 1000000000 / 30)
-			;
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+		Gdx.app.log("Input Test", "touch up: " + x + ", " + y + ", button: " + getButtonString(button));			
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		Gdx.app.log("Input Test", "touch moved: " + x + ", " + y);
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
+		Gdx.app.log("Input Test", "scrolled: " + amount);
 		return false;
 	}
 
 	@Override public boolean needsGL20 () {
 		return false;
 	}
-
+	
+	private String getButtonString(int button) {
+		if(button == Buttons.LEFT)
+			return "left";
+		if(button == Buttons.RIGHT)
+			return "right";
+		if(button == Buttons.MIDDLE)
+			return "middle";
+		return "left";
+	}
 }

@@ -49,7 +49,7 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
+	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
@@ -57,7 +57,7 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
 		r = (float)Math.random();
 		g = (float)Math.random();
 		b = (float)Math.random();
@@ -71,6 +71,14 @@ public class SimpleTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean needsGL20 () {
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}
 }
