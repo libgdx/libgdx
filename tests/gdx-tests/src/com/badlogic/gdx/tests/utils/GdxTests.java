@@ -88,11 +88,8 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
  */
 public class GdxTests 
 {
-	public static final Class[] tests = {
-		VibratorTest.class,
-		Gdx2DTest.class,				
-		ShaderMultitextureTest.class,
-		SplineTest.class,		
+	public static final Class[] tests = {		
+		Gdx2DTest.class,						
 		AlphaTest.class,	
 		AtlasIssueTest.class,		
 		FilterPerformanceTest.class,
@@ -129,6 +126,8 @@ public class GdxTests
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		Pong.class,
+		ShaderMultitextureTest.class,
+		SplineTest.class,		
 		SimpleTest.class,
 		SoundTest.class,
 		SpriteCacheTest.class,
@@ -150,6 +149,7 @@ public class GdxTests
 		VertexArrayClassTest.class,
 		VertexBufferObjectClassTest.class,
 		VertexBufferObjectShaderTest.class,
+		VibratorTest.class,
 		//VorbisTest.class,
 		WaterRipples.class,
 		HelloTriangle.class,		
