@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="32" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="perspective walls" tilewidth="64" tileheight="64">
+  <image source="perspective walls.png"/>
+  <tile id="13">
+   <properties>
+    <property name="door" value="true"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="door" value="true"/>
+   </properties>
+  </tile>
+  <tile id="15">
+   <properties>
+    <property name="pickup" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="17" name="perspective walls test" tilewidth="64" tileheight="64">
+  <image source="perspective walls test.png"/>
+ </tileset>
+ <layer name="Walls" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+2PNw4DQRDDxtnnfDmH/7/SjdSoW2CxxWHYEGAlmTmO4ziOWQ4fpBfwUXoJn6RX8DnSrlTwdy6dvwvp/F1K5+/KnBBq+CK9ga/SW/gmvYPvkXalgr9r6fzdSOfvVjp/d+aE0MOZ9AF+SB/hp/QJfkXalQr+7qXz9yCdv0fp/D2ZE8IMv6Uv8Ef6Cn+lb/Avzqxk8Pcsnb8X6fy9SufvLc6s3fIH/jahigAQAAA=
+  </data>
+ </layer>
+ <layer name="Walls level 2" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BAQ0AAADCoPdPbQ8HFAAAAPBuEQAcxwAQAAA=
+  </data>
+ </layer>
+ <layer name="Walls level 3" width="32" height="32">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3BAQ0AAADCoPdPbQ8HFAAAAPBuEQAcxwAQAAA=
+  </data>
+ </layer>
+</map>
