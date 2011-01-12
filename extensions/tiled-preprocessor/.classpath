@@ -8,7 +8,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="gdx/windows"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="/libgdx-tiled"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-jogl"/>
 	<classpathentry kind="src" path="/gdx-backend-lwjgl"/>
 	<classpathentry kind="output" path="bin"/>
