@@ -348,6 +348,14 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		vibrator.vibrate(milliseconds);
 	}
 
+	@Override public void vibrate (long[] pattern, int repeat) {
+		vibrator.vibrate(pattern, repeat);
+	}
+
+	@Override public void cancelVibrate () {
+		vibrator.cancel();
+	}
+	
 	@Override public boolean supportsVibrator () {
 		return true;
 	}

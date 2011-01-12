@@ -296,4 +296,10 @@ public class AngleInput implements Input {
 	@Override public boolean isButtonPressed (int button) {
 		return false;
 	}
+
+	@Override public void vibrate (long[] pattern, int repeat) {
+	}
+
+	@Override public void cancelVibrate () {
+	}
 }

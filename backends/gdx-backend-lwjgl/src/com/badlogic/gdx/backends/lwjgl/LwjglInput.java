@@ -583,4 +583,10 @@ final class LwjglInput implements Input {
 	@Override public boolean isButtonPressed (int button) {
 		return Mouse.isButtonDown(toLwjglButton(button));
 	}
+
+	@Override public void vibrate (long[] pattern, int repeat) {
+	}
+
+	@Override public void cancelVibrate () {
+	}
 }

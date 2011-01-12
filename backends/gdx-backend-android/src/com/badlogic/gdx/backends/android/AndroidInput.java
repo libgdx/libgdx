@@ -361,6 +361,14 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	@Override public void vibrate (int milliseconds) {
 		vibrator.vibrate(milliseconds);
 	}
+	
+	@Override public void vibrate (long[] pattern, int repeat) {
+		vibrator.vibrate(pattern, repeat);
+	}
+
+	@Override public void cancelVibrate () {
+		vibrator.cancel();
+	}
 
 	@Override public boolean justTouched () {
 		return justTouched;

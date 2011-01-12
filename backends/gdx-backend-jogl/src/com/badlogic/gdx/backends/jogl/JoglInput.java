@@ -440,4 +440,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	@Override public boolean isButtonPressed (int button) {
 		return pressedButtons.contains(button);
 	}
+
+	@Override public void vibrate (long[] pattern, int repeat) {
+	}
+
+	@Override public void cancelVibrate () {
+	}
 }
