@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 
 /**
- * A renderer for Tiled maps backed with a Sprite Cache
+ * A renderer for Tiled maps backed with a Sprite Cache.
  * @author David Fraska
  * */
 public class TiledMapRenderer {
@@ -46,7 +46,16 @@ public class TiledMapRenderer {
 	private int[] allLayers;
 
 	/**
-	 * A renderer for Tiled maps backed with a Sprite Cache
+	 * A renderer for Tiled maps backed with a Sprite Cache.
+	 * 
+	 * The blockWidth and blockHeight parameters are used to determine how many tiles are in each block. When
+	 * {@link TiledMapRenderer#render(int, int, int, int, int[])} is called, each block will equate one call to
+	 * {@link SpriteCache#draw(int)}.
+	 * 
+	 * For debugging, use {@link TiledMapRenderer#getInitialCol()}, {@link TiledMapRenderer#getInitialRow()},
+	 * {@link TiledMapRenderer#getLastCol()}, and {@link TiledMapRenderer#getLastRow()} after calling
+	 * {@link TiledMapRenderer#render(int, int, int, int, int[])} to determine how many blocks were drawn.
+	 * 
 	 * @param map The map to be drawn
 	 * @param atlas The tile atlas to be used when drawing the map
 	 * @param blockWidth The width of each block to be drawn, in pixels
@@ -57,7 +66,16 @@ public class TiledMapRenderer {
 	}
 
 	/**
-	 * Draws a Tiled layer using a Sprite Cache
+	 * A renderer for Tiled maps backed with a Sprite Cache.
+	 * 
+	 * The blockWidth and blockHeight parameters are used to determine how many tiles are in each block. When
+	 * {@link TiledMapRenderer#render(int, int, int, int, int[])} is called, each block will equate one call to
+	 * {@link SpriteCache#draw(int)}.
+	 * 
+	 * For debugging, use {@link TiledMapRenderer#getInitialCol()}, {@link TiledMapRenderer#getInitialRow()},
+	 * {@link TiledMapRenderer#getLastCol()}, and {@link TiledMapRenderer#getLastRow()} after calling
+	 * {@link TiledMapRenderer#render(int, int, int, int, int[])} to determine how many blocks were drawn.
+	 * 
 	 * @param map The map to be drawn
 	 * @param atlas The tile atlas to be used when drawing the map
 	 * @param blockWidth The width of each block to be drawn, in pixels
@@ -171,7 +189,6 @@ public class TiledMapRenderer {
 		return cache.endCache();
 	}
 
-	// This function should not be used most of the time. Use render(int x, int y, int width, int height) instead.
 	/**
 	 * Renders the entire map. Use this function only on very small maps or for debugging purposes.
 	 */
@@ -179,7 +196,10 @@ public class TiledMapRenderer {
 		render(0, 0, pixelsPerMapX, pixelsPerMapY);
 	}
 
-	/** Renders all layers between the given Tiled world coordinates. */
+	/**
+	 * Renders all layers between the given Tiled world coordinates. This is the same as calling
+	 * {@link TiledMapRenderer#render(int, int, int, int, int[])} with all layers in the layers list.
+	 */
 	public void render (int x, int y, int width, int height) {
 		render(x, y, width, height, allLayers);
 	}
@@ -194,13 +214,13 @@ public class TiledMapRenderer {
 	public void render (int x, int y, int width, int height, int[] layers) {
 		if (x > pixelsPerMapX || y > pixelsPerMapY) return;
 		initialRow = (y - overdrawY) / (tilesPerBlockY * tileHeight);
-		initialRow = (initialRow > 0) ? initialRow : 0;
+		initialRow = (initialRow > 0) ? initialRow : 0; // Clamp initial Row > 0
 		initialCol = (x - overdrawX) / (tilesPerBlockX * tileWidth);
-		initialCol = (initialCol > 0) ? initialCol : 0;
+		initialCol = (initialCol > 0) ? initialCol : 0; // Clamp initial Col > 0
 		lastRow = (y + height + overdrawY) / (tilesPerBlockY * tileHeight);
-		lastRow = (lastRow < blocksPerMapY) ? lastRow : blocksPerMapY - 1;
+		lastRow = (lastRow < blocksPerMapY) ? lastRow : blocksPerMapY - 1; // Clamp last Row < blocksPerMapY
 		lastCol = (x + width + overdrawX) / (tilesPerBlockX * tileWidth);
-		lastCol = (lastCol < blocksPerMapX) ? lastCol : blocksPerMapX - 1;
+		lastCol = (lastCol < blocksPerMapX) ? lastCol : blocksPerMapX - 1; // Clamp last Col < blocksPerMapX
 
 		Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -219,28 +239,36 @@ public class TiledMapRenderer {
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 	}
 
-	/** Returns the initial drawn block row (for debugging) */
+	/**
+	 * Returns the initial drawn block row, for debugging purposes. Use this along with {@link TiledMapRenderer#getLastRow()} to
+	 * compute the number of rows drawn in the last call to {@link TiledMapRenderer#render(int, int, int, int, int[])}.
+	 * */
 	public int getInitialRow () {
 		return initialRow;
-		// FIXME: remove debugging functions
 	}
 
-	/** Returns the initial drawn block column (for debugging) */
+	/**
+	 * Returns the initial drawn block column, for debugging purposes. Use this along with {@link TiledMapRenderer#getLastCol()} to
+	 * compute the number of columns drawn in the last call to {@link TiledMapRenderer#render(int, int, int, int, int[])}.
+	 * */
 	public int getInitialCol () {
 		return initialCol;
-		// FIXME: remove debugging functions
 	}
 
-	/** Returns the last drawn block row (for debugging) */
+	/**
+	 * Returns the final drawn block row, for debugging purposes. Use this along with {@link TiledMapRenderer#getInitialRow()} to
+	 * compute the number of rows drawn in the last call to {@link TiledMapRenderer#render(int, int, int, int, int[])}.
+	 * */
 	public int getLastRow () {
 		return lastRow;
-		// FIXME: remove debugging functions
 	}
 
-	/** Returns the last drawn block column (for debugging) */
+	/**
+	 * Returns the final drawn block column, for debugging purposes. Use this along with {@link TiledMapRenderer#getInitialCol()}
+	 * to compute the number of columns drawn in the last call to {@link TiledMapRenderer#render(int, int, int, int, int[])}.
+	 * */
 	public int getLastCol () {
 		return lastCol;
-		// FIXME: remove debugging functions
 	}
 
 	public Matrix4 getProjectionMatrix () {
@@ -259,12 +287,20 @@ public class TiledMapRenderer {
 		return pixelsPerMapX;
 	}
 
+	/**
+	 * Computes the Tiled Map row given a Y coordinate in pixels
+	 * @param worldY the Y coordinate in pixels
+	 * */
 	int getRow (int worldY) {
 		if (worldY < 0) return 0;
 		if (worldY > pixelsPerMapY) return tileHeight - 1;
 		return worldY / tileHeight;
 	}
-
+	
+	/**
+	 * Computes the Tiled Map column given an X coordinate in pixels
+	 * @param worldX the X coordinate in pixels
+	 * */
 	int getCol (int worldX) {
 		if (worldX < 0) return 0;
 		if (worldX > pixelsPerMapX) return tileWidth - 1;
@@ -279,6 +315,9 @@ public class TiledMapRenderer {
 		}
 	}
 
+	/**
+	 * Releases all resources held by this TiledMapRenderer.
+	 * */
 	void dispose () {
 		cache.dispose();
 	}
