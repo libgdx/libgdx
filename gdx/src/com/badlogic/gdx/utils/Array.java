@@ -167,13 +167,17 @@ public class Array<T> implements Iterable<T> {
 			System.arraycopy(items, index + 1, items, index, size - index);
 		else
 			items[index] = items[size];
+		items[size] = null;
 	}
 
 	/**
 	 * Removes and returns the last item.
 	 */
 	public T pop () {
-		return items[--size];
+		--size;
+		T item = items[size];
+		items[size] = null;
+		return item;
 	}
 
 	/**
@@ -188,6 +192,7 @@ public class Array<T> implements Iterable<T> {
 			System.arraycopy(items, index + 1, items, index, size - index);
 		else
 			items[index] = items[size];
+		items[size] = null;
 		return value;
 	}
 

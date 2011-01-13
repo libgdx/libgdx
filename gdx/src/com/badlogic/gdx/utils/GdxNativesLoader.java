@@ -90,7 +90,7 @@ public class GdxNativesLoader {
 			System.load(outputPath + tmpName);
 			return true;
 		} catch (Throwable t) {
-			System.err.println("GdxNativesLoader: Couldn't unpack and load native '" + libName + "'");
+			//System.err.println("GdxNativesLoader: Couldn't unpack and load native '" + libName + "'");
 			return false;
 		} finally {
 			if (out != null) try {

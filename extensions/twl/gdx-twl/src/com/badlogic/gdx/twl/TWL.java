@@ -21,6 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -150,36 +151,44 @@ public class TWL implements InputProcessor {
 		return gui.handleKey(0, character, true);
 	}
 
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-		if (pointer != 0) return false;
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		if (!mouseDown) lastPressConsumed = false; // Only the first button down counts.
 		mouseDown = true;
 		if (ignoreMouse) return false;
-		boolean handled = gui.handleMouse(x, y, 0, true);
+		boolean handled = gui.handleMouse(x, y, button, true);
 		if (handled) lastPressConsumed = true;
 		return handled;
 	}
 
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		if (pointer != 0) return false;
 		mouseDown = false;
 		if (ignoreMouse) {
 			ignoreMouse = false;
 			return false;
 		}
 		boolean handled = gui.handleMouse(x, y, 0, false);
-		gui.handleMouse(-9999, -9999, -1, false);
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			// Move mouse away since there is no mouse cursor on android.
+			gui.handleMouse(-9999, -9999, -1, false);
+		}
 		return handled;
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
-		if (pointer != 0) return false;
 		if (mouseDown && !lastPressConsumed) {
 			ignoreMouse = true;
 			gui.clearMouseState();
 			return false;
 		}
 		return gui.handleMouse(x, y, -1, true);
+	}
+
+	public boolean touchMoved (int x, int y) {
+		return gui.handleMouse(x, y, -1, true);
+	}
+
+	public boolean scrolled (int amount) {
+		return gui.handleMouseWheel(amount);
 	}
 
 	public void dispose () {
@@ -332,15 +341,5 @@ public class TWL implements InputProcessor {
 				};
 			}
 		});
-	}
-
-	@Override public boolean touchMoved (int x, int y) {
-		// FIXME
-		return false;
-	}
-
-	@Override public boolean scrolled (int amount) {
-		// FIXME
-		return false;
 	}
 }
