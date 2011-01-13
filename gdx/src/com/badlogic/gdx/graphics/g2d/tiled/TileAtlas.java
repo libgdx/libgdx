@@ -30,7 +30,13 @@ public class TileAtlas {
 	private IntMap<AtlasRegion> regionsMap;
 	private final HashSet<Texture> textures = new HashSet<Texture>(1);
 
-	/** Creates a TileAtlas for use with {@link TiledMapRenderer} */
+	/**
+	 * Creates a TileAtlas for use with {@link TiledMapRenderer}. Run the map through {@link TiledMapPacker} to create the files
+	 * required.
+	 * @param map The tiled map
+	 * @param packFile The pack file created by {@link TiledMapPacker}
+	 * @param imagesDir The directory that has the images created by {@link TiledMapPacker}
+	 * */
 	public TileAtlas (TiledMap map, FileHandle packFile, FileHandle imagesDir) {
 		TextureAtlas textureAtlas = new TextureAtlas(packFile, imagesDir, false);
 		List<AtlasRegion> atlasRegions = (List<AtlasRegion>)textureAtlas.findRegions(map.tmxFile.nameWithoutExtension());

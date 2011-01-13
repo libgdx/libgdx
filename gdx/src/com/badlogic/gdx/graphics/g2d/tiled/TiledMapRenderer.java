@@ -56,7 +56,7 @@ public class TiledMapRenderer {
 	 * {@link TiledMapRenderer#getLastCol()}, and {@link TiledMapRenderer#getLastRow()} after calling
 	 * {@link TiledMapRenderer#render(int, int, int, int, int[])} to determine how many blocks were drawn.
 	 * 
-	 * @param map The map to be drawn
+	 * @param map A Tiled map that has been run through the {@link TiledMapPacker}, which will add a few properties to optimize the renderer
 	 * @param atlas The tile atlas to be used when drawing the map
 	 * @param blockWidth The width of each block to be drawn, in pixels
 	 * @param blockHeight The width of each block to be drawn, in pixels

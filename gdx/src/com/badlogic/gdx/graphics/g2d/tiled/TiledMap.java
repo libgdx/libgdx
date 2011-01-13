@@ -26,6 +26,7 @@ public class TiledMap {
 	public ArrayList<TiledLayer> layers = new ArrayList<TiledLayer>(4);
 	public ArrayList<TiledObjectGroup> objectGroups = new ArrayList<TiledObjectGroup>(1);
 	public ArrayList<TileSet> tileSets = new ArrayList<TileSet>(5);
+	
 	/** Stores the map properties with a key of the property name. */
 	public HashMap<String, String> properties = new HashMap<String, String>(2);
 	private ArrayList<TileProperty> tileProperties = new ArrayList<TileProperty>(0);
