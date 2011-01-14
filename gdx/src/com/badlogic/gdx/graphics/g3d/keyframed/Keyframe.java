@@ -22,11 +22,11 @@ import com.badlogic.gdx.math.Vector3;
  *
  */
 public class Keyframe {
-	public float[][] Vertices = null;
-	public short[][] Indices = null;
-	public boolean IndicesSet = false;
-	public boolean IndicesSent = false;
+	public float[][] vertices = null;
+	public short[][] indices = null;
+	public boolean indicesSet = false;
+	public boolean indicesSent = false;
 	
-	public Vector3[] TaggedJointPos = null;
-	public Quaternion[] TaggedJoint = null;
+	public Vector3[] taggedJointPos = null;
+	public Quaternion[] taggedJoint = null;
 }

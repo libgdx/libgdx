@@ -31,8 +31,8 @@ public class KeyframeAnimator extends Animator {
 	private Keyframe A = null;
 	private Keyframe B = null;
 	private Keyframe R = null;
-	private int mNumMeshes = 0;
-	private float mInvSampleRate = 0;
+	private int numMeshes = 0;
+	private float invSampleRate = 0;
 	
 	/**
 	 * Get the current {@link Keyframe}.
@@ -49,12 +49,12 @@ public class KeyframeAnimator extends Animator {
 	 */
 	public KeyframeAnimator(int numMeshes, float sampleRate)
 	{
-		mNumMeshes = numMeshes;
+		this.numMeshes = numMeshes;
 		// allocate vertex and index buffers for our temp result keyframe
-		R = new Keyframe();
-		R.Vertices = new float[mNumMeshes][];
-		R.Indices = new short[mNumMeshes][];
-		mInvSampleRate = 1.f/sampleRate;
+		this.R = new Keyframe();
+		this.R.vertices = new float[numMeshes][];
+		this.R.indices = new short[numMeshes][];
+		this.invSampleRate = 1.f/sampleRate;
 	}
 	
 	/**
@@ -68,8 +68,8 @@ public class KeyframeAnimator extends Animator {
 	 */
 	public void setKeyframeDimensions(int idx, int numVertices, int numIndices)
 	{
-		R.Vertices[idx] = new float[numVertices];
-		R.Indices[idx] = new short[numIndices];
+		R.vertices[idx] = new float[numVertices];
+		R.indices[idx] = new short[numIndices];
 	}
 	
 	/**
@@ -79,18 +79,18 @@ public class KeyframeAnimator extends Animator {
 	public void setNumTaggedJoints(int num)
 	{
 		// allocate space for joint data in the result keyframe
-		R.TaggedJointPos = new Vector3[num];
+		R.taggedJointPos = new Vector3[num];
 		for(int i=0; i<num; i++)
-			R.TaggedJointPos[i] = new Vector3();
-		R.TaggedJoint = new Quaternion[num];
+			R.taggedJointPos[i] = new Vector3();
+		R.taggedJoint = new Quaternion[num];
 		for(int i=0; i<num; i++)
-			R.TaggedJoint[i] = new Quaternion(0,0,0,0);
+			R.taggedJoint[i] = new Quaternion(0,0,0,0);
 	}
 	
 	@Override
 	protected void setInterpolationFrames() {
-		A = ((KeyframeAnimation)mCurrentAnim).mKeyframes[mCurrentFrameIdx];
-		B = ((KeyframeAnimation)mCurrentAnim).mKeyframes[mNextFrameIdx];
+		A = ((KeyframeAnimation)mCurrentAnim).keyframes[mCurrentFrameIdx];
+		B = ((KeyframeAnimation)mCurrentAnim).keyframes[mNextFrameIdx];
 	}
 
 
@@ -101,84 +101,84 @@ public class KeyframeAnimator extends Animator {
 	@Override
 	protected void interpolate()
 	{
-		float t = mFrameDelta*mInvSampleRate;
-		for(int i=0; i<mNumMeshes; i++)
+		float t = mFrameDelta*invSampleRate;
+		for(int i=0; i<numMeshes; i++)
 		{
-			for(int n=0; n<A.Vertices[i].length; n+=sStride)
+			for(int n=0; n<A.vertices[i].length; n+=sStride)
 			{
 				// interpolated position
-				float Ax = A.Vertices[i][n];
-				float Bx = B.Vertices[i][n];
+				float Ax = A.vertices[i][n];
+				float Bx = B.vertices[i][n];
 				float Rx = Ax + (Bx - Ax)*t;
-				float Ay = A.Vertices[i][n+1];
-				float By = B.Vertices[i][n+1];
+				float Ay = A.vertices[i][n+1];
+				float By = B.vertices[i][n+1];
 				float Ry = Ay + (By - Ay)*t;
-				float Az = A.Vertices[i][n+2];
-				float Bz = B.Vertices[i][n+2];
+				float Az = A.vertices[i][n+2];
+				float Bz = B.vertices[i][n+2];
 				float Rz = Az + (Bz - Az)*t;
 
-				R.Vertices[i][n] = Rx;
-				R.Vertices[i][n+1] = Ry;
-				R.Vertices[i][n+2] = Rz;
+				R.vertices[i][n] = Rx;
+				R.vertices[i][n+1] = Ry;
+				R.vertices[i][n+2] = Rz;
 
 				// texture coordinates
-				R.Vertices[i][n+3] = A.Vertices[i][n+3];
-				R.Vertices[i][n+4] = A.Vertices[i][n+4];
+				R.vertices[i][n+3] = A.vertices[i][n+3];
+				R.vertices[i][n+4] = A.vertices[i][n+4];
 				
 				// interpolated normals
-				Ax = A.Vertices[i][n+5];
-				Bx = B.Vertices[i][n+5];
+				Ax = A.vertices[i][n+5];
+				Bx = B.vertices[i][n+5];
 				Rx = Ax + (Bx - Ax)*t;
-				Ay = A.Vertices[i][n+6];
-				By = B.Vertices[i][n+6];
+				Ay = A.vertices[i][n+6];
+				By = B.vertices[i][n+6];
 				Ry = Ay + (By - Ay)*t;
-				Az = A.Vertices[i][n+7];
-				Bz = B.Vertices[i][n+7];
+				Az = A.vertices[i][n+7];
+				Bz = B.vertices[i][n+7];
 				Rz = Az + (Bz - Az)*t;
-				R.Vertices[i][n+5] = Rx;
-				R.Vertices[i][n+6] = Ry;
-				R.Vertices[i][n+7] = Rz;
+				R.vertices[i][n+5] = Rx;
+				R.vertices[i][n+6] = Ry;
+				R.vertices[i][n+7] = Rz;
 			}
 
-			if(!R.IndicesSet)
+			if(!R.indicesSet)
 			{
-				for(int n=0; n<A.Indices[i].length; n++)
+				for(int n=0; n<A.indices[i].length; n++)
 				{
-					R.Indices[i][n] = A.Indices[i][n];
+					R.indices[i][n] = A.indices[i][n];
 				}
 			}
 		}
-		R.IndicesSet = true;
+		R.indicesSet = true;
 		
 		//interpolate any tagged joints
-		for(int tj = 0; tj<A.TaggedJoint.length; tj++)
+		for(int tj = 0; tj<A.taggedJoint.length; tj++)
 		{
 			//position
-			float PAX = A.TaggedJointPos[tj].x;
-			float PAY = A.TaggedJointPos[tj].y;
-			float PAZ = A.TaggedJointPos[tj].z;
-			float PBX = B.TaggedJointPos[tj].x;
-			float PBY = B.TaggedJointPos[tj].y;
-			float PBZ = B.TaggedJointPos[tj].z;
+			float PAX = A.taggedJointPos[tj].x;
+			float PAY = A.taggedJointPos[tj].y;
+			float PAZ = A.taggedJointPos[tj].z;
+			float PBX = B.taggedJointPos[tj].x;
+			float PBY = B.taggedJointPos[tj].y;
+			float PBZ = B.taggedJointPos[tj].z;
 
-			R.TaggedJointPos[tj].x = PAX + (PBX - PAX)*t;
-			R.TaggedJointPos[tj].y = PAY + (PBY - PAY)*t;
-			R.TaggedJointPos[tj].z = PAZ + (PBZ - PAZ)*t;
+			R.taggedJointPos[tj].x = PAX + (PBX - PAX)*t;
+			R.taggedJointPos[tj].y = PAY + (PBY - PAY)*t;
+			R.taggedJointPos[tj].z = PAZ + (PBZ - PAZ)*t;
 			
 			//orientation
-			jointAOrient.x = A.TaggedJoint[tj].x;
-			jointAOrient.y = A.TaggedJoint[tj].y;
-			jointAOrient.z = A.TaggedJoint[tj].z;
-			jointAOrient.w = A.TaggedJoint[tj].w;
-			jointBOrient.x = B.TaggedJoint[tj].x;
-			jointBOrient.y = B.TaggedJoint[tj].y;
-			jointBOrient.z = B.TaggedJoint[tj].z;
-			jointBOrient.w = B.TaggedJoint[tj].w;
+			jointAOrient.x = A.taggedJoint[tj].x;
+			jointAOrient.y = A.taggedJoint[tj].y;
+			jointAOrient.z = A.taggedJoint[tj].z;
+			jointAOrient.w = A.taggedJoint[tj].w;
+			jointBOrient.x = B.taggedJoint[tj].x;
+			jointBOrient.y = B.taggedJoint[tj].y;
+			jointBOrient.z = B.taggedJoint[tj].z;
+			jointBOrient.w = B.taggedJoint[tj].w;
 			jointAOrient.slerp(jointBOrient, t);
-			R.TaggedJoint[tj].x = jointAOrient.x;
-			R.TaggedJoint[tj].y = jointAOrient.y;
-			R.TaggedJoint[tj].z = jointAOrient.z;
-			R.TaggedJoint[tj].w = jointAOrient.w;
+			R.taggedJoint[tj].x = jointAOrient.x;
+			R.taggedJoint[tj].y = jointAOrient.y;
+			R.taggedJoint[tj].z = jointAOrient.z;
+			R.taggedJoint[tj].w = jointAOrient.w;
 		}
 	}
 

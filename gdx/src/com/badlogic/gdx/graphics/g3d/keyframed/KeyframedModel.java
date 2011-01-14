@@ -16,6 +16,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -40,18 +41,20 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class KeyframedModel {
 	
-	private Material[] mMaterials;
-	private ObjectMap<String, KeyframeAnimation> mAnimations = new ObjectMap<String, KeyframeAnimation>();
-	private KeyframeAnimator mAnimator = null;
-	private Mesh[] mTarget = null;
-	private int mNumMeshes = 0;
-	private ArrayList<String> mTaggedJointNames = new ArrayList<String>();
+	private Material[] materials;
+	private static ObjectMap<String, KeyframeAnimation> animations = null;
+	private ArrayList<String> animationRefs = new ArrayList<String>();
+	private String assetName;
+	private KeyframeAnimator animator = null;
+	private Mesh[] target = null;
+	private int numMeshes = 0;
+	private ArrayList<String> taggedJointNames = new ArrayList<String>();
 	
 	/**
 	 * Gets the {@link KeyframeAnimator} for this model.
 	 * @return the animator.
 	 */
-	public Animator getAnimator() { return mAnimator; }
+	public Animator getAnimator() { return animator; }
 	
 	public void write(DataOutputStream out)
 	{
@@ -70,10 +73,10 @@ public class KeyframedModel {
 	 */
 	public void setMaterials(Material[] mats)
 	{
-		mMaterials = new Material[mats.length];
+		materials = new Material[mats.length];
 		for(int i=0; i<mats.length; i++)
 		{
-			mMaterials[i] = mats[i];
+			materials[i] = mats[i];
 		}
 	}
 	
@@ -84,125 +87,165 @@ public class KeyframedModel {
 	 */
 	public void setTaggedJoints(ArrayList<String> joints)
 	{
-		mTaggedJointNames = joints;
+		taggedJointNames = joints;
 	}
 
 	//TODO: Split this out to an MD5toKeyframe loader in com.badlogic.gdx.graphics.loaders
 	/**
-	 * Loads a single {@link KeyframeAnimation} from an {@link MD5Animation}, then stores it in the model's animation map for runtime playback.
-	 * @param model
+	 * Loads a single {@link KeyframeAnimation} from an {@link MD5Animation}, then stores it in the animation dictionary for runtime playback.
+	 * The dictionary manages ref counted animations so you do not have multiple copies of 100k animations in memory when you only need one per
+	 * unique MD5 model. You must call dispose() when finished with this class.
+	 * @param md5model
 	 *           The source {@link MD5Model}.
-	 * @param renderer
+	 * @param md5renderer
 	 *           An {@link MD5Renderer} instance, used to calculate the skinned geometry.
-	 * @param animator
+	 * @param md5animator
 	 *           An {@link MD5Animator} instance to control the MD5 animation cycle the keyframing samples from.
-	 * @param animation
+	 * @param md5animation
 	 *           The {@link MD5Animation} to sample.
 	 * @param sampleRate
 	 *           The sample rate (use smaller values for smoother animation but greater memory usage). Recommended value: 0.3
+	 * @param modelAsset
+	 *           The name of the model asset. Must be unique to the model. Using its path is recommended
 	 * @param animKey
 	 *           The name used to store the animation in the mode's animation map.
 	 */
-	public void sampleAnimationFromMD5(MD5Model model, MD5Renderer renderer, MD5Animator animator, MD5Animation animation, float sampleRate, String animKey)
+	public void sampleAnimationFromMD5(MD5Model md5model, MD5Renderer md5renderer, MD5Animator md5animator, MD5Animation md5animation, float sampleRate, String modelAsset, String animKey)
 	{
-		animator.setAnimation(animation, false);
-
-		float len = animation.frames.length*animation.secondsPerFrame;
-		int numSamples = (int)(len/sampleRate)+1;
-		mNumMeshes = model.meshes.length;
-	
-		if(mAnimator == null)
-		{
-			mAnimator = new KeyframeAnimator(mNumMeshes, sampleRate);
-			mTarget = new Mesh[mNumMeshes];
-		}
+		this.assetName = modelAsset;
+		numMeshes = md5model.meshes.length;
+		boolean cached = false;
 		
-		KeyframeAnimation a = new KeyframeAnimation(animation.name, numSamples, len);
+		if(animator == null)
+		{
+			animator = new KeyframeAnimator(numMeshes, sampleRate);
+			target = new Mesh[numMeshes];
+		}
 
-		animator.update(0);
-		renderer.setSkeleton(animator.getSkeleton());
+		if(animations == null)
+		{
+			animations = new ObjectMap<String, KeyframeAnimation>();
+		}
+		String key = modelAsset+"_"+animKey;
+		
+		KeyframeAnimation a = null;
+		if(animations.containsKey(key))
+		{
+			a = animations.get(key);
+			a.addRef();
+			cached = true;
+		}
+		animationRefs.add(key);
+		
+		md5animator.setAnimation(md5animation, false);
+
+		float len = md5animation.frames.length*md5animation.secondsPerFrame;
+		int numSamples = (int)(len/sampleRate)+1;
+	
+		if(!cached)
+		{
+			a = new KeyframeAnimation(md5animation.name, numSamples, len);
+			animations.put(key, a);
+		}
+
+		md5animator.update(0.1f);
+		md5renderer.setSkeleton(md5animator.getSkeleton());
 
 		int i=0;
 		int numVertices=0,numIndices=0;
 		for(float t = 0; t < len; t += sampleRate)
 		{
 			//store meshes.
-			Keyframe k = new Keyframe();
-			k.Vertices = new float[mNumMeshes][];
-			k.Indices = new short[mNumMeshes][];
-			if(mTaggedJointNames.size() > 0)
+			Keyframe k = null;
+			if(!cached)
 			{
-				k.TaggedJointPos = new Vector3[mTaggedJointNames.size()];
-				k.TaggedJoint = new Quaternion[mTaggedJointNames.size()];
-			}
-			
-			for(int m=0; m<mNumMeshes; m++)
+				k = new Keyframe();
+				k.vertices = new float[numMeshes][];
+				k.indices = new short[numMeshes][];
+				if(taggedJointNames.size() > 0)
+				{
+					k.taggedJointPos = new Vector3[taggedJointNames.size()];
+					k.taggedJoint = new Quaternion[taggedJointNames.size()];
+				}
+			}			
+			for(int m=0; m<numMeshes; m++)
 			{
-				float vertices[] = renderer.getVertices(m);
-				short indices[] = renderer.getIndices(m);
+				float vertices[] = md5renderer.getVertices(m);
+				short indices[] = md5renderer.getIndices(m);
 				numVertices = vertices.length;
 				numIndices = indices.length;
-				k.Vertices[m] = new float[vertices.length];
-				k.Vertices[m] = vertices.clone();
-				k.Indices[m] = new short[indices.length];
-				k.Indices[m] = indices.clone();
-
-				if(mTarget[m] == null)
+				if(!cached)
 				{
-					mAnimator.setKeyframeDimensions(m, numVertices, numIndices);
-					mAnimator.setNumTaggedJoints(mTaggedJointNames.size());
+					k.vertices[m] = new float[vertices.length];
+					k.vertices[m] = vertices.clone();
+					k.indices[m] = new short[indices.length];
+					k.indices[m] = indices.clone();
+				}
+				
+				if(target[m] == null)
+				{
+					animator.setKeyframeDimensions(m, numVertices, numIndices);
+					animator.setNumTaggedJoints(taggedJointNames.size());
 
-					VertexAttributes attribs = renderer.getMesh().getVertexAttributes();
-					mTarget[m] = new Mesh(false, numVertices, numIndices, attribs);
-					if(mTarget[m].getVertexSize()/4 != KeyframeAnimator.sStride)
+					VertexAttributes attribs = md5renderer.getMesh().getVertexAttributes();
+					target[m] = new Mesh(false, numVertices, numIndices, attribs);
+					if(target[m].getVertexSize()/4 != KeyframeAnimator.sStride)
 						throw new GdxRuntimeException("Mesh vertexattributes != 8 - is this a valid MD5 source mesh?");
 				}
 			}
 			
-			//store tagged joints.
-			MD5Joints skel = animator.getSkeleton();
-			for(int tj=0; tj<mTaggedJointNames.size(); tj++)
+			if(!cached)
 			{
-				String name = mTaggedJointNames.get(tj);
-				for(int j=0; j<skel.numJoints; j++)
+				//store tagged joints.
+				MD5Joints skel = md5animator.getSkeleton();
+				for(int tj=0; tj<taggedJointNames.size(); tj++)
 				{
-					if(name.equals(skel.names[j]))
+					String name = taggedJointNames.get(tj);
+					for(int j=0; j<skel.numJoints; j++)
 					{
-						int idx = j*8;
-						float p = skel.joints[idx];
-						float x = skel.joints[idx+1];
-						float y = skel.joints[idx+2];
-						float z = skel.joints[idx+3];
-						k.TaggedJointPos[tj] = new Vector3(x, y, z);
-						float qx = skel.joints[idx+4];
-						float qy = skel.joints[idx+5];
-						float qz = skel.joints[idx+6];
-						float qw = skel.joints[idx+7];
-						k.TaggedJoint[tj] = new Quaternion(qx, qy, qz, qw);
-						break;
+						if(name.equals(skel.names[j]))
+						{
+							int idx = j*8;
+							float p = skel.joints[idx];
+							float x = skel.joints[idx+1];
+							float y = skel.joints[idx+2];
+							float z = skel.joints[idx+3];
+							k.taggedJointPos[tj] = new Vector3(x, y, z);
+							float qx = skel.joints[idx+4];
+							float qy = skel.joints[idx+5];
+							float qz = skel.joints[idx+6];
+							float qw = skel.joints[idx+7];
+							k.taggedJoint[tj] = new Quaternion(qx, qy, qz, qw);
+							break;
+						}
 					}
 				}
-			}
-			
-			a.mKeyframes[i] = k;
-			
-			animator.update(sampleRate);
-			renderer.setSkeleton(animator.getSkeleton());
+				
+				a.keyframes[i] = k;
+			}			
+			md5animator.update(sampleRate);
+			md5renderer.setSkeleton(md5animator.getSkeleton());
 			i++;
 		}
 		
-		//Gdx.app.log("Loader", "Added animation "+animation.name+" to keyframes ("+i+" keyframes generated)");
-		mAnimations.put(animKey, a);
+		if(cached)
+		{
+			//Gdx.app.log("Loader", "Added ref to animation "+key+" - keyframes ("+i+" keyframes generated). animations.size = "+animations.size);
+		}
+		else
+		{
+			//Gdx.app.log("Loader", "Loaded animation "+key+" - keyframes ("+i+" keyframes generated). animations.size = "+animations.size);
+		}
 	}
 	
 	public void getJointData(int tagIndex, Vector3 pos, Quaternion orient)
 	{
-		Keyframe kf = mAnimator.getInterpolatedKeyframe();
-		pos.set(kf.TaggedJointPos[tagIndex]);
-		orient.x = kf.TaggedJoint[tagIndex].x;
-		orient.y = kf.TaggedJoint[tagIndex].y;
-		orient.z = kf.TaggedJoint[tagIndex].z;
-		orient.w = kf.TaggedJoint[tagIndex].w;
+		Keyframe kf = animator.getInterpolatedKeyframe();
+		pos.set(kf.taggedJointPos[tagIndex]);
+		orient.x = kf.taggedJoint[tagIndex].x;
+		orient.y = kf.taggedJoint[tagIndex].y;
+		orient.z = kf.taggedJoint[tagIndex].z;
+		orient.w = kf.taggedJoint[tagIndex].w;
 	}
 	
 	/**
@@ -214,8 +257,8 @@ public class KeyframedModel {
 	 */
 	public void setAnimation(String animKey, boolean loop)
 	{
-		KeyframeAnimation anim = mAnimations.get(animKey);
-		mAnimator.setAnimation(anim, loop);
+		KeyframeAnimation anim = getAnimation(animKey);
+		animator.setAnimation(anim, loop);
 	}
 	
 	/**
@@ -226,7 +269,7 @@ public class KeyframedModel {
 	 */
 	public KeyframeAnimation getAnimation(String animKey)
 	{
-		return mAnimations.get(animKey);
+		return animations.get(assetName + "_" + animKey);
 	}
 	
 	/**
@@ -236,24 +279,24 @@ public class KeyframedModel {
 	 */
 	public void update(float dt)
 	{
-		if(mAnimator != null)
+		if(animator != null)
 		{
-			mAnimator.update(dt);
+			animator.update(dt);
 			
-			if(mAnimator.hasAnimation())
+			if(animator.hasAnimation())
 			{
-				Keyframe ikf = mAnimator.getInterpolatedKeyframe();
+				Keyframe ikf = animator.getInterpolatedKeyframe();
 				
 				// send our target index and vertex data to the target mesh
-				for(int i=0; i<mNumMeshes; i++)
+				for(int i=0; i<numMeshes; i++)
 				{
-					mTarget[i].setVertices(ikf.Vertices[i]);
-					if(!ikf.IndicesSent)
+					target[i].setVertices(ikf.vertices[i]);
+					if(!ikf.indicesSent)
 					{
-						mTarget[i].setIndices(ikf.Indices[i]);
+						target[i].setIndices(ikf.indices[i]);
 					}
 				}
-				ikf.IndicesSent = true;
+				ikf.indicesSent = true;
 			}
 		}
 	}
@@ -264,10 +307,10 @@ public class KeyframedModel {
 	 */
 	public void render()
 	{
-		for(int i=0; i<mNumMeshes; i++)
+		for(int i=0; i<numMeshes; i++)
 		{
 			// bind textures etc.
-			Material mat = mMaterials[i];
+			Material mat = materials[i];
 			if(mat != null)
 			{
 				if(mat.Texture != null)
@@ -276,7 +319,7 @@ public class KeyframedModel {
 				}
 				mat.set(GL10.GL_FRONT);
 			}
-			mTarget[i].render(GL10.GL_TRIANGLES, 0, mTarget[i].getNumIndices());
+			target[i].render(GL10.GL_TRIANGLES, 0, target[i].getNumIndices());
 		}
 	}
 
@@ -288,6 +331,19 @@ public class KeyframedModel {
 	 *          whether the mesh should be drawn or not
 	 */
 	public void setMeshVisible(int idx, boolean visible) {
-		mTarget[idx].setVisible(visible);
+		target[idx].setVisible(visible);
+	}
+	
+	public void dispose()
+	{
+		for(String key : animationRefs)
+		{
+			KeyframeAnimation anim = animations.get(key);
+			if(anim.removeRef() == 0)
+			{
+				//Gdx.app.log("Engine", "Removing anim "+key+" from dict. Dict size = "+animations.size);
+				animations.remove(key);
+			}
+		}
 	}
 }

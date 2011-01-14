@@ -20,24 +20,36 @@ import com.badlogic.gdx.graphics.g3d.Animation;
  *
  */
 public class KeyframeAnimation extends Animation {
-	public String mName;
-	public Keyframe[] mKeyframes;
-	public float mLength;
+	public String name;
+	public Keyframe[] keyframes;
+	public float length;
+	public int refs;
 	
 	public KeyframeAnimation(String name, int frames, float length)
 	{
-		mName = name;
-		mKeyframes = new Keyframe[frames];
-		mLength = length;
+		this.name = name;
+		this.keyframes = new Keyframe[frames];
+		this.length = length;
+		this.refs = 1;
 	}
 
 	@Override
 	public float getLength() {
-		return mLength;
+		return length;
 	}
 
 	@Override
 	public int getNumFrames() {
-		return mKeyframes.length;
+		return keyframes.length;
+	}
+	
+	public void addRef()
+	{
+		refs++;
+	}
+	
+	public int removeRef()
+	{
+		return --refs;
 	}
 }
