@@ -62,6 +62,7 @@ import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.SpritePerformanceTest;
+import com.badlogic.gdx.tests.SpritePerformanteTest2;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
@@ -136,8 +137,9 @@ public class GdxTests
 		SpriteCacheOffsetTest.class,
 		SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class,
-		SpriteBatchTest.class,
+		SpriteBatchTest.class,		
 		SpritePerformanceTest.class,
+		SpritePerformanteTest2.class,
 		StageTest.class,
 		TerrainTest.class,		
 		TextureAtlasTest.class,

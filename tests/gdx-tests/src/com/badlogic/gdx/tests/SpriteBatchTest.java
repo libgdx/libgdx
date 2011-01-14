@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class SpriteBatchTest extends GdxTest implements InputProcessor {
-	int SPRITES = 400 / 2;
+	int SPRITES = 50000 / 2;
 
 	long startTime = System.nanoTime();
 	int frames = 0;
