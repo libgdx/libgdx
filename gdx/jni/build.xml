@@ -14,7 +14,7 @@
 		<ant antfile="build-lin64.xml"/>
 		<ant antfile="build-android.xml"/>
 
-		<jar destfile="../libs/gdx-natives.jar">
+		<jar destfile="../natives/gdx-natives.jar">
 			<fileset dir="../natives/windows" includes="gdx.dll"/>
 			<fileset dir="../natives/windows64" includes="gdx-64.dll"/>
 			<fileset dir="../natives/linux" includes="libgdx.so"/>
@@ -24,7 +24,7 @@
 	</target>
 	
 	<target name="pack-natives">
-			<jar destfile="../libs/gdx-natives.jar">
+			<jar destfile="../natives/gdx-natives.jar">
 			<fileset dir="../natives/windows" includes="gdx.dll"/>
 			<fileset dir="../natives/windows64" includes="gdx-64.dll"/>
 			<fileset dir="../natives/linux" includes="libgdx.so"/>
@@ -34,10 +34,10 @@
 	</target>
 	
 	<target name="update-natives" depends="pack-natives">		
-		<copy tofile="../../tests/gdx-tests-android/libs/armeabi/libgdx.so" file="../libs/armeabi/libgdx.so" />
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi/libgdx.so" file="../natives/armeabi/libgdx.so" />
 		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi/libmpg123.so" file="${stable}/armeabi/libmpg123.so" /> -->
 		<copy tofile="../../tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />
-		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="../libs//armeabi-v7a/libgdx.so" />
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="../natives/armeabi-v7a/libgdx.so" />
 		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libmpg123.so" file="${stable}/armeabi-v7a/libmpg123.so" /> -->
 		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />	
 	</target>
