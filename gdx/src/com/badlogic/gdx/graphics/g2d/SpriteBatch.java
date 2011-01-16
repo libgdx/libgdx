@@ -235,8 +235,7 @@ public class SpriteBatch {
 		renderCalls = 0;
 
 		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.gl10;
-			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			GL10 gl = Gdx.gl10;			
 			gl.glDisable(GL10.GL_LIGHTING);
 			gl.glDisable(GL10.GL_DEPTH_TEST);
 			gl.glDisable(GL10.GL_CULL_FACE);
@@ -252,8 +251,7 @@ public class SpriteBatch {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-			GL20 gl = Gdx.gl20;
-			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			GL20 gl = Gdx.gl20;			
 			gl.glDisable(GL20.GL_DEPTH_TEST);
 			gl.glDisable(GL20.GL_CULL_FACE);
 			gl.glDepthMask(false);
