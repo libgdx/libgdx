@@ -20,7 +20,7 @@ just replace the prefix with whatever your local Windows MinGW install uses (e.g
 10) Profit!
 
 This will compile the natives for win32 (gdx.dll), win64 (gdx-64.dll), lin32 (libgdx.so), lin64 (libgdx-64) and Android (arm5, arm7). 
-It will also pack them into the gdx-natives.jar which is placed in backends/dependencies and used by all the desktop projects in the SVN trunk
+It will also pack them into the gdx-natives.jar which is placed in gdx/natives and used by all the desktop projects in the SVN trunk
 
 Why the separate ant files? Cause i like copy & pasting... I'll write a more generic ant script that can be used by any platform as soon
 as time permits. 
