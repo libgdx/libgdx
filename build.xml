@@ -165,6 +165,8 @@ gdx and backend modules and creates a distribution out of this mess.
 		</jar>
 
 		<copy tofile="${stable}/gdx-natives.jar" file="gdx/natives/gdx-natives.jar" />
+		<copy tofile="${stable}/jogl-natives.jar" file="backends/gdx-backend-jogl/libs/jogl-natives.jar" />
+		<copy tofile="${stable}/lwjgl-natives.jar" file="backends/gdx-backend-lwjgl/libs/lwjgl-natives.jar" />
 		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/natives/armeabi/libgdx.so" />
 		<!--<copy tofile="${stable}/armeabi/libmpg123.so" file="gdx/natives/armeabi/libmpg123.so" />-->
 		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
@@ -175,7 +177,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html" />
 	</target>
 
-	<!-- builds the distribution zip, does not include the desktop libs -->
+	<!-- builds the distribution zip -->
 	<target name="dist" depends="compile,compile-natives,package,docs">
 		<zip destfile="libgdx-${version}.zip" basedir="${stable}"/>
 	</target>
