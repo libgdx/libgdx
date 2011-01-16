@@ -14,22 +14,22 @@
 		<ant antfile="build-lin64.xml"/>
 		<ant antfile="build-android.xml"/>
 
-		<jar destfile="../../backends/dependencies/gdx-natives.jar">
-			<fileset dir="../windows" includes="gdx.dll"/>
-			<fileset dir="../windows64" includes="gdx-64.dll"/>
-			<fileset dir="../linux" includes="libgdx.so"/>
-			<fileset dir="../linux64" includes="libgdx-64.so"/>
-			<fileset dir="../mac" includes="libgdx.dylib"/>
+		<jar destfile="../libs/gdx-natives.jar">
+			<fileset dir="../natives/windows" includes="gdx.dll"/>
+			<fileset dir="../natives/windows64" includes="gdx-64.dll"/>
+			<fileset dir="../natives/linux" includes="libgdx.so"/>
+			<fileset dir="../natives/linux64" includes="libgdx-64.so"/>
+			<fileset dir="../natives/mac" includes="libgdx.dylib"/>
 		</jar>
 	</target>
 	
 	<target name="pack-natives">
-			<jar destfile="../../backends/dependencies/gdx-natives.jar">
-			<fileset dir="../windows" includes="gdx.dll"/>
-			<fileset dir="../windows64" includes="gdx-64.dll"/>
-			<fileset dir="../linux" includes="libgdx.so"/>
-			<fileset dir="../linux64" includes="libgdx-64.so"/>
-			<fileset dir="../mac" includes="libgdx.dylib"/>
+			<jar destfile="../libs/gdx-natives.jar">
+			<fileset dir="../natives/windows" includes="gdx.dll"/>
+			<fileset dir="../natives/windows64" includes="gdx-64.dll"/>
+			<fileset dir="../natives/linux" includes="libgdx.so"/>
+			<fileset dir="../natives/linux64" includes="libgdx-64.so"/>
+			<fileset dir="../natives/mac" includes="libgdx.dylib"/>
 		</jar>
 	</target>
 	

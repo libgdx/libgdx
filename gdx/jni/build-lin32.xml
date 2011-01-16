@@ -3,7 +3,7 @@
 	<property environment="env"/>	
 	
 	<!-- defined build directory where object files and shared lib will be placed in -->
-	<property name="builddir" value="../linux"/>
+	<property name="builddir" value="../natives/linux"/>
 	<property name="libname" value="libgdx.so"/>
 	<property name="jni-platform" value="linux"/>
 	
