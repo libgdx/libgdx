@@ -3,7 +3,7 @@
 	<property environment="env"/>	
 	
 	<!-- defined build directory where object files and shared lib will be placed in -->
-	<property name="builddir" value="../natives/mac"/>
+	<property name="builddir" value="../libs/mac"/>
 	<property name="libname" value="libgdx.dylib"/>
 	<property name="jni-platform" value="mac"/>
 	
