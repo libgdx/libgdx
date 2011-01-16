@@ -45,21 +45,14 @@ public class SpritePerformanteTest2 extends GdxTest {
 		
 		batch.begin();
 		batch.disableBlending();
-		for(int i = 0; i < SPRITES / 2; i++) {
+		for(int i = 0; i < SPRITES; i++) {
+			if(i == SPRITES / 2)
+				batch.enableBlending();					
 			sprites[i].setRotation(sprites[i].getRotation() + elapsed * 45);			
 			sprites[i].setScale(scale, scale);
-			sprites[i].draw(batch);
+			sprites[i].draw(batch);			
 		}
-		batch.end();
-		
-		batch.begin();
-		batch.enableBlending();
-		for(int i = SPRITES / 2; i < SPRITES; i++) {
-			sprites[i].setRotation(sprites[i].getRotation() + elapsed * 45);			
-			sprites[i].setScale(scale, scale);
-			sprites[i].draw(batch);
-		}		
-		batch.end();
+		batch.end();			
 		
 		timePassed += elapsed;
 		frames++;
