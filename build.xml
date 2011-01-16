@@ -145,7 +145,6 @@ gdx and backend modules and creates a distribution out of this mess.
 			<zipfileset src="backends/gdx-backend-jogl/libs/gluegen-rt.jar" />
 			<zipfileset src="backends/gdx-backend-jogl/libs/javazoom-spi.jar" />
 			<zipfileset src="backends/gdx-backend-jogl/libs/jl1.0.1.jar" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/jogl-natives.jar" />
 			<zipfileset src="backends/gdx-backend-jogl/libs/jogl.jar" />
 			<zipfileset src="backends/gdx-backend-jogl/libs/jorbis.jar" />
 			<zipfileset src="backends/gdx-backend-jogl/libs/tritonus-utils.jar" />
@@ -153,7 +152,6 @@ gdx and backend modules and creates a distribution out of this mess.
 		<jar destfile="${stable}/gdx-backend-lwjgl.jar">
 			<fileset dir="backends/gdx-backend-lwjgl/bin" />
 			<zipfileset src="backends/gdx-backend-lwjgl/libs/lwjgl.jar" />
-			<zipfileset src="backends/gdx-backend-lwjgl/libs/lwjgl-natives.jar" />
 			<zipfileset src="backends/gdx-backend-lwjgl/libs/javazoom-spi.jar" />
 			<zipfileset src="backends/gdx-backend-lwjgl/libs/jl1.0.1.jar" />
 			<zipfileset src="backends/gdx-backend-lwjgl/libs/jorbis.jar" />
