@@ -307,7 +307,7 @@ public class Vector3 implements Serializable {
 	 * @return This vector for chaining
 	 */
 	public Vector3 crs (float x, float y, float z) {
-		return this.set(y * z - z * y, z * x - x * z, x * y - y * x);
+		return this.set(this.y * z - this.z * y, this.z * x - this.x * z, this.x * y - this.y * x);
 	}
 
 	/**
