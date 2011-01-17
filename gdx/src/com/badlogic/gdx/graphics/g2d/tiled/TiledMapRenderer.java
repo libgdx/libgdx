@@ -291,7 +291,7 @@ public class TiledMapRenderer {
 	 * Computes the Tiled Map row given a Y coordinate in pixels
 	 * @param worldY the Y coordinate in pixels
 	 * */
-	int getRow (int worldY) {
+	public int getRow (int worldY) {
 		if (worldY < 0) return 0;
 		if (worldY > pixelsPerMapY) return tileHeight - 1;
 		return worldY / tileHeight;
@@ -301,13 +301,14 @@ public class TiledMapRenderer {
 	 * Computes the Tiled Map column given an X coordinate in pixels
 	 * @param worldX the X coordinate in pixels
 	 * */
-	int getCol (int worldX) {
+	public int getCol (int worldX) {
 		if (worldX < 0) return 0;
 		if (worldX > pixelsPerMapX) return tileWidth - 1;
 		return worldX / tileWidth;
 	}
 
 	private static int parseIntWithDefault (String string, int defaultValue) {
+		if(string == null) return defaultValue;
 		try {
 			return Integer.parseInt(string);
 		} catch (NumberFormatException e) {

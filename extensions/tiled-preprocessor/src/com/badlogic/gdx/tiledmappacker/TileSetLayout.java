@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.IntMap;
 
 /**
  * Contains extra information that can only be calculated after a Tiled Map's tile set images are loaded.
@@ -29,8 +30,10 @@ import com.badlogic.gdx.math.Vector2;
 public class TileSetLayout {
 
 	public final BufferedImage image;
-	private final Vector2[] imageTilePositions;
-	public final int numRows, numCols, numTiles;
+	private final IntMap<Vector2> imageTilePositions;
+	private int numRows;
+	private int numCols;
+	public final int numTiles;
 	public final TileSet tileSet;
 
 	/**
@@ -43,29 +46,34 @@ public class TileSetLayout {
 		this.tileSet = tileSet;
 		image = ImageIO.read(baseDir.child(tileSet.imageName).read());
 
-		numRows = (image.getHeight() - 2 * tileSet.margin) / (tileSet.tileHeight + tileSet.spacing);
-		numCols = (image.getWidth() - 2 * tileSet.margin) / (tileSet.tileWidth + tileSet.spacing);
-		numTiles = numRows * numCols;
-
-		imageTilePositions = new Vector2[numTiles];
+		imageTilePositions = new IntMap<Vector2>();
 
 		// fill the tile regions
-		int x = tileSet.margin, y = tileSet.margin, tile = 0;
-		for (int row = 0; row < numRows; row++) {
-			for (int col = 0; col < numCols; col++) {
-				imageTilePositions[tile] = new Vector2(x, y);
+		int x, y, tile = 0;
+		numRows = 0;
+		numCols = 0;
+		for (y = tileSet.margin; y < image.getHeight() - tileSet.margin; y += tileSet.tileHeight + tileSet.spacing) {
+			for (x = tileSet.margin; x < image.getWidth() - tileSet.margin; x += tileSet.tileWidth + tileSet.spacing){
+				if(y == tileSet.margin) numCols++;
+				imageTilePositions.put(tile, new Vector2(x, y));
 				tile++;
-				x += tileSet.tileWidth + tileSet.spacing;
-				if (x >= image.getWidth()) { // end of row
-					x = tileSet.margin;
-					y += tileSet.tileHeight + tileSet.spacing;
-				}
 			}
+			numRows++;
 		}
+		
+		numTiles = numRows * numCols;
+	}
+
+	public int getNumRows () {
+		return numRows;
+	}
+
+	public int getNumCols () {
+		return numCols;
 	}
 
 	/** Returns the location of the tile in {@link TileSetLayout#image} */
 	public Vector2 getLocation (int tile) {
-		return imageTilePositions[tile - tileSet.firstgid];
+		return imageTilePositions.get(tile - tileSet.firstgid);
 	}
 }

@@ -116,7 +116,9 @@ public class TiledMapPacker {
 		}
 
 		for (int i = 0; i < tilesOnMap.size(); i++) {
-			packerTileSet = getTileSetLayout(tilesOnMap.get(i));
+			//FIXME: this is kind of brute force. We don't know when a tileSet is going to change, so we just assume
+			//it changes every tile. Should probably keep track of how many tiles are in the tileSet and use that.
+			packerTileSet = getTileSetLayout(tilesOnMap.get(i)); 
 			tileLocation = packerTileSet.getLocation(tilesOnMap.get(i));
 			tile = new BufferedImage(packerTileSet.tileSet.tileWidth, packerTileSet.tileSet.tileHeight,
 				BufferedImage.TYPE_4BYTE_ABGR);
@@ -149,8 +151,9 @@ public class TiledMapPacker {
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 			doc = docBuilder.parse(tmxFileHandle.read());
-
+			
 			Node map = doc.getFirstChild();
+			
 			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
 			setProperty(doc, map, "tile count", String.valueOf(tileCount));
 
@@ -204,10 +207,12 @@ public class TiledMapPacker {
 			}
 		}
 
+		Node newNode = parent.getOwnerDocument().createElement(child);
+		
 		if (childNodes.item(0) != null)
-			return parent.insertBefore(parent.getOwnerDocument().createElement(child), childNodes.item(0));
+			return parent.insertBefore(newNode, childNodes.item(0));
 		else
-			return parent.appendChild(parent.getOwnerDocument().createElement(child));
+			return parent.appendChild(newNode);
 	}
 
 	/**

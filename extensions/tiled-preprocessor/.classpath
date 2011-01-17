@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="/image-packer"/>
 	<classpathentry kind="src" path="/gdx">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="gdx/windows"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="gdx/windows64"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-jogl"/>
