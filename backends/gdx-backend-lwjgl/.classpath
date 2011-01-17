@@ -7,8 +7,8 @@
 	<classpathentry kind="lib" path="libs/jl1.0.1.jar"/>
 	<classpathentry kind="lib" path="libs/jorbis.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl-debug.jar"/>
-	<classpathentry kind="lib" path="libs/lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="libs/tritonus-utils.jar"/>
 	<classpathentry kind="lib" path="/gdx/libs/gdx-natives.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
