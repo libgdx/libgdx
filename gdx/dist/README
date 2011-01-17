@@ -24,7 +24,9 @@ gdx-helloworld
     -> gdx.jar
     -> gdx-backend-android.jar
     -> gdx-backend-jogl.jar
+    -> gdx-backend-jogl-natives.jar
     -> gdx-backend-lwjgl.jar
+    -> gdx-backend-lwjgl-natives.jar
     -> gdx-natives.jar
     -> gdx-twl.jar
     -> gdx-sources.jar   	
@@ -32,8 +34,9 @@ gdx-helloworld
     
 Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
 "Java Build Path" to the left in the new dialog and then click the Libraries tab. In the libraries tab 
-click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-natives.jar and gdx-backend-jogl.jar Now you have 
-added all that's needed for the Java desktop project to compile. 
+click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-natives.jar, 
+gdx-backend-jogl.jar, and gdx-backend-jogl-natives.jar Now you have added all that's needed for the Java 
+desktop project to compile. 
 
 Create a new package in the "src/" folder of the gdx-helloworld project, say "com.badlogic.helloworld" 
 and create a new class called "HelloWorld" in this package. Here's the source to put into this class:
@@ -127,8 +130,9 @@ gdx-helloworld-android
  -> default.properties
  
  Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
-project in the project tab and the gdx.jar and gdx-backend-android.jar in the Libraries tab. You don't have to add the gdx-backend-jogl.jar
-jars as those are only needed for the desktop Java version. 
+project in the project tab and the gdx.jar and gdx-backend-android.jar in the Libraries tab. You don't have to 
+add the gdx-backend-jogl.jar or gdx-backend-jogl-natives.jar jars as those are only needed for the desktop 
+Java version. 
 
 Now open the HelloWorldAndroid.java file and paste the following code in:
 
@@ -180,6 +184,7 @@ Now you can start the Activity as you do with any normal android application in 
 You never have to change the android project again unless you add assets. The rest is done in the Java project.
 Just verify that it works on the device every now and then starting the Activity of the android project.
 
-You can download both demo projects completely setup (minus the run configurations) at http://libgdx.googlecode.com/files/gdx-helloworld.zip
+You can download both demo projects completely setup (minus the run configurations) at:
+http://libgdx.googlecode.com/files/gdx-helloworld.zip
 
 Have fun!
