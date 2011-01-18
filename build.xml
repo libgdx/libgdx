@@ -21,6 +21,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	<target name="clean">
 		<delete dir="${stable}" />
 		<delete dir="gdx/bin" />
+		<delete dir="backends/gdx-openal/bin" />
 		<delete dir="backends/gdx-backend-jogl/bin" />
 		<delete dir="backends/gdx-backend-lwjgl/bin" />
 		<delete dir="backends/gdx-backend-android/bin" />	
@@ -32,6 +33,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="${stable}" />
 		<mkdir dir="${stable}/docs/api"/>
 		<mkdir dir="gdx/bin" />
+		<mkdir dir="backends/gdx-openal/bin" />
 		<mkdir dir="backends/gdx-backend-jogl/bin" />
 		<mkdir dir="backends/gdx-backend-lwjgl/bin" />
 		<mkdir dir="backends/gdx-backend-android/bin" />
@@ -45,17 +47,20 @@ gdx and backend modules and creates a distribution out of this mess.
 		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.png" file="gdx/src/com/badlogic/gdx/utils/arial-15.png" />
 		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.fnt" file="gdx/src/com/badlogic/gdx/utils/arial-15.fnt" />
 
+		<!-- build gdx-openal -->
+		<javac srcdir="backends/gdx-openal/src" destdir="backends/gdx-openal/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<fileset file="backends/gdx-openal/libs/*.jar" />
+			</classpath>
+		</javac>
+
 		<!-- build jogl backend -->
 		<javac srcdir="backends/gdx-backend-jogl/src" destdir="backends/gdx-backend-jogl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
-				<pathelement location="backends/gdx-backend-jogl/libs/gluegen-rt.jar" />
-				<pathelement location="backends/gdx-backend-jogl/libs/javazoom-spi.jar" />
-				<pathelement location="backends/gdx-backend-jogl/libs/jl1.0.1.jar" />
-				<pathelement location="backends/gdx-backend-jogl/libs/gdx-backend-jogl-natives.jar" />
-				<pathelement location="backends/gdx-backend-jogl/libs/jogl.jar" />
-				<pathelement location="backends/gdx-backend-jogl/libs/jorbis.jar" />
-				<pathelement location="backends/gdx-backend-jogl/libs/tritonus-utils.jar" />
+				<pathelement location="backends/gdx-openal/bin" />
+				<fileset file="backends/gdx-backend-jogl/libs/*.jar" />
 			</classpath>
 		</javac>
 		
@@ -63,12 +68,9 @@ gdx and backend modules and creates a distribution out of this mess.
 		<javac srcdir="backends/gdx-backend-lwjgl/src" destdir="backends/gdx-backend-lwjgl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
-				<pathelement location="backends/gdx-backend-lwjgl/libs/lwjgl.jar" />
-				<pathelement location="backends/gdx-backend-lwjgl/libs/gdx-backend-lwjgl-natives.jar.jar" />
-				<pathelement location="backends/gdx-backend-lwjgl/libs/javazoom-spi.jar" />
-				<pathelement location="backends/gdx-backend-lwjgl/libs/jl1.0.1.jar" />
-				<pathelement location="backends/gdx-backend-lwjgl/libs/jorbis.jar" />
-				<pathelement location="backends/gdx-backend-lwjgl/libs/tritonus-utils.jar" />
+				<pathelement location="backends/gdx-openal/bin" />
+				<fileset file="backends/gdx-openal/libs/*.jar" />
+				<fileset file="backends/gdx-backend-lwjgl/libs/*.jar" />
 			</classpath>
 		</javac>
 
@@ -76,7 +78,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<javac srcdir="backends/gdx-backend-android/src" destdir="backends/gdx-backend-android/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
-				<pathelement location="backends/gdx-backend-android/libs/android-2.0.jar" />
+				<fileset file="backends/gdx-backend-android/libs/*.jar" />
 			</classpath>
 		</javac>
 		
@@ -84,8 +86,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<javac srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
-				<pathelement location="extensions/twl/gdx-twl/libs/twl-android.jar" />
-				<pathelement location="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
+				<fileset file="extensions/twl/gdx-twl/libs/*.jar" />
 			</classpath>
 		</javac>
 	</target>
@@ -130,8 +131,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>
 
 	<target name="compile-natives" depends="init">
-		<ant antfile="build.xml" dir="gdx/jni/" target="clean"/>
-		<ant antfile="build.xml" dir="gdx/jni/"/>
+		
 	</target>
 	
 	<!-- creates jars and places other files in the output dir -->
@@ -141,27 +141,29 @@ gdx and backend modules and creates a distribution out of this mess.
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" />
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src" />
 		<jar destfile="${stable}/gdx-backend-jogl.jar">
+			<fileset dir="backends/gdx-openal/bin" />
+			<zipgroupfileset file="backends/gdx-openal/libs/*.jar">
+				<exclude name="lwjgl-debug.jar"/>
+			</zipgroupfileset>
 			<fileset dir="backends/gdx-backend-jogl/bin" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/gluegen-rt.jar" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/javazoom-spi.jar" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/jl1.0.1.jar" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/jogl.jar" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/jorbis.jar" />
-			<zipfileset src="backends/gdx-backend-jogl/libs/tritonus-utils.jar" />
+			<zipgroupfileset file="backends/gdx-backend-jogl/libs/*.jar">
+				<exclude name="*-natives.jar"/>
+			</zipgroupfileset>
 		</jar>
 		<jar destfile="${stable}/gdx-backend-lwjgl.jar">
+			<fileset dir="backends/gdx-openal/bin" />
+			<zipgroupfileset file="backends/gdx-openal/libs/*.jar">
+				<exclude name="lwjgl-debug.jar"/>
+			</zipgroupfileset>
 			<fileset dir="backends/gdx-backend-lwjgl/bin" />
-			<zipfileset src="backends/gdx-backend-lwjgl/libs/lwjgl.jar" />
-			<zipfileset src="backends/gdx-backend-lwjgl/libs/javazoom-spi.jar" />
-			<zipfileset src="backends/gdx-backend-lwjgl/libs/jl1.0.1.jar" />
-			<zipfileset src="backends/gdx-backend-lwjgl/libs/jorbis.jar" />
-			<zipfileset src="backends/gdx-backend-lwjgl/libs/tritonus-utils.jar" />
+			<zipgroupfileset file="backends/gdx-backend-lwjgl/libs/*.jar">
+				<exclude name="*-natives.jar"/>
+			</zipgroupfileset>
 		</jar>
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin" />
 		<jar destfile="${stable}/gdx-twl.jar">
 			<fileset dir="extensions/twl/gdx-twl/bin" />
-			<zipfileset src="extensions/twl/gdx-twl/libs/twl-android.jar" />
-			<zipfileset src="extensions/twl/gdx-twl/libs/xpp3-1.1.4c.jar" />
+			<zipgroupfileset file="extensions/twl/gdx-twl/libs/*.jar" />
 		</jar>
 
 		<copy tofile="${stable}/gdx-natives.jar" file="gdx/libs/gdx-natives.jar" />
