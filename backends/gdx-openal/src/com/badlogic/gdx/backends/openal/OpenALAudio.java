@@ -110,6 +110,8 @@ public class OpenALAudio implements Audio {
 			if (state != AL_STOPPED) alSourceStop(streamID);
 			alDeleteSources(streamID);
 		}
+		
+		AL.destroy();
 	}
 
 	public AudioDevice newAudioDevice (boolean isMono) {
@@ -118,5 +120,5 @@ public class OpenALAudio implements Audio {
 
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
-	}
+	}	
 }
