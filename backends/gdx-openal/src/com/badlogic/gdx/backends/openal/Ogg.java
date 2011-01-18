@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.backend.openal;
+package com.badlogic.gdx.backends.openal;
 
 import java.io.ByteArrayOutputStream;
 
