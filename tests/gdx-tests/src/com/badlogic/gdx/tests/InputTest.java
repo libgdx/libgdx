@@ -30,6 +30,10 @@ public class InputTest extends GdxTest implements InputProcessor {
 																 + (Gdx.input.isButtonPressed(Buttons.MIDDLE)?"middle ":"")																 
 																 + (Gdx.input.isButtonPressed(Buttons.RIGHT)?"right":""));
 		}
+		
+		if(Gdx.input.isTouched()) {
+			Gdx.app.log("Input Test", "is touched");
+		}
 	}
 
 	@Override public boolean keyDown (int keycode) {

@@ -312,8 +312,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			touchEvents.add(event);			
 
 			touchX = event.x;
-			touchY = event.y;			
+			touchY = event.y;					
 			pressedButtons.remove(event.button);
+			if(pressedButtons.size()==0)
+				touchDown = false;
 		}
 	}
 	
