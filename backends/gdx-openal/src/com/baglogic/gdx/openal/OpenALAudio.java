@@ -1,7 +1,17 @@
+/*
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 
 package com.baglogic.gdx.openal;
-
-import static org.lwjgl.openal.AL10.*;
 
 import java.nio.FloatBuffer;
 
@@ -17,20 +27,19 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 
+import static org.lwjgl.openal.AL10.*;
+
+/**
+ * @author Nathan Sweet
+ */
 public class OpenALAudio implements Audio {
-	// BOZO
-	public AudioDevice newAudioDevice (boolean isMono) {
-		return null;
-	}
-
-	// BOZO
-	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
-		return null;
-	}
-
 	private int[] streams;
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
+
+	public OpenALAudio () {
+		this(16);
+	}
 
 	public OpenALAudio (int simultaneousStreams) {
 		try {
@@ -59,9 +68,11 @@ public class OpenALAudio implements Audio {
 	public OpenALSound newSound (FileHandle file) {
 		String extension = file.extension();
 		if (extension.equals("ogg")) {
-			return new OggSound(this, file);
+			return new Ogg.Sound(this, file);
 		} else if (extension.equals("mp3")) {
-			return new Mp3Sound(this, file);
+			return new Mp3.Sound(this, file);
+		} else if (extension.equals("wav")) {
+			return new Wav.Sound(this, file);
 		}
 		throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 	}
@@ -69,9 +80,11 @@ public class OpenALAudio implements Audio {
 	public OpenALMusic newMusic (FileHandle file) {
 		String extension = file.extension();
 		if (extension.equals("ogg")) {
-			return new OggMusic(this, file);
+			return new Ogg.Music(this, file);
 		} else if (extension.equals("mp3")) {
-			return new Mp3Music(this, file);
+			return new Mp3.Music(this, file);
+		} else if (extension.equals("wav")) {
+			return new Wav.Music(this, file);
 		}
 		throw new GdxRuntimeException("Unknown file extension for music: " + file);
 	}
@@ -97,5 +110,13 @@ public class OpenALAudio implements Audio {
 			if (state != AL_STOPPED) alSourceStop(streamID);
 			alDeleteSources(streamID);
 		}
+	}
+
+	public AudioDevice newAudioDevice (boolean isMono) {
+		return new JavaSoundAudioDevice(isMono);
+	}
+
+	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
+		return new JavaSoundAudioRecorder(samplingRate, isMono);
 	}
 }

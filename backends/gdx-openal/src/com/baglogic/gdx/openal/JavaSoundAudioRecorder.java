@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.baglogic.gdx.openal;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
@@ -22,19 +22,13 @@ import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * {@link AudioRecorder} implementation for the desktop using the java sound API.
- * 
- * @author badlogicgames@gmail.com
- * 
+ * @author mzechner
  */
-final class LwjglAudioRecorder implements AudioRecorder {
-	/** the line we read the audio from **/
+public class JavaSoundAudioRecorder implements AudioRecorder {
 	private TargetDataLine line;
-
-	/** the buffer to temporarily store the samples **/
 	private byte[] buffer = new byte[1024 * 4];
 
-	public LwjglAudioRecorder (int samplingRate, boolean isMono) {
+	public JavaSoundAudioRecorder (int samplingRate, boolean isMono) {
 		try {
 			AudioFormat format = new AudioFormat(Encoding.PCM_SIGNED, samplingRate, 16, isMono ? 1 : 2, isMono ? 2 : 4,
 				samplingRate, false);
@@ -42,7 +36,7 @@ final class LwjglAudioRecorder implements AudioRecorder {
 			line.open(format, buffer.length);
 			line.start();
 		} catch (Exception ex) {
-			throw new GdxRuntimeException("Couldn't create AudioRecorder", ex);
+			throw new GdxRuntimeException("Error creating JavaSoundAudioRecorder.", ex);
 		}
 	}
 
@@ -51,13 +45,11 @@ final class LwjglAudioRecorder implements AudioRecorder {
 
 		int toRead = numSamples * 2;
 		int read = 0;
-
 		while (read != toRead)
 			read += line.read(buffer, read, toRead - read);
 
-		for (int i = 0, j = 0; i < numSamples * 2; i += 2, j++) {
+		for (int i = 0, j = 0; i < numSamples * 2; i += 2, j++)
 			samples[offset + j] = (short)((buffer[i] << 8) | (buffer[i + 1] & 0xff));
-		}
 	}
 
 	public void dispose () {

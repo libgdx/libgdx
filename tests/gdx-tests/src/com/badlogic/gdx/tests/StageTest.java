@@ -219,12 +219,10 @@ public class StageTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchMoved (int x, int y) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override public boolean scrolled (int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

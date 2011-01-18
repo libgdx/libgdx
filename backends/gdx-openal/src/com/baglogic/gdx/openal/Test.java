@@ -3,7 +3,6 @@ package com.baglogic.gdx.openal;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class Test implements ApplicationListener {
 	public void create () {
@@ -49,6 +48,6 @@ public class Test implements ApplicationListener {
 	}
 
 	public static void main (String[] args) throws Exception {
-		new LwjglApplication(new Test(), "Test", 480, 320, false);
+		//new LwjglApplication(new Test(), "Test", 480, 320, false);
 	}
 }

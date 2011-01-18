@@ -1,6 +1,0 @@
-- why do those freaking methods take ByteBuffer, FloatBuffer and DoubleBuffer only? Why not just Buffer? As they all have to be direct buffers it doesn't matter.
-- GL13.glCompressedTexImage2D() has two methods, one with a long pointer and one with a buffer. In case of the buffer the imageSize is ignored. So where does the method get that info from?
-- GL13.glCompressedSubTexImage2D(), same shit
-- GL11.glDrawElements(), again seperate methods for typed Buffers. You can't specify a count with those. So i assume the limit of the buffer is taken instead. Awesome! Seriously...
-- GL11.glNormalPointer() can either be specified via a long pointer and a stride or via a Buffer in which ase no stride can be given. So how do interleaved vertex arrays work then if the pointer version only works with VBOs?
-- GL11.glTexCoordPointer has a stride but no ByteBuffer variant? Wtf?

@@ -29,6 +29,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.baglogic.gdx.openal.OpenALAudio;
 
 /**
  * An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
@@ -37,7 +38,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class LwjglCanvas implements Application {
 	final LwjglGraphics graphics;
-	final LwjglAudio audio;
+	final OpenALAudio audio;
 	final LwjglFiles files;
 	final LwjglInput input;
 	final ApplicationListener listener;
@@ -71,7 +72,7 @@ public class LwjglCanvas implements Application {
 		canvas.setIgnoreRepaint(true);
 
 		graphics = new LwjglGraphics(canvas, useGL2);
-		audio = new LwjglAudio();
+		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		this.listener = listener;
@@ -145,6 +146,7 @@ public class LwjglCanvas implements Application {
 				}
 				((LwjglInput)Gdx.input).processEvents();
 				listener.render();
+				audio.update();
 				Display.update();
 				Display.sync(60);
 			}

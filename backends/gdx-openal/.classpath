@@ -2,8 +2,9 @@
 <classpath>
 	<classpathentry excluding="**/.svn/*" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl"/>
 	<classpathentry kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
 	<classpathentry kind="lib" path="libs/jorbis.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl-openal.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

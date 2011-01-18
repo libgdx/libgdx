@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.baglogic.gdx.openal;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -21,22 +21,14 @@ import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Implementation of the {@link AudioDevice} interface for the desktop using Java Sound.
- * 
  * @author mzechner
- * 
  */
-final class LwjglAudioDevice implements AudioDevice {
-	/** the audio line **/
+public class JavaSoundAudioDevice implements AudioDevice {
 	private SourceDataLine line;
-
-	/** whether this device is mono **/
 	private final boolean isMono;
-
-	/** byte buffer **/
 	private byte[] bytes = new byte[44100 * 2 * 2];
 
-	public LwjglAudioDevice (boolean isMono) {
+	public JavaSoundAudioDevice (boolean isMono) {
 		this.isMono = isMono;
 
 		try {
@@ -44,8 +36,8 @@ final class LwjglAudioDevice implements AudioDevice {
 			line = AudioSystem.getSourceDataLine(format);
 			line.open(format, 4410 * 2);
 			line.start();
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't createa AudioDevice", e);
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating JavaSoundAudioDevice.", ex);
 		}
 	}
 

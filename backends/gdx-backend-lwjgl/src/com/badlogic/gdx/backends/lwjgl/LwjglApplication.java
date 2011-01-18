@@ -27,13 +27,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.baglogic.gdx.openal.OpenALAudio;
 
 /**
  * An OpenGL surface fullscreen or in a lightweight window.
  */
 public class LwjglApplication implements Application {
 	LwjglGraphics graphics;
-	LwjglAudio audio;
+	OpenALAudio audio;
 	LwjglFiles files;
 	LwjglInput input;
 	final ApplicationListener listener;
@@ -41,8 +42,10 @@ public class LwjglApplication implements Application {
 	boolean running = true;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
+		LwjglNativesLoader.load();
+
 		graphics = new LwjglGraphics(title, width, height, useGL2);
-		audio = new LwjglAudio();
+		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		this.listener = listener;
@@ -56,8 +59,10 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
+		LwjglNativesLoader.load();
+
 		graphics = new LwjglGraphics(canvas, useGL2);
-		audio = new LwjglAudio();
+		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		this.listener = listener;
@@ -71,7 +76,6 @@ public class LwjglApplication implements Application {
 	}
 
 	private void initialize () {
-		LwjglNativesLoader.load();
 		mainLoopThread = new Thread("LWJGL Application") {
 			@SuppressWarnings("synthetic-access") public void run () {
 				LwjglApplication.this.mainLoop();
@@ -111,6 +115,7 @@ public class LwjglApplication implements Application {
 
 			((LwjglInput)Gdx.input).processEvents();
 			listener.render();
+			audio.update();
 			Display.update();
 			Display.sync(60);
 		}
