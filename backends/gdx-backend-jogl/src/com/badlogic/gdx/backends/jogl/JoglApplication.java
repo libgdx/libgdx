@@ -30,8 +30,8 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Version;
+import com.badlogic.gdx.backend.openal.OpenALAudio;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.baglogic.gdx.openal.OpenALAudio;
 
 /**
  * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with

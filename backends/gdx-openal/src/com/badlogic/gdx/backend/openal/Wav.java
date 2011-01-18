@@ -1,5 +1,5 @@
 
-package com.baglogic.gdx.openal;
+package com.badlogic.gdx.backend.openal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;

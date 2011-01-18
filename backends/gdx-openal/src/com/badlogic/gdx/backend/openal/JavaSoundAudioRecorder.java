@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.baglogic.gdx.openal;
+package com.badlogic.gdx.backend.openal;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
