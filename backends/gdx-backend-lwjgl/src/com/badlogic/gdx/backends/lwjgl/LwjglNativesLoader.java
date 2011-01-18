@@ -36,7 +36,7 @@ final class LwjglNativesLoader {
 		}
 	}
 
-	static void load () {		
+	static void load () {
 		Version.loadLibrary();
 
 		if (!load) return;
@@ -76,20 +76,20 @@ final class LwjglNativesLoader {
 			loadLibrary(libName, "/native/linux/", System.getProperty("java.io.tmpdir") + File.separator);
 	}
 
-	private static void loadLibrariesMac () {		
+	private static void loadLibrariesMac () {
 		String[] libNames = new String[] {"libopenal.dylib", "liblwjgl.jnilib"};
 		for (String libName : libNames)
-			 loadLibrary(libName, "/native/macosx/", System.getProperty("java.io.tmpdir") + File.separator);
+			loadLibrary(libName, "/native/macosx/", System.getProperty("java.io.tmpdir") + File.separator);
 	}
 
-	private static void loadLibrary (String libName, String classPath, String outputPath) {
+	private static void loadLibrary (String libName, String nativePath, String outputPath) {
 		if (new File(outputPath + libName).exists()) return;
 
 		InputStream in = null;
 		BufferedOutputStream out = null;
 
 		try {
-			in = LwjglApplication.class.getResourceAsStream(classPath + libName);
+			in = LwjglApplication.class.getResourceAsStream(nativePath + libName);
 			out = new BufferedOutputStream(new FileOutputStream(outputPath + libName));
 			byte[] bytes = new byte[1024 * 4];
 			while (true) {

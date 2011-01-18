@@ -22,6 +22,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.baglogic.gdx.openal.OpenALAudio;
 
 /**
  * Implements the {@link Graphics} interface with Jogl.
@@ -78,6 +79,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 				updateTimes();
 				((JoglInput)Gdx.input).processEvents();
 				listener.render();
+				((OpenALAudio)Gdx.audio).update();
 			}
 		}
 	}

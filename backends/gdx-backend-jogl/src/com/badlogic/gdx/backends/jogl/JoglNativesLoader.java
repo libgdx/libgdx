@@ -14,6 +14,7 @@
 package com.badlogic.gdx.backends.jogl;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +46,20 @@ public class JoglNativesLoader {
 		loadLibrary("gluegen-rt");
 		loadLibrary("jogl_awt");
 		loadLibrary("jogl");
+
+		String os = System.getProperty("os.name");
+		boolean is64Bit = System.getProperty("os.arch").equals("amd64");
+		if (os.contains("Windows")) {
+			load("/native/windows/", is64Bit ? "lwjgl64.dll" : "lwjgl.dll");
+			load("/native/windows/", is64Bit ? "OpenAL64.dll" : "OpenAL32.dll");
+		} else if (os.contains("Linux")) {
+			load("/native/linux/", is64Bit ? "liblwjgl64.so" : "liblwjgl.so");
+			load("/native/linux/", is64Bit ? "libopenal64.so" : "libopenal.so");
+		} else if (os.contains("Mac")) {
+			load("/native/macosx/", "liblwjgl.jnilib");
+			load("/native/macosx/", "libopenal.dylib");
+		}
+		System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
 
 		nativesLoaded = true;
 	}
@@ -79,7 +94,10 @@ public class JoglNativesLoader {
 		if (os.contains("Mac")) {
 			library = "lib" + resource + ".jnilib";
 		}
+		load(package_path, library);
+	}
 
+	private static void load (String package_path, String library) {
 		String so = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime() + library;
 		InputStream in = JoglGraphics.class.getResourceAsStream(package_path + library);
 		if (in == null) throw new RuntimeException("couldn't find " + library + " in jar file.");

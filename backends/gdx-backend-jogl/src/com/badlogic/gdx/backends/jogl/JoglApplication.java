@@ -31,6 +31,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Version;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.baglogic.gdx.openal.OpenALAudio;
 
 /**
  * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with
@@ -47,7 +48,7 @@ public final class JoglApplication implements Application {
 	JoglGraphics graphics;
 	JoglInput input;
 	JoglFiles files;
-	JoglAudio audio;
+	OpenALAudio audio;
 	JFrame frame;
 
 	/**
@@ -82,7 +83,7 @@ public final class JoglApplication implements Application {
 		JoglNativesLoader.loadLibraries();
 		graphics = new JoglGraphics(listener, title, width, height, useGL20);
 		input = new JoglInput(graphics.getCanvas());
-		audio = new JoglAudio();
+		audio = new OpenALAudio();
 		files = new JoglFiles();
 
 		Gdx.app = JoglApplication.this;

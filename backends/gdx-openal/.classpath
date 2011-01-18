@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
 	<classpathentry kind="lib" path="libs/jorbis.jar"/>
-	<classpathentry kind="lib" path="libs/lwjgl-openal.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
+	<classpathentry exported="true" kind="lib" path="libs/lwjgl-debug.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
