@@ -190,6 +190,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar" />
+		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-backend-jogl-natives.jar" file="${stable}/gdx-backend-jogl-natives.jar" />
 		<copy tofile="demos/helloworld/gdx-helloworld/libs/gdx-natives.jar" file="${stable}/gdx-natives.jar" failonerror="false" />
 
 		<copy tofile="demos/helloworld/gdx-helloworld-android/libs/gdx.jar" file="${stable}/gdx.jar" />
@@ -204,6 +205,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx.jar" file="${stable}/gdx.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-sources.jar" file="${stable}/gdx-sources.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-jogl.jar" file="${stable}/gdx-backend-jogl.jar" />
+		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-backend-jogl-natives.jar" file="${stable}/gdx-backend-jogl-natives.jar" />
 		<copy tofile="demos/invaders/gdx-invaders/libs/gdx-natives.jar" file="${stable}/gdx-natives.jar" />
 		
 		<copy tofile="demos/invaders/gdx-invaders-android/libs/gdx.jar" file="${stable}/gdx.jar" />
