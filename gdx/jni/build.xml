@@ -1,4 +1,4 @@
-<project name="gdx-natives" basedir="." default="compile-natives">
+<project name="gdx-natives" basedir="." default="all">
 	<target name="clean">
 		<ant antfile="build-win32.xml" target="clean"/>
 		<ant antfile="build-win64.xml" target="clean"/>
@@ -41,4 +41,6 @@
 		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libmpg123.so" file="${stable}/armeabi-v7a/libmpg123.so" /> -->
 		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />	
 	</target>
+
+	<target name="all" depends="compile-natives,update-natives"/>
 </project>

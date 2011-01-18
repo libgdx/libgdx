@@ -8,6 +8,7 @@
 	</target>
 
 	<target name="compile-natives">
+		<echo>ndk_home: ${env.NDK_HOME}</echo>
 		<exec executable="${env.NDK_HOME}/ndk-build" dir="../"/>
 	</target>
 	
