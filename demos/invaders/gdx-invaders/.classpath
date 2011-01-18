@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="libs/gdx-sources.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-natives.jar"/>
 	<classpathentry kind="lib" path="libs/gdx.jar"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-jogl-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
