@@ -50,14 +50,14 @@ public class JoglNativesLoader {
 		String os = System.getProperty("os.name");
 		boolean is64Bit = System.getProperty("os.arch").equals("amd64");
 		if (os.contains("Windows")) {
-			load("/native/windows/", is64Bit ? "lwjgl64.dll" : "lwjgl.dll");
-			load("/native/windows/", is64Bit ? "OpenAL64.dll" : "OpenAL32.dll");
+			load("/native/windows/", is64Bit ? "lwjgl64.dll" : "lwjgl.dll", false);
+			load("/native/windows/", is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", false);
 		} else if (os.contains("Linux")) {
-			load("/native/linux/", is64Bit ? "liblwjgl64.so" : "liblwjgl.so");
-			load("/native/linux/", is64Bit ? "libopenal64.so" : "libopenal.so");
+			load("/native/linux/", is64Bit ? "liblwjgl64.so" : "liblwjgl.so", false);
+			load("/native/linux/", is64Bit ? "libopenal64.so" : "libopenal.so", false);
 		} else if (os.contains("Mac")) {
-			load("/native/macosx/", "liblwjgl.jnilib");
-			load("/native/macosx/", "libopenal.dylib");
+			load("/native/macosx/", "liblwjgl.jnilib", false);
+			load("/native/macosx/", "libopenal.dylib", false);
 		}
 		System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
 
@@ -94,11 +94,11 @@ public class JoglNativesLoader {
 		if (os.contains("Mac")) {
 			library = "lib" + resource + ".jnilib";
 		}
-		load(package_path, library);
+		load(package_path, library, true);
 	}
 
-	private static void load (String package_path, String library) {
-		String so = System.getProperty("java.io.tmpdir") + "/" + System.nanoTime() + library;
+	private static void load (String package_path, String library, boolean stamped) {
+		String so = System.getProperty("java.io.tmpdir") + "/" + (stamped?System.nanoTime():"") + library;
 		InputStream in = JoglGraphics.class.getResourceAsStream(package_path + library);
 		if (in == null) throw new RuntimeException("couldn't find " + library + " in jar file.");
 
@@ -115,7 +115,8 @@ public class JoglNativesLoader {
 			in.close();
 			System.load(so);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
+			if(stamped)
+				throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
 		} catch (IOException e) {
 			throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
 		}
