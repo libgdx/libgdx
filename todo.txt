@@ -2,7 +2,6 @@ TODO (in order of priority)
 MUSTS for 0.9
 - fix up angle input handling.
 - First iteration of gdx2d/Gdx2DPixmap (see current stubs, loading works already), refactoring of Texture and Pixmap accordingly. No more Graphics.newXXX. Think about where managed textures will get reloaded.
-- Rewrite the Audio backend http://code.google.com/p/libgdx/issues/detail?id=56, Nate mostly did this already, MP3 decoder missing as of yet.
 - Z-ordering of sprites, maybe via z-buffer. If we do it it must be done before AnimatedSprite
 - AnimatedSprite
 - Implementing Matrix3.inv()
