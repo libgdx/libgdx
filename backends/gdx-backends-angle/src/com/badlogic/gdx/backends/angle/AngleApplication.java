@@ -23,6 +23,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Version;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class AngleApplication implements Application, ESLoop {
 	AngleGraphics graphics;
@@ -37,7 +38,7 @@ public class AngleApplication implements Application, ESLoop {
 		final boolean fullscreen) {
 		new Thread(new Runnable() {
 			public void run () {
-				Version.loadLibrary();
+				GdxNativesLoader.load();
 
 				AngleApplication.this.listener = listener;
 				utils = new ESUtil(title, width, height, ESUtil.ES_WINDOW_DEPTH | (fullscreen ? ESUtil.ES_WINDOW_FULLSCREEN : 0));

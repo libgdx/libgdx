@@ -13,22 +13,20 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
+import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.sun.opengl.impl.NativeLibLoader;
 
+import static com.badlogic.gdx.utils.GdxNativesLoader.*;
+
 public class JoglNativesLoader {
-	static boolean nativesLoaded = false;
+	static private boolean nativesLoaded = false;
 
 	/**
 	 * loads the necessary libraries depending on the operating system
 	 */
-	static void loadLibraries () {
+	static void load () {
+		GdxNativesLoader.load();
+
 		if (nativesLoaded) return;
 
 		NativeLibLoader.disableLoading();
@@ -43,82 +41,33 @@ public class JoglNativesLoader {
 				System.err.println("WARNING: Unable to load native jawt library: '" + ex.getMessage() + "'");
 			}
 		}
-		loadLibrary("gluegen-rt");
-		loadLibrary("jogl_awt");
-		loadLibrary("jogl");
 
-		String os = System.getProperty("os.name");
-		boolean is64Bit = System.getProperty("os.arch").equals("amd64");
-		if (os.contains("Windows")) {
-			load("/native/windows/", is64Bit ? "lwjgl64.dll" : "lwjgl.dll", false);
-			load("/native/windows/", is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", false);
-		} else if (os.contains("Linux")) {
-			load("/native/linux/", is64Bit ? "liblwjgl64.so" : "liblwjgl.so", false);
-			load("/native/linux/", is64Bit ? "libopenal64.so" : "libopenal.so", false);
-		} else if (os.contains("Mac")) {
-			load("/native/macosx/", "liblwjgl.jnilib", false);
-			load("/native/macosx/", "libopenal.dylib", false);
+		if (isWindows) {
+			loadLibrary("gluegen-rt-win32.dll", "gluegen-rt-win64.dll");
+			loadLibrary("jogl_awt-win32.dll", "jogl_awt-win64.dll");
+			loadLibrary("jogl-win32.dll", "jogl-win64.dll");
+		} else if (isMac) {
+			loadLibrary("libgluegen-rt.jnilib", "libgluegen-rt.jnilib");
+			loadLibrary("libjogl_awt.jnilib", "libjogl_awt.jnilib");
+			loadLibrary("libjogl.jnilib", "libjogl.jnilib");
+		} else if (isLinux) {
+			loadLibrary("libgluegen-rt-linux32.so", "libgluegen-rt-linux64.so");
+			loadLibrary("libjogl_awt-linux32.so", "libjogl_awt-linux64.so");
+			loadLibrary("libjogl-linux32.so", "libjogl-linux64.so");
 		}
-		System.setProperty("org.lwjgl.librarypath", new File(System.getProperty("java.io.tmpdir")).getAbsolutePath());
+
+		if (isWindows) {
+			extractLibrary("OpenAL32.dll", "OpenAL64.dll");
+			extractLibrary("lwjgl.dll", "lwjgl64.dll");
+		} else if (isMac) {
+			extractLibrary("openal.dylib", "openal.dylib");
+			extractLibrary("liblwjgl.jnilib", "liblwjgl.jnilib");
+		} else if (isLinux) {
+			extractLibrary("libopenal.so", "libopenal64.so");
+			extractLibrary("liblwjgl.so", "liblwjgl64.so");
+		}
+		System.setProperty("org.lwjgl.librarypath", nativesDir.getAbsolutePath());
 
 		nativesLoaded = true;
-	}
-
-	/**
-	 * helper method to load a specific library in an operation system dependant manner
-	 * 
-	 * @param resource the name of the resource
-	 */
-	private static void loadLibrary (String resource) {
-		String package_path = "/javax/media/";
-		String library = "";
-
-		String os = System.getProperty("os.name");
-		String arch = System.getProperty("os.arch");
-
-		if (os.contains("Windows")) {
-			if (!arch.equals("amd64"))
-				library = resource + "-win32.dll";
-			else {
-				library = resource + "-win64.dll";
-			}
-		}
-
-		if (os.contains("Linux")) {
-			if (!arch.equals("amd64"))
-				library = "lib" + resource + "-linux32.so";
-			else
-				library = "lib" + resource + "-linux64.so";
-		}
-
-		if (os.contains("Mac")) {
-			library = "lib" + resource + ".jnilib";
-		}
-		load(package_path, library, true);
-	}
-
-	private static void load (String package_path, String library, boolean stamped) {
-		String so = System.getProperty("java.io.tmpdir") + "/" + (stamped?System.nanoTime():"") + library;
-		InputStream in = JoglGraphics.class.getResourceAsStream(package_path + library);
-		if (in == null) throw new RuntimeException("couldn't find " + library + " in jar file.");
-
-		try {
-			BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(so));
-			byte[] bytes = new byte[1024 * 4];
-			while (true) {
-				int read_bytes = in.read(bytes);
-				if (read_bytes == -1) break;
-
-				out.write(bytes, 0, read_bytes);
-			}
-			out.close();
-			in.close();
-			System.load(so);
-		} catch (FileNotFoundException e) {
-			if(stamped)
-				throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
-		} catch (IOException e) {
-			throw new RuntimeException("couldn't write " + library + " to temporary file " + so);
-		}
 	}
 }

@@ -24,19 +24,4 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 public class Version {
 	/** the current version of libgdx in the major.minor format **/
 	public static String VERSION = "0.81";
-
-	public static void loadLibrary () {		
-		String os = System.getProperty("os.name");
-		String arch = System.getProperty("os.arch");
-		String vm = System.getProperty("java.vm.name");
-		
-		if(!(vm != null && vm.contains("Dalvik")))
-			if (GdxNativesLoader.loadLibraries()) return;
-
-		if (!arch.equals("amd64") || os.contains("Mac")) {
-			System.loadLibrary("gdx");
-		} else {
-			System.loadLibrary("gdx-64");
-		}
-	}
 }

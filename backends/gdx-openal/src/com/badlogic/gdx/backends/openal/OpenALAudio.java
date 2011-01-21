@@ -26,6 +26,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import static org.lwjgl.openal.AL10.*;
 
@@ -34,6 +35,8 @@ import static org.lwjgl.openal.AL10.*;
  */
 public class OpenALAudio implements Audio {
 	private int[] streams;
+	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
+	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 
@@ -42,6 +45,13 @@ public class OpenALAudio implements Audio {
 	}
 
 	public OpenALAudio (int simultaneousStreams) {
+		registerSound("ogg", Ogg.Sound.class);
+		registerMusic("ogg", Ogg.Music.class);
+		registerSound("wav", Wav.Sound.class);
+		registerMusic("wav", Wav.Music.class);
+		registerSound("mp3", Mp3.Sound.class);
+		registerMusic("mp3", Mp3.Music.class);
+
 		try {
 			AL.create();
 		} catch (LWJGLException ex) {
@@ -65,28 +75,38 @@ public class OpenALAudio implements Audio {
 		alListener(AL_POSITION, position);
 	}
 
+	public void registerSound (String extension, Class<? extends OpenALSound> soundClass) {
+		if (extension == null) throw new IllegalArgumentException("extension cannot be null.");
+		if (soundClass == null) throw new IllegalArgumentException("soundClass cannot be null.");
+		extensionToSoundClass.put(extension, soundClass);
+	}
+
+	public void registerMusic (String extension, Class<? extends OpenALMusic> musicClass) {
+		if (extension == null) throw new IllegalArgumentException("extension cannot be null.");
+		if (musicClass == null) throw new IllegalArgumentException("musicClass cannot be null.");
+		extensionToMusicClass.put(extension, musicClass);
+	}
+
 	public OpenALSound newSound (FileHandle file) {
-		String extension = file.extension();
-		if (extension.equals("ogg")) {
-			return new Ogg.Sound(this, file);
-		} else if (extension.equals("mp3")) {
-			return new Mp3.Sound(this, file);
-		} else if (extension.equals("wav")) {
-			return new Wav.Sound(this, file);
+		if (file == null) throw new IllegalArgumentException("file cannot be null.");
+		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(file.extension());
+		if (soundClass == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
+		try {
+			return soundClass.getConstructor(new Class[] {OpenALAudio.class, FileHandle.class}).newInstance(this, file);
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file);
 		}
-		throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 	}
 
 	public OpenALMusic newMusic (FileHandle file) {
-		String extension = file.extension();
-		if (extension.equals("ogg")) {
-			return new Ogg.Music(this, file);
-		} else if (extension.equals("mp3")) {
-			return new Mp3.Music(this, file);
-		} else if (extension.equals("wav")) {
-			return new Wav.Music(this, file);
+		if (file == null) throw new IllegalArgumentException("file cannot be null.");
+		Class<? extends OpenALMusic> musicClass = extensionToMusicClass.get(file.extension());
+		if (musicClass == null) throw new GdxRuntimeException("Unknown file extension for music: " + file);
+		try {
+			return musicClass.getConstructor(new Class[] {OpenALAudio.class, FileHandle.class}).newInstance(this, file);
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file);
 		}
-		throw new GdxRuntimeException("Unknown file extension for music: " + file);
 	}
 
 	int getIdleStreamID () {

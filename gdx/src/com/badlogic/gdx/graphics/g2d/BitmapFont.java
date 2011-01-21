@@ -613,6 +613,12 @@ public class BitmapFont {
 		this.scaleY = scaleY;
 	}
 
+	/**
+	 * Scales the font by the specified amount in both directions.<br>
+	 * <br>
+	 * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}. The
+	 * default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
+	 */
 	public void setScale (float scaleXY) {
 		setScale(scaleXY, scaleXY);
 	}

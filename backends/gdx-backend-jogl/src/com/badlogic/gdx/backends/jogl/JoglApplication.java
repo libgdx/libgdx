@@ -41,10 +41,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  */
 public final class JoglApplication implements Application {
-	static {
-		Version.loadLibrary();
-	}
-
 	JoglGraphics graphics;
 	JoglInput input;
 	JoglFiles files;
@@ -80,7 +76,7 @@ public final class JoglApplication implements Application {
 	}
 
 	void initialize (ApplicationListener listener, String title, int width, int height, boolean useGL20) {
-		JoglNativesLoader.loadLibraries();
+		JoglNativesLoader.load();
 		graphics = new JoglGraphics(listener, title, width, height, useGL20);
 		input = new JoglInput(graphics.getCanvas());
 		audio = new OpenALAudio();

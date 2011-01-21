@@ -23,8 +23,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import android.widget.FrameLayout;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -32,12 +32,12 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Version;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /**
  * An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
@@ -47,9 +47,8 @@ import com.badlogic.gdx.graphics.GL11;
  * @author mzechner
  */
 public class AndroidApplication extends Activity implements Application {
-
     static {
-        Version.loadLibrary();
+   	 GdxNativesLoader.load();
     }
 
     protected AndroidGraphics graphics;
