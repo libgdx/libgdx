@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.CRC32;
 
 import com.badlogic.gdx.Version;
 
@@ -28,7 +29,28 @@ public class GdxNativesLoader {
 	static public boolean isLinux = System.getProperty("os.name").contains("Linux");
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
-	static public File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx/" + Version.VERSION);
+	static public File nativesDir = generateNativesDir();
+	
+	static private File generateNativesDir() {
+		return new File(System.getProperty("java.io.tmpdir") + "/libgdx/" + crc("gdx.dll"));
+	}
+	
+	static private String crc(String nativeFile) {
+		InputStream input = GdxNativesLoader.class.getResourceAsStream("/" + nativeFile);
+		if (input == null) return Version.VERSION; // fallback
+		CRC32 crc = new CRC32();
+		byte[] buffer = new byte[4096];
+		try {
+			while (true) {
+				int length = input.read(buffer);
+				if (length == -1) break;
+				crc.update(buffer, 0, length);
+			}
+		} catch (Exception ex) {
+			try { input.close(); } catch (Exception e) { };
+		}
+		return "" + crc.getValue();
+	}
 
 	static public boolean loadLibrary (String nativeFile32, String nativeFile64) {
 		String path = extractLibrary(nativeFile32, nativeFile64);
