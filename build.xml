@@ -19,6 +19,7 @@ gdx and backend modules and creates a distribution out of this mess.
 
 	<!-- clean output directories -->
 	<target name="clean">
+		<echo>${version}</echo>
 		<delete dir="${stable}" />
 		<delete dir="gdx/bin" />
 		<delete dir="backends/gdx-openal/bin" />
