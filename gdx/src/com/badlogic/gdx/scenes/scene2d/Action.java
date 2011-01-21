@@ -62,4 +62,11 @@ public abstract class Action {
 		this.listener = listener;
 		return this;
 	}
+
+	/**
+	 * @return the {@link OnActionCompleted} listener or null.
+	 */
+	public OnActionCompleted getCompletionListener () {
+		return listener;
+	}
 }

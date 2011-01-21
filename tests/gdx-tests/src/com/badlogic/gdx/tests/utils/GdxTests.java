@@ -16,6 +16,7 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
@@ -90,8 +91,9 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
  */
 public class GdxTests 
 {
-	public static final Class[] tests = {		
+	public static final Class[] tests = {				
 		Gdx2DTest.class,						
+		ActionTest.class,
 		AlphaTest.class,	
 		AtlasIssueTest.class,		
 		FilterPerformanceTest.class,

@@ -18,6 +18,7 @@ import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.utils.Pool;
 
 public class Sequence extends Action {
@@ -54,7 +55,9 @@ public class Sequence extends Action {
 
 		actions.get(currAction).act(delta);
 		if (actions.get(currAction).isDone()) {
-			actions.get(currAction).finish();
+			OnActionCompleted listener = actions.get(currAction).getCompletionListener();
+			if(listener != null) listener.completed(actions.get(currAction));
+			actions.get(currAction).setCompletionListener(null);			
 			currAction++;
 			if (currAction < actions.size()) actions.get(currAction).setTarget(target);
 		}
@@ -75,8 +78,10 @@ public class Sequence extends Action {
 		Sequence action = pool.obtain();
 		action.actions.clear();
 		int len = actions.size();
-		for (int i = 0; i < len; i++)
+		for (int i = 0; i < len; i++) {
+			actions.get(i).finish();
 			action.actions.add(actions.get(i).copy());
+		}
 		return action;
 	}
 }
