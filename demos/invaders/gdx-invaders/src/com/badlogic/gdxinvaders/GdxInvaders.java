@@ -88,6 +88,6 @@ public class GdxInvaders implements ApplicationListener {
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+		System.out.println("resume");
 	}
 }
