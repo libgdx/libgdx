@@ -88,7 +88,7 @@ public class GdxNativesLoader {
 		String vm = System.getProperty("java.vm.name");
 		if (vm == null || !vm.contains("Dalvik")) {
 			if (isWindows) {
-				nativesLoaded = loadLibrary("gdx.dll", "gdx64.dll");
+				nativesLoaded = loadLibrary("gdx.dll", "gdx-64.dll");
 			} else if (isMac) {
 				nativesLoaded = loadLibrary("libgdx.dylib", "libgdx.dylib");
 			} else if (isLinux) {
