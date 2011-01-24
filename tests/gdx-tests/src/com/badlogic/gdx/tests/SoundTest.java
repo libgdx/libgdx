@@ -29,7 +29,8 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public void create () {
-		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
+//		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
+		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/sell_buy_item.wav", FileType.Internal));
 
 		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
 		music.setVolume(volume);
