@@ -14,6 +14,7 @@
 package com.badlogic.gdx.backends.openal;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import com.badlogic.gdx.audio.Sound;
 
@@ -32,13 +33,15 @@ public class OpenALSound implements Sound {
 	}
 
 	void setup (byte[] pcm, int channels, int sampleRate) {
-		ByteBuffer buffer = ByteBuffer.allocateDirect(pcm.length);
-		buffer.put(pcm);
+		int bytes = pcm.length - (pcm.length%(channels>1?4:2));
+		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
+		buffer.order(ByteOrder.nativeOrder());
+		buffer.put(pcm, 0, bytes);
 		buffer.flip();
 
 		if (bufferID == -1) {
 			bufferID = alGenBuffers();
-			alBufferData(bufferID, channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buffer, sampleRate);
+			alBufferData(bufferID, channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buffer.asShortBuffer(), sampleRate);
 		}
 	}
 
