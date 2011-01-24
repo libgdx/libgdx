@@ -23,7 +23,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class SoundTest extends GdxTest implements InputProcessor {
 	Sound sound;
 	Music music;
-	float volume = 1.0f;
+	float volume = 0.5f;
 
 	@Override public void render () {
 	}
@@ -31,8 +31,8 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	@Override public void create () {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
 
-// music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
-		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/cloudconnected.ogg", FileType.Internal));
+		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
+		music.setVolume(volume);
 		music.play();
 		music.setLooping(true);
 		Gdx.input.setInputProcessor(this);
@@ -56,7 +56,7 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
-		sound.play(0.5f);
+		sound.play(1f);
 		return false;
 	}
 

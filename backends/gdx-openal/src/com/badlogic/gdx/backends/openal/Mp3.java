@@ -32,11 +32,7 @@ public class Mp3 {
 				boolean setup = bitstream == null;
 				if (setup) {
 					bitstream = new Bitstream(file.read());
-
-					outputBuffer = new OutputBuffer(2, false);
-
 					decoder = new MP3Decoder();
-					decoder.setOutputBuffer(outputBuffer);
 				}
 
 				int totalLength = 0;
@@ -45,7 +41,10 @@ public class Mp3 {
 					Header header = bitstream.readFrame();
 					if (header == null) break;
 					if (setup) {
-						setup(outputBuffer.isStereo() ? 2 : 1, header.getSampleRate());
+						int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
+						outputBuffer = new OutputBuffer(channels, false);
+						decoder.setOutputBuffer(outputBuffer);
+						setup(channels, header.getSampleRate());
 						setup = false;
 					}
 					try {
@@ -85,18 +84,20 @@ public class Mp3 {
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 
 			Bitstream bitstream = new Bitstream(file.read());
-
-			OutputBuffer outputBuffer = new OutputBuffer(2, false);
-
 			MP3Decoder decoder = new MP3Decoder();
-			decoder.setOutputBuffer(outputBuffer);
 
 			try {
-				int sampleRate = -1;
+				OutputBuffer outputBuffer = null;
+				int sampleRate = -1, channels = -1;
 				while (true) {
 					Header header = bitstream.readFrame();
 					if (header == null) break;
-					if (sampleRate == -1) sampleRate = header.getSampleRate();
+					if (outputBuffer == null) {
+						channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
+						outputBuffer = new OutputBuffer(channels, false);
+						decoder.setOutputBuffer(outputBuffer);
+						sampleRate = header.getSampleRate();
+					}
 					try {
 						decoder.decodeFrame(header, bitstream);
 					} catch (Exception ignored) {
@@ -106,7 +107,7 @@ public class Mp3 {
 					output.write(outputBuffer.getBuffer(), 0, outputBuffer.reset());
 				}
 				bitstream.close();
-				setup(output.toByteArray(), outputBuffer.isStereo() ? 2 : 1, sampleRate);
+				setup(output.toByteArray(), channels, sampleRate);
 			} catch (Throwable ex) {
 				throw new GdxRuntimeException("Error reading audio data.", ex);
 			}

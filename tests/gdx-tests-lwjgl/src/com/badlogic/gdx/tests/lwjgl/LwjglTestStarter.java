@@ -16,8 +16,11 @@ package com.badlogic.gdx.tests.lwjgl;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.prefs.Preferences;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
@@ -36,8 +39,9 @@ public class LwjglTestStarter {
 		public TestList () {
 			setLayout(new BorderLayout());
 
-			final JList list = new JList(GdxTests.getNames());
 			final JButton button = new JButton("Run Test");
+
+			final JList list = new JList(GdxTests.getNames());
 			JScrollPane pane = new JScrollPane(list);
 
 			DefaultListSelectionModel m = new DefaultListSelectionModel();
@@ -51,11 +55,20 @@ public class LwjglTestStarter {
 				}
 			});
 
+			list.addKeyListener(new KeyAdapter() {
+				public void keyPressed (KeyEvent e) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER) button.doClick();
+				}
+			});
+
+			list.setSelectedValue(Preferences.systemNodeForPackage(GdxTests.class).get("last", null), true);
+
 			button.addActionListener(new ActionListener() {
 				@Override public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
 					new LwjglApplication(test, testName, 480, 320, test.needsGL20());
+					Preferences.systemNodeForPackage(GdxTests.class).put("last", testName);
 				}
 			});
 

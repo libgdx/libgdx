@@ -94,7 +94,7 @@ public class OpenALAudio implements Audio {
 		try {
 			return soundClass.getConstructor(new Class[] {OpenALAudio.class, FileHandle.class}).newInstance(this, file);
 		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file);
+			throw new GdxRuntimeException("Error creating sound " + soundClass.getName() + " for file: " + file, ex);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class OpenALAudio implements Audio {
 		try {
 			return musicClass.getConstructor(new Class[] {OpenALAudio.class, FileHandle.class}).newInstance(this, file);
 		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file);
+			throw new GdxRuntimeException("Error creating music " + musicClass.getName() + " for file: " + file, ex);
 		}
 	}
 
@@ -130,7 +130,7 @@ public class OpenALAudio implements Audio {
 			if (state != AL_STOPPED) alSourceStop(streamID);
 			alDeleteSources(streamID);
 		}
-		
+
 		AL.destroy();
 	}
 
@@ -140,5 +140,5 @@ public class OpenALAudio implements Audio {
 
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
-	}	
+	}
 }
