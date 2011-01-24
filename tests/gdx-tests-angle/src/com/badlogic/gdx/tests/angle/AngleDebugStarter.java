@@ -17,6 +17,6 @@ import com.badlogic.gdx.backends.angle.AngleApplication;
 
 public class AngleDebugStarter {
 	public static void main (String[] argv) {
-		new AngleApplication(new com.badlogic.gdx.tests.MeshShaderTest(), "Angle Test", 480, 320, false);
+		new AngleApplication(new com.badlogic.gdx.tests.gles2.SimpleVertexShader(), "Angle Test", 480, 320, true);
 	}
 }
