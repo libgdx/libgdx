@@ -71,6 +71,7 @@ public class AngleInput implements Input {
 	int mouseX = 0;
 	int mouseY = 0;
 	HashSet<Integer> pressedKeys = new HashSet<Integer>();
+	HashSet<Integer> pressedButtons = new HashSet<Integer>();
 
 	private InputProcessor processor;
 
@@ -95,9 +96,8 @@ public class AngleInput implements Input {
 		});
 	}
 
-	public int getX () {
-		// FIXME
-		return 0;
+	public int getX () { 
+		return mouseY;
 	}
 
 	public int getY () {
@@ -116,7 +116,7 @@ public class AngleInput implements Input {
 	}
 
 	public boolean isTouched () {
-		return mousePressed = true;
+		return mousePressed;
 	}
 
 	public int getX (int pointer) {
@@ -244,7 +244,7 @@ public class AngleInput implements Input {
 				break;
 			case ESLoop.ES_KEY_TYPED:
 				event.type = KeyEvent.KEY_TYPED;
-				break;
+				break;				
 			}
 
 			keyEvents.add(event);
@@ -262,13 +262,45 @@ public class AngleInput implements Input {
 			case ESLoop.ES_MOUSE_DOWN:
 				event.type = TouchEvent.TOUCH_DOWN;
 				mousePressed = true;
+				justTouched = true;
+				if((button & ESLoop.ES_MOUSE_LBUTTON) != 0) {
+					pressedButtons.add(Buttons.LEFT);
+					event.button = Buttons.LEFT;
+				}
+				if((button & ESLoop.ES_MOUSE_RBUTTON) != 0) {
+					pressedButtons.add(Buttons.RIGHT);
+					event.button = Buttons.RIGHT;
+				}
+				if((button & ESLoop.ES_MOUSE_MBUTTON) != 0) {
+					pressedButtons.add(Buttons.MIDDLE);
+					event.button = Buttons.MIDDLE;
+				}
 				break;
 			case ESLoop.ES_MOUSE_UP:
 				event.type = TouchEvent.TOUCH_UP;
-				mousePressed = true;
+				mousePressed = false;
+				if((button & ESLoop.ES_MOUSE_LBUTTON) != 0) {
+					pressedButtons.remove(Buttons.LEFT);
+					event.button = Buttons.LEFT;					
+				}
+				if((button & ESLoop.ES_MOUSE_RBUTTON) != 0) {
+					pressedButtons.remove(Buttons.RIGHT);
+					event.button = Buttons.RIGHT;
+				}
+				if((button & ESLoop.ES_MOUSE_MBUTTON) != 0) {
+					pressedButtons.remove(Buttons.MIDDLE);
+					event.button = Buttons.MIDDLE;
+				}
 				break;
 			case ESLoop.ES_MOUSE_MOVE:
-				event.type = TouchEvent.TOUCH_DRAGGED;
+				if(!mousePressed)
+					event.type = TouchEvent.TOUCH_MOVED;
+				else
+					event.type = TouchEvent.TOUCH_DRAGGED;
+				break;			
+			case ESLoop.ES_MOUSE_WHEEL:
+				event.type = TouchEvent.TOUCH_SCROLL;
+				event.scrollAmount = -(int)Math.signum(x);
 				break;
 			}
 			
@@ -277,7 +309,6 @@ public class AngleInput implements Input {
 	}
 
 	int translateKey (int keyCode) {
-		// FIXME
 		return keyCode;
 	}
 
@@ -291,10 +322,10 @@ public class AngleInput implements Input {
 
 	@Override public boolean justTouched () {
 		return justTouched;
-	}
-
-	@Override public boolean isButtonPressed (int button) {
-		return false;
+	}		
+	
+	@Override public boolean isButtonPressed (int button) {		
+		return pressedButtons.contains(button);
 	}
 
 	@Override public void vibrate (long[] pattern, int repeat) {

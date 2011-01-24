@@ -99,7 +99,7 @@ public class AngleApplication implements Application, ESLoop {
 	}
 
 	@Override public void onMouse (int action, int x, int y, int button) {
-		if (action != ES_MOUSE_WHEEL) input.registerMouseEvent(action, x, y, button);
+		input.registerMouseEvent(action, x, y, button);
 	}
 
 	@Override public void quit () {
@@ -115,6 +115,7 @@ public class AngleApplication implements Application, ESLoop {
 		}
 		input.processEvents();
 		listener.render();
+		input.justTouched = false;
 	}
 
 	@Override public void resize (int width, int height) {
