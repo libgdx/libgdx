@@ -43,17 +43,17 @@ import com.badlogic.gdx.math.Vector2;
  * 
  */
 public class Stage extends InputAdapter {
-	private float width;
-	private float height;
-	private float centerX;
-	private float centerY;
-	private boolean stretch;
+	protected float width;
+	protected float height;
+	protected float centerX;
+	protected float centerY;
+	protected boolean stretch;
 
-	private final Group root;
+	protected final Group root;
 
-	private final SpriteBatch batch;
-	private final Matrix4 projection;
-	private final Matrix4 identity;
+	protected final SpriteBatch batch;
+	protected final Matrix4 projection;
+	protected final Matrix4 identity;
 
 	/**
 	 * <p>
