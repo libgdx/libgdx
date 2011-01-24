@@ -61,5 +61,7 @@ public class SimpleVertexShader extends GdxTest {
 		shader.setUniformMatrix("u_mvpMatrix", combined);
 		mesh.render(shader, GL20.GL_TRIANGLES);
 		shader.end();
+		
+		Gdx.app.log("angle", "" + angle);
 	}
 }
