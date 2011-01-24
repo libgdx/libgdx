@@ -30,7 +30,7 @@ inline uint32_t to_format(uint32_t format, uint32_t color) {
 		case GDX2D_FORMAT_ALPHA: 
 			return color & 0xff;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA: 
-			return (color & 0xff00) >> 8 | (color & 0xff) << 8;
+			return (color & 0xffff);
 		case GDX2D_FORMAT_RGB888:
 			return color & 0xffffff;
 		case GDX2D_FORMAT_RGBA8888:
@@ -58,7 +58,7 @@ inline uint32_t to_RGBA8888(uint32_t format, uint32_t color) {
 		case GDX2D_FORMAT_ALPHA: 
 			return (color & 0xff) | 0xffffff00;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA: 
-			return ((color & 0xff) << 24) | ((color & 0xff) << 16) | (color & 0xffff);
+			return ((color & 0xff00) << 16) | ((color & 0xff00) << 8) | (color & 0xffff);
 		case GDX2D_FORMAT_RGB888:
 			return (color << 8) | 0x000000ff;
 		case GDX2D_FORMAT_RGBA8888:
@@ -94,53 +94,19 @@ inline void set_pixel_RGB888(unsigned char *pixel_addr, uint32_t color) {
 	pixel_addr[2] = (color & 0xff);
 }
 
-inline void set_pixel_RGBA8888(unsigned char *pixel_addr, uint32_t color) {		
-	if(!gdx2d_blend) {
-		*(uint32_t*)pixel_addr = ((color & 0xff000000) >> 24) |
-								((color & 0xff0000) >> 8) |
-								((color & 0xff00) << 8) |
-								((color & 0xff) << 24);
-	} else {		
-		int32_t src_r = (color & 0xff000000) >> 24;
-		int32_t src_g = (color & 0xff0000) >> 16;
-		int32_t src_b = (color & 0xff00) >> 8;
-		int32_t src_a = (color & 0xff);
-		
-		int32_t dst = *(uint32_t*)pixel_addr;		
-		int32_t dst_r = (dst & 0xff);
-		int32_t dst_g = (dst & 0xff00) >> 8;
-		int32_t dst_b = (dst & 0xff0000) >> 16;
-			
-		dst_r = dst_r + src_a * (src_r - dst_r) / 255;
-		dst_g = dst_g + src_a * (src_g - dst_g) / 255;
-		dst_b = dst_b + src_a * (src_b - dst_b) / 255;
-		*(uint32_t*)pixel_addr = (uint32_t)(dst_r | (dst_g << 8) | (dst_b << 16) | (src_a << 24));		
-	}	
+inline void set_pixel_RGBA8888(unsigned char *pixel_addr, uint32_t color) {			
+	*(uint32_t*)pixel_addr = ((color & 0xff000000) >> 24) |
+							((color & 0xff0000) >> 8) |
+							((color & 0xff00) << 8) |
+							((color & 0xff) << 24);
 }
 
 inline void set_pixel_RGB565(unsigned char *pixel_addr, uint32_t color) {
 	*(uint16_t*)pixel_addr = (uint16_t)(color);
 }
 
-inline void set_pixel_RGBA4444(unsigned char *pixel_addr, uint32_t color) {
-	if(!gdx2d_blend) {
-		*(uint16_t*)pixel_addr = (uint16_t)(color);
-	} else {
-		uint16_t src_a = color & 0xf;
-		uint16_t src_r = (color & 0xf000) >> 12;
-		uint16_t src_g = (color & 0xf00) >> 8;
-		uint16_t src_b = (color & 0xf0) >> 4;
-
-		uint16_t dst = *(uint16_t*)pixel_addr;
-		uint16_t dst_r = (dst & 0xf000) >> 12;
-		uint16_t dst_g = (dst & 0xf00) >> 8;
-		uint16_t dst_b = (dst & 0xf0) >> 4;
-		
-		dst_r = dst_r + src_a * (src_r - dst_r) / 15;
-		dst_g = dst_g + src_a * (src_g - dst_g) / 15;
-		dst_b = dst_b + src_a * (src_b - dst_b) / 15;
-		*(uint16_t*)pixel_addr = (uint16_t)((dst_r << 12) | (dst_g << 8) | (dst_b << 4) | src_a);		
-	}
+inline void set_pixel_RGBA4444(unsigned char *pixel_addr, uint32_t color) {	
+	*(uint16_t*)pixel_addr = (uint16_t)(color);	
 }
 
 inline set_pixel_func set_pixel_func_ptr(uint32_t format) {
@@ -153,6 +119,22 @@ inline set_pixel_func set_pixel_func_ptr(uint32_t format) {
 		case GDX2D_FORMAT_RGBA4444:			return &set_pixel_RGBA4444;
 		default: return &set_pixel_alpha; // better idea for a default?
 	}
+}
+
+inline uint32_t blend(uint32_t src, uint32_t dst) {
+	int32_t src_r = (src & 0xff000000) >> 24;
+	int32_t src_g = (src & 0xff0000) >> 16;
+	int32_t src_b = (src & 0xff00) >> 8;
+	int32_t src_a = (src & 0xff);
+		
+	int32_t dst_r = (dst & 0xff);
+	int32_t dst_g = (dst & 0xff00) >> 8;
+	int32_t dst_b = (dst & 0xff0000) >> 16;
+		
+	dst_r = dst_r + src_a * (src_r - dst_r) / 255;
+	dst_g = dst_g + src_a * (src_g - dst_g) / 255;
+	dst_b = dst_b + src_a * (src_b - dst_b) / 255;
+	return (uint32_t)((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | src_a);		
 }
 
 inline uint32_t get_pixel_alpha(unsigned char *pixel_addr) {
@@ -325,7 +307,8 @@ inline void clear_RGBA4444(const gdx2d_pixmap* pixmap, uint32_t col) {
 }
 
 void gdx2d_clear(const gdx2d_pixmap* pixmap, uint32_t col) {	
-	
+	col = to_format(pixmap->format, col);
+
 	switch(pixmap->format) {
 		case GDX2D_FORMAT_ALPHA:
 			clear_alpha(pixmap, col);
@@ -366,6 +349,7 @@ inline void set_pixel(unsigned char* pixels, uint32_t width, uint32_t height, ui
 }
 
 void gdx2d_set_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t col) {
+	col = to_format(pixmap->format, col);
 	set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
 }
 
@@ -373,7 +357,7 @@ uint32_t gdx2d_get_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
 	if(!in_pixmap(pixmap, x, y)) 
 		return 0;
 	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->height * y) * bytes_per_pixel(pixmap->format);
-	return get_pixel_func_ptr(pixmap->format)(ptr);
+	return to_RGBA8888(pixmap->format, get_pixel_func_ptr(pixmap->format)(ptr));
 }
 
 void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint32_t col) {	
