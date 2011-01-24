@@ -22,7 +22,6 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Version;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class AngleApplication implements Application, ESLoop {
@@ -109,9 +108,9 @@ public class AngleApplication implements Application, ESLoop {
 	}
 
 	@Override public void render () {
+		graphics.updateTime();
 		if (!created) {
-			listener.create();
-			listener.resume();
+			listener.create();			
 			created = true;
 		}
 		input.processEvents();
