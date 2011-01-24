@@ -46,30 +46,30 @@ public class Gdx2DTest extends GdxTest {
 		
 		Gdx2DPixmap.setBlend(1);
 		
-		alpha.clear(Color.alpha(0.1f));
-		alpha.setPixel(16, 16, Color.alpha(1.0f));		
-		if(alpha.getPixel(16, 16) != 0xff) throw new RuntimeException("alpha error");
-		if(alpha.getPixel(15, 16) != Color.alpha(0.1f)) throw new RuntimeException("alpha error");
+		alpha.clear(Color.rgba8888(1, 1, 1, 0.1f));
+		alpha.setPixel(16, 16, Color.rgba8888(1, 1, 1, 1.0f));		
+		if(alpha.getPixel(16, 16) != Color.rgba8888(1, 1, 1, 1.0f)) throw new RuntimeException("alpha error");
+		if(alpha.getPixel(15, 16) != Color.rgba8888(1, 1, 1, 0.1f)) throw new RuntimeException("alpha error");
 		alpha.drawLine(0, 0, 31, 31, Color.alpha(1.0f));
 		alpha.drawRect(10, 10, 5, 7, Color.alpha(1.0f));		
 		alpha.fillRect(20, 10, 5, 7, Color.alpha(1.0f));
 		alpha.drawCircle(16, 16, 10, Color.alpha(1.0f));
 		alpha.fillCircle(16, 16, 6, Color.alpha(1.0f));
 		
-		luminanceAlpha.clear(Color.luminanceAlpha(1, 0.1f));
-		luminanceAlpha.setPixel(16, 16, Color.luminanceAlpha(1.0f, 1.0f));
-		if(luminanceAlpha.getPixel(16, 16) != 0xffff) throw new RuntimeException("luminance alpha error");
-		if(luminanceAlpha.getPixel(15, 16) != Color.luminanceAlpha(1, 0.1f)) throw new RuntimeException("luminance alpha error");
+		luminanceAlpha.clear(Color.rgba8888(1, 1, 1, 0.1f));
+		luminanceAlpha.setPixel(16, 16, Color.rgba8888(1, 1, 1.0f, 1.0f));
+		if(luminanceAlpha.getPixel(16, 16) != Color.rgba8888(1, 1, 1, 1)) throw new RuntimeException("luminance alpha error");
+		if(luminanceAlpha.getPixel(15, 16) != Color.rgba8888(1, 1, 1, 0.1f)) throw new RuntimeException("luminance alpha error");
 		luminanceAlpha.drawLine(0, 0, 31, 31, Color.luminanceAlpha(1, 1));
 		luminanceAlpha.drawRect(10, 10, 5, 7, Color.luminanceAlpha(1, 1));
 		luminanceAlpha.fillRect(20, 10, 5, 7, Color.luminanceAlpha(1, 1));
 		luminanceAlpha.drawCircle(16, 16, 10, Color.luminanceAlpha(1, 1));
 		luminanceAlpha.fillCircle(16, 16, 6, Color.luminanceAlpha(1, 1));
 		
-		rgb565.clear(Color.rgb565(1, 0, 0));
-		rgb565.setPixel(16, 16, Color.rgb565(0, 0, 1));
-		if(rgb565.getPixel(16, 16) != Color.rgb565(0, 0, 1)) throw new RuntimeException("rgb565 error");
-		if(rgb565.getPixel(31, 31) != Color.rgb565(1, 0, 0)) throw new RuntimeException("rgb565 error");
+		rgb565.clear(Color.rgba8888(1, 0, 0, 1));
+		rgb565.setPixel(16, 16, Color.rgba8888(0, 0, 1, 1));
+		if(rgb565.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgb565 error");
+		if(rgb565.getPixel(31, 31) != Color.rgba8888(1, 0, 0, 1)) throw new RuntimeException("rgb565 error");
 		rgb565.drawLine(0,0,32,32, Color.rgb565(0,1,0));
 		rgb565.drawRect(10, 10, 5, 7, Color.rgb565(1, 1, 0));
 		rgb565.fillRect(20, 10, 5, 7, Color.rgb565(0, 1, 1));
