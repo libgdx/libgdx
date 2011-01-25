@@ -107,6 +107,10 @@ public class Gdx2DPixmap {
 		fillCircle(basePtr, x, y, radius, color);
 	}
 	
+	public void drawPixmap(Gdx2DPixmap src, int srcX, int srcY, int dstX, int dstY, int width, int height) {
+		drawPixmap(src.basePtr, basePtr, srcX, srcY, width, height, dstX, dstY, width, height);
+	}
+	
 	private void drawPixmap(Gdx2DPixmap src, 
 							int srcX, int srcY, int srcWidth, int srcHeight, 
 							int dstX, int dstY, int dstWidth, int dstHeight) {

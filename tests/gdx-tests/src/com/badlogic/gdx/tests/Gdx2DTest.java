@@ -43,68 +43,76 @@ public class Gdx2DTest extends GdxTest {
 		Gdx2DPixmap rgba4444 = createPixmap(32, 32, Gdx2DPixmap.GDX2D_FORMAT_RGBA4444);		
 		Gdx2DPixmap rgb888 = createPixmap(32, 32, Gdx2DPixmap.GDX2D_FORMAT_RGB888);		
 		Gdx2DPixmap rgba8888 = createPixmap(32, 32, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
+		Gdx2DPixmap composite = createPixmap(256, 32, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
 		
 		Gdx2DPixmap.setBlend(1);
 		
 		alpha.clear(Color.rgba8888(1, 1, 1, 0.1f));
-		alpha.setPixel(16, 16, Color.rgba8888(1, 1, 1, 1.0f));		
-		if(alpha.getPixel(16, 16) != Color.rgba8888(1, 1, 1, 1.0f)) throw new RuntimeException("alpha error");
-		if(alpha.getPixel(15, 16) != Color.rgba8888(1, 1, 1, 0.1f)) throw new RuntimeException("alpha error");
-		alpha.drawLine(0, 0, 31, 31, Color.alpha(1.0f));
-		alpha.drawRect(10, 10, 5, 7, Color.alpha(1.0f));		
-		alpha.fillRect(20, 10, 5, 7, Color.alpha(1.0f));
-		alpha.drawCircle(16, 16, 10, Color.alpha(1.0f));
-		alpha.fillCircle(16, 16, 6, Color.alpha(1.0f));
+		alpha.setPixel(16, 16, Color.rgba8888(1, 1, 1, 1));		
+//		if(alpha.getPixel(16, 16) != Color.rgba8888(1, 1, 1, 1f)) throw new RuntimeException("alpha error");
+//		if(alpha.getPixel(15, 16) != Color.rgba8888(1, 1, 1, 0.1f)) throw new RuntimeException("alpha error");
+		alpha.drawLine(0, 0, 31, 31, Color.rgba8888(1, 1, 1, 1));
+		alpha.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 1, 0.5f));		
+		alpha.fillRect(20, 10, 5, 7, Color.rgba8888(1, 1, 1, 0.5f));
+		alpha.drawCircle(16, 16, 10, Color.rgba8888(1, 1, 1, 1));
+		alpha.fillCircle(16, 16, 6, Color.rgba8888(1, 1, 1, 1));
 		
 		luminanceAlpha.clear(Color.rgba8888(1, 1, 1, 0.1f));
 		luminanceAlpha.setPixel(16, 16, Color.rgba8888(1, 1, 1.0f, 1.0f));
-		if(luminanceAlpha.getPixel(16, 16) != Color.rgba8888(1, 1, 1, 1)) throw new RuntimeException("luminance alpha error");
-		if(luminanceAlpha.getPixel(15, 16) != Color.rgba8888(1, 1, 1, 0.1f)) throw new RuntimeException("luminance alpha error");
-		luminanceAlpha.drawLine(0, 0, 31, 31, Color.luminanceAlpha(1, 1));
-		luminanceAlpha.drawRect(10, 10, 5, 7, Color.luminanceAlpha(1, 1));
-		luminanceAlpha.fillRect(20, 10, 5, 7, Color.luminanceAlpha(1, 1));
-		luminanceAlpha.drawCircle(16, 16, 10, Color.luminanceAlpha(1, 1));
-		luminanceAlpha.fillCircle(16, 16, 6, Color.luminanceAlpha(1, 1));
+//		if(luminanceAlpha.getPixel(16, 16) != Color.rgba8888(1, 1, 1, 1)) throw new RuntimeException("luminance alpha error");
+//		if(luminanceAlpha.getPixel(15, 16) != Color.rgba8888(1, 1, 1, 0.1f)) throw new RuntimeException("luminance alpha error");
+		luminanceAlpha.drawLine(0, 0, 31, 31, Color.rgba8888(1, 1, 1, 1));
+		luminanceAlpha.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 1, 0.5f));
+		luminanceAlpha.fillRect(20, 10, 5, 7, Color.rgba8888(1, 1, 1, 0.5f));
+		luminanceAlpha.drawCircle(16, 16, 10, Color.rgba8888(1, 1, 1, 1));
+		luminanceAlpha.fillCircle(16, 16, 6, Color.rgba8888(1, 1, 1, 1));
 		
 		rgb565.clear(Color.rgba8888(1, 0, 0, 1));
 		rgb565.setPixel(16, 16, Color.rgba8888(0, 0, 1, 1));
-		if(rgb565.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgb565 error");
+//		if(rgb565.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgb565 error");
 		if(rgb565.getPixel(31, 31) != Color.rgba8888(1, 0, 0, 1)) throw new RuntimeException("rgb565 error");
-		rgb565.drawLine(0,0,32,32, Color.rgb565(0,1,0));
-		rgb565.drawRect(10, 10, 5, 7, Color.rgb565(1, 1, 0));
-		rgb565.fillRect(20, 10, 5, 7, Color.rgb565(0, 1, 1));
-		rgb565.drawCircle(16, 16, 10, Color.rgb565(1, 0, 1));
-		rgb565.fillCircle(16, 16, 6, Color.rgb565(1, 0, 1));
+		rgb565.drawLine(0,0,32,32, Color.rgba8888(0, 1, 0, 1));
+		rgb565.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 0, 0.5f));
+		rgb565.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 0.5f));
+		rgb565.drawCircle(16, 16, 10, Color.rgba8888(1, 0, 1, 1));
+		rgb565.fillCircle(16, 16, 6, Color.rgba8888(1, 0, 1, 1));
 		
-		rgba4444.clear(Color.rgba4444(1, 0, 0, 0.5f));
-		rgba4444.setPixel(16, 16, Color.rgba4444(0, 0, 1, 1));
-		//if(rgba4444.getPixel(16, 16) != Color.rgba4444(0, 0, 1, 1)) throw new RuntimeException("rgba4444 error");
-		//if(rgba4444.getPixel(15, 16) != Color.rgba4444(1, 0, 0, 0.5f)) throw new RuntimeException("rgba4444 error");
-		rgba4444.drawLine(0,0,31,31, Color.rgba4444(0, 1, 0, 1));
-		rgba4444.drawRect(10, 10, 5, 7, Color.rgba4444(1, 1, 0, 1));
-		rgba4444.fillRect(20, 10, 5, 7, Color.rgba4444(0, 1, 1, 1));
-		rgba4444.drawCircle(16, 16, 10, Color.rgba4444(1, 0, 1, 1));
-		rgba4444.fillCircle(16, 16, 6, Color.rgba4444(1, 0, 1, 0.5f));
+		rgba4444.clear(Color.rgba8888(1, 0, 0, 1));
+		rgba4444.setPixel(16, 16, Color.rgba8888(0, 0, 1, 1));
+//		if(rgba4444.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgba4444 error");
+		if(rgba4444.getPixel(15, 16) != 0xff0000ff) throw new RuntimeException("rgba4444 error"); // lut will not be 100% correct
+		rgba4444.drawLine(0,0,31,31, Color.rgba8888(0, 1, 0, 1));
+		rgba4444.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 0, 0.5f));
+		rgba4444.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 0.5f));
+		rgba4444.drawCircle(16, 16, 10, Color.rgba8888(1, 0, 1, 1));
+		rgba4444.fillCircle(16, 16, 6, Color.rgba8888(1, 0, 1, 0.5f));
 		
-		rgb888.clear(Color.rgb888(1, 0, 0 ));
-		rgb888.setPixel(16, 16, Color.rgb888(0, 0, 1));
-		if(rgb888.getPixel(16, 16) != Color.rgb888(0, 0, 1)) throw new RuntimeException("rgb888 error");
-		if(rgb888.getPixel(15, 16) != Color.rgb888(1, 0, 0)) throw new RuntimeException("rgb888 error");
-		rgb888.drawLine(0,0,31,31, Color.rgb888(0, 1, 0));
-		rgb888.drawRect(10, 10, 5, 7, Color.rgb888(1, 1, 0));
-		rgb888.fillRect(20, 10, 5, 7, Color.rgb888(0, 1, 1));
-		rgb888.drawCircle(16, 16, 10, Color.rgb888(1, 0, 1));
-		rgb888.fillCircle(16, 16, 6, Color.rgb888(1, 0, 1));
+		rgb888.clear(Color.rgba8888(1, 0, 0, 1));
+		rgb888.setPixel(16, 16, Color.rgba8888(0, 0, 1, 1));
+//		if(rgb888.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgb888 error");
+		if(rgb888.getPixel(15, 16) != Color.rgba8888(1, 0, 0, 1)) throw new RuntimeException("rgb888 error");
+		rgb888.drawLine(0,0,31,31, Color.rgba8888(0, 1, 0, 1));
+		rgb888.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 0, 0.5f));
+		rgb888.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 0.5f));
+		rgb888.drawCircle(16, 16, 10, Color.rgba8888(1, 0, 1, 1));
+		rgb888.fillCircle(16, 16, 6, Color.rgba8888(1, 0, 1, 1));
 		
-		rgba8888.clear(Color.rgba8888(1, 0, 0, 0.5f));
+		rgba8888.clear(Color.rgba8888(1, 0, 0, 1));
 		rgba8888.setPixel(16, 16, Color.rgba8888(0, 0, 1, 1));
-		if(rgba8888.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgba8888 error");
-		if(rgba8888.getPixel(15, 16) != Color.rgba8888(1, 0, 0, 0.5f)) throw new RuntimeException("rgba8888 error");
+//		if(rgba8888.getPixel(16, 16) != Color.rgba8888(0, 0, 1, 1)) throw new RuntimeException("rgba8888 error");
+		if(rgba8888.getPixel(15, 16) != Color.rgba8888(1, 0, 0, 1)) throw new RuntimeException("rgba8888 error");
 		rgba8888.drawLine(0,0,31,31,Color.rgba8888(0, 1, 0, 1));
-		rgba8888.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 0, 1));
-		rgba8888.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 1));
+		rgba8888.drawRect(10, 10, 5, 7, Color.rgba8888(1, 1, 0, 0.5f));
+		rgba8888.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 0.5f));
 		rgba8888.drawCircle(16, 16, 10, Color.rgba8888(1, 0, 1, 1));
 		rgba8888.fillCircle(16, 16, 6, Color.rgba8888(1, 0, 1, 0.5f));
+		
+		Gdx2DPixmap.setBlend(0);
+		composite.clear(Color.rgba8888(1, 1, 1, 1));
+		composite.drawPixmap(alpha, 0, 0, 0, 0, 32, 32);
+		composite.drawPixmap(luminanceAlpha, 0, 0, 32, 0, 32, 32);
+		composite.drawPixmap(rgb565, 0, 0, 64, 0, 32, 32);
+		composite.drawPixmap(rgba4444, 0, 0, 96, 0, 32, 32);
 			
 		Format[] formats = { Format.Alpha, Format.RGB565, Format.RGBA4444, Format.RGBA8888 };
 		int[] gdxFormats = { Gdx2DPixmap.GDX2D_FORMAT_ALPHA, Gdx2DPixmap.GDX2D_FORMAT_RGB565, Gdx2DPixmap.GDX2D_FORMAT_RGBA4444, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888 };
@@ -153,7 +161,8 @@ public class Gdx2DTest extends GdxTest {
 		sprites.add(new Sprite(textureFromPixmap(rgb565)));
 		sprites.add(new Sprite(textureFromPixmap(rgba4444)));
 		sprites.add(new Sprite(textureFromPixmap(rgb888)));
-		sprites.add(new Sprite(textureFromPixmap(rgba8888)));		
+		sprites.add(new Sprite(textureFromPixmap(rgba8888)));
+		sprites.add(new Sprite(textureFromPixmap(composite)));		
 		
 		
 		sprites.get(0).setPosition(10, 10);
@@ -162,6 +171,7 @@ public class Gdx2DTest extends GdxTest {
 		sprites.get(3).setPosition(130, 10);
 		sprites.get(4).setPosition(170, 10);
 		sprites.get(5).setPosition(210, 10);
+		sprites.get(6).setPosition(10, 50);
 	}
 
 	@Override public void render() {
