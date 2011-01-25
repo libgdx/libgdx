@@ -30,6 +30,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -78,10 +79,12 @@ public class TiledLoader extends DefaultHandler {
 
 				@Override public void startElement (String uri, String name, String qName, Attributes attr) {
 					currentBranch.push(qName);
-
+					
+					//Gdx.app.log("TiledLoader", "Start element name: " + name + "qName: " + qName);
+					
 					try {
 
-						if ("layer".equals(qName)) {
+						if ("layer".equals(qName) | "layer".equals(name)) {
 							String layerName = attr.getValue("name");
 							int layerWidth = Integer.parseInt(attr.getValue("width"));
 							int layerHeight = Integer.parseInt(attr.getValue("height"));
@@ -90,7 +93,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("data".equals(qName)) {
+						if ("data".equals(qName) | "data".equals(name)) {
 							encoding = attr.getValue("encoding");
 							compression = attr.getValue("compression");
 							dataString = ""; // clear the string for new data
@@ -98,7 +101,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("tileset".equals(qName)) {
+						if ("tileset".equals(qName) | "tileset".equals(name)) {
 							firstgid = Integer.parseInt(attr.getValue("firstgid"));
 							tileWidth = Integer.parseInt(attr.getValue("tilewidth"));
 							tileHeight = Integer.parseInt(attr.getValue("tileheight"));
@@ -107,7 +110,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("objectgroup".equals(qName)) {
+						if ("objectgroup".equals(qName) | "objectgroup".equals(name)) {
 							currentObjectGroup = new TiledObjectGroup();
 							currentObjectGroup.name = attr.getValue("name");
 							currentObjectGroup.height = Integer.parseInt(attr.getValue("height"));
@@ -115,7 +118,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("object".equals(qName)) {
+						if ("object".equals(qName) | "object".equals(name)) {
 							currentObject = new TiledObject();
 							currentObject.name = attr.getValue("name");
 							currentObject.type = attr.getValue("type");
@@ -126,7 +129,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("image".equals(qName)) {
+						if ("image".equals(qName) | "image".equals(name)) {
 							currentTileSet = new TileSet();
 							currentTileSet.imageName = attr.getValue("source");
 							currentTileSet.tileWidth = tileWidth;
@@ -137,7 +140,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("map".equals(qName)) {
+						if ("map".equals(qName) | "map".equals(name)) {
 							map.orientation = attr.getValue("orientation");
 							map.width = Integer.parseInt(attr.getValue("width"));
 							map.height = Integer.parseInt(attr.getValue("height"));
@@ -146,7 +149,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("tile".equals(qName)) {
+						if ("tile".equals(qName) | "tile".equals(name)) {
 							switch (state) {
 							case INIT:
 								currentTile = Integer.parseInt(attr.getValue("id"));
@@ -162,7 +165,7 @@ public class TiledLoader extends DefaultHandler {
 							return;
 						}
 
-						if ("property".equals(qName)) {
+						if ("property".equals(qName) | "property".equals(name)) {
 							String parentType = currentBranch.get(currentBranch.size() - 3);
 							putProperty(parentType, attr.getValue("name"), attr.getValue("value"));
 							return;
@@ -210,7 +213,7 @@ public class TiledLoader extends DefaultHandler {
 				@Override public void endElement (String uri, String name, String qName) {
 					currentBranch.pop();
 
-					if ("data".equals(qName)) {
+					if ("data".equals(qName) | "data".equals(name)) {
 						if (dataString == null | "".equals(dataString)) return;
 
 						// decode and uncompress the data
@@ -239,25 +242,25 @@ public class TiledLoader extends DefaultHandler {
 						return;
 					}
 
-					if ("layer".equals(qName)) {
+					if ("layer".equals(qName) | "layer".equals(name)) {
 						map.layers.add(currentLayer);
 						currentLayer = null;
 						return;
 					}
 
-					if ("tileset".equals(qName)) {
+					if ("tileset".equals(qName) | "tileset".equals(name)) {
 						map.tileSets.add(currentTileSet);
 						currentTileSet = null;
 						return;
 					}
 
-					if ("objectgroup".equals(qName)) {
+					if ("objectgroup".equals(qName) | "objectgroup".equals(name)) {
 						map.objectGroups.add(currentObjectGroup);
 						currentObjectGroup = null;
 						return;
 					}
 
-					if ("object".equals(qName)) {
+					if ("object".equals(qName) | "object".equals(name)) {
 						currentObjectGroup.objects.add(currentObject);
 						currentObject = null;
 						return;

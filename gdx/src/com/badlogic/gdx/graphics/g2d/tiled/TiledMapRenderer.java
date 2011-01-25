@@ -123,6 +123,10 @@ public class TiledMapRenderer {
 		if (blendedTilesString != null) {
 			blendedTiles = createFromCSV(blendedTilesString);
 		}
+		else{
+			blendedTiles = new IntArray(false, 0);
+		}
+			
 
 		int maxCacheSize = parseIntWithDefault(map.properties.get("tile count"), 0);
 		if (maxCacheSize == 0) {
@@ -319,7 +323,7 @@ public class TiledMapRenderer {
 	/**
 	 * Releases all resources held by this TiledMapRenderer.
 	 * */
-	void dispose () {
+	public void dispose () {
 		cache.dispose();
 	}
 }
