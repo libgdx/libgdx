@@ -42,7 +42,10 @@ public class AngleTestStarter {
 
 			for (String name : GdxTests.getNames()) {
 				GdxTest test = GdxTests.newTest(name);
-				if (test != null && test.needsGL20()) tests.add(name);
+				if (test != null && (test.needsGL20()||
+				    name.contains("InputTest"))) { 
+					tests.add(name);
+				}
 			}
 
 			final JList list = new JList(tests.toArray());

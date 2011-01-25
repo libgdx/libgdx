@@ -166,6 +166,11 @@ public interface Input {
 		public static final int META_SHIFT_ON = 1;
 		public static final int META_SHIFT_RIGHT_ON = 128;
 		public static final int META_SYM_ON = 4;
+		public static final int KEYCODE_CONTROL_LEFT = 129;
+		public static final int KEYCODE_CONTROL_RIGHT = 130;
+		public static final int KEYCODE_ESCAPE = 131;
+		public static final int KEYCODE_END = 132;
+		public static final int KEYCODE_INSERT = 133;		
 	}
 
 	/**
