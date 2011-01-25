@@ -639,45 +639,39 @@ void gdx2d_fill_circle(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, uint3
 void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap, 
 						 			 int32_t src_x, int32_t src_y, 
 									 int32_t dst_x, int32_t dst_y, 
-									 uint32_t width, uint32_t height) {
-/*	if(src_x >= src_pixmap->width) return;
-	if(src_y >= src_pixmap->height) return;
-	if(dst_x >= dst_pixmap->width) return;
-	if(dst_y >= dst_pixmap->height) return;
-
-	if(src_x + width - 1 < 0) return;
-	if(src_y + height - 1 < 0) return;
-	if(dst_x + width - 1 < 0) return;
-	if(dst_y + height - 1 < 0) return;*/
-
+									 uint32_t width, uint32_t height) {	
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t spitch = bytes_per_pixel(src_pixmap->format) * src_pixmap->width;
-	uint32_t dpitch = bytes_per_pixel(dst_pixmap->format) * dst_pixmap->width;
+	uint32_t sbpp = bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = bytes_per_pixel(dst_pixmap->format);
+	uint32_t spitch = sbpp * src_pixmap->width;
+	uint32_t dpitch = dbpp * dst_pixmap->width;
 
 	int sx = src_x;
 	int sy = src_y;
 	int dx = dst_x;
 	int dy = dst_y;
 
-	for(sx = src_x ;sy < src_y + height - 1; sy++, dy++) {
-		//if(sy < 0 || dy < 0) continue;
-		//if(sy >= src_pixmap->height || dy >= dst_pixmap->height) break;
+	for(;sy < src_y + height; sy++, dy++) {
+		if(sy < 0 || dy < 0) continue;
+		if(sy >= src_pixmap->height || dy >= dst_pixmap->height) break;
+		
+		for(sx = src_x, dx = dst_x; sx < src_x + width; sx++, dx++) {
+			if(sx < 0 || dx < 0) continue;
+			if(sx >= src_pixmap->width || dx >= dst_pixmap->width) break;
 
-		for(;sx < src_x + width - 1; sx++, dx++) {
-			//if(sx < 0 || dx < 0) continue;
-			//if(sx >= src_pixmap->width || dx >= dst_pixmap->width) break;
-
-			const void* src_ptr = src_pixmap->pixels + sx + sy * spitch;
-			const void* dst_ptr = dst_pixmap->pixels + dx + dy * dpitch;
+			const void* src_ptr = src_pixmap->pixels + sx * sbpp + sy * spitch;
+			const void* dst_ptr = dst_pixmap->pixels + dx * dbpp + dy * dpitch;
 			uint32_t src_col = to_RGBA8888(src_pixmap->format, pget((void*)src_ptr));
+
 			if(gdx2d_blend) {
 				uint32_t dst_col = to_RGBA8888(dst_pixmap->format, dpget((void*)dst_ptr));
 				src_col = to_format(dst_pixmap->format, blend(src_col, dst_col));
 			} else {
-				src_col = to_format(dst_pixmap->format, src_col);
+				src_col = to_format(dst_pixmap->format, src_col); 
 			}
+			
 			pset((void*)dst_ptr, src_col);
 		}
 	}
