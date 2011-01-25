@@ -30,7 +30,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -79,8 +78,6 @@ public class TiledLoader extends DefaultHandler {
 
 				@Override public void startElement (String uri, String name, String qName, Attributes attr) {
 					currentBranch.push(qName);
-					
-					//Gdx.app.log("TiledLoader", "Start element name: " + name + "qName: " + qName);
 					
 					try {
 
