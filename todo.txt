@@ -1,8 +1,6 @@
 TODO (in order of priority)
 MUSTS for 0.9
-- fix up angle input handling.
 - First iteration of gdx2d/Gdx2DPixmap (see current stubs, loading works already), refactoring of Texture and Pixmap accordingly. No more Graphics.newXXX. Think about where managed textures will get reloaded.
-- Z-ordering of sprites, maybe via z-buffer. If we do it it must be done before AnimatedSprite
 - AnimatedSprite
 - Implementing Matrix3.inv()
 - Rework camera classes, Not happy With the distinction at the moment, should be merged and have a flag/mode -> ortho,perspective
@@ -14,3 +12,6 @@ NICE TO HAVES 0.9
 - Rewrite Dave’s stuff a tad bit to make it compatible with GLES 2.0 as well and unify loading and baking for new formats. This mostly concerns Materials (and some optimizations to reduce state changes)
 - A very very simple little 3D scene graph API, even simpler than the 2D scenegraph. I believe that a complete scene graph is utter overkill. However, there are use cases were you want to have small hierarchies in your game world for which this API should provide sensible methods and classes
 - Spatial partitioning datastructures (Octree, Hashed Grids), follow example from my book in terms of API, SpatialHashGrid. Distinction between static and dynamic objects, insertion performed via bounding shape and object reference. Dynamic objects need to be reinserted each frame. Classes to partition triangle soups as well. Could be a new bounding shape. See Chris Hecker's book. 
+
+DIDN'T MAKE IT
+- z-ordering of sprites. the z-buffer idea just won't work. and sorting can be done external to the SpriteBatch. The implementation is complex enough as is. Maybe consider a SpriteBatch3 that allows z-coords to be specified along with billboarding.
