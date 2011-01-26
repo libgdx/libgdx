@@ -33,6 +33,9 @@ public class Gdx2DPixmap {
 	public static final int GDX2D_FORMAT_RGB565 = 5;
 	public static final int GDX2D_FORMAT_RGBA4444 = 6;
 	
+	public static final int GDX2D_SCALE_NEAREST = 0;
+	public static final int GDX2D_SCALE_LINEAR = 1;
+	
 	final long basePtr;
 	final int width;
 	final int height;
@@ -111,7 +114,7 @@ public class Gdx2DPixmap {
 		drawPixmap(src.basePtr, basePtr, srcX, srcY, width, height, dstX, dstY, width, height);
 	}
 	
-	private void drawPixmap(Gdx2DPixmap src, 
+	public void drawPixmap(Gdx2DPixmap src, 
 							int srcX, int srcY, int srcWidth, int srcHeight, 
 							int dstX, int dstY, int dstWidth, int dstHeight) {
 		drawPixmap(src.basePtr, basePtr, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);

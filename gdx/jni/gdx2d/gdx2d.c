@@ -82,6 +82,18 @@ inline uint32_t to_format(uint32_t format, uint32_t color) {
 	}
 }
 
+#define min(a, b) (a > b?b:a)
+
+inline uint32_t weight_RGBA8888(uint32_t color, float weight) {
+	uint32_t r, g, b, a;
+	r = min((uint32_t)(((color & 0xff000000) >> 24) * weight), 255);
+	g = min((uint32_t)(((color & 0xff0000) >> 16) * weight), 255);
+	b = min((uint32_t)(((color & 0xff00) >> 8) * weight), 255);
+	a = min((uint32_t)(((color & 0xff)) * weight), 255);
+
+	return (r << 24) | (g << 16) | (b << 8) | a;
+}
+
 inline uint32_t to_RGBA8888(uint32_t format, uint32_t color) {
 	uint32_t r, g, b, a;
 
@@ -677,9 +689,143 @@ void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixm
 	}
 }
 
+void blit_bilinear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+		   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
+		   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
+	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
+	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
+	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
+	uint32_t sbpp = bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = bytes_per_pixel(dst_pixmap->format);
+	uint32_t spitch = sbpp * src_pixmap->width;
+	uint32_t dpitch = dbpp * dst_pixmap->width;
+
+	float x_ratio = ((float)src_width - 1)/ dst_width;
+	float y_ratio = ((float)src_height - 1) / dst_height;
+	float x_diff = 0;
+	float y_diff = 0;
+
+	int dx = dst_x;
+	int dy = dst_y;
+	int sx = src_x;
+	int sy = src_y;
+	int i = 0;
+	int j = 0;
+
+	for(;i < dst_height; i++) {
+		sy = (int)(i * y_ratio) + src_y;
+		dy = i + dst_y;
+		y_diff = (y_ratio * i + src_y) - sy;
+		if(sy < 0 || dy < 0) continue;
+		if(sy >= src_pixmap->height || dy >= dst_pixmap->height) break;
+
+		for(j = 0 ;j < dst_width; j++) {
+			sx = (int)(j * x_ratio) + src_x;
+			dx = j + dst_x;
+			x_diff = (x_ratio * j + src_x) - sx;
+			if(sx < 0 || dx < 0) continue;
+			if(sx >= src_pixmap->width || dx >= dst_pixmap->width) break;
+
+			const void* dst_ptr = dst_pixmap->pixels + dx * dbpp + dy * dpitch;
+			const void* src_ptr = src_pixmap->pixels + sx * sbpp + sy * spitch;
+			uint32_t c1 = 0, c2 = 0, c3 = 0, c4 = 0;
+			c1 = to_RGBA8888(src_pixmap->format, pget((void*)src_ptr));
+			if(sx + 1 < src_width) c2 = to_RGBA8888(src_pixmap->format, pget((void*)(src_ptr + sbpp))); else c2 = c1;
+			if(sy + 1< src_height) c3 = to_RGBA8888(src_pixmap->format, pget((void*)(src_ptr + spitch))); else c3 = c1;
+			if(sx + 1< src_width && sy + 1 < src_height) c4 = to_RGBA8888(src_pixmap->format, pget((void*)(src_ptr + spitch + sbpp))); else c4 = c1;
+
+			float ta = (1 - x_diff) * (1 - y_diff);
+			float tb = (x_diff) * (1 - y_diff);
+			float tc = (1 - x_diff) * (y_diff);
+			float td = (x_diff) * (y_diff);
+
+			uint32_t r = (uint32_t)(((c1 & 0xff000000) >> 24) * ta +
+									((c2 & 0xff000000) >> 24) * tb +
+									((c3 & 0xff000000) >> 24) * tc +
+									((c4 & 0xff000000) >> 24) * td) & 0xff;
+			uint32_t g = (uint32_t)(((c1 & 0xff0000) >> 16) * ta +
+									((c2 & 0xff0000) >> 16) * tb +
+									((c3 & 0xff0000) >> 16) * tc +
+									((c4 & 0xff0000) >> 16) * td) & 0xff;
+			uint32_t b = (uint32_t)(((c1 & 0xff00) >> 8) * ta +
+									((c2 & 0xff00) >> 8) * tb +
+									((c3 & 0xff00) >> 8) * tc +
+									((c4 & 0xff00) >> 8) * td) & 0xff;
+			uint32_t a = (uint32_t)((c1 & 0xff) * ta +
+									(c2 & 0xff) * tb +
+									(c3 & 0xff) * tc +
+									(c4 & 0xff) * td) & 0xff;
+
+			uint32_t src_col = (r << 24) | (g << 16) | (b << 8) | a;
+
+			if(gdx2d_blend) {
+				uint32_t dst_col = to_RGBA8888(dst_pixmap->format, dpget((void*)dst_ptr));
+				src_col = to_format(dst_pixmap->format, blend(src_col, dst_col));
+			} else {
+				src_col = to_format(dst_pixmap->format, src_col);
+			}
+
+			pset((void*)dst_ptr, src_col);
+		}
+	}
+}
+
+void blit_linear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
+		   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
+		   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
+	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
+	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
+	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
+	uint32_t sbpp = bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = bytes_per_pixel(dst_pixmap->format);
+	uint32_t spitch = sbpp * src_pixmap->width;
+	uint32_t dpitch = dbpp * dst_pixmap->width;
+
+	uint32_t x_ratio = (src_width << 16) / dst_width + 1;
+	uint32_t y_ratio = (src_height << 16) / dst_height + 1;
+
+	int dx = dst_x;
+	int dy = dst_y;
+	int sx = src_x;
+	int sy = src_y;
+	int i = 0;
+	int j = 0;
+
+	for(;i < dst_height; i++) {
+		sy = ((i * y_ratio) >> 16) + src_y;
+		dy = i + dst_y;
+		if(sy < 0 || dy < 0) continue;
+		if(sy >= src_pixmap->height || dy >= dst_pixmap->height) break;
+
+		for(j = 0 ;j < dst_width; j++) {
+			sx = ((j * x_ratio) >> 16) + src_x;
+			dx = j + dst_x;
+			if(sx < 0 || dx < 0) continue;
+			if(sx >= src_pixmap->width || dx >= dst_pixmap->width) break;
+
+			const void* src_ptr = src_pixmap->pixels + sx * sbpp + sy * spitch;
+			const void* dst_ptr = dst_pixmap->pixels + dx * dbpp + dy * dpitch;
+			uint32_t src_col = to_RGBA8888(src_pixmap->format, pget((void*)src_ptr));
+
+			if(gdx2d_blend) {
+				uint32_t dst_col = to_RGBA8888(dst_pixmap->format, dpget((void*)dst_ptr));
+				src_col = to_format(dst_pixmap->format, blend(src_col, dst_col));
+			} else {
+				src_col = to_format(dst_pixmap->format, src_col);
+			}
+
+			pset((void*)dst_ptr, src_col);
+		}
+	}
+}
+
 void blit(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
 					   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 					   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height) {
+	if(gdx2d_scale == GDX2D_SCALE_NEAREST)
+		blit_linear(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
+	if(gdx2d_scale == GDX2D_SCALE_BILINEAR)
+		blit_bilinear(src_pixmap, dst_pixmap, src_x, src_y, src_width, src_height, dst_x, dst_y, dst_width, dst_height);
 }
 
 void gdx2d_draw_pixmap(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,

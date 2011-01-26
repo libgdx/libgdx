@@ -43,7 +43,7 @@ public class Gdx2DTest extends GdxTest {
 		Gdx2DPixmap rgba4444 = createPixmap(32, 32, Gdx2DPixmap.GDX2D_FORMAT_RGBA4444);		
 		Gdx2DPixmap rgb888 = createPixmap(32, 32, Gdx2DPixmap.GDX2D_FORMAT_RGB888);		
 		Gdx2DPixmap rgba8888 = createPixmap(32, 32, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
-		Gdx2DPixmap composite = createPixmap(256, 32, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
+		Gdx2DPixmap composite = createPixmap(256, 64, Gdx2DPixmap.GDX2D_FORMAT_RGB565);
 		
 		Gdx2DPixmap.setBlend(1);
 		
@@ -108,6 +108,7 @@ public class Gdx2DTest extends GdxTest {
 		rgba8888.fillCircle(16, 16, 6, Color.rgba8888(1, 0, 1, 0.5f));
 		
 		Gdx2DPixmap.setBlend(0);
+		Gdx2DPixmap.setScale(Gdx2DPixmap.GDX2D_SCALE_LINEAR);
 		composite.clear(Color.rgba8888(1, 1, 1, 1));
 		composite.drawPixmap(alpha, 0, 0, 0, 0, 32, 32);
 		composite.drawPixmap(luminanceAlpha, 0, 0, 32, 0, 32, 32);
@@ -115,6 +116,11 @@ public class Gdx2DTest extends GdxTest {
 		composite.drawPixmap(rgba4444, 0, 0, 96, 0, 32, 32);
 		composite.drawPixmap(rgb888, 0, 0, 128, 0, 32, 32);
 		composite.drawPixmap(rgba8888, 0, 0, 160, 0, 32, 32);
+		composite.drawPixmap(rgb888, 0, 0, 32, 32, 192, 0, 64, 64);
+		composite.drawPixmap(alpha, 0, 0, 32, 32, 192, 0, 16, 16);
+		composite.drawPixmap(luminanceAlpha, 0, 0, 32, 32, 256 - 16, 0, 16, 16);
+		composite.drawPixmap(rgb565, 0, 0, 32, 32, 192, 64 - 16, 16, 16);
+		composite.drawPixmap(rgba4444, 0, 0, 32, 32, 256 - 16, 64 - 16, 16, 16);
 			
 //		Format[] formats = { Format.Alpha, Format.RGB565, Format.RGBA4444, Format.RGBA8888 };
 //		int[] gdxFormats = { Gdx2DPixmap.GDX2D_FORMAT_ALPHA, Gdx2DPixmap.GDX2D_FORMAT_RGB565, Gdx2DPixmap.GDX2D_FORMAT_RGBA4444, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888 };
