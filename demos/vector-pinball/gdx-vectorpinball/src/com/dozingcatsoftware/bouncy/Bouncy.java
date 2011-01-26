@@ -77,13 +77,13 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer) {
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
 		if (field.getBalls().size() != 0) field.setAllFlippersEngaged(true);
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer) {
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
 		if (field.getBalls().size() == 0) field.launchBall();
 		field.setAllFlippersEngaged(false);

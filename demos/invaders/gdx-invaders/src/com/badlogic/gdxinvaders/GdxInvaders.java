@@ -71,7 +71,7 @@ public class GdxInvaders implements ApplicationListener {
 
 	@Override public void create () {
 		if (!isInitialized) {
-			screen = new GameOver(Gdx.app);
+			screen = new MainMenu(Gdx.app);
 			Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
 			music.setLooping(true);
 			music.play();
