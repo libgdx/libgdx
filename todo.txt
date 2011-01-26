@@ -1,8 +1,9 @@
 TODO (in order of priority)
 MUSTS for 0.9
-- First iteration of gdx2d/Gdx2DPixmap (see current stubs, loading works already), refactoring of Texture and Pixmap accordingly. No more Graphics.newXXX. Think about where managed textures will get reloaded.
+- refactoring of Texture and Pixmap accordingly. No more Graphics.newXXX. Think about where managed textures will get reloaded.
 - AnimatedSprite
 - Implementing Matrix3.inv()
+- Fix Label actor class
 - Rework camera classes, Not happy With the distinction at the moment, should be merged and have a flag/mode -> ortho,perspective
 - Proper fullscreen support for Lwjgl and Jogl backends, only Angle backend supports it atm
 - http://code.google.com/p/libgdx/issues/list, fix all these defects 
@@ -15,3 +16,4 @@ NICE TO HAVES 0.9
 
 DIDN'T MAKE IT
 - z-ordering of sprites. the z-buffer idea just won't work. and sorting can be done external to the SpriteBatch. The implementation is complex enough as is. Maybe consider a SpriteBatch3 that allows z-coords to be specified along with billboarding.
+- screenshot method in Graphics
