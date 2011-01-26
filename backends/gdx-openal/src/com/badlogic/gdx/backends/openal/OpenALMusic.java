@@ -34,7 +34,7 @@ public abstract class OpenALMusic implements Music {
 	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 
 	private final OpenALAudio audio;
-	private final IntBuffer buffers;
+	private IntBuffer buffers;
 	private int streamID = -1;
 	private int format, sampleRate;
 	private boolean isLooping;
@@ -137,8 +137,15 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void dispose () {
-		audio.music.removeValue(this, true);
-		stop();
+		if (buffers == null) return;
+		if (streamID != -1) {
+			reset();
+			audio.music.removeValue(this, true);
+			alSourceStop(streamID);
+			alSourcei(streamID, AL_BUFFER, 0);
+			streamID = -1;
+		}
 		alDeleteBuffers(buffers);
+		buffers = null;
 	}
 }

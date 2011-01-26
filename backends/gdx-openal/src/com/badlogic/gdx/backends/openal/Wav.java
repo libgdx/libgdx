@@ -48,9 +48,11 @@ public class Wav {
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 			try {
 				byte[] buffer = new byte[2048];
-				while (true) {
+				while (input.dataLength > 0) {
 					int length = input.read(buffer);
 					if (length == -1) break;
+					length = Math.min(length, input.dataLength);
+					input.dataLength -= length;
 					output.write(buffer, 0, length);
 				}
 			} catch (IOException ex) {
@@ -61,36 +63,44 @@ public class Wav {
 	}
 
 	static private class WavInputStream extends FilterInputStream {
-		static private final int headerBytes = 12 + 24 + 8; // RIFF chunk + FORMAT chunk + DATA chunk
-
-		int channels, sampleRate;
+		int channels, sampleRate, dataLength;
 
 		WavInputStream (FileHandle file) {
 			super(file.read());
 			try {
-				byte[] head = new byte[headerBytes];
-				int total = 0;
-				while (total < headerBytes) {
-					int bytes = read(head, total, headerBytes - total);
-					if (bytes == -1) break;
-					total += bytes;
-				}
-				if (total != headerBytes) throw new GdxRuntimeException("Unexpected EOF while reading header: " + file);
+				if (read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')
+					throw new GdxRuntimeException("RIFF header not found: " + file);
 
-				if (head[0] != 'R' || head[1] != 'I' || head[2] != 'F' || head[3] != 'F' || head[8] != 'W' || head[9] != 'A'
-					|| head[10] != 'V' || head[11] != 'E') throw new GdxRuntimeException("RIFF header not found: " + file);
+				skip(4);
 
-				int type = head[21] << 8 & 0x0000FF00 | head[20] & 0x00000FF;
+				if (read() != 'W' || read() != 'A' || read() != 'V' || read() != 'E')
+					throw new GdxRuntimeException("Invalid wave file header: " + file);
+
+				if (read() != 'f' || read() != 'm' || read() != 't' || read() != ' ')
+					throw new GdxRuntimeException("fmt header not found: " + file);
+
+				int waveChunkLength = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
+
+				int type = read() & 0xff | (read() & 0xff) << 8;
 				if (type != 1) throw new GdxRuntimeException("WAV files must be PCM: " + type);
 
-				channels = head[23] << 8 & 0xFF00 | head[22] & 0xFF;
+				channels = read() & 0xff | (read() & 0xff) << 8;
 				if (channels != 1 && channels != 2)
 					throw new GdxRuntimeException("WAV files must have 1 or 2 channels: " + channels);
 
-				sampleRate = head[25] << 8 & 0xFF00 | head[24] & 0xFF | head[26] << 32 & 0xFF000000 | head[27] << 16 & 0xFF0000;
+				sampleRate = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
 
-				int bitsPerSample = head[35] << 8 & 0xFF00 | head[34] & 0xFF;
+				skip(6);
+
+				int bitsPerSample = read() & 0xff | (read() & 0xff) << 8;
 				if (bitsPerSample != 16) throw new GdxRuntimeException("WAV files must have 16 bits per sample: " + bitsPerSample);
+
+				skip(waveChunkLength - 16);
+
+				if (read() != 'd' || read() != 'a' || read() != 't' || read() != 'a')
+					throw new GdxRuntimeException("data header not found: " + file);
+
+				dataLength = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
 			} catch (Throwable ex) {
 				try {
 					close();

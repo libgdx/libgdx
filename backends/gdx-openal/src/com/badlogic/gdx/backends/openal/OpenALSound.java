@@ -33,7 +33,7 @@ public class OpenALSound implements Sound {
 	}
 
 	void setup (byte[] pcm, int channels, int sampleRate) {
-		int bytes = pcm.length - (pcm.length%(channels>1?4:2));
+		int bytes = pcm.length - (pcm.length % (channels > 1 ? 4 : 2));
 		ByteBuffer buffer = ByteBuffer.allocateDirect(bytes);
 		buffer.order(ByteOrder.nativeOrder());
 		buffer.put(pcm, 0, bytes);
@@ -73,6 +73,13 @@ public class OpenALSound implements Sound {
 	}
 
 	public void dispose () {
+		if (bufferID == -1) return;
+		if (streamID != -1) {
+			alSourceStop(streamID);
+			alSourcei(streamID, AL_BUFFER, 0);
+			streamID = -1;
+		}
 		alDeleteBuffers(bufferID);
+		bufferID = -1;
 	}
 }
