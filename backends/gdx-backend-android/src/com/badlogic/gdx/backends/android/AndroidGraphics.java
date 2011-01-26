@@ -287,6 +287,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
         this.width = width;
         this.height = height;
         updatePpi();
+        gl.glViewport(0, 0, this.width, this.height);
         app.listener.resize(width, height);
     }
 
