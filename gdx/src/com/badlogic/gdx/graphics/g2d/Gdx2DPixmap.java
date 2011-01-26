@@ -36,12 +36,20 @@ public class Gdx2DPixmap {
 	public static final int GDX2D_SCALE_NEAREST = 0;
 	public static final int GDX2D_SCALE_LINEAR = 1;
 	
+	public static final int GDX2D_BLEND_NONE = 0;
+	public static final int GDX2D_BLEND_SRC_OVER = 1;
+	
 	final long basePtr;
 	final int width;
 	final int height;
 	final int format;	
 	final ByteBuffer pixelPtr;
-	static final long[] nativeData = new long[4];
+	static final long[] nativeData = new long[4]; 
+	
+	static {
+		setBlend(GDX2D_BLEND_SRC_OVER);
+		setScale(GDX2D_SCALE_LINEAR);
+	}
 	
 	public Gdx2DPixmap(InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();

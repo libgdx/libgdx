@@ -57,11 +57,11 @@ inline uint32_t to_format(uint32_t format, uint32_t color) {
 			return color & 0xff;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA: 
 			r = (color & 0xff000000) >> 24;
-			g = (color & 0xff000000) >> 16;
-			b = (color & 0xff000000) >> 8;
+			g = (color & 0xff0000) >> 16;
+			b = (color & 0xff00) >> 8;
 			a = (color & 0xff);
 			l = ((uint32_t)(0.2126f * r + 0.7152 * g + 0.0722 * b) & 0xff) << 8;
-			return l | a;
+			return (l & 0xffffff00) | a;
 		case GDX2D_FORMAT_RGB888:
 			return color >> 8;
 		case GDX2D_FORMAT_RGBA8888:
@@ -101,7 +101,7 @@ inline uint32_t to_RGBA8888(uint32_t format, uint32_t color) {
 
 	switch(format) {
 		case GDX2D_FORMAT_ALPHA: 
-			return (color & 0xff) | (color & 0xff) << 8 | ((color & 0xff) << 16) | ((color & 0xff) << 24);
+			return (color & 0xff) | 0xffffff00;
 		case GDX2D_FORMAT_LUMINANCE_ALPHA: 
 			return ((color & 0xff00) << 16) | ((color & 0xff00) << 8) | (color & 0xffff);
 		case GDX2D_FORMAT_RGB888:
@@ -388,7 +388,7 @@ inline int32_t in_pixmap(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
 
 inline void set_pixel(unsigned char* pixels, uint32_t width, uint32_t height, uint32_t bpp, set_pixel_func pixel_func, int32_t x, int32_t y, uint32_t col) {
 	if(x < 0 || y < 0) return;
-	if(x >= width || y >= height) return;
+	if(x >= (int32_t)width || y >= (int32_t)height) return;
 	pixels = pixels + (x + height * y) * bpp;
 	pixel_func(pixels, col);
 }
@@ -432,7 +432,8 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
     if(gdx2d_blend) {
     	col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(addr))));
     }
-	pset(addr, col_format);
+    if(in_pixmap(pixmap, x0, y0))
+    	pset(addr, col_format);
     if (dx > dy) {
         fraction = dy - (dx >> 1);
         while (x0 != x1) {
@@ -478,7 +479,7 @@ inline void hline(const gdx2d_pixmap* pixmap, int32_t x1, int32_t x2, int32_t y,
 	uint32_t bpp = bytes_per_pixel(pixmap->format);
 	uint32_t col_format = to_format(pixmap->format, col);
 
-	if(y < 0 || y >= pixmap->height) return;
+	if(y < 0 || y >= (int32_t)pixmap->height) return;
 
 	if(x1 > x2) {
 		tmp = x1;
@@ -486,11 +487,11 @@ inline void hline(const gdx2d_pixmap* pixmap, int32_t x1, int32_t x2, int32_t y,
 		x2 = tmp;
 	}
 
-	if(x1 >= pixmap->width) return;
-	if(x2 < 0) return;
+	if(x1 >= (int32_t)pixmap->width) return;
+	if(x2 < 0)  return;
 
 	if(x1 < 0) x1 = 0;
-	if(x2 >= pixmap->width) x2 = pixmap->width - 1;	
+	if(x2 >= (int32_t)pixmap->width) x2 = pixmap->width - 1;
 	x2 += 1;
 	
 	ptr += (x1 + y * pixmap->width) * bpp;
@@ -522,11 +523,11 @@ inline void vline(const gdx2d_pixmap* pixmap, int32_t y1, int32_t y2, int32_t x,
 		y2 = tmp;
 	}
 
-	if(y1 >= pixmap->height) return;
+	if(y1 >= (int32_t)pixmap->height) return;
 	if(y2 < 0) return;
 
 	if(y1 < 0) y1 = 0;
-	if(y2 >= pixmap->height) y2 = pixmap->height - 1;	
+	if(y2 >= (int32_t)pixmap->height) y2 = pixmap->height - 1;
 	y2 += 1;
 
 	ptr += (x + y1 * pixmap->width) * bpp;
@@ -601,15 +602,15 @@ void gdx2d_fill_rect(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t 
 	int32_t x2 = x + width - 1;
 	int32_t y2 = y + height - 1;
 
-	if(x >= pixmap->width) return;
-	if(y >= pixmap->height) return;
+	if(x >= (int32_t)pixmap->width) return;
+	if(y >= (int32_t)pixmap->height) return;
 	if(x2 < 0) return;
 	if(y2 < 0) return;
 
 	if(x < 0) x = 0;
 	if(y < 0) y = 0;
-	if(x2 >= pixmap->width) x2 = pixmap->width - 1;
-	if(y2 >= pixmap->height) y2 = pixmap->height - 1;
+	if(x2 >= (int32_t)pixmap->width) x2 = pixmap->width - 1;
+	if(y2 >= (int32_t)pixmap->height) y2 = pixmap->height - 1;
 
 	y2++;
 	while(y!=y2) {
