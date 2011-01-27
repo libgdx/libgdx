@@ -47,12 +47,12 @@ public class MD5Animator extends Animator {
 	 * Sets the currently playing {@link MD5Animation}.
 	 * @param anim
 	 *          An {@link MD5Animation}.
-	 * @param loop
-	 *          Whether to loop the animation.
+	 * @param WrapMode
+	 *          The animation {@link WrapMode}.
 	 */
-	public void setAnimation(Animation anim, boolean loop)
+	public void setAnimation(Animation anim, WrapMode wrapMode)
 	{
-		super.setAnimation(anim, loop);
+		super.setAnimation(anim, wrapMode);
 		
 		if(anim != null)
 		{

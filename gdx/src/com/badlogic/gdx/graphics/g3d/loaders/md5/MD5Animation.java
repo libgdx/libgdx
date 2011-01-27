@@ -13,6 +13,10 @@
 
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import com.badlogic.gdx.graphics.g3d.Animation;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -29,6 +33,55 @@ public class MD5Animation extends Animation {
 	public BoundingBox[] bounds;
 	public String name;
 
+	public void write(DataOutputStream out) throws IOException
+	{
+		out.writeUTF(name);
+		out.writeInt(frameRate);
+		out.writeFloat(secondsPerFrame);
+		out.writeInt(frames.length);
+		for(int i=0; i<frames.length; i++)
+		{
+			frames[i].write(out);
+		}
+		out.writeInt(bounds.length);
+		for(int i=0; i<bounds.length; i++)
+		{
+			out.writeFloat(bounds[i].min.x);
+			out.writeFloat(bounds[i].min.y);
+			out.writeFloat(bounds[i].min.z);
+			out.writeFloat(bounds[i].max.x);
+			out.writeFloat(bounds[i].max.y);
+			out.writeFloat(bounds[i].max.z);
+		}
+	}
+	
+	public void read(DataInputStream in) throws IOException
+	{
+		name = in.readUTF();
+		frameRate = in.readInt();
+		secondsPerFrame = in.readFloat();
+		int numFrames = in.readInt();
+		frames = new MD5Joints[numFrames];
+		for(int i=0; i<numFrames; i++)
+		{
+			frames[i] = new MD5Joints();
+			frames[i].read(in);
+		}
+		int numBounds = in.readInt();
+		bounds = new BoundingBox[numBounds];
+		for(int i=0; i<numBounds; i++)
+		{
+			bounds[i] = new BoundingBox();
+			bounds[i].min.x = in.readFloat();
+			bounds[i].min.y = in.readFloat();
+			bounds[i].min.z = in.readFloat();
+			bounds[i].max.x = in.readFloat();
+			bounds[i].max.y = in.readFloat();
+			bounds[i].max.z = in.readFloat();
+		}
+	}
+
+	
 	static MD5Quaternion jointAOrient = new MD5Quaternion();
 	static MD5Quaternion jointBOrient = new MD5Quaternion();
 

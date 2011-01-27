@@ -13,6 +13,10 @@
 
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Represents an MD5 (Doom 3) skinned model.
  * Note: The normal interpolation implementation is experimental. Using it will incur a greater CPU overhead, and correct normals
@@ -42,5 +46,30 @@ public class MD5Model {
 			numTriangles += meshes[i].numTriangles;
 
 		return numTriangles;
+	}
+	
+	public void read(DataInputStream in) throws IOException
+	{
+		numJoints = in.readInt();
+		baseSkeleton = new MD5Joints();
+		baseSkeleton.read(in);
+		int numMeshes = in.readInt();
+		meshes = new MD5Mesh[numMeshes];
+		for(int i=0; i<numMeshes; i++)
+		{
+			meshes[i] = new MD5Mesh();
+			meshes[i].read(in);
+		}
+	}
+	
+	public void write(DataOutputStream out) throws IOException
+	{
+		out.writeInt(numJoints);
+		baseSkeleton.write(out);
+		out.writeInt(meshes.length);
+		for(int i=0; i<meshes.length; i++)
+		{
+			meshes[i].write(out);
+		}
 	}
 }

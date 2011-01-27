@@ -22,23 +22,31 @@ package com.badlogic.gdx.graphics.g3d;
 public abstract class Animator {
 	protected float mAnimPos = 0.f;
 	protected float mAnimLen = 0.f;
-	protected boolean mAnimLoop = false;
+	protected WrapMode mWrapMode = WrapMode.Clamp;
 	protected int mCurrentFrameIdx = -1;
 	protected int mNextFrameIdx = -1;
 	protected float mFrameDelta = 0.f;
 	protected Animation mCurrentAnim = null;
 	
+	public enum WrapMode
+	{
+		Loop,
+		Clamp,
+		//PingPong, //TODO
+		SingleFrame,
+	}
+	
 	/**
 	 * Sets the currently playing {@link Animation}.
 	 * @param anim
 	 *          The animation to play.
-	 * @param loop
-	 *          Whether to loop the animation.
+	 * @param mode
+	 *          The animation's {@link WrapMode}.
 	 */
-	public void setAnimation(Animation anim, boolean loop)
+	public void setAnimation(Animation anim, WrapMode mode)
 	{
 		mCurrentAnim = anim;
-		mAnimLoop = loop;
+		mWrapMode = mode;
 
 		mAnimPos = mFrameDelta = 0.f;
 		mCurrentFrameIdx = -1;
@@ -47,7 +55,7 @@ public abstract class Animator {
 		if(mCurrentAnim != null)
 		{
 			mAnimLen = mCurrentAnim.getLength(); 
-		}	
+		}
 	}
 	
 	/**
@@ -57,6 +65,15 @@ public abstract class Animator {
 	public Animation getCurrentAnimation()
 	{
 		return mCurrentAnim;
+	}
+	
+	/**
+	 * Gets the current animation {@link WrapMode}.
+	 * @return the current wrapmode.
+	 */
+	public WrapMode getCurrentWrapMode()
+	{
+		return mWrapMode;
 	}
 
 	/**
@@ -68,16 +85,19 @@ public abstract class Animator {
 	{
 		if(mCurrentAnim != null)
 		{
-			mAnimPos += dt;
-			if(mAnimPos > mAnimLen)
+			if(mWrapMode != WrapMode.SingleFrame)
 			{
-				if(mAnimLoop)
+				mAnimPos += dt;
+				if(mAnimPos > mAnimLen)
 				{
-					mAnimPos = 0.f;
-				}
-				else
-				{
-					mAnimPos = mAnimLen;
+					if(mWrapMode == WrapMode.Loop)
+					{
+						mAnimPos = 0.f;
+					}
+					else if(mWrapMode == WrapMode.Clamp)
+					{
+						mAnimPos = mAnimLen;
+					}
 				}
 			}
 			// select the frames
@@ -94,13 +114,13 @@ public abstract class Animator {
 				}
 				else
 				{
-					if(mAnimLoop)
+					switch(mWrapMode)
 					{
-						mNextFrameIdx = 0;
-					}
-					else
-					{
-						mNextFrameIdx = currentFrameIdx;
+					case Loop:
+					case SingleFrame:
+						mNextFrameIdx = 0; break;
+					case Clamp:
+						mNextFrameIdx = currentFrameIdx; break;
 					}
 				}
 				

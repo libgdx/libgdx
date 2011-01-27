@@ -12,8 +12,6 @@
  */
 package com.badlogic.gdx.graphics.g3d.keyframed;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -22,6 +20,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Animator;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Animator.WrapMode;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animator;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Joints;
@@ -55,16 +54,6 @@ public class KeyframedModel {
 	 * @return the animator.
 	 */
 	public Animator getAnimator() { return animator; }
-	
-	public void write(DataOutputStream out)
-	{
-		throw new GdxRuntimeException("Not implemented");
-	}
-	
-	public void read(DataInputStream in)
-	{		
-		throw new GdxRuntimeException("Not implemented");
-	}
 	
 	/**
 	 * Sets the {@link Material} list for this model, one for each mesh, in mesh order.
@@ -110,7 +99,7 @@ public class KeyframedModel {
 	 * @param animKey
 	 *           The name used to store the animation in the mode's animation map.
 	 */
-	public void sampleAnimationFromMD5(MD5Model md5model, MD5Renderer md5renderer, MD5Animator md5animator, MD5Animation md5animation, float sampleRate, String modelAsset, String animKey)
+	public KeyframeAnimation sampleAnimationFromMD5(MD5Model md5model, MD5Renderer md5renderer, MD5Animator md5animator, MD5Animation md5animation, float sampleRate, String modelAsset, String animKey)
 	{
 		this.assetName = modelAsset;
 		numMeshes = md5model.meshes.length;
@@ -137,14 +126,14 @@ public class KeyframedModel {
 		}
 		animationRefs.add(key);
 		
-		md5animator.setAnimation(md5animation, false);
+		md5animator.setAnimation(md5animation, WrapMode.Clamp);
 
 		float len = md5animation.frames.length*md5animation.secondsPerFrame;
 		int numSamples = (int)(len/sampleRate)+1;
 	
 		if(!cached)
 		{
-			a = new KeyframeAnimation(md5animation.name, numSamples, len);
+			a = new KeyframeAnimation(md5animation.name, numSamples, len, sampleRate);
 			animations.put(key, a);
 		}
 
@@ -236,6 +225,8 @@ public class KeyframedModel {
 		{
 			//Gdx.app.log("Loader", "Loaded animation "+key+" - keyframes ("+i+" keyframes generated). animations.size = "+animations.size);
 		}
+		
+		return a;
 	}
 	
 	public void getJointData(int tagIndex, Vector3 pos, Quaternion orient)
@@ -252,13 +243,15 @@ public class KeyframedModel {
 	 * Set the current playing animation.
 	 * @param animKey
 	 *           The name of the animation.
-	 * @param loop
-	 *           Whether the animation should loop.
+	 * @param wrapMode
+	 *           The animation {@link WrapMode}.
 	 */
-	public void setAnimation(String animKey, boolean loop)
+	public void setAnimation(String animKey, WrapMode wrapMode)
 	{
 		KeyframeAnimation anim = getAnimation(animKey);
-		animator.setAnimation(anim, loop);
+		animator.setAnimation(anim, wrapMode);
+		animator.getInterpolatedKeyframe().indicesSet = false;
+		animator.getInterpolatedKeyframe().indicesSent = false;
 	}
 	
 	/**
@@ -286,6 +279,10 @@ public class KeyframedModel {
 			if(animator.hasAnimation())
 			{
 				Keyframe ikf = animator.getInterpolatedKeyframe();
+				
+				if(animator.getCurrentWrapMode() == WrapMode.SingleFrame &&
+					ikf.indicesSent)
+					return; /* early out for single frame animations */
 				
 				// send our target index and vertex data to the target mesh
 				for(int i=0; i<numMeshes; i++)
@@ -345,5 +342,13 @@ public class KeyframedModel {
 				animations.remove(key);
 			}
 		}
+		for(Mesh m : target)
+		{
+			if(m != null)
+			{
+				m.dispose();
+			}
+		}
+		//Gdx.app.log("Engine", "Disposed kfmodel "+this.assetName+", "+animations.size+" anims remain in cache");
 	}
 }

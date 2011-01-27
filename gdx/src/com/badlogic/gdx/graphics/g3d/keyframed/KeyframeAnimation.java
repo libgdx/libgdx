@@ -23,13 +23,15 @@ public class KeyframeAnimation extends Animation {
 	public String name;
 	public Keyframe[] keyframes;
 	public float length;
+	public float sampleRate;
 	public int refs;
 	
-	public KeyframeAnimation(String name, int frames, float length)
+	public KeyframeAnimation(String name, int frames, float length, float sampleRate)
 	{
 		this.name = name;
 		this.keyframes = new Keyframe[frames];
 		this.length = length;
+		this.sampleRate = sampleRate;
 		this.refs = 1;
 	}
 

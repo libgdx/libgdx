@@ -13,6 +13,10 @@
 
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -366,4 +370,49 @@ public class MD5Mesh {
 		}
 	}
 
+	public void read(DataInputStream in) throws IOException {
+		shader = in.readUTF();
+		numVertices = in.readInt();
+		numWeights = in.readInt();
+		numTriangles = in.readInt();
+		floatsPerVertex = in.readInt();
+		floatsPerWeight = in.readInt();
+		
+		vertices = new float[numVertices*floatsPerVertex];
+		indices = new short[numTriangles*3];
+		weights = new float[numWeights*floatsPerWeight];
+		for(int i=0; i<vertices.length; i++)
+		{
+			vertices[i] = in.readFloat();
+		}
+		for(int i=0; i<indices.length; i++)
+		{
+			indices[i] = in.readShort();
+		}
+		for(int i=0; i<weights.length; i++)
+		{
+			weights[i] = in.readFloat();
+		}
+	}
+
+	public void write(DataOutputStream out) throws IOException {
+		out.writeUTF(shader);
+		out.writeInt(numVertices);
+		out.writeInt(numWeights);
+		out.writeInt(numTriangles);
+		out.writeInt(floatsPerVertex);
+		out.writeInt(floatsPerWeight);
+		for(int i=0; i<vertices.length; i++)
+		{
+			out.writeFloat(vertices[i]);
+		}
+		for(int i=0; i<indices.length; i++)
+		{
+			out.writeShort(indices[i]);
+		}
+		for(int i=0; i<weights.length; i++)
+		{
+			out.writeFloat(weights[i]);
+		}
+	}
 }

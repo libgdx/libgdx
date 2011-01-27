@@ -12,6 +12,7 @@
  */
 package com.badlogic.gdx.graphics.g3d.keyframed;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Animator;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Quaternion;
 import com.badlogic.gdx.math.Quaternion;
@@ -26,7 +27,7 @@ import com.badlogic.gdx.math.Vector3;
 public class KeyframeAnimator extends Animator {
 
 	// constants
-	public static int sStride = 8; // hmmm.
+	public final static int sStride = 8; // TODO: fix hard-coded wrongness like this.
 
 	private Keyframe A = null;
 	private Keyframe B = null;
@@ -97,47 +98,53 @@ public class KeyframeAnimator extends Animator {
 	static MD5Quaternion jointAOrient = new MD5Quaternion();
 	static MD5Quaternion jointBOrient = new MD5Quaternion();
 
-	//TODO: Optimise further if possible - this is the CPU bottleneck for animation
 	@Override
 	protected void interpolate()
 	{
+		if(mWrapMode == WrapMode.SingleFrame &&
+				R.indicesSet)
+			return;
+
 		float t = mFrameDelta*invSampleRate;
 		for(int i=0; i<numMeshes; i++)
 		{
-			for(int n=0; n<A.vertices[i].length; n+=sStride)
+			float[] Rvertices = R.vertices[i];
+			float[] Avertices = A.vertices[i];
+			float[] Bvertices = B.vertices[i];
+			for(int n=0; n<Avertices.length; n+=sStride)
 			{
 				// interpolated position
-				float Ax = A.vertices[i][n];
-				float Bx = B.vertices[i][n];
+				float Ax = Avertices[n];
+				float Bx = Bvertices[n];
 				float Rx = Ax + (Bx - Ax)*t;
-				float Ay = A.vertices[i][n+1];
-				float By = B.vertices[i][n+1];
+				float Ay = Avertices[n+1];
+				float By = Bvertices[n+1];
 				float Ry = Ay + (By - Ay)*t;
-				float Az = A.vertices[i][n+2];
-				float Bz = B.vertices[i][n+2];
+				float Az = Avertices[n+2];
+				float Bz = Bvertices[n+2];
 				float Rz = Az + (Bz - Az)*t;
 
-				R.vertices[i][n] = Rx;
-				R.vertices[i][n+1] = Ry;
-				R.vertices[i][n+2] = Rz;
+				Rvertices[n] = Rx;
+				Rvertices[n+1] = Ry;
+				Rvertices[n+2] = Rz;
 
 				// texture coordinates
-				R.vertices[i][n+3] = A.vertices[i][n+3];
-				R.vertices[i][n+4] = A.vertices[i][n+4];
+				Rvertices[n+3] = Avertices[n+3];
+				Rvertices[n+4] = Avertices[n+4];
 				
 				// interpolated normals
-				Ax = A.vertices[i][n+5];
-				Bx = B.vertices[i][n+5];
+				Ax = Avertices[n+5];
+				Bx = Bvertices[n+5];
 				Rx = Ax + (Bx - Ax)*t;
-				Ay = A.vertices[i][n+6];
-				By = B.vertices[i][n+6];
+				Ay = Avertices[n+6];
+				By = Bvertices[n+6];
 				Ry = Ay + (By - Ay)*t;
-				Az = A.vertices[i][n+7];
-				Bz = B.vertices[i][n+7];
+				Az = Avertices[n+7];
+				Bz = Bvertices[n+7];
 				Rz = Az + (Bz - Az)*t;
-				R.vertices[i][n+5] = Rx;
-				R.vertices[i][n+6] = Ry;
-				R.vertices[i][n+7] = Rz;
+				Rvertices[n+5] = Rx;
+				Rvertices[n+6] = Ry;
+				Rvertices[n+7] = Rz;
 			}
 
 			if(!R.indicesSet)
@@ -150,6 +157,14 @@ public class KeyframeAnimator extends Animator {
 		}
 		R.indicesSet = true;
 		
+		if(A.taggedJoint != null)
+		{
+			interpolateJoints(t);
+		}
+	}
+	
+	private void interpolateJoints(float t)
+	{
 		//interpolate any tagged joints
 		for(int tj = 0; tj<A.taggedJoint.length; tj++)
 		{

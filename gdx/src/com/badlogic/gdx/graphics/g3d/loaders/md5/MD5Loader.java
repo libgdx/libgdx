@@ -210,7 +210,7 @@ public class MD5Loader {
 			return null;
 		}			
 	}
-
+	
 	public static MD5Animation loadAnimation (InputStream in) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		List<String> tokens = new ArrayList<String>();

@@ -89,8 +89,12 @@ public class TextureDict {
 	/**
 	 * Unloads all of the currently managed textures.
 	 */
-	public static void unloadAll() //TODO: check this calls dispose on the textures
+	public static void unloadAll()
 	{
+		for(TextureRef tex : sDictionary.values())
+		{
+			tex.dispose();
+		}
 		sDictionary.clear();
 	}
 }
