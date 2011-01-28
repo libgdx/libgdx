@@ -178,6 +178,8 @@ public class Texture {
 		this.textureData = null;
 		glHandle = createGLHandle();
 		Pixmap pixmap = new Pixmap(width, height, format);
+		pixmap.setColor(0, 0, 0, 0);
+		pixmap.fill();
 		uploadImageData(pixmap);	
 		pixmap.dispose();
 		setFilter(minFilter, magFilter);
