@@ -30,6 +30,7 @@ public class MeshTest extends GdxTest {
 	Texture texture;
 
 	@Override public void render () {
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.graphics.getGL10().glEnable(GL10.GL_TEXTURE_2D);
 		texture.bind();
@@ -45,7 +46,7 @@ public class MeshTest extends GdxTest {
 			Color.toFloatBits(255, 255, 255, 255), 0, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 

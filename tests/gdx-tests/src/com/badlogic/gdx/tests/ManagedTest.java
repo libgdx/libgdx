@@ -34,7 +34,7 @@ public class ManagedTest extends GdxTest {
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, 0, 0.5f, -0.5f, 1, 0, 0.5f, 0.5f, 1, 1, -0.5f, 0.5f, 0, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 3});
 
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);		
 	}
 

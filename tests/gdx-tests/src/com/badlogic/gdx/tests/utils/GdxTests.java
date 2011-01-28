@@ -66,6 +66,7 @@ import com.badlogic.gdx.tests.SpritePerformanceTest;
 import com.badlogic.gdx.tests.SpritePerformanteTest2;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TerrainTest;
+import com.badlogic.gdx.tests.TextInputDialogTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.TileTest;
@@ -145,6 +146,7 @@ public class GdxTests
 		StageTest.class,
 		TerrainTest.class,		
 		TextureAtlasTest.class,
+		TextInputDialogTest.class,
 		TextureRenderTest.class,
 		TiledMapTest.class,
 		TileTest.class,

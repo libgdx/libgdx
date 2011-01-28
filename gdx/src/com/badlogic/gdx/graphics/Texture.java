@@ -109,7 +109,8 @@ public class Texture {
 	 * It will also throw an exception in case mipmapping is requested but the texture is not square
 	 * when using OpenGL ES 1.x. The minification and magnification filters will be set 
 	 * to GL_NEAREST by default. The texture wrap for u and v is set to GL_CLAMP_TO_EDGE by default.
-	 * The texture will be managed and reloaded in case of a context loss.
+	 * The texture will be managed and reloaded in case of a context loss. In case mipmapping is
+	 * set to true then the minification filter will be set to TextureFilter.MipMap automatically.
 	 * 
 	 * @param file the FileHandle to the image file.
 	 * @param mipmap whether to build a mipmap chain.
@@ -123,6 +124,8 @@ public class Texture {
 		Pixmap pixmap = new Pixmap(file);
 		uploadImageData(pixmap);
 		pixmap.dispose();		
+		if(mipmap)
+			minFilter = TextureFilter.MipMap;
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
 		managedTextures.add(this);
@@ -132,7 +135,7 @@ public class Texture {
 	 * Creates a new texture from the given {@link Pixmap}. The Pixmap must 
 	 * have power of two dimensions. The minification and magnification filters will be set 
 	 * to GL_NEAREST by default. The texture wrap for u and v is set to GL_CLAMP_TO_EDGE by default.
-	 * The texture is not managed and has to be reloaded manually on a context loss.
+	 * The texture is not managed and has to be reloaded manually on a context loss. 
 	 * 
 	 * @param pixmap the {@link Pixmap}
 	 */
@@ -145,7 +148,8 @@ public class Texture {
 	 * have power of two dimensions. In case mipmapping is requested the
 	 * pixmap must be square.  The minification and magnification filters will be set 
 	 * to GL_NEAREST by default. The texture wrap for u and v is set to GL_CLAMP_TO_EDGE by default.
-	 * The texture is not managed and has to be reloaded manually on a context loss.
+	 * The texture is not managed and has to be reloaded manually on a context loss. In case mipmapping is
+	 * set to true then the minification filter will be set to TextureFilter.MipMap automatically.
 	 * 
 	 * @param pixmap the {@link Pixmap}
 	 * @param mipmap whether to generate mipmaps
@@ -157,6 +161,8 @@ public class Texture {
 		this.textureData = null;
 		glHandle = createGLHandle();
 		uploadImageData(pixmap);	
+		if(mipmap)
+			minFilter = TextureFilter.MipMap;
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
 	}

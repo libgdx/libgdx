@@ -19,6 +19,7 @@ import java.util.HashSet;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -174,6 +175,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
 						listener.input(input.getText().toString());
+					}
+				});
+				alert.setOnCancelListener(new OnCancelListener() {					
+					@Override
+					public void onCancel(DialogInterface arg0) {
+						listener.cancled();
 					}
 				});
 				alert.show();

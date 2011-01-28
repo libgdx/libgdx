@@ -46,6 +46,7 @@ public interface Input {
 	 */
 	public interface TextInputListener {
 		public void input (String text);
+		public void cancled();
 	}
 
 	/**

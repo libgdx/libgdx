@@ -103,7 +103,11 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override public void run () {
 				String output = JOptionPane.showInputDialog(null, title, text);
-				if (output != null) listener.input(output);
+				if (output != null) 
+					listener.input(output);
+				else
+					listener.cancled();
+				
 			}
 		});
 	}
