@@ -52,7 +52,7 @@ public class LifeCycleTest extends GdxTest {
 	}
 
 	@Override public void resize (int width, int height) {
-		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app resized");
+		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app resized: " + width + "x" + height + ", Graphics says: "+ Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
 	}
 
 	@Override public boolean needsGL20 () {
