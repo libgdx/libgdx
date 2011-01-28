@@ -437,8 +437,7 @@ public class Group extends Actor {
 	}
 
 	public static void enableDebugging (String debugTextureFile) {
-		debugTexture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(debugTextureFile, FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		debugTexture = new Texture(Gdx.files.internal(debugTextureFile), false);
 		debug = true;
 	}
 

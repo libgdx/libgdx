@@ -37,8 +37,7 @@ public class BobTest extends GdxTest {
 	Bob[] bobs;
 
 	public void create () {
-		bobTexture = Gdx.graphics.newTexture(Gdx.files.internal("data/bobargb8888-32x32.png"), TextureFilter.Nearest,
-			TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		bobTexture = new Texture(Gdx.files.internal("data/bobargb8888-32x32.png"));
 
 		bobModel = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_pos"), new VertexAttribute(
 			Usage.TextureCoordinates, 2, "a_tex"));

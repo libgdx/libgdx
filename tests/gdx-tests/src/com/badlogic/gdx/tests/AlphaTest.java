@@ -28,13 +28,14 @@ public class AlphaTest extends GdxTest {
 	Texture texture;
 
 	@Override public void create () {
-		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888);
+		Pixmap pixmap = new Pixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(0, 1, 0, 0.7f);
 		pixmap.fill();
 
-		texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
+		texture = new Texture(pixmap, false);
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);			
 		batch = new SpriteBatch();
+		pixmap.dispose();
 	}
 
 	@Override public void render () {

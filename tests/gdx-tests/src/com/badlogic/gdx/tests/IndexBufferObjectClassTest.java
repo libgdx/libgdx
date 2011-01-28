@@ -67,8 +67,7 @@ public class IndexBufferObjectClassTest extends GdxTest {
 		ibo = new IndexBufferObject(true, 3);
 		ibo.setIndices(new short[] {0, 1, 2}, 0, 3);
 
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
 
 	@Override public void resume () {

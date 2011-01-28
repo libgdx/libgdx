@@ -43,16 +43,19 @@ public class PixmapBlendingTest extends GdxTest {
 		transform.mul(new Matrix4().setToScaling(1, -1, 1));
 		spriteBatch.setTransformMatrix(transform);
 
-		pixS1 = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/test4.png", Files.FileType.Internal));
-		pixS2 = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/test3.png", Files.FileType.Internal));
-		pixD = Gdx.graphics.newPixmap(64, 128, Pixmap.Format.RGBA8888);
+		pixS1 = new Pixmap(Gdx.files.getFileHandle("data/test4.png", Files.FileType.Internal));
+		pixS2 = new Pixmap(Gdx.files.getFileHandle("data/test3.png", Files.FileType.Internal));
+		pixD = new Pixmap(64, 128, Pixmap.Format.RGBA8888);
 
 		pixD.drawPixmap(pixS1, 0, 0, 0, 0, 76, 76);
 		pixD.drawPixmap(pixS2, 0, 0, 0, 0, 76, 76);
 
-		logoSprite = new Sprite(Gdx.graphics.newUnmanagedTexture(pixD, TextureFilter.Nearest, TextureFilter.Linear,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+		logoSprite = new Sprite(new Texture(pixD));
 		logoSprite.flip(false, true);
+		
+		pixS1.dispose();
+		pixS2.dispose();
+		pixD.dispose();
 	}
 
 	@Override public void render () {

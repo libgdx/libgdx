@@ -85,8 +85,7 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	@Override public void create () {
 		spriteBatch = new SpriteBatch();
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/test.png", FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/test.png"));
 		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4);
 		buffer.order(ByteOrder.nativeOrder());

@@ -49,8 +49,7 @@ public class ImmediateModeRendererTest extends GdxTest {
 
 	@Override public void create () {
 		renderer = new ImmediateModeRenderer();
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
 
 	@Override public boolean needsGL20 () {

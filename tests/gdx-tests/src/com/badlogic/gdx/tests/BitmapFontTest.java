@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;
@@ -46,8 +47,7 @@ public class BitmapFontTest extends GdxTest {
 
 		spriteBatch = new SpriteBatch();
 
-		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.internal("data/badlogic.jpg"), Linear, Linear, ClampToEdge,
-			ClampToEdge));
+		logoSprite = new Sprite(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		logoSprite.setColor(1, 1, 1, 0.5f);
 
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), false);

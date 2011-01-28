@@ -155,7 +155,6 @@ public class ParticleEffect {
 	}
 
 	protected Texture loadTexture (FileHandle file) {
-		return Gdx.graphics.newTexture(file, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
+		return new Texture(file, false);
 	}
 }

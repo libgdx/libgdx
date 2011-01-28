@@ -50,8 +50,8 @@ public class GLTest implements ApplicationListener {
 		mesh.setVertices(new float[] {-1, -1, 0, 1, 1, -1, 1, 1, 1, 1, 1, 0, -1, 1, 0, 0});
 
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
-		texture = Gdx.graphics.newUnmanagedTexture(512, 512, Format.RGBA8888, TextureFilter.Linear, TextureFilter.Linear,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(512, 512, Format.RGBA8888);
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);				
 
 		webCore = new WebCore(".");
 		webView = webCore.createWebView(512, 512);

@@ -28,10 +28,10 @@ public class HelloTriangle extends GdxTest {
 		String fragmentShader =		
 			"#ifdef GL_ES\n"
 			+ "precision mediump float;\n"
-			+ "#endif\b" +
+			+ "#endif\n" +
 		    "void main()                                  \n" +		
 		    "{                                            \n" +
-		    "  gl_FragColor = vec4 ( 1.0, 0.0, 0.0, 1.0 );\n" +
+		    "  gl_FragColor = vec4 ( 1.0, 1.0, 1.0, 1.0 );\n" +
 		    "}";
 		
 		shader = new ShaderProgram(vertexShader, fragmentShader);

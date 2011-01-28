@@ -63,7 +63,7 @@ public class MipMap2D extends GdxTest {
 	}
 	
 	private void createTexture() {
-		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGB565);
+		Pixmap pixmap = new Pixmap(256, 256, Format.RGB565);
 		boolean useRed = true;
 		for(int y = 0; y < 256; y+= 8) {
 			for(int x = 0; x < 256; x+= 8) {			
@@ -73,7 +73,8 @@ public class MipMap2D extends GdxTest {
 			}
 			useRed = !useRed;
 		}
-		texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.MipMapLinearLinear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(pixmap, true);
+		texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
 	}
 	
 	public void resume() {

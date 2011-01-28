@@ -20,12 +20,10 @@ public class SpritePerformanteTest2 extends GdxTest {
 	int frames = 0;
 	
 	@Override public void create() {
-		image = Gdx.graphics.newTexture(Gdx.files.internal("data/badlogicsmall.jpg"), 
-												  TextureFilter.Linear, TextureFilter.Linear,
-												  TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		image2 = Gdx.graphics.newTexture(Gdx.files.internal("data/bobargb8888-32x32.png"), 
-													TextureFilter.Linear, TextureFilter.Linear,
-			  									  	TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		image = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		image.setFilter(TextureFilter.Linear, TextureFilter.Linear);			
+		image2 = new Texture(Gdx.files.internal("data/bobargb8888-32x32.png"));
+		image2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		sprites = new Sprite[SPRITES];
 		for(int i = 0; i < SPRITES; i++) {

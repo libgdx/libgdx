@@ -13,10 +13,6 @@
 
 package com.badlogic.gdx.backends.jogl;
 
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
@@ -25,19 +21,11 @@ import javax.media.opengl.GLEventListener;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GLCanvas canvas;
@@ -185,63 +173,5 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	@Override public GraphicsType getType () {
 		return GraphicsType.JoglGL;
-	}
-
-	@Override public Pixmap newPixmap (int width, int height, Format format) {
-		return new JoglPixmap(width, height, format);
-	}
-
-	@Override public Pixmap newPixmap (InputStream in) {
-		try {
-			BufferedImage img = (BufferedImage)ImageIO.read(in);
-			return new JoglPixmap(img);
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Couldn't load Pixmap from InputStream", ex);
-		}
-	}
-
-	@Override public Pixmap newPixmap (FileHandle file) {
-		return newPixmap(file.read());
-	}
-
-	@Override public Pixmap newPixmap (Object nativePixmap) {
-		return new JoglPixmap((BufferedImage)nativePixmap);
-	}
-
-	private static boolean isPowerOfTwo (int value) {
-		return ((value != 0) && (value & (value - 1)) == 0);
-	}
-
-	@Override public Texture newUnmanagedTexture (int width, int height, Pixmap.Format format, TextureFilter minFilter,
-		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (gl != gl20 && (!isPowerOfTwo(width) || !isPowerOfTwo(height)))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two");
-
-		if (format == Format.Alpha)
-			return new JoglTexture(width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, false);
-		else
-			return new JoglTexture(width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, false);
-	}
-
-	@Override public Texture newUnmanagedTexture (Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter,
-		TextureWrap uWrap, TextureWrap vWrap) {
-		if (gl != gl20 && (!isPowerOfTwo(pixmap.getWidth()) || !isPowerOfTwo(pixmap.getHeight())))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two");
-
-		return new JoglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
-	}
-
-	@Override public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
-		TextureWrap vWrap) {
-		Pixmap pixmap = newPixmap(file);
-		if (gl != gl20 && (!isPowerOfTwo(pixmap.getWidth()) || !isPowerOfTwo(pixmap.getHeight())))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two");
-
-		return new JoglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
-	}
-
-	@Override public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
-		TextureWrap uWrap, TextureWrap vWrap) {
-		return new JoglTexture(textureData, minFilter, magFilter, uWrap, vWrap);
 	}
 }

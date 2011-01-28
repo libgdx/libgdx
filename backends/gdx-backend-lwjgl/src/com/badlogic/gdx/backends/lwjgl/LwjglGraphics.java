@@ -111,63 +111,6 @@ public final class LwjglGraphics implements Graphics {
 		return gl20 != null;
 	}
 
-	public Pixmap newPixmap (int width, int height, Format format) {
-		return new LwjglPixmap(width, height, format);
-	}
-
-	public Pixmap newPixmap (InputStream in) {
-		try {
-			BufferedImage img = (BufferedImage)ImageIO.read(in);
-			return new LwjglPixmap(img);
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Couldn't load Pixmap from InputStream", ex);
-		}
-	}
-
-	public Pixmap newPixmap (FileHandle file) {
-		return newPixmap(file.read());
-	}
-
-	public Pixmap newPixmap (Object nativePixmap) {
-		return new LwjglPixmap((BufferedImage)nativePixmap);
-	}
-
-	public Texture newUnmanagedTexture (int width, int height, Pixmap.Format format, TextureFilter minFilter,
-		TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		if (gl != gl20 && (!MathUtils.isPowerOfTwo(height) || !MathUtils.isPowerOfTwo(height)))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + width + "x" + height);
-
-		if (format == Format.Alpha)
-			return new LwjglTexture(width, height, BufferedImage.TYPE_BYTE_GRAY, minFilter, magFilter, uWrap, vWrap, false);
-		else
-			return new LwjglTexture(width, height, BufferedImage.TYPE_4BYTE_ABGR, minFilter, magFilter, uWrap, vWrap, false);
-	}
-
-	public Texture newUnmanagedTexture (Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
-		TextureWrap vWrap) {
-		if (gl != gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
-			throw new GdxRuntimeException("Texture dimensions must be a power of two: " + width + "x" + height);
-
-		return new LwjglTexture((BufferedImage)pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false);
-	}
-
-	public Texture newTexture (FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
-		TextureWrap vWrap) {
-		if (enforcePotImages) {
-			Pixmap pixmap = newPixmap(file);
-			if (gl != gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
-				throw new GdxRuntimeException("Texture dimensions must be a power of two: " + file + " (" + pixmap.getWidth() + "x"
-					+ pixmap.getHeight() + ")");
-		}
-
-		return new LwjglTexture(file, minFilter, magFilter, uWrap, vWrap, false);
-	}
-
-	public Texture newTexture (TextureData textureData, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
-		TextureWrap vWrap) {
-		return new LwjglTexture(textureData, minFilter, magFilter, uWrap, vWrap);
-	}
-
 	public float getDeltaTime () {
 		return deltaTime;
 	}

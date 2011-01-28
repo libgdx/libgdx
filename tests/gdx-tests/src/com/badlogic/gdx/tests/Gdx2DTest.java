@@ -23,7 +23,7 @@ public class Gdx2DTest extends GdxTest {
 	List<Sprite> sprites;		
 	
 	Texture textureFromPixmap(Gdx2DPixmap pixmap) {
-		Texture texture = Gdx.graphics.newUnmanagedTexture(pixmap.getWidth(), pixmap.getHeight(), Format.RGB565, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		Texture texture = new Texture(pixmap.getWidth(), pixmap.getHeight(), Format.RGB565);
 		texture.bind();
 		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), 
 								  pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
@@ -68,7 +68,7 @@ public class Gdx2DTest extends GdxTest {
 		pixmap.fillRect(20, 10, 5, 7, Color.rgba8888(0, 1, 1, 0.5f));
 		pixmap.drawCircle(16, 16, 10, Color.rgba8888(1, 0, 1, 1));
 		pixmap.fillCircle(16, 16, 6, Color.rgba8888(0, 1, 0, 0.5f));
-		pixmap.drawLine(-10, -10, 0, 0, Color.rgba8888(1, 1, 0, 1));
+//		pixmap.drawLine(-10, -10, 0, 0, Color.rgba8888(1, 1, 0, 1));
 		pixmap.drawLine(41, -10, 31, 0, Color.rgba8888(1, 1, 0, 1));
 		pixmap.drawLine(10, 41, 0, 31, Color.rgba8888(0, 1, 1, 1));
 		pixmap.drawLine(41, 41, 31, 31, Color.rgba8888(0, 1, 1, 1));		

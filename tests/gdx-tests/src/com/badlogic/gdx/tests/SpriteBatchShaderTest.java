@@ -92,21 +92,21 @@ public class SpriteBatchShaderTest extends GdxTest {
 
 	@Override public void create () {
 		spriteBatch = new SpriteBatch();
-		Pixmap pixmap = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal));
+		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogicsmall.jpg"));
 // pixmap.setColor( 0, 0, 0, 0 );
 // pixmap.fillCircle( 16, 16, 4 );
-		texture = Gdx.graphics.newUnmanagedTexture(32, 32, Format.RGB565, TextureFilter.Nearest, TextureFilter.Nearest,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(32, 32, Format.RGB565);
 		texture.draw(pixmap, 0, 0);
+		pixmap.dispose();
 
-		pixmap = Gdx.graphics.newPixmap(32, 32, Format.RGB565);
+		pixmap = new Pixmap(32, 32, Format.RGB565);
 		pixmap.setColor(1, 1, 0, 0.7f);
 		pixmap.fill();
 // pixmap.setColor( 0, 0, 0, 0 );
 // pixmap.fillCircle( 16, 16, 4 );
 //
-		texture2 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
+		texture2 = new Texture(pixmap);
+		pixmap.dispose();
 
 //		if (font == null) font = Gdx.graphics.newFont("Arial", 32, FontStyle.Plain);
 

@@ -106,7 +106,9 @@ public class TextureAtlas {
 						repeatY = Repeat;
 					}
 
-					pageImage = Gdx.graphics.newTexture(file, min, max, repeatX, repeatY);
+					pageImage = new Texture(file, TextureFilter.isMipMap(min) || TextureFilter.isMipMap(max)?true:false);
+					pageImage.setFilter(min, max);
+					pageImage.setWrap(repeatX, repeatY);
 					textures.add(pageImage);
 				} else {
 					boolean rotate = Boolean.valueOf(readValue(reader));

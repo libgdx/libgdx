@@ -71,8 +71,8 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 		vertices = new float[(WIDTH + 1) * (HEIGHT + 1) * 5];
 		mesh = new Mesh(false, (WIDTH + 1) * (HEIGHT + 1), WIDTH * HEIGHT * 6, new VertexAttribute(VertexAttributes.Usage.Position,
 			3, "a_Position"), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/stones.jpg", FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/stones.jpg"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		createIndices();
 		updateVertices(curr);

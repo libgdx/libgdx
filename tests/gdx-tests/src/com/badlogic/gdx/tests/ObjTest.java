@@ -37,12 +37,12 @@ public class ObjTest extends GdxTest implements InputProcessor {
 	float touchStartY = 0;
 
 	@Override public void create () {
-		mesh = ModelLoader.loadObj(Gdx.files.internal("data/ship2.obj").read());
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/shiptexture.png", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		mesh = ModelLoader.loadObj(Gdx.files.internal("data/cube.obj").read());
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
+		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
 		cam = new PerspectiveCamera();
-		cam.getPosition().set(1, 1, 1);
+		cam.getPosition().set(3, 3, 3);
 		cam.getDirection().set(-1, -1, -1);
 		Gdx.input.setInputProcessor(this);
 	}

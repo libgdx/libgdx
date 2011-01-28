@@ -46,8 +46,7 @@ public class TileTest extends GdxTest {
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/tiles.png"), TextureFilter.Nearest, TextureFilter.Nearest,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/tiles.png"));
 
 		Random rand = new Random();
 		for (int i = 0; i < LAYERS; i++) {

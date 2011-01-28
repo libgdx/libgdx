@@ -22,9 +22,8 @@ public class ActionTest extends GdxTest {
 	
 	@Override public void create() {
 		stage = new Stage(480, 320, true);
-		Texture texture = Gdx.graphics.newTexture(Gdx.files.internal("data/badlogic.jpg"),
-																TextureFilter.Linear, TextureFilter.Linear,
-																TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);																
 		Image img = new Image("actor", texture);
 		img.width = img.height = 100;
 		img.x = img.y = 100;

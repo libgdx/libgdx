@@ -71,7 +71,6 @@ public class VertexArrayClassTest extends GdxTest {
 		indices.put(new short[] {0, 1, 2});
 		indices.flip();
 
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
 }

@@ -52,8 +52,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 	float vScale = 1;
 
 	@Override public void create () {
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
-			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		// font = Gdx.graphics.newFont("DroidSans", 12, FontStyle.Plain);
 
 		stage = new Stage(480, 320, true);
@@ -70,8 +70,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 			stage.addActor(group);
 		}
 
-		uiTexture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/ui.png", FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		uiTexture = new Texture(Gdx.files.internal("data/ui.png"));
+		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);		
 		ui = new Stage(480, 320, false);
 		Image blend = new Image("blend button", new TextureRegion(uiTexture, 0, 0, 64, 32));
 		blend.y = ui.height() - 32;

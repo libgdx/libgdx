@@ -103,9 +103,8 @@ public class BitmapFont {
 	 * ignored.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
-	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
-		region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Nearest, TextureFilter.Nearest,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {			
+		region = new TextureRegion(new Texture(imageFile, false));
 		init(fontFile, region, flip);
 	}
 
@@ -133,9 +132,8 @@ public class BitmapFont {
 				String[] page = line.split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				String imgFilename = page[2].substring(6, page[2].length() - 1);
-				FileHandle imageFile = fontFile.parent().child(imgFilename);
-				region = new TextureRegion(Gdx.graphics.newTexture(imageFile, TextureFilter.Nearest, TextureFilter.Nearest,
-					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+				FileHandle imageFile = fontFile.parent().child(imgFilename);				
+				region = new TextureRegion(new Texture(imageFile, false));
 			}
 
 			this.region = region;

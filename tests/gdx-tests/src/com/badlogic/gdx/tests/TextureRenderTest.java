@@ -41,9 +41,9 @@ public class TextureRenderTest extends GdxTest {
 		camera.setViewport(480, 320);
 		camera.getPosition().set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
-		Pixmap pixmap = Gdx.graphics.newPixmap(Gdx.files.getFileHandle("data/badlogic.jpg", Files.FileType.Internal));
-		texture = Gdx.graphics.newUnmanagedTexture(pixmap, Texture.TextureFilter.Linear, Texture.TextureFilter.Linear,
-			Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
+		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogic.jpg"));
+		texture = new Texture(pixmap);
+		pixmap.dispose();
 
 		float invTexWidth = 1.0f / texture.getWidth();
 		float invTexHeight = 1.0f / texture.getHeight();

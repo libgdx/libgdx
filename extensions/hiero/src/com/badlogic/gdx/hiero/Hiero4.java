@@ -82,6 +82,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
@@ -276,7 +277,7 @@ public class Hiero4 extends JFrame {
 			final ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 4);
 			buffer.order(ByteOrder.LITTLE_ENDIAN);
 			fontGenerator.getTextureData(buffer.asIntBuffer());
-			TextureRegion glyphRegion = new TextureRegion(Gdx.graphics.newTexture(new TextureData() {
+			TextureRegion glyphRegion = new TextureRegion(new Texture(new TextureData() {
 				public void load () {
 					GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
 						buffer);
@@ -289,7 +290,7 @@ public class Hiero4 extends JFrame {
 				public int getHeight () {
 					return height;
 				}
-			}, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+			}));
 			fontGenerator.write(new File("out"), ExportFormat.TEXT);
 			renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);
 		} catch (IOException ex) {

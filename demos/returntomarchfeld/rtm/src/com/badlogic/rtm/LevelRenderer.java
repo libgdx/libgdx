@@ -61,8 +61,8 @@ public class LevelRenderer implements ApplicationListener {
 
 	private void load () {
 		try {
-			tiles = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/tiles-3.png", FileType.Internal),
-				TextureFilter.MipMapLinearNearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+			tiles = new Texture(Gdx.files.internal("data/tiles-3.png"));
+			tiles.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Nearest);
 
 			TextureAtlas atlas = new TextureAtlas();
 			for (int i = 0; i < 12; i++) {

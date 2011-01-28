@@ -56,11 +56,9 @@ public class UITest extends GdxTest implements InputProcessor {
 
 		// font = Gdx.graphics.newFont( "Droid Sans", 20, FontStyle.Plain );
 
-		uiTexture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/ui.png", FileType.Internal), TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		uiTexture = new Texture(Gdx.files.internal("data/ui.png"));
 
-		badlogic = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		badlogic = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
 		ui = new Stage(480, 320, false);
 		TextureRegion blendRegion = new TextureRegion(uiTexture, 0, 0, 64, 32);

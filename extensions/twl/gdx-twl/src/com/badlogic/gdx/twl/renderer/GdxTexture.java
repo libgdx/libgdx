@@ -42,8 +42,7 @@ class GdxTexture implements Texture, Resource {
 
 	public GdxTexture (GdxRenderer renderer, FileHandle textureFile) {
 		this.renderer = renderer;
-		texture = Gdx.graphics.newTexture(textureFile, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
+		texture =new com.badlogic.gdx.graphics.Texture(textureFile);
 	}
 
 	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled) {

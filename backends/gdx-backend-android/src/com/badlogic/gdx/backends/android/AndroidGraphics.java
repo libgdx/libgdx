@@ -208,41 +208,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
     private static boolean isPowerOfTwo(int value) {
         return ((value != 0) && (value & (value - 1)) == 0);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Pixmap newPixmap(int width, int height, Format format) {
-        return new AndroidPixmap(width, height, format);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Pixmap newPixmap(InputStream in) {
-        Bitmap bitmap = BitmapFactory.decodeStream(in);
-        if (bitmap == null) throw new GdxRuntimeException("Couldn't load Pixmap from InputStream");
-        return new AndroidPixmap(bitmap);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Pixmap newPixmap(FileHandle file) {
-        return newPixmap(file.read());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Pixmap newPixmap(Object nativePixmap) {
-        return new AndroidPixmap((Bitmap) nativePixmap);
-    }
+    }   
 
     /**
      * This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
@@ -298,7 +264,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
         updatePpi();
 
         Mesh.invalidateAllMeshes();
-        AndroidTexture.invalidateAllTextures();
+        Texture.invalidateAllTextures();
         ShaderProgram.invalidateAllShaderPrograms();
         FrameBuffer.invalidateAllFrameBuffers();
 
@@ -462,47 +428,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
     @Override
     public int getFramesPerSecond() {
         return fps;
-    }
-
-    @Override
-    public Texture newUnmanagedTexture(int width, int height, Format format, TextureFilter minFilter,
-                                       TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-        if (gl != gl20 && (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)))
-            throw new GdxRuntimeException("Dimensions have to be a power of two");
-
-        Bitmap.Config config = AndroidPixmap.getInternalFormat(format);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, config);
-        Texture texture = null;
-        texture = new AndroidTexture(this, bitmap, minFilter, magFilter, uWrap, vWrap, false, null);
-        bitmap.recycle();
-        return texture;
-    }
-
-    @Override
-    public Texture newUnmanagedTexture(Pixmap pixmap, TextureFilter minFilter, TextureFilter magFilter,
-                                       TextureWrap uWrap, TextureWrap vWrap) {
-
-        if (gl != gl20 && (!MathUtils.isPowerOfTwo(pixmap.getWidth()) || !MathUtils.isPowerOfTwo(pixmap.getHeight())))
-            throw new GdxRuntimeException("Dimensions have to be a power of two");
-
-        return new AndroidTexture(this, (Bitmap) pixmap.getNativePixmap(), minFilter, magFilter, uWrap, vWrap, false, null);
-    }
-
-    @Override
-    public Texture newTexture(FileHandle file, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap,
-                              TextureWrap vWrap) {
-        return new AndroidTexture(this, (Bitmap) null, minFilter, magFilter, uWrap, vWrap, true, file);
-    }
-
-    @Override
-    public Texture newTexture(TextureData textureData, TextureFilter minFilter, TextureFilter magFilter,
-                              TextureWrap uWrap, TextureWrap vWrap) {
-        return new AndroidTexture(this, textureData, minFilter, magFilter, uWrap, vWrap);
-    }
+    }   
 
     public void clearManagedCaches() {
         Mesh.clearAllMeshes();
-        AndroidTexture.clearAllTextures();
+        Texture.clearAllTextures();
         ShaderProgram.clearAllShaderPrograms();
         FrameBuffer.clearAllFrameBuffers();
     }

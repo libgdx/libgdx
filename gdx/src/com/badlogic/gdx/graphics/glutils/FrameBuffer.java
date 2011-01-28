@@ -86,8 +86,9 @@ public class FrameBuffer {
 	}
 
 	private void build () {
-		colorTexture = Gdx.graphics.newUnmanagedTexture(width, height, format, TextureFilter.Linear, TextureFilter.Linear,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		colorTexture = new Texture(width, height, format);
+		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		GL20 gl = Gdx.graphics.getGL20();
 
 		ByteBuffer tmp = ByteBuffer.allocateDirect(4);

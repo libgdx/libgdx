@@ -79,17 +79,15 @@ public class MeshShaderTest extends GdxTest {
 		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 
 
-		Pixmap pixmap = Gdx.graphics.newPixmap(2, 1, Format.RGBA8888);
+//		Pixmap pixmap = new Pixmap(2, 1, Format.RGBA8888);
 //		pixmap.drawPixel(0, 0, 0xffff0000);
 //		pixmap.drawPixel(1, 0, 0xff00ff00);
 //		pixmap.drawPixel(0, 1, 0xff0000ff);
 //		pixmap.drawPixel(0, 0, 0xffff00ff);
 //		pixmap.drawPixel(1, 0, 0xffffff00);
 //		texture = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle(
-				"data/bobrgb888-32x32.png", FileType.Internal), TextureFilter.MipMap,
-				TextureFilter.Linear, TextureWrap.ClampToEdge,
-				TextureWrap.ClampToEdge);
+//		pixmap.dispose();
+		texture = new Texture(Gdx.files.internal("data/bobrgb888-32x32.png"));
 
 		spriteBatch = new SpriteBatch();
 		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);

@@ -36,6 +36,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -318,8 +319,7 @@ public class ParticleEditor extends JFrame {
 					file = Gdx.files.classpath(imagePath);
 				else
 					file = Gdx.files.absolute(imagePath);
-				emitter.setSprite(new Sprite(Gdx.graphics.newTexture(file, TextureFilter.Nearest, TextureFilter.Nearest,
-					TextureWrap.ClampToEdge, TextureWrap.ClampToEdge)));
+				emitter.setSprite(new Sprite(new Texture(file)));
 			} catch (GdxRuntimeException ex) {
 				ex.printStackTrace();
 				EventQueue.invokeLater(new Runnable() {

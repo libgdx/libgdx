@@ -45,8 +45,8 @@ public class SpritePerformanceTest extends GdxTest {
 	int mode = 0;
 
 	public void create () {
-		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/badlogicsmall.jpg"), TextureFilter.Linear, TextureFilter.Linear,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		vaBatch = new SpriteBatch(1000);
 		Mesh.forceVBO = true;
 		vboBatch = new SpriteBatch(1000, 1);

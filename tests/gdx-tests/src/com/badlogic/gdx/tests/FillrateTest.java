@@ -36,8 +36,8 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 	float frames = 0;
 
 	@Override public void create () {
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogicsmall.jpg", FileType.Internal),
-			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		mesh = new Mesh(true, 4, 6, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_pos"), new VertexAttribute(
 			VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));

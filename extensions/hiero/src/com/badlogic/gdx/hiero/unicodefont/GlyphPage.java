@@ -47,8 +47,7 @@ public class GlyphPage {
 		this.pageWidth = pageWidth;
 		this.pageHeight = pageHeight;
 
-		texture = Gdx.graphics.newUnmanagedTexture(pageWidth, pageHeight, Format.RGBA8888, TextureFilter.Linear,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(pageWidth, pageHeight, Format.RGBA8888);
 	}
 
 	/**

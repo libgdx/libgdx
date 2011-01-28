@@ -18,6 +18,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -48,14 +49,12 @@ public class BitmapFontFlipTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 		spriteBatch.setProjectionMatrix(new Matrix4().setToOrtho(0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, 0, 1));
 
-		logoSprite = new Sprite(Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal),
-			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge));
+		logoSprite = new Sprite(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		logoSprite.flip(false, true);
 		logoSprite.setPosition(0, 320 - 256);
 		logoSprite.setColor(1, 1, 1, 0.5f);
 
-		font = new BitmapFont(Gdx.files.getFileHandle("data/verdana39.fnt", FileType.Internal), Gdx.files.getFileHandle(
-			"data/verdana39.png", FileType.Internal), true);
+		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"),Gdx.files.internal("data/verdana39.png"), true);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);

@@ -58,23 +58,21 @@ public class MeshMultitextureTest extends GdxTest {
 	}
 
 	void initUnmanaged () {
-		Pixmap pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888);
+		Pixmap pixmap = new Pixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.fill();
 		pixmap.setColor(0, 0, 0, 1);
 		pixmap.drawLine(0, 0, 256, 256);
 		pixmap.drawLine(256, 0, 0, 256);
-		tex1 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
+		tex1 = new Texture(pixmap);
 		pixmap.dispose();
 
-		pixmap = Gdx.graphics.newPixmap(256, 256, Format.RGBA8888);
+		pixmap = new Pixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.fill();
 		pixmap.setColor(0, 0, 0, 1);
 		pixmap.drawLine(128, 0, 128, 256);
-		tex2 = Gdx.graphics.newUnmanagedTexture(pixmap, TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge,
-			TextureWrap.ClampToEdge);
+		tex2 = new Texture(pixmap);
 		pixmap.dispose();
 	}
 

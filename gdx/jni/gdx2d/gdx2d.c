@@ -429,11 +429,12 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
     dy <<= 1;
     dx <<= 1;    
 
-    if(gdx2d_blend) {
-    	col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(addr))));
-    }
-    if(in_pixmap(pixmap, x0, y0))
+    if(in_pixmap(pixmap, x0, y0)) {
+    	if(gdx2d_blend) {
+    		col_format = to_format(pixmap->format, blend(col, to_RGBA8888(pixmap->format, pget(addr))));
+    	}
     	pset(addr, col_format);
+    }
     if (dx > dy) {
         fraction = dy - (dx >> 1);
         while (x0 != x1) {

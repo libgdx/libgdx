@@ -40,8 +40,7 @@ public class IsometricTileTest extends GdxTest {
 		Gdx.input.setInputProcessor(camController);
 
 		renderer = new ImmediateModeRenderer();
-		texture = Gdx.graphics.newTexture(Gdx.files.internal("data/isotile.png"), TextureFilter.Nearest, TextureFilter.Nearest,
-			TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/isotile.png"));
 
 		Random rand = new Random();
 		for (int i = 0; i < LAYERS; i++) {

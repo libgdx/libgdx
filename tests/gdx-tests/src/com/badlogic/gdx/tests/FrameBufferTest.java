@@ -71,8 +71,7 @@ public class FrameBufferTest extends GdxTest {
 
 		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, c1, 0, 0, 0.5f, -0.5f, 0, c2, 1, 0, 0, 0.5f, 0, c3, 0.5f, 1});
 
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 
 		spriteBatch = new SpriteBatch();
 		frameBuffer = new FrameBuffer(Format.RGB565, 128, 128, true);

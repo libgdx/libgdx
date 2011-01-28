@@ -45,8 +45,8 @@ public class MeshTest extends GdxTest {
 			Color.toFloatBits(255, 255, 255, 255), 0, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 
 	@Override public boolean needsGL20 () {
