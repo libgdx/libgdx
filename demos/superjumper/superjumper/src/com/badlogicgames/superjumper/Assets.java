@@ -43,7 +43,7 @@ public class Assets {
     public static Sound clickSound;
     
     public static Texture loadTexture(String file) {
-   	 return Gdx.graphics.newTexture(Gdx.files.internal(file), TextureFilter.Nearest, TextureFilter.Nearest, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+    	return new Texture(Gdx.files.internal(file));
     }
     
     public static void load() {
