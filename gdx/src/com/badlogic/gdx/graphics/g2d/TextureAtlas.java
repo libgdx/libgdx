@@ -411,7 +411,7 @@ public class TextureAtlas {
 		final AtlasRegion region;
 
 		public AtlasSprite (AtlasRegion region) {
-			this.region = region;
+			this.region = new AtlasRegion(region);
 			setRegion(region);
 			if (region.rotate) rotate90(true);
 			setOrigin(region.originalWidth / 2, region.originalHeight / 2);
