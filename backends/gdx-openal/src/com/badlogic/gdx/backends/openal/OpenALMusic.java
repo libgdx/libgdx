@@ -72,16 +72,18 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void stop () {
+		if (streamID == -1) return;
 		reset();
 		alSourceStop(streamID);
 		streamID = -1;
 	}
 
 	public void pause () {
-		alSourcePause(streamID);
+		if (streamID != -1) alSourcePause(streamID);
 	}
 
 	public boolean isPlaying () {
+		if (streamID == -1) return false;
 		return alGetSourcei(streamID, AL_SOURCE_STATE) == AL_PLAYING;
 	}
 

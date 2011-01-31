@@ -69,7 +69,7 @@ public class OpenALSound implements Sound {
 	}
 
 	public void stop () {
-		alSourceStop(streamID);
+		if (streamID != -1) alSourceStop(streamID);
 	}
 
 	public void dispose () {
