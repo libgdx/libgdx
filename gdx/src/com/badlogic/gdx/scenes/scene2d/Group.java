@@ -15,6 +15,7 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.badlogic.gdx.Files.FileType;
@@ -412,14 +413,14 @@ public class Group extends Actor {
 	}
 
 	/**
-	 * @return all child {@link Actor}s
+	 * @return all child {@link Actor}s as an ordered list.
 	 */
 	public List<Actor> getActors () {
 		return immutableChildren;
 	}
 
 	/**
-	 * @return all child {@link Group}s
+	 * @return all child {@link Group}s as an unordered list.
 	 */
 	public List<Group> getGroups () {
 		return immutableGroups;
@@ -453,5 +454,13 @@ public class Group extends Actor {
 		this.children.clear();
 		this.groups.clear();
 		this.namesToActors.clear();		
+	}
+	
+	/**
+	 * Sorts the children via the given {@link Comparator}. 
+	 * @param comparator the comparator.
+	 */
+	public void sortChildren(Comparator<Actor> comparator) {
+		Collections.sort(this.children, comparator);
 	}
 }
