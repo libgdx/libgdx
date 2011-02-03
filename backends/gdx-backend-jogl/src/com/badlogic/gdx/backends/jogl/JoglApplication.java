@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.media.opengl.GLCanvas;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -172,5 +173,19 @@ public final class JoglApplication implements Application {
 
 	@Override public long getNativeHeap () {
 		return getJavaHeap();
+	}
+	
+	/**	 
+	 * @return the JFrame of the application.
+	 */
+	public JFrame getJFrame() {
+		return frame;
+	}
+	
+	/**
+	 * @return the GLCanvas of the application.
+	 */
+	public GLCanvas getGLCanvas() {
+		return graphics.canvas;
 	}
 }
