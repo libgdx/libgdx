@@ -1,9 +1,10 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
-import com.mojang.metagun.*;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Sound;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
+import com.mojang.metagun.screen.Screen;
 
 public class Gunner extends Entity {
     public static final int CHARGE_DURATION = 100; 
@@ -58,7 +59,7 @@ public class Gunner extends Entity {
     }
 
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         //        g.setColor(Color.red);
         int xp = (int) x;
         int yp = (int) y;
@@ -99,7 +100,7 @@ public class Gunner extends Entity {
         }
 
 
-        g.drawImage(Art.guys[xFrame][yFrame], xp, yp, null);
+        g.draw(Art.guys[xFrame][yFrame], xp, yp);
         
         java.util.List<Entity> entities = level.getEntities((int) x, (int) y, 1, 1);
         for (int i = 0; i < entities.size(); i++) {

@@ -1,9 +1,9 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
 import com.mojang.metagun.Art;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
+import com.mojang.metagun.screen.Screen;
 
 public class Explosion extends Entity {
     private int life, delay, color;
@@ -56,9 +56,9 @@ public class Explosion extends Entity {
         this.ya *= 0.4;
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         int xp = (int) x;
         int yp = (int) y;
-        g.drawImage(Art.guys[(life - 1) * 8 / duration][4 + color], xp - 3, yp - 3, null);
+        g.draw(Art.guys[(life - 1) * 8 / duration][4 + color], xp - 3, yp - 3);
     }
 }

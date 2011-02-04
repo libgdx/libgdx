@@ -1,8 +1,9 @@
 package com.mojang.metagun;
 
-import java.awt.event.KeyEvent;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 
-public class Input {
+public class Input extends InputAdapter {
     public static final int UP = 0;
     public static final int DOWN = 1;
     public static final int LEFT = 2;
@@ -19,24 +20,20 @@ public class Input {
     public void set(int key, boolean down) {
         int button = -1;
 
-        if (key == KeyEvent.VK_UP) button = UP;
-        if (key == KeyEvent.VK_LEFT) button = LEFT;
-        if (key == KeyEvent.VK_DOWN) button = DOWN;
-        if (key == KeyEvent.VK_RIGHT) button = RIGHT;
+        if (key == Keys.KEYCODE_DPAD_UP) button = UP;
+        if (key == Keys.KEYCODE_DPAD_LEFT) button = LEFT;
+        if (key == Keys.KEYCODE_DPAD_DOWN) button = DOWN;
+        if (key == Keys.KEYCODE_DPAD_RIGHT) button = RIGHT;
 
-        if (key == KeyEvent.VK_NUMPAD8) button = UP;
-        if (key == KeyEvent.VK_NUMPAD4) button = LEFT;
-        if (key == KeyEvent.VK_NUMPAD2) button = DOWN;
-        if (key == KeyEvent.VK_NUMPAD6) button = RIGHT;
+        if (key == Keys.KEYCODE_Y) button = JUMP;
+        if (key == Keys.KEYCODE_Z) button = JUMP;
+        if (key == Keys.KEYCODE_X) button = SHOOT;
+        if (key == Keys.KEYCODE_C) button = JUMP;
+        if (key == Keys.KEYCODE_A) button = JUMP;
+        if (key == Keys.KEYCODE_S) button = SHOOT;
+        if (key == Keys.KEYCODE_D) button = JUMP;
 
-        if (key == KeyEvent.VK_Z) button = JUMP;
-        if (key == KeyEvent.VK_X) button = SHOOT;
-        if (key == KeyEvent.VK_C) button = JUMP;
-        if (key == KeyEvent.VK_A) button = JUMP;
-        if (key == KeyEvent.VK_S) button = SHOOT;
-        if (key == KeyEvent.VK_D) button = JUMP;
-
-        if (key == KeyEvent.VK_ESCAPE) button = ESCAPE;
+        if (key == Keys.KEYCODE_ESCAPE) button = ESCAPE;
 
         if (button >= 0) {
             buttons[button] = down;
@@ -55,4 +52,19 @@ public class Input {
             buttons[i] = false;
         }
     }
+
+	@Override public boolean keyDown (int keycode) {
+		set(keycode, true);
+		return false;
+	}
+
+	@Override public boolean keyUp (int keycode) {
+		set(keycode, false);
+		return false;
+	}
+
+	@Override public boolean keyTyped (char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}	
 }

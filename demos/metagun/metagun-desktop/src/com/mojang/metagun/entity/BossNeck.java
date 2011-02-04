@@ -1,9 +1,8 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
-import com.mojang.metagun.*;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.screen.Screen;
 
 public class BossNeck extends BossPart {
     public int slamTime = 0;
@@ -47,10 +46,10 @@ public class BossNeck extends BossPart {
         baseRot = rot;
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen screen, Camera camera) {
         int xp = (int) x - 1;
         int yp = (int) y - 1;
-        g.drawImage(Art.gremlins[4][1], xp, yp, null);
+        screen.draw(Art.gremlins[4][1], xp, yp);
     }
 
     public void hitSpikes() {

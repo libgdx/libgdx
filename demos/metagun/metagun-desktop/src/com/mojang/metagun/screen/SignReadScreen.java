@@ -1,8 +1,7 @@
 package com.mojang.metagun.screen;
 
-import java.awt.Graphics;
-
-import com.mojang.metagun.*;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Input;
 
 public class SignReadScreen extends Screen {
     private Screen parent;
@@ -164,6 +163,7 @@ public class SignReadScreen extends Screen {
     
     public void render() {
         parent.render();
+        spriteBatch.begin();
         int xs = 0;
         int ys = signs[id].length+3;
         for (int y=0; y<signs[id].length; y++) {
@@ -180,15 +180,15 @@ public class SignReadScreen extends Screen {
                 if (y<0) yf--;
                 if (x>=xs) xf++;
                 if (y>=ys) yf++;
-                // FIXME
-                // g.drawImage(Art.guys[xf][yf], xp+x*6, yp+y*6, null);
+                draw(Art.guys[xf][yf], xp+x*6, yp+y*6);
             }
         }
         for (int y=0; y<signs[id].length; y++) {
-            drawString(signs[id][y], null, xp, yp+y*6);
+            drawString(signs[id][y], xp, yp+y*6);
         }
         if (delay==0)
-        drawString("PRESS X", null, xp+(xs-8)*6, yp+(signs[id].length+2)*6);
+        drawString("PRESS X", xp+(xs-8)*6, yp+(signs[id].length+2)*6);
+        spriteBatch.end();
     }
     
     public void tick(Input input) {

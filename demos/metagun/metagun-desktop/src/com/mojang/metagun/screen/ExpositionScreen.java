@@ -1,10 +1,13 @@
 package com.mojang.metagun.screen;
 
-import java.awt.Graphics;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.mojang.metagun.*;
+import com.badlogic.gdx.Gdx;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Input;
 
 public class ExpositionScreen extends Screen {
     private int time = 0;
@@ -15,7 +18,7 @@ public class ExpositionScreen extends Screen {
 
     public ExpositionScreen() {
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(ExpositionScreen.class.getResourceAsStream("exposition.txt")));
+            BufferedReader br = new BufferedReader(new InputStreamReader(Gdx.files.internal("res/exposition.txt").read()));
 
             String line = "";
             while ((line = br.readLine()) != null) {
@@ -28,18 +31,20 @@ public class ExpositionScreen extends Screen {
 
     }
 
-    public void render(Graphics g) {
-        int w = Art.bg.getHeight();
-        g.drawImage(Art.bg, 0, -(time / 8 % w), null);
-        g.drawImage(Art.bg, 0, -(time / 8 % w) + w, null);
+    public void render() {
+        int w = -Art.bg.getRegionHeight();
+        spriteBatch.begin();
+        draw(Art.bg, 0, -(time / 8 % w));
+        draw(Art.bg, 0, -(time / 8 % w) + w);        
 
         int yo = time / 4;
         for (int y = 0; y <= 240 / 6; y++) {
             int yl = yo / 6 - 240 / 6+y;
             if (yl >= 0 && yl < lines.size()) {
-                drawString(lines.get(yl), g, (320 - 40 * 6)/2, y * 6 - yo % 6);
+                drawString(lines.get(yl), (320 - 40 * 6)/2, y * 6 - yo % 6);
             }
         }
+        spriteBatch.end();
     }
 
     public void tick(Input input) {

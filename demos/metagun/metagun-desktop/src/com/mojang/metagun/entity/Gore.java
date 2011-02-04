@@ -1,9 +1,9 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
 import com.mojang.metagun.Art;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
+import com.mojang.metagun.screen.Screen;
 
 public class Gore extends Entity {
     private int life;
@@ -35,9 +35,9 @@ public class Gore extends Entity {
         this.ya *= 0.4;
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         int xp = (int) x;
         int yp = (int) y;
-        g.drawImage(Art.guys[7][1], xp, yp, null);
+        g.draw(Art.guys[7][1], xp, yp);
     }
 }

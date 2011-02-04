@@ -1,9 +1,9 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
-import com.mojang.metagun.*;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Sound;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.screen.Screen;
 
 public class Boss extends BossPart {
     private static final int MAX_TEMPERATURE = 80 * 5;
@@ -51,16 +51,17 @@ public class Boss extends BossPart {
         }
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen screen, Camera camera) {
         int xp = (int) x - 2;
         int yp = (int) y - 2;
-        g.drawImage(Art.gremlins[3][1], xp, yp, null);
-        g.setColor(Color.BLACK);
-        yp += 2;
-        xp -= 7;
-        g.fillRect(xp + 5, yp - 8, 20, 3);
-        g.setColor(Color.RED);
-        g.fillRect(xp + 5, yp - 8, 20 - (20 * temperature / MAX_TEMPERATURE), 2);
+        screen.draw(Art.gremlins[3][1], xp, yp);
+        //FIXME
+//        g.setColor(Color.BLACK);
+//        yp += 2;
+//        xp -= 7;
+//        g.fillRect(xp + 5, yp - 8, 20, 3);
+//        g.setColor(Color.RED);
+//        g.fillRect(xp + 5, yp - 8, 20 - (20 * temperature / MAX_TEMPERATURE), 2);
     }
 
     public void hitSpikes() {

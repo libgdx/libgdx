@@ -1,8 +1,9 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
 
+import com.mojang.metagun.Art;
 import com.mojang.metagun.level.*;
+import com.mojang.metagun.screen.Screen;
 
 public class Bullet extends Entity {
     public Entity source;
@@ -47,33 +48,35 @@ public class Bullet extends Entity {
         remove();
     }
 
-    public void render(Graphics g, Camera camera) {
-        if (tick % 2 == 0) {
-            g.setColor(Color.YELLOW);
-            int x1 = (int) (x + w / 2 - xa * 3);
-            int y1 = (int) (y + h / 2 - ya * 3);
-            int x2 = (int) (x + w / 2);
-            int y2 = (int) (y + h / 2);
+    public void render(Screen g, Camera camera) {
+   	 // FIXME
+//        if (tick % 2 == 0) {
+//            g.setColor(Color.YELLOW);
+//            int x1 = (int) (x + w / 2 - xa * 3);
+//            int y1 = (int) (y + h / 2 - ya * 3);
+//            int x2 = (int) (x + w / 2);
+//            int y2 = (int) (y + h / 2);
+//
+//            g.drawLine(x1, y1, x2, y2);
+//            g.setColor(Color.WHITE);
+//
+//            x1 = (int) (x + w / 2 - xa);
+//            y1 = (int) (y + h / 2 - ya);
+//            x2 = (int) (x + w / 2 + xa);
+//            y2 = (int) (y + h / 2 + ya);
+//
+//            g.drawLine(x1, y1, x2, y2);
+//        } else {
+//            g.setColor(Color.YELLOW);
+//            int x1 = (int) (x + w / 2 - xa);
+//            int y1 = (int) (y + h / 2 - ya);
+//            int x2 = (int) (x + w / 2 + xa);
+//            int y2 = (int) (y + h / 2 + ya);
+//
+//            g.drawLine(x1, y1, x2, y2);
+//        }
 
-            g.drawLine(x1, y1, x2, y2);
-            g.setColor(Color.WHITE);
-
-            x1 = (int) (x + w / 2 - xa);
-            y1 = (int) (y + h / 2 - ya);
-            x2 = (int) (x + w / 2 + xa);
-            y2 = (int) (y + h / 2 + ya);
-
-            g.drawLine(x1, y1, x2, y2);
-        } else {
-            g.setColor(Color.YELLOW);
-            int x1 = (int) (x + w / 2 - xa);
-            int y1 = (int) (y + h / 2 - ya);
-            int x2 = (int) (x + w / 2 + xa);
-            int y2 = (int) (y + h / 2 + ya);
-
-            g.drawLine(x1, y1, x2, y2);
-        }
-
+   	 g.draw(Art.shot, (int)x, (int)y);
         //        g.fillRect(xp, yp, w, h);
     }
 }

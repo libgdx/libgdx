@@ -4,8 +4,9 @@ import java.awt.Graphics;
 import java.util.Random;
 
 import com.mojang.metagun.level.*;
+import com.mojang.metagun.screen.Screen;
 
-public class Entity {
+public abstract class Entity {
     protected boolean onGround = false;
     protected static Random random = new Random();
 
@@ -71,8 +72,7 @@ public class Entity {
     public void tick() {
     }
 
-    public void render(Graphics g, Camera camera) {
-    }
+    public abstract void render(Screen screen, Camera camera);    
 
     public boolean shot(Bullet bullet) {
         return false;

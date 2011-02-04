@@ -1,17 +1,14 @@
 package com.mojang.metagun;
 
-import java.applet.Applet;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
+import java.awt.event.KeyEvent;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.mojang.metagun.screen.*;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mojang.metagun.screen.GameScreen;
+import com.mojang.metagun.screen.Screen;
 
 public class Metagun implements ApplicationListener {
 	public static final int GAME_WIDTH = 320;
@@ -25,10 +22,17 @@ public class Metagun implements ApplicationListener {
 	private Input input = new Input();
 	private boolean started = false;
 	private float accum = 0;
+	BitmapFont font;
+	SpriteBatch batch;
 	
 	public void create() {
+		Art.load();
+		Gdx.input.setInputProcessor(input);
 		running = true;
-		setScreen(new TitleScreen());
+//		setScreen(new TitleScreen());
+		setScreen(new GameScreen());
+		font = new BitmapFont();	
+		batch = new SpriteBatch();
 	}
 
 	public void pause() {
@@ -48,13 +52,17 @@ public class Metagun implements ApplicationListener {
 	}
 
 	public void render() {
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
 		while(accum > 1.0f / 60.0f) {				
 			screen.tick(input);
 			input.tick();
 			accum -= 1.0f / 60.0f;
 		}
-		screen.render();
+		screen.render();	
+		batch.begin();
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
+		batch.end();
 	}
 
 	public void keyPressed(KeyEvent ke) {

@@ -1,10 +1,13 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
-import com.mojang.metagun.*;
-import com.mojang.metagun.level.*;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Input;
+import com.mojang.metagun.Sound;
+import com.mojang.metagun.Stats;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
+import com.mojang.metagun.screen.Screen;
 
 public class Player extends Entity {
     private int dir = 1;
@@ -28,7 +31,7 @@ public class Player extends Entity {
     public void tick() {
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         //        g.setColor(Color.GREEN);
         int xp = (int) x - (16 - w) / 2;
         int yp = (int) y - 2;
@@ -36,19 +39,19 @@ public class Player extends Entity {
 
         int stepFrame = frame / 4 % 4;
 
-        BufferedImage[][] sheet = dir == 1 ? Art.player1 : Art.player2;
+        TextureRegion[][] sheet = dir == 1 ? Art.player1 : Art.player2;        
         if (!onGround) {
             int yya = (int) Math.round(-ya);
             stepFrame = 4;
             if (yya < -1) stepFrame = 5;
             yp += yya;
         }
-        g.drawImage(sheet[3 + stepFrame][hatCount > 0 ? 0 : 1], xp, yp, null);
+        g.draw(sheet[3 + stepFrame][hatCount > 0 ? 0 : 1], xp, yp);
 
 
         yp += (stepFrame == 3 ? 1 : 0);
         for (int i = 1; i < hatCount; i++) {
-            g.drawImage(sheet[0][1], xp, yp - i * 2, null);
+            g.draw(sheet[0][1], xp, yp - i * 2);
         }
 
         if (gunLevel > 0) {
@@ -58,7 +61,7 @@ public class Player extends Entity {
                 if (yya > 1) yya = 1;
                 yp += yya;
             }
-            g.drawImage(sheet[1 + yAim][(gunLevel - 1) * 2], xp, yp, null);
+            g.draw(sheet[1 + yAim][(gunLevel - 1) * 2], xp, yp);
         }
     }
 

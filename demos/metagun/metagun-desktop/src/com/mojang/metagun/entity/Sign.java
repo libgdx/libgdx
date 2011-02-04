@@ -1,9 +1,8 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
 import com.mojang.metagun.Art;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.screen.Screen;
 
 public class Sign extends Entity {
     public int id;
@@ -34,15 +33,15 @@ public class Sign extends Entity {
         }
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         if (id==6 && level.player.gunLevel>=1) return;
         if (id==15 && level.player.gunLevel>=2) return;
         if (id==6) {
-            g.drawImage(Art.walls[5][0], (int)x, (int)y, null);
+            g.draw(Art.walls[5][0], (int)x, (int)y);
         } else if (id==15) {
-            g.drawImage(Art.walls[6][0], (int)x, (int)y, null);
+            g.draw(Art.walls[6][0], (int)x, (int)y);
         } else {
-            g.drawImage(Art.walls[4][0], (int)x, (int)y, null);
+            g.draw(Art.walls[4][0], (int)x, (int)y);
         }
     }
 }

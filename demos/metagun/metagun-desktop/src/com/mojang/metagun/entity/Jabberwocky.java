@@ -1,9 +1,10 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-
-import com.mojang.metagun.*;
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Sound;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
+import com.mojang.metagun.screen.Screen;
 
 public class Jabberwocky extends Entity {
     private static final int MAX_TEMPERATURE = 80 * 5;
@@ -48,15 +49,16 @@ public class Jabberwocky extends Entity {
         }
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         int xp = (int) x;
         int yp = (int) y-10;
-        g.drawImage(Art.gremlins[3+(slamTime/10%5==2?1:0)][0], xp, yp, null);
-        g.setColor(Color.BLACK);
-        yp+=10;
-        g.fillRect(xp + 5, yp - 8, 20, 3);
-        g.setColor(Color.RED);
-        g.fillRect(xp + 5, yp - 8, (20 * temperature / MAX_TEMPERATURE), 2);
+        g.draw(Art.gremlins[3+(slamTime/10%5==2?1:0)][0], xp, yp);
+        // FIXME
+//        g.setColor(Color.BLACK);
+//        yp+=10;
+//        g.fillRect(xp + 5, yp - 8, 20, 3);
+//        g.setColor(Color.RED);
+//        g.fillRect(xp + 5, yp - 8, (20 * temperature / MAX_TEMPERATURE), 2);
     }
 
     public void hitSpikes() {

@@ -1,10 +1,11 @@
 package com.mojang.metagun.entity;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
-import com.mojang.metagun.*;
-import com.mojang.metagun.level.*;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Sound;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
+import com.mojang.metagun.screen.Screen;
 
 public class Hat extends Entity {
     double time = 0;
@@ -51,7 +52,8 @@ public class Hat extends Entity {
                     player.hatCount++;
 
                     if (xPos >= 0 && yPos >= 0) {
-                        Art.level.setRGB(xPos, yPos, 0);
+                  	   Art.level.setColor(0, 0, 0, 0);
+                        Art.level.drawPixel(xPos, yPos);
                     }
                     Sound.gethat.play();
                     remove();
@@ -60,16 +62,16 @@ public class Hat extends Entity {
         }
     }
 
-    public void render(Graphics g, Camera camera) {
+    public void render(Screen g, Camera camera) {
         int dir = 1;
         int xp = (int) x - (16 - w) / 2;
         int yp = (int) y - 2;
-        BufferedImage[][] sheet = dir == 1 ? Art.player1 : Art.player2;
+        TextureRegion[][] sheet = dir == 1 ? Art.player1 : Art.player2;
 
         int xFrame = (int) (xa * 10);
         if (xFrame < -1) xFrame = -1;
         if (xFrame > +1) xFrame = +1;
-        g.drawImage(sheet[1 + xFrame][1], xp, yp, null);
+        g.draw(sheet[1 + xFrame][1], xp, yp);
     }
 
     public boolean shot(Bullet bullet) {

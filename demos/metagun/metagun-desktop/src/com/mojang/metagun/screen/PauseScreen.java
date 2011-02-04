@@ -1,8 +1,7 @@
 package com.mojang.metagun.screen;
 
-import java.awt.Graphics;
-
-import com.mojang.metagun.*;
+import com.mojang.metagun.Art;
+import com.mojang.metagun.Input;
 
 public class PauseScreen extends Screen {
     private GameScreen parent;
@@ -14,8 +13,10 @@ public class PauseScreen extends Screen {
         this.parent = parent;
     }
 
-    public void render(Graphics g) {
-        parent.render(g);
+    public void render() {
+        parent.render();
+        
+        spriteBatch.begin();
         int xs = 0;
         int ys = options.length;
         for (int y = 0; y < options.length; y++) {
@@ -33,15 +34,16 @@ public class PauseScreen extends Screen {
                 if (y < 0) yf--;
                 if (x >= xs) xf++;
                 if (y >= ys) yf++;
-                g.drawImage(Art.guys[xf][yf], xp + x * 6, yp + y * 6, null);
+                draw(Art.guys[xf][yf], xp + x * 6, yp + y * 6);
             }
         }
         for (int y = 0; y < options.length; y++) {
             if (y == selected) {
-                drawString("+", g, xp, yp + y * 6);
+                drawString("+", xp, yp + y * 6);
             }
-            drawString(options[y], g, xp + 6, yp + y * 6);
+            drawString(options[y], xp + 6, yp + y * 6);
         }
+        spriteBatch.end();
     }
 
     public void tick(Input input) {
