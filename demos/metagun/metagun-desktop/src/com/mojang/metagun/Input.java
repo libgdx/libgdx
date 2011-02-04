@@ -1,9 +1,11 @@
 package com.mojang.metagun;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 
-public class Input extends InputAdapter {
+public class Input implements InputProcessor {
     public static final int UP = 0;
     public static final int DOWN = 1;
     public static final int LEFT = 2;
@@ -41,9 +43,18 @@ public class Input extends InputAdapter {
     }
 
     public void tick() {
+   	 if(Gdx.input.getAccelerometerY() < -1.2f)
+   		 set(Keys.KEYCODE_DPAD_LEFT, true);
+   	 else if(Gdx.input.getAccelerometerY() > 1.2f)
+   		 set(Keys.KEYCODE_DPAD_RIGHT, true);
+   	 else {
+   		 set(Keys.KEYCODE_DPAD_LEFT, false);
+   		 set(Keys.KEYCODE_DPAD_RIGHT, false);
+   	 }
+   	 
         for (int i = 0; i < buttons.length; i++) {
             oldButtons[i] = buttons[i];
-        }
+        }               
     }
 
 
@@ -65,6 +76,32 @@ public class Input extends InputAdapter {
 
 	@Override public boolean keyTyped (char character) {
 		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+		if(x < Gdx.graphics.getWidth() / 5) 
+			set(Keys.KEYCODE_Z, true);
+		if(x > Gdx.graphics.getWidth() - Gdx.graphics.getWidth() / 5)
+			set(Keys.KEYCODE_Y, true);
+		return false;
+	}
+
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {		
+		set(Keys.KEYCODE_Z, false);		
+		set(Keys.KEYCODE_Y, false);
+		return false;
+	}
+
+	@Override public boolean touchDragged (int x, int y, int pointer) {		
+		return false;
+	}
+
+	@Override public boolean touchMoved (int x, int y) {
+		return false;
+	}
+
+	@Override public boolean scrolled (int amount) {
 		return false;
 	}	
 }

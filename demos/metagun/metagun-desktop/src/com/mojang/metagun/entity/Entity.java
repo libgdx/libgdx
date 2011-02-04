@@ -1,9 +1,9 @@
 package com.mojang.metagun.entity;
 
-import java.awt.Graphics;
 import java.util.Random;
 
-import com.mojang.metagun.level.*;
+import com.mojang.metagun.level.Camera;
+import com.mojang.metagun.level.Level;
 import com.mojang.metagun.screen.Screen;
 
 public abstract class Entity {

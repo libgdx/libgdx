@@ -27,12 +27,13 @@ public class Metagun implements ApplicationListener {
 	
 	public void create() {
 		Art.load();
+		Sound.load();
 		Gdx.input.setInputProcessor(input);
 		running = true;
 //		setScreen(new TitleScreen());
 		setScreen(new GameScreen());
-		font = new BitmapFont();	
-		batch = new SpriteBatch();
+//		font = new BitmapFont();	
+//		batch = new SpriteBatch();
 	}
 
 	public void pause() {
@@ -60,9 +61,9 @@ public class Metagun implements ApplicationListener {
 			accum -= 1.0f / 60.0f;
 		}
 		screen.render();	
-		batch.begin();
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
-		batch.end();
+//		batch.begin();
+//		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
+//		batch.end();
 	}
 
 	public void keyPressed(KeyEvent ke) {
