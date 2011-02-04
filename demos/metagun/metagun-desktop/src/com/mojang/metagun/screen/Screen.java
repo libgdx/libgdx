@@ -3,13 +3,16 @@ package com.mojang.metagun.screen;
 import java.awt.Graphics;
 import java.util.Random;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mojang.metagun.*;
 
 public abstract class Screen {
     protected static Random random = new Random();
     private Metagun metagun;
+    protected SpriteBatch spriteBatch = new SpriteBatch(100);
     
-    public void removed() {
+    public void removed() {    	
+    	spriteBatch.dispose();
     }
 
     public final void init(Metagun metagun) {
