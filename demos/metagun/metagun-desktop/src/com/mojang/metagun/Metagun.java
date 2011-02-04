@@ -1,6 +1,5 @@
 package com.mojang.metagun;
 
-import java.awt.event.KeyEvent;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -61,18 +60,7 @@ public class Metagun implements ApplicationListener {
 //		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
 //		batch.end();
 	}
-
-	public void keyPressed(KeyEvent ke) {
-		input.set(ke.getKeyCode(), true);
-	}
-
-	public void keyReleased(KeyEvent ke) {
-		input.set(ke.getKeyCode(), false);
-	}
-
-	public void keyTyped(KeyEvent ke) {
-	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
