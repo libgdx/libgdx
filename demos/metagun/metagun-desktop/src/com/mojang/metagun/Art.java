@@ -16,6 +16,7 @@ public class Art {
 	public static Pixmap level;
 	public static TextureRegion titleScreen;
 	public static TextureRegion shot;
+	public static TextureRegion[][] buttons;	
 
 	public static TextureRegion winScreen1;
 	public static TextureRegion winScreen2;
@@ -29,7 +30,7 @@ public class Art {
 		player2 = split("res/player.png", 16, 32, true);
 		walls = split("res/walls.png", 10, 10);
 		gremlins = split("res/gremlins.png", 30, 30);
-
+		buttons = split("res/buttons.png", 32, 32);
 		shot = new TextureRegion(guys[0][0].getTexture(), 3, 27, 2, 2);
 		winScreen1 = load("res/winscreen1.png", 320, 240);
 		winScreen2 = load("res/winscreen2.png", 320, 240);

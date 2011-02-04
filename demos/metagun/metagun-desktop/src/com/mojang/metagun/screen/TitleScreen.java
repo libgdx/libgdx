@@ -1,5 +1,6 @@
 package com.mojang.metagun.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Input;
 import com.mojang.metagun.Sound;
@@ -28,7 +29,7 @@ public class TitleScreen extends Screen {
     public void tick(Input input) {
         time++;
         if (time > 240) {
-            if (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT]) {
+            if (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT] || Gdx.input.isTouched()) {
                 Sound.startgame.play();
                 setScreen(new GameScreen());
                 input.releaseAllKeys();

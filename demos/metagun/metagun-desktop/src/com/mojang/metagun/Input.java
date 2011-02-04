@@ -1,8 +1,8 @@
 package com.mojang.metagun;
 
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public class Input implements InputProcessor {
@@ -43,18 +43,42 @@ public class Input implements InputProcessor {
     }
 
     public void tick() {
-   	 if(Gdx.input.getAccelerometerY() < -1.2f)
-   		 set(Keys.KEYCODE_DPAD_LEFT, true);
-   	 else if(Gdx.input.getAccelerometerY() > 1.2f)
-   		 set(Keys.KEYCODE_DPAD_RIGHT, true);
-   	 else {
-   		 set(Keys.KEYCODE_DPAD_LEFT, false);
-   		 set(Keys.KEYCODE_DPAD_RIGHT, false);
-   	 }
+       for (int i = 0; i < buttons.length; i++) {
+          oldButtons[i] = buttons[i];
+      }   
    	 
-        for (int i = 0; i < buttons.length; i++) {
-            oldButtons[i] = buttons[i];
-        }               
+   	 if(Gdx.app.getType() == ApplicationType.Android) {   	 
+	   	 boolean left = false;
+	   	 boolean right = false;
+	   	 boolean z = false;
+	   	 boolean s = false;
+	   	 
+	   	 for(int i = 0; i < 2; i++) {
+	   		 int x = (int)((Gdx.input.getX(i) / (float)Gdx.graphics.getWidth()) * 320);
+	   		 if(!Gdx.input.isTouched(i)) continue;
+	   		 if(x < 32) {
+	   			 set(Keys.KEYCODE_DPAD_LEFT, true);
+	   			 left |= true;
+	   		 }
+	   		 if(x > 32 && x < 90) {
+	   			 set(Keys.KEYCODE_DPAD_RIGHT, true);
+	   			 right |= true;
+	   		 }
+	   		 if(x > 320-64 && x < 320-32) {
+	   			 set(Keys.KEYCODE_Z, true);
+	   			 z |= true;	   			 
+	   		 }
+	   		 if(x > 320-32 && x < 320) {
+	   			 set(Keys.KEYCODE_X, true);
+	   			 s |= true;
+	   		 }
+	   	 }   	 
+   	 
+	   	 if(left==false) set(Keys.KEYCODE_DPAD_LEFT, false);
+	   	 if(right==false) set(Keys.KEYCODE_DPAD_RIGHT, false);
+	   	 if(z==false) set(Keys.KEYCODE_Z, false);
+	   	 if(s==false) set(Keys.KEYCODE_X, false);
+   	 }      	    	    	                          
     }
 
 
@@ -80,16 +104,10 @@ public class Input implements InputProcessor {
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer, int button) {
-		if(x < Gdx.graphics.getWidth() / 5) 
-			set(Keys.KEYCODE_Z, true);
-		if(x > Gdx.graphics.getWidth() - Gdx.graphics.getWidth() / 5)
-			set(Keys.KEYCODE_Y, true);
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {		
-		set(Keys.KEYCODE_Z, false);		
-		set(Keys.KEYCODE_Y, false);
+	@Override public boolean touchUp (int x, int y, int pointer, int button) {				
 		return false;
 	}
 

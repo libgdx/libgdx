@@ -193,8 +193,7 @@ public class SignReadScreen extends Screen {
     }
     
     public void tick(Input input) {
-        if (!input.oldButtons[Input.ESCAPE] && input.buttons[Input.ESCAPE] ||
-      	    Gdx.input.isTouched()) {
+        if (!input.oldButtons[Input.ESCAPE] && input.buttons[Input.ESCAPE] || Gdx.input.isTouched()) {
             setScreen(parent);
             return;
         }
