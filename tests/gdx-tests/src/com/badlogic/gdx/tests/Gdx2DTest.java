@@ -94,7 +94,7 @@ public class Gdx2DTest extends GdxTest {
 		
 		Gdx2DPixmap[] pixmaps = new Gdx2DPixmap[formats.length];
 		for(int i = 0; i < pixmaps.length; i++) {
-			Gdx2DPixmap pixmap = new Gdx2DPixmap(32, 32, formats[i]);
+			Gdx2DPixmap pixmap = new Gdx2DPixmap(64, 32, formats[i]);
 			drawToPixmap(pixmap);
 			pixmaps[i] = pixmap;
 		}

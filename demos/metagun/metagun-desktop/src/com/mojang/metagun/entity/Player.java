@@ -66,7 +66,7 @@ public class Player extends Entity {
     }
 
     public void tick(Input input) {
-        readSign = onGround && input.buttons[Input.UP] && !input.oldButtons[Input.UP];
+        readSign = true; //onGround && input.buttons[Input.UP] && !input.oldButtons[Input.UP];
         if (noHurtTime > 0) noHurtTime--;
         double speed = 0.4;
         double aimAngle = -0.2;
@@ -221,6 +221,7 @@ public class Player extends Entity {
             }
             level.readSign(sign);
         }
+        sign.remove();
     }
 
     public void outOfBounds() {

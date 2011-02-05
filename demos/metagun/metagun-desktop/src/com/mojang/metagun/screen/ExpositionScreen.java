@@ -52,7 +52,7 @@ public class ExpositionScreen extends Screen {
         if (time / 4 > lines.size() * 6 + 250) {
             setScreen(new TitleScreen());
         }
-        if (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT]) {
+        if (input.buttons[Input.SHOOT] && !input.oldButtons[Input.SHOOT] || Gdx.input.isTouched()) {
             setScreen(new TitleScreen());
         }
         if (input.buttons[Input.ESCAPE] && !input.oldButtons[Input.ESCAPE]) {

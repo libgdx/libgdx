@@ -52,6 +52,7 @@ import com.badlogic.gdx.tests.OrthoCamBorderTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
+import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.Pong;
 import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SimpleTest;
@@ -92,7 +93,8 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
  */
 public class GdxTests 
 {
-	public static final Class[] tests = {				
+	public static final Class[] tests = {	
+		PixmapTest.class,
 		Gdx2DTest.class,						
 		ActionTest.class,
 		AlphaTest.class,	

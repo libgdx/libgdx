@@ -55,7 +55,7 @@ public class JoglTestStarter {
 				@Override public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
-					new JoglApplication(test, testName, 480, 320, test.needsGL20());
+					new JoglApplication(test, testName, 800, 480, test.needsGL20());
 				}
 			});
 
