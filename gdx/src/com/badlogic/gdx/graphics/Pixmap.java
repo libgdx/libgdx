@@ -129,7 +129,7 @@ public class Pixmap {
 			in = file.read();
 			pixmap = new Gdx2DPixmap(in, 0);
 		} catch (Exception e) {
-			throw new GdxRuntimeException("couldn't load file '" + file.name() + "', " + e.getMessage());
+			throw new GdxRuntimeException("couldn't load file '" + file.name() + "'", e);
 		} finally {
 			if(in != null);
 			try { in.close(); } catch(Exception e) { };

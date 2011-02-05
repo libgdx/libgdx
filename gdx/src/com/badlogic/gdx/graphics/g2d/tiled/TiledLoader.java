@@ -297,7 +297,7 @@ public class TiledLoader extends DefaultHandler {
 								currentLayer.tile[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
 									| unsignedByteToInt(readTemp[2]) << 16 | unsignedByteToInt(readTemp[3]) << 24;
 							} catch (DataFormatException e) {
-								throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
+								throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
 							}
 						}
 					}
@@ -320,7 +320,7 @@ public class TiledLoader extends DefaultHandler {
 								currentLayer.tile[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
 									| unsignedByteToInt(readTemp[2]) << 16 | unsignedByteToInt(readTemp[3]) << 24;
 							} catch (IOException e) {
-								throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
+								throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
 							}
 						}
 					}
@@ -341,11 +341,11 @@ public class TiledLoader extends DefaultHandler {
 				}
 			});
 		} catch (ParserConfigurationException e) {
-			throw new GdxRuntimeException("Error Parsing TMX file - Parser Configuration Exception: " + e.getMessage());
+			throw new GdxRuntimeException("Error Parsing TMX file.", e);
 		} catch (SAXException e) {
-			throw new GdxRuntimeException("Error Parsing TMX file - SAX Exception: " + e.getMessage());
+			throw new GdxRuntimeException("Error Parsing TMX file.", e);
 		} catch (IOException e) {
-			throw new GdxRuntimeException("Error Parsing TMX file - IOException: " + e.getMessage());
+			throw new GdxRuntimeException("Error Parsing TMX file.", e);
 		}
 
 		return map;
