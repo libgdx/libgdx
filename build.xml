@@ -47,12 +47,12 @@ gdx and backend modules and creates a distribution out of this mess.
 	<!-- compiles the java code of all modules -->
 	<target name="compile" depends="init">
 		<!-- build gdx api -->
-		<javac srcdir="gdx/src" destdir="gdx/bin" />
+		<javac debug="on" srcdir="gdx/src" destdir="gdx/bin" />
 		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.png" file="gdx/src/com/badlogic/gdx/utils/arial-15.png" />
 		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.fnt" file="gdx/src/com/badlogic/gdx/utils/arial-15.fnt" />
 
 		<!-- build gdx-openal -->
-		<javac srcdir="backends/gdx-openal/src" destdir="backends/gdx-openal/bin">
+		<javac debug="on" srcdir="backends/gdx-openal/src" destdir="backends/gdx-openal/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
 				<fileset file="backends/gdx-openal/libs/*.jar" />
@@ -60,7 +60,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		</javac>
 
 		<!-- build jogl backend -->
-		<javac srcdir="backends/gdx-backend-jogl/src" destdir="backends/gdx-backend-jogl/bin">
+		<javac debug="on" srcdir="backends/gdx-backend-jogl/src" destdir="backends/gdx-backend-jogl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
 				<pathelement location="backends/gdx-openal/bin" />
@@ -69,7 +69,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		</javac>
 		
 		<!-- build lwjgl backend -->
-		<javac srcdir="backends/gdx-backend-lwjgl/src" destdir="backends/gdx-backend-lwjgl/bin">
+		<javac debug="on" srcdir="backends/gdx-backend-lwjgl/src" destdir="backends/gdx-backend-lwjgl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
 				<pathelement location="backends/gdx-openal/bin" />
@@ -79,7 +79,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		</javac>
 
 		<!-- build android backend -->
-		<javac srcdir="backends/gdx-backend-android/src" destdir="backends/gdx-backend-android/bin">
+		<javac debug="on" srcdir="backends/gdx-backend-android/src" destdir="backends/gdx-backend-android/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
 				<fileset file="backends/gdx-backend-android/libs/*.jar" />
@@ -87,7 +87,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		</javac>
 		
 		<!-- build twl extensions -->
-		<javac srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
+		<javac debug="on" srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
 			<classpath>
 				<pathelement location="gdx/bin" />
 				<fileset file="extensions/twl/gdx-twl/libs/*.jar" />

@@ -31,6 +31,8 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/superjumper/superjumper-and
 
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/returntomarchfeld/rtm-android/libs
 
+cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/metagun/metagun-android/libs
+
 # remove temporary directory
 rm -rf nightlies
 rm libgdx-nightlies.zip
