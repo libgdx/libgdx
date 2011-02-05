@@ -38,7 +38,7 @@ public class PixmapTest extends GdxTest {
       pixmap.drawLine(100, 0, 100, 100);
       
       pixmap.setColor(1.0f, 1.0f, 1.0f, 1.0f);    // White
-      pixmap.drawCircle(400, 300, 16);
+      pixmap.drawCircle(400, 300, 100);
       
       // Blit the composited overlay to a texture
       texture.draw (pixmap, 0,0);

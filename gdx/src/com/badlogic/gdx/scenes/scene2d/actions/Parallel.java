@@ -82,6 +82,8 @@ public class Parallel extends Action {
 	@Override public Action copy () {
 		Parallel action = pool.obtain();
 		action.actions.clear();
+		if(action.finished == null || action.finished.length < actions.size()) 
+			action.finished = new boolean[actions.size()];
 		int len = actions.size();
 		for(int i = 0; i < len; i++)
 			action.finished[i] = false;
