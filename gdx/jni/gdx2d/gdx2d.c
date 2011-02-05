@@ -389,14 +389,14 @@ inline int32_t in_pixmap(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
 inline void set_pixel(unsigned char* pixels, uint32_t width, uint32_t height, uint32_t bpp, set_pixel_func pixel_func, int32_t x, int32_t y, uint32_t col) {
 	if(x < 0 || y < 0) return;
 	if(x >= (int32_t)width || y >= (int32_t)height) return;
-	pixels = pixels + (x + height * y) * bpp;
+	pixels = pixels + (x + width * y) * bpp;
 	pixel_func(pixels, col);
 }
 
 uint32_t gdx2d_get_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
 	if(!in_pixmap(pixmap, x, y))
 		return 0;
-	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->height * y) * bytes_per_pixel(pixmap->format);
+	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->width * y) * bytes_per_pixel(pixmap->format);
 	return to_RGBA8888(pixmap->format, get_pixel_func_ptr(pixmap->format)(ptr));
 }
 
@@ -422,7 +422,7 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	uint32_t col_format = to_format(pixmap->format, col);
-	void* addr = ptr + (x0 + y0) * bpp;
+	void* addr = ptr + (x0 + y0 * pixmap->width) * bpp;
 
     if (dy < 0) { dy = -dy;  stepy = -1; } else { stepy = 1; }
     if (dx < 0) { dx = -dx;  stepx = -1; } else { stepx = 1; }

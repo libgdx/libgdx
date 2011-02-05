@@ -57,7 +57,7 @@ public class Gdx2DPixmap {
 		int readBytes = 0;
 		
 		while((readBytes = in.read(buffer)) != -1) {
-			bytes.write(buffer);
+			bytes.write(buffer, 0, readBytes);
 		}
 		
 		buffer = bytes.toByteArray();
