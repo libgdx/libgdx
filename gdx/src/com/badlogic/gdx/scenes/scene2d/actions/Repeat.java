@@ -34,6 +34,7 @@ public class Repeat extends Action {
 		repeat.action = action;
 		repeat.times = times;
 		repeat.finishedTimes = 0;
+		repeat.listener = null;
 		return repeat;
 	}
 

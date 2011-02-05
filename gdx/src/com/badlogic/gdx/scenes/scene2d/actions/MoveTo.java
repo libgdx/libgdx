@@ -42,6 +42,7 @@ public class MoveTo extends Action {
 		action.y = y;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 

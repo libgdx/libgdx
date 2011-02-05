@@ -40,6 +40,7 @@ public class FadeTo extends Action {
 		action.toAlpha = alpha;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 

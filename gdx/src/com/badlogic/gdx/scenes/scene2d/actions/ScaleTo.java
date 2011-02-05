@@ -42,6 +42,7 @@ public class ScaleTo extends Action {
 		action.scaleY = scaleY;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 

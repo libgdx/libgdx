@@ -35,6 +35,7 @@ public class Parallel extends Action {
 		int len = actions.length;
 		for (int i = 0; i < len; i++)
 			action.actions.add(actions[i]);
+		action.listener = null;
 		return action;
 	}
 

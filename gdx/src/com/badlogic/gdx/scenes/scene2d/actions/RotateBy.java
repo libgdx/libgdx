@@ -38,6 +38,7 @@ public class RotateBy extends Action {
 		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 

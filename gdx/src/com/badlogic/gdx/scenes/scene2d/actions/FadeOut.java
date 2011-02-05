@@ -36,6 +36,7 @@ public class FadeOut extends Action {
 		FadeOut action = pool.obtain();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 

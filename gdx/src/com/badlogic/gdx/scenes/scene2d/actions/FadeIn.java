@@ -36,6 +36,7 @@ public class FadeIn extends Action {
 		FadeIn action = pool.obtain();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 
@@ -46,6 +47,7 @@ public class FadeIn extends Action {
 		this.deltaAlpha = 1;
 		this.taken = 0;
 		this.done = false;
+		
 	}
 
 	@Override public void act (float delta) {

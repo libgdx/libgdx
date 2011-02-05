@@ -42,6 +42,7 @@ public class MoveBy extends Action {
 		action.y = y;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
+		action.listener = null;
 		return action;
 	}
 
@@ -52,7 +53,7 @@ public class MoveBy extends Action {
 		this.deltaX = x;
 		this.deltaY = y;
 		this.taken = 0;
-		this.done = false;
+		this.done = false;		
 	}
 
 	@Override public void act (float delta) {

@@ -32,6 +32,7 @@ public class Delay extends Action {
 		Delay delay = pool.obtain();
 		delay.duration = duration;
 		delay.action = action;
+		delay.listener = null;
 		return delay;
 	}
 

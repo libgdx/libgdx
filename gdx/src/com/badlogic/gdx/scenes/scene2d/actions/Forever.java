@@ -30,6 +30,7 @@ public class Forever extends Action {
 	public static Forever $ (Action action) {
 		Forever forever = pool.obtain();
 		forever.action = action;
+		forever.listener = null;
 		return forever;
 	}
 
