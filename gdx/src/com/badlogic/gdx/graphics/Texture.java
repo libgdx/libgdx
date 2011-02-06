@@ -196,7 +196,7 @@ public class Texture {
 	 * Creates a new texture from the given {@link TextureData}. The
 	 * texture is managed and the TextureData instance is invoked
 	 * in case of a context loss to recreate the texture. The texture wrap for u and v is set to GL_CLAMP_TO_EDGE by default.
-	 * The texture is not managed and has to be reloaded manually on a context loss.
+	 * The texture is managed.
 	 * @param data the TextureData
 	 */
 	public Texture(TextureData data) {
@@ -209,6 +209,7 @@ public class Texture {
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
 		textureData.load();	
+		managedTextures.add(this);
 	}
 	
 	private void reload() {
