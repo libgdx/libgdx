@@ -21,6 +21,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * <p>
@@ -238,7 +239,7 @@ public class Texture {
 	private void uploadImageData(Pixmap pixmap) {					
 		this.width = pixmap.getWidth();
 		this.height = pixmap.getHeight();
-		if(!isPowerOfTwo(width) || !isPowerOfTwo(height))
+		if(!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height))
 			throw new GdxRuntimeException("texture width and height must be powers of two");
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
@@ -263,10 +264,6 @@ public class Texture {
 			}
 			pixmap.dispose();
 		}		
-	}
-	
-	private static boolean isPowerOfTwo (int value) {
-		return ((value != 0) && (value & (value - 1)) == 0);
 	}
 
 	/**
