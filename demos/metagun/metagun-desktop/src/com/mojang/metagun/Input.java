@@ -103,15 +103,21 @@ public class Input implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int button) {
-		return false;
-	}
+	@Override public boolean touchDown (int x, int y, int pointer, int button) {		
+		return false;		
+	}	
 
 	@Override public boolean touchUp (int x, int y, int pointer, int button) {
-		if(x > 160 - 32 && x < 160) 
+		if(x > 160 - 32 && x < 160) {
 			set(Keys.KEYCODE_DPAD_UP, !buttons[UP]);
-		if(x > 160 && x < 160 + 32) 
+			if(buttons[UP])
+				buttons[DOWN] = false;
+		}
+		if(x > 160 && x < 160 + 32) { 
 			set(Keys.KEYCODE_DPAD_DOWN, !buttons[DOWN]);
+			if(buttons[DOWN])
+				buttons[UP] = false;
+		}
 		return false;
 	}
 
