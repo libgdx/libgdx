@@ -116,8 +116,7 @@ public class Pixmap {
 	public Pixmap(int width, int height, Format format) {
 		pixmap = new Gdx2DPixmap(width, height, Format.toGdx2DPixmapFormat(format));
 		setColor(0, 0, 0, 0);
-		fill();
-		setColor(1, 1, 1, 1);
+		fill();		
 	}
 	
 	/**
