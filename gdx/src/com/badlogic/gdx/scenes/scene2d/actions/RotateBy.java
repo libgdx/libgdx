@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Moritz Post
+ * (moritzpost@gmail.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -15,11 +16,13 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.AnimationAction;
 import com.badlogic.gdx.utils.Pool;
 
-public class RotateBy extends Action {
-	static final Pool<RotateBy> pool = new Pool<RotateBy>(4, 100) {
-		protected RotateBy newObject () {
+public class RotateBy extends AnimationAction {
+
+	private static final Pool<RotateBy> pool = new Pool<RotateBy>(4, 100) {
+		@Override protected RotateBy newObject () {
 			return new RotateBy();
 		}
 	};
@@ -27,11 +30,6 @@ public class RotateBy extends Action {
 	protected float rotation;
 	protected float startRotation;;
 	protected float deltaRotation;
-	protected float duration;
-	protected float invDuration;
-	protected float taken = 0;
-	protected Actor target;
-	protected boolean done;
 
 	public static RotateBy $ (float rotation, float duration) {
 		RotateBy action = pool.obtain();
@@ -51,25 +49,17 @@ public class RotateBy extends Action {
 	}
 
 	@Override public void act (float delta) {
-		taken += delta;
-		if (taken >= duration) {
-			taken = duration;
-			done = true;
-			return;
+		float alpha = createInterpolatedAlpha(delta);
+		if (done) {
+			target.rotation = rotation;
+		} else {
+			target.rotation = startRotation + deltaRotation * alpha;
 		}
-
-		float alpha = taken * invDuration;
-		target.rotation = startRotation + deltaRotation * alpha;
-	}
-
-	@Override public boolean isDone () {
-		return done;
 	}
 
 	@Override public void finish () {
+		super.finish();
 		pool.free(this);
-		if(listener != null)
-			listener.completed(this);
 	}
 
 	@Override public Action copy () {

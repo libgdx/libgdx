@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Moritz Post
+ * (moritzpost@gmail.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -15,11 +16,13 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.AnimationAction;
 import com.badlogic.gdx.utils.Pool;
 
-public class MoveBy extends Action {
-	static final Pool<MoveBy> pool = new Pool<MoveBy>(4, 100) {
-		protected MoveBy newObject () {
+public class MoveBy extends AnimationAction {
+
+	private static final Pool<MoveBy> pool = new Pool<MoveBy>(4, 100) {
+		@Override protected MoveBy newObject () {
 			return new MoveBy();
 		}
 	};
@@ -30,11 +33,6 @@ public class MoveBy extends Action {
 	protected float startY;
 	protected float deltaX;
 	protected float deltaY;
-	protected float duration;
-	protected float invDuration;
-	protected float taken = 0;
-	protected Actor target;
-	protected boolean done;
 
 	public static MoveBy $ (float x, float y, float duration) {
 		MoveBy action = pool.obtain();
@@ -53,29 +51,23 @@ public class MoveBy extends Action {
 		this.deltaX = x;
 		this.deltaY = y;
 		this.taken = 0;
-		this.done = false;		
+		this.done = false;
 	}
 
 	@Override public void act (float delta) {
-		taken += delta;
-		if (taken >= duration) {
-			taken = duration;
-			done = true;
+		float alpha = createInterpolatedAlpha(delta);
+		if (done) {
+			target.x = x;
+			target.y = y;
+		} else {
+			target.x = startX + deltaX * alpha;
+			target.y = startY + deltaY * alpha;
 		}
-
-		float alpha = taken * invDuration;
-		target.x = startX + deltaX * alpha;
-		target.y = startY + deltaY * alpha;
-	}
-
-	@Override public boolean isDone () {
-		return done;
 	}
 
 	@Override public void finish () {
+		super.finish();
 		pool.free(this);
-		if(listener != null)
-			listener.completed(this);
 	}
 
 	@Override public Action copy () {

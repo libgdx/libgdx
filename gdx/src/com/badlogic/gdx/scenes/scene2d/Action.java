@@ -20,8 +20,9 @@ package com.badlogic.gdx.scenes.scene2d;
  * 
  */
 public abstract class Action {
+
 	protected OnActionCompleted listener = null;
-	
+
 	/**
 	 * Sets the {@link Actor} of this action. Will be called when the Action is added to an Actor via {@link Actor#action(Action)}
 	 * before any other call to this interface.
@@ -45,20 +46,24 @@ public abstract class Action {
 	/**
 	 * Called by the owner of the action when it can release all its resources, e.g. put itself back into a pool.
 	 */
-	public abstract void finish ();
+	public void finish () {
+		if (listener != null) {
+			listener.completed(this);
+		}
+	}
 
 	/**
 	 * Creates a copy of this action. The action must be in a state independent of the original and one must be able to call
 	 * {@link #setTarget(Actor)} on it without any side effects.
 	 */
 	public abstract Action copy ();
-	
+
 	/**
 	 * Sets the listener to be invoked when the action is finished.
 	 * @param listener
 	 * @return this
 	 */
-	public Action setCompletionListener(OnActionCompleted listener) {
+	public Action setCompletionListener (OnActionCompleted listener) {
 		this.listener = listener;
 		return this;
 	}
@@ -69,4 +74,5 @@ public abstract class Action {
 	public OnActionCompleted getCompletionListener () {
 		return listener;
 	}
+
 }
