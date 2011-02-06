@@ -18,11 +18,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -89,11 +86,16 @@ public class Group extends Actor {
 	protected void act (float delta) {
 		super.act(delta);
 
-		int len = children.size();
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
 			child.act(delta);
+			if (child.isMarkedToRemove()) {
+				child.markToRemove(false);
+				removeActor(child);
+				i--;
+			}
 		}
+
 	}
 
 	@Override protected void render (SpriteBatch batch) {
@@ -314,48 +316,48 @@ public class Group extends Actor {
 		namesToActors.put(actor.name, actor);
 		actor.parent = this;
 	}
-	
+
 	/**
-	 * Adds an {@link Actor} at the given index in the group. The first Actor added will be at
-	 * index 0 and so on. Throws an IndexOutOfBoundsException in case the index is invalid.
+	 * Adds an {@link Actor} at the given index in the group. The first Actor added will be at index 0 and so on. Throws an
+	 * IndexOutOfBoundsException in case the index is invalid.
 	 * @param index the index to add the actor at.
 	 */
-	public void addActorAt(int index, Actor actor) {
+	public void addActorAt (int index, Actor actor) {
 		children.add(index, actor);
-		if(actor instanceof Group)groups.add((Group)actor);
+		if (actor instanceof Group) groups.add((Group)actor);
 		namesToActors.put(actor.name, actor);
-		actor.parent = this;		
-	}
-	
-	/**
-	 * Adds an {@link Actor} before the given Actor. 
-	 * @param actorBefore the Actor to add the other actor in front of
-	 * @param actor the Actor to add
-	 */
-	public void addActorBefore(Actor actorBefore, Actor actor) {
-		int index = children.indexOf(actorBefore);		
-		children.add(index, actor);
-		if(actor instanceof Group)groups.add((Group)actor);
-		namesToActors.put(actor.name, actor);
-		actor.parent = this;		
+		actor.parent = this;
 	}
 
 	/**
-	 * Adds an {@link Actor} after the given Actor. 
+	 * Adds an {@link Actor} before the given Actor.
+	 * @param actorBefore the Actor to add the other actor in front of
+	 * @param actor the Actor to add
+	 */
+	public void addActorBefore (Actor actorBefore, Actor actor) {
+		int index = children.indexOf(actorBefore);
+		children.add(index, actor);
+		if (actor instanceof Group) groups.add((Group)actor);
+		namesToActors.put(actor.name, actor);
+		actor.parent = this;
+	}
+
+	/**
+	 * Adds an {@link Actor} after the given Actor.
 	 * @param actorAfter the Actor to add the other Actor behind
 	 * @param actor the Actor to add
 	 */
-	public void addActorAfter(Actor actorAfter, Actor actor) {
+	public void addActorAfter (Actor actorAfter, Actor actor) {
 		int index = children.indexOf(actorAfter);
-		if(index == children.size())			
+		if (index == children.size())
 			children.add(actor);
 		else
-			children.add(index+1, actor);
-		if(actor instanceof Group)groups.add((Group)actor);
+			children.add(index + 1, actor);
+		if (actor instanceof Group) groups.add((Group)actor);
 		namesToActors.put(actor.name, actor);
-		actor.parent = this;		
+		actor.parent = this;
 	}
-	
+
 	/**
 	 * Removes an {@link Actor} from this Group.
 	 * @param actor
@@ -453,14 +455,14 @@ public class Group extends Actor {
 	public void clear () {
 		this.children.clear();
 		this.groups.clear();
-		this.namesToActors.clear();		
+		this.namesToActors.clear();
 	}
-	
+
 	/**
-	 * Sorts the children via the given {@link Comparator}. 
+	 * Sorts the children via the given {@link Comparator}.
 	 * @param comparator the comparator.
 	 */
-	public void sortChildren(Comparator<Actor> comparator) {
+	public void sortChildren (Comparator<Actor> comparator) {
 		Collections.sort(this.children, comparator);
 	}
 }

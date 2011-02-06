@@ -86,6 +86,7 @@ public abstract class Actor {
 	public final Color color = new Color(1, 1, 1, 1);
 
 	protected PooledLinkedList<Action> actions = new PooledLinkedList<Action>(10);
+	private boolean toRemove;
 
 	public Actor (String name) {
 		this.name = name;
@@ -160,4 +161,24 @@ public abstract class Actor {
 			+ height + "]";
 	}
 
+	/**
+	 * Marks the {@link Actor} to be removed by its parent.
+	 * <p>
+	 * The actual removal happens in the {@link Group#act(float)} method of the parent and after the parent has called
+	 * {@link #act(float)} on this {@link Actor}.
+	 * 
+	 * @param remove whether the parent is supposed to remove this {@link Actor}
+	 */
+	public void markToRemove (final boolean remove) {
+		toRemove = remove;
+	}
+
+	/**
+	 * States if this actor is to be removed by its parent.
+	 * 
+	 * @return <code>true</code> when the actor is to be removed or <code>false</code> otherwise
+	 */
+	public boolean isMarkedToRemove () {
+		return toRemove;
+	}
 }
