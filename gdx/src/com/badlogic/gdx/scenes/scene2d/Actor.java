@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Moritz Post
+ * (moritzpost@gmail.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -112,7 +113,9 @@ public abstract class Actor {
 	 * @param point the point
 	 */
 	public void toLocalCoordinates (Vector2 point) {
-		if (parent == null) return;
+		if (parent == null) {
+			return;
+		}
 
 		parent.toLocalCoordinates(point);
 		Group.toChildCoordinates(this, point.x, point.y, point);
@@ -156,7 +159,7 @@ public abstract class Actor {
 		actions.clear();
 	}
 
-	public String toString () {
+	@Override public String toString () {
 		return name + ": [x=" + x + ", y=" + y + ", refX=" + originX + ", refY=" + originY + ", width=" + width + ", height="
 			+ height + "]";
 	}
