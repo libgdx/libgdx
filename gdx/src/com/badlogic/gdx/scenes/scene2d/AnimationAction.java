@@ -64,4 +64,11 @@ public abstract class AnimationAction extends Action {
 			return interpolatedTime * invDuration;
 		}
 	}
+	
+	/**
+	 * @return the {@link Actor} this Action applies to.
+	 */
+	public Actor getTarget() {
+		return target;
+	}
 }

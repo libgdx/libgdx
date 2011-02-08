@@ -30,7 +30,7 @@ public abstract class Action {
 	 * 
 	 * @param actor the actor.
 	 */
-	public abstract void setTarget (Actor actor);
+	public abstract void setTarget (Actor actor);	
 
 	/**
 	 * Apply the action.
