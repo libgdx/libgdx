@@ -204,12 +204,14 @@ public class Texture {
 		this.isManaged = true;
 		this.isMipMap = false;
 		this.textureData = data;
+		this.width = textureData.getWidth();
+		this.height = textureData.getHeight();
 		this.file = null;
 		glHandle = createGLHandle();
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
-		textureData.load();	
+		textureData.load();			
 		managedTextures.add(this);
 	}
 	
