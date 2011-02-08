@@ -104,14 +104,14 @@ public class Renderer {
 			shotMesh = ModelLoader.loadObj(in);
 			in.close();
 
-			shipTexture = app.getGraphics().newTexture(Gdx.files.internal("data/ship.png"),
-				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			invaderTexture = app.getGraphics().newTexture(Gdx.files.internal("data/invader.png"),
-				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			backgroundTexture = app.getGraphics().newTexture(Gdx.files.internal("data/planet.jpg"),
-				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
-			explosionTexture = app.getGraphics().newTexture(Gdx.files.internal("data/explode.png"),
-				TextureFilter.MipMap, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+			shipTexture = new Texture(Gdx.files.internal("data/ship.png"), true);
+			shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);				
+			invaderTexture = new Texture(Gdx.files.internal("data/invader.png"), true);
+			invaderTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+			backgroundTexture = new Texture(Gdx.files.internal("data/planet.jpg"), true);
+			backgroundTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+			explosionTexture = new Texture(Gdx.files.internal("data/explode.png"), true);
+			explosionTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
 			explosionMesh = new Mesh(true, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
 				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord"));

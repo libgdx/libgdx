@@ -51,11 +51,11 @@ public class GameOver implements Screen {
 
 	public GameOver (Application app) {
 		spriteBatch = new SpriteBatch();
-		background = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/planet.jpg", FileType.Internal),
-			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		background = new Texture(Gdx.files.internal("data/planet.jpg"));
+		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		logo = app.getGraphics().newTexture(app.getFiles().getFileHandle("data/title.png", FileType.Internal),
-			TextureFilter.Linear, TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		logo = new Texture(Gdx.files.internal("data/title.png"));
+		logo.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);
 	}
