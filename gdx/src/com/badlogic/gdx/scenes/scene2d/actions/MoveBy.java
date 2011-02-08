@@ -50,6 +50,8 @@ public class MoveBy extends AnimationAction {
 		this.startY = target.y;
 		this.deltaX = x;
 		this.deltaY = y;
+		this.x = target.x + x;
+		this.y = target.y + y;
 		this.taken = 0;
 		this.done = false;
 	}
