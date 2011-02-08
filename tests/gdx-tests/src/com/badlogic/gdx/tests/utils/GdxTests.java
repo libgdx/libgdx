@@ -54,6 +54,7 @@ import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.Pong;
+import com.badlogic.gdx.tests.RotationTest;
 import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SimpleTest;
 import com.badlogic.gdx.tests.SoundTest;
@@ -96,6 +97,7 @@ public class GdxTests
 {
 	public static final Class[] tests = {	
 		PixmapTest.class,
+		RotationTest.class,
 		Gdx2DTest.class,						
 		ActionTest.class,
 		AlphaTest.class,	
