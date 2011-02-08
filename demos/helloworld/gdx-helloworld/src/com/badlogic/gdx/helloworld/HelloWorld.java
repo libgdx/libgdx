@@ -64,8 +64,7 @@ public class HelloWorld implements ApplicationListener {
 	@Override public void create () {
 		font = new BitmapFont();
 		font.setColor(Color.RED);
-		texture = Gdx.graphics.newTexture(Gdx.files.getFileHandle("data/badlogic.jpg", FileType.Internal), TextureFilter.MipMap,
-			TextureFilter.Linear, TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 		spriteBatch = new SpriteBatch();
 	}
 
