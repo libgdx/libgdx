@@ -369,6 +369,23 @@ public class Group extends Actor {
 	}
 
 	/**
+	 * Removes an {@link Actor} from this Group recursively by checking
+	 * if the Actor is in this group or one of its child-groups.
+	 * @param actor the Actor
+	 */
+	public void removeActorRecursive(Actor actor) {
+		if(children.remove(actor)) {
+			if (actor instanceof Group) groups.remove((Group)actor);
+			namesToActors.remove(actor.name);
+			return;
+		}
+		
+		for(int i = 0; i < groups.size(); i++) {
+			groups.get(i).removeActorRecursive(actor);
+		}
+	}
+	
+	/**
 	 * Finds the {@link Actor} with the given name in this Group and its children.
 	 * @param name the name of the Actor
 	 * @return the Actor or null

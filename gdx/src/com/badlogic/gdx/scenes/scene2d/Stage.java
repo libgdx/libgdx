@@ -354,4 +354,13 @@ public class Stage extends InputAdapter {
 	public void clear() {
 		root.clear();
 	}
+	
+	/**
+	 * Removes the given {@link Actor} from the stage by trying to find it
+	 * recursively in the scenegraph.
+	 * @param actor the actor
+	 */
+	public void removeActor(Actor actor) {
+		root.removeActorRecursive(actor);
+	}
 }
