@@ -37,6 +37,7 @@ public class MathUtils {
 
 	static public final float[] sin = new float[SIN_COUNT];
 	static public final float[] cos = new float[SIN_COUNT];
+	
 	static {
 		for (int i = 0; i < SIN_COUNT; i++) {
 			float a = (i + 0.5f) / SIN_COUNT * radFull;
@@ -46,19 +47,23 @@ public class MathUtils {
 	}
 
 	static public final float sin (float rad) {
-		return sin[(int)(rad * radToIndex) & SIN_MASK];
+		return (float)Math.sin(rad);
+//		return sin[(int)(rad * radToIndex) & SIN_MASK];
 	}
 
 	static public final float cos (float rad) {
-		return cos[(int)(rad * radToIndex) & SIN_MASK];
+		return (float)Math.cos(rad);
+//		return cos[(int)(rad * radToIndex) & SIN_MASK];
 	}
 
 	static public final float sinDeg (float deg) {
-		return sin[(int)(deg * degToIndex) & SIN_MASK];
+		return (float)Math.sin(degreesToRadians * deg);
+//		return sin[(int)(deg * degToIndex) & SIN_MASK];
 	}
 
 	static public final float cosDeg (float deg) {
-		return cos[(int)(deg * degToIndex) & SIN_MASK];
+		return (float)Math.cos(degreesToRadians * deg);
+//		return cos[(int)(deg * degToIndex) & SIN_MASK];
 	}
 
 	// ---
