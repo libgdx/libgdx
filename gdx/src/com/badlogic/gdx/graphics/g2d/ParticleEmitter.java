@@ -416,7 +416,7 @@ public class ParticleEmitter {
 
 			float velocityX, velocityY;
 			if ((updateFlags & UPDATE_ANGLE) != 0) {
-				float angle = particle.angle += particle.angleDiff * angleValue.getScale(percent);
+				float angle = particle.angle + particle.angleDiff * angleValue.getScale(percent);
 				velocityX = velocity * MathUtils.cosDeg(angle);
 				velocityY = velocity * MathUtils.sinDeg(angle);
 				if ((updateFlags & UPDATE_ROTATION) != 0) {
