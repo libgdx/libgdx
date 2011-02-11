@@ -15,6 +15,7 @@ package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.MathUtils;
 
 /**
@@ -38,6 +39,7 @@ public class Sprite extends TextureRegion {
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
+	private Rectangle bounds = new Rectangle();
 
 	/**
 	 * Creates an uninitialized sprite. The sprite will need a texture, texture region, bounds, and color set before it can be
@@ -377,6 +379,45 @@ public class Sprite extends TextureRegion {
 			}
 		}
 		return vertices;
+	}
+	
+	/**
+	 * Returns the bounding axis aligned {@link Rectangle} that
+	 * bounds this sprite. The rectangles x and y coordinates
+	 * describe its bottom left corner. 
+	 * 
+	 * @return the bounding Rectangle
+	 */
+	public Rectangle getBoundingRectangle() {
+		final float[] vertices = getVertices();
+		
+		float minx = vertices[X1];
+		float miny = vertices[Y1];
+		float maxx = vertices[X1];
+		float maxy = vertices[Y1];
+		
+		minx = minx > vertices[X2]? vertices[X2]: minx;
+		minx = minx > vertices[X3]? vertices[X3]: minx;
+		minx = minx > vertices[X4]? vertices[X4]: minx;
+		
+		maxx = maxx < vertices[X2]? vertices[X2]: maxx;
+		maxx = maxx < vertices[X3]? vertices[X3]: maxx;
+		maxx = maxx < vertices[X4]? vertices[X4]: maxx;
+		
+		miny = miny > vertices[Y2]? vertices[Y2]: miny;
+		miny = miny > vertices[Y3]? vertices[Y3]: miny;
+		miny = miny > vertices[Y4]? vertices[Y4]: miny;
+		
+		maxy = maxy > vertices[Y2]? vertices[Y2]: maxy;
+		maxy = maxy > vertices[Y3]? vertices[Y3]: maxy;
+		maxy = maxy > vertices[Y4]? vertices[Y4]: maxy;
+		
+		bounds.x = minx;
+		bounds.y = miny;
+		bounds.width = maxx - minx;
+		bounds.height = maxy - miny;
+		
+		return bounds;
 	}
 
 	public void draw (SpriteBatch spriteBatch) {
