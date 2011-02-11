@@ -38,6 +38,7 @@ public class ObjTest extends GdxTest implements InputProcessor {
 
 	@Override public void create () {
 		mesh = ModelLoader.loadObj(Gdx.files.internal("data/cube.obj").read());
+		Gdx.app.log("ObjTest", "obj bounds: " + mesh.calculateBoundingBox());
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
