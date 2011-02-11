@@ -27,6 +27,9 @@ import com.badlogic.gdx.graphics.glutils.VertexArray;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.VertexData;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * <p>
@@ -490,6 +493,50 @@ public class Mesh {
 	 */
 	public FloatBuffer getVerticesBuffer () {
 		return vertices.getBuffer();
+	}
+	
+	/**
+	 * Calculates the {@link BoundingBox} of the vertices contained
+	 * in this mesh. In case no vertices are defined yet a {@link GdxRuntimeException}
+	 * is thrown.
+	 * 
+	 * @return the bounding box.
+	 */
+	public BoundingBox calculateBoundingBox() {
+		final int numVertices = getNumVertices();
+		if(numVertices==0)
+			throw new GdxRuntimeException("No vertices defined");
+		
+		final BoundingBox bbox = new BoundingBox();		
+		final FloatBuffer verts = vertices.getBuffer();
+		bbox.inf();
+		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
+		final int offset = posAttrib.offset / 4;		
+		final int vertexSize = vertices.getAttributes().vertexSize / 4;
+		int idx = offset;
+			
+		switch(posAttrib.numComponents) {
+			case 1:
+				for(int i = 0; i < numVertices; i++) {
+					bbox.ext(verts.get(idx), 0, 0);
+					idx+=vertexSize;
+				}
+				break;
+			case 2:
+				for(int i = 0; i < numVertices; i++) {
+					bbox.ext(verts.get(idx), verts.get(idx+1), 0);
+					idx+=vertexSize;
+				}
+				break;
+			case 3:
+				for(int i = 0; i < numVertices; i++) {
+					bbox.ext(verts.get(idx), verts.get(idx+1), verts.get(idx+2));
+					idx+=vertexSize;
+				}
+				break;
+		}
+		
+		return bbox;
 	}
 
 	/**
