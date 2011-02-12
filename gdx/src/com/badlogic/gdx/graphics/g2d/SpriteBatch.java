@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -236,13 +237,9 @@ public class SpriteBatch {
 
 		if (Gdx.graphics.isGL20Available() == false) {
 			GL10 gl = Gdx.gl10;			
-			gl.glDisable(GL10.GL_LIGHTING);
-			gl.glDisable(GL10.GL_DEPTH_TEST);
-			gl.glDisable(GL10.GL_CULL_FACE);
-			gl.glDepthMask(false);
 
+			gl.glDepthMask(false);
 			gl.glEnable(GL10.GL_TEXTURE_2D);
-			// gl.glActiveTexture( GL10.GL_TEXTURE0 );
 
 			gl.glMatrixMode(GL10.GL_PROJECTION);
 			gl.glLoadMatrixf(projectionMatrix.val, 0);
@@ -252,12 +249,8 @@ public class SpriteBatch {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
 			GL20 gl = Gdx.gl20;			
-			gl.glDisable(GL20.GL_DEPTH_TEST);
-			gl.glDisable(GL20.GL_CULL_FACE);
 			gl.glDepthMask(false);
-
 			gl.glEnable(GL20.GL_TEXTURE_2D);
-			// gl.glActiveTexture( GL20.GL_TEXTURE0 );
 
 			shader.begin();
 			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
@@ -278,18 +271,15 @@ public class SpriteBatch {
 		lastTexture = null;
 		idx = 0;
 		drawing = false;
-
-		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.gl10;
-			gl.glDepthMask(true);
+		
+		GLCommon gl = Gdx.gl;
+		gl.glDepthMask(true);
+		if(isBlendingEnabled())
 			gl.glDisable(GL10.GL_BLEND);
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-		} else {
-			shader.end();
-			GL20 gl = Gdx.gl20;
-			gl.glDepthMask(true);
-			gl.glDisable(GL20.GL_BLEND);
-			gl.glDisable(GL20.GL_TEXTURE_2D);
+		gl.glDisable(GL10.GL_TEXTURE_2D);
+
+		if (Gdx.graphics.isGL20Available()) {		
+			shader.end();			
 		}
 	}
 
