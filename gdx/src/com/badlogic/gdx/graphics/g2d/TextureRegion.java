@@ -220,4 +220,63 @@ public class TextureRegion {
 			v2 = v + height / texture.getHeight();
 		}
 	}
+	
+	/**
+	 * Helper function to create tiles out of this TextureRegion
+	 * starting from the top left corner going to the left and
+	 * ending at the bottom right corner. Only complete tiles will
+	 * be returned so if the region's width or height are not a 
+	 * multiple of the tile width and height not all of the
+	 * region will be used.
+	 * 
+	 * @param tileWidth a tile's width in pixels
+	 * @param tileHeight a tile's height in pixels
+	 * @return a 2D array of TextureRegions indexed by [row][column].
+	 */
+	public TextureRegion[][] split(int tileWidth, int tileHeight) {
+		int x = getRegionX();
+		int y = getRegionY();
+		int width = getRegionWidth();
+		int height = getRegionHeight();
+		
+		if(width < 0) {
+			x = x - width;
+			width = -width;
+		}
+		
+		if(height < 0) {
+			y = y - height;
+			height = -height;
+		}
+		
+		int rows = height / tileHeight;
+		int cols = width / tileWidth;		
+		
+		TextureRegion[][] tiles = new TextureRegion[rows][cols];		
+		for(int row = 0; row < rows; row++, y += tileHeight) {
+			for(int col = 0; col < cols; col++, x += tileWidth) {
+				tiles[row][col] = new TextureRegion(texture, x, y, tileWidth, tileHeight);
+			}
+		}
+		
+		return tiles;
+	}
+	
+	/**
+	 * Helper function to create tiles out of the given {@link Texture}
+	 * starting from the top left corner going to the left and
+	 * ending at the bottom right corner. Only complete tiles will
+	 * be returned so if the texture's width or height are not a 
+	 * multiple of the tile width and height not all of the
+	 * texture will be used.
+	 * 
+	 * @param texture the Texture
+	 * @param tileWidth a tile's width in pixels
+	 * @param tileHeight a tile's height in pixels
+	 * @return a 2D array of TextureRegions indexed by [row][column].
+	 */
+	public static TextureRegion[][] split(Texture texture, int tileWidth, int tileHeight) {
+		TextureRegion region = new TextureRegion(texture);
+		return region.split(tileWidth, tileHeight);
+	}
 }

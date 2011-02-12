@@ -18,6 +18,7 @@ import java.util.List;
 
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
+import com.badlogic.gdx.tests.AnimationTest;
 import com.badlogic.gdx.tests.AtlasIssueTest;
 import com.badlogic.gdx.tests.AudioDeviceTest;
 import com.badlogic.gdx.tests.AudioRecorderTest;
@@ -98,7 +99,8 @@ public class GdxTests
 	public static final Class[] tests = {	
 		PixmapTest.class,
 		RotationTest.class,
-		Gdx2DTest.class,						
+		Gdx2DTest.class,
+		AnimationTest.class,
 		ActionTest.class,
 		AlphaTest.class,	
 		AtlasIssueTest.class,		

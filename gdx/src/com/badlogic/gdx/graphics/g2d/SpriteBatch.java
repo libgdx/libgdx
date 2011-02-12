@@ -708,7 +708,7 @@ public class SpriteBatch {
 	 * Draws a rectangle with the top left corner at x,y having the width and height of the region.
 	 */
 	public void draw (TextureRegion region, float x, float y) {
-		draw(region, x, y, region.getRegionWidth(), region.getRegionHeight());
+		draw(region, x, y, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 	}
 
 	/**
