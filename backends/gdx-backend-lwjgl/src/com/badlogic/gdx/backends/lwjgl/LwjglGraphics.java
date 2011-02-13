@@ -15,10 +15,6 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -27,19 +23,11 @@ import org.lwjgl.opengl.PixelFormat;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.MathUtils;
+import com.badlogic.gdx.graphics.GLU;
 
 /**
  * An implementation of the {@link Graphics} interface based on Lwjgl.
@@ -50,6 +38,7 @@ public final class LwjglGraphics implements Graphics {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
+	GLU glu;
 	final boolean useGL2;
 	float deltaTime = 0;
 	long frameStart = 0;
@@ -87,6 +76,10 @@ public final class LwjglGraphics implements Graphics {
 
 	public GL20 getGL20 () {
 		return gl20;
+	}
+	
+	public GLU getGLU() {
+		return glu;
 	}
 
 	public int getHeight () {
@@ -183,6 +176,9 @@ public final class LwjglGraphics implements Graphics {
 			gl = gl10;
 		}
 
+		glu = new LwjglGLU();
+		
+		Gdx.glu = glu;
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;

@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GLU;
 
 /**
  * <p>
@@ -27,7 +28,7 @@ import com.badlogic.gdx.graphics.GLCommon;
  * </p>
  * 
  * <p>
- * There's also references to {@link GLCommon}, {@link GL10}, {@link GL11} and {@link GL20}. The same rules as above apply. Don't
+ * There's also references to {@link GLCommon}, {@link GL10}, {@link GL11}, {@link GL20} and {@link GLU}. The same rules as above apply. Don't
  * mess with this or things will break!
  * </p>
  * 
@@ -49,4 +50,5 @@ public class Gdx {
 	public static GL10 gl10;
 	public static GL11 gl11;
 	public static GL20 gl20;
+	public static GLU glu;
 }

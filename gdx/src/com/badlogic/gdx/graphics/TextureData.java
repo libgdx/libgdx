@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 /**
  * Loads image data for a texture. Used with
- * {@link Graphics#newTexture(TextureData, TextureFilter, TextureFilter, TextureWrap, TextureWrap) newTexture}, this allows custom
+ * {@link Texture}, this allows custom
  * image loading for managed textures. If the OpenGL context is lost, the TextureData will be asked to load again when the context
  * is restored. The TextureData doesn't necessary need to keep the image data in memory between loads.
  */

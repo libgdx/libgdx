@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	ApplicationListener listener = null;
 	boolean useGL2;
-	boolean created = false;
+	boolean created = false;	
 
 	public JoglGraphics (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		initialize(title, width, height, useGL2);

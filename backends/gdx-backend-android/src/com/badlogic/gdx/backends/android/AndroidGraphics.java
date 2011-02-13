@@ -56,6 +56,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
     GL10 gl10;
     GL11 gl11;
     GL20 gl20;
+    GLU glu;
 
     private long lastFrameTime = System.nanoTime();
     private float deltaTime = 0;
@@ -237,10 +238,13 @@ public final class AndroidGraphics implements Graphics, Renderer {
             }
         }
 
+        this.glu = new AndroidGLU();
+        
         Gdx.gl = this.gl;
         Gdx.gl10 = gl10;
         Gdx.gl11 = gl11;
         Gdx.gl20 = gl20;
+        Gdx.glu = glu;
 
         Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
         Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
@@ -468,4 +472,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
     public float getPpcY() {
         return ppcY;
     }
+
+	@Override public GLU getGLU () {
+		return null;
+	}
 }

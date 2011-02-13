@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.math.WindowedMean;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
@@ -43,6 +44,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
+	GLU glu;
 
 	void initialize (String title, int width, int height, boolean useGL2) {
 		GLCapabilities caps = new GLCapabilities();
@@ -60,6 +62,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 		canvas.addGLEventListener(this);
 		this.useGL2 = useGL2;
+		this.glu = new JoglGLU();
 	}
 
 	GLCanvas getCanvas () {
@@ -163,6 +166,10 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		return gl;
 	}
 
+	@Override public GLU getGLU() {
+		return glu;
+	}
+	
 	@Override public boolean isGL11Available () {
 		return gl11 != null;
 	}
