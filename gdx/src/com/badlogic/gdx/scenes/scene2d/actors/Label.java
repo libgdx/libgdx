@@ -28,7 +28,7 @@ public class Label extends Actor {
 // this.height = font.getLineHeight();
 	}
 
-	@Override protected void render (SpriteBatch batch) {
+	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
 // batch.drawText(font, text, x, y, color);
 	}
 

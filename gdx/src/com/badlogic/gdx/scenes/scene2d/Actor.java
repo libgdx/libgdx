@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
 /**
@@ -53,7 +54,7 @@ import com.badlogic.gdx.utils.PooledLinkedList;
  * </p>
  * 
  * <p>
- * An Actor might render itself when its {@link #render(SpriteBatch)} method is called. The projection and transform matrices are
+ * An Actor might render itself when its {@link #draw(SpriteBatch)} method is called. The projection and transform matrices are
  * setup so that an Actor can simply call the
  * {@link SpriteBatch#draw(com.badlogic.gdx.graphics.Texture, float, float, float, float, float, float, float, float, float, int, int, int, int, boolean, boolean)}
  * method to render himself. Using a {@link Sprite} instance is also an option. An Actor might decide to not render itself at all
@@ -94,11 +95,15 @@ public abstract class Actor {
 	}
 
 	/**
-	 * Renders the Actor. The spriteBatch is configured so that the Actor can render in its parents coordinate system.
+	 * Draws the Actor. The spriteBatch is configured so that the Actor can draw in its parents coordinate system.
+	 * The parent's alpha is passed to the method in order for the Actor to multiply it with its own alpha. This
+	 * will allow {@link FadeIn} and other Actions to have an effect even if they are only set on the parent of
+	 * the Actor. 
 	 * 
 	 * @param batch the spritebatch to render with
+	 * @param parentAlpha the parent's alpha value. 
 	 */
-	protected abstract void render (SpriteBatch batch);
+	protected abstract void draw (SpriteBatch batch, float parentAlpha);
 
 	protected abstract boolean touchDown (float x, float y, int pointer);
 
@@ -183,5 +188,5 @@ public abstract class Actor {
 	 */
 	public boolean isMarkedToRemove () {
 		return toRemove;
-	}
+	}	
 }

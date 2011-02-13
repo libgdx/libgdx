@@ -259,7 +259,7 @@ public class Stage extends InputAdapter {
 		batch.setProjectionMatrix(projection);
 		batch.setTransformMatrix(identity);
 		batch.begin();
-		root.render(batch);
+		root.draw(batch, 1);
 		batch.end();
 	}
 

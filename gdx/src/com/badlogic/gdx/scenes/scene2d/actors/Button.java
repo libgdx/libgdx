@@ -74,9 +74,9 @@ public class Button extends Actor {
 		this.pressedRegion = new TextureRegion(pressedRegion);
 	}
 
-	@Override protected void render (SpriteBatch batch) {
+	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
 		TextureRegion region = pressed ? pressedRegion : unpressedRegion;
-		batch.setColor(color);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (region.getTexture() != null) {
 			if (scaleX == 0 && scaleY == 0 && rotation == 0)
 				batch.draw(region, x, y, width, height);

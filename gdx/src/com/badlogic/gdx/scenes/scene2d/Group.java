@@ -98,7 +98,7 @@ public class Group extends Actor {
 
 	}
 
-	@Override protected void render (SpriteBatch batch) {
+	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
 		updateTransform();
 		tmp4.set(scenetransform);
 
@@ -113,7 +113,7 @@ public class Group extends Actor {
 
 		int len = children.size();
 		for (int i = 0; i < len; i++)
-			children.get(i).render(batch);
+			children.get(i).draw(batch, parentAlpha * color.a);
 
 		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
