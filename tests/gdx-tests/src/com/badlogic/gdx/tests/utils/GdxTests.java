@@ -34,6 +34,7 @@ import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.Gdx2DTest;
+import com.badlogic.gdx.tests.GroupFadeTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
 import com.badlogic.gdx.tests.IndexBufferObjectClassTest;
 import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
@@ -119,6 +120,7 @@ public class GdxTests
 		//FillrateTest.class,
 		FloatTest.class,
 		FrameBufferTest.class,
+		GroupFadeTest.class,
 		ImmediateModeRendererTest.class,
 		IndexBufferObjectClassTest.class,
 		IndexBufferObjectShaderTest.class,

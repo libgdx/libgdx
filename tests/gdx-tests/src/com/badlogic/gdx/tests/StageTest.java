@@ -159,7 +159,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 			}
 		}
 
-		stage.render();
+		stage.draw();
 
 		Gdx.graphics.getGL10().glPointSize(4);
 		renderer.begin(GL10.GL_POINTS);
@@ -176,7 +176,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		// Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
 		// ", groups "
 		// + stage.getGroups().size();
-		ui.render();
+		ui.draw();
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer, int button) {

@@ -64,7 +64,7 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 	public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
-		stage.render();
+		stage.draw();
 	}
 
 	@Override
