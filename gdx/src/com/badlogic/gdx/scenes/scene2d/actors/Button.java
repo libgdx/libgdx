@@ -102,7 +102,7 @@ public class Button extends Actor {
 	}
 
 	@Override protected boolean touchDragged (float x, float y, int pointer) {
-		return true;
+		return pressed;
 	}
 
 	public Actor hit (float x, float y) {

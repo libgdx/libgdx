@@ -306,6 +306,9 @@ public class SpriteBatch {
 		this.color = color;
 	}
 
+	/**
+	 * @return the rendering color of this SpriteBatch. Manipulating the returned instance has no effect.
+	 */
 	public Color getColor () {
 		int intBits = Float.floatToRawIntBits(color);
 		Color color = this.tempColor;
