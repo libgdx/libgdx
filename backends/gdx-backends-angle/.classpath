@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/tritonus-utils.jar"/>
 	<classpathentry kind="lib" path="/gdx/libs/gdx-natives.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/angle.jar"/>
+	<classpathentry kind="lib" path="libs/lwjgl_util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

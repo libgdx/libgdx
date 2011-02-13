@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GLU;
 
 public class AngleGraphics implements Graphics {
 	GL20 gl;
+	GLU glu;
 	int width;
 	int height;
 	long lastTime = System.nanoTime();
@@ -34,6 +35,7 @@ public class AngleGraphics implements Graphics {
 
 	AngleGraphics (int width, int height) {
 		gl = new AngleGLES20();
+		glu = new AngleGLU();
 	}
 
 	@Override public boolean isGL11Available () {
@@ -61,7 +63,7 @@ public class AngleGraphics implements Graphics {
 	}
 	
 	@Override public GLU getGLU() {
-		return null;
+		return glu;
 	}
 
 	@Override public int getWidth () {
