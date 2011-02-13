@@ -33,7 +33,7 @@ public class GroupFadeTest extends GdxTest {
 		
 		stage.getRoot().action(Forever.$(Sequence.$(FadeOut.$(3), FadeIn.$(3))));
 	}
-
+	
 	@Override public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
