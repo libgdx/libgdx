@@ -423,6 +423,16 @@ public class Sprite extends TextureRegion {
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(texture, getVertices(), 0, SPRITE_SIZE);
 	}
+	
+	public void draw(SpriteBatch spriteBatch, float alphaModulation) {
+		Color color = getColor();
+		float oldAlpha = color.a;
+		color.a *= alphaModulation;
+		setColor(color);
+		draw(spriteBatch);
+		color.a = oldAlpha;
+		setColor(color);
+	}
 
 	public float getX () {
 		return x;
