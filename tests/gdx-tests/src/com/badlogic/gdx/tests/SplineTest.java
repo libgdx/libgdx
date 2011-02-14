@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -27,9 +27,8 @@ public class SplineTest extends GdxTest {
 	
 
 	@Override public void create () {
-		cam = new OrthographicCamera();
-		cam.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.getPosition().set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 		renderer = new ImmediateModeRenderer();
 		spline = new CatmullRomSpline();
 		float x = 0;
@@ -48,7 +47,11 @@ public class SplineTest extends GdxTest {
 	
 	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);		
-		cam.setMatrices();		
+		cam.update();
+		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
+		Gdx.gl10.glLoadMatrixf(cam.projection.val, 0);
+		Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
+		Gdx.gl10.glLoadMatrixf(cam.view.val, 0);
 		
 		renderer.begin(GL10.GL_TRIANGLES);
 		for(int i = 0; i < path.length - 1; i++) {
@@ -85,24 +88,24 @@ public class SplineTest extends GdxTest {
 	
 	Vector3 point = new Vector3();
 	private void processInput() {
-		if(Gdx.input.isTouched()) {			
-			Vector3 nearest = null;
-			float nearestDist = Float.MAX_VALUE;
-			point.set(cam.getScreenToWorldX(Gdx.input.getX()), 
-				 cam.getScreenToWorldY(Gdx.input.getY()),
-				 0);			
-			
-			for(int i = 0; i < spline.getControlPoints().size(); i++) {
-				Vector3 controlPoint = spline.getControlPoints().get(i);
-				float dist = Math.abs(point.x - controlPoint.x);
-				if(dist < nearestDist) {
-					nearest = controlPoint;
-					nearestDist = dist; 
-				}								
-			}
-			
-			nearest.y += (point.y - nearest.y) * Gdx.graphics.getDeltaTime();		
-			spline.getPath(path, 5);
-		}
+//		if(Gdx.input.isTouched()) {			
+//			Vector3 nearest = null;
+//			float nearestDist = Float.MAX_VALUE;
+//			point.set(cam.getScreenToWorldX(Gdx.input.getX()), 
+//				 cam.getScreenToWorldY(Gdx.input.getY()),
+//				 0);			
+//			
+//			for(int i = 0; i < spline.getControlPoints().size(); i++) {
+//				Vector3 controlPoint = spline.getControlPoints().get(i);
+//				float dist = Math.abs(point.x - controlPoint.x);
+//				if(dist < nearestDist) {
+//					nearest = controlPoint;
+//					nearestDist = dist; 
+//				}								
+//			}
+//			
+//			nearest.y += (point.y - nearest.y) * Gdx.graphics.getDeltaTime();		
+//			spline.getPath(path, 5);
+//		}
 	}
 }

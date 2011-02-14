@@ -413,6 +413,7 @@ public class Matrix4 implements Serializable {
 		val[M13] = 0;
 		val[M23] = l_a2;
 		val[M33] = 0;
+		
 		return this;
 	}
 

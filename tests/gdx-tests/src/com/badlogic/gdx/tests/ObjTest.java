@@ -21,8 +21,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.tmp.PerspectiveCamera;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ObjTest extends GdxTest implements InputProcessor {
@@ -42,9 +42,9 @@ public class ObjTest extends GdxTest implements InputProcessor {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
-		cam = new PerspectiveCamera();
-		cam.getPosition().set(3, 3, 3);
-		cam.getDirection().set(-1, -1, -1);
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.position.set(3, 3, 3);
+		cam.direction.set(-1, -1, -1);
 		Gdx.input.setInputProcessor(this);
 	}
 
@@ -58,7 +58,11 @@ public class ObjTest extends GdxTest implements InputProcessor {
 		gl.glEnable(GL10.GL_COLOR_MATERIAL);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
-		cam.setMatrices();
+		cam.update();
+		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
+		Gdx.gl10.glLoadMatrixf(cam.projection.val, 0);
+		Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
+		Gdx.gl10.glLoadMatrixf(cam.view.val, 0);
 
 		gl.glEnable(GL10.GL_LIGHT0);
 		gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
