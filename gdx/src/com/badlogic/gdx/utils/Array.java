@@ -13,14 +13,9 @@
 
 package com.badlogic.gdx.utils;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
-
-import com.badlogic.gdx.utils.ObjectMap.Entries;
 
 /**
  * A resizable, ordered or unordered array of objects. If unordered, this class avoids a memory copy when removing elements (the
@@ -85,12 +80,30 @@ public class Array<T> implements Iterable<T> {
 		items[size++] = value;
 	}
 
-	public void addAll (Array array) {
+	public void add (Array array) {
+		add(array, 0, array.size);
+	}
+
+	public void add (Array array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		T[] items = this.items;
 		int sizeNeeded = size + array.size;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
+	}
+
+	public void add (T[] array) {
+		add(array, 0, array.length);
+	}
+
+	public void add (T[] array, int offset, int length) {
+		T[] items = this.items;
+		int sizeNeeded = size + length - offset;
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		System.arraycopy(array, offset, items, size, length);
+		size += length;
 	}
 
 	public T get (int index) {

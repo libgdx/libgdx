@@ -67,12 +67,30 @@ public class IntArray {
 		items[size++] = value;
 	}
 
-	public void addAll (IntArray array) {
+	public void add (IntArray array) {
+		add(array, 0, array.size);
+	}
+
+	public void add (IntArray array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		int[] items = this.items;
 		int sizeNeeded = size + array.size;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
+	}
+
+	public void add (int[] array) {
+		add(array, 0, array.length);
+	}
+
+	public void add (int[] array, int offset, int length) {
+		int[] items = this.items;
+		int sizeNeeded = size + length - offset;
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		System.arraycopy(array, offset, items, size, length);
+		size += length;
 	}
 
 	public int get (int index) {

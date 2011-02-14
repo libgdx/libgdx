@@ -67,12 +67,30 @@ public class LongArray {
 		items[size++] = value;
 	}
 
-	public void addAll (LongArray array) {
+	public void add (LongArray array) {
+		add(array, 0, array.size);
+	}
+
+	public void add (LongArray array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		long[] items = this.items;
 		int sizeNeeded = size + array.size;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
+	}
+
+	public void add (long[] array) {
+		add(array, 0, array.length);
+	}
+
+	public void add (long[] array, int offset, int length) {
+		long[] items = this.items;
+		int sizeNeeded = size + length - offset;
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		System.arraycopy(array, offset, items, size, length);
+		size += length;
 	}
 
 	public long get (int index) {

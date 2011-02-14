@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -106,7 +105,7 @@ public class TextureAtlas {
 						repeatY = Repeat;
 					}
 
-					pageImage = new Texture(file, TextureFilter.isMipMap(min) || TextureFilter.isMipMap(max)?true:false);
+					pageImage = new Texture(file, TextureFilter.isMipMap(min) || TextureFilter.isMipMap(max) ? true : false);
 					pageImage.setFilter(min, max);
 					pageImage.setWrap(repeatX, repeatY);
 					textures.add(pageImage);
@@ -279,7 +278,11 @@ public class TextureAtlas {
 	}
 
 	private Sprite newSprite (AtlasRegion region) {
-		if (region.packedWidth == region.originalWidth && region.packedHeight == region.originalHeight) return new Sprite(region);
+		if (region.packedWidth == region.originalWidth && region.packedHeight == region.originalHeight) {
+			Sprite sprite = new Sprite(region);
+			if (region.rotate) sprite.rotate90(true);
+			return sprite;
+		}
 		return new AtlasSprite(region);
 	}
 

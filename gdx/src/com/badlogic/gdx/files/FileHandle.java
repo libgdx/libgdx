@@ -17,8 +17,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -81,8 +84,7 @@ public abstract class FileHandle {
 
 	/**
 	 * Returns a stream for reading this file.
-	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} and the file doesn't exist, or if it could not be read.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
 	 */
 	public InputStream read () {
 		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
@@ -97,6 +99,43 @@ public abstract class FileHandle {
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
 		}
+	}
+
+	/**
+	 * Reads the entire file into a string using the platform's default charset.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
+	 */
+	public String readString () {
+		return readString(null);
+	}
+
+	/**
+	 * Reads the entire file into a string using the specified charset.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
+	 */
+	public String readString (String charset) {
+		StringBuilder output = new StringBuilder(512);
+		InputStreamReader reader = null;
+		try {
+			if (charset == null)
+				reader = new InputStreamReader(read());
+			else
+				reader = new InputStreamReader(read(), charset);
+			char[] buffer = new char[256];
+			while (true) {
+				int length = reader.read(buffer);
+				if (length == -1) break;
+				output.append(buffer, 0, length);
+			}
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error reading layout file: " + this, ex);
+		} finally {
+			try {
+				if (reader != null) reader.close();
+			} catch (IOException ignored) {
+			}
+		}
+		return output.toString();
 	}
 
 	/**
