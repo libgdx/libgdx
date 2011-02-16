@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.twl;
 
+import de.matthiasmann.twl.Alignment;
 import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.Event;
 import de.matthiasmann.twl.Widget;
@@ -112,9 +113,17 @@ public class Layout extends DialogLayout {
 			}
 
 			/**
+			 * Adds the specified widgets with the {@link Alignment#FILL fill} alignment.
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group add (Object... widgets) {
+				return add(Alignment.FILL, widgets);
+			}
+
+			/**
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+			 */
+			public Group add (Alignment alignment, Object... widgets) {
 				for (int i = 0, n = widgets.length; i < n; i++) {
 					Object object = widgets[i];
 					if (object instanceof Integer) {
@@ -124,7 +133,7 @@ public class Layout extends DialogLayout {
 						else
 							dialogGroup.addGap(size);
 					} else
-						dialogGroup.addWidget((Widget)object);
+						dialogGroup.addWidget((Widget)object, alignment);
 				}
 				return this;
 			}

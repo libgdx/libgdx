@@ -4,6 +4,10 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry exported="true" kind="lib" path="libs/xpp3-1.1.4c.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/twl-android.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/twl-android.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://twl.l33tlabs.org/dist/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

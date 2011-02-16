@@ -45,6 +45,8 @@ import de.matthiasmann.twl.renderer.MouseCursor;
 import de.matthiasmann.twl.renderer.Renderer;
 import de.matthiasmann.twl.renderer.Texture;
 
+// BOZO - Add cursors.
+
 /**
  * @author Nathan Sweet
  * @author Matthias Mann
@@ -95,10 +97,11 @@ public class GdxRenderer implements Renderer {
 		return System.nanoTime() / 1000000;
 	}
 
-	public void startRenderering () {
+	public boolean startRenderering () {
 		tintStack = tintStateRoot;
 		batch.begin();
 		rendering = true;
+		return true;
 	}
 
 	public void endRendering () {
@@ -162,6 +165,9 @@ public class GdxRenderer implements Renderer {
 	}
 
 	public void setCursor (MouseCursor cursor) {
+	}
+
+	public void setMouseButton (int arg0, boolean arg1) {
 	}
 
 	public void setMousePosition (int mouseX, int mouseY) {
