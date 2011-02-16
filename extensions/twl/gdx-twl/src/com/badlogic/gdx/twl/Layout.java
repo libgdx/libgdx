@@ -98,6 +98,14 @@ public class Layout extends DialogLayout {
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group sequence (Object... widgets) {
+				return sequence(Alignment.FILL, widgets);
+			}
+
+			/**
+			 * Adds the specified widgets with the {@link Alignment#FILL fill} alignment.
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+			 */
+			public Group sequence (Alignment alignment, Object... widgets) {
 				DialogLayout.Group dialogGroup = createSequentialGroup();
 				this.dialogGroup.addGroup(dialogGroup);
 				return new Group(this, dialogGroup).add(widgets);
@@ -107,6 +115,14 @@ public class Layout extends DialogLayout {
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group parallel (Object... widgets) {
+				return parallel(Alignment.FILL, widgets);
+			}
+
+			/**
+			 * Adds the specified widgets with the {@link Alignment#FILL fill} alignment.
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
+			 */
+			public Group parallel (Alignment alignment, Object... widgets) {
 				DialogLayout.Group dialogGroup = createParallelGroup();
 				this.dialogGroup.addGroup(dialogGroup);
 				return new Group(this, dialogGroup).add(widgets);
