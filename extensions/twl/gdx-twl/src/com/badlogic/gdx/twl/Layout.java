@@ -95,6 +95,7 @@ public class Layout extends DialogLayout {
 			}
 
 			/**
+			 * Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group sequence (Object... widgets) {
@@ -102,7 +103,6 @@ public class Layout extends DialogLayout {
 			}
 
 			/**
-			 * Adds the specified widgets with the {@link Alignment#FILL fill} alignment.
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group sequence (Alignment alignment, Object... widgets) {
@@ -112,6 +112,7 @@ public class Layout extends DialogLayout {
 			}
 
 			/**
+			 * Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group parallel (Object... widgets) {
@@ -119,7 +120,6 @@ public class Layout extends DialogLayout {
 			}
 
 			/**
-			 * Adds the specified widgets with the {@link Alignment#FILL fill} alignment.
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group parallel (Alignment alignment, Object... widgets) {
@@ -129,7 +129,7 @@ public class Layout extends DialogLayout {
 			}
 
 			/**
-			 * Adds the specified widgets with the {@link Alignment#FILL fill} alignment.
+			 * Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
 			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
 			 */
 			public Group add (Object... widgets) {
