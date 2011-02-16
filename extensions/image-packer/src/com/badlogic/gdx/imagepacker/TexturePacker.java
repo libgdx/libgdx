@@ -339,7 +339,7 @@ public class TexturePacker {
 		if (!filter.accept(source)) return null;
 		uncompressedSize += source.getWidth() * source.getHeight();
 		WritableRaster alphaRaster = source.getAlphaRaster();
-		if (alphaRaster == null) return new Image(name, source, 0, 0, source.getWidth(), source.getHeight());
+		if (alphaRaster == null || !settings.stripWhitespace) return new Image(name, source, 0, 0, source.getWidth(), source.getHeight());
 		final byte[] a = new byte[1];
 		int top = 0;
 		int bottom = source.getHeight();
@@ -617,14 +617,15 @@ public class TexturePacker {
 		public TextureFilter defaultFilterMag = TextureFilter.Nearest;
 		public int alphaThreshold = 0;
 		public boolean pot = true;
-		public int padding = 1;
-		public boolean duplicatePadding;
+		public int padding = 2;
+		public boolean duplicatePadding = true;
 		public boolean debug = false;
 		public boolean rotate = false;
 		public int minWidth = 16;
 		public int minHeight = 16;
-		public int maxWidth = 1024;
-		public int maxHeight = 1024;
+		public int maxWidth = 512;
+		public int maxHeight = 512;
+		public boolean stripWhitespace = true;
 		public boolean incremental;
 
 		HashMap<String, Long> crcs = new HashMap();
