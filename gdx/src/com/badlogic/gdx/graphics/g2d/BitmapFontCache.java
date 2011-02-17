@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
@@ -33,7 +34,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
  * @author Nathan Sweet
  * @author Matthias Mann
  */
-public class BitmapFontCache {
+public class BitmapFontCache implements Disposable {
 	private final BitmapFont font;
 	private float[] vertices = new float[0];
 	private int idx;
@@ -343,5 +344,12 @@ public class BitmapFontCache {
 	 */
 	public float getY () {
 		return y;
+	}
+	
+	/**
+	 * Disposes the underlying BitmapFont of this cache.
+	 */
+	public void dispose() {
+		font.dispose();
 	}
 }

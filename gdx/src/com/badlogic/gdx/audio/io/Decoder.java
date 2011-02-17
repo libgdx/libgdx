@@ -15,13 +15,15 @@ package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.utils.Disposable;
+
 /**
  * Interface for audio decoders that return successive amplitude frames. When a decoder is no longer used it has to be disposed.
  * 
  * @author badlogicgames@gmail.com
  * 
  */
-public interface Decoder {
+public interface Decoder extends Disposable {
 	/**
 	 * Reads in samples.capacity() samples in 16-bit signed PCM format from the decoder. Returns the actual number read in. If this
 	 * number is smaller than the capacity of the buffer then the end of stream has been reached. The provided ShortBuffer must be

@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
@@ -37,7 +38,7 @@ import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
  * A TextureAtlas must be disposed to free up the resources consumed by the backing textures.
  * @author Nathan Sweet
  */
-public class TextureAtlas {
+public class TextureAtlas implements Disposable {
 	static private final String[] tuple = new String[2];
 
 	private final HashSet<Texture> textures = new HashSet(4);

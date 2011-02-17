@@ -13,6 +13,8 @@
 
 package com.badlogic.gdx.audio;
 
+import com.badlogic.gdx.utils.Disposable;
+
 /**
  * Encapsulates an audio device in 44.1khz mono or stereo mode. Use the {@link #writeSamples(float[], int, int)} and
  * {@link #writeSamples(short[], int, int)} methods to write float or 16-bit signed short PCM data directly to the audio device.
@@ -22,7 +24,7 @@ package com.badlogic.gdx.audio;
  * @author badlogicgames@gmail.com
  * 
  */
-public interface AudioDevice {
+public interface AudioDevice extends Disposable {
 	/**
 	 * @return whether this AudioDevice is in mono or stereo mode.
 	 */

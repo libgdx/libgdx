@@ -16,6 +16,7 @@ package com.badlogic.gdx.graphics.glutils;
 import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * A VertexData instance holds vertices for rendering with OpenGL. It is implemented as either a {@link VertexArray} or a
@@ -24,7 +25,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
  * @author mzechner
  * 
  */
-public interface VertexData {
+public interface VertexData extends Disposable {
 	/**
 	 * @return the number of vertices this VertexData stores
 	 */

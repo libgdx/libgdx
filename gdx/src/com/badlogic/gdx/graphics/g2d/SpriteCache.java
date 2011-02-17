@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.MathUtils;
 
@@ -62,7 +63,7 @@ import static com.badlogic.gdx.graphics.g2d.Sprite.*;
  * SpriteCache must be disposed once it is no longer needed.
  * @author Nathan Sweet
  */
-public class SpriteCache {
+public class SpriteCache implements Disposable {
 	static private final float[] tempVertices = new float[VERTEX_SIZE * 6];
 
 	private final Mesh mesh;

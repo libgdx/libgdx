@@ -15,13 +15,15 @@ package com.badlogic.gdx.audio.analysis;
 
 import java.nio.FloatBuffer;
 
+import com.badlogic.gdx.utils.Disposable;
+
 /**
  * A native implementation of the Fast Fourier Transform, directly ported from the {@link FFT} class.
  * 
  * @author mzechner
  * 
  */
-public class NativeFFT {
+public class NativeFFT implements Disposable {
 	/** the handle to the native fft instance **/
 	private long handle;
 

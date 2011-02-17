@@ -15,6 +15,7 @@ package com.badlogic.gdx.audio;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * <p>
@@ -29,7 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
  * @author badlogicgames@gmail.com
  * 
  */
-public interface Sound {
+public interface Sound extends Disposable {
 	/**
 	 * Plays the sound, you can call this repeatedly to play the same sound a couple of times with a bit of lag introduced.
 	 */

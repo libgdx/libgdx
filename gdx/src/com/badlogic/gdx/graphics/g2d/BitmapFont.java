@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -51,7 +52,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Nathan Sweet
  * @author Matthias Mann
  */
-public class BitmapFont {
+public class BitmapFont implements Disposable {
 	static private final int LOG2_PAGE_SIZE = 9;
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;

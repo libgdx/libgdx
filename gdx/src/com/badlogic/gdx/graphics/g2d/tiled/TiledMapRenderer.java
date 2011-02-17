@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 
@@ -29,7 +30,7 @@ import com.badlogic.gdx.utils.IntArray;
  * A renderer for Tiled maps backed with a Sprite Cache.
  * @author David Fraska
  * */
-public class TiledMapRenderer {
+public class TiledMapRenderer implements Disposable {
 	private SpriteCache cache;
 	private int normalCacheId[][][], blendedCacheId[][][];
 

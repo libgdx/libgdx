@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -58,7 +59,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author mzechner
  * 
  */
-public class ShaderProgram {
+public class ShaderProgram implements Disposable {
 	/** the list of currently available shaders **/
 	private final static ArrayList<ShaderProgram> shaders = new ArrayList<ShaderProgram>();
 

@@ -37,6 +37,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
 
 /**
@@ -44,7 +45,7 @@ import com.badlogic.gdx.utils.LongMap;
  * memory management facilities.
  * @author mzechner
  */
-public class World {
+public class World implements Disposable {
 	/** the address of the world instance **/
 	private final long addr;
 

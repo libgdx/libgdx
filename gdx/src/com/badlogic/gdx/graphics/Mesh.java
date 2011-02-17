@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObjectSubData;
 import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -60,7 +61,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * 
  */
-public class Mesh {
+public class Mesh implements Disposable {
 	public enum VertexDataType {
 		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
 	}

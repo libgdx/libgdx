@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.MathUtils;
 
@@ -69,7 +70,7 @@ import com.badlogic.gdx.utils.MathUtils;
  * @author mzechner
  * 
  */
-public class SpriteBatch {
+public class SpriteBatch implements Disposable {
 	private Mesh mesh;
 	private Mesh[] buffers;
 

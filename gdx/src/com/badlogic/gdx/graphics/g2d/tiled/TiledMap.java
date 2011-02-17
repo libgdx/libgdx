@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Contains information from a Tiled Map. Use {@link TiledLoader#createMap(FileHandle)} to fill it.

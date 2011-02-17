@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -36,7 +37,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Pixmap {
+public class Pixmap implements Disposable {
 	/**
 	 * Different pixel formats.
 	 * 

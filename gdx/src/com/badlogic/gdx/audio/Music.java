@@ -17,6 +17,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * <p>
@@ -36,7 +37,7 @@ import com.badlogic.gdx.files.FileHandle;
  * @author mzechner
  * 
  */
-public interface Music {
+public interface Music extends Disposable {
 	/**
 	 * Starts the play back of the music stream. In case the stream was paused this will resume the play back. In case the music
 	 * stream is finished playing this will restart the play back.

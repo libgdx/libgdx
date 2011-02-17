@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -26,7 +27,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Mario Zechner <contact@badlogicgames.com>, Nathan Sweet <admin@esotericsoftware.com>, Dave Clayton <contact@redskyforge.com>
  *
  */
-public class MD5Renderer {
+public class MD5Renderer implements Disposable{
 	private final MD5Model model;
 	private final Mesh mesh;
 	private final short[][] indices;

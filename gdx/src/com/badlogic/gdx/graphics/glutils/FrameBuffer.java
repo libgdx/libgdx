@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -45,7 +46,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * 
  */
-public class FrameBuffer {
+public class FrameBuffer implements Disposable {
 	/** the frame buffers **/
 	private final static ArrayList<FrameBuffer> buffers = new ArrayList<FrameBuffer>();
 

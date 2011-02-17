@@ -20,13 +20,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
 
 /**
  * Contains an atlas of tiles by tile id for use with {@link TiledMapRenderer}
  * @author David Fraska
  */
-public class TileAtlas {
+public class TileAtlas implements Disposable {
 	private IntMap<AtlasRegion> regionsMap;
 	private final HashSet<Texture> textures = new HashSet<Texture>(1);
 

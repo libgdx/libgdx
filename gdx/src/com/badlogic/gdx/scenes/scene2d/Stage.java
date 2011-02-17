@@ -20,6 +20,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * <p>
@@ -42,7 +43,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author mzechner
  * 
  */
-public class Stage extends InputAdapter {
+public class Stage extends InputAdapter implements Disposable {
 	protected float width;
 	protected float height;
 	protected float centerX;
