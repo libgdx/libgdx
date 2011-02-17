@@ -93,6 +93,28 @@ public class BitmapFontCache implements Disposable {
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(font.getRegion().getTexture(), vertices, 0, idx);
 	}
+	
+	Color tmpColor = new Color(Color.WHITE);
+	public void draw(SpriteBatch spriteBatch, float alphaModulation) {
+		Color color = getColor();
+		float oldAlpha = color.a;
+		color.a *= alphaModulation;
+		setColor(color);
+		draw(spriteBatch);
+		color.a = oldAlpha;
+		setColor(color);
+	}
+	
+	public Color getColor() {		
+		float floatBits = color;
+		int intBits = Float.floatToRawIntBits(color);
+		Color color = tmpColor;
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
 
 	private void reset (int glyphCount) {
 		x = 0;
