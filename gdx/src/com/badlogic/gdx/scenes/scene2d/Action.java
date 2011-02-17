@@ -30,7 +30,7 @@ public abstract class Action {
 	 * 
 	 * @param actor the actor.
 	 */
-	public abstract void setTarget (Actor actor);	
+	public abstract void setTarget (Actor actor);
 
 	/**
 	 * Apply the action.
@@ -64,7 +64,7 @@ public abstract class Action {
 	 * @param listener
 	 * @return this
 	 */
-	public Action setCompletionListener (OnActionCompleted listener) {
+	public Action setCompletionListener (final OnActionCompleted listener) {
 		this.listener = listener;
 		return this;
 	}
@@ -74,6 +74,13 @@ public abstract class Action {
 	 */
 	public OnActionCompleted getCompletionListener () {
 		return listener;
+	}
+
+	/**
+	 * Sets the Action back to a vanilla state.
+	 */
+	public void reset () {
+		listener = null;
 	}
 
 }

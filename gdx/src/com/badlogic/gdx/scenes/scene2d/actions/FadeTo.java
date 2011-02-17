@@ -17,11 +17,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.AnimationAction;
-import com.badlogic.gdx.utils.Pool;
 
 public class FadeTo extends AnimationAction {
 
-	private static final Pool<FadeTo> pool = new Pool<FadeTo>(4, 100) {
+	private static final ActionResetingPool<FadeTo> pool = new ActionResetingPool<FadeTo>(4, 100) {
 		@Override protected FadeTo newObject () {
 			return new FadeTo();
 		}
@@ -36,7 +35,6 @@ public class FadeTo extends AnimationAction {
 		action.toAlpha = Math.min(Math.max(alpha, 0.0f), 1.0f);
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.listener = null;
 		return action;
 	}
 

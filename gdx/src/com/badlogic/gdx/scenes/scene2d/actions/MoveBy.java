@@ -17,11 +17,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.AnimationAction;
-import com.badlogic.gdx.utils.Pool;
 
 public class MoveBy extends AnimationAction {
 
-	private static final Pool<MoveBy> pool = new Pool<MoveBy>(4, 100) {
+	private static final ActionResetingPool<MoveBy> pool = new ActionResetingPool<MoveBy>(4, 100) {
 		@Override protected MoveBy newObject () {
 			return new MoveBy();
 		}
@@ -40,7 +39,6 @@ public class MoveBy extends AnimationAction {
 		action.y = y;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.listener = null;
 		return action;
 	}
 

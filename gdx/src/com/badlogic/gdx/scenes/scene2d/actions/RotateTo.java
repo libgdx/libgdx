@@ -17,11 +17,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.AnimationAction;
-import com.badlogic.gdx.utils.Pool;
 
 public class RotateTo extends AnimationAction {
 
-	private static final Pool<RotateTo> pool = new Pool<RotateTo>(4, 100) {
+	private static final ActionResetingPool<RotateTo> pool = new ActionResetingPool<RotateTo>(4, 100) {
 		@Override protected RotateTo newObject () {
 			return new RotateTo();
 		}
@@ -36,7 +35,6 @@ public class RotateTo extends AnimationAction {
 		action.rotation = rotation;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.listener = null;
 		return action;
 	}
 

@@ -17,11 +17,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.AnimationAction;
-import com.badlogic.gdx.utils.Pool;
 
 public class FadeIn extends AnimationAction {
 
-	private static final Pool<FadeIn> pool = new Pool<FadeIn>(4, 100) {
+	private static final ActionResetingPool<FadeIn> pool = new ActionResetingPool<FadeIn>(4, 100) {
 		@Override protected FadeIn newObject () {
 			return new FadeIn();
 		}
@@ -34,7 +33,6 @@ public class FadeIn extends AnimationAction {
 		FadeIn action = pool.obtain();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.listener = null;
 		return action;
 	}
 

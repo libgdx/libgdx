@@ -14,17 +14,13 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.AnimationAction;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.utils.Pool;
 
 public class FadeOut extends AnimationAction {
 
-	private static final Pool<FadeOut> pool = new Pool<FadeOut>(4, 100) {
+	private static final ActionResetingPool<FadeOut> pool = new ActionResetingPool<FadeOut>(4, 100) {
 		@Override protected FadeOut newObject () {
 			return new FadeOut();
 		}
@@ -37,7 +33,6 @@ public class FadeOut extends AnimationAction {
 		FadeOut action = pool.obtain();
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.listener = null;
 		return action;
 	}
 
@@ -51,12 +46,12 @@ public class FadeOut extends AnimationAction {
 	}
 
 	@Override public void act (float delta) {
-		float alpha = createInterpolatedAlpha(delta);		
+		float alpha = createInterpolatedAlpha(delta);
 		if (done) {
 			target.color.a = 0.0f;
 		} else {
 			target.color.a = startAlpha + deltaAlpha * alpha;
-		}		
+		}
 	}
 
 	@Override public void finish () {

@@ -17,11 +17,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.AnimationAction;
-import com.badlogic.gdx.utils.Pool;
 
 public class ScaleTo extends AnimationAction {
 
-	private static final Pool<ScaleTo> pool = new Pool<ScaleTo>(4, 100) {
+	private static final ActionResetingPool<ScaleTo> pool = new ActionResetingPool<ScaleTo>(4, 100) {
 		@Override protected ScaleTo newObject () {
 			return new ScaleTo();
 		}
@@ -40,7 +39,6 @@ public class ScaleTo extends AnimationAction {
 		action.scaleY = scaleY;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
-		action.listener = null;
 		return action;
 	}
 
