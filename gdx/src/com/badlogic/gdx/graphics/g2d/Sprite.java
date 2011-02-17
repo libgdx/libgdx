@@ -408,9 +408,9 @@ public class Sprite extends TextureRegion {
 		miny = miny > vertices[Y3]? vertices[Y3]: miny;
 		miny = miny > vertices[Y4]? vertices[Y4]: miny;
 		
-		maxy = maxy > vertices[Y2]? vertices[Y2]: maxy;
-		maxy = maxy > vertices[Y3]? vertices[Y3]: maxy;
-		maxy = maxy > vertices[Y4]? vertices[Y4]: maxy;
+		maxy = maxy < vertices[Y2]? vertices[Y2]: maxy;
+		maxy = maxy < vertices[Y3]? vertices[Y3]: maxy;
+		maxy = maxy < vertices[Y4]? vertices[Y4]: maxy;
 		
 		bounds.x = minx;
 		bounds.y = miny;
