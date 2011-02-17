@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.math.Vector3;
 
-public class PerspectiveCamera extends BaseCamera {	
+public class PerspectiveCamera extends Camera {	
 	/** the field of view in degrees **/
 	public float fieldOfView = 67;
 	

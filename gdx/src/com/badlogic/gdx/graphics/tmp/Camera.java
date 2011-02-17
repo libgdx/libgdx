@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
-public abstract class BaseCamera {				
+public abstract class Camera {				
 	/** the position of the camera **/
 	public final Vector3 position = new Vector3();
 	/** the unit length direction vector of the camera **/

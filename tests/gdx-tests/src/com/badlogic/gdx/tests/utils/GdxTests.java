@@ -29,6 +29,7 @@ import com.badlogic.gdx.tests.BobTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.CompassTest;
+import com.badlogic.gdx.tests.CullTest;
 import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FloatTest;
@@ -116,6 +117,7 @@ public class GdxTests
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		CompassTest.class,
+		CullTest.class,
 		FilesTest.class,
 		//FillrateTest.class,
 		FloatTest.class,

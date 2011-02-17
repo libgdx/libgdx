@@ -392,11 +392,11 @@ public class Matrix4 implements Serializable {
 	 * @param aspectRatio The aspect ratio
 	 * @return This matrix for chaining
 	 */
-	public Matrix4 setToProjection (float near, float far, float fov, float aspectRatio) {
+	public Matrix4 setToProjection (float near, float far, float fov, float aspectRatio) {				
 		this.idt();
 		float l_fd = (float)(1.0 / Math.tan((fov * (Math.PI / 180)) / 2.0));
-		float l_a1 = -(far + near) / (far - near);
-		float l_a2 = -(2 * far * near) / (far - near);
+		float l_a1 = (far + near) / (near - far);
+		float l_a2 = (2 * far * near) / (near - far);
 		val[M00] = l_fd / aspectRatio;
 		val[M10] = 0;
 		val[M20] = 0;
@@ -470,7 +470,7 @@ public class Matrix4 implements Serializable {
 
 		float tx = -(right + left) / (right - left);
 		float ty = -(top + bottom) / (top - bottom);
-		float tz = (far + near) / (far - near);
+		float tz = -(far + near) / (far - near);
 
 		val[M00] = x_orth;
 		val[M10] = 0;
