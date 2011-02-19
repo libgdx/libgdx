@@ -140,6 +140,9 @@ public class LongArray {
 		return false;
 	}
 
+	/**
+	 * Removes the item at the specified index. Use {@link #pop(int)} to obtain the removed item.
+	 */
 	public void removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
