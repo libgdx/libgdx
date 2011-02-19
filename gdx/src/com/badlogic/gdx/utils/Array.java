@@ -76,67 +76,53 @@ public class Array<T> implements Iterable<T> {
 
 	public void add (T value) {
 		T[] items = this.items;
-		if (size == items.length) {
-			items = resize(Math.max(8, (int)(size * 1.75f)));
-		}
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		items[size++] = value;
 	}
 
-	public void add (Array array) {
-		add(array, 0, array.size);
+	public void addAll (Array array) {
+		addAll(array, 0, array.size);
 	}
 
-	public void add (Array array, int offset, int length) {
-		if (offset + length > array.size) {
+	public void addAll (Array array, int offset, int length) {
+		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		}
 		T[] items = this.items;
 		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) {
-			items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		}
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array.items, 0, items, size, array.size);
 		size += array.size;
 	}
 
-	public void add (T[] array) {
-		add(array, 0, array.length);
+	public void addAll (T[] array) {
+		addAll(array, 0, array.length);
 	}
 
-	public void add (T[] array, int offset, int length) {
+	public void addAll (T[] array, int offset, int length) {
 		T[] items = this.items;
 		int sizeNeeded = size + length - offset;
-		if (sizeNeeded >= items.length) {
-			items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		}
+		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
 
 	public T get (int index) {
-		if (index >= size) {
-			throw new IndexOutOfBoundsException(String.valueOf(index));
-		}
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		return items[index];
 	}
 
 	public void set (int index, T value) {
-		if (index >= size) {
-			throw new IndexOutOfBoundsException(String.valueOf(index));
-		}
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		items[index] = value;
 	}
 
 	public void insert (int index, T value) {
 		T[] items = this.items;
-		if (size == items.length) {
-			items = resize(Math.max(8, (int)(size * 1.75f)));
-		}
-		if (ordered) {
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		if (ordered)
 			System.arraycopy(items, index, items, index + 1, size - index);
-		} else {
+		else
 			items[size] = items[index];
-		}
 		size++;
 		items[index] = value;
 	}
@@ -145,17 +131,11 @@ public class Array<T> implements Iterable<T> {
 		Object[] items = this.items;
 		int i = size - 1;
 		if (identity || value == null) {
-			while (i >= 0) {
-				if (items[i--] == value) {
-					return true;
-				}
-			}
+			while (i >= 0)
+				if (items[i--] == value) return true;
 		} else {
-			while (i >= 0) {
-				if (value.equals(items[i--])) {
-					return true;
-				}
-			}
+			while (i >= 0)
+				if (value.equals(items[i--])) return true;
 		}
 		return false;
 	}
@@ -163,17 +143,11 @@ public class Array<T> implements Iterable<T> {
 	public int indexOf (T value, boolean identity) {
 		Object[] items = this.items;
 		if (identity || value == null) {
-			for (int i = 0, n = size; i < n; i++) {
-				if (items[i] == value) {
-					return i;
-				}
-			}
+			for (int i = 0, n = size; i < n; i++)
+				if (items[i] == value) return i;
 		} else {
-			for (int i = 0, n = size; i < n; i++) {
-				if (value.equals(items[i])) {
-					return i;
-				}
-			}
+			for (int i = 0, n = size; i < n; i++)
+				if (value.equals(items[i])) return i;
 		}
 		return -1;
 	}
@@ -198,20 +172,15 @@ public class Array<T> implements Iterable<T> {
 		return false;
 	}
 
-	public T removeIndex (int index) {
-		if (index >= size) {
-			throw new IndexOutOfBoundsException(String.valueOf(index));
-		}
+	public void removeIndex (int index) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		size--;
-		T[] items = this.items;
-		T result = items[index];
-		if (ordered) {
+		Object[] items = this.items;
+		if (ordered)
 			System.arraycopy(items, index + 1, items, index, size - index);
-		} else {
+		else
 			items[index] = items[size];
-		}
 		items[size] = null;
-		return result;
 	}
 
 	/**
@@ -228,17 +197,14 @@ public class Array<T> implements Iterable<T> {
 	 * Removes and returns the item at the specified index.
 	 */
 	public T pop (int index) {
-		if (index >= size) {
-			throw new IndexOutOfBoundsException(String.valueOf(index));
-		}
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		Object[] items = this.items;
 		T value = (T)items[index];
 		size--;
-		if (ordered) {
+		if (ordered)
 			System.arraycopy(items, index + 1, items, index, size - index);
-		} else {
+		else
 			items[index] = items[size];
-		}
 		items[size] = null;
 		return value;
 	}
@@ -258,12 +224,12 @@ public class Array<T> implements Iterable<T> {
 	/**
 	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes.
+	 * @return {@link #items}
 	 */
-	public void ensureCapacity (int additionalCapacity) {
+	public T[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) {
-			resize(Math.max(8, sizeNeeded));
-		}
+		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
+		return items;
 	}
 
 	protected T[] resize (int newSize) {
@@ -312,17 +278,13 @@ public class Array<T> implements Iterable<T> {
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration.
 	 */
 	public Iterator<T> iterator () {
-		if (iterator == null) {
-			iterator = new ArrayIterator(this);
-		}
+		if (iterator == null) iterator = new ArrayIterator(this);
 		iterator.index = 0;
 		return iterator;
 	}
 
-	@Override public String toString () {
-		if (size == 0) {
-			return "[]";
-		}
+	public String toString () {
+		if (size == 0) return "[]";
 		Object[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
@@ -348,9 +310,7 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public T next () {
-			if (index >= array.size) {
-				throw new NoSuchElementException(String.valueOf(index));
-			}
+			if (index >= array.size) throw new NoSuchElementException(String.valueOf(index));
 			return array.items[index++];
 		}
 
