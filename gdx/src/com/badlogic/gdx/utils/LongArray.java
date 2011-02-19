@@ -141,29 +141,9 @@ public class LongArray {
 	}
 
 	/**
-	 * Removes the item at the specified index. Use {@link #pop(int)} to obtain the removed item.
-	 */
-	public void removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		size--;
-		long[] items = this.items;
-		if (ordered)
-			System.arraycopy(items, index + 1, items, index, size - index);
-		else
-			items[index] = items[size];
-	}
-
-	/**
-	 * Removes and returns the last item.
-	 */
-	public long pop () {
-		return items[--size];
-	}
-
-	/**
 	 * Removes and returns the item at the specified index.
 	 */
-	public long pop (int index) {
+	public long removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		long[] items = this.items;
 		long value = items[index];
@@ -173,6 +153,13 @@ public class LongArray {
 		else
 			items[index] = items[size];
 		return value;
+	}
+
+	/**
+	 * Removes and returns the last item.
+	 */
+	public long pop () {
+		return items[--size];
 	}
 
 	public void clear () {

@@ -173,33 +173,9 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/**
-	 * Removes the item at the specified index. Use {@link #pop(int)} to obtain the removed item.
-	 */
-	public void removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		size--;
-		Object[] items = this.items;
-		if (ordered)
-			System.arraycopy(items, index + 1, items, index, size - index);
-		else
-			items[index] = items[size];
-		items[size] = null;
-	}
-
-	/**
-	 * Removes and returns the last item.
-	 */
-	public T pop () {
-		--size;
-		T item = items[size];
-		items[size] = null;
-		return item;
-	}
-
-	/**
 	 * Removes and returns the item at the specified index.
 	 */
-	public T pop (int index) {
+	public T removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		Object[] items = this.items;
 		T value = (T)items[index];
@@ -210,6 +186,16 @@ public class Array<T> implements Iterable<T> {
 			items[index] = items[size];
 		items[size] = null;
 		return value;
+	}
+
+	/**
+	 * Removes and returns the last item.
+	 */
+	public T pop () {
+		--size;
+		T item = items[size];
+		items[size] = null;
+		return item;
 	}
 
 	public void clear () {
