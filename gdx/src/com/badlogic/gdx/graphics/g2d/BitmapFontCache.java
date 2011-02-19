@@ -40,6 +40,7 @@ public class BitmapFontCache implements Disposable {
 	private int idx;
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
+	private final Color tmpColor = new Color(Color.WHITE);
 	private final TextBounds textBounds = new TextBounds();
 
 	public BitmapFontCache (BitmapFont font) {
@@ -93,9 +94,8 @@ public class BitmapFontCache implements Disposable {
 	public void draw (SpriteBatch spriteBatch) {
 		spriteBatch.draw(font.getRegion().getTexture(), vertices, 0, idx);
 	}
-	
-	Color tmpColor = new Color(Color.WHITE);
-	public void draw(SpriteBatch spriteBatch, float alphaModulation) {
+
+	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
 		Color color = getColor();
 		float oldAlpha = color.a;
 		color.a *= alphaModulation;
@@ -104,8 +104,8 @@ public class BitmapFontCache implements Disposable {
 		color.a = oldAlpha;
 		setColor(color);
 	}
-	
-	public Color getColor() {		
+
+	public Color getColor () {
 		float floatBits = color;
 		int intBits = Float.floatToRawIntBits(color);
 		Color color = tmpColor;
@@ -367,11 +367,11 @@ public class BitmapFontCache implements Disposable {
 	public float getY () {
 		return y;
 	}
-	
+
 	/**
 	 * Disposes the underlying BitmapFont of this cache.
 	 */
-	public void dispose() {
+	public void dispose () {
 		font.dispose();
 	}
 }
