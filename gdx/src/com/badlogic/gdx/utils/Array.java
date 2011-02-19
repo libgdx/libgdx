@@ -198,13 +198,23 @@ public class Array<T> implements Iterable<T> {
 		return item;
 	}
 
+	/**
+	 * Returns the last item.
+	 */
+	public T peek () {
+		return items[size - 1];
+	}
+
 	public void clear () {
 		size = 0;
+		Object[] items = this.items;
+		for (int i = 0, n = size; i < n; i++)
+			items[i] = null;
 	}
 
 	/**
 	 * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known the more items will not be added.
+	 * been removed, or if it is known that more items will not be added.
 	 */
 	public void shrink () {
 		resize(size);
