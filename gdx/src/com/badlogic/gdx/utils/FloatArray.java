@@ -67,11 +67,11 @@ public class FloatArray {
 		items[size++] = value;
 	}
 
-	public void add (FloatArray array) {
-		add(array, 0, array.size);
+	public void addAll (FloatArray array) {
+		addAll(array, 0, array.size);
 	}
 
-	public void add (FloatArray array, int offset, int length) {
+	public void addAll (FloatArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		float[] items = this.items;
@@ -81,11 +81,11 @@ public class FloatArray {
 		size += length;
 	}
 
-	public void add (float[] array) {
-		add(array, 0, array.length);
+	public void addAll (float[] array) {
+		addAll(array, 0, array.length);
 	}
 
-	public void add (float[] array, int offset, int length) {
+	public void addAll (float[] array, int offset, int length) {
 		float[] items = this.items;
 		int sizeNeeded = size + length - offset;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
@@ -187,10 +187,12 @@ public class FloatArray {
 	/**
 	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes.
+	 * @return {@link #items}
 	 */
-	public void ensureCapacity (int additionalCapacity) {
+	public float[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
+		return items;
 	}
 
 	protected float[] resize (int newSize) {

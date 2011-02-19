@@ -498,7 +498,7 @@ public class ObjectMap<K, V> {
 	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
 	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
 	 */
-	public Keys keys () {
+	public Keys<K> keys () {
 		if (keys == null)
 			keys = new Keys(this);
 		else

@@ -67,11 +67,11 @@ public class IntArray {
 		items[size++] = value;
 	}
 
-	public void add (IntArray array) {
-		add(array, 0, array.size);
+	public void addAll (IntArray array) {
+		addAll(array, 0, array.size);
 	}
 
-	public void add (IntArray array, int offset, int length) {
+	public void addAll (IntArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		int[] items = this.items;
@@ -81,11 +81,11 @@ public class IntArray {
 		size += array.size;
 	}
 
-	public void add (int[] array) {
-		add(array, 0, array.length);
+	public void addAll (int[] array) {
+		addAll(array, 0, array.length);
 	}
 
-	public void add (int[] array, int offset, int length) {
+	public void addAll (int[] array, int offset, int length) {
 		int[] items = this.items;
 		int sizeNeeded = size + length - offset;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
@@ -187,10 +187,12 @@ public class IntArray {
 	/**
 	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes.
+	 * @return {@link #items}
 	 */
-	public void ensureCapacity (int additionalCapacity) {
+	public int[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
+		return items;
 	}
 
 	protected int[] resize (int newSize) {

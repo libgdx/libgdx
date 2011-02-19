@@ -48,6 +48,7 @@ public class TexturePacker {
 	static Pattern indexPattern = Pattern.compile(".+_(\\d+)(_.*|$)");
 
 	ArrayList<Image> images = new ArrayList();
+	HashMap<String, Image> imageCrcs = new HashMap();
 	FileWriter writer;
 	int uncompressedSize, compressedSize;
 	int xPadding, yPadding;
@@ -95,7 +96,18 @@ public class TexturePacker {
 
 	public void addImage (BufferedImage image, String name) {
 		Image squeezed = squeeze(image, name);
-		if (squeezed != null) images.add(squeezed);
+		if (squeezed != null) {
+			if (settings.alias) {
+				String crc = hash(squeezed);
+				Image existing = imageCrcs.get(crc);
+				if (existing != null) {
+					existing.aliases.add(squeezed);
+					return;
+				}
+				imageCrcs.put(crc, squeezed);
+			}
+			images.add(squeezed);
+		}
 	}
 
 	public void process (File outputDir, File packFile, String prefix) throws IOException {
@@ -293,7 +305,6 @@ public class TexturePacker {
 			usedPixels += image.getWidth() * image.getHeight();
 			images.remove(i);
 			if (canvas != null) {
-				System.out.println("Packing... " + image.name);
 				node.writePackEntry();
 				Graphics2D g = (Graphics2D)canvas.getGraphics();
 				if (image.rotate) {
@@ -339,7 +350,8 @@ public class TexturePacker {
 		if (!filter.accept(source)) return null;
 		uncompressedSize += source.getWidth() * source.getHeight();
 		WritableRaster alphaRaster = source.getAlphaRaster();
-		if (alphaRaster == null || !settings.stripWhitespace) return new Image(name, source, 0, 0, source.getWidth(), source.getHeight());
+		if (alphaRaster == null || !settings.stripWhitespace)
+			return new Image(name, source, 0, 0, source.getWidth(), source.getHeight());
 		final byte[] a = new byte[1];
 		int top = 0;
 		int bottom = source.getHeight();
@@ -398,6 +410,23 @@ public class TexturePacker {
 		return new Image(name, source, left, top, newWidth, newHeight);
 	}
 
+	static private String hash (BufferedImage image) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA1");
+			WritableRaster raster = image.getRaster();
+			final byte[] pixel = new byte[4];
+			for (int y = 0; y < image.getHeight(); y++) {
+				for (int x = 0; x < image.getWidth(); x++) {
+					raster.getDataElements(x, y, pixel);
+					digest.update(pixel);
+				}
+			}
+			return new BigInteger(1, digest.digest()).toString(16);
+		} catch (NoSuchAlgorithmException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
 	private class Node {
 		int left, top, width, height;
 		Node child1, child2;
@@ -448,8 +477,16 @@ public class TexturePacker {
 		}
 
 		void writePackEntry () throws IOException {
+			writePackEntry(image);
+			for (Image alias : image.aliases)
+				writePackEntry(alias);
+		}
+
+		private void writePackEntry (Image image) throws IOException {
 			String imageName = image.name;
 			imageName = imageName.replace("\\", "/");
+
+			System.out.println("Packing... " + imageName);
 
 			Matcher matcher = indexPattern.matcher(imageName);
 			int index = -1;
@@ -473,6 +510,7 @@ public class TexturePacker {
 		final int offsetX, offsetY;
 		final int originalWidth, originalHeight;
 		boolean rotate;
+		ArrayList<Image> aliases = new ArrayList();
 
 		public Image (String name, BufferedImage src, int left, int top, int newWidth, int newHeight) {
 			super(src.getColorModel(), src.getRaster().createWritableChild(left, top, newWidth, newHeight, 0, 0, null), src
@@ -627,6 +665,7 @@ public class TexturePacker {
 		public int maxHeight = 512;
 		public boolean stripWhitespace = true;
 		public boolean incremental;
+		public boolean alias;
 
 		HashMap<String, Long> crcs = new HashMap();
 		HashMap<String, String> packSections = new HashMap();
@@ -845,6 +884,7 @@ public class TexturePacker {
 		input = args[0];
 		output = args[1];
 		Settings settings = new Settings();
+		settings.alias = true;
 		process(settings, input, output);
 	}
 }
