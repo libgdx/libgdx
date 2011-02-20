@@ -17,8 +17,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MultitouchTest extends GdxTest implements InputProcessor {

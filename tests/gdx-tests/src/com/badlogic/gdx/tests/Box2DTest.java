@@ -19,10 +19,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -41,7 +41,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the camera **/
-	private com.badlogic.gdx.graphics.tmp.OrthographicCamera camera;
+	private com.badlogic.gdx.graphics.OrthographicCamera camera;
 
 	/** the immediate mode renderer to output our debug drawings **/
 	private ImmediateModeRenderer renderer;

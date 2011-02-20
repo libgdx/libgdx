@@ -1,7 +1,7 @@
 package com.badlogic.gdx.tests.utils;
 
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 

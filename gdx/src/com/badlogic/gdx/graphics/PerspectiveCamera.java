@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.tmp;
+package com.badlogic.gdx.graphics;
 
 import java.util.Arrays;
 

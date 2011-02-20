@@ -16,9 +16,9 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -30,7 +30,7 @@ public class OrthoCamBorderTest extends GdxTest {
 
 	static final int WIDTH = 480;
 	static final int HEIGHT = 320;
-	com.badlogic.gdx.graphics.tmp.OrthographicCamera cam;
+	com.badlogic.gdx.graphics.OrthographicCamera cam;
 	Rectangle glViewport;
 	Mesh mesh;
 

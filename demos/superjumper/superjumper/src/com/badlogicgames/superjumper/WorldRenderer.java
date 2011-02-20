@@ -1,9 +1,9 @@
 
 package com.badlogicgames.superjumper;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 
 public class WorldRenderer {
 	static final float FRUSTUM_WIDTH = 10;
