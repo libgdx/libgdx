@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GLU;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -83,10 +84,10 @@ public abstract class Camera {
 	 */
 	public void translate(float x, float y, float z) {
 		position.add(x, y, z);
-	}
+	}	
 	
 	/**
-	 * Function to translate a point given in screen (or window)
+	 * Function to translate a point given in window (or window)
 	 * coordinates to world space. It's the same as {@link GLU#gluUnProject(float, float, float, float[], int, float[], int, int[], int, float[], int)}
 	 * but does not rely on OpenGL. The viewport is assuemd to span the whole screen
 	 * and is fetched from {@link Graphics#getWidth()} and {@link Graphics#getHeight()}. The
@@ -95,13 +96,30 @@ public abstract class Camera {
 	 * touch methods in {@link Input}. A z-coordinate of 0 will return a point on the
 	 * near plane, a z-coordinate of 1 will return a point on the far plane. 
 	 * 
-	 * @param vec the point in screen coordinates
+	 * @param vec the point in window coordinates
 	 */
 	public void unproject(Vector3 vec) {
 		vec.x = (2 * vec.x) / Gdx.graphics.getWidth() - 1;
 		vec.y = (2 * (Gdx.graphics.getHeight() - vec.y - 1)) / Gdx.graphics.getHeight() - 1;
 		vec.z = 2 * vec.z - 1;
 		vec.prj(invProjectionView);
+	}
+	
+	/**
+	 * Projects the {@link Vector3} given in object/world space to window coordinates. It's the
+	 * same as {@link GLU#gluProject(float, float, float, float[], int, float[], int, int[], int, float[], int)} with
+	 * one small deviation:
+	 * The viewport is assumed to span the whole screen. The window coordinate
+	 * system has its origin in the <b>bottom</b> left, with the y-axis pointing <b>upwards</b>
+	 * and the x-axis pointing to the right. This makes it easily useable in conjunction with
+	 * {@link SpriteBatch} and similar classes.
+	 * @param vec the position in object/world space.
+	 */
+	public void project(Vector3 vec) {
+		vec.prj(combined);
+		vec.x = Gdx.graphics.getWidth() * (vec.x + 1) / 2;
+		vec.y = Gdx.graphics.getHeight() * (vec.y + 1) / 2;
+		vec.z = (vec.z + 1) / 2;
 	}
 	
 	final Ray ray = new Ray(new Vector3(), new Vector3());
@@ -122,5 +140,5 @@ public abstract class Camera {
 		unproject(ray.direction.set(x, y, 1));
 		ray.direction.sub(ray.origin).nor();
 		return ray;
-	}
+	}	
 }

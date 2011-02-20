@@ -60,6 +60,7 @@ import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.Pong;
+import com.badlogic.gdx.tests.ProjectTest;
 import com.badlogic.gdx.tests.RotationTest;
 import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SimpleTest;
@@ -149,6 +150,7 @@ public class GdxTests
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		Pong.class,
+		ProjectTest.class,
 		ShaderMultitextureTest.class,
 		SplineTest.class,		
 		SimpleTest.class,
