@@ -5,9 +5,25 @@ import java.util.Arrays;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 
+/**
+ * A camera with orthographic projection.
+ * 
+ * @author mzechner
+ *
+ */
 public class OrthographicCamera extends Camera {
+	/** the zoom of the camera **/
 	public float zoom = 1;
 	
+	/**
+	 * Constructs a new OrthographicCamera, using the given viewport
+	 * width and height. For pixel perfect 2D rendering just supply
+	 * the screen size, for other unit scales (e.g. meters for box2d)
+	 * proceed accordingly. 
+	 * 
+	 * @param viewportWidth the viewport width
+	 * @param viewportHeight the viewport height
+	 */
 	public OrthographicCamera(float viewportWidth, float viewportHeight) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;		
