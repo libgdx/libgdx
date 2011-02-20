@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -30,7 +30,7 @@ public class OrthoCamBorderTest extends GdxTest {
 
 	static final int WIDTH = 480;
 	static final int HEIGHT = 320;
-	OrthographicCamera cam;
+	com.badlogic.gdx.graphics.tmp.OrthographicCamera cam;
 	Rectangle glViewport;
 	Mesh mesh;
 
@@ -39,9 +39,8 @@ public class OrthoCamBorderTest extends GdxTest {
 		mesh.setVertices(new float[] {0, 0, 1, 0, 0, 1, WIDTH, 0, 0, 1, 0, 1, WIDTH, HEIGHT, 0, 0, 1, 1, 0, HEIGHT, 1, 0, 1, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		cam = new OrthographicCamera();
-		cam.setViewport(WIDTH, HEIGHT);
-		cam.getPosition().set(WIDTH / 2, HEIGHT / 2, 0);
+		cam = new OrthographicCamera(WIDTH, HEIGHT);		
+		cam.position.set(WIDTH / 2, HEIGHT / 2, 0);
 
 		glViewport = calculateGLViewport(WIDTH, HEIGHT);
 	}
@@ -73,7 +72,8 @@ public class OrthoCamBorderTest extends GdxTest {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glViewport((int)glViewport.x, (int)glViewport.y, (int)glViewport.width, (int)glViewport.height);
 
-		cam.setMatrices();
+		cam.update();
+		cam.apply(gl);
 		mesh.render(GL10.GL_TRIANGLES);
 	}
 }

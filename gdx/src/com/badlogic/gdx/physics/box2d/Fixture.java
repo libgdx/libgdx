@@ -130,6 +130,15 @@ public class Fixture {
 	public boolean testPoint (Vector2 p) {
 		return jniTestPoint(addr, p.x, p.y);
 	}
+	
+	/**
+	 * Test a point for containment in this fixture.
+	 * @param x the x-coordinate
+	 * @param y the y-coordinate
+	 */
+	public boolean testPoint(float x, float y) {
+		return jniTestPoint(addr, x, y);
+	}
 
 	private native boolean jniTestPoint (long addr, float x, float y);
 

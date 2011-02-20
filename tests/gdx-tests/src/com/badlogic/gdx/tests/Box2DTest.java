@@ -20,10 +20,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -40,7 +41,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the camera **/
-	private OrthographicCamera camera;
+	private com.badlogic.gdx.graphics.tmp.OrthographicCamera camera;
 
 	/** the immediate mode renderer to output our debug drawings **/
 	private ImmediateModeRenderer renderer;
@@ -72,9 +73,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// We also position the camera so that it
 		// looks at (0,16) (that's where the middle of the
 		// screen will be located).
-		camera = new OrthographicCamera();
-		camera.setViewport(48, 32);
-		camera.getPosition().set(0, 16, 0);
+		camera = new OrthographicCamera(48,32);		
+		camera.position.set(0, 16, 0);
 
 		// next we setup the immediate mode renderer
 		renderer = new ImmediateModeRenderer();
@@ -169,7 +169,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// matrices
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		camera.setMatrices();
+		camera.update();
+		camera.apply(gl);
 
 		// next we render the ground body
 		renderBox(gl, groundBody, 50, 1);
@@ -239,7 +240,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	}
 
 	/** we instantiate this vector and the callback here so we don't irritate the GC **/
-	Vector2 testPoint = new Vector2();
+	Vector3 testPoint = new Vector3();
 	QueryCallback callback = new QueryCallback() {
 		@Override public boolean reportFixture (Fixture fixture) {
 			// if the hit fixture's body is the ground body
@@ -248,7 +249,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 			// if the hit point is inside the fixture of the body
 			// we report it
-			if (fixture.testPoint(testPoint)) {
+			if (fixture.testPoint(testPoint.x, testPoint.y)) {
 				hitBody = fixture.getBody();
 				return false;
 			} else
@@ -258,7 +259,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
 		// translate the mouse coordinates to world coordinates
-		camera.getScreenToWorld(x, y, testPoint);
+		testPoint.set(x, y, 0);
+		camera.unproject(testPoint);
+		
 		// ask the world which bodies are within the given
 		// bounding box around the mouse pointer
 		hitBody = null;
@@ -271,7 +274,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 			def.bodyA = groundBody;
 			def.bodyB = hitBody;
 			def.collideConnected = true;
-			def.target.set(testPoint);
+			def.target.set(testPoint.x, testPoint.y);
 			def.maxForce = 1000.0f * hitBody.getMass();
 
 			mouseJoint = (MouseJoint)world.createJoint(def);
@@ -293,9 +296,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// if a mouse joint exists we simply update
 		// the target of the joint based on the new
 		// mouse coordinates
-		if (mouseJoint != null) {
-			camera.getScreenToWorld(x, y, target);
-			mouseJoint.setTarget(target);
+		if (mouseJoint != null) {			
+			camera.unproject(testPoint.set(x, y,0));
+			mouseJoint.setTarget(target.set(testPoint.x, testPoint.y));
 		}
 		return false;
 	}

@@ -1,9 +1,9 @@
 
 package com.badlogicgames.superjumper;
 
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 
 public class WorldRenderer {
 	static final float FRUSTUM_WIDTH = 10;
@@ -15,16 +15,15 @@ public class WorldRenderer {
 
 	public WorldRenderer (SpriteBatch batch, World world) {
 		this.world = world;
-		this.cam = new OrthographicCamera();
-		this.cam.setViewport(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
-		this.cam.getPosition().set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
+		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);		
+		this.cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
 		this.batch = batch;
 	}
 
 	public void render () {
-		if (world.bob.position.y > cam.getPosition().y) cam.getPosition().y = world.bob.position.y;
+		if (world.bob.position.y > cam.position.y) cam.position.y = world.bob.position.y;
 		cam.update();
-		batch.setProjectionMatrix(cam.getCombinedMatrix());
+		batch.setProjectionMatrix(cam.combined);
 		renderBackground();
 		renderObjects();
 	}
@@ -32,7 +31,7 @@ public class WorldRenderer {
 	public void renderBackground () {
 		batch.disableBlending();
 		batch.begin();
-		batch.draw(Assets.backgroundRegion, cam.getPosition().x - FRUSTUM_WIDTH / 2, cam.getPosition().y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+		batch.draw(Assets.backgroundRegion, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 		batch.end();
 	}
 

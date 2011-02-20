@@ -15,18 +15,16 @@ package com.badlogic.gdx.tests;
 
 import java.util.Random;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.tmp.PerspectiveCamera;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
@@ -59,12 +57,10 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 
 	@Override public void create () {
 
-		camera = new PerspectiveCamera();
-		camera.getPosition().set((WIDTH) / 2.0f, (HEIGHT) / 2.0f, WIDTH / 2.0f);
-		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
-		camera.setFov(90);
-		camera.setNear(0.1f);
-		camera.setFar(1000);
+		camera = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
+		camera.position.set((WIDTH) / 2.0f, (HEIGHT) / 2.0f, WIDTH / 2.0f);
+		camera.near = 0.1f;
+		camera.far = 1000;
 		last = new float[WIDTH + 1][HEIGHT + 1];
 		curr = new float[WIDTH + 1][HEIGHT + 1];
 		intp = new float[WIDTH + 1][HEIGHT + 1];
@@ -170,15 +166,15 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 
 		camera.update();
 		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadMatrixf(camera.getCombinedMatrix().val, 0);
+		gl.glLoadMatrixf(camera.combined.val, 0);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
+		gl.glLoadIdentity();
 
 		accum += Gdx.graphics.getDeltaTime();
 		while (accum > TICK) {
 			for (int i = 0; i < 5; i++) {
 				if (Gdx.input.isTouched(i)) {
-					Ray ray = camera.getPickRay(Gdx.input.getX(i),
-						(int)(Gdx.input.getY(i) / (float)Gdx.graphics.getHeight() * Gdx.graphics.getWidth()));
+					Ray ray = camera.getPickRay(Gdx.input.getX(i), Gdx.input.getY(i));
 					Intersector.intersectRayPlane(ray, plane, point);
 					touchWater(point);
 				}

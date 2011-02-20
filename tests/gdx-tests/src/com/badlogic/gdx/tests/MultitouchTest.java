@@ -17,8 +17,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MultitouchTest extends GdxTest implements InputProcessor {
@@ -31,7 +31,8 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 	@Override public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setMatrices();
+		camera.update();
+		camera.apply(Gdx.gl10);
 		renderer.begin(GL10.GL_TRIANGLES);
 		int size = Math.max(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 10;
 		for (int i = 0; i < 10; i++) {
@@ -59,9 +60,8 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 	@Override public void create () {
 		Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.supportsMultitouch());
 		renderer = new ImmediateModeRenderer();
-		camera = new OrthographicCamera();
-		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.getPosition().set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
+		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		Gdx.input.setInputProcessor(this);
 	}
 

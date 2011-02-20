@@ -15,7 +15,6 @@ package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -24,7 +23,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TextureRenderTest extends GdxTest {
@@ -37,9 +36,8 @@ public class TextureRenderTest extends GdxTest {
 	Color color = new Color(Color.GREEN);
 
 	@Override public void create () {
-		camera = new OrthographicCamera();
-		camera.setViewport(480, 320);
-		camera.getPosition().set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+		camera = new OrthographicCamera(480, 320);		
+		camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
 		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogic.jpg"));
 		texture = new Texture(pixmap);
@@ -112,11 +110,7 @@ public class TextureRenderTest extends GdxTest {
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 
 		camera.update();
-
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadMatrixf(camera.getCombinedMatrix().val, 0);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
+		camera.apply(gl);
 
 		gl.glEnable(GL10.GL_BLEND);
 		gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);

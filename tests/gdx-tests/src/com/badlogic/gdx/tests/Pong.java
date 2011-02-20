@@ -18,8 +18,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -106,8 +106,7 @@ public class Pong extends GdxTest {
 		// on devices like the Droid. The screen center will be at (0,0)
 		// so that's the reference frame for our scene.
 		//
-		camera = new OrthographicCamera();
-		camera.setViewport(480, 320);
+		camera = new OrthographicCamera(480, 320);		
 	}
 
 	/**
@@ -131,10 +130,7 @@ public class Pong extends GdxTest {
 
 		// Next we update the camera and set the camera matrix
 		camera.update();
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadMatrixf(camera.getCombinedMatrix().val, 0);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
+		camera.apply(Gdx.gl10);
 
 		// Now we render the ball, we remember that we
 		// Defined 4 vertices so we use a triangle fan

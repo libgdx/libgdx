@@ -176,36 +176,36 @@ public class Matrix3 implements Serializable {
 		throw new GdxRuntimeException("Not implemented yet");
 	}
 
-	public static void main (String[] argv) {
-		float refX = 50, refY = -50;
-		float scaleX = 2, scaleY = 1;
-		float rotation = 45;
-		float x = -232, y = 123;
-
-		Matrix3 transform = new Matrix3();
-		Matrix3 tmp = new Matrix3();
-
-		tmp.vals = new float[] {-2, -1, 2, 2, 1, 0, -3, 3, -1};
-		System.out.println(tmp.det());
-
-		transform.idt();
-		transform.setToTranslation(-refX, -refY);
-		transform.mul(tmp.setToScaling(scaleX, scaleY));
-		transform.mul(tmp.setToRotation(rotation));
-		transform.mul(tmp.setToTranslation(refX, refY));
-		transform.mul(tmp.setToTranslation(x, y));
-		System.out.println(new Vector2().mul(transform));
-
-		Matrix4 transform4 = new Matrix4();
-		Matrix4 tmp4 = new Matrix4();
-		transform4.idt();
-		transform4.setToTranslation(-refX, -refY, 0);
-		transform4.mul(tmp4.setToScaling(scaleX, scaleY, 1));
-		transform4.mul(tmp4.setToRotation(new Vector3(0, 0, 1), rotation));
-		transform4.mul(tmp4.setToTranslation(refX, refY, 0));
-		transform4.mul(tmp4.setToTranslation(x, y, 0));
-		System.out.println(new Vector3().mul(transform4));
-	}
+//	public static void main (String[] argv) {
+//		float refX = 50, refY = -50;
+//		float scaleX = 2, scaleY = 1;
+//		float rotation = 45;
+//		float x = -232, y = 123;
+//
+//		Matrix3 transform = new Matrix3();
+//		Matrix3 tmp = new Matrix3();
+//
+//		tmp.vals = new float[] {-2, -1, 2, 2, 1, 0, -3, 3, -1};
+//		System.out.println(tmp.det());
+//
+//		transform.idt();
+//		transform.setToTranslation(-refX, -refY);
+//		transform.mul(tmp.setToScaling(scaleX, scaleY));
+//		transform.mul(tmp.setToRotation(rotation));
+//		transform.mul(tmp.setToTranslation(refX, refY));
+//		transform.mul(tmp.setToTranslation(x, y));
+//		System.out.println(new Vector2().mul(transform));
+//
+//		Matrix4 transform4 = new Matrix4();
+//		Matrix4 tmp4 = new Matrix4();
+//		transform4.idt();
+//		transform4.setToTranslation(-refX, -refY, 0);
+//		transform4.mul(tmp4.setToScaling(scaleX, scaleY, 1));
+//		transform4.mul(tmp4.setToRotation(new Vector3(0, 0, 1), rotation));
+//		transform4.mul(tmp4.setToTranslation(refX, refY, 0));
+//		transform4.mul(tmp4.setToTranslation(x, y, 0));
+//		System.out.println(new Vector3().mul(transform4));
+//	}
 
 	public Matrix3 set (Matrix3 mat) {
 		vals[0] = mat.vals[0];

@@ -6,10 +6,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogicgames.superjumper.World.WorldListener;
 
 public class GameScreen extends Screen {
@@ -21,7 +21,7 @@ public class GameScreen extends Screen {
 
 	int state;
 	OrthographicCamera guiCam;
-	Vector2 touchPoint;
+	Vector3 touchPoint;
 	SpriteBatch batcher;
 	World world;
 	WorldListener worldListener;
@@ -35,10 +35,9 @@ public class GameScreen extends Screen {
 	public GameScreen (Game game) {
 		super(game);
 		state = GAME_READY;
-		guiCam = new OrthographicCamera();
-		guiCam.setViewport(320, 480);
-		guiCam.getPosition().set(320 / 2, 480 / 2, 0);
-		touchPoint = new Vector2();
+		guiCam = new OrthographicCamera(320, 480);		
+		guiCam.position.set(320 / 2, 480 / 2, 0);
+		touchPoint = new Vector3();
 		batcher = new SpriteBatch();
 		worldListener = new WorldListener() {
 			@Override public void jump () {
@@ -96,9 +95,9 @@ public class GameScreen extends Screen {
 
 	private void updateRunning (float deltaTime) {
 		if (Gdx.input.justTouched()) {
-			guiCam.getScreenToWorld(Gdx.input.getX(), Gdx.input.getY(), touchPoint);
+			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));			
 
-			if (OverlapTester.pointInRectangle(pauseBounds, touchPoint)) {
+			if (OverlapTester.pointInRectangle(pauseBounds, touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				state = GAME_PAUSED;
 				return;
@@ -136,15 +135,15 @@ public class GameScreen extends Screen {
 
 	private void updatePaused () {
 		if (Gdx.input.justTouched()) {
-			guiCam.getScreenToWorld(Gdx.input.getX(), Gdx.input.getY(), touchPoint);
+			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			if (OverlapTester.pointInRectangle(resumeBounds, touchPoint)) {
+			if (OverlapTester.pointInRectangle(resumeBounds, touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				state = GAME_RUNNING;
 				return;
 			}
 
-			if (OverlapTester.pointInRectangle(quitBounds, touchPoint)) {
+			if (OverlapTester.pointInRectangle(quitBounds, touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new MainMenuScreen(game));
 				return;
@@ -176,7 +175,7 @@ public class GameScreen extends Screen {
 		renderer.render();
 
 		guiCam.update();
-		batcher.setProjectionMatrix(guiCam.getCombinedMatrix());	
+		batcher.setProjectionMatrix(guiCam.combined);	
 		batcher.enableBlending();
 		batcher.begin();		
 		switch (state) {

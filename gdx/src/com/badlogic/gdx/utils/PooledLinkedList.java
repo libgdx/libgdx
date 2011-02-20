@@ -119,35 +119,35 @@ public class PooledLinkedList<T> {
 		n.prev = p;
 	}
 
-	public static void main (String[] argv) {
-		PooledLinkedList<Integer> list = new PooledLinkedList<Integer>(10);
-
-		list.add(1);
-		list.add(2);
-		list.add(3);
-		list.add(4);
-		list.iter();
-		list.next();
-		list.next();
-		list.remove();
-		list.next();
-		list.next();
-		list.remove();
-
-		list.iter();
-		Integer v = null;
-		while ((v = list.next()) != null)
-			System.out.println(v);
-
-		list.iter();
-		list.next();
-		list.next();
-		list.remove();
-
-		list.iter();
-		list.next();
-		list.remove();
-	}
+//	public static void main (String[] argv) {
+//		PooledLinkedList<Integer> list = new PooledLinkedList<Integer>(10);
+//
+//		list.add(1);
+//		list.add(2);
+//		list.add(3);
+//		list.add(4);
+//		list.iter();
+//		list.next();
+//		list.next();
+//		list.remove();
+//		list.next();
+//		list.next();
+//		list.remove();
+//
+//		list.iter();
+//		Integer v = null;
+//		while ((v = list.next()) != null)
+//			System.out.println(v);
+//
+//		list.iter();
+//		list.next();
+//		list.next();
+//		list.remove();
+//
+//		list.iter();
+//		list.next();
+//		list.remove();
+//	}
 
 	public void clear () {
 		iter();

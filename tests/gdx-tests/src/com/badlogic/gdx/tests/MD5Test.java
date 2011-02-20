@@ -18,13 +18,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5AnimationInfo;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Joints;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Loader;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Model;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Renderer;
+import com.badlogic.gdx.graphics.tmp.PerspectiveCamera;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MD5Test extends GdxTest implements InputProcessor {
@@ -53,12 +53,10 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		// app.log( "MD5 Test", "took: " + (System.nanoTime() - start ) /
 		// 1000000000.0 );
 
-		camera = new PerspectiveCamera();
-		camera.getPosition().set(0, 25, 100);
-		camera.setFov(60);
-		camera.setNear(1);
-		camera.setFar(1000);
-		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(0, 25, 100);		
+		camera.near = 1;
+		camera.far = 1000;		
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -73,7 +71,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-		camera.setMatrices();
+		camera.update();
+		camera.apply(gl);
 		angle += Gdx.graphics.getDeltaTime() * 20;
 		animInfo.update(Gdx.graphics.getDeltaTime());
 
@@ -84,7 +83,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		float skinTime = 0;
 
 		for (int z = 0; z < 50; z += 50) {
-			gl.glLoadIdentity();
+			gl.glPushMatrix();
 			gl.glTranslatef(0, 0, -z);
 			gl.glRotatef(angle, 0, 1, 0);
 			gl.glRotatef(-90, 1, 0, 0);
@@ -98,6 +97,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 			start = System.nanoTime();
 			renderer.render();
 			renderTime = (System.nanoTime() - start) / 1000000000.0f;
+			gl.glPopMatrix();
 		}
 
 		gl.glDisable(GL10.GL_DEPTH_TEST);

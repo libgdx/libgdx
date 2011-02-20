@@ -18,22 +18,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.tmp.PerspectiveCamera;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LevelRenderer implements ApplicationListener {
@@ -47,11 +45,9 @@ public class LevelRenderer implements ApplicationListener {
 	float angle = -90;
 
 	@Override public void create () {
-		camera = new PerspectiveCamera();
-		camera.setNear(1);
-		camera.setFar(2000);
-		camera.setFov(67);
-		camera.getDirection().set(0, 0, -1);
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.near = 1;
+		camera.far = 2000;				
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -75,7 +71,7 @@ public class LevelRenderer implements ApplicationListener {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.internal("data/level.map").read()));
 			String line = reader.readLine();
 			String tokens[] = line.split(",");
-			camera.getPosition().set(Float.parseFloat(tokens[0]), 0, Float.parseFloat(tokens[1]));
+			camera.position.set(Float.parseFloat(tokens[0]), 0, Float.parseFloat(tokens[1]));
 			int floors = Integer.parseInt(reader.readLine());
 			int walls = Integer.parseInt(reader.readLine());
 			float[] floorVertices = new float[floors * 20];
@@ -192,9 +188,9 @@ public class LevelRenderer implements ApplicationListener {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
-
-		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setMatrices();
+		
+		camera.update();
+		camera.apply(gl);
 
 		tiles.bind();
 		gl.glColor4f(1, 1, 1, 1);
@@ -215,8 +211,8 @@ public class LevelRenderer implements ApplicationListener {
 // if (Gdx.input.isKeyPressed(Keys.ANY_KEY)==false)
 // Gdx.app.log("RTM", "No key pressed");
 
-		if (Gdx.input.isKeyPressed(Keys.KEYCODE_W)) camera.getPosition().add(camera.getDirection().tmp().mul(80 * delta));
-		if (Gdx.input.isKeyPressed(Keys.KEYCODE_S)) camera.getPosition().add(camera.getDirection().tmp().mul(-80 * delta));
+		if (Gdx.input.isKeyPressed(Keys.KEYCODE_W)) camera.position.add(camera.direction.tmp().mul(80 * delta));
+		if (Gdx.input.isKeyPressed(Keys.KEYCODE_S)) camera.position.add(camera.direction.tmp().mul(-80 * delta));
 		if (Gdx.input.isKeyPressed(Keys.KEYCODE_A)) angle -= 90 * delta;
 		if (Gdx.input.isKeyPressed(Keys.KEYCODE_D)) angle += 90 * delta;
 
@@ -226,12 +222,12 @@ public class LevelRenderer implements ApplicationListener {
 			if (x > Gdx.graphics.getWidth() / 2 + Gdx.graphics.getWidth() / 4) angle += 90 * delta;
 			if (x < Gdx.graphics.getWidth() / 2 - Gdx.graphics.getWidth() / 4) angle -= 90 * delta;
 			if (y > Gdx.graphics.getHeight() / 2 + Gdx.graphics.getHeight() / 4)
-				camera.getPosition().add(camera.getDirection().tmp().mul(80 * delta));
+				camera.position.add(camera.direction.tmp().mul(80 * delta));
 			if (y < Gdx.graphics.getHeight() / 2 - Gdx.graphics.getHeight() / 4)
-				camera.getPosition().add(camera.getDirection().tmp().mul(-80 * delta));
+				camera.position.add(camera.direction.tmp().mul(-80 * delta));
 		}
 
-		camera.getDirection().set((float)Math.cos(Math.toRadians(angle)), 0, (float)Math.sin(Math.toRadians(angle)));
+		camera.direction.set((float)Math.cos(Math.toRadians(angle)), 0, (float)Math.sin(Math.toRadians(angle)));
 	}
 
 	@Override public void resize (int width, int height) {

@@ -4,27 +4,26 @@ package com.badlogicgames.superjumper;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.tmp.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class HighscoresScreen extends Screen {
 	OrthographicCamera guiCam;
 	SpriteBatch batcher;
 	Rectangle backBounds;
-	Vector2 touchPoint;
+	Vector3 touchPoint;
 	String[] highScores;
 	float xOffset = 0;
 
 	public HighscoresScreen (Game game) {
 		super(game);
 
-		guiCam = new OrthographicCamera();
-		guiCam.setViewport(320, 480);
-		guiCam.getPosition().set(320 / 2, 480 / 2, 0);
+		guiCam = new OrthographicCamera(320, 480);		
+		guiCam.position.set(320 / 2, 480 / 2, 0);
 		backBounds = new Rectangle(0, 0, 64, 64);
-		touchPoint = new Vector2();
+		touchPoint = new Vector3();
 		batcher = new SpriteBatch();
 		highScores = new String[5];
 		for (int i = 0; i < 5; i++) {
@@ -36,8 +35,9 @@ public class HighscoresScreen extends Screen {
 
 	@Override public void update (float deltaTime) {
 		if (Gdx.input.justTouched()) {
-			guiCam.getScreenToWorld(Gdx.input.getX(), Gdx.input.getY(), touchPoint);
-			if (OverlapTester.pointInRectangle(backBounds, touchPoint)) {
+			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+			
+			if (OverlapTester.pointInRectangle(backBounds, touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new MainMenuScreen(game));
 				return;
@@ -48,7 +48,8 @@ public class HighscoresScreen extends Screen {
 	@Override public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		guiCam.setMatrices();
+		guiCam.update();
+		guiCam.apply(Gdx.gl10);
 
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 

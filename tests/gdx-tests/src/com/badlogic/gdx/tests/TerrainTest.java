@@ -23,8 +23,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.tmp.PerspectiveCamera;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -55,14 +55,11 @@ public class TerrainTest extends GdxTest {
 		mesh.setVertices(chunk.vertices);
 		mesh.setIndices(chunk.indices);
 
-		camera = new PerspectiveCamera();
-		camera.getPosition().set(0, 5, 5);
-		camera.getDirection().set(0, 0, 0).sub(camera.getPosition()).nor();
-		camera.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.setNear(0.5f);
-		camera.setFar(300);
-		camera.setFov(67);
-
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(0, 5, 5);
+		camera.direction.set(0, 0, 0).sub(camera.position).nor();	
+		camera.near = 0.5f;
+		camera.far = 300;		
 	}
 
 	@Override public void render () {
@@ -71,7 +68,8 @@ public class TerrainTest extends GdxTest {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-		camera.setMatrices();
+		camera.update();
+		camera.apply(gl);
 		gl.glColor4f(1, 1, 1, 1);
 		mesh.render(GL10.GL_TRIANGLES);
 
@@ -99,12 +97,12 @@ public class TerrainTest extends GdxTest {
 			intersected = false;
 		}
 
-		if (input.isKeyPressed(Keys.KEYCODE_W)) camera.getPosition().z -= delta;
-		if (input.isKeyPressed(Keys.KEYCODE_S)) camera.getPosition().z += delta;
-		if (input.isKeyPressed(Keys.KEYCODE_A)) camera.getPosition().x -= delta;
-		if (input.isKeyPressed(Keys.KEYCODE_D)) camera.getPosition().x += delta;
-		if (input.isKeyPressed(Keys.KEYCODE_Q)) camera.getPosition().y += delta;
-		if (input.isKeyPressed(Keys.KEYCODE_E)) camera.getPosition().y -= delta;
+		if (input.isKeyPressed(Keys.KEYCODE_W)) camera.position.z -= delta;
+		if (input.isKeyPressed(Keys.KEYCODE_S)) camera.position.z += delta;
+		if (input.isKeyPressed(Keys.KEYCODE_A)) camera.position.x -= delta;
+		if (input.isKeyPressed(Keys.KEYCODE_D)) camera.position.x += delta;
+		if (input.isKeyPressed(Keys.KEYCODE_Q)) camera.position.y += delta;
+		if (input.isKeyPressed(Keys.KEYCODE_E)) camera.position.y -= delta;
 	}
 
 	final static class TerrainChunk {

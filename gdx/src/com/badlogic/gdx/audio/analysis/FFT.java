@@ -218,9 +218,9 @@ public class FFT extends FourierTransform {
 		}
 	}
 
-	public static void main (String[] argv) {
-		FFT fft = new FFT(1024, 44100);
-		System.out.println(fft.getRealPart().length);
-		System.out.println(fft.getSpectrum().length);
-	}
+//	public static void main (String[] argv) {
+//		FFT fft = new FFT(1024, 44100);
+//		System.out.println(fft.getRealPart().length);
+//		System.out.println(fft.getSpectrum().length);
+//	}
 }
