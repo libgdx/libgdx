@@ -1,15 +1,9 @@
-package com.badlogic.gdx.graphics.tmp;
-
-import java.util.Arrays;
+package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Plane;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 
 public class Frustum {
 	protected static final Vector3[] clipSpacePlanePoints = { new Vector3(-1, -1, -1), new Vector3(1, -1, -1), new Vector3(1, 1, -1), new Vector3(-1, 1, -1), // near clip
