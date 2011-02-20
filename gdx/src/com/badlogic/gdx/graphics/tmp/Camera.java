@@ -51,7 +51,7 @@ public abstract class Camera {
 	
 	/**
 	 * Recalculates the projection and view matrix of this
-	 * camera and the frustum planes. Use this after you've manipulated
+	 * camera and the {@link Frustum} planes. Use this after you've manipulated
 	 * any of the attributes of the camera.
 	 */
 	public abstract void update();
