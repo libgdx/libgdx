@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="30" orientation="orthogonal" tileheight="32" tilewidth="32" version="1.0" width="50">
- <properties>
+ <properties><property name="tile count" value="2228"/>
   <property name="blended tiles" value="7,8,12,11,16,15"/>
  </properties>
  <tileset firstgid="1" name="tileset" tileheight="32" tilewidth="32">

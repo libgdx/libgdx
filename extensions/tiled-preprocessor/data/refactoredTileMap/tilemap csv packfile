@@ -1,7 +1,7 @@
 
 tilemap csv1.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 tilemap csv
   rotate: false

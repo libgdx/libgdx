@@ -41,7 +41,7 @@ public class TiledMapTest extends GdxTest{
         private static final int SCREEN_WIDTH = 480;
         private static final int SCREEN_HEIGHT = 320;
 
-        private static final int[] layersList = {0,1,2};
+        private static final int[] layersList = {0};
         
         SpriteBatch spriteBatch;
         BitmapFont font;
@@ -105,8 +105,8 @@ public class TiledMapTest extends GdxTest{
                 
                 spriteBatch = new SpriteBatch();
                 
-                FileHandle mapHandle = Gdx.files.internal("data/tiledmap/perspective walls.tmx");
-                FileHandle packfile = Gdx.files.internal("data/tiledmap/perspective walls packfile");
+                FileHandle mapHandle = Gdx.files.internal("data/tiledmap/margin spacing doctype test.tmx");
+                FileHandle packfile = Gdx.files.internal("data/tiledmap/margin spacing doctype test packfile");
                 FileHandle baseDir = Gdx.files.internal("data/tiledmap");
 
                 startTime = System.currentTimeMillis();

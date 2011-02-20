@@ -47,6 +47,7 @@ import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.imagepacker.TexturePacker;
 import com.badlogic.gdx.imagepacker.TexturePacker.Settings;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Packs a Tiled Map, adding some properties to improve the speed of the {@link TiledMapRenderer}. Also runs the texture packer on
@@ -153,6 +154,11 @@ public class TiledMapPacker {
 			doc = docBuilder.parse(tmxFileHandle.read());
 			
 			Node map = doc.getFirstChild();
+			while(map.getNodeType() != Node.ELEMENT_NODE || map.getNodeName() != "map"){
+				if((map = map.getNextSibling()) == null){
+					throw new GdxRuntimeException("Couldn't find map node!");
+				}
+			}
 			
 			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
 			setProperty(doc, map, "tile count", String.valueOf(tileCount));
@@ -188,7 +194,7 @@ public class TiledMapPacker {
 			valueNode.setNodeValue(value);
 		}
 	}
-
+	
 	private static String toCSV (ArrayList<Integer> values) {
 		String temp = "";
 		for (int i = 0; i < values.size() - 1; i++) {
