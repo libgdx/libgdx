@@ -33,7 +33,7 @@ public class ScaleTo extends AnimationAction {
 	protected float deltaScaleX;
 	protected float deltaScaleY;
 
-	public static AnimationAction $ (float scaleX, float scaleY, float duration) {
+	public static ScaleTo $ (float scaleX, float scaleY, float duration) {
 		ScaleTo action = pool.obtain();
 		action.scaleX = scaleX;
 		action.scaleY = scaleY;
