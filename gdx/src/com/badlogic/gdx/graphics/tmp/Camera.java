@@ -1,5 +1,8 @@
 package com.badlogic.gdx.graphics.tmp;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -18,6 +21,8 @@ public abstract class Camera {
 	public final Matrix4 view = new Matrix4();
 	/** the combined projection and view matrix **/
 	public final Matrix4 combined = new Matrix4();
+	/** the inverse combined projection and view matrix **/
+	public final Matrix4 invProjectionView = new Matrix4();
 	
 	/** the near clipping plane distance, has to be positive **/
 	public float near = 1;	
@@ -77,5 +82,44 @@ public abstract class Camera {
 	 */
 	public void translate(float x, float y, float z) {
 		position.add(x, y, z);
+	}
+	
+	/**
+	 * Function to translate a point given in screen (or window)
+	 * coordinates to world space. It's the same as {@link GLU#gluUnProject(float, float, float, float[], int, float[], int, int[], int, float[], int)}
+	 * but does not rely on OpenGL. The viewport is assuemd to span the whole screen
+	 * and is fetched from {@link Graphics#getWidth()} and {@link Graphics#getHeight()}. The
+	 * x- and y-coordinate of vec are assumed to be in window coordinates (origin is the 
+	 * top left corner, y pointing down, x pointing to the right) as reported by the
+	 * touch methods in {@link Input}. A z-coordinate of 0 will return a point on the
+	 * near plane, a z-coordinate of 1 will return a point on the far plane. 
+	 * 
+	 * @param vec the point in screen coordinates
+	 */
+	public void unproject(Vector3 vec) {
+		vec.x = (2 * vec.x) / Gdx.graphics.getWidth() - 1;
+		vec.y = (2 * (Gdx.graphics.getHeight() - vec.y - 1)) / Gdx.graphics.getHeight() - 1;
+		vec.z = 2 * vec.z - 1;
+		vec.prj(invProjectionView);
+	}
+	
+	final Ray ray = new Ray(new Vector3(), new Vector3());
+	/**
+	 * Creates a picking {@link Ray} from the coordinates given in window 
+	 * coordinates. It is assumed that the viewport spans the whole screen.
+	 * The window coordinates origin is assumed to be in the top left corner,
+	 * its y-axis pointing down, the x-axis pointing to the right. The
+	 * returned instance is not a new instance but an internal member only
+	 * accessible via this function.
+	 * 
+	 * @param x the x-coordinate in window coordinates.
+	 * @param y the y-coordinate in window coordinates.
+	 * @return the picking Ray.
+	 */
+	public Ray getPickRay(float x, float y) {
+		unproject(ray.origin.set(x, y, 0));
+		unproject(ray.direction.set(x, y, 1));
+		ray.direction.sub(ray.origin).nor();
+		return ray;
 	}
 }

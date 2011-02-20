@@ -26,20 +26,17 @@ public class Frustum {
 			planes[i] = new Plane(new Vector3(), 0);
 		}
 	}
-	
-	final Matrix4 invProjectionView = new Matrix4();
+		
 	/**
-	 * Updates the clipping plane's based on the given combined projection and view
+	 * Updates the clipping plane's based on the given inverse combined projection and view
 	 * matrix, e.g. from an {@link OrthographicCamera} or {@link PerspectiveCamera}.
-	 * @param projectionView the combined projection and view matrices.
+	 * @param inverseProjectionView the combined projection and view matrices.
 	 */
-	public void update(Matrix4 projectionView) {
-		invProjectionView.set(projectionView);
-		invProjectionView.inv();
+	public void update(Matrix4 inverseProjectionView) {		
 		
 		for(int i = 0; i < 8; i++) {
 			Vector3 point = planePoints[i].set(clipSpacePlanePoints[i]);
-			point.prj(invProjectionView);			
+			point.prj(inverseProjectionView);			
 		}
 		
 		planes[0].set(planePoints[1], planePoints[0], planePoints[2]);

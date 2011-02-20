@@ -29,12 +29,8 @@ public class PerspectiveCamera extends Camera {
 		projection.setToProjection(Math.abs(near), Math.abs(far), fieldOfView, aspect);
 		view.setToLookAt(position, tmp.set(position).add(direction), up);	
 		combined.set(projection).mul(view);
-		frustum.update(combined);
-	}
-	
-	public static void main(String[] argv) {
-		PerspectiveCamera cam = new PerspectiveCamera(90, 1, 1);
-		cam.update();
-		System.out.println(Arrays.toString(cam.frustum.planes));
-	}
+		invProjectionView.set(combined);
+		invProjectionView.inv();
+		frustum.update(invProjectionView);
+	}	
 }

@@ -30,6 +30,7 @@ import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.CompassTest;
 import com.badlogic.gdx.tests.CullTest;
+import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FloatTest;
@@ -54,6 +55,7 @@ import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
 import com.badlogic.gdx.tests.OrthoCamBorderTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
+import com.badlogic.gdx.tests.PickingTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.PixmapTest;
@@ -118,6 +120,7 @@ public class GdxTests
 		Box2DTestCollection.class,
 		CompassTest.class,
 		CullTest.class,
+		DeltaTimeTest.class,
 		FilesTest.class,
 		//FillrateTest.class,
 		FloatTest.class,
@@ -142,6 +145,7 @@ public class GdxTests
 		ObjTest.class,
 		OrthoCamBorderTest.class,
 		ParticleEmitterTest.class,
+		PickingTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		Pong.class,
