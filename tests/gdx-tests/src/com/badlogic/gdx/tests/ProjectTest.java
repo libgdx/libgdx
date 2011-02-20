@@ -52,10 +52,7 @@ public class ProjectTest extends GdxTest {
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		
 		cam.update();
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadMatrixf(cam.projection.val, 0);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadMatrixf(cam.view.val, 0);
+		cam.apply(gl);
 		
 		int visible = 0;
 		for(int i = 0; i < positions.length; i++) {
