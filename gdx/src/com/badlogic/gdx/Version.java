@@ -23,5 +23,5 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  */
 public class Version {
 	/** the current version of libgdx in the major.minor format **/
-	public static String VERSION = "0.81";
+	public static String VERSION = "0.9";
 }
