@@ -33,7 +33,7 @@ public class OrthographicCamera extends Camera {
 	private final Vector3 tmp = new Vector3();
 	@Override	
 	public void update() {
-		projection.setToOrtho(-viewportWidth / 2, viewportWidth / 2, -viewportHeight / 2, viewportHeight / 2, Math.abs(near), Math.abs(far));
+		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom * viewportHeight / 2, Math.abs(near), Math.abs(far));
 		view.setToLookAt(position, tmp.set(position).add(direction), up);	
 		combined.set(projection).mul(view);
 		invProjectionView.set(combined);
