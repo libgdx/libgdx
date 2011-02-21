@@ -257,7 +257,7 @@ public class Pixmap implements Disposable {
 	 * @param radius The radius in pixels
 	 */
 	public void fillCircle (int x, int y, int radius) {
-		pixmap.drawCircle(x, y, radius, color);
+		pixmap.fillCircle(x, y, radius, color);
 	}
 
 	/**
