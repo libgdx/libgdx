@@ -39,11 +39,8 @@ public class MyFirstTriangle extends GdxTest {
 	}
 
 	@Override public void render () {
-		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		mesh.setAutoBind(false);
-		mesh.bind();
-		mesh.render(GL10.GL_TRIANGLES, 0, 3);
-		mesh.unbind();
+		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);		
+		mesh.render(GL10.GL_TRIANGLES, 0, 3);		
 	}
 
 	@Override public void resize (int width, int height) {
