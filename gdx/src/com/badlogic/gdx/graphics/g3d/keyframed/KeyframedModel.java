@@ -249,9 +249,12 @@ public class KeyframedModel {
 	public void setAnimation(String animKey, WrapMode wrapMode)
 	{
 		KeyframeAnimation anim = getAnimation(animKey);
-		animator.setAnimation(anim, wrapMode);
-		animator.getInterpolatedKeyframe().indicesSet = false;
-		animator.getInterpolatedKeyframe().indicesSent = false;
+		if(anim != null)
+		{
+			animator.setAnimation(anim, wrapMode);
+			animator.getInterpolatedKeyframe().indicesSet = false;
+			animator.getInterpolatedKeyframe().indicesSent = false;
+		}
 	}
 	
 	/**
