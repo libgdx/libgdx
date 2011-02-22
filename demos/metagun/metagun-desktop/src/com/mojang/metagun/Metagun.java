@@ -26,10 +26,10 @@ public class Metagun implements ApplicationListener {
 	public void create() {
 		Art.load();
 		Sound.load();
-		Gdx.input.setInputProcessor(input);
+		Gdx.input.setInputProcessor(input);		
 		running = true;
-//		setScreen(new TitleScreen());
-		setScreen(new GameScreen());		
+		setScreen(new TitleScreen());
+//		setScreen(new GameScreen());		
 	}
 
 	public void pause() {

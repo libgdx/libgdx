@@ -35,7 +35,8 @@ public class Input implements InputProcessor {
         if (key == Keys.KEYCODE_S) button = SHOOT;
         if (key == Keys.KEYCODE_D) button = JUMP;
 
-        if (key == Keys.KEYCODE_ESCAPE) button = ESCAPE;
+        if (key == Keys.KEYCODE_ESCAPE ||
+      	   key == Keys.KEYCODE_MENU) button = ESCAPE;
 
         if (button >= 0) {
             buttons[button] = down;
@@ -84,6 +85,7 @@ public class Input implements InputProcessor {
 
     public void releaseAllKeys() {
         for (int i = 0; i < buttons.length; i++) {
+      	  if(i == UP || i == DOWN) continue;
             buttons[i] = false;
         }
     }
@@ -108,6 +110,7 @@ public class Input implements InputProcessor {
 	}	
 
 	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+		x = (int)(x / (float)Gdx.graphics.getWidth() * 320);
 		if(x > 160 - 32 && x < 160) {
 			set(Keys.KEYCODE_DPAD_UP, !buttons[UP]);
 			if(buttons[UP])
@@ -118,6 +121,7 @@ public class Input implements InputProcessor {
 			if(buttons[DOWN])
 				buttons[UP] = false;
 		}
+		System.out.println("buttons: " + buttons[UP] + ", " + buttons[DOWN]);
 		return false;
 	}
 

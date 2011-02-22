@@ -1,5 +1,6 @@
 package com.mojang.metagun.screen;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.mojang.metagun.Art;
 import com.mojang.metagun.Input;
@@ -15,7 +16,11 @@ public class TitleScreen extends Screen {
         draw(Art.bg, 0, 0);
         draw(Art.titleScreen, 0, -yOffs);        
         if (time > 240) {
-            String msg = "PRESS X TO START";
+      	  String msg = null;
+      	  if(Gdx.app.getType()==ApplicationType.Android)
+      		   msg = "TOUCH TO START";
+      	  else
+      		  msg = "PRESS X TO START";
             drawString(msg, 160 - msg.length() * 3, 140 - 3 - (int) (Math.abs(Math.sin(time * 0.1) * 10)));
 
         }
