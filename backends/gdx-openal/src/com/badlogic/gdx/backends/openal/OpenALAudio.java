@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 
 import static org.lwjgl.openal.AL10.*;
 
@@ -34,7 +35,7 @@ import static org.lwjgl.openal.AL10.*;
  * @author Nathan Sweet
  */
 public class OpenALAudio implements Audio {
-	private int[] streams;
+	private IntArray idleStreams, allStreams;
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 
@@ -58,13 +59,13 @@ public class OpenALAudio implements Audio {
 			throw new GdxRuntimeException("Error initializing OpenAL.", ex);
 		}
 
-		IntArray streams = new IntArray(false, simultaneousStreams);
+		allStreams = new IntArray(false, simultaneousStreams);
 		for (int i = 0; i < simultaneousStreams; i++) {
 			int streamID = alGenSources();
 			if (alGetError() != AL_NO_ERROR) break;
-			streams.add(streamID);
+			allStreams.add(streamID);
 		}
-		this.streams = streams.items;
+		idleStreams = new IntArray(allStreams);
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
 			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
@@ -109,13 +110,20 @@ public class OpenALAudio implements Audio {
 		}
 	}
 
-	int getIdleStreamID () {
-		for (int i = 0, n = streams.length; i < n; i++) {
-			int streamID = streams[i];
+	int obtainStream (boolean isMusic) {
+		for (int i = 0, n = idleStreams.size; i < n; i++) {
+			int streamID = idleStreams.get(i);
 			int state = alGetSourcei(streamID, AL_SOURCE_STATE);
-			if (state != AL_PLAYING && state != AL_PAUSED) return streamID;
+			if (state != AL_PLAYING && state != AL_PAUSED) {
+				if (isMusic) idleStreams.removeIndex(i);
+				return streamID;
+			}
 		}
 		return -1;
+	}
+
+	void freeStream (int streamID) {
+		idleStreams.add(streamID);
 	}
 
 	public void update () {
@@ -124,8 +132,8 @@ public class OpenALAudio implements Audio {
 	}
 
 	public void dispose () {
-		for (int i = 0, n = streams.length; i < n; i++) {
-			int streamID = streams[i];
+		for (int i = 0, n = allStreams.size; i < n; i++) {
+			int streamID = allStreams.get(i);
 			int state = alGetSourcei(streamID, AL_SOURCE_STATE);
 			if (state != AL_STOPPED) alSourceStop(streamID);
 			alDeleteSources(streamID);

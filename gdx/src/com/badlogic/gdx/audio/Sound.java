@@ -32,16 +32,20 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public interface Sound extends Disposable {
 	/**
-	 * Plays the sound, you can call this repeatedly to play the same sound a couple of times with a bit of lag introduced.
+	 * Plays the sound. If the sound is already playing, it will be played again, concurrently.
 	 */
 	public void play ();
 
 	/**
-	 * Plays the sound, you can call this repeatedly to play the same sound a couple of times with a bit of lag introduced.
-	 * 
+	 * Plays the sound. If the sound is already playing, it will be played again, concurrently.
 	 * @param volume the volume in the range [0,1]
 	 */
 	public void play (float volume);
+
+	/**
+	 * Stops the sound.
+	 */
+	public void stop ();
 
 	/**
 	 * Releases all the resources.

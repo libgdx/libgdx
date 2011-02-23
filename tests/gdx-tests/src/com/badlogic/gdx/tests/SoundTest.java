@@ -15,9 +15,13 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class SoundTest extends GdxTest implements InputProcessor {
@@ -25,19 +29,29 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	Music music;
 	float volume = 0.5f;
 
+	BitmapFont font;
+	SpriteBatch batch;
+
 	@Override public void render () {
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		batch.begin();
+		font.draw(batch, "Position: " + music.getPosition(), 30, 146);
+		batch.end();
 	}
 
 	@Override public void create () {
-//		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
+		// sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/sell_buy_item.wav", FileType.Internal));
 
-//		music = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
+		// music = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
 		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
 		music.setVolume(volume);
 		music.play();
 		music.setLooping(true);
 		Gdx.input.setInputProcessor(this);
+
+		batch = new SpriteBatch();
+		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), false);
 	}
 
 	@Override public boolean keyDown (int keycode) {
@@ -53,12 +67,20 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean keyUp (int keycode) {
-
+		if (keycode != Input.Keys.KEYCODE_SPACE) return false;
+		if (music.isPlaying())
+			music.pause();
+		else
+			music.play();
 		return false;
 	}
 
 	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
 		sound.play(1f);
+		if (music.isPlaying())
+			music.stop();
+		else
+			music.play();
 		return false;
 	}
 

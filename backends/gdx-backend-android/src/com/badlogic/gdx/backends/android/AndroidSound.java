@@ -42,4 +42,7 @@ final class AndroidSound implements Sound {
 		soundPool.play(soundId, volume, volume, 1, 0, 1);
 	}
 
+	public void stop () {
+		soundPool.stop(soundId);
+	}
 }

@@ -56,19 +56,19 @@ public interface Music extends Disposable {
 	public void stop ();
 
 	/**
-	 * @return whether this music stream is playing or not
+	 * @return whether this music stream is playing
 	 */
 	public boolean isPlaying ();
 
 	/**
-	 * Sets whether the music stream is looping or not. This can be called at any time, whether the stream is playing or not.
+	 * Sets whether the music stream is looping. This can be called at any time, whether the stream is playing.
 	 * 
-	 * @param isLooping whether to loop the stream or not
+	 * @param isLooping whether to loop the stream
 	 */
 	public void setLooping (boolean isLooping);
 
 	/**
-	 * @return whether the music stream is playing or not.
+	 * @return whether the music stream is playing.
 	 */
 	public boolean isLooping ();
 
@@ -79,6 +79,11 @@ public interface Music extends Disposable {
 	 * @param volume
 	 */
 	public void setVolume (float volume);
+
+	/**
+	 * Returns the playback position in milliseconds.
+	 */
+	public float getPosition ();
 
 	/**
 	 * Needs to be called when the Music is no longer needed.

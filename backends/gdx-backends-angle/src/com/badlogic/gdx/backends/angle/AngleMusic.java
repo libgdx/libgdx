@@ -167,4 +167,8 @@ final class AngleMusic implements Music, Runnable {
 			}
 		}
 	}
+
+	public float getPosition () {
+		throw new UnsupportedOperationException("Upgrade Angle to OpenAL.");
+	}
 }

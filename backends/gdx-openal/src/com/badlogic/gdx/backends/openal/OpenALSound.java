@@ -16,6 +16,8 @@ package com.badlogic.gdx.backends.openal;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.lwjgl.openal.AL11;
+
 import com.badlogic.gdx.audio.Sound;
 
 import static org.lwjgl.openal.AL10.*;
@@ -50,9 +52,10 @@ public class OpenALSound implements Sound {
 	}
 
 	public void play (float volume) {
-		streamID = audio.getIdleStreamID();
+		streamID = audio.obtainStream(false);
 		if (streamID == -1) return;
 		alSourceStop(streamID);
+		alSourcei(streamID, AL_BUFFER, 0);
 		alSourcei(streamID, AL_BUFFER, bufferID);
 		alSourcei(streamID, AL_LOOPING, AL_FALSE);
 		alSourcef(streamID, AL_GAIN, volume);
@@ -60,16 +63,20 @@ public class OpenALSound implements Sound {
 	}
 
 	public void loop () {
-		streamID = audio.getIdleStreamID();
+		streamID = audio.obtainStream(false);
 		if (streamID == -1) return;
 		alSourceStop(streamID);
+		alSourcei(streamID, AL_BUFFER, 0);
 		alSourcei(streamID, AL_BUFFER, bufferID);
 		alSourcei(streamID, AL_LOOPING, AL_TRUE);
 		alSourcePlay(streamID);
 	}
 
 	public void stop () {
-		if (streamID != -1) alSourceStop(streamID);
+		if (streamID == -1) return;
+		alSourceStop(streamID);
+		alSourcei(streamID, AL_BUFFER, 0);
+		streamID = -1;
 	}
 
 	public void dispose () {

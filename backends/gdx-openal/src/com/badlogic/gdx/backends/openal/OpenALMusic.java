@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL11;
 
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -30,6 +31,7 @@ import static org.lwjgl.openal.AL10.*;
 public abstract class OpenALMusic implements Music {
 	static private final int bufferSize = 4096 * 10;
 	static private final int bufferCount = 3;
+	static private final int bytesPerSample = 2;
 	static private final byte[] tempBytes = new byte[bufferSize];
 	static private final ByteBuffer tempBuffer = BufferUtils.createByteBuffer(bufferSize);
 
@@ -37,8 +39,9 @@ public abstract class OpenALMusic implements Music {
 	private IntBuffer buffers;
 	private int streamID = -1;
 	private int format, sampleRate;
-	private boolean isLooping;
+	private boolean isLooping, isPlaying;
 	private float volume = 1;
+	private float renderedSeconds, secondsPerBuffer;
 
 	protected final FileHandle file;
 
@@ -56,19 +59,27 @@ public abstract class OpenALMusic implements Music {
 	protected void setup (int channels, int sampleRate) {
 		this.format = channels > 1 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16;
 		this.sampleRate = sampleRate;
+		secondsPerBuffer = (float)bufferSize / bytesPerSample / channels / sampleRate;
 	}
 
 	public void play () {
 		if (streamID == -1) {
-			streamID = audio.getIdleStreamID();
+			streamID = audio.obtainStream(true);
 			if (streamID == -1) return;
+			alSourceStop(streamID);
+			alSourcei(streamID, AL_BUFFER, 0);
 			alSourcei(streamID, AL_LOOPING, AL_FALSE);
 			alSourcef(streamID, AL_GAIN, volume);
 			for (int i = 0; i < bufferCount; i++)
 				fill(buffers.get(i));
 			alSourceQueueBuffers(streamID, buffers);
+			if (alGetError() != AL_NO_ERROR) {
+				stop();
+				return;
+			}
 		}
 		alSourcePlay(streamID);
+		isPlaying = true;
 	}
 
 	public void stop () {
@@ -76,16 +87,20 @@ public abstract class OpenALMusic implements Music {
 		reset();
 		alSourceStop(streamID);
 		alSourcei(streamID, AL_BUFFER, 0);
+		audio.freeStream(streamID);
 		streamID = -1;
+		renderedSeconds = 0;
+		isPlaying = false;
 	}
 
 	public void pause () {
 		if (streamID != -1) alSourcePause(streamID);
+		isPlaying = false;
 	}
 
 	public boolean isPlaying () {
 		if (streamID == -1) return false;
-		return alGetSourcei(streamID, AL_SOURCE_STATE) == AL_PLAYING;
+		return isPlaying;
 	}
 
 	public void setLooping (boolean isLooping) {
@@ -101,6 +116,11 @@ public abstract class OpenALMusic implements Music {
 		if (streamID != -1) alSourcef(streamID, AL_GAIN, volume);
 	}
 
+	public float getPosition () {
+		if (streamID == -1) return 0;
+		return renderedSeconds + alGetSourcef(streamID, AL11.AL_SEC_OFFSET);
+	}
+
 	/**
 	 * Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the
 	 * stream.
@@ -114,10 +134,13 @@ public abstract class OpenALMusic implements Music {
 
 	public void update () {
 		if (streamID == -1) return;
+		// A buffer underflow will cause the source to stop.
+		if (isPlaying && alGetSourcei(streamID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(streamID);
 		int buffers = alGetSourcei(streamID, AL_BUFFERS_PROCESSED);
 		while (buffers-- > 0) {
 			int bufferID = alSourceUnqueueBuffers(streamID);
 			if (bufferID == AL_INVALID_VALUE) break;
+			renderedSeconds += secondsPerBuffer;
 			if (!fill(bufferID)) return;
 			alSourceQueueBuffers(streamID, bufferID);
 		}
@@ -129,10 +152,13 @@ public abstract class OpenALMusic implements Music {
 		if (length <= 0) {
 			if (isLooping) {
 				reset();
+				renderedSeconds = 0;
 				length = read(tempBytes);
 				if (length <= 0) return false;
-			} else
+			} else {
+				stop();
 				return false;
+			}
 		}
 		tempBuffer.put(tempBytes, 0, length).flip();
 		alBufferData(bufferID, format, tempBuffer, sampleRate);
@@ -146,6 +172,7 @@ public abstract class OpenALMusic implements Music {
 			audio.music.removeValue(this, true);
 			alSourceStop(streamID);
 			alSourcei(streamID, AL_BUFFER, 0);
+			audio.freeStream(streamID);
 			streamID = -1;
 		}
 		alDeleteBuffers(buffers);

@@ -73,4 +73,7 @@ public class AndroidMusic implements Music {
 		isPrepared = false;
 	}
 
+	public float getPosition () {
+		return player.getCurrentPosition() * 1000;
+	}
 }

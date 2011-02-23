@@ -142,6 +142,10 @@ final class AngleSound implements Sound {
 		audio.enqueueSound(this, volume);
 	}
 
+	public void stop () {
+		throw new UnsupportedOperationException("Upgrade Angle to OpenAL.");
+	}
+
 	/**
 	 * @return the {@link AudioFormat} of the audio data
 	 */
@@ -155,5 +159,4 @@ final class AngleSound implements Sound {
 	public float[] getAudioData () {
 		return samples;
 	}
-
 }
