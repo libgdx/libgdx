@@ -75,6 +75,7 @@ public abstract class OpenALMusic implements Music {
 		if (streamID == -1) return;
 		reset();
 		alSourceStop(streamID);
+		alSourcei(streamID, AL_BUFFER, 0);
 		streamID = -1;
 	}
 
