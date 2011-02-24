@@ -227,8 +227,8 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Sets up the SpriteBatch for drawing. This will disable depth buffer testing and writting, culling and lighting. It enables
-	 * blending and alpha testing. If you have more texture units enabled than the first one you have to disable them before
+	 * Sets up the SpriteBatch for drawing. This will disable depth buffer writting. It enables
+	 * blending and texturing. If you have more texture units enabled than the first one you have to disable them before
 	 * calling this. Uses a screen coordinate system by default where everything is given in pixels. You can specify your own
 	 * projection and modelview matrices via {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}.
 	 */
@@ -264,7 +264,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Finishes off rendering. Must always be called after a call to {@link #begin()}
+	 * Finishes off rendering. Enables depth writes, disables blending and texturing. Must always be called after a call to {@link #begin()}
 	 */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before end.");
