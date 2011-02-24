@@ -14,6 +14,8 @@
 package com.badlogic.gdx.backends.android;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -32,6 +34,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -50,7 +53,7 @@ public class AndroidApplication extends Activity implements Application {
     static {
    	 GdxNativesLoader.load();
     }
-
+    
     protected AndroidGraphics graphics;
     protected AndroidInput input;
     protected AndroidAudio audio;
@@ -259,4 +262,8 @@ public class AndroidApplication extends Activity implements Application {
     public long getNativeHeap() {
         return Debug.getNativeHeapAllocatedSize();
     }
+
+	@Override public Preferences getPreferences (String name) {
+		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
+	}
 }

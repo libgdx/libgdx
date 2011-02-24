@@ -28,6 +28,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -183,5 +184,9 @@ public class LwjglCanvas implements Application {
 
 	@Override public long getNativeHeap () {
 		return getJavaHeap();
+	}
+
+	@Override public Preferences getPreferences (String name) {
+		throw new RuntimeException();
 	}
 }

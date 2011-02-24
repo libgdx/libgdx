@@ -136,4 +136,11 @@ public interface Application {
 	 * @return the Native heap memory use in bytes
 	 */
 	public long getNativeHeap ();
+	
+	/**
+	 * Returns the {@link Preferences} instance of this Application.
+	 * @param name the name of the preferences
+	 * @return the preferences.
+	 */
+	public Preferences getPreferences(String name);
 }

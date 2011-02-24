@@ -22,6 +22,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class AngleApplication implements Application, ESLoop {
@@ -122,5 +123,9 @@ public class AngleApplication implements Application, ESLoop {
 		graphics.width = width;
 		graphics.height = height;
 		if (!created) listener.resize(width, height);
+	}
+
+	@Override public Preferences getPreferences (String name) {
+		throw new RuntimeException();
 	}
 }
