@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2011 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Moritz Post
+ * (moritzpost@gmail.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -13,34 +14,32 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.scenes.scene2d.CompositeAction;
 
-public class Parallel extends Action {
-	static final Pool<Parallel> pool = new Pool<Parallel>(4, 100) {
-		protected Parallel newObject () {
+public class Parallel extends CompositeAction {
+
+	static final ActionResetingPool<Parallel> pool = new ActionResetingPool<Parallel>(4, 100) {
+		@Override protected Parallel newObject () {
 			return new Parallel();
 		}
 	};
 
+	protected boolean[] finished;
+
 	public static Parallel $ (Action... actions) {
-		Parallel action = pool.obtain();
-		action.actions.clear();
-		if(action.finished == null || action.finished.length < actions.length) 
-			action.finished = new boolean[actions.length];
+		Parallel parallel = pool.obtain();
+		parallel.actions.clear();
+		if (parallel.finished == null || parallel.finished.length < actions.length) parallel.finished = new boolean[actions.length];
 		int len = actions.length;
 		for (int i = 0; i < len; i++)
-			action.actions.add(actions[i]);
-		action.listener = null;
-		return action;
+			parallel.finished[i] = false;
+		len = actions.length;
+		for (int i = 0; i < len; i++)
+			parallel.actions.add(actions[i]);
+		return parallel;
 	}
-
-	protected final List<Action> actions = new ArrayList<Action>();
-	protected boolean[] finished;
 
 	@Override public void setTarget (Actor actor) {
 		int len = actions.size();
@@ -54,7 +53,7 @@ public class Parallel extends Action {
 			if (!actions.get(i).isDone()) {
 				actions.get(i).act(delta);
 			} else {
-				if(!finished[i]) {
+				if (!finished[i]) {
 					actions.get(i).finish();
 					finished[i] = true;
 				}
@@ -71,22 +70,19 @@ public class Parallel extends Action {
 
 	@Override public void finish () {
 		pool.free(this);
-		int len = 0;
+		int len = actions.size();
 		for (int i = 0; i < len; i++) {
-			if(!finished[i])
-				actions.get(i).finish();
+			if (!finished[i]) actions.get(i).finish();
 		}
-		if(listener != null)
-			listener.completed(this);
+		super.finish();
 	}
 
 	@Override public Action copy () {
 		Parallel action = pool.obtain();
 		action.actions.clear();
-		if(action.finished == null || action.finished.length < actions.size()) 
-			action.finished = new boolean[actions.size()];
+		if (action.finished == null || action.finished.length < actions.size()) action.finished = new boolean[actions.size()];
 		int len = actions.size();
-		for(int i = 0; i < len; i++)
+		for (int i = 0; i < len; i++)
 			action.finished[i] = false;
 		len = actions.size();
 		for (int i = 0; i < len; i++)

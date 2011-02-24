@@ -15,11 +15,10 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
 
 public class Delay extends Action {
-	static final Pool<Delay> pool = new Pool<Delay>(4, 100) {
-		protected Delay newObject () {
+	static final ActionResetingPool<Delay> pool = new ActionResetingPool<Delay>(4, 100) {
+		@Override protected Delay newObject () {
 			return new Delay();
 		}
 	};
@@ -33,9 +32,12 @@ public class Delay extends Action {
 		Delay delay = pool.obtain();
 		delay.duration = duration;
 		delay.action = action;
-		delay.listener = null;
-		delay.listenerFired = false;
 		return delay;
+	}
+
+	@Override public void reset () {
+		listenerFired = false;
+		super.reset();
 	}
 
 	@Override public void setTarget (Actor actor) {
@@ -46,8 +48,8 @@ public class Delay extends Action {
 	@Override public void act (float delta) {
 		taken += delta;
 		if (taken > duration) {
-			if(!listenerFired && listener != null) {
-				listener.completed(this);				
+			if (!listenerFired && listener != null) {
+				listener.completed(this);
 				listenerFired = true;
 			}
 			action.act(delta);
@@ -60,10 +62,12 @@ public class Delay extends Action {
 
 	@Override public void finish () {
 		pool.free(this);
-		action.finish();		
+		action.finish();
+		super.finish();
 	}
 
 	@Override public Action copy () {
 		return $(action.copy(), duration);
-	}	
+	}
+
 }

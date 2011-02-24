@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Moritz Post
+ * (moritzpost@gmail.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -13,33 +14,29 @@
 
 package com.badlogic.gdx.scenes.scene2d.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.CompositeAction;
 import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
-import com.badlogic.gdx.utils.Pool;
 
-public class Sequence extends Action {
-	static final Pool<Sequence> pool = new Pool<Sequence>(4, 100) {
-		protected Sequence newObject () {
+public class Sequence extends CompositeAction {
+
+	static final ActionResetingPool<Sequence> pool = new ActionResetingPool<Sequence>(4, 100) {
+		@Override protected Sequence newObject () {
 			return new Sequence();
 		}
 	};
 
-	protected final List<Action> actions = new ArrayList<Action>();
 	protected Actor target;
 	protected int currAction = 0;
 
 	public static Sequence $ (Action... actions) {
-		Sequence action = pool.obtain();
-		action.actions.clear();
+		Sequence sequence = pool.obtain();
+		sequence.actions.clear();
 		int len = actions.length;
 		for (int i = 0; i < len; i++)
-			action.actions.add(actions[i]);
-		action.listener = null;
-		return action;
+			sequence.actions.add(actions[i]);
+		return sequence;
 	}
 
 	@Override public void setTarget (Actor actor) {
@@ -57,8 +54,8 @@ public class Sequence extends Action {
 		actions.get(currAction).act(delta);
 		if (actions.get(currAction).isDone()) {
 			OnActionCompleted listener = actions.get(currAction).getCompletionListener();
-			if(listener != null) listener.completed(actions.get(currAction));
-			actions.get(currAction).setCompletionListener(null);			
+			if (listener != null) listener.completed(actions.get(currAction));
+			actions.get(currAction).setCompletionListener(null);
 			currAction++;
 			if (currAction < actions.size()) actions.get(currAction).setTarget(target);
 		}
@@ -70,9 +67,7 @@ public class Sequence extends Action {
 
 	@Override public void finish () {
 		pool.free(this);
-		int len = 0;		
-		if(listener != null)
-			listener.completed(this);
+		super.finish();
 	}
 
 	@Override public Action copy () {

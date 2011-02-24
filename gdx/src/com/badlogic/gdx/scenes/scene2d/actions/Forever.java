@@ -15,22 +15,18 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.scenes.scene2d.TemporalAction;
 
-public class Forever extends Action {
-	static final Pool<Forever> pool = new Pool<Forever>(4, 100) {
-		protected Forever newObject () {
+public class Forever extends TemporalAction {
+	static final ActionResetingPool<Forever> pool = new ActionResetingPool<Forever>(4, 100) {
+		@Override protected Forever newObject () {
 			return new Forever();
 		}
 	};
 
-	protected Action action;
-	protected Actor target;
-
 	public static Forever $ (Action action) {
 		Forever forever = pool.obtain();
 		forever.action = action;
-		forever.listener = null;
 		return forever;
 	}
 
@@ -56,8 +52,7 @@ public class Forever extends Action {
 	@Override public void finish () {
 		pool.free(this);
 		action.finish();
-		if(listener != null)
-			listener.completed(this);
+		super.finish();
 	}
 
 	@Override public Action copy () {

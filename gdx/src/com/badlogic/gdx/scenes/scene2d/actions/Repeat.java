@@ -1,5 +1,6 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com), Moritz Post
+ * (moritzpost@gmail.com)
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
  * License. You may obtain a copy of the License at
@@ -15,17 +16,15 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.scenes.scene2d.TemporalAction;
 
-public class Repeat extends Action {
-	static final Pool<Repeat> pool = new Pool<Repeat>(4, 100) {
-		protected Repeat newObject () {
+public class Repeat extends TemporalAction {
+	static final ActionResetingPool<Repeat> pool = new ActionResetingPool<Repeat>(4, 100) {
+		@Override protected Repeat newObject () {
 			return new Repeat();
 		}
 	};
 
-	protected Action action;
-	protected Actor target;
 	protected int times;
 	protected int finishedTimes;
 
@@ -33,9 +32,13 @@ public class Repeat extends Action {
 		Repeat repeat = pool.obtain();
 		repeat.action = action;
 		repeat.times = times;
-		repeat.finishedTimes = 0;
-		repeat.listener = null;
 		return repeat;
+	}
+
+	@Override public void reset () {
+		super.reset();
+		finishedTimes = 0;
+		listener = null;
 	}
 
 	@Override public void setTarget (Actor actor) {
@@ -63,8 +66,7 @@ public class Repeat extends Action {
 	@Override public void finish () {
 		pool.free(this);
 		action.finish();
-		if(listener != null)
-			listener.completed(this);
+		super.finish();
 	}
 
 	@Override public Action copy () {
