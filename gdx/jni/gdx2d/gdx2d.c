@@ -175,11 +175,13 @@ inline uint32_t blend(uint32_t src, uint32_t dst) {
 	int32_t dst_r = (dst & 0xff000000) >> 24;
 	int32_t dst_g = (dst & 0xff0000) >> 16;
 	int32_t dst_b = (dst & 0xff00) >> 8;
+	int32_t dst_a = (dst & 0xff);
 		
 	dst_r = dst_r + src_a * (src_r - dst_r) / 255;
 	dst_g = dst_g + src_a * (src_g - dst_g) / 255;
 	dst_b = dst_b + src_a * (src_b - dst_b) / 255;
-	return (uint32_t)((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | src_a);
+	dst_a = (int32)((1.0f - (1.0f - src_a / 255.0f) * (1.0f - dst_a / 255.0f)) * 255);
+	return (uint32_t)((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | dst_a);
 }
 
 inline uint32_t get_pixel_alpha(unsigned char *pixel_addr) {
