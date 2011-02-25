@@ -15,6 +15,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.MathUtils;
+
 /**
  * Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com
@@ -252,4 +254,14 @@ public class Vector2 implements Serializable {
 	public float crs(float x, float y) {
 		 return this.x * y - this.y * x;
 	}
+	
+	/**
+	 * @return the angle of this vector (point) relative to the x-axis. Angles are counter-clockwise and between 0 and 360.
+	 */
+	public float angle() {
+      float angle = (float)Math.atan2(y, x) * MathUtils.degreesToRadians;
+      if(angle < 0)
+          angle += 360;
+      return angle;
+  } 
 }
