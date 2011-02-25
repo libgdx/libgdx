@@ -180,7 +180,7 @@ inline uint32_t blend(uint32_t src, uint32_t dst) {
 	dst_r = dst_r + src_a * (src_r - dst_r) / 255;
 	dst_g = dst_g + src_a * (src_g - dst_g) / 255;
 	dst_b = dst_b + src_a * (src_b - dst_b) / 255;
-	dst_a = (int32)((1.0f - (1.0f - src_a / 255.0f) * (1.0f - dst_a / 255.0f)) * 255);
+	dst_a = (int32_t)((1.0f - (1.0f - src_a / 255.0f) * (1.0f - dst_a / 255.0f)) * 255);
 	return (uint32_t)((dst_r << 24) | (dst_g << 16) | (dst_b << 8) | dst_a);
 }
 
