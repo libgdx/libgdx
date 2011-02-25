@@ -3,9 +3,15 @@ package com.badlogic.gdx;
 import java.util.Map;
 
 /**
- * A Preference instance is a hash map holding different
+ * <p>A Preference instance is a hash map holding different
  * values. It is stored alongside your application (SharedPreferences
- * on Android, flat file in apps root directory on desktop). 
+ * on Android, flat file in apps root directory on desktop).</p>
+ * 
+ * <p>
+ * On the desktop the file will be located in the user directory. Make
+ * sure you give the preferences instance a name that can be used as
+ * a filename.
+ * </p>
  * 
  * @author mzechner
  *
@@ -32,5 +38,9 @@ public interface Preferences {
 	
 	public boolean contains(String key);
 	public void clear();
+	
+	/**
+	 * Makes sure the preferences are persisted.
+	 */
 	public void flush();
 }
