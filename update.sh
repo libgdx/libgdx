@@ -11,6 +11,7 @@ cp nightlies/gdx.dll gdx/libs/windows
 cp nightlies/gdx-64.dll gdx/libs/windows64
 cp nightlies/libgdx.so gdx/libs/linux
 cp nightlies/libgdx-64.so gdx/libs/linux64
+cp nightlies/libgdx.dylib gdx/libs/mac
 
 # copy android natives to tests
 cp -rf nightlies/armeabi tests/gdx-tests-android/libs
