@@ -16,6 +16,7 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
@@ -60,6 +61,7 @@ import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.PixmapBlendingTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.Pong;
+import com.badlogic.gdx.tests.PreferencesTest;
 import com.badlogic.gdx.tests.ProjectTest;
 import com.badlogic.gdx.tests.RotationTest;
 import com.badlogic.gdx.tests.ShaderMultitextureTest;
@@ -149,6 +151,7 @@ public class GdxTests
 		PickingTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
+		PreferencesTest.class,
 		Pong.class,
 		ProjectTest.class,
 		ShaderMultitextureTest.class,

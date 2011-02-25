@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.jogl;
+package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -12,11 +12,11 @@ import java.util.Properties;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
-public class JoglPreferences implements Preferences {
+public class LwjglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
 
-	JoglPreferences(String name) {
+	LwjglPreferences(String name) {
 		this.name = name;
 		InputStream in = null;
 		try {
@@ -138,7 +138,7 @@ public class JoglPreferences implements Preferences {
 	@Override public void flush () {
 		OutputStream out = null;
 		try {
-			out = new BufferedOutputStream(Gdx.files.external(JoglPreferences.this.name).write(false));
+			out = new BufferedOutputStream(Gdx.files.external(LwjglPreferences.this.name).write(false));
 			properties.storeToXML(out, null);
 		} catch(Throwable t) {					
 		} finally {

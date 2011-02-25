@@ -16,6 +16,8 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -186,7 +188,14 @@ public class LwjglCanvas implements Application {
 		return getJavaHeap();
 	}
 
+	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
 	@Override public Preferences getPreferences (String name) {
-		throw new RuntimeException();
+		if(preferences.containsKey(name)) {
+			return preferences.get(name);
+		} else {
+			Preferences prefs = new LwjglPreferences(name);
+			preferences.put(name, prefs);
+			return prefs;
+		}
 	}
 }

@@ -13,6 +13,9 @@
 
 package com.badlogic.gdx.backends.angle;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.anglejni.ESLoop;
 import com.badlogic.anglejni.ESUtil;
 import com.badlogic.gdx.Application;
@@ -125,7 +128,14 @@ public class AngleApplication implements Application, ESLoop {
 		if (!created) listener.resize(width, height);
 	}
 
+	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
 	@Override public Preferences getPreferences (String name) {
-		throw new RuntimeException();
+		if(preferences.containsKey(name)) {
+			return preferences.get(name);
+		} else {
+			Preferences prefs = new AnglePreferences(name);
+			preferences.put(name, prefs);
+			return prefs;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.jogl;
+package com.badlogic.gdx.backends.angle;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -6,17 +6,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
-public class JoglPreferences implements Preferences {
+public class AnglePreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
 
-	JoglPreferences(String name) {
+	AnglePreferences(String name) {
 		this.name = name;
 		InputStream in = null;
 		try {
@@ -135,10 +135,11 @@ public class JoglPreferences implements Preferences {
 		properties.clear();
 	}
 	
-	@Override public void flush () {
+	@Override public void flush() {
 		OutputStream out = null;
 		try {
-			out = new BufferedOutputStream(Gdx.files.external(JoglPreferences.this.name).write(false));
+
+			out = new BufferedOutputStream(Gdx.files.external(AnglePreferences.this.name).write(false));
 			properties.storeToXML(out, null);
 		} catch(Throwable t) {					
 		} finally {

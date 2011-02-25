@@ -32,4 +32,5 @@ public interface Preferences {
 	
 	public boolean contains(String key);
 	public void clear();
+	public void flush();
 }

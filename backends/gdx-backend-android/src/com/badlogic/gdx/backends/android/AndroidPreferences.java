@@ -57,6 +57,8 @@ public class AndroidPreferences implements Preferences {
 				putLong(val.getKey(), (Long)val.getValue());
 			if(val.getValue() instanceof String)
 				putString(val.getKey(), (String)val.getValue());
+			if(val.getValue() instanceof Float) 
+				putFloat(val.getKey(), (Float)val.getValue());
 		}
 		edit.commit();
 	}
@@ -113,5 +115,8 @@ public class AndroidPreferences implements Preferences {
 		Editor edit = sharedPrefs.edit();
 		edit.clear();
 		edit.commit();
+	}
+	
+	@Override public void flush () {		
 	}
 }

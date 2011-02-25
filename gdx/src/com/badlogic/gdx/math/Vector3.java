@@ -503,5 +503,5 @@ public class Vector3 implements Serializable {
 		y *= scalarY;
 		z *= scalarZ;
 		return this;
-	}
+	}	
 }

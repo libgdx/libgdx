@@ -138,8 +138,9 @@ public interface Application {
 	public long getNativeHeap ();
 	
 	/**
-	 * Returns the {@link Preferences} instance of this Application.
-	 * @param name the name of the preferences
+	 * Returns the {@link Preferences} instance of this Application. The
+	 * can be used to store application settings across runs.
+	 * @param name the name of the preferences, must be useable as a file name.
 	 * @return the preferences.
 	 */
 	public Preferences getPreferences(String name);
