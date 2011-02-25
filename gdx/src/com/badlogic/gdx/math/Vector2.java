@@ -256,12 +256,31 @@ public class Vector2 implements Serializable {
 	}
 	
 	/**
-	 * @return the angle of this vector (point) relative to the x-axis. Angles are counter-clockwise and between 0 and 360.
+	 * @return the angle in degrees of this vector (point) relative to the x-axis. Angles are counter-clockwise and between 0 and 360.
 	 */
 	public float angle() {
       float angle = (float)Math.atan2(y, x) * MathUtils.degreesToRadians;
       if(angle < 0)
           angle += 360;
       return angle;
-  } 
+  }
+	
+	/**
+	 * Rotates the Vector2 by the given angle, counter-clockwise.
+	 * @param angle the angle in degrees
+	 * @return the 
+	 */
+   public Vector2 rotate(float angle) {
+      float rad = angle * MathUtils.degreesToRadians;
+      float cos = (float)Math.cos(rad);
+      float sin = (float)Math.sin(rad);
+      
+      float newX = this.x * cos - this.y * sin;
+      float newY = this.x * sin + this.y * cos;
+      
+      this.x = newX;
+      this.y = newY;
+      
+      return this;
+  }
 }
