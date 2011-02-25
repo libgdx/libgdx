@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.g2d.OrthographicCamera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.WindowedMean;
 import com.dozingcatsoftware.bouncy.elements.FieldElement;
 
@@ -21,7 +21,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 
 	@Override public void create () {
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-		cam = new OrthographicCamera();
+		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderer = new GLFieldRenderer();
 		field = new Field();
 		field.resetForLevel(level);
@@ -40,9 +40,11 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		physicsMean.addValue((System.nanoTime() - startPhysics) / 1000000000.0f);
 
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		cam.setViewport(field.getWidth(), field.getHeight());
-		cam.getPosition().set(field.getWidth() / 2, field.getHeight() / 2, 0);
-		cam.setMatrices();
+		cam.viewportWidth = field.getWidth();
+		cam.viewportHeight = field.getHeight();
+		cam.position.set(field.getWidth() / 2, field.getHeight() / 2, 0);
+		cam.update();
+		cam.apply(Gdx.gl10);
 
 		long startRender = System.nanoTime();
 		renderer.begin();
