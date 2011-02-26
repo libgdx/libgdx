@@ -71,6 +71,6 @@ public class MoveBy extends AnimationAction {
 	}
 
 	@Override public Action copy () {
-		return $(x, y, duration);
+		return $(deltaX, deltaY, duration);
 	}
 }
