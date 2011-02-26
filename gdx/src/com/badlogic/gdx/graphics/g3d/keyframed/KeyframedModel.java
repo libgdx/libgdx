@@ -14,13 +14,12 @@ package com.badlogic.gdx.graphics.g3d.keyframed;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Animator;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Animator.WrapMode;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animation;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Animator;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Joints;
