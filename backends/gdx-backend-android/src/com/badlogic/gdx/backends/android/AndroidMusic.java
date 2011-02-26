@@ -51,7 +51,10 @@ public class AndroidMusic implements Music {
 		if (player.isPlaying()) return;
 
 		try {
-			if (!isPrepared) player.prepare();
+			if (!isPrepared) {
+				player.prepare();
+				isPrepared = true;
+			}
 			player.start();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
@@ -69,11 +72,12 @@ public class AndroidMusic implements Music {
 	}
 
 	@Override public void stop () {
+		player.seekTo(0);
 		player.stop();
 		isPrepared = false;
 	}
 
 	public float getPosition () {
-		return player.getCurrentPosition() * 1000;
+		return player.getCurrentPosition() / 1000f;
 	}
 }
