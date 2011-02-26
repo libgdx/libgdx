@@ -85,7 +85,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 					}
 					runnables.clear();
 				}
-				((JoglInput)Gdx.input).processEvents();
+				((JoglInput)((JoglApplication)Gdx.app).getInput()).processEvents();
 				listener.render();
 				((OpenALAudio)Gdx.audio).update();
 			}
