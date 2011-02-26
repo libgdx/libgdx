@@ -156,7 +156,7 @@ public class LwjglCanvas implements Application {
 					lastHeight = height;
 					listener.resize(width, height);
 				}
-				((LwjglInput)Gdx.input).processEvents();
+				input.processEvents();
 				listener.render();
 				audio.update();
 				Display.update();

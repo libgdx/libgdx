@@ -125,7 +125,7 @@ public class LwjglApplication implements Application {
 				}
 			}
 
-			((LwjglInput)Gdx.input).processEvents();
+			input.processEvents();
 			listener.render();
 			audio.update();
 			Display.update();
