@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Delay;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
+import com.badlogic.gdx.scenes.scene2d.actions.Repeat;
+import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -37,33 +39,35 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 		// img.action(Forever.$(Parallel.$(RotateTo.$(1, 1))));
 		// img.action(Delay.$(RotateBy.$(45, 2),
 		// 1).setCompletionListener(this));
-		Action actionMoveBy = MoveBy.$(30, 0, 0.5f).setCompletionListener(
-				new OnActionCompleted() {
+//		Action actionMoveBy = MoveBy.$(30, 0, 0.5f).setCompletionListener(
+//				new OnActionCompleted() {
+//
+//					@Override
+//					public void completed(Action action) {
+//						System.out.println("move by complete");
+//					}
+//				});
+//
+//		Action actionDelay = Delay.$(actionMoveBy, 1).setCompletionListener(
+//				new OnActionCompleted() {
+//
+//					@Override
+//					public void completed(Action action) {
+//						System.out.println("delay complete");
+//					}
+//				});
+//
+//		img.action(actionDelay);
 
-					@Override
-					public void completed(Action action) {
-						System.out.println("move by complete");
-					}
-				});
-
-		Action actionDelay = Delay.$(actionMoveBy, 1).setCompletionListener(
-				new OnActionCompleted() {
-
-					@Override
-					public void completed(Action action) {
-						System.out.println("delay complete");
-					}
-				});
-
-		img.action(actionDelay);
-
+		img.action(Repeat.$(Sequence.$(MoveBy.$(50, 0, 1), MoveBy.$(0, 50, 1), MoveBy.$(-50, 0, 1), MoveBy.$(0, -50, 1)), 3));
+		
 		stage.addActor(img);
 	}
 
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
+		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 	}
 
