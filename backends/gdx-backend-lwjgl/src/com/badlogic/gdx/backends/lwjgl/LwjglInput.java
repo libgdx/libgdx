@@ -355,6 +355,8 @@ final class LwjglInput implements Input {
 			return Input.Keys.KEYCODE_END;
 		case Keyboard.KEY_INSERT:
 			return Input.Keys.KEYCODE_INSERT;
+		case Keyboard.KEY_NUMPAD5:
+			return Input.Keys.KEYCODE_DPAD_CENTER;
 		default:
 			return Input.Keys.KEYCODE_UNKNOWN;
 		}

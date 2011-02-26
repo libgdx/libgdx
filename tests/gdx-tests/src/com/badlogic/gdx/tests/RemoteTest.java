@@ -19,10 +19,10 @@ public class RemoteTest extends GdxTest implements ApplicationListener, InputPro
 	String ips;
 	
 	@Override public void create () {
-		RemoteInput receiver = new RemoteInput();
-		ips = Arrays.toString(receiver.getIPs());
+		RemoteInput receiver = new RemoteInput();		
 		Gdx.input = receiver;		
 		
+		ips = Arrays.toString(receiver.getIPs());
 		Gdx.input.setInputProcessor(this);		
 		batch = new SpriteBatch();
 		font = new BitmapFont();

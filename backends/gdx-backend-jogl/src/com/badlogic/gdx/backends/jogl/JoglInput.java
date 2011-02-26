@@ -426,6 +426,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		if (keyCode == java.awt.event.KeyEvent.VK_ESCAPE) return Input.Keys.KEYCODE_ESCAPE;
 		if (keyCode == java.awt.event.KeyEvent.VK_END) return Input.Keys.KEYCODE_END;
 		if (keyCode == java.awt.event.KeyEvent.VK_INSERT) return Input.Keys.KEYCODE_INSERT;
+		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD5) return Input.Keys.KEYCODE_DPAD_CENTER;
 
 		return Input.Keys.KEYCODE_UNKNOWN;
 	}
