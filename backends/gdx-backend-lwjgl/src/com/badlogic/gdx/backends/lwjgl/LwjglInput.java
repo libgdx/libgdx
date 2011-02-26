@@ -76,13 +76,17 @@ final class LwjglInput implements Input {
 	List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	boolean mousePressed = false;
-	int mouseX = 0;
-	int mouseY = 0;
+	int mouseX, mouseY;
 	int pressedKeys = 0;	
 	boolean justTouched = false;
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	InputProcessor processor;
-	int lastKeyPressed;
+	char lastKeyCharPressed;
+	float keyRepeatTimer;
+
+	public LwjglInput () {
+		Keyboard.enableRepeatEvents(false);
+	}
 
 	public float getAccelerometerX () {
 		return 0;
@@ -535,6 +539,19 @@ final class LwjglInput implements Input {
 	}
 
 	void updateKeyboard () {
+		if (lastKeyCharPressed != 0) {
+			keyRepeatTimer -= Gdx.graphics.getDeltaTime();
+			if (keyRepeatTimer < 0) {
+				keyRepeatTimer = 0.15f;
+
+				KeyEvent event = usedKeyEvents.obtain();
+				event.keyCode = 0;
+				event.keyChar = lastKeyCharPressed;
+				event.type = KeyEvent.KEY_TYPED;
+				keyEvents.add(event);
+			}
+		}
+
 		if (Keyboard.isCreated()) {
 			while (Keyboard.next()) {
 				if (Keyboard.getEventKeyState()) {
@@ -542,20 +559,20 @@ final class LwjglInput implements Input {
 					char keyChar = Keyboard.getEventCharacter();
 
 					KeyEvent event = usedKeyEvents.obtain();
+					event.keyCode = keyCode;
+					event.keyChar = 0;
+					event.type = KeyEvent.KEY_DOWN;
+					keyEvents.add(event);
+			
+					event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
 					keyEvents.add(event);
 
-					if (lastKeyPressed != keyCode || pressedKeys == 0) {
-						lastKeyPressed = keyCode;
-						pressedKeys++;
-						event = usedKeyEvents.obtain();
-						event.keyCode = keyCode;
-						event.keyChar = 0;
-						event.type = KeyEvent.KEY_DOWN;
-						keyEvents.add(event);
-					}
+					pressedKeys++;
+					lastKeyCharPressed = keyChar;
+					keyRepeatTimer = 0.4f;
 				} else {
 					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
 
@@ -566,6 +583,7 @@ final class LwjglInput implements Input {
 					keyEvents.add(event);
 
 					pressedKeys--;
+					lastKeyCharPressed = 0;
 				}
 			}
 		}

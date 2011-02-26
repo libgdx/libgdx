@@ -129,8 +129,6 @@ public class LwjglCanvas implements Application {
 			throw new GdxRuntimeException(e);
 		}
 
-		Keyboard.enableRepeatEvents(true);
-
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
 
