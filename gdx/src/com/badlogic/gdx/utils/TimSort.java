@@ -113,6 +113,7 @@ class TimSort<T> {
 	}
 
 	public void doSort (T[] a, Comparator<T> c, int lo, int hi) {
+		stackSize = 0;
 		rangeCheck(a.length, lo, hi);
 		int nRemaining = hi - lo;
 		if (nRemaining < 2) return; // Arrays of size 0 and 1 are always sorted
