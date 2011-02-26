@@ -13,9 +13,11 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -61,6 +63,7 @@ public class AndroidApplication extends Activity implements Application {
     protected ApplicationListener listener;
     protected Handler handler;
     protected boolean firstResume = true;
+    protected final List<Runnable> runnables = new ArrayList<Runnable>();
 
     /**
      * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
@@ -265,5 +268,11 @@ public class AndroidApplication extends Activity implements Application {
 
 	@Override public Preferences getPreferences (String name) {
 		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
+	}
+
+	@Override public void postRunnable (Runnable runnable) {
+		synchronized(runnables) {
+			runnables.add(runnable);
+		}
 	}
 }

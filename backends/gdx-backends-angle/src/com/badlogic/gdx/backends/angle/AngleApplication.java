@@ -13,7 +13,9 @@
 
 package com.badlogic.gdx.backends.angle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.anglejni.ESLoop;
@@ -35,6 +37,7 @@ public class AngleApplication implements Application, ESLoop {
 	AngleFiles files;
 	ESUtil utils;
 	ApplicationListener listener;
+	List<Runnable> runnables = new ArrayList<Runnable>();
 	boolean created = false;
 
 	public AngleApplication (final ApplicationListener listener, final String title, final int width, final int height,
@@ -117,6 +120,12 @@ public class AngleApplication implements Application, ESLoop {
 			listener.create();			
 			created = true;
 		}
+		synchronized (runnables) {
+			for(int i = 0; i < runnables.size(); i++) {
+				runnables.get(i).run();
+			}
+			runnables.clear();
+		}
 		input.processEvents();
 		listener.render();
 		input.justTouched = false;
@@ -137,5 +146,12 @@ public class AngleApplication implements Application, ESLoop {
 			preferences.put(name, prefs);
 			return prefs;
 		}
+	}
+
+	@Override public void postRunnable (Runnable runnable) {
+		synchronized(runnables) {
+			runnables.add(runnable);
+		}
+		
 	}
 }

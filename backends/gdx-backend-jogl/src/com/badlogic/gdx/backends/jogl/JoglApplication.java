@@ -17,7 +17,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GLCanvas;
@@ -49,6 +51,7 @@ public final class JoglApplication implements Application {
 	JoglFiles files;
 	OpenALAudio audio;
 	JFrame frame;
+	List<Runnable> runnables = new ArrayList<Runnable>();
 
 	/**
 	 * Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication
@@ -199,6 +202,12 @@ public final class JoglApplication implements Application {
 			Preferences prefs = new JoglPreferences(name);
 			preferences.put(name, prefs);
 			return prefs;
+		}
+	}
+
+	@Override public void postRunnable (Runnable runnable) {
+		synchronized(runnables) {
+			runnables.add(runnable);
 		}
 	}
 }

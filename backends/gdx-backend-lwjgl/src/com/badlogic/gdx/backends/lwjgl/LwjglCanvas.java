@@ -16,7 +16,9 @@ package com.badlogic.gdx.backends.lwjgl;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.LWJGLException;
@@ -46,6 +48,7 @@ public class LwjglCanvas implements Application {
 	final LwjglInput input;
 	final ApplicationListener listener;
 	final Canvas canvas;
+	final List<Runnable> runnables = new ArrayList<Runnable>();
 	boolean running = true;
 
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
@@ -138,6 +141,12 @@ public class LwjglCanvas implements Application {
 			public void run () {
 				if (!running) return;
 				graphics.updateTime();
+				synchronized (runnables) {
+					for(int i = 0; i < runnables.size(); i++) {
+						runnables.get(i).run();
+					}
+					runnables.clear();
+				}
 				input.update();
 
 				int width = Math.max(1, graphics.getWidth());
@@ -197,5 +206,12 @@ public class LwjglCanvas implements Application {
 			preferences.put(name, prefs);
 			return prefs;
 		}
+	}
+
+	@Override public void postRunnable (Runnable runnable) {
+		synchronized(runnables) {
+			runnables.add(runnable);
+		}
+		
 	}
 }

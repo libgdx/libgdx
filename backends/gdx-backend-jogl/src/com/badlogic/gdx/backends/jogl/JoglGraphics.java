@@ -14,6 +14,7 @@
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.Toolkit;
+import java.util.List;
 
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
@@ -77,6 +78,13 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		synchronized (this) {
 			if (!paused) {
 				updateTimes();
+				synchronized (((JoglApplication)Gdx.app).runnables) {
+					List<Runnable> runnables = ((JoglApplication)Gdx.app).runnables;
+					for(int i = 0; i < runnables.size(); i++) {
+						runnables.get(i).run();
+					}
+					runnables.clear();
+				}
 				((JoglInput)Gdx.input).processEvents();
 				listener.render();
 				((OpenALAudio)Gdx.audio).update();
