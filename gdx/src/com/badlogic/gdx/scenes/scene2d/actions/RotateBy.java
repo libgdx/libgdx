@@ -49,7 +49,7 @@ public class RotateBy extends AnimationAction {
 	@Override public void act (float delta) {
 		float alpha = createInterpolatedAlpha(delta);
 		if (done) {
-			target.rotation = rotation;
+			target.rotation = startRotation + rotation;
 		} else {
 			target.rotation = startRotation + deltaRotation * alpha;
 		}
