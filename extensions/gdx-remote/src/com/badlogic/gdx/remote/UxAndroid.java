@@ -4,13 +4,13 @@ package com.badlogic.gdx.remote;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.RemoteInput;
 import com.badlogic.gdx.input.RemoteSender;
 
 public class UxAndroid extends AndroidApplication {
@@ -21,7 +21,8 @@ public class UxAndroid extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		Bundle bundle = getIntent().getExtras();
 		IP = bundle.getString("ip");
-		PORT = bundle.getInt("port");
+		PORT = Integer.parseInt(bundle.getString("port"));
+		Log.d("UxAndroid", "ip: " + IP + ", port: " + PORT);
 		initialize(new ApplicationListener() {
 
 			RemoteSender sender;
