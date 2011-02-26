@@ -82,7 +82,7 @@ final class LwjglInput implements Input {
 	boolean justTouched = false;
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	InputProcessor processor;
-	
+	int lastKeyPressed;
 
 	public float getAccelerometerX () {
 		return 0;
@@ -542,17 +542,20 @@ final class LwjglInput implements Input {
 					char keyChar = Keyboard.getEventCharacter();
 
 					KeyEvent event = usedKeyEvents.obtain();
-					event.keyCode = keyCode;
-					event.keyChar = 0;
-					event.type = KeyEvent.KEY_DOWN;
-					keyEvents.add(event);
-
-					event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
 					keyEvents.add(event);
-					pressedKeys++;
+
+					if (lastKeyPressed != keyCode || pressedKeys == 0) {
+						lastKeyPressed = keyCode;
+						pressedKeys++;
+						event = usedKeyEvents.obtain();
+						event.keyCode = keyCode;
+						event.keyChar = 0;
+						event.type = KeyEvent.KEY_DOWN;
+						keyEvents.add(event);
+					}
 				} else {
 					int keyCode = LwjglInput.getGdxKeyCode(Keyboard.getEventKey());
 

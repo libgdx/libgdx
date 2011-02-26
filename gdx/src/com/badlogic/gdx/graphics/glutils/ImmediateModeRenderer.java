@@ -155,9 +155,9 @@ public class ImmediateModeRenderer {
 		positions[idxPos++] = y;
 		positions[idxPos++] = z;
 
-		idxCols += 4;
-		idxNors += 3;
-		idxTexCoords += 2;
+		if (idxCols > 0) idxCols += 4;
+		if (idxNors > 0) idxNors += 3;
+		if (idxTexCoords > 0) idxTexCoords += 2;
 	}
 
 	/**
