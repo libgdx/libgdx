@@ -90,6 +90,7 @@ public class Texture implements Disposable {
 	TextureFilter magFilter = TextureFilter.Nearest;
 	TextureWrap uWrap = TextureWrap.ClampToEdge;
 	TextureWrap vWrap = TextureWrap.ClampToEdge;
+	Format format;
 	
 	/**
 	 * Creates a new texture from the given {@link FileHandle}. The 
@@ -124,6 +125,7 @@ public class Texture implements Disposable {
 		this.textureData = null;
 		glHandle = createGLHandle();
 		Pixmap pixmap = new Pixmap(file);
+		format = pixmap.getFormat();
 		uploadImageData(pixmap);
 		pixmap.dispose();		
 		if(mipmap)
@@ -162,6 +164,7 @@ public class Texture implements Disposable {
 		this.file = null;
 		this.textureData = null;
 		glHandle = createGLHandle();
+		format = pixmap.getFormat();
 		uploadImageData(pixmap);	
 		if(mipmap)
 			minFilter = TextureFilter.MipMap;
@@ -188,6 +191,7 @@ public class Texture implements Disposable {
 		Pixmap pixmap = new Pixmap(width, height, format);
 		pixmap.setColor(0, 0, 0, 0);
 		pixmap.fill();
+		format = pixmap.getFormat();
 		uploadImageData(pixmap);	
 		pixmap.dispose();
 		setFilter(minFilter, magFilter);
@@ -211,6 +215,7 @@ public class Texture implements Disposable {
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
 		textureData.load();			
+		format = Format.RGBA8888; // FIXME, let TextureData return the format upon load.
 		this.width = textureData.getWidth();
 		this.height = textureData.getHeight();
 		managedTextures.add(this);
@@ -410,5 +415,12 @@ public class Texture implements Disposable {
 			Texture texture = managedTextures.get(i);			
 			texture.reload();			
 		}		
+	}
+	
+	/**
+	 * @return the {@link Format} of the Texture. For {@link TextureData} based textures this will always be RGBA8888.
+	 */
+	public Format getFormat() {
+		return format;
 	}
 }
