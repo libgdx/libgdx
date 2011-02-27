@@ -157,7 +157,7 @@ public abstract class FileHandle {
 
 	/**
 	 * Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-	 * directory.
+	 * directory. On the desktop, an internal handle to a directory on the classpath will return a zero length array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file.
 	 */
 	public FileHandle[] list () {
@@ -172,7 +172,7 @@ public abstract class FileHandle {
 
 	/**
 	 * Returns true if this file is a directory. Always returns false for classpath files. On Android, an internal handle to an
-	 * empty directory will return false.
+	 * empty directory will return false. On the desktop, an internal handle to a directory on the classpath will return false.
 	 */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
