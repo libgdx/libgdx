@@ -121,7 +121,7 @@ public class Matrix4 implements Serializable {
 	 * @param quaternion The quaternion
 	 * @return This matrix for chaining
 	 */
-	public Matrix4 set (Quaternion quaternion) {
+	public Matrix4 set (Quaternion quaternion) {		
 		// Compute quaternion factors
 		float l_xx = quaternion.x * quaternion.x;
 		float l_xy = quaternion.x * quaternion.y;
@@ -136,12 +136,18 @@ public class Matrix4 implements Serializable {
 		val[M00] = 1 - 2 * (l_yy + l_zz);
 		val[M01] = 2 * (l_xy - l_zw);
 		val[M02] = 2 * (l_xz + l_yw);
+		val[M03] = 0;
 		val[M10] = 2 * (l_xy + l_zw);
 		val[M11] = 1 - 2 * (l_xx + l_zz);
 		val[M12] = 2 * (l_yz - l_xw);
+		val[M13] = 0;
 		val[M20] = 2 * (l_xz - l_yw);
 		val[M21] = 2 * (l_yz + l_xw);
 		val[M22] = 1 - 2 * (l_xx + l_yy);
+		val[M23] = 0;
+		val[M30] = 0;
+		val[M31] = 0;
+		val[M32] = 0;
 		val[M33] = 1;
 		return this;
 	}
