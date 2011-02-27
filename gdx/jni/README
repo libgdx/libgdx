@@ -1,0 +1,28 @@
+=== BUILDING FOR WINDOWS, LINUX & ANDROID ===
+
+This folder contains 4 ant files responsible for building the gdx shared libs for win32, win64, lin32 and lin64. They are
+intended to be used with ant >= 1.8.1 as well as the common multilib gcc toolchain for linux (x86 and x86_64 targets) and
+the mingw w64 linux port (http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Automated%20Builds/mingw-w64-bin_i686-linux_20101216.tar.bz2/download).
+We currently don't support building on Windows directly. If you want to do this you have to change the build-winxxx.xml files.
+just replace the prefix with whatever your local Windows MinGW install uses (e.g. the empty string...). Otherwise go this route:
+
+1) Install a nice new and shiny Ubuntu 10.10 (just as an example) 64-bit
+2) Install the gcc toolchain via apt
+3) Install gcc-multilib via apt for gcc and g++ (package gcc-multilib should suffice and install the correct versions)
+4) Install gcc-mingw32 (needed for targeting win32)
+5) Fetch MinGW w64 targeting win64 from http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Automated%20Builds/mingw-w64-bin_i686-linux_20101216.tar.bz2/download
+6) unpack it and put it in an accessible directory, e.g. /opt/mingw-w64, then export PATH=$PATH:/opt/mingw-w64/bin
+7) Download the latest ant binaries (>= 1.8.1) and extract them to say /opt/ant, then export PATH=$PATH:/opt/ant/bin
+8) Download the latest Android NDK and make sure ndk-build is on the PATH
+9) set NDK_HOME to the directory you extracted the Android NDK to (e.g. /opt/android-ndk-r5).
+8) invoke ant in the directory gdx/jni
+9) ...
+10) Profit!
+
+This will compile the natives for win32 (gdx.dll), win64 (gdx-64.dll), lin32 (libgdx.so), lin64 (libgdx-64) and Android (arm5, arm7). 
+It will also pack them into the gdx-natives.jar which is placed in gdx/natives and used by all the desktop projects in the SVN trunk
+
+Why the separate ant files? Cause i like copy & pasting... I'll write a more generic ant script that can be used by any platform as soon
+as time permits. 
+
+MacOSX lovers, i'm afraid you are shit out of luck. Seems like Apple doesn't want people to write software for the super awesome OS. 

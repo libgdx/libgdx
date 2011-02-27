@@ -1,0 +1,84 @@
+<project name="gdx-natives" basedir="." default="link">
+	<!-- include the environment -->
+	<property environment="env"/>	
+	
+	<!-- defined build directory where object files and shared lib will be placed in -->
+	<property name="builddir" value="../libs/linux64"/>
+	<property name="libname" value="libgdx-64.so"/>
+	<property name="jni-platform" value="linux"/>
+	
+	<!-- define g++ compiler, options and files to compile -->
+	<property name="g++" value="g++"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m64 -fPIC"/>
+	<fileset id="g++-files" dir="./">
+		<include name="**/*.cpp"/>
+		<exclude name="Mpg123Decoder.cpp"/>
+		<exclude name="mpg123/**"/>
+	</fileset>
+	
+	<!-- define gcc compiler, options and files to compile -->
+	<property name="gcc" value="gcc"/>	
+	<property name="gcc-opts" value="${g++-opts}"/>
+	<fileset id="gcc-files" dir="./">		
+		<include name="**/*.c"/>				
+		<exclude name="mpg123/**"/>
+	</fileset>
+
+	<!-- define linker and options -->
+	<property name="linker" value="g++"/>
+	<property name="linker-opts" value="-shared"/>
+	
+	<!-- cleans the build directory, removes all object files and shared libs -->
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${builddir}" includes="**/*" excludes="**/.svn"/>
+		</delete>
+	</target>
+
+	<!-- compiles all C and C++ files to object files in the build directory -->
+	<target name="compile">
+		<apply failonerror="true" executable="${g++}" dest="${builddir}" verbose="true">
+			<arg line="${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
+			<arg value="-I./"/>
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<chainedmapper>
+				<flattenmapper/>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+			</chainedmapper>
+		</apply>
+		<apply failonerror="true" executable="${gcc}" dest="${builddir}" verbose="true">
+			<arg line="${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
+			<arg value="-I./"/>
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<chainedmapper>
+				<flattenmapper/>
+				<mapper type="glob" from="*.c" to="*.o"/>
+			</chainedmapper>
+		</apply>
+	</target>	
+
+	<!-- links the shared library based on the previously compiled object files -->
+	<target name="link" depends="compile">
+		<apply failonerror="true" executable="${linker}" parallel="true">
+			<arg value="${linker-opts}"/>
+			<arg value="-m64"/>
+			<arg value="-o"/>
+			<arg path="${builddir}/${libname}"/>		
+			<fileset dir="${builddir}">
+				<patternset>
+					<include name="**/*.o"/>
+				</patternset>
+			</fileset>
+		</apply>
+	</target>
+</project>

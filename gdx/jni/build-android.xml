@@ -1,0 +1,24 @@
+<project name="gdx-natives" basedir="." default="compile-natives">
+	<property environment="env" />
+
+	<target name="clean">
+		<exec executable="${env.NDK_HOME}/ndk-build" dir="../">
+			<arg value="clean"/>
+		</exec>
+	</target>
+
+	<target name="compile-natives">
+		<echo>ndk_home: ${env.NDK_HOME}</echo>
+		<exec executable="${env.NDK_HOME}/ndk-build" dir="../"/>
+	</target>
+	
+	<!-- updates the native libs of the android test suite -->
+	<target name="update-android-tests">
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi/libgdx.so" file="../libs/armeabi/libgdx.so" />
+		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi/libmpg123.so" file="${stable}/armeabi/libmpg123.so" /> -->
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="../libs/armeabi-v7a/libgdx.so" />
+		<!-- <copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libmpg123.so" file="${stable}/armeabi-v7a/libmpg123.so" /> -->
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />
+	</target>
+</project>

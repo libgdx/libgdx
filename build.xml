@@ -1,0 +1,191 @@
+<!-- 
+libgdx distribution ant build file. Performs the compilation of the
+gdx and backend modules and creates a distribution out of this mess. 
+-->
+<project name="gdx" default="all" basedir=".">
+	<description>libgdx distribution build file</description>
+
+	<!-- property for NDK_HOME, you need to set this to
+		  the root directory of your Android NDK installation,
+		  e.g. c:\android-ndk or /opt/android-ndk -->
+	<property environment="env" />
+	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
+
+	<!-- libgdx version -->
+	<property name="version" value="0.82a" />
+
+	<!-- output directory for distribution -->
+	<property name="stable" value="target" />
+
+	<target name="ver">
+		<echo>${version}</echo>
+	</target>
+	
+	<!-- clean output directories -->	
+	<target name="clean">		
+		<delete dir="${stable}" />
+		<delete dir="gdx/bin" />
+		<delete dir="backends/gdx-openal/bin" />
+		<delete dir="backends/gdx-backend-jogl/bin" />
+		<delete dir="backends/gdx-backend-lwjgl/bin" />
+		<delete dir="backends/gdx-backend-android/bin" />	
+		<delete dir="extensions/twl/gdx-twl/bin"/>
+	</target>
+
+	<!-- init task, creates all necessary directories -->
+	<target name="init" depends="clean">
+		<mkdir dir="${stable}" />
+		<mkdir dir="${stable}/docs/api"/>
+		<mkdir dir="gdx/bin" />
+		<mkdir dir="backends/gdx-openal/bin" />
+		<mkdir dir="backends/gdx-backend-jogl/bin" />
+		<mkdir dir="backends/gdx-backend-lwjgl/bin" />
+		<mkdir dir="backends/gdx-backend-android/bin" />
+		<mkdir dir="extensions/twl/gdx-twl/bin"/>
+	</target>
+
+	<!-- compiles the java code of all modules -->
+	<target name="compile" depends="init">
+		<!-- build gdx api -->
+		<javac debug="on" srcdir="gdx/src" destdir="gdx/bin" />
+		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.png" file="gdx/src/com/badlogic/gdx/utils/arial-15.png" />
+		<copy tofile="gdx/bin/com/badlogic/gdx/utils/arial-15.fnt" file="gdx/src/com/badlogic/gdx/utils/arial-15.fnt" />
+
+		<!-- build gdx-openal -->
+		<javac debug="on" srcdir="backends/gdx-openal/src" destdir="backends/gdx-openal/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<fileset file="backends/gdx-openal/libs/*.jar" />
+			</classpath>
+		</javac>
+
+		<!-- build jogl backend -->
+		<javac debug="on" srcdir="backends/gdx-backend-jogl/src" destdir="backends/gdx-backend-jogl/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<pathelement location="backends/gdx-openal/bin" />
+				<fileset file="backends/gdx-backend-jogl/libs/*.jar" />
+			</classpath>
+		</javac>
+		
+		<!-- build lwjgl backend -->
+		<javac debug="on" srcdir="backends/gdx-backend-lwjgl/src" destdir="backends/gdx-backend-lwjgl/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<pathelement location="backends/gdx-openal/bin" />
+				<fileset file="backends/gdx-openal/libs/*.jar" />
+				<fileset file="backends/gdx-backend-lwjgl/libs/*.jar" />
+			</classpath>
+		</javac>
+
+		<!-- build android backend -->
+		<javac debug="on" srcdir="backends/gdx-backend-android/src" destdir="backends/gdx-backend-android/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<fileset file="backends/gdx-backend-android/libs/*.jar" />
+			</classpath>
+		</javac>
+		
+		<!-- build twl extensions -->
+		<javac debug="on" srcdir="extensions/twl/gdx-twl/src" destdir="extensions/twl/gdx-twl/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />
+				<fileset file="extensions/twl/gdx-twl/libs/*.jar" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- generates the javadoc for the core api and the application implementations -->
+	<target name="docs" depends="init">
+		<javadoc destdir="${stable}/docs/api" author="true" version="true" use="true"
+		windowtitle="libgdx API" doctitle="libgdx API" footer="libgdx API">
+			<header><![CDATA[
+				libgdx API
+				<style>
+				body, td, th { font-family:Helvetica, Tahoma, Arial, sans-serif; font-size:10pt }
+				pre, code, tt { font-size:9pt; font-family:Lucida Console, Courier New, sans-serif }
+				h1, h2, h3, .FrameTitleFont, .FrameHeadingFont, .TableHeadingColor font { font-size:105%;  font-weight:bold }
+				.TableHeadingColor { background:#EEEEFF; }
+				a { text-decoration:none }
+				a:hover { text-decoration:underline }
+				a:link, a:visited { color:blue }
+				table { border:0px }
+				.TableRowColor td:first-child { border-left:1px solid black }
+				.TableRowColor td { border:0px; border-bottom:1px solid black; border-right:1px solid black }
+				hr { border:0px; border-bottom:1px solid #333366; }
+				</style>
+			]]></header>
+			<bottom><![CDATA[
+				<div style="font-size:9pt"><i>
+				Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
+				</i></div>
+			]]></bottom>
+			<fileset dir="gdx/src" defaultexcludes="yes">
+				<include name="com/badlogic/gdx/**" />
+				<exclude name="com/badlogic/gdx/utils/arial-15.fnt" />
+				<exclude name="com/badlogic/gdx/utils/arial-15.png" />
+			</fileset>
+			<fileset dir="backends" includes="gdx-backend-jogl/src/com/badlogic/gdx/backends/jogl/JoglApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglCanvas.java"/>
+			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
+			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
+			<fileset dir="extensions/twl/" includes="gdx-twl/src/com/badlogic/gdx/twl/TWL.java"/>
+		</javadoc>
+	</target>
+
+	<target name="compile-natives" depends="init">
+		<ant antfile="build.xml" target="clean" dir="gdx/jni"/>
+		<ant antfile="build.xml" target="all" dir="gdx/jni"/>
+	</target>
+	
+	<!-- creates jars and places other files in the output dir -->
+	<target name="package">
+		<!-- for some reason excludes don't work so we have to delete the ndk directory first... -->
+		<delete dir="gdx/bin/ndk" />
+		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" />
+		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src" />
+		<jar destfile="${stable}/gdx-backend-jogl.jar">
+			<fileset dir="backends/gdx-openal/bin" />
+			<zipgroupfileset file="backends/gdx-openal/libs/*.jar">
+				<exclude name="lwjgl-debug.jar"/>
+			</zipgroupfileset>
+			<fileset dir="backends/gdx-backend-jogl/bin" />
+			<zipgroupfileset file="backends/gdx-backend-jogl/libs/*.jar">
+				<exclude name="*-natives.jar"/>
+			</zipgroupfileset>
+		</jar>
+		<jar destfile="${stable}/gdx-backend-lwjgl.jar">
+			<fileset dir="backends/gdx-openal/bin" />
+			<zipgroupfileset file="backends/gdx-openal/libs/*.jar">
+				<exclude name="lwjgl-debug.jar"/>
+			</zipgroupfileset>
+			<fileset dir="backends/gdx-backend-lwjgl/bin" />
+			<zipgroupfileset file="backends/gdx-backend-lwjgl/libs/*.jar">
+				<exclude name="*-natives.jar"/>
+			</zipgroupfileset>
+		</jar>
+		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin" />
+		<jar destfile="${stable}/gdx-twl.jar">
+			<fileset dir="extensions/twl/gdx-twl/bin" />
+			<zipgroupfileset file="extensions/twl/gdx-twl/libs/*.jar" />
+		</jar>
+
+		<copy tofile="${stable}/gdx-natives.jar" file="gdx/libs/gdx-natives.jar" />
+		<copy tofile="${stable}/gdx-backend-jogl-natives.jar" file="backends/gdx-backend-jogl/libs/gdx-backend-jogl-natives.jar" />
+		<copy tofile="${stable}/gdx-backend-lwjgl-natives.jar" file="backends/gdx-backend-lwjgl/libs/gdx-backend-lwjgl-natives.jar" />
+		<copy tofile="${stable}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so" />
+		<!--<copy tofile="${stable}/armeabi/libmpg123.so" file="gdx/libs/armeabi/libmpg123.so" />-->
+		<copy tofile="${stable}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
+		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so" />
+		<!--<copy tofile="${stable}/armeabi-v7a/libmpg123.so" file="gdx/libs/armeabi-v7a/libmpg123.so" />-->
+		<copy tofile="${stable}/armeabi-v7a/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
+		<copy tofile="${stable}/README" file="gdx/dist/README" />
+		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html" />
+	</target>
+
+	<!-- builds the distribution zip -->
+	<target name="dist" depends="compile,compile-natives,package,docs">
+		<zip destfile="libgdx-${version}.zip" basedir="${stable}"/>
+	</target>	
+</project>

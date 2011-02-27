@@ -1,0 +1,110 @@
+
+perspective walls1.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+perspective walls
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+perspective walls
+  rotate: false
+  xy: 0, 66
+  size: 56, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 10
+perspective walls
+  rotate: false
+  xy: 0, 132
+  size: 56, 64
+  orig: 64, 64
+  offset: 8, 0
+  index: 12
+perspective walls
+  rotate: false
+  xy: 0, 198
+  size: 48, 64
+  orig: 64, 64
+  offset: 8, 0
+  index: 2
+perspective walls
+  rotate: false
+  xy: 0, 264
+  size: 40, 64
+  orig: 64, 64
+  offset: 12, 0
+  index: 15
+perspective walls
+  rotate: false
+  xy: 0, 330
+  size: 64, 56
+  orig: 64, 64
+  offset: 0, 0
+  index: 11
+perspective walls
+  rotate: false
+  xy: 0, 388
+  size: 64, 56
+  orig: 64, 64
+  offset: 0, 8
+  index: 9
+perspective walls
+  rotate: false
+  xy: 0, 446
+  size: 56, 56
+  orig: 64, 64
+  offset: 0, 0
+  index: 7
+perspective walls
+  rotate: false
+  xy: 0, 504
+  size: 56, 56
+  orig: 64, 64
+  offset: 8, 0
+  index: 8
+perspective walls
+  rotate: false
+  xy: 0, 562
+  size: 56, 56
+  orig: 64, 64
+  offset: 0, 8
+  index: 6
+perspective walls
+  rotate: false
+  xy: 0, 620
+  size: 56, 56
+  orig: 64, 64
+  offset: 8, 8
+  index: 5
+perspective walls
+  rotate: false
+  xy: 0, 678
+  size: 64, 48
+  orig: 64, 64
+  offset: 0, 8
+  index: 1
+perspective walls
+  rotate: false
+  xy: 0, 728
+  size: 48, 48
+  orig: 64, 64
+  offset: 8, 8
+  index: 4
+perspective walls
+  rotate: false
+  xy: 0, 778
+  size: 40, 41
+  orig: 64, 64
+  offset: 20, 19
+  index: 13
+perspective walls
+  rotate: false
+  xy: 0, 821
+  size: 64, 40
+  orig: 64, 64
+  offset: 0, 12
+  index: 14

@@ -1,0 +1,16 @@
+﻿TODO (in order of priority)
+MUSTS for 0.9
+
+NICE TO HAVES 0.9
+- Loaders for new 3D formats (MD2, MD5, Obj, Cal3D, Ogre)
+- Rewrite Daves stuff a tad bit to make it compatible with GLES 2.0 as well and unify loading and baking for new formats. This mostly concerns Materials (and some optimizations to reduce state changes)
+- A very very simple little 3D scene graph API, even simpler than the 2D scenegraph. I believe that a complete scene graph is utter overkill. However, there are use cases were you want to have small hierarchies in your game world for which this API should provide sensible methods and classes
+- Spatial partitioning datastructures (Octree, Hashed Grids), follow example from my book in terms of API, SpatialHashGrid. Distinction between static and dynamic objects, insertion performed via bounding shape and object reference. Dynamic objects need to be reinserted each frame. Classes to partition triangle soups as well. Could be a new bounding shape. See Chris Hecker's book. 
+
+DIDN'T MAKE IT
+- z-ordering of sprites. the z-buffer idea just won't work. and sorting can be done external to the SpriteBatch. The implementation is complex enough as is. Maybe consider a SpriteBatch3 that allows z-coords to be specified along with billboarding.
+- screenshot method in Graphics
+- Proper fullscreen support for Lwjgl and Jogl backends, only Angle backend supports it atm
+- Fix Label actor class
+- Implementing Matrix3.inv()
+- http://code.google.com/p/libgdx/issues/list, fix all these defects  lol :)
