@@ -148,7 +148,7 @@ public class Renderer {
 			explosionMesh.setVertices(vertices);
 			font = new BitmapFont(Gdx.files.internal("data/font10.fnt"), Gdx.files.internal("data/font10.png"), false);
 
-			camera = new PerspectiveCamera(67, 480, 320);			
+			camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -218,8 +218,7 @@ public class Renderer {
 
 	private void setProjectionAndCamera (Graphics graphics, Ship ship, Application app) {
 		camera.position.set(ship.position.x, 6, 2);
-		dir.set(ship.position.x, 0, -4).sub(camera.position).nor();
-		camera.position.set(dir);
+		camera.direction.set(ship.position.x, 0, -4).sub(camera.position).nor();		
 		camera.update();
 		camera.apply(Gdx.gl10);		
 	}
