@@ -20,8 +20,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -38,6 +40,7 @@ import com.badlogic.gdx.physics.box2d.WorldManifold;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.MathUtils;
 
 public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the camera **/
@@ -46,9 +49,10 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	/** the immediate mode renderer to output our debug drawings **/
 	private ImmediateModeRenderer renderer;
 
-	/** a spritebatch and a font for text rendering **/
+	/** a spritebatch and a font for text rendering and a Texture to draw our boxes**/
 	private SpriteBatch batch;
 	private BitmapFont font;
+	private TextureRegion textureRegion;
 
 	/** our box2D world **/
 	private World world;
@@ -83,6 +87,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(Color.RED);
+		textureRegion = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 
 		// next we create out physics world.
 		createPhysicsWorld();
@@ -142,11 +147,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 			boxBodyDef.position.x = -24 + (float)(Math.random() * 48);
 			boxBodyDef.position.y = 10 + (float)(Math.random() * 100);
 			Body boxBody = world.createBody(boxBodyDef);
-
-			// add the boxPoly shape as a fixture
-			FixtureDef fixtureDef = new FixtureDef();
-			fixtureDef.shape = boxPoly;
-			boxBody.createFixture(fixtureDef);
+		
+			boxBody.createFixture(boxPoly, 1);
 
 			// add the box to our list of boxes
 			boxes.add(boxBody);
@@ -175,12 +177,24 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// next we render the ground body
 		renderBox(gl, groundBody, 50, 1);
 
-		// next we render each box via the ImmediateModeRenderer
-		// we instantiated previously
+		// next we render each box via the SpriteBatch.
+		// for this we have to set the projection matrix of the
+		// spritebatch to the camera's combined matrix. This will
+		// make the spritebatch work in world coordinates
+		batch.getProjectionMatrix().set(camera.combined);
+		batch.begin();
 		for (int i = 0; i < boxes.size(); i++) {
 			Body box = boxes.get(i);
-			renderBox(gl, box, 1, 1);
+			Vector2 position = box.getPosition(); // that's the box's center position
+			float angle = MathUtils.radiansToDegrees *box.getAngle(); // the rotation angle around the center
+			batch.draw(textureRegion, 
+						  position.x - 1, position.y - 1, // the bottom left corner of the box, unrotated
+						  1f, 1f, // the rotation center relative to the bottom left corner of the box
+						  2, 2, // the width and height of the box
+						  1, 1, // the scale on the x- and y-axis
+						  angle); // the rotation angle
 		}
+		batch.end();
 
 		// finally we render all contact points
 		gl.glPointSize(4);
@@ -205,6 +219,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		gl.glPointSize(1);
 
 		// finally we render the time it took to update the world
+		// for this we have to set the projection matrix again, so 
+		// we work in pixel coordinates
+		batch.getProjectionMatrix().setToOrtho2D(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0, 20);
 		batch.end();
