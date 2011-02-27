@@ -16,7 +16,6 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
@@ -52,6 +51,7 @@ import com.badlogic.gdx.tests.MeshMultitextureTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MeshTest;
 import com.badlogic.gdx.tests.MultitouchTest;
+import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
 import com.badlogic.gdx.tests.OrthoCamBorderTest;
@@ -142,9 +142,10 @@ public class GdxTests
 		MD5Test.class,
 		MeshMultitextureTest.class,
 		MeshShaderTest.class,
-		MeshTest.class,
+		MeshTest.class,		
 		//Mpg123Test.class,
 		MultitouchTest.class,
+		MusicTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
 		OrthoCamBorderTest.class,
