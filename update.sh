@@ -22,11 +22,9 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/twl/gdx-twl-tests-andr
 cp -rf nightlies/gdx.jar nightlies/gdx-natives.jar nightlies/gdx-backend-jogl.jar nightlies/gdx-backend-jogl-natives.jar nightlies/gdx-sources.jar demos/helloworld/gdx-helloworld/libs
 cp -rf nightlies/gdx.jar nightlies/gdx-backend-android.jar nightlies/armeabi nightlies/armeabi-v7a demos/helloworld/gdx-helloworld-android/libs
 
-cp -rf nightlies/gdx.jar nightlies/gdx-natives.jar nightlies/gdx-backend-jogl.jar nightlies/gdx-backend-jogl-natives.jar nightlies/gdx-sources.jar demos/invaders/gdx-invaders/libs
-cp -rf nightlies/gdx.jar nightlies/gdx-backend-android.jar nightlies/armeabi nightlies/armeabi-v7a demos/invaders/gdx-invaders-android/libs
+cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/invaders/gdx-invaders-android/libs
 
-cp -rf nightlies/gdx.jar nightlies/gdx-natives.jar nightlies/gdx-backend-jogl.jar nightlies/gdx-backend-jogl-natives.jar nightlies/gdx-sources.jar demos/vector-pinball/gdx-vectorpinball/libs
-cp -rf nightlies/gdx.jar nightlies/gdx-backend-android.jar nightlies/armeabi nightlies/armeabi-v7a demos/vector-pinball/gdx-vectorpinball-android/libs
+cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/vector-pinball/gdx-vectorpinball-android/libs
 
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/superjumper/superjumper-android/libs
 
