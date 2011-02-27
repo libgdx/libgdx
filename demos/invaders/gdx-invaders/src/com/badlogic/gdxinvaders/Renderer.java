@@ -22,14 +22,13 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -149,9 +148,7 @@ public class Renderer {
 			explosionMesh.setVertices(vertices);
 			font = new BitmapFont(Gdx.files.internal("data/font10.fnt"), Gdx.files.internal("data/font10.png"), false);
 
-			camera = new PerspectiveCamera();
-			camera.setFov(67);
-			camera.setViewport(480, 320);
+			camera = new PerspectiveCamera(67, 480, 320);			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -220,15 +217,11 @@ public class Renderer {
 	final Vector3 dir = new Vector3();
 
 	private void setProjectionAndCamera (Graphics graphics, Ship ship, Application app) {
-		camera.getPosition().set(ship.position.x, 6, 2);
-		dir.set(ship.position.x, 0, -4).sub(camera.getPosition()).nor();
-		camera.getDirection().set(dir);
+		camera.position.set(ship.position.x, 6, 2);
+		dir.set(ship.position.x, 0, -4).sub(camera.position).nor();
+		camera.position.set(dir);
 		camera.update();
-		GL10 gl = graphics.getGL10();
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadMatrixf(camera.getCombinedMatrix().val, 0);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadIdentity();
+		camera.apply(Gdx.gl10);		
 	}
 
 	float[] direction = {1, 0.5f, 0, 0};

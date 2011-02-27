@@ -7,10 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.utils.json.JSONArray;
-import com.badlogic.gdx.utils.json.JSONException;
-import com.badlogic.gdx.utils.json.JSONObject;
-
 public class JSONUtils {
 
 	/**
