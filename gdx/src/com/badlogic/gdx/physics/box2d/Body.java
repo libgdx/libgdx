@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.utils.Disposable;
 
 /**
  * A rigid body. These are created via World.CreateBody.

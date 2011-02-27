@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * @author Nathan Sweet
  */
 public class InputMultiplexer implements InputProcessor {
-	private ArrayList<InputProcessor> processors = new ArrayList(4);
+	private ArrayList<InputProcessor> processors = new ArrayList<InputProcessor>(4);
 
 	public void addProcessor (InputProcessor processor) {
 		processors.add(processor);

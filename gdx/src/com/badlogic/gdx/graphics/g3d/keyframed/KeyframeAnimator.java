@@ -12,7 +12,6 @@
  */
 package com.badlogic.gdx.graphics.g3d.keyframed;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Animator;
 import com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Quaternion;
 import com.badlogic.gdx.math.Quaternion;

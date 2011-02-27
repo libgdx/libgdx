@@ -17,8 +17,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import com.badlogic.gdx.utils.Disposable;
-
 /**
  * Represents an MD5 (Doom 3) skinned model.
  * Note: The normal interpolation implementation is experimental. Using it will incur a greater CPU overhead, and correct normals

@@ -328,7 +328,7 @@ public class MD5Mesh {
 		}
 		
 		// calculate weight normals
-		for( int vertexOffset = 2, k = 0; vertexOffset < vertices.length; vertexOffset += vstride )
+		for( int vertexOffset = 2; vertexOffset < vertices.length; vertexOffset += vstride )
 		{
 			int weightOffset = (int)vertices[vertexOffset];
 			int weightCount = (int)vertices[vertexOffset+1];
@@ -336,11 +336,12 @@ public class MD5Mesh {
 			
 			for( int j = 0; j < weightCount; j++ )
 			{								
-				int jointOffset = (int)weights[weightOffset++] << 3;				
-				float bias = weights[weightOffset++];				
-				float vx = weights[weightOffset++];
-				float vy = weights[weightOffset++];
-				float vz = weights[weightOffset++];
+				int jointOffset = (int)weights[weightOffset++] << 3;		
+				// FIXME why aren't these used?
+//				float bias = weights[weightOffset++];				
+//				float vx = weights[weightOffset++];
+//				float vy = weights[weightOffset++];
+//				float vz = weights[weightOffset++];
 				
 				float qx = skeleton.joints[jointOffset+4];
 				float qy = skeleton.joints[jointOffset+5];

@@ -1,7 +1,5 @@
 package com.badlogic.gdx.graphics;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.math.Vector3;
 
 /**

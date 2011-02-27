@@ -13,9 +13,6 @@
 
 package com.badlogic.gdx.graphics;
 
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 /**
  * Loads image data for a texture. Used with

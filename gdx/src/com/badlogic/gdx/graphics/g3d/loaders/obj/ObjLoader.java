@@ -169,14 +169,6 @@ public class ObjLoader {
 		return mesh;
 	}
 
-	private static int[] convertToFixedPoint (float[] fverts) {
-		int[] fpverts = new int[fverts.length];
-		for (int i = 0; i < fverts.length; i++)
-			fpverts[i] = (int)(fverts[i] * 65536);
-		;
-		return fpverts;
-	}
-
 	private static int getIndex (String index, int size) {
 		if (index == null || index.length() == 0) return 0;
 		int idx = Integer.parseInt(index);

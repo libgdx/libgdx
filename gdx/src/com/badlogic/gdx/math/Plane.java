@@ -21,7 +21,9 @@ import java.io.Serializable;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Plane implements Serializable {
+public class Plane implements Serializable {	
+	private static final long serialVersionUID = -1240652082930747866L;
+
 	/**
 	 * Enum specifying on which side a point lies respective to the plane and it's normal. {@link PlaneSide#Front} is the side to
 	 * which the normal points.

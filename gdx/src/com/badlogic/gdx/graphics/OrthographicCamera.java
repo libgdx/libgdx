@@ -1,9 +1,6 @@
 package com.badlogic.gdx.graphics;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 
 /**
  * A camera with orthographic projection.

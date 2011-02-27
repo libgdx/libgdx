@@ -23,7 +23,9 @@ import com.badlogic.gdx.math.Vector3;
  * @author mzechner
  * 
  */
-public class Segment implements Serializable {
+public class Segment implements Serializable {	
+	private static final long serialVersionUID = 2739667069736519602L;
+
 	/** the starting position **/
 	public final Vector3 a = new Vector3();
 

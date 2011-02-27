@@ -194,7 +194,7 @@ public class KeyframedModel {
 						if(name.equals(skel.names[j]))
 						{
 							int idx = j*8;
-							float p = skel.joints[idx];
+							// FIXME what is this? float p = skel.joints[idx];
 							float x = skel.joints[idx+1];
 							float y = skel.joints[idx+2];
 							float z = skel.joints[idx+3];

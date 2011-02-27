@@ -20,7 +20,8 @@ import java.io.Serializable;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Rectangle implements Serializable {
+public class Rectangle implements Serializable {	
+	private static final long serialVersionUID = 5733252015138115702L;
 	public float x, y;
 	public float width, height;
 

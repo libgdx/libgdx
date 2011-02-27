@@ -24,7 +24,8 @@ import com.badlogic.gdx.math.Vector3;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Ray implements Serializable {
+public class Ray implements Serializable {	
+	private static final long serialVersionUID = -620692054835390878L;
 	public final Vector3 origin = new Vector3();
 	public final Vector3 direction = new Vector3();
 

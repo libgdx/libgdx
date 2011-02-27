@@ -16,11 +16,6 @@ package com.badlogic.gdx.math;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * A simple implementation of the ear cutting algorithm to triangulate simple

@@ -22,7 +22,9 @@ import com.badlogic.gdx.utils.MathUtils;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Vector2 implements Serializable {
+public class Vector2 implements Serializable {	
+	private static final long serialVersionUID = 913902788239530931L;
+
 	/** static temporary vector **/
 	private final static Vector2 tmp = new Vector2();
 

@@ -23,7 +23,8 @@ import com.badlogic.gdx.math.Vector3;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Sphere implements Serializable {
+public class Sphere implements Serializable {	
+	private static final long serialVersionUID = -6487336868908521596L;
 	/** the radius of the sphere **/
 	public float radius;
 	/** the center of the sphere **/
