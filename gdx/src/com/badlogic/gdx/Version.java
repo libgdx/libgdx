@@ -13,7 +13,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /**
  * The version of libgdx
