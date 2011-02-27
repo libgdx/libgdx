@@ -72,8 +72,10 @@ public class AndroidMusic implements Music {
 	}
 
 	@Override public void stop () {
-		player.seekTo(0);
-		player.stop();
+		if(isPrepared) {
+			player.seekTo(0);
+		}
+		player.stop();		
 		isPrepared = false;
 	}
 
