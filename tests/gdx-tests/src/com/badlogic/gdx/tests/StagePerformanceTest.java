@@ -5,7 +5,9 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,14 +24,18 @@ public class StagePerformanceTest extends GdxTest {
 	Stage stage;
 	SpriteBatch batch;
 	BitmapFont font;
+	Sprite[] sprites;
+	boolean useStage = true;
 	
 	@Override public void create() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		stage = new Stage(24, 12, true);
 		regions = new TextureRegion[8*8];
+		sprites = new Sprite[24*12];
 		
-		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));		
+		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
+		tex.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 		for(int y = 0; y < 8; y++) {
 			for(int x = 0; x < 8; x++) {
 				regions[x + y*8] = new TextureRegion(tex, x * 32, y * 32, 32, 32);
@@ -43,19 +49,41 @@ public class StagePerformanceTest extends GdxTest {
 				img.x = x; img.y = y;
 				img.width = 1; img.height = 1;
 				stage.addActor(img);
+				sprites[i] = new Sprite(regions[rand.nextInt(8 * 8)]);
+				sprites[i].setPosition(x, y);
+				sprites[i].setSize(1, 1);
+				i++;
 			}
 		}
 	}
 	
 	@Override public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.getSpriteBatch().disableBlending();
-		stage.draw();		
+		
+		if(useStage) {
+			stage.act(Gdx.graphics.getDeltaTime());
+			stage.getSpriteBatch().disableBlending();
+			stage.draw();	
+		} else {		
+			batch.getProjectionMatrix().setToOrtho2D(0, 0, 24, 12);
+			batch.disableBlending();
+			batch.begin();
+			for(int i = 0; i < sprites.length; i++) {
+				sprites[i].draw(batch);
+			}		
+			batch.end();
+		}
+		
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
+		batch.enableBlending();
 		batch.begin();
 		font.setColor(0, 0, 1, 1);
 		font.setScale(2);
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 40);
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + (useStage?", stage": "sprite"), 10, 40);		
 		batch.end();
+		
+		if(Gdx.input.justTouched()) {
+			useStage = !useStage;
+		}
 	}
 }
