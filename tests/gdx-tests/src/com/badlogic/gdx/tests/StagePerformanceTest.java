@@ -1,0 +1,61 @@
+package com.badlogic.gdx.tests;
+
+import java.util.Random;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.tests.utils.GdxTest;
+
+public class StagePerformanceTest extends GdxTest {
+
+	@Override public boolean needsGL20 () {
+		return false;
+	}
+
+	TextureRegion[] regions;
+	Stage stage;
+	SpriteBatch batch;
+	BitmapFont font;
+	
+	@Override public void create() {
+		batch = new SpriteBatch();
+		font = new BitmapFont();
+		stage = new Stage(24, 12, true);
+		regions = new TextureRegion[8*8];
+		
+		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));		
+		for(int y = 0; y < 8; y++) {
+			for(int x = 0; x < 8; x++) {
+				regions[x + y*8] = new TextureRegion(tex, x * 32, y * 32, 32, 32);
+			}	
+		}
+				
+		Random rand = new Random();
+		for(int y = 0, i = 0; y < 12; y++) {
+			for(int x = 0; x < 24; x++) {
+				Image img = new Image("img" + i, regions[rand.nextInt(8 * 8)]);
+				img.x = x; img.y = y;
+				img.width = 1; img.height = 1;
+				stage.addActor(img);
+			}
+		}
+	}
+	
+	@Override public void render() {
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.getSpriteBatch().disableBlending();
+		stage.draw();		
+		batch.begin();
+		font.setColor(0, 0, 1, 1);
+		font.setScale(2);
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 40);
+		batch.end();
+	}
+}
