@@ -34,8 +34,7 @@ public class StagePerformanceTest extends GdxTest {
 		regions = new TextureRegion[8*8];
 		sprites = new Sprite[24*12];
 		
-		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
-		tex.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
+		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));		
 		for(int y = 0; y < 8; y++) {
 			for(int x = 0; x < 8; x++) {
 				regions[x + y*8] = new TextureRegion(tex, x * 32, y * 32, 32, 32);
