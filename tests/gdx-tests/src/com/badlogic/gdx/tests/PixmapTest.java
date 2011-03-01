@@ -44,6 +44,14 @@ public class PixmapTest extends GdxTest {
       texture.draw (pixmap, 0,0);
       region = new TextureRegion(texture, 0, 0, 800, 480);
       batch = new SpriteBatch();
+      
+      Pixmap pixmap = new Pixmap(512,1024,Pixmap.Format.RGBA8888);
+      for (int y = 0; y < pixmap.getHeight(); y++) { //1024
+       for (int x = 0; x < pixmap.getWidth(); x++) { //512
+         pixmap.getPixel(x, y);
+       }
+      }
+      pixmap.dispose();
 	}
 	
 	public void render() {
