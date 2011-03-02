@@ -261,7 +261,7 @@ public class Vector2 implements Serializable {
 	 * @return the angle in degrees of this vector (point) relative to the x-axis. Angles are counter-clockwise and between 0 and 360.
 	 */
 	public float angle() {
-      float angle = (float)Math.atan2(y, x) * MathUtils.degreesToRadians;
+      float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
       if(angle < 0)
           angle += 360;
       return angle;
