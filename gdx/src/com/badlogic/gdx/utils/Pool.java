@@ -59,6 +59,7 @@ abstract public class Pool<T> {
 	 * {@link #max} free objects, the specified object is ignored.
 	 */
 	public void free (T object) {
+		if (object == null) throw new IllegalArgumentException("object cannot be null.");
 		if (freeObjects.size < max) freeObjects.add(object);
 	}
 
