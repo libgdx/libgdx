@@ -62,6 +62,10 @@ public class ImmediateModeRenderer {
 	private int idxNors = 0;
 	private int idxTexCoords = 0;
 
+	private boolean hasCols;
+	private boolean hasNors;
+	private boolean hasTexCoords;
+
 	/**
 	 * Constructs a new ImmediateModeRenderer
 	 */
@@ -104,6 +108,9 @@ public class ImmediateModeRenderer {
 		idxCols = 0;
 		idxNors = 0;
 		idxTexCoords = 0;
+		hasCols = false;
+		hasNors = false;
+		hasTexCoords = false;
 	}
 
 	/**
@@ -118,6 +125,7 @@ public class ImmediateModeRenderer {
 		colors[idxCols + 1] = g;
 		colors[idxCols + 2] = b;
 		colors[idxCols + 3] = a;
+		hasCols = true;
 	}
 
 	/**
@@ -130,6 +138,7 @@ public class ImmediateModeRenderer {
 		normals[idxNors] = x;
 		normals[idxNors + 1] = y;
 		normals[idxNors + 2] = z;
+		hasNors = true;
 	}
 
 	/**
@@ -140,6 +149,7 @@ public class ImmediateModeRenderer {
 	public void texCoord (float u, float v) {
 		texCoords[idxTexCoords] = u;
 		texCoords[idxTexCoords + 1] = v;
+		hasTexCoords = true;
 	}
 
 	/**
@@ -155,9 +165,9 @@ public class ImmediateModeRenderer {
 		positions[idxPos++] = y;
 		positions[idxPos++] = z;
 
-		if (idxCols > 0) idxCols += 4;
-		if (idxNors > 0) idxNors += 3;
-		if (idxTexCoords > 0) idxTexCoords += 2;
+		if (hasCols) idxCols += 4;
+		if (hasNors) idxNors += 3;
+		if (hasTexCoords) idxTexCoords += 2;
 	}
 
 	/**
@@ -172,21 +182,21 @@ public class ImmediateModeRenderer {
 		BufferUtils.copy(positions, positionsBuffer, idxPos, 0);
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, positionsBuffer);
 
-		if (idxCols > 0) {
+		if (hasCols) {
 			gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
 			colorsBuffer.clear();
 			BufferUtils.copy(colors, colorsBuffer, idxCols, 0);
 			gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorsBuffer);
 		}
 
-		if (idxNors > 0) {
+		if (hasNors) {
 			gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
 			normalsBuffer.clear();
 			BufferUtils.copy(normals, normalsBuffer, idxNors, 0);
 			gl.glNormalPointer(GL10.GL_FLOAT, 0, normalsBuffer);
 		}
 
-		if (idxTexCoords > 0) {
+		if (hasTexCoords) {
 			gl.glClientActiveTexture(GL10.GL_TEXTURE0);
 			gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 			texCoordsBuffer.clear();
@@ -196,8 +206,8 @@ public class ImmediateModeRenderer {
 
 		gl.glDrawArrays(primitiveType, 0, idxPos / 3);
 
-		if (idxCols > 0) gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
-		if (idxNors > 0) gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
-		if (idxTexCoords > 0) gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+		if (hasCols) gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
+		if (hasNors) gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
+		if (hasTexCoords) gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 	}
 }
