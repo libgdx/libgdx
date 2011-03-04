@@ -157,15 +157,18 @@ public class AndroidApplication extends Activity implements Application {
     protected void onPause() {
         graphics.pause();
 
-        if (isFinishing()) {
-            graphics.clearManagedCaches();
-            graphics.destroy();
-        }
-
         if (graphics != null && graphics.view != null) {
             if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onPause();
             if (graphics.view instanceof android.opengl.GLSurfaceView)
                 ((android.opengl.GLSurfaceView) graphics.view).onPause();
+        }
+        
+        if (isFinishing()) {
+      	  input.unregisterListeners();
+           graphics.clearManagedCaches();
+           graphics.destroy();
+           audio.dispose();
+           audio = null;
         }
 
         if (audio != null) audio.pause();
@@ -195,8 +198,7 @@ public class AndroidApplication extends Activity implements Application {
     }
 
     @Override
-    protected void onDestroy() {
-        audio.dispose();
+    protected void onDestroy() {        
         super.onDestroy();
     }
 

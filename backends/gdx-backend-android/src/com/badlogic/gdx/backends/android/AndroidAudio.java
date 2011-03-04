@@ -145,6 +145,9 @@ public final class AndroidAudio implements Audio {
 	 * Kills the soundpool and all other resources
 	 */
 	public void dispose () {
+		for (AndroidMusic music : musics) {
+			music.dispose();
+		}
 		soundPool.release();
 	}
 }

@@ -446,4 +446,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		updateOrientation();
 		return roll;
 	}
+	
+	void unregisterListeners() {
+		manager.unregisterListener(this);
+	}
 }
