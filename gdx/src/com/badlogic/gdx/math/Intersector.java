@@ -268,7 +268,7 @@ public final class Intersector {
 		dir.set(ray.direction).nor();
 		start.set(ray.origin);
 		float b = 2 * (dir.dot(start.tmp().sub(center)));
-		float c = start.dist2(center) - radius * radius;
+		float c = start.dst2(center) - radius * radius;
 		float disc = b * b - 4 * c;
 		if (disc < 0) return false;
 

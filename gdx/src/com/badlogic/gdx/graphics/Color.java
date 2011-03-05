@@ -31,6 +31,13 @@ public class Color {
 	public float r, g, b, a;
 
 	/**
+	 * Constructs a new Color with all components set to 0.
+	 */
+	public Color() {
+		
+	}
+	
+	/**
 	 * Constructor, sets the components of the color
 	 * 
 	 * @param r the red component

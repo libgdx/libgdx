@@ -260,17 +260,6 @@ public class Vector3 implements Serializable {
 	}
 
 	/**
-	 * @param vector The other vector
-	 * @return The squared euclidian distance between this and the other vector
-	 */
-	public float dist2 (Vector3 vector) {
-		float a = vector.x - x;
-		float b = vector.y - y;
-		float c = vector.z - z;
-		return a * a + b * b + c * c;
-	}
-
-	/**
 	 * Normalizes this vector to unit length
 	 * 
 	 * @return This vector for chaining
