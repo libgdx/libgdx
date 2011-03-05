@@ -426,7 +426,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return roll;
 	}
 	
-	void registerSensorListeners() {
+	void registerSensorListeners() {		
 		manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
 		if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
 			accelerometerAvailable = false;
@@ -447,7 +447,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		Gdx.app.log("AndroidInput", "sensor listener setup");
 	}
 	
-	void unregisterSensorListeners() {
+	void unregisterSensorListeners() {		
 		manager.unregisterListener(this);
 		manager = null;
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
