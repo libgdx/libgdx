@@ -33,6 +33,7 @@ import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
@@ -97,7 +98,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private int sleepTime = 0;
 	private boolean catchBack = false;
 	private final Vibrator vibrator;
-	private final boolean compassAvailable;
+	private boolean compassAvailable;
 	private final float[] magneticFieldValues = new float[3];
 	private float azimuth = 0;
 	private float pitch = 0;
@@ -114,18 +115,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		view.setFocusableInTouchMode(true);
 		view.requestFocus();
 		view.requestFocusFromTouch();
-
-		manager = (SensorManager)activity.getSystemService(Context.SENSOR_SERVICE);
-		if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
-			accelerometerAvailable = false;
-		} else {
-			Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-			if (!manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME))
-				accelerometerAvailable = false;
-			else
-				accelerometerAvailable = true;
-		}
-
+		
 		handle = new Handler();
 		this.app = activity;
 		this.sleepTime = sleepTime;
@@ -137,18 +127,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler
 			&& ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
 
-		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
-		
-		Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		if(sensor != null) {
-			compassAvailable = accelerometerAvailable;
-			if(compassAvailable) {
-				manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
-			}
-		} else {
-			compassAvailable = false;
-		}
-		
+		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);					
 	}
 
 	@Override public float getAccelerometerX () {
@@ -447,7 +426,30 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return roll;
 	}
 	
-	void unregisterListeners() {
+	void registerSensorListeners() {
+		manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
+		if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
+			accelerometerAvailable = false;
+		} else {
+			Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+			accelerometerAvailable = manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);				
+		}
+		
+		Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		if(sensor != null) {
+			compassAvailable = accelerometerAvailable;
+			if(compassAvailable) {
+				compassAvailable = manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+			}
+		} else {
+			compassAvailable = false;
+		}
+		Gdx.app.log("AndroidInput", "sensor listener setup");
+	}
+	
+	void unregisterSensorListeners() {
 		manager.unregisterListener(this);
+		manager = null;
+		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
 }

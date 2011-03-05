@@ -156,22 +156,24 @@ public class AndroidApplication extends Activity implements Application {
     @Override
     protected void onPause() {
         graphics.pause();
-
+        
+        if (audio != null) audio.pause();
+        
+        input.unregisterSensorListeners();
+        
+        if (isFinishing()) {      	
+           graphics.clearManagedCaches();
+           graphics.destroy();
+           audio.dispose();
+           audio = null;
+        }
+        
         if (graphics != null && graphics.view != null) {
             if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onPause();
             if (graphics.view instanceof android.opengl.GLSurfaceView)
                 ((android.opengl.GLSurfaceView) graphics.view).onPause();
         }
         
-        if (isFinishing()) {
-      	  input.unregisterListeners();
-           graphics.clearManagedCaches();
-           graphics.destroy();
-           audio.dispose();
-           audio = null;
-        }
-
-        if (audio != null) audio.pause();
         super.onPause();
     }
 
@@ -183,6 +185,8 @@ public class AndroidApplication extends Activity implements Application {
         Gdx.files = this.getFiles();
         Gdx.graphics = this.getGraphics();
 
+        ((AndroidInput)getInput()).registerSensorListeners();
+        
         if (graphics != null && graphics.view != null) {
             if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onResume();
             if (graphics.view instanceof android.opengl.GLSurfaceView)
