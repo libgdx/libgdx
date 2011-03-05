@@ -664,7 +664,7 @@ public class TexturePacker {
 		public int maxWidth = 512;
 		public int maxHeight = 512;
 		public boolean stripWhitespace = true;
-		public boolean incremental;
+		public boolean incremental=true;
 		public boolean alias;
 
 		HashMap<String, Long> crcs = new HashMap();
@@ -788,7 +788,7 @@ public class TexturePacker {
 
 		// Load incremental file.
 		File incrmentalFile = null;
-		if (settings.incremental) {
+		if (settings.incremental && packFile.exists()) {
 			settings.crcs.clear();
 			incrmentalFile = new File(System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath()));
 			if (incrmentalFile.exists()) {
@@ -837,7 +837,7 @@ public class TexturePacker {
 		process(settings, inputDir, outputDir, packFile);
 
 		// Write incrmental file.
-		if (settings.incremental) {
+		if (incrmentalFile != null) {
 			incrmentalFile.getParentFile().mkdirs();
 			FileWriter writer = new FileWriter(incrmentalFile);
 			for (Entry<String, Long> entry : settings.crcs.entrySet()) {
