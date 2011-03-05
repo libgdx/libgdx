@@ -163,15 +163,18 @@ public class AndroidApplication extends Activity implements Application {
         
         if (isFinishing()) {      	
            graphics.clearManagedCaches();
-           graphics.destroy();
-           audio.dispose();
-           audio = null;
+           graphics.destroy();           
         }
         
         if (graphics != null && graphics.view != null) {
             if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onPause();
             if (graphics.view instanceof android.opengl.GLSurfaceView)
                 ((android.opengl.GLSurfaceView) graphics.view).onPause();
+        }
+        
+        if(isFinishing()) {
+      	  audio.dispose();
+           audio = null;
         }
         
         super.onPause();

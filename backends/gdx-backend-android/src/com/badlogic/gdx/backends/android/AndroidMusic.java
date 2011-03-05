@@ -21,7 +21,7 @@ import com.badlogic.gdx.audio.Music;
 
 public class AndroidMusic implements Music {
 	private final AndroidAudio audio;
-	private final MediaPlayer player;
+	private MediaPlayer player;
 	private boolean isPrepared = true;
 
 	AndroidMusic (AndroidAudio audio, MediaPlayer player) {
@@ -30,8 +30,10 @@ public class AndroidMusic implements Music {
 	}
 
 	@Override public void dispose () {
+		if(player == null) return;
 		if (player.isPlaying()) player.stop();
 		player.release();
+		player = null;
 		audio.musics.remove(this);
 	}
 
