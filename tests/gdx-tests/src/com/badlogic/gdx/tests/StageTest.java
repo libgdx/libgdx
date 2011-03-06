@@ -16,13 +16,12 @@ package com.badlogic.gdx.tests;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -30,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.actors.Label;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class StageTest extends GdxTest implements InputProcessor {
@@ -41,7 +41,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	Stage ui;
 	Texture texture;
 	Texture uiTexture;
-	// Font font;
+	BitmapFont font;
 
 	boolean rotateSprites = false;
 	boolean scaleSprites = false;
@@ -54,7 +54,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	@Override public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		// font = Gdx.graphics.newFont("DroidSans", 12, FontStyle.Plain);
+		font = new BitmapFont();
 
 		stage = new Stage(480, 320, true);
 
@@ -86,9 +86,10 @@ public class StageTest extends GdxTest implements InputProcessor {
 		ui.addActor(rotate);
 		ui.addActor(scale);
 
-		// Label fps = new Label("fps", font, "fps: 0");
-		// fps.color.set(0, 1, 0, 1);
-		// ui.addActor(fps);
+		 Label fps = new Label("fps", font, "fps: 0");
+		 fps.x = 10; fps.y = 30;
+		 fps.color.set(0, 1, 0, 1);
+		 ui.addActor(fps);
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		renderer = new ImmediateModeRenderer();
@@ -172,10 +173,10 @@ public class StageTest extends GdxTest implements InputProcessor {
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize(4);
 
-		// ((Label)ui.findActor("fps")).text = "fps: " +
-		// Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
-		// ", groups "
-		// + stage.getGroups().size();
+		 ((Label)ui.findActor("fps")).text = "fps: " +
+		 Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
+		 ", groups "
+		 + stage.getGroups().size();
 		ui.draw();
 	}
 
