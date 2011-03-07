@@ -18,6 +18,6 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 public class JoglDebugStarter {
 
 	public static void main (String[] argv) {
-		new JoglApplication(new com.badlogic.gdx.tests.StagePerformanceTest(), "Debug Test", 480, 320, false);
+		new JoglApplication(new com.badlogic.gdx.tests.FramebufferToTextureTest(), "Debug Test", 480, 320, false);
 	}
 }

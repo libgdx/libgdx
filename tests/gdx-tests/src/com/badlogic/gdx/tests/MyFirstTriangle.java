@@ -38,9 +38,17 @@ public class MyFirstTriangle extends GdxTest {
 	@Override public void pause () {
 	}
 
+	int renderCount = 0;
 	@Override public void render () {
-		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);		
-		mesh.render(GL10.GL_TRIANGLES, 0, 3);		
+		renderCount++;
+		Gdx.app.log("RenderCountTest", String.valueOf(renderCount));
+		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		mesh.render(GL10.GL_TRIANGLES, 0, 3);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			Gdx.app.log("RenderCountTest", e.toString());
+		}	
 	}
 
 	@Override public void resize (int width, int height) {

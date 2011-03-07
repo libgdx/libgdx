@@ -152,5 +152,5 @@ public interface Graphics {
 	/**
 	 * @return the pixels per centimeter on the y-axis.
 	 */
-	public float getPpcY ();
+	public float getPpcY ();		
 }

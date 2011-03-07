@@ -35,7 +35,7 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"),
 				false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		Image img = new Image("actor", texture);
+		final Image img = new Image("actor", texture);
 		img.width = img.height = 100;
 		img.originX = 50;
 		img.originY = 50;
@@ -66,14 +66,23 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 //		img.action(actionDelay);
 
 //		img.action(Repeat.$(Sequence.$(MoveBy.$(50, 0, 1), MoveBy.$(0, 50, 1), MoveBy.$(-50, 0, 1), MoveBy.$(0, -50, 1)), 3));
-		img.action(Sequence.$(FadeOut.$(1), 
-									 FadeIn.$(1), 
-									 Delay.$(MoveTo.$(100, 100, 1), 2), 
-									 ScaleTo.$(0.5f, 0.5f, 1),
-			                   FadeOut.$(0.5f), 
-			                   Delay.$(Parallel.$( RotateTo.$(360, 1), 
-			                  	 						FadeIn.$(1), 
-			                  	 						ScaleTo.$(1, 1, 1)), 1)));
+//		img.action(Sequence.$(FadeOut.$(1), 
+//									 FadeIn.$(1), 
+//									 Delay.$(MoveTo.$(100, 100, 1), 2), 
+//									 ScaleTo.$(0.5f, 0.5f, 1),
+//			                   FadeOut.$(0.5f), 
+//			                   Delay.$(Parallel.$( RotateTo.$(360, 1), 
+//			                  	 						FadeIn.$(1), 
+//			                  	 						ScaleTo.$(1, 1, 1)), 1)));
+		OnActionCompleted listener = new OnActionCompleted() {			
+			@Override public void completed (Action action) {
+				img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
+					Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(this));				
+			}
+		};
+		
+		img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
+			Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(listener));
 		
 		stage.addActor(img);
 	}

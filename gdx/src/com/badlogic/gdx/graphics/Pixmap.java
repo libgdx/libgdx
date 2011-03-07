@@ -114,10 +114,10 @@ public class Pixmap implements Disposable {
 	 * @param format the {@link Format}
 	 */
 	public Pixmap(int width, int height, Format format) {
-		pixmap = new Gdx2DPixmap(width, height, Format.toGdx2DPixmapFormat(format));
+		pixmap = new Gdx2DPixmap(width, height, Format.toGdx2DPixmapFormat(format));		
 		setColor(0, 0, 0, 0);
 		fill();		
-	}
+	}	
 	
 	/**
 	 * Creates a new Pixmap instance from the given file. The file must
