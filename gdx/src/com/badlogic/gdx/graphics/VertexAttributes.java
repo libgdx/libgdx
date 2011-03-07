@@ -113,4 +113,19 @@ public final class VertexAttributes {
 	public VertexAttribute get (int index) {
 		return attributes[index];
 	}
+	
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < attributes.length; i++) {
+			builder.append(attributes[i].alias);
+			builder.append(", ");
+			builder.append(attributes[i].usage);
+			builder.append(", ");
+			builder.append(attributes[i].numComponents);
+			builder.append(", ");
+			builder.append(attributes[i].offset);
+			builder.append("\n");
+		}
+		return builder.toString();
+	}
 }

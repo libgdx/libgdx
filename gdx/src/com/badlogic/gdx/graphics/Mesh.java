@@ -73,8 +73,7 @@ public class Mesh implements Disposable {
 
 	final VertexData vertices;
 	final IndexData indices;
-	boolean autoBind = true;
-	boolean visible = true;
+	boolean autoBind = true;	
 	final boolean isVertexArray;
 
 	/**
@@ -276,15 +275,6 @@ public class Mesh implements Disposable {
 	public void setAutoBind (boolean autoBind) {
 		this.autoBind = autoBind;
 	}
-
-	/**
-	 * Sets whether the mesh is visible or not. Meshes are visible by default. If not visible, the mesh will not be drawn when
-	 * {@link #render(int)} is called.
-	 * @param visible whether the mesh is visible.
-	 */
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
 	
 	/**
 	 * Binds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} if indices were given. Use
@@ -365,8 +355,6 @@ public class Mesh implements Disposable {
 	 */
 	public void render (int primitiveType, int offset, int count) {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-
-		if (!visible) return; /* early out */
 		
 		if (autoBind) bind();
 
@@ -444,8 +432,6 @@ public class Mesh implements Disposable {
 	 */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
-
-		if (!visible) return; /* early out */
 
 		if (autoBind) bind(shader);
 

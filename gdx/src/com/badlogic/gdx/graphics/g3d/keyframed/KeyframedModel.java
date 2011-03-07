@@ -45,6 +45,7 @@ public class KeyframedModel {
 	private String assetName;
 	private KeyframeAnimator animator = null;
 	private Mesh[] target = null;
+	private boolean[] visible = null;
 	private int numMeshes = 0;
 	private ArrayList<String> taggedJointNames = new ArrayList<String>();
 	
@@ -108,6 +109,10 @@ public class KeyframedModel {
 		{
 			animator = new KeyframeAnimator(numMeshes, sampleRate);
 			target = new Mesh[numMeshes];
+			visible = new boolean[numMeshes];
+			for(int i = 0; i < visible.length; i++) {
+				visible[i] = true;
+			}
 		}
 
 		if(animations == null)
@@ -318,7 +323,8 @@ public class KeyframedModel {
 				}
 				mat.set(GL10.GL_FRONT);
 			}
-			target[i].render(GL10.GL_TRIANGLES, 0, target[i].getNumIndices());
+			if(visible[i])
+				target[i].render(GL10.GL_TRIANGLES, 0, target[i].getNumIndices());
 		}
 	}
 
@@ -330,7 +336,7 @@ public class KeyframedModel {
 	 *          whether the mesh should be drawn or not
 	 */
 	public void setMeshVisible(int idx, boolean visible) {
-		target[idx].setVisible(visible);
+		this.visible[idx] = visible;
 	}
 	
 	public void dispose()
