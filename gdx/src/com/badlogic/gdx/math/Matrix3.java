@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Matrix3 implements Serializable {	
 	private static final long serialVersionUID = 7907569533774959788L;
 	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
-	float[] vals = new float[9];
+	public float[] vals = new float[9];
 
 	public Matrix3 () {
 		idt();
