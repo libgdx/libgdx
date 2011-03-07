@@ -390,7 +390,8 @@ public class ParticleEmitter {
 				float lineX = width * MathUtils.random();
 				x += lineX;
 				y += lineX * (height / (float)width);
-			}
+			} else
+				y += height * MathUtils.random();
 			break;
 		}
 		}
