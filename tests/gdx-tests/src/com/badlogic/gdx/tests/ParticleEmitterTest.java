@@ -23,12 +23,13 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
 
 public class ParticleEmitterTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	ParticleEffect effect;
 	int emitterIndex;
-	ArrayList<ParticleEmitter> emitters;
+	Array<ParticleEmitter> emitters;
 	int particleCount = 10;
 	float fpsCounter;
 	InputProcessor inputProcessor;
@@ -40,7 +41,7 @@ public class ParticleEmitterTest extends GdxTest {
 		effect.load(Gdx.files.internal("data/test.p"), Gdx.files.internal("data"));
 		effect.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		// Of course, a ParticleEffect is normally just used, without messing around with its emitters.
-		emitters = new ArrayList(effect.getEmitters());
+		emitters = new Array(effect.getEmitters());
 		effect.getEmitters().clear();
 		effect.getEmitters().add(emitters.get(0));
 
@@ -74,7 +75,7 @@ public class ParticleEmitterTest extends GdxTest {
 				else if (keycode == Input.Keys.KEYCODE_DPAD_DOWN)
 					particleCount -= 5;
 				else if (keycode == Input.Keys.KEYCODE_SPACE) {
-					emitterIndex = (emitterIndex + 1) % emitters.size();
+					emitterIndex = (emitterIndex + 1) % emitters.size;
 					emitter = emitters.get(emitterIndex);
 					particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax() / 1000f);
 				} else

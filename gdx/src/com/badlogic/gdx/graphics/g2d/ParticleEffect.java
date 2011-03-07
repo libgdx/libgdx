@@ -20,36 +20,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEffect {
-	private ArrayList<ParticleEmitter> emitters = new ArrayList();
+	private final Array<ParticleEmitter> emitters;
+
+	public ParticleEffect () {
+		emitters = new Array();
+	}
+
+	public ParticleEffect (ParticleEffect effect) {
+		emitters = new Array(effect.emitters.size);
+		for (int i = 0, n = effect.emitters.size; i < n; i++)
+			emitters.add(new ParticleEmitter(effect.emitters.items[i]));
+	}
 
 	public void start () {
-		for (int i = 0, n = emitters.size(); i < n; i++)
-			emitters.get(i).start();
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.items[i].start();
 	}
 
 	public void draw (SpriteBatch spriteBatch, float delta) {
-		for (int i = 0, n = emitters.size(); i < n; i++)
-			emitters.get(i).draw(spriteBatch, delta);
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.items[i].draw(spriteBatch, delta);
 	}
 
 	public void allowCompletion () {
-		for (int i = 0, n = emitters.size(); i < n; i++)
-			emitters.get(i).allowCompletion();
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.items[i].allowCompletion();
 	}
 
 	public boolean isComplete () {
-		for (int i = 0, n = emitters.size(); i < n; i++) {
-			ParticleEmitter emitter = emitters.get(i);
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.items[i];
 			if (emitter.isContinuous()) return false;
 			if (!emitter.isComplete()) return false;
 		}
@@ -57,8 +64,8 @@ public class ParticleEffect {
 	}
 
 	public void setDuration (int duration) {
-		for (int i = 0, n = emitters.size(); i < n; i++) {
-			ParticleEmitter emitter = emitters.get(i);
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.items[i];
 			emitter.setContinuous(false);
 			emitter.duration = duration;
 			emitter.durationTimer = 0;
@@ -66,16 +73,16 @@ public class ParticleEffect {
 	}
 
 	public void setPosition (float x, float y) {
-		for (int i = 0, n = emitters.size(); i < n; i++)
-			emitters.get(i).setPosition(x, y);
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.items[i].setPosition(x, y);
 	}
 
 	public void setFlip (boolean flipX, boolean flipY) {
-		for (int i = 0, n = emitters.size(); i < n; i++)
-			emitters.get(i).setFlip(flipX, flipY);
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.items[i].setFlip(flipX, flipY);
 	}
 
-	public ArrayList<ParticleEmitter> getEmitters () {
+	public Array<ParticleEmitter> getEmitters () {
 		return emitters;
 	}
 
@@ -84,8 +91,8 @@ public class ParticleEffect {
 		try {
 			output = new FileWriter(file);
 			int index = 0;
-			for (int i = 0, n = emitters.size(); i < n; i++) {
-				ParticleEmitter emitter = emitters.get(i);
+			for (int i = 0, n = emitters.size; i < n; i++) {
+				ParticleEmitter emitter = emitters.items[i];
 				if (index++ > 0) output.write("\n\n");
 				emitter.save(output);
 				output.write("- Image Path -\n");
@@ -136,8 +143,8 @@ public class ParticleEffect {
 	}
 
 	public void loadEmitterImages (TextureAtlas atlas) {
-		for (int i = 0, n = emitters.size(); i < n; i++) {
-			ParticleEmitter emitter = emitters.get(i);
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.items[i];
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
@@ -150,8 +157,8 @@ public class ParticleEffect {
 	}
 
 	public void loadEmitterImages (FileHandle imagesDir) {
-		for (int i = 0, n = emitters.size(); i < n; i++) {
-			ParticleEmitter emitter = emitters.get(i);
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.items[i];
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
