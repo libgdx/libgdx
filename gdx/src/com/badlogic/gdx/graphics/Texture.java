@@ -13,6 +13,7 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 
@@ -423,4 +424,41 @@ public class Texture implements Disposable {
 	public Format getFormat() {
 		return format;
 	}
+	
+//	public static Texture getFrameBufferTexture () {
+//		ByteBuffer pixels = BufferUtils.newByteBuffer(Gdx.graphics.getWidth() * Gdx.graphics.getHeight() * 4);
+//		Gdx.gl.glReadPixels(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
+//		Pixmap pixmap = new Pixmap(MathUtils.nextPowerOfTwo(Gdx.graphics.getWidth()), MathUtils.nextPowerOfTwo(Gdx.graphics.getHeight()), Format.RGBA8888);
+//		
+//		pixels.position(0);		
+//		int scanSrc = Gdx.graphics.getWidth() * 4;
+//		int scanDst = pixmap.getWidth() * 4;
+//		int posSrc = 0;
+//		int posDst = 0;
+//		ByteBuffer dst = pixmap.getPixels();
+//		ByteBuffer src = pixels;
+//		for(int i = 0; i < Gdx.graphics.getHeight(); i++) {
+//			src.position(posSrc);
+//			src.limit(posSrc + scanSrc);
+//			dst.position(posDst);
+//			dst.limit(posDst + scanDst);
+//			dst.put(src);
+//			
+//			posSrc += scanSrc;
+//			posDst += scanDst;			
+//		}
+//		
+//		dst.position(0);
+//		dst.limit(pixmap.getWidth() * pixmap.getHeight() * 4);
+//		return new Texture(pixmap);
+//		
+//		Texture texture = new Texture(MathUtils.nextPowerOfTwo(Gdx.graphics.getWidth()),
+//												MathUtils.nextPowerOfTwo(Gdx.graphics.getHeight()), 
+//												Format.RGBA8888);
+//		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//		Gdx.gl.glFlush();
+//		texture.bind();
+//		Gdx.gl.glCopyTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0);	
+//		return texture;
+//	}
 }
