@@ -126,12 +126,12 @@ public class RemoteInput implements Runnable, Input {
 	private boolean multiTouch = false;
 	private float remoteWidth = 0;
 	private float remoteHeight = 0;
-	private Set<Integer> keys = new HashSet<Integer>();	
-	private int[] touchX = new int[20];
-	private int[] touchY = new int[20];
-	private boolean isTouched[] = new boolean[20];
-	private boolean justTouched = false;
-	private InputProcessor processor = null;
+	Set<Integer> keys = new HashSet<Integer>();	
+	int[] touchX = new int[20];
+	int[] touchY = new int[20];
+	boolean isTouched[] = new boolean[20];
+	boolean justTouched = false;
+	InputProcessor processor = null;
 	private final int port;
 	public final String[] ips;
 	

@@ -30,11 +30,11 @@ public class ParticleEffect {
 	private final Array<ParticleEmitter> emitters;
 
 	public ParticleEffect () {
-		emitters = new Array();
+		emitters = new Array(true, 8, ParticleEmitter.class);
 	}
 
 	public ParticleEffect (ParticleEffect effect) {
-		emitters = new Array(effect.emitters.size);
+		emitters = new Array(true, effect.emitters.size, ParticleEmitter.class);
 		for (int i = 0, n = effect.emitters.size; i < n; i++)
 			emitters.add(new ParticleEmitter(effect.emitters.items[i]));
 	}
