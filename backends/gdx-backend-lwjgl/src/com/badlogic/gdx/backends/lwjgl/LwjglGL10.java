@@ -22,6 +22,7 @@ import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
 
 import com.badlogic.gdx.graphics.GL10;
@@ -436,6 +437,8 @@ class LwjglGL10 implements GL10 {
 	}
 
 	public final void glTexParameterf (int target, int pname, float param) {
+		// LwjglGraphics.major is should to be 1 if we are in LwjglGL10.
+		if (LwjglGraphics.minor < 2 && param == GL12.GL_CLAMP_TO_EDGE) param = GL11.GL_CLAMP;
 		GL11.glTexParameterf(target, pname, param);
 	}
 

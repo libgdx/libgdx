@@ -37,6 +37,8 @@ import com.badlogic.gdx.utils.MathUtils;
  * @author mzechner
  */
 public final class LwjglGraphics implements Graphics {
+	static int major, minor;
+
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -162,8 +164,8 @@ public final class LwjglGraphics implements Graphics {
 
 	private void initiateGLInstances () {
 		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
-		int major = Integer.parseInt("" + version.charAt(0));
-		int minor = Integer.parseInt("" + version.charAt(2));
+		major = Integer.parseInt("" + version.charAt(0));
+		minor = Integer.parseInt("" + version.charAt(2));
 
 		if (useGL2 && major >= 2) {
 			// FIXME add check whether gl 2.0 is supported

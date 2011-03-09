@@ -17,6 +17,8 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import javax.media.opengl.GL;
+
 import com.badlogic.gdx.graphics.GL10;
 
 /**
@@ -331,6 +333,8 @@ class JoglGL10 implements GL10 {
 	}
 
 	@Override public final void glTexParameterf (int target, int pname, float param) {
+		// JoglGL10.major is should to be 1 if we are in JoglGL10.
+		if (JoglGraphics.minor < 2 && param == GL.GL_CLAMP_TO_EDGE) param = GL.GL_CLAMP;
 		gl.glTexParameterf(target, pname, param);
 	}
 

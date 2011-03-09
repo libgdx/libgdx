@@ -32,6 +32,8 @@ import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.MathUtils;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
+	static int major, minor;
+
 	GLCanvas canvas;
 	JoglAnimator animator;
 	boolean useGL2;
@@ -102,8 +104,8 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	void initializeGLInstances (GLAutoDrawable drawable) {
 		String version = drawable.getGL().glGetString(GL.GL_VERSION);
-		int major = Integer.parseInt("" + version.charAt(0));
-		int minor = Integer.parseInt("" + version.charAt(2));
+		major = Integer.parseInt("" + version.charAt(0));
+		minor = Integer.parseInt("" + version.charAt(2));
 
 		if (useGL2 && major >= 2) {
 			gl20 = new JoglGL20(drawable.getGL());
