@@ -74,9 +74,9 @@ public class Sequence extends CompositeAction {
 		Sequence action = pool.obtain();
 		action.actions.clear();
 		int len = actions.size();
-		for (int i = 0; i < len; i++) {
-			actions.get(i).finish();
+		for (int i = 0; i < len; i++) {			
 			action.actions.add(actions.get(i).copy());
+			actions.get(i).finish();
 		}
 		return action;
 	}
