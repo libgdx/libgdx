@@ -28,7 +28,6 @@ import static org.lwjgl.openal.AL10.*;
 public class OpenALSound implements Sound {
 	private int bufferID = -1;
 	private final OpenALAudio audio;
-	private int streamID;
 
 	public OpenALSound (OpenALAudio audio) {
 		this.audio = audio;
@@ -52,7 +51,7 @@ public class OpenALSound implements Sound {
 	}
 
 	public void play (float volume) {
-		streamID = audio.obtainStream(false);
+		int streamID = audio.obtainStream(false);
 		if (streamID == -1) return;
 		alSourceStop(streamID);
 		alSourcei(streamID, AL_BUFFER, 0);
@@ -63,7 +62,7 @@ public class OpenALSound implements Sound {
 	}
 
 	public void loop () {
-		streamID = audio.obtainStream(false);
+		int streamID = audio.obtainStream(false);
 		if (streamID == -1) return;
 		alSourceStop(streamID);
 		alSourcei(streamID, AL_BUFFER, 0);
@@ -72,20 +71,8 @@ public class OpenALSound implements Sound {
 		alSourcePlay(streamID);
 	}
 
-	public void stop () {
-		if (streamID == -1) return;
-		alSourceStop(streamID);
-		alSourcei(streamID, AL_BUFFER, 0);
-		streamID = -1;
-	}
-
 	public void dispose () {
 		if (bufferID == -1) return;
-		if (streamID != -1) {
-			alSourceStop(streamID);
-			alSourcei(streamID, AL_BUFFER, 0);
-			streamID = -1;
-		}
 		alDeleteBuffers(bufferID);
 		bufferID = -1;
 	}
