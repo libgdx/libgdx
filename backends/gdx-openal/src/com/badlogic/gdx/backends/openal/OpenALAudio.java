@@ -116,6 +116,8 @@ public class OpenALAudio implements Audio {
 			int state = alGetSourcei(streamID, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
 				if (isMusic) idleStreams.removeIndex(i);
+				alSourceStop(streamID);
+				alSourcei(streamID, AL_BUFFER, 0);
 				return streamID;
 			}
 		}
@@ -124,6 +126,20 @@ public class OpenALAudio implements Audio {
 
 	void freeStream (int streamID) {
 		idleStreams.add(streamID);
+	}
+
+	void freeBuffer (int bufferID) {
+		for (int i = 0, n = idleStreams.size; i < n; i++) {
+			int streamID = idleStreams.get(i);
+			if (alGetSourcei(streamID, AL_BUFFER) == bufferID) alSourcei(streamID, AL_BUFFER, 0);
+		}
+	}
+
+	void stopStreamsWithBuffer (int bufferID) {
+		for (int i = 0, n = idleStreams.size; i < n; i++) {
+			int streamID = idleStreams.get(i);
+			if (alGetSourcei(streamID, AL_BUFFER) == bufferID) alSourceStop(streamID);
+		}
 	}
 
 	public void update () {

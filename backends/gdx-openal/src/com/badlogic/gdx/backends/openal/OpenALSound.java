@@ -53,8 +53,6 @@ public class OpenALSound implements Sound {
 	public void play (float volume) {
 		int streamID = audio.obtainStream(false);
 		if (streamID == -1) return;
-		alSourceStop(streamID);
-		alSourcei(streamID, AL_BUFFER, 0);
 		alSourcei(streamID, AL_BUFFER, bufferID);
 		alSourcei(streamID, AL_LOOPING, AL_FALSE);
 		alSourcef(streamID, AL_GAIN, volume);
@@ -64,15 +62,18 @@ public class OpenALSound implements Sound {
 	public void loop () {
 		int streamID = audio.obtainStream(false);
 		if (streamID == -1) return;
-		alSourceStop(streamID);
-		alSourcei(streamID, AL_BUFFER, 0);
 		alSourcei(streamID, AL_BUFFER, bufferID);
 		alSourcei(streamID, AL_LOOPING, AL_TRUE);
 		alSourcePlay(streamID);
 	}
 
+	public void stop () {
+		audio.stopStreamsWithBuffer(bufferID);
+	}
+
 	public void dispose () {
 		if (bufferID == -1) return;
+		audio.freeBuffer(bufferID);
 		alDeleteBuffers(bufferID);
 		bufferID = -1;
 	}

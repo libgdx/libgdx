@@ -66,8 +66,6 @@ public abstract class OpenALMusic implements Music {
 		if (streamID == -1) {
 			streamID = audio.obtainStream(true);
 			if (streamID == -1) return;
-			alSourceStop(streamID);
-			alSourcei(streamID, AL_BUFFER, 0);
 			alSourcei(streamID, AL_LOOPING, AL_FALSE);
 			alSourcef(streamID, AL_GAIN, volume);
 			for (int i = 0; i < bufferCount; i++)

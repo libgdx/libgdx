@@ -43,6 +43,11 @@ public interface Sound extends Disposable {
 	public void play (float volume);
 
 	/**
+	 * Stops playing all instances of this sound.
+	 */
+	public void stop ();
+
+	/**
 	 * Releases all the resources.
 	 */
 	public void dispose ();
