@@ -46,6 +46,7 @@ public class Sprite extends TextureRegion {
 	 * drawn.
 	 */
 	public Sprite () {
+		setColor(1, 1, 1, 1);
 	}
 
 	/**
