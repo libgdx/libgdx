@@ -34,7 +34,18 @@ public class ObjLoader {
 	 * @param in the InputStream
 	 * 
 	 */
-	public static Mesh loadObj (InputStream in) {
+	public static Mesh loadObj(InputStream in) {
+		return loadObj(in, false);
+	}
+	
+	/**
+	 * Loads a Wavefront OBJ file from the given input stream.
+	 * 
+	 * @param in the InputStream
+	 * @param flipV whether to flip the v texture coordinate or not
+	 * 
+	 */
+	public static Mesh loadObj (InputStream in, boolean flipV) {
 		String line = "";
 
 		try {
@@ -52,7 +63,7 @@ public class ObjLoader {
 		} catch (Exception ex) {
 			return null;
 		}
-		return loadObjFromString(line);
+		return loadObjFromString(line, flipV);
 	}
 
 	/**
@@ -62,6 +73,17 @@ public class ObjLoader {
 	 * @return The Mesh
 	 */
 	public static Mesh loadObjFromString (String obj) {
+		return loadObjFromString(obj, false);
+	}
+	
+	/**
+	 * Loads a mesh from the given string in Wavefront OBJ format
+	 * 
+	 * @param obj The string
+	 * @param flipV whether to flip the v texture coordinate or not
+	 * @return The Mesh
+	 */
+	public static Mesh loadObjFromString (String obj, boolean flipV) {
 		String[] lines = obj.split("\n");
 		float[] vertices = new float[lines.length * 3];
 		float[] normals = new float[lines.length * 3];
@@ -105,7 +127,7 @@ public class ObjLoader {
 			if (line.startsWith("vt")) {
 				String[] tokens = line.split("[ ]+");
 				uv[uvIndex] = Float.parseFloat(tokens[1]);
-				uv[uvIndex + 1] = Float.parseFloat(tokens[2]);
+				uv[uvIndex + 1] = flipV? 1 - Float.parseFloat(tokens[2]):Float.parseFloat(tokens[2]);
 				uvIndex += 2;
 				numUV++;
 				continue;
