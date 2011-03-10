@@ -248,7 +248,7 @@ public class Texture implements Disposable {
 	private void uploadImageData(Pixmap pixmap) {					
 		this.width = pixmap.getWidth();
 		this.height = pixmap.getHeight();
-		if(!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height))
+		if(Gdx.gl20 == null && (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)))
 			throw new GdxRuntimeException("texture width and height must be powers of two");
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
