@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import android.media.MediaPlayer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 public class AndroidMusic implements Music {
@@ -31,10 +32,15 @@ public class AndroidMusic implements Music {
 
 	@Override public void dispose () {
 		if(player == null) return;
-		if (player.isPlaying()) player.stop();
-		player.release();
-		player = null;
-		audio.musics.remove(this);
+		try {
+			if (player.isPlaying()) player.stop();
+			player.release();
+		} catch(Throwable t) {
+			Gdx.app.log("AndroidMusic", "error while disposing AndroidMusic instance, non-fatal");
+		} finally {
+			player = null;
+			audio.musics.remove(this);
+		}
 	}
 
 	@Override public boolean isLooping () {
