@@ -326,6 +326,7 @@ public interface GL20 extends GLCommon {
 	public static final int GL_RENDERBUFFER_BINDING = 0x8CA7;
 	public static final int GL_MAX_RENDERBUFFER_SIZE = 0x84E8;
 	public static final int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506;
+	public static final int GL_VERTEX_PROGRAM_POINT_SIZE = 0x8642;
 
 	public void glAttachShader (int program, int shader);
 

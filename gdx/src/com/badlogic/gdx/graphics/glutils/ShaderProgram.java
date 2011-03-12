@@ -59,6 +59,9 @@ import com.badlogic.gdx.utils.ObjectMap;
  * 
  */
 public class ShaderProgram implements Disposable {
+	/** flag indicating whether uniforms must be present at all times **/
+	public static boolean strictUniformChecks = true;
+	
 	/** the list of currently available shaders **/
 	private final static ArrayList<ShaderProgram> shaders = new ArrayList<ShaderProgram>();
 
@@ -224,7 +227,7 @@ public class ShaderProgram implements Disposable {
 		Integer location;
 		if ((location = uniforms.get(name)) == null) {
 			location = gl.glGetUniformLocation(program, name);
-			if (location == -1) throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
+			if (location == -1 && strictUniformChecks) throw new IllegalArgumentException("no uniform with name '" + name + "' in shader");
 			uniforms.put(name, location);
 		}
 		return location;
