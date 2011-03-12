@@ -125,13 +125,18 @@ public class OpenALAudio implements Audio {
 	}
 
 	void freeStream (int streamID) {
+		alSourceStop(streamID);
+		alSourcei(streamID, AL_BUFFER, 0);
 		idleStreams.add(streamID);
 	}
 
 	void freeBuffer (int bufferID) {
 		for (int i = 0, n = idleStreams.size; i < n; i++) {
 			int streamID = idleStreams.get(i);
-			if (alGetSourcei(streamID, AL_BUFFER) == bufferID) alSourcei(streamID, AL_BUFFER, 0);
+			if (alGetSourcei(streamID, AL_BUFFER) == bufferID) {
+				alSourceStop(streamID);
+				alSourcei(streamID, AL_BUFFER, 0);
+			}
 		}
 	}
 
