@@ -7,14 +7,10 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Delay;
-import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
-import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveTo;
+import com.badlogic.gdx.scenes.scene2d.actions.FadeTo;
+import com.badlogic.gdx.scenes.scene2d.actions.Forever;
 import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
-import com.badlogic.gdx.scenes.scene2d.actions.Repeat;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateTo;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
@@ -74,16 +70,25 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 //			                   Delay.$(Parallel.$( RotateTo.$(360, 1), 
 //			                  	 						FadeIn.$(1), 
 //			                  	 						ScaleTo.$(1, 1, 1)), 1)));
-		OnActionCompleted listener = new OnActionCompleted() {			
-			@Override public void completed (Action action) {
-				img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
-					Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(this));				
-			}
-		};
+//		OnActionCompleted listener = new OnActionCompleted() {			
+//			@Override public void completed (Action action) {
+//				img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
+//					Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(this));				
+//			}
+//		};
+//		
+//		img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
+//			Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(listener));
 		
-		img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
-			Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(listener));
-		
+		img.action(
+         Forever.$(
+            Sequence.$(
+                     Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)), 
+                     Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2))
+                  )
+               )
+        );
+	
 		stage.addActor(img);
 	}
 
