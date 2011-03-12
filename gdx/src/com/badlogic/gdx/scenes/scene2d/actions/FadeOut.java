@@ -60,6 +60,8 @@ public class FadeOut extends AnimationAction {
 	}
 
 	@Override public Action copy () {
-		return $(duration);
+		FadeOut fadeOut = $(duration);
+		fadeOut.setInterpolator(interpolator.copy());
+		return fadeOut;
 	}
 }

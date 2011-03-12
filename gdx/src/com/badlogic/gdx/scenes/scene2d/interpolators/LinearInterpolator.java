@@ -50,4 +50,7 @@ public class LinearInterpolator implements Interpolator {
 		return input;
 	}
 
+	@Override public Interpolator copy () {
+		return $();
+	}
 }

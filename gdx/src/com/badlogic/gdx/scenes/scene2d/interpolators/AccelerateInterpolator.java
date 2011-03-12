@@ -74,4 +74,8 @@ public class AccelerateInterpolator implements Interpolator {
 			return (float)Math.pow(input, doubledFactor);
 		}
 	}
+
+	@Override public Interpolator copy () {
+		return $(factor);
+	}
 }

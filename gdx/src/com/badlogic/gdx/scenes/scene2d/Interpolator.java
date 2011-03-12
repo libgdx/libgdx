@@ -37,4 +37,9 @@ public interface Interpolator {
 	 */
 	void finished ();
 
+	/**
+	 * Creates a copy of this interpolator.
+	 * @return the copy.
+	 */
+	Interpolator copy();
 }

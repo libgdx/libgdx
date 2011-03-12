@@ -27,7 +27,7 @@ public abstract class AnimationAction extends Action {
 	protected Actor target;
 	protected boolean done;
 
-	private Interpolator interpolator;
+	protected Interpolator interpolator;
 
 	@Override public boolean isDone () {
 		return done;

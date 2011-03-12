@@ -63,6 +63,8 @@ public class FadeIn extends AnimationAction {
 	}
 
 	@Override public Action copy () {
-		return $(duration);
+		FadeIn fadeIn = $(duration);
+		fadeIn.setInterpolator(interpolator.copy());
+		return fadeIn;
 	}
 }

@@ -67,4 +67,8 @@ public class AnticipateInterpolator implements Interpolator {
 	public float getInterpolation (float t) {
 		return t * t * ((tension + 1) * t - tension);
 	}
+
+	@Override public Interpolator copy () {
+		return $(tension);
+	}
 }

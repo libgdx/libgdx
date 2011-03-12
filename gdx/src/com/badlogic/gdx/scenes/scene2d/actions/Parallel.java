@@ -17,6 +17,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.CompositeAction;
+import com.badlogic.gdx.utils.Array;
 
 public class Parallel extends CompositeAction {
 
@@ -76,17 +77,17 @@ public class Parallel extends CompositeAction {
 		}
 		super.finish();
 	}
-
+	
 	@Override public Action copy () {
-		Parallel action = pool.obtain();
-		action.actions.clear();
-		if (action.finished == null || action.finished.length < actions.size()) action.finished = new boolean[actions.size()];
+		Parallel parallel = pool.obtain();
+		parallel.actions.clear();
+		if (parallel.finished == null || parallel.finished.length < actions.size()) parallel.finished = new boolean[actions.size()];
 		int len = actions.size();
 		for (int i = 0; i < len; i++)
-			action.finished[i] = false;
+			parallel.finished[i] = false;
 		len = actions.size();
 		for (int i = 0; i < len; i++)
-			action.actions.add(actions.get(i).copy());
-		return action;
+			parallel.actions.add(actions.get(i).copy());
+		return parallel;
 	}
 }

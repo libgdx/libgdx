@@ -74,4 +74,8 @@ public class DecelerateInterpolator implements Interpolator {
 			return (float)(1.0f - Math.pow((1.0f - input), doubledFactor));
 		}
 	}
+
+	@Override public Interpolator copy () {
+		return $(factor);
+	}
 }

@@ -69,6 +69,8 @@ public class MoveTo extends AnimationAction {
 	}
 
 	@Override public Action copy () {
-		return $(x, y, duration);
+		MoveTo moveTo = $(x, y, duration);
+		moveTo.setInterpolator(interpolator.copy());
+		return moveTo;
 	}
 }
