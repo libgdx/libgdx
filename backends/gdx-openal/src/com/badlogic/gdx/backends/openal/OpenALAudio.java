@@ -35,7 +35,7 @@ import static org.lwjgl.openal.AL10.*;
  * @author Nathan Sweet
  */
 public class OpenALAudio implements Audio {
-	private IntArray idleStreams, allStreams;
+	private IntArray idleSources, allSources;
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 
@@ -45,7 +45,7 @@ public class OpenALAudio implements Audio {
 		this(16);
 	}
 
-	public OpenALAudio (int simultaneousStreams) {
+	public OpenALAudio (int simultaneousSources) {
 		registerSound("ogg", Ogg.Sound.class);
 		registerMusic("ogg", Ogg.Music.class);
 		registerSound("wav", Wav.Sound.class);
@@ -59,13 +59,13 @@ public class OpenALAudio implements Audio {
 			throw new GdxRuntimeException("Error initializing OpenAL.", ex);
 		}
 
-		allStreams = new IntArray(false, simultaneousStreams);
-		for (int i = 0; i < simultaneousStreams; i++) {
-			int streamID = alGenSources();
+		allSources = new IntArray(false, simultaneousSources);
+		for (int i = 0; i < simultaneousSources; i++) {
+			int sourceID = alGenSources();
 			if (alGetError() != AL_NO_ERROR) break;
-			allStreams.add(streamID);
+			allSources.add(sourceID);
 		}
-		idleStreams = new IntArray(allStreams);
+		idleSources = new IntArray(allSources);
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
 			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
@@ -110,40 +110,40 @@ public class OpenALAudio implements Audio {
 		}
 	}
 
-	int obtainStream (boolean isMusic) {
-		for (int i = 0, n = idleStreams.size; i < n; i++) {
-			int streamID = idleStreams.get(i);
-			int state = alGetSourcei(streamID, AL_SOURCE_STATE);
+	int obtainSource (boolean isMusic) {
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			int state = alGetSourcei(sourceID, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
-				if (isMusic) idleStreams.removeIndex(i);
-				alSourceStop(streamID);
-				alSourcei(streamID, AL_BUFFER, 0);
-				return streamID;
+				if (isMusic) idleSources.removeIndex(i);
+				alSourceStop(sourceID);
+				alSourcei(sourceID, AL_BUFFER, 0);
+				return sourceID;
 			}
 		}
 		return -1;
 	}
 
-	void freeStream (int streamID) {
-		alSourceStop(streamID);
-		alSourcei(streamID, AL_BUFFER, 0);
-		idleStreams.add(streamID);
+	void freeSource (int sourceID) {
+		alSourceStop(sourceID);
+		alSourcei(sourceID, AL_BUFFER, 0);
+		idleSources.add(sourceID);
 	}
 
 	void freeBuffer (int bufferID) {
-		for (int i = 0, n = idleStreams.size; i < n; i++) {
-			int streamID = idleStreams.get(i);
-			if (alGetSourcei(streamID, AL_BUFFER) == bufferID) {
-				alSourceStop(streamID);
-				alSourcei(streamID, AL_BUFFER, 0);
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+				alSourceStop(sourceID);
+				alSourcei(sourceID, AL_BUFFER, 0);
 			}
 		}
 	}
 
-	void stopStreamsWithBuffer (int bufferID) {
-		for (int i = 0, n = idleStreams.size; i < n; i++) {
-			int streamID = idleStreams.get(i);
-			if (alGetSourcei(streamID, AL_BUFFER) == bufferID) alSourceStop(streamID);
+	void stopSourcesWithBuffer (int bufferID) {
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) alSourceStop(sourceID);
 		}
 	}
 
@@ -153,11 +153,11 @@ public class OpenALAudio implements Audio {
 	}
 
 	public void dispose () {
-		for (int i = 0, n = allStreams.size; i < n; i++) {
-			int streamID = allStreams.get(i);
-			int state = alGetSourcei(streamID, AL_SOURCE_STATE);
-			if (state != AL_STOPPED) alSourceStop(streamID);
-			alDeleteSources(streamID);
+		for (int i = 0, n = allSources.size; i < n; i++) {
+			int sourceID = allSources.get(i);
+			int state = alGetSourcei(sourceID, AL_SOURCE_STATE);
+			if (state != AL_STOPPED) alSourceStop(sourceID);
+			alDeleteSources(sourceID);
 		}
 
 		AL.destroy();

@@ -37,7 +37,7 @@ public abstract class OpenALMusic implements Music {
 
 	private final OpenALAudio audio;
 	private IntBuffer buffers;
-	private int streamID = -1;
+	private int sourceID = -1;
 	private int format, sampleRate;
 	private boolean isLooping, isPlaying;
 	private float volume = 1;
@@ -63,41 +63,39 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void play () {
-		if (streamID == -1) {
-			streamID = audio.obtainStream(true);
-			if (streamID == -1) return;
-			alSourcei(streamID, AL_LOOPING, AL_FALSE);
-			alSourcef(streamID, AL_GAIN, volume);
+		if (sourceID == -1) {
+			sourceID = audio.obtainSource(true);
+			if (sourceID == -1) return;
+			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
+			alSourcef(sourceID, AL_GAIN, volume);
 			for (int i = 0; i < bufferCount; i++)
 				fill(buffers.get(i));
-			alSourceQueueBuffers(streamID, buffers);
+			alSourceQueueBuffers(sourceID, buffers);
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
 				return;
 			}
 		}
-		alSourcePlay(streamID);
+		alSourcePlay(sourceID);
 		isPlaying = true;
 	}
 
 	public void stop () {
-		if (streamID == -1) return;
+		if (sourceID == -1) return;
 		reset();
-		alSourceStop(streamID);
-		alSourcei(streamID, AL_BUFFER, 0);
-		audio.freeStream(streamID);
-		streamID = -1;
+		audio.freeSource(sourceID);
+		sourceID = -1;
 		renderedSeconds = 0;
 		isPlaying = false;
 	}
 
 	public void pause () {
-		if (streamID != -1) alSourcePause(streamID);
+		if (sourceID != -1) alSourcePause(sourceID);
 		isPlaying = false;
 	}
 
 	public boolean isPlaying () {
-		if (streamID == -1) return false;
+		if (sourceID == -1) return false;
 		return isPlaying;
 	}
 
@@ -111,12 +109,12 @@ public abstract class OpenALMusic implements Music {
 
 	public void setVolume (float volume) {
 		this.volume = volume;
-		if (streamID != -1) alSourcef(streamID, AL_GAIN, volume);
+		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
 	}
 
 	public float getPosition () {
-		if (streamID == -1) return 0;
-		return renderedSeconds + alGetSourcef(streamID, AL11.AL_SEC_OFFSET);
+		if (sourceID == -1) return 0;
+		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
 	}
 
 	/**
@@ -131,16 +129,18 @@ public abstract class OpenALMusic implements Music {
 	abstract protected void reset ();
 
 	public void update () {
-		if (streamID == -1) return;
+		if (sourceID == -1) return;
+
 		// A buffer underflow will cause the source to stop.
-		if (isPlaying && alGetSourcei(streamID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(streamID);
-		int buffers = alGetSourcei(streamID, AL_BUFFERS_PROCESSED);
+		if (isPlaying && alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(sourceID);
+
+		int buffers = alGetSourcei(sourceID, AL_BUFFERS_PROCESSED);
 		while (buffers-- > 0) {
-			int bufferID = alSourceUnqueueBuffers(streamID);
+			int bufferID = alSourceUnqueueBuffers(sourceID);
 			if (bufferID == AL_INVALID_VALUE) break;
 			renderedSeconds += secondsPerBuffer;
 			if (!fill(bufferID)) return;
-			alSourceQueueBuffers(streamID, bufferID);
+			alSourceQueueBuffers(sourceID, bufferID);
 		}
 	}
 
@@ -165,13 +165,11 @@ public abstract class OpenALMusic implements Music {
 
 	public void dispose () {
 		if (buffers == null) return;
-		if (streamID != -1) {
+		if (sourceID != -1) {
 			reset();
 			audio.music.removeValue(this, true);
-			alSourceStop(streamID);
-			alSourcei(streamID, AL_BUFFER, 0);
-			audio.freeStream(streamID);
-			streamID = -1;
+			audio.freeSource(sourceID);
+			sourceID = -1;
 		}
 		alDeleteBuffers(buffers);
 		buffers = null;
