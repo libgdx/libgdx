@@ -75,8 +75,7 @@ public class Sequence extends CompositeAction {
 		action.actions.clear();
 		int len = actions.size();
 		for (int i = 0; i < len; i++) {			
-			action.actions.add(actions.get(i).copy());
-			actions.get(i).finish();
+			action.actions.add(actions.get(i).copy());			
 		}
 		return action;
 	}
