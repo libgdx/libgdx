@@ -19,6 +19,7 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -209,5 +210,9 @@ public class ImmediateModeRenderer {
 		if (hasCols) gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
 		if (hasNors) gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
 		if (hasTexCoords) gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+	}
+
+	public void vertex (Vector3 point) {
+		vertex(point.x, point.y, point.z);
 	}
 }

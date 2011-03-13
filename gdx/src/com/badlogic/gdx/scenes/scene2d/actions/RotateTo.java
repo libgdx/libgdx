@@ -62,7 +62,8 @@ public class RotateTo extends AnimationAction {
 
 	@Override public Action copy () {
 		RotateTo rotateTo = $(rotation, duration);
-		rotateTo.setInterpolator(interpolator.copy());
+		if(interpolator != null)
+			rotateTo.setInterpolator(interpolator.copy());
 		return rotateTo;
 	}
 }

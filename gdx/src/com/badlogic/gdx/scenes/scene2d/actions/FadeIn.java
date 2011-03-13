@@ -64,7 +64,8 @@ public class FadeIn extends AnimationAction {
 
 	@Override public Action copy () {
 		FadeIn fadeIn = $(duration);
-		fadeIn.setInterpolator(interpolator.copy());
+		if(interpolator != null)
+			fadeIn.setInterpolator(interpolator.copy());		
 		return fadeIn;
 	}
 }

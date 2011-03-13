@@ -736,4 +736,10 @@ public class Matrix4 implements Serializable {
 		val[15] = mat.vals[8];
 		return this;
 	}
+
+	public void scl (Vector3 scale) {
+		val[M00] *= scale.x;
+		val[M11] *= scale.y;
+		val[M22] *= scale.z;
+	}
 }

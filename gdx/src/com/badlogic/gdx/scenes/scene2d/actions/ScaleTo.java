@@ -70,7 +70,8 @@ public class ScaleTo extends AnimationAction {
 
 	@Override public Action copy () {
 		ScaleTo scaleTo = $(scaleX, scaleY, duration);
-		scaleTo.setInterpolator(interpolator.copy());
+		if(interpolator != null)
+			scaleTo.setInterpolator(interpolator.copy());
 		return scaleTo;
 	}
 }

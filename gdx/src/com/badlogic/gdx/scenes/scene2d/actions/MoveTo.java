@@ -70,7 +70,8 @@ public class MoveTo extends AnimationAction {
 
 	@Override public Action copy () {
 		MoveTo moveTo = $(x, y, duration);
-		moveTo.setInterpolator(interpolator.copy());
+		if(interpolator != null)
+			moveTo.setInterpolator(interpolator.copy());
 		return moveTo;
 	}
 }

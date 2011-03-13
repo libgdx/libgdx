@@ -72,7 +72,8 @@ public class MoveBy extends AnimationAction {
 
 	@Override public Action copy () {
 		MoveBy moveBy = $(deltaX, deltaY, duration);
-		moveBy.setInterpolator(interpolator.copy());
+		if(interpolator != null)
+			moveBy.setInterpolator(interpolator.copy());
 		return moveBy;
 	}
 }
