@@ -131,7 +131,7 @@ public class Pixmap implements Disposable {
 			in = file.read();
 			pixmap = new Gdx2DPixmap(in, 0);
 		} catch (Exception e) {
-			throw new GdxRuntimeException("couldn't load file '" + file.name() + "'", e);
+			throw new GdxRuntimeException("Couldn't load file: " + file, e);
 		} finally {
 			if(in != null);
 			try { in.close(); } catch(Exception e) { };

@@ -86,6 +86,17 @@ public class ParticleEffect {
 		return emitters;
 	}
 
+	/**
+	 * Returns the emitter with the specified name, or null.
+	 */
+	public ParticleEmitter findEmitter (String name) {
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.items[i];
+			if (emitter.getName().equals(name)) return emitter;
+		}
+		return null;
+	}
+
 	public void save (File file) {
 		Writer output = null;
 		try {
