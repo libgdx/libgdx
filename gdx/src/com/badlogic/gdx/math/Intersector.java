@@ -316,50 +316,46 @@ public final class Intersector {
 	 * @param bounds The bounding box
 	 * @return Wheter the ray and the bounding box intersect.
 	 */
-	public static boolean intersectRayBoundsFast (Ray ray, BoundingBox bounds) {
-		float t_x_min, t_x_max;
-		float t_y_min, t_y_max;
-		float t_z_min, t_z_max;
-		float div_x, div_y, div_z;
+	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
+		float a, b;
+		float min, max;
+		float divX = 1 / ray.direction.x;
+		float divY = 1 / ray.direction.y;
+		float divZ = 1 / ray.direction.z;
 
-		div_x = 1 / ray.direction.x;
-		div_y = 1 / ray.direction.y;
-		div_z = 1 / ray.direction.z;
-
-		if (div_x >= 0) {
-			t_x_min = (bounds.min.x - ray.origin.x) * div_x;
-			t_x_max = (bounds.max.x - ray.origin.x) * div_x;
+		a = (box.min.x - ray.origin.x) * divX;
+		b = (box.max.x - ray.origin.x) * divX;
+		if (a < b) {
+			min = a;
+			max = b;
 		} else {
-			t_x_min = (bounds.max.x - ray.origin.x) * div_x;
-			t_x_max = (bounds.min.x - ray.origin.x) * div_x;
+			min = b;
+			max = a;
 		}
 
-		if (div_y >= 0) {
-			t_y_min = (bounds.min.y - ray.origin.y) * div_y;
-			t_y_max = (bounds.max.y - ray.origin.y) * div_y;
-		} else {
-			t_y_min = (bounds.max.y - ray.origin.y) * div_y;
-			t_y_max = (bounds.min.y - ray.origin.y) * div_y;
+		a = (box.min.y - ray.origin.y) * divY;
+		b = (box.max.y - ray.origin.y) * divY;
+		if (a > b) {
+			float t = a;
+			a = b;
+			b = t;
 		}
 
-		if (t_x_min > t_y_max || (t_y_min > t_x_max)) return false;
+		if (a > min) min = a;
+		if (b < max) max = b;
 
-		if (t_y_min > t_x_min) t_x_min = t_y_min;
-		if (t_y_max < t_x_max) t_x_max = t_y_max;
-
-		if (div_z >= 0) {
-			t_z_min = (bounds.min.z - ray.origin.z) * div_z;
-			t_z_max = (bounds.max.z - ray.origin.z) * div_z;
-		} else {
-			t_z_min = (bounds.max.z - ray.origin.z) * div_z;
-			t_z_max = (bounds.min.z - ray.origin.z) * div_z;
+		a = (box.min.z - ray.origin.z) * divZ;
+		b = (box.max.z - ray.origin.z) * divZ;
+		if (a > b) {
+			float t = a;
+			a = b;
+			b = t;
 		}
 
-		if ((t_x_min > t_z_max) || (t_z_min > t_x_max)) return false;
-		if (t_z_min > t_x_min) t_x_min = t_z_min;
-		if (t_z_max < t_x_max) t_x_max = t_z_max;
+		if (a > min) min = a;
+		if (b < max) max = b;
 
-		return ((t_x_min < 1) && (t_x_max > 0));
+		return (max >= 0) && (max >= min);
 	}
 
 	static Vector3 tmp = new Vector3();
