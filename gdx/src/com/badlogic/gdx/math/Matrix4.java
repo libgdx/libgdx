@@ -742,4 +742,14 @@ public class Matrix4 implements Serializable {
 		val[M11] *= scale.y;
 		val[M22] *= scale.z;
 	}
+
+	public void getTranslation (Vector3 position) {
+		position.x = val[M03];
+		position.y = val[M13];
+		position.z = val[M23];
+	}
+
+	public void getRotation (Quaternion rotation) {
+		rotation.setFromMatrix(this);
+	}
 }
