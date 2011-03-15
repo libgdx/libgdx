@@ -405,6 +405,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
         if (ldestroy) {
             app.listener.dispose();
+            ((AndroidApplication)app).audio.dispose();
             Gdx.app.log("AndroidGraphics", "destroyed");
         }
 

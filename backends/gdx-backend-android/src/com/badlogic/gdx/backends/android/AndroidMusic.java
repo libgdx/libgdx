@@ -30,7 +30,7 @@ public class AndroidMusic implements Music {
 		this.player = player;
 	}
 
-	@Override public void dispose () {
+	@Override public void dispose () {		
 		if(player == null) return;
 		try {
 			if (player.isPlaying()) player.stop();

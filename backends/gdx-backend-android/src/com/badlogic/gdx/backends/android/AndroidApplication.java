@@ -172,8 +172,7 @@ public class AndroidApplication extends Activity implements Application {
                 ((android.opengl.GLSurfaceView) graphics.view).onPause();
         }
         
-        if(isFinishing()) {
-      	  audio.dispose();
+        if(isFinishing()) {      	  
            audio = null;
         }
         
