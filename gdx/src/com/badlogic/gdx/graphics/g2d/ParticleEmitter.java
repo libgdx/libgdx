@@ -90,6 +90,7 @@ public class ParticleEmitter {
 	}
 
 	public ParticleEmitter (ParticleEmitter emitter) {
+		name = emitter.name;
 		sprite = emitter.sprite;
 		setMaxParticleCount(emitter.maxParticleCount);
 		minParticleCount = emitter.minParticleCount;
