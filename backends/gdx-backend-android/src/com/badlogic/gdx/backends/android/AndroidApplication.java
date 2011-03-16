@@ -170,11 +170,7 @@ public class AndroidApplication extends Activity implements Application {
             if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onPause();
             if (graphics.view instanceof android.opengl.GLSurfaceView)
                 ((android.opengl.GLSurfaceView) graphics.view).onPause();
-        }
-        
-        if(isFinishing()) {      	  
-           audio = null;
-        }
+        }        
         
         super.onPause();
     }
