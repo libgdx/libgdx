@@ -14,37 +14,46 @@
 package com.badlogic.gdx.scenes.scene2d.actors;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Label extends Actor {
-	public BitmapFont font;
-	public String text;
+	public BitmapFontCache cache;
 
 	public Label (String name, BitmapFont font, String text) {
 		super(name);
-		this.font = font;
-		this.text = text;				
+		cache = new BitmapFontCache(font);
+		setText(text);
+	}
+
+	public void setText (String text) {
+		cache.setText(text, 0, 0);
+		TextBounds bounds = cache.getBounds();
+		width = bounds.width;
+		height = bounds.height;
 	}
 
 	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
-		font.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		font.draw(batch, text, x, y);
+		cache.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		cache.setPosition(x, y);
+		cache.draw(batch);
 	}
 
 	@Override protected boolean touchDown (float x, float y, int pointer) {
-		return x > 0 && y > 0 && x < font.getBounds(text).width && x < font.getLineHeight();		
+		return x > 0 && y > 0 && x < width && y < height;
 	}
 
 	@Override protected boolean touchUp (float x, float y, int pointer) {
-		return x > 0 && y > 0 && x < font.getBounds(text).width && x < font.getLineHeight();		
+		return x > 0 && y > 0 && x < width && y < height;
 	}
 
 	@Override protected boolean touchDragged (float x, float y, int pointer) {
-		return x > 0 && y > 0 && x < font.getBounds(text).width && x < font.getLineHeight();		
+		return x > 0 && y > 0 && x < width && y < height;
 	}
 
 	@Override public Actor hit (float x, float y) {
-		 return x > 0 && y > 0 && x < font.getBounds(text).width && x < font.getLineHeight() ? this : null;		
+		return x > 0 && y > 0 && x < width && y < height ? this : null;
 	}
 }

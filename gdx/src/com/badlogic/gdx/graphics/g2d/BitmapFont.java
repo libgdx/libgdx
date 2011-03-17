@@ -79,6 +79,16 @@ public class BitmapFont implements Disposable {
 		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
 			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), false);
 	}
+	
+	/**
+	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
+	 * text without bothering with generating a bitmap font.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 */
+	public BitmapFont (boolean flip) {
+		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
+			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), flip);
+	}
 
 	/**
 	 * Creates a BitmapFont with the glyphs relative to the specified region.

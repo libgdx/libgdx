@@ -173,10 +173,10 @@ public class StageTest extends GdxTest implements InputProcessor {
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize(4);
 
-		 ((Label)ui.findActor("fps")).text = "fps: " +
-		 Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
-		 ", groups "
-		 + stage.getGroups().size();
+		 ((Label)ui.findActor("fps")).setText("fps: " +
+			 Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
+			 ", groups "
+			 + stage.getGroups().size());
 		ui.draw();
 	}
 

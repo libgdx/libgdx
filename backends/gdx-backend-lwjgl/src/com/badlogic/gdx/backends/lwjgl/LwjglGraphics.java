@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.MathUtils;
 
 /**
@@ -82,8 +83,8 @@ public final class LwjglGraphics implements Graphics {
 	public GL20 getGL20 () {
 		return gl20;
 	}
-	
-	public GLU getGLU() {
+
+	public GLU getGLU () {
 		return glu;
 	}
 
@@ -155,7 +156,12 @@ public final class LwjglGraphics implements Graphics {
 				Display.create(new PixelFormat(8, 8, 0));
 			} catch (Exception ex2) {
 				Display.destroy();
-				Display.create(new PixelFormat());
+				try {
+					Display.create(new PixelFormat());
+				} catch (Exception ex3) {
+					if (ex3.getMessage().contains("Pixel format not accelerated"))
+						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+				}
 			}
 		}
 
@@ -182,7 +188,7 @@ public final class LwjglGraphics implements Graphics {
 		}
 
 		glu = new LwjglGLU();
-		
+
 		Gdx.glu = glu;
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;

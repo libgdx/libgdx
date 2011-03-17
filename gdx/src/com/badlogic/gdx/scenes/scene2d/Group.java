@@ -50,6 +50,10 @@ public class Group extends Actor {
 	public Actor lastTouchedChild;
 	public Actor focusedActor = null;
 
+	public Group () {
+		this(null);
+	}
+
 	/**
 	 * Creates a new Group with the given name.
 	 * @param name the name of the group
@@ -313,7 +317,7 @@ public class Group extends Actor {
 	public void addActor (Actor actor) {
 		children.add(actor);
 		if (actor instanceof Group) groups.add((Group)actor);
-		namesToActors.put(actor.name, actor);
+		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
 	}
 
@@ -325,7 +329,7 @@ public class Group extends Actor {
 	public void addActorAt (int index, Actor actor) {
 		children.add(index, actor);
 		if (actor instanceof Group) groups.add((Group)actor);
-		namesToActors.put(actor.name, actor);
+		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
 	}
 
@@ -338,7 +342,7 @@ public class Group extends Actor {
 		int index = children.indexOf(actorBefore);
 		children.add(index, actor);
 		if (actor instanceof Group) groups.add((Group)actor);
-		namesToActors.put(actor.name, actor);
+		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
 	}
 
@@ -354,7 +358,7 @@ public class Group extends Actor {
 		else
 			children.add(index + 1, actor);
 		if (actor instanceof Group) groups.add((Group)actor);
-		namesToActors.put(actor.name, actor);
+		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
 	}
 
@@ -365,7 +369,7 @@ public class Group extends Actor {
 	public void removeActor (Actor actor) {
 		children.remove(actor);
 		if (actor instanceof Group) groups.remove((Group)actor);
-		namesToActors.remove(actor.name);
+		if (actor.name != null) namesToActors.remove(actor.name);
 	}
 
 	/**
@@ -376,7 +380,7 @@ public class Group extends Actor {
 	public void removeActorRecursive(Actor actor) {
 		if(children.remove(actor)) {
 			if (actor instanceof Group) groups.remove((Group)actor);
-			namesToActors.remove(actor.name);
+			if (actor.name != null) namesToActors.remove(actor.name);
 			return;
 		}
 		

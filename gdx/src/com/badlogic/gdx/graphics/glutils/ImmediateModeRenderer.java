@@ -171,6 +171,10 @@ public class ImmediateModeRenderer {
 		if (hasTexCoords) idxTexCoords += 2;
 	}
 
+	public int getNumVertices () {
+		return idxPos / 3;
+	}
+
 	/**
 	 * Renders the primitives just defined.
 	 */
