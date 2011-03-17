@@ -343,7 +343,6 @@ public class Quaternion implements Serializable {
 	 * @param zx z-axis x-coordinate
 	 * @param zy z-axis y-coordinate
 	 * @param zz z-axis z-coordinate
-	 * @return
 	 */
 	public Quaternion setFromAxes(float xx, float xy, float xz, 
 											float yx, float yy, float yz, 

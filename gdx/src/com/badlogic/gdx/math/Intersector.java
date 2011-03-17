@@ -313,7 +313,7 @@ public final class Intersector {
 	 * Quick check wheter the given {@link Ray} and {@link BoundingBox} intersect.
 	 * 
 	 * @param ray The ray
-	 * @param bounds The bounding box
+	 * @param box The bounding box
 	 * @return Wheter the ray and the bounding box intersect.
 	 */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
