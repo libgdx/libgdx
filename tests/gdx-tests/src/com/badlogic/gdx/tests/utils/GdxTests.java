@@ -38,6 +38,7 @@ import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.Gdx2DTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
+import com.badlogic.gdx.tests.ImmediateModeRendererAlphaTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererTest;
 import com.badlogic.gdx.tests.IndexBufferObjectClassTest;
 import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
@@ -134,6 +135,7 @@ public class GdxTests
 		FramebufferToTextureTest.class,
 		GroupFadeTest.class,
 		ImmediateModeRendererTest.class,
+		ImmediateModeRendererAlphaTest.class,
 		IndexBufferObjectClassTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
