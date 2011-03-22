@@ -298,7 +298,7 @@ public class TiledMapRenderer implements Disposable {
 	 * */
 	public int getRow (int worldY) {
 		if (worldY < 0) return 0;
-		if (worldY > pixelsPerMapY) return tileHeight - 1;
+		if (worldY > pixelsPerMapY) return pixelsPerMapY/tileHeight;
 		return worldY / tileHeight;
 	}
 	
@@ -308,7 +308,7 @@ public class TiledMapRenderer implements Disposable {
 	 * */
 	public int getCol (int worldX) {
 		if (worldX < 0) return 0;
-		if (worldX > pixelsPerMapX) return tileWidth - 1;
+		if (worldX > pixelsPerMapX) return pixelsPerMapX/tileWidth;
 		return worldX / tileWidth;
 	}
 
