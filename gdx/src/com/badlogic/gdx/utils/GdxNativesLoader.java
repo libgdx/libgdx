@@ -23,6 +23,7 @@ import java.util.zip.CRC32;
 import com.badlogic.gdx.Version;
 
 public class GdxNativesLoader {
+	static public boolean disableNativesLoading = false;
 	static private boolean nativesLoaded = false;
 
 	static public boolean isWindows = System.getProperty("os.name").contains("Windows");
@@ -83,6 +84,10 @@ public class GdxNativesLoader {
 	 * Loads the libgdx native libraries.
 	 */
 	static public void load () {
+		if(disableNativesLoading) {
+			System.out.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
+			return; 
+		}
 		if (nativesLoaded) return;
 
 		String vm = System.getProperty("java.vm.name");
