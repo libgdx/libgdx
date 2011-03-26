@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -85,6 +86,9 @@ public class Pixmap implements Disposable {
 	public enum Filter {
 		NearestNeighbour, BiLinear
 	}
+
+	/** global blending state **/
+	private static Blending blending = Blending.SourceOver;
 	
 	final Gdx2DPixmap pixmap;
 	int color = 0;
@@ -94,7 +98,8 @@ public class Pixmap implements Disposable {
 	 * @param blending the blending type
 	 */
 	public static void setBlending(Blending blending) {
-		Gdx2DPixmap.setBlend(blending==Blending.None?0:1);
+		Pixmap.blending = blending;
+		Gdx2DPixmap.setBlend(blending==Blending.None?0:1);		
 	}
 	
 	/**
@@ -355,5 +360,12 @@ public class Pixmap implements Disposable {
 	 */
 	public Format getFormat() {
 		return Format.fromGdx2DPixmapFormat(pixmap.getFormat());
+	}
+
+	/**	 
+	 * @return the currently set {@link Blending}
+	 */
+	public static Blending getBlending () {
+		return blending;
 	}
 }

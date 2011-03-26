@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -91,7 +92,7 @@ public class Texture implements Disposable {
 	TextureFilter magFilter = TextureFilter.Nearest;
 	TextureWrap uWrap = TextureWrap.ClampToEdge;
 	TextureWrap vWrap = TextureWrap.ClampToEdge;
-	Format format;
+	final Format format;
 	
 	/**
 	 * Creates a new texture from the given {@link FileHandle}. The 
@@ -137,6 +138,37 @@ public class Texture implements Disposable {
 	}
 	
 	/**
+	 * Creates a new texture from the given {@link FileHandle}. The 
+	 * FileHandle must point to a Jpeg, Png or Bmp file. This constructor
+	 * will throw an runtime exception in case the dimensions are not powers of two. 
+	 * It will also throw an exception in case mipmapping is requested but the texture is not square
+	 * when using OpenGL ES 1.x. The minification and magnification filters will be set 
+	 * to GL_NEAREST by default. The texture wrap for u and v is set to GL_CLAMP_TO_EDGE by default.
+	 * The texture will be managed and reloaded in case of a context loss. In case mipmapping is
+	 * set to true then the minification filter will be set to TextureFilter.MipMap automatically.
+	 * 
+	 * @param file the FileHandle to the image file.
+	 * @param format the prefered format for the texture. Conversion happens on the fly.
+	 * @param mipmap whether to build a mipmap chain.
+	 */
+	public Texture(FileHandle file, Format format, boolean mipmap) {
+		this.isManaged = true;
+		this.isMipMap = mipmap;
+		this.file = file;		
+		this.textureData = null;
+		glHandle = createGLHandle();
+		Pixmap pixmap = new Pixmap(file);
+		this.format = format;
+		uploadImageData(pixmap);
+		pixmap.dispose();		
+		if(mipmap)
+			minFilter = TextureFilter.MipMap;
+		setFilter(minFilter, magFilter);
+		setWrap(uWrap, vWrap);
+		managedTextures.add(this);
+	}
+	
+	/**
 	 * Creates a new texture from the given {@link Pixmap}. The Pixmap must 
 	 * have power of two dimensions. The minification and magnification filters will be set 
 	 * to GL_NEAREST by default. The texture wrap for u and v is set to GL_CLAMP_TO_EDGE by default.
@@ -165,7 +197,7 @@ public class Texture implements Disposable {
 		this.file = null;
 		this.textureData = null;
 		glHandle = createGLHandle();
-		format = pixmap.getFormat();
+		format = pixmap.getFormat();		
 		uploadImageData(pixmap);	
 		if(mipmap)
 			minFilter = TextureFilter.MipMap;
@@ -192,7 +224,7 @@ public class Texture implements Disposable {
 		Pixmap pixmap = new Pixmap(width, height, format);
 		pixmap.setColor(0, 0, 0, 0);
 		pixmap.fill();
-		format = pixmap.getFormat();
+		this.format = pixmap.getFormat();
 		uploadImageData(pixmap);	
 		pixmap.dispose();
 		setFilter(minFilter, magFilter);
@@ -245,7 +277,18 @@ public class Texture implements Disposable {
 		return buffer.get(0);		
 	}
 	
-	private void uploadImageData(Pixmap pixmap) {					
+	private void uploadImageData(Pixmap pixmap) {
+		boolean disposePixmap = false;
+		if(this.format != pixmap.getFormat()) {
+			Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), this.format);			
+			Blending blend = Pixmap.getBlending();
+			Pixmap.setBlending(Blending.None);
+			tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+			Pixmap.setBlending(blend);
+			pixmap = tmp;
+			disposePixmap = true;
+		}
+		
 		this.width = pixmap.getWidth();
 		this.height = pixmap.getHeight();
 		if(Gdx.gl20 == null && (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)))
@@ -261,7 +304,7 @@ public class Texture implements Disposable {
 			while(width > 0  && height > 0) {
 				Pixmap tmp = new Pixmap(width, height, pixmap.getFormat());		
 				tmp.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, width, height);
-				if(level > 1)
+				if(level > 1 || disposePixmap)
 					pixmap.dispose();				
 				pixmap = tmp;
 				
@@ -272,7 +315,9 @@ public class Texture implements Disposable {
 				level++;
 			}
 			pixmap.dispose();
-		}		
+		} else {
+			if(disposePixmap) pixmap.dispose();
+		}
 	}
 
 	/**
