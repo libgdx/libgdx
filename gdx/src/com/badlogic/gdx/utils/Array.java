@@ -65,6 +65,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
 	 */
 	public Array (boolean ordered, int capacity, Class<T> arrayType) {
+		this.ordered = ordered;
 		items = (T[])java.lang.reflect.Array.newInstance(arrayType, capacity);
 	}
 
