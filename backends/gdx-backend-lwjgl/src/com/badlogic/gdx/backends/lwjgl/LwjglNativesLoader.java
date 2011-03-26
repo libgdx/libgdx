@@ -41,6 +41,7 @@ final class LwjglNativesLoader {
 
 	static void load () {
 		GdxNativesLoader.load();
+		if(GdxNativesLoader.disableNativesLoading) return;
 		if (!load) return;
 		if (isWindows) {
 			extractLibrary("OpenAL32.dll", "OpenAL64.dll");

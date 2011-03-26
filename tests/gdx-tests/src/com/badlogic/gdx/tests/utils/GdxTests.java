@@ -29,6 +29,7 @@ import com.badlogic.gdx.tests.BobTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.CompassTest;
+import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CullTest;
 import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.FilesTest;
@@ -68,6 +69,7 @@ import com.badlogic.gdx.tests.ProjectTest;
 import com.badlogic.gdx.tests.RemoteTest;
 import com.badlogic.gdx.tests.RotationTest;
 import com.badlogic.gdx.tests.ShaderMultitextureTest;
+import com.badlogic.gdx.tests.SimpleAnimationTest;
 import com.badlogic.gdx.tests.SimpleTest;
 import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SplineTest;
@@ -126,6 +128,7 @@ public class GdxTests
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		CompassTest.class,
+		ComplexActionTest.class,
 		CullTest.class,
 		DeltaTimeTest.class,
 		FilesTest.class,
@@ -165,6 +168,7 @@ public class GdxTests
 		ShaderMultitextureTest.class,
 		SplineTest.class,		
 		SimpleTest.class,
+		SimpleAnimationTest.class,
 		SoundTest.class,
 		SpriteCacheTest.class,
 		SpriteCacheOffsetTest.class,

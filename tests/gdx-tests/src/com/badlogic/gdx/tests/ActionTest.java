@@ -8,8 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeTo;
-import com.badlogic.gdx.scenes.scene2d.actions.Forever;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
 import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
+import com.badlogic.gdx.scenes.scene2d.actions.Remove;
+import com.badlogic.gdx.scenes.scene2d.actions.Repeat;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
@@ -80,15 +82,23 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 //		img.action(Parallel.$(Sequence.$(FadeOut.$(2), FadeIn.$(2)),
 //			Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))).setCompletionListener(listener));
 		
-		img.action(
-         Forever.$(
-            Sequence.$(
-                     Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)), 
-                     Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2))
-                  )
-               )
-        );
-	
+//		img.action( 
+//            Sequence.$(
+//                     Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.4f, 1.4f, 2), FadeTo.$(0.7f, 2)), 
+//                     Parallel.$(RotateBy.$(180, 2), ScaleTo.$(1.0f, 1.0f, 2), FadeTo.$(1.0f, 2)),
+//                     Remove.$()
+//                  )
+//               );        		
+		
+		Action action = Repeat.$(Sequence.$(
+			MoveBy.$(8, 0, 0.03f),
+			MoveBy.$(-16, 0, 0.03f),
+			MoveBy.$(8, 8, 0.03f),
+			MoveBy.$(0, -8, 0.03f)), 20);
+
+		Action action2 = action.copy();
+		img.action(action2);
+		
 		stage.addActor(img);
 	}
 

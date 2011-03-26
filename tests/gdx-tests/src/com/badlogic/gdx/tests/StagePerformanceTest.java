@@ -1,16 +1,19 @@
 package com.badlogic.gdx.tests;
 
+import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actors.FastImage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -44,7 +47,7 @@ public class StagePerformanceTest extends GdxTest {
 		Random rand = new Random();
 		for(int y = 0, i = 0; y < 12; y++) {
 			for(int x = 0; x < 24; x++) {
-				Image img = new Image("img" + i, regions[rand.nextInt(8 * 8)]);
+				FastImage img = new FastImage("img" + i, regions[rand.nextInt(8 * 8)]);
 				img.x = x; img.y = y;
 				img.width = 1; img.height = 1;
 				stage.addActor(img);
@@ -62,12 +65,19 @@ public class StagePerformanceTest extends GdxTest {
 		if(useStage) {
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.getSpriteBatch().disableBlending();
+			Group root = stage.getRoot();
+			List<Actor> actors = root.getActors();
+//			for(int i = 0; i < actors.size(); i++) {
+//				actors.get(i).rotation += 45 * Gdx.graphics.getDeltaTime();
+//			}
 			stage.draw();	
 		} else {		
 			batch.getProjectionMatrix().setToOrtho2D(0, 0, 24, 12);
+			batch.getTransformMatrix().idt();
 			batch.disableBlending();
 			batch.begin();
 			for(int i = 0; i < sprites.length; i++) {
+//				sprites[i].rotate(45 * Gdx.graphics.getDeltaTime());
 				sprites[i].draw(batch);
 			}		
 			batch.end();
