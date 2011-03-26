@@ -26,6 +26,8 @@ public class MoveBy extends AnimationAction {
 		}
 	};
 
+	protected float initialX;
+	protected float initialY;
 	protected float x;
 	protected float y;
 	protected float startX;
@@ -35,8 +37,8 @@ public class MoveBy extends AnimationAction {
 
 	public static MoveBy $ (float x, float y, float duration) {
 		MoveBy action = pool.obtain();
-		action.x = x;
-		action.y = y;
+		action.x = action.initialX = x;
+		action.y = action.initialY = y;
 		action.duration = duration;
 		action.invDuration = 1 / duration;
 		return action;
@@ -71,7 +73,7 @@ public class MoveBy extends AnimationAction {
 	}
 
 	@Override public Action copy () {
-		MoveBy moveBy = $(deltaX, deltaY, duration);
+		MoveBy moveBy = $(initialX, initialY, duration);
 		if(interpolator != null)
 			moveBy.setInterpolator(interpolator.copy());
 		return moveBy;
