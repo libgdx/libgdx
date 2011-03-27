@@ -9,13 +9,12 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.PerspectiveCamera;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Plane;
@@ -37,12 +36,8 @@ public class GLTest implements ApplicationListener {
 	float angleInc = 1;
 
 	@Override public void create () {
-		cam = new PerspectiveCamera();
-		cam.setFov(67);
-		cam.setNear(0.1f);
-		cam.setFar(100);
-		cam.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.getPosition().z = 2;
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());			
+		cam.position.z = 2;
 
 		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_pos"), new VertexAttribute(Usage.TextureCoordinates,
 			2, "a_texCoords"));
@@ -185,7 +180,7 @@ public class GLTest implements ApplicationListener {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		texture.bind();
-		cam.setMatrices();
+		cam.apply(Gdx.gl10);
 		Gdx.gl10.glLoadMatrixf(matrix.getValues(), 0);
 		mesh.render(GL10.GL_TRIANGLES);
 	}
