@@ -32,6 +32,7 @@ import com.badlogic.gdx.tests.CompassTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CullTest;
 import com.badlogic.gdx.tests.DeltaTimeTest;
+import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.FilesTest;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FloatTest;
@@ -132,6 +133,7 @@ public class GdxTests
 		ComplexActionTest.class,
 		CullTest.class,
 		DeltaTimeTest.class,
+		EdgeDetectionTest.class,
 		FilesTest.class,
 		//FillrateTest.class,
 		FloatTest.class,

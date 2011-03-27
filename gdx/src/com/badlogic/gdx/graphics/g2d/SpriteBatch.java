@@ -102,6 +102,7 @@ public class SpriteBatch implements Disposable {
 
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxSpritesInBatch = 0;
+	private ShaderProgram customShader = null;
 
 	/**
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
@@ -253,15 +254,23 @@ public class SpriteBatch implements Disposable {
 			gl.glDepthMask(false);
 			gl.glEnable(GL20.GL_TEXTURE_2D);
 
-			shader.begin();
-			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
-			shader.setUniformi("u_texture", 0);
+			if(customShader != null) {
+				customShader.begin();
+				customShader.setUniformMatrix("u_proj", projectionMatrix);
+				customShader.setUniformMatrix("u_trans", transformMatrix);
+				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+				customShader.setUniformi("u_texture", 0);
+			} else {
+				shader.begin();
+				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+				shader.setUniformi("u_texture", 0);
+			}
 		}
 
 		idx = 0;
 		lastTexture = null;
 		drawing = true;
-	}
+	}	
 
 	/**
 	 * Finishes off rendering. Enables depth writes, disables blending and texturing. Must always be called after a call to {@link #begin()}
@@ -279,8 +288,11 @@ public class SpriteBatch implements Disposable {
 			gl.glDisable(GL10.GL_BLEND);
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 
-		if (Gdx.graphics.isGL20Available()) {		
-			shader.end();			
+		if (Gdx.graphics.isGL20Available()) {
+			if(customShader != null) 
+				customShader.end();
+			else
+				shader.end();			
 		}
 	}
 
@@ -911,7 +923,10 @@ public class SpriteBatch implements Disposable {
 				gl20.glBlendFunc(blendSrcFunc, blendDstFunc);
 			}
 
-			mesh.render(shader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
+			if(customShader != null)
+				mesh.render(customShader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
+			else
+				mesh.render(shader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 		} else {
 			if (blendingDisabled) {
 				Gdx.gl10.glDisable(GL10.GL_BLEND);
@@ -1004,6 +1019,20 @@ public class SpriteBatch implements Disposable {
 		if (drawing) throw new GdxRuntimeException("Can't set the matrix within begin()/end() block");
 
 		transformMatrix.set(transform);
+	}
+	
+	/**
+	 * Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture coordinates attribute is called called "a_texCoords", the
+	 * color attribute is called "a_color".
+	 * The projection matrix is uploaded via a mat4 uniform called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined
+	 * transform and projection matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture". 
+	 * 
+	 * Call this method with a null argument to use the default shader.
+	 * 
+	 * @param shader the {@link ShaderProgram} or null to use the default shader.
+	 */
+	public void setShader(ShaderProgram shader) {
+		customShader  = shader;
 	}
 
 	/**

@@ -587,6 +587,22 @@ public class Matrix4 implements Serializable {
 		if (angle == 0) return this;
 		return this.set(quat.set(axis, angle));
 	}
+	
+	/**
+	 * Sets the matrix to a rotation matrix around the given axis.
+	 * 
+	 * @param axisX The x-component of the axis
+	 * @param axisY The y-component of the axis
+	 * @param axisZ The z-component of the axis
+	 * @param angle The angle in degrees
+	 * @return This matrix for chaining
+	 */	
+	static final Vector3 tmpV = new Vector3();
+	public Matrix4 setToRotation (float axisX, float axisY, float axisZ, float angle) {
+		idt();
+		if (angle == 0) return this;
+		return this.set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
+	}
 
 	/**
 	 * Sets this matrix to a rotation matrix from the given euler angles.

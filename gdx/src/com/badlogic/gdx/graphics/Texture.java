@@ -329,6 +329,16 @@ public class Texture implements Disposable {
 	}
 
 	/**
+	 * Binds the texture to the given texture unit. Sets the currently active texture unit via
+	 * {@link GLCommon#glActiveTexture(int)}.
+	 * @param unit the unit (0 to MAX_TEXTURE_UNITS).
+	 */
+	public void bind(int unit) {
+		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + unit);
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
+	}
+	
+	/**
 	 * Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed so you have to make sure that you
 	 * draw only inside the texture region.
 	 * 
