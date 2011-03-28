@@ -11,7 +11,7 @@ package com.badlogic.gdx.graphics.g2d;
  */
 public class Animation {     
    final TextureRegion[] keyFrames;
-   final float frameDuration;
+   public float frameDuration;
    
    /**
     * Constructor, storing the frame duration and key frames. 
@@ -42,5 +42,5 @@ public class Animation {
            frameNumber = frameNumber % keyFrames.length;
        }        
        return keyFrames[frameNumber];
-   }
+   }  
 }
