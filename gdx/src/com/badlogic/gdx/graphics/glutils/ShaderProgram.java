@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -98,6 +99,11 @@ public class ShaderProgram implements Disposable {
 	/** whether this shader was invalidated **/
 	private boolean invalidated;
 
+	/** direct buffer for passing float and int uniform arrays **/
+	private ByteBuffer buffer = null;
+	private FloatBuffer floatBuffer = null;
+	private IntBuffer intBuffer = null;
+	
 	/**
 	 * Construcs a new JOglShaderProgram and immediatly compiles it.
 	 * 
@@ -356,6 +362,46 @@ public class ShaderProgram implements Disposable {
 		int location = fetchUniformLocation(name);
 		gl.glUniform4f(location, value1, value2, value3, value4);
 	}
+	
+	public void setUniform1fv(String name, float[] values, int offset, int length) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		ensureBufferCapacity(length << 2);
+		floatBuffer.clear();
+		BufferUtils.copy(values, floatBuffer, length, offset);
+		gl.glUniform1fv(location, length, floatBuffer);
+	}
+	
+	public void setUniform2fv(String name, float[] values, int offset, int length) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		ensureBufferCapacity(length << 2);
+		floatBuffer.clear();
+		BufferUtils.copy(values, floatBuffer, length, offset);
+		gl.glUniform2fv(location, length / 2, floatBuffer);
+	}	
+	
+	public void setUniform3fv(String name, float[] values, int offset, int length) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		ensureBufferCapacity(length << 2);
+		floatBuffer.clear();
+		BufferUtils.copy(values, floatBuffer, length, offset);
+		gl.glUniform3fv(location, length / 3, floatBuffer);
+	}	
+	
+	public void setUniform4fv(String name, float[] values, int offset, int length) {
+		GL20 gl = Gdx.graphics.getGL20();
+		checkManaged();
+		int location = fetchUniformLocation(name);
+		ensureBufferCapacity(length << 2);
+		floatBuffer.clear();
+		BufferUtils.copy(values, floatBuffer, length, offset);
+		gl.glUniform4fv(location, length / 4, floatBuffer);
+	}	
 
 	/**
 	 * Sets the uniform matrix with the given name. Throws an IllegalArgumentException in case it is not called in between a
@@ -545,5 +591,13 @@ public class ShaderProgram implements Disposable {
 		GL20 gl = Gdx.graphics.getGL20();
 		int location = fetchAttributeLocation(name);
 		gl.glVertexAttrib4f(location, value1, value2, value3, value4);
+	}
+	
+	private void ensureBufferCapacity(int numBytes) {
+		if(buffer == null || buffer.capacity() != numBytes) {
+			buffer = BufferUtils.newByteBuffer(numBytes);
+			floatBuffer = buffer.asFloatBuffer();
+			intBuffer = buffer.asIntBuffer();
+		}
 	}
 }
