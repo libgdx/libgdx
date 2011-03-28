@@ -104,7 +104,7 @@ public class EdgeDetectionTest extends GdxTest {
 		batchShader.setUniformi("u_filterSize", filter.length);
 		batchShader.setUniform1fv("u_filter", filter, 0, filter.length);
 		batchShader.setUniform2fv("u_offsets", offsets, 0, offsets.length);		
-		batch.draw(fboRegion, 0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		batch.draw(fboRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
 		logger.log();
 	}
