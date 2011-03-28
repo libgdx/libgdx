@@ -279,6 +279,8 @@ public class TWL implements InputProcessor {
 		case Keys.KEYCODE_COMMA:
 			return Event.KEY_COMMA;
 		case Keys.KEYCODE_DEL:
+			return Event.KEY_BACK;
+		case Keys.KEYCODE_FORWARD_DEL:
 			return Event.KEY_DELETE;
 		case Keys.KEYCODE_DPAD_LEFT:
 			return Event.KEY_LEFT;

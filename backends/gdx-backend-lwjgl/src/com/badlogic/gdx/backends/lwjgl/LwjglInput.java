@@ -314,7 +314,7 @@ final class LwjglInput implements Input {
 		case Keyboard.KEY_COMMA:
 			return Input.Keys.KEYCODE_COMMA;
 		case Keyboard.KEY_DELETE:
-			return Input.Keys.KEYCODE_DEL;
+			return Input.Keys.KEYCODE_FORWARD_DEL;
 		case Keyboard.KEY_LEFT:
 			return Input.Keys.KEYCODE_DPAD_LEFT;
 		case Keyboard.KEY_RIGHT:
@@ -357,6 +357,8 @@ final class LwjglInput implements Input {
 			return Input.Keys.KEYCODE_INSERT;
 		case Keyboard.KEY_NUMPAD5:
 			return Input.Keys.KEYCODE_DPAD_CENTER;
+		case Keyboard.KEY_BACK:
+			return Input.Keys.KEYCODE_DEL;
 		default:
 			return Input.Keys.KEYCODE_UNKNOWN;
 		}
@@ -444,7 +446,7 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_BACKSLASH;
 		case Input.Keys.KEYCODE_COMMA:
 			return Keyboard.KEY_COMMA;
-		case Input.Keys.KEYCODE_DEL:
+		case Input.Keys.KEYCODE_FORWARD_DEL:
 			return Keyboard.KEY_DELETE;
 		case Input.Keys.KEYCODE_DPAD_LEFT:
 			return Keyboard.KEY_LEFT;
@@ -476,6 +478,8 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_SPACE;
 		case Input.Keys.KEYCODE_TAB:
 			return Keyboard.KEY_TAB;
+		case Input.Keys.KEYCODE_DEL:
+			return Keyboard.KEY_BACK;
 		default:
 			return Keyboard.KEY_NONE;
 		}

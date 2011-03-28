@@ -43,7 +43,8 @@ public class Layout extends DialogLayout {
 	}
 
 	protected boolean handleEvent (Event evt) {
-		return eatEvents;
+		boolean handled = super.handleEvent(evt);
+		return eatEvents ? true : handled;
 	}
 
 	public Direction horizontal () {
