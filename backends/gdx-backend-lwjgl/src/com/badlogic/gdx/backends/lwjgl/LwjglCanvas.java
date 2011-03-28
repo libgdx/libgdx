@@ -158,7 +158,7 @@ public class LwjglCanvas implements Application {
 				listener.render();
 				audio.update();
 				Display.update();
-				Display.sync(60);
+				if (graphics.vsync) Display.sync(60);
 			}
 		};
 

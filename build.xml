@@ -2,7 +2,7 @@
 libgdx distribution ant build file. Performs the compilation of the
 gdx and backend modules and creates a distribution out of this mess. 
 -->
-<project name="gdx" default="all" basedir=".">
+<project name="gdx" default="package" basedir=".">
 	<description>libgdx distribution build file</description>
 
 	<!-- property for NDK_HOME, you need to set this to
@@ -140,7 +140,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>
 	
 	<!-- creates jars and places other files in the output dir -->
-	<target name="package">
+	<target name="package" depends="compile">
 		<!-- for some reason excludes don't work so we have to delete the ndk directory first... -->
 		<delete dir="gdx/bin/ndk" />
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" />

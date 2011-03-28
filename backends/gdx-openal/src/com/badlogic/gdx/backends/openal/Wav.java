@@ -22,9 +22,7 @@ public class Wav {
 				setup(input.channels, input.sampleRate);
 			}
 			try {
-				int read = input.read(buffer);
-				System.out.println(read);
-				return read;
+				return input.readData(buffer);
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
 			}
@@ -48,11 +46,9 @@ public class Wav {
 			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 			try {
 				byte[] buffer = new byte[2048];
-				while (input.dataLength > 0) {
-					int length = input.read(buffer);
+				while (true) {
+					int length = input.readData(buffer);
 					if (length == -1) break;
-					length = Math.min(length, input.dataLength);
-					input.dataLength -= length;
 					output.write(buffer, 0, length);
 				}
 			} catch (IOException ex) {
@@ -63,7 +59,7 @@ public class Wav {
 	}
 
 	static private class WavInputStream extends FilterInputStream {
-		int channels, sampleRate, dataLength;
+		int channels, sampleRate, dataRemaining;
 
 		WavInputStream (FileHandle file) {
 			super(file.read());
@@ -100,7 +96,7 @@ public class Wav {
 				if (read() != 'd' || read() != 'a' || read() != 't' || read() != 'a')
 					throw new GdxRuntimeException("data header not found: " + file);
 
-				dataLength = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
+				dataRemaining = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
 			} catch (Throwable ex) {
 				try {
 					close();
@@ -108,6 +104,14 @@ public class Wav {
 				}
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
 			}
+		}
+
+		public int readData (byte[] buffer) throws IOException {
+			if (dataRemaining == 0) return -1;
+			int length = Math.min(read(buffer), dataRemaining);
+			if (length == -1) return -1;
+			dataRemaining -= length;
+			return length;
 		}
 	}
 }

@@ -68,9 +68,11 @@ public abstract class OpenALMusic implements Music {
 			if (sourceID == -1) return;
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			alSourcef(sourceID, AL_GAIN, volume);
-			for (int i = 0; i < bufferCount; i++)
-				fill(buffers.get(i));
-			alSourceQueueBuffers(sourceID, buffers);
+			for (int i = 0; i < bufferCount; i++) {
+				int bufferID = buffers.get(i);
+				if (!fill(bufferID)) break;
+				alSourceQueueBuffers(sourceID, bufferID);
+			}
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
 				return;
@@ -131,17 +133,22 @@ public abstract class OpenALMusic implements Music {
 	public void update () {
 		if (sourceID == -1) return;
 
-		// A buffer underflow will cause the source to stop.
-		if (isPlaying && alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(sourceID);
-
+		boolean end = false;
 		int buffers = alGetSourcei(sourceID, AL_BUFFERS_PROCESSED);
 		while (buffers-- > 0) {
 			int bufferID = alSourceUnqueueBuffers(sourceID);
 			if (bufferID == AL_INVALID_VALUE) break;
 			renderedSeconds += secondsPerBuffer;
-			if (!fill(bufferID)) return;
-			alSourceQueueBuffers(sourceID, bufferID);
+			if (end) continue;
+			if (fill(bufferID))
+				alSourceQueueBuffers(sourceID, bufferID);
+			else
+				end = true;
 		}
+		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) stop();
+
+		// A buffer underflow will cause the source to stop.
+		if (isPlaying && alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) alSourcePlay(sourceID);
 	}
 
 	private boolean fill (int bufferID) {
@@ -153,10 +160,8 @@ public abstract class OpenALMusic implements Music {
 				renderedSeconds = 0;
 				length = read(tempBytes);
 				if (length <= 0) return false;
-			} else {
-				stop();
+			} else
 				return false;
-			}
 		}
 		tempBuffer.put(tempBytes, 0, length).flip();
 		alBufferData(bufferID, format, tempBuffer, sampleRate);

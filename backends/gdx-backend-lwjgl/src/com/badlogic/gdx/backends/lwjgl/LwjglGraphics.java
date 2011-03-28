@@ -55,7 +55,7 @@ public final class LwjglGraphics implements Graphics {
 	int height;
 	String title;
 	Canvas canvas;
-	boolean enforcePotImages = true;
+	boolean vsync = true;
 
 	LwjglGraphics (String title, int width, int height, boolean useGL2IfAvailable) {
 		useGL2 = useGL2IfAvailable;
@@ -212,7 +212,7 @@ public final class LwjglGraphics implements Graphics {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 
-	public void setEnforcePotImages (boolean enforcePotImages) {
-		this.enforcePotImages = enforcePotImages;
+	public void setVsync (boolean vsync) {
+		this.vsync = vsync;
 	}
 }

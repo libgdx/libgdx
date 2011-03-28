@@ -54,6 +54,8 @@ import com.badlogic.gdx.utils.MathUtils;
  * 
  */
 public class Texture implements Disposable {
+	 static private boolean enforcePotImages = true;
+
 	/**
 	 * Texture filter enum
 	 * 
@@ -291,7 +293,7 @@ public class Texture implements Disposable {
 		
 		this.width = pixmap.getWidth();
 		this.height = pixmap.getHeight();
-		if(Gdx.gl20 == null && (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)))
+		if(enforcePotImages && Gdx.gl20 == null && (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)))
 			throw new GdxRuntimeException("texture width and height must be powers of two");
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
@@ -479,7 +481,11 @@ public class Texture implements Disposable {
 	public Format getFormat() {
 		return format;
 	}
-	
+
+	static public void setEnforcePotImages (boolean enforcePotImages) {
+		Texture.enforcePotImages = enforcePotImages;
+	}
+
 //	public static Texture getFrameBufferTexture () {
 //		ByteBuffer pixels = BufferUtils.newByteBuffer(Gdx.graphics.getWidth() * Gdx.graphics.getHeight() * 4);
 //		Gdx.gl.glReadPixels(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
