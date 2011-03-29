@@ -47,6 +47,7 @@ import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.IsometricTileTest;
+import com.badlogic.gdx.tests.KinematicBodyTest;
 import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MD5Test;
 import com.badlogic.gdx.tests.ManagedTest;
@@ -147,6 +148,7 @@ public class GdxTests
 		InputTest.class,
 		IsoCamTest.class,
 		IsometricTileTest.class,
+		KinematicBodyTest.class,
 		LifeCycleTest.class,
 		ManagedTest.class,
 		ManualBindTest.class,

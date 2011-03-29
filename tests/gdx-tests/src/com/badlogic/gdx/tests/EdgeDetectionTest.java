@@ -36,7 +36,7 @@ public class EdgeDetectionTest extends GdxTest {
 	ShaderProgram batchShader;	
 		
 	float[] filter = { 0, 0.25f, 0,
-		 					 0.25f, -1, 0.25f,
+		 					 0.25f, -1f, 0.6f,
 		 					 0, 0.25f, 0,
 	};
 	

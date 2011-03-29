@@ -69,7 +69,7 @@ public class SimpleAnimationTest extends GdxTest implements InputProcessor {
    @Override
    public boolean touchDown(int x, int y, int pointer, int button) {
       position.x = x;
-      position.y = -y + 48;
+      position.y = y;
       //System.out.println(position);
       return true;
    }

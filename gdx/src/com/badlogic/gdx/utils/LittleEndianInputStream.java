@@ -36,7 +36,7 @@ public class LittleEndianInputStream extends FilterInputStream {
 		return (bool != 0);
 	}
 
-	public byte readByte (int b) throws IOException {
+	public byte readByte () throws IOException {
 		int temp = in.read();
 		if (temp == -1) throw new EOFException();
 		return (byte)temp;
