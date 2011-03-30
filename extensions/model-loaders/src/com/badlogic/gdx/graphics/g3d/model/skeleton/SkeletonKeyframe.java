@@ -1,9 +1,9 @@
-package com.badlogic.gdx.graphics.g3d.model;
+package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-public class JointKeyframe {
+public class SkeletonKeyframe {
 	public float timeStamp = 0;
 	public int parentIndex = -1;
 	public final Vector3 position = new Vector3();

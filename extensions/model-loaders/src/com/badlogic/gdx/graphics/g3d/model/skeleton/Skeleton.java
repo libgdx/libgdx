@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.model;
+package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,15 +9,15 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 public class Skeleton {
 	/** each joint is a root joint in the hierachy **/
-	public final Array<Joint> hierarchy = new Array<Joint>();
+	public final Array<SkeletonJoint> hierarchy = new Array<SkeletonJoint>();
 	/** the names of each joint in breadth first order **/
 	public final Array<String> jointNames = new Array<String>();
 	/** names to indices **/
 	public final Map<String, Integer> namesToIndices = new HashMap<String, Integer>();
 	/** the bind pose joints in breadth first order **/
-	public final Array<JointKeyframe> bindPoseJoints = new Array<JointKeyframe>();
+	public final Array<SkeletonKeyframe> bindPoseJoints = new Array<SkeletonKeyframe>();
 	/** the joints in breadth first order for the last calculates animation pose **/
-	public final Array<JointKeyframe> animPoseJoints = new Array<JointKeyframe>();
+	public final Array<SkeletonKeyframe> animPoseJoints = new Array<SkeletonKeyframe>();
 	/** the offset matrices for each joint in the same order as the bindPoseJoints **/
 	public final Array<Matrix4> offsetMatrices = new Array<Matrix4>();
 	/** the scene matrices for each joint in the same order as bindPoseJoints **/
@@ -52,11 +52,11 @@ public class Skeleton {
 		calculateOffsetMatrices();
 	}
 	
-	private void recursiveFill(Joint joint) {
+	private void recursiveFill(SkeletonJoint joint) {
 		joint.index = bindPoseJoints.size;
 		joint.parentIndex = joint.parent != null? joint.parent.index: -1;
 		
-		JointKeyframe keyFrame = new JointKeyframe();
+		SkeletonKeyframe keyFrame = new SkeletonKeyframe();
 		keyFrame.position.set(joint.position);
 		keyFrame.scale.set(joint.scale);
 		keyFrame.rotation.set(joint.rotation);
@@ -65,7 +65,7 @@ public class Skeleton {
 		jointNames.add(joint.name);
 		namesToIndices.put(joint.name, joint.index);
 		bindPoseJoints.add(keyFrame);
-		JointKeyframe animKeyframe = new JointKeyframe();
+		SkeletonKeyframe animKeyframe = new SkeletonKeyframe();
 		animKeyframe.parentIndex = joint.parentIndex;
 		animPoseJoints.add(animKeyframe);
 		offsetMatrices.add(new Matrix4());
@@ -84,9 +84,9 @@ public class Skeleton {
 		}
 	}
 	
-	protected void calculateMatrices(Array<JointKeyframe> joints) {
+	protected void calculateMatrices(Array<SkeletonKeyframe> joints) {
 		for(int i = 0; i < joints.size; i++) {			
-			JointKeyframe joint = joints.get(i);
+			SkeletonKeyframe joint = joints.get(i);
 			Matrix4 sceneMatrix = sceneMatrices.get(i);
 			Matrix4 parentMatrix = joint.parentIndex != -1? sceneMatrices.get(joint.parentIndex): IDENTITY;
 			Matrix4 combinedMatrix = combinedMatrices.get(i);
@@ -105,29 +105,29 @@ public class Skeleton {
 	public void setAnimation(String name, float time) {		
 		SkeletonAnimation anim = animations.get(name);
 		if(anim == null) throw new IllegalArgumentException("Animation with name '" + name + "' does not exist");
-		if(time < 0 || time > anim.duration) throw new IllegalArgumentException("time must be 0 < time < animation duration");
+		if(time < 0 || time > anim.duration) throw new IllegalArgumentException("time must be 0 <= time <= animation duration");
 		
 		int len = anim.perJointkeyFrames.length;
 		for(int i = 0; i < len; i++) {
-			JointKeyframe[] jointTrack = anim.perJointkeyFrames[i];
+			SkeletonKeyframe[] jointTrack = anim.perJointkeyFrames[i];
 			int idx = 0;			
 			int len2 = jointTrack.length;
 			for(int j = 0; j < len2; j++) {
-				JointKeyframe jointFrame = jointTrack[j];
+				SkeletonKeyframe jointFrame = jointTrack[j];
 				if(jointFrame.timeStamp >= time) {
 					idx = Math.max(0, j - 1);
 					break;
 				}
 			}
 			
-			JointKeyframe startFrame = jointTrack[idx];
-			JointKeyframe endFrame = idx + 1 == len2? startFrame: jointTrack[idx+1];
+			SkeletonKeyframe startFrame = jointTrack[idx];
+			SkeletonKeyframe endFrame = idx + 1 == len2? startFrame: jointTrack[idx+1];
 			float alpha = 0; 
 			
 			if(startFrame != endFrame) {
 				alpha = Math.min(1, (time - startFrame.timeStamp) / (endFrame.timeStamp - startFrame.timeStamp));
 			}
-			JointKeyframe animFrame = animPoseJoints.get(i);			
+			SkeletonKeyframe animFrame = animPoseJoints.get(i);			
 			animFrame.position.set(startFrame.position).lerp(endFrame.position, alpha);
 			animFrame.scale.set(startFrame.scale).lerp(endFrame.scale, alpha);
 			animFrame.rotation.set(startFrame.rotation).slerp(endFrame.rotation, alpha);				

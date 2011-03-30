@@ -1,11 +1,12 @@
-package com.badlogic.gdx.graphics.g3d.model;
+package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-public class Model {
+public class SkeletonModel {
 	public Skeleton skeleton;
 	public SubMesh[] subMeshes;
 	
@@ -60,7 +61,7 @@ public class Model {
 				
 				if(nidx != -1) {
 					v.set(onx, ony, onz);
-					v.rot(boneMatrices.get(boneIndex)).nor();
+					v.rot(boneMatrices.get(boneIndex));
 					nx += v.x * weight;
 					ny += v.y * weight;
 					nz += v.z * weight;
@@ -84,11 +85,36 @@ public class Model {
 	public void render() {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
-			SubMesh subMesh = subMeshes[i];						
-			for(int j = 0; j < subMesh.textures.length; j++) {
-				subMesh.textures[j].bind();
+			SubMesh subMesh = subMeshes[i];
+			if(i == 0 ) {
+				subMesh.material.bind();
+			} else if (!subMeshes[i-1].material.equals(subMesh.material)) {
+				subMesh.material.bind();
 			}
 			subMesh.mesh.render(subMesh.primitiveType);
 		}	
 	}	
+	
+	public void setMaterials(Material ... materials) {
+		if(materials.length != subMeshes.length) throw new UnsupportedOperationException("number of materials must equal number of sub-meshes");
+		int len = materials.length;
+		for(int i = 0; i < len; i++) {
+			subMeshes[i].material = materials[i];
+		}
+	}
+	
+	public void setMaterial(Material material) {
+		int len = subMeshes.length;
+		for(int i = 0; i < len; i++) {
+			subMeshes[i].material = material;
+		}
+	}
+	
+	public SubMesh getSubMesh(String name) {
+		int len = subMeshes.length;
+		for(int i = 0; i < len; i++) {
+			if(subMeshes[i].name.equals(name)) return subMeshes[i];
+		}		
+		return null;
+	}
 }

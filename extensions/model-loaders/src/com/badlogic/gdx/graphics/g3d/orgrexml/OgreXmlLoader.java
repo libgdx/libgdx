@@ -16,12 +16,12 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.model.Joint;
-import com.badlogic.gdx.graphics.g3d.model.JointKeyframe;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.Skeleton;
-import com.badlogic.gdx.graphics.g3d.model.SkeletonAnimation;
-import com.badlogic.gdx.graphics.g3d.model.SubMesh;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonJoint;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.Skeleton;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonAnimation;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SubMesh;
 import com.badlogic.gdx.graphics.g3d.orgrexml.mesh.ColourDiffuse;
 import com.badlogic.gdx.graphics.g3d.orgrexml.mesh.Face;
 import com.badlogic.gdx.graphics.g3d.orgrexml.mesh.Mesh;
@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.MathUtils;
 
 public class OgreXmlLoader {
-	public Model loadMesh(FileHandle file) {
+	public SkeletonModel loadMesh(FileHandle file) {
 		InputStream in = null;
 		try {
 			in = file.read();
@@ -55,9 +55,9 @@ public class OgreXmlLoader {
 		}
 	}
 	
-	public Model loadMesh(InputStream in) {	
+	public SkeletonModel loadMesh(InputStream in) {	
 		try {
-			Model model = new Model();
+			SkeletonModel model = new SkeletonModel();
 			Mesh ogreMesh = loadOgreMesh(in);			
 			SubMesh[] meshes = generateSubMeshes(ogreMesh);
 			model.subMeshes = meshes;			
@@ -67,8 +67,8 @@ public class OgreXmlLoader {
 		}
 	}
 	
-	public Model load(FileHandle mesh, FileHandle skeleton) {
-		Model model = loadMesh(mesh);
+	public SkeletonModel load(FileHandle mesh, FileHandle skeleton) {
+		SkeletonModel model = loadMesh(mesh);
 		Skeleton skel = loadSkeleton(skeleton);
 		model.skeleton = skel;
 		return model;
@@ -325,11 +325,11 @@ public class OgreXmlLoader {
 
 	private Skeleton generateSkeleton (com.badlogic.gdx.graphics.g3d.orgrexml.skeleton.Skeleton ogreSkel) {
 		List<Bone> bones = ogreSkel.getBones().getBone();
-		List<Joint> joints = new ArrayList<Joint>();
-		Map<String, Joint> nameToJoint = new HashMap<String, Joint>();
+		List<SkeletonJoint> joints = new ArrayList<SkeletonJoint>();
+		Map<String, SkeletonJoint> nameToJoint = new HashMap<String, SkeletonJoint>();
 		for(int i = 0; i < bones.size(); i++) {
 			Bone bone = bones.get(i);
-			Joint joint = new Joint();
+			SkeletonJoint joint = new SkeletonJoint();
 			
 			joint.name = bone.name;
 			joint.position.set(bone.position.x, bone.position.y, bone.position.z);
@@ -347,15 +347,15 @@ public class OgreXmlLoader {
 		List<Boneparent> hierarchy = ogreSkel.getBonehierarchy().getBoneparent();
 		for(int i = 0; i < hierarchy.size(); i++) {
 			Boneparent link = hierarchy.get(i);
-			Joint joint = nameToJoint.get(link.getBone());
-			Joint parent = nameToJoint.get(link.getParent());
+			SkeletonJoint joint = nameToJoint.get(link.getBone());
+			SkeletonJoint parent = nameToJoint.get(link.getParent());
 			parent.children.add(joint);
 			joint.parent = parent;
 		}
 		
 		Skeleton skel = new Skeleton();
 		for(int i = 0; i < joints.size(); i++) {
-			Joint joint = joints.get(i);
+			SkeletonJoint joint = joints.get(i);
 			if(joint.parent == null)
 				skel.hierarchy.add(joint);
 		}
@@ -367,7 +367,7 @@ public class OgreXmlLoader {
 			Animation animation = animations.get(i);
 			SkeletonAnimation skelAnim = new SkeletonAnimation();
 			skelAnim.duration = animation.length;
-			skelAnim.perJointkeyFrames = new JointKeyframe[skel.bindPoseJoints.size][];
+			skelAnim.perJointkeyFrames = new SkeletonKeyframe[skel.bindPoseJoints.size][];
 			
 			List<Track> tracks = animation.getTracks().getTrack();
 			if(tracks.size() != skelAnim.perJointkeyFrames.length) throw new IllegalArgumentException("Number of tracks does not equal number of joints");
@@ -380,12 +380,12 @@ public class OgreXmlLoader {
 				String jointName = track.getBone();
 				int jointIndex = skel.namesToIndices.get(jointName);
 				if(skelAnim.perJointkeyFrames[jointIndex] != null) throw new IllegalArgumentException("Track for bone " + jointName + " in animation " + animation.name + " already defined!");
-				JointKeyframe[] jointKeyFrames = new JointKeyframe[track.getKeyframes().getKeyframe().size()];
+				SkeletonKeyframe[] jointKeyFrames = new SkeletonKeyframe[track.getKeyframes().getKeyframe().size()];
 				skelAnim.perJointkeyFrames[jointIndex] = jointKeyFrames; 
 				
 				for(int k = 0; k < track.getKeyframes().getKeyframe().size(); k++) {
 					Keyframe keyFrame = track.getKeyframes().getKeyframe().get(k);
-					JointKeyframe jointKeyframe = new JointKeyframe();
+					SkeletonKeyframe jointKeyframe = new SkeletonKeyframe();
 					jointKeyframe.timeStamp = keyFrame.time;
 					jointKeyframe.position.set(keyFrame.translate.x, keyFrame.translate.y, keyFrame.translate.z);
 					if(keyFrame.scale != null) {

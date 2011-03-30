@@ -11,8 +11,10 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.model.JointKeyframe;
-import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.orgrexml.OgreXmlLoader;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -24,7 +26,8 @@ public class Viewer implements ApplicationListener {
 		new JoglApplication(new Viewer(), "Viewer", 480, 320, false);
 	}
 
-	Model model;	
+	static final int NUM_INSTANCES = 1;	
+	SkeletonModel model;	
 	PerspectiveCamera cam;
 	ImmediateModeRenderer renderer;
 	float angle = 0;
@@ -37,10 +40,11 @@ public class Viewer implements ApplicationListener {
 	
 	@Override public void create () {
 		
-		Texture[] textures = new Texture[] { new Texture(Gdx.files.internal("data/nskingr.jpg")) };
-		model = new OgreXmlLoader().load(Gdx.files.internal("data/ninja.mesh.xml"), Gdx.files.internal("data/ninja.skeleton.xml"));		
-		model.subMeshes[0].textures = textures;
-		model.subMeshes[1].textures = textures;		
+		Texture texture = new Texture(Gdx.files.internal("data/nskingr.jpg"));
+		Material mat = new Material("mat", new TextureAttribute(texture, 0, "s_tex"));
+		model = new OgreXmlLoader().load(Gdx.files.internal("data/ninja.mesh.xml"), 
+													Gdx.files.internal("data/ninja.skeleton.xml"));		
+		model.setMaterial(mat);	
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		BoundingBox bounds = model.subMeshes[0].mesh.calculateBoundingBox();
@@ -80,14 +84,24 @@ public class Viewer implements ApplicationListener {
 		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
 		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);			
 				
-		angle += 45 * Gdx.graphics.getDeltaTime();
-		Gdx.gl10.glRotatef(angle, 0, 1, 0);				
-		model.render();	
+		angle += 45 * Gdx.graphics.getDeltaTime();		
+		long processingTime = 0;
+		for(int i = 0; i < NUM_INSTANCES; i++) {						
+//			Gdx.gl10.glPushMatrix();
+//			Gdx.gl10.glTranslatef(0, 0, i *  -50);
+//			Gdx.gl10.glRotatef(angle, 0, 1, 0);			
+			model.setAnimation(animation, time);					
+			model.render();					
+			
+//			Gdx.gl10.glPopMatrix();
+		}
 		
 		Gdx.gl.glDisable(GL10.GL_LIGHTING);
 		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
-		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);		
 		renderSkeleton();
+				
+		Gdx.app.log("Skinning", "took: " + processingTime / 1000000000.0f + " secs");
 		
 		batch.begin();
 		font.draw(batch, "Touch to switch Animation, Animation: " + animation +", FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
@@ -100,12 +114,10 @@ public class Viewer implements ApplicationListener {
 			time = 0;
 		}
 		
-		time += Gdx.graphics.getDeltaTime();
+		time += Gdx.graphics.getDeltaTime() / 10;
 		if(time > model.skeleton.animations.get(animation).duration) {
 			time = 0;
-		}
-				
-		model.setAnimation(animation, time);
+		}					
 	}
 	
 	Vector3 point1 = new Vector3();
@@ -113,7 +125,7 @@ public class Viewer implements ApplicationListener {
 	private void renderSkeleton () {
 		renderer.begin(GL10.GL_LINES);
 		for (int i = 0; i < model.skeleton.sceneMatrices.size; i++) {
-			JointKeyframe joint = model.skeleton.bindPoseJoints.get(i);			
+			SkeletonKeyframe joint = model.skeleton.bindPoseJoints.get(i);			
 			if (joint.parentIndex == -1) continue;
 
 			point1.set(0, 0, 0).mul(model.skeleton.sceneMatrices.get(i));

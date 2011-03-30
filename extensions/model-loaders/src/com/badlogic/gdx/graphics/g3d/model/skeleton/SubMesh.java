@@ -1,11 +1,11 @@
-package com.badlogic.gdx.graphics.g3d.model;
+package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Material;
 
 public class SubMesh {
 	public String name;		
-	public Texture[] textures;
+	public Material material;
 	public Mesh mesh;
 	public short[] indices;
 	public float[] vertices;
