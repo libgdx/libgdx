@@ -188,7 +188,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>
 
 	<!-- builds the distribution zip -->
-	<target name="dist" depends="compile,compile-natives,package,docs">
+	<target name="dist" depends="docs,compile,compile-natives,package">
 		<zip destfile="libgdx-${version}.zip" basedir="${stable}"/>
 	</target>	
 </project>
