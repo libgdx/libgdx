@@ -2,7 +2,7 @@
 libgdx distribution ant build file. Performs the compilation of the
 gdx and backend modules and creates a distribution out of this mess. 
 -->
-<project name="gdx" default="package" basedir=".">
+<project name="gdx" default="all" basedir=".">
 	<description>libgdx distribution build file</description>
 
 	<!-- property for NDK_HOME, you need to set this to
@@ -12,7 +12,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
 
 	<!-- libgdx version -->
-	<property name="version" value="0.82a" />
+	<property name="version" value="0.91" />
 
 	<!-- output directory for distribution -->
 	<property name="stable" value="target" />
@@ -138,7 +138,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	<target name="compile-natives" depends="init">
 		<ant antfile="build.xml" target="clean" dir="gdx/jni"/>
 		<ant antfile="build.xml" target="all" dir="gdx/jni"/>
-	</target>
+	</target>	
 	
 	<!-- creates jars and places other files in the output dir -->
 	<target name="package" depends="compile">
@@ -191,5 +191,9 @@ gdx and backend modules and creates a distribution out of this mess.
 	<!-- builds the distribution zip -->
 	<target name="dist" depends="docs,compile,compile-natives,package">
 		<zip destfile="libgdx-${version}.zip" basedir="${stable}"/>
-	</target>	
+	</target>
+
+	<target name="all" depends="docs,compile,package">
+		<zip destfile="libgdx-${version}.zip" basedir="${stable}"/>
+	</target>
 </project>
