@@ -157,9 +157,9 @@ public class Xml {
 				text(new String(data, s, end - s));
 		}
 
-		attribute = ^(space | '/' | '>' | '=')+ >buffer %attributeName space* '=' space*
+		attribute = ^(space | [/>=])+ >buffer %attributeName space* '=' space*
 			(('\'' ^'\''* >buffer %attribute '\'') | ('"' ^'"'* >buffer %attribute '"'));
-		element = '<' space* ^(space | '/' | '>')+ >buffer %elementStart (space+ attribute)*
+		element = '<' space* ^(space | [/>])+ >buffer %elementStart (space+ attribute)*
 			:>> (space* ('/' %elementEndSingle)? space* '>' @element);
 		elementBody := space* <: ((^'<'+ >buffer %text) <: space*)?
 			element? :>> ('<' space* '/' ^'>'+ '>' @elementEnd);

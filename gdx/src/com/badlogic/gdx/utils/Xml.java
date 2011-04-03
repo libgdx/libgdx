@@ -75,12 +75,12 @@ public class Xml {
 		String attributeName = null;
 		boolean hasBody = false;
 
-// line 3 "Xml.java"
+		// line 3 "Xml.java"
 		{
 			cs = xml_start;
 		}
 
-// line 7 "Xml.java"
+		// line 7 "Xml.java"
 		{
 			int _klen;
 			int _trans = 0;
@@ -159,13 +159,13 @@ public class Xml {
 						while (_nacts-- > 0) {
 							switch (_xml_actions[_acts++]) {
 							case 0:
-// line 80 "Xml.rl"
+								// line 80 "Xml.rl"
 							{
 								s = p;
 							}
 								break;
 							case 1:
-// line 81 "Xml.rl"
+								// line 81 "Xml.rl"
 							{
 								char c = data[s];
 								if (c == '?' || c == '!') {
@@ -195,7 +195,7 @@ public class Xml {
 							}
 								break;
 							case 2:
-// line 105 "Xml.rl"
+								// line 105 "Xml.rl"
 							{
 								hasBody = false;
 								close();
@@ -207,7 +207,7 @@ public class Xml {
 							}
 								break;
 							case 3:
-// line 110 "Xml.rl"
+								// line 110 "Xml.rl"
 							{
 								close();
 								{
@@ -218,7 +218,7 @@ public class Xml {
 							}
 								break;
 							case 4:
-// line 114 "Xml.rl"
+								// line 114 "Xml.rl"
 							{
 								if (hasBody) {
 									cs = 15;
@@ -228,19 +228,19 @@ public class Xml {
 							}
 								break;
 							case 5:
-// line 117 "Xml.rl"
+								// line 117 "Xml.rl"
 							{
 								attributeName = new String(data, s, p - s);
 							}
 								break;
 							case 6:
-// line 120 "Xml.rl"
+								// line 120 "Xml.rl"
 							{
 								attribute(attributeName, new String(data, s, p - s));
 							}
 								break;
 							case 7:
-// line 123 "Xml.rl"
+								// line 123 "Xml.rl"
 							{
 								int end = p;
 								while (end != s) {
@@ -278,7 +278,7 @@ public class Xml {
 									text(new String(data, s, end - s));
 							}
 								break;
-// line 190 "Xml.java"
+							// line 190 "Xml.java"
 							}
 						}
 					}
@@ -299,7 +299,7 @@ public class Xml {
 			}
 		}
 
-// line 170 "Xml.rl"
+		// line 170 "Xml.rl"
 
 		if (p < pe) {
 			int lineNumber = 1;
@@ -317,7 +317,7 @@ public class Xml {
 		return root;
 	}
 
-// line 210 "Xml.java"
+	// line 210 "Xml.java"
 	private static byte[] init__xml_actions_0 () {
 		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 2, 0, 6, 2, 1, 4, 2, 2, 4};
 	}
@@ -393,7 +393,7 @@ public class Xml {
 	static final int xml_en_elementBody = 15;
 	static final int xml_en_main = 1;
 
-// line 189 "Xml.rl"
+	// line 189 "Xml.rl"
 
 	protected void open (String name) {
 		Element child = new Element(name);

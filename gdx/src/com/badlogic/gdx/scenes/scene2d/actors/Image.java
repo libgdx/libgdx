@@ -37,8 +37,8 @@ public class Image extends Actor {
 
 	public Image (String name, TextureRegion region) {
 		super(name);
-		width = region.getRegionWidth();
-		height = region.getRegionHeight();
+		width = Math.abs(region.getRegionWidth());
+		height = Math.abs(region.getRegionHeight());
 		originX = width / 2.0f;
 		originY = height / 2.0f;
 		this.region = new TextureRegion(region);
