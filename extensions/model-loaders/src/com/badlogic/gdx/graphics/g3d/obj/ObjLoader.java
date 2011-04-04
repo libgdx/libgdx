@@ -89,25 +89,22 @@ public class ObjLoader {
 								: Float.parseFloat(tokens[2])));
 					}
 				} else if (firstChar == 'f') {
-					String[] parts = tokens[1].split("/");
-					faces.add(getIndex(parts[0], verts.size()));
-					if (parts.length > 2)
-						faces.add(getIndex(parts[2], norms.size()));
-					if (parts.length > 1 && parts[1].length() > 0)
-						faces.add(getIndex(parts[1], uvs.size()));
-					parts = tokens[2].split("/");
-					faces.add(getIndex(parts[0], verts.size()));
-					if (parts.length > 2)
-						faces.add(getIndex(parts[2], norms.size()));
-					if (parts.length > 1 && parts[1].length() > 0)
-						faces.add(getIndex(parts[1], uvs.size()));
-					parts = tokens[3].split("/");
-					faces.add(getIndex(parts[0], verts.size()));
-					if (parts.length > 2)
-						faces.add(getIndex(parts[2], norms.size()));
-					if (parts.length > 1 && parts[1].length() > 0)
-						faces.add(getIndex(parts[1], uvs.size()));
-					numFaces++;
+					String[] parts;
+					for (int i=1; i < tokens.length - 2; i--) {
+						parts = tokens[1].split("/");
+						faces.add(getIndex(parts[0], verts.size()));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));	
+						parts = tokens[++i].split("/");
+						faces.add(getIndex(parts[0], verts.size()));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));
+						parts = tokens[++i].split("/");
+						faces.add(getIndex(parts[0], verts.size()));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));
+						numFaces++;
+					}
 				}
 			}
 			reader.close();
