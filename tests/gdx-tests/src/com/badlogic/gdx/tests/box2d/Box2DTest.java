@@ -18,6 +18,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -42,6 +44,9 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 
 	/** the renderer **/
 	protected Box2DDebugRenderer renderer;
+	
+	SpriteBatch batch;
+	BitmapFont font;
 
 	/** our box2D world **/
 	protected World world;
@@ -62,8 +67,11 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 
 	@Override public void render () {
 		// update the world with a fixed time step
-		world.step(Gdx.app.getGraphics().getDeltaTime(), 8, 3);
+		long startTime = System.nanoTime();
+		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
+		float updateTime = (System.nanoTime() - startTime) / 1000000000.0f;
 
+		startTime = System.nanoTime();
 		// clear the screen and setup the projection matrix
 		GL10 gl = Gdx.app.getGraphics().getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -71,7 +79,12 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		camera.apply(gl);
 
 		// render the world using the debug renderer
-		renderer.render(world);			
+		renderer.render(world);
+		float renderTime = (System.nanoTime() - startTime) / 1000000000.0f;
+		
+		batch.begin();
+		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", update: " + updateTime + ", render: " + renderTime, 0, 20);
+		batch.end();
 	}
 
 	@Override public void create () {
@@ -98,6 +111,9 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 
 		// call abstract method to populate the world
 		createWorld(world);
+		
+		batch = new SpriteBatch();
+		font = new BitmapFont();
 	}
 
 	@Override public void dispose () {		
