@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.solaria.utils;
+package com.badlogic.gdx.graphics.g3d.obj;
 
 import java.io.BufferedReader;
 import java.io.IOException;
