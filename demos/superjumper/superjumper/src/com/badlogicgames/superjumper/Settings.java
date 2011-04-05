@@ -22,7 +22,7 @@ public class Settings {
             for(int i = 0; i < 5; i++) {
                 highscores[i] = Integer.parseInt(in.readLine());
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // :( It's ok we have defaults        
         } finally {
             try {
@@ -42,7 +42,7 @@ public class Settings {
                 out.write(Integer.toString(highscores[i]));
             }
 
-        } catch (IOException e) {
+        } catch (Throwable e) {
         } finally {
             try {
                 if (out != null)
