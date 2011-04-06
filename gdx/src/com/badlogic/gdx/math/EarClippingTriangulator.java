@@ -153,7 +153,7 @@ public final class EarClippingTriangulator {
 	private static int computeSpannedAreaSign(final float pX1, final float pY1,
 			final float pX2, final float pY2, final float pX3, final float pY3) {
 		/*
-		 * @Espitz using doubles corrects for very rare cases where we run into
+		 * Espitz: using doubles corrects for very rare cases where we run into
 		 * floating point imprecision in the area test, causing the method to
 		 * return a 0 when it should have returned -1 or 1.
 		 */
@@ -183,19 +183,6 @@ public final class EarClippingTriangulator {
 
 				final float currentVertexX = currentVertex.x;
 				final float currentVertexY = currentVertex.y;
-
-				/*
-				 * @ESpitz If the concave vertex shares it's coordinates with a
-				 * vertex in this triangle, it should always be considered to
-				 * fall "outside" of that triangle. We cannot rely on the
-				 * areaSign tests to below to identify such a case, since two of
-				 * the areaSign values will always be zero and the third could
-				 * be negative OR positive.
-				 */
-				if ((currentVertexX == pX1 && currentVertexY == pY1)
-						|| (currentVertexX == pX2 && currentVertexY == pY2)
-						|| (currentVertexX == pX3 && currentVertexY == pY3))
-					break;
 
 				final int areaSign1 = EarClippingTriangulator
 						.computeSpannedAreaSign(pX1, pY1, pX2, pY2,
