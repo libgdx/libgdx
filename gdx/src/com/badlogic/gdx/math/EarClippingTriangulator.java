@@ -56,7 +56,7 @@ public final class EarClippingTriangulator {
 		 * verts left to test, or there were only three verts to begin with,
 		 * there is no need to continue with this loop.
 		 */
-		while (vertices.size() >= 3) {
+		while (vertices.size() > 3) {
 			// TODO Usually(Always?) only the Types of the vertices next to the
 			// ear change! --> Improve
 			final int vertexTypes[] = this.classifyVertices(vertices);
