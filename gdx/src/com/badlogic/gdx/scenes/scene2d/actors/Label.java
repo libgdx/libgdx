@@ -29,7 +29,7 @@ public class Label extends Actor {
 	}
 
 	public void setText (String text) {
-		cache.setText(text, 0, 0);
+		cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
 		TextBounds bounds = cache.getBounds();
 		width = bounds.width;
 		height = bounds.height;

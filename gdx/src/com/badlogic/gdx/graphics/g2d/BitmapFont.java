@@ -70,6 +70,7 @@ public class BitmapFont implements Disposable {
 	private final TextBounds textBounds = new TextBounds();
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
+	private boolean flipped;
 
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
@@ -79,7 +80,7 @@ public class BitmapFont implements Disposable {
 		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
 			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), false);
 	}
-	
+
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering with generating a bitmap font.
@@ -114,12 +115,13 @@ public class BitmapFont implements Disposable {
 	 * ignored.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
-	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {			
+	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
 		region = new TextureRegion(new Texture(imageFile, false));
 		init(fontFile, region, flip);
 	}
 
 	private void init (FileHandle fontFile, TextureRegion region, boolean flip) {
+		flipped = flip;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 		try {
 			reader.readLine(); // info
@@ -143,7 +145,7 @@ public class BitmapFont implements Disposable {
 				String[] page = line.split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				String imgFilename = page[2].substring(6, page[2].length() - 1);
-				FileHandle imageFile = fontFile.parent().child(imgFilename);				
+				FileHandle imageFile = fontFile.parent().child(imgFilename);
 				region = new TextureRegion(new Texture(imageFile, false));
 			}
 
@@ -685,6 +687,13 @@ public class BitmapFont implements Disposable {
 	 */
 	public float getAscent () {
 		return ascent;
+	}
+
+	/**
+	 * Returns true if this BitmapFont has been flipped for use with a y-down coordinate system.
+	 */
+	public boolean isFlipped () {
+		return flipped;
 	}
 
 	/**

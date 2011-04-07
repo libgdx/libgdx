@@ -368,6 +368,10 @@ public class BitmapFontCache implements Disposable {
 		return y;
 	}
 
+	public BitmapFont getFont () {
+		return font;
+	}
+
 	/**
 	 * Disposes the underlying BitmapFont of this cache.
 	 */
