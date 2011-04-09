@@ -213,9 +213,8 @@ public class Color {
 	 * @param a the alpha component, 0 - 255
 	 * @return the packed color as a 32-bit int
 	 */
-	public static float toIntBits (int r, int g, int b, int a) {
+	public static int toIntBits (int r, int g, int b, int a) {
 		return (a << 24) | (b << 16) | (g << 8) | r;
-
 	}
 
 	/**
