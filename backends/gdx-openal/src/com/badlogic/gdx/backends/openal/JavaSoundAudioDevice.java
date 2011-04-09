@@ -72,7 +72,7 @@ public class JavaSoundAudioDevice implements AudioDevice {
 			if (fValue > 1) fValue = 1;
 			if (fValue < -1) fValue = -1;
 			short value = (short)(fValue * Short.MAX_VALUE);
-			bytes[j] = (byte)(value | 0xff);
+			bytes[j] = (byte)(value & 0xff);
 			bytes[j + 1] = (byte)(value >> 8);
 		}
 
