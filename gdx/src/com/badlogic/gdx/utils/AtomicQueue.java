@@ -1,6 +1,4 @@
 /*
- * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
- * 
  * Copyright (c) 2008-2010, Matthias Mann
  * 
  * All rights reserved.
