@@ -597,12 +597,12 @@ public class Matrix4 implements Serializable {
 	 * @param angle The angle in degrees
 	 * @return This matrix for chaining
 	 */	
-	static final Vector3 tmpV = new Vector3();
 	public Matrix4 setToRotation (float axisX, float axisY, float axisZ, float angle) {
 		idt();
 		if (angle == 0) return this;
 		return this.set(quat.set(tmpV.set(axisX, axisY, axisZ), angle));
 	}
+	static final Vector3 tmpV = new Vector3();
 
 	/**
 	 * Sets this matrix to a rotation matrix from the given euler angles.

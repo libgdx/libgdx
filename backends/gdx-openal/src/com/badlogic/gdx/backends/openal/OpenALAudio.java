@@ -164,6 +164,7 @@ public class OpenALAudio implements Audio {
 	}
 
 	public AudioDevice newAudioDevice (boolean isMono) {
+		// BOZO - Write OpenAL device.
 		return new JavaSoundAudioDevice(isMono);
 	}
 
