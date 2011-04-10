@@ -41,6 +41,7 @@ import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
 import com.badlogic.gdx.tests.BitmapFontFlipTest;
 import com.badlogic.gdx.tests.BitmapFontTest;
 import com.badlogic.gdx.tests.BobTest;
+import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.CompassTest;
@@ -143,6 +144,7 @@ public class GdxTests
 		BitmapFontFlipTest.class,
 		BitmapFontTest.class,
 		BobTest.class,
+		Box2DInitialOverlapTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		CompassTest.class,
