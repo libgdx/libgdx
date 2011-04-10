@@ -215,6 +215,10 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 			this.processor = processor;
 		}
 	}
+	
+	@Override public InputProcessor getInputProcessor() {
+		return this.processor;
+	}
 
 	void processEvents () {
 		InputProcessor processor;

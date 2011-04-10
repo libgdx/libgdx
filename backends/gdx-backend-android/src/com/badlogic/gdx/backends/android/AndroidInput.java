@@ -454,4 +454,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		manager = null;
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
+	
+	@Override public InputProcessor getInputProcessor() {
+		return this.processor;
+	}
 }

@@ -370,4 +370,9 @@ public interface Input {
 	 * @param processor the InputProcessor
 	 */
 	public void setInputProcessor (InputProcessor processor);
+	
+	/**
+	 * @return the currently set {@link InputProcessor} or null.
+	 */
+	public InputProcessor getInputProcessor();
 }

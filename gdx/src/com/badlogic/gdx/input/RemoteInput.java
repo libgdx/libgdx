@@ -360,6 +360,10 @@ public class RemoteInput implements Runnable, Input {
 		this.processor = processor;
 	}
 	
+	@Override public InputProcessor getInputProcessor() {
+		return this.processor;
+	}
+	
 	/**
 	 * @return the IP addresses {@link RemoteSender} or gdx-remote should connect to. Most likely the LAN addresses if behind a NAT.
 	 */

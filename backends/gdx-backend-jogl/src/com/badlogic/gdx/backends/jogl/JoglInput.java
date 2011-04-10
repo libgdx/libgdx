@@ -438,6 +438,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			this.processor = processor;
 		}
 	}
+	
+	@Override public InputProcessor getInputProcessor() {
+		return this.processor;
+	}
 
 	@Override public boolean supportsVibrator () {
 		return false;

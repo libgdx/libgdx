@@ -230,6 +230,10 @@ public class AngleInput implements Input {
 	@Override public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}
+	
+	@Override public InputProcessor getInputProcessor() {
+		return this.processor;
+	}
 
 	void registerKeyEvent (int action, int key, int uniCode) {
 		synchronized (this) {

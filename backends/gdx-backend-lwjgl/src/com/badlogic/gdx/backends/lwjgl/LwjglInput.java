@@ -600,6 +600,10 @@ final class LwjglInput implements Input {
 	@Override public void setInputProcessor (InputProcessor processor) {
 		this.processor = processor;
 	}
+	
+	@Override public InputProcessor getInputProcessor() {
+		return this.processor;
+	}
 
 	@Override public boolean supportsVibrator () {
 		return false;
