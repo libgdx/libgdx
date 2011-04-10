@@ -185,7 +185,10 @@ gdx and backend modules and creates a distribution out of this mess.
 		<!--<copy tofile="${stable}/armeabi-v7a/libmpg123.so" file="gdx/libs/armeabi-v7a/libmpg123.so" />-->
 		<copy tofile="${stable}/armeabi-v7a/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
 		<copy tofile="${stable}/README" file="gdx/dist/README" />
-		<copy tofile="${stable}/LICENSE-2.0.html" file="gdx/dist/LICENSE-2.0.html" />
+		<copy tofile="${stable}/LICENSE" file="gdx/dist/LICENSE" />
+		<copy tofile="${stable}/CC-LICENSE" file="gdx/dist/CC-LICENSE" />
+		<copy tofile="${stable}/AUTHORS" file="gdx/dist/AUTHORS" />
+		<copy tofile="${stable}/CONTRIBUTORS" file="gdx/dist/CONTRIBUTORS" />
 	</target>
 
 	<!-- builds the distribution zip -->
