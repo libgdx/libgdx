@@ -50,7 +50,7 @@ public class Group extends Actor {
 	protected final ObjectMap<String, Actor> namesToActors;
 
 	public Actor lastTouchedChild;
-	public Actor focusedActor = null;
+	public Actor[] focusedActor = new Actor[20];
 
 	public Group () {
 		this(null);
@@ -224,11 +224,11 @@ public class Group extends Actor {
 
 		if (debug) Gdx.app.log("Group", name + ": " + x + ", " + y);
 
-		if (focusedActor != null) {
+		if (focusedActor[pointer] != null) {
 			point.x = x;
 			point.y = y;
-			focusedActor.toLocalCoordinates(point);
-			focusedActor.touchDown(point.x, point.y, pointer);
+			focusedActor[pointer].toLocalCoordinates(point);
+			focusedActor[pointer].touchDown(point.x, point.y, pointer);
 			return true;
 		}
 
@@ -257,8 +257,8 @@ public class Group extends Actor {
 		if (focusedActor != null) {
 			point.x = x;
 			point.y = y;
-			focusedActor.toLocalCoordinates(point);
-			focusedActor.touchUp(point.x, point.y, pointer);
+			focusedActor[pointer].toLocalCoordinates(point);
+			focusedActor[pointer].touchUp(point.x, point.y, pointer);
 			return true;
 		}
 
@@ -277,11 +277,11 @@ public class Group extends Actor {
 	@Override protected boolean touchDragged (float x, float y, int pointer) {
 		if (!touchable) return false;
 
-		if (focusedActor != null) {
+		if (focusedActor[pointer] != null) {
 			point.x = x;
 			point.y = y;
-			focusedActor.toLocalCoordinates(point);
-			focusedActor.touchDragged(point.x, point.y, pointer);
+			focusedActor[pointer].toLocalCoordinates(point);
+			focusedActor[pointer].touchDragged(point.x, point.y, pointer);
 			return true;
 		}
 
@@ -452,14 +452,14 @@ public class Group extends Actor {
 	}
 
 	/**
-	 * Sets the focus to the given child {@link Actor}. All subsequent touch events will be passed to this child Actor. To unset
+	 * Sets the focus to the given child {@link Actor}. All subsequent touch events with the given pointer id will be passed to this child Actor. To unset
 	 * the focus simply pass null.
 	 * 
 	 * @param actor the Actor
 	 */
-	public void focus (Actor actor) {
-		focusedActor = actor;
-		if (parent != null) parent.focus(actor);
+	public void focus (Actor actor, int pointer) {
+		focusedActor[pointer] = actor;
+		if (parent != null) parent.focus(actor, pointer);
 	}
 
 	public static void enableDebugging (String debugTextureFile) {

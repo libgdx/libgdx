@@ -35,6 +35,7 @@ public class Button extends Actor {
 	public final TextureRegion unpressedRegion;
 	public ClickListener clickListener;
 	protected boolean pressed = false;
+	protected int pointer = -1;
 
 	/**
 	 * Creates a new Button instance with the given name.
@@ -90,14 +91,19 @@ public class Button extends Actor {
 	@Override protected boolean touchDown (float x, float y, int pointer) {
 		boolean result = x > 0 && y > 0 && x < width && y < height;
 		pressed = result;
-		if (pressed) parent.focus(this);
+		if (pressed) {
+			parent.focus(this, pointer);
+			this.pointer = pointer;
+		}
 		return result;
 	}
 
 	@Override protected boolean touchUp (float x, float y, int pointer) {
 		if (!pressed) return false;
 
-		parent.focus(null);
+		if(pointer == this.pointer) {
+			parent.focus(null, pointer);
+		}
 		pressed = false;
 		if (clickListener != null) clickListener.clicked(this);
 		return true;
