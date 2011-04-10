@@ -29,12 +29,23 @@ public class LwjglApplet extends Applet {
 	final Canvas canvas;
 	LwjglApplication app;
 
+	class LwjglAppletApplication extends LwjglApplication {
+
+		public LwjglAppletApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
+			super(listener, useGL2, canvas);			
+		}
+		
+		@Override public ApplicationType getType() {
+			return ApplicationType.Applet;
+		}
+	}
+	
 	public LwjglApplet (final ApplicationListener listener, final boolean useGL2) {
 		LwjglNativesLoader.load = false;
 		canvas = new Canvas() {
 			public final void addNotify () {
 				super.addNotify();
-				app = new LwjglApplication(listener, useGL2, canvas);
+				app = new LwjglAppletApplication(listener, useGL2, canvas);
 			}
 
 			public final void removeNotify () {
