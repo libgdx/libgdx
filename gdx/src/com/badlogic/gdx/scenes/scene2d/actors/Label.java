@@ -23,12 +23,12 @@ import com.badlogic.gdx.scenes.scene2d.Layout;
 
 public class Label extends Actor implements Layout {
 	public BitmapFontCache cache;
-	public VAlignment valignment = VAlignment.BOTTOM;
+	public VAlignment valign = VAlignment.BOTTOM;
 	public String text;
-	public TextBounds bounds;
+	public final TextBounds bounds = new TextBounds();
 
 	private WrapType wrapType;
-	private HAlignment halignment;
+	private HAlignment halign;
 	private float lastWidth = -1;
 
 	public Label (String name, BitmapFont font) {
@@ -44,7 +44,7 @@ public class Label extends Actor implements Layout {
 	public void setText (String text) {
 		this.text = text;
 		wrapType = WrapType.singleLine;
-		bounds = cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight());
+		bounds.set(cache.setText(text, 0, cache.getFont().isFlipped() ? 0 : cache.getFont().getCapHeight()));
 		width = bounds.width;
 		height = bounds.height;
 	}
@@ -52,18 +52,18 @@ public class Label extends Actor implements Layout {
 	public void setMultiLineText (String text) {
 		this.text = text;
 		wrapType = WrapType.multiLine;
-		bounds = cache.getFont().getMultiLineBounds(text);
+		bounds.set(cache.getFont().getMultiLineBounds(text));
 		cache.setMultiLineText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height);
 		width = bounds.width;
 		height = bounds.height;
 	}
 
-	public void setWrappedText (String text, HAlignment alignment) {
+	public void setWrappedText (String text, HAlignment halign) {
 		this.text = text;
-		this.halignment = alignment;
+		this.halign = halign;
 		wrapType = WrapType.wrapped;
-		bounds = cache.getFont().getWrappedBounds(text, width);
-		cache.setWrappedText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, width, alignment);
+		bounds.set(cache.getFont().getWrappedBounds(text, width));
+		cache.setWrappedText(text, 0, cache.getFont().isFlipped() ? 0 : bounds.height, width, halign);
 	}
 
 	public void setFont (BitmapFont font) {
@@ -76,22 +76,28 @@ public class Label extends Actor implements Layout {
 			setMultiLineText(text);
 			break;
 		case wrapped:
-			setWrappedText(text, halignment);
+			setWrappedText(text, halign);
 			break;
 		}
 	}
 
 	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
 		cache.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		switch (valignment) {
+		switch (valign) {
 		case TOP:
-			cache.setPosition(x, y + height - bounds.height);
+			if (cache.getFont().isFlipped())
+				cache.setPosition(x, y);
+			else
+				cache.setPosition(x, y + height - bounds.height);
 			break;
 		case CENTER:
 			cache.setPosition(x, y + (height - bounds.height) / 2);
 			break;
 		case BOTTOM:
-			cache.setPosition(x, y);
+			if (cache.getFont().isFlipped())
+				cache.setPosition(x, y + height - bounds.height);
+			else
+				cache.setPosition(x, y);
 			break;
 		}
 		cache.draw(batch);
@@ -117,7 +123,7 @@ public class Label extends Actor implements Layout {
 	}
 
 	public void layout () {
-		if (wrapType == WrapType.wrapped && lastWidth != width) setWrappedText(text, halignment);
+		if (wrapType == WrapType.wrapped && lastWidth != width) setWrappedText(text, halign);
 		lastWidth = width;
 	}
 

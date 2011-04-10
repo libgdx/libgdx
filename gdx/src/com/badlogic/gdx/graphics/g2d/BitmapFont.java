@@ -755,6 +755,11 @@ public class BitmapFont implements Disposable {
 	static public class TextBounds {
 		public int width;
 		public int height;
+
+		public void set (TextBounds bounds) {
+			width = bounds.width;
+			height = bounds.height;
+		}
 	}
 
 	static public enum HAlignment {
