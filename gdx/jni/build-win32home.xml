@@ -28,7 +28,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${prefix}g++"/>
-	<property name="linker-opts" value="-Wl,--kill-at -shared"/>
+	<property name="linker-opts" value="-Wl,--kill-at -shared -static-libgcc -static-libstdc++"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">

@@ -465,6 +465,8 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyJoint
  * Method:    jniStep
  * Signature: (JFII)V
  */
+b2ContactFilter defaultFilter;
+
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniStep
  (JNIEnv *env, jobject obj, jlong addr, jfloat timeStep, jint velocityIterations, jint positionIterations)
 {
@@ -474,7 +476,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniStep
 	world->SetContactFilter(&contactFilter);
 	world->SetContactListener(&contactListener);
 	world->Step( timeStep, velocityIterations, positionIterations );
-	world->SetContactFilter(0);
+	world->SetContactFilter(&defaultFilter);
 	world->SetContactListener(0);
 }
 
