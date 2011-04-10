@@ -249,13 +249,14 @@ public class TexturePacker {
 			type = BufferedImage.TYPE_INT_ARGB;
 			break;
 		case RGB565:
+		case RGB888:
 			type = BufferedImage.TYPE_INT_RGB;
 			break;
 		case Alpha:
 			type = BufferedImage.TYPE_BYTE_GRAY;
 			break;
 		default:
-			throw new RuntimeException();
+			throw new RuntimeException("Luminance Alpha format is not supported.");
 		}
 
 		int imageNumber = 1;
