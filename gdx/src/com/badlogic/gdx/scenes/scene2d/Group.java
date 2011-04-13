@@ -254,7 +254,7 @@ public class Group extends Actor {
 	@Override protected boolean touchUp (float x, float y, int pointer) {
 		if (!touchable) return false;
 
-		if (focusedActor != null) {
+		if (focusedActor[pointer] != null) {
 			point.x = x;
 			point.y = y;
 			focusedActor[pointer].toLocalCoordinates(point);
