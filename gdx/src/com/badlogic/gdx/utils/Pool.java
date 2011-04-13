@@ -73,4 +73,11 @@ abstract public class Pool<T> {
 		for (int i = 0, n = Math.min(objects.size, max - freeObjects.size); i < n; i++)
 			freeObjects.add(objects.get(i));
 	}
+	
+	/**
+	 * Removes all free objects from this pool.
+	 */
+	public void clear() {
+		freeObjects.clear();
+	}
 }
