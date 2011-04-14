@@ -6,14 +6,14 @@
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="tileset.png"/>
  </tileset>
- <tileset firstgid="5" name="tileset_2" tilewidth="32" tileheight="32">
-  <image source="tileset_2.png"/>
+ <tileset firstgid="5" name="tileset2" tilewidth="32" tileheight="32">
+  <image source="tileset2.png"/>
  </tileset>
- <tileset firstgid="9" name="tileset_3" tilewidth="32" tileheight="32">
-  <image source="tileset_3.png"/>
+ <tileset firstgid="9" name="tileset3" tilewidth="32" tileheight="32">
+  <image source="tileset3.png"/>
  </tileset>
- <tileset firstgid="13" name="tileset_4" tilewidth="32" tileheight="32">
-  <image source="tileset_4.png"/>
+ <tileset firstgid="13" name="tileset4" tilewidth="32" tileheight="32">
+  <image source="tileset4.png"/>
  </tileset>
  <layer name="First Layer" width="50" height="30">
   <properties>
