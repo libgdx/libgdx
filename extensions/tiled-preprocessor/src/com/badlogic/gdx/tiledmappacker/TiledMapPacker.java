@@ -18,6 +18,7 @@ package com.badlogic.gdx.tiledmappacker;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -42,6 +43,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
+import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLayer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
@@ -52,7 +55,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Packs a Tiled Map, adding some properties to improve the speed of the {@link TiledMapRenderer}. Also runs the texture packer on
+ * Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on
  * the tiles for use with a {@link TileAtlas}
  * @author David Fraska
  */
@@ -60,93 +63,105 @@ public class TiledMapPacker {
 
 	private TexturePacker packer;
 	private TiledMap map;
-	private int tileCount = 0;
 
 	private File outputDir;
-	private FileHandle tmxFileHandle;
-	private FileHandle imageDirHandle;
+	private ArrayList<String> processedTileSets = new ArrayList<String>();
 
 	private ArrayList<Integer> blendedTiles = new ArrayList<Integer>();
 
+	static private class TmxFilter implements FilenameFilter {
+
+		public TmxFilter () {
+		}
+
+		@Override public boolean accept (File dir, String name) {
+			if (name.endsWith(".tmx")) return true;
+
+			return false;
+		}
+
+	}
+
 	/**
-	 * Packs a Tiled Map, adding some properties to improve the speed of the {@link TiledMapRenderer}. Also runs the texture packer
-	 * on the tiles for use with a {@link TileAtlas}
-	 * @param tmxFile the map's tmx file
-	 * @param imageDir the directory containing tile set images
+	 * Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method.
+	 * Packs a directory of Tiled Maps, adding properties to improve the speed of the {@link TileMapRenderer}. Also runs the
+	 * texture packer on the tile sets for use with a {@link TileAtlas}
+	 * @param inputDir the directory containing tile set images and tmx files
 	 * @param outputDir the directory to output a fully processed map to
 	 * @param settings the settings used in the TexturePacker
 	 * */
-	public void processMap (File tmxFile, File imageDir, File outputDir, Settings settings) throws IOException {
+	public void processMap (File inputDir, File outputDir, Settings settings) throws IOException {
 		this.outputDir = outputDir;
 
-		tmxFileHandle = Gdx.files.absolute(tmxFile.getAbsolutePath());
-		imageDirHandle = Gdx.files.absolute(imageDir.getAbsolutePath());
+		FileHandle inputDirHandle = Gdx.files.absolute(inputDir.getAbsolutePath());
+		File[] files = inputDir.listFiles(new TmxFilter());
 
-		new File(outputDir, tmxFileHandle.name()).delete();
-		if (outputDir.exists()) {
-			String prefix = tmxFileHandle.nameWithoutExtension();
-			for (File file : outputDir.listFiles())
-				if (file.getName().startsWith(prefix)) file.delete();
+		for (File file : files) {
+			map = TiledLoader.createMap(Gdx.files.absolute(file.getAbsolutePath()));
+
+			for (TileSet set : map.tileSets) {
+				if (!processedTileSets.contains(set.imageName)) {
+					processedTileSets.add(set.imageName);
+					packTileSet(set, inputDirHandle, settings);
+				}
+			}
+
+			writeUpdatedTMX(map.tmxFile);
 		}
-
-		map = TiledLoader.createMap(tmxFileHandle);
-
-		packMap(map, settings);
 	}
 
-	private void packMap (TiledMap map, Settings settings) throws IOException {
-		packer = new TexturePacker(settings);
-
+	private void packTileSet (TileSet set, FileHandle inputDirHandle, Settings settings) throws IOException {
 		BufferedImage tile;
 		Vector2 tileLocation;
 		TileSetLayout packerTileSet;
 		Graphics g;
 
-		ArrayList<Integer> tilesOnMap = new ArrayList<Integer>();
+		packer = new TexturePacker(settings);
 
-		// Loop through all tiles on map
-		for (TiledLayer layer : map.layers) {
-			for (int row = 0; row < layer.height; row++) {
-				for (int col = 0; col < layer.width; col++) {
-					if (layer.tile[row][col] != 0) {
-						tileCount++;
-						if (!tilesOnMap.contains(layer.tile[row][col])) {
-							tilesOnMap.add(layer.tile[row][col]);
-						}
-					}
-				}
-			}
-		}
+		TileSetLayout layout = new TileSetLayout(set, inputDirHandle);
 
-		for (int i = 0; i < tilesOnMap.size(); i++) {
-			//FIXME: this is kind of brute force. We don't know when a tileSet is going to change, so we just assume
-			//it changes every tile. Should probably keep track of how many tiles are in the tileSet and use that.
-			packerTileSet = getTileSetLayout(tilesOnMap.get(i)); 
-			tileLocation = packerTileSet.getLocation(tilesOnMap.get(i));
-			tile = new BufferedImage(packerTileSet.tileSet.tileWidth, packerTileSet.tileSet.tileHeight,
-				BufferedImage.TYPE_4BYTE_ABGR);
+		for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
+			tileLocation = layout.getLocation(gid);
+			tile = new BufferedImage(layout.tileWidth, layout.tileHeight, BufferedImage.TYPE_4BYTE_ABGR);
 
 			g = tile.createGraphics();
-			g.drawImage(packerTileSet.image, 0, 0, packerTileSet.tileSet.tileWidth, packerTileSet.tileSet.tileHeight,
-				(int)tileLocation.x, (int)tileLocation.y, (int)tileLocation.x + packerTileSet.tileSet.tileWidth, (int)tileLocation.y
-					+ packerTileSet.tileSet.tileHeight, null);
+			g.drawImage(layout.image, 0, 0, layout.tileWidth, layout.tileHeight, (int)tileLocation.x, (int)tileLocation.y,
+				(int)tileLocation.x + layout.tileWidth, (int)tileLocation.y + layout.tileHeight, null);
 
-			if (isBlended(tile)) setBlended(tilesOnMap.get(i));
+			if (isBlended(tile)) setBlended(gid);
 
-			packer.addImage(tile, map.tmxFile.nameWithoutExtension() + "_" + tilesOnMap.get(i));
+			packer.addImage(tile, removeExtension(set.imageName) + "_" + i);
 		}
 
-		packer.process(outputDir, new File(outputDir, map.tmxFile.nameWithoutExtension() + " packfile"),
-			tmxFileHandle.nameWithoutExtension());
-		writeUpdatedTMX();
+		packer
+			.process(outputDir, new File(outputDir, removeExtension(set.imageName) + " packfile"), removeExtension(set.imageName));
+	}
+
+	private static String removeExtension (String s) {
+
+		String separator = System.getProperty("file.separator");
+		String filename;
+
+		// Remove the path up to the filename.
+		int lastSeparatorIndex = s.lastIndexOf(separator);
+		if (lastSeparatorIndex == -1) {
+			filename = s;
+		} else {
+			filename = s.substring(lastSeparatorIndex + 1);
+		}
+
+		// Remove the extension.
+		int extensionIndex = filename.lastIndexOf(".");
+		if (extensionIndex == -1) return filename;
+
+		return filename.substring(0, extensionIndex);
 	}
 
 	private void setBlended (int tileNum) {
 		blendedTiles.add(tileNum);
-		// System.out.println("TileNum " + tileNum + " is blended");
 	}
 
-	private void writeUpdatedTMX () throws IOException {
+	private void writeUpdatedTMX (FileHandle tmxFileHandle) throws IOException {
 		Document doc;
 		DocumentBuilder docBuilder;
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -154,16 +169,15 @@ public class TiledMapPacker {
 		try {
 			docBuilder = docFactory.newDocumentBuilder();
 			doc = docBuilder.parse(tmxFileHandle.read());
-			
+
 			Node map = doc.getFirstChild();
-			while(map.getNodeType() != Node.ELEMENT_NODE || map.getNodeName() != "map"){
-				if((map = map.getNextSibling()) == null){
+			while (map.getNodeType() != Node.ELEMENT_NODE || map.getNodeName() != "map") {
+				if ((map = map.getNextSibling()) == null) {
 					throw new GdxRuntimeException("Couldn't find map node!");
 				}
 			}
-			
+
 			setProperty(doc, map, "blended tiles", toCSV(blendedTiles));
-			setProperty(doc, map, "tile count", String.valueOf(tileCount));
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -196,7 +210,7 @@ public class TiledMapPacker {
 			valueNode.setNodeValue(value);
 		}
 	}
-	
+
 	private static String toCSV (ArrayList<Integer> values) {
 		String temp = "";
 		for (int i = 0; i < values.size() - 1; i++) {
@@ -216,7 +230,7 @@ public class TiledMapPacker {
 		}
 
 		Node newNode = parent.getOwnerDocument().createElement(child);
-		
+
 		if (childNodes.item(0) != null)
 			return parent.insertBefore(newNode, childNodes.item(0));
 		else
@@ -262,12 +276,12 @@ public class TiledMapPacker {
 		return false;
 	}
 
-	private TileSetLayout getTileSetLayout (int tileNum) throws IOException {
+	private TileSetLayout getTileSetLayout (int tileNum, FileHandle inputDirHandle) throws IOException {
 		int firstgid = 0;
 		int lastgid;
 
 		for (TileSet set : map.tileSets) {
-			TileSetLayout layout = new TileSetLayout(set, imageDirHandle);
+			TileSetLayout layout = new TileSetLayout(set, inputDirHandle);
 			firstgid = set.firstgid;
 			lastgid = firstgid + layout.numTiles - 1;
 			if (tileNum >= firstgid && tileNum <= lastgid) {
@@ -278,12 +292,19 @@ public class TiledMapPacker {
 		return null;
 	}
 
+	/**
+	 * Processes a 
+	 * @param args args[0]: the input directory containing tmx files and tile set images.
+	 * 				args[1]: The output directory, should be empty before running.
+	 */
 	public static void main (String[] args) {
-		File tmxFile, baseDir, outputDir;
+		File tmxFile, inputDir, outputDir;
 
 		Settings settings = new Settings();
 		settings.padding = 2;
 		settings.duplicatePadding = true;
+		settings.incremental = true;
+		settings.alias = true;
 
 		// Create a new JoglApplication so that Gdx stuff works properly
 		new JoglApplication(new ApplicationListener() {
@@ -308,24 +329,20 @@ public class TiledMapPacker {
 
 		TiledMapPacker packer = new TiledMapPacker();
 
-		if (args.length != 3) {
-			System.out.println("Usage: TMXFILE BASEDIR OUTPUTDIR");
-			return;
+		if (args.length != 2) {
+			System.out.println("Usage: INPUTDIR OUTPUTDIR");
+			System.exit(0);
 		}
 
-		tmxFile = new File(args[0]);
-		baseDir = new File(args[1]);
-		outputDir = new File(args[2]);
+		inputDir = new File(args[0]);
+		outputDir = new File(args[1]);
 
-		if (!baseDir.exists()) {
-			throw new RuntimeException("Base directory does not exist");
-		}
-		if (!tmxFile.exists()) {
-			throw new RuntimeException("TMX file does not exist");
+		if (!inputDir.exists()) {
+			throw new RuntimeException("Input directory does not exist");
 		}
 
 		try {
-			packer.processMap(tmxFile, baseDir, outputDir, settings);
+			packer.processMap(inputDir, outputDir, settings);
 		} catch (IOException e) {
 			throw new RuntimeException("Error processing map: " + e.getMessage());
 		}

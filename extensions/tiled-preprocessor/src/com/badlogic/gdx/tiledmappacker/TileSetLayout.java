@@ -29,14 +29,13 @@ import com.badlogic.gdx.utils.IntMap;
  * Contains extra information that can only be calculated after a Tiled Map's tile set images are loaded.
  * @author David Fraska
  * */
-public class TileSetLayout {
+public class TileSetLayout extends TileSet {
 
 	public final BufferedImage image;
 	private final IntMap<Vector2> imageTilePositions;
 	private int numRows;
 	private int numCols;
 	public final int numTiles;
-	public final TileSet tileSet;
 
 	/**
 	 * Constructs a Tile Set layout. The tile set image contained in the baseDir should be the original tile set images before
@@ -44,8 +43,9 @@ public class TileSetLayout {
 	 * @param tileSet the tile set to process
 	 * @param baseDir the directory in which the tile set image is stored
 	 * */
-	TileSetLayout (TileSet tileSet, FileHandle baseDir) throws IOException {
-		this.tileSet = tileSet;
+	protected TileSetLayout (TileSet tileSet, FileHandle baseDir) throws IOException {
+		super(tileSet);
+
 		image = ImageIO.read(baseDir.child(tileSet.imageName).read());
 
 		imageTilePositions = new IntMap<Vector2>();
@@ -55,14 +55,14 @@ public class TileSetLayout {
 		numRows = 0;
 		numCols = 0;
 		for (y = tileSet.margin; y < image.getHeight() - tileSet.margin; y += tileSet.tileHeight + tileSet.spacing) {
-			for (x = tileSet.margin; x < image.getWidth() - tileSet.margin; x += tileSet.tileWidth + tileSet.spacing){
-				if(y == tileSet.margin) numCols++;
+			for (x = tileSet.margin; x < image.getWidth() - tileSet.margin; x += tileSet.tileWidth + tileSet.spacing) {
+				if (y == tileSet.margin) numCols++;
 				imageTilePositions.put(tile, new Vector2(x, y));
 				tile++;
 			}
 			numRows++;
 		}
-		
+
 		numTiles = numRows * numCols;
 	}
 
@@ -76,6 +76,6 @@ public class TileSetLayout {
 
 	/** Returns the location of the tile in {@link TileSetLayout#image} */
 	public Vector2 getLocation (int tile) {
-		return imageTilePositions.get(tile - tileSet.firstgid);
+		return imageTilePositions.get(tile - firstgid);
 	}
 }
