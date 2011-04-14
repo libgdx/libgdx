@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntMap;
 
 /**
- * Contains an atlas of tiles by tile id for use with {@link TiledMapRenderer}
+ * Contains an atlas of tiles by tile id for use with {@link TileMapRenderer}
  * @author David Fraska
  */
 public class TileAtlas implements Disposable {
@@ -34,19 +34,27 @@ public class TileAtlas implements Disposable {
 	private final HashSet<Texture> textures = new HashSet<Texture>(1);
 
 	/**
-	 * Creates a TileAtlas for use with {@link TiledMapRenderer}. Run the map through TiledMapPacker to create the files
-	 * required.
+	 * Creates a TileAtlas for use with {@link TileMapRenderer}. Run the map through TiledMapPacker to create the files required.
 	 * @param map The tiled map
-	 * @param packFile The pack file created by TiledMapPacker
-	 * @param imagesDir The directory that has the images created by TiledMapPacker
+	 * @param inputDir The directory containing all the files created by TiledMapPacker
 	 * */
-	public TileAtlas (TiledMap map, FileHandle packFile, FileHandle imagesDir) {
-		TextureAtlas textureAtlas = new TextureAtlas(packFile, imagesDir, false);
-		List<AtlasRegion> atlasRegions = (List<AtlasRegion>)textureAtlas.findRegions(map.tmxFile.nameWithoutExtension());
-		regionsMap = new IntMap<AtlasRegion>(atlasRegions.size());
-		for (int i = 0; i < atlasRegions.size(); i++) {
-			regionsMap.put(atlasRegions.get(i).index, atlasRegions.get(i));
-			if (!textures.contains(atlasRegions.get(i).getTexture())) textures.add(atlasRegions.get(i).getTexture());
+	public TileAtlas (TiledMap map, FileHandle inputDir) {
+		// TODO: Create a constructor that doesn't take a tmx map, 
+		regionsMap = new IntMap<AtlasRegion>();
+		TextureAtlas textureAtlas;
+		List<AtlasRegion> atlasRegions;
+		int j;
+		TileSet set;
+
+		for (int i = 0; i < map.tileSets.size(); i++) {
+			set = map.tileSets.get(i);
+			textureAtlas = new TextureAtlas(inputDir.child(removeExtension(set.imageName) + " packfile"), inputDir, false);
+			atlasRegions = (List<AtlasRegion>)textureAtlas.findRegions(removeExtension(set.imageName));
+
+			for (j = 0; j < atlasRegions.size(); j++) {
+				regionsMap.put(atlasRegions.get(j).index + set.firstgid, atlasRegions.get(j));
+				if (!textures.contains(atlasRegions.get(j).getTexture())) textures.add(atlasRegions.get(j).getTexture());
+			}
 		}
 	}
 
@@ -62,13 +70,30 @@ public class TileAtlas implements Disposable {
 	/**
 	 * Releases all resources associated with this TileAtlas instance. This releases all the textures backing all AtlasRegions,
 	 * which should no longer be used after calling dispose.
-	 * 
-	 * Note: This function will only dispose of textures that were added by TiledMapPacker and are included in the map specified in
-	 * the constructor.
 	 */
 	public void dispose () {
 		for (Texture texture : textures)
 			texture.dispose();
 		textures.clear();
+	}
+
+	private static String removeExtension (String s) {
+
+		String separator = System.getProperty("file.separator");
+		String filename;
+
+		// Remove the path up to the filename.
+		int lastSeparatorIndex = s.lastIndexOf(separator);
+		if (lastSeparatorIndex == -1) {
+			filename = s;
+		} else {
+			filename = s.substring(lastSeparatorIndex + 1);
+		}
+
+		// Remove the extension.
+		int extensionIndex = filename.lastIndexOf(".");
+		if (extensionIndex == -1) return filename;
+
+		return filename.substring(0, extensionIndex);
 	}
 }

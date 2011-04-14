@@ -25,4 +25,23 @@ public class TileSet {
 	public int tileHeight;
 	public int margin, spacing;
 	public String imageName;
+	
+	/**
+	 * Contains a Tiled Map tile set
+	 */
+	protected TileSet(){
+	}
+	
+	/**
+	 * Copy constructor
+	 * @param set The set to be copied
+	 */
+	protected TileSet(TileSet set){
+		this.firstgid = set.firstgid;
+		this.tileWidth = set.tileWidth;
+		this.tileHeight = set.tileHeight;
+		this.margin = set.margin;
+		this.spacing = set.spacing;
+		this.imageName = set.imageName;
+	}
 }

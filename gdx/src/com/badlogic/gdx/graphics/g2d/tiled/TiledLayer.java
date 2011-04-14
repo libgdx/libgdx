@@ -30,7 +30,7 @@ public class TiledLayer {
 	public final int width, height;
 
 	/** Contains the tile ids, addressed as [row][column]. */
-	public final int[][] tile;
+	public final int[][] tiles;
 
 	/**
 	 * Constructs a new TiledLayer, typically used by {@link TiledLoader}
@@ -42,6 +42,6 @@ public class TiledLayer {
 		this.name = name;
 		this.width = width;
 		this.height = height;
-		tile = new int[height][width];
+		tiles = new int[height][width];
 	}
 }

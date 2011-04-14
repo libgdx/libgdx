@@ -156,7 +156,7 @@ public class TiledLoader extends DefaultHandler {
 							case DATA:
 								col = dataCounter % currentLayer.width;
 								row = dataCounter / currentLayer.width;
-								currentLayer.tile[row][col] = Integer.parseInt(attr.getValue("gid"));
+								currentLayer.tiles[row][col] = Integer.parseInt(attr.getValue("gid"));
 								dataCounter++;
 								break;
 							}
@@ -270,7 +270,7 @@ public class TiledLoader extends DefaultHandler {
 					StringTokenizer st = new StringTokenizer(dataString.trim(), ",");
 					for (int row = 0; row < currentLayer.height; row++) {
 						for (int col = 0; col < currentLayer.width; col++) {
-							currentLayer.tile[row][col] = Integer.parseInt(st.nextToken().trim());
+							currentLayer.tiles[row][col] = Integer.parseInt(st.nextToken().trim());
 						}
 					}
 				}
@@ -279,7 +279,7 @@ public class TiledLoader extends DefaultHandler {
 					int byteCounter = 0;
 					for (int row = 0; row < currentLayer.height; row++) {
 						for (int col = 0; col < currentLayer.width; col++) {
-							currentLayer.tile[row][col] = unsignedByteToInt(data[byteCounter++])
+							currentLayer.tiles[row][col] = unsignedByteToInt(data[byteCounter++])
 								| unsignedByteToInt(data[byteCounter++]) << 8 | unsignedByteToInt(data[byteCounter++]) << 16
 								| unsignedByteToInt(data[byteCounter++]) << 24;
 						}
@@ -296,7 +296,7 @@ public class TiledLoader extends DefaultHandler {
 						for (int col = 0; col < currentLayer.width; col++) {
 							try {
 								zlib.inflate(readTemp, 0, 4);
-								currentLayer.tile[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
+								currentLayer.tiles[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
 									| unsignedByteToInt(readTemp[2]) << 16 | unsignedByteToInt(readTemp[3]) << 24;
 							} catch (DataFormatException e) {
 								throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
@@ -319,7 +319,7 @@ public class TiledLoader extends DefaultHandler {
 						for (int col = 0; col < currentLayer.width; col++) {
 							try {
 								GZIS.read(readTemp, 0, 4);
-								currentLayer.tile[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
+								currentLayer.tiles[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
 									| unsignedByteToInt(readTemp[2]) << 16 | unsignedByteToInt(readTemp[3]) << 24;
 							} catch (IOException e) {
 								throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
