@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="32" orientation="orthogonal" tileheight="32" tilewidth="32" version="1.0" width="32"><properties><property name="tile count" value="79"/><property name="blended tiles" value="5,14,6,15,13,4,8,9,1,7,2,3,11,12,10"/></properties>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="32" orientation="orthogonal" tileheight="32" tilewidth="32" version="1.0" width="32"><properties><property name="blended tiles" value="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40"/></properties>
  <tileset firstgid="1" name="perspective walls" tileheight="64" tilewidth="64">
  <image source="perspective walls.png"/>
  <tile id="13">
