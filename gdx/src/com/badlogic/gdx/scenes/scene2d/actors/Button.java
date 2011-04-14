@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Layout;
 
 /**
  * A simple Button {@link Actor}, useful for simple UIs
@@ -26,13 +27,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * @author mzechner
  * 
  */
-public class Button extends Actor {
+public class Button extends Actor implements Layout {
 	public interface ClickListener {
 		public void clicked (Button button);
 	}
 
-	public final TextureRegion pressedRegion;
-	public final TextureRegion unpressedRegion;
+	public TextureRegion pressedRegion;
+	public TextureRegion unpressedRegion;
 	public ClickListener clickListener;
 	protected boolean pressed = false;
 	protected int pointer = -1;
@@ -117,4 +118,14 @@ public class Button extends Actor {
 		return x > 0 && y > 0 && x < width && y < height ? this : null;
 	}
 
+	public void layout () {
+	}
+
+	public float getPrefWidth () {
+		return unpressedRegion.getRegionWidth();
+	}
+
+	public float getPrefHeight () {
+		return unpressedRegion.getRegionHeight();
+	}
 }
