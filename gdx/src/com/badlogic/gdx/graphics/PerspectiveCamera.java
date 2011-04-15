@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -47,9 +48,10 @@ public class PerspectiveCamera extends Camera {
 		float aspect = viewportWidth / viewportHeight;				
 		projection.setToProjection(Math.abs(near), Math.abs(far), fieldOfView, aspect);
 		view.setToLookAt(position, tmp.set(position).add(direction), up);	
-		combined.set(projection).mul(view);
+		combined.set(projection);
+		Matrix4.mul(combined.val, view.val);
 		invProjectionView.set(combined);
-		invProjectionView.inv();
+		Matrix4.inv(invProjectionView.val);
 		frustum.update(invProjectionView);
 	}	
 }

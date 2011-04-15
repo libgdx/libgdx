@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -47,9 +48,10 @@ public class OrthographicCamera extends Camera {
 	public void update() {
 		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom * viewportHeight / 2, Math.abs(near), Math.abs(far));
 		view.setToLookAt(position, tmp.set(position).add(direction), up);	
-		combined.set(projection).mul(view);
-		invProjectionView.set(combined);
-		invProjectionView.inv();		
+		combined.set(projection);
+		Matrix4.mul(combined.val, view.val);
+		invProjectionView.set(combined);	
+		Matrix4.inv(invProjectionView.val);
 		frustum.update(combined);
 	}
 }

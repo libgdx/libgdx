@@ -120,7 +120,7 @@ static inline void matrix4_mulVec(float* mat, float* vec) {
 }
 
 static inline void matrix4_proj(float* mat, float* vec) {
-	float inv_w = 1.0f / vec[0] * mat[M30] + vec[1] * mat[M31] + vec[3] * mat[M32] + mat[M33];
+	float inv_w = 1.0f / (vec[0] * mat[M30] + vec[1] * mat[M31] + vec[2] * mat[M32] + mat[M33]);
 	float x = (vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03]) * inv_w;
 	float y = (vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13]) * inv_w; 
 	float z = (vec[0] * mat[M20] + vec[1] * mat[M21] + vec[2] * mat[M22] + mat[M23]) * inv_w;

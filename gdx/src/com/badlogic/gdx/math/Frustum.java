@@ -23,6 +23,16 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class Frustum {
 	protected static final Vector3[] clipSpacePlanePoints = { new Vector3(-1, -1, -1), new Vector3(1, -1, -1), new Vector3(1, 1, -1), new Vector3(-1, 1, -1), // near clip
 		   												   new Vector3(-1, -1, 1), new Vector3(1, -1, 1), new Vector3(1, 1, 1), new Vector3(-1, 1, 1) }; // far clip
+	protected static final float[] clipSpacePlanePointsArray = new float[8 * 3];	
+	
+	static {
+		int j = 0;
+		for(Vector3 v: clipSpacePlanePoints) {
+			clipSpacePlanePointsArray[j++] = v.x;
+			clipSpacePlanePointsArray[j++] = v.y;
+			clipSpacePlanePointsArray[j++] = v.z;
+		}
+	}
 	
 	/** the six clipping planes, near, far, left, right, top, bottm **/
 	public final Plane[] planes = new Plane[6];	
@@ -31,6 +41,7 @@ public class Frustum {
 	protected final Vector3[] planePoints = { new Vector3(), new Vector3(), new Vector3(), new Vector3(), 
 			new Vector3(), new Vector3(), new Vector3(), new Vector3() 
 	};	
+	protected final float[] planePointsArray = new float[8 *  3];
 		
 	public Frustum() {
 		for(int i = 0; i < 6; i++) {
@@ -43,12 +54,15 @@ public class Frustum {
 	 * matrix, e.g. from an {@link OrthographicCamera} or {@link PerspectiveCamera}.
 	 * @param inverseProjectionView the combined projection and view matrices.
 	 */
-	public void update(Matrix4 inverseProjectionView) {		
-		
-		for(int i = 0; i < 8; i++) {
-			Vector3 point = planePoints[i].set(clipSpacePlanePoints[i]);
-			point.prj(inverseProjectionView);			
-		}
+	public void update(Matrix4 inverseProjectionView) {						
+		System.arraycopy(clipSpacePlanePointsArray, 0, planePointsArray, 0, clipSpacePlanePointsArray.length);
+		Matrix4.prj(inverseProjectionView.val, planePointsArray, 0, 8, 3);
+		for(int i = 0, j=0; i < 8; i++) {
+			Vector3 v = planePoints[i];
+			v.x = planePointsArray[j++];
+			v.y = planePointsArray[j++];
+			v.z = planePointsArray[j++];
+		}			
 		
 		planes[0].set(planePoints[1], planePoints[0], planePoints[2]);
 		planes[1].set(planePoints[4], planePoints[5], planePoints[7]);
