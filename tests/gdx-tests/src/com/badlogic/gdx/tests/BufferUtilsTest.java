@@ -91,10 +91,11 @@ public class BufferUtilsTest extends GdxTest {
 		ByteBuffer bb = BufferUtils.newByteBuffer(1024*1024);
 		byte[] bytes = new byte[1024*1024];
 		int len = bytes.length;
+		final int NUM_MB = 5;
 		
 		// relative put
 		long start = System.nanoTime();
-		for(int j = 0; j < 50; j++) {
+		for(int j = 0; j < NUM_MB; j++) {
 			bb.clear();		
 			for(int i = 0; i < len; i++) bb.put(bytes[i]);
 		}
@@ -102,7 +103,7 @@ public class BufferUtilsTest extends GdxTest {
 		
 		// absolute put
 		start = System.nanoTime();
-		for(int j = 0; j < 50; j++) {
+		for(int j = 0; j < NUM_MB; j++) {
 			bb.clear();		
 			for(int i = 0; i < len; i++) bb.put(i, bytes[i]);
 		}
@@ -110,7 +111,7 @@ public class BufferUtilsTest extends GdxTest {
 		
 		// bulk put
 		start = System.nanoTime();
-		for(int j = 0; j < 10; j++) {
+		for(int j = 0; j < NUM_MB; j++) {
 			bb.clear();		
 			bb.put(bytes);
 		}
@@ -118,7 +119,7 @@ public class BufferUtilsTest extends GdxTest {
 		
 		// JNI put
 		start = System.nanoTime();
-		for(int j = 0; j < 10; j++) {
+		for(int j = 0; j < NUM_MB; j++) {
 			bb.clear();		
 			BufferUtils.copy(bytes, 0, bb, len);
 		}
