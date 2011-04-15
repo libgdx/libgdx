@@ -324,6 +324,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 inv () {
 		float l_det = this.det();
 		if (l_det == 0f) throw new RuntimeException("non-invertible matrix");
+		float inv_det = 1.0f / l_det;
 		tmp[M00] = val[M12] * val[M23] * val[M31] - val[M13] * val[M22] * val[M31] + val[M13] * val[M21] * val[M32] - val[M11]
 			* val[M23] * val[M32] - val[M12] * val[M21] * val[M33] + val[M11] * val[M22] * val[M33];
 		tmp[M01] = val[M03] * val[M22] * val[M31] - val[M02] * val[M23] * val[M31] - val[M03] * val[M21] * val[M32] + val[M01]
@@ -357,22 +358,22 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = val[M01] * val[M12] * val[M20] - val[M02] * val[M11] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] + val[M00] * val[M11] * val[M22];
 		this.set(tmp);
-		val[M00] /= l_det;
-		val[M01] /= l_det;
-		val[M02] /= l_det;
-		val[M03] /= l_det;
-		val[M10] /= l_det;
-		val[M11] /= l_det;
-		val[M12] /= l_det;
-		val[M13] /= l_det;
-		val[M20] /= l_det;
-		val[M21] /= l_det;
-		val[M22] /= l_det;
-		val[M23] /= l_det;
-		val[M30] /= l_det;
-		val[M31] /= l_det;
-		val[M32] /= l_det;
-		val[M33] /= l_det;
+		val[M00] *= inv_det;
+		val[M01] *= inv_det;
+		val[M02] *= inv_det;
+		val[M03] *= inv_det;
+		val[M10] *= inv_det;
+		val[M11] *= inv_det;
+		val[M12] *= inv_det;
+		val[M13] *= inv_det;
+		val[M20] *= inv_det;
+		val[M21] *= inv_det;
+		val[M22] *= inv_det;
+		val[M23] *= inv_det;
+		val[M30] *= inv_det;
+		val[M31] *= inv_det;
+		val[M32] *= inv_det;
+		val[M33] *= inv_det;
 		return this;
 	}		
 
@@ -771,13 +772,113 @@ public class Matrix4 implements Serializable {
 		rotation.setFromMatrix(this);
 	}
 	
-	public static native void mulJNI(float[] mata, float[] matb);
-	public static native void mulVecJNI(float[] mat, float[] vec);
-	public static native void mulVecJNI(float[] mat, float[] vecs, int offset, int numVecs, int stride);
-	public static native void projVecJNI(float[] mat, float[] vec);
-	public static native void projVecJNI(float[] mat, float[] vec, int offset, int numVecs, int stride);
-	public static native void rotVecJNI(float[] mat, float[] vec);
-	public static native void rotVecJNI(float[] mat, float[] vec, int offset, int numVecs, int stride);
-	public static native boolean invJNI(float[] values);
-	public static native float detJNI(float[] values);
+	/**
+	 * Multiplies the matrix mata with matrix matb, storing the result in mata. The 
+	 * arrays are assumed to hold 4x4 column major matrices as you can get from {@link Matrix4#val}.
+	 * This is the same as {@link Matrix4#mul(Matrix4)}.
+	 * 
+	 * @param mata the first matrix.
+	 * @param matb the second matrix.
+	 */
+	public static native void mul(float[] mata, float[] matb);
+	
+	/**
+	 * Multiplies the vector with the given matrix. The matrix array is assumed to hold a 
+	 * 4x4 column major matrix as you can get from {@link Matrix4#val}. The vector array is
+	 * assumed to hold a 3-component vector, with x being the first element, y being the second
+	 * and z being the last component. The result is stored in the vector array. This is the
+	 * same as {@link Vector3#mul(Matrix4)}.
+	 * @param mat the matrix
+	 * @param vec the vector.
+	 */
+	public static native void mulVec(float[] mat, float[] vec);
+	
+	/**
+	 * Multiplies the vectors with the given matrix. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed
+	 * to hold 3-component vectors. Offset specifies the offset into the array where the x-component
+	 * of the first vector is located. The numVecs parameter specifies the number of vectors stored
+	 * in the vectors array. The stride parameter specifies the number of floats between subsequent
+	 * vectors and must be >= 3. This is the same as {@link Vector3#mul(Matrix4)} applied to multiple
+	 * vectors. 
+	 *  
+	 * @param mat the matrix
+	 * @param vecs the vectors
+	 * @param offset the offset into the vectors array
+	 * @param numVecs the number of vectors
+	 * @param stride the stride between vectors in floats
+	 */	
+	public static native void mulVec(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	
+	/**
+	 * Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 
+	 * 4x4 column major matrix as you can get from {@link Matrix4#val}. The vector array is
+	 * assumed to hold a 3-component vector, with x being the first element, y being the second
+	 * and z being the last component. The result is stored in the vector array. This is the same as 
+	 * {@link Vector3#prj(Matrix4)}. 
+	 * @param mat the matrix
+	 * @param vec the vector.
+	 */	
+	public static native void prj(float[] mat, float[] vec);
+	
+	/**
+	 * Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed
+	 * to hold 3-component vectors. Offset specifies the offset into the array where the x-component
+	 * of the first vector is located. The numVecs parameter specifies the number of vectors stored
+	 * in the vectors array. The stride parameter specifies the number of floats between subsequent
+	 * vectors and must be >= 3. This is the same as {@link Vector3#prj(Matrix4)} applied to multiple
+	 * vectors. 
+	 *  
+	 * @param mat the matrix
+	 * @param vecs the vectors
+	 * @param offset the offset into the vectors array
+	 * @param numVecs the number of vectors
+	 * @param stride the stride between vectors in floats
+	 */	
+	public static native void prj(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	
+	/**
+	 * Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 
+	 * 4x4 column major matrix as you can get from {@link Matrix4#val}. The vector array is
+	 * assumed to hold a 3-component vector, with x being the first element, y being the second
+	 * and z being the last component. The result is stored in the vector array. This is the same as 
+	 * {@link Vector3#rot(Matrix4)}. 
+	 * @param mat the matrix
+	 * @param vec the vector.
+	 */	
+	public static native void rot(float[] mat, float[] vec);
+	
+	/**
+	 * Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. The vectors array is assumed
+	 * to hold 3-component vectors. Offset specifies the offset into the array where the x-component
+	 * of the first vector is located. The numVecs parameter specifies the number of vectors stored
+	 * in the vectors array. The stride parameter specifies the number of floats between subsequent
+	 * vectors and must be >= 3. This is the same as {@link Vector3#rot(Matrix4)} applied to multiple
+	 * vectors. 
+	 *  
+	 * @param mat the matrix
+	 * @param vecs the vectors
+	 * @param offset the offset into the vectors array
+	 * @param numVecs the number of vectors
+	 * @param stride the stride between vectors in floats
+	 */
+	public static native void rot(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	
+	/**
+	 * Computes the inverse of the given matrix. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. 
+	 * @param values the matrix values.
+	 * @return false in case the inverse could not be calculated, true otherwise.
+	 */
+	public static native boolean inv(float[] values);
+	
+	/**
+	 * Computes the determinante of the given matrix. The matrix array is assumed to hold a 4x4
+	 * column major matrix as you can get from {@link Matrix4#val}. 
+	 * @param values the matrix values.
+	 * @return the determinante.
+	 */
+	public static native float det(float[] values);
 }

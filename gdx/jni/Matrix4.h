@@ -43,74 +43,74 @@ extern "C" {
 #define com_badlogic_gdx_math_Matrix4_M33 15L
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    mulJNI
+ * Method:    mul
  * Signature: ([F[F)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulJNI
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mul
   (JNIEnv *, jclass, jfloatArray, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    mulVecJNI
+ * Method:    mulVec
  * Signature: ([F[F)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVecJNI___3F_3F
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3F
   (JNIEnv *, jclass, jfloatArray, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    mulVecJNI
+ * Method:    mulVec
  * Signature: ([F[FIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVecJNI___3F_3FIII
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_mulVec___3F_3FIII
   (JNIEnv *, jclass, jfloatArray, jfloatArray, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    projVecJNI
+ * Method:    prj
  * Signature: ([F[F)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_projVecJNI___3F_3F
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_prj___3F_3F
   (JNIEnv *, jclass, jfloatArray, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    projVecJNI
+ * Method:    prj
  * Signature: ([F[FIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_projVecJNI___3F_3FIII
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_prj___3F_3FIII
   (JNIEnv *, jclass, jfloatArray, jfloatArray, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    rotVecJNI
+ * Method:    rot
  * Signature: ([F[F)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rotVecJNI___3F_3F
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rot___3F_3F
   (JNIEnv *, jclass, jfloatArray, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    rotVecJNI
+ * Method:    rot
  * Signature: ([F[FIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rotVecJNI___3F_3FIII
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_math_Matrix4_rot___3F_3FIII
   (JNIEnv *, jclass, jfloatArray, jfloatArray, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    invJNI
+ * Method:    inv
  * Signature: ([F)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_math_Matrix4_invJNI
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_math_Matrix4_inv
   (JNIEnv *, jclass, jfloatArray);
 
 /*
  * Class:     com_badlogic_gdx_math_Matrix4
- * Method:    detJNI
+ * Method:    det
  * Signature: ([F)F
  */
-JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_math_Matrix4_detJNI
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_math_Matrix4_det
   (JNIEnv *, jclass, jfloatArray);
 
 #ifdef __cplusplus
