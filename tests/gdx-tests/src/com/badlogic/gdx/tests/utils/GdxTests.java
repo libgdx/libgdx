@@ -44,6 +44,7 @@ import com.badlogic.gdx.tests.BobTest;
 import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
+import com.badlogic.gdx.tests.BufferUtilsTest;
 import com.badlogic.gdx.tests.CompassTest;
 import com.badlogic.gdx.tests.ComplexActionTest;
 import com.badlogic.gdx.tests.CullTest;
@@ -68,6 +69,7 @@ import com.badlogic.gdx.tests.LifeCycleTest;
 import com.badlogic.gdx.tests.MD5Test;
 import com.badlogic.gdx.tests.ManagedTest;
 import com.badlogic.gdx.tests.ManualBindTest;
+import com.badlogic.gdx.tests.MatrixJNITest;
 import com.badlogic.gdx.tests.MeshMultitextureTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MeshTest;
@@ -147,6 +149,7 @@ public class GdxTests
 		Box2DInitialOverlapTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
+		BufferUtilsTest.class,
 		CompassTest.class,
 		ComplexActionTest.class,
 		CullTest.class,
@@ -169,6 +172,7 @@ public class GdxTests
 		LifeCycleTest.class,
 		ManagedTest.class,
 		ManualBindTest.class,
+		MatrixJNITest.class,
 		MD5Test.class,
 		MeshMultitextureTest.class,
 		MeshShaderTest.class,

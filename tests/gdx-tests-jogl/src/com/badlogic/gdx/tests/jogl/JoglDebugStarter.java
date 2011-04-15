@@ -20,6 +20,6 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 public class JoglDebugStarter {
 
 	public static void main (String[] argv) {
-		new JoglApplication(new com.badlogic.gdx.tests.KinematicBodyTest(), "Debug Test", 480, 320, false);
+		new JoglApplication(new com.badlogic.gdx.tests.MatrixJNITest(), "Debug Test", 480, 320, false);
 	}
 }

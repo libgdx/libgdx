@@ -264,7 +264,7 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = val[M30] * matrix.val[M03] + val[M31] * matrix.val[M13] + val[M32] * matrix.val[M23] + val[M33]
 			* matrix.val[M33];
 		return this.set(tmp);
-	}
+	}	
 
 	/**
 	 * Transposes the matrix
@@ -374,7 +374,7 @@ public class Matrix4 implements Serializable {
 		val[M32] /= l_det;
 		val[M33] /= l_det;
 		return this;
-	}
+	}		
 
 	/**
 	 * @return The determinant of this matrix
@@ -770,4 +770,11 @@ public class Matrix4 implements Serializable {
 	public void getRotation (Quaternion rotation) {
 		rotation.setFromMatrix(this);
 	}
+	
+	public static native void mulJNI(float[] mata, float[] matb);
+	public static native void mulVecJNI(float[] mat, float[] vec);
+	public static native void projVec(float[] mat, float[] vec);
+	public static native void rotVec(float[] mat, float[] vec);
+	public static native boolean invJNI(float[] values);
+	public static native float detJNI(float[] values);
 }

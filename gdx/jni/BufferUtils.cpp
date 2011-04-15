@@ -14,47 +14,100 @@
 #include <stdio.h>
 #include <string.h>
 
+static inline void copy(JNIEnv* env, jarray src, int srcOffset, jobject dst, int dstOffset, int numBytes) {
+	char* pDst = (char*)env->GetDirectBufferAddress( dst );
+	char* pSrc = (char*)env->GetPrimitiveArrayCritical(src, 0);
+	memcpy( pDst + dstOffset, pSrc + srcOffset, numBytes);
+	env->ReleasePrimitiveArrayCritical(src, pSrc, 0);
+}
+
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava_nio_Buffer_2II
   (JNIEnv *env, jclass, jfloatArray src, jobject dst, jint numFloats, jint offset )
 {
 	float* pDst = (float*)env->GetDirectBufferAddress( dst );
 	float* pSrc = (float*)env->GetPrimitiveArrayCritical(src, 0);
-
-
 	memcpy( pDst, pSrc + (offset << 2), numFloats << 2 );
-
 	env->ReleasePrimitiveArrayCritical(src, pSrc, 0);
 }
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
- * Method:    copy
- * Signature: (Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;I)V
+ * Method:    copyJni
+ * Signature: ([BILjava/nio/Buffer;II)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_nio_Buffer_2Ljava_nio_Buffer_2I
-  (JNIEnv *env, jclass, jobject src, jobject dst, jint numBytes )
-{
-	float* pSrc = (float*)env->GetDirectBufferAddress( src );
-	float* pDst = (float*)env->GetDirectBufferAddress( dst );
-
-	memcpy( pDst, pSrc, numBytes );
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3BILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jbyteArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+	copy(env, src, srcOffset, dst, dstOffset, numBytes);
 }
 
-JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_utils_BufferUtils_int2float
-  (JNIEnv *, jclass, jint value )
-{
-	return *((jfloat*)&value);
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: ([CILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3CILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jcharArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+	copy(env, src, srcOffset, dst, dstOffset, numBytes);
 }
 
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_utils_BufferUtils_float2int
-  (JNIEnv *, jclass, jfloat value)
-{
-	return *((jint*)&value);
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: ([SILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3SILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jshortArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+	copy(env, src, srcOffset, dst, dstOffset, numBytes); 
 }
 
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_utils_BufferUtils_bitEqual
-  (JNIEnv *, jclass, jint value1, jfloat value2)
-{
-	jint v = *((jint*)&value2);
-	return v == value1;
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: ([IILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3IILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jintArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+  	copy(env, src, srcOffset, dst, dstOffset, numBytes);
+}
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: ([JILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3JILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jlongArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+  	copy(env, src, srcOffset, dst, dstOffset, numBytes);
+}
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: ([FILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jfloatArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+	copy(env, src, srcOffset, dst, dstOffset, numBytes);
+}
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: ([DILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3DILjava_nio_Buffer_2II
+  (JNIEnv * env, jclass, jdoubleArray src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+	copy(env, src, srcOffset, dst, dstOffset, numBytes);
+}
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    copyJni
+ * Signature: (Ljava/nio/Buffer;ILjava/nio/Buffer;II)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_nio_Buffer_2ILjava_nio_Buffer_2II
+  (JNIEnv *env, jclass, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+	char* pSrc = (char*)env->GetDirectBufferAddress( src );  
+	char* pDst = (char*)env->GetDirectBufferAddress( dst );
+	memcpy( pDst + dstOffset, pSrc + srcOffset, numBytes);
 }

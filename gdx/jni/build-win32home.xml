@@ -81,5 +81,6 @@
 				</patternset>
 			</fileset>
 		</apply>
+		<ant antfile="build.xml" target="pack-natives"/>
 	</target>
 </project>
