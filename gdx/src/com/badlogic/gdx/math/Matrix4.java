@@ -773,8 +773,11 @@ public class Matrix4 implements Serializable {
 	
 	public static native void mulJNI(float[] mata, float[] matb);
 	public static native void mulVecJNI(float[] mat, float[] vec);
-	public static native void projVec(float[] mat, float[] vec);
-	public static native void rotVec(float[] mat, float[] vec);
+	public static native void mulVecJNI(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	public static native void projVecJNI(float[] mat, float[] vec);
+	public static native void projVecJNI(float[] mat, float[] vec, int offset, int numVecs, int stride);
+	public static native void rotVecJNI(float[] mat, float[] vec);
+	public static native void rotVecJNI(float[] mat, float[] vec, int offset, int numVecs, int stride);
 	public static native boolean invJNI(float[] values);
 	public static native float detJNI(float[] values);
 }
