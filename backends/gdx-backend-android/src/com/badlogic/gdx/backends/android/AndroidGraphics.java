@@ -26,6 +26,7 @@ import android.view.Display;
 import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.android.surfaceview.*;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
@@ -494,6 +495,26 @@ public final class AndroidGraphics implements Graphics, Renderer {
     }
 
 	@Override public GLU getGLU () {
-		return null;
+		return glu;
+	}
+
+	@Override public boolean supportsDisplayModeChange () {
+		return false;
+	}
+
+	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+		return false;
+	}
+	
+	@Override public DisplayMode[] getDisplayModes () {
+		return new DisplayMode[0];
+	}
+
+	@Override public void setTitle (String title) {
+		
+	}
+
+	@Override public void setIcon (Pixmap pixmap) {
+		
 	}
 }

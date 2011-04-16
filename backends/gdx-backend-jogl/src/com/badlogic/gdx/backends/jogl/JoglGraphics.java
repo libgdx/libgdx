@@ -24,7 +24,9 @@ import javax.media.opengl.GLEventListener;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -117,5 +119,25 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 
 	@Override public float getPpcY () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
+	}
+	
+	@Override public boolean supportsDisplayModeChange () {
+		return false;
+	}
+
+	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+		return false;
+	}
+	
+	@Override public DisplayMode[] getDisplayModes () {
+		return new DisplayMode[0];
+	}
+
+	@Override public void setTitle (String title) {
+		
+	}
+
+	@Override public void setIcon (Pixmap pixmap) {
+		
 	}
 }

@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -145,7 +146,7 @@ public final class LwjglGraphics implements Graphics {
 		if (canvas != null) {
 			Display.setParent(canvas);
 		} else {
-			Display.setDisplayMode(new DisplayMode(width, height));
+			Display.setDisplayMode(new org.lwjgl.opengl.DisplayMode(width, height));
 			Display.setFullscreen(false);
 			Display.setTitle(title);
 		}
@@ -216,5 +217,25 @@ public final class LwjglGraphics implements Graphics {
 
 	public void setVsync (boolean vsync) {
 		this.vsync = vsync;
+	}
+
+	@Override public boolean supportsDisplayModeChange () {
+		return false;
+	}
+	
+	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+		return false;
+	}
+
+	@Override public DisplayMode[] getDisplayModes () {
+		return new DisplayMode[0];
+	}
+
+	@Override public void setTitle (String title) {
+		
+	}
+
+	@Override public void setIcon (Pixmap pixmap) {
+		
 	}
 }

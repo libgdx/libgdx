@@ -71,6 +71,19 @@ public interface Graphics {
 	public enum GraphicsType {
 		AndroidGL, JoglGL, LWJGL, Angle
 	}
+	
+	/**
+	 * Class describing a display mode
+	 * @author mzechner
+	 *
+	 */
+	public class DisplayMode {
+		public int width;
+		public int height;
+		public boolean fullscreen;
+		public int refreshRate;
+		public int bitsPerPixel;
+	}
 
 	/**
 	 * Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to
@@ -158,6 +171,38 @@ public interface Graphics {
 	 * @return the pixels per centimeter on the y-axis.
 	 */
 	public float getPpcY ();
+	
+	/**
+	 * Whether the given backend supports a display mode change via calling {@link Graphics#setDisplayMode(DisplayMode)}
+	 * 
+	 * @return whether display mode changes are supported or not.
+	 */
+	public boolean supportsDisplayModeChange();
+	
+	/**
+	 * @return the supported fullscreen {@link DisplayMode}.
+	 */
+	public DisplayMode[] getDisplayModes();
+	
+	/**
+	 * Sets the current {@link DisplayMode}. Returns false in case the operation failed. Not 
+	 * all backends support this methods. See {@link Graphics#supportsDisplayModeChange()}.
+	 * @param displayMode the display mode.
+	 * @return whether the operation succeeded.
+	 */
+	public boolean setDisplayMode(DisplayMode displayMode);
+	
+	/**
+	 * Sets the title of the window. Ignored on Android.
+	 * @param title the title.
+	 */
+	public void setTitle(String title);
+	
+	/**
+	 * Sets the icon of the window. Ignored on Android.
+	 * @param pixmap
+	 */
+	public void setIcon(Pixmap pixmap);
 	
 //	/**
 //	 * Opens the first back facing video camera. Only one camera

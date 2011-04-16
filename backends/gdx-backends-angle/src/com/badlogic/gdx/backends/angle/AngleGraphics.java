@@ -18,11 +18,13 @@ package com.badlogic.gdx.backends.angle;
 import java.awt.Toolkit;
 
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
+import com.badlogic.gdx.graphics.Pixmap;
 
 public class AngleGraphics implements Graphics {
 	GL20 gl;
@@ -115,5 +117,25 @@ public class AngleGraphics implements Graphics {
 			frameStart = time;
 		}
 		frames++;
+	}
+
+	@Override public boolean supportsDisplayModeChange () {
+		return false;
+	}
+
+	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+		return false;
+	}
+	
+	@Override public DisplayMode[] getDisplayModes () {
+		return new DisplayMode[0];
+	}
+
+	@Override public void setTitle (String title) {
+		
+	}
+
+	@Override public void setIcon (Pixmap pixmap) {
+		
 	}
 }
