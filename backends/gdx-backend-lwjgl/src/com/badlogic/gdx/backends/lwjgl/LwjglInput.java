@@ -29,6 +29,7 @@ import org.lwjgl.input.Mouse;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.utils.Pool;
 
 /**
@@ -165,10 +166,6 @@ final class LwjglInput implements Input {
 
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {
 
-	}
-
-	@Override public boolean supportsOnscreenKeyboard () {
-		return false;
 	}
 
 	@Override public void setCatchBackKey (boolean catchBack) {
@@ -605,10 +602,6 @@ final class LwjglInput implements Input {
 		return this.processor;
 	}
 
-	@Override public boolean supportsVibrator () {
-		return false;
-	}
-
 	@Override public void vibrate (int milliseconds) {
 	}
 
@@ -636,10 +629,6 @@ final class LwjglInput implements Input {
 	@Override public void cancelVibrate () {
 	}
 
-	@Override public boolean supportsCompass () {
-		return false;
-	}
-
 	@Override public float getAzimuth () {
 		return 0;
 	}
@@ -650,5 +639,10 @@ final class LwjglInput implements Input {
 
 	@Override public float getRoll () {
 		return 0;
+	}
+	
+	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {		
+		if(peripheral == Peripheral.HardwareKeyboard) return true;
+		return false;
 	}
 }

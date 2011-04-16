@@ -101,13 +101,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private boolean catchBack = false;
 	private final Vibrator vibrator;
 	private boolean compassAvailable;
+	boolean keyboardAvailable;
 	private final float[] magneticFieldValues = new float[3];
 	private float azimuth = 0;
 	private float pitch = 0;
 	private float roll = 0;
 	private float inclination = 0;
-	private boolean justTouched = false;
-
+	private boolean justTouched = false;	
 	private InputProcessor processor;
 
 	public AndroidInput (AndroidApplication activity, View view, int sleepTime) {
@@ -187,10 +187,6 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	public boolean isTouched (int pointer) {
 		return touched[pointer];
-	}
-
-	@Override public boolean isAccelerometerAvailable () {
-		return accelerometerAvailable;
 	}
 
 	@Override public boolean isKeyPressed (int key) {
@@ -341,10 +337,6 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override public boolean supportsMultitouch () {
-		return hasMultitouch;
-	}
-
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {
 		InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
 		if (visible) {
@@ -352,18 +344,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		} else {
 			manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
 		}
-	}
-
-	@Override public boolean supportsOnscreenKeyboard () {
-		return true;
-	}
+	}	
 
 	@Override public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
-	}
-
-	@Override public boolean supportsVibrator () {
-		return true;
 	}
 
 	@Override public void vibrate (int milliseconds) {
@@ -389,12 +373,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			return false;
 	}
 
-	@Override public boolean supportsCompass () {		
-		return compassAvailable;
-	}
-
 	final float[] R = new float[9];	
-	final float[] orientation = new float[3];
+	final float[] orientation = new float[3];			
 	private void updateOrientation() {
 		if(SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
 			SensorManager.getOrientation(R, orientation);
@@ -457,5 +437,14 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	
 	@Override public InputProcessor getInputProcessor() {
 		return this.processor;
+	}
+
+	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if(peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
+		if(peripheral == Peripheral.Compass) return compassAvailable;
+		if(peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
+		if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if(peripheral == Peripheral.Vibrator) return vibrator != null;
+		return false;
 	}
 }

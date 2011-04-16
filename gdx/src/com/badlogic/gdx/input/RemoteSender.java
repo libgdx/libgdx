@@ -19,6 +19,7 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.InputProcessor;
 
 /**
@@ -50,7 +51,7 @@ public class RemoteSender implements InputProcessor {
 			socket.setTcpNoDelay(true);
 			socket.setSoTimeout(3000);
 			out = new DataOutputStream(socket.getOutputStream());
-			out.writeBoolean(Gdx.input.supportsMultitouch());
+			out.writeBoolean(Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen));
 			connected = true;
 			Gdx.input.setInputProcessor(this);
 		} catch(Exception e) {

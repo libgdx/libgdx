@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -91,7 +92,7 @@ public class UITest extends GdxTest implements InputProcessor {
 		button.clickListener = new ClickListener() {
 
 			@Override public void clicked (Button button) {
-				if (Gdx.input.supportsOnscreenKeyboard()) Gdx.input.setOnscreenKeyboardVisible(true);
+				if (Gdx.input.isPeripheralAvailable(Peripheral.OnscreenKeyboard)) Gdx.input.setOnscreenKeyboardVisible(true);
 			}
 		};
 		ui.addActor(button);

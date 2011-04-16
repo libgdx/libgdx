@@ -35,6 +35,7 @@ import android.widget.EditText;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.utils.AtomicQueue;
 
 /**
@@ -96,6 +97,7 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 	private float roll = 0;
 	private float inclination = 0;
 	private boolean justTouched = false;
+	boolean keyboardAvailable;
 
 	private InputProcessor processor;
 
@@ -191,10 +193,6 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 
 	public boolean isTouched (int pointer) {
 		return touched[pointer];
-	}
-
-	@Override public boolean isAccelerometerAvailable () {
-		return accelerometerAvailable;
 	}
 
 	@Override public boolean isKeyPressed (int key) {
@@ -348,10 +346,6 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		}
 	}
 
-	@Override public boolean supportsMultitouch () {
-		return hasMultitouch;
-	}
-
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {
 		InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
 		if (visible) {
@@ -359,10 +353,6 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		} else {
 			manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
 		}
-	}
-
-	@Override public boolean supportsOnscreenKeyboard () {
-		return true;
 	}
 
 	@Override public void setCatchBackKey (boolean catchBack) {
@@ -380,10 +370,6 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 	@Override public void cancelVibrate () {
 		vibrator.cancel();
 	}
-	
-	@Override public boolean supportsVibrator () {
-		return true;
-	}
 
 	@Override public boolean justTouched () {
 		return justTouched;
@@ -395,13 +381,9 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		else
 			return false;
 	}
-	
-	@Override public boolean supportsCompass () {		
-		return compassAvailable;
-	}
 
 	final float[] R = new float[9];	
-	final float[] orientation = new float[3];
+	final float[] orientation = new float[3];	
 	private void updateOrientation() {
 		if(SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
 			SensorManager.getOrientation(R, orientation);
@@ -433,5 +415,14 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		
 		updateOrientation();
 		return roll;
+	}
+	
+	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if(peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
+		if(peripheral == Peripheral.Compass) return compassAvailable;
+		if(peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
+		if(peripheral == Peripheral.OnscreenKeyboard) return true;
+		if(peripheral == Peripheral.Vibrator) return vibrator != null;
+		return false;
 	}
 }

@@ -250,10 +250,6 @@ public class RemoteInput implements Runnable, Input {
 		}
 	}
 
-	@Override public boolean isAccelerometerAvailable () {
-		return true;
-	}
-
 	@Override public float getAccelerometerX () {
 		return accel[0];
 	}
@@ -310,19 +306,7 @@ public class RemoteInput implements Runnable, Input {
 	}
 
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {		
-	}
-
-	@Override public boolean supportsOnscreenKeyboard () {
-		return false;
-	}
-
-	@Override public boolean supportsMultitouch () {
-		return multiTouch;
-	}
-
-	@Override public boolean supportsVibrator () {
-		return true;
-	}
+	}	
 
 	@Override public void vibrate (int milliseconds) {
 		
@@ -334,10 +318,6 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override public void cancelVibrate () {
 		
-	}
-
-	@Override public boolean supportsCompass () {
-		return true;
 	}
 
 	@Override public float getAzimuth () {
@@ -369,5 +349,12 @@ public class RemoteInput implements Runnable, Input {
 	 */
 	public String[] getIPs() {
 		return ips;
+	}
+
+	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if(peripheral == Peripheral.Accelerometer) return true;
+		if(peripheral == Peripheral.Compass) return true;
+		if(peripheral == Peripheral.MultitouchScreen) return multiTouch;				
+		return false;
 	}
 }

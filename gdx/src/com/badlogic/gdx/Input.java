@@ -176,11 +176,21 @@ public interface Input {
 		public static final int KEYCODE_END = 132;
 		public static final int KEYCODE_INSERT = 133;		
 	}
-
+	
 	/**
-	 * @return whether an accelerometer is available
+	 * Enumeration of potentially available peripherals. Use with
+	 * {@link Input#isPeripheralAvailable(Peripheral)}.
+	 * @author mzechner
+	 *
 	 */
-	public boolean isAccelerometerAvailable ();
+	public enum Peripheral {
+		HardwareKeyboard,
+		OnscreenKeyboard,				
+		MultitouchScreen,
+		Accelerometer,
+		Compass,
+		Vibrator
+	}
 
 	/**
 	 * @return The value of the accelerometer on its x-axis. ranges between [-10,10].
@@ -286,25 +296,6 @@ public interface Input {
 	public void setOnscreenKeyboardVisible (boolean visible);
 
 	/**
-	 * @return whether an on-screen keyboard is available or not
-	 */
-	public boolean supportsOnscreenKeyboard ();
-
-	/**
-	 * Returns whether multitouch is supported by the device. Note that this also includes the "broken" multitouch on the Droid or
-	 * Nexus One!
-	 * 
-	 * @return whether multitouch is supported
-	 */
-	public boolean supportsMultitouch ();
-
-	/**
-	 * Retuns whether the system has a vibrator. Yeah, L.O.L.
-	 * @return whether a vibrator is present or not
-	 */
-	public boolean supportsVibrator ();
-
-	/**
 	 * Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
 	 * 
@@ -324,11 +315,6 @@ public interface Input {
 	 * Stops the vibrator
 	 */
 	public void cancelVibrate();
-
-	/**
-	 * @return whether a compass is available.
-	 */
-	public boolean supportsCompass();
 	
 	/**
 	 * The azimuth is the angle of the device's orientation around the z-axis. The
@@ -375,4 +361,10 @@ public interface Input {
 	 * @return the currently set {@link InputProcessor} or null.
 	 */
 	public InputProcessor getInputProcessor();
+	
+	/**
+	 * @param peripheral the {@link Peripheral}
+	 * @return whether the peripheral is available or not.
+	 */
+	public boolean isPeripheralAvailable(Peripheral peripheral);
 }

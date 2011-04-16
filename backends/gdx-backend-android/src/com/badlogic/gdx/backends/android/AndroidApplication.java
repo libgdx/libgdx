@@ -20,6 +20,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -280,5 +281,12 @@ public class AndroidApplication extends Activity implements Application {
 		synchronized(runnables) {
 			runnables.add(runnable);
 		}
+	}
+	
+	@Override public void onConfigurationChanged(Configuration config) {
+		super.onConfigurationChanged(config);
+		boolean keyboardAvailable = false;
+		if(config.keyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) keyboardAvailable = true;
+		input.keyboardAvailable = keyboardAvailable;		
 	}
 }

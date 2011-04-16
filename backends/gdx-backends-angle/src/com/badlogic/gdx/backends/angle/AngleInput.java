@@ -150,10 +150,6 @@ public class AngleInput implements Input {
 
 	}
 
-	@Override public boolean supportsOnscreenKeyboard () {
-		return false;
-	}
-
 	@Override public void setCatchBackKey (boolean catchBack) {
 
 	}
@@ -398,10 +394,6 @@ public class AngleInput implements Input {
 		}		
 	}
 
-	@Override public boolean supportsVibrator () {
-		return false;
-	}
-
 	@Override public void vibrate (int milliseconds) {
 		
 	}
@@ -420,10 +412,6 @@ public class AngleInput implements Input {
 	@Override public void cancelVibrate () {
 	}
 
-	@Override public boolean supportsCompass () {
-		return false;
-	}
-
 	@Override public float getAzimuth () {
 		return 0;
 	}
@@ -434,5 +422,10 @@ public class AngleInput implements Input {
 
 	@Override public float getRoll () {
 		return 0;
+	}
+	
+	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {	
+		if(peripheral == Peripheral.HardwareKeyboard) return true;		
+		return false;
 	}
 }

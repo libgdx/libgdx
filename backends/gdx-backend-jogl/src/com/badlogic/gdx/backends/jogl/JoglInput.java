@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.utils.Pool;
 
 public class JoglInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
@@ -136,10 +137,6 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			return 0;
 	}
 
-	@Override public boolean isAccelerometerAvailable () {
-		return false;
-	}
-
 	@Override public boolean isKeyPressed (int key) {
 		synchronized (this) {
 			if (key == Input.Keys.ANY_KEY)
@@ -232,14 +229,6 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 
 	@Override public void setOnscreenKeyboardVisible (boolean visible) {
 
-	}
-
-	@Override public boolean supportsMultitouch () {
-		return false;
-	}
-
-	@Override public boolean supportsOnscreenKeyboard () {
-		return false;
 	}
 
 	@Override public void mouseDragged (MouseEvent e) {
@@ -443,10 +432,6 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		return this.processor;
 	}
 
-	@Override public boolean supportsVibrator () {
-		return false;
-	}
-
 	@Override public void vibrate (int milliseconds) {
 	}
 
@@ -464,10 +449,6 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	@Override public void cancelVibrate () {
 	}
 
-	@Override public boolean supportsCompass () {
-		return false;
-	}
-
 	@Override public float getAzimuth () {
 		return 0;
 	}
@@ -478,5 +459,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 
 	@Override public float getRoll () {
 		return 0;
+	}
+	
+	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {		
+		if(peripheral == Peripheral.HardwareKeyboard) return true;	
+		return false;
 	}
 }
