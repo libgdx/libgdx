@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Image extends Actor {
-	public final TextureRegion region;
+	public TextureRegion region;
 
 	public Image (String name) {
 		super(name);
