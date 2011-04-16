@@ -20,7 +20,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -66,7 +70,7 @@ public class ShaderProgram implements Disposable {
 	public static boolean pedantic = true;
 	
 	/** the list of currently available shaders **/
-	private final static ArrayList<ShaderProgram> shaders = new ArrayList<ShaderProgram>();
+	private final static Map<Application, List<ShaderProgram>> shaders = new HashMap<Application, List<ShaderProgram>>();
 
 	/** the log **/
 	private String log = "";
@@ -125,7 +129,7 @@ public class ShaderProgram implements Disposable {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(4 * 16);
 		buffer.order(ByteOrder.nativeOrder());
 		matrix = buffer.asFloatBuffer();
-		shaders.add(this);
+		addManagedShader(Gdx.app, this);
 	}
 
 	/**
@@ -528,7 +532,7 @@ public class ShaderProgram implements Disposable {
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
-		shaders.remove(this);
+		if(shaders.get(Gdx.app) != null) shaders.get(Gdx.app).remove(this);
 	}
 
 	/**
@@ -564,20 +568,43 @@ public class ShaderProgram implements Disposable {
 		}
 	}
 
+	private void addManagedShader (Application app, ShaderProgram shaderProgram) {
+		List<ShaderProgram> managedResources = shaders.get(app);
+		if(managedResources == null) managedResources = new ArrayList<ShaderProgram>();
+		managedResources.add(shaderProgram);
+		shaders.put(app, managedResources);
+	}
+	
 	/**
 	 * Invalidates all shaders so the next time they are used new handles are generated
+	 * @param app 
 	 */
-	public static void invalidateAllShaderPrograms () {
+	public static void invalidateAllShaderPrograms (Application app) {
 		if (Gdx.graphics.getGL20() == null) return;
 
-		for (int i = 0; i < shaders.size(); i++) {
-			shaders.get(i).invalidated = true;
-			shaders.get(i).checkManaged();
+		List<ShaderProgram> shaderList = shaders.get(app);
+		if(shaderList == null) return;
+		
+		for (int i = 0; i < shaderList.size(); i++) {
+			shaderList.get(i).invalidated = true;
+			shaderList.get(i).checkManaged();
 		}
 	}
 
-	public static void clearAllShaderPrograms () {
-		shaders.clear();
+	public static void clearAllShaderPrograms (Application app) {
+		shaders.remove(app);
+	}
+	
+	public static String getManagedStatus() {
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		builder.append("Managed shaders/app: { ");
+		for(Application app: shaders.keySet()) {
+			builder.append(shaders.get(app).size());
+			builder.append(" ");
+		}
+		builder.append("}");
+		return builder.toString();
 	}
 
 	/**

@@ -18,7 +18,11 @@ package com.badlogic.gdx.graphics;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
@@ -68,7 +72,7 @@ public class Mesh implements Disposable {
 	}
 
 	/** list of all meshes **/
-	static final ArrayList<Mesh> meshes = new ArrayList<Mesh>();
+	static final Map<Application, List<Mesh>> meshes = new HashMap<Application, List<Mesh>>();
 
 	/** used for benchmarking **/
 	public static boolean forceVBO = false;
@@ -98,7 +102,7 @@ public class Mesh implements Disposable {
 			isVertexArray = true;
 		}
 
-		meshes.add(this);
+		addManagedMesh(Gdx.app, this);
 	}
 	
 	/**
@@ -128,7 +132,7 @@ public class Mesh implements Disposable {
 			isVertexArray = true;
 		}
 
-		meshes.add(this);
+		addManagedMesh(Gdx.app, this);
 	}
 
 	/**
@@ -157,8 +161,7 @@ public class Mesh implements Disposable {
 			indices = new IndexBufferObject(maxIndices);
 			isVertexArray = true;
 		}
-
-		meshes.add(this);
+		addManagedMesh(Gdx.app, this);		
 	}
 
 	/**
@@ -449,7 +452,7 @@ public class Mesh implements Disposable {
 	 * Frees all resources associated with this Mesh
 	 */
 	public void dispose () {
-		meshes.remove(this);
+		if(meshes.get(Gdx.app) != null) meshes.get(Gdx.app).remove(this);
 		vertices.dispose();
 		indices.dispose();
 	}
@@ -534,15 +537,24 @@ public class Mesh implements Disposable {
 		return indices.getBuffer();
 	}
 
+	private static void addManagedMesh(Application app, Mesh mesh) {
+		List<Mesh> managedResources = meshes.get(app);
+		if(managedResources == null) managedResources = new ArrayList<Mesh>();
+		managedResources.add(mesh);
+		meshes.put(app, managedResources);
+	}
+	
 	/**
 	 * Invalidates all meshes so the next time they are rendered new VBO handles are generated.
+	 * @param app 
 	 */
-	public static void invalidateAllMeshes () {
-
-		for (int i = 0; i < meshes.size(); i++) {
-			if (meshes.get(i).vertices instanceof VertexBufferObject) {
-				((VertexBufferObject)meshes.get(i).vertices).invalidate();
-				meshes.get(i).indices.invalidate();
+	public static void invalidateAllMeshes (Application app) {
+		List<Mesh> meshesList = meshes.get(app);
+		if(meshesList == null) return;
+		for (int i = 0; i < meshesList.size(); i++) {
+			if (meshesList.get(i).vertices instanceof VertexBufferObject) {
+				((VertexBufferObject)meshesList.get(i).vertices).invalidate();
+				meshesList.get(i).indices.invalidate();
 			}
 		}
 	}
@@ -550,7 +562,19 @@ public class Mesh implements Disposable {
 	/**
 	 * Will clear the managed mesh cache. I wouldn't use this if i was you :)
 	 */
-	public static void clearAllMeshes () {
-		meshes.clear();
+	public static void clearAllMeshes (Application app) {		
+		meshes.remove(app);
+	}
+	
+	public static String getManagedStatus() {
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		builder.append("Managed meshes/app: { ");
+		for(Application app: meshes.keySet()) {
+			builder.append(meshes.get(app).size());
+			builder.append(" ");
+		}
+		builder.append("}");
+		return builder.toString();
 	}
 }

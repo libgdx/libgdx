@@ -19,9 +19,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -50,7 +55,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class FrameBuffer implements Disposable {
 	/** the frame buffers **/
-	private final static ArrayList<FrameBuffer> buffers = new ArrayList<FrameBuffer>();
+	private final static Map<Application, List<FrameBuffer>> buffers = new HashMap<Application, List<FrameBuffer>>();
 
 	/** the color buffer texture **/
 	private Texture colorTexture;
@@ -85,7 +90,7 @@ public class FrameBuffer implements Disposable {
 		this.format = format;
 		build();
 
-		buffers.add(this);
+		addManagedFrameBuffer(Gdx.app, this);
 	}
 
 	private void build () {
@@ -156,7 +161,7 @@ public class FrameBuffer implements Disposable {
 		handle.flip();
 		gl.glDeleteFramebuffers(1, handle);
 
-		buffers.remove(this);
+		if(buffers.get(Gdx.app) != null) buffers.get(Gdx.app).remove(this);
 	}
 
 	/**
@@ -175,20 +180,41 @@ public class FrameBuffer implements Disposable {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, 0);
 	}
 
+	private void addManagedFrameBuffer (Application app, FrameBuffer frameBuffer) {
+		List<FrameBuffer> managedResources = buffers.get(app);
+		if(managedResources == null) managedResources = new ArrayList<FrameBuffer>();
+		managedResources.add(frameBuffer);
+		buffers.put(app, managedResources);
+	}
+	
 	/**
 	 * Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
 	 * assumes that the texture attached to this buffer has already been rebuild! Use with care.
 	 */
-	public static void invalidateAllFrameBuffers () {
+	public static void invalidateAllFrameBuffers (Application app) {
 		if (Gdx.graphics.getGL20() == null) return;
 
-		for (int i = 0; i < buffers.size(); i++) {
-			buffers.get(i).build();
+		List<FrameBuffer> bufferList = buffers.get(app);
+		if(bufferList == null) return;		
+		for (int i = 0; i < bufferList.size(); i++) {
+			bufferList.get(i).build();
 		}
 	}
 
-	public static void clearAllFrameBuffers () {
-		buffers.clear();
+	public static void clearAllFrameBuffers (Application app) {
+		buffers.remove(app);
+	}
+	
+	public static String getManagedStatus() {
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		builder.append("Managed buffers/app: { ");
+		for(Application app: buffers.keySet()) {
+			builder.append(buffers.get(app).size());
+			builder.append(" ");
+		}
+		builder.append("}");
+		return builder.toString();
 	}
 
 	/**

@@ -269,10 +269,15 @@ public final class AndroidGraphics implements Graphics, Renderer {
         logConfig(config);
         updatePpi();
 
-        Mesh.invalidateAllMeshes();
-        Texture.invalidateAllTextures();
-        ShaderProgram.invalidateAllShaderPrograms();
-        FrameBuffer.invalidateAllFrameBuffers();
+        Mesh.invalidateAllMeshes(app);
+        Texture.invalidateAllTextures(app);
+        ShaderProgram.invalidateAllShaderPrograms(app);
+        FrameBuffer.invalidateAllFrameBuffers(app);
+        
+        Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
+        Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
+        Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
+        Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
 
         Display display = app.getWindowManager().getDefaultDisplay();
         this.width = display.getWidth();
@@ -445,10 +450,15 @@ public final class AndroidGraphics implements Graphics, Renderer {
     }   
 
     public void clearManagedCaches() {
-        Mesh.clearAllMeshes();
-        Texture.clearAllTextures();
-        ShaderProgram.clearAllShaderPrograms();
-        FrameBuffer.clearAllFrameBuffers();
+        Mesh.clearAllMeshes(app);
+        Texture.clearAllTextures(app);
+        ShaderProgram.clearAllShaderPrograms(app);
+        FrameBuffer.clearAllFrameBuffers(app);
+        
+        Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
+        Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
+        Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
+        Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
     }
 
     public View getView() {

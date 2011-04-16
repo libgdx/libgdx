@@ -178,7 +178,7 @@ public class GdxTests
 		MeshShaderTest.class,
 		MeshTest.class,		
 		//Mpg123Test.class,
-		MultitouchTest.class,
+		MultitouchTest.class,		
 		MusicTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,

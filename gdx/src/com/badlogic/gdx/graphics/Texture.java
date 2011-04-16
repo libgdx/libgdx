@@ -15,10 +15,13 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
@@ -83,7 +86,7 @@ public class Texture implements Disposable {
 	}
 	
 	final static IntBuffer buffer = BufferUtils.newIntBuffer(1);
-	final static ArrayList<Texture> managedTextures = new ArrayList<Texture>();	
+	final static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();	
 	
 	int width;
 	int height;	
@@ -137,8 +140,8 @@ public class Texture implements Disposable {
 		if(mipmap)
 			minFilter = TextureFilter.MipMap;
 		setFilter(minFilter, magFilter);
-		setWrap(uWrap, vWrap);
-		managedTextures.add(this);
+		setWrap(uWrap, vWrap);	
+		addManagedTexture(Gdx.app, this);
 	}
 	
 	/**
@@ -169,7 +172,7 @@ public class Texture implements Disposable {
 			minFilter = TextureFilter.MipMap;
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);
-		managedTextures.add(this);
+		addManagedTexture(Gdx.app, this);
 	}
 	
 	/**
@@ -255,7 +258,7 @@ public class Texture implements Disposable {
 		format = Format.RGBA8888; // FIXME, let TextureData return the format upon load.
 		this.width = textureData.getWidth();
 		this.height = textureData.getHeight();
-		managedTextures.add(this);
+		addManagedTexture(Gdx.app, this);
 	}
 	
 	private void reload() {
@@ -407,8 +410,9 @@ public class Texture implements Disposable {
 	public void dispose () {
 		buffer.put(0, glHandle);
 		Gdx.gl.glDeleteTextures(1, buffer);
-		if(isManaged)
-			managedTextures.remove(this);
+		if(isManaged) {
+			if(managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).remove(this);
+		}
 	}
 
 	/**
@@ -460,21 +464,42 @@ public class Texture implements Disposable {
 			return GL10.GL_LINEAR_MIPMAP_LINEAR;
 	}
 	
+	private static void addManagedTexture(Application app, Texture texture) {
+		List<Texture> managedTexureList = managedTextures.get(app);
+		if(managedTexureList == null) managedTexureList = new ArrayList<Texture>();
+		managedTexureList.add(texture);
+		managedTextures.put(app, managedTexureList);
+	}
+	
 	/**
 	 * Clears all managed textures. This is an internal method. Do not use it!
 	 */
-	public static void clearAllTextures () {
-		managedTextures.clear();
+	public static void clearAllTextures (Application app) {
+		managedTextures.remove(app);
 	}
 	
 	/**
 	 * Invalidate all managed textures. This is an internal method. Do not use it!
 	 */
-	public static void invalidateAllTextures () {
-		for (int i = 0; i < managedTextures.size(); i++) {			
-			Texture texture = managedTextures.get(i);			
+	public static void invalidateAllTextures (Application app) {
+		List<Texture> managedTexureList = managedTextures.get(app);
+		if(managedTexureList == null) return;
+		for (int i = 0; i < managedTexureList.size(); i++) {			
+			Texture texture = managedTexureList.get(i);			
 			texture.reload();			
 		}		
+	}
+	
+	public static String getManagedStatus() {
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		builder.append("Managed textures/app: { ");
+		for(Application app: managedTextures.keySet()) {
+			builder.append(managedTextures.get(app).size());
+			builder.append(" ");
+		}
+		builder.append("}");
+		return builder.toString();
 	}
 	
 	/**

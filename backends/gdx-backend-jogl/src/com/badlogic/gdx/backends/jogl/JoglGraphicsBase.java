@@ -41,8 +41,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	boolean useGL2;
 	long frameStart = System.nanoTime();
 	long lastFrameTime = System.nanoTime();
-	float deltaTime = 0;
-	WindowedMean mean = new WindowedMean(10);
+	float deltaTime = 0;	
 	int fps;
 	int frames;
 	boolean paused = true;
@@ -79,8 +78,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	void create () {
 		frameStart = System.nanoTime();
 		lastFrameTime = frameStart;
-		deltaTime = 0;
-		mean.clear();
+		deltaTime = 0;		
 		animator = new JoglAnimator(canvas);
 // animator.setRunAsFastAsPossible(true);
 		animator.start();
@@ -97,8 +95,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		paused = false;
 		frameStart = System.nanoTime();
 		lastFrameTime = frameStart;
-		deltaTime = 0;
-		mean.clear();
+		deltaTime = 0;		
 		animator = new JoglAnimator(canvas);
 		animator.setRunAsFastAsPossible(true);
 		animator.start();
@@ -130,8 +127,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	void updateTimes () {
 		deltaTime = (System.nanoTime() - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = System.nanoTime();
-		mean.addValue(deltaTime);
+		lastFrameTime = System.nanoTime();		
 
 		if (System.nanoTime() - frameStart > 1000000000) {
 			fps = frames;
@@ -142,7 +138,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	}
 
 	@Override public float getDeltaTime () {
-		return mean.getMean() == 0 ? deltaTime : mean.getMean();
+		return deltaTime;
 	}
 
 	@Override public int getFramesPerSecond () {
