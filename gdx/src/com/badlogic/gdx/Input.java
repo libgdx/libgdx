@@ -363,6 +363,10 @@ public interface Input {
 	public InputProcessor getInputProcessor();
 	
 	/**
+	 * Queries whether a {@link Peripheral} is currently available. In case of Android
+	 * and the {@link Peripheral#HardwareKeyboard} this returns the whether the keyboard
+	 * is currently slid out or not. 
+	 * 
 	 * @param peripheral the {@link Peripheral}
 	 * @return whether the peripheral is available or not.
 	 */
