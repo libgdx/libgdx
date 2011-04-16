@@ -17,7 +17,6 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself

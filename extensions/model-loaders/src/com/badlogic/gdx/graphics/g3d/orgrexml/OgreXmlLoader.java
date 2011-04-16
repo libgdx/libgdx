@@ -35,12 +35,12 @@ import com.badlogic.gdx.graphics.g3d.orgrexml.skeleton.Bone;
 import com.badlogic.gdx.graphics.g3d.orgrexml.skeleton.Boneparent;
 import com.badlogic.gdx.graphics.g3d.orgrexml.skeleton.Keyframe;
 import com.badlogic.gdx.graphics.g3d.orgrexml.skeleton.Track;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.MathUtils;
 
 public class OgreXmlLoader {
 	public SkeletonModel loadMesh(FileHandle file) {

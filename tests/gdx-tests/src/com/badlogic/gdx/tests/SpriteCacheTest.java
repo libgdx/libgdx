@@ -27,8 +27,8 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.MathUtils;
 
 public class SpriteCacheTest extends GdxTest implements InputProcessor {
 	int SPRITES = 400 / 2;

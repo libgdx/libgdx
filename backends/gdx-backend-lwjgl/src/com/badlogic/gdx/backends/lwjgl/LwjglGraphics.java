@@ -33,8 +33,8 @@ import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.MathUtils;
 
 /**
  * An implementation of the {@link Graphics} interface based on Lwjgl.

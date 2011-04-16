@@ -22,7 +22,7 @@ import java.util.BitSet;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.MathUtils;
+import com.badlogic.gdx.math.MathUtils;
 
 // BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.

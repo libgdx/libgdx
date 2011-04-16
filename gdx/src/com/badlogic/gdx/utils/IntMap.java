@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /**

@@ -30,8 +30,8 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.MathUtils;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	static int major, minor;

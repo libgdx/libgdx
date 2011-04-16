@@ -44,7 +44,7 @@ import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.utils.MathUtils;
+import com.badlogic.gdx.math.MathUtils;
 
 public class TexturePacker {
 	static Pattern indexPattern = Pattern.compile(".+_(\\d+)(_.*|$)");
