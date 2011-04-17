@@ -130,9 +130,8 @@ public class GdxRenderer implements Renderer {
 	public Font loadFont (URL baseUrl, Map<String, String> parameter, Collection<FontParameter> conditionalParameter)
 		throws IOException {
 		String fileName = parameter.get("filename");
-		if (fileName == null) {
-			throw new IllegalArgumentException("filename parameter required");
-		}
+		if (fileName == null) throw new IllegalArgumentException("Font filename parameter is required.");
+		if (!fileName.startsWith("/")) fileName = "/" + fileName;
 		BitmapFont bitmapFont = getActiveCacheContext().loadBitmapFont(new URL(baseUrl, fileName));
 		return new GdxFont(this, bitmapFont, parameter, conditionalParameter);
 	}

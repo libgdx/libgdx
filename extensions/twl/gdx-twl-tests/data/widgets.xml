@@ -66,19 +66,19 @@
             <alias ref="none"/>
 				</select>
 				</images>
-    <fontDef name="normal" filename="font.fnt" color="#FFFFFF" default="true">
+    <fontDef name="normal" filename="fonts/font.fnt" color="#FFFFFF" default="true">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
         <fontParam if="textSelection" color="blue"/>
     </fontDef>
-    <fontDef name="heading" filename="font-heading.fnt" color="#FFFFFF">
+    <fontDef name="heading" filename="fonts/font-heading.fnt" color="#FFFFFF">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
         <fontParam if="textSelection" color="blue"/>
     </fontDef>
-    <fontDef name="button.font" filename="font.fnt" color="#FFFFFF">
+    <fontDef name="button.font" filename="fonts/font.fnt" color="#FFFFFF">
         <fontParam if="error" color="red"/>
         <fontParam if="warning" color="orange"/>
         <fontParam if="disabled" color="gray"/>
