@@ -55,6 +55,7 @@ public class ParticleEmitter {
 	private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
 	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
 
+	private float accumulator;
 	private Sprite sprite;
 	private Particle[] particles;
 	private int minParticleCount, maxParticleCount = 4;
@@ -162,8 +163,10 @@ public class ParticleEmitter {
 	}
 
 	public void draw (SpriteBatch spriteBatch, float delta) {
-		delta = Math.min(delta, 0.250f);
-		int deltaMillis = (int)(delta * 1000);
+		accumulator += Math.min(delta * 1000, 250);
+		if (accumulator < 1) return;
+		int deltaMillis = (int)accumulator;
+		accumulator -= deltaMillis;
 
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
