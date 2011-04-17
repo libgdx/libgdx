@@ -168,7 +168,7 @@ public class TWL implements InputProcessor {
 			ignoreMouse = false;
 			return false;
 		}
-		boolean handled = gui.handleMouse(x, y, 0, false);
+		boolean handled = gui.handleMouse(x, y, button, false);
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			// Move mouse away since there is no mouse cursor on android.
 			gui.handleMouse(-9999, -9999, -1, false);
