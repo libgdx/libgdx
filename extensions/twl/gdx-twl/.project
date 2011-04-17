@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>assets</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/gdx-twl-tests-android/assets</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
