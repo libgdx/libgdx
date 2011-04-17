@@ -89,7 +89,6 @@ public class TextureAtlas implements Disposable {
 				else if (pageImage == null) {
 					FileHandle file = imagesDir.child(line);
 
-					// FIXME - Actually load in the requested format.
 					Format format = Format.valueOf(readValue(reader));
 
 					readTuple(reader);
@@ -108,7 +107,7 @@ public class TextureAtlas implements Disposable {
 						repeatY = Repeat;
 					}
 
-					pageImage = new Texture(file, TextureFilter.isMipMap(min) || TextureFilter.isMipMap(max) ? true : false);
+					pageImage = new Texture(file, format, TextureFilter.isMipMap(min) || TextureFilter.isMipMap(max) ? true : false);
 					pageImage.setFilter(min, max);
 					pageImage.setWrap(repeatX, repeatY);
 					textures.add(pageImage);
