@@ -108,7 +108,7 @@ public class SpriteBatch implements Disposable {
 
 	/**
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
-	 * point to the right and the origin being in the bottome left corner of the screen. The projection will be pixel perfect with
+	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
 	 */
 	public SpriteBatch () {
@@ -118,7 +118,7 @@ public class SpriteBatch implements Disposable {
 	/**
 	 * <p>
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
-	 * point to the right and the origin being in the bottome left corner of the screen. The projection will be pixel perfect with
+	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
 	 * </p>
 	 * 
@@ -158,7 +158,7 @@ public class SpriteBatch implements Disposable {
 	/**
 	 * <p>
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
-	 * point to the right and the origin being in the bottome left corner of the screen. The projection will be pixel perfect with
+	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
 	 * </p>
 	 * 
@@ -335,7 +335,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y having the given width and height in pixels. The rectangle is offset by
+	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
 	 * originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled around
 	 * originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around originX, originY. The
 	 * portion of the {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in
@@ -486,7 +486,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y having the given width and height in pixels. The portion of the
+	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in texels. FlipX
 	 * and flipY specify whether the texture portion should be fliped horizontally or vertically.
 	 * 
@@ -558,7 +558,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y having the given width and height in pixels. The portion of the
+	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by srcX, srcY and srcWidth, srcHeight are used. These coordinates and sizes are given in texels.
 	 * 
 	 * @param texture the Texture
@@ -612,7 +612,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y having the given width and height in pixels. The portion of the
+	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by u, v and u2, v2 are used. These coordinates and sizes are given in texture size percentage. The
 	 * rectangle will have the given tint {@link Color}.
 	 * 
@@ -661,7 +661,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y having the width and height of the texture.
+	 * Draws a rectangle with the bottom left corner at x,y having the width and height of the texture.
 	 * @param texture the Texture
 	 * @param x the x-coordinate in screen space
 	 * @param y the y-coordinate in screen space
@@ -723,14 +723,14 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y having the width and height of the region.
+	 * Draws a rectangle with the bottom left corner at x,y having the width and height of the region.
 	 */
 	public void draw (TextureRegion region, float x, float y) {
 		draw(region, x, y, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y and stretching the region to cover the given width and height.
+	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height.
 	 */
 	public void draw (TextureRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -777,7 +777,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
-	 * Draws a rectangle with the top left corner at x,y and stretching the region to cover the given width and height. The
+	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
 	 * rectangle is offset by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle
 	 * should be scaled around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around
 	 * originX, originY.
