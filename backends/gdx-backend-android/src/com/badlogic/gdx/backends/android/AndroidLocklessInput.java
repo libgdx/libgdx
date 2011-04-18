@@ -423,7 +423,7 @@ public final class AndroidLocklessInput implements Input, OnKeyListener, OnTouch
 		if(peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if(peripheral == Peripheral.OnscreenKeyboard) return true;
 		if(peripheral == Peripheral.Vibrator) return vibrator != null;
-		if(peripheral == Peripheral.MultitouchScreen) return touchHandler instanceof AndroidMultiTouchHandler;
+		if(peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		return false;
 	}
 }
