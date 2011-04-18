@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.io.File;
@@ -34,6 +35,7 @@ final class LwjglFileHandle extends FileHandle {
 	}
 
 	public FileHandle child (String name) {
+		if (file.getPath().length() == 0) return new LwjglFileHandle(new File(name), type);
 		return new LwjglFileHandle(new File(file, name), type);
 	}
 

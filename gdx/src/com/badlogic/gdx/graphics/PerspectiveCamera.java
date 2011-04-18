@@ -27,7 +27,10 @@ import com.badlogic.gdx.math.Vector3;
 public class PerspectiveCamera extends Camera {	
 	/** the field of view in degrees **/
 	public float fieldOfView = 67;
-	
+
+	public PerspectiveCamera () {
+	}
+
 	/**
 	 * Constructs a new {@link PerspectiveCamera} with the given field of view and viewport
 	 * size. The apsect ratio is derrived from the viewport size.
@@ -40,6 +43,7 @@ public class PerspectiveCamera extends Camera {
 		this.fieldOfView = fieldOfView;
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
+		update();
 	}
 	
 	final Vector3 tmp = new Vector3();

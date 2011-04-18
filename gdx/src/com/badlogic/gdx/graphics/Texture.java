@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -101,6 +102,13 @@ public class Texture implements Disposable {
 	TextureWrap vWrap = TextureWrap.ClampToEdge;
 	final Format format;
 	
+	/**
+	 * Creates a new texture using an {@link FileType#Internal internal} file handle.
+	 */
+	public Texture(String internalPath) {
+		this(Gdx.files.internal(internalPath));
+	}
+
 	/**
 	 * Creates a new texture from the given {@link FileHandle}. The 
 	 * FileHandle must point to a Jpeg, Png or Bmp file. This constructor

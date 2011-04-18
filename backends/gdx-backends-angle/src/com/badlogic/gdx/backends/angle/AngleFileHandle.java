@@ -48,6 +48,7 @@ final class AngleFileHandle extends FileHandle {
 	}
 
 	public FileHandle child (String name) {
+		if (file.getPath().length() == 0) return new AngleFileHandle(new File(name), type);
 		return new AngleFileHandle(new File(file, name), type);
 	}
 

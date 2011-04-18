@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import java.io.File;
@@ -44,6 +45,7 @@ public class AndroidFileHandle extends FileHandle {
 	}
 
 	public FileHandle child (String name) {
+		if (file.getPath().length() == 0) return new AndroidFileHandle(assets, new File(name), type);
 		return new AndroidFileHandle(assets, new File(file, name), type);
 	}
 

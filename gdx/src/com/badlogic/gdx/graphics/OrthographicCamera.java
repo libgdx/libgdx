@@ -28,6 +28,10 @@ public class OrthographicCamera extends Camera {
 	/** the zoom of the camera **/
 	public float zoom = 1;
 	
+	public OrthographicCamera() {
+		this.near = 0;
+	}
+	
 	/**
 	 * Constructs a new OrthographicCamera, using the given viewport
 	 * width and height. For pixel perfect 2D rendering just supply
@@ -41,6 +45,7 @@ public class OrthographicCamera extends Camera {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;		
 		this.near = 0;
+		update();
 	}
 	
 	private final Vector3 tmp = new Vector3();

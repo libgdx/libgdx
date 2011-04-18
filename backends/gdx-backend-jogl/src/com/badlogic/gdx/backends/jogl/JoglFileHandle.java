@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.jogl;
 
 import java.io.File;
@@ -34,6 +35,7 @@ public class JoglFileHandle extends FileHandle {
 	}
 
 	public FileHandle child (String name) {
+		if (file.getPath().length() == 0) return new JoglFileHandle(new File(name), type);
 		return new JoglFileHandle(new File(file, name), type);
 	}
 

@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -51,6 +53,14 @@ public class TextureAtlas implements Disposable {
 	 */
 	public TextureAtlas () {
 		regions = new ArrayList();
+	}
+
+	/**
+	 * Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
+	 * images.
+	 */
+	public TextureAtlas (String internalPackFile) {
+		this(Gdx.files.internal(internalPackFile));
 	}
 
 	/**
