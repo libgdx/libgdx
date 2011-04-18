@@ -26,7 +26,7 @@ public class JoglNativesLoader {
 	/**
 	 * loads the necessary libraries depending on the operating system
 	 */
-	static void load () {
+	public static void load () {
 		GdxNativesLoader.load();
 		if(GdxNativesLoader.disableNativesLoading) return;
 

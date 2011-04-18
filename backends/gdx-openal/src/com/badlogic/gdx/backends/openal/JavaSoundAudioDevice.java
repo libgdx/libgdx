@@ -82,4 +82,8 @@ public class JavaSoundAudioDevice implements AudioDevice {
 		while (writtenBytes != numSamples * 2)
 			writtenBytes += line.write(bytes, writtenBytes, numSamples * 2 - writtenBytes);
 	}
+
+	@Override public int getLatency () {
+		return 0;
+	}
 }

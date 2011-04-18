@@ -49,6 +49,11 @@ public interface AudioDevice extends Disposable {
 	 * @param numSamples the number of samples to write to the device
 	 */
 	public void writeSamples (float[] samples, int offset, int numSamples);
+	
+	/**
+	 * @return the latency in samples.
+	 */
+	public int getLatency();
 
 	/**
 	 * Frees all resources associated with this AudioDevice. Needs to be called when the device is no longer needed.

@@ -36,6 +36,9 @@ class AndroidAudioDevice implements AudioDevice {
 
 	/** whether this device is in mono or stereo mode **/
 	private final boolean isMono;
+	
+	/** the latency in samples **/
+	private final int latency;
 
 	AndroidAudioDevice (boolean isMono) {
 		this.isMono = isMono;
@@ -44,6 +47,7 @@ class AndroidAudioDevice implements AudioDevice {
 		track = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
 			: AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT, minSize, AudioTrack.MODE_STREAM);
 		track.play();
+		latency = minSize / (isMono?1:2);
 	}
 
 	@Override public void dispose () {
@@ -78,4 +82,7 @@ class AndroidAudioDevice implements AudioDevice {
 			writtenSamples += track.write(buffer, writtenSamples, numSamples - writtenSamples);
 	}
 
+	@Override public int getLatency () {
+		return latency;
+	}
 }
