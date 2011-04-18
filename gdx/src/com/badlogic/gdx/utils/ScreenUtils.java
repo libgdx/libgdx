@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.MathUtils;
+import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Class with static helper methods that provide access to the default OpenGL
@@ -89,11 +89,11 @@ public class ScreenUtils {
 	}
 
 	/**
-	 * Returns the default framebuffer contents as a byte[] array with a
-	 * length equal to screen width * height * 4. The ByteBuffer will always
-	 * contain RGBA data. Because of differences in screen and image origins the
+	 * Returns the default framebuffer contents as a byte[] array with a length
+	 * equal to screen width * height * 4. The byte[] will always contain
+	 * RGBA8888 data. Because of differences in screen and image origins the
 	 * framebuffer contents should be flipped along the Y axis if you intend
-	 * save them to disk as a bitmap. Flipping is not cheap operation, so use
+	 * save them to disk as a bitmap. Flipping is not a cheap operation, so use
 	 * this functionality wisely.
 	 * 
 	 * @param flipY
@@ -108,7 +108,7 @@ public class ScreenUtils {
 	/**
 	 * Returns a portion of the default framebuffer contents specified by x, y,
 	 * width and height, as a byte[] array with a length equal to the specified
-	 * width * height * 4. The byte[] will always contain RGBA data. If the
+	 * width * height * 4. The byte[] will always contain RGBA8888 data. If the
 	 * width and height specified are larger than the framebuffer dimensions,
 	 * the Texture will be padded accordingly. Pixels that fall outside of the
 	 * current screen will have RGBA values of 0. Because of differences in
@@ -132,8 +132,10 @@ public class ScreenUtils {
 				pixels.position((h - i - 1) * numBytesPerLine);
 				pixels.get(lines, i * numBytesPerLine, numBytesPerLine);
 			}
+		} else {
+			pixels.clear();
+			pixels.get(lines);
 		}
-		BufferUtils.copy(lines, 0, pixels.position(0), numBytes);
 		return lines;
 
 	}

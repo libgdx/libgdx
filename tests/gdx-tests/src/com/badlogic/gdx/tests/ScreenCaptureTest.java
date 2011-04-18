@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.tests.utils.ScreenUtils;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class ScreenCaptureTest extends GdxTest implements InputProcessor {
 
