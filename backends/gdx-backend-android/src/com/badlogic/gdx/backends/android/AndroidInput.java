@@ -445,6 +445,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		if(peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
 		if(peripheral == Peripheral.OnscreenKeyboard) return true;
 		if(peripheral == Peripheral.Vibrator) return vibrator != null;
+		if(peripheral == Peripheral.MultitouchScreen) return touchHandler instanceof AndroidMultiTouchHandler;
 		return false;
 	}
 }
