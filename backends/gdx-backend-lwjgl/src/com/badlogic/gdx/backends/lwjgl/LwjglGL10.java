@@ -493,8 +493,14 @@ class LwjglGL10 implements GL10 {
 			textures[i] = GL11.glGenTextures();
 	}
 
-	public final void glGetIntegerv (int pname, int[] params, int offset) {
-		GL11.glGetInteger(pname, toBuffer(params, offset)); // FIXME this is wrong!
+	IntBuffer getBuffer = BufferUtils.createIntBuffer(100); 
+	public final void glGetIntegerv (int pname, int[] params, int offset) {		
+		GL11.glGetInteger(pname, getBuffer);
+		// FIXME Yeah, so. This sucks as well :D LWJGL does not set pos/lim. 
+		for(int i = offset, j = 0; i < params.length; i++, j++) {
+			if(j == getBuffer.capacity()) return;
+			params[i] = getBuffer.get(j);
+		}
 	}
 
 	public final void glLightModelfv (int pname, float[] params, int offset) {
