@@ -174,7 +174,26 @@ public interface Input {
 		public static final int KEYCODE_CONTROL_RIGHT = 130;
 		public static final int KEYCODE_ESCAPE = 131;
 		public static final int KEYCODE_END = 132;
-		public static final int KEYCODE_INSERT = 133;		
+		public static final int KEYCODE_INSERT = 133;
+		public static final int KEYCODE_PAGE_UP = 92;
+		public static final int KEYCODE_PAGE_DOWN = 93;
+		public static final int KEYCODE_PICTSYMBOLS = 94;
+		public static final int KEYCODE_SWITCH_CHARSET = 95;
+		public static final int KEYCODE_BUTTON_A = 96;
+		public static final int KEYCODE_BUTTON_B = 97;
+		public static final int KEYCODE_BUTTON_C = 98;
+		public static final int KEYCODE_BUTTON_X = 99;
+		public static final int KEYCODE_BUTTON_Y = 100;
+		public static final int KEYCODE_BUTTON_Z = 101;
+		public static final int KEYCODE_BUTTON_L1 = 102;
+		public static final int KEYCODE_BUTTON_R1 = 103;
+		public static final int KEYCODE_BUTTON_L2 = 104;
+		public static final int KEYCODE_BUTTON_R2 = 105;
+		public static final int KEYCODE_BUTTON_THUMBL = 106;
+		public static final int KEYCODE_BUTTON_THUMBR = 107;
+		public static final int KEYCODE_BUTTON_START = 108;
+		public static final int KEYCODE_BUTTON_SELECT = 109;
+		public static final int KEYCODE_BUTTON_MODE = 110;
 	}
 	
 	/**
