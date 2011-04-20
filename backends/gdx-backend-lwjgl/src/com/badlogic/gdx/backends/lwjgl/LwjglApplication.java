@@ -199,4 +199,9 @@ public class LwjglApplication implements Application {
 			runnables.add(runnable);
 		}
 	}
+	
+	@Override public void log (String tag, String message, Exception exception) {
+		System.out.println(tag + ": " + message);
+		exception.printStackTrace();
+	}
 }

@@ -118,6 +118,11 @@ public interface Application {
 	 * Logs a message to the console or logcat
 	 */
 	public void log (String tag, String message);
+	
+	/**
+	 * Logs a message to the console or logcat
+	 */
+	public void log (String tag, String message, Exception exception);
 
 	/**
 	 * @return what {@link ApplicationType} this application has, e.g. Android or Desktop

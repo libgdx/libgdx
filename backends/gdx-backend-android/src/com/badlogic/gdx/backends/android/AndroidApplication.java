@@ -289,4 +289,8 @@ public class AndroidApplication extends Activity implements Application {
 		if(config.keyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) keyboardAvailable = true;
 		input.keyboardAvailable = keyboardAvailable;		
 	}
+
+	@Override public void log (String tag, String message, Exception exception) {
+		Log.d(tag, message, exception);
+	}
 }

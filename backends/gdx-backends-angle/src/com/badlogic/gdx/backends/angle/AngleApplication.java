@@ -153,7 +153,11 @@ public class AngleApplication implements Application, ESLoop {
 	@Override public void postRunnable (Runnable runnable) {
 		synchronized(runnables) {
 			runnables.add(runnable);
-		}
-		
+		}	
+	}
+	
+	@Override public void log (String tag, String message, Exception exception) {
+		System.out.println(tag + ": " + message);
+		exception.printStackTrace();
 	}
 }
