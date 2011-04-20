@@ -143,7 +143,7 @@ class GdxFont implements Font {
 	}
 
 	public int computeVisibleGlpyhs (CharSequence str, int start, int end, int width) {
-		return bitmapFont.computeVisibleGlpyhs(str, start, end, width);
+		return bitmapFont.computeVisibleGlyphs(str, start, end, width);
 	}
 
 	FontState evalFontState (AnimationState animationState) {

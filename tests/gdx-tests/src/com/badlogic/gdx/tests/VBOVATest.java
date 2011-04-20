@@ -46,6 +46,9 @@ public class VBOVATest extends GdxTest {
 	boolean isStatic = false;
 
 	@Override public void create () {
+		int viewport[] = new int[4];
+		Gdx.gl10.glGetIntegerv(GL11.GL_VIEWPORT, viewport, 0);
+		Gdx.gl10.glGetIntegerv(GL11.GL_VIEWPORT, viewport, 0);
 		VertexAttribute[] attributes = {new VertexAttribute(Usage.Position, 3, "a_pos")};
 		vbo = new VertexBufferObject(false, TRIANGLES * 3, attributes);
 		vbosd = new VertexBufferObjectSubData(false, TRIANGLES * 3, attributes);

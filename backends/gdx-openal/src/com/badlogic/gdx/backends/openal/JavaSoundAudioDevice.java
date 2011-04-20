@@ -57,8 +57,8 @@ public class JavaSoundAudioDevice implements AudioDevice {
 
 		for (int i = offset, j = 0; i < offset + numSamples; i++, j += 2) {
 			short value = samples[i];
-			bytes[j + 1] = (byte)(value & 0xff);
-			bytes[j] = (byte)(value >> 8);
+			bytes[j] = (byte)(value & 0xff);
+			bytes[j+1] = (byte)(value >> 8);
 		}
 
 		int writtenBytes = line.write(bytes, 0, numSamples * 2);

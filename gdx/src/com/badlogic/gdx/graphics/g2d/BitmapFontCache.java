@@ -313,7 +313,7 @@ public class BitmapFontCache implements Disposable {
 		int start = 0;
 		int numLines = 0;
 		while (start < length) {
-			int lineEnd = start + font.computeVisibleGlpyhs(str, start, BitmapFont.indexOf(str, '\n', start), wrapWidth);
+			int lineEnd = start + font.computeVisibleGlyphs(str, start, BitmapFont.indexOf(str, '\n', start), wrapWidth);
 			if (lineEnd < length) {
 				while (lineEnd > start) {
 					char ch = str.charAt(lineEnd);

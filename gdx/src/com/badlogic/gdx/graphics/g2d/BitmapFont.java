@@ -371,7 +371,7 @@ public class BitmapFont implements Disposable {
 			if (alignment != HAlignment.LEFT) {
 				int lineWidth = getBounds(str, start, lineEnd).width;
 				xOffset = alignmentWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset /= 2;
+				if (alignment == HAlignment.CENTER) xOffset = (int)(xOffset / 2);
 			}
 			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
@@ -415,7 +415,7 @@ public class BitmapFont implements Disposable {
 		int length = str.length();
 		int maxWidth = 0;
 		while (start < length) {
-			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
+			int lineEnd = start + computeVisibleGlyphs(str, start, indexOf(str, '\n', start), wrapWidth);
 			int nextLineStart;
 			if (lineEnd < length) {
 				int originalLineEnd = lineEnd;
@@ -438,7 +438,7 @@ public class BitmapFont implements Disposable {
 			if (alignment != HAlignment.LEFT) {
 				int lineWidth = getBounds(str, start, lineEnd).width;
 				xOffset = wrapWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset /= 2;
+				if (alignment == HAlignment.CENTER) xOffset = (int)(xOffset /= 2);
 			}
 			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
@@ -526,7 +526,7 @@ public class BitmapFont implements Disposable {
 		int length = str.length();
 		int maxWidth = 0;
 		while (start < length) {
-			int lineEnd = start + computeVisibleGlpyhs(str, start, indexOf(str, '\n', start), wrapWidth);
+			int lineEnd = start + computeVisibleGlyphs(str, start, indexOf(str, '\n', start), wrapWidth);
 			int nextLineStart;
 			if (lineEnd < length) {
 				int originalLineEnd = lineEnd;
@@ -560,7 +560,7 @@ public class BitmapFont implements Disposable {
 	 * @param start The first character of the string.
 	 * @param end The last character of the string (exclusive).
 	 */
-	public int computeVisibleGlpyhs (CharSequence str, int start, int end, float availableWidth) {
+	public int computeVisibleGlyphs (CharSequence str, int start, int end, float availableWidth) {
 		int index = start;
 		int width = 0;
 		Glyph lastGlyph = null;
