@@ -40,11 +40,11 @@ class AndroidAudioDevice implements AudioDevice {
 	/** the latency in samples **/
 	private final int latency;
 
-	AndroidAudioDevice (boolean isMono) {
+	AndroidAudioDevice (int samplingRate, boolean isMono) {
 		this.isMono = isMono;
-		int minSize = AudioTrack.getMinBufferSize(44100, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
+		int minSize = AudioTrack.getMinBufferSize(samplingRate, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
 			: AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT);
-		track = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
+		track = new AudioTrack(AudioManager.STREAM_MUSIC, samplingRate, isMono ? AudioFormat.CHANNEL_CONFIGURATION_MONO
 			: AudioFormat.CHANNEL_CONFIGURATION_STEREO, AudioFormat.ENCODING_PCM_16BIT, minSize, AudioTrack.MODE_STREAM);
 		track.play();
 		latency = minSize / (isMono?1:2);

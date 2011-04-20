@@ -41,15 +41,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public interface Audio {
 	/**
-	 * Creates a new {@link AudioDevice} either in 44.1khz mono or stereo mode. The AudioDevice has to be disposed via its
+	 * Creates a new {@link AudioDevice} either in mono or stereo mode. The AudioDevice has to be disposed via its
 	 * {@link AudioDevice#dispose()} method when it is no longer used.
 	 * 
+	 * @param samplingRate the sampling rate.
 	 * @param isMono whether the AudioDevice should be in mono or stereo mode
 	 * @return the AudioDevice
 	 * 
 	 * @throws GdxRuntimeException in case the device could not be created
 	 */
-	public AudioDevice newAudioDevice (boolean isMono);
+	public AudioDevice newAudioDevice (int samplingRate, boolean isMono);
 
 	/**
 	 * Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed after it is no longer used.

@@ -165,9 +165,9 @@ public class OpenALAudio implements Audio {
 		AL.destroy();
 	}
 
-	public AudioDevice newAudioDevice (boolean isMono) {
+	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
 		// BOZO - Write OpenAL device.
-		return new JavaSoundAudioDevice(isMono);
+		return new JavaSoundAudioDevice(samplingRate, isMono);
 	}
 
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {

@@ -122,8 +122,8 @@ final class AngleAudio implements Audio, Runnable {
 		}
 	}
 
-	public AudioDevice newAudioDevice (boolean isMono) {
-		return new AngleAudioDevice(isMono);
+	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
+		return new AngleAudioDevice(samplingRate, isMono);
 	}
 
 	public Music newMusic (FileHandle file) {

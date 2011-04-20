@@ -38,11 +38,11 @@ final class AngleAudioDevice implements AudioDevice {
 	/** byte buffer **/
 	private byte[] bytes = new byte[44100 * 2 * 2];
 
-	public AngleAudioDevice (boolean isMono) {
+	public AngleAudioDevice (int samplingRate, boolean isMono) {
 		this.isMono = isMono;
 
 		try {
-			AudioFormat format = new AudioFormat(44100.0f, 16, isMono ? 1 : 2, true, false);
+			AudioFormat format = new AudioFormat(samplingRate, 16, isMono ? 1 : 2, true, false);
 			line = AudioSystem.getSourceDataLine(format);
 			line.open(format, 4410 * 2);
 			line.start();

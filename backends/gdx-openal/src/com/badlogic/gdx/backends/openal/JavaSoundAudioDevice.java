@@ -30,13 +30,13 @@ public class JavaSoundAudioDevice implements AudioDevice {
 	private final boolean isMono;
 	private byte[] bytes = new byte[44100 * 2 * 2];
 
-	public JavaSoundAudioDevice (boolean isMono) {
+	public JavaSoundAudioDevice (int samplingRate, boolean isMono) {
 		this.isMono = isMono;
 
 		try {
-			AudioFormat format = new AudioFormat(44100.0f, 16, isMono ? 1 : 2, true, false);
+			AudioFormat format = new AudioFormat(samplingRate, 16, isMono ? 1 : 2, true, false);
 			line = AudioSystem.getSourceDataLine(format);
-			line.open(format, 4410 * 2);
+			line.open(format, Math.min(1024, samplingRate / 10) * 2);
 			line.start();
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating JavaSoundAudioDevice.", ex);

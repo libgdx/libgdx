@@ -25,7 +25,7 @@ public class AudioDeviceTest extends GdxTest {
 
 	@Override public void create () {
 		if (thread == null) {
-			final AudioDevice device = Gdx.app.getAudio().newAudioDevice(false);
+			final AudioDevice device = Gdx.app.getAudio().newAudioDevice(44100, false);
 			thread = new Thread(new Runnable() {
 				@Override public void run () {
 					final float frequency = 440;

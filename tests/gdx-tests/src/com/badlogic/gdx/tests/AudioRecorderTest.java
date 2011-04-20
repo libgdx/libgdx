@@ -29,7 +29,7 @@ public class AudioRecorderTest extends GdxTest {
 	ImmediateModeRenderer renderer;
 
 	@Override public void create () {
-		device = Gdx.audio.newAudioDevice(true);
+		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
 		renderer = new ImmediateModeRenderer();
 
@@ -65,7 +65,7 @@ public class AudioRecorderTest extends GdxTest {
 	}
 
 	@Override public void resume () {
-		device = Gdx.audio.newAudioDevice(true);
+		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
 	}
 

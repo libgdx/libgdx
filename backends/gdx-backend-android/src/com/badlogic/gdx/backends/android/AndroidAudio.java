@@ -73,8 +73,8 @@ public final class AndroidAudio implements Audio {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public AudioDevice newAudioDevice (boolean isMono) {
-		return new AndroidAudioDevice(isMono);
+	@Override public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
+		return new AndroidAudioDevice(samplingRate, isMono);
 	}
 
 	/**
