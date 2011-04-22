@@ -95,6 +95,7 @@ public interface Input {
 		public static final int KEYCODE_COMMA = 55;
 		public static final int KEYCODE_D = 32;
 		public static final int KEYCODE_DEL = 67;
+		public static final int KEYCODE_BACKSPACE = 67;
 		public static final int KEYCODE_FORWARD_DEL = 112;
 		public static final int KEYCODE_DPAD_CENTER = 23;
 		public static final int KEYCODE_DPAD_DOWN = 20;
