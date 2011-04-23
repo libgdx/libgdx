@@ -212,9 +212,11 @@ public class TileMapRenderer implements Disposable {
 				if (tile != 0) {
 					if (blended == blendedTiles.contains(tile)) {
 						region = atlas.getRegion(tile);
-						y = (layer.length - row) * tileHeight - (region.packedHeight + region.offsetY);
-						x = col * tileWidth + region.offsetX;
-						cache.add(region, x, y);
+						if(region != null){
+							y = (layer.length - row) * tileHeight - (region.packedHeight + region.offsetY);
+							x = col * tileWidth + region.offsetX;
+							cache.add(region, x, y);
+						}
 					}
 				}
 			}

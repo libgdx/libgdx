@@ -1,18 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tiledmappacker;
 
 import java.awt.Graphics;
@@ -83,9 +81,9 @@ public class TiledMapPacker {
 	}
 
 	/**
-	 * Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method.
-	 * Packs a directory of Tiled Maps, adding properties to improve the speed of the {@link TileMapRenderer}. Also runs the
-	 * texture packer on the tile sets for use with a {@link TileAtlas}
+	 * Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method. Packs a directory of
+	 * Tiled Maps, adding properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on the tile
+	 * sets for use with a {@link TileAtlas}
 	 * @param inputDir the directory containing tile set images and tmx files
 	 * @param outputDir the directory to output a fully processed map to
 	 * @param settings the settings used in the TexturePacker
@@ -293,14 +291,15 @@ public class TiledMapPacker {
 	}
 
 	/**
-	 * Processes a 
-	 * @param args args[0]: the input directory containing tmx files and tile set images.
-	 * 				args[1]: The output directory, should be empty before running.
+	 * Processes a directory of Tile Maps, compressing each tile set contained in any map once.
+	 * @param args args[0]: the input directory containing tmx files and tile set images. args[1]: The output directory, should be
+	 *           empty before running.
 	 */
 	public static void main (String[] args) {
 		File tmxFile, inputDir, outputDir;
 
 		Settings settings = new Settings();
+		//The settings below are now all default...
 		settings.padding = 2;
 		settings.duplicatePadding = true;
 		settings.incremental = true;
