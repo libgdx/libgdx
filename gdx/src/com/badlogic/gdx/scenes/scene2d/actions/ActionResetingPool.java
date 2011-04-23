@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author Moritz Post <moritzpost@gmail.com>
  * @param <T> the type action to manage
  */
-abstract class ActionResetingPool<T extends Action> extends Pool<T> {
+public abstract class ActionResetingPool<T extends Action> extends Pool<T> {
 
 	public ActionResetingPool (int initialCapacity, int max) {
 		super(initialCapacity, max);
