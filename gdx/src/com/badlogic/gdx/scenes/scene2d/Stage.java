@@ -19,9 +19,11 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -32,7 +34,7 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * <p>
  * A Stage object fills the whole screen. It has a width and height given in device independent pixels. It will create a
- * projection matrix that maps this viewport to the given real screen resolution. If the stretched attribute is set to true then
+ * {@link Camera} that maps this viewport to the given real screen resolution. If the stretched attribute is set to true then
  * the viewport is enforced no matter the difference in aspect ratio between the stage object and the screen dimensions. In case
  * stretch is disabled then the viewport is extended in the bigger screen dimensions.
  * </p>
@@ -54,9 +56,8 @@ public class Stage extends InputAdapter implements Disposable {
 
 	protected final Group root;
 
-	protected final SpriteBatch batch;
-	protected final Matrix4 projection;
-	protected final Matrix4 identity;
+	protected final SpriteBatch batch;	
+	protected Camera camera;
 
 	/**
 	 * <p>
@@ -75,8 +76,7 @@ public class Stage extends InputAdapter implements Disposable {
 		this.stretch = stretch;
 		this.root = new Group("root");
 		this.batch = new SpriteBatch();
-		this.projection = new Matrix4();
-		this.identity = new Matrix4();
+		this.camera = new OrthographicCamera();		
 		setViewport(width, height, stretch);
 	}
 
@@ -114,10 +114,12 @@ public class Stage extends InputAdapter implements Disposable {
 		centerX = width / 2;
 		centerY = height / 2;
 
-		projection.setToOrtho2D(0, 0, this.width, this.height);
+		camera.position.set(centerX, centerY, 0);
+		camera.viewportWidth = this.width;
+		camera.viewportHeight = this.height;		
 	}
 
-	/**
+	/**8
 	 * @return the width of the stage in dips
 	 */
 	public float width () {
@@ -259,8 +261,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * Renders the stage
 	 */
 	public void draw () {
-		batch.setProjectionMatrix(projection);
-		batch.setTransformMatrix(identity);
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);		
 		batch.begin();
 		root.draw(batch, 1);
 		batch.end();
@@ -317,6 +319,23 @@ public class Stage extends InputAdapter implements Disposable {
 	public SpriteBatch getSpriteBatch () {
 		return batch;
 	}
+	
+	/**	 
+	 * @return the {@link Camera} of this stage.
+	 */
+	public Camera getCamera() {
+		return camera;
+	}
+	
+	/**
+	 * Sets the {@link Camera} this stage uses. You are responsible for setting
+	 * it up properly! The {@link Stage#draw()} will call the Camera's update() method
+	 * and use it's combined matrix as the projection matrix for the SpriteBatch.
+	 * @param camera the {@link Camera}
+	 */
+	public void setCamera(Camera camera) {
+		this.camera = camera;
+	}
 
 	/**
 	 * @return the {@link Actor} last hit by a touch event.
@@ -330,8 +349,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * Actors were inserted into the Stage, last inserted Actors being tested first. To get stage coordinates from screen
 	 * coordinates use {@link #toStageCoordinates(int, int, Vector2)}.
 	 * 
-	 * @param x the x-coordinate in screen coordinates
-	 * @param y the y-coordinate in screen cordinates
+	 * @param x the x-coordinate in stage coordinates
+	 * @param y the y-coordinate in stage coordinates
 	 * @return the hit Actor or null
 	 */
 	public Actor hit (float x, float y) {
@@ -339,6 +358,7 @@ public class Stage extends InputAdapter implements Disposable {
 		return root.hit(point.x, point.y);
 	}
 
+	final Vector3 tmp = new Vector3();
 	/**
 	 * Transforms the given screen coordinates to stage coordinates
 	 * @param x the x-coordinate in screen coordinates
@@ -346,9 +366,9 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param out the output {@link Vector2}.
 	 */
 	public void toStageCoordinates (int x, int y, Vector2 out) {
-		out.y = (Gdx.graphics.getHeight() - 1) - y;
-		out.x = (float)x / Gdx.graphics.getWidth() * width;
-		out.y = out.y / Gdx.graphics.getHeight() * height;
+		camera.unproject(tmp.set(x, y, 0));
+		out.x = tmp.x;
+		out.y = tmp.y;
 	}
 	
 	/**
