@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.android;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -30,6 +31,8 @@ public class GdxTestActivity extends AndroidApplication {
 		String testName = (String)extras.get("test");
 
 		GdxTest test = GdxTests.newTest(testName);
-		initialize(test, test.needsGL20());
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useGL20 = test.needsGL20();		
+		initialize(test, config);
 	}
 }

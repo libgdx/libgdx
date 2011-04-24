@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tests.android;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -45,7 +45,7 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 		Button b2 = new Button(this);
 		b2.setText("New Window");
 		b2.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-		View view = initializeForView(this, false,new FillResolutionStrategy(),  16);
+		View view = initializeForView(this, false);
 
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);

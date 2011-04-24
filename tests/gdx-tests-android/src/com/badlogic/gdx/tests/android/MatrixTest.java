@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tests;
+package com.badlogic.gdx.tests.android;
 
 import javax.microedition.khronos.opengles.GL10;
 

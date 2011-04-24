@@ -10,6 +10,6 @@ public class BouncyAndroid extends AndroidApplication {
 	/** Called when the activity is first created. */
 	@Override public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initialize(new Bouncy(), false, new FillResolutionStrategy(), 16);
+		initialize(new Bouncy(), false);
 	}
 }

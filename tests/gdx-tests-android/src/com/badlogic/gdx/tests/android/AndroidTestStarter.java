@@ -17,8 +17,6 @@ package com.badlogic.gdx.tests.android;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.tests.MatrixTest;
-import com.badlogic.gdx.tests.WindowedTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 import android.app.ListActivity;
@@ -36,7 +34,7 @@ public class AndroidTestStarter extends ListActivity {
 		for(String name: GdxTests.getNames()) {
 			testNames.add(name);
 		}		
-		testNames.add(MatrixTest.class.getSimpleName());
+		testNames.add(MatrixTest.class.getSimpleName());		
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames.toArray(new String[0])));
 	}
 

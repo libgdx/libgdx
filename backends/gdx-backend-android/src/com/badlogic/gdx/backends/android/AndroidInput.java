@@ -100,7 +100,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private int sleepTime = 0;
 	private boolean catchBack = false;
 	private final Vibrator vibrator;
-	private boolean compassAvailable;
+	private boolean compassAvailable = false;
 	boolean keyboardAvailable;
 	private final float[] magneticFieldValues = new float[3];
 	private float azimuth = 0;
@@ -109,18 +109,20 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private float inclination = 0;
 	private boolean justTouched = false;	
 	private InputProcessor processor;
+	private final AndroidApplicationConfiguration config;
 
-	public AndroidInput (AndroidApplication activity, View view, int sleepTime) {
+	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
 		view.setOnKeyListener(this);
 		view.setOnTouchListener(this);
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
 		view.requestFocus();
 		view.requestFocusFromTouch();
+		this.config = config;
 		
 		handle = new Handler();
 		this.app = activity;
-		this.sleepTime = sleepTime;
+		this.sleepTime = config.touchSleepTime;
 		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
 		if (sdkVersion >= 5)
 			touchHandler = new AndroidMultiTouchHandler();
@@ -409,29 +411,36 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 	
 	void registerSensorListeners() {		
-		manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
-		if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
-			accelerometerAvailable = false;
-		} else {
-			Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-			accelerometerAvailable = manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);				
-		}
-		
-		Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		if(sensor != null) {
-			compassAvailable = accelerometerAvailable;
-			if(compassAvailable) {
-				compassAvailable = manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+		if(config.useAccelerometer) {
+			manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
+			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
+				accelerometerAvailable = false;
+			} else {
+				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
+				accelerometerAvailable = manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);				
 			}
-		} else {
-			compassAvailable = false;
-		}
+		} else accelerometerAvailable = false;
+		
+		if(config.useCompass) {
+			if(manager == null) manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
+			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+			if(sensor != null) {
+				compassAvailable = accelerometerAvailable;
+				if(compassAvailable) {
+					compassAvailable = manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+				}
+			} else {
+				compassAvailable = false;
+			}
+		} else compassAvailable = false;
 		Gdx.app.log("AndroidInput", "sensor listener setup");
 	}
 	
-	void unregisterSensorListeners() {		
-		manager.unregisterListener(this);
-		manager = null;
+	void unregisterSensorListeners() {	
+		if(manager != null) {
+			manager.unregisterListener(this);
+			manager = null;
+		}
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
 	
