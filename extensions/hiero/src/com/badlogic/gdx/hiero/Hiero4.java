@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.hiero;
 
 import java.awt.BorderLayout;
@@ -85,8 +86,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -226,7 +225,7 @@ public class Hiero4 extends JFrame {
 	void updateFont (boolean force) {
 		if (fontData == null || renderer.batch == null) return;
 
-		String text = sampleTextPane.getText();
+		final String text = sampleTextPane.getText();
 
 		if (!force) {
 			// Don't regenerate font unless the text has new characters or has removed characters.
@@ -258,46 +257,54 @@ public class Hiero4 extends JFrame {
 		if (sampleFontSize < 14) sampleFontSize = 14;
 		sampleTextPane.setFont(fontData.getJavaFont().deriveFont((float)sampleFontSize));
 
-		Padding padding = new Padding((Integer)padTopSpinner.getValue(), (Integer)padLeftSpinner.getValue(),
+		final Padding padding = new Padding((Integer)padTopSpinner.getValue(), (Integer)padLeftSpinner.getValue(),
 			(Integer)padBottomSpinner.getValue(), (Integer)padRightSpinner.getValue(), (Integer)padAdvanceXSpinner.getValue());
 		final int width = (Integer)glyphPageWidthCombo.getSelectedItem();
 		final int height = (Integer)glyphPageHeightCombo.getSelectedItem();
 
-		GeneratorMethod method;
+		final GeneratorMethod method;
 		if (vectorRadio.isSelected())
 			method = GeneratorMethod.AWT_VECTOR;
 		else if (drawStringRadio.isSelected())
 			method = GeneratorMethod.AWT_DRAWSTRING;
 		else
 			method = GeneratorMethod.FREETYPE2;
-		fontGenerator = new FontGenerator(fontData, method);
-		CharSet charset = new CharSet();
-		charset.setManualCharacters(text);
-		try {
-			fontGenerator.generate(width, height, charset, padding, new Effect.Renderer[0], true);
 
-			final ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 4);
-			buffer.order(ByteOrder.LITTLE_ENDIAN);
-			fontGenerator.getTextureData(buffer.asIntBuffer());
-			TextureRegion glyphRegion = new TextureRegion(new Texture(new TextureData() {
-				public void load () {
-					GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-						buffer);
+		new Thread() {
+			public void run () {
+				fontGenerator = new FontGenerator(fontData, method);
+				CharSet charset = new CharSet();
+				charset.setManualCharacters(text);
+				try {
+					fontGenerator.generate(width, height, charset, padding, new Effect.Renderer[0], true);
+					fontGenerator.write(new File("out"), ExportFormat.TEXT);
+				} catch (IOException ex) {
+					ex.printStackTrace();
 				}
+				EventQueue.invokeLater(new Runnable() {
+					public void run () {
+						final ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * 4);
+						buffer.order(ByteOrder.LITTLE_ENDIAN);
+						fontGenerator.getTextureData(buffer.asIntBuffer());
+						TextureRegion glyphRegion = new TextureRegion(new Texture(new TextureData() {
+							public void load () {
+								GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA,
+									GL11.GL_UNSIGNED_BYTE, buffer);
+							}
 
-				public int getWidth () {
-					return width;
-				}
+							public int getWidth () {
+								return width;
+							}
 
-				public int getHeight () {
-					return height;
-				}
-			}));
-			fontGenerator.write(new File("out"), ExportFormat.TEXT);
-			renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+							public int getHeight () {
+								return height;
+							}
+						}));
+						renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);
+					}
+				});
+			}
+		}.start();
 	}
 
 	private void initializeEvents () {
@@ -567,6 +574,7 @@ public class Hiero4 extends JFrame {
 				vectorRadio = new JRadioButton("Vector");
 				fontPanel.add(vectorRadio, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 					GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
+				if (!FontGenerator.GeneratorMethod.FREETYPE2.isAvailable) vectorRadio.setSelected(true);
 			}
 			{
 				drawStringRadio = new JRadioButton("DrawString");
@@ -577,7 +585,10 @@ public class Hiero4 extends JFrame {
 				freetypeRadio = new JRadioButton("FreeType");
 				fontPanel.add(freetypeRadio, new GridBagConstraints(3, 4, 1, 1, 1.0, 0.0, GridBagConstraints.WEST,
 					GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
-				freetypeRadio.setSelected(true);
+				if (FontGenerator.GeneratorMethod.FREETYPE2.isAvailable)
+					freetypeRadio.setSelected(true);
+				else
+					freetypeRadio.setEnabled(false);
 			}
 			ButtonGroup buttonGroup = new ButtonGroup();
 			buttonGroup.add(systemFontRadio);
@@ -659,15 +670,15 @@ public class Hiero4 extends JFrame {
 						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 				}
 				{
-					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(64), new Integer(128),
+						new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
 					glyphCachePanel.add(glyphPageWidthCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageWidthCombo.setSelectedIndex(4);
 				}
 				{
-					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(64), new Integer(128),
+						new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
 					glyphCachePanel.add(glyphPageHeightCombo, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageHeightCombo.setSelectedIndex(4);
@@ -908,7 +919,8 @@ public class Hiero4 extends JFrame {
 		}
 
 		@Override public void resize (int width, int height) {
-			batch.getProjectionMatrix().setToOrtho(0, Gdx.graphics.getWidth(), 0, Gdx.graphics.getHeight(), 0, 1);
+			GL11.glViewport(0, 0, width, height);
+			batch.getProjectionMatrix().setToOrtho(0, width, 0, height, 0, 1);
 		}
 
 		@Override public void render () {
