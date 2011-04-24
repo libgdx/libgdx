@@ -526,7 +526,7 @@ public class World implements Disposable {
 
 	private void endContact (long contactAddr) {
 		contact.addr = contactAddr;
-		contact.GetWorldManifold();
+		contact.getWorldManifold();
 		if (contactListener != null) contactListener.endContact(contact);
 	}
 
