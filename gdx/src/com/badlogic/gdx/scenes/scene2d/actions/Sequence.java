@@ -50,16 +50,17 @@ public class Sequence extends CompositeAction {
 		if (actions.size() == 0) {
 			currAction = 1;
 			return;
-		}
-
-		actions.get(currAction).act(delta);
+		}	
+				
 		if (actions.get(currAction).isDone()) {
 			OnActionCompleted listener = actions.get(currAction).getCompletionListener();
 			if (listener != null) listener.completed(actions.get(currAction));
 			actions.get(currAction).setCompletionListener(null);
 			currAction++;
 			if (currAction < actions.size()) actions.get(currAction).setTarget(target);
-		}
+		} 
+		
+		if(currAction < actions.size()) actions.get(currAction).act(delta);		
 	}
 
 	@Override public boolean isDone () {
