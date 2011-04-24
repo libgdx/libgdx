@@ -2,8 +2,9 @@ package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 
-public class SubMesh {
+public class SkeletonSubMesh extends SubMesh {
 	public String name;		
 	public Material material;
 	public Mesh mesh;

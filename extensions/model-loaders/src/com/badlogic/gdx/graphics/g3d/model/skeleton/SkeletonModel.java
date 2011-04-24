@@ -2,13 +2,16 @@ package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
+import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-public class SkeletonModel {
+public class SkeletonModel implements AnimatedModel {
 	public Skeleton skeleton;
-	public SubMesh[] subMeshes;
+	public SkeletonSubMesh[] subMeshes;
 	
 	public void setBindPose() {
 		skeleton.setBindPose();
@@ -17,7 +20,7 @@ public class SkeletonModel {
 		}
 	}
 	
-	public void setAnimation(String animation, float time) {
+	@Override public void setAnimation(String animation, float time) {
 		skeleton.setAnimation(animation, time);
 		for(int i = 0; i < subMeshes.length; i++) {
 			skin(subMeshes[i], skeleton.combinedMatrices);
@@ -25,7 +28,7 @@ public class SkeletonModel {
 	}
 	
 	final Vector3 v = new Vector3();
-	public void skin(SubMesh subMesh, Array<Matrix4> boneMatrices) {
+	public void skin(SkeletonSubMesh subMesh, Array<Matrix4> boneMatrices) {
 		final int stride = subMesh.mesh.getVertexSize() / 4;
 		final int numVertices = subMesh.mesh.getNumVertices();
 		int idx = 0;
@@ -82,10 +85,10 @@ public class SkeletonModel {
 		subMesh.mesh.setVertices(skinnedVertices);
 	}
 	
-	public void render() {
+	@Override public void render() {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
-			SubMesh subMesh = subMeshes[i];
+			SkeletonSubMesh subMesh = subMeshes[i];
 			if(i == 0 ) {
 				subMesh.material.bind();
 			} else if (!subMeshes[i-1].material.equals(subMesh.material)) {
@@ -95,7 +98,7 @@ public class SkeletonModel {
 		}	
 	}	
 	
-	public void setMaterials(Material ... materials) {
+	@Override public void setMaterials(Material ... materials) {
 		if(materials.length != subMeshes.length) throw new UnsupportedOperationException("number of materials must equal number of sub-meshes");
 		int len = materials.length;
 		for(int i = 0; i < len; i++) {
@@ -103,18 +106,22 @@ public class SkeletonModel {
 		}
 	}
 	
-	public void setMaterial(Material material) {
+	@Override public void setMaterial(Material material) {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
 			subMeshes[i].material = material;
 		}
 	}
 	
-	public SubMesh getSubMesh(String name) {
+	@Override public SubMesh getSubMesh(String name) {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
 			if(subMeshes[i].name.equals(name)) return subMeshes[i];
 		}		
 		return null;
+	}
+
+	@Override public SubMesh[] getSubMeshes () {
+		return subMeshes;
 	}
 }

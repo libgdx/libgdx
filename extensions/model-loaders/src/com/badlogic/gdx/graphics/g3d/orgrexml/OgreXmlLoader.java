@@ -21,7 +21,7 @@ import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.Skeleton;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonAnimation;
-import com.badlogic.gdx.graphics.g3d.model.skeleton.SubMesh;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.g3d.orgrexml.mesh.ColourDiffuse;
 import com.badlogic.gdx.graphics.g3d.orgrexml.mesh.Face;
 import com.badlogic.gdx.graphics.g3d.orgrexml.mesh.Mesh;
@@ -59,7 +59,7 @@ public class OgreXmlLoader {
 		try {
 			SkeletonModel model = new SkeletonModel();
 			Mesh ogreMesh = loadOgreMesh(in);			
-			SubMesh[] meshes = generateSubMeshes(ogreMesh);
+			SkeletonSubMesh[] meshes = generateSubMeshes(ogreMesh);
 			model.subMeshes = meshes;			
 			return model;
 		} catch(Throwable t) {
@@ -74,9 +74,9 @@ public class OgreXmlLoader {
 		return model;
 	}
 	
-	private SubMesh[] generateSubMeshes(Mesh ogreMesh) {		
+	private SkeletonSubMesh[] generateSubMeshes(Mesh ogreMesh) {		
 		List<Submesh> ogreSubmeshes = ogreMesh.getSubmeshes().getSubmesh();
-		SubMesh[] submeshes = new SubMesh[ogreSubmeshes.size()];
+		SkeletonSubMesh[] submeshes = new SkeletonSubMesh[ogreSubmeshes.size()];
 		
 		for(int i = 0; i < ogreSubmeshes.size(); i++) {
 			Submesh ogreSubmesh = ogreSubmeshes.get(i);
@@ -253,7 +253,7 @@ public class OgreXmlLoader {
 				boneWeights.get(vertexIndex).add(weight);
 			}					
 			
-			SubMesh subMesh = new SubMesh();
+			SkeletonSubMesh subMesh = new SkeletonSubMesh();
 			// FIXME ? subMesh.materialName = ogreSubmesh.material;
 			subMesh.mesh = mesh;
 			subMesh.vertices = vertices;

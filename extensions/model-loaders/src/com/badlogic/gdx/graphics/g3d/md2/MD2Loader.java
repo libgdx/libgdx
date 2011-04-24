@@ -8,13 +8,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
-import com.badlogic.gdx.graphics.g3d.model.keyframe.SubMesh;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
 
 public class MD2Loader {	
@@ -99,7 +100,7 @@ public class MD2Loader {
 
 		header.numVertices = vertCombos.size();
 
-		SubMesh subMesh = new SubMesh();
+		KeyframedSubMesh subMesh = new KeyframedSubMesh();
 		KeyframedAnimation animation = new KeyframedAnimation();
 		animation.duration = frames.length * 0.2f;
 		animation.keyframes = new Keyframe[frames.length];
@@ -129,8 +130,10 @@ public class MD2Loader {
 			new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex0"));
 		subMesh.mesh.setIndices(indices);
 		subMesh.animations.put("all", animation);
+		subMesh.primitiveType = GL10.GL_TRIANGLES;		
 		KeyframedModel model = new KeyframedModel();
-		model.subMeshes = new SubMesh[] {subMesh};
+		model.subMeshes = new KeyframedSubMesh[] {subMesh};
+		model.setAnimation("all", 0);
 		return model;
 	}
 
