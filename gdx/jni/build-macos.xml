@@ -27,7 +27,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="g++"/>
-	<property name="linker-opts" value="-shared"/>
+	<property name="linker-opts" value="-shared -arch ppc -arch i386 -arch x86_64"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
