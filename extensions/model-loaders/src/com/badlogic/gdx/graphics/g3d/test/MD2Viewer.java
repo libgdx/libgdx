@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.md2.MD2Loader;
+import com.badlogic.gdx.graphics.g3d.md2old.MD2Loader;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 
 public class MD2Viewer implements ApplicationListener {
@@ -28,6 +28,7 @@ public class MD2Viewer implements ApplicationListener {
 	}
 
 	@Override public void render () {
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 		
@@ -37,7 +38,7 @@ public class MD2Viewer implements ApplicationListener {
 		angle += 45 * Gdx.graphics.getDeltaTime();
 		Gdx.gl10.glRotatef(angle, 0, 1, 0);
 		
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);		
 		texture.bind();		
 		
 		model.subMeshes[0].mesh.setVertices(model.subMeshes[0].animations.get("all").keyframes[0].vertices);
