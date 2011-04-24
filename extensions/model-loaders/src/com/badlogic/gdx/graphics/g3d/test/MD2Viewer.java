@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.md2old.MD2Loader;
+import com.badlogic.gdx.graphics.g3d.md2.MD2Loader;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 
 public class MD2Viewer implements ApplicationListener {

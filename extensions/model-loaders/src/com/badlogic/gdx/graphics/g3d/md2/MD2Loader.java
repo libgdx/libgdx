@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.graphics.g3d.md2old;
+package com.badlogic.gdx.graphics.g3d.md2;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
