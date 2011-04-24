@@ -43,7 +43,7 @@ public class Contact {
 	 */
 	private final float[] tmp = new float[6];
 
-	public WorldManifold GetWorldManifold () {
+	public WorldManifold getWorldManifold () {
 		int numContactPoints = jniGetWorldManifold(addr, tmp);
 
 		worldManifold.numContactPoints = numContactPoints;
