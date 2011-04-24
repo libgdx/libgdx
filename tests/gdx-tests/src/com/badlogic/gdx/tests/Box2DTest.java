@@ -208,7 +208,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 				// get the world manifold from which we get the
 				// contact points. A manifold can have 0, 1 or 2
 				// contact points.
-				WorldManifold manifold = contact.GetWorldManifold();
+				WorldManifold manifold = contact.getWorldManifold();
 				int numContactPoints = manifold.getNumberOfContactPoints();
 				for (int j = 0; j < numContactPoints; j++) {
 					Vector2 point = manifold.getPoints()[j];
