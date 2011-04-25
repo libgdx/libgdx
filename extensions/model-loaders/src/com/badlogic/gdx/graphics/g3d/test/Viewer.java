@@ -115,7 +115,7 @@ public class Viewer implements ApplicationListener {
 		}
 		
 		time += Gdx.graphics.getDeltaTime() / 10;
-		if(time > model.skeleton.animations.get(animation).duration) {
+		if(time > model.skeleton.animations.get(animation).totalDuration) {
 			time = 0;
 		}					
 	}

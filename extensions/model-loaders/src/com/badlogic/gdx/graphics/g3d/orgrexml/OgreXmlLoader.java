@@ -366,7 +366,7 @@ public class OgreXmlLoader {
 		for(int i = 0; i < animations.size(); i++) {
 			Animation animation = animations.get(i);
 			SkeletonAnimation skelAnim = new SkeletonAnimation();
-			skelAnim.duration = animation.length;
+			skelAnim.totalDuration = animation.length;
 			skelAnim.perJointkeyFrames = new SkeletonKeyframe[skel.bindPoseJoints.size][];
 			
 			List<Track> tracks = animation.getTracks().getTrack();

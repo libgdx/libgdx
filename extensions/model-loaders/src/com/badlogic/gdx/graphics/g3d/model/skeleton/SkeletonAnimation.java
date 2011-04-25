@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.model.skeleton;
 
-public class SkeletonAnimation {
-	public float duration;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
+
+public class SkeletonAnimation extends Animation {
 	public SkeletonKeyframe[][] perJointkeyFrames;
 }

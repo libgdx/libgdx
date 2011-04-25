@@ -105,7 +105,7 @@ public class Skeleton {
 	public void setAnimation(String name, float time) {		
 		SkeletonAnimation anim = animations.get(name);
 		if(anim == null) throw new IllegalArgumentException("Animation with name '" + name + "' does not exist");
-		if(time < 0 || time > anim.duration) throw new IllegalArgumentException("time must be 0 <= time <= animation duration");
+		if(time < 0 || time > anim.totalDuration) throw new IllegalArgumentException("time must be 0 <= time <= animation duration");
 		
 		int len = anim.perJointkeyFrames.length;
 		for(int i = 0; i < len; i++) {

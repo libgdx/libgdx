@@ -102,7 +102,7 @@ public class MD2Loader {
 
 		KeyframedSubMesh subMesh = new KeyframedSubMesh();
 		KeyframedAnimation animation = new KeyframedAnimation();
-		animation.duration = frames.length * 0.2f;
+		animation.totalDuration = frames.length * 0.2f;
 		animation.keyframes = new Keyframe[frames.length];
 
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
