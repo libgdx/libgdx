@@ -3,8 +3,10 @@ package com.badlogic.gdx.graphics.g3d.model.skeleton;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -96,7 +98,11 @@ public class SkeletonModel implements AnimatedModel {
 			}
 			subMesh.mesh.render(subMesh.primitiveType);
 		}	
-	}	
+	}
+	
+	@Override public void render (ShaderProgram program) {
+		// FIXME
+	}
 	
 	@Override public void setMaterials(Material ... materials) {
 		if(materials.length != subMeshes.length) throw new UnsupportedOperationException("number of materials must equal number of sub-meshes");
@@ -123,5 +129,15 @@ public class SkeletonModel implements AnimatedModel {
 
 	@Override public SubMesh[] getSubMeshes () {
 		return subMeshes;
+	}
+
+	@Override public Animation getAnimation (String name) {
+		// FIXME
+		return null;
+	}
+
+	@Override public Animation[] getAnimations () {
+		// FIXME
+		return null;
 	}
 }

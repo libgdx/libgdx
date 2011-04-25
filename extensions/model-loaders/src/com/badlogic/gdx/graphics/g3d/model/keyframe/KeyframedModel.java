@@ -2,9 +2,11 @@ package com.badlogic.gdx.graphics.g3d.model.keyframe;
 
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 
 public class KeyframedModel implements AnimatedModel {
@@ -22,6 +24,10 @@ public class KeyframedModel implements AnimatedModel {
 			subMesh.mesh.render(subMesh.primitiveType);
 		}			
 	}	
+	
+	@Override public void render (ShaderProgram program) {
+		// FIXME
+	}
 	
 	@Override public void setMaterials(Material ... materials) {
 		if(materials.length != subMeshes.length) throw new UnsupportedOperationException("number of materials must equal number of sub-meshes");
@@ -58,5 +64,15 @@ public class KeyframedModel implements AnimatedModel {
 			if(anim == null) throw new IllegalArgumentException("No animation with name '" + animation + "' in submesh #" + i);
 			subMesh.mesh.setVertices(anim.keyframes[0].vertices);
 		}
+	}
+	
+	@Override public Animation getAnimation (String name) {
+		// FIXME
+		return null;
+	}
+
+	@Override public Animation[] getAnimations () {
+		// FIXME
+		return null;
 	}
 }
