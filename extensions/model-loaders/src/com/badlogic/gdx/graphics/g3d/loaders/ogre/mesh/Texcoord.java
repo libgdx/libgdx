@@ -1,0 +1,28 @@
+
+package com.badlogic.gdx.graphics.g3d.loaders.ogre.mesh;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+
+/**
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "")
+@XmlRootElement(name = "texcoord")
+public class Texcoord {
+    @XmlAttribute(required = true)    
+    public float u;
+    @XmlAttribute    
+    public float v;
+    @XmlAttribute    
+    public float w;
+    @XmlAttribute    
+    public float x;
+}
