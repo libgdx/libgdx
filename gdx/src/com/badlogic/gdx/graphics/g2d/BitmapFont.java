@@ -756,6 +756,13 @@ public class BitmapFont implements Disposable {
 		public int width;
 		public int height;
 
+		public TextBounds() {			
+		}
+		
+		public TextBounds(TextBounds bounds) {
+			set(bounds);
+		}
+		
 		public void set (TextBounds bounds) {
 			width = bounds.width;
 			height = bounds.height;
