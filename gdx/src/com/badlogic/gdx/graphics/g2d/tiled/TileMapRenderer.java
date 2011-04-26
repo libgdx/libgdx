@@ -154,20 +154,16 @@ public class TileMapRenderer implements Disposable {
 		this.tilesPerBlockY = tilesPerBlockY;
 
 		int layer, row, col;
-
-		/*
-		 * int maxCacheSize = parseIntWithDefault(map.properties.get("tile count"), 0); if (maxCacheSize == 0) { for (i = 0; i <
-		 * map.layers.size(); i++) { maxCacheSize += map.layers.get(i).height * map.layers.get(i).width; }
-		 * Gdx.app.log("TiledMapRenderer", "Warning - map doesn't include a tile count"); }
-		 */
-
+		
 		// Calculate maximum cache size and map height in pixels
 		int maxCacheSize = 0;
 		int maxHeight = 0;
 		for (layer = 0; layer < map.length; layer++) {
 			if (map[layer].length > maxHeight) maxHeight = map[layer].length;
 			for (row = 0; row < map[layer].length; row++) {
-				maxCacheSize += map[layer].length * map[layer][row].length;
+				for(col = 0; col < map[layer][row].length; col++)
+					if(map[layer][row][col] != 0)
+						maxCacheSize ++;
 			}
 		}
 		mapHeightPixels = maxHeight * tileHeight;
