@@ -40,6 +40,7 @@ public class TileMapRenderer implements Disposable {
 	private int mapHeightPixels;
 	private int tileWidth, tileHeight;
 	private int tilesPerBlockX, tilesPerBlockY;
+	private int[] allLayers;
 
 	private IntArray blendedTiles;
 
@@ -155,10 +156,14 @@ public class TileMapRenderer implements Disposable {
 
 		int layer, row, col;
 		
+		allLayers = new int[map.length];
+		
 		// Calculate maximum cache size and map height in pixels
+		// Fill allLayers array
 		int maxCacheSize = 0;
 		int maxHeight = 0;
 		for (layer = 0; layer < map.length; layer++) {
+			allLayers[layer] = layer;
 			if (map[layer].length > maxHeight) maxHeight = map[layer].length;
 			for (row = 0; row < map[layer].length; row++) {
 				for(col = 0; col < map[layer][row].length; col++)
@@ -235,7 +240,7 @@ public class TileMapRenderer implements Disposable {
 	 * {@link TileMapRenderer#render(float, float, int, int, int[])} with all layers in the layers list.
 	 */
 	public void render (float x, float y, int width, int height) {
-		render(x, y, width, height, null);
+		render(x, y, width, height, allLayers);
 	}
 
 	/**
@@ -259,7 +264,7 @@ public class TileMapRenderer implements Disposable {
 	 * @param width the width of the tiles to draw (in pixels)
 	 * @param height the width of the tiles to draw (in pixels)
 	 * @param layers The list of layers to draw, 0 being the lowest layer. You will get an IndexOutOfBoundsException if a layer
-	 *           number is too high. A null argument draws all layers.
+	 *           number is too high.
 	 */
 	public void render (float x, float y, int width, int height, int[] layers) {
 		initialRow = (int)((mapHeightPixels - y - overdrawY) / (tilesPerBlockY * tileHeight));
@@ -272,13 +277,13 @@ public class TileMapRenderer implements Disposable {
 		Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		cache.begin();
-		for (currentLayer = 0; (layers == null) ? (currentLayer < normalCacheId.length) : (currentLayer < layers.length); currentLayer++) {
+		for (currentLayer = 0; currentLayer < layers.length; currentLayer++) {
 			for (currentRow = initialRow; currentRow <= lastRow && currentRow < getLayerHeightInBlocks(currentLayer); currentRow++) {
 				for (currentCol = initialCol; currentCol <= lastCol && currentCol < getLayerWidthInBlocks(currentLayer, currentRow); currentCol++) {
 					Gdx.gl.glDisable(GL10.GL_BLEND);
-					cache.draw(normalCacheId[currentLayer][currentRow][currentCol]);
+					cache.draw(normalCacheId[layers[currentLayer]][currentRow][currentCol]);
 					Gdx.gl.glEnable(GL10.GL_BLEND);
-					cache.draw(blendedCacheId[currentLayer][currentRow][currentCol]);
+					cache.draw(blendedCacheId[layers[currentLayer]][currentRow][currentCol]);
 				}
 			}
 		}
