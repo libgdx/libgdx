@@ -22,15 +22,15 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.FadeTo;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
+import com.badlogic.gdx.scenes.scene2d.actions.Delay;
+import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
+import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
 import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
 import com.badlogic.gdx.scenes.scene2d.actions.Remove;
-import com.badlogic.gdx.scenes.scene2d.actions.Repeat;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ActionTest extends GdxTest implements OnActionCompleted {
@@ -105,14 +105,27 @@ public class ActionTest extends GdxTest implements OnActionCompleted {
 //                  )
 //               );        		
 		
-		Action action = Repeat.$(Sequence.$(
-			MoveBy.$(8, 0, 0.03f),
-			MoveBy.$(-16, 0, 0.03f),
-			MoveBy.$(8, 8, 0.03f),
-			MoveBy.$(0, -8, 0.03f)), 20);
-
-		Action action2 = action.copy();
-		img.action(action2);
+//		Action action = Repeat.$(Sequence.$(
+//			MoveBy.$(8, 0, 0.03f),
+//			MoveBy.$(-16, 0, 0.03f),
+//			MoveBy.$(8, 8, 0.03f),
+//			MoveBy.$(0, -8, 0.03f)), 20);
+//
+//		Action action2 = action.copy();
+//		img.action(action2);
+		float scale = 1;
+		float showDuration = 1;
+		ScaleTo scaleCountdown = ScaleTo.$(scale * 1.0f,  scale * 1.0f, 1.0f);
+		scaleCountdown.setInterpolator(DecelerateInterpolator.$(3.0f));
+		  Parallel parallel = Parallel.$(scaleCountdown);//,
+		  //  Sequence.$(FadeIn.$(0.25f), Delay.$(FadeOut.$(0.25f), 0.5f)));
+		Sequence cdAnim = Sequence.$(Delay.$(parallel, showDuration), Remove.$());
+		cdAnim.setCompletionListener(new OnActionCompleted() {			
+			@Override public void completed (Action action) {
+				System.out.println("completed Action: " + action);
+			}
+		});
+		img.action(cdAnim);
 		
 		stage.addActor(img);
 	}
