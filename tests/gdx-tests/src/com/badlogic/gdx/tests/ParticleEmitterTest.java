@@ -72,11 +72,11 @@ public class ParticleEmitterTest extends GdxTest {
 
 			public boolean keyDown (int keycode) {
 				ParticleEmitter emitter = emitters.get(emitterIndex);
-				if (keycode == Input.Keys.KEYCODE_DPAD_UP)
+				if (keycode == Input.Keys.DPAD_UP)
 					particleCount += 5;
-				else if (keycode == Input.Keys.KEYCODE_DPAD_DOWN)
+				else if (keycode == Input.Keys.DPAD_DOWN)
 					particleCount -= 5;
-				else if (keycode == Input.Keys.KEYCODE_SPACE) {
+				else if (keycode == Input.Keys.SPACE) {
 					emitterIndex = (emitterIndex + 1) % emitters.size;
 					emitter = emitters.get(emitterIndex);
 					particleCount = (int)(emitter.getEmission().getHighMax() * emitter.getLife().getHighMax() / 1000f);

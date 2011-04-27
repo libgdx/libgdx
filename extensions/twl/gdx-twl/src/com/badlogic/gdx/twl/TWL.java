@@ -200,119 +200,119 @@ public class TWL implements InputProcessor {
 
 	static public int getTwlKeyCode (int gdxKeyCode) {
 		switch (gdxKeyCode) {
-		case Keys.KEYCODE_0:
+		case Keys.NUM_0:
 			return Event.KEY_0;
-		case Keys.KEYCODE_1:
+		case Keys.NUM_1:
 			return Event.KEY_1;
-		case Keys.KEYCODE_2:
+		case Keys.NUM_2:
 			return Event.KEY_2;
-		case Keys.KEYCODE_3:
+		case Keys.NUM_3:
 			return Event.KEY_3;
-		case Keys.KEYCODE_4:
+		case Keys.NUM_4:
 			return Event.KEY_4;
-		case Keys.KEYCODE_5:
+		case Keys.NUM_5:
 			return Event.KEY_5;
-		case Keys.KEYCODE_6:
+		case Keys.NUM_6:
 			return Event.KEY_6;
-		case Keys.KEYCODE_7:
+		case Keys.NUM_7:
 			return Event.KEY_7;
-		case Keys.KEYCODE_8:
+		case Keys.NUM_8:
 			return Event.KEY_8;
-		case Keys.KEYCODE_9:
+		case Keys.NUM_9:
 			return Event.KEY_9;
-		case Keys.KEYCODE_A:
+		case Keys.A:
 			return Event.KEY_A;
-		case Keys.KEYCODE_B:
+		case Keys.B:
 			return Event.KEY_B;
-		case Keys.KEYCODE_C:
+		case Keys.C:
 			return Event.KEY_C;
-		case Keys.KEYCODE_D:
+		case Keys.D:
 			return Event.KEY_D;
-		case Keys.KEYCODE_E:
+		case Keys.E:
 			return Event.KEY_E;
-		case Keys.KEYCODE_F:
+		case Keys.F:
 			return Event.KEY_F;
-		case Keys.KEYCODE_G:
+		case Keys.G:
 			return Event.KEY_G;
-		case Keys.KEYCODE_H:
+		case Keys.H:
 			return Event.KEY_H;
-		case Keys.KEYCODE_I:
+		case Keys.I:
 			return Event.KEY_I;
-		case Keys.KEYCODE_J:
+		case Keys.J:
 			return Event.KEY_J;
-		case Keys.KEYCODE_K:
+		case Keys.K:
 			return Event.KEY_K;
-		case Keys.KEYCODE_L:
+		case Keys.L:
 			return Event.KEY_L;
-		case Keys.KEYCODE_M:
+		case Keys.M:
 			return Event.KEY_M;
-		case Keys.KEYCODE_N:
+		case Keys.N:
 			return Event.KEY_N;
-		case Keys.KEYCODE_O:
+		case Keys.O:
 			return Event.KEY_O;
-		case Keys.KEYCODE_P:
+		case Keys.P:
 			return Event.KEY_P;
-		case Keys.KEYCODE_Q:
+		case Keys.Q:
 			return Event.KEY_Q;
-		case Keys.KEYCODE_R:
+		case Keys.R:
 			return Event.KEY_R;
-		case Keys.KEYCODE_S:
+		case Keys.S:
 			return Event.KEY_S;
-		case Keys.KEYCODE_T:
+		case Keys.T:
 			return Event.KEY_T;
-		case Keys.KEYCODE_U:
+		case Keys.U:
 			return Event.KEY_U;
-		case Keys.KEYCODE_V:
+		case Keys.V:
 			return Event.KEY_V;
-		case Keys.KEYCODE_W:
+		case Keys.W:
 			return Event.KEY_W;
-		case Keys.KEYCODE_X:
+		case Keys.X:
 			return Event.KEY_X;
-		case Keys.KEYCODE_Y:
+		case Keys.Y:
 			return Event.KEY_Y;
-		case Keys.KEYCODE_Z:
+		case Keys.Z:
 			return Event.KEY_Z;
-		case Keys.KEYCODE_ALT_LEFT:
+		case Keys.ALT_LEFT:
 			return Event.KEY_LMETA;
-		case Keys.KEYCODE_ALT_RIGHT:
+		case Keys.ALT_RIGHT:
 			return Event.KEY_RMETA;
-		case Keys.KEYCODE_BACKSLASH:
+		case Keys.BACKSLASH:
 			return Event.KEY_BACKSLASH;
-		case Keys.KEYCODE_COMMA:
+		case Keys.COMMA:
 			return Event.KEY_COMMA;
-		case Keys.KEYCODE_DEL:
+		case Keys.DEL:
 			return Event.KEY_BACK;
-		case Keys.KEYCODE_FORWARD_DEL:
+		case Keys.FORWARD_DEL:
 			return Event.KEY_DELETE;
-		case Keys.KEYCODE_DPAD_LEFT:
+		case Keys.DPAD_LEFT:
 			return Event.KEY_LEFT;
-		case Keys.KEYCODE_DPAD_RIGHT:
+		case Keys.DPAD_RIGHT:
 			return Event.KEY_RIGHT;
-		case Keys.KEYCODE_DPAD_UP:
+		case Keys.DPAD_UP:
 			return Event.KEY_UP;
-		case Keys.KEYCODE_DPAD_DOWN:
+		case Keys.DPAD_DOWN:
 			return Event.KEY_DOWN;
-		case Keys.KEYCODE_ENTER:
+		case Keys.ENTER:
 			return Event.KEY_RETURN;
-		case Keys.KEYCODE_HOME:
+		case Keys.HOME:
 			return Event.KEY_HOME;
-		case Keys.KEYCODE_MINUS:
+		case Keys.MINUS:
 			return Event.KEY_MINUS;
-		case Keys.KEYCODE_PERIOD:
+		case Keys.PERIOD:
 			return Event.KEY_PERIOD;
-		case Keys.KEYCODE_PLUS:
+		case Keys.PLUS:
 			return Event.KEY_ADD;
-		case Keys.KEYCODE_SEMICOLON:
+		case Keys.SEMICOLON:
 			return Event.KEY_SEMICOLON;
-		case Keys.KEYCODE_SHIFT_LEFT:
+		case Keys.SHIFT_LEFT:
 			return Event.KEY_LSHIFT;
-		case Keys.KEYCODE_SHIFT_RIGHT:
+		case Keys.SHIFT_RIGHT:
 			return Event.KEY_RSHIFT;
-		case Keys.KEYCODE_SLASH:
+		case Keys.SLASH:
 			return Event.KEY_SLASH;
-		case Keys.KEYCODE_SPACE:
+		case Keys.SPACE:
 			return Event.KEY_SPACE;
-		case Keys.KEYCODE_TAB:
+		case Keys.TAB:
 			return Event.KEY_TAB;
 		}
 		return Event.KEY_NONE;

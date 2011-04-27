@@ -84,9 +84,9 @@ public class ProjectTest extends GdxTest {
 			gl.glPopMatrix();
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.KEYCODE_A))
+		if(Gdx.input.isKeyPressed(Keys.A))
 			cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if(Gdx.input.isKeyPressed(Keys.KEYCODE_D))
+		if(Gdx.input.isKeyPressed(Keys.D))
 			cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);		
 		
 		gl.glDisable(GL10.GL_DEPTH_TEST);

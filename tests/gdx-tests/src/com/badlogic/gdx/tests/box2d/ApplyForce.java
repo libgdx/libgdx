@@ -163,13 +163,13 @@ public class ApplyForce extends Box2DTest {
 	private final Vector2 tmp = new Vector2();
 
 	public boolean keyDown (int keyCode) {
-		if (keyCode == Keys.KEYCODE_W) {
+		if (keyCode == Keys.W) {
 			Vector2 f = m_body.getWorldVector(tmp.set(0, -200));
 			Vector2 p = m_body.getWorldPoint(tmp.set(0, 2));
 			m_body.applyForce(f, p);
 		}
-		if (keyCode == Keys.KEYCODE_A) m_body.applyTorque(50);
-		if (keyCode == Keys.KEYCODE_D) m_body.applyTorque(-50);
+		if (keyCode == Keys.A) m_body.applyTorque(50);
+		if (keyCode == Keys.D) m_body.applyTorque(-50);
 
 		return false;
 	}

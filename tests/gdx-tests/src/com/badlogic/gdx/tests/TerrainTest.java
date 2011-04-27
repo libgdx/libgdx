@@ -99,12 +99,12 @@ public class TerrainTest extends GdxTest {
 			intersected = false;
 		}
 
-		if (input.isKeyPressed(Keys.KEYCODE_W)) camera.position.z -= delta;
-		if (input.isKeyPressed(Keys.KEYCODE_S)) camera.position.z += delta;
-		if (input.isKeyPressed(Keys.KEYCODE_A)) camera.position.x -= delta;
-		if (input.isKeyPressed(Keys.KEYCODE_D)) camera.position.x += delta;
-		if (input.isKeyPressed(Keys.KEYCODE_Q)) camera.position.y += delta;
-		if (input.isKeyPressed(Keys.KEYCODE_E)) camera.position.y -= delta;
+		if (input.isKeyPressed(Keys.W)) camera.position.z -= delta;
+		if (input.isKeyPressed(Keys.S)) camera.position.z += delta;
+		if (input.isKeyPressed(Keys.A)) camera.position.x -= delta;
+		if (input.isKeyPressed(Keys.D)) camera.position.x += delta;
+		if (input.isKeyPressed(Keys.Q)) camera.position.y += delta;
+		if (input.isKeyPressed(Keys.E)) camera.position.y -= delta;
 	}
 
 	final static class TerrainChunk {

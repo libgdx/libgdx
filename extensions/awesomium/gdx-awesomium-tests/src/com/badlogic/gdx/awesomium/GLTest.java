@@ -112,27 +112,27 @@ public class GLTest implements ApplicationListener {
 
 			public int translateKeycode(int keycode) {
 				int virtualKeycode = 0;
-				if(keycode == Keys.KEYCODE_DPAD_LEFT)
+				if(keycode == Keys.DPAD_LEFT)
 					virtualKeycode = Awesomium.AWE_AK_LEFT;
-				if(keycode == Keys.KEYCODE_DPAD_RIGHT)
+				if(keycode == Keys.DPAD_RIGHT)
 					virtualKeycode = Awesomium.AWE_AK_RIGHT;
-				if(keycode == Keys.KEYCODE_DPAD_UP)
+				if(keycode == Keys.DPAD_UP)
 					virtualKeycode = Awesomium.AWE_AK_UP;
-				if(keycode == Keys.KEYCODE_DPAD_DOWN)
+				if(keycode == Keys.DPAD_DOWN)
 					virtualKeycode = Awesomium.AWE_AK_DOWN;
-				if(keycode == Keys.KEYCODE_ENTER)
+				if(keycode == Keys.ENTER)
 					virtualKeycode = Awesomium.AWE_AK_RETURN;
-				if(keycode == Keys.KEYCODE_DEL)					
+				if(keycode == Keys.DEL)					
 					virtualKeycode = Awesomium.AWE_AK_BACK;
-				if(keycode == Keys.KEYCODE_SHIFT_LEFT || keycode == Keys.KEYCODE_SHIFT_RIGHT)
+				if(keycode == Keys.SHIFT_LEFT || keycode == Keys.SHIFT_RIGHT)
 					virtualKeycode = Awesomium.AWE_AK_SHIFT;				
 				return virtualKeycode;
 			}
 			
 			private int getModifiers() {
 				int modifiers = 0;
-				if(Gdx.input.isKeyPressed(Keys.KEYCODE_SHIFT_LEFT) ||
-					Gdx.input.isKeyPressed(Keys.KEYCODE_SHIFT_RIGHT))
+				if(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ||
+					Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))
 					modifiers |= Awesomium.AWE_MOD_SHIFT_KEY;
 				return modifiers;
 			}

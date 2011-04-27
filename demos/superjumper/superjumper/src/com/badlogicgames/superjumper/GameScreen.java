@@ -123,9 +123,9 @@ public class GameScreen extends Screen {
 		}
 		else {
 			float accel = 0;
-			if(Gdx.input.isKeyPressed(Keys.KEYCODE_DPAD_LEFT))
+			if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT))
 				accel = 5f;
-			if(Gdx.input.isKeyPressed(Keys.KEYCODE_DPAD_RIGHT))
+			if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT))
 				accel = -5f;
 			world.update(deltaTime, accel);
 		}

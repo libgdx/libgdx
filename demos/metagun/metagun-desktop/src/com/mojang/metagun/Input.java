@@ -22,21 +22,21 @@ public class Input implements InputProcessor {
     public void set(int key, boolean down) {
         int button = -1;
 
-        if (key == Keys.KEYCODE_DPAD_UP) button = UP;
-        if (key == Keys.KEYCODE_DPAD_LEFT) button = LEFT;
-        if (key == Keys.KEYCODE_DPAD_DOWN) button = DOWN;
-        if (key == Keys.KEYCODE_DPAD_RIGHT) button = RIGHT;
+        if (key == Keys.DPAD_UP) button = UP;
+        if (key == Keys.DPAD_LEFT) button = LEFT;
+        if (key == Keys.DPAD_DOWN) button = DOWN;
+        if (key == Keys.DPAD_RIGHT) button = RIGHT;
 
-        if (key == Keys.KEYCODE_Y) button = JUMP;
-        if (key == Keys.KEYCODE_Z) button = JUMP;
-        if (key == Keys.KEYCODE_X) button = SHOOT;
-        if (key == Keys.KEYCODE_C) button = JUMP;
-        if (key == Keys.KEYCODE_A) button = JUMP;
-        if (key == Keys.KEYCODE_S) button = SHOOT;
-        if (key == Keys.KEYCODE_D) button = JUMP;
+        if (key == Keys.Y) button = JUMP;
+        if (key == Keys.Z) button = JUMP;
+        if (key == Keys.X) button = SHOOT;
+        if (key == Keys.C) button = JUMP;
+        if (key == Keys.A) button = JUMP;
+        if (key == Keys.S) button = SHOOT;
+        if (key == Keys.D) button = JUMP;
 
-        if (key == Keys.KEYCODE_ESCAPE ||
-      	   key == Keys.KEYCODE_MENU) button = ESCAPE;
+        if (key == Keys.ESCAPE ||
+      	   key == Keys.MENU) button = ESCAPE;
 
         if (button >= 0) {
             buttons[button] = down;
@@ -58,27 +58,27 @@ public class Input implements InputProcessor {
 	   		 int x = (int)((Gdx.input.getX(i) / (float)Gdx.graphics.getWidth()) * 320);
 	   		 if(!Gdx.input.isTouched(i)) continue;
 	   		 if(x < 32) {
-	   			 set(Keys.KEYCODE_DPAD_LEFT, true);
+	   			 set(Keys.DPAD_LEFT, true);
 	   			 left |= true;
 	   		 }
 	   		 if(x > 32 && x < 90) {
-	   			 set(Keys.KEYCODE_DPAD_RIGHT, true);
+	   			 set(Keys.DPAD_RIGHT, true);
 	   			 right |= true;
 	   		 }
 	   		 if(x > 320-64 && x < 320-32) {
-	   			 set(Keys.KEYCODE_Z, true);
+	   			 set(Keys.Z, true);
 	   			 z |= true;	   			 
 	   		 }
 	   		 if(x > 320-32 && x < 320) {
-	   			 set(Keys.KEYCODE_X, true);
+	   			 set(Keys.X, true);
 	   			 s |= true;
 	   		 }
 	   	 }   	 
    	 
-	   	 if(left==false) set(Keys.KEYCODE_DPAD_LEFT, false);
-	   	 if(right==false) set(Keys.KEYCODE_DPAD_RIGHT, false);
-	   	 if(z==false) set(Keys.KEYCODE_Z, false);
-	   	 if(s==false) set(Keys.KEYCODE_X, false);
+	   	 if(left==false) set(Keys.DPAD_LEFT, false);
+	   	 if(right==false) set(Keys.DPAD_RIGHT, false);
+	   	 if(z==false) set(Keys.Z, false);
+	   	 if(s==false) set(Keys.X, false);
    	 }      	    	    	                          
     }
 
@@ -112,12 +112,12 @@ public class Input implements InputProcessor {
 	@Override public boolean touchUp (int x, int y, int pointer, int button) {
 		x = (int)(x / (float)Gdx.graphics.getWidth() * 320);
 		if(x > 160 - 32 && x < 160) {
-			set(Keys.KEYCODE_DPAD_UP, !buttons[UP]);
+			set(Keys.DPAD_UP, !buttons[UP]);
 			if(buttons[UP])
 				buttons[DOWN] = false;
 		}
 		if(x > 160 && x < 160 + 32) { 
-			set(Keys.KEYCODE_DPAD_DOWN, !buttons[DOWN]);
+			set(Keys.DPAD_DOWN, !buttons[DOWN]);
 			if(buttons[DOWN])
 				buttons[UP] = false;
 		}

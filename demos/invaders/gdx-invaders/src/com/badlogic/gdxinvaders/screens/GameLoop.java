@@ -65,10 +65,10 @@ public class GameLoop implements Screen, SimulationListener {
 		else
 			simulation.moveShipRight(app.getGraphics().getDeltaTime(), Math.abs(input.getAccelerometerY()) / 10);
 
-		if (input.isKeyPressed(Keys.KEYCODE_DPAD_LEFT)) simulation.moveShipLeft(app.getGraphics().getDeltaTime(), 0.5f);
-		if (input.isKeyPressed(Keys.KEYCODE_DPAD_RIGHT)) simulation.moveShipRight(app.getGraphics().getDeltaTime(), 0.5f);
+		if (input.isKeyPressed(Keys.DPAD_LEFT)) simulation.moveShipLeft(app.getGraphics().getDeltaTime(), 0.5f);
+		if (input.isKeyPressed(Keys.DPAD_RIGHT)) simulation.moveShipRight(app.getGraphics().getDeltaTime(), 0.5f);
 
-		if (input.isTouched() || input.isKeyPressed(Keys.KEYCODE_SPACE)) simulation.shot();
+		if (input.isTouched() || input.isKeyPressed(Keys.SPACE)) simulation.shot();
 	}
 
 	@Override public void explosion () {

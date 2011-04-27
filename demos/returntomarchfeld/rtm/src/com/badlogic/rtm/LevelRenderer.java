@@ -213,10 +213,10 @@ public class LevelRenderer implements ApplicationListener {
 // if (Gdx.input.isKeyPressed(Keys.ANY_KEY)==false)
 // Gdx.app.log("RTM", "No key pressed");
 
-		if (Gdx.input.isKeyPressed(Keys.KEYCODE_W)) camera.position.add(camera.direction.tmp().mul(80 * delta));
-		if (Gdx.input.isKeyPressed(Keys.KEYCODE_S)) camera.position.add(camera.direction.tmp().mul(-80 * delta));
-		if (Gdx.input.isKeyPressed(Keys.KEYCODE_A)) angle -= 90 * delta;
-		if (Gdx.input.isKeyPressed(Keys.KEYCODE_D)) angle += 90 * delta;
+		if (Gdx.input.isKeyPressed(Keys.W)) camera.position.add(camera.direction.tmp().mul(80 * delta));
+		if (Gdx.input.isKeyPressed(Keys.S)) camera.position.add(camera.direction.tmp().mul(-80 * delta));
+		if (Gdx.input.isKeyPressed(Keys.A)) angle -= 90 * delta;
+		if (Gdx.input.isKeyPressed(Keys.D)) angle += 90 * delta;
 
 		if (Gdx.input.isTouched()) {
 			float x = Gdx.input.getX();

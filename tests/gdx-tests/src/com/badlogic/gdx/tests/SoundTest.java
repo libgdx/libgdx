@@ -69,7 +69,7 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	}
 
 	@Override public boolean keyUp (int keycode) {
-		if (keycode != Input.Keys.KEYCODE_SPACE) return false;
+		if (keycode != Input.Keys.SPACE) return false;
 		if (music.isPlaying())
 			music.pause();
 		else
