@@ -71,10 +71,10 @@ public class TextureDownloadTest extends GdxTest {
 	}
 	
 	@Override public void create() {
-		// POT image
+		// POT image, mananged
 		potTexture = new Texture(new URLHandle("http://libgdx.badlogicgames.com/bob.png"));
 	
-		// non-POT image
+		// non-POT image, not managed!
 		Pixmap pixmap = new Pixmap(new URLHandle("http://libgdx.badlogicgames.com/libgdx.png"));
 		int width = MathUtils.nextPowerOfTwo(pixmap.getWidth());
 		int height = MathUtils.nextPowerOfTwo(pixmap.getHeight());
