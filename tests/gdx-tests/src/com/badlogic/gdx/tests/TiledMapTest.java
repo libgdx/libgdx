@@ -47,7 +47,7 @@ public class TiledMapTest extends GdxTest {
 	private static final int SCREEN_WIDTH = 480;
 	private static final int SCREEN_HEIGHT = 320;
 
-	private static final int[] layersList = {2,3};
+	//private static final int[] layersList = {2,3};
 
 	SpriteBatch spriteBatch;
 	BitmapFont font;
@@ -76,7 +76,7 @@ public class TiledMapTest extends GdxTest {
 		tmp.set(0, 0, 0);
 		cam.unproject(tmp);
 
-		tileMapRenderer.render(tmp.x, tmp.y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), layersList);
+		tileMapRenderer.render(tmp.x, tmp.y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());//, layersList);
 
 		spriteBatch.begin();
 		font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);

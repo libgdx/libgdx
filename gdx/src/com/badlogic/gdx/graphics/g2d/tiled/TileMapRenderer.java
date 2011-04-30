@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
@@ -181,11 +182,11 @@ public class TileMapRenderer implements Disposable {
 		normalCacheId = new int[map.length][][];
 		blendedCacheId = new int[map.length][][];
 		for (layer = 0; layer < map.length; layer++) {
-			normalCacheId[layer] = new int[(int)Math.ceil((float)map[layer].length / tilesPerBlockY)][];
-			blendedCacheId[layer] = new int[(int)Math.ceil((float)map[layer].length / tilesPerBlockY)][];
+			normalCacheId[layer] = new int[(int)MathUtils.ceil((float)map[layer].length / tilesPerBlockY)][];
+			blendedCacheId[layer] = new int[(int)MathUtils.ceil((float)map[layer].length / tilesPerBlockY)][];
 			for (row = 0; row < normalCacheId[layer].length; row++) {
-				normalCacheId[layer][row] = new int[(int)Math.ceil(map[layer][row].length / tilesPerBlockX)];
-				blendedCacheId[layer][row] = new int[(int)Math.ceil(map[layer][row].length / tilesPerBlockX)];
+				normalCacheId[layer][row] = new int[(int)MathUtils.ceil((float)map[layer][row].length / tilesPerBlockX)];
+				blendedCacheId[layer][row] = new int[(int)MathUtils.ceil((float)map[layer][row].length / tilesPerBlockX)];
 				for (col = 0; col < normalCacheId[layer][row].length; col++) {
 					normalCacheId[layer][row][col] = addBlock(map[layer], layer, row, col, false);
 					blendedCacheId[layer][row][col] = addBlock(map[layer], layer, row, col, true);
@@ -267,13 +268,14 @@ public class TileMapRenderer implements Disposable {
 	 *           number is too high.
 	 */
 	public void render (float x, float y, int width, int height, int[] layers) {
-		initialRow = (int)((mapHeightPixels - y - overdrawY) / (tilesPerBlockY * tileHeight));
+		lastRow = (int)((mapHeightPixels - (y - height + overdrawY)) / (tilesPerBlockY * tileHeight));
+		initialRow = (int)((mapHeightPixels - (y - overdrawY))/(tilesPerBlockY * tileHeight));
 		initialRow = (initialRow > 0) ? initialRow : 0; // Clamp initial Row > 0
+		
 		initialCol = (int)((x - overdrawX) / (tilesPerBlockX * tileWidth));
 		initialCol = (initialCol > 0) ? initialCol : 0; // Clamp initial Col > 0
-		lastRow = (int)((mapHeightPixels - y + height + overdrawY) / (tilesPerBlockY * tileHeight)); // clamping done in render loop
-		lastCol = (int)((x + width + overdrawX) / (tilesPerBlockX * tileWidth)); // clamping done in render loop
-
+		lastCol = (int)((x + width + overdrawX) / (tilesPerBlockX * tileWidth));
+				
 		Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		cache.begin();
