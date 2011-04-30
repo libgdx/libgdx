@@ -125,6 +125,7 @@ public class TiledLoader extends DefaultHandler {
 							currentObject.y = Integer.parseInt(attr.getValue("y"));
 							currentObject.width = parseIntWithDefault(attr.getValue("width"), 0);
 							currentObject.height = parseIntWithDefault(attr.getValue("height"), 0);
+							currentObject.gid = parseIntWithDefault(attr.getValue("gid"), 0);
 							return;
 						}
 
