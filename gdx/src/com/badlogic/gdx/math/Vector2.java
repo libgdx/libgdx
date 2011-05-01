@@ -286,4 +286,18 @@ public class Vector2 implements Serializable {
       
       return this;
   }
+   
+	/**
+	 * Linearly interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is stored
+	 * in this vector.
+	 * 
+	 * @param target The target vector
+	 * @param alpha The interpolation coefficient
+	 * @return This vector for chaining.
+	 */
+	public Vector2 lerp (Vector2 target, float alpha) {
+		Vector2 r = this.mul(1.0f - alpha);
+		r.add(target.tmp().mul(alpha));
+		return r;
+	}
 }

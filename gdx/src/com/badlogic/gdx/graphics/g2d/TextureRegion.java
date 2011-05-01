@@ -201,7 +201,7 @@ public class TextureRegion {
 			float temp = v;
 			v = v2;
 			v2 = temp;
-		}
+		}		
 	}
 
 	/**
