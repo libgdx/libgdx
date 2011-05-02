@@ -78,11 +78,7 @@ public class IntArray {
 	public void addAll (IntArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		int[] items = this.items;
-		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		System.arraycopy(array.items, 0, items, size, array.size);
-		size += array.size;
+		addAll(array.items, offset, length);
 	}
 
 	public void addAll (int[] array) {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 import java.util.Comparator;
@@ -97,11 +98,7 @@ public class Array<T> implements Iterable<T> {
 	public void addAll (Array array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
-		T[] items = this.items;
-		int sizeNeeded = size + array.size;
-		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
-		System.arraycopy(array.items, 0, items, size, array.size);
-		size += array.size;
+		addAll((T[])array.items, offset, length);
 	}
 
 	public void addAll (T[] array) {
