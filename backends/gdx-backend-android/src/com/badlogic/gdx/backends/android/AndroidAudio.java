@@ -149,7 +149,7 @@ public final class AndroidAudio implements Audio {
 	public void dispose () {
 		for (AndroidMusic music : musics) {
 			music.dispose();
-		}
+		}		
 		soundPool.release();
 	}
 }

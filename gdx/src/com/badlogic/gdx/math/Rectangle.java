@@ -143,7 +143,7 @@ public class Rectangle implements Serializable {
 					y + height < rectangle.y);
 	}
 
-	public void set (int x, int y, int width, int height) {
+	public void set (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
