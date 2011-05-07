@@ -550,4 +550,48 @@ public final class Intersector {
 	static double detd (double a, double b, double c, double d) {
 		return a * d - b * c;
 	}
+	
+	public static boolean overlapCircles(Circle c1, Circle c2) {
+		float x = c1.x - c2.x;		
+		float y = c1.y - c2.y;		
+      float distance = x * x + y * y;
+      float radiusSum = c1.radius + c2.radius;
+      return distance <= radiusSum * radiusSum;
+  }
+  
+  public static boolean overlapRectangles(Rectangle r1, Rectangle r2) {
+      if(r1.x < r2.x + r2.width &&
+         r1.x + r1.width > r2.x &&
+         r1.y < r2.y + r2.height &&
+         r1.y + r1.height > r2.y)
+          return true;
+      else
+          return false;
+  }
+  
+  public static boolean overlapCircleRectangle(Circle c, Rectangle r) {
+      float closestX = c.x;
+      float closestY = c.y;
+      
+      if(c.x < r.x) {
+          closestX = r.x; 
+      } 
+      else if(c.x > r.x + r.width) {
+          closestX = r.x + r.width;
+      }
+        
+      if(c.y < r.y) {
+          closestY = r.y;
+      } 
+      else if(c.y > r.y + r.height) {
+          closestY = r.y + r.height;
+      }
+      
+      closestX = closestX - c.x;
+      closestX *= closestX;
+      closestY = closestY - c.y;
+      closestY *= closestY;
+      
+      return closestX + closestY < c.radius * c.radius;           
+  }
 }
