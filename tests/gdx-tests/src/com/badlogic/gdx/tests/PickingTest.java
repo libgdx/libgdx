@@ -22,11 +22,11 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -38,27 +38,43 @@ public class PickingTest extends GdxTest {
 		return false;
 	}
 
+	static final int BORDER = 20;
+	static final int VP_X = BORDER;
+	static final int VP_Y = BORDER;
+	static int VP_WIDTH;
+	static int VP_HEIGHT;
 	Mesh sphere;
 	Camera cam;	
 	Vector3[] positions = new Vector3[100];
+	ImmediateModeRenderer renderer;
+	SpriteBatch batch;
+	Texture logo;
 	
 	@Override public void create() {
+		VP_WIDTH = Gdx.graphics.getWidth() - 4 * BORDER;
+		VP_HEIGHT = Gdx.graphics.getHeight() - 4 * BORDER;
 		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
-		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(45, VP_WIDTH, VP_HEIGHT);
 //		cam = new OrthographicCamera(10, 10);
 		cam.far = 200;
+		batch = new SpriteBatch();
+		logo = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		Random rand = new Random();
 		for(int i = 0; i < positions.length; i++) {
 			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, 
 												rand.nextFloat() * 100 - rand.nextFloat() * 100, 
-												rand.nextFloat() * -100 - 3);
+												rand.nextFloat() * 100 - rand.nextFloat() * 100);
 		}		
 		positions[0].set(0, 0, -10);
+		renderer = new ImmediateModeRenderer();
 	}
-	
+
+	Vector3 intersection = new Vector3();
 	@Override public void render() {
 		GL10 gl = Gdx.gl10;
 		
+		gl.glViewport(VP_Y, VP_X, VP_WIDTH, VP_HEIGHT);
+		gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		
@@ -67,14 +83,15 @@ public class PickingTest extends GdxTest {
 		
 		Ray pickRay = null;
 		if(Gdx.input.isTouched()) {
-			pickRay = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
-			Gdx.app.log("PickingTest", "ray: " + pickRay);
+			pickRay = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY(), VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
+//			Gdx.app.log("PickingTest", "ray: " + pickRay);
 		}
 		
+		boolean intersected = false;
 		for(int i = 0; i < positions.length; i++) {
-			if(pickRay != null &&
-				Intersector.intersectRaySphere(pickRay, positions[i], 1, null)) {
+			if(pickRay != null && Intersector.intersectRaySphere(pickRay, positions[i], 1, intersection)) {
 				gl.glColor4f(1, 0, 0, 1);
+				intersected = true;
 			} else {
 				gl.glColor4f(1, 1, 1, 1);
 			}
@@ -84,9 +101,28 @@ public class PickingTest extends GdxTest {
 			gl.glPopMatrix();
 		}
 		
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.begin();
+		if(intersected) {			
+			cam.project(intersection, VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
+			batch.draw(logo, intersection.x, intersection.y);			
+		}
+		batch.end();
+		
+		renderer.begin(GL10.GL_LINE_LOOP);
+		renderer.color(1, 1, 1, 1);
+		renderer.vertex(VP_X, VP_Y, 0);
+		renderer.color(1, 1, 1, 1);
+		renderer.vertex(VP_X + VP_WIDTH, VP_Y, 0);
+		renderer.color(1, 1, 1, 1);
+		renderer.vertex(VP_X + VP_WIDTH, VP_Y + VP_HEIGHT, 0);
+		renderer.color(1, 1, 1, 1);
+		renderer.vertex(VP_X, VP_Y + VP_HEIGHT, 0);
+		renderer.end();
+		
 		if(Gdx.input.isKeyPressed(Keys.A))
 			cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if(Gdx.input.isKeyPressed(Keys.D))
+		if(Gdx.input.isKeyPressed(Keys.D))	
 			cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);					
-	}
+	}	
 }

@@ -69,6 +69,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		canvas.addGLEventListener(this);
 		this.useGL2 = useGL2;
 		this.glu = new JoglGLU();
+		Gdx.glu = glu;
 	}
 
 	GLCanvas getCanvas () {

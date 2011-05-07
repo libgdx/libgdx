@@ -31,8 +31,7 @@ public class TextureAtlasTest extends GdxTest {
 	BitmapFont font;
 
 	public void create () {
-		batch = new SpriteBatch();
-
+		batch = new SpriteBatch();	
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 
 		badlogic = atlas.createSprite("badlogicslice");
