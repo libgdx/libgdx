@@ -522,6 +522,7 @@ public class Xml {
 		 * @return the first child having the given name or null, does not recurse
 		 */
 		public Element getChildByName(String name) {
+			if(children == null) return null;
 			for(int i = 0; i < children.size; i++) {
 				Element element = children.get(i);
 				if(element.name.equals(name)) return element;
@@ -534,6 +535,7 @@ public class Xml {
 		 * @return the first child having the given name or null, recurses
 		 */
 		public Element getChildByNameRecursive(String name) {
+			if(children == null) return null;
 			for(int i = 0; i < children.size; i++) {
 				Element element = children.get(i);
 				if(element.name.equals(name)) return element;
@@ -549,7 +551,8 @@ public class Xml {
 		 */
 		public Array<Element> getChildrenByName(String name) {
 			Array<Element> children = new Array<Element>();
-			for(int i = 0; i < children.size; i++) {
+			if(this.children == null) return children;
+			for(int i = 0; i < this.children.size; i++) {
 				Element child = children.get(i);
 				if(child.name.equals(name)) children.add(child);
 			}
