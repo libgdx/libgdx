@@ -516,5 +516,44 @@ public class Xml {
 			}
 			return buffer.toString();
 		}
-	}
+		
+		/**
+		 * @param name the name of the child {@link Element}
+		 * @return the first child having the given name or null, does not recurse
+		 */
+		public Element getChildByName(String name) {
+			for(int i = 0; i < children.size; i++) {
+				Element element = children.get(i);
+				if(element.name.equals(name)) return element;
+			}
+			return null;
+		}
+		
+		/**
+		 * @param name the name of the child {@link Element}
+		 * @return the first child having the given name or null, recurses
+		 */
+		public Element getChildByNameRecursive(String name) {
+			for(int i = 0; i < children.size; i++) {
+				Element element = children.get(i);
+				if(element.name.equals(name)) return element;
+				Element found = element.getChildByNameRecursive(name);
+				if(found != null) return found;
+			}
+			return null;		
+		}
+		
+		/**
+		 * @param name the name of the children
+		 * @return the children with the given name or an empty {@link Array}
+		 */
+		public Array<Element> getChildrenByName(String name) {
+			Array<Element> children = new Array<Element>();
+			for(int i = 0; i < children.size; i++) {
+				Element child = children.get(i);
+				if(child.name.equals(name)) children.add(child);
+			}
+			return children;
+		}
+	}	
 }
