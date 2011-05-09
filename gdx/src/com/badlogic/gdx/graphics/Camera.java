@@ -141,12 +141,10 @@ public abstract class Camera {
 		float x = vec.x, y = vec.y;
 		x = x - viewportX;		
 		y = Gdx.graphics.getHeight() - y - 1;
-		y = y - viewportY;
-		System.out.print(x + ", " + y);
+		y = y - viewportY;		
 		vec.x = (2 * x) / viewportWidth - 1;
 		vec.y = (2 * y) / viewportHeight - 1;
-		vec.z = 2 * vec.z - 1;
-		System.out.println(" " + vec);
+		vec.z = 2 * vec.z - 1;		
 		vec.prj(invProjectionView);
 	}
 	
