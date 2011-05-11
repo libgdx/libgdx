@@ -15,20 +15,14 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TextureDataTest extends GdxTest {
 	private SpriteBatch spriteBatch;
@@ -38,32 +32,51 @@ public class TextureDataTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 
 		sprite = new Sprite(new Texture(new TextureData() {
-			public void load () {
-				FileHandle file = Gdx.files.internal("data/raw.bin");
-				InputStream input = file.read();
-				ByteBuffer buffer = ByteBuffer.allocateDirect((int)file.length());
-				buffer.order(ByteOrder.nativeOrder());
-				byte[] bytes = new byte[1024];
-				try {
-					while (true) {
-						int length = input.read(bytes);
-						if (length == -1) break;
-						buffer.put(bytes, 0, length);
-					}
-				} catch (IOException ex) {
-					throw new GdxRuntimeException(ex);
-				}
-				buffer.flip();
-				Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, getWidth(), getHeight(), 0, GL10.GL_RGBA,
-					GL10.GL_UNSIGNED_SHORT_4_4_4_4, buffer);
+//			public void load () {
+//				FileHandle file = Gdx.files.internal("data/raw.bin");
+//				InputStream input = file.read();
+//				ByteBuffer buffer = ByteBuffer.allocateDirect((int)file.length());
+//				buffer.order(ByteOrder.nativeOrder());
+//				byte[] bytes = new byte[1024];
+//				try {
+//					while (true) {
+//						int length = input.read(bytes);
+//						if (length == -1) break;
+//						buffer.put(bytes, 0, length);
+//					}
+//				} catch (IOException ex) {
+//					throw new GdxRuntimeException(ex);
+//				}
+//				buffer.flip();
+//				Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, getWidth(), getHeight(), 0, GL10.GL_RGBA,
+//					GL10.GL_UNSIGNED_SHORT_4_4_4_4, buffer);
+//			}
+//
+//			public int getWidth () {
+//				return 512;
+//			}
+//
+//			public int getHeight () {
+//				return 512;
+//			}
+			
+			int width = 0;
+			int height = 0;
+			
+			public void load() {
+				Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogicsmall.jpg"));
+				Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+				width = pixmap.getWidth();
+				height = pixmap.getHeight();
+				pixmap.dispose();
 			}
-
-			public int getWidth () {
-				return 512;
+			
+			public int getWidth() {
+				return width;
 			}
-
-			public int getHeight () {
-				return 512;
+			
+			public int getHeight() {
+				return height;
 			}
 		}));
 	}
