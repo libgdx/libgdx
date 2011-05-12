@@ -71,8 +71,18 @@ public class TileMapRenderer implements Disposable {
 			if (map.tileSets.get(i).tileWidth - map.tileWidth > overdrawX)
 				overdrawX = map.tileSets.get(i).tileWidth - map.tileWidth;
 		}
-
-		init(tileMap, atlas, map.tileWidth, map.tileHeight, createFromCSV(map.properties.get("blended tiles")), tilesPerBlockX,
+		
+		String blendedTiles = map.properties.get("blended tiles");
+		IntArray blendedTilesArray; 
+		
+		if(blendedTiles != null){
+			blendedTilesArray = createFromCSV(blendedTiles);
+		}
+		else{
+			blendedTilesArray = new IntArray(0);
+		}
+		
+		init(tileMap, atlas, map.tileWidth, map.tileHeight, blendedTilesArray, tilesPerBlockX,
 			tilesPerBlockY, null);
 	}
 

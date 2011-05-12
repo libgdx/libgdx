@@ -172,8 +172,8 @@ public class TiledLoader extends DefaultHandler {
 						}
 					} catch (NumberFormatException e) {
 						throw new GdxRuntimeException("Required attribute missing from TMX file! Property for " + qName + " missing.");
-						// Note: Required attributes are parsed with "Integer.parseInt()" directly
-						// Non-required are parsed with parseIntWithDefault()
+						// Note: Required integer attributes are parsed with "Integer.parseInt()" directly
+						// Non-required integer attributes are parsed with parseIntWithDefault()
 					}
 				}
 
