@@ -47,7 +47,7 @@ public class TiledMapTest extends GdxTest {
 	private static final int SCREEN_WIDTH = 480;
 	private static final int SCREEN_HEIGHT = 320;
 
-	//private static final int[] layersList = {2,3};
+	private static final int[] layersList = {2,3};
 
 	SpriteBatch spriteBatch;
 	BitmapFont font;

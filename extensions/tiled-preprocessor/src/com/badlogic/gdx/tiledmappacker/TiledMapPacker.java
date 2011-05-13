@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,7 +63,7 @@ public class TiledMapPacker {
 	private TexturePacker packer;
 	private TiledMap map;
 
-	private File outputDir;
+	// private File outputDir;
 	private ArrayList<String> processedTileSets = new ArrayList<String>();
 
 	private ArrayList<Integer> blendedTiles = new ArrayList<Integer>();
@@ -84,13 +85,14 @@ public class TiledMapPacker {
 	 * Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method. Packs a directory of
 	 * Tiled Maps, adding properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on the tile
 	 * sets for use with a {@link TileAtlas}
-	 * @param inputDir the directory containing tile set images and tmx files
-	 * @param outputDir the directory to output a fully processed map to
+	 * @param inputDir the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx file)
+	 * @param outputDir The output directory for the tmx files, should be empty before running. WARNING: Use caution if you have a
+	 *           "../" in the path of your tile sets! The output for these tile sets will be relative to the output directory. For
+	 *           example, if your output directory is "C:\mydir\maps" and you have a tileset with the path "../tileset.png", the
+	 *           tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
 	 * @param settings the settings used in the TexturePacker
 	 * */
 	public void processMap (File inputDir, File outputDir, Settings settings) throws IOException {
-		this.outputDir = outputDir;
-
 		FileHandle inputDirHandle = Gdx.files.absolute(inputDir.getAbsolutePath());
 		File[] files = inputDir.listFiles(new TmxFilter());
 
@@ -100,15 +102,15 @@ public class TiledMapPacker {
 			for (TileSet set : map.tileSets) {
 				if (!processedTileSets.contains(set.imageName)) {
 					processedTileSets.add(set.imageName);
-					packTileSet(set, inputDirHandle, settings);
+					packTileSet(set, inputDirHandle, outputDir, settings);
 				}
 			}
 
-			writeUpdatedTMX(map.tmxFile);
+			writeUpdatedTMX(outputDir, map.tmxFile);
 		}
 	}
 
-	private void packTileSet (TileSet set, FileHandle inputDirHandle, Settings settings) throws IOException {
+	private void packTileSet (TileSet set, FileHandle inputDirHandle, File outputDir, Settings settings) throws IOException {
 		BufferedImage tile;
 		Vector2 tileLocation;
 		TileSetLayout packerTileSet;
@@ -128,38 +130,60 @@ public class TiledMapPacker {
 
 			if (isBlended(tile)) setBlended(gid);
 
-			packer.addImage(tile, removeExtension(set.imageName) + "_" + i);
+			packer.addImage(tile, removeExtension(removePath(set.imageName)) + "_" + i);
 		}
 
-		packer
-			.process(outputDir, new File(outputDir, removeExtension(set.imageName) + " packfile"), removeExtension(set.imageName));
+		File outputFile = getRelativeFile(outputDir, removeExtension(set.imageName) + " packfile");
+		outputFile.getParentFile().mkdirs();
+		packer.process(outputFile.getParentFile(), outputFile, removeExtension(removePath(set.imageName)));
 	}
 
 	private static String removeExtension (String s) {
+		int extensionIndex = s.lastIndexOf(".");
+		if (extensionIndex == -1) return s;
 
-		String separator = System.getProperty("file.separator");
-		String filename;
+		return s.substring(0, extensionIndex);
+	}
 
-		// Remove the path up to the filename.
-		int lastSeparatorIndex = s.lastIndexOf(separator);
-		if (lastSeparatorIndex == -1) {
-			filename = s;
-		} else {
-			filename = s.substring(lastSeparatorIndex + 1);
+	private static String removePath (String s) {
+		String temp;
+
+		int index = s.lastIndexOf('\\');
+		if (index != -1)
+			temp = s.substring(index + 1);
+		else
+			temp = s;
+
+		index = temp.lastIndexOf('/');
+		if (index != -1)
+			return s.substring(index + 1);
+		else
+			return s;
+	}
+
+	private static File getRelativeFile (File path, String relativePath) {
+		if (relativePath.trim().isEmpty()) return path;
+
+		File child = path;
+
+		StringTokenizer tokenizer = new StringTokenizer(relativePath, "\\/");
+		while (tokenizer.hasMoreElements()) {
+			String token = tokenizer.nextToken();
+			if (token.equals(".."))
+				child = child.getParentFile();
+			else {
+				child = new File(child, token);
+			}
 		}
 
-		// Remove the extension.
-		int extensionIndex = filename.lastIndexOf(".");
-		if (extensionIndex == -1) return filename;
-
-		return filename.substring(0, extensionIndex);
+		return child;
 	}
 
 	private void setBlended (int tileNum) {
 		blendedTiles.add(tileNum);
 	}
 
-	private void writeUpdatedTMX (FileHandle tmxFileHandle) throws IOException {
+	private void writeUpdatedTMX (File outputDir, FileHandle tmxFileHandle) throws IOException {
 		Document doc;
 		DocumentBuilder docBuilder;
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -180,6 +204,8 @@ public class TiledMapPacker {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
+
+			outputDir.mkdirs();
 			StreamResult result = new StreamResult(new File(outputDir, tmxFileHandle.name()));
 			transformer.transform(source, result);
 
@@ -292,18 +318,20 @@ public class TiledMapPacker {
 
 	/**
 	 * Processes a directory of Tile Maps, compressing each tile set contained in any map once.
-	 * @param args args[0]: the input directory containing tmx files and tile set images. args[1]: The output directory, should be
-	 *           empty before running.
+	 * @param args args[0]: the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx
+	 *           file). args[1]: The output directory for the tmx files, should be empty before running. WARNING: Use caution if
+	 *           you have a "../" in the path of your tile sets! The output for these tile sets will be relative to the output
+	 *           directory. For example, if your output directory is "C:\mydir\maps" and you have a tileset with the path
+	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
 	 */
 	public static void main (String[] args) {
 		File tmxFile, inputDir, outputDir;
 
 		Settings settings = new Settings();
-		//The settings below are now all default...
+
+		// Note: the settings below are now default...
 		settings.padding = 2;
 		settings.duplicatePadding = true;
-		settings.incremental = true;
-		settings.alias = true;
 
 		// Create a new JoglApplication so that Gdx stuff works properly
 		new JoglApplication(new ApplicationListener() {

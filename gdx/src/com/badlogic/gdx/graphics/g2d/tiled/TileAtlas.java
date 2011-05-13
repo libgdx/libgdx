@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g2d.tiled;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,8 +50,9 @@ public class TileAtlas implements Disposable {
 
 		for (int i = 0; i < map.tileSets.size(); i++) {
 			set = map.tileSets.get(i);
-			textureAtlas = new TextureAtlas(inputDir.child(removeExtension(set.imageName) + " packfile"), inputDir, false);
-			atlasRegions = (List<AtlasRegion>)textureAtlas.findRegions(removeExtension(set.imageName));
+			FileHandle packfile = getRelativeFileHandle(inputDir, removeExtension(set.imageName) + " packfile");
+			textureAtlas = new TextureAtlas(packfile, packfile.parent(), false);
+			atlasRegions = (List<AtlasRegion>)textureAtlas.findRegions(removeExtension(removePath(set.imageName)));
 
 			for (j = 0; j < atlasRegions.size(); j++) {
 				regionsMap.put(atlasRegions.get(j).index + set.firstgid, atlasRegions.get(j));
@@ -78,22 +81,43 @@ public class TileAtlas implements Disposable {
 	}
 
 	private static String removeExtension (String s) {
+		int extensionIndex = s.lastIndexOf(".");
+		if (extensionIndex == -1) return s;
 
-		String separator = System.getProperty("file.separator");
-		String filename;
+		return s.substring(0, extensionIndex);
+	}
+	
+	private static String removePath(String s){
+		String temp;
+		
+		int index = s.lastIndexOf('\\');
+		if(index != -1)
+			temp = s.substring(index + 1);
+		else
+			temp = s;
+		
+		index = temp.lastIndexOf('/');
+		if(index != -1)
+			return s.substring(index + 1);
+		else
+			return s;	
+	}
 
-		// Remove the path up to the filename.
-		int lastSeparatorIndex = s.lastIndexOf(separator);
-		if (lastSeparatorIndex == -1) {
-			filename = s;
-		} else {
-			filename = s.substring(lastSeparatorIndex + 1);
+	private static FileHandle getRelativeFileHandle(FileHandle path, String relativePath){
+		if(relativePath.trim().isEmpty()) return path;
+		
+		FileHandle child = path;
+		
+		StringTokenizer tokenizer = new StringTokenizer(relativePath, "\\/");
+		while (tokenizer.hasMoreElements()) {
+			String token = tokenizer.nextToken();
+			if(token.equals(".."))
+				child = child.parent();
+			else{
+				child = child.child(token);
+			}
 		}
-
-		// Remove the extension.
-		int extensionIndex = filename.lastIndexOf(".");
-		if (extensionIndex == -1) return filename;
-
-		return filename.substring(0, extensionIndex);
+		
+		return child;
 	}
 }

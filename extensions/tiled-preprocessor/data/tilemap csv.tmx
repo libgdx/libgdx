@@ -4,16 +4,16 @@
   <property name="blended tiles" value="7,8,12,11,16,15"/>
  </properties>
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
-  <image source="tileset.png"/>
+  <image source="tileset.png" width="64" height="64"/>
  </tileset>
  <tileset firstgid="5" name="tileset2" tilewidth="32" tileheight="32">
-  <image source="tileset2.png"/>
+  <image source="tileset2.png" width="64" height="64"/>
  </tileset>
  <tileset firstgid="9" name="tileset3" tilewidth="32" tileheight="32">
-  <image source="tileset3.png"/>
+  <image source="tileset3.png" width="64" height="64"/>
  </tileset>
  <tileset firstgid="13" name="tileset4" tilewidth="32" tileheight="32">
-  <image source="tileset4.png"/>
+  <image source="tileset4.png" width="64" height="64"/>
  </tileset>
  <layer name="First Layer" width="50" height="30">
   <properties>
@@ -170,5 +170,6 @@
   <object name="Upper Right" x="1600" y="0"/>
   <object name="Lower Right" x="1600" y="960"/>
   <object name="Lower Left" x="0" y="960"/>
+  <object name="tile object" type="tile object type" gid="6" x="533" y="272"/>
  </objectgroup>
 </map>
