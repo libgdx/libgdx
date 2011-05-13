@@ -479,6 +479,10 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_TAB;
 		case Input.Keys.DEL:
 			return Keyboard.KEY_BACK;
+		case Input.Keys.CONTROL_LEFT:
+			return Keyboard.KEY_LCONTROL;
+		case Input.Keys.CONTROL_RIGHT:
+			return Keyboard.KEY_RCONTROL;
 		case Input.Keys.ESCAPE:
 			return Keyboard.KEY_ESCAPE;
 		default:

@@ -129,6 +129,10 @@ public class Label extends Actor implements Layout {
 		lastWidth = width;
 	}
 
+	public void invalidate () {
+		lastWidth = -1;
+	}
+
 	public float getPrefWidth () {
 		switch (wrapType) {
 		case singleLine:

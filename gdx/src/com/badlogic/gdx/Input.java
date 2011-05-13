@@ -102,6 +102,11 @@ public interface Input {
 		public static final int DPAD_LEFT = 21;
 		public static final int DPAD_RIGHT = 22;
 		public static final int DPAD_UP = 19;
+		public static final int CENTER = 23;
+		public static final int DOWN = 20;
+		public static final int LEFT = 21;
+		public static final int RIGHT = 22;
+		public static final int UP = 19;
 		public static final int E = 33;
 		public static final int ENDCALL = 6;
 		public static final int ENTER = 66;

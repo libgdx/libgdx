@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.imagepacker;
 
 import java.awt.Color;
@@ -45,6 +46,7 @@ import javax.imageio.ImageIO;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TexturePacker {
 	static Pattern indexPattern = Pattern.compile(".+_(\\d+)(_.*|$)");
@@ -667,7 +669,7 @@ public class TexturePacker {
 		public int maxWidth = 512;
 		public int maxHeight = 512;
 		public boolean stripWhitespace = true;
-		public boolean incremental=true;
+		public boolean incremental;
 		public boolean alias;
 
 		HashMap<String, Long> crcs = new HashMap();
@@ -778,76 +780,80 @@ public class TexturePacker {
 			if (file.isDirectory()) process(settings, file, outputDir, packFile);
 	}
 
-	static public void process (Settings settings, String input, String output) throws IOException {
-		File inputDir = new File(input);
-		File outputDir = new File(output);
+	static public void process (Settings settings, String input, String output) {
+		try {
+			File inputDir = new File(input);
+			File outputDir = new File(output);
 
-		if (!inputDir.isDirectory()) {
-			System.out.println("Not a directory: " + inputDir);
-			return;
-		}
+			if (!inputDir.isDirectory()) {
+				System.out.println("Not a directory: " + inputDir);
+				return;
+			}
 
-		File packFile = new File(outputDir, "pack");
+			File packFile = new File(outputDir, "pack");
 
-		// Load incremental file.
-		File incrmentalFile = null;
-		if (settings.incremental && packFile.exists()) {
-			settings.crcs.clear();
-			incrmentalFile = new File(System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath()));
-			if (incrmentalFile.exists()) {
-				BufferedReader reader = new BufferedReader(new FileReader(incrmentalFile));
+			// Load incremental file.
+			File incrmentalFile = null;
+			if (settings.incremental && packFile.exists()) {
+				settings.crcs.clear();
+				incrmentalFile = new File(System.getProperty("user.home") + "/.texturepacker/" + hash(inputDir.getAbsolutePath()));
+				if (incrmentalFile.exists()) {
+					BufferedReader reader = new BufferedReader(new FileReader(incrmentalFile));
+					while (true) {
+						String path = reader.readLine();
+						if (path == null) break;
+						String crc = reader.readLine();
+						if (crc == null) break;
+						settings.crcs.put(path, Long.parseLong(crc));
+					}
+					reader.close();
+				}
+
+				// Store the pack file text for each section.
+				BufferedReader reader = new BufferedReader(new FileReader(packFile));
+				StringBuilder buffer = new StringBuilder(2048);
 				while (true) {
-					String path = reader.readLine();
-					if (path == null) break;
-					String crc = reader.readLine();
-					if (crc == null) break;
-					settings.crcs.put(path, Long.parseLong(crc));
+					String imageName = reader.readLine();
+					if (imageName == null) break;
+					if (imageName.length() == 0) continue;
+
+					String pageName = imageName.replaceAll("\\d+.png$", "");
+					String section = settings.packSections.get(pageName);
+					if (section != null) buffer.append(section);
+
+					// buffer.append("****start\n");
+					buffer.append('\n');
+					buffer.append(imageName);
+					buffer.append('\n');
+					while (true) {
+						String line = reader.readLine();
+						if (line == null || line.length() == 0) break;
+						buffer.append(line);
+						buffer.append('\n');
+					}
+					settings.packSections.put(pageName, buffer.toString());
+					buffer.setLength(0);
 				}
 				reader.close();
 			}
 
-			// Store the pack file text for each section.
-			BufferedReader reader = new BufferedReader(new FileReader(packFile));
-			StringBuilder buffer = new StringBuilder(2048);
-			while (true) {
-				String imageName = reader.readLine();
-				if (imageName == null) break;
-				if (imageName.length() == 0) continue;
+			// Clean pack file.
+			packFile.delete();
 
-				String pageName = imageName.replaceAll("\\d+.png$", "");
-				String section = settings.packSections.get(pageName);
-				if (section != null) buffer.append(section);
+			process(settings, inputDir, outputDir, packFile);
 
-				// buffer.append("****start\n");
-				buffer.append('\n');
-				buffer.append(imageName);
-				buffer.append('\n');
-				while (true) {
-					String line = reader.readLine();
-					if (line == null || line.length() == 0) break;
-					buffer.append(line);
-					buffer.append('\n');
+			// Write incrmental file.
+			if (incrmentalFile != null) {
+				incrmentalFile.getParentFile().mkdirs();
+				FileWriter writer = new FileWriter(incrmentalFile);
+				for (Entry<String, Long> entry : settings.crcs.entrySet()) {
+					writer.write(entry.getKey() + "\n");
+					writer.write(entry.getValue() + "\n");
 				}
-				settings.packSections.put(pageName, buffer.toString());
-				buffer.setLength(0);
+				writer.close();
 			}
-			reader.close();
-		}
-
-		// Clean pack file.
-		packFile.delete();
-
-		process(settings, inputDir, outputDir, packFile);
-
-		// Write incrmental file.
-		if (incrmentalFile != null) {
-			incrmentalFile.getParentFile().mkdirs();
-			FileWriter writer = new FileWriter(incrmentalFile);
-			for (Entry<String, Long> entry : settings.crcs.entrySet()) {
-				writer.write(entry.getKey() + "\n");
-				writer.write(entry.getValue() + "\n");
-			}
-			writer.close();
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error packing images: " + input, ex);
 		}
 	}
 

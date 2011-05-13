@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
@@ -132,7 +133,7 @@ public class LwjglCanvas implements Application {
 		}
 
 		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
+		listener.resize(Math.max(1, graphics.getWidth()), Math.max(1, graphics.getHeight()));
 
 		final Runnable runnable = new Runnable() {
 			int lastWidth = Math.max(1, graphics.getWidth());
@@ -142,7 +143,7 @@ public class LwjglCanvas implements Application {
 				if (!running) return;
 				graphics.updateTime();
 				synchronized (runnables) {
-					for(int i = 0; i < runnables.size(); i++) {
+					for (int i = 0; i < runnables.size(); i++) {
 						runnables.get(i).run();
 					}
 					runnables.clear();
@@ -198,8 +199,9 @@ public class LwjglCanvas implements Application {
 	}
 
 	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
+
 	@Override public Preferences getPreferences (String name) {
-		if(preferences.containsKey(name)) {
+		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
 			Preferences prefs = new LwjglPreferences(name);
@@ -209,11 +211,11 @@ public class LwjglCanvas implements Application {
 	}
 
 	@Override public void postRunnable (Runnable runnable) {
-		synchronized(runnables) {
+		synchronized (runnables) {
 			runnables.add(runnable);
-		}	
+		}
 	}
-	
+
 	@Override public void log (String tag, String message, Exception exception) {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();

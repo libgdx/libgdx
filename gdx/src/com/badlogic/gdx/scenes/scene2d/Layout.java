@@ -17,6 +17,8 @@ package com.badlogic.gdx.scenes.scene2d;
 
 public interface Layout {
 	public void layout ();
+	
+	public void invalidate ();
 
 	public float getPrefWidth ();
 
