@@ -47,7 +47,7 @@ public class AudioTools {
 	 * @param target the target buffer
 	 * @param numSamples the number of samples
 	 */
-	public static native void convertToShort (FloatBuffer source, FloatBuffer target, int numSamples);
+	public static native void convertToShort (FloatBuffer source, ShortBuffer target, int numSamples);
 
 	/**
 	 * Converts the samples in source which are assumed to be interleaved left/right stereo samples to mono, writting the converted
