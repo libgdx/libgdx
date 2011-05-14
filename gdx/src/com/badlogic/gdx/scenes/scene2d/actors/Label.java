@@ -136,9 +136,9 @@ public class Label extends Actor implements Layout {
 	public float getPrefWidth () {
 		switch (wrapType) {
 		case singleLine:
-			return cache.getFont().getBounds(text).width;
+			return cache.getFont().getBounds(text).width * scaleX;
 		case multiLine:
-			return cache.getFont().getMultiLineBounds(text).width;
+			return cache.getFont().getMultiLineBounds(text).width * scaleX;
 		case wrapped:
 		}
 		return 0;
@@ -147,9 +147,9 @@ public class Label extends Actor implements Layout {
 	public float getPrefHeight () {
 		switch (wrapType) {
 		case singleLine:
-			return cache.getFont().getBounds(text).height;
+			return cache.getFont().getBounds(text).height * scaleY;
 		case multiLine:
-			return cache.getFont().getMultiLineBounds(text).width;
+			return cache.getFont().getMultiLineBounds(text).height * scaleY;
 		case wrapped:
 		}
 		return 0;

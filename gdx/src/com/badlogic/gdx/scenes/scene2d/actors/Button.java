@@ -125,10 +125,10 @@ public class Button extends Actor implements Layout {
 	}
 
 	public float getPrefWidth () {
-		return unpressedRegion.getRegionWidth();
+		return unpressedRegion.getRegionWidth() * scaleX;
 	}
 
 	public float getPrefHeight () {
-		return unpressedRegion.getRegionHeight();
+		return unpressedRegion.getRegionHeight() * scaleY;
 	}
 }
