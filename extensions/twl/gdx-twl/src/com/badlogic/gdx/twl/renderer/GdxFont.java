@@ -30,6 +30,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.math.MathUtils;
 
 import de.matthiasmann.twl.Color;
 import de.matthiasmann.twl.renderer.AnimationState;
@@ -74,7 +75,7 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		bitmapFont.setColor(renderer.getColor(fontState.color));
-		return bitmapFont.draw(renderer.batch, str, x, y, start, end).width;
+		return MathUtils.ceilPositive(bitmapFont.draw(renderer.batch, str, x, y, start, end).width);
 	}
 
 	public int drawMultiLineText (AnimationState as, int x, int y, CharSequence str, int width,
@@ -83,7 +84,8 @@ class GdxFont implements Font {
 		x += fontState.offsetX;
 		y += fontState.offsetY + yOffset;
 		bitmapFont.setColor(renderer.getColor(fontState.color));
-		return bitmapFont.drawMultiLine(renderer.batch, str, x, y, width, gdxAlignment[align.ordinal()]).width;
+		return MathUtils
+			.ceilPositive(bitmapFont.drawMultiLine(renderer.batch, str, x, y, width, gdxAlignment[align.ordinal()]).width);
 	}
 
 	public FontCache cacheText (FontCache cache, CharSequence str) {
@@ -131,15 +133,15 @@ class GdxFont implements Font {
 	}
 
 	public int computeMultiLineTextWidth (CharSequence str) {
-		return bitmapFont.getMultiLineBounds(str).width;
+		return MathUtils.ceilPositive(bitmapFont.getMultiLineBounds(str).width);
 	}
 
 	public int computeTextWidth (CharSequence str) {
-		return bitmapFont.getBounds(str).width;
+		return MathUtils.ceilPositive(bitmapFont.getBounds(str).width);
 	}
 
 	public int computeTextWidth (CharSequence str, int start, int end) {
-		return bitmapFont.getBounds(str, start, end).width;
+		return MathUtils.ceilPositive(bitmapFont.getBounds(str, start, end).width);
 	}
 
 	public int computeVisibleGlpyhs (CharSequence str, int start, int end, int width) {
@@ -185,11 +187,11 @@ class GdxFont implements Font {
 		}
 
 		public int getWidth () {
-			return getBounds().width;
+			return MathUtils.ceilPositive(getBounds().width);
 		}
 
 		public int getHeight () {
-			return getBounds().height;
+			return MathUtils.ceilPositive(getBounds().height);
 		}
 
 		public void destroy () {

@@ -333,8 +333,8 @@ public class BitmapFont implements Disposable {
 			}
 		}
 		spriteBatch.setColor(batchColor);
-		textBounds.width = (int)(x - startX);
-		textBounds.height = (int)capHeight;
+		textBounds.width = x - startX;
+		textBounds.height = capHeight;
 		return textBounds;
 	}
 
@@ -364,16 +364,16 @@ public class BitmapFont implements Disposable {
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
-		int maxWidth = 0;
+		float maxWidth = 0;
 		while (start < length) {
 			int lineEnd = indexOf(str, '\n', start);
 			float xOffset = 0;
 			if (alignment != HAlignment.LEFT) {
-				int lineWidth = getBounds(str, start, lineEnd).width;
+				float lineWidth = getBounds(str, start, lineEnd).width;
 				xOffset = alignmentWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset = (int)(xOffset / 2);
+				if (alignment == HAlignment.CENTER) xOffset = xOffset / 2;
 			}
-			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
+			float lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
@@ -382,7 +382,7 @@ public class BitmapFont implements Disposable {
 		spriteBatch.setColor(batchColor);
 
 		textBounds.width = maxWidth;
-		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
+		textBounds.height = capHeight + (numLines - 1) * lineHeight;
 		return textBounds;
 	}
 
@@ -413,7 +413,7 @@ public class BitmapFont implements Disposable {
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
-		int maxWidth = 0;
+		float maxWidth = 0;
 		while (start < length) {
 			int lineEnd = start + computeVisibleGlyphs(str, start, indexOf(str, '\n', start), wrapWidth);
 			int nextLineStart;
@@ -436,11 +436,11 @@ public class BitmapFont implements Disposable {
 			}
 			float xOffset = 0;
 			if (alignment != HAlignment.LEFT) {
-				int lineWidth = getBounds(str, start, lineEnd).width;
+				float lineWidth = getBounds(str, start, lineEnd).width;
 				xOffset = wrapWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset = (int)(xOffset /= 2);
+				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			int lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
+			float lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = nextLineStart;
 			y += down;
@@ -448,7 +448,7 @@ public class BitmapFont implements Disposable {
 		}
 		spriteBatch.setColor(batchColor);
 		textBounds.width = maxWidth;
-		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
+		textBounds.height = capHeight + (numLines - 1) * lineHeight;
 		return textBounds;
 	}
 
@@ -487,8 +487,8 @@ public class BitmapFont implements Disposable {
 				width += g.xadvance;
 			}
 		}
-		textBounds.width = (int)(width * scaleX);
-		textBounds.height = (int)capHeight;
+		textBounds.width = width * scaleX;
+		textBounds.height = capHeight;
 		return textBounds;
 	}
 
@@ -499,18 +499,18 @@ public class BitmapFont implements Disposable {
 	 */
 	public TextBounds getMultiLineBounds (CharSequence str) {
 		int start = 0;
-		int maxWidth = 0;
+		float maxWidth = 0;
 		int numLines = 0;
 		int length = str.length();
 		while (start < length) {
 			int lineEnd = indexOf(str, '\n', start);
-			int lineWidth = getBounds(str, start, lineEnd).width;
+			float lineWidth = getBounds(str, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
+		textBounds.height = capHeight + (numLines - 1) * lineHeight;
 		return textBounds;
 	}
 
@@ -524,7 +524,7 @@ public class BitmapFont implements Disposable {
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
-		int maxWidth = 0;
+		float maxWidth = 0;
 		while (start < length) {
 			int lineEnd = start + computeVisibleGlyphs(str, start, indexOf(str, '\n', start), wrapWidth);
 			int nextLineStart;
@@ -545,13 +545,13 @@ public class BitmapFont implements Disposable {
 				if (lineEnd == start) lineEnd++;
 				nextLineStart = length;
 			}
-			int lineWidth = getBounds(str, start, lineEnd).width;
+			float lineWidth = getBounds(str, start, lineEnd).width;
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = nextLineStart;
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = (int)(capHeight + (numLines - 1) * lineHeight);
+		textBounds.height = capHeight + (numLines - 1) * lineHeight;
 		return textBounds;
 	}
 
@@ -753,8 +753,8 @@ public class BitmapFont implements Disposable {
 	}
 
 	static public class TextBounds {
-		public int width;
-		public int height;
+		public float width;
+		public float height;
 
 		public TextBounds() {			
 		}

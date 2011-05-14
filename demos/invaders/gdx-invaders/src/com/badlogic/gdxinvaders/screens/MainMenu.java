@@ -72,7 +72,7 @@ public class MainMenu implements Screen {
 		spriteBatch.draw(logo, 0, 320-128, 480, 128, 0, 0, 512, 256, false, false);
 		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		String text = "Touch screen to start!";
-		int width = font.getBounds(text).width;	
+		float width = font.getBounds(text).width;	
 		font.draw(spriteBatch, text, 240 - width / 2, 128);
 		spriteBatch.end();
 	}

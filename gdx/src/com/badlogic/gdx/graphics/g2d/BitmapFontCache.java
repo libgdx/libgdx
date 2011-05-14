@@ -118,7 +118,7 @@ public class BitmapFontCache implements Disposable {
 		if (vertices == null || vertices.length < vertexCount) vertices = new float[vertexCount];
 	}
 
-	private int addToCache (CharSequence str, float x, float y, int start, int end) {
+	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
@@ -170,7 +170,7 @@ public class BitmapFontCache implements Disposable {
 				}
 			}
 		}
-		return (int)(x - startX);
+		return x - startX;
 	}
 
 	private void addGlyph (Glyph glyph, float x, float y, float width, float height) {
@@ -229,7 +229,7 @@ public class BitmapFontCache implements Disposable {
 		reset(end - start);
 		y += font.ascent;
 		textBounds.width = addToCache(str, x, y, start, end);
-		textBounds.height = (int)font.capHeight;
+		textBounds.height = font.capHeight;
 		return textBounds;
 	}
 
@@ -259,7 +259,7 @@ public class BitmapFontCache implements Disposable {
 		y += font.ascent;
 		float down = font.down;
 
-		int maxWidth = 0;
+		float maxWidth = 0;
 		float startY = y;
 		int start = 0;
 		int numLines = 0;
@@ -267,18 +267,18 @@ public class BitmapFontCache implements Disposable {
 			int lineEnd = BitmapFont.indexOf(str, '\n', start);
 			float xOffset = 0;
 			if (alignment != HAlignment.LEFT) {
-				int lineWidth = font.getBounds(str, start, lineEnd).width;
+				float lineWidth = font.getBounds(str, start, lineEnd).width;
 				xOffset = alignmentWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			int lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
+			float lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = (int)(font.capHeight + (numLines - 1) * font.lineHeight);
+		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
 		return textBounds;
 	}
 
@@ -309,7 +309,7 @@ public class BitmapFontCache implements Disposable {
 		y += font.ascent;
 		float down = font.down;
 
-		int maxWidth = 0;
+		float maxWidth = 0;
 		int start = 0;
 		int numLines = 0;
 		while (start < length) {
@@ -324,18 +324,18 @@ public class BitmapFontCache implements Disposable {
 			if (lineEnd == start) lineEnd++;
 			float xOffset = 0;
 			if (alignment != HAlignment.LEFT) {
-				int lineWidth = font.getBounds(str, start, lineEnd).width;
+				float lineWidth = font.getBounds(str, start, lineEnd).width;
 				xOffset = wrapWidth - lineWidth;
 				if (alignment == HAlignment.CENTER) xOffset /= 2;
 			}
-			int lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
+			float lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
 			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = (int)(font.capHeight + (numLines - 1) * font.lineHeight);
+		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
 		return textBounds;
 	}
 
