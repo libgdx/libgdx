@@ -65,11 +65,10 @@ public class Delay extends Action {
 	@Override public void finish () {
 		pool.free(this);
 		action.finish();
-		super.finish();
+		if(!listenerFired) super.finish();
 	}
 
 	@Override public Action copy () {
 		return $(action.copy(), duration);
 	}
-
 }
