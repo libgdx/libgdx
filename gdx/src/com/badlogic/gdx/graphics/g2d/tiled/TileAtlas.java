@@ -104,7 +104,7 @@ public class TileAtlas implements Disposable {
 	}
 
 	private static FileHandle getRelativeFileHandle(FileHandle path, String relativePath){
-		if(relativePath.trim().isEmpty()) return path;
+		if(relativePath.trim().length() == 0) return path;
 		
 		FileHandle child = path;
 		
