@@ -64,7 +64,7 @@ public class TextureDataTest extends GdxTest {
 			int height = 0;
 			
 			public void load() {
-				Pixmap pixmap = new Pixmap(Gdx.files.internal("data/stone2.png"));
+				Pixmap pixmap = new Pixmap(Gdx.files.internal("data/t8890.png"));
 				Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 				width = pixmap.getWidth();
 				height = pixmap.getHeight();

@@ -261,6 +261,13 @@ public final class AndroidGraphics implements Graphics, Renderer {
         this.height = height;
         updatePpi();
         gl.glViewport(0, 0, this.width, this.height);
+        if (created == false) {
+           app.listener.create();
+           created = true;
+           synchronized (this) {
+               running = true;
+           }
+       }
         app.listener.resize(width, height);
     }
 
@@ -279,7 +286,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
         Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
         Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
         Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
-
+        
         Display display = app.getWindowManager().getDefaultDisplay();
         this.width = display.getWidth();
         this.height = display.getHeight();
@@ -287,14 +294,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
         this.lastFrameTime = System.nanoTime();
 
         gl.glViewport(0, 0, this.width, this.height);
-
-        if (created == false) {
-            app.listener.create();
-            created = true;
-            synchronized (this) {
-                running = true;
-            }
-        }
     }
 
     private void logConfig(EGLConfig config) {

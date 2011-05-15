@@ -47,7 +47,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		skeleton.joints = new float[anim.frames[0].joints.length];
 		animInfo = new MD5AnimationInfo(anim.frames.length, anim.secondsPerFrame);
 		renderer = new MD5Renderer(model, false, true);
-		renderer.setSkeleton(model.baseSkeleton);
+		renderer.setSkeleton(model.baseSkeleton);		
 
 		// long start = System.nanoTime();
 		// for( int i = 0; i < 100000; i++ )
@@ -84,7 +84,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		float renderTime = 0;
 		float skinTime = 0;
 
-		for (int z = 0; z < 50; z += 50) {
+		for (int z = 0; z < 100; z += 50) {
 			gl.glPushMatrix();
 			gl.glTranslatef(0, 0, -z);
 			gl.glRotatef(angle, 0, 1, 0);
@@ -107,6 +107,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + (renderer.isJniUsed() ? ", jni" : ", java")
 			+ ", render time: " + renderTime + ", skin time: " + skinTime, 10, 20);
+		font.draw(batch, "#triangles: " + model.getNumTriangles() + ", #vertices: " + model.getNumVertices(), 10, 40);
 		batch.end();
 	}
 

@@ -50,8 +50,7 @@ public class LifeCycleTest extends GdxTest {
 
 	@Override public void create () {
 		Gdx.app.log("Test", "Thread=" + Thread.currentThread().getId() + ", app created: " + Gdx.graphics.getWidth() + "x"
-			+ Gdx.graphics.getHeight());
-		System.exit(0);
+			+ Gdx.graphics.getHeight());		
 	}
 
 	@Override public void resize (int width, int height) {
