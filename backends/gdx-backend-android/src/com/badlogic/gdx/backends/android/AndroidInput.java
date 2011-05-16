@@ -87,7 +87,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
 	boolean[] touched = new boolean[20];
-	int[] realId = new int[20];
+	int[] realId = new int[0];
 	final boolean hasMultitouch;
 	private HashSet<Integer> keys = new HashSet<Integer>();
 	private SensorManager manager;
@@ -475,7 +475,11 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		for(int i = 0; i < len; i++) {
 			if(realId[i] == -1) return i;
 		}
-		return -1;
+		
+		int[] tmp = new int[realId.length + 1];
+		System.arraycopy(realId, 0, tmp, 0, realId.length);
+		realId = tmp;
+		return tmp.length - 1;
 	}
 	
 	public int lookUpPointerIndex(int pointerId) {
@@ -483,6 +487,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		for(int i = 0; i < len; i++) {
 			if(realId[i] == pointerId) return i;
 		}
+		
 		return -1;
 	}
 }
