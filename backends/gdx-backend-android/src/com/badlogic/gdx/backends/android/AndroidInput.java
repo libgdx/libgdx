@@ -174,31 +174,31 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 
 	@Override public int getX () {
-		synchronized (realId) {
+		synchronized(this) {
 			return touchX[0];
 		}
 	}
 
 	@Override public int getY () {
-		synchronized (realId) {
+		synchronized(this) {
 			return touchY[0];
 		}
 	}
 
 	@Override public int getX (int pointer) {
-		synchronized (realId) {
+		synchronized(this) {
 			return touchX[pointer];
 		}
 	}
 
 	@Override public int getY (int pointer) {
-		synchronized (realId) {
+		synchronized(this) {
 			return touchY[pointer];
 		}
 	}
 
 	public boolean isTouched (int pointer) {
-		synchronized (realId) {
+		synchronized(this) {
 			return touched[pointer];
 		}
 	}
@@ -213,7 +213,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 
 	@Override public boolean isTouched () {
-		return touched[0];
+		synchronized(this) {
+			return touched[0];
+		}
 	}
 
 	public void setInputProcessor (InputProcessor processor) {

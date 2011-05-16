@@ -35,7 +35,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int x = 0, y = 0;
 		int realPointerIndex = 0;
 
-		synchronized(input.realId) { // FUCK 
+		synchronized(input) { // FUCK 
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
@@ -81,16 +81,14 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 	}
 
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
-		long timeStamp = System.nanoTime();
-		synchronized (input) {
-			TouchEvent event = input.usedTouchEvents.obtain();
-			event.timeStamp = timeStamp;
-			event.pointer = pointer;
-			event.x = x;
-			event.y = y;
-			event.type = type;
-			input.touchEvents.add(event);
-		}
+		long timeStamp = System.nanoTime();		
+		TouchEvent event = input.usedTouchEvents.obtain();
+		event.timeStamp = timeStamp;
+		event.pointer = pointer;
+		event.x = x;
+		event.y = y;
+		event.type = type;
+		input.touchEvents.add(event);		
 	}
 
 	public boolean supportsMultitouch (AndroidApplication activity) {
