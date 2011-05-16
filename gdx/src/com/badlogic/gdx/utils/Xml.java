@@ -553,7 +553,7 @@ public class Xml {
 			Array<Element> children = new Array<Element>();
 			if(this.children == null) return children;
 			for(int i = 0; i < this.children.size; i++) {
-				Element child = children.get(i);
+				Element child = this.children.get(i);
 				if(child.name.equals(name)) children.add(child);
 			}
 			return children;
