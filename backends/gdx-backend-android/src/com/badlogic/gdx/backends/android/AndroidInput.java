@@ -84,9 +84,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	ArrayList<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
 	ArrayList<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
-	int[] touchX = new int[40];
-	int[] touchY = new int[40];
-	boolean[] touched = new boolean[40];
+	int[] touchX = new int[20];
+	int[] touchY = new int[20];
+	boolean[] touched = new boolean[20];
+	int[] realId = new int[20];
 	final boolean hasMultitouch;
 	private HashSet<Integer> keys = new HashSet<Integer>();
 	private SensorManager manager;
@@ -120,6 +121,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		view.requestFocusFromTouch();
 		this.config = config;
 		
+		for(int i = 0; i < realId.length; i++) realId[i] = -1;
 		handle = new Handler();
 		this.app = activity;
 		this.sleepTime = config.touchSleepTime;
@@ -172,23 +174,33 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 
 	@Override public int getX () {
-		return touchX[0];
+		synchronized (realId) {
+			return touchX[0];
+		}
 	}
 
 	@Override public int getY () {
-		return touchY[0];
+		synchronized (realId) {
+			return touchY[0];
+		}
 	}
 
 	@Override public int getX (int pointer) {
-		return touchX[pointer];
+		synchronized (realId) {
+			return touchX[pointer];
+		}
 	}
 
 	@Override public int getY (int pointer) {
-		return touchY[pointer];
+		synchronized (realId) {
+			return touchY[pointer];
+		}
 	}
 
 	public boolean isTouched (int pointer) {
-		return touched[pointer];
+		synchronized (realId) {
+			return touched[pointer];
+		}
 	}
 
 	@Override public boolean isKeyPressed (int key) {
@@ -456,5 +468,21 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		if(peripheral == Peripheral.Vibrator) return vibrator != null;
 		if(peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		return false;
+	}
+	
+	public int getFreePointerIndex() {
+		int len = realId.length;
+		for(int i = 0; i < len; i++) {
+			if(realId[i] == -1) return i;
+		}
+		return -1;
+	}
+	
+	public int lookUpPointerIndex(int pointerId) {
+		int len = realId.length;
+		for(int i = 0; i < len; i++) {
+			if(realId[i] == pointerId) return i;
+		}
+		return -1;
 	}
 }

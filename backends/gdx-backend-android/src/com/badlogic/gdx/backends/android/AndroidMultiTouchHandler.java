@@ -30,45 +30,53 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 	public void onTouch (MotionEvent event, AndroidInput input) {
 		final int action = event.getAction() & MotionEvent.ACTION_MASK;
 		int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_ID_MASK) >> MotionEvent.ACTION_POINTER_ID_SHIFT;
-		int pointerId = event.getPointerId(pointerIndex);
-
+		int pointerId = event.getPointerId(pointerIndex);		
+		
 		int x = 0, y = 0;
+		int realPointerIndex = 0;
 
-		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-		case MotionEvent.ACTION_POINTER_DOWN:
-			x = (int)event.getX(pointerIndex);
-			y = (int)event.getY(pointerIndex);
-			postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, pointerId);
-			input.touchX[pointerId] = x;
-			input.touchY[pointerId] = y;
-			input.touched[pointerId] = true;
-			break;
-
-		case MotionEvent.ACTION_UP:
-		case MotionEvent.ACTION_POINTER_UP:
-		case MotionEvent.ACTION_OUTSIDE:
-		case MotionEvent.ACTION_CANCEL:
-			x = (int)event.getX(pointerIndex);
-			y = (int)event.getY(pointerIndex);
-			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, pointerId);
-			input.touchX[pointerId] = x;
-			input.touchY[pointerId] = y;
-			input.touched[pointerId] = false;
-			break;
-
-		case MotionEvent.ACTION_MOVE:
-			int pointerCount = event.getPointerCount();
-			for (int i = 0; i < pointerCount; i++) {
-				pointerIndex = i;
-				pointerId = event.getPointerId(pointerIndex);
+		synchronized(input.realId) { // FUCK 
+			switch (action) {
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_POINTER_DOWN:
+				realPointerIndex = input.getFreePointerIndex(); // get a free pointer index as reported by Input.getX() etc.
+				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, pointerId);
-				input.touchX[pointerId] = x;
-				input.touchY[pointerId] = y;
+				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex);
+				input.touchX[realPointerIndex] = x;
+				input.touchY[realPointerIndex] = y;
+				input.touched[realPointerIndex] = true;
+				break;
+	
+			case MotionEvent.ACTION_UP:
+			case MotionEvent.ACTION_POINTER_UP:
+			case MotionEvent.ACTION_OUTSIDE:
+			case MotionEvent.ACTION_CANCEL:
+				realPointerIndex = input.lookUpPointerIndex(pointerId);
+				input.realId[realPointerIndex] = -1;
+				x = (int)event.getX(pointerIndex);
+				y = (int)event.getY(pointerIndex);
+				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex);
+				input.touchX[realPointerIndex] = x;
+				input.touchY[realPointerIndex] = y;
+				input.touched[realPointerIndex] = false;
+				break;
+	
+			case MotionEvent.ACTION_MOVE:
+				int pointerCount = event.getPointerCount();
+				for (int i = 0; i < pointerCount; i++) {
+					pointerIndex = i;
+					pointerId = event.getPointerId(pointerIndex);
+					x = (int)event.getX(pointerIndex);
+					y = (int)event.getY(pointerIndex);
+					realPointerIndex = input.lookUpPointerIndex(pointerId);
+					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex);
+					input.touchX[realPointerIndex] = x;
+					input.touchY[realPointerIndex] = y;
+				}
+				break;
 			}
-			break;
 		}
 	}
 
