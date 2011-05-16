@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g2d.tiled;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
