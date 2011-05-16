@@ -80,7 +80,7 @@ typedef float float32;
 
 /// A velocity threshold for elastic collisions. Any collision with a relative linear
 /// velocity below this threshold will be treated as inelastic.
-#define b2_velocityThreshold		0.0f
+#define b2_velocityThreshold		1.0f
 
 /// The maximum linear position correction used when solving constraints. This helps to
 /// prevent overshoot.
