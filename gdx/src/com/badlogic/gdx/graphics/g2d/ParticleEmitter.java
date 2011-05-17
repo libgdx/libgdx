@@ -490,7 +490,7 @@ public class ParticleEmitter {
 		Texture texture = sprite.getTexture();
 		for (int i = 0, n = particles.length; i < n; i++) {
 			Particle particle = particles[i];
-			if (particle == null) continue;
+			if (particle == null) break;
 			particle.setTexture(texture);
 			particle.setOrigin(originX, originY);
 		}
