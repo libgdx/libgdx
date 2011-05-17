@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d;
+package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;

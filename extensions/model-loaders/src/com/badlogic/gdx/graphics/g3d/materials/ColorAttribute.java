@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d;
+package com.badlogic.gdx.graphics.g3d.materials;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

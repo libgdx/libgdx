@@ -1,6 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.model.still;
 
-import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
