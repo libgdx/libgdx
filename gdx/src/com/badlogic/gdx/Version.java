@@ -24,5 +24,5 @@ package com.badlogic.gdx;
  */
 public class Version {
 	/** the current version of libgdx in the major.minor format **/
-	public static String VERSION = "0.91";
+	public static String VERSION = "0.9.1";
 }
