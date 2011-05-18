@@ -27,8 +27,7 @@ public class Delay extends Action {
 
 	protected float taken;
 	protected float duration;
-	protected Action action;
-	protected boolean listenerFired = false;
+	protected Action action;	
 
 	public static Delay $ (Action action, float duration) {
 		Delay delay = pool.obtain();
@@ -37,8 +36,7 @@ public class Delay extends Action {
 		return delay;
 	}
 
-	@Override public void reset () {
-		listenerFired = false;
+	@Override public void reset () {		
 		super.reset();
 	}
 
@@ -50,11 +48,9 @@ public class Delay extends Action {
 	@Override public void act (float delta) {
 		taken += delta;
 		if (taken > duration) {
-			if (!listenerFired && listener != null) {
-				listener.completed(this);
-				listenerFired = true;
-			}
+			callActionCompletedListener();
 			action.act(delta);
+			if(action.isDone()) action.callActionCompletedListener();
 		}
 	}
 
@@ -65,7 +61,7 @@ public class Delay extends Action {
 	@Override public void finish () {
 		pool.free(this);
 		action.finish();
-		if(!listenerFired) super.finish();
+		super.finish();
 	}
 
 	@Override public Action copy () {

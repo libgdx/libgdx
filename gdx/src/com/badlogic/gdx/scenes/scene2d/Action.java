@@ -53,6 +53,17 @@ public abstract class Action {
 			listener.completed(this);
 		}
 	}
+	
+	/**
+	 * Calls the {@link OnActionCompleted} listener and sets it to null so it won't
+	 * be called again.
+	 */
+	public void callActionCompletedListener() {
+		if (listener != null) {
+			listener.completed(this);
+		}
+		listener = null;
+	}
 
 	/**
 	 * Creates a copy of this action. The action must be in a state independent of the original and one must be able to call
