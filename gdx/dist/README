@@ -1,0 +1,190 @@
+-- libgdx --
+Hi there, you seem to have downloaded libgdx so let me explain to you how to setup your projects. 
+The following assumes that you are going the proper libgdx way, that is developing your app on the 
+Desktop and then painlessly droping it on your Android device without any further code modifications. 
+We go through this step by step.
+
+1) Setting up the desktop Java project
+Open Eclipse and create a new Java project called gdx-helloworld. Within the project create a new 
+folder called "libs/" and drop files of this zip file into it. In the package explorer you should then 
+have something like this:
+
+gdx-helloworld
+ -> src/
+ -> JRE System Library
+ -> libs/
+    -> armeabi/
+       - >libandroidgl20.so
+       - >libgdx.so
+	-> armeabi-v7a/
+	   - >libandroidgl20.so
+	   - >libgdx.so
+	-> docs/
+	   - > index.html and other files containing the Java Doc.
+    -> gdx.jar
+    -> gdx-backend-android.jar
+    -> gdx-backend-jogl.jar
+    -> gdx-backend-jogl-natives.jar
+    -> gdx-backend-lwjgl.jar
+    -> gdx-backend-lwjgl-natives.jar
+    -> gdx-natives.jar
+    -> gdx-twl.jar
+    -> gdx-sources.jar   	
+    -> README
+    
+Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
+"Java Build Path" to the left in the new dialog and then click the Libraries tab. In the libraries tab 
+click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-natives.jar, 
+gdx-backend-jogl.jar, and gdx-backend-jogl-natives.jar Now you have added all that's needed for the Java 
+desktop project to compile. 
+
+Create a new package in the "src/" folder of the gdx-helloworld project, say "com.badlogic.helloworld" 
+and create a new class called "HelloWorld" in this package. Here's the source to put into this class:
+
+=========== CODE ===========
+package com.badlogic.helloworld;
+import com.badlogic.gdx.ApplicationListener;
+
+public class HelloWorld implements ApplicationListener 
+{
+	@Override
+	public void resume() {
+		
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		
+	}
+	
+	@Override
+	public void render() {
+	
+	}
+	
+	@Override
+	public void pause() {
+		
+	}
+	
+	@Override
+	public void dispose() {
+		
+	}
+	
+	@Override
+	public void create() {
+	
+	}
+}
+=========== CODE ===========
+
+Next we need to create a start class that will actually execute the above application on the desktop. Create
+a new Java class in the same package called "HelloWorldDesktop": 
+=========== CODE ===========
+package com.badlogic.helloworld;
+import com.badlogic.gdx.backends.jogl.JoglApplication;
+
+public class HelloWorldDesktop {
+	public static void main(String[] argv) {
+		new JoglApplication(new HelloWorld(), "Hello World", 480, 320, false);
+	}
+}
+
+Simply start the app by right clicking on the project and selecting Run as.. -> Java Application. You will have
+to select the HelloWorldDesktop class from the dialog that pops up.  
+
+2) Setting up the Android project
+Now we want the above HelloWorld class to run on Android. For this we create a new Android project
+and call it let's say gdx-helloworld-android. Specify Android 1.5 as the target platform. Specify 3
+as the minimum SDK version. As an activity name chose for example HelloWorldAndroid. As a package name
+use "com.badlogic.helloworld".
+
+In the manifset file make sure you have this:
+
+<uses-sdk minSdkVersion="3" targetSdkVersion="8"/>
+
+This will ensure that you can run on all Android versions to date (1.5 - 2.2). 
+ 
+Also copy over the contents of this zip file to a folder called "libs/" in your Android project. Note that you
+only need to copy a subset of the files! Here's how your android project should look like now:
+
+gdx-helloworld-android
+ -> src/
+    -> com.badlogic.helloworld/
+       -> HelloWorldAndroid.java
+ -> gen/
+ -> Android 1.5
+ -> assets/
+ -> libs/
+    -> armeabi/
+       -> libandroidgl20.so
+       -> libgdx.so
+	-> armeabi-v7a/
+	   - >libandroidgl20.so
+	   - >libgdx.so    
+    -> gdx.jar
+    -> gdx-backend-android.jar        
+ -> res/
+ -> AndroidManifset.xml
+ -> default.properties
+ 
+ Go to the properties of the Android project and select "Java Build Path" again. Add the gdx-helloworld 
+project in the project tab and the gdx.jar and gdx-backend-android.jar in the Libraries tab. You don't have to 
+add the gdx-backend-jogl.jar or gdx-backend-jogl-natives.jar jars as those are only needed for the desktop 
+Java version. 
+
+Now open the HelloWorldAndroid.java file and paste the following code in:
+
+=========== CODE ===========
+package com.badlogic.helloworld;
+
+import android.os.Bundle;
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.helloworld.HelloWorld;
+
+public class GDXHelloWorld extends AndroidApplication
+{	
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initialize(new HelloWorld(), false);        
+    }
+}
+=========== CODE ===========  
+ 
+Now we are almost ready to start the thing on the device. Open the AndroidManifest.xml and add 
+
+android:configChanges="keyboard|keyboardHidden|orientation"
+
+to the <activity> tag. Your manifest should look something like this then:
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.badlogic.helloworld"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".HelloWorldAndroid"
+                  android:label="@string/app_name"
+                  android:configChanges="keyboard|keyboardHidden|orientation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8"/>
+
+</manifest> 
+
+Now you can start the Activity as you do with any normal android application in eclipse. Et voila, profit!
+
+You never have to change the android project again unless you add assets. The rest is done in the Java project.
+Just verify that it works on the device every now and then starting the Activity of the android project.
+
+You can download both demo projects completely setup (minus the run configurations) at:
+http://libgdx.googlecode.com/files/gdx-helloworld.zip
+
+Have fun!

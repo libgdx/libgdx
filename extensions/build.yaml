@@ -1,0 +1,6 @@
+---
+keystore("keystore", "libgdx", "xdgbil", "Badlogic Games", "Hiero");
+sign("target/hiero.jar", "keystore", "libgdx", "xdgbil");
+sign("target/particle-editor.jar", "keystore", "libgdx", "xdgbil");
+sign("target/natives-win.jar", "keystore", "libgdx", "xdgbil");
+sign("target/natives-linux.jar", "keystore", "libgdx", "xdgbil");

@@ -1,0 +1,121 @@
+<!-- 
+
+ libgdx extension distribution ant build file.
+ Performs the compilation of the extension modules
+ and creates a distribution out of this mess. 
+
+-->
+<project name="gdx-extensions" default="dist" basedir=".">
+	<description>libgdx extension distribution build file</description>
+	
+	<!-- output directory for distribution -->
+	<property name="output" value="target"/>
+	<property name="stable" value="../target"/>
+	
+	<!-- clean output directories -->
+	<target name="clean">
+		<delete dir="${output}"/>
+	</target>
+	
+	<!-- init task, creates all necessary directories -->
+	<target name="init" depends="clean">
+		<mkdir dir="${output}"/>
+		<mkdir dir="${output}/docs/api"/>
+		<mkdir dir="${output}/classes/beans"/>
+		<mkdir dir="${output}/classes/hiero"/>
+		<mkdir dir="${output}/classes/image-packer"/>
+		<mkdir dir="${output}/classes/particle-editor"/>
+		<mkdir dir="${output}/classes/gdx-twl"/>
+	</target>
+	
+	<!-- compiles the java code of all extension modules -->
+	<target name="compile" depends="init">
+		<javac srcdir="beans/src" destdir="${output}/classes/beans"/>
+		
+		<javac srcdir="hiero/src" destdir="${output}/classes/hiero">
+			<classpath>
+				<pathelement location="${stable}/gdx.jar"/>
+				<pathelement location="${stable}/gdx-backend-lwjgl.jar"/>
+			</classpath>
+		</javac>
+		
+		<javac srcdir="image-packer/src" destdir="${output}/classes/image-packer">
+			<classpath>
+				<pathelement location="${stable}/gdx.jar"/>
+			</classpath>
+		</javac>
+		
+		<javac srcdir="particle-editor/src" destdir="${output}/classes/particle-editor">
+			<classpath>
+				<pathelement location="${stable}/gdx.jar"/>
+				<pathelement location="${stable}/gdx-backend-lwjgl.jar"/>
+			</classpath>
+		</javac>
+		
+		<javac srcdir="twl/gdx-twl/src" destdir="${output}/classes/gdx-twl">
+			<classpath>
+				<pathelement location="${stable}/gdx.jar"/>
+				<pathelement location="${stable}/gdx-backend-lwjgl.jar"/>
+				<pathelement location="twl/gdx-twl/libs/twl.jar"/>
+				<pathelement location="twl/gdx-twl/libs/xpp3-1.1.4c.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- generates the javadoc for the extensions api -->
+	<target name="docs" depends="init">
+		<javadoc destdir="${output}/docs/api" author="true" version="true" use="true" windowtitle="Extensions API">
+			<fileset dir="twl/gdx-twl/src" defaultexcludes="yes">
+				<include name="com/badlogic/gdx/**" />
+			</fileset>
+			<fileset dir="image-packer/src" defaultexcludes="yes">
+				<include name="com/badlogic/gdx/**" />
+			</fileset>
+		</javadoc>
+	</target>
+	
+	<target name="dist" depends="compile,docs">
+		<jar destfile="${output}/beans.jar" basedir="${output}/classes/beans"/>
+		<exec executable="java">
+			<arg line="-jar beans/build/jarjar-1.0.jar process beans/build/rules.txt ${output}/beans.jar ${output}/beans-android.jar"/>
+		</exec>
+		<delete file="${output}/beans.jar"/>
+		
+		<jar destfile="${output}/hiero.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.badlogic.gdx.hiero.Hiero"/>
+			</manifest>
+			<fileset dir="${output}/classes/hiero"/>
+			<fileset dir="hiero/data"/>
+			<zipfileset src="${stable}/gdx.jar"/>
+			<zipfileset src="${stable}/gdx-backend-lwjgl.jar"/>
+		</jar>
+
+		<jar destfile="${output}/image-packer.jar" basedir="${output}/classes/image-packer">
+			<manifest>
+				<attribute name="Main-Class" value="com.badlogic.gdx.imagepacker.SpriteSheetPacker"/>
+			</manifest>
+			<zipfileset src="${stable}/gdx.jar"/>
+		</jar>
+		
+		<jar destfile="${output}/particle-editor.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.badlogic.gdx.graphics.particles.ParticleEditor"/>
+			</manifest>
+			<fileset dir="${output}/classes/particle-editor"/>
+			<fileset dir="particle-editor/data"/>
+			<zipfileset src="${stable}/gdx.jar"/>
+			<zipfileset src="${stable}/gdx-backend-lwjgl.jar"/>
+		</jar>
+
+		<jar destfile="${output}/gdx-twl.jar">
+			<fileset dir="${output}/classes/gdx-twl"/>
+			<zipfileset src="${output}/beans-android.jar"/>
+			<zipfileset src="twl/gdx-twl/libs/twl.jar"/>
+			<zipfileset src="twl/gdx-twl/libs/xpp3-1.1.4c.jar"/>
+		</jar>
+		
+		<copy tofile="${output}/LICENSE-2.0.html" file="../gdx/dist/LICENSE-2.0.html"/>
+		<zip destfile="../libgdx-extensions.zip" basedir="${output}"/>
+	</target>
+</project>
