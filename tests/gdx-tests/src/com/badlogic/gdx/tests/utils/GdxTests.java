@@ -73,6 +73,7 @@ import com.badlogic.gdx.tests.MatrixJNITest;
 import com.badlogic.gdx.tests.MeshMultitextureTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MeshTest;
+import com.badlogic.gdx.tests.MultiTouchActorTest;
 import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
@@ -181,6 +182,7 @@ public class GdxTests
 		//Mpg123Test.class,
 		MultitouchTest.class,		
 		MusicTest.class,
+		MultiTouchActorTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
 		OrthoCamBorderTest.class,
