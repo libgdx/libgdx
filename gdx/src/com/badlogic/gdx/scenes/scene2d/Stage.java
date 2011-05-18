@@ -214,9 +214,10 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param x the x coordinate of the touch in screen coordinates
 	 * @param y the y coordinate of the touch in screen coordinates
 	 * @param pointer the pointer index
+	 * @param button the button that's been pressed
 	 * @return whether an {@link Actor} in the scene processed the event or not
 	 */
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchDown(point.x, point.y, pointer);

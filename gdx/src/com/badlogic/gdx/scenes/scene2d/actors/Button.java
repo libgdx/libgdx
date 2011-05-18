@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d.actors;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,7 +36,7 @@ public class Button extends Actor implements Layout {
 	public TextureRegion pressedRegion;
 	public TextureRegion unpressedRegion;
 	public ClickListener clickListener;
-	protected boolean pressed = false;
+	public boolean pressed = false;
 	protected int pointer = -1;
 
 	/**
@@ -90,8 +91,11 @@ public class Button extends Actor implements Layout {
 	}
 
 	@Override protected boolean touchDown (float x, float y, int pointer) {
+		if(pressed) return false;
+
 		boolean result = x > 0 && y > 0 && x < width && y < height;
 		pressed = result;
+		
 		if (pressed) {
 			parent.focus(this, pointer);
 			this.pointer = pointer;
