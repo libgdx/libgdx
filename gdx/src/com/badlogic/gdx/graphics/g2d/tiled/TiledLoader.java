@@ -78,8 +78,12 @@ public class TiledLoader extends DefaultHandler {
 
 				int dataCounter = 0, row, col;
 
-				@Override public void startElement (String uri, String name, String qName, Attributes attr) {
-					currentBranch.push(qName);
+				@Override public void startElement (String uri, String name, String qName, Attributes attr) {										
+					if("".equals(qName)){
+						currentBranch.push(name);
+					} else{
+						currentBranch.push(qName);						
+					}
 					
 					try {
 
