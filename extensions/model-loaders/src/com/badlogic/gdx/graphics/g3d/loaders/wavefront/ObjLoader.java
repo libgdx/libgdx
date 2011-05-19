@@ -11,7 +11,7 @@
  * governing permissions and limitations under the License.
  */
 
-package com.badlogic.gdx.graphics.g3d.loaders.obj;
+package com.badlogic.gdx.graphics.g3d.loaders.wavefront;
 
 import java.io.BufferedReader;
 import java.io.IOException;
