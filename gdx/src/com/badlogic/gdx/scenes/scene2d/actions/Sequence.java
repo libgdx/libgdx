@@ -50,13 +50,17 @@ public class Sequence extends CompositeAction {
 		if (actions.size() == 0) {
 			currAction = 1;
 			return;
-		}	
-			
+		}		
+		
+		if(currAction >= actions.size()) {			
+			return;		
+		}
+		
 		actions.get(currAction).act(delta);
 		if (actions.get(currAction).isDone()) {
 			actions.get(currAction).callActionCompletedListener();			
 			currAction++;
-			if (currAction < actions.size()) actions.get(currAction).setTarget(target);
+			if (currAction < actions.size()) actions.get(currAction).setTarget(target);			
 		} 				
 	}
 
@@ -64,7 +68,7 @@ public class Sequence extends CompositeAction {
 		return currAction >= actions.size();
 	} 
 
-	@Override public void finish () {
+	@Override public void finish () {		
 		pool.free(this);
 		super.finish();
 	}
