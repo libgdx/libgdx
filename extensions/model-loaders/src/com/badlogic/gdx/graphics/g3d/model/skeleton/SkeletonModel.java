@@ -140,4 +140,10 @@ public class SkeletonModel implements AnimatedModel {
 		// FIXME
 		return null;
 	}
+
+	@Override
+	public Model getSubModel(String... subMeshNames) {
+		// FIXME
+		return null;
+	}
 }

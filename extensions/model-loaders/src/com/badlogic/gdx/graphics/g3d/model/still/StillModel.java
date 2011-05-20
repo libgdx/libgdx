@@ -53,4 +53,10 @@ public class StillModel implements Model {
 			subMeshes[i].material = material;
 		}
 	}
+
+	@Override
+	public Model getSubModel(String... subMeshNames) {
+		// FIXME
+		return null;
+	}
 }
