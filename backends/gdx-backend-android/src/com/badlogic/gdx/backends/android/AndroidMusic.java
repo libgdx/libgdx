@@ -41,7 +41,9 @@ public class AndroidMusic implements Music {
 			Gdx.app.log("AndroidMusic", "error while disposing AndroidMusic instance, non-fatal");
 		} finally {
 			player = null;
-			audio.musics.remove(this);
+			synchronized(audio.musics) {
+				audio.musics.remove(this);
+			}
 		}
 	}
 

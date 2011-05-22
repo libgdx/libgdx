@@ -54,19 +54,23 @@ public final class AndroidAudio implements Audio {
 	}
 
 	protected void pause () {
-		wasPlaying.clear();
-		for (AndroidMusic music : musics) {
-			if (music.isPlaying()) {
-				music.pause();
-				wasPlaying.add(true);
-			} else
-				wasPlaying.add(false);
+		synchronized(musics) {
+			wasPlaying.clear();
+			for (AndroidMusic music : musics) {
+				if (music.isPlaying()) {
+					music.pause();
+					wasPlaying.add(true);
+				} else
+					wasPlaying.add(false);
+			}
 		}
 	}
 
 	protected void resume () {
-		for (int i = 0; i < musics.size(); i++) {
-			if (wasPlaying.get(i)) musics.get(i).play();
+		synchronized(musics) {
+			for (int i = 0; i < musics.size(); i++) {
+				if (wasPlaying.get(i)) musics.get(i).play();
+			}
 		}
 	}
 
@@ -92,7 +96,9 @@ public final class AndroidAudio implements Audio {
 				descriptor.close();
 				mediaPlayer.prepare();
 				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				musics.add(music);
+				synchronized(musics) {
+					musics.add(music);
+				}
 				return music;
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file
@@ -147,9 +153,11 @@ public final class AndroidAudio implements Audio {
 	 * Kills the soundpool and all other resources
 	 */
 	public void dispose () {
-		for (AndroidMusic music : musics) {
-			music.dispose();
-		}		
+		synchronized(musics) {
+			for (AndroidMusic music : musics) {
+				music.dispose();
+			}		
+		}
 		soundPool.release();
 	}
 }
