@@ -218,7 +218,7 @@ public class VertexBufferObject implements VertexData {
 				break;
 
 			default:
-				throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
+				//throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
 			}
 		}
 
@@ -283,7 +283,7 @@ public class VertexBufferObject implements VertexData {
 				textureUnit++;
 				break;
 			default:
-				throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
+				//throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
 			}
 		}
 

@@ -154,7 +154,7 @@ public class VertexArray implements VertexData {
 				break;
 
 			default:
-				throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
+				//throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
 			}
 		}
 
@@ -185,7 +185,7 @@ public class VertexArray implements VertexData {
 				textureUnit++;
 				break;
 			default:
-				throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
+				//throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
 			}
 		}
 		byteBuffer.position(0);

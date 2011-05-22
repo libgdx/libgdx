@@ -489,16 +489,28 @@ public class Mesh implements Disposable {
 	/**
 	 * Calculates the {@link BoundingBox} of the vertices contained
 	 * in this mesh. In case no vertices are defined yet a {@link GdxRuntimeException}
-	 * is thrown.
+	 * is thrown. This method creates a new BoundingBox instance.
 	 * 
 	 * @return the bounding box.
 	 */
 	public BoundingBox calculateBoundingBox() {
+		BoundingBox bbox = new BoundingBox();
+		calculateBoundingBox(bbox);
+		return bbox;
+	}
+	
+	/**
+	 * Calculates the {@link BoundingBox} of the vertices contained
+	 * in this mesh. In case no vertices are defined yet a {@link GdxRuntimeException}
+	 * is thrown.
+	 * 
+	 * @param bbox the bounding box to store the result in.
+	 */
+	public void calculateBoundingBox(BoundingBox bbox) {
 		final int numVertices = getNumVertices();
 		if(numVertices==0)
 			throw new GdxRuntimeException("No vertices defined");
-		
-		final BoundingBox bbox = new BoundingBox();		
+						
 		final FloatBuffer verts = vertices.getBuffer();
 		bbox.inf();
 		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
@@ -525,9 +537,7 @@ public class Mesh implements Disposable {
 					idx+=vertexSize;
 				}
 				break;
-		}
-		
-		return bbox;
+		}				
 	}
 
 	/**
