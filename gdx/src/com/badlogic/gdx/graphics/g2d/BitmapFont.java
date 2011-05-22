@@ -596,8 +596,8 @@ public class BitmapFont implements Disposable {
 	}
 
 	public void setColor (float r, float g, float b, float a) {
-		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = Float.intBitsToFloat(intBits);
+		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);		
+		color = Float.intBitsToFloat((intBits & 0xfeffffff));
 	}
 
 	/**
