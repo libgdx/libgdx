@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Xml;
@@ -33,9 +36,12 @@ public class ColladaLoader {
 		Array<Geometry> geos = readGeometries(root);
 		
 		// convert geometries to meshes
-		Array<Mesh> meshes = createMeshes(geos);
+		StillSubMesh[] meshes = createMeshes(geos);
 		
-		return null;
+		// create StillModel
+		StillModel model = new StillModel();
+		model.subMeshes = meshes;			
+		return model;
 	}
 	
 	private static Array<Geometry> readGeometries(Element root) {		
@@ -61,10 +67,15 @@ public class ColladaLoader {
 		return geometries;
 	}		
 	
-	private static Array<Mesh> createMeshes(Array<Geometry> geos) {
-		Array<Mesh> meshes = new Array<Mesh>();
-		for(int i = 0; i < geos.size; i++) {
-			meshes.add(geos.get(i).getMesh());
+	private static StillSubMesh[] createMeshes(Array<Geometry> geos) {
+		StillSubMesh[] meshes = new StillSubMesh[geos.size];
+		for(int i = 0; i < geos.size; i++) {			
+			StillSubMesh subMesh = new StillSubMesh();
+			subMesh.name = geos.get(i).id;
+			subMesh.material = new Material("Null Material");
+			subMesh.primitiveType = GL10.GL_TRIANGLES;
+			subMesh.mesh = geos.get(i).getMesh();
+			meshes[i] = subMesh;
 		}
 		return meshes;		
 	}

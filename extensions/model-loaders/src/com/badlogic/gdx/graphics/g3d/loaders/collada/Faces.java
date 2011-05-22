@@ -6,9 +6,10 @@ import java.util.Map;
 
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.Xml.Element;
 
 public class Faces {
@@ -19,23 +20,28 @@ public class Faces {
 	protected static final String BITANGENT = "TEXBINORMAL";	
 	
 	int count = 0;
-	final Map<String, Source> sources;
+	final Map<String, Source> sourcesMap;
 	final Map<String, String> mappings;
 	Array<Element> inputs;
+	Source[] sources;
+	Array<VertexIndices> triangles;
 	Array<VertexIndices> vertices;
-	int uniqueVertices = 0;
+	int numVertices = 0;
+	int numIndices = 0;
 	int primitiveType = GL10.GL_TRIANGLES;
 	
 	public Faces (Element faces, Map<String, String> mappings, Map<String, Source> sources) {
-		this.sources = sources;
+		this.sourcesMap = sources;
 		this.mappings = mappings;
 		parseVertices(faces);
 		triangulate(faces);
-		for(VertexIndices v: vertices) {
+		this.numIndices = triangles.size;
+		
+		for(VertexIndices v: triangles) {
 			System.out.println(v);
 		}
-		System.out.println("vertices: " + uniqueVertices);
-		System.out.println("indices: " + vertices.size);
+		System.out.println("vertices: " + numVertices);
+		System.out.println("indices: " + numIndices);
 	}
 	
 	/**
@@ -52,6 +58,7 @@ public class Faces {
 		
 		// normalize source references, should use the URI/address scheme of Collada FIXME
 		// calculate stride and prepare to untangle the index lists mess...
+		sources = new Source[inputs.size];
 		for(int i = 0; i < inputs.size; i++) {
 			Element input = inputs.get(i);
 			
@@ -65,8 +72,8 @@ public class Faces {
 			
 			// check whether source exists
 			source = input.getAttribute("source");
-			if(!sources.containsKey(source)) throw new GdxRuntimeException("source '" + source + "'  not in mesh> but in <triangle>");
-						
+			if(!sourcesMap.containsKey(source)) throw new GdxRuntimeException("source '" + source + "'  not in mesh> but in <triangle>");
+			sources[i] = sourcesMap.get(source);
 			offsets[i] = Integer.parseInt(input.getAttribute("offset"));
 			stride = Math.max(offsets[i], stride);			
 		}
@@ -84,6 +91,7 @@ public class Faces {
 		// untangle indices on a per source basis
 		Map<VertexIndices, VertexIndices> indicesSet = new HashMap<VertexIndices, VertexIndices>();
 		VertexIndices vertex = new VertexIndices(inputs.size);
+		triangles = new Array<VertexIndices>(indices.length / stride);
 		vertices = new Array<VertexIndices>(indices.length / stride);
 		int index = 0;
 		for(int i = 0; i < indices.length; i+= stride) {			
@@ -94,15 +102,16 @@ public class Faces {
 			
 			VertexIndices lookup = indicesSet.get(vertex);
 			if(lookup != null) {
-				vertices.add(lookup);
+				triangles.add(lookup);
 			} else {
+				triangles.add(vertex);
 				vertices.add(vertex);
 				indicesSet.put(vertex, vertex);				
 				vertex = new VertexIndices(inputs.size);
 				index++;
 			}				
 		}					
-		uniqueVertices = index;
+		numVertices = index;
 	}	
 	
 	/**
@@ -119,27 +128,106 @@ public class Faces {
 		
 		String[] tokens = colladaPolys.getText().split("\\s+");
 		int[] polys = new int[tokens.length];
-		for(int i = 0; i < tokens.length; i++) {
-			polys[i] = Integer.parseInt(tokens[i]);
+		int vertexCount = 0;
+		for(int i = 0;i < tokens.length; i++) {
+			int verts = Integer.parseInt(tokens[i]);
+			polys[i] = verts;
+			vertexCount += verts; 
 		}
 		
-		Array<VertexIndices> newVertices = new Array<VertexIndices>();
+		Array<VertexIndices> newVertices = new Array<VertexIndices>(vertexCount);
 		int idx = 0;
 		for(int i = 0; i < polys.length; i++) {
 			int numVertices = polys[i];
-			VertexIndices baseVertex = vertices.get(idx++);
+			VertexIndices baseVertex = triangles.get(idx++);
 			for(int j = 1; j < numVertices-1; j++) {
 				newVertices.add(baseVertex);
-				newVertices.add(vertices.get(idx));
-				newVertices.add(vertices.get(idx+1));
+				newVertices.add(triangles.get(idx));
+				newVertices.add(triangles.get(idx+1));
 				idx++;
 			}
+			idx++;
 		}
-		vertices = newVertices;
+		triangles = newVertices;
 	}
 	
-	public Mesh getMesh () {
-		return null;
+	public Mesh getMesh () {		
+		float[] verts = new float[getVertexSize() * numVertices];
+		short[] indices = new short[numIndices];
+		VertexAttribute[] attributes = getVertexAttributes();
+		
+		for(int i = 0; i < numIndices; i++) {
+			VertexIndices vertex = triangles.get(i);
+			if(vertex.index > Short.MAX_VALUE ||
+				vertex.index < Short.MIN_VALUE) throw new GdxRuntimeException("index to big for short: " + vertex.index);
+			indices[i] = (short)vertex.index;
+		}			
+		
+		int idx = 0;				
+		int destOffset = 0;
+		
+		for(int i = 0; i < vertices.size; i++) {	
+			VertexIndices vertex = vertices.get(i);
+			
+			for(int j = 0; j < sources.length; j++) {
+				Source source = sources[j];
+				float[] data = source.data;
+				int index = vertex.indices[j];
+				int components = source.components;			
+				int sourceOffset = index * components;
+				
+				for(int k = 0; k < components; k++) {
+					verts[destOffset++] = data[sourceOffset++]; 
+				}			
+			}			
+		}
+		
+		Mesh mesh = new Mesh(true, vertices.size, indices.length, attributes);
+		mesh.setVertices(verts);
+		mesh.setIndices(indices);
+		return mesh;
+	}
+	
+	private VertexAttribute[] getVertexAttributes() {
+		VertexAttribute[] attributes = new VertexAttribute[inputs.size];
+				
+		int texUnit = 0;
+		for(int i = 0; i < inputs.size; i++) {
+			Element input = inputs.get(i);
+			String semantic = input.getAttribute("semantic");
+			Source source = sourcesMap.get(input.getAttribute("source"));
+			
+			int usage = getVertexAttributeUsage(semantic);
+			int components = source.components;
+			String alias = getVertexAttributeAlias(semantic);
+			if(alias.equals("a_tex")) alias += texUnit++;						
+			attributes[i] = new VertexAttribute(usage, components, alias);
+		}
+		return attributes;
+	}	
+
+	private int getVertexSize() {
+		int size = 0;
+		for(int i = 0; i < inputs.size; i++) {
+			size += sourcesMap.get(inputs.get(i).getAttribute("source")).components;
+		}
+		return size;
+	}
+	
+	private int getVertexAttributeUsage(String attribute) {
+		if(attribute.equals(VERTEX)) return Usage.Position;
+		if(attribute.equals(TEXCOORD)) return Usage.TextureCoordinates;
+		if(attribute.equals(NORMAL)) return Usage.Normal;
+		return Usage.Generic;
+	}	
+	
+	private String getVertexAttributeAlias (String attribute) {
+		if(attribute.equals(VERTEX)) return "a_pos";
+		if(attribute.equals(TEXCOORD)) return "a_tex";
+		if(attribute.equals(NORMAL)) return "a_nor";
+		if(attribute.equals(TANGENT)) return "a_tan";
+		if(attribute.equals(BITANGENT)) return "a_bin";
+		throw new GdxRuntimeException("can't map semantic '" + attribute + "' to alias, must be VERTEX, TEXCOORD, NORMAL, TANGENT or BITANGENT");
 	}
 	
 	/**

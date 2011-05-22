@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 
 public class KeyframedModel implements AnimatedModel {
@@ -80,5 +81,14 @@ public class KeyframedModel implements AnimatedModel {
 	public Model getSubModel(String... subMeshNames) {
 		// FIXME
 		return null;
+	}
+
+	private final static BoundingBox tmpBox = new BoundingBox();
+	@Override public void getBoundingBox (BoundingBox bbox) {
+		bbox.inf();
+		for(int i = 0; i < subMeshes.length; i++) {
+			subMeshes[i].mesh.calculateBoundingBox(tmpBox);
+			bbox.ext(tmpBox);
+		}
 	}
 }
