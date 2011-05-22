@@ -27,9 +27,10 @@ import java.io.Writer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class ParticleEffect {
+public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
 
 	public ParticleEffect () {
