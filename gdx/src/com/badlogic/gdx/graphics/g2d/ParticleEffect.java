@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
@@ -32,33 +33,33 @@ public class ParticleEffect {
 	private final Array<ParticleEmitter> emitters;
 
 	public ParticleEffect () {
-		emitters = new Array(true, 8, ParticleEmitter.class);
+		emitters = new Array(8);
 	}
 
 	public ParticleEffect (ParticleEffect effect) {
-		emitters = new Array(true, effect.emitters.size, ParticleEmitter.class);
+		emitters = new Array(true, effect.emitters.size);
 		for (int i = 0, n = effect.emitters.size; i < n; i++)
 			emitters.add(new ParticleEmitter(effect.emitters.items[i]));
 	}
 
 	public void start () {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.items[i].start();
+			emitters.get(i).start();
 	}
 
 	public void draw (SpriteBatch spriteBatch, float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.items[i].draw(spriteBatch, delta);
+			emitters.get(i).draw(spriteBatch, delta);
 	}
 
 	public void allowCompletion () {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.items[i].allowCompletion();
+			emitters.get(i).allowCompletion();
 	}
 
 	public boolean isComplete () {
 		for (int i = 0, n = emitters.size; i < n; i++) {
-			ParticleEmitter emitter = emitters.items[i];
+			ParticleEmitter emitter = emitters.get(i);
 			if (emitter.isContinuous()) return false;
 			if (!emitter.isComplete()) return false;
 		}
@@ -67,7 +68,7 @@ public class ParticleEffect {
 
 	public void setDuration (int duration) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
-			ParticleEmitter emitter = emitters.items[i];
+			ParticleEmitter emitter = emitters.get(i);
 			emitter.setContinuous(false);
 			emitter.duration = duration;
 			emitter.durationTimer = 0;
@@ -76,12 +77,12 @@ public class ParticleEffect {
 
 	public void setPosition (float x, float y) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.items[i].setPosition(x, y);
+			emitters.get(i).setPosition(x, y);
 	}
 
 	public void setFlip (boolean flipX, boolean flipY) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.items[i].setFlip(flipX, flipY);
+			emitters.get(i).setFlip(flipX, flipY);
 	}
 
 	public Array<ParticleEmitter> getEmitters () {
@@ -93,7 +94,7 @@ public class ParticleEffect {
 	 */
 	public ParticleEmitter findEmitter (String name) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
-			ParticleEmitter emitter = emitters.items[i];
+			ParticleEmitter emitter = emitters.get(i);
 			if (emitter.getName().equals(name)) return emitter;
 		}
 		return null;
@@ -105,7 +106,7 @@ public class ParticleEffect {
 			output = new FileWriter(file);
 			int index = 0;
 			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleEmitter emitter = emitters.items[i];
+				ParticleEmitter emitter = emitters.get(i);
 				if (index++ > 0) output.write("\n\n");
 				emitter.save(output);
 				output.write("- Image Path -\n");
@@ -157,7 +158,7 @@ public class ParticleEffect {
 
 	public void loadEmitterImages (TextureAtlas atlas) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
-			ParticleEmitter emitter = emitters.items[i];
+			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
@@ -171,7 +172,7 @@ public class ParticleEffect {
 
 	public void loadEmitterImages (FileHandle imagesDir) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
-			ParticleEmitter emitter = emitters.items[i];
+			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
 			if (imagePath == null) continue;
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
@@ -181,5 +182,15 @@ public class ParticleEffect {
 
 	protected Texture loadTexture (FileHandle file) {
 		return new Texture(file, false);
+	}
+
+	/**
+	 * Disposes the texture for each sprite for each ParticleEmitter.
+	 */
+	public void dispose () {
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.get(i);
+			emitter.getSprite().getTexture().dispose();
+		}
 	}
 }
