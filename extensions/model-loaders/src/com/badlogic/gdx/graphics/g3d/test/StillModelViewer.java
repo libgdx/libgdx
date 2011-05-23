@@ -39,10 +39,10 @@ public class StillModelViewer implements ApplicationListener {
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
-		System.out.println("bounds: " + bounds);
+		System.out.println("bounds: " + bounds);	
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
+		cam.position.set(bounds.getCenter().cpy().add(len*2, len*2, len*2));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
 		cam.near = 0.1f;
 		cam.far = 1000;

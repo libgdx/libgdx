@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.loaders;
+package com.badlogic.gdx.graphics.g3d.loaders.g3d;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;

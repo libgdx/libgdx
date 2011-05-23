@@ -37,7 +37,9 @@ public class ColladaLoader {
 		
 		// convert geometries to meshes
 		StillSubMesh[] meshes = createMeshes(geos);
-		
+		for(StillSubMesh mesh: meshes) {
+			System.out.println(mesh.mesh.getNumVertices());
+		}
 		// create StillModel
 		StillModel model = new StillModel();
 		model.subMeshes = meshes;			
