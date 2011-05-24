@@ -1,0 +1,28 @@
+g3dt-keyframed-#versionminor.#versionmajor
+#meshes
+meshName
+
+#faces
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+
+#numVertices
+#numAttributes
+position (1)
+normal (0-1)
+uv (0-n)
+u, v
+u, v
+u, v
+
+#numAnimations
+animationName
+#frames
+#frameDurationInSeconds
+x, y, z, (nx, ny, nz)? 
+x, y, z, (nx, ny, nz)? 
+x, y, z, (nx, ny, nz)?
+x, y, z, (nx, ny, nz)?
+x, y, z, (nx, ny, nz)?
