@@ -40,7 +40,7 @@ public class ParticleEffect implements Disposable {
 	public ParticleEffect (ParticleEffect effect) {
 		emitters = new Array(true, effect.emitters.size);
 		for (int i = 0, n = effect.emitters.size; i < n; i++)
-			emitters.add(new ParticleEmitter(effect.emitters.items[i]));
+			emitters.add(new ParticleEmitter(effect.emitters.get(i)));
 	}
 
 	public void start () {
