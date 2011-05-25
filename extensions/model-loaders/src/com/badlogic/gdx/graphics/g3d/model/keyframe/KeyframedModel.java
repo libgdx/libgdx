@@ -8,11 +8,12 @@ import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 
 public class KeyframedModel implements AnimatedModel {
 	public final KeyframedSubMesh[] subMeshes;
-	protected final Animation[] animations;
+	protected final KeyframedAnimation[] animations;
 
 	public KeyframedModel(KeyframedSubMesh[] subMeshes) {
 		this.subMeshes = subMeshes;
@@ -21,7 +22,25 @@ public class KeyframedModel implements AnimatedModel {
 		animations = new KeyframedAnimation[meshAnims.size];
 		for(int i = 0; i < animations.length; i++) {
 			animations[i] = meshAnims.get(i);
-		}		
+		}
+		
+		checkCorrectness();
+	}
+	
+	private void checkCorrectness() {
+		for(int i = 0; i < subMeshes.length; i++) {
+			if(subMeshes[i].animations.size != animations.length) throw new GdxRuntimeException("number of animations in subMesh[0] is not the same in subMesh[" + i + "]. All sub-meshes must have the same animations and number of frames");
+		}
+		
+		for(int i = 0; i < animations.length; i++) {
+			KeyframedAnimation anim = animations[i];
+			for(int j = 0; j < subMeshes.length; j++) {
+				KeyframedAnimation otherAnim = subMeshes[j].animations.get(anim.name);
+				if(otherAnim == null) throw new GdxRuntimeException("animation '" +  anim.name + "' missing in subMesh[" + j + "]");
+				if(otherAnim.frameDuration != anim.frameDuration) throw new GdxRuntimeException("animation '" + anim.name + "' in subMesh[" + j + "] has different frame duration than the same animation in subMesh[0]");
+				if(otherAnim.keyframes.length != anim.keyframes.length) throw new GdxRuntimeException("animation '" + anim.name + "' in subMesh[" + j + "] has different number of keyframes than the same animation in subMesh[0]");
+			}
+		}
 	}
 	
 	@Override public void render() {		
@@ -71,22 +90,36 @@ public class KeyframedModel implements AnimatedModel {
 	@Override public void setAnimation (String animation, float time) {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
-			KeyframedSubMesh subMesh = subMeshes[i];
-			KeyframedAnimation anim = subMesh.animations.get(animation);
+			final KeyframedSubMesh subMesh = subMeshes[i];
+			final KeyframedAnimation anim = subMesh.animations.get(animation);
 			if(anim == null) throw new IllegalArgumentException("No animation with name '" + animation + "' in submesh #" + i);
-			// FIXME actually select frames and blend...
-			Keyframe keyframe = anim.keyframes[(int)time];					
 			
-			float[] src = keyframe.vertices;
-			int numComponents = keyframe.animatedComponents;
-			int srcLen = numComponents * subMesh.mesh.getNumVertices();
+			final int startIndex = (int)Math.floor((time / anim.frameDuration));
+			final Keyframe startFrame = anim.keyframes[startIndex];
+			final Keyframe endFrame = anim.keyframes[anim.keyframes.length-1==startIndex?startIndex:startIndex + 1];			
 			
-			float[] dst = subMesh.blendedVertices;
-			int dstInc = subMesh.mesh.getVertexSize() / 4 - numComponents;
+			final int numComponents = startFrame.animatedComponents;
+			final float[] src = startFrame.vertices;				
+			final int srcLen = numComponents * subMesh.mesh.getNumVertices();
 			
-			for(int srcIdx = 0, dstIdx = 0; srcIdx < srcLen; dstIdx += dstInc) {
-				for(int j = 0; j < numComponents; j++) {
-					dst[dstIdx++] = src[srcIdx++];
+			final float[] dst = subMesh.blendedVertices;						
+			final int dstInc = subMesh.mesh.getVertexSize() / 4 - numComponents;			
+			
+			if(startFrame == endFrame) {																			
+				for(int srcIdx = 0, dstIdx = 0; srcIdx < srcLen; dstIdx += dstInc) {
+					for(int j = 0; j < numComponents; j++) {
+						dst[dstIdx++] = src[srcIdx++];
+					}
+				}
+			} else {				
+				float[] src2 = endFrame.vertices;
+				float alpha = (time - (startIndex * anim.frameDuration)) / anim.frameDuration;
+				for(int srcIdx = 0, dstIdx = 0; srcIdx < srcLen; dstIdx += dstInc) {
+					for(int j = 0; j < numComponents; j++) {
+						final float valSrc = src[srcIdx];
+						final float valSrc2 = src2[srcIdx++];
+						dst[dstIdx++] = valSrc + (valSrc2 - valSrc) * alpha;
+					}
 				}
 			}
 			

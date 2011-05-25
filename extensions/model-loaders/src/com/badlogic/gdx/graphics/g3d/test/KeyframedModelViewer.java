@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class KeyframedModelViewer implements ApplicationListener {
 	PerspectiveCamera cam;
 	KeyframedModel model;
+	KeyframedModel modelHigh;
 	Texture texture = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
@@ -28,8 +29,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	String fileName;
 	String textureFileName;
 	KeyframedAnimation anim;
-	int frame = 0;
-	long lastTick = System.nanoTime();
+	float animTime = 0;	
 	
 	public KeyframedModelViewer(String fileName, String textureFileName) {
 		this.fileName = fileName;
@@ -38,12 +38,14 @@ public class KeyframedModelViewer implements ApplicationListener {
 	
 	@Override public void create () {
 		if(fileName.endsWith(".g3dt")) model = G3DTLoader.loadKeyframedModel(Gdx.files.internal(fileName));
-		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
+		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
+		modelHigh = G3DTLoader.loadKeyframedModel(Gdx.files.internal("data/boy.g3dt"));			
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
 		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
 		model.setMaterial(material);
-		anim = (KeyframedAnimation)model.getAnimations()[0];
+		modelHigh.setMaterial(material);
+		anim = (KeyframedAnimation)model.getAnimations()[0];		
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
@@ -96,15 +98,17 @@ public class KeyframedModelViewer implements ApplicationListener {
 		}
 		
 		angle += 45 * Gdx.graphics.getDeltaTime();
-//		Gdx.gl10.glRotatef(angle, 0, 1, 0);
-		
-		if(System.nanoTime() - lastTick > 30000000) {
-			frame++;
-			if(frame >= anim.keyframes.length) frame = 0;
-			lastTick = System.nanoTime();
-		}		
-		model.setAnimation(anim.name, frame);
+//		Gdx.gl10.glRotatef(angle, 0, 1, 0);		
+		animTime += Gdx.graphics.getDeltaTime();
+		if(animTime > anim.totalDuration) {
+			animTime = 0;
+		}
+		model.setAnimation(anim.name, animTime);
 		model.render();
+		
+		Gdx.gl10.glTranslatef(0, 0, 7);
+		modelHigh.setAnimation(anim.name, animTime);
+		modelHigh.render();
 		
 		if(texture != null) {
 			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
@@ -150,6 +154,6 @@ public class KeyframedModelViewer implements ApplicationListener {
 //			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 //			System.exit(-1);
 //		}
-		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", "data/boy_lowpoly_color.png"), "KeframedModel Viewer", 320, 240, false);
+		new JoglApplication(new KeyframedModelViewer("data/boy_low.g3dt", "data/boy_lowpoly_color.png"), "KeframedModel Viewer", 320, 240, false);
 	}
 }
