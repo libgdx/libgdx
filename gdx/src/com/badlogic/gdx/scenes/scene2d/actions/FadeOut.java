@@ -39,9 +39,8 @@ public class FadeOut extends AnimationAction {
 
 	@Override public void setTarget (Actor actor) {
 		this.target = actor;
-		this.target.color.a = 1;
-		this.startAlpha = 1;
-		this.deltaAlpha = -1;
+		this.startAlpha = this.target.color.a;
+		this.deltaAlpha = -this.target.color.a;
 		this.taken = 0;
 		this.done = false;
 	}
