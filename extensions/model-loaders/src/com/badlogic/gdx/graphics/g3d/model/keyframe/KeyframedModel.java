@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g3d.model.AnimatedModel;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.SubMesh;
-import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
 
 
 public class KeyframedModel implements AnimatedModel {
@@ -63,18 +63,40 @@ public class KeyframedModel implements AnimatedModel {
 			KeyframedSubMesh subMesh = subMeshes[i];
 			KeyframedAnimation anim = subMesh.animations.get(animation);
 			if(anim == null) throw new IllegalArgumentException("No animation with name '" + animation + "' in submesh #" + i);
-			subMesh.mesh.setVertices(anim.keyframes[0].vertices);
+			// FIXME actually select frames and blend...
+			Keyframe keyframe = anim.keyframes[9];					
+			
+			float[] src = keyframe.vertices;
+			int numComponents = keyframe.animatedComponents;
+			int srcLen = numComponents * subMesh.mesh.getNumVertices();
+			
+			float[] dst = subMesh.blendedVertices;
+			int dstInc = subMesh.mesh.getVertexSize() / 4 - numComponents;
+			
+			for(int srcIdx = 0, dstIdx = 0; srcIdx < srcLen; dstIdx += dstInc) {
+				for(int j = 0; j < numComponents; j++) {
+					dst[dstIdx++] = src[srcIdx++];
+				}
+			}
+			
+			subMesh.mesh.setVertices(dst);
 		}
 	}
 	
 	@Override public Animation getAnimation (String name) {
-		// FIXME
-		return null;
+		return subMeshes[0].animations.get(name);		
 	}
 
+	private Animation[] animations = null;
 	@Override public Animation[] getAnimations () {
-		// FIXME
-		return null;
+		if(animations == null || animations.length != subMeshes[0].animations.size) {
+			Array<KeyframedAnimation> meshAnims = subMeshes[0].animations.values().toArray();
+			animations = new KeyframedAnimation[meshAnims.size];
+			for(int i = 0; i < animations.length; i++) {
+				animations[i] = meshAnims.get(i);
+			}
+		}
+		return animations;
 	}
 
 	@Override

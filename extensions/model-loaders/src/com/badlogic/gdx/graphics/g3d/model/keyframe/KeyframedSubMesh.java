@@ -8,7 +8,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 public class KeyframedSubMesh extends SubMesh {	
 	public Mesh mesh;	
-	public final ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
+	public float[] blendedVertices;
+	public ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 	public int primitiveType;
 	
 	@Override public void getBoundingBox (BoundingBox bbox) {	

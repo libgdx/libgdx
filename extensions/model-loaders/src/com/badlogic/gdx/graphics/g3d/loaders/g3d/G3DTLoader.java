@@ -1,14 +1,19 @@
 package com.badlogic.gdx.graphics.g3d.loaders.g3d;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
@@ -17,6 +22,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Class to import the G3D text format.
@@ -43,16 +49,18 @@ public class G3DTLoader {
 			for(int i = 0; i < numMeshes; i++) {
 				subMeshes[i] = readMesh(in);
 			}
-			
+			KeyframedModel model = new KeyframedModel();
+			model.subMeshes = subMeshes;
+			model.setAnimation(model.getAnimations()[0].name, 0);
+			return model;
 		} catch(Throwable e) {
 			throw new GdxRuntimeException("Couldn't read keyframed model, error in line " + lineNum + ", '" + line + "' : " + e.getMessage(), e);
-		}
-		return null;
+		}		
 	}	
 	
 	private static KeyframedSubMesh readMesh(BufferedReader in) throws IOException {
 		String name = readString(in);
-		int[] indices = readFaces(in);
+		IntArray indices = readFaces(in);
 		int numVertices = readInt(in);
 		int numAttributes = readInt(in);		
 		
@@ -74,8 +82,10 @@ public class G3DTLoader {
 		}
 		int animatedComponents = hasNormals?6:3;
 		
+		VertexAttribute[] vertexAttributes = createVertexAttributes(hasNormals, uvSets.size);
+		
 		int numAnimations = readInt(in);
-		KeyframedAnimation[] animations = new KeyframedAnimation[numAnimations];
+		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>(numAnimations);
 		for(int i = 0; i < numAnimations; i++) {					
 			String animationName = readString(in);
 			int numKeyframes = readInt(in);
@@ -103,12 +113,53 @@ public class G3DTLoader {
 			animation.name = animationName;
 			animation.frameDuration = frameDuration;
 			animation.keyframes = keyframes;
-			animations[i] = animation;
+			animations.put(animationName, animation);
+		}		
+		
+		KeyframedSubMesh mesh = new KeyframedSubMesh();
+		mesh.animations = animations;
+		mesh.name = name;
+		mesh.primitiveType = GL10.GL_TRIANGLES;
+		mesh.blendedVertices = buildVertices(numVertices, hasNormals, uvSets);
+		mesh.mesh = new Mesh(false, numVertices, indices.size, createVertexAttributes(hasNormals, uvSets.size));
+		mesh.mesh.setIndices(convertToShortArray(indices));
+		mesh.mesh.setVertices(mesh.blendedVertices);
+		return mesh;
+	}
+
+	private static float[] buildVertices(int numVertices, boolean hasNormals, Array<FloatArray> uvSets) {
+		float[] vertices = new float[numVertices * (3 + (hasNormals?3:0) + uvSets.size * 2)];
+		
+		int idx = 0;
+		int idxUv = 0;
+		for(int i = 0; i < numVertices; i++) {
+			vertices[idx++] = 0;
+			vertices[idx++] = 0;
+			vertices[idx++] = 0;
+			if(hasNormals) {
+				vertices[idx++] = 0;
+				vertices[idx++] = 0;
+				vertices[idx++] = 0;
+			}
+			for(int j = 0; j < uvSets.size; j++) {
+				vertices[idx++] = uvSets.get(j).get(idxUv);
+				vertices[idx++] = uvSets.get(j).get(idxUv+1);
+			}
+			idxUv+=2;
 		}
 		
-		// FIXME build KeyframedSubMesh here :D
-		
-		return null;
+		return vertices;
+	}
+	
+	private static VertexAttribute[] createVertexAttributes (boolean hasNormals, int uvs) {
+		VertexAttribute[] attributes = new VertexAttribute[1 + (hasNormals?1:0) + uvs];
+		int idx = 0;
+		attributes[idx++] = new VertexAttribute(Usage.Position, 3, "a_pos");
+		if(hasNormals) attributes[idx++] = new VertexAttribute(Usage.Normal, 3, "a_nor");
+		for(int i = 0; i < uvs; i++) {
+			attributes[idx++] = new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex" + i);
+		}		
+		return attributes;
 	}
 
 	private static FloatArray readUVSet(BufferedReader in, int numVertices) throws IOException {
@@ -122,7 +173,7 @@ public class G3DTLoader {
 		return uvSet;
 	}
 	
-	private static int[] readFaces(BufferedReader in) throws NumberFormatException, IOException {
+	private static IntArray readFaces(BufferedReader in) throws NumberFormatException, IOException {
 		int numFaces = readInt(in);
 		IntArray faceIndices = new IntArray();
 		IntArray triangles = new IntArray();
@@ -142,7 +193,15 @@ public class G3DTLoader {
 		}
 		
 		indices.shrink();
-		return indices.items;
+		return indices;
+	}
+	
+	private static short[] convertToShortArray(IntArray array) {
+		short[] shortArray = new short[array.size];
+		for(int i = 0; i < array.size; i++) {
+			shortArray[i] = (short)array.items[i];
+		}
+		return shortArray;
 	}
 	
 	private static float readFloat(BufferedReader in) throws NumberFormatException, IOException {
