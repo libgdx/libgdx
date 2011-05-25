@@ -110,19 +110,26 @@ public class ObjLoader {
 				} 
 				else if (firstChar == 'f') {
 					String[] parts;
+					ArrayList<Integer> faces = activeGroup.faces;
 					for (int i=1; i < tokens.length - 2; i--) {
 						parts = tokens[1].split("/");
-						activeGroup.faces.add(getIndex(parts[0], verts.size()));
-						if (parts.length > 2) activeGroup.faces.add(getIndex(parts[2], norms.size()));
-						if (parts.length > 1 && parts[1].length() > 0) activeGroup.faces.add(getIndex(parts[1], uvs.size()));	
+						faces.add(getIndex(parts[0], verts.size()));
+						if (parts.length > 2) {
+							if (i==1) activeGroup.hasNorms = true;
+							faces.add(getIndex(parts[2], norms.size()));
+						}
+						if (parts.length > 1 && parts[1].length() > 0) {
+							if (i==1) activeGroup.hasUVs = true;
+							faces.add(getIndex(parts[1], uvs.size()));	
+						}
 						parts = tokens[++i].split("/");
-						activeGroup.faces.add(getIndex(parts[0], verts.size()));
-						if (parts.length > 2) activeGroup.faces.add(getIndex(parts[2], norms.size()));
-						if (parts.length > 1 && parts[1].length() > 0) activeGroup.faces.add(getIndex(parts[1], uvs.size()));
+						faces.add(getIndex(parts[0], verts.size()));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));
 						parts = tokens[++i].split("/");
-						activeGroup.faces.add(getIndex(parts[0], verts.size()));
-						if (parts.length > 2) activeGroup.faces.add(getIndex(parts[2], norms.size()));
-						if (parts.length > 1 && parts[1].length() > 0) activeGroup.faces.add(getIndex(parts[1], uvs.size()));
+						faces.add(getIndex(parts[0], verts.size()));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));
 						activeGroup.numFaces++;
 					}
 				} 
@@ -139,10 +146,18 @@ public class ObjLoader {
 			return null;
 		}
 		
-		// If the "default" group was not used, get rid of it
-		if (groups.get(0).numFaces < 1) groups.remove(0);
-		if (groups.size() < 1) return null;	
+		// If the "default" group or any others were not used, get rid of them
+		for (int i=0; i<groups.size(); i++) {
+			if (groups.get(i).numFaces < 1) {
+				groups.remove(i);
+				i--;
+			}
+		}
 		
+		// If there are no groups left, there is no valid Model to return
+		if (groups.size() < 1) return null;	
+
+		// Get number of objects/groups remaining after removing empty ones
 		final int numGroups = groups.size();
 		
 		final StillModel model = new StillModel();	
@@ -153,18 +168,8 @@ public class ObjLoader {
 			ArrayList<Integer> faces = group.faces;
 			int numElements = faces.size();
 			int numFaces = group.numFaces;
-			boolean hasNorms, hasUVs;
-			
-			if (numElements == numFaces * 3) {
-				hasNorms = false;
-				hasUVs = false;
-			} else if (numElements == numFaces * 6) {
-				hasNorms = true;
-				hasUVs = false;
-			} else {
-				hasNorms = true;
-				hasUVs = true;
-			}
+			boolean hasNorms = group.hasNorms;
+			boolean hasUVs = group.hasUVs;
 
 			float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
 
@@ -246,6 +251,8 @@ public class ObjLoader {
 		final String name;
 		ArrayList<Integer> faces;
 		int numFaces;
+		boolean hasNorms;
+		boolean hasUVs;
 		Material mat;
 		Group(String name) {
 			this.name = name;
