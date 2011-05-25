@@ -44,6 +44,7 @@ public class TileMapRenderer implements Disposable {
 	private int tileWidth, tileHeight;
 	private float unitsPerTileX, unitsPerTileY;
 	private int tilesPerBlockX, tilesPerBlockY;
+	private float unitsPerBlockX, unitsPerBlockY;
 	private int[] allLayers;
 
 	private IntArray blendedTiles;
@@ -199,6 +200,9 @@ public class TileMapRenderer implements Disposable {
 		this.blendedTiles = blendedTiles;
 		this.tilesPerBlockX = tilesPerBlockX;
 		this.tilesPerBlockY = tilesPerBlockY;
+		
+		unitsPerBlockX = unitsPerTileX * tilesPerBlockX;
+		unitsPerBlockY = unitsPerTileY * tilesPerBlockY;
 
 		int layer, row, col;
 
@@ -284,14 +288,14 @@ public class TileMapRenderer implements Disposable {
 
 	/**
 	 * Renders all layers between the given bounding box in map units. This is the same as calling
-	 * {@link TileMapRenderer#render(float, float, int, int, int[])} with all layers in the layers list.
+	 * {@link TileMapRenderer#render(float, float, float, float, int[])} with all layers in the layers list.
 	 */
 	public void render (float x, float y, float width, float height) {
 		render(x, y, width, height, allLayers);
 	}
 
 	/**
-	 * Renders specific layers between the given a camera. The x and y coordinates of the camera 
+	 * Renders specific layers in the given a camera
 	 * @param cam The camera to use
 	 */
 	public void render (Camera cam) {
@@ -300,7 +304,7 @@ public class TileMapRenderer implements Disposable {
 
 	Vector3 tmp = new Vector3();
 	/**
-	 * Renders specific layers between the given a camera.
+	 * Renders specific layers in the given a camera.
 	 * @param cam The camera to use
 	 * @param layers The list of layers to draw, 0 being the lowest layer. You will get an IndexOutOfBoundsException if a layer
 	 *           number is too high.
@@ -336,13 +340,13 @@ public class TileMapRenderer implements Disposable {
 	 *           number is too high.
 	 */
 	public void render (float x, float y, float width, float height, int[] layers) {
-		lastRow = (int)((mapHeightUnits - (y - height + overdrawY)) / (tilesPerBlockY * unitsPerTileY));
-		initialRow = (int)((mapHeightUnits - (y - overdrawY)) / (tilesPerBlockY * unitsPerTileY));
+		lastRow = (int)((mapHeightUnits - (y - height + overdrawY)) / (unitsPerBlockY));
+		initialRow = (int)((mapHeightUnits - (y - overdrawY)) / (unitsPerBlockY));
 		initialRow = (initialRow > 0) ? initialRow : 0; // Clamp initial Row > 0
 
-		initialCol = (int)((x - overdrawX) / (tilesPerBlockX * unitsPerTileX));
+		initialCol = (int)((x - overdrawX) / (unitsPerBlockX));
 		initialCol = (initialCol > 0) ? initialCol : 0; // Clamp initial Col > 0
-		lastCol = (int)((x + width + overdrawX) / (tilesPerBlockX * unitsPerTileX));
+		lastCol = (int)((x + width + overdrawX) / (unitsPerBlockX));
 
 		Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -400,7 +404,7 @@ public class TileMapRenderer implements Disposable {
 
 	/**
 	 * Returns the initial drawn block row, for debugging purposes. Use this along with {@link TileMapRenderer#getLastRow()} to
-	 * compute the number of rows drawn in the last call to {@link TileMapRenderer#render(float, float, int, int, int[])}.
+	 * compute the number of rows drawn in the last call to {@link TileMapRenderer#render(float, float, float, float, int[])}.
 	 * */
 	public int getInitialRow () {
 		return initialRow;
@@ -408,7 +412,7 @@ public class TileMapRenderer implements Disposable {
 
 	/**
 	 * Returns the initial drawn block column, for debugging purposes. Use this along with {@link TileMapRenderer#getLastCol()} to
-	 * compute the number of columns drawn in the last call to {@link TileMapRenderer#render(float, float, int, int, int[])}.
+	 * compute the number of columns drawn in the last call to {@link TileMapRenderer#render(float, float, float, float, int[])}.
 	 * */
 	public int getInitialCol () {
 		return initialCol;
@@ -416,7 +420,7 @@ public class TileMapRenderer implements Disposable {
 
 	/**
 	 * Returns the final drawn block row, for debugging purposes. Use this along with {@link TileMapRenderer#getInitialRow()} to
-	 * compute the number of rows drawn in the last call to {@link TileMapRenderer#render(float, float, int, int, int[])}.
+	 * compute the number of rows drawn in the last call to {@link TileMapRenderer#render(float, float, float, float, int[])}.
 	 * */
 	public int getLastRow () {
 		return lastRow;
@@ -424,7 +428,7 @@ public class TileMapRenderer implements Disposable {
 
 	/**
 	 * Returns the final drawn block column, for debugging purposes. Use this along with {@link TileMapRenderer#getInitialCol()} to
-	 * compute the number of columns drawn in the last call to {@link TileMapRenderer#render(float, float, int, int, int[])}.
+	 * compute the number of columns drawn in the last call to {@link TileMapRenderer#render(float, float, float, float, int[])}.
 	 * */
 	public int getLastCol () {
 		return lastCol;
