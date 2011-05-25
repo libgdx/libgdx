@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class MD2Loader {	
 	public KeyframedModel load (FileHandle fileHandle) {
@@ -99,12 +100,8 @@ public class MD2Loader {
 		}
 
 		header.numVertices = vertCombos.size();
-
-		KeyframedSubMesh subMesh = new KeyframedSubMesh();
-		KeyframedAnimation animation = new KeyframedAnimation();
-		animation.totalDuration = frames.length * 0.2f;
-		animation.keyframes = new Keyframe[frames.length];
-
+		
+		KeyframedAnimation animation = new KeyframedAnimation("all", frames.length * 0.2f, new Keyframe[frames.length]);		
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
 			MD2Frame frame = frames[frameNum];
 			float[] vertices = new float[header.numVertices * 5];
@@ -119,20 +116,19 @@ public class MD2Loader {
 				vertices[idx++] = uvs[idxT++];
 			}
 
-			Keyframe keyFrame = new Keyframe();
-			keyFrame.timeStamp = 0;
-			keyFrame.vertices = vertices;
-
+			Keyframe keyFrame = new Keyframe(0 /** FIXME set frameduration **/, 3, vertices);			
 			animation.keyframes[frameNum] = keyFrame;
 		}
 
-		subMesh.mesh = new Mesh(false, header.numTriangles * 3, indices.length, new VertexAttribute(Usage.Position, 3, "a_pos"),
-			new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex0"));
-		subMesh.mesh.setIndices(indices);
-		subMesh.animations.put("all", animation);
-		subMesh.primitiveType = GL10.GL_TRIANGLES;		
-		KeyframedModel model = new KeyframedModel();
-		model.subMeshes = new KeyframedSubMesh[] {subMesh};
+		
+		Mesh mesh = new Mesh(false, header.numTriangles * 3, indices.length, 
+									new VertexAttribute(Usage.Position, 3, "a_pos"), 
+									new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex0"));
+		mesh.setIndices(indices);
+		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
+		animations.put("all", animation);
+		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, null /** FIXME **/, animations, GL10.GL_TRIANGLES);	
+		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});		
 		model.setAnimation("all", 0);
 		return model;
 	}

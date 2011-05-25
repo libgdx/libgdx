@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class SkeletonSubMesh extends SubMesh {
-	public String name;		
-	public Material material;
+	public String name;			
 	public Mesh mesh;
 	public short[] indices;
 	public float[] vertices;

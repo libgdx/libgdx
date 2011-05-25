@@ -13,8 +13,13 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 public class SkeletonModel implements AnimatedModel {
-	public Skeleton skeleton;
-	public SkeletonSubMesh[] subMeshes;
+	public final Skeleton skeleton;
+	public final SkeletonSubMesh[] subMeshes;
+	
+	public SkeletonModel(Skeleton skeleton, SkeletonSubMesh[] subMeshes) {
+		this.skeleton = skeleton;
+		this.subMeshes = subMeshes;
+	}
 	
 	public void setBindPose() {
 		skeleton.setBindPose();

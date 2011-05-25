@@ -11,8 +11,19 @@ import com.badlogic.gdx.utils.Array;
 
 
 public class KeyframedModel implements AnimatedModel {
-	public KeyframedSubMesh[] subMeshes;
+	public final KeyframedSubMesh[] subMeshes;
+	protected final Animation[] animations;
 
+	public KeyframedModel(KeyframedSubMesh[] subMeshes) {
+		this.subMeshes = subMeshes;
+
+		Array<KeyframedAnimation> meshAnims = subMeshes[0].animations.values().toArray();
+		animations = new KeyframedAnimation[meshAnims.size];
+		for(int i = 0; i < animations.length; i++) {
+			animations[i] = meshAnims.get(i);
+		}		
+	}
+	
 	@Override public void render() {		
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
@@ -86,16 +97,8 @@ public class KeyframedModel implements AnimatedModel {
 	@Override public Animation getAnimation (String name) {
 		return subMeshes[0].animations.get(name);		
 	}
-
-	private Animation[] animations = null;
+	
 	@Override public Animation[] getAnimations () {
-		if(animations == null || animations.length != subMeshes[0].animations.size) {
-			Array<KeyframedAnimation> meshAnims = subMeshes[0].animations.values().toArray();
-			animations = new KeyframedAnimation[meshAnims.size];
-			for(int i = 0; i < animations.length; i++) {
-				animations[i] = meshAnims.get(i);
-			}
-		}
 		return animations;
 	}
 

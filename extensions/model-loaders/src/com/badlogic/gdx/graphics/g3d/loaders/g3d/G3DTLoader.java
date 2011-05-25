@@ -49,8 +49,7 @@ public class G3DTLoader {
 			for(int i = 0; i < numMeshes; i++) {
 				subMeshes[i] = readMesh(in);
 			}
-			KeyframedModel model = new KeyframedModel();
-			model.subMeshes = subMeshes;
+			KeyframedModel model = new KeyframedModel(subMeshes);			
 			model.setAnimation(model.getAnimations()[0].name, 0);
 			return model;
 		} catch(Throwable e) {
@@ -100,28 +99,21 @@ public class G3DTLoader {
 				for(int j = 0; j < numVertices; j++) {
 					idx = readFloatArray(in, vertices, idx);					
 				}
-				Keyframe keyframe = new Keyframe();
-				keyframe.timeStamp = time;
-				keyframe.animatedComponents = animatedComponents;
-				keyframe.vertices = vertices;
+				Keyframe keyframe = new Keyframe(time, animatedComponents, vertices);				
 				keyframes[frame] = keyframe;
 				time += frameDuration;
 				System.out.println("finished frame" + frame);
 			}						
 			
-			KeyframedAnimation animation = new KeyframedAnimation();
-			animation.name = animationName;
-			animation.frameDuration = frameDuration;
-			animation.keyframes = keyframes;
+			KeyframedAnimation animation = new KeyframedAnimation(animationName, frameDuration, keyframes);
 			animations.put(animationName, animation);
 		}		
 		
-		KeyframedSubMesh mesh = new KeyframedSubMesh();
-		mesh.animations = animations;
-		mesh.name = name;
-		mesh.primitiveType = GL10.GL_TRIANGLES;
-		mesh.blendedVertices = buildVertices(numVertices, hasNormals, uvSets);
-		mesh.mesh = new Mesh(false, numVertices, indices.size, createVertexAttributes(hasNormals, uvSets.size));
+		KeyframedSubMesh mesh = new KeyframedSubMesh(name, 
+																	new Mesh(false, numVertices, indices.size, createVertexAttributes(hasNormals, uvSets.size)),
+																	buildVertices(numVertices, hasNormals, uvSets),
+																	animations,
+																	GL10.GL_TRIANGLES);
 		mesh.mesh.setIndices(convertToShortArray(indices));
 		mesh.mesh.setVertices(mesh.blendedVertices);
 		return mesh;
