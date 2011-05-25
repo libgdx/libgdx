@@ -39,9 +39,8 @@ public class FadeIn extends AnimationAction {
 
 	@Override public void setTarget (Actor actor) {
 		this.target = actor;
-		this.target.color.a = 0;
-		this.startAlpha = 0;
-		this.deltaAlpha = 1;
+		this.startAlpha = this.target.color.a;
+		this.deltaAlpha = 1 - this.target.color.a;
 		this.taken = 0;
 		this.done = false;
 
