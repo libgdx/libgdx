@@ -29,7 +29,7 @@ public final class VertexAttributes {
 	 * @author mzechner
 	 * 
 	 */
-	public final class Usage {
+	public static final class Usage {
 		public static final int Position = 0;
 		public static final int Color = 1;
 		public static final int ColorPacked = 5;
