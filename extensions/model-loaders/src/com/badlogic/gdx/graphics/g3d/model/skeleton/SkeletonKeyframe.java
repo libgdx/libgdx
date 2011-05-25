@@ -8,7 +8,7 @@ public class SkeletonKeyframe {
 	public int parentIndex = -1;
 	public final Vector3 position = new Vector3();
 	public final Vector3 scale = new Vector3(1, 1, 1);
-	public final Quaternion rotation = new Quaternion(0, 0, 0, 1);
+	public final Quaternion rotation = new Quaternion(0, 0, 0, 1);	
 	
 	public String toString() {
 		return "time: " + timeStamp + ", " +

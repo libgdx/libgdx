@@ -10,9 +10,9 @@ public class SkeletonJoint {
 	public int index;
 	public int parentIndex;
 	public SkeletonJoint parent;
-	public Array<SkeletonJoint> children = new Array<SkeletonJoint>(1);
+	public final Array<SkeletonJoint> children = new Array<SkeletonJoint>(1);
 	
 	public final Vector3 position = new Vector3();	
 	public final Quaternion rotation = new Quaternion(new Vector3(0, 1, 0), 0);	
-	public final Vector3 scale = new Vector3(1, 1, 1);	
+	public final Vector3 scale = new Vector3(1, 1, 1);		
 }
