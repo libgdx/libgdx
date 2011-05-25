@@ -16,6 +16,7 @@ package com.badlogic.gdx.graphics.g2d.tiled;
 import java.util.StringTokenizer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
@@ -38,8 +40,9 @@ public class TileMapRenderer implements Disposable {
 
 	private TileAtlas atlas;
 
-	private int mapHeightPixels;
+	private int mapHeightUnits, mapWidthUnits;
 	private int tileWidth, tileHeight;
+	private float unitsPerTileX, unitsPerTileY;
 	private int tilesPerBlockX, tilesPerBlockY;
 	private int[] allLayers;
 
@@ -48,7 +51,9 @@ public class TileMapRenderer implements Disposable {
 	/**
 	 * A renderer for static tile maps backed with a Sprite Cache.
 	 * 
-	 * This constructor is for convenience when loading TiledMaps.
+	 * This constructor is for convenience when loading TiledMaps. The normal Tiled coordinate system is used when placing tiles.
+	 * 
+	 * A default shader is used if OpenGL ES 2.0 is enabled.
 	 * 
 	 * The tilesPerBlockX and tilesPerBlockY parameters will need to be adjusted for best performance. Smaller values will cull
 	 * more precisely, but result in longer loading times. Larger values result in shorter loading times, but will cull less
@@ -60,36 +65,36 @@ public class TileMapRenderer implements Disposable {
 	 * @param tilesPerBlockY The height of each block to be drawn, in number of tiles
 	 */
 	public TileMapRenderer (TiledMap map, TileAtlas atlas, int tilesPerBlockX, int tilesPerBlockY) {
-		int[][][] tileMap = new int[map.layers.size()][][];
-		for (int i = 0; i < map.layers.size(); i++) {
-			tileMap[i] = map.layers.get(i).tiles;
-		}
-
-		for (int i = 0; i < map.tileSets.size(); i++) {
-			if (map.tileSets.get(i).tileHeight - map.tileHeight > overdrawY)
-				overdrawY = map.tileSets.get(i).tileHeight - map.tileHeight;
-			if (map.tileSets.get(i).tileWidth - map.tileWidth > overdrawX)
-				overdrawX = map.tileSets.get(i).tileWidth - map.tileWidth;
-		}
-		
-		String blendedTiles = map.properties.get("blended tiles");
-		IntArray blendedTilesArray; 
-		
-		if(blendedTiles != null){
-			blendedTilesArray = createFromCSV(blendedTiles);
-		}
-		else{
-			blendedTilesArray = new IntArray(0);
-		}
-		
-		init(tileMap, atlas, map.tileWidth, map.tileHeight, blendedTilesArray, tilesPerBlockX,
-			tilesPerBlockY, null);
+		this(map, atlas, tilesPerBlockX, tilesPerBlockY, map.tileWidth, map.tileHeight);
 	}
 
 	/**
 	 * A renderer for static tile maps backed with a Sprite Cache.
 	 * 
 	 * This constructor is for convenience when loading TiledMaps.
+	 * 
+	 * A default shader is used if OpenGL ES 2.0 is enabled.
+	 * 
+	 * The tilesPerBlockX and tilesPerBlockY parameters will need to be adjusted for best performance. Smaller values will cull
+	 * more precisely, but result in longer loading times. Larger values result in shorter loading times, but will cull less
+	 * precisely.
+	 * 
+	 * @param map A tile map's tile numbers, in the order [layer][row][column]
+	 * @param atlas The tile atlas to be used when drawing the map
+	 * @param tilesPerBlockX The width of each block to be drawn, in number of tiles
+	 * @param tilesPerBlockY The height of each block to be drawn, in number of tiles
+	 * @param unitsPerTileX The number of units per tile in the x direction
+	 * @param unitsPerTileY The number of units per tile in the y direction
+	 */
+	public TileMapRenderer (TiledMap map, TileAtlas atlas, int tilesPerBlockX, int tilesPerBlockY, float unitsPerTileX,
+		float unitsPerTileY) {
+		this(map, atlas, tilesPerBlockX, tilesPerBlockY, unitsPerTileX, unitsPerTileY, null);
+	}
+
+	/**
+	 * A renderer for static tile maps backed with a Sprite Cache.
+	 * 
+	 * This constructor is for convenience when loading TiledMaps. The normal Tiled coordinate system is used when placing tiles.
 	 * 
 	 * The tilesPerBlockX and tilesPerBlockY parameters will need to be adjusted for best performance. Smaller values will cull
 	 * more precisely, but result in longer loading times. Larger values result in shorter loading times, but will cull less
@@ -102,12 +107,33 @@ public class TileMapRenderer implements Disposable {
 	 * @param shader Shader to use for OpenGL ES 2.0, null uses a default shader. Ignored if using OpenGL ES 1.0.
 	 */
 	public TileMapRenderer (TiledMap map, TileAtlas atlas, int tilesPerBlockX, int tilesPerBlockY, ShaderProgram shader) {
+		this(map, atlas, tilesPerBlockX, tilesPerBlockY, map.tileWidth, map.tileHeight, shader);
+	}
+
+	public TileMapRenderer (TiledMap map, TileAtlas atlas, int tilesPerBlockX, int tilesPerBlockY, float unitsPerTileX,
+		float unitsPerTileY, ShaderProgram shader) {
 		int[][][] tileMap = new int[map.layers.size()][][];
 		for (int i = 0; i < map.layers.size(); i++) {
 			tileMap[i] = map.layers.get(i).tiles;
 		}
 
-		init(tileMap, atlas, map.tileWidth, map.tileHeight, createFromCSV(map.properties.get("blended tiles")), tilesPerBlockX,
+		for (int i = 0; i < map.tileSets.size(); i++) {
+			if (map.tileSets.get(i).tileHeight - map.tileHeight > overdrawY * unitsPerTileY)
+				overdrawY = (map.tileSets.get(i).tileHeight - map.tileHeight) / unitsPerTileY;
+			if (map.tileSets.get(i).tileWidth - map.tileWidth > overdrawX * unitsPerTileX)
+				overdrawX = (map.tileSets.get(i).tileWidth - map.tileWidth) / unitsPerTileX;
+		}
+
+		String blendedTiles = map.properties.get("blended tiles");
+		IntArray blendedTilesArray;
+
+		if (blendedTiles != null) {
+			blendedTilesArray = createFromCSV(blendedTiles);
+		} else {
+			blendedTilesArray = new IntArray(0);
+		}
+
+		init(tileMap, atlas, map.tileWidth, map.tileHeight, unitsPerTileX, unitsPerTileY, blendedTilesArray, tilesPerBlockX,
 			tilesPerBlockY, shader);
 	}
 
@@ -118,17 +144,21 @@ public class TileMapRenderer implements Disposable {
 	 * more precisely, but result in longer loading times. Larger values result in shorter loading times, but will cull less
 	 * precisely.
 	 * 
+	 * A default shader is used if OpenGL ES 2.0 is enabled.
+	 * 
 	 * @param map A tile map's tile numbers, in the order [layer][row][column]
 	 * @param atlas The tile atlas to be used when drawing the map
 	 * @param tileWidth The width of the tiles, in pixels
 	 * @param tileHeight The height of the tiles, in pixels
+	 * @param unitsPerTileX The number of units per tile in the x direction
+	 * @param unitsPerTileY The number of units per tile in the y direction
 	 * @param blendedTiles Array containing tile numbers that require blending
 	 * @param tilesPerBlockX The width of each block to be drawn, in number of tiles
 	 * @param tilesPerBlockY The height of each block to be drawn, in number of tiles
 	 */
-	public TileMapRenderer (int[][][] map, TileAtlas atlas, int tileWidth, int tileHeight, IntArray blendedTiles,
-		int tilesPerBlockX, int tilesPerBlockY) {
-		init(map, atlas, tileWidth, tileHeight, blendedTiles, tilesPerBlockX, tilesPerBlockY, null);
+	public TileMapRenderer (int[][][] map, TileAtlas atlas, int tileWidth, int tileHeight, float unitsPerTileX,
+		float unitsPerTileY, IntArray blendedTiles, int tilesPerBlockX, int tilesPerBlockY) {
+		init(map, atlas, tileWidth, tileHeight, unitsPerTileX, unitsPerTileY, blendedTiles, tilesPerBlockX, tilesPerBlockY, null);
 	}
 
 	/**
@@ -142,47 +172,53 @@ public class TileMapRenderer implements Disposable {
 	 * @param atlas The tile atlas to be used when drawing the map
 	 * @param tileWidth The width of the tiles, in pixels
 	 * @param tileHeight The height of the tiles, in pixels
+	 * @param unitsPerTileX The number of units per tile in the x direction
+	 * @param unitsPerTileY The number of units per tile in the y direction
 	 * @param blendedTiles Array containing tile numbers that require blending
 	 * @param tilesPerBlockX The width of each block to be drawn, in number of tiles
 	 * @param tilesPerBlockY The height of each block to be drawn, in number of tiles
 	 * @param shader Shader to use for OpenGL ES 2.0, null uses a default shader. Ignored if using OpenGL ES 1.0.
 	 */
-	public TileMapRenderer (int[][][] map, TileAtlas atlas, int tileWidth, int tileHeight, IntArray blendedTiles,
-		int tilesPerBlockX, int tilesPerBlockY, ShaderProgram shader) {
-		init(map, atlas, tileWidth, tileHeight, blendedTiles, tilesPerBlockX, tilesPerBlockY, shader);
+	public TileMapRenderer (int[][][] map, TileAtlas atlas, int tileWidth, int tileHeight, float unitsPerTileX,
+		float unitsPerTileY, IntArray blendedTiles, int tilesPerBlockX, int tilesPerBlockY, ShaderProgram shader) {
+		init(map, atlas, tileWidth, tileHeight, unitsPerTileX, unitsPerTileY, blendedTiles, tilesPerBlockX, tilesPerBlockY, shader);
 	}
 
 	/**
 	 * Initializer, used to avoid a "Constructor call must be the first statement in a constructor" syntax error when creating a
 	 * map from a TiledMap
 	 * */
-	private void init (int[][][] map, TileAtlas atlas, int tileWidth, int tileHeight, IntArray blendedTiles, int tilesPerBlockX,
-		int tilesPerBlockY, ShaderProgram shader) {
+	private void init (int[][][] map, TileAtlas atlas, int tileWidth, int tileHeight, float unitsPerTileX, float unitsPerTileY,
+		IntArray blendedTiles, int tilesPerBlockX, int tilesPerBlockY, ShaderProgram shader) {
 		this.atlas = atlas;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
+		this.unitsPerTileX = unitsPerTileX;
+		this.unitsPerTileY = unitsPerTileY;
+
 		this.blendedTiles = blendedTiles;
 		this.tilesPerBlockX = tilesPerBlockX;
 		this.tilesPerBlockY = tilesPerBlockY;
 
 		int layer, row, col;
-		
+
 		allLayers = new int[map.length];
-		
-		// Calculate maximum cache size and map height in pixels
-		// Fill allLayers array
+
+		// Calculate maximum cache size and map height in pixels, fill allLayers array
 		int maxCacheSize = 0;
 		int maxHeight = 0;
+		int maxWidth = 0;
 		for (layer = 0; layer < map.length; layer++) {
 			allLayers[layer] = layer;
 			if (map[layer].length > maxHeight) maxHeight = map[layer].length;
 			for (row = 0; row < map[layer].length; row++) {
-				for(col = 0; col < map[layer][row].length; col++)
-					if(map[layer][row][col] != 0)
-						maxCacheSize ++;
+				if (map[layer][row].length > maxWidth) maxWidth = map[layer][row].length;
+				for (col = 0; col < map[layer][row].length; col++)
+					if (map[layer][row][col] != 0) maxCacheSize++;
 			}
 		}
-		mapHeightPixels = maxHeight * tileHeight;
+		mapHeightUnits = (int)(maxHeight * unitsPerTileY);
+		mapWidthUnits = (int)(maxWidth * unitsPerTileX);
 
 		if (shader == null)
 			cache = new SpriteCache(maxCacheSize, false);
@@ -224,10 +260,10 @@ public class TileMapRenderer implements Disposable {
 				if (tile != 0) {
 					if (blended == blendedTiles.contains(tile)) {
 						region = atlas.getRegion(tile);
-						if(region != null){
-							y = (layer.length - row) * tileHeight - (region.packedHeight + region.offsetY);
-							x = col * tileWidth + region.offsetX;
-							cache.add(region, x, y);
+						if (region != null) {
+							y = ((layer.length - row) - (region.packedHeight + region.offsetY) / tileHeight) * unitsPerTileY;// + unitsPerTileY*layer.length;
+							x = (col + region.offsetX / tileWidth) * unitsPerTileX;
+							cache.add(region, x, y, unitsPerTileX, unitsPerTileY);
 						}
 					}
 				}
@@ -242,50 +278,72 @@ public class TileMapRenderer implements Disposable {
 	 * the first layer and the first row's size.
 	 */
 	public void render () {
-		render(0, 0, getLayerWidthInBlocks(0, 0) * tilesPerBlockX * tileWidth, getLayerHeightInBlocks(0) * tilesPerBlockX
-			* tileHeight);
+		render(0, 0, (int)(getLayerWidthInBlocks(0, 0) * tilesPerBlockX * unitsPerTileX), (int)(getLayerHeightInBlocks(0)
+			* tilesPerBlockX * unitsPerTileY));
 	}
 
 	/**
-	 * Renders all layers between the given Tiled world coordinates. This is the same as calling
+	 * Renders all layers between the given bounding box in map units. This is the same as calling
 	 * {@link TileMapRenderer#render(float, float, int, int, int[])} with all layers in the layers list.
 	 */
-	public void render (float x, float y, int width, int height) {
+	public void render (float x, float y, float width, float height) {
 		render(x, y, width, height, allLayers);
 	}
 
 	/**
-	 * Sets the amount of overdraw in the X direction. Use this if an actual tile width is greater than the tileSize.x specified in
-	 * the constructor. Use the value actual_tile_width - tileSize.x (from the constructor).
+	 * Renders specific layers between the given a camera. The x and y coordinates of the camera 
+	 * @param cam The camera to use
 	 */
-	public int overdrawX;
+	public void render (Camera cam) {
+		render(cam, allLayers);
+	}
+
+	Vector3 tmp = new Vector3();
+	/**
+	 * Renders specific layers between the given a camera.
+	 * @param cam The camera to use
+	 * @param layers The list of layers to draw, 0 being the lowest layer. You will get an IndexOutOfBoundsException if a layer
+	 *           number is too high.
+	 */
+	public void render (Camera cam, int[] layers) {
+		getProjectionMatrix().set(cam.combined);
+		tmp.set(0, 0, 0);
+		cam.unproject(tmp);
+		render(tmp.x, tmp.y, cam.viewportWidth, cam.viewportHeight, layers);
+	}
 
 	/**
-	 * Sets the amount of overdraw in the Y direction. Use this if an actual tile height is greater than the tileSize.y specified
-	 * in the constructor. Use the value actual_tile_height - tileSize.y (from the constructor).
+	 * Sets the amount of overdraw in the X direction (in units). Use this if an actual tile width is greater than the tileWidth
+	 * specified in the constructor. Use the value actual_tile_width - tileWidth (from the constructor).
 	 */
-	public int overdrawY;
+	public float overdrawX;
+
+	/**
+	 * Sets the amount of overdraw in the Y direction (in units). Use this if an actual tile height is greater than the tileHeight
+	 * specified in the constructor. Use the value actual_tile_height - tileHeight (from the constructor).
+	 */
+	public float overdrawY;
 
 	private int initialRow, initialCol, currentRow, currentCol, lastRow, lastCol, currentLayer;
 
 	/**
-	 * Renders specific layers between the given Tiled world coordinates.
-	 * @param x The x coordinate to start drawing (in pixels)
-	 * @param y the y coordinate to start drawing (in pixels)
-	 * @param width the width of the tiles to draw (in pixels)
-	 * @param height the width of the tiles to draw (in pixels)
+	 * Renders specific layers between the given bounding box in map units.
+	 * @param x The x coordinate to start drawing
+	 * @param y the y coordinate to start drawing
+	 * @param width the width of the tiles to draw
+	 * @param height the width of the tiles to draw
 	 * @param layers The list of layers to draw, 0 being the lowest layer. You will get an IndexOutOfBoundsException if a layer
 	 *           number is too high.
 	 */
-	public void render (float x, float y, int width, int height, int[] layers) {
-		lastRow = (int)((mapHeightPixels - (y - height + overdrawY)) / (tilesPerBlockY * tileHeight));
-		initialRow = (int)((mapHeightPixels - (y - overdrawY))/(tilesPerBlockY * tileHeight));
+	public void render (float x, float y, float width, float height, int[] layers) {
+		lastRow = (int)((mapHeightUnits - (y - height + overdrawY)) / (tilesPerBlockY * unitsPerTileY));
+		initialRow = (int)((mapHeightUnits - (y - overdrawY)) / (tilesPerBlockY * unitsPerTileY));
 		initialRow = (initialRow > 0) ? initialRow : 0; // Clamp initial Row > 0
-		
-		initialCol = (int)((x - overdrawX) / (tilesPerBlockX * tileWidth));
+
+		initialCol = (int)((x - overdrawX) / (tilesPerBlockX * unitsPerTileX));
 		initialCol = (initialCol > 0) ? initialCol : 0; // Clamp initial Col > 0
-		lastCol = (int)((x + width + overdrawX) / (tilesPerBlockX * tileWidth));
-				
+		lastCol = (int)((x + width + overdrawX) / (tilesPerBlockX * unitsPerTileX));
+
 		Gdx.gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		cache.begin();
@@ -325,19 +383,19 @@ public class TileMapRenderer implements Disposable {
 	}
 
 	/**
-	 * Computes the Tiled Map row given a Y coordinate in pixels
-	 * @param worldY the Y coordinate in pixels
+	 * Computes the Tiled Map row given a Y coordinate in units
+	 * @param worldY the Y coordinate in units
 	 * */
 	public int getRow (int worldY) {
-		return worldY / tileHeight;
+		return (int)(worldY / unitsPerTileY);
 	}
 
 	/**
-	 * Computes the Tiled Map column given an X coordinate in pixels
-	 * @param worldX the X coordinate in pixels
+	 * Computes the Tiled Map column given an X coordinate in units
+	 * @param worldX the X coordinate in units
 	 * */
 	public int getCol (int worldX) {
-		return worldX / tileWidth;
+		return (int)(worldX / unitsPerTileX);
 	}
 
 	/**
@@ -370,6 +428,22 @@ public class TileMapRenderer implements Disposable {
 	 * */
 	public int getLastCol () {
 		return lastCol;
+	}
+
+	public float getUnitsPerTileX () {
+		return unitsPerTileX;
+	}
+
+	public float getUnitsPerTileY () {
+		return unitsPerTileY;
+	}
+
+	public int getMapHeightUnits () {
+		return mapHeightUnits;
+	}
+
+	public int getMapWidthUnits () {
+		return mapWidthUnits;
 	}
 
 	private static int parseIntWithDefault (String string, int defaultValue) {

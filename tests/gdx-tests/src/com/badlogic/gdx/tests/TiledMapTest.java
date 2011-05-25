@@ -44,9 +44,6 @@ public class TiledMapTest extends GdxTest {
 
 	private static final boolean automove = false;
 
-	private static final int SCREEN_WIDTH = 480;
-	private static final int SCREEN_HEIGHT = 320;
-
 	private static final int[] layersList = {2,3};
 
 	SpriteBatch spriteBatch;
@@ -66,17 +63,13 @@ public class TiledMapTest extends GdxTest {
 
 	@Override public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		cam.update();
-
+		
 		if (automove) {
 			updateCameraPosition();
 		}
-
-		tileMapRenderer.getProjectionMatrix().set(cam.combined);
-		tmp.set(0, 0, 0);
-		cam.unproject(tmp);
-
-		tileMapRenderer.render(tmp.x, tmp.y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());//, layersList);
+		
+		cam.update();
+		tileMapRenderer.render(cam);//, layersList);
 
 		spriteBatch.begin();
 		font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
@@ -84,7 +77,10 @@ public class TiledMapTest extends GdxTest {
 			40);
 		font.draw(spriteBatch, "InitialRow, LastRow: " + tileMapRenderer.getInitialRow() + "," + tileMapRenderer.getLastRow(), 20,
 			60);
-		font.draw(spriteBatch, "Location: " + (int)tmp.x + "," + (map.height * map.tileHeight - (int)tmp.y), 20, 80);
+		
+		tmp.set(0, 0, 0);
+		cam.unproject(tmp);
+		font.draw(spriteBatch, "Location: " + (int)tmp.x + "," + (int)(tileMapRenderer.getMapHeightUnits() - tmp.y), 20, 80);
 		spriteBatch.end();
 	}
 
@@ -135,7 +131,7 @@ public class TiledMapTest extends GdxTest {
 
 		startTime = System.currentTimeMillis();
 
-		tileMapRenderer = new TileMapRenderer(map, atlas, blockWidth, blockHeight);
+		tileMapRenderer = new TileMapRenderer(map, atlas, blockWidth, blockHeight, 5, 5);
 		endTime = System.currentTimeMillis();
 		System.out.println("Created cache in " + (endTime - startTime) + "mS");
 
@@ -147,8 +143,8 @@ public class TiledMapTest extends GdxTest {
 			}
 		}
 
-		cam = new OrthographicCamera(SCREEN_WIDTH, SCREEN_HEIGHT);
-		cam.position.set(map.width * map.tileWidth / 2, map.height * map.tileHeight / 2, 0);
+		cam = new OrthographicCamera(100, 100);
+		cam.position.set(tileMapRenderer.getMapWidthUnits()/2, tileMapRenderer.getMapHeightUnits() / 2, 0);
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 

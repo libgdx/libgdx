@@ -162,7 +162,7 @@ public class TiledMapPacker {
 	}
 
 	private static File getRelativeFile (File path, String relativePath) {
-		if (relativePath.trim().isEmpty()) return path;
+		if (relativePath.trim().length() == 0) return path;
 
 		File child = path;
 
@@ -321,8 +321,8 @@ public class TiledMapPacker {
 	 * @param args args[0]: the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx
 	 *           file). args[1]: The output directory for the tmx files, should be empty before running. WARNING: Use caution if
 	 *           you have a "../" in the path of your tile sets! The output for these tile sets will be relative to the output
-	 *           directory. For example, if your output directory is "C:\mydir\maps" and you have a tileset with the path
-	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
+	 *           directory. For example, if your output directory is "C:\mydir\output" and you have a tileset with the path
+	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\output".
 	 */
 	public static void main (String[] args) {
 		File tmxFile, inputDir, outputDir;
