@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3DTLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
@@ -26,6 +27,9 @@ public class KeyframedModelViewer implements ApplicationListener {
 	float angle = 0;
 	String fileName;
 	String textureFileName;
+	KeyframedAnimation anim;
+	int frame = 0;
+	long lastTick = System.nanoTime();
 	
 	public KeyframedModelViewer(String fileName, String textureFileName) {
 		this.fileName = fileName;
@@ -38,7 +42,8 @@ public class KeyframedModelViewer implements ApplicationListener {
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
 		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
-		model.setMaterial(material);		
+		model.setMaterial(material);
+		anim = (KeyframedAnimation)model.getAnimations()[0];
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
@@ -91,7 +96,14 @@ public class KeyframedModelViewer implements ApplicationListener {
 		}
 		
 		angle += 45 * Gdx.graphics.getDeltaTime();
-		Gdx.gl10.glRotatef(angle, 0, 1, 0);
+//		Gdx.gl10.glRotatef(angle, 0, 1, 0);
+		
+		if(System.nanoTime() - lastTick > 30000000) {
+			frame++;
+			if(frame >= anim.keyframes.length) frame = 0;
+			lastTick = System.nanoTime();
+		}		
+		model.setAnimation(anim.name, frame);
 		model.render();
 		
 		if(texture != null) {
@@ -134,10 +146,10 @@ public class KeyframedModelViewer implements ApplicationListener {
 	}	
 	
 	public static void main(String[] argv) {
-		if(argv.length != 1 && argv.length != 2) {
-			System.out.println("StillModelViewer <filename> ?<texture-filename>");
-			System.exit(-1);
-		}
-		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", argv.length==2?argv[1]:null), "KeframedModel Viewer", 320, 240, false);
+//		if(argv.length != 1 && argv.length != 2) {
+//			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
+//			System.exit(-1);
+//		}
+		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", "data/boy_lowpoly_color.png"), "KeframedModel Viewer", 320, 240, false);
 	}
 }

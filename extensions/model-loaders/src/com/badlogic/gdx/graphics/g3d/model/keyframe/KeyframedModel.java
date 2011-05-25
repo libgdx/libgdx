@@ -64,7 +64,7 @@ public class KeyframedModel implements AnimatedModel {
 			KeyframedAnimation anim = subMesh.animations.get(animation);
 			if(anim == null) throw new IllegalArgumentException("No animation with name '" + animation + "' in submesh #" + i);
 			// FIXME actually select frames and blend...
-			Keyframe keyframe = anim.keyframes[9];					
+			Keyframe keyframe = anim.keyframes[(int)time];					
 			
 			float[] src = keyframe.vertices;
 			int numComponents = keyframe.animatedComponents;
