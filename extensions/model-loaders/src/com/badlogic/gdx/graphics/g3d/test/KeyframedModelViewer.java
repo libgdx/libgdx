@@ -138,6 +138,6 @@ public class KeyframedModelViewer implements ApplicationListener {
 			System.out.println("StillModelViewer <filename> ?<texture-filename>");
 			System.exit(-1);
 		}
-		new JoglApplication(new KeyframedModelViewer(argv[0], argv.length==2?argv[1]:null), "KeframedModel Viewer", 320, 240, false);
+		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", argv.length==2?argv[1]:null), "KeframedModel Viewer", 320, 240, false);
 	}
 }

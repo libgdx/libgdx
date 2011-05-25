@@ -147,7 +147,6 @@ public class G3DTLoader {
 			}
 			idxUv+=2;
 		}
-		
 		return vertices;
 	}
 	
