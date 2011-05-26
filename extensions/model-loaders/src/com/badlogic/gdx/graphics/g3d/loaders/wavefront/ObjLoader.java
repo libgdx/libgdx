@@ -37,18 +37,19 @@ import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
  * 
  */
 public class ObjLoader {
-	
+
 	ArrayList<Float> verts;
 	ArrayList<Float> norms;
 	ArrayList<Float> uvs;
 	ArrayList<Group> groups;
-	
+
 	public ObjLoader() {
 		verts = new ArrayList<Float>(300);
 		norms = new ArrayList<Float>(300);
 		uvs = new ArrayList<Float>(200);
 		groups = new ArrayList<Group>(10);
 	}
+
 	/**
 	 * Loads a Wavefront OBJ file from a given file handle.
 	 * 
@@ -74,12 +75,12 @@ public class ObjLoader {
 		String line;
 		String[] tokens;
 		char firstChar;
-		
+
 		// Create a "default" Group and set it as the active group, in case
 		// there are no groups or objects defined in the OBJ file.
 		Group activeGroup = new Group("default");
 		groups.add(activeGroup);
-		
+
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				file.read()), 4096);
 		try {
@@ -89,11 +90,9 @@ public class ObjLoader {
 
 				if (tokens[0].length() == 0) {
 					continue;
-				} 
-				else if ((firstChar = tokens[0].toLowerCase().charAt(0)) == '#') {
+				} else if ((firstChar = tokens[0].toLowerCase().charAt(0)) == '#') {
 					continue;
-				} 
-				else if (firstChar == 'v') {
+				} else if (firstChar == 'v') {
 					if (tokens[0].length() == 1) {
 						verts.add(Float.parseFloat(tokens[1]));
 						verts.add(Float.parseFloat(tokens[2]));
@@ -107,62 +106,69 @@ public class ObjLoader {
 						uvs.add((flipV ? 1 - Float.parseFloat(tokens[2])
 								: Float.parseFloat(tokens[2])));
 					}
-				} 
-				else if (firstChar == 'f') {
+				} else if (firstChar == 'f') {
 					String[] parts;
 					ArrayList<Integer> faces = activeGroup.faces;
-					for (int i=1; i < tokens.length - 2; i--) {
+					for (int i = 1; i < tokens.length - 2; i--) {
 						parts = tokens[1].split("/");
 						faces.add(getIndex(parts[0], verts.size()));
 						if (parts.length > 2) {
-							if (i==1) activeGroup.hasNorms = true;
+							if (i == 1)
+								activeGroup.hasNorms = true;
 							faces.add(getIndex(parts[2], norms.size()));
 						}
 						if (parts.length > 1 && parts[1].length() > 0) {
-							if (i==1) activeGroup.hasUVs = true;
-							faces.add(getIndex(parts[1], uvs.size()));	
+							if (i == 1)
+								activeGroup.hasUVs = true;
+							faces.add(getIndex(parts[1], uvs.size()));
 						}
 						parts = tokens[++i].split("/");
 						faces.add(getIndex(parts[0], verts.size()));
-						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
-						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));
+						if (parts.length > 2)
+							faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0)
+							faces.add(getIndex(parts[1], uvs.size()));
 						parts = tokens[++i].split("/");
 						faces.add(getIndex(parts[0], verts.size()));
-						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size()));
-						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size()));
+						if (parts.length > 2)
+							faces.add(getIndex(parts[2], norms.size()));
+						if (parts.length > 1 && parts[1].length() > 0)
+							faces.add(getIndex(parts[1], uvs.size()));
 						activeGroup.numFaces++;
 					}
-				} 
-				else if (firstChar == 'o' || firstChar == 'g') {
+				} else if (firstChar == 'o' || firstChar == 'g') {
 					// This implementation only supports single object or group
 					// definitions. i.e. "o group_a group_b" will set group_a
-					// as the active group, while group_b will simply be ignored.
-					if (tokens.length > 1) activeGroup = setActiveGroup(tokens[1]);
-					else activeGroup = setActiveGroup("default");
+					// as the active group, while group_b will simply be
+					// ignored.
+					if (tokens.length > 1)
+						activeGroup = setActiveGroup(tokens[1]);
+					else
+						activeGroup = setActiveGroup("default");
 				}
 			}
 			reader.close();
 		} catch (IOException e) {
 			return null;
 		}
-		
+
 		// If the "default" group or any others were not used, get rid of them
-		for (int i=0; i<groups.size(); i++) {
+		for (int i = 0; i < groups.size(); i++) {
 			if (groups.get(i).numFaces < 1) {
 				groups.remove(i);
 				i--;
 			}
 		}
-		
+
 		// If there are no groups left, there is no valid Model to return
-		if (groups.size() < 1) return null;	
+		if (groups.size() < 1)
+			return null;
 
 		// Get number of objects/groups remaining after removing empty ones
 		final int numGroups = groups.size();
-		
-		final StillModel model = new StillModel();	
-		model.subMeshes = new StillSubMesh[numGroups];
-		
+
+		final StillModel model = new StillModel(new StillSubMesh[numGroups]);
+
 		for (int g = 0; g < numGroups; g++) {
 			Group group = groups.get(g);
 			ArrayList<Integer> faces = group.faces;
@@ -171,7 +177,8 @@ public class ObjLoader {
 			boolean hasNorms = group.hasNorms;
 			boolean hasUVs = group.hasUVs;
 
-			float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
+			float[] finalVerts = new float[(numFaces * 3)
+					* (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
 
 			for (int i = 0, vi = 0; i < numElements;) {
 				int vertIndex = faces.get(i++) * 3;
@@ -190,53 +197,58 @@ public class ObjLoader {
 					finalVerts[vi++] = uvs.get(uvIndex);
 				}
 			}
-			
+
 			final Mesh mesh;
-			
+
 			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
-			attributes.add(new VertexAttribute(Usage.Position, 3, "a_Position"));
+			attributes
+					.add(new VertexAttribute(Usage.Position, 3, "a_Position"));
 			if (hasNorms)
-				attributes.add(new VertexAttribute(Usage.Normal, 3, "a_Normal"));
+				attributes
+						.add(new VertexAttribute(Usage.Normal, 3, "a_Normal"));
 			if (hasUVs)
-				attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, "a_TexCoord"));
+				attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2,
+						"a_TexCoord"));
 
 			mesh = new Mesh(true, numFaces * 3, 0,
 					attributes.toArray(new VertexAttribute[attributes.size()]));
 			mesh.setVertices(finalVerts);
-			
-			StillSubMesh subMesh = new StillSubMesh();
-			subMesh.name = group.name;
-			subMesh.primitiveType = GL10.GL_TRIANGLES;
+
+			StillSubMesh subMesh = new StillSubMesh(group.name, mesh,
+					GL10.GL_TRIANGLES);
 			subMesh.material = new Material("default");
-			subMesh.mesh = mesh;
 			model.subMeshes[g] = subMesh;
-		
+
 		}
-		
+
 		// An instance of ObjLoader can be used to load more than one OBJ.
 		// Clearing the ArrayList cache instead of instantiating new
 		// ArrayLists should result in slightly faster load times for
 		// subsequent calls to loadObj
-		if (verts.size() > 0) verts.clear();
-		if (norms.size() > 0) norms.clear();
-		if (uvs.size() > 0) uvs.clear();
-		if (groups.size() > 0) groups.clear();
-		
+		if (verts.size() > 0)
+			verts.clear();
+		if (norms.size() > 0)
+			norms.clear();
+		if (uvs.size() > 0)
+			uvs.clear();
+		if (groups.size() > 0)
+			groups.clear();
+
 		return model;
 	}
-	
+
 	private Group setActiveGroup(String name) {
 		// TODO: Check if a HashMap.get calls are faster than iterating
 		// through an ArrayList
 		for (Group group : groups) {
-			if (group.name.equals(name)) 
+			if (group.name.equals(name))
 				return group;
-		} 
+		}
 		Group group = new Group(name);
 		groups.add(group);
 		return group;
 	}
-	
+
 	private int getIndex(String index, int size) {
 		if (index == null || index.length() == 0)
 			return 0;
@@ -246,7 +258,7 @@ public class ObjLoader {
 		else
 			return idx - 1;
 	}
-	
+
 	private class Group {
 		final String name;
 		ArrayList<Integer> faces;
@@ -254,6 +266,7 @@ public class ObjLoader {
 		boolean hasNorms;
 		boolean hasUVs;
 		Material mat;
+
 		Group(String name) {
 			this.name = name;
 			this.faces = new ArrayList<Integer>(200);
