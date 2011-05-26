@@ -28,7 +28,7 @@ public class SkeletonModel implements AnimatedModel {
 		}
 	}
 	
-	@Override public void setAnimation(String animation, float time) {
+	@Override public void setAnimation(String animation, float time, boolean loop) {
 		skeleton.setAnimation(animation, time);
 		for(int i = 0; i < subMeshes.length; i++) {
 			skin(subMeshes[i], skeleton.combinedMatrices);

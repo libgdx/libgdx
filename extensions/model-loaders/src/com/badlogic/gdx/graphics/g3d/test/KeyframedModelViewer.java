@@ -21,6 +21,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	PerspectiveCamera cam;
 	KeyframedModel model;
 	KeyframedModel modelHigh;
+	KeyframedModel modelLow;
 	Texture texture = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
@@ -40,11 +41,13 @@ public class KeyframedModelViewer implements ApplicationListener {
 		if(fileName.endsWith(".g3dt")) model = G3DTLoader.loadKeyframedModel(Gdx.files.internal(fileName));
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
 		modelHigh = G3DTLoader.loadKeyframedModel(Gdx.files.internal("data/boy.g3dt"));			
+		modelLow = G3DTLoader.loadKeyframedModel(Gdx.files.internal("data/boy_low2.g3dt"));
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
 		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
 		model.setMaterial(material);
 		modelHigh.setMaterial(material);
+		modelLow.setMaterial(material);
 		anim = (KeyframedAnimation)model.getAnimations()[0];		
 		
 		model.getBoundingBox(bounds);
@@ -100,15 +103,19 @@ public class KeyframedModelViewer implements ApplicationListener {
 		angle += 45 * Gdx.graphics.getDeltaTime();
 //		Gdx.gl10.glRotatef(angle, 0, 1, 0);		
 		animTime += Gdx.graphics.getDeltaTime();
-		if(animTime > anim.totalDuration) {
+		if(animTime > anim.totalDuration - anim.frameDuration) {
 			animTime = 0;
 		}
-		model.setAnimation(anim.name, animTime);
+		model.setAnimation(anim.name, animTime, true);
 		model.render();
 		
 		Gdx.gl10.glTranslatef(0, 0, 7);
-		modelHigh.setAnimation(anim.name, animTime);
+		modelHigh.setAnimation(anim.name, animTime, true);
 		modelHigh.render();
+		
+		Gdx.gl10.glTranslatef(0, 0, 7);
+		modelLow.setAnimation(anim.name, animTime, true);
+		modelLow.render();
 		
 		if(texture != null) {
 			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);

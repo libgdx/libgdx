@@ -50,7 +50,7 @@ public class G3DTLoader {
 				subMeshes[i] = readMesh(in);
 			}
 			KeyframedModel model = new KeyframedModel(subMeshes);			
-			model.setAnimation(model.getAnimations()[0].name, 0);
+			model.setAnimation(model.getAnimations()[0].name, 0, false);
 			return model;
 		} catch(Throwable e) {
 			throw new GdxRuntimeException("Couldn't read keyframed model, error in line " + lineNum + ", '" + line + "' : " + e.getMessage(), e);

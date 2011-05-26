@@ -87,7 +87,7 @@ public class KeyframedModel implements AnimatedModel {
 		return subMeshes;
 	}
 
-	@Override public void setAnimation (String animation, float time) {
+	@Override public void setAnimation (String animation, float time, boolean loop) {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
 			final KeyframedSubMesh subMesh = subMeshes[i];
@@ -96,7 +96,7 @@ public class KeyframedModel implements AnimatedModel {
 			
 			final int startIndex = (int)Math.floor((time / anim.frameDuration));
 			final Keyframe startFrame = anim.keyframes[startIndex];
-			final Keyframe endFrame = anim.keyframes[anim.keyframes.length-1==startIndex?startIndex:startIndex + 1];			
+			final Keyframe endFrame = anim.keyframes[anim.keyframes.length-1==startIndex?loop?0:startIndex:startIndex + 1];			
 			
 			final int numComponents = startFrame.animatedComponents;
 			final float[] src = startFrame.vertices;				

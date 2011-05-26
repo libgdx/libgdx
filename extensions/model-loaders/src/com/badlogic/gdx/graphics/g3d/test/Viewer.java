@@ -90,7 +90,7 @@ public class Viewer implements ApplicationListener {
 //			Gdx.gl10.glPushMatrix();
 //			Gdx.gl10.glTranslatef(0, 0, i *  -50);
 //			Gdx.gl10.glRotatef(angle, 0, 1, 0);			
-			model.setAnimation(animation, time);					
+			model.setAnimation(animation, time, true);					
 			model.render();					
 			
 //			Gdx.gl10.glPopMatrix();

@@ -129,7 +129,7 @@ public class MD2Loader {
 		animations.put("all", animation);
 		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, null /** FIXME **/, animations, GL10.GL_TRIANGLES);	
 		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});		
-		model.setAnimation("all", 0);
+		model.setAnimation("all", 0, false);
 		return model;
 	}
 
