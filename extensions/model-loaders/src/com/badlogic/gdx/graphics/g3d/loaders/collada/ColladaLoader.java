@@ -41,8 +41,7 @@ public class ColladaLoader {
 			System.out.println(mesh.mesh.getNumVertices());
 		}
 		// create StillModel
-		StillModel model = new StillModel();
-		model.subMeshes = meshes;			
+		StillModel model = new StillModel(meshes);		
 		return model;
 	}
 	
@@ -72,11 +71,8 @@ public class ColladaLoader {
 	private static StillSubMesh[] createMeshes(Array<Geometry> geos) {
 		StillSubMesh[] meshes = new StillSubMesh[geos.size];
 		for(int i = 0; i < geos.size; i++) {			
-			StillSubMesh subMesh = new StillSubMesh();
-			subMesh.name = geos.get(i).id;
-			subMesh.material = new Material("Null Material");
-			subMesh.primitiveType = GL10.GL_TRIANGLES;
-			subMesh.mesh = geos.get(i).getMesh();
+			StillSubMesh subMesh = new StillSubMesh(geos.get(i).id, geos.get(i).getMesh(), GL10.GL_TRIANGLES);			
+			subMesh.material = new Material("Null Material");			
 			meshes[i] = subMesh;
 		}
 		return meshes;		
