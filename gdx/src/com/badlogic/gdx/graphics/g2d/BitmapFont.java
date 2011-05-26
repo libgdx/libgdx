@@ -221,6 +221,13 @@ public class BitmapFont implements Disposable {
 			}
 
 			Glyph g = getGlyph(' ');
+			if (g == null) {
+				g = new Glyph();
+				g.xadvance = getGlyph('l').xadvance;
+				Glyph[] page = glyphs[' ' / PAGE_SIZE];
+				if (page == null) glyphs[' ' / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
+				page[' ' & PAGE_SIZE - 1] = g;
+			}
 			spaceWidth = g != null ? g.xadvance + g.width : 1;
 
 			g = getGlyph('x');
@@ -596,7 +603,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	public void setColor (float r, float g, float b, float a) {
-		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);		
+		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
 		color = Float.intBitsToFloat((intBits & 0xfeffffff));
 	}
 
@@ -756,13 +763,13 @@ public class BitmapFont implements Disposable {
 		public float width;
 		public float height;
 
-		public TextBounds() {			
+		public TextBounds () {
 		}
-		
-		public TextBounds(TextBounds bounds) {
+
+		public TextBounds (TextBounds bounds) {
 			set(bounds);
 		}
-		
+
 		public void set (TextBounds bounds) {
 			width = bounds.width;
 			height = bounds.height;
