@@ -73,6 +73,7 @@ public class TiledLoader extends DefaultHandler {
 				Stack<String> currentBranch = new Stack<String>();
 
 				int firstgid, tileWidth, tileHeight, margin, spacing;
+				String tileSetName;
 				String encoding, dataString, compression;
 				byte[] data;
 
@@ -91,7 +92,6 @@ public class TiledLoader extends DefaultHandler {
 							String layerName = attr.getValue("name");
 							int layerWidth = Integer.parseInt(attr.getValue("width"));
 							int layerHeight = Integer.parseInt(attr.getValue("height"));
-
 							currentLayer = new TiledLayer(layerName, layerWidth, layerHeight);
 							return;
 						}
@@ -108,6 +108,7 @@ public class TiledLoader extends DefaultHandler {
 							firstgid = Integer.parseInt(attr.getValue("firstgid"));
 							tileWidth = Integer.parseInt(attr.getValue("tilewidth"));
 							tileHeight = Integer.parseInt(attr.getValue("tileheight"));
+							tileSetName = attr.getValue("name");
 							spacing = parseIntWithDefault(attr.getValue("spacing"), 0);
 							margin = parseIntWithDefault(attr.getValue("margin"), 0);
 							return;
@@ -136,6 +137,7 @@ public class TiledLoader extends DefaultHandler {
 						if ("image".equals(qName) | "image".equals(name)) {
 							currentTileSet = new TileSet();
 							currentTileSet.imageName = attr.getValue("source");
+							currentTileSet.name = tileSetName;
 							currentTileSet.tileWidth = tileWidth;
 							currentTileSet.tileHeight = tileHeight;
 							currentTileSet.firstgid = firstgid;
