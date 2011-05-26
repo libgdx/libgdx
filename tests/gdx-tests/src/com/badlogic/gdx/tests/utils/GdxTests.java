@@ -31,6 +31,7 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.tests.ActionSequenceTest;
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.AnimationTest;
@@ -139,6 +140,7 @@ public class GdxTests
 		Gdx2DTest.class,
 		AnimationTest.class,
 		ActionTest.class,
+		ActionSequenceTest.class,
 		AlphaTest.class,	
 		AtlasIssueTest.class,		
 		FilterPerformanceTest.class,
