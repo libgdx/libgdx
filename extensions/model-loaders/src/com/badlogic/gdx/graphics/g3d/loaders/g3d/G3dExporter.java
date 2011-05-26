@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.loaders.g3d;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -29,6 +30,8 @@ public class G3dExporter {
 	//private static final short KEYFRAMED_MODEL =		0x2000;
 	
 	public boolean export(StillModel model, FileHandle file) {		
+		long nanos = System.nanoTime();
+		
 		// Create root chunk; everything else is contained within this chunk
 		// uID is set to 0 since the root chunk has a special, non-integer uID
 		Chunk g3dRoot = new Chunk((short) 0x0000);
@@ -85,6 +88,8 @@ public class G3dExporter {
 		DataOutputStream out = new DataOutputStream(new BufferedOutputStream(file.write(false)));
 	    writeChunk(g3dRoot, out);
 
+	    nanos = System.nanoTime() - nanos;
+	    System.out.println("Export took " + (nanos / 1000000) + " ms");
 		return true;
 	}
 	
@@ -92,13 +97,9 @@ public class G3dExporter {
 		try {
 			if (chunk.parent == null) out.writeInt(G3D_HEADER);
 			else out.writeShort(chunk.uID);
-			
 			out.writeInt(chunk.length);
-			
-			for (byte b : chunk.data) out.writeByte(b);
-			
+			chunk.data.writeTo(out);
 			for (Chunk child : chunk.children) writeChunk(child, out);
-			
 			if (chunk.parent == null) out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -110,12 +111,12 @@ public class G3dExporter {
 		int length;
 		Chunk parent;
 		ArrayList<Chunk> children;
-		ArrayList<Byte> data;
+		ByteArrayOutputStream data;
 		public Chunk(short uID) {
 			this.uID = uID;
 			this.length = 0;
 			this.children = new ArrayList<Chunk>();
-			this.data = new ArrayList<Byte>();
+			this.data = new ByteArrayOutputStream();
 		}
 		public Chunk getParent() {
 			return parent;
@@ -132,30 +133,30 @@ public class G3dExporter {
 				parent.adjustLength(length);
 		}
 		public void append(byte b) {
-			data.add(b);
+			data.write(b);
 			adjustLength(+1);
 		}
 		public void append(short s) {
-			data.add((byte) (s >>> 8));
-			data.add((byte) s);
+			data.write((byte) (s >>> 8));
+			data.write((byte) s);
 			adjustLength(+2);
 		}
 		public void append(int i) {
-			data.add((byte) (i >>> 24));
-			data.add((byte) (i >>> 16));
-			data.add((byte) (i >>> 8));
-			data.add((byte) i);
+			data.write((byte) (i >>> 24));
+			data.write((byte) (i >>> 16));
+			data.write((byte) (i >>> 8));
+			data.write((byte) i);
 			adjustLength(+4);
 		}
 		public void append(long l) {
-			data.add((byte) (l >>> 56));
-			data.add((byte) (l >>> 48));
-			data.add((byte) (l >>> 40));
-			data.add((byte) (l >>> 32));
-			data.add((byte) (l >>> 24));
-			data.add((byte) (l >>> 16));
-			data.add((byte) (l >>> 8));
-			data.add((byte) l);
+			data.write((byte) (l >>> 56));
+			data.write((byte) (l >>> 48));
+			data.write((byte) (l >>> 40));
+			data.write((byte) (l >>> 32));
+			data.write((byte) (l >>> 24));
+			data.write((byte) (l >>> 16));
+			data.write((byte) (l >>> 8));
+			data.write((byte) l);
 			adjustLength(+8);
 		}
 		public void append(float f) {
@@ -169,7 +170,7 @@ public class G3dExporter {
 		public void append(String s) {
 			for (byte b : s.getBytes())
 				append(b);
-			append((short) 0x0000);
+			append((byte) 0x00);
 		}
 	}
 }
