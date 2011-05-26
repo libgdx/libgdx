@@ -68,6 +68,7 @@ public class TiledMapTest extends GdxTest {
 			updateCameraPosition();
 		}
 		
+		cam.zoom = 0.9f;
 		cam.update();
 		tileMapRenderer.render(cam);//, layersList);
 
@@ -80,12 +81,12 @@ public class TiledMapTest extends GdxTest {
 		
 		tmp.set(0, 0, 0);
 		cam.unproject(tmp);
-		font.draw(spriteBatch, "Location: " + (int)tmp.x + "," + (int)(tileMapRenderer.getMapHeightUnits() - tmp.y), 20, 80);
+		font.draw(spriteBatch, "Location: " + (int)tmp.x + "," + (int)tmp.y, 20, 80);
 		spriteBatch.end();
 	}
 
 	private void updateCameraPosition () {
-		cam.position.add(camDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(60));
+		cam.position.add(camDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(5*tileMapRenderer.getUnitsPerTileX()));
 
 		if (cam.position.x < 0) {
 			cam.position.x = 0;
@@ -143,14 +144,14 @@ public class TiledMapTest extends GdxTest {
 			}
 		}
 
-		cam = new OrthographicCamera(100, 100);
+		float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
+		cam = new OrthographicCamera(100f * aspectRatio, 100f);
+		
 		cam.position.set(tileMapRenderer.getMapWidthUnits()/2, tileMapRenderer.getMapHeightUnits() / 2, 0);
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		float maxX = map.width * map.tileWidth;
-		float maxY = map.height * map.tileHeight;
-		maxCamPosition.set(maxX, maxY);
+		maxCamPosition.set(tileMapRenderer.getMapWidthUnits(), tileMapRenderer.getMapHeightUnits());
 	}
 
 	@Override public boolean needsGL20 () {

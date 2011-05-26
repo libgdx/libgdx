@@ -19,6 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -298,7 +299,7 @@ public class TileMapRenderer implements Disposable {
 	 * Renders specific layers in the given a camera
 	 * @param cam The camera to use
 	 */
-	public void render (Camera cam) {
+	public void render (OrthographicCamera cam) {
 		render(cam, allLayers);
 	}
 
@@ -309,11 +310,11 @@ public class TileMapRenderer implements Disposable {
 	 * @param layers The list of layers to draw, 0 being the lowest layer. You will get an IndexOutOfBoundsException if a layer
 	 *           number is too high.
 	 */
-	public void render (Camera cam, int[] layers) {
+	public void render (OrthographicCamera cam, int[] layers) {
 		getProjectionMatrix().set(cam.combined);
 		tmp.set(0, 0, 0);
 		cam.unproject(tmp);
-		render(tmp.x, tmp.y, cam.viewportWidth, cam.viewportHeight, layers);
+		render(tmp.x, tmp.y, cam.viewportWidth * cam.zoom, cam.viewportHeight * cam.zoom, layers);
 	}
 
 	/**
