@@ -104,6 +104,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	void initializeGLInstances (GLAutoDrawable drawable) {
 		String version = drawable.getGL().glGetString(GL.GL_VERSION);
+		String renderer = drawable.getGL().glGetString(GL.GL_RENDERER);
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
@@ -111,7 +112,8 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 			gl20 = new JoglGL20(drawable.getGL());
 			gl = gl20;
 		} else {
-			if (major == 1 && minor < 5) {
+			
+			if (major == 1 && minor < 5 || renderer.equals("Mirage Graphics3")) {
 				gl10 = new JoglGL10(drawable.getGL());
 			} else {
 				gl11 = new JoglGL11(drawable.getGL());
