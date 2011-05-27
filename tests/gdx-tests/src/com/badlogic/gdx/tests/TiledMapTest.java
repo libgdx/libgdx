@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.IntArray;
  * */
 public class TiledMapTest extends GdxTest {
 
-	private static final boolean automove = false;
+	private static final boolean automove = true;
 
 	private static final int[] layersList = {2,3};
 
@@ -70,6 +70,7 @@ public class TiledMapTest extends GdxTest {
 		
 		cam.zoom = 0.9f;
 		cam.update();
+		//tileMapRenderer.getProjectionMatrix().set(cam.combined); //Not required when using tileMapRenderer.render(cam)
 		tileMapRenderer.render(cam);//, layersList);
 
 		spriteBatch.begin();
@@ -81,7 +82,7 @@ public class TiledMapTest extends GdxTest {
 		
 		tmp.set(0, 0, 0);
 		cam.unproject(tmp);
-		font.draw(spriteBatch, "Location: " + (int)tmp.x + "," + (int)tmp.y, 20, 80);
+		font.draw(spriteBatch, "Location: " + tmp.x + "," + tmp.y, 20, 80);
 		spriteBatch.end();
 	}
 

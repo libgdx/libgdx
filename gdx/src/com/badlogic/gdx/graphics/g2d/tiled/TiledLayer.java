@@ -22,26 +22,28 @@ import java.util.HashMap;
  * @author David Fraska
  */
 public class TiledLayer {
-	public final String name;
+	public String name;
 
 	/** Contains the layer properties with a key of the property name. */
 	public HashMap<String, String> properties = new HashMap<String, String>(0);
 
-	public final int width, height;
+	//public final int width, height;
 
 	/** Contains the tile ids, addressed as [row][column]. */
-	public final int[][] tiles;
+	public int[][] tiles;
 
 	/**
-	 * Constructs a new TiledLayer, typically used by {@link TiledLoader}
-	 * @param name layer name
-	 * @param width layer width
-	 * @param height layer height
+	 * Constructs a new TiledLayer, used by {@link TiledLoader}
 	 * */
-	TiledLayer (String name, int width, int height) {
-		this.name = name;
-		this.width = width;
-		this.height = height;
-		tiles = new int[height][width];
+	TiledLayer () {
+	}
+	
+	public int getWidth(){
+		if(tiles[0] == null) return 0;
+		return tiles[0].length;
+	}
+	
+	public int getHeight(){
+		return tiles.length;
 	}
 }

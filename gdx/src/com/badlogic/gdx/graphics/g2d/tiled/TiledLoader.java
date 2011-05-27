@@ -1,18 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d.tiled;
 
 import java.io.ByteArrayInputStream;
@@ -23,29 +21,16 @@ import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Xml;
 
 /**
  * Loads a Tiled Map from a tmx file
  * @author David Fraska
  * */
-public class TiledLoader extends DefaultHandler {
-
-	// define states
-	private static final int INIT = 0;
-	private static final int DATA = 1;
-	private static final int DONE = 2;
+public class TiledLoader {
 
 	/**
 	 * Loads a Tiled Map from a tmx file
@@ -58,168 +43,271 @@ public class TiledLoader extends DefaultHandler {
 		map = new TiledMap();
 		map.tmxFile = tmxFile;
 
-		SAXParser parser = null;
 		try {
-			parser = SAXParserFactory.newInstance().newSAXParser();
-			parser.parse(new InputSource(tmxFile.read()), new DefaultHandler() {
+			new Xml() {
 
-				int state = INIT;;
-				TiledLayer currentLayer;
-				TileSet currentTileSet;
-				TiledObjectGroup currentObjectGroup;
-				TiledObject currentObject;
-				int currentTile;
+				Stack<String> currBranch = new Stack<String>();
 
-				Stack<String> currentBranch = new Stack<String>();
+				boolean awaitingData = false;
+				TiledLayer currLayer;
+				int currLayerWidth = 0, currLayerHeight = 0;
+				TileSet currTileSet;
+				TiledObjectGroup currObjectGroup;
+				TiledObject currObject;
+				int currTile;
 
-				int firstgid, tileWidth, tileHeight, margin, spacing;
-				String tileSetName;
+				class Property {
+					String parentType, name, value;
+				}
+
+				Property currProperty;
+
 				String encoding, dataString, compression;
 				byte[] data;
 
 				int dataCounter = 0, row, col;
 
-				@Override public void startElement (String uri, String name, String qName, Attributes attr) {										
-					if("".equals(qName)){
-						currentBranch.push(name);
-					} else{
-						currentBranch.push(qName);						
+				@Override protected void open (String name) {
+					currBranch.push(name);
+
+					if ("layer".equals(name)) {
+						currLayer = new TiledLayer();
+						return;
 					}
-					
-					try {
 
-						if ("layer".equals(qName) | "layer".equals(name)) {
-							String layerName = attr.getValue("name");
-							int layerWidth = Integer.parseInt(attr.getValue("width"));
-							int layerHeight = Integer.parseInt(attr.getValue("height"));
-							currentLayer = new TiledLayer(layerName, layerWidth, layerHeight);
-							return;
+					if ("tileset".equals(name)) {
+						currTileSet = new TileSet();
+						return;
+					}
+
+					if ("data".equals(name)) {
+						dataString = ""; // clear the string for new data
+						awaitingData = true;
+						return;
+					}
+
+					if ("objectgroup".equals(name)) {
+						currObjectGroup = new TiledObjectGroup();
+						return;
+					}
+
+					if ("object".equals(name)) {
+						currObject = new TiledObject();
+						return;
+					}
+
+					if ("property".equals(name)) {
+						currProperty = new Property();
+						currProperty.parentType = currBranch.get(currBranch.size() - 3);
+						return;
+					}
+				}
+
+				@Override protected void attribute (String name, String value) {
+					String element = currBranch.peek();
+
+					if ("layer".equals(element)) {
+						if ("width".equals(name)) {
+							currLayerWidth = Integer.parseInt(value);
+						} else if ("height".equals(name)) {
+							currLayerHeight = Integer.parseInt(value);
 						}
 
-						if ("data".equals(qName) | "data".equals(name)) {
-							encoding = attr.getValue("encoding");
-							compression = attr.getValue("compression");
-							dataString = ""; // clear the string for new data
-							state = DATA;
+						if (currLayerWidth != 0 && currLayerHeight != 0) {
+							currLayer.tiles = new int[currLayerHeight][currLayerWidth];
+						}
+						return;
+					}
+
+					if ("tileset".equals(element)) {
+						if ("firstgid".equals(name)) {
+							currTileSet.firstgid = Integer.parseInt(value);
 							return;
 						}
-
-						if ("tileset".equals(qName) | "tileset".equals(name)) {
-							firstgid = Integer.parseInt(attr.getValue("firstgid"));
-							tileWidth = Integer.parseInt(attr.getValue("tilewidth"));
-							tileHeight = Integer.parseInt(attr.getValue("tileheight"));
-							tileSetName = attr.getValue("name");
-							spacing = parseIntWithDefault(attr.getValue("spacing"), 0);
-							margin = parseIntWithDefault(attr.getValue("margin"), 0);
+						if ("tilewidth".equals(name)) {
+							currTileSet.tileWidth = Integer.parseInt(value);
 							return;
 						}
-
-						if ("objectgroup".equals(qName) | "objectgroup".equals(name)) {
-							currentObjectGroup = new TiledObjectGroup();
-							currentObjectGroup.name = attr.getValue("name");
-							currentObjectGroup.height = Integer.parseInt(attr.getValue("height"));
-							currentObjectGroup.width = Integer.parseInt(attr.getValue("width"));
+						if ("tileheight".equals(name)) {
+							currTileSet.tileHeight = Integer.parseInt(value);
 							return;
 						}
-
-						if ("object".equals(qName) | "object".equals(name)) {
-							currentObject = new TiledObject();
-							currentObject.name = attr.getValue("name");
-							currentObject.type = attr.getValue("type");
-							currentObject.x = Integer.parseInt(attr.getValue("x"));
-							currentObject.y = Integer.parseInt(attr.getValue("y"));
-							currentObject.width = parseIntWithDefault(attr.getValue("width"), 0);
-							currentObject.height = parseIntWithDefault(attr.getValue("height"), 0);
-							currentObject.gid = parseIntWithDefault(attr.getValue("gid"), 0);
+						if ("name".equals(name)) {
+							currTileSet.name = value;
 							return;
 						}
-
-						if ("image".equals(qName) | "image".equals(name)) {
-							currentTileSet = new TileSet();
-							currentTileSet.imageName = attr.getValue("source");
-							currentTileSet.name = tileSetName;
-							currentTileSet.tileWidth = tileWidth;
-							currentTileSet.tileHeight = tileHeight;
-							currentTileSet.firstgid = firstgid;
-							currentTileSet.spacing = spacing;
-							currentTileSet.margin = margin;
+						if ("spacing".equals(name)) {
+							currTileSet.spacing = Integer.parseInt(value);
 							return;
 						}
-
-						if ("map".equals(qName) | "map".equals(name)) {
-							map.orientation = attr.getValue("orientation");
-							map.width = Integer.parseInt(attr.getValue("width"));
-							map.height = Integer.parseInt(attr.getValue("height"));
-							map.tileWidth = Integer.parseInt(attr.getValue("tilewidth"));
-							map.tileHeight = Integer.parseInt(attr.getValue("tileheight"));
+						if ("margin".equals(name)) {
+							currTileSet.margin = Integer.parseInt(value);
 							return;
 						}
+						return;
+					}
 
-						if ("tile".equals(qName) | "tile".equals(name)) {
-							switch (state) {
-							case INIT:
-								currentTile = Integer.parseInt(attr.getValue("id"));
-								break;
-							case DATA:
-								col = dataCounter % currentLayer.width;
-								row = dataCounter / currentLayer.width;
-								currentLayer.tiles[row][col] = Integer.parseInt(attr.getValue("gid"));
+					if ("image".equals(element)) {
+						if ("source".equals(name)) {
+							currTileSet.imageName = value;
+							return;
+						}
+						return;
+					}
+
+					if ("data".equals(element)) {
+						if ("encoding".equals(name)) {
+							encoding = value;
+							return;
+						}
+						if ("compression".equals(name)) {
+							compression = value;
+							return;
+						}
+						return;
+					}
+
+					if ("objectgroup".equals(element)) {
+						if ("name".equals(name)) {
+							currObjectGroup.name = value;
+							return;
+						}
+						if ("height".equals(name)) {
+							currObjectGroup.height = Integer.parseInt(value);
+							return;
+						}
+						if ("width".equals(name)) {
+							currObjectGroup.width = Integer.parseInt(value);
+							return;
+						}
+						return;
+					}
+
+					if ("object".equals(element)) {
+						if ("name".equals(name)) {
+							currObject.name = value;
+							return;
+						}
+						if ("type".equals(name)) {
+							currObject.type = value;
+							return;
+						}
+						if ("x".equals(name)) {
+							currObject.x = Integer.parseInt(value);
+							return;
+						}
+						if ("y".equals(name)) {
+							currObject.y = Integer.parseInt(value);
+							return;
+						}
+						if ("width".equals(name)) {
+							currObject.width = Integer.parseInt(value);
+							return;
+						}
+						if ("height".equals(name)) {
+							currObject.height = Integer.parseInt(value);
+							return;
+						}
+						if ("gid".equals(name)) {
+							currObject.gid = Integer.parseInt(value);
+							return;
+						}
+						return;
+					}
+
+					if ("map".equals(element)) {
+						if ("orientation".equals(name)) {
+							map.orientation = value;
+							return;
+						}
+						if ("width".equals(name)) {
+							map.width = Integer.parseInt(value);
+							return;
+						}
+						if ("height".equals(name)) {
+							map.height = Integer.parseInt(value);
+							return;
+						}
+						if ("tilewidth".equals(name)) {
+							map.tileWidth = Integer.parseInt(value);
+							return;
+						}
+						if ("tileheight".equals(name)) {
+							map.tileHeight = Integer.parseInt(value);
+							return;
+						}
+						return;
+					}
+
+					if ("tile".equals(element)) {
+						if (awaitingData) { // Actually getting tile data
+							if ("gid".equals(name)) {
+								col = dataCounter % currLayerWidth;
+								row = dataCounter / currLayerWidth;
+								currLayer.tiles[row][col] = Integer.parseInt(value);
 								dataCounter++;
-								break;
 							}
+						} else { // Not getting tile data, must be a tile Id (for properties)
+							if ("id".equals(name)) {
+								currTile = Integer.parseInt(value);
+							}
+						}
+						return;
+					}
 
+					if ("property".equals(element)) {
+						if ("name".equals(name)) {
+							currProperty.name = value;
 							return;
 						}
-
-						if ("property".equals(qName) | "property".equals(name)) {
-							String parentType = currentBranch.get(currentBranch.size() - 3);
-							putProperty(parentType, attr.getValue("name"), attr.getValue("value"));
+						if ("value".equals(name)) {
+							currProperty.value = value;
 							return;
 						}
-					} catch (NumberFormatException e) {
-						throw new GdxRuntimeException("Required attribute missing from TMX file! Property for " + qName + " missing.");
-						// Note: Required integer attributes are parsed with "Integer.parseInt()" directly
-						// Non-required integer attributes are parsed with parseIntWithDefault()
-					}
-				}
-
-				@Override public void startDocument () {
-
-				}
-
-				private void putProperty (String parentType, String name, String value) {
-					if ("tile".equals(parentType)) {
-						map.setTileProperty(currentTile + currentTileSet.firstgid, name, value);
-						return;
-					}
-
-					if ("map".equals(parentType)) {
-						map.properties.put(name, value);
-						return;
-					}
-
-					if ("layer".equals(parentType)) {
-						currentLayer.properties.put(name, value);
-						return;
-					}
-
-					if ("objectgroup".equals(parentType)) {
-						currentObjectGroup.properties.put(name, value);
-						return;
-					}
-
-					if ("object".equals(parentType)) {
-						currentObject.properties.put(name, value);
 						return;
 					}
 				}
 
-				// No checking is done to make sure that an element has actually started.
-				// Currently this may cause strange results if the XML file is malformed
-				@Override public void endElement (String uri, String name, String qName) {
-					currentBranch.pop();
+				@Override protected void text (String text) {
+					if (awaitingData) {
+						dataString = dataString.concat(text);
+					}
+				}
 
-					if ("data".equals(qName) | "data".equals(name)) {
+				@Override protected void close () {
+					String element = currBranch.pop();
+
+					if ("layer".equals(element)) {
+						map.layers.add(currLayer);
+						currLayer = null;
+						return;
+					}
+
+					if ("tileset".equals(element)) {
+						map.tileSets.add(currTileSet);
+						currTileSet = null;
+						return;
+					}
+
+					if ("object".equals(element)) {
+						currObjectGroup.objects.add(currObject);
+						currObject = null;
+						return;
+					}
+
+					if ("objectgroup".equals(element)) {
+						map.objectGroups.add(currObjectGroup);
+						currObjectGroup = null;
+						return;
+					}
+
+					if ("property".equals(element)) {
+						putProperty(currProperty);
+						currProperty = null;
+						return;
+					}
+
+					if ("data".equals(element)) {
 						if (dataString == null | "".equals(dataString)) return;
 
 						// decode and uncompress the data
@@ -244,49 +332,57 @@ public class TiledLoader extends DefaultHandler {
 							throw new GdxRuntimeException("Unsupported encoding and/or compression format");
 						}
 
-						state = INIT;
+						awaitingData = false;
 						return;
 					}
 
-					if ("layer".equals(qName) | "layer".equals(name)) {
-						map.layers.add(currentLayer);
-						currentLayer = null;
+					if ("property".equals(element)) {
+						putProperty(currProperty);
+						currProperty = null;
+					}
+				}
+
+				private void putProperty (Property property) {
+					if ("tile".equals(property.parentType)) {
+						map.setTileProperty(currTile + currTileSet.firstgid, property.name, property.value);
 						return;
 					}
 
-					if ("tileset".equals(qName) | "tileset".equals(name)) {
-						map.tileSets.add(currentTileSet);
-						currentTileSet = null;
+					if ("map".equals(property.parentType)) {
+						map.properties.put(property.name, property.value);
 						return;
 					}
 
-					if ("objectgroup".equals(qName) | "objectgroup".equals(name)) {
-						map.objectGroups.add(currentObjectGroup);
-						currentObjectGroup = null;
+					if ("layer".equals(property.parentType)) {
+						currLayer.properties.put(property.name, property.value);
 						return;
 					}
 
-					if ("object".equals(qName) | "object".equals(name)) {
-						currentObjectGroup.objects.add(currentObject);
-						currentObject = null;
+					if ("objectgroup".equals(property.parentType)) {
+						currObjectGroup.properties.put(property.name, property.value);
+						return;
+					}
+
+					if ("object".equals(property.parentType)) {
+						currObject.properties.put(property.name, property.value);
 						return;
 					}
 				}
 
 				private void fromCSV () {
 					StringTokenizer st = new StringTokenizer(dataString.trim(), ",");
-					for (int row = 0; row < currentLayer.height; row++) {
-						for (int col = 0; col < currentLayer.width; col++) {
-							currentLayer.tiles[row][col] = Integer.parseInt(st.nextToken().trim());
+					for (int row = 0; row < currLayerHeight; row++) {
+						for (int col = 0; col < currLayerWidth; col++) {
+							currLayer.tiles[row][col] = Integer.parseInt(st.nextToken().trim());
 						}
 					}
 				}
 
 				private void arrangeData () {
 					int byteCounter = 0;
-					for (int row = 0; row < currentLayer.height; row++) {
-						for (int col = 0; col < currentLayer.width; col++) {
-							currentLayer.tiles[row][col] = unsignedByteToInt(data[byteCounter++])
+					for (int row = 0; row < currLayerHeight; row++) {
+						for (int col = 0; col < currLayerWidth; col++) {
+							currLayer.tiles[row][col] = unsignedByteToInt(data[byteCounter++])
 								| unsignedByteToInt(data[byteCounter++]) << 8 | unsignedByteToInt(data[byteCounter++]) << 16
 								| unsignedByteToInt(data[byteCounter++]) << 24;
 						}
@@ -299,11 +395,11 @@ public class TiledLoader extends DefaultHandler {
 
 					zlib.setInput(data, 0, data.length);
 
-					for (int row = 0; row < currentLayer.height; row++) {
-						for (int col = 0; col < currentLayer.width; col++) {
+					for (int row = 0; row < currLayerHeight; row++) {
+						for (int col = 0; col < currLayerWidth; col++) {
 							try {
 								zlib.inflate(readTemp, 0, 4);
-								currentLayer.tiles[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
+								currLayer.tiles[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
 									| unsignedByteToInt(readTemp[2]) << 16 | unsignedByteToInt(readTemp[3]) << 24;
 							} catch (DataFormatException e) {
 								throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
@@ -322,11 +418,11 @@ public class TiledLoader extends DefaultHandler {
 
 					// Read the GZIS data into an array, 4 bytes = 1 GID
 					byte[] readTemp = new byte[4];
-					for (int row = 0; row < currentLayer.height; row++) {
-						for (int col = 0; col < currentLayer.width; col++) {
+					for (int row = 0; row < currLayerHeight; row++) {
+						for (int col = 0; col < currLayerWidth; col++) {
 							try {
 								GZIS.read(readTemp, 0, 4);
-								currentLayer.tiles[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
+								currLayer.tiles[row][col] = unsignedByteToInt(readTemp[0]) | unsignedByteToInt(readTemp[1]) << 8
 									| unsignedByteToInt(readTemp[2]) << 16 | unsignedByteToInt(readTemp[3]) << 24;
 							} catch (IOException e) {
 								throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
@@ -334,27 +430,9 @@ public class TiledLoader extends DefaultHandler {
 						}
 					}
 				}
-
-				@Override public void endDocument () {
-					state = DONE;
-				}
-
-				@Override public void characters (char ch[], int start, int length) {
-					switch (state) {
-					case DATA:
-						dataString = dataString.concat(String.copyValueOf(ch, start, length));
-						break;
-					default:
-						break;
-					}
-				}
-			});
-		} catch (ParserConfigurationException e) {
-			throw new GdxRuntimeException("Error Parsing TMX file.", e);
-		} catch (SAXException e) {
-			throw new GdxRuntimeException("Error Parsing TMX file.", e);
+			}.parse(tmxFile);
 		} catch (IOException e) {
-			throw new GdxRuntimeException("Error Parsing TMX file.", e);
+			throw new GdxRuntimeException("Error Parsing TMX file", e);
 		}
 
 		return map;
@@ -363,13 +441,4 @@ public class TiledLoader extends DefaultHandler {
 	static int unsignedByteToInt (byte b) {
 		return (int)b & 0xFF;
 	}
-
-	static int parseIntWithDefault (String string, int defaultValue) {
-		try {
-			return Integer.parseInt(string);
-		} catch (NumberFormatException e) {
-			return defaultValue;
-		}
-	}
-
 }
