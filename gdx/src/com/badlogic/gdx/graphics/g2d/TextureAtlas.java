@@ -405,6 +405,7 @@ public class TextureAtlas implements Disposable {
 			packedHeight = region.packedHeight;
 			originalWidth = region.originalWidth;
 			originalHeight = region.originalHeight;
+			rotate = region.rotate;
 		}
 
 		/**
