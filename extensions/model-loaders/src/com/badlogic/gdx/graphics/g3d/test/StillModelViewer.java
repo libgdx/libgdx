@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dExporter;
+import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
@@ -33,13 +35,16 @@ public class StillModelViewer implements ApplicationListener {
 	
 	@Override public void create () {
 		if(fileName.endsWith(".dae")) model = ColladaLoader.loadStillModel(Gdx.files.internal(fileName));
+		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName));
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
-		System.out.println("bounds: " + bounds);	
+		System.out.println("bounds: " + bounds);
+		
+		new G3dExporter().export(model, Gdx.files.absolute(fileName + ".g3d"));
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
@@ -132,10 +137,11 @@ public class StillModelViewer implements ApplicationListener {
 	}	
 	
 	public static void main(String[] argv) {
-		if(argv.length != 1 && argv.length != 2) {
-			System.out.println("StillModelViewer <filename> ?<texture-filename>");
-			System.exit(-1);
-		}
-		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
+//		if(argv.length != 1 && argv.length != 2) {
+//			System.out.println("StillModelViewer <filename> ?<texture-filename>");
+//			System.exit(-1);
+//		}
+//		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new StillModelViewer("data/cube.obj", null), "StillModel Viewer", 800, 480, false);
 	}
 }

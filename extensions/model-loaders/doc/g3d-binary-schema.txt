@@ -1,0 +1,23 @@
+--- OVERALL STRUCTURE ---
+- A file starts off with a magic 32-bit int identifying it as a g3d file.
+- The schema is composed of nested chunks.
+- A chunk is encoded like this
+
+short  CHUNK_ID
+int    CHUNK_LENGTH_IN_BYTES (including nested chunks!)
+byte[] CHUNK_PAYLOAD
+CHUNK[] children (nested)
+
+
+--- CHUNKS ---
+
+[ROOT]
+contains:
+   - [VERSION_INFO]
+   - [STILL_MODEL] | [KEYFRAMED_MODEL] | [SKELETON_MODEL]
+
+[VERSION_INFO]
+id: 0x0000: int
+payload:
+- major version: byte
+- minor version: byte

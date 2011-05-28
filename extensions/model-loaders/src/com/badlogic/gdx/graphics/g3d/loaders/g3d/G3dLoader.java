@@ -28,41 +28,42 @@ public class G3dLoader {
 	byte majorVersion, minorVersion;
 	
 	public StillModel loadStillModel(FileHandle file) {
-		DataInputStream dis = new DataInputStream(new BufferedInputStream(file.read()));
-		
-		position = 0;
-		fileLength = 0;
-		short chunkUID;
-		int chunkLength;
-		
-		// Check if this is actually a g3d binary file
-		if (readLong(dis) != G3D_HEADER) return null;
-		else fileLength = readInt(dis);
-		
-		StillSubMesh subMesh;
-		int activeSubMesh = 0;
-		
-		while (position <= fileLength) {
-			chunkUID = readShort(dis);
-			chunkLength = readInt(dis);
-			switch(chunkUID) {
-			case VERSION_INFO:
-				readVersionInfo(dis, chunkLength);
-			case STILL_MODEL:
-				readStillModel(dis, chunkLength);
-			case STILL_SUBMESH:
-				readStilLSumbesh(dis, chunkLength);
-			case VERTEX_LIST:
-				readVertexList(dis, chunkLength);
-			case VERTEX_ATTRIBUTES:
-				readVertexAttributes(dis, chunkLength);
-			case VERTEX_ATTRIBUTE:
-				readVertexAttribute(dis, chunkLength);
-			default:
-				skipChunk(dis, chunkLength);
-			}
-		}
-		return model;
+		return null;
+//		DataInputStream dis = new DataInputStream(new BufferedInputStream(file.read()));
+//		
+//		position = 0;
+//		fileLength = 0;
+//		short chunkUID;
+//		int chunkLength;
+//		
+//		// Check if this is actually a g3d binary file
+//		if (readLong(dis) != G3D_HEADER) return null;
+//		else fileLength = readInt(dis);
+//		
+//		StillSubMesh subMesh;
+//		int activeSubMesh = 0;
+//		
+//		while (position <= fileLength) {
+//			chunkUID = readShort(dis);
+//			chunkLength = readInt(dis);
+//			switch(chunkUID) {
+//			case VERSION_INFO:
+//				readVersionInfo(dis, chunkLength);
+//			case STILL_MODEL:
+//				readStillModel(dis, chunkLength);
+//			case STILL_SUBMESH:
+//				readStilLSumbesh(dis, chunkLength);
+//			case VERTEX_LIST:
+//				readVertexList(dis, chunkLength);
+//			case VERTEX_ATTRIBUTES:
+//				readVertexAttributes(dis, chunkLength);
+//			case VERTEX_ATTRIBUTE:
+//				readVertexAttribute(dis, chunkLength);
+//			default:
+//				skipChunk(dis, chunkLength);
+//			}
+//		}
+//		return model;
 	}
 	
 	private void readVersionInfo(DataInputStream dis, int len) throws IOException {
