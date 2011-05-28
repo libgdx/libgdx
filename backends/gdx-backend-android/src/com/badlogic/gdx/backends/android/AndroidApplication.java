@@ -289,7 +289,7 @@ public class AndroidApplication extends Activity implements Application {
      */
     @Override
     public int getVersion() {
-        return Build.VERSION.SDK.charAt(0) - '0';
+   	 return Integer.parseInt(android.os.Build.VERSION.SDK);        
     }
 
     @Override
