@@ -137,8 +137,8 @@ public class Cube {
 						x = 0;
 						y = 0;
 					}
-					accel.x = x * ACCELERATION;
-					accel.y = y * ACCELERATION;
+					vel.x = x * MAX_VELOCITY;
+					vel.y = y * MAX_VELOCITY;
 				} else {
 					accel.x = 0;
 					accel.y = 0;
