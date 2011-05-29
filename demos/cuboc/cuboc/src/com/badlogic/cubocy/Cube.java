@@ -13,8 +13,8 @@ public class Cube {
 	static final int FIXED = 1;
 	static final int CONTROLLED = 2;
 	static final int DEAD = 3;
-	static final float ACCELERATION = 10;
-	static final float MAX_VELOCITY = 5;
+	static final float ACCELERATION = 20;
+	static final float MAX_VELOCITY = 4;
 	static final float DAMP = 0.90f;	
 	
 	Map map;
@@ -47,6 +47,7 @@ public class Cube {
 			target.y += 0.2f;
 			
 			vel.set(target).sub(pos).mul(Math.min(4, pos.dst(target)) * deltaTime);
+			if(vel.len() > MAX_VELOCITY) vel.nor().mul(MAX_VELOCITY);
 			tryMove();
 		}
 		
@@ -126,8 +127,18 @@ public class Cube {
 							
 			if(touch0) {
 				if(dpadRect.contains(x0, y0)) {
-					accel.x = (x0 - 64) / 64 * ACCELERATION / 2;
-					accel.y = (y0 - 64) / 64 * ACCELERATION / 2;
+					float x = (x0 - 64) / 64;
+					float y = (y0 - 64) / 64;
+					float len = (float)Math.sqrt(x*x + y*y);
+					if(len != 0) {
+						x /= len;
+						y /= len;
+					} else {
+						x = 0;
+						y = 0;
+					}
+					accel.x = x * ACCELERATION;
+					accel.y = y * ACCELERATION;
 				} else {
 					accel.x = 0;
 					accel.y = 0;
