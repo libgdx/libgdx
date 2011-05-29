@@ -149,4 +149,13 @@ public class Rectangle implements Serializable {
 		this.width = width;
 		this.height = height;		
 	}
+
+	/**
+	 * @param x0 point x coordinate
+	 * @param y0 point y coordinate
+	 * @return whether the point is contained in the rectangle
+	 */
+	public boolean contains (float x, float y) {
+		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
+	}
 }
