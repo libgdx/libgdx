@@ -13,7 +13,8 @@ public class OnscreenControlRenderer {
 	TextureRegion left;
 	TextureRegion right;
 	TextureRegion jump;
-	TextureRegion cube;
+	TextureRegion cubeControl;
+	TextureRegion cubeFollow;
 	
 	public OnscreenControlRenderer(Map map) {
 		this.map = map;
@@ -26,7 +27,8 @@ public class OnscreenControlRenderer {
 		left = buttons[0];
 		right = buttons[1];
 		jump = buttons[2];
-		cube = buttons[3];
+		cubeControl = buttons[3];
+		cubeFollow =  TextureRegion.split(texture, 64, 64)[1][2];
 		dpad = new TextureRegion(texture, 0, 64, 128, 128);		
 		batch = new SpriteBatch();
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
@@ -37,16 +39,16 @@ public class OnscreenControlRenderer {
 		if(map.cube.state != Cube.CONTROLLED) {
 			batch.begin();
 			batch.draw(left, 0, 0);
-			batch.draw(right, 70, 0);
-			batch.draw(cube, 480-64, 320-128);
-			batch.draw(cube, 480-64, 320-64);
+			batch.draw(right, 70, 0);			
+			batch.draw(cubeControl, 480-64, 320-64);
+			batch.draw(cubeFollow, 480-64, 320-138);
 			batch.draw(jump, 480-64, 0);
 			batch.end();
 		} else {			
 			batch.begin();
 			batch.draw(dpad, 0, 0);
-			batch.draw(cube, 480-64, 320-138);
-			batch.draw(cube, 480-64, 320-64);
+			batch.draw(cubeFollow, 480-64, 320-138);
+			batch.draw(cubeControl, 480-64, 320-64);
 			batch.end();
 		}
 	}
