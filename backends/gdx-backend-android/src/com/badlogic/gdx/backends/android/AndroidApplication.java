@@ -216,14 +216,14 @@ public class AndroidApplication extends Activity implements Application {
         Gdx.graphics = this.getGraphics();
 
         ((AndroidInput)getInput()).registerSensorListeners();
+        if (audio != null) audio.resume();
         
         if (graphics != null && graphics.view != null) {
             if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake) graphics.view).onResume();
             if (graphics.view instanceof android.opengl.GLSurfaceView)
                 ((android.opengl.GLSurfaceView) graphics.view).onResume();
         }
-
-        if (audio != null) audio.resume();
+        
         if (!firstResume)
             graphics.resume();
         else
