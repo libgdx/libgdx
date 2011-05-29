@@ -104,7 +104,7 @@ public class Cube {
 			return;
 		}		
 		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || followButton) && stateTime > 0.5f) {
+		if((Gdx.input.isKeyPressed(Keys.F) || followButton) && stateTime > 0.5f) {
 			stateTime = 0;
 			state = FOLLOW;
 			return;
