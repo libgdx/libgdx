@@ -2,6 +2,7 @@ package com.badlogic.cubocy;
 
 import org.lwjgl.opengl.Display;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,6 +25,7 @@ public class Cube {
 	int state = FOLLOW;
 	float stateTime = 0;
 	Rectangle cubeButtonRect = new Rectangle(480-64, 320-64, 64, 64);
+	Rectangle dpadRect = new Rectangle(0, 0, 128, 128);
 	
 	public Cube(Map map, float x, float y) {
 		this.map = map;
@@ -105,8 +107,8 @@ public class Cube {
 		boolean down = (touch0 && (y0 < 60)) || (touch1 && (y1 < 60));
 		boolean up = (touch0 && (y0 > 80 && x0 < 128)) || (touch1 && (y1 > 80 && y1 < 128));			
 		
-		if(state == CONTROLLED) {
-			if (Gdx.input.isKeyPressed(Keys.A) || left) {						
+		if(state == CONTROLLED) {			
+			if (Gdx.input.isKeyPressed(Keys.A)) {						
 				accel.x = -ACCELERATION;
 			} else if (Gdx.input.isKeyPressed(Keys.D) || right ) {					
 				accel.x = ACCELERATION;
@@ -121,6 +123,16 @@ public class Cube {
 			} else {			
 				accel.y = 0;
 			}
+							
+			if(touch0) {
+				if(dpadRect.contains(x0, y0)) {
+					accel.x = (x0 - 64) / 64 * ACCELERATION / 2;
+					accel.y = (y0 - 64) / 64 * ACCELERATION / 2;
+				} else {
+					accel.x = 0;
+					accel.y = 0;
+				}
+			}			
 		}
 	}
 	
