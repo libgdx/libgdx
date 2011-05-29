@@ -74,7 +74,7 @@ public class Map {
 		bob.update(deltaTime);
 		if(bob.state == Bob.DEAD) bob = new Bob(this, activeDispenser.bounds.x, activeDispenser.bounds.y);
 		cube.update(deltaTime);
-		if(cube.state == Cube.DEAD) cube = new Cube(this, activeDispenser.bounds.x, activeDispenser.bounds.y);
+		if(cube.state == Cube.DEAD) cube = new Cube(this, bob.bounds.x, bob.bounds.y);
 		for(int i = 0; i < dispensers.size; i++) {
 			if(bob.bounds.overlaps(dispensers.get(i).bounds)) {
 				activeDispenser = dispensers.get(i);
