@@ -38,12 +38,14 @@ public class OnscreenControlRenderer {
 			batch.begin();
 			batch.draw(left, 0, 0);
 			batch.draw(right, 70, 0);
+			batch.draw(cube, 480-128-10, 320-64);
 			batch.draw(cube, 480-64, 320-64);
 			batch.draw(jump, 480-64, 0);
 			batch.end();
 		} else {			
 			batch.begin();
 			batch.draw(dpad, 0, 0);
+			batch.draw(cube, 480-128-10, 320-64);
 			batch.draw(cube, 480-64, 320-64);
 			batch.end();
 		}

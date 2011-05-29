@@ -24,7 +24,8 @@ public class Cube {
 	Rectangle bounds = new Rectangle();
 	int state = FOLLOW;
 	float stateTime = 0;
-	Rectangle cubeButtonRect = new Rectangle(480-64, 320-64, 64, 64);
+	Rectangle controllButtonRect = new Rectangle(480-64, 320-64, 64, 64);
+	Rectangle followButtonRect = new Rectangle(480-128-10, 320-64, 64, 64);
 	Rectangle dpadRect = new Rectangle(0, 0, 128, 128);
 	
 	public Cube(Map map, float x, float y) {
@@ -80,22 +81,24 @@ public class Cube {
 		float x1 = (Gdx.input.getX(1) / (float)Gdx.graphics.getWidth()) * 480;
 		float y0 = 320 - (Gdx.input.getY(0) / (float)Gdx.graphics.getHeight()) * 320;
 		float y1 = 320 - (Gdx.input.getY(1) / (float)Gdx.graphics.getHeight()) * 320;
-		boolean cubeButton = (Gdx.input.isTouched(0) && cubeButtonRect.contains(x0, y0)) ||
-									(Gdx.input.isTouched(1) && cubeButtonRect.contains(x1, y1));
+		boolean controlButton = (Gdx.input.isTouched(0) && controllButtonRect.contains(x0, y0)) ||
+									(Gdx.input.isTouched(1) && controllButtonRect.contains(x1, y1));
+		boolean followButton = (Gdx.input.isTouched(0) && followButtonRect.contains(x0, y0)) ||
+										(Gdx.input.isTouched(1) && followButtonRect.contains(x1, y1));
 		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || cubeButton) && state == FOLLOW && stateTime > 0.5f) {
+		if((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == FOLLOW && stateTime > 0.5f) {
 			stateTime = 0;
 			state = CONTROLLED;
 			return;
 		}		
 		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || cubeButton) && state == CONTROLLED && stateTime > 0.5f) {
+		if((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == CONTROLLED && stateTime > 0.5f) {
 			stateTime = 0;
 			state = FIXED;
 			return;
 		}
 		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || cubeButton) && state == FIXED && stateTime > 0.5f) {
+		if((Gdx.input.isKeyPressed(Keys.SPACE) || followButton) && state == FIXED && stateTime > 0.5f) {
 			stateTime = 0;
 			state = FOLLOW;
 			return;
