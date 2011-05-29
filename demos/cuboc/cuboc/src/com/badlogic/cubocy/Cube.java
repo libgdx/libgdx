@@ -34,7 +34,7 @@ public class Cube {
 		this.pos.y = y;
 		this.bounds.x = pos.x + 0.2f;
 		this.bounds.y = pos.y + 0.2f;
-		this.bounds.width = this.bounds.height = 0.60f;
+		this.bounds.width = this.bounds.height = 1.0f;
 	}
 	
 	Vector2 target = new Vector2();

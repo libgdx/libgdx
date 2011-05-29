@@ -173,9 +173,9 @@ public class MapRenderer {
 	}
 	
 	private void renderCube() {
-		if(map.cube.state == Cube.FOLLOW) batch.draw(cube, map.cube.pos.x, map.cube.pos.y, 1, 1);
-		if(map.cube.state == Cube.FIXED) batch.draw(cubeFixed.getKeyFrame(map.cube.stateTime, false), map.cube.pos.x, map.cube.pos.y, 1, 1);		
-		if(map.cube.state == Cube.CONTROLLED) batch.draw(cubeControlled, map.cube.pos.x, map.cube.pos.y, 1, 1);
+		if(map.cube.state == Cube.FOLLOW) batch.draw(cube, map.cube.pos.x, map.cube.pos.y, 1.5f, 1.5f);
+		if(map.cube.state == Cube.FIXED) batch.draw(cubeFixed.getKeyFrame(map.cube.stateTime, false), map.cube.pos.x, map.cube.pos.y, 1.5f, 1.5f);		
+		if(map.cube.state == Cube.CONTROLLED) batch.draw(cubeControlled, map.cube.pos.x, map.cube.pos.y, 1.5f, 1.5f);
 	}
 		
 	private void renderRockets() {
