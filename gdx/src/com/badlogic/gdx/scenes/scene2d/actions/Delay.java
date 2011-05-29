@@ -69,7 +69,6 @@ public class Delay extends Action {
 	}
 
 	@Override public Actor getTarget () {
-		action.getTarget();
-		return null;
+		return action.getTarget();		
 	}
 }
