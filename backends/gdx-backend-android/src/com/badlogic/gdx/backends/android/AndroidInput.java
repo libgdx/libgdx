@@ -38,6 +38,7 @@ import android.widget.EditText;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
 /**
@@ -490,6 +491,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			if(realId[i] == pointerId) return i;
 		}
 		
-		return -1;
+		StringBuffer buf = new StringBuffer();
+		for(int i = 0; i < len; i++) {
+			buf.append(i + ":" + realId[i] + " ");
+		}
+		throw new GdxRuntimeException("Pointer ID lookup failed: " + pointerId + ", " + buf.toString());
 	}
 }
