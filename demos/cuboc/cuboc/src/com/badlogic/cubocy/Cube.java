@@ -25,7 +25,7 @@ public class Cube {
 	int state = FOLLOW;
 	float stateTime = 0;
 	Rectangle controllButtonRect = new Rectangle(480-64, 320-64, 64, 64);
-	Rectangle followButtonRect = new Rectangle(480-128-10, 320-64, 64, 64);
+	Rectangle followButtonRect = new Rectangle(480-64, 320-138, 64, 64);
 	Rectangle dpadRect = new Rectangle(0, 0, 128, 128);
 	
 	public Cube(Map map, float x, float y) {
@@ -97,6 +97,12 @@ public class Cube {
 			state = FIXED;
 			return;
 		}
+		
+		if((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == FIXED && stateTime > 0.5f) {
+			stateTime = 0;
+			state = CONTROLLED;
+			return;
+		}		
 		
 		if((Gdx.input.isKeyPressed(Keys.SPACE) || followButton) && state == FIXED && stateTime > 0.5f) {
 			stateTime = 0;
