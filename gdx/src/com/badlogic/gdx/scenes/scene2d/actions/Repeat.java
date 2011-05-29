@@ -74,4 +74,7 @@ public class Repeat extends TemporalAction {
 		return $(action.copy(), times);
 	}
 
+	@Override public Actor getTarget () {	
+		return target;
+	}
 }

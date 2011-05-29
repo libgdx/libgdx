@@ -54,4 +54,7 @@ public class Remove extends Action {
 		return $();
 	}
 
+	@Override public Actor getTarget () {	
+		return target;
+	}
 }

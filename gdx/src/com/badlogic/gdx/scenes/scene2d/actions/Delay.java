@@ -67,4 +67,9 @@ public class Delay extends Action {
 	@Override public Action copy () {
 		return $(action.copy(), duration);
 	}
+
+	@Override public Actor getTarget () {
+		action.getTarget();
+		return null;
+	}
 }

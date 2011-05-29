@@ -34,6 +34,11 @@ public abstract class Action {
 	public abstract void setTarget (Actor actor);
 
 	/**
+	 * @return the {@link Actor} this action targets.
+	 */
+	public abstract Actor getTarget();
+	
+	/**
 	 * Apply the action.
 	 * 
 	 * @param delta delta time in seconds

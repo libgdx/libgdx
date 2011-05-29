@@ -82,4 +82,8 @@ public class Sequence extends CompositeAction {
 		}
 		return action;
 	}
+	
+	@Override public Actor getTarget () {	
+		return target;
+	}
 }

@@ -61,4 +61,7 @@ public class Forever extends TemporalAction {
 		return $(action.copy());
 	}
 
+	@Override public Actor getTarget () {	
+		return target;
+	}
 }

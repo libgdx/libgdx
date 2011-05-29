@@ -28,6 +28,7 @@ public class Parallel extends CompositeAction {
 	};
 
 	protected boolean[] finished;
+	protected Actor target = null;
 
 	public static Parallel $ (Action... actions) {
 		Parallel parallel = pool.obtain();
@@ -43,6 +44,7 @@ public class Parallel extends CompositeAction {
 	}
 
 	@Override public void setTarget (Actor actor) {
+		this.target = actor;
 		int len = actions.size();
 		for (int i = 0; i < len; i++)
 			actions.get(i).setTarget(actor);
@@ -89,5 +91,9 @@ public class Parallel extends CompositeAction {
 		for (int i = 0; i < len; i++)
 			parallel.actions.add(actions.get(i).copy());
 		return parallel;
+	}
+	
+	@Override public Actor getTarget () {	
+		return target;
 	}
 }
