@@ -15,7 +15,7 @@ public class Cube {
 	static final int DEAD = 3;
 	static final float ACCELERATION = 20;
 	static final float MAX_VELOCITY = 4;
-	static final float DAMP = 0.90f;	
+	static final float DAMP = 0.80f;	
 	
 	Map map;
 	Vector2 pos = new Vector2();
