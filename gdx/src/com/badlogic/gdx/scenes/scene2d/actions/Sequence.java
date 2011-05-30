@@ -29,7 +29,7 @@ public class Sequence extends CompositeAction {
 	};
 
 	protected Actor target;
-	protected int currAction = 0;
+	protected int currAction = 0;	
 
 	public static Sequence $ (Action... actions) {
 		Sequence sequence = pool.obtain();
@@ -52,7 +52,8 @@ public class Sequence extends CompositeAction {
 			return;
 		}		
 		
-		if(currAction >= actions.size()) {			
+		if(currAction >= actions.size()) {				
+			callActionCompletedListener();			
 			return;		
 		}
 		
