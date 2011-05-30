@@ -43,6 +43,7 @@ public class Remove extends Action {
 		if(!removed) {
 			target.markToRemove(true);
 			removed = true;
+			callActionCompletedListener();
 		}
 	}
 

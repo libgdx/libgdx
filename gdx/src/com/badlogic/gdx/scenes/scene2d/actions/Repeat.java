@@ -56,6 +56,8 @@ public class Repeat extends TemporalAction {
 				action = action.copy();
 				oldAction.finish();
 				action.setTarget(target);
+			} else {
+				callActionCompletedListener();
 			}
 		}
 	}

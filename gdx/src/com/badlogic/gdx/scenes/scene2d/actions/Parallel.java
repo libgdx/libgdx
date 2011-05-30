@@ -52,6 +52,7 @@ public class Parallel extends CompositeAction {
 
 	@Override public void act (float delta) {
 		int len = actions.size();
+		boolean allDone = true;
 		for (int i = 0; i < len; i++) {
 			if (!actions.get(i).isDone()) {
 				actions.get(i).act(delta);
@@ -60,8 +61,10 @@ public class Parallel extends CompositeAction {
 					actions.get(i).finish();
 					finished[i] = true;
 				}
+				allDone &= finished[i];
 			}
 		}
+		if(allDone) callActionCompletedListener();
 	}
 
 	@Override public boolean isDone () {
