@@ -29,25 +29,26 @@ public class ChunkTest {
 			writer.writeByte(MINOR_VERSION);
 		writer.endChunk();			
 		writer.newChunk(STILL_MODEL);			
-			writer.writeInt(1);								
-			writer.newChunk(STILL_SUBMESH);					
-				writer.writeString("triangle");
-				writer.newChunk(VERTEX_ATTRIBUTES);
-					writer.writeInt(1);
-					writer.newChunk(VERTEX_ATTRIBUTE);
-						writer.writeInt(Usage.Position);
-						writer.writeInt(2);
-						writer.writeString("a_pos");
+			writer.writeInt(2);
+			for(int i = 0; i < 2; i++) {
+				writer.newChunk(STILL_SUBMESH);					
+					writer.writeString("triangle" + i);
+					writer.newChunk(VERTEX_ATTRIBUTES);
+						writer.writeInt(1);
+						writer.newChunk(VERTEX_ATTRIBUTE);
+							writer.writeInt(Usage.Position);
+							writer.writeInt(2);
+							writer.writeString("a_pos");
+						writer.endChunk();
 					writer.endChunk();
-				writer.endChunk();
-				writer.newChunk(VERTEX_LIST);
-					writer.writeInt(6);
-					writer.writeFloats(new float[] { -1, -1, 0, 1, 1, -1 } );
-				writer.endChunk();
-				writer.newChunk(INDEX_LIST);
-					writer.writeInt(0);
-				writer.endChunk();
-			writer.endChunk();				
+					writer.newChunk(VERTEX_LIST);					
+						writer.writeFloats(new float[] { -1, -1, 0, 1, 1, -1 } );
+					writer.endChunk();
+					writer.newChunk(INDEX_LIST);
+						writer.writeShorts(new short[] { 0, 1, 2 } );
+					writer.endChunk();
+				writer.endChunk();				
+			}
 		writer.endChunk();		
 		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -81,6 +82,7 @@ public class ChunkTest {
 				break;
 			case STILL_SUBMESH: 
 				id = "STILL_SUBMESH"; 
+				payload = rep("   ", level + 1) + "name: " + chunk.readString();
 				break;
 			case VERTEX_ATTRIBUTE: 
 				id = "VERTEX_ATTRIBUTE";

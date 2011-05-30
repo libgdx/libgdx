@@ -182,8 +182,9 @@ public class ChunkReader {
 		int id = din.readInt();
 		int payloadSize = din.readInt();
 		int numChildren = din.readInt();	
+		int offset = din.getReadBytes();
 		din.skipBytes(payloadSize);				
-		Chunk chunk = new Chunk(id, null, bytes, din.getReadBytes(), payloadSize);
+		Chunk chunk = new Chunk(id, null, bytes, offset, payloadSize);
 		for(int i = 0; i < numChildren; i++) {
 			Chunk child = loadChunk(din, bytes);
 			child.parent = chunk;
