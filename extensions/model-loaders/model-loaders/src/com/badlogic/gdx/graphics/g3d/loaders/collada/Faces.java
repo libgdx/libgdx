@@ -177,7 +177,11 @@ public class Faces {
 				int sourceOffset = index * components;
 				
 				for(int k = 0; k < components; k++) {
-					verts[destOffset++] = data[sourceOffset++]; 
+					if((attributes[j].usage == Usage.TextureCoordinates) && k == 1) {
+						verts[destOffset++] = 1- data[sourceOffset++];
+					} else {
+						verts[destOffset++] = data[sourceOffset++];
+					}
 				}			
 			}			
 		}
