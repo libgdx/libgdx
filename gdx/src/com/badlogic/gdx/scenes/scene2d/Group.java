@@ -488,4 +488,20 @@ public class Group extends Actor {
 	public void sortChildren (Comparator<Actor> comparator) {
 		Collections.sort(this.children, comparator);
 	}
+	
+	/**
+	 * Unfocues all {@link Actor} instance currently focused. You should 
+	 * call this in case your app resumes to clear up any pressed states.
+	 * Make sure the Actors forget their states as well! This will be applied
+	 * to all child groups recursively.
+	 */
+	public void unfocusAll() {
+		for(int i = 0; i < focusedActor.length; i++) {
+			focusedActor[i] = null;
+		}
+		
+		for(int i = 0; i < groups.size(); i++) {
+			groups.get(i).unfocusAll();
+		}
+	}
 }

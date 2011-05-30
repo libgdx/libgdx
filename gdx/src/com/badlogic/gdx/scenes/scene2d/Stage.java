@@ -44,6 +44,11 @@ import com.badlogic.gdx.utils.Disposable;
  * top of Actors added earlier. The same is true for touch events that will get distributed to later Actors first.
  * </p>
  * 
+ * <p>Actors can get focused. When your game pauses and resumes make sure to call the {@link Stage#unfocusAll()} method so 
+ * that the focus states get reset for each pointer id. You also have to make sure that the Actors that were focused reset
+ * their state if the depend on being focused, e.g. wait for a touch up event. An easier way to tackle this is to recreate the 
+ * Stage if possible.</p>
+ * 
  * @author mzechner
  * 
  */
@@ -387,5 +392,14 @@ public class Stage extends InputAdapter implements Disposable {
 	 */
 	public void removeActor(Actor actor) {
 		root.removeActorRecursive(actor);
+	}
+	
+	/**
+	 * Unfocues all {@link Actor} instance currently focused. You should 
+	 * call this in case your app resumes to clear up any pressed states.
+	 * Make sure the Actors forget their states as well!
+	 */
+	public void unfocusAll() {
+		root.unfocusAll();
 	}
 }
