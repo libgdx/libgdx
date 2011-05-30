@@ -32,6 +32,10 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/returntomarchfeld/rtm-andro
 
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/metagun/metagun-android/libs
 
+cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/cuboc/cuboc-android/libs
+
+cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/model-loaders/model-loaders-android/libs
+
 # remove temporary directory
 rm -rf nightlies
 rm libgdx-nightlies.zip
