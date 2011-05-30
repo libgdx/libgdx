@@ -19,12 +19,7 @@ import java.util.Arrays;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class ChunkReader {
-	
-	private static final int HEADER_SIZE = 4 + // id 
-														4 + // payload size
-														4;  // numChildren
-	
+public class ChunkReader {	
 	public static class Chunk {
 		int id;
 		Chunk parent;
