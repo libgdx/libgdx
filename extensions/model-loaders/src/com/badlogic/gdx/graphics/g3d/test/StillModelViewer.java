@@ -1,5 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.test;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
@@ -8,7 +11,10 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dExporter;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader.Chunk;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
@@ -34,17 +40,23 @@ public class StillModelViewer implements ApplicationListener {
 	}
 	
 	@Override public void create () {
+		long start = System.nanoTime();
 		if(fileName.endsWith(".dae")) model = ColladaLoader.loadStillModel(Gdx.files.internal(fileName));
 		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName));
-		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
+		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
+		Gdx.app.log("StillModelViewer", "loading took: " + (System.nanoTime() - start)/ 1000000000.0f);
+		
+		G3dExporter.export(model, Gdx.files.absolute(fileName + ".g3d"));		
+		start = System.nanoTime();
+		model = G3dLoader.loadStillModel(Gdx.files.absolute(fileName + ".g3d"));
+		Gdx.app.log("StillModelViewer", "loading binary took: " + (System.nanoTime() - start)/ 1000000000.0f);
+				
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
-		System.out.println("bounds: " + bounds);
-		
-		new G3dExporter().export(model, Gdx.files.absolute(fileName + ".g3d"));
+		System.out.println("bounds: " + bounds);			
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
@@ -142,6 +154,6 @@ public class StillModelViewer implements ApplicationListener {
 //			System.exit(-1);
 //		}
 //		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/cube.obj", null), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new StillModelViewer("data/goblin.dae", null), "StillModel Viewer", 800, 480, false);
 	}
 }

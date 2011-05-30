@@ -1,12 +1,21 @@
 package com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks;
 
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.G3D_ROOT;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.INDEX_LIST;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.STILL_MODEL;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.STILL_SUBMESH;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.VERSION_INFO;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.VERTEX_ATTRIBUTE;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.VERTEX_ATTRIBUTES;
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.VERTEX_LIST;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader.Chunk;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -166,6 +175,16 @@ public class ChunkReader {
 			}
 			return null;
 		}
+
+		public Chunk[] getChildren(int id) {
+			Array<Chunk> meshes = new Array<Chunk>(true, 16, Chunk.class);
+			for(int i = 0; i < children.size; i++) {
+				Chunk child = children.get(i);
+				if(child.getId() == id) meshes.add(child); 
+			}
+			meshes.shrink();
+			return meshes.items;
+		}
 	}	
 	
 	public static Chunk readChunks(InputStream in) throws IOException {
@@ -209,4 +228,78 @@ public class ChunkReader {
 			return bytes;
 		}
 	}
+	
+	/**
+	 * Prints a textual representation of the given Chunk hierarchy
+	 * @param chunk the hierarchy root {@link Chunk}
+	 */
+	public static void printChunks(Chunk chunk) {
+		printChunks(chunk, 0);
+	}
+	
+	private static void printChunks(Chunk chunk, int level) {
+		String id = null;
+		String payload = null;
+		switch(chunk.getId()) {
+			case G3D_ROOT: 
+				id = "G3D_ROOT"; 
+				break;
+			case VERSION_INFO: 
+				id = "VERSION_INFO";
+				int major = chunk.readByte();
+				int minor = chunk.readByte();
+				payload = rep("   ", level + 1) + "major: " + major + ", minor: " + minor;
+				break;
+			case STILL_MODEL: 
+				id = "STILL_MODEL";
+				int subMeshes = chunk.readInt();
+				payload = rep("   ", level + 1) + "#submeshes: " + subMeshes;
+				break;
+			case STILL_SUBMESH: 
+				id = "STILL_SUBMESH"; 				
+				payload = rep("   ", level + 1) + "name: " + chunk.readString() + ", primitive type: " + chunk.readInt();
+				break;
+			case VERTEX_ATTRIBUTE: 
+				id = "VERTEX_ATTRIBUTE";
+				int usage = chunk.readInt();
+				int components = chunk.readInt();
+				String name = chunk.readString();
+				payload = rep("   ", level + 1) + "usage: " + usage + ", components: " + components + ", name: " + name;
+				break;
+			case VERTEX_ATTRIBUTES: 
+				id = "VERTEX_ATTRIBUTES"; 
+				int numAttributes = chunk.readInt();
+				payload = rep("   ", level + 1) + "#attributes: " + numAttributes;
+				break;
+			case VERTEX_LIST: 
+				id = "VERTEX_LIST";
+				int numVertices = chunk.readInt();
+				float[] vertices = chunk.readFloats();
+				payload = rep("   ", level + 1) + "#vertices: " + numVertices + ": " + Arrays.toString(vertices).substring(0, 400);
+				break;
+			case INDEX_LIST: 
+				id = "INDEX_LIST";
+				int numIndices = chunk.readInt();
+				short[] indices = chunk.readShorts();
+				payload = rep("   ", level + 1) + "#indices: " + numIndices + ": " + Arrays.toString(indices).substring(0, 400);
+				break;
+			default: 
+				id ="unknown [" + id + "]";
+				payload = rep("   ", level + 1) + "unknown";
+				break;
+		}
+		
+		System.out.println(rep("   ", level) + id + " {");
+		if(payload != null) System.out.println(payload);
+		for(Chunk child: chunk.getChildren()) {
+			printChunks(child, level+1);
+		}
+		System.out.println(rep("   ", level) + "}");
+	}
+	
+	private static String rep(String c, int n) {
+		StringBuffer buf = new StringBuffer();
+		for(int i = 0; i < n; i++) buf.append(c);		
+		return buf.toString();
+	}	
 }
