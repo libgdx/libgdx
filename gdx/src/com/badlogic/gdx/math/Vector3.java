@@ -267,10 +267,12 @@ public class Vector3 implements Serializable {
 	 * @return This vector for chaining
 	 */
 	public Vector3 nor () {
-		if (x == 0 && y == 0 && z == 0)
+		float len = this.len();
+		if(len == 0) {
 			return this;
-		else
-			return this.div(this.len());
+		} else {
+			return this.div(len);
+		}
 	}
 
 	/**
