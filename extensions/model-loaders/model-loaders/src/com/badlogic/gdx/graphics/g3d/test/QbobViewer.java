@@ -62,7 +62,7 @@ public class QbobViewer implements ApplicationListener {
 	float[] lightColor = {1, 1, 1, 0};
 	float[] lightPosition = {2, 5, 10, 0};
 	@Override public void render () {
-		Gdx.gl.glClearColor(0.7f, 0.940f, 0.893f, 1.0f);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);		
 						
@@ -78,16 +78,7 @@ public class QbobViewer implements ApplicationListener {
 		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-		/*for(int i = 0; i < 4; i++) {
-			Gdx.gl10.glPushMatrix();
-			if(i == 0 || i == 1) {
-				Gdx.gl10.glTranslatef(i * 14 * 12f, 0, 0);
-			} else {
-				Gdx.gl10.glTranslatef((i-2) * 14 * 12f, 11 * 12f, 0);
-			}
-			
-			Gdx.gl10.glPopMatrix();
-		}*/
+		
 		lightMaps[0].bind();
 		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);				
 		setCombiners();
@@ -97,13 +88,11 @@ public class QbobViewer implements ApplicationListener {
 		lightMaps[1].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		setCombiners();
 		
-		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[1].render();
 		lightMaps[2].bind();
 		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);		
 		setCombiners();
-		
-		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
+				
 		model[2].render();
 		lightMaps[3].bind();
 		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);		
