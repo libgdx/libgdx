@@ -36,7 +36,7 @@ public class QbobViewer implements ApplicationListener {
 			lightMaps[3] = new Texture(Gdx.files.internal("data/world_blobbie_lm_04.jpg"), true);
 		//}
 		
-		diffuse = new Texture(Gdx.files.internal("data/world_blobbie_blocks_512.png"), true);
+		diffuse = new Texture(Gdx.files.internal("data/world_blobbie_blocks.png"), true);
 		
 							
 									
