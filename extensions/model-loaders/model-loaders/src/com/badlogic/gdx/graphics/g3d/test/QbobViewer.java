@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
@@ -36,6 +37,7 @@ public class QbobViewer implements ApplicationListener {
 		//}
 		
 		diffuse = new Texture(Gdx.files.internal("data/world_blobbie_blocks_512.png"), true);
+		
 							
 									
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -73,6 +75,7 @@ public class QbobViewer implements ApplicationListener {
 		diffuse.bind();
 		diffuse.setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		
+		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		/*for(int i = 0; i < 4; i++) {
@@ -87,18 +90,22 @@ public class QbobViewer implements ApplicationListener {
 		}*/
 		lightMaps[0].bind();
 		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		
 		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[0].render();
 		lightMaps[1].bind();
 		lightMaps[1].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		
 		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[1].render();
 		lightMaps[2].bind();
 		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		
 		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[2].render();
 		lightMaps[3].bind();
 		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		
 		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[3].render();
 		

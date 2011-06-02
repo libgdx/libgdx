@@ -165,6 +165,6 @@ public class StillModelViewer implements ApplicationListener {
 //			System.exit(-1);
 //		}
 //		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/boy_static.dae", "data/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new StillModelViewer("data/test_section_02.dae", "data/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
 	}
 }
