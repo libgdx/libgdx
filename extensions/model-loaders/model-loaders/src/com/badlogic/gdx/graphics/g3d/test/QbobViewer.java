@@ -2,9 +2,10 @@ package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.jogl.JoglApplication;
+//import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -73,8 +74,7 @@ public class QbobViewer implements ApplicationListener {
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		diffuse.bind();
-		diffuse.setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
-		
+		diffuse.setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);				
 		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -89,24 +89,25 @@ public class QbobViewer implements ApplicationListener {
 			Gdx.gl10.glPopMatrix();
 		}*/
 		lightMaps[0].bind();
-		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);				
+		setCombiners();
 		
-		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[0].render();
 		lightMaps[1].bind();
 		lightMaps[1].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		setCombiners();
 		
 		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[1].render();
 		lightMaps[2].bind();
-		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);		
+		setCombiners();
 		
 		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
 		model[2].render();
 		lightMaps[3].bind();
-		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
-		
-		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
+		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);		
+		setCombiners();
 		model[3].render();
 		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
@@ -121,6 +122,13 @@ public class QbobViewer implements ApplicationListener {
 		fps.log();	
 	}
 		
+	private void setCombiners() {
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_COMBINE);
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, GL11.GL_ADD_SIGNED);
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC0_RGB, GL11.GL_PREVIOUS);
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);	
+	}
+	
 	@Override public void resize (int width, int height) {
 		
 	}
@@ -132,7 +140,7 @@ public class QbobViewer implements ApplicationListener {
 	@Override public void dispose () {		
 	}	
 	
-	public static void main(String[] argv) {
-		new JoglApplication(new QbobViewer(), "Qbob Viewer", 800, 480, false);
-	}
+//	public static void main(String[] argv) {
+//		new JoglApplication(new QbobViewer(), "Qbob Viewer", 800, 480, false);
+//	}
 }
