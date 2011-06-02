@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
@@ -23,12 +24,18 @@ public class QbobViewer implements ApplicationListener {
 	BitmapFont font;
 	
 	@Override public void create () {		
-		for(int i = 0; i < 4; i++) {
-			model[i] = G3dLoader.loadStillModel(Gdx.files.internal("data/blobbie_world_test.dae.g3d"));
-			lightMaps[i] = new Texture(Gdx.files.internal("data/blobbie_world_test_lightmap_256.jpg"), true);
-		}
+		//for(int i = 0; i < 4; i++) {
+			model[0] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_01.dae.g3d"));
+			lightMaps[0] = new Texture(Gdx.files.internal("data/world_blobbie_lm_01.jpg"), true);
+			model[1] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_02.dae.g3d"));
+			lightMaps[1] = new Texture(Gdx.files.internal("data/world_blobbie_lm_02.jpg"), true);
+			model[2] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_03.dae.g3d"));
+			lightMaps[2] = new Texture(Gdx.files.internal("data/world_blobbie_lm_03.jpg"), true);
+			model[3] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_04.dae.g3d"));
+			lightMaps[3] = new Texture(Gdx.files.internal("data/world_blobbie_lm_04.jpg"), true);
+		//}
 		
-		diffuse = new Texture(Gdx.files.internal("data/world_blobbie_blocks.png"), true);
+		diffuse = new Texture(Gdx.files.internal("data/world_blobbie_blocks_512.png"), true);
 							
 									
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -52,7 +59,7 @@ public class QbobViewer implements ApplicationListener {
 	float[] lightColor = {1, 1, 1, 0};
 	float[] lightPosition = {2, 5, 10, 0};
 	@Override public void render () {
-		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		Gdx.gl.glClearColor(0.7f, 0.940f, 0.893f, 1.0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);		
 						
@@ -63,21 +70,37 @@ public class QbobViewer implements ApplicationListener {
 				
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-		diffuse.bind();		
+		diffuse.bind();
+		diffuse.setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-		for(int i = 0; i < 4; i++) {
+		/*for(int i = 0; i < 4; i++) {
 			Gdx.gl10.glPushMatrix();
 			if(i == 0 || i == 1) {
 				Gdx.gl10.glTranslatef(i * 14 * 12f, 0, 0);
 			} else {
 				Gdx.gl10.glTranslatef((i-2) * 14 * 12f, 11 * 12f, 0);
 			}
-			lightMaps[i].bind();			
-			model[i].render();
+			
 			Gdx.gl10.glPopMatrix();
-		}		
+		}*/
+		lightMaps[0].bind();
+		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
+		model[0].render();
+		lightMaps[1].bind();
+		lightMaps[1].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
+		model[1].render();
+		lightMaps[2].bind();
+		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
+		model[2].render();
+		lightMaps[3].bind();
+		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
+		//Gdx.gl10.glTexEnvf(GL10.GL_TEXTURE_ENV, GL10.GL_TEXTURE_ENV_MODE, GL10.GL_ADD);
+		model[3].render();
 		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
