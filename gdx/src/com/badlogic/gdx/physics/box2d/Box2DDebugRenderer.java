@@ -171,6 +171,7 @@ public class Box2DDebugRenderer {
 			drawSegment(s2, p2, JOINT_COLOR);
 			drawSegment(s1, s2, JOINT_COLOR);
 		} else if (joint.getType() == JointType.MouseJoint) {
+			drawSegment(joint.getAnchorA(), joint.getAnchorB(), JOINT_COLOR);
 		} else {
 			drawSegment(x1, p1, JOINT_COLOR);
 			drawSegment(p1, p2, JOINT_COLOR);
