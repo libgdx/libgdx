@@ -88,7 +88,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
 	boolean[] touched = new boolean[20];
-	int[] realId = new int[0];
+	int[] realId = new int[10];
 	final boolean hasMultitouch;
 	private HashSet<Integer> keys = new HashSet<Integer>();
 	private SensorManager manager;

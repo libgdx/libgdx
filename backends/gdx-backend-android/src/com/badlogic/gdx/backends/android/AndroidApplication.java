@@ -191,6 +191,9 @@ public class AndroidApplication extends Activity implements Application {
         if (audio != null) audio.pause();
         
         input.unregisterSensorListeners();
+        // erase pointer ids. this sucks donkeyballs...
+        int[] realId = input.realId;
+        for(int i = 0; i < realId.length; i++) realId[i] = -1;
         
         if (isFinishing()) {      	
            graphics.clearManagedCaches();

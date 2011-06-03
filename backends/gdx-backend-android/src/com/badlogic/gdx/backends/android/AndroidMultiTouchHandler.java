@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.android;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
@@ -52,8 +53,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 			case MotionEvent.ACTION_UP:
 			case MotionEvent.ACTION_POINTER_UP:
 			case MotionEvent.ACTION_OUTSIDE:
-			case MotionEvent.ACTION_CANCEL:
-				realPointerIndex = input.lookUpPointerIndex(pointerId);
+			case MotionEvent.ACTION_CANCEL:				
+				realPointerIndex = input.lookUpPointerIndex(pointerId);				
 				input.realId[realPointerIndex] = -1;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
