@@ -33,8 +33,7 @@ public class FastImage extends Actor {
 	private float sScaleY;
 	private float sWidth;
 	private float sHeight;
-	private Sprite sprite = new Sprite();
-	boolean updated = false;
+	private Sprite sprite = new Sprite();	
 	
 	public FastImage (String name) {
 		super(name);
@@ -67,8 +66,7 @@ public class FastImage extends Actor {
 		}
 	}
 	
-	private void updateSprite() {
-		if(updated) return;
+	private void updateSprite() {		
 		if(sX != x || sY != y) {
 			sprite.setPosition(x, y);
 			sX = x;
@@ -98,8 +96,7 @@ public class FastImage extends Actor {
 			sHeight = height;
 		}
 				
-		sprite.setRegion(region);
-		updated = true;
+		sprite.setRegion(region);		
 	}
 
 	@Override protected boolean touchDown (float x, float y, int pointer) {
