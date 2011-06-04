@@ -93,6 +93,7 @@ public class KeyframedModel implements AnimatedModel {
 			final KeyframedSubMesh subMesh = subMeshes[i];
 			final KeyframedAnimation anim = subMesh.animations.get(animation);
 			if(anim == null) throw new IllegalArgumentException("No animation with name '" + animation + "' in submesh #" + i);
+			if(time < 0 || time > anim.totalDuration) throw new IllegalArgumentException("time must be 0 <= time <= animation duration");
 			
 			final int startIndex = (int)Math.floor((time / anim.frameDuration));
 			final Keyframe startFrame = anim.keyframes[startIndex];
@@ -127,11 +128,11 @@ public class KeyframedModel implements AnimatedModel {
 		}
 	}
 	
-	@Override public Animation getAnimation (String name) {
+	@Override public KeyframedAnimation getAnimation (String name) {
 		return subMeshes[0].animations.get(name);		
 	}
 	
-	@Override public Animation[] getAnimations () {
+	@Override public KeyframedAnimation[] getAnimations () {
 		return animations;
 	}
 

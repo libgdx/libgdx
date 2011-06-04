@@ -101,8 +101,7 @@ public class G3DTLoader {
 				}
 				Keyframe keyframe = new Keyframe(time, animatedComponents, vertices);				
 				keyframes[frame] = keyframe;
-				time += frameDuration;
-				System.out.println("finished frame" + frame);
+				time += frameDuration;				
 			}						
 			
 			KeyframedAnimation animation = new KeyframedAnimation(animationName, frameDuration, keyframes);

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.graphics.g3d.test.KeyframedModelViewer;
 import com.badlogic.gdx.graphics.g3d.test.QbobViewer;
 
 public class ModelViewerActivity extends AndroidApplication {
@@ -15,6 +16,8 @@ public class ModelViewerActivity extends AndroidApplication {
         config.useAccelerometer = false;
         config.useCompass = false;
         config.useWakelock = true;
+        
         initialize(new QbobViewer(), config);
+//        initialize(new KeyframedModelViewer("data/boy.g3dt", "data/boy.png"), config);
     }
 }

@@ -54,10 +54,10 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 
 		renderer.end();
 
-		if (System.nanoTime() - startTime > 1000000000l) {
-			Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
-			startTime = System.nanoTime();
-		}
+//		if (System.nanoTime() - startTime > 1000000000l) {
+//			Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
+//			startTime = System.nanoTime();
+//		}
 	}
 
 	@Override public void create () {

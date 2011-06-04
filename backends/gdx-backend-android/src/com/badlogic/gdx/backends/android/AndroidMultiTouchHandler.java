@@ -17,8 +17,8 @@ package com.badlogic.gdx.backends.android;
 
 import android.view.MotionEvent;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
@@ -36,10 +36,11 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int x = 0, y = 0;
 		int realPointerIndex = 0;
 
+//		logAction(action, pointerId);
 		synchronized(input) { // FUCK 
 			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-			case MotionEvent.ACTION_POINTER_DOWN:
+			case MotionEvent.ACTION_DOWN:				
+			case MotionEvent.ACTION_POINTER_DOWN:				
 				realPointerIndex = input.getFreePointerIndex(); // get a free pointer index as reported by Input.getX() etc.
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
@@ -81,6 +82,19 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		}
 	}
 
+	private void logAction(int action, int pointer) {
+		String actionStr = "";
+		if(action == MotionEvent.ACTION_DOWN) actionStr = "DOWN";
+		else if(action == MotionEvent.ACTION_POINTER_DOWN) actionStr = "POINTER DOWN";
+		else if(action == MotionEvent.ACTION_UP) actionStr = "UP";
+		else if(action == MotionEvent.ACTION_POINTER_UP) actionStr = "POINTER UP";
+		else if(action == MotionEvent.ACTION_OUTSIDE) actionStr = "OUTSIDE";
+		else if(action == MotionEvent.ACTION_CANCEL) actionStr = "CANCEL";
+		else if(action == MotionEvent.ACTION_MOVE) actionStr = "MOVE";
+		else actionStr = "UNKNOWN (" + action + ")";
+		Gdx.app.log("AndroidMultiTouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
+	}
+	
 	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
 		long timeStamp = System.nanoTime();		
 		TouchEvent event = input.usedTouchEvents.obtain();
