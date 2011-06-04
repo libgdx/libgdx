@@ -107,7 +107,7 @@ public class SimpleStageCullingTest extends GdxTest {
 	}
 	
 	OrthoCamController camController;
-	Stage stage;	
+	Stage stage;		
 	SpriteBatch batch;
 	BitmapFont font;
 	
@@ -122,10 +122,10 @@ public class SimpleStageCullingTest extends GdxTest {
 		Texture texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		
 		// populate the stage with some actors and groups.
-		for(int i = 0; i < 200; i++) {
+		for(int i = 0; i < 5000; i++) {
 			Actor img = new CullableActor("img" + i, texture, (OrthographicCamera)stage.getCamera());
-			img.x = (float)Math.random() * 480 * 2;
-			img.y = (float)Math.random() * 320 * 2;
+			img.x = (float)Math.random() * 480 * 10;
+			img.y = (float)Math.random() * 320 * 10;
 			stage.addActor(img);
 		}
 		
@@ -146,7 +146,7 @@ public class SimpleStageCullingTest extends GdxTest {
 		}
 		
 		batch.begin();
-		font.draw(batch, "Visible: " + numVisible, 20, 30);
+		font.draw(batch, "Visible: " + numVisible + ", fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
 		batch.end();
 	}
 	
