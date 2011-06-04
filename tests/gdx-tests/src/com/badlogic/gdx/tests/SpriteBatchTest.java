@@ -88,7 +88,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < sprites2.length; i += 6)
 			spriteBatch
 				.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
-		draw2 = (System.nanoTime() - start) / 1000000000.0f;
+		draw2 = (System.nanoTime() - start) / 1000000000.0f;		
 
 		start = System.nanoTime();
 // spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
@@ -108,6 +108,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			startTime = System.nanoTime();
 		}
 		frames++;
+				
 	}
 
 	private void renderSprites () {
@@ -206,8 +207,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 
 		for (int i = 0; i < SPRITES * 2; i++) {
 			int x = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
-
+			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));		
+			
 			if (i >= SPRITES)
 				sprites3[i] = new Sprite(texture2, 32, 32);
 			else

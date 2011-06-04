@@ -92,6 +92,7 @@ import com.badlogic.gdx.tests.RemoteTest;
 import com.badlogic.gdx.tests.RotationTest;
 import com.badlogic.gdx.tests.ShaderMultitextureTest;
 import com.badlogic.gdx.tests.SimpleAnimationTest;
+import com.badlogic.gdx.tests.SimpleStageCullingTest;
 import com.badlogic.gdx.tests.SimpleTest;
 import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.SplineTest;
@@ -200,6 +201,7 @@ public class GdxTests
 		SplineTest.class,		
 		SimpleTest.class,
 		SimpleAnimationTest.class,
+		SimpleStageCullingTest.class,
 		SoundTest.class,
 		SpriteCacheTest.class,
 		SpriteCacheOffsetTest.class,
