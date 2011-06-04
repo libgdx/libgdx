@@ -30,6 +30,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<delete dir="backends/gdx-backend-lwjgl/bin" />
 		<delete dir="backends/gdx-backend-android/bin" />	
 		<delete dir="extensions/twl/gdx-twl/bin"/>
+		<delete dir="extensions/image-packer/bin"/>
 	</target>
 
 	<!-- init task, creates all necessary directories -->
@@ -42,6 +43,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="backends/gdx-backend-lwjgl/bin" />
 		<mkdir dir="backends/gdx-backend-android/bin" />
 		<mkdir dir="extensions/twl/gdx-twl/bin"/>
+		<mkdir dir="extensions/image-packer/bin"/>
 	</target>
 
 	<!-- compiles the java code of all modules -->
@@ -93,6 +95,13 @@ gdx and backend modules and creates a distribution out of this mess.
 				<fileset file="extensions/twl/gdx-twl/libs/*.jar" />
 			</classpath>
 		</javac>
+		
+		<!-- build texture packer extensions -->
+		<javac debug="on" srcdir="extensions/image-packer/src" destdir="extensions/image-packer/bin">
+			<classpath>
+				<pathelement location="gdx/bin" />				
+			</classpath>
+		</javac>		
 	</target>
 
 	<!-- generates the javadoc for the core api and the application implementations -->
@@ -145,11 +154,15 @@ gdx and backend modules and creates a distribution out of this mess.
 	<target name="package" depends="compile">
 		<!-- for some reason excludes don't work so we have to delete the ndk directory first... -->
 		<delete dir="gdx/bin/ndk" />
+		
+		<!-- source jars -->
 		<jar destfile="${stable}/gdx.jar" basedir="gdx/bin" />
 		<jar destfile="${stable}/gdx-sources.jar" basedir="gdx/src" />
 		<jar destfile="${stable}/gdx-backend-android-sources.jar" basedir="backends/gdx-backend-android/src" />
 		<jar destfile="${stable}/gdx-backend-jogl-sources.jar" basedir="backends/gdx-backend-jogl/src" />
 		<jar destfile="${stable}/gdx-backend-lwjgl-sources.jar" basedir="backends/gdx-backend-lwjgl/src" />
+		
+		<!-- jogl backend jar -->
 		<jar destfile="${stable}/gdx-backend-jogl.jar">
 			<fileset dir="backends/gdx-openal/bin" />
 			<zipgroupfileset file="backends/gdx-openal/libs/*.jar">
@@ -160,6 +173,8 @@ gdx and backend modules and creates a distribution out of this mess.
 				<exclude name="*-natives.jar"/>
 			</zipgroupfileset>
 		</jar>
+		
+		<!-- lwjgl backend jar -->
 		<jar destfile="${stable}/gdx-backend-lwjgl.jar">
 			<fileset dir="backends/gdx-openal/bin" />
 			<zipgroupfileset file="backends/gdx-openal/libs/*.jar">
@@ -170,12 +185,21 @@ gdx and backend modules and creates a distribution out of this mess.
 				<exclude name="*-natives.jar"/>
 			</zipgroupfileset>
 		</jar>
+		<!-- android backend jar -->
 		<jar destfile="${stable}/gdx-backend-android.jar" basedir="backends/gdx-backend-android/bin" />
+		
+		<!-- twl jar -->
 		<jar destfile="${stable}/gdx-twl.jar">
 			<fileset dir="extensions/twl/gdx-twl/bin" />
 			<zipgroupfileset file="extensions/twl/gdx-twl/libs/*.jar" />
 		</jar>
+		
+		<!-- texture packer jar -->
+		<jar destfile="${stable}/texture-packer.jar">
+			<fileset dir="extensions/image-packer/bin" />			
+		</jar>
 
+		<!-- copy natives like mad! -->
 		<copy tofile="${stable}/gdx-natives.jar" file="gdx/libs/gdx-natives.jar" />
 		<copy tofile="${stable}/gdx-backend-jogl-natives.jar" file="backends/gdx-backend-jogl/libs/gdx-backend-jogl-natives.jar" />
 		<copy tofile="${stable}/gdx-backend-lwjgl-natives.jar" file="backends/gdx-backend-lwjgl/libs/gdx-backend-lwjgl-natives.jar" />
@@ -185,6 +209,8 @@ gdx and backend modules and creates a distribution out of this mess.
 		<copy tofile="${stable}/armeabi-v7a/libgdx.so" file="gdx/libs/armeabi-v7a/libgdx.so" />
 		<!--<copy tofile="${stable}/armeabi-v7a/libmpg123.so" file="gdx/libs/armeabi-v7a/libmpg123.so" />-->
 		<copy tofile="${stable}/armeabi-v7a/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
+		
+		<!-- misc files -->
 		<copy tofile="${stable}/README" file="gdx/dist/README" />
 		<copy tofile="${stable}/LICENSE" file="gdx/dist/LICENSE" />
 		<copy tofile="${stable}/CC-LICENSE" file="gdx/dist/CC-LICENSE" />
