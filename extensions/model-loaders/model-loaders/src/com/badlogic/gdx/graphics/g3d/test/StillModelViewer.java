@@ -44,7 +44,7 @@ public class StillModelViewer implements ApplicationListener {
 	@Override public void create () {
 		long start = System.nanoTime();
 		if(fileName.endsWith(".dae")) model = ColladaLoader.loadStillModel(Gdx.files.internal(fileName));
-		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName), true);
+		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName));
 		else if(fileName.endsWith(".g3d")) model = G3dLoader.loadStillModel(Gdx.files.internal(fileName));
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
 		Gdx.app.log("StillModelViewer", "loading took: " + (System.nanoTime() - start)/ 1000000000.0f);
@@ -99,32 +99,32 @@ public class StillModelViewer implements ApplicationListener {
 		
 		drawAxes();
 		
-		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
+//		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 		
-//		if(hasNormals) {
-//			Gdx.gl.glEnable(GL10.GL_LIGHTING);
-//			Gdx.gl.glEnable(GL10.GL_COLOR_MATERIAL);
-//			Gdx.gl.glEnable(GL10.GL_LIGHT0);
-//			Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
-//			Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);			
-//		}
+		if(hasNormals) {
+			Gdx.gl.glEnable(GL10.GL_LIGHTING);
+			Gdx.gl.glEnable(GL10.GL_COLOR_MATERIAL);
+			Gdx.gl.glEnable(GL10.GL_LIGHT0);
+			Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightColor, 0);
+			Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);			
+		}
 		
 		if(texture != null) {
 			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);			
 			texture.bind();
 		}
 		
-//		angle += 45 * Gdx.graphics.getDeltaTime();
-//		Gdx.gl10.glRotatef(angle, 0, 1, 0);
+		angle += 45 * Gdx.graphics.getDeltaTime();
+		Gdx.gl10.glRotatef(angle, 0, 1, 0);
 		model.render();
 		
 		if(texture != null) {
 			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 		}
 		
-//		if(hasNormals) {
-//			Gdx.gl.glDisable(GL10.GL_LIGHTING);
-//		}
+		if(hasNormals) {
+			Gdx.gl.glDisable(GL10.GL_LIGHTING);
+		}
 		
 		fps.log();
 	}
@@ -165,6 +165,6 @@ public class StillModelViewer implements ApplicationListener {
 //			System.exit(-1);
 //		}
 //		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/test_section_02.dae", "data/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new StillModelViewer("data/test.obj", "data/test.png"), "StillModel Viewer", 800, 480, false);
 	}
 }

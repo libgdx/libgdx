@@ -20,10 +20,10 @@ import com.badlogic.gdx.utils.LittleEndianInputStream;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class MD2Loader {	
-	public KeyframedModel load (FileHandle fileHandle) {
+	public KeyframedModel load (FileHandle fileHandle, float frameDuration) {
 		InputStream in = fileHandle.read();
 		try {
-			return load(in);
+			return load(in, frameDuration);
 		} finally {
 			if (in != null) try {
 				in.close();
@@ -33,7 +33,7 @@ public class MD2Loader {
 		}
 	}
 
-	public KeyframedModel load (InputStream in) {
+	public KeyframedModel load (InputStream in, float frameDuration) {
 		try {
 			byte[] bytes = loadBytes(in);
 
@@ -42,14 +42,14 @@ public class MD2Loader {
 			MD2Triangle[] triangles = loadTriangles(header, bytes);
 			MD2Frame[] frames = loadFrames(header, bytes);
 
-			return buildModel(header, triangles, texCoords, frames);
+			return buildModel(header, triangles, texCoords, frames, frameDuration);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
 	}
 
-	private KeyframedModel buildModel (MD2Header header, MD2Triangle[] triangles, float[] texCoords, MD2Frame[] frames) {
+	private KeyframedModel buildModel (MD2Header header, MD2Triangle[] triangles, float[] texCoords, MD2Frame[] frames, float frameDuration) {
 		ArrayList<VertexIndices> vertCombos = new ArrayList<VertexIndices>();
 		short[] indices = new short[triangles.length * 3];
 		int idx = 0;
@@ -101,33 +101,45 @@ public class MD2Loader {
 
 		header.numVertices = vertCombos.size();
 		
-		KeyframedAnimation animation = new KeyframedAnimation("all", frames.length * 0.2f, new Keyframe[frames.length]);		
+		float[] blendedVertices = new float[header.numVertices * 5];
+		MD2Frame frame = frames[0];		
+		idx = 0;
+		int idxV = 0;
+		int idxT = 0;
+		for (int i = 0; i < header.numVertices; i++) {
+			blendedVertices[idx++] = frame.vertices[idxV++];
+			blendedVertices[idx++] = frame.vertices[idxV++];
+			blendedVertices[idx++] = frame.vertices[idxV++];
+			blendedVertices[idx++] = uvs[idxT++];
+			blendedVertices[idx++] = uvs[idxT++];
+		}
+		
+		KeyframedAnimation animation = new KeyframedAnimation("all", frameDuration, new Keyframe[frames.length]);
+		float timeStamp = 0;
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
-			MD2Frame frame = frames[frameNum];
-			float[] vertices = new float[header.numVertices * 5];
-			idx = 0;
-			int idxV = 0;
-			int idxT = 0;
+			frame = frames[frameNum];
+			float[] vertices = new float[header.numVertices * 3];
+			idx = 0;			
+			idxV = 0;
 			for (int i = 0; i < header.numVertices; i++) {
 				vertices[idx++] = frame.vertices[idxV++];
 				vertices[idx++] = frame.vertices[idxV++];
-				vertices[idx++] = frame.vertices[idxV++];
-				vertices[idx++] = uvs[idxT++];
-				vertices[idx++] = uvs[idxT++];
+				vertices[idx++] = frame.vertices[idxV++];				
 			}
 
-			Keyframe keyFrame = new Keyframe(0 /** FIXME set frameduration **/, 3, vertices);			
+			Keyframe keyFrame = new Keyframe(frameNum * frameDuration, 3, vertices);			
 			animation.keyframes[frameNum] = keyFrame;
 		}
 
 		
-		Mesh mesh = new Mesh(false, header.numTriangles * 3, indices.length, 
+		Mesh mesh = new Mesh(false, header.numVertices, indices.length, 
 									new VertexAttribute(Usage.Position, 3, "a_pos"), 
 									new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex0"));
 		mesh.setIndices(indices);
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);
-		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, null /** FIXME **/, animations, GL10.GL_TRIANGLES);	
+		
+		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, GL10.GL_TRIANGLES);	
 		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});		
 		model.setAnimation("all", 0, false);
 		return model;

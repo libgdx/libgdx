@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3DTLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
@@ -37,6 +38,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	
 	@Override public void create () {
 		if(fileName.endsWith(".g3dt")) model = G3DTLoader.loadKeyframedModel(Gdx.files.internal(fileName));
+		else if(fileName.endsWith(".md2")) model = new MD2Loader().load(Gdx.files.internal(fileName), 1 / 7f);
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
@@ -147,6 +149,6 @@ public class KeyframedModelViewer implements ApplicationListener {
 //			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 //			System.exit(-1);
 //		}
-		new JoglApplication(new KeyframedModelViewer("data/boy_low.g3dt", "data/boy_lowpoly_color.png"), "KeframedModel Viewer", 320, 240, false);
+		new JoglApplication(new KeyframedModelViewer("data/knight.md2", "data/knight.jpg"), "KeframedModel Viewer", 320, 240, false);
 	}
 }

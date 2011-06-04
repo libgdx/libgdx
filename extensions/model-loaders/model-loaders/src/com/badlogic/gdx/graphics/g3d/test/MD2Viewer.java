@@ -17,7 +17,7 @@ public class MD2Viewer implements ApplicationListener {
 	float angle = 0;	
 	
 	@Override public void create () {		
-		model = new MD2Loader().load(Gdx.files.internal("data/knight.md2").read());
+		model = new MD2Loader().load(Gdx.files.internal("data/knight.md2").read(), 0.2f);
 		Material material = new Material("knight", new TextureAttribute(new Texture("data/knight.jpg"), 0, "a_tex0"));
 		model.setMaterial(material);	
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
