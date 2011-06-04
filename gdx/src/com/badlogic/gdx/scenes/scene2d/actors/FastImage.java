@@ -63,7 +63,7 @@ public class FastImage extends Actor {
 		updateSprite();
 		
 		if (region.getTexture() != null) {			
-			sprite.draw(batch); //, parentAlpha);
+			sprite.draw(batch, parentAlpha);
 		}
 	}
 	
