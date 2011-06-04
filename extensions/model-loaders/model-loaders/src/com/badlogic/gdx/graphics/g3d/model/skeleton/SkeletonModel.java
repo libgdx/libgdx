@@ -138,13 +138,20 @@ public class SkeletonModel implements AnimatedModel {
 	}
 
 	@Override public Animation getAnimation (String name) {
-		// FIXME
-		return null;
+		return skeleton.animations.get(name);
 	}
 
+	// FIXME, ugh...
+	protected SkeletonAnimation[] animations;
 	@Override public Animation[] getAnimations () {
-		// FIXME
-		return null;
+		if(animations == null || animations.length != skeleton.animations.size) {
+			animations = new SkeletonAnimation[skeleton.animations.size];
+			int i = 0;
+			for(SkeletonAnimation anim: skeleton.animations.values()) {
+				animations[i] = anim;
+			}
+		}
+		return animations;
 	}
 
 	@Override

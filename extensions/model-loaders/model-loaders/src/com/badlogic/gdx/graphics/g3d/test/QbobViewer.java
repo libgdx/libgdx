@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.test.utils.PerspectiveCamController;
 
 public class QbobViewer implements ApplicationListener {
 	PerspectiveCamera cam;
@@ -26,21 +27,17 @@ public class QbobViewer implements ApplicationListener {
 	BitmapFont font;
 	
 	@Override public void create () {		
-		//for(int i = 0; i < 4; i++) {
-			model[0] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_01.dae.g3d"));
-			lightMaps[0] = new Texture(Gdx.files.internal("data/world_blobbie_lm_01.jpg"), true);
-			model[1] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_02.dae.g3d"));
-			lightMaps[1] = new Texture(Gdx.files.internal("data/world_blobbie_lm_02.jpg"), true);
-			model[2] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_03.dae.g3d"));
-			lightMaps[2] = new Texture(Gdx.files.internal("data/world_blobbie_lm_03.jpg"), true);
-			model[3] = G3dLoader.loadStillModel(Gdx.files.internal("data/test_section_04.dae.g3d"));
-			lightMaps[3] = new Texture(Gdx.files.internal("data/world_blobbie_lm_04.jpg"), true);
-		//}
+		model[0] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_01.dae.g3d"));
+		lightMaps[0] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_01.jpg"), true);
+		model[1] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_02.dae.g3d"));
+		lightMaps[1] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_02.jpg"), true);
+		model[2] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_03.dae.g3d"));
+		lightMaps[2] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_03.jpg"), true);
+		model[3] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_04.dae.g3d"));
+		lightMaps[3] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_04.jpg"), true);
 		
-		diffuse = new Texture(Gdx.files.internal("data/world_blobbie_blocks.png"), true);
-		
-							
-									
+		diffuse = new Texture(Gdx.files.internal("data/qbob/world_blobbie_blocks.png"), true);
+																		
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(30, 10, 85f);
 		cam.direction.set(0,0,-1);
@@ -58,9 +55,7 @@ public class QbobViewer implements ApplicationListener {
 	@Override public void resume () {
 		
 	}
-
-	float[] lightColor = {1, 1, 1, 0};
-	float[] lightPosition = {2, 5, 10, 0};
+	
 	@Override public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);

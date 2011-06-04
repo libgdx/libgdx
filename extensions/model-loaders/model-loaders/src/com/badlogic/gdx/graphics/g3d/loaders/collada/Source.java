@@ -34,8 +34,6 @@ public class Source {
 		String[] tokens = floatArray.getText().split("\\s+");
 		for(int i = 0; i < tokens.length; i++) {
 			data[i] = Float.parseFloat(tokens[i]);
-		}			
-		
-		System.out.println(id + ": " + Arrays.toString(data));
+		}						
 	}
 }

@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.test;
+package com.badlogic.gdx.graphics.g3d.test.utils;
 
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.PerspectiveCamera;

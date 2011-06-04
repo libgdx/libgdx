@@ -1,34 +1,28 @@
 package com.badlogic.gdx.graphics.g3d.test;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader.Chunk;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
-import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.loaders.ogre.OgreXmlLoader;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonAnimation;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
+import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class StillModelViewer implements ApplicationListener {
-
+public class SkeletonModelViewer implements ApplicationListener {
 	PerspectiveCamera cam;
-	StillModel model;
+	SkeletonModel model;	
 	Texture texture = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
@@ -36,38 +30,32 @@ public class StillModelViewer implements ApplicationListener {
 	float angle = 0;
 	String fileName;
 	String textureFileName;
-	FPSLogger fps = new FPSLogger();
+	SkeletonAnimation anim;
+	float animTime = 0;	
 	SpriteBatch batch;
 	BitmapFont font;
 	
-	public StillModelViewer(String fileName, String textureFileName) {
+	public SkeletonModelViewer(String fileName, String textureFileName) {
 		this.fileName = fileName;
 		this.textureFileName = textureFileName;
 	}
 	
 	@Override public void create () {
-		long start = System.nanoTime();
-		if(fileName.endsWith(".dae")) model = ColladaLoader.loadStillModel(Gdx.files.internal(fileName));
-		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName));
-		else if(fileName.endsWith(".g3d")) model = G3dLoader.loadStillModel(Gdx.files.internal(fileName));
-		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
-		Gdx.app.log("StillModelViewer", "loading took: " + (System.nanoTime() - start)/ 1000000000.0f);
-		
-		if(!fileName.endsWith(".g3d")) {
-			G3dExporter.export(model, Gdx.files.absolute(fileName + ".g3d"));		
-			start = System.nanoTime();
-			model = G3dLoader.loadStillModel(Gdx.files.absolute(fileName + ".g3d"));
-			Gdx.app.log("StillModelViewer", "loading binary took: " + (System.nanoTime() - start)/ 1000000000.0f);
+		if(fileName.endsWith(".xml")) {
+			model = new OgreXmlLoader().load(Gdx.files.internal(fileName), Gdx.files.internal(fileName.replace("mesh.xml", "skeleton.xml")));		
 		}
-				
-		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName), true);		
+		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
+		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
 		hasNormals = hasNormals();
+		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
+		model.setMaterial(material);		
+		anim = (SkeletonAnimation)model.getAnimations()[0];		
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
-		System.out.println("bounds: " + bounds);			
+		System.out.println("bounds: " + bounds);	
 		
-		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
 		cam.near = 0.1f;
@@ -79,7 +67,7 @@ public class StillModelViewer implements ApplicationListener {
 	}
 	
 	private boolean hasNormals() {
-		for(StillSubMesh mesh: model.subMeshes) {
+		for(SkeletonSubMesh mesh: model.subMeshes) {
 			if(mesh.mesh.getVertexAttribute(Usage.Normal) == null) return false;
 		}
 		return true;
@@ -95,11 +83,11 @@ public class StillModelViewer implements ApplicationListener {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);		
-			
+		
 		cam.update();
 		cam.apply(Gdx.gl10);		
 		
-		drawAxes();	
+		drawAxes();
 		
 		if(hasNormals) {
 			Gdx.gl.glEnable(GL10.GL_LIGHTING);
@@ -110,13 +98,19 @@ public class StillModelViewer implements ApplicationListener {
 		}
 		
 		if(texture != null) {
-			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);			
-			texture.bind();
+			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+			Gdx.gl.glEnable(GL10.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);			
 		}
 		
 		angle += 45 * Gdx.graphics.getDeltaTime();
-		Gdx.gl10.glRotatef(angle, 0, 1, 0);
-		model.render();
+		Gdx.gl10.glRotatef(angle, 0, 1, 0);		
+		animTime += Gdx.graphics.getDeltaTime();
+		if(animTime > anim.totalDuration) {
+			animTime = 0;
+		}
+		model.setAnimation(anim.name, animTime, false);
+		model.render();			
 		
 		if(texture != null) {
 			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
@@ -129,8 +123,6 @@ public class StillModelViewer implements ApplicationListener {
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
 		batch.end();
-		
-		fps.log();
 	}
 	
 	private void drawAxes() {
@@ -165,10 +157,9 @@ public class StillModelViewer implements ApplicationListener {
 	
 	public static void main(String[] argv) {
 //		if(argv.length != 1 && argv.length != 2) {
-//			System.out.println("StillModelViewer <filename> ?<texture-filename>");
+//			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 //			System.exit(-1);
 //		}
-//		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/boy_plotted.dae", "data/boy_lowpoly_color.png"), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new SkeletonModelViewer("data/robot-mesh.xml", "data/r2skin.jpg"), "SkeletonModel Viewer", 800, 480, false);
 	}
 }

@@ -30,14 +30,14 @@ import com.badlogic.gdx.utils.ObjectMap;
  *
  */
 public class G3DTLoader {
-	public static KeyframedModel loadKeyframedModel(FileHandle handle) {
-		return loadKeyframedModel(handle.read());
+	public static KeyframedModel loadKeyframedModel(FileHandle handle, boolean flipV) {
+		return loadKeyframedModel(handle.read(), flipV);
 	}
 	
 	static int lineNum = 0;
 	static String line = null;
 	
-	public static KeyframedModel loadKeyframedModel(InputStream stream) {
+	public static KeyframedModel loadKeyframedModel(InputStream stream, boolean flipV) {
 		BufferedReader in = new BufferedReader(new InputStreamReader(stream));
 		
 		lineNum = 1;
@@ -47,7 +47,7 @@ public class G3DTLoader {
 			int numMeshes = readInt(in);
 			KeyframedSubMesh[] subMeshes = new KeyframedSubMesh[numMeshes];
 			for(int i = 0; i < numMeshes; i++) {
-				subMeshes[i] = readMesh(in);
+				subMeshes[i] = readMesh(in, flipV);
 			}
 			KeyframedModel model = new KeyframedModel(subMeshes);			
 			model.setAnimation(model.getAnimations()[0].name, 0, false);
@@ -57,7 +57,7 @@ public class G3DTLoader {
 		}		
 	}	
 	
-	private static KeyframedSubMesh readMesh(BufferedReader in) throws IOException {
+	private static KeyframedSubMesh readMesh(BufferedReader in, boolean flipV) throws IOException {
 		String name = readString(in);
 		IntArray indices = readFaces(in);
 		int numVertices = readInt(in);
@@ -76,7 +76,7 @@ public class G3DTLoader {
 				hasNormals = true;
 			}
 			if(attributeType.equals("uv")) {
-				uvSets.add(readUVSet(in, numVertices));
+				uvSets.add(readUVSet(in, numVertices, flipV));
 			}
 		}
 		int animatedComponents = hasNormals?6:3;
@@ -153,13 +153,13 @@ public class G3DTLoader {
 		return attributes;
 	}
 
-	private static FloatArray readUVSet(BufferedReader in, int numVertices) throws IOException {
+	private static FloatArray readUVSet(BufferedReader in, int numVertices, boolean flipV) throws IOException {
 		FloatArray uvSet = new FloatArray(numVertices * 2);
 		FloatArray uv = new FloatArray(2);
 		for(int i = 0; i < numVertices; i++) {
 			readFloatArray(in, uv);
 			uvSet.add(uv.items[0]);
-			uvSet.add(uv.items[1]);
+			uvSet.add(flipV?1-uv.items[1]:uv.items[1]);
 		}
 		return uvSet;
 	}
@@ -242,12 +242,5 @@ public class G3DTLoader {
 	private static String read(BufferedReader in) throws IOException {
 		line = in.readLine();
 		return line;
-	}
-		
-	public static void main(String[] argv) throws FileNotFoundException {
-		long start = System.nanoTime();
-		KeyframedModel loadKeyframedModel = G3DTLoader.loadKeyframedModel(new FileInputStream("data/cylinder.g3dt"));
-//		KeyframedModel loadKeyframedModel = G3DTLoader.loadKeyframedModel(new FileInputStream("data/boy.g3dt"));
-		System.out.println("took " + (System.nanoTime() - start) / 1000000000.0f);
-	}
+	}	
 }

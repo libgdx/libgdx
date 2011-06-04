@@ -35,13 +35,7 @@ public class Faces {
 		this.mappings = mappings;
 		parseVertices(faces);
 		triangulate(faces);
-		this.numIndices = triangles.size;
-		
-		for(VertexIndices v: triangles) {
-			System.out.println(v);
-		}
-		System.out.println("vertices: " + numVertices);
-		System.out.println("indices: " + numIndices);
+		this.numIndices = triangles.size;			
 	}
 	
 	/**

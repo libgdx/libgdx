@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3DTLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
@@ -30,6 +32,8 @@ public class KeyframedModelViewer implements ApplicationListener {
 	String textureFileName;
 	KeyframedAnimation anim;
 	float animTime = 0;	
+	SpriteBatch batch;
+	BitmapFont font;
 	
 	public KeyframedModelViewer(String fileName, String textureFileName) {
 		this.fileName = fileName;
@@ -37,7 +41,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	}
 	
 	@Override public void create () {
-		if(fileName.endsWith(".g3dt")) model = G3DTLoader.loadKeyframedModel(Gdx.files.internal(fileName));
+		if(fileName.endsWith(".g3dt")) model = G3DTLoader.loadKeyframedModel(Gdx.files.internal(fileName), true);
 		else if(fileName.endsWith(".md2")) model = new MD2Loader().load(Gdx.files.internal(fileName), 1 / 7f);
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
@@ -57,6 +61,8 @@ public class KeyframedModelViewer implements ApplicationListener {
 		cam.far = 1000;
 		
 		renderer = new ImmediateModeRenderer();
+		batch = new SpriteBatch();
+		font = new BitmapFont();
 	}
 	
 	private boolean hasNormals() {
@@ -102,7 +108,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 		if(animTime > anim.totalDuration - anim.frameDuration) {
 			animTime = 0;
 		}
-		model.setAnimation(anim.name, animTime, true);
+		model.setAnimation(anim.name, animTime, false);
 		model.render();			
 		
 		if(texture != null) {
@@ -112,6 +118,10 @@ public class KeyframedModelViewer implements ApplicationListener {
 		if(hasNormals) {
 			Gdx.gl.glDisable(GL10.GL_LIGHTING);
 		}
+		
+		batch.begin();
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
+		batch.end();
 	}
 	
 	private void drawAxes() {
@@ -149,6 +159,6 @@ public class KeyframedModelViewer implements ApplicationListener {
 //			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 //			System.exit(-1);
 //		}
-		new JoglApplication(new KeyframedModelViewer("data/knight.md2", "data/knight.jpg"), "KeframedModel Viewer", 320, 240, false);
+		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", "data/boy.png"), "KeframedModel Viewer", 800, 480, false);
 	}
 }
