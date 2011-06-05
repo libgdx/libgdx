@@ -1,0 +1,22 @@
+g3dt-still-#versionminor.#versionmajor
+#meshes
+meshName
+
+#faces
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+#faceVertices, idx1, idx2, idx2, ... idx#faceVertices
+
+#numVertices
+#numAttributes
+position (1)
+normal (0-1)
+uv (0-n)
+
+x, y, z, (nx, ny, nz)? (u1, v1)? (u2, v2)?
+x, y, z, (nx, ny, nz)? (u1, v1)? (u2, v2)?
+x, y, z, (nx, ny, nz)? (u1, v1)? (u2, v2)?
+x, y, z, (nx, ny, nz)? (u1, v1)? (u2, v2)?
+x, y, z, (nx, ny, nz)? (u1, v1)? (u2, v2)?
+
