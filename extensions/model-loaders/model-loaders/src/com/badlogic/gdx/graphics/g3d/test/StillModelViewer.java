@@ -1,8 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.test;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
@@ -14,10 +11,9 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader.Chunk;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
@@ -50,8 +46,13 @@ public class StillModelViewer implements ApplicationListener {
 		if(fileName.endsWith(".dae")) model = ColladaLoader.loadStillModel(Gdx.files.internal(fileName));
 		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName));
 		else if(fileName.endsWith(".g3d")) model = G3dLoader.loadStillModel(Gdx.files.internal(fileName));
+		else if(fileName.endsWith(".g3dt")) model = G3dtLoader.loadStillModel(Gdx.files.internal(fileName), true);
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
 		Gdx.app.log("StillModelViewer", "loading took: " + (System.nanoTime() - start)/ 1000000000.0f);
+		
+		for(StillSubMesh mesh: model.subMeshes) {
+			mesh.mesh.scale(0.1f, 0.1f, 0.1f);
+		}
 		
 		if(!fileName.endsWith(".g3d")) {
 			G3dExporter.export(model, Gdx.files.absolute(fileName + ".g3d"));		
@@ -72,10 +73,10 @@ public class StillModelViewer implements ApplicationListener {
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
 		cam.near = 0.1f;
 		cam.far = 1000;
-		
+					
 		renderer = new ImmediateModeRenderer();
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont();		
 	}
 	
 	private boolean hasNormals() {
@@ -169,6 +170,6 @@ public class StillModelViewer implements ApplicationListener {
 //			System.exit(-1);
 //		}
 //		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/boy_plotted.dae", "data/boy_lowpoly_color.png"), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
 	}
 }

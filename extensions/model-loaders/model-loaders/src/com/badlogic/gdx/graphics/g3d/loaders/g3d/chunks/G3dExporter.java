@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -79,5 +80,19 @@ public class G3dExporter {
 		} finally {
 			if(out != null) try { out.close(); } catch(IOException e) { }
 		}
+	}
+	
+	public static void export(KeyframedModel model, FileHandle handle) {
+		ChunkWriter writer = new ChunkWriter();
+		
+		// write version info
+		writer.newChunk(G3dConstants.VERSION_INFO);
+		writer.writeByte(G3dConstants.MAJOR_VERSION);
+		writer.writeByte(G3dConstants.MINOR_VERSION);
+		writer.endChunk();
+		
+		// write still model
+		writer.newChunk(G3dConstants.KEYFRAMED_MODEL);
+		writer.writeInt(model.subMeshes.length);
 	}
 }

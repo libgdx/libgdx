@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3DTLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
@@ -41,7 +41,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	}
 	
 	@Override public void create () {
-		if(fileName.endsWith(".g3dt")) model = G3DTLoader.loadKeyframedModel(Gdx.files.internal(fileName), true);
+		if(fileName.endsWith(".g3dt")) model = G3dtLoader.loadKeyframedModel(Gdx.files.internal(fileName), true);
 		else if(fileName.endsWith(".md2")) model = new MD2Loader().load(Gdx.files.internal(fileName), 1 / 7f);
 		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");		
 		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		

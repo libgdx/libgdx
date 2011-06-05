@@ -1,23 +1,22 @@
 package com.badlogic.gdx.graphics.g3d.loaders.g3d;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
+import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -29,13 +28,79 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author mzechner
  *
  */
-public class G3DTLoader {
+public class G3dtLoader {
 	public static KeyframedModel loadKeyframedModel(FileHandle handle, boolean flipV) {
 		return loadKeyframedModel(handle.read(), flipV);
 	}
 	
+	public static StillModel loadStillModel(FileHandle handle, boolean flipV) {
+		return loadStillModel(handle.read(), flipV);
+	}
+	
 	static int lineNum = 0;
 	static String line = null;
+	
+	public static StillModel loadStillModel(InputStream stream, boolean flipV) {
+		BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+		
+		lineNum = 1;
+		try {
+			String version = readString(in);
+			if(!version.equals("g3dt-still-1.0")) throw new GdxRuntimeException("incorrect version");
+			int numMeshes = readInt(in);
+			StillSubMesh[] subMeshes = new StillSubMesh[numMeshes];
+			for(int i = 0; i < numMeshes; i++) {
+				subMeshes[i] = readStillSubMesh(in, flipV);
+			}
+			StillModel model = new StillModel(subMeshes);						
+			return model;
+		} catch(Throwable e) {
+			throw new GdxRuntimeException("Couldn't read keyframed model, error in line " + lineNum + ", '" + line + "' : " + e.getMessage(), e);
+		}
+	}
+	
+	private static StillSubMesh readStillSubMesh(BufferedReader in, boolean flipV) throws IOException {
+		String name = readString(in);
+		IntArray indices = readFaces(in);
+		int numVertices = readInt(in);
+		int numAttributes = readInt(in);		
+		
+		if(!readString(in).equals("position")) throw new GdxRuntimeException("first attribute must be position.");
+		int numUvs = 0;
+		boolean hasNormals = false;
+		for(int i = 1; i < numAttributes; i++) {
+			String attributeType = readString(in);
+			
+			if(!attributeType.equals("normal") && !attributeType.equals("uv")) throw new GdxRuntimeException("attribute name must be normal or uv");
+			
+			if(attributeType.equals("normal")) {
+				if(i != 1) throw new GdxRuntimeException("attribute normal must be second attribute");
+				hasNormals = true;
+			}
+			if(attributeType.equals("uv")) {
+				numUvs++;
+			}
+		}				
+		VertexAttribute[] vertexAttributes = createVertexAttributes(hasNormals, numUvs);		
+		int vertexSize = new VertexAttributes(vertexAttributes).vertexSize / 4;
+		float[] vertices = new float[numVertices * vertexSize];
+		int idx = 0;
+		int uvOffset = hasNormals?6:3;
+		for(int i = 0; i < numVertices; i++) {
+			readFloatArray(in, vertices, idx);
+			if(flipV) {
+				for(int j = idx + uvOffset + 1; j < idx + uvOffset + numUvs * 2; j+=2) {
+					vertices[j] = 1 - vertices[j];
+				}
+			}
+			idx+=vertexSize;		
+		}
+		
+		Mesh mesh = new Mesh(true, numVertices, indices.size, vertexAttributes);
+		mesh.setVertices(vertices);
+		mesh.setIndices(convertToShortArray(indices));
+		return new StillSubMesh(name, mesh, GL10.GL_TRIANGLES);
+	}
 	
 	public static KeyframedModel loadKeyframedModel(InputStream stream, boolean flipV) {
 		BufferedReader in = new BufferedReader(new InputStreamReader(stream));

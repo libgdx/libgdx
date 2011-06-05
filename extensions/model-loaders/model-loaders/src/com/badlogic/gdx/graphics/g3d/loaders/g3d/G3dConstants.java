@@ -11,8 +11,10 @@ public class G3dConstants {
 	public static final int VERSION_INFO = 0x0001;
 	public static final int STILL_MODEL = 0x1000;
 	public static final int STILL_SUBMESH = 0x1100;
+	public static final int KEYFRAMED_MODEL = 0x2000;
+	public static final int KEYFRAMED_SUBMESH = 0x2200;
 	public static final int VERTEX_LIST = 0x1110;
 	public static final int INDEX_LIST = 0x1111;
 	public static final int VERTEX_ATTRIBUTES = 0x1120;
-	public static final int VERTEX_ATTRIBUTE = 0x1121;
+	public static final int VERTEX_ATTRIBUTE = 0x1121;	
 }

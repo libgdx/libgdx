@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3DTLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
@@ -39,7 +39,7 @@ public class QbobViewer implements ApplicationListener {
 	BitmapFont font;	
 	
 	@Override public void create () {
-		animModel = G3DTLoader.loadKeyframedModel(Gdx.files.internal("data/boy.g3dt"), true);
+		animModel = G3dtLoader.loadKeyframedModel(Gdx.files.internal("data/boy.g3dt"), true);
 		anim = animModel.getAnimations()[0];
 		Material material = new Material("default", new TextureAttribute(new Texture(Gdx.files.internal("data/boy.png")), 0, "tex0"));
 		animModel.setMaterial(material);

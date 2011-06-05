@@ -13,5 +13,5 @@ public interface Model {
 	public SubMesh[] getSubMeshes();
 	public void getBoundingBox(BoundingBox bbox);
 	public void setMaterials(Material... materials);
-	public void setMaterial(Material material);
+	public void setMaterial(Material material);	
 }
