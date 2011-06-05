@@ -26,7 +26,7 @@ public class LinearGroup extends BoundGroup {
 
 	protected final LinearGroupLayout layout;
 
-	public LinearGroup (String name, int width, int height, LinearGroupLayout layout) {
+	public LinearGroup (String name, float width, float height, LinearGroupLayout layout) {
 		super(name, width, height);
 		this.layout = layout;
 	}

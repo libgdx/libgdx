@@ -250,6 +250,18 @@ public class Body {
 	public void applyForce (Vector2 force, Vector2 point) {
 		jniApplyForce(addr, force.x, force.y, point.x, point.y);
 	}
+	
+	/**
+	 * Apply a force at a world point. If the force is not applied at the center of mass, it will generate a torque and affect the
+	 * angular velocity. This wakes up the body.
+	 * @param forceX the world force vector on x, usually in Newtons (N).
+	 * @param forceY the world force vector on y, usually in Newtons (N).
+	 * @param pointX the world position of the point of application on x.
+	 * @param pointY the world position of the point of application on y.
+	 */
+	public void applyForce (float forceX, float forceY, float pointX, float pointY) {
+		jniApplyForce(addr, forceX, forceY, pointX, pointY);
+	}
 
 	private native void jniApplyForce (long addr, float forceX, float forceY, float pointX, float pointY);
 
