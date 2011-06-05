@@ -113,6 +113,18 @@ public class Body {
 	public void setTransform (Vector2 position, float angle) {
 		jniSetTransform(addr, position.x, position.y, angle);
 	}
+	
+	/**
+	 * Set the position of the body's origin and rotation. This breaks any contacts and wakes the other bodies. Manipulating a
+	 * body's transform may cause non-physical behavior.
+	 * @param x the world position on the x-axis
+	 * @param y the world position on the y-axis
+	 * @param angle the world rotation in radians.
+	 */
+	public void setTransform(float x, float y, float angle) {
+		jniSetTransform(addr, x, y, angle);
+	}
+	
 
 	private native void jniSetTransform (long addr, float positionX, float positionY, float angle);
 
@@ -187,6 +199,13 @@ public class Body {
 	public void setLinearVelocity (Vector2 v) {
 		jniSetLinearVelocity(addr, v.x, v.y);
 	}
+	
+	/**
+	 * Set the linear velocity of the center of mass.
+	 */
+	public void setLinearVelocity (float vX, float vY) {
+		jniSetLinearVelocity(addr, vX, vY);
+	}
 
 	private native void jniSetLinearVelocity (long addr, float x, float y);
 
@@ -253,6 +272,18 @@ public class Body {
 	 */
 	public void applyLinearImpulse (Vector2 impulse, Vector2 point) {
 		jniApplyLinearImpulse(addr, impulse.x, impulse.y, point.x, point.y);
+	}
+	
+	/**
+	 * Apply an impulse at a point. This immediately modifies the velocity. It also modifies the angular velocity if the point of
+	 * application is not at the center of mass. This wakes up the body.
+	 * @param impulseX the world impulse vector on the x-axis, usually in N-seconds or kg-m/s.
+	 * @param impulseY the world impulse vector on the y-axis, usually in N-seconds or kg-m/s.
+	 * @param pointX the world position of the point of application on the x-axis.
+	 * @param pointY the world position of the point of application on the y-axis.
+	 */
+	public void applyLinearImpulse(float impulseX, float impulseY, float pointX, float pointY) {
+		jniApplyLinearImpulse(addr, impulseX, impulseY, pointX, pointY);
 	}
 
 	private native void jniApplyLinearImpulse (long addr, float impulseX, float impulseY, float pointX, float pointY);
