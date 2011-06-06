@@ -6,6 +6,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.g3d.test.KeyframedModelViewer;
 import com.badlogic.gdx.graphics.g3d.test.QbobViewer;
+import com.badlogic.gdx.graphics.g3d.test.SkeletonModelViewer;
 
 public class ModelViewerActivity extends AndroidApplication {
     /** Called when the activity is first created. */
@@ -19,5 +20,6 @@ public class ModelViewerActivity extends AndroidApplication {
         
         initialize(new QbobViewer(), config);
 //        initialize(new KeyframedModelViewer("data/boy.g3dt", "data/boy.png"), config);
+//        initialize(new SkeletonModelViewer("data/ninja.mesh.xml", "data/ninja.jpg"), config);
     }
 }
