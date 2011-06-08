@@ -558,5 +558,32 @@ public class Xml {
 			}
 			return children;
 		}
+
+		/**
+		 * Returns the attribute as a float.
+		 * @param name the name of the attribute
+		 * @return the attribute
+		 */
+		public float getAttributeAsFloat(String name) {
+			return Float.parseFloat(getAttribute(name));
+		}
+		
+		/**
+		 * Returns the attribute as an int.
+		 * @param name the name of the attribute
+		 * @return the attribute
+		 */
+		public int getAttributeAsInt(String name) {
+			return Integer.parseInt(getAttribute(name));
+		}
+		
+		/**
+		 * Returns the attribute as a boolean.
+		 * @param name the name of the attribute
+		 * @return the attribute
+		 */
+		public boolean getAttributeAsBoolean(String name) {
+			return Boolean.parseBoolean(getAttribute(name));
+		}
 	}	
 }
