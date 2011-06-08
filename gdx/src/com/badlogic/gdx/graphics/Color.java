@@ -271,5 +271,5 @@ public class Color {
 	
 	public static int rgba8888(float r, float g, float b, float a) {
 		return ((int)(r*255) << 24) | ((int)(g*255) << 16) | ((int)(b*255) << 8) | (int)(a*255);
-	}
+	}	
 }
