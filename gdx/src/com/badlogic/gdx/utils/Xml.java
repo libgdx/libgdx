@@ -564,7 +564,7 @@ public class Xml {
 		 * @param name the name of the attribute
 		 * @return the attribute
 		 */
-		public float getAttributeAsFloat(String name) {
+		public float getFloatAttribute(String name) {
 			return Float.parseFloat(getAttribute(name));
 		}
 		
@@ -573,7 +573,7 @@ public class Xml {
 		 * @param name the name of the attribute
 		 * @return the attribute
 		 */
-		public int getAttributeAsInt(String name) {
+		public int getIntAttribute(String name) {
 			return Integer.parseInt(getAttribute(name));
 		}
 		
@@ -582,7 +582,7 @@ public class Xml {
 		 * @param name the name of the attribute
 		 * @return the attribute
 		 */
-		public boolean getAttributeAsBoolean(String name) {
+		public boolean getBooleanAttribute(String name) {
 			return Boolean.parseBoolean(getAttribute(name));
 		}
 	}	
