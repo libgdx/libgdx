@@ -110,6 +110,10 @@ public abstract class Actor {
 	protected abstract boolean touchUp (float x, float y, int pointer);
 
 	protected abstract boolean touchDragged (float x, float y, int pointer);
+	
+	protected boolean touchMoved (float x, float y) {
+		return false;
+	}
 
 	public abstract Actor hit (float x, float y);
 
