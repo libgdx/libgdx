@@ -61,6 +61,7 @@ public class BitmapFont implements Disposable {
 	float lineHeight;
 	float capHeight;
 	float ascent;
+	float descent;
 	float down;
 	float scaleX = 1, scaleY = 1;
 
@@ -236,7 +237,10 @@ public class BitmapFont implements Disposable {
 			g = getGlyph('M');
 			capHeight = g != null ? g.height : 1;
 
-			ascent = baseLine - capHeight;
+			g = getGlyph('g');
+			descent = g != null? baseLine + g.yoffset:0;
+			
+			ascent = baseLine - capHeight;			
 			down = -lineHeight;
 			if (flip) {
 				ascent = -ascent;
@@ -694,6 +698,14 @@ public class BitmapFont implements Disposable {
 	 */
 	public float getAscent () {
 		return ascent;
+	}
+	
+	/**
+	 * Returns the descent, which is the distance from the baseline to the bottom of the glyph 'g'. 
+	 * This number is negative.
+	 */
+	public float getDescent() {
+		return descent;
 	}
 
 	/**
