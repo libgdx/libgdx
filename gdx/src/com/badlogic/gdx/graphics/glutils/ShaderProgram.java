@@ -432,8 +432,8 @@ public class ShaderProgram implements Disposable {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
 		int location = fetchUniformLocation(name);
-		this.matrix.put(matrix.val);
-		this.matrix.position(0);
+		this.matrix.clear();
+		BufferUtils.copy(matrix.val, this.matrix, matrix.val.length, 0);
 		gl.glUniformMatrix4fv(location, 1, transpose, this.matrix);
 	}
 
@@ -460,8 +460,9 @@ public class ShaderProgram implements Disposable {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();
 		int location = fetchUniformLocation(name);
-		this.matrix.put(matrix.getValues());
-		this.matrix.position(0);
+		float[] vals = matrix.getValues();
+		this.matrix.clear();
+		BufferUtils.copy(vals, this.matrix, vals.length, 0);
 		gl.glUniformMatrix3fv(location, 1, transpose, this.matrix);
 	}
 
