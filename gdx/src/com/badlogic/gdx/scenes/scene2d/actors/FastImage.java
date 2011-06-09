@@ -95,7 +95,8 @@ public class FastImage extends Actor {
 			sWidth = width;
 			sHeight = height;
 		}
-				
+		
+		sprite.setColor(color);
 		sprite.setRegion(region);		
 	}
 
