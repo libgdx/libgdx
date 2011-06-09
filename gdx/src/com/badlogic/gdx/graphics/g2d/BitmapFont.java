@@ -145,7 +145,12 @@ public class BitmapFont implements Disposable {
 				if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				String[] page = line.split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				String imgFilename = page[2].substring(6, page[2].length() - 1);
+				String imgFilename = null;
+				if(page[2].endsWith("\"")) {
+					imgFilename = page[2].substring(6, page[2].length() - 1);
+				} else {
+					imgFilename = page[2].substring(5, page[2].length());
+				}
 				FileHandle imageFile = fontFile.parent().child(imgFilename);
 				region = new TextureRegion(new Texture(imageFile, false));
 			}
