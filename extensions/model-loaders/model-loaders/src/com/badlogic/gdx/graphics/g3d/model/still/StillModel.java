@@ -49,7 +49,7 @@ public class StillModel implements Model {
 	}
 
 	@Override
-	public SubMesh getSubMesh(String name) {
+	public StillSubMesh getSubMesh(String name) {
 		for (StillSubMesh subMesh : subMeshes) {
 			if (subMesh.name.equals(name))
 				return subMesh;
