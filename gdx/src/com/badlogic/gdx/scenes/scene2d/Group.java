@@ -226,9 +226,8 @@ public class Group extends Actor {
 
 		if (focusedActor[pointer] != null) {
 			point.x = x;
-			point.y = y;
-			toChildCoordinates(focusedActor[pointer], x, y, point);			
-			focusedActor[pointer].touchDown(point.x, point.y, pointer);
+			point.y = y;			
+			focusedActor[pointer].toLocalCoordinates(point);						
 			return true;
 		}
 
@@ -257,7 +256,7 @@ public class Group extends Actor {
 		if (focusedActor[pointer] != null) {
 			point.x = x;
 			point.y = y;
-			toChildCoordinates(focusedActor[pointer], x, y, point);
+			focusedActor[pointer].toLocalCoordinates(point);			
 			focusedActor[pointer].touchUp(point.x, point.y, pointer);
 			return true;
 		}
@@ -280,7 +279,7 @@ public class Group extends Actor {
 		if (focusedActor[pointer] != null) {
 			point.x = x;
 			point.y = y;
-			toChildCoordinates(focusedActor[pointer], x, y, point);
+			focusedActor[pointer].toLocalCoordinates(point);			
 			focusedActor[pointer].touchDragged(point.x, point.y, pointer);
 			return true;
 		}
