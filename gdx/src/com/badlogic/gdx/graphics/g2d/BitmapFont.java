@@ -160,6 +160,9 @@ public class BitmapFont implements Disposable {
 			float invTexHeight = 1.0f / region.getTexture().getHeight();
 			float u = region.u;
 			float v = region.v;
+			
+			descent = 0;
+//			descent = g != null? baseLine + g.yoffset:0;
 
 			while (true) {
 				line = reader.readLine();
@@ -206,6 +209,8 @@ public class BitmapFont implements Disposable {
 					glyph.v2 = v + srcY * invTexHeight;
 					glyph.v = v + (srcY + glyph.height) * invTexHeight;
 				}
+				
+				descent = Math.min(baseLine + glyph.yoffset, descent);
 			}
 
 			while (true) {
@@ -240,10 +245,7 @@ public class BitmapFont implements Disposable {
 			xHeight = g != null ? g.height : 1;
 
 			g = getGlyph('M');
-			capHeight = g != null ? g.height : 1;
-
-			g = getGlyph('g');
-			descent = g != null? baseLine + g.yoffset:0;
+			capHeight = g != null ? g.height : 1;							
 			
 			ascent = baseLine - capHeight;			
 			down = -lineHeight;
