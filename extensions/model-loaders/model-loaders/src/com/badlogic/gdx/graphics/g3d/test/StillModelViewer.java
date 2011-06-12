@@ -5,8 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,20 +27,20 @@ public class StillModelViewer implements ApplicationListener {
 
 	PerspectiveCamera cam;
 	StillModel model;
-	Texture texture = null;
+	Texture[] textures = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
 	ImmediateModeRenderer renderer;
 	float angle = 0;
 	String fileName;
-	String textureFileName;
+	String[] textureFileNames;
 	FPSLogger fps = new FPSLogger();
 	SpriteBatch batch;
 	BitmapFont font;
 	
-	public StillModelViewer(String fileName, String textureFileName) {
+	public StillModelViewer(String fileName, String ... textureFileNames) {
 		this.fileName = fileName;
-		this.textureFileName = textureFileName;
+		this.textureFileNames = textureFileNames;
 	}
 	
 	@Override public void create () {
@@ -61,7 +63,12 @@ public class StillModelViewer implements ApplicationListener {
 			Gdx.app.log("StillModelViewer", "loading binary took: " + (System.nanoTime() - start)/ 1000000000.0f);
 		}
 				
-		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName), true);		
+		if(textureFileNames.length != 0) {
+			textures = new Texture[textureFileNames.length];
+			for(int i = 0; i < textureFileNames.length; i++) {
+				textures[i] = new Texture(Gdx.files.internal(textureFileNames[i]), i>0?false:true);				
+			}
+		}
 		hasNormals = hasNormals();
 		
 		model.getBoundingBox(bounds);
@@ -69,7 +76,7 @@ public class StillModelViewer implements ApplicationListener {
 		System.out.println("bounds: " + bounds);			
 		
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
+		cam.position.set(bounds.getCenter().cpy().add(len / 2, len / 2, len / 2));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
 		cam.near = 0.1f;
 		cam.far = 1000;
@@ -110,17 +117,35 @@ public class StillModelViewer implements ApplicationListener {
 			Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);			
 		}
 		
-		if(texture != null) {
-			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);			
-			texture.bind();
+		if(textures != null) {
+			for(int i = 0; i < textures.length; i++) {
+				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + i);
+				Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);			
+				textures[i].bind();
+				if(i > 0) {
+					switch(i) {
+						case 1:
+							setCombiners(GL11.GL_ADD_SIGNED);
+							break;
+						case 2:
+							setCombiners(GL10.GL_MODULATE);
+							break;
+						default:
+							setCombiners(GL10.GL_MODULATE);
+					}
+				}
+			}
 		}
 		
 		angle += 45 * Gdx.graphics.getDeltaTime();
 		Gdx.gl10.glRotatef(angle, 0, 1, 0);
 		model.render();
 		
-		if(texture != null) {
-			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
+		if(textures != null) {
+			for(int i = 0; i < textures.length; i++) {
+				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + i);
+				Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);							
+			}
 		}
 		
 		if(hasNormals) {
@@ -132,6 +157,13 @@ public class StillModelViewer implements ApplicationListener {
 		batch.end();
 		
 		fps.log();
+	}
+	
+	private void setCombiners(int mod) {
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_COMBINE);
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, mod);
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC0_RGB, GL11.GL_PREVIOUS);
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);	
 	}
 	
 	private void drawAxes() {
@@ -170,6 +202,7 @@ public class StillModelViewer implements ApplicationListener {
 //			System.exit(-1);
 //		}
 //		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-		new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
+//		new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
+		new JoglApplication(new StillModelViewer("data/multipleuvs.g3dt", "data/multipleuvs_1.png", "data/multipleuvs_2.png"), "StillModel Viewer", 800, 480, false);
 	}
 }
