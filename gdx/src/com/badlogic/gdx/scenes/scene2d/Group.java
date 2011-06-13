@@ -104,7 +104,13 @@ public class Group extends Actor {
 
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override protected void draw (SpriteBatch batch, float parentAlpha) {		
+		setupTransform(batch);			
+		drawChildren(batch, parentAlpha);
+		resetTransform(batch);
+	}
+
+	protected void setupTransform(SpriteBatch batch) {
 		updateTransform();
 		tmp4.set(scenetransform);
 
@@ -116,16 +122,25 @@ public class Group extends Actor {
 		oldBatchTransform.set(batch.getTransformMatrix());
 		batch.setTransformMatrix(tmp4);
 		batch.begin();
-
+	}
+	
+	protected void drawChildren(SpriteBatch batch, float parentAlpha) {
 		int len = children.size();
 		for (int i = 0; i < len; i++)
 			children.get(i).draw(batch, parentAlpha * color.a);
-
+		batch.flush();
+	}
+	
+	protected void drawChild(Actor child, SpriteBatch batch, float parentAlpha) {
+		child.draw(batch, parentAlpha * color.a);
+	}
+	
+	protected void resetTransform(SpriteBatch batch) {		
 		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
 		batch.begin();
 	}
-
+	
 	final Vector2 point = new Vector2();
 
 	static final Vector2 xAxis = new Vector2();
