@@ -32,8 +32,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -574,6 +574,53 @@ public class BitmapFont implements Disposable {
 	}
 
 	/**
+	 * Computes the glyph advances for the given character sequence and stores
+	 * them in the provided {@link FloatArray}. The FloatArray is cleared. This
+	 * will add an additional element at the end.
+	 * @param str the character sequence
+	 * @param glyphAdvances the glyph advances output array.
+	 * @param glyphPositions the glyph positions output array.
+	 */
+	public void computeGlyphAdvancesAndPositions(CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
+		glyphAdvances.clear();
+		glyphPositions.clear();
+		int index = 0;
+		int end = str.length();
+		int width = 0;		
+		Glyph lastGlyph = null;
+		if (scaleX == 1) {
+			for (; index < end; index++) {
+				char ch = str.charAt(index);
+				Glyph g = getGlyph(ch);
+				if (g != null) {
+					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
+					lastGlyph = g;							
+					glyphAdvances.add(g.xadvance);
+					glyphPositions.add(width);
+					width += g.xadvance;
+				}
+			}
+			glyphAdvances.add(0);
+			glyphPositions.add(width);
+		} else {
+			float scaleX = this.scaleX;
+			for (; index < end; index++) {
+				char ch = str.charAt(index);
+				Glyph g = getGlyph(ch);
+				if (g != null) {
+					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
+					lastGlyph = g;					
+					glyphAdvances.add(g.xadvance * scaleX);
+					glyphPositions.add(width);
+					width += g.xadvance;
+				}			
+			}
+			glyphAdvances.add(0);
+			glyphPositions.add(width);
+		}		
+	}
+	
+	/**
 	 * Returns the number of glyphs from the substring that can be rendered in the specified width.
 	 * @param start The first character of the string.
 	 * @param end The last character of the string (exclusive).
@@ -637,6 +684,7 @@ public class BitmapFont implements Disposable {
 		xHeight = xHeight / this.scaleY * scaleY;
 		capHeight = capHeight / this.scaleY * scaleY;
 		ascent = ascent / this.scaleY * scaleY;
+		descent = descent / this.scaleY * scaleY;
 		down = down / this.scaleY * scaleY;
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
@@ -797,5 +845,13 @@ public class BitmapFont implements Disposable {
 
 	static public enum HAlignment {
 		LEFT, CENTER, RIGHT
+	}
+
+	/**
+	 * @param character
+	 * @return whether the given character is contained in this font.
+	 */
+	public boolean containsCharacter(char character) {
+		return getGlyph(character) != null;
 	}
 }
