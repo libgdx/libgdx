@@ -36,12 +36,12 @@ public class Circle implements Serializable {
 	public boolean contains(float x, float y) {
 		x = this.x - x;
 		y = this.y - y;
-		return Math.sqrt(x*x + y*y) <= 0;
+		return x*x + y*y <= radius * radius;
 	}
 	
 	public boolean contains(Vector2 point) {
 		float x = this.x - point.x;
 		float y = this.y - point.y;
-		return Math.sqrt(x*x + y*y) <= 0;
+		return x*x + y*y <= radius * radius;
 	}
 }
