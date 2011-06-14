@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -114,6 +115,22 @@ public abstract class Actor {
 	protected boolean touchMoved (float x, float y) {
 		return false;
 	}
+	
+	protected boolean scrolled(int amount) {
+		return false;
+	}
+	
+	protected  boolean keyDown (int keycode) {
+		return false;
+	}
+	
+	protected boolean keyUp(int keycode) {
+		return false;
+	}
+	
+	protected boolean keyTyped(char character) {
+		return false;
+	}	
 
 	public abstract Actor hit (float x, float y);
 

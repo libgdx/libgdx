@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -222,6 +223,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param button the button that's been pressed
 	 * @return whether an {@link Actor} in the scene processed the event or not
 	 */
+	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
@@ -236,6 +238,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param pointer the pointer index
 	 * @return whether an {@link Actor} in the scene processed the event or not
 	 */
+	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
@@ -249,10 +252,69 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param pointer the pointer index
 	 * @return whether an {@link Actor} in the scene processed the event or not
 	 */
+	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		return root.touchDragged(point.x, point.y, pointer);
+	}
+	
+	/**
+	 * Call this to distribute a touch moved event to the stage. This event will
+	 * only ever appear on the desktop.
+	 * @param x the x coordinate of the touch in screen coordinates
+	 * @param y the y coordinate of the touch in screen coordinates
+	 * @return whether an {@link Actor} in the scene processed the event or not
+	 */
+	@Override
+	public boolean touchMoved(int x, int y) {
+		toStageCoordinates(x, y, coords);
+		Group.toChildCoordinates(root, coords.x, coords.y, point);
+		return root.touchMoved(point.x, point.y);
+	}
+	
+	/**
+	 * Call this to distribute a mouse scroll event to the stage. This event will
+	 * only ever appear on the desktop.
+	 * @param amount the scroll amount.
+	 * @return whether an {@link Actor} in the scene processed the event or not.
+	 */
+	@Override
+	public boolean scrolled(int amount) {		
+		return root.scrolled(amount);
+	}
+	
+	/**
+	 * Called when a key was pressed
+	 * 
+	 * @param keycode one of the constants in {@link Input.Keys}
+	 * @return whether the input was processed
+	 */
+	@Override
+	public boolean keyDown (int keycode) {
+		return root.keyDown(keycode);
+	}
+
+	/**
+	 * Called when a key was released
+	 * 
+	 * @param keycode one of the constants in {@link Input.Keys}
+	 * @return whether the input was processed
+	 */
+	@Override
+	public boolean keyUp (int keycode) {
+		return root.keyUp(keycode);
+	}
+
+	/**
+	 * Called when a key was typed
+	 * 
+	 * @param character The character
+	 * @return whether the input was processed
+	 */
+	@Override
+	public boolean keyTyped (char character) {
+		return root.keyTyped(character);
 	}
 
 	/**
@@ -401,5 +463,5 @@ public class Stage extends InputAdapter implements Disposable {
 	 */
 	public void unfocusAll() {
 		root.unfocusAll();
-	}
+	}	
 }

@@ -51,6 +51,8 @@ public class Group extends Actor {
 
 	public Actor lastTouchedChild;
 	public Actor[] focusedActor = new Actor[20];
+	public Actor keyboardFocusedActor = null;
+	public Actor scrollFocusedActor = null;
 
 	public Group () {
 		this(null);
@@ -287,6 +289,22 @@ public class Group extends Actor {
 		}
 		return false;
 	}
+	
+	@Override protected boolean touchMoved (float x, float y) {
+		if (!touchable) return false;
+
+		int len = children.size() - 1;
+		for (int i = len; i >= 0; i--) {
+			Actor child = children.get(i);
+			if (!child.touchable) continue;
+
+			toChildCoordinates(child, x, y, point);
+
+			if (child.touchMoved(point.x, point.y)) return true;
+		}
+		return false;
+	}
+
 
 	@Override protected boolean touchDragged (float x, float y, int pointer) {
 		if (!touchable) return false;
@@ -310,7 +328,28 @@ public class Group extends Actor {
 		}
 		return false;
 	}
-
+	
+	@Override
+	protected boolean scrolled(int amount) {
+		if(scrollFocusedActor != null) scrollFocusedActor.scrolled(amount);
+		return false;
+	}
+	
+	protected  boolean keyDown (int keycode) {
+		if(keyboardFocusedActor != null) return keyboardFocusedActor.keyDown(keycode);
+		else return false;
+	}
+	
+	protected boolean keyUp(int keycode) {
+		if(keyboardFocusedActor != null) return keyboardFocusedActor.keyUp(keycode);
+		else return false;
+	}
+	
+	protected boolean keyTyped(char character) {
+		if(keyboardFocusedActor != null) return keyboardFocusedActor.keyTyped(character);
+		else return false;			
+	}	
+	
 	public Actor hit (float x, float y) {
 		int len = children.size() - 1;
 		for (int i = len; i >= 0; i--) {
@@ -382,10 +421,11 @@ public class Group extends Actor {
 	 * Removes an {@link Actor} from this Group.
 	 * @param actor
 	 */
-	public void removeActor (Actor actor) {
+	public void removeActor (Actor actor) {		
 		children.remove(actor);
 		if (actor instanceof Group) groups.remove((Group)actor);
 		if (actor.name != null) namesToActors.remove(actor.name);
+		unfocusAll(actor);
 	}
 
 	/**
@@ -397,6 +437,7 @@ public class Group extends Actor {
 		if(children.remove(actor)) {
 			if (actor instanceof Group) groups.remove((Group)actor);
 			if (actor.name != null) namesToActors.remove(actor.name);
+			unfocusAll(actor);
 			return;
 		}
 		
@@ -475,6 +516,26 @@ public class Group extends Actor {
 		focusedActor[pointer] = actor;
 		if (parent != null) parent.focus(actor, pointer);
 	}
+	
+	/**
+	 * Sets the keyboard focus to the given child {@link Actor}. All subsequent keyboard events will be passed to that actor.
+	 * To unfocus an actor simply pass null.
+	 * @param actor the Actor
+	 */
+	public void keyboardFocus(Actor actor) {
+		keyboardFocusedActor = actor;
+		if(parent != null) parent.keyboardFocus(actor);
+	}
+	
+	/**
+	 * Sets the scroll focus to the given child {@link Actor}. All subsequent scroll events will be passed to that actor.
+	 * To unfocus an actor simply pass null.
+	 * @param actor the Actor.
+	 */
+	public void scrollFocus(Actor actor) {
+		scrollFocusedActor = actor;
+		if(parent != null) parent.scrollFocus(actor);
+	}
 
 	public static void enableDebugging (String debugTextureFile) {
 		debugTexture = new Texture(Gdx.files.internal(debugTextureFile), false);
@@ -504,7 +565,7 @@ public class Group extends Actor {
 	}
 	
 	/**
-	 * Unfocues all {@link Actor} instance currently focused. You should 
+	 * Unfocuses all {@link Actor} instance currently focused for touch and keyboard events. You should 
 	 * call this in case your app resumes to clear up any pressed states.
 	 * Make sure the Actors forget their states as well! This will be applied
 	 * to all child groups recursively.
@@ -517,5 +578,24 @@ public class Group extends Actor {
 		for(int i = 0; i < groups.size(); i++) {
 			groups.get(i).unfocusAll();
 		}
+		
+		keyboardFocusedActor = null;
+		scrollFocusedActor = null;
+	}
+	
+	/**
+	 * Unfocuses this {@link Actor} from the touch, keyboard and scroll focus from this group
+	 * and all groups above it. 
+	 * @param actor the Actor
+	 */
+	public void unfocusAll(Actor actor) {
+		for(int i = 0; i < focusedActor.length; i++) {
+			if(focusedActor[i] == actor) {
+				focus(null, i);
+			}
+		}
+		
+		if(keyboardFocusedActor == actor) keyboardFocus(null);
+		if(scrollFocusedActor == actor) scrollFocus(null);
 	}
 }
