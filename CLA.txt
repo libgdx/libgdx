@@ -3,7 +3,7 @@
 
 Thank you for your interest in libgdx. In order to clarify the intellectual 
 property license granted with Contributions from any person or entity, Mario  
-Zechner and Nathan Sweet ("Project Ownerss") must have a Contributor License Agreement ("CLA") 
+Zechner and Nathan Sweet ("Project Owners") must have a Contributor License Agreement ("CLA") 
 on file that has been signed by each Contributor, indicating agreement to the 
 license terms below. This license is for your protection as a Contributor as
 well as the protection of the Project Owners and the project's users; it does 
