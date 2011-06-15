@@ -10,7 +10,8 @@
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="g++"/>
 	<!-- should probably contain -fPic but we use gcc 4.4.1 to compile those binaries -->
-	<property name="g++-opts" value="-c -Wall -O2 -arch ppc -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC"/>
+	<!-- no more PPC support by XCode :( <property name="g++-opts" value="-c -Wall -O2 -arch ppc -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC"/>-->
+	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
