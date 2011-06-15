@@ -21,7 +21,6 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -324,5 +323,14 @@ public class AndroidApplication extends Activity implements Application {
 
 	@Override public void log (String tag, String message, Exception exception) {
 		Log.d(tag, message, exception);
+	}
+
+
+	@Override public void exit () {
+		handler.post(new Runnable() {
+			@Override public void run () {
+				AndroidApplication.this.finish();			
+			}			
+		});
 	}
 }

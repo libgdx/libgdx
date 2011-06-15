@@ -160,4 +160,14 @@ public class AngleApplication implements Application, ESLoop {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();
 	}
+
+	@Override public void exit () {
+		postRunnable(new Runnable() {
+			@Override public void run () {
+				AngleApplication.this.listener.pause();
+				AngleApplication.this.listener.dispose();
+				System.exit(-1);
+			}			
+		});
+	}
 }

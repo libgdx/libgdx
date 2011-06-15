@@ -158,4 +158,10 @@ public interface Application {
 	 * @param runnable the runnable.
 	 */
 	public void postRunnable(Runnable runnable);
+	
+	/**
+	 * Exits the application. This will cause a call to pause() and dispose()
+	 * some time in the future, it will not immediately finish your application!
+	 */
+	public void exit();
 }

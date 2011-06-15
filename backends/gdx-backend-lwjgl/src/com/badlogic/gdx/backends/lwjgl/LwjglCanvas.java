@@ -220,4 +220,14 @@ public class LwjglCanvas implements Application {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();
 	}
+	
+	@Override public void exit () {
+		postRunnable(new Runnable() {
+			@Override public void run () {
+				LwjglCanvas.this.listener.pause();
+				LwjglCanvas.this.listener.dispose();
+				System.exit(-1);
+			}			
+		});
+	}
 }

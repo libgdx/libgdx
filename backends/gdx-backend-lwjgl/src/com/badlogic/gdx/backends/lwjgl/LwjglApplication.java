@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Application;
@@ -203,5 +202,15 @@ public class LwjglApplication implements Application {
 	@Override public void log (String tag, String message, Exception exception) {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();
+	}
+	
+	@Override public void exit () {
+		postRunnable(new Runnable() {
+			@Override public void run () {
+				LwjglApplication.this.listener.pause();
+				LwjglApplication.this.listener.dispose();
+				System.exit(-1);
+			}			
+		});
 	}
 }

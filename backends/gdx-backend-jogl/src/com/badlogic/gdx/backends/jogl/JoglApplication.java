@@ -217,4 +217,14 @@ public final class JoglApplication implements Application {
 		System.out.println(tag + ": " + message);
 		exception.printStackTrace();
 	}
+	
+	@Override public void exit () {
+		postRunnable(new Runnable() {
+			@Override public void run () {
+				JoglApplication.this.graphics.listener.pause();
+				JoglApplication.this.graphics.listener.dispose();
+				System.exit(-1);
+			}			
+		});
+	}
 }
