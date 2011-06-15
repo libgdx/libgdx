@@ -20,6 +20,6 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 public class JoglDebugStarter {
 
 	public static void main (String[] argv) {
-		new JoglApplication(new com.badlogic.gdx.tests.SimpleStageCullingTest(), "Debug Test", 480, 320, false);
+		new JoglApplication(new com.badlogic.gdx.tests.Box2DTest(), "Debug Test", 480, 320, false);
 	}
 }
