@@ -495,6 +495,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		for(int i = 0; i < len; i++) {
 			buf.append(i + ":" + realId[i] + " ");
 		}
-		throw new GdxRuntimeException("Pointer ID lookup failed: " + pointerId + ", " + buf.toString());
+		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + buf.toString());
+		return -1;	
 	}
 }
