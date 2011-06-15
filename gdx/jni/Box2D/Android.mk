@@ -14,6 +14,8 @@ Box2D/MouseJoint.cpp \
 Box2D/PrismaticJoint.cpp \
 Box2D/PulleyJoint.cpp \
 Box2D/RevoluteJoint.cpp \
+Box2D/ContactImpulse.cpp \
+Box2D/Manifold.cpp \
 Box2D/Collision/b2BroadPhase.cpp \
 Box2D/Collision/b2CollideCircle.cpp \
 Box2D/Collision/b2CollidePolygon.cpp \

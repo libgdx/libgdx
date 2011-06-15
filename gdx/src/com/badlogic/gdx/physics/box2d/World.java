@@ -518,6 +518,8 @@ public class World implements Disposable {
 	}
 
 	private final Contact contact = new Contact(this, 0);
+	private final Manifold manifold = new Manifold(this, 0);
+	private final ContactImpulse impulse = new ContactImpulse(this, 0);
 
 	private void beginContact (long contactAddr) {
 		contact.addr = contactAddr;
@@ -525,9 +527,21 @@ public class World implements Disposable {
 	}
 
 	private void endContact (long contactAddr) {
-		contact.addr = contactAddr;
-		contact.getWorldManifold();
+		contact.addr = contactAddr;		
 		if (contactListener != null) contactListener.endContact(contact);
+	}
+	
+
+	private void preSolve (long contactAddr, long manifoldAddr) {
+		contact.addr = contactAddr;
+		manifold.addr = manifoldAddr;
+		if (contactListener != null) contactListener.preSolve(contact, manifold);
+	}
+		
+	private void postSolve (long contactAddr, long impulseAddr) {
+		contact.addr = contactAddr;		
+		impulse.addr = impulseAddr;
+		if (contactListener != null) contactListener.postSolve(contact, impulse);
 	}
 
 	private boolean reportFixture (long addr) {
