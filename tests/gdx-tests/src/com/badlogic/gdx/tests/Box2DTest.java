@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -54,6 +55,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 	/** the immediate mode renderer to output our debug drawings **/
 	private ImmediateModeRenderer renderer;
+	
+	/** box2d debug renderer **/
+	private Box2DDebugRenderer debugRenderer;
 
 	/** a spritebatch and a font for text rendering and a Texture to draw our boxes**/
 	private SpriteBatch batch;
@@ -88,6 +92,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we setup the immediate mode renderer
 		renderer = new ImmediateModeRenderer();
+		
+		// next we create the box2d debug renderer
+		debugRenderer = new Box2DDebugRenderer();
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
@@ -134,6 +141,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		createBoxes();
 		
+		// You can savely ignore the rest of this method :)
 		world.setContactListener(new ContactListener() {
 			@Override
 			public void beginContact(Contact contact) {
@@ -235,6 +243,14 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		}
 		batch.end();
 
+		// next we use the debug renderer. Note that we 
+		// simply apply the camera again and then call 
+		// the renderer. the camera.apply() call is actually
+		// not needed as the opengl matrices are already set
+		// by the spritebatch which in turn uses the camera matrices :)		
+		camera.apply(Gdx.gl10);
+		debugRenderer.render(world);
+		
 		// finally we render all contact points
 		gl.glPointSize(4);
 		renderer.begin(GL10.GL_POINTS);
