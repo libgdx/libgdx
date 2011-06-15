@@ -21,6 +21,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -244,7 +245,12 @@ public class TiledLoader {
 							if ("gid".equals(name)) {
 								col = dataCounter % currLayerWidth;
 								row = dataCounter / currLayerWidth;
-								currLayer.tiles[row][col] = Integer.parseInt(value);
+								if(row < currLayerHeight){
+									currLayer.tiles[row][col] = Integer.parseInt(value);
+									}
+								else{
+									Gdx.app.log("TiledLoader", "Warning: extra XML gid values ignored! Your map is likely corrupt!");
+								}
 								dataCounter++;
 							}
 						} else { // Not getting tile data, must be a tile Id (for properties)
@@ -308,10 +314,11 @@ public class TiledLoader {
 					}
 
 					if ("data".equals(element)) {
-						if (dataString == null | "".equals(dataString)) return;
 
 						// decode and uncompress the data
 						if ("base64".equals(encoding)) {
+							if (dataString == null | "".equals(dataString.trim())) return;
+							
 							data = Base64Coder.decode(dataString.trim());
 
 							if ("gzip".equals(compression)) {
