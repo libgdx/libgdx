@@ -166,7 +166,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				alert.setOnCancelListener(new OnCancelListener() {					
 					@Override
 					public void onCancel(DialogInterface arg0) {
-						listener.cancled();
+						listener.canceled();
 					}
 				});
 				alert.show();

@@ -110,7 +110,7 @@ final class LwjglInput implements Input {
 				if(output != null) 
 					listener.input(output);
 				else
-					listener.cancled();
+					listener.canceled();
 			}
 		});
 	}

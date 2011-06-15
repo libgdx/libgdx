@@ -47,7 +47,7 @@ public class TextInputDialogTest extends GdxTest {
 				}
 				
 				@Override
-				public void cancled() {
+				public void canceled() {
 					message = "cancled by user";
 				}
 			}, "enter something funny", "funny");

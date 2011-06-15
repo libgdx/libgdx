@@ -109,7 +109,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 				if (output != null) 
 					listener.input(output);
 				else
-					listener.cancled();
+					listener.canceled();
 				
 			}
 		});
