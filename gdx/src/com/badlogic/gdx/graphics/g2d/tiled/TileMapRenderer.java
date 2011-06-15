@@ -266,7 +266,7 @@ public class TileMapRenderer implements Disposable {
 					if (blended == blendedTiles.contains(tile)) {
 						region = atlas.getRegion(tile);
 						if (region != null) {
-							cache.add(region, col*unitsPerTileX, ((layer.length - row))*unitsPerTileY, (float)region.offsetX*unitsPerTileX/tileWidth, -(float)(region.packedHeight + region.offsetY)*unitsPerTileY/tileHeight, region.packedWidth, region.packedHeight, unitsPerTileX/tileWidth, unitsPerTileY/tileHeight, (region.rotate)?90:0);
+							cache.add(region, col*unitsPerTileX, (layer.length - row - 1)*unitsPerTileY, (float)region.offsetX*unitsPerTileX/tileWidth, -(float)(region.offsetY)*unitsPerTileY/tileHeight, region.packedWidth, region.packedHeight, unitsPerTileX/tileWidth, unitsPerTileY/tileHeight, (region.rotate)?90:0);
 						}
 					}
 				}
