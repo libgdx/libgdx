@@ -6,9 +6,11 @@ import java.util.Map;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader.G3dStillModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader.G3dtKeyframedModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader.G3dtStillModelLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader;
+import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader.MD2LoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.ogre.OgreXmlLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.wavefront.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.Model;
@@ -38,7 +40,8 @@ public class ModelLoaderRegistry {
 		registerLoader("obj", new ObjLoader(), new ModelLoaderHints(false));
 		registerLoader("g3dt", new G3dtStillModelLoader(), new ModelLoaderHints(true));
 		registerLoader("g3dt", new G3dtKeyframedModelLoader(), new ModelLoaderHints(true));
-		registerLoader("md2", new MD2Loader(), new ModelLoaderHints(false));
+		registerLoader("g3d", new G3dStillModelLoader(), new ModelLoaderHints(false));		
+		registerLoader("md2", new MD2Loader(), new MD2LoaderHints(0.2f) );
 	}
 	
 	/**
