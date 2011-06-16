@@ -29,20 +29,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class IsoCamTest extends GdxTest implements InputProcessor {
-
-	@Override public boolean needsGL20 () {
-		return false;
-	}
-
+public class IsoCamTest extends GdxTest implements InputProcessor {	
 	Texture texture;
 	OrthographicCamera cam;
 	SpriteBatch batch;	
 	final Sprite[][] sprites = new Sprite[10][10];
 	final Matrix4 matrix = new Matrix4();
-	final Plane xzPlane = new Plane(new Vector3(0, 1, 0), 0);
-	final Vector3 intersection = new Vector3();
-	Sprite lastSelectedTile = null;
 	
 	@Override public void create() {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));		
@@ -50,10 +42,7 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 		cam.position.set(5, 5, 10);
 		cam.direction.set(-1, -1, -1);
 		cam.near = 1;
-		cam.far = 100;
-		
-		// rotation matrix so we rotate the x/y plane spritebatch
-		// operates on to tze x/z plane.
+		cam.far = 100;		
 		matrix.setToRotation(new Vector3(1, 0, 0), 90);
 		
 		for(int z = 0; z < 10; z++) {
@@ -83,6 +72,14 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 		}
 		batch.end();
 		
+		checkTileTouched();
+	}
+		
+	final Plane xzPlane = new Plane(new Vector3(0, 1, 0), 0);
+	final Vector3 intersection = new Vector3();
+	Sprite lastSelectedTile = null;
+	
+	private void checkTileTouched() {
 		if(Gdx.input.justTouched()) {
 			Ray pickRay = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 			Intersector.intersectRayPlane(pickRay, xzPlane, intersection);
@@ -125,4 +122,7 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 	@Override public boolean touchDown (int x, int y, int pointer, int button) { return false; }		
 	@Override public boolean touchMoved (int x, int y) { return false; }
 	@Override public boolean scrolled (int amount) { return false; }
+	@Override public boolean needsGL20 () {
+		return false;
+	}
 }
