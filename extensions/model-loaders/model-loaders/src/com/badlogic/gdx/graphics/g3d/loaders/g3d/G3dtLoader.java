@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
+import com.badlogic.gdx.graphics.g3d.loaders.KeyframedModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
@@ -307,4 +310,17 @@ public class G3dtLoader {
 		line = in.readLine();
 		return line;
 	}	
+	
+	public static class G3dtStillModelLoader implements StillModelLoader {
+
+		@Override public StillModel load (FileHandle handle, ModelLoaderHints hints) {
+			return G3dtLoader.loadStillModel(handle, hints.flipV);
+		}		
+	}
+	
+	public static class G3dtKeyframedModelLoader implements KeyframedModelLoader {
+		@Override public KeyframedModel load (FileHandle handle, ModelLoaderHints hints) {
+			return G3dtLoader.loadKeyframedModel(handle, hints.flipV);
+		}	
+	}
 }

@@ -26,9 +26,12 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
+import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.utils.FloatArray;
 
 /**
  * Loads Wavefront OBJ files.
@@ -36,17 +39,16 @@ import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
  * @author mzechner, espitz
  * 
  */
-public class ObjLoader {
-
-	ArrayList<Float> verts;
-	ArrayList<Float> norms;
-	ArrayList<Float> uvs;
-	ArrayList<Group> groups;
+public class ObjLoader implements StillModelLoader {
+	final FloatArray verts;
+	final FloatArray norms;
+	final FloatArray uvs;
+	final ArrayList<Group> groups;
 
 	public ObjLoader() {
-		verts = new ArrayList<Float>(300);
-		norms = new ArrayList<Float>(300);
-		uvs = new ArrayList<Float>(200);
+		verts = new FloatArray(300);
+		norms = new FloatArray(300);
+		uvs = new FloatArray(200);
 		groups = new ArrayList<Group>(10);
 	}
 
@@ -111,29 +113,29 @@ public class ObjLoader {
 					ArrayList<Integer> faces = activeGroup.faces;
 					for (int i = 1; i < tokens.length - 2; i--) {
 						parts = tokens[1].split("/");
-						faces.add(getIndex(parts[0], verts.size()));
+						faces.add(getIndex(parts[0], verts.size));
 						if (parts.length > 2) {
 							if (i == 1)
 								activeGroup.hasNorms = true;
-							faces.add(getIndex(parts[2], norms.size()));
+							faces.add(getIndex(parts[2], norms.size));
 						}
 						if (parts.length > 1 && parts[1].length() > 0) {
 							if (i == 1)
 								activeGroup.hasUVs = true;
-							faces.add(getIndex(parts[1], uvs.size()));
+							faces.add(getIndex(parts[1], uvs.size));
 						}
 						parts = tokens[++i].split("/");
-						faces.add(getIndex(parts[0], verts.size()));
+						faces.add(getIndex(parts[0], verts.size));
 						if (parts.length > 2)
-							faces.add(getIndex(parts[2], norms.size()));
+							faces.add(getIndex(parts[2], norms.size));
 						if (parts.length > 1 && parts[1].length() > 0)
-							faces.add(getIndex(parts[1], uvs.size()));
+							faces.add(getIndex(parts[1], uvs.size));
 						parts = tokens[++i].split("/");
-						faces.add(getIndex(parts[0], verts.size()));
+						faces.add(getIndex(parts[0], verts.size));
 						if (parts.length > 2)
-							faces.add(getIndex(parts[2], norms.size()));
+							faces.add(getIndex(parts[2], norms.size));
 						if (parts.length > 1 && parts[1].length() > 0)
-							faces.add(getIndex(parts[1], uvs.size()));
+							faces.add(getIndex(parts[1], uvs.size));
 						activeGroup.numFaces++;
 					}
 				} else if (firstChar == 'o' || firstChar == 'g') {
@@ -225,11 +227,11 @@ public class ObjLoader {
 		// Clearing the ArrayList cache instead of instantiating new
 		// ArrayLists should result in slightly faster load times for
 		// subsequent calls to loadObj
-		if (verts.size() > 0)
+		if (verts.size > 0)
 			verts.clear();
-		if (norms.size() > 0)
+		if (norms.size > 0)
 			norms.clear();
-		if (uvs.size() > 0)
+		if (uvs.size > 0)
 			uvs.clear();
 		if (groups.size() > 0)
 			groups.clear();
@@ -273,5 +275,9 @@ public class ObjLoader {
 			this.numFaces = 0;
 			this.mat = new Material("");
 		}
+	}
+
+	@Override public StillModel load (FileHandle handle, ModelLoaderHints hints) {
+		return loadObj(handle, hints.flipV);
 	}
 }

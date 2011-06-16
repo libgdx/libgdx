@@ -1,15 +1,11 @@
 package com.badlogic.gdx.graphics.g3d.loaders.collada;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
+import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
@@ -18,7 +14,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Xml;
 import com.badlogic.gdx.utils.Xml.Element;
 
-public class ColladaLoader {
+public class ColladaLoader implements StillModelLoader {
 	public static StillModel loadStillModel(FileHandle handle) {
 		return loadStillModel(handle.read());
 	}
@@ -74,11 +70,13 @@ public class ColladaLoader {
 			meshes[i] = subMesh;
 		}
 		return meshes;		
-	}
-	
-	public static void main(String[] argv) throws FileNotFoundException, IOException {
-//		loadStillModel(new FileInputStream("data/boy_plotted.dae"));
-		loadStillModel(new FileInputStream("data/cubes.dae"));
-		loadStillModel(new FileInputStream("data/cubes_poly.dae"));
+	}	
+
+	/**
+	 * Loads all the meshes in a Collada file, does not interpret the visual_scene tag!
+	 * Hints are ignored.
+	 */
+	@Override public StillModel load (FileHandle handle, ModelLoaderHints hints) {	
+		return loadStillModel(handle);
 	}
 }

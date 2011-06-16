@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.loaders.collada.ColladaLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
@@ -45,11 +46,7 @@ public class StillModelViewer implements ApplicationListener {
 	
 	@Override public void create () {
 		long start = System.nanoTime();
-		if(fileName.endsWith(".dae")) model = ColladaLoader.loadStillModel(Gdx.files.internal(fileName));
-		else if(fileName.endsWith(".obj")) model = new ObjLoader().loadObj(Gdx.files.internal(fileName));
-		else if(fileName.endsWith(".g3d")) model = G3dLoader.loadStillModel(Gdx.files.internal(fileName));
-		else if(fileName.endsWith(".g3dt")) model = G3dtLoader.loadStillModel(Gdx.files.internal(fileName), true);
-		else throw new GdxRuntimeException("Unknown file format '" + fileName + "'");
+		model = ModelLoaderRegistry.loadStillModel(Gdx.files.internal(fileName));		
 		Gdx.app.log("StillModelViewer", "loading took: " + (System.nanoTime() - start)/ 1000000000.0f);
 		
 		for(StillSubMesh mesh: model.subMeshes) {
@@ -202,7 +199,8 @@ public class StillModelViewer implements ApplicationListener {
 //			System.exit(-1);
 //		}
 //		new JoglApplication(new StillModelViewer(argv[0], argv.length==2?argv[1]:null), "StillModel Viewer", 800, 480, false);
-//		new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);
+//		new JoglApplication(new StillModelViewer("data/qbob/world_blobbie_brushes.g3dt", "data/qbob/world_blobbie_blocks.png"), "StillModel Viewer", 800, 480, false);		
 		new JoglApplication(new StillModelViewer("data/multipleuvs.g3dt", "data/multipleuvs_1.png", "data/multipleuvs_2.png"), "StillModel Viewer", 800, 480, false);
+//		new JoglApplication(new StillModelViewer("data/head.obj"), "StillModel Viewer", 800, 480, false);
 	}
 }

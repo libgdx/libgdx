@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
+import com.badlogic.gdx.graphics.g3d.loaders.KeyframedModelLoader;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
@@ -19,7 +21,15 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class MD2Loader {	
+public class MD2Loader implements KeyframedModelLoader {	
+	public KeyframedModel load(FileHandle file, ModelLoaderHints hints) {
+		float frameDuration = 0.2f;
+		if(hints instanceof MD2LoaderHints) {
+			frameDuration = ((MD2LoaderHints)hints).frameDuration;
+		}
+		return load(file, frameDuration);
+	}
+	
 	public KeyframedModel load (FileHandle fileHandle, float frameDuration) {
 		InputStream in = fileHandle.read();
 		try {
@@ -329,5 +339,14 @@ public class MD2Loader {
 		public short vIdx;
 		public short tIdx;
 		public short nIdx;
+	}
+	
+	public static class MD2LoaderHints extends ModelLoaderHints {
+		public final float frameDuration;
+		
+		public MD2LoaderHints(float frameDuration) {
+			super(false);
+			this.frameDuration = frameDuration;
+		}
 	}
 }
