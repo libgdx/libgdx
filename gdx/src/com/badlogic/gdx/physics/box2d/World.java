@@ -551,6 +551,14 @@ public class World implements Disposable {
 			return false;
 	}
 	
+	/**
+	 * Sets the box2d velocity threshold globally, for all World instances.
+	 * @param threshold the threshold, default 1.0f
+	 */
 	public static native void setVelocityThreshold(float threshold);
+	
+	/**
+	 * @return the global box2d velocity threshold.
+	 */
 	public static native float getVelocityThreshold();
 }
