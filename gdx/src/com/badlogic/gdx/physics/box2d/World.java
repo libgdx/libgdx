@@ -550,4 +550,7 @@ public class World implements Disposable {
 		else
 			return false;
 	}
+	
+	public static native void setVelocityThreshold(float threshold);
+	public static native float getVelocityThreshold();
 }

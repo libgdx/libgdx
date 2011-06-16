@@ -25,6 +25,8 @@
 
 #define B2_DEBUG_SOLVER 0
 
+float b2_velocityThreshold = 1.0f;
+
 b2ContactSolver::b2ContactSolver(b2Contact** contacts, int32 contactCount,
 								b2StackAllocator* allocator, float32 impulseRatio)
 {

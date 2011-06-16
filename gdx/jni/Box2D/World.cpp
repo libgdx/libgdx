@@ -710,3 +710,23 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast
 	CustomRayCastCallback callback( env, obj );	
 	world->RayCast( &callback, b2Vec2(aX,aY), b2Vec2(bX,bY) );
 }
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    setVelocityThreshold
+ * Signature: (F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setVelocityThreshold
+  (JNIEnv *, jclass, jfloat threshold) {
+  b2_velocityThreshold = threshold;
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    getVelocityThreshold
+ * Signature: (F)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_World_getVelocityThreshold
+  (JNIEnv *, jclass) {
+  return b2_velocityThreshold;
+}
