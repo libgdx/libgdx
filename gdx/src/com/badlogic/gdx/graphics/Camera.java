@@ -96,6 +96,17 @@ public abstract class Camera {
 	}
 	
 	/**
+	 * Normalizes the up vector by first calculating the
+	 * right vector via a cross product between direction and up,
+	 * and then recalculating the up vector via a cross product
+	 * between right and direction.
+	 */
+	final Vector3 right = new Vector3();
+	public void normalizeUp() {
+		right.set(direction).crs(up).nor();
+		up.set(right).crs(direction).nor();
+	}
+	/**
 	 * Rotates the direction and up vector of this camera by the
 	 * given angle around the given axis. The direction and up
 	 * vector will not be orthogonalized.

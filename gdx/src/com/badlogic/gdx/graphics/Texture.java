@@ -27,6 +27,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -453,7 +454,7 @@ public class Texture implements Disposable {
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, getTextureFilter(magFilter));
 	}
 	
-	private int getTextureFilter (TextureFilter filter) {
+	public int getTextureFilter (TextureFilter filter) {
 		if (filter == TextureFilter.Linear)
 			return GL10.GL_LINEAR;
 		else if (filter == TextureFilter.Nearest)
@@ -518,5 +519,21 @@ public class Texture implements Disposable {
 
 	static public void setEnforcePotImages (boolean enforcePotImages) {
 		Texture.enforcePotImages = enforcePotImages;
+	}
+
+	public TextureWrap getUWrap () {		
+		return uWrap;
+	}
+	
+	public TextureWrap getVWrap () {		
+		return vWrap;
+	}
+	
+	public TextureFilter getMinFilter() {
+		return minFilter;
+	}
+	
+	public TextureFilter getMagFilter() {
+		return magFilter;
 	}
 }

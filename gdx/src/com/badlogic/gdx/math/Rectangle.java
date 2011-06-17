@@ -158,4 +158,15 @@ public class Rectangle implements Serializable {
 	public boolean contains (float x, float y) {
 		return this.x < x && this.x + this.width > x && this.y < y && this.y + this.height > y;
 	}
+
+	/**
+	 * Sets the values of the given rectangle to this rectangle.
+	 * @param rect the other rectangle
+	 */
+	public void set (Rectangle rect) {
+		this.x = rect.x;
+		this.y = rect.y;
+		this.width = rect.width;
+		this.height = rect.height;		
+	}
 }

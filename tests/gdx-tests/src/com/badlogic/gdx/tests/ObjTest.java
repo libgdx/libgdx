@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ObjTest extends GdxTest implements InputProcessor {
@@ -40,7 +40,7 @@ public class ObjTest extends GdxTest implements InputProcessor {
 	float touchStartY = 0;
 
 	@Override public void create () {
-		mesh = ModelLoader.loadObj(Gdx.files.internal("data/cube.obj").read());
+		mesh = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());
 		Gdx.app.log("ObjTest", "obj bounds: " + mesh.calculateBoundingBox());
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);

@@ -20,7 +20,7 @@ public class StillModel implements Model {
 		int len = subMeshes.length;
 		for (int i = 0; i < len; i++) {
 			StillSubMesh subMesh = subMeshes[i];
-			if (i == 0) {
+			if (i == 0) {				
 				subMesh.material.bind();
 			} else if (!subMeshes[i - 1].material.equals(subMesh.material)) {
 				subMesh.material.bind();
@@ -89,6 +89,12 @@ public class StillModel implements Model {
 		for (int i = 0; i < subMeshes.length; i++) {
 			subMeshes[i].mesh.calculateBoundingBox(tmpBox);
 			bbox.ext(tmpBox);
+		}
+	}
+	
+	@Override public void dispose () {
+		for(int i = 0; i < subMeshes.length; i++) {
+			subMeshes[i].mesh.dispose();
 		}
 	}
 }

@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g3d.model.SubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 
-public class KeyframedModel implements AnimatedModel {
+public class KeyframedModel implements AnimatedModel, Disposable {
 	public final KeyframedSubMesh[] subMeshes;
 	protected final KeyframedAnimation[] animations;
 
@@ -148,6 +149,12 @@ public class KeyframedModel implements AnimatedModel {
 		for(int i = 0; i < subMeshes.length; i++) {
 			subMeshes[i].mesh.calculateBoundingBox(tmpBox);
 			bbox.ext(tmpBox);
+		}
+	}
+
+	@Override public void dispose () {
+		for(int i = 0; i < subMeshes.length; i++) {
+			subMeshes[i].mesh.dispose();
 		}
 	}
 }

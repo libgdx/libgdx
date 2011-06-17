@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
  * @author mzechner
  * 
  */
-public class ModelLoader {
+public class ModelLoaderOld {
 	/**
 	 * Loads a Wavefront OBJ file from the given InputStream. The OBJ file must only contain triangulated meshes. Materials are
 	 * ignored.

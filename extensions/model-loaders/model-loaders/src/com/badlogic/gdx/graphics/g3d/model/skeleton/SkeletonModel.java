@@ -168,4 +168,10 @@ public class SkeletonModel implements AnimatedModel {
 			bbox.ext(tmpBox);
 		}
 	}
+	
+	@Override public void dispose () {
+		for(int i = 0; i < subMeshes.length; i++) {
+			subMeshes[i].mesh.dispose();
+		}
+	}
 }
