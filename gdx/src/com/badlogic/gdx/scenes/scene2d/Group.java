@@ -135,6 +135,7 @@ public class Group extends Actor {
 	
 	protected void drawChild(Actor child, SpriteBatch batch, float parentAlpha) {
 		child.draw(batch, parentAlpha * color.a);
+		batch.flush();
 	}
 	
 	protected void resetTransform(SpriteBatch batch) {		
