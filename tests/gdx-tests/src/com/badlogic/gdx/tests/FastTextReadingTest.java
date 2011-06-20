@@ -62,7 +62,7 @@ public class FastTextReadingTest extends GdxTest {
 	}
 	
 	private void readWordIntArrayISO() {
-		InputStream in = new BufferedInputStream(Gdx.files.internal("data/words.txt").read());
+		InputStream in = new BufferedInputStream(Gdx.files.internal("data/words.png").read());
 		try {			
 			byte[] buffer = new byte[1024*20];
 			int[] word = new int[100];
@@ -71,7 +71,7 @@ public class FastTextReadingTest extends GdxTest {
 			
 			while((readBytes =in.read(buffer)) != -1) {
 				for(int i = 0; i < readBytes; i++) {
-					byte c = (byte)buffer[i];
+					byte c = (byte)buffer[i];				
 					if(c == '\n') {
 						String wordStr = new String(word, 0, charIdx);
 						words.put(wordStr, wordStr);
@@ -81,14 +81,16 @@ public class FastTextReadingTest extends GdxTest {
 					}
 				}
 			}
-		} catch(Exception e) {			
+		} catch(Exception e) {
+			e.printStackTrace();
+			Gdx.app.log("FastTextReadingText", "boom goes the app: " + e.getMessage());			
 		} finally {
 			try { in.close(); } catch(Exception e) { };
 		}
 	}
 	
 	private void readWordStringBuilder() {
-		InputStream in = new BufferedInputStream(Gdx.files.internal("data/words.txt").read());
+		InputStream in = new BufferedInputStream(Gdx.files.internal("data/words.png").read());
 		try {			
 			byte[] buffer = new byte[1024*10];						
 			int readBytes = 0;			
@@ -105,14 +107,16 @@ public class FastTextReadingTest extends GdxTest {
 					}
 				}
 			}
-		} catch(Exception e) {			
+		} catch(Exception e) {
+			e.printStackTrace();
+			Gdx.app.log("FastTextReadingText", "boom goes the app: " + e.getMessage());
 		} finally {
 			try { in.close(); } catch(Exception e) { };
 		}
 	}
 	
 	private void readWordIntArrayISOMethod() {
-		InputStream in = new BufferedInputStream(Gdx.files.internal("data/words.txt").read());
+		InputStream in = new BufferedInputStream(Gdx.files.internal("data/words.png").read());
 		try {			
 			byte[] buffer = new byte[1024*20];
 			int[] word = new int[100];
@@ -123,6 +127,8 @@ public class FastTextReadingTest extends GdxTest {
 				charIdx = readBuffer(buffer, readBytes, word, charIdx);
 			}
 		} catch(Exception e) {			
+			e.printStackTrace();
+			Gdx.app.log("FastTextReadingText", "boom goes the app: " + e.getMessage());
 		} finally {
 			try { in.close(); } catch(Exception e) { };
 		}

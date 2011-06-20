@@ -445,8 +445,8 @@ public class Xml {
 		public String getAttribute (String name) {
 			if (attributes == null) return null;
 			return attributes.get(name);
-		}
-
+		}	
+		
 		public void setAttribute (String name, String value) {
 			if (attributes == null) attributes = new ObjectMap(8);
 			attributes.put(name, value);
