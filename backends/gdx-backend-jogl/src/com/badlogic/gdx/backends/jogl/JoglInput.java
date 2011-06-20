@@ -357,6 +357,8 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	}
 
 	protected static int translateKeyCode (int keyCode) {
+		if (keyCode == java.awt.event.KeyEvent.VK_ADD) return Input.Keys.PLUS;
+		if (keyCode == java.awt.event.KeyEvent.VK_SUBTRACT) return Input.Keys.MINUS;		
 		if (keyCode == java.awt.event.KeyEvent.VK_0) return Input.Keys.NUM_0;
 		if (keyCode == java.awt.event.KeyEvent.VK_1) return Input.Keys.NUM_1;
 		if (keyCode == java.awt.event.KeyEvent.VK_2) return Input.Keys.NUM_2;
