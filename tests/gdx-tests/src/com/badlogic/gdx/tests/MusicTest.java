@@ -30,15 +30,19 @@ public class MusicTest extends GdxTest {
 		return false;
 	}
 
-	Music music;
+	static final int NUM_STREAMS = 1; 
+	Music[] music = new Music[NUM_STREAMS];
 	TextureRegion buttons;
 	SpriteBatch batch;
 	BitmapFont font;	
 	
 	@Override public void create() {
-		music = Gdx.audio.newMusic(Gdx.files.internal("data/threeofaperfectpair.mp3"));
-//		music = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-//		music = Gdx.audio.newMusic(Gdx.files.internal("data/sell_buy_item.wav"));		
+		for(int i = 0; i < music.length; i++) {
+			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
+//			music = Gdx.audio.newMusic(Gdx.files.internal("data/sell_buy_item.wav"));	
+//			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/threeofaperfectpair.mp3"));
+		}
+		
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -52,14 +56,20 @@ public class MusicTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-		font.draw(batch, "\"Three of a perfect pair: " +  music.getPosition(), 10, Gdx.graphics.getHeight() - 20);
+		font.draw(batch, "\"Three of a perfect pair: " +  music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
 		batch.end();			
 		
 		if(Gdx.input.justTouched()) {
 			if(Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
-				if(Gdx.input.getX() < 64) music.play();
-				if(Gdx.input.getX() > 64 && Gdx.input.getX() < 128) music.stop();
-				if(Gdx.input.getX() > 128 && Gdx.input.getX() < 192) music.pause();
+				if(Gdx.input.getX() < 64) {
+					for(int i = 0; i < music.length; i++) music[i].play();
+				}
+				if(Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
+					for(int i = 0; i < music.length; i++) music[i].stop();
+				}
+				if(Gdx.input.getX() > 128 && Gdx.input.getX() < 192) {
+					for(int i = 0; i < music.length; i++) music[i].pause();
+				}
 			}
 		}
 	}
