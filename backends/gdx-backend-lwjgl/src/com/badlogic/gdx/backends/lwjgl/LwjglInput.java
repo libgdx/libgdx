@@ -232,132 +232,72 @@ final class LwjglInput implements Input {
 
 	public static int getGdxKeyCode (int lwjglKeyCode) {
 		switch (lwjglKeyCode) {
-		case Keyboard.KEY_0:
-			return Input.Keys.NUM_0;
-		case Keyboard.KEY_1:
-			return Input.Keys.NUM_1;
-		case Keyboard.KEY_2:
-			return Input.Keys.NUM_2;
-		case Keyboard.KEY_3:
-			return Input.Keys.NUM_3;
-		case Keyboard.KEY_4:
-			return Input.Keys.NUM_4;
-		case Keyboard.KEY_5:
-			return Input.Keys.NUM_5;
-		case Keyboard.KEY_6:
-			return Input.Keys.NUM_6;
-		case Keyboard.KEY_7:
-			return Input.Keys.NUM_7;
-		case Keyboard.KEY_8:
-			return Input.Keys.NUM_8;
-		case Keyboard.KEY_9:
-			return Input.Keys.NUM_9;
-		case Keyboard.KEY_A:
-			return Input.Keys.A;
-		case Keyboard.KEY_B:
-			return Input.Keys.B;
-		case Keyboard.KEY_C:
-			return Input.Keys.C;
-		case Keyboard.KEY_D:
-			return Input.Keys.D;
-		case Keyboard.KEY_E:
-			return Input.Keys.E;
-		case Keyboard.KEY_F:
-			return Input.Keys.F;
-		case Keyboard.KEY_G:
-			return Input.Keys.G;
-		case Keyboard.KEY_H:
-			return Input.Keys.H;
-		case Keyboard.KEY_I:
-			return Input.Keys.I;
-		case Keyboard.KEY_J:
-			return Input.Keys.J;
-		case Keyboard.KEY_K:
-			return Input.Keys.K;
-		case Keyboard.KEY_L:
-			return Input.Keys.L;
-		case Keyboard.KEY_M:
-			return Input.Keys.M;
-		case Keyboard.KEY_N:
-			return Input.Keys.N;
-		case Keyboard.KEY_O:
-			return Input.Keys.O;
-		case Keyboard.KEY_P:
-			return Input.Keys.P;
-		case Keyboard.KEY_Q:
-			return Input.Keys.Q;
-		case Keyboard.KEY_R:
-			return Input.Keys.R;
-		case Keyboard.KEY_S:
-			return Input.Keys.S;
-		case Keyboard.KEY_T:
-			return Input.Keys.T;
-		case Keyboard.KEY_U:
-			return Input.Keys.U;
-		case Keyboard.KEY_V:
-			return Input.Keys.V;
-		case Keyboard.KEY_W:
-			return Input.Keys.W;
-		case Keyboard.KEY_X:
-			return Input.Keys.X;
-		case Keyboard.KEY_Y:
-			return Input.Keys.Y;
-		case Keyboard.KEY_Z:
-			return Input.Keys.Z;
-		case Keyboard.KEY_LMETA:
-			return Input.Keys.ALT_LEFT;
-		case Keyboard.KEY_RMETA:
-			return Input.Keys.ALT_RIGHT;
-		case Keyboard.KEY_BACKSLASH:
-			return Input.Keys.BACKSLASH;
-		case Keyboard.KEY_COMMA:
-			return Input.Keys.COMMA;
-		case Keyboard.KEY_DELETE:
-			return Input.Keys.FORWARD_DEL;
-		case Keyboard.KEY_LEFT:
-			return Input.Keys.DPAD_LEFT;
-		case Keyboard.KEY_RIGHT:
-			return Input.Keys.DPAD_RIGHT;
-		case Keyboard.KEY_UP:
-			return Input.Keys.DPAD_UP;
-		case Keyboard.KEY_DOWN:
-			return Input.Keys.DPAD_DOWN;
-		case Keyboard.KEY_RETURN:
-			return Input.Keys.ENTER;
-		case Keyboard.KEY_HOME:
-			return Input.Keys.HOME;
-		case Keyboard.KEY_MINUS:
-			return Input.Keys.MINUS;
-		case Keyboard.KEY_PERIOD:
-			return Input.Keys.PERIOD;
-		case Keyboard.KEY_ADD:
-			return Input.Keys.PLUS;
-		case Keyboard.KEY_SEMICOLON:
-			return Input.Keys.SEMICOLON;
-		case Keyboard.KEY_LSHIFT:
-			return Input.Keys.SHIFT_LEFT;
-		case Keyboard.KEY_RSHIFT:
-			return Input.Keys.SHIFT_RIGHT;
-		case Keyboard.KEY_SLASH:
-			return Input.Keys.SLASH;
-		case Keyboard.KEY_SPACE:
-			return Input.Keys.SPACE;
-		case Keyboard.KEY_TAB:
-			return Input.Keys.TAB;
-		case Keyboard.KEY_LCONTROL:
-			return Input.Keys.CONTROL_LEFT;
-		case Keyboard.KEY_RCONTROL:
-			return Input.Keys.CONTROL_RIGHT;
-		case Keyboard.KEY_ESCAPE:
-			return Input.Keys.ESCAPE;
-		case Keyboard.KEY_END:
-			return Input.Keys.END;
-		case Keyboard.KEY_INSERT:
-			return Input.Keys.INSERT;
-		case Keyboard.KEY_NUMPAD5:
-			return Input.Keys.DPAD_CENTER;
-		case Keyboard.KEY_BACK:
-			return Input.Keys.DEL;		
+		case Keyboard.KEY_0:	return Input.Keys.NUM_0;
+		case Keyboard.KEY_1:	return Input.Keys.NUM_1;
+		case Keyboard.KEY_2:	return Input.Keys.NUM_2;
+		case Keyboard.KEY_3:	return Input.Keys.NUM_3;
+		case Keyboard.KEY_4:	return Input.Keys.NUM_4;
+		case Keyboard.KEY_5:	return Input.Keys.NUM_5;
+		case Keyboard.KEY_6:	return Input.Keys.NUM_6;
+		case Keyboard.KEY_7:	return Input.Keys.NUM_7;
+		case Keyboard.KEY_8:	return Input.Keys.NUM_8;
+		case Keyboard.KEY_9:	return Input.Keys.NUM_9;
+		case Keyboard.KEY_A:	return Input.Keys.A;
+		case Keyboard.KEY_B:	return Input.Keys.B;
+		case Keyboard.KEY_C:	return Input.Keys.C;
+		case Keyboard.KEY_D:	return Input.Keys.D;
+		case Keyboard.KEY_E:	return Input.Keys.E;
+		case Keyboard.KEY_F:	return Input.Keys.F;
+		case Keyboard.KEY_G:	return Input.Keys.G;
+		case Keyboard.KEY_H:	return Input.Keys.H;
+		case Keyboard.KEY_I:	return Input.Keys.I;
+		case Keyboard.KEY_J:	return Input.Keys.J;
+		case Keyboard.KEY_K:	return Input.Keys.K;
+		case Keyboard.KEY_L:	return Input.Keys.L;
+		case Keyboard.KEY_M:	return Input.Keys.M;
+		case Keyboard.KEY_N:	return Input.Keys.N;
+		case Keyboard.KEY_O:	return Input.Keys.O;
+		case Keyboard.KEY_P:	return Input.Keys.P;
+		case Keyboard.KEY_Q:	return Input.Keys.Q;
+		case Keyboard.KEY_R:	return Input.Keys.R;
+		case Keyboard.KEY_S:	return Input.Keys.S;
+		case Keyboard.KEY_T:	return Input.Keys.T;
+		case Keyboard.KEY_U:	return Input.Keys.U;
+		case Keyboard.KEY_V:	return Input.Keys.V;
+		case Keyboard.KEY_W:	return Input.Keys.W;
+		case Keyboard.KEY_X:	return Input.Keys.X;
+		case Keyboard.KEY_Y:	return Input.Keys.Y;
+		case Keyboard.KEY_Z:	return Input.Keys.Z;
+		case Keyboard.KEY_LMENU: return Input.Keys.ALT_LEFT;
+		case Keyboard.KEY_RMENU: return Input.Keys.ALT_RIGHT;
+		case Keyboard.KEY_BACKSLASH: return Input.Keys.BACKSLASH;
+		case Keyboard.KEY_COMMA: return Input.Keys.COMMA;
+		case Keyboard.KEY_DELETE: return Input.Keys.FORWARD_DEL;
+		case Keyboard.KEY_LEFT: return Input.Keys.DPAD_LEFT;
+		case Keyboard.KEY_RIGHT: return Input.Keys.DPAD_RIGHT;
+		case Keyboard.KEY_UP: return Input.Keys.DPAD_UP;
+		case Keyboard.KEY_DOWN: return Input.Keys.DPAD_DOWN;
+		case Keyboard.KEY_RETURN: return Input.Keys.ENTER;
+		case Keyboard.KEY_HOME: return Input.Keys.HOME;
+		case Keyboard.KEY_MINUS: return Input.Keys.MINUS;
+		case Keyboard.KEY_PERIOD: return Input.Keys.PERIOD;
+		case Keyboard.KEY_ADD: return Input.Keys.PLUS;
+		case Keyboard.KEY_SEMICOLON: return Input.Keys.SEMICOLON;
+		case Keyboard.KEY_LSHIFT: return Input.Keys.SHIFT_LEFT;
+		case Keyboard.KEY_RSHIFT: return Input.Keys.SHIFT_RIGHT;
+		case Keyboard.KEY_SLASH: return Input.Keys.SLASH;
+		case Keyboard.KEY_SPACE: return Input.Keys.SPACE;
+		case Keyboard.KEY_TAB: return Input.Keys.TAB;
+		case Keyboard.KEY_LCONTROL: return Input.Keys.CONTROL_LEFT;
+		case Keyboard.KEY_RCONTROL: return Input.Keys.CONTROL_RIGHT;
+		case Keyboard.KEY_ESCAPE: return Input.Keys.ESCAPE;
+		case Keyboard.KEY_END: return Input.Keys.END;
+		case Keyboard.KEY_INSERT: return Input.Keys.INSERT;
+		case Keyboard.KEY_NUMPAD5: return Input.Keys.DPAD_CENTER;
+		case Keyboard.KEY_BACK: return Input.Keys.DEL;		
+		case Keyboard.KEY_SUBTRACT: return Input.Keys.MINUS;		
+		case Keyboard.KEY_APOSTROPHE: return Input.Keys.APOSTROPHE;
+		
 		default:
 			return Input.Keys.UNKNOWN;
 		}
@@ -438,9 +378,9 @@ final class LwjglInput implements Input {
 		case Input.Keys.Z:
 			return Keyboard.KEY_Z;
 		case Input.Keys.ALT_LEFT:
-			return Keyboard.KEY_LMETA;
+			return Keyboard.KEY_LMENU;
 		case Input.Keys.ALT_RIGHT:
-			return Keyboard.KEY_RMETA;
+			return Keyboard.KEY_RMENU;
 		case Input.Keys.BACKSLASH:
 			return Keyboard.KEY_BACKSLASH;
 		case Input.Keys.COMMA:
