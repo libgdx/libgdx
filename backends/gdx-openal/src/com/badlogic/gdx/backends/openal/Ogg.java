@@ -28,6 +28,8 @@ public class Ogg {
 
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
+			input = new OggInputStream(file.read());
+			setup(input.getChannels(), input.getSampleRate());
 		}
 
 		protected int read (byte[] buffer) {

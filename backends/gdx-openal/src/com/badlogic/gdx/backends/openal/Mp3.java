@@ -39,6 +39,18 @@ public class Mp3 {
 
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
+			bitstream = new Bitstream(file.read());
+			decoder = new MP3Decoder();
+			try {
+				Header header = bitstream.readFrame();
+				if (header == null) throw new GdxRuntimeException("empty ogg");			
+				int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
+				outputBuffer = new OutputBuffer(channels, false);
+				decoder.setOutputBuffer(outputBuffer);
+				setup(channels, header.getSampleRate());					
+			} catch(BitstreamException e) {
+				throw new GdxRuntimeException("error while preloading mp3", e);
+			}
 		}
 
 		protected int read (byte[] buffer) {

@@ -37,6 +37,8 @@ public class MusicTest extends GdxTest {
 	
 	@Override public void create() {
 		music = Gdx.audio.newMusic(Gdx.files.internal("data/threeofaperfectpair.mp3"));
+//		music = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
+//		music = Gdx.audio.newMusic(Gdx.files.internal("data/sell_buy_item.wav"));		
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
 		font = new BitmapFont();

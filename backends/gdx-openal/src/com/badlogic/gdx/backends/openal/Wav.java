@@ -28,6 +28,8 @@ public class Wav {
 
 		public Music (OpenALAudio audio, FileHandle file) {
 			super(audio, file);
+			input = new WavInputStream(file);
+			setup(input.channels, input.sampleRate);
 		}
 
 		protected int read (byte[] buffer) {
