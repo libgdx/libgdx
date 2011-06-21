@@ -317,6 +317,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_DOWN;
+				
+				// Xperia hack for circle key. gah...
+				if(keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
+					keyCode = Keys.BUTTON_CIRCLE;
+				}
+				
 				keyEvents.add(event);
 				keys.add(event.keyCode);
 				break;
@@ -325,6 +331,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_UP;
+				// Xperia hack for circle key. gah...
+				if(keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
+					keyCode = Keys.BUTTON_CIRCLE;
+				}
 				keyEvents.add(event);
 
 				event = usedKeyEvents.obtain();
