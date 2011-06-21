@@ -81,6 +81,7 @@ import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.MyFirstTriangle;
 import com.badlogic.gdx.tests.ObjTest;
+import com.badlogic.gdx.tests.OnscreenKeyboardTest;
 import com.badlogic.gdx.tests.OrthoCamBorderTest;
 import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PickingTest;
@@ -192,6 +193,7 @@ public class GdxTests
 		MultiTouchActorTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
+		OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class,
 		ParticleEmitterTest.class,
 		PickingTest.class,
