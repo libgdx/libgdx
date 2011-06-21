@@ -81,6 +81,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
     public AndroidGraphics(AndroidApplication activity, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy) {
         view = createGLSurfaceView(activity, useGL2IfAvailable, resolutionStrategy);
+        view.setFocusable(true);
+  		  view.setFocusableInTouchMode(true);
         this.app = activity;
     }
 
