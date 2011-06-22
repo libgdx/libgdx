@@ -154,7 +154,9 @@ public final class AndroidAudio implements Audio {
 	 */
 	public void dispose () {
 		synchronized(musics) {
-			for (AndroidMusic music : musics) {
+			// gah i hate myself.... music.dispose() removes the music from the list...
+			ArrayList<AndroidMusic> musicsCopy = new ArrayList<AndroidMusic>(musics);
+			for (AndroidMusic music : musicsCopy) {
 				music.dispose();
 			}		
 		}
