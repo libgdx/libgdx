@@ -200,7 +200,7 @@ public abstract class Camera {
 	 * specify the viewport position and dimensions in the coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with
 	 * the origin in the bottom left corner of the screen.
 	 * 
-	 * @param vec the point in window coordinates (origin top left)
+	 * @param vec the point in object/world space
 	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
 	 * @param viewportY the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
 	 * @param viewportWidth the width of the viewport in pixels

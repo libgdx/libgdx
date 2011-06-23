@@ -397,4 +397,19 @@ public interface Input {
 	 * @return whether the peripheral is available or not.
 	 */
 	public boolean isPeripheralAvailable(Peripheral peripheral);
+	
+	/**
+	 * @return the rotation of the device with respect to its native orientation.
+	 */
+	public int getRotation();
+	
+	/**
+	 * @return the native orientation of the device.
+	 */
+	public Orientation getNativeOrientation();
+	
+	public enum Orientation {
+		Landscape,
+		Portrait
+	}
 }

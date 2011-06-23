@@ -26,6 +26,7 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Orientation;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -356,5 +357,13 @@ public class RemoteInput implements Runnable, Input {
 		if(peripheral == Peripheral.Compass) return true;
 		if(peripheral == Peripheral.MultitouchScreen) return multiTouch;				
 		return false;
+	}
+
+	@Override public int getRotation () {
+		return 0;
+	}
+
+	@Override public Orientation getNativeOrientation () {
+		return Orientation.Landscape;
 	}
 }

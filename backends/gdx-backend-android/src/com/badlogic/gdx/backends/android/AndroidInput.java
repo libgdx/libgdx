@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import java.util.ArrayList;
@@ -28,17 +29,20 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 
 /**
@@ -109,9 +113,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private float pitch = 0;
 	private float roll = 0;
 	private float inclination = 0;
-	private boolean justTouched = false;	
+	private boolean justTouched = false;
 	private InputProcessor processor;
 	private final AndroidApplicationConfiguration config;
+	private final Orientation nativeOrientation;
 
 	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
 		view.setOnKeyListener(this);
@@ -121,8 +126,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		view.requestFocus();
 		view.requestFocusFromTouch();
 		this.config = config;
-		
-		for(int i = 0; i < realId.length; i++) realId[i] = -1;
+
+		for (int i = 0; i < realId.length; i++)
+			realId[i] = -1;
 		handle = new Handler();
 		this.app = activity;
 		this.sleepTime = config.touchSleepTime;
@@ -134,7 +140,16 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler
 			&& ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
 
-		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);					
+		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
+		
+		int rotation = getRotation();
+		DisplayMode mode = app.graphics.getDesktopDisplayMode();
+		if(((rotation == 0 || rotation == 180) && (mode.width >= mode.height)) ||
+			((rotation == 90 || rotation == 270) && (mode.width <= mode.height))) {
+			nativeOrientation = Orientation.Landscape;
+		} else {
+			nativeOrientation = Orientation.Portrait;
+		}		
 	}
 
 	@Override public float getAccelerometerX () {
@@ -163,9 +178,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 						listener.input(input.getText().toString());
 					}
 				});
-				alert.setOnCancelListener(new OnCancelListener() {					
-					@Override
-					public void onCancel(DialogInterface arg0) {
+				alert.setOnCancelListener(new OnCancelListener() {
+					@Override public void onCancel (DialogInterface arg0) {
 						listener.canceled();
 					}
 				});
@@ -175,31 +189,31 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 
 	@Override public int getX () {
-		synchronized(this) {
+		synchronized (this) {
 			return touchX[0];
 		}
 	}
 
 	@Override public int getY () {
-		synchronized(this) {
+		synchronized (this) {
 			return touchY[0];
 		}
 	}
 
 	@Override public int getX (int pointer) {
-		synchronized(this) {
+		synchronized (this) {
 			return touchX[pointer];
 		}
 	}
 
 	@Override public int getY (int pointer) {
-		synchronized(this) {
+		synchronized (this) {
 			return touchY[pointer];
 		}
 	}
 
 	public boolean isTouched (int pointer) {
-		synchronized(this) {
+		synchronized (this) {
 			return touched[pointer];
 		}
 	}
@@ -214,7 +228,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 
 	@Override public boolean isTouched () {
-		synchronized(this) {
+		synchronized (this) {
 			return touched[0];
 		}
 	}
@@ -317,12 +331,12 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_DOWN;
-				
+
 				// Xperia hack for circle key. gah...
-				if(keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
+				if (keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
 					keyCode = Keys.BUTTON_CIRCLE;
 				}
-				
+
 				keyEvents.add(event);
 				keys.add(event.keyCode);
 				break;
@@ -332,7 +346,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_UP;
 				// Xperia hack for circle key. gah...
-				if(keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
+				if (keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
 					keyCode = Keys.BUTTON_CIRCLE;
 				}
 				keyEvents.add(event);
@@ -357,16 +371,22 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override public void onSensorChanged (SensorEvent event) {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
+			if(nativeOrientation == Orientation.Portrait) {
+				System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
+			} else {
+				accelerometerValues[0] = event.values[1];
+				accelerometerValues[1] = -event.values[0];
+				accelerometerValues[2] = event.values[2];
+			}
 		}
-		if(event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+		if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 			System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
 		}
 	}
 
 	@Override public void setOnscreenKeyboardVisible (final boolean visible) {
-		handle.post(new Runnable() {				
-			public void run() {
+		handle.post(new Runnable() {
+			public void run () {
 				InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
 				if (visible) {
 					View view = ((AndroidGraphics)app.getGraphics()).getView();
@@ -378,7 +398,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				}
 			}
 		});
-	}	
+	}
 
 	@Override public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
@@ -387,7 +407,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	@Override public void vibrate (int milliseconds) {
 		vibrator.vibrate(milliseconds);
 	}
-	
+
 	@Override public void vibrate (long[] pattern, int repeat) {
 		vibrator.vibrate(pattern, repeat);
 	}
@@ -407,112 +427,132 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			return false;
 	}
 
-	final float[] R = new float[9];	
-	final float[] orientation = new float[3];			
-	private void updateOrientation() {
-		if(SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
+	final float[] R = new float[9];
+	final float[] orientation = new float[3];
+
+	private void updateOrientation () {
+		if (SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
 			SensorManager.getOrientation(R, orientation);
 			azimuth = (float)Math.toDegrees(orientation[0]);
 			pitch = (float)Math.toDegrees(orientation[1]);
-			roll = (float)Math.toDegrees(orientation[2]);			
+			roll = (float)Math.toDegrees(orientation[2]);
 		}
 	}
-	
+
 	@Override public float getAzimuth () {
-		if(!compassAvailable)
-			return 0;
-		
+		if (!compassAvailable) return 0;
+
 		updateOrientation();
 		return azimuth;
 	}
 
 	@Override public float getPitch () {
-		if(!compassAvailable)
-			return 0;
-		
+		if (!compassAvailable) return 0;
+
 		updateOrientation();
 		return pitch;
 	}
 
 	@Override public float getRoll () {
-		if(!compassAvailable)
-			return 0;
-		
+		if (!compassAvailable) return 0;
+
 		updateOrientation();
 		return roll;
 	}
-	
-	void registerSensorListeners() {		
-		if(config.useAccelerometer) {
+
+	void registerSensorListeners () {
+		if (config.useAccelerometer) {
 			manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
 			if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
 				accelerometerAvailable = false;
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-				accelerometerAvailable = manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);				
+				accelerometerAvailable = manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
 			}
-		} else accelerometerAvailable = false;
-		
-		if(config.useCompass) {
-			if(manager == null) manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
+		} else
+			accelerometerAvailable = false;
+
+		if (config.useCompass) {
+			if (manager == null) manager = (SensorManager)app.getSystemService(Context.SENSOR_SERVICE);
 			Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-			if(sensor != null) {
+			if (sensor != null) {
 				compassAvailable = accelerometerAvailable;
-				if(compassAvailable) {
+				if (compassAvailable) {
 					compassAvailable = manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
 				}
 			} else {
 				compassAvailable = false;
 			}
-		} else compassAvailable = false;
+		} else
+			compassAvailable = false;
 		Gdx.app.log("AndroidInput", "sensor listener setup");
 	}
-	
-	void unregisterSensorListeners() {	
-		if(manager != null) {
+
+	void unregisterSensorListeners () {
+		if (manager != null) {
 			manager.unregisterListener(this);
 			manager = null;
 		}
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
-	
-	@Override public InputProcessor getInputProcessor() {
+
+	@Override public InputProcessor getInputProcessor () {
 		return this.processor;
 	}
 
 	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {
-		if(peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
-		if(peripheral == Peripheral.Compass) return compassAvailable;
-		if(peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
-		if(peripheral == Peripheral.OnscreenKeyboard) return true;
-		if(peripheral == Peripheral.Vibrator) return vibrator != null;
-		if(peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
+		if (peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
+		if (peripheral == Peripheral.Compass) return compassAvailable;
+		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
+		if (peripheral == Peripheral.Vibrator) return vibrator != null;
+		if (peripheral == Peripheral.MultitouchScreen) return hasMultitouch;
 		return false;
 	}
-	
-	public int getFreePointerIndex() {
+
+	public int getFreePointerIndex () {
 		int len = realId.length;
-		for(int i = 0; i < len; i++) {
-			if(realId[i] == -1) return i;
+		for (int i = 0; i < len; i++) {
+			if (realId[i] == -1) return i;
 		}
-		
+
 		int[] tmp = new int[realId.length + 1];
 		System.arraycopy(realId, 0, tmp, 0, realId.length);
 		realId = tmp;
 		return tmp.length - 1;
 	}
-	
-	public int lookUpPointerIndex(int pointerId) {
+
+	public int lookUpPointerIndex (int pointerId) {
 		int len = realId.length;
-		for(int i = 0; i < len; i++) {
-			if(realId[i] == pointerId) return i;
+		for (int i = 0; i < len; i++) {
+			if (realId[i] == pointerId) return i;
 		}
-		
+
 		StringBuffer buf = new StringBuffer();
-		for(int i = 0; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			buf.append(i + ":" + realId[i] + " ");
 		}
 		Gdx.app.log("AndroidInput", "Pointer ID lookup failed: " + pointerId + ", " + buf.toString());
-		return -1;	
+		return -1;
+	}
+
+	@Override public int getRotation () {				
+		int orientation = app.getWindowManager().getDefaultDisplay().getOrientation();
+		switch (orientation) {
+		case Surface.ROTATION_0:
+			return 0;
+		case Surface.ROTATION_90:
+			return 90;
+		case Surface.ROTATION_180:
+			return 180;
+		case Surface.ROTATION_270:
+			return 270;
+		default:
+			return 0;
+		}
+	}
+
+	@Override public Orientation getNativeOrientation () {
+		return nativeOrientation;
 	}
 }
