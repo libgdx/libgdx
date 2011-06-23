@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -45,15 +46,15 @@ public class QbobViewer implements ApplicationListener {
 		animModel.setMaterial(material);
 		
 		model[0] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_01.dae.g3d"));
-		lightMaps[0] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_01.jpg"), true);
+		lightMaps[0] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_01.jpg"), Format.RGB565, true);
 		model[1] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_02.dae.g3d"));
-		lightMaps[1] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_02.jpg"), true);
+		lightMaps[1] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_02.jpg"), Format.RGB565, true);
 		model[2] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_03.dae.g3d"));
-		lightMaps[2] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_03.jpg"), true);
+		lightMaps[2] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_03.jpg"), Format.RGB565, true);
 		model[3] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_04.dae.g3d"));
-		lightMaps[3] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_04.jpg"), true);
+		lightMaps[3] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_04.jpg"), Format.RGB565, true);
 		
-		diffuse = new Texture(Gdx.files.internal("data/qbob/World_blobbie_blocks.png"), true);
+		diffuse = new Texture(Gdx.files.internal("data/qbob/World_blobbie_blocks.png"), Format.RGB565, true);
 																		
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(30, 10, 85f);
