@@ -78,6 +78,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
     private float ppiY = 0;
     private float ppcX = 0;
     private float ppcY = 0;
+    
+    private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0);
 
     public AndroidGraphics(AndroidApplication activity, boolean useGL2IfAvailable, ResolutionStrategy resolutionStrategy) {
         view = createGLSurfaceView(activity, useGL2IfAvailable, resolutionStrategy);
@@ -313,6 +315,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
         Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
         Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
         Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
+        
+        bufferFormat = new BufferFormat(r, g, b, a, d, s, 0);
     }
 
     int[] value = new int[1];
@@ -513,6 +517,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[0];
 	}
+	
+	@Override public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+		return false;
+	}
 
 	@Override public void setTitle (String title) {
 		
@@ -520,5 +528,25 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override public void setIcon (Pixmap pixmap) {
 		
+	}
+
+	private class AndroidDisplayMode extends DisplayMode {
+		protected AndroidDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
+			super(width, height, refreshRate, bitsPerPixel);
+		}
+	}
+	
+	@Override public DisplayMode getDesktopDisplayMode () {
+		DisplayMetrics metrics = new DisplayMetrics();
+      app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+      
+		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
+	}
+
+	@Override public BufferFormat getBufferFormat () {
+		return bufferFormat;
+	}
+
+	@Override public void setVSync (boolean vsync) {		
 	}
 }

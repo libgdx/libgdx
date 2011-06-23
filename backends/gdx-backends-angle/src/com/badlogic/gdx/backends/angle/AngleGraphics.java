@@ -138,4 +138,21 @@ public class AngleGraphics implements Graphics {
 	@Override public void setIcon (Pixmap pixmap) {
 		
 	}
+
+	@Override public DisplayMode getDesktopDisplayMode () {
+		return null;
+	}
+
+	@Override public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+		return false;
+	}
+
+	@Override public void setVSync (boolean vsync) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override public BufferFormat getBufferFormat () {
+		return null;
+	}
 }

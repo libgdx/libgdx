@@ -82,12 +82,24 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	Set<Integer> keys = new HashSet<Integer>();
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	InputProcessor processor;
+	GLCanvas canvas;
 
 	public JoglInput (GLCanvas canvas) {
+		setListeners(canvas);
+	}
+	
+	public void setListeners(GLCanvas canvas) {
+		if(this.canvas != null) {
+			canvas.removeMouseListener(this);
+			canvas.removeMouseMotionListener(this);
+			canvas.removeMouseWheelListener(this);
+			canvas.removeKeyListener(this);
+		}
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addMouseWheelListener(this);
-		canvas.addKeyListener(this);		
+		canvas.addKeyListener(this);
+		this.canvas = canvas;
 	}
 
 	@Override public float getAccelerometerX () {

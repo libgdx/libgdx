@@ -51,7 +51,29 @@ public class LwjglApplication implements Application {
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		LwjglNativesLoader.load();
 
-		graphics = new LwjglGraphics(title, width, height, useGL2);
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = title;
+		config.width = width;
+		config.height = height;
+		config.useGL20 = useGL2;
+		graphics = new LwjglGraphics(config);
+		audio = new OpenALAudio();
+		files = new LwjglFiles();
+		input = new LwjglInput();
+		this.listener = listener;
+
+		Gdx.app = this;
+		Gdx.graphics = graphics;
+		Gdx.audio = audio;
+		Gdx.files = files;
+		Gdx.input = input;
+		initialize();
+	}
+	
+	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
+		LwjglNativesLoader.load();
+		
+		graphics = new LwjglGraphics(config);
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
@@ -100,6 +122,7 @@ public class LwjglApplication implements Application {
 
 		listener.create();
 		listener.resize(graphics.getWidth(), graphics.getHeight());
+		graphics.resize = false;
 
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();
@@ -107,6 +130,10 @@ public class LwjglApplication implements Application {
 		graphics.lastTime = System.nanoTime();
 		while (running && !Display.isCloseRequested()) {
 			graphics.updateTime();
+			if(graphics.resize) {
+				graphics.resize = false;
+				listener.resize(graphics.getWidth(), graphics.getHeight());
+			}
 			synchronized(runnables) {
 				for(int i = 0; i < runnables.size(); i++) {
 					runnables.get(i).run();
@@ -129,7 +156,9 @@ public class LwjglApplication implements Application {
 			listener.render();
 			audio.update();
 			Display.update();
-			if (graphics.vsync) Display.sync(60);
+			if (graphics.vsync && graphics.config.useCPUSynch) {				
+				Display.sync(60);
+			}
 		}
 
 		listener.pause();

@@ -58,6 +58,7 @@ import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.FloatTest;
 import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.FramebufferToTextureTest;
+import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.Gdx2DTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
 import com.badlogic.gdx.tests.ImmediateModeRendererAlphaTest;
@@ -169,6 +170,7 @@ public class GdxTests
 		FloatTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
+		FullscreenTest.class,
 		FastTextReadingTest.class,
 		GroupFadeTest.class,
 		ImmediateModeRendererTest.class,

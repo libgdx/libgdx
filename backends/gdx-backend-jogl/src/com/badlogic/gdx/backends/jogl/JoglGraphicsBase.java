@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.jogl;
 
+import java.awt.Color;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
@@ -44,7 +46,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	float deltaTime = 0;	
 	int fps;
 	int frames;
-	boolean paused = true;
+	boolean paused = true;	
 
 	GLCommon gl;
 	GL10 gl10;
@@ -52,24 +54,25 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	GL20 gl20;
 	GLU glu;
 
-	void initialize (String title, int width, int height, boolean useGL2) {
+	void initialize (JoglApplicationConfiguration config) {
 		GLCapabilities caps = new GLCapabilities();
-		caps.setRedBits(8);
-		caps.setGreenBits(8);
-		caps.setBlueBits(8);
-		caps.setAlphaBits(8);
-		caps.setDepthBits(16);
-		caps.setStencilBits(8);
-		caps.setNumSamples(0);
-		caps.setSampleBuffers(false);
+		caps.setRedBits(config.r);
+		caps.setGreenBits(config.g);
+		caps.setBlueBits(config.b);
+		caps.setAlphaBits(config.a);
+		caps.setDepthBits(config.depth);
+		caps.setStencilBits(config.stencil);
+		caps.setNumSamples(config.numSamples);
+		caps.setSampleBuffers(config.numSamples > 0);
 		caps.setDoubleBuffered(true);
 
 		canvas = new GLCanvas(caps);
-
+		canvas.setBackground(Color.BLACK);
 		canvas.addGLEventListener(this);
-		this.useGL2 = useGL2;
+		this.useGL2 = config.useGL20;
 		this.glu = new JoglGLU();
 		Gdx.glu = glu;
+		
 	}
 
 	GLCanvas getCanvas () {
@@ -81,7 +84,6 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		lastFrameTime = frameStart;
 		deltaTime = 0;		
 		animator = new JoglAnimator(canvas);
-// animator.setRunAsFastAsPossible(true);
 		animator.start();
 	}
 

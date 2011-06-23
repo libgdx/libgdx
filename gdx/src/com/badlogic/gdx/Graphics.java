@@ -73,16 +73,49 @@ public interface Graphics {
 	}
 	
 	/**
-	 * Class describing a display mode
+	 * Class describing a fullscreen display mode
 	 * @author mzechner
 	 *
 	 */
 	public class DisplayMode {
-		public int width;
-		public int height;
-		public boolean fullscreen;
-		public int refreshRate;
-		public int bitsPerPixel;
+		public final int width;
+		public final int height;		
+		public final int refreshRate;
+		public final int bitsPerPixel;
+		
+		protected DisplayMode(int width, int height, int refreshRate, int bitsPerPixel) {
+			this.width = width;
+			this.height = height;			
+			this.refreshRate = refreshRate;
+			this.bitsPerPixel = bitsPerPixel;
+		}
+		
+		public String toString() {
+			return width + "x" + height + ", bpp: " + bitsPerPixel + ", hz: " + refreshRate;
+		}
+	}
+	
+	/**
+	 * Class describing the bits per pixel, depth buffer precision,
+	 * stencil precision and number of MSAA samples.
+	 */
+	public static class BufferFormat {
+		/** number of bits per color channel **/
+		public final int r, g, b, a;
+		/** number of bits for depth and stencil buffer **/
+		public final int depth, stencil;
+		/** number of samples for MSAA **/
+		public final int numSamples;
+		
+		public BufferFormat(int r, int g, int b, int a, int depth, int stencil, int numSamples) {
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			this.a = a;
+			this.depth = depth;
+			this.stencil = stencil;
+			this.numSamples = numSamples;
+		}
 	}
 
 	/**
@@ -185,12 +218,28 @@ public interface Graphics {
 	public DisplayMode[] getDisplayModes();
 	
 	/**
+	 * @return the display mode of the primary graphics adapter.
+	 */
+	public DisplayMode getDesktopDisplayMode();
+	
+	/**
 	 * Sets the current {@link DisplayMode}. Returns false in case the operation failed. Not 
 	 * all backends support this methods. See {@link Graphics#supportsDisplayModeChange()}.
 	 * @param displayMode the display mode.
 	 * @return whether the operation succeeded.
 	 */
 	public boolean setDisplayMode(DisplayMode displayMode);
+	
+	/**
+	 * Tries to set the display mode width the given width and height in pixels. Will
+	 * always succeed if fullscreen is set to false, in which case the application will
+	 * be run in windowed mode. Use {@link Graphics#getDisplayModes()} to get a list
+	 * of supported fullscreen modes.  
+	 * @param width the width in pixels
+	 * @param height the height in pixels
+	 * @param fullscreen whether to use fullscreen rendering or not
+	 */
+	public boolean setDisplayMode(int width, int height, boolean fullscreen);
 	
 	/**
 	 * Sets the title of the window. Ignored on Android.
@@ -203,6 +252,18 @@ public interface Graphics {
 	 * @param pixmap
 	 */
 	public void setIcon(Pixmap pixmap);
+	
+	/**
+	 * Enable/Disable vsynching. This is a best-effort attempt which might
+	 * not work on all platforms.
+	 * @param vsync vsync enabled or not.
+	 */
+	public void setVSync(boolean vsync);
+	
+	/**
+	 * @return the format of the color, depth and stencil buffer in a {@link BufferFormat} instance
+	 */
+	public BufferFormat getBufferFormat();
 	
 //	/**
 //	 * Opens the first back facing video camera. Only one camera

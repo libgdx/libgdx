@@ -15,16 +15,26 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.jogl;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCanvas;
+import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -39,11 +49,15 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	ApplicationListener listener = null;
 	boolean useGL2;
 	boolean created = false;	
+	boolean exclusiveMode = false;
+	final JoglDisplayMode desktopMode; 
 
-	public JoglGraphics (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
-		initialize(title, width, height, useGL2);
+	public JoglGraphics (ApplicationListener listener, JoglApplicationConfiguration config) {
+		initialize(config);
 		if (listener == null) throw new GdxRuntimeException("RenderListener must not be null");
 		this.listener = listener;
+		
+		desktopMode = (JoglDisplayMode)JoglApplicationConfiguration.getDesktopDisplayMode();
 	}
 
 	public void create () {
@@ -103,6 +117,9 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	public void destroy () {
 		canvas.getContext().makeCurrent();
 		listener.dispose();
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = genv.getDefaultScreenDevice();
+		device.setFullScreenWindow(null);
 	}
 
 	@Override public float getPpiX () {
@@ -122,22 +139,191 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	}
 	
 	@Override public boolean supportsDisplayModeChange () {
-		return false;
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = genv.getDefaultScreenDevice();
+		return device.isFullScreenSupported() && (Gdx.app instanceof JoglApplication);		
 	}
-
-	@Override public boolean setDisplayMode (DisplayMode displayMode) {
-		return false;
+	
+	protected static class JoglDisplayMode extends DisplayMode {
+		final java.awt.DisplayMode mode;
+		
+		protected JoglDisplayMode (int width, int height, int refreshRate, int bitsPerPixel, java.awt.DisplayMode mode) {
+			super(width, height, refreshRate, bitsPerPixel);
+			this.mode = mode;
+		}		
 	}
 	
 	@Override public DisplayMode[] getDisplayModes () {
-		return new DisplayMode[0];
+		return JoglApplicationConfiguration.getDisplayModes();
 	}
 
 	@Override public void setTitle (String title) {
-		
+		Container parent = canvas.getParent();
+		while(parent != null) {
+			if(parent instanceof JFrame) {
+				((JFrame)parent).setTitle(title);
+				return;
+			}
+			parent = parent.getParent();
+		}
 	}
 
 	@Override public void setIcon (Pixmap pixmap) {
 		
+	}
+
+	@Override public DisplayMode getDesktopDisplayMode () {
+		return desktopMode;
+	}
+	
+	
+	@Override public boolean setDisplayMode (int width, int height, boolean fullscreen) {	
+		if(!supportsDisplayModeChange()) return false;
+		
+		if(!fullscreen) {
+			setWindowedMode(width, height);			
+		} else {
+			DisplayMode mode = findBestMatch(width, height);
+			if(mode == null) return false;			
+			setDisplayMode(mode);
+		}
+		return false;
+	}
+	
+	protected JoglDisplayMode findBestMatch(int width, int height) {
+		DisplayMode[] modes = getDisplayModes();
+		int maxBitDepth = 0;
+		DisplayMode best = null;
+		for(DisplayMode mode: modes) {
+			if(mode.width == width && mode.height == height && mode.bitsPerPixel == desktopMode.bitsPerPixel) {
+				maxBitDepth = mode.bitsPerPixel;
+				best = mode; 
+			}
+		}
+		return (JoglDisplayMode)best;
+	}
+	
+	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+		if(!supportsDisplayModeChange()) return false;
+		
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = genv.getDefaultScreenDevice();
+		final JFrame frame = findJFrame();
+		if(frame == null) return false;								
+		
+		// create new canvas, sharing the rendering context with the old canvas
+		// and pause the animator
+		super.pause();		
+		GLCanvas newCanvas = new GLCanvas(canvas.getChosenGLCapabilities(), null, canvas.getContext(), device);
+		newCanvas.addGLEventListener(this);
+							
+		JFrame newframe = new JFrame(frame.getTitle());		
+		newframe.setUndecorated(true);
+		newframe.setResizable(false);
+		newframe.add(newCanvas, BorderLayout.CENTER);
+		newframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		newframe.setLocationRelativeTo(null);
+		newframe.pack();
+		newframe.setVisible(true);		
+						
+		device.setFullScreenWindow(newframe);
+		device.setDisplayMode(((JoglDisplayMode)displayMode).mode);		
+		
+		initializeGLInstances(canvas);
+		this.canvas = newCanvas;	
+		((JoglInput)Gdx.input).setListeners(canvas);
+		canvas.requestFocus();	
+		newframe.addWindowListener(((JoglApplication)Gdx.app).windowListener);
+		((JoglApplication)Gdx.app).frame = newframe;
+		resume();
+		
+		Gdx.app.postRunnable(new Runnable() {
+			public void run() {		
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override public void run () {
+						frame.dispose();
+					}	
+				});
+			}
+		});			
+		
+		return true;		
+	}
+	
+	private boolean setWindowedMode(int width, int height) {	
+		
+		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = genv.getDefaultScreenDevice();
+		if(device.isDisplayChangeSupported()) {
+			device.setDisplayMode(desktopMode.mode);
+			device.setFullScreenWindow(null);		
+		
+			final JFrame frame = findJFrame();
+			if(frame == null) return false;								
+			
+			// create new canvas, sharing the rendering context with the old canvas
+			// and pause the animator
+			super.pause();		
+			GLCanvas newCanvas = new GLCanvas(canvas.getChosenGLCapabilities(), null, canvas.getContext(), device);
+			newCanvas.setBackground(Color.BLACK);
+			newCanvas.setPreferredSize(new Dimension(width, height));		
+			newCanvas.addGLEventListener(this);
+								
+			JFrame newframe = new JFrame(frame.getTitle());		
+			newframe.setUndecorated(false);
+			newframe.setResizable(true);
+			newframe.setSize(width + newframe.getInsets().left + newframe.getInsets().right, newframe.getInsets().top + newframe.getInsets().bottom + height);
+			newframe.add(newCanvas, BorderLayout.CENTER);
+			newframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			newframe.setLocationRelativeTo(null);
+			newframe.pack();
+			newframe.setVisible(true);												
+			
+			initializeGLInstances(canvas);
+			this.canvas = newCanvas;	
+			((JoglInput)Gdx.input).setListeners(canvas);
+			canvas.requestFocus();	
+			newframe.addWindowListener(((JoglApplication)Gdx.app).windowListener);
+			((JoglApplication)Gdx.app).frame = newframe;
+			resume();
+			
+			Gdx.app.postRunnable(new Runnable() {
+				public void run() {		
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override public void run () {
+							frame.dispose();
+						}	
+					});
+				}
+			});			
+		} else {
+			final JFrame frame = findJFrame();
+			if(frame == null) return false;			
+			frame.setSize(width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom + height);			
+		}
+		
+		return true;	
+	}
+		
+	private JFrame findJFrame() {
+		Container parent = canvas.getParent();
+		while(parent != null) {
+			if(parent instanceof JFrame) {
+				return (JFrame)parent;
+			}
+			parent = parent.getParent();
+		}
+		
+		return null;
+	}
+
+	@Override public void setVSync (boolean vsync) {
+		if(vsync) canvas.getGL().setSwapInterval(1);
+		else canvas.getGL().setSwapInterval(0);
+	}
+
+	@Override public BufferFormat getBufferFormat () {
+		GLCapabilities caps = canvas.getChosenGLCapabilities();
+		return new BufferFormat(caps.getRedBits(), caps.getGreenBits(), caps.getBlueBits(), caps.getAlphaBits(), caps.getDepthBits(), caps.getStencilBits(), caps.getNumSamples());		
 	}
 }

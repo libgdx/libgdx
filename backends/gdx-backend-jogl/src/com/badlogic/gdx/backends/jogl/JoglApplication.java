@@ -17,6 +17,8 @@ package com.badlogic.gdx.backends.jogl;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.jogl.JoglGraphics.JoglDisplayMode;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -68,24 +71,47 @@ public final class JoglApplication implements Application {
 	 */
 	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height,
 		final boolean useGL20IfAvailable) {
+		final JoglApplicationConfiguration config = new JoglApplicationConfiguration();
+		config.title = title;
+		config.width = width;
+		config.height = height;
+		config.useGL20 = useGL20IfAvailable;
+		
+		if (!SwingUtilities.isEventDispatchThread()) {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run () {						
+						initialize(listener, config);
+					}
+				});
+			} catch (Exception e) {
+				throw new GdxRuntimeException("Creating window failed", e);
+			}
+		} else {			
+			config.useGL20 = useGL20IfAvailable;
+			initialize(listener, config);
+		}
+	}
+
+	public JoglApplication(final ApplicationListener listener, final JoglApplicationConfiguration config) {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
 					public void run () {
-						initialize(listener, title, width, height, useGL20IfAvailable);
+						initialize(listener, config);
 					}
 				});
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Creating window failed", e);
 			}
 		} else {
-			initialize(listener, title, width, height, useGL20IfAvailable);
+			initialize(listener, config);
 		}
 	}
-
-	void initialize (ApplicationListener listener, String title, int width, int height, boolean useGL20) {
+	
+	void initialize (ApplicationListener listener, JoglApplicationConfiguration config) {
 		JoglNativesLoader.load();
-		graphics = new JoglGraphics(listener, title, width, height, useGL20);
+		graphics = new JoglGraphics(listener, config);
 		input = new JoglInput(graphics.getCanvas());
 		audio = new OpenALAudio();
 		files = new JoglFiles();
@@ -96,40 +122,71 @@ public final class JoglApplication implements Application {
 		Gdx.audio = JoglApplication.this.getAudio();
 		Gdx.files = JoglApplication.this.getFiles();
 
-		frame = new JFrame(title);
-		graphics.getCanvas().setPreferredSize(new Dimension(width, height));
-		frame.setSize(width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
-			+ height);
-		frame.add(graphics.getCanvas(), BorderLayout.CENTER);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-
-		frame.addWindowListener(new WindowAdapter() {
-			@Override public void windowOpened (WindowEvent arg0) {
-				graphics.getCanvas().requestFocus();
-				graphics.getCanvas().requestFocusInWindow();
-			}
-
-			@Override public void windowIconified (WindowEvent arg0) {
-// graphics.pause();
-			}
-
-			@Override public void windowDeiconified (WindowEvent arg0) {
-// graphics.resume();
-			}
-
-			@Override public void windowClosing (WindowEvent arg0) {
-				graphics.pause();
-				graphics.destroy();
+		if(!config.fullscreen) {
+			frame = new JFrame(config.title);
+			graphics.getCanvas().setPreferredSize(new Dimension(config.width, config.height));
+			frame.setSize(config.width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
+				+ config.height);
+			frame.add(graphics.getCanvas(), BorderLayout.CENTER);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setLocationRelativeTo(null);
+			frame.addWindowListener(windowListener);
+	
+			frame.pack();
+			frame.setVisible(true);
+			graphics.create();
+		} else {
+			GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice device = genv.getDefaultScreenDevice();
+			frame = new JFrame(config.title);
+			graphics.getCanvas().setPreferredSize(new Dimension(config.width, config.height));
+			frame.setSize(config.width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
+				+ config.height);
+			frame.add(graphics.getCanvas(), BorderLayout.CENTER);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setLocationRelativeTo(null);
+			frame.addWindowListener(windowListener);
+			frame.setUndecorated(true);
+			frame.setResizable(false);
+			frame.pack();
+			frame.setVisible(true);
+			java.awt.DisplayMode desktopMode = device.getDisplayMode();
+			try {
+				device.setFullScreenWindow(frame);
+				JoglDisplayMode mode = graphics.findBestMatch(config.width, config.height);
+				if(mode == null) throw new GdxRuntimeException("Couldn't set fullscreen mode " + config.width + "x" + config.height);
+				device.setDisplayMode(mode.mode);
+			} catch(Throwable e) {
+				e.printStackTrace();				
+				device.setDisplayMode(desktopMode);
+				device.setFullScreenWindow(null);
+				frame.dispose();
 				audio.dispose();
-				frame.remove(graphics.getCanvas());
+				System.exit(-1);
 			}
-		});
-
-		frame.pack();
-		frame.setVisible(true);
-		graphics.create();
+			graphics.create();
+		}
 	}
+	
+	final WindowAdapter windowListener = new WindowAdapter() {
+		@Override public void windowOpened (WindowEvent arg0) {
+			graphics.getCanvas().requestFocus();
+			graphics.getCanvas().requestFocusInWindow();
+		}
+
+		@Override public void windowIconified (WindowEvent arg0) {
+		}
+
+		@Override public void windowDeiconified (WindowEvent arg0) {
+		}
+
+		@Override public void windowClosing (WindowEvent arg0) {			
+			graphics.pause();
+			graphics.destroy();
+			audio.dispose();
+			frame.remove(graphics.getCanvas());
+		}
+	};
 
 	/**
 	 * {@inheritDoc}

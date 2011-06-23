@@ -53,6 +53,7 @@ public class CullTest extends GdxTest {
 		}
 		batch = new SpriteBatch();
 		font = new BitmapFont();
+		Gdx.graphics.setVSync(true);
 	}
 	
 	@Override public void render() {
@@ -86,7 +87,7 @@ public class CullTest extends GdxTest {
 		
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		batch.begin();
-		font.draw(batch, "visible: " + visible + "/100", 0, 20);
+		font.draw(batch, "visible: " + visible + "/100" + ", fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
 		batch.end();
 	}
 }
