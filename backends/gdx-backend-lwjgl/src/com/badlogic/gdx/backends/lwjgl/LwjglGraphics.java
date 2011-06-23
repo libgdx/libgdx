@@ -150,8 +150,8 @@ public final class LwjglGraphics implements Graphics {
 	private void createDisplayPixelFormat() {
 		int samples = 0;
 		try {
-			Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.numSamples));
-			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
+			Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples);
 		} catch (Exception ex) {
 			Display.destroy();
 			try {

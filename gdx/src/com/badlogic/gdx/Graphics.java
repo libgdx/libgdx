@@ -105,16 +105,20 @@ public interface Graphics {
 		/** number of bits for depth and stencil buffer **/
 		public final int depth, stencil;
 		/** number of samples for MSAA **/
-		public final int numSamples;
+		public final int samples;
 		
-		public BufferFormat(int r, int g, int b, int a, int depth, int stencil, int numSamples) {
+		public BufferFormat(int r, int g, int b, int a, int depth, int stencil, int samples) {
 			this.r = r;
 			this.g = g;
 			this.b = b;
 			this.a = a;
 			this.depth = depth;
 			this.stencil = stencil;
-			this.numSamples = numSamples;
+			this.samples = samples;
+		}
+		
+		public String toString() {
+			return "r: " + r + ", g: " + g + ", b: " + b + ", a: " + a + ", depth: " + depth + ", stencil: " + stencil + ", num samples: " + samples;
 		}
 	}
 

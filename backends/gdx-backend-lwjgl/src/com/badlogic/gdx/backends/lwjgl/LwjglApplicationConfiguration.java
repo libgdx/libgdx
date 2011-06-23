@@ -14,7 +14,7 @@ public class LwjglApplicationConfiguration {
 	/** number of bits for depth and stencil buffer **/
 	public int depth = 16, stencil = 8;
 	/** number of samples for MSAA **/
-	public int numSamples = 0;
+	public int samples = 0;
 	/** width & height of application **/
 	public int width = 480, height = 320;
 	/** fullscreen **/

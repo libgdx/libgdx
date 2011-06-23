@@ -62,8 +62,8 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		caps.setAlphaBits(config.a);
 		caps.setDepthBits(config.depth);
 		caps.setStencilBits(config.stencil);
-		caps.setNumSamples(config.numSamples);
-		caps.setSampleBuffers(config.numSamples > 0);
+		caps.setNumSamples(config.samples);
+		caps.setSampleBuffers(config.samples > 0);
 		caps.setDoubleBuffered(true);
 
 		canvas = new GLCanvas(caps);
