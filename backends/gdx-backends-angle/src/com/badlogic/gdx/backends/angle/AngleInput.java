@@ -428,4 +428,12 @@ public class AngleInput implements Input {
 		if(peripheral == Peripheral.HardwareKeyboard) return true;		
 		return false;
 	}
+
+	@Override public int getRotation () {
+		return 0;
+	}
+
+	@Override public Orientation getNativeOrientation () {
+		return Orientation.Landscape;
+	}
 }

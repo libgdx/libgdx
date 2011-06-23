@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Orientation;
 import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.utils.Pool;
 
@@ -480,5 +481,13 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {		
 		if(peripheral == Peripheral.HardwareKeyboard) return true;	
 		return false;
+	}
+
+	@Override public int getRotation () {
+		return 0;
+	}
+
+	@Override public Orientation getNativeOrientation () {
+		return Orientation.Landscape;
 	}
 }

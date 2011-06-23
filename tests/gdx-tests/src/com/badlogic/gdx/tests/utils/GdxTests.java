@@ -31,6 +31,7 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.tests.AccelerometerTest;
 import com.badlogic.gdx.tests.ActionSequenceTest;
 import com.badlogic.gdx.tests.ActionTest;
 import com.badlogic.gdx.tests.AlphaTest;
@@ -139,11 +140,9 @@ import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
  */
 public class GdxTests 
 {
-	public static final Class[] tests = {	
-		PixmapTest.class,
-		RotationTest.class,
-		Gdx2DTest.class,
+	public static final Class[] tests = {							
 		AnimationTest.class,
+		AccelerometerTest.class,
 		ActionTest.class,
 		ActionSequenceTest.class,
 		AlphaTest.class,	
@@ -172,6 +171,7 @@ public class GdxTests
 		FramebufferToTextureTest.class,
 		FullscreenTest.class,
 		FastTextReadingTest.class,
+		Gdx2DTest.class,
 		GroupFadeTest.class,
 		ImmediateModeRendererTest.class,
 		ImmediateModeRendererAlphaTest.class,
@@ -201,10 +201,12 @@ public class GdxTests
 		PickingTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
+		PixmapTest.class,
 		PreferencesTest.class,
 		Pong.class,
 		ProjectTest.class,
 		RemoteTest.class,
+		RotationTest.class,
 		ShaderMultitextureTest.class,
 		SplineTest.class,		
 		SimpleTest.class,
