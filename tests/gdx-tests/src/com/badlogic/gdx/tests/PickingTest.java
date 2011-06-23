@@ -40,7 +40,7 @@ public class PickingTest extends GdxTest {
 
 	static final int BORDER = 20;
 	static final int VP_X = BORDER;
-	static final int VP_Y = BORDER;
+	static final int VP_Y = BORDER * 2;
 	static int VP_WIDTH;
 	static int VP_HEIGHT;
 	Mesh sphere;
@@ -59,7 +59,7 @@ public class PickingTest extends GdxTest {
 		cam.far = 200;
 		batch = new SpriteBatch();
 		logo = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
-		Random rand = new Random();
+		Random rand = new Random(10);
 		for(int i = 0; i < positions.length; i++) {
 			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, 
 												rand.nextFloat() * 100 - rand.nextFloat() * 100, 
@@ -72,14 +72,14 @@ public class PickingTest extends GdxTest {
 	Vector3 intersection = new Vector3();
 	@Override public void render() {
 		GL10 gl = Gdx.gl10;
-		
-		gl.glViewport(VP_Y, VP_X, VP_WIDTH, VP_HEIGHT);
+				
 		gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		
 		cam.update();
 		cam.apply(gl);
+		gl.glViewport(VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
 		
 		Ray pickRay = null;
 		if(Gdx.input.isTouched()) {
