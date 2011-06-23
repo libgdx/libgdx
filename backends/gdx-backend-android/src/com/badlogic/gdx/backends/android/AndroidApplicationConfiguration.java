@@ -15,11 +15,17 @@ public class AndroidApplicationConfiguration {
 	/** whether to use OpenGL ES 2.0 or not. default: false **/
 	public boolean useGL20 = false;
 	
+	/** number of bits per color channel **/
+	public int r = 5, g = 6, b = 5, a = 0;
+	
+	/** number of bits for depth and stencil buffer **/
+	public int depth = 16, stencil = 0;	
+	
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
 	
 	/** whether to use the compass. default: true **/
-	public boolean useCompass = true;
+	public boolean useCompass = true;	
 	
 	/** the time in milliseconds to sleep after each event in the touch handler, set this
 	 * to 16ms to get rid of touch flooding on pre Android 2.0 devices. default: 0 **/

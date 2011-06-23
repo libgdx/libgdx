@@ -54,11 +54,13 @@ public class CullTest extends GdxTest {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		Gdx.graphics.setVSync(true);
+		Gdx.app.log("CullTest", "" + Gdx.graphics.getBufferFormat().toString());
 	}
 	
 	@Override public void render() {
 		GL10 gl = Gdx.gl10;
 		
+		gl.glClearColor(0, 0, 0, 0);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		

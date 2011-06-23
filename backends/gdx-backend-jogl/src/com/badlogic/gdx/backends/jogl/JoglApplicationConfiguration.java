@@ -13,7 +13,7 @@ public class JoglApplicationConfiguration {
 	/** number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
 	/** number of bits for depth and stencil buffer **/
-	public int depth = 16, stencil = 8;
+	public int depth = 16, stencil = 0;
 	/** number of samples for MSAA **/
 	public int samples = 0;
 	/** width & height of application **/

@@ -98,7 +98,7 @@ public class AndroidApplication extends Activity implements Application {
      * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer, etc.).
      */
     public void initialize(ApplicationListener listener, AndroidApplicationConfiguration config) {
-   	 graphics = new AndroidGraphics(this, config.useGL20, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
+   	 graphics = new AndroidGraphics(this, config, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
        input = new AndroidInput(this, graphics.view, config);
        audio = new AndroidAudio(this);
        files = new AndroidFiles(this.getAssets());
@@ -165,7 +165,7 @@ public class AndroidApplication extends Activity implements Application {
      * @return the GLSurfaceView of the application
      */
     public View initializeForView(ApplicationListener listener, AndroidApplicationConfiguration config) {
-   	 graphics = new AndroidGraphics(this, config.useGL20, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
+   	 graphics = new AndroidGraphics(this, config, config.resolutionStrategy==null?new FillResolutionStrategy():config.resolutionStrategy);
        input = new AndroidInput(this, graphics.view, config);
        audio = new AndroidAudio(this);
        files = new AndroidFiles(this.getAssets());

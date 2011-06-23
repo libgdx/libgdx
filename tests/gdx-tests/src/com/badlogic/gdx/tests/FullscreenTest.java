@@ -26,7 +26,8 @@ public class FullscreenTest extends GdxTest {
 		for(DisplayMode mode: modes) {
 			System.out.println(mode);
 		}
-		Gdx.graphics.setDisplayMode(800, 600, true);			
+		Gdx.graphics.setDisplayMode(800, 600, true);
+		Gdx.app.log("FullscreenTest", Gdx.graphics.getBufferFormat().toString());
 	}
 
 	@Override public void resume () {
