@@ -515,7 +515,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	}
 	
 	@Override public DisplayMode[] getDisplayModes () {
-		return new DisplayMode[0];
+		return new DisplayMode[] { getDesktopDisplayMode() };
 	}
 	
 	@Override public boolean setDisplayMode (int width, int height, boolean fullscreen) {
