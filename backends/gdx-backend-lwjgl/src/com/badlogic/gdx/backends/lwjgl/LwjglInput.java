@@ -91,6 +91,7 @@ final class LwjglInput implements Input {
 
 	public LwjglInput () {
 		Keyboard.enableRepeatEvents(false);
+		Mouse.setClipMouseCoordinatesToWindow(false);
 	}
 
 	public float getAccelerometerX () {
