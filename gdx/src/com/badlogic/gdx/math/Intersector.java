@@ -147,19 +147,27 @@ public final class Intersector {
 	 * @param center The center of the circle
 	 * @param squareRadius The squared radius of the circle
 	 * @return Wheter the line segment and the circle intersect
-	 */
+	 */	
 	public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Vector2 center, float squareRadius) {
-		float u = (center.x - start.x) * (end.x - start.x) + (center.y - start.y) * (end.y - start.y);
-		float d = start.dst(end);
-		u /= (d * d);
-		if (u < 0 || u > 1) return false;
-		tmp.set(end.x, end.y, 0).sub(start.x, start.y, 0);
-		tmp2.set(start.x, start.y, 0).add(tmp.mul(u));
-		if (tmp2.dst2(center.x, center.y, 0) < squareRadius)
-			return true;
-		else
-			return false;
+		tmp.set(end.x - start.x, end.y - start.y, 0);
+		tmp1.set(center.x - start.x, center.y - start.y, 0);
+			
+		float u = tmp1.dot(tmp.nor());
+		if (u <= 0) {
+			tmp2.set(start.x, start.y, 0);
+		} else if (u >= tmp.len()) {
+			tmp2.set(end.x, end.y, 0);
+		} else {
+			tmp3.set(tmp.mul(u)); //remember tmp is already normalized
+			tmp2.set(tmp3.x + start.x, tmp3.y + start.y, 0);
+		}
+
+		float x = center.x - tmp2.x;
+		float y = center.y - tmp2.y;
+			
+		return x*x + y*y <= squareRadius;
 	}
+
 
 	/**
 	 * Checks wheter the line segment and the circle intersect and returns by how much and in what direction the line has to move
