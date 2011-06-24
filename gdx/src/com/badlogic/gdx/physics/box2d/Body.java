@@ -115,6 +115,7 @@ public class Body {
 		jniDestroyFixture(addr, fixture.addr);
 		this.world.fixtures.remove(fixture.addr);
 		this.fixtures.remove(fixture);
+		this.world.freeFixtures.free(fixture);
 	}
 
 	private native void jniDestroyFixture (long addr, long fixtureAddr);
