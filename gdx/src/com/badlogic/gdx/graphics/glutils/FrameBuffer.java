@@ -72,6 +72,9 @@ public class FrameBuffer implements Disposable {
 	/** height **/
 	private final int height;
 
+	/** depth **/
+	private final boolean hasDepth;
+	
 	/** format **/
 	private final Pixmap.Format format;
 
@@ -88,6 +91,7 @@ public class FrameBuffer implements Disposable {
 		this.width = width;
 		this.height = height;
 		this.format = format;
+		this.hasDepth = hasDepth;
 		build();
 
 		addManagedFrameBuffer(Gdx.app, this);
@@ -106,17 +110,24 @@ public class FrameBuffer implements Disposable {
 		gl.glGenFramebuffers(1, handle);
 		framebufferHandle = handle.get(0);
 
-		gl.glGenRenderbuffers(1, handle);
-		depthbufferHandle = handle.get(0);
+		if(hasDepth) {
+			gl.glGenRenderbuffers(1, handle);
+			depthbufferHandle = handle.get(0);
+		}
 
 		gl.glBindTexture(GL20.GL_TEXTURE_2D, colorTexture.getTextureObjectHandle());
-		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
-		gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(), colorTexture.getHeight());
+		
+		if(hasDepth) {
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
+			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(), colorTexture.getHeight());
+		}
 
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
 			colorTexture.getTextureObjectHandle(), 0);
-		gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
+		if(hasDepth) {
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
+		}
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
 
 		gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, 0);
@@ -125,10 +136,13 @@ public class FrameBuffer implements Disposable {
 
 		if (result != GL20.GL_FRAMEBUFFER_COMPLETE) {
 			colorTexture.dispose();
-			handle.put(depthbufferHandle);
-			handle.flip();
-			gl.glDeleteRenderbuffers(1, handle);
+			if(hasDepth) {
+				handle.put(depthbufferHandle);
+				handle.flip();
+				gl.glDeleteRenderbuffers(1, handle);
+			}
 
+			colorTexture.dispose();
 			handle.put(framebufferHandle);
 			handle.flip();
 			gl.glDeleteFramebuffers(1, handle);
@@ -153,9 +167,11 @@ public class FrameBuffer implements Disposable {
 		IntBuffer handle = tmp.asIntBuffer();
 
 		colorTexture.dispose();
-		handle.put(depthbufferHandle);
-		handle.flip();
-		gl.glDeleteRenderbuffers(1, handle);
+		if(hasDepth) {
+			handle.put(depthbufferHandle);
+			handle.flip();
+			gl.glDeleteRenderbuffers(1, handle);
+		}
 
 		handle.put(framebufferHandle);
 		handle.flip();
