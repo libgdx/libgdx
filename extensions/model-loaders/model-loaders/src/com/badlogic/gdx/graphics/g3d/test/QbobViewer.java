@@ -87,7 +87,7 @@ public class QbobViewer implements ApplicationListener {
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		diffuse.bind();
-		diffuse.setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);				
+		diffuse.setFilter(TextureFilter.MipMap, TextureFilter.Linear);				
 		
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
