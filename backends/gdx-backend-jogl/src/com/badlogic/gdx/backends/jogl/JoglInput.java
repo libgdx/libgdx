@@ -15,25 +15,35 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.jogl;
 
+import java.awt.AWTEvent;
+import java.awt.AWTException;
+import java.awt.Cursor;
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.media.opengl.GLCanvas;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Orientation;
-import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.utils.Pool;
 
 public class JoglInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
@@ -78,15 +88,33 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	int touchX = 0;
 	int touchY = 0;
+	int deltaX = 0;
+	int deltaY = 0;
 	boolean touchDown = false;
 	boolean justTouched = false;
 	Set<Integer> keys = new HashSet<Integer>();
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	InputProcessor processor;
 	GLCanvas canvas;
+	boolean catched = false;	
+	Robot robot = null;	
 
 	public JoglInput (GLCanvas canvas) {
 		setListeners(canvas);
+		try {
+			robot = new Robot(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice());
+		} catch (HeadlessException e) {
+		} catch (AWTException e) {
+		}
+		
+		long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK;		    
+		Toolkit.getDefaultToolkit().addAWTEventListener( new AWTEventListener()
+		{
+		    public void eventDispatched(AWTEvent e)
+		    {
+		        System.out.println(e.getID());		        
+		    }
+		}, eventMask);
 	}
 	
 	public void setListeners(GLCanvas canvas) {
@@ -95,11 +123,13 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			canvas.removeMouseMotionListener(this);
 			canvas.removeMouseWheelListener(this);
 			canvas.removeKeyListener(this);
+			JFrame frame = JoglGraphics.findJFrame(canvas);
+			
 		}
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		canvas.addMouseWheelListener(this);
-		canvas.addKeyListener(this);
+		canvas.addKeyListener(this);		
 		this.canvas = canvas;
 	}
 
@@ -231,6 +261,11 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 				}
 			}
 
+			if(touchEvents.size() == 0) {
+				deltaX = 0;
+				deltaY = 0;
+			}
+			
 			keyEvents.clear();
 			touchEvents.clear();
 		}		
@@ -253,33 +288,55 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.type = TouchEvent.TOUCH_DRAGGED;
 			touchEvents.add(event);
 
+			deltaX = event.x - touchX;
+			deltaY = event.y - touchY;
 			touchX = event.x;
-			touchY = event.y;			
+			touchY = event.y;
+			checkCatched(e);
 		}
 	}
 
 	@Override public void mouseMoved (MouseEvent e) {
 		synchronized (this) {
-			TouchEvent event = usedTouchEvents.obtain();
+			TouchEvent event = usedTouchEvents.obtain();			
 			event.pointer = 0;
 			event.x = e.getX();
 			event.y = e.getY();
 			event.type = TouchEvent.TOUCH_MOVED;
 			touchEvents.add(event);
 
+			deltaX = event.x - touchX;
+			deltaY = event.y - touchY;
 			touchX = event.x;
 			touchY = event.y;			
+			checkCatched(e);
 		}
 	}
 
-	@Override public void mouseClicked (MouseEvent arg0) {
-
+	@Override public void mouseClicked (MouseEvent arg0) {		
 	}
 
-	@Override public void mouseEntered (MouseEvent arg0) {
+	@Override public void mouseEntered (MouseEvent e) {
+		touchX = e.getX();
+		touchY = e.getY();		
+		checkCatched(e);
 	}
 
-	@Override public void mouseExited (MouseEvent arg0) {
+	@Override public void mouseExited (MouseEvent e) {
+		checkCatched(e);
+	}
+	
+	private void checkCatched(MouseEvent e) {
+		if(catched && robot != null && canvas.isShowing()) {				
+			int x = Math.max(0, Math.min(e.getX(), canvas.getWidth()) - 1) + canvas.getLocationOnScreen().x;
+			int y = Math.max(0, Math.min(e.getY(), canvas.getHeight()) - 1) + canvas.getLocationOnScreen().y;
+			deltaX = e.getLocationOnScreen().x - x;
+			deltaY = e.getLocationOnScreen().y - y;
+			if(e.getX() < 0 || e.getX() >= canvas.getWidth() || e.getY() < 0 || e.getY() >= canvas.getHeight()) {
+				robot.mouseMove(x - deltaX, y - deltaY);
+			}
+			System.out.println("reported: " + e.getX() + ", " + e.getY() + ", set: " + (x - canvas.getLocationOnScreen().x) + ", " + (y - canvas.getLocationOnScreen().y) );
+		}
 	}
 
 	private int toGdxButton(int swingButton) {
@@ -302,10 +359,12 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.button = toGdxButton(e.getButton());
 			touchEvents.add(event);
 
+			deltaX = event.x - touchX;
+			deltaY = event.y - touchY;
 			touchX = event.x;
 			touchY = event.y;		
 			touchDown = true;
-			pressedButtons.add(event.button);
+			pressedButtons.add(event.button);			
 		}
 	}
 
@@ -319,11 +378,13 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.type = TouchEvent.TOUCH_UP;
 			touchEvents.add(event);			
 
+			deltaX = event.x - touchX;
+			deltaY = event.y - touchY;
 			touchX = event.x;
 			touchY = event.y;					
 			pressedButtons.remove(event.button);
 			if(pressedButtons.size()==0)
-				touchDown = false;
+				touchDown = false;			
 		}
 	}
 	
@@ -489,5 +550,51 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 
 	@Override public Orientation getNativeOrientation () {
 		return Orientation.Landscape;
+	}
+
+	@Override public void setCursorCatched (boolean catched) {
+		this.catched = catched;
+		showCursor(!catched);
+	}
+	
+	private void showCursor(boolean visible) {
+		if(!visible) {
+			Toolkit t = Toolkit.getDefaultToolkit();
+			Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+			Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
+			JFrame frame = JoglGraphics.findJFrame(canvas);
+			frame.setCursor(noCursor);
+		} else {
+			JFrame frame = JoglGraphics.findJFrame(canvas);
+			frame.setCursor(Cursor.getDefaultCursor());
+		}
+	}
+
+	@Override public boolean isCursorCatched () {
+		return catched;
+	}
+
+	@Override public int getDeltaX () {		
+		return deltaX;
+	}
+
+	@Override public int getDeltaX (int pointer) {
+		if(pointer == 0) return deltaX;
+		return 0;
+	}
+
+	@Override public int getDeltaY () {
+		return deltaY;
+	}
+
+	@Override public int getDeltaY (int pointer) {
+		if(pointer == 0) return deltaY;
+		return 0;
+	}
+
+	@Override public void setCursorPosition (int x, int y) {
+		if(robot != null) {
+			robot.mouseMove(canvas.getLocationOnScreen().x + x, canvas.getLocationOnScreen().y + y);
+		}
 	}
 }

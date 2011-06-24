@@ -24,6 +24,6 @@ public class JoglDebugStarter {
 
 	public static void main (String[] argv) {		
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();		
-		new JoglApplication(new com.badlogic.gdx.tests.CullTest(), config);
+		new JoglApplication(new com.badlogic.gdx.tests.InputTest(), config);
 	}
 }

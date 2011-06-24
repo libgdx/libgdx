@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class InputTest extends GdxTest implements InputProcessor {
@@ -33,6 +34,12 @@ public class InputTest extends GdxTest implements InputProcessor {
 																 + (Gdx.input.isButtonPressed(Buttons.RIGHT)?"right":""));
 		}
 		
+		for(int i = 0; i < 10; i++) {
+			if(Gdx.input.getDeltaX(i) != 0 || Gdx.input.getDeltaY(i) != 0) {
+				Gdx.app.log("Input Test", "delta[" + i + "]: " + Gdx.input.getDeltaX(i) + ", " + Gdx.input.getDeltaY(i));
+			}
+		}
+//		Gdx.input.setCursorPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);		
 //		if(Gdx.input.isTouched()) {
 //			Gdx.app.log("Input Test", "is touched");
 //		}		
@@ -40,6 +47,7 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override public boolean keyDown (int keycode) {
 		Gdx.app.log("Input Test", "key down: " + keycode);
+		if(keycode == Keys.G) Gdx.input.setCursorCatched(!Gdx.input.isCursorCatched());
 		return false;
 	}
 

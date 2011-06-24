@@ -237,6 +237,7 @@ public interface Input {
 	 * @return the last touch x coordinate in screen coordinates. The screen origin is the top left corner.
 	 */
 	public int getX ();
+		
 
 	/**
 	 * Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
@@ -248,6 +249,16 @@ public interface Input {
 	 * @return the x coordinate
 	 */
 	public int getX (int pointer);
+	
+	/**
+	 * @return the different between the current pointer location and the last pointer location on the x-axis.
+	 */
+	public int getDeltaX();
+	
+	/**
+	 * @return the different between the current pointer location and the last pointer location on the x-axis.
+	 */
+	public int getDeltaX(int pointer);
 
 	/**
 	 * @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner.
@@ -264,6 +275,16 @@ public interface Input {
 	 * @return the y coordinate
 	 */
 	public int getY (int pointer);
+	
+	/**
+	 * @return the different between the current pointer location and the last pointer location on the y-axis.
+	 */
+	public int getDeltaY();
+	
+	/**
+	 * @return the different between the current pointer location and the last pointer location on the y-axis.
+	 */
+	public int getDeltaY(int pointer);
 
 	/**
 	 * @return whether the screen is currently touched.
@@ -412,4 +433,24 @@ public interface Input {
 		Landscape,
 		Portrait
 	}
+	
+	/**
+	 * Only viable on the desktop. Will confine the mouse cursor location
+	 * to the window and hide the mouse cursor.
+	 * @param catched whether to catch or not to catch the mouse cursor
+	 */
+	public void setCursorCatched(boolean catched);	
+
+	/**
+	 * @return whether the mouse cursor is catched.
+	 */
+	public boolean isCursorCatched ();	
+	
+	/**
+	 * Only viable on the desktop. Will set the mouse cursor location
+	 * to the given window coordinates (origin top-left corner).
+	 * @param x the x-position
+	 * @param y the y-position
+	 */
+	public void setCursorPosition(int x, int y);
 }

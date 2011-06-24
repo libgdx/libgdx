@@ -59,7 +59,7 @@ final class LwjglInput implements Input {
 
 		int type;
 		int x;
-		int y;
+		int y;		
 		int scrollAmount;
 		int button;
 		int pointer;
@@ -81,6 +81,7 @@ final class LwjglInput implements Input {
 	List<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	boolean mousePressed = false;
 	int mouseX, mouseY;
+	int deltaX, deltaY;
 	int pressedKeys = 0;	
 	boolean justTouched = false;
 	Set<Integer> pressedButtons = new HashSet<Integer>();
@@ -450,7 +451,9 @@ final class LwjglInput implements Input {
 	void updateMouse () {
 		justTouched = false;
 		if (Mouse.isCreated()) {
+			int events = 0;
 			while (Mouse.next()) {
+				events++;
 				int x = Mouse.getEventX();
 				int y = Gdx.graphics.getHeight() - Mouse.getEventY() - 1;
 				int button = Mouse.getEventButton();
@@ -486,6 +489,13 @@ final class LwjglInput implements Input {
 				touchEvents.add(event);
 				mouseX = event.x;
 				mouseY = event.y;
+				deltaX = Mouse.getEventDX();
+				deltaY = Mouse.getEventDY();
+			}
+		
+			if(events == 0) {
+				deltaX = 0;
+				deltaY = 0;
 			}
 		}
 	}
@@ -599,5 +609,35 @@ final class LwjglInput implements Input {
 
 	@Override public Orientation getNativeOrientation () {
 		return Orientation.Landscape;
+	}
+
+	@Override public void setCursorCatched (boolean catched) {
+		Mouse.setGrabbed(catched);
+	}
+
+	@Override public boolean isCursorCatched () {
+		return Mouse.isGrabbed();
+	}
+
+	@Override public int getDeltaX () {
+		return deltaX;
+	}
+
+	@Override public int getDeltaX (int pointer) {
+		if(pointer == 0) return deltaX;
+		else return 0;
+	}
+
+	@Override public int getDeltaY () {
+		return deltaY;
+	}
+
+	@Override public int getDeltaY (int pointer) {
+		if(pointer == 0) return deltaY;
+		else return 0;
+	}
+
+	@Override public void setCursorPosition (int x, int y) {
+		Mouse.setCursorPosition(x, y);
 	}
 }

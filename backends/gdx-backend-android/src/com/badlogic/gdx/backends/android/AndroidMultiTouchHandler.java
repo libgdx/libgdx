@@ -48,6 +48,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
+				input.deltaX[realPointerIndex] = 0;
+				input.deltaY[realPointerIndex] = 0;
 				input.touched[realPointerIndex] = true;
 				break;
 	
@@ -63,6 +65,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
+				input.deltaX[realPointerIndex] = 0;
+				input.deltaY[realPointerIndex] = 0;
 				input.touched[realPointerIndex] = false;
 				break;
 	
@@ -76,6 +80,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 					realPointerIndex = input.lookUpPointerIndex(pointerId);
 					if(realPointerIndex == -1) continue;
 					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex);
+					input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
+					input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
 					input.touchX[realPointerIndex] = x;
 					input.touchY[realPointerIndex] = y;
 				}

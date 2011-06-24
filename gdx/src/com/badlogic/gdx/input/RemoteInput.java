@@ -366,4 +366,32 @@ public class RemoteInput implements Runnable, Input {
 	@Override public Orientation getNativeOrientation () {
 		return Orientation.Landscape;
 	}
+
+	@Override public void setCursorCatched (boolean catched) {
+		
+	}
+
+	@Override public boolean isCursorCatched () {
+		return false;
+	}
+
+	@Override public int getDeltaX () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override public int getDeltaX (int pointer) {
+		return 0;
+	}
+
+	@Override public int getDeltaY () {
+		return 0;
+	}
+
+	@Override public int getDeltaY (int pointer) {
+		return 0;
+	}
+
+	@Override public void setCursorPosition (int x, int y) {		
+	}
 }

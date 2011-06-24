@@ -17,12 +17,12 @@ package com.badlogic.gdx.backends.jogl;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.media.opengl.GLAutoDrawable;
@@ -208,7 +208,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		
 		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice device = genv.getDefaultScreenDevice();
-		final JFrame frame = findJFrame();
+		final JFrame frame = findJFrame(canvas);
 		if(frame == null) return false;								
 		
 		// create new canvas, sharing the rendering context with the old canvas
@@ -258,7 +258,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 			device.setDisplayMode(desktopMode.mode);
 			device.setFullScreenWindow(null);		
 		
-			final JFrame frame = findJFrame();
+			final JFrame frame = findJFrame(canvas);
 			if(frame == null) return false;								
 			
 			// create new canvas, sharing the rendering context with the old canvas
@@ -297,7 +297,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 				}
 			});			
 		} else {
-			final JFrame frame = findJFrame();
+			final JFrame frame = findJFrame(canvas);
 			if(frame == null) return false;			
 			frame.setSize(width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom + height);			
 		}
@@ -305,8 +305,8 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		return true;	
 	}
 		
-	private JFrame findJFrame() {
-		Container parent = canvas.getParent();
+	protected static JFrame findJFrame(Component component) {
+		Container parent = component.getParent();
 		while(parent != null) {
 			if(parent instanceof JFrame) {
 				return (JFrame)parent;

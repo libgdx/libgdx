@@ -91,6 +91,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	ArrayList<TouchEvent> touchEvents = new ArrayList<TouchEvent>();
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
+	int[] deltaX = new int[20];
+	int[] deltaY = new int[20];
 	boolean[] touched = new boolean[20];
 	int[] realId = new int[10];
 	final boolean hasMultitouch;
@@ -289,6 +291,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
 					usedKeyEvents.free(keyEvents.get(i));
+				}
+			}
+			
+			if(touchEvents.size() == 0) {
+				for(int i = 0; i < deltaX.length; i++) {
+					deltaX[0] = 0;
+					deltaY[0] = 0;
 				}
 			}
 
@@ -555,4 +564,30 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	@Override public Orientation getNativeOrientation () {
 		return nativeOrientation;
 	}
+
+	@Override public void setCursorCatched (boolean catched) {
+	}
+
+	@Override public boolean isCursorCatched () {
+		return false;
+	}
+
+	@Override public int getDeltaX () {
+		return deltaX[0];
+	}
+
+	@Override public int getDeltaX (int pointer) {
+		return deltaX[pointer];
+	}
+
+	@Override public int getDeltaY () {
+		return deltaY[0];
+	}
+
+	@Override public int getDeltaY (int pointer) {
+		return deltaY[pointer];
+	}
+
+	@Override public void setCursorPosition (int x, int y) {		
+	}	
 }
