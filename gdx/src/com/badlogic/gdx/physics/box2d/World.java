@@ -41,6 +41,7 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
@@ -48,6 +49,20 @@ import com.badlogic.gdx.utils.LongMap;
  * @author mzechner
  */
 public class World implements Disposable {
+	/** pool for bodies **/
+	protected final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
+		@Override protected Body newObject () {
+			return new Body(World.this, 0);
+		}		
+	};
+	
+	/** pool for fixtures **/
+	protected final Pool<Fixture> freeFixtures = new Pool<Fixture>(100, 200) {
+		@Override protected Fixture newObject () {
+			return new Fixture(null, 0);
+		}		
+	};
+	
 	/** the address of the world instance **/
 	private final long addr;
 
@@ -134,9 +149,11 @@ public class World implements Disposable {
 	 * @warning This function is locked during callbacks.
 	 */
 	public Body createBody (BodyDef def) {
-		Body body = new Body(this, jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle,
+		long bodyAddr = jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle,
 			def.linearVelocity.x, def.linearVelocity.y, def.angularVelocity, def.linearDamping, def.angularDamping, def.allowSleep,
-			def.awake, def.fixedRotation, def.bullet, def.active, def.inertiaScale));
+			def.awake, def.fixedRotation, def.bullet, def.active, def.inertiaScale);
+		Body body = freeBodies.obtain();
+		body.reset(bodyAddr);
 		this.bodies.put(body.addr, body);
 		return body;
 	}
@@ -158,6 +175,7 @@ public class World implements Disposable {
 		for (int i = 0; i < body.getJointList().size(); i++)
 			this.joints.remove(body.getJointList().get(i).joint.addr);
 		jniDestroyBody(addr, body.addr);
+		freeBodies.free(body);
 	}
 
 	private native void jniDestroyBody (long addr, long bodyAddr);

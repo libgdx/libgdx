@@ -27,7 +27,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  */
 public class Body {
 	/** the address of the body **/
-	protected final long addr;
+	protected long addr;
 
 	/** temporary float array **/
 	private final float[] tmp = new float[4];
@@ -51,7 +51,18 @@ public class Body {
 	 */
 	protected Body (World world, long addr) {
 		this.world = world;
+		this.addr = addr;		
+	}
+	
+	/**
+	 * Resets this body after fetching it from the {@link World#freeBodies} Pool.
+	 */
+	protected void reset(long addr) {
 		this.addr = addr;
+		this.userData = null;
+		for(int i = 0; i < fixtures.size(); i++) this.world.freeFixtures.free(fixtures.get(i));		
+		fixtures.clear();
+		this.joints.clear();
 	}
 
 	/**
@@ -62,8 +73,10 @@ public class Body {
 	 * @warning This function is locked during callbacks.
 	 */
 	public Fixture createFixture (FixtureDef def) {
-		Fixture fixture = new Fixture(this, jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density,
-			def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex));
+		long fixtureAddr = jniCreateFixture(addr, def.shape.addr, def.friction, def.restitution, def.density,
+			def.isSensor, def.filter.categoryBits, def.filter.maskBits, def.filter.groupIndex);
+		Fixture fixture = this.world.freeFixtures.obtain();
+		fixture.reset(this, fixtureAddr);
 		this.world.fixtures.put(fixture.addr, fixture);
 		this.fixtures.add(fixture);
 		return fixture;
@@ -81,7 +94,9 @@ public class Body {
 	 * @warning This function is locked during callbacks.
 	 */
 	public Fixture createFixture (Shape shape, float density) {
-		Fixture fixture = new Fixture(this, jniCreateFixture(addr, shape.addr, density));
+		long fixtureAddr = jniCreateFixture(addr, shape.addr, density);
+		Fixture fixture = this.world.freeFixtures.obtain();
+		fixture.reset(this, fixtureAddr);
 		this.world.fixtures.put(fixture.addr, fixture);
 		this.fixtures.add(fixture);
 		return fixture;

@@ -20,10 +20,10 @@ import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 public class Fixture {
 	/** body **/
-	private final Body body;
+	private Body body;
 
 	/** the address of the fixture **/
-	protected final long addr;
+	protected long addr;
 
 	/** the shape, initialized lazy **/
 	protected Shape shape;
@@ -40,6 +40,13 @@ public class Fixture {
 		this.addr = addr;
 	}
 
+	protected void reset(Body body, long addr) {
+		this.body = body;
+		this.addr = addr;
+		this.shape = null;
+		this.userData = null;
+	}
+	
 	/**
 	 * Get the type of the child shape. You can use this to down cast to the concrete shape.
 	 * @return the shape type.
