@@ -105,16 +105,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			robot = new Robot(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice());
 		} catch (HeadlessException e) {
 		} catch (AWTException e) {
-		}
-		
-		long eventMask = AWTEvent.MOUSE_MOTION_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK;		    
-		Toolkit.getDefaultToolkit().addAWTEventListener( new AWTEventListener()
-		{
-		    public void eventDispatched(AWTEvent e)
-		    {
-		        System.out.println(e.getID());		        
-		    }
-		}, eventMask);
+		}			
 	}
 	
 	public void setListeners(GLCanvas canvas) {
