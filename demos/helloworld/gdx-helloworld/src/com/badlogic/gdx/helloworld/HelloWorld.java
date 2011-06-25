@@ -16,15 +16,13 @@
 package com.badlogic.gdx.helloworld;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class HelloWorld implements ApplicationListener {
@@ -38,7 +36,7 @@ public class HelloWorld implements ApplicationListener {
 		font = new BitmapFont();
 		font.setColor(Color.RED);
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-		spriteBatch = new SpriteBatch();
+		spriteBatch = new SpriteBatch();		
 	}
 
 	@Override public void render () {
