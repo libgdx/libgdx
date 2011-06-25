@@ -24,12 +24,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdxinvaders.simulation.Block;
@@ -88,28 +89,28 @@ public class Renderer {
 			spriteBatch = new SpriteBatch();
 
 			InputStream in = Gdx.files.internal("data/ship.obj").read();
-			shipMesh = ModelLoader.loadObj(in);
+			shipMesh = ModelLoaderOld.loadObj(in);
 			in.close();
 
 			in = Gdx.files.internal("data/invader.obj").read();
-			invaderMesh = ModelLoader.loadObj(in);
+			invaderMesh = ModelLoaderOld.loadObj(in);
 			in.close();
 
 			in = Gdx.files.internal("data/block.obj").read();
-			blockMesh = ModelLoader.loadObj(in);
+			blockMesh = ModelLoaderOld.loadObj(in);
 			in.close();
 
 			in = Gdx.files.internal("data/shot.obj").read();
-			shotMesh = ModelLoader.loadObj(in);
+			shotMesh = ModelLoaderOld.loadObj(in);
 			in.close();
 
-			shipTexture = new Texture(Gdx.files.internal("data/ship.png"), true);
+			shipTexture = new Texture(Gdx.files.internal("data/ship.png"), Format.RGB565, true);
 			shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);				
-			invaderTexture = new Texture(Gdx.files.internal("data/invader.png"), true);
+			invaderTexture = new Texture(Gdx.files.internal("data/invader.png"), Format.RGB565, true);
 			invaderTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
-			backgroundTexture = new Texture(Gdx.files.internal("data/planet.jpg"), true);
+			backgroundTexture = new Texture(Gdx.files.internal("data/planet.jpg"), Format.RGB565, true);
 			backgroundTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
-			explosionTexture = new Texture(Gdx.files.internal("data/explode.png"), true);
+			explosionTexture = new Texture(Gdx.files.internal("data/explode.png"), Format.RGBA4444, true);
 			explosionTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
 			explosionMesh = new Mesh(true, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
