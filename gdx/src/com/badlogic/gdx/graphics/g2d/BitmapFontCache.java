@@ -35,9 +35,20 @@ public class BitmapFontCache implements Disposable {
 	private float color = Color.WHITE.toFloatBits();
 	private final Color tmpColor = new Color(Color.WHITE);
 	private final TextBounds textBounds = new TextBounds();
+	private boolean integer = true;
 
 	public BitmapFontCache (BitmapFont font) {
+		this.font = font;		
+	}
+	
+	/**
+	 * Creates a new BitmapFontCache
+	 * @param font the font to use
+	 * @param integer whether to use integer positions and sizes.
+	 */
+	public BitmapFontCache (BitmapFont font, boolean integer) {
 		this.font = font;
+		this.integer = integer;
 	}
 
 	/**
@@ -56,6 +67,10 @@ public class BitmapFontCache implements Disposable {
 	 */
 	public void translate (float xAmount, float yAmount) {
 		if (xAmount == 0 && yAmount == 0) return;
+		if(integer) {
+			xAmount = (int)xAmount;
+			yAmount = (int)yAmount;
+		}
 		x += xAmount;
 		y += yAmount;
 		float[] vertices = this.vertices;
@@ -181,30 +196,56 @@ public class BitmapFontCache implements Disposable {
 		final float v = glyph.v;
 		final float v2 = glyph.v2;
 
-		float[] vertices = this.vertices;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v;
-
-		vertices[idx++] = x;
-		vertices[idx++] = y2;
-		vertices[idx++] = color;
-		vertices[idx++] = u;
-		vertices[idx++] = v2;
-
-		vertices[idx++] = x2;
-		vertices[idx++] = y2;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v2;
-
-		vertices[idx++] = x2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = u2;
-		vertices[idx++] = v;
+		final float[] vertices = this.vertices;
+		if(!integer) {			
+			vertices[idx++] = x;
+			vertices[idx++] = y;
+			vertices[idx++] = color;
+			vertices[idx++] = u;
+			vertices[idx++] = v;
+	
+			vertices[idx++] = x;
+			vertices[idx++] = y2;
+			vertices[idx++] = color;
+			vertices[idx++] = u;
+			vertices[idx++] = v2;
+	
+			vertices[idx++] = x2;
+			vertices[idx++] = y2;
+			vertices[idx++] = color;
+			vertices[idx++] = u2;
+			vertices[idx++] = v2;
+	
+			vertices[idx++] = x2;
+			vertices[idx++] = y;
+			vertices[idx++] = color;
+			vertices[idx++] = u2;
+			vertices[idx++] = v;
+		} else {			
+			vertices[idx++] = (int)x;
+			vertices[idx++] = (int)y;
+			vertices[idx++] = color;
+			vertices[idx++] = u;
+			vertices[idx++] = v;
+	
+			vertices[idx++] = (int)x;
+			vertices[idx++] = (int)y2;
+			vertices[idx++] = color;
+			vertices[idx++] = u;
+			vertices[idx++] = v2;
+	
+			vertices[idx++] = (int)x2;
+			vertices[idx++] = (int)y2;
+			vertices[idx++] = color;
+			vertices[idx++] = u2;
+			vertices[idx++] = v2;
+	
+			vertices[idx++] = (int)x2;
+			vertices[idx++] = (int)y;
+			vertices[idx++] = color;
+			vertices[idx++] = u2;
+			vertices[idx++] = v;			
+		}
 	}
 
 	/**
@@ -370,5 +411,21 @@ public class BitmapFontCache implements Disposable {
 	 */
 	public void dispose () {
 		font.dispose();
+	}
+	
+	/**
+	 * Specifies whether to use integer positions or not. Default is to use
+	 * them so filtering doesn't kick in as badly.
+	 * @param use 
+	 */
+	public void setUseIntegerPositions(boolean use) {
+		this.integer = use;
+	}
+	
+	/**
+	 * @return whether this font uses integer positions for drawing.
+	 */
+	public boolean usesIntegerPositions() {
+		return integer;
 	}
 }

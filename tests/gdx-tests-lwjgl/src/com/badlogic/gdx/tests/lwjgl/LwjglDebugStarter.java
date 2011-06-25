@@ -21,6 +21,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();		
-		new LwjglApplication(new com.badlogic.gdx.tests.InputTest(), config);
+		new LwjglApplication(new com.badlogic.gdx.tests.IntegerBitmapFontTest(), config);
 	}
 }

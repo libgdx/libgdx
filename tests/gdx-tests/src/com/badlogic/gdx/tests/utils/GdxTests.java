@@ -67,6 +67,7 @@ import com.badlogic.gdx.tests.ImmediateModeRendererTest;
 import com.badlogic.gdx.tests.IndexBufferObjectClassTest;
 import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.InputTest;
+import com.badlogic.gdx.tests.IntegerBitmapFontTest;
 import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.IsometricTileTest;
 import com.badlogic.gdx.tests.KinematicBodyTest;
@@ -178,6 +179,7 @@ public class GdxTests
 		IndexBufferObjectClassTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
+		IntegerBitmapFontTest.class,
 		IsoCamTest.class,
 		IsometricTileTest.class,
 		KinematicBodyTest.class,

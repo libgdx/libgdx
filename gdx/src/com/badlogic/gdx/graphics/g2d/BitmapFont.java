@@ -72,14 +72,15 @@ public class BitmapFont implements Disposable {
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 	private boolean flipped;
-
+	private boolean integer = true;
+	
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering with generating a bitmap font.
 	 */
 	public BitmapFont () {
 		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
-			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), false);
+			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), false, true);
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class BitmapFont implements Disposable {
 	 */
 	public BitmapFont (boolean flip) {
 		this(Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.fnt"),
-			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), flip);
+			Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png"), flip, true);
 	}
 
 	/**
@@ -114,10 +115,21 @@ public class BitmapFont implements Disposable {
 	/**
 	 * Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
 	 * ignored.
-	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. 
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
+		this(fontFile, imageFile, flip, true);
+	}
+	
+	/**
+	 * Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
+	 * ignored.
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
+	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.s
+	 */
+	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer) {
 		region = new TextureRegion(new Texture(imageFile, false));
+		this.integer = integer;
 		init(fontFile, region, flip);
 	}
 
@@ -300,10 +312,17 @@ public class BitmapFont implements Disposable {
 			while (start < end) {
 				lastGlyph = getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					spriteBatch.draw(texture, //
-						x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
-						lastGlyph.width, lastGlyph.height, //
-						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					if(!integer) {
+						spriteBatch.draw(texture, //
+							x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
+							lastGlyph.width, lastGlyph.height, //
+							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					} else {
+						spriteBatch.draw(texture, //
+							(int)x + lastGlyph.xoffset, (int)y + lastGlyph.yoffset, //
+							lastGlyph.width, lastGlyph.height, //
+							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);	
+					}
 					x += lastGlyph.xadvance;
 					break;
 				}
@@ -314,10 +333,17 @@ public class BitmapFont implements Disposable {
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
-				spriteBatch.draw(texture, //
-					x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
-					lastGlyph.width, lastGlyph.height, //
-					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				if(!integer) {
+					spriteBatch.draw(texture, //
+						x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
+						lastGlyph.width, lastGlyph.height, //
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				} else {
+					spriteBatch.draw(texture, //
+						(int)x + lastGlyph.xoffset, (int)y + lastGlyph.yoffset, //
+						lastGlyph.width, lastGlyph.height, //
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				}
 				x += g.xadvance;
 			}
 		} else {
@@ -325,12 +351,21 @@ public class BitmapFont implements Disposable {
 			while (start < end) {
 				lastGlyph = getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					spriteBatch.draw(texture, //
-						x + lastGlyph.xoffset * scaleX, //
-						y + lastGlyph.yoffset * scaleY, //
-						lastGlyph.width * scaleX, //
-						lastGlyph.height * scaleY, //
-						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					if(!integer) {
+						spriteBatch.draw(texture, //
+							x + lastGlyph.xoffset * scaleX, //
+							y + lastGlyph.yoffset * scaleY, //
+							lastGlyph.width * scaleX, //
+							lastGlyph.height * scaleY, //
+							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					} else {
+						spriteBatch.draw(texture, //
+							(int)(x + lastGlyph.xoffset * scaleX), //
+							(int)(y + lastGlyph.yoffset * scaleY), //
+							(int)(lastGlyph.width * scaleX), //
+							(int)(lastGlyph.height * scaleY), //
+							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+					}
 					x += lastGlyph.xadvance * scaleX;
 					break;
 				}
@@ -341,12 +376,21 @@ public class BitmapFont implements Disposable {
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch) * scaleX;
 				lastGlyph = g;
-				spriteBatch.draw(texture, //
-					x + lastGlyph.xoffset * scaleX, //
-					y + lastGlyph.yoffset * scaleY, //
-					lastGlyph.width * scaleX, //
-					lastGlyph.height * scaleY, //
-					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				if(!integer) {
+					spriteBatch.draw(texture, //
+						x + lastGlyph.xoffset * scaleX, //
+						y + lastGlyph.yoffset * scaleY, //
+						lastGlyph.width * scaleX, //
+						lastGlyph.height * scaleY, //
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				} else {
+					spriteBatch.draw(texture, //
+						(int)(x + lastGlyph.xoffset * scaleX), //
+						(int)(y + lastGlyph.yoffset * scaleY), //
+						(int)(lastGlyph.width * scaleX), //
+						(int)(lastGlyph.height * scaleY), //
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
+				}
 				x += g.xadvance * scaleX;
 			}
 		}
@@ -853,5 +897,21 @@ public class BitmapFont implements Disposable {
 	 */
 	public boolean containsCharacter(char character) {
 		return getGlyph(character) != null;
+	}
+	
+	/**
+	 * Specifies whether to use integer positions or not. Default is to use
+	 * them so filtering doesn't kick in as badly.
+	 * @param use 
+	 */
+	public void setUseIntegerPositions(boolean use) {
+		this.integer = use;
+	}
+	
+	/**
+	 * @return whether this font uses integer positions for drawing.
+	 */
+	public boolean usesIntegerPositions() {
+		return integer;
 	}
 }
