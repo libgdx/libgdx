@@ -12,6 +12,8 @@ cp nightlies/gdx-64.dll gdx/libs/windows64
 cp nightlies/libgdx.so gdx/libs/linux
 cp nightlies/libgdx-64.so gdx/libs/linux64
 cp nightlies/libgdx.dylib gdx/libs/mac
+cp -rf nightlies/armeabi gdx/libs/armeabi
+cp -rf nightlies/armeabi-v7a gdx/libs/armeabi-v7a
 
 # copy android natives to tests
 cp -rf nightlies/armeabi tests/gdx-tests-android/libs
@@ -33,6 +35,8 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/returntomarchfeld/rtm-andro
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/metagun/metagun-android/libs
 
 cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/cuboc/cuboc-android/libs
+
+cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/very-angry-robots/very-angry-robots-android/libs
 
 cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/model-loaders/model-loaders-android/libs
 
