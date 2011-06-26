@@ -151,8 +151,8 @@ public class Rectangle implements Serializable {
 	}
 
 	/**
-	 * @param x0 point x coordinate
-	 * @param y0 point y coordinate
+	 * @param x point x coordinate
+	 * @param y point y coordinate
 	 * @return whether the point is contained in the rectangle
 	 */
 	public boolean contains (float x, float y) {
