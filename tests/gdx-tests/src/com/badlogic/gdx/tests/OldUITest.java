@@ -47,7 +47,7 @@ import com.badlogic.gdx.scenes.scene2d.actors.Button.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup.LinearGroupLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class UITest extends GdxTest implements InputProcessor {
+public class OldUITest extends GdxTest implements InputProcessor {
 	Texture uiTexture;
 	Texture badlogic;
 	Stage ui;

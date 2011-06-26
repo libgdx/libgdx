@@ -120,7 +120,7 @@ import com.badlogic.gdx.tests.TextureFormatTest;
 import com.badlogic.gdx.tests.TextureRenderTest;
 import com.badlogic.gdx.tests.TileTest;
 import com.badlogic.gdx.tests.TiledMapTest;
-import com.badlogic.gdx.tests.UITest;
+import com.badlogic.gdx.tests.OldUITest;
 import com.badlogic.gdx.tests.VBOVATest;
 import com.badlogic.gdx.tests.VertexArrayClassTest;
 import com.badlogic.gdx.tests.VertexArrayTest;
@@ -233,7 +233,7 @@ public class GdxTests
 		TextureRenderTest.class,
 		TiledMapTest.class,
 		TileTest.class,
-		UITest.class,
+		OldUITest.class,
 		VBOVATest.class,
 		VertexArrayTest.class,		
 		VertexBufferObjectTest.class,
