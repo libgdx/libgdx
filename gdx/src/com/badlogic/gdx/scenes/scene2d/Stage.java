@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -287,7 +288,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/**
 	 * Called when a key was pressed
 	 * 
-	 * @param keycode one of the constants in {@link Input.Keys}
+	 * @param keycode one of the constants in {@link Keys}
 	 * @return whether the input was processed
 	 */
 	@Override
@@ -298,7 +299,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/**
 	 * Called when a key was released
 	 * 
-	 * @param keycode one of the constants in {@link Input.Keys}
+	 * @param keycode one of the constants in {@link Keys}
 	 * @return whether the input was processed
 	 */
 	@Override
