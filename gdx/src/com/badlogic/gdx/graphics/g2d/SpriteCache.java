@@ -84,6 +84,8 @@ public class SpriteCache implements Disposable {
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 
+	private ShaderProgram customShader = null;
+	
 	/**
 	 * Creates a cache that uses indexed geometry and can contain up to 1000 images.
 	 */
@@ -875,10 +877,6 @@ public class SpriteCache implements Disposable {
 
 		if (Gdx.graphics.isGL20Available() == false) {
 			GL10 gl = Gdx.gl10;
-			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			gl.glDisable(GL10.GL_LIGHTING);
-			gl.glDisable(GL10.GL_DEPTH_TEST);
-			gl.glDisable(GL10.GL_CULL_FACE);
 			gl.glDepthMask(false);
 			gl.glEnable(GL10.GL_TEXTURE_2D);
 
@@ -891,16 +889,21 @@ public class SpriteCache implements Disposable {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-			GL20 gl = Gdx.gl20;
-			gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			gl.glDisable(GL20.GL_DEPTH_TEST);
-			gl.glDisable(GL20.GL_CULL_FACE);
+			GL20 gl = Gdx.gl20;			
 			gl.glDepthMask(false);
 			gl.glEnable(GL20.GL_TEXTURE_2D);
 
-			shader.begin();
-			shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
-			shader.setUniformi("u_texture", 0);
+			if(customShader != null) {
+				customShader.begin();
+				customShader.setUniformMatrix("u_proj", projectionMatrix);
+				customShader.setUniformMatrix("u_trans", transformMatrix);
+				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+				customShader.setUniformi("u_texture", 0);
+			} else {
+				shader.begin();
+				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+				shader.setUniformi("u_texture", 0);
+			}					
 
 			mesh.bind(shader);
 		}
@@ -942,7 +945,8 @@ public class SpriteCache implements Disposable {
 			for (int i = 0, n = textures.length; i < n; i++) {
 				int count = counts[i];
 				textures[i].bind();
-				mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
+				if(customShader != null) mesh.render(customShader, GL10.GL_TRIANGLES, offset, count); 
+				else mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
 				offset += count;
 			}
 		} else {
@@ -977,7 +981,8 @@ public class SpriteCache implements Disposable {
 					count = length;
 				} else
 					length -= count;
-				mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
+				if(customShader != null) mesh.render(customShader, GL10.GL_TRIANGLES, offset, count);
+				else mesh.render(shader, GL10.GL_TRIANGLES, offset, count);
 				offset += count;
 			}
 		} else {
@@ -1061,5 +1066,19 @@ public class SpriteCache implements Disposable {
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
 		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
+	}
+	
+	/**
+	 * Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture coordinates attribute is called called "a_texCoords", the
+	 * color attribute is called "a_color".
+	 * The projection matrix is uploaded via a mat4 uniform called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined
+	 * transform and projection matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture". 
+	 * 
+	 * Call this method with a null argument to use the default shader.
+	 * 
+	 * @param shader the {@link ShaderProgram} or null to use the default shader.
+	 */
+	public void setShader(ShaderProgram shader) {
+		customShader  = shader;
 	}
 }
