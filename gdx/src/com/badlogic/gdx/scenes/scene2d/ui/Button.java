@@ -22,6 +22,48 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * <h2>Functionality</h2>
+ * A button can be either in a pressed or unpressed state. A {@link ClickListener} can
+ * be registered with the Button which will be called in case the button was clicked/touched.
+ * 
+ * <h2>Layout</h2>
+ * The (preferred) width and height of a Button are derrived from the border patches in the
+ * background {@link NinePatch} as well as the bounding box around the multi-line text displayed
+ * on the Button. Use {@link Button#setPrefSize(int, int)} to programmatically change the size
+ * to your liking. In case the width and height you set are to small for the contained text you
+ * will see artifacts.
+ * 
+ * <h2>Style</h2>
+ * A Button is a {@link Widget} displaying a background {@link NinePatch} as well as
+ * multi-line text with a specific font and color. The style is defined via an instance
+ * of {@link ButtonStyle}, which can be either done programmatically or via a {@link Skin}.</p>
+ * 
+ * A Button's style definition in a skin XML file should look like this:
+ * 
+ * <pre>
+ * {@code 
+ * <button name="styleName" 
+ *         down="downNinePatch" 
+ *         up="upNinePatch" 
+ *         font="fontName" 
+ *         fontColor="colorName"/>/>
+ * }
+ * </pre>
+ * 
+ * <ul>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newButton(String, String, String)}.</li>
+ * <li>The <code>down</code> attribute references a {@link NinePatch} by name, to be used as the button's background when it is pressed</li>
+ * <li>The <code>up</code> attribute references a {@link NinePatch} by name, to be used as the button's background when it is not pressed</li>
+ * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the text on the button</li>
+ * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the text on the button</li>
+ * </ul> 
+ * 
+ * 
+ * 
+ * @author mzechner
+ *
+ */
 public class Button extends Widget {
 	final ButtonStyle style;
 	String text;	

@@ -18,12 +18,57 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+/**
+ * <h2>Functionality</h2>
+ * A CheckBox can be either checked or unchecked. The state of the CheckBox is displayed
+ * with images representing the checked and unchecked state as well as a label, displayed to the right of the
+ * image(s). Checking/unchecking a CheckBox works by clicking either the image or the label itself, the hit
+ * area of the CheckBox is the compositum of both elements. </p>
+ * 
+ * To get notifications about a change in state of the CheckBox one can register a {@link CheckedListener} with
+ * the CheckBox.</p>
+ * 
+ * <h2>Layout</h2>
+ * A CheckBox's (preferred) width and height is determined by the size of the bigger of the two images representing
+ * the state plus the bounding box around the (single-line) label. Both the image and the label are centered vertically.
+ * Use {@link CheckBox#setPrefSize(int, int)} to programmatically change the size to your liking. Note that this
+ * will not have an affect on the actual rendering, but only manipulate the hit area of the CheckBox.
+ * 
+ * <h2>Style</h2>
+ * A CheckBox is a {@link Widget} displaying one of two {@link TextureRegion} instances representing the checked and
+ * unchecked state, as well as a label via a {@link BitmapFont} and accompanying {@link Color}. The style is defined
+ * via an instance of {@link CheckBoxStyle}, which can either be done programmatically or via a {@link Skin}.</p>
+ * 
+ * A CheckBox's style definition in a skin XML file should look like this:
+ * 
+ *  <pre>
+ *  {@code 
+ *  <checkbox name="styleName"
+ *            checked="checkedRegion" 
+ *            unchecked="uncheckedRegion"
+ *            font="fontName" 
+ *            fontColor="fontColor"/>
+ *  }
+ *  </pre>
+ *  
+ * <ul>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newCheckBox(String, String, String)}.</li>
+ * <li>The <code>checked</code> attribute references a {@link TextureRegion} by name, to be used when the CheckBox is checked</li>
+ * <li>The <code>unchecked</code> attribute references a {@link TextureRegion} by name, to be used when the CheckBox is unchecked</li>
+ * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the label</li>
+ * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the label</li>
+ * </ul> 
+ *  
+ * @author mzechner
+ *
+ */
 public class CheckBox extends Widget {
 	final CheckBoxStyle style;
 	String label;	

@@ -25,6 +25,63 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
+/**
+ * <h2>Functionality</h2>
+ * A ComboBox contains a list of Strings, with one of the strings being selected and displayed
+ * in the main area of the ComboBox. Clicking the ComboBox brings up a popup list showing all
+ * the entries. This popup list will grab the touch focus while it is displayed. This is achieved
+ * by temporarily adding a new Actor to the root of the Stage the ComboBox is contained in. As soon
+ * as an item is selected or a mouse click outside the area of the popup list is registered, the
+ * popup will disappear again and the focus is given back. </p>
+ * 
+ * A {@link SelectionListener} can be registered with the ComboBox to receive notification of 
+ * selection changes.</p>
+ * 
+ * <h2>Layout</h2>
+ * A ComboBox's (preferred) width and height are determined by the border patches in the background
+ * {@link NinePatch} as well as the bounding box of the widest entry in the list of strings. Use
+ * {@link ComboBox#setPrefSize(int, int)} to change this size programmatically. In case the set
+ * size is to small to contain the widest entry, artifacts may appear.</p>
+ * 
+ * The additional popup list will be positioned at the bottom edge of the ComboBox, displaying
+ * all entries. The width and size is governed by the background {@link NinePatch} of the popup
+ * list as well as the bounding box around the list entries.
+ * 
+ * <h2>Style</h2>
+ * A ComboBox is a {@link Widget} displaying a background {@link NinePatch} as well as the selected
+ * list entry as a label via a {@link BitmapFont} and a corresponding {@link Color}. Additionally
+ * a popup menu might be displayed, using a {@link NinePatch} for the background, another {@link NinePatch} for
+ * highlighting the current selection and the same {@link BitmapFont} and Color used to display the
+ * selected entry in the actual ComboBox.</p>
+ * 
+ * The style is defined via an instance of the {@link ComboBoxStyle} class, which can be either done programmatically
+ * or via a {@link Skin}.</p>
+ *
+ * A ComboBox's style definition in a skin XML file should look like this:
+ * 
+ * <pre>
+ * {@code 
+ * <combobox name="styleName"  			 
+ *           background="backgroundNinePatch" 
+ *           listBackground="popupBackgroundNinePatch" 
+ *           listSelection="popupSelectionNinePatch"
+ *           font="fontName" 
+ *           fontColor="colorName" />
+ * }
+ * </pre>
+ * 
+ * <ul>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newComboBox(String, String[], Stage, String)}.</li>
+ * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the ComboBox's background</li>
+ * <li>The <code>listBackground</code> attribute references a {@link NinePatch} by name, to be used as the background for the popup list</li>
+ * <li>The <code>listSelection</code> attribute references a {@link NinePatch} by name, to be used for highlighting a selection in the popup list</li>
+ * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the list entries</li>
+ * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the list entries</li>
+ * </ul>
+ * 
+ * @author mzechner
+ *
+ */
 public class ComboBox extends Widget {	
 	final Stage stage;	
 	final ComboBoxStyle style;
