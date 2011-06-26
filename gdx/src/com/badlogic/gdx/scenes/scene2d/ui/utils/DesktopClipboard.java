@@ -23,7 +23,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-public class DesktopClipboard implements Clipboard, ClipboardOwner {
+public class DesktopClipboard extends Clipboard implements ClipboardOwner {
 
 	@Override public String getContents () {
 		String result = "";

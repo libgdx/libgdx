@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
-public class AndroidClipboard implements Clipboard {
+public class AndroidClipboard extends Clipboard {
 
 	@Override public String getContents () {
 		return "";

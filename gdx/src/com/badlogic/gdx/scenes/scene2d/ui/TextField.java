@@ -64,7 +64,7 @@ public class TextField extends Widget {
 		super(name, prefWidth, 0);
 		this.style = style;
 		this.initialPrefWidth = prefWidth;
-		this.clipboard = Gdx.app.getType() == ApplicationType.Desktop ? new DesktopClipboard() : new AndroidClipboard();
+		this.clipboard = Clipboard.getDefaultKeyboard();
 		layout();
 		this.width = this.prefWidth;
 		this.height = this.prefHeight;

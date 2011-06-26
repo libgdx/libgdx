@@ -31,104 +31,7 @@ package com.badlogic.gdx.tests.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.tests.AccelerometerTest;
-import com.badlogic.gdx.tests.ActionSequenceTest;
-import com.badlogic.gdx.tests.ActionTest;
-import com.badlogic.gdx.tests.AlphaTest;
-import com.badlogic.gdx.tests.AnimationTest;
-import com.badlogic.gdx.tests.AtlasIssueTest;
-import com.badlogic.gdx.tests.AudioDeviceTest;
-import com.badlogic.gdx.tests.AudioRecorderTest;
-import com.badlogic.gdx.tests.BitmapFontAlignmentTest;
-import com.badlogic.gdx.tests.BitmapFontFlipTest;
-import com.badlogic.gdx.tests.BitmapFontTest;
-import com.badlogic.gdx.tests.BobTest;
-import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
-import com.badlogic.gdx.tests.Box2DTest;
-import com.badlogic.gdx.tests.Box2DTestCollection;
-import com.badlogic.gdx.tests.BufferUtilsTest;
-import com.badlogic.gdx.tests.CompassTest;
-import com.badlogic.gdx.tests.ComplexActionTest;
-import com.badlogic.gdx.tests.CullTest;
-import com.badlogic.gdx.tests.DeltaTimeTest;
-import com.badlogic.gdx.tests.EdgeDetectionTest;
-import com.badlogic.gdx.tests.ExitTest;
-import com.badlogic.gdx.tests.FastTextReadingTest;
-import com.badlogic.gdx.tests.FilesTest;
-import com.badlogic.gdx.tests.FilterPerformanceTest;
-import com.badlogic.gdx.tests.FloatTest;
-import com.badlogic.gdx.tests.FrameBufferTest;
-import com.badlogic.gdx.tests.FramebufferToTextureTest;
-import com.badlogic.gdx.tests.FullscreenTest;
-import com.badlogic.gdx.tests.Gdx2DTest;
-import com.badlogic.gdx.tests.GroupFadeTest;
-import com.badlogic.gdx.tests.ImmediateModeRendererAlphaTest;
-import com.badlogic.gdx.tests.ImmediateModeRendererTest;
-import com.badlogic.gdx.tests.IndexBufferObjectClassTest;
-import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
-import com.badlogic.gdx.tests.InputTest;
-import com.badlogic.gdx.tests.IntegerBitmapFontTest;
-import com.badlogic.gdx.tests.IsoCamTest;
-import com.badlogic.gdx.tests.IsometricTileTest;
-import com.badlogic.gdx.tests.KinematicBodyTest;
-import com.badlogic.gdx.tests.LifeCycleTest;
-import com.badlogic.gdx.tests.MD5Test;
-import com.badlogic.gdx.tests.ManagedTest;
-import com.badlogic.gdx.tests.ManualBindTest;
-import com.badlogic.gdx.tests.MatrixJNITest;
-import com.badlogic.gdx.tests.MeshMultitextureTest;
-import com.badlogic.gdx.tests.MeshShaderTest;
-import com.badlogic.gdx.tests.MeshTest;
-import com.badlogic.gdx.tests.MultiTouchActorTest;
-import com.badlogic.gdx.tests.MultitouchTest;
-import com.badlogic.gdx.tests.MusicTest;
-import com.badlogic.gdx.tests.MyFirstTriangle;
-import com.badlogic.gdx.tests.ObjTest;
-import com.badlogic.gdx.tests.OnscreenKeyboardTest;
-import com.badlogic.gdx.tests.OrthoCamBorderTest;
-import com.badlogic.gdx.tests.ParticleEmitterTest;
-import com.badlogic.gdx.tests.PickingTest;
-import com.badlogic.gdx.tests.PixelsPerInchTest;
-import com.badlogic.gdx.tests.PixmapBlendingTest;
-import com.badlogic.gdx.tests.PixmapTest;
-import com.badlogic.gdx.tests.Pong;
-import com.badlogic.gdx.tests.PreferencesTest;
-import com.badlogic.gdx.tests.ProjectTest;
-import com.badlogic.gdx.tests.RemoteTest;
-import com.badlogic.gdx.tests.RotationTest;
-import com.badlogic.gdx.tests.ShaderMultitextureTest;
-import com.badlogic.gdx.tests.SimpleAnimationTest;
-import com.badlogic.gdx.tests.SimpleStageCullingTest;
-import com.badlogic.gdx.tests.SimpleTest;
-import com.badlogic.gdx.tests.SoundTest;
-import com.badlogic.gdx.tests.SplineTest;
-import com.badlogic.gdx.tests.SpriteBatchRotationTest;
-import com.badlogic.gdx.tests.SpriteBatchShaderTest;
-import com.badlogic.gdx.tests.SpriteBatchTest;
-import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
-import com.badlogic.gdx.tests.SpriteCacheTest;
-import com.badlogic.gdx.tests.SpritePerformanceTest;
-import com.badlogic.gdx.tests.SpritePerformanteTest2;
-import com.badlogic.gdx.tests.StagePerformanceTest;
-import com.badlogic.gdx.tests.StageTest;
-import com.badlogic.gdx.tests.TerrainTest;
-import com.badlogic.gdx.tests.TextInputDialogTest;
-import com.badlogic.gdx.tests.TextureAtlasTest;
-import com.badlogic.gdx.tests.TextureDataTest;
-import com.badlogic.gdx.tests.TextureDownloadTest;
-import com.badlogic.gdx.tests.TextureFormatTest;
-import com.badlogic.gdx.tests.TextureRenderTest;
-import com.badlogic.gdx.tests.TileTest;
-import com.badlogic.gdx.tests.TiledMapTest;
-import com.badlogic.gdx.tests.OldUITest;
-import com.badlogic.gdx.tests.VBOVATest;
-import com.badlogic.gdx.tests.VertexArrayClassTest;
-import com.badlogic.gdx.tests.VertexArrayTest;
-import com.badlogic.gdx.tests.VertexBufferObjectClassTest;
-import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
-import com.badlogic.gdx.tests.VertexBufferObjectTest;
-import com.badlogic.gdx.tests.VibratorTest;
-import com.badlogic.gdx.tests.WaterRipples;
+import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 
@@ -197,6 +100,7 @@ public class GdxTests
 		MultiTouchActorTest.class,
 		MyFirstTriangle.class,
 		ObjTest.class,
+		OldUITest.class,
 		OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class,
 		ParticleEmitterTest.class,
@@ -232,8 +136,8 @@ public class GdxTests
 		TextInputDialogTest.class,
 		TextureRenderTest.class,
 		TiledMapTest.class,
-		TileTest.class,
-		OldUITest.class,
+		TileTest.class,		
+		UITest.class,
 		VBOVATest.class,
 		VertexArrayTest.class,		
 		VertexBufferObjectTest.class,
