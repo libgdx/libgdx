@@ -26,11 +26,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 
 /**
  * <h2>Functionality</h2>
- * A Container is a {@link Group} capable of layouting inserted {@link Actor} instances in a table layout. See 
+ * A Container is a {@link Group} capable of laying out inserted {@link Actor} instances in a table layout. See 
  * <a href="http://code.google.com/p/table-layout/">http://code.google.com/p/table-layout/</a></p>
  * 
  * <h2>Layout</h2>
- * Actors added to the Container will be layouted in rows and columns. To start a new row call the {@link #row()} method.
+ * Actors added to the Container will be laid out in rows and columns. To start a new row call the {@link #row()} method.
  * To insert an Actor into the current row call the {@link #add(Actor)} method. Actors are added from left to right to 
  * the current row. <b>Do not use the {@link #addActor(Actor)}, {@link #addActorAfter(Actor, Actor)}, 
  * {@link #addActorAt(int, Actor)}, {@link #addActorBefore(Actor, Actor)} methods!</b></p>
@@ -39,15 +39,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
  * Each added Actor is contained within a cell, which has {@link CellProperties} defining the layout of that Actor within
  * the cell as well as the layout of the cell within the table.</p>
  * 
- * To specify how an Actor should be layouted within the cell, one can manipulate the {@link CellProperties} instance
- * returned by the {@link #add(Actor)} method. It allows to define the alignment, padding, minimum and maximum size
+ * To specify how an Actor should be laid out within the cell, one can manipulate the {@link CellProperties} instance
+ * returned by the {@link #add(Actor)} method. It defines the alignment, padding, minimum and maximum size
  * of the Actor within the cell. By default an Actor's width and height are taken. If the Actor is a {@link Widget} its
  * preferred width and height are taken (see {@link Widget#getPrefWidth()} and {@link Widget#getPrefWidth()}. To let an Actor
  * fill the entire cell on either or both the x- and y-axis one can use the {@link CellProperties#fill(boolean, boolean)} method. 
- * The layouting process may resize the Actor according to the {@link CellProperties} as well as the available space 
+ * The layout process may resize the Actor according to the {@link CellProperties} as well as the available space 
  * of the cell within the table.</p>
  * 
- * To specify how a cell should be layouted within the table the {@link CellProperties} class offers the methods 
+ * To specify how a cell should be laid out within the table the {@link CellProperties} class offers the methods 
  * {@link CellProperties#expand(boolean, boolean)}, {@link CellProperties#spacing(int, int, int, int)} and 
  * {@link CellProperties#colspan(int)} method. </p>
  * 
@@ -56,10 +56,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
  * by its contained Actor are used as weightings. Additionally one can use the {@link CellProperties#expand(int, int)} 
  * method to directly specify a weight.</p>
  * 
- * The {@link CellProperties#spacing(int, int, int, int)} method allows to define how much space should be left empty 
+ * The {@link CellProperties#spacing(int, int, int, int)} method defines how much space should be left empty 
  * between adjacent cells.</p>
  * 
- * The {@link CellProperties#colspan(int)} method allows to define how many columns a cell should span in the table. 
+ * The {@link CellProperties#colspan(int)} method defines how many columns a cell should span in the table. 
  * Note that a table does not necessarily have to have the same amount of columns in every row.</p> 
  * 
  * To set the {@link CellProperties} for all cells in an entire row, one can manipulate the {@link CellProperties} instance 
@@ -67,12 +67,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
  * 
  * <h3>Container Size</h3>
  * A Container's size is usually determined by the dimensions given in its constructor. Unless the Container is nested 
- * inside another Container, its width and height will stay constant. To programmatically change the size of a Container 
+ * inside another Container, its width and height will stay constant. To change the size of a Container programmatically, 
  * call the {@link #setPrefSize(float, float)} method.</p>
  * 
  * <h3>Layout Invalidation</h3>
- * When a Container is resized, its layout has to be recomputed. For this process to work the Container has to be invalidated, 
- * which will trigger a relayouting in the next call to either {@link Container#layout()} or 
+ * When a Container is resized, its layout has to be recomputed. For this process to work, the Container has to be invalidated, 
+ * which will trigger a new layout process in the next call to either {@link Container#layout()} or 
  * {@link Container#draw(com.badlogic.gdx.graphics.g2d.SpriteBatch, float)}. Consequently, if a Container is 
  * nested inside another Container, the parent Container also has to be invalidated.</p>
  * 
@@ -80,15 +80,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
  * parent Container call the {@link Container#invalidateHierarchically()} method, which will invalidate the Container and 
  * all its parents.</p>
  * 
- * An Actor added to a container can also change its (preferred) size. In this case the Container has to be informed of this circumstance by a 
- * explicitely calling either {@link Container#invalidate()} or {@link Container#invalidateHierarchically()}.</p>
+ * An Actor added to a container can also change its (preferred) size. In this case the Container has to be informed of this circumstance by 
+ * explicitly calling either {@link Container#invalidate()} or {@link Container#invalidateHierarchically()}.</p>
  * 
  * <h3>Restrictions</h3>
- * Once an Actor is added to a Container, it's width and height controlled by the Container (unless you chose to use the method described in the
- * last paragraph). For this reason, applying an {@link Action} to an Actor contained in a Container will not work. It is advised to not change
- * the size of contained Actors during runtime, as layouting every frame might be a costly operation.</p>
+ * Once an Actor is added to a Container, its width and height are controlled by the Container (unless you chose to use the method described in the
+ * last paragraph). For this reason, applying an {@link Action} to an Actor contained in a Container will not work. It is advised to not to change
+ * the size of contained Actors during runtime, as a layout process every frame might be a costly operation.</p>
  * 
- * Actors should also not be scaled or rotated when contained inside a Container. The layouting algorithm will simply ignore these properties!</p>
+ * Actors should also not be scaled or rotated when contained inside a Container. The layout algorithm will simply ignore these properties!</p>
  * 
  * <h2>Style</h2>
  * A Container has no graphical representation. See {@link Window} and {@link Pane} for styled
@@ -101,7 +101,7 @@ public class Container extends Table {
 	
 	/**
 	 * Class specifying the layout of an Actor within a cell as well as the
-	 * behaviour of th cell within the entire layout. See <a href="http://code.google.com/p/table-layout/">http://code.google.com/p/table-layout/</a> as
+	 * behaviour of the cell within the entire layout. See <a href="http://code.google.com/p/table-layout/">http://code.google.com/p/table-layout/</a> as
 	 * well as the class documentation of {@link Container}.
 	 * @author mzechner
 	 *
