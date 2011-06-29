@@ -199,21 +199,22 @@ public class ShaderProgram implements Disposable {
 		gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
 		int linked = intbuf.get(0);
 		if (linked == 0) {
-			gl.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
-			int infoLogLength = intbuf.get(0);
-			if (infoLogLength > 1) log += gl.glGetProgramInfoLog(program);
-
 			return -1;
 		}
 
 		return program;
 	}
 
+	final static IntBuffer intbuf = BufferUtils.newIntBuffer(1);
+	
 	/**
-	 * @return the log info for the shader compilation and program linking stage. Returns an empty string if the shader program
-	 *         compiled successfully.
-	 */
+	 * @return the log info for the shader compilation and program linking stage. The shader needs to be bound for this
+	 * method to have an effect.
+	 */	
 	public String getLog () {
+		Gdx.gl20.glGetProgramiv(program, GL20.GL_INFO_LOG_LENGTH, intbuf);
+		int infoLogLength = intbuf.get(0);
+		if (infoLogLength > 1) log = Gdx.gl20.glGetProgramInfoLog(program);
 		return log;
 	}
 
