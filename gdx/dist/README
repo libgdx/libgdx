@@ -34,7 +34,7 @@ gdx-helloworld
     
 Next right click on the the gdx-helloworld project in the package explorer and select properties. Select 
 "Java Build Path" to the left in the new dialog and then click the Libraries tab. In the libraries tab 
-click Add Libaries, browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-natives.jar, 
+click "Add Jars", browse to the gdx-helloworld/libs folder and select gdx.jar, gdx-natives.jar, 
 gdx-backend-jogl.jar, and gdx-backend-jogl-natives.jar Now you have added all that's needed for the Java 
 desktop project to compile. 
 
