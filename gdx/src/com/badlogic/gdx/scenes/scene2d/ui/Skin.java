@@ -179,16 +179,32 @@ public class Skin implements Disposable {
 	Map<String, WindowStyle> windowStyles = new HashMap<String, WindowStyle>();
 	Texture texture;
 	
+	/**
+	 * Creates a new Skin from the given XML skin file and {@link Texture} image.
+	 * @param skinFile the XML skin file
+	 * @param textureFile the texture image
+	 */
 	public Skin(FileHandle skinFile, FileHandle textureFile) {
 		texture = new Texture(textureFile);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);		
 		parseSkin(skinFile);
 	}
 	
+	/**
+	 * Creates an empty skin, using the given {@link Texture}
+	 * @param texture the Texture
+	 */
 	public Skin(Texture texture) {
 		this.texture = texture;
 	}
 	
+	/**
+	 * Parses the given XML skin file and adds all assets (regions, patches, colors, fonts)
+	 * and widget styles to this skin. If an asset or widget style with the same name was
+	 * already in the skin it will be overwritten. Widgets already created via this skin
+	 * won't change their style!
+	 * @param skinFile the XML skin file
+	 */
 	public void parseSkin(FileHandle skinFile) {
 		try {
 			Xml xml = new Xml();
