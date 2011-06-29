@@ -17,7 +17,8 @@ public class NinePatch {
 	final TextureRegion[] patches;
 	final Color color = new Color();
 	
-	public NinePatch(TextureRegion[] patches) {
+	public NinePatch(TextureRegion ... patches) {
+		if(patches.length != 9) throw new IllegalArgumentException("NinePatch needs nine TextureRegions");
 		this.patches = patches;
 		checkValidity();
 	}

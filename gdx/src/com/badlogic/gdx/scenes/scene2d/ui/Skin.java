@@ -181,19 +181,23 @@ public class Skin implements Disposable {
 	
 	public Skin(FileHandle skinFile, FileHandle textureFile) {
 		texture = new Texture(textureFile);
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		try {
-			parseSkin(skinFile);
-		} catch(IOException e) {
-			throw new GdxRuntimeException("Couldn't parse skinFile", e);
-		}
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);		
+		parseSkin(skinFile);
 	}
 	
-	private void parseSkin(FileHandle skinFile) throws IOException {
-		Xml xml = new Xml();
-		Element skin = xml.parse(skinFile);
-		parseLibrary(skin);
-		parseWidgetStyles(skin.getChildByName("widgetStyles"));
+	public Skin(Texture texture) {
+		this.texture = texture;
+	}
+	
+	public void parseSkin(FileHandle skinFile) {
+		try {
+			Xml xml = new Xml();
+			Element skin = xml.parse(skinFile);
+			parseLibrary(skin);
+			parseWidgetStyles(skin.getChildByName("widgetStyles"));
+		} catch(Exception e) {
+			throw new GdxRuntimeException("Couldn't parse skinFile", e);
+		}
 	}
 	
 	protected void parseWidgetStyles(Element styles) {		
@@ -507,12 +511,34 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link Color} with the given name. Overwrites
+	 * and previously stored Color with that name. Will not
+	 * have an effect on widget styles already added to this skin!
+	 * @param name the name
+	 * @param color the Color
+	 */
+	public void addColor(String name, Color color) {
+		colors.put(name, color);
+	}
+	
+	/**
 	 * Returns a {@link NinePatch} with the given name. 
 	 * @param name the name
 	 * @return the NinePatch or null
 	 */
 	public NinePatch getNinePatch(String name) {
 		return ninePatches.get(name);
+	}
+	
+	/**
+	 * Adds the {@link NinePatch} with the given name. Overwrites
+	 * and previously stored NinePatch with that name. Will not
+	 * have an effect on widget styles already added to this skin!
+	 * @param name the name
+	 * @param ninePatch the Color
+	 */
+	public void addNinePatch(String name, NinePatch ninePatch) {
+		ninePatches.put(name,  ninePatch);
 	}
 	
 	/**
@@ -525,12 +551,34 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link TextureRegion} with the given name. Overwrites
+	 * any previously stored TextureRegion with that name. Will not
+	 * have an effect on widget styles already added to this skin!
+	 * @param name the name
+	 * @param region the TextureRegion
+	 */
+	public void addRegion(String name, TextureRegion region) {
+		regions.put(name, region);
+	}
+	
+	/**
 	 * Returns a {@link BitmapFont} with the given name.
 	 * @param name the name
 	 * @return the BitmapFont or null.
 	 */
 	public BitmapFont getFont(String name) {
 		return fonts.get(name);
+	}
+	
+	/**
+	 * Adds the {@link BitmapFont} with the given name. Overwrites
+	 * any previously stored BitmapFont with that name. Will not
+	 * have an effect on widget styles already added to this skin!
+	 * @param name the name
+	 * @param font the BitmapFont
+	 */
+	public void addFont(String name, BitmapFont font) {
+		fonts.put(name,  font);
 	}
 	
 	/**
@@ -543,12 +591,34 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link ButtonStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the ButtonStyle
+	 */
+	public void addButtonStyle(String name, ButtonStyle style) {
+		buttonStyles.put(name, style);
+	}
+	
+	/**
 	 * Returns the {@link ImageButtonStyle} with the given name.
 	 * @param name the name
 	 * @return the ImageButtonStyle or null
 	 */
 	public ImageButtonStyle getImageButtonStyle(String name) {
 		return imageButtonStyles.get(name);
+	}
+	
+	/**
+	 * Adds the {@link ImageButtonStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addImageButtonStyle(String name, ImageButtonStyle style) {
+		imageButtonStyles.put(name, style);
 	}
 	
 	/**
@@ -561,6 +631,17 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link ImageToggleButtonStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addImageToggleButtonStyle(String name, ImageToggleButtonStyle style) {
+		imageToggleButtonStyles.put(name, style);
+	}
+	
+	/**
 	 * Returns the {@link CheckBoxStyle} with the given name.
 	 * @param name the name
 	 * @return the CheckBoxStyle or null
@@ -570,12 +651,34 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link CheckBoxStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addCheckBoxStyle(String name, CheckBoxStyle style) {
+		checkBoxStyles.put(name,  style);
+	}
+	
+	/**
 	 * Returns the {@link ComboBoxStyle} with the given name. 
 	 * @param name the name
 	 * @return the ComboBoxStyle or null
 	 */
 	public ComboBoxStyle getComboBoxStyle(String name) {
 		return comboBoxStyles.get(name);
+	}	
+	
+	/**
+	 * Adds the {@link ComboBoxStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addComboBoxStyle(String name, ComboBoxStyle style) {
+		comboBoxStyles.put(name, style);
 	}
 	
 	/**
@@ -588,12 +691,34 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link LabelStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addLabelStyle(String name, LabelStyle style) {
+		labelStyles.put(name, style);
+	}
+	
+	/**
 	 * Returns the {@link ListStyle} with the given name.
 	 * @param name the name
 	 * @return the ListStyle or null
 	 */
 	public ListStyle getListStyle(String name) {
 		return listStyles.get(name);
+	}
+	
+	/**
+	 * Adds the {@link ListStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addListStyle(String name, ListStyle style) {
+		listStyles.put(name,  style);
 	}
 	
 	/**
@@ -606,12 +731,34 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link PaneStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addPaneStyle(String name, PaneStyle style) {
+		paneStyles.put(name, style);
+	}
+	
+	/**
 	 * Returns the {@link ScrollPaneStyle} with the given name.
 	 * @param name the name
 	 * @return the ScrollPaneStyle or null
 	 */
 	public ScrollPaneStyle getScrollPaneStyle(String name) {
 		return scrollPaneStyles.get(name);
+	}
+	
+	/**
+	 * Adds the {@link ScrollPaneStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addScrollPaneStyle(String name, ScrollPaneStyle style) {
+		scrollPaneStyles.put(name, style);
 	}
 	
 	/**
@@ -624,12 +771,34 @@ public class Skin implements Disposable {
 	}	
 	
 	/**
+	 * Adds the {@link SliderStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addSliderStyle(String name, SliderStyle style) {
+		sliderStyles.put(name, style);
+	}
+	
+	/**
 	 * Returns the {@link SplitPaneStyle} with the given name.
 	 * @param name the name
 	 * @return the SplitPaneStyle or null
 	 */
 	public SplitPaneStyle getSplitPaneStyle(String name) {
 		return splitPaneStyles.get(name);
+	}
+	
+	/**
+	 * Adds the {@link SplitPaneStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addSplitPaneStyle(String name, SplitPaneStyle style) {
+		splitPaneStyles.put(name, style);
 	}
 	
 	/**
@@ -642,6 +811,17 @@ public class Skin implements Disposable {
 	}
 	
 	/**
+	 * Adds the {@link TextFieldStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addTextFieldStyle(String name, TextFieldStyle style) {
+		textFieldStyles.put(name, style);
+	}
+	
+	/**
 	 * Returns the {@link ToggleButtonStyle} with the given name.
 	 * @param name the name
 	 * @return the ToggleButtonStyle or null
@@ -649,6 +829,17 @@ public class Skin implements Disposable {
 	public ToggleButtonStyle getToggleButtonStyle(String name) {
 		return toggleButtonStyles.get(name);
 	}				
+	
+	/**
+	 * Adds the {@link ToggleButtonStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addToggleButtonStyle(String name, ToggleButtonStyle style) {
+		toggleButtonStyles.put(name, style);
+	}
 
 	/**
 	 * Returns the {@link WindowStyle} with the given name.
@@ -657,6 +848,17 @@ public class Skin implements Disposable {
 	 */
 	public WindowStyle getWindowStyle(String name) {
 		return windowStyles.get(name);
+	}
+	
+	/**
+	 * Adds the {@link WindowStyle} with the given name. Overwrites
+	 * any previously stored style with that name. Will not have
+	 * an effect on widgets already created!
+	 * @param name the name of the style
+	 * @param style the style
+	 */
+	public void addWindowStyle(String name, WindowStyle style) {
+		windowStyles.put(name, style);
 	}
 	
 	/**
