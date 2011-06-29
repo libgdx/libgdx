@@ -254,16 +254,10 @@ abstract public class BaseTableLayout<T> {
 	 * Removes all widgets and cells from the table and resets the cell and column defaults.
 	 */
 	public void clear () {
-		for (int i = cells.size() - 1; i >= 0; i--)
-			removeChild(getTable(), (T)cells.get(i).widget);
-		cells.clear();
+		clearCells();
 		columnDefaults.clear();
-		nameToWidget.clear();
-		widgetToCell.clear();
 		cellDefaults.set(Cell.defaults());
 		debug = null;
-		rows = 0;
-		columns = 0;
 		rowDefaults = null;
 		padTop = null;
 		padLeft = null;
@@ -271,6 +265,21 @@ abstract public class BaseTableLayout<T> {
 		padRight = null;
 		align = CENTER;
 		if (debug != null) clearDebugRectangles();
+	}
+	
+	/**
+	 * 
+	 * removes all widgets and cells but keeps current settings
+	 * 
+	 */
+	public void clearCells(){
+		for (int i = cells.size() - 1; i >= 0; i--)
+			removeChild(getTable(), (T)cells.get(i).widget);
+		cells.clear();
+		nameToWidget.clear();
+		widgetToCell.clear();
+		rows=0;
+		columns=0;
 	}
 
 	/**

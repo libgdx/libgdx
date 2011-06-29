@@ -433,4 +433,16 @@ public class Container extends Table {
 		this.height = height;
 		invalidateHierarchically();
 	}
+
+	/**
+	 * 
+	 * removes all widgets from the container keeping the current container settings
+	 * 
+	 */
+	@Override
+	public void clear() {
+		super.clear();
+		layout.clearCells();
+	}
+	
 }
