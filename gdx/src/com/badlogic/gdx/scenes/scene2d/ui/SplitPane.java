@@ -27,6 +27,53 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * <h2>Functionality</h2>
+ * A SplitPane can embedd to {@link Actor} instances (or {@link Widget} or {@link Container} instances for that matter), separated
+ * by a split handle, either vertically or horizontally. Both widgets will be sized so that they take up their respective space
+ * within the SplitPane. The handle can be moved via dragging to vary the size available to each widget.</p>
+ * 
+ * The amount of available space for the first Actor is given between 0 and 1, 0 meaning no space, 1 meaning all the space. The amount
+ * of space available for the second Actor is computed as 1 minus the amount available to the second Actor. One can set 
+ * the value for the first widget via {@link #setSplitAmount(float)} manually, the amount for the second Actor is derrived 
+ * automatically. The range of the split amount can be defined via {@link #setMinSplitAmount(float)} and {@link #setMaxSplitAmount(float)}.
+ * 
+ * The SplitPane will employ scissoring (clipping) to make sure none of the two Actors can render outside of their allocated 
+ * space.</p>
+ * 
+ * <b>Note: do not use any of the {@link #addActor(Actor)} or {@link #removeActor(Actor)} methods with this class! The embedded
+ * Actors are specified at construction time or via #set</b>
+ * 
+ * The embedded Actors will always be resized to fill their entire space within the SplitPane</p>
+ * 
+ * <h2>Layout</h2>
+ * The (preferred) width and height of a split pane is determined by the size passed to its constructor. The contained
+ * Actor instances size will be set to their respective available area within the split pane.</p>
+ * 
+ * <h2>Style</h2>
+ * A SplitPane is a {@link Group} displaying two Actor instances either left and right or top and bottom, depending on
+ * whether the SplitPane is a horizontal split pane or a vertical split pane. Additionally a {@link NinePatch} is used
+ * to render the SplitPane handle, either a horizontal or vertical strip. In case the SplitPane is a horizontal one the
+ * NinePatch will be stretched vertically, and its width will be the value returned by {@link NinePatch#getTotalWidth()}. 
+ * In case the SplitPane is a vertical one it will be stretched horizontally and its height will be the value returned by
+ * {@link NinePatch#getTotalHeight()}.</p>
+ * 
+ * A SplitPane's style definition in a skin XML file should look like this:
+ * 
+ * <pre>
+ * {@code 
+ * <splitpane name="styleName" 
+ *            handle="handlePatch"/>
+ * }
+ * </pre>
+ * 
+ * <ul>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newSplitPane(String, Stage, Actor, Actor, boolean, int, int, String)}.</li>
+ * <li>The <code>handle</code> attribute references a {@link NinePatch} by name, to be used as the split pane's handle</li>
+ * </ul>
+ * @author mzechner
+ *
+ */
 public class SplitPane extends Group implements Layout {
 	final SplitPaneStyle style;
 	float prefWidth;
@@ -48,6 +95,18 @@ public class SplitPane extends Group implements Layout {
 	Rectangle[] scissors = new Rectangle[] { new Rectangle(), new Rectangle() };	
 	boolean touchDrag = false;
 
+	/**
+	 * Creates a new SplitPane. It's width and height is determined by the prefWidth and prefHeight
+	 * parameters. 
+	 * @param name the name
+	 * @param stage the stage, used for clipping
+	 * @param firstWidget the first {@link Actor}
+	 * @param secondWidget the second Actor
+	 * @param vertical whether this is a vertical SplitPane or not (horizontal)
+	 * @param prefWidth the (preferred) width
+	 * @param prefHeight the (preferred) height
+	 * @param style the {@link SplitPaneStyle}
+	 */
 	public SplitPane(String name, Stage stage, Actor firstWidget, Actor secondWidget, boolean vertical, int prefWidth, int prefHeight, SplitPaneStyle style) {
 		super(name);
 		this.stage = stage;
@@ -246,6 +305,11 @@ public class SplitPane extends Group implements Layout {
 		return x > 0 && x < width && y > 0 && y < height?this: null;
 	}
 	
+	/**
+	 * Defines the style of a split pane, see {@link SplitPane}
+	 * @author mzechner
+	 *
+	 */
 	public static class SplitPaneStyle {
 		public final NinePatch handle;
 		
@@ -254,24 +318,57 @@ public class SplitPane extends Group implements Layout {
 		}
 	}
 	
+	/**
+	 * Sets the split amount
+	 * @param split the split amount between 0 and 1
+	 */
 	public void setSplitAmount(float split) {
 		this.splitAmount = Math.max(Math.min(maxAmount, split), minAmount);
 		invalidate();
 	}
 	
+	/**	 
+	 * @return the split amount
+	 */
 	public float getSplit() {
 		return splitAmount;
 	}
 	
+	/**
+	 * Sets the minimum split amount
+	 * @param minAmount the minimum split amount
+	 */
 	public void setMinSplitAmount(float minAmount) {
 		if(minAmount < 0) throw new GdxRuntimeException("minAmount has to be >= 0");
 		if(minAmount >= maxAmount) throw new GdxRuntimeException("minAmount has to be < maxAmount");
 		this.minAmount = minAmount;		
 	}
 	
+	/**
+	 * Sets the maximum split amount 
+	 * @param maxAmount the maximum split amount
+	 */
 	public void setMaxSplitAmount(float maxAmount) {
 		if(maxAmount > 1) throw new GdxRuntimeException("maxAmount has to be >= 0");
 		if(maxAmount <= minAmount) throw new GdxRuntimeException("maxAmount has to be > minAmount");
 		this.maxAmount = maxAmount;
+	}
+	
+	/**
+	 * Sets the {@link Actor} instances embedded in this scroll pane. Invalidates
+	 * the new Actor instances if they derrive from {@link Widget}
+	 * @param firstWidget the first Actor
+	 * @params secondtWidget the second Actor
+	 */
+	public void setWidgets(Actor firstWidget, Actor secondWidget) {
+		if(firstWidget == null) throw new IllegalArgumentException("firstWidget must not be null");
+		if(secondWidget == null) throw new IllegalArgumentException("secondWidget must not be null");
+		this.removeActor(this.firstWidget);
+		this.removeActor(this.secondWidget);
+		this.firstWidget = firstWidget;
+		this.secondWidget = secondWidget;
+		this.addActor(firstWidget);
+		this.addActor(secondWidget);
+		invalidate();
 	}
 }

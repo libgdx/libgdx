@@ -28,7 +28,7 @@ import com.badlogic.gdx.math.Rectangle;
  * <h2>Layout</h2>
  * The (preferred) width and height of an ImageToggleButton are derrived from the border patches in the
  * background {@link NinePatch} as well as the width and height of the TextureRegion of the image
- * displayed inside the ImageToggleButton. Use {@link Button#setPrefSize(int, int)} to programmatically change the size
+ * displayed inside the ImageToggleButton. Use {@link #setPrefSize(int, int)} to programmatically change the size
  * to your liking. In case the width and height you set are to small for the contained image you
  * will see artifacts.
  * 
@@ -129,7 +129,7 @@ public class ImageToggleButton extends Widget {
 		float imageX = (width - bounds.width) * 0.5f;
 		float imageY = (height - bounds.height) * 0.5f;
 		
-		batch.draw(image, x + imageX, y + imageY);
+		batch.draw(image, x + imageX, y + imageY, imageWidth, imageHeight);
 	}
 
 	@Override

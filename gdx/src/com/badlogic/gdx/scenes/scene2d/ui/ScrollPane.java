@@ -38,7 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * Actor's size with respect to the scroll pane's own size.</p>
  * 
  * <b>Note: do not use any of the {@link #addActor(Actor)} or {@link #removeActor(Actor)} methods with this class! The embedded
- * widget is specified at construction time.</b>
+ * widget is specified at construction time or via {@link #setWidget(Actor)}.</b>
  *  * 
  * <h2>Layout</h2>
  * The (preferred) width and height of a scroll pane is determined by the size passed to its constructor. The contained
@@ -370,7 +370,7 @@ public class ScrollPane extends Group implements Layout {
 	 */
 	public void setWidget(Actor widget) {
 		if(widget == null) throw new IllegalArgumentException("widget must not be null");
-		this.removeActor(widget);
+		this.removeActor(this.widget);
 		this.widget = widget;		
 		this.addActor(widget);
 		invalidate();
