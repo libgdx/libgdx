@@ -703,6 +703,52 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = 1;
 		vertices[idx++] = 1;
 	}
+	
+	/**
+	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height.
+	 */
+	public void draw (Texture texture, float x, float y, float width, float height) {
+		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+		
+		if (texture != lastTexture) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1f / texture.getWidth();
+			invTexHeight = 1f / texture.getHeight();
+		} else if (idx == vertices.length) //
+			renderMesh();
+
+		final float fx2 = x + width;
+		final float fy2 = y + height;
+		final float u = 0;
+		final float v = 1;
+		final float u2 = 1;
+		final float v2 = 0;
+
+		vertices[idx++] = x;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v;
+
+		vertices[idx++] = x;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = u;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = fy2;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = fx2;
+		vertices[idx++] = y;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v;
+	}
 
 	/**
 	 * Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,

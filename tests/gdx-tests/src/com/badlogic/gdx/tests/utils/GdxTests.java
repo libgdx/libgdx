@@ -114,6 +114,7 @@ public class GdxTests
 		RemoteTest.class,
 		RotationTest.class,
 		ShaderMultitextureTest.class,
+		ShadowMappingTest.class,
 		SplineTest.class,		
 		SimpleTest.class,
 		SimpleAnimationTest.class,

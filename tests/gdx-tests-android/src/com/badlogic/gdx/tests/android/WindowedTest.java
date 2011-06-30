@@ -29,8 +29,6 @@ import android.widget.LinearLayout;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.Color;
 
 public class WindowedTest extends AndroidApplication implements ApplicationListener {
