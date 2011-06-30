@@ -20,6 +20,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+/**
+ * <h2>Functionality</h2>
+ * A slider lets you select a value within a range (min, max), with stepping between each value the slider represents.
+ * To listen for changes of the slider value one can register a {@link ValueChangedListener} with the slider.
+ * 
+ * <h2>Layout</h2>
+ * A slider's (preferred) width and height are determined by the parameter past to its constructor as well as the maximum
+ * height of the {@link NinePatch} and {@link TextureRegion} involved in the display of the slider. Use {@link #setPrefSize(int, int)} to programmatically change the size
+ * to your liking. In case the width and height you set are to small you will see artifacts.
+ * 
+ * <h2>Style</h2>
+ * TODO FIX THIS UP, TO TIRED... ALSO, MAKE SURE IMPL == DOCS!
+ * 
+ * @author mzechner
+ *
+ */
 public class Slider extends Widget {
 	final SliderStyle style;
 	float min;

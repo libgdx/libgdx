@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -28,6 +30,61 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
+/**
+ * <h2>Functionality</h2>
+ * A ScrollPane can embed any {@link Actor} (and {@link Widget} or {@link Container} for that matter) and provide
+ * scrolling functionality in case the embedded Actor is bigger than the scroll pane itself. The scroll pane will
+ * automatically decide whether it needs a vertical and/or horizontal scroll handle based on the contained
+ * Actor's size with respect to the scroll pane's own size.</p>
+ * 
+ * <b>Note: do not use any of the {@link #addActor(Actor)} or {@link #removeActor(Actor)} methods with this class! The embedded
+ * widget is specified at construction time.</b>
+ *  * 
+ * <h2>Layout</h2>
+ * The (preferred) width and height of a scroll pane is determined by the size passed to its constructor. The contained
+ * Actor will be positioned in such a way that it's top left corner will coincide with the scroll pane's corner when
+ * the vertical and horizontal scroll handles are at their minimum position.</p>
+ *
+ * 
+ * <h2>Style</h2>
+ * A ScrollPane is a {@link Group} (note the comment in the functionality section!) that conditionally displays horizontal 
+ * and vertical scroll bars and handles as well as the embedded Actor, clipped to the available area inside of the
+ * scroll pane. The scroll bars are {@link NinePatch} instances, the scroll handles are {@link NinePatch} instances as well.
+ * In addition a background {@link NinePatch} is displayed behind the embedded Actor. The style is defined
+ * via a {@link ScrollPaneStyle} instance, which can be either done programmatically or via a {@link Skin}.</p>
+ * 
+ * The height of the horizontal scroll bar and handle is constant and takes on the maximum {@link NinePatch#getTotalHeight()} value of the involed NinePatch 
+ * instances. The width is determined automatically based on the size of the scroll pane.</p>
+ * 
+ * The width of the vertical scroll bar and handle is constant and takes on the maximum {@link NinePatch#getTotalWidth()} value of the involed NinePatch 
+ * instances. The height is determined automatically based on the size of the scroll pane.</p>
+ * 
+ * 
+ * A ScrollPane's style definition in a skin XML file should look like this:
+ * 
+ * <pre>
+ * {@code 
+ * <scrollpane name="default" 
+ *             background="backgroundPatch" 
+ *             hScroll="horizontalScrollBarPatch" 
+ *             hScrollKnob="horizontalScrollHandlePatch" 
+ *             vScroll="verticalScrollBarPatch" 
+ *             vScrollKnob="verticalScrollBarHandle"/>
+ * }
+ * </pre>
+ * 
+ * <ul>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newScrollPane(String, Stage, Actor, int, int, String)}.</li>
+ * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's background</li>
+ * <li>The <code>hScroll</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's horizontal scroll bar.</li>
+ * <li>The <code>hScrollKnow</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's horizontal scroll handle.</li>
+ * <li>The <code>vScroll</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's vertical scroll bar.</li>
+ * <li>The <code>vScrollKnow</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's vertical scroll handle..</li>
+ * </ul>
+ * 
+ * @author mzechner
+ *
+ */
 public class ScrollPane extends Group implements Layout {
 	final ScrollPaneStyle style;
 	Actor widget;
@@ -305,5 +362,17 @@ public class ScrollPane extends Group implements Layout {
 	@Override
 	public Actor hit(float x, float y) {
 		return x > 0 && x < width && y > 0 && y < height?this: null;
+	}
+
+	/**
+	 * Sets the {@link Actor} embedded in this scroll pane.
+	 * @param widget the Actor
+	 */
+	public void setWidget(Actor widget) {
+		if(widget == null) throw new IllegalArgumentException("widget must not be null");
+		this.removeActor(widget);
+		this.widget = widget;		
+		this.addActor(widget);
+		invalidate();
 	}
 }

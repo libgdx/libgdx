@@ -82,6 +82,13 @@ public class CheckBox extends Widget {
 	float checkWidth = 0;
 	float checkHeight = 0;	
 	
+	/**
+	 * Creates a new check box. The width and height of the check box are 
+	 * determined by its label text and style.
+	 * @param name the name 
+	 * @param label the label
+	 * @param style the {@link CheckBoxStyle}
+	 */
 	public CheckBox(String name, String label, CheckBoxStyle style) {
 		super(name, 0, 0);
 		this.style = style;
@@ -157,14 +164,30 @@ public class CheckBox extends Widget {
 		return x > 0 && x < width && y > 0 && y < height?this: null;
 	}	
 	
+	/**
+	 * Interface for listening to check events on this check box.
+	 * @author mzechner
+	 *
+	 */
 	public interface CheckedListener {
 		public void checked(CheckBox checkBox, boolean isChecked);
 	}
 	
-	public void setCheckedListener(CheckedListener listener) {
+	/**
+	 * Sets the {@link CheckedListener}
+	 * @param listener the listener or null
+	 * @return this CheckBox for chaining
+	 */
+	public CheckBox setCheckedListener(CheckedListener listener) {
 		this.listener = listener;
+		return this;
 	}
 	
+	/**
+	 * Defines a check box style, see {@link CheckBox}
+	 * @author mzechner
+	 *
+	 */
 	public static class CheckBoxStyle {
 		public final BitmapFont font;
 		public final Color fontColor;
@@ -179,11 +202,19 @@ public class CheckBox extends Widget {
 		}
 	}
 
+	/**
+	 * Sets whether this check box is checked or not. Invalidates
+	 * all parents.
+	 * @param isChecked checked or not
+	 */
 	public void setChecked (boolean isChecked) { 
 		this.isChecked = isChecked;
-		invalidate();
+		invalidateHierarchy();
 	}
 	
+	/**
+	 * @return whether this checkbox is checked or not
+	 */
 	public boolean isChecked() {
 		return isChecked;
 	}

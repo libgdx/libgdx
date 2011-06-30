@@ -62,6 +62,9 @@ import com.badlogic.gdx.utils.Xml.Element;
  * <p>This class loads a widget style XML file and exposes all parts defined in it via getter methods. Additionally
  * it allows to instantiate the default widgets via convenience methods like {@link Skin#newButton(String, String)}.</p>
  * 
+ * <p>Additionally you can instantiate an empty Skin via {@link Skin#Skin(Texture)} and add graphical resources and styles
+ * programmatically.</p>
+ * 
  * <p>The Skin has a couple of resources it manages, namely the {@link Texture} containing all (nine-patch)regions as
  * well as all the {@link BitmapFont} instances defined in the XML file. To dispose all resouces use the {@link Skin#dispose()}
  * method.</p>
@@ -356,7 +359,7 @@ public class Skin implements Disposable {
 	}
 
 	private void parseImageToggleButtonStyles (Element styles) {
-		for(Element style: styles.getChildrenByName("togglebutton")) {
+		for(Element style: styles.getChildrenByName("imagetogglebutton")) {
 			String name = style.getAttribute("name");
 			NinePatch down = getNinePatch(style.getAttribute("down"));
 			NinePatch up = getNinePatch(style.getAttribute("up"));			

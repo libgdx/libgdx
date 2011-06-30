@@ -435,9 +435,7 @@ public class Container extends Table {
 	}
 
 	/**
-	 * 
 	 * removes all widgets from the container keeping the current container settings
-	 * 
 	 */
 	@Override
 	public void clear() {

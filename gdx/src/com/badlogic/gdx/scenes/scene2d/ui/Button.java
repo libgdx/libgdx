@@ -59,8 +59,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the text on the button</li>
  * </ul> 
  * 
- * 
- * 
  * @author mzechner
  *
  */
@@ -71,6 +69,13 @@ public class Button extends Widget {
 	boolean isPressed = false;	
 	ClickListener listener = null;
 	
+	/**
+	 * Creates a new Button. The width and height of the Button are determined by its
+	 * label test and style.
+	 * @param name the namen
+	 * @param label the label
+	 * @param style the {@link ButtonStyle}
+	 */
 	public Button(String name, String label, ButtonStyle style) {
 		super(name, 0, 0);		
 		this.style = style;
@@ -139,6 +144,11 @@ public class Button extends Widget {
 		return isPressed;
 	}	
 	
+	/**
+	 * Defines a button style, see {@link Button}
+	 * @author mzechner
+	 *
+	 */
 	public static class ButtonStyle {
 		public final NinePatch down;
 		public final NinePatch up;
@@ -153,19 +163,37 @@ public class Button extends Widget {
 		}
 	}
 	
+	/**
+	 * Interface for listening to click events of a button.
+	 * @author mzechner
+	 *
+	 */
 	public interface ClickListener {
 		public void click(Button button);
 	}
 	
+	/**
+	 * Sets the multi-line label text of this button. Causes invalidation
+	 * of all parents.
+	 * @param text
+	 */
 	public void setText(String text) {
 		this.text = text;
 		invalidateHierarchy();
 	}
 	
+	/**
+	 * @return the label text of this button
+	 */
 	public String getText() {
 		return text;
 	}
 	
+	/**
+	 * Sets the {@link ClickListener} of this button
+	 * @param listener the listener or null
+	 * @return this Button for chaining
+	 */
 	public Button setClickListener(ClickListener listener) {
 		this.listener = listener;
 		return this;

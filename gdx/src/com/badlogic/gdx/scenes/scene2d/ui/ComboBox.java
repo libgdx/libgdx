@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
@@ -92,6 +93,14 @@ public class ComboBox extends Widget {
 	ComboList list = null;
 	SelectionListener listener;
 	
+	/**
+	 * Creates a new combo box. The width and height are determined by the widets entry and
+	 * the style.
+	 * @param name the name
+	 * @param entries the single-line entries
+	 * @param stage the stage, used for the popup
+	 * @param style the {@link ComboBoxStyle}
+	 */
 	public ComboBox(String name, String[] entries, Stage stage, ComboBoxStyle style) {
 		super(name, 0, 0);
 		this.entries = entries;
@@ -157,6 +166,11 @@ public class ComboBox extends Widget {
 		return false;
 	}
 	
+	/**
+	 * Defines the style of a combo box. See {@link ComboBox}
+	 * @author mzechner
+	 *
+	 */
 	public static class ComboBoxStyle {
 		public final NinePatch background;
 		public final NinePatch listBackground;		
@@ -173,10 +187,19 @@ public class ComboBox extends Widget {
 		}
 	}
 	
+	/**
+	 * Interface for listening to selection events.
+	 * @author mzechner
+	 *
+	 */
 	public interface SelectionListener {
 		public void selected(ComboBox comboBox, int selectionIndex, String selection);
 	}
 	
+	/**
+	 * Sets the {@link SelectionListener}.
+	 * @param listener the listener or null
+	 */
 	public void setSelectionListener(SelectionListener listener) {
 		this.listener = listener;
 	}
@@ -286,7 +309,21 @@ public class ComboBox extends Widget {
 		}		
 	}
 
+	/**
+	 * Sets the selected item via it's index
+	 * @param selection the selection index
+	 */
 	public void setSelection (int selection) {
 		this.selection = selection;
+	}
+	
+	/**
+	 * Sets the entries of this combo box. Invalidates
+	 * all parents.
+	 * @param entries the entries
+	 */
+	public void setEntries(String[] entries) {
+		this.entries = entries;
+		invalidateHierarchy();
 	}
 }
