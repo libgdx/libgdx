@@ -27,7 +27,7 @@ import com.badlogic.gdx.Preferences;
 public class AndroidPreferences implements Preferences {
 	SharedPreferences sharedPrefs;
 	
-	AndroidPreferences(SharedPreferences preferences) {
+	public AndroidPreferences(SharedPreferences preferences) {
 		this.sharedPrefs = preferences;
 	}
 
