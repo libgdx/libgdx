@@ -132,10 +132,12 @@ public class CheckBox extends Widget {
 		final Color fontColor = style.fontColor;
 		
 		if(invalidated) layout();
+		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if(isChecked) batch.draw(checkedRegion, x + boxPos.x, y + boxPos.y);
 		else batch.draw(uncheckedRegion, x + boxPos.x, y + boxPos.y);
 		
-		font.setColor(fontColor);
+		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 		font.draw(batch, label, x + textPos.x, y + textPos.y);
 	}
 

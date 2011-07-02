@@ -130,14 +130,16 @@ public class ComboBox extends Widget {
 		final Color fontColor = style.fontColor;
 		
 		if(invalidated) layout();
-		background.draw(batch, x, y, width, height, parentAlpha);
+		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		background.draw(batch, x, y, width, height);
 		if(entries.length > 0) {
 			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
 			int numGlyphs = font.computeVisibleGlyphs(entries[selection], 0, entries[selection].length(), availableWidth);
 			bounds.set(font.getBounds(entries[selection]));
 			bounds.height -= font.getDescent();
 			float textY = (int)(height / 2) + (int)(bounds.height / 2);
-			font.setColor(fontColor);
+			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			font.draw(batch, entries[selection], x + background.getLeftWidth(), y + textY, 0, numGlyphs); 
 		}
 		
@@ -254,13 +256,14 @@ public class ComboBox extends Widget {
 			final BitmapFont font = style.font;
 			final Color fontColor = style.fontColor;
 			
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			listBackground.draw(batch, x, y, width, height);
 			float posY = height;
 			for(int i = 0; i < entries.length; i++) {
 				if(selected == i) {
 					listSelection.draw(batch, x, y + posY - entryHeight, width, entryHeight);					
 				}
-				font.setColor(fontColor);
+				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 				font.draw(batch, entries[i], x + textOffsetX, y + posY - textOffsetY);
 				posY -= entryHeight;
 			}

@@ -227,14 +227,15 @@ public class SplitPane extends Group implements Layout {
 	protected void draw(SpriteBatch batch, float parentAlpha) {
 		NinePatch handle = style.handle;
 		
-		setupTransform(batch);			
+		setupTransform(batch);		
 		calculateBoundsAndPositions(batch.getTransformMatrix());									
 		for(int i = 0; i < children.size(); i++) {
 			ScissorStack.pushScissors(scissors[i]);			
 			drawChild(children.get(i), batch, parentAlpha);
 			ScissorStack.popScissors();
 		}
-		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height, parentAlpha);
+		batch.setColor(color.r, color.g, color.b, color.a);
+		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		if(invalidated) layout();
 		resetTransform(batch);
 	}

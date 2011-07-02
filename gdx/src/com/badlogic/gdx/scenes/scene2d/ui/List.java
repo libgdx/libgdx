@@ -121,14 +121,15 @@ public class List extends Widget {
 		final Color fontColorUnselected = style.fontColorUnselected;
 		
 		if(invalidated) layout();
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		
 		float posY = height;
 		for(int i = 0; i < entries.length; i++) {
 			if(selected == i) {
 				selectedPatch.draw(batch, x, y + posY - entryHeight, Math.max(prefWidth, width), entryHeight);
-				font.setColor(fontColorSelected);
+				font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 			} else {
-				font.setColor(fontColorUnselected);
+				font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 			}
 			font.draw(batch, entries[i], x + textOffsetX, y + posY - textOffsetY);
 			posY -= entryHeight;

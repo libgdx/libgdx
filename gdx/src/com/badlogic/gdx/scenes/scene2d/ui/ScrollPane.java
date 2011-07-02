@@ -206,13 +206,14 @@ public class ScrollPane extends Group implements Layout {
 		setupTransform(batch);	
 		
 		// if invalidated layout!
-		if(invalidated) layout();
+		if(invalidated) layout();		
 		
 		// calculate the bounds for the scrollbars, the widget
 		// area and the scissor area. Nasty...
 		calculateBoundsAndPositions(batch.getTransformMatrix());			
 		
 		// first draw the background ninepatch
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, 0, 0, width, height);				
 		
 		// enable scissors for widget area and draw that damn
@@ -222,6 +223,7 @@ public class ScrollPane extends Group implements Layout {
 		ScissorStack.popScissors();
 		
 		// render scrollbars and knobs on top.
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if(hasHScroll) {
 			hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
 			hScrollKnob.draw(batch, hScrollKnobBounds.x, hScrollKnobBounds.y, hScrollKnobBounds.width, hScrollKnobBounds.height);

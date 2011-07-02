@@ -219,18 +219,20 @@ public class TextField extends Widget {
 		
 		if (invalidated) layout();
 
-		background.draw(batch, x, y, width, height, parentAlpha);
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		background.draw(batch, x, y, width, height);
 		float textY = (int)(height / 2) + (int)(textBounds.height / 2);
-		font.setColor(fontColor);
+		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 		calculateOffsets();
 
-		if(hasSelection) {
+		if(hasSelection) {			
 			batch.draw(selection, x + selectionX + background.getLeftWidth() + renderOffset, y + textY - textBounds.height, selectionWidth, textBounds.height);
 		}
-		font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+		
+		font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);		
 		if (parent.keyboardFocusedActor == this) {
 			blink();
-			if (cursorOn) {
+			if (cursorOn) {				
 				cursorPatch.draw(batch, x + background.getLeftWidth() + glyphPositions.get(cursor) + renderOffset - 1, y + textY
 					- textBounds.height, cursorPatch.getTotalWidth(), textBounds.height);
 

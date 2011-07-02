@@ -14,8 +14,7 @@ public class NinePatch {
 	public static final int BOTTOM_CENTER = 7;
 	public static final int BOTTOM_RIGHT = 8;
 	
-	final TextureRegion[] patches;
-	final Color color = new Color();
+	final TextureRegion[] patches;	
 	
 	public NinePatch(TextureRegion ... patches) {
 		if(patches.length != 9) throw new IllegalArgumentException("NinePatch needs nine TextureRegions");
@@ -45,19 +44,7 @@ public class NinePatch {
 		}
 	}
 	
-	public void setColor(Color color) {
-		this.color.set(color);
-	}
-	
-	public void setColor(float r, float g, float b, float a) {
-		this.color.set(r, g, b, a);
-	}
-	
 	public void draw(SpriteBatch batch, float x, float y, float width, float height) {
-		draw(batch, x, y, width, height, 1);
-	}
-	
-	public void draw(SpriteBatch batch, float x, float y, float width, float height, float alphaModulation) {
 		float widthTopBottom = width - (patches[TOP_LEFT].getRegionWidth() + patches[TOP_RIGHT].getRegionWidth());
 		float heightLeftRight = height - (patches[TOP_LEFT].getRegionHeight() + patches[BOTTOM_LEFT].getRegionHeight());				
 		float widthCenter = widthTopBottom;		

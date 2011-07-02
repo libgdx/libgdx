@@ -108,6 +108,8 @@ public class Slider extends Widget {
 		final NinePatch slider = style.slider;
 		
 		if(invalidated) layout();
+		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		sliderPos = value / (max-min) * (width - knob.getRegionWidth());
 		sliderPos = Math.max(0, sliderPos);
 		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);

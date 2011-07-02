@@ -123,12 +123,14 @@ public class ImageToggleButton extends Widget {
 		final NinePatch upPatch = style.up;
 		
 		if(invalidated) layout();
-		if(isPressed) downPatch.draw(batch, x, y, width, height, parentAlpha);
-		else upPatch.draw(batch, x, y, width, height, parentAlpha);
+		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		if(isPressed) downPatch.draw(batch, x, y, width, height);
+		else upPatch.draw(batch, x, y, width, height);
 		
 		float imageX = (width - bounds.width) * 0.5f;
 		float imageY = (height - bounds.height) * 0.5f;
-		
+				
 		batch.draw(image, x + imageX, y + imageY, imageWidth, imageHeight);
 	}
 

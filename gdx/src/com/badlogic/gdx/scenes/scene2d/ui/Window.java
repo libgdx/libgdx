@@ -129,17 +129,15 @@ public class Window extends Container {
 		final NinePatch backgroundPatch = style.background;
 		final BitmapFont titleFont = style.titleFont;
 		final Color titleFontColor = style.titleFontColor;
-		
-//		invalidate(); // HACK, invalidate is not properly distributed it seems! Comment, then start qpre and resize window, see options pane!
-//		layout(); // HACK, since we can't access the invalidated flag of the Table we derrive from.
 					
 		setupTransform(batch);
 		applyLayout();
 		calculateBoundsAndScissors(batch.getTransformMatrix());
 		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		backgroundPatch.draw(batch, 0, 0, width, height);
 		float textY = height - (int)(backgroundPatch.getTopHeight() / 2) + (int)(textBounds.height / 2);
-		titleFont.setColor(titleFontColor);
+		titleFont.setColor(titleFontColor.r, titleFontColor.g, titleFontColor.b, titleFontColor.a * parentAlpha);
 		titleFont.drawMultiLine(batch, title, (int)(width / 2), textY, 0, HAlignment.CENTER);
 		batch.flush();
 		

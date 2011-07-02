@@ -104,6 +104,7 @@ public class Pane extends Container {
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		final NinePatch background = style.background;
 		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);		
 		setupTransform(batch);
 		applyLayout();

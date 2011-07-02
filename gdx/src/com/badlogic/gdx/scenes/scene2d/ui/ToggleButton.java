@@ -109,13 +109,15 @@ public class ToggleButton extends Widget {
 		final NinePatch upPatch = style.up;
 		
 		if(invalidated) layout();
+		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (isPressed)
-			downPatch.draw(batch, x, y, width, height, parentAlpha);
+			downPatch.draw(batch, x, y, width, height);
 		else
-			upPatch.draw(batch, x, y, width, height, parentAlpha);
+			upPatch.draw(batch, x, y, width, height);
 
 		float textY = (int) (height / 2) + (int) (bounds.height / 2);
-		font.setColor(fontColor);
+		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 		font.drawMultiLine(batch, text, x + (int) (width / 2), y + textY, 0,
 				HAlignment.CENTER);
 	}

@@ -105,11 +105,13 @@ public class Button extends Widget {
 		final NinePatch upPatch = style.up;
 		
 		if(invalidated) layout();
-		if(isPressed) downPatch.draw(batch, x, y, width, height, parentAlpha);
-		else upPatch.draw(batch, x, y, width, height, parentAlpha);
+		
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		if(isPressed) downPatch.draw(batch, x, y, width, height);
+		else upPatch.draw(batch, x, y, width, height);
 				
 		float textY = (int)(height * 0.5f) + (int)(bounds.height * 0.5f);
-		font.setColor(fontColor);
+		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 		font.drawMultiLine(batch, text, x + (int)(width * 0.5f), y + textY, 0, HAlignment.CENTER);
 	}
 

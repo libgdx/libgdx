@@ -94,7 +94,7 @@ public class Label extends Widget {
 		final Color fontColor = style.fontColor;
 		
 		if(invalidated) layout();
-		font.setColor(fontColor);		
+		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);		
 		font.drawMultiLine(batch, label, x + textPos.x, y + height);		
 	}
 
