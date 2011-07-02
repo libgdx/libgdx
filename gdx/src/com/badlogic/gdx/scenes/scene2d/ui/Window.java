@@ -28,6 +28,50 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
+/**
+ * <h2>Functionality</h2>
+ * A Window is a {@link Container} that can be moved around by touching and dragging its titlebar.It can house
+ * multiple {@link Actor} instances in a table-layout. The difference to a pure Container is
+ * that the Window will automatically set the padding of the layout to respect the width and height
+ * of the border patches of its background NinePatch. See {@link Container} for more information on
+ * how Actor instances are laid out when using this class.</p>
+ * 
+ * A Window can also be set to be modal via a call to {@link #setModal(boolean)}, in which case all
+ * touch input will go to that window no matter where the user touched the screen.
+ * 
+ * <h2>Layout</h2>
+ * The (preferred) width and height are determined by the values given in the constructor of this class. 
+ * Please consult the {@link Container} documentation on how the width and height will be manipulated
+ * if the Window is contained in another Container, a not so common use case. Additionally you can set 
+ * the (preferred) width and height via a call to {@link #setPrefSize(float, float)}.
+ * 
+ * <h2>Style</h2>
+ * A Window is a {@link Container} displaying a background {@link NinePatch} and its child Actors, clipped to the
+ * Window's area, taking into account the padding as described in the functionality section. Additionally the window
+ * will render a title string in its top border patches. The style is defined via
+ * an instance of {@link WindowStyle}, which can be either done programmatically or via a {@link Skin}.</p>
+ * 
+ * A Pane's style definition in a skin XML file should look like this:
+ * 
+ * <pre>
+ * {@code 
+ * <window name="name"
+ *         titleFont="fontName" 
+ *         titleFontColor="fontColor" 
+ *         background="backgroundPatch"/>
+ * }
+ * </pre>
+ * 
+ * <ul>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newWindow(String, Stage, String, int, int, String)}.</li>
+ * <li>The <code>titleFont</code> attribute references a {@link BitmapFont} by name, to be used to render the title string.</li>
+ *  * <li>The <code>titleFontColor</code> attribute references a {@link Color} by name, to be used to render the title string.</li>
+ * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the Window's background.</li> * 
+ * </ul> 
+ * 
+ * @author mzechner
+ *
+ */
 public class Window extends Container {
 	final WindowStyle style;
 	String title;
@@ -40,6 +84,15 @@ public class Window extends Container {
 	final Vector2 initial = new Vector2();
 	boolean isModal = false;
 	
+	/**
+	 * Creates a new Window. The width and height are determined by the given parameters.
+	 * @param name the name
+	 * @param stage the {@link Stage}, used for clipping
+	 * @param title the title
+	 * @param prefWidth the (preferred) width 
+	 * @param prefHeight the (preferred) height
+	 * @param style the {@link WindowStyle}
+	 */
 	public Window(String name, Stage stage, String title, int prefWidth, int prefHeight, WindowStyle style) {
 		super(name, prefWidth, prefHeight);
 		this.style = style;
@@ -98,6 +151,11 @@ public class Window extends Container {
 			
 	}
 	
+	/**
+	 * Defines the style of a window, see {@link Window}
+	 * @author mzechner
+	 *
+	 */
 	public static class WindowStyle {
 		public final NinePatch background;
 		public final BitmapFont titleFont;
@@ -150,11 +208,35 @@ public class Window extends Container {
 		return (x > 0 && x < width && y > 0 && y < height)||isModal?this: null;
 	}
 	
+	/**
+	 * Sets the title of the Window
+	 * @param title the title
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 	
+	/**
+	 * @return the title of the window
+	 */
+	public String getTitle() {
+		return title;
+	}
+	
+	/**
+	 * Sets whether this Window is modal or not. In case it is
+	 * it will receive all touch events, no matter where the user touched
+	 * the screen.
+	 * @param isModal whether the window is modal or not
+	 */
 	public void setModal(boolean isModal) {
 		this.isModal = isModal;
+	}
+	
+	/**
+	 * @return whether the window is modal
+	 */
+	public boolean isModal() {
+		return isModal;
 	}
 }

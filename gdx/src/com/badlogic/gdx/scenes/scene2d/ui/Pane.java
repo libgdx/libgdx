@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * multiple {@link Actor} instances in a table-layout. The difference to a pure Container is
  * that the Pane will automatically set the padding of the layout to respect the width and height
  * of the border patches of its background NinePatch. See {@link Container} for more information on
- * how Actor instances are laid out when using this call. </p>
+ * how Actor instances are laid out when using this class. </p>
  * 
  * In addition to the basic functionality provided by the Container super class, a Pane will also
  * employ scissoring (clipping) to ensure that no contained Actor can render outside of its bounds.
@@ -44,21 +44,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * <h2>Style</h2>
  * A Pane is a {@link Container} displaying a background {@link NinePatch} and its child Actors, clipped to the
- * Pane's area, taking into account the padding as described in the layout section. The style is defined via
+ * Pane's area, taking into account the padding as described in the functionality section. The style is defined via
  * an instance of {@link PaneStyle}, which can be either done programmatically or via a {@link Skin}.</p>
  * 
  * A Pane's style definition in a skin XML file should look like this:
  * 
  * <pre>
  * {@code 
- *    <pane name="default" 
- *          background="default-round"/>
+ *    <pane name="name" 
+ *          background="backgroundPatch"/>
  * }
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newPane(String, Stage, int, int, String)}.</li>
- * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the Pane's background.</li> * 
+ * <li>The <code>styleName</code> attribute defines the name of the style which you can later use with {@link Skin#newPane(String, Stage, int, int, String)}.</li>
+ * <li>The <code>backgroundPatch</code> attribute references a {@link NinePatch} by name, to be used as the Pane's background.</li> * 
  * </ul> 
  * @author mzechner
  *

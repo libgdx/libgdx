@@ -23,6 +23,12 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
+/**
+ * Implementation of the {@link Clipboard} interface for the desktop. Uses the
+ * system clipboard via the default {@link Toolkit}.
+ * @author mzechner
+ *
+ */
 public class DesktopClipboard extends Clipboard implements ClipboardOwner {
 
 	@Override public String getContents () {

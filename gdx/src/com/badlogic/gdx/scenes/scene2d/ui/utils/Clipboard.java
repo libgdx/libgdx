@@ -37,7 +37,7 @@ public abstract class Clipboard {
 	 */
 	public abstract void setContents(String content);
 	
-	public static Clipboard getDefaultKeyboard() {
+	public static Clipboard getDefaultClipboard() {
 		if(Gdx.app.getType() == ApplicationType.Android) return new AndroidClipboard();
 		else {
 			try {

@@ -441,6 +441,5 @@ public class Container extends Table {
 	public void clear() {
 		super.clear();
 		layout.clearCells();
-	}
-	
+	}	
 }
