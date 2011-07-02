@@ -79,7 +79,7 @@ public class ShadowMappingTest extends GdxTest {
 	}
 	
 	private void setupShadowMap() {
-		shadowMap = new FrameBuffer(Format.RGBA8888, 512, 512, true);		
+		shadowMap = new FrameBuffer(Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);		
 		lightCam = new PerspectiveCamera(67, shadowMap.getWidth(), shadowMap.getHeight());
 		lightCam.position.set(-10, 10, 0);
 		lightCam.lookAt(0,  0, 0);

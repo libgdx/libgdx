@@ -109,6 +109,7 @@ public class GdxTests
 		PixmapBlendingTest.class,
 		PixmapTest.class,
 		PreferencesTest.class,
+		ProjectiveTextureTest.class,
 		Pong.class,
 		ProjectTest.class,
 		RemoteTest.class,

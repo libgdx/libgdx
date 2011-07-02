@@ -71,6 +71,9 @@ public class UITest extends GdxTest {
 		final SplitPane splitPane = skin.newSplitPane("split", ui, scrollPane, scrollPane2, false, 0, 0, "default-horizontal");
 		final Label label = skin.newLabel("label", "fps:");
 		
+		imgButton.setImageSize(16, 20);
+		imgToggleButton.setImageSize(10, 10);
+		
 		window.row().fill(true, true).expand(true, false).spacingBottom(10);
 		window.add(button);
 		window.add(buttonMulti);			
@@ -85,7 +88,7 @@ public class UITest extends GdxTest {
 		window.row().spacingBottom(10);
 		window.add(splitPane).fill(true, true).expand(true, true).colspan(4);
 		window.row();
-		window.add(label);
+		window.add(label).fill(true,  true).expand(true, true);
 		
 		textfield.setTextFieldListener(new TextFieldListener() {			
 			@Override public void keyTyped (TextField textField, char key) {

@@ -224,7 +224,7 @@
 			<region x="69" y="44" width="3" height="3"/>
 		</ninepatch>
 		
-		<region name="default-slider-knob" x="71" y="0" width="8" height="8"/>
+		<region name="default-slider-knob" x="115" y="0" width="9" height="18"/>
 		<region name="check-off" x="51" y="0" width="14" height="14"/>				
 		<region name="check-on" x="36" y="0" width="14" height="14"/>
 		<region name="selection" x="102" y="0" width="1" height="1"/>
@@ -241,6 +241,7 @@
 		<button name="default" down="default-round-down" up="default-round" font="default-font" fontColor="white"/>		
 		<imagebutton name="default" down="default-round-down" up="default-round"/>
 		<togglebutton name="default" down="default-round-down" up="default-round" font="default-font" fontColor="white"/>
+		<imagetogglebutton name="default" down="default-round-down" up="default-round"/>
 		<checkbox name="default" font="default-font" fontColor="white" checked="check-on" unchecked="check-off"/>
 		<label name="default" font="default-font" fontColor="white"/>
 		<slider name="default" slider="default-slider" knob="default-slider-knob"/>
