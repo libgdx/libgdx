@@ -120,6 +120,11 @@ public class Label extends Widget {
 		return null;
 	}
 	
+	/**
+	 * Defines a label's style, see {@link Label}
+	 * @author mzechner
+	 *
+	 */
 	public static class LabelStyle {
 		public BitmapFont font;
 		public Color fontColor;

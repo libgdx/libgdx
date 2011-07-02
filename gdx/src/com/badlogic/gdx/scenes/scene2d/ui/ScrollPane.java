@@ -238,6 +238,11 @@ public class ScrollPane extends Group implements Layout {
 		resetTransform(batch);
 	}
 	
+	/**
+	 * Defines a scroll pane' style, see {@link ScrollPane}
+	 * @author mzechner
+	 *
+	 */
 	public static class ScrollPaneStyle {
 		public final NinePatch background;
 		public final NinePatch hScroll;
