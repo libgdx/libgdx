@@ -780,6 +780,18 @@ public class Matrix4 implements Serializable {
 	}
 	
 	/**
+	 * removes the translational part and transposes the
+	 * matrix.
+	 */
+	public Matrix4 toNormalMatrix() {
+		val[M03] = 0;
+		val[M13] = 0;
+		val[M23] = 0;
+		inv();
+		return tra();
+	}
+	
+	/**
 	 * Multiplies the matrix mata with matrix matb, storing the result in mata. The 
 	 * arrays are assumed to hold 4x4 column major matrices as you can get from {@link Matrix4#val}.
 	 * This is the same as {@link Matrix4#mul(Matrix4)}.

@@ -67,7 +67,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class ShaderProgram implements Disposable {
 	/** flag indicating whether attributes & uniforms must be present at all times **/
-	public static boolean pedantic = true;
+	public static boolean pedantic = true;	
 	
 	/** the list of currently available shaders **/
 	private final static Map<Application, List<ShaderProgram>> shaders = new HashMap<Application, List<ShaderProgram>>();

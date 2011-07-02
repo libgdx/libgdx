@@ -323,6 +323,20 @@ public class ComboBox extends Widget {
 	}
 	
 	/**
+	 * @return the index of the current selection. The top entry has an index of 0
+	 */
+	public int getSelectionIndex() {
+		return selection;
+	}
+	
+	/**
+	 * @return the string of the currently selected entry
+	 */
+	public String getSelection() {
+		return entries[selection];
+	}
+	
+	/**
 	 * Sets the entries of this combo box. Invalidates
 	 * all parents.
 	 * @param entries the entries

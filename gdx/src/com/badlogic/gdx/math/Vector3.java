@@ -35,6 +35,9 @@ public class Vector3 implements Serializable {
 	private static Vector3 tmp = new Vector3();
 	private static Vector3 tmp2 = new Vector3();
 	private static Vector3 tmp3 = new Vector3();
+	public static Vector3 X = new Vector3(1, 0, 0);
+	public static Vector3 Y = new Vector3(0, 1, 0);
+	public static Vector3 Z = new Vector3(0, 0, 1);
 
 	/**
 	 * Constructs a vector at (0,0,0)
