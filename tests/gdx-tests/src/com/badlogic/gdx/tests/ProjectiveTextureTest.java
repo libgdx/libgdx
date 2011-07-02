@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -29,7 +30,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class ProjectiveTextureTest extends GdxTest {
 
 	@Override public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 
 	PerspectiveCamera cam;
@@ -69,8 +70,8 @@ public class ProjectiveTextureTest extends GdxTest {
 												   -10, -1, -10, 0, 1, 0 });
 		plane.setIndices(new short[] { 3, 2, 1, 1, 0, 3 });
 		cube = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());		
-		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), Format.RGB565, true);
+		texture.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0, 5, 10);
@@ -86,13 +87,13 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 	
 	public void setupUI() {
-		ui = new Stage(480, 320, false);
+		ui = new Stage(480, 320, true);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.xml"), Gdx.files.internal("data/uiskin.png"));
 		Button reload = skin.newButton("reload", "Reload Shaders");
 		ComboBox camera = skin.newComboBox("camera", new String[] { "Camera", "Light" }, ui);
 		Label fps = skin.newLabel("fps", "fps: ");
 		
-		Container container = new Container("container", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Container container = new Container("container", (int)ui.width(), (int)ui.height());
 		container.add(reload).spacingRight(5);
 		container.add(camera).spacingRight(5);
 		container.add(fps);

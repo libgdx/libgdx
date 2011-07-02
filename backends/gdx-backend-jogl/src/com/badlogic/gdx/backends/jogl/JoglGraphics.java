@@ -89,7 +89,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	}
 
 	@Override public void reshape (GLAutoDrawable drawable, int x, int y, int width, int height) {
-		listener.resize(width, height);
+		listener.resize(width, height);		
 	}
 
 	@Override public void display (GLAutoDrawable arg0) {

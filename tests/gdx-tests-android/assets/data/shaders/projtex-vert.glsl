@@ -18,7 +18,9 @@ void main() {
 	normalize(lightDir);	
 	normalize(worldNormal);
 		
-	v_color = clamp(u_color * max(0, dot(lightDir, worldNormal)), 0, 1);
+	float dotL = dot(lightDir, worldNormal);
+	if(dotL < 0.0) dotL = 0.0;
+	v_color = u_color * dotL;
 	v_texcoords = u_projector * worldPos;	
 	gl_Position = u_camera * worldPos;
 }
