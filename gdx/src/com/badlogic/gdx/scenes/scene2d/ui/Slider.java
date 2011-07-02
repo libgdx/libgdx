@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 
 /**
+ * A value slider.
+ * 
  * <h2>Functionality</h2>
  * A slider lets you select a value within a range (min, max), with stepping between each value the slider represents.
  * To listen for changes of the slider value one can register a {@link ValueChangedListener} with the slider.

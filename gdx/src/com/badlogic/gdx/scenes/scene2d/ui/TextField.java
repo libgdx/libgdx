@@ -34,6 +34,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.DesktopClipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
 /**
+ * A single-line text field.
+ * 
  * <h2>Functionality</h2>
  * A TextField provides a way to get single-line text input from a user. It supports
  * scrolling based on the cursor position, selection via holding down the shift-key (desktop-only),
@@ -126,6 +128,14 @@ public class TextField extends Widget {
 	float selectionWidth = 0;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
+	/**
+	 * Creates a new Textfield. The width is determined by the prefWidth
+	 * parameter, the height is determined by the font's height as well
+	 * as the top and bottom border patches of the text fields background.
+	 * @param name the name
+	 * @param prefWidth the (preferred) width
+	 * @param style the {@link TextFieldStyle}
+	 */
 	public TextField (String name, float prefWidth, TextFieldStyle style) {
 		super(name, prefWidth, 0);
 		this.style = style;
@@ -419,6 +429,11 @@ public class TextField extends Widget {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
+	/**
+	 * Defines a text field's style, see {@link TextField}
+	 * @author mzechner
+	 *
+	 */
 	public static class TextFieldStyle {
 		public final NinePatch background;
 		public final BitmapFont font;
@@ -435,14 +450,27 @@ public class TextField extends Widget {
 		}
 	}
 	
+	/**
+	 * Interface for listening to typed characters.
+	 * @author mzechner
+	 *
+	 */
 	public interface TextFieldListener {
 		public void keyTyped(TextField textField, char key);
 	}
 	
+	/**
+	 * Sets the {@link TextFieldListener}
+	 * @param listener the listener or null
+	 */
 	public void setTextFieldListener(TextFieldListener listener) {
 		this.listener = listener;
 	}
 
+	/**
+	 * Sets the text of this text field.
+	 * @param text the text
+	 */
 	public void setText (String text) {
 		final BitmapFont font = style.font;
 		
@@ -454,6 +482,9 @@ public class TextField extends Widget {
 		invalidateHierarchy();
 	}
 
+	/**
+	 * @return the text of this text field. Never null, might be an empty string.
+	 */
 	public String getText () {
 		return text;
 	}

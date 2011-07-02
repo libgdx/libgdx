@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
+ * A button with an image on it.
+ * 
  * <h2>Functionality</h2>
  * A button can be either in a pressed or unpressed state. A {@link ClickListener} can
  * be registered with the ImageButton which will be called in case the button was clicked/touched.

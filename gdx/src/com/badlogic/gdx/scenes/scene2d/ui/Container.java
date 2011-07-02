@@ -25,6 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 
 /**
+ * Baseclass for all container widgets.
+ * 
  * <h2>Functionality</h2>
  * A Container is a {@link Group} capable of laying out inserted {@link Actor} instances in a table layout. See 
  * <a href="http://code.google.com/p/table-layout/">http://code.google.com/p/table-layout/</a></p>

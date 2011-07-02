@@ -21,6 +21,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
+ * A toggle button with an image on it.
+ * 
  * <h2>Functionality</h2>
  * A toggle button can be either in a pressed or unpressed state. A {@link ClickListener} can
  * be registered with the ImageToggleButton which will be called in case the button changed its state.

@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
+ * A list of string entries.
+ * 
  * <h2>Functionality</h2>
  * A list displays textual entries and highlights the current selection. A {@link SelectionListener} can
  * be registered with the list to listen to selection changes. Entries have an index in the list, the

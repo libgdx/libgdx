@@ -27,6 +27,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
+ * A dropdown or combo box.
+ * 
  * <h2>Functionality</h2>
  * A ComboBox contains a list of Strings, with one of the strings being selected and displayed
  * in the main area of the ComboBox. Clicking the ComboBox brings up a popup list showing all

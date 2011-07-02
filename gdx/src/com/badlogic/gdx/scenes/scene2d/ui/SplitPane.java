@@ -28,6 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
+ * A special container holding two children and allowing to define the space used by each.
+ * 
  * <h2>Functionality</h2>
  * A SplitPane can embedd to {@link Actor} instances (or {@link Widget} or {@link Container} instances for that matter), separated
  * by a split handle, either vertically or horizontally. Both widgets will be sized so that they take up their respective space

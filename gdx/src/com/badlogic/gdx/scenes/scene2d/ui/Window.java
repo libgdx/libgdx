@@ -29,6 +29,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
+ * A container acting as a dialog or window.
+ * 
  * <h2>Functionality</h2>
  * A Window is a {@link Container} that can be moved around by touching and dragging its titlebar.It can house
  * multiple {@link Actor} instances in a table-layout. The difference to a pure Container is

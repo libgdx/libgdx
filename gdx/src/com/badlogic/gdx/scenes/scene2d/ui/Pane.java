@@ -26,6 +26,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
+ * A Container with a background NinePatch.
+ * 
  * <h2>Functionality</h2>
  * A Pane is a {@link Container} displaying a background {@link NinePatch}. It can house
  * multiple {@link Actor} instances in a table-layout. The difference to a pure Container is

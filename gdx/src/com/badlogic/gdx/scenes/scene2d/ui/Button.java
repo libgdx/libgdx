@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
+ * A button with text on it.
+ * 
  * <h2>Functionality</h2>
  * A button can be either in a pressed or unpressed state. A {@link ClickListener} can
  * be registered with the Button which will be called in case the button was clicked/touched.

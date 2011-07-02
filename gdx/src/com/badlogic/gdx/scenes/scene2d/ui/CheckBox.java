@@ -26,6 +26,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
+ * A checkbox with a label.
+ * 
  * <h2>Functionality</h2>
  * A CheckBox can be either checked or unchecked. The state of the CheckBox is displayed
  * with images representing the checked and unchecked state as well as a label, displayed to the right of the

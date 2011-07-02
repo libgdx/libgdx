@@ -31,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
+ * A special container that allows scrolling over its children.
+ * 
  * <h2>Functionality</h2>
  * A ScrollPane can embed any {@link Actor} (and {@link Widget} or {@link Container} for that matter) and provide
  * scrolling functionality in case the embedded Actor is bigger than the scroll pane itself. The scroll pane will

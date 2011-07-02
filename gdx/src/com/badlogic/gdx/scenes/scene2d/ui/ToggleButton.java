@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
+ * A toggle button.
+ * 
  * <h2>Functionality</h2>
  * A toggle button can be either in a pressed or unpressed state. A {@link ClickListener} can
  * be registered with the ToggleButton which will be called in case the button changed its state.
