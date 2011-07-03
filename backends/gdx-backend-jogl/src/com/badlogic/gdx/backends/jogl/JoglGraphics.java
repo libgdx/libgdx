@@ -50,18 +50,20 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	boolean useGL2;
 	boolean created = false;	
 	boolean exclusiveMode = false;
-	final JoglDisplayMode desktopMode; 
+	final JoglDisplayMode desktopMode;
+	final JoglApplicationConfiguration config; 
 
 	public JoglGraphics (ApplicationListener listener, JoglApplicationConfiguration config) {
 		initialize(config);
 		if (listener == null) throw new GdxRuntimeException("RenderListener must not be null");
 		this.listener = listener;
+		this.config = config;
 		
 		desktopMode = (JoglDisplayMode)JoglApplicationConfiguration.getDesktopDisplayMode();
 	}
 
 	public void create () {
-		super.create();
+		super.create();		
 	}
 
 	public void pause () {
@@ -78,7 +80,8 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 
 	@Override public void init (GLAutoDrawable drawable) {
 		initializeGLInstances(drawable);
-
+		setVSync(config.vSyncEnabled);
+		
 		if (!created) {
 			listener.create();
 			synchronized (this) {

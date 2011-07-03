@@ -77,14 +77,15 @@ public class LwjglApplication implements Application {
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
-		this.listener = listener;
-
+		this.listener = listener;			
+		
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
 		initialize();
+		
 	}
 
 	public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
@@ -106,7 +107,8 @@ public class LwjglApplication implements Application {
 
 	private void initialize () {
 		mainLoopThread = new Thread("LWJGL Application") {
-			@SuppressWarnings("synthetic-access") public void run () {
+			@SuppressWarnings("synthetic-access") public void run () {	
+				graphics.setVSync(graphics.config.vSyncEnabled);
 				LwjglApplication.this.mainLoop();
 			}
 		};

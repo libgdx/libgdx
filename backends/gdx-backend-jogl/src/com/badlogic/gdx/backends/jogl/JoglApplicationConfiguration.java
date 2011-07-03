@@ -4,6 +4,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.jogl.JoglGraphics.JoglDisplayMode;
 
@@ -20,6 +21,8 @@ public class JoglApplicationConfiguration {
 	public int width = 480, height = 320;
 	/** fullscreen **/
 	public boolean fullscreen = false;
+	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
+	public boolean vSyncEnabled = false;
 	/** title of application **/
 	public String title = "Jogl Application";	
 	
