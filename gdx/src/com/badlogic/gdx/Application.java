@@ -93,6 +93,10 @@ public interface Application {
 	public enum ApplicationType {
 		Android, Desktop, Applet
 	}
+	
+	public static final int LOG_NONE = 0;
+	public static final int LOG_INFO = 1;
+	public static final int LOG_ERROR = 2;
 
 	/**
 	 * @return the {@link Graphics} instance
@@ -123,7 +127,26 @@ public interface Application {
 	 * Logs a message to the console or logcat
 	 */
 	public void log (String tag, String message, Exception exception);
+	
+	/**
+	 * Logs an error message to the console or logcat
+	 */
+	public void error (String tag, String message);
+	
+	/**
+	 * Logs an error message to the console or logcat
+	 */
+	public void error (String tag, String message, Exception exception);
 
+	/**
+	 * Sets the log level. {@link #LOG_NONE} will mute all log output.
+	 * {@link #LOG_ERROR} will only let messages issued with {@link #error(String, String)} through.
+	 * {@link #LOG_INFO} will let all messages though, either logged via {@link #error(String, String)} or
+	 * {@link #log(String, String)}. 
+	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}. 
+	 */
+	public void setLogLevel(int logLevel);
+	
 	/**
 	 * @return what {@link ApplicationType} this application has, e.g. Android or Desktop
 	 */

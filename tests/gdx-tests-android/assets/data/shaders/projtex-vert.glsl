@@ -10,17 +10,16 @@ uniform vec3 u_color;
 
 varying vec3 v_color;
 varying vec4 v_texcoords;
+varying vec3 v_normal;
+varying vec3 v_position;
 
 void main() {	
 	vec4 worldPos = u_model * a_Position;
 	vec3 worldNormal = (u_modelNormal * vec4(a_Normal, 1)).xyz;	
-	vec3 lightDir = u_projectorPos - worldPos.xyz;
-	lightDir = normalize(lightDir);	
-	worldNormal = normalize(worldNormal);
-		
-	float dotL = dot(lightDir, worldNormal);
-	if(dotL < 0.0) dotL = 0.0;
-	v_color = u_color * dotL;
+	
+	v_position = worldPos.xyz;
+	v_normal = worldNormal.xyz;		
+	v_color = u_color;
 	v_texcoords = u_projector * worldPos;
 	gl_Position = u_camera * worldPos;
 }

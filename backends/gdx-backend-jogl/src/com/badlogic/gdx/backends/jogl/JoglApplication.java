@@ -57,6 +57,7 @@ public final class JoglApplication implements Application {
 	OpenALAudio audio;
 	JFrame frame;
 	List<Runnable> runnables = new ArrayList<Runnable>();
+	int logLevel = LOG_INFO;
 
 	/**
 	 * Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication
@@ -216,9 +217,6 @@ public final class JoglApplication implements Application {
 		return input;
 	}
 
-	@Override public void log (String tag, String message) {
-		System.out.println(tag + ": " + message);
-	}
 
 	/**
 	 * {@inheritDoc}
@@ -270,9 +268,36 @@ public final class JoglApplication implements Application {
 		}
 	}
 
+	public void log(String tag, String message) {
+   	if(logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);		
+		}
+   }
+
 	@Override public void log (String tag, String message, Exception exception) {
-		System.out.println(tag + ": " + message);
-		exception.printStackTrace();
+		if(logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);
+			exception.printStackTrace(System.out);
+		}
+	}
+	
+	@Override public void error (String tag, String message) {
+		if(logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);			
+		}
+	}
+
+
+	@Override public void error (String tag, String message, Exception exception) {
+		if(logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);
+			exception.printStackTrace(System.err);
+		}
+	}
+
+
+	@Override public void setLogLevel (int logLevel) {		
+		this.logLevel = logLevel;
 	}
 	
 	@Override public void exit () {

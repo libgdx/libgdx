@@ -68,6 +68,7 @@ public class AndroidApplication extends Activity implements Application {
     protected boolean firstResume = true;
     protected final List<Runnable> runnables = new ArrayList<Runnable>();
     protected WakeLock wakeLock = null;
+    protected int logLevel = LOG_INFO;
 
     /**
      * This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
@@ -268,15 +269,7 @@ public class AndroidApplication extends Activity implements Application {
     @Override
     public Input getInput() {
         return input;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void log(String tag, String message) {
-        Log.d(tag, message);
-    }
+    }   
 
     /**
      * {@inheritDoc}
@@ -321,16 +314,34 @@ public class AndroidApplication extends Activity implements Application {
 		input.keyboardAvailable = keyboardAvailable;
 	}
 
-	@Override public void log (String tag, String message, Exception exception) {
-		Log.d(tag, message, exception);
-	}
-
-
 	@Override public void exit () {
 		handler.post(new Runnable() {
 			@Override public void run () {
 				AndroidApplication.this.finish();			
 			}			
 		});
+	}
+	
+   @Override
+   public void log(String tag, String message) {
+  	 if(logLevel >= LOG_INFO) Log.i(tag, message);
+   }
+
+	@Override public void log (String tag, String message, Exception exception) {
+		if(logLevel >= LOG_INFO) Log.i(tag, message, exception);
+	}
+	
+	@Override public void error (String tag, String message) {
+		if(logLevel >= LOG_ERROR) Log.e(tag, message);
+	}
+
+
+	@Override public void error (String tag, String message, Exception exception) {
+		if(logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+	}
+
+
+	@Override public void setLogLevel (int logLevel) {		
+		this.logLevel = logLevel;
 	}
 }

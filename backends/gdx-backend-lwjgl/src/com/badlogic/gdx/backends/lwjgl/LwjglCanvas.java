@@ -53,7 +53,8 @@ public class LwjglCanvas implements Application {
 	final Canvas canvas;
 	final List<Runnable> runnables = new ArrayList<Runnable>();
 	boolean running = true;
-
+	int logLevel = LOG_INFO;
+	
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
 
@@ -119,10 +120,6 @@ public class LwjglCanvas implements Application {
 
 	@Override public int getVersion () {
 		return 0;
-	}
-
-	@Override public void log (String tag, String message) {
-		System.out.println(tag + ": " + message);
 	}
 
 	void start () {
@@ -216,9 +213,36 @@ public class LwjglCanvas implements Application {
 		}
 	}
 
+	public void log(String tag, String message) {
+   	if(logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);		
+		}
+   }
+
 	@Override public void log (String tag, String message, Exception exception) {
-		System.out.println(tag + ": " + message);
-		exception.printStackTrace();
+		if(logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);
+			exception.printStackTrace(System.out);
+		}
+	}
+	
+	@Override public void error (String tag, String message) {
+		if(logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);			
+		}
+	}
+
+
+	@Override public void error (String tag, String message, Exception exception) {
+		if(logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);
+			exception.printStackTrace(System.err);
+		}
+	}
+
+
+	@Override public void setLogLevel (int logLevel) {		
+		this.logLevel = logLevel;
 	}
 	
 	@Override public void exit () {
