@@ -87,6 +87,7 @@ public class GdxTests
 		IsometricTileTest.class,
 		KinematicBodyTest.class,
 		LifeCycleTest.class,
+		LineDrawingTest.class,
 		ManagedTest.class,
 		ManualBindTest.class,
 		MatrixJNITest.class,
