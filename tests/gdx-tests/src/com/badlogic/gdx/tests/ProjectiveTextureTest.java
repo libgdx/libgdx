@@ -69,7 +69,7 @@ public class ProjectiveTextureTest extends GdxTest {
 												   10, -1, -10, 0, 1, 0,
 												   -10, -1, -10, 0, 1, 0 });
 		plane.setIndices(new short[] { 3, 2, 1, 1, 0, 3 });
-		cube = ModelLoaderOld.loadObj(Gdx.files.internal("data/cube.obj").read());		
+		cube = ModelLoaderOld.loadObj(Gdx.files.internal("data/sphere.obj").read());		
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), Format.RGB565, true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 		
