@@ -167,7 +167,7 @@ public class G3dtLoader {
 				for(int j = 0; j < numVertices; j++) {
 					idx = readFloatArray(in, vertices, idx);					
 				}
-				Keyframe keyframe = new Keyframe(time, animatedComponents, vertices);				
+				Keyframe keyframe = new Keyframe(time, vertices);				
 				keyframes[frame] = keyframe;
 				time += frameDuration;				
 			}						
@@ -179,7 +179,7 @@ public class G3dtLoader {
 		KeyframedSubMesh mesh = new KeyframedSubMesh(name, 
 																	new Mesh(false, numVertices, indices.size, createVertexAttributes(hasNormals, uvSets.size)),
 																	buildVertices(numVertices, hasNormals, uvSets),
-																	animations,
+																	animations, animatedComponents,
 																	GL10.GL_TRIANGLES);
 		mesh.mesh.setIndices(convertToShortArray(indices));
 		mesh.mesh.setVertices(mesh.blendedVertices);

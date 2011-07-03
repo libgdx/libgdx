@@ -1,13 +1,11 @@
 package com.badlogic.gdx.graphics.g3d.model.keyframe;
 
 public class Keyframe {
-	public final float timeStamp;
-	public final int animatedComponents;
+	public final float timeStamp;	
 	public final float[] vertices;
 	
-	public Keyframe(float timeStamp, int animatedComponents, float[] vertices) {
-		this.timeStamp = timeStamp;
-		this.animatedComponents = animatedComponents;
+	public Keyframe(float timeStamp, float[] vertices) {
+		this.timeStamp = timeStamp;		
 		this.vertices = vertices;
 	}
 }

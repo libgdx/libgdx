@@ -10,15 +10,17 @@ public class KeyframedSubMesh extends SubMesh {
 	public final String name;
 	public final Mesh mesh;	
 	public final float[] blendedVertices;
+	public final int animatedComponents;
 	public final ObjectMap<String, KeyframedAnimation> animations;
 	public final int primitiveType;
 	
-	public KeyframedSubMesh(String name, Mesh mesh, float[] blendedVertices, ObjectMap<String, KeyframedAnimation> animations, int primitiveType) {
+	public KeyframedSubMesh(String name, Mesh mesh, float[] blendedVertices, ObjectMap<String, KeyframedAnimation> animations, int animatedComponents, int primitiveType) {
 		this.name = name;
 		this.mesh = mesh;
 		this.blendedVertices = blendedVertices;
 		this.animations = animations;
 		this.primitiveType = primitiveType;
+		this.animatedComponents = animatedComponents;
 	}
 	
 	@Override public void getBoundingBox (BoundingBox bbox) {	

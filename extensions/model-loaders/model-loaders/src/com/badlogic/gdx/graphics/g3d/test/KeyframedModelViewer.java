@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dtLoader;
+import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
 import com.badlogic.gdx.graphics.g3d.loaders.md2.MD2Loader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
@@ -43,11 +45,11 @@ public class KeyframedModelViewer implements ApplicationListener {
 	
 	@Override public void create () {
 		model = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal(fileName));		
-		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));		
+		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));										
 		hasNormals = hasNormals();
 		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
 		model.setMaterial(material);		
-		anim = (KeyframedAnimation)model.getAnimations()[0];		
+		anim = (KeyframedAnimation)model.getAnimations()[0];
 		
 		model.getBoundingBox(bounds);
 		float len = bounds.getDimensions().len();
@@ -158,7 +160,10 @@ public class KeyframedModelViewer implements ApplicationListener {
 //			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 //			System.exit(-1);
 //		}
-		new JoglApplication(new KeyframedModelViewer("data/knight.md2", "data/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
+//		new JoglApplication(new KeyframedModelViewer("data/knight.md2", "data/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
 //		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt", "data/boy.png"), "KeframedModel Viewer", 800, 480, false);
+		
+//		new JoglApplication(new KeyframedModelViewer("data/knight.g3d", "data/knight.jpg"), "KeframedModel Viewer", 800, 480, false);
+		new JoglApplication(new KeyframedModelViewer("data/boy.g3dt.g3d", "data/boy.png"), "KeframedModel Viewer", 800, 480, false);
 	}
 }

@@ -137,7 +137,7 @@ public class MD2Loader implements KeyframedModelLoader {
 				vertices[idx++] = frame.vertices[idxV++];				
 			}
 
-			Keyframe keyFrame = new Keyframe(frameNum * frameDuration, 3, vertices);			
+			Keyframe keyFrame = new Keyframe(frameNum * frameDuration, vertices);			
 			animation.keyframes[frameNum] = keyFrame;
 		}
 
@@ -149,7 +149,7 @@ public class MD2Loader implements KeyframedModelLoader {
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);
 		
-		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, GL10.GL_TRIANGLES);	
+		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 3, GL10.GL_TRIANGLES);	
 		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});		
 		model.setAnimation("all", 0, false);
 		return model;

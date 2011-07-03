@@ -25,10 +25,10 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 			animations[i] = meshAnims.get(i);
 		}
 		
-		checkCorrectness();
+		checkValidity();
 	}
 	
-	private void checkCorrectness() {
+	private void checkValidity() {
 		for(int i = 0; i < subMeshes.length; i++) {
 			if(subMeshes[i].animations.size != animations.length) throw new GdxRuntimeException("number of animations in subMesh[0] is not the same in subMesh[" + i + "]. All sub-meshes must have the same animations and number of frames");
 		}
@@ -76,7 +76,7 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 		}
 	}
 	
-	@Override public SubMesh getSubMesh(String name) {
+	@Override public KeyframedSubMesh getSubMesh(String name) {
 		int len = subMeshes.length;
 		for(int i = 0; i < len; i++) {
 			if(subMeshes[i].name.equals(name)) return subMeshes[i];
@@ -100,7 +100,7 @@ public class KeyframedModel implements AnimatedModel, Disposable {
 			final Keyframe startFrame = anim.keyframes[startIndex];
 			final Keyframe endFrame = anim.keyframes[anim.keyframes.length-1==startIndex?loop?0:startIndex:startIndex + 1];			
 			
-			final int numComponents = startFrame.animatedComponents;
+			final int numComponents = subMesh.animatedComponents;
 			final float[] src = startFrame.vertices;				
 			final int srcLen = numComponents * subMesh.mesh.getNumVertices();
 			

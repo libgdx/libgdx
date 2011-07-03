@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 public interface Model {
 	public void render();
-
 	public void render(ShaderProgram program);
 	public Model getSubModel(String... subMeshNames);
 	public SubMesh getSubMesh(String name);
