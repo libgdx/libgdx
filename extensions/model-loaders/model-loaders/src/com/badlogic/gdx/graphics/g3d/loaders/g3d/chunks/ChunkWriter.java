@@ -1,13 +1,13 @@
 package com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks;
 
+import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.G3D_ROOT;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants;
 import com.badlogic.gdx.utils.Array;
-import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.*;
 
 public class ChunkWriter {
 															

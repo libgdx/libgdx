@@ -1,6 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.test;
 
-import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.G3D_ROOT;
 import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.INDEX_LIST;
 import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.MAJOR_VERSION;
 import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.MINOR_VERSION;
@@ -14,7 +13,6 @@ import static com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dConstants.VERTEX_LIST
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.ChunkReader;

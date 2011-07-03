@@ -1,8 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.loaders.collada;
 
-import java.util.Arrays;
-
-import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Xml.Element;
 
