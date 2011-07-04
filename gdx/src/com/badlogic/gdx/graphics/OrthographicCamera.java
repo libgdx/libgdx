@@ -57,6 +57,6 @@ public class OrthographicCamera extends Camera {
 		Matrix4.mul(combined.val, view.val);
 		invProjectionView.set(combined);	
 		Matrix4.inv(invProjectionView.val);
-		frustum.update(combined);
+		frustum.update(invProjectionView);
 	}
 }
