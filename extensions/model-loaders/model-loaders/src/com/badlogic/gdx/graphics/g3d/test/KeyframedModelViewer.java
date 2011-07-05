@@ -3,9 +3,11 @@ package com.badlogic.gdx.graphics.g3d.test;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.jogl.JoglApplication;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -40,10 +42,10 @@ public class KeyframedModelViewer implements ApplicationListener {
 	
 	@Override public void create () {
 		model = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal(fileName));		
-		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName));										
+		if(textureFileName != null) texture = new Texture(Gdx.files.internal(textureFileName), Format.RGB565, true);										
 		hasNormals = hasNormals();
-		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
-		model.setMaterial(material);		
+//		Material material = new Material("material", new TextureAttribute(texture, 0, "s_tex"));
+//		model.setMaterial(material);		
 		anim = (KeyframedAnimation)model.getAnimations()[0];				
 		
 		model.getBoundingBox(bounds);
@@ -53,7 +55,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(bounds.getCenter().cpy().add(len, len, len));
 		cam.lookAt(bounds.getCenter().x, bounds.getCenter().y, bounds.getCenter().z);
-		cam.near = 0.1f;
+		cam.near = 1f;
 		cam.far = 1000;
 		
 		renderer = new ImmediateModeRenderer();
@@ -94,8 +96,9 @@ public class KeyframedModelViewer implements ApplicationListener {
 		
 		if(texture != null) {
 			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-			Gdx.gl.glEnable(GL10.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);			
+			texture.bind();
+//			Gdx.gl.glEnable(GL10.GL_BLEND);
+//			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);			
 		}
 		
 		angle += 45 * Gdx.graphics.getDeltaTime();
@@ -104,8 +107,14 @@ public class KeyframedModelViewer implements ApplicationListener {
 		if(animTime > anim.totalDuration - anim.frameDuration) {
 			animTime = 0;
 		}
+		
 		model.setAnimation(anim.name, animTime, false);
-		model.render();			
+		for(int i = 0; i < 20; i++) {
+			Gdx.gl10.glPushMatrix();
+			Gdx.gl10.glTranslatef(0, 0, -100 + i * 10);			
+			model.render();			
+			Gdx.gl10.glPopMatrix();
+		}
 		
 		if(texture != null) {
 			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
@@ -116,6 +125,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 		}
 		
 		batch.begin();
+		font.setColor(Color.RED);
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 20, 30);
 		batch.end();
 	}

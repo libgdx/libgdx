@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g3d.ModelLoaderHints;
 import com.badlogic.gdx.graphics.g3d.loaders.KeyframedModelLoader;
@@ -82,7 +83,9 @@ public class G3dLoader {
 				meshes[i] = mesh;
 			}
 		
-			return new StillModel(meshes);
+			StillModel model =  new StillModel(meshes);
+			model.setMaterial(new Material("default"));
+			return model;
 		} catch(IOException e) {
 			throw new GdxRuntimeException("Couldn't load still model from '" + handle.name() +"', " + e.getMessage(), e);
 		} finally {
@@ -176,7 +179,9 @@ public class G3dLoader {
 				mesh.setIndices(indexData);
 			}
 		
-			return new KeyframedModel(meshes);					
+			KeyframedModel model =  new KeyframedModel(meshes);
+			model.setMaterial(new Material("default"));
+			return model;
 		} catch(IOException e) {
 			throw new GdxRuntimeException("Couldn't load still model from '" + handle.name() +"', " + e.getMessage(), e);
 		} finally {
