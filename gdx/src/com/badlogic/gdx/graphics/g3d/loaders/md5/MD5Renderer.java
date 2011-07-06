@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -78,15 +79,15 @@ public class MD5Renderer implements Disposable{
 		if(useNormals)
 		{
 			this.mesh = new Mesh( false, maxVertices, maxIndices, 
-				     new VertexAttribute( VertexAttributes.Usage.Position, 3, "a_position" ), 
-					 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords" ),
-					 new VertexAttribute( VertexAttributes.Usage.Normal, 3, "a_normal" ) );	
+				     new VertexAttribute( VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ), 
+					 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0" ),
+					 new VertexAttribute( VertexAttributes.Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE ) );	
 		}
 		else
 		{
 			this.mesh = new Mesh(false, maxVertices, maxIndices,
-					new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
-					new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+					new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+					new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
 		}
 	}
 

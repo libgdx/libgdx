@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
  * Loads Wavefront OBJ files, ignores material files.
@@ -184,9 +185,9 @@ public class ObjLoader {
 		Mesh mesh = null;
 
 		ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
-		attributes.add(new VertexAttribute(Usage.Position, 3, "a_Position"));
-		if (numNormals > 0) attributes.add(new VertexAttribute(Usage.Normal, 3, "a_Normal"));
-		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, "a_TexCoord"));
+		attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+		if (numNormals > 0) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
 
 		mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
 		mesh.setVertices(verts);
