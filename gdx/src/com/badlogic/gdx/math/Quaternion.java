@@ -298,7 +298,7 @@ public class Quaternion implements Serializable {
 	 * @return This quaternion for chaining.
 	 */
 	public Quaternion setFromAxis(Vector3 axis, float angle) {
-		return setFromAxis(axis.z, axis.y, axis.z, angle);
+		return setFromAxis(axis.x, axis.y, axis.z, angle);
 	}
 
 	/**
