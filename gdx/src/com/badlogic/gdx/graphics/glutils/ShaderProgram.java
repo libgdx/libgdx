@@ -66,6 +66,19 @@ import com.badlogic.gdx.utils.ObjectMap;
  * 
  */
 public class ShaderProgram implements Disposable {
+	/** default name for position attributes **/
+	public static final String POSITION_ATTRIBUTE = "a_position";
+	/** default name for normal attribtues **/
+	public static final String NORMAL_ATTRIBUTE = "a_normal";
+	/** default name for color attributes **/
+	public static final String COLOR_ATTRIBUTE = "a_color";
+	/** default name for texcoords attributes, append texture unit number **/
+	public static final String TEXCOORDS_ATTRIBUTE = "a_texCoords";
+	/** default name for tangent attribute **/
+	public static final String TANGENT_ATTRIBUTE = "a_tangent";
+	/** default name for binormal attribute **/
+	public static final String BINORMAL_ATTRIBUTE = "a_binormal";
+	
 	/** flag indicating whether attributes & uniforms must be present at all times **/
 	public static boolean pedantic = true;	
 	
@@ -139,8 +152,8 @@ public class ShaderProgram implements Disposable {
 
 		compileShaders(vertexShader, fragmentShader);				
 		if(isCompiled()) {			
-//			fetchAttributes();
-//			fetchUniforms();			
+			fetchAttributes();
+			fetchUniforms();			
 			addManagedShader(Gdx.app, this);			
 		}
 	}
@@ -685,7 +698,7 @@ public class ShaderProgram implements Disposable {
 			int location = Gdx.gl20.glGetAttribLocation(program, name);
 			attributes.put(name, location);
 			attributeTypes.put(name, type.get(0));
-			attributeNames[i] = name;
+			attributeNames[i] = name;					
 		}
 	}	
 	

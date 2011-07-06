@@ -131,8 +131,8 @@ public class SpriteBatch implements Disposable {
 	public SpriteBatch (int size) {
 		this.buffers = new Mesh[1];
 		this.buffers[0] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
-			"a_position"), new VertexAttribute(Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2,
-			"a_texCoords"));
+			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2,
+				ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -173,8 +173,8 @@ public class SpriteBatch implements Disposable {
 		this.buffers = new Mesh[buffers];
 
 		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, "a_position"),
-				new VertexAttribute(Usage.ColorPacked, 4, "a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
+			this.buffers[i] = new Mesh(false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
+				new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.TEXCOORDS_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
 		}
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -201,18 +201,18 @@ public class SpriteBatch implements Disposable {
 	}
 
 	private void createShader () {
-		String vertexShader = "attribute vec4 a_position;\n" //
-			+ "attribute vec4 a_color;\n" //
-			+ "attribute vec2 a_texCoords;\n" //
+		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "attribute vec2 " + ShaderProgram.TEXCOORDS_ATTRIBUTE + "0;\n" //
 			+ "uniform mat4 u_projectionViewMatrix;\n" //
 			+ "varying vec4 v_color;\n" //
 			+ "varying vec2 v_texCoords;\n" //
 			+ "\n" //
 			+ "void main()\n" //
 			+ "{\n" //
-			+ "   v_color = a_color;\n" //
-			+ "   v_texCoords = a_texCoords;\n" //
-			+ "   gl_Position =  u_projectionViewMatrix * a_position;\n" //
+			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "   v_texCoords = " + ShaderProgram.TEXCOORDS_ATTRIBUTE + "0;\n" //
+			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
 		String fragmentShader = "#ifdef GL_ES\n" //
 			+ "precision mediump float;\n" //
@@ -1070,8 +1070,9 @@ public class SpriteBatch implements Disposable {
 	}
 	
 	/**
-	 * Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture coordinates attribute is called called "a_texCoords", the
-	 * color attribute is called "a_color".
+	 * Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture coordinates attribute is called called "a_texCoords0", the
+	 * color attribute is called "a_color". See {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORDS_ATTRIBUTE} which gets 
+	 * "0" appened to indicate the use of the first texture unit.
 	 * The projection matrix is uploaded via a mat4 uniform called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined
 	 * transform and projection matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture". 
 	 * 

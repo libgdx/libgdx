@@ -258,12 +258,28 @@ final class JoglGL20 implements GL20 {
 		gl.glGenerateMipmapEXT(target);
 	}
 
-	@Override public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {		
-		throw new UnsupportedOperationException("not implemented"); // FIXME
+	@Override public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+		int[] length = new int[1];
+		int[] sizeTmp = new int[2];
+		int[] typeTmp = new int[1];
+		byte[] name = new byte[256];
+		gl.glGetActiveAttrib(program, index, 256, length, 0, sizeTmp, 0, typeTmp, 0, name, 0);
+		
+		size.put(sizeTmp[0]);
+		if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp[0]);
+		return new String(name, 0, length[0]);
 	}
 
 	@Override public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		throw new UnsupportedOperationException("not implemented"); // FIXME
+		int[] length = new int[1];
+		int[] sizeTmp = new int[2];
+		int[] typeTmp = new int[1];
+		byte[] name = new byte[256];
+		gl.glGetActiveUniform(program, index, 256, length, 0, sizeTmp, 0, typeTmp, 0, name, 0);
+		
+		size.put(sizeTmp[0]);
+		if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp[0]);
+		return new String(name, 0, length[0]);
 	}
 
 	@Override public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {

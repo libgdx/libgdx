@@ -54,11 +54,11 @@ public class ImmediateModeRenderer20 {
 
 	private VertexAttribute[] buildVertexAttributes (boolean hasNormals, boolean hasColor, int numTexCoords) {
 		Array<VertexAttribute> attribs = new Array<VertexAttribute>();
-		attribs.add(new VertexAttribute(Usage.Position, 3, "a_pos"));
-		if(hasNormals) attribs.add(new VertexAttribute(Usage.Normal, 3, "a_nor"));
-		if(hasColor) attribs.add(new VertexAttribute(Usage.ColorPacked, 4, "a_col"));
+		attribs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+		if(hasNormals) attribs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+		if(hasColor) attribs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		for(int i = 0; i < numTexCoords; i++) {
-			attribs.add(new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex" + i));
+			attribs.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + i));
 		}
 		VertexAttribute[] array = new VertexAttribute[attribs.size];
 		for(int i = 0; i < attribs.size; i++) array[i] = attribs.get(i);
@@ -66,12 +66,12 @@ public class ImmediateModeRenderer20 {
 	}
 	
 	public String createVertexShader(boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "attribute vec4 a_pos;\n" 
-				        + (hasNormals?"attribute vec3 a_nor;\n": "")
-				        + (hasColors?"attribute vec4 a_col;\n": "");
+		String shader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" 
+				        + (hasNormals?"attribute vec3 " + ShaderProgram.NORMAL_ATTRIBUTE + ";\n": "")
+				        + (hasColors?"attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n": "");
 		
 		for(int i = 0; i < numTexCoords; i++) {
-			shader += "attribute vec2 a_tex" + i + ";\n";
+			shader += "attribute vec2 " + ShaderProgram.TEXCOORDS_ATTRIBUTE + i + ";\n";
 		}
 		
 		shader += "uniform mat4 u_projModelView;\n";		
@@ -82,11 +82,11 @@ public class ImmediateModeRenderer20 {
 		}
 		
 		shader += "void main() {\n"
-				 +  "   gl_Position = u_projModelView * a_pos;\n"
-			    +  (hasColors?"   v_col = a_col;\n":"");
+				 +  "   gl_Position = u_projModelView * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
+			    +  (hasColors?"   v_col = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n":"");
 		
 		for(int i = 0; i < numTexCoords; i++) {
-			shader += "   v_tex" + i + " = a_tex" + i + ";\n";
+			shader += "   v_tex" + i + " = " + ShaderProgram.TEXCOORDS_ATTRIBUTE + i + ";\n";
 		}
 		
 		shader += "}\n";
