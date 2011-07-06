@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -212,10 +213,10 @@ public class G3dtLoader {
 	private static VertexAttribute[] createVertexAttributes (boolean hasNormals, int uvs) {
 		VertexAttribute[] attributes = new VertexAttribute[1 + (hasNormals?1:0) + uvs];
 		int idx = 0;
-		attributes[idx++] = new VertexAttribute(Usage.Position, 3, "a_pos");
-		if(hasNormals) attributes[idx++] = new VertexAttribute(Usage.Normal, 3, "a_nor");
+		attributes[idx++] = new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
+		if(hasNormals) attributes[idx++] = new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 		for(int i = 0; i < uvs; i++) {
-			attributes[idx++] = new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex" + i);
+			attributes[idx++] = new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + i);
 		}		
 		return attributes;
 	}

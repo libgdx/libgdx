@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Xml.Element;
@@ -198,7 +199,7 @@ public class Faces {
 			int usage = getVertexAttributeUsage(semantic);
 			int components = source.components;
 			String alias = getVertexAttributeAlias(semantic);
-			if(alias.equals("a_tex")) alias += texUnit++;						
+			if(alias.equals(ShaderProgram.TEXCOORDS_ATTRIBUTE)) alias += texUnit++;						
 			attributes[i] = new VertexAttribute(usage, components, alias);
 		}
 		return attributes;
@@ -220,11 +221,11 @@ public class Faces {
 	}	
 	
 	private String getVertexAttributeAlias (String attribute) {
-		if(attribute.equals(VERTEX)) return "a_pos";
-		if(attribute.equals(TEXCOORD)) return "a_tex";
-		if(attribute.equals(NORMAL)) return "a_nor";
-		if(attribute.equals(TANGENT)) return "a_tan";
-		if(attribute.equals(BITANGENT)) return "a_bin";
+		if(attribute.equals(VERTEX)) return ShaderProgram.POSITION_ATTRIBUTE;
+		if(attribute.equals(TEXCOORD)) return ShaderProgram.TEXCOORDS_ATTRIBUTE;
+		if(attribute.equals(NORMAL)) return ShaderProgram.NORMAL_ATTRIBUTE;
+		if(attribute.equals(TANGENT)) return ShaderProgram.TANGENT_ATTRIBUTE;
+		if(attribute.equals(BITANGENT)) return ShaderProgram.BINORMAL_ATTRIBUTE;
 		throw new GdxRuntimeException("can't map semantic '" + attribute + "' to alias, must be VERTEX, TEXCOORD, NORMAL, TANGENT or BITANGENT");
 	}
 	

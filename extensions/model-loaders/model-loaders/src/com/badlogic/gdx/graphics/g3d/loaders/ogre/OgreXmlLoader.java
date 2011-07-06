@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonJoint;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonSubMesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
@@ -102,23 +103,23 @@ public class OgreXmlLoader {
 				Vertexbuffer buffer = ogreSubmesh.getGeometry().getVertexbuffer().get(j);
 				offsets.add(offset); 
 				if(buffer.positions) { 
-					attributes.add(new VertexAttribute(Usage.Position, 3, "a_pos")); 
+					attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE)); 
 					offset += 3; 
 				}
 				if(buffer.normals) {
-					attributes.add(new VertexAttribute(Usage.Normal, 3, "a_nor"));					
+					attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));					
 					offset += 3;
 				}
 				if(buffer.tangents) {
-					attributes.add(new VertexAttribute(Usage.Generic, buffer.tangentDimensions, "a_tan"));					
+					attributes.add(new VertexAttribute(Usage.Generic, buffer.tangentDimensions, ShaderProgram.TANGENT_ATTRIBUTE));					
 					offset += buffer.tangentDimensions;
 				}
 				if(buffer.binormals) {
-					attributes.add(new VertexAttribute(Usage.Generic, 3, "a_bin"));					
+					attributes.add(new VertexAttribute(Usage.Generic, 3, ShaderProgram.BINORMAL_ATTRIBUTE));					
 					offset += 3;
 				}
 				if(buffer.coloursDiffuse) {
-					attributes.add(new VertexAttribute(Usage.ColorPacked, 4, "a_col"));					
+					attributes.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));					
 					offset += 4;
 				}
 				
@@ -135,7 +136,7 @@ public class OgreXmlLoader {
 						case 6: numTexCoords = Integer.valueOf(buffer.getTextureCoordDimensions6()); break;
 						case 7: numTexCoords = Integer.valueOf(buffer.getTextureCoordDimensions7()); break;
 						}
-						attributes.add(new VertexAttribute(Usage.TextureCoordinates, numTexCoords, "a_tex" + k));						
+						attributes.add(new VertexAttribute(Usage.TextureCoordinates, numTexCoords, ShaderProgram.TEXCOORDS_ATTRIBUTE + k));						
 						offset += numTexCoords;
 					} catch(NumberFormatException e) {
 						throw new GdxRuntimeException("Can't process texture coords with dimensions != 1, 2, 3, 4 (e.g. float1)");

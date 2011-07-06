@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.Keyframe;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -143,8 +144,8 @@ public class MD2Loader implements KeyframedModelLoader {
 
 		
 		Mesh mesh = new Mesh(false, header.numVertices, indices.length, 
-									new VertexAttribute(Usage.Position, 3, "a_pos"), 
-									new VertexAttribute(Usage.TextureCoordinates, 2, "a_tex0"));
+									new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
+									new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
 		mesh.setIndices(indices);
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);

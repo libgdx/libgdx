@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.StillModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.FloatArray;
 
 /**
@@ -204,13 +205,13 @@ public class ObjLoader implements StillModelLoader {
 
 			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
 			attributes
-					.add(new VertexAttribute(Usage.Position, 3, "a_Position"));
+					.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 			if (hasNorms)
 				attributes
-						.add(new VertexAttribute(Usage.Normal, 3, "a_Normal"));
+						.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs)
 				attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2,
-						"a_TexCoord"));
+						ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
 
 			mesh = new Mesh(true, numFaces * 3, 0,
 					attributes.toArray(new VertexAttribute[attributes.size()]));
