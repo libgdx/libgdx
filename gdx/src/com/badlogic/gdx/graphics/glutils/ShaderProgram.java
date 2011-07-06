@@ -77,12 +77,24 @@ public class ShaderProgram implements Disposable {
 
 	/** whether this program compiled succesfully **/
 	private boolean isCompiled;
-
+	
 	/** uniform lookup **/
 	private final ObjectMap<String, Integer> uniforms = new ObjectMap<String, Integer>();
 
+	/** uniform types **/
+	private final ObjectMap<String, Integer> uniformTypes = new ObjectMap<String, Integer>();
+	
+	/** uniform names **/
+	private String[] uniformNames;
+	
 	/** attribute lookup **/
 	private final ObjectMap<String, Integer> attributes = new ObjectMap<String, Integer>();
+	
+	/** attribute types **/
+	private final ObjectMap<String, Integer> attributeTypes = new ObjectMap<String, Integer>();
+	
+	/** attribute names **/
+	private String[] attributeNames;
 
 	/** program handle **/
 	private int program;
@@ -642,15 +654,19 @@ public class ShaderProgram implements Disposable {
 	private void fetchUniforms() {
 		params.clear();
 		Gdx.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_UNIFORMS, params);
-		int numAttributes = params.get(0);
+		int numUniforms = params.get(0);
 				
-		for(int i = 0; i < numAttributes; i++) {
+		uniformNames = new String[numUniforms];
+		
+		for(int i = 0; i < numUniforms; i++) {
 			params.clear();
 			params.put(0, 256);
 			type.clear();
 			String name = Gdx.gl20.glGetActiveUniform(program, i, params, type);
 			int location = Gdx.gl20.glGetUniformLocation(program, name);
 			uniforms.put(name, location);
+			uniformTypes.put(name, type.get(0));
+			uniformNames[i] = name;
 		}
 	}
 	
@@ -658,7 +674,9 @@ public class ShaderProgram implements Disposable {
 		params.clear();
 		Gdx.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_ATTRIBUTES, params);
 		int numAttributes = params.get(0);
-				
+		
+		attributeNames = new String[numAttributes];
+		
 		for(int i = 0; i < numAttributes; i++) {
 			params.clear();
 			params.put(0, 256);
@@ -666,6 +684,78 @@ public class ShaderProgram implements Disposable {
 			String name = Gdx.gl20.glGetActiveAttrib(program, i, params, type);
 			int location = Gdx.gl20.glGetAttribLocation(program, name);
 			attributes.put(name, location);
+			attributeTypes.put(name, type.get(0));
+			attributeNames[i] = name;
 		}
 	}	
+	
+	/**
+	 * @param name the name of the attribute
+	 * @return whether the attribute is available in the shader
+	 */
+	public boolean hasAttribute(String name) {
+		return attributes.containsKey(name);
+	}
+	
+	/**
+	 * @param name the name of the attribute
+	 * @return the type of the attribute, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc.
+	 */
+	public int getAttributeType(String name) {
+		Integer type = attributes.get(name);
+		if(type == null) return 0;
+		else return type;
+	}
+	
+	/**
+	 * @param name the name of the attribute
+	 * @return the location of the attribute or -1.
+	 */
+	public int getAttributeLocation(String name) {
+		Integer location = attributes.get(name);
+		if(location == null) return -1;
+		else return location;
+	}
+	
+	/**
+	 * @param name the name of the uniform
+	 * @return whether the uniform is available in the shader
+	 */
+	public boolean hasUniform(String name) {
+		return uniforms.containsKey(name);
+	}
+	
+	/**
+	 * @param name the name of the uniform
+	 * @return the type of the uniform, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc.
+	 */
+	public int getUniformType(String name) {
+		Integer type = attributes.get(name);
+		if(type == null) return 0;
+		else return type;
+	}
+	
+	/**
+	 * @param name the name of the uniform
+	 * @return the location of the uniform or -1.
+	 */
+	public int getUniformLocation(String name) {
+		Integer location = uniforms.get(name);
+		if(location == null) return -1;
+		else return location;
+	}
+	
+	/**
+	 * @return the attributes
+	 */
+	public String[] getAttributes() {
+		return attributeNames;
+	}
+	
+	/**
+	 * @return the uniforms
+	 */
+	public String[] getUniforms() {
+		return uniformNames;
+	}
 }
