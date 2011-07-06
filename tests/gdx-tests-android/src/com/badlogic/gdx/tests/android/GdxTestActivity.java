@@ -32,8 +32,9 @@ public class GdxTestActivity extends AndroidApplication {
 
 		GdxTest test = GdxTests.newTest(testName);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = test.needsGL20();	
+		config.useGL20 = test.needsGL20();
 		config.stencil = 1;
+		config.numSamples = 2;
 		initialize(test, config);
 	}
 }

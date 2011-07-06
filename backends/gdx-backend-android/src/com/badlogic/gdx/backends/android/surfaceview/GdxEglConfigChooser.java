@@ -29,8 +29,8 @@ import android.util.Log;
  */
 public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 	private static final int EGL_OPENGL_ES2_BIT = 4;
-	private static final int EGL_COVERAGE_BUFFERS_NV = 0x30E0;
-   private static final int EGL_COVERAGE_SAMPLES_NV = 0x30E1;
+	public static final int EGL_COVERAGE_BUFFERS_NV = 0x30E0;
+   public static final int EGL_COVERAGE_SAMPLES_NV = 0x30E1;
 	private static final String TAG = "GdxEglConfigChooser";
 
 	protected int mRedSize;
@@ -84,13 +84,13 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 		egl.eglChooseConfig(display, mConfigAttribs, configs, numConfigs, num_config);
 		
 		// FIXME remove this.
-		printConfigs(egl, display, configs);
+		//printConfigs(egl, display, configs);
 		
 		// chose the best one, taking into account multi sampling.
 		EGLConfig config = chooseConfig(egl, display, configs);
 		
 		// FIXME print the chosen config
-		printConfigs(egl, display, new EGLConfig[] { config });
+		//printConfigs(egl, display, new EGLConfig[] { config });
 		return config;
 	}
 
@@ -115,11 +115,16 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 			// isn't set already.
 			if (best == null && r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
 				best = config;
+				
+				// if no AA is requested we can bail out here.
+				if(mNumSamples == 0) {
+					break;
+				}					
 			}
 			
 			// now check for MSAA support
 			int hasSampleBuffers = findConfigAttrib(egl, display, config, EGL10.EGL_SAMPLE_BUFFERS, 0);
-			int numSamples = findConfigAttrib(egl, display, config, EGL10.EGL_SAMPLE_BUFFERS, 0);					
+			int numSamples = findConfigAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0);					
 			
 			// We take the first sort of matching config, thank you.
 			if(bestAA == null && hasSampleBuffers == 1 && numSamples >= mNumSamples && r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
@@ -127,9 +132,12 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 				continue;
 			}
 			
-			// still no luck, let's try CSAA support
-			hasSampleBuffers = findConfigAttrib(egl, display, config, EGL_COVERAGE_BUFFERS_NV, 0);
-			numSamples = findConfigAttrib(egl, display, config, EGL_COVERAGE_SAMPLES_NV, 0);
+			// for this to work we need to call the extension glCoverageMaskNV which is not
+			// exposed in the Android bindings. We'd have to link agains the NVidia SDK and
+			// that is simply not going to happen.
+//			// still no luck, let's try CSAA support
+//			hasSampleBuffers = findConfigAttrib(egl, display, config, EGL_COVERAGE_BUFFERS_NV, 0);
+//			numSamples = findConfigAttrib(egl, display, config, EGL_COVERAGE_SAMPLES_NV, 0);
 			
 			// We take the first sort of matching config, thank you.
 			if(bestAA == null && hasSampleBuffers == 1 && numSamples >= mNumSamples && r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {
@@ -189,8 +197,9 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 				Log.w(TAG, String.format("  %s: %d\n", name, value[0]));
 			} else {
 				// Log.w(TAG, String.format("  %s: failed\n", name));
-				while (egl.eglGetError() != EGL10.EGL_SUCCESS)
-					;
+				egl.eglGetError();
+//				while (egl.eglGetError() != EGL10.EGL_SUCCESS)
+//					;
 			}
 		}
 	}

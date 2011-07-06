@@ -22,10 +22,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 
 import android.app.Activity;
-import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -35,6 +33,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.android.surfaceview.DefaultGLSurfaceView;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
+import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -120,22 +119,24 @@ public final class AndroidGraphics implements Graphics, Renderer {
     }
 
 	private EGLConfigChooser getEglConfigChooser () {
-		if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
-			return null;
-		else
-			return new android.opengl.GLSurfaceView.EGLConfigChooser() {
-
-				public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
-
-					// Ensure that we get a 16bit depth-buffer. Otherwise, we'll fall
-					// back to Pixelflinger on some device (read: Samsung I7500)
-					int[] attributes = new int[] {EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE};
-					EGLConfig[] configs = new EGLConfig[1];
-					int[] result = new int[1];
-					egl.eglChooseConfig(display, attributes, configs, 1, result);
-					return configs[0];
-				}
-			};
+		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples, config.useGL20);
+		
+//		if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
+//			return null;
+//		else
+//			return new android.opengl.GLSurfaceView.EGLConfigChooser() {
+//
+//				public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
+//
+//					// Ensure that we get a 16bit depth-buffer. Otherwise, we'll fall
+//					// back to Pixelflinger on some device (read: Samsung I7500)
+//					int[] attributes = new int[] {EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE};
+//					EGLConfig[] configs = new EGLConfig[1];
+//					int[] result = new int[1];
+//					egl.eglChooseConfig(display, attributes, configs, 1, result);
+//					return configs[0];
+//				}
+//			};
 	}
 
 	private void updatePpi () {
@@ -309,13 +310,16 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		int b = getAttrib(egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
 		int a = getAttrib(egl, display, config, EGL10.EGL_ALPHA_SIZE, 0);
 		int d = getAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
-		int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);
+		int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);		
+		int samples = Math.max(getAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0),
+							   	  getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
 
 		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
 		Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
 		Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
+		Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
 
-		bufferFormat = new BufferFormat(r, g, b, a, d, s, 0);
+		bufferFormat = new BufferFormat(r, g, b, a, d, s, samples);
 	}
 
 	int[] value = new int[1];
