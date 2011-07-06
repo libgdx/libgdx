@@ -21,6 +21,9 @@ public class AndroidApplicationConfiguration {
 	/** number of bits for depth and stencil buffer **/
 	public int depth = 16, stencil = 0;	
 	
+	/** number of samples for CSAA/MSAA, 2 is a good value **/
+	public int numSamples = 0;
+	
 	/** whether to use the accelerometer. default: true **/
 	public boolean useAccelerometer = true;
 	

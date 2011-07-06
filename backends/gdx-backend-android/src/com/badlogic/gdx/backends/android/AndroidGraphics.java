@@ -99,6 +99,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
         if (useGL2 && checkGL20()) {
             GLSurfaceView20 view = new GLSurfaceView20(activity, resolutionStrategy);
             if (configChooser != null) view.setEGLConfigChooser(configChooser);
+            else view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
             view.setRenderer(this);
             return view;
         } else {
