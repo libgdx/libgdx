@@ -258,7 +258,7 @@ final class JoglGL20 implements GL20 {
 		gl.glGenerateMipmapEXT(target);
 	}
 
-	@Override public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
+	@Override public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {		
 		throw new UnsupportedOperationException("not implemented"); // FIXME
 	}
 

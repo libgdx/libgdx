@@ -123,13 +123,14 @@ public class ShaderProgram implements Disposable {
 
 		this.vertexShaderSource = vertexShader;
 		this.fragmentShaderSource = fragmentShader;
+		this.matrix = BufferUtils.newFloatBuffer(16);
 
-		compileShaders(vertexShader, fragmentShader);
-
-		ByteBuffer buffer = ByteBuffer.allocateDirect(4 * 16);
-		buffer.order(ByteOrder.nativeOrder());
-		matrix = buffer.asFloatBuffer();
-		addManagedShader(Gdx.app, this);
+		compileShaders(vertexShader, fragmentShader);				
+		if(isCompiled()) {			
+//			fetchAttributes();
+//			fetchUniforms();			
+			addManagedShader(Gdx.app, this);			
+		}
 	}
 
 	/**
@@ -635,4 +636,36 @@ public class ShaderProgram implements Disposable {
 			intBuffer = buffer.asIntBuffer();
 		}
 	}
+	
+	IntBuffer params = BufferUtils.newIntBuffer(1);
+	IntBuffer type = BufferUtils.newIntBuffer(1);
+	private void fetchUniforms() {
+		params.clear();
+		Gdx.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_UNIFORMS, params);
+		int numAttributes = params.get(0);
+				
+		for(int i = 0; i < numAttributes; i++) {
+			params.clear();
+			params.put(0, 256);
+			type.clear();
+			String name = Gdx.gl20.glGetActiveUniform(program, i, params, type);
+			int location = Gdx.gl20.glGetUniformLocation(program, name);
+			uniforms.put(name, location);
+		}
+	}
+	
+	private void fetchAttributes() {
+		params.clear();
+		Gdx.gl20.glGetProgramiv(program, GL20.GL_ACTIVE_ATTRIBUTES, params);
+		int numAttributes = params.get(0);
+				
+		for(int i = 0; i < numAttributes; i++) {
+			params.clear();
+			params.put(0, 256);
+			type.clear();
+			String name = Gdx.gl20.glGetActiveAttrib(program, i, params, type);
+			int location = Gdx.gl20.glGetAttribLocation(program, name);
+			attributes.put(name, location);
+		}
+	}	
 }

@@ -23,6 +23,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -286,11 +287,19 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		throw new UnsupportedOperationException("not implemented"); // FIXME
+		// FIXME this is less than ideal of course...		
+		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);		
+		String name = GL20.glGetActiveAttrib(program, index, 256, typeTmp);
+		if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		return name;
 	}
 
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		throw new UnsupportedOperationException("not implemented"); // FIXME
+		// FIXME this is less than ideal of course...		
+		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);		
+		String name = GL20.glGetActiveUniform(program, index, 256, typeTmp);
+		if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		return name;
 	}
 
 	public void glGetAttachedShaders (int program, int maxcount, Buffer count, IntBuffer shaders) {
