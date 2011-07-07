@@ -112,7 +112,7 @@ public class Slider extends Widget {
 		if(invalidated) layout();
 		
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		sliderPos = value / (max-min) * (width - knob.getRegionWidth());
+		sliderPos = (value-min) / (max-min) * (width - knob.getRegionWidth());
 		sliderPos = Math.max(0, sliderPos);
 		sliderPos = Math.min(width - knob.getRegionWidth(), sliderPos);
 		
@@ -205,7 +205,7 @@ public class Slider extends Widget {
 	 * @return the current value of the slider
 	 */
 	public float getValue() {
-		return (int)(value / steps) * steps;	
+		return (float)Math.floor(value / steps) * steps;	
 	}	
 	
 	/**

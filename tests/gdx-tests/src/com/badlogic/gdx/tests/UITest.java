@@ -1,5 +1,4 @@
 package com.badlogic.gdx.tests;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.ValueChangedListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
@@ -93,6 +93,13 @@ public class UITest extends GdxTest {
 		textfield.setTextFieldListener(new TextFieldListener() {			
 			@Override public void keyTyped (TextField textField, char key) {
 				if(key == '\n') textField.getOnscreenKeyboard().show(false);
+			}
+		});
+		
+		slider.setValueChangedListener(new ValueChangedListener() {
+			
+			@Override public void changed (Slider slider, float value) {
+				Gdx.app.log("UITest", "slider: " + value);
 			}
 		});
 		

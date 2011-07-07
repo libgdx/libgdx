@@ -34,7 +34,7 @@ public class PixelsPerInchTest extends GdxTest {
 	@Override public void create () {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal("data/ui.png"));
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 	}
 
 	public void render () {
