@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.Pool;
  * memory management facilities.
  * @author mzechner
  */
-public class World implements Disposable {
+public final class World implements Disposable {
 	/** pool for bodies **/
 	protected final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
 		@Override protected Body newObject () {
