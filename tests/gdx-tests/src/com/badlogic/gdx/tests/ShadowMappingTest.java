@@ -58,7 +58,7 @@ public class ShadowMappingTest extends GdxTest {
 	}
 	
 	private void setupScene() {
-		plane = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 3, "a_Position"));
+		plane = new Mesh(true, 4, 4, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 		plane.setVertices(new float[] { -10, -1, 10, 
 												   10, -1, 10,
 												   10, -1, -10,
@@ -131,7 +131,7 @@ public class ShadowMappingTest extends GdxTest {
 	}
 	
 	@Override public void render() {
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling?GL20.GL_COVERAGE_BUFFER_BIT_NV:0));
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);						
 		
 		if(currShader == flatShader) {

@@ -106,8 +106,12 @@ public interface Graphics {
 		public final int depth, stencil;
 		/** number of samples for MSAA **/
 		public final int samples;
+		/** whether coverage sampling anti-aliasing is used. in that case
+		 * you have to clear the coverage buffer as well!
+		 */
+		public final boolean coverageSampling;
 		
-		public BufferFormat(int r, int g, int b, int a, int depth, int stencil, int samples) {
+		public BufferFormat(int r, int g, int b, int a, int depth, int stencil, int samples, boolean coverageSampling) {
 			this.r = r;
 			this.g = g;
 			this.b = b;
@@ -115,10 +119,11 @@ public interface Graphics {
 			this.depth = depth;
 			this.stencil = stencil;
 			this.samples = samples;
+			this.coverageSampling = coverageSampling;
 		}
 		
 		public String toString() {
-			return "r: " + r + ", g: " + g + ", b: " + b + ", a: " + a + ", depth: " + depth + ", stencil: " + stencil + ", num samples: " + samples;
+			return "r: " + r + ", g: " + g + ", b: " + b + ", a: " + a + ", depth: " + depth + ", stencil: " + stencil + ", num samples: " + samples + ", coverage sampling: " + coverageSampling;
 		}
 	}
 

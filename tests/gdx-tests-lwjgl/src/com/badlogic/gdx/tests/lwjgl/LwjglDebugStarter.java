@@ -17,10 +17,15 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.FilterPerformanceTest;
+import com.badlogic.gdx.tests.ProjectiveTextureTest;
+import com.badlogic.gdx.tests.ShadowMappingTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();			
-		new LwjglApplication(new com.badlogic.gdx.tests.InputTest(), config);
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useGL20 = true;
+		config.samples = 0;
+		new LwjglApplication(new ShadowMappingTest(), config);
 	}
 }

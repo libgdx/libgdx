@@ -1,5 +1,5 @@
-attribute vec4 a_Position;
-attribute vec3 a_Normal;
+attribute vec4 a_position;
+attribute vec3 a_normal;
 
 uniform mat4 u_camera;
 uniform mat4 u_projector;
@@ -14,8 +14,8 @@ varying vec3 v_normal;
 varying vec3 v_position;
 
 void main() {	
-	vec4 worldPos = u_model * a_Position;
-	vec3 worldNormal = (u_modelNormal * vec4(a_Normal, 1)).xyz;	
+	vec4 worldPos = u_model * a_position;
+	vec3 worldNormal = (u_modelNormal * vec4(a_normal, 1)).xyz;	
 	
 	v_position = worldPos.xyz;
 	v_normal = worldNormal.xyz;		

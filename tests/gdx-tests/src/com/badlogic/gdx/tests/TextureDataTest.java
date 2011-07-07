@@ -31,35 +31,7 @@ public class TextureDataTest extends GdxTest {
 	public void create () {
 		spriteBatch = new SpriteBatch();
 
-		sprite = new Sprite(new Texture(new TextureData() {
-//			public void load () {
-//				FileHandle file = Gdx.files.internal("data/raw.bin");
-//				InputStream input = file.read();
-//				ByteBuffer buffer = ByteBuffer.allocateDirect((int)file.length());
-//				buffer.order(ByteOrder.nativeOrder());
-//				byte[] bytes = new byte[1024];
-//				try {
-//					while (true) {
-//						int length = input.read(bytes);
-//						if (length == -1) break;
-//						buffer.put(bytes, 0, length);
-//					}
-//				} catch (IOException ex) {
-//					throw new GdxRuntimeException(ex);
-//				}
-//				buffer.flip();
-//				Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, getWidth(), getHeight(), 0, GL10.GL_RGBA,
-//					GL10.GL_UNSIGNED_SHORT_4_4_4_4, buffer);
-//			}
-//
-//			public int getWidth () {
-//				return 512;
-//			}
-//
-//			public int getHeight () {
-//				return 512;
-//			}
-			
+		sprite = new Sprite(new Texture(new TextureData() {			
 			int width = 0;
 			int height = 0;
 			

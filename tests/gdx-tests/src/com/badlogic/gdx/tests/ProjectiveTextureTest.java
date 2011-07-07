@@ -62,8 +62,8 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 	
 	public void setupScene() {
-		plane = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_Position"),
-											  new VertexAttribute(Usage.Normal, 3, "a_Normal"));
+		plane = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+											  new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		plane.setVertices(new float[] { -10, -1, 10, 0, 1, 0, 
 												   10, -1, 10, 0, 1, 0, 
 												   10, -1, -10, 0, 1, 0,

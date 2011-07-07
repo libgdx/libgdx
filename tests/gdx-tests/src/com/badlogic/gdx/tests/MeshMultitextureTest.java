@@ -65,7 +65,7 @@ public class MeshMultitextureTest extends GdxTest {
 		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 
 		tex1 = new Texture(Gdx.files.internal("data/planet_earth.png"));
-		tex2 = new Texture(Gdx.files.internal("data/planet_heavyclouds.png"));
+		tex2 = new Texture(Gdx.files.internal("data/planet_heavyclouds.jpg"));
 	}
 
 	@Override public boolean needsGL20 () {

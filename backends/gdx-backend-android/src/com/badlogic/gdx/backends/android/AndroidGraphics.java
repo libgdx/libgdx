@@ -82,7 +82,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private float ppcY = 0;
 
 	private final AndroidApplicationConfiguration config;
-	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0);
+	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 
 	public AndroidGraphics (AndroidApplication activity, AndroidApplicationConfiguration config, ResolutionStrategy resolutionStrategy) {
 		this.config = config;
@@ -313,13 +313,15 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);		
 		int samples = Math.max(getAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0),
 							   	  getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
+		boolean coverageSample = getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
 
 		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
 		Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
 		Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
 		Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
+		Gdx.app.log("AndroidGraphics", "coverage sampling: (" + coverageSample + ")");
 
-		bufferFormat = new BufferFormat(r, g, b, a, d, s, samples);
+		bufferFormat = new BufferFormat(r, g, b, a, d, s, samples, coverageSample);
 	}
 
 	int[] value = new int[1];

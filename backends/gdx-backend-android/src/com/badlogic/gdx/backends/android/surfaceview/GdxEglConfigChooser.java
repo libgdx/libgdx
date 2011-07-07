@@ -58,12 +58,12 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 			mConfigAttribs = new int[] {EGL10.EGL_RED_SIZE, 4, 
 												 EGL10.EGL_GREEN_SIZE, 4, 
 												 EGL10.EGL_BLUE_SIZE, 4,
-												 EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, 
+												 EGL10.EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,												 
 												 EGL10.EGL_NONE};
 		} else {
 			mConfigAttribs = new int[] {EGL10.EGL_RED_SIZE, 4, 
 												 EGL10.EGL_GREEN_SIZE, 4, 
-												 EGL10.EGL_BLUE_SIZE, 4, 
+												 EGL10.EGL_BLUE_SIZE, 4,												 
 												 EGL10.EGL_NONE};
 		}
 	}
@@ -136,8 +136,8 @@ public class GdxEglConfigChooser implements GLSurfaceView.EGLConfigChooser {
 			// exposed in the Android bindings. We'd have to link agains the NVidia SDK and
 			// that is simply not going to happen.
 //			// still no luck, let's try CSAA support
-//			hasSampleBuffers = findConfigAttrib(egl, display, config, EGL_COVERAGE_BUFFERS_NV, 0);
-//			numSamples = findConfigAttrib(egl, display, config, EGL_COVERAGE_SAMPLES_NV, 0);
+			hasSampleBuffers = findConfigAttrib(egl, display, config, EGL_COVERAGE_BUFFERS_NV, 0);
+			numSamples = findConfigAttrib(egl, display, config, EGL_COVERAGE_SAMPLES_NV, 0);
 			
 			// We take the first sort of matching config, thank you.
 			if(bestAA == null && hasSampleBuffers == 1 && numSamples >= mNumSamples && r == mRedSize && g == mGreenSize && b == mBlueSize && a == mAlphaSize) {

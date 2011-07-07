@@ -327,6 +327,6 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 
 	@Override public BufferFormat getBufferFormat () {
 		GLCapabilities caps = canvas.getChosenGLCapabilities();
-		return new BufferFormat(caps.getRedBits(), caps.getGreenBits(), caps.getBlueBits(), caps.getAlphaBits(), caps.getDepthBits(), caps.getStencilBits(), caps.getNumSamples());		
+		return new BufferFormat(caps.getRedBits(), caps.getGreenBits(), caps.getBlueBits(), caps.getAlphaBits(), caps.getDepthBits(), caps.getStencilBits(), caps.getNumSamples(), false);		
 	}
 }

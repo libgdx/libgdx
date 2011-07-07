@@ -54,7 +54,7 @@ public final class LwjglGraphics implements Graphics {
 	boolean vsync = false;
 	boolean resize = false;
 	LwjglApplicationConfiguration config;
-	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0);
+	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {		
 		this.config = config;
@@ -151,32 +151,32 @@ public final class LwjglGraphics implements Graphics {
 		int samples = 0;
 		try {
 			Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
-			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples);
+			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
 		} catch (Exception ex) {
 			Display.destroy();
 			try {
 				Display.create(new PixelFormat(0, 16, 8));
 				if(getDesktopDisplayMode().bitsPerPixel == 16) {
-					bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 8, 0);
+					bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 8, 0, false);
 				}
 				if(getDesktopDisplayMode().bitsPerPixel == 24) {
-					bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 8, 0);
+					bufferFormat = new BufferFormat(8, 8, 8, 0, 16, 8, 0, false);
 				}
 				if(getDesktopDisplayMode().bitsPerPixel == 32) {
-					bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0);
+					bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
 				}
 			} catch (Exception ex2) {
 				Display.destroy();
 				try {
 					Display.create(new PixelFormat());
 					if(getDesktopDisplayMode().bitsPerPixel == 16) {
-						bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0);
+						bufferFormat = new BufferFormat(5, 6, 5, 0, 8, 0, 0, false);
 					}
 					if(getDesktopDisplayMode().bitsPerPixel == 24) {
-						bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0);
+						bufferFormat = new BufferFormat(8, 8, 8, 0, 8, 0, 0, false);
 					}
 					if(getDesktopDisplayMode().bitsPerPixel == 32) {
-						bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0);
+						bufferFormat = new BufferFormat(8, 8, 8, 8, 8, 0, 0, false);
 					}
 				} catch (Exception ex3) {
 					if (ex3.getMessage().contains("Pixel format not accelerated"))
