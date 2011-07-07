@@ -63,6 +63,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class Texture implements Disposable {
 	 static private boolean enforcePotImages = true;
+	 static boolean useHWMipMap = true;
 
 	/**
 	 * Texture filter enum
@@ -320,6 +321,11 @@ public class Texture implements Disposable {
 	}
 	
 	private void generateMipMap(Pixmap pixmap, boolean disposePixmap) {
+		if(!useHWMipMap) {
+			generateMipMapCPU(pixmap, disposePixmap);
+			return;
+		}
+		
 		if(Gdx.app.getType() == ApplicationType.Android) {
 			if(Gdx.graphics.isGL20Available())
 				generateMipMapGLES20(pixmap, disposePixmap);
@@ -542,6 +548,10 @@ public class Texture implements Disposable {
 
 	static public void setEnforcePotImages (boolean enforcePotImages) {
 		Texture.enforcePotImages = enforcePotImages;
+	}
+	
+	static public void setUseHardwareMipMap(boolean useHWMipMap) {
+		Texture.useHWMipMap = useHWMipMap;
 	}
 
 	public TextureWrap getUWrap () {		
