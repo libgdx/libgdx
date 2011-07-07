@@ -361,7 +361,7 @@ public final class LwjglGraphics implements Graphics {
 		if(!vsync && !config.useCPUSynch) Display.setVSyncEnabled(false);
 	}
 	
-	@Override public boolean hasExtension (String extension) {
+	@Override public boolean supportsExtension (String extension) {
 		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}

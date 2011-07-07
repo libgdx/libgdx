@@ -546,7 +546,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override public void setVSync (boolean vsync) {
 	}
 
-	@Override public boolean hasExtension (String extension) {
+	@Override public boolean supportsExtension (String extension) {
 		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}

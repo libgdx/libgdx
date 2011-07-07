@@ -25,6 +25,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.util.List;
 
+import javax.media.opengl.GL;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCanvas;
 import javax.media.opengl.GLCapabilities;
@@ -332,8 +333,8 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		return new BufferFormat(caps.getRedBits(), caps.getGreenBits(), caps.getBlueBits(), caps.getAlphaBits(), caps.getDepthBits(), caps.getStencilBits(), caps.getNumSamples(), false);		
 	}
 	
-	@Override public boolean hasExtension (String extension) {
+	@Override public boolean supportsExtension (String extension) {
 		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
-		return extensions.contains(extension);
+		return extensions.contains(extension);		
 	}
 }

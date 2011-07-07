@@ -278,7 +278,7 @@ public interface Graphics {
 	 * @param extension the extension name
 	 * @return whether the extension is supported
 	 */
-	public boolean hasExtension(String extension);
+	public boolean supportsExtension(String extension);
 	
 //	/**
 //	 * Opens the first back facing video camera. Only one camera

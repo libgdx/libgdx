@@ -24,6 +24,8 @@ import java.nio.IntBuffer;
  * 
  */
 public interface GLCommon {
+	public static final int GL_GENERATE_MIPMAP = 0x8191;
+
 	public void glActiveTexture (int texture);
 
 	public void glBindTexture (int target, int texture);
