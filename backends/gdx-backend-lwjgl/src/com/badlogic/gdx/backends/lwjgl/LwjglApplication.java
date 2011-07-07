@@ -130,9 +130,7 @@ public class LwjglApplication implements Application {
 		graphics.resize = false;
 
 		int lastWidth = graphics.getWidth();
-		int lastHeight = graphics.getHeight();
-
-		Gdx.app.log("LwjglApplication", "extension: " + Gdx.gl.glGetString(GL10.GL_EXTENSIONS));
+		int lastHeight = graphics.getHeight();	
 		
 		graphics.lastTime = System.nanoTime();
 		while (running && !Display.isCloseRequested()) {
