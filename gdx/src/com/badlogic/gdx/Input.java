@@ -201,6 +201,18 @@ public interface Input {
 		public static final int BUTTON_START = 108;
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
+		public static final int F1 = 244;
+		public static final int F2 = 245;
+		public static final int F3 = 246;
+		public static final int F4 = 247;
+		public static final int F5 = 248;
+		public static final int F6 = 249;
+		public static final int F7 = 250;
+		public static final int F8 = 251;
+		public static final int F9 = 252;
+		public static final int F10 = 253;
+		public static final int F11 = 254;
+		public static final int F12 = 255;
 	}
 	
 	/**

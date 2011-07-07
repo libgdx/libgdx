@@ -300,6 +300,18 @@ final class LwjglInput implements Input {
 		case Keyboard.KEY_BACK: return Input.Keys.DEL;		
 		case Keyboard.KEY_SUBTRACT: return Input.Keys.MINUS;		
 		case Keyboard.KEY_APOSTROPHE: return Input.Keys.APOSTROPHE;
+		case Keyboard.KEY_F1: return Input.Keys.F1;
+		case Keyboard.KEY_F2: return Input.Keys.F2;
+		case Keyboard.KEY_F3: return Input.Keys.F3;
+		case Keyboard.KEY_F4: return Input.Keys.F4;
+		case Keyboard.KEY_F5: return Input.Keys.F5;		
+		case Keyboard.KEY_F6: return Input.Keys.F6;
+		case Keyboard.KEY_F7: return Input.Keys.F7;
+		case Keyboard.KEY_F8: return Input.Keys.F8;
+		case Keyboard.KEY_F9: return Input.Keys.F9;
+		case Keyboard.KEY_F10: return Input.Keys.F10;
+		case Keyboard.KEY_F11: return Input.Keys.F11;
+		case Keyboard.KEY_F12: return Input.Keys.F12;		
 		
 		default:
 			return Input.Keys.UNKNOWN;
@@ -428,6 +440,18 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_RCONTROL;
 		case Input.Keys.ESCAPE:
 			return Keyboard.KEY_ESCAPE;
+		case Input.Keys.F1: return Keyboard.KEY_F1;
+		case Input.Keys.F2: return Keyboard.KEY_F2;
+		case Input.Keys.F3: return Keyboard.KEY_F3;
+		case Input.Keys.F4: return Keyboard.KEY_F4;
+		case Input.Keys.F5: return Keyboard.KEY_F5;
+		case Input.Keys.F6: return Keyboard.KEY_F6;
+		case Input.Keys.F7: return Keyboard.KEY_F7;
+		case Input.Keys.F8: return Keyboard.KEY_F8;
+		case Input.Keys.F9: return Keyboard.KEY_F9;		
+		case Input.Keys.F10: return Keyboard.KEY_F10;
+		case Input.Keys.F11: return Keyboard.KEY_F11;
+		case Input.Keys.F12: return Keyboard.KEY_F12;
 		default:
 			return Keyboard.KEY_NONE;
 		}

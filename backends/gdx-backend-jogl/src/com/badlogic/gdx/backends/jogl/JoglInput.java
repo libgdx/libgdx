@@ -486,6 +486,18 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		if (keyCode == java.awt.event.KeyEvent.VK_NUMPAD5) return Input.Keys.DPAD_CENTER;
 		if (keyCode == java.awt.event.KeyEvent.VK_PAGE_UP) return Input.Keys.PAGE_UP;
 		if (keyCode == java.awt.event.KeyEvent.VK_PAGE_DOWN) return Input.Keys.PAGE_DOWN;
+		if (keyCode == java.awt.event.KeyEvent.VK_F1) return Input.Keys.F1;
+		if (keyCode == java.awt.event.KeyEvent.VK_F2) return Input.Keys.F2;
+		if (keyCode == java.awt.event.KeyEvent.VK_F3) return Input.Keys.F3;
+		if (keyCode == java.awt.event.KeyEvent.VK_F4) return Input.Keys.F4;		
+		if (keyCode == java.awt.event.KeyEvent.VK_F5) return Input.Keys.F5;
+		if (keyCode == java.awt.event.KeyEvent.VK_F6) return Input.Keys.F6;
+		if (keyCode == java.awt.event.KeyEvent.VK_F7) return Input.Keys.F7;
+		if (keyCode == java.awt.event.KeyEvent.VK_F8) return Input.Keys.F8;
+		if (keyCode == java.awt.event.KeyEvent.VK_F9) return Input.Keys.F9;		
+		if (keyCode == java.awt.event.KeyEvent.VK_F10) return Input.Keys.F10;
+		if (keyCode == java.awt.event.KeyEvent.VK_F11) return Input.Keys.F11;
+		if (keyCode == java.awt.event.KeyEvent.VK_F12) return Input.Keys.F12;
 
 		return Input.Keys.UNKNOWN;
 	}
