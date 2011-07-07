@@ -112,7 +112,7 @@ public class SpriteCache implements Disposable {
 
 		mesh = new Mesh(true, size * (useIndices ? 4 : 6), useIndices ? size * 6 : 0, new VertexAttribute(Usage.Position, 2,
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2,
-			ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
+			ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setAutoBind(false);
 
 		if (useIndices) {
@@ -1043,7 +1043,7 @@ public class SpriteCache implements Disposable {
 		if (!Gdx.graphics.isGL20Available()) return null;
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 		+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-		+ "attribute vec2 " + ShaderProgram.TEXCOORDS_ATTRIBUTE + "0;\n" //
+		+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 		+ "uniform mat4 u_projectionViewMatrix;\n" //
 		+ "varying vec4 v_color;\n" //
 		+ "varying vec2 v_texCoords;\n" //
@@ -1051,7 +1051,7 @@ public class SpriteCache implements Disposable {
 		+ "void main()\n" //
 		+ "{\n" //
 		+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-		+ "   v_texCoords = " + ShaderProgram.TEXCOORDS_ATTRIBUTE + "0;\n" //
+		+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 		+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 		+ "}\n";
 	String fragmentShader = "#ifdef GL_ES\n" //

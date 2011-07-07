@@ -216,7 +216,7 @@ public class G3dtLoader {
 		attributes[idx++] = new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
 		if(hasNormals) attributes[idx++] = new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 		for(int i = 0; i < uvs; i++) {
-			attributes[idx++] = new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + i);
+			attributes[idx++] = new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + i);
 		}		
 		return attributes;
 	}

@@ -187,7 +187,7 @@ public class ObjLoader {
 		ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
 		attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 		if (numNormals > 0) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
-		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
+		if (numUV > 0) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
 		mesh.setVertices(verts);

@@ -145,7 +145,7 @@ public class MD2Loader implements KeyframedModelLoader {
 		
 		Mesh mesh = new Mesh(false, header.numVertices, indices.length, 
 									new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-									new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
+									new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setIndices(indices);
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);

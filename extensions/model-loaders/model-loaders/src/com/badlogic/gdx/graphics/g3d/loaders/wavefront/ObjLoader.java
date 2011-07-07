@@ -211,7 +211,7 @@ public class ObjLoader implements StillModelLoader {
 						.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs)
 				attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2,
-						ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
+						ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 			mesh = new Mesh(true, numFaces * 3, 0,
 					attributes.toArray(new VertexAttribute[attributes.size()]));

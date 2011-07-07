@@ -73,7 +73,7 @@ public class ShaderProgram implements Disposable {
 	/** default name for color attributes **/
 	public static final String COLOR_ATTRIBUTE = "a_color";
 	/** default name for texcoords attributes, append texture unit number **/
-	public static final String TEXCOORDS_ATTRIBUTE = "a_texCoords";
+	public static final String TEXCOORD_ATTRIBUTE = "a_texCoord";
 	/** default name for tangent attribute **/
 	public static final String TANGENT_ATTRIBUTE = "a_tangent";
 	/** default name for binormal attribute **/

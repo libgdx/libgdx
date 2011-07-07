@@ -18,8 +18,8 @@ public class ModelViewerActivity extends AndroidApplication {
         config.useCompass = false;
         config.useWakelock = true;
         
-        initialize(new QbobViewer(), config);
-//        initialize(new KeyframedModelViewer("data/boy.g3dt", "data/boy.png"), config);
+//        initialize(new QbobViewer(), config);
+        initialize(new KeyframedModelViewer("data/knight.g3d", "data/knight.jpg"), config);
 //        initialize(new SkeletonModelViewer("data/ninja.mesh.xml", "data/ninja.jpg"), config);
     }
 }

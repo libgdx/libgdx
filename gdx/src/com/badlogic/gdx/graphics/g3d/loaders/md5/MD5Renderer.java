@@ -80,14 +80,14 @@ public class MD5Renderer implements Disposable{
 		{
 			this.mesh = new Mesh( false, maxVertices, maxIndices, 
 				     new VertexAttribute( VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE ), 
-					 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0" ),
+					 new VertexAttribute( VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0" ),
 					 new VertexAttribute( VertexAttributes.Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE ) );	
 		}
 		else
 		{
 			this.mesh = new Mesh(false, maxVertices, maxIndices,
 					new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
-					new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + "0"));
+					new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		}
 	}
 

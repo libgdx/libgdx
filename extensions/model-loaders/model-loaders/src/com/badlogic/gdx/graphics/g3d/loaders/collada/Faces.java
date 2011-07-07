@@ -199,7 +199,7 @@ public class Faces {
 			int usage = getVertexAttributeUsage(semantic);
 			int components = source.components;
 			String alias = getVertexAttributeAlias(semantic);
-			if(alias.equals(ShaderProgram.TEXCOORDS_ATTRIBUTE)) alias += texUnit++;						
+			if(alias.equals(ShaderProgram.TEXCOORD_ATTRIBUTE)) alias += texUnit++;						
 			attributes[i] = new VertexAttribute(usage, components, alias);
 		}
 		return attributes;
@@ -222,7 +222,7 @@ public class Faces {
 	
 	private String getVertexAttributeAlias (String attribute) {
 		if(attribute.equals(VERTEX)) return ShaderProgram.POSITION_ATTRIBUTE;
-		if(attribute.equals(TEXCOORD)) return ShaderProgram.TEXCOORDS_ATTRIBUTE;
+		if(attribute.equals(TEXCOORD)) return ShaderProgram.TEXCOORD_ATTRIBUTE;
 		if(attribute.equals(NORMAL)) return ShaderProgram.NORMAL_ATTRIBUTE;
 		if(attribute.equals(TANGENT)) return ShaderProgram.TANGENT_ATTRIBUTE;
 		if(attribute.equals(BITANGENT)) return ShaderProgram.BINORMAL_ATTRIBUTE;

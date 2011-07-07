@@ -136,7 +136,7 @@ public class OgreXmlLoader {
 						case 6: numTexCoords = Integer.valueOf(buffer.getTextureCoordDimensions6()); break;
 						case 7: numTexCoords = Integer.valueOf(buffer.getTextureCoordDimensions7()); break;
 						}
-						attributes.add(new VertexAttribute(Usage.TextureCoordinates, numTexCoords, ShaderProgram.TEXCOORDS_ATTRIBUTE + k));						
+						attributes.add(new VertexAttribute(Usage.TextureCoordinates, numTexCoords, ShaderProgram.TEXCOORD_ATTRIBUTE + k));						
 						offset += numTexCoords;
 					} catch(NumberFormatException e) {
 						throw new GdxRuntimeException("Can't process texture coords with dimensions != 1, 2, 3, 4 (e.g. float1)");

@@ -58,7 +58,7 @@ public class ImmediateModeRenderer20 {
 		if(hasNormals) attribs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		if(hasColor) attribs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		for(int i = 0; i < numTexCoords; i++) {
-			attribs.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORDS_ATTRIBUTE + i));
+			attribs.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + i));
 		}
 		VertexAttribute[] array = new VertexAttribute[attribs.size];
 		for(int i = 0; i < attribs.size; i++) array[i] = attribs.get(i);
@@ -71,7 +71,7 @@ public class ImmediateModeRenderer20 {
 				        + (hasColors?"attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n": "");
 		
 		for(int i = 0; i < numTexCoords; i++) {
-			shader += "attribute vec2 " + ShaderProgram.TEXCOORDS_ATTRIBUTE + i + ";\n";
+			shader += "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
 		}
 		
 		shader += "uniform mat4 u_projModelView;\n";		
@@ -86,7 +86,7 @@ public class ImmediateModeRenderer20 {
 			    +  (hasColors?"   v_col = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n":"");
 		
 		for(int i = 0; i < numTexCoords; i++) {
-			shader += "   v_tex" + i + " = " + ShaderProgram.TEXCOORDS_ATTRIBUTE + i + ";\n";
+			shader += "   v_tex" + i + " = " + ShaderProgram.TEXCOORD_ATTRIBUTE + i + ";\n";
 		}
 		
 		shader += "}\n";
