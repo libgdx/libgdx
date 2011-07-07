@@ -274,6 +274,12 @@ public interface Graphics {
 	 */
 	public BufferFormat getBufferFormat();
 	
+	/**
+	 * @param extension the extension name
+	 * @return whether the extension is supported
+	 */
+	public boolean hasExtension(String extension);
+	
 //	/**
 //	 * Opens the first back facing video camera. Only one camera
 //	 * can be opened at any given time.

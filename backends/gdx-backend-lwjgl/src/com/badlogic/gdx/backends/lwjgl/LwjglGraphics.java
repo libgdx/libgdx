@@ -55,6 +55,7 @@ public final class LwjglGraphics implements Graphics {
 	boolean resize = false;
 	LwjglApplicationConfiguration config;
 	BufferFormat bufferFormat = new BufferFormat(8, 8, 8, 8, 16, 8, 0, false);
+	String extensions;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {		
 		this.config = config;
@@ -358,5 +359,10 @@ public final class LwjglGraphics implements Graphics {
 		this.vsync = vsync;
 		if(vsync && !config.useCPUSynch) Display.setVSyncEnabled(true);
 		if(!vsync && !config.useCPUSynch) Display.setVSyncEnabled(false);
+	}
+	
+	@Override public boolean hasExtension (String extension) {
+		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+		return extensions.contains(extension);
 	}
 }

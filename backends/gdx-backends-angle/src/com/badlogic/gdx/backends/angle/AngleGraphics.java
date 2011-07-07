@@ -17,6 +17,7 @@ package com.badlogic.gdx.backends.angle;
 
 import java.awt.Toolkit;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL10;
@@ -36,6 +37,7 @@ public class AngleGraphics implements Graphics {
 	int fps;
 	int frames;
 	float deltaTime = 0;
+	String extensions;
 
 	AngleGraphics (int width, int height) {
 		gl = new AngleGLES20();
@@ -154,5 +156,10 @@ public class AngleGraphics implements Graphics {
 
 	@Override public BufferFormat getBufferFormat () {
 		return null;
+	}
+	
+	@Override public boolean hasExtension (String extension) {
+		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+		return extensions.contains(extension);
 	}
 }

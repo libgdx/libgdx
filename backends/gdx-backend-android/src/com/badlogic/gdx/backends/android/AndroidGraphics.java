@@ -62,6 +62,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	GL11 gl11;
 	GL20 gl20;
 	GLU glu;
+	String extensions;
 
 	private long lastFrameTime = System.nanoTime();
 	private float deltaTime = 0;
@@ -543,5 +544,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	@Override public void setVSync (boolean vsync) {
+	}
+
+	@Override public boolean hasExtension (String extension) {
+		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+		return extensions.contains(extension);
 	}
 }

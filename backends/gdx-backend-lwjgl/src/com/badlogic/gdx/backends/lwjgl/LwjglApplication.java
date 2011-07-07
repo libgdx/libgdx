@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -33,6 +34,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -130,6 +132,8 @@ public class LwjglApplication implements Application {
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();
 
+		Gdx.app.log("LwjglApplication", "extension: " + Gdx.gl.glGetString(GL10.GL_EXTENSIONS));
+		
 		graphics.lastTime = System.nanoTime();
 		while (running && !Display.isCloseRequested()) {
 			graphics.updateTime();

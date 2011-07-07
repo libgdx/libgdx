@@ -36,6 +36,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -52,6 +53,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	boolean exclusiveMode = false;
 	final JoglDisplayMode desktopMode;
 	final JoglApplicationConfiguration config; 
+	String extensions;
 
 	public JoglGraphics (ApplicationListener listener, JoglApplicationConfiguration config) {
 		initialize(config);
@@ -328,5 +330,10 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	@Override public BufferFormat getBufferFormat () {
 		GLCapabilities caps = canvas.getChosenGLCapabilities();
 		return new BufferFormat(caps.getRedBits(), caps.getGreenBits(), caps.getBlueBits(), caps.getAlphaBits(), caps.getDepthBits(), caps.getStencilBits(), caps.getNumSamples(), false);		
+	}
+	
+	@Override public boolean hasExtension (String extension) {
+		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+		return extensions.contains(extension);
 	}
 }
