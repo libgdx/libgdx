@@ -33,6 +33,7 @@ public class InverseKinematicsTest extends GdxTest {
 		}
 	}
 	
+	static final float GRAVITY = 0;
 	OrthographicCamera camera;
 	ImmediateModeRenderer renderer;	
 	Bone[] bones;
@@ -50,7 +51,7 @@ public class InverseKinematicsTest extends GdxTest {
 									new Bone("bone2", 0, 4, 2),
 									new Bone("bone3", 0, 6, 2),
 									new Bone("end", 0, 8, 2)};
-		globalCoords.set(bones[0].position);
+		globalCoords.set(bones[0].position);		
 	}
 	
 	@Override public void render() {
@@ -87,7 +88,7 @@ public class InverseKinematicsTest extends GdxTest {
 		
 		
 	public void solveFakeIK(Vector3 target) {				
-		float gravity = Gdx.graphics.getDeltaTime() * 5;
+		float gravity = Gdx.graphics.getDeltaTime() * GRAVITY;
 		
 		endPoint.set(target);
 		bones[0].position.set(endPoint);
@@ -97,7 +98,7 @@ public class InverseKinematicsTest extends GdxTest {
 			endPoint.set(bone.position);			
 			
 			diff.set(endPoint.x, endPoint.y).sub(bones[i+1].position.x, bones[i+1].position.y);
-//			diff.add(0, gravity);
+			diff.add(0, gravity);
 			diff.add(bones[i+1].inertia.x, bones[i+1].inertia.y);
 			diff.nor().mul(bones[i+1].len);
 			
