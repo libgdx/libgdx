@@ -133,7 +133,11 @@ public class LwjglApplication implements Application {
 		int lastHeight = graphics.getHeight();	
 		
 		graphics.lastTime = System.nanoTime();
-		while (running && !Display.isCloseRequested()) {
+		while (running) {
+			if(Display.isCloseRequested()) {
+				exit();
+			}
+			
 			graphics.updateTime();
 			if(graphics.resize) {
 				graphics.resize = false;
@@ -266,6 +270,8 @@ public class LwjglApplication implements Application {
 			@Override public void run () {
 				LwjglApplication.this.listener.pause();
 				LwjglApplication.this.listener.dispose();
+				Display.destroy();
+				audio.dispose();				
 				System.exit(-1);
 			}			
 		});
