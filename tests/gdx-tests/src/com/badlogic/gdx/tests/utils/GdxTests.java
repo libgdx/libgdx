@@ -82,6 +82,7 @@ public class GdxTests
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
 		IntegerBitmapFontTest.class,
+		InverseKinematicsTest.class,
 		IsoCamTest.class,
 		IsometricTileTest.class,
 		KinematicBodyTest.class,

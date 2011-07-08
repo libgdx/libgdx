@@ -92,7 +92,7 @@ public class MipMapTest extends GdxTest {
 		container.add(minFilter).spacingRight(5);
 		container.add(skin.newLabel("lbl1", "Mag Filter")).spacingRight(5);
 		container.add(magFilter);		
-		
+				
 		ui.addActor(container);			
 	}
 	
