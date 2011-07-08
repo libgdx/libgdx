@@ -25,7 +25,9 @@ public class LwjglApplicationConfiguration {
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = false;
 	/** title of application **/
-	public String title = "Lwjgl Application";	
+	public String title = "Lwjgl Application";
+	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
+	public boolean forceExit = true;	
 	
 	/**
 	 * Sets the r, g, b and a bits per channel based on the given

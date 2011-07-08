@@ -174,6 +174,7 @@ public class LwjglApplication implements Application {
 		listener.dispose();
 		Display.destroy();
 		audio.dispose();
+		if(graphics.config.forceExit) System.exit(-1);
 	}
 
 	@Override public Audio getAudio () {
