@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -38,7 +40,7 @@ public class Frustum {
 	public final Plane[] planes = new Plane[6];	
 	
 	/** eight points making up the near and far clipping "rectangles". order is counter clockwise, starting at bottom left **/
-	protected final Vector3[] planePoints = { new Vector3(), new Vector3(), new Vector3(), new Vector3(), 
+	public final Vector3[] planePoints = { new Vector3(), new Vector3(), new Vector3(), new Vector3(), 
 			new Vector3(), new Vector3(), new Vector3(), new Vector3() 
 	};	
 	protected final float[] planePointsArray = new float[8 *  3];
@@ -135,7 +137,7 @@ public class Frustum {
 		}
 
 		return true;
-	}
+	}	
 	
 //	/**
 //	 * Calculates the pick ray for the given window coordinates. Assumes the window coordinate system has it's y downwards. The
