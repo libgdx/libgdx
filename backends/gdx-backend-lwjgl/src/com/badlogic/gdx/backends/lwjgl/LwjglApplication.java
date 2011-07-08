@@ -268,11 +268,7 @@ public class LwjglApplication implements Application {
 	@Override public void exit () {
 		postRunnable(new Runnable() {
 			@Override public void run () {
-				LwjglApplication.this.listener.pause();
-				LwjglApplication.this.listener.dispose();
-				Display.destroy();
-				audio.dispose();				
-				System.exit(-1);
+				running = false;
 			}			
 		});
 	}
