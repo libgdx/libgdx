@@ -350,6 +350,8 @@ public class Texture implements Disposable {
 			Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 			if(disposePixmap) pixmap.dispose();
 		} else if(Gdx.graphics.supportsExtension("GL_SGIS_generate_mipmap")) {
+			if((Gdx.gl20==null) && width != height)
+				throw new GdxRuntimeException("texture width and height must be square when using mipmapping in OpenGL ES 1.x");
 			Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GLCommon.GL_GENERATE_MIPMAP, GL10.GL_TRUE);
 			Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			if(disposePixmap) pixmap.dispose();
@@ -360,7 +362,7 @@ public class Texture implements Disposable {
 	
 	private void generateMipMapCPU(Pixmap pixmap, boolean disposePixmap) {
 		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-		if(!(Gdx.gl20==null) && width != height)
+		if((Gdx.gl20==null) && width != height)
 			throw new GdxRuntimeException("texture width and height must be square when using mipmapping in OpenGL ES 1.x");
 		int width = pixmap.getWidth() / 2;
 		int height = pixmap.getHeight() / 2;
