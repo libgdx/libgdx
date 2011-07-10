@@ -324,5 +324,9 @@ public class Array<T> implements Iterable<T> {
 			index--;
 			array.removeIndex(index);
 		}
+		
+		public void reset() {
+			index = 0;
+		}
 	}
 }
