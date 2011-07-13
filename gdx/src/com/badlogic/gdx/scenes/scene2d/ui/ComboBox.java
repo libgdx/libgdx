@@ -242,12 +242,14 @@ public class ComboBox extends Widget {
 					
 			entryHeight = font.getLineHeight() - font.getDescent();
 			entryHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
+			entryHeight *= ComboBox.this.parent.scaleY;
 			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth();		
 			prefHeight = entries.length * entryHeight;
 			textOffsetX = listSelection.getLeftWidth();
 			textOffsetY = listSelection.getTopHeight() - font.getDescent();
 			
 			width = Math.max(prefWidth, ComboBox.this.width);
+			width *= ComboBox.this.parent.scaleX;
 			height = prefHeight;
 			y -= height;
 		}
@@ -266,7 +268,9 @@ public class ComboBox extends Widget {
 					listSelection.draw(batch, x, y + posY - entryHeight, width, entryHeight);					
 				}
 				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+				font.setScale(ComboBox.this.parent.scaleX, ComboBox.this.parent.scaleY);
 				font.draw(batch, entries[i], x + textOffsetX, y + posY - textOffsetY);
+				font.setScale(1, 1);
 				posY -= entryHeight;
 			}
 			

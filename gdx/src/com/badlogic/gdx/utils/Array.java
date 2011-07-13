@@ -329,4 +329,18 @@ public class Array<T> implements Iterable<T> {
 			index = 0;
 		}
 	}
+
+	static public class ArrayIterable<T> implements Iterable<T> {
+		private ArrayIterator<T> iterator;
+
+		public ArrayIterable(Array<T> array) {
+			iterator = new ArrayIterator<T>(array);
+		}
+
+		@Override
+		public Iterator<T> iterator() {
+			iterator.reset();
+			return iterator;
+		}
+	}
 }
