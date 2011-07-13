@@ -116,7 +116,10 @@ public final class World implements Disposable {
 	public World (Vector2 gravity, boolean doSleep) {
 		addr = newWorld(gravity.x, gravity.y, doSleep);
 
-		for (int i = 0; i < 200; i++)
+		contacts.ensureCapacity(contactAddrs.length);
+		freeContacts.ensureCapacity(contactAddrs.length);
+
+		for (int i = 0; i < contactAddrs.length; i++)
 			freeContacts.add(new Contact(this, 0));
 	}
 
@@ -473,7 +476,12 @@ public final class World implements Disposable {
 
 	public List<Contact> getContactList () {
 		int numContacts = getContactCount();
-		if (numContacts > contactAddrs.length) contactAddrs = new long[numContacts];
+		if (numContacts > contactAddrs.length) {
+			int newSize = 2*numContacts;
+			contactAddrs = new long[newSize];
+			contacts.ensureCapacity(newSize);
+			freeContacts.ensureCapacity(newSize);
+		}
 		if (numContacts > freeContacts.size()) {
 			int freeConts = freeContacts.size();
 			for (int i = 0; i < numContacts - freeConts; i++)
