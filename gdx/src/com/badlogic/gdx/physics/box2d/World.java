@@ -474,6 +474,12 @@ public final class World implements Disposable {
 	private final ArrayList<Contact> contacts = new ArrayList<Contact>();
 	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>();
 
+	/**
+	 * Returns the list of {@link Contact} instances produced by the last 
+	 * call to {@link #step(float, int, int)}. Note that the returned list
+	 * will have O(1) access times when using indexing. 
+	 * @return the contact list
+	 */
 	public List<Contact> getContactList () {
 		int numContacts = getContactCount();
 		if (numContacts > contactAddrs.length) {
