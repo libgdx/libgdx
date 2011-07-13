@@ -312,7 +312,7 @@ final class LwjglInput implements Input {
 		case Keyboard.KEY_F10: return Input.Keys.F10;
 		case Keyboard.KEY_F11: return Input.Keys.F11;
 		case Keyboard.KEY_F12: return Input.Keys.F12;		
-		
+		case Keyboard.KEY_COLON: return Input.Keys.COLON;
 		default:
 			return Input.Keys.UNKNOWN;
 		}
@@ -452,6 +452,7 @@ final class LwjglInput implements Input {
 		case Input.Keys.F10: return Keyboard.KEY_F10;
 		case Input.Keys.F11: return Keyboard.KEY_F11;
 		case Input.Keys.F12: return Keyboard.KEY_F12;
+		case Input.Keys.COLON: return Keyboard.KEY_COLON;
 		default:
 			return Keyboard.KEY_NONE;
 		}

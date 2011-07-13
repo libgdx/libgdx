@@ -201,6 +201,27 @@ public interface Input {
 		public static final int BUTTON_START = 108;
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
+		
+		
+//		public static final int BACKTICK = 0;
+//		public static final int TILDE = 0;		
+//		public static final int UNDERSCORE = 0;
+//		public static final int DOT = 0;
+//		public static final int BREAK = 0;
+//		public static final int PIPE = 0;
+//		public static final int EXCLAMATION = 0;
+//		public static final int QUESTIONMARK = 0;
+			
+//		`         | VK_BACKTICK
+//		~         | VK_TILDE
+//		:         | VK_COLON
+//		_         | VK_UNDERSCORE
+//		.         | VK_DOT
+//		(break)   | VK_BREAK
+//		|         | VK_PIPE
+//		!         | VK_EXCLAMATION
+//		?         | VK_QUESTION
+		public static final int COLON = 243;
 		public static final int F1 = 244;
 		public static final int F2 = 245;
 		public static final int F3 = 246;
