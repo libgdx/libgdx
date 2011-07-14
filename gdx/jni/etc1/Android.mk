@@ -1,2 +1,2 @@
-GDX_SRC_FILES += gdx2d/etc1.cpp
+GDX_SRC_FILES += etc1/etc1.cpp
 				 
