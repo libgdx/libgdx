@@ -14,5 +14,5 @@ GDX_SRC_FILES += vorbis/bitwise.c \
 				 vorbis/vorbisfile.c \
 				 vorbis/window.c \
 				 vorbis/VorbisDecoder.cpp
-
-GDX_CFLAGS += -D_ARM_ASSEM_ 
+				
+GDX_CFLAGS += -D_ARM_ASSEM_

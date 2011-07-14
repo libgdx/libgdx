@@ -15,6 +15,7 @@ include $(LOCAL_PATH)/Box2D/Android.mk
 include $(LOCAL_PATH)/kissfft/Android.mk
 include $(LOCAL_PATH)/vorbis/Android.mk	
 include $(LOCAL_PATH)/gdx2d/Android.mk				 
+include $(LOCAL_PATH)/etc1/Android.mk	
 
 LOCAL_MODULE    := gdx
 LOCAL_ARM_MODE  := arm

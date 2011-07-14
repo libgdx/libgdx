@@ -33,6 +33,9 @@
 #include <sys/types.h>
 #endif
 
+/** mzechner: looks like that's not set correctly in the Android tool chain... **/
+#define BYTE_ORDER LITTLE_ENDIAN
+
 #if BYTE_ORDER==LITTLE_ENDIAN
 union magic {
   struct {
