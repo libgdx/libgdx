@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * <p>
  * Actors have a z-order which is equal to the order they were inserted into this Stage. Actors inserted later will be drawn on
- * top of Actors added earlier. The same is true for touch events that will get distributed to later Actors first.
+ * top of Actors added earlier. Touch events that will get distributed to later Actors first.
  * </p>
  * 
  * <p>Actors can get focused. When your game pauses and resumes make sure to call the {@link Stage#unfocusAll()} method so 
