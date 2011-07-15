@@ -139,8 +139,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			touchHandler = new AndroidMultiTouchHandler();
 		else
 			touchHandler = new AndroidSingleTouchHandler();
-		hasMultitouch = touchHandler instanceof AndroidMultiTouchHandler
-			&& ((AndroidMultiTouchHandler)touchHandler).supportsMultitouch(activity);
+		hasMultitouch = touchHandler.supportsMultitouch(app);
 
 		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
 		

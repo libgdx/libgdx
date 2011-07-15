@@ -69,4 +69,8 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 			input.touchEvents.add(event);
 		}
 	}
+	
+	public boolean supportsMultitouch (AndroidApplication activity) {
+		return false;
+	}
 }

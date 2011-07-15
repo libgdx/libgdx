@@ -15,8 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
+import android.content.Context;
 import android.view.MotionEvent;
 
 public interface AndroidTouchHandler {
 	public void onTouch (MotionEvent event, AndroidInput input);
+	public boolean supportsMultitouch(AndroidApplication app);
 }
