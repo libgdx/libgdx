@@ -151,11 +151,11 @@ public final class Intersector {
 	public static boolean intersectSegmentCircle (Vector2 start, Vector2 end, Vector2 center, float squareRadius) {
 		tmp.set(end.x - start.x, end.y - start.y, 0);
 		tmp1.set(center.x - start.x, center.y - start.y, 0);
-			
+		 float l = tmp.len();
 		float u = tmp1.dot(tmp.nor());
 		if (u <= 0) {
 			tmp2.set(start.x, start.y, 0);
-		} else if (u >= tmp.len()) {
+		} else if (u >= l) {
 			tmp2.set(end.x, end.y, 0);
 		} else {
 			tmp3.set(tmp.mul(u)); //remember tmp is already normalized
