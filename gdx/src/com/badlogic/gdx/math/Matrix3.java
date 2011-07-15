@@ -175,8 +175,30 @@ public class Matrix3 implements Serializable {
 		float det = det();
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
 
-		// TODO insert code... http://stackoverflow.com/questions/983999/simple-3x3-matrix-inverse-code-c
-		throw new GdxRuntimeException("Not implemented yet");
+		float inv_det = 1.0f / det;
+		float tmp[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+		
+		tmp[0] = vals[4] * vals[8] - vals[5] * vals[7];
+        tmp[1] = vals[2] * vals[7] - vals[1] * vals[8];
+        tmp[2] = vals[1] * vals[5] - vals[2] * vals[4];
+        tmp[3] = vals[5] * vals[6] - vals[3] * vals[8];
+        tmp[4] = vals[0] * vals[8] - vals[2] * vals[6];
+        tmp[5] = vals[2] * vals[3] - vals[0] * vals[5];
+        tmp[6] = vals[3] * vals[7] - vals[4] * vals[6];
+        tmp[7] = vals[1] * vals[6] - vals[0] * vals[7];
+        tmp[8] = vals[0] * vals[4] - vals[1] * vals[3];
+        
+        vals[0] = inv_det * tmp[0];
+        vals[1] = inv_det * tmp[1];
+        vals[2] = inv_det * tmp[2];
+        vals[3] = inv_det * tmp[3];
+        vals[4] = inv_det * tmp[4];
+        vals[5] = inv_det * tmp[5];
+        vals[6] = inv_det * tmp[6];
+        vals[7] = inv_det * tmp[7];
+        vals[8] = inv_det * tmp[8];
+                        
+        return this;
 	}
 
 //	public static void main (String[] argv) {
