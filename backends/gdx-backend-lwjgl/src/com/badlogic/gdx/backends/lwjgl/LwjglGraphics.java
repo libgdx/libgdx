@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
+import java.nio.ByteBuffer;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -348,7 +349,8 @@ public final class LwjglGraphics implements Graphics {
 		Display.setTitle(title);
 	}
 
-	@Override public void setIcon (Pixmap pixmap) {		
+	@Override public void setIcon (Pixmap pixmap) { 
+		Display.setIcon(new ByteBuffer[] { pixmap.getPixels().duplicate() } );
 	}
 
 	@Override public BufferFormat getBufferFormat () {		
