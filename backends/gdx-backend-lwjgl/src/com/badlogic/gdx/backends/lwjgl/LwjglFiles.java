@@ -22,7 +22,7 @@ import com.badlogic.gdx.files.FileHandle;
  * @author mzechner
  * @author Nathan Sweet
  */
-final class LwjglFiles implements Files {
+public final class LwjglFiles implements Files {
 	private final String externalPath = System.getProperty("user.home") + "/";
 
 	@Override public FileHandle getFileHandle (String fileName, FileType type) {

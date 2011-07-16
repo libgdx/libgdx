@@ -25,7 +25,7 @@ import com.badlogic.gdx.files.FileHandle;
  * @author mzechner
  * @author Nathan Sweet
  */
-final class LwjglFileHandle extends FileHandle {
+public final class LwjglFileHandle extends FileHandle {
 	LwjglFileHandle (String fileName, FileType type) {
 		super(fileName, type);
 	}
