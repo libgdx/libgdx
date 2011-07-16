@@ -12,6 +12,7 @@
  */
 #include "BufferUtils.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static inline void copy(JNIEnv* env, jarray src, int srcOffset, jobject dst, int dstOffset, int numBytes) {
@@ -19,6 +20,11 @@ static inline void copy(JNIEnv* env, jarray src, int srcOffset, jobject dst, int
 	char* pSrc = (char*)env->GetPrimitiveArrayCritical(src, 0);
 	memcpy( pDst + dstOffset, pSrc + srcOffset, numBytes);
 	env->ReleasePrimitiveArrayCritical(src, pSrc, 0);
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_freeMemory
+  (JNIEnv *env, jclass, jobject buffer) {
+	free(env->GetDirectBufferAddress(buffer));
 }
 
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava_nio_Buffer_2II

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <etc1/etc1.h>
+#include <etc1/etc1_utils.h>
 
 #include <string.h>
 

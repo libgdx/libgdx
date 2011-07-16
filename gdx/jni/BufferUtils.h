@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    freeMemory
+ * Signature: (Ljava/nio/ByteBuffer;)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_freeMemory
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    copyJni
  * Signature: ([FLjava/nio/Buffer;II)V
  */
