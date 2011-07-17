@@ -67,6 +67,7 @@ public class GdxTests
 		CullTest.class,
 		DeltaTimeTest.class,
 		EdgeDetectionTest.class,
+		ETC1Test.class,
 		ExitTest.class,
 		FilesTest.class,
 		//FillrateTest.class,

@@ -17,6 +17,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.ETC1Test;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.InverseKinematicsTest;
 import com.badlogic.gdx.tests.MipMapTest;
@@ -28,6 +29,6 @@ import com.badlogic.gdx.tests.UITest;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();		
-		new LwjglApplication(new InverseKinematicsTest(), config);
+		new LwjglApplication(new ETC1Test(), config);
 	}
 }
