@@ -221,6 +221,9 @@ public class Container extends Table {
 		 */
 		public CellProperties pad(int top, int left, int bottom, int right) {
 			cell.padTop = Integer.toString(top);
+			cell.padLeft = Integer.toString(left);
+			cell.padBottom = Integer.toString(bottom);
+			cell.padRight = Integer.toString(right);
 			return this;
 		}
 
