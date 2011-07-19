@@ -98,7 +98,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 */
 	public void setViewport (float width, float height, boolean stretch) {
 		if (!stretch) {
-			if (width > height) {
+			if (width > height && width/(float)Gdx.graphics.getWidth() <= height/(float)Gdx.graphics.getHeight()) {
 				float toDeviceSpace = Gdx.graphics.getHeight() / height;
 				float toViewportSpace = height / Gdx.graphics.getHeight();
 
