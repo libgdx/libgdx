@@ -24,7 +24,8 @@ import com.badlogic.gdx.math.Rectangle;
  * Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A Sprite has a position
  * and a size given as width and height. The position is relative to the origin of the coordinate system specified via
  * {@link SpriteBatch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
- * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed. The
+ * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed (that is,
+ * the origin is not modified by rotation and scaling). The
  * origin is given relative to the bottom left corner of the Sprite, its position.
  * @author mzechner
  * @author Nathan Sweet
