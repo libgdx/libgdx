@@ -21,11 +21,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Image extends Actor {
-	public TextureRegion region;
+	public TextureRegion region = null;
 
 	public Image (String name) {
 		super(name);
-		this.region = new TextureRegion();
 	}
 
 	public Image (String name, Texture texture) {
