@@ -666,4 +666,10 @@ final class LwjglInput implements Input {
 	@Override public void setCursorPosition (int x, int y) {
 		Mouse.setCursorPosition(x, y);
 	}
+
+	@Override
+	public void setCatchMenuKey(boolean catchMenu) {
+		// TODO Auto-generated method stub
+		
+	}
 }

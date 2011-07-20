@@ -107,6 +107,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private final AndroidTouchHandler touchHandler;
 	private int sleepTime = 0;
 	private boolean catchBack = false;
+	private boolean catchMenu = false;
 	private final Vibrator vibrator;
 	private boolean compassAvailable = false;
 	boolean keyboardAvailable;
@@ -370,6 +371,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 
 		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
+		if (catchMenu && keyCode == android.view.KeyEvent.KEYCODE_MENU) return true;
 		return false;
 	}
 
@@ -410,6 +412,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
+	}
+	
+	@Override public void setCatchMenuKey (boolean catchMenu) {
+		this.catchMenu = catchMenu;
 	}
 
 	@Override public void vibrate (int milliseconds) {

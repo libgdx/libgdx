@@ -467,5 +467,11 @@ public class AngleInput implements Input {
 	@Override public void setCursorPosition (int x, int y) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setCatchMenuKey(boolean catchMenu) {
+		// TODO Auto-generated method stub
+		
 	}	
 }

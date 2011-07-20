@@ -600,4 +600,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			robot.mouseMove(canvas.getLocationOnScreen().x + x, canvas.getLocationOnScreen().y + y);
 		}
 	}
+
+	@Override
+	public void setCatchMenuKey(boolean catchMenu) {
+		// TODO Auto-generated method stub
+		
+	}
 }

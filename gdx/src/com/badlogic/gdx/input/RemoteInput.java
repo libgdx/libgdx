@@ -394,4 +394,10 @@ public class RemoteInput implements Runnable, Input {
 
 	@Override public void setCursorPosition (int x, int y) {		
 	}
+
+	@Override
+	public void setCatchMenuKey(boolean catchMenu) {
+		// TODO Auto-generated method stub
+		
+	}
 }
