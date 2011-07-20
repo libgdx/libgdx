@@ -32,7 +32,8 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 {
 	float* pDst = (float*)env->GetDirectBufferAddress( dst );
 	float* pSrc = (float*)env->GetPrimitiveArrayCritical(src, 0);
-	memcpy( pDst, pSrc + (offset << 2), numFloats << 2 );
+	
+	memcpy( pDst, pSrc + offset, numFloats << 2 );
 	env->ReleasePrimitiveArrayCritical(src, pSrc, 0);
 }
 
