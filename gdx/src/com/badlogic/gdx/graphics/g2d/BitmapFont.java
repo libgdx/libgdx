@@ -57,9 +57,13 @@ public class BitmapFont implements Disposable {
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
+	static private final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
+	static private final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q',
+		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+
 	TextureRegion region;
 	float lineHeight;
-	float capHeight;
+	float capHeight = 1;
 	float ascent;
 	float descent;
 	float down;
@@ -67,13 +71,13 @@ public class BitmapFont implements Disposable {
 
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
 	private float spaceWidth;
-	private float xHeight;
+	private float xHeight = 1;
 	private final TextBounds textBounds = new TextBounds();
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 	private boolean flipped;
 	private boolean integer = true;
-	
+
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering with generating a bitmap font.
@@ -115,12 +119,12 @@ public class BitmapFont implements Disposable {
 	/**
 	 * Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
 	 * ignored.
-	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. 
+	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip) {
 		this(fontFile, imageFile, flip, true);
 	}
-	
+
 	/**
 	 * Creates a BitmapFont from a BMFont file, using the specified image for glyphs. Any image specified in the BMFont file is
 	 * ignored.
@@ -158,7 +162,7 @@ public class BitmapFont implements Disposable {
 				String[] page = line.split(" ", 4);
 				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				String imgFilename = null;
-				if(page[2].endsWith("\"")) {
+				if (page[2].endsWith("\"")) {
 					imgFilename = page[2].substring(6, page[2].length() - 1);
 				} else {
 					imgFilename = page[2].substring(5, page[2].length());
@@ -172,9 +176,9 @@ public class BitmapFont implements Disposable {
 			float invTexHeight = 1.0f / region.getTexture().getHeight();
 			float u = region.u;
 			float v = region.v;
-			
+
 			descent = 0;
-//			descent = g != null? baseLine + g.yoffset:0;
+			// descent = g != null? baseLine + g.yoffset:0;
 
 			while (true) {
 				line = reader.readLine();
@@ -221,7 +225,7 @@ public class BitmapFont implements Disposable {
 					glyph.v2 = v + srcY * invTexHeight;
 					glyph.v = v + (srcY + glyph.height) * invTexHeight;
 				}
-				
+
 				descent = Math.min(baseLine + glyph.yoffset, descent);
 			}
 
@@ -253,13 +257,21 @@ public class BitmapFont implements Disposable {
 			}
 			spaceWidth = g != null ? g.xadvance + g.width : 1;
 
-			g = getGlyph('x');
-			xHeight = g != null ? g.height : 1;
+			for (int i = 0; i < xChars.length; i++) {
+				g = getGlyph(xChars[i]);
+				if (g == null) continue;
+				xHeight = g.height;
+				break;
+			}
 
-			g = getGlyph('M');
-			capHeight = g != null ? g.height : 1;							
-			
-			ascent = baseLine - capHeight;			
+			for (int i = 0; i < capChars.length; i++) {
+				g = getGlyph(capChars[i]);
+				if (g == null) continue;
+				capHeight = g.height;
+				break;
+			}
+
+			ascent = baseLine - capHeight;
 			down = -lineHeight;
 			if (flip) {
 				ascent = -ascent;
@@ -312,7 +324,7 @@ public class BitmapFont implements Disposable {
 			while (start < end) {
 				lastGlyph = getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					if(!integer) {
+					if (!integer) {
 						spriteBatch.draw(texture, //
 							x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
 							lastGlyph.width, lastGlyph.height, //
@@ -321,7 +333,7 @@ public class BitmapFont implements Disposable {
 						spriteBatch.draw(texture, //
 							(int)x + lastGlyph.xoffset, (int)y + lastGlyph.yoffset, //
 							lastGlyph.width, lastGlyph.height, //
-							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);	
+							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					}
 					x += lastGlyph.xadvance;
 					break;
@@ -333,7 +345,7 @@ public class BitmapFont implements Disposable {
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
-				if(!integer) {
+				if (!integer) {
 					spriteBatch.draw(texture, //
 						x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
 						lastGlyph.width, lastGlyph.height, //
@@ -351,7 +363,7 @@ public class BitmapFont implements Disposable {
 			while (start < end) {
 				lastGlyph = getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					if(!integer) {
+					if (!integer) {
 						spriteBatch.draw(texture, //
 							x + lastGlyph.xoffset * scaleX, //
 							y + lastGlyph.yoffset * scaleY, //
@@ -376,7 +388,7 @@ public class BitmapFont implements Disposable {
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch) * scaleX;
 				lastGlyph = g;
-				if(!integer) {
+				if (!integer) {
 					spriteBatch.draw(texture, //
 						x + lastGlyph.xoffset * scaleX, //
 						y + lastGlyph.yoffset * scaleY, //
@@ -618,19 +630,18 @@ public class BitmapFont implements Disposable {
 	}
 
 	/**
-	 * Computes the glyph advances for the given character sequence and stores
-	 * them in the provided {@link FloatArray}. The FloatArray is cleared. This
-	 * will add an additional element at the end.
+	 * Computes the glyph advances for the given character sequence and stores them in the provided {@link FloatArray}. The
+	 * FloatArray is cleared. This will add an additional element at the end.
 	 * @param str the character sequence
 	 * @param glyphAdvances the glyph advances output array.
 	 * @param glyphPositions the glyph positions output array.
 	 */
-	public void computeGlyphAdvancesAndPositions(CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
+	public void computeGlyphAdvancesAndPositions (CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
 		glyphAdvances.clear();
 		glyphPositions.clear();
 		int index = 0;
 		int end = str.length();
-		int width = 0;		
+		int width = 0;
 		Glyph lastGlyph = null;
 		if (scaleX == 1) {
 			for (; index < end; index++) {
@@ -638,7 +649,7 @@ public class BitmapFont implements Disposable {
 				Glyph g = getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
-					lastGlyph = g;							
+					lastGlyph = g;
 					glyphAdvances.add(g.xadvance);
 					glyphPositions.add(width);
 					width += g.xadvance;
@@ -653,17 +664,17 @@ public class BitmapFont implements Disposable {
 				Glyph g = getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
-					lastGlyph = g;					
+					lastGlyph = g;
 					glyphAdvances.add(g.xadvance * scaleX);
 					glyphPositions.add(width);
 					width += g.xadvance;
-				}			
+				}
 			}
 			glyphAdvances.add(0);
 			glyphPositions.add(width);
-		}		
+		}
 	}
-	
+
 	/**
 	 * Returns the number of glyphs from the substring that can be rendered in the specified width.
 	 * @param start The first character of the string.
@@ -798,12 +809,11 @@ public class BitmapFont implements Disposable {
 	public float getAscent () {
 		return ascent;
 	}
-	
+
 	/**
-	 * Returns the descent, which is the distance from the baseline to the bottom of the glyph 'g'. 
-	 * This number is negative.
+	 * Returns the descent, which is the distance from the baseline to the bottom of the glyph 'g'. This number is negative.
 	 */
-	public float getDescent() {
+	public float getDescent () {
 		return descent;
 	}
 
@@ -895,23 +905,22 @@ public class BitmapFont implements Disposable {
 	 * @param character
 	 * @return whether the given character is contained in this font.
 	 */
-	public boolean containsCharacter(char character) {
+	public boolean containsCharacter (char character) {
 		return getGlyph(character) != null;
 	}
-	
+
 	/**
-	 * Specifies whether to use integer positions or not. Default is to use
-	 * them so filtering doesn't kick in as badly.
-	 * @param use 
+	 * Specifies whether to use integer positions or not. Default is to use them so filtering doesn't kick in as badly.
+	 * @param use
 	 */
-	public void setUseIntegerPositions(boolean use) {
+	public void setUseIntegerPositions (boolean use) {
 		this.integer = use;
 	}
-	
+
 	/**
 	 * @return whether this font uses integer positions for drawing.
 	 */
-	public boolean usesIntegerPositions() {
+	public boolean usesIntegerPositions () {
 		return integer;
 	}
 }
