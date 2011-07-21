@@ -361,8 +361,7 @@ public class TexturePacker {
 		int top = 0;
 		int bottom = source.getHeight();
 		if (!filter.direction.isY()) {
-			outer:
-			for (int y = 0; y < source.getHeight(); y++) {
+			outer: for (int y = 0; y < source.getHeight(); y++) {
 				for (int x = 0; x < source.getWidth(); x++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -371,8 +370,7 @@ public class TexturePacker {
 				}
 				top++;
 			}
-			outer:
-			for (int y = source.getHeight(); --y >= top;) {
+			outer: for (int y = source.getHeight(); --y >= top;) {
 				for (int x = 0; x < source.getWidth(); x++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -385,8 +383,7 @@ public class TexturePacker {
 		int left = 0;
 		int right = source.getWidth();
 		if (!filter.direction.isX()) {
-			outer:
-			for (int x = 0; x < source.getWidth(); x++) {
+			outer: for (int x = 0; x < source.getWidth(); x++) {
 				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -395,8 +392,7 @@ public class TexturePacker {
 				}
 				left++;
 			}
-			outer:
-			for (int x = source.getWidth(); --x >= left;) {
+			outer: for (int x = source.getWidth(); --x >= left;) {
 				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -745,7 +741,7 @@ public class TexturePacker {
 				Format format = formats.get(i);
 				for (int ii = 0, nn = filters.size(); ii < nn; ii++) {
 					TextureFilter min = filters.get(ii);
-					for (int iii = ii; iii < nn; iii++) {
+					for (int iii = 0; iii < nn; iii++) {
 						TextureFilter mag = filters.get(iii);
 						if ((min == null && mag != null) || (min != null && mag == null)) continue;
 
