@@ -355,7 +355,7 @@ public class TexturePacker {
 		if (!filter.accept(source)) return null;
 		uncompressedSize += source.getWidth() * source.getHeight();
 		WritableRaster alphaRaster = source.getAlphaRaster();
-		if (alphaRaster == null || !settings.stripWhitespace)
+		if (alphaRaster == null || !settings.stripWhitespace || name.contains("_ws"))
 			return new Image(name, source, 0, 0, source.getWidth(), source.getHeight());
 		final byte[] a = new byte[1];
 		int top = 0;
