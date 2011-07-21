@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
@@ -162,14 +163,92 @@ public class ParticleEmitter {
 		this.activeCount += count;
 	}
 
-	public void draw (SpriteBatch spriteBatch, float delta) {
+	public void update (float delta) {
 		accumulator += Math.min(delta * 1000, 250);
 		if (accumulator < 1) return;
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
+		BitSet active = this.active;
+		int activeCount = this.activeCount;
+		int index = 0;
+		while (true) {
+			index = active.nextSetBit(index);
+			if (index == -1) break;
+			if (!updateParticle(index, delta, deltaMillis)) {
+				active.clear(index);
+				activeCount--;
+			}
+			index++;
+		}
+		this.activeCount = activeCount;
+
+		if (delayTimer < delay) {
+			delayTimer += deltaMillis;
+			return;
+		}
+
+		if (firstUpdate) {
+			firstUpdate = false;
+			addParticle();
+		}
+
+		if (durationTimer < duration)
+			durationTimer += deltaMillis;
+		else {
+			if (!continuous || allowCompletion) return;
+			restart();
+		}
+
+		emissionDelta += deltaMillis;
+		float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
+		if (emissionTime > 0) {
+			emissionTime = 1000 / emissionTime;
+			if (emissionDelta >= emissionTime) {
+				int emitCount = (int)(emissionDelta / emissionTime);
+				emitCount = Math.min(emitCount, maxParticleCount - activeCount);
+				emissionDelta -= emitCount * emissionTime;
+				emissionDelta %= emissionTime;
+				addParticles(emitCount);
+			}
+		}
+		if (activeCount < minParticleCount) addParticles(minParticleCount - activeCount);
+	}
+
+	public void draw (SpriteBatch spriteBatch) {
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
+		Particle[] particles = this.particles;
+		BitSet active = this.active;
+		int activeCount = this.activeCount;
+		int index = 0;
+		while (true) {
+			index = active.nextSetBit(index);
+			if (index == -1) break;
+			particles[index].draw(spriteBatch);
+			index++;
+		}
+		this.activeCount = activeCount;
+
+		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	/**
+	 * Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
+	 * {@link #draw(SpriteBatch)} separately.
+	 */
+	public void draw (SpriteBatch spriteBatch, float delta) {
+		accumulator += Math.min(delta * 1000, 250);
+		if (accumulator < 1) {
+			draw(spriteBatch);
+			return;
+		}
+		int deltaMillis = (int)accumulator;
+		accumulator -= deltaMillis;
+
+		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+
+		Particle[] particles = this.particles;
 		BitSet active = this.active;
 		int activeCount = this.activeCount;
 		int index = 0;
