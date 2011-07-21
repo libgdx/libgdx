@@ -501,7 +501,7 @@ public class TexturePacker {
 			writer.write("  xy: " + left + ", " + top + "\n");
 			writer.write("  size: " + image.getWidth() + ", " + image.getHeight() + "\n");
 			writer.write("  orig: " + image.originalWidth + ", " + image.originalHeight + "\n");
-			writer.write("  offset: " + image.offsetX + ", " + image.offsetY + "\n");
+			writer.write("  offset: " + image.offsetX + ", " + (image.originalHeight - image.getHeight() - image.offsetY) + "\n");
 			writer.write("  index: " + index + "\n");
 		}
 	}
