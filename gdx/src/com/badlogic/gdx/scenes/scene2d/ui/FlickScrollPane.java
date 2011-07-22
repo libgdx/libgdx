@@ -131,11 +131,8 @@ public class FlickScrollPane extends Group implements Layout {
 	public void layout () {
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
-			widget.width = width;
-			widget.height = height;
-			layout.invalidate();
-			widget.width = layout.getPrefWidth();
-			widget.height = layout.getPrefHeight();
+			widget.width = Math.max(width, layout.getPrefWidth());
+			widget.height = Math.max(height, layout.getPrefHeight());
 			layout.invalidate();
 			layout.layout();
 		}
