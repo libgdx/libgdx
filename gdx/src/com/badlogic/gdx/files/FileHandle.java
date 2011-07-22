@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.files;
 
 import java.io.File;
@@ -169,6 +170,32 @@ public abstract class FileHandle {
 		FileHandle[] handles = new FileHandle[relativePaths.length];
 		for (int i = 0, n = relativePaths.length; i < n; i++)
 			handles[i] = child(relativePaths[i]);
+		return handles;
+	}
+
+	/**
+	 * Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
+	 * represents a file and not a directory. On the desktop, an internal handle to a directory on the classpath will return a zero
+	 * length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file.
+	 */
+	public FileHandle[] list (String suffix) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
+		String[] relativePaths = file().list();
+		if (relativePaths == null) return new FileHandle[0];
+		FileHandle[] handles = new FileHandle[relativePaths.length];
+		int count = 0;
+		for (int i = 0, n = relativePaths.length; i < n; i++) {
+			String path = relativePaths[i];
+			if (!path.endsWith(suffix)) continue;
+			handles[i] = child(path);
+			count++;
+		}
+		if (count < relativePaths.length) {
+			FileHandle[] newHandles = new FileHandle[count];
+			System.arraycopy(handles, 0, newHandles, 0, count);
+			handles = newHandles;
+		}
 		return handles;
 	}
 

@@ -92,9 +92,8 @@ public class Button extends Widget {
 		final BitmapFont font = style.font;
 		final NinePatch downPatch = style.down;
 		bounds.set(font.getMultiLineBounds(text));
-		bounds.height -= font.getDescent();
-		
-		prefHeight = downPatch.getBottomHeight() + downPatch.getTopHeight() + bounds.height;
+
+		prefHeight = downPatch.getBottomHeight() + downPatch.getTopHeight() + bounds.height + -font.getDescent() * 2;
 		prefWidth = downPatch.getLeftWidth() + downPatch.getRightWidth() + bounds.width;
 		invalidated = false;
 	}

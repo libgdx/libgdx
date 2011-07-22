@@ -811,7 +811,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	/**
-	 * Returns the descent, which is the distance from the baseline to the bottom of the glyph 'g'. This number is negative.
+	 * Returns the descent, which is the distance from the bottom of the glyph 'g' to the baseline. This number is negative.
 	 */
 	public float getDescent () {
 		return descent;
