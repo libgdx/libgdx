@@ -71,7 +71,7 @@ public class GdxTests
 		ExitTest.class,
 		FilesTest.class,
 		//FillrateTest.class,
-		FlickLayoutTest.class,
+		FlickScrollPaneLayoutTest.class,
 		FloatTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
