@@ -339,7 +339,7 @@ public class TableLayout extends BaseTableLayout<Actor> {
 		final String type;
 
 		public DebugRect (String type, int x, int y, int width, int height) {
-			super(x, y, width, height - 1);
+			super(x, y, width, height);
 			this.type = type;
 		}
 	}
