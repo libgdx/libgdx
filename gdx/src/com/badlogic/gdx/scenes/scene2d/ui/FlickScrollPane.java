@@ -131,6 +131,9 @@ public class FlickScrollPane extends Group implements Layout {
 	public void layout () {
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
+			widget.width = width;
+			widget.height = height;
+			layout.invalidate();
 			widget.width = layout.getPrefWidth();
 			widget.height = layout.getPrefHeight();
 			layout.invalidate();
@@ -180,13 +183,13 @@ public class FlickScrollPane extends Group implements Layout {
 		if (pointer != 0) return false;
 		if (touchScroll) {
 			if (hasHScroll) {
-				hScrollAmount -= (x - lastPoint.x) / width;
+				hScrollAmount -= (x - lastPoint.x) / (widget.width - width);
 				hScrollAmount = Math.max(0, hScrollAmount);
 				hScrollAmount = Math.min(1, hScrollAmount);
 			}
 
 			if (hasVScroll) {
-				vScrollAmount += (y - lastPoint.y) / height;
+				vScrollAmount += (y - lastPoint.y) / (widget.height - height);
 				vScrollAmount = Math.max(0, vScrollAmount);
 				vScrollAmount = Math.min(1, vScrollAmount);
 			}

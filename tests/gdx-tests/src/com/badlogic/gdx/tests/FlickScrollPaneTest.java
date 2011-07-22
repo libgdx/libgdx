@@ -36,7 +36,7 @@ public class FlickScrollPaneTest extends GdxTest {
 		table.layout.parse("pad:10 * expand:x space:4");
 		for (int i = 0; i < 100; i++) {
 			table.row();
-			table.add(new Label(null, i + "uno", new LabelStyle(font, Color.RED)));
+			table.add(new Label(null, i + "uno", new LabelStyle(font, Color.RED))).expand(true, false).fill(true, false);
 			table.add(new Label(null, i + "dos", new LabelStyle(font, Color.RED)));
 			table.add(new Label(null, i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9", new LabelStyle(font,
 				Color.RED)));

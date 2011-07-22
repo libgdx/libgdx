@@ -76,17 +76,13 @@ public class Table extends Group implements Layout {
 	}
 
 	public float getPrefWidth () {
-		layout.tableLayoutWidth = 0;
-		layout.tableLayoutHeight = 0;
 		layout.layout();
-		return layout.tableMinWidth;
+		return layout.tablePrefWidth;
 	}
 
 	public float getPrefHeight () {
-		layout.tableLayoutWidth = 0;
-		layout.tableLayoutHeight = 0;
 		layout.layout();
-		return layout.tableMinHeight;
+		return layout.tablePrefHeight;
 	}
 
 	/**

@@ -525,6 +525,7 @@ abstract public class BaseTableLayout<T> {
 		// Distribute remaining space to any expanding columns/rows.
 		if (totalExpandWidth > 0) {
 			int extra = Math.max(0, tableLayoutWidth - tablePrefWidth);
+			tablePrefWidth += extra;
 			int used = 0, lastIndex = 0;
 			for (int i = 0; i < columns; i++) {
 				if (expandWidth[i] == 0) continue;
@@ -537,6 +538,7 @@ abstract public class BaseTableLayout<T> {
 		}
 		if (totalExpandHeight > 0) {
 			int extra = Math.max(0, tableLayoutHeight - tablePrefHeight);
+			tablePrefHeight += extra;
 			int used = 0, lastIndex = 0;
 			for (int i = 0; i < rows; i++) {
 				if (expandHeight[i] == 0) continue;
