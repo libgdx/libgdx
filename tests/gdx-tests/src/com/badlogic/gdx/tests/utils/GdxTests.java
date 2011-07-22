@@ -71,7 +71,7 @@ public class GdxTests
 		ExitTest.class,
 		FilesTest.class,
 		//FillrateTest.class,
-		FlickScrollPaneLayoutTest.class,
+		FlickScrollPaneTest.class,
 		FloatTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
@@ -176,6 +176,7 @@ public class GdxTests
 				Class clazz = Class.forName("com.badlogic.gdx.tests.gles2." + testName);
 				return (GdxTest)clazz.newInstance();
 			} catch(Exception e) {
+				ex.printStackTrace();
 				return null;
 			}
 		}		
