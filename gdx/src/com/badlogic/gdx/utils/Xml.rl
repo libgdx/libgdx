@@ -237,6 +237,13 @@ public class Xml {
 			return attributes.get(name);
 		}
 
+		public String getAttribute (String name, String defaultValue) {
+			if (attributes == null) return defaultValue;
+			String value = attributes.get(name);
+			if (value == null) return defaultValue;
+			return value;
+		}
+
 		public void setAttribute (String name, String value) {
 			if (attributes == null) attributes = new ObjectMap(8);
 			attributes.put(name, value);
@@ -305,6 +312,75 @@ public class Xml {
 				buffer.append('>');
 			}
 			return buffer.toString();
+		}
+		
+		/**
+		 * @param name the name of the child {@link Element}
+		 * @return the first child having the given name or null, does not recurse
+		 */
+		public Element getChildByName(String name) {
+			if(children == null) return null;
+			for(int i = 0; i < children.size; i++) {
+				Element element = children.get(i);
+				if(element.name.equals(name)) return element;
+			}
+			return null;
+		}
+		
+		/**
+		 * @param name the name of the child {@link Element}
+		 * @return the first child having the given name or null, recurses
+		 */
+		public Element getChildByNameRecursive(String name) {
+			if(children == null) return null;
+			for(int i = 0; i < children.size; i++) {
+				Element element = children.get(i);
+				if(element.name.equals(name)) return element;
+				Element found = element.getChildByNameRecursive(name);
+				if(found != null) return found;
+			}
+			return null;		
+		}
+		
+		/**
+		 * @param name the name of the children
+		 * @return the children with the given name or an empty {@link Array}
+		 */
+		public Array<Element> getChildrenByName(String name) {
+			Array<Element> children = new Array<Element>();
+			if(this.children == null) return children;
+			for(int i = 0; i < this.children.size; i++) {
+				Element child = this.children.get(i);
+				if(child.name.equals(name)) children.add(child);
+			}
+			return children;
+		}
+
+		/**
+		 * Returns the attribute as a float.
+		 * @param name the name of the attribute
+		 * @return the attribute
+		 */
+		public float getFloatAttribute(String name) {
+			return Float.parseFloat(getAttribute(name));
+		}
+		
+		/**
+		 * Returns the attribute as an int.
+		 * @param name the name of the attribute
+		 * @return the attribute
+		 */
+		public int getIntAttribute(String name) {
+			return Integer.parseInt(getAttribute(name));
+		}
+		
+		/**
+		 * Returns the attribute as a boolean.
+		 * @param name the name of the attribute
+		 * @return the attribute
+		 */
+		public boolean getBooleanAttribute(String name) {
+			return Boolean.parseBoolean(getAttribute(name));
 		}
 	}
 }
