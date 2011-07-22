@@ -169,4 +169,8 @@ public class Rectangle implements Serializable {
 		this.width = rect.width;
 		this.height = rect.height;		
 	}
+	
+	public String toString () {
+		return x + "," + y + "," + width + "," + height;
+	}
 }
