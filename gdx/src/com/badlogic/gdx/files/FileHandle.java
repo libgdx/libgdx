@@ -188,7 +188,7 @@ public abstract class FileHandle {
 		for (int i = 0, n = relativePaths.length; i < n; i++) {
 			String path = relativePaths[i];
 			if (!path.endsWith(suffix)) continue;
-			handles[i] = child(path);
+			handles[count] = child(path);
 			count++;
 		}
 		if (count < relativePaths.length) {

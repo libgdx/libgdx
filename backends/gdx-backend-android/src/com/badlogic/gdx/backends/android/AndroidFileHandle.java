@@ -95,7 +95,7 @@ public class AndroidFileHandle extends FileHandle {
 				for (int i = 0, n = handles.length; i < n; i++) {
 					String path = relativePaths[i];
 					if (!path.endsWith(suffix)) continue;
-					handles[i] = new AndroidFileHandle(assets, new File(file, path), type);
+					handles[count] = new AndroidFileHandle(assets, new File(file, path), type);
 					count++;
 				}
 				if (count < relativePaths.length) {
