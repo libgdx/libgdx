@@ -110,7 +110,9 @@ public class ScrollPane extends Group implements Layout {
 	boolean touchScrollH = false;
 	boolean touchScrollV = false;
 	Vector2 lastPoint = new Vector2();
-	
+
+	public boolean touchScroll = false;
+
 	public ScrollPane(String name, Stage stage, Actor widget, int prefWidth, int prefHeight, ScrollPaneStyle style) {
 		super(name);
 		this.style = style;
@@ -139,7 +141,7 @@ public class ScrollPane extends Group implements Layout {
 		// Figure out if we need horizontal/vertical scrollbars, 
 		if(widget.width > areaWidth) hasHScroll = true;
 		if(widget.height > areaHeight) hasVScroll = true;
-		
+
 		// check again, now taking into account the area 
 		// that's taken up by any enabled scrollbars
 		if(hasVScroll && (widget.width > areaWidth - vScrollKnob.getTotalWidth())) {
@@ -263,17 +265,9 @@ public class ScrollPane extends Group implements Layout {
 	public void layout() {
 		if(widget instanceof Layout) {
 			Layout layout = (Layout)widget;
+			widget.width = layout.getPrefWidth();
+			widget.height = layout.getPrefHeight();
 			layout.layout();
-			
-			// we only set the width/height of non-Tables
-			// the reason is that table-layout will totally
-			// return the min table size instead of the
-			// real pref width/height. That sucks. Sort of.
-			// but it makes sense :)
-			if(!(widget instanceof Table)) {
-				widget.width = layout.getPrefWidth();
-				widget.height = layout.getPrefHeight();
-			}
 		}
 		invalidated = false;
 	}
@@ -299,8 +293,8 @@ public class ScrollPane extends Group implements Layout {
 	protected boolean touchDown (float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		
-		if(hasHScroll && hScrollBounds.contains(x, y)) {
-			if(hScrollKnobBounds.contains(x, y)) {
+		if(hasHScroll && (touchScroll || hScrollBounds.contains(x, y))) {
+			if(touchScroll || hScrollKnobBounds.contains(x, y)) {
 				lastPoint.set(x,y);
 				handlePos = hScrollKnobBounds.x;
 				touchScrollH = true;
@@ -314,8 +308,8 @@ public class ScrollPane extends Group implements Layout {
 			}		
 			return true;
 		}
-		else if(hasVScroll && vScrollBounds.contains(x, y)) {
-			if(vScrollKnobBounds.contains(x, y)) {
+		else if(hasVScroll && (touchScroll || vScrollBounds.contains(x, y) )) {
+			if(touchScroll || vScrollKnobBounds.contains(x, y)) {
 				lastPoint.set(x,y);
 				handlePos = vScrollKnobBounds.y;
 				touchScrollV = true;
