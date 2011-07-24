@@ -17,14 +17,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextArea;
 
 public abstract class GwtApplication implements EntryPoint, Application {
 	private ApplicationListener listener;
 	private GwtApplicationConfiguration config;
 	private GwtGraphics graphics;
-	private Label log = null;
+	private Panel root = null;
+	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
 	private List<Runnable> runnables = new ArrayList<Runnable>();
 	
@@ -32,8 +34,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public void onModuleLoad() {
 		this.listener = getApplicationListener();
 		this.config = getConfig();
+		this.root = config.rootPanel != null? config.rootPanel: RootPanel.get();
 
-		graphics = new GwtGraphics(config);
+		graphics = new GwtGraphics(root, config);
+		
+		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
 		Gdx.gl = graphics.getGLCommon();
@@ -58,6 +63,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		FpsTimer timer = new FpsTimer(config.fps) {
 			@Override
 			public void update() {
+				graphics.setFps(this.getFps());
+				
 				for(int i = 0; i < runnables.size(); i++) {
 					runnables.get(i).run();
 				}
@@ -96,8 +103,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	private void checkLogLabel() {
 		if(log == null) {
-			log = new Label();
-			RootPanel.get().add(log);
+			log = new TextArea();
+			log.setSize(graphics.getWidth() + "px", "150px");
+			log.setReadOnly(true);
+			root.add(log);
 		}
 	}
 	
@@ -106,6 +115,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		if(logLevel >= LOG_INFO) {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message);
+			log.setCursorPos(log.getText().length() - 1);
 		}
 	}
 
@@ -114,6 +124,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		if(logLevel >= LOG_INFO) {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
+			log.setCursorPos(log.getText().length() - 1);
 		}	
 	}
 
@@ -122,6 +133,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		if(logLevel >= LOG_ERROR) {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message);
+			log.setCursorPos(log.getText().length() - 1);
 		}
 	}
 
@@ -130,6 +142,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		if(logLevel >= LOG_ERROR) {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
+			log.setCursorPos(log.getText().length() - 1);
 		}		
 	}
 

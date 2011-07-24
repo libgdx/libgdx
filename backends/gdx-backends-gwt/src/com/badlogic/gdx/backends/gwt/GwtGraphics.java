@@ -13,20 +13,23 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Panel;
 
 public class GwtGraphics implements Graphics {
 	final Surface3D surface;
 	final GL20 gl;
 	String extensions;
-
-	public GwtGraphics(GwtApplicationConfiguration config) {		
+	float fps = 0;
+	long lastTimeStamp = System.currentTimeMillis();
+	float deltaTime = 0;
+	
+	public GwtGraphics(Panel root, GwtApplicationConfiguration config) {
 		// create surface per configuration
 		WebGLContextAttributes contextAttribs = new WebGLContextAttributes();
 		contextAttribs.setStencilEnable(config.stencil);
 		contextAttribs.setAntialiasEnable(config.antialiasing);
 		surface = new Surface3D(config.width, config.height, contextAttribs);
-		RootPanel.get().add(surface);
+		root.add(surface);
 	
 		// check whether WebGL is supported
 		GL2 gl = surface.getGL();
@@ -91,12 +94,12 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public float getDeltaTime() {
-		return 0;
+		return deltaTime;
 	}
 
 	@Override
 	public int getFramesPerSecond() {
-		return 0;
+		return (int)fps;
 	}
 
 	@Override
@@ -173,5 +176,12 @@ public class GwtGraphics implements Graphics {
 	public boolean supportsExtension(String extension) {
 		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
+	}
+
+	public void setFps(float fps) {
+		long currTimeStamp = System.currentTimeMillis();
+		deltaTime = (currTimeStamp - lastTimeStamp) / 1000.0f;
+		lastTimeStamp = currTimeStamp;
+		this.fps = fps;
 	}
 }

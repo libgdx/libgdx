@@ -27,6 +27,8 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 	public void render() {
 		Gdx.gl.glClearColor(1, (float)Math.random(), 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		Gdx.app.log("GdxGwtTest", "fps:" + Gdx.graphics.getFramesPerSecond() + ", " + Gdx.graphics.getDeltaTime());
 	}
 
 	@Override
