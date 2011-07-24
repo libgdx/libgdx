@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /**
  * A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
  * internal values after execution.
@@ -178,10 +180,10 @@ public class Color {
 	}
 
 	@Override public int hashCode () {
-		int result = (r != +0.0f ? Float.floatToIntBits(r) : 0);
-		result = 31 * result + (g != +0.0f ? Float.floatToIntBits(g) : 0);
-		result = 31 * result + (b != +0.0f ? Float.floatToIntBits(b) : 0);
-		result = 31 * result + (a != +0.0f ? Float.floatToIntBits(a) : 0);
+		int result = (r != +0.0f ? NumberUtils.floatToIntBits(r) : 0);
+		result = 31 * result + (g != +0.0f ? NumberUtils.floatToIntBits(g) : 0);
+		result = 31 * result + (b != +0.0f ? NumberUtils.floatToIntBits(b) : 0);
+		result = 31 * result + (a != +0.0f ? NumberUtils.floatToIntBits(a) : 0);
 		return result;
 	}
 
@@ -201,7 +203,7 @@ public class Color {
 	 */
 	public static float toFloatBits (int r, int g, int b, int a) {
 		int color = (a << 24) | (b << 16) | (g << 8) | r;
-		float floatColor = Float.intBitsToFloat(color & 0xfeffffff);
+		float floatColor = NumberUtils.intBitsToFloat(color & 0xfeffffff);
 		return floatColor;
 	}
 
@@ -226,7 +228,7 @@ public class Color {
 	 */
 	public float toFloatBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return Float.intBitsToFloat(color & 0xfeffffff);
+		return NumberUtils.intBitsToFloat(color & 0xfeffffff);
 	}
 
 	/**
@@ -246,7 +248,7 @@ public class Color {
 	 */
 	public static float toFloatBits (float r, float g, float b, float a) {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return Float.intBitsToFloat(color & 0xfeffffff);
+		return NumberUtils.intBitsToFloat(color & 0xfeffffff);
 	}
 	
 	public static int alpha(float alpha) {

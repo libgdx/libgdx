@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /**
  * Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
@@ -717,7 +718,7 @@ public class BitmapFont implements Disposable {
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = Float.intBitsToFloat((intBits & 0xfeffffff));
+		color = NumberUtils.intBitsToFloat((intBits & 0xfeffffff));
 	}
 
 	/**
@@ -725,7 +726,7 @@ public class BitmapFont implements Disposable {
 	 * {@link #setColor(float, float, float, float)} must be used.
 	 */
 	public Color getColor () {
-		int intBits = Float.floatToRawIntBits(color);
+		int intBits = NumberUtils.floatToRawIntBits(color);
 		Color color = this.tempColor;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

@@ -157,11 +157,11 @@ public class MD5Quaternion {
 		y = k0 * y + k1 * q1y;
 		z = k0 * z + k1 * q1z;
 	}
-
-	public String toString () {
-		return String.format("%.4f", x) + ", " + String.format("%.4f", y) + ", " + String.format("%.4f", z) + ", "
-			+ String.format("%.4f", w);
-	}
+//
+//	public String toString () {
+//		return String.format("%.4f", x) + ", " + String.format("%.4f", y) + ", " + String.format("%.4f", z) + ", "
+//			+ String.format("%.4f", w);
+//	}
 
 	public void invert() {
 		float d = x*x + y*y + z*z + w*w;

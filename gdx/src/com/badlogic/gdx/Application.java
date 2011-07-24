@@ -91,7 +91,7 @@ public interface Application {
 	 * 
 	 */
 	public enum ApplicationType {
-		Android, Desktop, Applet
+		Android, Desktop, Applet, WebGL
 	}
 	
 	public static final int LOG_NONE = 0;

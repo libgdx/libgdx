@@ -17,6 +17,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /**
  * Encapsulates a 3D vector. Allows chaining operations by returning a reference to it self in all modification methods.
  * 
@@ -403,7 +405,7 @@ public class Vector3 implements Serializable {
 	 * {@inheritDoc}
 	 */
 	public String toString () {
-		return String.format("%.4f", x) + ", " + String.format("%.4f", y) + ", " + String.format("%.4f", z);
+		return x + "," + y + "," + z;
 	}
 
 	/**
@@ -467,9 +469,9 @@ public class Vector3 implements Serializable {
 	@Override public int hashCode () {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
-		result = prime * result + Float.floatToIntBits(z);
+		result = prime * result + NumberUtils.floatToIntBits(x);
+		result = prime * result + NumberUtils.floatToIntBits(y);
+		result = prime * result + NumberUtils.floatToIntBits(z);
 		return result;
 	}
 
@@ -481,9 +483,9 @@ public class Vector3 implements Serializable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Vector3 other = (Vector3)obj;
-		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
-		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
-		if (Float.floatToIntBits(z) != Float.floatToIntBits(other.z)) return false;
+		if (NumberUtils.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x)) return false;
+		if (NumberUtils.floatToIntBits(y) != NumberUtils.floatToIntBits(other.y)) return false;
+		if (NumberUtils.floatToIntBits(z) != NumberUtils.floatToIntBits(other.z)) return false;
 		return true;
 	}
 

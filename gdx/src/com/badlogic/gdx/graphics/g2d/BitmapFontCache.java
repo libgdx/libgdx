@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /**
  * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
@@ -91,7 +92,7 @@ public class BitmapFontCache implements Disposable {
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = Float.intBitsToFloat((intBits & 0xfeffffff));
+		float color = NumberUtils.intBitsToFloat((intBits & 0xfeffffff));
 		if (color == this.color) return;
 		this.color = color;
 		float[] vertices = this.vertices;
@@ -115,7 +116,7 @@ public class BitmapFontCache implements Disposable {
 
 	public Color getColor () {
 		float floatBits = color;
-		int intBits = Float.floatToRawIntBits(color);
+		int intBits = NumberUtils.floatToRawIntBits(color);
 		Color color = tmpColor;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

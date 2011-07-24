@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='com.badlogic.gdx'>
+
+	<source path="gdx">
+		<!-- main interfaces/classes -->
+		<include name="**/Application.java"/>
+		<include name="**/ApplicationListener.java"/>
+		<include name="**/Audio.java"/>
+		<include name="**/Files.java"/>
+		<include name="**/Gdx.java"/>
+		<include name="**/Graphics.java"/>
+		<include name="**/Input.java"/>
+		<include name="**/InputAdapter.java"/>
+		<include name="**/InputMultiplexer.java"/>
+		<include name="**/InputProcessor.java"/>
+		<include name="**/Preferences.java"/>
+		
+		<!-- audio interfaces/classes -->
+		<include name="**/audio/AudioDevice.java"/>
+		<include name="**/audio/AudioRecorder.java"/>
+		<include name="**/audio/Music.java"/>
+		<include name="**/audio/Sound.java"/>
+		
+		<!-- files interfaces/classes -->
+<!-- 		<include name="**/FileHandle.java"/> -->
+<!-- 		<include name="**/FileHandleStream.java"/> -->
+		
+		<!-- graphics interfaces/classes -->
+		<include name="**/graphics/Color.java"/>
+		<include name="**/graphics/GL10.java"/>
+		<include name="**/graphics/GL11.java"/>
+		<include name="**/graphics/GL20.java"/>
+		<include name="**/graphics/GLCommon.java"/>
+		<include name="**/graphics/GLU.java"/>
+		<include name="**/graphics/Pixmap.java"/>
+
+		<!-- math package -->
+		<include name="**/math/**"/>
+		
+		<!-- utils interfaces/classes -->
+		<include name="**/utils/Disposable.java"/>
+		<include name="**/utils/GdxRuntimeException.java"/>
+	</source>
+
+<!-- 	<source path='gdx'> -->
+<!-- 		<exclude name="**/audio/analysis/**" /> -->
+<!-- 		<exclude name="**/audio/io/**" /> -->
+<!-- 		<exclude name="**/files/FileHandle.java**"/> -->
+<!-- 		<exclude name="**/graphics/g2d/tiled/**" /> -->
+<!-- 		<exclude name="**/graphics/g2d/ParticleEffect.java" /> -->
+<!-- 		<exclude name="**/graphics/g2d/ParticleEmitter.java" /> -->
+<!-- 		<exclude name="**/graphics/g2d/Gdx2DPixmap.java" /> -->
+<!-- 		<exclude name="**/graphics/g3d/**" /> -->
+<!-- 		<exclude name="**/graphics/glutils/ETC1.java" /> -->
+<!-- 		<exclude name="**/graphics/Texture.java" /> -->
+<!-- 		<exclude name="**/graphics/Pixmap.java" /> -->
+<!-- 		<exclude name="**/graphics/TextureDict.java"/> -->
+<!-- 		<exclude name="**/graphics/TextureRef.java"/> -->
+<!-- 		<exclude name="**/input/**"/> -->
+<!-- 		<exclude name="**/physics/**" /> -->
+<!-- 		<exclude name="**/scenes/**" /> -->
+<!-- 		<exclude name="**/utils/AtomicQueue.java"/> -->
+<!-- 		<exclude name="**/utils/Base64Coder.java"/> -->
+<!-- 		<exclude name="**/utils/PauseableThread.java"/> -->
+<!-- 		<exclude name="**/utils/GdxNativesLoader.java"/> -->
+<!-- 		<exclude name="**/utils/NumberUtils.java"/> -->
+<!-- 		<exclude name="**/utils/Array.java"/> -->
+<!-- 		<exclude name="**/utils/NumberUtils.java"/> -->
+<!-- 		<exclude name="**/utils/LittleEndianInputStream.java"/> -->
+<!-- 		<exclude name="**/utils/Array.java"/> -->
+<!-- 	</source> -->
+</module>

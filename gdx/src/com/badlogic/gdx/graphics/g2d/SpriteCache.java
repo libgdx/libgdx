@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
+
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -32,8 +35,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import static com.badlogic.gdx.graphics.g2d.Sprite.*;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /**
  * Draws 2D images, optimized for geometry that does not change. Sprites and/or textures are cached and given an ID, which can
@@ -145,7 +147,7 @@ public class SpriteCache implements Disposable {
 	 */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = Float.intBitsToFloat(intBits & 0xfeffffff);
+		color = NumberUtils.intBitsToFloat(intBits & 0xfeffffff);
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class SpriteCache implements Disposable {
 	}
 
 	public Color getColor () {
-		int intBits = Float.floatToRawIntBits(color);
+		int intBits = NumberUtils.floatToRawIntBits(color);
 		Color color = this.tempColor;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

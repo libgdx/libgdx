@@ -22,15 +22,16 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /**
  * <p>
@@ -310,7 +311,7 @@ public class SpriteBatch implements Disposable {
 	 */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = Float.intBitsToFloat(intBits & 0xfeffffff);
+		color = NumberUtils.intBitsToFloat(intBits & 0xfeffffff);
 	}
 
 	/**
@@ -325,7 +326,7 @@ public class SpriteBatch implements Disposable {
 	 * @return the rendering color of this SpriteBatch. Manipulating the returned instance has no effect.
 	 */
 	public Color getColor () {
-		int intBits = Float.floatToRawIntBits(color);
+		int intBits = NumberUtils.floatToRawIntBits(color);
 		Color color = this.tempColor;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

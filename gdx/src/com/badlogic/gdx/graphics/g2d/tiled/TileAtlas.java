@@ -119,7 +119,7 @@ public class TileAtlas implements Disposable {
         FileHandle child = path;
 
         StringTokenizer tokenizer = new StringTokenizer(relativePath, "\\/");
-        while (tokenizer.hasMoreElements()) {
+        while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             if (token.equals("..")) {
                 child = child.parent();

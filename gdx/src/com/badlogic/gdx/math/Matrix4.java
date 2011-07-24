@@ -799,7 +799,7 @@ public class Matrix4 implements Serializable {
 	 * @param mata the first matrix.
 	 * @param matb the second matrix.
 	 */
-	public static native void mul(float[] mata, float[] matb);
+	public static native void mul(float[] mata, float[] matb) /*-{ }-*/;
 	
 	/**
 	 * Multiplies the vector with the given matrix. The matrix array is assumed to hold a 
@@ -810,7 +810,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector.
 	 */
-	public static native void mulVec(float[] mat, float[] vec);
+	public static native void mulVec(float[] mat, float[] vec) /*-{ }-*/;
 	
 	/**
 	 * Multiplies the vectors with the given matrix. The matrix array is assumed to hold a 4x4
@@ -827,7 +827,7 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats
 	 */	
-	public static native void mulVec(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	public static native void mulVec(float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/;
 	
 	/**
 	 * Multiplies the vector with the given matrix, performing a division by w. The matrix array is assumed to hold a 
@@ -838,7 +838,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector.
 	 */	
-	public static native void prj(float[] mat, float[] vec);
+	public static native void prj(float[] mat, float[] vec) /*-{ }-*/;
 	
 	/**
 	 * Multiplies the vectors with the given matrix, , performing a division by w. The matrix array is assumed to hold a 4x4
@@ -855,7 +855,7 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats
 	 */	
-	public static native void prj(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	public static native void prj(float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/;
 	
 	/**
 	 * Multiplies the vector with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 
@@ -866,7 +866,7 @@ public class Matrix4 implements Serializable {
 	 * @param mat the matrix
 	 * @param vec the vector.
 	 */	
-	public static native void rot(float[] mat, float[] vec);
+	public static native void rot(float[] mat, float[] vec) /*-{ }-*/;
 	
 	/**
 	 * Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix. The matrix array is assumed to hold a 4x4
@@ -883,7 +883,7 @@ public class Matrix4 implements Serializable {
 	 * @param numVecs the number of vectors
 	 * @param stride the stride between vectors in floats
 	 */
-	public static native void rot(float[] mat, float[] vecs, int offset, int numVecs, int stride);
+	public static native void rot(float[] mat, float[] vecs, int offset, int numVecs, int stride) /*-{ }-*/;
 	
 	/**
 	 * Computes the inverse of the given matrix. The matrix array is assumed to hold a 4x4
@@ -891,7 +891,7 @@ public class Matrix4 implements Serializable {
 	 * @param values the matrix values.
 	 * @return false in case the inverse could not be calculated, true otherwise.
 	 */
-	public static native boolean inv(float[] values);
+	public static native boolean inv(float[] values) /*-{ }-*/;
 	
 	/**
 	 * Computes the determinante of the given matrix. The matrix array is assumed to hold a 4x4
@@ -899,5 +899,5 @@ public class Matrix4 implements Serializable {
 	 * @param values the matrix values.
 	 * @return the determinante.
 	 */
-	public static native float det(float[] values);
+	public static native float det(float[] values) /*-{ }-*/;
 }

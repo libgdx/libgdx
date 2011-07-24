@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /**
  * Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A Sprite has a position
@@ -229,7 +230,7 @@ public class Sprite extends TextureRegion {
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = Float.intBitsToFloat(intBits & 0xfeffffff);
+		float color = NumberUtils.intBitsToFloat(intBits & 0xfeffffff);
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -480,7 +481,7 @@ public class Sprite extends TextureRegion {
 	 */
 	public Color getColor () {
 		float floatBits = vertices[C1];
-		int intBits = Float.floatToRawIntBits(vertices[C1]);
+		int intBits = NumberUtils.floatToRawIntBits(vertices[C1]);
 		Color color = this.color;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

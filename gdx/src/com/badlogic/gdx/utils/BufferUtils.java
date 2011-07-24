@@ -36,7 +36,7 @@ public class BufferUtils {
 	 * Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS ALLOCATEd
 	 * VIA METHODS IN THIS CLASS OR ByteBuffer.allocateDirect()! IT WILL EXPLODE!
 	 */
-	public static native void freeMemory(ByteBuffer buffer);
+	public static native void freeMemory(ByteBuffer buffer) /*-{ }-*/;
 	
 	/**
 	 * Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
@@ -230,15 +230,15 @@ public class BufferUtils {
 		else throw new GdxRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");		
 	}
 	
-	private native static void copyJni (float[] src, Buffer dst, int numFloats, int offset);
-	private native static void copyJni (byte[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (char[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (short[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (int[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (long[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (float[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (double[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
-	private native static void copyJni (Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes);
+	private native static void copyJni (float[] src, Buffer dst, int numFloats, int offset) /*-{ }-*/;
+	private native static void copyJni (byte[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (char[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (short[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (int[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (long[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (float[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (double[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
+	private native static void copyJni (Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
 
 	public static FloatBuffer newFloatBuffer (int numFloats) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
