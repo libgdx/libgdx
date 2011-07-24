@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='com.badlogic.gdx.backends.gwt'>
+	<inherits name='com.google.gwt.user.User' />
+	<inherits name='gwt.g3d.g3d' />
+	<inherits name="com.badlogic.gdx" />
+
+	<super-source path="gwt/emu" />
+	<source path="gwt">
+		<exclude name="**/emu/**" />
+	</source>
+
+	<entry-point class='com.badlogic.gdx.backends.gwt.GdxGwtTest' />
+<!-- 	<entry-point class='com.badlogic.gdx.backends.gwt.PlainTest' /> -->
+</module>

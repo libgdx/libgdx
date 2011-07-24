@@ -1,0 +1,3296 @@
+<html>
+<head><meta charset="UTF-8" /><script>
+var $gwt_version = "2.3.0";
+var $wnd = parent;
+var $doc = $wnd.document;
+var $moduleName, $moduleBase;
+var $strongName = '99636C7BA79348FFDFA59D14A7A865CE';
+var $stats = $wnd.__gwtStatsEvent ? function(a) {return $wnd.__gwtStatsEvent(a);} : null,
+$sessionId = $wnd.__gwtStatsSessionId ? $wnd.__gwtStatsSessionId : null;
+$stats && $stats({moduleName:'com.badlogic.gdx.backends.gwt',sessionId:$sessionId,subSystem:'startup',evtGroup:'moduleStartup',millis:(new Date()).getTime(),type:'moduleEvalStart'});
+</script></head>
+<body>
+<script><!--
+var _, P0_longLit = {l:0, m:0, h:0};
+function nullMethod(){
+}
+
+function Object_0(){
+}
+
+_ = Object_0.prototype = {};
+_.equals$ = function equals(other){
+  return this === other;
+}
+;
+_.hashCode$ = function hashCode_0(){
+  return this.$H || (this.$H = ++sNextHashId);
+}
+;
+_.typeMarker$ = nullMethod;
+_.castableTypeMap$ = {};
+var graphics = null;
+function $onModuleLoad(this$static){
+  var timer;
+  this$static.config = new GwtApplicationConfiguration_0;
+  this$static.graphics = new GwtGraphics_0(this$static.config);
+  graphics = this$static.graphics;
+  $addHandler(this$static.graphics.surface, new GwtApplication$1_0, (!TYPE_0 && (TYPE_0 = new GwtEvent$Type_0) , TYPE_0));
+  timer = new GwtApplication$2_0;
+  timer.timer.renderTime = fromDouble((new Date).getTime());
+  $scheduleRepeating(timer.timer, ~~(1000 / timer.desiredFps));
+  $scheduleRepeating(timer.fpsUpdateTimer, 500);
+}
+
+function GwtApplication(){
+}
+
+_ = GwtApplication.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.config = null;
+_.graphics = null;
+function $render(){
+  var gl;
+  gl = graphics.surface.context;
+  gl.clearColor(1, Math.random(), 0, 1);
+  gl.clear(($clinit_6() , COLOR_BUFFER_BIT).value);
+}
+
+function GdxGwtTest_0(){
+}
+
+function GdxGwtTest(){
+}
+
+_ = GdxGwtTest_0.prototype = GdxGwtTest.prototype = new GwtApplication;
+_.castableTypeMap$ = {};
+function GwtApplication$1_0(){
+}
+
+function GwtApplication$1(){
+}
+
+_ = GwtApplication$1_0.prototype = GwtApplication$1.prototype = new Object_0;
+_.castableTypeMap$ = {10:1};
+function FpsTimer(){
+}
+
+_ = FpsTimer.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.desiredFps = 0;
+function GwtApplication$2_0(){
+  this.timer = new FpsTimer$FpsTimerImpl_0(this);
+  this.fpsUpdateTimer = new FpsTimer$1_0(this);
+  this.desiredFps = 60;
+}
+
+function GwtApplication$2(){
+}
+
+_ = GwtApplication$2_0.prototype = GwtApplication$2.prototype = new FpsTimer;
+_.castableTypeMap$ = {};
+function GwtApplicationConfiguration_0(){
+  this.width_0 = 500;
+  this.height_0 = 500;
+}
+
+function GwtApplicationConfiguration(){
+}
+
+_ = GwtApplicationConfiguration_0.prototype = GwtApplicationConfiguration.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.height_0 = 0;
+_.width_0 = 0;
+function GwtGraphics_0(config){
+  var contextAttribs, gl;
+  contextAttribs = new WebGLContextAttributes_0;
+  contextAttribs.impl.stencil = false;
+  contextAttribs.impl.antialias = false;
+  this.surface = new Surface3D_0(config.width_0, config.height_0, contextAttribs);
+  $add_0(($clinit_5() , get()), this.surface);
+  gl = this.surface.context;
+  if (!gl) {
+    throw new GdxRuntimeException_0;
+  }
+  gl.viewport(0, 0, this.surface.width_0, this.surface.height_0);
+}
+
+function GwtGraphics(){
+}
+
+_ = GwtGraphics_0.prototype = GwtGraphics.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.surface = null;
+function $setStackTrace(stackTrace){
+  var c, copy, i;
+  copy = initDim(_3Ljava_lang_StackTraceElement_2_classLit, {24:1}, 27, stackTrace.length, 0);
+  for (i = 0 , c = stackTrace.length; i < c; ++i) {
+    if (!stackTrace[i]) {
+      throw new NullPointerException_0;
+    }
+    copy[i] = stackTrace[i];
+  }
+}
+
+function Throwable(){
+}
+
+_ = Throwable.prototype = new Object_0;
+_.castableTypeMap$ = {5:1, 24:1};
+function Exception(){
+}
+
+_ = Exception.prototype = new Throwable;
+_.castableTypeMap$ = {5:1, 24:1};
+function RuntimeException_0(message){
+  $fillInStackTrace();
+}
+
+function RuntimeException_1(){
+  $fillInStackTrace();
+}
+
+function RuntimeException(){
+}
+
+_ = RuntimeException_0.prototype = RuntimeException.prototype = new Exception;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function GdxRuntimeException_0(){
+  $fillInStackTrace();
+}
+
+function GdxRuntimeException(){
+}
+
+_ = GdxRuntimeException_0.prototype = GdxRuntimeException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function JavaScriptException_0(e){
+  $fillInStackTrace();
+  this.e = e;
+  $createStackTrace(this);
+}
+
+function JavaScriptException(){
+}
+
+_ = JavaScriptException_0.prototype = JavaScriptException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+_.e = null;
+function equals__devirtual$(this$static, other){
+  var maybeJsoInvocation;
+  return maybeJsoInvocation = this$static , maybeJsoInvocation.typeMarker$ == nullMethod || maybeJsoInvocation.castableTypeMap$ && !!maybeJsoInvocation.castableTypeMap$[1]?maybeJsoInvocation.equals$(other):maybeJsoInvocation === other;
+}
+
+function hashCode__devirtual$(this$static){
+  var maybeJsoInvocation;
+  return maybeJsoInvocation = this$static , maybeJsoInvocation.typeMarker$ == nullMethod || maybeJsoInvocation.castableTypeMap$ && !!maybeJsoInvocation.castableTypeMap$[1]?maybeJsoInvocation.hashCode$():maybeJsoInvocation.$H || (maybeJsoInvocation.$H = ++sNextHashId);
+}
+
+function Scheduler(){
+}
+
+_ = Scheduler.prototype = new Object_0;
+_.castableTypeMap$ = {};
+function apply(jsFunction, thisObj, arguments_0){
+  return jsFunction.apply(thisObj, arguments_0);
+  var __0;
+}
+
+function enter(){
+  if (entryDepth++ == 0) {
+    $flushEntryCommands(($clinit() , INSTANCE));
+    return true;
+  }
+  return false;
+}
+
+function entry_0(jsFunction){
+  return function(){
+    try {
+      return entry0(jsFunction, this, arguments);
+    }
+     catch (e) {
+      throw e;
+    }
+  }
+  ;
+}
+
+function entry0(jsFunction, thisObj, arguments_0){
+  var initialEntry;
+  initialEntry = enter();
+  try {
+    return apply(jsFunction, thisObj, arguments_0);
+  }
+   finally {
+    initialEntry && $flushFinallyCommands(($clinit() , INSTANCE));
+    --entryDepth;
+  }
+}
+
+var entryDepth = 0, sNextHashId = 0;
+function $clinit(){
+  $clinit = nullMethod;
+  INSTANCE = new SchedulerImpl_0;
+}
+
+function $flushEntryCommands(this$static){
+  var oldQueue, rescheduled;
+  if (this$static.entryCommands) {
+    rescheduled = null;
+    do {
+      oldQueue = this$static.entryCommands;
+      this$static.entryCommands = null;
+      rescheduled = runScheduledTasks(oldQueue, rescheduled);
+    }
+     while (this$static.entryCommands);
+    this$static.entryCommands = rescheduled;
+  }
+}
+
+function $flushFinallyCommands(this$static){
+  var oldQueue, rescheduled;
+  if (this$static.finallyCommands) {
+    rescheduled = null;
+    do {
+      oldQueue = this$static.finallyCommands;
+      this$static.finallyCommands = null;
+      rescheduled = runScheduledTasks(oldQueue, rescheduled);
+    }
+     while (this$static.finallyCommands);
+    this$static.finallyCommands = rescheduled;
+  }
+}
+
+function SchedulerImpl_0(){
+}
+
+function push(queue, task){
+  !queue && (queue = []);
+  queue[queue.length] = task;
+  return queue;
+}
+
+function runScheduledTasks(tasks, rescheduled){
+  var $e0, i, j, t;
+  for (i = 0 , j = tasks.length; i < j; ++i) {
+    t = tasks[i];
+    try {
+      t[1]?t[0].nullMethod() && (rescheduled = push(rescheduled, t)):($wnd.__gwt_initWindowCloseHandler($entry(onClosing), $entry(onClosed)) , undefined);
+    }
+     catch ($e0) {
+      $e0 = caught_0($e0);
+      if (!instanceOf($e0, 2))
+        throw $e0;
+    }
+  }
+  return rescheduled;
+}
+
+function SchedulerImpl(){
+}
+
+_ = SchedulerImpl_0.prototype = SchedulerImpl.prototype = new Scheduler;
+_.castableTypeMap$ = {};
+_.entryCommands = null;
+_.finallyCommands = null;
+var INSTANCE;
+function extractNameFromToString(fnToString){
+  var index, start, toReturn;
+  toReturn = '';
+  fnToString = $trim(fnToString);
+  index = fnToString.indexOf('(');
+  if (index != -1) {
+    start = fnToString.indexOf('function') == 0?8:0;
+    toReturn = $trim(fnToString.substr(start, index - start));
+  }
+  return toReturn.length > 0?toReturn:'anonymous';
+}
+
+function splice(arr, length_0){
+  arr.length >= length_0 && arr.splice(0, length_0);
+  return arr;
+}
+
+function $createStackTrace(e){
+  var i, j, stack, stackTrace;
+  stack = $inferFrom(instanceOfJso(e.e)?dynamicCastJso(e.e):null);
+  stackTrace = initDim(_3Ljava_lang_StackTraceElement_2_classLit, {24:1}, 27, stack.length, 0);
+  for (i = 0 , j = stackTrace.length; i < j; ++i) {
+    stackTrace[i] = new StackTraceElement_0(stack[i]);
+  }
+  $setStackTrace(stackTrace);
+}
+
+function $fillInStackTrace(){
+  var i, j, stack, stackTrace;
+  stack = splice($inferFrom($makeException()), 2);
+  stackTrace = initDim(_3Ljava_lang_StackTraceElement_2_classLit, {24:1}, 27, stack.length, 0);
+  for (i = 0 , j = stackTrace.length; i < j; ++i) {
+    stackTrace[i] = new StackTraceElement_0(stack[i]);
+  }
+  $setStackTrace(stackTrace);
+}
+
+function $makeException(){
+  try {
+    null.a();
+  }
+   catch (e) {
+    return e;
+  }
+}
+
+function $inferFrom(e){
+  var i, j, stack;
+  stack = e && e.stack?e.stack.split('\n'):[];
+  for (i = 0 , j = stack.length; i < j; ++i) {
+    stack[i] = extractNameFromToString(stack[i]);
+  }
+  return stack;
+}
+
+function $eventGetRelatedTarget(evt){
+  var relatedTarget = evt.relatedTarget;
+  if (!relatedTarget) {
+    return null;
+  }
+  try {
+    var nodeName = relatedTarget.nodeName;
+    return relatedTarget;
+  }
+   catch (e) {
+    return null;
+  }
+}
+
+function $isOrHasChild(parent_0, child){
+  return parent_0 === child || !!(parent_0.compareDocumentPosition(child) & 16);
+}
+
+function Event_0(){
+}
+
+_ = Event_0.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.source = null;
+function GwtEvent(){
+}
+
+_ = GwtEvent.prototype = new Event_0;
+_.castableTypeMap$ = {};
+_.dead = false;
+function CloseEvent_0(){
+}
+
+function fire(source){
+  var event_0;
+  if (TYPE) {
+    event_0 = new CloseEvent_0;
+    $fireEvent(source, event_0);
+  }
+}
+
+function CloseEvent(){
+}
+
+_ = CloseEvent_0.prototype = CloseEvent.prototype = new GwtEvent;
+_.dispatch = function dispatch(handler){
+  dynamicCast(handler, 3).onClose(this);
+}
+;
+_.getAssociatedType = function getAssociatedType(){
+  return TYPE;
+}
+;
+_.castableTypeMap$ = {};
+var TYPE = null;
+var TYPE_0 = null;
+function Event$Type(){
+}
+
+_ = Event$Type.prototype = new Object_0;
+_.hashCode$ = function hashCode_1(){
+  return this.index;
+}
+;
+_.castableTypeMap$ = {};
+_.index = 0;
+var nextHashCode = 0;
+function GwtEvent$Type_0(){
+  this.index = ++nextHashCode;
+}
+
+function GwtEvent$Type(){
+}
+
+_ = GwtEvent$Type_0.prototype = GwtEvent$Type.prototype = new Event$Type;
+_.castableTypeMap$ = {};
+function $fireEvent(this$static, event_0){
+  var $e0, e, oldSource;
+  !event_0.dead || (event_0.dead = false , event_0.source = null);
+  oldSource = event_0.source;
+  event_0.source = this$static.source;
+  try {
+    $doFire(this$static.eventBus, event_0);
+  }
+   catch ($e0) {
+    $e0 = caught_0($e0);
+    if (instanceOf($e0, 4)) {
+      e = $e0;
+      throw new UmbrellaException_2(e.causes);
+    }
+     else 
+      throw $e0;
+  }
+   finally {
+    oldSource == null?(event_0.dead = true , event_0.source = null):(event_0.source = oldSource);
+  }
+}
+
+function HandlerManager_0(source){
+  this.eventBus = new HandlerManager$Bus_0;
+  this.source = source;
+}
+
+function HandlerManager(){
+}
+
+_ = HandlerManager_0.prototype = HandlerManager.prototype = new Object_0;
+_.castableTypeMap$ = {18:1};
+_.eventBus = null;
+_.source = null;
+function EventBus(){
+}
+
+_ = EventBus.prototype = new Object_0;
+_.castableTypeMap$ = {};
+function $defer(this$static, command){
+  !this$static.deferredDeltas && (this$static.deferredDeltas = new ArrayList_0);
+  $add_2(this$static.deferredDeltas, command);
+}
+
+function $doAdd(this$static, type, handler){
+  var l_0;
+  if (!type) {
+    throw new NullPointerException_1('Cannot add a handler with a null type');
+  }
+  if (!handler) {
+    throw new NullPointerException_1('Cannot add a null handler');
+  }
+  this$static.firingDepth > 0?$defer(this$static, new SimpleEventBus$2_0(this$static, type, handler)):(l_0 = $ensureHandlerList(this$static, type) , l_0.add(handler) , undefined);
+  return new SimpleEventBus$1_0;
+}
+
+function $doAddNow(this$static, type, handler){
+  var l_0;
+  l_0 = $ensureHandlerList(this$static, type);
+  l_0.add(handler);
+}
+
+function $doFire(this$static, event_0){
+  var $e0, causes, e, handler, handlers, it, old;
+  if (!event_0) {
+    throw new NullPointerException_1('Cannot fire null event');
+  }
+  try {
+    ++this$static.firingDepth;
+    handlers = $getHandlerList(this$static, event_0.getAssociatedType());
+    causes = null;
+    it = this$static.isReverseOrder?handlers.listIterator_0(handlers.size_0()):handlers.listIterator();
+    while (this$static.isReverseOrder?it.hasPrevious():it.hasNext()) {
+      handler = this$static.isReverseOrder?it.previous():it.next_0();
+      try {
+        event_0.dispatch(dynamicCast(handler, 10));
+      }
+       catch ($e0) {
+        $e0 = caught_0($e0);
+        if (instanceOf($e0, 5)) {
+          e = $e0;
+          !causes && (causes = new HashSet_0);
+          old = $put(causes.map, e, causes);
+        }
+         else 
+          throw $e0;
+      }
+    }
+    if (causes) {
+      throw new UmbrellaException_1(causes);
+    }
+  }
+   finally {
+    --this$static.firingDepth;
+    this$static.firingDepth == 0 && $handleQueuedAddsAndRemoves(this$static);
+  }
+}
+
+function $ensureHandlerList(this$static, type){
+  var handlers, sourceMap;
+  sourceMap = dynamicCast($get(this$static.map, type), 11);
+  if (!sourceMap) {
+    sourceMap = new HashMap_0;
+    $put(this$static.map, type, sourceMap);
+  }
+  handlers = dynamicCast(sourceMap.nullSlot, 12);
+  if (!handlers) {
+    handlers = new ArrayList_0;
+    $putNullSlot(sourceMap, handlers);
+  }
+  return handlers;
+}
+
+function $getHandlerList(this$static, type){
+  var handlers, sourceMap;
+  sourceMap = dynamicCast($get(this$static.map, type), 11);
+  if (!sourceMap) {
+    return $clinit_9() , $clinit_9() , EMPTY_LIST;
+  }
+  handlers = dynamicCast(sourceMap.nullSlot, 12);
+  if (!handlers) {
+    return $clinit_9() , $clinit_9() , EMPTY_LIST;
+  }
+  return handlers;
+}
+
+function $handleQueuedAddsAndRemoves(this$static){
+  var c, c$iterator;
+  if (this$static.deferredDeltas) {
+    try {
+      for (c$iterator = new AbstractList$IteratorImpl_0(this$static.deferredDeltas); c$iterator.i < c$iterator.this$0_0.size_0();) {
+        c = dynamicCast($next_0(c$iterator), 13);
+        $doAddNow(c.this$0, c.val$type, c.val$handler);
+      }
+    }
+     finally {
+      this$static.deferredDeltas = null;
+    }
+  }
+}
+
+function SimpleEventBus(){
+}
+
+_ = SimpleEventBus.prototype = new EventBus;
+_.castableTypeMap$ = {};
+_.deferredDeltas = null;
+_.firingDepth = 0;
+_.isReverseOrder = false;
+function HandlerManager$Bus_0(){
+  this.map = new HashMap_0;
+  this.isReverseOrder = false;
+}
+
+function HandlerManager$Bus(){
+}
+
+_ = HandlerManager$Bus_0.prototype = HandlerManager$Bus.prototype = new SimpleEventBus;
+_.castableTypeMap$ = {};
+function LegacyHandlerWrapper_0(){
+}
+
+function LegacyHandlerWrapper(){
+}
+
+_ = LegacyHandlerWrapper_0.prototype = LegacyHandlerWrapper.prototype = new Object_0;
+_.castableTypeMap$ = {};
+function UmbrellaException_1(causes){
+  RuntimeException_1.call(this, causes.size_0() == 0?null:dynamicCast(causes.toArray(initDim(_3Ljava_lang_Throwable_2_classLit, {14:1, 24:1}, 5, 0, 0)), 14)[0]);
+  this.causes = causes;
+}
+
+function UmbrellaException_0(){
+}
+
+_ = UmbrellaException_1.prototype = UmbrellaException_0.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 4:1, 5:1, 24:1};
+_.causes = null;
+function UmbrellaException_2(causes){
+  UmbrellaException_1.call(this, causes);
+}
+
+function UmbrellaException(){
+}
+
+_ = UmbrellaException_2.prototype = UmbrellaException.prototype = new UmbrellaException_0;
+_.castableTypeMap$ = {2:1, 4:1, 5:1, 24:1};
+function Array_1(){
+}
+
+function createFrom(array, length_0){
+  var a_0, result;
+  a_0 = array;
+  result = createFromSeed(0, length_0);
+  initValues(a_0.arrayClass$, a_0.castableTypeMap$, a_0.queryId$, result);
+  return result;
+}
+
+function createFromSeed(seedType, length_0){
+  var array = new Array(length_0);
+  if (seedType == 3) {
+    for (var i = 0; i < length_0; ++i) {
+      var value = new Object;
+      value.l = value.m = value.h = 0;
+      array[i] = value;
+    }
+  }
+   else if (seedType > 0) {
+    var value = [null, 0, false][seedType];
+    for (var i = 0; i < length_0; ++i) {
+      array[i] = value;
+    }
+  }
+  return array;
+}
+
+function initDim(arrayClass, castableTypeMap, queryId, length_0, seedType){
+  var result;
+  result = createFromSeed(seedType, length_0);
+  $clinit_0();
+  wrapArray(result, expandoNames_0, expandoValues_0);
+  result.arrayClass$ = arrayClass;
+  result.castableTypeMap$ = castableTypeMap;
+  result.queryId$ = queryId;
+  return result;
+}
+
+function initValues(arrayClass, castableTypeMap, queryId, array){
+  $clinit_0();
+  wrapArray(array, expandoNames_0, expandoValues_0);
+  array.arrayClass$ = arrayClass;
+  array.castableTypeMap$ = castableTypeMap;
+  array.queryId$ = queryId;
+  return array;
+}
+
+function setCheck(array, index, value){
+  if (value != null) {
+    if (array.queryId$ > 0 && !canCastUnsafe(value, array.queryId$)) {
+      throw new ArrayStoreException_0;
+    }
+    if (array.queryId$ < 0 && (value.typeMarker$ == nullMethod || value.castableTypeMap$ && !!value.castableTypeMap$[1])) {
+      throw new ArrayStoreException_0;
+    }
+  }
+  return array[index] = value;
+}
+
+function Array_0(){
+}
+
+_ = Array_1.prototype = Array_0.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.arrayClass$ = null;
+_.queryId$ = 0;
+function $clinit_0(){
+  $clinit_0 = nullMethod;
+  expandoNames_0 = [];
+  expandoValues_0 = [];
+  initExpandos(new Array_1, expandoNames_0, expandoValues_0);
+}
+
+function initExpandos(protoType, expandoNames, expandoValues){
+  var i = 0, value;
+  for (var name_0 in protoType) {
+    if (value = protoType[name_0]) {
+      expandoNames[i] = name_0;
+      expandoValues[i] = value;
+      ++i;
+    }
+  }
+}
+
+function wrapArray(array, expandoNames, expandoValues){
+  $clinit_0();
+  for (var i = 0, c = expandoNames.length; i < c; ++i) {
+    array[expandoNames[i]] = expandoValues[i];
+  }
+}
+
+var expandoNames_0, expandoValues_0;
+function canCastUnsafe(src, dstId){
+  return src.castableTypeMap$ && src.castableTypeMap$[dstId];
+}
+
+function dynamicCast(src, dstId){
+  if (src != null && !(src.castableTypeMap$ && src.castableTypeMap$[dstId])) {
+    throw new ClassCastException_0;
+  }
+  return src;
+}
+
+function dynamicCastJso(src){
+  if (src != null && (src.typeMarker$ == nullMethod || src.castableTypeMap$ && !!src.castableTypeMap$[1])) {
+    throw new ClassCastException_0;
+  }
+  return src;
+}
+
+function instanceOf(src, dstId){
+  return src != null && src.castableTypeMap$ && !!src.castableTypeMap$[dstId];
+}
+
+function instanceOfJso(src){
+  return src != null && src.typeMarker$ != nullMethod && !(src.castableTypeMap$ && !!src.castableTypeMap$[1]);
+}
+
+function throwClassCastExceptionUnlessNull(o){
+  if (o != null) {
+    throw new ClassCastException_0;
+  }
+  return null;
+}
+
+function init(){
+  var runtimeValue;
+  !!$stats && onModuleStart('com.google.gwt.user.client.UserAgentAsserter');
+  runtimeValue = $getRuntimeValue();
+  $equals('gecko1_8', runtimeValue) || ($wnd.alert('ERROR: Possible problem with your *.gwt.xml module file.\nThe compile time user.agent value (gecko1_8) does not match the runtime user.agent value (' + runtimeValue + '). Expect more errors.\n') , undefined);
+  !!$stats && onModuleStart('com.badlogic.gdx.backends.gwt.GdxGwtTest');
+  $onModuleLoad(new GdxGwtTest_0);
+}
+
+function caught_0(e){
+  if (e != null && e.castableTypeMap$ && !!e.castableTypeMap$[5]) {
+    return e;
+  }
+  return new JavaScriptException_0(e);
+}
+
+function create(value){
+  var a0, a1, a2;
+  a0 = value & 4194303;
+  a1 = value >> 22 & 4194303;
+  a2 = value < 0?1048575:0;
+  return a = new LongLibBase$LongEmul_0 , a.l = a0 , a.m = a1 , a.h = a2 , a;
+}
+
+function create0(l_0, m_0, h_0){
+  return a = new LongLibBase$LongEmul_0 , a.l = l_0 , a.m = m_0 , a.h = h_0 , a;
+}
+
+function fromDouble(value){
+  var a0, a1, a2, negative, result, neg0, neg1, neg2;
+  if (isNaN(value)) {
+    return $clinit_1() , ZERO;
+  }
+  if (value < -9223372036854775808) {
+    return $clinit_1() , MIN_VALUE;
+  }
+  if (value >= 9223372036854775807) {
+    return $clinit_1() , MAX_VALUE;
+  }
+  negative = false;
+  if (value < 0) {
+    negative = true;
+    value = -value;
+  }
+  a2 = 0;
+  if (value >= 17592186044416) {
+    a2 = ~~Math.max(Math.min(value / 17592186044416, 2147483647), -2147483648);
+    value -= a2 * 17592186044416;
+  }
+  a1 = 0;
+  if (value >= 4194304) {
+    a1 = ~~Math.max(Math.min(value / 4194304, 2147483647), -2147483648);
+    value -= a1 * 4194304;
+  }
+  a0 = ~~Math.max(Math.min(value, 2147483647), -2147483648);
+  result = (a = new LongLibBase$LongEmul_0 , a.l = a0 , a.m = a1 , a.h = a2 , a);
+  negative && (neg0 = ~result.l + 1 & 4194303 , neg1 = ~result.m + (neg0 == 0?1:0) & 4194303 , neg2 = ~result.h + (neg0 == 0 && neg1 == 0?1:0) & 1048575 , result.l = neg0 , result.m = neg1 , result.h = neg2 , undefined);
+  return result;
+}
+
+function fromInt(value){
+  var rebase, result;
+  if (value > -129 && value < 128) {
+    rebase = value + 128;
+    boxedValues == null && (boxedValues = initDim(_3Lcom_google_gwt_lang_LongLibBase$LongEmul_2_classLit, {24:1}, 19, 256, 0));
+    result = boxedValues[rebase];
+    !result && (result = boxedValues[rebase] = create(value));
+    return result;
+  }
+  return create(value);
+}
+
+function sub(a_0, b){
+  var sum0, sum1, sum2;
+  sum0 = a_0.l - b.l;
+  sum1 = a_0.m - b.m + (sum0 >> 22);
+  sum2 = a_0.h - b.h + (sum1 >> 22);
+  return create0(sum0 & 4194303, sum1 & 4194303, sum2 & 1048575);
+}
+
+function toInt(a_0){
+  return a_0.l | a_0.m << 22;
+}
+
+var boxedValues = null;
+function $clinit_1(){
+  $clinit_1 = nullMethod;
+  MAX_VALUE = (a = new LongLibBase$LongEmul_0 , a.l = 4194303 , a.m = 4194303 , a.h = 524287 , a);
+  MIN_VALUE = (a = new LongLibBase$LongEmul_0 , a.l = 0 , a.m = 0 , a.h = 524288 , a);
+  fromInt(1);
+  fromInt(2);
+  ZERO = fromInt(0);
+}
+
+var MAX_VALUE, MIN_VALUE, ZERO;
+function LongLibBase$LongEmul_0(){
+}
+
+function LongLibBase$LongEmul(){
+}
+
+_ = LongLibBase$LongEmul_0.prototype = LongLibBase$LongEmul.prototype = new Object_0;
+_.castableTypeMap$ = {19:1};
+function onModuleStart(mainClassName){
+  return $stats({moduleName:$moduleName, sessionId:$sessionId, subSystem:'startup', evtGroup:'moduleStartup', millis:(new Date).getTime(), type:'onModuleLoadStart', className:mainClassName});
+}
+
+function dispatchEvent_0(evt, elem, listener){
+  var prevCurrentEvent;
+  prevCurrentEvent = currentEvent;
+  currentEvent = evt;
+  elem == sCaptureElem && $eventGetTypeInt(evt.type) == 8192 && (sCaptureElem = null);
+  listener.onBrowserEvent(evt);
+  currentEvent = prevCurrentEvent;
+}
+
+var currentEvent = null, sCaptureElem = null;
+function $clinit_2(){
+  $clinit_2 = nullMethod;
+  timers = new ArrayList_0;
+  addCloseHandler(new Timer$1_0);
+}
+
+function $cancel(this$static){
+  this$static.isRepeating?($wnd.clearInterval(this$static.timerId) , undefined):($wnd.clearTimeout(this$static.timerId) , undefined);
+  $remove_4(timers, this$static);
+}
+
+function $scheduleRepeating(this$static, periodMillis){
+  if (periodMillis <= 0) {
+    throw new IllegalArgumentException_0('must be positive');
+  }
+  this$static.isRepeating?($wnd.clearInterval(this$static.timerId) , undefined):($wnd.clearTimeout(this$static.timerId) , undefined);
+  $remove_4(timers, this$static);
+  this$static.isRepeating = true;
+  this$static.timerId = createInterval(this$static, periodMillis);
+  $add_2(timers, this$static);
+}
+
+function createInterval(timer, period){
+  return $wnd.setInterval($entry(function(){
+    timer.fire();
+  }
+  ), period);
+}
+
+function Timer(){
+}
+
+_ = Timer.prototype = new Object_0;
+_.fire = function fire_0(){
+  this.isRepeating || $remove_4(timers, this);
+  this.run();
+}
+;
+_.castableTypeMap$ = {6:1};
+_.isRepeating = false;
+_.timerId = 0;
+var timers;
+function Timer$1_0(){
+}
+
+function Timer$1(){
+}
+
+_ = Timer$1_0.prototype = Timer$1.prototype = new Object_0;
+_.onClose = function onClose(event_0){
+  while (($clinit_2() , timers).size > 0) {
+    $cancel(dynamicCast($get_0(timers, 0), 6));
+  }
+}
+;
+_.castableTypeMap$ = {3:1, 10:1};
+function $getRuntimeValue(){
+  var ua = navigator.userAgent.toLowerCase();
+  var makeVersion = function(result){
+    return parseInt(result[1]) * 1000 + parseInt(result[2]);
+  }
+  ;
+  if (function(){
+    return ua.indexOf('opera') != -1;
+  }
+  ())
+    return 'opera';
+  if (function(){
+    return ua.indexOf('webkit') != -1;
+  }
+  ())
+    return 'safari';
+  if (function(){
+    return ua.indexOf('msie') != -1 && $doc.documentMode >= 9;
+  }
+  ())
+    return 'ie9';
+  if (function(){
+    return ua.indexOf('msie') != -1 && $doc.documentMode >= 8;
+  }
+  ())
+    return 'ie8';
+  if (function(){
+    var result = /msie ([0-9]+)\.([0-9]+)/.exec(ua);
+    if (result && result.length == 3)
+      return makeVersion(result) >= 6000;
+  }
+  ())
+    return 'ie6';
+  if (function(){
+    return ua.indexOf('gecko') != -1;
+  }
+  ())
+    return 'gecko1_8';
+  return 'unknown';
+}
+
+function addCloseHandler(handler){
+  maybeInitializeCloseHandlers();
+  return addHandler(TYPE?TYPE:(TYPE = new GwtEvent$Type_0), handler);
+}
+
+function addHandler(type, handler){
+  return new LegacyHandlerWrapper_0($doAdd((!handlers_0 && (handlers_0 = new Window$WindowHandlers_0) , handlers_0).eventBus, type, handler));
+}
+
+function maybeInitializeCloseHandlers(){
+  if (!closeHandlersInitialized) {
+    $initWindowCloseHandler();
+    closeHandlersInitialized = true;
+  }
+}
+
+function onClosed(){
+  closeHandlersInitialized && fire((!handlers_0 && (handlers_0 = new Window$WindowHandlers_0) , handlers_0));
+}
+
+function onClosing(){
+  var event_0;
+  if (closeHandlersInitialized) {
+    event_0 = new Window$ClosingEvent_0;
+    !!handlers_0 && $fireEvent(handlers_0, event_0);
+    return null;
+  }
+  return null;
+}
+
+var closeHandlersInitialized = false, handlers_0 = null;
+function $clinit_3(){
+  $clinit_3 = nullMethod;
+  TYPE_1 = new GwtEvent$Type_0;
+}
+
+function Window$ClosingEvent_0(){
+  $clinit_3();
+}
+
+function Window$ClosingEvent(){
+}
+
+_ = Window$ClosingEvent_0.prototype = Window$ClosingEvent.prototype = new GwtEvent;
+_.dispatch = function dispatch_0(handler){
+  throwClassCastExceptionUnlessNull(handler);
+  null.nullMethod();
+}
+;
+_.getAssociatedType = function getAssociatedType_0(){
+  return TYPE_1;
+}
+;
+_.castableTypeMap$ = {};
+var TYPE_1;
+function Window$WindowHandlers_0(){
+  this.eventBus = new HandlerManager$Bus_0;
+  this.source = null;
+}
+
+function Window$WindowHandlers(){
+}
+
+_ = Window$WindowHandlers_0.prototype = Window$WindowHandlers.prototype = new HandlerManager;
+_.castableTypeMap$ = {18:1};
+function $eventGetTypeInt(eventType){
+  switch (eventType) {
+    case 'blur':
+      return 4096;
+    case 'change':
+      return 1024;
+    case 'click':
+      return 1;
+    case 'dblclick':
+      return 2;
+    case 'focus':
+      return 2048;
+    case 'keydown':
+      return 128;
+    case 'keypress':
+      return 256;
+    case 'keyup':
+      return 512;
+    case 'load':
+      return 32768;
+    case 'losecapture':
+      return 8192;
+    case 'mousedown':
+      return 4;
+    case 'mousemove':
+      return 64;
+    case 'mouseout':
+      return 32;
+    case 'mouseover':
+      return 16;
+    case 'mouseup':
+      return 8;
+    case 'scroll':
+      return 16384;
+    case 'error':
+      return 65536;
+    case 'DOMMouseScroll':
+    case 'mousewheel':
+      return 131072;
+    case 'contextmenu':
+      return 262144;
+    case 'paste':
+      return 524288;
+    case 'touchstart':
+      return 1048576;
+    case 'touchmove':
+      return 2097152;
+    case 'touchend':
+      return 4194304;
+    case 'touchcancel':
+      return 8388608;
+    case 'gesturestart':
+      return 16777216;
+    case 'gesturechange':
+      return 33554432;
+    case 'gestureend':
+      return 67108864;
+    case 'ended':
+      return 134217728;
+    case 'progress':
+      return 268435456;
+    case 'canplaythrough':
+      return 536870912;
+    default:return -1;
+  }
+}
+
+function $maybeInitializeEventSystem(){
+  if (!eventSystemIsInitialized) {
+    $initEventSystem();
+    $initSyntheticMouseUpEvents();
+    eventSystemIsInitialized = true;
+  }
+}
+
+function isMyListener(object){
+  return !instanceOfJso(object) && object != null && object.castableTypeMap$ && !!object.castableTypeMap$[7];
+}
+
+var eventSystemIsInitialized = false;
+--></script>
+<script><!--
+function $initEventSystem(){
+  dispatchCapturedEvent = $entry(function(evt){
+    return true;
+  }
+  );
+  dispatchEvent_1 = $entry(function(evt){
+    var listener, curElem = this;
+    while (curElem && !(listener = curElem.__listener)) {
+      curElem = curElem.parentNode;
+    }
+    curElem && curElem.nodeType != 1 && (curElem = null);
+    listener && isMyListener(listener) && dispatchEvent_0(evt, curElem, listener);
+  }
+  );
+  dispatchUnhandledEvent = $entry(function(evt){
+    this.__gwtLastUnhandledEvent = evt.type;
+    dispatchEvent_1.call(this, evt);
+  }
+  );
+  dispatchCapturedMouseEvent = $entry(function(evt){
+    var dispatchCapturedEventFn = dispatchCapturedEvent;
+    if (dispatchCapturedEventFn(evt)) {
+      var cap = captureElem;
+      if (cap && cap.__listener) {
+        if (isMyListener(cap.__listener)) {
+          dispatchEvent_0(evt, cap, cap.__listener);
+          evt.stopPropagation();
+        }
+      }
+    }
+  }
+  );
+  $wnd.addEventListener('click', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('dblclick', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('mousedown', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('mouseup', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('mousemove', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('mouseover', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('mouseout', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('mousewheel', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('keydown', dispatchCapturedEvent, true);
+  $wnd.addEventListener('keyup', dispatchCapturedEvent, true);
+  $wnd.addEventListener('keypress', dispatchCapturedEvent, true);
+  $wnd.addEventListener('touchstart', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('touchmove', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('touchend', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('touchcancel', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('gesturestart', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('gesturechange', dispatchCapturedMouseEvent, true);
+  $wnd.addEventListener('gestureend', dispatchCapturedMouseEvent, true);
+}
+
+function $sinkEventsImpl(elem, bits){
+  var chMask = (elem.__eventBits || 0) ^ bits;
+  elem.__eventBits = bits;
+  if (!chMask)
+    return;
+  chMask & 1 && (elem.onclick = bits & 1?dispatchEvent_1:null);
+  chMask & 2 && (elem.ondblclick = bits & 2?dispatchEvent_1:null);
+  chMask & 4 && (elem.onmousedown = bits & 4?dispatchEvent_1:null);
+  chMask & 8 && (elem.onmouseup = bits & 8?dispatchEvent_1:null);
+  chMask & 16 && (elem.onmouseover = bits & 16?dispatchEvent_1:null);
+  chMask & 32 && (elem.onmouseout = bits & 32?dispatchEvent_1:null);
+  chMask & 64 && (elem.onmousemove = bits & 64?dispatchEvent_1:null);
+  chMask & 128 && (elem.onkeydown = bits & 128?dispatchEvent_1:null);
+  chMask & 256 && (elem.onkeypress = bits & 256?dispatchEvent_1:null);
+  chMask & 512 && (elem.onkeyup = bits & 512?dispatchEvent_1:null);
+  chMask & 1024 && (elem.onchange = bits & 1024?dispatchEvent_1:null);
+  chMask & 2048 && (elem.onfocus = bits & 2048?dispatchEvent_1:null);
+  chMask & 4096 && (elem.onblur = bits & 4096?dispatchEvent_1:null);
+  chMask & 8192 && (elem.onlosecapture = bits & 8192?dispatchEvent_1:null);
+  chMask & 16384 && (elem.onscroll = bits & 16384?dispatchEvent_1:null);
+  chMask & 32768 && (elem.onload = bits & 32768?dispatchUnhandledEvent:null);
+  chMask & 65536 && (elem.onerror = bits & 65536?dispatchEvent_1:null);
+  chMask & 131072 && (elem.onmousewheel = bits & 131072?dispatchEvent_1:null);
+  chMask & 262144 && (elem.oncontextmenu = bits & 262144?dispatchEvent_1:null);
+  chMask & 524288 && (elem.onpaste = bits & 524288?dispatchEvent_1:null);
+  chMask & 1048576 && (elem.ontouchstart = bits & 1048576?dispatchEvent_1:null);
+  chMask & 2097152 && (elem.ontouchmove = bits & 2097152?dispatchEvent_1:null);
+  chMask & 4194304 && (elem.ontouchend = bits & 4194304?dispatchEvent_1:null);
+  chMask & 8388608 && (elem.ontouchcancel = bits & 8388608?dispatchEvent_1:null);
+  chMask & 16777216 && (elem.ongesturestart = bits & 16777216?dispatchEvent_1:null);
+  chMask & 33554432 && (elem.ongesturechange = bits & 33554432?dispatchEvent_1:null);
+  chMask & 67108864 && (elem.ongestureend = bits & 67108864?dispatchEvent_1:null);
+}
+
+var captureElem = null, dispatchCapturedEvent = null, dispatchCapturedMouseEvent = null, dispatchEvent_1 = null, dispatchUnhandledEvent = null;
+function $initSyntheticMouseUpEvents(){
+  $wnd.addEventListener('mouseout', $entry(function(evt){
+    var cap = captureElem;
+    if (cap && !evt.relatedTarget) {
+      if ('html' == evt.target.tagName.toLowerCase()) {
+        var muEvent = $doc.createEvent('MouseEvents');
+        muEvent.initMouseEvent('mouseup', true, true, $wnd, 0, evt.screenX, evt.screenY, evt.clientX, evt.clientY, evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, evt.button, null);
+        cap.dispatchEvent(muEvent);
+      }
+    }
+  }
+  ), true);
+  $wnd.addEventListener('DOMMouseScroll', dispatchCapturedMouseEvent, true);
+}
+
+function $sinkEvents(elem, bits){
+  $maybeInitializeEventSystem();
+  $sinkEventsImpl(elem, bits);
+  bits & 131072 && elem.addEventListener('DOMMouseScroll', dispatchEvent_1, false);
+}
+
+function $initWindowCloseHandler(){
+  var oldOnBeforeUnload = $wnd.onbeforeunload;
+  var oldOnUnload = $wnd.onunload;
+  $wnd.onbeforeunload = function(evt){
+    var ret, oldRet;
+    try {
+      ret = $entry(onClosing)();
+    }
+     finally {
+      oldRet = oldOnBeforeUnload && oldOnBeforeUnload(evt);
+    }
+    if (ret != null) {
+      return ret;
+    }
+    if (oldRet != null) {
+      return oldRet;
+    }
+  }
+  ;
+  $wnd.onunload = $entry(function(evt){
+    try {
+      closeHandlersInitialized && fire((!handlers_0 && (handlers_0 = new Window$WindowHandlers_0) , handlers_0));
+    }
+     finally {
+      oldOnUnload && oldOnUnload(evt);
+      $wnd.onresize = null;
+      $wnd.onscroll = null;
+      $wnd.onbeforeunload = null;
+      $wnd.onunload = null;
+    }
+  }
+  );
+}
+
+function setStylePrimaryName(elem, style){
+  if (!elem) {
+    throw new RuntimeException_0('Null widget handle. If you are creating a composite, ensure that initWidget() has been called.');
+  }
+  style = $trim(style);
+  if (style.length == 0) {
+    throw new IllegalArgumentException_0('Style names cannot be empty');
+  }
+  updatePrimaryAndDependentStyleNames(elem, style);
+}
+
+function updatePrimaryAndDependentStyleNames(elem, newPrimaryStyle){
+  var classes = elem.className.split(/\s+/);
+  if (!classes) {
+    return;
+  }
+  var oldPrimaryStyle = classes[0];
+  var oldPrimaryStyleLen = oldPrimaryStyle.length;
+  classes[0] = newPrimaryStyle;
+  for (var i = 1, n = classes.length; i < n; i++) {
+    var name_0 = classes[i];
+    name_0.length > oldPrimaryStyleLen && name_0.charAt(oldPrimaryStyleLen) == '-' && name_0.indexOf(oldPrimaryStyle) == 0 && (classes[i] = newPrimaryStyle + name_0.substring(oldPrimaryStyleLen));
+  }
+  elem.className = classes.join(' ');
+}
+
+function UIObject(){
+}
+
+_ = UIObject.prototype = new Object_0;
+_.castableTypeMap$ = {21:1};
+_.element = null;
+function $addHandler(this$static, handler, type){
+  return new LegacyHandlerWrapper_0($doAdd((!this$static.handlerManager?(this$static.handlerManager = new HandlerManager_0(this$static)):this$static.handlerManager).eventBus, type, handler));
+}
+
+function $onAttach(this$static){
+  var bitsToAdd;
+  if (this$static.attached) {
+    throw new IllegalStateException_0("Should only call onAttach when the widget is detached from the browser's document");
+  }
+  this$static.attached = true;
+  this$static.element.__listener = this$static;
+  bitsToAdd = this$static.eventsToSink;
+  this$static.eventsToSink = -1;
+  bitsToAdd > 0 && (this$static.eventsToSink == -1?$sinkEvents(this$static.element, bitsToAdd | (this$static.element.__eventBits || 0)):(this$static.eventsToSink |= bitsToAdd));
+  this$static.doAttachChildren();
+}
+
+function $onDetach(this$static){
+  if (!this$static.attached) {
+    throw new IllegalStateException_0("Should only call onDetach when the widget is attached to the browser's document");
+  }
+  try {
+    this$static.doDetachChildren();
+  }
+   finally {
+    this$static.element.__listener = null;
+    this$static.attached = false;
+  }
+}
+
+function $removeFromParent(this$static){
+  if (!this$static.parent_0) {
+    ($clinit_5() , $containsKey(widgetsToDetach.map, this$static)) && detachNow(this$static);
+  }
+   else if (this$static.parent_0) {
+    $remove_0(this$static.parent_0, this$static);
+  }
+   else if (this$static.parent_0) {
+    throw new IllegalStateException_0("This widget's parent does not implement HasWidgets");
+  }
+}
+
+function $setParent(this$static, parent_0){
+  var oldParent;
+  oldParent = this$static.parent_0;
+  if (!parent_0) {
+    try {
+      !!oldParent && oldParent.attached && $onDetach(this$static);
+    }
+     finally {
+      this$static.parent_0 = null;
+    }
+  }
+   else {
+    if (oldParent) {
+      throw new IllegalStateException_0('Cannot set a new parent without first clearing the old parent');
+    }
+    this$static.parent_0 = parent_0;
+    parent_0.attached && $onAttach_0(this$static);
+  }
+}
+
+function Widget(){
+}
+
+_ = Widget.prototype = new UIObject;
+_.doAttachChildren = function doAttachChildren(){
+}
+;
+_.doDetachChildren = function doDetachChildren(){
+}
+;
+_.onAttach = function onAttach(){
+  $onAttach(this);
+}
+;
+_.onBrowserEvent = function onBrowserEvent(event_0){
+  var related;
+  switch ($eventGetTypeInt(event_0.type)) {
+    case 16:
+    case 32:
+      related = $eventGetRelatedTarget(event_0);
+      if (!!related && $isOrHasChild(this.element, related)) {
+        return;
+      }
+
+  }
+}
+;
+_.castableTypeMap$ = {7:1, 8:1, 17:1, 18:1, 20:1, 21:1};
+_.attached = false;
+_.eventsToSink = 0;
+_.handlerManager = null;
+_.parent_0 = null;
+function Panel(){
+}
+
+_ = Panel.prototype = new Widget;
+_.doAttachChildren = function doAttachChildren_0(){
+  tryCommand(this, ($clinit_4() , attachCommand));
+}
+;
+_.doDetachChildren = function doDetachChildren_0(){
+  tryCommand(this, ($clinit_4() , detachCommand));
+}
+;
+_.castableTypeMap$ = {7:1, 8:1, 17:1, 18:1, 20:1, 21:1};
+function $add(this$static, child, container){
+  $removeFromParent(child);
+  $add_1(this$static.children, child);
+  container.appendChild(child.element);
+  $setParent(child, this$static);
+}
+
+function $remove(this$static, w){
+  var elem, parent_0;
+  if (w.parent_0 != this$static) {
+    return false;
+  }
+  try {
+    $setParent(w, null);
+  }
+   finally {
+    elem = w.element;
+    (parent_0 = elem.parentNode , (!parent_0 || parent_0.nodeType != 1) && (parent_0 = null) , parent_0).removeChild(elem);
+    $remove_2(this$static.children, w);
+  }
+  return true;
+}
+
+function ComplexPanel(){
+}
+
+_ = ComplexPanel.prototype = new Panel;
+_.iterator = function iterator(){
+  return new WidgetCollection$WidgetIterator_0(this.children);
+}
+;
+_.castableTypeMap$ = {7:1, 8:1, 17:1, 18:1, 20:1, 21:1};
+function $add_0(this$static, w){
+  $add(this$static, w, this$static.element);
+}
+
+function $remove_0(this$static, w){
+  var removed;
+  removed = $remove(this$static, w);
+  removed && changeToStaticPositioning(w.element);
+  return removed;
+}
+
+function changeToStaticPositioning(elem){
+  elem.style['left'] = '';
+  elem.style['top'] = '';
+  elem.style['position'] = '';
+}
+
+function AbsolutePanel(){
+}
+
+_ = AbsolutePanel.prototype = new ComplexPanel;
+_.castableTypeMap$ = {7:1, 8:1, 17:1, 18:1, 20:1, 21:1};
+function $clinit_4(){
+  $clinit_4 = nullMethod;
+  attachCommand = new AttachDetachException$1_0;
+  detachCommand = new AttachDetachException$2_0;
+}
+
+function AttachDetachException_0(causes){
+  UmbrellaException_1.call(this, causes);
+}
+
+function tryCommand(hasWidgets, c){
+  var old;
+  $clinit_4();
+  var $e0, caught, e, w, w$iterator;
+  caught = null;
+  for (w$iterator = hasWidgets.iterator(); w$iterator.hasNext();) {
+    w = dynamicCast(w$iterator.next_0(), 8);
+    try {
+      c.execute(w);
+    }
+     catch ($e0) {
+      $e0 = caught_0($e0);
+      if (instanceOf($e0, 5)) {
+        e = $e0;
+        !caught && (caught = new HashSet_0);
+        old = $put(caught.map, e, caught);
+      }
+       else 
+        throw $e0;
+    }
+  }
+  if (caught) {
+    throw new AttachDetachException_0(caught);
+  }
+}
+
+function AttachDetachException(){
+}
+
+_ = AttachDetachException_0.prototype = AttachDetachException.prototype = new UmbrellaException;
+_.castableTypeMap$ = {2:1, 4:1, 5:1, 24:1};
+var attachCommand, detachCommand;
+function AttachDetachException$1_0(){
+}
+
+function AttachDetachException$1(){
+}
+
+_ = AttachDetachException$1_0.prototype = AttachDetachException$1.prototype = new Object_0;
+_.execute = function execute(w){
+  w.onAttach();
+}
+;
+_.castableTypeMap$ = {};
+function AttachDetachException$2_0(){
+}
+
+function AttachDetachException$2(){
+}
+
+_ = AttachDetachException$2_0.prototype = AttachDetachException$2.prototype = new Object_0;
+_.execute = function execute_0(w){
+  $onDetach(w);
+}
+;
+_.castableTypeMap$ = {};
+function $onAttach_0(this$static){
+  var tabIndex;
+  $onAttach(this$static);
+  tabIndex = this$static.element.tabIndex;
+  -1 == tabIndex && (this$static.element.tabIndex = 0 , undefined);
+}
+
+function FocusWidget(){
+}
+
+_ = FocusWidget.prototype = new Widget;
+_.onAttach = function onAttach_0(){
+  $onAttach_0(this);
+}
+;
+_.castableTypeMap$ = {7:1, 8:1, 17:1, 18:1, 20:1, 21:1};
+function $clinit_5(){
+  $clinit_5 = nullMethod;
+  maybeDetachCommand = new RootPanel$1_0;
+  rootPanels = new HashMap_0;
+  widgetsToDetach = new HashSet_0;
+}
+
+function RootPanel_0(elem){
+  this.children = new WidgetCollection_0;
+  this.element = elem;
+  $onAttach(this);
+}
+
+function detachNow(widget){
+  $clinit_5();
+  try {
+    $onDetach(widget);
+  }
+   finally {
+    $remove_3(widgetsToDetach.map, widget) != null;
+  }
+}
+
+function detachWidgets(){
+  $clinit_5();
+  try {
+    tryCommand(widgetsToDetach, maybeDetachCommand);
+  }
+   finally {
+    $clearImpl(widgetsToDetach.map);
+    $clearImpl(rootPanels);
+  }
+}
+
+function get(){
+  $clinit_5();
+  var rp;
+  rp = dynamicCast($get(rootPanels, null), 9);
+  if (rp) {
+    return rp;
+  }
+  rootPanels.size == 0 && addCloseHandler(new RootPanel$2_0);
+  rp = new RootPanel$DefaultRootPanel_0;
+  $put(rootPanels, null, rp);
+  $add_3(widgetsToDetach, rp);
+  return rp;
+}
+
+function RootPanel(){
+}
+
+_ = RootPanel.prototype = new AbsolutePanel;
+_.castableTypeMap$ = {7:1, 8:1, 9:1, 17:1, 18:1, 20:1, 21:1};
+var maybeDetachCommand, rootPanels, widgetsToDetach;
+function RootPanel$1_0(){
+}
+
+function RootPanel$1(){
+}
+
+_ = RootPanel$1_0.prototype = RootPanel$1.prototype = new Object_0;
+_.execute = function execute_1(w){
+  w.attached && $onDetach(w);
+}
+;
+_.castableTypeMap$ = {};
+function RootPanel$2_0(){
+}
+
+function RootPanel$2(){
+}
+
+_ = RootPanel$2_0.prototype = RootPanel$2.prototype = new Object_0;
+_.onClose = function onClose_0(closeEvent){
+  detachWidgets();
+}
+;
+_.castableTypeMap$ = {3:1, 10:1};
+function RootPanel$DefaultRootPanel_0(){
+  RootPanel_0.call(this, $doc.body);
+}
+
+function RootPanel$DefaultRootPanel(){
+}
+
+_ = RootPanel$DefaultRootPanel_0.prototype = RootPanel$DefaultRootPanel.prototype = new RootPanel;
+_.castableTypeMap$ = {7:1, 8:1, 9:1, 17:1, 18:1, 20:1, 21:1};
+function $add_1(this$static, w){
+  $insert(this$static, w, this$static.size);
+}
+
+function $indexOf(this$static, w){
+  var i;
+  for (i = 0; i < this$static.size; ++i) {
+    if (this$static.array[i] == w) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function $insert(this$static, w, beforeIndex){
+  var i, newArray;
+  if (beforeIndex < 0 || beforeIndex > this$static.size) {
+    throw new IndexOutOfBoundsException_0;
+  }
+  if (this$static.size == this$static.array.length) {
+    newArray = initDim(_3Lcom_google_gwt_user_client_ui_Widget_2_classLit, {24:1}, 8, this$static.array.length * 2, 0);
+    for (i = 0; i < this$static.array.length; ++i) {
+      setCheck(newArray, i, this$static.array[i]);
+    }
+    this$static.array = newArray;
+  }
+  ++this$static.size;
+  for (i = this$static.size - 1; i > beforeIndex; --i) {
+    setCheck(this$static.array, i, this$static.array[i - 1]);
+  }
+  setCheck(this$static.array, beforeIndex, w);
+}
+
+function $remove_1(this$static, index){
+  var i;
+  if (index < 0 || index >= this$static.size) {
+    throw new IndexOutOfBoundsException_0;
+  }
+  --this$static.size;
+  for (i = index; i < this$static.size; ++i) {
+    setCheck(this$static.array, i, this$static.array[i + 1]);
+  }
+  setCheck(this$static.array, this$static.size, null);
+}
+
+function $remove_2(this$static, w){
+  var index;
+  index = $indexOf(this$static, w);
+  if (index == -1) {
+    throw new NoSuchElementException_0;
+  }
+  $remove_1(this$static, index);
+}
+
+function WidgetCollection_0(){
+  this.array = initDim(_3Lcom_google_gwt_user_client_ui_Widget_2_classLit, {24:1}, 8, 4, 0);
+}
+
+function WidgetCollection(){
+}
+
+_ = WidgetCollection_0.prototype = WidgetCollection.prototype = new Object_0;
+_.iterator = function iterator_0(){
+  return new WidgetCollection$WidgetIterator_0(this);
+}
+;
+_.castableTypeMap$ = {};
+_.array = null;
+_.size = 0;
+function $next(this$static){
+  if (this$static.index >= this$static.this$0.size) {
+    throw new NoSuchElementException_0;
+  }
+  return this$static.this$0.array[++this$static.index];
+}
+
+function WidgetCollection$WidgetIterator_0(this$0){
+  this.this$0 = this$0;
+}
+
+function WidgetCollection$WidgetIterator(){
+}
+
+_ = WidgetCollection$WidgetIterator_0.prototype = WidgetCollection$WidgetIterator.prototype = new Object_0;
+_.hasNext = function hasNext(){
+  return this.index < this.this$0.size - 1;
+}
+;
+_.next_0 = function next_0(){
+  return $next(this);
+}
+;
+_.castableTypeMap$ = {};
+_.index = -1;
+_.this$0 = null;
+function SimpleEventBus$1_0(){
+}
+
+function SimpleEventBus$1(){
+}
+
+_ = SimpleEventBus$1_0.prototype = SimpleEventBus$1.prototype = new Object_0;
+_.castableTypeMap$ = {};
+function SimpleEventBus$2_0(this$0, val$type, val$handler){
+  this.this$0 = this$0;
+  this.val$type = val$type;
+  this.val$handler = val$handler;
+}
+
+function SimpleEventBus$2(){
+}
+
+_ = SimpleEventBus$2_0.prototype = SimpleEventBus$2.prototype = new Object_0;
+_.castableTypeMap$ = {13:1};
+_.this$0 = null;
+_.val$handler = null;
+_.val$type = null;
+function FpsTimer$1_0(this$0){
+  $clinit_2();
+  this.this$0 = this$0;
+}
+
+function FpsTimer$1(){
+}
+
+_ = FpsTimer$1_0.prototype = FpsTimer$1.prototype = new Timer;
+_.run = function run(){
+  var fps, fps$iterator, tot;
+  tot = 0;
+  for (fps$iterator = $listIterator(this.this$0.timer.framerates, 0); fps$iterator.currentNode != fps$iterator.this$0.header;) {
+    fps = dynamicCast($next_1(fps$iterator), 15);
+    tot += fps.value;
+  }
+}
+;
+_.castableTypeMap$ = {6:1};
+_.this$0 = null;
+function FpsTimer$FpsTimerImpl_0(this$0){
+  $clinit_2();
+  this.this$0 = this$0;
+  this.framerates = new LinkedList_0;
+}
+
+function FpsTimer$FpsTimerImpl(){
+}
+
+_ = FpsTimer$FpsTimerImpl_0.prototype = FpsTimer$FpsTimerImpl.prototype = new Timer;
+_.run = function run_0(){
+  var framerate, newTime, t;
+  newTime = fromDouble((new Date).getTime());
+  t = toInt(sub(newTime, this.renderTime));
+  framerate = 1000 / t;
+  $addLast(this.framerates, new Float_0(framerate));
+  while (this.framerates.size > this.this$0.desiredFps) {
+    $removeFirst(this.framerates);
+  }
+  this.renderTime = newTime;
+  $render(this.this$0);
+}
+;
+_.castableTypeMap$ = {6:1};
+_.renderTime = P0_longLit;
+_.this$0 = null;
+function Surface3D_0(width, height, attribs){
+  this.canvas = $doc.createElement('canvas');
+  this.element = $doc.createElement('div');
+  this.element.appendChild(this.canvas);
+  this.canvas.width = width;
+  this.canvas.height = height;
+  setStylePrimaryName(this.element, 'g2d-Surface3D');
+  this.width_0 = width;
+  this.height_0 = height;
+  !attribs?(this.context = this.canvas.getContext('experimental-webgl')):(this.context = this.canvas.getContext('experimental-webgl', attribs.impl));
+}
+
+function Surface3D(){
+}
+
+_ = Surface3D_0.prototype = Surface3D.prototype = new FocusWidget;
+_.castableTypeMap$ = {7:1, 8:1, 17:1, 18:1, 20:1, 21:1};
+_.canvas = null;
+_.context = null;
+_.height_0 = 0;
+_.width_0 = 0;
+function WebGLContextAttributes_0(){
+  this.impl = {};
+}
+
+function WebGLContextAttributes(){
+}
+
+_ = WebGLContextAttributes_0.prototype = WebGLContextAttributes.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.impl = null;
+function Enum(){
+}
+
+_ = Enum.prototype = new Object_0;
+_.equals$ = function equals_0(other){
+  return this === other;
+}
+;
+_.hashCode$ = function hashCode_2(){
+  return this.$H || (this.$H = ++sNextHashId);
+}
+;
+_.castableTypeMap$ = {24:1, 25:1, 26:1};
+function $clinit_6(){
+  $clinit_6 = nullMethod;
+  DEPTH_BUFFER_BIT = new ClearBufferMask_0('DEPTH_BUFFER_BIT', ($clinit_7() , DEPTH_BUFFER_BIT_0));
+  STENCIL_BUFFER_BIT = new ClearBufferMask_0('STENCIL_BUFFER_BIT', STENCIL_BUFFER_BIT_0);
+  COLOR_BUFFER_BIT = new ClearBufferMask_0('COLOR_BUFFER_BIT', COLOR_BUFFER_BIT_0);
+  initValues(_3Lgwt_g3d_client_gl2_enums_ClearBufferMask_2_classLit, {24:1}, 22, [DEPTH_BUFFER_BIT, STENCIL_BUFFER_BIT, COLOR_BUFFER_BIT]);
+}
+
+function ClearBufferMask_0(enum$name, glEnum){
+  this.value = glEnum.value;
+}
+
+function ClearBufferMask(){
+}
+
+_ = ClearBufferMask_0.prototype = ClearBufferMask.prototype = new Enum;
+_.castableTypeMap$ = {22:1, 24:1, 25:1, 26:1};
+_.value = 0;
+var COLOR_BUFFER_BIT, DEPTH_BUFFER_BIT, STENCIL_BUFFER_BIT;
+--></script>
+<script><!--
+function $clinit_7(){
+  $clinit_7 = nullMethod;
+  DEPTH_BUFFER_BIT_0 = new GLEnum_0('DEPTH_BUFFER_BIT', 256);
+  STENCIL_BUFFER_BIT_0 = new GLEnum_0('STENCIL_BUFFER_BIT', 1024);
+  COLOR_BUFFER_BIT_0 = new GLEnum_0('COLOR_BUFFER_BIT', 16384);
+  POINTS = new GLEnum_0('POINTS', 0);
+  LINES = new GLEnum_0('LINES', 1);
+  LINE_LOOP = new GLEnum_0('LINE_LOOP', 2);
+  LINE_STRIP = new GLEnum_0('LINE_STRIP', 3);
+  TRIANGLES = new GLEnum_0('TRIANGLES', 4);
+  TRIANGLE_STRIP = new GLEnum_0('TRIANGLE_STRIP', 5);
+  TRIANGLE_FAN = new GLEnum_0('TRIANGLE_FAN', 6);
+  ZERO_0 = new GLEnum_0('ZERO', 0);
+  ONE = new GLEnum_0('ONE', 1);
+  SRC_COLOR = new GLEnum_0('SRC_COLOR', 768);
+  ONE_MINUS_SRC_COLOR = new GLEnum_0('ONE_MINUS_SRC_COLOR', 769);
+  SRC_ALPHA = new GLEnum_0('SRC_ALPHA', 770);
+  ONE_MINUS_SRC_ALPHA = new GLEnum_0('ONE_MINUS_SRC_ALPHA', 771);
+  DST_ALPHA = new GLEnum_0('DST_ALPHA', 772);
+  ONE_MINUS_DST_ALPHA = new GLEnum_0('ONE_MINUS_DST_ALPHA', 773);
+  DST_COLOR = new GLEnum_0('DST_COLOR', 774);
+  ONE_MINUS_DST_COLOR = new GLEnum_0('ONE_MINUS_DST_COLOR', 775);
+  SRC_ALPHA_SATURATE = new GLEnum_0('SRC_ALPHA_SATURATE', 776);
+  FUNC_ADD = new GLEnum_0('FUNC_ADD', 32774);
+  BLEND_EQUATION = new GLEnum_0('BLEND_EQUATION', 32777);
+  BLEND_EQUATION_RGB = new GLEnum_0('BLEND_EQUATION_RGB', 32777);
+  BLEND_EQUATION_ALPHA = new GLEnum_0('BLEND_EQUATION_ALPHA', 34877);
+  FUNC_SUBTRACT = new GLEnum_0('FUNC_SUBTRACT', 32778);
+  FUNC_REVERSE_SUBTRACT = new GLEnum_0('FUNC_REVERSE_SUBTRACT', 32779);
+  BLEND_DST_RGB = new GLEnum_0('BLEND_DST_RGB', 32968);
+  BLEND_SRC_RGB = new GLEnum_0('BLEND_SRC_RGB', 32969);
+  BLEND_DST_ALPHA = new GLEnum_0('BLEND_DST_ALPHA', 32970);
+  BLEND_SRC_ALPHA = new GLEnum_0('BLEND_SRC_ALPHA', 32971);
+  CONSTANT_COLOR = new GLEnum_0('CONSTANT_COLOR', 32769);
+  ONE_MINUS_CONSTANT_COLOR = new GLEnum_0('ONE_MINUS_CONSTANT_COLOR', 32770);
+  CONSTANT_ALPHA = new GLEnum_0('CONSTANT_ALPHA', 32771);
+  ONE_MINUS_CONSTANT_ALPHA = new GLEnum_0('ONE_MINUS_CONSTANT_ALPHA', 32772);
+  BLEND_COLOR = new GLEnum_0('BLEND_COLOR', 32773);
+  ARRAY_BUFFER = new GLEnum_0('ARRAY_BUFFER', 34962);
+  ELEMENT_ARRAY_BUFFER = new GLEnum_0('ELEMENT_ARRAY_BUFFER', 34963);
+  ARRAY_BUFFER_BINDING = new GLEnum_0('ARRAY_BUFFER_BINDING', 34964);
+  ELEMENT_ARRAY_BUFFER_BINDING = new GLEnum_0('ELEMENT_ARRAY_BUFFER_BINDING', 34965);
+  STREAM_DRAW = new GLEnum_0('STREAM_DRAW', 35040);
+  STATIC_DRAW = new GLEnum_0('STATIC_DRAW', 35044);
+  DYNAMIC_DRAW = new GLEnum_0('DYNAMIC_DRAW', 35048);
+  BUFFER_SIZE = new GLEnum_0('BUFFER_SIZE', 34660);
+  BUFFER_USAGE = new GLEnum_0('BUFFER_USAGE', 34661);
+  CURRENT_VERTEX_ATTRIB = new GLEnum_0('CURRENT_VERTEX_ATTRIB', 34342);
+  FRONT = new GLEnum_0('FRONT', 1028);
+  BACK = new GLEnum_0('BACK', 1029);
+  FRONT_AND_BACK = new GLEnum_0('FRONT_AND_BACK', 1032);
+  TEXTURE_2D = new GLEnum_0('TEXTURE_2D', 3553);
+  CULL_FACE = new GLEnum_0('CULL_FACE', 2884);
+  BLEND = new GLEnum_0('BLEND', 3042);
+  DITHER = new GLEnum_0('DITHER', 3024);
+  STENCIL_TEST = new GLEnum_0('STENCIL_TEST', 2960);
+  DEPTH_TEST = new GLEnum_0('DEPTH_TEST', 2929);
+  SCISSOR_TEST = new GLEnum_0('SCISSOR_TEST', 3089);
+  POLYGON_OFFSET_FILL = new GLEnum_0('POLYGON_OFFSET_FILL', 32823);
+  SAMPLE_ALPHA_TO_COVERAGE = new GLEnum_0('SAMPLE_ALPHA_TO_COVERAGE', 32926);
+  SAMPLE_COVERAGE = new GLEnum_0('SAMPLE_COVERAGE', 32928);
+  NO_ERROR = new GLEnum_0('NO_ERROR', 0);
+  INVALID_ENUM = new GLEnum_0('INVALID_ENUM', 1280);
+  INVALID_VALUE = new GLEnum_0('INVALID_VALUE', 1281);
+  INVALID_OPERATION = new GLEnum_0('INVALID_OPERATION', 1282);
+  OUT_OF_MEMORY = new GLEnum_0('OUT_OF_MEMORY', 1285);
+  CW = new GLEnum_0('CW', 2304);
+  CCW = new GLEnum_0('CCW', 2305);
+  LINE_WIDTH = new GLEnum_0('LINE_WIDTH', 2849);
+  ALIASED_POINT_SIZE_RANGE = new GLEnum_0('ALIASED_POINT_SIZE_RANGE', 33901);
+  ALIASED_LINE_WIDTH_RANGE = new GLEnum_0('ALIASED_LINE_WIDTH_RANGE', 33902);
+  CULL_FACE_MODE = new GLEnum_0('CULL_FACE_MODE', 2885);
+  FRONT_FACE = new GLEnum_0('FRONT_FACE', 2886);
+  DEPTH_RANGE = new GLEnum_0('DEPTH_RANGE', 2928);
+  DEPTH_WRITEMASK = new GLEnum_0('DEPTH_WRITEMASK', 2930);
+  DEPTH_CLEAR_VALUE = new GLEnum_0('DEPTH_CLEAR_VALUE', 2931);
+  DEPTH_FUNC = new GLEnum_0('DEPTH_FUNC', 2932);
+  STENCIL_CLEAR_VALUE = new GLEnum_0('STENCIL_CLEAR_VALUE', 2961);
+  STENCIL_FUNC = new GLEnum_0('STENCIL_FUNC', 2962);
+  STENCIL_FAIL = new GLEnum_0('STENCIL_FAIL', 2964);
+  STENCIL_PASS_DEPTH_FAIL = new GLEnum_0('STENCIL_PASS_DEPTH_FAIL', 2965);
+  STENCIL_PASS_DEPTH_PASS = new GLEnum_0('STENCIL_PASS_DEPTH_PASS', 2966);
+  STENCIL_REF = new GLEnum_0('STENCIL_REF', 2967);
+  STENCIL_VALUE_MASK = new GLEnum_0('STENCIL_VALUE_MASK', 2963);
+  STENCIL_WRITEMASK = new GLEnum_0('STENCIL_WRITEMASK', 2968);
+  STENCIL_BACK_FUNC = new GLEnum_0('STENCIL_BACK_FUNC', 34816);
+  STENCIL_BACK_FAIL = new GLEnum_0('STENCIL_BACK_FAIL', 34817);
+  STENCIL_BACK_PASS_DEPTH_FAIL = new GLEnum_0('STENCIL_BACK_PASS_DEPTH_FAIL', 34818);
+  STENCIL_BACK_PASS_DEPTH_PASS = new GLEnum_0('STENCIL_BACK_PASS_DEPTH_PASS', 34819);
+  STENCIL_BACK_REF = new GLEnum_0('STENCIL_BACK_REF', 36003);
+  STENCIL_BACK_VALUE_MASK = new GLEnum_0('STENCIL_BACK_VALUE_MASK', 36004);
+  STENCIL_BACK_WRITEMASK = new GLEnum_0('STENCIL_BACK_WRITEMASK', 36005);
+  VIEWPORT = new GLEnum_0('VIEWPORT', 2978);
+  SCISSOR_BOX = new GLEnum_0('SCISSOR_BOX', 3088);
+  COLOR_CLEAR_VALUE = new GLEnum_0('COLOR_CLEAR_VALUE', 3106);
+  COLOR_WRITEMASK = new GLEnum_0('COLOR_WRITEMASK', 3107);
+  UNPACK_ALIGNMENT = new GLEnum_0('UNPACK_ALIGNMENT', 3317);
+  PACK_ALIGNMENT = new GLEnum_0('PACK_ALIGNMENT', 3333);
+  MAX_TEXTURE_SIZE = new GLEnum_0('MAX_TEXTURE_SIZE', 3379);
+  MAX_VIEWPORT_DIMS = new GLEnum_0('MAX_VIEWPORT_DIMS', 3386);
+  SUBPIXEL_BITS = new GLEnum_0('SUBPIXEL_BITS', 3408);
+  RED_BITS = new GLEnum_0('RED_BITS', 3410);
+  GREEN_BITS = new GLEnum_0('GREEN_BITS', 3411);
+  BLUE_BITS = new GLEnum_0('BLUE_BITS', 3412);
+  ALPHA_BITS = new GLEnum_0('ALPHA_BITS', 3413);
+  DEPTH_BITS = new GLEnum_0('DEPTH_BITS', 3414);
+  STENCIL_BITS = new GLEnum_0('STENCIL_BITS', 3415);
+  POLYGON_OFFSET_UNITS = new GLEnum_0('POLYGON_OFFSET_UNITS', 10752);
+  POLYGON_OFFSET_FACTOR = new GLEnum_0('POLYGON_OFFSET_FACTOR', 32824);
+  TEXTURE_BINDING_2D = new GLEnum_0('TEXTURE_BINDING_2D', 32873);
+  SAMPLE_BUFFERS = new GLEnum_0('SAMPLE_BUFFERS', 32936);
+  SAMPLES = new GLEnum_0('SAMPLES', 32937);
+  SAMPLE_COVERAGE_VALUE = new GLEnum_0('SAMPLE_COVERAGE_VALUE', 32938);
+  SAMPLE_COVERAGE_INVERT = new GLEnum_0('SAMPLE_COVERAGE_INVERT', 32939);
+  NUM_COMPRESSED_TEXTURE_FORMATS = new GLEnum_0('NUM_COMPRESSED_TEXTURE_FORMATS', 34466);
+  COMPRESSED_TEXTURE_FORMATS = new GLEnum_0('COMPRESSED_TEXTURE_FORMATS', 34467);
+  DONT_CARE = new GLEnum_0('DONT_CARE', 4352);
+  FASTEST = new GLEnum_0('FASTEST', 4353);
+  NICEST = new GLEnum_0('NICEST', 4354);
+  GENERATE_MIPMAP_HINT = new GLEnum_0('GENERATE_MIPMAP_HINT', 33170);
+  BYTE = new GLEnum_0('BYTE', 5120);
+  UNSIGNED_BYTE = new GLEnum_0('UNSIGNED_BYTE', 5121);
+  SHORT = new GLEnum_0('SHORT', 5122);
+  UNSIGNED_SHORT = new GLEnum_0('UNSIGNED_SHORT', 5123);
+  INT = new GLEnum_0('INT', 5124);
+  UNSIGNED_INT = new GLEnum_0('UNSIGNED_INT', 5125);
+  FLOAT = new GLEnum_0('FLOAT', 5126);
+  DEPTH_COMPONENT = new GLEnum_0('DEPTH_COMPONENT', 6402);
+  ALPHA = new GLEnum_0('ALPHA', 6406);
+  RGB = new GLEnum_0('RGB', 6407);
+  RGBA = new GLEnum_0('RGBA', 6408);
+  LUMINANCE = new GLEnum_0('LUMINANCE', 6409);
+  LUMINANCE_ALPHA = new GLEnum_0('LUMINANCE_ALPHA', 6410);
+  UNSIGNED_SHORT_4_4_4_4 = new GLEnum_0('UNSIGNED_SHORT_4_4_4_4', 32819);
+  UNSIGNED_SHORT_5_5_5_1 = new GLEnum_0('UNSIGNED_SHORT_5_5_5_1', 32820);
+  UNSIGNED_SHORT_5_6_5 = new GLEnum_0('UNSIGNED_SHORT_5_6_5', 33635);
+  FRAGMENT_SHADER = new GLEnum_0('FRAGMENT_SHADER', 35632);
+  VERTEX_SHADER = new GLEnum_0('VERTEX_SHADER', 35633);
+  MAX_VERTEX_ATTRIBS = new GLEnum_0('MAX_VERTEX_ATTRIBS', 34921);
+  MAX_VERTEX_UNIFORM_VECTORS = new GLEnum_0('MAX_VERTEX_UNIFORM_VECTORS', 36347);
+  MAX_VARYING_VECTORS = new GLEnum_0('MAX_VARYING_VECTORS', 36348);
+  MAX_COMBINED_TEXTURE_IMAGE_UNITS = new GLEnum_0('MAX_COMBINED_TEXTURE_IMAGE_UNITS', 35661);
+  MAX_VERTEX_TEXTURE_IMAGE_UNITS = new GLEnum_0('MAX_VERTEX_TEXTURE_IMAGE_UNITS', 35660);
+  MAX_TEXTURE_IMAGE_UNITS = new GLEnum_0('MAX_TEXTURE_IMAGE_UNITS', 34930);
+  MAX_FRAGMENT_UNIFORM_VECTORS = new GLEnum_0('MAX_FRAGMENT_UNIFORM_VECTORS', 36349);
+  SHADER_TYPE = new GLEnum_0('SHADER_TYPE', 35663);
+  DELETE_STATUS = new GLEnum_0('DELETE_STATUS', 35712);
+  LINK_STATUS = new GLEnum_0('LINK_STATUS', 35714);
+  VALIDATE_STATUS = new GLEnum_0('VALIDATE_STATUS', 35715);
+  ATTACHED_SHADERS = new GLEnum_0('ATTACHED_SHADERS', 35717);
+  ACTIVE_UNIFORMS = new GLEnum_0('ACTIVE_UNIFORMS', 35718);
+  ACTIVE_UNIFORM_MAX_LENGTH = new GLEnum_0('ACTIVE_UNIFORM_MAX_LENGTH', 35719);
+  ACTIVE_ATTRIBUTES = new GLEnum_0('ACTIVE_ATTRIBUTES', 35721);
+  ACTIVE_ATTRIBUTE_MAX_LENGTH = new GLEnum_0('ACTIVE_ATTRIBUTE_MAX_LENGTH', 35722);
+  SHADING_LANGUAGE_VERSION = new GLEnum_0('SHADING_LANGUAGE_VERSION', 35724);
+  CURRENT_PROGRAM = new GLEnum_0('CURRENT_PROGRAM', 35725);
+  NEVER = new GLEnum_0('NEVER', 512);
+  LESS = new GLEnum_0('LESS', 513);
+  EQUAL = new GLEnum_0('EQUAL', 514);
+  LEQUAL = new GLEnum_0('LEQUAL', 515);
+  GREATER = new GLEnum_0('GREATER', 516);
+  NOTEQUAL = new GLEnum_0('NOTEQUAL', 517);
+  GEQUAL = new GLEnum_0('GEQUAL', 518);
+  ALWAYS = new GLEnum_0('ALWAYS', 519);
+  KEEP = new GLEnum_0('KEEP', 7680);
+  REPLACE = new GLEnum_0('REPLACE', 7681);
+  INCR = new GLEnum_0('INCR', 7682);
+  DECR = new GLEnum_0('DECR', 7683);
+  INVERT = new GLEnum_0('INVERT', 5386);
+  INCR_WRAP = new GLEnum_0('INCR_WRAP', 34055);
+  DECR_WRAP = new GLEnum_0('DECR_WRAP', 34056);
+  VENDOR = new GLEnum_0('VENDOR', 7936);
+  RENDERER = new GLEnum_0('RENDERER', 7937);
+  VERSION = new GLEnum_0('VERSION', 7938);
+  EXTENSIONS = new GLEnum_0('EXTENSIONS', 7939);
+  NEAREST = new GLEnum_0('NEAREST', 9728);
+  LINEAR = new GLEnum_0('LINEAR', 9729);
+  NEAREST_MIPMAP_NEAREST = new GLEnum_0('NEAREST_MIPMAP_NEAREST', 9984);
+  LINEAR_MIPMAP_NEAREST = new GLEnum_0('LINEAR_MIPMAP_NEAREST', 9985);
+  NEAREST_MIPMAP_LINEAR = new GLEnum_0('NEAREST_MIPMAP_LINEAR', 9986);
+  LINEAR_MIPMAP_LINEAR = new GLEnum_0('LINEAR_MIPMAP_LINEAR', 9987);
+  TEXTURE_MAG_FILTER = new GLEnum_0('TEXTURE_MAG_FILTER', 10240);
+  TEXTURE_MIN_FILTER = new GLEnum_0('TEXTURE_MIN_FILTER', 10241);
+  TEXTURE_WRAP_S = new GLEnum_0('TEXTURE_WRAP_S', 10242);
+  TEXTURE_WRAP_T = new GLEnum_0('TEXTURE_WRAP_T', 10243);
+  TEXTURE = new GLEnum_0('TEXTURE', 5890);
+  TEXTURE_CUBE_MAP = new GLEnum_0('TEXTURE_CUBE_MAP', 34067);
+  TEXTURE_BINDING_CUBE_MAP = new GLEnum_0('TEXTURE_BINDING_CUBE_MAP', 34068);
+  TEXTURE_CUBE_MAP_POSITIVE_X = new GLEnum_0('TEXTURE_CUBE_MAP_POSITIVE_X', 34069);
+  TEXTURE_CUBE_MAP_NEGATIVE_X = new GLEnum_0('TEXTURE_CUBE_MAP_NEGATIVE_X', 34070);
+  TEXTURE_CUBE_MAP_POSITIVE_Y = new GLEnum_0('TEXTURE_CUBE_MAP_POSITIVE_Y', 34071);
+  TEXTURE_CUBE_MAP_NEGATIVE_Y = new GLEnum_0('TEXTURE_CUBE_MAP_NEGATIVE_Y', 34072);
+  TEXTURE_CUBE_MAP_POSITIVE_Z = new GLEnum_0('TEXTURE_CUBE_MAP_POSITIVE_Z', 34073);
+  TEXTURE_CUBE_MAP_NEGATIVE_Z = new GLEnum_0('TEXTURE_CUBE_MAP_NEGATIVE_Z', 34074);
+  MAX_CUBE_MAP_TEXTURE_SIZE = new GLEnum_0('MAX_CUBE_MAP_TEXTURE_SIZE', 34076);
+  TEXTURE0 = new GLEnum_0('TEXTURE0', 33984);
+  TEXTURE1 = new GLEnum_0('TEXTURE1', 33985);
+  TEXTURE2 = new GLEnum_0('TEXTURE2', 33986);
+  TEXTURE3 = new GLEnum_0('TEXTURE3', 33987);
+  TEXTURE4 = new GLEnum_0('TEXTURE4', 33988);
+  TEXTURE5 = new GLEnum_0('TEXTURE5', 33989);
+  TEXTURE6 = new GLEnum_0('TEXTURE6', 33990);
+  TEXTURE7 = new GLEnum_0('TEXTURE7', 33991);
+  TEXTURE8 = new GLEnum_0('TEXTURE8', 33992);
+  TEXTURE9 = new GLEnum_0('TEXTURE9', 33993);
+  TEXTURE10 = new GLEnum_0('TEXTURE10', 33994);
+  TEXTURE11 = new GLEnum_0('TEXTURE11', 33995);
+  TEXTURE12 = new GLEnum_0('TEXTURE12', 33996);
+  TEXTURE13 = new GLEnum_0('TEXTURE13', 33997);
+  TEXTURE14 = new GLEnum_0('TEXTURE14', 33998);
+  TEXTURE15 = new GLEnum_0('TEXTURE15', 33999);
+  TEXTURE16 = new GLEnum_0('TEXTURE16', 34000);
+  TEXTURE17 = new GLEnum_0('TEXTURE17', 34001);
+  TEXTURE18 = new GLEnum_0('TEXTURE18', 34002);
+  TEXTURE19 = new GLEnum_0('TEXTURE19', 34003);
+  TEXTURE20 = new GLEnum_0('TEXTURE20', 34004);
+  TEXTURE21 = new GLEnum_0('TEXTURE21', 34005);
+  TEXTURE22 = new GLEnum_0('TEXTURE22', 34006);
+  TEXTURE23 = new GLEnum_0('TEXTURE23', 34007);
+  TEXTURE24 = new GLEnum_0('TEXTURE24', 34008);
+  TEXTURE25 = new GLEnum_0('TEXTURE25', 34009);
+  TEXTURE26 = new GLEnum_0('TEXTURE26', 34010);
+  TEXTURE27 = new GLEnum_0('TEXTURE27', 34011);
+  TEXTURE28 = new GLEnum_0('TEXTURE28', 34012);
+  TEXTURE29 = new GLEnum_0('TEXTURE29', 34013);
+  TEXTURE30 = new GLEnum_0('TEXTURE30', 34014);
+  TEXTURE31 = new GLEnum_0('TEXTURE31', 34015);
+  ACTIVE_TEXTURE = new GLEnum_0('ACTIVE_TEXTURE', 34016);
+  REPEAT = new GLEnum_0('REPEAT', 10497);
+  CLAMP_TO_EDGE = new GLEnum_0('CLAMP_TO_EDGE', 33071);
+  MIRRORED_REPEAT = new GLEnum_0('MIRRORED_REPEAT', 33648);
+  FLOAT_VEC2 = new GLEnum_0('FLOAT_VEC2', 35664);
+  FLOAT_VEC3 = new GLEnum_0('FLOAT_VEC3', 35665);
+  FLOAT_VEC4 = new GLEnum_0('FLOAT_VEC4', 35666);
+  INT_VEC2 = new GLEnum_0('INT_VEC2', 35667);
+  INT_VEC3 = new GLEnum_0('INT_VEC3', 35668);
+  INT_VEC4 = new GLEnum_0('INT_VEC4', 35669);
+  BOOL = new GLEnum_0('BOOL', 35670);
+  BOOL_VEC2 = new GLEnum_0('BOOL_VEC2', 35671);
+  BOOL_VEC3 = new GLEnum_0('BOOL_VEC3', 35672);
+  BOOL_VEC4 = new GLEnum_0('BOOL_VEC4', 35673);
+  FLOAT_MAT2 = new GLEnum_0('FLOAT_MAT2', 35674);
+  FLOAT_MAT3 = new GLEnum_0('FLOAT_MAT3', 35675);
+  FLOAT_MAT4 = new GLEnum_0('FLOAT_MAT4', 35676);
+  SAMPLER_2D = new GLEnum_0('SAMPLER_2D', 35678);
+  SAMPLER_CUBE = new GLEnum_0('SAMPLER_CUBE', 35680);
+  VERTEX_ATTRIB_ARRAY_ENABLED = new GLEnum_0('VERTEX_ATTRIB_ARRAY_ENABLED', 34338);
+  VERTEX_ATTRIB_ARRAY_SIZE = new GLEnum_0('VERTEX_ATTRIB_ARRAY_SIZE', 34339);
+  VERTEX_ATTRIB_ARRAY_STRIDE = new GLEnum_0('VERTEX_ATTRIB_ARRAY_STRIDE', 34340);
+  VERTEX_ATTRIB_ARRAY_TYPE = new GLEnum_0('VERTEX_ATTRIB_ARRAY_TYPE', 34341);
+  VERTEX_ATTRIB_ARRAY_NORMALIZED = new GLEnum_0('VERTEX_ATTRIB_ARRAY_NORMALIZED', 34922);
+  VERTEX_ATTRIB_ARRAY_POINTER = new GLEnum_0('VERTEX_ATTRIB_ARRAY_POINTER', 34373);
+  VERTEX_ATTRIB_ARRAY_BUFFER_BINDING = new GLEnum_0('VERTEX_ATTRIB_ARRAY_BUFFER_BINDING', 34975);
+  IMPLEMENTATION_COLOR_READ_TYPE = new GLEnum_0('IMPLEMENTATION_COLOR_READ_TYPE', 35738);
+  IMPLEMENTATION_COLOR_READ_FORMAT = new GLEnum_0('IMPLEMENTATION_COLOR_READ_FORMAT', 35739);
+  COMPILE_STATUS = new GLEnum_0('COMPILE_STATUS', 35713);
+  INFO_LOG_LENGTH = new GLEnum_0('INFO_LOG_LENGTH', 35716);
+  SHADER_SOURCE_LENGTH = new GLEnum_0('SHADER_SOURCE_LENGTH', 35720);
+  SHADER_COMPILER = new GLEnum_0('SHADER_COMPILER', 36346);
+  LOW_FLOAT = new GLEnum_0('LOW_FLOAT', 36336);
+  MEDIUM_FLOAT = new GLEnum_0('MEDIUM_FLOAT', 36337);
+  HIGH_FLOAT = new GLEnum_0('HIGH_FLOAT', 36338);
+  LOW_INT = new GLEnum_0('LOW_INT', 36339);
+  MEDIUM_INT = new GLEnum_0('MEDIUM_INT', 36340);
+  HIGH_INT = new GLEnum_0('HIGH_INT', 36341);
+  FRAMEBUFFER = new GLEnum_0('FRAMEBUFFER', 36160);
+  RENDERBUFFER = new GLEnum_0('RENDERBUFFER', 36161);
+  RGBA4 = new GLEnum_0('RGBA4', 32854);
+  RGB5_A1 = new GLEnum_0('RGB5_A1', 32855);
+  RGB565 = new GLEnum_0('RGB565', 36194);
+  DEPTH_COMPONENT16 = new GLEnum_0('DEPTH_COMPONENT16', 33189);
+  STENCIL_INDEX = new GLEnum_0('STENCIL_INDEX', 6401);
+  STENCIL_INDEX8 = new GLEnum_0('STENCIL_INDEX8', 36168);
+  RENDERBUFFER_WIDTH = new GLEnum_0('RENDERBUFFER_WIDTH', 36162);
+  RENDERBUFFER_HEIGHT = new GLEnum_0('RENDERBUFFER_HEIGHT', 36163);
+  RENDERBUFFER_INTERNAL_FORMAT = new GLEnum_0('RENDERBUFFER_INTERNAL_FORMAT', 36164);
+  RENDERBUFFER_RED_SIZE = new GLEnum_0('RENDERBUFFER_RED_SIZE', 36176);
+  RENDERBUFFER_GREEN_SIZE = new GLEnum_0('RENDERBUFFER_GREEN_SIZE', 36177);
+  RENDERBUFFER_BLUE_SIZE = new GLEnum_0('RENDERBUFFER_BLUE_SIZE', 36178);
+  RENDERBUFFER_ALPHA_SIZE = new GLEnum_0('RENDERBUFFER_ALPHA_SIZE', 36179);
+  RENDERBUFFER_DEPTH_SIZE = new GLEnum_0('RENDERBUFFER_DEPTH_SIZE', 36180);
+  RENDERBUFFER_STENCIL_SIZE = new GLEnum_0('RENDERBUFFER_STENCIL_SIZE', 36181);
+  FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE = new GLEnum_0('FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE', 36048);
+  FRAMEBUFFER_ATTACHMENT_OBJECT_NAME = new GLEnum_0('FRAMEBUFFER_ATTACHMENT_OBJECT_NAME', 36049);
+  FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL = new GLEnum_0('FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL', 36050);
+  FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE = new GLEnum_0('FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE', 36051);
+  COLOR_ATTACHMENT0 = new GLEnum_0('COLOR_ATTACHMENT0', 36064);
+  DEPTH_ATTACHMENT = new GLEnum_0('DEPTH_ATTACHMENT', 36096);
+  STENCIL_ATTACHMENT = new GLEnum_0('STENCIL_ATTACHMENT', 36128);
+  NONE = new GLEnum_0('NONE', 0);
+  FRAMEBUFFER_COMPLETE = new GLEnum_0('FRAMEBUFFER_COMPLETE', 36053);
+  FRAMEBUFFER_INCOMPLETE_ATTACHMENT = new GLEnum_0('FRAMEBUFFER_INCOMPLETE_ATTACHMENT', 36054);
+  FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT = new GLEnum_0('FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT', 36055);
+  FRAMEBUFFER_INCOMPLETE_DIMENSIONS = new GLEnum_0('FRAMEBUFFER_INCOMPLETE_DIMENSIONS', 36057);
+  FRAMEBUFFER_UNSUPPORTED = new GLEnum_0('FRAMEBUFFER_UNSUPPORTED', 36061);
+  FRAMEBUFFER_BINDING = new GLEnum_0('FRAMEBUFFER_BINDING', 36006);
+  RENDERBUFFER_BINDING = new GLEnum_0('RENDERBUFFER_BINDING', 36007);
+  MAX_RENDERBUFFER_SIZE = new GLEnum_0('MAX_RENDERBUFFER_SIZE', 34024);
+  INVALID_FRAMEBUFFER_OPERATION = new GLEnum_0('INVALID_FRAMEBUFFER_OPERATION', 1286);
+  UNPACK_FLIP_Y_WEBGL = new GLEnum_0('UNPACK_FLIP_Y_WEBGL', 37440);
+  UNPACK_PREMULTIPLY_ALPHA_WEBGL = new GLEnum_0('UNPACK_PREMULTIPLY_ALPHA_WEBGL', 37441);
+  CONTEXT_LOST_WEBGL = new GLEnum_0('CONTEXT_LOST_WEBGL', 37442);
+  initValues(_3Lgwt_g3d_client_gl2_enums_GLEnum_2_classLit, {24:1}, 23, [DEPTH_BUFFER_BIT_0, STENCIL_BUFFER_BIT_0, COLOR_BUFFER_BIT_0, POINTS, LINES, LINE_LOOP, LINE_STRIP, TRIANGLES, TRIANGLE_STRIP, TRIANGLE_FAN, ZERO_0, ONE, SRC_COLOR, ONE_MINUS_SRC_COLOR, SRC_ALPHA, ONE_MINUS_SRC_ALPHA, DST_ALPHA, ONE_MINUS_DST_ALPHA, DST_COLOR, ONE_MINUS_DST_COLOR, SRC_ALPHA_SATURATE, FUNC_ADD, BLEND_EQUATION, BLEND_EQUATION_RGB, BLEND_EQUATION_ALPHA, FUNC_SUBTRACT, FUNC_REVERSE_SUBTRACT, BLEND_DST_RGB, BLEND_SRC_RGB, BLEND_DST_ALPHA, BLEND_SRC_ALPHA, CONSTANT_COLOR, ONE_MINUS_CONSTANT_COLOR, CONSTANT_ALPHA, ONE_MINUS_CONSTANT_ALPHA, BLEND_COLOR, ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER, ARRAY_BUFFER_BINDING, ELEMENT_ARRAY_BUFFER_BINDING, STREAM_DRAW, STATIC_DRAW, DYNAMIC_DRAW, BUFFER_SIZE, BUFFER_USAGE, CURRENT_VERTEX_ATTRIB, FRONT, BACK, FRONT_AND_BACK, TEXTURE_2D, CULL_FACE, BLEND, DITHER, STENCIL_TEST, DEPTH_TEST, SCISSOR_TEST, POLYGON_OFFSET_FILL, SAMPLE_ALPHA_TO_COVERAGE, SAMPLE_COVERAGE, NO_ERROR, INVALID_ENUM, INVALID_VALUE, INVALID_OPERATION, OUT_OF_MEMORY, CW, CCW, LINE_WIDTH, ALIASED_POINT_SIZE_RANGE, ALIASED_LINE_WIDTH_RANGE, CULL_FACE_MODE, FRONT_FACE, DEPTH_RANGE, DEPTH_WRITEMASK, DEPTH_CLEAR_VALUE, DEPTH_FUNC, STENCIL_CLEAR_VALUE, STENCIL_FUNC, STENCIL_FAIL, STENCIL_PASS_DEPTH_FAIL, STENCIL_PASS_DEPTH_PASS, STENCIL_REF, STENCIL_VALUE_MASK, STENCIL_WRITEMASK, STENCIL_BACK_FUNC, STENCIL_BACK_FAIL, STENCIL_BACK_PASS_DEPTH_FAIL, STENCIL_BACK_PASS_DEPTH_PASS, STENCIL_BACK_REF, STENCIL_BACK_VALUE_MASK, STENCIL_BACK_WRITEMASK, VIEWPORT, SCISSOR_BOX, COLOR_CLEAR_VALUE, COLOR_WRITEMASK, UNPACK_ALIGNMENT, PACK_ALIGNMENT, MAX_TEXTURE_SIZE, MAX_VIEWPORT_DIMS, SUBPIXEL_BITS, RED_BITS, GREEN_BITS, BLUE_BITS, ALPHA_BITS, DEPTH_BITS, STENCIL_BITS, POLYGON_OFFSET_UNITS, POLYGON_OFFSET_FACTOR, TEXTURE_BINDING_2D, SAMPLE_BUFFERS, SAMPLES, SAMPLE_COVERAGE_VALUE, SAMPLE_COVERAGE_INVERT, NUM_COMPRESSED_TEXTURE_FORMATS, COMPRESSED_TEXTURE_FORMATS, DONT_CARE, FASTEST, NICEST, GENERATE_MIPMAP_HINT, BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INT, UNSIGNED_INT, FLOAT, DEPTH_COMPONENT, ALPHA, RGB, RGBA, LUMINANCE, LUMINANCE_ALPHA, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5, FRAGMENT_SHADER, VERTEX_SHADER, MAX_VERTEX_ATTRIBS, MAX_VERTEX_UNIFORM_VECTORS, MAX_VARYING_VECTORS, MAX_COMBINED_TEXTURE_IMAGE_UNITS, MAX_VERTEX_TEXTURE_IMAGE_UNITS, MAX_TEXTURE_IMAGE_UNITS, MAX_FRAGMENT_UNIFORM_VECTORS, SHADER_TYPE, DELETE_STATUS, LINK_STATUS, VALIDATE_STATUS, ATTACHED_SHADERS, ACTIVE_UNIFORMS, ACTIVE_UNIFORM_MAX_LENGTH, ACTIVE_ATTRIBUTES, ACTIVE_ATTRIBUTE_MAX_LENGTH, SHADING_LANGUAGE_VERSION, CURRENT_PROGRAM, NEVER, LESS, EQUAL, LEQUAL, GREATER, NOTEQUAL, GEQUAL, ALWAYS, KEEP, REPLACE, INCR, DECR, INVERT, INCR_WRAP, DECR_WRAP, VENDOR, RENDERER, VERSION, EXTENSIONS, NEAREST, LINEAR, NEAREST_MIPMAP_NEAREST, LINEAR_MIPMAP_NEAREST, NEAREST_MIPMAP_LINEAR, LINEAR_MIPMAP_LINEAR, TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER, TEXTURE_WRAP_S, TEXTURE_WRAP_T, TEXTURE, TEXTURE_CUBE_MAP, TEXTURE_BINDING_CUBE_MAP, TEXTURE_CUBE_MAP_POSITIVE_X, TEXTURE_CUBE_MAP_NEGATIVE_X, TEXTURE_CUBE_MAP_POSITIVE_Y, TEXTURE_CUBE_MAP_NEGATIVE_Y, TEXTURE_CUBE_MAP_POSITIVE_Z, TEXTURE_CUBE_MAP_NEGATIVE_Z, MAX_CUBE_MAP_TEXTURE_SIZE, TEXTURE0, TEXTURE1, TEXTURE2, TEXTURE3, TEXTURE4, TEXTURE5, TEXTURE6, TEXTURE7, TEXTURE8, TEXTURE9, TEXTURE10, TEXTURE11, TEXTURE12, TEXTURE13, TEXTURE14, TEXTURE15, TEXTURE16, TEXTURE17, TEXTURE18, TEXTURE19, TEXTURE20, TEXTURE21, TEXTURE22, TEXTURE23, TEXTURE24, TEXTURE25, TEXTURE26, TEXTURE27, TEXTURE28, TEXTURE29, TEXTURE30, TEXTURE31, ACTIVE_TEXTURE, REPEAT, CLAMP_TO_EDGE, MIRRORED_REPEAT, FLOAT_VEC2, FLOAT_VEC3, FLOAT_VEC4, INT_VEC2, INT_VEC3, INT_VEC4, BOOL, BOOL_VEC2, BOOL_VEC3, BOOL_VEC4, FLOAT_MAT2, FLOAT_MAT3, FLOAT_MAT4, SAMPLER_2D, SAMPLER_CUBE, VERTEX_ATTRIB_ARRAY_ENABLED, VERTEX_ATTRIB_ARRAY_SIZE, VERTEX_ATTRIB_ARRAY_STRIDE, VERTEX_ATTRIB_ARRAY_TYPE, VERTEX_ATTRIB_ARRAY_NORMALIZED, VERTEX_ATTRIB_ARRAY_POINTER, VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, IMPLEMENTATION_COLOR_READ_TYPE, IMPLEMENTATION_COLOR_READ_FORMAT, COMPILE_STATUS, INFO_LOG_LENGTH, SHADER_SOURCE_LENGTH, SHADER_COMPILER, LOW_FLOAT, MEDIUM_FLOAT, HIGH_FLOAT, LOW_INT, MEDIUM_INT, HIGH_INT, FRAMEBUFFER, RENDERBUFFER, RGBA4, RGB5_A1, RGB565, DEPTH_COMPONENT16, STENCIL_INDEX, STENCIL_INDEX8, RENDERBUFFER_WIDTH, RENDERBUFFER_HEIGHT, RENDERBUFFER_INTERNAL_FORMAT, RENDERBUFFER_RED_SIZE, RENDERBUFFER_GREEN_SIZE, RENDERBUFFER_BLUE_SIZE, RENDERBUFFER_ALPHA_SIZE, RENDERBUFFER_DEPTH_SIZE, RENDERBUFFER_STENCIL_SIZE, FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL, FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE, COLOR_ATTACHMENT0, DEPTH_ATTACHMENT, STENCIL_ATTACHMENT, NONE, FRAMEBUFFER_COMPLETE, FRAMEBUFFER_INCOMPLETE_ATTACHMENT, FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT, FRAMEBUFFER_INCOMPLETE_DIMENSIONS, FRAMEBUFFER_UNSUPPORTED, FRAMEBUFFER_BINDING, RENDERBUFFER_BINDING, MAX_RENDERBUFFER_SIZE, INVALID_FRAMEBUFFER_OPERATION, UNPACK_FLIP_Y_WEBGL, UNPACK_PREMULTIPLY_ALPHA_WEBGL, CONTEXT_LOST_WEBGL]);
+}
+
+function GLEnum_0(enum$name, value){
+  this.value = value;
+}
+
+function GLEnum(){
+}
+
+_ = GLEnum_0.prototype = GLEnum.prototype = new Enum;
+_.castableTypeMap$ = {23:1, 24:1, 25:1, 26:1};
+_.value = 0;
+var ACTIVE_ATTRIBUTES, ACTIVE_ATTRIBUTE_MAX_LENGTH, ACTIVE_TEXTURE, ACTIVE_UNIFORMS, ACTIVE_UNIFORM_MAX_LENGTH, ALIASED_LINE_WIDTH_RANGE, ALIASED_POINT_SIZE_RANGE, ALPHA, ALPHA_BITS, ALWAYS, ARRAY_BUFFER, ARRAY_BUFFER_BINDING, ATTACHED_SHADERS, BACK, BLEND, BLEND_COLOR, BLEND_DST_ALPHA, BLEND_DST_RGB, BLEND_EQUATION, BLEND_EQUATION_ALPHA, BLEND_EQUATION_RGB, BLEND_SRC_ALPHA, BLEND_SRC_RGB, BLUE_BITS, BOOL, BOOL_VEC2, BOOL_VEC3, BOOL_VEC4, BUFFER_SIZE, BUFFER_USAGE, BYTE, CCW, CLAMP_TO_EDGE, COLOR_ATTACHMENT0, COLOR_BUFFER_BIT_0, COLOR_CLEAR_VALUE, COLOR_WRITEMASK, COMPILE_STATUS, COMPRESSED_TEXTURE_FORMATS, CONSTANT_ALPHA, CONSTANT_COLOR, CONTEXT_LOST_WEBGL, CULL_FACE, CULL_FACE_MODE, CURRENT_PROGRAM, CURRENT_VERTEX_ATTRIB, CW, DECR, DECR_WRAP, DELETE_STATUS, DEPTH_ATTACHMENT, DEPTH_BITS, DEPTH_BUFFER_BIT_0, DEPTH_CLEAR_VALUE, DEPTH_COMPONENT, DEPTH_COMPONENT16, DEPTH_FUNC, DEPTH_RANGE, DEPTH_TEST, DEPTH_WRITEMASK, DITHER, DONT_CARE, DST_ALPHA, DST_COLOR, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER, ELEMENT_ARRAY_BUFFER_BINDING, EQUAL, EXTENSIONS, FASTEST, FLOAT, FLOAT_MAT2, FLOAT_MAT3, FLOAT_MAT4, FLOAT_VEC2, FLOAT_VEC3, FLOAT_VEC4, FRAGMENT_SHADER, FRAMEBUFFER, FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE, FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE, FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL, FRAMEBUFFER_BINDING, FRAMEBUFFER_COMPLETE, FRAMEBUFFER_INCOMPLETE_ATTACHMENT, FRAMEBUFFER_INCOMPLETE_DIMENSIONS, FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT, FRAMEBUFFER_UNSUPPORTED, FRONT, FRONT_AND_BACK, FRONT_FACE, FUNC_ADD, FUNC_REVERSE_SUBTRACT, FUNC_SUBTRACT, GENERATE_MIPMAP_HINT, GEQUAL, GREATER, GREEN_BITS, HIGH_FLOAT, HIGH_INT, IMPLEMENTATION_COLOR_READ_FORMAT, IMPLEMENTATION_COLOR_READ_TYPE, INCR, INCR_WRAP, INFO_LOG_LENGTH, INT, INT_VEC2, INT_VEC3, INT_VEC4, INVALID_ENUM, INVALID_FRAMEBUFFER_OPERATION, INVALID_OPERATION, INVALID_VALUE, INVERT, KEEP, LEQUAL, LESS, LINEAR, LINEAR_MIPMAP_LINEAR, LINEAR_MIPMAP_NEAREST, LINES, LINE_LOOP, LINE_STRIP, LINE_WIDTH, LINK_STATUS, LOW_FLOAT, LOW_INT, LUMINANCE, LUMINANCE_ALPHA, MAX_COMBINED_TEXTURE_IMAGE_UNITS, MAX_CUBE_MAP_TEXTURE_SIZE, MAX_FRAGMENT_UNIFORM_VECTORS, MAX_RENDERBUFFER_SIZE, MAX_TEXTURE_IMAGE_UNITS, MAX_TEXTURE_SIZE, MAX_VARYING_VECTORS, MAX_VERTEX_ATTRIBS, MAX_VERTEX_TEXTURE_IMAGE_UNITS, MAX_VERTEX_UNIFORM_VECTORS, MAX_VIEWPORT_DIMS, MEDIUM_FLOAT, MEDIUM_INT, MIRRORED_REPEAT, NEAREST, NEAREST_MIPMAP_LINEAR, NEAREST_MIPMAP_NEAREST, NEVER, NICEST, NONE, NOTEQUAL, NO_ERROR, NUM_COMPRESSED_TEXTURE_FORMATS, ONE, ONE_MINUS_CONSTANT_ALPHA, ONE_MINUS_CONSTANT_COLOR, ONE_MINUS_DST_ALPHA, ONE_MINUS_DST_COLOR, ONE_MINUS_SRC_ALPHA, ONE_MINUS_SRC_COLOR, OUT_OF_MEMORY, PACK_ALIGNMENT, POINTS, POLYGON_OFFSET_FACTOR, POLYGON_OFFSET_FILL, POLYGON_OFFSET_UNITS, RED_BITS, RENDERBUFFER, RENDERBUFFER_ALPHA_SIZE, RENDERBUFFER_BINDING, RENDERBUFFER_BLUE_SIZE, RENDERBUFFER_DEPTH_SIZE, RENDERBUFFER_GREEN_SIZE, RENDERBUFFER_HEIGHT, RENDERBUFFER_INTERNAL_FORMAT, RENDERBUFFER_RED_SIZE, RENDERBUFFER_STENCIL_SIZE, RENDERBUFFER_WIDTH, RENDERER, REPEAT, REPLACE, RGB, RGB565, RGB5_A1, RGBA, RGBA4, SAMPLER_2D, SAMPLER_CUBE, SAMPLES, SAMPLE_ALPHA_TO_COVERAGE, SAMPLE_BUFFERS, SAMPLE_COVERAGE, SAMPLE_COVERAGE_INVERT, SAMPLE_COVERAGE_VALUE, SCISSOR_BOX, SCISSOR_TEST, SHADER_COMPILER, SHADER_SOURCE_LENGTH, SHADER_TYPE, SHADING_LANGUAGE_VERSION, SHORT, SRC_ALPHA, SRC_ALPHA_SATURATE, SRC_COLOR, STATIC_DRAW, STENCIL_ATTACHMENT, STENCIL_BACK_FAIL, STENCIL_BACK_FUNC, STENCIL_BACK_PASS_DEPTH_FAIL, STENCIL_BACK_PASS_DEPTH_PASS, STENCIL_BACK_REF, STENCIL_BACK_VALUE_MASK, STENCIL_BACK_WRITEMASK, STENCIL_BITS, STENCIL_BUFFER_BIT_0, STENCIL_CLEAR_VALUE, STENCIL_FAIL, STENCIL_FUNC, STENCIL_INDEX, STENCIL_INDEX8, STENCIL_PASS_DEPTH_FAIL, STENCIL_PASS_DEPTH_PASS, STENCIL_REF, STENCIL_TEST, STENCIL_VALUE_MASK, STENCIL_WRITEMASK, STREAM_DRAW, SUBPIXEL_BITS, TEXTURE, TEXTURE0, TEXTURE1, TEXTURE10, TEXTURE11, TEXTURE12, TEXTURE13, TEXTURE14, TEXTURE15, TEXTURE16, TEXTURE17, TEXTURE18, TEXTURE19, TEXTURE2, TEXTURE20, TEXTURE21, TEXTURE22, TEXTURE23, TEXTURE24, TEXTURE25, TEXTURE26, TEXTURE27, TEXTURE28, TEXTURE29, TEXTURE3, TEXTURE30, TEXTURE31, TEXTURE4, TEXTURE5, TEXTURE6, TEXTURE7, TEXTURE8, TEXTURE9, TEXTURE_2D, TEXTURE_BINDING_2D, TEXTURE_BINDING_CUBE_MAP, TEXTURE_CUBE_MAP, TEXTURE_CUBE_MAP_NEGATIVE_X, TEXTURE_CUBE_MAP_NEGATIVE_Y, TEXTURE_CUBE_MAP_NEGATIVE_Z, TEXTURE_CUBE_MAP_POSITIVE_X, TEXTURE_CUBE_MAP_POSITIVE_Y, TEXTURE_CUBE_MAP_POSITIVE_Z, TEXTURE_MAG_FILTER, TEXTURE_MIN_FILTER, TEXTURE_WRAP_S, TEXTURE_WRAP_T, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, UNPACK_ALIGNMENT, UNPACK_FLIP_Y_WEBGL, UNPACK_PREMULTIPLY_ALPHA_WEBGL, UNSIGNED_BYTE, UNSIGNED_INT, UNSIGNED_SHORT, UNSIGNED_SHORT_4_4_4_4, UNSIGNED_SHORT_5_5_5_1, UNSIGNED_SHORT_5_6_5, VALIDATE_STATUS, VENDOR, VERSION, VERTEX_ATTRIB_ARRAY_BUFFER_BINDING, VERTEX_ATTRIB_ARRAY_ENABLED, VERTEX_ATTRIB_ARRAY_NORMALIZED, VERTEX_ATTRIB_ARRAY_POINTER, VERTEX_ATTRIB_ARRAY_SIZE, VERTEX_ATTRIB_ARRAY_STRIDE, VERTEX_ATTRIB_ARRAY_TYPE, VERTEX_SHADER, VIEWPORT, ZERO_0;
+function ArrayStoreException_0(){
+  $fillInStackTrace();
+}
+
+function ArrayStoreException(){
+}
+
+_ = ArrayStoreException_0.prototype = ArrayStoreException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function Class_0(){
+}
+
+function Class(){
+}
+
+_ = Class_0.prototype = Class.prototype = new Object_0;
+_.castableTypeMap$ = {};
+function ClassCastException_0(){
+  $fillInStackTrace();
+}
+
+function ClassCastException(){
+}
+
+_ = ClassCastException_0.prototype = ClassCastException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function Number_0(){
+}
+
+_ = Number_0.prototype = new Object_0;
+_.castableTypeMap$ = {24:1};
+function Float_0(value){
+  this.value = value;
+}
+
+function Float(){
+}
+
+_ = Float_0.prototype = Float.prototype = new Number_0;
+_.equals$ = function equals_1(o){
+  return o != null && o.castableTypeMap$ && !!o.castableTypeMap$[15] && dynamicCast(o, 15).value == this.value;
+}
+;
+_.hashCode$ = function hashCode_3(){
+  return ~~Math.max(Math.min(this.value, 2147483647), -2147483648);
+}
+;
+_.castableTypeMap$ = {15:1, 24:1, 25:1};
+_.value = 0;
+function IllegalArgumentException_0(message){
+  $fillInStackTrace();
+}
+
+function IllegalArgumentException(){
+}
+
+_ = IllegalArgumentException_0.prototype = IllegalArgumentException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function IllegalStateException_0(s){
+  $fillInStackTrace();
+}
+
+function IllegalStateException(){
+}
+
+_ = IllegalStateException_0.prototype = IllegalStateException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function IndexOutOfBoundsException_0(){
+  $fillInStackTrace();
+}
+
+function IndexOutOfBoundsException_1(message){
+  $fillInStackTrace();
+}
+
+function IndexOutOfBoundsException(){
+}
+
+_ = IndexOutOfBoundsException_1.prototype = IndexOutOfBoundsException_0.prototype = IndexOutOfBoundsException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+--></script>
+<script><!--
+function NullPointerException_0(){
+  $fillInStackTrace();
+}
+
+function NullPointerException_1(message){
+  $fillInStackTrace();
+}
+
+function NullPointerException(){
+}
+
+_ = NullPointerException_1.prototype = NullPointerException_0.prototype = NullPointerException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function StackTraceElement_0(methodName){
+}
+
+function StackTraceElement(){
+}
+
+_ = StackTraceElement_0.prototype = StackTraceElement.prototype = new Object_0;
+_.castableTypeMap$ = {24:1, 27:1};
+function $equals(this$static, other){
+  if (!(other != null && other.castableTypeMap$ && !!other.castableTypeMap$[1])) {
+    return false;
+  }
+  return String(this$static) == other;
+}
+
+function $trim(this$static){
+  if (this$static.length == 0 || this$static[0] > ' ' && this$static[this$static.length - 1] > ' ') {
+    return this$static;
+  }
+  var r1 = this$static.replace(/^(\s*)/, '');
+  var r2 = r1.replace(/\s*$/, '');
+  return r2;
+}
+
+_ = String.prototype;
+_.equals$ = function equals_2(other){
+  return $equals(this, other);
+}
+;
+_.hashCode$ = function hashCode_4(){
+  return getHashCode(this);
+}
+;
+_.castableTypeMap$ = {1:1, 24:1, 25:1};
+function $clinit_8(){
+  $clinit_8 = nullMethod;
+  back_0 = {};
+  front = {};
+}
+
+function compute(str){
+  var hashCode, i, n, nBatch;
+  hashCode = 0;
+  n = str.length;
+  nBatch = n - 4;
+  i = 0;
+  while (i < nBatch) {
+    hashCode = str.charCodeAt(i + 3) + 31 * (str.charCodeAt(i + 2) + 31 * (str.charCodeAt(i + 1) + 31 * (str.charCodeAt(i) + 31 * hashCode))) | 0;
+    i += 4;
+  }
+  while (i < n) {
+    hashCode = hashCode * 31 + str.charCodeAt(i++);
+  }
+  return hashCode | 0;
+}
+
+function getHashCode(str){
+  $clinit_8();
+  var key = ':' + str;
+  var result = front[key];
+  if (result != null) {
+    return result;
+  }
+  result = back_0[key];
+  result == null && (result = compute(str));
+  increment();
+  return front[key] = result;
+}
+
+function increment(){
+  if (count == 256) {
+    back_0 = front;
+    front = {};
+    count = 0;
+  }
+  ++count;
+}
+
+var back_0, count = 0, front;
+function UnsupportedOperationException_0(message){
+  $fillInStackTrace();
+}
+
+function UnsupportedOperationException(){
+}
+
+_ = UnsupportedOperationException_0.prototype = UnsupportedOperationException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1};
+function $advanceToFind(iter, o){
+  var t;
+  while (iter.hasNext()) {
+    t = iter.next_0();
+    if (o == null?t == null:equals__devirtual$(o, t)) {
+      return iter;
+    }
+  }
+  return null;
+}
+
+function AbstractCollection(){
+}
+
+_ = AbstractCollection.prototype = new Object_0;
+_.add = function add(o){
+  throw new UnsupportedOperationException_0('Add not supported on this collection');
+}
+;
+_.contains = function contains(o){
+  var iter;
+  iter = $advanceToFind(this.iterator(), o);
+  return !!iter;
+}
+;
+_.toArray = function toArray(a_0){
+  var i, it, size;
+  size = this.size_0();
+  a_0.length < size && (a_0 = createFrom(a_0, size));
+  it = this.iterator();
+  for (i = 0; i < size; ++i) {
+    setCheck(a_0, i, it.next_0());
+  }
+  a_0.length > size && setCheck(a_0, size, null);
+  return a_0;
+}
+;
+_.castableTypeMap$ = {};
+function $keySet(this$static){
+  var entrySet;
+  entrySet = new AbstractHashMap$EntrySet_0(this$static);
+  return new AbstractMap$1_0(this$static, entrySet);
+}
+
+function AbstractMap(){
+}
+
+_ = AbstractMap.prototype = new Object_0;
+_.equals$ = function equals_3(obj){
+  var entry, entry$iterator, otherKey, otherMap, otherValue;
+  if (obj === this) {
+    return true;
+  }
+  if (!(obj != null && obj.castableTypeMap$ && !!obj.castableTypeMap$[11])) {
+    return false;
+  }
+  otherMap = dynamicCast(obj, 11);
+  if (this.size != otherMap.size) {
+    return false;
+  }
+  for (entry$iterator = new AbstractHashMap$EntrySetIterator_0((new AbstractHashMap$EntrySet_0(otherMap)).this$0); $hasNext(entry$iterator.iter);) {
+    entry = dynamicCast($next_0(entry$iterator.iter), 28);
+    otherKey = entry.getKey();
+    otherValue = entry.getValue();
+    if (!(otherKey == null?this.nullSlotLive:otherKey != null && otherKey.castableTypeMap$ && !!otherKey.castableTypeMap$[1]?':' + dynamicCast(otherKey, 1) in this.stringMap:$hasHashValue(this, otherKey, ~~hashCode__devirtual$(otherKey)))) {
+      return false;
+    }
+    if (!equalsWithNullCheck(otherValue, otherKey == null?this.nullSlot:otherKey != null && otherKey.castableTypeMap$ && !!otherKey.castableTypeMap$[1]?this.stringMap[':' + dynamicCast(otherKey, 1)]:$getHashValue(this, otherKey, ~~hashCode__devirtual$(otherKey)))) {
+      return false;
+    }
+  }
+  return true;
+}
+;
+_.hashCode$ = function hashCode_5(){
+  var entry, entry$iterator, hashCode;
+  hashCode = 0;
+  for (entry$iterator = new AbstractHashMap$EntrySetIterator_0((new AbstractHashMap$EntrySet_0(this)).this$0); $hasNext(entry$iterator.iter);) {
+    entry = dynamicCast($next_0(entry$iterator.iter), 28);
+    hashCode += entry.hashCode$();
+    hashCode = ~~hashCode;
+  }
+  return hashCode;
+}
+;
+_.castableTypeMap$ = {11:1};
+function $addAllHashEntries(this$static, dest){
+  var hashCodeMap = this$static.hashCodeMap;
+  for (var hashCode in hashCodeMap) {
+    var hashCodeInt = parseInt(hashCode, 10);
+    if (hashCode == hashCodeInt) {
+      var array = hashCodeMap[hashCodeInt];
+      for (var i = 0, c = array.length; i < c; ++i) {
+        dest.add(array[i]);
+      }
+    }
+  }
+}
+
+function $addAllStringEntries(this$static, dest){
+  var stringMap = this$static.stringMap;
+  for (var key in stringMap) {
+    if (key.charCodeAt(0) == 58) {
+      var entry = new AbstractHashMap$MapEntryString_0(this$static, key.substring(1));
+      dest.add(entry);
+    }
+  }
+}
+
+function $clearImpl(this$static){
+  this$static.hashCodeMap = [];
+  this$static.stringMap = {};
+  this$static.nullSlotLive = false;
+  this$static.nullSlot = null;
+  this$static.size = 0;
+}
+
+function $containsKey(this$static, key){
+  return key == null?this$static.nullSlotLive:key != null && key.castableTypeMap$ && !!key.castableTypeMap$[1]?$hasStringValue(this$static, dynamicCast(key, 1)):$hasHashValue(this$static, key, ~~hashCode__devirtual$(key));
+}
+
+function $get(this$static, key){
+  return key == null?this$static.nullSlot:key != null && key.castableTypeMap$ && !!key.castableTypeMap$[1]?this$static.stringMap[':' + dynamicCast(key, 1)]:$getHashValue(this$static, key, ~~hashCode__devirtual$(key));
+}
+
+function $getHashValue(this$static, key, hashCode){
+  var array = this$static.hashCodeMap[hashCode];
+  if (array) {
+    for (var i = 0, c = array.length; i < c; ++i) {
+      var entry = array[i];
+      var entryKey = entry.getKey();
+      if (this$static.equalsBridge(key, entryKey)) {
+        return entry.getValue();
+      }
+    }
+  }
+  return null;
+}
+
+function $hasHashValue(this$static, key, hashCode){
+  var array = this$static.hashCodeMap[hashCode];
+  if (array) {
+    for (var i = 0, c = array.length; i < c; ++i) {
+      var entry = array[i];
+      var entryKey = entry.getKey();
+      if (this$static.equalsBridge(key, entryKey)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function $hasStringValue(this$static, key){
+  return ':' + key in this$static.stringMap;
+}
+
+function $put(this$static, key, value){
+  return key == null?$putNullSlot(this$static, value):key != null && key.castableTypeMap$ && !!key.castableTypeMap$[1]?$putStringValue(this$static, dynamicCast(key, 1), value):$putHashValue(this$static, key, value, ~~hashCode__devirtual$(key));
+}
+
+function $putHashValue(this$static, key, value, hashCode){
+  var array = this$static.hashCodeMap[hashCode];
+  if (array) {
+    for (var i = 0, c = array.length; i < c; ++i) {
+      var entry = array[i];
+      var entryKey = entry.getKey();
+      if (this$static.equalsBridge(key, entryKey)) {
+        var previous = entry.getValue();
+        entry.setValue(value);
+        return previous;
+      }
+    }
+  }
+   else {
+    array = this$static.hashCodeMap[hashCode] = [];
+  }
+  var entry = new MapEntryImpl_0(key, value);
+  array.push(entry);
+  ++this$static.size;
+  return null;
+}
+
+function $putNullSlot(this$static, value){
+  var result;
+  result = this$static.nullSlot;
+  this$static.nullSlot = value;
+  if (!this$static.nullSlotLive) {
+    this$static.nullSlotLive = true;
+    ++this$static.size;
+  }
+  return result;
+}
+
+function $putStringValue(this$static, key, value){
+  var result, stringMap = this$static.stringMap;
+  key = ':' + key;
+  key in stringMap?(result = stringMap[key]):++this$static.size;
+  stringMap[key] = value;
+  return result;
+}
+
+function $remove_3(this$static, key){
+  return !key?$removeNullSlot(this$static):$removeHashValue(this$static, key, ~~(key.$H || (key.$H = ++sNextHashId)));
+}
+
+function $removeHashValue(this$static, key, hashCode){
+  var array = this$static.hashCodeMap[hashCode];
+  if (array) {
+    for (var i = 0, c = array.length; i < c; ++i) {
+      var entry = array[i];
+      var entryKey = entry.getKey();
+      if (this$static.equalsBridge(key, entryKey)) {
+        array.length == 1?delete this$static.hashCodeMap[hashCode]:array.splice(i, 1);
+        --this$static.size;
+        return entry.getValue();
+      }
+    }
+  }
+  return null;
+}
+
+function $removeNullSlot(this$static){
+  var result;
+  result = this$static.nullSlot;
+  this$static.nullSlot = null;
+  if (this$static.nullSlotLive) {
+    this$static.nullSlotLive = false;
+    --this$static.size;
+  }
+  return result;
+}
+
+function AbstractHashMap(){
+}
+
+_ = AbstractHashMap.prototype = new AbstractMap;
+_.equalsBridge = function equalsBridge(value1, value2){
+  return (value1 == null?null:value1) === (value2 == null?null:value2) || value1 != null && equals__devirtual$(value1, value2);
+}
+;
+_.castableTypeMap$ = {11:1};
+_.hashCodeMap = null;
+_.nullSlot = null;
+_.nullSlotLive = false;
+_.size = 0;
+_.stringMap = null;
+function AbstractSet(){
+}
+
+_ = AbstractSet.prototype = new AbstractCollection;
+_.equals$ = function equals_4(o){
+  var iter, other, otherItem;
+  if (o === this) {
+    return true;
+  }
+  if (!(o != null && o.castableTypeMap$ && !!o.castableTypeMap$[30])) {
+    return false;
+  }
+  other = dynamicCast(o, 30);
+  if (other.size_0() != this.size_0()) {
+    return false;
+  }
+  for (iter = other.iterator(); iter.hasNext();) {
+    otherItem = iter.next_0();
+    if (!this.contains(otherItem)) {
+      return false;
+    }
+  }
+  return true;
+}
+;
+_.hashCode$ = function hashCode_6(){
+  var hashCode, iter, next;
+  hashCode = 0;
+  for (iter = this.iterator(); iter.hasNext();) {
+    next = iter.next_0();
+    if (next != null) {
+      hashCode += hashCode__devirtual$(next);
+      hashCode = ~~hashCode;
+    }
+  }
+  return hashCode;
+}
+;
+_.castableTypeMap$ = {30:1};
+function $contains(this$static, o){
+  var entry, key, value;
+  if (o != null && o.castableTypeMap$ && !!o.castableTypeMap$[28]) {
+    entry = dynamicCast(o, 28);
+    key = entry.getKey();
+    if ($containsKey(this$static.this$0, key)) {
+      value = $get(this$static.this$0, key);
+      return $equals_0(entry.getValue(), value);
+    }
+  }
+  return false;
+}
+
+function AbstractHashMap$EntrySet_0(this$0){
+  this.this$0 = this$0;
+}
+
+function AbstractHashMap$EntrySet(){
+}
+
+_ = AbstractHashMap$EntrySet_0.prototype = AbstractHashMap$EntrySet.prototype = new AbstractSet;
+_.contains = function contains_0(o){
+  return $contains(this, o);
+}
+;
+_.iterator = function iterator_1(){
+  return new AbstractHashMap$EntrySetIterator_0(this.this$0);
+}
+;
+_.size_0 = function size_0(){
+  return this.this$0.size;
+}
+;
+_.castableTypeMap$ = {30:1};
+_.this$0 = null;
+function AbstractHashMap$EntrySetIterator_0(this$0){
+  var list;
+  list = new ArrayList_0;
+  this$0.nullSlotLive && $add_2(list, new AbstractHashMap$MapEntryNull_0(this$0));
+  $addAllStringEntries(this$0, list);
+  $addAllHashEntries(this$0, list);
+  this.iter = new AbstractList$IteratorImpl_0(list);
+}
+
+function AbstractHashMap$EntrySetIterator(){
+}
+
+_ = AbstractHashMap$EntrySetIterator_0.prototype = AbstractHashMap$EntrySetIterator.prototype = new Object_0;
+_.hasNext = function hasNext_0(){
+  return $hasNext(this.iter);
+}
+;
+_.next_0 = function next_1(){
+  return dynamicCast($next_0(this.iter), 28);
+}
+;
+_.castableTypeMap$ = {};
+_.iter = null;
+function AbstractMapEntry(){
+}
+
+_ = AbstractMapEntry.prototype = new Object_0;
+_.equals$ = function equals_5(other){
+  var entry;
+  if (other != null && other.castableTypeMap$ && !!other.castableTypeMap$[28]) {
+    entry = dynamicCast(other, 28);
+    if (equalsWithNullCheck(this.getKey(), entry.getKey()) && equalsWithNullCheck(this.getValue(), entry.getValue())) {
+      return true;
+    }
+  }
+  return false;
+}
+;
+_.hashCode$ = function hashCode_7(){
+  var keyHash, valueHash;
+  keyHash = 0;
+  valueHash = 0;
+  this.getKey() != null && (keyHash = hashCode__devirtual$(this.getKey()));
+  this.getValue() != null && (valueHash = hashCode__devirtual$(this.getValue()));
+  return keyHash ^ valueHash;
+}
+;
+_.castableTypeMap$ = {28:1};
+function AbstractHashMap$MapEntryNull_0(this$0){
+  this.this$0 = this$0;
+}
+
+function AbstractHashMap$MapEntryNull(){
+}
+
+_ = AbstractHashMap$MapEntryNull_0.prototype = AbstractHashMap$MapEntryNull.prototype = new AbstractMapEntry;
+_.getKey = function getKey(){
+  return null;
+}
+;
+_.getValue = function getValue(){
+  return this.this$0.nullSlot;
+}
+;
+_.setValue = function setValue(object){
+  return $putNullSlot(this.this$0, object);
+}
+;
+_.castableTypeMap$ = {28:1};
+_.this$0 = null;
+function AbstractHashMap$MapEntryString_0(this$0, key){
+  this.this$0 = this$0;
+  this.key = key;
+}
+
+function AbstractHashMap$MapEntryString(){
+}
+
+_ = AbstractHashMap$MapEntryString_0.prototype = AbstractHashMap$MapEntryString.prototype = new AbstractMapEntry;
+_.getKey = function getKey_0(){
+  return this.key;
+}
+;
+_.getValue = function getValue_0(){
+  return this.this$0.stringMap[':' + this.key];
+}
+;
+_.setValue = function setValue_0(object){
+  return $putStringValue(this.this$0, this.key, object);
+}
+;
+_.castableTypeMap$ = {28:1};
+_.key = null;
+_.this$0 = null;
+function checkIndex(index, size){
+  (index < 0 || index >= size) && indexOutOfBounds(index, size);
+}
+
+function indexOutOfBounds(index, size){
+  throw new IndexOutOfBoundsException_1('Index: ' + index + ', Size: ' + size);
+}
+
+function AbstractList(){
+}
+
+_ = AbstractList.prototype = new AbstractCollection;
+_.add = function add_0(obj){
+  this.add_0(this.size_0(), obj);
+  return true;
+}
+;
+_.add_0 = function add_1(index, element){
+  throw new UnsupportedOperationException_0('Add not supported on this list');
+}
+;
+_.equals$ = function equals_6(o){
+  var elem, elemOther, iter, iterOther, other;
+  if (o === this) {
+    return true;
+  }
+  if (!(o != null && o.castableTypeMap$ && !!o.castableTypeMap$[12])) {
+    return false;
+  }
+  other = dynamicCast(o, 12);
+  if (this.size_0() != other.size_0()) {
+    return false;
+  }
+  iter = this.iterator();
+  iterOther = other.iterator();
+  while (iter.hasNext()) {
+    elem = iter.next_0();
+    elemOther = iterOther.next_0();
+    if (!(elem == null?elemOther == null:equals__devirtual$(elem, elemOther))) {
+      return false;
+    }
+  }
+  return true;
+}
+;
+_.hashCode$ = function hashCode_8(){
+  var iter, k, obj;
+  k = 1;
+  iter = this.iterator();
+  while (iter.hasNext()) {
+    obj = iter.next_0();
+    k = 31 * k + (obj == null?0:hashCode__devirtual$(obj));
+    k = ~~k;
+  }
+  return k;
+}
+;
+_.iterator = function iterator_2(){
+  return new AbstractList$IteratorImpl_0(this);
+}
+;
+_.listIterator = function listIterator(){
+  return this.listIterator_0(0);
+}
+;
+_.listIterator_0 = function listIterator_0(from){
+  return new AbstractList$ListIteratorImpl_0(this, from);
+}
+;
+_.castableTypeMap$ = {12:1};
+function $hasNext(this$static){
+  return this$static.i < this$static.this$0_0.size_0();
+}
+
+function $next_0(this$static){
+  if (this$static.i >= this$static.this$0_0.size_0()) {
+    throw new NoSuchElementException_0;
+  }
+  return this$static.this$0_0.get(this$static.i++);
+}
+
+function AbstractList$IteratorImpl_0(this$0){
+  this.this$0_0 = this$0;
+}
+
+function AbstractList$IteratorImpl(){
+}
+
+_ = AbstractList$IteratorImpl_0.prototype = AbstractList$IteratorImpl.prototype = new Object_0;
+_.hasNext = function hasNext_1(){
+  return this.i < this.this$0_0.size_0();
+}
+;
+_.next_0 = function next_2(){
+  return $next_0(this);
+}
+;
+_.castableTypeMap$ = {};
+_.i = 0;
+_.this$0_0 = null;
+function AbstractList$ListIteratorImpl_0(this$0, start){
+  var size;
+  this.this$0 = this$0;
+  this.this$0_0 = this$0;
+  size = this$0.size_0();
+  (start < 0 || start > size) && indexOutOfBounds(start, size);
+  this.i = start;
+}
+
+function AbstractList$ListIteratorImpl(){
+}
+
+_ = AbstractList$ListIteratorImpl_0.prototype = AbstractList$ListIteratorImpl.prototype = new AbstractList$IteratorImpl;
+_.hasPrevious = function hasPrevious(){
+  return this.i > 0;
+}
+;
+_.previous = function previous_0(){
+  if (this.i <= 0) {
+    throw new NoSuchElementException_0;
+  }
+  return this.this$0.get(--this.i);
+}
+;
+_.castableTypeMap$ = {};
+_.this$0 = null;
+function AbstractMap$1_0(this$0, val$entrySet){
+  this.this$0 = this$0;
+  this.val$entrySet = val$entrySet;
+}
+
+function AbstractMap$1(){
+}
+
+_ = AbstractMap$1_0.prototype = AbstractMap$1.prototype = new AbstractSet;
+_.contains = function contains_1(key){
+  return $containsKey(this.this$0, key);
+}
+;
+_.iterator = function iterator_3(){
+  var outerIter;
+  return outerIter = new AbstractHashMap$EntrySetIterator_0(this.val$entrySet.this$0) , new AbstractMap$1$1_0(outerIter);
+}
+;
+_.size_0 = function size_1(){
+  return this.val$entrySet.this$0.size;
+}
+;
+_.castableTypeMap$ = {30:1};
+_.this$0 = null;
+_.val$entrySet = null;
+function AbstractMap$1$1_0(val$outerIter){
+  this.val$outerIter = val$outerIter;
+}
+
+function AbstractMap$1$1(){
+}
+
+_ = AbstractMap$1$1_0.prototype = AbstractMap$1$1.prototype = new Object_0;
+_.hasNext = function hasNext_2(){
+  return $hasNext(this.val$outerIter.iter);
+}
+;
+_.next_0 = function next_3(){
+  var entry;
+  entry = dynamicCast($next_0(this.val$outerIter.iter), 28);
+  return entry.getKey();
+}
+;
+_.castableTypeMap$ = {};
+_.val$outerIter = null;
+function AbstractSequentialList(){
+}
+
+_ = AbstractSequentialList.prototype = new AbstractList;
+_.add_0 = function add_2(index, element){
+  var iter;
+  iter = $listIterator(this, index);
+  $addBefore(iter.this$0, element, iter.currentNode);
+  ++iter.currentIndex;
+  iter.lastNode = null;
+}
+;
+_.get = function get_0(index){
+  var $e0, iter;
+  iter = $listIterator(this, index);
+  try {
+    return $next_1(iter);
+  }
+   catch ($e0) {
+    $e0 = caught_0($e0);
+    if (instanceOf($e0, 29)) {
+      throw new IndexOutOfBoundsException_1("Can't get element " + index);
+    }
+     else 
+      throw $e0;
+  }
+}
+;
+_.iterator = function iterator_4(){
+  return $listIterator(this, 0);
+}
+;
+_.castableTypeMap$ = {12:1};
+function $add_2(this$static, o){
+  setCheck(this$static.array, this$static.size++, o);
+  return true;
+}
+
+function $get_0(this$static, index){
+  checkIndex(index, this$static.size);
+  return this$static.array[index];
+}
+
+function $indexOf_0(this$static, o, index){
+  for (; index < this$static.size; ++index) {
+    if (equalsWithNullCheck(o, this$static.array[index])) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+function $remove_4(this$static, o){
+  var i, previous;
+  i = $indexOf_0(this$static, o, 0);
+  if (i == -1) {
+    return false;
+  }
+  previous = (checkIndex(i, this$static.size) , this$static.array[i]);
+  this$static.array.splice(i, 1);
+  --this$static.size;
+  return true;
+}
+
+function ArrayList_0(){
+  this.array = initDim(_3Ljava_lang_Object_2_classLit, {24:1}, 0, 0, 0);
+}
+
+function ArrayList(){
+}
+
+_ = ArrayList_0.prototype = ArrayList.prototype = new AbstractList;
+_.add = function add_3(o){
+  return setCheck(this.array, this.size++, o) , true;
+}
+;
+_.add_0 = function add_4(index, o){
+  (index < 0 || index > this.size) && indexOutOfBounds(index, this.size);
+  this.array.splice(index, 0, o);
+  ++this.size;
+}
+;
+_.contains = function contains_2(o){
+  return $indexOf_0(this, o, 0) != -1;
+}
+;
+_.get = function get_1(index){
+  return checkIndex(index, this.size) , this.array[index];
+}
+;
+_.size_0 = function size_2(){
+  return this.size;
+}
+;
+_.toArray = function toArray_0(out){
+  var i, a_0, result;
+  out.length < this.size && (out = (a_0 = out , result = createFromSeed(0, this.size) , initValues(a_0.arrayClass$, a_0.castableTypeMap$, a_0.queryId$, result) , result));
+  for (i = 0; i < this.size; ++i) {
+    setCheck(out, i, this.array[i]);
+  }
+  out.length > this.size && setCheck(out, this.size, null);
+  return out;
+}
+;
+_.castableTypeMap$ = {12:1, 24:1};
+_.size = 0;
+function $clinit_9(){
+  $clinit_9 = nullMethod;
+  EMPTY_LIST = new Collections$EmptyList_0;
+}
+
+var EMPTY_LIST;
+function Collections$EmptyList_0(){
+}
+
+function Collections$EmptyList(){
+}
+
+_ = Collections$EmptyList_0.prototype = Collections$EmptyList.prototype = new AbstractList;
+_.contains = function contains_3(object){
+  return false;
+}
+;
+_.get = function get_2(location_0){
+  throw new IndexOutOfBoundsException_0;
+}
+;
+_.size_0 = function size_3(){
+  return 0;
+}
+;
+_.castableTypeMap$ = {12:1, 24:1};
+function $equals_0(value1, value2){
+  return (value1 == null?null:value1) === (value2 == null?null:value2) || value1 != null && equals__devirtual$(value1, value2);
+}
+
+function HashMap_0(){
+  $clearImpl(this);
+}
+
+function HashMap(){
+}
+
+_ = HashMap_0.prototype = HashMap.prototype = new AbstractHashMap;
+_.castableTypeMap$ = {11:1, 24:1};
+function $add_3(this$static, o){
+  var old;
+  old = $put(this$static.map, o, this$static);
+  return old == null;
+}
+
+function HashSet_0(){
+  this.map = new HashMap_0;
+}
+
+function HashSet(){
+}
+
+_ = HashSet_0.prototype = HashSet.prototype = new AbstractSet;
+_.add = function add_5(o){
+  var old;
+  return old = $put(this.map, o, this) , old == null;
+}
+;
+_.contains = function contains_4(o){
+  return $containsKey(this.map, o);
+}
+;
+_.iterator = function iterator_5(){
+  var outerIter;
+  return outerIter = new AbstractHashMap$EntrySetIterator_0($keySet(this.map).val$entrySet.this$0) , new AbstractMap$1$1_0(outerIter);
+}
+;
+_.size_0 = function size_4(){
+  return this.map.size;
+}
+;
+_.castableTypeMap$ = {24:1, 30:1};
+_.map = null;
+function $addBefore(this$static, o, target){
+  new LinkedList$Node_1(o, target);
+  ++this$static.size;
+}
+
+function $addLast(this$static, o){
+  new LinkedList$Node_1(o, this$static.header);
+  ++this$static.size;
+}
+
+function $listIterator(this$static, index){
+  var i, node;
+  (index < 0 || index > this$static.size) && indexOutOfBounds(index, this$static.size);
+  if (index >= this$static.size >> 1) {
+    node = this$static.header;
+    for (i = this$static.size; i > index; --i) {
+      node = node.prev;
+    }
+  }
+   else {
+    node = this$static.header.next;
+    for (i = 0; i < index; ++i) {
+      node = node.next;
+    }
+  }
+  return new LinkedList$ListIteratorImpl_0(this$static, index, node);
+}
+
+function $removeFirst(this$static){
+  var node;
+  $throwEmptyException(this$static);
+  --this$static.size;
+  node = this$static.header.next;
+  node.next.prev = node.prev;
+  node.prev.next = node.next;
+  node.next = node.prev = node;
+  return node.value;
+}
+
+function $throwEmptyException(this$static){
+  if (this$static.size == 0) {
+    throw new NoSuchElementException_0;
+  }
+}
+
+function LinkedList_0(){
+  this.header = new LinkedList$Node_0;
+  this.size = 0;
+}
+
+function LinkedList(){
+}
+
+_ = LinkedList_0.prototype = LinkedList.prototype = new AbstractSequentialList;
+_.add = function add_6(o){
+  new LinkedList$Node_1(o, this.header);
+  ++this.size;
+  return true;
+}
+;
+_.listIterator_0 = function listIterator_1(index){
+  return $listIterator(this, index);
+}
+;
+_.size_0 = function size_5(){
+  return this.size;
+}
+;
+_.castableTypeMap$ = {12:1, 24:1};
+_.header = null;
+_.size = 0;
+function $next_1(this$static){
+  if (this$static.currentNode == this$static.this$0.header) {
+    throw new NoSuchElementException_0;
+  }
+  this$static.lastNode = this$static.currentNode;
+  this$static.currentNode = this$static.currentNode.next;
+  ++this$static.currentIndex;
+  return this$static.lastNode.value;
+}
+
+function LinkedList$ListIteratorImpl_0(this$0, index, startNode){
+  this.this$0 = this$0;
+  this.currentNode = startNode;
+  this.currentIndex = index;
+}
+
+function LinkedList$ListIteratorImpl(){
+}
+
+_ = LinkedList$ListIteratorImpl_0.prototype = LinkedList$ListIteratorImpl.prototype = new Object_0;
+_.hasNext = function hasNext_3(){
+  return this.currentNode != this.this$0.header;
+}
+;
+_.hasPrevious = function hasPrevious_0(){
+  return this.currentNode.prev != this.this$0.header;
+}
+;
+_.next_0 = function next_4(){
+  return $next_1(this);
+}
+;
+_.previous = function previous_1(){
+  if (this.currentNode.prev == this.this$0.header) {
+    throw new NoSuchElementException_0;
+  }
+  this.lastNode = this.currentNode = this.currentNode.prev;
+  --this.currentIndex;
+  return this.lastNode.value;
+}
+;
+_.castableTypeMap$ = {};
+_.currentIndex = 0;
+_.currentNode = null;
+_.lastNode = null;
+_.this$0 = null;
+function LinkedList$Node_0(){
+  this.next = this.prev = this;
+}
+
+function LinkedList$Node_1(value, nextNode){
+  this.value = value;
+  this.next = nextNode;
+  this.prev = nextNode.prev;
+  nextNode.prev.next = this;
+  nextNode.prev = this;
+}
+
+function LinkedList$Node(){
+}
+
+_ = LinkedList$Node_1.prototype = LinkedList$Node_0.prototype = LinkedList$Node.prototype = new Object_0;
+_.castableTypeMap$ = {};
+_.next = null;
+_.prev = null;
+_.value = null;
+function MapEntryImpl_0(key, value){
+  this.key = key;
+  this.value = value;
+}
+
+function MapEntryImpl(){
+}
+
+_ = MapEntryImpl_0.prototype = MapEntryImpl.prototype = new AbstractMapEntry;
+_.getKey = function getKey_1(){
+  return this.key;
+}
+;
+_.getValue = function getValue_1(){
+  return this.value;
+}
+;
+_.setValue = function setValue_1(value){
+  var old;
+  old = this.value;
+  this.value = value;
+  return old;
+}
+;
+_.castableTypeMap$ = {28:1};
+_.key = null;
+_.value = null;
+function NoSuchElementException_0(){
+  $fillInStackTrace();
+}
+
+function NoSuchElementException(){
+}
+
+_ = NoSuchElementException_0.prototype = NoSuchElementException.prototype = new RuntimeException;
+_.castableTypeMap$ = {2:1, 5:1, 24:1, 29:1};
+function equalsWithNullCheck(a_0, b){
+  return (a_0 == null?null:a_0) === (b == null?null:b) || a_0 != null && equals__devirtual$(a_0, b);
+}
+
+var $entry = entry_0;
+function gwtOnLoad(errFn, modName, modBase, softPermutationId){
+  $moduleName = modName;
+  $moduleBase = modBase;
+  if (errFn)
+    try {
+      $entry(init)();
+    }
+     catch (e) {
+      errFn(modName);
+    }
+   else {
+    $entry(init)();
+  }
+}
+
+var _3Ljava_lang_StackTraceElement_2_classLit = new Class_0, _3Lcom_google_gwt_lang_LongLibBase$LongEmul_2_classLit = new Class_0, _3Lcom_google_gwt_user_client_ui_Widget_2_classLit = new Class_0, _3Ljava_lang_Throwable_2_classLit = new Class_0, _3Lgwt_g3d_client_gl2_enums_ClearBufferMask_2_classLit = new Class_0, _3Lgwt_g3d_client_gl2_enums_GLEnum_2_classLit = new Class_0, _3Ljava_lang_Object_2_classLit = new Class_0;
+$stats && $stats({moduleName:'com.badlogic.gdx.backends.gwt',sessionId:$sessionId,subSystem:'startup',evtGroup:'moduleStartup',millis:(new Date()).getTime(),type:'moduleEvalEnd'});
+if ($wnd.com_badlogic_gdx_backends_gwt) $wnd.com_badlogic_gdx_backends_gwt.onScriptLoad();
+--></script></body></html>
