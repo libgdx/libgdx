@@ -1,2 +1,0 @@
-serviceClass: com.badlogic.gdx.backends.gwt.client.GreetingService
-path: D8F6C0215ECF227B0BBE028ABB18B1D3.gwt.rpc

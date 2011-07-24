@@ -1,2 +1,0 @@
-# Module gdx_backends_gwt
-# RPC service class, partial path of RPC policy file
