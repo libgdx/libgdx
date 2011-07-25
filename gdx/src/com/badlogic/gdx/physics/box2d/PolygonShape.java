@@ -69,7 +69,7 @@ public class PolygonShape extends Shape {
 	 * @param hx the half-width.
 	 * @param hy the half-height.
 	 * @param center the center of the box in local coordinates.
-	 * @param angle the rotation of the box in local coordinates.
+	 * @param angle the rotation in radians of the box in local coordinates.
 	 */
 	public void setAsBox (float hx, float hy, Vector2 center, float angle) {
 		jniSetAsBox(addr, hx, hy, center.x, center.y, angle);
