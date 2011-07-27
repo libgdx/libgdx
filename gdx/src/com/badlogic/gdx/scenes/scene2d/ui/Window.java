@@ -82,7 +82,8 @@ public class Window extends Container {
 	final Rectangle titleBounds = new Rectangle();
 	final TextBounds textBounds = new TextBounds();
 	final Rectangle scissors = new Rectangle();
-	boolean move = false;	
+	boolean move = false;
+	boolean isMovable = true;
 	final Vector2 initial = new Vector2();
 	boolean isModal = false;
 	
@@ -174,7 +175,9 @@ public class Window extends Container {
 			if(parent.getActors().size() > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size()-1));
 			if(titleBounds.contains(x, y)) {
 				focus(this, 0);
-				move = true;
+				if (isMovable) {
+					move = true;
+				}
 				initial.set(x,y);				
 			} else if(!super.touchDown(x, y, pointer)) {
 				focus(this, 0);
@@ -221,6 +224,22 @@ public class Window extends Container {
 	 */
 	public String getTitle() {
 		return title;
+	}
+	
+	/**
+	 * Sets whether this Window is movable by touch or not. In case it is
+	 * the user will be able to grab and move the window by its title bar
+	 * @param isMovable whether the window is movable or not
+	 */
+	public void setMovable(boolean isMovable) {
+		this.isMovable = isMovable;
+	}
+	
+	/**
+	 * @return whether the window is movable
+	 */
+	public boolean isMovable() {
+		return isMovable;
 	}
 	
 	/**
