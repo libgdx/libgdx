@@ -150,7 +150,7 @@ public class IndexBufferObjectSubData implements IndexData {
 	public void setIndices (short[] indices, int offset, int count) {
 		isDirty = true;
 		buffer.clear();
-		buffer.put(indices);
+		buffer.put(indices, offset, count);
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
