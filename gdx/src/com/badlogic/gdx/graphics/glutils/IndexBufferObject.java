@@ -139,12 +139,12 @@ public class IndexBufferObject implements IndexData {
 	 * 
 	 * @param indices the vertex data
 	 * @param offset the offset to start copying the data from
-	 * @param count the number of floats to copy
+	 * @param count the number of shorts to copy
 	 */
 	public void setIndices (short[] indices, int offset, int count) {
 		isDirty = true;
 		buffer.clear();
-		buffer.put(indices);
+		buffer.put(indices, offset, count);
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
