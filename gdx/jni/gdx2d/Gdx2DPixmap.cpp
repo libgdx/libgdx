@@ -7,8 +7,8 @@
  * Signature: ([J[BII)Ljava/nio/ByteBuffer;
  */
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load
-  (JNIEnv *env, jclass, jlongArray nativeData, jbyteArray buffer, jint len, jint req_format) {
-	const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
+  (JNIEnv *env, jclass, jlongArray nativeData, jbyteArray buffer, jint offset, jint len, jint req_format) {
+	const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0) + offset;
 	gdx2d_pixmap* pixmap = gdx2d_load(p_buffer, len, req_format);
 	env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 

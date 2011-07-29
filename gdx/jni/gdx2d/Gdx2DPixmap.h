@@ -19,13 +19,21 @@ extern "C" {
 #define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGB565 5L
 #undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA4444
 #define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_FORMAT_RGBA4444 6L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_SCALE_NEAREST
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_SCALE_NEAREST 0L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_SCALE_LINEAR
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_SCALE_LINEAR 1L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_BLEND_NONE
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_BLEND_NONE 0L
+#undef com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_BLEND_SRC_OVER
+#define com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_GDX2D_BLEND_SRC_OVER 1L
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap
  * Method:    load
- * Signature: ([J[BII)Ljava/nio/ByteBuffer;
+ * Signature: ([J[BIII)Ljava/nio/ByteBuffer;
  */
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load
-  (JNIEnv *, jclass, jlongArray, jbyteArray, jint, jint);
+  (JNIEnv *, jclass, jlongArray, jbyteArray, jint, jint, jint);
 
 /*
  * Class:     com_badlogic_gdx_graphics_g2d_Gdx2DPixmap

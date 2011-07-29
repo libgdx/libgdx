@@ -15,11 +15,11 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -125,6 +125,21 @@ public class Pixmap implements Disposable {
 		setColor(0, 0, 0, 0);
 		fill();		
 	}	
+	
+	/**
+	 * Creates a new Pixmap instance from the given encoded image data. The
+	 * image can be encoded as JPEG, PNG or BMP. 
+	 * @param encodedData the encoded image data
+	 * @param offset the offset
+	 * @param len the length
+	 */
+	public Pixmap(byte[] encodedData, int offset, int len) {
+		try {
+			pixmap = new Gdx2DPixmap(encodedData, offset, len, 0);
+		} catch(IOException e) {
+			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
+		}
+	}
 	
 	/**
 	 * Creates a new Pixmap instance from the given file. The file must

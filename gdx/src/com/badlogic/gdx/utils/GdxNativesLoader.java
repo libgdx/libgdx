@@ -35,6 +35,7 @@ public class GdxNativesLoader {
 	static public File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx/" + crc("gdx.dll"));
 
 	static private String crc (String nativeFile) {
+		System.out.println("loading /" + nativeFile);
 		InputStream input = GdxNativesLoader.class.getResourceAsStream("/" + nativeFile);
 		if (input == null) return Version.VERSION; // fallback
 		CRC32 crc = new CRC32();

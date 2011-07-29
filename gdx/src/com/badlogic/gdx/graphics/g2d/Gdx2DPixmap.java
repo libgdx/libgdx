@@ -55,6 +55,17 @@ public class Gdx2DPixmap implements Disposable {
 		setScale(GDX2D_SCALE_LINEAR);
 	}
 	
+	public Gdx2DPixmap(byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
+		pixelPtr = load(nativeData, encodedData, offset, len, requestedFormat);
+		if(pixelPtr == null)
+			throw new IOException("couldn't load pixmap");
+		
+		basePtr = nativeData[0];
+		width = (int)nativeData[1];
+		height = (int)nativeData[2];
+		format = (int)nativeData[3];		
+	}
+	
 	public Gdx2DPixmap(InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
@@ -65,7 +76,7 @@ public class Gdx2DPixmap implements Disposable {
 		}
 		
 		buffer = bytes.toByteArray();
-		pixelPtr = load(nativeData, buffer, buffer.length, requestedFormat);
+		pixelPtr = load(nativeData, buffer, 0, buffer.length, requestedFormat);
 		if(pixelPtr == null)
 			throw new IOException("couldn't load pixmap");
 		
@@ -149,7 +160,7 @@ public class Gdx2DPixmap implements Disposable {
 		}
 	}	
 	
-	private static native ByteBuffer load(long[] nativeData, byte[] buffer, int len, int requestedFormat);
+	private static native ByteBuffer load(long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat);
 	private static native ByteBuffer newPixmap(long[] nativeData, int width, int height, int format);
 	private static native void free(long basePtr);
 	private static native void clear(long pixmap, int color);
