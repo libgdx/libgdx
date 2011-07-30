@@ -43,7 +43,7 @@ import de.matthiasmann.twl.utils.StateExpression;
  * @author Nathan Sweet
  * @author Matthias Mann
  */
-class GdxFont implements Font {
+public class GdxFont implements Font {
 	static private final HAlignment[] gdxAlignment = HAlignment.values();
 
 	final GdxRenderer renderer;

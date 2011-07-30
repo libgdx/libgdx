@@ -34,7 +34,7 @@ import de.matthiasmann.twl.renderer.SupportsDrawRepeat;
  * @author Nathan Sweet
  * @author Matthias Mann
  */
-class GdxImage implements Image, SupportsDrawRepeat {
+public class GdxImage implements Image, SupportsDrawRepeat {
 	private final GdxRenderer renderer;
 	private final Sprite sprite;
 	private final Color tintColor;

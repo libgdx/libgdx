@@ -36,7 +36,7 @@ import de.matthiasmann.twl.renderer.Texture;
 /**
  * @author Nathan Sweet
  */
-class GdxTexture implements Texture, Resource {
+public class GdxTexture implements Texture, Resource {
 	private final GdxRenderer renderer;
 	private final com.badlogic.gdx.graphics.Texture texture;
 

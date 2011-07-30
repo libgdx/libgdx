@@ -27,7 +27,7 @@ import de.matthiasmann.twl.renderer.CacheContext;
 /**
  * @author Nathan Sweet
  */
-class GdxCacheContext implements CacheContext {
+public class GdxCacheContext implements CacheContext {
 	final GdxRenderer renderer;
 	private final ObjectMap<String, GdxTexture> textures = new ObjectMap();
 	private final ObjectMap<String, BitmapFont> fonts = new ObjectMap();
