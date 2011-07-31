@@ -231,6 +231,10 @@ public final class LwjglGraphics implements Graphics {
 	@Override public float getPpcY () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
+	
+	@Override public float getDensity () {
+		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
+	}
 
 	@Override public boolean supportsDisplayModeChange () {
 		return true;

@@ -144,6 +144,10 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 	
+	@Override public float getDensity () {
+		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
+	}
+	
 	@Override public boolean supportsDisplayModeChange () {
 		GraphicsEnvironment genv = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice device = genv.getDefaultScreenDevice();

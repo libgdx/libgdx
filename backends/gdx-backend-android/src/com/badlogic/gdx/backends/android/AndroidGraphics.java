@@ -81,6 +81,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private float ppiY = 0;
 	private float ppcX = 0;
 	private float ppcY = 0;
+	private float density = 1;
 
 	private final AndroidApplicationConfiguration config;
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
@@ -148,6 +149,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		ppiY = metrics.ydpi;
 		ppcX = metrics.xdpi / 2.54f;
 		ppcY = metrics.ydpi / 2.54f;
+		density = metrics.density;
 	}
 
 	private boolean checkGL20 () {
@@ -497,6 +499,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override public float getPpcY () {
 		return ppcY;
+	}
+	
+	@Override public float getDensity () {
+		return density;
 	}
 
 	@Override public GLU getGLU () {
