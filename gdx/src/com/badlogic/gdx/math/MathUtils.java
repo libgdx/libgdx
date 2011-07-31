@@ -148,7 +148,7 @@ public class MathUtils {
 
 	static public int nextPowerOfTwo (int value) {
 		if (value == 0) return 1;
-		if ((value & value - 1) == 0) return value;
+		value--;
 		value |= value >> 1;
 		value |= value >> 2;
 		value |= value >> 4;

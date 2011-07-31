@@ -151,7 +151,7 @@ public class TextField extends Widget {
 		final NinePatch background = style.background;
 		
 		textBounds.set(font.getBounds(text));
-		textBounds.height -= font.getDescent();
+		textBounds.height -= font.getDescent() * 2;
 		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
 
 		prefHeight = background.getBottomHeight() + background.getTopHeight() + textBounds.height;
@@ -231,21 +231,21 @@ public class TextField extends Widget {
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);
-		float textY = (int)(height / 2) + (int)(textBounds.height / 2);
+		float textY = (int)(height / 2) + (int)(textBounds.height / 2) + font.getDescent() / 2;
 		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 		calculateOffsets();
 
-		if(hasSelection) {			
-			batch.draw(selection, x + selectionX + background.getLeftWidth() + renderOffset, y + textY - textBounds.height, selectionWidth, textBounds.height);
+		if (hasSelection) {
+			batch.draw(selection, x + selectionX + background.getLeftWidth() + renderOffset,
+				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
 		}
-		
-		font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);		
+
+		font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 		if (parent.keyboardFocusedActor == this) {
 			blink();
-			if (cursorOn) {				
+			if (cursorOn) {
 				cursorPatch.draw(batch, x + background.getLeftWidth() + glyphPositions.get(cursor) + renderOffset - 1, y + textY
-					- textBounds.height, cursorPatch.getTotalWidth(), textBounds.height);
-
+					- textBounds.height - font.getDescent() / 2, cursorPatch.getTotalWidth(), textBounds.height);
 			}
 		}
 	}

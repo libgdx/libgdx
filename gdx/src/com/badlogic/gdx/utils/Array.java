@@ -75,6 +75,13 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/**
+	 * Creates an ordered array with {@link #items} of the specified type and a capacity of 16.
+	 */
+	public Array (Class<T> arrayType) {
+		this(false, 16, arrayType);
+	}
+
+	/**
 	 * Creates a new array containing the elements in the specific array. The new array will be ordered if the specific array is
 	 * ordered. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
 	 * grown.
@@ -289,6 +296,16 @@ public class Array<T> implements Iterable<T> {
 		return iterator;
 	}
 
+	public T[] toArray () {
+		return (T[])toArray(items.getClass().getComponentType());
+	}
+
+	public <V> V[] toArray (Class<V> type) {
+		V[] result = (V[])java.lang.reflect.Array.newInstance(type, size);
+		System.arraycopy(items, 0, result, 0, size);
+		return result;
+	}
+
 	public String toString () {
 		if (size == 0) return "[]";
 		Object[] items = this.items;
@@ -324,8 +341,8 @@ public class Array<T> implements Iterable<T> {
 			index--;
 			array.removeIndex(index);
 		}
-		
-		public void reset() {
+
+		public void reset () {
 			index = 0;
 		}
 	}
@@ -333,12 +350,12 @@ public class Array<T> implements Iterable<T> {
 	static public class ArrayIterable<T> implements Iterable<T> {
 		private ArrayIterator<T> iterator;
 
-		public ArrayIterable(Array<T> array) {
+		public ArrayIterable (Array<T> array) {
 			iterator = new ArrayIterator<T>(array);
 		}
 
 		@Override
-		public Iterator<T> iterator() {
+		public Iterator<T> iterator () {
 			iterator.reset();
 			return iterator;
 		}

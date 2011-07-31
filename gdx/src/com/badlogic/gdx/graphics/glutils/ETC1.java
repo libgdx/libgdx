@@ -48,7 +48,7 @@ public class ETC1 {
 		/** the offset in bytes to the actual compressed data. Might be 16 if this contains a PKM header, 0 otherwise **/
 		public final int dataOffset;
 		
-		private ETC1Data(int width, int height, ByteBuffer compressedData, int dataOffset) {
+		ETC1Data(int width, int height, ByteBuffer compressedData, int dataOffset) {
 			this.width = width;
 			this.height = height;
 			this.compressedData = compressedData;
@@ -160,21 +160,21 @@ public class ETC1 {
 	 * @param offset the offset in bytes to the PKM header from the ByteBuffer's start
 	 * @return the width stored in the PKM header
 	 */
-	private static native int getWidthPKM(ByteBuffer header, int offset);
+	static native int getWidthPKM(ByteBuffer header, int offset);
 	
 	/**
 	 * @param header direct native order {@link ByteBuffer} holding the PKM header
 	 * @param offset the offset in bytes to the PKM header from the ByteBuffer's start
 	 * @return the height stored in the PKM header
 	 */
-	private static native int getHeightPKM(ByteBuffer header, int offset);
+	static native int getHeightPKM(ByteBuffer header, int offset);
 	
 	/**
 	 * @param header direct native order {@link ByteBuffer} holding the PKM header
 	 * @param offset the offset in bytes to the PKM header from the ByteBuffer's start
 	 * @return the width stored in the PKM header
 	 */
-	private static native boolean isValidPKM(ByteBuffer header, int offset);
+	static native boolean isValidPKM(ByteBuffer header, int offset);
 	
 	/**
 	 * Decodes the compressed image data to RGB565 or RGB888 pixel data. Does not

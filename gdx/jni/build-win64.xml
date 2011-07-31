@@ -43,7 +43,7 @@
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jni-platform}"/>
-			<arg value="-I./"/>
+			<arg value="-I."/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -57,7 +57,7 @@
 			<arg line="${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jni-platform}"/>
-			<arg value="-I./"/>
+			<arg value="-I."/>
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>

@@ -1,6 +1,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class NinePatch {
@@ -15,6 +15,26 @@ public class NinePatch {
 	public static final int BOTTOM_RIGHT = 8;
 	
 	final TextureRegion[] patches;	
+	
+	public NinePatch(Texture texture, int left, int right, int top, int bottom) {
+		this(new TextureRegion(texture), left, right, top, bottom);
+	}
+
+	public NinePatch(TextureRegion region, int left, int right, int top, int bottom) {
+		int middleWidth = region.getRegionWidth() - left - right;
+		int middleHeight = region.getRegionHeight() - top - bottom;
+		this.patches = new TextureRegion[] {
+			new TextureRegion(region, 0, 0, left, top),
+			new TextureRegion(region, left, 0, middleWidth, top),
+			new TextureRegion(region, left + middleWidth, 0, right, top),
+			new TextureRegion(region, 0, top, left, middleHeight),
+			new TextureRegion(region, left, top, middleWidth, middleHeight),
+			new TextureRegion(region, left + middleWidth, top, right, middleHeight),
+			new TextureRegion(region, 0, top + middleHeight, left, bottom),
+			new TextureRegion(region, left, top + middleHeight, middleWidth, bottom),
+			new TextureRegion(region, left + middleWidth, top + middleHeight, right, bottom),
+		};
+	}
 	
 	public NinePatch(TextureRegion ... patches) {
 		if(patches.length != 9) throw new IllegalArgumentException("NinePatch needs nine TextureRegions");

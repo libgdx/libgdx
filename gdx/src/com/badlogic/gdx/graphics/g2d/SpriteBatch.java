@@ -947,6 +947,145 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/**
+	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
+	 * rectangle is offset by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle
+	 * should be scaled around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around
+	 * originX, originY.
+	 */
+	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
+		float scaleX, float scaleY, float rotation, boolean clockwise) {
+		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+		Texture texture = region.texture;
+		if (texture != lastTexture) {
+			renderMesh();
+			lastTexture = texture;
+			invTexWidth = 1f / texture.getWidth();
+			invTexHeight = 1f / texture.getHeight();
+		} else if (idx == vertices.length) //
+			renderMesh();
+
+		// bottom left and top right corner points relative to origin
+		final float worldOriginX = x + originX;
+		final float worldOriginY = y + originY;
+		float fx = -originX;
+		float fy = -originY;
+		float fx2 = width - originX;
+		float fy2 = height - originY;
+
+		// scale
+		if (scaleX != 1 || scaleY != 1) {
+			fx *= scaleX;
+			fy *= scaleY;
+			fx2 *= scaleX;
+			fy2 *= scaleY;
+		}
+
+		// construct corner points, start from top left and go counter clockwise
+		final float p1x = fx;
+		final float p1y = fy;
+		final float p2x = fx;
+		final float p2y = fy2;
+		final float p3x = fx2;
+		final float p3y = fy2;
+		final float p4x = fx2;
+		final float p4y = fy;
+
+		float x1;
+		float y1;
+		float x2;
+		float y2;
+		float x3;
+		float y3;
+		float x4;
+		float y4;
+
+		// rotate
+		if (rotation != 0) {
+			final float cos = MathUtils.cosDeg(rotation);
+			final float sin = MathUtils.sinDeg(rotation);
+
+			x1 = cos * p1x - sin * p1y;
+			y1 = sin * p1x + cos * p1y;
+
+			x2 = cos * p2x - sin * p2y;
+			y2 = sin * p2x + cos * p2y;
+
+			x3 = cos * p3x - sin * p3y;
+			y3 = sin * p3x + cos * p3y;
+
+			x4 = x1 + (x3 - x2);
+			y4 = y3 - (y2 - y1);
+		} else {
+			x1 = p1x;
+			y1 = p1y;
+
+			x2 = p2x;
+			y2 = p2y;
+
+			x3 = p3x;
+			y3 = p3y;
+
+			x4 = p4x;
+			y4 = p4y;
+		}
+
+		x1 += worldOriginX;
+		y1 += worldOriginY;
+		x2 += worldOriginX;
+		y2 += worldOriginY;
+		x3 += worldOriginX;
+		y3 += worldOriginY;
+		x4 += worldOriginX;
+		y4 += worldOriginY;
+
+		float u1, v1, u2, v2, u3, v3, u4, v4;
+		if (clockwise) {
+			u1 = region.u2;
+			v1 = region.v2;
+			u2 = region.u;
+			v2 = region.v2;
+			u3 = region.u;
+			v3 = region.v;
+			u4 = region.u2;
+			v4 = region.v;
+		} else {
+			u1 = region.u;
+			v1 = region.v;
+			u2 = region.u2;
+			v2 = region.v;
+			u3 = region.u2;
+			v3 = region.v2;
+			u4 = region.u;
+			v4 = region.v2;
+		}
+
+		vertices[idx++] = x1;
+		vertices[idx++] = y1;
+		vertices[idx++] = color;
+		vertices[idx++] = u1;
+		vertices[idx++] = v1;
+
+		vertices[idx++] = x2;
+		vertices[idx++] = y2;
+		vertices[idx++] = color;
+		vertices[idx++] = u2;
+		vertices[idx++] = v2;
+
+		vertices[idx++] = x3;
+		vertices[idx++] = y3;
+		vertices[idx++] = color;
+		vertices[idx++] = u3;
+		vertices[idx++] = v3;
+
+		vertices[idx++] = x4;
+		vertices[idx++] = y4;
+		vertices[idx++] = color;
+		vertices[idx++] = u4;
+		vertices[idx++] = v4;
+	}
+
+	/**
 	 * Causes any pending sprites to be rendered, without ending the SpriteBatch.
 	 */
 	public void flush () {

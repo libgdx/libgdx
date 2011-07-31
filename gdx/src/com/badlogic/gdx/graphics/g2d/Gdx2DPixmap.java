@@ -67,7 +67,7 @@ public class Gdx2DPixmap implements Disposable {
 	}
 	
 	public Gdx2DPixmap(InputStream in, int requestedFormat) throws IOException {
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
 		int readBytes = 0;
 		
