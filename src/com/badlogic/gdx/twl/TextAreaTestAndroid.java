@@ -19,8 +19,10 @@ import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class TextAreaTest extends AndroidApplication {
-	public void onCreate (Bundle bundle) {
+public class TextAreaTestAndroid extends AndroidApplication 
+{
+	public void onCreate (Bundle bundle) 
+	{
 		super.onCreate(bundle);
 		initialize(new com.badlogic.gdx.twl.tests.TextAreaTest(), false);
 	}
