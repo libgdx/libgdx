@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.files;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -138,6 +139,45 @@ public abstract class FileHandle {
 			}
 		}
 		return output.toString();
+	}
+
+	/**
+	 * Reads the entire file into a byte array.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read.
+	 */
+	public byte[] readBytes () {
+		int length = (int)length();
+		if (length == 0) length = 512;
+		byte[] buffer = new byte[length];
+		int position = 0;
+		InputStream input = read();
+		try {
+			while (true) {
+				int count = input.read(buffer, position, buffer.length - position);
+				if (count == -1) break;
+				position += count;
+				if (position == buffer.length) {
+					// Grow buffer.
+					byte[] newBuffer = new byte[buffer.length * 2];
+					System.arraycopy(buffer, 0, newBuffer, 0, position);
+					buffer = newBuffer;
+				}
+			}
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error reading file: " + this, ex);
+		} finally {
+			try {
+				if (input != null) input.close();
+			} catch (IOException ignored) {
+			}
+		}
+		if (position < buffer.length) {
+			// Shrink buffer.
+			byte[] newBuffer = new byte[position];
+			System.arraycopy(buffer, 0, newBuffer, 0, position);
+			buffer = newBuffer;
+		}
+		return buffer;
 	}
 
 	/**
@@ -305,19 +345,20 @@ public abstract class FileHandle {
 	}
 
 	/**
-	 * Returns the length in bytes of this file, or 0 if this file is a directory or does not exist.
+	 * Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
+	 * determined.
 	 */
 	public long length () {
 		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
+			InputStream input = read();
 			try {
-				InputStream input = read();
-				long length = input.available();
+				return input.available();
+			} catch (Exception ignored) {
+			} finally {
 				try {
 					input.close();
-				} catch (Exception ignored) {
+				} catch (IOException ignored) {
 				}
-				return length;
-			} catch (Exception ignored) {
 			}
 			return 0;
 		}

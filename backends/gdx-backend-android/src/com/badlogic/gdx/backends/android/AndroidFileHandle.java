@@ -138,4 +138,14 @@ public class AndroidFileHandle extends FileHandle {
 		}
 		return super.exists();
 	}
+
+	public long length () {
+		if (type == FileType.Internal) {
+			try {
+				return assets.openFd(file.getPath()).getLength();
+			} catch (IOException ignored) {
+			}
+		}
+		return super.length();
+	}
 }

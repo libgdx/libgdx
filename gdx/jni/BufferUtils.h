@@ -87,6 +87,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3DILjav
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_nio_Buffer_2ILjava_nio_Buffer_2II
   (JNIEnv *, jclass, jobject, jint, jobject, jint, jint);
 
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    clear
+ * Signature: (Ljava/nio/Buffer;I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_clear
+  (JNIEnv *env, jclass, jobject buffer, jint count);
+
 #ifdef __cplusplus
 }
 #endif

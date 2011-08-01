@@ -281,4 +281,9 @@ public class BufferUtils {
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asLongBuffer();
 	}
+
+	/**
+	 * Writes the specified number of zeros to the buffer. This is generally faster than reallocating a new buffer.
+	 */
+	public static native void clear (ByteBuffer buffer, int numBytes);
 }

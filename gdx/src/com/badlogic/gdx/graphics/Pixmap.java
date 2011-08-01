@@ -148,15 +148,11 @@ public class Pixmap implements Disposable {
 	 * @param file the {@link FileHandle}
 	 */
 	public Pixmap(FileHandle file) {
-		InputStream in = null;
 		try {
-			in = file.read();
-			pixmap = new Gdx2DPixmap(in, 0);
+			byte[] bytes = file.readBytes();
+			pixmap = new Gdx2DPixmap(bytes, 0, bytes.length, 0);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load file: " + file, e);
-		} finally {
-			if(in != null);
-			try { in.close(); } catch(Exception e) { };
 		}
 	}
 	

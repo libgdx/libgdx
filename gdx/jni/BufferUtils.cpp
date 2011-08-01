@@ -118,3 +118,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 	char* pDst = (char*)env->GetDirectBufferAddress( dst );
 	memcpy( pDst + dstOffset, pSrc + srcOffset, numBytes);
 }
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    clear
+ * Signature: (Ljava/nio/Buffer;I)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_clear
+  (JNIEnv *env, jclass, jobject buffer, jint count) {
+	unsigned char *pBuffer = (unsigned char *)env->GetDirectBufferAddress(buffer);
+	memset(pBuffer, 0, count);
+}
