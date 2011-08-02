@@ -21,13 +21,13 @@ public class MultiTouchActorTest extends GdxTest implements InputProcessor {
 			super(name, texture);
 		}		
 		
-		@Override protected boolean touchUp (float x, float y, int pointer) {			
+		@Override public boolean touchUp (float x, float y, int pointer) {			
 			boolean result = super.touchUp(x, y, pointer);
 			if(result) Gdx.app.log("MultiTouchActorTest", "button '" + name + "', touch up, pointer " + pointer);
 			return result;
 		}
 		
-		@Override protected boolean touchDown (float x, float y, int pointer) {
+		@Override public boolean touchDown (float x, float y, int pointer) {
 			boolean result = super.touchDown(x, y, pointer);
 			if(result) Gdx.app.log("MultiTouchActorTest", "button '" + name + "', touch down, pointer " + pointer);
 			return result;
