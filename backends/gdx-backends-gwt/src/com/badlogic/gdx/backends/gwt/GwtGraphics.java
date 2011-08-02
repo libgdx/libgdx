@@ -184,4 +184,9 @@ public class GwtGraphics implements Graphics {
 		lastTimeStamp = currTimeStamp;
 		this.fps = fps;
 	}
+
+	@Override
+	public float getDensity() {
+		throw new GdxRuntimeException("No supported");
+	}
 }

@@ -162,4 +162,9 @@ public class AngleGraphics implements Graphics {
 		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
+
+	@Override
+	public float getDensity() {
+		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
+	}
 }
