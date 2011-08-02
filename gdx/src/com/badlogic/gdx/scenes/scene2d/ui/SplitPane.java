@@ -226,7 +226,7 @@ public class SplitPane extends Group implements Layout {
 	}
 	
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		NinePatch handle = style.handle;
 		
 		setupTransform(batch);		
@@ -269,7 +269,7 @@ public class SplitPane extends Group implements Layout {
 	}
 
 	@Override
-	protected boolean touchDragged (float x, float y, int pointer) {
+	public boolean touchDragged (float x, float y, int pointer) {
 		NinePatch handle = style.handle;
 		
 		if(pointer != 0) return false;

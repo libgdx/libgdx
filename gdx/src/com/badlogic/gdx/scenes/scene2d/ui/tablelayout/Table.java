@@ -58,7 +58,7 @@ public class Table extends Group implements Layout {
 		layout.table = this;
 	}
 
-	protected void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (layout.needsLayout) layout.layout();
 		super.draw(batch, parentAlpha);
 	}

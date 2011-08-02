@@ -338,7 +338,7 @@ public class ScrollPane extends Group implements Layout {
 	}
 
 	@Override
-	protected boolean touchDragged (float x, float y, int pointer) {
+	public boolean touchDragged (float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(touchScrollH) {
 			float delta = x - lastPoint.x;

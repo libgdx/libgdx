@@ -45,7 +45,7 @@ public class Image extends Actor {
 		this.region = new TextureRegion(region);
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {
 		if (region.getTexture() != null) {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			if (scaleX == 1 && scaleY == 1 && rotation == 0)
@@ -63,7 +63,7 @@ public class Image extends Actor {
 		return false;
 	}
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		return false;
 	}
 

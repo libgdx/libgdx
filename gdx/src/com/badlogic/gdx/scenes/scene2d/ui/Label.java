@@ -91,7 +91,7 @@ public class Label extends Widget {
 	}
 
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 		
@@ -111,7 +111,7 @@ public class Label extends Widget {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		return false;
 	}
 

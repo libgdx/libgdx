@@ -91,7 +91,7 @@ public class Group extends Actor {
 		}
 	}
 
-	protected void act (float delta) {
+	public void act (float delta) {
 		super.act(delta);
 
 		for (int i = 0; i < children.size(); i++) {
@@ -106,7 +106,7 @@ public class Group extends Actor {
 
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {		
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {		
 		setupTransform(batch);			
 		drawChildren(batch, parentAlpha);
 		resetTransform(batch);
@@ -292,7 +292,7 @@ public class Group extends Actor {
 		return false;
 	}
 	
-	@Override protected boolean touchMoved (float x, float y) {
+	@Override public boolean touchMoved (float x, float y) {
 		if (!touchable) return false;
 
 		int len = children.size() - 1;
@@ -308,7 +308,7 @@ public class Group extends Actor {
 	}
 
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		if (!touchable) return false;
 
 		if (focusedActor[pointer] != null) {
@@ -332,22 +332,22 @@ public class Group extends Actor {
 	}
 	
 	@Override
-	protected boolean scrolled(int amount) {
+	public boolean scrolled(int amount) {
 		if(scrollFocusedActor != null) scrollFocusedActor.scrolled(amount);
 		return false;
 	}
 	
-	protected  boolean keyDown (int keycode) {
+	public boolean keyDown (int keycode) {
 		if(keyboardFocusedActor != null) return keyboardFocusedActor.keyDown(keycode);
 		else return false;
 	}
 	
-	protected boolean keyUp(int keycode) {
+	public boolean keyUp(int keycode) {
 		if(keyboardFocusedActor != null) return keyboardFocusedActor.keyUp(keycode);
 		else return false;
 	}
 	
-	protected boolean keyTyped(char character) {
+	public boolean keyTyped(char character) {
 		if(keyboardFocusedActor != null) return keyboardFocusedActor.keyTyped(character);
 		else return false;			
 	}	

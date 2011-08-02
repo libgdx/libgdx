@@ -58,7 +58,7 @@ public class FastImage extends Actor {
 		this.region = new TextureRegion(region);
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {
 		updateSprite();
 		
 		if (region.getTexture() != null) {			
@@ -108,7 +108,7 @@ public class FastImage extends Actor {
 		return false;
 	}
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		return false;
 	}
 

@@ -105,7 +105,7 @@ public class Slider extends Widget {
 	}
 
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		final TextureRegion knob = style.knob;
 		final NinePatch slider = style.slider;
 		
@@ -144,7 +144,7 @@ public class Slider extends Widget {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(parent.focusedActor[0] == this) {
 			calculateSliderPosAndValue(x);

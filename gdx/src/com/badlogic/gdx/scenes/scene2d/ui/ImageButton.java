@@ -120,7 +120,7 @@ public class ImageButton extends Widget {
 	}
 	
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {		
+	public void draw(SpriteBatch batch, float parentAlpha) {		
 		final NinePatch downPatch = style.down;		
 		final NinePatch upPatch = style.up;
 		
@@ -162,7 +162,7 @@ public class ImageButton extends Widget {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		if(pointer != 0) return false;		
 		return isPressed;
 	}	

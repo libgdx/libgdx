@@ -127,7 +127,7 @@ public class CheckBox extends Widget {
 	}
 
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final TextureRegion checkedRegion = style.checked;
 		final TextureRegion uncheckedRegion = style.unchecked;
@@ -159,7 +159,7 @@ public class CheckBox extends Widget {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		return false;
 	}
 

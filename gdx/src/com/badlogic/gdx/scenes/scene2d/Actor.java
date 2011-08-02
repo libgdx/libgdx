@@ -104,31 +104,31 @@ public abstract class Actor {
 	 * @param batch the spritebatch to render with
 	 * @param parentAlpha the parent's alpha value.
 	 */
-	protected abstract void draw (SpriteBatch batch, float parentAlpha);
+	public abstract void draw (SpriteBatch batch, float parentAlpha);
 
 	public abstract boolean touchDown (float x, float y, int pointer);
 
 	public abstract boolean touchUp (float x, float y, int pointer);
 
-	protected abstract boolean touchDragged (float x, float y, int pointer);
+	public abstract boolean touchDragged (float x, float y, int pointer);
 
-	protected boolean touchMoved (float x, float y) {
+	public boolean touchMoved (float x, float y) {
 		return false;
 	}
 	
-	protected boolean scrolled(int amount) {
+	public boolean scrolled(int amount) {
 		return false;
 	}
 	
-	protected  boolean keyDown (int keycode) {
+	public  boolean keyDown (int keycode) {
 		return false;
 	}
 	
-	protected boolean keyUp(int keycode) {
+	public boolean keyUp(int keycode) {
 		return false;
 	}
 	
-	protected boolean keyTyped(char character) {
+	public boolean keyTyped(char character) {
 		return false;
 	}	
 
@@ -155,7 +155,7 @@ public abstract class Actor {
 		parent.removeActor(this);
 	}
 
-	protected void act (float delta) {
+	public void act (float delta) {
 		actions.iter();
 		Action action;
 

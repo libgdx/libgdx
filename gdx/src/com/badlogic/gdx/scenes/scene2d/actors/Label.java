@@ -83,7 +83,7 @@ public class Label extends Actor implements Layout {
 		}
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {
 		cache.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		switch (valign) {
 		case TOP:
@@ -115,7 +115,7 @@ public class Label extends Actor implements Layout {
 		return x > 0 && y > 0 && x < width && y < height;
 	}
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		if (!touchable) return false;
 		return x > 0 && y > 0 && x < width && y < height;
 	}

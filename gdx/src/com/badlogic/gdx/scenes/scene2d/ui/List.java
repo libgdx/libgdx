@@ -116,7 +116,7 @@ public class List extends Widget {
 	}
 
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;		
 		final NinePatch selectedPatch = style.selectedPatch;
 		final Color fontColorSelected = style.fontColorSelected;
@@ -157,7 +157,7 @@ public class List extends Widget {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		return false;
 	}
 

@@ -290,7 +290,7 @@ public class FlickScrollPane extends Group implements Layout {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		if (pointer != 0 || !touchable)
 			return false;
 		if (scrolling) {
@@ -389,7 +389,7 @@ public class FlickScrollPane extends Group implements Layout {
 	}
 
 	@Override
-	protected void act(float delta) {
+	public void act(float delta) {
 		super.act(delta);
 		
 		if(smoothscrolldestx != -1 && smoothscrolldesty != -1){

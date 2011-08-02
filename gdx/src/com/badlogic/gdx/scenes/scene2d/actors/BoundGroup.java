@@ -50,7 +50,7 @@ public class BoundGroup extends Group {
 		}
 	}
 
-	protected boolean touchDragged (float x, float y, int pointer) {
+	public boolean touchDragged (float x, float y, int pointer) {
 		if (focusedActor != null) {
 			return super.touchDragged(x, y, pointer);
 		} else {

@@ -126,7 +126,7 @@ public class ComboBox extends Widget {
 		invalidated = false;		
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {
 		final NinePatch background = style.background;
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
@@ -166,7 +166,7 @@ public class ComboBox extends Widget {
 		return false;
 	}
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		return false;
 	}
 	
@@ -254,7 +254,7 @@ public class ComboBox extends Widget {
 			y -= height;
 		}
 		
-		@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+		@Override public void draw (SpriteBatch batch, float parentAlpha) {
 			final NinePatch listBackground = style.listBackground;
 			final NinePatch listSelection = style.listSelection;
 			final BitmapFont font = style.font;
@@ -299,11 +299,11 @@ public class ComboBox extends Widget {
 			return true;
 		}
 
-		@Override protected boolean touchDragged (float x, float y, int pointer) {
+		@Override public boolean touchDragged (float x, float y, int pointer) {
 			return true;
 		}
 		
-		@Override protected boolean touchMoved(float x, float y) {
+		@Override public boolean touchMoved(float x, float y) {
 			if(hit(x, y) != null) {
 				selected = (int)((height-y) / entryHeight);
 				selected = Math.max(0, selected);

@@ -79,7 +79,7 @@ public class Button extends Actor implements Layout {
 		this.pressedRegion = new TextureRegion(pressedRegion);
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {
 		TextureRegion region = pressed ? pressedRegion : unpressedRegion;
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (region.getTexture() != null) {
@@ -114,7 +114,7 @@ public class Button extends Actor implements Layout {
 		return true;
 	}
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		return pressed;
 	}
 

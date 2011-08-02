@@ -99,7 +99,7 @@ public class Button extends Widget {
 	}
 	
 	@Override
-	protected void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 		final NinePatch downPatch = style.down;		
@@ -142,7 +142,7 @@ public class Button extends Widget {
 	}
 
 	@Override
-	protected boolean touchDragged(float x, float y, int pointer) {
+	public boolean touchDragged(float x, float y, int pointer) {
 		if(pointer != 0) return false;		
 		return isPressed;
 	}	

@@ -220,7 +220,7 @@ public class TextField extends Widget {
 		}
 	}
 
-	@Override protected void draw (SpriteBatch batch, float parentAlpha) {
+	@Override public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 		final NinePatch background = style.background;
@@ -272,11 +272,11 @@ public class TextField extends Widget {
 		return false;
 	}
 
-	@Override protected boolean touchDragged (float x, float y, int pointer) {
+	@Override public boolean touchDragged (float x, float y, int pointer) {
 		return false;
 	}
 
-	protected boolean keyDown (int keycode) {
+	public boolean keyDown (int keycode) {
 		final BitmapFont font = style.font;
 		
 		if (parent.keyboardFocusedActor == this) {			
@@ -369,7 +369,7 @@ public class TextField extends Widget {
 		return false;
 	}
 
-	protected boolean keyTyped (char character) {
+	public boolean keyTyped (char character) {
 		final BitmapFont font = style.font;
 		
 		if (parent.keyboardFocusedActor == this) {			
