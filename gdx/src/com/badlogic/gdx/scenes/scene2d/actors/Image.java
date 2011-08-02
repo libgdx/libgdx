@@ -55,11 +55,11 @@ public class Image extends Actor {
 		}
 	}
 
-	@Override protected boolean touchDown (float x, float y, int pointer) {
+	@Override public boolean touchDown (float x, float y, int pointer) {
 		return x > 0 && y > 0 && x < width && y < height;
 	}
 
-	@Override protected boolean touchUp (float x, float y, int pointer) {
+	@Override public boolean touchUp (float x, float y, int pointer) {
 		return false;
 	}
 

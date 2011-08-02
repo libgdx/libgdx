@@ -144,12 +144,12 @@ public class CheckBox extends Widget {
 	}
 
 	@Override
-	protected boolean touchDown(float x, float y, int pointer) {
+	public boolean touchDown(float x, float y, int pointer) {
 		return false;
 	}
 
 	@Override
-	protected boolean touchUp(float x, float y, int pointer) {
+	public boolean touchUp(float x, float y, int pointer) {
 		if(x >= 0 && x < width &&
 		   y >= 0 && y < height) {
 			isChecked = !isChecked;

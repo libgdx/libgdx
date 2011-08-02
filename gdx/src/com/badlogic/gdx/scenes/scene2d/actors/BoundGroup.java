@@ -32,7 +32,7 @@ public class BoundGroup extends Group {
 		this.originY = height / 2;
 	}
 
-	protected boolean touchDown (float x, float y, int pointer) {
+	public boolean touchDown (float x, float y, int pointer) {
 		if (focusedActor != null) {
 			return super.touchDown(x, y, pointer);
 		} else {
@@ -41,7 +41,7 @@ public class BoundGroup extends Group {
 		}
 	}
 
-	protected boolean touchUp (float x, float y, int pointer) {
+	public boolean touchUp (float x, float y, int pointer) {
 		if (focusedActor != null) {
 			return super.touchUp(x, y, pointer);
 		} else {

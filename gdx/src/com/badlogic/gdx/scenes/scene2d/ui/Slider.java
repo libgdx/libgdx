@@ -122,7 +122,7 @@ public class Slider extends Widget {
 	}
 
 	@Override
-	protected boolean touchDown(float x, float y, int pointer) {
+	public boolean touchDown(float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(hit(x, y) != null) {			
 			calculateSliderPosAndValue(x);
@@ -133,7 +133,7 @@ public class Slider extends Widget {
 	}
 
 	@Override
-	protected boolean touchUp(float x, float y, int pointer) {
+	public boolean touchUp(float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(parent.focusedActor[0] == this) {
 			calculateSliderPosAndValue(x);

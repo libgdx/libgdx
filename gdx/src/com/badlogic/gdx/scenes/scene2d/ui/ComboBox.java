@@ -150,7 +150,7 @@ public class ComboBox extends Widget {
 	}
 
 	Vector2 stageCoords = new Vector2();
-	@Override protected boolean touchDown (float x, float y, int pointer) {
+	@Override public boolean touchDown (float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(hit(x, y) != null) {
 			if(list != null) stage.removeActor(list);
@@ -162,7 +162,7 @@ public class ComboBox extends Widget {
 		return false;
 	}
 
-	@Override protected boolean touchUp (float x, float y, int pointer) {
+	@Override public boolean touchUp (float x, float y, int pointer) {
 		return false;
 	}
 
@@ -279,7 +279,7 @@ public class ComboBox extends Widget {
 			}
 		}
 
-		@Override protected boolean touchDown (float x, float y, int pointer) {
+		@Override public boolean touchDown (float x, float y, int pointer) {
 			if(pointer != 0) return false;
 			if(hit(x, y) != null) {			
 				selected = (int)((height-y) / entryHeight);
@@ -292,7 +292,7 @@ public class ComboBox extends Widget {
 		}
 
 		boolean firstUp = false;
-		@Override protected boolean touchUp (float x, float y, int pointer) {
+		@Override public boolean touchUp (float x, float y, int pointer) {
 			if(firstUp) {
 				stage.removeActor(this);
 			} else firstUp = true;

@@ -245,7 +245,7 @@ public class SplitPane extends Group implements Layout {
 	Vector2 lastPoint = new Vector2();
 	Vector2 handlePos = new Vector2();
 	@Override
-	protected boolean touchDown (float x, float y, int pointer) {
+	public boolean touchDown (float x, float y, int pointer) {
 		if(pointer != 0) return false;		
 		if(handleBounds.contains(x, y)) {
 			touchDrag = true;
@@ -258,7 +258,7 @@ public class SplitPane extends Group implements Layout {
 	}
 
 	@Override
-	protected boolean touchUp (float x, float y, int pointer) {
+	public boolean touchUp (float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(touchDrag) {
 			focus(null, 0);

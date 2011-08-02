@@ -250,7 +250,7 @@ public class TextField extends Widget {
 		}
 	}
 
-	@Override protected boolean touchDown (float x, float y, int pointer) {
+	@Override public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
 		if (hit(x, y) != null) {
 			parent.keyboardFocus(this);
@@ -268,7 +268,7 @@ public class TextField extends Widget {
 			return false;
 	}
 
-	@Override protected boolean touchUp (float x, float y, int pointer) {
+	@Override public boolean touchUp (float x, float y, int pointer) {
 		return false;
 	}
 

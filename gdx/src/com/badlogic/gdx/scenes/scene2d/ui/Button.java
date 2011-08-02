@@ -117,7 +117,7 @@ public class Button extends Widget {
 	}
 
 	@Override
-	protected boolean touchDown(float x, float y, int pointer) {
+	public boolean touchDown(float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(hit(x, y) != null) {
 			isPressed = true;
@@ -128,7 +128,7 @@ public class Button extends Widget {
 	}
 
 	@Override
-	protected boolean touchUp(float x, float y, int pointer) {
+	public boolean touchUp(float x, float y, int pointer) {
 		if(pointer != 0) return false;
 		if(hit(x, y) != null) {			
 			if(listener != null) listener.click(this);				

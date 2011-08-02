@@ -106,12 +106,12 @@ public abstract class Actor {
 	 */
 	protected abstract void draw (SpriteBatch batch, float parentAlpha);
 
-	protected abstract boolean touchDown (float x, float y, int pointer);
+	public abstract boolean touchDown (float x, float y, int pointer);
 
-	protected abstract boolean touchUp (float x, float y, int pointer);
+	public abstract boolean touchUp (float x, float y, int pointer);
 
 	protected abstract boolean touchDragged (float x, float y, int pointer);
-	
+
 	protected boolean touchMoved (float x, float y) {
 		return false;
 	}
@@ -132,6 +132,7 @@ public abstract class Actor {
 		return false;
 	}	
 
+	
 	public abstract Actor hit (float x, float y);
 
 	/**

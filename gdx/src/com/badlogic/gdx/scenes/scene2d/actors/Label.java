@@ -105,12 +105,12 @@ public class Label extends Actor implements Layout {
 		cache.draw(batch);
 	}
 
-	@Override protected boolean touchDown (float x, float y, int pointer) {
+	@Override public boolean touchDown (float x, float y, int pointer) {
 		if (!touchable) return false;
 		return x > 0 && y > 0 && x < width && y < height;
 	}
 
-	@Override protected boolean touchUp (float x, float y, int pointer) {
+	@Override public boolean touchUp (float x, float y, int pointer) {
 		if (!touchable) return false;
 		return x > 0 && y > 0 && x < width && y < height;
 	}

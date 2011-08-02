@@ -237,7 +237,7 @@ public class Group extends Actor {
 		}
 	}
 
-	@Override protected boolean touchDown (float x, float y, int pointer) {
+	@Override public boolean touchDown (float x, float y, int pointer) {
 		if (!touchable) return false;
 
 		if (debug) Gdx.app.log("Group", name + ": " + x + ", " + y);
@@ -269,7 +269,7 @@ public class Group extends Actor {
 		return false;
 	}
 
-	@Override protected boolean touchUp (float x, float y, int pointer) {
+	@Override public boolean touchUp (float x, float y, int pointer) {
 		if (!touchable) return false;
 
 		if (focusedActor[pointer] != null) {

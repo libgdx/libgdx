@@ -90,7 +90,7 @@ public class Button extends Actor implements Layout {
 		}
 	}
 
-	@Override protected boolean touchDown (float x, float y, int pointer) {
+	@Override public boolean touchDown (float x, float y, int pointer) {
 		if(pressed) return false;
 
 		boolean result = x > 0 && y > 0 && x < width && y < height;
@@ -103,7 +103,7 @@ public class Button extends Actor implements Layout {
 		return result;
 	}
 
-	@Override protected boolean touchUp (float x, float y, int pointer) {
+	@Override public boolean touchUp (float x, float y, int pointer) {
 		if (!pressed) return false;
 
 		if(pointer == this.pointer) {
