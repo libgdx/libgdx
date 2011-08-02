@@ -109,7 +109,9 @@ public final class AndroidAudio implements Audio {
 				mediaPlayer.setDataSource(aHandle.path());
 				mediaPlayer.prepare();
 				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				musics.add(music);
+				synchronized(musics) {
+					musics.add(music);
+				}
 				return music;
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);

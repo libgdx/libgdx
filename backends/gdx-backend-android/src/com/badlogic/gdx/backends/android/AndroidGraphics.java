@@ -423,6 +423,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 		if (lpause) {
 			app.listener.pause();
+			((AndroidApplication)app).audio.pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 

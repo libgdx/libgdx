@@ -188,8 +188,6 @@ public class AndroidApplication extends Activity implements Application {
    	 if(wakeLock != null) wakeLock.release();
         graphics.pause();
         
-        if (audio != null) audio.pause();
-        
         input.unregisterSensorListeners();
         // erase pointer ids. this sucks donkeyballs...
         int[] realId = input.realId;
