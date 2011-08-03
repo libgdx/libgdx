@@ -107,6 +107,7 @@ public class Group extends Actor {
 	}
 
 	@Override public void draw (SpriteBatch batch, float parentAlpha) {		
+		if(!visible) return;
 		setupTransform(batch);			
 		drawChildren(batch, parentAlpha);
 		resetTransform(batch);
@@ -127,8 +128,10 @@ public class Group extends Actor {
 	}
 	
 	protected void drawChildren(SpriteBatch batch, float parentAlpha) {
-		for (Actor child : children){
-			if(child.visable){
+		int len = children.size();
+		for (int i = 0; i < len; i++){
+			Actor child = children.get(i);
+			if(child.visible){
 				child.draw(batch, parentAlpha * color.a);
 			}
 		}
@@ -136,7 +139,7 @@ public class Group extends Actor {
 	}
 	
 	protected void drawChild(Actor child, SpriteBatch batch, float parentAlpha) {
-		if(child.visable){
+		if(child.visible){
 			child.draw(batch, parentAlpha * color.a);
 		}
 		batch.flush();
