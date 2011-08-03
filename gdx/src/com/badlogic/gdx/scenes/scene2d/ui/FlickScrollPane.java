@@ -422,7 +422,7 @@ public class FlickScrollPane extends Group implements Layout {
 			}
 			
 			
-			Gdx.app.log("", String.format("t %f h %f v %f", relscrolltime, hScrollAmount, vScrollAmount));
+			//Gdx.app.log("", String.format("t %f h %f v %f", relscrolltime, hScrollAmount, vScrollAmount));
 
 			if(scrolledtime >= scrolltime){
 				hScrollAmount = smoothscrolldestx;

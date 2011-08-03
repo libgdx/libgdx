@@ -127,14 +127,18 @@ public class Group extends Actor {
 	}
 	
 	protected void drawChildren(SpriteBatch batch, float parentAlpha) {
-		int len = children.size();
-		for (int i = 0; i < len; i++)			
-			children.get(i).draw(batch, parentAlpha * color.a);
+		for (Actor child : children){
+			if(child.visable){
+				child.draw(batch, parentAlpha * color.a);
+			}
+		}
 		batch.flush();
 	}
 	
 	protected void drawChild(Actor child, SpriteBatch batch, float parentAlpha) {
-		child.draw(batch, parentAlpha * color.a);
+		if(child.visable){
+			child.draw(batch, parentAlpha * color.a);
+		}
 		batch.flush();
 	}
 	

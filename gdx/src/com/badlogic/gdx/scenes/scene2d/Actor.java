@@ -77,6 +77,7 @@ public abstract class Actor {
 	public Group parent;
 	public final String name;
 	public boolean touchable = true;
+	public boolean visable = true;
 
 	public float x;
 	public float y;
