@@ -73,15 +73,13 @@ public class Group extends Actor {
 	}
 
 	protected void updateTransform () {
-		transform.idt();
-		if (originX != 0 || originY != 0) transform.setToTranslation(originX, originY);
+		if (originX != 0 || originY != 0)
+			transform.setToTranslation(originX, originY);
+		else
+			transform.idt();
 		if (rotation != 0) transform.mul(scenetransform.setToRotation(rotation));
 		if (scaleX != 1 || scaleY != 1) transform.mul(scenetransform.setToScaling(scaleX, scaleY));
-		if (originX != 0 || originY != 0) transform.mul(scenetransform.setToTranslation(-originX, -originY));
-		if (x != 0 || y != 0) {
-			transform.getValues()[6] += x;
-			transform.getValues()[7] += y;
-		}
+		transform.trn(-originX + x, -originY + y);
 
 		if (parent != null) {
 			scenetransform.set(parent.scenetransform);
