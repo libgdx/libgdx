@@ -8,6 +8,6 @@ import com.badlogic.gdx.utils.ObjectMap;
  * modular {@link GroupStrategy GroupStrategies}.
  */
 public interface GroupPlug {
-	public void beforeGroup(ObjectMap.Values<Array<Decal>> contents);
+	public void beforeGroup(Array<Decal> contents);
 	public void afterGroup();
 }

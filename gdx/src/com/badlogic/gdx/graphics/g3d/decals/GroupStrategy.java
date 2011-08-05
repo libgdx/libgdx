@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.decals;
 
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap.Values;
 
@@ -9,7 +10,7 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
  * well as to adjust settings before and after rendering a group.
  * </p>
  * <p>
- * A group is identified by an integer. The {@link #beforeGroup(int, com.badlogic.gdx.utils.ObjectMap.Values) beforeGroup()}
+ * A group is identified by an integer. The {@link #beforeGroup(int, Array) beforeGroup()}
  * method provides the strategy with a list of all the decals, which are contained in the group itself, and will be rendered
  * before the associated call to {@link #afterGroup(int)}.<br/>
  * A call to {@code beforeGroup()} is always fallowed by a call to {@code afterGroup()}.<br/>
@@ -19,16 +20,21 @@ import com.badlogic.gdx.utils.ObjectMap.Values;
  * afterGroupN(), afterGroups()}.
  * </p>
  * <p>
- * The contents of the {@code beforeGroup()} call are split into multiple {@link Array Array's} based. Each array
- * contains an entry of the group which will be batched and rendered using the entry's material.</br>
- * The contents can be modified at will to realize view frustum culling, depth sorting, ... all based on
+ * The contents of the {@code beforeGroup()} call can be modified at will to realize view frustum culling, material & depth sorting, ... all based on
  * the requirements of the current group. The batch itself does not change OpenGL settings except for whichever
- * changes are entailed {@link spark.graphics.decal.DecalMaterial#set()}. If the group requires a special shader,
- * blending, etc. {@code beforeGroup()} is the place to apply those, and if needed {@code afterGroup()} the place
- * to clean up.
+ * changes are entailed {@link DecalMaterial#set()}. If the group requires a special shader,
+ * blending, {@link #getGroupShader(int)} should return it so that DecalBatch can apply it while rendering the group.
  * </p>
  */
 public interface GroupStrategy {
+	/**
+	 * Returns the shader to be used for the group. Can be null
+	 * in which case the GroupStrategy doesn't support GLES 2.0
+	 * @param group the group
+	 * @return the {@link ShaderProgram}
+	 */
+	public ShaderProgram getGroupShader(int group);
+	
 	/**
 	 * Assigns a group to a decal
 	 *
@@ -43,7 +49,7 @@ public interface GroupStrategy {
 	 * @param group    Group that will be rendered
 	 * @param contents List of entries of arrays containing all the decals in the group
 	 */
-	public void beforeGroup(int group, Values<Array<Decal>> contents);
+	public void beforeGroup(int group, Array<Decal> contents);
 
 	/**
 	 * Invoked directly after rendering of a group has completed

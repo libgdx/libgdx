@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.decals;
 
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -36,9 +37,15 @@ public class DecalBatch implements Disposable {
 	private float[] vertices;
 	private Mesh mesh;
 
-	private SortedIntList<ObjectMap<DecalMaterial, Array<Decal>>> groupList = new SortedIntList<ObjectMap<DecalMaterial, Array<Decal>>>();
-
+	private final SortedIntList<Array<Decal>> groupList = new SortedIntList<Array<Decal>>();
 	private GroupStrategy groupStrategy;
+	private final Pool<Array<Decal>> groupPool = new Pool<Array<Decal>>(16) {
+		@Override
+		protected Array<Decal> newObject () {
+			return new Array<Decal>(false, 100);
+		}		
+	};	
+	private final Array<Array<Decal>> usedGroups = new Array<Array<Decal>>(16);
 
 	/**
 	 * Creates a new batch using the {@link DefaultGroupStrategy}
@@ -73,9 +80,9 @@ public class DecalBatch implements Disposable {
 		vertices = new float[size * Decal.SIZE];
 		mesh = new Mesh(
 				Mesh.VertexDataType.VertexArray, false, size * 4, size * 6,
-				new VertexAttribute(VertexAttributes.Usage.Position, 3, "a_position"),
-				new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, "a_color"),
-				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
+				new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
+				new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+				new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		short[] indices = new short[size * 6];
 		int v = 0;
@@ -105,18 +112,14 @@ public class DecalBatch implements Disposable {
 	public void add(Decal decal) {
 		DecalMaterial material = decal.getMaterial();
 		int groupIndex = groupStrategy.decideGroup(decal);
-		ObjectMap<DecalMaterial, Array<Decal>> targetGroup = groupList.get(groupIndex);
+		Array<Decal> targetGroup = groupList.get(groupIndex);
 		if(targetGroup == null) {
-			targetGroup = new ObjectMap<DecalMaterial, Array<Decal>>();
+			targetGroup = groupPool.obtain();
+			targetGroup.clear();
+			usedGroups.add(targetGroup);
 			groupList.insert(groupIndex, targetGroup);
 		}
-		Array<Decal> targetList = targetGroup.get(material);
-		if(targetList == null) {
-			//create unordered arrays for all lists
-			targetList = new Array<Decal>(false, 16);
-			targetGroup.put(material, targetList);
-		}
-		targetList.add(decal);
+		targetGroup.add(decal);
 	}
 
 	/**
@@ -132,11 +135,10 @@ public class DecalBatch implements Disposable {
 	 */
 	protected void render() {
 		groupStrategy.beforeGroups();
-		for(SortedIntList.Node<ObjectMap<DecalMaterial, Array<Decal>>> group : groupList) {
-			groupStrategy.beforeGroup(group.index, group.value.values());
-			for(ObjectMap.Entry<DecalMaterial, Array<Decal>> groupEntry : group.value.entries()) {
-				render(groupEntry.key, groupEntry.value);
-			}
+		for(SortedIntList.Node<Array<Decal>> group : groupList) {
+			groupStrategy.beforeGroup(group.index, group.value);
+			ShaderProgram shader = groupStrategy.getGroupShader(group.index);
+			render(shader, group.value);
 			groupStrategy.afterGroup(group.index);
 		}
 		groupStrategy.afterGroups();
@@ -148,25 +150,31 @@ public class DecalBatch implements Disposable {
 	 * @param material Material of that group to set
 	 * @param decals   Decals to render
 	 */
-	private void render(DecalMaterial material, Array<Decal> decals) {
-		//apply the groups material
-		material.set();
-
+	private void render(ShaderProgram shader, Array<Decal> decals) {
 		//batch vertices
+		DecalMaterial lastMaterial = null;
 		int idx = 0;
 		for(Decal decal : decals) {
+			if(lastMaterial == null || !lastMaterial.equals(decal.getMaterial())) {
+				if(idx > 0) {
+					flush(shader, idx);
+					idx = 0;
+				}
+				decal.material.set();
+				lastMaterial = decal.material;
+			}
 			decal.update();
 			System.arraycopy(decal.vertices, 0, vertices, idx, decal.vertices.length);
 			idx += decal.vertices.length;
 			//if our batch is full we have to flush it
 			if(idx == vertices.length) {
-				flush(idx);
+				flush(shader, idx);
 				idx = 0;
 			}
 		}
 		//at the end if there is stuff left in the batch we render that
 		if(idx > 0) {
-			flush(idx);
+			flush(shader, idx);
 		}
 	}
 
@@ -176,9 +184,13 @@ public class DecalBatch implements Disposable {
 	 *
 	 * @param verticesPosition Amount of elements from the vertices array to flush
 	 */
-	protected void flush(int verticesPosition) {
+	protected void flush(ShaderProgram shader, int verticesPosition) {
 		mesh.setVertices(vertices, 0, verticesPosition);
-		mesh.render(GL10.GL_TRIANGLES, 0, verticesPosition / 4);
+		if(shader != null) {
+			mesh.render(shader, GL10.GL_TRIANGLES, 0, verticesPosition / 4);
+		} else {
+			mesh.render(GL10.GL_TRIANGLES, 0, verticesPosition / 4);
+		}
 	}
 
 	/**
@@ -186,6 +198,8 @@ public class DecalBatch implements Disposable {
 	 */
 	protected void clear() {
 		groupList.clear();
+		groupPool.free(usedGroups);
+		usedGroups.clear();
 	}
 
 	/**

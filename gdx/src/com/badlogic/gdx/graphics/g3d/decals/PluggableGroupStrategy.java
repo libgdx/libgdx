@@ -12,7 +12,7 @@ public abstract class PluggableGroupStrategy implements GroupStrategy {
 	private IntMap<GroupPlug> plugs = new IntMap<GroupPlug>();
 
 	@Override
-	public void beforeGroup(int group, ObjectMap.Values<Array<Decal>> contents) {
+	public void beforeGroup(int group, Array<Decal> contents) {
 		plugs.get(group).beforeGroup(contents);
 	}
 

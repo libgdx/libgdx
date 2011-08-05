@@ -2,6 +2,7 @@ package com.badlogic.gdx.graphics.g3d.decals;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
@@ -49,15 +50,15 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 	}
 
 	@Override
-	public void beforeGroup(int group, ObjectMap.Values<Array<Decal>> contents) {
+	public void beforeGroup(int group, Array<Decal> contents) {
 		if(group == GROUP_BLEND) {
-			for(Array<Decal> entry : contents) {
-				Sort.instance().sort(entry, comparator);
-			}
+			Sort.instance().sort(contents, comparator);
 			Gdx.gl10.glEnable(GL10.GL_BLEND);
 			//no need for writing into the z buffer if transparent decals are the last thing to be rendered
 			//and they are rendered back to front
 			Gdx.gl10.glDepthMask(false);
+		} else {
+			// FIXME sort by material
 		}
 	}
 
@@ -84,5 +85,10 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 		public int compare(Decal a, Decal b) {
 			return a.getZ() - b.getZ() < 0 ? -1 : 1;
 		}
+	}
+
+	@Override
+	public ShaderProgram getGroupShader (int group) {
+		return null;
 	}
 }
