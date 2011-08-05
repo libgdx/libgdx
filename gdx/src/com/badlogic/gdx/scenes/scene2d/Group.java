@@ -79,7 +79,8 @@ public class Group extends Actor {
 			transform.idt();
 		if (rotation != 0) transform.mul(scenetransform.setToRotation(rotation));
 		if (scaleX != 1 || scaleY != 1) transform.mul(scenetransform.setToScaling(scaleX, scaleY));
-		transform.trn(-originX + x, -originY + y);
+		if (originX != 0 || originY != 0) transform.mul(scenetransform.setToTranslation(-originX, -originY));
+		transform.trn(x, y);
 
 		if (parent != null) {
 			scenetransform.set(parent.scenetransform);
