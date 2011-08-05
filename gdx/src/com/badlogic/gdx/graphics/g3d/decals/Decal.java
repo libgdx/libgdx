@@ -25,7 +25,13 @@ public class Decal {
 	 * It takes a float[SIZE] to hold the decal.
 	 */
 	public static final int SIZE = 4 * VERTEX_SIZE;
-
+	
+	/**
+	 * Temporary vector for various calculations.
+	 */
+	private static Vector3 tmp = new Vector3();
+	private static Vector3 tmp2 = new Vector3();
+	
 	/**
 	 * Set a multipurpose value which can be queried and used for things like group identification.
 	 */
@@ -96,6 +102,19 @@ public class Decal {
 	public void rotateZ(float angle) {
 		rotator.set(Z_AXIS, angle);
 		rotation.mul(rotator);
+		updated = false;
+	}
+	
+	/**
+	 * Sets the rotation of this decal based on the (normalized)
+	 * direction and up vector.
+	 * @param dir the direction vector
+	 * @param up the up vector
+	 */
+	public void setRotation(Vector3 dir, Vector3 up) {
+		tmp.set(up).crs(dir).nor();
+		tmp2.set(dir).crs(tmp).nor();
+		rotation.setFromAxes(tmp.x, tmp.y, tmp.z, tmp2.x, tmp2.y, tmp2.z, dir.x, dir.y, dir.z); 
 		updated = false;
 	}
 

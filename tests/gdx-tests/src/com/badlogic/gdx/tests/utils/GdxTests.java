@@ -125,6 +125,7 @@ public class GdxTests
 		SplineTest.class,		
 		SimpleTest.class,
 		SimpleAnimationTest.class,
+		SimpleDecalTest.class,
 		SimpleStageCullingTest.class,
 		SoundTest.class,
 		SpriteCacheTest.class,

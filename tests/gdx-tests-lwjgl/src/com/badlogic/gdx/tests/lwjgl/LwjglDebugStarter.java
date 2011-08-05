@@ -25,12 +25,14 @@ import com.badlogic.gdx.tests.MipMapTest;
 import com.badlogic.gdx.tests.ObjTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
+import com.badlogic.gdx.tests.SimpleDecalTest;
 import com.badlogic.gdx.tests.TransformationTest;
 import com.badlogic.gdx.tests.UITest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();		
-		new LwjglApplication(new TransformationTest(), config);
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+//		config.useGL20 = true;
+		new LwjglApplication(new SimpleDecalTest(), config);
 	}
 }
