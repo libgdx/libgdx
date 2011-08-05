@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE themes PUBLIC "-//www.matthiasmann.de//TWL-Theme//EN" "http://hg.l33tlabs.org/twl/raw-file/tip/src/de/matthiasmann/twl/theme/theme.dtd">
+<themes>
+    <images file="cursors.png" format="RGBA">
+        <cursor name="arrow.top-left" hotSpotX="7" hotSpotY="7" xywh="0,0,15,15"/>
+        <cursor name="arrow.top-right" hotSpotX="7" hotSpotY="7" xywh="16,0,15,15"/>
+        <cursor name="arrow.left" hotSpotX="10" hotSpotY="4" xywh="0,16,21,9"/>
+        <cursor name="arrow.top" hotSpotX="4" hotSpotY="10" xywh="32,0,9,21"/>
+        <cursor name="arrow.bottom-left" ref="arrow.top-right"/>
+        <cursor name="arrow.bottom-right" ref="arrow.top-left"/>
+        <cursor name="arrow.bottom" ref="arrow.top"/>
+        <cursor name="arrow.right" ref="arrow.left"/>
+        <cursor name="cursor.text" hotSpotX="3" hotSpotY="8" xywh="38,22,7,17"/>
+        <cursor name="cursor.resizecolumn" hotSpotX="10" hotSpotY="7" xywh="0,26,21,15"/>
+        <cursor name="cursor.resizerow" hotSpotX="7" hotSpotY="10" xywh="22,22,15,21"/>
+        <cursor name="cursor.finger" hotSpotX="5" hotSpotY="1" xywh="47,0,17,22"/>
+    </images>
+</themes>

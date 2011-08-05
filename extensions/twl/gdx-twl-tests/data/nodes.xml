@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE themes PUBLIC "-//www.matthiasmann.de//TWL-Theme//EN" "http://hg.l33tlabs.org/twl/raw-file/tip/src/de/matthiasmann/twl/theme/theme.dtd">
+<themes>
+    <include filename="cursors.xml"/>
+
+    <images file="nodes.png">
+        <area name="tooltipwindow.background" xywh="53,17,3,3" splitx="L1,B1" splity="L1,B1" border="3"/>
+        <grid name="frame.background" weightsX="1" weightsY="0,0,0,1,0" inset="5,0">
+            <area xywh="0,0,24,10" splitx="L10,R10"/>
+            <area xywh="0,9,24,1" splitx="L10,R10" sizeOverwriteV="5"/>
+            <area xywh="0,11,24,1" splitx="L10,R10"/>
+            <area xywh="0,13,24,1" splitx="L10,R10"/>
+            <area xywh="0,13,24,11" splitx="L10,R10"/>
+        </grid>
+
+        <area name="vscrollbar.background" splity="7,9" xywh="43,0,13,16"/>
+        <select name="vscrollbar.thumb.background">
+            <area splity="10,14" if="pressed" xywh="85,0,13,24"/>
+            <area splity="10,14" if="hover + !disabled" xywh="71,0,13,24"/>
+            <area splity="10,14" xywh="57,0,13,24"/>
+        </select>
+
+        <area name="hscrollbar.background" splitx="7,9" xywh="99,0,16,13"/>
+        <select name="hscrollbar.thumb.background">
+            <area splitx="10,14" if="pressed" xywh="82,25,24,13"/>
+            <area splitx="10,14" if="hover + !disabled" xywh="57,25,24,13"/>
+            <area splitx="10,14" xywh="32,25,24,13"/>
+        </select>
+        <area name="-pad-inner" xywh="32,11,8,8" center="true"/>
+        <composed name="pad.background">
+            <area xywh="32,0,10,10"/>
+            <select>
+                <alias ref="-pad-inner" if="dragDestination" tint="#FF0000"/>
+                <alias ref="-pad-inner" if="hover" tint="#C0C0C0C0"/>
+                <alias ref="-pad-inner" tint="#808080"/>
+            </select>
+        
+        </composed>
+
+    </images>
+
+    <fontDef name="normal" filename="fonts/font2.fnt" color="white" default="true">
+        <fontParam if="error" color="red"/>
+        <fontParam if="warning" color="orange"/>
+        <fontParam if="disabled" color="gray"/>
+        <fontParam if="textSelection" color="blue"/>
+    </fontDef>
+
+    <fontDef name="tooltip" filename="fonts/font2.fnt" color="black"/>
+
+    <inputMapDef name="-defaultInputMap">
+        <action name="selectAll">ctrl A</action>
+        <action name="selectAll">cmd A</action>
+        <action name="cut">ctrl X</action>
+        <action name="cut">cmd X</action>
+        <action name="copy">ctrl C</action>
+        <action name="copy">cmd C</action>
+        <action name="paste">ctrl V</action>
+        <action name="paste">cmd V</action>
+    </inputMapDef>
+
+    <theme name="-defaults">
+        <param name="background"><image>none</image></param>
+        <param name="overlay"><image>none</image></param>
+        <param name="font"><font>normal</font></param>
+        <param name="textAlignment"><enum type="alignment">left</enum></param>
+        <param name="minWidth"><int>0</int></param>
+        <param name="minHeight"><int>0</int></param>
+        <param name="maxWidth"><int>0</int></param>
+        <param name="maxHeight"><int>0</int></param>
+        <param name="inputMap"><inputMap>-defaultInputMap</inputMap></param>
+    </theme>
+
+    <theme name="label" ref="-defaults" allowWildcard="true">
+    </theme>
+
+    <theme name="vscrollbar" ref="-defaults" allowWildcard="true">
+        <param name="background"><image>vscrollbar.background</image></param>
+        <theme name="upbutton" ref="-defaults"/>
+        <theme name="downbutton" ref="-defaults"/>
+        <theme name="thumb" ref="-defaults">
+            <param name=""><image>vscrollbar.thumb.*</image></param>
+            <param name="minHeight"><int>32</int></param>
+        </theme>
+        <param name="scaleThumb"><bool>true</bool></param>
+        <param name="minWidth"><int>13</int></param>
+        <param name="minHeight"><int>48</int></param>
+    </theme>
+
+    <theme name="hscrollbar" ref="-defaults" allowWildcard="true">
+        <param name="background"><image>hscrollbar.background</image></param>
+        <theme name="leftbutton" ref="-defaults"/>
+        <theme name="rightbutton" ref="-defaults"/>
+        <theme name="thumb" ref="-defaults">
+            <param name=""><image>hscrollbar.thumb.*</image></param>
+            <param name="minWidth"><int>32</int></param>
+        </theme>
+        <param name="scaleThumb"><bool>true</bool></param>
+        <param name="minWidth"><int>48</int></param>
+        <param name="minHeight"><int>13</int></param>
+    </theme>
+
+    <theme name="scrollpane" ref="-defaults" allowWildcard="true">
+        <theme name="hscrollbar" ref="hscrollbar"/>
+        <theme name="vscrollbar" ref="vscrollbar"/>
+        <param name="minWidth"><int>100</int></param>
+        <param name="minHeight"><int>100</int></param>
+        <param name="maxWidth"><int>32767</int></param>
+        <param name="maxHeight"><int>32767</int></param>
+        <param name="hasDragButton"><bool>false</bool></param>
+        <param name="autoScrollArea"><int>5</int></param>
+        <param name="autoScrollSpeed"><int>10</int></param>
+        <param name="scrollbarsAlwaysVisible"><bool>false</bool></param>
+        <param name=""><image>scrollpane.*</image></param>
+        <theme name="" ref="*"/>
+    </theme>
+
+    <theme name="resizableframe" ref="-defaults">
+        <param name="background"><image>frame.background</image></param>
+        <param name="border"><border>20,10,10,10</border></param>
+        <param name="titleAreaTop"><int>0</int></param>
+        <param name="titleAreaLeft"><int>15</int></param>
+        <param name="titleAreaRight"><int>-15</int></param>
+        <param name="titleAreaBottom"><int>14</int></param>
+        <param name="hasCloseButton"><bool>false</bool></param>
+        <param name="closeButtonX"><int>0</int></param>
+        <param name="closeButtonY"><int>0</int></param>
+        <param name="hasResizeHandle"><bool>true</bool></param>
+        <param name="resizeHandleX"><int>-10</int></param>
+        <param name="resizeHandleY"><int>-10</int></param>
+        <param name="fadeColorInactive"><color>white</color></param>
+        <param name="fadeDurationActivate"><int>0</int></param>
+        <param name="fadeDurationDeactivate"><int>0</int></param>
+        <param name="fadeDurationShow"><int>0</int></param>
+        <param name="fadeDurationHide"><int>0</int></param>
+        <param name="mouseCursor"><cursor>arrow.*</cursor></param>
+        <theme name="title" ref="-defaults">
+            <param name="textAlignment"><enum type="alignment">left</enum></param>
+            <param name="font"><font>normal</font></param>
+        </theme>
+        <theme name="closeButton" ref="-defaults"/>
+        <theme name="resizeHandle" ref="-defaults"/>
+    </theme>
+    
+    <theme name="nodearea" ref="-defaults" allowWildcard="true">
+        <theme name="node" ref="resizableframe">
+            <theme name="pad" ref="-defaults">
+                <param name="background"><image>pad.background</image></param>
+            </theme>
+            <param name="minHeight"><int>80</int></param>
+        </theme>
+        <theme name="" ref="*"/>
+    </theme>
+
+    <theme name="tooltipwindow" ref="-defaults">
+        <param name="background"><image>tooltipwindow.background</image></param>
+        <param name="border"><border>background.border</border></param>
+        <param name="fadeInTime"><int>0</int></param>
+        <theme name="label" ref="label">
+            <param name="font"><font>tooltip</font></param>
+        </theme>
+    </theme>
+
+</themes>

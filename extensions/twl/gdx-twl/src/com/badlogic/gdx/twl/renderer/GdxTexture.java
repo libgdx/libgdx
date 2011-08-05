@@ -45,18 +45,34 @@ public class GdxTexture implements Texture, Resource {
 		texture =new com.badlogic.gdx.graphics.Texture(textureFile);
 	}
 
-	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled) {
+	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled, Rotation rotation) 
+	{
 		if (x < 0 || x >= getWidth()) throw new IllegalArgumentException("x");
 		if (y < 0 || y >= getHeight()) throw new IllegalArgumentException("y");
 		if (x + Math.abs(width) > getWidth()) throw new IllegalArgumentException("width");
 		if (y + Math.abs(height) > getHeight()) throw new IllegalArgumentException("height");
 		if (tiled && (width <= 0 || height <= 0))
 			throw new IllegalArgumentException("Tiled rendering requires positive width & height.");
-		return new GdxImage(renderer, texture, x, y, width, height, tintColor, tiled);
+		float rd = 0f;
+		switch(rotation)
+		{
+			case CLOCKWISE_90:
+				rd = 90f;
+				break;
+			case CLOCKWISE_180:
+				rd = 180f;
+				break;
+			case CLOCKWISE_270:
+				rd = 270f;
+				break;
+		}
+		return new GdxImage(renderer, texture, x, y, width, height, tintColor, tiled, rd);
 	}
 
-	public MouseCursor createCursor (int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) {
-		return null;
+	public MouseCursor createCursor (int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) 
+	{
+		//System.out.println("trying to build a cursor!");
+		return null; // Unsupported.
 	}
 
 	public void themeLoadingDone () {
