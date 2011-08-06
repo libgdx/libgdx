@@ -40,12 +40,12 @@ import java.util.ArrayDeque;
  * @author Nathan Sweet
  */
 //@on
-public class XmlBuilder {
+public class XmlWriter extends Writer {
 	private final Writer writer;
 	private final ArrayDeque<String> stack = new ArrayDeque();
 	private String currentElement;
 
-	public XmlBuilder (Writer writer) {
+	public XmlWriter (Writer writer) {
 		this.writer = writer;
 	}
 
@@ -56,7 +56,7 @@ public class XmlBuilder {
 			writer.write('\t');
 	}
 
-	public XmlBuilder element (String name) throws IOException {
+	public XmlWriter element (String name) throws IOException {
 		startElementContent();
 		writer.write('<');
 		writer.write(name);
@@ -73,7 +73,7 @@ public class XmlBuilder {
 		indent();
 	}
 
-	public XmlBuilder attribute (String name, String value) throws IOException {
+	public XmlWriter attribute (String name, String value) throws IOException {
 		if (currentElement == null) throw new IllegalStateException();
 		writer.write(' ');
 		writer.write(name);
@@ -83,14 +83,14 @@ public class XmlBuilder {
 		return this;
 	}
 
-	public XmlBuilder text (String text) throws IOException {
+	public XmlWriter text (String text) throws IOException {
 		startElementContent();
 		writer.write(text);
 		writer.write('\n');
 		return this;
 	}
 
-	public XmlBuilder pop () throws IOException {
+	public XmlWriter pop () throws IOException {
 		if (currentElement != null) {
 			writer.write("/>\n");
 			currentElement = null;
@@ -105,10 +105,19 @@ public class XmlBuilder {
 	}
 
 	/**
-	 * Calls {@link #pop()} for each remaining open element, if any.
+	 * Calls {@link #pop()} for each remaining open element, if any, and closes the stream.
 	 */
 	public void close () throws IOException {
 		while (!stack.isEmpty())
 			pop();
+		writer.close();
+	}
+
+	public void write (char[] cbuf, int off, int len) throws IOException {
+		writer.write(cbuf, off, len);
+	}
+
+	public void flush () throws IOException {
+		writer.flush();
 	}
 }
