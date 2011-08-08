@@ -16,7 +16,7 @@ public class TextureAttribute extends MaterialAttribute {
 	public int vWrap;
 	
 	public TextureAttribute (Texture texture, int unit, String name, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
-		this(texture, unit, name, texture.getTextureFilter(minFilter), texture.getTextureFilter(magFilter), uWrap == TextureWrap.ClampToEdge?GL10.GL_CLAMP_TO_EDGE:GL10.GL_REPEAT, vWrap == TextureWrap.ClampToEdge?GL10.GL_CLAMP_TO_EDGE:GL10.GL_REPEAT);
+		this(texture, unit, name, minFilter.getGLEnum(), magFilter.getGLEnum(), uWrap.getGLEnum(), vWrap.getGLEnum());
 	}
 
 	public TextureAttribute (Texture texture, int unit, String name, int minFilter, int magFilter, int uWrap, int vWrap) {

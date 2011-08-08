@@ -51,6 +51,7 @@ public class GdxTests
 		ActionSequenceTest.class,
 		AlphaTest.class,	
 		AtlasIssueTest.class,		
+		AssetManagerTest.class,
 		FilterPerformanceTest.class,
 		AudioDeviceTest.class,
 		AudioRecorderTest.class,

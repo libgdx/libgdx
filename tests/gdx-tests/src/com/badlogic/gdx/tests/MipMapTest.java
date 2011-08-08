@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -60,7 +61,7 @@ public class MipMapTest extends GdxTest {
 		if(!shader.isCompiled()) throw new GdxRuntimeException("shader error: " + shader.getLog());
 		
 		textureHW = new Texture(Gdx.files.internal("data/badlogic.jpg"), Format.RGB565, true);
-		Texture.setUseHardwareMipMap(false);
+		MipMapGenerator.setUseHardwareMipMap(false);
 		textureSW = new Texture(Gdx.files.internal("data/badlogic.jpg"), Format.RGB565, true);
 		currTexture = textureHW;
 		

@@ -73,7 +73,7 @@ public class TextureDict {
 		}
 		// load new texture
 		FileHandle texFile = Gdx.app.getFiles().getFileHandle(path, FileType.Internal);
-		Texture newTex = new Texture(texFile, TextureFilter.isMipMap(minFilter) || TextureFilter.isMipMap(magFilter)?true:false);
+		Texture newTex = new Texture(texFile, minFilter.isMipMap() || magFilter.isMipMap()?true:false);
 		newTex.setFilter(minFilter, magFilter);
 		newTex.setWrap(uwrap, vwrap);				
 		TextureRef ref = new TextureRef(path, newTex);

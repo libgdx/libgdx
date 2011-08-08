@@ -62,7 +62,7 @@ public class FilterPerformanceTest extends GdxTest {
 		textMatrix = new Matrix4().setToOrtho2D(0, 0, 480, 320);		
 
 		atlas = new TextureAtlas(Gdx.files.internal("data/issue_pack"), Gdx.files.internal("data/"));
-		texture = new Texture(Gdx.files.internal("data/resource1.jpg"));
+		texture = new Texture(Gdx.files.internal("data/resource1.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Nearest);													 
 		setTextureFilter(0);
 		setModeString();

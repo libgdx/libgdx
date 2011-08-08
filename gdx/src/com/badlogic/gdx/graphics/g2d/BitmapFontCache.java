@@ -138,9 +138,9 @@ public class BitmapFontCache implements Disposable {
 		float startX = x;
 		BitmapFont font = this.font;
 		Glyph lastGlyph = null;
-		if (font.scaleX == 1 && font.scaleY == 1) {
+		if (font.data.scaleX == 1 && font.data.scaleY == 1) {
 			while (start < end) {
-				lastGlyph = font.getGlyph(str.charAt(start++));
+				lastGlyph = font.data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height);
 					x += lastGlyph.xadvance;
@@ -149,7 +149,7 @@ public class BitmapFontCache implements Disposable {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
-				Glyph g = font.getGlyph(ch);
+				Glyph g = font.data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch);
 					lastGlyph = g;
@@ -158,9 +158,9 @@ public class BitmapFontCache implements Disposable {
 				}
 			}
 		} else {
-			float scaleX = font.scaleX, scaleY = font.scaleY;
+			float scaleX = font.data.scaleX, scaleY = font.data.scaleY;
 			while (start < end) {
-				lastGlyph = font.getGlyph(str.charAt(start++));
+				lastGlyph = font.data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, //
 						x + lastGlyph.xoffset * scaleX, //
@@ -173,7 +173,7 @@ public class BitmapFontCache implements Disposable {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
-				Glyph g = font.getGlyph(ch);
+				Glyph g = font.data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
@@ -269,9 +269,9 @@ public class BitmapFontCache implements Disposable {
 	 */
 	public TextBounds setText (CharSequence str, float x, float y, int start, int end) {
 		reset(end - start);
-		y += font.ascent;
+		y += font.data.ascent;
 		textBounds.width = addToCache(str, x, y, start, end);
-		textBounds.height = font.capHeight;
+		textBounds.height = font.data.capHeight;
 		return textBounds;
 	}
 
@@ -298,8 +298,8 @@ public class BitmapFontCache implements Disposable {
 		int length = str.length();
 		reset(length);
 
-		y += font.ascent;
-		float down = font.down;
+		y += font.data.ascent;
+		float down = font.data.down;
 
 		float maxWidth = 0;
 		float startY = y;
@@ -320,7 +320,7 @@ public class BitmapFontCache implements Disposable {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
+		textBounds.height = font.data.capHeight + (numLines - 1) * font.data.lineHeight;
 		return textBounds;
 	}
 
@@ -348,8 +348,8 @@ public class BitmapFontCache implements Disposable {
 		int length = str.length();
 		reset(length);
 
-		y += font.ascent;
-		float down = font.down;
+		y += font.data.ascent;
+		float down = font.data.down;
 
 		float maxWidth = 0;
 		int start = 0;
@@ -377,7 +377,7 @@ public class BitmapFontCache implements Disposable {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = font.capHeight + (numLines - 1) * font.lineHeight;
+		textBounds.height = font.data.capHeight + (numLines - 1) * font.data.lineHeight;
 		return textBounds;
 	}
 

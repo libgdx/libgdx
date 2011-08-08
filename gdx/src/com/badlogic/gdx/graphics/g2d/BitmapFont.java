@@ -63,22 +63,160 @@ public class BitmapFont implements Disposable {
 		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 	TextureRegion region;
-	float lineHeight;
-	float capHeight = 1;
-	float ascent;
-	float descent;
-	float down;
-	float scaleX = 1, scaleY = 1;
-
-	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private float spaceWidth;
-	private float xHeight = 1;
 	private final TextBounds textBounds = new TextBounds();
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 	private boolean flipped;
 	private boolean integer = true;
+	final BitmapFontData data;
 
+	public static class BitmapFontData {
+		FileHandle imgFile;
+		final boolean flipped;
+		final float lineHeight;
+		float capHeight = 1;
+		float ascent;
+		float descent;
+		float down;
+		float scaleX = 1, scaleY = 1;
+		
+		private final Glyph[][] glyphs = new Glyph[PAGES][];
+		private float spaceWidth;
+		private float xHeight = 1;
+		
+		public BitmapFontData(FileHandle fontFile, boolean flip) {
+			this.flipped = flip;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
+			try {
+				reader.readLine(); // info
+
+				String line = reader.readLine();
+				if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				String[] common = line.split(" ", 4);
+				if (common.length < 4) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+
+				if (!common[1].startsWith("lineHeight=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				lineHeight = Integer.parseInt(common[1].substring(11));
+
+				if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				int baseLine = Integer.parseInt(common[2].substring(5));
+
+				line = reader.readLine();
+				if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				String[] pageLine = line.split(" ", 4);
+				if (!pageLine[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
+				String imgFilename = null;
+				if (pageLine[2].endsWith("\"")) {
+					imgFilename = pageLine[2].substring(6, pageLine[2].length() - 1);
+				} else {
+					imgFilename = pageLine[2].substring(5, pageLine[2].length());
+				}
+				imgFile = fontFile.parent().child(imgFilename);				
+				descent = 0;
+
+				while (true) {
+					line = reader.readLine();
+					if (line == null) break;
+					if (line.startsWith("kernings ")) break;
+					if (!line.startsWith("char ")) continue;
+
+					Glyph glyph = new Glyph();
+
+					StringTokenizer tokens = new StringTokenizer(line, " =");
+					tokens.nextToken();
+					tokens.nextToken();
+					int ch = Integer.parseInt(tokens.nextToken());
+					if (ch <= Character.MAX_VALUE) {
+						Glyph[] page = glyphs[ch / PAGE_SIZE];
+						if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
+						page[ch & PAGE_SIZE - 1] = glyph;
+					} else
+						continue;
+					tokens.nextToken();
+					glyph.srcX = Integer.parseInt(tokens.nextToken());
+					tokens.nextToken();
+					glyph.srcY = Integer.parseInt(tokens.nextToken());
+					tokens.nextToken();
+					glyph.width = Integer.parseInt(tokens.nextToken());
+					tokens.nextToken();
+					glyph.height = Integer.parseInt(tokens.nextToken());
+					tokens.nextToken();
+					glyph.xoffset = Integer.parseInt(tokens.nextToken());
+					tokens.nextToken();
+					if (flip)
+						glyph.yoffset = Integer.parseInt(tokens.nextToken());
+					else
+						glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
+					tokens.nextToken();
+					glyph.xadvance = Integer.parseInt(tokens.nextToken());		
+					descent = Math.min(baseLine + glyph.yoffset, descent);
+				}
+
+				while (true) {
+					line = reader.readLine();
+					if (line == null) break;
+					if (!line.startsWith("kerning ")) break;
+
+					StringTokenizer tokens = new StringTokenizer(line, " =");
+					tokens.nextToken();
+					tokens.nextToken();
+					int first = Integer.parseInt(tokens.nextToken());
+					tokens.nextToken();
+					int second = Integer.parseInt(tokens.nextToken());
+					if (first < 0 || first > Character.MAX_VALUE || second < 0 || second > Character.MAX_VALUE) continue;
+					Glyph glyph = getGlyph((char)first);
+					tokens.nextToken();
+					int amount = Integer.parseInt(tokens.nextToken());
+					glyph.setKerning(second, amount);
+				}
+
+				Glyph g = getGlyph(' ');
+				if (g == null) {
+					g = new Glyph();
+					g.xadvance = getGlyph('l').xadvance;
+					Glyph[] page = glyphs[' ' / PAGE_SIZE];
+					if (page == null) glyphs[' ' / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
+					page[' ' & PAGE_SIZE - 1] = g;
+				}
+				spaceWidth = g != null ? g.xadvance + g.width : 1;
+
+				for (int i = 0; i < xChars.length; i++) {
+					g = getGlyph(xChars[i]);
+					if (g == null) continue;
+					xHeight = g.height;
+					break;
+				}
+
+				for (int i = 0; i < capChars.length; i++) {
+					g = getGlyph(capChars[i]);
+					if (g == null) continue;
+					capHeight = g.height;
+					break;
+				}
+
+				ascent = baseLine - capHeight;
+				down = -lineHeight;
+				if (flip) {
+					ascent = -ascent;
+					down = -down;
+				}
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
+			} finally {
+				try {
+					reader.close();
+				} catch (IOException ignored) {
+				}
+			}
+		}
+		
+		Glyph getGlyph (char ch) {
+			Glyph[] page = glyphs[ch / PAGE_SIZE];
+			if (page != null) return page[ch & PAGE_SIZE - 1];
+			return null;
+		}
+	}
+	
 	/**
 	 * Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering with generating a bitmap font.
@@ -105,7 +243,7 @@ public class BitmapFont implements Disposable {
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, TextureRegion region, boolean flip) {
-		init(fontFile, region, flip);
+		this(new BitmapFontData(fontFile, flip), region, true);
 	}
 
 	/**
@@ -114,7 +252,7 @@ public class BitmapFont implements Disposable {
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public BitmapFont (FileHandle fontFile, boolean flip) {
-		init(fontFile, null, flip);
+		this(new BitmapFontData(fontFile, flip), null, true);
 	}
 
 	/**
@@ -133,165 +271,38 @@ public class BitmapFont implements Disposable {
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.s
 	 */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer) {
-		region = new TextureRegion(new Texture(imageFile, false));
+		this(new BitmapFontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer);
+	}
+	
+	public BitmapFont(BitmapFontData data, TextureRegion region, boolean integer) {
+		this.region = region == null? new TextureRegion(new Texture(data.imgFile, false)): region;
+		this.flipped = data.flipped;
 		this.integer = integer;
-		init(fontFile, region, flip);
+		this.data = data;
+		load(data);
 	}
 
-	private void init (FileHandle fontFile, TextureRegion region, boolean flip) {
-		flipped = flip;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
-		try {
-			reader.readLine(); // info
-
-			String line = reader.readLine();
-			if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-			String[] common = line.split(" ", 4);
-			if (common.length < 4) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-
-			if (!common[1].startsWith("lineHeight=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-			lineHeight = Integer.parseInt(common[1].substring(11));
-
-			if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-			int baseLine = Integer.parseInt(common[2].substring(5));
-
-			if (region != null)
-				reader.readLine(); // page
-			else {
-				line = reader.readLine();
-				if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				String[] page = line.split(" ", 4);
-				if (!page[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				String imgFilename = null;
-				if (page[2].endsWith("\"")) {
-					imgFilename = page[2].substring(6, page[2].length() - 1);
+	private void load(BitmapFontData data) {
+		float invTexWidth = 1.0f / region.getTexture().getWidth();
+		float invTexHeight = 1.0f / region.getTexture().getHeight();
+		float u = region.u;
+		float v = region.v;
+		
+		for(Glyph[] glyphs: data.glyphs) {
+			if(glyphs == null) continue;
+			for(Glyph glyph: glyphs) {
+				if(glyph == null) continue;
+				glyph.u = u + glyph.srcX * invTexWidth;
+				glyph.u2 = u + (glyph.srcX + glyph.width) * invTexWidth;
+				if (data.flipped) {
+					glyph.v = v + glyph.srcY * invTexHeight;
+					glyph.v2 = v + (glyph.srcY + glyph.height) * invTexHeight;
 				} else {
-					imgFilename = page[2].substring(5, page[2].length());
+					glyph.v2 = v + glyph.srcY * invTexHeight;
+					glyph.v = v + (glyph.srcY + glyph.height) * invTexHeight;
 				}
-				FileHandle imageFile = fontFile.parent().child(imgFilename);
-				region = new TextureRegion(new Texture(imageFile, false));
-			}
-
-			this.region = region;
-			float invTexWidth = 1.0f / region.getTexture().getWidth();
-			float invTexHeight = 1.0f / region.getTexture().getHeight();
-			float u = region.u;
-			float v = region.v;
-
-			descent = 0;
-			// descent = g != null? baseLine + g.yoffset:0;
-
-			while (true) {
-				line = reader.readLine();
-				if (line == null) break;
-				if (line.startsWith("kernings ")) break;
-				if (!line.startsWith("char ")) continue;
-
-				Glyph glyph = new Glyph();
-
-				StringTokenizer tokens = new StringTokenizer(line, " =");
-				tokens.nextToken();
-				tokens.nextToken();
-				int ch = Integer.parseInt(tokens.nextToken());
-				if (ch <= Character.MAX_VALUE) {
-					Glyph[] page = glyphs[ch / PAGE_SIZE];
-					if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
-					page[ch & PAGE_SIZE - 1] = glyph;
-				} else
-					continue;
-				tokens.nextToken();
-				int srcX = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-				int srcY = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-				glyph.width = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-				glyph.height = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-				glyph.xoffset = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-				if (flip)
-					glyph.yoffset = Integer.parseInt(tokens.nextToken());
-				else
-					glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
-				tokens.nextToken();
-				glyph.xadvance = Integer.parseInt(tokens.nextToken());
-
-				glyph.u = u + srcX * invTexWidth;
-				glyph.u2 = u + (srcX + glyph.width) * invTexWidth;
-				if (flip) {
-					glyph.v = v + srcY * invTexHeight;
-					glyph.v2 = v + (srcY + glyph.height) * invTexHeight;
-				} else {
-					glyph.v2 = v + srcY * invTexHeight;
-					glyph.v = v + (srcY + glyph.height) * invTexHeight;
-				}
-
-				descent = Math.min(baseLine + glyph.yoffset, descent);
-			}
-
-			while (true) {
-				line = reader.readLine();
-				if (line == null) break;
-				if (!line.startsWith("kerning ")) break;
-
-				StringTokenizer tokens = new StringTokenizer(line, " =");
-				tokens.nextToken();
-				tokens.nextToken();
-				int first = Integer.parseInt(tokens.nextToken());
-				tokens.nextToken();
-				int second = Integer.parseInt(tokens.nextToken());
-				if (first < 0 || first > Character.MAX_VALUE || second < 0 || second > Character.MAX_VALUE) continue;
-				Glyph glyph = getGlyph((char)first);
-				tokens.nextToken();
-				int amount = Integer.parseInt(tokens.nextToken());
-				glyph.setKerning(second, amount);
-			}
-
-			Glyph g = getGlyph(' ');
-			if (g == null) {
-				g = new Glyph();
-				g.xadvance = getGlyph('l').xadvance;
-				Glyph[] page = glyphs[' ' / PAGE_SIZE];
-				if (page == null) glyphs[' ' / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
-				page[' ' & PAGE_SIZE - 1] = g;
-			}
-			spaceWidth = g != null ? g.xadvance + g.width : 1;
-
-			for (int i = 0; i < xChars.length; i++) {
-				g = getGlyph(xChars[i]);
-				if (g == null) continue;
-				xHeight = g.height;
-				break;
-			}
-
-			for (int i = 0; i < capChars.length; i++) {
-				g = getGlyph(capChars[i]);
-				if (g == null) continue;
-				capHeight = g.height;
-				break;
-			}
-
-			ascent = baseLine - capHeight;
-			down = -lineHeight;
-			if (flip) {
-				ascent = -ascent;
-				down = -down;
-			}
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException ignored) {
 			}
 		}
-	}
-
-	Glyph getGlyph (char ch) {
-		Glyph[] page = glyphs[ch / PAGE_SIZE];
-		if (page != null) return page[ch & PAGE_SIZE - 1];
-		return null;
 	}
 
 	/**
@@ -318,12 +329,12 @@ public class BitmapFont implements Disposable {
 		float batchColor = spriteBatch.color;
 		spriteBatch.setColor(color);
 		final Texture texture = region.getTexture();
-		y += ascent;
+		y += data.ascent;
 		float startX = x;
 		Glyph lastGlyph = null;
-		if (scaleX == 1 && scaleY == 1) {
+		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
-				lastGlyph = getGlyph(str.charAt(start++));
+				lastGlyph = data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
 					if (!integer) {
 						spriteBatch.draw(texture, //
@@ -342,7 +353,7 @@ public class BitmapFont implements Disposable {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
-				Glyph g = getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
 				lastGlyph = g;
@@ -360,9 +371,9 @@ public class BitmapFont implements Disposable {
 				x += g.xadvance;
 			}
 		} else {
-			float scaleX = this.scaleX, scaleY = this.scaleY;
+			float scaleX = this.data.scaleX, scaleY = this.data.scaleY;
 			while (start < end) {
-				lastGlyph = getGlyph(str.charAt(start++));
+				lastGlyph = data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
 					if (!integer) {
 						spriteBatch.draw(texture, //
@@ -385,7 +396,7 @@ public class BitmapFont implements Disposable {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
-				Glyph g = getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch) * scaleX;
 				lastGlyph = g;
@@ -409,7 +420,7 @@ public class BitmapFont implements Disposable {
 		}
 		spriteBatch.setColor(batchColor);
 		textBounds.width = x - startX;
-		textBounds.height = capHeight;
+		textBounds.height = data.capHeight;
 		return textBounds;
 	}
 
@@ -435,7 +446,7 @@ public class BitmapFont implements Disposable {
 	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
 		HAlignment alignment) {
 		float batchColor = spriteBatch.color;
-		float down = this.down;
+		float down = this.data.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
@@ -457,7 +468,7 @@ public class BitmapFont implements Disposable {
 		spriteBatch.setColor(batchColor);
 
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
 
@@ -484,7 +495,7 @@ public class BitmapFont implements Disposable {
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
 		float batchColor = spriteBatch.color;
-		float down = this.down;
+		float down = this.data.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
@@ -523,7 +534,7 @@ public class BitmapFont implements Disposable {
 		}
 		spriteBatch.setColor(batchColor);
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
 
@@ -547,7 +558,7 @@ public class BitmapFont implements Disposable {
 		int width = 0;
 		Glyph lastGlyph = null;
 		while (start < end) {
-			lastGlyph = getGlyph(str.charAt(start++));
+			lastGlyph = data.getGlyph(str.charAt(start++));
 			if (lastGlyph != null) {
 				width = lastGlyph.xadvance;
 				break;
@@ -555,15 +566,15 @@ public class BitmapFont implements Disposable {
 		}
 		while (start < end) {
 			char ch = str.charAt(start++);
-			Glyph g = getGlyph(ch);
+			Glyph g = data.getGlyph(ch);
 			if (g != null) {
 				width += lastGlyph.getKerning(ch);
 				lastGlyph = g;
 				width += g.xadvance;
 			}
 		}
-		textBounds.width = width * scaleX;
-		textBounds.height = capHeight;
+		textBounds.width = width * data.scaleX;
+		textBounds.height = data.capHeight;
 		return textBounds;
 	}
 
@@ -585,7 +596,7 @@ public class BitmapFont implements Disposable {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
 
@@ -626,7 +637,7 @@ public class BitmapFont implements Disposable {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = capHeight + (numLines - 1) * lineHeight;
+		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
 
@@ -644,10 +655,10 @@ public class BitmapFont implements Disposable {
 		int end = str.length();
 		int width = 0;
 		Glyph lastGlyph = null;
-		if (scaleX == 1) {
+		if (data.scaleX == 1) {
 			for (; index < end; index++) {
 				char ch = str.charAt(index);
-				Glyph g = getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
 					lastGlyph = g;
@@ -659,10 +670,10 @@ public class BitmapFont implements Disposable {
 			glyphAdvances.add(0);
 			glyphPositions.add(width);
 		} else {
-			float scaleX = this.scaleX;
+			float scaleX = this.data.scaleX;
 			for (; index < end; index++) {
 				char ch = str.charAt(index);
-				Glyph g = getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
@@ -685,10 +696,10 @@ public class BitmapFont implements Disposable {
 		int index = start;
 		int width = 0;
 		Glyph lastGlyph = null;
-		if (scaleX == 1) {
+		if (data.scaleX == 1) {
 			for (; index < end; index++) {
 				char ch = str.charAt(index);
-				Glyph g = getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
 					lastGlyph = g;
@@ -697,10 +708,10 @@ public class BitmapFont implements Disposable {
 				}
 			}
 		} else {
-			float scaleX = this.scaleX;
+			float scaleX = this.data.scaleX;
 			for (; index < end; index++) {
 				char ch = str.charAt(index);
-				Glyph g = getGlyph(ch);
+				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
@@ -736,14 +747,14 @@ public class BitmapFont implements Disposable {
 	}
 
 	public void setScale (float scaleX, float scaleY) {
-		spaceWidth = spaceWidth / this.scaleX * scaleX;
-		xHeight = xHeight / this.scaleY * scaleY;
-		capHeight = capHeight / this.scaleY * scaleY;
-		ascent = ascent / this.scaleY * scaleY;
-		descent = descent / this.scaleY * scaleY;
-		down = down / this.scaleY * scaleY;
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
+		data.spaceWidth = data.spaceWidth / this.data.scaleX * scaleX;
+		data.xHeight = data.xHeight / this.data.scaleY * scaleY;
+		data.capHeight = data.capHeight / this.data.scaleY * scaleY;
+		data.ascent = data.ascent / this.data.scaleY * scaleY;
+		data.descent = data.descent / this.data.scaleY * scaleY;
+		data.down = data.down / this.data.scaleY * scaleY;
+		data.scaleX = scaleX;
+		data.scaleY = scaleY;
 	}
 
 	/**
@@ -760,15 +771,15 @@ public class BitmapFont implements Disposable {
 	 * Sets the font's scale relative to the current scale.
 	 */
 	public void scale (float amount) {
-		setScale(scaleX + amount, scaleY + amount);
+		setScale(data.scaleX + amount, data.scaleY + amount);
 	}
 
 	public float getScaleX () {
-		return scaleX;
+		return data.scaleX;
 	}
 
 	public float getScaleY () {
-		return scaleY;
+		return data.scaleY;
 	}
 
 	public TextureRegion getRegion () {
@@ -779,21 +790,21 @@ public class BitmapFont implements Disposable {
 	 * Returns the line height, which is the distance from one line of text to the next.
 	 */
 	public float getLineHeight () {
-		return lineHeight;
+		return data.lineHeight;
 	}
 
 	/**
 	 * Returns the width of the space character.
 	 */
 	public float getSpaceWidth () {
-		return spaceWidth;
+		return data.spaceWidth;
 	}
 
 	/**
 	 * Returns the x-height, which is the distance from the top of most lowercase characters to the baseline.
 	 */
 	public float getXHeight () {
-		return xHeight;
+		return data.xHeight;
 	}
 
 	/**
@@ -801,21 +812,21 @@ public class BitmapFont implements Disposable {
 	 * position is the cap height of the first line, the cap height can be used to get the location of the baseline.
 	 */
 	public float getCapHeight () {
-		return capHeight;
+		return data.capHeight;
 	}
 
 	/**
 	 * Returns the ascent, which is the distance from the cap height to the top of the tallest glyph.
 	 */
 	public float getAscent () {
-		return ascent;
+		return data.ascent;
 	}
 
 	/**
 	 * Returns the descent, which is the distance from the bottom of the glyph 'g' to the baseline. This number is negative.
 	 */
 	public float getDescent () {
-		return descent;
+		return data.descent;
 	}
 
 	/**
@@ -839,11 +850,11 @@ public class BitmapFont implements Disposable {
 	public void setFixedWidthGlyphs (CharSequence glyphs) {
 		int maxAdvance = 0;
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
-			Glyph g = getGlyph(glyphs.charAt(index));
+			Glyph g = data.getGlyph(glyphs.charAt(index));
 			if (g != null && g.xadvance > maxAdvance) maxAdvance = g.xadvance;
 		}
 		for (int index = 0, end = glyphs.length(); index < end; index++) {
-			Glyph g = getGlyph(glyphs.charAt(index));
+			Glyph g = data.getGlyph(glyphs.charAt(index));
 			if (g == null) continue;
 			g.xoffset += (maxAdvance - g.xadvance) / 2;
 			g.xadvance = maxAdvance;
@@ -852,6 +863,8 @@ public class BitmapFont implements Disposable {
 	}
 
 	static class Glyph {
+		public int srcX;
+		public int srcY;
 		int width, height;
 		float u, v, u2, v2;
 		int xoffset, yoffset;
@@ -907,7 +920,7 @@ public class BitmapFont implements Disposable {
 	 * @return whether the given character is contained in this font.
 	 */
 	public boolean containsCharacter (char character) {
-		return getGlyph(character) != null;
+		return data.getGlyph(character) != null;
 	}
 
 	/**

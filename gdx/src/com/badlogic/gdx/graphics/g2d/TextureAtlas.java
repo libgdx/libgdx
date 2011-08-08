@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.ClampToEdge;
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,17 +27,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Loads images from texture atlases created by TexturePacker.<br>
@@ -46,13 +53,139 @@ public class TextureAtlas implements Disposable {
 	static private final String[] tuple = new String[2];
 
 	private final HashSet<Texture> textures = new HashSet(4);
-	private final ArrayList<AtlasRegion> regions;
+	private final ArrayList<AtlasRegion> regions = new ArrayList<AtlasRegion>();
+	
+	
+	public static class TextureAtlasData {	
+		class Page {
+			final FileHandle textureFile;
+			final boolean useMipMaps;
+			final Format format;
+			final TextureFilter minFilter;
+			final TextureFilter magFilter;
+			final TextureWrap uWrap;
+			final TextureWrap vWrap;
+			
+			public Page(FileHandle handle, boolean useMipMaps, Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+				this.textureFile = handle;
+				this.useMipMaps = useMipMaps;
+				this.format = format;
+				this.minFilter = minFilter;
+				this.magFilter = magFilter;
+				this.uWrap = uWrap;
+				this.vWrap = vWrap;
+			}
+		}
+		
+		class Region {
+			public Page page;
+			public int index;
+			public String name;
+			public float offsetX;
+			public float offsetY;
+			public int packedWidth;
+			public int packedHeight;
+			public int originalWidth;
+			public int originalHeight;
+			public boolean rotate;
+			public int left;
+			public int top;
+			public int width;
+			public int height;
+			public boolean flip;
+		}
+		
+		final Array<Page> pages = new Array<Page>();
+		final Array<Region> regions = new Array<Region>();
+		
+		public TextureAtlasData(FileHandle packFile, FileHandle imagesDir, boolean flip) {
+			PriorityQueue<Region> sortedRegions = new PriorityQueue(16, indexComparator);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
+			try {
+				Page pageImage = null;
+				while (true) {
+					String line = reader.readLine();
+					if (line == null) break;
+					if (line.trim().length() == 0)
+						pageImage = null;
+					else if (pageImage == null) {
+						FileHandle file = imagesDir.child(line);
+
+						Format format = Format.valueOf(readValue(reader));
+
+						readTuple(reader);
+						TextureFilter min = TextureFilter.valueOf(tuple[0]);
+						TextureFilter max = TextureFilter.valueOf(tuple[1]);
+
+						String direction = readValue(reader);
+						TextureWrap repeatX = ClampToEdge;
+						TextureWrap repeatY = ClampToEdge;
+						if (direction.equals("x"))
+							repeatX = Repeat;
+						else if (direction.equals("y"))
+							repeatY = Repeat;
+						else if (direction.equals("xy")) {
+							repeatX = Repeat;
+							repeatY = Repeat;
+						}
+
+						pageImage = new Page(file, min.isMipMap(), format, min, max, repeatX, repeatY);
+						pages.add(pageImage);
+					} else {
+						boolean rotate = Boolean.valueOf(readValue(reader));
+
+						readTuple(reader);
+						int left = Integer.parseInt(tuple[0]);
+						int top = Integer.parseInt(tuple[1]);
+
+						readTuple(reader);
+						int width = Integer.parseInt(tuple[0]);
+						int height = Integer.parseInt(tuple[1]);
+
+						Region region = new Region();
+						region.page = pageImage;
+						region.left = left;
+						region.top = top;
+						region.width = width;
+						region.height = height;
+						region.name = line;
+						region.rotate = rotate;
+
+						readTuple(reader);
+						region.originalWidth = Integer.parseInt(tuple[0]);
+						region.originalHeight = Integer.parseInt(tuple[1]);
+
+						readTuple(reader);
+						region.offsetX = Integer.parseInt(tuple[0]);
+						region.offsetY = Integer.parseInt(tuple[1]);
+
+						region.index = Integer.parseInt(readValue(reader));
+
+						if (flip) region.flip = true;
+
+						sortedRegions.add(region);
+					}
+				}
+			} catch (IOException ex) {
+				throw new GdxRuntimeException("Error reading pack file: " + packFile);
+			} finally {
+				try {
+					reader.close();
+				} catch (IOException ignored) {
+				}
+			}
+			
+			int n = sortedRegions.size();
+			for (int i = 0; i < n; i++)
+				regions.add(sortedRegions.poll());
+		}
+	}
 
 	/**
 	 * Creates an empty atlas to which regions can be added.
 	 */
 	public TextureAtlas () {
-		regions = new ArrayList();
 	}
 
 	/**
@@ -86,84 +219,38 @@ public class TextureAtlas implements Disposable {
 	 * @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
 	 */
 	public TextureAtlas (FileHandle packFile, FileHandle imagesDir, boolean flip) {
-		PriorityQueue<AtlasRegion> sortedRegions = new PriorityQueue(16, indexComparator);
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
-		try {
-			Texture pageImage = null;
-			while (true) {
-				String line = reader.readLine();
-				if (line == null) break;
-				if (line.trim().length() == 0)
-					pageImage = null;
-				else if (pageImage == null) {
-					FileHandle file = imagesDir.child(line);
-
-					Format format = Format.valueOf(readValue(reader));
-
-					readTuple(reader);
-					TextureFilter min = TextureFilter.valueOf(tuple[0]);
-					TextureFilter max = TextureFilter.valueOf(tuple[1]);
-
-					String direction = readValue(reader);
-					TextureWrap repeatX = ClampToEdge;
-					TextureWrap repeatY = ClampToEdge;
-					if (direction.equals("x"))
-						repeatX = Repeat;
-					else if (direction.equals("y"))
-						repeatY = Repeat;
-					else if (direction.equals("xy")) {
-						repeatX = Repeat;
-						repeatY = Repeat;
-					}
-
-					pageImage = new Texture(file, format, TextureFilter.isMipMap(min) || TextureFilter.isMipMap(max) ? true : false);
-					pageImage.setFilter(min, max);
-					pageImage.setWrap(repeatX, repeatY);
-					textures.add(pageImage);
-				} else {
-					boolean rotate = Boolean.valueOf(readValue(reader));
-
-					readTuple(reader);
-					int left = Integer.parseInt(tuple[0]);
-					int top = Integer.parseInt(tuple[1]);
-
-					readTuple(reader);
-					int width = Integer.parseInt(tuple[0]);
-					int height = Integer.parseInt(tuple[1]);
-
-					AtlasRegion region = new AtlasRegion(pageImage, left, top, width, height);
-					region.name = line;
-					region.rotate = rotate;
-
-					readTuple(reader);
-					region.originalWidth = Integer.parseInt(tuple[0]);
-					region.originalHeight = Integer.parseInt(tuple[1]);
-
-					readTuple(reader);
-					region.offsetX = Integer.parseInt(tuple[0]);
-					region.offsetY = Integer.parseInt(tuple[1]);
-
-					region.index = Integer.parseInt(readValue(reader));
-
-					if (flip) region.flip(false, true);
-
-					sortedRegions.add(region);
-				}
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error reading pack file: " + packFile);
-		} finally {
-			try {
-				reader.close();
-			} catch (IOException ignored) {
-			}
+		this(new TextureAtlasData(packFile, imagesDir, flip));
+	}
+	
+	public TextureAtlas(TextureAtlasData data) {
+		load(data);
+	}
+	
+	private void load(TextureAtlasData data) {
+		// FIXME dispose textures?
+		textures.clear();
+		regions.clear();
+		
+		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
+		for(Page page: data.pages) {
+			Texture texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+			textures.add(texture);
+			pageToTexture.put(page, texture);
 		}
-
-		int n = sortedRegions.size();
-		regions = new ArrayList(n);
-		for (int i = 0; i < n; i++)
-			regions.add(sortedRegions.poll());
+		
+		for(Region region: data.regions) {
+			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top, region.width, region.height);
+			atlasRegion.index = region.index;
+			atlasRegion.name = region.name;
+			atlasRegion.offsetX = region.offsetX;
+			atlasRegion.offsetY = region.offsetY;
+			atlasRegion.originalHeight = region.originalHeight;
+			atlasRegion.originalWidth = region.originalWidth;
+			atlasRegion.packedHeight = region.packedHeight;
+			atlasRegion.packedWidth = region.packedWidth;
+			atlasRegion.rotate = region.rotate;
+			regions.add(atlasRegion);
+		}
 	}
 
 	/**
@@ -308,8 +395,8 @@ public class TextureAtlas implements Disposable {
 		textures.clear();
 	}
 
-	static private final Comparator<AtlasRegion> indexComparator = new Comparator<AtlasRegion>() {
-		public int compare (AtlasRegion region1, AtlasRegion region2) {
+	static private final Comparator<Region> indexComparator = new Comparator<Region>() {
+		public int compare (Region region1, Region region2) {
 			int i1 = region1.index;
 			if (i1 == -1) i1 = Integer.MAX_VALUE;
 			int i2 = region2.index;

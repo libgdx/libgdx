@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.graphics.Pixmap.Format;
+
 
 /**
  * Loads image data for a texture. Used with
@@ -23,19 +25,11 @@ package com.badlogic.gdx.graphics;
  * is restored. The TextureData doesn't necessary need to keep the image data in memory between loads.
  */
 public interface TextureData {
-	/**
-	 * Loads the image data into the currently bound texture. Usually
-	 * {@link GL10#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)} is used.
-	 */
-	public void load ();
-
-	/**
-	 * Returns the width of the texture, which must be a power of two. This will not be called before {@link #load()}.
-	 */
-	public int getWidth ();
-
-	/**
-	 * Returns the height of the texture, which must be a power of two. This will not be called before {@link #load()}.
-	 */
-	public int getHeight ();
+	public Pixmap getPixmap();
+	public boolean disposePixmap();
+	public int getWidth();
+	public int getHeight();
+	public Format getFormat();
+	public boolean useMipMaps();
+	public boolean isManaged();
 }

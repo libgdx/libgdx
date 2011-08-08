@@ -1,5 +1,5 @@
 
-resource1.png
+resource1.jpg
 format: RGBA8888
 filter: MipMapLinearNearest,Nearest
 repeat: none

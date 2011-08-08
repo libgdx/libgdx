@@ -1,6 +1,6 @@
 info face="Verdana" size=39 bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1
 common lineHeight=49 base=40 scaleW=256 scaleH=256 pages=1 packed=0
-page id=0 file="test.png"
+page id=0 file="verdana39.png"
 chars count=95
 char id=32   x=0     y=0     width=0     height=0     xoffset=0     yoffset=40    xadvance=13     page=0  chnl=0 
 char id=36   x=0     y=0     width=22     height=39     xoffset=2     yoffset=9    xadvance=24     page=0  chnl=0 

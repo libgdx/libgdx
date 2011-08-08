@@ -16,46 +16,27 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TextureDataTest extends GdxTest {
 	private SpriteBatch spriteBatch;
-	private Sprite sprite;
-
+	private Texture texture;
+	
 	public void create () {
 		spriteBatch = new SpriteBatch();
-
-		sprite = new Sprite(new Texture(new TextureData() {			
-			int width = 0;
-			int height = 0;
-			
-			public void load() {
-				Pixmap pixmap = new Pixmap(Gdx.files.internal("data/t8890.png"));
-				Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-				width = pixmap.getWidth();
-				height = pixmap.getHeight();
-				pixmap.dispose();
-			}
-			
-			public int getWidth() {
-				return width;
-			}
-			
-			public int getHeight() {
-				return height;
-			}
-		}));
+//		texture = new Texture(new PixmapTextureData(new Pixmap(Gdx.files.internal("data/t8890.png")), null, false, true)); 
+		texture = new Texture(new FileTextureData(Gdx.files.internal("data/t8890.png"), null, null, false));
 	}
 
 	public void render () {
 		spriteBatch.begin();
-		sprite.draw(spriteBatch);
+		spriteBatch.draw(texture, 100, 100);
 		spriteBatch.end();
 	}
 

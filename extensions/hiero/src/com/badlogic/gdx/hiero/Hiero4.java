@@ -85,6 +85,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -287,10 +289,7 @@ public class Hiero4 extends JFrame {
 						buffer.order(ByteOrder.LITTLE_ENDIAN);
 						fontGenerator.getTextureData(buffer.asIntBuffer());
 						TextureRegion glyphRegion = new TextureRegion(new Texture(new TextureData() {
-							public void load () {
-								GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA,
-									GL11.GL_UNSIGNED_BYTE, buffer);
-							}
+							Pixmap pixmap;
 
 							public int getWidth () {
 								return width;
@@ -298,6 +297,34 @@ public class Hiero4 extends JFrame {
 
 							public int getHeight () {
 								return height;
+							}
+
+							@Override
+							public Pixmap getPixmap () {
+								this.pixmap = new Pixmap(width, height, Format.RGBA8888);
+								pixmap.getPixels().put(buffer);
+								pixmap.getPixels().rewind();
+								return pixmap;
+							}
+
+							@Override
+							public boolean disposePixmap () {
+								return true;
+							}
+
+							@Override
+							public Format getFormat () {
+								return pixmap.getFormat();
+							}
+
+							@Override
+							public boolean useMipMaps () {
+								return false;
+							}
+
+							@Override
+							public boolean isManaged () {
+								return true;
 							}
 						}));
 						renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);
