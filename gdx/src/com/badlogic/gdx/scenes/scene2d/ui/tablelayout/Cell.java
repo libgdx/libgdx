@@ -414,27 +414,50 @@ public class Cell<C> {
 	}
 
 	public Cell center () {
-		align = CENTER;
+		if (align == null)
+			align = CENTER;
+		else
+			align |= CENTER;
 		return this;
 	}
 
 	public Cell top () {
-		align = TOP;
+		if (align == null)
+			align = TOP;
+		else {
+			align |= TOP;
+			align &= ~BOTTOM;
+		}
 		return this;
 	}
 
 	public Cell left () {
-		align = LEFT;
+		if (align == null)
+			align = LEFT;
+		else {
+			align |= LEFT;
+			align &= ~RIGHT;
+		}
 		return this;
 	}
 
 	public Cell bottom () {
-		align = BOTTOM;
+		if (align == null)
+			align = BOTTOM;
+		else {
+			align |= BOTTOM;
+			align &= ~TOP;
+		}
 		return this;
 	}
 
 	public Cell right () {
-		align = RIGHT;
+		if (align == null)
+			align = RIGHT;
+		else {
+			align |= RIGHT;
+			align &= ~LEFT;
+		}
 		return this;
 	}
 

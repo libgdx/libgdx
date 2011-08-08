@@ -54,12 +54,8 @@ public class Stack extends Group implements Layout {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (!visible) return;
-		// BOZO - Make flushing the SpriteBatch optional?
-		for (int i = 0, n = children.size(); i < n; i++) {
-			Actor child = children.get(i);
-			if (child.visible) child.draw(batch, parentAlpha * color.a);
-		}
+		if (needsLayout) layout();
+		super.draw(batch, parentAlpha);
 	}
 
 	public void invalidate () {

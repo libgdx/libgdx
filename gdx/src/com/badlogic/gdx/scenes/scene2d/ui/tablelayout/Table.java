@@ -29,6 +29,7 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -92,11 +93,7 @@ public class Table extends Group implements Layout {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (!visible) return;
 		if (layout.needsLayout) layout.layout();
-		// BOZO - Make flushing the SpriteBatch optional?
-		for (int i = 0, n = children.size(); i < n; i++) {
-			Actor child = children.get(i);
-			if (child.visible) child.draw(batch, parentAlpha * color.a);
-		}
+		super.draw(batch, parentAlpha);
 	}
 
 	public void layout () {
@@ -117,6 +114,11 @@ public class Table extends Group implements Layout {
 		layout.setLayoutSize(0, 0, 0, 0);
 		layout.layout();
 		return layout.getMinHeight();
+	}
+
+	public void clear () {
+		super.clear();
+		layout.clear();
 	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be

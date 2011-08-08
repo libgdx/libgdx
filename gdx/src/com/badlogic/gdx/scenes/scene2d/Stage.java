@@ -82,8 +82,6 @@ public class Stage extends InputAdapter implements Disposable {
 		this.height = height;
 		this.stretch = stretch;
 		this.root = new Group("root");
-		root.width = width;
-		root.height = height;
 		this.batch = new SpriteBatch();
 		this.camera = new OrthographicCamera();		
 		setViewport(width, height, stretch);
@@ -127,9 +125,6 @@ public class Stage extends InputAdapter implements Disposable {
 		camera.position.set(centerX, centerY, 0);
 		camera.viewportWidth = this.width;
 		camera.viewportHeight = this.height;
-
-		root.width = width;
-		root.height = height;
 	}
 
 	/**8

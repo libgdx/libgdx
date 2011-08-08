@@ -48,7 +48,6 @@ import com.badlogic.gdx.utils.Array;
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
 	/** The atlas to use to find texture regions. */
 	public TextureAtlas atlas;
-	public boolean updatesTransform;
 
 	boolean needsLayout = true;
 	Array<DebugRect> debugRects;
@@ -87,15 +86,8 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		if (!needsLayout) return;
 		needsLayout = false;
 
+		setLayoutSize(0, 0, (int)table.width, (int)table.height);
 		Table table = getTable();
-
-		float topLeftY = table.height;
-		if (updatesTransform)
-			setLayoutSize(0, 0, (int)table.width, (int)table.height);
-		else {
-			setLayoutSize((int)table.x, 0, (int)table.width, (int)table.height);
-			topLeftY += table.y;
-		}
 
 		super.layout();
 
@@ -106,7 +98,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 			Actor actor = (Actor)c.getWidget();
 			actor.x = c.getWidgetX();
 			int widgetHeight = c.getWidgetHeight();
-			actor.y = topLeftY - c.getWidgetY() - widgetHeight;
+			actor.y = table.height - c.getWidgetY() - widgetHeight;
 			actor.width = c.getWidgetWidth();
 			actor.height = widgetHeight;
 			if (actor instanceof Layout) {
@@ -143,13 +135,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		Actor parent = table.parent;
 		float x = 0, y = 0;
 		while (parent != null) {
-			boolean parentUpdatesTransform = false;
-			if (parent instanceof Table)
-				parentUpdatesTransform = ((Table)parent).getTableLayout().updatesTransform;
-			else {
-				if (parent instanceof Group) parentUpdatesTransform = true;
-			}
-			if (parentUpdatesTransform) {
+			if (parent instanceof Group) {
 				x += parent.x;
 				y += parent.y;
 			}

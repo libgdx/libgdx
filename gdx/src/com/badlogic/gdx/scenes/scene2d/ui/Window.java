@@ -106,10 +106,8 @@ public class Window extends Table {
 		height = prefHeight;
 		this.style = style;
 
-		TableLayout layout = getTableLayout();
-		layout.updatesTransform = true;
-		
 		final NinePatch background = style.background;
+		TableLayout layout = getTableLayout();
 		layout.padBottom(Integer.toString((int)(background.getBottomHeight()) + 1));
 		layout.padTop(Integer.toString((int)(background.getTopHeight()) + 1));
 		layout.padLeft(Integer.toString((int)(background.getLeftWidth()) + 1));

@@ -484,31 +484,35 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #CENTER}. */
 	public L center () {
-		align = CENTER;
+		align |= CENTER;
 		return (L)this;
 	}
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #TOP}. */
 	public L top () {
-		align = TOP;
+		align |= TOP;
+		align &= ~BOTTOM;
 		return (L)this;
 	}
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #LEFT}. */
 	public L left () {
-		align = LEFT;
+		align |= LEFT;
+		align &= ~RIGHT;
 		return (L)this;
 	}
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #BOTTOM}. */
 	public L bottom () {
 		align = BOTTOM;
+		align &= ~TOP;
 		return (L)this;
 	}
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #RIGHT}. */
 	public L right () {
 		align = RIGHT;
+		align &= ~LEFT;
 		return (L)this;
 	}
 
