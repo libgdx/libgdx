@@ -76,7 +76,7 @@ public class UITest extends GdxTest {
 		imgToggleButton.setImageSize(10, 10);
 		
 		TableLayout layout = window.getTableLayout();
-		layout.getDefaults().spaceBottom(10);
+		layout.defaults().spaceBottom(10);
 		layout.row().fill().expandX();
 		layout.add(button);
 		layout.add(buttonMulti);			

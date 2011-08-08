@@ -173,7 +173,7 @@ class TableLayoutParser {
 								// line 57 "TableLayoutParser.rl"
 								{
 									if (debug) System.out.println("cellDefaultProperty: " + name + " = " + values);
-									toolkit.setCellProperty(((BaseTableLayout)parent).getDefaults(), name, values);
+									toolkit.setCellProperty(((BaseTableLayout)parent).defaults(), name, values);
 									values.clear();
 									name = null;
 								}
@@ -181,7 +181,7 @@ class TableLayoutParser {
 								case 5:
 								// line 63 "TableLayoutParser.rl"
 								{
-									columnDefaults = ((BaseTableLayout)parent).getColumnDefaults(columnDefaultCount++);
+									columnDefaults = ((BaseTableLayout)parent).columnDefaults(columnDefaultCount++);
 								}
 									break;
 								case 6:

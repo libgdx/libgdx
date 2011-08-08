@@ -30,15 +30,14 @@ public class FlickScrollPaneTest extends GdxTest {
 		Table table = new Table();
 
 		FlickScrollPane scroll = new FlickScrollPane(null, stage, table, 0, 0);
-		container.getTableLayout().add(scroll).expand().fill();
+		container.add(scroll).expand().fill();
 
-		TableLayout layout = table.getTableLayout();
-		layout.parse("pad:10 * expand:x space:4");
+		table.parse("pad:10 * expand:x space:4");
 		for (int i = 0; i < 100; i++) {
-			layout.row();
-			layout.add(new Label(null, i + "uno", new LabelStyle(font, Color.RED))).expandX().fillX();
-			layout.add(new Label(null, i + "dos", new LabelStyle(font, Color.RED)));
-			layout.add(new Label(null, i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9", new LabelStyle(font,
+			table.row();
+			table.add(new Label(null, i + "uno", new LabelStyle(font, Color.RED))).expandX().fillX();
+			table.add(new Label(null, i + "dos", new LabelStyle(font, Color.RED)));
+			table.add(new Label(null, i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9", new LabelStyle(font,
 				Color.RED)));
 		}
 

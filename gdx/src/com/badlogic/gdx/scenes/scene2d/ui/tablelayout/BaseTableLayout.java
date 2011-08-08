@@ -176,7 +176,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	/** Gets the cell values that will be used as the defaults for all cells in the specified column. */
-	public Cell getColumnDefaults (int column) {
+	public Cell columnDefaults (int column) {
 		Cell cell = columnDefaults.size() > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
 			cell = new Cell(this);
@@ -333,7 +333,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	/** The cell values that will be used as the defaults for all cells. */
-	public Cell getDefaults () {
+	public Cell defaults () {
 		return cellDefaults;
 	}
 

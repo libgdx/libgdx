@@ -96,12 +96,11 @@ public class ProjectiveTextureTest extends GdxTest {
 		ComboBox camera = skin.newComboBox("camera", new String[] { "Camera", "Light" }, ui);
 		Label fps = skin.newLabel("fps", "fps: ");
 		
-		TableLayout layout = new Table("container").getTableLayout();
-		layout.size((int)ui.width(), (int)ui.height());
-		layout.add(reload).spaceRight(5);
-		layout.add(camera).spaceRight(5);
-		layout.add(fps);
-		ui.addActor(layout.getTable());
+		Table table = new Table("container", (int)ui.width(), (int)ui.height());
+		table.add(reload).spaceRight(5);
+		table.add(camera).spaceRight(5);
+		table.add(fps);
+		ui.addActor(table);
 		
 		reload.setClickListener(new ClickListener() {			
 			@Override public void click (Button button) {

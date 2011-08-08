@@ -388,6 +388,12 @@ public class Cell<C> {
 		return this;
 	}
 
+	public Cell fill (boolean x, boolean y) {
+		fillX = x ? 1f : 0;
+		fillY = y ? 1f : 0;
+		return this;
+	}
+
 	/** Alignment of the widget within the cell. Set to {@link #CENTER}, {@link #TOP}, {@link #BOTTOM}, {@link #LEFT},
 	 * {@link #RIGHT}, or any combination of those. */
 	public Cell align (Integer align) {
@@ -451,6 +457,12 @@ public class Cell<C> {
 	public Cell expand (Integer x, Integer y) {
 		expandX = x;
 		expandY = y;
+		return this;
+	}
+
+	public Cell expand (boolean x, boolean y) {
+		expandX = x ? 1 : 0;
+		expandY = y ? 1 : 0;
 		return this;
 	}
 

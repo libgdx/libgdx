@@ -87,16 +87,15 @@ public class MipMapTest extends GdxTest {
 		minFilter = skin.newComboBox("minfilter", filters, ui);
 		magFilter = skin.newComboBox("magfilter", new String[] { "Nearest", "Linear" }, ui);
 		
-		TableLayout layout = new Table("container").getTableLayout();
-		layout.size((int)ui.width(), 30);
-		layout.getTable().y = ui.height() - 30;
-		layout.add(hwMipMap).spaceRight(5);
-		layout.add(skin.newLabel("lbl1", "Min Filter")).spaceRight(5);
-		layout.add(minFilter).spaceRight(5);
-		layout.add(skin.newLabel("lbl1", "Mag Filter")).spaceRight(5);
-		layout.add(magFilter);		
-				
-		ui.addActor(layout.getTable());			
+		Table table = new Table("container", (int)ui.width(), 30);
+		table.y = ui.height() - 30;
+		table.add(hwMipMap).spaceRight(5);
+		table.add(skin.newLabel("lbl1", "Min Filter")).spaceRight(5);
+		table.add(minFilter).spaceRight(5);
+		table.add(skin.newLabel("lbl1", "Mag Filter")).spaceRight(5);
+		table.add(magFilter);		
+
+		ui.addActor(table);			
 	}
 	
 	@Override public void render() {

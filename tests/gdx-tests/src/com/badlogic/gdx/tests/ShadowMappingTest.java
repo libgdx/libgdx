@@ -104,16 +104,15 @@ public class ShadowMappingTest extends GdxTest {
 		ComboBox shaderCombo = skin.newComboBox("shaderCombo", new String[] { "flat", "shadow-gen", "shadow-map" }, ui);
 		Label fpsLabel = skin.newLabel("fps", "fps:");
 		
-		TableLayout layout = new Table("toolbar").getTableLayout();
-		layout.size(Gdx.graphics.getWidth(), 100);
-		layout.getDefaults().spaceRight(5);
-		layout.add(label);
-		layout.add(cameraCombo);
-		layout.add(label2);
-		layout.add(shaderCombo);
-		layout.add(fpsLabel);
-		layout.getTable().y = ui.top() - 100;		
-		ui.addActor(layout.getTable());
+		Table table = new Table("toolbar", Gdx.graphics.getWidth(), 100);
+		table.defaults().spaceRight(5);
+		table.add(label);
+		table.add(cameraCombo);
+		table.add(label2);
+		table.add(shaderCombo);
+		table.add(fpsLabel);
+		table.getTable().y = ui.top() - 100;		
+		ui.addActor(table.getTable());
 		
 		cameraCombo.setSelectionListener(new ComboBox.SelectionListener() {			
 			@Override public void selected (ComboBox comboBox, int selectionIndex, String selection) {

@@ -43,6 +43,12 @@ public class Table extends Group implements Layout {
 		this(null, new TableLayout());
 	}
 
+	public Table (float width, float height) {
+		this(null, new TableLayout());
+		this.width = width;
+		this.height = height;
+	}
+
 	public Table (TableLayout layout) {
 		this(null, layout);
 	}
@@ -51,10 +57,36 @@ public class Table extends Group implements Layout {
 		this(name, new TableLayout());
 	}
 
+	public Table (String name, float width, float height) {
+		this(name, new TableLayout());
+		this.width = width;
+		this.height = height;
+	}
+
 	public Table (String name, TableLayout layout) {
 		super(name);
 		this.layout = layout;
 		layout.setTable(this);
+	}
+
+	public Cell add (Actor actor) {
+		return layout.add(actor);
+	}
+
+	public Cell row () {
+		return layout.row();
+	}
+
+	public void parse (String tableDescription) {
+		layout.parse(tableDescription);
+	}
+
+	public Cell columnDefaults (int column) {
+		return layout.columnDefaults(column);
+	}
+
+	public Cell defaults () {
+		return layout.defaults();
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
