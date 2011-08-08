@@ -7,6 +7,7 @@ import java.util.concurrent.Future;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
@@ -22,11 +23,15 @@ class AssetLoadingTask implements Callable<Void> {
 	final AssetDescriptor assetDesc;
 	final AssetLoader loader;
 	final ExecutorService threadPool;
-	Future<Void> future = null;
+	boolean dependenciesLoaded = false;
+	Future<Void> loadFuture = null;
+	Future<Void> depsFuture = null;
 	boolean updateOnRenderThread = false;
 	Object asset = null;
+	AssetManager manager;
 	
-	public AssetLoadingTask(AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {
+	public AssetLoadingTask(AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {
+		this.manager = manager;
 		this.assetDesc = assetDesc;
 		this.loader = loader;
 		this.threadPool = threadPool;
@@ -39,7 +44,16 @@ class AssetLoadingTask implements Callable<Void> {
 	@Override
 	public Void call () throws Exception {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
-		asyncLoader.loadAsync(assetDesc.fileName, assetDesc.params);
+		if(dependenciesLoaded == false) {
+			Array<AssetDescriptor> dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
+			if(dependencies != null) {
+				for(AssetDescriptor desc: dependencies) {
+					manager.injectTask(desc);
+				}
+			}
+		} else {
+			asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
+		}
 		return null;
 	}
 	
@@ -53,28 +67,59 @@ class AssetLoadingTask implements Callable<Void> {
 	 */
 	public boolean update() {
 		if(loader instanceof SynchronousAssetLoader) {
-			SynchronousAssetLoader syncLoader = (SynchronousAssetLoader)loader;
-			asset = syncLoader.load(assetDesc.fileName, assetDesc.params);
+			handleSyncLoader();
 		} else {
-			AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
-			if(future == null) {
-				future = threadPool.submit(this);
+			handleAsyncLoader();
+		}
+		return asset != null;
+	}
+	
+	private void handleSyncLoader() {
+		SynchronousAssetLoader syncLoader = (SynchronousAssetLoader)loader;
+		if(!dependenciesLoaded) {
+			dependenciesLoaded = true;
+			Array<AssetDescriptor> dependencies = syncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
+			if(dependencies == null) {
+				asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
+				return;
+			}
+			for(AssetDescriptor desc: dependencies) {
+				manager.injectTask(desc);
+			}
+		} else {
+			asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
+		}
+	}
+	
+	private void handleAsyncLoader() {
+		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
+		if(!dependenciesLoaded) {
+			if(depsFuture == null) {
+				depsFuture = threadPool.submit(this);
 			} else {
-				if(future.isDone()) {
-					if(!updateOnRenderThread) {
-						try {
-							future.get();
-							updateOnRenderThread = true;
-						} catch (Exception e) {
-							throw new GdxRuntimeException("Couldn't load asset '" + assetDesc.fileName + "'", e);
-						}
-					} else {
-						asset = asyncLoader.loadSync();
+				if(depsFuture.isDone()) {
+					try {
+						depsFuture.get();
+					} catch (Exception e) {
+						throw new GdxRuntimeException("Couldn't load dependencies of asset '" + assetDesc.fileName + "'", e);
 					}
+					dependenciesLoaded = true;
+				}
+			}
+		} else {
+			if(loadFuture == null) {
+				loadFuture = threadPool.submit(this);
+			} else {
+				if(loadFuture.isDone()) {
+					try {
+						loadFuture.get();
+					} catch (Exception e) {
+						throw new GdxRuntimeException("Couldn't load asset '" + assetDesc.fileName + "'", e);
+					}
+					asset = asyncLoader.loadSync();
 				}
 			}
 		}
-		return asset != null;
 	}
 	
 	public Object getAsset() {

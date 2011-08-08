@@ -1,20 +1,17 @@
 package com.badlogic.gdx.assets;
 
-import java.util.concurrent.Callable;
+import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 import com.badlogic.gdx.assets.loaders.AssetLoader;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
-import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -32,7 +29,7 @@ public class AssetManager implements Disposable {
 	final ObjectMap<Class, AssetLoader> loaders = new ObjectMap<Class, AssetLoader>();
 	final Array<AssetDescriptor> preloadQueue = new Array<AssetDescriptor>();
 	final ExecutorService threadPool;
-	AssetLoadingTask task = null;
+	Stack<AssetLoadingTask> tasks = new Stack<AssetLoadingTask>();
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
@@ -109,7 +106,7 @@ public class AssetManager implements Disposable {
 
 	public synchronized boolean update () {
 		try {
-			if(task == null) {
+			if(tasks.size() == 0) {
 				if(preloadQueue.size == 0) return true;
 				nextTask();
 			}
@@ -119,14 +116,21 @@ public class AssetManager implements Disposable {
 		}
 	}
 	
+	synchronized void injectTask(AssetDescriptor assetDesc) {
+		AssetLoader loader = loaders.get(assetDesc.type);
+		if(loader == null) throw new GdxRuntimeException("No loader for type '" + assetDesc.type.getSimpleName() + "'");
+		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
+	}
+	
 	private void nextTask() {
 		AssetDescriptor assetDesc = preloadQueue.removeIndex(0);
 		AssetLoader loader = loaders.get(assetDesc.type);
 		if(loader == null) throw new GdxRuntimeException("No loader for type '" + assetDesc.type.getSimpleName() + "'");
-		task = new AssetLoadingTask(assetDesc, loader, threadPool);
+		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
 	}
 	
 	private boolean updateTask() {
+		AssetLoadingTask task = tasks.peek();
 		if(task.update()) {
 			assetTypes.put(task.assetDesc.fileName, task.assetDesc.type);
 			ObjectMap<String, Object> typeToAssets = assets.get(task.assetDesc.type);
@@ -137,6 +141,7 @@ public class AssetManager implements Disposable {
 			typeToAssets.put(task.assetDesc.fileName, task.getAsset());
 			task = null;
 			loaded++;
+			tasks.pop();
 			return true;
 		} else {
 			return false;
@@ -144,6 +149,7 @@ public class AssetManager implements Disposable {
 	}
 	
 	private boolean handleTaskError(Throwable t) {
+		AssetLoadingTask task = tasks.pop();
 		AssetDescriptor assetDesc = task.assetDesc;
 		task = null;
 		if(listener != null) {
@@ -163,7 +169,7 @@ public class AssetManager implements Disposable {
 	}
 
 	public synchronized int getQueuedAssets () {
-		return preloadQueue.size + (task == null?0:1);
+		return preloadQueue.size + (tasks.size());
 	}
 	
 	public synchronized float getProgress() {
@@ -183,14 +189,14 @@ public class AssetManager implements Disposable {
 	}
 
 	public synchronized void clear () {
-		if(preloadQueue.size > 0 || task != null) {
+		if(preloadQueue.size > 0 || tasks.size() != 0) {
 			try {
 				while(!updateTask());
 			} catch(Throwable t) {
 				handleTaskError(t);
 			}
 			preloadQueue.clear();
-			task = null;
+			tasks.clear();
 		}
 		
 		Array<String> assets = assetTypes.keys().toArray();

@@ -71,7 +71,7 @@ public class BitmapFont implements Disposable {
 	final BitmapFontData data;
 
 	public static class BitmapFontData {
-		FileHandle imgFile;
+		String imgFile;
 		final boolean flipped;
 		final float lineHeight;
 		float capHeight = 1;
@@ -111,7 +111,7 @@ public class BitmapFont implements Disposable {
 				} else {
 					imgFilename = pageLine[2].substring(5, pageLine[2].length());
 				}
-				imgFile = fontFile.parent().child(imgFilename);				
+				imgFile = fontFile.parent().child(imgFilename).path();				
 				descent = 0;
 
 				while (true) {
@@ -210,10 +210,14 @@ public class BitmapFont implements Disposable {
 			}
 		}
 		
-		Glyph getGlyph (char ch) {
+		public Glyph getGlyph (char ch) {
 			Glyph[] page = glyphs[ch / PAGE_SIZE];
 			if (page != null) return page[ch & PAGE_SIZE - 1];
 			return null;
+		}
+		
+		public String getImageFile() {
+			return imgFile;
 		}
 	}
 	
@@ -275,7 +279,7 @@ public class BitmapFont implements Disposable {
 	}
 	
 	public BitmapFont(BitmapFontData data, TextureRegion region, boolean integer) {
-		this.region = region == null? new TextureRegion(new Texture(data.imgFile, false)): region;
+		this.region = region == null? new TextureRegion(new Texture(Gdx.files.internal(data.imgFile), false)): region;
 		this.flipped = data.flipped;
 		this.integer = integer;
 		this.data = data;

@@ -35,7 +35,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * An animated model with {@link KeyframeAnimation}s. Currently the animations can only be instanced from an {@link MD5Animation}.
- * Support for binary serialization may be included in future development.
+ * Support for binary serialization may be included in loadFuture development.
  *  
  * @author Dave Clayton <contact@redskyforge.com>
  *
