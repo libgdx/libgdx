@@ -44,6 +44,8 @@ public class ScissorStack {
 	 * @param scissor the scissor Rectangle
 	 */
 	public static void pushScissors(Rectangle scissor) {				
+		fix(scissor);
+		
 		if(scissors.size == 0) {
 			Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);		
 		}
@@ -75,6 +77,17 @@ public class ScissorStack {
 		else {
 			Rectangle scissor = scissors.peek();
 			Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
+		}
+	}
+	
+	private static void fix(Rectangle rect) {
+		if(rect.width < 0) {
+			rect.width = -rect.width;
+			rect.x -= rect.width;
+		}
+		if(rect.height < 0) {
+			rect.height = -rect.height;
+			rect.y -= rect.height;
 		}
 	}
 	

@@ -157,6 +157,14 @@ public class Pixmap implements Disposable {
 	}
 	
 	/**
+	 * Constructs a new Pixmap from a {@link Gdx2DPixmap}.
+	 * @param pixmap
+	 */
+	public Pixmap(Gdx2DPixmap pixmap) {
+		this.pixmap = pixmap;
+	}
+	
+	/**
 	 * Sets the color for the following drawing operations.
 	 * 
 	 * @param r The red component.

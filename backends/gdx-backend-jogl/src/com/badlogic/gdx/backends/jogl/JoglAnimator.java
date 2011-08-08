@@ -292,7 +292,7 @@ public class JoglAnimator {
 							} else {
 								// Compute union with already dirty region
 								// Note we could compute multiple non-overlapping
-								// regions: might want to do that in the future
+								// regions: might want to do that in the loadFuture
 								// (prob. need more complex algorithm -- dynamic
 								// programming?)
 								dirty.add(new Rectangle(x, y, visible.width, visible.height));

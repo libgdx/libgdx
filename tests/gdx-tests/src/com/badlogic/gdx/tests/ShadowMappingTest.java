@@ -111,8 +111,8 @@ public class ShadowMappingTest extends GdxTest {
 		table.add(label2);
 		table.add(shaderCombo);
 		table.add(fpsLabel);
-		table.getTable().y = ui.top() - 100;		
-		ui.addActor(table.getTable());
+		table.y = ui.top() - 100;		
+		ui.addActor(table);
 		
 		cameraCombo.setSelectionListener(new ComboBox.SelectionListener() {			
 			@Override public void selected (ComboBox comboBox, int selectionIndex, String selection) {

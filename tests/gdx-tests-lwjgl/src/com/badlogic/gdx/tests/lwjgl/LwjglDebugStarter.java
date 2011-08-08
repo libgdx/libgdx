@@ -34,7 +34,7 @@ import com.badlogic.gdx.tests.UITest;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-//		config.useGL20 = true;
-		new LwjglApplication(new AssetManagerTest(), config);
+		config.useGL20 = true;
+		new LwjglApplication(new ShadowMappingTest(), config);
 	}
 }
