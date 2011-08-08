@@ -26,16 +26,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
  * A container acting as a dialog or window.
  * 
  * <h2>Functionality</h2>
- * A Window is a {@link Container} that can be moved around by touching and dragging its titlebar.It can house
+ * A Window is a {@link Table} that can be moved around by touching and dragging its titlebar.It can house
  * multiple {@link Actor} instances in a table-layout. The difference to a pure Container is
  * that the Window will automatically set the padding of the layout to respect the width and height
- * of the border patches of its background NinePatch. See {@link Container} for more information on
+ * of the border patches of its background NinePatch. See {@link Table} for more information on
  * how Actor instances are laid out when using this class.</p>
  * 
  * A Window can also be set to be modal via a call to {@link #setModal(boolean)}, in which case all
@@ -43,12 +45,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * <h2>Layout</h2>
  * The (preferred) width and height are determined by the values given in the constructor of this class. 
- * Please consult the {@link Container} documentation on how the width and height will be manipulated
+ * Please consult the {@link Table} documentation on how the width and height will be manipulated
  * if the Window is contained in another Container, a not so common use case. Additionally you can set 
- * the (preferred) width and height via a call to {@link #setPrefSize(float, float)}.
+ * the (preferred) width and height via a call to {@link TableLayout#size(int, int)}.
  * 
  * <h2>Style</h2>
- * A Window is a {@link Container} displaying a background {@link NinePatch} and its child Actors, clipped to the
+ * A Window is a {@link Table} displaying a background {@link NinePatch} and its child Actors, clipped to the
  * Window's area, taking into account the padding as described in the functionality section. Additionally the window
  * will render a title string in its top border patches. The style is defined via
  * an instance of {@link WindowStyle}, which can be either done programmatically or via a {@link Skin}.</p>
@@ -74,7 +76,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * @author mzechner
  *
  */
-public class Window extends Container {
+public class Window extends Table {
 	final WindowStyle style;
 	String title;
 	final Stage stage;
@@ -97,16 +99,21 @@ public class Window extends Container {
 	 * @param style the {@link WindowStyle}
 	 */
 	public Window(String name, Stage stage, String title, int prefWidth, int prefHeight, WindowStyle style) {
-		super(name, prefWidth, prefHeight);
-		this.style = style;
-		this.title = title;
+		super(name);
 		this.stage = stage;
+		this.title = title;
+		width = prefWidth;
+		height = prefHeight;
+		this.style = style;
+
+		TableLayout layout = getTableLayout();
+		layout.updatesTransform = true;
 		
 		final NinePatch background = style.background;
-		layout.padBottom = Integer.toString((int)(background.getBottomHeight()) + 1);
-		layout.padTop = Integer.toString((int)(background.getTopHeight()) + 1);
-		layout.padLeft = Integer.toString((int)(background.getLeftWidth()) + 1);
-		layout.padRight = Integer.toString((int)(background.getRightWidth()) + 1);
+		layout.padBottom(Integer.toString((int)(background.getBottomHeight()) + 1));
+		layout.padTop(Integer.toString((int)(background.getTopHeight()) + 1));
+		layout.padLeft(Integer.toString((int)(background.getLeftWidth()) + 1));
+		layout.padRight(Integer.toString((int)(background.getRightWidth()) + 1));
 	}
 	
 	
@@ -134,7 +141,7 @@ public class Window extends Container {
 		final Color titleFontColor = style.titleFontColor;
 					
 		setupTransform(batch);
-		applyLayout();
+		layout();
 		calculateBoundsAndScissors(batch.getTransformMatrix());
 		
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);

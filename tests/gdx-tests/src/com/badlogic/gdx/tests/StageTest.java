@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -38,7 +38,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 	private static final int NUM_GROUPS = 5;
 	private static final int NUM_SPRITES = (int)Math.sqrt(400 / NUM_GROUPS);
 	private static final float SPACING = 5;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	Stage stage;
 	Stage ui;
 	Texture texture;
@@ -94,7 +94,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		 ui.addActor(fps);
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		Gdx.input.setInputProcessor(this);
 	}
 

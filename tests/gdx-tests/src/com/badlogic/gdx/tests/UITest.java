@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ToggleButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
@@ -74,21 +75,23 @@ public class UITest extends GdxTest {
 		imgButton.setImageSize(16, 20);
 		imgToggleButton.setImageSize(10, 10);
 		
-		window.row().fill(true, true).expand(true, false).spacingBottom(10);
-		window.add(button);
-		window.add(buttonMulti);			
-		window.add(imgButton);
-		window.add(imgToggleButton);
-		window.row().spacingBottom(10);
-		window.add(checkBox);
-		window.add(slider).fill(true, false).colspan(3);
-		window.row().spacingBottom(10);		
-		window.add(combobox);			
-		window.add(textfield).expand(true, false).fill(true, false).colspan(3);
-		window.row().spacingBottom(10);
-		window.add(splitPane).fill(true, true).expand(true, true).colspan(4);
-		window.row();
-		window.add(label).fill(true,  true).expand(true, true);
+		TableLayout layout = window.getTableLayout();
+		layout.getDefaults().spaceBottom(10);
+		layout.row().fill().expandX();
+		layout.add(button);
+		layout.add(buttonMulti);			
+		layout.add(imgButton);
+		layout.add(imgToggleButton);
+		layout.row();
+		layout.add(checkBox);
+		layout.add(slider).fillX().colspan(3);
+		layout.row();		
+		layout.add(combobox);			
+		layout.add(textfield).expandX().fillX().colspan(3);
+		layout.row();
+		layout.add(splitPane).fill().expand().colspan(4);
+		layout.row();
+		layout.add(label).fill().expand();
 		
 		textfield.setTextFieldListener(new TextFieldListener() {			
 			@Override public void keyTyped (TextField textField, char key) {
@@ -106,7 +109,6 @@ public class UITest extends GdxTest {
 		ui.addActor(window);
 	}
 
-	Vector2 point = new Vector2();
 	@Override
 	public void render() {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);

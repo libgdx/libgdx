@@ -2,7 +2,6 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -14,9 +13,10 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -104,14 +104,16 @@ public class ShadowMappingTest extends GdxTest {
 		ComboBox shaderCombo = skin.newComboBox("shaderCombo", new String[] { "flat", "shadow-gen", "shadow-map" }, ui);
 		Label fpsLabel = skin.newLabel("fps", "fps:");
 		
-		Container container = new Container("toolbar", Gdx.graphics.getWidth(), 100);
-		container.add(label).spacingRight(5);
-		container.add(cameraCombo).spacingRight(5);
-		container.add(label2).spacingRight(5);
-		container.add(shaderCombo).spacingRight(5);
-		container.add(fpsLabel).spacingRight(5);
-		container.y = ui.top() - 100;		
-		ui.addActor(container);
+		TableLayout layout = new Table("toolbar").getTableLayout();
+		layout.size(Gdx.graphics.getWidth(), 100);
+		layout.getDefaults().spaceRight(5);
+		layout.add(label);
+		layout.add(cameraCombo);
+		layout.add(label2);
+		layout.add(shaderCombo);
+		layout.add(fpsLabel);
+		layout.getTable().y = ui.top() - 100;		
+		ui.addActor(layout.getTable());
 		
 		cameraCombo.setSelectionListener(new ComboBox.SelectionListener() {			
 			@Override public void selected (ComboBox comboBox, int selectionIndex, String selection) {

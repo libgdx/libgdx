@@ -18,12 +18,13 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /**
  * Base class for all UI widgets. A widget implements the {@link Layout} interface which
  * has a couple of features.</p>
  * 
- * A widget has a preferred width and height which it will use if possible, e.g. if it is not in a {@link Container} ({@link Pane}, {@link Window}) or a {@link SplitPane} or
+ * A widget has a preferred width and height which it will use if possible, e.g. if it is not in a {@link Table} ({@link Pane}, {@link Window}) or a {@link SplitPane} or
  * a {@link ScrollPane}. In case it is contained in one of the aforementioned containers, the
  * preferred width and height will be used to guide the layouting mechanism employed by those containers.</p>
  * 

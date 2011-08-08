@@ -23,16 +23,18 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
  * A Container with a background NinePatch.
  * 
  * <h2>Functionality</h2>
- * A Pane is a {@link Container} displaying a background {@link NinePatch}. It can house
+ * A Pane is a {@link Table} displaying a background {@link NinePatch}. It can house
  * multiple {@link Actor} instances in a table-layout. The difference to a pure Container is
  * that the Pane will automatically set the padding of the layout to respect the width and height
- * of the border patches of its background NinePatch. See {@link Container} for more information on
+ * of the border patches of its background NinePatch. See {@link Table} for more information on
  * how Actor instances are laid out when using this class. </p>
  * 
  * In addition to the basic functionality provided by the Container super class, a Pane will also
@@ -40,12 +42,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * <h2>Layout</h2>
  * The (preferred) width and height are determined by the values given in the constructor of this class. 
- * Please consult the {@link Container} documentation on how the width and height will be manipulated
+ * Please consult the {@link Table} documentation on how the width and height will be manipulated
  * if the Pane is contained in another Container. Additionally you can set the (preferred) width and height
- * via a call to {@link #setPrefSize(float, float)}.
+ * via a call to {@link TableLayout#size(int, int)}.
  * 
  * <h2>Style</h2>
- * A Pane is a {@link Container} displaying a background {@link NinePatch} and its child Actors, clipped to the
+ * A Pane is a {@link Table} displaying a background {@link NinePatch} and its child Actors, clipped to the
  * Pane's area, taking into account the padding as described in the functionality section. The style is defined via
  * an instance of {@link PaneStyle}, which can be either done programmatically or via a {@link Skin}.</p>
  * 
@@ -65,7 +67,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * @author mzechner
  *
  */
-public class Pane extends Container {	
+public class Pane extends Table {	
 	final PaneStyle style;
 	final Stage stage;
 	final Rectangle widgetBounds = new Rectangle();
@@ -81,15 +83,18 @@ public class Pane extends Container {
 	 * @param style the {@link PaneStyle}
 	 */
 	public Pane(String name, Stage stage, int prefWidth, int prefHeight, PaneStyle style) {
-		super(name, prefWidth, prefHeight);
-		this.style = style;
+		super(name);
 		this.stage = stage;
+		width = prefWidth;
+		height = prefHeight;
+		this.style = style;
 		
 		final NinePatch background = style.background;
-		layout.padBottom = Integer.toString((int)(background.getBottomHeight()) + 1);
-		layout.padTop = Integer.toString((int)(background.getTopHeight()) + 1);
-		layout.padLeft = Integer.toString((int)(background.getLeftWidth()) + 1);
-		layout.padRight = Integer.toString((int)(background.getRightWidth()) + 1);
+		TableLayout layout = getTableLayout();
+		layout.padBottom(Integer.toString((int)(background.getBottomHeight()) + 1));
+		layout.padTop(Integer.toString((int)(background.getTopHeight()) + 1));
+		layout.padLeft(Integer.toString((int)(background.getLeftWidth()) + 1));
+		layout.padRight(Integer.toString((int)(background.getRightWidth()) + 1));
 	}	
 	
 	private void calculateScissors(Matrix4 transform) {
@@ -109,7 +114,7 @@ public class Pane extends Container {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);		
 		setupTransform(batch);
-		applyLayout();
+		layout();
 		calculateScissors(batch.getTransformMatrix());
 		ScissorStack.pushScissors(scissors);
 		super.drawChildren(batch, parentAlpha);

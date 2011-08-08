@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -54,7 +54,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	private com.badlogic.gdx.graphics.OrthographicCamera camera;
 
 	/** the immediate mode renderer to output our debug drawings **/
-	private ImmediateModeRenderer renderer;
+	private ImmediateModeRenderer10 renderer;
 	
 	/** box2d debug renderer **/
 	private Box2DDebugRenderer debugRenderer;
@@ -91,7 +91,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		camera.position.set(0, 16, 0);
 
 		// next we setup the immediate mode renderer
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		
 		// next we create the box2d debug renderer
 		debugRenderer = new Box2DDebugRenderer();

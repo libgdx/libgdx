@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class KeyframedModelViewer implements ApplicationListener {
@@ -26,7 +26,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 	Texture texture = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	float angle = 0;
 	String fileName;
 	String textureFileName;
@@ -58,7 +58,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 		cam.near = 1f;
 		cam.far = 1000;
 		
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 	}

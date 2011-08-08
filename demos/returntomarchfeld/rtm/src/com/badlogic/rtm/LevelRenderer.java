@@ -33,7 +33,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LevelRenderer implements ApplicationListener {
@@ -43,7 +43,7 @@ public class LevelRenderer implements ApplicationListener {
 	Mesh wallMesh;
 	SpriteBatch batch;
 	BitmapFont font;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	float angle = -90;
 
 	@Override public void create () {

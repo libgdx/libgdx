@@ -23,14 +23,14 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.input.RemoteInput;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class RemoteTest extends GdxTest implements ApplicationListener, InputProcessor {	
 	BitmapFont font;
 	SpriteBatch batch;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	String ips;
 	
 	@Override public void create () {
@@ -41,7 +41,7 @@ public class RemoteTest extends GdxTest implements ApplicationListener, InputPro
 		Gdx.input.setInputProcessor(this);		
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 	}
 
 	@Override public void resume () {

@@ -1,5 +1,7 @@
 package com.badlogic.gdx.tests;
 
+import java.awt.Container;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
@@ -20,9 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -93,11 +96,12 @@ public class ProjectiveTextureTest extends GdxTest {
 		ComboBox camera = skin.newComboBox("camera", new String[] { "Camera", "Light" }, ui);
 		Label fps = skin.newLabel("fps", "fps: ");
 		
-		Container container = new Container("container", (int)ui.width(), (int)ui.height());
-		container.add(reload).spacingRight(5);
-		container.add(camera).spacingRight(5);
-		container.add(fps);
-		ui.addActor(container);
+		TableLayout layout = new Table("container").getTableLayout();
+		layout.size((int)ui.width(), (int)ui.height());
+		layout.add(reload).spaceRight(5);
+		layout.add(camera).spaceRight(5);
+		layout.add(fps);
+		ui.addActor(layout.getTable());
 		
 		reload.setClickListener(new ClickListener() {			
 			@Override public void click (Button button) {

@@ -21,7 +21,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 public class Box2DDebugRenderer {
 
 	/** the immediate mode renderer to output our debug drawings **/
-	protected ImmediateModeRenderer renderer;
+	protected ImmediateModeRenderer10 renderer;
 
 	/** a spritebatch and a font for text rendering **/
 	public SpriteBatch batch;
@@ -42,7 +42,7 @@ public class Box2DDebugRenderer {
 
 	public Box2DDebugRenderer () {
 		// next we setup the immediate mode renderer
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();

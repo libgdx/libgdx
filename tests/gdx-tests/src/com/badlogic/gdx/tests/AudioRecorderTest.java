@@ -19,19 +19,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class AudioRecorderTest extends GdxTest {
 	short[] samples = new short[1024 * 4];
 	AudioDevice device;
 	AudioRecorder recorder;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 
 	@Override public void create () {
 		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 
 		Thread t = new Thread(new Runnable() {
 

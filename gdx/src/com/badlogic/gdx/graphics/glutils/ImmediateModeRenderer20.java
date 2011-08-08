@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  *
  */
-public class ImmediateModeRenderer20 {		
+public class ImmediateModeRenderer20 implements ImmediateModeRenderer {		
 	int primitiveType;	
 	int vertexIdx;
 	int numSetTexCoords;
@@ -182,5 +182,9 @@ public class ImmediateModeRenderer20 {
 		
 		numSetTexCoords = 0;
 		vertexIdx = 0;
+	}
+	
+	public int getNumVertices () {
+		return vertexIdx / 3;
 	}
 }

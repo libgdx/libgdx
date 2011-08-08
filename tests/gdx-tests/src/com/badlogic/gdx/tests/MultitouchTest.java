@@ -21,11 +21,11 @@ import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MultitouchTest extends GdxTest implements InputProcessor {
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	OrthographicCamera camera;
 	long startTime = System.nanoTime();
 
@@ -62,7 +62,7 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 
 	@Override public void create () {
 		Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen));
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		Gdx.input.setInputProcessor(this);

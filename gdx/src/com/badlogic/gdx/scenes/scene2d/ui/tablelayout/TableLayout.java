@@ -24,68 +24,62 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
-import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
-import com.badlogic.gdx.scenes.scene2d.actors.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
 
-public class TableLayout extends BaseTableLayout<Actor> {
-	static {
-		addClassPrefix("com.badlogic.gdx.scenes.scene2d.");
-		addClassPrefix("com.badlogic.gdx.scenes.scene2d.actors.");
-	}
-
-	static public BitmapFont defaultFont;
-	static private HashMap<String, BitmapFont> fonts = new HashMap();
-
+/** @author Nathan Sweet */
+public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
 	/** The atlas to use to find texture regions. */
 	public TextureAtlas atlas;
+	public boolean updatesTransform;
 
-	Table table;
 	boolean needsLayout = true;
-
-	private Array<DebugRect> debugRects;
+	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;
+
+	public TableLayout () {
+		super(LibgdxToolkit.instance);
+	}
+
+	public TableLayout (LibgdxToolkit toolkit) {
+		super(toolkit);
+	}
 
 	public void parse (FileHandle file) {
 		super.parse(file.readString());
 	}
 
-	/**
-	 * Calls {@link #register(String, Actor)} with the name of the actor.
-	 */
+	/** Calls {@link #register(String, Actor)} with the name of the actor. */
 	public Actor register (Actor actor) {
 		if (actor.name == null) throw new IllegalArgumentException("Actor must have a name: " + actor.getClass());
 		return register(actor.name, actor);
 	}
 
-	/**
-	 * Finds the texture region in the {@link #atlas}, creates an {@link Image} and registers it with the specified name.
-	 */
+	/** Finds the texture region in the {@link #atlas}, creates an {@link Image} and registers it with the specified name. */
 	public Actor registerImage (String name) {
 		return register(new Image(name, atlas.findRegion(name)));
 	}
 
 	public Actor getWidget (String name) {
 		Actor actor = super.getWidget(name);
-		if (actor == null) actor = table.findActor(name);
+		if (actor == null) actor = getTable().findActor(name);
 		return actor;
 	}
 
@@ -93,20 +87,28 @@ public class TableLayout extends BaseTableLayout<Actor> {
 		if (!needsLayout) return;
 		needsLayout = false;
 
-		tableLayoutWidth = (int)table.width;
-		int height = (int)table.height;
-		tableLayoutHeight = height;
+		Table table = getTable();
+
+		float topLeftY = table.height;
+		if (updatesTransform)
+			setLayoutSize(0, 0, (int)table.width, (int)table.height);
+		else {
+			setLayoutSize((int)table.x, 0, (int)table.width, (int)table.height);
+			topLeftY += table.y;
+		}
 
 		super.layout();
 
+		List<Cell> cells = getCells();
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
-			if (c.ignore) continue;
-			Actor actor = (Actor)c.widget;
-			actor.x = c.widgetX;
-			actor.y = height - c.widgetY - c.widgetHeight;
-			actor.width = c.widgetWidth;
-			actor.height = c.widgetHeight;
+			if (c.getIgnore()) continue;
+			Actor actor = (Actor)c.getWidget();
+			actor.x = c.getWidgetX();
+			int widgetHeight = c.getWidgetHeight();
+			actor.y = topLeftY - c.getWidgetY() - widgetHeight;
+			actor.width = c.getWidgetWidth();
+			actor.height = widgetHeight;
 			if (actor instanceof Layout) {
 				Layout layout = (Layout)actor;
 				layout.invalidate();
@@ -115,133 +117,58 @@ public class TableLayout extends BaseTableLayout<Actor> {
 		}
 	}
 
-	public Actor wrap (Object object) {
-		if (object instanceof String) {
-			if (defaultFont == null) throw new IllegalStateException("No default font has been set.");
-			return new Label(null, defaultFont, (String)object);
-		}
-		if (object == null) return new Group();
-		return super.wrap(object);
-	}
-
-	public Actor newWidget (String className) {
-		AtlasRegion region = atlas.findRegion(className);
-		if (region != null) return new Image(className, region);
-		if (className.equals("button")) return new Button(null);
-		return super.newWidget(className);
-	}
-
-	public void setProperty (Actor object, String name, List<String> values) {
-		if (object instanceof Label) {
-			Label label = ((Label)object);
-			String value = values.get(0);
-			if (name.equals("wrappedText") && values.size() > 0) {
-				HAlignment alignment = HAlignment.LEFT;
-				if (values.size() > 1) alignment = HAlignment.valueOf(values.get(1).toUpperCase());
-				label.setWrappedText((String)values.get(0), alignment);
-				return;
-			}
-			if (name.equals("font")) {
-				label.setFont(getFont(value));
-				return;
-			}
-		}
-
-		if (object instanceof Button) {
-			Button button = (Button)object;
-			if (name.equals("up")) {
-				button.unpressedRegion = atlas.findRegion(values.get(0));
-				return;
-			}
-			if (name.equals("down")) {
-				button.pressedRegion = atlas.findRegion(values.get(0));
-				return;
-			}
-		}
-
-		super.setProperty(object, name, values);
-	}
-
-	public BaseTableLayout newTableLayout () {
-		TableLayout layout = new Table().layout;
-		layout.setParent(this);
-		return layout;
-	}
-
-	public Actor newStack () {
-		return new Stack();
-	}
-
-	public void addChild (Actor parent, Actor child, String layoutString) {
-		if (child.parent != null) child.remove();
-		((Group)parent).addActor(child);
-	}
-
-	public void removeChild (Actor parent, Actor child) {
-		((Group)parent).removeActor(child);
-	}
-
-	public int getMinWidth (Actor actor) {
-		if (actor instanceof Layout) return (int)((Layout)actor).getPrefWidth();
-		return (int)actor.width;
-	}
-
-	public int getMinHeight (Actor actor) {
-		if (actor instanceof Layout) return (int)((Layout)actor).getPrefHeight();
-		return (int)actor.height;
-	}
-
-	public int getPrefWidth (Actor actor) {
-		if (actor instanceof Layout) return (int)((Layout)actor).getPrefWidth();
-		return (int)actor.width;
-	}
-
-	public int getPrefHeight (Actor actor) {
-		if (actor instanceof Layout) return (int)((Layout)actor).getPrefHeight();
-		return (int)actor.height;
-	}
-
-	public int getMaxWidth (Actor actor) {
-		return 0;
-	}
-
-	public int getMaxHeight (Actor actor) {
-		return 0;
-	}
-
 	public void invalidate () {
 		needsLayout = true;
 	}
 
-	public void drawDebug () {
-		if (debug == null || debugRects == null) return;
-		if (debugRenderer == null) debugRenderer = new ImmediateModeRenderer(64);
-
-		float x = 0, y = table.height;
-		Actor parent = table;
+	public void invalidateHierarchy () {
+		invalidate();
+		Actor parent = getTable().parent;
 		while (parent != null) {
-			if (parent instanceof Table) {
-				x += parent.x;
-				y += parent.y;
-			} else {
+			if (parent instanceof Layout) ((Layout)parent).invalidate();
+			parent = parent.parent;
+		}
+	}
+
+	public void drawDebug (SpriteBatch batch) {
+		if (getDebug() == DEBUG_NONE || debugRects == null) return;
+		if (debugRenderer == null) {
+			if (Gdx.graphics.isGL20Available())
+				debugRenderer = new ImmediateModeRenderer20(64, false, true, 0);
+			else
+				debugRenderer = new ImmediateModeRenderer10(64);
+		}
+
+		Table table = getTable();
+		Actor parent = table.parent;
+		float x = 0, y = 0;
+		while (parent != null) {
+			boolean parentUpdatesTransform = false;
+			if (parent instanceof Table)
+				parentUpdatesTransform = ((Table)parent).getTableLayout().updatesTransform;
+			else {
+				if (parent instanceof Group) parentUpdatesTransform = true;
+			}
+			if (parentUpdatesTransform) {
 				x += parent.x;
 				y += parent.y;
 			}
 			parent = parent.parent;
 		}
+		y = table.y + table.height - y;
 
 		int viewHeight = Gdx.graphics.getHeight();
 
-		debugRenderer.begin(GL10.GL_LINES);
+		debugRenderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
 		for (int i = 0, n = debugRects.size; i < n; i++) {
 			DebugRect rect = debugRects.get(i);
 			float x1 = x + rect.x;
 			float y1 = y - rect.y - rect.height;
 			float x2 = x1 + rect.width;
 			float y2 = y1 + rect.height;
-			float r = rect.type.equals(DEBUG_CELL) ? 1 : 0;
-			float g = rect.type.equals(DEBUG_WIDGET) ? 1 : 0;
-			float b = rect.type.equals(DEBUG_TABLE) ? 1 : 0;
+			float r = (rect.type & DEBUG_CELL) != 0 ? 1 : 0;
+			float g = (rect.type & DEBUG_WIDGET) != 0 ? 1 : 0;
+			float b = (rect.type & DEBUG_TABLE) != 0 ? 1 : 0;
 
 			debugRenderer.color(r, g, b, 1);
 			debugRenderer.vertex(x1, y1, 0);
@@ -265,82 +192,9 @@ public class TableLayout extends BaseTableLayout<Actor> {
 
 			if (debugRenderer.getNumVertices() == 64) {
 				debugRenderer.end();
-				debugRenderer.begin(GL10.GL_LINES);
+				debugRenderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
 			}
 		}
 		debugRenderer.end();
-	}
-
-	public void clearDebugRectangles () {
-		if (debugRects != null) debugRects.clear();
-	}
-
-	public void addDebugRectangle (String type, int x, int y, int w, int h) {
-		if (debugRects == null) debugRects = new Array();
-		debugRects.add(new DebugRect(type, x, y, w, h));
-	}
-
-	public Table getTable () {
-		return table;
-	}
-
-	/**
-	 * Sets the name of a font.
-	 */
-	static public void registerFont (String name, BitmapFont font) {
-		fonts.put(name, font);
-		if (defaultFont == null) defaultFont = font;
-	}
-
-	static public BitmapFont getFont (String name) {
-		BitmapFont font = fonts.get(name);
-		if (font == null) throw new IllegalArgumentException("Font not found: " + name);
-		return font;
-	}
-
-	class Stack extends Group implements Layout {
-		private boolean needsLayout = true;
-
-		public void layout () {
-			if (!needsLayout) return;
-			needsLayout = false;
-			for (int i = 0, n = children.size(); i < n; i++) {
-				Actor actor = children.get(i);
-				actor.width = width;
-				actor.height = height;
-				if (actor instanceof Layout) {
-					Layout layout = (Layout)actor;
-					layout.invalidate();
-					layout.layout();
-				}
-			}
-		}
-
-		public void invalidate () {
-			needsLayout = true;
-		}
-
-		public float getPrefWidth () {
-			float width = 0;
-			for (int i = 0, n = children.size(); i < n; i++)
-				width = Math.max(width, TableLayout.this.getPrefWidth(children.get(i)));
-			return width * scaleX;
-		}
-
-		public float getPrefHeight () {
-			float height = 0;
-			for (int i = 0, n = children.size(); i < n; i++)
-				height = Math.max(height, TableLayout.this.getPrefHeight(children.get(i)));
-			return height * scaleY;
-		}
-	}
-
-	static private class DebugRect extends Rectangle {
-		final String type;
-
-		public DebugRect (String type, int x, int y, int width, int height) {
-			super(x, y, width, height);
-			this.type = type;
-		}
 	}
 }

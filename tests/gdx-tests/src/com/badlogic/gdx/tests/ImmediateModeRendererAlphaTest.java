@@ -22,12 +22,12 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ImmediateModeRendererAlphaTest extends GdxTest {	
 
-	     ImmediateModeRenderer renderer;
+	     ImmediateModeRenderer10 renderer;
 	   
 	     Texture background;
 	     TextureRegion bgTR;
@@ -48,7 +48,7 @@ public class ImmediateModeRendererAlphaTest extends GdxTest {
 	      
 	          this.batcher = new SpriteBatch();
 	      
-	           this.renderer = new ImmediateModeRenderer();
+	           this.renderer = new ImmediateModeRenderer10();
 
 	     }
 

@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.g3d.G3dLoader;
 import com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
 public class StillModelViewer implements ApplicationListener {
@@ -26,7 +26,7 @@ public class StillModelViewer implements ApplicationListener {
 	Texture[] textures = null;
 	boolean hasNormals = false;
 	BoundingBox bounds = new BoundingBox();
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	float angle = 0;
 	String fileName;
 	String[] textureFileNames;
@@ -73,7 +73,7 @@ public class StillModelViewer implements ApplicationListener {
 		cam.near = 0.1f;
 		cam.far = 1000;
 					
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		batch = new SpriteBatch();
 		font = new BitmapFont();		
 	}

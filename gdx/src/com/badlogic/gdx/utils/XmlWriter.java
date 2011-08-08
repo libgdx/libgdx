@@ -44,49 +44,63 @@ public class XmlWriter extends Writer {
 	private final Writer writer;
 	private final ArrayDeque<String> stack = new ArrayDeque();
 	private String currentElement;
+	private boolean indentNextClose;
+
+	public int indent;
 
 	public XmlWriter (Writer writer) {
 		this.writer = writer;
 	}
 
 	private void indent () throws IOException {
-		int count = stack.size();
+		int count = indent;
 		if (currentElement != null) count++;
 		for (int i = 0; i < count; i++)
 			writer.write('\t');
 	}
 
 	public XmlWriter element (String name) throws IOException {
-		startElementContent();
+		if (startElementContent()) writer.write('\n');
+		indent();
 		writer.write('<');
 		writer.write(name);
 		currentElement = name;
 		return this;
 	}
 
-	private void startElementContent () throws IOException {
-		if (currentElement != null) {
-			stack.push(currentElement);
-			currentElement = null;
-			writer.write(">\n");
-		}
-		indent();
+	public XmlWriter element (String name, Object text) throws IOException {
+		return element(name).text(text).pop();
 	}
 
-	public XmlWriter attribute (String name, String value) throws IOException {
+	private boolean startElementContent () throws IOException {
+		if (currentElement == null) return false;
+		indent++;
+		stack.push(currentElement);
+		currentElement = null;
+		writer.write(">");
+		return true;
+	}
+
+	public XmlWriter attribute (String name, Object value) throws IOException {
 		if (currentElement == null) throw new IllegalStateException();
 		writer.write(' ');
 		writer.write(name);
 		writer.write("=\"");
-		writer.write(value);
+		writer.write(value == null ? "null" : value.toString());
 		writer.write('"');
 		return this;
 	}
 
-	public XmlWriter text (String text) throws IOException {
+	public XmlWriter text (Object text) throws IOException {
 		startElementContent();
-		writer.write(text);
-		writer.write('\n');
+		String string = text == null ? "null" : text.toString();
+		indentNextClose = string.length() > 64;
+		if (indentNextClose) {
+			writer.write('\n');
+			indent();
+		}
+		writer.write(string);
+		if (indentNextClose) writer.write('\n');
 		return this;
 	}
 
@@ -95,12 +109,13 @@ public class XmlWriter extends Writer {
 			writer.write("/>\n");
 			currentElement = null;
 		} else {
-			String name = stack.pop();
-			indent();
+			indent = Math.max(indent - 1, 0);
+			if (indentNextClose) indent();
 			writer.write("</");
-			writer.write(name);
+			writer.write(stack.pop());
 			writer.write(">\n");
 		}
+		indentNextClose = true;
 		return this;
 	}
 
@@ -114,6 +129,7 @@ public class XmlWriter extends Writer {
 	}
 
 	public void write (char[] cbuf, int off, int len) throws IOException {
+		startElementContent();
 		writer.write(cbuf, off, len);
 	}
 

@@ -59,6 +59,7 @@ public class LwjglApplication implements Application {
 		config.width = width;
 		config.height = height;
 		config.useGL20 = useGL2;
+		config.vSyncEnabled = true;
 		graphics = new LwjglGraphics(config);
 		audio = new OpenALAudio();
 		files = new LwjglFiles();

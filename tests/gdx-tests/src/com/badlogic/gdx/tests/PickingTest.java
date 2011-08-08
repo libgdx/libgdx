@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -46,7 +46,7 @@ public class PickingTest extends GdxTest {
 	Mesh sphere;
 	Camera cam;	
 	Vector3[] positions = new Vector3[100];
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	SpriteBatch batch;
 	Texture logo;
 	
@@ -66,7 +66,7 @@ public class PickingTest extends GdxTest {
 												rand.nextFloat() * 100 - rand.nextFloat() * 100);
 		}		
 		positions[0].set(0, 0, -10);
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 	}
 
 	Vector3 intersection = new Vector3();

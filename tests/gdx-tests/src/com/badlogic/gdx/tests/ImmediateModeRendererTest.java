@@ -21,11 +21,11 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ImmediateModeRendererTest extends GdxTest {
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	Texture texture;
 
 	@Override public void dispose () {
@@ -50,7 +50,7 @@ public class ImmediateModeRendererTest extends GdxTest {
 	}
 
 	@Override public void create () {
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
 

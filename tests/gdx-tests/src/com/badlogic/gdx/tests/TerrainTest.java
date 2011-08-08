@@ -26,14 +26,14 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TerrainTest extends GdxTest {
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	TerrainChunk chunk;
 	Mesh mesh;
 	PerspectiveCamera camera;
@@ -42,7 +42,7 @@ public class TerrainTest extends GdxTest {
 	long lastTime = System.nanoTime();
 
 	@Override public void create () {
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 
 		chunk = new TerrainChunk(32, 32, 4);
 

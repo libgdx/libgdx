@@ -19,7 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class CompassTest extends GdxTest {
@@ -30,12 +30,12 @@ public class CompassTest extends GdxTest {
 
 	BitmapFont font;
 	SpriteBatch batch;
-	ImmediateModeRenderer renderer;	
+	ImmediateModeRenderer10 renderer;	
 	
 	@Override public void create() {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 	}
 	
 	@Override public void render() {

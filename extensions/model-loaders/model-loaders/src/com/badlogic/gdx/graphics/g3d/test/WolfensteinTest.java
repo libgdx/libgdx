@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -24,7 +24,7 @@ public class WolfensteinTest implements ApplicationListener {
 
 	PerspectiveCamera camera;
 	StillModel model;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	Texture texture;
 	float[] triangles;
 	short[] indices;
@@ -45,7 +45,7 @@ public class WolfensteinTest implements ApplicationListener {
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());	
 		camera.position.y = 1;
 		
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 	}
 	
 	Vector3 movement = new Vector3();

@@ -2,15 +2,15 @@
 package com.dozingcatsoftware.bouncy;
 
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 
 public class GLFieldRenderer implements IFieldRenderer {
 	static final int CIRCLE_VERTICES = 10;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	float[] circleVerts = new float[2 * CIRCLE_VERTICES];
 
 	public GLFieldRenderer () {
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 
 		float angle = 0;
 		float angleInc = 360.0f / CIRCLE_VERTICES;

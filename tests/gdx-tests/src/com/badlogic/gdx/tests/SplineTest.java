@@ -21,7 +21,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -35,7 +35,7 @@ public class SplineTest extends GdxTest {
 
 	final int CONTROL_POINTS = 10;
 	OrthographicCamera cam;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	CatmullRomSpline spline;
 	Vector3[] path;
 	
@@ -43,7 +43,7 @@ public class SplineTest extends GdxTest {
 	@Override public void create () {
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		spline = new CatmullRomSpline();
 		float x = 0;
 		float y = Gdx.graphics.getHeight() / 2;

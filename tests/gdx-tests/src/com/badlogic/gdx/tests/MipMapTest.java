@@ -7,16 +7,17 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -86,15 +87,16 @@ public class MipMapTest extends GdxTest {
 		minFilter = skin.newComboBox("minfilter", filters, ui);
 		magFilter = skin.newComboBox("magfilter", new String[] { "Nearest", "Linear" }, ui);
 		
-		Container container = new Container("container", (int)ui.width(), 30);
-		container.y = ui.height() - container.height;
-		container.add(hwMipMap).spacingRight(5);
-		container.add(skin.newLabel("lbl1", "Min Filter")).spacingRight(5);
-		container.add(minFilter).spacingRight(5);
-		container.add(skin.newLabel("lbl1", "Mag Filter")).spacingRight(5);
-		container.add(magFilter);		
+		TableLayout layout = new Table("container").getTableLayout();
+		layout.size((int)ui.width(), 30);
+		layout.getTable().y = ui.height() - 30;
+		layout.add(hwMipMap).spaceRight(5);
+		layout.add(skin.newLabel("lbl1", "Min Filter")).spaceRight(5);
+		layout.add(minFilter).spaceRight(5);
+		layout.add(skin.newLabel("lbl1", "Mag Filter")).spaceRight(5);
+		layout.add(magFilter);		
 				
-		ui.addActor(container);			
+		ui.addActor(layout.getTable());			
 	}
 	
 	@Override public void render() {

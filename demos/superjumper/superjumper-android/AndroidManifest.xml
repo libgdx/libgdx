@@ -15,7 +15,7 @@
         </activity>
 
     </application>
-    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="9"/>
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="10"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 </manifest> 

@@ -24,6 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.util.List;
@@ -34,37 +35,36 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+/** @author Nathan Sweet */
 public class Table extends Group implements Layout {
-	public final TableLayout layout;
+	private final TableLayout layout;
 
 	public Table () {
-		this(new TableLayout());
+		this(null, new TableLayout());
 	}
 
 	public Table (TableLayout layout) {
-		this.layout = layout;
-		layout.table = this;
+		this(null, layout);
 	}
 
 	public Table (String name) {
-		super(name);
-		layout = new TableLayout();
-		layout.table = this;
+		this(name, new TableLayout());
 	}
 
 	public Table (String name, TableLayout layout) {
 		super(name);
 		this.layout = layout;
-		layout.table = this;
+		layout.setTable(this);
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		if (!visible) return;
 		if (layout.needsLayout) layout.layout();
-		super.draw(batch, parentAlpha);
-	}
-	
-	protected void applyLayout() {
-		if (layout.needsLayout) layout.layout();
+		// BOZO - Make flushing the SpriteBatch optional?
+		for (int i = 0, n = children.size(); i < n; i++) {
+			Actor child = children.get(i);
+			if (child.visible) child.draw(batch, parentAlpha * color.a);
+		}
 	}
 
 	public void layout () {
@@ -76,28 +76,32 @@ public class Table extends Group implements Layout {
 	}
 
 	public float getPrefWidth () {
+		layout.setLayoutSize(0, 0, 0, 0);
 		layout.layout();
-		return layout.tablePrefWidth;
+		return layout.getMinWidth();
 	}
 
 	public float getPrefHeight () {
+		layout.setLayoutSize(0, 0, 0, 0);
 		layout.layout();
-		return layout.tablePrefHeight;
+		return layout.getMinHeight();
 	}
 
-	/**
-	 * Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be
-	 * drawn.
-	 */
+	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be
+	 * drawn. */
 	static public void drawDebug (Stage stage) {
-		drawDebug(stage.getActors());
+		drawDebug(stage.getActors(), stage.getSpriteBatch());
 	}
 
-	static private void drawDebug (List<Actor> actors) {
+	static private void drawDebug (List<Actor> actors, SpriteBatch batch) {
 		for (int i = 0, n = actors.size(); i < n; i++) {
 			Actor actor = actors.get(i);
-			if (actor instanceof Table) ((Table)actor).layout.drawDebug();
-			if (actor instanceof Group) drawDebug(((Group)actor).getActors());
+			if (actor instanceof Table) ((Table)actor).layout.drawDebug(batch);
+			if (actor instanceof Group) drawDebug(((Group)actor).getActors(), batch);
 		}
+	}
+
+	public TableLayout getTableLayout () {
+		return layout;
 	}
 }

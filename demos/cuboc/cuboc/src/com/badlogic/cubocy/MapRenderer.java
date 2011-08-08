@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Vector3;
 
 public class MapRenderer {	
@@ -17,7 +17,7 @@ public class MapRenderer {
 	OrthographicCamera cam;	
 	SpriteCache cache;
 	SpriteBatch batch = new SpriteBatch(10000);
-	ImmediateModeRenderer renderer = new ImmediateModeRenderer(2000*2);
+	ImmediateModeRenderer10 renderer = new ImmediateModeRenderer10(2000*2);
 	int[][] blocks;
 	TextureRegion tile;	
 	Animation bobLeft;

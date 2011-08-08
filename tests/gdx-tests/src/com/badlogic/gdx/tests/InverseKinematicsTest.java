@@ -3,7 +3,7 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -35,7 +35,7 @@ public class InverseKinematicsTest extends GdxTest {
 	
 	static final float GRAVITY = 0;
 	OrthographicCamera camera;
-	ImmediateModeRenderer renderer;	
+	ImmediateModeRenderer10 renderer;	
 	Bone[] bones;
 	Vector3 globalCoords = new Vector3();
 	Vector3 endPoint = new Vector3();
@@ -44,7 +44,7 @@ public class InverseKinematicsTest extends GdxTest {
 	@Override public void create() {
 		float aspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
 		camera = new OrthographicCamera(15 * aspect, 15);
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		
 		bones = new Bone[] { new Bone("bone0", 0, 0, 0),
 									new Bone("bone1", 0, 2, 2),

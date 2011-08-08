@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonKeyframe;
 import com.badlogic.gdx.graphics.g3d.model.skeleton.SkeletonModel;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
@@ -29,7 +29,7 @@ public class Viewer implements ApplicationListener {
 	static final int NUM_INSTANCES = 1;	
 	SkeletonModel model;	
 	PerspectiveCamera cam;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	float angle = 0;
 	SpriteBatch batch;
 	BitmapFont font;
@@ -53,7 +53,7 @@ public class Viewer implements ApplicationListener {
 		cam.near = 0.1f;
 		cam.far = 1000;
 		
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 				

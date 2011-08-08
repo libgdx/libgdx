@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector3;
@@ -28,7 +28,7 @@ public class FrustumTest extends GdxTest {
 	PerspectiveCamController controller;
 	Mesh plane;
 	Mesh sphere;	
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	
 	@Override public void create() {
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -59,7 +59,7 @@ public class FrustumTest extends GdxTest {
 				   							   -10, -1, -10});
 		plane.setIndices(new short[] { 3, 2, 1, 1, 0, 3 });
 		sphere = ModelLoaderOld.loadObj(Gdx.files.internal("data/sphere.obj").read());
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 	}
 	
 	@Override public void render() {
@@ -80,7 +80,7 @@ public class FrustumTest extends GdxTest {
 		renderFrustum(renderer, camera3.frustum);
 	}
 	
-	public void renderFrustum(ImmediateModeRenderer renderer, Frustum frustum) {
+	public void renderFrustum(ImmediateModeRenderer10 renderer, Frustum frustum) {
 		Vector3[] planePoints = frustum.planePoints;
 		renderer.begin(GL10.GL_LINES);
 		

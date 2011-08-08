@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.interpolators.DecelerateInterpolator;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /**
@@ -34,7 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * scrolling by click/dragging anywhere and flick gestures.
  * 
  * <h2>Functionality</h2> A ScrollPane can embed any {@link Actor} (and
- * {@link Widget} or {@link Container} for that matter) and provide scrolling
+ * {@link Widget} or {@link Table} for that matter) and provide scrolling
  * functionality in case the embedded Actor is bigger than the scroll pane
  * itself. The scroll pane will automatically decide whether it needs a vertical
  * and/or horizontal scroll handle based on the contained Actor's size with

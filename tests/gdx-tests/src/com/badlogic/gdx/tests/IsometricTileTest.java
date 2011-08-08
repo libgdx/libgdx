@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 
@@ -42,7 +42,7 @@ public class IsometricTileTest extends GdxTest {
 	int[] layers = new int[LAYERS];
 	OrthographicCamera cam;
 	OrthoCamController camController;
-	ImmediateModeRenderer renderer;
+	ImmediateModeRenderer10 renderer;
 	long startTime = System.nanoTime();
 
 	@Override public void create () {
@@ -50,7 +50,7 @@ public class IsometricTileTest extends GdxTest {
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
-		renderer = new ImmediateModeRenderer();
+		renderer = new ImmediateModeRenderer10();
 		texture = new Texture(Gdx.files.internal("data/isotile.png"));
 
 		Random rand = new Random();
