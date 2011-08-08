@@ -234,6 +234,8 @@ public class TextureAtlas implements Disposable {
 		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
 		for(Page page: data.pages) {
 			Texture texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+			texture.setFilter(page.minFilter, page.magFilter);
+			texture.setWrap(page.uWrap, page.vWrap);
 			textures.add(texture);
 			pageToTexture.put(page, texture);
 		}
