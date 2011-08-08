@@ -40,7 +40,7 @@ public class Viewer implements ApplicationListener {
 	
 	@Override public void create () {
 		
-		Texture texture = new Texture(Gdx.files.internal("data/nskingr.jpg"));
+		Texture texture = new Texture(Gdx.files.internal("data/ninja.jpg"));
 		Material mat = new Material("mat", new TextureAttribute(texture, 0, "s_tex"));
 		model = new OgreXmlLoader().load(Gdx.files.internal("data/ninja.mesh.xml"), 
 													Gdx.files.internal("data/ninja.skeleton.xml"));		

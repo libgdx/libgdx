@@ -50,7 +50,7 @@ public class QbobViewer implements ApplicationListener {
 		model[3] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_04.dae.g3d"));
 		lightMaps[3] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_04.jpg"), Format.RGB565, true);
 		
-		diffuse = new Texture(Gdx.files.internal("data/qbob/World_blobbie_blocks.png"), Format.RGB565, true);
+		diffuse = new Texture(Gdx.files.internal("data/qbob/world_blobbie_blocks.png"), Format.RGB565, true);
 																		
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(30, 10, 85f);

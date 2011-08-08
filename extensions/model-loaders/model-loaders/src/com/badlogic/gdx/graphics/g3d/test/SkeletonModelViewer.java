@@ -159,6 +159,6 @@ public class SkeletonModelViewer implements ApplicationListener {
 //			System.out.println("KeyframedModelViewer <filename> ?<texture-filename>");
 //			System.exit(-1);
 //		}
-		new JoglApplication(new SkeletonModelViewer("data/robot-mesh.xml", "data/r2skin.jpg"), "SkeletonModel Viewer", 800, 480, false);
+		new JoglApplication(new SkeletonModelViewer("data/robot-mesh.xml", "data/robot.jpg"), "SkeletonModel Viewer", 800, 480, false);
 	}
 }
