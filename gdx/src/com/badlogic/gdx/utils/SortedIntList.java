@@ -9,9 +9,9 @@ package com.badlogic.gdx.utils;
 public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	private NodePool<E> nodePool = new NodePool<E>(); //avoid allocating nodes
 	private Iterator iterator;
-	private int size = 0;
+	int size = 0;
 
-	private Node<E> first;
+	Node<E> first;
 
 	/**
 	 * Creates an ascending list
@@ -110,7 +110,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		return iterator.reset();
 	}
 
-	private class Iterator implements java.util.Iterator<Node<E>> {
+	class Iterator implements java.util.Iterator<Node<E>> {
 		private Node<E> position;
 		private Node<E> previousPosition;
 
@@ -171,7 +171,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		public int index;
 	}
 
-	private static class NodePool<E> extends Pool<Node<E>> {
+	static class NodePool<E> extends Pool<Node<E>> {
 		@Override
 		protected Node<E> newObject() {
 			return new Node<E>();

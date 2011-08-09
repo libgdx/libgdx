@@ -59,7 +59,7 @@ class AssetLoadingTask implements Callable<Void> {
 	
 	/**
 	 * Updates the loading of the asset. In case the asset is loaded with an
-	 * {@link AsynchronousAssetLoader}, the loaders {@link AsynchronousAssetLoader#loadAsync(String, Object)}
+	 * {@link AsynchronousAssetLoader}, the loaders {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, Object)}
 	 * method is first called on a worker thread. Once this method returns, the rest 
 	 * of the asset is loaded on the rendering thread via {@link AsynchronousAssetLoader#loadSync()}. 
 	 * @return true in case the asset was fully loaded, false otherwise

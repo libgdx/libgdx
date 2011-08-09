@@ -80,7 +80,7 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 		Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
 	}
 
-	private class Comparator implements java.util.Comparator<Decal> {
+	class Comparator implements java.util.Comparator<Decal> {
 		@Override
 		public int compare(Decal a, Decal b) {
 			return a.getZ() - b.getZ() < 0 ? -1 : 1;

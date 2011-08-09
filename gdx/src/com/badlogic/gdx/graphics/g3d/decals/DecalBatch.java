@@ -147,7 +147,6 @@ public class DecalBatch implements Disposable {
 	/**
 	 * Renders a group of vertices to the buffer, flushing them to GL when done/full
 	 *
-	 * @param material Material of that group to set
 	 * @param decals   Decals to render
 	 */
 	private void render(ShaderProgram shader, Array<Decal> decals) {

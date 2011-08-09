@@ -27,15 +27,13 @@ import java.io.Reader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-/**
- * Lightweight XML parser. Supports a subset of XML features: elements, attributes, text, predefined entities, CDATA, mixed
+/** Lightweight XML parser. Supports a subset of XML features: elements, attributes, text, predefined entities, CDATA, mixed
  * content. Namespaces are parsed as part of the element or attribute name. Prologs and doctypes are ignored. Only 8-bit character
  * encodings are supported. Input is assumed to be well formed.<br>
  * <br>
  * The default behavior is to parse the XML into a DOM. Extends this class and override methods to perform event driven parsing.
  * When this is done, the parse methods will return null.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class Xml {
 	private final Array<Element> elements = new Array(8);
 	private Element root, current;
@@ -161,13 +159,13 @@ public class Xml {
 						while (_nacts-- > 0) {
 							switch (_xml_actions[_acts++]) {
 							case 0:
-								// line 80 "Xml.rl"
+							// line 80 "Xml.rl"
 							{
 								s = p;
 							}
 								break;
 							case 1:
-								// line 81 "Xml.rl"
+							// line 81 "Xml.rl"
 							{
 								char c = data[s];
 								if (c == '?' || c == '!') {
@@ -197,7 +195,7 @@ public class Xml {
 							}
 								break;
 							case 2:
-								// line 105 "Xml.rl"
+							// line 105 "Xml.rl"
 							{
 								hasBody = false;
 								close();
@@ -209,7 +207,7 @@ public class Xml {
 							}
 								break;
 							case 3:
-								// line 110 "Xml.rl"
+							// line 110 "Xml.rl"
 							{
 								close();
 								{
@@ -220,7 +218,7 @@ public class Xml {
 							}
 								break;
 							case 4:
-								// line 114 "Xml.rl"
+							// line 114 "Xml.rl"
 							{
 								if (hasBody) {
 									cs = 15;
@@ -230,19 +228,19 @@ public class Xml {
 							}
 								break;
 							case 5:
-								// line 117 "Xml.rl"
+							// line 117 "Xml.rl"
 							{
 								attributeName = new String(data, s, p - s);
 							}
 								break;
 							case 6:
-								// line 120 "Xml.rl"
+							// line 120 "Xml.rl"
 							{
 								attribute(attributeName, new String(data, s, p - s));
 							}
 								break;
 							case 7:
-								// line 123 "Xml.rl"
+							// line 123 "Xml.rl"
 							{
 								int end = p;
 								while (end != s) {
@@ -442,10 +440,13 @@ public class Xml {
 			return name;
 		}
 
+		/** @throws GdxRuntimeException if the attribute was not found. */
 		public String getAttribute (String name) {
-			if (attributes == null) return null;
-			return attributes.get(name);
-		}	
+			if (attributes == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			String value = attributes.get(name);
+			if (value == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);
+			return value;
+		}
 
 		public String getAttribute (String name, String defaultValue) {
 			if (attributes == null) return defaultValue;
@@ -453,7 +454,7 @@ public class Xml {
 			if (value == null) return defaultValue;
 			return value;
 		}
-		
+
 		public void setAttribute (String name, String value) {
 			if (attributes == null) attributes = new ObjectMap(8);
 			attributes.put(name, value);
@@ -464,8 +465,9 @@ public class Xml {
 			return children.size;
 		}
 
+		/** @throws GdxRuntimeException if the element has no children. */
 		public Element getChild (int i) {
-			if (children == null) return null;
+			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
 			return children.get(i);
 		}
 
@@ -523,74 +525,144 @@ public class Xml {
 			}
 			return buffer.toString();
 		}
-		
-		/**
-		 * @param name the name of the child {@link Element}
-		 * @return the first child having the given name or null, does not recurse
-		 */
-		public Element getChildByName(String name) {
-			if(children == null) return null;
-			for(int i = 0; i < children.size; i++) {
+
+		/** @param name the name of the child {@link Element}
+		 * @return the first child having the given name or null, does not recurse */
+		public Element getChildByName (String name) {
+			if (children == null) return null;
+			for (int i = 0; i < children.size; i++) {
 				Element element = children.get(i);
-				if(element.name.equals(name)) return element;
+				if (element.name.equals(name)) return element;
 			}
 			return null;
 		}
-		
-		/**
-		 * @param name the name of the child {@link Element}
-		 * @return the first child having the given name or null, recurses
-		 */
-		public Element getChildByNameRecursive(String name) {
-			if(children == null) return null;
-			for(int i = 0; i < children.size; i++) {
+
+		/** @param name the name of the child {@link Element}
+		 * @return the first child having the given name or null, recurses */
+		public Element getChildByNameRecursive (String name) {
+			if (children == null) return null;
+			for (int i = 0; i < children.size; i++) {
 				Element element = children.get(i);
-				if(element.name.equals(name)) return element;
+				if (element.name.equals(name)) return element;
 				Element found = element.getChildByNameRecursive(name);
-				if(found != null) return found;
+				if (found != null) return found;
 			}
-			return null;		
+			return null;
 		}
-		
-		/**
-		 * @param name the name of the children
-		 * @return the children with the given name or an empty {@link Array}
-		 */
-		public Array<Element> getChildrenByName(String name) {
+
+		/** @param name the name of the children
+		 * @return the children with the given name or an empty {@link Array} */
+		public Array<Element> getChildrenByName (String name) {
 			Array<Element> children = new Array<Element>();
-			if(this.children == null) return children;
-			for(int i = 0; i < this.children.size; i++) {
+			if (this.children == null) return children;
+			for (int i = 0; i < this.children.size; i++) {
 				Element child = this.children.get(i);
-				if(child.name.equals(name)) children.add(child);
+				if (child.name.equals(name)) children.add(child);
 			}
 			return children;
 		}
 
-		/**
-		 * Returns the attribute as a float.
-		 * @param name the name of the attribute
-		 * @return the attribute
-		 */
-		public float getFloatAttribute(String name) {
+		/** @throws GdxRuntimeException if the attribute was not found. */
+		public float getFloatAttribute (String name) {
 			return Float.parseFloat(getAttribute(name));
 		}
-		
-		/**
-		 * Returns the attribute as an int.
-		 * @param name the name of the attribute
-		 * @return the attribute
-		 */
-		public int getIntAttribute(String name) {
+
+		public float getFloatAttribute (String name, float defaultValue) {
+			String value = getAttribute(name, null);
+			if (value == null) return defaultValue;
+			return Float.parseFloat(value);
+		}
+
+		/** @throws GdxRuntimeException if the attribute was not found. */
+		public int getIntAttribute (String name) {
 			return Integer.parseInt(getAttribute(name));
 		}
-		
-		/**
-		 * Returns the attribute as a boolean.
-		 * @param name the name of the attribute
-		 * @return the attribute
-		 */
-		public boolean getBooleanAttribute(String name) {
+
+		public int getIntAttribute (String name, int defaultValue) {
+			String value = getAttribute(name, null);
+			if (value == null) return defaultValue;
+			return Integer.parseInt(value);
+		}
+
+		/** @throws GdxRuntimeException if the attribute was not found. */
+		public boolean getBooleanAttribute (String name) {
 			return Boolean.parseBoolean(getAttribute(name));
 		}
-	}	
+
+		public boolean getBooleanAttribute (String name, boolean defaultValue) {
+			String value = getAttribute(name, null);
+			if (value == null) return defaultValue;
+			return Boolean.parseBoolean(value);
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public String get (String name) {
+			String value = get(name, null);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute or child: " + name);
+			return value;
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public String get (String name, String defaultValue) {
+			if (attributes != null) {
+				String value = attributes.get(name);
+				if (value != null) return value;
+			}
+			Element child = getChildByName(name);
+			if (child == null) return defaultValue;
+			String value = child.getText();
+			if (value == null) return defaultValue;
+			return value;
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public int getInt (String name) {
+			String value = get(name, null);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute or child: " + name);
+			return Integer.parseInt(value);
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public int getInt (String name, int defaultValue) {
+			String value = get(name, null);
+			if (value == null) return defaultValue;
+			return Integer.parseInt(value);
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public float getFloat (String name) {
+			String value = get(name, null);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute or child: " + name);
+			return Float.parseFloat(value);
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public float getFloat (String name, float defaultValue) {
+			String value = get(name, null);
+			if (value == null) return defaultValue;
+			return Float.parseFloat(value);
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public boolean getBolean (String name) {
+			String value = get(name, null);
+			if (value == null) throw new GdxRuntimeException("Element " + this.name + " doesn't have attribute or child: " + name);
+			return Boolean.parseBoolean(value);
+		}
+
+		/** Returns the attribute value with the specified name, or if no attribute is found, the text of a child with the name.
+		 * @throws GdxRuntimeException if no attribute or child was not found. */
+		public boolean getBoolean (String name, boolean defaultValue) {
+			String value = get(name, null);
+			if (value == null) return defaultValue;
+			return Boolean.parseBoolean(value);
+		}
+	}
 }

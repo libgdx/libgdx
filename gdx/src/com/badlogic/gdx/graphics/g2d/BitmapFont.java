@@ -58,8 +58,8 @@ public class BitmapFont implements Disposable {
 	static private final int PAGE_SIZE = 1 << LOG2_PAGE_SIZE;
 	static private final int PAGES = 0x10000 / PAGE_SIZE;
 
-	static private final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
-	static private final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q',
+	static final char[] xChars = {'x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z'};
+	static final char[] capChars = {'M', 'N', 'B', 'D', 'C', 'E', 'F', 'K', 'A', 'G', 'H', 'I', 'J', 'L', 'O', 'P', 'Q',
 		'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 	TextureRegion region;
@@ -80,9 +80,9 @@ public class BitmapFont implements Disposable {
 		float down;
 		float scaleX = 1, scaleY = 1;
 		
-		private final Glyph[][] glyphs = new Glyph[PAGES][];
-		private float spaceWidth;
-		private float xHeight = 1;
+		final Glyph[][] glyphs = new Glyph[PAGES][];
+		float spaceWidth;
+		float xHeight = 1;
 		
 		public BitmapFontData(FileHandle fontFile, boolean flip) {
 			this.flipped = flip;

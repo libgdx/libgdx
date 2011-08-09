@@ -50,7 +50,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Nathan Sweet
  */
 public class TextureAtlas implements Disposable {
-	static private final String[] tuple = new String[2];
+	static final String[] tuple = new String[2];
 
 	private final HashSet<Texture> textures = new HashSet(4);
 	private final ArrayList<AtlasRegion> regions = new ArrayList<AtlasRegion>();
@@ -397,7 +397,7 @@ public class TextureAtlas implements Disposable {
 		textures.clear();
 	}
 
-	static private final Comparator<Region> indexComparator = new Comparator<Region>() {
+	static final Comparator<Region> indexComparator = new Comparator<Region>() {
 		public int compare (Region region1, Region region2) {
 			int i1 = region1.index;
 			if (i1 == -1) i1 = Integer.MAX_VALUE;
@@ -407,14 +407,14 @@ public class TextureAtlas implements Disposable {
 		}
 	};
 
-	static private String readValue (BufferedReader reader) throws IOException {
+	static String readValue (BufferedReader reader) throws IOException {
 		String line = reader.readLine();
 		int colon = line.indexOf(':');
 		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
 		return line.substring(colon + 1).trim();
 	}
 
-	static private void readTuple (BufferedReader reader) throws IOException {
+	static void readTuple (BufferedReader reader) throws IOException {
 		String line = reader.readLine();
 		int colon = line.indexOf(':');
 		int comma = line.indexOf(',');
