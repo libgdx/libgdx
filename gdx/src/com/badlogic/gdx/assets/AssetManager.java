@@ -117,6 +117,7 @@ public class AssetManager implements Disposable {
 	}
 	
 	synchronized void injectTask(AssetDescriptor assetDesc) {
+		if(isLoaded(assetDesc.fileName)) return;
 		AssetLoader loader = loaders.get(assetDesc.type);
 		if(loader == null) throw new GdxRuntimeException("No loader for type '" + assetDesc.type.getSimpleName() + "'");
 		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
