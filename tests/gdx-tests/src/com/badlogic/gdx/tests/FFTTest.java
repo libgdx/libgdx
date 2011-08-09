@@ -22,11 +22,13 @@ import java.util.Arrays;
 import com.badlogic.gdx.audio.analysis.AudioTools;
 import com.badlogic.gdx.audio.analysis.FFT;
 import com.badlogic.gdx.audio.analysis.KissFFT;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class FFTTest {
 	static int SAMPLES = 256;
 
 	public static void main (String[] argv) {
+		GdxNativesLoader.load();
 		float[] samples = new float[SAMPLES];
 		ShortBuffer shortSamples = AudioTools.allocateShortBuffer(SAMPLES, 1);
 
