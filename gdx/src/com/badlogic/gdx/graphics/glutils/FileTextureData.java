@@ -2,8 +2,9 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class FileTextureData implements TextureData {
 	final FileHandle file;
@@ -72,5 +73,15 @@ public class FileTextureData implements TextureData {
 	
 	public FileHandle getFileHandle() {
 		return file;
+	}
+	
+	@Override
+	public TextureDataType getType () {
+		return TextureDataType.Pixmap;
+	}
+
+	@Override
+	public void uploadCompressedData () {
+		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
 	}
 }

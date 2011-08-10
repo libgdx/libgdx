@@ -15,8 +15,13 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.glutils;
 
+import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -55,11 +60,58 @@ public class ETC1 {
 			this.dataOffset = dataOffset;
 		}
 		
+		public ETC1Data(FileHandle pkmFile) {
+			compressedData = BufferUtils.newByteBuffer((int)pkmFile.length());
+			
+			byte[] buffer = new byte[1024*10];
+			InputStream in = null;
+			try {
+				in = new BufferedInputStream(pkmFile.read());
+				int readBytes = 0;
+				while((readBytes = in.read(buffer)) != -1) {
+					compressedData.put(buffer, 0, readBytes);
+				}
+				compressedData.position(0);
+				compressedData.limit(compressedData.capacity());
+			} catch(Exception e) {
+				throw new GdxRuntimeException("Couldn't load pkm file '" + pkmFile + "'", e);
+			} finally {
+				if(in != null) try { in.close(); } catch(Exception e) { }
+			}
+			
+			width = getWidthPKM(compressedData, 0);
+			height = getHeightPKM(compressedData, 0);
+			dataOffset = PKM_HEADER_SIZE;
+			compressedData.position(dataOffset);
+		}
+		
 		/**
 		 * @return whether this ETC1Data has a PKM header
 		 */
 		public boolean hasPKMHeader() {
 			return dataOffset == 16;
+		}
+		
+		/**
+		 * Writes the ETC1Data with a PKM header to the given file.
+		 * @param handle the file.
+		 */
+		public void write(FileHandle file) {
+			DataOutputStream write = new DataOutputStream(file.write(false));
+			byte[] buffer = new byte[10*1024];
+			int writtenBytes = 0;
+			try {
+				while(writtenBytes != compressedData.capacity()) {
+					int bytesToWrite = writtenBytes + buffer.length > compressedData.capacity()? compressedData.capacity() - writtenBytes: buffer.length; 
+					compressedData.get(buffer, writtenBytes, bytesToWrite);
+					write.write(buffer, 0, bytesToWrite);
+					writtenBytes += bytesToWrite;
+				}
+			} catch(Exception e) {
+				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
+			} finally {
+				if(write != null) try { write.close(); } catch(Exception e) { }
+			}
 		}
 		
 		/**

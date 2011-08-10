@@ -21,6 +21,9 @@ public class BufferUtilsTest extends GdxTest {
 	}
 	
 	@Override public void create() {
+		ByteBuffer bytebuffer = BufferUtils.newDisposableByteBuffer(1000*1000);
+		BufferUtils.freeMemory(bytebuffer);
+		
 		ByteBuffer bb = BufferUtils.newByteBuffer(8);
 		CharBuffer cb = BufferUtils.newCharBuffer(8);
 		ShortBuffer sb = BufferUtils.newShortBuffer(8);

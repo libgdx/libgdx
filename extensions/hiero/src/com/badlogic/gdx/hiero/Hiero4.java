@@ -326,6 +326,18 @@ public class Hiero4 extends JFrame {
 							public boolean isManaged () {
 								return true;
 							}
+
+							@Override
+							public TextureDataType getType () {
+								// TODO Auto-generated method stub
+								return null;
+							}
+
+							@Override
+							public void uploadCompressedData () {
+								// TODO Auto-generated method stub
+								
+							}
 						}));
 						renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);
 					}

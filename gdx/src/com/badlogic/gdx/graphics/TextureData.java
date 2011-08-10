@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
 
@@ -25,8 +27,18 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
  * is restored. The TextureData doesn't necessary need to keep the image data in memory between loads.
  */
 public interface TextureData {
+	public enum TextureDataType {
+		Pixmap,
+		Compressed
+	}
+
+	public TextureDataType getType();
+	
 	public Pixmap getPixmap();
 	public boolean disposePixmap();
+	
+	public void uploadCompressedData();
+	
 	public int getWidth();
 	public int getHeight();
 	public Format getFormat();

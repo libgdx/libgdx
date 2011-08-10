@@ -17,6 +17,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_freeMemory
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    newDisposableByteBuffer
+ * Signature: (I)Ljava/nio/ByteBuffer;
+ */
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    copyJni
  * Signature: ([FLjava/nio/Buffer;II)V
  */
@@ -90,10 +98,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    clear
- * Signature: (Ljava/nio/Buffer;I)V
+ * Signature: (Ljava/nio/ByteBuffer;I)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_clear
-  (JNIEnv *env, jclass, jobject buffer, jint count);
+  (JNIEnv *, jclass, jobject, jint);
 
 #ifdef __cplusplus
 }

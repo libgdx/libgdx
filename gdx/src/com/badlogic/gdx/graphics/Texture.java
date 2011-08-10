@@ -13,6 +13,7 @@ import com.badlogic.gdx.assets.loaders.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.TextureData.TextureDataType;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -123,11 +124,21 @@ public class Texture implements Disposable {
 	public void load(TextureData data) {
 		if(this.data != null && data.isManaged() != this.data.isManaged()) throw new GdxRuntimeException("New data must have the same managed status as the old data");
 		this.data = data;
-		Pixmap pixmap = data.getPixmap();
-		uploadImageData(pixmap);
-		if(data.disposePixmap()) pixmap.dispose();
-		setFilter(minFilter, magFilter);
-		setWrap(uWrap, vWrap);
+		
+		if(data.getType() == TextureDataType.Pixmap) {
+			Pixmap pixmap = data.getPixmap();
+			uploadImageData(pixmap);
+			if(data.disposePixmap()) pixmap.dispose();
+			setFilter(minFilter, magFilter);
+			setWrap(uWrap, vWrap);
+		}
+		
+		if(data.getType() == TextureDataType.Compressed) {
+			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
+			data.uploadCompressedData();
+			setFilter(minFilter, magFilter);
+			setWrap(uWrap, vWrap);
+		}
 	}
 	
 	private void uploadImageData(Pixmap pixmap) {

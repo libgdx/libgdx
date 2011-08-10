@@ -37,6 +37,12 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 	env->ReleasePrimitiveArrayCritical(src, pSrc, 0);
 }
 
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer
+  (JNIEnv *env, jclass, jint numBytes) {
+	char* ptr = (char*)malloc(numBytes);
+	return env->NewDirectByteBuffer(ptr, numBytes);
+}
+
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    copyJni

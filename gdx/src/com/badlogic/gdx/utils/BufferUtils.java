@@ -38,6 +38,8 @@ public class BufferUtils {
 	 */
 	public static native void freeMemory(ByteBuffer buffer) /*-{ }-*/;
 	
+	public static native ByteBuffer newDisposableByteBuffer(int numBytes);
+	
 	/**
 	 * Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
 	 * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
