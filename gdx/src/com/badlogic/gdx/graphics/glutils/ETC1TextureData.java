@@ -40,13 +40,13 @@ public class ETC1TextureData implements TextureData {
 		width = data.width;
 		height = data.height;
 		
-		if(Gdx.app.getType() == ApplicationType.Desktop) {
+//		if(Gdx.app.getType() == ApplicationType.Desktop) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
 			Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			pixmap.dispose();
-		} else {
-			
-		}
+//		} else {
+//			
+//		}
 		data.dispose();
 	}
 

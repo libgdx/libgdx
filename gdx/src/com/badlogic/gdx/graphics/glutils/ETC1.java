@@ -61,7 +61,7 @@ public class ETC1 {
 		}
 		
 		public ETC1Data(FileHandle pkmFile) {
-			compressedData = BufferUtils.newByteBuffer((int)pkmFile.length());
+			compressedData = BufferUtils.newDisposableByteBuffer((int)pkmFile.length());
 			
 			byte[] buffer = new byte[1024*10];
 			InputStream in = null;
