@@ -18,6 +18,7 @@ public class SkeletonModel implements AnimatedModel {
 	public SkeletonModel(Skeleton skeleton, SkeletonSubMesh[] subMeshes) {
 		this.skeleton = skeleton;
 		this.subMeshes = subMeshes;
+		setMaterial(new Material("default"));
 	}
 	
 	public void setBindPose() {
