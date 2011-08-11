@@ -36,7 +36,6 @@ import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ReferenceCounted;
 
 /**
  * <p>
@@ -67,7 +66,7 @@ import com.badlogic.gdx.utils.ReferenceCounted;
  * 
  * 
  */
-public class Mesh implements ReferenceCounted {
+public class Mesh implements Disposable {
 	public enum VertexDataType {
 		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
 	}
@@ -638,20 +637,5 @@ public class Mesh implements ReferenceCounted {
 		}
 		
 		setVertices(vertices);
-	}
-
-	@Override
-	public void incRefCount () {
-		refCount++;
-	}
-
-	@Override
-	public int getRefCount () {
-		return refCount;
-	}
-
-	@Override
-	public void decRefCount () {
-		refCount--;
 	}	
 }

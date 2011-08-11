@@ -37,7 +37,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ReferenceCounted;
 
 /**
  * <p>
@@ -66,12 +65,11 @@ import com.badlogic.gdx.utils.ReferenceCounted;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Texture implements ReferenceCounted {
+public class Texture implements Disposable {
 	static private boolean enforcePotImages = true;
 	static private boolean useHWMipMap = true;
 	private static AssetManager assetManager;
 	final private static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
-	private int refCount = 0;
 	
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), 
@@ -327,29 +325,12 @@ public class Texture implements ReferenceCounted {
 	 * Disposes all resources associated with the texture
 	 */
 	public void dispose () {
-		refCount--;
-		if(refCount > 0) return;
 		buffer.put(0, glHandle);
 		Gdx.gl.glDeleteTextures(1, buffer);
 		if(data.isManaged()) {
 			if(managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).remove(this);
 		}
 	}
-	
-	@Override
-	public void incRefCount () {
-		refCount++;
-	}
-
-	@Override
-	public int getRefCount () {
-		return refCount;
-	}
-
-	@Override
-	public void decRefCount () {
-		refCount--;
-	}	
 	
 	/**
 	 * @param enforcePotImages whether to enforce power of two images in OpenGL ES 1.0 or not.
