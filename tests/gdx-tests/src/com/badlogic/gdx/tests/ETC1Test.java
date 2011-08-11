@@ -44,6 +44,8 @@ public class ETC1Test extends GdxTest {
 		pixmap.dispose();
 		pixmap = ETC1.decodeImage(encodedImage, Format.RGB565);
 		
+//		ETC1.encodeImagePKM(new Pixmap(Gdx.files.internal("data/environment.jpg"))).write(Gdx.files.absolute("test.pkm"));
+		
 		encodedImage.dispose();
 		
 		img1 = new Texture(pixmap);

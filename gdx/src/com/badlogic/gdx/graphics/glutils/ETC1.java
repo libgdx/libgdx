@@ -16,10 +16,11 @@
 package com.badlogic.gdx.graphics.glutils;
 
 import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -37,6 +38,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class ETC1 {
 	/** The PKM header size in bytes **/
 	public static int PKM_HEADER_SIZE = 16;
+	public static int ETC1_RGB8_OES = 0x00008d64;
 	
 	/**
 	 * Class for storing ETC1 compressed image data.
@@ -61,12 +63,12 @@ public class ETC1 {
 		}
 		
 		public ETC1Data(FileHandle pkmFile) {
-			compressedData = BufferUtils.newDisposableByteBuffer((int)pkmFile.length());
-			
 			byte[] buffer = new byte[1024*10];
-			InputStream in = null;
+			DataInputStream in = null;
 			try {
-				in = new BufferedInputStream(pkmFile.read());
+				in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(pkmFile.read())));
+				int fileSize = in.readInt();
+				compressedData = BufferUtils.newDisposableByteBuffer(fileSize);
 				int readBytes = 0;
 				while((readBytes = in.read(buffer)) != -1) {
 					compressedData.put(buffer, 0, readBytes);
@@ -97,13 +99,18 @@ public class ETC1 {
 		 * @param handle the file.
 		 */
 		public void write(FileHandle file) {
-			DataOutputStream write = new DataOutputStream(file.write(false));
+			DataOutputStream write = null;
 			byte[] buffer = new byte[10*1024];
 			int writtenBytes = 0;
+			compressedData.position(0);
+			compressedData.limit(compressedData.capacity());
 			try {
+				write = new DataOutputStream(new GZIPOutputStream(file.write(false)));
+				write.writeInt(compressedData.capacity());
 				while(writtenBytes != compressedData.capacity()) {
-					int bytesToWrite = writtenBytes + buffer.length > compressedData.capacity()? compressedData.capacity() - writtenBytes: buffer.length; 
-					compressedData.get(buffer, writtenBytes, bytesToWrite);
+					int bytesToWrite = Math.min(compressedData.remaining(), buffer.length); 
+					System.out.println("writting " + bytesToWrite);
+					compressedData.get(buffer, 0, bytesToWrite);
 					write.write(buffer, 0, bytesToWrite);
 					writtenBytes += bytesToWrite;
 				}
@@ -112,6 +119,8 @@ public class ETC1 {
 			} finally {
 				if(write != null) try { write.close(); } catch(Exception e) { }
 			}
+			compressedData.position(dataOffset);
+			compressedData.limit(compressedData.capacity());
 		}
 		
 		/**

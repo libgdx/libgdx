@@ -24,9 +24,9 @@ public class MipMapGenerator {
 	 * @param texture the Texture
 	 * @param disposePixmap whether to dispose the Pixmap after upload
 	 */
-	public static void generateMipMap(Pixmap pixmap, Texture texture, boolean disposePixmap) {
+	public static void generateMipMap(Pixmap pixmap, int textureWidth, int textureHeight, boolean disposePixmap) {
 		if(!useHWMipMap) {
-			generateMipMapCPU(pixmap, texture, disposePixmap);
+			generateMipMapCPU(pixmap, textureWidth, textureHeight, disposePixmap);
 			return;
 		}
 		
@@ -34,9 +34,9 @@ public class MipMapGenerator {
 			if(Gdx.graphics.isGL20Available())
 				generateMipMapGLES20(pixmap, disposePixmap);
 			else
-				generateMipMapCPU(pixmap, texture, disposePixmap);
+				generateMipMapCPU(pixmap, textureWidth, textureHeight, disposePixmap);
 		} else {
-			generateMipMapDesktop(pixmap, texture, disposePixmap);
+			generateMipMapDesktop(pixmap, textureWidth, textureHeight, disposePixmap);
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class MipMapGenerator {
 		if(disposePixmap) pixmap.dispose();
 	}
 	
-	private static void generateMipMapDesktop(Pixmap pixmap, Texture texture, boolean disposePixmap) {
+	private static void generateMipMapDesktop(Pixmap pixmap, int textureWidth, int textureHeight, boolean disposePixmap) {
 		if(Gdx.graphics.isGL20Available() &&
 			(Gdx.graphics.supportsExtension("GL_ARB_framebuffer_object") ||
 			Gdx.graphics.supportsExtension("GL_EXT_framebuffer_object"))) {
@@ -54,20 +54,20 @@ public class MipMapGenerator {
 			Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 			if(disposePixmap) pixmap.dispose();
 		} else if(Gdx.graphics.supportsExtension("GL_SGIS_generate_mipmap")) {
-			if((Gdx.gl20==null) && texture.getWidth() != texture.getHeight())
+			if((Gdx.gl20==null) && textureWidth != textureHeight)
 				throw new GdxRuntimeException("texture width and height must be square when using mipmapping in OpenGL ES 1.x");
 			Gdx.gl.glTexParameterf(GL20.GL_TEXTURE_2D, GLCommon.GL_GENERATE_MIPMAP, GL10.GL_TRUE);
 			Gdx.gl.glTexImage2D(GL20.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			if(disposePixmap) pixmap.dispose();
 		} else {
-			generateMipMapCPU(pixmap, texture, disposePixmap);
+			generateMipMapCPU(pixmap, textureWidth, textureHeight, disposePixmap);
 		}				
 	}
 	
-	private static void generateMipMapCPU(Pixmap pixmap, Texture texture, boolean disposePixmap) {
+	private static void generateMipMapCPU(Pixmap pixmap, int textureWidth, int textureHeight, boolean disposePixmap) {
 		Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-		if((Gdx.gl20==null) && texture.getWidth() != texture.getHeight())
-			throw new GdxRuntimeException("texture width and height must be square when using mipmapping in OpenGL ES 1.x");
+		if((Gdx.gl20==null) && textureWidth != textureHeight)
+			throw new GdxRuntimeException("texture width and height must be square when using mipmapping.");
 		int width = pixmap.getWidth() / 2;
 		int height = pixmap.getHeight() / 2;
 		int level = 1;

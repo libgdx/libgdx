@@ -158,7 +158,7 @@ public class Texture implements Disposable {
 		
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);								
 		if(data.useMipMaps()) {						
-			MipMapGenerator.generateMipMap(pixmap, this, disposePixmap);			
+			MipMapGenerator.generateMipMap(pixmap, pixmap.getWidth(), pixmap.getHeight(), disposePixmap);			
 		} else {
 			Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			if(disposePixmap) pixmap.dispose();
