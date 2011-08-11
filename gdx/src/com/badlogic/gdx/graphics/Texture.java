@@ -37,6 +37,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ReferenceCounted;
 
 /**
  * <p>
@@ -65,7 +66,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com
  * 
  */
-public class Texture implements Disposable {
+public class Texture implements ReferenceCounted {
 	static private boolean enforcePotImages = true;
 	static private boolean useHWMipMap = true;
 	private static AssetManager assetManager;
@@ -326,6 +327,7 @@ public class Texture implements Disposable {
 	 * Disposes all resources associated with the texture
 	 */
 	public void dispose () {
+		refCount--;
 		if(refCount > 0) return;
 		buffer.put(0, glHandle);
 		Gdx.gl.glDeleteTextures(1, buffer);
@@ -334,28 +336,20 @@ public class Texture implements Disposable {
 		}
 	}
 	
-	/**
-	 * Increases the reference count by one. The dispose method
-	 * will not do anything unless the reference count is <= 0.
-	 */
-	public void incRefCount() {
+	@Override
+	public void incRefCount () {
 		refCount++;
 	}
-	
-	/**
-	 * Decreases the reference count by one. The dispose method
-	 * will not do anything unless the reference count is <= 0.
-	 */
-	public void decRefCount() {
-		refCount--;
-	}
-	
-	/**
-	 * @return the reference count.
-	 */
-	public int getRefCount() {
+
+	@Override
+	public int getRefCount () {
 		return refCount;
 	}
+
+	@Override
+	public void decRefCount () {
+		refCount--;
+	}	
 	
 	/**
 	 * @param enforcePotImages whether to enforce power of two images in OpenGL ES 1.0 or not.

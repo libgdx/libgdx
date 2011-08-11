@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ReferenceCounted;
 
 /**
  * <p>
@@ -65,7 +66,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author mzechner
  * 
  */
-public class ShaderProgram implements Disposable {
+public class ShaderProgram implements ReferenceCounted {
 	/** default name for position attributes **/
 	public static final String POSITION_ATTRIBUTE = "a_position";
 	/** default name for normal attribtues **/
@@ -134,6 +135,9 @@ public class ShaderProgram implements Disposable {
 	private ByteBuffer buffer = null;
 	private FloatBuffer floatBuffer = null;
 	private IntBuffer intBuffer = null;
+	
+	/** reference count **/
+	private int refCount = 0;
 	
 	/**
 	 * Construcs a new JOglShaderProgram and immediatly compiles it.
@@ -559,6 +563,9 @@ public class ShaderProgram implements Disposable {
 	 * Disposes all resources associated with this shader. Must be called when the shader is no longer used.
 	 */
 	public void dispose () {
+		refCount--;
+		if(refCount > 0) return;
+		
 		GL20 gl = Gdx.graphics.getGL20();
 		gl.glUseProgram(0);
 		gl.glDeleteShader(vertexShaderHandle);
@@ -771,4 +778,19 @@ public class ShaderProgram implements Disposable {
 	public String[] getUniforms() {
 		return uniformNames;
 	}
+	
+	@Override
+	public void incRefCount () {
+		refCount++;
+	}
+
+	@Override
+	public int getRefCount () {
+		return refCount;
+	}
+
+	@Override
+	public void decRefCount () {
+		refCount--;
+	}	
 }
