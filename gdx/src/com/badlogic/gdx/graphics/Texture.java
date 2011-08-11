@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.graphics;
 
 import java.nio.IntBuffer;
@@ -9,6 +24,7 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
@@ -22,11 +38,39 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * <p>
+ * A Texture wraps a standard OpenGL ES texture.
+ * </p>
+ * 
+ * <p>
+ * A Texture can be managed. If the OpenGL context is lost all managed textures get invalidated. This happens when a user switches
+ * to another application or receives an incoming call. Managed textures get reloaded automatically.
+ * </p>
+ * 
+ * <p>
+ * A Texture has to be bound via the {@link Texture#bind()} method in order for it to be applied to geometry. The texture will be
+ * bound to the currently active texture unit specified via {@link GLCommon#glActiveTexture(int)}.
+ * </p>
+ * 
+ * <p>
+ * You can draw {@link Pixmap}s to a texture at any time. The changes will be automatically uploaded to texture memory. This is of
+ * course not extremely fast so use it with care. It also only works with unmanaged textures.
+ * </p>
+ * 
+ * <p>
+ * A Texture must be disposed when it is no longer used
+ * </p>
+ * 
+ * @author badlogicgames@gmail.com
+ * 
+ */
 public class Texture implements Disposable {
 	static private boolean enforcePotImages = true;
 	static private boolean useHWMipMap = true;
 	private static AssetManager assetManager;
 	final private static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
+	private int refCount = 0;
 	
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), 
@@ -282,6 +326,7 @@ public class Texture implements Disposable {
 	 * Disposes all resources associated with the texture
 	 */
 	public void dispose () {
+		if(refCount > 0) return;
 		buffer.put(0, glHandle);
 		Gdx.gl.glDeleteTextures(1, buffer);
 		if(data.isManaged()) {
@@ -289,6 +334,32 @@ public class Texture implements Disposable {
 		}
 	}
 	
+	/**
+	 * Increases the reference count by one. The dispose method
+	 * will not do anything unless the reference count is <= 0.
+	 */
+	public void incRefCount() {
+		refCount++;
+	}
+	
+	/**
+	 * Decreases the reference count by one. The dispose method
+	 * will not do anything unless the reference count is <= 0.
+	 */
+	public void decRefCount() {
+		refCount--;
+	}
+	
+	/**
+	 * @return the reference count.
+	 */
+	public int getRefCount() {
+		return refCount;
+	}
+	
+	/**
+	 * @param enforcePotImages whether to enforce power of two images in OpenGL ES 1.0 or not.
+	 */
 	static public void setEnforcePotImages (boolean enforcePotImages) {
 		Texture.enforcePotImages = enforcePotImages;
 	}
@@ -340,6 +411,14 @@ public class Texture implements Disposable {
 		}
 	}
 	
+	/**
+	 * Sets the {@link AssetManager}. When the context is lost, textures managed
+	 * by the asset manager are reloaded by the manager on a separate thread (provided
+	 * that a suitable {@link AssetLoader} is registered with the manager). Textures
+	 * not managed by the AssetManager are reloaded via the usual means on the
+	 * rendering thread.
+	 * @param manager the asset manager.
+	 */
 	public static void setAssetManager(AssetManager manager) {
 		Texture.assetManager = manager;
 	}
