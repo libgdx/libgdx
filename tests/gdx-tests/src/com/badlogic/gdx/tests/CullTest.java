@@ -22,6 +22,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -44,6 +45,7 @@ public class CullTest extends GdxTest {
 	@Override public void create() {
 		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+//		cam = new OrthographicCamera(100, 100);
 		cam.far = 200;
 		Random rand = new Random();
 		for(int i = 0; i < positions.length; i++) {
