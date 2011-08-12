@@ -3,6 +3,7 @@ package com.badlogic.gdx.assets.loaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.ReferenceCountedAsset;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -38,12 +39,37 @@ public class TextureLoader implements AsynchronousAssetLoader<Texture, TexturePa
 			texture.load(data);
 			return texture;
 		} else {
-			return new Texture(data);
+			return new ReferenceCountedTexture(data);
 		}		
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, TextureParameter parameter) {
 		return null;
+	}
+	
+	public static class ReferenceCountedTexture extends Texture implements ReferenceCountedAsset {
+		public ReferenceCountedTexture (TextureData data) {
+			super(data);
+		}
+
+		private int refCount = 1;
+
+		@Override
+		public void incRefCount () {
+			refCount++;
+		}
+
+		@Override
+		public int getRefCount () {
+			return refCount;
+		}
+		
+		@Override
+		public void dispose() {
+			refCount --;
+			if(refCount > 0) return;
+			super.dispose();
+		}
 	}
 }

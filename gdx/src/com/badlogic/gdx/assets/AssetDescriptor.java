@@ -12,8 +12,13 @@ public class AssetDescriptor {
 	final AssetLoaderParameters params;
 	
 	public AssetDescriptor(String fileName, Class assetType, AssetLoaderParameters params) {
-		this.fileName = fileName;
+		this.fileName = fileName.replaceAll("\\\\", "/");
 		this.type = assetType;
 		this.params = params;
+	}
+	
+	@Override
+	public String toString() {
+		return fileName;
 	}
 }

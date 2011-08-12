@@ -57,14 +57,14 @@ public class TextureAtlas implements Disposable {
 	
 	
 	public static class TextureAtlasData {	
-		class Page {
-			final FileHandle textureFile;
-			final boolean useMipMaps;
-			final Format format;
-			final TextureFilter minFilter;
-			final TextureFilter magFilter;
-			final TextureWrap uWrap;
-			final TextureWrap vWrap;
+		public static class Page {
+			public final FileHandle textureFile;
+			public final boolean useMipMaps;
+			public final Format format;
+			public final TextureFilter minFilter;
+			public final TextureFilter magFilter;
+			public final TextureWrap uWrap;
+			public final TextureWrap vWrap;
 			
 			public Page(FileHandle handle, boolean useMipMaps, Format format, TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 				this.textureFile = handle;
@@ -77,7 +77,7 @@ public class TextureAtlas implements Disposable {
 			}
 		}
 		
-		class Region {
+		public static class Region {
 			public Page page;
 			public int index;
 			public String name;
@@ -180,6 +180,14 @@ public class TextureAtlas implements Disposable {
 			for (int i = 0; i < n; i++)
 				regions.add(sortedRegions.poll());
 		}
+		
+		public Array<Page> getPages() {
+			return pages;
+		}
+		
+		public Array<Region> getRegion() {
+			return regions;
+		}
 	}
 
 	/**
@@ -226,11 +234,7 @@ public class TextureAtlas implements Disposable {
 		load(data);
 	}
 	
-	private void load(TextureAtlasData data) {
-		// FIXME dispose textures?
-		textures.clear();
-		regions.clear();
-		
+	private void load(TextureAtlasData data) {		
 		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
 		for(Page page: data.pages) {
 			Texture texture = new Texture(page.textureFile, page.format, page.useMipMaps);

@@ -48,7 +48,7 @@ class AssetLoadingTask implements Callable<Void> {
 			Array<AssetDescriptor> dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if(dependencies != null) {
 				for(AssetDescriptor desc: dependencies) {
-					manager.injectTask(desc);
+					manager.injectDependency(assetDesc.fileName, desc);
 				}
 			}
 		} else {
@@ -84,7 +84,7 @@ class AssetLoadingTask implements Callable<Void> {
 				return;
 			}
 			for(AssetDescriptor desc: dependencies) {
-				manager.injectTask(desc);
+				manager.injectDependency(assetDesc.fileName, desc);
 			}
 		} else {
 			asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);

@@ -111,7 +111,7 @@ public class BitmapFont implements Disposable {
 				} else {
 					imgFilename = pageLine[2].substring(5, pageLine[2].length());
 				}
-				imgFile = fontFile.parent().child(imgFilename).path();				
+				imgFile = fontFile.parent().child(imgFilename).path().replaceAll("\\\\", "/");				
 				descent = 0;
 
 				while (true) {
