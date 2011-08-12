@@ -15,7 +15,6 @@ public class BitmapFontLoader implements AsynchronousAssetLoader<BitmapFont, Bit
 	BitmapFontData data;
 	AssetManager manager;
 	String fileName;
-	BitmapFontParameter parameter;
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, BitmapFontParameter parameter) {
@@ -31,7 +30,6 @@ public class BitmapFontLoader implements AsynchronousAssetLoader<BitmapFont, Bit
 	public void loadAsync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
 		this.manager = manager;
 		this.fileName = fileName;
-		this.parameter = parameter;
 	}
 
 	@Override

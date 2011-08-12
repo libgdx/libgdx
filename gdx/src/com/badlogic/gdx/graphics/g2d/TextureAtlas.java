@@ -59,6 +59,7 @@ public class TextureAtlas implements Disposable {
 	public static class TextureAtlasData {	
 		public static class Page {
 			public final FileHandle textureFile;
+			public Texture texture; // FIXME THIS IS FUCKING UGLY AS IT IS OPTIONAL FOR TEXTUREATLASLOADER UGH.e
 			public final boolean useMipMaps;
 			public final Format format;
 			public final TextureFilter minFilter;
@@ -237,9 +238,16 @@ public class TextureAtlas implements Disposable {
 	private void load(TextureAtlasData data) {		
 		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
 		for(Page page: data.pages) {
-			Texture texture = new Texture(page.textureFile, page.format, page.useMipMaps);
-			texture.setFilter(page.minFilter, page.magFilter);
-			texture.setWrap(page.uWrap, page.vWrap);
+			Texture texture = null;
+			if(page.texture == null) {
+				texture = new Texture(page.textureFile, page.format, page.useMipMaps);
+				texture.setFilter(page.minFilter, page.magFilter);
+				texture.setWrap(page.uWrap, page.vWrap);
+			} else {
+				texture = page.texture;
+				texture.setFilter(page.minFilter, page.magFilter);
+				texture.setWrap(page.uWrap, page.vWrap);
+			}
 			textures.add(texture);
 			pageToTexture.put(page, texture);
 		}

@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class AssetManager implements Disposable {
 	final ObjectMap<Class, ObjectMap<String, Object>> assets = new ObjectMap<Class, ObjectMap<String,Object>>();
 	final ObjectMap<String, Class> assetTypes = new ObjectMap<String, Class>();
-	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap<String, Array<String>>(); 
+	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap<String, Array<String>>();
 
 	final ObjectMap<Class, AssetLoader> loaders = new ObjectMap<Class, AssetLoader>();
 	final Array<AssetDescriptor> preloadQueue = new Array<AssetDescriptor>();
@@ -83,8 +83,8 @@ public class AssetManager implements Disposable {
 	public synchronized void remove (String fileName) {
 		// get the asset and its type
 		Class type = assetTypes.get(fileName);
-		Object asset = assets.get(type).get(fileName);		
 		if(type == null) throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
+		Object asset = assets.get(type).get(fileName);		
 		
 		// if it is disposable dispose it
 		if(asset instanceof Disposable) ((Disposable)asset).dispose();
@@ -262,12 +262,34 @@ public class AssetManager implements Disposable {
 			}
 			typeToAssets.put(task.assetDesc.fileName, task.getAsset());
 			
+			// increase the ref count of all dependencies (and their dependencies)
+			incrementRefCountedDependencies(task.assetDesc.fileName);
+			
 			// increase the number of loaded assets and pop the task from the stack
 			loaded++;
 			tasks.pop();
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	private void incrementRefCountedDependencies(String parent) {
+		Array<String> dependencies = assetDependencies.get(parent);
+		if(dependencies == null) return;
+		
+		for(String dependency: dependencies) {
+			Class type = assetTypes.get(dependency);
+			if(type == null) throw new GdxRuntimeException("Asset '" + dependency + "' not loaded");
+			// if we found a reference counted dependency we increase the ref count
+			Object asset = assets.get(type).get(dependency);
+			if(asset instanceof ReferenceCountedAsset) {
+				((ReferenceCountedAsset)asset).incRefCount();
+			} 
+			// otherwise we go deeper down the rabbit hole
+			else {
+				incrementRefCountedDependencies(dependency);
+			}
 		}
 	}
 	
