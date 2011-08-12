@@ -13,6 +13,7 @@ import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -46,12 +47,12 @@ public class AssetManager implements Disposable {
 	 */
 	public AssetManager() {
 		log.setEnabled(false);
-		setLoader(BitmapFont.class, new BitmapFontLoader());
-		setLoader(Music.class, new MusicLoader());
-		setLoader(Pixmap.class, new PixmapLoader());
-		setLoader(Sound.class, new SoundLoader());
-		setLoader(TextureAtlas.class, new TextureAtlasLoader());
-		setLoader(Texture.class, new TextureLoader());
+		setLoader(BitmapFont.class, new BitmapFontLoader(new InternalFileHandleResolver()));
+		setLoader(Music.class, new MusicLoader(new InternalFileHandleResolver()));
+		setLoader(Pixmap.class, new PixmapLoader(new InternalFileHandleResolver()));
+		setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
+		setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
+		setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
 		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {			
 			@Override
 			public Thread newThread (Runnable r) {

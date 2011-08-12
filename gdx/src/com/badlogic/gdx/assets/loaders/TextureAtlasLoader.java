@@ -10,7 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.utils.Array;
 
-public class TextureAtlasLoader implements SynchronousAssetLoader<TextureAtlas, TextureAtlasParameter>{
+public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, TextureAtlasParameter>{
+	public TextureAtlasLoader (FileHandleResolver resolver) {
+		super(resolver);
+	}
+
 	TextureAtlasData data;
 	
 	@Override
@@ -25,11 +29,15 @@ public class TextureAtlasLoader implements SynchronousAssetLoader<TextureAtlas, 
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, TextureAtlasParameter parameter) {
-		if(parameter != null) data = new TextureAtlasData(Gdx.files.internal(fileName), Gdx.files.internal(fileName).parent(), parameter.flip);
-		else data = new TextureAtlasData(Gdx.files.internal(fileName), Gdx.files.internal(fileName).parent(), false);
+		FileHandle atlasFile = resolve(fileName);
+		FileHandle imgDir = atlasFile.parent();
+		
+		if(parameter != null) data = new TextureAtlasData(atlasFile, imgDir, parameter.flip);
+		else data = new TextureAtlasData(atlasFile, imgDir, false);
+		
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		for(Page page: data.getPages()) {
-			FileHandle handle = page.textureFile;
+			FileHandle handle = resolve(page.textureFile.path());
 			TextureParameter params = new TextureParameter();
 			params.format = page.format;
 			params.genMipMaps = page.useMipMaps;

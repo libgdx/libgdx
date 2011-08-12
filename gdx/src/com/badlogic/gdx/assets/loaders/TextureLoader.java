@@ -1,6 +1,5 @@
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.ReferenceCountedAsset;
@@ -12,13 +11,17 @@ import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
-public class TextureLoader implements AsynchronousAssetLoader<Texture, TextureParameter>{
+public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParameter> {
 	TextureData data;
 	Texture texture;
 	
+	public TextureLoader (FileHandleResolver resolver) {
+		super(resolver);
+	}
+	
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
-		FileHandle handle = Gdx.files.internal(fileName);
+		FileHandle handle = resolve(fileName);
 		Pixmap pixmap = new Pixmap(handle);
 		Format format = null;
 		boolean genMipMaps = false;

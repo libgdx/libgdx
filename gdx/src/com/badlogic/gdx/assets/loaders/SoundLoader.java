@@ -6,10 +6,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 
-public class SoundLoader implements SynchronousAssetLoader<Sound, SoundParameter> {
+public class SoundLoader extends SynchronousAssetLoader<Sound, SoundParameter> {
+	public SoundLoader (FileHandleResolver resolver) {
+		super(resolver);
+	}
+
 	@Override
 	public Sound load (AssetManager assetManager, String fileName, SoundParameter parameter) {
-		return Gdx.audio.newSound(Gdx.files.internal(fileName));
+		return Gdx.audio.newSound(resolve(fileName));
 	}
 
 	@Override
