@@ -29,12 +29,13 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		Gdx.app.setLogLevel(Application.LOG_ERROR);
 		manager = new AssetManager();
 		manager.setErrorListener(this);
-		manager.preload("data/stones787.jpg", Pixmap.class);
-		manager.preload("data/animation.png", Texture.class);
-		manager.preload("data/badlogic.jpg", Texture.class);
-		manager.preload("data/cloudconnected.ogg", Music.class);
-		manager.preload("data/shotgun.wav", Sound.class);
+//		manager.preload("data/animation.png", Texture.class);
+//		manager.preload("data/badlogic.jpg", Texture.class);
+//		manager.preload("data/cloudconnected.ogg", Music.class);
+//		manager.preload("data/shotgun.wav", Sound.class);
+		manager.preload("data/pack1.png", Texture.class);
 		manager.preload("data/pack", TextureAtlas.class);
+		manager.preload("data/verdana39.png", Texture.class);
 		manager.preload("data/verdana39.fnt", BitmapFont.class);
 		Texture.setAssetManager(manager);
 		batch = new SpriteBatch();
@@ -42,11 +43,18 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), false); 
 	}
 	
+	boolean diagnosed = false;
 	public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		manager.update();
+		if(manager.update() & !diagnosed) {
+			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagonistics());
+			diagnosed = true;
+			manager.remove("data/pack");
+			manager.remove("data/verdana39.fnt");
+			Gdx.app.log("AssetManagerTest", "after disposal\n" + manager.getDiagonistics());
+		}
 		frame++;
-		if(manager.getQueuedAssets() > 0) Gdx.app.log("AssetManagerTest", "frames: " + frame + ", loaded: " + manager.getLoadedAssets() + ", queued: " + manager.getQueuedAssets());
+//		if(manager.getQueuedAssets() > 0) Gdx.app.log("AssetManagerTest", "frames: " + frame + ", loaded: " + manager.getLoadedAssets() + ", queued: " + manager.getQueuedAssets());
 		
 		batch.begin();
 		if(manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
