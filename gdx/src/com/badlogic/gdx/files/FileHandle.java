@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.files;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,7 +36,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * @author Nathan Sweet
  */
-public abstract class FileHandle {
+public class FileHandle {
 	protected File file;
 	protected FileType type;
 
@@ -254,9 +253,21 @@ public abstract class FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist.
 	 */
-	abstract public FileHandle child (String name);
+	public FileHandle child (String name) {
+		if (file.getPath().length() == 0) return new FileHandle(new File(name), type);
+		return new FileHandle(new File(file, name), type);
+	}
 
-	abstract public FileHandle parent ();
+	public FileHandle parent () {
+		File parent = file.getParentFile();
+		if (parent == null) {
+			if (type == FileType.Absolute)
+				parent = new File("/");
+			else
+				parent = new File("");
+		}
+		return new FileHandle(parent, type);
+	}
 
 	/**
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file.
