@@ -43,6 +43,30 @@ public class FileHandle {
 	protected FileHandle () {
 	}
 
+	/**
+	 * Creates a new absolute FileHandle for the file name. Use this
+	 * for tools on the desktop that don't need any of the backends. 
+	 * Do not use this constructor in case you write something cross-platform.
+	 * Use the {@link Files} interface instead.
+	 * @param fileName the filename.
+	 */
+	public FileHandle(String fileName) {
+		this.file = new File(fileName);
+		this.type = FileType.Absolute;
+	}
+	
+	/**
+	 * Creates a new absolute FileHandle for the {@link File}. Use this
+	 * for tools on the desktop that don't need any of the backends. 
+	 * Do not use this constructor in case you write something cross-platform.
+	 * Use the {@link Files} interface instead.
+	 * @param file the file.
+	 */
+	public FileHandle(File file) {
+		this.file = file;
+		this.type = FileType.Absolute;
+	}
+	
 	protected FileHandle (String fileName, FileType type) {
 		this.type = type;
 		file = new File(fileName);
