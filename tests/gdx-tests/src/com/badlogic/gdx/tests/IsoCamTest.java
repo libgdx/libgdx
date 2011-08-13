@@ -16,7 +16,9 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,7 +31,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class IsoCamTest extends GdxTest implements InputProcessor {	
+public class IsoCamTest extends GdxTest {	
+	private static final int TARGET_WIDTH = 480;
+	private static final float UNIT_TO_PIXEL = TARGET_WIDTH * 0.15f;
 	Texture texture;
 	OrthographicCamera cam;
 	SpriteBatch batch;	
@@ -37,12 +41,14 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 	final Matrix4 matrix = new Matrix4();
 	
 	@Override public void create() {
-		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));		
-		cam = new OrthographicCamera(10, 10 * (Gdx.graphics.getHeight() / (float)Gdx.graphics.getWidth()));			
-		cam.position.set(5, 5, 10);
-		cam.direction.set(-1, -1, -1);
+		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
+		float unitsOnX = (float)Math.sqrt(2) * TARGET_WIDTH / (UNIT_TO_PIXEL);
+		float pixelsOnX = Gdx.graphics.getWidth() / unitsOnX;
+		float unitsOnY = Gdx.graphics.getHeight() / pixelsOnX;
+		cam = new OrthographicCamera(unitsOnX, unitsOnY, 25);
+		cam.position.mul(30);
 		cam.near = 1;
-		cam.far = 100;		
+		cam.far = 1000;		
 		matrix.setToRotation(new Vector3(1, 0, 0), 90);
 		
 		for(int z = 0; z < 10; z++) {
@@ -55,13 +61,13 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 		
 		batch = new SpriteBatch();
 		
-		Gdx.input.setInputProcessor(this);
+		Gdx.input.setInputProcessor(new IsoCamController(cam));
 	}
 	
 	@Override public void render() {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		cam.update();		
-				
+		
 		batch.setProjectionMatrix(cam.combined);
 		batch.setTransformMatrix(matrix);
 		batch.begin();
@@ -83,6 +89,7 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 		if(Gdx.input.justTouched()) {
 			Ray pickRay = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
 			Intersector.intersectRayPlane(pickRay, xzPlane, intersection);
+			System.out.println(intersection);
 			int x = (int)intersection.x;
 			int z = (int)intersection.z;
 			if(x >= 0 && x < 10 && z >= 0 && z < 10) {
@@ -94,35 +101,41 @@ public class IsoCamTest extends GdxTest implements InputProcessor {
 		}
 	}
 	
-	final Vector3 curr = new Vector3();
-	final Vector3 last = new Vector3(-1, -1, -1);
-	final Vector3 delta = new Vector3();
-	@Override public boolean touchDragged (int x, int y, int pointer) {
-		Ray pickRay = cam.getPickRay(x, y);
-		Intersector.intersectRayPlane(pickRay, xzPlane, curr);
+	public class IsoCamController extends InputAdapter {
+		final Plane xzPlane = new Plane(new Vector3(0, 1, 0), 0);
+		final Vector3 intersection = new Vector3();
+		final Vector3 curr = new Vector3();
+		final Vector3 last = new Vector3(-1, -1, -1);
+		final Vector3 delta = new Vector3();
+		final Camera camera;
 		
-		if(!(last.x == -1 && last.y == -1 && last.z == -1)) {
-			pickRay = cam.getPickRay(last.x, last.y);
-			Intersector.intersectRayPlane(pickRay, xzPlane, delta);			
-			delta.sub(curr);
-			cam.position.add(delta.x, delta.y, delta.z);
+		public IsoCamController(Camera camera) {
+			this.camera = camera;
 		}
-		last.set(x, y, 0);
-		return false;
+		
+		@Override public boolean touchDragged (int x, int y, int pointer) {
+			Ray pickRay = camera.getPickRay(x, y);
+			Intersector.intersectRayPlane(pickRay, xzPlane, curr);
+			
+			if(!(last.x == -1 && last.y == -1 && last.z == -1)) {
+				pickRay = camera.getPickRay(last.x, last.y);
+				Intersector.intersectRayPlane(pickRay, xzPlane, delta);			
+				delta.sub(curr);
+				camera.position.add(delta.x, 0, delta.z);
+			}
+			last.set(x, y, 0);
+			return false;
+		}
+		
+		@Override public boolean touchUp(int x, int y, int pointer, int button) {
+			last.set(-1, -1, -1);
+			return false;
+		}
 	}
-	
-	@Override public boolean touchUp(int x, int y, int pointer, int button) {
-		last.set(-1, -1, -1);
+
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean keyDown (int keycode) { return false; }	
-	@Override public boolean keyUp (int keycode) { return false; }
-	@Override public boolean keyTyped (char character) { return false; }
-	@Override public boolean touchDown (int x, int y, int pointer, int button) { return false; }		
-	@Override public boolean touchMoved (int x, int y) { return false; }
-	@Override public boolean scrolled (int amount) { return false; }
-	@Override public boolean needsGL20 () {
-		return false;
-	}
 }

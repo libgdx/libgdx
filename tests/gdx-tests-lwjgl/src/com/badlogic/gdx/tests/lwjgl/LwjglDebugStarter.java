@@ -23,8 +23,10 @@ import com.badlogic.gdx.tests.DecalTest;
 import com.badlogic.gdx.tests.ETC1Test;
 import com.badlogic.gdx.tests.FilterPerformanceTest;
 import com.badlogic.gdx.tests.InverseKinematicsTest;
+import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.MipMapTest;
 import com.badlogic.gdx.tests.ObjTest;
+import com.badlogic.gdx.tests.PickingTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.SimpleDecalTest;
@@ -35,9 +37,8 @@ import com.badlogic.gdx.tests.UITest;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 480;
+		
 		config.useGL20 = true;
-		new LwjglApplication(new AssetManagerTest(), config);
+		new LwjglApplication(new IsoCamTest(), config);
 	}
 }
