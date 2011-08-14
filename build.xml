@@ -30,7 +30,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<delete dir="backends/gdx-backend-lwjgl/bin" />
 		<delete dir="backends/gdx-backend-android/bin" />	
 		<delete dir="extensions/twl/gdx-twl/bin"/>
-		<delete dir="extensions/image-packer/bin"/>
+		<delete dir="extensions/gdx-tools/bin"/>
 	</target>
 
 	<!-- init task, creates all necessary directories -->
@@ -43,7 +43,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="backends/gdx-backend-lwjgl/bin" />
 		<mkdir dir="backends/gdx-backend-android/bin" />
 		<mkdir dir="extensions/twl/gdx-twl/bin"/>
-		<mkdir dir="extensions/image-packer/bin"/>
+		<mkdir dir="extensions/gdx-tools/bin"/>
 	</target>
 
 	<!-- compiles the java code of all modules -->
@@ -97,9 +97,13 @@ gdx and backend modules and creates a distribution out of this mess.
 		</javac>
 		
 		<!-- build texture packer extensions -->
-		<javac debug="on" srcdir="extensions/image-packer/src" destdir="extensions/image-packer/bin">
+		<javac debug="on" srcdir="extensions/gdx-tools/src" destdir="extensions/gdx-tools/bin">
 			<classpath>
-				<pathelement location="gdx/bin" />				
+				<pathelement location="gdx/bin" />	
+				<pathelement location="backends/gdx-backend-lwjgl/bin"/>
+				<fileset file="extensions/gdx-tools/libs/hiero4/*.jar" />
+				<fileset file="backends/gdx-backend-lwjgl/libs/*.jar" />
+				<fileset file="backends/gdx-openal/libs/*.jar" />
 			</classpath>
 		</javac>		
 	</target>
@@ -195,8 +199,8 @@ gdx and backend modules and creates a distribution out of this mess.
 		</jar>
 		
 		<!-- texture packer jar -->
-		<jar destfile="${stable}/texture-packer.jar">
-			<fileset dir="extensions/image-packer/bin" />			
+		<jar destfile="${stable}/gdx-tools.jar">
+			<fileset dir="extensions/gdx-tools/bin" />			
 		</jar>
 
 		<!-- copy natives like mad! -->

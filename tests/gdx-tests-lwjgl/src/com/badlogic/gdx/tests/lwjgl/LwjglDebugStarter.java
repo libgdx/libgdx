@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.FlickScrollPaneTest;
 import com.badlogic.gdx.tests.IsoCamTest;
 
 public class LwjglDebugStarter {
@@ -25,6 +26,6 @@ public class LwjglDebugStarter {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		config.useGL20 = true;
-		new LwjglApplication(new IsoCamTest(), config);
+		new LwjglApplication(new FlickScrollPaneTest(), config);
 	}
 }
