@@ -6,7 +6,7 @@ if "bpy" in locals():
 import bpy
 from bpy.props import BoolProperty, FloatProperty, StringProperty, EnumProperty
 import io_utils
-from io_utils import ExportHelper, ImportHelper
+from bpy_extras.io_utils import ExportHelper, ImportHelper
 from . import *
 
 

@@ -4,7 +4,7 @@ import shutil
 
 import bpy
 import mathutils
-import io_utils
+import bpy_extras.io_utils
 
 def collect_faces(mesh):
 	faces = []
