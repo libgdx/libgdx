@@ -47,7 +47,7 @@ public class ETC1Compressor {
 				pixmap.dispose();
 				pixmap = tmp;
 			}
-			ETC1.encodeImage(pixmap).write(new FileHandle(inputFile.outputFile));
+			ETC1.encodeImagePKM(pixmap).write(new FileHandle(inputFile.outputFile));
 			pixmap.dispose();
 		}
 

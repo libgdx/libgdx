@@ -48,6 +48,8 @@ import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker;
+import com.badlogic.gdx.tools.imagepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on

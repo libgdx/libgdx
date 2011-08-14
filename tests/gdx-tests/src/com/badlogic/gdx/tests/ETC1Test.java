@@ -60,12 +60,12 @@ public class ETC1Test extends GdxTest {
 		pixmap.dispose();
 		pixmap = ETC1.decodeImage(encodedImage, Format.RGB565);
 
-// ETC1.encodeImagePKM(new Pixmap(Gdx.files.internal("data/environment.jpg"))).write(Gdx.files.absolute("test.pkm"));
+		// ETC1.encodeImagePKM(new Pixmap(Gdx.files.internal("data/environment.jpg"))).write(Gdx.files.absolute("test.pkm"));
 
 		encodedImage.dispose();
 
 		img1 = new Texture(pixmap);
-		img2 = new Texture(new ETC1TextureData(Gdx.files.internal("data/test.pkm")));
+		img2 = new Texture("data/test.etc1");
 		batch = new SpriteBatch();
 		pixmap.dispose();
 	}
