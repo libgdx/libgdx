@@ -16,13 +16,6 @@
 
 package com.badlogic.gdx.tools.hiero;
 
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glVertex3f;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -109,13 +102,12 @@ import de.matthiasmann.twlthemeeditor.fontgen.FontGenerator;
 import de.matthiasmann.twlthemeeditor.fontgen.FontGenerator.ExportFormat;
 import de.matthiasmann.twlthemeeditor.fontgen.FontGenerator.GeneratorMethod;
 import de.matthiasmann.twlthemeeditor.fontgen.Padding;
+import static org.lwjgl.opengl.GL11.*;
 
-/**
- * WIP, based on Matthias' TWL font renderer. Currently missing effects and saving hiero settings.<br>
+/** WIP, based on Matthias' TWL font renderer. Currently missing effects and saving hiero settings.<br>
  * <br>
  * A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class Hiero4 extends JFrame {
 	static final String NEHE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n" //
 		+ "abcdefghijklmnopqrstuvwxyz\n1234567890\n" //
@@ -342,7 +334,7 @@ public class Hiero4 extends JFrame {
 							@Override
 							public void uploadCompressedData () {
 								// TODO Auto-generated method stub
-								
+
 							}
 						}));
 						renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);
@@ -958,17 +950,20 @@ public class Hiero4 extends JFrame {
 		SpriteBatch batch;
 		BitmapFont font;
 
-		@Override public void create () {
+		@Override
+		public void create () {
 			batch = new SpriteBatch();
 			changeFont();
 		}
 
-		@Override public void resize (int width, int height) {
+		@Override
+		public void resize (int width, int height) {
 			GL11.glViewport(0, 0, width, height);
 			batch.getProjectionMatrix().setToOrtho(0, width, 0, height, 0, 1);
 		}
 
-		@Override public void render () {
+		@Override
+		public void render () {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
 
@@ -1008,13 +1003,16 @@ public class Hiero4 extends JFrame {
 			}
 		}
 
-		@Override public void pause () {
+		@Override
+		public void pause () {
 		}
 
-		@Override public void resume () {
+		@Override
+		public void resume () {
 		}
 
-		@Override public void dispose () {
+		@Override
+		public void dispose () {
 		}
 	}
 
@@ -1046,7 +1044,8 @@ public class Hiero4 extends JFrame {
 			}
 		}
 		SwingUtilities.invokeLater(new Runnable() {
-			@Override public void run () {
+			@Override
+			public void run () {
 				new Hiero4();
 			}
 		});

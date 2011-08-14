@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
 import java.awt.Color;
@@ -26,10 +27,8 @@ import java.util.List;
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 
-/**
- * Paints glyphs with a gradient fill.
- * @author Nathan Sweet
- */
+/** Paints glyphs with a gradient fill.
+ * @author Nathan Sweet */
 public class GradientEffect implements ConfigurableEffect {
 	private Color topColor = Color.cyan, bottomColor = Color.blue;
 	private int offset = 0;
@@ -73,9 +72,7 @@ public class GradientEffect implements ConfigurableEffect {
 		return offset;
 	}
 
-	/**
-	 * Sets the pixel offset to move the gradient up or down. The gradient is normally centered on the glyph.
-	 */
+	/** Sets the pixel offset to move the gradient up or down. The gradient is normally centered on the glyph. */
 	public void setOffset (int offset) {
 		this.offset = offset;
 	}
@@ -84,9 +81,7 @@ public class GradientEffect implements ConfigurableEffect {
 		return scale;
 	}
 
-	/**
-	 * Changes the height of the gradient by a percentage. The gradient is normally the height of most glyphs in the font.
-	 */
+	/** Changes the height of the gradient by a percentage. The gradient is normally the height of most glyphs in the font. */
 	public void setScale (float scale) {
 		this.scale = scale;
 	}
@@ -95,9 +90,7 @@ public class GradientEffect implements ConfigurableEffect {
 		return cyclic;
 	}
 
-	/**
-	 * If set to true, the gradient will repeat.
-	 */
+	/** If set to true, the gradient will repeat. */
 	public void setCyclic (boolean cyclic) {
 		this.cyclic = cyclic;
 	}

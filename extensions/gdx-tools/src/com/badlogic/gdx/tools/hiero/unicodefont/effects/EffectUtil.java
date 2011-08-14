@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
 import java.awt.AlphaComposite;
@@ -44,17 +45,13 @@ import javax.swing.SpinnerNumberModel;
 import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
 
-/**
- * Provides utility methods for effects.
- * @author Nathan Sweet
- */
+/** Provides utility methods for effects.
+ * @author Nathan Sweet */
 public class EffectUtil {
 	static private BufferedImage scratchImage = new BufferedImage(GlyphPage.MAX_GLYPH_SIZE, GlyphPage.MAX_GLYPH_SIZE,
 		BufferedImage.TYPE_INT_ARGB);
 
-	/**
-	 * Returns an image that can be used by effects as a temp image.
-	 */
+	/** Returns an image that can be used by effects as a temp image. */
 	static public BufferedImage getScratchImage () {
 		Graphics2D g = (Graphics2D)scratchImage.getGraphics();
 		g.setComposite(AlphaComposite.Clear);
@@ -64,9 +61,7 @@ public class EffectUtil {
 		return scratchImage;
 	}
 
-	/**
-	 * Returns a value that represents a color.
-	 */
+	/** Returns a value that represents a color. */
 	static public Value colorValue (String name, Color currentValue) {
 		return new DefaultValue(name, EffectUtil.toString(currentValue)) {
 			public void showDialog () {
@@ -80,9 +75,7 @@ public class EffectUtil {
 		};
 	}
 
-	/**
-	 * Returns a value that represents an int.
-	 */
+	/** Returns a value that represents an int. */
 	static public Value intValue (String name, final int currentValue, final String description) {
 		return new DefaultValue(name, String.valueOf(currentValue)) {
 			public void showDialog () {
@@ -96,9 +89,7 @@ public class EffectUtil {
 		};
 	}
 
-	/**
-	 * Returns a value that represents a float, from 0 to 1 (inclusive).
-	 */
+	/** Returns a value that represents a float, from 0 to 1 (inclusive). */
 	static public Value floatValue (String name, final float currentValue, final float min, final float max,
 		final String description) {
 		return new DefaultValue(name, String.valueOf(currentValue)) {
@@ -113,9 +104,7 @@ public class EffectUtil {
 		};
 	}
 
-	/**
-	 * Returns a value that represents a boolean.
-	 */
+	/** Returns a value that represents a boolean. */
 	static public Value booleanValue (String name, final boolean currentValue, final String description) {
 		return new DefaultValue(name, String.valueOf(currentValue)) {
 			public void showDialog () {
@@ -130,11 +119,9 @@ public class EffectUtil {
 		};
 	}
 
-	/**
-	 * Returns a value that represents a fixed number of options. All options are strings.
+	/** Returns a value that represents a fixed number of options. All options are strings.
 	 * @param options The first array has an entry for each option. Each entry is either a String[1] that is both the display value
-	 *           and actual value, or a String[2] whose first element is the display value and second element is the actual value.
-	 */
+	 *           and actual value, or a String[2] whose first element is the display value and second element is the actual value. */
 	static public Value optionValue (String name, final String currentValue, final String[][] options, final String description) {
 		return new DefaultValue(name, currentValue.toString()) {
 			public void showDialog () {
@@ -166,9 +153,7 @@ public class EffectUtil {
 		};
 	}
 
-	/**
-	 * Convers a color to a string.
-	 */
+	/** Convers a color to a string. */
 	static public String toString (Color color) {
 		if (color == null) throw new IllegalArgumentException("color cannot be null.");
 		String r = Integer.toHexString(color.getRed());
@@ -180,18 +165,14 @@ public class EffectUtil {
 		return r + g + b;
 	}
 
-	/**
-	 * Converts a string to a color.
-	 */
+	/** Converts a string to a color. */
 	static public Color fromString (String rgb) {
 		if (rgb == null || rgb.length() != 6) return Color.white;
 		return new Color(Integer.parseInt(rgb.substring(0, 2), 16), Integer.parseInt(rgb.substring(2, 4), 16), Integer.parseInt(
 			rgb.substring(4, 6), 16));
 	}
 
-	/**
-	 * Provides generic functionality for an effect's configurable value.
-	 */
+	/** Provides generic functionality for an effect's configurable value. */
 	static private abstract class DefaultValue implements Value {
 		String value;
 		String name;
@@ -235,9 +216,7 @@ public class EffectUtil {
 		}
 	};
 
-	/**
-	 * Provides generic functionality for a dialog to configure a value.
-	 */
+	/** Provides generic functionality for a dialog to configure a value. */
 	static private class ValueDialog extends JDialog {
 		public boolean okPressed = false;
 

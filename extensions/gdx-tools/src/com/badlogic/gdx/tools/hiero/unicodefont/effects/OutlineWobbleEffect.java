@@ -23,10 +23,8 @@ import java.awt.geom.PathIterator;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author Jerry Huxtable
- * @author Nathan Sweet
- */
+/** @author Jerry Huxtable
+ * @author Nathan Sweet */
 public class OutlineWobbleEffect extends OutlineEffect {
 	float detail = 1;
 	float amplitude = 1;

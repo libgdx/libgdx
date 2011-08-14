@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero;
 
 import java.awt.font.GlyphVector;
@@ -28,13 +29,11 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * Reads a TTF font file and provides access to kerning information.
+/** Reads a TTF font file and provides access to kerning information.
  * 
  * Thanks to the Apache FOP project for their inspiring work!
  * 
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 class Kerning {
 	private Map values = Collections.EMPTY_MAP;
 	private int size = -1;
@@ -44,11 +43,9 @@ class Kerning {
 	private long headOffset = -1;
 	private long kernOffset = -1;
 
-	/**
-	 * @param input The data for the TTF font.
+	/** @param input The data for the TTF font.
 	 * @param size The font size to use to determine kerning pixel offsets.
-	 * @throws IOException If the font could not be read.
-	 */
+	 * @throws IOException If the font could not be read. */
 	public void load (InputStream input, int size) throws IOException {
 		this.size = size;
 		if (input == null) throw new IllegalArgumentException("input cannot be null.");
@@ -96,10 +93,8 @@ class Kerning {
 		}
 	}
 
-	/**
-	 * Returns the encoded kerning value for the specified glyph. The glyph code for a Unicode codepoint can be retrieved with
-	 * {@link GlyphVector#getGlyphCode(int)}.
-	 */
+	/** Returns the encoded kerning value for the specified glyph. The glyph code for a Unicode codepoint can be retrieved with
+	 * {@link GlyphVector#getGlyphCode(int)}. */
 	public int[] getValues (int firstGlyphCode) {
 		return (int[])values.get(new Integer(firstGlyphCode));
 	}

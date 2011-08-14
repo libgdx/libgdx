@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
 import java.awt.Graphics2D;
@@ -22,10 +23,8 @@ import java.awt.image.BufferedImageOp;
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 
-/**
- * Applys a {@link BufferedImageOp} filter to glyphs. Many filters can be fond here: http://www.jhlabs.com/ip/filters/index.html
- * @author Nathan Sweet
- */
+/** Applys a {@link BufferedImageOp} filter to glyphs. Many filters can be fond here: http://www.jhlabs.com/ip/filters/index.html
+ * @author Nathan Sweet */
 public class FilterEffect implements Effect {
 	private BufferedImageOp filter;
 

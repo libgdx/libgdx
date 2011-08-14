@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
 import java.awt.BasicStroke;
@@ -27,10 +28,8 @@ import java.util.List;
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 
-/**
- * Strokes glyphs with an outline.
- * @author Nathan Sweet
- */
+/** Strokes glyphs with an outline.
+ * @author Nathan Sweet */
 public class OutlineEffect implements ConfigurableEffect {
 	private float width = 2;
 	private Color color = Color.black;
@@ -60,9 +59,7 @@ public class OutlineEffect implements ConfigurableEffect {
 		return width;
 	}
 
-	/**
-	 * Sets the width of the outline. The glyphs will need padding so the outline doesn't get clipped.
-	 */
+	/** Sets the width of the outline. The glyphs will need padding so the outline doesn't get clipped. */
 	public void setWidth (int width) {
 		this.width = width;
 	}
@@ -84,17 +81,13 @@ public class OutlineEffect implements ConfigurableEffect {
 		return stroke;
 	}
 
-	/**
-	 * Sets the stroke to use for the outline. If this is set, the other outline settings are ignored.
-	 */
+	/** Sets the stroke to use for the outline. If this is set, the other outline settings are ignored. */
 	public void setStroke (Stroke stroke) {
 		this.stroke = stroke;
 	}
 
-	/**
-	 * Sets how the corners of the outline are drawn. This is usually only noticeable at large outline widths.
-	 * @param join One of: {@link BasicStroke#JOIN_BEVEL}, {@link BasicStroke#JOIN_MITER}, {@link BasicStroke#JOIN_ROUND}
-	 */
+	/** Sets how the corners of the outline are drawn. This is usually only noticeable at large outline widths.
+	 * @param join One of: {@link BasicStroke#JOIN_BEVEL}, {@link BasicStroke#JOIN_MITER}, {@link BasicStroke#JOIN_ROUND} */
 	public void setJoin (int join) {
 		this.join = join;
 	}

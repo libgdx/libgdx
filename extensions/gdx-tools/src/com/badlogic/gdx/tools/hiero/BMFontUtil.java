@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero;
 
 import java.awt.Font;
@@ -42,9 +43,7 @@ import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class BMFontUtil {
 	private final UnicodeFont unicodeFont;
 

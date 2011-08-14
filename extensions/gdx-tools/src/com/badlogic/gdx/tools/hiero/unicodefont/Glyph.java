@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
 import java.awt.Rectangle;
@@ -22,10 +23,8 @@ import java.awt.font.GlyphVector;
 
 import com.badlogic.gdx.graphics.Texture;
 
-/**
- * Represents the glyph in a font for a unicode codepoint.
- * @author Nathan Sweet
- */
+/** Represents the glyph in a font for a unicode codepoint.
+ * @author Nathan Sweet */
 public class Glyph {
 	private int codePoint;
 	private short width, height;
@@ -62,37 +61,27 @@ public class Glyph {
 		isMissing = !unicodeFont.getFont().canDisplay((char)codePoint);
 	}
 
-	/**
-	 * The unicode codepoint the glyph represents.
-	 */
+	/** The unicode codepoint the glyph represents. */
 	public int getCodePoint () {
 		return codePoint;
 	}
 
-	/**
-	 * Returns true if the font does not have a glyph for this codepoint.
-	 */
+	/** Returns true if the font does not have a glyph for this codepoint. */
 	public boolean isMissing () {
 		return isMissing;
 	}
 
-	/**
-	 * The width of the glyph's image.
-	 */
+	/** The width of the glyph's image. */
 	public int getWidth () {
 		return width;
 	}
 
-	/**
-	 * The height of the glyph's image.
-	 */
+	/** The height of the glyph's image. */
 	public int getHeight () {
 		return height;
 	}
 
-	/**
-	 * The shape to use to draw this glyph. This is set to null after the glyph is stored in a GlyphPage.
-	 */
+	/** The shape to use to draw this glyph. This is set to null after the glyph is stored in a GlyphPage. */
 	public Shape getShape () {
 		return shape;
 	}
@@ -129,9 +118,7 @@ public class Glyph {
 		return v2;
 	}
 
-	/**
-	 * The distance from drawing y location to top of this glyph, causing the glyph to sit on the baseline.
-	 */
+	/** The distance from drawing y location to top of this glyph, causing the glyph to sit on the baseline. */
 	public int getYOffset () {
 		return yOffset;
 	}

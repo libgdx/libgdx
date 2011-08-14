@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.particleeditor;
 
 import java.awt.BorderLayout;
@@ -47,12 +48,9 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
-import com.badlogic.gdx.backends.lwjgl.LwjglGraphics;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -262,7 +260,8 @@ public class ParticleEditor extends JFrame {
 			Gdx.input.setInputProcessor(this);
 		}
 
-		@Override public void resize (int width, int height) {
+		@Override
+		public void resize (int width, int height) {
 			Gdx.gl.glViewport(0, 0, width, height);
 			spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 
@@ -371,20 +370,25 @@ public class ParticleEditor extends JFrame {
 			return false;
 		}
 
-		@Override public void dispose () {
+		@Override
+		public void dispose () {
 		}
 
-		@Override public void pause () {
+		@Override
+		public void pause () {
 		}
 
-		@Override public void resume () {
+		@Override
+		public void resume () {
 		}
 
-		@Override public boolean touchMoved (int x, int y) {
+		@Override
+		public boolean touchMoved (int x, int y) {
 			return false;
 		}
 
-		@Override public boolean scrolled (int amount) {
+		@Override
+		public boolean scrolled (int amount) {
 			return false;
 		}
 	}

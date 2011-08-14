@@ -361,7 +361,8 @@ public class TexturePacker {
 		int top = 0;
 		int bottom = source.getHeight();
 		if (!filter.direction.isY()) {
-			outer: for (int y = 0; y < source.getHeight(); y++) {
+			outer:
+			for (int y = 0; y < source.getHeight(); y++) {
 				for (int x = 0; x < source.getWidth(); x++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -370,7 +371,8 @@ public class TexturePacker {
 				}
 				top++;
 			}
-			outer: for (int y = source.getHeight(); --y >= top;) {
+			outer:
+			for (int y = source.getHeight(); --y >= top;) {
 				for (int x = 0; x < source.getWidth(); x++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -383,7 +385,8 @@ public class TexturePacker {
 		int left = 0;
 		int right = source.getWidth();
 		if (!filter.direction.isX()) {
-			outer: for (int x = 0; x < source.getWidth(); x++) {
+			outer:
+			for (int x = 0; x < source.getWidth(); x++) {
 				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -392,7 +395,8 @@ public class TexturePacker {
 				}
 				left++;
 			}
-			outer: for (int x = source.getWidth(); --x >= left;) {
+			outer:
+			for (int x = source.getWidth(); --x >= left;) {
 				for (int y = top; y < bottom; y++) {
 					alphaRaster.getDataElements(x, y, a);
 					int alpha = a[0];
@@ -440,9 +444,7 @@ public class TexturePacker {
 			this.height = height;
 		}
 
-		/**
-		 * Returns true if the image was inserted. If canvas != null, an entry is written to the pack file.
-		 */
+		/** Returns true if the image was inserted. If canvas != null, an entry is written to the pack file. */
 		public Node insert (Image image, boolean rotate) throws IOException {
 			if (this.image != null) return null;
 			if (child1 != null) {

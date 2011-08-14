@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
 import java.io.BufferedReader;
@@ -27,10 +28,8 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * Holds the settings needed to configure a UnicodeFont.
- * @author Nathan Sweet
- */
+/** Holds the settings needed to configure a UnicodeFont.
+ * @author Nathan Sweet */
 public class HieroSettings {
 	private int fontSize = 12;
 	private boolean bold = false, italic = false;
@@ -42,9 +41,7 @@ public class HieroSettings {
 	public HieroSettings () {
 	}
 
-	/**
-	 * @param hieroFileRef The file system or classpath location of the Hiero settings file.
-	 */
+	/** @param hieroFileRef The file system or classpath location of the Hiero settings file. */
 	public HieroSettings (String hieroFileRef) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(Gdx.files.absolute(hieroFileRef).read()));
@@ -107,169 +104,123 @@ public class HieroSettings {
 		}
 	}
 
-	/**
-	 * @see UnicodeFont#getPaddingTop()
-	 */
+	/** @see UnicodeFont#getPaddingTop() */
 	public int getPaddingTop () {
 		return paddingTop;
 	}
 
-	/**
-	 * @see UnicodeFont#setPaddingTop(int)
-	 */
+	/** @see UnicodeFont#setPaddingTop(int) */
 	public void setPaddingTop (int paddingTop) {
 		this.paddingTop = paddingTop;
 	}
 
-	/**
-	 * @see UnicodeFont#getPaddingLeft()
-	 */
+	/** @see UnicodeFont#getPaddingLeft() */
 	public int getPaddingLeft () {
 		return paddingLeft;
 	}
 
-	/**
-	 * @see UnicodeFont#setPaddingLeft(int)
-	 */
+	/** @see UnicodeFont#setPaddingLeft(int) */
 	public void setPaddingLeft (int paddingLeft) {
 		this.paddingLeft = paddingLeft;
 	}
 
-	/**
-	 * @see UnicodeFont#getPaddingBottom()
-	 */
+	/** @see UnicodeFont#getPaddingBottom() */
 	public int getPaddingBottom () {
 		return paddingBottom;
 	}
 
-	/**
-	 * @see UnicodeFont#setPaddingBottom(int)
-	 */
+	/** @see UnicodeFont#setPaddingBottom(int) */
 	public void setPaddingBottom (int paddingBottom) {
 		this.paddingBottom = paddingBottom;
 	}
 
-	/**
-	 * @see UnicodeFont#getPaddingRight()
-	 */
+	/** @see UnicodeFont#getPaddingRight() */
 	public int getPaddingRight () {
 		return paddingRight;
 	}
 
-	/**
-	 * @see UnicodeFont#setPaddingRight(int)
-	 */
+	/** @see UnicodeFont#setPaddingRight(int) */
 	public void setPaddingRight (int paddingRight) {
 		this.paddingRight = paddingRight;
 	}
 
-	/**
-	 * @see UnicodeFont#getPaddingAdvanceX()
-	 */
+	/** @see UnicodeFont#getPaddingAdvanceX() */
 	public int getPaddingAdvanceX () {
 		return paddingAdvanceX;
 	}
 
-	/**
-	 * @see UnicodeFont#setPaddingAdvanceX(int)
-	 */
+	/** @see UnicodeFont#setPaddingAdvanceX(int) */
 	public void setPaddingAdvanceX (int paddingAdvanceX) {
 		this.paddingAdvanceX = paddingAdvanceX;
 	}
 
-	/**
-	 * @see UnicodeFont#getPaddingAdvanceY()
-	 */
+	/** @see UnicodeFont#getPaddingAdvanceY() */
 	public int getPaddingAdvanceY () {
 		return paddingAdvanceY;
 	}
 
-	/**
-	 * @see UnicodeFont#setPaddingAdvanceY(int)
-	 */
+	/** @see UnicodeFont#setPaddingAdvanceY(int) */
 	public void setPaddingAdvanceY (int paddingAdvanceY) {
 		this.paddingAdvanceY = paddingAdvanceY;
 	}
 
-	/**
-	 * @see UnicodeFont#getGlyphPageWidth()
-	 */
+	/** @see UnicodeFont#getGlyphPageWidth() */
 	public int getGlyphPageWidth () {
 		return glyphPageWidth;
 	}
 
-	/**
-	 * @see UnicodeFont#setGlyphPageWidth(int)
-	 */
+	/** @see UnicodeFont#setGlyphPageWidth(int) */
 	public void setGlyphPageWidth (int glyphPageWidth) {
 		this.glyphPageWidth = glyphPageWidth;
 	}
 
-	/**
-	 * @see UnicodeFont#getGlyphPageHeight()
-	 */
+	/** @see UnicodeFont#getGlyphPageHeight() */
 	public int getGlyphPageHeight () {
 		return glyphPageHeight;
 	}
 
-	/**
-	 * @see UnicodeFont#setGlyphPageHeight(int)
-	 */
+	/** @see UnicodeFont#setGlyphPageHeight(int) */
 	public void setGlyphPageHeight (int glyphPageHeight) {
 		this.glyphPageHeight = glyphPageHeight;
 	}
 
-	/**
-	 * @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
-	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean)
-	 */
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
 	public int getFontSize () {
 		return fontSize;
 	}
 
-	/**
-	 * @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
-	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean)
-	 */
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
 	public void setFontSize (int fontSize) {
 		this.fontSize = fontSize;
 	}
 
-	/**
-	 * @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
-	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean)
-	 */
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
 	public boolean isBold () {
 		return bold;
 	}
 
-	/**
-	 * @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
-	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean)
-	 */
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
 	public void setBold (boolean bold) {
 		this.bold = bold;
 	}
 
-	/**
-	 * @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
-	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean)
-	 */
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
 	public boolean isItalic () {
 		return italic;
 	}
 
-	/**
-	 * @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
-	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean)
-	 */
+	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
+	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
 	public void setItalic (boolean italic) {
 		this.italic = italic;
 	}
 
-	/**
-	 * @see UnicodeFont#getEffects()
-	 */
+	/** @see UnicodeFont#getEffects() */
 	public List getEffects () {
 		return effects;
 	}
@@ -282,10 +233,8 @@ public class HieroSettings {
 		this.nativeRendering = nativeRendering;
 	}
 
-	/**
-	 * Saves the settings to a file.
-	 * @throws IOException if the file could not be saved.
-	 */
+	/** Saves the settings to a file.
+	 * @throws IOException if the file could not be saved. */
 	public void save (File file) throws IOException {
 		PrintStream out = new PrintStream(new FileOutputStream(file));
 		out.println("font.size=" + fontSize);

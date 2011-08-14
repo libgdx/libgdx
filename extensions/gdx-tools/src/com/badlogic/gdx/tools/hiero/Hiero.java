@@ -13,35 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tools.hiero;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_COORD_ARRAY;
-import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glClearDepth;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnableClientState;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glScissor;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glVertex3f;
-import static org.lwjgl.opengl.GL11.glViewport;
+package com.badlogic.gdx.tools.hiero;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -129,10 +102,10 @@ import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineWobbleEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineZigzagEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ShadowEffect;
 
-/**
- * A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
- * @author Nathan Sweet
- */
+import static org.lwjgl.opengl.GL11.*;
+
+/** A tool to visualize settings for {@link UnicodeFont} and to export BMFont files for use with {@link BitmapFont}.
+ * @author Nathan Sweet */
 public class Hiero extends JFrame {
 	static final String NEHE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n" //
 		+ "abcdefghijklmnopqrstuvwxyz\n1234567890\n" //
@@ -1148,7 +1121,8 @@ public class Hiero extends JFrame {
 	class Renderer implements ApplicationListener {
 		private String sampleText;
 
-		@Override public void create () {
+		@Override
+		public void create () {
 			glEnable(GL_SCISSOR_TEST);
 
 			glEnable(GL_TEXTURE_2D);
@@ -1164,7 +1138,8 @@ public class Hiero extends JFrame {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		@Override public void resize (int width, int height) {
+		@Override
+		public void resize (int width, int height) {
 			glViewport(0, 0, width, height);
 			glScissor(0, 0, width, height);
 
@@ -1265,13 +1240,16 @@ public class Hiero extends JFrame {
 			}
 		}
 
-		@Override public void pause () {
+		@Override
+		public void pause () {
 		}
 
-		@Override public void resume () {
+		@Override
+		public void resume () {
 		}
 
-		@Override public void dispose () {
+		@Override
+		public void dispose () {
 		}
 	}
 
@@ -1288,7 +1266,8 @@ public class Hiero extends JFrame {
 // }
 		SwingUtilities.invokeLater(new Runnable() {
 
-			@Override public void run () {
+			@Override
+			public void run () {
 				new Hiero();
 			}
 		});

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
 import java.awt.AlphaComposite;
@@ -30,9 +31,7 @@ import java.util.List;
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class ShadowEffect implements ConfigurableEffect {
 	/** The numberof kernels to apply */
 	public static final int NUM_KERNELS = 16;
@@ -106,9 +105,7 @@ public class ShadowEffect implements ConfigurableEffect {
 		return xDistance;
 	}
 
-	/**
-	 * Sets the pixels to offset the shadow on the x axis. The glyphs will need padding so the shadow doesn't get clipped.
-	 */
+	/** Sets the pixels to offset the shadow on the x axis. The glyphs will need padding so the shadow doesn't get clipped. */
 	public void setXDistance (float distance) {
 		xDistance = distance;
 	}
@@ -117,9 +114,7 @@ public class ShadowEffect implements ConfigurableEffect {
 		return yDistance;
 	}
 
-	/**
-	 * Sets the pixels to offset the shadow on the y axis. The glyphs will need padding so the shadow doesn't get clipped.
-	 */
+	/** Sets the pixels to offset the shadow on the y axis. The glyphs will need padding so the shadow doesn't get clipped. */
 	public void setYDistance (float distance) {
 		yDistance = distance;
 	}
@@ -128,9 +123,7 @@ public class ShadowEffect implements ConfigurableEffect {
 		return blurKernelSize;
 	}
 
-	/**
-	 * Sets how many neighboring pixels are used to blur the shadow. Set to 0 for no blur.
-	 */
+	/** Sets how many neighboring pixels are used to blur the shadow. Set to 0 for no blur. */
 	public void setBlurKernelSize (int blurKernelSize) {
 		this.blurKernelSize = blurKernelSize;
 	}
@@ -139,9 +132,7 @@ public class ShadowEffect implements ConfigurableEffect {
 		return blurPasses;
 	}
 
-	/**
-	 * Sets the number of times to apply a blur to the shadow. Set to 0 for no blur.
-	 */
+	/** Sets the number of times to apply a blur to the shadow. Set to 0 for no blur. */
 	public void setBlurPasses (int blurPasses) {
 		this.blurPasses = blurPasses;
 	}
@@ -199,12 +190,10 @@ public class ShadowEffect implements ConfigurableEffect {
 		}
 	}
 
-	/**
-	 * Generate the blur kernels which will be repeatedly applied when blurring images
+	/** Generate the blur kernels which will be repeatedly applied when blurring images
 	 * 
 	 * @param level The number of kernels to generate
-	 * @return The kernels generated
-	 */
+	 * @return The kernels generated */
 	private static float[][] generateGaussianBlurKernels (int level) {
 		float[][] pascalsTriangle = generatePascalsTriangle(level);
 		float[][] gaussianTriangle = new float[pascalsTriangle.length][];
@@ -220,12 +209,10 @@ public class ShadowEffect implements ConfigurableEffect {
 		return gaussianTriangle;
 	}
 
-	/**
-	 * Generate Pascal's triangle
+	/** Generate Pascal's triangle
 	 * 
 	 * @param level The level of the triangle to generate
-	 * @return The Pascal's triangle kernel
-	 */
+	 * @return The Pascal's triangle kernel */
 	private static float[][] generatePascalsTriangle (int level) {
 		if (level < 2) level = 2;
 		float[][] triangle = new float[level][];

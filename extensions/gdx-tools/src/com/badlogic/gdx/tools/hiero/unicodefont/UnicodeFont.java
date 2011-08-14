@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
 import java.awt.Font;
@@ -37,17 +38,16 @@ import org.lwjgl.opengl.GL11;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 // BOZO - Look at actual pixels to determine glyph size, current size sometimes selects blank pixels (eg Calibri, 45, 'o').
 
-/**
- * A bitmap font that can display unicode glyphs from a TrueTypeFont.
+/** A bitmap font that can display unicode glyphs from a TrueTypeFont.
  * 
  * For efficiency, glyphs are packed on to textures. Glyphs can be loaded to the textures on the fly, when they are first needed
  * for display. However, it is best to load the glyphs that are known to be needed at startup.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class UnicodeFont {
 	static private final int DISPLAY_LIST_CACHE_SIZE = 200;
 	static private final int MAX_GLYPH_CODE = 0x10FFFF;
@@ -79,17 +79,13 @@ public class UnicodeFont {
 		}
 	};
 
-	/**
-	 * @param ttfFileRef The file system or classpath location of the TrueTypeFont file.
-	 * @param hieroFileRef The file system or classpath location of the Hiero settings file.
-	 */
+	/** @param ttfFileRef The file system or classpath location of the TrueTypeFont file.
+	 * @param hieroFileRef The file system or classpath location of the Hiero settings file. */
 	public UnicodeFont (String ttfFileRef, String hieroFileRef) {
 		this(ttfFileRef, new HieroSettings(hieroFileRef));
 	}
 
-	/**
-	 * @param ttfFileRef The file system or classpath location of the TrueTypeFont file.
-	 */
+	/** @param ttfFileRef The file system or classpath location of the TrueTypeFont file. */
 	public UnicodeFont (String ttfFileRef, HieroSettings settings) {
 		this.ttfFileRef = ttfFileRef;
 		Font font = createFont(ttfFileRef);
@@ -97,40 +93,30 @@ public class UnicodeFont {
 		loadSettings(settings);
 	}
 
-	/**
-	 * @param ttfFileRef The file system or classpath location of the TrueTypeFont file.
-	 */
+	/** @param ttfFileRef The file system or classpath location of the TrueTypeFont file. */
 	public UnicodeFont (String ttfFileRef, int size, boolean bold, boolean italic) {
 		this.ttfFileRef = ttfFileRef;
 		initializeFont(createFont(ttfFileRef), size, bold, italic);
 	}
 
-	/**
-	 * Creates a new UnicodeFont.
-	 * @param hieroFileRef The file system or classpath location of the Hiero settings file.
-	 */
+	/** Creates a new UnicodeFont.
+	 * @param hieroFileRef The file system or classpath location of the Hiero settings file. */
 	public UnicodeFont (Font font, String hieroFileRef) {
 		this(font, new HieroSettings(hieroFileRef));
 	}
 
-	/**
-	 * Creates a new UnicodeFont.
-	 */
+	/** Creates a new UnicodeFont. */
 	public UnicodeFont (Font font, HieroSettings settings) {
 		initializeFont(font, settings.getFontSize(), settings.isBold(), settings.isItalic());
 		loadSettings(settings);
 	}
 
-	/**
-	 * Creates a new UnicodeFont.
-	 */
+	/** Creates a new UnicodeFont. */
 	public UnicodeFont (Font font) {
 		initializeFont(font, font.getSize(), font.isBold(), font.isItalic());
 	}
 
-	/**
-	 * Creates a new UnicodeFont.
-	 */
+	/** Creates a new UnicodeFont. */
 	public UnicodeFont (Font font, int size, boolean bold, boolean italic) {
 		initializeFont(font, size, bold, italic);
 	}
@@ -170,22 +156,18 @@ public class UnicodeFont {
 		effects.addAll(settings.getEffects());
 	}
 
-	/**
-	 * Queues the glyphs in the specified codepoint range (inclusive) to be loaded. Note that the glyphs are not actually loaded
+	/** Queues the glyphs in the specified codepoint range (inclusive) to be loaded. Note that the glyphs are not actually loaded
 	 * until {@link #loadGlyphs()} is called.
 	 * 
 	 * Some characters like combining marks and non-spacing marks can only be rendered with the context of other glyphs. In this
-	 * case, use {@link #addGlyphs(String)}.
-	 */
+	 * case, use {@link #addGlyphs(String)}. */
 	public void addGlyphs (int startCodePoint, int endCodePoint) {
 		for (int codePoint = startCodePoint; codePoint <= endCodePoint; codePoint++)
 			addGlyphs(new String(Character.toChars(codePoint)));
 	}
 
-	/**
-	 * Queues the glyphs in the specified text to be loaded. Note that the glyphs are not actually loaded until
-	 * {@link #loadGlyphs()} is called.
-	 */
+	/** Queues the glyphs in the specified text to be loaded. Note that the glyphs are not actually loaded until
+	 * {@link #loadGlyphs()} is called. */
 	public void addGlyphs (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
@@ -198,35 +180,27 @@ public class UnicodeFont {
 		}
 	}
 
-	/**
-	 * Queues the glyphs in the ASCII character set (codepoints 32 through 255) to be loaded. Note that the glyphs are not actually
-	 * loaded until {@link #loadGlyphs()} is called.
-	 */
+	/** Queues the glyphs in the ASCII character set (codepoints 32 through 255) to be loaded. Note that the glyphs are not actually
+	 * loaded until {@link #loadGlyphs()} is called. */
 	public void addAsciiGlyphs () {
 		addGlyphs(32, 255);
 	}
 
-	/**
-	 * Queues the glyphs in the NEHE character set (codepoints 32 through 128) to be loaded. Note that the glyphs are not actually
-	 * loaded until {@link #loadGlyphs()} is called.
-	 */
+	/** Queues the glyphs in the NEHE character set (codepoints 32 through 128) to be loaded. Note that the glyphs are not actually
+	 * loaded until {@link #loadGlyphs()} is called. */
 	public void addNeheGlyphs () {
 		addGlyphs(32, 32 + 96);
 	}
 
-	/**
-	 * Loads all queued glyphs to the backing textures. Glyphs that are typically displayed together should be added and loaded at
+	/** Loads all queued glyphs to the backing textures. Glyphs that are typically displayed together should be added and loaded at
 	 * the same time so that they are stored on the same backing texture. This reduces the number of backing texture binds required
-	 * to draw glyphs.
-	 */
+	 * to draw glyphs. */
 	public boolean loadGlyphs () {
 		return loadGlyphs(-1);
 	}
 
-	/**
-	 * Loads up to the specified number of queued glyphs to the backing textures. This is typically called from the game loop to
-	 * load glyphs on the fly that were requested for display but have not yet been loaded.
-	 */
+	/** Loads up to the specified number of queued glyphs to the backing textures. This is typically called from the game loop to
+	 * load glyphs on the fly that were requested for display but have not yet been loaded. */
 	public boolean loadGlyphs (int maxGlyphsToLoad) {
 		if (queuedGlyphs.isEmpty()) return false;
 
@@ -273,9 +247,7 @@ public class UnicodeFont {
 		return true;
 	}
 
-	/**
-	 * Clears all loaded and queued glyphs.
-	 */
+	/** Clears all loaded and queued glyphs. */
 	public void clearGlyphs () {
 		for (int i = 0; i < PAGES; i++)
 			glyphs[i] = null;
@@ -295,19 +267,15 @@ public class UnicodeFont {
 		missingGlyph = null;
 	}
 
-	/**
-	 * Releases all resources used by this UnicodeFont. This method should be called when this UnicodeFont instance is no longer
-	 * needed.
-	 */
+	/** Releases all resources used by this UnicodeFont. This method should be called when this UnicodeFont instance is no longer
+	 * needed. */
 	public void destroy () {
 		// The destroy() method is just to provide a consistent API for releasing resources.
 		clearGlyphs();
 	}
 
-	/**
-	 * Identical to {@link #drawString(float, float, String, Color, int, int)} but returns a DisplayList which provides access to
-	 * the width and height of the text drawn.
-	 */
+	/** Identical to {@link #drawString(float, float, String, Color, int, int)} but returns a DisplayList which provides access to
+	 * the width and height of the text drawn. */
 	public DisplayList drawDisplayList (float x, float y, String text, Color color, int startIndex, int endIndex) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		if (text.length() == 0) return emptyDisplayList;
@@ -445,9 +413,7 @@ public class UnicodeFont {
 		drawString(x, y, text, col, 0, text.length());
 	}
 
-	/**
-	 * Returns the glyph for the specified codePoint. If the glyph does not exist yet, it is created and queued to be loaded.
-	 */
+	/** Returns the glyph for the specified codePoint. If the glyph does not exist yet, it is created and queued to be loaded. */
 	private Glyph getGlyph (int glyphCode, int codePoint, Rectangle bounds, GlyphVector vector, int index) {
 		if (glyphCode < 0 || glyphCode >= MAX_GLYPH_CODE) {
 			// GlyphVector#getGlyphCode sometimes returns negative numbers on OS X!?
@@ -549,9 +515,7 @@ public class UnicodeFont {
 		return lines * getLineHeight() + height;
 	}
 
-	/**
-	 * Returns the distance from the y drawing location to the top most pixel of the specified text.
-	 */
+	/** Returns the distance from the y drawing location to the top most pixel of the specified text. */
 	public int getYOffset (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
@@ -572,181 +536,131 @@ public class UnicodeFont {
 		return yOffset;
 	}
 
-	/**
-	 * Returns the TrueTypeFont for this UnicodeFont.
-	 */
+	/** Returns the TrueTypeFont for this UnicodeFont. */
 	public Font getFont () {
 		return font;
 	}
 
-	/**
-	 * Returns the padding above a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Returns the padding above a glyph on the GlyphPage to allow for effects to be drawn. */
 	public int getPaddingTop () {
 		return paddingTop;
 	}
 
-	/**
-	 * Sets the padding above a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Sets the padding above a glyph on the GlyphPage to allow for effects to be drawn. */
 	public void setPaddingTop (int paddingTop) {
 		this.paddingTop = paddingTop;
 	}
 
-	/**
-	 * Returns the padding to the left of a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Returns the padding to the left of a glyph on the GlyphPage to allow for effects to be drawn. */
 	public int getPaddingLeft () {
 		return paddingLeft;
 	}
 
-	/**
-	 * Sets the padding to the left of a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Sets the padding to the left of a glyph on the GlyphPage to allow for effects to be drawn. */
 	public void setPaddingLeft (int paddingLeft) {
 		this.paddingLeft = paddingLeft;
 	}
 
-	/**
-	 * Returns the padding below a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Returns the padding below a glyph on the GlyphPage to allow for effects to be drawn. */
 	public int getPaddingBottom () {
 		return paddingBottom;
 	}
 
-	/**
-	 * Sets the padding below a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Sets the padding below a glyph on the GlyphPage to allow for effects to be drawn. */
 	public void setPaddingBottom (int paddingBottom) {
 		this.paddingBottom = paddingBottom;
 	}
 
-	/**
-	 * Returns the padding to the right of a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Returns the padding to the right of a glyph on the GlyphPage to allow for effects to be drawn. */
 	public int getPaddingRight () {
 		return paddingRight;
 	}
 
-	/**
-	 * Sets the padding to the right of a glyph on the GlyphPage to allow for effects to be drawn.
-	 */
+	/** Sets the padding to the right of a glyph on the GlyphPage to allow for effects to be drawn. */
 	public void setPaddingRight (int paddingRight) {
 		this.paddingRight = paddingRight;
 	}
 
-	/**
-	 * Gets the additional amount to offset glyphs on the x axis.
-	 */
+	/** Gets the additional amount to offset glyphs on the x axis. */
 	public int getPaddingAdvanceX () {
 		return paddingAdvanceX;
 	}
 
-	/**
-	 * Sets the additional amount to offset glyphs on the x axis. This is typically set to a negative number when left or right
-	 * padding is used so that glyphs are not spaced too far apart.
-	 */
+	/** Sets the additional amount to offset glyphs on the x axis. This is typically set to a negative number when left or right
+	 * padding is used so that glyphs are not spaced too far apart. */
 	public void setPaddingAdvanceX (int paddingAdvanceX) {
 		this.paddingAdvanceX = paddingAdvanceX;
 	}
 
-	/**
-	 * Gets the additional amount to offset a line of text on the y axis.
-	 */
+	/** Gets the additional amount to offset a line of text on the y axis. */
 	public int getPaddingAdvanceY () {
 		return paddingAdvanceY;
 	}
 
-	/**
-	 * Sets the additional amount to offset a line of text on the y axis. This is typically set to a negative number when top or
-	 * bottom padding is used so that lines of text are not spaced too far apart.
-	 */
+	/** Sets the additional amount to offset a line of text on the y axis. This is typically set to a negative number when top or
+	 * bottom padding is used so that lines of text are not spaced too far apart. */
 	public void setPaddingAdvanceY (int paddingAdvanceY) {
 		this.paddingAdvanceY = paddingAdvanceY;
 	}
 
-	/**
-	 * Returns the distance from one line of text to the next. This is the sum of the descent, ascent, leading, padding top,
-	 * padding bottom, and padding advance y. To change the line height, use {@link #setPaddingAdvanceY(int)}.
-	 */
+	/** Returns the distance from one line of text to the next. This is the sum of the descent, ascent, leading, padding top,
+	 * padding bottom, and padding advance y. To change the line height, use {@link #setPaddingAdvanceY(int)}. */
 	public int getLineHeight () {
 		return descent + ascent + leading + paddingTop + paddingBottom + paddingAdvanceY;
 	}
 
-	/**
-	 * Gets the distance from the baseline to the y drawing location.
-	 */
+	/** Gets the distance from the baseline to the y drawing location. */
 	public int getAscent () {
 		return ascent;
 	}
 
-	/**
-	 * Gets the distance from the baseline to the bottom of most alphanumeric characters with descenders.
-	 */
+	/** Gets the distance from the baseline to the bottom of most alphanumeric characters with descenders. */
 	public int getDescent () {
 		return descent;
 	}
 
-	/**
-	 * Gets the extra distance between the descent of one line of text to the ascent of the next.
-	 */
+	/** Gets the extra distance between the descent of one line of text to the ascent of the next. */
 	public int getLeading () {
 		return leading;
 	}
 
-	/**
-	 * Returns the width of the backing textures.
-	 */
+	/** Returns the width of the backing textures. */
 	public int getGlyphPageWidth () {
 		return glyphPageWidth;
 	}
 
-	/**
-	 * Sets the width of the backing textures. Default is 512.
-	 */
+	/** Sets the width of the backing textures. Default is 512. */
 	public void setGlyphPageWidth (int glyphPageWidth) {
 		this.glyphPageWidth = glyphPageWidth;
 	}
 
-	/**
-	 * Returns the height of the backing textures.
-	 */
+	/** Returns the height of the backing textures. */
 	public int getGlyphPageHeight () {
 		return glyphPageHeight;
 	}
 
-	/**
-	 * Sets the height of the backing textures. Default is 512.
-	 */
+	/** Sets the height of the backing textures. Default is 512. */
 	public void setGlyphPageHeight (int glyphPageHeight) {
 		this.glyphPageHeight = glyphPageHeight;
 	}
 
-	/**
-	 * Returns the GlyphPages for this UnicodeFont.
-	 */
+	/** Returns the GlyphPages for this UnicodeFont. */
 	public List getGlyphPages () {
 		return glyphPages;
 	}
 
-	/**
-	 * Returns a list of {@link com.badlogic.gdx.hiero.unicodefont.effects.Effect}s that will be applied to the glyphs.
-	 */
+	/** Returns a list of {@link Effect}s that will be applied to the glyphs. */
 	public List getEffects () {
 		return effects;
 	}
 
-	/**
-	 * Returns true if this UnicodeFont caches the glyph drawing instructions to improve performance.
-	 */
+	/** Returns true if this UnicodeFont caches the glyph drawing instructions to improve performance. */
 	public boolean isCaching () {
 		return displayListCaching;
 	}
 
-	/**
-	 * Sets if this UnicodeFont caches the glyph drawing instructions to improve performance. Default is true. Text rendering is
-	 * very slow without display list caching.
-	 */
+	/** Sets if this UnicodeFont caches the glyph drawing instructions to improve performance. Default is true. Text rendering is
+	 * very slow without display list caching. */
 	public void setDisplayListCaching (boolean displayListCaching) {
 		this.displayListCaching = displayListCaching;
 	}
@@ -759,10 +673,8 @@ public class UnicodeFont {
 		return nativeRendering;
 	}
 
-	/**
-	 * Returns the path to the TTF file for this UnicodeFont, or null. If this UnicodeFont was created without specifying the TTF
-	 * file, it will try to determine the path using Sun classes. If this fails, null is returned.
-	 */
+	/** Returns the path to the TTF file for this UnicodeFont, or null. If this UnicodeFont was created without specifying the TTF
+	 * file, it will try to determine the path using Sun classes. If this fails, null is returned. */
 	public String getFontFile () {
 		if (ttfFileRef == null) {
 			// Worst case if this UnicodeFont was loaded without a ttfFileRef, try to get the font file from Sun's classes.
@@ -780,9 +692,7 @@ public class UnicodeFont {
 		return ttfFileRef;
 	}
 
-	/**
-	 * @param ttfFileRef The file system or classpath location of the TrueTypeFont file.
-	 */
+	/** @param ttfFileRef The file system or classpath location of the TrueTypeFont file. */
 	static private Font createFont (String ttfFileRef) {
 		try {
 			return Font.createFont(Font.TRUETYPE_FONT, Gdx.files.absolute(ttfFileRef).read());
@@ -793,9 +703,7 @@ public class UnicodeFont {
 		}
 	}
 
-	/**
-	 * Sorts glyphs by height, tallest first.
-	 */
+	/** Sorts glyphs by height, tallest first. */
 	static private final Comparator heightComparator = new Comparator() {
 		public int compare (Object o1, Object o2) {
 			return ((Glyph)o1).getHeight() - ((Glyph)o2).getHeight();

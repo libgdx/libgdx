@@ -13,30 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tools.hiero.unicodefont;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_PROJECTION;
-import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_COORD_ARRAY;
-import static org.lwjgl.opengl.GL11.GL_VERTEX_ARRAY;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glClearDepth;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnableClientState;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
-import static org.lwjgl.opengl.GL11.glMatrixMode;
-import static org.lwjgl.opengl.GL11.glOrtho;
-import static org.lwjgl.opengl.GL11.glScissor;
-import static org.lwjgl.opengl.GL11.glViewport;
+package com.badlogic.gdx.tools.hiero.unicodefont;
 
 import org.lwjgl.opengl.GL11;
 
@@ -44,15 +22,19 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class UnicodeFontTest implements ApplicationListener {
 	private UnicodeFont unicodeFont;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		unicodeFont = new UnicodeFont("c:/windows/fonts/arial.ttf", 48, false, false);
 		unicodeFont.getEffects().add(new ColorEffect(java.awt.Color.white));
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 		glViewport(0, 0, width, height);
 		glScissor(0, 0, width, height);
 		glEnable(GL_SCISSOR_TEST);
@@ -76,7 +58,8 @@ public class UnicodeFontTest implements ApplicationListener {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL11.glClear(GL_COLOR_BUFFER_BIT);
 
 		unicodeFont.loadGlyphs(1);
@@ -95,12 +78,15 @@ public class UnicodeFontTest implements ApplicationListener {
 		new LwjglApplication(new UnicodeFontTest(), "UnicodeFont Test", 800, 600, false);
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 }

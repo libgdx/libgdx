@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
 import java.awt.AlphaComposite;
@@ -37,10 +38,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
 
-/**
- * Stores a number of glyphs on a single texture.
- * @author Nathan Sweet
- */
+/** Stores a number of glyphs on a single texture.
+ * @author Nathan Sweet */
 public class GlyphPage {
 	private final UnicodeFont unicodeFont;
 	private final int pageWidth, pageHeight;
@@ -49,10 +48,8 @@ public class GlyphPage {
 	private boolean orderAscending;
 	private final List pageGlyphs = new ArrayList(32);
 
-	/**
-	 * @param pageWidth The width of the backing texture.
-	 * @param pageHeight The height of the backing texture.
-	 */
+	/** @param pageWidth The width of the backing texture.
+	 * @param pageHeight The height of the backing texture. */
 	GlyphPage (UnicodeFont unicodeFont, int pageWidth, int pageHeight) {
 		this.unicodeFont = unicodeFont;
 		this.pageWidth = pageWidth;
@@ -61,16 +58,14 @@ public class GlyphPage {
 		texture = new Texture(pageWidth, pageHeight, Format.RGBA8888);
 	}
 
-	/**
-	 * Loads glyphs to the backing texture and sets the image on each loaded glyph. Loaded glyphs are removed from the list.
+	/** Loads glyphs to the backing texture and sets the image on each loaded glyph. Loaded glyphs are removed from the list.
 	 * 
 	 * If this page already has glyphs and maxGlyphsToLoad is -1, then this method will return 0 if all the new glyphs don't fit.
 	 * This reduces texture binds when drawing since glyphs loaded at once are typically displayed together.
 	 * @param glyphs The glyphs to load.
 	 * @param maxGlyphsToLoad This is the maximum number of glyphs to load from the list. Set to -1 to attempt to load all the
 	 *           glyphs.
-	 * @return The number of glyphs that were actually loaded.
-	 */
+	 * @return The number of glyphs that were actually loaded. */
 	int loadGlyphs (List glyphs, int maxGlyphsToLoad) {
 		if (rowHeight != 0 && maxGlyphsToLoad == -1) {
 			// If this page has glyphs and we are not loading incrementally, return zero if any of the glyphs don't fit.
@@ -138,9 +133,7 @@ public class GlyphPage {
 		return i;
 	}
 
-	/**
-	 * Loads a single glyph to the backing texture, if it fits.
-	 */
+	/** Loads a single glyph to the backing texture, if it fits. */
 	private void renderGlyph (Glyph glyph, int width, int height) {
 		// Draw the glyph to the scratch image using Java2D.
 		scratchGraphics.setComposite(AlphaComposite.Clear);
@@ -181,9 +174,7 @@ public class GlyphPage {
 		glyph.setTexture(texture, u, v, u2, v2);
 	}
 
-	/**
-	 * Returns an iterator for the specified glyphs, sorted either ascending or descending.
-	 */
+	/** Returns an iterator for the specified glyphs, sorted either ascending or descending. */
 	private Iterator getIterator (List glyphs) {
 		if (orderAscending) return glyphs.iterator();
 		final ListIterator iter = glyphs.listIterator(glyphs.size());
@@ -202,16 +193,12 @@ public class GlyphPage {
 		};
 	}
 
-	/**
-	 * Returns the glyphs stored on this page.
-	 */
+	/** Returns the glyphs stored on this page. */
 	public List getGlyphs () {
 		return pageGlyphs;
 	}
 
-	/**
-	 * Returns the backing texture for this page.
-	 */
+	/** Returns the backing texture for this page. */
 	public Texture getTexture () {
 		return texture;
 	}

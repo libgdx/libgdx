@@ -23,10 +23,8 @@ import java.awt.geom.PathIterator;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author Jerry Huxtable
- * @author Nathan Sweet
- */
+/** @author Jerry Huxtable
+ * @author Nathan Sweet */
 public class OutlineZigzagEffect extends OutlineEffect {
 	float amplitude = 1;
 	float wavelength = 3;

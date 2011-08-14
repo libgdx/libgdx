@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tools.imagepacker;
 
 import java.awt.Color;
@@ -29,8 +30,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-/**
- * <p>
+/** <p>
  * A simple image packer class based on the nice algorithm by blackpawn.
  * </p>
  * 
@@ -61,9 +61,7 @@ import javax.imageio.ImageIO;
  * Happy packing!
  * </p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class ImagePacker {
 	static final class Node {
 		public Node leftChild;
@@ -89,8 +87,7 @@ public class ImagePacker {
 	Node root;
 	Map<String, Rectangle> rects;
 
-	/**
-	 * <p>
+	/** <p>
 	 * Creates a new ImagePacker which will insert all supplied images into a <code>width</code> by <code>height</code> image.
 	 * <code>padding</code> specifies the minimum number of pixels to insert between images. <code>border</code> will duplicate the
 	 * border pixels of the inserted images to avoid seams when rendering with bi-linear filtering on.
@@ -99,8 +96,7 @@ public class ImagePacker {
 	 * @param width the width of the output image
 	 * @param height the height of the output image
 	 * @param padding the number of padding pixels
-	 * @param duplicateBorder whether to duplicate the border
-	 */
+	 * @param duplicateBorder whether to duplicate the border */
 	public ImagePacker (int width, int height, int padding, boolean duplicateBorder) {
 		this.image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		this.padding = padding;
@@ -109,16 +105,14 @@ public class ImagePacker {
 		this.rects = new HashMap<String, Rectangle>();
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Inserts the given image. You can later on retrieve the images position in the output image via the supplied name and the
 	 * method {@link #getRects()}.
 	 * </p>
 	 * 
 	 * @param name the name of the image
 	 * @param image the image
-	 * @throws RuntimeException in case the image did not fit or you specified a duplicate name
-	 */
+	 * @throws RuntimeException in case the image did not fit or you specified a duplicate name */
 	public void insertImage (String name, BufferedImage image) {
 		if (rects.containsKey(name)) throw new RuntimeException("Key with name '" + name + "' is already in map");
 
@@ -211,16 +205,12 @@ public class ImagePacker {
 		}
 	}
 
-	/**
-	 * @return the output image
-	 */
+	/** @return the output image */
 	public BufferedImage getImage () {
 		return image;
 	}
 
-	/**
-	 * @return the rectangle in the output image of each inserted image
-	 */
+	/** @return the rectangle in the output image of each inserted image */
 	public Map<String, Rectangle> getRects () {
 		return rects;
 	}
@@ -237,7 +227,8 @@ public class ImagePacker {
 // BufferedImage[] images = { ImageIO.read( new File( "test.png" ) ) };
 
 		Arrays.sort(images, new Comparator<BufferedImage>() {
-			@Override public int compare (BufferedImage o1, BufferedImage o2) {
+			@Override
+			public int compare (BufferedImage o1, BufferedImage o2) {
 				return o2.getWidth() * o2.getHeight() - o1.getWidth() * o1.getHeight();
 			}
 		});
