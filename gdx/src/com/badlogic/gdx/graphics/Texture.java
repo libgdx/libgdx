@@ -31,6 +31,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData.TextureDataType;
+import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
@@ -113,19 +114,23 @@ public class Texture implements Disposable {
 	TextureData data;
 
 	public Texture (String internalPath) {
-		this(new FileTextureData(Gdx.files.internal(internalPath), null, null, false));
+		this(Gdx.files.internal(internalPath));
 	}
 
 	public Texture (FileHandle file) {
-		this(new FileTextureData(file, null, null, false));
+		this(file, null, false);
 	}
 
 	public Texture (FileHandle file, boolean useMipMaps) {
-		this(new FileTextureData(file, null, null, useMipMaps));
+		this(file, null, useMipMaps);
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		this(new FileTextureData(file, null, format, useMipMaps));
+		if (file.name().endsWith(".etc1")) {
+			create(new ETC1TextureData(file, useMipMaps));
+		} else {
+			create(new FileTextureData(file, null, format, useMipMaps));
+		}
 	}
 
 	public Texture (Pixmap pixmap) {
@@ -145,6 +150,10 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (TextureData data) {
+		create(data);
+	}
+
+	private void create (TextureData data) {
 		glHandle = createGLHandle();
 		load(data);
 		if (data.isManaged()) addManagedTexture(Gdx.app, this);
