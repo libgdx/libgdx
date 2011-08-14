@@ -1,2 +1,0 @@
-# Module com.badlogic.gdx.backends.gwt
-# RPC service class, partial path of RPC policy file
