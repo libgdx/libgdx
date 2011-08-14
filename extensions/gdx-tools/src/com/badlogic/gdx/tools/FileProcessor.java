@@ -1,18 +1,4 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+
 package com.badlogic.gdx.tools;
 
 import java.io.File;
@@ -22,22 +8,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
-public abstract class FileProcessor {
+import com.badlogic.gdx.utils.Array;
+
+public class FileProcessor {
 	FilenameFilter inputFilter;
 	Comparator<File> comparator;
-	String inputSuffix;
+	Array<Pattern> inputRegex = new Array();
 	String outputSuffix;
 	ArrayList<InputFile> outputFiles = new ArrayList();
 	boolean recursive = true;
 	boolean flattenOutput;
-
-	public FileProcessor () {
-	}
-
-	public FileProcessor (String inputSuffix) {
-		this.inputSuffix = inputSuffix;
-	}
 
 	Comparator<InputFile> inputFileComparator = new Comparator<InputFile>() {
 		public int compare (InputFile o1, InputFile o2) {
@@ -45,28 +27,41 @@ public abstract class FileProcessor {
 		}
 	};
 
-	public void setInputFilter (FilenameFilter inputFilter) {
+	public FileProcessor setInputFilter (FilenameFilter inputFilter) {
 		this.inputFilter = inputFilter;
+		return this;
 	}
 
-	public void setComparator (Comparator<File> comparator) {
+	public FileProcessor setComparator (Comparator<File> comparator) {
 		this.comparator = comparator;
+		return this;
 	}
 
-	public void setInputSuffix (String inputSuffix) {
-		this.inputSuffix = inputSuffix;
+	public FileProcessor addInputSuffix (String... suffixes) {
+		for (String suffix : suffixes)
+			addInputRegex(".*" + Pattern.quote(suffix));
+		return this;
 	}
 
-	public void setOutputSuffix (String outputSuffix) {
+	public FileProcessor addInputRegex (String... regexex) {
+		for (String regex : regexex)
+			inputRegex.add(Pattern.compile(regex));
+		return this;
+	}
+
+	public FileProcessor setOutputSuffix (String outputSuffix) {
 		this.outputSuffix = outputSuffix;
+		return this;
 	}
 
-	public void setFlattenOutput (boolean flattenOutput) {
+	public FileProcessor setFlattenOutput (boolean flattenOutput) {
 		this.flattenOutput = flattenOutput;
+		return this;
 	}
 
-	public void setRecursive (boolean recursive) {
+	public FileProcessor setRecursive (boolean recursive) {
 		this.recursive = recursive;
+		return this;
 	}
 
 	public void process (File inputFile, File outputRoot) throws Exception {
@@ -112,7 +107,16 @@ public abstract class FileProcessor {
 		int depth) {
 		for (File file : files) {
 			if (file.isFile()) {
-				if (inputSuffix != null && !file.getName().endsWith(inputSuffix)) continue;
+				if (inputRegex != null) {
+					boolean found = false;
+					for (Pattern pattern : inputRegex) {
+						if (pattern.matcher(file.getName()).matches()) {
+							found = true;
+							continue;
+						}
+					}
+					if (!found) continue;
+				}
 
 				File dir = file.getParentFile();
 				if (inputFilter != null && !inputFilter.accept(dir, file.getName())) continue;
@@ -137,9 +141,11 @@ public abstract class FileProcessor {
 		}
 	}
 
-	protected abstract void processFile (InputFile inputFile) throws Exception;
+	protected void processFile (InputFile inputFile) throws Exception {
+	}
 
-	protected abstract void processDir (InputFile inputDir, ArrayList<InputFile> value) throws Exception;
+	protected void processDir (InputFile inputDir, ArrayList<InputFile> value) throws Exception {
+	}
 
 	protected void addOutputFile (InputFile inputFile) {
 		outputFiles.add(inputFile);

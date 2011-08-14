@@ -29,15 +29,10 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 
 public class ETC1Compressor {
 	static class ETC1FileProcessor extends FileProcessor {
-		private ETC1FileProcessor () {
-			setInputFilter(new FilenameFilter() {
-				@Override
-				public boolean accept (File dir, String name) {
-					return name.toLowerCase().endsWith(".png") || 
-							 name.toLowerCase().endsWith(".jpg") ||
-							 name.toLowerCase().endsWith(".bmp");
-				}
-			});
+		ETC1FileProcessor () {
+			addInputSuffix(".png");
+			addInputSuffix(".jpg");
+			addInputSuffix(".bmp");
 			setOutputSuffix(".etc1");
 		}
 
