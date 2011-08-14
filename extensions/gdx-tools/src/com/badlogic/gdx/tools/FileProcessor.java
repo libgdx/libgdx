@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.math;
+package com.badlogic.gdx.tools;
 
 import java.io.File;
 import java.io.FilenameFilter;
