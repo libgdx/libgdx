@@ -64,13 +64,15 @@ public class FileProcessor {
 		return this;
 	}
 
-	public void process (File inputFile, File outputRoot) throws Exception {
+	/** @return the processed files added with {@link #addProcessedFile(InputFile)}. */
+	public ArrayList<InputFile> process (File inputFile, File outputRoot) throws Exception {
 		if (inputFile.isFile())
-			process(new File[] {inputFile}, outputRoot);
+			return process(new File[] {inputFile}, outputRoot);
 		else
-			process(inputFile.listFiles(), outputRoot);
+			return process(inputFile.listFiles(), outputRoot);
 	}
 
+	/** @return the processed files added with {@link #addProcessedFile(InputFile)}. */
 	public ArrayList<InputFile> process (File[] files, File outputRoot) throws Exception {
 		outputFiles.clear();
 
