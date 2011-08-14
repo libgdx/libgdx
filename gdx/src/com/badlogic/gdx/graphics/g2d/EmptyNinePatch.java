@@ -4,9 +4,7 @@ package com.badlogic.gdx.graphics.g2d;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 
-/**
- * Empty ninepatch for controls that require a ninepatch.
- */
+/** Empty ninepatch for controls that require a ninepatch. */
 public class EmptyNinePatch extends NinePatch {
 	static private TextureRegion[] emptyPatches;
 	static private EmptyNinePatch instance;

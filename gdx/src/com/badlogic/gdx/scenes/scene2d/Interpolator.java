@@ -13,35 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d;
 
-/**
- * An interpolator defines the rate of change of an animation. This allows the basic animation effects (alpha, scale, translate,
+/** An interpolator defines the rate of change of an animation. This allows the basic animation effects (alpha, scale, translate,
  * rotate) to be accelerated, decelerated etc.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public interface Interpolator {
 
-	/**
-	 * Maps a point in the animation duration to a multiplier to be applied to the transformations of an animation. The Input is a
+	/** Maps a point in the animation duration to a multiplier to be applied to the transformations of an animation. The Input is a
 	 * percentage of the elapsed animation duration.
 	 * 
 	 * @param input A value between 0 and 1.0 indicating our current point in the animation where 0 represents the start and 1.0
 	 *           represents the end
 	 * @return The interpolation value. This value can be more than 1.0 for {@link Interpolator}s which overshoot their targets, or
-	 *         less than 0 for {@link Interpolator}s that undershoot their targets.
-	 */
+	 *         less than 0 for {@link Interpolator}s that undershoot their targets. */
 	float getInterpolation (float input);
 
-	/**
-	 * Called when the animation has finished and the {@link Interpolator} is no longer needed.
-	 */
+	/** Called when the animation has finished and the {@link Interpolator} is no longer needed. */
 	void finished ();
 
-	/**
-	 * Creates a copy of this interpolator.
-	 * @return the copy.
-	 */
-	Interpolator copy();
+	/** Creates a copy of this interpolator.
+	 * @return the copy. */
+	Interpolator copy ();
 }

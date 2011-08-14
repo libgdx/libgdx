@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.ShortBuffer;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.VertexArray;
@@ -35,16 +33,19 @@ public class VertexArrayClassTest extends GdxTest {
 	VertexArray va;
 	ShortBuffer indices;
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		texture.dispose();
 		va.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.gl10;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -62,7 +63,8 @@ public class VertexArrayClassTest extends GdxTest {
 		va.unbind();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		va = new VertexArray(3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"), new VertexAttribute(
 			VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"), new VertexAttribute(VertexAttributes.Usage.ColorPacked, 4,
 			"a_Color"));

@@ -16,23 +16,17 @@
 
 package java.nio;
 
-
-/**
- * A {@code ReadOnlyBufferException} is thrown when some write operation is
- * called on a read-only buffer.
+/** A {@code ReadOnlyBufferException} is thrown when some write operation is called on a read-only buffer.
  * 
- * @since Android 1.0
- */
+ * @since Android 1.0 */
 public class ReadOnlyBufferException extends UnsupportedOperationException {
 
-    private static final long serialVersionUID = -1210063976496234090L;
+	private static final long serialVersionUID = -1210063976496234090L;
 
-    /**
-     * Constructs a {@code ReadOnlyBufferException}.
-     * 
-     * @since Android 1.0
-     */
-    public ReadOnlyBufferException() {
-        super();
-    }
+	/** Constructs a {@code ReadOnlyBufferException}.
+	 * 
+	 * @since Android 1.0 */
+	public ReadOnlyBufferException () {
+		super();
+	}
 }

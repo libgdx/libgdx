@@ -44,7 +44,8 @@ public class BodyTypes extends Box2DTest {
 	Body m_platform;
 	float m_speed;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		Body ground;
 
 		{
@@ -130,7 +131,8 @@ public class BodyTypes extends Box2DTest {
 
 	private final Vector2 tmp = new Vector2();
 
-	@Override public boolean keyDown (int keyCode) {
+	@Override
+	public boolean keyDown (int keyCode) {
 		if (keyCode == Keys.D) m_platform.setType(BodyType.DynamicBody);
 		if (keyCode == Keys.S) m_platform.setType(BodyType.StaticBody);
 		if (keyCode == Keys.K) {
@@ -142,7 +144,8 @@ public class BodyTypes extends Box2DTest {
 		return false;
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		if (m_platform.getType() == BodyType.KinematicBody) {
 			Vector2 p = m_platform.getTransform().getPosition();
 			Vector2 v = m_platform.getLinearVelocity();
@@ -157,8 +160,8 @@ public class BodyTypes extends Box2DTest {
 
 		if (renderer.batch != null) {
 			renderer.batch.begin();
-//			renderer.batch.drawText(renderer.font, "Keys: (d) dynamic, (s) static, (k) kinematic", 0, Gdx.app.getGraphics()
-//				.getHeight(), Color.WHITE);
+// renderer.batch.drawText(renderer.font, "Keys: (d) dynamic, (s) static, (k) kinematic", 0, Gdx.app.getGraphics()
+// .getHeight(), Color.WHITE);
 			renderer.batch.end();
 		}
 	}

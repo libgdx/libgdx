@@ -17,80 +17,74 @@
 
 package java.nio;
 
-/**
- * ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer
- * compose the implementation of array based short buffers.
+/** ShortArrayBuffer, ReadWriteShortArrayBuffer and ReadOnlyShortArrayBuffer compose the implementation of array based short
+ * buffers.
  * <p>
- * ReadOnlyShortArrayBuffer extends ShortArrayBuffer with all the write methods
- * throwing read only exception.
+ * ReadOnlyShortArrayBuffer extends ShortArrayBuffer with all the write methods throwing read only exception.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p>
- * 
- */
+ * </p> */
 final class ReadOnlyShortArrayBuffer extends ShortArrayBuffer {
 
-    static ReadOnlyShortArrayBuffer copy(ShortArrayBuffer other, int markOfOther) {
-        ReadOnlyShortArrayBuffer buf = new ReadOnlyShortArrayBuffer(other
-                .capacity(), other.backingArray, other.offset);
-        buf.limit = other.limit();
-        buf.position = other.position();
-        buf.mark = markOfOther;
-        return buf;
-    }
+	static ReadOnlyShortArrayBuffer copy (ShortArrayBuffer other, int markOfOther) {
+		ReadOnlyShortArrayBuffer buf = new ReadOnlyShortArrayBuffer(other.capacity(), other.backingArray, other.offset);
+		buf.limit = other.limit();
+		buf.position = other.position();
+		buf.mark = markOfOther;
+		return buf;
+	}
 
-    ReadOnlyShortArrayBuffer(int capacity, short[] backingArray, int arrayOffset) {
-        super(capacity, backingArray, arrayOffset);
-    }
+	ReadOnlyShortArrayBuffer (int capacity, short[] backingArray, int arrayOffset) {
+		super(capacity, backingArray, arrayOffset);
+	}
 
-    public ShortBuffer asReadOnlyBuffer() {
-        return duplicate();
-    }
+	public ShortBuffer asReadOnlyBuffer () {
+		return duplicate();
+	}
 
-    public ShortBuffer compact() {
-        throw new ReadOnlyBufferException();
-    }
+	public ShortBuffer compact () {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ShortBuffer duplicate() {
-        return copy(this, mark);
-    }
+	public ShortBuffer duplicate () {
+		return copy(this, mark);
+	}
 
-    public boolean isReadOnly() {
-        return true;
-    }
+	public boolean isReadOnly () {
+		return true;
+	}
 
-    protected short[] protectedArray() {
-        throw new ReadOnlyBufferException();
-    }
+	protected short[] protectedArray () {
+		throw new ReadOnlyBufferException();
+	}
 
-    protected int protectedArrayOffset() {
-        throw new ReadOnlyBufferException();
-    }
+	protected int protectedArrayOffset () {
+		throw new ReadOnlyBufferException();
+	}
 
-    protected boolean protectedHasArray() {
-        return false;
-    }
-    
-    public ShortBuffer put(ShortBuffer buf) {
-        throw new ReadOnlyBufferException();
-    }
+	protected boolean protectedHasArray () {
+		return false;
+	}
 
-    public ShortBuffer put(short c) {
-        throw new ReadOnlyBufferException();
-    }
+	public ShortBuffer put (ShortBuffer buf) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ShortBuffer put(int index, short c) {
-        throw new ReadOnlyBufferException();
-    }
+	public ShortBuffer put (short c) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public final ShortBuffer put(short[] src, int off, int len) {
-        throw new ReadOnlyBufferException();
-    }
-    
-    public ShortBuffer slice() {
-        return new ReadOnlyShortArrayBuffer(remaining(), backingArray, offset
-                + position);
-    }
+	public ShortBuffer put (int index, short c) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public final ShortBuffer put (short[] src, int off, int len) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public ShortBuffer slice () {
+		return new ReadOnlyShortArrayBuffer(remaining(), backingArray, offset + position);
+	}
 
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.remote;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -32,70 +33,77 @@ public class UxAndroid extends AndroidApplication {
 	String IP = null;
 	int PORT = 0;
 	RemoteSender sender;
-	
-	@Override public void onCreate (Bundle savedInstanceState) {
+
+	@Override
+	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Bundle bundle = getIntent().getExtras();
 		IP = bundle.getString("ip");
 		PORT = Integer.parseInt(bundle.getString("port"));
 		Log.d("UxAndroid", "ip: " + IP + ", port: " + PORT);
 		initialize(new ApplicationListener() {
-			
-			BitmapFont font;
-			SpriteBatch batch;			
 
-			@Override public void create () {
+			BitmapFont font;
+			SpriteBatch batch;
+
+			@Override
+			public void create () {
 				new Thread(new Runnable() {
 
-					@Override public void run () {
+					@Override
+					public void run () {
 						try {
 							RemoteSender sender = new RemoteSender(IP, PORT);
-							synchronized(UxAndroid.this) {
+							synchronized (UxAndroid.this) {
 								UxAndroid.this.sender = sender;
 							}
-						} catch(GdxRuntimeException e) {					
-						}						
+						} catch (GdxRuntimeException e) {
+						}
 					}
-					
+
 				}).start();
-				
+
 				batch = new SpriteBatch();
 				font = new BitmapFont();
 			}
-			
-			@Override public void resume () {
+
+			@Override
+			public void resume () {
 			}
 
-			@Override public void resize (int width, int height) {
+			@Override
+			public void resize (int width, int height) {
 				batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 			}
 
-			@Override public void render () {
+			@Override
+			public void render () {
 				boolean connected = false;
-				synchronized(UxAndroid.this) {
-					if(sender != null) {
+				synchronized (UxAndroid.this) {
+					if (sender != null) {
 						sender.sendUpdate();
 						connected = sender.isConnected();
 					}
 				}
-				
+
 				Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-				batch.begin();				
-				if(connected) {
-					font.draw(batch, "accel:" + Gdx.input.getAccelerometerX() + ", " + 
-										  Gdx.input.getAccelerometerY() + ", " + 
-										  Gdx.input.getAccelerometerZ() + ", fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+				batch.begin();
+				if (connected) {
+					font.draw(batch, "accel:" + Gdx.input.getAccelerometerX() + ", " + Gdx.input.getAccelerometerY() + ", "
+						+ Gdx.input.getAccelerometerZ() + ", fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
 				} else {
 					font.draw(batch, "No connection to " + IP + ":" + PORT, 10, 20);
 				}
-				batch.end();							
-			}			
+				batch.end();
+			}
 
-			@Override public void pause () {
+			@Override
+			public void pause () {
 
 			}
 
-			@Override public void dispose () {
+			@Override
+			public void dispose () {
 
 			}
 		}, false);

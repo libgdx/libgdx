@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d.joints;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
-/**
- * Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, max lengths for each side, and a
- * pulley ratio.
- */
+/** Pulley joint definition. This requires two ground anchors, two dynamic body anchor points, max lengths for each side, and a
+ * pulley ratio. */
 public class PulleyJointDef extends JointDef {
 	private final static float minPulleyLength = 2.0f;
 
@@ -31,9 +30,7 @@ public class PulleyJointDef extends JointDef {
 		collideConnected = true;
 	}
 
-	/**
-	 * Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors.
-	 */
+	/** Initialize the bodies, anchors, lengths, max lengths, and ratio using the world anchors. */
 	public void initialize (Body bodyA, Body bodyB, Vector2 groundAnchorA, Vector2 groundAnchorB, Vector2 anchorA,
 		Vector2 anchorB, float ratio) {
 		this.bodyA = bodyA;
@@ -51,48 +48,30 @@ public class PulleyJointDef extends JointDef {
 
 	}
 
-	/**
-	 * The first ground anchor in world coordinates. This point never moves.
-	 */
+	/** The first ground anchor in world coordinates. This point never moves. */
 	public final Vector2 groundAnchorA = new Vector2(-1, 1);
 
-	/**
-	 * The second ground anchor in world coordinates. This point never moves.
-	 */
+	/** The second ground anchor in world coordinates. This point never moves. */
 	public final Vector2 groundAnchorB = new Vector2(1, 1);
 
-	/**
-	 * The local anchor point relative to bodyA's origin.
-	 */
+	/** The local anchor point relative to bodyA's origin. */
 	public final Vector2 localAnchorA = new Vector2(-1, 0);
 
-	/**
-	 * The local anchor point relative to bodyB's origin.
-	 */
+	/** The local anchor point relative to bodyB's origin. */
 	public final Vector2 localAnchorB = new Vector2(1, 0);
 
-	/**
-	 * The a reference length for the segment attached to bodyA.
-	 */
+	/** The a reference length for the segment attached to bodyA. */
 	public float lengthA = 0;
 
-	/**
-	 * The maximum length of the segment attached to bodyA.
-	 */
+	/** The maximum length of the segment attached to bodyA. */
 	public float maxLengthA = 0;
 
-	/**
-	 * The a reference length for the segment attached to bodyB.
-	 */
+	/** The a reference length for the segment attached to bodyB. */
 	public float lengthB = 0;
 
-	/**
-	 * The maximum length of the segment attached to bodyB.
-	 */
+	/** The maximum length of the segment attached to bodyB. */
 	public float maxLengthB = 0;
 
-	/**
-	 * The pulley ratio, used to simulate a block-and-tackle.
-	 */
+	/** The pulley ratio, used to simulate a block-and-tackle. */
 	public float ratio = 1;
 }

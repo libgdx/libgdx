@@ -29,13 +29,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -45,12 +43,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * An implementation of the {@link Input} interface for Android.
+/** An implementation of the {@link Input} interface for Android.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public final class AndroidInput implements Input, OnKeyListener, OnTouchListener, SensorEventListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
@@ -143,30 +138,34 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		hasMultitouch = touchHandler.supportsMultitouch(app);
 
 		vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
-		
+
 		int rotation = getRotation();
 		DisplayMode mode = app.graphics.getDesktopDisplayMode();
-		if(((rotation == 0 || rotation == 180) && (mode.width >= mode.height)) ||
-			((rotation == 90 || rotation == 270) && (mode.width <= mode.height))) {
+		if (((rotation == 0 || rotation == 180) && (mode.width >= mode.height))
+			|| ((rotation == 90 || rotation == 270) && (mode.width <= mode.height))) {
 			nativeOrientation = Orientation.Landscape;
 		} else {
 			nativeOrientation = Orientation.Portrait;
-		}		
+		}
 	}
 
-	@Override public float getAccelerometerX () {
+	@Override
+	public float getAccelerometerX () {
 		return accelerometerValues[0];
 	}
 
-	@Override public float getAccelerometerY () {
+	@Override
+	public float getAccelerometerY () {
 		return accelerometerValues[1];
 	}
 
-	@Override public float getAccelerometerZ () {
+	@Override
+	public float getAccelerometerZ () {
 		return accelerometerValues[2];
 	}
 
-	@Override public void getTextInput (final TextInputListener listener, final String title, final String text) {
+	@Override
+	public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		handle.post(new Runnable() {
 			public void run () {
 				AlertDialog.Builder alert = new AlertDialog.Builder(AndroidInput.this.app);
@@ -181,7 +180,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					}
 				});
 				alert.setOnCancelListener(new OnCancelListener() {
-					@Override public void onCancel (DialogInterface arg0) {
+					@Override
+					public void onCancel (DialogInterface arg0) {
 						listener.canceled();
 					}
 				});
@@ -190,25 +190,29 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		});
 	}
 
-	@Override public int getX () {
+	@Override
+	public int getX () {
 		synchronized (this) {
 			return touchX[0];
 		}
 	}
 
-	@Override public int getY () {
+	@Override
+	public int getY () {
 		synchronized (this) {
 			return touchY[0];
 		}
 	}
 
-	@Override public int getX (int pointer) {
+	@Override
+	public int getX (int pointer) {
 		synchronized (this) {
 			return touchX[pointer];
 		}
 	}
 
-	@Override public int getY (int pointer) {
+	@Override
+	public int getY (int pointer) {
 		synchronized (this) {
 			return touchY[pointer];
 		}
@@ -220,7 +224,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override public boolean isKeyPressed (int key) {
+	@Override
+	public boolean isKeyPressed (int key) {
 		synchronized (this) {
 			if (key == Input.Keys.ANY_KEY)
 				return keys.size() > 0;
@@ -229,7 +234,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override public boolean isTouched () {
+	@Override
+	public boolean isTouched () {
 		synchronized (this) {
 			return touched[0];
 		}
@@ -293,9 +299,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 					usedKeyEvents.free(keyEvents.get(i));
 				}
 			}
-			
-			if(touchEvents.size() == 0) {
-				for(int i = 0; i < deltaX.length; i++) {
+
+			if (touchEvents.size() == 0) {
+				for (int i = 0; i < deltaX.length; i++) {
 					deltaX[0] = 0;
 					deltaY[0] = 0;
 				}
@@ -308,7 +314,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	boolean requestFocus = true;
 
-	@Override public boolean onTouch (View view, MotionEvent event) {
+	@Override
+	public boolean onTouch (View view, MotionEvent event) {
 		if (requestFocus) {
 			view.requestFocus();
 			view.requestFocusFromTouch();
@@ -327,7 +334,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return true;
 	}
 
-	@Override public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
+	@Override
+	public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
 		synchronized (this) {
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
@@ -375,13 +383,15 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return false;
 	}
 
-	@Override public void onAccuracyChanged (Sensor arg0, int arg1) {
+	@Override
+	public void onAccuracyChanged (Sensor arg0, int arg1) {
 
 	}
 
-	@Override public void onSensorChanged (SensorEvent event) {
+	@Override
+	public void onSensorChanged (SensorEvent event) {
 		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			if(nativeOrientation == Orientation.Portrait) {
+			if (nativeOrientation == Orientation.Portrait) {
 				System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
 			} else {
 				accelerometerValues[0] = event.values[1];
@@ -394,7 +404,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override public void setOnscreenKeyboardVisible (final boolean visible) {
+	@Override
+	public void setOnscreenKeyboardVisible (final boolean visible) {
 		handle.post(new Runnable() {
 			public void run () {
 				InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -410,31 +421,38 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		});
 	}
 
-	@Override public void setCatchBackKey (boolean catchBack) {
+	@Override
+	public void setCatchBackKey (boolean catchBack) {
 		this.catchBack = catchBack;
 	}
-	
-	@Override public void setCatchMenuKey (boolean catchMenu) {
+
+	@Override
+	public void setCatchMenuKey (boolean catchMenu) {
 		this.catchMenu = catchMenu;
 	}
 
-	@Override public void vibrate (int milliseconds) {
+	@Override
+	public void vibrate (int milliseconds) {
 		vibrator.vibrate(milliseconds);
 	}
 
-	@Override public void vibrate (long[] pattern, int repeat) {
+	@Override
+	public void vibrate (long[] pattern, int repeat) {
 		vibrator.vibrate(pattern, repeat);
 	}
 
-	@Override public void cancelVibrate () {
+	@Override
+	public void cancelVibrate () {
 		vibrator.cancel();
 	}
 
-	@Override public boolean justTouched () {
+	@Override
+	public boolean justTouched () {
 		return justTouched;
 	}
 
-	@Override public boolean isButtonPressed (int button) {
+	@Override
+	public boolean isButtonPressed (int button) {
 		if (button == Buttons.LEFT)
 			return isTouched();
 		else
@@ -453,21 +471,24 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override public float getAzimuth () {
+	@Override
+	public float getAzimuth () {
 		if (!compassAvailable) return 0;
 
 		updateOrientation();
 		return azimuth;
 	}
 
-	@Override public float getPitch () {
+	@Override
+	public float getPitch () {
 		if (!compassAvailable) return 0;
 
 		updateOrientation();
 		return pitch;
 	}
 
-	@Override public float getRoll () {
+	@Override
+	public float getRoll () {
 		if (!compassAvailable) return 0;
 
 		updateOrientation();
@@ -510,11 +531,13 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
 
-	@Override public InputProcessor getInputProcessor () {
+	@Override
+	public InputProcessor getInputProcessor () {
 		return this.processor;
 	}
 
-	@Override public boolean isPeripheralAvailable (Peripheral peripheral) {
+	@Override
+	public boolean isPeripheralAvailable (Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer) return accelerometerAvailable;
 		if (peripheral == Peripheral.Compass) return compassAvailable;
 		if (peripheral == Peripheral.HardwareKeyboard) return keyboardAvailable;
@@ -550,7 +573,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		return -1;
 	}
 
-	@Override public int getRotation () {				
+	@Override
+	public int getRotation () {
 		int orientation = app.getWindowManager().getDefaultDisplay().getOrientation();
 		switch (orientation) {
 		case Surface.ROTATION_0:
@@ -566,33 +590,41 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
-	@Override public Orientation getNativeOrientation () {
+	@Override
+	public Orientation getNativeOrientation () {
 		return nativeOrientation;
 	}
 
-	@Override public void setCursorCatched (boolean catched) {
+	@Override
+	public void setCursorCatched (boolean catched) {
 	}
 
-	@Override public boolean isCursorCatched () {
+	@Override
+	public boolean isCursorCatched () {
 		return false;
 	}
 
-	@Override public int getDeltaX () {
+	@Override
+	public int getDeltaX () {
 		return deltaX[0];
 	}
 
-	@Override public int getDeltaX (int pointer) {
+	@Override
+	public int getDeltaX (int pointer) {
 		return deltaX[pointer];
 	}
 
-	@Override public int getDeltaY () {
+	@Override
+	public int getDeltaY () {
 		return deltaY[0];
 	}
 
-	@Override public int getDeltaY (int pointer) {
+	@Override
+	public int getDeltaY (int pointer) {
 		return deltaY[pointer];
 	}
 
-	@Override public void setCursorPosition (int x, int y) {		
-	}	
+	@Override
+	public void setCursorPosition (int x, int y) {
+	}
 }

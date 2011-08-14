@@ -13,74 +13,56 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "vertexbuffer"
-})
+@XmlType(name = "", propOrder = {"vertexbuffer"})
 @XmlRootElement(name = "sharedgeometry")
 public class Sharedgeometry {
 
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String vertexcount;
-    @XmlElement(required = true)
-    protected List<Vertexbuffer> vertexbuffer;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String vertexcount;
+	@XmlElement(required = true)
+	protected List<Vertexbuffer> vertexbuffer;
 
-    /**
-     * Gets the value of the vertexcount property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getVertexcount() {
-        return vertexcount;
-    }
+	/** Gets the value of the vertexcount property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getVertexcount () {
+		return vertexcount;
+	}
 
-    /**
-     * Sets the value of the vertexcount property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setVertexcount(String value) {
-        this.vertexcount = value;
-    }
+	/** Sets the value of the vertexcount property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setVertexcount (String value) {
+		this.vertexcount = value;
+	}
 
-    /**
-     * Gets the value of the vertexbuffer property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the vertexbuffer property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getVertexbuffer().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Vertexbuffer }
-     * 
-     * 
-     */
-    public List<Vertexbuffer> getVertexbuffer() {
-        if (vertexbuffer == null) {
-            vertexbuffer = new ArrayList<Vertexbuffer>();
-        }
-        return this.vertexbuffer;
-    }
+	/** Gets the value of the vertexbuffer property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the
+	 * returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the
+	 * vertexbuffer property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getVertexbuffer().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link Vertexbuffer } */
+	public List<Vertexbuffer> getVertexbuffer () {
+		if (vertexbuffer == null) {
+			vertexbuffer = new ArrayList<Vertexbuffer>();
+		}
+		return this.vertexbuffer;
+	}
 
 }

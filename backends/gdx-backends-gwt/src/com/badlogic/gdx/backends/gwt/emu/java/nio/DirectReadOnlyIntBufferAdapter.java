@@ -19,132 +19,126 @@ package java.nio;
 import gwt.g3d.client.gl2.array.ArrayBufferView;
 import gwt.g3d.client.gl2.array.Int32Array;
 
-/**
- * This class wraps a byte buffer to be a int buffer.
+/** This class wraps a byte buffer to be a int buffer.
  * <p>
  * Implementation notice:
  * <ul>
- * <li>After a byte buffer instance is wrapped, it becomes privately owned by
- * the adapter. It must NOT be accessed outside the adapter any more.</li>
- * <li>The byte buffer's position and limit are NOT linked with the adapter.
- * The adapter extends Buffer, thus has its own position and limit.</li>
+ * <li>After a byte buffer instance is wrapped, it becomes privately owned by the adapter. It must NOT be accessed outside the
+ * adapter any more.</li>
+ * <li>The byte buffer's position and limit are NOT linked with the adapter. The adapter extends Buffer, thus has its own position
+ * and limit.</li>
  * </ul>
- * </p>
- * 
- */
+ * </p> */
 final class DirectReadOnlyIntBufferAdapter extends IntBuffer implements HasArrayBufferView {
-//implements DirectBuffer {
+// implements DirectBuffer {
 
-    static IntBuffer wrap(DirectByteBuffer byteBuffer) {
-        return new DirectReadOnlyIntBufferAdapter((DirectByteBuffer) byteBuffer.slice());
-    }
+	static IntBuffer wrap (DirectByteBuffer byteBuffer) {
+		return new DirectReadOnlyIntBufferAdapter((DirectByteBuffer)byteBuffer.slice());
+	}
 
-    private final DirectByteBuffer byteBuffer;
-    private final Int32Array intArray;
+	private final DirectByteBuffer byteBuffer;
+	private final Int32Array intArray;
 
-    DirectReadOnlyIntBufferAdapter(DirectByteBuffer byteBuffer) {
-        super((byteBuffer.capacity() >> 2));
-        this.byteBuffer = byteBuffer;
-        this.byteBuffer.clear();
-        this.intArray = Int32Array.create(byteBuffer.byteArray.getBuffer(), 
-        			byteBuffer.byteArray.getByteOffset(),
-        			capacity);
-    }
+	DirectReadOnlyIntBufferAdapter (DirectByteBuffer byteBuffer) {
+		super((byteBuffer.capacity() >> 2));
+		this.byteBuffer = byteBuffer;
+		this.byteBuffer.clear();
+		this.intArray = Int32Array.create(byteBuffer.byteArray.getBuffer(), byteBuffer.byteArray.getByteOffset(), capacity);
+	}
 
-    @Override
-    public IntBuffer asReadOnlyBuffer() {
-        DirectReadOnlyIntBufferAdapter buf = new DirectReadOnlyIntBufferAdapter(byteBuffer);
-        buf.limit = limit;
-        buf.position = position;
-        buf.mark = mark;
-        return buf;
-    }
+	@Override
+	public IntBuffer asReadOnlyBuffer () {
+		DirectReadOnlyIntBufferAdapter buf = new DirectReadOnlyIntBufferAdapter(byteBuffer);
+		buf.limit = limit;
+		buf.position = position;
+		buf.mark = mark;
+		return buf;
+	}
 
-    @Override
-    public IntBuffer compact() {
-        throw new ReadOnlyBufferException();
-    }
+	@Override
+	public IntBuffer compact () {
+		throw new ReadOnlyBufferException();
+	}
 
-    @Override
-    public IntBuffer duplicate() {
-        DirectReadOnlyIntBufferAdapter buf = new DirectReadOnlyIntBufferAdapter(
-        		(DirectByteBuffer) byteBuffer.duplicate());
-        buf.limit = limit;
-        buf.position = position;
-        buf.mark = mark;
-        return buf;
-    }
+	@Override
+	public IntBuffer duplicate () {
+		DirectReadOnlyIntBufferAdapter buf = new DirectReadOnlyIntBufferAdapter((DirectByteBuffer)byteBuffer.duplicate());
+		buf.limit = limit;
+		buf.position = position;
+		buf.mark = mark;
+		return buf;
+	}
 
-    @Override
-    public int get() {
-//        if (position == limit) {
-//            throw new BufferUnderflowException();
-//        }
-        return intArray.get(position++);
-    }
+	@Override
+	public int get () {
+// if (position == limit) {
+// throw new BufferUnderflowException();
+// }
+		return intArray.get(position++);
+	}
 
-    @Override
-    public int get(int index) {
-        if (index < 0 || index >= limit) {
-            throw new IndexOutOfBoundsException();
-        }
-        return intArray.get(index);
-    }
+	@Override
+	public int get (int index) {
+		if (index < 0 || index >= limit) {
+			throw new IndexOutOfBoundsException();
+		}
+		return intArray.get(index);
+	}
 
-    @Override
-    public boolean isDirect() {
-        return true;
-    }
+	@Override
+	public boolean isDirect () {
+		return true;
+	}
 
-    @Override
-    public boolean isReadOnly() {
-        return true;
-    }
+	@Override
+	public boolean isReadOnly () {
+		return true;
+	}
 
-    @Override
-    public ByteOrder order() {
-        return byteBuffer.order();
-    }
+	@Override
+	public ByteOrder order () {
+		return byteBuffer.order();
+	}
 
-    @Override
-    protected int[] protectedArray() {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	protected int[] protectedArray () {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    protected int protectedArrayOffset() {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	protected int protectedArrayOffset () {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    protected boolean protectedHasArray() {
-        return false;
-    }
+	@Override
+	protected boolean protectedHasArray () {
+		return false;
+	}
 
-    @Override
-    public IntBuffer put(int c) {
-        throw new ReadOnlyBufferException();
-    }
+	@Override
+	public IntBuffer put (int c) {
+		throw new ReadOnlyBufferException();
+	}
 
-    @Override
-    public IntBuffer put(int index, int c) {
-        throw new ReadOnlyBufferException();
-    }
+	@Override
+	public IntBuffer put (int index, int c) {
+		throw new ReadOnlyBufferException();
+	}
 
-    @Override
-    public IntBuffer slice() {
-        byteBuffer.limit(limit << 2);
-        byteBuffer.position(position << 2);
-        IntBuffer result = new DirectReadOnlyIntBufferAdapter((DirectByteBuffer) byteBuffer.slice());
-        byteBuffer.clear();
-        return result;
-    }
+	@Override
+	public IntBuffer slice () {
+		byteBuffer.limit(limit << 2);
+		byteBuffer.position(position << 2);
+		IntBuffer result = new DirectReadOnlyIntBufferAdapter((DirectByteBuffer)byteBuffer.slice());
+		byteBuffer.clear();
+		return result;
+	}
 
-	public ArrayBufferView getTypedArray() {
+	public ArrayBufferView getTypedArray () {
 		return intArray;
 	}
 
-	public int getElementSize() {
+	public int getElementSize () {
 		return 4;
 	}
 }

@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx;
 
 import java.util.ArrayList;
 
-/**
- * An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
+/** An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
  * processor returns true, which indicates that the event was handled.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
 	private ArrayList<InputProcessor> processors = new ArrayList<InputProcessor>(4);
 
@@ -77,13 +76,15 @@ public class InputMultiplexer implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		for (int i = 0, n = processors.size(); i < n; i++)
 			if (processors.get(i).touchMoved(x, y)) return true;
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		for (int i = 0, n = processors.size(); i < n; i++)
 			if (processors.get(i).scrolled(amount)) return true;
 		return false;

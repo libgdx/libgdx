@@ -24,231 +24,226 @@ import gwt.g3d.client.gl2.array.Int8Array;
 import com.google.gwt.corp.compatibility.Endianness;
 import com.google.gwt.corp.compatibility.Numbers;
 
-/**
- * DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyHeapByteBuffer compose
- * the implementation of direct byte buffers.
+/** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyHeapByteBuffer compose the implementation of direct byte buffers.
  * <p>
- * DirectByteBuffer implements all the shared readonly methods and is extended by
- * the other two classes.
+ * DirectByteBuffer implements all the shared readonly methods and is extended by the other two classes.
  * </p>
  * <p>
  * All methods are marked final for runtime performance.
- * </p>
- * 
- */
+ * </p> */
 abstract class DirectByteBuffer extends BaseByteBuffer implements HasArrayBufferView {
 
 	Int8Array byteArray;
 
-    DirectByteBuffer(int capacity) {
-    	this(ArrayBuffer.create(capacity), capacity, 0);
-    }
+	DirectByteBuffer (int capacity) {
+		this(ArrayBuffer.create(capacity), capacity, 0);
+	}
 
-    DirectByteBuffer(ArrayBuffer buf) {
-    	this(buf, buf.getByteLength(), 0);
-    }
-    
-    DirectByteBuffer(ArrayBuffer buffer, int capacity, int offset) {
-    	super(capacity);
-    	byteArray = Int8Array.create(buffer, offset, capacity);
-    }
+	DirectByteBuffer (ArrayBuffer buf) {
+		this(buf, buf.getByteLength(), 0);
+	}
 
-	public ArrayBufferView getTypedArray() {
+	DirectByteBuffer (ArrayBuffer buffer, int capacity, int offset) {
+		super(capacity);
+		byteArray = Int8Array.create(buffer, offset, capacity);
+	}
+
+	public ArrayBufferView getTypedArray () {
 		return byteArray;
 	}
-	
-	public int getElementSize() {
+
+	public int getElementSize () {
 		return 1;
 	}
 
-    /*
-     * Override ByteBuffer.get(byte[], int, int) to improve performance.
-     * 
-     * (non-Javadoc)
-     * 
-     * @see java.nio.ByteBuffer#get(byte[], int, int)
-     */
-    public final ByteBuffer get(byte[] dest, int off, int len) {
-        int length = dest.length;
-        if (off < 0 || len < 0 || (long)off + (long)len > length) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (len > remaining()) {
-            throw new BufferUnderflowException();
-        }
-        
-        for (int i = 0; i < len; i++) {
-        	dest[i + off] = get(position + i);
-        }
-        
-        position += len;
-        return this;
-    }
-    
-    public final byte get() {
-//        if (position == limit) {
-//            throw new BufferUnderflowException();
-//        }
-        return (byte)byteArray.get(position++);
-    }
+	/*
+	 * Override ByteBuffer.get(byte[], int, int) to improve performance.
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see java.nio.ByteBuffer#get(byte[], int, int)
+	 */
+	public final ByteBuffer get (byte[] dest, int off, int len) {
+		int length = dest.length;
+		if (off < 0 || len < 0 || (long)off + (long)len > length) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (len > remaining()) {
+			throw new BufferUnderflowException();
+		}
 
-    public final byte get(int index) {
-//        if (index < 0 || index >= limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        return (byte)byteArray.get(index);
-    }
+		for (int i = 0; i < len; i++) {
+			dest[i + off] = get(position + i);
+		}
 
-    public final double getDouble() {
-        return Numbers.longBitsToDouble(getLong());
-    }
+		position += len;
+		return this;
+	}
 
-    public final double getDouble(int index) {
-        return Numbers.longBitsToDouble(getLong(index));
-    }
+	public final byte get () {
+// if (position == limit) {
+// throw new BufferUnderflowException();
+// }
+		return (byte)byteArray.get(position++);
+	}
 
-    public final float getFloat() {
-        return Numbers.intBitsToFloat(getInt());
-    }
+	public final byte get (int index) {
+// if (index < 0 || index >= limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		return (byte)byteArray.get(index);
+	}
 
-    public final float getFloat(int index) {
-        return Numbers.intBitsToFloat(getInt(index));
-    }
+	public final double getDouble () {
+		return Numbers.longBitsToDouble(getLong());
+	}
 
-    public final int getInt() {
-        int newPosition = position + 4;
-//        if (newPosition > limit) {
-//            throw new BufferUnderflowException();
-//        }
-        int result = loadInt(position);
-        position = newPosition;
-        return result;
-    }
+	public final double getDouble (int index) {
+		return Numbers.longBitsToDouble(getLong(index));
+	}
 
-    public final int getInt(int index) {
-//        if (index < 0 || index + 4 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        return loadInt(index);
-    }
+	public final float getFloat () {
+		return Numbers.intBitsToFloat(getInt());
+	}
 
-    public final long getLong() {
-        int newPosition = position + 8;
-//        if (newPosition > limit) {
-//            throw new BufferUnderflowException();
-//        }
-        long result = loadLong(position);
-        position = newPosition;
-        return result;
-    }
+	public final float getFloat (int index) {
+		return Numbers.intBitsToFloat(getInt(index));
+	}
 
-    public final long getLong(int index) {
-//        if (index < 0 || index + 8 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        return loadLong(index);
-    }
+	public final int getInt () {
+		int newPosition = position + 4;
+// if (newPosition > limit) {
+// throw new BufferUnderflowException();
+// }
+		int result = loadInt(position);
+		position = newPosition;
+		return result;
+	}
 
-    public final short getShort() {
-        int newPosition = position + 2;
-//        if (newPosition > limit) {
-//            throw new BufferUnderflowException();
-//        }
-        short result = loadShort(position);
-        position = newPosition;
-        return result;
-    }
+	public final int getInt (int index) {
+// if (index < 0 || index + 4 > limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		return loadInt(index);
+	}
 
-    public final short getShort(int index) {
-//        if (index < 0 || index + 2 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        return loadShort(index);
-    }
+	public final long getLong () {
+		int newPosition = position + 8;
+// if (newPosition > limit) {
+// throw new BufferUnderflowException();
+// }
+		long result = loadLong(position);
+		position = newPosition;
+		return result;
+	}
 
-    public final boolean isDirect() {
-        return false;
-    }
+	public final long getLong (int index) {
+// if (index < 0 || index + 8 > limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		return loadLong(index);
+	}
 
-    protected final int loadInt(int baseOffset) {
-        int bytes = 0;
-        if(order == Endianness.BIG_ENDIAN){
-            for (int i = 0; i < 4; i++) {
-                bytes = bytes << 8;
-                bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
-            }    
-        }else{
-            for (int i = 3; i >= 0; i--) {
-                bytes = bytes << 8;
-                bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
-            }
-        }
-        return bytes;
-    }
+	public final short getShort () {
+		int newPosition = position + 2;
+// if (newPosition > limit) {
+// throw new BufferUnderflowException();
+// }
+		short result = loadShort(position);
+		position = newPosition;
+		return result;
+	}
 
-    protected final long loadLong(int baseOffset) {
-        long bytes = 0;
-        if(order == Endianness.BIG_ENDIAN){
-            for (int i = 0; i < 8; i++) {
-                bytes = bytes << 8;
-                bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
-            }    
-        }else{
-            for (int i = 7; i >= 0; i--) {
-                bytes = bytes << 8;
-                bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
-            }
-        }
-        return bytes;
-    }
+	public final short getShort (int index) {
+// if (index < 0 || index + 2 > limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		return loadShort(index);
+	}
 
-    protected final short loadShort(int baseOffset) {
-        short bytes  = 0;
-        if(order == Endianness.BIG_ENDIAN){
-            bytes = (short) (byteArray.get(baseOffset) << 8);
-            bytes |= (byteArray.get(baseOffset + 1) & 0xFF);   
-        }else{
-            bytes = (short) (byteArray.get(baseOffset+1) << 8);
-            bytes |= (byteArray.get(baseOffset) & 0xFF);
-        }
-        return bytes;
-    }
+	public final boolean isDirect () {
+		return false;
+	}
 
-    protected final void store(int baseOffset, int value) {
-        if (order == Endianness.BIG_ENDIAN) {
-            for (int i = 3; i >= 0; i--) {
-                byteArray.set(baseOffset + i, (byte) (value & 0xFF));
-                value = value >> 8;
-            }
-        } else {
-            for (int i = 0; i <= 3; i++) {
-                byteArray.set(baseOffset + i, (byte) (value & 0xFF));
-                value = value >> 8;
-            }
-        }
-    }
+	protected final int loadInt (int baseOffset) {
+		int bytes = 0;
+		if (order == Endianness.BIG_ENDIAN) {
+			for (int i = 0; i < 4; i++) {
+				bytes = bytes << 8;
+				bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
+			}
+		} else {
+			for (int i = 3; i >= 0; i--) {
+				bytes = bytes << 8;
+				bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
+			}
+		}
+		return bytes;
+	}
 
-    protected final void store(int baseOffset, long value) {
-        if (order == Endianness.BIG_ENDIAN) {
-            for (int i = 7; i >= 0; i--) {
-                byteArray.set(baseOffset + i, (byte) (value & 0xFF));
-                value = value >> 8;
-            }
-        } else {
-            for (int i = 0; i <= 7; i++) {
-                byteArray.set(baseOffset + i, (byte) (value & 0xFF));
-                value = value >> 8;
-            }
-        }
-    }
+	protected final long loadLong (int baseOffset) {
+		long bytes = 0;
+		if (order == Endianness.BIG_ENDIAN) {
+			for (int i = 0; i < 8; i++) {
+				bytes = bytes << 8;
+				bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
+			}
+		} else {
+			for (int i = 7; i >= 0; i--) {
+				bytes = bytes << 8;
+				bytes = bytes | (byteArray.get(baseOffset + i) & 0xFF);
+			}
+		}
+		return bytes;
+	}
 
-    protected final void store(int baseOffset, short value) {
-        if (order == Endianness.BIG_ENDIAN) {
-            byteArray.set(baseOffset, (byte) ((value >> 8) & 0xFF));
-            byteArray.set(baseOffset + 1, (byte) (value & 0xFF));
-        } else {
-            byteArray.set(baseOffset+1, (byte) ((value >> 8) & 0xFF));
-            byteArray.set(baseOffset, (byte) (value & 0xFF));
-        }
-    }
+	protected final short loadShort (int baseOffset) {
+		short bytes = 0;
+		if (order == Endianness.BIG_ENDIAN) {
+			bytes = (short)(byteArray.get(baseOffset) << 8);
+			bytes |= (byteArray.get(baseOffset + 1) & 0xFF);
+		} else {
+			bytes = (short)(byteArray.get(baseOffset + 1) << 8);
+			bytes |= (byteArray.get(baseOffset) & 0xFF);
+		}
+		return bytes;
+	}
+
+	protected final void store (int baseOffset, int value) {
+		if (order == Endianness.BIG_ENDIAN) {
+			for (int i = 3; i >= 0; i--) {
+				byteArray.set(baseOffset + i, (byte)(value & 0xFF));
+				value = value >> 8;
+			}
+		} else {
+			for (int i = 0; i <= 3; i++) {
+				byteArray.set(baseOffset + i, (byte)(value & 0xFF));
+				value = value >> 8;
+			}
+		}
+	}
+
+	protected final void store (int baseOffset, long value) {
+		if (order == Endianness.BIG_ENDIAN) {
+			for (int i = 7; i >= 0; i--) {
+				byteArray.set(baseOffset + i, (byte)(value & 0xFF));
+				value = value >> 8;
+			}
+		} else {
+			for (int i = 0; i <= 7; i++) {
+				byteArray.set(baseOffset + i, (byte)(value & 0xFF));
+				value = value >> 8;
+			}
+		}
+	}
+
+	protected final void store (int baseOffset, short value) {
+		if (order == Endianness.BIG_ENDIAN) {
+			byteArray.set(baseOffset, (byte)((value >> 8) & 0xFF));
+			byteArray.set(baseOffset + 1, (byte)(value & 0xFF));
+		} else {
+			byteArray.set(baseOffset + 1, (byte)((value >> 8) & 0xFF));
+			byteArray.set(baseOffset, (byte)(value & 0xFF));
+		}
+	}
 }

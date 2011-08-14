@@ -27,51 +27,49 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package com.badlogic.gdx.twl.tests.nodes;
 
-/**
- *
- * @author Matthias Mann
- */
+/** @author Matthias Mann */
 public class Connection {
 
-    private final Pad source;
-    private final Pad destination;
+	private final Pad source;
+	private final Pad destination;
 
-    public Connection(Pad source, Pad destination) {
-        if(source == null) {
-            throw new NullPointerException("source");
-        }
-        if(destination == null) {
-            throw new NullPointerException("dest");
-        }
-        this.source = source;
-        this.destination = destination;
-    }
+	public Connection (Pad source, Pad destination) {
+		if (source == null) {
+			throw new NullPointerException("source");
+		}
+		if (destination == null) {
+			throw new NullPointerException("dest");
+		}
+		this.source = source;
+		this.destination = destination;
+	}
 
-    public Pad getDestination() {
-        return destination;
-    }
+	public Pad getDestination () {
+		return destination;
+	}
 
-    public Pad getSource() {
-        return source;
-    }
+	public Pad getSource () {
+		return source;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Connection other = (Connection)obj;
-        return (this.source == other.source) && (this.destination == other.destination);
-    }
+	@Override
+	public boolean equals (Object obj) {
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		final Connection other = (Connection)obj;
+		return (this.source == other.source) && (this.destination == other.destination);
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + System.identityHashCode(this.source);
-        hash = 79 * hash + System.identityHashCode(this.destination);
-        return hash;
-    }
-    
+	@Override
+	public int hashCode () {
+		int hash = 7;
+		hash = 79 * hash + System.identityHashCode(this.source);
+		hash = 79 * hash + System.identityHashCode(this.destination);
+		return hash;
+	}
+
 }

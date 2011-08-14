@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.android;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -55,7 +56,8 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 
 		b1.setOnClickListener(new OnClickListener() {
 
-			@Override public void onClick (View arg0) {
+			@Override
+			public void onClick (View arg0) {
 				color.set((float)Math.random(), (float)Math.random(), (float)Math.random(), 1);
 			}
 
@@ -63,7 +65,8 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 
 		b2.setOnClickListener(new OnClickListener() {
 
-			@Override public void onClick (View v) {
+			@Override
+			public void onClick (View v) {
 				Intent intent = new Intent(WindowedTest.this, WindowedTest.class);
 				WindowedTest.this.startActivity(intent);
 			}
@@ -74,29 +77,36 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 		super.onPause();
 	}
 
-	@Override public void onDestroy () {
+	@Override
+	public void onDestroy () {
 		super.onDestroy();
 		Log.w("WindowedTest", "destroying");
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.graphics.getGL10().glClearColor(color.r, color.g, color.g, color.a);
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 	}
 }

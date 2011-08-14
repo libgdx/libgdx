@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-/**
- * Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}. Note that this
+/** Interface wrapping all OpenGL ES 1.1 methods. This interface inherits all the methods from {@link GL10}. Note that this
  * excludes all fixed point methods!
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public interface GL11 extends GL10 {
 	public static final int GL_OES_VERSION_1_0 = 1;
 	public static final int GL_MAX_ELEMENTS_VERTICES = 0x80E8;

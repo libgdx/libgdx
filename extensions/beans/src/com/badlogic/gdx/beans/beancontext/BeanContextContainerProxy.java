@@ -21,5 +21,5 @@ import java.awt.Container;
 
 public interface BeanContextContainerProxy {
 
-    public Container getContainer();
+	public Container getContainer ();
 }

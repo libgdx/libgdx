@@ -10,38 +10,38 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-/**
- * A convenient 2D circle class.
- * @author mzechner
- *
- */
+/** A convenient 2D circle class.
+ * @author mzechner */
 public class Circle implements Serializable {
 	public float x, y;
 	public float radius;
-	
-	public Circle(float x, float y, float radius) {
-		this.x = x; this.y = y;
+
+	public Circle (float x, float y, float radius) {
+		this.x = x;
+		this.y = y;
 		this.radius = radius;
 	}
-	
-	public Circle(Vector2 position, float radius) {
-		this.x = position.x; this.y = position.y;
+
+	public Circle (Vector2 position, float radius) {
+		this.x = position.x;
+		this.y = position.y;
 		this.radius = radius;
 	}
-	
-	public boolean contains(float x, float y) {
+
+	public boolean contains (float x, float y) {
 		x = this.x - x;
 		y = this.y - y;
-		return x*x + y*y <= radius * radius;
+		return x * x + y * y <= radius * radius;
 	}
-	
-	public boolean contains(Vector2 point) {
+
+	public boolean contains (Vector2 point) {
 		float x = this.x - point.x;
 		float y = this.y - point.y;
-		return x*x + y*y <= radius * radius;
+		return x * x + y * y <= radius * radius;
 	}
 }

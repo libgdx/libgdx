@@ -1,110 +1,95 @@
+
 package com.badlogic.gdx.utils;
 
-
-/**
- * A sorted double linked list which uses ints for indexing
- *
- * @param <E>
- */
+/** A sorted double linked list which uses ints for indexing
+ * 
+ * @param <E> */
 public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
-	private NodePool<E> nodePool = new NodePool<E>(); //avoid allocating nodes
+	private NodePool<E> nodePool = new NodePool<E>(); // avoid allocating nodes
 	private Iterator iterator;
 	int size = 0;
 
 	Node<E> first;
 
-	/**
-	 * Creates an ascending list
-	 */
-	public SortedIntList() {
+	/** Creates an ascending list */
+	public SortedIntList () {
 	}
 
-	/**
-	 * Inserts an element into the list at the given index
-	 *
+	/** Inserts an element into the list at the given index
+	 * 
 	 * @param index Index of the element
 	 * @param value Element to insert
-	 * @return Element replaced by newly inserted element, null if nothing was replaced
-	 */
-	public E insert(int index, E value) {
-		if(first != null) {
+	 * @return Element replaced by newly inserted element, null if nothing was replaced */
+	public E insert (int index, E value) {
+		if (first != null) {
 			Node<E> c = first;
-			//iterate to the right until we can't move any further because the next number is bigger than index
-			while(c.n != null && c.n.index <= index) {
+			// iterate to the right until we can't move any further because the next number is bigger than index
+			while (c.n != null && c.n.index <= index) {
 				c = c.n;
 			}
-			//add one to the right
-			if(index > c.index) {
+			// add one to the right
+			if (index > c.index) {
 				c.n = nodePool.obtain(c, c.n, value, index);
-				if(c.n.n != null) {
+				if (c.n.n != null) {
 					c.n.n.p = c.n;
 				}
 				size++;
 			}
-			//the new element is smaller than every other element
-			else if(index < c.index) {
+			// the new element is smaller than every other element
+			else if (index < c.index) {
 				Node<E> newFirst = nodePool.obtain(null, first, value, index);
 				first.p = newFirst;
 				first = newFirst;
 				size++;
 			}
-			//that element already exists so swap the value
+			// that element already exists so swap the value
 			else {
 				c.value = value;
 			}
-		}
-		else {
+		} else {
 			first = nodePool.obtain(null, null, value, index);
 			size++;
 		}
 		return null;
 	}
 
-	/**
-	 * Retrieves an element at a given index
-	 *
+	/** Retrieves an element at a given index
+	 * 
 	 * @param index Index of the element to retrieve
-	 * @return Matching element, null otherwise
-	 */
-	public E get(int index) {
+	 * @return Matching element, null otherwise */
+	public E get (int index) {
 		E match = null;
-		if(first != null) {
+		if (first != null) {
 			Node<E> c = first;
-			while(c.n != null && c.index < index) {
+			while (c.n != null && c.index < index) {
 				c = c.n;
 			}
-			if(c.index == index) {
+			if (c.index == index) {
 				match = c.value;
 			}
 		}
 		return match;
 	}
 
-	/**
-	 * Clears list
-	 */
-	public void clear() {
-		for(; first != null; first = first.n) {
+	/** Clears list */
+	public void clear () {
+		for (; first != null; first = first.n) {
 			nodePool.free(first);
 		}
 		size = 0;
 	}
 
-	/**
-	 * @return size of list equal to elements contained in it
-	 */
-	public int size() {
+	/** @return size of list equal to elements contained in it */
+	public int size () {
 		return size;
 	}
 
-	/**
-	 * Returns an iterator to traverse the list.<br/>
+	/** Returns an iterator to traverse the list.<br/>
 	 * Only one iterator can be active per list at any given time.
-	 *
-	 * @return Iterator to traverse list
-	 */
-	public java.util.Iterator<Node<E>> iterator() {
-		if(iterator == null) {
+	 * 
+	 * @return Iterator to traverse list */
+	public java.util.Iterator<Node<E>> iterator () {
+		if (iterator == null) {
 			iterator = new Iterator();
 		}
 		return iterator.reset();
@@ -115,29 +100,29 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		private Node<E> previousPosition;
 
 		@Override
-		public boolean hasNext() {
+		public boolean hasNext () {
 			return position != null;
 		}
 
 		@Override
-		public Node<E> next() {
+		public Node<E> next () {
 			previousPosition = position;
 			position = position.n;
 			return previousPosition;
 		}
 
 		@Override
-		public void remove() {
-			//the contract specifies to remove the last returned element, if nothing was returned yet assumably do nothing
-			if(previousPosition != null) {
-				//if we are at the second element set it as the first element
-				if(previousPosition == first) {
+		public void remove () {
+			// the contract specifies to remove the last returned element, if nothing was returned yet assumably do nothing
+			if (previousPosition != null) {
+				// if we are at the second element set it as the first element
+				if (previousPosition == first) {
 					first = position;
 				}
-				//else remove last returned element by changing the chain
+				// else remove last returned element by changing the chain
 				else {
 					previousPosition.p.n = position;
-					if(position != null) {
+					if (position != null) {
 						position.p = previousPosition.p;
 					}
 				}
@@ -145,7 +130,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 			}
 		}
 
-		public Iterator reset() {
+		public Iterator reset () {
 			position = first;
 			previousPosition = null;
 			return this;
@@ -153,31 +138,23 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	}
 
 	public static class Node<E> {
-		/**
-		 * Node previous to this
-		 */
+		/** Node previous to this */
 		protected Node<E> p;
-		/**
-		 * Node next to this
-		 */
+		/** Node next to this */
 		protected Node<E> n;
-		/**
-		 * Value held
-		 */
+		/** Value held */
 		public E value;
-		/**
-		 * Index value in list
-		 */
+		/** Index value in list */
 		public int index;
 	}
 
 	static class NodePool<E> extends Pool<Node<E>> {
 		@Override
-		protected Node<E> newObject() {
+		protected Node<E> newObject () {
 			return new Node<E>();
 		}
 
-		public Node<E> obtain(Node<E> p, Node<E> n, E value, int index) {
+		public Node<E> obtain (Node<E> p, Node<E> n, E value, int index) {
 			Node<E> newNode = super.obtain();
 			newNode.p = p;
 			newNode.n = n;

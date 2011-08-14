@@ -28,10 +28,7 @@ import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL;
 
-/**
- * A wrapper that logs all GL calls (and results) in human-readable form.
- * 
- */
+/** A wrapper that logs all GL calls (and results) in human-readable form. */
 class GLLogWrapper extends GLWrapperBase {
 	private static final int FORMAT_INT = 0;
 	private static final int FORMAT_FLOAT = 1;
@@ -682,7 +679,7 @@ class GLLogWrapper extends GLWrapperBase {
 		case GL_BLUE_BITS:
 			return 1;
 		case GL_COMPRESSED_TEXTURE_FORMATS:
-			// Have to ask the implementation for the size
+		// Have to ask the implementation for the size
 		{
 			int[] buffer = new int[1];
 			mgl.glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, buffer, 0);
@@ -2954,17 +2951,11 @@ class GLLogWrapper extends GLWrapperBase {
 	}
 
 	private class PointerInfo {
-		/**
-		 * The number of coordinates per vertex. 1..4
-		 */
+		/** The number of coordinates per vertex. 1..4 */
 		public int mSize;
-		/**
-		 * The type of each coordinate.
-		 */
+		/** The type of each coordinate. */
 		public int mType;
-		/**
-		 * The byte offset between consecutive vertices. 0 means mSize * sizeof(mType)
-		 */
+		/** The byte offset between consecutive vertices. 0 means mSize * sizeof(mType) */
 		public int mStride;
 		public Buffer mPointer;
 		public ByteBuffer mTempByteBuffer; // Only valid during glDrawXXX calls

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx;
 
-/**
- * <p>
+/** <p>
  * An <code>Application</code> is the main entry point of your project. It sets up a window and rendering surface and manages the
  * different aspects of your application, namely {@link Graphics}, {@link Audio}, {@link Input} and {@link Files}. Think of an
  * Application being equivalent to a JFrame of Activity.
@@ -80,111 +80,72 @@ package com.badlogic.gdx;
  * Android.
  * </p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public interface Application {
-	/**
-	 * Enumeration of possible {@link Application} types
+	/** Enumeration of possible {@link Application} types
 	 * 
-	 * @author mzechner
-	 * 
-	 */
+	 * @author mzechner */
 	public enum ApplicationType {
 		Android, Desktop, Applet, WebGL
 	}
-	
+
 	public static final int LOG_NONE = 0;
 	public static final int LOG_INFO = 1;
 	public static final int LOG_ERROR = 2;
 
-	/**
-	 * @return the {@link Graphics} instance
-	 */
+	/** @return the {@link Graphics} instance */
 	public Graphics getGraphics ();
 
-	/**
-	 * @return the {@link Audio} instance
-	 */
+	/** @return the {@link Audio} instance */
 	public Audio getAudio ();
 
-	/**
-	 * @return the {@link Input} instance
-	 */
+	/** @return the {@link Input} instance */
 	public Input getInput ();
 
-	/**
-	 * @return the {@link Files} instance
-	 */
+	/** @return the {@link Files} instance */
 	public Files getFiles ();
 
-	/**
-	 * Logs a message to the console or logcat
-	 */
+	/** Logs a message to the console or logcat */
 	public void log (String tag, String message);
-	
-	/**
-	 * Logs a message to the console or logcat
-	 */
+
+	/** Logs a message to the console or logcat */
 	public void log (String tag, String message, Exception exception);
-	
-	/**
-	 * Logs an error message to the console or logcat
-	 */
+
+	/** Logs an error message to the console or logcat */
 	public void error (String tag, String message);
-	
-	/**
-	 * Logs an error message to the console or logcat
-	 */
+
+	/** Logs an error message to the console or logcat */
 	public void error (String tag, String message, Exception exception);
 
-	/**
-	 * Sets the log level. {@link #LOG_NONE} will mute all log output.
-	 * {@link #LOG_ERROR} will only let messages issued with {@link #error(String, String)} through.
-	 * {@link #LOG_INFO} will let all messages though, either logged via {@link #error(String, String)} or
-	 * {@link #log(String, String)}. 
-	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}. 
-	 */
-	public void setLogLevel(int logLevel);
-	
-	/**
-	 * @return what {@link ApplicationType} this application has, e.g. Android or Desktop
-	 */
+	/** Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let messages issued with
+	 * {@link #error(String, String)} through. {@link #LOG_INFO} will let all messages though, either logged via
+	 * {@link #error(String, String)} or {@link #log(String, String)}.
+	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}. */
+	public void setLogLevel (int logLevel);
+
+	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
 
-	/**
-	 * @return the Android API level on Android or 0 on the desktop.
-	 */
+	/** @return the Android API level on Android or 0 on the desktop. */
 	public int getVersion ();
 
-	/**
-	 * @return the Java heap memory use in bytes
-	 */
+	/** @return the Java heap memory use in bytes */
 	public long getJavaHeap ();
 
-	/**
-	 * @return the Native heap memory use in bytes
-	 */
+	/** @return the Native heap memory use in bytes */
 	public long getNativeHeap ();
-	
-	/**
-	 * Returns the {@link Preferences} instance of this Application. It
-	 * can be used to store application settings across runs.
+
+	/** Returns the {@link Preferences} instance of this Application. It can be used to store application settings across runs.
 	 * @param name the name of the preferences, must be useable as a file name.
-	 * @return the preferences.
-	 */
-	public Preferences getPreferences(String name);
-	
-	/**
-	 * Posts a {@link Runnable} on the main loop thread.
-	 *  
-	 * @param runnable the runnable.
-	 */
-	public void postRunnable(Runnable runnable);
-	
-	/**
-	 * Exits the application. This will cause a call to pause() and dispose()
-	 * some time in the loadFuture, it will not immediately finish your application!
-	 */
-	public void exit();
+	 * @return the preferences. */
+	public Preferences getPreferences (String name);
+
+	/** Posts a {@link Runnable} on the main loop thread.
+	 * 
+	 * @param runnable the runnable. */
+	public void postRunnable (Runnable runnable);
+
+	/** Exits the application. This will cause a call to pause() and dispose() some time in the loadFuture, it will not immediately
+	 * finish your application! */
+	public void exit ();
 }

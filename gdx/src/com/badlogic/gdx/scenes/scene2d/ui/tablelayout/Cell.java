@@ -27,7 +27,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
-import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout.*;
+import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.BaseTableLayout.*;
 
 /** @author Nathan Sweet */
 public class Cell<C> {

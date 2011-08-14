@@ -26,10 +26,8 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * @author mzechner
- * @author Nathan Sweet
- */
+/** @author mzechner
+ * @author Nathan Sweet */
 public class AndroidFileHandle extends FileHandle {
 	// The asset manager, or null if this is not an internal file.
 	final AssetManager assets;

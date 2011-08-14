@@ -17,11 +17,9 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceRevokedEvent;
-
 import java.util.EventListener;
 
 public interface BeanContextServiceRevokedListener extends EventListener {
 
-    public void serviceRevoked(BeanContextServiceRevokedEvent bcsre);
+	public void serviceRevoked (BeanContextServiceRevokedEvent bcsre);
 }

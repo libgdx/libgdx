@@ -16,5 +16,5 @@ package com.badlydrawngames.veryangryrobots;
 import com.badlydrawngames.veryangryrobots.StatusManager.Achievements;
 
 public interface AchievementsListener {
-	void onAttained(Achievements achievement);
+	void onAttained (Achievements achievement);
 }

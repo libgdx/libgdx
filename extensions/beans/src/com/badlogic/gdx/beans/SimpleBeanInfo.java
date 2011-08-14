@@ -19,63 +19,56 @@ package com.badlogic.gdx.beans;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-
-import com.badlogic.gdx.beans.BeanDescriptor;
-import com.badlogic.gdx.beans.BeanInfo;
-import com.badlogic.gdx.beans.EventSetDescriptor;
-import com.badlogic.gdx.beans.MethodDescriptor;
-import com.badlogic.gdx.beans.PropertyDescriptor;
-
 import java.net.URL;
 
 public class SimpleBeanInfo implements BeanInfo {
 
-    public SimpleBeanInfo() {
-        // expected
-    }
+	public SimpleBeanInfo () {
+		// expected
+	}
 
-    public Image loadImage(String resourceName) {
-        if (null == resourceName) {
-            return null;
-        }
-        
-        URL file = getClass().getResource(resourceName);
-        
-        if (file != null) {
-            return Toolkit.getDefaultToolkit().createImage(file);
-        }
-        return null;
-    }
+	public Image loadImage (String resourceName) {
+		if (null == resourceName) {
+			return null;
+		}
 
-    public PropertyDescriptor[] getPropertyDescriptors() {
-        return null;
-    }
+		URL file = getClass().getResource(resourceName);
 
-    public MethodDescriptor[] getMethodDescriptors() {
-        return null;
-    }
+		if (file != null) {
+			return Toolkit.getDefaultToolkit().createImage(file);
+		}
+		return null;
+	}
 
-    public EventSetDescriptor[] getEventSetDescriptors() {
-        return null;
-    }
+	public PropertyDescriptor[] getPropertyDescriptors () {
+		return null;
+	}
 
-    public BeanInfo[] getAdditionalBeanInfo() {
-        return null;
-    }
+	public MethodDescriptor[] getMethodDescriptors () {
+		return null;
+	}
 
-    public BeanDescriptor getBeanDescriptor() {
-        return null;
-    }
+	public EventSetDescriptor[] getEventSetDescriptors () {
+		return null;
+	}
 
-    public Image getIcon(int iconKind) {
-        return null;
-    }
+	public BeanInfo[] getAdditionalBeanInfo () {
+		return null;
+	}
 
-    public int getDefaultPropertyIndex() {
-        return -1;
-    }
+	public BeanDescriptor getBeanDescriptor () {
+		return null;
+	}
 
-    public int getDefaultEventIndex() {
-        return -1;
-    }
+	public Image getIcon (int iconKind) {
+		return null;
+	}
+
+	public int getDefaultPropertyIndex () {
+		return -1;
+	}
+
+	public int getDefaultEventIndex () {
+		return -1;
+	}
 }

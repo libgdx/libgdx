@@ -13,35 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.graphics;
 
-import java.nio.ByteBuffer;
+package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 
-
-/**
- * Loads image data for a texture. Used with
- * {@link Texture}, this allows custom
- * image loading for managed textures. If the OpenGL context is lost, the TextureData will be asked to load again when the context
- * is restored. The TextureData doesn't necessary need to keep the image data in memory between loads.
- */
+/** Loads image data for a texture. Used with {@link Texture}, this allows custom image loading for managed textures. If the OpenGL
+ * context is lost, the TextureData will be asked to load again when the context is restored. The TextureData doesn't necessary
+ * need to keep the image data in memory between loads. */
 public interface TextureData {
 	public enum TextureDataType {
-		Pixmap,
-		Compressed
+		Pixmap, Compressed
 	}
 
-	public TextureDataType getType();
-	
-	public Pixmap getPixmap();
-	public boolean disposePixmap();
-	
-	public void uploadCompressedData();
-	
-	public int getWidth();
-	public int getHeight();
-	public Format getFormat();
-	public boolean useMipMaps();
-	public boolean isManaged();
+	public TextureDataType getType ();
+
+	public Pixmap getPixmap ();
+
+	public boolean disposePixmap ();
+
+	public void uploadCompressedData ();
+
+	public int getWidth ();
+
+	public int getHeight ();
+
+	public Format getFormat ();
+
+	public boolean useMipMaps ();
+
+	public boolean isManaged ();
 }

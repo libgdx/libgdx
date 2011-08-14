@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 
-import com.badlogic.gdx.Version;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import static com.badlogic.gdx.utils.GdxNativesLoader.*;
@@ -43,7 +39,7 @@ final class LwjglNativesLoader {
 
 	static void load () {
 		GdxNativesLoader.load();
-		if(GdxNativesLoader.disableNativesLoading) return;
+		if (GdxNativesLoader.disableNativesLoading) return;
 		if (!load) return;
 		if (isWindows) {
 			extractLibrary("OpenAL32.dll", "OpenAL64.dll");

@@ -27,45 +27,45 @@ public class RoomBuilder {
 	private static final int MAX_RECTANGLES = 256;
 	private static final int MAX_DOORS = 4;
 	private static final int MAX_WALLS = MAX_RECTANGLES - MAX_DOORS;
-	
+
 	private final MazeGenerator mazeGenerator;
 	private final Pool<Rectangle> rectanglePool;
 	private Array<Rectangle> doorRects;
 	private Array<Rectangle> wallRects;
 	private final int hcells;
 	private final int vcells;
-	
-	public RoomBuilder(int hcells, int vcells) {
+
+	public RoomBuilder (int hcells, int vcells) {
 		this.hcells = hcells;
 		this.vcells = vcells;
 		mazeGenerator = new MazeGenerator(hcells, vcells);
 		rectanglePool = new Pool<Rectangle>(MAX_RECTANGLES) {
 			@Override
-			protected Rectangle newObject() {
+			protected Rectangle newObject () {
 				return new Rectangle();
 			}
 		};
 	}
 
-	public void build(int doorPosition) {
+	public void build (int doorPosition) {
 		mazeGenerator.rebuild(doorPosition);
 		createWallsAndDoors();
 	}
-	
-	public Array<Rectangle> getWalls() {
+
+	public Array<Rectangle> getWalls () {
 		return wallRects;
 	}
-	
-	public Array<Rectangle> getDoors() {
+
+	public Array<Rectangle> getDoors () {
 		return doorRects;
 	}
-	
-	private void createWallsAndDoors() {
+
+	private void createWallsAndDoors () {
 		createWalls();
 		createDoors();
 	}
 
-	private void createWalls() {
+	private void createWalls () {
 		IntArray wallDefs = mazeGenerator.getWalls();
 		int n = wallDefs.size / 4;
 		wallRects = Pools.makeArrayFromPool(wallRects, rectanglePool, MAX_WALLS);
@@ -75,17 +75,17 @@ public class RoomBuilder {
 		}
 	}
 
-	private void createDoors() {
+	private void createDoors () {
 		IntArray doorDefs = mazeGenerator.getDoors();
-		int n = doorDefs.size/ 4;
+		int n = doorDefs.size / 4;
 		doorRects = Pools.makeArrayFromPool(doorRects, rectanglePool, MAX_DOORS);
 		for (int i = 0, j = 0; i < n; i++, j += 4) {
-			Rectangle doorRect = createDoor(doorDefs, j); 
+			Rectangle doorRect = createDoor(doorDefs, j);
 			doorRects.add(doorRect);
 		}
 	}
 
-	private Rectangle createWall(IntArray wallDefs, int i) {
+	private Rectangle createWall (IntArray wallDefs, int i) {
 		int x1 = wallDefs.get(i);
 		int y1 = wallDefs.get(i + 1);
 		int x2 = wallDefs.get(i + 2);
@@ -93,7 +93,7 @@ public class RoomBuilder {
 		return (x1 == x2) ? createVWall(x1, y1, y2) : createHWall(x1, x2, y1);
 	}
 
-	private Rectangle createHWall(int x1, int x2, int y1) {
+	private Rectangle createHWall (int x1, int x2, int y1) {
 		float x = coordMinusHalfHeight(x1, hcells);
 		float y = coordMinusHalfHeight(y1, vcells);
 		float t = coordMinusHalfHeight(x2, hcells);
@@ -101,8 +101,8 @@ public class RoomBuilder {
 		float h = WALL_HEIGHT;
 		return newRectangle(x, y, w, h);
 	}
-	
-	private Rectangle createVWall(int x1, int y1, int y2) {
+
+	private Rectangle createVWall (int x1, int y1, int y2) {
 		float x = coordMinusHalfHeight(x1, hcells);
 		float y = coordMinusHalfHeight(y1, vcells);
 		float t = coordMinusHalfHeight(y2, vcells);
@@ -110,62 +110,58 @@ public class RoomBuilder {
 		float h = (t - y) + WALL_HEIGHT;
 		return newRectangle(x, y, w, h);
 	}
-	
-	private Rectangle createDoor(IntArray doorDefs, int i) {
+
+	private Rectangle createDoor (IntArray doorDefs, int i) {
 		int x1 = doorDefs.get(i);
 		int y1 = doorDefs.get(i + 1);
 		int x2 = doorDefs.get(i + 2);
 		return (x1 == x2) ? createVDoor(x1, y1) : createHDoor(x1, y1);
 	}
-	
-	private Rectangle createHDoor(int x1, int y1) {
+
+	private Rectangle createHDoor (int x1, int y1) {
 		float x = coordPlusHalfHeight(x1, hcells);
 		float y = coordMinusHalfHeight(y1, vcells);
 		float w = WALL_WIDTH - WALL_HEIGHT;
 		float h = WALL_HEIGHT;
 		return newRectangle(x, y, w, h);
 	}
-	
-	private Rectangle createVDoor(int x1, int y1) {
+
+	private Rectangle createVDoor (int x1, int y1) {
 		float x = coordMinusHalfHeight(x1, hcells);
 		float y = coordPlusHalfHeight(y1, vcells);
 		float w = WALL_HEIGHT;
 		float h = WALL_WIDTH - WALL_HEIGHT;
 		return newRectangle(x, y, w, h);
 	}
-	
-	private float coordPlusHalfHeight(int c, int limit) {
+
+	private float coordPlusHalfHeight (int c, int limit) {
 		float n = ADJUSTMENT;
 		if (c == 0) {
-			return n + HALF_HEIGHT; 
-		}
-		else if (c < limit) {
+			return n + HALF_HEIGHT;
+		} else if (c < limit) {
 			return n + WALL_WIDTH - ADJUSTMENT + ((c - 1) * WALL_WIDTH) + HALF_HEIGHT;
-		}
-		else {
+		} else {
 			return n + 2 * (WALL_WIDTH - ADJUSTMENT) + ((c - 2) * WALL_WIDTH) + HALF_HEIGHT;
 		}
 	}
-	
-	private float coordMinusHalfHeight(int c, int limit) {
+
+	private float coordMinusHalfHeight (int c, int limit) {
 		float n = ADJUSTMENT;
 		if (c == 0) {
-			return n - HALF_HEIGHT; 
-		}
-		else if (c < limit) {
+			return n - HALF_HEIGHT;
+		} else if (c < limit) {
 			return n + WALL_WIDTH - ADJUSTMENT + ((c - 1) * WALL_WIDTH) - HALF_HEIGHT;
-		}
-		else {
+		} else {
 			return n + 2 * (WALL_WIDTH - ADJUSTMENT) + ((c - 2) * WALL_WIDTH) - HALF_HEIGHT;
 		}
 	}
-	
-	private Rectangle newRectangle(float x, float y, float w, float h) {
+
+	private Rectangle newRectangle (float x, float y, float w, float h) {
 		Rectangle r = rectanglePool.obtain();
 		r.x = x;
 		r.y = y;
 		r.width = w;
 		r.height = h;
 		return r;
-	}	
+	}
 }

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d.tiled;
 
 import java.util.HashMap;
 
-/**
- * Contains a Tiled map object
- * @author David Fraska
- */
+/** Contains a Tiled map object
+ * @author David Fraska */
 public class TiledObject {
 	public String name, type;
 	public int x, y, width = 0, height = 0, gid = 0;

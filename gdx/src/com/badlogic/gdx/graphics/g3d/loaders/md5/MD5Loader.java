@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders.md5;
 
 import java.io.BufferedReader;
@@ -25,194 +26,171 @@ import java.util.StringTokenizer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-/**
- * Loads an {@link MD5Model} MD5 (Doom 3) model.
- * @author Mario Zechner <contact@badlogicgames.com>, Nathan Sweet <admin@esotericsoftware.com>, Dave Clayton <contact@redskyforge.com>
- *
- */
+/** Loads an {@link MD5Model} MD5 (Doom 3) model.
+ * @author Mario Zechner <contact@badlogicgames.com>, Nathan Sweet <admin@esotericsoftware.com>, Dave Clayton
+ *         <contact@redskyforge.com> */
 public class MD5Loader {
 
 	public static MD5Model loadModel (InputStream in, boolean allocateNormals) {
-		BufferedReader reader = new BufferedReader( new InputStreamReader( in ), 1024 );
-		MD5Model model = new MD5Model( );
-		List<String>tokens = new ArrayList<String>( 10 );
-		MD5Quaternion quat = new MD5Quaternion( );
+		BufferedReader reader = new BufferedReader(new InputStreamReader(in), 1024);
+		MD5Model model = new MD5Model();
+		List<String> tokens = new ArrayList<String>(10);
+		MD5Quaternion quat = new MD5Quaternion();
 
 		int floatsPerVert = 4;
-		if(allocateNormals) floatsPerVert += 3;
-		
+		if (allocateNormals) floatsPerVert += 3;
+
 		int floatsPerWeight = 5;
-		if(allocateNormals) floatsPerWeight += 3;			
-		
-		try
-		{			
+		if (allocateNormals) floatsPerWeight += 3;
+
+		try {
 			String line;
 			int currMesh = 0;
-			
-			while( (line = reader.readLine() ) != null )
-			{
-				tokenize( line, tokens );
-				if( tokens.size() == 0 )
-					continue;
-				
+
+			while ((line = reader.readLine()) != null) {
+				tokenize(line, tokens);
+				if (tokens.size() == 0) continue;
+
 				//
 				// check version string
 				//
-				if( tokens.get(0).equals( "MD5Version" ) )
-				{
+				if (tokens.get(0).equals("MD5Version")) {
 					int version = parseInt(tokens.get(1));
-					if( version != 10 )
-						throw new IllegalArgumentException( "Not a valid MD5 file, go version " + version + ", need 10" );
-				}		
-				
+					if (version != 10)
+						throw new IllegalArgumentException("Not a valid MD5 file, go version " + version + ", need 10");
+				}
+
 				//
 				// read number of joints
 				//
-				if( tokens.get(0).equals( "numJoints" ) )
-				{
-					int numJoints = parseInt( tokens.get(1) );					
+				if (tokens.get(0).equals("numJoints")) {
+					int numJoints = parseInt(tokens.get(1));
 					model.baseSkeleton = new MD5Joints();
 					model.baseSkeleton.names = new String[numJoints];
 					model.baseSkeleton.numJoints = numJoints;
-					model.baseSkeleton.joints = new float[numJoints*8];
+					model.baseSkeleton.joints = new float[numJoints * 8];
 				}
-				
+
 				//
 				// read number of meshes
 				//
-				if( tokens.get(0).equals( "numMeshes" ) )
-				{
-					int numMeshes = parseInt( tokens.get(1) );
+				if (tokens.get(0).equals("numMeshes")) {
+					int numMeshes = parseInt(tokens.get(1));
 					model.meshes = new MD5Mesh[numMeshes];
 				}
-				
+
 				//
 				// read joints
 				//
-				if( tokens.get(0).equals( "joints") )
-				{
-					for( int i = 0; i < model.baseSkeleton.numJoints; i++ )
-					{
+				if (tokens.get(0).equals("joints")) {
+					for (int i = 0; i < model.baseSkeleton.numJoints; i++) {
 						line = reader.readLine();
-						tokenize( line, tokens );
-						if( tokens.size() == 0 )
-						{
+						tokenize(line, tokens);
+						if (tokens.size() == 0) {
 							i--;
 							continue;
-						}							
-						
+						}
+
 						int jointIdx = i << 3;
-						model.baseSkeleton.names[i] = tokens.get(0);;
-						model.baseSkeleton.joints[jointIdx] =  parseInt( tokens.get(1) );;
-						model.baseSkeleton.joints[jointIdx+1] = parseFloat( tokens.get(3) );
-						model.baseSkeleton.joints[jointIdx+2] = parseFloat( tokens.get(4) );
-						model.baseSkeleton.joints[jointIdx+3] = parseFloat( tokens.get(5) );											
-						
-						quat.x = parseFloat( tokens.get(8) );
-						quat.y = parseFloat( tokens.get(9) );
-						quat.z = parseFloat( tokens.get(10) );
-						quat.computeW();						
-						
-						model.baseSkeleton.joints[jointIdx+4] = quat.x;
-						model.baseSkeleton.joints[jointIdx+5] = quat.y;
-						model.baseSkeleton.joints[jointIdx+6] = quat.z;
-						model.baseSkeleton.joints[jointIdx+7] = quat.w;						
+						model.baseSkeleton.names[i] = tokens.get(0);
+						;
+						model.baseSkeleton.joints[jointIdx] = parseInt(tokens.get(1));
+						;
+						model.baseSkeleton.joints[jointIdx + 1] = parseFloat(tokens.get(3));
+						model.baseSkeleton.joints[jointIdx + 2] = parseFloat(tokens.get(4));
+						model.baseSkeleton.joints[jointIdx + 3] = parseFloat(tokens.get(5));
+
+						quat.x = parseFloat(tokens.get(8));
+						quat.y = parseFloat(tokens.get(9));
+						quat.z = parseFloat(tokens.get(10));
+						quat.computeW();
+
+						model.baseSkeleton.joints[jointIdx + 4] = quat.x;
+						model.baseSkeleton.joints[jointIdx + 5] = quat.y;
+						model.baseSkeleton.joints[jointIdx + 6] = quat.z;
+						model.baseSkeleton.joints[jointIdx + 7] = quat.w;
 					}
 				}
-				
+
 				//
 				// read meshes
 				//
-				if( tokens.get(0).equals( "mesh" ) && tokens.get(1).equals( "{") )
-				{
-					MD5Mesh mesh = new MD5Mesh( );
+				if (tokens.get(0).equals("mesh") && tokens.get(1).equals("{")) {
+					MD5Mesh mesh = new MD5Mesh();
 					mesh.floatsPerVertex = floatsPerVert;
 					mesh.floatsPerWeight = floatsPerWeight;
-					
+
 					model.meshes[currMesh++] = mesh;
-					
+
 					int vertIndex = 0;
 					int triIndex = 0;
 					int weightIndex = 0;
-					
-					
-					while( !line.contains( "}" ) )
-					{
-						line = reader.readLine( );
-						tokenize( line, tokens );
-						if( tokens.size() == 0 )
-							continue;
-						
-						if( tokens.get(0).equals( "shader" ) )
-						{
+
+					while (!line.contains("}")) {
+						line = reader.readLine();
+						tokenize(line, tokens);
+						if (tokens.size() == 0) continue;
+
+						if (tokens.get(0).equals("shader")) {
 							mesh.shader = tokens.get(1);
 						}
-						if( tokens.get(0).equals( "numverts" ) )
-						{
-							mesh.numVertices = parseInt( tokens.get(1) );
-							mesh.vertices = new float[mesh.numVertices*floatsPerVert];
+						if (tokens.get(0).equals("numverts")) {
+							mesh.numVertices = parseInt(tokens.get(1));
+							mesh.vertices = new float[mesh.numVertices * floatsPerVert];
 						}
-						if( tokens.get(0).equals( "numtris" ) )
-						{							
-							mesh.indices = new short[parseInt( tokens.get(1) )*3];
+						if (tokens.get(0).equals("numtris")) {
+							mesh.indices = new short[parseInt(tokens.get(1)) * 3];
 							mesh.numTriangles = mesh.indices.length / 3;
 						}
-						if( tokens.get(0).equals( "numweights" ) )
-						{							
-							mesh.numWeights = parseInt( tokens.get(1) );
-							mesh.weights = new float[mesh.numWeights*floatsPerWeight];
+						if (tokens.get(0).equals("numweights")) {
+							mesh.numWeights = parseInt(tokens.get(1));
+							mesh.weights = new float[mesh.numWeights * floatsPerWeight];
 						}
-						if( tokens.get(0).equals( "vert" ) )
-						{							
-							vertIndex = parseInt( tokens.get(1) );							
-							
-							int idx = vertIndex*floatsPerVert;
-							mesh.vertices[idx++] = parseFloat( tokens.get(3) ); // s
-							mesh.vertices[idx++] = parseFloat( tokens.get(4) ); // t
-							mesh.vertices[idx++] = parseFloat( tokens.get(6) ); // start
-							mesh.vertices[idx++] = parseFloat( tokens.get(7) ); // count
-							if(allocateNormals)
-							{
+						if (tokens.get(0).equals("vert")) {
+							vertIndex = parseInt(tokens.get(1));
+
+							int idx = vertIndex * floatsPerVert;
+							mesh.vertices[idx++] = parseFloat(tokens.get(3)); // s
+							mesh.vertices[idx++] = parseFloat(tokens.get(4)); // t
+							mesh.vertices[idx++] = parseFloat(tokens.get(6)); // start
+							mesh.vertices[idx++] = parseFloat(tokens.get(7)); // count
+							if (allocateNormals) {
 								mesh.vertices[idx++] = 0.f;
 								mesh.vertices[idx++] = 0.f;
 								mesh.vertices[idx++] = 0.f;
 							}
 						}
-						if( tokens.get(0).equals( "tri" ) )
-						{							
-							triIndex = parseInt( tokens.get(1) );													
-							
-							int idx = triIndex*3;
-							mesh.indices[idx++] = Short.parseShort( tokens.get(2) ); // idx 1
-							mesh.indices[idx++] = Short.parseShort( tokens.get(3) ); // idx 2
-							mesh.indices[idx++] = Short.parseShort( tokens.get(4) ); // idx 3
+						if (tokens.get(0).equals("tri")) {
+							triIndex = parseInt(tokens.get(1));
+
+							int idx = triIndex * 3;
+							mesh.indices[idx++] = Short.parseShort(tokens.get(2)); // idx 1
+							mesh.indices[idx++] = Short.parseShort(tokens.get(3)); // idx 2
+							mesh.indices[idx++] = Short.parseShort(tokens.get(4)); // idx 3
 						}
-						
-						if( tokens.get(0).equals( "weight" ) )
-						{							
-							weightIndex = parseInt( tokens.get(1) );													
-							
-							int idx = weightIndex*floatsPerWeight;
-							mesh.weights[idx++] = parseInt( tokens.get(2) ); // joint
-							mesh.weights[idx++] = parseFloat( tokens.get(3) ); // bias
-							mesh.weights[idx++] = parseFloat( tokens.get(5) ); // pos.x
-							mesh.weights[idx++] = parseFloat( tokens.get(6) ); // pos.y
-							mesh.weights[idx++] = parseFloat( tokens.get(7) ); // pos.z
+
+						if (tokens.get(0).equals("weight")) {
+							weightIndex = parseInt(tokens.get(1));
+
+							int idx = weightIndex * floatsPerWeight;
+							mesh.weights[idx++] = parseInt(tokens.get(2)); // joint
+							mesh.weights[idx++] = parseFloat(tokens.get(3)); // bias
+							mesh.weights[idx++] = parseFloat(tokens.get(5)); // pos.x
+							mesh.weights[idx++] = parseFloat(tokens.get(6)); // pos.y
+							mesh.weights[idx++] = parseFloat(tokens.get(7)); // pos.z
 						}
 					}
-					//Gdx.app.log("MD5Loader", "mesh.vertices.length["+(currMesh-1)+"] = "+mesh.vertices.length);
+					// Gdx.app.log("MD5Loader", "mesh.vertices.length["+(currMesh-1)+"] = "+mesh.vertices.length);
 				}
 			}
-			
+
 			return model;
-		}
-		catch( Exception ex )
-		{
-			ex.printStackTrace( );
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			return null;
-		}			
+		}
 	}
-	
+
 	public static MD5Animation loadAnimation (InputStream in) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 		List<String> tokens = new ArrayList<String>();

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.angle;
 
 import javax.sound.sampled.AudioFormat;
@@ -22,12 +23,9 @@ import javax.sound.sampled.SourceDataLine;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * Implementation of the {@link AudioDevice} interface for the desktop using Java Sound.
+/** Implementation of the {@link AudioDevice} interface for the desktop using Java Sound.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 final class AngleAudioDevice implements AudioDevice {
 	/** the audio line **/
 	private SourceDataLine line;
@@ -91,7 +89,8 @@ final class AngleAudioDevice implements AudioDevice {
 			writtenBytes += line.write(bytes, writtenBytes, numSamples * 2 - writtenBytes);
 	}
 
-	@Override public int getLatency () {
+	@Override
+	public int getLatency () {
 		return 0;
 	}
 }

@@ -17,16 +17,11 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-
 class SwingToolTipManagerPersistenceDelegate extends PersistenceDelegate {
 
 	@Override
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
-		return new Expression(oldInstance, oldInstance.getClass(),
-				"sharedInstance", null); //$NON-NLS-1$
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		return new Expression(oldInstance, oldInstance.getClass(), "sharedInstance", null); //$NON-NLS-1$
 	}
 
 }

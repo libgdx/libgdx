@@ -17,16 +17,14 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * FieldElement subclass for a flipper that is controlled by the player. A flipper consists of a Box2D RevoluteJoint where a thin
+/** FieldElement subclass for a flipper that is controlled by the player. A flipper consists of a Box2D RevoluteJoint where a thin
  * wall rotates around an invisible anchor. Flippers are defined in the layout JSON as follows: { "class": "FlipperElement",
  * "position": [5.5, 10], // x,y of fixed end of flipper which it rotates around "length": 2.5, // length of the flipper. Negative
  * if the flipper rotates around its right end. "minangle": -20, // minimum angle from the horizontal. Negative angles are below
  * horizontal. "maxangle": 20, // maximum angle from the horizontal. "upspeed": 7, // rate at which the flipper rotates up when
  * activated (in radians/sec?) "downspeed": 3 // rate at which the flipper rotates down when not activated (in radians/sec?) }
  * 
- * @author brian
- */
+ * @author brian */
 
 public class FlipperElement extends FieldElement {
 
@@ -41,7 +39,8 @@ public class FlipperElement extends FieldElement {
 	float minangle, maxangle;
 	float cx, cy;
 
-	@Override public void finishCreate (Map params, World world) {
+	@Override
+	public void finishCreate (Map params, World world) {
 		List pos = (List)params.get("position");
 
 		this.cx = asFloat(pos.get(0));
@@ -94,15 +93,18 @@ public class FlipperElement extends FieldElement {
 		joint.setMotorSpeed(speed);
 	}
 
-	@Override public Collection getBodies () {
+	@Override
+	public Collection getBodies () {
 		return flipperBodySet;
 	}
 
-	@Override public boolean shouldCallTick () {
+	@Override
+	public boolean shouldCallTick () {
 		return true;
 	}
 
-	@Override public void tick (Field field) {
+	@Override
+	public void tick (Field field) {
 		super.tick(field);
 
 		// if angle is at maximum, reduce speed so that the ball won't fly off when it hits
@@ -138,7 +140,8 @@ public class FlipperElement extends FieldElement {
 		return anchorBody;
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		// draw single line segment from anchor point
 		Vector2 position = anchorBody.getPosition();
 		float angle = joint.getJointAngle();

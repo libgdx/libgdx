@@ -20,11 +20,9 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL;
 
-/**
- * Implement an error checking wrapper. The wrapper will automatically call glError after each GL operation, and throw a
+/** Implement an error checking wrapper. The wrapper will automatically call glError after each GL operation, and throw a
  * GLException if an error occurs. (By design, calling glError itself will not cause an exception to be thrown.) Enabling error
- * checking is an alternative to manually calling glError after every GL operation.
- */
+ * checking is an alternative to manually calling glError after every GL operation. */
 class GLErrorWrapper extends GLWrapperBase {
 	boolean mCheckError;
 	boolean mCheckThread;

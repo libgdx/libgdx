@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import java.nio.FloatBuffer;
@@ -29,13 +30,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Pool;
 
 import static org.lwjgl.openal.AL10.*;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class OpenALAudio implements Audio {
 	private IntArray idleSources, allSources;
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();

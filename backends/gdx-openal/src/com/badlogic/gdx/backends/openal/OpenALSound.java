@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.lwjgl.openal.AL11;
-
 import com.badlogic.gdx.audio.Sound;
 
 import static org.lwjgl.openal.AL10.*;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class OpenALSound implements Sound {
 	private int bufferID = -1;
 	private final OpenALAudio audio;

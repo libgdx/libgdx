@@ -52,11 +52,9 @@ import de.matthiasmann.twl.utils.ClipStack;
 
 // BOZO - Add cursors.
 
-/**
- * @author Nathan Sweet
+/** @author Nathan Sweet
  * @author Matthias Mann
- * @author Kurtis Kopf
- */
+ * @author Kurtis Kopf */
 public class GdxRenderer implements Renderer, LineRenderer {
 	private int mouseX, mouseY;
 	private GdxCacheContext cacheContext;
@@ -67,7 +65,7 @@ public class GdxRenderer implements Renderer, LineRenderer {
 	private boolean rendering;
 	private int width, height;
 	final SpriteBatch batch;
-	
+
 	private final ClipStack clipStack;
 
 	public GdxRenderer (SpriteBatch batch) {
@@ -234,65 +232,56 @@ public class GdxRenderer implements Renderer, LineRenderer {
 	}
 
 	@Override
-	public void clipEnter(Rect rect)
-	{
+	public void clipEnter (Rect rect) {
 		clipStack.push(rect);
 		// using null might not be correct here.
 		setClipRect(null);
 	}
 
 	@Override
-	public void clipEnter(int x, int y, int w, int h)
-	{
+	public void clipEnter (int x, int y, int w, int h) {
 		clipStack.push(x, y, w, h);
 		setClipRect(null);
 	}
-	
+
 	@Override
-	public void clipLeave()
-	{
+	public void clipLeave () {
 		clipStack.pop();
 		setClipRect(null);
 	}
 
 	@Override
-	public boolean clipIsEmpty()
-	{
+	public boolean clipIsEmpty () {
 		return clipStack.isClipEmpty();
 	}
-	
+
 	@Override
-	public OffscreenRenderer getOffscreenRenderer()
-	{
+	public OffscreenRenderer getOffscreenRenderer () {
 		// this is the same as in LWJGLRenderer in the main TWL project
 		return null;
 	}
 
 	@Override
-	public void drawLine(float[] pts, int numPts, float width, de.matthiasmann.twl.Color color, boolean drawAsLoop)
-	{
-		if(numPts*2 > pts.length) 
-		{
-            throw new ArrayIndexOutOfBoundsException(numPts*2);
-        }
-		if(numPts >= 2) 
-		{
-            if (Gdx.gl11 != null)
-            {
-            	//tintStack.push(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
-            	Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
-                Gdx.gl.glLineWidth(width);
-            	FloatBuffer fb = BufferUtils.newFloatBuffer(pts.length);
-            	fb.put(pts);
-            	fb.position(0);
-            	Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-            	Gdx.gl11.glVertexPointer(2, GL11.GL_FLOAT, 0, fb);
-            	Gdx.gl11.glColor4f(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
-            	Gdx.gl11.glDrawArrays((drawAsLoop ? GL11.GL_LINE_LOOP : GL11.GL_LINE_STRIP), 0, numPts);
-            	Gdx.gl11.glColor4f(tintStack.r, tintStack.g, tintStack.b, tintStack.a);
-            	Gdx.gl11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-            	Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-            }
-        }
+	public void drawLine (float[] pts, int numPts, float width, de.matthiasmann.twl.Color color, boolean drawAsLoop) {
+		if (numPts * 2 > pts.length) {
+			throw new ArrayIndexOutOfBoundsException(numPts * 2);
+		}
+		if (numPts >= 2) {
+			if (Gdx.gl11 != null) {
+				// tintStack.push(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
+				Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
+				Gdx.gl.glLineWidth(width);
+				FloatBuffer fb = BufferUtils.newFloatBuffer(pts.length);
+				fb.put(pts);
+				fb.position(0);
+				Gdx.gl11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+				Gdx.gl11.glVertexPointer(2, GL11.GL_FLOAT, 0, fb);
+				Gdx.gl11.glColor4f(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
+				Gdx.gl11.glDrawArrays((drawAsLoop ? GL11.GL_LINE_LOOP : GL11.GL_LINE_STRIP), 0, numPts);
+				Gdx.gl11.glColor4f(tintStack.r, tintStack.g, tintStack.b, tintStack.a);
+				Gdx.gl11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+				Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+			}
+		}
 	}
 }

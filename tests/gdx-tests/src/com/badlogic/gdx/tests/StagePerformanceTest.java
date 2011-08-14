@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.List;
@@ -29,12 +30,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.FastImage;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class StagePerformanceTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -44,27 +45,30 @@ public class StagePerformanceTest extends GdxTest {
 	BitmapFont font;
 	Sprite[] sprites;
 	boolean useStage = true;
-	
-	@Override public void create() {
+
+	@Override
+	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		stage = new Stage(24, 12, true);
-		regions = new TextureRegion[8*8];
-		sprites = new Sprite[24*12];
-		
-		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));		
-		for(int y = 0; y < 8; y++) {
-			for(int x = 0; x < 8; x++) {
-				regions[x + y*8] = new TextureRegion(tex, x * 32, y * 32, 32, 32);
-			}	
+		regions = new TextureRegion[8 * 8];
+		sprites = new Sprite[24 * 12];
+
+		Texture tex = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+		for (int y = 0; y < 8; y++) {
+			for (int x = 0; x < 8; x++) {
+				regions[x + y * 8] = new TextureRegion(tex, x * 32, y * 32, 32, 32);
+			}
 		}
-				
+
 		Random rand = new Random();
-		for(int y = 0, i = 0; y < 12; y++) {
-			for(int x = 0; x < 24; x++) {
+		for (int y = 0, i = 0; y < 12; y++) {
+			for (int x = 0; x < 24; x++) {
 				FastImage img = new FastImage("img" + i, regions[rand.nextInt(8 * 8)]);
-				img.x = x; img.y = y;
-				img.width = 1; img.height = 1;
+				img.x = x;
+				img.y = y;
+				img.width = 1;
+				img.height = 1;
 				stage.addActor(img);
 				sprites[i] = new Sprite(regions[rand.nextInt(8 * 8)]);
 				sprites[i].setPosition(x, y);
@@ -73,40 +77,41 @@ public class StagePerformanceTest extends GdxTest {
 			}
 		}
 	}
-	
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
-		if(useStage) {
+
+		if (useStage) {
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.getSpriteBatch().disableBlending();
 			Group root = stage.getRoot();
 			List<Actor> actors = root.getActors();
-//			for(int i = 0; i < actors.size(); i++) {
-//				actors.get(i).rotation += 45 * Gdx.graphics.getDeltaTime();
-//			}
-			stage.draw();	
-		} else {		
+// for(int i = 0; i < actors.size(); i++) {
+// actors.get(i).rotation += 45 * Gdx.graphics.getDeltaTime();
+// }
+			stage.draw();
+		} else {
 			batch.getProjectionMatrix().setToOrtho2D(0, 0, 24, 12);
 			batch.getTransformMatrix().idt();
 			batch.disableBlending();
 			batch.begin();
-			for(int i = 0; i < sprites.length; i++) {
-//				sprites[i].rotate(45 * Gdx.graphics.getDeltaTime());
+			for (int i = 0; i < sprites.length; i++) {
+// sprites[i].rotate(45 * Gdx.graphics.getDeltaTime());
 				sprites[i].draw(batch);
-			}		
+			}
 			batch.end();
 		}
-		
+
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, 480, 320);
 		batch.enableBlending();
 		batch.begin();
 		font.setColor(0, 0, 1, 1);
 		font.setScale(2);
-		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + (useStage?", stage": "sprite"), 10, 40);		
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + (useStage ? ", stage" : "sprite"), 10, 40);
 		batch.end();
-		
-		if(Gdx.input.justTouched()) {
+
+		if (Gdx.input.justTouched()) {
 			useStage = !useStage;
 		}
 	}

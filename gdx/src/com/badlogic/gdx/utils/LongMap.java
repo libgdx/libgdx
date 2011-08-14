@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/**
- * An unordered map that uses long keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
+/** An unordered map that uses long keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
  * stash for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
  * <br>
  * This map performs very fast get, containsKey, and remove (typically O(1), worst case O(log(n))). Put may be a bit slower,
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
  * next higher POT size.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class LongMap<V> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
@@ -53,26 +51,20 @@ public class LongMap<V> {
 	private Values values;
 	private Keys keys;
 
-	/**
-	 * Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
-	 * backing table.
-	 */
+	/** Creates a new map with an initial capacity of 32 and a load factor of 0.8. This map will hold 25 items before growing the
+	 * backing table. */
 	public LongMap () {
 		this(32, 0.8f);
 	}
 
-	/**
-	 * Creates a new map with a load factor of 0.8. This map will hold initialCapacity * 0.8 items before growing the backing
-	 * table.
-	 */
+	/** Creates a new map with a load factor of 0.8. This map will hold initialCapacity * 0.8 items before growing the backing
+	 * table. */
 	public LongMap (int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
 
-	/**
-	 * Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity * loadFactor items
-	 * before growing the backing table.
-	 */
+	/** Creates a new map with the specified initial capacity and load factor. This map will hold initialCapacity * loadFactor items
+	 * before growing the backing table. */
 	public LongMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
 		if (capacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
@@ -156,9 +148,7 @@ public class LongMap<V> {
 			put(entry.key, entry.value);
 	}
 
-	/**
-	 * Skips checks for existing keys.
-	 */
+	/** Skips checks for existing keys. */
 	private void putResize (long key, V value) {
 		if (key == 0) {
 			zeroValue = value;
@@ -386,10 +376,8 @@ public class LongMap<V> {
 		hasZeroValue = false;
 	}
 
-	/**
-	 * Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
-	 * an expensive operation.
-	 */
+	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
+	 * an expensive operation. */
 	public boolean containsValue (Object value, boolean identity) {
 		V[] valueTable = this.valueTable;
 		if (value == null) {
@@ -429,10 +417,8 @@ public class LongMap<V> {
 		return false;
 	}
 
-	/**
-	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
-	 * items to avoid multiple backing array resizes.
-	 */
+	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= threshold) resize(MathUtils.nextPowerOfTwo((int)(sizeNeeded / loadFactor)));
@@ -499,10 +485,8 @@ public class LongMap<V> {
 		return buffer.toString();
 	}
 
-	/**
-	 * Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
+	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries<V> entries () {
 		if (entries == null)
 			entries = new Entries(this);
@@ -511,10 +495,8 @@ public class LongMap<V> {
 		return entries;
 	}
 
-	/**
-	 * Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
+	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
+	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
 		if (values == null)
 			values = new Values(this);
@@ -523,10 +505,8 @@ public class LongMap<V> {
 		return values;
 	}
 
-	/**
-	 * Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration.
-	 */
+	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
+	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Keys keys () {
 		if (keys == null)
 			keys = new Keys(this);
@@ -602,9 +582,7 @@ public class LongMap<V> {
 			super(map);
 		}
 
-		/**
-		 * Note the same entry instance is returned each time this method is called.
-		 */
+		/** Note the same entry instance is returned each time this method is called. */
 		public Entry<V> next () {
 			if (!hasNext) throw new NoSuchElementException();
 			long[] keyTable = map.keyTable;
@@ -653,9 +631,7 @@ public class LongMap<V> {
 			return this;
 		}
 
-		/**
-		 * Returns a new array containing the remaining values.
-		 */
+		/** Returns a new array containing the remaining values. */
 		public Array<V> toArray () {
 			Array array = new Array(true, map.size);
 			while (hasNext)
@@ -676,9 +652,7 @@ public class LongMap<V> {
 			return key;
 		}
 
-		/**
-		 * Returns a new array containing the remaining values.
-		 */
+		/** Returns a new array containing the remaining values. */
 		public LongArray toArray () {
 			LongArray array = new LongArray(true, map.size);
 			while (hasNext)

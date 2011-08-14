@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import android.content.res.AssetManager;
@@ -21,10 +22,8 @@ import android.os.Environment;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
-/**
- * @author mzechner
- * @author Nathan Sweet
- */
+/** @author mzechner
+ * @author Nathan Sweet */
 public class AndroidFiles implements Files {
 	protected final String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 	protected final AssetManager assets;
@@ -33,31 +32,38 @@ public class AndroidFiles implements Files {
 		this.assets = assets;
 	}
 
-	@Override public FileHandle getFileHandle (String path, FileType type) {
+	@Override
+	public FileHandle getFileHandle (String path, FileType type) {
 		return new AndroidFileHandle(type == FileType.Internal ? assets : null, path, type);
 	}
 
-	@Override public FileHandle classpath (String path) {
+	@Override
+	public FileHandle classpath (String path) {
 		return new AndroidFileHandle(null, path, FileType.Classpath);
 	}
 
-	@Override public FileHandle internal (String path) {
+	@Override
+	public FileHandle internal (String path) {
 		return new AndroidFileHandle(assets, path, FileType.Internal);
 	}
 
-	@Override public FileHandle external (String path) {
+	@Override
+	public FileHandle external (String path) {
 		return new AndroidFileHandle(null, path, FileType.External);
 	}
 
-	@Override public FileHandle absolute (String path) {
+	@Override
+	public FileHandle absolute (String path) {
 		return new AndroidFileHandle(null, path, FileType.Absolute);
 	}
 
-	@Override public String getExternalStoragePath () {
+	@Override
+	public String getExternalStoragePath () {
 		return sdcard;
 	}
 
-	@Override public boolean isExternalStorageAvailable () {
+	@Override
+	public boolean isExternalStorageAvailable () {
 		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 	}
 }

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.g3d.test;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -25,22 +26,24 @@ public class QbobViewer implements ApplicationListener {
 	PerspectiveCamera cam;
 	KeyframedModel animModel;
 	KeyframedAnimation anim;
-	float animTime = 0;	
-	
+	float animTime = 0;
+
 	StillModel model[] = new StillModel[4];
 	Texture diffuse;
 	Texture[] lightMaps = new Texture[4];
-	FPSLogger fps = new FPSLogger();	
+	FPSLogger fps = new FPSLogger();
 	PerspectiveCamController controller;
 	SpriteBatch batch;
-	BitmapFont font;	
-	
-	@Override public void create () {
+	BitmapFont font;
+
+	@Override
+	public void create () {
 		animModel = G3dtLoader.loadKeyframedModel(Gdx.files.internal("data/boy.g3dt"), true);
 		anim = animModel.getAnimations()[0];
-		Material material = new Material("default", new TextureAttribute(new Texture(Gdx.files.internal("data/boy.png")), 0, "tex0"));
+		Material material = new Material("default",
+			new TextureAttribute(new Texture(Gdx.files.internal("data/boy.png")), 0, "tex0"));
 		animModel.setMaterial(material);
-		
+
 		model[0] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_01.dae.g3d"));
 		lightMaps[0] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_01.jpg"), Format.RGB565, true);
 		model[1] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_02.dae.g3d"));
@@ -49,110 +52,114 @@ public class QbobViewer implements ApplicationListener {
 		lightMaps[2] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_03.jpg"), Format.RGB565, true);
 		model[3] = G3dLoader.loadStillModel(Gdx.files.internal("data/qbob/test_section_04.dae.g3d"));
 		lightMaps[3] = new Texture(Gdx.files.internal("data/qbob/world_blobbie_lm_04.jpg"), Format.RGB565, true);
-		
+
 		diffuse = new Texture(Gdx.files.internal("data/qbob/world_blobbie_blocks.png"), Format.RGB565, true);
-																		
+
 		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(30, 10, 85f);
-		cam.direction.set(0,0,-1);
-		cam.up.set(0,1,0);
+		cam.direction.set(0, 0, -1);
+		cam.up.set(0, 1, 0);
 		cam.near = 10f;
-		cam.far = 1000;			
-		
+		cam.far = 1000;
+
 		controller = new PerspectiveCamController(cam);
 		Gdx.input.setInputProcessor(controller);
-		
+
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-	}	
-
-	@Override public void resume () {
-		
 	}
-	
-	@Override public void render () {
+
+	@Override
+	public void resume () {
+
+	}
+
+	@Override
+	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);			
-						
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+
 		cam.update();
-		cam.apply(Gdx.gl10);						
-		
+		cam.apply(Gdx.gl10);
+
 		Gdx.gl.glEnable(GL10.GL_CULL_FACE);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-				
+
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		diffuse.bind();
-		diffuse.setFilter(TextureFilter.MipMap, TextureFilter.Linear);				
-		
+		diffuse.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
+
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-		
+
 		lightMaps[0].bind();
-		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);				
+		lightMaps[0].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		setCombiners();
-		
+
 		model[0].render();
 		lightMaps[1].bind();
 		lightMaps[1].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		setCombiners();
-		
+
 		model[1].render();
 		lightMaps[2].bind();
-		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);		
+		lightMaps[2].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		setCombiners();
-				
+
 		model[2].render();
 		lightMaps[3].bind();
-		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);		
+		lightMaps[3].setFilter(TextureFilter.MipMapNearestNearest, TextureFilter.Linear);
 		setCombiners();
 		model[3].render();
-		
+
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE1);
 		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0);
 		Gdx.gl.glDisable(GL10.GL_CULL_FACE);
 		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-		
+
 		Gdx.gl.glDisable(GL10.GL_BLEND);
-		
-		
+
 		animTime += Gdx.graphics.getDeltaTime();
-		if(animTime > anim.totalDuration - anim.frameDuration) animTime = 0;		
+		if (animTime > anim.totalDuration - anim.frameDuration) animTime = 0;
 		animModel.setAnimation(anim.name, animTime, true);
-				
+
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glTranslatef(cam.position.x, cam.position.y, 6);
-		animModel.render();		
-		Gdx.gl10.glPopMatrix();			
-						
+		animModel.render();
+		Gdx.gl10.glPopMatrix();
+
 		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-		batch.end();			
-		
-		fps.log();	
+		batch.end();
+
+		fps.log();
 	}
-		
-	private void setCombiners() {
+
+	private void setCombiners () {
 		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_COMBINE);
 		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_COMBINE_RGB, GL11.GL_ADD_SIGNED);
 		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC0_RGB, GL11.GL_PREVIOUS);
-		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);	
-	}
-	
-	@Override public void resize (int width, int height) {
-		
+		Gdx.gl11.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_SRC1_RGB, GL11.GL_TEXTURE);
 	}
 
-	@Override public void pause () {
-		
+	@Override
+	public void resize (int width, int height) {
+
 	}
 
-	@Override public void dispose () {		
-	}	
-	
-	public static void main(String[] argv) {
+	@Override
+	public void pause () {
+
+	}
+
+	@Override
+	public void dispose () {
+	}
+
+	public static void main (String[] argv) {
 		new JoglApplication(new QbobViewer(), "Qbob Viewer", 800, 480, false);
 	}
 }

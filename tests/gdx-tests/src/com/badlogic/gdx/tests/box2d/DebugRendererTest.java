@@ -38,7 +38,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class DebugRendererTest extends Box2DTest {
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		{
 			PolygonShape shape = new PolygonShape();
 			shape.setAsEdge(new Vector2(-40.0f, 0), new Vector2(40, 0));

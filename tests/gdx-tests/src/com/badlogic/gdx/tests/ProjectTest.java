@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
@@ -33,7 +34,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ProjectTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -44,38 +46,38 @@ public class ProjectTest extends GdxTest {
 	Vector3[] positions = new Vector3[100];
 	Vector3 tmp = new Vector3();
 	TextureRegion logo;
-	
-	@Override public void create() {
+
+	@Override
+	public void create () {
 		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
 		cam = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.far = 200;
 		Random rand = new Random();
-		for(int i = 0; i < positions.length; i++) {
-			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, 
-												rand.nextFloat() * 100 - rand.nextFloat() * 100, 
-												rand.nextFloat() * -100 - 3);
+		for (int i = 0; i < positions.length; i++) {
+			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat()
+				* 100, rand.nextFloat() * -100 - 3);
 		}
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		logo = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg"))); 
+		logo = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 	}
-	
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		GL10 gl = Gdx.gl10;
-		
+
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
-		
+
 		cam.update();
 		cam.apply(gl);
-		
+
 		int visible = 0;
-		for(int i = 0; i < positions.length; i++) {
-			if(cam.frustum.sphereInFrustum(positions[i], 1)) {
+		for (int i = 0; i < positions.length; i++) {
+			if (cam.frustum.sphereInFrustum(positions[i], 1)) {
 				gl.glColor4f(1, 1, 1, 1);
 				visible++;
-			}
-			else {
+			} else {
 				gl.glColor4f(1, 0, 0, 1);
 			}
 			gl.glPushMatrix();
@@ -83,18 +85,16 @@ public class ProjectTest extends GdxTest {
 			sphere.render(GL10.GL_TRIANGLES);
 			gl.glPopMatrix();
 		}
-		
-		if(Gdx.input.isKeyPressed(Keys.A))
-			cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if(Gdx.input.isKeyPressed(Keys.D))
-			cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);		
-		
+
+		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+
 		gl.glDisable(GL10.GL_DEPTH_TEST);
 		batch.begin();
-		for(int i = 0; i < positions.length; i++) {
-			tmp.set(positions[i]);			
+		for (int i = 0; i < positions.length; i++) {
+			tmp.set(positions[i]);
 			cam.project(tmp);
-			if(tmp.z < 0) continue;
+			if (tmp.z < 0) continue;
 			batch.draw(logo, tmp.x, tmp.y);
 		}
 		batch.end();

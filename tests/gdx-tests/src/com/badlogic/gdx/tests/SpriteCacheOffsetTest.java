@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -22,9 +23,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.tests.utils.GdxTest;
-
-import static com.badlogic.gdx.graphics.Texture.TextureFilter.*;
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
 public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 	private int tileMapWidth = 10;
@@ -84,11 +82,13 @@ public class SpriteCacheOffsetTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

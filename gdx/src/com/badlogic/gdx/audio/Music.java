@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio;
 
 import com.badlogic.gdx.Application;
@@ -21,8 +22,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Disposable;
 
-/**
- * <p>
+/** <p>
  * A Music instance represents a streamed audio file. The interface supports setting the play back position, pausing and resuming
  * and so on. When you are done with using the Music instance you have to dispose it via the {@link #dispose()} method.
  * </p>
@@ -36,59 +36,39 @@ import com.badlogic.gdx.utils.Disposable;
  * {@link ApplicationListener}.
  * </p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public interface Music extends Disposable {
-	/**
-	 * Starts the play back of the music stream. In case the stream was paused this will resume the play back. In case the music
-	 * stream is finished playing this will restart the play back.
-	 */
+	/** Starts the play back of the music stream. In case the stream was paused this will resume the play back. In case the music
+	 * stream is finished playing this will restart the play back. */
 	public void play ();
 
-	/**
-	 * Pauses the play back. If the music stream has not been started yet or has finished playing a call to this method will be
-	 * ignored.
-	 */
+	/** Pauses the play back. If the music stream has not been started yet or has finished playing a call to this method will be
+	 * ignored. */
 	public void pause ();
 
-	/**
-	 * Stops a playing or paused Music instance. Next time play() is invoked the Music will start from the beginning.
-	 */
+	/** Stops a playing or paused Music instance. Next time play() is invoked the Music will start from the beginning. */
 	public void stop ();
 
-	/**
-	 * @return whether this music stream is playing
-	 */
+	/** @return whether this music stream is playing */
 	public boolean isPlaying ();
 
-	/**
-	 * Sets whether the music stream is looping. This can be called at any time, whether the stream is playing.
+	/** Sets whether the music stream is looping. This can be called at any time, whether the stream is playing.
 	 * 
-	 * @param isLooping whether to loop the stream
-	 */
+	 * @param isLooping whether to loop the stream */
 	public void setLooping (boolean isLooping);
 
-	/**
-	 * @return whether the music stream is playing.
-	 */
+	/** @return whether the music stream is playing. */
 	public boolean isLooping ();
 
-	/**
-	 * Sets the volume of this music stream. The volume must be given in the range [0,1] with 0 being silent and 1 being the
+	/** Sets the volume of this music stream. The volume must be given in the range [0,1] with 0 being silent and 1 being the
 	 * maximum volume.
 	 * 
-	 * @param volume
-	 */
+	 * @param volume */
 	public void setVolume (float volume);
 
-	/**
-	 * Returns the playback position in milliseconds.
-	 */
+	/** Returns the playback position in milliseconds. */
 	public float getPosition ();
 
-	/**
-	 * Needs to be called when the Music is no longer needed.
-	 */
+	/** Needs to be called when the Music is no longer needed. */
 	public void dispose ();
 }

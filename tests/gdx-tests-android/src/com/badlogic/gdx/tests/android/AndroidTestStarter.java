@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.android;
 
 import java.util.ArrayList;
@@ -28,13 +29,14 @@ import com.badlogic.gdx.tests.utils.GdxTests;
 
 public class AndroidTestStarter extends ListActivity {
 
-	@Override public void onCreate (Bundle savedInstanceState) {
+	@Override
+	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ArrayList<String> testNames = new ArrayList<String>();
-		for(String name: GdxTests.getNames()) {
+		for (String name : GdxTests.getNames()) {
 			testNames.add(name);
-		}		
-		testNames.add(MatrixTest.class.getSimpleName());		
+		}
+		testNames.add(MatrixTest.class.getSimpleName());
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames.toArray(new String[0])));
 	}
 

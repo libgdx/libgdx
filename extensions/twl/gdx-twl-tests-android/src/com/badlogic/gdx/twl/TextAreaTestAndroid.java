@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.twl;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
-public class TextAreaTestAndroid extends AndroidApplication 
-{
-	public void onCreate (Bundle bundle) 
-	{
+public class TextAreaTestAndroid extends AndroidApplication {
+	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
 		initialize(new com.badlogic.gdx.twl.tests.TextAreaTest(), false);
 	}

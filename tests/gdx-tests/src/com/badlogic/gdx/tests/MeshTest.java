@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -31,7 +30,8 @@ public class MeshTest extends GdxTest {
 	Mesh mesh;
 	Texture texture;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.graphics.getGL10().glEnable(GL10.GL_TEXTURE_2D);
@@ -39,7 +39,8 @@ public class MeshTest extends GdxTest {
 		mesh.render(GL10.GL_TRIANGLES, 3, 3);
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 			"a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
@@ -52,7 +53,8 @@ public class MeshTest extends GdxTest {
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

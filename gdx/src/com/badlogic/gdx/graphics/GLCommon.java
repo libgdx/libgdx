@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
 import java.nio.IntBuffer;
 
-/**
- * This interface defines methods common to GL10, GL11 and GL20.
- * @author mzechner
- * 
- */
+/** This interface defines methods common to GL10, GL11 and GL20.
+ * @author mzechner */
 public interface GLCommon {
 	public static final int GL_GENERATE_MIPMAP = 0x8191;
 

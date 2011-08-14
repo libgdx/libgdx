@@ -52,12 +52,12 @@ public class ParticleEffect implements Disposable {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).update(delta);
 	}
-	
+
 	public void draw (SpriteBatch spriteBatch) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).draw(spriteBatch);
 	}
-	
+
 	public void draw (SpriteBatch spriteBatch, float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).draw(spriteBatch, delta);
@@ -100,9 +100,7 @@ public class ParticleEffect implements Disposable {
 		return emitters;
 	}
 
-	/**
-	 * Returns the emitter with the specified name, or null.
-	 */
+	/** Returns the emitter with the specified name, or null. */
 	public ParticleEmitter findEmitter (String name) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
@@ -195,9 +193,7 @@ public class ParticleEffect implements Disposable {
 		return new Texture(file, false);
 	}
 
-	/**
-	 * Disposes the texture for each sprite for each ParticleEmitter.
-	 */
+	/** Disposes the texture for each sprite for each ParticleEmitter. */
 	public void dispose () {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);

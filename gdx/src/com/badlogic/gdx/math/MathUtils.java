@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.math;
 
 import java.util.Random;
 
 import com.badlogic.gdx.utils.NumberUtils;
 
-/**
- * Utility and fast math functions.<br>
+/** Utility and fast math functions.<br>
  * <br>
- * Thanks to Riven on JavaGaming.org for sin/cos/atan2/floor/ceil.<br>
- */
+ * Thanks to Riven on JavaGaming.org for sin/cos/atan2/floor/ceil.<br> */
 public class MathUtils {
 	static public final float PI = 3.1415927f;
 
@@ -117,9 +116,7 @@ public class MathUtils {
 
 	static public Random random = new Random();
 
-	/**
-	 * Returns a random number between 0 (inclusive) and the specified value (inclusive).
-	 */
+	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public final int random (int range) {
 		return random.nextInt(range + 1);
 	}
@@ -166,52 +163,41 @@ public class MathUtils {
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
 	static private final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
 	static private final double CEIL = 0.9999999;
-	static private final double BIG_ENOUGH_CEIL = NumberUtils.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+	static private final double BIG_ENOUGH_CEIL = NumberUtils
+		.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
 	static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
 
-	/**
-	 * Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from
-	 * -(2^14) to (Float.MAX_VALUE - 2^14).
-	 */
+	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats from
+	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
 	static public int floor (float x) {
 		return (int)(x + BIG_ENOUGH_FLOOR) - BIG_ENOUGH_INT;
 	}
 
-	/**
-	 * Returns the largest integer less than or equal to the specified float. This method will only properly floor floats that are
-	 * positive. Note this method simply casts the float to int.
-	 */
+	/** Returns the largest integer less than or equal to the specified float. This method will only properly floor floats that are
+	 * positive. Note this method simply casts the float to int. */
 	static public int floorPositive (float x) {
 		return (int)x;
 	}
 
-	/**
-	 * Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
-	 * -(2^14) to (Float.MAX_VALUE - 2^14).
-	 */
+	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats from
+	 * -(2^14) to (Float.MAX_VALUE - 2^14). */
 	static public int ceil (float x) {
 		return (int)(x + BIG_ENOUGH_CEIL) - BIG_ENOUGH_INT;
 	}
 
-	/**
-	 * Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that
-	 * are positive.
-	 */
+	/** Returns the smallest integer greater than or equal to the specified float. This method will only properly ceil floats that
+	 * are positive. */
 	static public int ceilPositive (float x) {
 		return (int)(x + CEIL);
 	}
 
-	/**
-	 * Returns the closest integer to the specified float. This method will only properly round floats from -(2^14) to
-	 * (Float.MAX_VALUE - 2^14).
-	 */
+	/** Returns the closest integer to the specified float. This method will only properly round floats from -(2^14) to
+	 * (Float.MAX_VALUE - 2^14). */
 	static public int round (float x) {
 		return (int)(x + BIG_ENOUGH_ROUND) - BIG_ENOUGH_INT;
 	}
 
-	/**
-	 * Returns the closest integer to the specified float. This method will only properly round floats that are positive.
-	 */
+	/** Returns the closest integer to the specified float. This method will only properly round floats that are positive. */
 	static public int roundPositive (float x) {
 		return (int)(x + 0.5f);
 	}

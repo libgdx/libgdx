@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.Manifold.ManifoldPoint;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
@@ -55,11 +55,11 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 	/** the immediate mode renderer to output our debug drawings **/
 	private ImmediateModeRenderer10 renderer;
-	
+
 	/** box2d debug renderer **/
 	private Box2DDebugRenderer debugRenderer;
 
-	/** a spritebatch and a font for text rendering and a Texture to draw our boxes**/
+	/** a spritebatch and a font for text rendering and a Texture to draw our boxes **/
 	private SpriteBatch batch;
 	private BitmapFont font;
 	private TextureRegion textureRegion;
@@ -79,7 +79,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	/** a hit body **/
 	Body hitBody = null;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		// setup the camera. In Box2D we operate on a
 		// meter scale, pixels won't do it. So we use
 		// an orthographic camera with a viewport of
@@ -87,12 +88,12 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// We also position the camera so that it
 		// looks at (0,16) (that's where the middle of the
 		// screen will be located).
-		camera = new OrthographicCamera(48,32);		
+		camera = new OrthographicCamera(48, 32);
 		camera.position.set(0, 16, 0);
 
 		// next we setup the immediate mode renderer
 		renderer = new ImmediateModeRenderer10();
-		
+
 		// next we create the box2d debug renderer
 		debugRenderer = new Box2DDebugRenderer();
 
@@ -140,39 +141,39 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		groundPoly.dispose();
 
 		createBoxes();
-		
+
 		// You can savely ignore the rest of this method :)
 		world.setContactListener(new ContactListener() {
 			@Override
-			public void beginContact(Contact contact) {
-//				System.out.println("begin contact");				
+			public void beginContact (Contact contact) {
+// System.out.println("begin contact");
 			}
 
 			@Override
-			public void endContact(Contact contact) {
-//				System.out.println("end contact");
+			public void endContact (Contact contact) {
+// System.out.println("end contact");
 			}
 
 			@Override
-			public void preSolve(Contact contact, Manifold oldManifold) {
-//				Manifold.ManifoldType type = oldManifold.getType();
-//				Vector2 localPoint = oldManifold.getLocalPoint();
-//				Vector2 localNormal = oldManifold.getLocalNormal();
-//				int pointCount = oldManifold.getPointCount();
-//				ManifoldPoint[] points = oldManifold.getPoints();
-//				System.out.println("pre solve, " + type + 
-//									", point: " + localPoint +
-//									", local normal: " + localNormal + 
-//									", #points: " + pointCount + 
-//									", [" + points[0] + ", " + points[1] + "]");				
+			public void preSolve (Contact contact, Manifold oldManifold) {
+// Manifold.ManifoldType type = oldManifold.getType();
+// Vector2 localPoint = oldManifold.getLocalPoint();
+// Vector2 localNormal = oldManifold.getLocalNormal();
+// int pointCount = oldManifold.getPointCount();
+// ManifoldPoint[] points = oldManifold.getPoints();
+// System.out.println("pre solve, " + type +
+// ", point: " + localPoint +
+// ", local normal: " + localNormal +
+// ", #points: " + pointCount +
+// ", [" + points[0] + ", " + points[1] + "]");
 			}
 
 			@Override
-			public void postSolve(Contact contact, ContactImpulse impulse) {
-//				float[] ni = impulse.getNormalImpulses();
-//				float[] ti = impulse.getTangentImpulses();		
-//				System.out.println("post solve, normal impulses: " + ni[0] + ", " + ni[1] + ", tangent impulses: " + ti[0] + ", " + ti[1]);				
-			}			
+			public void postSolve (Contact contact, ContactImpulse impulse) {
+// float[] ni = impulse.getNormalImpulses();
+// float[] ti = impulse.getTangentImpulses();
+// System.out.println("post solve, normal impulses: " + ni[0] + ", " + ni[1] + ", tangent impulses: " + ti[0] + ", " + ti[1]);
+			}
 		});
 	}
 
@@ -194,7 +195,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 			boxBodyDef.position.x = -24 + (float)(Math.random() * 48);
 			boxBodyDef.position.y = 10 + (float)(Math.random() * 100);
 			Body boxBody = world.createBody(boxBodyDef);
-		
+
 			boxBody.createFixture(boxPoly, 1);
 
 			// add the box to our list of boxes
@@ -205,7 +206,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		boxPoly.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		// first we update the world. For simplicity
 		// we use the delta time provided by the Graphics
 		// instance. Normally you'll want to fix the time
@@ -233,24 +235,23 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < boxes.size(); i++) {
 			Body box = boxes.get(i);
 			Vector2 position = box.getPosition(); // that's the box's center position
-			float angle = MathUtils.radiansToDegrees *box.getAngle(); // the rotation angle around the center
-			batch.draw(textureRegion, 
-						  position.x - 1, position.y - 1, // the bottom left corner of the box, unrotated
-						  1f, 1f, // the rotation center relative to the bottom left corner of the box
-						  2, 2, // the width and height of the box
-						  1, 1, // the scale on the x- and y-axis
-						  angle); // the rotation angle
+			float angle = MathUtils.radiansToDegrees * box.getAngle(); // the rotation angle around the center
+			batch.draw(textureRegion, position.x - 1, position.y - 1, // the bottom left corner of the box, unrotated
+				1f, 1f, // the rotation center relative to the bottom left corner of the box
+				2, 2, // the width and height of the box
+				1, 1, // the scale on the x- and y-axis
+				angle); // the rotation angle
 		}
 		batch.end();
 
-		// next we use the debug renderer. Note that we 
-		// simply apply the camera again and then call 
+		// next we use the debug renderer. Note that we
+		// simply apply the camera again and then call
 		// the renderer. the camera.apply() call is actually
 		// not needed as the opengl matrices are already set
-		// by the spritebatch which in turn uses the camera matrices :)		
+		// by the spritebatch which in turn uses the camera matrices :)
 		camera.apply(Gdx.gl10);
 		debugRenderer.render(world);
-		
+
 		// finally we render all contact points
 		gl.glPointSize(4);
 		renderer.begin(GL10.GL_POINTS);
@@ -274,9 +275,9 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		gl.glPointSize(1);
 
 		// finally we render the time it took to update the world
-		// for this we have to set the projection matrix again, so 
+		// for this we have to set the projection matrix again, so
 		// we work in pixel coordinates
-		batch.getProjectionMatrix().setToOrtho2D(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond() + " update time: " + updateTime, 0, 20);
 		batch.end();
@@ -314,7 +315,8 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	/** we instantiate this vector and the callback here so we don't irritate the GC **/
 	Vector3 testPoint = new Vector3();
 	QueryCallback callback = new QueryCallback() {
-		@Override public boolean reportFixture (Fixture fixture) {
+		@Override
+		public boolean reportFixture (Fixture fixture) {
 			// if the hit fixture's body is the ground body
 			// we ignore it
 			if (fixture.getBody() == groundBody) return true;
@@ -329,11 +331,12 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		}
 	};
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		// translate the mouse coordinates to world coordinates
 		testPoint.set(x, y, 0);
 		camera.unproject(testPoint);
-		
+
 		// ask the world which bodies are within the given
 		// bounding box around the mouse pointer
 		hitBody = null;
@@ -364,18 +367,20 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	/** another temporary vector **/
 	Vector2 target = new Vector2();
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		// if a mouse joint exists we simply update
 		// the target of the joint based on the new
 		// mouse coordinates
-		if (mouseJoint != null) {			
-			camera.unproject(testPoint.set(x, y,0));
+		if (mouseJoint != null) {
+			camera.unproject(testPoint.set(x, y, 0));
 			mouseJoint.setTarget(target.set(testPoint.x, testPoint.y));
 		}
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		// if a mouse joint exists we simply destroy it
 		if (mouseJoint != null) {
 			world.destroyJoint(mouseJoint);
@@ -384,11 +389,13 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		world.dispose();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -397,23 +404,28 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 	// MOVE ALONG
 	// ---------------------------------------------------------------
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

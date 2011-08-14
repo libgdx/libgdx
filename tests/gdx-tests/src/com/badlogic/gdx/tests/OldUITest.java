@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Input.Peripheral;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,7 +28,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Delay;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
-import com.badlogic.gdx.scenes.scene2d.actions.Forever;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveBy;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
@@ -41,9 +37,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.RotateTo;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.actors.Button;
+import com.badlogic.gdx.scenes.scene2d.actors.Button.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup;
-import com.badlogic.gdx.scenes.scene2d.actors.Button.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.actors.LinearGroup.LinearGroupLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -54,7 +50,8 @@ public class OldUITest extends GdxTest implements InputProcessor {
 
 	// Font font;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 // Gdx.input.setCatchBackKey(true);
 
 		// font = Gdx.graphics.newFont( "Droid Sans", 20, FontStyle.Plain );
@@ -91,7 +88,8 @@ public class OldUITest extends GdxTest implements InputProcessor {
 			Sequence.$(ScaleTo.$(0.1f, 0.1f, 1.5f), ScaleTo.$(1.0f, 1.0f, 1.5f))));
 		button.clickListener = new ClickListener() {
 
-			@Override public void clicked (Button button) {
+			@Override
+			public void clicked (Button button) {
 				if (Gdx.input.isPeripheralAvailable(Peripheral.OnscreenKeyboard)) Gdx.input.setOnscreenKeyboardVisible(true);
 			}
 		};
@@ -124,22 +122,26 @@ public class OldUITest extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public void render () {
-		GL10 gl = Gdx.graphics.getGL10();		
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);		
+	@Override
+	public void render () {
+		GL10 gl = Gdx.graphics.getGL10();
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		ui.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30.0f));
 		ui.draw();
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		// Label label = ((Label)ui.findActor( "label" ));
 		// if( character == '\b' ) {
 		// if( label.text.length() > "text input: ".length() )
@@ -150,14 +152,16 @@ public class OldUITest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		ui.touchDown(x, y, pointer, button);
 		return false;
 	}
 
 	Vector2 point = new Vector2();
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		if (!ui.touchUp(x, y, pointer, button)) {
 			Actor actor = ui.findActor("image1");
 			if (actor != null) {
@@ -174,20 +178,24 @@ public class OldUITest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		ui.touchDragged(x, y, pointer);
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

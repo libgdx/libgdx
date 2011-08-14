@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.rtm;
 
 import java.io.BufferedReader;
@@ -46,10 +47,11 @@ public class LevelRenderer implements ApplicationListener {
 	ImmediateModeRenderer10 renderer;
 	float angle = -90;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 1;
-		camera.far = 2000;				
+		camera.far = 2000;
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -180,17 +182,19 @@ public class LevelRenderer implements ApplicationListener {
 		}
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.gl10;
 
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
-		
+
 		camera.update();
 		camera.apply(gl);
 
@@ -232,15 +236,18 @@ public class LevelRenderer implements ApplicationListener {
 		camera.direction.set((float)Math.cos(Math.toRadians(angle)), 0, (float)Math.sin(Math.toRadians(angle)));
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 
 	}
 }

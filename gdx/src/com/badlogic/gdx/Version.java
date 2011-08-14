@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx;
 
-
-/**
- * The version of libgdx
+/** The version of libgdx
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class Version {
 	/** the current version of libgdx in the major.minor format **/
 	public static String VERSION = "0.9.2";

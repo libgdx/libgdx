@@ -14,6 +14,7 @@
 package com.badlydrawngames.veryangryrobots;
 
 public interface ScoreListener {
-	void onScoreChanged(int score);
-	void onLivesChanged(int lives);
+	void onScoreChanged (int score);
+
+	void onLivesChanged (int lives);
 }

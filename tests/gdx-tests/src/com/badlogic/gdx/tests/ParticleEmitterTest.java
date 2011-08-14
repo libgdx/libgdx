@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tests;
 
-import java.util.ArrayList;
+package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -36,7 +35,8 @@ public class ParticleEmitterTest extends GdxTest {
 	float fpsCounter;
 	InputProcessor inputProcessor;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		spriteBatch = new SpriteBatch();
 
 		effect = new ParticleEffect();
@@ -90,11 +90,13 @@ public class ParticleEmitterTest extends GdxTest {
 				return false;
 			}
 
-			@Override public boolean touchMoved (int x, int y) {
+			@Override
+			public boolean touchMoved (int x, int y) {
 				return false;
 			}
 
-			@Override public boolean scrolled (int amount) {
+			@Override
+			public boolean scrolled (int amount) {
 				return false;
 			}
 		};

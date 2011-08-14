@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.keyframed;
 
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * Container for the geometry of a single animation keyframe.
+/** Container for the geometry of a single animation keyframe.
  * 
- * @author Dave Clayton <contact@redskyforge.com>
- *
- */
+ * @author Dave Clayton <contact@redskyforge.com> */
 public class Keyframe {
 	public float[][] vertices = null;
 	public short[][] indices = null;
 	public boolean indicesSet = false;
 	public boolean indicesSent = false;
-	
+
 	public Vector3[] taggedJointPos = null;
 	public Quaternion[] taggedJoint = null;
 }

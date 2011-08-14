@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.gwt;
 
 import gwt.g2d.client.util.FpsTimer;
@@ -6,14 +7,11 @@ import gwt.g3d.client.gl2.GL2;
 import gwt.g3d.client.gl2.WebGLContextAttributes;
 import gwt.g3d.client.gl2.enums.ClearBufferMask;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.user.client.ui.RootPanel;
-
 public class PlainTest implements EntryPoint {
 	private Surface3D surface;
 
 	@Override
-	public void onModuleLoad() {
+	public void onModuleLoad () {
 		// create surface per configuration
 		WebGLContextAttributes contextAttribs = new WebGLContextAttributes();
 		surface = new Surface3D(500, 500, contextAttribs);
@@ -30,11 +28,11 @@ public class PlainTest implements EntryPoint {
 		setupLoop();
 	}
 
-	private void setupLoop() {
+	private void setupLoop () {
 		// setup rendering timer
 		FpsTimer timer = new FpsTimer(60) {
 			@Override
-			public void update() {
+			public void update () {
 				GL2 gl = surface.getGL();
 				gl.clearColor((float)Math.random(), 0, 0, 1);
 				gl.clear(ClearBufferMask.COLOR_BUFFER_BIT);

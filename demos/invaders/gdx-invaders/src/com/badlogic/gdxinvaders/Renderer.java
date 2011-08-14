@@ -23,8 +23,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -40,11 +40,8 @@ import com.badlogic.gdxinvaders.simulation.Ship;
 import com.badlogic.gdxinvaders.simulation.Shot;
 import com.badlogic.gdxinvaders.simulation.Simulation;
 
-/**
- * The renderer receives a simulation and renders it.
- * @author mzechner
- * 
- */
+/** The renderer receives a simulation and renders it.
+ * @author mzechner */
 public class Renderer {
 	/** sprite batch to draw text **/
 	private SpriteBatch spriteBatch;
@@ -105,7 +102,7 @@ public class Renderer {
 			in.close();
 
 			shipTexture = new Texture(Gdx.files.internal("data/ship.png"), Format.RGB565, true);
-			shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);				
+			shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 			invaderTexture = new Texture(Gdx.files.internal("data/invader.png"), Format.RGB565, true);
 			invaderTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 			backgroundTexture = new Texture(Gdx.files.internal("data/planet.jpg"), Format.RGB565, true);
@@ -113,8 +110,8 @@ public class Renderer {
 			explosionTexture = new Texture(Gdx.files.internal("data/explode.png"), Format.RGBA4444, true);
 			explosionTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
-			explosionMesh = new Mesh(true, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"),
-				new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord"));
+			explosionMesh = new Mesh(true, 4 * 16, 0, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(
+				Usage.TextureCoordinates, 2, "a_texCoord"));
 
 			float[] vertices = new float[4 * 16 * (3 + 2)];
 			int idx = 0;
@@ -149,7 +146,7 @@ public class Renderer {
 			explosionMesh.setVertices(vertices);
 			font = new BitmapFont(Gdx.files.internal("data/font10.fnt"), Gdx.files.internal("data/font10.png"), false);
 
-			camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());			
+			camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -197,7 +194,7 @@ public class Renderer {
 		}
 		spriteBatch.enableBlending();
 		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		font.draw(spriteBatch, status, 0, 320);		
+		font.draw(spriteBatch, status, 0, 320);
 		spriteBatch.end();
 
 		invaderAngle += app.getGraphics().getDeltaTime() * 90;
@@ -219,9 +216,9 @@ public class Renderer {
 
 	private void setProjectionAndCamera (Graphics graphics, Ship ship, Application app) {
 		camera.position.set(ship.position.x, 6, 2);
-		camera.direction.set(ship.position.x, 0, -4).sub(camera.position).nor();		
+		camera.direction.set(ship.position.x, 0, -4).sub(camera.position).nor();
 		camera.update();
-		camera.apply(Gdx.gl10);		
+		camera.apply(Gdx.gl10);
 	}
 
 	float[] direction = {1, 0.5f, 0, 0};

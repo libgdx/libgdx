@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.interpolators;
 
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * An interpolator where the rate of change starts out fast and then decelerates over time.
+/** An interpolator where the rate of change starts out fast and then decelerates over time.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public class DecelerateInterpolator implements Interpolator {
 
 	private static final float DEFAULT_FACTOR = 1.0f;
 
 	private static final Pool<DecelerateInterpolator> pool = new Pool<DecelerateInterpolator>(4, 100) {
-		@Override protected DecelerateInterpolator newObject () {
+		@Override
+		protected DecelerateInterpolator newObject () {
 			return new DecelerateInterpolator();
 		}
 	};
@@ -41,12 +41,10 @@ public class DecelerateInterpolator implements Interpolator {
 		// hide constructor
 	}
 
-	/**
-	 * Gets a new {@link DecelerateInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link DecelerateInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * 
 	 * @param factor the factor controlling the rate of change
-	 * @return the obtained {@link DecelerateInterpolator}
-	 */
+	 * @return the obtained {@link DecelerateInterpolator} */
 	public static DecelerateInterpolator $ (float factor) {
 		DecelerateInterpolator inter = pool.obtain();
 		inter.factor = factor;
@@ -54,18 +52,17 @@ public class DecelerateInterpolator implements Interpolator {
 		return inter;
 	}
 
-	/**
-	 * Gets a new {@link DecelerateInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link DecelerateInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * <p>
 	 * The initial factor is set to <code>{@value DecelerateInterpolator#DEFAULT_FACTOR}</code>.
 	 * 
-	 * @return the obtained {@link DecelerateInterpolator}
-	 */
+	 * @return the obtained {@link DecelerateInterpolator} */
 	public static DecelerateInterpolator $ () {
 		return $(DEFAULT_FACTOR);
 	}
 
-	@Override public void finished () {
+	@Override
+	public void finished () {
 		pool.free(this);
 	}
 
@@ -77,7 +74,8 @@ public class DecelerateInterpolator implements Interpolator {
 		}
 	}
 
-	@Override public Interpolator copy () {
+	@Override
+	public Interpolator copy () {
 		return $(factor);
 	}
 }

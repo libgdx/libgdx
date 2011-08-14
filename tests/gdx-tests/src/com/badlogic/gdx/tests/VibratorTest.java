@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -23,27 +24,27 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class VibratorTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
 	SpriteBatch batch;
 	BitmapFont font;
-	
+
 	@Override
-	public void create() {
+	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 	}
-	
-	@Override 
-	public void render() {
+
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.draw(batch, "Touch screen to vibrate", 100, 100);
 		batch.end();
-		
-		if(Gdx.input.justTouched())
-			Gdx.input.vibrate(100);		
+
+		if (Gdx.input.justTouched()) Gdx.input.vibrate(100);
 	}
 }

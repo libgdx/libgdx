@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.interpolators;
 
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * A very simple {@link Interpolator} which provides a linear progression by just returning the current input.
+/** A very simple {@link Interpolator} which provides a linear progression by just returning the current input.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public class LinearInterpolator implements Interpolator {
 
 	private static final Pool<LinearInterpolator> pool = new Pool<LinearInterpolator>(4, 100) {
-		@Override protected LinearInterpolator newObject () {
+		@Override
+		protected LinearInterpolator newObject () {
 			return new LinearInterpolator();
 		}
 	};
@@ -35,24 +35,25 @@ public class LinearInterpolator implements Interpolator {
 		// hide constructor
 	}
 
-	/**
-	 * Gets a new {@link LinearInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link LinearInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * 
-	 * @return the obtained {@link LinearInterpolator}
-	 */
+	 * @return the obtained {@link LinearInterpolator} */
 	public static LinearInterpolator $ () {
 		return pool.obtain();
 	}
 
-	@Override public void finished () {
+	@Override
+	public void finished () {
 		pool.free(this);
 	}
 
-	@Override public float getInterpolation (float input) {
+	@Override
+	public float getInterpolation (float input) {
 		return input;
 	}
 
-	@Override public Interpolator copy () {
+	@Override
+	public Interpolator copy () {
 		return $();
 	}
 }

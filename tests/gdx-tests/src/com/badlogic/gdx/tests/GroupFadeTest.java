@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -28,28 +29,31 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GroupFadeTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
-	
-	Stage stage;	
-	
-	@Override public void create() {
+
+	Stage stage;
+
+	@Override
+	public void create () {
 		Texture texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		stage = new Stage(480, 320, true);
-		
-		for(int i = 0; i < 100; i++) {
+
+		for (int i = 0; i < 100; i++) {
 			Image img = new Image("img" + i, texture);
 			img.x = (float)Math.random() * 480;
 			img.y = (float)Math.random() * 320;
 			img.color.a = (float)Math.random() * 0.5f + 0.5f;
 			stage.addActor(img);
 		}
-		
+
 		stage.getRoot().action(Forever.$(Sequence.$(FadeOut.$(3), FadeIn.$(3))));
 	}
-	
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();

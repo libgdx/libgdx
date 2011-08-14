@@ -15,21 +15,18 @@ package com.badlogic.gdx.backends.android.surfaceview;
 
 import android.view.View;
 
-/**
- * This {@link ResolutionStrategy} will stretch the GLSurfaceView to full screen.
- * FillResolutionStrategy is the default {@link ResolutionStrategy} if none is specified.
- *
- * @author christoph widulle
- */
+/** This {@link ResolutionStrategy} will stretch the GLSurfaceView to full screen. FillResolutionStrategy is the default
+ * {@link ResolutionStrategy} if none is specified.
+ * 
+ * @author christoph widulle */
 public class FillResolutionStrategy implements ResolutionStrategy {
 
+	@Override
+	public MeasuredDimension calcMeasures (int widthMeasureSpec, int heightMeasureSpec) {
 
-    @Override
-    public MeasuredDimension calcMeasures(int widthMeasureSpec, int heightMeasureSpec) {
+		final int width = View.MeasureSpec.getSize(widthMeasureSpec);
+		final int height = View.MeasureSpec.getSize(heightMeasureSpec);
 
-        final int width = View.MeasureSpec.getSize(widthMeasureSpec);
-        final int height = View.MeasureSpec.getSize(heightMeasureSpec);
-
-        return new MeasuredDimension(width, height);
-    }
+		return new MeasuredDimension(width, height);
+	}
 }

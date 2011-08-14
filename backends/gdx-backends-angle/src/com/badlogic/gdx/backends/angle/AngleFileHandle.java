@@ -34,10 +34,8 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-/**
- * @author mzechner
- * @author Nathan Sweet <misc@n4te.com>
- */
+/** @author mzechner
+ * @author Nathan Sweet <misc@n4te.com> */
 final class AngleFileHandle extends FileHandle {
 	AngleFileHandle (String fileName, FileType type) {
 		super(fileName, type);

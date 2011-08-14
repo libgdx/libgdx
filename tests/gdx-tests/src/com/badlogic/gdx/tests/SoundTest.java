@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
@@ -34,14 +35,16 @@ public class SoundTest extends GdxTest implements InputProcessor {
 	BitmapFont font;
 	SpriteBatch batch;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.draw(batch, "Position: " + music.getPosition(), 30, 146);
 		batch.end();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		// sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/sell_buy_item.wav", FileType.Internal));
 
@@ -56,11 +59,13 @@ public class SoundTest extends GdxTest implements InputProcessor {
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), false);
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		if (character == '+') volume += 0.1f;
 		if (character == '-') volume -= 0.1f;
 		music.setVolume(volume);
@@ -68,7 +73,8 @@ public class SoundTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		if (keycode != Input.Keys.SPACE) return false;
 		if (music.isPlaying())
 			music.pause();
@@ -77,7 +83,8 @@ public class SoundTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		sound.play(1f);
 		if (music.isPlaying())
 			music.stop();
@@ -86,23 +93,28 @@ public class SoundTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

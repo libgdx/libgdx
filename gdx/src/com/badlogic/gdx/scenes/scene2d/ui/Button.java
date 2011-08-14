@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -22,24 +23,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/**
- * A button with text on it.
+/** A button with text on it.
  * 
- * <h2>Functionality</h2>
- * A button can be either in a pressed or unpressed state. A {@link ClickListener} can
- * be registered with the Button which will be called in case the button was clicked/touched.
+ * <h2>Functionality</h2> A button can be either in a pressed or unpressed state. A {@link ClickListener} can be registered with
+ * the Button which will be called in case the button was clicked/touched.
  * 
- * <h2>Layout</h2>
- * The (preferred) width and height of a Button are derrived from the border patches in the
- * background {@link NinePatch} as well as the bounding box around the multi-line text displayed
- * on the Button. Use {@link Button#setPrefSize(int, int)} to programmatically change the size
- * to your liking. In case the width and height you set are to small for the contained text you
- * will see artifacts.
+ * <h2>Layout</h2> The (preferred) width and height of a Button are derrived from the border patches in the background
+ * {@link NinePatch} as well as the bounding box around the multi-line text displayed on the Button. Use
+ * {@link Button#setPrefSize(int, int)} to programmatically change the size to your liking. In case the width and height you set
+ * are to small for the contained text you will see artifacts.
  * 
- * <h2>Style</h2>
- * A Button is a {@link Widget} displaying a background {@link NinePatch} as well as
- * multi-line text with a specific font and color. The style is defined via an instance
- * of {@link ButtonStyle}, which can be either done programmatically or via a {@link Skin}.</p>
+ * <h2>Style</h2> A Button is a {@link Widget} displaying a background {@link NinePatch} as well as multi-line text with a
+ * specific font and color. The style is defined via an instance of {@link ButtonStyle}, which can be either done programmatically
+ * or via a {@link Skin}.</p>
  * 
  * A Button's style definition in a skin XML file should look like this:
  * 
@@ -54,41 +50,39 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with {@link Skin#newButton(String, String, String)}.</li>
- * <li>The <code>down</code> attribute references a {@link NinePatch} by name, to be used as the button's background when it is pressed</li>
- * <li>The <code>up</code> attribute references a {@link NinePatch} by name, to be used as the button's background when it is not pressed</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with
+ * {@link Skin#newButton(String, String, String)}.</li>
+ * <li>The <code>down</code> attribute references a {@link NinePatch} by name, to be used as the button's background when it is
+ * pressed</li>
+ * <li>The <code>up</code> attribute references a {@link NinePatch} by name, to be used as the button's background when it is not
+ * pressed</li>
  * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the text on the button</li>
  * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the text on the button</li>
- * </ul> 
+ * </ul>
  * 
- * @author mzechner
- *
- */
+ * @author mzechner */
 public class Button extends Widget {
 	final ButtonStyle style;
-	String text;	
-	final TextBounds bounds = new TextBounds();	
-	boolean isPressed = false;	
+	String text;
+	final TextBounds bounds = new TextBounds();
+	boolean isPressed = false;
 	ClickListener listener = null;
-	
-	/**
-	 * Creates a new Button. The width and height of the Button are determined by its
-	 * label test and style.
+
+	/** Creates a new Button. The width and height of the Button are determined by its label test and style.
 	 * @param name the namen
 	 * @param label the label
-	 * @param style the {@link ButtonStyle}
-	 */
-	public Button(String name, String label, ButtonStyle style) {
-		super(name, 0, 0);		
+	 * @param style the {@link ButtonStyle} */
+	public Button (String name, String label, ButtonStyle style) {
+		super(name, 0, 0);
 		this.style = style;
 		this.text = label;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
-	}		
-	
+	}
+
 	@Override
-	public void layout() {	
+	public void layout () {
 		final BitmapFont font = style.font;
 		final NinePatch downPatch = style.down;
 		bounds.set(font.getMultiLineBounds(text));
@@ -97,107 +91,96 @@ public class Button extends Widget {
 		prefWidth = downPatch.getLeftWidth() + downPatch.getRightWidth() + bounds.width;
 		invalidated = false;
 	}
-	
+
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
-		final NinePatch downPatch = style.down;		
+		final NinePatch downPatch = style.down;
 		final NinePatch upPatch = style.up;
-		
-		if(invalidated) layout();
-		
+
+		if (invalidated) layout();
+
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if(isPressed) downPatch.draw(batch, x, y, width, height);
-		else upPatch.draw(batch, x, y, width, height);
-				
+		if (isPressed)
+			downPatch.draw(batch, x, y, width, height);
+		else
+			upPatch.draw(batch, x, y, width, height);
+
 		float textY = (int)(height * 0.5f) + (int)(bounds.height * 0.5f);
 		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 		font.drawMultiLine(batch, text, x + (int)(width * 0.5f), y + textY, 0, HAlignment.CENTER);
 	}
 
 	@Override
-	public boolean touchDown(float x, float y, int pointer) {
-		if(pointer != 0) return false;
-		if(hit(x, y) != null) {
+	public boolean touchDown (float x, float y, int pointer) {
+		if (pointer != 0) return false;
+		if (hit(x, y) != null) {
 			isPressed = true;
-			parent.focus(this, pointer);	
+			parent.focus(this, pointer);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean touchUp(float x, float y, int pointer) {
-		if(pointer != 0) return false;
-		if(hit(x, y) != null) {			
-			if(listener != null) listener.click(this);				
+	public boolean touchUp (float x, float y, int pointer) {
+		if (pointer != 0) return false;
+		if (hit(x, y) != null) {
+			if (listener != null) listener.click(this);
 			parent.focus(null, pointer);
 			isPressed = false;
 			return true;
-		}		
+		}
 		isPressed = false;
 		parent.focus(null, pointer);
 		return false;
 	}
 
 	@Override
-	public boolean touchDragged(float x, float y, int pointer) {
-		if(pointer != 0) return false;		
+	public boolean touchDragged (float x, float y, int pointer) {
+		if (pointer != 0) return false;
 		return isPressed;
-	}	
-	
-	/**
-	 * Defines a button style, see {@link Button}
-	 * @author mzechner
-	 *
-	 */
+	}
+
+	/** Defines a button style, see {@link Button}
+	 * @author mzechner */
 	public static class ButtonStyle {
 		public final NinePatch down;
 		public final NinePatch up;
 		public final BitmapFont font;
-		public final Color fontColor;	
-		
-		public ButtonStyle(BitmapFont font, Color fontColor, NinePatch down, NinePatch up) {
+		public final Color fontColor;
+
+		public ButtonStyle (BitmapFont font, Color fontColor, NinePatch down, NinePatch up) {
 			this.font = font;
 			this.fontColor = fontColor;
 			this.down = down;
 			this.up = up;
 		}
 	}
-	
-	/**
-	 * Interface for listening to click events of a button.
-	 * @author mzechner
-	 *
-	 */
+
+	/** Interface for listening to click events of a button.
+	 * @author mzechner */
 	public interface ClickListener {
-		public void click(Button button);
+		public void click (Button button);
 	}
-	
-	/**
-	 * Sets the multi-line label text of this button. Causes invalidation
-	 * of all parents.
-	 * @param text
-	 */
-	public void setText(String text) {
+
+	/** Sets the multi-line label text of this button. Causes invalidation of all parents.
+	 * @param text */
+	public void setText (String text) {
 		this.text = text;
 		invalidateHierarchy();
 	}
-	
-	/**
-	 * @return the label text of this button
-	 */
-	public String getText() {
+
+	/** @return the label text of this button */
+	public String getText () {
 		return text;
 	}
-	
-	/**
-	 * Sets the {@link ClickListener} of this button
+
+	/** Sets the {@link ClickListener} of this button
 	 * @param listener the listener or null
-	 * @return this Button for chaining
-	 */
-	public Button setClickListener(ClickListener listener) {
+	 * @return this Button for chaining */
+	public Button setClickListener (ClickListener listener) {
 		this.listener = listener;
 		return this;
 	}

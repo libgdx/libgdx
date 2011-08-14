@@ -19,17 +19,12 @@ package com.badlogic.gdx.beans;
 
 import java.awt.Cursor;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import org.apache.harmony.beans.BeansUtils;
 
 class AwtCursorPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        Cursor cursor = (Cursor) oldInstance;
-        return new Expression(oldInstance, oldInstance.getClass(),
-                BeansUtils.NEW, new Object[] { cursor.getType() });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		Cursor cursor = (Cursor)oldInstance;
+		return new Expression(oldInstance, oldInstance.getClass(), BeansUtils.NEW, new Object[] {cursor.getType()});
+	}
 }

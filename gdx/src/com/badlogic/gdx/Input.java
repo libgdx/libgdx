@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx;
 
-/**
- * <p>
+/** <p>
  * Interface to the input facilities. This allows to poll the state of the keyboard, touch screen and accelerometer. On the
  * desktop the touch screen is replaced by mouse input, the accelerometer is of course not available.
  * </p>
@@ -36,38 +36,28 @@ package com.badlogic.gdx;
  * The class also offers methods to let the phone vibrate as well as getting compass readings.
  * </p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public interface Input {
-	/**
-	 * Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
+	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
 	 * 
-	 * @author mzechner
-	 * 
-	 */
+	 * @author mzechner */
 	public interface TextInputListener {
 		public void input (String text);
-		public void canceled();
+
+		public void canceled ();
 	}
 
-	/**
-	 * Mouse buttons.
-	 * @author mzechner
-	 * 
-	 */
+	/** Mouse buttons.
+	 * @author mzechner */
 	public class Buttons {
 		public static final int LEFT = 0;
 		public static final int RIGHT = 1;
 		public static final int MIDDLE = 2;
 	}
 
-	/**
-	 * Keys.
+	/** Keys.
 	 * 
-	 * @author mzechner
-	 * 
-	 */
+	 * @author mzechner */
 	public class Keys {
 		public static final int ANY_KEY = -1;
 		public static final int NUM_0 = 7;
@@ -201,26 +191,25 @@ public interface Input {
 		public static final int BUTTON_START = 108;
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
-		
-		
-//		public static final int BACKTICK = 0;
-//		public static final int TILDE = 0;		
-//		public static final int UNDERSCORE = 0;
-//		public static final int DOT = 0;
-//		public static final int BREAK = 0;
-//		public static final int PIPE = 0;
-//		public static final int EXCLAMATION = 0;
-//		public static final int QUESTIONMARK = 0;
-			
-//		`         | VK_BACKTICK
-//		~         | VK_TILDE
-//		:         | VK_COLON
-//		_         | VK_UNDERSCORE
-//		.         | VK_DOT
-//		(break)   | VK_BREAK
-//		|         | VK_PIPE
-//		!         | VK_EXCLAMATION
-//		?         | VK_QUESTION
+
+// public static final int BACKTICK = 0;
+// public static final int TILDE = 0;
+// public static final int UNDERSCORE = 0;
+// public static final int DOT = 0;
+// public static final int BREAK = 0;
+// public static final int PIPE = 0;
+// public static final int EXCLAMATION = 0;
+// public static final int QUESTIONMARK = 0;
+
+// ` | VK_BACKTICK
+// ~ | VK_TILDE
+// : | VK_COLON
+// _ | VK_UNDERSCORE
+// . | VK_DOT
+// (break) | VK_BREAK
+// | | VK_PIPE
+// ! | VK_EXCLAMATION
+// ? | VK_QUESTION
 		public static final int COLON = 243;
 		public static final int F1 = 244;
 		public static final int F2 = 245;
@@ -235,263 +224,185 @@ public interface Input {
 		public static final int F11 = 254;
 		public static final int F12 = 255;
 	}
-	
-	/**
-	 * Enumeration of potentially available peripherals. Use with
-	 * {@link Input#isPeripheralAvailable(Peripheral)}.
-	 * @author mzechner
-	 *
-	 */
+
+	/** Enumeration of potentially available peripherals. Use with {@link Input#isPeripheralAvailable(Peripheral)}.
+	 * @author mzechner */
 	public enum Peripheral {
-		HardwareKeyboard,
-		OnscreenKeyboard,				
-		MultitouchScreen,
-		Accelerometer,
-		Compass,
-		Vibrator
+		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator
 	}
 
-	/**
-	 * @return The value of the accelerometer on its x-axis. ranges between [-10,10].
-	 */
+	/** @return The value of the accelerometer on its x-axis. ranges between [-10,10]. */
 	public float getAccelerometerX ();
 
-	/**
-	 * @return The value of the accelerometer on its y-axis. ranges between [-10,10].
-	 */
+	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
 	public float getAccelerometerY ();
 
-	/**
-	 * @return The value of the accelerometer on its y-axis. ranges between [-10,10].
-	 */
+	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
 	public float getAccelerometerZ ();
 
-	/**
-	 * @return the last touch x coordinate in screen coordinates. The screen origin is the top left corner.
-	 */
+	/** @return the last touch x coordinate in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
-		
 
-	/**
-	 * Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
+	/** Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
 	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
 	 * 
 	 * @param pointer the pointer id.
-	 * @return the x coordinate
-	 */
+	 * @return the x coordinate */
 	public int getX (int pointer);
-	
-	/**
-	 * @return the different between the current pointer location and the last pointer location on the x-axis.
-	 */
-	public int getDeltaX();
-	
-	/**
-	 * @return the different between the current pointer location and the last pointer location on the x-axis.
-	 */
-	public int getDeltaX(int pointer);
 
-	/**
-	 * @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner.
-	 */
+	/** @return the different between the current pointer location and the last pointer location on the x-axis. */
+	public int getDeltaX ();
+
+	/** @return the different between the current pointer location and the last pointer location on the x-axis. */
+	public int getDeltaX (int pointer);
+
+	/** @return the last touch y coordinate in screen coordinates. The screen origin is the top left corner. */
 	public int getY ();
 
-	/**
-	 * Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
+	/** Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
 	 * identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
 	 * 
 	 * @param pointer the pointer id.
-	 * @return the y coordinate
-	 */
+	 * @return the y coordinate */
 	public int getY (int pointer);
-	
-	/**
-	 * @return the different between the current pointer location and the last pointer location on the y-axis.
-	 */
-	public int getDeltaY();
-	
-	/**
-	 * @return the different between the current pointer location and the last pointer location on the y-axis.
-	 */
-	public int getDeltaY(int pointer);
 
-	/**
-	 * @return whether the screen is currently touched.
-	 */
+	/** @return the different between the current pointer location and the last pointer location on the y-axis. */
+	public int getDeltaY ();
+
+	/** @return the different between the current pointer location and the last pointer location on the y-axis. */
+	public int getDeltaY (int pointer);
+
+	/** @return whether the screen is currently touched. */
 	public boolean isTouched ();
 
-	/**
-	 * @return whether a new touch down event just occured.
-	 */
+	/** @return whether a new touch down event just occured. */
 	public boolean justTouched ();
 
-	/**
-	 * Whether the screen is currently touched by the pointer with the given index. Pointers are indexed from 0 to n. The pointer
+	/** Whether the screen is currently touched by the pointer with the given index. Pointers are indexed from 0 to n. The pointer
 	 * id identifies the order in which the fingers went down on the screen, e.g. 0 is the first finger, 1 is the second and so on.
 	 * When two fingers are touched down and the first one is lifted the second one keeps its index. If another finger is placed on
 	 * the touch screen the first free index will be used.
 	 * 
 	 * @param pointer the pointer
-	 * @return whether the screen is touched by the pointer
-	 */
+	 * @return whether the screen is touched by the pointer */
 	public boolean isTouched (int pointer);
 
-	/**
-	 * Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
+	/** Whether a given button is pressed or not. Button constants can be found in {@link Buttons}. On Android only the Button#LEFT
 	 * constant is meaningful.
 	 * @param button the button to check.
-	 * @return whether the button is down or not.
-	 */
+	 * @return whether the button is down or not. */
 	public boolean isButtonPressed (int button);
 
-	/**
-	 * Returns whether the key is pressed.
+	/** Returns whether the key is pressed.
 	 * 
 	 * @param key The key code as found in {@link Input.Keys}.
-	 * @return true or false.
-	 */
+	 * @return true or false. */
 	public boolean isKeyPressed (int key);
 
-	/**
-	 * System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
+	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called but not
 	 * necessarily in the rendering thread in which all the {@link ApplicationListener} methods are called. You have to synchronize
 	 * this yourself.
 	 * 
 	 * @param listener The TextInputListener.
 	 * @param title The title of the text input dialog.
-	 * @param text The message presented to the user.
-	 */
+	 * @param text The message presented to the user. */
 	public void getTextInput (TextInputListener listener, String title, String text);
 
-	/**
-	 * Sets the on-screen keyboard visible if available.
+	/** Sets the on-screen keyboard visible if available.
 	 * 
-	 * @param visible visible or not
-	 */
+	 * @param visible visible or not */
 	public void setOnscreenKeyboardVisible (boolean visible);
 
-	/**
-	 * Vibrates for the given amount of time. Note that you'll need the permission
+	/** Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code> in your manifest file in order for this to work.
 	 * 
-	 * @param milliseconds the number of milliseconds to vibrate.
-	 */
+	 * @param milliseconds the number of milliseconds to vibrate. */
 	public void vibrate (int milliseconds);
-	
-	/**
-	 * Vibrate with a given pattern.
-	 * Pass in an array of ints that are the times at which to turn on or off the vibrator. The first one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index into the pattern at which to start the repeat.
-	 * @param pattern an array of longs of times to turn the vibrator on or off.
-	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat.
-	 */
-	public void vibrate (long[] pattern, int repeat);
-	
-	/**
-	 * Stops the vibrator
-	 */
-	public void cancelVibrate();
-	
-	/**
-	 * The azimuth is the angle of the device's orientation around the z-axis. The
-	 * positive z-axis points towards the earths center.
-	 * 
-	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
-	 * @return the azimuth in degrees
-	 */
-	public float getAzimuth();
-	
-	/** 
-	 * The pitch is the angle of the device's orientation around the x-axis. The
-	 * positive x-axis roughly points to the west and is orthogonal to the z- and y-axis.
-	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
-	 * @return the pitch in degrees
-	 */
-	public float getPitch();
-	
-	/**
-	 * The roll is the angle of the device's orientation around the y-axis. The
-	 * positive y-axis points to the magnetic north pole of the earth.
-	 * @see <a href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
-	 * @return the roll in degrees
-	 */
-	public float getRoll();	
-	
-	/**
-	 * Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
-	 * on the desktop.
-	 * 
-	 * @param catchBack whether to catch the back button
-	 */
-	public void setCatchBackKey (boolean catchBack);
-	
-	/**
-	 * Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no effect
-	 * on the desktop.
-	 * 
-	 * @param catchMenu whether to catch the back button
-	 */
-	public void setCatchMenuKey(boolean catchMenu);
 
-	/**
-	 * Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
+	/** Vibrate with a given pattern. Pass in an array of ints that are the times at which to turn on or off the vibrator. The first
+	 * one is how long to wait before turning it on, and then after that it alternates. If you want to repeat, pass the index into
+	 * the pattern at which to start the repeat.
+	 * @param pattern an array of longs of times to turn the vibrator on or off.
+	 * @param repeat the index into pattern at which to repeat, or -1 if you don't want to repeat. */
+	public void vibrate (long[] pattern, int repeat);
+
+	/** Stops the vibrator */
+	public void cancelVibrate ();
+
+	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
+	 * center.
+	 * 
+	 * @see <a
+	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 * @return the azimuth in degrees */
+	public float getAzimuth ();
+
+	/** The pitch is the angle of the device's orientation around the x-axis. The positive x-axis roughly points to the west and is
+	 * orthogonal to the z- and y-axis.
+	 * @see <a
+	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 * @return the pitch in degrees */
+	public float getPitch ();
+
+	/** The roll is the angle of the device's orientation around the y-axis. The positive y-axis points to the magnetic north pole
+	 * of the earth.
+	 * @see <a
+	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
+	 * @return the roll in degrees */
+	public float getRoll ();
+
+	/** Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
+	 * on the desktop.
+	 * 
+	 * @param catchBack whether to catch the back button */
+	public void setCatchBackKey (boolean catchBack);
+
+	/** Sets whether the MENU button on Android should be caught. This will prevent the onscreen keyboard to show up. Will have no
+	 * effect on the desktop.
+	 * 
+	 * @param catchMenu whether to catch the back button */
+	public void setCatchMenuKey (boolean catchMenu);
+
+	/** Sets the {@link InputProcessor} that will receive all touch and key input events. It will be called before the
 	 * {@link ApplicationListener#render()} method each frame.
 	 * 
-	 * @param processor the InputProcessor
-	 */
+	 * @param processor the InputProcessor */
 	public void setInputProcessor (InputProcessor processor);
-	
-	/**
-	 * @return the currently set {@link InputProcessor} or null.
-	 */
-	public InputProcessor getInputProcessor();
-	
-	/**
-	 * Queries whether a {@link Peripheral} is currently available. In case of Android
-	 * and the {@link Peripheral#HardwareKeyboard} this returns the whether the keyboard
-	 * is currently slid out or not. 
+
+	/** @return the currently set {@link InputProcessor} or null. */
+	public InputProcessor getInputProcessor ();
+
+	/** Queries whether a {@link Peripheral} is currently available. In case of Android and the {@link Peripheral#HardwareKeyboard}
+	 * this returns the whether the keyboard is currently slid out or not.
 	 * 
 	 * @param peripheral the {@link Peripheral}
-	 * @return whether the peripheral is available or not.
-	 */
-	public boolean isPeripheralAvailable(Peripheral peripheral);
-	
-	/**
-	 * @return the rotation of the device with respect to its native orientation.
-	 */
-	public int getRotation();
-	
-	/**
-	 * @return the native orientation of the device.
-	 */
-	public Orientation getNativeOrientation();
-	
-	public enum Orientation {
-		Landscape,
-		Portrait
-	}
-	
-	/**
-	 * Only viable on the desktop. Will confine the mouse cursor location
-	 * to the window and hide the mouse cursor.
-	 * @param catched whether to catch or not to catch the mouse cursor
-	 */
-	public void setCursorCatched(boolean catched);	
+	 * @return whether the peripheral is available or not. */
+	public boolean isPeripheralAvailable (Peripheral peripheral);
 
-	/**
-	 * @return whether the mouse cursor is catched.
-	 */
-	public boolean isCursorCatched ();	
-	
-	/**
-	 * Only viable on the desktop. Will set the mouse cursor location
-	 * to the given window coordinates (origin top-left corner).
+	/** @return the rotation of the device with respect to its native orientation. */
+	public int getRotation ();
+
+	/** @return the native orientation of the device. */
+	public Orientation getNativeOrientation ();
+
+	public enum Orientation {
+		Landscape, Portrait
+	}
+
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor.
+	 * @param catched whether to catch or not to catch the mouse cursor */
+	public void setCursorCatched (boolean catched);
+
+	/** @return whether the mouse cursor is catched. */
+	public boolean isCursorCatched ();
+
+	/** Only viable on the desktop. Will set the mouse cursor location to the given window coordinates (origin top-left corner).
 	 * @param x the x-position
-	 * @param y the y-position
-	 */
-	public void setCursorPosition(int x, int y);
+	 * @param y the y-position */
+	public void setCursorPosition (int x, int y);
 }

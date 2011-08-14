@@ -17,28 +17,22 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-
 class NullPersistenceDelegate extends PersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        return null;
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder out) {
+		return null;
+	}
 
-    @Override
-    /*
-     * It's unnecessary to do anything for initialization, because two mutatable
-     * strings are actually equivalent already.
-     */
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder out) {
-        // do nothing
-    }
+	@Override
+	/*
+	 * It's unnecessary to do anything for initialization, because two mutatable strings are actually equivalent already.
+	 */
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+		// do nothing
+	}
 
-    @Override
-    public void writeObject(Object oldInstance, Encoder out) {
-        // do nothing
-    }
+	@Override
+	public void writeObject (Object oldInstance, Encoder out) {
+		// do nothing
+	}
 }

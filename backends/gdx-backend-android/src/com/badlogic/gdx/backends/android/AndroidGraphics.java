@@ -47,11 +47,9 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 
-/**
- * An implementation of {@link Graphics} for Android.
+/** An implementation of {@link Graphics} for Android.
  * 
- * @author mzechner
- */
+ * @author mzechner */
 public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
@@ -86,7 +84,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private final AndroidApplicationConfiguration config;
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 
-	public AndroidGraphics (AndroidApplication activity, AndroidApplicationConfiguration config, ResolutionStrategy resolutionStrategy) {
+	public AndroidGraphics (AndroidApplication activity, AndroidApplicationConfiguration config,
+		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
 		view = createGLSurfaceView(activity, config.useGL20, resolutionStrategy);
 		view.setFocusable(true);
@@ -94,51 +93,58 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		this.app = activity;
 	}
 
-	private View createGLSurfaceView(Activity activity, boolean useGL2, ResolutionStrategy resolutionStrategy) {
-        EGLConfigChooser configChooser = getEglConfigChooser();
+	private View createGLSurfaceView (Activity activity, boolean useGL2, ResolutionStrategy resolutionStrategy) {
+		EGLConfigChooser configChooser = getEglConfigChooser();
 
-        if (useGL2 && checkGL20()) {
-            GLSurfaceView20 view = new GLSurfaceView20(activity, resolutionStrategy);
-            if (configChooser != null) view.setEGLConfigChooser(configChooser);
-            else view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-            view.setRenderer(this);
-            return view;
-        } else {
-            if (Integer.parseInt(android.os.Build.VERSION.SDK) <= 4) {
-                GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);                
-                if (configChooser != null) view.setEGLConfigChooser(configChooser);
-                else view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);                
-                view.setRenderer(this);                
-                return view;
-            } else {
-                android.opengl.GLSurfaceView view = new DefaultGLSurfaceView(activity, resolutionStrategy);
-                if (configChooser != null) view.setEGLConfigChooser(configChooser);
-                else view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);                
-                view.setRenderer(this);                
-                return view;
-            }
-        }
-    }
+		if (useGL2 && checkGL20()) {
+			GLSurfaceView20 view = new GLSurfaceView20(activity, resolutionStrategy);
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		} else {
+			if (Integer.parseInt(android.os.Build.VERSION.SDK) <= 4) {
+				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
+				if (configChooser != null)
+					view.setEGLConfigChooser(configChooser);
+				else
+					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+				view.setRenderer(this);
+				return view;
+			} else {
+				android.opengl.GLSurfaceView view = new DefaultGLSurfaceView(activity, resolutionStrategy);
+				if (configChooser != null)
+					view.setEGLConfigChooser(configChooser);
+				else
+					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+				view.setRenderer(this);
+				return view;
+			}
+		}
+	}
 
 	private EGLConfigChooser getEglConfigChooser () {
-		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples, config.useGL20);
-		
-//		if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
-//			return null;
-//		else
-//			return new android.opengl.GLSurfaceView.EGLConfigChooser() {
+		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
+			config.useGL20);
+
+// if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
+// return null;
+// else
+// return new android.opengl.GLSurfaceView.EGLConfigChooser() {
 //
-//				public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
+// public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
 //
-//					// Ensure that we get a 16bit depth-buffer. Otherwise, we'll fall
-//					// back to Pixelflinger on some device (read: Samsung I7500)
-//					int[] attributes = new int[] {EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE};
-//					EGLConfig[] configs = new EGLConfig[1];
-//					int[] result = new int[1];
-//					egl.eglChooseConfig(display, attributes, configs, 1, result);
-//					return configs[0];
-//				}
-//			};
+// // Ensure that we get a 16bit depth-buffer. Otherwise, we'll fall
+// // back to Pixelflinger on some device (read: Samsung I7500)
+// int[] attributes = new int[] {EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE};
+// EGLConfig[] configs = new EGLConfig[1];
+// int[] result = new int[1];
+// egl.eglChooseConfig(display, attributes, configs, 1, result);
+// return configs[0];
+// }
+// };
 	}
 
 	private void updatePpi () {
@@ -170,52 +176,45 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		return num_config[0] > 0;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public GL10 getGL10 () {
+	/** {@inheritDoc} */
+	@Override
+	public GL10 getGL10 () {
 		return gl10;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public GL11 getGL11 () {
+	/** {@inheritDoc} */
+	@Override
+	public GL11 getGL11 () {
 		return gl11;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public GL20 getGL20 () {
+	/** {@inheritDoc} */
+	@Override
+	public GL20 getGL20 () {
 		return gl20;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getHeight () {
+	/** {@inheritDoc} */
+	@Override
+	public int getHeight () {
 		return height;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getWidth () {
+	/** {@inheritDoc} */
+	@Override
+	public int getWidth () {
 		return width;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public boolean isGL11Available () {
+	/** {@inheritDoc} */
+	@Override
+	public boolean isGL11Available () {
 		return gl11 != null;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public boolean isGL20Available () {
+	/** {@inheritDoc} */
+	@Override
+	public boolean isGL20Available () {
 		return gl20 != null;
 	}
 
@@ -223,13 +222,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		return ((value != 0) && (value & (value - 1)) == 0);
 	}
 
-	/**
-	 * This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
+	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
 	 * fuck up vertex buffer objects. This includes the pixelflinger which segfaults when buffers are deleted as well as the
 	 * Motorola CLIQ and the Samsung Behold II.
 	 * 
-	 * @param gl
-	 */
+	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
 		if (gl10 != null || gl20 != null) return;
 
@@ -266,7 +263,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
 	}
 
-	@Override public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
+	@Override
+	public void onSurfaceChanged (javax.microedition.khronos.opengles.GL10 gl, int width, int height) {
 		this.width = width;
 		this.height = height;
 		updatePpi();
@@ -281,7 +279,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		app.listener.resize(width, height);
 	}
 
-	@Override public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
+	@Override
+	public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
@@ -313,9 +312,9 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		int b = getAttrib(egl, display, config, EGL10.EGL_BLUE_SIZE, 0);
 		int a = getAttrib(egl, display, config, EGL10.EGL_ALPHA_SIZE, 0);
 		int d = getAttrib(egl, display, config, EGL10.EGL_DEPTH_SIZE, 0);
-		int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);		
+		int s = getAttrib(egl, display, config, EGL10.EGL_STENCIL_SIZE, 0);
 		int samples = Math.max(getAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0),
-							   	  getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
+			getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
 		boolean coverageSample = getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
 
 		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
@@ -373,7 +372,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	@Override public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
+	@Override
+	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
@@ -442,24 +442,21 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		frames++;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public float getDeltaTime () {
+	/** {@inheritDoc} */
+	@Override
+	public float getDeltaTime () {
 		return mean.getMean() == 0 ? deltaTime : mean.getMean();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public GraphicsType getType () {
+	/** {@inheritDoc} */
+	@Override
+	public GraphicsType getType () {
 		return GraphicsType.AndroidGL;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getFramesPerSecond () {
+	/** {@inheritDoc} */
+	@Override
+	public int getFramesPerSecond () {
 		return fps;
 	}
 
@@ -479,58 +476,69 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		return view;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public GLCommon getGLCommon () {
+	/** {@inheritDoc} */
+	@Override
+	public GLCommon getGLCommon () {
 		return gl;
 	}
 
-	@Override public float getPpiX () {
+	@Override
+	public float getPpiX () {
 		return ppiX;
 	}
 
-	@Override public float getPpiY () {
+	@Override
+	public float getPpiY () {
 		return ppiY;
 	}
 
-	@Override public float getPpcX () {
+	@Override
+	public float getPpcX () {
 		return ppcX;
 	}
 
-	@Override public float getPpcY () {
+	@Override
+	public float getPpcY () {
 		return ppcY;
 	}
-	
-	@Override public float getDensity () {
+
+	@Override
+	public float getDensity () {
 		return density;
 	}
 
-	@Override public GLU getGLU () {
+	@Override
+	public GLU getGLU () {
 		return glu;
 	}
 
-	@Override public boolean supportsDisplayModeChange () {
+	@Override
+	public boolean supportsDisplayModeChange () {
 		return false;
 	}
 
-	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+	@Override
+	public boolean setDisplayMode (DisplayMode displayMode) {
 		return false;
 	}
 
-	@Override public DisplayMode[] getDisplayModes () {
+	@Override
+	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[] {getDesktopDisplayMode()};
 	}
 
-	@Override public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+	@Override
+	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		return false;
 	}
 
-	@Override public void setTitle (String title) {
+	@Override
+	public void setTitle (String title) {
 
 	}
 
-	@Override public void setIcon (Pixmap pixmap) {
+	@Override
+	public void setIcon (Pixmap pixmap) {
 
 	}
 
@@ -540,21 +548,25 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	@Override public DisplayMode getDesktopDisplayMode () {
+	@Override
+	public DisplayMode getDesktopDisplayMode () {
 		DisplayMetrics metrics = new DisplayMetrics();
 		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
 	}
 
-	@Override public BufferFormat getBufferFormat () {
+	@Override
+	public BufferFormat getBufferFormat () {
 		return bufferFormat;
 	}
 
-	@Override public void setVSync (boolean vsync) {
+	@Override
+	public void setVSync (boolean vsync) {
 	}
 
-	@Override public boolean supportsExtension (String extension) {
-		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+	@Override
+	public boolean supportsExtension (String extension) {
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 }

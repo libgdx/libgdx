@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
@@ -37,8 +38,9 @@ public class TextureRenderTest extends GdxTest {
 	private ArrayList<SimpleRect> rects = new ArrayList<SimpleRect>();
 	Color color = new Color(Color.GREEN);
 
-	@Override public void create () {
-		camera = new OrthographicCamera(480, 320);		
+	@Override
+	public void create () {
+		camera = new OrthographicCamera(480, 320);
 		camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
 
 		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogic.jpg"));
@@ -104,7 +106,8 @@ public class TextureRenderTest extends GdxTest {
 
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -161,7 +164,8 @@ public class TextureRenderTest extends GdxTest {
 		}
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 

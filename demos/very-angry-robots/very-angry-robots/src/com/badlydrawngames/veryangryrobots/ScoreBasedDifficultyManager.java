@@ -21,11 +21,11 @@ public class ScoreBasedDifficultyManager implements DifficultyManager, ScoreList
 	// Robot numbers.
 	private static final int MAX_ROBOTS = Config.asInt("Global.maxRobots", 12);
 	private static final int INITIAL_ROBOTS = Config.asInt("Global.initialRobots", 6);
-	
+
 	// Shot speeds.
 	private static final float SLOW_SHOT_SPEED = Config.asFloat("RobotShot.slowSpeed", 75.0f);
 	private static final float FAST_SHOT_SPEED = Config.asFloat("RobotShot.fastSpeed", 125.0f);
-	
+
 	// Level progression.
 	private static final int ROBOT_INCREMENT = Config.asInt("Level.robotIncrement", 3);
 	private static final int LEVEL_0_ROBOT_SHOTS = Config.asInt("Level.0.robotShots", 0);
@@ -62,109 +62,98 @@ public class ScoreBasedDifficultyManager implements DifficultyManager, ScoreList
 	private static final Color WHITE = Color.WHITE;
 	private static final Color LIGHT_PURPLE = new Color(1.0f, 0.0f, 1.0f, 1.0f);
 	private static final Color GREY = new Color(0.75f, 0.75f, 0.75f, 1.0f);
-	
+
 	private boolean dirty;
 	private int score;
 	private Color robotColor;
 	private int numRobots;
 	private int numRobotShots;
 	private float robotShotSpeed;
-	
+
 	@Override
-	public Color getRobotColor() {
+	public Color getRobotColor () {
 		updateIfDirty();
 		return robotColor;
 	}
 
 	@Override
-	public int getNumberOfRobots() {
+	public int getNumberOfRobots () {
 		updateIfDirty();
 		return numRobots;
 	}
 
 	@Override
-	public int getNumberOfRobotShots() {
+	public int getNumberOfRobotShots () {
 		updateIfDirty();
 		return numRobotShots;
 	}
-	
+
 	@Override
-	public float getRobotShotSpeed() {
+	public float getRobotShotSpeed () {
 		updateIfDirty();
 		return robotShotSpeed;
 	}
 
 	@Override
-	public void onScoreChanged(int score) {
+	public void onScoreChanged (int score) {
 		dirty = true;
 		this.score = score;
 	}
 
 	@Override
-	public void onLivesChanged(int lives) {
+	public void onLivesChanged (int lives) {
 	}
-	
-	private void updateIfDirty() {
+
+	private void updateIfDirty () {
 		if (!dirty) return;
 		dirty = false;
-		
+
 		Color lastRobotColor = robotColor;
 		if (score < LEVEL_1_SCORE) {
 			robotColor = DARK_YELLOW;
 			numRobotShots = LEVEL_0_ROBOT_SHOTS;
 			robotShotSpeed = SLOW_SHOT_SPEED;
-		}
-		else if (score < LEVEL_2_SCORE) {
+		} else if (score < LEVEL_2_SCORE) {
 			robotColor = RED;
 			numRobotShots = LEVEL_1_ROBOT_SHOTS;
 			robotShotSpeed = SLOW_SHOT_SPEED;
-		}
-		else if (score < LEVEL_3_SCORE) {
+		} else if (score < LEVEL_3_SCORE) {
 			robotColor = DARK_CYAN;
 			numRobotShots = LEVEL_2_ROBOT_SHOTS;
 			robotShotSpeed = SLOW_SHOT_SPEED;
-		}
-		else if (score < LEVEL_4_SCORE) {
+		} else if (score < LEVEL_4_SCORE) {
 			robotColor = GREEN;
 			numRobotShots = LEVEL_3_ROBOT_SHOTS;
 			robotShotSpeed = SLOW_SHOT_SPEED;
-		}
-		else if (score < LEVEL_5_SCORE) {
+		} else if (score < LEVEL_5_SCORE) {
 			robotColor = DARK_PURPLE;
 			numRobotShots = LEVEL_4_ROBOT_SHOTS;
 			robotShotSpeed = SLOW_SHOT_SPEED;
-		}
-		else if (score < LEVEL_6_SCORE) {
+		} else if (score < LEVEL_6_SCORE) {
 			robotColor = LIGHT_YELLOW;
 			numRobotShots = LEVEL_5_ROBOT_SHOTS;
 			robotShotSpeed = SLOW_SHOT_SPEED;
-		}
-		else if (score < LEVEL_7_SCORE) {
+		} else if (score < LEVEL_7_SCORE) {
 			robotColor = WHITE;
 			numRobotShots = LEVEL_6_ROBOT_SHOTS;
 			robotShotSpeed = FAST_SHOT_SPEED;
-		}
-		else if (score < LEVEL_8_SCORE) {
+		} else if (score < LEVEL_8_SCORE) {
 			robotColor = DARK_CYAN;
 			numRobotShots = LEVEL_7_ROBOT_SHOTS;
 			robotShotSpeed = FAST_SHOT_SPEED;
-		}
-		else if (score < LEVEL_9_SCORE) {
+		} else if (score < LEVEL_9_SCORE) {
 			robotColor = LIGHT_PURPLE;
 			numRobotShots = LEVEL_8_ROBOT_SHOTS;
 			robotShotSpeed = FAST_SHOT_SPEED;
-		}
-		else if (score < LEVEL_10_SCORE) {
+		} else if (score < LEVEL_10_SCORE) {
 			robotColor = GREY;
 			numRobotShots = LEVEL_9_ROBOT_SHOTS;
 			robotShotSpeed = FAST_SHOT_SPEED;
-		}
-		else if (score < LEVEL_11_SCORE) {
+		} else if (score < LEVEL_11_SCORE) {
 			robotColor = DARK_YELLOW;
 			numRobotShots = LEVEL_10_ROBOT_SHOTS;
 			robotShotSpeed = FAST_SHOT_SPEED;
-		}
-		else {
+		} else {
 			robotColor = RED;
 			numRobotShots = LEVEL_11_ROBOT_SHOTS;
 			robotShotSpeed = FAST_SHOT_SPEED;
@@ -174,8 +163,7 @@ public class ScoreBasedDifficultyManager implements DifficultyManager, ScoreList
 			if (numRobots < MAX_ROBOTS) {
 				numRobots += ROBOT_INCREMENT;
 			}
-		}
-		else {
+		} else {
 			numRobots = INITIAL_ROBOTS;
 		}
 	}

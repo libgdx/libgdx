@@ -17,33 +17,26 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-
 class StringPersistenceDelegate extends PersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        String value = (String) oldInstance;
-        return new Expression(oldInstance, String.class,
-                "new", new Object[] { value }); //$NON-NLS-1$
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder out) {
+		String value = (String)oldInstance;
+		return new Expression(oldInstance, String.class, "new", new Object[] {value}); //$NON-NLS-1$
+	}
 
-    @Override
-    /*
-     * It's unnecessary to do anything for initialization, because two mutatable
-     * strings are actually equivalent already.
-     */
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder out) {
-        // do nothing
-    }
+	@Override
+	/*
+	 * It's unnecessary to do anything for initialization, because two mutatable strings are actually equivalent already.
+	 */
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+		// do nothing
+	}
 
-    @Override
-    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        if (oldInstance instanceof String && newInstance instanceof String) {
-            return newInstance.equals(oldInstance);
-        }
-        return super.mutatesTo(oldInstance, newInstance);
-    }
+	@Override
+	protected boolean mutatesTo (Object oldInstance, Object newInstance) {
+		if (oldInstance instanceof String && newInstance instanceof String) {
+			return newInstance.equals(oldInstance);
+		}
+		return super.mutatesTo(oldInstance, newInstance);
+	}
 }

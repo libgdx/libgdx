@@ -23,7 +23,7 @@ import com.badlogic.gdx.beans.beancontext.BeanContext;
 
 public interface AppletInitializer {
 
-    public void initialize(Applet newAppletBean, BeanContext bCtxt);
+	public void initialize (Applet newAppletBean, BeanContext bCtxt);
 
-    public void activate(Applet newApplet);
+	public void activate (Applet newApplet);
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
 import java.awt.Toolkit;
@@ -23,15 +24,12 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
-/**
- * Implementation of the {@link Clipboard} interface for the desktop. Uses the
- * system clipboard via the default {@link Toolkit}.
- * @author mzechner
- *
- */
+/** Implementation of the {@link Clipboard} interface for the desktop. Uses the system clipboard via the default {@link Toolkit}.
+ * @author mzechner */
 public class DesktopClipboard extends Clipboard implements ClipboardOwner {
 
-	@Override public String getContents () {
+	@Override
+	public String getContents () {
 		String result = "";
 		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable contents = clipboard.getContents(null);
@@ -48,12 +46,14 @@ public class DesktopClipboard extends Clipboard implements ClipboardOwner {
 		return result;
 	}
 
-	@Override public void setContents (String content) {
+	@Override
+	public void setContents (String content) {
 		StringSelection stringSelection = new StringSelection(content);
 		java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(stringSelection, this);
 	}
 
-	@Override public void lostOwnership (java.awt.datatransfer.Clipboard arg0, Transferable arg1) {
+	@Override
+	public void lostOwnership (java.awt.datatransfer.Clipboard arg0, Transferable arg1) {
 	}
 }

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.gwt;
 
 import com.google.gwt.user.client.ui.Panel;
@@ -11,8 +12,8 @@ public class GwtApplicationConfiguration {
 	public int fps = 60;
 	public Panel rootPanel;
 	public TextArea log;
-	
-	public GwtApplicationConfiguration(int width, int height) {
+
+	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;
 		this.height = height;
 	}

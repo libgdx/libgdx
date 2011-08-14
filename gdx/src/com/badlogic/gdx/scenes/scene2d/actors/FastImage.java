@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actors;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -33,8 +34,8 @@ public class FastImage extends Actor {
 	private float sScaleY;
 	private float sWidth;
 	private float sHeight;
-	private Sprite sprite = new Sprite();	
-	
+	private Sprite sprite = new Sprite();
+
 	public FastImage (String name) {
 		super(name);
 		this.region = new TextureRegion();
@@ -46,7 +47,7 @@ public class FastImage extends Actor {
 		this.originY = texture.getHeight() / 2.0f;
 		this.width = texture.getWidth();
 		this.height = texture.getHeight();
-		this.region = new TextureRegion(texture);		
+		this.region = new TextureRegion(texture);
 	}
 
 	public FastImage (String name, TextureRegion region) {
@@ -58,57 +59,61 @@ public class FastImage extends Actor {
 		this.region = new TextureRegion(region);
 	}
 
-	@Override public void draw (SpriteBatch batch, float parentAlpha) {
+	@Override
+	public void draw (SpriteBatch batch, float parentAlpha) {
 		updateSprite();
-		
-		if (region.getTexture() != null) {			
+
+		if (region.getTexture() != null) {
 			sprite.draw(batch, parentAlpha);
 		}
 	}
-	
-	private void updateSprite() {		
-		if(sX != x || sY != y) {
+
+	private void updateSprite () {
+		if (sX != x || sY != y) {
 			sprite.setPosition(x, y);
 			sX = x;
 			sY = y;
 		}
-		
-		if(sOriginX != originX || sOriginY != originY) {
+
+		if (sOriginX != originX || sOriginY != originY) {
 			sprite.setOrigin(originX, originY);
 			sOriginX = originX;
 			sOriginY = originY;
 		}
-		
-		if(sRotation != rotation) {
+
+		if (sRotation != rotation) {
 			sprite.setRotation(rotation);
 			sRotation = rotation;
 		}
-		
-		if(sScaleX != scaleX || sScaleY != scaleY) {
+
+		if (sScaleX != scaleX || sScaleY != scaleY) {
 			sprite.setScale(scaleX, scaleY);
 			sScaleX = scaleX;
 			sScaleY = scaleY;
 		}
-		
-		if(sWidth != width || sHeight != height) {
+
+		if (sWidth != width || sHeight != height) {
 			sprite.setSize(width, height);
 			sWidth = width;
 			sHeight = height;
 		}
-		
+
 		sprite.setColor(color);
-		sprite.setRegion(region);		
+		sprite.setRegion(region);
 	}
 
-	@Override public boolean touchDown (float x, float y, int pointer) {
+	@Override
+	public boolean touchDown (float x, float y, int pointer) {
 		return x > 0 && y > 0 && x < width && y < height;
 	}
 
-	@Override public boolean touchUp (float x, float y, int pointer) {
+	@Override
+	public boolean touchUp (float x, float y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (float x, float y, int pointer) {
+	@Override
+	public boolean touchDragged (float x, float y, int pointer) {
 		return false;
 	}
 

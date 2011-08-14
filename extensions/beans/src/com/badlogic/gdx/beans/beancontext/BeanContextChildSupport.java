@@ -17,18 +17,6 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.PropertyChangeEvent;
-import com.badlogic.gdx.beans.PropertyChangeListener;
-import com.badlogic.gdx.beans.PropertyChangeSupport;
-import com.badlogic.gdx.beans.PropertyVetoException;
-import com.badlogic.gdx.beans.VetoableChangeListener;
-import com.badlogic.gdx.beans.VetoableChangeSupport;
-import com.badlogic.gdx.beans.beancontext.BeanContext;
-import com.badlogic.gdx.beans.beancontext.BeanContextChild;
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceAvailableEvent;
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceRevokedEvent;
-import com.badlogic.gdx.beans.beancontext.BeanContextServicesListener;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,172 +24,164 @@ import java.io.Serializable;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-public class BeanContextChildSupport implements BeanContextChild,
-        BeanContextServicesListener, Serializable {
+import com.badlogic.gdx.beans.PropertyChangeEvent;
+import com.badlogic.gdx.beans.PropertyChangeListener;
+import com.badlogic.gdx.beans.PropertyChangeSupport;
+import com.badlogic.gdx.beans.PropertyVetoException;
+import com.badlogic.gdx.beans.VetoableChangeListener;
+import com.badlogic.gdx.beans.VetoableChangeSupport;
 
-    private static final long serialVersionUID = 6328947014421475877L;
+public class BeanContextChildSupport implements BeanContextChild, BeanContextServicesListener, Serializable {
 
-    static final String BEAN_CONTEXT = "beanContext"; //$NON-NLS-1$
+	private static final long serialVersionUID = 6328947014421475877L;
 
-    protected transient BeanContext beanContext;
+	static final String BEAN_CONTEXT = "beanContext"; //$NON-NLS-1$
 
-    public BeanContextChild beanContextChildPeer;
+	protected transient BeanContext beanContext;
 
-    protected PropertyChangeSupport pcSupport;
+	public BeanContextChild beanContextChildPeer;
 
-    protected transient boolean rejectedSetBCOnce;
+	protected PropertyChangeSupport pcSupport;
 
-    protected VetoableChangeSupport vcSupport;
-    
-    private transient BeanContext lastVetoedContext;
+	protected transient boolean rejectedSetBCOnce;
 
-    public BeanContextChildSupport() {
-        // This class implements the JavaBean component itself
-        this(null);
-    }
+	protected VetoableChangeSupport vcSupport;
 
-    public BeanContextChildSupport(BeanContextChild bcc) {
-        // If 'bcc' parameter is not null the JavaBean component itself
-        // implements BeanContextChild
-        this.beanContextChildPeer = (bcc == null ? this : bcc);
+	private transient BeanContext lastVetoedContext;
 
-        // Initialize necessary fields for later use
-        pcSupport = new PropertyChangeSupport(this.beanContextChildPeer);
-        vcSupport = new VetoableChangeSupport(this.beanContextChildPeer);
-        this.rejectedSetBCOnce = false;
-    }
+	public BeanContextChildSupport () {
+		// This class implements the JavaBean component itself
+		this(null);
+	}
 
-    public void addPropertyChangeListener(String name,
-            PropertyChangeListener pcl) {
-        // Do nothing if name or listener is null
-        if ((name == null) || (pcl == null)) {
-            return;
-        }
+	public BeanContextChildSupport (BeanContextChild bcc) {
+		// If 'bcc' parameter is not null the JavaBean component itself
+		// implements BeanContextChild
+		this.beanContextChildPeer = (bcc == null ? this : bcc);
 
-        this.pcSupport.addPropertyChangeListener(name, pcl);
-    }
+		// Initialize necessary fields for later use
+		pcSupport = new PropertyChangeSupport(this.beanContextChildPeer);
+		vcSupport = new VetoableChangeSupport(this.beanContextChildPeer);
+		this.rejectedSetBCOnce = false;
+	}
 
-    public void addVetoableChangeListener(String name,
-            VetoableChangeListener vcl) {
-        // Do nothing if name or listener is null
-        if ((name == null) || (vcl == null)) {
-            return;
-        }
+	public void addPropertyChangeListener (String name, PropertyChangeListener pcl) {
+		// Do nothing if name or listener is null
+		if ((name == null) || (pcl == null)) {
+			return;
+		}
 
-        this.vcSupport.addVetoableChangeListener(name, vcl);
-        this.lastVetoedContext = null;
-    }
+		this.pcSupport.addPropertyChangeListener(name, pcl);
+	}
 
-    public void firePropertyChange(String name, Object oldValue, Object newValue) {
-        this.pcSupport.firePropertyChange(name, oldValue, newValue);
-    }
+	public void addVetoableChangeListener (String name, VetoableChangeListener vcl) {
+		// Do nothing if name or listener is null
+		if ((name == null) || (vcl == null)) {
+			return;
+		}
 
-    public void fireVetoableChange(String name, Object oldValue, Object newValue)
-            throws PropertyVetoException {
+		this.vcSupport.addVetoableChangeListener(name, vcl);
+		this.lastVetoedContext = null;
+	}
 
-        this.vcSupport.fireVetoableChange(name, oldValue, newValue);
-    }
+	public void firePropertyChange (String name, Object oldValue, Object newValue) {
+		this.pcSupport.firePropertyChange(name, oldValue, newValue);
+	}
 
-    public synchronized BeanContext getBeanContext() {
-        return this.beanContext;
-    }
+	public void fireVetoableChange (String name, Object oldValue, Object newValue) throws PropertyVetoException {
 
-    public BeanContextChild getBeanContextChildPeer() {
-        return this.beanContextChildPeer;
-    }
+		this.vcSupport.fireVetoableChange(name, oldValue, newValue);
+	}
 
-    protected void initializeBeanContextResources() {
-    }
+	public synchronized BeanContext getBeanContext () {
+		return this.beanContext;
+	}
 
-    public boolean isDelegated() {
-        return (!this.beanContextChildPeer.equals(this));
-    }
+	public BeanContextChild getBeanContextChildPeer () {
+		return this.beanContextChildPeer;
+	}
 
-    private void readObject(ObjectInputStream ois) throws IOException,
-            ClassNotFoundException {
+	protected void initializeBeanContextResources () {
+	}
 
-        ois.defaultReadObject();
-    }
+	public boolean isDelegated () {
+		return (!this.beanContextChildPeer.equals(this));
+	}
 
-    protected void releaseBeanContextResources() {
-    }
+	private void readObject (ObjectInputStream ois) throws IOException, ClassNotFoundException {
 
-    public void removePropertyChangeListener(String name,
-            PropertyChangeListener pcl) {
+		ois.defaultReadObject();
+	}
 
-        this.pcSupport.removePropertyChangeListener(name, pcl);
-    }
+	protected void releaseBeanContextResources () {
+	}
 
-    public void removeVetoableChangeListener(String name,
-            VetoableChangeListener vcl) {
+	public void removePropertyChangeListener (String name, PropertyChangeListener pcl) {
 
-        this.vcSupport.removeVetoableChangeListener(name, vcl);
-        this.lastVetoedContext = null;
-    }
+		this.pcSupport.removePropertyChangeListener(name, pcl);
+	}
 
-    public void serviceAvailable(BeanContextServiceAvailableEvent bcsae) {
-        if (isDelegated()) {
-            ((BeanContextServicesListener) beanContextChildPeer)
-                    .serviceAvailable(bcsae);
-        }
-    }
+	public void removeVetoableChangeListener (String name, VetoableChangeListener vcl) {
 
-    public void serviceRevoked(BeanContextServiceRevokedEvent bcsre) {
-        if (isDelegated()) {
-            ((BeanContextServicesListener) beanContextChildPeer)
-                    .serviceRevoked(bcsre);
-        }
-    }
+		this.vcSupport.removeVetoableChangeListener(name, vcl);
+		this.lastVetoedContext = null;
+	}
 
-    public synchronized void setBeanContext(BeanContext bc)
-            throws PropertyVetoException {
+	public void serviceAvailable (BeanContextServiceAvailableEvent bcsae) {
+		if (isDelegated()) {
+			((BeanContextServicesListener)beanContextChildPeer).serviceAvailable(bcsae);
+		}
+	}
 
-        // Do nothing if the old and new values are equal
-        if ((this.beanContext == null) && (bc == null)) {
-            return;
-        }
+	public void serviceRevoked (BeanContextServiceRevokedEvent bcsre) {
+		if (isDelegated()) {
+			((BeanContextServicesListener)beanContextChildPeer).serviceRevoked(bcsre);
+		}
+	}
 
-        if ((this.beanContext != null) && this.beanContext.equals(bc)) {
-            return;
-        }
+	public synchronized void setBeanContext (BeanContext bc) throws PropertyVetoException {
 
-       
-        
+		// Do nothing if the old and new values are equal
+		if ((this.beanContext == null) && (bc == null)) {
+			return;
+		}
 
-        
-        // Children are not allowed to repeatedly veto this operation.
-        // So, we set rejectedSetBCOnce flag to true if veto occurs
-        // and never veto the change again
-        if (!(this.rejectedSetBCOnce && this.lastVetoedContext == bc)) {
-            this.lastVetoedContext = bc;
-            this.rejectedSetBCOnce = true;
-            // Validate the new BeanContext value and throw
-            // PropertyVetoException if it was not successful
-            if (!validatePendingSetBeanContext(bc)) {                
-                throw new PropertyVetoException(Messages.getString("beans.0F"), //$NON-NLS-1$
-                        new PropertyChangeEvent(this.beanContextChildPeer,
-                                BEAN_CONTEXT, this.beanContext, bc));
-            }
-            fireVetoableChange(BEAN_CONTEXT, this.beanContext, bc);
-        }
-            
-            this.rejectedSetBCOnce = false;
-            
-            releaseBeanContextResources();
+		if ((this.beanContext != null) && this.beanContext.equals(bc)) {
+			return;
+		}
 
-            // We have to notify all listeners about "beanContext"
-            // property change
-            firePropertyChange(BEAN_CONTEXT, this.beanContext, bc);
-            this.beanContext = bc;
-            initializeBeanContextResources();
-        //}
-    }
+		// Children are not allowed to repeatedly veto this operation.
+		// So, we set rejectedSetBCOnce flag to true if veto occurs
+		// and never veto the change again
+		if (!(this.rejectedSetBCOnce && this.lastVetoedContext == bc)) {
+			this.lastVetoedContext = bc;
+			this.rejectedSetBCOnce = true;
+			// Validate the new BeanContext value and throw
+			// PropertyVetoException if it was not successful
+			if (!validatePendingSetBeanContext(bc)) {
+				throw new PropertyVetoException(Messages.getString("beans.0F"), //$NON-NLS-1$
+					new PropertyChangeEvent(this.beanContextChildPeer, BEAN_CONTEXT, this.beanContext, bc));
+			}
+			fireVetoableChange(BEAN_CONTEXT, this.beanContext, bc);
+		}
 
-    public boolean validatePendingSetBeanContext(BeanContext newValue) {
-        return true;
-    }
+		this.rejectedSetBCOnce = false;
 
-    private void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
-    }
+		releaseBeanContextResources();
+
+		// We have to notify all listeners about "beanContext"
+		// property change
+		firePropertyChange(BEAN_CONTEXT, this.beanContext, bc);
+		this.beanContext = bc;
+		initializeBeanContextResources();
+		// }
+	}
+
+	public boolean validatePendingSetBeanContext (BeanContext newValue) {
+		return true;
+	}
+
+	private void writeObject (ObjectOutputStream oos) throws IOException {
+		oos.defaultWriteObject();
+	}
 }

@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
 public class AndroidClipboard extends Clipboard {
 
-	@Override public String getContents () {
+	@Override
+	public String getContents () {
 		return "";
 	}
 
-	@Override public void setContents (String content) {
-		
+	@Override
+	public void setContents (String content) {
+
 	}
 
 }

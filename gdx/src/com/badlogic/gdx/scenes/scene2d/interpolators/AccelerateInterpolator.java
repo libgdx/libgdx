@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.interpolators;
 
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * An interpolator where the rate of change starts out slowly and then accelerates over time.
+/** An interpolator where the rate of change starts out slowly and then accelerates over time.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public class AccelerateInterpolator implements Interpolator {
 
 	private static final float DEFAULT_FACTOR = 1.0f;
 
 	private static final Pool<AccelerateInterpolator> pool = new Pool<AccelerateInterpolator>(4, 100) {
-		@Override protected AccelerateInterpolator newObject () {
+		@Override
+		protected AccelerateInterpolator newObject () {
 			return new AccelerateInterpolator();
 		}
 	};
@@ -41,12 +41,10 @@ public class AccelerateInterpolator implements Interpolator {
 		// hide constructor
 	}
 
-	/**
-	 * Gets a new {@link AccelerateInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link AccelerateInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * 
 	 * @param factor the factor controlling the rate of change
-	 * @return the obtained {@link AccelerateInterpolator}
-	 */
+	 * @return the obtained {@link AccelerateInterpolator} */
 	public static AccelerateInterpolator $ (float factor) {
 		AccelerateInterpolator inter = pool.obtain();
 		inter.factor = factor;
@@ -54,18 +52,17 @@ public class AccelerateInterpolator implements Interpolator {
 		return inter;
 	}
 
-	/**
-	 * Gets a new {@link AccelerateInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link AccelerateInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * <p>
 	 * The initial factor is set to <code>{@value AccelerateInterpolator#DEFAULT_FACTOR}</code>.
 	 * 
-	 * @return the obtained {@link AccelerateInterpolator}
-	 */
+	 * @return the obtained {@link AccelerateInterpolator} */
 	public static AccelerateInterpolator $ () {
 		return $(DEFAULT_FACTOR);
 	}
 
-	@Override public void finished () {
+	@Override
+	public void finished () {
 		pool.free(this);
 	}
 
@@ -77,7 +74,8 @@ public class AccelerateInterpolator implements Interpolator {
 		}
 	}
 
-	@Override public Interpolator copy () {
+	@Override
+	public Interpolator copy () {
 		return $(factor);
 	}
 }

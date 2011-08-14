@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.ShortBuffer;
@@ -25,7 +26,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class VorbisTest extends GdxTest {
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		VorbisDecoder decoder = null;
 		if (Gdx.app.getType() == ApplicationType.Android)
 			decoder = new VorbisDecoder("/sdcard/audio/schism.ogg");
@@ -45,7 +47,8 @@ public class VorbisTest extends GdxTest {
 		decoder.dispose();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 

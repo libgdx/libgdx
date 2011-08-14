@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import java.io.IOException;
@@ -35,12 +36,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An implementation of the {@link Audio} interface for Android.
+/** An implementation of the {@link Audio} interface for Android.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public final class AndroidAudio implements Audio {
 	private SoundPool soundPool;
 	private final AudioManager manager;
@@ -54,7 +52,7 @@ public final class AndroidAudio implements Audio {
 	}
 
 	protected void pause () {
-		synchronized(musics) {
+		synchronized (musics) {
 			wasPlaying.clear();
 			for (AndroidMusic music : musics) {
 				if (music.isPlaying()) {
@@ -67,24 +65,22 @@ public final class AndroidAudio implements Audio {
 	}
 
 	protected void resume () {
-		synchronized(musics) {
+		synchronized (musics) {
 			for (int i = 0; i < musics.size(); i++) {
 				if (wasPlaying.get(i)) musics.get(i).play();
 			}
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
+	/** {@inheritDoc} */
+	@Override
+	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
 		return new AndroidAudioDevice(samplingRate, isMono);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Music newMusic (FileHandle file) {
+	/** {@inheritDoc} */
+	@Override
+	public Music newMusic (FileHandle file) {
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 
 		MediaPlayer mediaPlayer = new MediaPlayer();
@@ -96,7 +92,7 @@ public final class AndroidAudio implements Audio {
 				descriptor.close();
 				mediaPlayer.prepare();
 				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized(musics) {
+				synchronized (musics) {
 					musics.add(music);
 				}
 				return music;
@@ -109,7 +105,7 @@ public final class AndroidAudio implements Audio {
 				mediaPlayer.setDataSource(aHandle.path());
 				mediaPlayer.prepare();
 				AndroidMusic music = new AndroidMusic(this, mediaPlayer);
-				synchronized(musics) {
+				synchronized (musics) {
 					musics.add(music);
 				}
 				return music;
@@ -120,10 +116,9 @@ public final class AndroidAudio implements Audio {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Sound newSound (FileHandle file) {
+	/** {@inheritDoc} */
+	@Override
+	public Sound newSound (FileHandle file) {
 		AndroidFileHandle aHandle = (AndroidFileHandle)file;
 		if (aHandle.type() == FileType.Internal) {
 			try {
@@ -144,23 +139,20 @@ public final class AndroidAudio implements Audio {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
+	/** {@inheritDoc} */
+	@Override
+	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new AndroidAudioRecorder(samplingRate, isMono);
 	}
 
-	/**
-	 * Kills the soundpool and all other resources
-	 */
+	/** Kills the soundpool and all other resources */
 	public void dispose () {
-		synchronized(musics) {
+		synchronized (musics) {
 			// gah i hate myself.... music.dispose() removes the music from the list...
 			ArrayList<AndroidMusic> musicsCopy = new ArrayList<AndroidMusic>(musics);
 			for (AndroidMusic music : musicsCopy) {
 				music.dispose();
-			}		
+			}
 		}
 		soundPool.release();
 	}

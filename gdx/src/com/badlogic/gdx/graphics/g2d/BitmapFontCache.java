@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
@@ -22,12 +23,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/**
- * Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
+/** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
  * of each glyph each frame.
  * @author Nathan Sweet
- * @author Matthias Mann
- */
+ * @author Matthias Mann */
 public class BitmapFontCache implements Disposable {
 	private final BitmapFont font;
 	private float[] vertices = new float[0];
@@ -39,36 +38,30 @@ public class BitmapFontCache implements Disposable {
 	private boolean integer = true;
 
 	public BitmapFontCache (BitmapFont font) {
-		this(font, true);		
+		this(font, true);
 	}
-	
-	/**
-	 * Creates a new BitmapFontCache
+
+	/** Creates a new BitmapFontCache
 	 * @param font the font to use
-	 * @param integer whether to use integer positions and sizes.
-	 */
+	 * @param integer whether to use integer positions and sizes. */
 	public BitmapFontCache (BitmapFont font, boolean integer) {
 		this.font = font;
 		this.integer = integer;
 	}
 
-	/**
-	 * Sets the position of the text, relative to the position when the cached text was created.
+	/** Sets the position of the text, relative to the position when the cached text was created.
 	 * @param x The x coordinate
-	 * @param y The y coodinate
-	 */
+	 * @param y The y coodinate */
 	public void setPosition (float x, float y) {
 		translate(x - this.x, y - this.y);
 	}
 
-	/**
-	 * Sets the position of the text, relative to its current position.
+	/** Sets the position of the text, relative to its current position.
 	 * @param xAmount The amount in x to move the text
-	 * @param yAmount The amount in y to move the text
-	 */
+	 * @param yAmount The amount in y to move the text */
 	public void translate (float xAmount, float yAmount) {
 		if (xAmount == 0 && yAmount == 0) return;
-		if(integer) {
+		if (integer) {
 			xAmount = (int)xAmount;
 			yAmount = (int)yAmount;
 		}
@@ -198,75 +191,71 @@ public class BitmapFontCache implements Disposable {
 		final float v2 = glyph.v2;
 
 		final float[] vertices = this.vertices;
-		if(!integer) {			
+		if (!integer) {
 			vertices[idx++] = x;
 			vertices[idx++] = y;
 			vertices[idx++] = color;
 			vertices[idx++] = u;
 			vertices[idx++] = v;
-	
+
 			vertices[idx++] = x;
 			vertices[idx++] = y2;
 			vertices[idx++] = color;
 			vertices[idx++] = u;
 			vertices[idx++] = v2;
-	
+
 			vertices[idx++] = x2;
 			vertices[idx++] = y2;
 			vertices[idx++] = color;
 			vertices[idx++] = u2;
 			vertices[idx++] = v2;
-	
+
 			vertices[idx++] = x2;
 			vertices[idx++] = y;
 			vertices[idx++] = color;
 			vertices[idx++] = u2;
 			vertices[idx++] = v;
-		} else {			
+		} else {
 			vertices[idx++] = (int)x;
 			vertices[idx++] = (int)y;
 			vertices[idx++] = color;
 			vertices[idx++] = u;
 			vertices[idx++] = v;
-	
+
 			vertices[idx++] = (int)x;
 			vertices[idx++] = (int)y2;
 			vertices[idx++] = color;
 			vertices[idx++] = u;
 			vertices[idx++] = v2;
-	
+
 			vertices[idx++] = (int)x2;
 			vertices[idx++] = (int)y2;
 			vertices[idx++] = color;
 			vertices[idx++] = u2;
 			vertices[idx++] = v2;
-	
+
 			vertices[idx++] = (int)x2;
 			vertices[idx++] = (int)y;
 			vertices[idx++] = color;
 			vertices[idx++] = u2;
-			vertices[idx++] = v;			
+			vertices[idx++] = v;
 		}
 	}
 
-	/**
-	 * Caches a string with the specified position.
+	/** Caches a string with the specified position.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline).
-	 */
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline). */
 	public TextBounds setText (CharSequence str, float x, float y) {
 		return setText(str, x, y, 0, str.length());
 	}
 
-	/**
-	 * Caches a substring with the specified position.
+	/** Caches a substring with the specified position.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
 	 * @param start The first character of the string to draw.
 	 * @param end The last character of the string to draw (exclusive).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline).
-	 */
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline). */
 	public TextBounds setText (CharSequence str, float x, float y, int start, int end) {
 		reset(end - start);
 		y += font.data.ascent;
@@ -275,23 +264,19 @@ public class BitmapFontCache implements Disposable {
 		return textBounds;
 	}
 
-	/**
-	 * Caches a string, which may contain newlines (\n), with the specified position.
+	/** Caches a string, which may contain newlines (\n), with the specified position.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
-	 */
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
 	public TextBounds setMultiLineText (CharSequence str, float x, float y) {
 		return setMultiLineText(str, x, y, 0, HAlignment.LEFT);
 	}
 
-	/**
-	 * Caches a string, which may contain newlines (\n), with the specified position and alignment. Each line is aligned
+	/** Caches a string, which may contain newlines (\n), with the specified position and alignment. Each line is aligned
 	 * horizontally within a rectangle of the specified width.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
-	 */
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
 	public TextBounds setMultiLineText (CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
 		BitmapFont font = this.font;
 
@@ -324,24 +309,20 @@ public class BitmapFontCache implements Disposable {
 		return textBounds;
 	}
 
-	/**
-	 * Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
+	/** Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
 	 * within a rectangle of the specified width.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
-	 */
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
 	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth) {
 		return setWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
 	}
 
-	/**
-	 * Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
+	/** Caches a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped to keep it
 	 * within a rectangle of the specified width, and aligned horizontally within that rectangle.
 	 * @param x The x position for the left most character.
 	 * @param y The y position for the top of most capital letters in the font (the {@link BitmapFont#getCapHeight() cap height}).
-	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line).
-	 */
+	 * @return The bounds of the cached string (the height is the distance from y to the baseline of the last line). */
 	public TextBounds setWrappedText (CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
 		BitmapFont font = this.font;
 
@@ -381,24 +362,18 @@ public class BitmapFontCache implements Disposable {
 		return textBounds;
 	}
 
-	/**
-	 * Returns the size of the cached string. The height is the distance from the top of most capital letters in the font (the
-	 * {@link BitmapFont#getCapHeight() cap height}) to the baseline of the last line of text.
-	 */
+	/** Returns the size of the cached string. The height is the distance from the top of most capital letters in the font (the
+	 * {@link BitmapFont#getCapHeight() cap height}) to the baseline of the last line of text. */
 	public TextBounds getBounds () {
 		return textBounds;
 	}
 
-	/**
-	 * Returns the x position of the cached string, relative to the position when the string was cached.
-	 */
+	/** Returns the x position of the cached string, relative to the position when the string was cached. */
 	public float getX () {
 		return x;
 	}
 
-	/**
-	 * Returns the y position of the cached string, relative to the position when the string was cached.
-	 */
+	/** Returns the y position of the cached string, relative to the position when the string was cached. */
 	public float getY () {
 		return y;
 	}
@@ -407,26 +382,19 @@ public class BitmapFontCache implements Disposable {
 		return font;
 	}
 
-	/**
-	 * Disposes the underlying BitmapFont of this cache.
-	 */
+	/** Disposes the underlying BitmapFont of this cache. */
 	public void dispose () {
 		font.dispose();
 	}
-	
-	/**
-	 * Specifies whether to use integer positions or not. Default is to use
-	 * them so filtering doesn't kick in as badly.
-	 * @param use 
-	 */
-	public void setUseIntegerPositions(boolean use) {
+
+	/** Specifies whether to use integer positions or not. Default is to use them so filtering doesn't kick in as badly.
+	 * @param use */
+	public void setUseIntegerPositions (boolean use) {
 		this.integer = use;
 	}
-	
-	/**
-	 * @return whether this font uses integer positions for drawing.
-	 */
-	public boolean usesIntegerPositions() {
+
+	/** @return whether this font uses integer positions for drawing. */
+	public boolean usesIntegerPositions () {
 		return integer;
 	}
 }

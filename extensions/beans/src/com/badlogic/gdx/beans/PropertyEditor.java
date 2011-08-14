@@ -21,31 +21,29 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import com.badlogic.gdx.beans.PropertyChangeListener;
-
 public interface PropertyEditor {
 
-    public void paintValue(Graphics gfx, Rectangle box);
+	public void paintValue (Graphics gfx, Rectangle box);
 
-    public void setAsText(String text) throws IllegalArgumentException;
+	public void setAsText (String text) throws IllegalArgumentException;
 
-    public String[] getTags();
+	public String[] getTags ();
 
-    public String getJavaInitializationString();
+	public String getJavaInitializationString ();
 
-    public String getAsText();
+	public String getAsText ();
 
-    public void setValue(Object value);
+	public void setValue (Object value);
 
-    public Object getValue();
+	public Object getValue ();
 
-    public void removePropertyChangeListener(PropertyChangeListener listener);
+	public void removePropertyChangeListener (PropertyChangeListener listener);
 
-    public void addPropertyChangeListener(PropertyChangeListener listener);
+	public void addPropertyChangeListener (PropertyChangeListener listener);
 
-    public Component getCustomEditor();
+	public Component getCustomEditor ();
 
-    public boolean supportsCustomEditor();
+	public boolean supportsCustomEditor ();
 
-    public boolean isPaintable();
+	public boolean isPaintable ();
 }

@@ -13,49 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * A Camera with perspective projection.
+/** A Camera with perspective projection.
  * 
- * @author mzechner
- *
- */
-public class PerspectiveCamera extends Camera {	
+ * @author mzechner */
+public class PerspectiveCamera extends Camera {
 	/** the field of view in degrees **/
 	public float fieldOfView = 67;
 
 	public PerspectiveCamera () {
 	}
 
-	/**
-	 * Constructs a new {@link PerspectiveCamera} with the given field of view and viewport
-	 * size. The apsect ratio is derrived from the viewport size.
+	/** Constructs a new {@link PerspectiveCamera} with the given field of view and viewport size. The apsect ratio is derrived from
+	 * the viewport size.
 	 * 
 	 * @param fieldOfView the field of view in degrees
 	 * @param viewportWidth the viewport width
-	 * @param viewportHeight the viewport height
-	 */
-	public PerspectiveCamera(float fieldOfView, float viewportWidth, float viewportHeight) {
+	 * @param viewportHeight the viewport height */
+	public PerspectiveCamera (float fieldOfView, float viewportWidth, float viewportHeight) {
 		this.fieldOfView = fieldOfView;
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
 		update();
 	}
-	
+
 	final Vector3 tmp = new Vector3();
+
 	@Override
-	public void update() {
-		float aspect = viewportWidth / viewportHeight;				
+	public void update () {
+		float aspect = viewportWidth / viewportHeight;
 		projection.setToProjection(Math.abs(near), Math.abs(far), fieldOfView, aspect);
-		view.setToLookAt(position, tmp.set(position).add(direction), up);	
+		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
 		invProjectionView.set(combined);
 		Matrix4.inv(invProjectionView.val);
 		frustum.update(invProjectionView);
-	}	
+	}
 }

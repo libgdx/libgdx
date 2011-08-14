@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.angle;
 
 import javax.sound.sampled.AudioFormat;
@@ -23,12 +24,9 @@ import javax.sound.sampled.TargetDataLine;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * {@link AudioRecorder} implementation for the desktop using the java sound API.
+/** {@link AudioRecorder} implementation for the desktop using the java sound API.
  * 
- * @author badlogicgames@gmail.com
- * 
- */
+ * @author badlogicgames@gmail.com */
 final class AngleAudioRecorder implements AudioRecorder {
 	/** the line we read the audio from **/
 	private TargetDataLine line;

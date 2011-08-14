@@ -17,90 +17,70 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.FeatureDescriptor;
-
-/**
- * Describes a bean's global information.
- */
+/** Describes a bean's global information. */
 public class BeanDescriptor extends FeatureDescriptor {
 
-    private Class<?> beanClass;
+	private Class<?> beanClass;
 
-    private Class<?> customizerClass;
+	private Class<?> customizerClass;
 
-    /**
-     * <p>
-     * Constructs an instance with the bean's {@link Class} and a customizer
-     * {@link Class}. The descriptor's {@link #getName()} is set as the
-     * unqualified name of the <code>beanClass</code>.
-     * </p>
-     * 
-     * @param beanClass
-     *            The bean's Class.
-     * @param customizerClass
-     *            The bean's customizer Class.
-     */
-    public BeanDescriptor(Class<?> beanClass, Class<?> customizerClass) {
-        if (beanClass == null) {
-            throw new NullPointerException();
-        }
-        setName(getShortClassName(beanClass));
-        this.beanClass = beanClass;
-        this.customizerClass = customizerClass;
-    }
+	/** <p>
+	 * Constructs an instance with the bean's {@link Class} and a customizer {@link Class}. The descriptor's {@link #getName()} is
+	 * set as the unqualified name of the <code>beanClass</code>.
+	 * </p>
+	 * 
+	 * @param beanClass The bean's Class.
+	 * @param customizerClass The bean's customizer Class. */
+	public BeanDescriptor (Class<?> beanClass, Class<?> customizerClass) {
+		if (beanClass == null) {
+			throw new NullPointerException();
+		}
+		setName(getShortClassName(beanClass));
+		this.beanClass = beanClass;
+		this.customizerClass = customizerClass;
+	}
 
-    /**
-     * <p>
-     * Constructs an instance with the bean's {@link Class}. The descriptor's
-     * {@link #getName()} is set as the unqualified name of the
-     * <code>beanClass</code>.
-     * </p>
-     * 
-     * @param beanClass
-     *            The bean's Class.
-     */
-    public BeanDescriptor(Class<?> beanClass) {
-        this(beanClass, null);
-    }
+	/** <p>
+	 * Constructs an instance with the bean's {@link Class}. The descriptor's {@link #getName()} is set as the unqualified name of
+	 * the <code>beanClass</code>.
+	 * </p>
+	 * 
+	 * @param beanClass The bean's Class. */
+	public BeanDescriptor (Class<?> beanClass) {
+		this(beanClass, null);
+	}
 
-    /**
-     * <p>
-     * Gets the bean's customizer {@link Class}/
-     * </p>
-     * 
-     * @return A {@link Class} instance or <code>null</code>.
-     */
-    public Class<?> getCustomizerClass() {
-        return customizerClass;
-    }
+	/** <p>
+	 * Gets the bean's customizer {@link Class}/
+	 * </p>
+	 * 
+	 * @return A {@link Class} instance or <code>null</code>. */
+	public Class<?> getCustomizerClass () {
+		return customizerClass;
+	}
 
-    /**
-     * <p>
-     * Gets the bean's {@link Class}.
-     * </p>
-     * 
-     * @return A {@link Class} instance.
-     */
-    public Class<?> getBeanClass() {
-        return beanClass;
-    }
+	/** <p>
+	 * Gets the bean's {@link Class}.
+	 * </p>
+	 * 
+	 * @return A {@link Class} instance. */
+	public Class<?> getBeanClass () {
+		return beanClass;
+	}
 
-    /**
-     * <p>
-     * Utility method for getting the unqualified name of a {@link Class}.
-     * </p>
-     * 
-     * @param leguminaClass
-     *            The Class to get the name from.
-     * @return A String instance or <code>null</code>.
-     */
-    private String getShortClassName(Class<?> leguminaClass) {
-        if(leguminaClass == null) {
-            return null;
-        }
-        String beanClassName = leguminaClass.getName();
-        int lastIndex = beanClassName.lastIndexOf("."); //$NON-NLS-1$
-        return (lastIndex == -1) ? beanClassName : beanClassName.substring(lastIndex + 1);
-    }
+	/** <p>
+	 * Utility method for getting the unqualified name of a {@link Class}.
+	 * </p>
+	 * 
+	 * @param leguminaClass The Class to get the name from.
+	 * @return A String instance or <code>null</code>. */
+	private String getShortClassName (Class<?> leguminaClass) {
+		if (leguminaClass == null) {
+			return null;
+		}
+		String beanClassName = leguminaClass.getName();
+		int lastIndex = beanClassName.lastIndexOf("."); //$NON-NLS-1$
+		return (lastIndex == -1) ? beanClassName : beanClassName.substring(lastIndex + 1);
+	}
 
 }

@@ -13,10 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package java.nio;
 
-import java.nio.ByteBuffer;
-
 public interface ByteBufferWrapper {
-	ByteBuffer getByteBuffer();
+	ByteBuffer getByteBuffer ();
 }

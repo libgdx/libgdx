@@ -13,36 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * A very simple clipboard interface for text content.
- * @author mzechner
- *
- */
+/** A very simple clipboard interface for text content.
+ * @author mzechner */
 public abstract class Clipboard {
-	/** 
-	 * gets the current content of the clipboard if it contains text
-	 * @return the clipboard content or null
-	 */
-	public abstract String getContents();
-	
-	/**
-	 * Sets the content of the system clipboard.
-	 * @param content the content
-	 */
-	public abstract void setContents(String content);
-	
-	public static Clipboard getDefaultClipboard() {
-		if(Gdx.app.getType() == ApplicationType.Android) return new AndroidClipboard();
+	/** gets the current content of the clipboard if it contains text
+	 * @return the clipboard content or null */
+	public abstract String getContents ();
+
+	/** Sets the content of the system clipboard.
+	 * @param content the content */
+	public abstract void setContents (String content);
+
+	public static Clipboard getDefaultClipboard () {
+		if (Gdx.app.getType() == ApplicationType.Android)
+			return new AndroidClipboard();
 		else {
 			try {
 				return (Clipboard)(Class.forName("com.badlogic.gdx.scenes.scene2d.ui.utils.DesktopClipboard").newInstance());
-			} catch(Exception e) {
+			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't instantiate desktop clipboard", e);
 			}
 		}

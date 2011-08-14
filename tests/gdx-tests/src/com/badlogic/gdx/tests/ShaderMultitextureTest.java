@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -36,26 +33,18 @@ public class ShaderMultitextureTest extends GdxTest {
 	Texture texture2;
 	Mesh mesh;
 
-	@Override public void create () {
-		String vertexShader = "attribute vec4 a_position;   \n" + 
-									 "attribute vec2 a_texCoord;   \n" + 
-									 "varying vec2 v_texCoord;     \n" + 
-									 "void main()                  \n" + 
-									 "{                            \n" + 
-									 "   gl_Position = a_position; \n" + 
-									 "   v_texCoord = a_texCoord;  \n" + 
-									 "}                            \n";
-		
-		String fragmentShader = "#ifdef GL_ES\n" + 
-										"precision mediump float;\n" + 
-										"#endif\n" + 
-										"varying vec2 v_texCoord;                            \n" + 
-										"uniform sampler2D s_texture;                        \n"	+ 
-										"uniform sampler2D s_texture2;                        \n" + 
-										"void main()                                         \n"	+ 
-										"{                                                   \n"	+										
-										"  gl_FragColor = texture2D( s_texture, v_texCoord ) * texture2D( s_texture2, v_texCoord);\n" + 
-										"}                                                   \n";
+	@Override
+	public void create () {
+		String vertexShader = "attribute vec4 a_position;   \n" + "attribute vec2 a_texCoord;   \n"
+			+ "varying vec2 v_texCoord;     \n" + "void main()                  \n" + "{                            \n"
+			+ "   gl_Position = a_position; \n" + "   v_texCoord = a_texCoord;  \n" + "}                            \n";
+
+		String fragmentShader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n"
+			+ "varying vec2 v_texCoord;                            \n" + "uniform sampler2D s_texture;                        \n"
+			+ "uniform sampler2D s_texture2;                        \n" + "void main()                                         \n"
+			+ "{                                                   \n"
+			+ "  gl_FragColor = texture2D( s_texture, v_texCoord ) * texture2D( s_texture2, v_texCoord);\n"
+			+ "}                                                   \n";
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
 			Usage.TextureCoordinates, 2, "a_texCoord"));
@@ -74,7 +63,7 @@ public class ShaderMultitextureTest extends GdxTest {
 		createTexture();
 	}
 
-	private void createTexture () {		
+	private void createTexture () {
 		Pixmap pixmap = new Pixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.fill();
@@ -90,7 +79,7 @@ public class ShaderMultitextureTest extends GdxTest {
 		pixmap.setColor(0, 0, 0, 1);
 		pixmap.drawLine(128, 0, 128, 256);
 		texture2 = new Texture(pixmap);
-		pixmap.dispose();		
+		pixmap.dispose();
 	}
 
 	public void resume () {
@@ -109,14 +98,15 @@ public class ShaderMultitextureTest extends GdxTest {
 
 		shader.begin();
 		shader.setUniformi("s_texture", 0);
-		shader.setUniformi("s_texture2", 1);		
-		
+		shader.setUniformi("s_texture2", 1);
+
 		mesh.render(shader, GL20.GL_TRIANGLES);
 
 		shader.end();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return true;
 	}
 }

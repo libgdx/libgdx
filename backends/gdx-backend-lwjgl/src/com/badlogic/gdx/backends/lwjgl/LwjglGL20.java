@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.nio.Buffer;
@@ -34,13 +35,10 @@ import org.lwjgl.opengl.GL20;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An implementation of the {@link GL20} interface based on Jogl. Note that Jogl shaders and OpenGL ES shaders will not be 100%
+/** An implementation of the {@link GL20} interface based on Jogl. Note that Jogl shaders and OpenGL ES shaders will not be 100%
  * compatible. Some glGetXXX methods are not implemented.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	public void glActiveTexture (int texture) {
 		GL13.glActiveTexture(texture);
@@ -287,18 +285,18 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public String glGetActiveAttrib (int program, int index, IntBuffer size, Buffer type) {
-		// FIXME this is less than ideal of course...		
-		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);		
+		// FIXME this is less than ideal of course...
+		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
 		String name = GL20.glGetActiveAttrib(program, index, 256, typeTmp);
-		if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
 		return name;
 	}
 
 	public String glGetActiveUniform (int program, int index, IntBuffer size, Buffer type) {
-		// FIXME this is less than ideal of course...		
-		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);		
+		// FIXME this is less than ideal of course...
+		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
 		String name = GL20.glGetActiveUniform(program, index, 256, typeTmp);
-		if(type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
 		return name;
 	}
 

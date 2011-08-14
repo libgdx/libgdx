@@ -41,7 +41,8 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 public class Bridge extends Box2DTest {
 	int e_count = 30;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		Body ground;
 		{
 			BodyDef bd = new BodyDef();

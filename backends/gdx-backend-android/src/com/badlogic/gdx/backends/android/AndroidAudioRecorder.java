@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import android.media.AudioFormat;
@@ -21,11 +22,8 @@ import android.media.MediaRecorder;
 
 import com.badlogic.gdx.audio.AudioRecorder;
 
-/**
- * {@link AudioRecorder} implementation for the android system based on AudioRecord
- * @author badlogicgames@gmail.com
- * 
- */
+/** {@link AudioRecorder} implementation for the android system based on AudioRecord
+ * @author badlogicgames@gmail.com */
 public class AndroidAudioRecorder implements AudioRecorder {
 	/** the audio track we read samples from **/
 	private AudioRecord recorder;
@@ -38,12 +36,14 @@ public class AndroidAudioRecorder implements AudioRecorder {
 		recorder.startRecording();
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		recorder.stop();
 		recorder.release();
 	}
 
-	@Override public void read (short[] samples, int offset, int numSamples) {
+	@Override
+	public void read (short[] samples, int offset, int numSamples) {
 		int read = 0;
 		while (read != numSamples) {
 			read += recorder.read(samples, offset + read, numSamples - read);

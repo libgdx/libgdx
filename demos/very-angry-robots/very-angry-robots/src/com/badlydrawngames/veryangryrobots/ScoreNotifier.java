@@ -18,24 +18,24 @@ import com.badlogic.gdx.utils.Array;
 public class ScoreNotifier implements ScoreListener {
 
 	private Array<ScoreListener> listeners;
-	
-	public ScoreNotifier() {
+
+	public ScoreNotifier () {
 		listeners = new Array<ScoreListener>();
 	}
-	
-	public void addListener(ScoreListener listener) {
+
+	public void addListener (ScoreListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	@Override
-	public void onScoreChanged(int score) {
+	public void onScoreChanged (int score) {
 		for (ScoreListener listener : listeners) {
 			listener.onScoreChanged(score);
 		}
 	}
 
 	@Override
-	public void onLivesChanged(int lives) {
+	public void onLivesChanged (int lives) {
 		for (ScoreListener listener : listeners) {
 			listener.onLivesChanged(lives);
 		}

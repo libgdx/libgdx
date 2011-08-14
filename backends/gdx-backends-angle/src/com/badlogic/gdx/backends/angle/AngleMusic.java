@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.angle;
 
 import java.io.BufferedInputStream;
@@ -71,7 +72,8 @@ final class AngleMusic implements Music, Runnable {
 		ain = AudioSystem.getAudioInputStream(decodedFormat, ain);
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		disposed = true;
 		try {
 			thread.join();
@@ -82,31 +84,38 @@ final class AngleMusic implements Music, Runnable {
 		}
 	}
 
-	@Override public boolean isLooping () {
+	@Override
+	public boolean isLooping () {
 		return looping.get();
 	}
 
-	@Override public boolean isPlaying () {
+	@Override
+	public boolean isPlaying () {
 		return state.get() == Playing;
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 		state.compareAndSet(Playing, Paused);
 	}
 
-	@Override public void play () {
+	@Override
+	public void play () {
 		state.set(Playing);
 	}
 
-	@Override public void stop () {
+	@Override
+	public void stop () {
 		state.set(Stopped);
 	}
 
-	@Override public void setLooping (boolean isLooping) {
+	@Override
+	public void setLooping (boolean isLooping) {
 		looping.set(isLooping);
 	}
 
-	@Override public void setVolume (float volume) {
+	@Override
+	public void setVolume (float volume) {
 		try {
 			volume = Math.min(1, volume);
 			volume = Math.max(0, volume);
@@ -117,7 +126,8 @@ final class AngleMusic implements Music, Runnable {
 		}
 	}
 
-	@Override public void run () {
+	@Override
+	public void run () {
 		int readBytes = 0;
 		long readSamples = 0;
 

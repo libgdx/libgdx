@@ -13,10 +13,6 @@
 
 package com.badlydrawngames.veryangryrobots;
 
-import static com.badlydrawngames.general.MathUtils.min;
-import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_HEIGHT;
-import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_WIDTH;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -43,33 +39,34 @@ import com.badlydrawngames.veryangryrobots.mobiles.Player;
 import com.badlydrawngames.veryangryrobots.mobiles.PlayerShot;
 import com.badlydrawngames.veryangryrobots.mobiles.Robot;
 
-/**
- * The <code>WorldView</code> displays the {@link World} on screen. It also provides the means by which the player can
- * control the game.
+import static com.badlydrawngames.general.MathUtils.*;
+import static com.badlydrawngames.veryangryrobots.Assets.*;
+
+/** The <code>WorldView</code> displays the {@link World} on screen. It also provides the means by which the player can control the
+ * game.
  * 
- * @author Rod
- *
- */
+ * @author Rod */
 public class WorldView {
 
-	/**
-	 * The <code>Presenter</code> interface is how the <code>WorldView</code> communicates the state of its controls.
-	 */
+	/** The <code>Presenter</code> interface is how the <code>WorldView</code> communicates the state of its controls. */
 	public static interface Presenter {
-		void setController(float x, float y);
-		void setFiringController(float dx, float dy);
-		void pause();
-		void resume();
+		void setController (float x, float y);
+
+		void setFiringController (float dx, float dy);
+
+		void pause ();
+
+		void resume ();
 	}
 
 	private static final float PARTICLE_SIZE = Config.asFloat("particle.size", 0.1875f);
-	
-	private static final int SPRITE_CACHE_SIZE = 128;					// TODO: add to Config?
-	private static final float FIRING_DEAD_ZONE = 0.125f;				// TODO: add to Config.
-	private static final float JOYSTICK_DISTANCE_MULTIPLIER = 0.2f;		// TODO: add to Config.
-	
+
+	private static final int SPRITE_CACHE_SIZE = 128; // TODO: add to Config?
+	private static final float FIRING_DEAD_ZONE = 0.125f; // TODO: add to Config.
+	private static final float JOYSTICK_DISTANCE_MULTIPLIER = 0.2f; // TODO: add to Config.
+
 	private static final int MAX_PARTICLES = 256;
-	
+
 	private final World world;
 	private final Presenter presenter;
 	private OrthographicCamera worldCam;
@@ -92,14 +89,12 @@ public class WorldView {
 	private final float worldHeight;
 	private final float worldMaxX;
 	private final float worldMaxY;
-	
-	/**
-	 * Constructs a new WorldView.
+
+	/** Constructs a new WorldView.
 	 * 
 	 * @param world the {@link World} that this is a view of.
-	 * @param presenter the interface by which this <code>WorldView</code> communicates the state of its controls.
-	 */
-	public WorldView(World world, StatusManager statusManager, Presenter presenter) {
+	 * @param presenter the interface by which this <code>WorldView</code> communicates the state of its controls. */
+	public WorldView (World world, StatusManager statusManager, Presenter presenter) {
 		this.world = world;
 		this.presenter = presenter;
 		Rectangle bounds = world.getRoomBounds();
@@ -131,19 +126,17 @@ public class WorldView {
 		resetCaches();
 	}
 
-	public void update(float delta) {
+	public void update (float delta) {
 		particleAdapter.update(delta);
 		flyupManager.update(delta);
 	}
-	
-	/**
-	 * Called when the view should be rendered.
+
+	/** Called when the view should be rendered.
 	 * 
-	 * @param delta the time in seconds since the last render.
-	 */
-	public void render(float delta) {
+	 * @param delta the time in seconds since the last render. */
+	public void render (float delta) {
 		switch (world.getState()) {
-		
+
 		case World.RESETTING:
 			resetCaches();
 			break;
@@ -157,7 +150,7 @@ public class WorldView {
 			drawWallsAndDoors();
 			drawMobiles();
 			break;
-		
+
 		case World.PLAYING:
 			// TODO: this is really a bit of a hack ... does it really need to be called every tick?
 			if (world.getStateTime() == 0.0f) {
@@ -172,26 +165,26 @@ public class WorldView {
 			break;
 		}
 	}
-	
-	private void resetCaches() {
+
+	private void resetCaches () {
 		cacheId = -1;
 		cacheTransform.idt();
 		prevCacheTransform.idt();
 	}
-	
-	private void createMazeContent() {
+
+	private void createMazeContent () {
 		cycleCaches();
 		cacheId = createWallsAndDoors(spriteCache);
 	}
-	
-	private void cycleCaches() {
+
+	private void cycleCaches () {
 		SpriteCache tempCache = prevSpriteCache;
 		prevSpriteCache = spriteCache;
 		spriteCache = tempCache;
 		prevCacheId = cacheId;
 	}
-	
-	private int createWallsAndDoors(SpriteCache sc) {
+
+	private int createWallsAndDoors (SpriteCache sc) {
 		// Walls and doors never move, so we put them into a sprite cache.
 		sc.clear();
 		sc.beginCache();
@@ -209,8 +202,8 @@ public class WorldView {
 		}
 		return sc.endCache();
 	}
-	
-	private void updatePanning() {
+
+	private void updatePanning () {
 		// If we're moving from one room to another then we want to draw the old room scrolling off as the new room
 		// scrolls on.
 		final float w = worldWidth;
@@ -223,42 +216,42 @@ public class WorldView {
 			prevCacheTransform.idt().trn(0.0f, -h * time, 0.0f);
 			cacheTransform.idt().trn(0.0f, h - h * time, 0.0f);
 			break;
-		
+
 		case DoorPositions.MAX_Y:
 			prevCacheTransform.idt().trn(0.0f, h * time, 0.0f);
 			cacheTransform.idt().trn(0.0f, -h + h * time, 0.0f);
 			break;
-		
+
 		case DoorPositions.MIN_X:
 			prevCacheTransform.idt().trn(-w * time, 0.0f, 0.0f);
 			cacheTransform.idt().trn(w - w * time, 0.0f, 0.0f);
 			break;
-		
+
 		case DoorPositions.MAX_X:
 			prevCacheTransform.idt().trn(w * time, 0.0f, 0.0f);
 			cacheTransform.idt().trn(-w + w * time, 0.0f, 0.0f);
 		}
-		
+
 		prevSpriteCache.setTransformMatrix(prevCacheTransform);
 		spriteCache.setTransformMatrix(cacheTransform);
 		spriteBatch.setTransformMatrix(cacheTransform);
 	}
-	
-	private void drawWallsAndDoors() {
+
+	private void drawWallsAndDoors () {
 		// Draw the old room if it is scrolling off.
 		if (world.getState() == World.ENTERED_ROOM && prevCacheId != -1) {
 			prevSpriteCache.begin();
 			prevSpriteCache.draw(prevCacheId);
 			prevSpriteCache.end();
 		}
-		
+
 		// Draw the current room.
 		spriteCache.begin();
 		spriteCache.draw(cacheId);
 		spriteCache.end();
 	}
-	
-	private void drawMobiles() {
+
+	private void drawMobiles () {
 		spriteBatch.setProjectionMatrix(worldCam.combined);
 		spriteBatch.begin();
 		spriteBatch.setColor(Color.WHITE);
@@ -272,34 +265,34 @@ public class WorldView {
 		spriteBatch.end();
 	}
 
-	private void drawRobots() {
+	private void drawRobots () {
 		spriteBatch.setColor(world.getRobotColor());
 		for (Robot robot : world.getRobots()) {
 			drawRobot(robot);
 		}
 		spriteBatch.setColor(Color.WHITE);
 	}
-	
-	private void drawCaptain() {
+
+	private void drawCaptain () {
 		Captain captain = world.getCaptain();
-		if (captain.state == Captain.CHASING) { 
+		if (captain.state == Captain.CHASING) {
 			drawClipped(captain, Assets.nemesisAnimation.getKeyFrame(captain.stateTime, true));
 		}
 	}
 
-	private void drawPlayersShots() {
+	private void drawPlayersShots () {
 		for (PlayerShot shot : world.getPlayerShots()) {
 			draw(shot, Assets.playerShot);
 		}
 	}
-	
-	private void drawRobotsShots() {
+
+	private void drawRobotsShots () {
 		for (BaseShot shot : world.getRobotShots()) {
 			draw(shot, Assets.robotShot);
 		}
 	}
 
-	private void drawPlayer() {
+	private void drawPlayer () {
 		Player player = world.getPlayer();
 		switch (player.state) {
 		case Player.WALKING_LEFT:
@@ -316,8 +309,8 @@ public class WorldView {
 			break;
 		}
 	}
-	
-	private void drawRobot(Robot robot) {
+
+	private void drawRobot (Robot robot) {
 		Animation robotAnimation = null;
 		switch (robot.state) {
 		case Robot.SCANNING:
@@ -346,17 +339,17 @@ public class WorldView {
 		}
 		draw(robot, robotAnimation.getKeyFrame(robot.stateTime, true));
 	}
-	
-	private void draw(GameObject go, TextureRegion region) {
+
+	private void draw (GameObject go, TextureRegion region) {
 		spriteBatch.draw(region, go.x, go.y, go.width, go.height);
 	}
 
-	private void drawClipped(GameObject go, TextureRegion region) {
+	private void drawClipped (GameObject go, TextureRegion region) {
 		float boundsMinX = worldMinX + World.OUTER_WALL_ADJUST + World.WALL_HEIGHT;
 		float boundsMaxX = worldMaxX - World.OUTER_WALL_ADJUST - World.WALL_HEIGHT;
 		float boundsMinY = worldMinY + World.OUTER_WALL_ADJUST + World.WALL_HEIGHT;
 		float boundsMaxY = worldMaxY - World.OUTER_WALL_ADJUST - World.WALL_HEIGHT;
-		
+
 		// Don't draw if it's completely out of bounds.
 		float maxX = go.x + go.width;
 		if (maxX < boundsMinX) return;
@@ -374,45 +367,33 @@ public class WorldView {
 		int srcY = region.getRegionY();
 		int srcWidth = region.getRegionWidth();
 		int srcHeight = region.getRegionHeight();
-		if (minX < boundsMinX) { 
+		if (minX < boundsMinX) {
 			float n = (boundsMinX - minX);
 			x += n;
 			n *= (srcWidth / go.width);
 			srcX += n;
 			srcWidth -= n;
-		}
-		else if (maxX > boundsMaxX) {
+		} else if (maxX > boundsMaxX) {
 			float n = (maxX - boundsMaxX);
 			srcWidth -= n * (srcWidth / go.width);
 		}
-		if (minY < boundsMinY) { 
+		if (minY < boundsMinY) {
 			float n = (boundsMinY - minY);
 			y += n;
 			srcHeight -= n * (srcHeight / go.height);
-		}
-		else if (maxY > boundsMaxY) {
+		} else if (maxY > boundsMaxY) {
 			float n = (maxY - boundsMaxY) * (srcHeight / go.height);
-			srcHeight -= n ;
+			srcHeight -= n;
 			srcY += n;
 		}
 		float width = go.width * srcWidth / region.getRegionWidth();
 		float height = go.height * srcHeight / region.getRegionHeight();
-		
-		spriteBatch.draw(region.getTexture(),
-			x,
-			y,
-			width,
-			height,
-			srcX,
-			srcY,
-			srcWidth,
-			srcHeight,
-			false,
-			false);
+
+		spriteBatch.draw(region.getTexture(), x, y, width, height, srcX, srcY, srcWidth, srcHeight, false, false);
 	}
-	
-	private void drawParticles() {
-		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);		
+
+	private void drawParticles () {
+		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 		for (Particle particle : particleManager.getParticles()) {
 			if (particle.active) {
 				spriteBatch.setColor(particle.color);
@@ -421,8 +402,8 @@ public class WorldView {
 		}
 		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
-	private void drawFlyups() {
+
+	private void drawFlyups () {
 		BitmapFont font = Assets.flyupFont;
 		float scale = font.getScaleX();
 		font.setScale(1.0f / Assets.pixelDensity);
@@ -435,24 +416,20 @@ public class WorldView {
 		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		font.setScale(scale);
 	}
-	
-	/**
-	 * Updates the state of the on-screen controls.
+
+	/** Updates the state of the on-screen controls.
 	 * 
-	 * @param delta time in seconds since the last render.
-	 */
-	public void updateControls(float delta) {
+	 * @param delta time in seconds since the last render. */
+	public void updateControls (float delta) {
 		presenter.setController(0.0f, 0.0f);
 		if (Gdx.input.justTouched()) {
 			worldCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 			if (world.isPaused()) {
 				presenter.resume();
-			}
-			else if (touchPoint.y >= worldMaxY) {
+			} else if (touchPoint.y >= worldMaxY) {
 				presenter.pause();
 			}
-		}
-		else if (Gdx.input.isTouched()) {
+		} else if (Gdx.input.isTouched()) {
 			worldCam.unproject(dragPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 			float dx = dragPoint.x - touchPoint.x;
 			float dy = dragPoint.y - touchPoint.y;

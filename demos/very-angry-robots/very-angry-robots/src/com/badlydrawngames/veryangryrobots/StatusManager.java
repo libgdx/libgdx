@@ -23,27 +23,30 @@ import com.badlydrawngames.veryangryrobots.mobiles.Robot;
 public class StatusManager implements WorldListener {
 
 	public enum Achievements {
-		PERFECTIONIST("Perfectionist", "Clear " + CLEAN_ROOMS + " rooms in a row."),
-		PERFECT_SHOT("Perfect Shot", "Clear a room by shooting everything."),
-		PACIFICIST("Pacifist", "Clear a room without shooting anything."),
-		DAREDEVIL("Daredevil", "Survive for " + DAREDEVIL_SECONDS + " seconds after the captain enters the room."),
-		COWARD("Coward", "Run from " + CHICKEN_ROOMS + " rooms in a row."),
-		ADDICT("Addict", "Play " + ADDICT_GAMES + " games."),
-		LUCKY_JIM("Lucky Jim", "Survive for " + LUCKY_JIM_ROOMS + " rooms without being hit."),
-		ROBOCIDE("Robocide", "Destroyed " + ROBOCIDE_ROBOTS + " robots");
+		PERFECTIONIST("Perfectionist", "Clear " + CLEAN_ROOMS + " rooms in a row."), PERFECT_SHOT("Perfect Shot",
+			"Clear a room by shooting everything."), PACIFICIST("Pacifist", "Clear a room without shooting anything."), DAREDEVIL(
+			"Daredevil", "Survive for " + DAREDEVIL_SECONDS + " seconds after the captain enters the room."), COWARD("Coward",
+			"Run from " + CHICKEN_ROOMS + " rooms in a row."), ADDICT("Addict", "Play " + ADDICT_GAMES + " games."), LUCKY_JIM(
+			"Lucky Jim", "Survive for " + LUCKY_JIM_ROOMS + " rooms without being hit."), ROBOCIDE("Robocide", "Destroyed "
+			+ ROBOCIDE_ROBOTS + " robots");
 
 		private final String summary;
 		private final String text;
-		
-		private Achievements(String summary, String text) {
+
+		private Achievements (String summary, String text) {
 			this.summary = summary;
 			this.text = text;
 		}
-		
-		public String summary() { return this.summary; }
-		public String text() { return this.text; }
+
+		public String summary () {
+			return this.summary;
+		}
+
+		public String text () {
+			return this.text;
+		}
 	}
-	
+
 	// Achievements.
 	private static final int CLEAN_ROOMS = Config.asInt("achievements.cleanRoomsForPerfectionist", 5);
 	private static final int ROBOCIDE_ROBOTS = Config.asInt("achievements.robotsForRobocide", 50);
@@ -51,7 +54,7 @@ public class StatusManager implements WorldListener {
 	private static final int CHICKEN_ROOMS = Config.asInt("achievements.roomsForChicken", 5);
 	private static final int ADDICT_GAMES = Config.asInt("achievements.gamesForAddict", 5);
 	private static final float DAREDEVIL_SECONDS = Config.asInt("achievements.daredevilSeconds", 10);
-	
+
 	// Lives and scoring.
 	private static final int INITIAL_LIVES = Config.asInt("Player.lives", 3);
 	private static final int ROBOT_SCORE = Config.asInt("Robot.score", 50);
@@ -63,55 +66,55 @@ public class StatusManager implements WorldListener {
 	private final ScoringEventNotifier scoringEventNotifier;
 	private final AchievementsNotifier achievementsNotifier;
 	private final EnumSet<Achievements> achieved;
-	
+
 	/** The number of lives that the player has. */
 	private int lives;
-	
+
 	/** The player's score. */
 	private int score;
-	
+
 	/** The number of games that the player has played. */
 	private int numGames;
-	
+
 	/** The number of robots that have been shot in this room. */
 	private int robotsShot;
-	
+
 	/** The number of robots that have been destroyed in this room (including those that have been shot). */
 	private int robotsDestroyed;
-	
+
 	/** The number of times the player has been hit in this room. */
 	private int playerHits;
 
 	/** The number of rooms entered in this game. */
 	private int gameRoomsEntered;
-	
+
 	/** The number of rooms exited in this game. */
 	private int gameRoomsExited;
-	
+
 	/** The number of robots that have been shot during this game. */
 	private int gameRobotsShot;
-	
+
 	/** The number of robots that have been destroyed in this game (including those that have been shot). */
 	private int gameRobotsDestroyed;
-	
+
 	/** The number of times the player has been hit in this game. */
 	private int gamePlayerHits;
-	
+
 	/** The number of times the player has cleared a room during this game. */
 	private int gameCleanRooms;
-	
+
 	/** The number of times the player has cleared a room in a row. */
 	private int cleanRooms;
-	
+
 	/** The number of rooms that the player has got through without dying. */
 	private int gameRoomsWithoutDying;
-	
+
 	/** The number of robots in the room. */
 	private int numRobots;
-	
+
 	/** The number of times the player has fled from a room in a row. */
 	private int chickenRooms;
-	
+
 	/** The number of times the player has fled from a room during this game. */
 	private int gameChickenRooms;
 
@@ -122,61 +125,60 @@ public class StatusManager implements WorldListener {
 	private boolean isPlayerHit;
 
 	private float now;
-	
-	public StatusManager() {
+
+	public StatusManager () {
 		scoreNotifier = new ScoreNotifier();
 		achievementsNotifier = new AchievementsNotifier();
 		scoringEventNotifier = new ScoringEventNotifier();
 		achieved = EnumSet.noneOf(Achievements.class);
 	}
-	
-	public void update(float delta) {
+
+	public void update (float delta) {
 		now += delta;
 		if (daredevilTime != 0.0f && now >= daredevilTime) {
 			achievement(Achievements.DAREDEVIL);
 			daredevilTime = 0.0f;
 		}
 	}
-	
-	public void addScoreListener(ScoreListener listener) {
+
+	public void addScoreListener (ScoreListener listener) {
 		scoreNotifier.addListener(listener);
 	}
-	
-	public void addAchievementsListener(AchievementsListener listener) {
+
+	public void addAchievementsListener (AchievementsListener listener) {
 		achievementsNotifier.addListener(listener);
 	}
-	
-	public void addScoringEventListener(ScoringEventListener listener) {
+
+	public void addScoringEventListener (ScoringEventListener listener) {
 		scoringEventNotifier.addListener(listener);
 	}
 
-	private void setLives(int lives) {
+	private void setLives (int lives) {
 		this.lives = lives;
 		scoreNotifier.onLivesChanged(lives);
 	}
-	
-	private void addLives(int inc) {
+
+	private void addLives (int inc) {
 		setLives(lives + inc);
 	}
 
-	private void setScore(int newScore) {
+	private void setScore (int newScore) {
 		this.score = newScore;
 		scoreNotifier.onScoreChanged(newScore);
 	}
-	
-	private void addScore(int inc) {
+
+	private void addScore (int inc) {
 		int oldScore = score;
 		setScore(score + inc);
 		if (oldScore < EXTRA_LIFE_SCORE_1 && score >= EXTRA_LIFE_SCORE_1) {
 			addLives(1);
-		}
-		else if (oldScore < EXTRA_LIFE_SCORE_2 && score >= EXTRA_LIFE_SCORE_2) {
+		} else if (oldScore < EXTRA_LIFE_SCORE_2 && score >= EXTRA_LIFE_SCORE_2) {
 			addLives(1);
 		}
 	}
 
 	@Override
-	public void onWorldReset() {
+	public void onWorldReset () {
 		numGames++;
 		achieved.clear();
 		if (numGames == ADDICT_GAMES) {
@@ -199,7 +201,7 @@ public class StatusManager implements WorldListener {
 	}
 
 	@Override
-	public void onEnteredRoom(float time, int robots) {
+	public void onEnteredRoom (float time, int robots) {
 		robotsShot = 0;
 		robotsDestroyed = 0;
 		playerHits = 0;
@@ -209,7 +211,7 @@ public class StatusManager implements WorldListener {
 	}
 
 	@Override
-	public void onExitedRoom(float time, int robots) {
+	public void onExitedRoom (float time, int robots) {
 		gameRoomsExited++;
 		if (robots == 0) {
 			chickenRooms = 0;
@@ -217,12 +219,10 @@ public class StatusManager implements WorldListener {
 			gameCleanRooms++;
 			if (cleanRooms == CLEAN_ROOMS) {
 				achievement(Achievements.PERFECTIONIST);
-			}
-			else if (robotsShot == 0) {
+			} else if (robotsShot == 0) {
 				achievement(Achievements.PACIFICIST);
 			}
-		}
-		else {
+		} else {
 			cleanRooms = 0;
 			chickenRooms++;
 			gameChickenRooms++;
@@ -235,24 +235,23 @@ public class StatusManager implements WorldListener {
 			if (gameRoomsWithoutDying == LUCKY_JIM_ROOMS) {
 				achievement(Achievements.LUCKY_JIM);
 			}
-		}
-		else {
+		} else {
 			gameRoomsWithoutDying = 0;
 		}
 		Gdx.app.log("Metrics", "FPS = " + Gdx.graphics.getFramesPerSecond());
 	}
-	
+
 	@Override
-	public void onRobotHit(Robot robot) {
+	public void onRobotHit (Robot robot) {
 		robotsShot++;
 		gameRobotsShot++;
 		if (robotsShot == numRobots) {
 			achievement(Achievements.PERFECT_SHOT);
 		}
 	}
-	
+
 	@Override
-	public void onRobotDestroyed(Robot robot) {
+	public void onRobotDestroyed (Robot robot) {
 		robotsDestroyed++;
 		gameRobotsDestroyed++;
 		int robotScore = ROBOT_SCORE;
@@ -265,9 +264,9 @@ public class StatusManager implements WorldListener {
 			achievement(Achievements.ROBOCIDE);
 		}
 	}
-	
+
 	@Override
-	public void onPlayerHit() {
+	public void onPlayerHit () {
 		daredevilTime = 0.0f;
 		playerHits++;
 		gamePlayerHits++;
@@ -275,16 +274,16 @@ public class StatusManager implements WorldListener {
 	}
 
 	@Override
-	public void onCaptainActivated(float time) {
+	public void onCaptainActivated (float time) {
 		daredevilTime = now + DAREDEVIL_SECONDS;
-	}
-	
-	@Override
-	public void onPlayerFired() {
 	}
 
 	@Override
-	public void onPlayerSpawned() {
+	public void onPlayerFired () {
+	}
+
+	@Override
+	public void onPlayerSpawned () {
 		if (isPlayerHit) {
 			addLives(-1);
 			isPlayerHit = false;
@@ -292,14 +291,14 @@ public class StatusManager implements WorldListener {
 	}
 
 	@Override
-	public void onRobotFired(Robot robot) {
+	public void onRobotFired (Robot robot) {
 	}
 
 	@Override
-	public void onShotDestroyed(BaseShot shot) {
+	public void onShotDestroyed (BaseShot shot) {
 	}
-	
-	private void achievement(Achievements achievement) {
+
+	private void achievement (Achievements achievement) {
 		if (!achieved.contains(achievement)) {
 			achieved.add(achievement);
 			achievementsNotifier.onAttained(achievement);

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -22,7 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.AnimationAction;
 public class RotateTo extends AnimationAction {
 
 	private static final ActionResetingPool<RotateTo> pool = new ActionResetingPool<RotateTo>(4, 100) {
-		@Override protected RotateTo newObject () {
+		@Override
+		protected RotateTo newObject () {
 			return new RotateTo();
 		}
 	};
@@ -39,7 +41,8 @@ public class RotateTo extends AnimationAction {
 		return action;
 	}
 
-	@Override public void setTarget (Actor actor) {
+	@Override
+	public void setTarget (Actor actor) {
 		this.target = actor;
 		this.startRotation = target.rotation;
 		this.deltaRotation = rotation - target.rotation;
@@ -47,7 +50,8 @@ public class RotateTo extends AnimationAction {
 		this.done = false;
 	}
 
-	@Override public void act (float delta) {
+	@Override
+	public void act (float delta) {
 		float alpha = createInterpolatedAlpha(delta);
 		if (done) {
 			target.rotation = rotation;
@@ -56,15 +60,16 @@ public class RotateTo extends AnimationAction {
 		}
 	}
 
-	@Override public void finish () {
+	@Override
+	public void finish () {
 		super.finish();
 		pool.free(this);
 	}
 
-	@Override public Action copy () {
+	@Override
+	public Action copy () {
 		RotateTo rotateTo = $(rotation, duration);
-		if(interpolator != null)
-			rotateTo.setInterpolator(interpolator.copy());
+		if (interpolator != null) rotateTo.setInterpolator(interpolator.copy());
 		return rotateTo;
 	}
 }

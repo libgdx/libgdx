@@ -19,138 +19,129 @@ package java.nio;
 
 import gwt.g3d.client.gl2.array.ArrayBuffer;
 
-/**
- * HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose
- * the implementation of array based byte buffers.
+/** HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose the implementation of array based byte buffers.
  * <p>
- * ReadOnlyHeapByteBuffer extends HeapByteBuffer with all the write methods
- * throwing read only exception.
+ * ReadOnlyHeapByteBuffer extends HeapByteBuffer with all the write methods throwing read only exception.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p>
- * 
- */
+ * </p> */
 final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
 
-    static DirectReadOnlyByteBuffer copy(DirectByteBuffer other, int markOfOther) {
-        DirectReadOnlyByteBuffer buf = new DirectReadOnlyByteBuffer(
-                other.byteArray.getBuffer(), other.capacity(), other.byteArray.getByteOffset());
-        buf.limit = other.limit();
-        buf.position = other.position();
-        buf.mark = markOfOther;
-        buf.order(other.order());
-        return buf;
-    }
+	static DirectReadOnlyByteBuffer copy (DirectByteBuffer other, int markOfOther) {
+		DirectReadOnlyByteBuffer buf = new DirectReadOnlyByteBuffer(other.byteArray.getBuffer(), other.capacity(),
+			other.byteArray.getByteOffset());
+		buf.limit = other.limit();
+		buf.position = other.position();
+		buf.mark = markOfOther;
+		buf.order(other.order());
+		return buf;
+	}
 
-    DirectReadOnlyByteBuffer(ArrayBuffer backingArray, int capacity, int arrayOffset) {
-        super(backingArray, capacity, arrayOffset);
-    }
+	DirectReadOnlyByteBuffer (ArrayBuffer backingArray, int capacity, int arrayOffset) {
+		super(backingArray, capacity, arrayOffset);
+	}
 
-    public ByteBuffer asReadOnlyBuffer() {
-        return copy(this, mark);
-    }
+	public ByteBuffer asReadOnlyBuffer () {
+		return copy(this, mark);
+	}
 
-    public ByteBuffer compact() {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer compact () {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer duplicate() {
-        return copy(this, mark);
-    }
+	public ByteBuffer duplicate () {
+		return copy(this, mark);
+	}
 
-    public boolean isReadOnly() {
-        return true;
-    }
+	public boolean isReadOnly () {
+		return true;
+	}
 
-    protected byte[] protectedArray() {
-        throw new ReadOnlyBufferException();
-    }
+	protected byte[] protectedArray () {
+		throw new ReadOnlyBufferException();
+	}
 
-    protected int protectedArrayOffset() {
-        throw new ReadOnlyBufferException();
-    }
+	protected int protectedArrayOffset () {
+		throw new ReadOnlyBufferException();
+	}
 
-    protected boolean protectedHasArray() {
-        return false;
-    }
+	protected boolean protectedHasArray () {
+		return false;
+	}
 
-    public FloatBuffer asFloatBuffer() {
-    	return DirectReadOnlyFloatBufferAdapter.wrap(this);
-    }
-    
-    public IntBuffer asIntBuffer() {
-    	return order() == ByteOrder.nativeOrder() 
-    		? DirectReadOnlyIntBufferAdapter.wrap(this) 
-    		: super.asIntBuffer();
-    }
-    
-    public ShortBuffer asShortBuffer() {
-    	return order() == ByteOrder.nativeOrder() 
-    		? DirectReadOnlyShortBufferAdapter.wrap(this) 
-    		: super.asShortBuffer();
-    }
-    
-    public ByteBuffer put(byte b) {
-        throw new ReadOnlyBufferException();
-    }
+	public FloatBuffer asFloatBuffer () {
+		return DirectReadOnlyFloatBufferAdapter.wrap(this);
+	}
 
-    public ByteBuffer put(int index, byte b) {
-        throw new ReadOnlyBufferException();
-    }
+	public IntBuffer asIntBuffer () {
+		return order() == ByteOrder.nativeOrder() ? DirectReadOnlyIntBufferAdapter.wrap(this) : super.asIntBuffer();
+	}
 
-    public ByteBuffer put(byte[] src, int off, int len) {
-        throw new ReadOnlyBufferException();
-    }
-    
-    public ByteBuffer putDouble(double value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ShortBuffer asShortBuffer () {
+		return order() == ByteOrder.nativeOrder() ? DirectReadOnlyShortBufferAdapter.wrap(this) : super.asShortBuffer();
+	}
 
-    public ByteBuffer putDouble(int index, double value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer put (byte b) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putFloat(float value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer put (int index, byte b) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putFloat(int index, float value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer put (byte[] src, int off, int len) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putInt(int value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer putDouble (double value) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putInt(int index, int value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer putDouble (int index, double value) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putLong(int index, long value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer putFloat (float value) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putLong(long value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer putFloat (int index, float value) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putShort(int index, short value) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer putInt (int value) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer putShort(short value) {
-        throw new ReadOnlyBufferException();
-    }
-    
-    public ByteBuffer put(ByteBuffer buf) {
-        throw new ReadOnlyBufferException();
-    }
+	public ByteBuffer putInt (int index, int value) {
+		throw new ReadOnlyBufferException();
+	}
 
-    public ByteBuffer slice() {
-        DirectReadOnlyByteBuffer slice = new DirectReadOnlyByteBuffer(byteArray.getBuffer(),
-                remaining(), byteArray.getByteOffset() + position);
-        slice.order = order;
-        return slice;
-    }
+	public ByteBuffer putLong (int index, long value) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public ByteBuffer putLong (long value) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public ByteBuffer putShort (int index, short value) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public ByteBuffer putShort (short value) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public ByteBuffer put (ByteBuffer buf) {
+		throw new ReadOnlyBufferException();
+	}
+
+	public ByteBuffer slice () {
+		DirectReadOnlyByteBuffer slice = new DirectReadOnlyByteBuffer(byteArray.getBuffer(), remaining(), byteArray.getByteOffset()
+			+ position);
+		slice.order = order;
+		return slice;
+	}
 }

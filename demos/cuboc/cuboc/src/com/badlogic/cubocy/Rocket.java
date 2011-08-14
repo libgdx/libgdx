@@ -1,3 +1,4 @@
+
 package com.badlogic.cubocy;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -8,7 +9,7 @@ public class Rocket {
 	static final int EXPLODING = 1;
 	static final int DEAD = 2;
 	static final float VELOCITY = 6;
-	
+
 	Map map;
 	float stateTime = 0;
 	int state = FLYING;
@@ -16,8 +17,8 @@ public class Rocket {
 	Vector2 pos = new Vector2();
 	Vector2 vel = new Vector2();
 	Rectangle bounds = new Rectangle();
-	
-	public Rocket(Map map, float x, float y) {
+
+	public Rocket (Map map, float x, float y) {
 		this.map = map;
 		this.startPos.set(x, y);
 		this.pos.set(x, y);
@@ -27,61 +28,61 @@ public class Rocket {
 		this.bounds.height = 0.6f;
 		this.vel.set(-VELOCITY, 0);
 	}
-	
-	public void update(float deltaTime) {		
-		if(state == FLYING) {
-//			if(pos.dst(map.bob.pos) < pos.dst(map.cube.pos)) vel.set(map.bob.pos);
-//			else vel.set(map.cube.pos);
+
+	public void update (float deltaTime) {
+		if (state == FLYING) {
+// if(pos.dst(map.bob.pos) < pos.dst(map.cube.pos)) vel.set(map.bob.pos);
+// else vel.set(map.cube.pos);
 			vel.set(map.bob.pos);
 			vel.sub(pos).nor().mul(VELOCITY);
 			pos.add(vel.x * deltaTime, vel.y * deltaTime);
 			bounds.x = pos.x + 0.2f;
-			bounds.y = pos.y + 0.2f;			
-			if(checkHit()) {
+			bounds.y = pos.y + 0.2f;
+			if (checkHit()) {
 				state = EXPLODING;
 				stateTime = 0;
 			}
 		}
-		
-		if(state == EXPLODING) {
-			if(stateTime > 0.6f) {
+
+		if (state == EXPLODING) {
+			if (stateTime > 0.6f) {
 				state = FLYING;
 				stateTime = 0;
 				pos.set(startPos);
 				bounds.x = pos.x + 0.2f;
 				bounds.y = pos.y + 0.2f;
 			}
-		}					
-		
-		stateTime += deltaTime;
-	}	
-	
-	Rectangle[] r = { new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle() };	
-
-	private boolean checkHit () {						
-		fetchCollidableRects();
-		for(int i = 0; i < r.length; i++) {
-			if(bounds.overlaps(r[i])) {
-				return true;
-			}			
 		}
-		
-		if(bounds.overlaps(map.bob.bounds)) {
-			if(map.bob.state != Bob.DYING) {
+
+		stateTime += deltaTime;
+	}
+
+	Rectangle[] r = {new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()};
+
+	private boolean checkHit () {
+		fetchCollidableRects();
+		for (int i = 0; i < r.length; i++) {
+			if (bounds.overlaps(r[i])) {
+				return true;
+			}
+		}
+
+		if (bounds.overlaps(map.bob.bounds)) {
+			if (map.bob.state != Bob.DYING) {
 				map.bob.state = Bob.DYING;
 				map.bob.stateTime = 0;
 			}
 			return true;
 		}
-		
-		if(bounds.overlaps(map.cube.bounds)) {			
+
+		if (bounds.overlaps(map.cube.bounds)) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
-	private void fetchCollidableRects() {
+
+	private void fetchCollidableRects () {
 		int p1x = (int)bounds.x;
 		int p1y = (int)Math.floor(bounds.y);
 		int p2x = (int)(bounds.x + bounds.width);

@@ -44,12 +44,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An implementation of the {@link Audio} interface for the desktop.
+/** An implementation of the {@link Audio} interface for the desktop.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 final class AngleAudio implements Audio, Runnable {
 	/** the audio line for sound effects **/
 	private SourceDataLine line;
@@ -62,12 +59,9 @@ final class AngleAudio implements Audio, Runnable {
 
 	private volatile boolean run = false;
 
-	/**
-	 * Helper class for playing back sound effects concurrently.
+	/** Helper class for playing back sound effects concurrently.
 	 * 
-	 * @author mzechner
-	 * 
-	 */
+	 * @author mzechner */
 	class AngleSoundBuffer {
 		private final float[] samples;
 		private final AudioFormat format;
@@ -80,10 +74,8 @@ final class AngleAudio implements Audio, Runnable {
 			this.volume = volume;
 		}
 
-		/**
-		 * Writes the next numFrames frames to the line for playback
-		 * @return whether playback is done or not.
-		 */
+		/** Writes the next numFrames frames to the line for playback
+		 * @return whether playback is done or not. */
 		public boolean writeSamples (int numSamples, float[] buffer) {
 			if (format.getChannels() == 1) {
 				int remainingSamples = Math.min(samples.length, writtenSamples + numSamples / 2);

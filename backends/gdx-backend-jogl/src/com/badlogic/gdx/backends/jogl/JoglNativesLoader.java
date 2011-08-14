@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.jogl;
 
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -23,12 +24,10 @@ import static com.badlogic.gdx.utils.GdxNativesLoader.*;
 public class JoglNativesLoader {
 	static private boolean nativesLoaded = false;
 
-	/**
-	 * loads the necessary libraries depending on the operating system
-	 */
+	/** loads the necessary libraries depending on the operating system */
 	public static void load () {
 		GdxNativesLoader.load();
-		if(GdxNativesLoader.disableNativesLoading) return;
+		if (GdxNativesLoader.disableNativesLoading) return;
 
 		if (nativesLoaded) return;
 

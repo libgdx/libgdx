@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
  * 
  */
@@ -18,63 +17,43 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "poseref")
 public class Poseref {
 
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String poseindex;
-    @XmlAttribute
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String influence;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String poseindex;
+	@XmlAttribute
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String influence;
 
-    /**
-     * Gets the value of the poseindex property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPoseindex() {
-        return poseindex;
-    }
+	/** Gets the value of the poseindex property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getPoseindex () {
+		return poseindex;
+	}
 
-    /**
-     * Sets the value of the poseindex property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPoseindex(String value) {
-        this.poseindex = value;
-    }
+	/** Sets the value of the poseindex property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setPoseindex (String value) {
+		this.poseindex = value;
+	}
 
-    /**
-     * Gets the value of the influence property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getInfluence() {
-        if (influence == null) {
-            return "1.0";
-        } else {
-            return influence;
-        }
-    }
+	/** Gets the value of the influence property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getInfluence () {
+		if (influence == null) {
+			return "1.0";
+		} else {
+			return influence;
+		}
+	}
 
-    /**
-     * Sets the value of the influence property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInfluence(String value) {
-        this.influence = value;
-    }
+	/** Sets the value of the influence property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setInfluence (String value) {
+		this.influence = value;
+	}
 
 }

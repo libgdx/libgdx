@@ -233,10 +233,8 @@ public class ParticleEmitter {
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	/**
-	 * Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
-	 * {@link #draw(SpriteBatch)} separately.
-	 */
+	/** Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
+	 * {@link #draw(SpriteBatch)} separately. */
 	public void draw (SpriteBatch spriteBatch, float delta) {
 		accumulator += Math.min(delta * 1000, 250);
 		if (accumulator < 1) {
@@ -575,10 +573,8 @@ public class ParticleEmitter {
 		}
 	}
 
-	/**
-	 * Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
-	 * to stop smoothly.
-	 */
+	/** Ignores the {@link #setContinuous(boolean) continuous} setting until the emitter is started again. This allows the emitter
+	 * to stop smoothly. */
 	public void allowCompletion () {
 		allowCompletion = true;
 		durationTimer = duration;

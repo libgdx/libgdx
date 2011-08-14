@@ -17,29 +17,20 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-import com.badlogic.gdx.beans.Statement;
-
 import javax.swing.DefaultComboBoxModel;
 
-
-class SwingDefaultComboBoxModelPersistenceDelegate extends
-		DefaultPersistenceDelegate {
-    @Override
-    @SuppressWarnings({ "nls", "boxing" })
-    protected void initialize(Class<?> type, Object oldInstance,
-			Object newInstance, Encoder enc) {
+class SwingDefaultComboBoxModelPersistenceDelegate extends DefaultPersistenceDelegate {
+	@Override
+	@SuppressWarnings({"nls", "boxing"})
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder enc) {
 		super.initialize(type, oldInstance, newInstance, enc);
 
-		DefaultComboBoxModel model = (DefaultComboBoxModel) oldInstance;
+		DefaultComboBoxModel model = (DefaultComboBoxModel)oldInstance;
 
 		int count = model.getSize();
 		Expression getterExp = null;
 		for (int i = 0; i < count; i++) {
-			getterExp = new Expression(model, "getElementAt", new Object[] { i });
+			getterExp = new Expression(model, "getElementAt", new Object[] {i});
 			try {
 				// Calculate the old value of the property
 				Object oldVal = getterExp.getValue();
@@ -50,30 +41,25 @@ class SwingDefaultComboBoxModelPersistenceDelegate extends
 				// Get the current property value in the new environment
 				Object newVal = null;
 				try {
-					newVal = new Expression(newInstance, "getElementAt",
-							new Object[] { i }).getValue();
+					newVal = new Expression(newInstance, "getElementAt", new Object[] {i}).getValue();
 				} catch (IndexOutOfBoundsException ex) {
 					// The newInstance has no elements, so current property
 					// value remains null
 				}
 				/*
-				 * Make the target value and current property value equivalent
-				 * in the new environment
+				 * Make the target value and current property value equivalent in the new environment
 				 */
 				Statement setterStm = null;
 				if (null == targetVal) {
 					if (null != newVal) {
 						// Set to null
-						setterStm = new Statement(oldInstance, "addElement",
-								new Object[] { null });
+						setterStm = new Statement(oldInstance, "addElement", new Object[] {null});
 						enc.writeStatement(setterStm);
 					}
 				} else {
-					PersistenceDelegate pd = enc
-							.getPersistenceDelegate(targetVal.getClass());
+					PersistenceDelegate pd = enc.getPersistenceDelegate(targetVal.getClass());
 					if (!pd.mutatesTo(targetVal, newVal)) {
-						setterStm = new Statement(oldInstance, "addElement",
-								new Object[] { oldVal });
+						setterStm = new Statement(oldInstance, "addElement", new Object[] {oldVal});
 						enc.writeStatement(setterStm);
 					}
 				}

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
@@ -21,15 +22,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class BobTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -53,7 +53,8 @@ public class BobTest extends GdxTest {
 		}
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		float deltaTime = Math.min(Gdx.graphics.getDeltaTime(), 0.1f);
 		for (int i = 0; i < NUM_BOBS; i++) {
 			bobs[i].update(deltaTime);

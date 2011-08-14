@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
@@ -16,10 +15,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "face")
 public class Face {
 
-    @XmlAttribute(required = true)    
-    public int v1;
-    @XmlAttribute    
-    public int v2;
-    @XmlAttribute    
-    public int v3;
+	@XmlAttribute(required = true)
+	public int v1;
+	@XmlAttribute
+	public int v2;
+	@XmlAttribute
+	public int v3;
 }

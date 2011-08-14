@@ -17,37 +17,27 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.DesignMode;
-import com.badlogic.gdx.beans.Visibility;
-import com.badlogic.gdx.beans.beancontext.BeanContextChild;
-import com.badlogic.gdx.beans.beancontext.BeanContextMembershipListener;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 
+import com.badlogic.gdx.beans.DesignMode;
+import com.badlogic.gdx.beans.Visibility;
+
 @SuppressWarnings("unchecked")
-public interface BeanContext extends BeanContextChild, Collection, DesignMode,
-        Visibility {
+public interface BeanContext extends BeanContextChild, Collection, DesignMode, Visibility {
 
-    /**
-     * TODO: find out what it should be initialized to
-     */
-    public static final Object globalHierarchyLock = new Object();
+	/** TODO: find out what it should be initialized to */
+	public static final Object globalHierarchyLock = new Object();
 
-    public void addBeanContextMembershipListener(
-            BeanContextMembershipListener bcml);
+	public void addBeanContextMembershipListener (BeanContextMembershipListener bcml);
 
-    public URL getResource(String name, BeanContextChild bcc)
-            throws IllegalArgumentException;
+	public URL getResource (String name, BeanContextChild bcc) throws IllegalArgumentException;
 
-    public InputStream getResourceAsStream(String name, BeanContextChild bcc)
-            throws IllegalArgumentException;
+	public InputStream getResourceAsStream (String name, BeanContextChild bcc) throws IllegalArgumentException;
 
-    public Object instantiateChild(String beanName) throws IOException,
-            ClassNotFoundException;
+	public Object instantiateChild (String beanName) throws IOException, ClassNotFoundException;
 
-    public void removeBeanContextMembershipListener(
-            BeanContextMembershipListener bcml);
+	public void removeBeanContextMembershipListener (BeanContextMembershipListener bcml);
 }

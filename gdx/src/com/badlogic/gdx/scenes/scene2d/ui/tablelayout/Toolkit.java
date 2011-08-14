@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout.*;
+import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.BaseTableLayout.*;
 
 /** @author Nathan Sweet */
 public abstract class Toolkit<C, T extends C, L extends BaseTableLayout> {

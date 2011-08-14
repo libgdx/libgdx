@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
  * 
  */
@@ -18,59 +17,39 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "submeshname")
 public class Submeshname {
 
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String name;
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String index;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String name;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String index;
 
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
+	/** Gets the value of the name property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getName () {
+		return name;
+	}
 
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+	/** Sets the value of the name property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setName (String value) {
+		this.name = value;
+	}
 
-    /**
-     * Gets the value of the index property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIndex() {
-        return index;
-    }
+	/** Gets the value of the index property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getIndex () {
+		return index;
+	}
 
-    /**
-     * Sets the value of the index property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIndex(String value) {
-        this.index = value;
-    }
+	/** Sets the value of the index property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setIndex (String value) {
+		this.index = value;
+	}
 
 }

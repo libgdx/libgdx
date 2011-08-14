@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -47,7 +46,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 	float SCALE_SPEED = -1;
 	int renderMethod = 0;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		if (renderMethod == 0) renderNormal();
 		;
 		if (renderMethod == 1) renderSprites();
@@ -88,7 +88,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < sprites2.length; i += 6)
 			spriteBatch
 				.draw(texture2, sprites2[i], sprites2[i + 1], 16, 16, 32, 32, scale, scale, angle, 0, 0, 32, 32, false, false);
-		draw2 = (System.nanoTime() - start) / 1000000000.0f;		
+		draw2 = (System.nanoTime() - start) / 1000000000.0f;
 
 		start = System.nanoTime();
 // spriteBatch.drawText(font, "Question?", 100, 300, Color.RED);
@@ -108,7 +108,7 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 			startTime = System.nanoTime();
 		}
 		frames++;
-				
+
 	}
 
 	private void renderSprites () {
@@ -173,7 +173,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		frames++;
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		spriteBatch = new SpriteBatch(1000);
 
 		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogicsmall.jpg"));
@@ -207,8 +208,8 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 
 		for (int i = 0; i < SPRITES * 2; i++) {
 			int x = (int)(Math.random() * (Gdx.graphics.getWidth() - 32));
-			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));		
-			
+			int y = (int)(Math.random() * (Gdx.graphics.getHeight() - 32));
+
 			if (i >= SPRITES)
 				sprites3[i] = new Sprite(texture2, 32, 32);
 			else
@@ -220,40 +221,49 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		renderMethod = (renderMethod + 1) % 2;
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 

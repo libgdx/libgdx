@@ -13,48 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this type of spline see
+/** Encapsulates a catmull rom spline with n control points, n >= 4. For more information on this type of spline see
  * http://www.mvps.org/directx/articles/catmull/.
  * 
- * @author badlogicgames@gmail.com
- * 
- */
+ * @author badlogicgames@gmail.com */
 public class CatmullRomSpline implements Serializable {
 	private static final long serialVersionUID = -3290464799289771451L;
 	private List<Vector3> controlPoints = new ArrayList<Vector3>();
 	Vector3 T1 = new Vector3();
 	Vector3 T2 = new Vector3();
 
-	/**
-	 * Adds a new control point
+	/** Adds a new control point
 	 * 
-	 * @param point the point
-	 */
+	 * @param point the point */
 	public void add (Vector3 point) {
 		controlPoints.add(point);
 	}
 
-	/**
-	 * @return all control points
-	 */
+	/** @return all control points */
 	public List<Vector3> getControlPoints () {
 		return controlPoints;
 	}
 
-	/**
-	 * Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
+	/** Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
 	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
 	 * 
 	 * @param numPoints number of points returned for a segment
-	 * @return the path
-	 */
+	 * @return the path */
 	public List<Vector3> getPath (int numPoints) {
 		ArrayList<Vector3> points = new ArrayList<Vector3>();
 
@@ -93,17 +85,15 @@ public class CatmullRomSpline implements Serializable {
 
 		return points;
 	}
-	
-	/**
-	 * Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
+
+	/** Returns a path, between every two control points numPoints are generated and the control points themselves are added too.
 	 * The first and the last controlpoint are omitted. if there's less than 4 controlpoints an empty path is returned.
 	 * 
 	 * @param points the array of Vector3 instances to store the path in
-	 * @param numPoints number of points returned for a segment
-	 */	
-	public void getPath (Vector3[] points, int numPoints) {		
+	 * @param numPoints number of points returned for a segment */
+	public void getPath (Vector3[] points, int numPoints) {
 		int idx = 0;
-		if (controlPoints.size() < 4) return;	
+		if (controlPoints.size() < 4) return;
 
 		for (int i = 1; i <= controlPoints.size() - 3; i++) {
 			points[idx++].set(controlPoints.get(i));
@@ -125,20 +115,18 @@ public class CatmullRomSpline implements Serializable {
 				Vector3 point = points[idx++].set(controlPoints.get(i)).mul(h1);
 				point.add(controlPoints.get(i + 1).tmp().mul(h2));
 				point.add(T1.tmp().mul(h3));
-				point.add(T2.tmp().mul(h4));				
+				point.add(T2.tmp().mul(h4));
 				t += increment;
 			}
 		}
 
-		points[idx].set(controlPoints.get(controlPoints.size() - 2));	
+		points[idx].set(controlPoints.get(controlPoints.size() - 2));
 	}
 
-	/**
-	 * Returns all tangents for the points in a path. Same semantics as getPath.
+	/** Returns all tangents for the points in a path. Same semantics as getPath.
 	 * 
 	 * @param numPoints number of points returned for a segment
-	 * @return the tangents of the points in the path
-	 */
+	 * @return the tangents of the points in the path */
 	public List<Vector3> getTangents (int numPoints) {
 		ArrayList<Vector3> tangents = new ArrayList<Vector3>();
 
@@ -178,13 +166,11 @@ public class CatmullRomSpline implements Serializable {
 		return tangents;
 	}
 
-	/**
-	 * Returns all tangent's normals in 2D space for the points in a path. The controlpoints have to lie in the x/y plane for this
+	/** Returns all tangent's normals in 2D space for the points in a path. The controlpoints have to lie in the x/y plane for this
 	 * to work. Same semantics as getPath.
 	 * 
 	 * @param numPoints number of points returned for a segment
-	 * @return the tangents of the points in the path
-	 */
+	 * @return the tangents of the points in the path */
 	public List<Vector3> getTangentNormals2D (int numPoints) {
 		ArrayList<Vector3> tangents = new ArrayList<Vector3>();
 
@@ -228,13 +214,11 @@ public class CatmullRomSpline implements Serializable {
 		return tangents;
 	}
 
-	/**
-	 * Returns the tangent's normals using the tangent and provided up vector doing a cross product.
+	/** Returns the tangent's normals using the tangent and provided up vector doing a cross product.
 	 * 
 	 * @param numPoints number of points per segment
 	 * @param up up vector
-	 * @return a list of tangent normals
-	 */
+	 * @return a list of tangent normals */
 	public List<Vector3> getTangentNormals (int numPoints, Vector3 up) {
 		List<Vector3> tangents = getTangents(numPoints);
 		ArrayList<Vector3> normals = new ArrayList<Vector3>();

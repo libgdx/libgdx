@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -37,7 +36,8 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 	float mean = 0;
 	float frames = 0;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
@@ -74,7 +74,8 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		if (mode == 3) {
@@ -117,42 +118,51 @@ public class FillrateTest extends GdxTest implements InputProcessor {
 		}
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		mode++;
 		if (mode > 3) mode = 0;
 		numFills = 0;
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

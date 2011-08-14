@@ -17,41 +17,35 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-
 import java.lang.reflect.Field;
 
-/**
- * This is a persistence delegate for the {@link java.lang.reflect.Field} class.
- */
+/** This is a persistence delegate for the {@link java.lang.reflect.Field} class. */
 class FieldPersistenceDelegate extends PersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        // should not be null or have a type other than Field
-        assert oldInstance instanceof Field : oldInstance;
-        Field oldField = (Field) oldInstance;
-        Class<?> declClass = oldField.getDeclaringClass();
-        return new Expression(oldField, declClass, "getField", //$NON-NLS-1$
-                new Object[] { oldField.getName() });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder out) {
+		// should not be null or have a type other than Field
+		assert oldInstance instanceof Field : oldInstance;
+		Field oldField = (Field)oldInstance;
+		Class<?> declClass = oldField.getDeclaringClass();
+		return new Expression(oldField, declClass, "getField", //$NON-NLS-1$
+			new Object[] {oldField.getName()});
+	}
 
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
-        // check for consistency
-        assert oldInstance instanceof Field : oldInstance;
-        assert newInstance instanceof Field : newInstance;
-        assert newInstance.equals(oldInstance);
-    }
+	@Override
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+		// check for consistency
+		assert oldInstance instanceof Field : oldInstance;
+		assert newInstance instanceof Field : newInstance;
+		assert newInstance.equals(oldInstance);
+	}
 
-    @Override
-    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        assert oldInstance instanceof Field : oldInstance;
-        if (!(newInstance instanceof Field)) {
-            // if null or not a Field
-            return false;
-        }
-        return oldInstance.equals(newInstance);
-    }
+	@Override
+	protected boolean mutatesTo (Object oldInstance, Object newInstance) {
+		assert oldInstance instanceof Field : oldInstance;
+		if (!(newInstance instanceof Field)) {
+			// if null or not a Field
+			return false;
+		}
+		return oldInstance.equals(newInstance);
+	}
 }

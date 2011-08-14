@@ -32,7 +32,8 @@ public class BitmapFontTest extends GdxTest {
 	private BitmapFont font;
 	ImmediateModeRenderer10 renderer;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		spriteBatch = new SpriteBatch();
 
 		TextureAtlas textureAtlas = new TextureAtlas("data/main");
@@ -41,7 +42,8 @@ public class BitmapFontTest extends GdxTest {
 		renderer = new ImmediateModeRenderer10();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		// red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
 		int viewHeight = Gdx.graphics.getHeight();

@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx;
 
-/**
- * An adapter class for {@link InputProcessor}. You can derive from this and only override what you are interested in.
+/** An adapter class for {@link InputProcessor}. You can derive from this and only override what you are interested in.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class InputAdapter implements InputProcessor {
 	public boolean keyDown (int keycode) {
 		return false;
@@ -46,11 +44,13 @@ public class InputAdapter implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

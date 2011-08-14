@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
@@ -15,12 +14,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "")
 @XmlRootElement(name = "texcoord")
 public class Texcoord {
-    @XmlAttribute(required = true)    
-    public float u;
-    @XmlAttribute    
-    public float v;
-    @XmlAttribute    
-    public float w;
-    @XmlAttribute    
-    public float x;
+	@XmlAttribute(required = true)
+	public float u;
+	@XmlAttribute
+	public float v;
+	@XmlAttribute
+	public float w;
+	@XmlAttribute
+	public float x;
 }

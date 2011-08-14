@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -28,14 +29,16 @@ public class AudioRecorderTest extends GdxTest {
 	AudioRecorder recorder;
 	ImmediateModeRenderer10 renderer;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
 		renderer = new ImmediateModeRenderer10();
 
 		Thread t = new Thread(new Runnable() {
 
-			@Override public void run () {
+			@Override
+			public void run () {
 				while (true) {
 					recorder.read(samples, 0, samples.length);
 					device.writeSamples(samples, 0, samples.length);
@@ -46,7 +49,8 @@ public class AudioRecorderTest extends GdxTest {
 		t.start();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -59,17 +63,20 @@ public class AudioRecorderTest extends GdxTest {
 // renderer.end();
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 		device.dispose();
 		recorder.dispose();
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecoder(44100, true);
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.FloatBuffer;
@@ -37,8 +38,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * <p>
+/** <p>
  * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
  * VRAM in form of vertex buffer objects or in RAM in form of vertex arrays. The former variant is more performant and is prefered
  * over vertex arrays if hardware supports it.
@@ -62,10 +62,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * Meshes can be used with either OpenGL ES 1.x or OpenGL ES 2.0.
  * </p>
  * 
- * @author mzechner, Dave Clayton <contact@redskyforge.com>
- * 
- * 
- */
+ * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class Mesh implements Disposable {
 	public enum VertexDataType {
 		VertexArray, VertexBufferObject, VertexBufferObjectSubData,
@@ -79,19 +76,17 @@ public class Mesh implements Disposable {
 
 	final VertexData vertices;
 	final IndexData indices;
-	boolean autoBind = true;	
+	boolean autoBind = true;
 	final boolean isVertexArray;
 	int refCount = 0;
 
-	/**
-	 * Creates a new Mesh with the given attributes.
+	/** Creates a new Mesh with the given attributes.
 	 * 
 	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
 	 * @param maxVertices the maximum number of vertices this mesh can hold
 	 * @param maxIndices the maximum number of indices this mesh can hold
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
-	 *           normal or texture coordinate
-	 */
+	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
 		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
@@ -105,25 +100,16 @@ public class Mesh implements Disposable {
 
 		addManagedMesh(Gdx.app, this);
 	}
-	
-	/**
-	 * Creates a new Mesh with the given attributes.
+
+	/** Creates a new Mesh with the given attributes.
 	 * 
-	 * @param isStatic
-	 *            whether this mesh is static or not. Allows for internal
-	 *            optimizations.
-	 * @param maxVertices
-	 *            the maximum number of vertices this mesh can hold
-	 * @param maxIndices
-	 *            the maximum number of indices this mesh can hold
-	 * @param attributes
-	 *            the {@link VertexAttributes}. Each vertex attribute defines
-	 *            one property of a vertex such as position, normal or texture
-	 *            coordinate
-	 */
-	public Mesh(boolean isStatic, int maxVertices, int maxIndices,
-			VertexAttributes attributes) {
-		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO ) {
+	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
+	 * @param maxVertices the maximum number of vertices this mesh can hold
+	 * @param maxIndices the maximum number of indices this mesh can hold
+	 * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
+	 *           normal or texture coordinate */
+	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
+		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
 			isVertexArray = false;
@@ -136,16 +122,14 @@ public class Mesh implements Disposable {
 		addManagedMesh(Gdx.app, this);
 	}
 
-	/**
-	 * Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
+	/** Creates a new Mesh with the given attributes. This is an expert method with no error checking. Use at your own risk.
 	 * 
 	 * @param type the {@link VertexDataType} to be used, VBO or VA.
 	 * @param isStatic whether this mesh is static or not. Allows for internal optimizations.
 	 * @param maxVertices the maximum number of vertices this mesh can hold
 	 * @param maxIndices the maximum number of indices this mesh can hold
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
-	 *           normal or texture coordinate
-	 */
+	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
 		if (type == VertexDataType.VertexArray && Gdx.graphics.isGL20Available()) type = VertexDataType.VertexBufferObject;
 
@@ -162,152 +146,122 @@ public class Mesh implements Disposable {
 			indices = new IndexBufferObject(maxIndices);
 			isVertexArray = true;
 		}
-		addManagedMesh(Gdx.app, this);		
+		addManagedMesh(Gdx.app, this);
 	}
 
-	/**
-	 * Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
+	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
 	 * fixed point an IllegalArgumentException will be thrown.
 	 * 
-	 * @param vertices the vertices.
-	 */
+	 * @param vertices the vertices. */
 	public void setVertices (float[] vertices) {
 		this.vertices.setVertices(vertices, 0, vertices.length);
 	}
 
-	/**
-	 * Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
+	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
 	 * fixed point an IllegalArgumentException will be thrown.
 	 * 
 	 * @param vertices the vertices.
 	 * @param offset the offset into the vertices array
-	 * @param count the number of floats to use
-	 */
+	 * @param count the number of floats to use */
 	public void setVertices (float[] vertices, int offset, int count) {
 		this.vertices.setVertices(vertices, offset, count);
 	}
-	
-	/**
-	 * Copies the vertices from the Mesh to the float array. The float 
-	 * array must be large enough to hold all the Mesh's vertices.
-	 * @param vertices the array to copy the vertices to
-	 */
-	public void getVertices(float[] vertices) {
-		if(vertices.length < getNumVertices() * getVertexSize() / 4)
-			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs " + getNumVertices() * getVertexSize() / 4);
-		int pos = getVerticesBuffer().position();		
+
+	/** Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
+	 * @param vertices the array to copy the vertices to */
+	public void getVertices (float[] vertices) {
+		if (vertices.length < getNumVertices() * getVertexSize() / 4)
+			throw new IllegalArgumentException("not enough room in vertices array, has " + vertices.length + " floats, needs "
+				+ getNumVertices() * getVertexSize() / 4);
+		int pos = getVerticesBuffer().position();
 		getVerticesBuffer().position(0);
 		getVerticesBuffer().get(vertices, 0, getNumVertices() * getVertexSize() / 4);
 		getVerticesBuffer().position(pos);
 	}
 
-	/**
-	 * Sets the indices of this Mesh
+	/** Sets the indices of this Mesh
 	 * 
-	 * @param indices the indices
-	 */
+	 * @param indices the indices */
 	public void setIndices (short[] indices) {
 		this.indices.setIndices(indices, 0, indices.length);
 	}
 
-	/**
-	 * Sets the indices of this Mesh.
+	/** Sets the indices of this Mesh.
 	 * 
 	 * @param indices the indices
 	 * @param offset the offset into the indices array
-	 * @param count the number of indices to copy
-	 */
+	 * @param count the number of indices to copy */
 	public void setIndices (short[] indices, int offset, int count) {
 		this.indices.setIndices(indices, offset, count);
 	}
-	
-	/**
-	 * Copies the indices from the Mesh to the short array. The short 
-	 * array must be large enough to hold all the Mesh's indices.
-	 * @param indices the array to copy the indices to
-	 */
-	public void getIndices(short[] indices) {
-		if(indices.length < getNumIndices())
-			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " floats, needs " + getNumIndices());
-		int pos = getIndicesBuffer().position();		
+
+	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold all the Mesh's indices.
+	 * @param indices the array to copy the indices to */
+	public void getIndices (short[] indices) {
+		if (indices.length < getNumIndices())
+			throw new IllegalArgumentException("not enough room in indices array, has " + indices.length + " floats, needs "
+				+ getNumIndices());
+		int pos = getIndicesBuffer().position();
 		getIndicesBuffer().position(0);
 		getIndicesBuffer().get(indices, 0, getNumIndices());
 		getIndicesBuffer().position(pos);
 	}
 
-	/**
-	 * @return the number of defined indices
-	 */
+	/** @return the number of defined indices */
 	public int getNumIndices () {
 		return indices.getNumIndices();
 	}
 
-	/**
-	 * @return the number of defined vertices
-	 */
+	/** @return the number of defined vertices */
 	public int getNumVertices () {
 		return vertices.getNumVertices();
 	}
 
-	/**
-	 * @return the maximum number of vertices this mesh can hold
-	 */
+	/** @return the maximum number of vertices this mesh can hold */
 	public int getMaxVertices () {
 		return vertices.getNumMaxVertices();
 	}
 
-	/**
-	 * @return the maximum number of indices this mesh can hold
-	 */
+	/** @return the maximum number of indices this mesh can hold */
 	public int getMaxIndices () {
 		return indices.getNumMaxIndices();
 	}
 
-	/**
-	 * @return the size of a single vertex in bytes
-	 */
+	/** @return the size of a single vertex in bytes */
 	public int getVertexSize () {
 		return vertices.getAttributes().vertexSize;
 	}
 
-	/**
-	 * Sets whether to bind the underlying {@link VertexArray} or {@link VertexBufferObject} automatically on a call to one of the
+	/** Sets whether to bind the underlying {@link VertexArray} or {@link VertexBufferObject} automatically on a call to one of the
 	 * {@link #render(int)} methods or not. Usually you want to use autobind. Manual binding is an expert functionality. There is a
 	 * driver bug on the MSM720xa chips that will fuck up memory if you manipulate the vertices and indices of a Mesh multiple
 	 * times while it is bound. Keep this in mind.
 	 * 
-	 * @param autoBind whether to autobind meshes.
-	 */
+	 * @param autoBind whether to autobind meshes. */
 	public void setAutoBind (boolean autoBind) {
 		this.autoBind = autoBind;
 	}
-	
-	/**
-	 * Binds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} if indices were given. Use
-	 * this with OpenGL ES 1.x and when auto-bind is disabled.
-	 */
+
+	/** Binds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} if indices were given. Use
+	 * this with OpenGL ES 1.x and when auto-bind is disabled. */
 	public void bind () {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
 		vertices.bind();
 		if (!isVertexArray && indices.getNumIndices() > 0) indices.bind();
 	}
 
-	/**
-	 * Unbinds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} is indices were given.
-	 * Use this with OpenGL ES 1.x and when auto-bind is disabled.
-	 */
+	/** Unbinds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} is indices were given.
+	 * Use this with OpenGL ES 1.x and when auto-bind is disabled. */
 	public void unbind () {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
 		vertices.unbind();
 		if (!isVertexArray && indices.getNumIndices() > 0) indices.unbind();
 	}
 
-	/**
-	 * Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
+	/** Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
 	 * ES 2.0 and when auto-bind is disabled.
 	 * 
-	 * @param shader the shader (does not bind the shader)
-	 */
+	 * @param shader the shader (does not bind the shader) */
 	public void bind (ShaderProgram shader) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 
@@ -315,12 +269,10 @@ public class Mesh implements Disposable {
 		if (indices.getNumIndices() > 0) indices.bind();
 	}
 
-	/**
-	 * Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
+	/** Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
 	 * ES 1.x and when auto-bind is disabled.
 	 * 
-	 * @param shader the shader (does not unbind the shader)
-	 */
+	 * @param shader the shader (does not unbind the shader) */
 	public void unbind (ShaderProgram shader) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 
@@ -328,8 +280,7 @@ public class Mesh implements Disposable {
 		if (indices.getNumIndices() > 0) indices.unbind();
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
 	 * primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
 	 * </p>
@@ -338,14 +289,12 @@ public class Mesh implements Disposable {
 	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
 	 * </p>
 	 * 
-	 * @param primitiveType the primitive type
-	 */
+	 * @param primitiveType the primitive type */
 	public void render (int primitiveType) {
 		render(primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices());
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Renders the mesh using the given primitive type. offset specifies the offset into vertex buffer and is ignored for the index
 	 * buffer. Count specifies the number of vertices or indices to use thus count / #vertices per primitive primitives are
 	 * rendered.
@@ -357,11 +306,10 @@ public class Mesh implements Disposable {
 	 * 
 	 * @param primitiveType the primitive type
 	 * @param offset the offset into the vertex buffer, ignored for indexed rendering
-	 * @param count number of vertices or indices to use
-	 */
+	 * @param count number of vertices or indices to use */
 	public void render (int primitiveType, int offset, int count) {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-		
+
 		if (autoBind) bind();
 
 		if (isVertexArray) {
@@ -386,8 +334,7 @@ public class Mesh implements Disposable {
 		if (autoBind) unbind();
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
 	 * primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
 	 * </p>
@@ -405,14 +352,12 @@ public class Mesh implements Disposable {
 	 * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
 	 * </p>
 	 * 
-	 * @param primitiveType the primitive type
-	 */
+	 * @param primitiveType the primitive type */
 	public void render (ShaderProgram shader, int primitiveType) {
 		render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices());
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
 	 * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
 	 * #vertices per primitive primitives are rendered.
@@ -434,8 +379,7 @@ public class Mesh implements Disposable {
 	 * @param shader the shader to be used
 	 * @param primitiveType the primitive type
 	 * @param offset the offset into the vertex or index buffer
-	 * @param count number of vertices or indices to use
-	 */
+	 * @param count number of vertices or indices to use */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 
@@ -449,23 +393,19 @@ public class Mesh implements Disposable {
 		if (autoBind) unbind(shader);
 	}
 
-	/**
-	 * Frees all resources associated with this Mesh
-	 */
+	/** Frees all resources associated with this Mesh */
 	public void dispose () {
 		refCount--;
-		if(refCount > 0) return;
-		if(meshes.get(Gdx.app) != null) meshes.get(Gdx.app).remove(this);
+		if (refCount > 0) return;
+		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).remove(this);
 		vertices.dispose();
 		indices.dispose();
 	}
 
-	/**
-	 * Returns the first {@link VertexAttribute} having the given {@link Usage}.
+	/** Returns the first {@link VertexAttribute} having the given {@link Usage}.
 	 * 
 	 * @param usage the Usage.
-	 * @return the VertexAttribute or null if no attribute with that usage was found.
-	 */
+	 * @return the VertexAttribute or null if no attribute with that usage was found. */
 	public VertexAttribute getVertexAttribute (int usage) {
 		VertexAttributes attributes = vertices.getAttributes();
 		int len = attributes.size();
@@ -475,95 +415,80 @@ public class Mesh implements Disposable {
 		return null;
 	}
 
-	/**
-	 * @return the vertex attributes of this Mesh
-	 */
+	/** @return the vertex attributes of this Mesh */
 	public VertexAttributes getVertexAttributes () {
 		return vertices.getAttributes();
 	}
 
-	/**
-	 * @return the backing FloatBuffer holding the vertices. Does not have to be a direct buffer on Android!
-	 */
+	/** @return the backing FloatBuffer holding the vertices. Does not have to be a direct buffer on Android! */
 	public FloatBuffer getVerticesBuffer () {
 		return vertices.getBuffer();
 	}
-	
-	/**
-	 * Calculates the {@link BoundingBox} of the vertices contained
-	 * in this mesh. In case no vertices are defined yet a {@link GdxRuntimeException}
-	 * is thrown. This method creates a new BoundingBox instance.
+
+	/** Calculates the {@link BoundingBox} of the vertices contained in this mesh. In case no vertices are defined yet a
+	 * {@link GdxRuntimeException} is thrown. This method creates a new BoundingBox instance.
 	 * 
-	 * @return the bounding box.
-	 */
-	public BoundingBox calculateBoundingBox() {
+	 * @return the bounding box. */
+	public BoundingBox calculateBoundingBox () {
 		BoundingBox bbox = new BoundingBox();
 		calculateBoundingBox(bbox);
 		return bbox;
 	}
-	
-	/**
-	 * Calculates the {@link BoundingBox} of the vertices contained
-	 * in this mesh. In case no vertices are defined yet a {@link GdxRuntimeException}
-	 * is thrown.
+
+	/** Calculates the {@link BoundingBox} of the vertices contained in this mesh. In case no vertices are defined yet a
+	 * {@link GdxRuntimeException} is thrown.
 	 * 
-	 * @param bbox the bounding box to store the result in.
-	 */
-	public void calculateBoundingBox(BoundingBox bbox) {
+	 * @param bbox the bounding box to store the result in. */
+	public void calculateBoundingBox (BoundingBox bbox) {
 		final int numVertices = getNumVertices();
-		if(numVertices==0)
-			throw new GdxRuntimeException("No vertices defined");
-						
+		if (numVertices == 0) throw new GdxRuntimeException("No vertices defined");
+
 		final FloatBuffer verts = vertices.getBuffer();
 		bbox.inf();
 		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
-		final int offset = posAttrib.offset / 4;		
+		final int offset = posAttrib.offset / 4;
 		final int vertexSize = vertices.getAttributes().vertexSize / 4;
 		int idx = offset;
-			
-		switch(posAttrib.numComponents) {
-			case 1:
-				for(int i = 0; i < numVertices; i++) {
-					bbox.ext(verts.get(idx), 0, 0);
-					idx+=vertexSize;
-				}
-				break;
-			case 2:
-				for(int i = 0; i < numVertices; i++) {
-					bbox.ext(verts.get(idx), verts.get(idx+1), 0);
-					idx+=vertexSize;
-				}
-				break;
-			case 3:
-				for(int i = 0; i < numVertices; i++) {
-					bbox.ext(verts.get(idx), verts.get(idx+1), verts.get(idx+2));
-					idx+=vertexSize;
-				}
-				break;
-		}				
+
+		switch (posAttrib.numComponents) {
+		case 1:
+			for (int i = 0; i < numVertices; i++) {
+				bbox.ext(verts.get(idx), 0, 0);
+				idx += vertexSize;
+			}
+			break;
+		case 2:
+			for (int i = 0; i < numVertices; i++) {
+				bbox.ext(verts.get(idx), verts.get(idx + 1), 0);
+				idx += vertexSize;
+			}
+			break;
+		case 3:
+			for (int i = 0; i < numVertices; i++) {
+				bbox.ext(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+				idx += vertexSize;
+			}
+			break;
+		}
 	}
 
-	/**
-	 * @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android!
-	 */
+	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
 	public ShortBuffer getIndicesBuffer () {
 		return indices.getBuffer();
 	}
 
-	private static void addManagedMesh(Application app, Mesh mesh) {
+	private static void addManagedMesh (Application app, Mesh mesh) {
 		List<Mesh> managedResources = meshes.get(app);
-		if(managedResources == null) managedResources = new ArrayList<Mesh>();
+		if (managedResources == null) managedResources = new ArrayList<Mesh>();
 		managedResources.add(mesh);
 		meshes.put(app, managedResources);
 	}
-	
-	/**
-	 * Invalidates all meshes so the next time they are rendered new VBO handles are generated.
-	 * @param app 
-	 */
+
+	/** Invalidates all meshes so the next time they are rendered new VBO handles are generated.
+	 * @param app */
 	public static void invalidateAllMeshes (Application app) {
 		List<Mesh> meshesList = meshes.get(app);
-		if(meshesList == null) return;
+		if (meshesList == null) return;
 		for (int i = 0; i < meshesList.size(); i++) {
 			if (meshesList.get(i).vertices instanceof VertexBufferObject) {
 				((VertexBufferObject)meshesList.get(i).vertices).invalidate();
@@ -572,70 +497,64 @@ public class Mesh implements Disposable {
 		}
 	}
 
-	/**
-	 * Will clear the managed mesh cache. I wouldn't use this if i was you :)
-	 */
-	public static void clearAllMeshes (Application app) {		
+	/** Will clear the managed mesh cache. I wouldn't use this if i was you :) */
+	public static void clearAllMeshes (Application app) {
 		meshes.remove(app);
 	}
-	
-	public static String getManagedStatus() {
+
+	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		builder.append("Managed meshes/app: { ");
-		for(Application app: meshes.keySet()) {
+		for (Application app : meshes.keySet()) {
 			builder.append(meshes.get(app).size());
 			builder.append(" ");
 		}
 		builder.append("}");
 		return builder.toString();
 	}
-	
-	/**
-	 * Method to scale the positions in the mesh. Normals will be
-	 * kept as is. This is a potentially slow operation, use with
-	 * care. It will also create a temporary float[] which will
-	 * be garbage collected.
+
+	/** Method to scale the positions in the mesh. Normals will be kept as is. This is a potentially slow operation, use with care.
+	 * It will also create a temporary float[] which will be garbage collected.
 	 * 
 	 * @param scaleX scale on x
 	 * @param scaleY scale on y
-	 * @param scaleZ scale on z
-	 */
-	public void scale(float scaleX, float scaleY, float scaleZ) {
+	 * @param scaleZ scale on z */
+	public void scale (float scaleX, float scaleY, float scaleZ) {
 		VertexAttribute posAttr = getVertexAttribute(Usage.Position);
 		int offset = posAttr.offset / 4;
 		int numComponents = posAttr.numComponents;
 		int numVertices = getNumVertices();
 		int vertexSize = getVertexSize() / 4;
-		
+
 		float[] vertices = new float[numVertices * vertexSize];
 		getVertices(vertices);
-		
+
 		int idx = offset;
-		switch(numComponents) {
+		switch (numComponents) {
 		case 1:
-			for(int i = 0; i < numVertices; i++) {
-				vertices[idx] *= scaleX;				
-				idx+=vertexSize;
+			for (int i = 0; i < numVertices; i++) {
+				vertices[idx] *= scaleX;
+				idx += vertexSize;
 			}
 			break;
 		case 2:
-			for(int i = 0; i < numVertices; i++) {
+			for (int i = 0; i < numVertices; i++) {
 				vertices[idx] *= scaleX;
-				vertices[idx+1] *= scaleY;				
-				idx+=vertexSize;
+				vertices[idx + 1] *= scaleY;
+				idx += vertexSize;
 			}
 			break;
 		case 3:
-			for(int i = 0; i < numVertices; i++) {
+			for (int i = 0; i < numVertices; i++) {
 				vertices[idx] *= scaleX;
-				vertices[idx+1] *= scaleY;				
-				vertices[idx+2] *= scaleZ;
-				idx+=vertexSize;
+				vertices[idx + 1] *= scaleY;
+				vertices[idx + 2] *= scaleZ;
+				idx += vertexSize;
 			}
 			break;
 		}
-		
+
 		setVertices(vertices);
-	}	
+	}
 }

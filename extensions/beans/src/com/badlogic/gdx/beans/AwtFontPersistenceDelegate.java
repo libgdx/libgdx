@@ -19,18 +19,13 @@ package com.badlogic.gdx.beans;
 
 import java.awt.Font;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import org.apache.harmony.beans.BeansUtils;
 
 class AwtFontPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        Font font = (Font) oldInstance;
-        return new Expression(oldInstance, oldInstance.getClass(),
-                BeansUtils.NEW, new Object[] { font.getFontName(),
-                        font.getStyle(), font.getSize() });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		Font font = (Font)oldInstance;
+		return new Expression(oldInstance, oldInstance.getClass(), BeansUtils.NEW, new Object[] {font.getFontName(),
+			font.getStyle(), font.getSize()});
+	}
 }

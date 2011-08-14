@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Peripheral;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,7 +32,8 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 
 	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE};
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.graphics.getGL10().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.update();
@@ -54,56 +56,66 @@ public class MultitouchTest extends GdxTest implements InputProcessor {
 
 		renderer.end();
 
-//		if (System.nanoTime() - startTime > 1000000000l) {
-//			Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
-//			startTime = System.nanoTime();
-//		}
+// if (System.nanoTime() - startTime > 1000000000l) {
+// Gdx.app.log("MultiTouhTest", "fps:" + Gdx.graphics.getFramesPerSecond());
+// startTime = System.nanoTime();
+// }
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Gdx.app.log("Multitouch", "multitouch supported: " + Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen));
 		renderer = new ImmediateModeRenderer10();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());		
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(Gdx.graphics.getWidth() / 2.0f, Gdx.graphics.getHeight() / 2.0f, 0);
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 // Gdx.app.log("Multitouch", "down: " + pointer);
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 // Gdx.app.log("Multitouch", "drag: " + pointer);
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 // Gdx.app.log("Multitouch", "up: " + pointer);
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

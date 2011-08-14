@@ -40,7 +40,8 @@ public class ContinuousTest extends Box2DTest {
 	Body m_body;
 	float m_angularVelocity;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		{
 			BodyDef bd = new BodyDef();
 			bd.position.set(0, 0);

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class TextureDownloadTest extends GdxTest {
 	@Override
-	public boolean needsGL20() {
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -41,26 +42,26 @@ public class TextureDownloadTest extends GdxTest {
 	SpriteBatch batch;
 
 	public static class URLHandle extends FileHandle {
-		final URL url; 
-		
-		public URLHandle(String url) {
+		final URL url;
+
+		public URLHandle (String url) {
 			try {
 				this.url = new URL(url);
-			} catch(Exception e) {
+			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't create URLHandle for '" + url + "'", e);
 			}
 		}
-		
+
 		@Override
-		public FileHandle child(String name) {
+		public FileHandle child (String name) {
 			return null;
 		}
 
 		@Override
-		public FileHandle parent() {
+		public FileHandle parent () {
 			return null;
-		}		
-		
+		}
+
 		public InputStream read () {
 			try {
 				return url.openStream();
@@ -69,11 +70,12 @@ public class TextureDownloadTest extends GdxTest {
 			}
 		}
 	}
-	
-	@Override public void create() {
+
+	@Override
+	public void create () {
 		// POT image, mananged
 		potTexture = new Texture(new URLHandle("http://libgdx.badlogicgames.com/bob.png"));
-	
+
 		// non-POT image, not managed!
 		Pixmap pixmap = new Pixmap(new URLHandle("http://libgdx.badlogicgames.com/libgdx.png"));
 		int width = MathUtils.nextPowerOfTwo(pixmap.getWidth());
@@ -83,11 +85,12 @@ public class TextureDownloadTest extends GdxTest {
 		nonPotTexture = new TextureRegion(new Texture(potPixmap), 0, 0, pixmap.getWidth(), pixmap.getHeight());
 		pixmap.dispose();
 		potPixmap.dispose();
-		
+
 		batch = new SpriteBatch();
 	}
-	
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();

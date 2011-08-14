@@ -17,22 +17,18 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
-class StaticFieldPersistenceDelegate extends
-		PersistenceDelegate {
+class StaticFieldPersistenceDelegate extends PersistenceDelegate {
 
-	public StaticFieldPersistenceDelegate() {
+	public StaticFieldPersistenceDelegate () {
 		super();
 	}
-	
+
 	static HashMap<Object, String> pairs = new HashMap<Object, String>();
-	static void init(Class<?> clz) {
+
+	static void init (Class<?> clz) {
 		Field[] field = clz.getFields();
 		for (int i = 0; i < field.length; i++) {
 			Object value = null;
@@ -48,7 +44,7 @@ class StaticFieldPersistenceDelegate extends
 	}
 
 	@Override
-	protected Expression instantiate(Object oldInstance, Encoder enc) {
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
 		Field field = null;
 		try {
 			field = oldInstance.getClass().getDeclaredField(pairs.get(oldInstance));
@@ -56,7 +52,7 @@ class StaticFieldPersistenceDelegate extends
 			enc.getExceptionListener().exceptionThrown(e);
 		}
 		return new Expression(oldInstance, field, "get", //$NON-NLS-1$
-				new Object[] { oldInstance.getClass() });
+			new Object[] {oldInstance.getClass()});
 	}
 
 }

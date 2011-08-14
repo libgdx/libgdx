@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -22,7 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.AnimationAction;
 public class FadeOut extends AnimationAction {
 
 	private static final ActionResetingPool<FadeOut> pool = new ActionResetingPool<FadeOut>(4, 100) {
-		@Override protected FadeOut newObject () {
+		@Override
+		protected FadeOut newObject () {
 			return new FadeOut();
 		}
 	};
@@ -37,7 +39,8 @@ public class FadeOut extends AnimationAction {
 		return action;
 	}
 
-	@Override public void setTarget (Actor actor) {
+	@Override
+	public void setTarget (Actor actor) {
 		this.target = actor;
 		this.startAlpha = this.target.color.a;
 		this.deltaAlpha = -this.target.color.a;
@@ -45,7 +48,8 @@ public class FadeOut extends AnimationAction {
 		this.done = false;
 	}
 
-	@Override public void act (float delta) {
+	@Override
+	public void act (float delta) {
 		float alpha = createInterpolatedAlpha(delta);
 		if (done) {
 			target.color.a = 0.0f;
@@ -54,15 +58,16 @@ public class FadeOut extends AnimationAction {
 		}
 	}
 
-	@Override public void finish () {
+	@Override
+	public void finish () {
 		super.finish();
 		pool.free(this);
 	}
 
-	@Override public Action copy () {
+	@Override
+	public Action copy () {
 		FadeOut fadeOut = $(duration);
-		if(interpolator != null)
-			fadeOut.setInterpolator(interpolator.copy());
+		if (interpolator != null) fadeOut.setInterpolator(interpolator.copy());
 		return fadeOut;
 	}
 }

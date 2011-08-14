@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tiledmappacker;
 
 import java.awt.image.BufferedImage;
@@ -25,10 +26,8 @@ import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.IntMap;
 
-/**
- * Contains extra information that can only be calculated after a Tiled Map's tile set images are loaded.
- * @author David Fraska
- * */
+/** Contains extra information that can only be calculated after a Tiled Map's tile set images are loaded.
+ * @author David Fraska */
 public class TileSetLayout extends TileSet {
 
 	public final BufferedImage image;
@@ -37,12 +36,10 @@ public class TileSetLayout extends TileSet {
 	private int numCols;
 	public final int numTiles;
 
-	/**
-	 * Constructs a Tile Set layout. The tile set image contained in the baseDir should be the original tile set images before
+	/** Constructs a Tile Set layout. The tile set image contained in the baseDir should be the original tile set images before
 	 * being processed by {@link TiledMapPacker} (the ones actually read by Tiled).
 	 * @param tileSet the tile set to process
-	 * @param baseDir the directory in which the tile set image is stored
-	 * */
+	 * @param baseDir the directory in which the tile set image is stored */
 	protected TileSetLayout (TileSet tileSet, FileHandle baseDir) throws IOException {
 		super(tileSet);
 

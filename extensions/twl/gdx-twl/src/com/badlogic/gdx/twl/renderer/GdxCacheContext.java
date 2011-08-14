@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.twl.renderer;
 
 import java.io.IOException;
@@ -24,9 +25,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import de.matthiasmann.twl.renderer.CacheContext;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class GdxCacheContext implements CacheContext {
 	final GdxRenderer renderer;
 	private final ObjectMap<String, GdxTexture> textures = new ObjectMap();

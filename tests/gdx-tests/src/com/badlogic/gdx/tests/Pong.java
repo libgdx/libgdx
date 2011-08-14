@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -25,12 +26,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/**
- * A simple Pong remake showing how easy it is to quickly prototype a game with libgdx.
+/** A simple Pong remake showing how easy it is to quickly prototype a game with libgdx.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class Pong extends GdxTest {
 	/** the camera **/
 	private OrthographicCamera camera;
@@ -64,18 +62,15 @@ public class Pong extends GdxTest {
 	/** score string **/
 	private String score = "";
 
-	/**
-	 * Here we setup all the resources. A MeshRenderer for the paddles which we use for both, a MeshRenderer for the ball and a
-	 * Text for rendering the score.
-	 */
-	@Override public void create () {
+	/** Here we setup all the resources. A MeshRenderer for the paddles which we use for both, a MeshRenderer for the ball and a
+	 * Text for rendering the score. */
+	@Override
+	public void create () {
 		setupGraphics();
 		setupGame();
 	}
 
-	/**
-	 * This method sets up all the graphics related stuff like the Meshes, the camera and the Font
-	 */
+	/** This method sets up all the graphics related stuff like the Meshes, the camera and the Font */
 	private void setupGraphics () {
 		//
 		// We first construct the paddle mesh which consists of
@@ -108,12 +103,10 @@ public class Pong extends GdxTest {
 		// on devices like the Droid. The screen center will be at (0,0)
 		// so that's the reference frame for our scene.
 		//
-		camera = new OrthographicCamera(480, 320);		
+		camera = new OrthographicCamera(480, 320);
 	}
 
-	/**
-	 * This sets up the game data like the initial paddle positions and the ball position and direction.
-	 */
+	/** This sets up the game data like the initial paddle positions and the ball position and direction. */
 	private void setupGame () {
 		leftPaddle.set(-200, 20);
 		rightPaddle.set(200, 0);
@@ -121,7 +114,8 @@ public class Pong extends GdxTest {
 		ballDirection.set(-1, 0);
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		// we update the game state so things move.
 		updateGame();
 
@@ -165,9 +159,7 @@ public class Pong extends GdxTest {
 		spriteBatch.end();
 	}
 
-	/**
-	 * Updates the game state, moves the ball, checks for collisions or whether the ball has left the playfield.
-	 */
+	/** Updates the game state, moves the ball, checks for collisions or whether the ball has left the playfield. */
 	private void updateGame () {
 		// the delta time so we can do frame independant time based movement
 		float deltaTime = Gdx.graphics.getDeltaTime();
@@ -262,7 +254,8 @@ public class Pong extends GdxTest {
 		}
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.FloatBuffer;
@@ -27,7 +28,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Mpg123Test extends GdxTest {
 
-	@Override public void create () {
+	@Override
+	public void create () {
 // Thread thread = new Thread( new Runnable() {
 //
 // public void run( )
@@ -61,7 +63,8 @@ public class Mpg123Test extends GdxTest {
 // thread.start();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -26,7 +27,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class OrthoCamBorderTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -41,7 +43,7 @@ public class OrthoCamBorderTest extends GdxTest {
 		mesh.setVertices(new float[] {0, 0, 1, 0, 0, 1, WIDTH, 0, 0, 1, 0, 1, WIDTH, HEIGHT, 0, 0, 1, 1, 0, HEIGHT, 1, 0, 1, 1});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 
-		cam = new OrthographicCamera(WIDTH, HEIGHT);		
+		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		cam.position.set(WIDTH / 2, HEIGHT / 2, 0);
 
 		glViewport = calculateGLViewport(WIDTH, HEIGHT);

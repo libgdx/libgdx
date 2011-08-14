@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.twl.tests;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -32,7 +33,8 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 	private TWL twl;
 	private InputMultiplexer input = new InputMultiplexer();
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Button button = new Button("Click Me");
 		FPSCounter fpsCounter = new FPSCounter(4, 2);
 
@@ -48,22 +50,27 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 		Gdx.input.setInputProcessor(input);
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		twl.render();
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		twl.dispose();
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
 	public boolean keyDown (int keycode) {
@@ -91,11 +98,13 @@ public class ButtonTest implements ApplicationListener, InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

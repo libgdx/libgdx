@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.lwjgl;
 
 import java.awt.BorderLayout;
@@ -66,7 +67,8 @@ public class LwjglTestStarter {
 			list.setSelectedValue(Preferences.systemNodeForPackage(GdxTests.class).get("last", null), true);
 
 			button.addActionListener(new ActionListener() {
-				@Override public void actionPerformed (ActionEvent e) {
+				@Override
+				public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
 					new LwjglApplication(test, testName, 480, 320, test.needsGL20());

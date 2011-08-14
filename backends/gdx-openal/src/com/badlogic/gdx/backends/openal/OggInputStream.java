@@ -40,10 +40,8 @@ import com.jcraft.jorbis.Comment;
 import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
 
-/**
- * An input stream to read Ogg Vorbis.
- * @author kevin
- */
+/** An input stream to read Ogg Vorbis.
+ * @author kevin */
 public class OggInputStream extends InputStream {
 	/** The conversion buffer size */
 	private int convsize = 4096 * 4;
@@ -90,11 +88,9 @@ public class OggInputStream extends InputStream {
 	/** The total number of bytes */
 	private int total;
 
-	/**
-	 * Create a new stream to decode OGG data
+	/** Create a new stream to decode OGG data
 	 * 
-	 * @param input The input stream from which to read the OGG file
-	 */
+	 * @param input The input stream from which to read the OGG file */
 	public OggInputStream (InputStream input) {
 		this.input = input;
 		try {
@@ -106,11 +102,9 @@ public class OggInputStream extends InputStream {
 		init();
 	}
 
-	/**
-	 * Get the number of bytes on the stream
+	/** Get the number of bytes on the stream
 	 * 
-	 * @return The number of the bytes on the stream
-	 */
+	 * @return The number of the bytes on the stream */
 	public int getLength () {
 		return total;
 	}
@@ -123,33 +117,25 @@ public class OggInputStream extends InputStream {
 		return oggInfo.rate;
 	}
 
-	/**
-	 * Initialise the streams and thread involved in the streaming of OGG data
-	 */
+	/** Initialise the streams and thread involved in the streaming of OGG data */
 	private void init () {
 		initVorbis();
 		readPCM();
 	}
 
-	/**
-	 * @see java.io.InputStream#available()
-	 */
+	/** @see java.io.InputStream#available() */
 	public int available () {
 		return endOfStream ? 0 : 1;
 	}
 
-	/**
-	 * Initialise the vorbis decoding
-	 */
+	/** Initialise the vorbis decoding */
 	private void initVorbis () {
 		syncState.init();
 	}
 
-	/**
-	 * Get a page and packet from that page
+	/** Get a page and packet from that page
 	 * 
-	 * @return True if there was a page available
-	 */
+	 * @return True if there was a page available */
 	private boolean getPageAndPacket () {
 		// grab some data at the head of the stream. We want the first page
 		// (which is guaranteed to be small and only contain the Vorbis
@@ -274,9 +260,7 @@ public class OggInputStream extends InputStream {
 		return true;
 	}
 
-	/**
-	 * Decode the OGG file as shown in the jogg/jorbis examples
-	 */
+	/** Decode the OGG file as shown in the jogg/jorbis examples */
 	private void readPCM () {
 		boolean wrote = false;
 

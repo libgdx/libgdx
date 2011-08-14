@@ -15,8 +15,8 @@ package com.badlogic.gdxinvaders;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdxinvaders.screens.GameLoop;
 import com.badlogic.gdxinvaders.screens.GameOver;
@@ -30,11 +30,13 @@ public class GdxInvaders implements ApplicationListener {
 	/** the current screen **/
 	private Screen screen;
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Application app = Gdx.app;
 
 		// update the screen
@@ -65,11 +67,13 @@ public class GdxInvaders implements ApplicationListener {
 		}
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		if (!isInitialized) {
 			screen = new MainMenu(Gdx.app);
 			Music music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/8.12.mp3", FileType.Internal));
@@ -80,13 +84,13 @@ public class GdxInvaders implements ApplicationListener {
 	}
 
 	@Override
-	public void pause() {
+	public void pause () {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void resume() {
+	public void resume () {
 		// TODO Auto-generated method stub
 		System.out.println("resume");
 	}

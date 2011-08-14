@@ -34,8 +34,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-/**
- * An implementation of SurfaceView that uses the dedicated surface for displaying OpenGL rendering.
+/** An implementation of SurfaceView that uses the dedicated surface for displaying OpenGL rendering.
  * <p>
  * A GLSurfaceView provides the following features:
  * <p>
@@ -128,69 +127,55 @@ import android.view.SurfaceView;
  * 
  * 
  * 
- * </pre>
  * 
- */
+ * </pre> */
 public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.Callback {
-	/**
-	 * The renderer only renders when the surface is created, or when {@link #requestRender} is called.
+	/** The renderer only renders when the surface is created, or when {@link #requestRender} is called.
 	 * 
 	 * @see #getRenderMode()
-	 * @see #setRenderMode(int)
-	 */
+	 * @see #setRenderMode(int) */
 	public final static int RENDERMODE_WHEN_DIRTY = 0;
-	/**
-	 * The renderer is called continuously to re-render the scene.
+	/** The renderer is called continuously to re-render the scene.
 	 * 
 	 * @see #getRenderMode()
 	 * @see #setRenderMode(int)
-	 * @see #requestRender()
-	 */
+	 * @see #requestRender() */
 	public final static int RENDERMODE_CONTINUOUSLY = 1;
 
-	/**
-	 * Check glError() after every GL call and throw an exception if glError indicates that an error has occurred. This can be used
+	/** Check glError() after every GL call and throw an exception if glError indicates that an error has occurred. This can be used
 	 * to help track down which OpenGL ES call is causing an error.
 	 * 
 	 * @see #getDebugFlags
-	 * @see #setDebugFlags
-	 */
+	 * @see #setDebugFlags */
 	public final static int DEBUG_CHECK_GL_ERROR = 1;
 
-	/**
-	 * Log GL calls to the system log at "verbose" level with tag "GLSurfaceView".
+	/** Log GL calls to the system log at "verbose" level with tag "GLSurfaceView".
 	 * 
 	 * @see #getDebugFlags
-	 * @see #setDebugFlags
-	 */
+	 * @see #setDebugFlags */
 	public final static int DEBUG_LOG_GL_CALLS = 2;
 
-     final ResolutionStrategy resolutionStrategy;
+	final ResolutionStrategy resolutionStrategy;
 
-	/**
-	 * Standard View constructor. In order to render something, you must call {@link #setRenderer} to register a renderer.
-	 */
+	/** Standard View constructor. In order to render something, you must call {@link #setRenderer} to register a renderer. */
 	public GLSurfaceViewCupcake (Context context, ResolutionStrategy resolutionStrategy) {
 		super(context);
-        this.resolutionStrategy = resolutionStrategy;
+		this.resolutionStrategy = resolutionStrategy;
 		init();
 	}
 
-	/**
-	 * Standard View constructor. In order to render something, you must call {@link #setRenderer} to register a renderer.
-	 */
+	/** Standard View constructor. In order to render something, you must call {@link #setRenderer} to register a renderer. */
 	public GLSurfaceViewCupcake (Context context, AttributeSet attrs, ResolutionStrategy resolutionStrategy) {
 		super(context, attrs);
-         this.resolutionStrategy = resolutionStrategy;
+		this.resolutionStrategy = resolutionStrategy;
 		init();
 	}
 
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(measures.width, measures.height);
-    }
+	@Override
+	protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
+		ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
+		setMeasuredDimension(measures.width, measures.height);
+	}
 
 	private void init () {
 		// Install a SurfaceHolder.Callback so we get notified when the
@@ -201,41 +186,34 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mRenderMode = RENDERMODE_CONTINUOUSLY;
 	}
 
-	/**
-	 * Set the glWrapper. If the glWrapper is not null, its {@link GLWrapper#wrap(GL)} method is called whenever a surface is
+	/** Set the glWrapper. If the glWrapper is not null, its {@link GLWrapper#wrap(GL)} method is called whenever a surface is
 	 * created. A GLWrapper can be used to wrap the GL object that's passed to the renderer. Wrapping a GL object enables examining
 	 * and modifying the behavior of the GL calls made by the renderer.
 	 * <p>
 	 * Wrapping is typically used for debugging purposes.
 	 * <p>
 	 * The default value is null.
-	 * @param glWrapper the new GLWrapper
-	 */
+	 * @param glWrapper the new GLWrapper */
 	public void setGLWrapper (GLWrapper glWrapper) {
 		mGLWrapper = glWrapper;
 	}
 
-	/**
-	 * Set the debug flags to a new value. The value is constructed by OR-together zero or more of the DEBUG_CHECK_* constants. The
+	/** Set the debug flags to a new value. The value is constructed by OR-together zero or more of the DEBUG_CHECK_* constants. The
 	 * debug flags take effect whenever a surface is created. The default value is zero.
 	 * @param debugFlags the new debug flags
 	 * @see #DEBUG_CHECK_GL_ERROR
-	 * @see #DEBUG_LOG_GL_CALLS
-	 */
+	 * @see #DEBUG_LOG_GL_CALLS */
 	public void setDebugFlags (int debugFlags) {
 		mDebugFlags = debugFlags;
 	}
 
-	/**
-	 * Get the current value of the debug flags.
-	 * @return the current value of the debug flags.
-	 */
+	/** Get the current value of the debug flags.
+	 * @return the current value of the debug flags. */
 	public int getDebugFlags () {
 		return mDebugFlags;
 	}
 
-	/**
-	 * Set the renderer associated with this view. Also starts the thread that will call the renderer, which in turn causes the
+	/** Set the renderer associated with this view. Also starts the thread that will call the renderer, which in turn causes the
 	 * rendering to start.
 	 * <p>
 	 * This method should be called once and only once in the life-cycle of a GLSurfaceView.
@@ -257,8 +235,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 * <li>{@link #setRenderMode(int)}
 	 * </ul>
 	 * 
-	 * @param renderer the renderer to use to perform OpenGL drawing.
-	 */
+	 * @param renderer the renderer to use to perform OpenGL drawing. */
 	public void setRenderer (Renderer renderer) {
 		if (mRenderer != null) {
 			throw new IllegalStateException("setRenderer has already been called for this instance.");
@@ -267,15 +244,13 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mRenderer = renderer;
 	}
 
-	/**
-	 * Install a custom EGLConfigChooser.
+	/** Install a custom EGLConfigChooser.
 	 * <p>
 	 * If this method is called, it must be called before {@link #setRenderer(Renderer)} is called.
 	 * <p>
 	 * If no setEGLConfigChooser method is called, then by default the view will choose a config as close to 16-bit RGB as
 	 * possible, with a depth buffer as close to 16 bits as possible.
-	 * @param configChooser
-	 */
+	 * @param configChooser */
 	public void setEGLConfigChooser (EGLConfigChooser configChooser) {
 		if (mRenderer != null) {
 			throw new IllegalStateException("setRenderer has already been called for this instance.");
@@ -283,8 +258,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mEGLConfigChooser = configChooser;
 	}
 
-	/**
-	 * Install a config chooser which will choose a config as close to 16-bit RGB as possible, with or without an optional depth
+	/** Install a config chooser which will choose a config as close to 16-bit RGB as possible, with or without an optional depth
 	 * buffer as close to 16-bits as possible.
 	 * <p>
 	 * If this method is called, it must be called before {@link #setRenderer(Renderer)} is called.
@@ -292,28 +266,23 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 * If no setEGLConfigChooser method is called, then by default the view will choose a config as close to 16-bit RGB as
 	 * possible, with a depth buffer as close to 16 bits as possible.
 	 * 
-	 * @param needDepth
-	 */
+	 * @param needDepth */
 	public void setEGLConfigChooser (boolean needDepth) {
 		setEGLConfigChooser(new SimpleEGLConfigChooser(needDepth));
 	}
 
-	/**
-	 * Install a config chooser which will choose a config with at least the specified component sizes, and as close to the
+	/** Install a config chooser which will choose a config with at least the specified component sizes, and as close to the
 	 * specified component sizes as possible.
 	 * <p>
 	 * If this method is called, it must be called before {@link #setRenderer(Renderer)} is called.
 	 * <p>
 	 * If no setEGLConfigChooser method is called, then by default the view will choose a config as close to 16-bit RGB as
-	 * possible, with a depth buffer as close to 16 bits as possible.
-	 * 
-	 */
+	 * possible, with a depth buffer as close to 16 bits as possible. */
 	public void setEGLConfigChooser (int redSize, int greenSize, int blueSize, int alphaSize, int depthSize, int stencilSize) {
 		setEGLConfigChooser(new ComponentSizeChooser(redSize, greenSize, blueSize, alphaSize, depthSize, stencilSize));
 	}
 
-	/**
-	 * Set the rendering mode. When renderMode is RENDERMODE_CONTINUOUSLY, the renderer is called repeatedly to re-render the
+	/** Set the rendering mode. When renderMode is RENDERMODE_CONTINUOUSLY, the renderer is called repeatedly to re-render the
 	 * scene. When renderMode is RENDERMODE_WHEN_DIRTY, the renderer only rendered when the surface is created, or when
 	 * {@link #requestRender} is called. Defaults to RENDERMODE_CONTINUOUSLY.
 	 * <p>
@@ -324,8 +293,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 * 
 	 * @param renderMode one of the RENDERMODE_X constants
 	 * @see #RENDERMODE_CONTINUOUSLY
-	 * @see #RENDERMODE_WHEN_DIRTY
-	 */
+	 * @see #RENDERMODE_WHEN_DIRTY */
 	public void setRenderMode (int renderMode) {
 		mRenderMode = renderMode;
 		if (mGLThread != null) {
@@ -333,29 +301,23 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		}
 	}
 
-	/**
-	 * Get the current rendering mode. May be called from any thread. Must not be called before a renderer has been set.
+	/** Get the current rendering mode. May be called from any thread. Must not be called before a renderer has been set.
 	 * @return the current rendering mode.
 	 * @see #RENDERMODE_CONTINUOUSLY
-	 * @see #RENDERMODE_WHEN_DIRTY
-	 */
+	 * @see #RENDERMODE_WHEN_DIRTY */
 	public int getRenderMode () {
 		return mRenderMode;
 	}
 
-	/**
-	 * Request that the renderer render a frame. This method is typically used when the render mode has been set to
+	/** Request that the renderer render a frame. This method is typically used when the render mode has been set to
 	 * {@link #RENDERMODE_WHEN_DIRTY}, so that frames are only rendered on demand. May be called from any thread. Must be called
-	 * after onResume() and before onPause().
-	 */
+	 * after onResume() and before onPause(). */
 	public void requestRender () {
 		mGLThread.requestRender();
 	}
 
-	/**
-	 * This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
-	 * GLSurfaceView.
-	 */
+	/** This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
+	 * GLSurfaceView. */
 	public void surfaceCreated (SurfaceHolder holder) {
 		if (mGLThread != null) {
 			mGLThread.surfaceCreated();
@@ -363,10 +325,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mHasSurface = true;
 	}
 
-	/**
-	 * This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
-	 * GLSurfaceView.
-	 */
+	/** This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
+	 * GLSurfaceView. */
 	public void surfaceDestroyed (SurfaceHolder holder) {
 		// Surface will be destroyed when we return
 		if (mGLThread != null) {
@@ -375,10 +335,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mHasSurface = false;
 	}
 
-	/**
-	 * This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
-	 * GLSurfaceView.
-	 */
+	/** This method is part of the SurfaceHolder.Callback interface, and is not normally called or subclassed by clients of
+	 * GLSurfaceView. */
 	public void surfaceChanged (SurfaceHolder holder, int format, int w, int h) {
 		if (mGLThread != null) {
 			mGLThread.onWindowResize(w, h);
@@ -387,21 +345,17 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mSurfaceHeight = h;
 	}
 
-	/**
-	 * Inform the view that the activity is paused. The owner of this view must call this method when the activity is paused.
-	 * Calling this method will pause the rendering thread. Must not be called before a renderer has been set.
-	 */
+	/** Inform the view that the activity is paused. The owner of this view must call this method when the activity is paused.
+	 * Calling this method will pause the rendering thread. Must not be called before a renderer has been set. */
 	public void onPause () {
 		mGLThread.onPause();
 		mGLThread.requestExitAndWait();
 		mGLThread = null;
 	}
 
-	/**
-	 * Inform the view that the activity is resumed. The owner of this view must call this method when the activity is resumed.
+	/** Inform the view that the activity is resumed. The owner of this view must call this method when the activity is resumed.
 	 * Calling this method will recreate the OpenGL display and resume the rendering thread. Must not be called before a renderer
-	 * has been set.
-	 */
+	 * has been set. */
 	public void onResume () {
 		if (mEGLConfigChooser == null) {
 			mEGLConfigChooser = new SimpleEGLConfigChooser(true);
@@ -418,11 +372,9 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		mGLThread.onResume();
 	}
 
-	/**
-	 * Queue a runnable to be run on the GL rendering thread. This can be used to communicate with the Renderer on the rendering
+	/** Queue a runnable to be run on the GL rendering thread. This can be used to communicate with the Renderer on the rendering
 	 * thread. Must be called after onResume() and before onPause().
-	 * @param r the runnable to be run on the GL rendering thread.
-	 */
+	 * @param r the runnable to be run on the GL rendering thread. */
 	public void queueEvent (Runnable r) {
 		if (mGLThread != null) {
 			mGLThread.queueEvent(r);
@@ -431,8 +383,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 
 	// ----------------------------------------------------------------------
 
-	/**
-	 * An interface used to wrap a GL interface.
+	/** An interface used to wrap a GL interface.
 	 * <p>
 	 * Typically used for implementing debugging and tracing on top of the default GL interface. You would typically use this by
 	 * creating your own class that implemented all the GL methods by delegating to another GL instance. Then you could add your
@@ -449,14 +400,11 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 	 *     }
 	 * }
 	 * </pre>
-	 * @see #setGLWrapper(GLWrapper)
-	 */
+	 * @see #setGLWrapper(GLWrapper) */
 	public interface GLWrapper {
-		/**
-		 * Wraps a gl interface in another gl interface.
+		/** Wraps a gl interface in another gl interface.
 		 * @param gl a GL interface that is to be wrapped.
-		 * @return either the input argument or another GL object that wraps the input argument.
-		 */
+		 * @return either the input argument or another GL object that wraps the input argument. */
 		GL wrap (GL gl);
 	}
 
@@ -504,7 +452,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 			mStencilSize = stencilSize;
 		}
 
-		@Override public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display, EGLConfig[] configs) {
+		@Override
+		public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display, EGLConfig[] configs) {
 			EGLConfig closestConfig = null;
 			int closestDistance = 1000;
 			for (EGLConfig config : configs) {
@@ -542,10 +491,7 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		protected int mStencilSize;
 	}
 
-	/**
-	 * This class will choose a supported surface as close to RGB565 as possible, with or without a depth buffer.
-	 * 
-	 */
+	/** This class will choose a supported surface as close to RGB565 as possible, with or without a depth buffer. */
 	private static class SimpleEGLConfigChooser extends ComponentSizeChooser {
 		public SimpleEGLConfigChooser (boolean withDepthBuffer) {
 			super(4, 4, 4, 0, withDepthBuffer ? 16 : 0, 0);
@@ -557,18 +503,14 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		}
 	}
 
-	/**
-	 * An EGL helper class.
-	 */
+	/** An EGL helper class. */
 
 	private class EglHelper {
 		public EglHelper () {
 
 		}
 
-		/**
-		 * Initialize EGL for a given configuration spec.
-		 */
+		/** Initialize EGL for a given configuration spec. */
 		public void start () {
 			/*
 			 * Get an EGL instance
@@ -635,10 +577,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 			return gl;
 		}
 
-		/**
-		 * Display the current render surface.
-		 * @return false if the context has been lost.
-		 */
+		/** Display the current render surface.
+		 * @return false if the context has been lost. */
 		public boolean swap () {
 			mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);
 
@@ -672,11 +612,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 		EGLContext mEglContext;
 	}
 
-	/**
-	 * A generic GL Thread. Takes care of initializing EGL and GL. Delegates to a Renderer instance to do the actual drawing. Can
-	 * be configured to render continuously or on request.
-	 * 
-	 */
+	/** A generic GL Thread. Takes care of initializing EGL and GL. Delegates to a Renderer instance to do the actual drawing. Can
+	 * be configured to render continuously or on request. */
 	class GLThread extends Thread {
 		GLThread (Renderer renderer) {
 			super();
@@ -690,7 +627,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 			setName("GLThread");
 		}
 
-		@Override public void run () {
+		@Override
+		public void run () {
 			/*
 			 * When the android framework launches a second instance of an activity, the new instance's onCreate() method may be
 			 * called before the first instance returns from onDestroy().
@@ -876,10 +814,8 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 			}
 		}
 
-		/**
-		 * Queue an "event" to be run on the GL rendering thread.
-		 * @param r the runnable to be run on the GL rendering thread.
-		 */
+		/** Queue an "event" to be run on the GL rendering thread.
+		 * @param r the runnable to be run on the GL rendering thread. */
 		public void queueEvent (Runnable r) {
 			synchronized (this) {
 				mEventQueue.add(r);
@@ -911,15 +847,18 @@ public class GLSurfaceViewCupcake extends SurfaceView implements SurfaceHolder.C
 
 	static class LogWriter extends Writer {
 
-		@Override public void close () {
+		@Override
+		public void close () {
 			flushBuilder();
 		}
 
-		@Override public void flush () {
+		@Override
+		public void flush () {
 			flushBuilder();
 		}
 
-		@Override public void write (char[] buf, int offset, int count) {
+		@Override
+		public void write (char[] buf, int offset, int count) {
 			for (int i = 0; i < count; i++) {
 				char c = buf[offset + i];
 				if (c == '\n') {

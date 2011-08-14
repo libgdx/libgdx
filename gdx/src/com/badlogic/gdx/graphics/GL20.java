@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-/**
- * Interface wrapping all the methods of OpenGL ES 2.0
- * @author mzechner
- * 
- */
-public interface GL20 extends GLCommon {	
+/** Interface wrapping all the methods of OpenGL ES 2.0
+ * @author mzechner */
+public interface GL20 extends GLCommon {
 	public static final int GL_ES_VERSION_2_0 = 1;
 	public static final int GL_DEPTH_BUFFER_BIT = 0x00000100;
 	public static final int GL_STENCIL_BUFFER_BIT = 0x00000400;
@@ -329,7 +327,7 @@ public interface GL20 extends GLCommon {
 	public static final int GL_MAX_RENDERBUFFER_SIZE = 0x84E8;
 	public static final int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506;
 	public static final int GL_VERTEX_PROGRAM_POINT_SIZE = 0x8642;
-	
+
 	// Extensions
 	public static final int GL_COVERAGE_BUFFER_BIT_NV = 0x8000;
 

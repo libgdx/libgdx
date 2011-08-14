@@ -41,7 +41,8 @@ import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 public class Prismatic extends Box2DTest {
 	PrismaticJoint m_joint;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		Body ground;
 
 		{
@@ -97,10 +98,10 @@ public class Prismatic extends Box2DTest {
 
 		if (renderer.batch != null) {
 			renderer.batch.begin();
-//			renderer.batch.drawText(renderer.font, "Keys: (l) limits, (m) motors, (s) speed", 0, Gdx.app.getGraphics().getHeight(),
-//				Color.WHITE);
-//			renderer.batch.drawText(renderer.font, "Motor Force = " + m_joint.getMotorForce(), 0,
-//				Gdx.app.getGraphics().getHeight() - 15, Color.WHITE);
+// renderer.batch.drawText(renderer.font, "Keys: (l) limits, (m) motors, (s) speed", 0, Gdx.app.getGraphics().getHeight(),
+// Color.WHITE);
+// renderer.batch.drawText(renderer.font, "Motor Force = " + m_joint.getMotorForce(), 0,
+// Gdx.app.getGraphics().getHeight() - 15, Color.WHITE);
 			renderer.batch.end();
 		}
 	}

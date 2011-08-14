@@ -19,29 +19,23 @@ package com.badlogic.gdx.beans;
 
 import java.awt.Rectangle;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import org.apache.harmony.beans.BeansUtils;
 
 class AwtRectanglePersistenceDelegate extends DefaultPersistenceDelegate {
 
-    @Override
-    protected boolean mutatesTo(Object o1, Object o2) {
-        return o1.equals(o2);
-    }
+	@Override
+	protected boolean mutatesTo (Object o1, Object o2) {
+		return o1.equals(o2);
+	}
 
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder enc) {
-        return;
-    }
+	@Override
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder enc) {
+		return;
+	}
 
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        Rectangle rect = (Rectangle) oldInstance;
-        return new Expression(rect, rect.getClass(), BeansUtils.NEW,
-                new Object[] { rect.x, rect.y, rect.width, rect.height });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		Rectangle rect = (Rectangle)oldInstance;
+		return new Expression(rect, rect.getClass(), BeansUtils.NEW, new Object[] {rect.x, rect.y, rect.width, rect.height});
+	}
 }

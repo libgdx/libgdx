@@ -28,7 +28,6 @@
 
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
@@ -36,8 +35,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -52,7 +49,8 @@ public class FrameBufferTest extends GdxTest {
 	Texture texture;
 	SpriteBatch spriteBatch;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		frameBuffer.begin();
 		Gdx.graphics.getGL20().glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
 		Gdx.graphics.getGL20().glClearColor(0f, 1f, 0f, 1);
@@ -75,7 +73,8 @@ public class FrameBufferTest extends GdxTest {
 		spriteBatch.end();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "a_Position"), new VertexAttribute(Usage.ColorPacked, 4,
 			"a_Color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 		float c1 = Color.toFloatBits(255, 0, 0, 255);
@@ -109,7 +108,8 @@ public class FrameBufferTest extends GdxTest {
 		if (meshShader.isCompiled() == false) throw new IllegalStateException(meshShader.getLog());
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return true;
 	}
 

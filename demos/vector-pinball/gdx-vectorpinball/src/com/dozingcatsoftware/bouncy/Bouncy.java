@@ -19,7 +19,8 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 	WindowedMean renderMean = new WindowedMean(10);
 	long startTime = System.nanoTime();
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		renderer = new GLFieldRenderer();
@@ -28,11 +29,13 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GLCommon gl = Gdx.gl;
 
 		long startPhysics = System.nanoTime();
@@ -67,32 +70,38 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		}
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
 		if (field.getBalls().size() != 0) field.setAllFlippersEngaged(true);
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		field.removeDeadBalls();
 		if (field.getBalls().size() == 0) field.launchBall();
 		field.setAllFlippersEngaged(false);
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		if (field.getBalls().size() != 0) field.setAllFlippersEngaged(true);
 		return false;
 	}

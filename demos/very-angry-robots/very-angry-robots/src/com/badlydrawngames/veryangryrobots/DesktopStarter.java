@@ -19,8 +19,8 @@ public class DesktopStarter {
 
 	private final static int WINDOW_WIDTH = 800;
 	private final static int WINDOW_HEIGHT = 480;
-	
-	public static void main(String[] args) {
+
+	public static void main (String[] args) {
 		new JoglApplication(new VeryAngryRobotsGame(), "Very Angry Robots", WINDOW_WIDTH, WINDOW_HEIGHT, false);
 	}
 }

@@ -20,210 +20,202 @@ import gwt.g3d.client.gl2.array.ArrayBuffer;
 
 import com.google.gwt.corp.compatibility.Numbers;
 
-/**
- * DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyByteBuffer compose
- * the implementation of direct byte buffers.
+/** DirectByteBuffer, DirectReadWriteByteBuffer and DirectReadOnlyByteBuffer compose the implementation of direct byte buffers.
  * <p>
  * DirectReadWriteByteBuffer extends DirectByteBuffer with all the write methods.
  * </p>
  * <p>
  * This class is marked final for runtime performance.
- * </p>
- * 
- */
+ * </p> */
 final class DirectReadWriteByteBuffer extends DirectByteBuffer {
 
-    static DirectReadWriteByteBuffer copy(DirectByteBuffer other, int markOfOther) {
-        DirectReadWriteByteBuffer buf = new DirectReadWriteByteBuffer(
-                other.byteArray.getBuffer(), other.capacity(), other.byteArray.getByteOffset());
-        buf.limit = other.limit();
-        buf.position = other.position();
-        buf.mark = markOfOther;
-        buf.order(other.order());
-        return buf;
-    }
+	static DirectReadWriteByteBuffer copy (DirectByteBuffer other, int markOfOther) {
+		DirectReadWriteByteBuffer buf = new DirectReadWriteByteBuffer(other.byteArray.getBuffer(), other.capacity(),
+			other.byteArray.getByteOffset());
+		buf.limit = other.limit();
+		buf.position = other.position();
+		buf.mark = markOfOther;
+		buf.order(other.order());
+		return buf;
+	}
 
-    DirectReadWriteByteBuffer(ArrayBuffer backingArray) {
-        super(backingArray);
-    }
+	DirectReadWriteByteBuffer (ArrayBuffer backingArray) {
+		super(backingArray);
+	}
 
-    DirectReadWriteByteBuffer(int capacity) {
-        super(capacity);
-    }
+	DirectReadWriteByteBuffer (int capacity) {
+		super(capacity);
+	}
 
-    DirectReadWriteByteBuffer(ArrayBuffer backingArray, int capacity, int arrayOffset) {
-        super(backingArray, capacity, arrayOffset);
-    }
+	DirectReadWriteByteBuffer (ArrayBuffer backingArray, int capacity, int arrayOffset) {
+		super(backingArray, capacity, arrayOffset);
+	}
 
-    public FloatBuffer asFloatBuffer() {
-    	return DirectReadWriteFloatBufferAdapter.wrap(this);
-    }
-    
-    public IntBuffer asIntBuffer() {
-    	return order() == ByteOrder.nativeOrder() 
-    		? DirectReadWriteIntBufferAdapter.wrap(this) 
-    		: super.asIntBuffer();
-    }
-    
-    public ShortBuffer asShortBuffer() {
-    	return order() == ByteOrder.nativeOrder() 
-    		? DirectReadWriteShortBufferAdapter.wrap(this) 
-    		: super.asShortBuffer();
-    }
+	public FloatBuffer asFloatBuffer () {
+		return DirectReadWriteFloatBufferAdapter.wrap(this);
+	}
 
-    public ByteBuffer asReadOnlyBuffer() {
-        return DirectReadOnlyByteBuffer.copy(this, mark);
-    }
+	public IntBuffer asIntBuffer () {
+		return order() == ByteOrder.nativeOrder() ? DirectReadWriteIntBufferAdapter.wrap(this) : super.asIntBuffer();
+	}
 
-    public ByteBuffer compact() {
-//        System.arraycopy(backingArray, position + offset, backingArray, offset,
-//                remaining());
-        
-        int rem = remaining();
-        for (int i = 0; i < rem; i++) {
-        	byteArray.set(i, byteArray.get(position + i));
-        }
-        
-        position = limit - position;
-        limit = capacity;
-        mark = UNSET_MARK;
-        return this;
-    }
+	public ShortBuffer asShortBuffer () {
+		return order() == ByteOrder.nativeOrder() ? DirectReadWriteShortBufferAdapter.wrap(this) : super.asShortBuffer();
+	}
 
-    public ByteBuffer duplicate() {
-        return copy(this, mark);
-    }
+	public ByteBuffer asReadOnlyBuffer () {
+		return DirectReadOnlyByteBuffer.copy(this, mark);
+	}
 
-    public boolean isReadOnly() {
-        return false;
-    }
+	public ByteBuffer compact () {
+// System.arraycopy(backingArray, position + offset, backingArray, offset,
+// remaining());
 
-    protected byte[] protectedArray() {
-        throw new UnsupportedOperationException();
-    }
+		int rem = remaining();
+		for (int i = 0; i < rem; i++) {
+			byteArray.set(i, byteArray.get(position + i));
+		}
 
-    protected int protectedArrayOffset() {
-        throw new UnsupportedOperationException();
-    }
+		position = limit - position;
+		limit = capacity;
+		mark = UNSET_MARK;
+		return this;
+	}
 
-    protected boolean protectedHasArray() {
-        return true;
-    }
+	public ByteBuffer duplicate () {
+		return copy(this, mark);
+	}
 
-    public ByteBuffer put(byte b) {
-//        if (position == limit) {
-//            throw new BufferOverflowException();
-//        }
-        byteArray.set(position++, b);
-        return this;
-    }
+	public boolean isReadOnly () {
+		return false;
+	}
 
-    public ByteBuffer put(int index, byte b) {
-//        if (index < 0 || index >= limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        byteArray.set(index, b);
-        return this;
-    }
+	protected byte[] protectedArray () {
+		throw new UnsupportedOperationException();
+	}
 
-    /*
-     * Override ByteBuffer.put(byte[], int, int) to improve performance.
-     * 
-     * (non-Javadoc)
-     * 
-     * @see java.nio.ByteBuffer#put(byte[], int, int)
-     */
-    public ByteBuffer put(byte[] src, int off, int len) {
-        if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
-            throw new IndexOutOfBoundsException();
-        }
-        if (len > remaining()) {
-            throw new BufferOverflowException();
-        }
-        if (isReadOnly()) {
-            throw new ReadOnlyBufferException();
-        }
-        for (int i = 0; i < len; i++) {
-        	byteArray.set(i + position, src[off + i]);
-        }
-        position += len;
-        return this;
-    }
-    
-    public ByteBuffer putDouble(double value) {
-        return putLong(Numbers.doubleToRawLongBits(value));
-    }
+	protected int protectedArrayOffset () {
+		throw new UnsupportedOperationException();
+	}
 
-    public ByteBuffer putDouble(int index, double value) {
-        return putLong(index, Numbers.doubleToRawLongBits(value));
-    }
+	protected boolean protectedHasArray () {
+		return true;
+	}
 
-    public ByteBuffer putFloat(float value) {
-        return putInt(Numbers.floatToIntBits(value));
-    }
+	public ByteBuffer put (byte b) {
+// if (position == limit) {
+// throw new BufferOverflowException();
+// }
+		byteArray.set(position++, b);
+		return this;
+	}
 
-    public ByteBuffer putFloat(int index, float value) {
-        return putInt(index, Numbers.floatToIntBits(value));
-    }
+	public ByteBuffer put (int index, byte b) {
+// if (index < 0 || index >= limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		byteArray.set(index, b);
+		return this;
+	}
 
-    public ByteBuffer putInt(int value) {
-        int newPosition = position + 4;
-//        if (newPosition > limit) {
-//            throw new BufferOverflowException();
-//        }
-        store(position, value);
-        position = newPosition;
-        return this;
-    }
+	/*
+	 * Override ByteBuffer.put(byte[], int, int) to improve performance.
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see java.nio.ByteBuffer#put(byte[], int, int)
+	 */
+	public ByteBuffer put (byte[] src, int off, int len) {
+		if (off < 0 || len < 0 || (long)off + (long)len > src.length) {
+			throw new IndexOutOfBoundsException();
+		}
+		if (len > remaining()) {
+			throw new BufferOverflowException();
+		}
+		if (isReadOnly()) {
+			throw new ReadOnlyBufferException();
+		}
+		for (int i = 0; i < len; i++) {
+			byteArray.set(i + position, src[off + i]);
+		}
+		position += len;
+		return this;
+	}
 
-    public ByteBuffer putInt(int index, int value) {
-//        if (index < 0 || (long)index + 4 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        store(index, value);
-        return this;
-    }
+	public ByteBuffer putDouble (double value) {
+		return putLong(Numbers.doubleToRawLongBits(value));
+	}
 
-    public ByteBuffer putLong(int index, long value) {
-//        if (index < 0 || (long)index + 8 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        store(index, value);
-        return this;
-    }
+	public ByteBuffer putDouble (int index, double value) {
+		return putLong(index, Numbers.doubleToRawLongBits(value));
+	}
 
-    public ByteBuffer putLong(long value) {
-        int newPosition = position + 8;
-//        if (newPosition > limit) {
-//            throw new BufferOverflowException();
-//        }
-        store(position, value);
-        position = newPosition;
-        return this;
-    }
+	public ByteBuffer putFloat (float value) {
+		return putInt(Numbers.floatToIntBits(value));
+	}
 
-    public ByteBuffer putShort(int index, short value) {
-//        if (index < 0 || (long)index + 2 > limit) {
-//            throw new IndexOutOfBoundsException();
-//        }
-        store(index, value);
-        return this;
-    }
+	public ByteBuffer putFloat (int index, float value) {
+		return putInt(index, Numbers.floatToIntBits(value));
+	}
 
-    public ByteBuffer putShort(short value) {
-        int newPosition = position + 2;
-//        if (newPosition > limit) {
-//            throw new BufferOverflowException();
-//        }
-        store(position, value);
-        position = newPosition;
-        return this;
-    }
+	public ByteBuffer putInt (int value) {
+		int newPosition = position + 4;
+// if (newPosition > limit) {
+// throw new BufferOverflowException();
+// }
+		store(position, value);
+		position = newPosition;
+		return this;
+	}
 
-    public ByteBuffer slice() {
-        DirectReadWriteByteBuffer slice = new DirectReadWriteByteBuffer(
-                byteArray.getBuffer(), remaining(), byteArray.getByteOffset() + position);
-        slice.order = order;
-        return slice;
-    }
+	public ByteBuffer putInt (int index, int value) {
+// if (index < 0 || (long)index + 4 > limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		store(index, value);
+		return this;
+	}
+
+	public ByteBuffer putLong (int index, long value) {
+// if (index < 0 || (long)index + 8 > limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		store(index, value);
+		return this;
+	}
+
+	public ByteBuffer putLong (long value) {
+		int newPosition = position + 8;
+// if (newPosition > limit) {
+// throw new BufferOverflowException();
+// }
+		store(position, value);
+		position = newPosition;
+		return this;
+	}
+
+	public ByteBuffer putShort (int index, short value) {
+// if (index < 0 || (long)index + 2 > limit) {
+// throw new IndexOutOfBoundsException();
+// }
+		store(index, value);
+		return this;
+	}
+
+	public ByteBuffer putShort (short value) {
+		int newPosition = position + 2;
+// if (newPosition > limit) {
+// throw new BufferOverflowException();
+// }
+		store(position, value);
+		position = newPosition;
+		return this;
+	}
+
+	public ByteBuffer slice () {
+		DirectReadWriteByteBuffer slice = new DirectReadWriteByteBuffer(byteArray.getBuffer(), remaining(),
+			byteArray.getByteOffset() + position);
+		slice.order = order;
+		return slice;
+	}
 }

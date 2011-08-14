@@ -17,58 +17,54 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Statement;
-
 import org.apache.harmony.beans.BeansUtils;
 
 public class Expression extends Statement {
 
-    boolean valueIsDefined = false;
+	boolean valueIsDefined = false;
 
-    Object value;
+	Object value;
 
-    public Expression(Object value, Object target, String methodName,
-            Object[] arguments) {
-        super(target, methodName, arguments);
-        this.value = value;
-        this.valueIsDefined = true;
-    }
+	public Expression (Object value, Object target, String methodName, Object[] arguments) {
+		super(target, methodName, arguments);
+		this.value = value;
+		this.valueIsDefined = true;
+	}
 
-    public Expression(Object target, String methodName, Object[] arguments) {
-        super(target, methodName, arguments);
-        this.value = null;
-        this.valueIsDefined = false;
-    }
+	public Expression (Object target, String methodName, Object[] arguments) {
+		super(target, methodName, arguments);
+		this.value = null;
+		this.valueIsDefined = false;
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (!valueIsDefined) {
-            sb.append("<unbound>"); //$NON-NLS-1$
-        } else {
-            if (value == null) {
-                sb.append(BeansUtils.NULL);
-            } else {
-                Class<?> clazz = value.getClass();
-                sb.append(clazz == String.class ? BeansUtils.QUOTE : BeansUtils
-                        .idOfClass(clazz));
-            }
-        }
-        sb.append('=');
-        sb.append(super.toString());
-        return sb.toString();
-    }
+	@Override
+	public String toString () {
+		StringBuilder sb = new StringBuilder();
+		if (!valueIsDefined) {
+			sb.append("<unbound>"); //$NON-NLS-1$
+		} else {
+			if (value == null) {
+				sb.append(BeansUtils.NULL);
+			} else {
+				Class<?> clazz = value.getClass();
+				sb.append(clazz == String.class ? BeansUtils.QUOTE : BeansUtils.idOfClass(clazz));
+			}
+		}
+		sb.append('=');
+		sb.append(super.toString());
+		return sb.toString();
+	}
 
-    public void setValue(Object value) {
-        this.value = value;
-        this.valueIsDefined = true;
-    }
+	public void setValue (Object value) {
+		this.value = value;
+		this.valueIsDefined = true;
+	}
 
-    public Object getValue() throws Exception {
-        if (!valueIsDefined) {
-            value = invokeMethod();
-            valueIsDefined = true;
-        }
-        return value;
-    }
+	public Object getValue () throws Exception {
+		if (!valueIsDefined) {
+			value = invokeMethod();
+			valueIsDefined = true;
+		}
+		return value;
+	}
 }

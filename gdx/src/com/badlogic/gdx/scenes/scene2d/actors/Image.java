@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actors;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -45,7 +46,8 @@ public class Image extends Actor {
 		this.region = new TextureRegion(region);
 	}
 
-	@Override public void draw (SpriteBatch batch, float parentAlpha) {
+	@Override
+	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (region.getTexture() != null) {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			if (scaleX == 1 && scaleY == 1 && rotation == 0)
@@ -55,15 +57,18 @@ public class Image extends Actor {
 		}
 	}
 
-	@Override public boolean touchDown (float x, float y, int pointer) {
+	@Override
+	public boolean touchDown (float x, float y, int pointer) {
 		return x > 0 && y > 0 && x < width && y < height;
 	}
 
-	@Override public boolean touchUp (float x, float y, int pointer) {
+	@Override
+	public boolean touchUp (float x, float y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (float x, float y, int pointer) {
+	@Override
+	public boolean touchDragged (float x, float y, int pointer) {
 		return false;
 	}
 

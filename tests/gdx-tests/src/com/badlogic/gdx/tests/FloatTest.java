@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.ByteBuffer;
@@ -24,8 +25,6 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class FloatTest extends GdxTest {
@@ -37,12 +36,14 @@ public class FloatTest extends GdxTest {
 	float angle = 0;
 	float angleIncrement = 0.1f;
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		tex.dispose();
 		tex2.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
@@ -103,7 +104,7 @@ public class FloatTest extends GdxTest {
 		pixmap.drawLine(256, 0, 0, 256);
 		tex = new Texture(pixmap, false);
 		pixmap.dispose();
-		
+
 		pixmap = new Pixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.fill();
@@ -113,15 +114,18 @@ public class FloatTest extends GdxTest {
 		pixmap.dispose();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		init();
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 		init();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

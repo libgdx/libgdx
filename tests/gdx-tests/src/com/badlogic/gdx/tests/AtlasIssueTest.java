@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -36,7 +35,7 @@ public class AtlasIssueTest extends GdxTest {
 		batch = new SpriteBatch();
 		batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, 855, 480));
 		atlas = new TextureAtlas(Gdx.files.internal("data/issue_pack"), Gdx.files.internal("data/"));
-		sprite  = atlas.createSprite("map");
+		sprite = atlas.createSprite("map");
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
 		Gdx.gl.glClearColor(0, 1, 0, 1);
 	}
@@ -45,7 +44,7 @@ public class AtlasIssueTest extends GdxTest {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		sprite.draw(batch);
-		font.draw(batch, "fps:"+Gdx.graphics.getFramesPerSecond(), 26, 65);
+		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond(), 26, 65);
 		batch.end();
 	}
 

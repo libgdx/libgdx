@@ -13,9 +13,6 @@
 
 package com.badlydrawngames.veryangryrobots;
 
-import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_HEIGHT;
-import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_WIDTH;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -29,6 +26,8 @@ import com.badlydrawngames.general.CameraHelper.ViewportMode;
 import com.badlydrawngames.general.GameScreen;
 import com.badlydrawngames.general.SimpleButton;
 
+import static com.badlydrawngames.veryangryrobots.Assets.*;
+
 public class MainMenuScreen extends GameScreen<VeryAngryRobotsGame> {
 
 	final String TITLE = "VERY ANGRY ROBOTS";
@@ -39,8 +38,8 @@ public class MainMenuScreen extends GameScreen<VeryAngryRobotsGame> {
 	private SimpleButton scoresButton;
 	private Vector3 touchPoint;
 	private boolean wasTouched;
-	
-	public MainMenuScreen(VeryAngryRobotsGame game) {
+
+	public MainMenuScreen (VeryAngryRobotsGame game) {
 		super(game);
 		menuCam = CameraHelper.createCamera2(ViewportMode.PIXEL_PERFECT, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, Assets.pixelDensity);
 		spriteBatch = new SpriteBatch();
@@ -49,72 +48,70 @@ public class MainMenuScreen extends GameScreen<VeryAngryRobotsGame> {
 		createButtons();
 	}
 
-	private void createButtons() {
+	private void createButtons () {
 		playButton = createPlayButton();
-		playButton.setWidth(VIRTUAL_WIDTH/4);
-		playButton.setHeight(VIRTUAL_HEIGHT/4);
+		playButton.setWidth(VIRTUAL_WIDTH / 4);
+		playButton.setHeight(VIRTUAL_HEIGHT / 4);
 		if (game.canShowScores()) {
 			scoresButton = createShowScoresButton();
-			scoresButton.setWidth(VIRTUAL_WIDTH/4);
-			scoresButton.setHeight(VIRTUAL_HEIGHT/4);
+			scoresButton.setWidth(VIRTUAL_WIDTH / 4);
+			scoresButton.setHeight(VIRTUAL_HEIGHT / 4);
 			scoresButton.rightOn(VIRTUAL_WIDTH);
 			scoresButton.bottomOn(1.0f);
 			playButton.leftOn(0);
 			playButton.bottomOn(1.0f);
-		}
-		else {
+		} else {
 			playButton.bottomOn(1.0f);
 			playButton.centerHorizontallyOn(VIRTUAL_WIDTH / 2);
 		}
 	}
-	
-	private SimpleButton createPlayButton() {
-		return new SimpleButton("Play", Assets.textFont); 
+
+	private SimpleButton createPlayButton () {
+		return new SimpleButton("Play", Assets.textFont);
 	}
 
-	private SimpleButton createShowScoresButton() {
+	private SimpleButton createShowScoresButton () {
 		return new SimpleButton("Scores", Assets.textFont);
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render (float delta) {
 		updateButtons(delta);
-		
+
 		if (playButton.wasPressed()) {
 			playButtonSound();
 			startGame();
-		}
-		else if (game.canShowScores() && scoresButton.wasPressed()) {
+		} else if (game.canShowScores() && scoresButton.wasPressed()) {
 			playButtonSound();
 			showScores();
-		}
-		else {
+		} else {
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			spriteBatch.begin();
 			Assets.scoreFont.setColor(Color.WHITE);
 			float y = VIRTUAL_HEIGHT - Assets.scoreFont.getCapHeight() / 2.0f;
 			Assets.scoreFont.drawWrapped(spriteBatch, TITLE, 0, y, VIRTUAL_WIDTH, HAlignment.CENTER);
-			Assets.textFont.drawWrapped(spriteBatch, JIBBER_JABBER, VIRTUAL_WIDTH / 8, 3 * VIRTUAL_HEIGHT / 4, 3 * VIRTUAL_WIDTH / 4, HAlignment.CENTER);
+			Assets.textFont.drawWrapped(spriteBatch, JIBBER_JABBER, VIRTUAL_WIDTH / 8, 3 * VIRTUAL_HEIGHT / 4,
+				3 * VIRTUAL_WIDTH / 4, HAlignment.CENTER);
 			drawButtons();
 			spriteBatch.end();
 		}
 	}
 
-	private void playButtonSound() {
+	private void playButtonSound () {
 		Sound buttonPressedSound = Assets.buttonSound;
 		Assets.playSound(buttonPressedSound);
 	}
-	
-	private void startGame() {
+
+	private void startGame () {
 		game.setScreen(game.playingScreen);
 	}
-	
-	private void showScores() {
+
+	private void showScores () {
 		game.showScores();
 	}
 
-	private void updateButtons(float delta) {
+	private void updateButtons (float delta) {
 		touchPoint = screenToViewport(Gdx.input.getX(), Gdx.input.getY());
 		boolean justTouched = Gdx.input.justTouched();
 		boolean isTouched = Gdx.input.isTouched();
@@ -125,15 +122,15 @@ public class MainMenuScreen extends GameScreen<VeryAngryRobotsGame> {
 			scoresButton.update(delta, justTouched, isTouched, justReleased, touchPoint.x, touchPoint.y);
 		}
 	}
-	
-	private void drawButtons() {
+
+	private void drawButtons () {
 		playButton.draw(spriteBatch);
 		if (game.canShowScores()) {
 			scoresButton.draw(spriteBatch);
 		}
 	}
 
-	private Vector3 screenToViewport(float x, float y) {
+	private Vector3 screenToViewport (float x, float y) {
 		menuCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 		return touchPoint;
 	}

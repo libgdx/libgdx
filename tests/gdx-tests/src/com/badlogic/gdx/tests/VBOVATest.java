@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -45,7 +46,8 @@ public class VBOVATest extends GdxTest {
 	int frames = 0;
 	boolean isStatic = false;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		int viewport[] = new int[4];
 		Gdx.gl10.glGetIntegerv(GL11.GL_VIEWPORT, viewport, 0);
 		Gdx.gl10.glGetIntegerv(GL11.GL_VIEWPORT, viewport, 0);
@@ -84,7 +86,8 @@ public class VBOVATest extends GdxTest {
 		startTime = System.nanoTime();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.gl11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 		switch (mode) {
@@ -118,7 +121,7 @@ public class VBOVATest extends GdxTest {
 			}
 			if (mode == 5) {
 				vaibo.setIndices(indices, 0, indices.length);
-			}		
+			}
 
 			if (mode <= 2) {
 				Gdx.gl11.glDrawArrays(GL11.GL_TRIANGLES, 0, TRIANGLES * 3);
@@ -150,14 +153,16 @@ public class VBOVATest extends GdxTest {
 		frames++;
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 		vbo.invalidate();
 		vbosd.invalidate();
 		ibo.invalidate();
 		ibosd.invalidate();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 

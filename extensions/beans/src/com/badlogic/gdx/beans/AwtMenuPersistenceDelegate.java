@@ -20,23 +20,16 @@ package com.badlogic.gdx.beans;
 import java.awt.Menu;
 import java.awt.MenuItem;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-import com.badlogic.gdx.beans.Statement;
-
 class AwtMenuPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-	@SuppressWarnings({ "nls", "boxing" })
-    protected void initialize(Class<?> type, Object oldInstance,
-			Object newInstance, Encoder enc) {
+	@Override
+	@SuppressWarnings({"nls", "boxing"})
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder enc) {
 		super.initialize(type, oldInstance, newInstance, enc);
 		if (type != oldInstance.getClass()) {
-            return;
-        }
-		
-		Menu menu = (Menu) oldInstance;
+			return;
+		}
+
+		Menu menu = (Menu)oldInstance;
 		int count = menu.getItemCount();
 		Expression getterExp = null;
 		for (int i = 0; i < count; i++) {
@@ -51,31 +44,26 @@ class AwtMenuPersistenceDelegate extends DefaultPersistenceDelegate {
 				// Get the current property value in the new environment
 				Object newVal = null;
 				try {
-					newVal = new Expression(((Menu) newInstance).getItem(i),
-							"getLabel", null).getValue();
+					newVal = new Expression(((Menu)newInstance).getItem(i), "getLabel", null).getValue();
 				} catch (IndexOutOfBoundsException ex) {
 					// The newInstance has no elements, so current property
 					// value remains null
 				}
 				/*
-				 * Make the target value and current property value equivalent
-				 * in the new environment
+				 * Make the target value and current property value equivalent in the new environment
 				 */
 				if (null == targetVal) {
 					if (null != newVal) {
 						// Set to null
-						Statement setterStm = new Statement(oldInstance, "insert",
-								new Object[] { null, i });
+						Statement setterStm = new Statement(oldInstance, "insert", new Object[] {null, i});
 						enc.writeStatement(setterStm);
 					}
 				} else {
-					PersistenceDelegate pd = enc
-							.getPersistenceDelegate(targetVal.getClass());
+					PersistenceDelegate pd = enc.getPersistenceDelegate(targetVal.getClass());
 					if (!pd.mutatesTo(targetVal, newVal)) {
-						MenuItem menuItem = new MenuItem((String) oldVal);
+						MenuItem menuItem = new MenuItem((String)oldVal);
 						menuItem.setName(menu.getItem(i).getName());
-						Statement setterStm = new Statement(oldInstance,
-								"add", new Object[] { menuItem });
+						Statement setterStm = new Statement(oldInstance, "add", new Object[] {menuItem});
 						enc.writeStatement(setterStm);
 					}
 				}

@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio.analysis;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Calculates a threshold function based on the spectral flux.
+/** Calculates a threshold function based on the spectral flux.
  * 
- * @author badlogicgames@gmail.com
- * 
- */
+ * @author badlogicgames@gmail.com */
 public class ThresholdFunction {
 	/** the history size **/
 	private final int historySize;
@@ -31,23 +29,19 @@ public class ThresholdFunction {
 	/** the average multiplier **/
 	private final float multiplier;
 
-	/**
-	 * Consturctor, sets the history size in number of spectra to take into account to calculate the average spectral flux at a
+	/** Consturctor, sets the history size in number of spectra to take into account to calculate the average spectral flux at a
 	 * specific position. Also sets the multiplier to multiply the average with.
 	 * 
 	 * @param historySize The history size.
-	 * @param multiplier The average multiplier.
-	 */
+	 * @param multiplier The average multiplier. */
 	public ThresholdFunction (int historySize, float multiplier) {
 		this.historySize = historySize;
 		this.multiplier = multiplier;
 	}
 
-	/**
-	 * Returns the threshold function for a given spectral flux function.
+	/** Returns the threshold function for a given spectral flux function.
 	 * 
-	 * @return The threshold function.
-	 */
+	 * @return The threshold function. */
 	public List<Float> calculate (List<Float> spectralFlux) {
 		ArrayList<Float> thresholds = new ArrayList<Float>(spectralFlux.size());
 

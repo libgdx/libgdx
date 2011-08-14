@@ -17,13 +17,9 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.PropertyChangeEvent;
-import com.badlogic.gdx.beans.PropertyVetoException;
-
 import java.util.EventListener;
 
 public interface VetoableChangeListener extends EventListener {
 
-    public void vetoableChange(PropertyChangeEvent evt)
-            throws PropertyVetoException;
+	public void vetoableChange (PropertyChangeEvent evt) throws PropertyVetoException;
 }

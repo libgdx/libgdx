@@ -21,5 +21,5 @@ import java.awt.Component;
 
 public interface BeanContextChildComponentProxy {
 
-    public Component getComponent();
+	public Component getComponent ();
 }

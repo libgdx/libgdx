@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.Application;
@@ -49,24 +50,28 @@ public class GameScreen extends Screen {
 	public GameScreen (Game game) {
 		super(game);
 		state = GAME_READY;
-		guiCam = new OrthographicCamera(320, 480);		
+		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		touchPoint = new Vector3();
 		batcher = new SpriteBatch();
 		worldListener = new WorldListener() {
-			@Override public void jump () {
+			@Override
+			public void jump () {
 				Assets.playSound(Assets.jumpSound);
 			}
 
-			@Override public void highJump () {
+			@Override
+			public void highJump () {
 				Assets.playSound(Assets.highJumpSound);
 			}
 
-			@Override public void hit () {
+			@Override
+			public void hit () {
 				Assets.playSound(Assets.hitSound);
 			}
 
-			@Override public void coin () {
+			@Override
+			public void coin () {
 				Assets.playSound(Assets.coinSound);
 			}
 		};
@@ -79,7 +84,8 @@ public class GameScreen extends Screen {
 		scoreString = "SCORE: 0";
 	}
 
-	@Override public void update (float deltaTime) {
+	@Override
+	public void update (float deltaTime) {
 		if (deltaTime > 0.1f) deltaTime = 0.1f;
 
 		switch (state) {
@@ -109,7 +115,7 @@ public class GameScreen extends Screen {
 
 	private void updateRunning (float deltaTime) {
 		if (Gdx.input.justTouched()) {
-			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));			
+			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
 			if (OverlapTester.pointInRectangle(pauseBounds, touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
@@ -118,15 +124,12 @@ public class GameScreen extends Screen {
 			}
 		}
 
-		if(Gdx.app.getType() == Application.ApplicationType.Android) { 
+		if (Gdx.app.getType() == Application.ApplicationType.Android) {
 			world.update(deltaTime, Gdx.input.getAccelerometerX());
-		}
-		else {
+		} else {
 			float accel = 0;
-			if(Gdx.input.isKeyPressed(Keys.DPAD_LEFT))
-				accel = 5f;
-			if(Gdx.input.isKeyPressed(Keys.DPAD_RIGHT))
-				accel = -5f;
+			if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) accel = 5f;
+			if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) accel = -5f;
 			world.update(deltaTime, accel);
 		}
 		if (world.score != lastScore) {
@@ -167,7 +170,7 @@ public class GameScreen extends Screen {
 	}
 
 	private void updateLevelEnd () {
-		if(Gdx.input.justTouched()) {
+		if (Gdx.input.justTouched()) {
 			world = new World(worldListener);
 			renderer = new WorldRenderer(batcher, world);
 			world.score = lastScore;
@@ -176,12 +179,13 @@ public class GameScreen extends Screen {
 	}
 
 	private void updateGameOver () {
-		if(Gdx.input.justTouched()) {
+		if (Gdx.input.justTouched()) {
 			game.setScreen(new MainMenuScreen(game));
 		}
 	}
 
-	@Override public void present (float deltaTime) {
+	@Override
+	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -189,9 +193,9 @@ public class GameScreen extends Screen {
 		renderer.render();
 
 		guiCam.update();
-		batcher.setProjectionMatrix(guiCam.combined);	
+		batcher.setProjectionMatrix(guiCam.combined);
 		batcher.enableBlending();
-		batcher.begin();		
+		batcher.begin();
 		switch (state) {
 		case GAME_READY:
 			presentReady();
@@ -209,7 +213,7 @@ public class GameScreen extends Screen {
 			presentGameOver();
 			break;
 		}
-		batcher.end();				
+		batcher.end();
 	}
 
 	private void presentReady () {
@@ -222,7 +226,7 @@ public class GameScreen extends Screen {
 	}
 
 	private void presentPaused () {
-		batcher.draw( Assets.pauseMenu, 160 - 192 / 2, 240 - 96 / 2, 192, 96);
+		batcher.draw(Assets.pauseMenu, 160 - 192 / 2, 240 - 96 / 2, 192, 96);
 		Assets.font.draw(batcher, scoreString, 16, 480 - 20);
 	}
 
@@ -241,13 +245,16 @@ public class GameScreen extends Screen {
 		Assets.font.draw(batcher, scoreString, 160 - scoreWidth / 2, 480 - 20);
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 		if (state == GAME_RUNNING) state = GAME_PAUSED;
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 	}
 }

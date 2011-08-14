@@ -8,19 +8,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "axis"
-})
+@XmlType(name = "", propOrder = {"axis"})
 @XmlRootElement(name = "rotate")
 public class Rotate {
 
-    @XmlAttribute(required = true)    
-    public float angle;
-    @XmlElement(required = true)
-    public Axis axis;  
+	@XmlAttribute(required = true)
+	public float angle;
+	@XmlElement(required = true)
+	public Axis axis;
 }

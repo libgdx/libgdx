@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.ByteBuffer;
@@ -29,7 +30,8 @@ public class VertexArrayTest extends GdxTest {
 	ShortBuffer indices;
 	final int BYTES_PER_VERTEX = (3 + 4) * 4;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
@@ -46,7 +48,8 @@ public class VertexArrayTest extends GdxTest {
 		gl.glDrawElements(GL10.GL_TRIANGLES, 3, GL10.GL_UNSIGNED_SHORT, indices);
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(BYTES_PER_VERTEX * 3);
 		buffer.order(ByteOrder.nativeOrder());
 		vertices = buffer.asFloatBuffer();
@@ -66,7 +69,8 @@ public class VertexArrayTest extends GdxTest {
 		indices.flip();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

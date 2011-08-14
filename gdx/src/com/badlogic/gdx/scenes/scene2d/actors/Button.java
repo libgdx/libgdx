@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 
-/**
- * A simple Button {@link Actor}, useful for simple UIs
+/** A simple Button {@link Actor}, useful for simple UIs
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class Button extends Actor implements Layout {
 	public interface ClickListener {
 		public void clicked (Button button);
@@ -39,22 +36,18 @@ public class Button extends Actor implements Layout {
 	public boolean pressed = false;
 	protected int pointer = -1;
 
-	/**
-	 * Creates a new Button instance with the given name.
-	 * @param name the name
-	 */
+	/** Creates a new Button instance with the given name.
+	 * @param name the name */
 	public Button (String name) {
 		super(name);
 		this.pressedRegion = new TextureRegion();
 		this.unpressedRegion = new TextureRegion();
 	}
 
-	/**
-	 * Creates a new Button instance with the given name, using the complete supplied texture for displaying the pressed and
+	/** Creates a new Button instance with the given name, using the complete supplied texture for displaying the pressed and
 	 * unpressed state of the button.
 	 * @param name the name
-	 * @param texture the {@link Texture}
-	 */
+	 * @param texture the {@link Texture} */
 	public Button (String name, Texture texture) {
 		super(name);
 		originX = texture.getWidth() / 2.0f;
@@ -79,7 +72,8 @@ public class Button extends Actor implements Layout {
 		this.pressedRegion = new TextureRegion(pressedRegion);
 	}
 
-	@Override public void draw (SpriteBatch batch, float parentAlpha) {
+	@Override
+	public void draw (SpriteBatch batch, float parentAlpha) {
 		TextureRegion region = pressed ? pressedRegion : unpressedRegion;
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (region.getTexture() != null) {
@@ -90,12 +84,13 @@ public class Button extends Actor implements Layout {
 		}
 	}
 
-	@Override public boolean touchDown (float x, float y, int pointer) {
-		if(pressed) return false;
+	@Override
+	public boolean touchDown (float x, float y, int pointer) {
+		if (pressed) return false;
 
 		boolean result = x > 0 && y > 0 && x < width && y < height;
 		pressed = result;
-		
+
 		if (pressed) {
 			parent.focus(this, pointer);
 			this.pointer = pointer;
@@ -103,10 +98,11 @@ public class Button extends Actor implements Layout {
 		return result;
 	}
 
-	@Override public boolean touchUp (float x, float y, int pointer) {
+	@Override
+	public boolean touchUp (float x, float y, int pointer) {
 		if (!pressed) return false;
 
-		if(pointer == this.pointer) {
+		if (pointer == this.pointer) {
 			parent.focus(null, pointer);
 		}
 		pressed = false;
@@ -114,7 +110,8 @@ public class Button extends Actor implements Layout {
 		return true;
 	}
 
-	@Override public boolean touchDragged (float x, float y, int pointer) {
+	@Override
+	public boolean touchDragged (float x, float y, int pointer) {
 		return pressed;
 	}
 

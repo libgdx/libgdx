@@ -14,16 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.badlogic.gdx.beans;
 
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-
-import com.badlogic.gdx.beans.PropertyChangeEvent;
-import com.badlogic.gdx.beans.PropertyChangeListener;
-import com.badlogic.gdx.beans.PropertyEditor;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,105 +28,100 @@ import org.apache.harmony.beans.internal.nls.Messages;
 
 public class PropertyEditorSupport implements PropertyEditor {
 
-    Object source = null;
+	Object source = null;
 
-    List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+	List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 
-    Object newValue = null;
+	Object newValue = null;
 
-    public PropertyEditorSupport(Object source) {
-        if (source == null) {
-            throw new NullPointerException(Messages.getString("beans.0C")); //$NON-NLS-1$
-        }
-        this.source = source;
-    }
+	public PropertyEditorSupport (Object source) {
+		if (source == null) {
+			throw new NullPointerException(Messages.getString("beans.0C")); //$NON-NLS-1$
+		}
+		this.source = source;
+	}
 
-    public PropertyEditorSupport() {
-        source = this;
-    }
+	public PropertyEditorSupport () {
+		source = this;
+	}
 
-    public void paintValue(Graphics gfx, Rectangle box) {
-        // expected
-    }
+	public void paintValue (Graphics gfx, Rectangle box) {
+		// expected
+	}
 
-    public void setAsText(String text) throws IllegalArgumentException {
-        if (newValue instanceof String) {
-            setValue(text);
-        } else {
-            throw new IllegalArgumentException(text);
-        }
-    }
+	public void setAsText (String text) throws IllegalArgumentException {
+		if (newValue instanceof String) {
+			setValue(text);
+		} else {
+			throw new IllegalArgumentException(text);
+		}
+	}
 
-    public String[] getTags() {
-        return null;
-    }
+	public String[] getTags () {
+		return null;
+	}
 
-    public String getJavaInitializationString() {
-        return "???"; //$NON-NLS-1$
-    }
+	public String getJavaInitializationString () {
+		return "???"; //$NON-NLS-1$
+	}
 
-    public String getAsText() {
-        return newValue == null ? "null" : newValue.toString(); //$NON-NLS-1$
-    }
+	public String getAsText () {
+		return newValue == null ? "null" : newValue.toString(); //$NON-NLS-1$
+	}
 
-    public void setValue(Object value) {
-        this.newValue = value;
-        firePropertyChange();
-    }
+	public void setValue (Object value) {
+		this.newValue = value;
+		firePropertyChange();
+	}
 
-    public Object getValue() {
-        return newValue;
-    }
+	public Object getValue () {
+		return newValue;
+	}
 
-    public void setSource(Object source) {        
-        this.source = source;
-    }
+	public void setSource (Object source) {
+		this.source = source;
+	}
 
-    public Object getSource() {
-        return source;
-    }
+	public Object getSource () {
+		return source;
+	}
 
-    public synchronized void removePropertyChangeListener(
-            PropertyChangeListener listener) {
-        if (listeners != null) {
-            listeners.remove(listener);
-        }
-    }
+	public synchronized void removePropertyChangeListener (PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.remove(listener);
+		}
+	}
 
-    public synchronized void addPropertyChangeListener(
-            PropertyChangeListener listener) {
-        listeners.add(listener);
-    }
+	public synchronized void addPropertyChangeListener (PropertyChangeListener listener) {
+		listeners.add(listener);
+	}
 
-    public Component getCustomEditor() {
-        return null;
-    }
+	public Component getCustomEditor () {
+		return null;
+	}
 
-    public boolean supportsCustomEditor() {
-        return false;
-    }
+	public boolean supportsCustomEditor () {
+		return false;
+	}
 
-    public boolean isPaintable() {
-        return false;
-    }
+	public boolean isPaintable () {
+		return false;
+	}
 
-    public void firePropertyChange() {
-        if (listeners.isEmpty()) {
-            return;
-        }
+	public void firePropertyChange () {
+		if (listeners.isEmpty()) {
+			return;
+		}
 
-        List<PropertyChangeListener> copy = new ArrayList<PropertyChangeListener>(
-                listeners.size());
-        synchronized (listeners) {
-            copy.addAll(listeners);
-        }
+		List<PropertyChangeListener> copy = new ArrayList<PropertyChangeListener>(listeners.size());
+		synchronized (listeners) {
+			copy.addAll(listeners);
+		}
 
-        PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(source,
-                null, null, null);
-        for (Iterator<PropertyChangeListener> listenersItr = copy.iterator(); listenersItr
-                .hasNext();) {
-            PropertyChangeListener listna = listenersItr.next();
-            listna.propertyChange(changeAllEvent);
-        }
-    }
+		PropertyChangeEvent changeAllEvent = new PropertyChangeEvent(source, null, null, null);
+		for (Iterator<PropertyChangeListener> listenersItr = copy.iterator(); listenersItr.hasNext();) {
+			PropertyChangeListener listna = listenersItr.next();
+			listna.propertyChange(changeAllEvent);
+		}
+	}
 }

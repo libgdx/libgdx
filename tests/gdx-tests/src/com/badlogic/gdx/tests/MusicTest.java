@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -26,49 +27,56 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MusicTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	static final int NUM_STREAMS = 1; 
+	static final int NUM_STREAMS = 1;
 	Music[] music = new Music[NUM_STREAMS];
 	TextureRegion buttons;
 	SpriteBatch batch;
-	BitmapFont font;	
-	
-	@Override public void create() {
-		for(int i = 0; i < music.length; i++) {
+	BitmapFont font;
+
+	@Override
+	public void create () {
+		for (int i = 0; i < music.length; i++) {
 			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-//			music = Gdx.audio.newMusic(Gdx.files.internal("data/sell_buy_item.wav"));	
-//			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/threeofaperfectpair.mp3"));
+// music = Gdx.audio.newMusic(Gdx.files.internal("data/sell_buy_item.wav"));
+// music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/threeofaperfectpair.mp3"));
 		}
-		
+
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 	}
-	
-	@Override public void resize(int width, int height) {
+
+	@Override
+	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
-	
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-		font.draw(batch, "\"Three of a perfect pair: " +  music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
-		batch.end();			
-		
-		if(Gdx.input.justTouched()) {
-			if(Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
-				if(Gdx.input.getX() < 64) {
-					for(int i = 0; i < music.length; i++) music[i].play();
+		font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
+		batch.end();
+
+		if (Gdx.input.justTouched()) {
+			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
+				if (Gdx.input.getX() < 64) {
+					for (int i = 0; i < music.length; i++)
+						music[i].play();
 				}
-				if(Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
-					for(int i = 0; i < music.length; i++) music[i].stop();
+				if (Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
+					for (int i = 0; i < music.length; i++)
+						music[i].stop();
 				}
-				if(Gdx.input.getX() > 128 && Gdx.input.getX() < 192) {
-					for(int i = 0; i < music.length; i++) music[i].pause();
+				if (Gdx.input.getX() > 128 && Gdx.input.getX() < 192) {
+					for (int i = 0; i < music.length; i++)
+						music[i].pause();
 				}
 			}
 		}

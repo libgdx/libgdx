@@ -38,7 +38,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class VaryingRestitution extends Box2DTest {
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		{
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);

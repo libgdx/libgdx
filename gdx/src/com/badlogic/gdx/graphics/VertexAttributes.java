@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
-/**
- * Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
+/** Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
  * its vertex structure. Vertex attributes have an order. The order is specified by the order they are added to this class.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public final class VertexAttributes {
-	/**
-	 * The usage of a vertex attribute.
+	/** The usage of a vertex attribute.
 	 * 
-	 * @author mzechner
-	 * 
-	 */
+	 * @author mzechner */
 	public static final class Usage {
 		public static final int Position = 0;
 		public static final int Color = 1;
@@ -44,9 +39,7 @@ public final class VertexAttributes {
 	/** the size of a single vertex in bytes **/
 	public final int vertexSize;
 
-	/**
-	 * Constructor, sets the vertex attributes in a specific order
-	 */
+	/** Constructor, sets the vertex attributes in a specific order */
 	public VertexAttributes (VertexAttribute... attributes) {
 		if (attributes.length == 0) throw new IllegalArgumentException("attributes must be >= 1");
 
@@ -101,24 +94,20 @@ public final class VertexAttributes {
 		if (pos == false) throw new IllegalArgumentException("no position attribute was specified");
 	}
 
-	/**
-	 * @return the number of attributes
-	 */
+	/** @return the number of attributes */
 	public int size () {
 		return attributes.length;
 	}
 
-	/**
-	 * @param index the index
-	 * @return the VertexAttribute at the given index
-	 */
+	/** @param index the index
+	 * @return the VertexAttribute at the given index */
 	public VertexAttribute get (int index) {
 		return attributes[index];
 	}
-	
-	public String toString() {
+
+	public String toString () {
 		StringBuilder builder = new StringBuilder();
-		for(int i = 0; i < attributes.length; i++) {
+		for (int i = 0; i < attributes.length; i++) {
 			builder.append(attributes[i].alias);
 			builder.append(", ");
 			builder.append(attributes[i].usage);

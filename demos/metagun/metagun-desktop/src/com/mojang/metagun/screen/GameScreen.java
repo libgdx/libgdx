@@ -74,25 +74,25 @@ public class GameScreen extends Screen {
 
 	public void render () {
 		spriteBatch.begin();
-//		draw(Art.bg, -xLevel * 160, -yLevel * 120);
+// draw(Art.bg, -xLevel * 160, -yLevel * 120);
 		draw(Art.bg, 0, 0);
 		spriteBatch.end();
 		level.render(this, camera);
-		
+
 		spriteBatch.begin();
 		if (mayRespawn) {
 			String msg = "PRESS X TO TRY AGAIN";
 			drawString(msg, 160 - msg.length() * 3, 120 - 3);
 		}
-		if(Gdx.app.getType() == ApplicationType.Android) {
-			draw(Art.buttons[0][0], 0, 240-32);
-			draw(Art.buttons[1][0], 32, 240-32);
-			
-			draw(Art.buttons[4][0], 160-32, 240-32);
-			draw(Art.buttons[5][0], 160, 240-32);
-			
-			draw(Art.buttons[2][0], 320-64, 240-32);
-			draw(Art.buttons[3][0], 320-32, 240-32);
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			draw(Art.buttons[0][0], 0, 240 - 32);
+			draw(Art.buttons[1][0], 32, 240 - 32);
+
+			draw(Art.buttons[4][0], 160 - 32, 240 - 32);
+			draw(Art.buttons[5][0], 160, 240 - 32);
+
+			draw(Art.buttons[2][0], 320 - 64, 240 - 32);
+			draw(Art.buttons[3][0], 320 - 32, 240 - 32);
 		}
 		spriteBatch.end();
 	}

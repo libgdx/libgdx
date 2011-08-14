@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -13,30 +14,30 @@ public class FileTextureData implements TextureData {
 	Format format;
 	Pixmap pixmap;
 	boolean useMipMaps;
-	
-	public FileTextureData(FileHandle file, Pixmap preloadedPixmap, Format format, boolean useMipMaps) {
+
+	public FileTextureData (FileHandle file, Pixmap preloadedPixmap, Format format, boolean useMipMaps) {
 		this.file = file;
 		this.pixmap = preloadedPixmap;
 		this.format = format;
 		this.useMipMaps = useMipMaps;
-		if(pixmap != null) {
+		if (pixmap != null) {
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
-			if(format == null) this.format = pixmap.getFormat();
+			if (format == null) this.format = pixmap.getFormat();
 		}
 	}
-	
+
 	@Override
 	public Pixmap getPixmap () {
-		if(pixmap != null) {
+		if (pixmap != null) {
 			Pixmap tmp = pixmap;
 			this.pixmap = null;
 			return tmp;
-		} else {			
+		} else {
 			Pixmap pixmap = new Pixmap(file);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
-			if(format == null) format = pixmap.getFormat();
+			if (format == null) format = pixmap.getFormat();
 			return pixmap;
 		}
 	}
@@ -70,11 +71,11 @@ public class FileTextureData implements TextureData {
 	public boolean isManaged () {
 		return true;
 	}
-	
-	public FileHandle getFileHandle() {
+
+	public FileHandle getFileHandle () {
 		return file;
 	}
-	
+
 	@Override
 	public TextureDataType getType () {
 		return TextureDataType.Pixmap;

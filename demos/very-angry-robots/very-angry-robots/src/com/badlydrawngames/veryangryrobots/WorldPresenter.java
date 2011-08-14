@@ -19,21 +19,18 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlydrawngames.general.GameScreen;
 import com.badlydrawngames.veryangryrobots.mobiles.Player;
 
-/**
- * <p>
- * It is the role of the <code>WorldPresenter</code> to glue together the {@link World} and the {@link WorldView}. It 
- * passes on information from the controls in the WorldView to the World, updates it, then asks the WorldView to draw
- * everything on its behalf. The {@link WorldView} tells this <code>WorldPresenter</code> what to do via the methods
- * provided by the {@link WorldView#Presenter} interface.
+/** <p>
+ * It is the role of the <code>WorldPresenter</code> to glue together the {@link World} and the {@link WorldView}. It passes on
+ * information from the controls in the WorldView to the World, updates it, then asks the WorldView to draw everything on its
+ * behalf. The {@link WorldView} tells this <code>WorldPresenter</code> what to do via the methods provided by the
+ * {@link WorldView#Presenter} interface.
  * </p>
  * 
- * @author Rod
- *
- */
+ * @author Rod */
 public class WorldPresenter extends GameScreen<VeryAngryRobotsGame> implements WorldView.Presenter, ScoreListener {
 
 	private static final float MAX_DELTA = 0.1f;
-	
+
 	private final World world;
 	private final WorldView worldView;
 	private final StatusView statusView;
@@ -44,12 +41,10 @@ public class WorldPresenter extends GameScreen<VeryAngryRobotsGame> implements W
 	private boolean isDead;
 	private boolean wasBackPressed;
 
-	/**
-	 * Constructs a new WorldPresenter.
+	/** Constructs a new WorldPresenter.
 	 * 
-	 * @param game the game, used primarily for switching between screens.
-	 */
-	public WorldPresenter(VeryAngryRobotsGame game) {
+	 * @param game the game, used primarily for switching between screens. */
+	public WorldPresenter (VeryAngryRobotsGame game) {
 		super(game);
 		difficultyManager = new ScoreBasedDifficultyManager();
 		world = new World(difficultyManager);
@@ -69,43 +64,41 @@ public class WorldPresenter extends GameScreen<VeryAngryRobotsGame> implements W
 	}
 
 	@Override
-	public void show() {
+	public void show () {
 		Gdx.input.setCatchBackKey(true);
 		wasBackPressed = false;
 		world.reset();
 		world.resume();
 	}
-	
+
 	@Override
-	public void pause() {
+	public void pause () {
 		world.pause();
 	}
-	
+
 	@Override
-	public void resume() {
+	public void resume () {
 		Gdx.input.setCatchBackKey(true);
 		world.resume();
 	}
-	
+
 	@Override
-	public void hide() {
+	public void hide () {
 		Gdx.input.setCatchBackKey(false);
 	}
-	
-	/**
-	 * Called by libgdx when this screen should render itself. It responds to a request to render by updating the
-	 * controls, updating the world and the managers, then drawing the views. 
+
+	/** Called by libgdx when this screen should render itself. It responds to a request to render by updating the controls,
+	 * updating the world and the managers, then drawing the views.
 	 * 
-	 * @param delta the time in seconds since the last time <code>render</code> was called.
-	 */
+	 * @param delta the time in seconds since the last time <code>render</code> was called. */
 	@Override
-	public void render(float delta) {
+	public void render (float delta) {
 		// Update time.
 		if (delta >= MAX_DELTA) delta = MAX_DELTA;
-		
+
 		// Ask the view to update the controls.
 		worldView.updateControls(delta);
-		
+
 		// If we're not paused then update the world and the subsystems.
 		world.update(delta);
 		if (!world.isPaused()) {
@@ -113,13 +106,13 @@ public class WorldPresenter extends GameScreen<VeryAngryRobotsGame> implements W
 			worldView.update(delta);
 			soundManager.update(delta);
 		}
-		
+
 		// Clear the screen and draw the views.
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		worldView.render(delta);
 		statusView.render(delta);
-		
+
 		if (isDead && world.getState() == World.PLAYING) {
 			game.submitScore(score);
 			game.setScreen(game.scoresScreen);
@@ -129,45 +122,40 @@ public class WorldPresenter extends GameScreen<VeryAngryRobotsGame> implements W
 		if (!wasBackPressed && isBackPressed) {
 			if (!world.isPaused()) {
 				world.pause();
-			}
-			else {
+			} else {
 				game.setScreen(game.mainMenuScreen);
 			}
 		}
 		wasBackPressed = isBackPressed;
 	}
-	
-	/**
-	 * Called by the {@link WorldView} when the player wants to move.
+
+	/** Called by the {@link WorldView} when the player wants to move.
 	 * 
 	 * @param x the x value of the controller.
-	 * @param y the y value of the controller.
-	 */
+	 * @param y the y value of the controller. */
 	@Override
-	public void setController(float x, float y) {
+	public void setController (float x, float y) {
 		Player player = world.getPlayer();
 		player.setController(x, y);
 	}
 
-	/**
-	 * Called by the {@link WorldView} when the player wants to fire.
+	/** Called by the {@link WorldView} when the player wants to fire.
 	 * 
 	 * @param x the x value of the controller.
-	 * @param y the y value of the controller.
-	 */
+	 * @param y the y value of the controller. */
 	@Override
-	public void setFiringController(float x, float y) {
+	public void setFiringController (float x, float y) {
 		Player player = world.getPlayer();
 		world.firePlayerShot.fire(player, x, y);
 	}
 
 	@Override
-	public void onScoreChanged(int score) {
+	public void onScoreChanged (int score) {
 		this.score = score;
 	}
 
 	@Override
-	public void onLivesChanged(int lives) {
+	public void onLivesChanged (int lives) {
 		isDead = (lives == 0);
 	}
 }

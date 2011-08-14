@@ -17,36 +17,32 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContext;
-
 import java.util.EventObject;
 
 public abstract class BeanContextEvent extends EventObject {
 
-    private static final long serialVersionUID = 7267998073569045052L;
-    
-    /**
-     * @serial
-     */
-    protected BeanContext propagatedFrom;
+	private static final long serialVersionUID = 7267998073569045052L;
 
-    protected BeanContextEvent(BeanContext bc) {
-        super(bc);
-    }
+	/** @serial */
+	protected BeanContext propagatedFrom;
 
-    public BeanContext getBeanContext() {
-        return (BeanContext) super.getSource();
-    }
+	protected BeanContextEvent (BeanContext bc) {
+		super(bc);
+	}
 
-    public synchronized BeanContext getPropagatedFrom() {
-        return this.propagatedFrom;
-    }
+	public BeanContext getBeanContext () {
+		return (BeanContext)super.getSource();
+	}
 
-    public synchronized boolean isPropagated() {
-        return (this.propagatedFrom != null);
-    }
+	public synchronized BeanContext getPropagatedFrom () {
+		return this.propagatedFrom;
+	}
 
-    public synchronized void setPropagatedFrom(BeanContext bc) {
-        this.propagatedFrom = bc;
-    }
+	public synchronized boolean isPropagated () {
+		return (this.propagatedFrom != null);
+	}
+
+	public synchronized void setPropagatedFrom (BeanContext bc) {
+		this.propagatedFrom = bc;
+	}
 }

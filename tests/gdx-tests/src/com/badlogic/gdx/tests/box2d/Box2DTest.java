@@ -47,19 +47,16 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 
-/**
- * Base class for all Box2D Testbed tests, all subclasses must implement the createWorld() method.
+/** Base class for all Box2D Testbed tests, all subclasses must implement the createWorld() method.
  * 
- * @author badlogicgames@gmail.com
- * 
- */
+ * @author badlogicgames@gmail.com */
 public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	/** the camera **/
 	protected OrthographicCamera camera;
 
 	/** the renderer **/
 	protected Box2DDebugRenderer renderer;
-	
+
 	SpriteBatch batch;
 	BitmapFont font;
 
@@ -80,7 +77,8 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	/** temp vector **/
 	protected Vector2 tmp = new Vector2();
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		// update the world with a fixed time step
 		long startTime = System.nanoTime();
 		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
@@ -96,13 +94,14 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		// render the world using the debug renderer
 		renderer.render(world);
 		float renderTime = (System.nanoTime() - startTime) / 1000000000.0f;
-		
+
 		batch.begin();
 		font.draw(batch, "fps:" + Gdx.graphics.getFramesPerSecond() + ", update: " + updateTime + ", render: " + renderTime, 0, 20);
 		batch.end();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		// setup the camera. In Box2D we operate on a
 		// meter scale, pixels won't do it. So we use
 		// an orthographic camera with a viewport of
@@ -110,7 +109,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		// We also position the camera so that it
 		// looks at (0,16) (that's where the middle of the
 		// screen will be located).
-		camera = new OrthographicCamera(48, 32);		
+		camera = new OrthographicCamera(48, 32);
 		camera.position.set(0, 15, 0);
 
 		// create the debug renderer
@@ -126,12 +125,13 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 
 		// call abstract method to populate the world
 		createWorld(world);
-		
+
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 	}
 
-	@Override public void dispose () {		
+	@Override
+	public void dispose () {
 		renderer.dispose();
 		world.dispose();
 
@@ -141,22 +141,26 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		hitBody = null;
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
 	/** we instantiate this vector and the callback here so we don't irritate the GC **/
 	Vector3 testPoint = new Vector3();
 	QueryCallback callback = new QueryCallback() {
-		@Override public boolean reportFixture (Fixture fixture) {
+		@Override
+		public boolean reportFixture (Fixture fixture) {
 			// if the hit point is inside the fixture of the body
 			// we report it
 			if (fixture.testPoint(testPoint.x, testPoint.y)) {
@@ -166,8 +170,9 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 				return true;
 		}
 	};
-	
-	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		// translate the mouse coordinates to world coordinates
 		camera.unproject(testPoint.set(x, y, 0));
 		// ask the world which bodies are within the given
@@ -198,9 +203,10 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 	}
 
 	/** another temporary vector **/
-	Vector2 target = new Vector2();	
+	Vector2 target = new Vector2();
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		// if a mouse joint exists we simply update
 		// the target of the joint based on the new
 		// mouse coordinates
@@ -211,7 +217,8 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		// if a mouse joint exists we simply destroy it
 		if (mouseJoint != null) {
 			world.destroyJoint(mouseJoint);
@@ -219,24 +226,26 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		}
 		return false;
 	}
-	
-	@Override public boolean touchMoved(int x, int y) {
+
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
-	
-	@Override public boolean scrolled(int amount) {
+
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
-	
-	public void pause() {
-		
+
+	public void pause () {
+
 	}
-	
-	public void resume() {
-		
+
+	public void resume () {
+
 	}
-	
-	public void resize(int width, int height) {
-		
+
+	public void resize (int width, int height) {
+
 	}
 }

@@ -19,28 +19,20 @@ package com.badlogic.gdx.beans;
 
 import java.awt.List;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-import com.badlogic.gdx.beans.Statement;
-
 class AwtListPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-	@SuppressWarnings({ "nls", "boxing" })
-    protected void initialize(Class<?> type, Object oldInstance,
-			Object newInstance, Encoder enc) {
+	@Override
+	@SuppressWarnings({"nls", "boxing"})
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder enc) {
 		super.initialize(type, oldInstance, newInstance, enc);
 
-		List list = (List) oldInstance;
-		Statement setterStm = new Statement(oldInstance, "setSize",
-				new Object[] { list.getSize()});
+		List list = (List)oldInstance;
+		Statement setterStm = new Statement(oldInstance, "setSize", new Object[] {list.getSize()});
 		enc.writeStatement(setterStm);
-		
+
 		int count = list.getItemCount();
 		Expression getterExp = null;
 		for (int i = 0; i < count; i++) {
-			getterExp = new Expression(list, "getItem", new Object[] { i });
+			getterExp = new Expression(list, "getItem", new Object[] {i});
 			try {
 				// Calculate the old value of the property
 				Object oldVal = getterExp.getValue();
@@ -51,29 +43,24 @@ class AwtListPersistenceDelegate extends DefaultPersistenceDelegate {
 				// Get the current property value in the new environment
 				Object newVal = null;
 				try {
-					newVal = new Expression(newInstance, "getItem",
-							new Object[] { i }).getValue();
+					newVal = new Expression(newInstance, "getItem", new Object[] {i}).getValue();
 				} catch (IndexOutOfBoundsException ex) {
 					// The newInstance has no elements, so current property
 					// value remains null
 				}
 				/*
-				 * Make the target value and current property value equivalent
-				 * in the new environment
+				 * Make the target value and current property value equivalent in the new environment
 				 */
 				if (null == targetVal) {
 					if (null != newVal) {
 						// Set to null
-						setterStm = new Statement(oldInstance, "add",
-								new Object[] { null });
+						setterStm = new Statement(oldInstance, "add", new Object[] {null});
 						enc.writeStatement(setterStm);
 					}
 				} else {
-					PersistenceDelegate pd = enc
-							.getPersistenceDelegate(targetVal.getClass());
+					PersistenceDelegate pd = enc.getPersistenceDelegate(targetVal.getClass());
 					if (!pd.mutatesTo(targetVal, newVal)) {
-						setterStm = new Statement(oldInstance, "add",
-								new Object[] { oldVal });
+						setterStm = new Statement(oldInstance, "add", new Object[] {oldVal});
 						enc.writeStatement(setterStm);
 					}
 				}

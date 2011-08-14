@@ -1,12 +1,9 @@
-package com.mojang.metagun;
 
+package com.mojang.metagun;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mojang.metagun.screen.GameScreen;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.TitleScreen;
 
@@ -22,54 +19,52 @@ public class Metagun implements ApplicationListener {
 	private Input input = new Input();
 	private boolean started = false;
 	private float accum = 0;
-	
-	public void create() {
+
+	public void create () {
 		Art.load();
 		Sound.load();
-		Gdx.input.setInputProcessor(input);		
+		Gdx.input.setInputProcessor(input);
 		running = true;
 		setScreen(new TitleScreen());
-//		setScreen(new GameScreen());		
+// setScreen(new GameScreen());
 	}
 
-	public void pause() {
+	public void pause () {
 		running = false;
 	}
 
-	public void resume() {
+	public void resume () {
 		running = true;
 	}
 
-	public void setScreen(Screen newScreen) {
-		if (screen != null)
-			screen.removed();
+	public void setScreen (Screen newScreen) {
+		if (screen != null) screen.removed();
 		screen = newScreen;
-		if (screen != null)
-			screen.init(this);
+		if (screen != null) screen.init(this);
 	}
 
-	public void render() {
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
-		while(accum > 1.0f / 60.0f) {			
-			screen.tick(input);			
+		while (accum > 1.0f / 60.0f) {
+			screen.tick(input);
 			input.tick();
 			accum -= 1.0f / 60.0f;
 		}
-		screen.render();	
-//		batch.begin();
-//		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
-//		batch.end();
+		screen.render();
+// batch.begin();
+// font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 10, 30);
+// batch.end();
 	}
-	
+
 	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 		// TODO Auto-generated method stub
 
 	}

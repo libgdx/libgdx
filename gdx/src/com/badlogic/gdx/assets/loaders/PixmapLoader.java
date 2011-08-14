@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -11,11 +12,11 @@ public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapParamete
 	}
 
 	Pixmap pixmap;
-	
+
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, PixmapParameter parameter) {
 		pixmap = null;
-		pixmap = new Pixmap(resolve(fileName));		
+		pixmap = new Pixmap(resolve(fileName));
 	}
 
 	@Override

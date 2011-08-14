@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d;
 
-/**
- * A {@link TemporalAction} controls an {@link Action} by repeating, delaying etc. the effect of an {@link Action}.
+/** A {@link TemporalAction} controls an {@link Action} by repeating, delaying etc. the effect of an {@link Action}.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public abstract class TemporalAction extends Action {
 
 	protected Action action;
 	protected Actor target;
 
-	/**
-	 * Gets the {@link Action} that is controlled by this {@link TemporalAction}.
+	/** Gets the {@link Action} that is controlled by this {@link TemporalAction}.
 	 * 
-	 * @return the {@link Action} under control
-	 */
+	 * @return the {@link Action} under control */
 	public Action getAction () {
 		return action;
 	}

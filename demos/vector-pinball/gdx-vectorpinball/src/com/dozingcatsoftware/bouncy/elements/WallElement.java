@@ -14,8 +14,7 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * FieldElement subclass that represents a straight wall. Its position is specified by the "position" parameter with 4 values,
+/** FieldElement subclass that represents a straight wall. Its position is specified by the "position" parameter with 4 values,
  * which are [start x, start y, end x, end y]. There are several optional parameters to customize the wall's behavior: "kick":
  * impulse to apply when a ball hits the wall, used for kickers and ball savers. "kill": if true, the ball is lost when it hits
  * the wall. Used for invisible wall below the flippers. "retractWhenHit": if true, the wall is removed when hit by a ball. Used
@@ -24,9 +23,7 @@ import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
  * 
  * Walls can be removed from the field by calling setRetracted(field, true), and restored with setRetracted(field, false).
  * 
- * @author brian
- * 
- */
+ * @author brian */
 
 public class WallElement extends FieldElement {
 
@@ -38,7 +35,8 @@ public class WallElement extends FieldElement {
 	boolean killBall;
 	boolean retractWhenHit;
 
-	@Override public void finishCreate (Map params, World world) {
+	@Override
+	public void finishCreate (Map params, World world) {
 		List pos = (List)params.get("position");
 		this.x1 = asFloat(pos.get(0));
 		this.y1 = asFloat(pos.get(1));
@@ -69,11 +67,13 @@ public class WallElement extends FieldElement {
 		}
 	}
 
-	@Override public Collection getBodies () {
+	@Override
+	public Collection getBodies () {
 		return bodySet;
 	}
 
-	@Override public boolean shouldCallTick () {
+	@Override
+	public boolean shouldCallTick () {
 		// tick() only needs to be called if this wall provides a kick which makes it flash
 		return (this.kick > 0.01f);
 	}
@@ -99,7 +99,8 @@ public class WallElement extends FieldElement {
 		return new Vector2(ix, iy);
 	}
 
-	@Override public void handleCollision (Body ball, Body bodyHit, Field field) {
+	@Override
+	public void handleCollision (Body ball, Body bodyHit, Field field) {
 		if (retractWhenHit) {
 			this.setRetracted(true);
 		}
@@ -115,7 +116,8 @@ public class WallElement extends FieldElement {
 		}
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		if (isRetracted()) return;
 		renderer.drawLine(x1, y1, x2, y2, redColorComponent(DEFAULT_WALL_RED), greenColorComponent(DEFAULT_WALL_GREEN),
 			blueColorComponent(DEFAULT_WALL_BLUE));

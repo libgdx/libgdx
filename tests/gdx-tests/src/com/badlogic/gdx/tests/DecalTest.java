@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import java.util.LinkedList;
@@ -20,7 +21,7 @@ public class DecalTest extends Game {
 	public static final int INITIAL_RENDERED = 100;
 	private boolean willItBlend_that_is_the_question = true;
 	private GroupStrategy strategy = new SimpleOrthoGroupStrategy();
-	//private GroupStrategy strategy = new DefaultGroupStrategy();
+	// private GroupStrategy strategy = new DefaultGroupStrategy();
 	Texture egg;
 	Texture wheel;
 	LinkedList<Decal> toRender = new LinkedList<Decal>();
@@ -34,7 +35,7 @@ public class DecalTest extends Game {
 	float h;
 
 	@Override
-	public void create() {
+	public void create () {
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glDepthFunc(GL10.GL_LESS);
 
@@ -47,23 +48,22 @@ public class DecalTest extends Game {
 
 		w = Gdx.graphics.getWidth() / 0.8f;
 		h = Gdx.graphics.getHeight() / 0.8f;
-		for(int i = 0; i < INITIAL_RENDERED; i++) {
+		for (int i = 0; i < INITIAL_RENDERED; i++) {
 			toRender.add(makeDecal());
 		}
 		batch = new DecalBatch(strategy);
 
-		Gdx.gl.glClearColor(1,1,0,1);
+		Gdx.gl.glClearColor(1, 1, 0, 1);
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
 
 		float elapsed = Gdx.graphics.getDeltaTime();
 		float scale = timePassed > 0.5 ? 1 - timePassed / 2 : 0.5f + timePassed / 2;
 
-		for(Decal decal : toRender) {
+		for (Decal decal : toRender) {
 			decal.rotateZ(elapsed * 45);
 			decal.setScale(scale);
 			batch.add(decal);
@@ -72,21 +72,20 @@ public class DecalTest extends Game {
 
 		timePassed += elapsed;
 		frames++;
-		if(timePassed > 1.0f) {
+		if (timePassed > 1.0f) {
 			System.out.println("DecalPerformanceTest2 fps: " + frames + " at spritecount: " + toRender.size());
 			fps.addValue(frames);
-			if(fps.hasEnoughData()) {
-				float factor = fps.getMean() / (float) TARGET_FPS;
-				int target = (int) (toRender.size() * factor);
-				if(fps.getMean() > TARGET_FPS) {
+			if (fps.hasEnoughData()) {
+				float factor = fps.getMean() / (float)TARGET_FPS;
+				int target = (int)(toRender.size() * factor);
+				if (fps.getMean() > TARGET_FPS) {
 					int start = toRender.size();
-					for(int i = start; toRender.size() < target; i++) {
+					for (int i = start; toRender.size() < target; i++) {
 						toRender.add(makeDecal());
 					}
 					fps.clear();
-				}
-				else {
-					while(toRender.size() > target) {
+				} else {
+					while (toRender.size() > target) {
 						toRender.removeLast();
 					}
 					fps.clear();
@@ -98,7 +97,7 @@ public class DecalTest extends Game {
 	}
 
 	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		w = Gdx.graphics.getWidth() / 0.8f;
 		h = Gdx.graphics.getHeight() / 0.8f;
 		cam = new OrthographicCamera(width, height);
@@ -110,17 +109,17 @@ public class DecalTest extends Game {
 		cam.apply(Gdx.gl10);
 	}
 
-	private Decal makeDecal() {
+	private Decal makeDecal () {
 		Decal sprite = null;
-		switch(idx % 2) {
-			case 0:
-				sprite = Decal.newDecal(new TextureRegion(egg), willItBlend_that_is_the_question);
-				break;
-			case 1:
-				sprite = Decal.newDecal(new TextureRegion(wheel));
-				break;
+		switch (idx % 2) {
+		case 0:
+			sprite = Decal.newDecal(new TextureRegion(egg), willItBlend_that_is_the_question);
+			break;
+		case 1:
+			sprite = Decal.newDecal(new TextureRegion(wheel));
+			break;
 		}
-		sprite.setPosition(-w / 2 + (float) Math.random() * w, h / 2 - (float) Math.random() * h, (float) -Math.random() * 10);
+		sprite.setPosition(-w / 2 + (float)Math.random() * w, h / 2 - (float)Math.random() * h, (float)-Math.random() * 10);
 		idx++;
 		return sprite;
 	}

@@ -19,15 +19,15 @@ public class BaseShot extends GameObject {
 	private float dy;
 	private float shotSpeed;
 
-	public BaseShot() {
+	public BaseShot () {
 		super();
 	}
 
-	public void setShotSpeed(float shotSpeed) {
-		this.shotSpeed = shotSpeed; 
+	public void setShotSpeed (float shotSpeed) {
+		this.shotSpeed = shotSpeed;
 	}
 
-	public void fire(float x, float y, float dx, float dy) {
+	public void fire (float x, float y, float dx, float dy) {
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
@@ -35,7 +35,7 @@ public class BaseShot extends GameObject {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update (float delta) {
 		stateTime += delta;
 		float n = shotSpeed * delta;
 		x += dx * n;

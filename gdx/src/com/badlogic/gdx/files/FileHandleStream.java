@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.files;
 
 import java.io.File;
@@ -21,11 +22,9 @@ import java.io.OutputStream;
 
 import com.badlogic.gdx.Files.FileType;
 
-/**
- * A FileHandle intended to be subclassed for the purpose of implementing {@link #read()} and/or {@link #write(boolean)}. Methods
+/** A FileHandle intended to be subclassed for the purpose of implementing {@link #read()} and/or {@link #write(boolean)}. Methods
  * that would manipulate the file instead throw UnsupportedOperationException.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public abstract class FileHandleStream extends FileHandle {
 	public FileHandleStream (String path) {
 		super(new File(path), FileType.Absolute);

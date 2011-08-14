@@ -36,7 +36,7 @@ public abstract class Screen {
 
 	public void draw (TextureRegion region, int x, int y) {
 		int width = region.getRegionWidth();
-		if(width <0) width = -width;
+		if (width < 0) width = -width;
 		spriteBatch.draw(region, x, y, width, -region.getRegionHeight());
 	}
 

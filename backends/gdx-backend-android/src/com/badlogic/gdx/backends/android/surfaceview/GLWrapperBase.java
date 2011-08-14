@@ -24,9 +24,7 @@ import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
 import javax.microedition.khronos.opengles.GL11ExtensionPack;
 
-/**
- * The abstract base class for a GL wrapper. Provides some convenient instance variables and default implementations.
- */
+/** The abstract base class for a GL wrapper. Provides some convenient instance variables and default implementations. */
 abstract class GLWrapperBase implements GL, GL10, GL10Ext, GL11, GL11Ext {
 	public GLWrapperBase (GL gl) {
 		mgl = (GL10)gl;

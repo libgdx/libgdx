@@ -20,23 +20,18 @@ package com.badlogic.gdx.beans.beancontext;
 import com.badlogic.gdx.beans.PropertyChangeListener;
 import com.badlogic.gdx.beans.PropertyVetoException;
 import com.badlogic.gdx.beans.VetoableChangeListener;
-import com.badlogic.gdx.beans.beancontext.BeanContext;
 
 public interface BeanContextChild {
 
-    public void addPropertyChangeListener(String name,
-            PropertyChangeListener pcl);
+	public void addPropertyChangeListener (String name, PropertyChangeListener pcl);
 
-    public void addVetoableChangeListener(String name,
-            VetoableChangeListener vcl);
+	public void addVetoableChangeListener (String name, VetoableChangeListener vcl);
 
-    public BeanContext getBeanContext();
+	public BeanContext getBeanContext ();
 
-    public void removePropertyChangeListener(String name,
-            PropertyChangeListener pcl);
+	public void removePropertyChangeListener (String name, PropertyChangeListener pcl);
 
-    public void removeVetoableChangeListener(String name,
-            VetoableChangeListener vcl);
+	public void removeVetoableChangeListener (String name, VetoableChangeListener vcl);
 
-    public void setBeanContext(BeanContext bc) throws PropertyVetoException;
+	public void setBeanContext (BeanContext bc) throws PropertyVetoException;
 }

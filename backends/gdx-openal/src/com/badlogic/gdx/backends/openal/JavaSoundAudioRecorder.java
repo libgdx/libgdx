@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import javax.sound.sampled.AudioFormat;
@@ -23,9 +24,7 @@ import javax.sound.sampled.TargetDataLine;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * @author mzechner
- */
+/** @author mzechner */
 public class JavaSoundAudioRecorder implements AudioRecorder {
 	private TargetDataLine line;
 	private byte[] buffer = new byte[1024 * 4];

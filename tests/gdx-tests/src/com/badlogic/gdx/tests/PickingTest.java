@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
@@ -34,7 +35,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class PickingTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
@@ -44,52 +46,54 @@ public class PickingTest extends GdxTest {
 	static int VP_WIDTH;
 	static int VP_HEIGHT;
 	Mesh sphere;
-	Camera cam;	
+	Camera cam;
 	Vector3[] positions = new Vector3[100];
 	ImmediateModeRenderer10 renderer;
 	SpriteBatch batch;
 	Texture logo;
-	
-	@Override public void create() {
+
+	@Override
+	public void create () {
 		VP_WIDTH = Gdx.graphics.getWidth() - 4 * BORDER;
 		VP_HEIGHT = Gdx.graphics.getHeight() - 4 * BORDER;
 		sphere = ObjLoader.loadObj(Gdx.files.internal("data/sphere.obj").read());
 		cam = new PerspectiveCamera(45, VP_WIDTH, VP_HEIGHT);
-//		cam = new OrthographicCamera(10, 10);
+// cam = new OrthographicCamera(10, 10);
 		cam.far = 200;
 		batch = new SpriteBatch();
 		logo = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		Random rand = new Random(10);
-		for(int i = 0; i < positions.length; i++) {
-			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, 
-												rand.nextFloat() * 100 - rand.nextFloat() * 100, 
-												rand.nextFloat() * 100 - rand.nextFloat() * 100);
-		}		
+		for (int i = 0; i < positions.length; i++) {
+			positions[i] = new Vector3(rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100 - rand.nextFloat()
+				* 100, rand.nextFloat() * 100 - rand.nextFloat() * 100);
+		}
 		positions[0].set(0, 0, -10);
 		renderer = new ImmediateModeRenderer10();
 	}
 
 	Vector3 intersection = new Vector3();
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		GL10 gl = Gdx.gl10;
-				
+
 		gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glEnable(GL10.GL_DEPTH_TEST);
-		
+
 		cam.update();
 		cam.apply(gl);
 		gl.glViewport(VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
-		
+
 		Ray pickRay = null;
-		if(Gdx.input.isTouched()) {
+		if (Gdx.input.isTouched()) {
 			pickRay = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY(), VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
-//			Gdx.app.log("PickingTest", "ray: " + pickRay);
+// Gdx.app.log("PickingTest", "ray: " + pickRay);
 		}
-		
+
 		boolean intersected = false;
-		for(int i = 0; i < positions.length; i++) {
-			if(pickRay != null && Intersector.intersectRaySphere(pickRay, positions[i], 1, intersection)) {
+		for (int i = 0; i < positions.length; i++) {
+			if (pickRay != null && Intersector.intersectRaySphere(pickRay, positions[i], 1, intersection)) {
 				gl.glColor4f(1, 0, 0, 1);
 				intersected = true;
 			} else {
@@ -100,15 +104,15 @@ public class PickingTest extends GdxTest {
 			sphere.render(GL10.GL_TRIANGLES);
 			gl.glPopMatrix();
 		}
-		
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.begin();
-		if(intersected) {			
+		if (intersected) {
 			cam.project(intersection, VP_X, VP_Y, VP_WIDTH, VP_HEIGHT);
-			batch.draw(logo, intersection.x, intersection.y);			
+			batch.draw(logo, intersection.x, intersection.y);
 		}
 		batch.end();
-		
+
 		renderer.begin(GL10.GL_LINE_LOOP);
 		renderer.color(1, 1, 1, 1);
 		renderer.vertex(VP_X, VP_Y, 0);
@@ -119,10 +123,8 @@ public class PickingTest extends GdxTest {
 		renderer.color(1, 1, 1, 1);
 		renderer.vertex(VP_X, VP_Y + VP_HEIGHT, 0);
 		renderer.end();
-		
-		if(Gdx.input.isKeyPressed(Keys.A))
-			cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if(Gdx.input.isKeyPressed(Keys.D))	
-			cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);					
-	}	
+
+		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+	}
 }

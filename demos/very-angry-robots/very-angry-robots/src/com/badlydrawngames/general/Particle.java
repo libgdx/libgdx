@@ -13,21 +13,17 @@
 
 package com.badlydrawngames.general;
 
-import static com.badlogic.gdx.math.MathUtils.PI;
-import static com.badlogic.gdx.math.MathUtils.cos;
-import static com.badlogic.gdx.math.MathUtils.random;
-import static com.badlogic.gdx.math.MathUtils.sin;
-import static com.badlydrawngames.general.MathUtils.max;
-import static com.badlydrawngames.general.MathUtils.min;
-
 import com.badlogic.gdx.graphics.Color;
 
+import static com.badlogic.gdx.math.MathUtils.*;
+import static com.badlydrawngames.general.MathUtils.*;
+
 public class Particle {
-	
+
 	private final float MIN_SPEED = 3.125f;
 	private final float MAX_SPEED = 6.25f;
 	private final float DECAY = 2.0f;
-	
+
 	public boolean active;
 	public float x;
 	public float y;
@@ -41,13 +37,13 @@ public class Particle {
 	float b;
 	float a;
 
-	public Particle(float size) {
+	public Particle (float size) {
 		this.color = new Color();
 		this.size = size;
 		this.halfSize = size / 2;
 	}
-	
-	public void spawn(Color c, float x, float y) {
+
+	public void spawn (Color c, float x, float y) {
 		this.active = true;
 		this.x = x - halfSize;
 		this.y = y - halfSize;
@@ -56,13 +52,13 @@ public class Particle {
 		g = c.g;
 		b = c.b;
 		a = 3.0f;
-		float direction = random((float) -PI, PI);
+		float direction = random((float)-PI, PI);
 		float speed = random(MIN_SPEED, MAX_SPEED);
 		dx = cos(direction) * speed;
 		dy = sin(direction) * speed;
 	}
-	
-	public void update(float delta) {
+
+	public void update (float delta) {
 		x += dx * delta;
 		y += dy * delta;
 		dx *= (1.0 - DECAY * delta * 0.5f);

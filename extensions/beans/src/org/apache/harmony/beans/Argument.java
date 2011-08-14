@@ -19,44 +19,44 @@ package org.apache.harmony.beans;
 
 public class Argument {
 
-    private Class<?> type;
+	private Class<?> type;
 
-    private Object value;
+	private Object value;
 
-    private Class<?>[] interfaces;
+	private Class<?>[] interfaces;
 
-    public Argument(Object value) {
-        this.value = value;
-        if (this.value != null) {
-            this.type = value.getClass();
-            this.interfaces = this.type.getInterfaces();
-        }
-    }
+	public Argument (Object value) {
+		this.value = value;
+		if (this.value != null) {
+			this.type = value.getClass();
+			this.interfaces = this.type.getInterfaces();
+		}
+	}
 
-    public Argument(Class<?> type, Object value) {
-        this.type = type;
-        this.value = value;
-        this.interfaces = type.getInterfaces();
-    }
+	public Argument (Class<?> type, Object value) {
+		this.type = type;
+		this.value = value;
+		this.interfaces = type.getInterfaces();
+	}
 
-    public Class<?> getType() {
-        return type;
-    }
+	public Class<?> getType () {
+		return type;
+	}
 
-    public Object getValue() {
-        return value;
-    }
+	public Object getValue () {
+		return value;
+	}
 
-    public Class<?>[] getInterfaces() {
-        return interfaces;
-    }
+	public Class<?>[] getInterfaces () {
+		return interfaces;
+	}
 
-    public void setType(Class<?> type) {
-        this.type = type;
-        this.interfaces = type.getInterfaces();
-    }
+	public void setType (Class<?> type) {
+		this.type = type;
+		this.interfaces = type.getInterfaces();
+	}
 
-    public void setInterfaces(Class<?>[] interfaces) {
-        this.interfaces = interfaces;
-    }
+	public void setInterfaces (Class<?>[] interfaces) {
+		this.interfaces = interfaces;
+	}
 }

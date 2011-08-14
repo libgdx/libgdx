@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
-/**
- * Callback class for AABB queries.
- */
+/** Callback class for AABB queries. */
 public interface QueryCallback {
-	/**
-	 * Called for each fixture found in the query AABB.
-	 * @return false to terminate the query.
-	 */
+	/** Called for each fixture found in the query AABB.
+	 * @return false to terminate the query. */
 	public boolean reportFixture (Fixture fixture);
 }

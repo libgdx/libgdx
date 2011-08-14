@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.FloatBuffer;
@@ -33,11 +34,13 @@ public class ManualBindTest extends GdxTest {
 	FloatBuffer vertices1;
 	FloatBuffer vertices2;
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL11 gl = Gdx.gl11;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -61,7 +64,8 @@ public class ManualBindTest extends GdxTest {
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		GL11 gl = Gdx.graphics.getGL11();
 		IntBuffer handleBuf = BufferUtils.newIntBuffer(2);
 		gl.glGenBuffers(2, handleBuf);

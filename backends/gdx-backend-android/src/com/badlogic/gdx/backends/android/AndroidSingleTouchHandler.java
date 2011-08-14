@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
 
-/**
- * Single touch handler for devices running <= 1.6
+/** Single touch handler for devices running <= 1.6
  * 
- * @author badlogicgames@gmail.com
- * 
- */
+ * @author badlogicgames@gmail.com */
 public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 	public void onTouch (MotionEvent event, AndroidInput input) {
 		int x = (int)event.getX();
@@ -39,17 +37,17 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 			input.touched[0] = true;
 			input.deltaX[0] = 0;
 			input.deltaY[0] = 0;
-		}else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+		} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 			postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, 0);
 			input.touched[0] = true;
 			input.deltaX[0] = x - oldX;
 			input.deltaY[0] = y - oldY;
-		}else if (event.getAction() == MotionEvent.ACTION_UP) {
+		} else if (event.getAction() == MotionEvent.ACTION_UP) {
 			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0);
 			input.touched[0] = false;
 			input.deltaX[0] = 0;
 			input.deltaY[0] = 0;
-		}else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
+		} else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
 			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0);
 			input.touched[0] = false;
 			input.deltaX[0] = 0;
@@ -69,7 +67,7 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 			input.touchEvents.add(event);
 		}
 	}
-	
+
 	public boolean supportsMultitouch (AndroidApplication activity) {
 		return false;
 	}

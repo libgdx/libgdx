@@ -17,55 +17,53 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContext;
-import com.badlogic.gdx.beans.beancontext.BeanContextEvent;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.harmony.beans.internal.nls.Messages;
+
 @SuppressWarnings("unchecked")
 public class BeanContextMembershipEvent extends BeanContextEvent {
 
-    private static final long serialVersionUID = 3499346510334590959L;
+	private static final long serialVersionUID = 3499346510334590959L;
 
-    protected Collection children;
+	protected Collection children;
 
-    public BeanContextMembershipEvent(BeanContext bc, Collection changes) {
-        super(bc);
+	public BeanContextMembershipEvent (BeanContext bc, Collection changes) {
+		super(bc);
 
-        if (changes == null) {
-            throw new NullPointerException(Messages.getString("beans.0E")); //$NON-NLS-1$
-        }
+		if (changes == null) {
+			throw new NullPointerException(Messages.getString("beans.0E")); //$NON-NLS-1$
+		}
 
-        this.children = changes;
-    }
+		this.children = changes;
+	}
 
-    public BeanContextMembershipEvent(BeanContext bc, Object[] changes) {
-        super(bc);
+	public BeanContextMembershipEvent (BeanContext bc, Object[] changes) {
+		super(bc);
 
-        if (changes == null) {
-            throw new NullPointerException(Messages.getString("beans.0E")); //$NON-NLS-1$
-        }
+		if (changes == null) {
+			throw new NullPointerException(Messages.getString("beans.0E")); //$NON-NLS-1$
+		}
 
-        // Initialize collection
-        this.children = Arrays.asList(changes);
-    }
+		// Initialize collection
+		this.children = Arrays.asList(changes);
+	}
 
-    public boolean contains(Object child) {
-        return this.children.contains(child);
-    }
+	public boolean contains (Object child) {
+		return this.children.contains(child);
+	}
 
-    public Iterator iterator() {
-        return this.children.iterator();
-    }
+	public Iterator iterator () {
+		return this.children.iterator();
+	}
 
-    public int size() {
-        return this.children.size();
-    }
+	public int size () {
+		return this.children.size();
+	}
 
-    public Object[] toArray() {
-        return this.children.toArray();
-    }
+	public Object[] toArray () {
+		return this.children.toArray();
+	}
 }

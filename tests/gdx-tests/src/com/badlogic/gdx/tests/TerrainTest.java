@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
@@ -41,7 +42,8 @@ public class TerrainTest extends GdxTest {
 	boolean intersected = false;
 	long lastTime = System.nanoTime();
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		renderer = new ImmediateModeRenderer10();
 
 		chunk = new TerrainChunk(32, 32, 4);
@@ -59,12 +61,13 @@ public class TerrainTest extends GdxTest {
 
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(0, 5, 5);
-		camera.direction.set(0, 0, 0).sub(camera.position).nor();	
+		camera.direction.set(0, 0, 0).sub(camera.position).nor();
 		camera.near = 0.5f;
-		camera.far = 300;		
+		camera.far = 300;
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -183,7 +186,8 @@ public class TerrainTest extends GdxTest {
 		}
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

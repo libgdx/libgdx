@@ -19,5 +19,5 @@ package com.badlogic.gdx.beans;
 
 public interface ExceptionListener {
 
-    public void exceptionThrown(Exception e);
+	public void exceptionThrown (Exception e);
 }

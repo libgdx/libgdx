@@ -13,32 +13,28 @@
 
 package com.badlydrawngames.general;
 
-import static com.badlydrawngames.general.Rectangles.setRectangle;
-
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+
+import static com.badlydrawngames.general.Rectangles.*;
 
 public class CollisionGeometry {
 	private final Array<Rectangle> runs;
 	private final Rectangle r;
 
-	/**
-	 * Creates this collision geometry.
-	 * @param runs the model-space rectangles that make up this object's collision geometry.
-	 */
-	public CollisionGeometry(Array<Rectangle> runs) {
+	/** Creates this collision geometry.
+	 * @param runs the model-space rectangles that make up this object's collision geometry. */
+	public CollisionGeometry (Array<Rectangle> runs) {
 		this.runs = runs;
 		r = new Rectangle();
 	}
 
-	/**
-	 * Tests if this collision geometry would collide with a rectangle if it was at the given coordinates.
+	/** Tests if this collision geometry would collide with a rectangle if it was at the given coordinates.
 	 * @param other the rectangle to test against.
 	 * @param x the x coordinate of this collision geometry.
 	 * @param y the y coordinate of this collision geometry.
-	 * @return true if in collision otherwise false.
-	 */
-	public boolean intersects(Rectangle other, float x, float y) {
+	 * @return true if in collision otherwise false. */
+	public boolean intersects (Rectangle other, float x, float y) {
 		boolean result = false;
 		for (int i = 0; i < runs.size; i++) {
 			Rectangle run = runs.get(i);
@@ -51,16 +47,14 @@ public class CollisionGeometry {
 		return result;
 	}
 
-	/**
-	 * Tests if this collision geometry is in collision with another. 
+	/** Tests if this collision geometry is in collision with another.
 	 * @param x this collision geometry's x coordinate.
 	 * @param y this collision geometry's y coordinate.
 	 * @param other the other collision geometry.
 	 * @param otherX the other collision geometry's x coordinate.
 	 * @param otherY the other collision geometry's y coordinate.
-	 * @return true if in collision otherwise false.
-	 */
-	public boolean intersects(float x, float y, CollisionGeometry other, float otherX, float otherY) {
+	 * @return true if in collision otherwise false. */
+	public boolean intersects (float x, float y, CollisionGeometry other, float otherX, float otherY) {
 		boolean result = false;
 		for (int i = 0; i < runs.size; i++) {
 			Rectangle run = runs.get(i);

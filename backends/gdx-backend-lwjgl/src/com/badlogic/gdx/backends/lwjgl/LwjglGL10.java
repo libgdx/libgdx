@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.nio.Buffer;
@@ -30,12 +31,9 @@ import org.lwjgl.opengl.GL13;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An implementation of the {@link GL10} interface based on Jogl. Fixed point vertex arrays are emulated.
+/** An implementation of the {@link GL10} interface based on Jogl. Fixed point vertex arrays are emulated.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 class LwjglGL10 implements GL10 {
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;
@@ -493,12 +491,13 @@ class LwjglGL10 implements GL10 {
 			textures[i] = GL11.glGenTextures();
 	}
 
-	IntBuffer getBuffer = BufferUtils.createIntBuffer(100); 
-	public final void glGetIntegerv (int pname, int[] params, int offset) {		
+	IntBuffer getBuffer = BufferUtils.createIntBuffer(100);
+
+	public final void glGetIntegerv (int pname, int[] params, int offset) {
 		GL11.glGetInteger(pname, getBuffer);
-		// FIXME Yeah, so. This sucks as well :D LWJGL does not set pos/lim. 
-		for(int i = offset, j = 0; i < params.length; i++, j++) {
-			if(j == getBuffer.capacity()) return;
+		// FIXME Yeah, so. This sucks as well :D LWJGL does not set pos/lim.
+		for (int i = offset, j = 0; i < params.length; i++, j++) {
+			if (j == getBuffer.capacity()) return;
 			params[i] = getBuffer.get(j);
 		}
 	}

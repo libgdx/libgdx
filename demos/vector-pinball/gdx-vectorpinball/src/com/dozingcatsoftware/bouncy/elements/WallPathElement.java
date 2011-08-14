@@ -12,12 +12,10 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * FieldElement subclass which represents a series of wall segments. The segments are defined in the "positions" parameter as a
+/** FieldElement subclass which represents a series of wall segments. The segments are defined in the "positions" parameter as a
  * list of [x,y] values, for example: { "class": "WallPathElement", "positions": [[5,5], [5,10], [8,10], [5, 15]] }
  * 
- * @author brian
- */
+ * @author brian */
 
 public class WallPathElement extends FieldElement {
 
@@ -40,11 +38,13 @@ public class WallPathElement extends FieldElement {
 		}
 	}
 
-	@Override public Collection getBodies () {
+	@Override
+	public Collection getBodies () {
 		return wallBodies;
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		int len = lineSegments.size();
 		for (int i = 0; i < len; i++) {
 			float[] segment = lineSegments.get(i);

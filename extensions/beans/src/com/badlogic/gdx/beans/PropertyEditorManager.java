@@ -17,107 +17,98 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.PropertyEditor;
-import com.badlogic.gdx.beans.PropertyEditorManager;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class PropertyEditorManager {
 
-    private static String[] path = { "org.apache.harmony.beans.editors" }; //$NON-NLS-1$
+	private static String[] path = {"org.apache.harmony.beans.editors"}; //$NON-NLS-1$
 
-    private static final Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
+	private static final Map<Class<?>, Class<?>> registeredEditors = new HashMap<Class<?>, Class<?>>();
 
-    public PropertyEditorManager() {
-        // expected
-    }
+	public PropertyEditorManager () {
+		// expected
+	}
 
-    public static void registerEditor(Class<?> targetType, Class<?> editorClass) {
-        if (targetType == null) {
-            throw new NullPointerException();
-        }
-        SecurityManager sm = System.getSecurityManager();
+	public static void registerEditor (Class<?> targetType, Class<?> editorClass) {
+		if (targetType == null) {
+			throw new NullPointerException();
+		}
+		SecurityManager sm = System.getSecurityManager();
 
-        if (sm != null) {
-            sm.checkPropertiesAccess();
-        }
+		if (sm != null) {
+			sm.checkPropertiesAccess();
+		}
 
-        if (editorClass != null) {
-            registeredEditors.put(targetType, editorClass);
-        } else {
-            registeredEditors.remove(targetType);
-        }
-    }
+		if (editorClass != null) {
+			registeredEditors.put(targetType, editorClass);
+		} else {
+			registeredEditors.remove(targetType);
+		}
+	}
 
-    private static PropertyEditor loadEditor(Class<?> targetType,
-            String className) throws ClassNotFoundException,
-            IllegalAccessException, InstantiationException {
-        ClassLoader loader = targetType.getClassLoader();
-        if (loader == null) {
-            loader = ClassLoader.getSystemClassLoader();
-        }
-        try {
-            return (PropertyEditor) loader.loadClass(className).newInstance();
-        } catch (ClassNotFoundException e) {
-            // Ignored
-        }
+	private static PropertyEditor loadEditor (Class<?> targetType, String className) throws ClassNotFoundException,
+		IllegalAccessException, InstantiationException {
+		ClassLoader loader = targetType.getClassLoader();
+		if (loader == null) {
+			loader = ClassLoader.getSystemClassLoader();
+		}
+		try {
+			return (PropertyEditor)loader.loadClass(className).newInstance();
+		} catch (ClassNotFoundException e) {
+			// Ignored
+		}
 
-        return (PropertyEditor) Thread.currentThread().getContextClassLoader()
-                .loadClass(className).newInstance();
-    }
+		return (PropertyEditor)Thread.currentThread().getContextClassLoader().loadClass(className).newInstance();
+	}
 
-    public static synchronized PropertyEditor findEditor(Class<?> targetType) {
-        if (targetType == null) {
-            throw new NullPointerException();
-        }
-        Class<?> editorClass = registeredEditors.get(targetType);
+	public static synchronized PropertyEditor findEditor (Class<?> targetType) {
+		if (targetType == null) {
+			throw new NullPointerException();
+		}
+		Class<?> editorClass = registeredEditors.get(targetType);
 
-        if (editorClass != null) {
-            try {
-                return (PropertyEditor) editorClass.newInstance();
-            } catch (Exception e) {
-                // expected
-            }
-        }
-        String editorClassName = targetType.getName() + "Editor"; //$NON-NLS-1$
+		if (editorClass != null) {
+			try {
+				return (PropertyEditor)editorClass.newInstance();
+			} catch (Exception e) {
+				// expected
+			}
+		}
+		String editorClassName = targetType.getName() + "Editor"; //$NON-NLS-1$
 
-        try {
-            return loadEditor(targetType, editorClassName);
-        } catch (Exception exception) {
-            // expected
-        }
-        String shortEditorClassName = (targetType.isPrimitive()
-                ? (editorClassName.substring(0, 1).toUpperCase()
-                        + editorClassName.substring(1))
-                : editorClassName.substring(
-                        editorClassName.lastIndexOf('.') + 1));
+		try {
+			return loadEditor(targetType, editorClassName);
+		} catch (Exception exception) {
+			// expected
+		}
+		String shortEditorClassName = (targetType.isPrimitive() ? (editorClassName.substring(0, 1).toUpperCase() + editorClassName
+			.substring(1)) : editorClassName.substring(editorClassName.lastIndexOf('.') + 1));
 
-        for (String element : path) {
-            if (element == null) {
-                continue;
-            }
-            try {
-                return loadEditor(targetType, element + '.'
-                        + shortEditorClassName);
-            } catch (Exception e) {
-                // expected
-            }
-        }
-        return null;
-    }
+		for (String element : path) {
+			if (element == null) {
+				continue;
+			}
+			try {
+				return loadEditor(targetType, element + '.' + shortEditorClassName);
+			} catch (Exception e) {
+				// expected
+			}
+		}
+		return null;
+	}
 
-    public static void setEditorSearchPath(String[] apath) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPropertiesAccess();
-        }
-        synchronized(PropertyEditorManager.class){
-            path = (apath == null)? new String[0] : apath;
-        }
-    }
+	public static void setEditorSearchPath (String[] apath) {
+		SecurityManager sm = System.getSecurityManager();
+		if (sm != null) {
+			sm.checkPropertiesAccess();
+		}
+		synchronized (PropertyEditorManager.class) {
+			path = (apath == null) ? new String[0] : apath;
+		}
+	}
 
-    public static synchronized String[] getEditorSearchPath() {
-        return path.clone();
-    }
+	public static synchronized String[] getEditorSearchPath () {
+		return path.clone();
+	}
 }

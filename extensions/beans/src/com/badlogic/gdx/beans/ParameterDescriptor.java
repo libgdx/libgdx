@@ -17,11 +17,9 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.FeatureDescriptor;
-
 public class ParameterDescriptor extends FeatureDescriptor {
 
-    public ParameterDescriptor() {
-        // do nothing
-    }
+	public ParameterDescriptor () {
+		// do nothing
+	}
 }

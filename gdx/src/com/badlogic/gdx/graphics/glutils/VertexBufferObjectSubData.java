@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
@@ -30,8 +31,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * <p>
+/** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
  * </p>
  * 
@@ -53,9 +53,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * VertexBufferObjects must be disposed via the {@link #dispose()} method when no longer needed
  * </p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class VertexBufferObjectSubData implements VertexData {
 	final static IntBuffer tmpHandle = BufferUtils.newIntBuffer(1);
 
@@ -69,13 +67,11 @@ public class VertexBufferObjectSubData implements VertexData {
 	boolean isDirty = false;
 	boolean isBound = false;
 
-	/**
-	 * Constructs a new interleaved VertexBufferObject.
+	/** Constructs a new interleaved VertexBufferObject.
 	 * 
 	 * @param isStatic whether the vertex data is static.
 	 * @param numVertices the maximum number of vertices
-	 * @param attributes the {@link VertexAttribute}s.
-	 */
+	 * @param attributes the {@link VertexAttribute}s. */
 	public VertexBufferObjectSubData (boolean isStatic, int numVertices, VertexAttribute... attributes) {
 		this.isStatic = isStatic;
 		this.attributes = new VertexAttributes(attributes);
@@ -112,39 +108,33 @@ public class VertexBufferObjectSubData implements VertexData {
 		return tmpHandle.get(0);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public VertexAttributes getAttributes () {
+	/** {@inheritDoc} */
+	@Override
+	public VertexAttributes getAttributes () {
 		return attributes;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getNumVertices () {
+	/** {@inheritDoc} */
+	@Override
+	public int getNumVertices () {
 		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
 	public int getNumMaxVertices () {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public FloatBuffer getBuffer () {
+	/** {@inheritDoc} */
+	@Override
+	public FloatBuffer getBuffer () {
 		isDirty = true;
 		return buffer;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void setVertices (float[] vertices, int offset, int count) {
+	/** {@inheritDoc} */
+	@Override
+	public void setVertices (float[] vertices, int offset, int count) {
 		isDirty = true;
 		if (isDirect) {
 			BufferUtils.copy(vertices, byteBuffer, count, offset);
@@ -170,10 +160,9 @@ public class VertexBufferObjectSubData implements VertexData {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void bind () {
+	/** {@inheritDoc} */
+	@Override
+	public void bind () {
 		GL11 gl = Gdx.gl11;
 
 		gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, bufferHandle);
@@ -226,11 +215,9 @@ public class VertexBufferObjectSubData implements VertexData {
 		isBound = true;
 	}
 
-	/**
-	 * Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
+	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
 	 * 
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	public void bind (ShaderProgram shader) {
 		GL20 gl = Gdx.gl20;
 
@@ -259,10 +246,9 @@ public class VertexBufferObjectSubData implements VertexData {
 		isBound = true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void unbind () {
+	/** {@inheritDoc} */
+	@Override
+	public void unbind () {
 		GL11 gl = Gdx.gl11;
 		int textureUnit = 0;
 		int numAttributes = attributes.size();
@@ -294,11 +280,9 @@ public class VertexBufferObjectSubData implements VertexData {
 		isBound = false;
 	}
 
-	/**
-	 * Unbinds this VertexBufferObject.
+	/** Unbinds this VertexBufferObject.
 	 * 
-	 * @param shader the shader
-	 */
+	 * @param shader the shader */
 	public void unbind (ShaderProgram shader) {
 		GL20 gl = Gdx.gl20;
 		int numAttributes = attributes.size();
@@ -310,18 +294,15 @@ public class VertexBufferObjectSubData implements VertexData {
 		isBound = false;
 	}
 
-	/**
-	 * Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
-	 */
+	/** Invalidates the VertexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate () {
 		bufferHandle = createBufferObject();
 		isDirty = true;
 	}
 
-	/**
-	 * Disposes of all resources this VertexBufferObject uses.
-	 */
-	@Override public void dispose () {
+	/** Disposes of all resources this VertexBufferObject uses. */
+	@Override
+	public void dispose () {
 		if (Gdx.gl20 != null) {
 			tmpHandle.clear();
 			tmpHandle.put(bufferHandle);
@@ -341,10 +322,8 @@ public class VertexBufferObjectSubData implements VertexData {
 		}
 	}
 
-	/**
-	 * Returns the VBO handle
-	 * @return the VBO handle
-	 */
+	/** Returns the VBO handle
+	 * @return the VBO handle */
 	public int getBufferHandle () {
 		return bufferHandle;
 	}

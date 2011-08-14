@@ -13,33 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android.surfaceview;
 
-
-/**
- * Will manipulate the GLSurfaceView. Gravity is always center.
- * The width and height of the View will be determinded by the classes implementing {@link ResolutionStrategy}.
- *
- * @author christoph widulle
- */
+/** Will manipulate the GLSurfaceView. Gravity is always center. The width and height of the View will be determinded by the
+ * classes implementing {@link ResolutionStrategy}.
+ * 
+ * @author christoph widulle */
 public interface ResolutionStrategy {
 
+	public MeasuredDimension calcMeasures (final int widthMeasureSpec, final int heightMeasureSpec);
 
-    public MeasuredDimension calcMeasures( final int widthMeasureSpec, final int heightMeasureSpec);
+	public static class MeasuredDimension {
+		public final int width;
+		public final int height;
 
+		public MeasuredDimension (int width, int height) {
+			this.width = width;
+			this.height = height;
+		}
 
-    public static class MeasuredDimension {
-        public final int width;
-        public final int height;
-
-        public MeasuredDimension(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
-
-    }
-
-
-
+	}
 
 }

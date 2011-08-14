@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d;
 
-/**
- * An {@link AnimationAction} performs a transformation on its target {@link Actor}. These transformations physically change the
+/** An {@link AnimationAction} performs a transformation on its target {@link Actor}. These transformations physically change the
  * Actor itself.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public abstract class AnimationAction extends Action {
 
 	protected float duration;
@@ -31,23 +30,23 @@ public abstract class AnimationAction extends Action {
 
 	protected Interpolator interpolator;
 
-	@Override public boolean isDone () {
+	@Override
+	public boolean isDone () {
 		return done;
 	}
 
-	@Override public void finish () {
+	@Override
+	public void finish () {
 		super.finish();
 		if (interpolator != null) {
 			interpolator.finished();
 		}
 	}
 
-	/**
-	 * Sets an {@link Interpolator} to modify the progression of the animations.
+	/** Sets an {@link Interpolator} to modify the progression of the animations.
 	 * 
 	 * @param interpolator the interpolator to use during the animation
-	 * @return an instance of self so that the call can be easily chained
-	 */
+	 * @return an instance of self so that the call can be easily chained */
 	public AnimationAction setInterpolator (Interpolator interpolator) {
 		this.interpolator = interpolator;
 		return this;
@@ -66,12 +65,13 @@ public abstract class AnimationAction extends Action {
 			return interpolatedTime * invDuration;
 		}
 	}
-	
+
 	public Actor getTarget () {
 		return target;
 	}
 
-	@Override public void reset () {
+	@Override
+	public void reset () {
 		super.reset();
 		interpolator = null;
 	}

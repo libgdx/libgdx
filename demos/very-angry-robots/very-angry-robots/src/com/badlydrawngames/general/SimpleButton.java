@@ -15,9 +15,9 @@ package com.badlydrawngames.general;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlydrawngames.veryangryrobots.Assets;
 
 public class SimpleButton {
@@ -33,8 +33,8 @@ public class SimpleButton {
 	private BitmapFont font;
 	private float textWidth;
 	private float textHeight;
-	
-	public SimpleButton(String text, BitmapFont font) {
+
+	public SimpleButton (String text, BitmapFont font) {
 		this.text = text;
 		this.wasPressed = false;
 		this.activated = false;
@@ -47,54 +47,50 @@ public class SimpleButton {
 		h = bounds.height * 2;
 		alignment = HAlignment.CENTER;
 	}
-	
-	public void setWidth(float width) {
+
+	public void setWidth (float width) {
 		w = width;
 	}
-	
-	public void setHeight(float height) {
+
+	public void setHeight (float height) {
 		h = height;
 	}
-	
-	public void setAlignment(HAlignment alignment) {
+
+	public void setAlignment (HAlignment alignment) {
 		this.alignment = alignment;
 	}
-	
-	public void update(float delta, boolean justTouched, boolean isTouched, boolean justReleased, float x, float y) {
+
+	public void update (float delta, boolean justTouched, boolean isTouched, boolean justReleased, float x, float y) {
 		wasPressed = false;
 		if (justTouched && inBounds(x, y)) {
 			activated = true;
 			down = true;
-		}
-		else if (isTouched) {
+		} else if (isTouched) {
 			down = activated && inBounds(x, y);
-		}
-		else if (justReleased) {
+		} else if (justReleased) {
 			wasPressed = activated && inBounds(x, y);
 			activated = false;
 			down = false;
-		}
-		else {
+		} else {
 			activated = false;
 		}
 	}
-	
-	private boolean inBounds(float x, float y) {
+
+	private boolean inBounds (float x, float y) {
 		return x >= this.x && x < this.x + this.w && y >= this.y && y < this.y + this.h;
 	}
-	
-	public void draw(SpriteBatch spriteBatch) {
+
+	public void draw (SpriteBatch spriteBatch) {
 		Color oldColor = font.getColor();
 		if (down) {
 			spriteBatch.setColor(Color.RED);
-		}
-		else {
+		} else {
 			spriteBatch.setColor(Color.BLUE);
 		}
 		spriteBatch.draw(Assets.pureWhiteTextureRegion, x, y, w, h);
 		spriteBatch.setColor(Color.WHITE);
 		if (down) {
-			font.setColor(oldColor.r/2, oldColor.g/2, oldColor.b/2, oldColor.a);
+			font.setColor(oldColor.r / 2, oldColor.g / 2, oldColor.b / 2, oldColor.a);
 		}
 		float textX = x;
 		float textY = y + h;
@@ -102,32 +98,32 @@ public class SimpleButton {
 		font.drawWrapped(spriteBatch, text, textX, textY, w, alignment);
 		font.setColor(oldColor);
 	}
-	
-	public boolean wasPressed() {
+
+	public boolean wasPressed () {
 		return this.wasPressed;
 	}
-	
-	public void rightOn(float right) {
+
+	public void rightOn (float right) {
 		x = right - w;
 	}
-	
-	public void leftOn(float left) {
+
+	public void leftOn (float left) {
 		x = left;
 	}
-	
-	public void centerHorizontallyOn(float centerX) {
-		x = centerX - w/2;
+
+	public void centerHorizontallyOn (float centerX) {
+		x = centerX - w / 2;
 	}
-	
-	public void bottomOn(float bottom) {
+
+	public void bottomOn (float bottom) {
 		y = bottom;
 	}
-	
-	public void topOn(float top) {
+
+	public void topOn (float top) {
 		y = top - h;
 	}
-	
-	public void centerVerticallyOn(float centerY) {
-		y = centerY - h/2;
+
+	public void centerVerticallyOn (float centerY) {
+		y = centerY - h / 2;
 	}
 }

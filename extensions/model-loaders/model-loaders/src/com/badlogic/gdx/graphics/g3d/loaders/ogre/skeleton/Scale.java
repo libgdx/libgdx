@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
@@ -16,12 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "scale")
 public class Scale {
 
-    @XmlAttribute
-    public float factor;
-    @XmlAttribute
-    public float x;
-    @XmlAttribute
-    public float y;
-    @XmlAttribute
-    public float z;
+	@XmlAttribute
+	public float factor;
+	@XmlAttribute
+	public float x;
+	@XmlAttribute
+	public float y;
+	@XmlAttribute
+	public float z;
 }

@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import java.util.HashMap;
@@ -24,13 +25,13 @@ public class TransformationTest extends InputAdapter implements ApplicationListe
 	float timePassed = 0;
 
 	@Override
-	public void create() {
+	public void create () {
 		image = new Texture(Gdx.files.internal("data/sys.png"));
 		image.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 		image.setWrap(Texture.TextureWrap.ClampToEdge, Texture.TextureWrap.ClampToEdge);
 
-		float w = 100;//Gdx.graphics.getWidth()/2;
-		float h = 80;//Gdx.graphics.getHeight()/2;
+		float w = 100;// Gdx.graphics.getWidth()/2;
+		float h = 80;// Gdx.graphics.getHeight()/2;
 
 		sprite = Decal.newDecal(20, 20, new TextureRegion(image), false);
 
@@ -56,18 +57,18 @@ public class TransformationTest extends InputAdapter implements ApplicationListe
 	}
 
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl11.glLoadIdentity();
 		Gdx.gl11.glScalef(0.02f, 0.02f, 1);
-		
+
 		Action a = keyActions.get(key);
-		if(a != null) {
+		if (a != null) {
 			a.perform(sprite);
 		}
 
 		float elapsed = Gdx.graphics.getDeltaTime();
-		float translate = timePassed > 0.5 ? (float)Math.random() - timePassed / 2 : (float)Math.random()/2 + timePassed / 2;
+		float translate = timePassed > 0.5 ? (float)Math.random() - timePassed / 2 : (float)Math.random() / 2 + timePassed / 2;
 		translate *= (-0.5 + Math.random());
 
 		cam.update();
@@ -78,124 +79,129 @@ public class TransformationTest extends InputAdapter implements ApplicationListe
 		batch.flush();
 
 		timePassed += elapsed;
-		if(timePassed > 1.0f) {
+		if (timePassed > 1.0f) {
 			timePassed = 0;
 		}
 
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
+	public boolean keyDown (int keycode) {
 		key = keycode;
 		return true;
 	}
 
 	@Override
-	public boolean keyUp(int keycode) {
+	public boolean keyUp (int keycode) {
 		key = -1;
 		return true;
 	}
 
 	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		cam = new PerspectiveCamera(45, width, height);
-		//cam = new OrthographicCamera(width, height);
+		// cam = new OrthographicCamera(width, height);
 		cam.near = 0.1f;
 		cam.far = 1000f;
 		cam.position.set(0, 0, 100);
 		cam.direction.set(0, 0, -1);
 	}
 
-
-
 	@Override
-	public void resume() {
+	public void resume () {
 	}
 
 	@Override
-	public void pause() {
+	public void pause () {
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose () {
 	}
 
 	private abstract class Action {
 		float dir;
 
-		protected Action(float dir) {
+		protected Action (float dir) {
 			this.dir = dir;
 		}
 
-		public abstract void perform(Decal d);
+		public abstract void perform (Decal d);
 	}
+
 	private class RotateZ extends Action {
-		public RotateZ(float dir) {
+		public RotateZ (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.rotateZ(Gdx.graphics.getDeltaTime() * dir);
 		}
 	}
+
 	private class RotateY extends Action {
-		public RotateY(float dir) {
+		public RotateY (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.rotateY(Gdx.graphics.getDeltaTime() * dir);
 		}
 	}
+
 	private class RotateX extends Action {
-		public RotateX(float dir) {
+		public RotateX (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.rotateX(Gdx.graphics.getDeltaTime() * dir);
 		}
 	}
+
 	private class TransX extends Action {
-		public TransX(float dir) {
+		public TransX (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.translateX(Gdx.graphics.getDeltaTime() * dir);
 		}
 	}
+
 	private class TransY extends Action {
-		public TransY(float dir) {
+		public TransY (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.translateY(Gdx.graphics.getDeltaTime() * dir);
 		}
 	}
+
 	private class TransZ extends Action {
-		public TransZ(float dir) {
+		public TransZ (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.translateZ(Gdx.graphics.getDeltaTime() * dir);
 		}
 	}
+
 	private class Scale extends Action {
-		public Scale(float dir) {
+		public Scale (float dir) {
 			super(dir);
 		}
 
 		@Override
-		public void perform(Decal d) {
+		public void perform (Decal d) {
 			d.setScale(Gdx.graphics.getDeltaTime() * dir + d.getScaleX(), Gdx.graphics.getDeltaTime() * dir + d.getScaleY());
 		}
 	}

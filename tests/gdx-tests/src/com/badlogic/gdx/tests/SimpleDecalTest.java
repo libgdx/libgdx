@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -21,58 +22,57 @@ public class SimpleDecalTest extends GdxTest {
 	PerspectiveCamera camera;
 	PerspectiveCamController controller;
 	FPSLogger logger = new FPSLogger();
-	
-	public void create() {
+
+	public void create () {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
-		
+
 		camera = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 1;
 		camera.far = 300;
 		camera.position.set(0, 0, 5);
 		controller = new PerspectiveCamController(camera);
-		
+
 		Gdx.input.setInputProcessor(controller);
 		batch = new DecalBatch(new CameraGroupStrategy(camera));
-		
-		TextureRegion[] textures = { new TextureRegion(new Texture(Gdx.files.internal("data/egg.png"))), 
-											  new TextureRegion(new Texture(Gdx.files.internal("data/wheel.png"))),
-											  new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")))
-		};
-		
-		
+
+		TextureRegion[] textures = {new TextureRegion(new Texture(Gdx.files.internal("data/egg.png"))),
+			new TextureRegion(new Texture(Gdx.files.internal("data/wheel.png"))),
+			new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")))};
+
 		Decal decal = Decal.newDecal(1, 1, textures[1]);
 		decal.setPosition(0, 0, 0);
 		decals.add(decal);
-		
+
 		decal = Decal.newDecal(1, 1, textures[0], true);
 		decal.setPosition(0.5f, 0.5f, 1);
 		decals.add(decal);
-		
+
 		decal = Decal.newDecal(1, 1, textures[0], true);
 		decal.setPosition(1, 1, -1);
 		decals.add(decal);
-		
+
 		decal = Decal.newDecal(1, 1, textures[2]);
 		decal.setPosition(1.5f, 1.5f, -2);
 		decals.add(decal);
-		
+
 		decal = Decal.newDecal(1, 1, textures[1]);
 		decal.setPosition(2, 2, -1.5f);
 		decals.add(decal);
 	}
-	
+
 	Vector3 dir = new Vector3();
 	private boolean billboard = true;
-	public void render() {
+
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
-		
-		camera.update();		
-		for(int i = 0; i < decals.size; i++) {
+
+		camera.update();
+		for (int i = 0; i < decals.size; i++) {
 			Decal decal = decals.get(i);
-			if(billboard ) {
-//				dir.set(camera.position).sub(decal.getPosition()).nor();
+			if (billboard) {
+// dir.set(camera.position).sub(decal.getPosition()).nor();
 				dir.set(-camera.direction.x, -camera.direction.y, -camera.direction.z);
 				decal.setRotation(dir, Vector3.Y);
 			}
@@ -81,7 +81,7 @@ public class SimpleDecalTest extends GdxTest {
 		batch.flush();
 		logger.log();
 	}
-	
+
 	@Override
 	public boolean needsGL20 () {
 		return true;

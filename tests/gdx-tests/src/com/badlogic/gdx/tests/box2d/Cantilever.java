@@ -42,7 +42,8 @@ public class Cantilever extends Box2DTest {
 	Body m_middle;
 	final int e_count = 8;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		Body ground;
 		{
 			BodyDef bd = new BodyDef();

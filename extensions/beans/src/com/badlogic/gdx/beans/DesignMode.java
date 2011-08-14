@@ -19,9 +19,9 @@ package com.badlogic.gdx.beans;
 
 public interface DesignMode {
 
-    public static final String PROPERTYNAME = "designTime"; //$NON-NLS-1$
+	public static final String PROPERTYNAME = "designTime"; //$NON-NLS-1$
 
-    public void setDesignTime(boolean designTime);
+	public void setDesignTime (boolean designTime);
 
-    public boolean isDesignTime();
+	public boolean isDesignTime ();
 }

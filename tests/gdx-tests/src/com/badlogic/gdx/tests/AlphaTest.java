@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -21,7 +22,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -29,18 +29,20 @@ public class AlphaTest extends GdxTest {
 	SpriteBatch batch;
 	Texture texture;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Pixmap pixmap = new Pixmap(256, 256, Format.RGBA8888);
 		pixmap.setColor(0, 1, 0, 0.7f);
 		pixmap.fill();
 
 		texture = new Texture(pixmap, false);
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);			
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		batch = new SpriteBatch();
 		pixmap.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
@@ -48,7 +50,8 @@ public class AlphaTest extends GdxTest {
 		batch.end();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

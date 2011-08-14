@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import java.io.IOException;
@@ -32,34 +33,39 @@ public class AndroidMusic implements Music {
 		this.player = player;
 	}
 
-	@Override public void dispose () {		
-		if(player == null) return;
+	@Override
+	public void dispose () {
+		if (player == null) return;
 		try {
 			if (player.isPlaying()) player.stop();
 			player.release();
-		} catch(Throwable t) {
+		} catch (Throwable t) {
 			Gdx.app.log("AndroidMusic", "error while disposing AndroidMusic instance, non-fatal");
 		} finally {
 			player = null;
-			synchronized(audio.musics) {
+			synchronized (audio.musics) {
 				audio.musics.remove(this);
 			}
 		}
 	}
 
-	@Override public boolean isLooping () {
+	@Override
+	public boolean isLooping () {
 		return player.isLooping();
 	}
 
-	@Override public boolean isPlaying () {
+	@Override
+	public boolean isPlaying () {
 		return player.isPlaying();
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 		if (player.isPlaying()) player.pause();
 	}
 
-	@Override public void play () {
+	@Override
+	public void play () {
 		if (player.isPlaying()) return;
 
 		try {
@@ -75,19 +81,22 @@ public class AndroidMusic implements Music {
 		}
 	}
 
-	@Override public void setLooping (boolean isLooping) {
+	@Override
+	public void setLooping (boolean isLooping) {
 		player.setLooping(isLooping);
 	}
 
-	@Override public void setVolume (float volume) {
+	@Override
+	public void setVolume (float volume) {
 		player.setVolume(volume, volume);
 	}
 
-	@Override public void stop () {
-		if(isPrepared) {
+	@Override
+	public void stop () {
+		if (isPrepared) {
 			player.seekTo(0);
 		}
-		player.stop();		
+		player.stop();
 		isPrepared = false;
 	}
 

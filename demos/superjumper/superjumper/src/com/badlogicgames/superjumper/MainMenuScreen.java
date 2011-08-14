@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.Gdx;
@@ -34,7 +35,7 @@ public class MainMenuScreen extends Screen {
 
 	public MainMenuScreen (Game game) {
 		super(game);
-		guiCam = new OrthographicCamera(320, 480);		
+		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		batcher = new SpriteBatch();
 		soundBounds = new Rectangle(0, 0, 64, 64);
@@ -44,7 +45,8 @@ public class MainMenuScreen extends Screen {
 		touchPoint = new Vector3();
 	}
 
-	@Override public void update (float deltaTime) {
+	@Override
+	public void update (float deltaTime) {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
@@ -74,12 +76,13 @@ public class MainMenuScreen extends Screen {
 		}
 	}
 
-	@Override public void present (float deltaTime) {
+	@Override
+	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		guiCam.update();
-		batcher.setProjectionMatrix(guiCam.combined);		
+		batcher.setProjectionMatrix(guiCam.combined);
 
 		batcher.disableBlending();
 		batcher.begin();
@@ -91,16 +94,19 @@ public class MainMenuScreen extends Screen {
 		batcher.draw(Assets.logo, 160 - 274 / 2, 480 - 10 - 142, 274, 142);
 		batcher.draw(Assets.mainMenu, 10, (int)(200 - 110 / 2), 300, 110);
 		batcher.draw(Settings.soundEnabled ? Assets.soundOn : Assets.soundOff, 0, 0, 64, 64);
-		batcher.end();	
+		batcher.end();
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 		Settings.save();
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 	}
 }

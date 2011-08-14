@@ -17,19 +17,14 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import java.util.Date;
 
 import org.apache.harmony.beans.BeansUtils;
 
 class UtilDatePersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        Date date = (Date) oldInstance;
-        return new Expression(oldInstance, oldInstance.getClass(),
-                BeansUtils.NEW, new Object[] { date.getTime() });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		Date date = (Date)oldInstance;
+		return new Expression(oldInstance, oldInstance.getClass(), BeansUtils.NEW, new Object[] {date.getTime()});
+	}
 }

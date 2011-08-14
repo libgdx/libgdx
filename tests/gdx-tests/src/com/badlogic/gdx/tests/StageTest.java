@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
@@ -53,7 +54,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 	float scale = 1;
 	float vScale = 1;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		font = new BitmapFont();
@@ -73,7 +75,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		}
 
 		uiTexture = new Texture(Gdx.files.internal("data/ui.png"));
-		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);		
+		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		ui = new Stage(480, 320, false);
 		Image blend = new Image("blend button", new TextureRegion(uiTexture, 0, 0, 64, 32));
 		blend.y = ui.height() - 32;
@@ -88,10 +90,11 @@ public class StageTest extends GdxTest implements InputProcessor {
 		ui.addActor(rotate);
 		ui.addActor(scale);
 
-		 Label fps = new Label("fps", font, "fps: 0");
-		 fps.x = 10; fps.y = 30;
-		 fps.color.set(0, 1, 0, 1);
-		 ui.addActor(fps);
+		Label fps = new Label("fps", font, "fps: 0");
+		fps.x = 10;
+		fps.y = 30;
+		fps.color.set(0, 1, 0, 1);
+		ui.addActor(fps);
 
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		renderer = new ImmediateModeRenderer10();
@@ -112,7 +115,8 @@ public class StageTest extends GdxTest implements InputProcessor {
 			}
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
@@ -175,14 +179,13 @@ public class StageTest extends GdxTest implements InputProcessor {
 		renderer.end();
 		Gdx.graphics.getGL10().glPointSize(4);
 
-		 ((Label)ui.findActor("fps")).setText("fps: " +
-			 Gdx.graphics.getFramesPerSecond() + ", actors " + images.size() +
-			 ", groups "
-			 + stage.getGroups().size());
+		((Label)ui.findActor("fps")).setText("fps: " + Gdx.graphics.getFramesPerSecond() + ", actors " + images.size()
+			+ ", groups " + stage.getGroups().size());
 		ui.draw();
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		boolean touched = ui.touchDown(x, y, pointer, button);
 		if (touched) {
 			Actor hitActor = ui.getLastTouchedChild();
@@ -197,35 +200,43 @@ public class StageTest extends GdxTest implements InputProcessor {
 		return touched;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

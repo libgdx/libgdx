@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actors;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
-/**
- * This is a group that respects its width and height. Useful for implementing layouts.
- * @author mzechner
- * 
- */
+/** This is a group that respects its width and height. Useful for implementing layouts.
+ * @author mzechner */
 public class BoundGroup extends Group {
 	public BoundGroup (String name, float width, float height) {
 		super(name);

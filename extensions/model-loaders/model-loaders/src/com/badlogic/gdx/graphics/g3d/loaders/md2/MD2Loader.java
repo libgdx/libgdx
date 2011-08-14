@@ -22,15 +22,15 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class MD2Loader implements KeyframedModelLoader {	
-	public KeyframedModel load(FileHandle file, ModelLoaderHints hints) {
+public class MD2Loader implements KeyframedModelLoader {
+	public KeyframedModel load (FileHandle file, ModelLoaderHints hints) {
 		float frameDuration = 0.2f;
-		if(hints instanceof MD2LoaderHints) {
+		if (hints instanceof MD2LoaderHints) {
 			frameDuration = ((MD2LoaderHints)hints).frameDuration;
 		}
 		return load(file, frameDuration);
 	}
-	
+
 	public KeyframedModel load (FileHandle fileHandle, float frameDuration) {
 		InputStream in = fileHandle.read();
 		try {
@@ -60,7 +60,8 @@ public class MD2Loader implements KeyframedModelLoader {
 		}
 	}
 
-	private KeyframedModel buildModel (MD2Header header, MD2Triangle[] triangles, float[] texCoords, MD2Frame[] frames, float frameDuration) {
+	private KeyframedModel buildModel (MD2Header header, MD2Triangle[] triangles, float[] texCoords, MD2Frame[] frames,
+		float frameDuration) {
 		ArrayList<VertexIndices> vertCombos = new ArrayList<VertexIndices>();
 		short[] indices = new short[triangles.length * 3];
 		int idx = 0;
@@ -111,9 +112,9 @@ public class MD2Loader implements KeyframedModelLoader {
 		}
 
 		header.numVertices = vertCombos.size();
-		
+
 		float[] blendedVertices = new float[header.numVertices * 5];
-		MD2Frame frame = frames[0];		
+		MD2Frame frame = frames[0];
 		idx = 0;
 		int idxV = 0;
 		int idxT = 0;
@@ -124,34 +125,33 @@ public class MD2Loader implements KeyframedModelLoader {
 			blendedVertices[idx++] = uvs[idxT++];
 			blendedVertices[idx++] = uvs[idxT++];
 		}
-		
+
 		KeyframedAnimation animation = new KeyframedAnimation("all", frameDuration, new Keyframe[frames.length]);
 		float timeStamp = 0;
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
 			frame = frames[frameNum];
 			float[] vertices = new float[header.numVertices * 3];
-			idx = 0;			
+			idx = 0;
 			idxV = 0;
 			for (int i = 0; i < header.numVertices; i++) {
 				vertices[idx++] = frame.vertices[idxV++];
 				vertices[idx++] = frame.vertices[idxV++];
-				vertices[idx++] = frame.vertices[idxV++];				
+				vertices[idx++] = frame.vertices[idxV++];
 			}
 
-			Keyframe keyFrame = new Keyframe(frameNum * frameDuration, vertices);			
+			Keyframe keyFrame = new Keyframe(frameNum * frameDuration, vertices);
 			animation.keyframes[frameNum] = keyFrame;
 		}
 
-		
-		Mesh mesh = new Mesh(false, header.numVertices, indices.length, 
-									new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-									new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+		Mesh mesh = new Mesh(false, header.numVertices, indices.length, new VertexAttribute(Usage.Position, 3,
+			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE
+			+ "0"));
 		mesh.setIndices(indices);
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);
-		
-		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 3, GL10.GL_TRIANGLES);	
-		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});		
+
+		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 3, GL10.GL_TRIANGLES);
+		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});
 		model.setAnimation("all", 0, false);
 		return model;
 	}
@@ -319,7 +319,8 @@ public class MD2Loader implements KeyframedModelLoader {
 			this.nIdx = nIdx;
 		}
 
-		@Override public int hashCode () {
+		@Override
+		public int hashCode () {
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + tIdx;
@@ -327,7 +328,8 @@ public class MD2Loader implements KeyframedModelLoader {
 			return result;
 		}
 
-		@Override public boolean equals (Object obj) {
+		@Override
+		public boolean equals (Object obj) {
 			if (this == obj) return true;
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
@@ -341,11 +343,11 @@ public class MD2Loader implements KeyframedModelLoader {
 		public short tIdx;
 		public short nIdx;
 	}
-	
+
 	public static class MD2LoaderHints extends ModelLoaderHints {
 		public final float frameDuration;
-		
-		public MD2LoaderHints(float frameDuration) {
+
+		public MD2LoaderHints (float frameDuration) {
 			super(false);
 			this.frameDuration = frameDuration;
 		}

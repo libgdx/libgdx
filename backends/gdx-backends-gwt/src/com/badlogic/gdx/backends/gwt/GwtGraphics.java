@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.backends.gwt;
 
 import gwt.g3d.client.Surface3D;
@@ -22,163 +23,163 @@ public class GwtGraphics implements Graphics {
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
 	float deltaTime = 0;
-	
-	public GwtGraphics(Panel root, GwtApplicationConfiguration config) {
+
+	public GwtGraphics (Panel root, GwtApplicationConfiguration config) {
 		// create surface per configuration
 		WebGLContextAttributes contextAttribs = new WebGLContextAttributes();
 		contextAttribs.setStencilEnable(config.stencil);
 		contextAttribs.setAntialiasEnable(config.antialiasing);
 		surface = new Surface3D(config.width, config.height, contextAttribs);
 		root.add(surface);
-	
+
 		// check whether WebGL is supported
 		GL2 gl = surface.getGL();
 		if (gl == null) {
 			throw new GdxRuntimeException("WebGL not supported");
 		}
-		
+
 		this.gl = new GwtGL20(surface);
-		
+
 		// set initial viewport to cover entire surface and
-		gl.viewport(0,  0, surface.getWidth(), surface.getHeight());
+		gl.viewport(0, 0, surface.getWidth(), surface.getHeight());
 	}
-	
-	public Surface3D getSurface() {
+
+	public Surface3D getSurface () {
 		return surface;
 	}
-	
+
 	@Override
-	public boolean isGL11Available() {
+	public boolean isGL11Available () {
 		return false;
 	}
 
 	@Override
-	public boolean isGL20Available() {
+	public boolean isGL20Available () {
 		return true;
 	}
 
 	@Override
-	public GLCommon getGLCommon() {
+	public GLCommon getGLCommon () {
 		return gl;
 	}
 
 	@Override
-	public GL10 getGL10() {
+	public GL10 getGL10 () {
 		return null;
 	}
 
 	@Override
-	public GL11 getGL11() {
+	public GL11 getGL11 () {
 		return null;
 	}
 
 	@Override
-	public GL20 getGL20() {
+	public GL20 getGL20 () {
 		return gl;
 	}
 
 	@Override
-	public GLU getGLU() {
+	public GLU getGLU () {
 		return null;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getWidth () {
 		return surface.getWidth();
 	}
 
 	@Override
-	public int getHeight() {
+	public int getHeight () {
 		return surface.getHeight();
 	}
 
 	@Override
-	public float getDeltaTime() {
+	public float getDeltaTime () {
 		return deltaTime;
 	}
 
 	@Override
-	public int getFramesPerSecond() {
+	public int getFramesPerSecond () {
 		return (int)fps;
 	}
 
 	@Override
-	public GraphicsType getType() {
+	public GraphicsType getType () {
 		return GraphicsType.WebGL;
 	}
 
 	@Override
-	public float getPpiX() {
+	public float getPpiX () {
 		return 0;
 	}
 
 	@Override
-	public float getPpiY() {
+	public float getPpiY () {
 		return 0;
 	}
 
 	@Override
-	public float getPpcX() {
+	public float getPpcX () {
 		return 0;
 	}
 
 	@Override
-	public float getPpcY() {
+	public float getPpcY () {
 		return 0;
 	}
 
 	@Override
-	public boolean supportsDisplayModeChange() {
+	public boolean supportsDisplayModeChange () {
 		return false;
 	}
 
 	@Override
-	public DisplayMode[] getDisplayModes() {
+	public DisplayMode[] getDisplayModes () {
 		return null;
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode() {
+	public DisplayMode getDesktopDisplayMode () {
 		return null;
 	}
 
 	@Override
-	public boolean setDisplayMode(DisplayMode displayMode) {
+	public boolean setDisplayMode (DisplayMode displayMode) {
 		return false;
 	}
 
 	@Override
-	public boolean setDisplayMode(int width, int height, boolean fullscreen) {
+	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		return false;
 	}
 
 	@Override
-	public void setTitle(String title) {
-		
+	public void setTitle (String title) {
+
 	}
 
 	@Override
-	public void setIcon(Pixmap pixmap) {
-		
+	public void setIcon (Pixmap pixmap) {
+
 	}
 
 	@Override
-	public void setVSync(boolean vsync) {
-		
+	public void setVSync (boolean vsync) {
+
 	}
 
 	@Override
-	public BufferFormat getBufferFormat() {
+	public BufferFormat getBufferFormat () {
 		return null;
 	}
 
 	@Override
-	public boolean supportsExtension(String extension) {
-		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+	public boolean supportsExtension (String extension) {
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 
-	public void setFps(float fps) {
+	public void setFps (float fps) {
 		long currTimeStamp = System.currentTimeMillis();
 		deltaTime = (currTimeStamp - lastTimeStamp) / 1000.0f;
 		lastTimeStamp = currTimeStamp;
@@ -186,7 +187,7 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
-	public float getDensity() {
+	public float getDensity () {
 		throw new GdxRuntimeException("No supported");
 	}
 }

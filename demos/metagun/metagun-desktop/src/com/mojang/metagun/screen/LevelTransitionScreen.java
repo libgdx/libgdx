@@ -31,23 +31,24 @@ public class LevelTransitionScreen extends Screen {
 			setScreen(parent);
 		}
 	}
-	
-	Camera c = new Camera(320, 240);	
-	public void render () {		
+
+	Camera c = new Camera(320, 240);
+
+	public void render () {
 		double pow = time / (double)TRANSITION_DURATION;
-		
+
 		spriteBatch.getTransformMatrix().idt();
-		spriteBatch.begin();		
-//		draw(Art.bg, -xLevel * 160 - (int)(xa * 160 * pow), -yLevel * 120 - (int)(ya * 120 * pow));
+		spriteBatch.begin();
+// draw(Art.bg, -xLevel * 160 - (int)(xa * 160 * pow), -yLevel * 120 - (int)(ya * 120 * pow));
 		draw(Art.bg, 0, 0);
 		spriteBatch.end();
-				
+
 		c.x = (int)(-xa * 320 * pow);
-		c.y = (int)(-ya * 240 * pow);				
-		level1.render(this, c);				
-		
-		c.x = (int)(xa * 320 * (1-pow));
-		c.y = (int)(ya * 240 * (1-pow));		
-		level2.render(this, c);		
+		c.y = (int)(-ya * 240 * pow);
+		level1.render(this, c);
+
+		c.x = (int)(xa * 320 * (1 - pow));
+		c.y = (int)(ya * 240 * (1 - pow));
+		level2.render(this, c);
 	}
 }

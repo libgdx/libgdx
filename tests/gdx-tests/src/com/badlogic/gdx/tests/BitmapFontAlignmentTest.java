@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
@@ -27,9 +28,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/**
- * Shows how to align single line, wrapped, and multi line text within a rectangle.
- */
+/** Shows how to align single line, wrapped, and multi line text within a rectangle. */
 public class BitmapFontAlignmentTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
@@ -37,7 +36,8 @@ public class BitmapFontAlignmentTest extends GdxTest {
 	private Sprite logoSprite;
 	int renderMode;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				renderMode = (renderMode + 1) % 6;
@@ -47,7 +47,7 @@ public class BitmapFontAlignmentTest extends GdxTest {
 
 		spriteBatch = new SpriteBatch();
 
-		logoSprite = new Sprite(new Texture(Gdx.files.internal("data/badlogic.jpg"), false));			
+		logoSprite = new Sprite(new Texture(Gdx.files.internal("data/badlogic.jpg"), false));
 		logoSprite.setColor(1, 1, 1, 0.6f);
 		logoSprite.setBounds(50, 100, 400, 100);
 
@@ -56,7 +56,8 @@ public class BitmapFontAlignmentTest extends GdxTest {
 		cache = new BitmapFontCache(font);
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();

@@ -30,10 +30,8 @@ import de.matthiasmann.twl.renderer.AnimationState;
 import de.matthiasmann.twl.renderer.Image;
 import de.matthiasmann.twl.renderer.SupportsDrawRepeat;
 
-/**
- * @author Nathan Sweet
- * @author Matthias Mann
- */
+/** @author Nathan Sweet
+ * @author Matthias Mann */
 public class GdxImage implements Image, SupportsDrawRepeat {
 	private final GdxRenderer renderer;
 	private final Sprite sprite;

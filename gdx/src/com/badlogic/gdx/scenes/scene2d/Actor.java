@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,8 +23,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
 import com.badlogic.gdx.utils.PooledLinkedList;
 
-/**
- * <p>
+/** <p>
  * An Actor is part of a {@link Stage} or a {@link Group} within a Stage. It has a position, a rectangular size given as width and
  * height, a rotation angle, a scale in x and y and an origin relative to the position which is used for rotation and scaling.
  * </p>
@@ -70,9 +69,7 @@ import com.badlogic.gdx.utils.PooledLinkedList;
  * rotation. Actions can be chained and make for rather sophisticated time based behaviour.
  * <p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public abstract class Actor {
 	public Group parent;
 	public final String name;
@@ -97,14 +94,12 @@ public abstract class Actor {
 		this.name = name;
 	}
 
-	/**
-	 * Draws the Actor. The spriteBatch is configured so that the Actor can draw in its parents coordinate system. The parent's
+	/** Draws the Actor. The spriteBatch is configured so that the Actor can draw in its parents coordinate system. The parent's
 	 * alpha is passed to the method in order for the Actor to multiply it with its own alpha. This will allow {@link FadeIn} and
 	 * other Actions to have an effect even if they are only set on the parent of the Actor.
 	 * 
 	 * @param batch the spritebatch to render with
-	 * @param parentAlpha the parent's alpha value.
-	 */
+	 * @param parentAlpha the parent's alpha value. */
 	public abstract void draw (SpriteBatch batch, float parentAlpha);
 
 	public abstract boolean touchDown (float x, float y, int pointer);
@@ -116,30 +111,27 @@ public abstract class Actor {
 	public boolean touchMoved (float x, float y) {
 		return false;
 	}
-	
-	public boolean scrolled(int amount) {
-		return false;
-	}
-	
-	public  boolean keyDown (int keycode) {
-		return false;
-	}
-	
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-	
-	public boolean keyTyped(char character) {
-		return false;
-	}	
 
-	
+	public boolean scrolled (int amount) {
+		return false;
+	}
+
+	public boolean keyDown (int keycode) {
+		return false;
+	}
+
+	public boolean keyUp (int keycode) {
+		return false;
+	}
+
+	public boolean keyTyped (char character) {
+		return false;
+	}
+
 	public abstract Actor hit (float x, float y);
 
-	/**
-	 * Transforms the given point in stage coordinates to the Actor's local coordinate system.
-	 * @param point the point
-	 */
+	/** Transforms the given point in stage coordinates to the Actor's local coordinate system.
+	 * @param point the point */
 	public void toLocalCoordinates (Vector2 point) {
 		if (parent == null) {
 			return;
@@ -149,9 +141,7 @@ public abstract class Actor {
 		Group.toChildCoordinates(this, point.x, point.y, point);
 	}
 
-	/**
-	 * Removes this actor from the Stage
-	 */
+	/** Removes this actor from the Stage */
 	public void remove () {
 		parent.removeActor(this);
 	}
@@ -169,46 +159,39 @@ public abstract class Actor {
 		}
 	}
 
-	/**
-	 * Adds an {@link Action} to the Actor. Actions will be automatically performed in the order added to the Actor and will be
+	/** Adds an {@link Action} to the Actor. Actions will be automatically performed in the order added to the Actor and will be
 	 * removed when they are done.
 	 * 
-	 * @param action the action
-	 */
+	 * @param action the action */
 	public void action (Action action) {
 		action.setTarget(this);
 		actions.add(action);
 	}
 
-	/**
-	 * Clears all actions of this Actor.
-	 */
+	/** Clears all actions of this Actor. */
 	public void clearActions () {
 		actions.clear();
 	}
 
-	@Override public String toString () {
+	@Override
+	public String toString () {
 		return name + ": [x=" + x + ", y=" + y + ", refX=" + originX + ", refY=" + originY + ", width=" + width + ", height="
 			+ height + "]";
 	}
 
-	/**
-	 * Marks the {@link Actor} to be removed by its parent.
+	/** Marks the {@link Actor} to be removed by its parent.
 	 * <p>
 	 * The actual removal happens in the {@link Group#act(float)} method of the parent and after the parent has called
 	 * {@link #act(float)} on this {@link Actor}.
 	 * 
-	 * @param remove whether the parent is supposed to remove this {@link Actor}
-	 */
+	 * @param remove whether the parent is supposed to remove this {@link Actor} */
 	public void markToRemove (final boolean remove) {
 		toRemove = remove;
 	}
 
-	/**
-	 * States if this actor is to be removed by its parent.
+	/** States if this actor is to be removed by its parent.
 	 * 
-	 * @return <code>true</code> when the actor is to be removed or <code>false</code> otherwise
-	 */
+	 * @return <code>true</code> when the actor is to be removed or <code>false</code> otherwise */
 	public boolean isMarkedToRemove () {
 		return toRemove;
 	}

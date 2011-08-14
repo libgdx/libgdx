@@ -48,16 +48,14 @@ import javax.swing.JComponent;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 
-/**
- * <P>
+/** <P>
  * An Animator can be attached to one or more {@link GLAutoDrawable}s to drive their display() methods in a loop.
  * </P>
  * 
  * <P>
  * The Animator class creates a background thread in which the calls to <code>display()</code> are performed. After each drawable
  * has been redrawn, a brief pause is performed to avoid swamping the CPU, unless {@link #setRunAsFastAsPossible} has been called.
- * </P>
- */
+ * </P> */
 
 public class JoglAnimator {
 	volatile ArrayList/* <GLAutoDrawable> */drawables = new ArrayList();
@@ -98,42 +96,32 @@ public class JoglAnimator {
 		drawables = newList;
 	}
 
-	/**
-	 * Returns an iterator over the drawables managed by this Animator.
-	 */
+	/** Returns an iterator over the drawables managed by this Animator. */
 	public Iterator/* <GLAutoDrawable> */drawableIterator () {
 		return drawables.iterator();
 	}
 
-	/**
-	 * Sets a flag causing this Animator to ignore exceptions produced while redrawing the drawables. By default this flag is set
-	 * to false, causing any exception thrown to halt the Animator.
-	 */
+	/** Sets a flag causing this Animator to ignore exceptions produced while redrawing the drawables. By default this flag is set
+	 * to false, causing any exception thrown to halt the Animator. */
 	public void setIgnoreExceptions (boolean ignoreExceptions) {
 		this.ignoreExceptions = ignoreExceptions;
 	}
 
-	/**
-	 * Sets a flag indicating that when exceptions are being ignored by this Animator (see {@link #setIgnoreExceptions}), to print
-	 * the exceptions' stack traces for diagnostic information. Defaults to false.
-	 */
+	/** Sets a flag indicating that when exceptions are being ignored by this Animator (see {@link #setIgnoreExceptions}), to print
+	 * the exceptions' stack traces for diagnostic information. Defaults to false. */
 	public void setPrintExceptions (boolean printExceptions) {
 		this.printExceptions = printExceptions;
 	}
 
-	/**
-	 * Sets a flag in this Animator indicating that it is to run as fast as possible. By default there is a brief pause in the
-	 * animation loop which prevents the CPU from getting swamped. This method may not have an effect on subclasses.
-	 */
+	/** Sets a flag in this Animator indicating that it is to run as fast as possible. By default there is a brief pause in the
+	 * animation loop which prevents the CPU from getting swamped. This method may not have an effect on subclasses. */
 	public final void setRunAsFastAsPossible (boolean runFast) {
 		runAsFastAsPossible = runFast;
 	}
 
-	/**
-	 * Called every frame to cause redrawing of all of the GLAutoDrawables this Animator manages. Subclasses should call this to
+	/** Called every frame to cause redrawing of all of the GLAutoDrawables this Animator manages. Subclasses should call this to
 	 * get the most optimized painting behavior for the set of components this Animator manages, in particular when multiple
-	 * lightweight widgets are continually being redrawn.
-	 */
+	 * lightweight widgets are continually being redrawn. */
 	protected void display () {
 		Iterator iter = drawableIterator();
 		while (iter.hasNext()) {
@@ -211,18 +199,14 @@ public class JoglAnimator {
 		thread.start();
 	}
 
-	/**
-	 * Indicates whether this animator is currently running. This should only be used as a heuristic to applications because in
-	 * some circumstances the Animator may be in the process of shutting down and this method will still return true.
-	 */
+	/** Indicates whether this animator is currently running. This should only be used as a heuristic to applications because in
+	 * some circumstances the Animator may be in the process of shutting down and this method will still return true. */
 	public synchronized boolean isAnimating () {
 		return (thread != null);
 	}
 
-	/**
-	 * Stops this animator. In most situations this method blocks until completion, except when called from the animation thread
-	 * itself or in some cases from an implementation-internal thread like the AWT event queue thread.
-	 */
+	/** Stops this animator. In most situations this method blocks until completion, except when called from the animation thread
+	 * itself or in some cases from an implementation-internal thread like the AWT event queue thread. */
 	public synchronized void stop () {
 		shouldStop = true;
 		notifyAll();

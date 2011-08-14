@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.interpolators;
 
 import com.badlogic.gdx.scenes.scene2d.Interpolator;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * An {@link Interpolator} where the changes start backwards and than spring forward as the time progresses.
+/** An {@link Interpolator} where the changes start backwards and than spring forward as the time progresses.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public class AnticipateInterpolator implements Interpolator {
 
 	private static final float DEFAULT_TENSION = 2.0f;
 
 	private static final Pool<AnticipateInterpolator> pool = new Pool<AnticipateInterpolator>(4, 100) {
-		@Override protected AnticipateInterpolator newObject () {
+		@Override
+		protected AnticipateInterpolator newObject () {
 			return new AnticipateInterpolator();
 		}
 	};
@@ -39,30 +39,27 @@ public class AnticipateInterpolator implements Interpolator {
 		// hide from the world
 	}
 
-	/**
-	 * Gets a new {@link AnticipateInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link AnticipateInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * 
 	 * @param tension the tension controlling the rate spring effect of the animation
-	 * @return the obtained {@link AccelerateInterpolator}
-	 */
+	 * @return the obtained {@link AccelerateInterpolator} */
 	public static AnticipateInterpolator $ (float tension) {
 		AnticipateInterpolator inter = pool.obtain();
 		inter.tension = tension;
 		return inter;
 	}
 
-	/**
-	 * Gets a new {@link AnticipateInterpolator} from a maintained pool of {@link Interpolator}s.
+	/** Gets a new {@link AnticipateInterpolator} from a maintained pool of {@link Interpolator}s.
 	 * <p>
 	 * The initial tension is set to <code>{@value AnticipateInterpolator#DEFAULT_TENSION}</code>.
 	 * 
-	 * @return the obtained {@link AnticipateInterpolator}
-	 */
+	 * @return the obtained {@link AnticipateInterpolator} */
 	public static AnticipateInterpolator $ () {
 		return $(DEFAULT_TENSION);
 	}
 
-	@Override public void finished () {
+	@Override
+	public void finished () {
 		pool.free(this);
 	}
 
@@ -70,7 +67,8 @@ public class AnticipateInterpolator implements Interpolator {
 		return t * t * ((tension + 1) * t - tension);
 	}
 
-	@Override public Interpolator copy () {
+	@Override
+	public Interpolator copy () {
 		return $(tension);
 	}
 }

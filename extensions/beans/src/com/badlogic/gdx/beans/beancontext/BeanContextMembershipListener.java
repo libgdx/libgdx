@@ -17,13 +17,11 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextMembershipEvent;
-
 import java.util.EventListener;
 
 public interface BeanContextMembershipListener extends EventListener {
 
-    public void childrenAdded(BeanContextMembershipEvent bcme);
+	public void childrenAdded (BeanContextMembershipEvent bcme);
 
-    public void childrenRemoved(BeanContextMembershipEvent bcme);
+	public void childrenRemoved (BeanContextMembershipEvent bcme);
 }

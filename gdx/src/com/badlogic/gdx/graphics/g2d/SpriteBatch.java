@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.Gdx;
@@ -33,8 +34,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/**
- * <p>
+/** <p>
  * A SpriteBatch is used to draw 2D rectangles that reference a texture (region). The class will batch the drawing commands and
  * optimize them for processing by the GPU.
  * </p>
@@ -70,9 +70,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * A SpriteBatch has to be disposed if it is no longer used.
  * </p>
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class SpriteBatch implements Disposable {
 	private Mesh mesh;
 	private Mesh[] buffers;
@@ -107,17 +105,14 @@ public class SpriteBatch implements Disposable {
 	public int maxSpritesInBatch = 0;
 	private ShaderProgram customShader = null;
 
-	/**
-	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
+	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
-	 * respect to the screen resolution.
-	 */
+	 * respect to the screen resolution. */
 	public SpriteBatch () {
 		this(1000);
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
@@ -127,13 +122,12 @@ public class SpriteBatch implements Disposable {
 	 * The size parameter specifies the maximum size of a single batch in number of sprites
 	 * </p>
 	 * 
-	 * @param size the batch size in number of sprites
-	 */
+	 * @param size the batch size in number of sprites */
 	public SpriteBatch (int size) {
 		this.buffers = new Mesh[1];
 		this.buffers[0] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2,
-				ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -156,8 +150,7 @@ public class SpriteBatch implements Disposable {
 		if (Gdx.graphics.isGL20Available()) createShader();
 	}
 
-	/**
-	 * <p>
+	/** <p>
 	 * Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
 	 * point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect with
 	 * respect to the screen resolution.
@@ -168,14 +161,14 @@ public class SpriteBatch implements Disposable {
 	 * </p>
 	 * 
 	 * @param size the batch size in number of sprites
-	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
-	 */
+	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function. */
 	public SpriteBatch (int size, int buffers) {
 		this.buffers = new Mesh[buffers];
 
 		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
-				new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			this.buffers[i] = new Mesh(false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
+				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		}
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -230,18 +223,16 @@ public class SpriteBatch implements Disposable {
 		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
 	}
 
-	/**
-	 * Sets up the SpriteBatch for drawing. This will disable depth buffer writting. It enables
-	 * blending and texturing. If you have more texture units enabled than the first one you have to disable them before
-	 * calling this. Uses a screen coordinate system by default where everything is given in pixels. You can specify your own
-	 * projection and modelview matrices via {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}.
-	 */
+	/** Sets up the SpriteBatch for drawing. This will disable depth buffer writting. It enables blending and texturing. If you have
+	 * more texture units enabled than the first one you have to disable them before calling this. Uses a screen coordinate system
+	 * by default where everything is given in pixels. You can specify your own projection and modelview matrices via
+	 * {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */
 	public void begin () {
 		if (drawing) throw new IllegalStateException("you have to call SpriteBatch.end() first");
 		renderCalls = 0;
 
 		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.gl10;			
+			GL10 gl = Gdx.gl10;
 
 			gl.glDepthMask(false);
 			gl.glEnable(GL10.GL_TEXTURE_2D);
@@ -253,11 +244,11 @@ public class SpriteBatch implements Disposable {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
-			GL20 gl = Gdx.gl20;			
+			GL20 gl = Gdx.gl20;
 			gl.glDepthMask(false);
 			gl.glEnable(GL20.GL_TEXTURE_2D);
 
-			if(customShader != null) {
+			if (customShader != null) {
 				customShader.begin();
 				customShader.setUniformMatrix("u_proj", projectionMatrix);
 				customShader.setUniformMatrix("u_trans", transformMatrix);
@@ -273,58 +264,48 @@ public class SpriteBatch implements Disposable {
 		idx = 0;
 		lastTexture = null;
 		drawing = true;
-	}	
+	}
 
-	/**
-	 * Finishes off rendering. Enables depth writes, disables blending and texturing. Must always be called after a call to {@link #begin()}
-	 */
+	/** Finishes off rendering. Enables depth writes, disables blending and texturing. Must always be called after a call to
+	 * {@link #begin()} */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before end.");
 		if (idx > 0) renderMesh();
 		lastTexture = null;
 		idx = 0;
 		drawing = false;
-		
+
 		GLCommon gl = Gdx.gl;
 		gl.glDepthMask(true);
-		if(isBlendingEnabled())
-			gl.glDisable(GL10.GL_BLEND);
+		if (isBlendingEnabled()) gl.glDisable(GL10.GL_BLEND);
 		gl.glDisable(GL10.GL_TEXTURE_2D);
 
 		if (Gdx.graphics.isGL20Available()) {
-			if(customShader != null) 
+			if (customShader != null)
 				customShader.end();
 			else
-				shader.end();			
+				shader.end();
 		}
 	}
 
-	/**
-	 * Sets the color used to tint images when they are added to the SpriteBatch. Default is {@link Color#WHITE}.
-	 */
+	/** Sets the color used to tint images when they are added to the SpriteBatch. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		color = tint.toFloatBits();
 	}
 
-	/**
-	 * @see #setColor(Color)
-	 */
+	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
 		color = NumberUtils.intBitsToFloat(intBits & 0xfeffffff);
 	}
 
-	/**
-	 * @see #setColor(Color)
-	 * @see Color#toFloatBits()
-	 */
+	/** @see #setColor(Color)
+	 * @see Color#toFloatBits() */
 	public void setColor (float color) {
 		this.color = color;
 	}
 
-	/**
-	 * @return the rendering color of this SpriteBatch. Manipulating the returned instance has no effect.
-	 */
+	/** @return the rendering color of this SpriteBatch. Manipulating the returned instance has no effect. */
 	public Color getColor () {
 		int intBits = NumberUtils.floatToRawIntBits(color);
 		Color color = this.tempColor;
@@ -335,8 +316,7 @@ public class SpriteBatch implements Disposable {
 		return color;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
+	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The rectangle is offset by
 	 * originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle should be scaled around
 	 * originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around originX, originY. The
 	 * portion of the {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in
@@ -357,8 +337,7 @@ public class SpriteBatch implements Disposable {
 	 * @param srcWidth the source with in texels
 	 * @param srcHeight the source height in texels
 	 * @param flipX whether to flip the sprite horizontally
-	 * @param flipY whether to flip the sprite vertically
-	 */
+	 * @param flipY whether to flip the sprite vertically */
 	public void draw (Texture texture, float x, float y, float originX, float originY, float width, float height, float scaleX,
 		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -486,8 +465,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
+	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by srcX, srcY and srcWidth, srcHeight is used. These coordinates and sizes are given in texels. FlipX
 	 * and flipY specify whether the texture portion should be fliped horizontally or vertically.
 	 * 
@@ -501,8 +479,7 @@ public class SpriteBatch implements Disposable {
 	 * @param srcWidth the source with in texels
 	 * @param srcHeight the source height in texels
 	 * @param flipX whether to flip the sprite horizontally
-	 * @param flipY whether to flip the sprite vertically
-	 */
+	 * @param flipY whether to flip the sprite vertically */
 	public void draw (Texture texture, float x, float y, float width, float height, int srcX, int srcY, int srcWidth,
 		int srcHeight, boolean flipX, boolean flipY) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -558,8 +535,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
+	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by srcX, srcY and srcWidth, srcHeight are used. These coordinates and sizes are given in texels.
 	 * 
 	 * @param texture the Texture
@@ -568,8 +544,7 @@ public class SpriteBatch implements Disposable {
 	 * @param srcX the x-coordinate in texel space
 	 * @param srcY the y-coordinate in texel space
 	 * @param srcWidth the source with in texels
-	 * @param srcHeight the source height in texels
-	 */
+	 * @param srcHeight the source height in texels */
 	public void draw (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -612,8 +587,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
+	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
 	 * {@link Texture} given by u, v and u2, v2 are used. These coordinates and sizes are given in texture size percentage. The
 	 * rectangle will have the given tint {@link Color}.
 	 * 
@@ -621,8 +595,7 @@ public class SpriteBatch implements Disposable {
 	 * @param x the x-coordinate in screen space
 	 * @param y the y-coordinate in screen space
 	 * @param width the width in pixels
-	 * @param height the height in pixels
-	 */
+	 * @param height the height in pixels */
 	public void draw (Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -661,12 +634,10 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y having the width and height of the texture.
+	/** Draws a rectangle with the bottom left corner at x,y having the width and height of the texture.
 	 * @param texture the Texture
 	 * @param x the x-coordinate in screen space
-	 * @param y the y-coordinate in screen space
-	 */
+	 * @param y the y-coordinate in screen space */
 	public void draw (Texture texture, float x, float y) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -704,13 +675,11 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = 1;
 		vertices[idx++] = 1;
 	}
-	
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height.
-	 */
+
+	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. */
 	public void draw (Texture texture, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
-		
+
 		if (texture != lastTexture) {
 			renderMesh();
 			lastTexture = texture;
@@ -751,10 +720,8 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
-	 * u, v.
-	 */
+	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
+	 * u, v. */
 	public void draw (Texture texture, float[] spriteVertices, int offset, int length) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -769,16 +736,12 @@ public class SpriteBatch implements Disposable {
 		idx += length;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y having the width and height of the region.
-	 */
+	/** Draws a rectangle with the bottom left corner at x,y having the width and height of the region. */
 	public void draw (TextureRegion region, float x, float y) {
 		draw(region, x, y, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height.
-	 */
+	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. */
 	public void draw (TextureRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -823,12 +786,10 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
+	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
 	 * rectangle is offset by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle
 	 * should be scaled around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around
-	 * originX, originY.
-	 */
+	 * originX, originY. */
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -946,12 +907,10 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v;
 	}
 
-	/**
-	 * Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
+	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
 	 * rectangle is offset by originX, originY relative to the origin. Scale specifies the scaling factor by which the rectangle
 	 * should be scaled around originX, originY. Rotation specifies the angle of counter clockwise rotation of the rectangle around
-	 * originX, originY.
-	 */
+	 * originX, originY. */
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation, boolean clockwise) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
@@ -1085,9 +1044,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = v4;
 	}
 
-	/**
-	 * Causes any pending sprites to be rendered, without ending the SpriteBatch.
-	 */
+	/** Causes any pending sprites to be rendered, without ending the SpriteBatch. */
 	public void flush () {
 		renderMesh();
 	}
@@ -1111,7 +1068,7 @@ public class SpriteBatch implements Disposable {
 				gl20.glBlendFunc(blendSrcFunc, blendDstFunc);
 			}
 
-			if(customShader != null)
+			if (customShader != null)
 				mesh.render(customShader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
 			else
 				mesh.render(shader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
@@ -1132,101 +1089,83 @@ public class SpriteBatch implements Disposable {
 		mesh = buffers[currBufferIdx];
 	}
 
-	/**
-	 * Disables blending for drawing sprites. Does not disable blending for text rendering
-	 */
+	/** Disables blending for drawing sprites. Does not disable blending for text rendering */
 	public void disableBlending () {
 		renderMesh();
 		blendingDisabled = true;
 	}
 
-	/**
-	 * Enables blending for sprites
-	 */
+	/** Enables blending for sprites */
 	public void enableBlending () {
 		renderMesh();
 		blendingDisabled = false;
 	}
 
-	/**
-	 * Sets the blending function to be used when rendering sprites.
+	/** Sets the blending function to be used when rendering sprites.
 	 * 
 	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
-	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA
-	 */
+	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
 		renderMesh();
 		blendSrcFunc = srcFunc;
 		blendDstFunc = dstFunc;
 	}
 
-	/**
-	 * Disposes all resources associated with this SpriteBatch
-	 */
+	/** Disposes all resources associated with this SpriteBatch */
 	public void dispose () {
 		for (int i = 0; i < buffers.length; i++)
 			buffers[i].dispose();
 		if (shader != null) shader.dispose();
 	}
 
-	/**
-	 * Returns the current projection matrix. Changing this will result in undefined behaviour.
+	/** Returns the current projection matrix. Changing this will result in undefined behaviour.
 	 * 
-	 * @return the currently set projection matrix
-	 */
+	 * @return the currently set projection matrix */
 	public Matrix4 getProjectionMatrix () {
 		return projectionMatrix;
 	}
 
-	/**
-	 * Returns the current transform matrix. Changing this will result in undefined behaviour.
+	/** Returns the current transform matrix. Changing this will result in undefined behaviour.
 	 * 
-	 * @return the currently set transform matrix
-	 */
+	 * @return the currently set transform matrix */
 	public Matrix4 getTransformMatrix () {
 		return transformMatrix;
 	}
 
-	/**
-	 * Sets the projection matrix to be used by this SpriteBatch. Can only be set outside a {@link #begin()}/{@link #end()} block.
+	/** Sets the projection matrix to be used by this SpriteBatch. Can only be set outside a {@link #begin()}/{@link #end()} block.
 	 * 
-	 * @param projection the projection matrix
-	 */
+	 * @param projection the projection matrix */
 	public void setProjectionMatrix (Matrix4 projection) {
 		if (drawing) throw new GdxRuntimeException("Can't set the matrix within begin()/end() block");
 
 		projectionMatrix.set(projection);
 	}
 
-	/**
-	 * Sets the transform matrix to be used by this SpriteBatch. Can only be set outside a {@link #begin()}/{@link #end()} block.
+	/** Sets the transform matrix to be used by this SpriteBatch. Can only be set outside a {@link #begin()}/{@link #end()} block.
 	 * 
-	 * @param transform the transform matrix
-	 */
+	 * @param transform the transform matrix */
 	public void setTransformMatrix (Matrix4 transform) {
 		if (drawing) throw new GdxRuntimeException("Can't set the matrix within begin()/end() block");
 
 		transformMatrix.set(transform);
 	}
-	
-	/**
-	 * Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture coordinates attribute is called called "a_texCoords0", the
-	 * color attribute is called "a_color". See {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE} which gets 
-	 * "0" appened to indicate the use of the first texture unit.
-	 * The projection matrix is uploaded via a mat4 uniform called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined
-	 * transform and projection matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called "u_texture". 
+
+	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
+	 * coordinates attribute is called called "a_texCoords0", the color attribute is called "a_color". See
+	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
+	 * which gets "0" appened to indicate the use of the first texture unit. The projection matrix is uploaded via a mat4 uniform
+	 * called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined transform and projection
+	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
+	 * "u_texture".
 	 * 
 	 * Call this method with a null argument to use the default shader.
 	 * 
-	 * @param shader the {@link ShaderProgram} or null to use the default shader.
-	 */
-	public void setShader(ShaderProgram shader) {
-		customShader  = shader;
+	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
+	public void setShader (ShaderProgram shader) {
+		customShader = shader;
 	}
 
-	/**
-	 * @return whether blending for sprites is enabled
-	 */
+	/** @return whether blending for sprites is enabled */
 	public boolean isBlendingEnabled () {
 		return !blendingDisabled;
 	}

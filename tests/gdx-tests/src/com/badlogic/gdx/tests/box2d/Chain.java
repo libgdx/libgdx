@@ -39,7 +39,8 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
 public class Chain extends Box2DTest {
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		Body ground;
 
 		{

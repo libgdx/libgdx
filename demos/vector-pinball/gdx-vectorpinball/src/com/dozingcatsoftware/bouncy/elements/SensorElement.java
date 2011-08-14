@@ -14,15 +14,12 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * This FieldElement subclass is used to identify areas on the table that should cause custom behavior when the ball enters.
+/** This FieldElement subclass is used to identify areas on the table that should cause custom behavior when the ball enters.
  * SensorElements have no bodies and don't draw anything. The area they monitor can be a rectangle defined by the "rect" parameter
  * as a [xmin,ymin,xmax,ymax] list, a circle defined by the "center" and "radius" parameters. During every tick() invocation, a
  * sensor determines if any of the field's balls are within its area, and if so calls the field delegate's ballInSensorRange
  * method.
- * @author brian
- * 
- */
+ * @author brian */
 
 public class SensorElement extends FieldElement {
 
@@ -31,7 +28,8 @@ public class SensorElement extends FieldElement {
 	float cx, cy; // center for circular areas
 	float radiusSquared;
 
-	@Override public void finishCreate (Map params, World world) {
+	@Override
+	public void finishCreate (Map params, World world) {
 		if (params.containsKey("center") && params.containsKey("radius")) {
 			this.circular = true;
 			List centerPos = (List)params.get("center");
@@ -53,7 +51,8 @@ public class SensorElement extends FieldElement {
 		}
 	}
 
-	@Override public boolean shouldCallTick () {
+	@Override
+	public boolean shouldCallTick () {
 		return true;
 	}
 
@@ -71,7 +70,8 @@ public class SensorElement extends FieldElement {
 		return true;
 	}
 
-	@Override public void tick (Field field) {
+	@Override
+	public void tick (Field field) {
 		int len = field.getBalls().size();
 		for (int i = 0; i < len; i++) {
 			Body ball = field.getBalls().get(i);
@@ -82,11 +82,13 @@ public class SensorElement extends FieldElement {
 		}
 	}
 
-	@Override public Collection<Body> getBodies () {
+	@Override
+	public Collection<Body> getBodies () {
 		return Collections.EMPTY_SET;
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		// no UI
 	}
 

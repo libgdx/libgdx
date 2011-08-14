@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.jogl;
 
 import java.io.BufferedInputStream;
@@ -31,133 +32,151 @@ public class JoglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
 
-	JoglPreferences(String name) {
+	JoglPreferences (String name) {
 		this.name = name;
 		InputStream in = null;
 		try {
 			in = new BufferedInputStream(Gdx.files.external(name).read());
 			properties.loadFromXML(in);
-		} catch(Throwable t) {			
+		} catch (Throwable t) {
 		} finally {
-			if(in != null) try { in.close(); } catch(Exception e) { }
+			if (in != null) try {
+				in.close();
+			} catch (Exception e) {
+			}
 		}
-		
+
 		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override public void run() {
+			@Override
+			public void run () {
 				flush();
 			}
 		});
-	}	
-	
-	@Override public void putBoolean (String key, boolean val) {
+	}
+
+	@Override
+	public void putBoolean (String key, boolean val) {
 		properties.put(key, Boolean.toString(val));
 	}
 
-	@Override public void putInteger (String key, int val) {
+	@Override
+	public void putInteger (String key, int val) {
 		properties.put(key, Integer.toString(val));
 	}
 
-	@Override public void putLong (String key, long val) {
+	@Override
+	public void putLong (String key, long val) {
 		properties.put(key, Long.toString(val));
 	}
 
-	@Override public void putFloat (String key, float val) {
+	@Override
+	public void putFloat (String key, float val) {
 		properties.put(key, Float.toString(val));
 	}
 
-	@Override public void putString (String key, String val) {
+	@Override
+	public void putString (String key, String val) {
 		properties.put(key, val);
 	}
 
-	@Override public void put (Map<String, ?> vals) {
-		for(Entry<String, ?> val: vals.entrySet()) {
-			if(val.getValue() instanceof Boolean)
-				putBoolean(val.getKey(), (Boolean)val.getValue());
-			if(val.getValue() instanceof Integer)
-				putInteger(val.getKey(), (Integer)val.getValue());
-			if(val.getValue() instanceof Long)
-				putLong(val.getKey(), (Long)val.getValue());
-			if(val.getValue() instanceof String)
-				putString(val.getKey(), (String)val.getValue());
-			if(val.getValue() instanceof Float)
-				putFloat(val.getKey(), (Float)val.getValue());
+	@Override
+	public void put (Map<String, ?> vals) {
+		for (Entry<String, ?> val : vals.entrySet()) {
+			if (val.getValue() instanceof Boolean) putBoolean(val.getKey(), (Boolean)val.getValue());
+			if (val.getValue() instanceof Integer) putInteger(val.getKey(), (Integer)val.getValue());
+			if (val.getValue() instanceof Long) putLong(val.getKey(), (Long)val.getValue());
+			if (val.getValue() instanceof String) putString(val.getKey(), (String)val.getValue());
+			if (val.getValue() instanceof Float) putFloat(val.getKey(), (Float)val.getValue());
 		}
 	}
 
-	@Override public boolean getBoolean (String key) {
+	@Override
+	public boolean getBoolean (String key) {
 		return getBoolean(key, false);
 	}
 
-	@Override public int getInteger (String key) {
+	@Override
+	public int getInteger (String key) {
 		return getInteger(key, 0);
 	}
 
-	@Override public long getLong (String key) {
+	@Override
+	public long getLong (String key) {
 		return getLong(key, 0);
 	}
 
-	@Override public float getFloat (String key) {
+	@Override
+	public float getFloat (String key) {
 		return getFloat(key, 0);
 	}
 
-	@Override public String getString (String key) {
+	@Override
+	public String getString (String key) {
 		return getString(key, "");
 	}
 
-	@Override public boolean getBoolean (String key, boolean defValue) {
+	@Override
+	public boolean getBoolean (String key, boolean defValue) {
 		return Boolean.parseBoolean(properties.getProperty(key, Boolean.toString(defValue)));
 	}
 
-	@Override public int getInteger (String key, int defValue) {
+	@Override
+	public int getInteger (String key, int defValue) {
 		return Integer.parseInt(properties.getProperty(key, Integer.toString(defValue)));
 	}
 
-	@Override public long getLong (String key, long defValue) {
+	@Override
+	public long getLong (String key, long defValue) {
 		return Long.parseLong(properties.getProperty(key, Long.toString(defValue)));
 	}
 
-	@Override public float getFloat (String key, float defValue) {
+	@Override
+	public float getFloat (String key, float defValue) {
 		return Float.parseFloat(properties.getProperty(key, Float.toString(defValue)));
 	}
 
-	@Override public String getString (String key, String defValue) {
+	@Override
+	public String getString (String key, String defValue) {
 		return properties.getProperty(key, defValue);
 	}
 
-	@Override public Map<String, ?> get () {
+	@Override
+	public Map<String, ?> get () {
 		Map<String, Object> map = new HashMap<String, Object>();
-		for(Entry<Object, Object> val: properties.entrySet()) {
-			if(val.getValue() instanceof Boolean)
-				map.put((String)val.getKey(), (Boolean)Boolean.parseBoolean((String)val.getValue()));				
-			if(val.getValue() instanceof Integer)
-				map.put((String)val.getKey(), (Integer)Integer.parseInt((String)val.getValue()));
-			if(val.getValue() instanceof Long)
-				map.put((String)val.getKey(), (Long)Long.parseLong((String)val.getValue()));
-			if(val.getValue() instanceof String)
-				map.put((String)val.getKey(), (String)val.getValue());
-			if(val.getValue() instanceof Float)
-				map.put((String)val.getKey(), (Float)Float.parseFloat((String)val.getValue()));
+		for (Entry<Object, Object> val : properties.entrySet()) {
+			if (val.getValue() instanceof Boolean)
+				map.put((String)val.getKey(), (Boolean)Boolean.parseBoolean((String)val.getValue()));
+			if (val.getValue() instanceof Integer) map.put((String)val.getKey(), (Integer)Integer.parseInt((String)val.getValue()));
+			if (val.getValue() instanceof Long) map.put((String)val.getKey(), (Long)Long.parseLong((String)val.getValue()));
+			if (val.getValue() instanceof String) map.put((String)val.getKey(), (String)val.getValue());
+			if (val.getValue() instanceof Float) map.put((String)val.getKey(), (Float)Float.parseFloat((String)val.getValue()));
 		}
-			
+
 		return map;
 	}
 
-	@Override public boolean contains (String key) {
+	@Override
+	public boolean contains (String key) {
 		return properties.containsKey(key);
 	}
 
-	@Override public void clear () {
+	@Override
+	public void clear () {
 		properties.clear();
 	}
-	
-	@Override public void flush () {
+
+	@Override
+	public void flush () {
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(Gdx.files.external(JoglPreferences.this.name).write(false));
 			properties.storeToXML(out, null);
-		} catch(Throwable t) {					
+		} catch (Throwable t) {
 		} finally {
-			if(out != null) try { out.close(); } catch(Exception e) { }
+			if (out != null) try {
+				out.close();
+			} catch (Exception e) {
+			}
 		}
 	}
 }

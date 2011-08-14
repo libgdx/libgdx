@@ -17,9 +17,7 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextChild;
-
 public interface BeanContextProxy {
 
-    public BeanContextChild getBeanContextProxy();
+	public BeanContextChild getBeanContextProxy ();
 }

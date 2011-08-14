@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
@@ -16,12 +15,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "tangent")
 public class Tangent {
 
-    @XmlAttribute(required = true)    
-    public float x;
-    @XmlAttribute(required = true)    
-    public float y;
-    @XmlAttribute(required = true)    
-    public float z;
-    @XmlAttribute    
-    public float w;   
+	@XmlAttribute(required = true)
+	public float x;
+	@XmlAttribute(required = true)
+	public float y;
+	@XmlAttribute(required = true)
+	public float z;
+	@XmlAttribute
+	public float w;
 }

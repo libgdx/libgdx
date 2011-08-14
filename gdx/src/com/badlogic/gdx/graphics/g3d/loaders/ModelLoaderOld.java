@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.loaders;
 
 import java.io.InputStream;
@@ -20,20 +21,15 @@ import java.io.InputStream;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 
-/**
- * A class for loading various model formats such as Wavefront OBJ. Ties in all the loaders from the loaders package.
+/** A class for loading various model formats such as Wavefront OBJ. Ties in all the loaders from the loaders package.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class ModelLoaderOld {
-	/**
-	 * Loads a Wavefront OBJ file from the given InputStream. The OBJ file must only contain triangulated meshes. Materials are
+	/** Loads a Wavefront OBJ file from the given InputStream. The OBJ file must only contain triangulated meshes. Materials are
 	 * ignored.
 	 * 
 	 * @param in the InputStream
-	 * @return a Mesh holding the OBJ data or null in case something went wrong.
-	 */
+	 * @return a Mesh holding the OBJ data or null in case something went wrong. */
 	public static Mesh loadObj (InputStream in) {
 		return ObjLoader.loadObj(in);
 	}

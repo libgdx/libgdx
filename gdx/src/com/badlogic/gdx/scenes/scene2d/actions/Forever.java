@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -21,7 +22,8 @@ import com.badlogic.gdx.scenes.scene2d.TemporalAction;
 
 public class Forever extends TemporalAction {
 	static final ActionResetingPool<Forever> pool = new ActionResetingPool<Forever>(4, 100) {
-		@Override protected Forever newObject () {
+		@Override
+		protected Forever newObject () {
 			return new Forever();
 		}
 	};
@@ -32,12 +34,14 @@ public class Forever extends TemporalAction {
 		return forever;
 	}
 
-	@Override public void setTarget (Actor actor) {
+	@Override
+	public void setTarget (Actor actor) {
 		action.setTarget(actor);
 		target = actor;
 	}
 
-	@Override public void act (float delta) {
+	@Override
+	public void act (float delta) {
 		action.act(delta);
 		if (action.isDone()) {
 			Action oldAction = action;
@@ -47,21 +51,25 @@ public class Forever extends TemporalAction {
 		}
 	}
 
-	@Override public boolean isDone () {
+	@Override
+	public boolean isDone () {
 		return false;
 	}
 
-	@Override public void finish () {
+	@Override
+	public void finish () {
 		pool.free(this);
 		action.finish();
 		super.finish();
 	}
 
-	@Override public Action copy () {
+	@Override
+	public Action copy () {
 		return $(action.copy());
 	}
 
-	@Override public Actor getTarget () {	
+	@Override
+	public Actor getTarget () {
 		return target;
 	}
 }

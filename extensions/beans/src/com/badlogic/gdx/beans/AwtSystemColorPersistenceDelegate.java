@@ -19,11 +19,11 @@ package com.badlogic.gdx.beans;
 
 import java.awt.SystemColor;
 
-class AwtSystemColorPersistenceDelegate extends
-		StaticFieldPersistenceDelegate {
-	public AwtSystemColorPersistenceDelegate() {
+class AwtSystemColorPersistenceDelegate extends StaticFieldPersistenceDelegate {
+	public AwtSystemColorPersistenceDelegate () {
 		super();
 	}
+
 	static {
 		init(SystemColor.class);
 	}

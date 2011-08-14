@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.twl;
 
 import java.io.File;
@@ -39,8 +40,7 @@ import de.matthiasmann.twl.GUI;
 import de.matthiasmann.twl.Widget;
 import de.matthiasmann.twl.theme.ThemeManager;
 
-/**
- * Convenience class for using TWL. This provides all the basics sufficient for most UIs. TWL can be used without this class if
+/** Convenience class for using TWL. This provides all the basics sufficient for most UIs. TWL can be used without this class if
  * more complex configurations are required (eg, multiple GUI instances).<br>
  * <br>
  * This class provides a single {@link GUI} instance with a root pane set to a widget that takes up the whole screen.
@@ -54,8 +54,7 @@ import de.matthiasmann.twl.theme.ThemeManager;
  * to use {@link InputMultiplexer} to avoid dispatching events that TWL handled to your application.<br>
  * <br>
  * If an instance of this call will no longer be used, {@link #dispose()} must be called to release resources.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class TWL implements InputProcessor {
 	private final GdxRenderer renderer;
 	private final GUI gui;
@@ -63,17 +62,13 @@ public class TWL implements InputProcessor {
 	private boolean mouseDown, ignoreMouse, lastPressConsumed;
 	public Widget root;
 
-	/**
-	 * Creates a new TWL instance with the specified theme file. The specified widget is added to the root pane.
-	 */
+	/** Creates a new TWL instance with the specified theme file. The specified widget is added to the root pane. */
 	public TWL (SpriteBatch batch, String themeFile, FileType fileType, Widget widget) {
 		this(batch, themeFile, fileType);
 		setWidget(widget);
 	}
 
-	/**
-	 * Creates a new TWL instance with the specified theme file.
-	 */
+	/** Creates a new TWL instance with the specified theme file. */
 	public TWL (SpriteBatch batch, String themeFile, FileType fileType) {
 		renderer = new GdxRenderer(batch);
 
@@ -95,33 +90,25 @@ public class TWL implements InputProcessor {
 		}
 	}
 
-	/**
-	 * Returns the GUI instance, which is the root of the TWL UI hierachy and manages timing, inputs, etc.
-	 */
+	/** Returns the GUI instance, which is the root of the TWL UI hierachy and manages timing, inputs, etc. */
 	public GUI getGUI () {
 		return gui;
 	}
 
-	/**
-	 * Sets the widget in the GUI's root pane. By default the root pane takes up the whole screen.
-	 * @param widget If null, this method is equivalent to {@link #clear()}.
-	 */
+	/** Sets the widget in the GUI's root pane. By default the root pane takes up the whole screen.
+	 * @param widget If null, this method is equivalent to {@link #clear()}. */
 	public void setWidget (Widget widget) {
 		Widget root = gui.getRootPane();
 		root.removeAllChildren();
 		if (widget != null) root.add(widget);
 	}
 
-	/**
-	 * Removes all widgets from the GUI's root pane. This effectively means that no TWL UI will be drawn.
-	 */
+	/** Removes all widgets from the GUI's root pane. This effectively means that no TWL UI will be drawn. */
 	public void clear () {
 		gui.getRootPane().removeAllChildren();
 	}
 
-	/**
-	 * Draws the TWL UI.
-	 */
+	/** Draws the TWL UI. */
 	public void render () {
 		GUI gui = this.gui;
 		int viewWidth = Gdx.graphics.getWidth();
@@ -318,11 +305,9 @@ public class TWL implements InputProcessor {
 		return Event.KEY_NONE;
 	}
 
-	/**
-	 * Returns a URL to a theme file, which can be used with
+	/** Returns a URL to a theme file, which can be used with
 	 * {@link ThemeManager#createThemeManager(URL, de.matthiasmann.twl.renderer.Renderer) ThemeManager} to create a theme for
-	 * {@link GUI#applyTheme(ThemeManager)}. This is only needed if not using the {@link TWL} class to make use of TWL.
-	 */
+	 * {@link GUI#applyTheme(ThemeManager)}. This is only needed if not using the {@link TWL} class to make use of TWL. */
 	static public URL getThemeURL (String themeFile, final FileType fileType) throws MalformedURLException {
 		File file = new File(themeFile);
 		final File themeRoot = file.getParentFile();

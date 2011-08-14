@@ -14,22 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.badlogic.gdx.beans;
 
 import java.awt.ScrollPane;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import org.apache.harmony.beans.BeansUtils;
 
 class AwtScrollPanePersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        return new Expression(oldInstance, oldInstance.getClass(),
-                BeansUtils.NEW,
-                new Object[] { ((ScrollPane) oldInstance)
-                        .getScrollbarDisplayPolicy() });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		return new Expression(oldInstance, oldInstance.getClass(), BeansUtils.NEW,
+			new Object[] {((ScrollPane)oldInstance).getScrollbarDisplayPolicy()});
+	}
 }

@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
-/**
- * A fixture definition is used to create a fixture. This class defines an abstract fixture definition. You can reuse fixture
+/** A fixture definition is used to create a fixture. This class defines an abstract fixture definition. You can reuse fixture
  * definitions safely.
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class FixtureDef {
-	/**
-	 * The shape, this must be set. The shape will be cloned, so you can create the shape on the stack.
-	 */
+	/** The shape, this must be set. The shape will be cloned, so you can create the shape on the stack. */
 	public Shape shape;
 
 	/** The friction coefficient, usually in the range [0,1]. **/
@@ -36,9 +32,7 @@ public class FixtureDef {
 	/** The density, usually in kg/m^2. **/
 	public float density = 0;
 
-	/**
-	 * A sensor shape collects contact information but never generates a collision response.
-	 */
+	/** A sensor shape collects contact information but never generates a collision response. */
 	public boolean isSensor = false;
 
 	/** Contact filtering data. **/

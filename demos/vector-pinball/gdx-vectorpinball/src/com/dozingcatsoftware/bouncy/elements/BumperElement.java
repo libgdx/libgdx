@@ -14,10 +14,8 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * This FieldElement subclass represents a bumper that applies an impulse to a ball when it hits. The impulse magnitude is
- * controlled by the "kick" parameter in the configuration map.
- */
+/** This FieldElement subclass represents a bumper that applies an impulse to a ball when it hits. The impulse magnitude is
+ * controlled by the "kick" parameter in the configuration map. */
 
 public class BumperElement extends FieldElement {
 
@@ -39,11 +37,13 @@ public class BumperElement extends FieldElement {
 		pegBodySet = Collections.singleton(pegBody);
 	}
 
-	@Override public Collection getBodies () {
+	@Override
+	public Collection getBodies () {
 		return pegBodySet;
 	}
 
-	@Override public boolean shouldCallTick () {
+	@Override
+	public boolean shouldCallTick () {
 		// needs to call tick to decrement flash counter (but can use superclass tick() implementation)
 		return true;
 	}
@@ -59,7 +59,8 @@ public class BumperElement extends FieldElement {
 		return new Vector2(ix * scale, iy * scale);
 	}
 
-	@Override public void handleCollision (Body ball, Body bodyHit, Field field) {
+	@Override
+	public void handleCollision (Body ball, Body bodyHit, Field field) {
 		Vector2 impulse = this.impulseForBall(ball);
 		if (impulse != null) {
 			ball.applyLinearImpulse(impulse, ball.getWorldCenter());
@@ -67,7 +68,8 @@ public class BumperElement extends FieldElement {
 		}
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		renderer.fillCircle(cx, cy, radius, redColorComponent(0), greenColorComponent(0), blueColorComponent(255));
 	}
 }

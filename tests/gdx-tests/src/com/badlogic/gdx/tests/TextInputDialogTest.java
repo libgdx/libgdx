@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -26,38 +27,37 @@ public class TextInputDialogTest extends GdxTest {
 	String message;
 	SpriteBatch batch;
 	BitmapFont font;
-	
-	public void create() {
+
+	public void create () {
 		message = "Touch screen for dialog";
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 	}
-	
-	public void render() {
+
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.draw(batch, message, 10, 40);
 		batch.end();
-		
-		if(Gdx.input.justTouched()) {
+
+		if (Gdx.input.justTouched()) {
 			Gdx.input.getTextInput(new TextInputListener() {
 				@Override
-				public void input(String text) {
+				public void input (String text) {
 					message = "message: " + text + ", touch screen for new dialog";
 				}
-				
+
 				@Override
-				public void canceled() {
+				public void canceled () {
 					message = "cancled by user";
 				}
 			}, "enter something funny", "funny");
 		}
 	}
-	
+
 	@Override
-	public boolean needsGL20() {
+	public boolean needsGL20 () {
 		return false;
 	}
-	
-	
+
 }

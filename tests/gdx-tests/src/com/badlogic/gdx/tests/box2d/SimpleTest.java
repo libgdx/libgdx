@@ -36,7 +36,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class SimpleTest extends Box2DTest {
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		// next we create a static ground platform. This platform
 		// is not moveable and will not react to any influences from
 		// outside. It will however influence other bodies. First we

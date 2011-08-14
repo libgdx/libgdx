@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.keyframed;
 
 import com.badlogic.gdx.graphics.g3d.Animation;
 
-/**
- * 
- * @author Dave Clayton <contact@redskyforge.com>
- *
- */
+/** @author Dave Clayton <contact@redskyforge.com> */
 public class KeyframeAnimation extends Animation {
 	public String name;
 	public Keyframe[] keyframes;
 	public float length;
 	public float sampleRate;
 	public int refs;
-	
-	public KeyframeAnimation(String name, int frames, float length, float sampleRate)
-	{
+
+	public KeyframeAnimation (String name, int frames, float length, float sampleRate) {
 		this.name = name;
 		this.keyframes = new Keyframe[frames];
 		this.length = length;
@@ -39,22 +35,20 @@ public class KeyframeAnimation extends Animation {
 	}
 
 	@Override
-	public float getLength() {
+	public float getLength () {
 		return length;
 	}
 
 	@Override
-	public int getNumFrames() {
+	public int getNumFrames () {
 		return keyframes.length;
 	}
-	
-	public void addRef()
-	{
+
+	public void addRef () {
 		refs++;
 	}
-	
-	public int removeRef()
-	{
+
+	public int removeRef () {
 		return --refs;
 	}
 }

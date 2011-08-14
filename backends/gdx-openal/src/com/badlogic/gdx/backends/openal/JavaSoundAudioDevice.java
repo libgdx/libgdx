@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import javax.sound.sampled.AudioFormat;
@@ -22,9 +23,7 @@ import javax.sound.sampled.SourceDataLine;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * @author mzechner
- */
+/** @author mzechner */
 public class JavaSoundAudioDevice implements AudioDevice {
 	private SourceDataLine line;
 	private final boolean isMono;
@@ -58,7 +57,7 @@ public class JavaSoundAudioDevice implements AudioDevice {
 		for (int i = offset, j = 0; i < offset + numSamples; i++, j += 2) {
 			short value = samples[i];
 			bytes[j] = (byte)(value & 0xff);
-			bytes[j+1] = (byte)(value >> 8);
+			bytes[j + 1] = (byte)(value >> 8);
 		}
 
 		int writtenBytes = line.write(bytes, 0, numSamples * 2);
@@ -83,7 +82,8 @@ public class JavaSoundAudioDevice implements AudioDevice {
 			writtenBytes += line.write(bytes, writtenBytes, numSamples * 2 - writtenBytes);
 	}
 
-	@Override public int getLatency () {
+	@Override
+	public int getLatency () {
 		return 0;
 	}
 }

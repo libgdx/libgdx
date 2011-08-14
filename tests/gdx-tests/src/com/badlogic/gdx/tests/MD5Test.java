@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -39,7 +40,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 	SpriteBatch batch;
 	BitmapFont font;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Gdx.app.log("MD5 Test", "created");
 		model = MD5Loader.loadModel(Gdx.files.internal("data/zfat.md5mesh").read(), false);
 		anim = MD5Loader.loadAnimation(Gdx.files.internal("data/walk1.md5anim").read());
@@ -47,7 +49,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		skeleton.joints = new float[anim.frames[0].joints.length];
 		animInfo = new MD5AnimationInfo(anim.frames.length, anim.secondsPerFrame);
 		renderer = new MD5Renderer(model, false, true);
-		renderer.setSkeleton(model.baseSkeleton);		
+		renderer.setSkeleton(model.baseSkeleton);
 
 		// long start = System.nanoTime();
 		// for( int i = 0; i < 100000; i++ )
@@ -56,9 +58,9 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		// 1000000000.0 );
 
 		camera = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(0, 25, 100);		
+		camera.position.set(0, 25, 100);
 		camera.near = 1;
-		camera.far = 1000;		
+		camera.far = 1000;
 
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -69,7 +71,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 
 	float angle = 0;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
@@ -111,7 +114,8 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		batch.end();
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		batch.dispose();
 		renderer.dispose();
 		font.dispose();
@@ -123,40 +127,49 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		System.gc();
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		renderer.setUseJni(!renderer.isJniUsed());
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 

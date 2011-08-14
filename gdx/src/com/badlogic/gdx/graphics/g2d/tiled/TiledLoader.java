@@ -27,16 +27,12 @@ import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Xml;
 
-/**
- * Loads a Tiled Map from a tmx file
- * @author David Fraska
- * */
+/** Loads a Tiled Map from a tmx file
+ * @author David Fraska */
 public class TiledLoader {
 
-	/**
-	 * Loads a Tiled Map from a tmx file
-	 * @param tmxFile the map's tmx file
-	 * */
+	/** Loads a Tiled Map from a tmx file
+	 * @param tmxFile the map's tmx file */
 	public static TiledMap createMap (FileHandle tmxFile) {
 
 		final TiledMap map;
@@ -68,7 +64,8 @@ public class TiledLoader {
 
 				int dataCounter = 0, row, col;
 
-				@Override protected void open (String name) {
+				@Override
+				protected void open (String name) {
 					currBranch.push(name);
 
 					if ("layer".equals(name)) {
@@ -104,7 +101,8 @@ public class TiledLoader {
 					}
 				}
 
-				@Override protected void attribute (String name, String value) {
+				@Override
+				protected void attribute (String name, String value) {
 					String element = currBranch.peek();
 
 					if ("layer".equals(element)) {
@@ -245,10 +243,9 @@ public class TiledLoader {
 							if ("gid".equals(name)) {
 								col = dataCounter % currLayerWidth;
 								row = dataCounter / currLayerWidth;
-								if(row < currLayerHeight){
+								if (row < currLayerHeight) {
 									currLayer.tiles[row][col] = Integer.parseInt(value);
-									}
-								else{
+								} else {
 									Gdx.app.log("TiledLoader", "Warning: extra XML gid values ignored! Your map is likely corrupt!");
 								}
 								dataCounter++;
@@ -274,13 +271,15 @@ public class TiledLoader {
 					}
 				}
 
-				@Override protected void text (String text) {
+				@Override
+				protected void text (String text) {
 					if (awaitingData) {
 						dataString = dataString.concat(text);
 					}
 				}
 
-				@Override protected void close () {
+				@Override
+				protected void close () {
 					String element = currBranch.pop();
 
 					if ("layer".equals(element)) {
@@ -318,7 +317,7 @@ public class TiledLoader {
 						// decode and uncompress the data
 						if ("base64".equals(encoding)) {
 							if (dataString == null | "".equals(dataString.trim())) return;
-							
+
 							data = Base64Coder.decode(dataString.trim());
 
 							if ("gzip".equals(compression)) {

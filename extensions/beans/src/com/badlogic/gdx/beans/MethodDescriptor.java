@@ -17,97 +17,76 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.FeatureDescriptor;
-import com.badlogic.gdx.beans.MethodDescriptor;
-import com.badlogic.gdx.beans.ParameterDescriptor;
-
 import java.lang.reflect.Method;
 
-/**
- * Describes a bean's method.
- */
+/** Describes a bean's method. */
 public class MethodDescriptor extends FeatureDescriptor {
 
-    private Method method;
+	private Method method;
 
-    private ParameterDescriptor[] parameterDescriptors;
+	private ParameterDescriptor[] parameterDescriptors;
 
-    /**
-     * <p>
-     * Constructs an instance with the given {@link Method} and
-     * {@link ParameterDescriptor}s. The {@link #getName()} is set as the name
-     * of the <code>method</code> passed.
-     * </p>
-     * 
-     * @param method
-     *            The Method to set.
-     * @param parameterDescriptors
-     *            An array of parameter descriptors.
-     */
-    public MethodDescriptor(Method method,
-            ParameterDescriptor[] parameterDescriptors) {
-        super();
+	/** <p>
+	 * Constructs an instance with the given {@link Method} and {@link ParameterDescriptor}s. The {@link #getName()} is set as the
+	 * name of the <code>method</code> passed.
+	 * </p>
+	 * 
+	 * @param method The Method to set.
+	 * @param parameterDescriptors An array of parameter descriptors. */
+	public MethodDescriptor (Method method, ParameterDescriptor[] parameterDescriptors) {
+		super();
 
-        if (method == null) {
-            throw new NullPointerException();
-        }
-        this.method = method;
-        this.parameterDescriptors = parameterDescriptors;
+		if (method == null) {
+			throw new NullPointerException();
+		}
+		this.method = method;
+		this.parameterDescriptors = parameterDescriptors;
 
-        setName(method.getName());
-    }
+		setName(method.getName());
+	}
 
-    /**
-     * <p>
-     * Constructs an instance with the given {@link Method}. The
-     * {@link #getName()} is set as the name of the <code>method</code>
-     * passed.
-     * </p>
-     * 
-     * @param method
-     *            The Method to set.
-     */
-    public MethodDescriptor(Method method) {
-        super();
+	/** <p>
+	 * Constructs an instance with the given {@link Method}. The {@link #getName()} is set as the name of the <code>method</code>
+	 * passed.
+	 * </p>
+	 * 
+	 * @param method The Method to set. */
+	public MethodDescriptor (Method method) {
+		super();
 
-        if (method == null) {
-            throw new NullPointerException();
-        }
-        this.method = method;
+		if (method == null) {
+			throw new NullPointerException();
+		}
+		this.method = method;
 
-        setName(method.getName());
-    }
+		setName(method.getName());
+	}
 
-    /**
-     * <p>
-     * Gets the method.
-     * </p>
-     * 
-     * @return A {@link Method} instance.
-     */
-    public Method getMethod() {
-        return method;
-    }
+	/** <p>
+	 * Gets the method.
+	 * </p>
+	 * 
+	 * @return A {@link Method} instance. */
+	public Method getMethod () {
+		return method;
+	}
 
-    /**
-     * <p>
-     * Gets the parameter descriptors.
-     * </p>
-     * 
-     * @return An array of {@link ParameterDescriptor} instance or
-     *         <code>null</code>.
-     */
-    public ParameterDescriptor[] getParameterDescriptors() {
-        return parameterDescriptors;
-    }
-    
-    void merge(MethodDescriptor anotherMethod){
-        super.merge(anotherMethod);
-        if(method == null){
-            method = anotherMethod.method;
-        }
-        if(parameterDescriptors == null){
-            parameterDescriptors = anotherMethod.parameterDescriptors;
-        }
-    }
+	/** <p>
+	 * Gets the parameter descriptors.
+	 * </p>
+	 * 
+	 * @return An array of {@link ParameterDescriptor} instance or <code>null</code>. */
+	public ParameterDescriptor[] getParameterDescriptors () {
+		return parameterDescriptors;
+	}
+
+	void merge (MethodDescriptor anotherMethod) {
+		super.merge(anotherMethod);
+		if (method == null) {
+			method = anotherMethod.method;
+		}
+		if (parameterDescriptors == null) {
+			parameterDescriptors = anotherMethod.parameterDescriptors;
+		}
+	}
 }

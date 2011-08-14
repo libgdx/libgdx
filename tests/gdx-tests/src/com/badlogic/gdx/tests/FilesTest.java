@@ -37,7 +37,8 @@ public class FilesTest extends GdxTest {
 	BitmapFont font;
 	SpriteBatch batch;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
@@ -338,14 +339,16 @@ public class FilesTest extends GdxTest {
 		throw new RuntimeException();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 

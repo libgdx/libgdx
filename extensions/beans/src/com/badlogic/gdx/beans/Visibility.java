@@ -19,11 +19,11 @@ package com.badlogic.gdx.beans;
 
 public interface Visibility {
 
-    public boolean needsGui();
+	public boolean needsGui ();
 
-    public boolean avoidingGui();
+	public boolean avoidingGui ();
 
-    public void okToUseGui();
+	public void okToUseGui ();
 
-    public void dontUseGui();
+	public void dontUseGui ();
 }

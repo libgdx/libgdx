@@ -34,15 +34,18 @@ final class AndroidSound implements Sound {
 		this.soundId = soundId;
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		soundPool.unload(soundId);
 	}
 
-	@Override public void play () {
+	@Override
+	public void play () {
 		play(1);
 	}
 
-	@Override public void play (float volume) {
+	@Override
+	public void play (float volume) {
 		if (streamIds.size == 8) streamIds.pop();
 		streamIds.add(soundPool.play(soundId, volume, volume, 1, 0, 1));
 	}

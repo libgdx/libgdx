@@ -13,10 +13,8 @@
 
 package com.badlogic.gdx.graphics.g2d.tiled;
 
-/**
- * Contains a Tiled Map tile set
- * @author David Fraska
- * */
+/** Contains a Tiled Map tile set
+ * @author David Fraska */
 public class TileSet {
 	public int firstgid;
 	public int tileWidth;
@@ -25,16 +23,12 @@ public class TileSet {
 	public String imageName;
 	public String name;
 
-	/**
-	 * Contains a Tiled Map tile set
-	 */
+	/** Contains a Tiled Map tile set */
 	protected TileSet () {
 	}
 
-	/**
-	 * Copy constructor
-	 * @param set The set to be copied
-	 */
+	/** Copy constructor
+	 * @param set The set to be copied */
 	protected TileSet (TileSet set) {
 		this.firstgid = set.firstgid;
 		this.tileWidth = set.tileWidth;

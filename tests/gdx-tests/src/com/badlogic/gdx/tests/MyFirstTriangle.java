@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -25,7 +26,8 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class MyFirstTriangle extends GdxTest {
 	private Mesh mesh;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		if (mesh == null) {
 			mesh = new Mesh(true, 3, 3, new VertexAttribute(Usage.Position, 3, "a_position"));
 
@@ -34,14 +36,18 @@ public class MyFirstTriangle extends GdxTest {
 		}
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 	}
 
 	int renderCount = 0;
-	@Override public void render () {
+
+	@Override
+	public void render () {
 		renderCount++;
 		Gdx.app.log("RenderCountTest", String.valueOf(renderCount));
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -50,16 +56,19 @@ public class MyFirstTriangle extends GdxTest {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			Gdx.app.log("RenderCountTest", e.toString());
-		}	
+		}
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

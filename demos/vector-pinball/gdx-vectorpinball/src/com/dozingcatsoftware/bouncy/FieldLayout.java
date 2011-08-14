@@ -143,10 +143,8 @@ public class FieldLayout {
 		return height;
 	}
 
-	/**
-	 * Returns the desired ratio between real world time and simulation time. The application should adjust the frame rate and/or
-	 * time interval passed to Field.tick() to keep the ratio as close to this value as possible.
-	 */
+	/** Returns the desired ratio between real world time and simulation time. The application should adjust the frame rate and/or
+	 * time interval passed to Field.tick() to keep the ratio as close to this value as possible. */
 	public float getTargetTimeRatio () {
 		return targetTimeRatio;
 	}

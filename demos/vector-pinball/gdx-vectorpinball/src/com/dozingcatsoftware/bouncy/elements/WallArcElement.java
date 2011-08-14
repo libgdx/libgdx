@@ -12,8 +12,7 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * This FieldElement subclass approximates a circular wall with a series of straight wall segments whose endpoints lie on a circle
+/** This FieldElement subclass approximates a circular wall with a series of straight wall segments whose endpoints lie on a circle
  * or ellipse. These elements are defined in the layout JSON as follows: { "class": "WallArcElement", "center": [5.5, 10], //
  * center of circle or ellipse "xradius": 2.5, // radius in the horizontal direction "yradius": 2, // radius in the y direction
  * "minangle": 45, // starting angle in degrees, 0 is to the right of the center, 90 is up. "maxangle": 135, // ending angle in
@@ -22,8 +21,7 @@ import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
  * 
  * For circular walls, the "radius" attribute can be used instead of xradius and yradius.
  * 
- * @author brian
- */
+ * @author brian */
 
 public class WallArcElement extends FieldElement {
 
@@ -64,11 +62,13 @@ public class WallArcElement extends FieldElement {
 		}
 	}
 
-	@Override public Collection getBodies () {
+	@Override
+	public Collection getBodies () {
 		return wallBodies;
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		int len = lineSegments.size();
 		for (int i = 0; i < len; i++) {
 			float[] segment = lineSegments.get(i);

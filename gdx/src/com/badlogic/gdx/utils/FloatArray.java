@@ -13,51 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 import java.util.Arrays;
 
 import com.badlogic.gdx.math.MathUtils;
 
-/**
- * A resizable, ordered or unordered float array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class
+/** A resizable, ordered or unordered float array. Avoids the boxing that occurs with ArrayList<Float>. If unordered, this class
  * avoids a memory copy when removing elements (the last element is moved to the removed element's position).
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class FloatArray {
 	public float[] items;
 	public int size;
 	public boolean ordered;
 
-	/**
-	 * Creates an ordered array with a capacity of 16.
-	 */
+	/** Creates an ordered array with a capacity of 16. */
 	public FloatArray () {
 		this(false, 16);
 	}
 
-	/**
-	 * Creates an ordered array with the specified capacity.
-	 */
+	/** Creates an ordered array with the specified capacity. */
 	public FloatArray (int capacity) {
 		this(false, capacity);
 	}
 
-	/**
-	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
+	/** @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
-	 * @param capacity Any elements added beyond this will cause the backing array to be grown.
-	 */
+	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
 	public FloatArray (boolean ordered, int capacity) {
 		this.ordered = ordered;
 		items = new float[capacity];
 	}
 
-	/**
-	 * Creates a new array containing the elements in the specific array. The new array will be ordered if the specific array is
+	/** Creates a new array containing the elements in the specific array. The new array will be ordered if the specific array is
 	 * ordered. The capacity is set to the number of elements, so any subsequent elements added will cause the backing array to be
-	 * grown.
-	 */
+	 * grown. */
 	public FloatArray (FloatArray array) {
 		this.ordered = array.ordered;
 		size = array.size;
@@ -140,9 +131,7 @@ public class FloatArray {
 		return false;
 	}
 
-	/**
-	 * Removes and returns the item at the specified index.
-	 */
+	/** Removes and returns the item at the specified index. */
 	public float removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		float[] items = this.items;
@@ -155,16 +144,12 @@ public class FloatArray {
 		return value;
 	}
 
-	/**
-	 * Removes and returns the last item.
-	 */
+	/** Removes and returns the last item. */
 	public float pop () {
 		return items[--size];
 	}
 
-	/**
-	 * Returns the last item.
-	 */
+	/** Returns the last item. */
 	public float peek () {
 		return items[size - 1];
 	}
@@ -173,19 +158,15 @@ public class FloatArray {
 		size = 0;
 	}
 
-	/**
-	 * Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
-	 * been removed, or if it is known that more items will not be added.
-	 */
+	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
+	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
 		resize(size);
 	}
 
-	/**
-	 * Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes.
-	 * @return {@link #items}
-	 */
+	 * @return {@link #items} */
 	public float[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));

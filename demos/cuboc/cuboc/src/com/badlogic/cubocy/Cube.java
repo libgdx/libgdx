@@ -1,8 +1,6 @@
+
 package com.badlogic.cubocy;
 
-import org.lwjgl.opengl.Display;
-
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,8 +13,8 @@ public class Cube {
 	static final int DEAD = 3;
 	static final float ACCELERATION = 20;
 	static final float MAX_VELOCITY = 4;
-	static final float DAMP = 0.80f;	
-	
+	static final float DAMP = 0.80f;
+
 	Map map;
 	Vector2 pos = new Vector2();
 	Vector2 accel = new Vector2();
@@ -24,11 +22,11 @@ public class Cube {
 	Rectangle bounds = new Rectangle();
 	int state = FOLLOW;
 	float stateTime = 0;
-	Rectangle controllButtonRect = new Rectangle(480-64, 320-64, 64, 64);
-	Rectangle followButtonRect = new Rectangle(480-64, 320-138, 64, 64);
+	Rectangle controllButtonRect = new Rectangle(480 - 64, 320 - 64, 64, 64);
+	Rectangle followButtonRect = new Rectangle(480 - 64, 320 - 138, 64, 64);
 	Rectangle dpadRect = new Rectangle(0, 0, 128, 128);
-	
-	public Cube(Map map, float x, float y) {
+
+	public Cube (Map map, float x, float y) {
 		this.map = map;
 		this.pos.x = x;
 		this.pos.y = y;
@@ -36,110 +34,111 @@ public class Cube {
 		this.bounds.y = pos.y + 0.2f;
 		this.bounds.width = this.bounds.height = 1.0f;
 	}
-	
+
 	Vector2 target = new Vector2();
-	public void update(float deltaTime) {
+
+	public void update (float deltaTime) {
 		processKeys();
-		
-		if(state == FOLLOW) {
+
+		if (state == FOLLOW) {
 			target.set(map.bob.pos);
-			if(map.bob.dir == Bob.RIGHT) target.x--;
-			if(map.bob.dir == Bob.LEFT) target.x++;
+			if (map.bob.dir == Bob.RIGHT) target.x--;
+			if (map.bob.dir == Bob.LEFT) target.x++;
 			target.y += 0.2f;
-			
+
 			vel.set(target).sub(pos).mul(Math.min(4, pos.dst(target)) * deltaTime);
-			if(vel.len() > MAX_VELOCITY) vel.nor().mul(MAX_VELOCITY);
+			if (vel.len() > MAX_VELOCITY) vel.nor().mul(MAX_VELOCITY);
 			tryMove();
 		}
-		
-		if(state == CONTROLLED) {		
+
+		if (state == CONTROLLED) {
 			accel.mul(deltaTime);
 			vel.add(accel.x, accel.y);
-			if(accel.x == 0) vel.x *= DAMP;
-			if(accel.y == 0) vel.y *= DAMP;
+			if (accel.x == 0) vel.x *= DAMP;
+			if (accel.y == 0) vel.y *= DAMP;
 			if (vel.x > MAX_VELOCITY) vel.x = MAX_VELOCITY;
 			if (vel.x < -MAX_VELOCITY) vel.x = -MAX_VELOCITY;
 			if (vel.y > MAX_VELOCITY) vel.y = MAX_VELOCITY;
 			if (vel.y < -MAX_VELOCITY) vel.y = -MAX_VELOCITY;
-			vel.mul(deltaTime);		
-			tryMove();		
+			vel.mul(deltaTime);
+			tryMove();
 			vel.mul(1.0f / deltaTime);
 		}
-		
-		if(state == FIXED) {
-//			if(stateTime > 5.0f) {
-//				stateTime = 0;
-//				state = FOLLOW;
-//			}
+
+		if (state == FIXED) {
+// if(stateTime > 5.0f) {
+// stateTime = 0;
+// state = FOLLOW;
+// }
 		}
-		
+
 		stateTime += deltaTime;
 	}
-	
+
 	private void processKeys () {
 		float x0 = (Gdx.input.getX(0) / (float)Gdx.graphics.getWidth()) * 480;
 		float x1 = (Gdx.input.getX(1) / (float)Gdx.graphics.getWidth()) * 480;
 		float y0 = 320 - (Gdx.input.getY(0) / (float)Gdx.graphics.getHeight()) * 320;
 		float y1 = 320 - (Gdx.input.getY(1) / (float)Gdx.graphics.getHeight()) * 320;
-		boolean controlButton = (Gdx.input.isTouched(0) && controllButtonRect.contains(x0, y0)) ||
-									(Gdx.input.isTouched(1) && controllButtonRect.contains(x1, y1));
-		boolean followButton = (Gdx.input.isTouched(0) && followButtonRect.contains(x0, y0)) ||
-										(Gdx.input.isTouched(1) && followButtonRect.contains(x1, y1));
-		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == FOLLOW && stateTime > 0.5f) {
+		boolean controlButton = (Gdx.input.isTouched(0) && controllButtonRect.contains(x0, y0))
+			|| (Gdx.input.isTouched(1) && controllButtonRect.contains(x1, y1));
+		boolean followButton = (Gdx.input.isTouched(0) && followButtonRect.contains(x0, y0))
+			|| (Gdx.input.isTouched(1) && followButtonRect.contains(x1, y1));
+
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == FOLLOW && stateTime > 0.5f) {
 			stateTime = 0;
 			state = CONTROLLED;
 			return;
-		}		
-		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == CONTROLLED && stateTime > 0.5f) {
+		}
+
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == CONTROLLED && stateTime > 0.5f) {
 			stateTime = 0;
 			state = FIXED;
 			return;
 		}
-		
-		if((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == FIXED && stateTime > 0.5f) {
+
+		if ((Gdx.input.isKeyPressed(Keys.SPACE) || controlButton) && state == FIXED && stateTime > 0.5f) {
 			stateTime = 0;
 			state = CONTROLLED;
 			return;
-		}		
-		
-		if((Gdx.input.isKeyPressed(Keys.F) || followButton) && stateTime > 0.5f) {
+		}
+
+		if ((Gdx.input.isKeyPressed(Keys.F) || followButton) && stateTime > 0.5f) {
 			stateTime = 0;
 			state = FOLLOW;
 			return;
-		}			
-		
+		}
+
 		boolean touch0 = Gdx.input.isTouched(0);
 		boolean touch1 = Gdx.input.isTouched(1);
 		boolean left = (touch0 && x0 < 60) || (touch1 && x1 < 60);
 		boolean right = (touch0 && (x0 > 80 && x0 < 128)) || (touch1 && (x1 > 80 && x1 < 128));
 		boolean down = (touch0 && (y0 < 60)) || (touch1 && (y1 < 60));
-		boolean up = (touch0 && (y0 > 80 && x0 < 128)) || (touch1 && (y1 > 80 && y1 < 128));			
-		
-		if(state == CONTROLLED) {			
-			if (Gdx.input.isKeyPressed(Keys.A)) {						
+		boolean up = (touch0 && (y0 > 80 && x0 < 128)) || (touch1 && (y1 > 80 && y1 < 128));
+
+		if (state == CONTROLLED) {
+			if (Gdx.input.isKeyPressed(Keys.A)) {
 				accel.x = -ACCELERATION;
-			} else if (Gdx.input.isKeyPressed(Keys.D) || right ) {					
+			} else if (Gdx.input.isKeyPressed(Keys.D) || right) {
 				accel.x = ACCELERATION;
-			} else {			
+			} else {
 				accel.x = 0;
 			}
-			
-			if (Gdx.input.isKeyPressed(Keys.W) || up) {						
+
+			if (Gdx.input.isKeyPressed(Keys.W) || up) {
 				accel.y = ACCELERATION;
-			} else if (Gdx.input.isKeyPressed(Keys.S) || down) {					
+			} else if (Gdx.input.isKeyPressed(Keys.S) || down) {
 				accel.y = -ACCELERATION;
-			} else {			
+			} else {
 				accel.y = 0;
 			}
-							
-			if(touch0) {
-				if(dpadRect.contains(x0, y0)) {
+
+			if (touch0) {
+				if (dpadRect.contains(x0, y0)) {
 					float x = (x0 - 64) / 64;
 					float y = (y0 - 64) / 64;
-					float len = (float)Math.sqrt(x*x + y*y);
-					if(len != 0) {
+					float len = (float)Math.sqrt(x * x + y * y);
+					if (len != 0) {
 						x /= len;
 						y /= len;
 					} else {
@@ -152,40 +151,44 @@ public class Cube {
 					accel.x = 0;
 					accel.y = 0;
 				}
-			}			
+			}
 		}
 	}
-	
-	Rectangle[] r = { new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle() };	
 
-	private void tryMove () {				
+	Rectangle[] r = {new Rectangle(), new Rectangle(), new Rectangle(), new Rectangle()};
+
+	private void tryMove () {
 		bounds.x += vel.x;
 		fetchCollidableRects();
-		for(int i = 0; i < r.length; i++) {
+		for (int i = 0; i < r.length; i++) {
 			Rectangle rect = r[i];
-			if(bounds.overlaps(rect)) {
-				if(vel.x < 0) bounds.x = rect.x + rect.width + 0.01f;
-				else bounds.x = rect.x - bounds.width - 0.01f;
+			if (bounds.overlaps(rect)) {
+				if (vel.x < 0)
+					bounds.x = rect.x + rect.width + 0.01f;
+				else
+					bounds.x = rect.x - bounds.width - 0.01f;
 				vel.x = 0;
 			}
-		}		
-		
-		bounds.y += vel.y;		
+		}
+
+		bounds.y += vel.y;
 		fetchCollidableRects();
-		for(int i = 0; i < r.length; i++) {
+		for (int i = 0; i < r.length; i++) {
 			Rectangle rect = r[i];
-			if(bounds.overlaps(rect)) {
-				if(vel.y < 0) { bounds.y = rect.y + rect.height + 0.01f; }
-				else bounds.y = rect.y - bounds.height - 0.01f;
+			if (bounds.overlaps(rect)) {
+				if (vel.y < 0) {
+					bounds.y = rect.y + rect.height + 0.01f;
+				} else
+					bounds.y = rect.y - bounds.height - 0.01f;
 				vel.y = 0;
 			}
-		}		
-		
+		}
+
 		pos.x = bounds.x - 0.2f;
-		pos.y = bounds.y - 0.2f;		
+		pos.y = bounds.y - 0.2f;
 	}
-	
-	private void fetchCollidableRects() {
+
+	private void fetchCollidableRects () {
 		int p1x = (int)bounds.x;
 		int p1y = (int)Math.floor(bounds.y);
 		int p2x = (int)(bounds.x + bounds.width);
@@ -218,9 +221,9 @@ public class Cube {
 		else
 			r[3].set(-1, -1, 0, 0);
 	}
-	
-	public void setControlled() {
-		if(state == FOLLOW) {
+
+	public void setControlled () {
+		if (state == FOLLOW) {
 			state = CONTROLLED;
 			stateTime = 0;
 		}

@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.math.MathUtils;
 
 import de.matthiasmann.twl.Color;
@@ -39,11 +39,9 @@ import de.matthiasmann.twl.renderer.FontCache;
 import de.matthiasmann.twl.renderer.FontParameter;
 import de.matthiasmann.twl.utils.StateExpression;
 
-/**
- * @author Nathan Sweet
+/** @author Nathan Sweet
  * @author Matthias Mann
- * @author Kurtis Kopf
- */
+ * @author Kurtis Kopf */
 public class GdxFont implements Font {
 	static private final HAlignment[] gdxAlignment = HAlignment.values();
 
@@ -51,7 +49,7 @@ public class GdxFont implements Font {
 	final BitmapFont bitmapFont;
 	private final FontState[] fontStates;
 	private final float yOffset;
-	
+
 	private Boolean proportional = null;
 
 	public GdxFont (GdxRenderer renderer, BitmapFont bitmapFont, Map<String, String> params, Collection<FontParameter> condParams) {
@@ -201,18 +199,13 @@ public class GdxFont implements Font {
 		}
 	}
 
-	public boolean isProportional()
-	{
-		if (proportional == null)
-		{
-			try
-			{
+	public boolean isProportional () {
+		if (proportional == null) {
+			try {
 				int iBound = (int)bitmapFont.getBounds("i").width;
 				int mBound = (int)bitmapFont.getBounds("m").width;
 				proportional = iBound != 0 && mBound != 0 && iBound != mBound;
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				proportional = false;
 			}
 		}

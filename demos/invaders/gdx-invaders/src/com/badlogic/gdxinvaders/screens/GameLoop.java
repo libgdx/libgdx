@@ -41,22 +41,26 @@ public class GameLoop implements Screen, SimulationListener {
 		shot = app.getAudio().newSound(app.getFiles().getFileHandle("data/shot.ogg", FileType.Internal));
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		renderer.dispose();
 		shot.dispose();
 		explosion.dispose();
 	}
 
-	@Override public boolean isDone () {
+	@Override
+	public boolean isDone () {
 		return simulation.ship.lives == 0;
 	}
 
-	@Override public void render (Application app) {
+	@Override
+	public void render (Application app) {
 		app.getGraphics().getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		renderer.render(app, simulation);
 	}
 
-	@Override public void update (Application app) {
+	@Override
+	public void update (Application app) {
 		simulation.update(app.getGraphics().getDeltaTime());
 
 		Input input = app.getInput();
@@ -71,11 +75,13 @@ public class GameLoop implements Screen, SimulationListener {
 		if (input.isTouched() || input.isKeyPressed(Keys.SPACE)) simulation.shot();
 	}
 
-	@Override public void explosion () {
+	@Override
+	public void explosion () {
 		explosion.play();
 	}
 
-	@Override public void shot () {
+	@Override
+	public void shot () {
 		shot.play();
 	}
 }

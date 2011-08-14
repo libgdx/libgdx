@@ -45,19 +45,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
-import com.badlogic.gdx.graphics.g2d.tiled.TiledLayer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
-import com.badlogic.gdx.imagepacker.TexturePacker;
-import com.badlogic.gdx.imagepacker.TexturePacker.Settings;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on
+/** Packs a Tiled Map, adding some properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on
  * the tiles for use with a {@link TileAtlas}
- * @author David Fraska
- */
+ * @author David Fraska */
 public class TiledMapPacker {
 
 	private TexturePacker packer;
@@ -73,7 +68,8 @@ public class TiledMapPacker {
 		public TmxFilter () {
 		}
 
-		@Override public boolean accept (File dir, String name) {
+		@Override
+		public boolean accept (File dir, String name) {
 			if (name.endsWith(".tmx")) return true;
 
 			return false;
@@ -81,8 +77,7 @@ public class TiledMapPacker {
 
 	}
 
-	/**
-	 * Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method. Packs a directory of
+	/** Typically, you should run the {@link TiledMapPacker#main(String[])} method instead of this method. Packs a directory of
 	 * Tiled Maps, adding properties to improve the speed of the {@link TileMapRenderer}. Also runs the texture packer on the tile
 	 * sets for use with a {@link TileAtlas}
 	 * @param inputDir the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx file)
@@ -90,8 +85,7 @@ public class TiledMapPacker {
 	 *           "../" in the path of your tile sets! The output for these tile sets will be relative to the output directory. For
 	 *           example, if your output directory is "C:\mydir\maps" and you have a tileset with the path "../tileset.png", the
 	 *           tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\maps".
-	 * @param settings the settings used in the TexturePacker
-	 * */
+	 * @param settings the settings used in the TexturePacker */
 	public void processMap (File inputDir, File outputDir, Settings settings) throws IOException {
 		FileHandle inputDirHandle = Gdx.files.absolute(inputDir.getAbsolutePath());
 		File[] files = inputDir.listFiles(new TmxFilter());
@@ -261,10 +255,8 @@ public class TiledMapPacker {
 			return parent.appendChild(newNode);
 	}
 
-	/**
-	 * If the child node or attribute doesn't exist, it is created. Usage example: Node property =
-	 * getFirstChildByAttrValue(properties, "property", "name", "blended tiles");
-	 */
+	/** If the child node or attribute doesn't exist, it is created. Usage example: Node property =
+	 * getFirstChildByAttrValue(properties, "property", "name", "blended tiles"); */
 	private static Node getFirstChildByNameAttrValue (Node node, String childName, String attr, String value) {
 		NodeList childNodes = node.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
@@ -316,14 +308,12 @@ public class TiledMapPacker {
 		return null;
 	}
 
-	/**
-	 * Processes a directory of Tile Maps, compressing each tile set contained in any map once.
+	/** Processes a directory of Tile Maps, compressing each tile set contained in any map once.
 	 * @param args args[0]: the input directory containing the tmx files (and tile sets, relative to the path listed in the tmx
 	 *           file). args[1]: The output directory for the tmx files, should be empty before running. WARNING: Use caution if
 	 *           you have a "../" in the path of your tile sets! The output for these tile sets will be relative to the output
 	 *           directory. For example, if your output directory is "C:\mydir\output" and you have a tileset with the path
-	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\output".
-	 */
+	 *           "../tileset.png", the tileset will be output to "C:\mydir\" and the maps will be in "C:\mydir\output". */
 	public static void main (String[] args) {
 		File tmxFile, inputDir, outputDir;
 
@@ -335,22 +325,28 @@ public class TiledMapPacker {
 
 		// Create a new JoglApplication so that Gdx stuff works properly
 		new JoglApplication(new ApplicationListener() {
-			@Override public void create () {
+			@Override
+			public void create () {
 			}
 
-			@Override public void dispose () {
+			@Override
+			public void dispose () {
 			}
 
-			@Override public void pause () {
+			@Override
+			public void pause () {
 			}
 
-			@Override public void render () {
+			@Override
+			public void render () {
 			}
 
-			@Override public void resize (int width, int height) {
+			@Override
+			public void resize (int width, int height) {
 			}
 
-			@Override public void resume () {
+			@Override
+			public void resume () {
 			}
 		}, "", 0, 0, false);
 

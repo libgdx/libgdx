@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.FloatBuffer;
@@ -27,7 +28,8 @@ public class VertexBufferObjectTest extends GdxTest {
 	int vboHandle;
 	int vboIndexHandle;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL11 gl = Gdx.graphics.getGL11();
 
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -45,7 +47,8 @@ public class VertexBufferObjectTest extends GdxTest {
 		gl.glDrawElements(GL11.GL_TRIANGLES, 3, GL11.GL_UNSIGNED_SHORT, 0);
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 
 		FloatBuffer vertices = BufferUtils.newFloatBuffer(3 * 7);
 		vertices.put(new float[] {-0.5f, -0.5f, 0, 1, 0, 0, 1, 0.5f, -0.5f, 0, 0, 1, 0, 1, 0.0f, 0.5f, 0, 0, 0, 1, 1});
@@ -92,7 +95,8 @@ public class VertexBufferObjectTest extends GdxTest {
 		gl.glBindBuffer(GL11.GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

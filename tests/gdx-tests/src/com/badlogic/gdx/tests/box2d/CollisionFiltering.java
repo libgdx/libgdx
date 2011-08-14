@@ -51,7 +51,8 @@ public class CollisionFiltering extends Box2DTest {
 	private final static short k_boxMask = -1 ^ k_triangleCategory;
 	private final static short k_circleMask = -1;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		{
 			PolygonShape shape = new PolygonShape();
 			shape.setAsEdge(new Vector2(-40.0f, 0), new Vector2(40, 0));

@@ -22,10 +22,7 @@
 
 package com.badlogic.gdx.twl.renderer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 
 import de.matthiasmann.twl.Color;
 import de.matthiasmann.twl.renderer.Image;
@@ -33,20 +30,17 @@ import de.matthiasmann.twl.renderer.MouseCursor;
 import de.matthiasmann.twl.renderer.Resource;
 import de.matthiasmann.twl.renderer.Texture;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class GdxTexture implements Texture, Resource {
 	private final GdxRenderer renderer;
 	private final com.badlogic.gdx.graphics.Texture texture;
 
 	public GdxTexture (GdxRenderer renderer, FileHandle textureFile) {
 		this.renderer = renderer;
-		texture =new com.badlogic.gdx.graphics.Texture(textureFile);
+		texture = new com.badlogic.gdx.graphics.Texture(textureFile);
 	}
 
-	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled, Rotation rotation) 
-	{
+	public Image getImage (int x, int y, int width, int height, Color tintColor, boolean tiled, Rotation rotation) {
 		if (x < 0 || x >= getWidth()) throw new IllegalArgumentException("x");
 		if (y < 0 || y >= getHeight()) throw new IllegalArgumentException("y");
 		if (x + Math.abs(width) > getWidth()) throw new IllegalArgumentException("width");
@@ -54,24 +48,22 @@ public class GdxTexture implements Texture, Resource {
 		if (tiled && (width <= 0 || height <= 0))
 			throw new IllegalArgumentException("Tiled rendering requires positive width & height.");
 		float rd = 0f;
-		switch(rotation)
-		{
-			case CLOCKWISE_90:
-				rd = 90f;
-				break;
-			case CLOCKWISE_180:
-				rd = 180f;
-				break;
-			case CLOCKWISE_270:
-				rd = 270f;
-				break;
+		switch (rotation) {
+		case CLOCKWISE_90:
+			rd = 90f;
+			break;
+		case CLOCKWISE_180:
+			rd = 180f;
+			break;
+		case CLOCKWISE_270:
+			rd = 270f;
+			break;
 		}
 		return new GdxImage(renderer, texture, x, y, width, height, tintColor, tiled, rd);
 	}
 
-	public MouseCursor createCursor (int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) 
-	{
-		//System.out.println("trying to build a cursor!");
+	public MouseCursor createCursor (int x, int y, int width, int height, int hotSpotX, int hotSpotY, Image imageRef) {
+		// System.out.println("trying to build a cursor!");
 		return null; // Unsupported.
 	}
 

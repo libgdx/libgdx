@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -24,26 +25,29 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class CompassTest extends GdxTest {
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
 	BitmapFont font;
 	SpriteBatch batch;
-	ImmediateModeRenderer10 renderer;	
-	
-	@Override public void create() {
+	ImmediateModeRenderer10 renderer;
+
+	@Override
+	public void create () {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 		renderer = new ImmediateModeRenderer10();
 	}
-	
-	@Override public void render() {
+
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.drawMultiLine(batch, getOrientationString(), 20, Gdx.graphics.getHeight() - 10);
 		batch.end();
-		
+
 		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
 		Gdx.gl10.glLoadIdentity();
 		float aspect = (float)Gdx.graphics.getHeight() / Gdx.graphics.getWidth();
@@ -52,21 +56,22 @@ public class CompassTest extends GdxTest {
 		Gdx.gl10.glLoadIdentity();
 		Gdx.gl10.glRotatef(Gdx.input.getAzimuth() + 90, 0, 0, 1);
 		renderer.begin(GL10.GL_TRIANGLES);
-		renderer.color( 1, 1, 1, 1);
+		renderer.color(1, 1, 1, 1);
 		renderer.vertex(-0.3f, -0.5f, 0);
-		renderer.color( 1, 1, 1, 1);
+		renderer.color(1, 1, 1, 1);
 		renderer.vertex(0.3f, -0.5f, 0);
-		renderer.color( 1, 1, 1, 1);
+		renderer.color(1, 1, 1, 1);
 		renderer.vertex(0, 0.5f, 0);
 		renderer.end();
 	}
-	
-	@Override public void resize(int width, int height) {
+
+	@Override
+	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
-	
-	private String getOrientationString() {
-		StringBuilder builder = new StringBuilder();		
+
+	private String getOrientationString () {
+		StringBuilder builder = new StringBuilder();
 		builder.append("\nazimuth: ");
 		builder.append((int)Gdx.input.getAzimuth());
 		builder.append("\npitch: ");

@@ -1,5 +1,6 @@
+
 package com.badlydrawngames.veryangryrobots;
 
 public interface ISubmitScores {
-	void submitScore(final int score);
+	void submitScore (final int score);
 }

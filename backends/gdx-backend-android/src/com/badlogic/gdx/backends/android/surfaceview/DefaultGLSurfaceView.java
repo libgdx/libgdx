@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android.surfaceview;
 
 import android.content.Context;
@@ -21,22 +22,21 @@ import android.util.AttributeSet;
 
 public class DefaultGLSurfaceView extends GLSurfaceView {
 
+	final ResolutionStrategy resolutionStrategy;
 
-    final ResolutionStrategy resolutionStrategy;
+	public DefaultGLSurfaceView (Context context, ResolutionStrategy resolutionStrategy) {
+		super(context);
+		this.resolutionStrategy = resolutionStrategy;
+	}
 
-    public DefaultGLSurfaceView(Context context, ResolutionStrategy resolutionStrategy) {
-        super(context);
-        this.resolutionStrategy = resolutionStrategy;
-    }
+	public DefaultGLSurfaceView (Context context, AttributeSet attrs, ResolutionStrategy resolutionStrategy) {
+		super(context, attrs);
+		this.resolutionStrategy = resolutionStrategy;
+	}
 
-    public DefaultGLSurfaceView(Context context, AttributeSet attrs, ResolutionStrategy resolutionStrategy) {
-        super(context, attrs);
-        this.resolutionStrategy = resolutionStrategy;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(measures.width, measures.height);
-    }
+	@Override
+	protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
+		ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec, heightMeasureSpec);
+		setMeasuredDimension(measures.width, measures.height);
+	}
 }

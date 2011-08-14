@@ -13,37 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d.tiled;
 
 import java.util.HashMap;
 
-/**
- * Contains Tiled map layer information
- * @author David Fraska
- */
+/** Contains Tiled map layer information
+ * @author David Fraska */
 public class TiledLayer {
 	public String name;
 
 	/** Contains the layer properties with a key of the property name. */
 	public HashMap<String, String> properties = new HashMap<String, String>(0);
 
-	//public final int width, height;
+	// public final int width, height;
 
 	/** Contains the tile ids, addressed as [row][column]. */
 	public int[][] tiles;
 
-	/**
-	 * Constructs a new TiledLayer, used by {@link TiledLoader}
-	 * */
+	/** Constructs a new TiledLayer, used by {@link TiledLoader} */
 	TiledLayer () {
 	}
-	
-	public int getWidth(){
-		if(tiles[0] == null) return 0;
+
+	public int getWidth () {
+		if (tiles[0] == null) return 0;
 		return tiles[0].length;
 	}
-	
-	public int getHeight(){
+
+	public int getHeight () {
 		return tiles.length;
 	}
 }

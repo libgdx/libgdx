@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.ArrayList;
@@ -43,26 +44,26 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.Pool;
 
-/**
- * The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
+/** The world class manages all physics entities, dynamic simulation, and asynchronous queries. The world also contains efficient
  * memory management facilities.
- * @author mzechner
- */
+ * @author mzechner */
 public final class World implements Disposable {
 	/** pool for bodies **/
 	protected final Pool<Body> freeBodies = new Pool<Body>(100, 200) {
-		@Override protected Body newObject () {
+		@Override
+		protected Body newObject () {
 			return new Body(World.this, 0);
-		}		
+		}
 	};
-	
+
 	/** pool for fixtures **/
 	protected final Pool<Fixture> freeFixtures = new Pool<Fixture>(100, 200) {
-		@Override protected Fixture newObject () {
+		@Override
+		protected Fixture newObject () {
 			return new Fixture(null, 0);
-		}		
+		}
 	};
-	
+
 	/** the address of the world instance **/
 	private final long addr;
 
@@ -81,38 +82,32 @@ public final class World implements Disposable {
 	/** Contact listener **/
 	protected ContactListener contactListener = null;
 
-	/**
-	 * Ray-cast the world for all fixtures in the path of the ray.
-	 * The ray-cast ignores shapes that contain the starting point.
+	/** Ray-cast the world for all fixtures in the path of the ray. The ray-cast ignores shapes that contain the starting point.
 	 * @param callback a user implemented callback class.
 	 * @param point1 the ray starting point
-	 * @param point2 the ray ending point
-	 */
-	public void rayCast(RayCastCallback callback, Vector2 point1, Vector2 point2)
-	{
+	 * @param point2 the ray ending point */
+	public void rayCast (RayCastCallback callback, Vector2 point1, Vector2 point2) {
 		rayCastCallback = callback;
 		jniRayCast(addr, point1.x, point1.y, point2.x, point2.y);
 	}
-	
+
 	private RayCastCallback rayCastCallback = null;
-	
+
 	private native void jniRayCast (long addr, float aX, float aY, float bX, float bY);
 
 	private Vector2 rayPoint = new Vector2();
 	private Vector2 rayNormal = new Vector2();
-	
+
 	private float reportRayFixture (long addr, float pX, float pY, float nX, float nY, float fraction) {
-			if (rayCastCallback != null)
-				return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint.set(pX, pY), rayNormal.set(nX, nY), fraction);
-			else
-				return 0.0f;
+		if (rayCastCallback != null)
+			return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint.set(pX, pY), rayNormal.set(nX, nY), fraction);
+		else
+			return 0.0f;
 	}
-	
-	/**
-	 * Construct a world object.
+
+	/** Construct a world object.
 	 * @param gravity the world gravity vector.
-	 * @param doSleep improve performance by not simulating inactive bodies.
-	 */
+	 * @param doSleep improve performance by not simulating inactive bodies. */
 	public World (Vector2 gravity, boolean doSleep) {
 		addr = newWorld(gravity.x, gravity.y, doSleep);
 
@@ -125,36 +120,28 @@ public final class World implements Disposable {
 
 	private native long newWorld (float gravityX, float gravityY, boolean doSleep);
 
-	/**
-	 * Register a destruction listener. The listener is owned by you and must remain in scope.
-	 */
+	/** Register a destruction listener. The listener is owned by you and must remain in scope. */
 	public void setDestructionListener (DestructionListener listener) {
 
 	}
 
-	/**
-	 * Register a contact filter to provide specific control over collision. Otherwise the default filter is used
-	 * (b2_defaultFilter). The listener is owned by you and must remain in scope.
-	 */
+	/** Register a contact filter to provide specific control over collision. Otherwise the default filter is used
+	 * (b2_defaultFilter). The listener is owned by you and must remain in scope. */
 	public void setContactFilter (ContactFilter filter) {
 		this.contactFilter = filter;
 	}
 
-	/**
-	 * Register a contact event listener. The listener is owned by you and must remain in scope.
-	 */
+	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
 	public void setContactListener (ContactListener listener) {
 		this.contactListener = listener;
 	}
 
-	/**
-	 * Create a rigid body given a definition. No reference to the definition is retained.
-	 * @warning This function is locked during callbacks.
-	 */
+	/** Create a rigid body given a definition. No reference to the definition is retained.
+	 * @warning This function is locked during callbacks. */
 	public Body createBody (BodyDef def) {
-		long bodyAddr = jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle,
-			def.linearVelocity.x, def.linearVelocity.y, def.angularVelocity, def.linearDamping, def.angularDamping, def.allowSleep,
-			def.awake, def.fixedRotation, def.bullet, def.active, def.inertiaScale);
+		long bodyAddr = jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle, def.linearVelocity.x,
+			def.linearVelocity.y, def.angularVelocity, def.linearDamping, def.angularDamping, def.allowSleep, def.awake,
+			def.fixedRotation, def.bullet, def.active, def.inertiaScale);
 		Body body = freeBodies.obtain();
 		body.reset(bodyAddr);
 		this.bodies.put(body.addr, body);
@@ -165,12 +152,10 @@ public final class World implements Disposable {
 		float linearVelocityY, float angularVelocity, float linearDamping, float angularDamping, boolean allowSleep, boolean awake,
 		boolean fixedRotation, boolean bullet, boolean active, float intertiaScale);
 
-	/**
-	 * Destroy a rigid body given a definition. No reference to the definition is retained. This function is locked during
+	/** Destroy a rigid body given a definition. No reference to the definition is retained. This function is locked during
 	 * callbacks.
 	 * @warning This automatically deletes all associated shapes and joints.
-	 * @warning This function is locked during callbacks.
-	 */
+	 * @warning This function is locked during callbacks. */
 	public void destroyBody (Body body) {
 		this.bodies.remove(body.addr);
 		for (int i = 0; i < body.getFixtureList().size(); i++)
@@ -183,11 +168,9 @@ public final class World implements Disposable {
 
 	private native void jniDestroyBody (long addr, long bodyAddr);
 
-	/**
-	 * Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
+	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
 	 * to cease colliding.
-	 * @warning This function is locked during callbacks.
-	 */
+	 * @warning This function is locked during callbacks. */
 	public Joint createJoint (JointDef def) {
 		long jointAddr = createProperJoint(def);
 		Joint joint = null;
@@ -297,10 +280,8 @@ public final class World implements Disposable {
 	private native long jniCreateWeldJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle);
 
-	/**
-	 * Destroy a joint. This may cause the connected bodies to begin colliding.
-	 * @warning This function is locked during callbacks.
-	 */
+	/** Destroy a joint. This may cause the connected bodies to begin colliding.
+	 * @warning This function is locked during callbacks. */
 	public void destroyJoint (Joint joint) {
 		joints.remove(joint.addr);
 		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
@@ -310,95 +291,75 @@ public final class World implements Disposable {
 
 	private native void jniDestroyJoint (long addr, long jointAddr);
 
-	/**
-	 * Take a time step. This performs collision detection, integration, and constraint solution.
+	/** Take a time step. This performs collision detection, integration, and constraint solution.
 	 * @param timeStep the amount of time to simulate, this should not vary.
 	 * @param velocityIterations for the velocity constraint solver.
-	 * @param positionIterations for the position constraint solver.
-	 */
+	 * @param positionIterations for the position constraint solver. */
 	public void step (float timeStep, int velocityIterations, int positionIterations) {
 		jniStep(addr, timeStep, velocityIterations, positionIterations);
 	}
 
 	private native void jniStep (long addr, float timeStep, int velocityIterations, int positionIterations);
 
-	/**
-	 * Call this after you are done with time steps to clear the forces. You normally call this after each call to Step, unless you
+	/** Call this after you are done with time steps to clear the forces. You normally call this after each call to Step, unless you
 	 * are performing sub-steps. By default, forces will be automatically cleared, so you don't need to call this function. See
-	 * {@link #setAutoClearForces(boolean)}
-	 */
+	 * {@link #setAutoClearForces(boolean)} */
 	public void clearForces () {
 		jniClearForces(addr);
 	}
 
 	private native void jniClearForces (long addr);
 
-	/**
-	 * Enable/disable warm starting. For testing.
-	 */
+	/** Enable/disable warm starting. For testing. */
 	public void setWarmStarting (boolean flag) {
 		jniSetWarmStarting(addr, flag);
 	}
 
 	private native void jniSetWarmStarting (long addr, boolean flag);
 
-	/**
-	 * Enable/disable continuous physics. For testing.
-	 */
+	/** Enable/disable continuous physics. For testing. */
 	public void setContinuousPhysics (boolean flag) {
 		jniSetContiousPhysics(addr, flag);
 	}
 
 	private native void jniSetContiousPhysics (long addr, boolean flag);
 
-	/**
-	 * Get the number of broad-phase proxies.
-	 */
+	/** Get the number of broad-phase proxies. */
 	public int getProxyCount () {
 		return jniGetProxyCount(addr);
 	}
 
 	private native int jniGetProxyCount (long addr);
 
-	/**
-	 * Get the number of bodies.
-	 */
+	/** Get the number of bodies. */
 	public int getBodyCount () {
 		return jniGetBodyCount(addr);
 	}
 
 	private native int jniGetBodyCount (long addr);
 
-	/**
-	 * Get the number of joints.
-	 */
+	/** Get the number of joints. */
 	public int getJointCount () {
 		return jniGetJointcount(addr);
 	}
 
 	private native int jniGetJointcount (long addr);
 
-	/**
-	 * Get the number of contacts (each may have 0 or more contact points).
-	 */
+	/** Get the number of contacts (each may have 0 or more contact points). */
 	public int getContactCount () {
 		return jniGetContactCount(addr);
 	}
 
 	private native int jniGetContactCount (long addr);
 
-	/**
-	 * Change the global gravity vector.
-	 */
+	/** Change the global gravity vector. */
 	public void setGravity (Vector2 gravity) {
 		jniSetGravity(addr, gravity.x, gravity.y);
 	}
 
 	private native void jniSetGravity (long addr, float gravityX, float gravityY);
 
-	/**
-	 * Get the global gravity vector.
-	 */
+	/** Get the global gravity vector. */
 	final float[] tmpGravity = new float[2];
 	final Vector2 gravity = new Vector2();
 
@@ -411,41 +372,33 @@ public final class World implements Disposable {
 
 	private native void jniGetGravity (long addr, float[] gravity);
 
-	/**
-	 * Is the world locked (in the middle of a time step).
-	 */
+	/** Is the world locked (in the middle of a time step). */
 	public boolean isLocked () {
 		return jniIsLocked(addr);
 	}
 
 	private native boolean jniIsLocked (long addr);
 
-	/**
-	 * Set flag to control automatic clearing of forces after each time step.
-	 */
+	/** Set flag to control automatic clearing of forces after each time step. */
 	public void setAutoClearForces (boolean flag) {
 		jniSetAutoClearForces(addr, flag);
 	}
 
 	private native void jniSetAutoClearForces (long addr, boolean flag);
 
-	/**
-	 * Get the flag that controls automatic clearing of forces after each time step.
-	 */
+	/** Get the flag that controls automatic clearing of forces after each time step. */
 	public boolean getAutoClearForces () {
 		return jniGetAutoClearForces(addr);
 	}
 
 	private native boolean jniGetAutoClearForces (long addr);
 
-	/**
-	 * Query the world for all fixtures that potentially overlap the provided AABB.
+	/** Query the world for all fixtures that potentially overlap the provided AABB.
 	 * @param callback a user implemented callback class.
 	 * @param lowerX the x coordinate of the lower left corner
 	 * @param lowerY the y coordinate of the lower left corner
 	 * @param upperX the x coordinate of the upper right corner
-	 * @param upperY the y coordinate of the upper right corner
-	 */
+	 * @param upperY the y coordinate of the upper right corner */
 	public void QueryAABB (QueryCallback callback, float lowerX, float lowerY, float upperX, float upperY) {
 		queryCallback = callback;
 		jniQueryAABB(addr, lowerX, lowerY, upperX, upperY);
@@ -474,16 +427,13 @@ public final class World implements Disposable {
 	private final ArrayList<Contact> contacts = new ArrayList<Contact>();
 	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>();
 
-	/**
-	 * Returns the list of {@link Contact} instances produced by the last 
-	 * call to {@link #step(float, int, int)}. Note that the returned list
-	 * will have O(1) access times when using indexing. 
-	 * @return the contact list
-	 */
+	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
+	 * returned list will have O(1) access times when using indexing.
+	 * @return the contact list */
 	public List<Contact> getContactList () {
 		int numContacts = getContactCount();
 		if (numContacts > contactAddrs.length) {
-			int newSize = 2*numContacts;
+			int newSize = 2 * numContacts;
 			contactAddrs = new long[newSize];
 			contacts.ensureCapacity(newSize);
 			freeContacts.ensureCapacity(newSize);
@@ -505,16 +455,12 @@ public final class World implements Disposable {
 		return contacts;
 	}
 
-	/**
-	 * @return all bodies currently in the simulation
-	 */
+	/** @return all bodies currently in the simulation */
 	public Iterator<Body> getBodies () {
 		return bodies.values();
 	}
 
-	/**
-	 * @return all joints currently in the simulation
-	 */
+	/** @return all joints currently in the simulation */
 	public Iterator<Joint> getJoints () {
 		return joints.values();
 	}
@@ -527,12 +473,10 @@ public final class World implements Disposable {
 
 	private native void jniDispose (long addr);
 
-	/**
-	 * Internal method called from JNI in case a contact happens
+	/** Internal method called from JNI in case a contact happens
 	 * @param fixtureA
 	 * @param fixtureB
-	 * @return whether the things collided
-	 */
+	 * @return whether the things collided */
 	private boolean contactFilter (long fixtureA, long fixtureB) {
 		if (contactFilter != null)
 			return contactFilter.shouldCollide(fixtures.get(fixtureA), fixtures.get(fixtureB));
@@ -559,19 +503,18 @@ public final class World implements Disposable {
 	}
 
 	private void endContact (long contactAddr) {
-		contact.addr = contactAddr;		
+		contact.addr = contactAddr;
 		if (contactListener != null) contactListener.endContact(contact);
 	}
-	
 
 	private void preSolve (long contactAddr, long manifoldAddr) {
 		contact.addr = contactAddr;
 		manifold.addr = manifoldAddr;
 		if (contactListener != null) contactListener.preSolve(contact, manifold);
 	}
-		
+
 	private void postSolve (long contactAddr, long impulseAddr) {
-		contact.addr = contactAddr;		
+		contact.addr = contactAddr;
 		impulse.addr = impulseAddr;
 		if (contactListener != null) contactListener.postSolve(contact, impulse);
 	}
@@ -582,15 +525,11 @@ public final class World implements Disposable {
 		else
 			return false;
 	}
-	
-	/**
-	 * Sets the box2d velocity threshold globally, for all World instances.
-	 * @param threshold the threshold, default 1.0f
-	 */
-	public static native void setVelocityThreshold(float threshold);
-	
-	/**
-	 * @return the global box2d velocity threshold.
-	 */
-	public static native float getVelocityThreshold();
+
+	/** Sets the box2d velocity threshold globally, for all World instances.
+	 * @param threshold the threshold, default 1.0f */
+	public static native void setVelocityThreshold (float threshold);
+
+	/** @return the global box2d velocity threshold. */
+	public static native float getVelocityThreshold ();
 }

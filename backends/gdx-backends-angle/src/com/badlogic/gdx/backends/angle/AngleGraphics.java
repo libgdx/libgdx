@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.angle;
 
 import java.awt.Toolkit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
@@ -44,67 +44,83 @@ public class AngleGraphics implements Graphics {
 		glu = new AngleGLU();
 	}
 
-	@Override public boolean isGL11Available () {
+	@Override
+	public boolean isGL11Available () {
 		return false;
 	}
 
-	@Override public boolean isGL20Available () {
+	@Override
+	public boolean isGL20Available () {
 		return true;
 	}
 
-	@Override public GLCommon getGLCommon () {
+	@Override
+	public GLCommon getGLCommon () {
 		return gl;
 	}
 
-	@Override public GL10 getGL10 () {
+	@Override
+	public GL10 getGL10 () {
 		return null;
 	}
 
-	@Override public GL11 getGL11 () {
+	@Override
+	public GL11 getGL11 () {
 		return null;
 	}
 
-	@Override public GL20 getGL20 () {
+	@Override
+	public GL20 getGL20 () {
 		return gl;
 	}
-	
-	@Override public GLU getGLU() {
+
+	@Override
+	public GLU getGLU () {
 		return glu;
 	}
 
-	@Override public int getWidth () {
+	@Override
+	public int getWidth () {
 		return width;
 	}
 
-	@Override public int getHeight () {
+	@Override
+	public int getHeight () {
 		return height;
 	}
 
-	@Override public float getDeltaTime () {
+	@Override
+	public float getDeltaTime () {
 		return deltaTime;
 	}
 
-	@Override public int getFramesPerSecond () {
+	@Override
+	public int getFramesPerSecond () {
 		return fps;
 	}
 
-	@Override public GraphicsType getType () {
+	@Override
+	public GraphicsType getType () {
 		return GraphicsType.Angle;
 	}
 
-	@Override public float getPpiX () {
+	@Override
+	public float getPpiX () {
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
-	@Override public float getPpiY () {
+	@Override
+	public float getPpiY () {
 		return Toolkit.getDefaultToolkit().getScreenResolution();
 	}
 
-	@Override public float getPpcX () {
+	@Override
+	public float getPpcX () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 
-	@Override public float getPpcY () {
+	@Override
+	public float getPpcY () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 2.54f);
 	}
 
@@ -121,50 +137,60 @@ public class AngleGraphics implements Graphics {
 		frames++;
 	}
 
-	@Override public boolean supportsDisplayModeChange () {
+	@Override
+	public boolean supportsDisplayModeChange () {
 		return false;
 	}
 
-	@Override public boolean setDisplayMode (DisplayMode displayMode) {
+	@Override
+	public boolean setDisplayMode (DisplayMode displayMode) {
 		return false;
 	}
-	
-	@Override public DisplayMode[] getDisplayModes () {
+
+	@Override
+	public DisplayMode[] getDisplayModes () {
 		return new DisplayMode[0];
 	}
 
-	@Override public void setTitle (String title) {
-		
+	@Override
+	public void setTitle (String title) {
+
 	}
 
-	@Override public void setIcon (Pixmap pixmap) {
-		
+	@Override
+	public void setIcon (Pixmap pixmap) {
+
 	}
 
-	@Override public DisplayMode getDesktopDisplayMode () {
+	@Override
+	public DisplayMode getDesktopDisplayMode () {
 		return null;
 	}
 
-	@Override public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+	@Override
+	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		return false;
 	}
 
-	@Override public void setVSync (boolean vsync) {
+	@Override
+	public void setVSync (boolean vsync) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	@Override public BufferFormat getBufferFormat () {
+	@Override
+	public BufferFormat getBufferFormat () {
 		return null;
 	}
-	
-	@Override public boolean supportsExtension (String extension) {
-		if(extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+
+	@Override
+	public boolean supportsExtension (String extension) {
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 
 	@Override
-	public float getDensity() {
+	public float getDensity () {
 		return (Toolkit.getDefaultToolkit().getScreenResolution() / 160f);
 	}
 }

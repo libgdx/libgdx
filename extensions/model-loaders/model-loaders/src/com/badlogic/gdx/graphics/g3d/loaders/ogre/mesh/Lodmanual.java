@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
  * 
  */
@@ -18,59 +17,39 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "lodmanual")
 public class Lodmanual {
 
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String value;
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    protected String meshname;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String value;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	protected String meshname;
 
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getValue() {
-        return value;
-    }
+	/** Gets the value of the value property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getValue () {
+		return value;
+	}
 
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
+	/** Sets the value of the value property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setValue (String value) {
+		this.value = value;
+	}
 
-    /**
-     * Gets the value of the meshname property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMeshname() {
-        return meshname;
-    }
+	/** Gets the value of the meshname property.
+	 * 
+	 * @return possible object is {@link String } */
+	public String getMeshname () {
+		return meshname;
+	}
 
-    /**
-     * Sets the value of the meshname property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMeshname(String value) {
-        this.meshname = value;
-    }
+	/** Sets the value of the meshname property.
+	 * 
+	 * @param value allowed object is {@link String } */
+	public void setMeshname (String value) {
+		this.meshname = value;
+	}
 
 }

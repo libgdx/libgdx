@@ -21,10 +21,8 @@ import java.io.File;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 
-/**
- * @author mzechner
- * @author Nathan Sweet
- */
+/** @author mzechner
+ * @author Nathan Sweet */
 public final class LwjglFileHandle extends FileHandle {
 	public LwjglFileHandle (String fileName, FileType type) {
 		super(fileName, type);

@@ -13,8 +13,6 @@
 
 package com.badlydrawngames.veryangryrobots;
 
-import static com.badlydrawngames.general.Rectangles.setRectangle;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -29,29 +27,31 @@ import com.badlydrawngames.general.CameraHelper;
 import com.badlydrawngames.general.CollisionGeometry;
 import com.badlydrawngames.general.Config;
 
+import static com.badlydrawngames.general.Rectangles.*;
+
 public class Assets {
 
 	private static final String FLYUP_FONT = Config.asString("Global.flyupFont", "ocr_a_small.fnt");
 	private static final String SCORE_FONT = Config.asString("Global.scoreFont", "wellbutrin.fnt");
 	private static final String TEXT_FONT = Config.asString("Global.textFont", "ocr_a.fnt");
-	
+
 	private static final float PLAYER_BORDER_WIDTH = Config.asFloat("Player.borderWidthPercent", 25.0f);
 	private static final float PLAYER_BORDER_HEIGHT = Config.asFloat("Player.borderHeightPercent", 6.7f);
 	private static final float PLAYER_FRAME_DURATION = Config.asFloat("Player.frameDuration", 0.2f);
 
-	private static final float ROBOT_FRAME_DURATION = Config.asFloat("Robot.frameDuration", 0.1f); 
+	private static final float ROBOT_FRAME_DURATION = Config.asFloat("Robot.frameDuration", 0.1f);
 
 	private static final float CAPTAIN_BORDER_WIDTH = Config.asFloat("Captain.borderWidthPercent", 16.7f);
 	private static final float CAPTAIN_BORDER_HEIGHT = Config.asFloat("Captain.borderHeightPercent", 16.7f);
 	private static final float CAPTAIN_FRAME_DURATION = Config.asFloat("Captain.frameDuration", 0.1f);
-	
+
 	private static final float PARTICLE_SIZE = Config.asFloat("particle.size", 0.1875f);
-	
+
 	private static TextureAtlas atlas;
 
 	public static final float VIRTUAL_WIDTH = 30.0f;
 	public static final float VIRTUAL_HEIGHT = 20.0f;
-	
+
 	public static TextureRegion pureWhiteTextureRegion;
 	public static TextureRegion playerWalkingRight1;
 	public static TextureRegion playerWalkingRight2;
@@ -74,20 +74,20 @@ public class Assets {
 	public static TextureRegion nemesis1;
 	public static TextureRegion nemesis2;
 	public static TextureRegion pauseButton;
-	
+
 	public static Animation playerWalkingRightAnimation;
 	public static Animation playerWalkingLeftAnimation;
 
 	public static Animation robotWalkingLeftAnimation;
 	public static Animation robotWalkingRightAnimation;
 	public static Animation robotScanningAnimation;
-	
+
 	public static Animation nemesisAnimation;
 
 	public static BitmapFont scoreFont;
 	public static BitmapFont textFont;
 	public static BitmapFont flyupFont;
-	
+
 	public static Sound[] chickenTaunts;
 	public static Sound[] standardTaunts;
 	public static Sound extraLifeSound;
@@ -117,15 +117,15 @@ public class Assets {
 	public static float robotShotHeight;
 	public static float particleWidth;
 	public static float particleHeight;
-	
+
 	public static CollisionGeometry playerGeometry;
 	public static CollisionGeometry captainGeometry;
-	
+
 	public static float pixelDensity;
-	
-	public static void load() {
+
+	public static void load () {
 		pixelDensity = calculatePixelDensity();
-		String textureDir = "data/textures/" + (int) pixelDensity;
+		String textureDir = "data/textures/" + (int)pixelDensity;
 		String textureFile = textureDir + "/pack";
 		atlas = new TextureAtlas(Gdx.files.internal(textureFile), Gdx.files.internal(textureDir));
 		loadTextures();
@@ -134,8 +134,8 @@ public class Assets {
 		loadSounds();
 		initialiseGeometries();
 	}
-	
-	private static void loadTextures() {
+
+	private static void loadTextures () {
 		pureWhiteTextureRegion = atlas.findRegion("8x8");
 		playerWalkingRight1 = atlas.findRegion("HeroRight1");
 		playerWalkingRight2 = atlas.findRegion("HeroRight2");
@@ -160,7 +160,7 @@ public class Assets {
 		pauseButton = atlas.findRegion("pause");
 	}
 
-	private static float calculatePixelDensity() {
+	private static float calculatePixelDensity () {
 		FileHandle textureDir = Gdx.files.internal("data/textures");
 		FileHandle[] availableDensities = textureDir.list();
 		FloatArray densities = new FloatArray(availableDensities.length);
@@ -171,51 +171,34 @@ public class Assets {
 		densities.sort();
 		return CameraHelper.bestDensity(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, densities.items);
 	}
-	
-	private static void createAnimations() {
+
+	private static void createAnimations () {
 		playerWalkingRightAnimation = new Animation(PLAYER_FRAME_DURATION, Assets.playerWalkingRight1, Assets.playerWalkingRight2);
 		playerWalkingLeftAnimation = new Animation(PLAYER_FRAME_DURATION, Assets.playerWalkingLeft1, Assets.playerWalkingLeft2);
-		
-		robotWalkingLeftAnimation = new Animation(ROBOT_FRAME_DURATION,
-				robotLeft1,
-				robotLeft2,
-				robotLeft3,
-				robotLeft4,
-				robotLeft3,
-				robotLeft2);
-		robotWalkingRightAnimation = new Animation(ROBOT_FRAME_DURATION, 
-				robotRight1, 
-				robotRight2, 
-				robotRight3,
-				robotRight4,
-				robotRight3,
-				robotRight2);
-		robotScanningAnimation = new Animation(ROBOT_FRAME_DURATION,
-				robotScan1,
-				robotScan2,
-				robotScan3,
-				robotScan4,
-				robotScan3,
-				robotScan2);
-		
-		nemesisAnimation = new Animation(CAPTAIN_FRAME_DURATION,
-				nemesis1,
-				nemesis2);
+
+		robotWalkingLeftAnimation = new Animation(ROBOT_FRAME_DURATION, robotLeft1, robotLeft2, robotLeft3, robotLeft4, robotLeft3,
+			robotLeft2);
+		robotWalkingRightAnimation = new Animation(ROBOT_FRAME_DURATION, robotRight1, robotRight2, robotRight3, robotRight4,
+			robotRight3, robotRight2);
+		robotScanningAnimation = new Animation(ROBOT_FRAME_DURATION, robotScan1, robotScan2, robotScan3, robotScan4, robotScan3,
+			robotScan2);
+
+		nemesisAnimation = new Animation(CAPTAIN_FRAME_DURATION, nemesis1, nemesis2);
 	}
-	
-	private static void loadFonts() {
-		String fontDir = "data/fonts/" + (int) pixelDensity + "/";
+
+	private static void loadFonts () {
+		String fontDir = "data/fonts/" + (int)pixelDensity + "/";
 
 		scoreFont = new BitmapFont(Gdx.files.internal(fontDir + SCORE_FONT), false);
 		textFont = new BitmapFont(Gdx.files.internal(fontDir + TEXT_FONT), false);
 		flyupFont = new BitmapFont(Gdx.files.internal(fontDir + FLYUP_FONT), false);
-		
+
 		scoreFont.setScale(1.0f / pixelDensity);
 		textFont.setScale(1.0f / pixelDensity);
 		flyupFont.setScale(1.0f / pixelDensity);
 	}
 
-	private static void loadSounds() {
+	private static void loadSounds () {
 		standardTaunts = loadSounds("standard_taunts");
 		chickenTaunts = loadSounds("chicken_taunts");
 		achievementSound = loadSound("achievement.ogg");
@@ -232,8 +215,8 @@ public class Assets {
 		killLastRobotSound = loadSound("hit03.ogg");
 		extraLifeSound = loadSound("pickup.ogg");
 	}
-	
-	private static Sound[] loadSounds(String dir) {
+
+	private static Sound[] loadSounds (String dir) {
 		FileHandle dh = Gdx.files.internal("data/sounds/" + dir);
 		FileHandle[] fhs = dh.list();
 		Sound[] sounds = new Sound[fhs.length];
@@ -242,16 +225,16 @@ public class Assets {
 		}
 		return sounds;
 	}
-	
-	private static Sound loadSound(String filename) { 
+
+	private static Sound loadSound (String filename) {
 		return Gdx.audio.newSound(Gdx.files.internal("data/sounds/" + filename));
 	}
-	
-	private static void initialiseGeometries() {
+
+	private static void initialiseGeometries () {
 
 		playerWidth = toWidth(playerWalkingRight1);
 		playerHeight = toHeight(playerWalkingRight1);
-		robotWidth = toWidth(robotRight1); 
+		robotWidth = toWidth(robotRight1);
 		robotHeight = toHeight(robotRight1);
 		captainWidth = toWidth(nemesis1);
 		captainHeight = toHeight(nemesis1);
@@ -261,11 +244,11 @@ public class Assets {
 		robotShotHeight = toHeight(robotShot);
 		particleWidth = PARTICLE_SIZE;
 		particleHeight = PARTICLE_SIZE;
-		
+
 		// TODO: The below is a complete hack just to provide the player and captain with some collision geometry
 		// so that he doesn't die when he's clearly not in contact with a wall, bullet or enemy. Ideally it would
 		// be generated from the bitmap, or loaded.
-		
+
 		// Configure player collision geometry.
 		Array<Rectangle> playerRectangles = new Array<Rectangle>();
 		Rectangle r = new Rectangle();
@@ -276,7 +259,7 @@ public class Assets {
 		setRectangle(r, x, y, w, h);
 		playerRectangles.add(r);
 		playerGeometry = new CollisionGeometry(playerRectangles);
-		
+
 		// Configure "captain" collision geometry.
 		Array<Rectangle> captainRectangles = new Array<Rectangle>();
 		r = new Rectangle();
@@ -289,15 +272,15 @@ public class Assets {
 		captainGeometry = new CollisionGeometry(captainRectangles);
 	}
 
-	private static float toWidth(TextureRegion region) {
+	private static float toWidth (TextureRegion region) {
 		return region.getRegionWidth() / pixelDensity;
 	}
-	
-	private static float toHeight(TextureRegion region) {
+
+	private static float toHeight (TextureRegion region) {
 		return region.getRegionHeight() / pixelDensity;
 	}
-	
-	public static void playSound(Sound sound) {
+
+	public static void playSound (Sound sound) {
 		sound.play(1);
 	}
 }

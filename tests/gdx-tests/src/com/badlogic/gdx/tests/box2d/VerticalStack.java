@@ -46,7 +46,8 @@ public class VerticalStack extends Box2DTest {
 	Body[] m_bodies = new Body[e_rowCount * e_columnCount];
 	int[] m_indices = new int[e_rowCount * e_columnCount];
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		{
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
@@ -93,7 +94,8 @@ public class VerticalStack extends Box2DTest {
 		m_bullet = null;
 	}
 
-	@Override public boolean keyDown (int keyCode) {
+	@Override
+	public boolean keyDown (int keyCode) {
 		if (keyCode == Input.Keys.COMMA) {
 			if (m_bullet != null) {
 				world.destroyBody(m_bullet);
@@ -129,8 +131,8 @@ public class VerticalStack extends Box2DTest {
 
 		if (renderer.batch != null) {
 			renderer.batch.begin();
-//			renderer.batch.drawText(renderer.font, "Press: (,) to launch a bullet", 0, Gdx.app.getGraphics().getHeight(),
-//				Color.WHITE);
+// renderer.batch.drawText(renderer.font, "Press: (,) to launch a bullet", 0, Gdx.app.getGraphics().getHeight(),
+// Color.WHITE);
 			renderer.batch.end();
 		}
 	}

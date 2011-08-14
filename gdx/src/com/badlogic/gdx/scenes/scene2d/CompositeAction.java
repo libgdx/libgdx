@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d;
 
 import java.util.ArrayList;
 
-/**
- * A base class for composite actions which deals with multiple child {@link Action}.
+/** A base class for composite actions which deals with multiple child {@link Action}.
  * 
- * @author Moritz Post <moritzpost@gmail.com>
- */
+ * @author Moritz Post <moritzpost@gmail.com> */
 public abstract class CompositeAction extends Action {
 
 	protected final ArrayList<Action> actions = new ArrayList<Action>();
 
-	/**
-	 * Gets all target {@link Action}s which are affected by the composite action.
+	/** Gets all target {@link Action}s which are affected by the composite action.
 	 * 
-	 * @return the {@link Action}s orchestrated by this {@link CompositeAction}
-	 */
+	 * @return the {@link Action}s orchestrated by this {@link CompositeAction} */
 	public ArrayList<Action> getActions () {
 		return actions;
 	}

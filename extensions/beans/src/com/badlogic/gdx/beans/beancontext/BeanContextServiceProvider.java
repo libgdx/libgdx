@@ -17,16 +17,13 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextServices;
-
 import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
 public interface BeanContextServiceProvider {
-    Iterator getCurrentServiceSelectors(BeanContextServices bcs, Class serviceClass);
+	Iterator getCurrentServiceSelectors (BeanContextServices bcs, Class serviceClass);
 
-    Object getService(BeanContextServices bcs, Object requestor, Class serviceClass,
-            Object serviceSelector);
+	Object getService (BeanContextServices bcs, Object requestor, Class serviceClass, Object serviceSelector);
 
-    void releaseService(BeanContextServices bcs, Object requestor, Object service);
+	void releaseService (BeanContextServices bcs, Object requestor, Object service);
 }

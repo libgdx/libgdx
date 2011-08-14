@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.gles2;
 
 import com.badlogic.gdx.Gdx;
@@ -27,37 +28,27 @@ public class HelloTriangle extends GdxTest {
 	ShaderProgram shader;
 	Mesh mesh;
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return true;
 	}
 
 	@Override
-	public void create() {
-		String vertexShader = 
-		      "attribute vec4 vPosition;    \n" +
-		      "void main()                  \n" +
-		      "{                            \n" +
-		      "   gl_Position = vPosition;  \n" +
-		      "}                            \n";
-		String fragmentShader =		
-			"#ifdef GL_ES\n"
-			+ "precision mediump float;\n"
-			+ "#endif\n" +
-		    "void main()                                  \n" +		
-		    "{                                            \n" +
-		    "  gl_FragColor = vec4 ( 1.0, 1.0, 1.0, 1.0 );\n" +
-		    "}";
-		
+	public void create () {
+		String vertexShader = "attribute vec4 vPosition;    \n" + "void main()                  \n"
+			+ "{                            \n" + "   gl_Position = vPosition;  \n" + "}                            \n";
+		String fragmentShader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n"
+			+ "void main()                                  \n" + "{                                            \n"
+			+ "  gl_FragColor = vec4 ( 1.0, 1.0, 1.0, 1.0 );\n" + "}";
+
 		shader = new ShaderProgram(vertexShader, fragmentShader);
 		mesh = new Mesh(true, 3, 0, new VertexAttribute(Usage.Position, 3, "vPosition"));
-		float[] vertices = { 0.0f,  0.5f, 0.0f,
-								  -0.5f, -0.5f, 0.0f,
-									0.5f, -0.5f, 0.0f };		
+		float[] vertices = {0.0f, 0.5f, 0.0f, -0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f};
 		mesh.setVertices(vertices);
-	}	
-	
+	}
+
 	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		shader.begin();

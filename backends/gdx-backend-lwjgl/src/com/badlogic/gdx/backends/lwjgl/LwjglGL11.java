@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.nio.Buffer;
@@ -28,13 +29,10 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 
-/**
- * An implementation of the {@link GL11} interface based on Jogl. Fixed point vertex arrays are emulated. Some glGetXXX methods
+/** An implementation of the {@link GL11} interface based on Jogl. Fixed point vertex arrays are emulated. Some glGetXXX methods
  * are not implemented.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;

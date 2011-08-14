@@ -17,13 +17,11 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.PropertyChangeListener;
-
 public interface Customizer {
 
-    public void setObject(Object bean);
+	public void setObject (Object bean);
 
-    public void removePropertyChangeListener(PropertyChangeListener listener);
+	public void removePropertyChangeListener (PropertyChangeListener listener);
 
-    public void addPropertyChangeListener(PropertyChangeListener listener);
+	public void addPropertyChangeListener (PropertyChangeListener listener);
 }

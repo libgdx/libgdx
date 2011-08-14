@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.jogl;
 
 import java.awt.BorderLayout;
@@ -54,7 +55,8 @@ public class JoglTestStarter {
 			});
 
 			button.addActionListener(new ActionListener() {
-				@Override public void actionPerformed (ActionEvent e) {
+				@Override
+				public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
 					new JoglApplication(test, testName, 480, 320, test.needsGL20());

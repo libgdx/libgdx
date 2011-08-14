@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.Gdx;
@@ -34,7 +35,7 @@ public class HighscoresScreen extends Screen {
 	public HighscoresScreen (Game game) {
 		super(game);
 
-		guiCam = new OrthographicCamera(320, 480);		
+		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		backBounds = new Rectangle(0, 0, 64, 64);
 		touchPoint = new Vector3();
@@ -47,10 +48,11 @@ public class HighscoresScreen extends Screen {
 		xOffset = 160 - xOffset / 2 + Assets.font.getSpaceWidth() / 2;
 	}
 
-	@Override public void update (float deltaTime) {
+	@Override
+	public void update (float deltaTime) {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-			
+
 			if (OverlapTester.pointInRectangle(backBounds, touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new MainMenuScreen(game));
@@ -59,7 +61,8 @@ public class HighscoresScreen extends Screen {
 		}
 	}
 
-	@Override public void present (float deltaTime) {
+	@Override
+	public void present (float deltaTime) {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		guiCam.update();
@@ -71,7 +74,7 @@ public class HighscoresScreen extends Screen {
 		batcher.begin();
 		batcher.draw(Assets.backgroundRegion, 0, 0, 320, 480);
 		batcher.end();
-	
+
 		batcher.enableBlending();
 		batcher.begin();
 		batcher.draw(Assets.highScoresRegion, 10, 360 - 16, 300, 33);
@@ -83,15 +86,18 @@ public class HighscoresScreen extends Screen {
 		}
 
 		batcher.draw(Assets.arrow, 0, 0, 64, 64);
-		batcher.end();		
+		batcher.end();
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 	}
 }

@@ -17,11 +17,9 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.PropertyChangeEvent;
-
 import java.util.EventListener;
 
 public interface PropertyChangeListener extends EventListener {
 
-    public void propertyChange(PropertyChangeEvent event);
+	public void propertyChange (PropertyChangeEvent event);
 }

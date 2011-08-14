@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import java.io.ByteArrayOutputStream;
@@ -26,9 +27,7 @@ import javazoom.jl.decoder.OutputBuffer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class Mp3 {
 	static public class Music extends OpenALMusic {
 		// Note: This uses a slightly modified version of JLayer.
@@ -43,12 +42,12 @@ public class Mp3 {
 			decoder = new MP3Decoder();
 			try {
 				Header header = bitstream.readFrame();
-				if (header == null) throw new GdxRuntimeException("empty ogg");			
+				if (header == null) throw new GdxRuntimeException("empty ogg");
 				int channels = header.mode() == Header.SINGLE_CHANNEL ? 1 : 2;
 				outputBuffer = new OutputBuffer(channels, false);
 				decoder.setOutputBuffer(outputBuffer);
-				setup(channels, header.getSampleRate());					
-			} catch(BitstreamException e) {
+				setup(channels, header.getSampleRate());
+			} catch (BitstreamException e) {
 				throw new GdxRuntimeException("error while preloading mp3", e);
 			}
 		}

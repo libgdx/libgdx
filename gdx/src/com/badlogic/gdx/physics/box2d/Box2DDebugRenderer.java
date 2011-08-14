@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.Iterator;
@@ -53,9 +54,7 @@ public class Box2DDebugRenderer {
 			vertices[i] = new Vector2();
 	}
 
-	/**
-	 * This assumes that the projection matrix has already been set.
-	 */
+	/** This assumes that the projection matrix has already been set. */
 	public void render (World world) {
 		renderBodies(world);
 	}

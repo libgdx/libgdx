@@ -119,9 +119,7 @@ public class XmlWriter extends Writer {
 		return this;
 	}
 
-	/**
-	 * Calls {@link #pop()} for each remaining open element, if any, and closes the stream.
-	 */
+	/** Calls {@link #pop()} for each remaining open element, if any, and closes the stream. */
 	public void close () throws IOException {
 		while (!stack.isEmpty())
 			pop();

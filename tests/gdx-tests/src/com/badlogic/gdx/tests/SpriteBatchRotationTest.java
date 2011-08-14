@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -37,7 +35,8 @@ public class SpriteBatchRotationTest extends GdxTest {
 	float vScale = 1;
 	IntBuffer pixelBuffer;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		spriteBatch.draw(texture, 16, 10, 16, 16, 32, 32, 1, 1, 0, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
@@ -85,7 +84,8 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		spriteBatch = new SpriteBatch();
 		texture = new Texture(Gdx.files.internal("data/test.png"));
 		// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
@@ -95,7 +95,8 @@ public class SpriteBatchRotationTest extends GdxTest {
 
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

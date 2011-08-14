@@ -9,10 +9,8 @@ import java.util.Map;
 
 public class JSONUtils {
 
-	/**
-	 * If argument is a JSONArray or JSONObject, returns the equivalent List or Map. If argument is JSONObject.NULL, returns null.
-	 * Otherwise, returns the argument unchanged.
-	 */
+	/** If argument is a JSONArray or JSONObject, returns the equivalent List or Map. If argument is JSONObject.NULL, returns null.
+	 * Otherwise, returns the argument unchanged. */
 	public static Object objectFromJSONItem (Object jsonItem) {
 		if (jsonItem == JSONObject.NULL) {
 			return null;
@@ -26,10 +24,8 @@ public class JSONUtils {
 		return jsonItem;
 	}
 
-	/**
-	 * Returns a List with the same objects in the same order as jsonArray. Recursively converts nested JSONArray and JSONObject
-	 * values to List and Map objects.
-	 */
+	/** Returns a List with the same objects in the same order as jsonArray. Recursively converts nested JSONArray and JSONObject
+	 * values to List and Map objects. */
 	public static List listFromJSONArray (JSONArray jsonArray) {
 		List result = new ArrayList();
 		try {
@@ -43,10 +39,8 @@ public class JSONUtils {
 		return result;
 	}
 
-	/**
-	 * Returns a List with the same keys and values as jsonObject. Recursively converts nested JSONArray and JSONObject values to
-	 * List and Map objects.
-	 */
+	/** Returns a List with the same keys and values as jsonObject. Recursively converts nested JSONArray and JSONObject values to
+	 * List and Map objects. */
 	public static Map mapFromJSONObject (JSONObject jsonObject) {
 		Map result = new HashMap();
 		try {
@@ -61,9 +55,7 @@ public class JSONUtils {
 		return result;
 	}
 
-	/**
-	 * Returns a List created by parsing the string argument as a JSON array and calling listFromJSONArray.
-	 */
+	/** Returns a List created by parsing the string argument as a JSON array and calling listFromJSONArray. */
 	public static List listFromJSONString (String jsonString) {
 		try {
 			return listFromJSONArray(new JSONArray(jsonString));
@@ -72,9 +64,7 @@ public class JSONUtils {
 		}
 	}
 
-	/**
-	 * Returns a Map created by parsing the string argument as a JSON object and calling mapFromJSONObject.
-	 */
+	/** Returns a Map created by parsing the string argument as a JSON object and calling mapFromJSONObject. */
 	public static Map mapFromJSONString (String jsonString) {
 		try {
 			return mapFromJSONObject(new JSONObject(jsonString));

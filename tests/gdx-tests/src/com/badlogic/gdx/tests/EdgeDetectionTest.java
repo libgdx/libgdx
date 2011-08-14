@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Arrays;
@@ -24,8 +25,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
@@ -35,41 +34,39 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class EdgeDetectionTest extends GdxTest {
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return true;
 	}
-	
+
 	FPSLogger logger;
 	ShaderProgram shader;
 	Mesh mesh;
 	FrameBuffer fbo;
-	PerspectiveCamera cam;	
+	PerspectiveCamera cam;
 	Matrix4 matrix = new Matrix4();
 	float angle = 0;
 	TextureRegion fboRegion;
 	SpriteBatch batch;
-	ShaderProgram batchShader;	
-		
-	float[] filter = { 0, 0.25f, 0,
-		 					 0.25f, -1f, 0.6f,
-		 					 0, 0.25f, 0,
-	};
-	
+	ShaderProgram batchShader;
+
+	float[] filter = {0, 0.25f, 0, 0.25f, -1f, 0.6f, 0, 0.25f, 0,};
+
 	float[] offsets = new float[18];
-	
-	public void create() {
+
+	public void create () {
 		ShaderProgram.pedantic = false;
-		shader = new ShaderProgram(Gdx.files.internal("data/default.vert").readString(),
-											Gdx.files.internal("data/depthtocolor.frag").readString());
-		if(!shader.isCompiled()) {
+		shader = new ShaderProgram(Gdx.files.internal("data/default.vert").readString(), Gdx.files.internal(
+			"data/depthtocolor.frag").readString());
+		if (!shader.isCompiled()) {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile scene shader: " + shader.getLog());
 		}
-		batchShader = new ShaderProgram(Gdx.files.internal("data/batch.vert").readString(),
-												  Gdx.files.internal("data/convolution.frag").readString());
-		if(!batchShader.isCompiled()) {
+		batchShader = new ShaderProgram(Gdx.files.internal("data/batch.vert").readString(), Gdx.files.internal(
+			"data/convolution.frag").readString());
+		if (!batchShader.isCompiled()) {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile post-processing shader: " + batchShader.getLog());
 		}
-		
+
 		mesh = ObjLoader.loadObj(Gdx.files.internal("data/scene.obj").read());
 		fbo = new FrameBuffer(Format.RGB565, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -81,28 +78,28 @@ public class EdgeDetectionTest extends GdxTest {
 		fboRegion = new TextureRegion(fbo.getColorBufferTexture());
 		fboRegion.flip(false, true);
 		logger = new FPSLogger();
-		calculateOffsets();		
+		calculateOffsets();
 	}
-	
-	private void calculateOffsets() {
+
+	private void calculateOffsets () {
 		int idx = 0;
-		for(int y = -1; y <= 1; y++) {
-			for(int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= 1; y++) {
+			for (int x = -1; x <= 1; x++) {
 				offsets[idx++] = x / (float)Gdx.graphics.getWidth();
 				offsets[idx++] = y / (float)Gdx.graphics.getHeight();
 			}
 		}
 		System.out.println(Arrays.toString(offsets));
 	}
-	
-	public void render() {
+
+	public void render () {
 		angle += 45 * Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
+
 		cam.update();
 		matrix.setToRotation(0, 1, 0, angle);
 		cam.combined.mul(matrix);
-				
+
 		fbo.begin();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
@@ -112,13 +109,12 @@ public class EdgeDetectionTest extends GdxTest {
 		mesh.render(shader, GL10.GL_TRIANGLES);
 		shader.end();
 		fbo.end();
-				
-		
+
 		batch.begin();
 		batch.disableBlending();
 		batchShader.setUniformi("u_filterSize", filter.length);
 		batchShader.setUniform1fv("u_filter", filter, 0, filter.length);
-		batchShader.setUniform2fv("u_offsets", offsets, 0, offsets.length);		
+		batchShader.setUniform2fv("u_offsets", offsets, 0, offsets.length);
 		batch.draw(fboRegion, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
 		logger.log();

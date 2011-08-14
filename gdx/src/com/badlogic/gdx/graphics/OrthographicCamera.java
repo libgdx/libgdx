@@ -20,12 +20,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-/**
- * A camera with orthographic projection.
+/** A camera with orthographic projection.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class OrthographicCamera extends Camera {
 	/** the zoom of the camera **/
 	public float zoom = 1;
@@ -34,13 +31,11 @@ public class OrthographicCamera extends Camera {
 		this.near = 0;
 	}
 
-	/**
-	 * Constructs a new OrthographicCamera, using the given viewport width and height. For pixel perfect 2D rendering just supply
+	/** Constructs a new OrthographicCamera, using the given viewport width and height. For pixel perfect 2D rendering just supply
 	 * the screen size, for other unit scales (e.g. meters for box2d) proceed accordingly.
 	 * 
 	 * @param viewportWidth the viewport width
-	 * @param viewportHeight the viewport height
-	 */
+	 * @param viewportHeight the viewport height */
 	public OrthographicCamera (float viewportWidth, float viewportHeight) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;
@@ -48,14 +43,12 @@ public class OrthographicCamera extends Camera {
 		update();
 	}
 
-	/**
-	 * Constructs a new OrthographicCamera, using the given viewport width and height. This will create a camera useable for
+	/** Constructs a new OrthographicCamera, using the given viewport width and height. This will create a camera useable for
 	 * iso-metric views. The diamond angle is specifies the angle of a tile viewed isometrically.
 	 * 
 	 * @param viewportWidth the viewport width
 	 * @param viewportHeight the viewport height
-	 * @param diamondAngle the angle in degrees
-	 */
+	 * @param diamondAngle the angle in degrees */
 	public OrthographicCamera (float viewportWidth, float viewportHeight, float diamondAngle) {
 		this.viewportWidth = viewportWidth;
 		this.viewportHeight = viewportHeight;

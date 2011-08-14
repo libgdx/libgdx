@@ -21,5 +21,5 @@ import com.badlogic.gdx.beans.BeanInfo;
 
 public interface BeanContextServiceProviderBeanInfo extends BeanInfo {
 
-    public BeanInfo[] getServicesBeanInfo();
+	public BeanInfo[] getServicesBeanInfo ();
 }

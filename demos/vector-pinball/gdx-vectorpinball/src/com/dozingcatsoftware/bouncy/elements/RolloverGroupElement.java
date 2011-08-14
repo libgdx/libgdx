@@ -15,13 +15,11 @@ import com.dozingcatsoftware.bouncy.IFieldRenderer;
 
 import static com.dozingcatsoftware.bouncy.util.MathUtils.*;
 
-/**
- * This class represents a collection of rollover elements, such as the rollovers in the top lanes. They are activated (and
+/** This class represents a collection of rollover elements, such as the rollovers in the top lanes. They are activated (and
  * optionally deactivated) when a ball passes over them. Individual rollovers in the group are represented by instances of the
  * Rollover nested class, which specify center, radius, and color. Parameters at the collection level control whether the
  * rollovers should cycle when flippers are activated, and whether rollovers can toggle from on to off.
- * @author brian
- */
+ * @author brian */
 
 public class RolloverGroupElement extends FieldElement {
 
@@ -44,7 +42,8 @@ public class RolloverGroupElement extends FieldElement {
 
 	List<Rollover> rolloversHitOnPreviousTick = new ArrayList<Rollover>();
 
-	@Override public void finishCreate (Map params, World world) {
+	@Override
+	public void finishCreate (Map params, World world) {
 		this.canToggleOff = Boolean.TRUE.equals(params.get("toggleOff"));
 		this.cycleOnFlipper = Boolean.TRUE.equals(params.get("cycleOnFlipper"));
 		this.ignoreBall = Boolean.TRUE.equals(params.get("ignoreBall"));
@@ -69,7 +68,8 @@ public class RolloverGroupElement extends FieldElement {
 		}
 	}
 
-	@Override public Collection<Body> getBodies () {
+	@Override
+	public Collection<Body> getBodies () {
 		return Collections.EMPTY_SET;
 	}
 
@@ -106,9 +106,7 @@ public class RolloverGroupElement extends FieldElement {
 		return activeRollovers.size() == rollovers.size();
 	}
 
-	/**
-	 * Activates the first unactivated rollover in the group. Has no effect if all are active.
-	 */
+	/** Activates the first unactivated rollover in the group. Has no effect if all are active. */
 	public void activateFirstUnactivatedRollover () {
 		int len = rollovers.size();
 		for (int i = 0; i < len; i++) {
@@ -120,12 +118,14 @@ public class RolloverGroupElement extends FieldElement {
 		}
 	}
 
-	@Override public boolean shouldCallTick () {
+	@Override
+	public boolean shouldCallTick () {
 		return true;
 
 	}
 
-	@Override public void tick (Field field) {
+	@Override
+	public void tick (Field field) {
 		if (this.ignoreBall) return;
 
 		boolean allActivePrevious = this.allRolloversActive();
@@ -164,7 +164,8 @@ public class RolloverGroupElement extends FieldElement {
 		}
 	}
 
-	@Override public void flipperActivated (Field field) {
+	@Override
+	public void flipperActivated (Field field) {
 		if (this.cycleOnFlipper) {
 			this.cycleRollovers();
 		}
@@ -172,11 +173,9 @@ public class RolloverGroupElement extends FieldElement {
 
 	List<Rollover> newActiveRollovers = new ArrayList<Rollover>();
 
-	/**
-	 * Cycles the states of all rollover elements by "rotating" right. For example, if this group has three rollovers whose states
+	/** Cycles the states of all rollover elements by "rotating" right. For example, if this group has three rollovers whose states
 	 * are (on, on, off), after calling this method the states will be (off, on, on). The state of the last rollover wraps around
-	 * to the first, so (off, off, on) -> (on, off, off).
-	 */
+	 * to the first, so (off, off, on) -> (on, off, off). */
 	public void cycleRollovers () {
 		newActiveRollovers.clear();
 		for (int i = 0; i < this.rollovers.size(); i++) {
@@ -189,9 +188,7 @@ public class RolloverGroupElement extends FieldElement {
 		this.activeRollovers.addAll(newActiveRollovers);
 	}
 
-	/**
-	 * Sets all rollovers to be active or inactive according to the boolean argument.
-	 */
+	/** Sets all rollovers to be active or inactive according to the boolean argument. */
 	public void setAllRolloversActivated (boolean active) {
 		activeRollovers.clear();
 		if (active) {
@@ -199,7 +196,8 @@ public class RolloverGroupElement extends FieldElement {
 		}
 	}
 
-	@Override public void draw (IFieldRenderer renderer) {
+	@Override
+	public void draw (IFieldRenderer renderer) {
 		// default color defined at the group level
 		int defaultRed = this.redColorComponent(0);
 		int defaultGreen = this.greenColorComponent(255);

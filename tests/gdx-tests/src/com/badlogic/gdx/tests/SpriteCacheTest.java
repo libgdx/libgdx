@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.math.MathUtils;
@@ -46,13 +45,14 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 
 	private float[] sprites2;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		if (renderMethod == 0) renderNormal();
 		;
 		if (renderMethod == 1) renderSprites();
 	}
 
-	private void renderNormal () {		
+	private void renderNormal () {
 		Gdx.gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -113,7 +113,8 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		frames++;
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		spriteCache = new SpriteCache(1000, true);
 
 		Pixmap pixmap = new Pixmap(Gdx.files.internal("data/badlogicsmall.jpg"));
@@ -187,7 +188,8 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		if (keycode != Input.Keys.SPACE) return false;
 		float scale = MathUtils.random(0.75f, 1.25f);
 		float angle = MathUtils.random(1, 360);
@@ -200,36 +202,44 @@ public class SpriteCacheTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		renderMethod = (renderMethod + 1) % 2;
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 

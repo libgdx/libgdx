@@ -14,5 +14,5 @@
 package com.badlydrawngames.veryangryrobots;
 
 public interface ScoringEventListener {
-	void onScoringEvent(float x, float y, int points);
+	void onScoringEvent (float x, float y, int points);
 }

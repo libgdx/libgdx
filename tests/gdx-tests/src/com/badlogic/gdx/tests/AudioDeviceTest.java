@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -23,11 +24,13 @@ public class AudioDeviceTest extends GdxTest {
 	Thread thread;
 	boolean stop = false;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		if (thread == null) {
 			final AudioDevice device = Gdx.app.getAudio().newAudioDevice(44100, false);
 			thread = new Thread(new Runnable() {
-				@Override public void run () {
+				@Override
+				public void run () {
 					final float frequency = 440;
 					float increment = (float)(2 * Math.PI) * frequency / 44100; // angular increment for each sample
 					float angle = 0;
@@ -50,7 +53,8 @@ public class AudioDeviceTest extends GdxTest {
 		}
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		stop = true;
 		try {
 			thread.join();
@@ -59,7 +63,8 @@ public class AudioDeviceTest extends GdxTest {
 		}
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 

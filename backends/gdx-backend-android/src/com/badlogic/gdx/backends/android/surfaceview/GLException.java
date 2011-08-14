@@ -15,11 +15,9 @@ package com.badlogic.gdx.backends.android.surfaceview;
 
 import android.opengl.GLU;
 
-/**
- * An exception class for OpenGL errors.
- * 
- */
-@SuppressWarnings("serial") public class GLException extends RuntimeException {
+/** An exception class for OpenGL errors. */
+@SuppressWarnings("serial")
+public class GLException extends RuntimeException {
 	public GLException (final int error) {
 		super(getErrorString(error));
 		mError = error;

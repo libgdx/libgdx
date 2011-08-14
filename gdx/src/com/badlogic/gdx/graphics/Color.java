@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.utils.NumberUtils;
 
-/**
- * A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
+/** A color class, holding the r, g, b and alpha component as floats in the range [0,1]. All methods perform clamping on the
  * internal values after execution.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class Color {
 	public static final Color WHITE = new Color(1, 1, 1, 1);
 	public static final Color BLACK = new Color(0, 0, 0, 1);
@@ -34,21 +32,17 @@ public class Color {
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 
-	/**
-	 * Constructs a new Color with all components set to 0.
-	 */
-	public Color() {
-		
+	/** Constructs a new Color with all components set to 0. */
+	public Color () {
+
 	}
-	
-	/**
-	 * Constructor, sets the components of the color
+
+	/** Constructor, sets the components of the color
 	 * 
 	 * @param r the red component
 	 * @param g the green component
 	 * @param b the blue component
-	 * @param a the alpha component
-	 */
+	 * @param a the alpha component */
 	public Color (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
@@ -57,20 +51,16 @@ public class Color {
 		clamp();
 	}
 
-	/**
-	 * Constructs a new color using the given color
+	/** Constructs a new color using the given color
 	 * 
-	 * @param color the color
-	 */
+	 * @param color the color */
 	public Color (Color color) {
 		set(color);
 	}
 
-	/**
-	 * Sets this color to the given color.
+	/** Sets this color to the given color.
 	 * 
-	 * @param color the Color
-	 */
+	 * @param color the Color */
 	public Color set (Color color) {
 		this.r = color.r;
 		this.g = color.g;
@@ -80,12 +70,10 @@ public class Color {
 		return this;
 	}
 
-	/**
-	 * Multiplies the this color and the given color
+	/** Multiplies the this color and the given color
 	 * 
 	 * @param color the color
-	 * @return this color.
-	 */
+	 * @return this color. */
 	public Color mul (Color color) {
 		this.r *= color.r;
 		this.g *= color.g;
@@ -95,12 +83,10 @@ public class Color {
 		return this;
 	}
 
-	/**
-	 * Multiplies all components of this Color with the given value.
+	/** Multiplies all components of this Color with the given value.
 	 * 
 	 * @param value the value
-	 * @return this color
-	 */
+	 * @return this color */
 	public Color mul (float value) {
 		this.r *= value;
 		this.g *= value;
@@ -110,12 +96,10 @@ public class Color {
 		return this;
 	}
 
-	/**
-	 * Adds the given color to this color.
+	/** Adds the given color to this color.
 	 * 
 	 * @param color the color
-	 * @return this color
-	 */
+	 * @return this color */
 	public Color add (Color color) {
 		this.r += color.r;
 		this.g += color.g;
@@ -125,12 +109,10 @@ public class Color {
 		return this;
 	}
 
-	/**
-	 * Subtracts the given color from this color
+	/** Subtracts the given color from this color
 	 * 
 	 * @param color the color
-	 * @return this color
-	 */
+	 * @return this color */
 	public Color sub (Color color) {
 		this.r -= color.r;
 		this.g -= color.g;
@@ -165,7 +147,8 @@ public class Color {
 		this.a = a;
 	}
 
-	@Override public boolean equals (Object o) {
+	@Override
+	public boolean equals (Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
@@ -179,7 +162,8 @@ public class Color {
 		return true;
 	}
 
-	@Override public int hashCode () {
+	@Override
+	public int hashCode () {
 		int result = (r != +0.0f ? NumberUtils.floatToIntBits(r) : 0);
 		result = 31 * result + (g != +0.0f ? NumberUtils.floatToIntBits(g) : 0);
 		result = 31 * result + (b != +0.0f ? NumberUtils.floatToIntBits(b) : 0);
@@ -191,87 +175,77 @@ public class Color {
 		return Integer.toHexString(toIntBits());
 	}
 
-	/**
-	 * Packs the four color components which should be in the range 0-255 into a 32-bit integer and then converts it to a float.
+	/** Packs the four color components which should be in the range 0-255 into a 32-bit integer and then converts it to a float.
 	 * Note that no range checking is performed for higher performance.
 	 * 
 	 * @param r the red component, 0 - 255
 	 * @param g the green component, 0 - 255
 	 * @param b the blue component, 0 - 255
 	 * @param a the alpha component, 0 - 255
-	 * @return the packed color as a float
-	 */
+	 * @return the packed color as a float */
 	public static float toFloatBits (int r, int g, int b, int a) {
 		int color = (a << 24) | (b << 16) | (g << 8) | r;
 		float floatColor = NumberUtils.intBitsToFloat(color & 0xfeffffff);
 		return floatColor;
 	}
 
-	/**
-	 * Packs the four color components which should be in the range 0-255 into a 32-bit. Note that no range checking is performed
+	/** Packs the four color components which should be in the range 0-255 into a 32-bit. Note that no range checking is performed
 	 * for higher performance.
 	 * 
 	 * @param r the red component, 0 - 255
 	 * @param g the green component, 0 - 255
 	 * @param b the blue component, 0 - 255
 	 * @param a the alpha component, 0 - 255
-	 * @return the packed color as a 32-bit int
-	 */
+	 * @return the packed color as a 32-bit int */
 	public static int toIntBits (int r, int g, int b, int a) {
 		return (a << 24) | (b << 16) | (g << 8) | r;
 	}
 
-	/**
-	 * Packs the 4 components of this color into a 32-bit int and returns it as a float.
+	/** Packs the 4 components of this color into a 32-bit int and returns it as a float.
 	 * 
-	 * @return the packed color as a 32-bit float
-	 */
+	 * @return the packed color as a 32-bit float */
 	public float toFloatBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return NumberUtils.intBitsToFloat(color & 0xfeffffff);
 	}
 
-	/**
-	 * Packs the 4 components of this color into a 32-bit int.
+	/** Packs the 4 components of this color into a 32-bit int.
 	 * 
-	 * @return the packed color as a 32-bit int.
-	 */
+	 * @return the packed color as a 32-bit int. */
 	public int toIntBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return color;
 	}
 
-	/**
-	 * Packs the 4 components of this color into a 32-bit int and returns it as a float.
+	/** Packs the 4 components of this color into a 32-bit int and returns it as a float.
 	 * 
-	 * @return the packed color as a 32-bit float
-	 */
+	 * @return the packed color as a 32-bit float */
 	public static float toFloatBits (float r, float g, float b, float a) {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		return NumberUtils.intBitsToFloat(color & 0xfeffffff);
 	}
-	
-	public static int alpha(float alpha) {
+
+	public static int alpha (float alpha) {
 		return (int)(alpha * 255.0f);
 	}
-	
-	public static int luminanceAlpha(float luminance, float alpha) {
-		return ((int)(luminance *  255.0f) << 8) | (int)(alpha * 255);
+
+	public static int luminanceAlpha (float luminance, float alpha) {
+		return ((int)(luminance * 255.0f) << 8) | (int)(alpha * 255);
 	}
-	
-	public static int rgb565(float r, float g, float b) {
+
+	public static int rgb565 (float r, float g, float b) {
 		return ((int)(r * 31) << 11) | ((int)(g * 63) << 5) | (int)(b * 31);
 	}
-	
-	public static int rgba4444(float r, float g, float b, float a) {
-		return ((int)(r*15) << 12) | ((int)(g*15) << 8) | ((int)(b*15) << 4) | (int)(a*15);
+
+	public static int rgba4444 (float r, float g, float b, float a) {
+		return ((int)(r * 15) << 12) | ((int)(g * 15) << 8) | ((int)(b * 15) << 4) | (int)(a * 15);
 	}
 
 	public static int rgb888 (float r, float g, float b) {
-		return ((int)(r*255) << 16) | ((int)(g*255) << 8) | (int)(b*255);
+		return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);
 	}
-	
-	public static int rgba8888(float r, float g, float b, float a) {
-		return ((int)(r*255) << 24) | ((int)(g*255) << 16) | ((int)(b*255) << 8) | (int)(a*255);
-	}	
+
+	public static int rgba8888 (float r, float g, float b, float a) {
+		return ((int)(r * 255) << 24) | ((int)(g * 255) << 16) | ((int)(b * 255) << 8) | (int)(a * 255);
+	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.angle;
 
 import java.util.ArrayList;
@@ -68,59 +69,71 @@ public class AngleApplication implements Application, ESLoop {
 		}).run();
 	}
 
-	@Override public Graphics getGraphics () {
+	@Override
+	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	@Override public Audio getAudio () {
+	@Override
+	public Audio getAudio () {
 		return audio;
 	}
 
-	@Override public Input getInput () {
+	@Override
+	public Input getInput () {
 		return input;
 	}
 
-	@Override public Files getFiles () {
+	@Override
+	public Files getFiles () {
 		return files;
 	}
 
-	@Override public ApplicationType getType () {
+	@Override
+	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
 
-	@Override public int getVersion () {
+	@Override
+	public int getVersion () {
 		return 0;
 	}
 
-	@Override public long getJavaHeap () {
+	@Override
+	public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override public long getNativeHeap () {
+	@Override
+	public long getNativeHeap () {
 		return getJavaHeap();
 	}
 
-	@Override public void onKey (int action, int key, int keyCode) {
+	@Override
+	public void onKey (int action, int key, int keyCode) {
 		input.registerKeyEvent(action, key, keyCode);
 	}
 
-	@Override public void onMouse (int action, int x, int y, int button) {
+	@Override
+	public void onMouse (int action, int x, int y, int button) {
 		input.registerMouseEvent(action, x, y, button);
 	}
 
-	@Override public void quit () {
+	@Override
+	public void quit () {
 		listener.pause();
 		listener.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		graphics.updateTime();
 		if (!created) {
-			listener.create();			
+			listener.create();
 			created = true;
 		}
 		synchronized (runnables) {
-			for(int i = 0; i < runnables.size(); i++) {
+			for (int i = 0; i < runnables.size(); i++) {
 				runnables.get(i).run();
 			}
 			runnables.clear();
@@ -130,15 +143,18 @@ public class AngleApplication implements Application, ESLoop {
 		input.justTouched = false;
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 		graphics.width = width;
 		graphics.height = height;
 		if (!created) listener.resize(width, height);
 	}
 
 	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
-	@Override public Preferences getPreferences (String name) {
-		if(preferences.containsKey(name)) {
+
+	@Override
+	public Preferences getPreferences (String name) {
+		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
 			Preferences prefs = new AnglePreferences(name);
@@ -147,52 +163,57 @@ public class AngleApplication implements Application, ESLoop {
 		}
 	}
 
-	@Override public void postRunnable (Runnable runnable) {
-		synchronized(runnables) {
+	@Override
+	public void postRunnable (Runnable runnable) {
+		synchronized (runnables) {
 			runnables.add(runnable);
-		}	
-	}
-	
-   @Override
-   public void log(String tag, String message) {
-   	if(logLevel >= LOG_INFO) {
-			System.out.println(tag + ":" + message);		
 		}
-   }
+	}
 
-	@Override public void log (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_INFO) {
+	@Override
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);
+		}
+	}
+
+	@Override
+	public void log (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ":" + message);
 			exception.printStackTrace(System.out);
 		}
 	}
-	
-	@Override public void error (String tag, String message) {
-		if(logLevel >= LOG_ERROR) {
-			System.err.println(tag + ":" + message);			
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);
 		}
 	}
 
-
-	@Override public void error (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_ERROR) {
+	@Override
+	public void error (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ":" + message);
 			exception.printStackTrace(System.err);
 		}
 	}
 
-
-	@Override public void setLogLevel (int logLevel) {		
+	@Override
+	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
 
-	@Override public void exit () {
+	@Override
+	public void exit () {
 		postRunnable(new Runnable() {
-			@Override public void run () {
+			@Override
+			public void run () {
 				AngleApplication.this.listener.pause();
 				AngleApplication.this.listener.dispose();
 				System.exit(-1);
-			}			
+			}
 		});
 	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
@@ -57,7 +58,8 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	float[][] intp;
 	float[] vertices;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 
 		camera = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
 		camera.position.set((WIDTH) / 2.0f, (HEIGHT) / 2.0f, WIDTH / 2.0f);
@@ -161,7 +163,8 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 	long lastTick = System.nanoTime();
 	Random rand = new Random();
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -203,45 +206,54 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 		batch.end();
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int newParam) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int newParam) {
 // Ray ray = camera.getPickRay( x, (int)(y / (float)Gdx.graphics.getHeight() * Gdx.graphics.getWidth()));
 // Intersector.intersectRayPlane( ray, plane, point );
 // touchWater( point );
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 // Ray ray = camera.getPickRay( x, (int)(y / (float)Gdx.graphics.getHeight() * Gdx.graphics.getWidth()));
 // Intersector.intersectRayPlane( ray, plane, point );
 // touchWater( point );
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 

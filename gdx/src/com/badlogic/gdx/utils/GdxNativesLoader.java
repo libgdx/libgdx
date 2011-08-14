@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class GdxNativesLoader {
 		if (path != null) {
 			System.load(path);
 		}
-		
+
 		return path != null;
 	}
 
@@ -86,13 +86,12 @@ public class GdxNativesLoader {
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
 	}
 
-	/**
-	 * Loads the libgdx native libraries.
-	 */
+	/** Loads the libgdx native libraries. */
 	static public void load () {
-		if(disableNativesLoading) {
-			System.out.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
-			return; 
+		if (disableNativesLoading) {
+			System.out
+				.println("So you don't like our native lib loading? Good, you are on your own now. We don't give support from here on out");
+			return;
 		}
 		if (nativesLoaded) return;
 

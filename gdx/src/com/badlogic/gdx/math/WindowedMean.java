@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.math;
 
-/**
- * A simple class keeping track of the mean of a stream of values within a certain window. the WindowedMean will only return a
+/** A simple class keeping track of the mean of a stream of values within a certain window. the WindowedMean will only return a
  * value in case enough data has been sampled. After enough data has been sampled the oldest sample will be replaced by the newest
  * in case a new sample is added.
  * 
- * @author badlogicgames@gmail.com
- * 
- */
+ * @author badlogicgames@gmail.com */
 public final class WindowedMean {
 	float values[];
 	int added_values = 0;
@@ -30,26 +28,20 @@ public final class WindowedMean {
 	float mean = 0;
 	boolean dirty = true;
 
-	/**
-	 * constructor, window_size specifies the number of samples we will continuously get the mean and variance from. the class will
+	/** constructor, window_size specifies the number of samples we will continuously get the mean and variance from. the class will
 	 * only return meaning full values if at least window_size values have been added.
 	 * 
-	 * @param window_size size of the sample window
-	 */
+	 * @param window_size size of the sample window */
 	public WindowedMean (int window_size) {
 		values = new float[window_size];
 	}
 
-	/**
-	 * @return wheter the value returned will be meaningfull
-	 */
+	/** @return wheter the value returned will be meaningfull */
 	public boolean hasEnoughData () {
 		return added_values >= values.length;
 	}
 
-	/**
-	 * clears this WindowedMean. The class will only return meaningfull values after enough data has been added again.
-	 */
+	/** clears this WindowedMean. The class will only return meaningfull values after enough data has been added again. */
 	public void clear () {
 		added_values = 0;
 		last_value = 0;
@@ -58,11 +50,9 @@ public final class WindowedMean {
 		dirty = true;
 	}
 
-	/**
-	 * adds a new sample to this mean. in case the window is full the oldest value will be replaced by this new value.
+	/** adds a new sample to this mean. in case the window is full the oldest value will be replaced by this new value.
 	 * 
-	 * @param value The value to add
-	 */
+	 * @param value The value to add */
 	public void addValue (float value) {
 		added_values++;
 		values[last_value++] = value;
@@ -70,11 +60,9 @@ public final class WindowedMean {
 		dirty = true;
 	}
 
-	/**
-	 * returns the mean of the samples added to this instance. only returns meaningfull results when at least window_size samples
+	/** returns the mean of the samples added to this instance. only returns meaningfull results when at least window_size samples
 	 * as specified in the constructor have been added.
-	 * @return the mean
-	 */
+	 * @return the mean */
 	public float getMean () {
 		if (hasEnoughData()) {
 			if (dirty == true) {
@@ -90,23 +78,17 @@ public final class WindowedMean {
 			return 0;
 	}
 
-	/**
-	 * @return the oldest value in the window
-	 */
+	/** @return the oldest value in the window */
 	public float getOldest () {
 		return last_value == values.length - 1 ? values[0] : values[last_value + 1];
 	}
 
-	/**
-	 * @return the value last added
-	 */
+	/** @return the value last added */
 	public float getLatest () {
 		return values[last_value - 1 == -1 ? values.length - 1 : last_value - 1];
 	}
 
-	/**
-	 * @return The standard deviation
-	 */
+	/** @return The standard deviation */
 	public float standardDeviation () {
 		if (!hasEnoughData()) return 0;
 

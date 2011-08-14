@@ -18,16 +18,12 @@ import java.io.Writer;
 import javax.microedition.khronos.egl.EGL;
 import javax.microedition.khronos.opengles.GL;
 
-/**
- * A helper class for debugging OpenGL ES applications.
+/** A helper class for debugging OpenGL ES applications.
  * 
- * Wraps the supplied GL interface with a new GL interface that adds support for error checking and logging.
- * 
- */
+ * Wraps the supplied GL interface with a new GL interface that adds support for error checking and logging. */
 public class GLDebugHelper {
 
-	/**
-	 * Wrap an existing GL interface in a new GL interface that adds support for error checking and/or logging.
+	/** Wrap an existing GL interface in a new GL interface that adds support for error checking and/or logging.
 	 * <p>
 	 * Wrapping means that the GL instance that is passed in to this method is wrapped inside a new GL instance that optionally
 	 * performs additional operations before and after calling the wrapped GL instance.
@@ -41,28 +37,19 @@ public class GLDebugHelper {
 	 * @param gl the existing GL interface. Must implement GL and GL10. May optionally implement GL11 as well.
 	 * @param configFlags A bitmask of error checking flags.
 	 * @param log - null to disable logging, non-null to enable logging.
-	 * @return the wrapped GL instance.
-	 */
+	 * @return the wrapped GL instance. */
 
-	/**
-	 * Check glError() after every call.
-	 */
+	/** Check glError() after every call. */
 	public static final int CONFIG_CHECK_GL_ERROR = (1 << 0);
 
-	/**
-	 * Check if all calls are on the same thread.
-	 */
+	/** Check if all calls are on the same thread. */
 	public static final int CONFIG_CHECK_THREAD = (1 << 1);
 
-	/**
-	 * Print argument names when logging GL Calls.
-	 */
+	/** Print argument names when logging GL Calls. */
 	public static final int CONFIG_LOG_ARGUMENT_NAMES = (1 << 2);
 
-	/**
-	 * The Error number used in the GLException that is thrown if CONFIG_CHECK_THREAD is enabled and you call OpenGL ES on the a
-	 * different thread.
-	 */
+	/** The Error number used in the GLException that is thrown if CONFIG_CHECK_THREAD is enabled and you call OpenGL ES on the a
+	 * different thread. */
 	public static final int ERROR_WRONG_THREAD = 0x7000;
 
 	public static GL wrap (GL gl, int configFlags, Writer log) {
@@ -76,13 +63,11 @@ public class GLDebugHelper {
 		return gl;
 	}
 
-	/**
-	 * Wrap an existing EGL interface in a new EGL interface that adds support for error checking and/or logging.
+	/** Wrap an existing EGL interface in a new EGL interface that adds support for error checking and/or logging.
 	 * @param egl the existing GL interface. Must implement EGL and EGL10. May optionally implement EGL11 as well.
 	 * @param configFlags A bitmask of error checking flags.
 	 * @param log - null to disable logging, non-null to enable logging.
-	 * @return the wrapped EGL interface.
-	 */
+	 * @return the wrapped EGL interface. */
 	public static EGL wrap (EGL egl, int configFlags, Writer log) {
 		if (log != null) {
 			egl = new EGLLogWrapper(egl, configFlags, log);

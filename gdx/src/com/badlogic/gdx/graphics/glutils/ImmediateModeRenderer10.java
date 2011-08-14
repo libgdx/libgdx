@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
@@ -26,20 +27,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An ImmediateModeRenderer allows you to perform immediate mode rendering as you were accustomed to in your desktop OpenGL
- * environment. In order to draw something you first have to call {@link ImmediateModeRenderer10#begin(int)} with the primitive type
- * you want to render. Next you specify as many vertices as you want by first defining the vertex color, normal and texture
+/** An ImmediateModeRenderer allows you to perform immediate mode rendering as you were accustomed to in your desktop OpenGL
+ * environment. In order to draw something you first have to call {@link ImmediateModeRenderer10#begin(int)} with the primitive
+ * type you want to render. Next you specify as many vertices as you want by first defining the vertex color, normal and texture
  * coordinates followed by the vertex position which finalizes the definition of a single vertex. When you are done specifying the
- * geometry you have to call {@link ImmediateModeRenderer10#end()} to make the renderer render the geometry. Internally the renderer
- * uses vertex arrays to render the provided geometry. This is not the best performing way to do this so use this class only for
- * non performance critical low vertex count geometries while debugging.
+ * geometry you have to call {@link ImmediateModeRenderer10#end()} to make the renderer render the geometry. Internally the
+ * renderer uses vertex arrays to render the provided geometry. This is not the best performing way to do this so use this class
+ * only for non performance critical low vertex count geometries while debugging.
  * 
  * Note that this class of course only works with OpenGL ES 1.x.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	/** the primitive type **/
 	private int primitiveType;
@@ -70,16 +68,12 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	private boolean hasNors;
 	private boolean hasTexCoords;
 
-	/**
-	 * Constructs a new ImmediateModeRenderer
-	 */
+	/** Constructs a new ImmediateModeRenderer */
 	public ImmediateModeRenderer10 () {
 		this(2000);
 	}
 
-	/**
-	 * Constructs a new ImmediateModeRenderer
-	 */
+	/** Constructs a new ImmediateModeRenderer */
 	public ImmediateModeRenderer10 (int maxVertices) {
 		if (Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("ImmediateModeRenderer can only be used with OpenGL ES 1.0/1.1");
@@ -109,12 +103,10 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 		begin(primitiveType);
 	}
 
-	/**
-	 * Starts a new list of primitives. The primitiveType specifies which primitives to draw. Can be any of GL10.GL_TRIANGLES,
+	/** Starts a new list of primitives. The primitiveType specifies which primitives to draw. Can be any of GL10.GL_TRIANGLES,
 	 * GL10.GL_LINES and so on. A maximum of 6000 vertices can be drawn at once.
 	 * 
-	 * @param primitiveType the primitive type.
-	 */
+	 * @param primitiveType the primitive type. */
 	public void begin (int primitiveType) {
 		this.primitiveType = primitiveType;
 		idxPos = 0;
@@ -126,13 +118,11 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 		hasTexCoords = false;
 	}
 
-	/**
-	 * Specifies the color of the current vertex
+	/** Specifies the color of the current vertex
 	 * @param r the red component
 	 * @param g the green component
 	 * @param b the blue component
-	 * @param a the alpha component
-	 */
+	 * @param a the alpha component */
 	public void color (float r, float g, float b, float a) {
 		colors[idxCols] = r;
 		colors[idxCols + 1] = g;
@@ -141,12 +131,10 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 		hasCols = true;
 	}
 
-	/**
-	 * Specifies the normal of the current vertex
+	/** Specifies the normal of the current vertex
 	 * @param x the x component
 	 * @param y the y component
-	 * @param z the z component
-	 */
+	 * @param z the z component */
 	public void normal (float x, float y, float z) {
 		normals[idxNors] = x;
 		normals[idxNors + 1] = y;
@@ -154,25 +142,21 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 		hasNors = true;
 	}
 
-	/**
-	 * Specifies the texture coordinates of the current vertex
+	/** Specifies the texture coordinates of the current vertex
 	 * @param u the u coordinate
-	 * @param v the v coordinate
-	 */
+	 * @param v the v coordinate */
 	public void texCoord (float u, float v) {
 		texCoords[idxTexCoords] = u;
 		texCoords[idxTexCoords + 1] = v;
 		hasTexCoords = true;
 	}
 
-	/**
-	 * Specifies the position of the current vertex and finalizes it. After a call to this method you will effectively define a new
+	/** Specifies the position of the current vertex and finalizes it. After a call to this method you will effectively define a new
 	 * vertex afterwards.
 	 * 
 	 * @param x the x component
 	 * @param y the y component
-	 * @param z the z component
-	 */
+	 * @param z the z component */
 	public void vertex (float x, float y, float z) {
 		positions[idxPos++] = x;
 		positions[idxPos++] = y;
@@ -187,9 +171,7 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 		return idxPos / 3;
 	}
 
-	/**
-	 * Renders the primitives just defined.
-	 */
+	/** Renders the primitives just defined. */
 	public void end () {
 		if (idxPos == 0) return;
 

@@ -19,17 +19,12 @@ package com.badlogic.gdx.beans;
 
 import java.awt.Dimension;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import org.apache.harmony.beans.BeansUtils;
 
 class AwtDimensionPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        Dimension dimension = (Dimension) oldInstance;
-        return new Expression(dimension, dimension.getClass(), BeansUtils.NEW,
-                new Object[] { dimension.width, dimension.height });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		Dimension dimension = (Dimension)oldInstance;
+		return new Expression(dimension, dimension.getClass(), BeansUtils.NEW, new Object[] {dimension.width, dimension.height});
+	}
 }

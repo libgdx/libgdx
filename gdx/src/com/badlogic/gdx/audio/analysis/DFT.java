@@ -13,8 +13,7 @@
 
 package com.badlogic.gdx.audio.analysis;
 
-/**
- * DFT stands for Discrete Fourier Transform and is the most widely used Fourier Transform. You will never want to use this class
+/** DFT stands for Discrete Fourier Transform and is the most widely used Fourier Transform. You will never want to use this class
  * due to the fact that it is a brute force implementation of the DFT and as such is quite slow. Use an FFT instead. This exists
  * primarily as a way to ensure that other implementations of the DFT are working properly. This implementation expects an even
  * <code>timeSize</code> and will throw and IllegalArgumentException if this is not the case.
@@ -23,17 +22,13 @@ package com.badlogic.gdx.audio.analysis;
  * 
  * @see FourierTransform
  * @see FFT
- * @see <a href="http://www.dspguide.com/ch8.htm">The Discrete Fourier Transform</a>
- * 
- */
+ * @see <a href="http://www.dspguide.com/ch8.htm">The Discrete Fourier Transform</a> */
 public class DFT extends FourierTransform {
-	/**
-	 * Constructs a DFT that expects audio buffers of length <code>timeSize</code> that have been recorded with a sample rate of
+	/** Constructs a DFT that expects audio buffers of length <code>timeSize</code> that have been recorded with a sample rate of
 	 * <code>sampleRate</code>. Will throw an IllegalArgumentException if <code>timeSize</code> is not even.
 	 * 
 	 * @param timeSize the length of the audio buffers you plan to analyze
-	 * @param sampleRate the sample rate of the audio samples you plan to analyze
-	 */
+	 * @param sampleRate the sample rate of the audio samples you plan to analyze */
 	public DFT (int timeSize, float sampleRate) {
 		super(timeSize, sampleRate);
 		if (timeSize % 2 != 0) throw new IllegalArgumentException("DFT: timeSize must be even.");
@@ -46,15 +41,11 @@ public class DFT extends FourierTransform {
 		imag = new float[timeSize / 2 + 1];
 	}
 
-	/**
-	 * Not currently implemented.
-	 */
+	/** Not currently implemented. */
 	public void scaleBand (int i, float s) {
 	}
 
-	/**
-	 * Not currently implemented.
-	 */
+	/** Not currently implemented. */
 	public void setBand (int i, float a) {
 	}
 

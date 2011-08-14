@@ -10,28 +10,23 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "position",
-    "rotation",
-    "scale"
-})
+@XmlType(name = "", propOrder = {"position", "rotation", "scale"})
 @XmlRootElement(name = "bone")
 public class Bone {
 
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String id;
-    @XmlAttribute(required = true)
-    @XmlJavaTypeAdapter(NormalizedStringAdapter.class)
-    public String name;
-    @XmlElement(required = true)
-    public Position position;
-    @XmlElement(required = true)
-    public Rotation rotation;
-    public Scale scale;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	public String id;
+	@XmlAttribute(required = true)
+	@XmlJavaTypeAdapter(NormalizedStringAdapter.class)
+	public String name;
+	@XmlElement(required = true)
+	public Position position;
+	@XmlElement(required = true)
+	public Rotation rotation;
+	public Scale scale;
 }

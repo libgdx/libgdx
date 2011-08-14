@@ -42,7 +42,8 @@ import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 public class ApplyForce extends Box2DTest {
 	Body m_body;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		world.setGravity(new Vector2(0, 0));
 
 		float k_restitution = 0.4f;
@@ -179,7 +180,7 @@ public class ApplyForce extends Box2DTest {
 
 		if (renderer.batch != null) {
 			renderer.batch.begin();
-//			renderer.batch.drawText(renderer.font, "Keys (w), (a), (d) to fly", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE);
+// renderer.batch.drawText(renderer.font, "Keys (w), (a), (d) to fly", 0, Gdx.app.getGraphics().getHeight(), Color.WHITE);
 			renderer.batch.end();
 		}
 	}

@@ -17,27 +17,19 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-import com.badlogic.gdx.beans.Statement;
-
 import javax.swing.Box;
 
 class SwingBoxPersistenceDelegate extends PersistenceDelegate {
 	@Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-		return new Expression(oldInstance, oldInstance.getClass(),
-				"createVerticalBox", null); //$NON-NLS-1$
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		return new Expression(oldInstance, oldInstance.getClass(), "createVerticalBox", null); //$NON-NLS-1$
 	}
 
-    @Override
-    @SuppressWarnings({ "nls", "boxing" })
-    protected void initialize(Class<?> type, Object oldInstance,
-			Object newInstance, Encoder enc) {
-		Box box = (Box) oldInstance;
-		Expression getterExp = new Expression(box.getAlignmentX(), box,
-				"getAlignmentX", null);
+	@Override
+	@SuppressWarnings({"nls", "boxing"})
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder enc) {
+		Box box = (Box)oldInstance;
+		Expression getterExp = new Expression(box.getAlignmentX(), box, "getAlignmentX", null);
 		try {
 			// Calculate the old value of the property
 			Object oldVal = getterExp.getValue();
@@ -47,26 +39,21 @@ class SwingBoxPersistenceDelegate extends PersistenceDelegate {
 			Object targetVal = enc.get(oldVal);
 			// Get the current property value in the new environment
 			Object newVal = null;
-			Box newBox = (Box) newInstance;
-			newVal = new Expression(newBox.getAlignmentX(), newBox,
-					"AlignmentX", null).getValue();
+			Box newBox = (Box)newInstance;
+			newVal = new Expression(newBox.getAlignmentX(), newBox, "AlignmentX", null).getValue();
 			/*
-			 * Make the target value and current property value equivalent in
-			 * the new environment
+			 * Make the target value and current property value equivalent in the new environment
 			 */
 			if (null == targetVal) {
 				if (null != newVal) {
 					// Set to null
-					Statement setterStm = new Statement(oldInstance, "setAlignmentX",
-							new Object[] { null });
+					Statement setterStm = new Statement(oldInstance, "setAlignmentX", new Object[] {null});
 					enc.writeStatement(setterStm);
 				}
 			} else {
-				PersistenceDelegate pd = enc.getPersistenceDelegate(targetVal
-						.getClass());
+				PersistenceDelegate pd = enc.getPersistenceDelegate(targetVal.getClass());
 				if (!pd.mutatesTo(targetVal, newVal)) {
-					Statement setterStm = new Statement(oldInstance,
-							"setAlignmentX", new Object[] { oldVal });
+					Statement setterStm = new Statement(oldInstance, "setAlignmentX", new Object[] {oldVal});
 					enc.writeStatement(setterStm);
 				}
 			}

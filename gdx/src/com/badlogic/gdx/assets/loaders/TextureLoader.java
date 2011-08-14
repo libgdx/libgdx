@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -14,11 +15,11 @@ import com.badlogic.gdx.utils.Array;
 public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParameter> {
 	TextureData data;
 	Texture texture;
-	
+
 	public TextureLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
-	
+
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
 		FileHandle handle = resolve(fileName);
@@ -26,31 +27,31 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 		Format format = null;
 		boolean genMipMaps = false;
 		texture = null;
-		
-		if(parameter != null) {
+
+		if (parameter != null) {
 			format = parameter.format;
 			genMipMaps = parameter.genMipMaps;
 			texture = parameter.texture;
 		}
-		
+
 		data = new FileTextureData(handle, pixmap, format, genMipMaps);
 	}
 
 	@Override
 	public Texture loadSync () {
-		if(texture != null) {
+		if (texture != null) {
 			texture.load(data);
 			return texture;
 		} else {
 			return new ReferenceCountedTexture(data);
-		}		
+		}
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, TextureParameter parameter) {
 		return null;
 	}
-	
+
 	public static class ReferenceCountedTexture extends Texture implements ReferenceCountedAsset {
 		public ReferenceCountedTexture (TextureData data) {
 			super(data);
@@ -67,11 +68,11 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 		public int getRefCount () {
 			return refCount;
 		}
-		
+
 		@Override
-		public void dispose() {
-			refCount --;
-			if(refCount > 0) return;
+		public void dispose () {
+			refCount--;
+			if (refCount > 0) return;
 			super.dispose();
 		}
 	}

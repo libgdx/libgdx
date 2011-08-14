@@ -37,13 +37,13 @@ public class Level {
 	// private int xo, yo;
 	private int tick;
 
-	@SuppressWarnings("unchecked") public Level (GameScreen screen, int w, int h, int xo, int yo, int xSpawn, int ySpawn) {
+	@SuppressWarnings("unchecked")
+	public Level (GameScreen screen, int w, int h, int xo, int yo, int xSpawn, int ySpawn) {
 		this.screen = screen;
-//		int[] pixels = new int[32 * 24];
+// int[] pixels = new int[32 * 24];
 		this.xSpawn = xSpawn;
 		this.ySpawn = ySpawn;
 
-	
 // Art.level.getRGB(xo * 31, yo * 23, 32, 24, pixels, 0, 32);
 
 		walls = new byte[w * h];
@@ -56,7 +56,7 @@ public class Level {
 				entityMap[x + y * w] = new ArrayList<Entity>();
 
 // int col = pixels[x + y * w] & 0xffffff;
-				int col = (Art.level.getPixel(x + xo * 31, y + yo * 23) & 0xffffff00) >>> 8;				
+				int col = (Art.level.getPixel(x + xo * 31, y + yo * 23) & 0xffffff00) >>> 8;
 				byte wall = 0;
 
 				if (col == 0xffffff)
@@ -117,8 +117,8 @@ public class Level {
 					add(e);
 				}
 				walls[x + y * w] = wall;
-			}			
-		}	
+			}
+		}
 		player = new Player(this.xSpawn, this.ySpawn);
 		add(player);
 	}
@@ -205,7 +205,7 @@ public class Level {
 		matrix.setToTranslation(camera.x, camera.y, 0);
 		screen.spriteBatch.setTransformMatrix(matrix);
 		screen.spriteBatch.begin();
-		//g.translate(-camera.x, -camera.y);
+		// g.translate(-camera.x, -camera.y);
 
 		int xo = 0;
 		int yo = 0;
@@ -243,9 +243,8 @@ public class Level {
 						ximg = 3;
 					}
 
-					if(w == 0)
-						continue;
-					
+					if (w == 0) continue;
+
 					screen.draw(Art.walls[ximg][yimg], x * 10, y * 10);
 				}
 			}
@@ -254,7 +253,7 @@ public class Level {
 			Entity e = entities.get(i);
 			e.render(screen, camera);
 		}
-		
+
 		screen.spriteBatch.end();
 	}
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import java.util.Random;
@@ -39,8 +40,9 @@ public class TileTest extends GdxTest {
 	OrthoCamController camController;
 	long startTime = System.nanoTime();
 
-	@Override public void create () {
-		cam = new OrthographicCamera(480, 320);		
+	@Override
+	public void create () {
+		cam = new OrthographicCamera(480, 320);
 		cam.position.set(WIDTH * 32 / 2, HEIGHT * 32 / 2, 0);
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
@@ -64,7 +66,8 @@ public class TileTest extends GdxTest {
 
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL10 gl = Gdx.gl10;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		cam.update();
@@ -87,7 +90,8 @@ public class TileTest extends GdxTest {
 		}
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

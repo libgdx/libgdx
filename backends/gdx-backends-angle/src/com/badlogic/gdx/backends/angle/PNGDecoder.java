@@ -32,12 +32,10 @@ import java.util.zip.CRC32;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
-/**
- * Decodes A PNG directly a ByteBuffer.
+/** Decodes A PNG directly a ByteBuffer.
  * 
  * @author Matthias Mann
- * @author Nathan Sweet <misc@n4te.com> (minor edits to avoid allocation)
- */
+ * @author Nathan Sweet <misc@n4te.com> (minor edits to avoid allocation) */
 final class PNGDecoder {
 	public enum Format {
 		ALPHA(1, true), LUMINANCE(1, false), LUMINANCE_ALPHA(2, true), RGB(3, false), RGBA(4, true), BGRA(4, true), ABGR(4, true);
@@ -144,13 +142,11 @@ final class PNGDecoder {
 		return colorType == COLOR_TRUEALPHA || colorType == COLOR_TRUECOLOR || colorType == COLOR_INDEXED;
 	}
 
-	/**
-	 * Computes the implemented format conversion for the desired format.
+	/** Computes the implemented format conversion for the desired format.
 	 * 
 	 * @param fmt the desired format
 	 * @return format which best matches the desired format
-	 * @throws UnsupportedOperationException if this PNG file can't be decoded
-	 */
+	 * @throws UnsupportedOperationException if this PNG file can't be decoded */
 	public Format decideTextureFormat (Format fmt) {
 		switch (colorType) {
 		case COLOR_TRUECOLOR:

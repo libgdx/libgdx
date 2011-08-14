@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.Color;
@@ -30,10 +31,6 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.GLU;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.WindowedMean;
 
 public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	static int major, minor;
@@ -43,10 +40,10 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	boolean useGL2;
 	long frameStart = System.nanoTime();
 	long lastFrameTime = System.nanoTime();
-	float deltaTime = 0;	
+	float deltaTime = 0;
 	int fps;
 	int frames;
-	boolean paused = true;	
+	boolean paused = true;
 
 	GLCommon gl;
 	GL10 gl10;
@@ -72,7 +69,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		this.useGL2 = config.useGL20;
 		this.glu = new JoglGLU();
 		Gdx.glu = glu;
-		
+
 	}
 
 	GLCanvas getCanvas () {
@@ -82,7 +79,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 	void create () {
 		frameStart = System.nanoTime();
 		lastFrameTime = frameStart;
-		deltaTime = 0;		
+		deltaTime = 0;
 		animator = new JoglAnimator(canvas);
 		animator.start();
 	}
@@ -98,7 +95,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		paused = false;
 		frameStart = System.nanoTime();
 		lastFrameTime = frameStart;
-		deltaTime = 0;		
+		deltaTime = 0;
 		animator = new JoglAnimator(canvas);
 		animator.setRunAsFastAsPossible(true);
 		animator.start();
@@ -114,7 +111,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 			gl20 = new JoglGL20(drawable.getGL());
 			gl = gl20;
 		} else {
-			
+
 			if (major == 1 && minor < 5 || renderer.equals("Mirage Graphics3")) {
 				gl10 = new JoglGL10(drawable.getGL());
 			} else {
@@ -132,7 +129,7 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 
 	void updateTimes () {
 		deltaTime = (System.nanoTime() - lastFrameTime) / 1000000000.0f;
-		lastFrameTime = System.nanoTime();		
+		lastFrameTime = System.nanoTime();
 
 		if (System.nanoTime() - frameStart > 1000000000) {
 			fps = frames;
@@ -142,51 +139,63 @@ public abstract class JoglGraphicsBase implements Graphics, GLEventListener {
 		frames++;
 	}
 
-	@Override public float getDeltaTime () {
+	@Override
+	public float getDeltaTime () {
 		return deltaTime;
 	}
 
-	@Override public int getFramesPerSecond () {
+	@Override
+	public int getFramesPerSecond () {
 		return fps;
 	}
 
-	@Override public int getHeight () {
+	@Override
+	public int getHeight () {
 		return canvas.getHeight();
 	}
 
-	@Override public int getWidth () {
+	@Override
+	public int getWidth () {
 		return canvas.getWidth();
 	}
 
-	@Override public GL10 getGL10 () {
+	@Override
+	public GL10 getGL10 () {
 		return gl10;
 	}
 
-	@Override public GL11 getGL11 () {
+	@Override
+	public GL11 getGL11 () {
 		return gl11;
 	}
 
-	@Override public GL20 getGL20 () {
+	@Override
+	public GL20 getGL20 () {
 		return gl20;
 	}
 
-	@Override public GLCommon getGLCommon () {
+	@Override
+	public GLCommon getGLCommon () {
 		return gl;
 	}
 
-	@Override public GLU getGLU() {
+	@Override
+	public GLU getGLU () {
 		return glu;
 	}
-	
-	@Override public boolean isGL11Available () {
+
+	@Override
+	public boolean isGL11Available () {
 		return gl11 != null;
 	}
 
-	@Override public boolean isGL20Available () {
+	@Override
+	public boolean isGL20Available () {
 		return gl20 != null;
 	}
 
-	@Override public GraphicsType getType () {
+	@Override
+	public GraphicsType getType () {
 		return GraphicsType.JoglGL;
-	}	
+	}
 }

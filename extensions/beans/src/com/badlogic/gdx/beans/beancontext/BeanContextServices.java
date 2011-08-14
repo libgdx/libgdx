@@ -17,41 +17,28 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContext;
-import com.badlogic.gdx.beans.beancontext.BeanContextChild;
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceProvider;
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceRevokedListener;
-import com.badlogic.gdx.beans.beancontext.BeanContextServicesListener;
-
 import java.util.Iterator;
 import java.util.TooManyListenersException;
+
 @SuppressWarnings("unchecked")
-public interface BeanContextServices extends BeanContext,
-        BeanContextServicesListener {
+public interface BeanContextServices extends BeanContext, BeanContextServicesListener {
 
-    public void addBeanContextServicesListener(BeanContextServicesListener bcsl);
+	public void addBeanContextServicesListener (BeanContextServicesListener bcsl);
 
-    public boolean addService(Class serviceClass,
-            BeanContextServiceProvider serviceProvider);
+	public boolean addService (Class serviceClass, BeanContextServiceProvider serviceProvider);
 
-    public Iterator getCurrentServiceClasses();
+	public Iterator getCurrentServiceClasses ();
 
-    public Iterator getCurrentServiceSelectors(Class serviceClass);
+	public Iterator getCurrentServiceSelectors (Class serviceClass);
 
-    public Object getService(BeanContextChild child, Object requestor,
-            Class serviceClass, Object serviceSelector,
-            BeanContextServiceRevokedListener bcsrl)
-            throws TooManyListenersException;
+	public Object getService (BeanContextChild child, Object requestor, Class serviceClass, Object serviceSelector,
+		BeanContextServiceRevokedListener bcsrl) throws TooManyListenersException;
 
-    public boolean hasService(Class serviceClass);
+	public boolean hasService (Class serviceClass);
 
-    public void releaseService(BeanContextChild child, Object requestor,
-            Object service);
+	public void releaseService (BeanContextChild child, Object requestor, Object service);
 
-    public void removeBeanContextServicesListener(
-            BeanContextServicesListener bcsl);
+	public void removeBeanContextServicesListener (BeanContextServicesListener bcsl);
 
-    public void revokeService(Class serviceClass,
-            BeanContextServiceProvider serviceProvider,
-            boolean revokeCurrentServicesNow);
+	public void revokeService (Class serviceClass, BeanContextServiceProvider serviceProvider, boolean revokeCurrentServicesNow);
 }

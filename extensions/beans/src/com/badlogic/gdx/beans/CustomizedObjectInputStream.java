@@ -25,62 +25,55 @@ import java.lang.reflect.Array;
 
 import org.apache.harmony.beans.internal.nls.Messages;
 
-/**
- * Customized object input stream that allows to read objects by specified class
- * loader
- */
+/** Customized object input stream that allows to read objects by specified class loader */
 class CustomizedObjectInputStream extends ObjectInputStream {
 
-    private ClassLoader cls;
+	private ClassLoader cls;
 
-    public CustomizedObjectInputStream(InputStream in, ClassLoader cls)
-            throws IOException {
-        super(in);
-        this.cls = cls;
-    }
+	public CustomizedObjectInputStream (InputStream in, ClassLoader cls) throws IOException {
+		super(in);
+		this.cls = cls;
+	}
 
-    @Override
-    protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-            ClassNotFoundException {
-        String className = desc.getName();
+	@Override
+	protected Class<?> resolveClass (ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+		String className = desc.getName();
 
-        if (className.startsWith("[")) { //$NON-NLS-1$
-            int idx = className.lastIndexOf("["); //$NON-NLS-1$
-            String prefix = className.substring(0, idx + 1);
-            int[] dimensions = new int[prefix.length()];
-            for (int i = 0; i < dimensions.length; ++i) {
-                dimensions[i] = 0;
-            }
+		if (className.startsWith("[")) { //$NON-NLS-1$
+			int idx = className.lastIndexOf("["); //$NON-NLS-1$
+			String prefix = className.substring(0, idx + 1);
+			int[] dimensions = new int[prefix.length()];
+			for (int i = 0; i < dimensions.length; ++i) {
+				dimensions[i] = 0;
+			}
 
-            String postfix = className.substring(idx + 1);
-            Class<?> componentType = null;
-            if (postfix.equals("Z")) { //$NON-NLS-1$
-                componentType = boolean.class;
-            } else if (postfix.equals("B")) { //$NON-NLS-1$
-                componentType = byte.class;
-            } else if (postfix.equals("C")) { //$NON-NLS-1$
-                componentType = char.class;
-            } else if (postfix.equals("D")) { //$NON-NLS-1$
-                componentType = double.class;
-            } else if (postfix.equals("F")) { //$NON-NLS-1$
-                componentType = float.class;
-            } else if (postfix.equals("I")) { //$NON-NLS-1$
-                componentType = int.class;
-            } else if (postfix.equals("L")) { //$NON-NLS-1$
-                componentType = long.class;
-            } else if (postfix.equals("S")) { //$NON-NLS-1$
-                componentType = short.class;
-            } else if (postfix.equals("V")) { //$NON-NLS-1$
-                // expected, componentType is already null
-            } else if (postfix.startsWith("L")) { //$NON-NLS-1$
-                componentType = cls.loadClass(postfix.substring(1, postfix
-                        .length() - 1));
-            } else {
-                throw new IllegalArgumentException(Messages.getString(
-                        "beans.1E", className)); //$NON-NLS-1$
-            }
-            return Array.newInstance(componentType, dimensions).getClass();
-        }
-        return Class.forName(className, true, cls);
-    }
+			String postfix = className.substring(idx + 1);
+			Class<?> componentType = null;
+			if (postfix.equals("Z")) { //$NON-NLS-1$
+				componentType = boolean.class;
+			} else if (postfix.equals("B")) { //$NON-NLS-1$
+				componentType = byte.class;
+			} else if (postfix.equals("C")) { //$NON-NLS-1$
+				componentType = char.class;
+			} else if (postfix.equals("D")) { //$NON-NLS-1$
+				componentType = double.class;
+			} else if (postfix.equals("F")) { //$NON-NLS-1$
+				componentType = float.class;
+			} else if (postfix.equals("I")) { //$NON-NLS-1$
+				componentType = int.class;
+			} else if (postfix.equals("L")) { //$NON-NLS-1$
+				componentType = long.class;
+			} else if (postfix.equals("S")) { //$NON-NLS-1$
+				componentType = short.class;
+			} else if (postfix.equals("V")) { //$NON-NLS-1$
+				// expected, componentType is already null
+			} else if (postfix.startsWith("L")) { //$NON-NLS-1$
+				componentType = cls.loadClass(postfix.substring(1, postfix.length() - 1));
+			} else {
+				throw new IllegalArgumentException(Messages.getString("beans.1E", className)); //$NON-NLS-1$
+			}
+			return Array.newInstance(componentType, dimensions).getClass();
+		}
+		return Class.forName(className, true, cls);
+	}
 }

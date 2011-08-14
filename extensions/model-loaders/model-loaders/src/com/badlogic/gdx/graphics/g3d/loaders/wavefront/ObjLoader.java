@@ -34,47 +34,34 @@ import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.FloatArray;
 
-/**
- * Loads Wavefront OBJ files.
+/** Loads Wavefront OBJ files.
  * 
- * @author mzechner, espitz
- * 
- */
+ * @author mzechner, espitz */
 public class ObjLoader implements StillModelLoader {
 	final FloatArray verts;
 	final FloatArray norms;
 	final FloatArray uvs;
 	final ArrayList<Group> groups;
 
-	public ObjLoader() {
+	public ObjLoader () {
 		verts = new FloatArray(300);
 		norms = new FloatArray(300);
 		uvs = new FloatArray(200);
 		groups = new ArrayList<Group>(10);
 	}
 
-	/**
-	 * Loads a Wavefront OBJ file from a given file handle.
+	/** Loads a Wavefront OBJ file from a given file handle.
 	 * 
-	 * @param file
-	 *            the FileHandle
-	 * 
-	 */
-	public StillModel loadObj(FileHandle file) {
+	 * @param file the FileHandle */
+	public StillModel loadObj (FileHandle file) {
 		return loadObj(file, false);
 	}
 
-	/**
-	 * Loads a Wavefront OBJ file from a given file handle.
+	/** Loads a Wavefront OBJ file from a given file handle.
 	 * 
-	 * @param file
-	 *            the FileHandle
-	 * @param flipV
-	 *            whether to flip the v texture coordinate (Blender, Wings3D, et
-	 *            al)
-	 * 
-	 */
-	public StillModel loadObj(FileHandle file, boolean flipV) {
+	 * @param file the FileHandle
+	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
+	public StillModel loadObj (FileHandle file, boolean flipV) {
 		String line;
 		String[] tokens;
 		char firstChar;
@@ -84,8 +71,7 @@ public class ObjLoader implements StillModelLoader {
 		Group activeGroup = new Group("default");
 		groups.add(activeGroup);
 
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				file.read()), 4096);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
 		try {
 			while ((line = reader.readLine()) != null) {
 
@@ -106,8 +92,7 @@ public class ObjLoader implements StillModelLoader {
 						norms.add(Float.parseFloat(tokens[3]));
 					} else if (tokens[0].charAt(1) == 't') {
 						uvs.add(Float.parseFloat(tokens[1]));
-						uvs.add((flipV ? 1 - Float.parseFloat(tokens[2])
-								: Float.parseFloat(tokens[2])));
+						uvs.add((flipV ? 1 - Float.parseFloat(tokens[2]) : Float.parseFloat(tokens[2])));
 					}
 				} else if (firstChar == 'f') {
 					String[] parts;
@@ -116,27 +101,21 @@ public class ObjLoader implements StillModelLoader {
 						parts = tokens[1].split("/");
 						faces.add(getIndex(parts[0], verts.size));
 						if (parts.length > 2) {
-							if (i == 1)
-								activeGroup.hasNorms = true;
+							if (i == 1) activeGroup.hasNorms = true;
 							faces.add(getIndex(parts[2], norms.size));
 						}
 						if (parts.length > 1 && parts[1].length() > 0) {
-							if (i == 1)
-								activeGroup.hasUVs = true;
+							if (i == 1) activeGroup.hasUVs = true;
 							faces.add(getIndex(parts[1], uvs.size));
 						}
 						parts = tokens[++i].split("/");
 						faces.add(getIndex(parts[0], verts.size));
-						if (parts.length > 2)
-							faces.add(getIndex(parts[2], norms.size));
-						if (parts.length > 1 && parts[1].length() > 0)
-							faces.add(getIndex(parts[1], uvs.size));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size));
 						parts = tokens[++i].split("/");
 						faces.add(getIndex(parts[0], verts.size));
-						if (parts.length > 2)
-							faces.add(getIndex(parts[2], norms.size));
-						if (parts.length > 1 && parts[1].length() > 0)
-							faces.add(getIndex(parts[1], uvs.size));
+						if (parts.length > 2) faces.add(getIndex(parts[2], norms.size));
+						if (parts.length > 1 && parts[1].length() > 0) faces.add(getIndex(parts[1], uvs.size));
 						activeGroup.numFaces++;
 					}
 				} else if (firstChar == 'o' || firstChar == 'g') {
@@ -164,8 +143,7 @@ public class ObjLoader implements StillModelLoader {
 		}
 
 		// If there are no groups left, there is no valid Model to return
-		if (groups.size() < 1)
-			return null;
+		if (groups.size() < 1) return null;
 
 		// Get number of objects/groups remaining after removing empty ones
 		final int numGroups = groups.size();
@@ -180,8 +158,7 @@ public class ObjLoader implements StillModelLoader {
 			boolean hasNorms = group.hasNorms;
 			boolean hasUVs = group.hasUVs;
 
-			float[] finalVerts = new float[(numFaces * 3)
-					* (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
+			float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
 
 			for (int i = 0, vi = 0; i < numElements;) {
 				int vertIndex = faces.get(i++) * 3;
@@ -204,21 +181,14 @@ public class ObjLoader implements StillModelLoader {
 			final Mesh mesh;
 
 			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
-			attributes
-					.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
-			if (hasNorms)
-				attributes
-						.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
-			if (hasUVs)
-				attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2,
-						ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
+			attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
+			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
+			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-			mesh = new Mesh(true, numFaces * 3, 0,
-					attributes.toArray(new VertexAttribute[attributes.size()]));
+			mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
 			mesh.setVertices(finalVerts);
 
-			StillSubMesh subMesh = new StillSubMesh(group.name, mesh,
-					GL10.GL_TRIANGLES);
+			StillSubMesh subMesh = new StillSubMesh(group.name, mesh, GL10.GL_TRIANGLES);
 			subMesh.material = new Material("default");
 			model.subMeshes[g] = subMesh;
 
@@ -228,33 +198,27 @@ public class ObjLoader implements StillModelLoader {
 		// Clearing the ArrayList cache instead of instantiating new
 		// ArrayLists should result in slightly faster load times for
 		// subsequent calls to loadObj
-		if (verts.size > 0)
-			verts.clear();
-		if (norms.size > 0)
-			norms.clear();
-		if (uvs.size > 0)
-			uvs.clear();
-		if (groups.size() > 0)
-			groups.clear();
+		if (verts.size > 0) verts.clear();
+		if (norms.size > 0) norms.clear();
+		if (uvs.size > 0) uvs.clear();
+		if (groups.size() > 0) groups.clear();
 
 		return model;
 	}
 
-	private Group setActiveGroup(String name) {
+	private Group setActiveGroup (String name) {
 		// TODO: Check if a HashMap.get calls are faster than iterating
 		// through an ArrayList
 		for (Group group : groups) {
-			if (group.name.equals(name))
-				return group;
+			if (group.name.equals(name)) return group;
 		}
 		Group group = new Group(name);
 		groups.add(group);
 		return group;
 	}
 
-	private int getIndex(String index, int size) {
-		if (index == null || index.length() == 0)
-			return 0;
+	private int getIndex (String index, int size) {
+		if (index == null || index.length() == 0) return 0;
 		final int idx = Integer.parseInt(index);
 		if (idx < 0)
 			return size + idx;
@@ -270,7 +234,7 @@ public class ObjLoader implements StillModelLoader {
 		boolean hasUVs;
 		Material mat;
 
-		Group(String name) {
+		Group (String name) {
 			this.name = name;
 			this.faces = new ArrayList<Integer>(200);
 			this.numFaces = 0;
@@ -278,7 +242,8 @@ public class ObjLoader implements StillModelLoader {
 		}
 	}
 
-	@Override public StillModel load (FileHandle handle, ModelLoaderHints hints) {
+	@Override
+	public StillModel load (FileHandle handle, ModelLoaderHints hints) {
 		return loadObj(handle, hints.flipV);
 	}
 }

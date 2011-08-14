@@ -15,56 +15,40 @@
  *  limitations under the License.
  */
 
-
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-import com.badlogic.gdx.beans.PersistenceDelegate;
-
-
-/**
- * A special internal <code>PersistenceDelegate</code> for wrapper classes of
- * primitive types like int.
- * 
- */
+/** A special internal <code>PersistenceDelegate</code> for wrapper classes of primitive types like int. */
 class PrimitiveWrapperPersistenceDelegate extends PersistenceDelegate {
 
-    /*
-     * It's unnecessary to do anything for initialization, because two mutatable
-     * wrapper objects are actually equivalent already.
-     */
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance,
-            Object newInstance, Encoder enc) {
-        // do nothing
-    }
+	/*
+	 * It's unnecessary to do anything for initialization, because two mutatable wrapper objects are actually equivalent already.
+	 */
+	@Override
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder enc) {
+		// do nothing
+	}
 
-    /*
-     * Instantiates a wrapper object using the constructor taking one String
-     * parameter except for Character.
-     */
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        if (oldInstance instanceof Character) {
-            return new Expression(oldInstance, oldInstance.toString(),
-                    "charAt", new Object[] { Integer.valueOf(0) }); //$NON-NLS-1$
-        }
-        return new Expression(oldInstance, oldInstance.getClass(),
-                "new", new Object[] { oldInstance //$NON-NLS-1$
-                        .toString() });
-    }
+	/*
+	 * Instantiates a wrapper object using the constructor taking one String parameter except for Character.
+	 */
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		if (oldInstance instanceof Character) {
+			return new Expression(oldInstance, oldInstance.toString(), "charAt", new Object[] {Integer.valueOf(0)}); //$NON-NLS-1$
+		}
+		return new Expression(oldInstance, oldInstance.getClass(), "new", new Object[] {oldInstance //$NON-NLS-1$
+			.toString()});
+	}
 
-    /*
-     * Two wrapper objects are regarded mutatable if they are equal.
-     */
-    @Override
-    protected boolean mutatesTo(Object o1, Object o2) {
-        if (null == o2) {
-            return false;
-        }
-        return o1.equals(o2);
-    }
+	/*
+	 * Two wrapper objects are regarded mutatable if they are equal.
+	 */
+	@Override
+	protected boolean mutatesTo (Object o1, Object o2) {
+		if (null == o2) {
+			return false;
+		}
+		return o1.equals(o2);
+	}
 
 }
-

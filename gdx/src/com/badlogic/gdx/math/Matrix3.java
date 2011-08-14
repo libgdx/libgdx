@@ -20,12 +20,9 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * A 3x3 column major matrix for 2D transforms.
+/** A 3x3 column major matrix for 2D transforms.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
 	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
@@ -35,10 +32,8 @@ public class Matrix3 implements Serializable {
 		idt();
 	}
 
-	/**
-	 * Sets this matrix to the identity matrix
-	 * @return this matrix
-	 */
+	/** Sets this matrix to the identity matrix
+	 * @return this matrix */
 	public Matrix3 idt () {
 		this.vals[0] = 1;
 		this.vals[1] = 0;
@@ -55,10 +50,8 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Multiplies this matrix with the other matrix in the order this * m.
-	 * @return this matrix
-	 */
+	/** Multiplies this matrix with the other matrix in the order this * m.
+	 * @return this matrix */
 	public Matrix3 mul (Matrix3 m) {
 		float v00 = vals[0] * m.vals[0] + vals[3] * m.vals[1] + vals[6] * m.vals[2];
 		float v01 = vals[0] * m.vals[3] + vals[3] * m.vals[4] + vals[6] * m.vals[5];
@@ -85,11 +78,9 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Sets this matrix to a rotation matrix that will rotate any vector in counter clockwise order around the z-axis.
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter clockwise order around the z-axis.
 	 * @param angle the angle in degrees.
-	 * @return this matrix
-	 */
+	 * @return this matrix */
 	public Matrix3 setToRotation (float angle) {
 		angle = DEGREE_TO_RAD * angle;
 		float cos = (float)Math.cos(angle);
@@ -110,12 +101,10 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Sets this matrix to a translation matrix.
+	/** Sets this matrix to a translation matrix.
 	 * @param x the translation in x
 	 * @param y the translation in y
-	 * @return this matrix
-	 */
+	 * @return this matrix */
 	public Matrix3 setToTranslation (float x, float y) {
 		this.vals[0] = 1;
 		this.vals[1] = 0;
@@ -132,13 +121,11 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Sets this matrix to a scaling matrix
+	/** Sets this matrix to a scaling matrix
 	 * 
 	 * @param sx the scale in x
 	 * @param sy the scale in y
-	 * @return this matrix
-	 */
+	 * @return this matrix */
 	public Matrix3 setToScaling (float sx, float sy) {
 		this.vals[0] = sx;
 		this.vals[1] = 0;
@@ -160,18 +147,14 @@ public class Matrix3 implements Serializable {
 			+ vals[2] + "|" + vals[5] + "|" + vals[8] + "]";
 	}
 
-	/**
-	 * @return the determinant of this matrix
-	 */
+	/** @return the determinant of this matrix */
 	public float det () {
 		return vals[0] * vals[4] * vals[8] + vals[3] * vals[7] * vals[2] + vals[6] * vals[1] * vals[5] - vals[0] * vals[7]
 			* vals[5] - vals[3] * vals[1] * vals[8] - vals[6] * vals[4] * vals[2];
 	}
 
-	/**
-	 * Inverts this matrix given that the determinant is != 0
-	 * @return this matrix
-	 */
+	/** Inverts this matrix given that the determinant is != 0
+	 * @return this matrix */
 	public Matrix3 inv () {
 		float det = det();
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
@@ -202,36 +185,36 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-//	public static void main (String[] argv) {
-//		float refX = 50, refY = -50;
-//		float scaleX = 2, scaleY = 1;
-//		float rotation = 45;
-//		float x = -232, y = 123;
+// public static void main (String[] argv) {
+// float refX = 50, refY = -50;
+// float scaleX = 2, scaleY = 1;
+// float rotation = 45;
+// float x = -232, y = 123;
 //
-//		Matrix3 transform = new Matrix3();
-//		Matrix3 tmp = new Matrix3();
+// Matrix3 transform = new Matrix3();
+// Matrix3 tmp = new Matrix3();
 //
-//		tmp.vals = new float[] {-2, -1, 2, 2, 1, 0, -3, 3, -1};
-//		System.out.println(tmp.det());
+// tmp.vals = new float[] {-2, -1, 2, 2, 1, 0, -3, 3, -1};
+// System.out.println(tmp.det());
 //
-//		transform.idt();
-//		transform.setToTranslation(-refX, -refY);
-//		transform.mul(tmp.setToScaling(scaleX, scaleY));
-//		transform.mul(tmp.setToRotation(rotation));
-//		transform.mul(tmp.setToTranslation(refX, refY));
-//		transform.mul(tmp.setToTranslation(x, y));
-//		System.out.println(new Vector2().mul(transform));
+// transform.idt();
+// transform.setToTranslation(-refX, -refY);
+// transform.mul(tmp.setToScaling(scaleX, scaleY));
+// transform.mul(tmp.setToRotation(rotation));
+// transform.mul(tmp.setToTranslation(refX, refY));
+// transform.mul(tmp.setToTranslation(x, y));
+// System.out.println(new Vector2().mul(transform));
 //
-//		Matrix4 transform4 = new Matrix4();
-//		Matrix4 tmp4 = new Matrix4();
-//		transform4.idt();
-//		transform4.setToTranslation(-refX, -refY, 0);
-//		transform4.mul(tmp4.setToScaling(scaleX, scaleY, 1));
-//		transform4.mul(tmp4.setToRotation(new Vector3(0, 0, 1), rotation));
-//		transform4.mul(tmp4.setToTranslation(refX, refY, 0));
-//		transform4.mul(tmp4.setToTranslation(x, y, 0));
-//		System.out.println(new Vector3().mul(transform4));
-//	}
+// Matrix4 transform4 = new Matrix4();
+// Matrix4 tmp4 = new Matrix4();
+// transform4.idt();
+// transform4.setToTranslation(-refX, -refY, 0);
+// transform4.mul(tmp4.setToScaling(scaleX, scaleY, 1));
+// transform4.mul(tmp4.setToRotation(new Vector3(0, 0, 1), rotation));
+// transform4.mul(tmp4.setToTranslation(refX, refY, 0));
+// transform4.mul(tmp4.setToTranslation(x, y, 0));
+// System.out.println(new Vector3().mul(transform4));
+// }
 
 	public Matrix3 set (Matrix3 mat) {
 		vals[0] = mat.vals[0];
@@ -246,23 +229,19 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
+	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
 	 * @param vector The translation vector
-	 * @return This matrix for chaining
-	 */
+	 * @return This matrix for chaining */
 	public Matrix3 trn (Vector3 vector) {
 		vals[6] += vector.x;
 		vals[7] += vector.y;
 		return this;
 	}
 
-	/**
-	 * Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
+	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
 	 * @param x The x-component of the translation vector
 	 * @param y The y-component of the translation vector
-	 * @return This matrix for chaining
-	 */
+	 * @return This matrix for chaining */
 	public Matrix3 trn (float x, float y) {
 		vals[6] += x;
 		vals[7] += y;

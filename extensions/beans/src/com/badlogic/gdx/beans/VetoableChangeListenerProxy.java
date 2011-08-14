@@ -17,30 +17,23 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.PropertyChangeEvent;
-import com.badlogic.gdx.beans.PropertyVetoException;
-import com.badlogic.gdx.beans.VetoableChangeListener;
-
 import java.util.EventListenerProxy;
 
-public class VetoableChangeListenerProxy extends EventListenerProxy implements
-        VetoableChangeListener {
+public class VetoableChangeListenerProxy extends EventListenerProxy implements VetoableChangeListener {
 
-    private String propertyName;
+	private String propertyName;
 
-    public VetoableChangeListenerProxy(String propertyName,
-            VetoableChangeListener listener) {
-        super(listener);
-        this.propertyName = propertyName;
-    }
+	public VetoableChangeListenerProxy (String propertyName, VetoableChangeListener listener) {
+		super(listener);
+		this.propertyName = propertyName;
+	}
 
-    public String getPropertyName() {
-        return propertyName;
-    }
+	public String getPropertyName () {
+		return propertyName;
+	}
 
-    public void vetoableChange(PropertyChangeEvent evt)
-            throws PropertyVetoException {
-        VetoableChangeListener listener = (VetoableChangeListener) getListener();
-            listener.vetoableChange(evt);
-    }
+	public void vetoableChange (PropertyChangeEvent evt) throws PropertyVetoException {
+		VetoableChangeListener listener = (VetoableChangeListener)getListener();
+		listener.vetoableChange(evt);
+	}
 }

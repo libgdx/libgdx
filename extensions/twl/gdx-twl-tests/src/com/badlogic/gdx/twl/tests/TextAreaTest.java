@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.twl.tests;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -36,7 +37,8 @@ import de.matthiasmann.twl.textarea.Value;
 public class TextAreaTest implements ApplicationListener {
 	TWL twl;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		final HTMLTextAreaModel htmlText = new HTMLTextAreaModel();
 		TextArea textArea = new TextArea(htmlText);
 		htmlText
@@ -84,21 +86,26 @@ public class TextAreaTest implements ApplicationListener {
 		Gdx.input.setInputProcessor(twl);
 	}
 
-	@Override public void resize (int width, int height) {
+	@Override
+	public void resize (int width, int height) {
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		twl.render();
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		twl.dispose();
 	}
 
-	@Override public void pause () {
+	@Override
+	public void pause () {
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 	}
 }

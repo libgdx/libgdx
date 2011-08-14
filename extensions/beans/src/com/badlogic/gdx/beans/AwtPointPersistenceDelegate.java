@@ -19,17 +19,12 @@ package com.badlogic.gdx.beans;
 
 import java.awt.Point;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import org.apache.harmony.beans.BeansUtils;
 
 class AwtPointPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder enc) {
-        Point point = (Point) oldInstance;
-        return new Expression(oldInstance, oldInstance.getClass(),
-                BeansUtils.NEW, new Object[] { point.x, point.y });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder enc) {
+		Point point = (Point)oldInstance;
+		return new Expression(oldInstance, oldInstance.getClass(), BeansUtils.NEW, new Object[] {point.x, point.y});
+	}
 }

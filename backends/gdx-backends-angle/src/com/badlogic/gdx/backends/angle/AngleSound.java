@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.angle;
 
 import java.io.BufferedInputStream;
@@ -31,11 +32,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import com.badlogic.gdx.audio.Sound;
 
-/**
- * Implements the {@link Sound} interface for the desktop using {@link Clip}s internally.
- * @author mzechner
- * 
- */
+/** Implements the {@link Sound} interface for the desktop using {@link Clip}s internally.
+ * @author mzechner */
 final class AngleSound implements Sound {
 	/** the audio format **/
 	private final AudioFormat format;
@@ -148,16 +146,12 @@ final class AngleSound implements Sound {
 		throw new UnsupportedOperationException("Upgrade Angle to OpenAL.");
 	}
 
-	/**
-	 * @return the {@link AudioFormat} of the audio data
-	 */
+	/** @return the {@link AudioFormat} of the audio data */
 	public AudioFormat getAudioFormat () {
 		return format;
 	}
 
-	/**
-	 * @return the audio samples in form of a byte array
-	 */
+	/** @return the audio samples in form of a byte array */
 	public float[] getAudioData () {
 		return samples;
 	}

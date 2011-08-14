@@ -25,11 +25,9 @@ package com.badlogic.gdx.utils;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
-/**
- * A queue that allows one thread to call {@link #put(Object)} and another thread to call {@link #poll()}. Multiple threads must
+/** A queue that allows one thread to call {@link #put(Object)} and another thread to call {@link #poll()}. Multiple threads must
  * not call these methods.
- * @author Matthias Mann
- */
+ * @author Matthias Mann */
 public class AtomicQueue<T> {
 	private final AtomicInteger writeIndex = new AtomicInteger();
 	private final AtomicInteger readIndex = new AtomicInteger();

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
@@ -23,7 +24,6 @@ import java.util.Map;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -34,12 +34,9 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An OpenGL surface fullscreen or in a lightweight window.
- */
+/** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
 	LwjglGraphics graphics;
 	OpenALAudio audio;
@@ -73,23 +70,23 @@ public class LwjglApplication implements Application {
 		Gdx.input = input;
 		initialize();
 	}
-	
+
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		LwjglNativesLoader.load();
-		
+
 		graphics = new LwjglGraphics(config);
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();
-		this.listener = listener;			
-		
+		this.listener = listener;
+
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
 		initialize();
-		
+
 	}
 
 	public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
@@ -111,7 +108,8 @@ public class LwjglApplication implements Application {
 
 	private void initialize () {
 		mainLoopThread = new Thread("LWJGL Application") {
-			@SuppressWarnings("synthetic-access") public void run () {	
+			@SuppressWarnings("synthetic-access")
+			public void run () {
 				graphics.setVSync(graphics.config.vSyncEnabled);
 				LwjglApplication.this.mainLoop();
 			}
@@ -131,21 +129,21 @@ public class LwjglApplication implements Application {
 		graphics.resize = false;
 
 		int lastWidth = graphics.getWidth();
-		int lastHeight = graphics.getHeight();	
-		
+		int lastHeight = graphics.getHeight();
+
 		graphics.lastTime = System.nanoTime();
 		while (running) {
-			if(Display.isCloseRequested()) {
+			if (Display.isCloseRequested()) {
 				exit();
 			}
-			
+
 			graphics.updateTime();
-			if(graphics.resize) {
+			if (graphics.resize) {
 				graphics.resize = false;
 				listener.resize(graphics.getWidth(), graphics.getHeight());
 			}
-			synchronized(runnables) {
-				for(int i = 0; i < runnables.size(); i++) {
+			synchronized (runnables) {
+				for (int i = 0; i < runnables.size(); i++) {
 					runnables.get(i).run();
 				}
 				runnables.clear();
@@ -166,7 +164,7 @@ public class LwjglApplication implements Application {
 			listener.render();
 			audio.update();
 			Display.update();
-			if (graphics.vsync && graphics.config.useCPUSynch) {				
+			if (graphics.vsync && graphics.config.useCPUSynch) {
 				Display.sync(60);
 			}
 		}
@@ -175,30 +173,36 @@ public class LwjglApplication implements Application {
 		listener.dispose();
 		Display.destroy();
 		audio.dispose();
-		if(graphics.config.forceExit) System.exit(-1);
+		if (graphics.config.forceExit) System.exit(-1);
 	}
 
-	@Override public Audio getAudio () {
+	@Override
+	public Audio getAudio () {
 		return audio;
 	}
 
-	@Override public Files getFiles () {
+	@Override
+	public Files getFiles () {
 		return files;
 	}
 
-	@Override public Graphics getGraphics () {
+	@Override
+	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	@Override public Input getInput () {
+	@Override
+	public Input getInput () {
 		return input;
 	}
 
-	@Override public ApplicationType getType () {
+	@Override
+	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
 
-	@Override public int getVersion () {
+	@Override
+	public int getVersion () {
 		return 0;
 	}
 
@@ -210,17 +214,21 @@ public class LwjglApplication implements Application {
 		}
 	}
 
-	@Override public long getJavaHeap () {
+	@Override
+	public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override public long getNativeHeap () {
+	@Override
+	public long getNativeHeap () {
 		return getJavaHeap();
 	}
 
 	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
-	@Override public Preferences getPreferences (String name) {
-		if(preferences.containsKey(name)) {
+
+	@Override
+	public Preferences getPreferences (String name) {
+		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
 			Preferences prefs = new LwjglPreferences(name);
@@ -229,49 +237,54 @@ public class LwjglApplication implements Application {
 		}
 	}
 
-	@Override public void postRunnable (Runnable runnable) {
+	@Override
+	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
 		}
 	}
-	
-	public void log(String tag, String message) {
-   	if(logLevel >= LOG_INFO) {
-			System.out.println(tag + ":" + message);		
-		}
-   }
 
-	@Override public void log (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_INFO) {
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);
+		}
+	}
+
+	@Override
+	public void log (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ":" + message);
 			exception.printStackTrace(System.out);
 		}
 	}
-	
-	@Override public void error (String tag, String message) {
-		if(logLevel >= LOG_ERROR) {
-			System.err.println(tag + ":" + message);			
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);
 		}
 	}
 
-
-	@Override public void error (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_ERROR) {
+	@Override
+	public void error (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ":" + message);
 			exception.printStackTrace(System.err);
 		}
 	}
 
-
-	@Override public void setLogLevel (int logLevel) {		
+	@Override
+	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
-	
-	@Override public void exit () {
+
+	@Override
+	public void exit () {
 		postRunnable(new Runnable() {
-			@Override public void run () {
+			@Override
+			public void run () {
 				running = false;
-			}			
+			}
 		});
 	}
 }

@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import java.io.ByteArrayOutputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class Ogg {
 	static public class Music extends OpenALMusic {
 		private OggInputStream input;

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
@@ -47,11 +48,13 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 
 	private Application app = null;
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		tests[testIndex].render();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		if (this.app == null) {
 			this.app = Gdx.app;
 			Box2DTest test = tests[testIndex];
@@ -61,7 +64,8 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 		Gdx.input.setInputProcessor(this);
 	}
 
-	@Override public boolean keyDown (int keycode) {
+	@Override
+	public boolean keyDown (int keycode) {
 		if (keycode == Keys.SPACE) {
 			app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
 			tests[testIndex].dispose();
@@ -77,40 +81,48 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override public boolean keyTyped (char character) {
+	@Override
+	public boolean keyTyped (char character) {
 		tests[testIndex].keyTyped(character);
 		return false;
 	}
 
-	@Override public boolean keyUp (int keycode) {
+	@Override
+	public boolean keyUp (int keycode) {
 		tests[testIndex].keyUp(keycode);
 		return false;
 	}
 
-	@Override public boolean touchDown (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchDown (int x, int y, int pointer, int button) {
 		tests[testIndex].touchDown(x, y, pointer, button);
 		return false;
 	}
 
-	@Override public boolean touchDragged (int x, int y, int pointer) {
+	@Override
+	public boolean touchDragged (int x, int y, int pointer) {
 		tests[testIndex].touchDragged(x, y, pointer);
 		return false;
 	}
 
-	@Override public boolean touchUp (int x, int y, int pointer, int button) {
+	@Override
+	public boolean touchUp (int x, int y, int pointer, int button) {
 		tests[testIndex].touchUp(x, y, pointer, button);
 		return false;
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public boolean touchMoved (int x, int y) {
+	@Override
+	public boolean touchMoved (int x, int y) {
 		return false;
 	}
 
-	@Override public boolean scrolled (int amount) {
+	@Override
+	public boolean scrolled (int amount) {
 		return false;
 	}
 }

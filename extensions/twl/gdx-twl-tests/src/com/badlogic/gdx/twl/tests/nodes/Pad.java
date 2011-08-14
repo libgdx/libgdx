@@ -27,125 +27,123 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package com.badlogic.gdx.twl.tests.nodes;
 
 import de.matthiasmann.twl.Event;
 import de.matthiasmann.twl.Widget;
 import de.matthiasmann.twl.renderer.AnimationState.StateKey;
 
-/**
- *
- * @author Matthias Mann
- */
+/** @author Matthias Mann */
 public class Pad extends Widget {
 
-    public static final StateKey STATE_HOVER            = StateKey.get("hover");
-    public static final StateKey STATE_DRAG_DESTINATION = StateKey.get("dragDestination");
-    
-    public static int RADIUS = 5;
+	public static final StateKey STATE_HOVER = StateKey.get("hover");
+	public static final StateKey STATE_DRAG_DESTINATION = StateKey.get("dragDestination");
 
-    private final Node node;
-    private final boolean input;
-    private Connection inConnection;
+	public static int RADIUS = 5;
 
-    private boolean isDragActive;
-    private Pad dragDestinationPad;
+	private final Node node;
+	private final boolean input;
+	private Connection inConnection;
 
-    public Pad(Node node, boolean input) {
-        this.node = node;
-        this.input = input;
-    }
+	private boolean isDragActive;
+	private Pad dragDestinationPad;
 
-    public Node getNode() {
-        return node;
-    }
+	public Pad (Node node, boolean input) {
+		this.node = node;
+		this.input = input;
+	}
 
-    public boolean isInput() {
-        return input;
-    }
+	public Node getNode () {
+		return node;
+	}
 
-    public Connection getInConnection() {
-        return inConnection;
-    }
+	public boolean isInput () {
+		return input;
+	}
 
-    public void setInConnection(Connection inConnection) {
-        this.inConnection = inConnection;
-    }
-    
-    @Override
-    protected boolean handleEvent(Event evt) {
-        if(evt.isMouseEvent()) {
-            getAnimationState().setAnimationState(STATE_HOVER, evt.getType() != Event.Type.MOUSE_EXITED);
-        }
-        
-        if(evt.getType() == Event.Type.MOUSE_DRAGGED) {
-            NodeArea nodeArea = node.getNodeArea();
+	public Connection getInConnection () {
+		return inConnection;
+	}
 
-            if(!isDragActive) {
-                isDragActive = true;
-                
-                if(isInput()) {
-                    nodeArea.removeConnection(getInConnection());
-                }
-            }
+	public void setInConnection (Connection inConnection) {
+		this.inConnection = inConnection;
+	}
 
-            nodeArea.dragNewConnection(this, evt.getMouseX(), evt.getMouseY());
+	@Override
+	protected boolean handleEvent (Event evt) {
+		if (evt.isMouseEvent()) {
+			getAnimationState().setAnimationState(STATE_HOVER, evt.getType() != Event.Type.MOUSE_EXITED);
+		}
 
-            Pad pad = nodeArea.padFromMouse(evt.getMouseX(), evt.getMouseY());
-            setDragDestPad(pad);
-        }
+		if (evt.getType() == Event.Type.MOUSE_DRAGGED) {
+			NodeArea nodeArea = node.getNodeArea();
 
-        if(isDragActive && evt.isMouseDragEnd()) {
-            NodeArea nodeArea = node.getNodeArea();
-            if(dragDestinationPad != null) {
-                if(isInput()) {
-                    nodeArea.addConnection(dragDestinationPad, this);
-                } else {
-                    nodeArea.addConnection(this, dragDestinationPad);
-                }
-            }
-            setDragDestPad(null);
-            nodeArea.dragNewConnection(null, 0, 0);
-            isDragActive = false;
-        }
+			if (!isDragActive) {
+				isDragActive = true;
 
-        return evt.isMouseEventNoWheel();
-    }
+				if (isInput()) {
+					nodeArea.removeConnection(getInConnection());
+				}
+			}
 
-    @Override
-    public int getPreferredHeight() {
-        return RADIUS*2;
-    }
+			nodeArea.dragNewConnection(this, evt.getMouseX(), evt.getMouseY());
 
-    @Override
-    public int getPreferredWidth() {
-        return RADIUS*2;
-    }
+			Pad pad = nodeArea.padFromMouse(evt.getMouseX(), evt.getMouseY());
+			setDragDestPad(pad);
+		}
 
-    public int getCenterX() {
-        return getX() + RADIUS;
-    }
+		if (isDragActive && evt.isMouseDragEnd()) {
+			NodeArea nodeArea = node.getNodeArea();
+			if (dragDestinationPad != null) {
+				if (isInput()) {
+					nodeArea.addConnection(dragDestinationPad, this);
+				} else {
+					nodeArea.addConnection(this, dragDestinationPad);
+				}
+			}
+			setDragDestPad(null);
+			nodeArea.dragNewConnection(null, 0, 0);
+			isDragActive = false;
+		}
 
-    public int getCenterY() {
-        return getY() + RADIUS;
-    }
+		return evt.isMouseEventNoWheel();
+	}
 
-    @Override
-    public boolean isInside(int x, int y) {
-        int dx = x - getCenterX();
-        int dy = y - getCenterY();
-        return dx*dx + dy*dy <= RADIUS*RADIUS;
-    }
+	@Override
+	public int getPreferredHeight () {
+		return RADIUS * 2;
+	}
 
-    private void setDragDestPad(Pad pad) {
-        if(pad != dragDestinationPad) {
-            if(dragDestinationPad != null) {
-                dragDestinationPad.getAnimationState().setAnimationState(STATE_DRAG_DESTINATION, false);
-            }
-            dragDestinationPad = pad;
-            if(dragDestinationPad != null) {
-                dragDestinationPad.getAnimationState().setAnimationState(STATE_DRAG_DESTINATION, true);
-            }
-        }
-    }
+	@Override
+	public int getPreferredWidth () {
+		return RADIUS * 2;
+	}
+
+	public int getCenterX () {
+		return getX() + RADIUS;
+	}
+
+	public int getCenterY () {
+		return getY() + RADIUS;
+	}
+
+	@Override
+	public boolean isInside (int x, int y) {
+		int dx = x - getCenterX();
+		int dy = y - getCenterY();
+		return dx * dx + dy * dy <= RADIUS * RADIUS;
+	}
+
+	private void setDragDestPad (Pad pad) {
+		if (pad != dragDestinationPad) {
+			if (dragDestinationPad != null) {
+				dragDestinationPad.getAnimationState().setAnimationState(STATE_DRAG_DESTINATION, false);
+			}
+			dragDestinationPad = pad;
+			if (dragDestinationPad != null) {
+				dragDestinationPad.getAnimationState().setAnimationState(STATE_DRAG_DESTINATION, true);
+			}
+		}
+	}
 }

@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ShortBuffer;
 
 import com.badlogic.gdx.utils.Disposable;
 
-/**
- * An IndexData instance holds index data. Can be either a plain short buffer or an OpenGL buffer object.
- * @author mzechner
- * 
- */
+/** An IndexData instance holds index data. Can be either a plain short buffer or an OpenGL buffer object.
+ * @author mzechner */
 public interface IndexData extends Disposable {
-	/**
-	 * @return the number of indices currently stored in this buffer
-	 */
+	/** @return the number of indices currently stored in this buffer */
 	public int getNumIndices ();
 
-	/**
-	 * @return the maximum number of indices this IndexBufferObject can store.
-	 */
+	/** @return the maximum number of indices this IndexBufferObject can store. */
 	public int getNumMaxIndices ();
 
-	/**
-	 * <p>
+	/** <p>
 	 * Sets the indices of this IndexBufferObject, discarding the old indices. The count must equal the number of indices to be
 	 * copied to this IndexBufferObject.
 	 * </p>
@@ -47,37 +40,26 @@ public interface IndexData extends Disposable {
 	 * 
 	 * @param indices the vertex data
 	 * @param offset the offset to start copying the data from
-	 * @param count the number of floats to copy
-	 */
+	 * @param count the number of floats to copy */
 	public void setIndices (short[] indices, int offset, int count);
 
-	/**
-	 * <p>
+	/** <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they wil be uploaded on the call to {@link #bind()}.
 	 * If you need immediate uploading use {@link #setIndices(short[], int, int)}.
 	 * </p>
 	 * 
-	 * @return the underlying short buffer.
-	 */
+	 * @return the underlying short buffer. */
 	public ShortBuffer getBuffer ();
 
-	/**
-	 * Binds this IndexBufferObject for rendering with glDrawElements.
-	 */
+	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	public void bind ();
 
-	/**
-	 * Unbinds this IndexBufferObject.
-	 */
+	/** Unbinds this IndexBufferObject. */
 	public void unbind ();
 
-	/**
-	 * Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss.
-	 */
+	/** Invalidates the IndexBufferObject so a new OpenGL buffer handle is created. Use this in case of a context loss. */
 	public void invalidate ();
 
-	/**
-	 * Disposes this IndexDatat and all its associated OpenGL resources.
-	 */
+	/** Disposes this IndexDatat and all its associated OpenGL resources. */
 	public void dispose ();
 }

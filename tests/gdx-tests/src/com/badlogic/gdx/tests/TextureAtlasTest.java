@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -31,7 +32,7 @@ public class TextureAtlasTest extends GdxTest {
 	BitmapFont font;
 
 	public void create () {
-		batch = new SpriteBatch();	
+		batch = new SpriteBatch();
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
 
 		badlogic = atlas.createSprite("badlogicslice");

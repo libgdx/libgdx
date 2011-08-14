@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 public class SuperJumperDesktop {
-	public static void main(String[] argv) {
+	public static void main (String[] argv) {
 		new JoglApplication(new SuperJumper(), "Super Jumper", 320, 480, false);
 	}
 }

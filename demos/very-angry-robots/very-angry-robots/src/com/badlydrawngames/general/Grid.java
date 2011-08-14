@@ -13,11 +13,10 @@
 
 package com.badlydrawngames.general;
 
-import static com.badlydrawngames.general.MathUtils.max;
-import static com.badlydrawngames.general.MathUtils.min;
-
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+
+import static com.badlydrawngames.general.MathUtils.*;
 
 public class Grid {
 
@@ -28,7 +27,7 @@ public class Grid {
 	private final Array<Array<Rectangle>> grid;
 	private Array<Rectangle> result;
 
-	public Grid(int cols, int rows, float width, float height) {
+	public Grid (int cols, int rows, float width, float height) {
 		this.cols = cols;
 		this.rows = rows;
 		this.cellWidth = width / cols;
@@ -39,14 +38,14 @@ public class Grid {
 		}
 		this.result = new Array<Rectangle>();
 	}
-	
-	public void clear() {
+
+	public void clear () {
 		for (Array<Rectangle> v : grid) {
 			v.clear();
 		}
 	}
-	
-	public void add(Rectangle r) {
+
+	public void add (Rectangle r) {
 		int minX = max(0, cellX(r.x));
 		int maxX = min(cols - 1, cellX(r.x + r.width));
 		int minY = max(0, cellY(r.y));
@@ -59,8 +58,8 @@ public class Grid {
 			}
 		}
 	}
-	
-	public Array<Rectangle> get(Rectangle r) {
+
+	public Array<Rectangle> get (Rectangle r) {
 		result.clear();
 		int minX = max(0, cellX(r.x));
 		int maxX = min(cols - 1, cellX(r.x + r.width));
@@ -74,16 +73,16 @@ public class Grid {
 		}
 		return result;
 	}
-	
-	private int cellX(float x) {
-		return (int) (x / cellWidth);
+
+	private int cellX (float x) {
+		return (int)(x / cellWidth);
 	}
-	
-	private int cellY(float y) {
-		return (int) (y / cellHeight);
+
+	private int cellY (float y) {
+		return (int)(y / cellHeight);
 	}
-	
-	private int getGridCell(int x, int y) {
+
+	private int getGridCell (int x, int y) {
 		return x + y * cols;
 	}
 }

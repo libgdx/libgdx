@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import java.nio.ByteBuffer;
@@ -26,10 +27,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * <p>
+/** <p>
  * Convenience class for working with OpenGL vertex arrays. It interleaves all data in the order you specified in the constructor
  * via {@link VertexAttribute}.
  * </p>
@@ -38,36 +37,26 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * This class does not support shaders and for that matter OpenGL ES 2.0. For this {@link VertexBufferObject}s are needed.
  * </p>
  * 
- * @author mzechner, Dave Clayton <contact@redskyforge.com>
- * 
- */
+ * @author mzechner, Dave Clayton <contact@redskyforge.com> */
 public class VertexArray implements VertexData {
 	final VertexAttributes attributes;
 	final FloatBuffer buffer;
 	final ByteBuffer byteBuffer;
 	boolean isBound = false;
 
-	/**
-	 * Constructs a new interleaved VertexArray
+	/** Constructs a new interleaved VertexArray
 	 * 
-	 * @param numVertices
-	 *            the maximum number of vertices
-	 * @param attributes
-	 *            the {@link VertexAttribute}s
-	 */
-	public VertexArray(int numVertices, VertexAttribute... attributes) {
+	 * @param numVertices the maximum number of vertices
+	 * @param attributes the {@link VertexAttribute}s */
+	public VertexArray (int numVertices, VertexAttribute... attributes) {
 		this(numVertices, new VertexAttributes(attributes));
 	}
-	
-	/**
-	 * Constructs a new interleaved VertexArray
+
+	/** Constructs a new interleaved VertexArray
 	 * 
-	 * @param numVertices
-	 *            the maximum number of vertices
-	 * @param attributes
-	 *            the {@link VertexAttributes}
-	 */
-	public VertexArray(int numVertices, VertexAttributes attributes) {
+	 * @param numVertices the maximum number of vertices
+	 * @param attributes the {@link VertexAttributes} */
+	public VertexArray (int numVertices, VertexAttributes attributes) {
 		this.attributes = attributes;
 		byteBuffer = ByteBuffer.allocateDirect(this.attributes.vertexSize * numVertices);
 		byteBuffer.order(ByteOrder.nativeOrder());
@@ -76,44 +65,39 @@ public class VertexArray implements VertexData {
 		byteBuffer.flip();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void dispose () {
+	/** {@inheritDoc} */
+	@Override
+	public void dispose () {
 
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public FloatBuffer getBuffer () {
+	/** {@inheritDoc} */
+	@Override
+	public FloatBuffer getBuffer () {
 		return buffer;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getNumVertices () {
+	/** {@inheritDoc} */
+	@Override
+	public int getNumVertices () {
 		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	/** {@inheritDoc} */
 	public int getNumMaxVertices () {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void setVertices (float[] vertices, int offset, int count) {
+	/** {@inheritDoc} */
+	@Override
+	public void setVertices (float[] vertices, int offset, int count) {
 		BufferUtils.copy(vertices, byteBuffer, count, offset);
 		buffer.position(0);
 		buffer.limit(count);
 	}
 
-	@Override public void bind () {
+	@Override
+	public void bind () {
 		GL10 gl = Gdx.gl10;
 		int textureUnit = 0;
 		int numAttributes = attributes.size();
@@ -154,14 +138,15 @@ public class VertexArray implements VertexData {
 				break;
 
 			default:
-				//throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
+				// throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
 			}
 		}
 
 		isBound = true;
 	}
 
-	@Override public void unbind () {
+	@Override
+	public void unbind () {
 		GL10 gl = Gdx.gl10;
 		int textureUnit = 0;
 		int numAttributes = attributes.size();
@@ -185,14 +170,15 @@ public class VertexArray implements VertexData {
 				textureUnit++;
 				break;
 			default:
-				//throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
+				// throw new GdxRuntimeException("unkown vertex attribute type: " + attribute.usage);
 			}
 		}
 		byteBuffer.position(0);
 		isBound = false;
 	}
 
-	@Override public VertexAttributes getAttributes () {
+	@Override
+	public VertexAttributes getAttributes () {
 		return attributes;
 	}
 }

@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.tests.jogl;
 
-import org.lwjgl.opengl.DisplayMode;
+package com.badlogic.gdx.tests.jogl;
 
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 import com.badlogic.gdx.backends.jogl.JoglApplicationConfiguration;
 
 public class JoglDebugStarter {
 
-	public static void main (String[] argv) {		
-		JoglApplicationConfiguration config = new JoglApplicationConfiguration();		
+	public static void main (String[] argv) {
+		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.useGL20 = true;
 		new JoglApplication(new com.badlogic.gdx.tests.ProjectiveTextureTest(), config);
 	}

@@ -13,9 +13,6 @@
 
 package com.badlydrawngames.veryangryrobots;
 
-import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_HEIGHT;
-import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_WIDTH;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
@@ -29,14 +26,16 @@ import com.badlydrawngames.general.CameraHelper.ViewportMode;
 import com.badlydrawngames.general.GameScreen;
 import com.badlydrawngames.general.ScoreString;
 
+import static com.badlydrawngames.veryangryrobots.Assets.*;
+
 public class ScoresScreen extends GameScreen<VeryAngryRobotsGame> {
-	
+
 	private static final String LAST_SCORE = "Score:";
 	private static final String TOP_SCORE = "Best: ";
 	private static final String VERY_ANGRY_ROBOTS = "VeryAngryRobots";
 	private static final String TOP_SCORE_PREF = "top score";
 	private static final String TAP_TO_CONTINUE = "Tap to continue";
-	
+
 	private ScoreString scoreString;
 	private ScoreString topScoreString;
 	private OrthographicCamera scoreCam;
@@ -46,7 +45,7 @@ public class ScoresScreen extends GameScreen<VeryAngryRobotsGame> {
 	private final Preferences preferences;
 	private float stateTime;
 
-	public ScoresScreen(VeryAngryRobotsGame game) {
+	public ScoresScreen (VeryAngryRobotsGame game) {
 		super(game);
 		scoreCam = CameraHelper.createCamera2(ViewportMode.PIXEL_PERFECT, VIRTUAL_WIDTH, VIRTUAL_HEIGHT, Assets.pixelDensity);
 		spriteBatch = new SpriteBatch();
@@ -58,8 +57,8 @@ public class ScoresScreen extends GameScreen<VeryAngryRobotsGame> {
 		topScoreString.setScore(topScore);
 		stateTime = 0.0f;
 	}
-	
-	public void setScore(int score) {
+
+	public void setScore (int score) {
 		scoreString.setScore(score);
 		if (score > topScore) {
 			topScore = score;
@@ -68,18 +67,16 @@ public class ScoresScreen extends GameScreen<VeryAngryRobotsGame> {
 			topScoreString.setScore(score);
 		}
 	}
-	
+
 	@Override
-	public void render(float delta) {
+	public void render (float delta) {
 		stateTime += delta;
 		if (Gdx.input.justTouched()) {
 			touched = true;
-		}
-		else if (touched && !Gdx.input.isTouched()) {
+		} else if (touched && !Gdx.input.isTouched()) {
 			touched = false;
 			game.setScreen(game.mainMenuScreen);
-		}
-		else {
+		} else {
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			spriteBatch.begin();
@@ -93,7 +90,7 @@ public class ScoresScreen extends GameScreen<VeryAngryRobotsGame> {
 			Assets.scoreFont.setColor(Color.WHITE);
 			Assets.scoreFont.draw(spriteBatch, TOP_SCORE, x, y);
 			Assets.scoreFont.draw(spriteBatch, topScoreString, x + w, y);
-			
+
 			b = Assets.scoreFont.getBounds(TOP_SCORE);
 			w = b.width + Assets.scoreFont.getSpaceWidth();
 			b = Assets.scoreFont.getBounds(topScoreString);
@@ -102,28 +99,28 @@ public class ScoresScreen extends GameScreen<VeryAngryRobotsGame> {
 			y += 2 * b.height;
 			Assets.scoreFont.draw(spriteBatch, LAST_SCORE, x, y);
 			Assets.scoreFont.draw(spriteBatch, scoreString, x + w, y);
-			
+
 			if (stateTime % 1.0f < 0.5f) {
 				Assets.textFont.setColor(Color.WHITE);
-				Assets.textFont.drawWrapped(spriteBatch, TAP_TO_CONTINUE, 0, VIRTUAL_HEIGHT/4, VIRTUAL_WIDTH, HAlignment.CENTER);
+				Assets.textFont.drawWrapped(spriteBatch, TAP_TO_CONTINUE, 0, VIRTUAL_HEIGHT / 4, VIRTUAL_WIDTH, HAlignment.CENTER);
 			}
 			spriteBatch.end();
 		}
 	}
-	
+
 	@Override
-	public void show() {
+	public void show () {
 		Gdx.input.setCatchBackKey(true);
 		stateTime = 0.0f;
 	}
-	
+
 	@Override
-	public void hide() {
+	public void hide () {
 		Gdx.input.setCatchBackKey(false);
 	}
-	
+
 	@Override
-	public void resume() {
+	public void resume () {
 		Gdx.input.setCatchBackKey(true);
 	}
 }

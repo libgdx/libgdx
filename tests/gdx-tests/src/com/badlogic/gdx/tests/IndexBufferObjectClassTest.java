@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.IndexBufferObject;
@@ -34,17 +32,20 @@ public class IndexBufferObjectClassTest extends GdxTest {
 	VertexBufferObject vbo;
 	IndexBufferObject ibo;
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 
-	@Override public void dispose () {
+	@Override
+	public void dispose () {
 		texture.dispose();
 		vbo.dispose();
 		ibo.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		GL11 gl = Gdx.gl11;
 		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -58,7 +59,8 @@ public class IndexBufferObjectClassTest extends GdxTest {
 		vbo.unbind();
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		vbo = new VertexBufferObject(true, 3, new VertexAttribute(VertexAttributes.Usage.Position, 2, "a_Position"),
 			new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_TexCoords"), new VertexAttribute(
 				VertexAttributes.Usage.ColorPacked, 4, "a_Color"));
@@ -72,7 +74,8 @@ public class IndexBufferObjectClassTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
 	}
 
-	@Override public void resume () {
+	@Override
+	public void resume () {
 		vbo.invalidate();
 		ibo.invalidate();
 	}

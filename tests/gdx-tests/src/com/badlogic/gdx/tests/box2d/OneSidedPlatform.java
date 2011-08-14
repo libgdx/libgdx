@@ -50,7 +50,8 @@ public class OneSidedPlatform extends Box2DTest {
 	float m_radius;
 	State m_state;
 
-	@Override protected void createWorld (World world) {
+	@Override
+	protected void createWorld (World world) {
 		{
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
@@ -90,7 +91,8 @@ public class OneSidedPlatform extends Box2DTest {
 
 		world.setContactFilter(new ContactFilter() {
 
-			@Override public boolean shouldCollide (Fixture fixtureA, Fixture fixtureB) {
+			@Override
+			public boolean shouldCollide (Fixture fixtureA, Fixture fixtureB) {
 				if ((fixtureA == m_platform && fixtureB == m_character) || (fixtureA == m_platform && fixtureB == m_character)) {
 					Vector2 position = m_character.getBody().getPosition();
 					if (position.y < m_top + m_radius - 3.0f * 0.005f)

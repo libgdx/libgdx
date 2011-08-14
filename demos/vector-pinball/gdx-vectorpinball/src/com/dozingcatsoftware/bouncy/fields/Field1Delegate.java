@@ -10,7 +10,8 @@ import com.dozingcatsoftware.bouncy.elements.WallElement;
 
 public class Field1Delegate extends BaseFieldDelegate {
 
-	@Override public void allRolloversInGroupActivated (Field field, RolloverGroupElement rolloverGroup) {
+	@Override
+	public void allRolloversInGroupActivated (Field field, RolloverGroupElement rolloverGroup) {
 		// rollover groups increment field multiplier when all rollovers are activated, also reset to inactive
 		rolloverGroup.setAllRolloversActivated(false);
 		field.getGameState().incrementScoreMultiplier();
@@ -28,7 +29,8 @@ public class Field1Delegate extends BaseFieldDelegate {
 
 	}
 
-	@Override public void allDropTargetsInGroupHit (Field field, DropTargetGroupElement targetGroup) {
+	@Override
+	public void allDropTargetsInGroupHit (Field field, DropTargetGroupElement targetGroup) {
 		// activate ball saver for left and right groups
 		String id = targetGroup.getElementID();
 		if ("DropTargetLeftSave".equals(id)) {
@@ -54,18 +56,21 @@ public class Field1Delegate extends BaseFieldDelegate {
 		barrier.setRetracted(!enabled);
 	}
 
-	@Override public void ballInSensorRange (Field field, SensorElement sensor) {
+	@Override
+	public void ballInSensorRange (Field field, SensorElement sensor) {
 		// enable launch barrier
 		if ("LaunchBarrierSensor".equals(sensor.getElementID())) {
 			setLaunchBarrierEnabled(field, true);
 		}
 	}
 
-	@Override public void gameStarted (Field field) {
+	@Override
+	public void gameStarted (Field field) {
 		setLaunchBarrierEnabled(field, false);
 	}
 
-	@Override public void ballLost (Field field) {
+	@Override
+	public void ballLost (Field field) {
 		setLaunchBarrierEnabled(field, false);
 	}
 

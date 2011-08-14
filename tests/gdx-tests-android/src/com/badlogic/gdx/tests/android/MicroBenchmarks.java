@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.android;
 
 import java.nio.ByteBuffer;
@@ -35,7 +36,8 @@ public class MicroBenchmarks extends Activity {
 	TextView tv;
 	Thread testThread = new Thread(new Runnable() {
 
-		@Override public void run () {
+		@Override
+		public void run () {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(1024 * 1024 * Float.SIZE / 8);
 			buffer.order(ByteOrder.nativeOrder());
 			FloatBuffer floatBuffer = buffer.asFloatBuffer();
@@ -111,7 +113,8 @@ public class MicroBenchmarks extends Activity {
 
 		tv.post(new Runnable() {
 
-			@Override public void run () {
+			@Override
+			public void run () {
 				StringBuilder buff = new StringBuilder(tv.getText());
 				buff.append(info).append(", ").append(time).append(" secs\n");
 				tv.setText(buff.toString());

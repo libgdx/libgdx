@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.twl;
 
 import de.matthiasmann.twl.Alignment;
@@ -20,10 +21,8 @@ import de.matthiasmann.twl.DialogLayout;
 import de.matthiasmann.twl.Event;
 import de.matthiasmann.twl.Widget;
 
-/**
- * Adds convenience methods to {@link DialogLayout}.
- * @author Nathan Sweet
- */
+/** Adds convenience methods to {@link DialogLayout}.
+ * @author Nathan Sweet */
 public class Layout extends DialogLayout {
 	private boolean eatEvents;
 
@@ -64,9 +63,7 @@ public class Layout extends DialogLayout {
 			this.horizontal = horizontal;
 		}
 
-		/**
-		 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-		 */
+		/** @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 		public Group sequence (Object... widgets) {
 			DialogLayout.Group dialogGroup = createSequentialGroup();
 			if (horizontal)
@@ -76,9 +73,7 @@ public class Layout extends DialogLayout {
 			return new Group(null, dialogGroup).add(widgets);
 		}
 
-		/**
-		 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-		 */
+		/** @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 		public Group parallel (Object... widgets) {
 			DialogLayout.Group dialogGroup = createParallelGroup();
 			if (horizontal)
@@ -97,51 +92,39 @@ public class Layout extends DialogLayout {
 				this.dialogGroup = dialogGroup;
 			}
 
-			/**
-			 * Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
-			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-			 */
+			/** Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 			public Group sequence (Object... widgets) {
 				return sequence(Alignment.FILL, widgets);
 			}
 
-			/**
-			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-			 */
+			/** @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 			public Group sequence (Alignment alignment, Object... widgets) {
 				DialogLayout.Group dialogGroup = createSequentialGroup();
 				this.dialogGroup.addGroup(dialogGroup);
 				return new Group(this, dialogGroup).add(widgets);
 			}
 
-			/**
-			 * Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
-			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-			 */
+			/** Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 			public Group parallel (Object... widgets) {
 				return parallel(Alignment.FILL, widgets);
 			}
 
-			/**
-			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-			 */
+			/** @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 			public Group parallel (Alignment alignment, Object... widgets) {
 				DialogLayout.Group dialogGroup = createParallelGroup();
 				this.dialogGroup.addGroup(dialogGroup);
 				return new Group(this, dialogGroup).add(widgets);
 			}
 
-			/**
-			 * Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
-			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-			 */
+			/** Adds the specified widgets. Sets the alignment to {@link Alignment#FILL fill} if the widget is not yet in the layout.
+			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 			public Group add (Object... widgets) {
 				return add(Alignment.FILL, widgets);
 			}
 
-			/**
-			 * @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size.
-			 */
+			/** @param widgets Either {@link Widget} or {@link Integer} objects. Integers are used to specify the gap size. */
 			public Group add (Alignment alignment, Object... widgets) {
 				for (int i = 0, n = widgets.length; i < n; i++) {
 					Object object = widgets[i];

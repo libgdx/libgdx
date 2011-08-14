@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.physics.box2d;
 
-/**
- * A shape is used for collision detection. You can create a shape however you like. Shapes used for simulation in b2World are
+/** A shape is used for collision detection. You can create a shape however you like. Shapes used for simulation in b2World are
  * created automatically when a b2Fixture is created.
  * 
  * NOTE: YOU NEED TO DISPOSE SHAPES AFTER YOU NO LONGER USE THEM! E.g. after calling body.createFixture();
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public abstract class Shape {
-	/**
-	 * Enum describing the type of a shape
-	 * @author mzechner
-	 * 
-	 */
+	/** Enum describing the type of a shape
+	 * @author mzechner */
 	public enum Type {
 		Circle, Polygon,
 	};
@@ -36,33 +31,25 @@ public abstract class Shape {
 	/** the address of the shape **/
 	protected long addr;
 
-	/**
-	 * Get the type of this shape. You can use this to down cast to the concrete shape.
-	 * @return the shape type.
-	 */
+	/** Get the type of this shape. You can use this to down cast to the concrete shape.
+	 * @return the shape type. */
 	public abstract Type getType ();
 
-	/**
-	 * Returns the radius of this shape
-	 */
+	/** Returns the radius of this shape */
 	public float getRadius () {
 		return jniGetRadius(addr);
 	}
 
 	private native float jniGetRadius (long addr);
 
-	/**
-	 * Sets the radius of this shape
-	 */
+	/** Sets the radius of this shape */
 	public void setRadius (float radius) {
 		jniSetRadius(addr, radius);
 	}
 
 	private native void jniSetRadius (long addr, float radius);
 
-	/**
-	 * Needs to be called when the shape is no longer used, e.g. after a fixture was created based on the shape.
-	 */
+	/** Needs to be called when the shape is no longer used, e.g. after a fixture was created based on the shape. */
 	public void dispose () {
 		jniDispose(addr);
 	}

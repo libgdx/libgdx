@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.jogl;
 
 import javax.media.opengl.glu.GLU;
@@ -25,20 +26,24 @@ public class JoglGLU implements com.badlogic.gdx.graphics.GLU {
 	double projectd[] = new double[16];
 	double wind[] = new double[3];
 
-	@Override public void gluLookAt (GL10 gl, float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
-		float upX, float upY, float upZ) {
+	@Override
+	public void gluLookAt (GL10 gl, float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX,
+		float upY, float upZ) {
 		glu.gluLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
 	}
 
-	@Override public void gluOrtho2D (GL10 gl, float left, float right, float bottom, float top) {
+	@Override
+	public void gluOrtho2D (GL10 gl, float left, float right, float bottom, float top) {
 		glu.gluOrtho2D(left, right, bottom, top);
 	}
 
-	@Override public void gluPerspective (GL10 gl, float fovy, float aspect, float zNear, float zFar) {
+	@Override
+	public void gluPerspective (GL10 gl, float fovy, float aspect, float zNear, float zFar) {
 		glu.gluPerspective(fovy, aspect, zNear, zFar);
 	}
 
-	@Override public boolean gluProject (float objX, float objY, float objZ, float[] model, int modelOffset, float[] project,
+	@Override
+	public boolean gluProject (float objX, float objY, float objZ, float[] model, int modelOffset, float[] project,
 		int projectOffset, int[] view, int viewOffset, float[] win, int winOffset) {
 		for (int i = 0; i < 16; i++) {
 			modeld[i] = model[modelOffset + i];
@@ -51,7 +56,8 @@ public class JoglGLU implements com.badlogic.gdx.graphics.GLU {
 		return result;
 	}
 
-	@Override public boolean gluUnProject (float winX, float winY, float winZ, float[] model, int modelOffset, float[] project,
+	@Override
+	public boolean gluUnProject (float winX, float winY, float winZ, float[] model, int modelOffset, float[] project,
 		int projectOffset, int[] view, int viewOffset, float[] obj, int objOffset) {
 		for (int i = 0; i < 16; i++) {
 			modeld[i] = model[modelOffset + i];

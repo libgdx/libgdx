@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogicgames.superjumper;
 
 public abstract class Screen {
 	Game game;
-	
-	public Screen(Game game) {
+
+	public Screen (Game game) {
 		this.game = game;
 	}
-	
-	public abstract void update(float deltaTime);		
-	
-	public abstract void present(float deltaTime);
-	
-	public abstract void pause();
-	
-	public abstract void resume();
-	
-	public abstract void dispose();
+
+	public abstract void update (float deltaTime);
+
+	public abstract void present (float deltaTime);
+
+	public abstract void pause ();
+
+	public abstract void resume ();
+
+	public abstract void dispose ();
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.jogl;
 
 import java.awt.BorderLayout;
@@ -43,13 +44,10 @@ import com.badlogic.gdx.backends.jogl.JoglGraphics.JoglDisplayMode;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with
+/** An implemenation of the {@link Application} interface based on Jogl for Windows, Linux and Mac. Instantiate this class with
  * apropriate parameters and then register {@link ApplicationListener} or {@link InputProcessor} instances.
  * 
- * @author mzechner
- * 
- */
+ * @author mzechner */
 public final class JoglApplication implements Application {
 	JoglGraphics graphics;
 	JoglInput input;
@@ -59,8 +57,7 @@ public final class JoglApplication implements Application {
 	List<Runnable> runnables = new ArrayList<Runnable>();
 	int logLevel = LOG_INFO;
 
-	/**
-	 * Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication
+	/** Creates a new {@link JoglApplication} with the given title and dimensions. If useGL20IfAvailable is set the JoglApplication
 	 * will try to create an OpenGL 2.0 context which can then be used via JoglApplication.getGraphics().getGL20(). To query
 	 * whether enabling OpenGL 2.0 was successful use the JoglApplication.getGraphics().isGL20Available() method.
 	 * 
@@ -68,8 +65,7 @@ public final class JoglApplication implements Application {
 	 * @param title the title of the application
 	 * @param width the width of the surface in pixels
 	 * @param height the height of the surface in pixels
-	 * @param useGL20IfAvailable wheter to use OpenGL 2.0 if it is available or not
-	 */
+	 * @param useGL20IfAvailable wheter to use OpenGL 2.0 if it is available or not */
 	public JoglApplication (final ApplicationListener listener, final String title, final int width, final int height,
 		final boolean useGL20IfAvailable) {
 		final JoglApplicationConfiguration config = new JoglApplicationConfiguration();
@@ -77,24 +73,24 @@ public final class JoglApplication implements Application {
 		config.width = width;
 		config.height = height;
 		config.useGL20 = useGL20IfAvailable;
-		
+
 		if (!SwingUtilities.isEventDispatchThread()) {
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
-					public void run () {						
+					public void run () {
 						initialize(listener, config);
 					}
 				});
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Creating window failed", e);
 			}
-		} else {			
+		} else {
 			config.useGL20 = useGL20IfAvailable;
 			initialize(listener, config);
 		}
 	}
 
-	public JoglApplication(final ApplicationListener listener, final JoglApplicationConfiguration config) {
+	public JoglApplication (final ApplicationListener listener, final JoglApplicationConfiguration config) {
 		if (!SwingUtilities.isEventDispatchThread()) {
 			try {
 				SwingUtilities.invokeAndWait(new Runnable() {
@@ -109,7 +105,7 @@ public final class JoglApplication implements Application {
 			initialize(listener, config);
 		}
 	}
-	
+
 	void initialize (ApplicationListener listener, JoglApplicationConfiguration config) {
 		JoglNativesLoader.load();
 		graphics = new JoglGraphics(listener, config);
@@ -123,16 +119,16 @@ public final class JoglApplication implements Application {
 		Gdx.audio = JoglApplication.this.getAudio();
 		Gdx.files = JoglApplication.this.getFiles();
 
-		if(!config.fullscreen) {
+		if (!config.fullscreen) {
 			frame = new JFrame(config.title);
 			graphics.getCanvas().setPreferredSize(new Dimension(config.width, config.height));
-			frame.setSize(config.width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
-				+ config.height);
+			frame.setSize(config.width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top
+				+ frame.getInsets().bottom + config.height);
 			frame.add(graphics.getCanvas(), BorderLayout.CENTER);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setLocationRelativeTo(null);
 			frame.addWindowListener(windowListener);
-	
+
 			frame.pack();
 			frame.setVisible(true);
 			graphics.create();
@@ -141,8 +137,8 @@ public final class JoglApplication implements Application {
 			GraphicsDevice device = genv.getDefaultScreenDevice();
 			frame = new JFrame(config.title);
 			graphics.getCanvas().setPreferredSize(new Dimension(config.width, config.height));
-			frame.setSize(config.width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top + frame.getInsets().bottom
-				+ config.height);
+			frame.setSize(config.width + frame.getInsets().left + frame.getInsets().right, frame.getInsets().top
+				+ frame.getInsets().bottom + config.height);
 			frame.add(graphics.getCanvas(), BorderLayout.CENTER);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setLocationRelativeTo(null);
@@ -155,10 +151,11 @@ public final class JoglApplication implements Application {
 			try {
 				device.setFullScreenWindow(frame);
 				JoglDisplayMode mode = graphics.findBestMatch(config.width, config.height);
-				if(mode == null) throw new GdxRuntimeException("Couldn't set fullscreen mode " + config.width + "x" + config.height);
+				if (mode == null)
+					throw new GdxRuntimeException("Couldn't set fullscreen mode " + config.width + "x" + config.height);
 				device.setDisplayMode(mode.mode);
-			} catch(Throwable e) {
-				e.printStackTrace();				
+			} catch (Throwable e) {
+				e.printStackTrace();
 				device.setDisplayMode(desktopMode);
 				device.setFullScreenWindow(null);
 				frame.dispose();
@@ -168,20 +165,24 @@ public final class JoglApplication implements Application {
 			graphics.create();
 		}
 	}
-	
+
 	final WindowAdapter windowListener = new WindowAdapter() {
-		@Override public void windowOpened (WindowEvent arg0) {
+		@Override
+		public void windowOpened (WindowEvent arg0) {
 			graphics.getCanvas().requestFocus();
 			graphics.getCanvas().requestFocusInWindow();
 		}
 
-		@Override public void windowIconified (WindowEvent arg0) {
+		@Override
+		public void windowIconified (WindowEvent arg0) {
 		}
 
-		@Override public void windowDeiconified (WindowEvent arg0) {
+		@Override
+		public void windowDeiconified (WindowEvent arg0) {
 		}
 
-		@Override public void windowClosing (WindowEvent arg0) {			
+		@Override
+		public void windowClosing (WindowEvent arg0) {
 			graphics.pause();
 			graphics.destroy();
 			audio.dispose();
@@ -189,71 +190,66 @@ public final class JoglApplication implements Application {
 		}
 	};
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Audio getAudio () {
+	/** {@inheritDoc} */
+	@Override
+	public Audio getAudio () {
 		return audio;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Files getFiles () {
+	/** {@inheritDoc} */
+	@Override
+	public Files getFiles () {
 		return files;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Graphics getGraphics () {
+	/** {@inheritDoc} */
+	@Override
+	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public Input getInput () {
+	/** {@inheritDoc} */
+	@Override
+	public Input getInput () {
 		return input;
 	}
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public ApplicationType getType () {
+	/** {@inheritDoc} */
+	@Override
+	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
 
-	@Override public int getVersion () {
+	@Override
+	public int getVersion () {
 		return 0;
 	}
 
-	@Override public long getJavaHeap () {
+	@Override
+	public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override public long getNativeHeap () {
+	@Override
+	public long getNativeHeap () {
 		return getJavaHeap();
 	}
-	
-	/**	 
-	 * @return the JFrame of the application.
-	 */
-	public JFrame getJFrame() {
+
+	/** @return the JFrame of the application. */
+	public JFrame getJFrame () {
 		return frame;
 	}
-	
-	/**
-	 * @return the GLCanvas of the application.
-	 */
-	public GLCanvas getGLCanvas() {
+
+	/** @return the GLCanvas of the application. */
+	public GLCanvas getGLCanvas () {
 		return graphics.canvas;
 	}
 
 	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
-	@Override public Preferences getPreferences (String name) {
-		if(preferences.containsKey(name)) {
+
+	@Override
+	public Preferences getPreferences (String name) {
+		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
 			Preferences prefs = new JoglPreferences(name);
@@ -262,51 +258,56 @@ public final class JoglApplication implements Application {
 		}
 	}
 
-	@Override public void postRunnable (Runnable runnable) {
-		synchronized(runnables) {
+	@Override
+	public void postRunnable (Runnable runnable) {
+		synchronized (runnables) {
 			runnables.add(runnable);
 		}
 	}
 
-	public void log(String tag, String message) {
-   	if(logLevel >= LOG_INFO) {
-			System.out.println(tag + ":" + message);		
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);
 		}
-   }
+	}
 
-	@Override public void log (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_INFO) {
+	@Override
+	public void log (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ":" + message);
 			exception.printStackTrace(System.out);
 		}
 	}
-	
-	@Override public void error (String tag, String message) {
-		if(logLevel >= LOG_ERROR) {
-			System.err.println(tag + ":" + message);			
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);
 		}
 	}
 
-
-	@Override public void error (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_ERROR) {
+	@Override
+	public void error (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ":" + message);
 			exception.printStackTrace(System.err);
 		}
 	}
 
-
-	@Override public void setLogLevel (int logLevel) {		
+	@Override
+	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
-	
-	@Override public void exit () {
+
+	@Override
+	public void exit () {
 		postRunnable(new Runnable() {
-			@Override public void run () {
+			@Override
+			public void run () {
 				JoglApplication.this.graphics.listener.pause();
 				JoglApplication.this.graphics.listener.dispose();
 				System.exit(-1);
-			}			
+			}
 		});
 	}
 }

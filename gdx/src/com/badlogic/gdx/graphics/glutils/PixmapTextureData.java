@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,19 +11,19 @@ public class PixmapTextureData implements TextureData {
 	final Format format;
 	final boolean useMipMaps;
 	final boolean disposePixmap;
-	
-	public PixmapTextureData(Pixmap pixmap, Format format, boolean useMipMaps, boolean disposePixmap) {
+
+	public PixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps, boolean disposePixmap) {
 		this.pixmap = pixmap;
-		this.format = format == null? pixmap.getFormat(): format;
+		this.format = format == null ? pixmap.getFormat() : format;
 		this.useMipMaps = useMipMaps;
 		this.disposePixmap = disposePixmap;
 	}
-	
+
 	@Override
 	public boolean disposePixmap () {
 		return disposePixmap;
 	}
-	
+
 	@Override
 	public Pixmap getPixmap () {
 		return pixmap;
@@ -60,6 +61,6 @@ public class PixmapTextureData implements TextureData {
 
 	@Override
 	public void uploadCompressedData () {
-		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");		
+		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
 	}
 }

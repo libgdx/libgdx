@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.StringTokenizer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -26,25 +24,22 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
+import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
-import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
-import com.badlogic.gdx.utils.IntArray;
 
-/**
- * @author David Fraska
- * */
+/** @author David Fraska */
 public class TiledMapTest extends GdxTest {
 
 	private static final boolean automove = true;
 
-	private static final int[] layersList = {2,3};
+	private static final int[] layersList = {2, 3};
 
 	SpriteBatch spriteBatch;
 	BitmapFont font;
@@ -61,17 +56,18 @@ public class TiledMapTest extends GdxTest {
 	long startTime = System.nanoTime();
 	Vector3 tmp = new Vector3();
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+
 		if (automove) {
 			updateCameraPosition();
 		}
-		
+
 		cam.zoom = 0.9f;
 		cam.update();
-		//tileMapRenderer.getProjectionMatrix().set(cam.combined); //Not required when using tileMapRenderer.render(cam)
-		tileMapRenderer.render(cam);//, layersList);
+		// tileMapRenderer.getProjectionMatrix().set(cam.combined); //Not required when using tileMapRenderer.render(cam)
+		tileMapRenderer.render(cam);// , layersList);
 
 		spriteBatch.begin();
 		font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
@@ -79,7 +75,7 @@ public class TiledMapTest extends GdxTest {
 			40);
 		font.draw(spriteBatch, "InitialRow, LastRow: " + tileMapRenderer.getInitialRow() + "," + tileMapRenderer.getLastRow(), 20,
 			60);
-		
+
 		tmp.set(0, 0, 0);
 		cam.unproject(tmp);
 		font.draw(spriteBatch, "Location: " + tmp.x + "," + tmp.y, 20, 80);
@@ -87,7 +83,7 @@ public class TiledMapTest extends GdxTest {
 	}
 
 	private void updateCameraPosition () {
-		cam.position.add(camDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(5*tileMapRenderer.getUnitsPerTileX()));
+		cam.position.add(camDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(5 * tileMapRenderer.getUnitsPerTileX()));
 
 		if (cam.position.x < 0) {
 			cam.position.x = 0;
@@ -107,7 +103,8 @@ public class TiledMapTest extends GdxTest {
 		}
 	}
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		int i;
 		long startTime, endTime;
 		font = new BitmapFont();
@@ -145,17 +142,18 @@ public class TiledMapTest extends GdxTest {
 			}
 		}
 
-		float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
+		float aspectRatio = (float)Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
 		cam = new OrthographicCamera(100f * aspectRatio, 100f);
-		
-		cam.position.set(tileMapRenderer.getMapWidthUnits()/2, tileMapRenderer.getMapHeightUnits() / 2, 0);
+
+		cam.position.set(tileMapRenderer.getMapWidthUnits() / 2, tileMapRenderer.getMapHeightUnits() / 2, 0);
 		camController = new OrthoCamController(cam);
 		Gdx.input.setInputProcessor(camController);
 
 		maxCamPosition.set(tileMapRenderer.getMapWidthUnits(), tileMapRenderer.getMapHeightUnits());
 	}
 
-	@Override public boolean needsGL20 () {
+	@Override
+	public boolean needsGL20 () {
 		return false;
 	}
 }

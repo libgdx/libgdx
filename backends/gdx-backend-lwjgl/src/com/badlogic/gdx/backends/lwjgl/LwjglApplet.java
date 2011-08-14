@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.applet.Applet;
@@ -21,10 +22,8 @@ import java.awt.Canvas;
 
 import com.badlogic.gdx.ApplicationListener;
 
-/**
- * An OpenGL surface in an applet.
- * @author Nathan Sweet
- */
+/** An OpenGL surface in an applet.
+ * @author Nathan Sweet */
 public class LwjglApplet extends Applet {
 	final Canvas canvas;
 	LwjglApplication app;
@@ -32,14 +31,15 @@ public class LwjglApplet extends Applet {
 	class LwjglAppletApplication extends LwjglApplication {
 
 		public LwjglAppletApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
-			super(listener, useGL2, canvas);			
+			super(listener, useGL2, canvas);
 		}
-		
-		@Override public ApplicationType getType() {
+
+		@Override
+		public ApplicationType getType () {
 			return ApplicationType.Applet;
 		}
 	}
-	
+
 	public LwjglApplet (final ApplicationListener listener, final boolean useGL2) {
 		LwjglNativesLoader.load = false;
 		canvas = new Canvas() {

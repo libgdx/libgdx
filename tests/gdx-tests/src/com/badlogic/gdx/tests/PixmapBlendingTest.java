@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files;
@@ -21,8 +22,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -36,7 +35,8 @@ public class PixmapBlendingTest extends GdxTest {
 
 	InputProcessor inputProcessor;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		if (spriteBatch != null) return;
 		spriteBatch = new SpriteBatch();
 
@@ -54,13 +54,14 @@ public class PixmapBlendingTest extends GdxTest {
 
 		logoSprite = new Sprite(new Texture(pixD));
 		logoSprite.flip(false, true);
-		
+
 		pixS1.dispose();
 		pixS2.dispose();
 		pixD.dispose();
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 
 		GL10 gl = Gdx.graphics.getGL10();
 		gl.glClearColor(0, 1, 0, 1);

@@ -17,11 +17,7 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceAvailableEvent;
-import com.badlogic.gdx.beans.beancontext.BeanContextServiceRevokedListener;
+public interface BeanContextServicesListener extends BeanContextServiceRevokedListener {
 
-public interface BeanContextServicesListener extends
-        BeanContextServiceRevokedListener {
-
-    public void serviceAvailable(BeanContextServiceAvailableEvent bcsae);
+	public void serviceAvailable (BeanContextServiceAvailableEvent bcsae);
 }

@@ -13,9 +13,6 @@
 
 package com.badlydrawngames.veryangryrobots;
 
-import static com.badlogic.gdx.math.MathUtils.random;
-import static com.badlydrawngames.general.MathUtils.max;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -36,31 +33,25 @@ import com.badlydrawngames.veryangryrobots.mobiles.PlayerShot;
 import com.badlydrawngames.veryangryrobots.mobiles.Robot;
 import com.badlydrawngames.veryangryrobots.mobiles.RobotShot;
 
-/**
- * The <code>World</code> is the representation of the game world of <b>Very Angry Robots</b>. It knows nothing about
- * how it will be displayed, neither does it know about how the player is controlled, particle effects, sounds, nor
- * anything else. It purely knows about the {@link Player}, {@link Robot}s and the walls of the room that the player
- * is in.
+import static com.badlogic.gdx.math.MathUtils.*;
+import static com.badlydrawngames.general.MathUtils.*;
+
+/** The <code>World</code> is the representation of the game world of <b>Very Angry Robots</b>. It knows nothing about how it will
+ * be displayed, neither does it know about how the player is controlled, particle effects, sounds, nor anything else. It purely
+ * knows about the {@link Player}, {@link Robot}s and the walls of the room that the player is in.
  * 
- * @author Rod
- *
- */
+ * @author Rod */
 public class World {
 
-	/**
-	 * The <code>FireCommand</code> interface is how the {@link World} is told that a {@link GameObject} wants to
-	 * fire.
-	 */
+	/** The <code>FireCommand</code> interface is how the {@link World} is told that a {@link GameObject} wants to fire. */
 	public static interface FireCommand {
-		/**
-		 * Tells the {@link World} that a {@link GameObject} wants to fire. Note that <code>dx</code> and
-		 * <code>dy</code> must be normalised. The World does not have to fire just because it is asked to.
+		/** Tells the {@link World} that a {@link GameObject} wants to fire. Note that <code>dx</code> and <code>dy</code> must be
+		 * normalised. The World does not have to fire just because it is asked to.
 		 * 
 		 * @param firer the {@link GameObject} that wants to fire.
 		 * @param dx the horizontal component of the bullet's direction.
-		 * @param dy the vertical component of the bullet's direction.
-		 */
-		void fire(GameObject firer, float dx, float dy);
+		 * @param dy the vertical component of the bullet's direction. */
+		void fire (GameObject firer, float dx, float dy);
 	}
 
 	// Maze proportions.
@@ -87,13 +78,13 @@ public class World {
 	public static final int ENTERED_ROOM = 2;
 	public static final int PLAYING = 3;
 	public static final int PLAYER_DEAD = 4;
-	
+
 	private final Pool<PlayerShot> shotPool;
 	private final Pool<Robot> robotPool;
 	private final Pool<RobotShot> robotShotPool;
 	private final Grid roomGrid;
 	private final RoomBuilder roomBuilder;
-	private final Rectangle roomBounds;	
+	private final Rectangle roomBounds;
 	private final float minX;
 	private final float maxX;
 	private final float minY;
@@ -103,7 +94,7 @@ public class World {
 	private long roomSeed;
 	private int roomX;
 	private int roomY;
-	private float playingTime;	
+	private float playingTime;
 	private float nextFireTime;
 	private int numRobotShots;
 	private float robotShotSpeed;
@@ -124,96 +115,94 @@ public class World {
 	private boolean isPaused;
 	private float pausedTime;
 
-	public void pause() {
+	public void pause () {
 		isPaused = true;
 		pausedTime = 0.0f;
 	}
-	
-	public void resume() {
+
+	public void resume () {
 		isPaused = false;
 	}
-	
-	public boolean isPaused() {
+
+	public boolean isPaused () {
 		return isPaused;
 	}
 
-	public float getPausedTime() {
+	public float getPausedTime () {
 		return pausedTime;
 	}
 
-	public int getState() {
+	public int getState () {
 		return state;
 	}
 
-	private void setState(int newState) {
+	private void setState (int newState) {
 		state = newState;
 		stateTime = 0.0f;
 	}
 
-	public float getStateTime() {
+	public float getStateTime () {
 		return stateTime;
 	}
 
-	public Color getRobotColor() {
+	public Color getRobotColor () {
 		return robotColor;
 	}
 
-	public int getDoorPosition() {
+	public int getDoorPosition () {
 		return doorPosition;
 	}
 
-	public Array<Rectangle> getDoorRects() {
+	public Array<Rectangle> getDoorRects () {
 		return doorRects;
 	}
 
-	public Array<Rectangle> getWallRects() {
+	public Array<Rectangle> getWallRects () {
 		return wallRects;
 	}
 
-	public Rectangle getRoomBounds() {
+	public Rectangle getRoomBounds () {
 		return roomBounds;
 	}
 
-	public Player getPlayer() {
+	public Player getPlayer () {
 		return player;
 	}
 
-	public Array<PlayerShot> getPlayerShots() {
+	public Array<PlayerShot> getPlayerShots () {
 		return playerShots;
 	}
 
-	public Array<Robot> getRobots() {
+	public Array<Robot> getRobots () {
 		return robots;
 	}
 
-	public Array<RobotShot> getRobotShots() {
+	public Array<RobotShot> getRobotShots () {
 		return robotShots;
 	}
 
-	public Captain getCaptain() {
+	public Captain getCaptain () {
 		return captain;
 	}
 
-	/**
-	 * Adds another listener to the {@link World}.
+	/** Adds another listener to the {@link World}.
 	 * 
-	 * @param listener the listener.
-	 */
-	public void addWorldListener(WorldListener listener) {
+	 * @param listener the listener. */
+	public void addWorldListener (WorldListener listener) {
 		notifier.addListener(listener);
 	}
 
 	public final FireCommand firePlayerShot = new FireCommand() {
 		@Override
-		public void fire(GameObject firer, float dx, float dy) {
+		public void fire (GameObject firer, float dx, float dy) {
 			if (now >= nextFireTime) {
 				addPlayerShot(dx, dy);
 				nextFireTime = now + FIRING_INTERVAL;
 			}
 		}
 	};
-	
-	private void addPlayerShot(float dx, float dy) {
+
+	private void addPlayerShot (float dx, float dy) {
 		if (state == PLAYING && playerShots.size < MAX_PLAYER_SHOTS) {
 			PlayerShot shot = shotPool.obtain();
 			shot.inCollision = false;
@@ -224,15 +213,15 @@ public class World {
 			notifier.onPlayerFired();
 		}
 	}
-	
+
 	public final FireCommand fireRobotShot = new FireCommand() {
 		@Override
-		public void fire(GameObject firer, float dx, float dy) {
+		public void fire (GameObject firer, float dx, float dy) {
 			addRobotShot(firer, dx, dy);
 		}
 	};
-	
-	private void addRobotShot(GameObject firer, float dx, float dy) {
+
+	private void addRobotShot (GameObject firer, float dx, float dy) {
 		if (state == PLAYING && robotShots.size < numRobotShots && stateTime >= FIRING_AMNESTY_INTERVAL) {
 			RobotShot shot = robotShotPool.obtain();
 			shot.inCollision = false;
@@ -242,42 +231,42 @@ public class World {
 			float y = firer.y + firer.height / 2 - shot.height / 2;
 			shot.fire(x, y, dx, dy);
 			robotShots.add(shot);
-			notifier.onRobotFired((Robot) firer);
+			notifier.onRobotFired((Robot)firer);
 		}
 	}
-	
+
 	private final RemovalHandler<Robot> robotRemovalHandler = new RemovalHandler<Robot>() {
 		@Override
-		public void onRemove(Robot robot) {
+		public void onRemove (Robot robot) {
 			notifier.onRobotDestroyed(robot);
 		}
 	};
-	
+
 	private final RemovalHandler<BaseShot> shotRemovalHandler = new RemovalHandler<BaseShot>() {
 		@Override
-		public void onRemove(BaseShot shot) {
+		public void onRemove (BaseShot shot) {
 			notifier.onShotDestroyed(shot);
 		}
 	};
-	
+
 	private final ColliderHandler<GameObject, GameObject> gameObjectCollisionHandler = new ColliderHandler<GameObject, GameObject>() {
 		@Override
-		public void onCollision(GameObject t, GameObject u) {
+		public void onCollision (GameObject t, GameObject u) {
 			t.inCollision = true;
 			u.inCollision = true;
 		}
 	};
-	
+
 	private final ColliderHandler<Captain, GameObject> captainGameObjectCollisionHandler = new ColliderHandler<Captain, GameObject>() {
 		@Override
-		public void onCollision(Captain captain, GameObject go) {
+		public void onCollision (Captain captain, GameObject go) {
 			go.inCollision = true;
 		}
 	};
-	
+
 	private final ColliderHandler<PlayerShot, Robot> shotRobotCollisionHandler = new ColliderHandler<PlayerShot, Robot>() {
 		@Override
-		public void onCollision(PlayerShot shot, Robot robot) {
+		public void onCollision (PlayerShot shot, Robot robot) {
 			if (!robot.inCollision) {
 				notifier.onRobotHit(robot);
 			}
@@ -285,34 +274,32 @@ public class World {
 			robot.inCollision = true;
 		}
 	};
-	
+
 	private final ColliderHandler<Robot, Robot> robotRobotCollisionHandler = new ColliderHandler<Robot, Robot>() {
 		@Override
-		public void onCollision(Robot t, Robot u) {
+		public void onCollision (Robot t, Robot u) {
 			t.inCollision = true;
 			u.inCollision = true;
 		}
 	};
-	
+
 	private final SceneryHandler<Player> playerSceneryHandler = new SceneryHandler<Player>() {
 		@Override
-		public void onCollision(Player player, Rectangle r) {
+		public void onCollision (Player player, Rectangle r) {
 			player.inCollision = true;
 		}
 	};
-	
+
 	private final SceneryHandler<GameObject> gameObjectSceneryHandler = new SceneryHandler<GameObject>() {
 		@Override
-		public void onCollision(GameObject t, Rectangle r) {
+		public void onCollision (GameObject t, Rectangle r) {
 			t.inCollision = true;
 		}
 	};
-	
-	/**
-	 * Constructs a new {@link World}.
-	 */
-	public World(DifficultyManager difficultyManager) {
-		this.difficultyManager = difficultyManager; 
+
+	/** Constructs a new {@link World}. */
+	public World (DifficultyManager difficultyManager) {
+		this.difficultyManager = difficultyManager;
 		notifier = new WorldNotifier();
 		minX = 0;
 		maxX = WALL_WIDTH * HCELLS;
@@ -324,42 +311,38 @@ public class World {
 		playerPos = new Vector2();
 		roomBuilder = new RoomBuilder(HCELLS, VCELLS);
 		roomGrid = new Grid(HCELLS * 2, VCELLS * 2, maxX, maxY);
-		
+
 		shotPool = new Pool<PlayerShot>(MAX_PLAYER_SHOTS, MAX_PLAYER_SHOTS) {
 			@Override
-			protected PlayerShot newObject() {
+			protected PlayerShot newObject () {
 				return new PlayerShot();
 			}
 		};
-		
+
 		robotPool = new Pool<Robot>(MAX_ROBOTS, MAX_ROBOTS) {
 			@Override
-			protected Robot newObject() {
+			protected Robot newObject () {
 				return new Robot();
 			}
 		};
-		
+
 		robotShotPool = new Pool<RobotShot>(MAX_ROBOT_SHOTS, MAX_ROBOT_SHOTS) {
 			@Override
-			protected RobotShot newObject() {
+			protected RobotShot newObject () {
 				return new RobotShot();
 			}
 		};
 	}
 
-	/**
-	 * Resets the {@link World} to its starting state.
-	 */
-	public void reset() {
+	/** Resets the {@link World} to its starting state. */
+	public void reset () {
 		setState(RESETTING);
 	}
 
-	/**
-	 * Called when the {@link World} is to be updated.
-	 *  
-	 * @param delta the time in seconds since the last render.
-	 */
-	public void update(float delta) {
+	/** Called when the {@link World} is to be updated.
+	 * 
+	 * @param delta the time in seconds since the last render. */
+	public void update (float delta) {
 		if (!isPaused) {
 			now += delta;
 			stateTime += delta;
@@ -377,34 +360,33 @@ public class World {
 				updatePlayerDead(delta);
 				break;
 			}
-		}
-		else {
+		} else {
 			pausedTime += delta;
 		}
 	}
-	
-	private void updateResetting() {
+
+	private void updateResetting () {
 		notifier.onWorldReset();
 		roomSeed = System.currentTimeMillis();
 		roomX = 0;
 		roomY = 0;
 		populateRoom(DoorPositions.MIN_Y);
 	}
-	
-	private void updateEnteredRoom() {
+
+	private void updateEnteredRoom () {
 		if (stateTime >= ROOM_TRANSITION_TIME) {
 			setState(PLAYING);
 		}
 	}
-	
-	private void updatePlaying(float delta) {
+
+	private void updatePlaying (float delta) {
 		player.update(delta);
 		updateMobiles(delta);
 		checkForCollisions();
 		checkForLeavingRoom();
 	}
-	
-	private void updatePlayerDead(float delta) {
+
+	private void updatePlayerDead (float delta) {
 		updateMobiles(delta);
 		checkForCollisions();
 		if (now >= playingTime) {
@@ -412,8 +394,8 @@ public class World {
 			setState(PLAYING);
 		}
 	}
-	
-	private void populateRoom(int doorPos) {
+
+	private void populateRoom (int doorPos) {
 		doorPosition = doorPos;
 		setRandomSeedFromRoom();
 		createMaze();
@@ -426,7 +408,7 @@ public class World {
 		notifier.onEnteredRoom(now, numRobots);
 	}
 
-	private void createMaze() {
+	private void createMaze () {
 		roomBuilder.build(doorPosition);
 		wallRects = roomBuilder.getWalls();
 		doorRects = roomBuilder.getDoors();
@@ -439,64 +421,64 @@ public class World {
 		}
 	}
 
-	private void setRandomSeedFromRoom() {
+	private void setRandomSeedFromRoom () {
 		long seed = roomSeed + ((roomX & 0xff) | ((roomY & 0xff) << 8));
 		random.setSeed(seed);
 	}
-	
-	private void placePlayer() {
+
+	private void placePlayer () {
 		player.inCollision = false;
-		
+
 		switch (doorPosition) {
-		
+
 		case DoorPositions.MIN_X:
 			player.x = minX + player.width / 2;
 			player.y = (maxY + minY) / 2 - player.height / 2;
 			break;
-			
+
 		case DoorPositions.MAX_X:
 			player.x = maxX - player.width - player.width / 2;
 			player.y = (maxY + minY) / 2 - player.height / 2;
 			break;
-			
+
 		case DoorPositions.MAX_Y:
 			player.x = (maxX + minX) / 2 - player.width / 2;
-			player.y = maxY - player.height - player.height / 4; 
+			player.y = maxY - player.height - player.height / 4;
 			break;
-			
+
 		case DoorPositions.MIN_Y:
 		default:
 			player.x = (maxX + minX) / 2 - player.width / 2;
-			player.y = minY + player.height / 4; 
+			player.y = minY + player.height / 4;
 			break;
 		}
-		
+
 		player.setState(Player.FACING_RIGHT);
 		notifier.onPlayerSpawned();
 	}
-	
-	private void placeCaptain() {
+
+	private void placeCaptain () {
 		captain.inCollision = false;
 		captain.setState(Captain.LURKING);
 		captain.activateAfter(max(CAPTAIN_MIN_DELAY, CAPTAIN_LURK_MULTIPLIER * robots.size));
 		captain.setPlayer(player);
-		
+
 		switch (doorPosition) {
 		case DoorPositions.MIN_X:
 			captain.x = minX - 2 * captain.width;
 			captain.y = (maxY + minY) / 2 - captain.height / 2;
 			break;
-			
+
 		case DoorPositions.MAX_X:
 			captain.x = maxX + captain.width;
 			captain.y = (maxY + minY) / 2 - captain.height / 2;
 			break;
-			
+
 		case DoorPositions.MAX_Y:
 			captain.x = (maxX + minX) / 2 - captain.width / 2;
 			captain.y = maxY + captain.height;
 			break;
-			
+
 		case DoorPositions.MIN_Y:
 		default:
 			captain.x = (maxX + minX) / 2 - captain.width / 2;
@@ -505,12 +487,12 @@ public class World {
 		}
 	}
 
-	private void createRobots() {
+	private void createRobots () {
 		robotColor = difficultyManager.getRobotColor();
 		numRobots = difficultyManager.getNumberOfRobots();
 		numRobotShots = difficultyManager.getNumberOfRobotShots();
 		robotShotSpeed = difficultyManager.getRobotShotSpeed();
-		
+
 		final float minXSpawn = minX + WALL_HEIGHT;
 		final float minYSpawn = minY + WALL_HEIGHT;
 		final float maxXSpawn = maxX - WALL_HEIGHT;
@@ -531,20 +513,20 @@ public class World {
 			robots.add(robot);
 		}
 	}
-	
-	private boolean canSpawnHere(Robot robot) {
+
+	private boolean canSpawnHere (Robot robot) {
 		return !(intersectsWalls(robot) || intersectsDoors(robot) || intersectsRobots(robot) || playerPos.dst(robot.x, robot.y) < WALL_WIDTH);
 	}
-	
-	private boolean intersectsWalls(Robot robot) {
+
+	private boolean intersectsWalls (Robot robot) {
 		return Colliders.intersects(robot.bounds(), wallRects);
 	}
 
-	private boolean intersectsDoors(Robot robot) {
+	private boolean intersectsDoors (Robot robot) {
 		return Colliders.intersects(robot.bounds(), doorRects);
 	}
-	
-	private boolean intersectsRobots(Robot robot) {
+
+	private boolean intersectsRobots (Robot robot) {
 		for (int i = 0; i < robots.size; i++) {
 			if (robot.boundsIntersect(robots.get(i))) {
 				return true;
@@ -553,22 +535,22 @@ public class World {
 		return false;
 	}
 
-	private void createPlayerShots() {
+	private void createPlayerShots () {
 		playerShots = Pools.makeArrayFromPool(playerShots, shotPool, MAX_PLAYER_SHOTS);
 	}
-	
-	private void createRobotShots() {
+
+	private void createRobotShots () {
 		robotShots = Pools.makeArrayFromPool(robotShots, robotShotPool, MAX_ROBOT_SHOTS);
 	}
-	
-	private void updateMobiles(float delta) {
+
+	private void updateMobiles (float delta) {
 		updateCaptain(delta);
 		update(robots, delta);
 		update(playerShots, delta);
 		update(robotShots, delta);
 	}
-	
-	private void resetRoom() {
+
+	private void resetRoom () {
 		placePlayer();
 		placeCaptain();
 		for (Robot robot : robots) {
@@ -578,20 +560,20 @@ public class World {
 		playerShots.clear();
 	}
 
-	private void updateCaptain(float delta) {
+	private void updateCaptain (float delta) {
 		captain.update(delta);
 		if (captain.stateTime == 0.0f && captain.state == Captain.CHASING) {
 			doCaptainActivated();
 		}
 	}
-	
-	private void update(Array<? extends GameObject> gos, float delta) {
+
+	private void update (Array<? extends GameObject> gos, float delta) {
 		for (GameObject go : gos) {
 			go.update(delta);
 		}
 	}
-	
-	private void checkForCollisions() {
+
+	private void checkForCollisions () {
 		checkMobileMobileCollisions();
 		checkMobileSceneryCollisions();
 		removeMarkedMobiles();
@@ -600,7 +582,7 @@ public class World {
 		}
 	}
 
-	private void checkMobileMobileCollisions() {
+	private void checkMobileMobileCollisions () {
 		Colliders.collide(player, robots, gameObjectCollisionHandler);
 		Colliders.collide(player, robotShots, gameObjectCollisionHandler);
 		Colliders.collide(captain, player, captainGameObjectCollisionHandler);
@@ -614,21 +596,21 @@ public class World {
 		Colliders.collide(captain, robotShots, captainGameObjectCollisionHandler);
 	}
 
-	private void checkMobileSceneryCollisions() {
+	private void checkMobileSceneryCollisions () {
 		Colliders.collide(player, roomGrid.get(player.bounds()), playerSceneryHandler);
 		markSceneryCollisions(robots, gameObjectSceneryHandler);
 		markSceneryCollisions(playerShots, gameObjectSceneryHandler);
 		markSceneryCollisions(robotShots, gameObjectSceneryHandler);
 	}
 
-	private <U extends GameObject, T extends U> void markSceneryCollisions(Array<T> gos, SceneryHandler<U> handler) {
+	private <U extends GameObject, T extends U> void markSceneryCollisions (Array<T> gos, SceneryHandler<U> handler) {
 		for (int i = 0; i < gos.size; i++) {
 			T go = gos.get(i);
 			Colliders.collide(go, roomGrid.get(go.bounds()), handler);
 		}
 	}
-	
-	private void removeMarkedMobiles() {
+
+	private void removeMarkedMobiles () {
 		Colliders.removeOutOfBounds(shotPool, playerShots, roomBounds);
 		Colliders.removeOutOfBounds(robotShotPool, robotShots, roomBounds);
 		Colliders.removeMarkedCollisions(shotPool, playerShots, shotRemovalHandler);
@@ -636,21 +618,18 @@ public class World {
 		Colliders.removeMarkedCollisions(robotShotPool, robotShots, shotRemovalHandler);
 	}
 
-	private void checkForLeavingRoom() {
+	private void checkForLeavingRoom () {
 		int newDoor = -1;
 		if (player.x + player.width / 2 < minX) {
 			roomX--;
 			newDoor = DoorPositions.MAX_X;
-		}
-		else if (player.x + player.width / 2 > maxX) {
+		} else if (player.x + player.width / 2 > maxX) {
 			roomX++;
 			newDoor = DoorPositions.MIN_X;
-		}
-		else if (player.y + player.height / 2 < minY) {
+		} else if (player.y + player.height / 2 < minY) {
 			roomY--;
 			newDoor = DoorPositions.MAX_Y;
-		}
-		else if (player.y + player.height / 2 > maxY) {
+		} else if (player.y + player.height / 2 > maxY) {
 			roomY++;
 			newDoor = DoorPositions.MIN_Y;
 		}
@@ -659,18 +638,18 @@ public class World {
 		}
 	}
 
-	private void doPlayerHit() {
+	private void doPlayerHit () {
 		notifier.onPlayerHit();
 		setState(PLAYER_DEAD);
 		playingTime = now + PLAYER_DEAD_INTERVAL;
 	}
-	
-	private void doLeftRoom(int newDoor) {
+
+	private void doLeftRoom (int newDoor) {
 		notifier.onExitedRoom(now, robots.size);
 		populateRoom(newDoor);
 	}
-	
-	private void doCaptainActivated() {
+
+	private void doCaptainActivated () {
 		notifier.onCaptainActivated(now);
 	}
 }

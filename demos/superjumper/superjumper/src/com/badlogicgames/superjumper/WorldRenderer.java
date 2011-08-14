@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogicgames.superjumper;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,7 +30,7 @@ public class WorldRenderer {
 
 	public WorldRenderer (SpriteBatch batch, World world) {
 		this.world = world;
-		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);		
+		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 		this.cam.position.set(FRUSTUM_WIDTH / 2, FRUSTUM_HEIGHT / 2, 0);
 		this.batch = batch;
 	}
@@ -45,11 +46,12 @@ public class WorldRenderer {
 	public void renderBackground () {
 		batch.disableBlending();
 		batch.begin();
-		batch.draw(Assets.backgroundRegion, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+		batch.draw(Assets.backgroundRegion, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
+			FRUSTUM_HEIGHT);
 		batch.end();
 	}
 
-	public void renderObjects () {			
+	public void renderObjects () {
 		batch.enableBlending();
 		batch.begin();
 		renderBob();
@@ -57,7 +59,7 @@ public class WorldRenderer {
 		renderItems();
 		renderSquirrels();
 		renderCastle();
-		batch.end();		
+		batch.end();
 	}
 
 	private void renderBob () {
@@ -75,7 +77,7 @@ public class WorldRenderer {
 		}
 
 		float side = world.bob.velocity.x < 0 ? -1 : 1;
-		if(side < 0)
+		if (side < 0)
 			batch.draw(keyFrame, world.bob.position.x + 0.5f, world.bob.position.y - 0.5f, side * 1, 1);
 		else
 			batch.draw(keyFrame, world.bob.position.x - 0.5f, world.bob.position.y - 0.5f, side * 1, 1);
@@ -115,7 +117,7 @@ public class WorldRenderer {
 			Squirrel squirrel = world.squirrels.get(i);
 			TextureRegion keyFrame = Assets.squirrelFly.getKeyFrame(squirrel.stateTime, Animation.ANIMATION_LOOPING);
 			float side = squirrel.velocity.x < 0 ? -1 : 1;
-			if(side < 0 )
+			if (side < 0)
 				batch.draw(keyFrame, squirrel.position.x + 0.5f, squirrel.position.y - 0.5f, side * 1, 1);
 			else
 				batch.draw(keyFrame, squirrel.position.x - 0.5f, squirrel.position.y - 0.5f, side * 1, 1);

@@ -17,37 +17,33 @@
 
 package com.badlogic.gdx.beans;
 
-import com.badlogic.gdx.beans.DefaultPersistenceDelegate;
-import com.badlogic.gdx.beans.Encoder;
-import com.badlogic.gdx.beans.Expression;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 class ProxyPersistenceDelegate extends DefaultPersistenceDelegate {
-    @Override
-    protected Expression instantiate(Object oldInstance, Encoder out) {
-        assert oldInstance instanceof Proxy : oldInstance;
-        Class<?>[] interfaces = oldInstance.getClass().getInterfaces();
-        InvocationHandler handler = Proxy.getInvocationHandler(oldInstance);
-        return new Expression(oldInstance, Proxy.class, "newProxyInstance", //$NON-NLS-1$
-                new Object[] { oldInstance.getClass().getClassLoader(), interfaces, handler });
-    }
+	@Override
+	protected Expression instantiate (Object oldInstance, Encoder out) {
+		assert oldInstance instanceof Proxy : oldInstance;
+		Class<?>[] interfaces = oldInstance.getClass().getInterfaces();
+		InvocationHandler handler = Proxy.getInvocationHandler(oldInstance);
+		return new Expression(oldInstance, Proxy.class, "newProxyInstance", //$NON-NLS-1$
+			new Object[] {oldInstance.getClass().getClassLoader(), interfaces, handler});
+	}
 
-    @Override
-    protected void initialize(Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
-        // check for consistency
-        assert oldInstance instanceof Proxy : oldInstance;
-        assert newInstance instanceof Proxy : newInstance;
-        super.initialize(type, oldInstance, newInstance, out);
-    }
+	@Override
+	protected void initialize (Class<?> type, Object oldInstance, Object newInstance, Encoder out) {
+		// check for consistency
+		assert oldInstance instanceof Proxy : oldInstance;
+		assert newInstance instanceof Proxy : newInstance;
+		super.initialize(type, oldInstance, newInstance, out);
+	}
 
-    @Override
-    protected boolean mutatesTo(Object oldInstance, Object newInstance) {
-        if((oldInstance instanceof Proxy) && (newInstance instanceof Proxy)){
-            return super.mutatesTo(oldInstance, newInstance);
-        }
-        
-        return false;
-    }
+	@Override
+	protected boolean mutatesTo (Object oldInstance, Object newInstance) {
+		if ((oldInstance instanceof Proxy) && (newInstance instanceof Proxy)) {
+			return super.mutatesTo(oldInstance, newInstance);
+		}
+
+		return false;
+	}
 }

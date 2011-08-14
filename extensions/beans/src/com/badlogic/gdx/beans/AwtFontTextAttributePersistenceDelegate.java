@@ -19,11 +19,11 @@ package com.badlogic.gdx.beans;
 
 import java.awt.font.TextAttribute;
 
-class AwtFontTextAttributePersistenceDelegate extends
-		StaticFieldPersistenceDelegate {
-	public AwtFontTextAttributePersistenceDelegate() {
+class AwtFontTextAttributePersistenceDelegate extends StaticFieldPersistenceDelegate {
+	public AwtFontTextAttributePersistenceDelegate () {
 		super();
 	}
+
 	static {
 		init(TextAttribute.class);
 	}

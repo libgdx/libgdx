@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
@@ -16,10 +15,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "vertexboneassignment")
 public class Vertexboneassignment {
 
-    @XmlAttribute(required = true)    
-    public int vertexindex;
-    @XmlAttribute(required = true)    
-    public int boneindex;
-    @XmlAttribute    
-    public float weight;  
+	@XmlAttribute(required = true)
+	public int vertexindex;
+	@XmlAttribute(required = true)
+	public int boneindex;
+	@XmlAttribute
+	public float weight;
 }

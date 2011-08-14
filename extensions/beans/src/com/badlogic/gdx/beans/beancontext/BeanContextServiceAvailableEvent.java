@@ -17,35 +17,30 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextEvent;
-import com.badlogic.gdx.beans.beancontext.BeanContextServices;
-
 import java.util.Iterator;
+
 @SuppressWarnings("unchecked")
 public class BeanContextServiceAvailableEvent extends BeanContextEvent {
 
-    private static final long serialVersionUID = -5333985775656400778L;
+	private static final long serialVersionUID = -5333985775656400778L;
 
-    /**
-     * @serial
-     */
-    protected Class serviceClass;
+	/** @serial */
+	protected Class serviceClass;
 
-    public BeanContextServiceAvailableEvent(BeanContextServices bcs, Class sc) {
-        super(bcs);
-        this.serviceClass = sc;
-    }
+	public BeanContextServiceAvailableEvent (BeanContextServices bcs, Class sc) {
+		super(bcs);
+		this.serviceClass = sc;
+	}
 
-    public Iterator getCurrentServiceSelectors() {
-        return ((BeanContextServices) super.source)
-                .getCurrentServiceSelectors(serviceClass);
-    }
+	public Iterator getCurrentServiceSelectors () {
+		return ((BeanContextServices)super.source).getCurrentServiceSelectors(serviceClass);
+	}
 
-    public Class getServiceClass() {
-        return this.serviceClass;
-    }
+	public Class getServiceClass () {
+		return this.serviceClass;
+	}
 
-    public BeanContextServices getSourceAsBeanContextServices() {
-        return (BeanContextServices) super.source;
-    }
+	public BeanContextServices getSourceAsBeanContextServices () {
+		return (BeanContextServices)super.source;
+	}
 }

@@ -26,7 +26,8 @@ public class GLFieldRenderer implements IFieldRenderer {
 		renderer.begin(GL10.GL_LINES);
 	}
 
-	@Override public void drawLine (float x1, float y1, float x2, float y2, int r, int g, int b) {
+	@Override
+	public void drawLine (float x1, float y1, float x2, float y2, int r, int g, int b) {
 		float fr = r / 255f;
 		float fg = g / 255f;
 		float fb = b / 255f;
@@ -36,7 +37,8 @@ public class GLFieldRenderer implements IFieldRenderer {
 		renderer.vertex(x2, y2, 0);
 	}
 
-	@Override public void fillCircle (float cx, float cy, float radius, int r, int g, int b) {
+	@Override
+	public void fillCircle (float cx, float cy, float radius, int r, int g, int b) {
 		end();
 		renderer.begin(GL10.GL_TRIANGLE_FAN);
 		float fr = r / 255f;
@@ -58,7 +60,8 @@ public class GLFieldRenderer implements IFieldRenderer {
 		begin();
 	}
 
-	@Override public void frameCircle (float cx, float cy, float radius, int r, int g, int b) {
+	@Override
+	public void frameCircle (float cx, float cy, float radius, int r, int g, int b) {
 		float fr = r / 255f;
 		float fg = g / 255f;
 		float fb = b / 255f;

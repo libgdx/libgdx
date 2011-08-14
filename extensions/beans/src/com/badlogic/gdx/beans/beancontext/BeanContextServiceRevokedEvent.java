@@ -17,45 +17,37 @@
 
 package com.badlogic.gdx.beans.beancontext;
 
-import com.badlogic.gdx.beans.beancontext.BeanContextEvent;
-import com.badlogic.gdx.beans.beancontext.BeanContextServices;
-
 @SuppressWarnings("unchecked")
 public class BeanContextServiceRevokedEvent extends BeanContextEvent {
 
-    private static final long serialVersionUID = -1295543154724961754L;
+	private static final long serialVersionUID = -1295543154724961754L;
 
-    /**
-     * @serial
-     */
-    protected Class serviceClass;
+	/** @serial */
+	protected Class serviceClass;
 
-    /**
-     * @serial
-     */
-    private boolean invalidateRefs;
+	/** @serial */
+	private boolean invalidateRefs;
 
-    public BeanContextServiceRevokedEvent(BeanContextServices bcs, Class sc,
-            boolean invalidate) {
+	public BeanContextServiceRevokedEvent (BeanContextServices bcs, Class sc, boolean invalidate) {
 
-        super(bcs);
-        this.serviceClass = sc;
-        this.invalidateRefs = invalidate;        
-    }
+		super(bcs);
+		this.serviceClass = sc;
+		this.invalidateRefs = invalidate;
+	}
 
-    public Class getServiceClass() {
-        return this.serviceClass;
-    }
+	public Class getServiceClass () {
+		return this.serviceClass;
+	}
 
-    public BeanContextServices getSourceAsBeanContextServices() {
-        return (BeanContextServices) super.getBeanContext();
-    }
+	public BeanContextServices getSourceAsBeanContextServices () {
+		return (BeanContextServices)super.getBeanContext();
+	}
 
-    public boolean isCurrentServiceInvalidNow() {
-        return this.invalidateRefs;
-    }
+	public boolean isCurrentServiceInvalidNow () {
+		return this.invalidateRefs;
+	}
 
-    public boolean isServiceClass(Class service) {        
-        return serviceClass.equals(service);
-    }
+	public boolean isServiceClass (Class service) {
+		return serviceClass.equals(service);
+	}
 }

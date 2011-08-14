@@ -13,70 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.audio.io;
 
 import java.nio.ShortBuffer;
 
-/**
- * A {@link Decoder} implementation that decodes OGG Vorbis files using tremor
- * @author mzechner
- * 
- */
+/** A {@link Decoder} implementation that decodes OGG Vorbis files using tremor
+ * @author mzechner */
 public class VorbisDecoder implements Decoder {
 	/** the handle **/
 	private final long handle;
 
-	/**
-	 * Opens the given file for ogg decoding. Throws an IllegalArugmentException in case the file could not be opened.
+	/** Opens the given file for ogg decoding. Throws an IllegalArugmentException in case the file could not be opened.
 	 * 
-	 * @param filename the filename
-	 */
+	 * @param filename the filename */
 	public VorbisDecoder (String filename) {
 		handle = openFile(filename);
 		if (handle == 0) throw new IllegalArgumentException("couldn't open file '" + filename + "'");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public void dispose () {
+	/** {@inheritDoc} */
+	@Override
+	public void dispose () {
 		closeFile(handle);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public float getLength () {
+	/** {@inheritDoc} */
+	@Override
+	public float getLength () {
 		return getLength(handle);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getNumChannels () {
+	/** {@inheritDoc} */
+	@Override
+	public int getNumChannels () {
 		return getNumChannels(handle);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int getRate () {
+	/** {@inheritDoc} */
+	@Override
+	public int getRate () {
 		return getRate(handle);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int readSamples (ShortBuffer samples) {
+	/** {@inheritDoc} */
+	@Override
+	public int readSamples (ShortBuffer samples) {
 		int read = readSamples(handle, samples, samples.capacity());
 		samples.position(0);
 		return read;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override public int skipSamples (int numSamples) {
+	/** {@inheritDoc} */
+	@Override
+	public int skipSamples (int numSamples) {
 		return skipSamples(handle, numSamples);
 	}
 

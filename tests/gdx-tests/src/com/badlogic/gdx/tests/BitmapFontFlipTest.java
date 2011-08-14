@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -40,7 +38,8 @@ public class BitmapFontFlipTest extends GdxTest {
 	private BitmapFontCache cacheScaled1, cacheScaled2, cacheScaled3, cacheScaled4, cacheScaled5;
 	int renderMode;
 
-	@Override public void create () {
+	@Override
+	public void create () {
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
 				renderMode = (renderMode + 1) % 4;
@@ -56,7 +55,7 @@ public class BitmapFontFlipTest extends GdxTest {
 		logoSprite.setPosition(0, 320 - 256);
 		logoSprite.setColor(1, 1, 1, 0.5f);
 
-		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"),Gdx.files.internal("data/verdana39.png"), true);
+		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), true);
 
 		cache1 = new BitmapFontCache(font);
 		cache2 = new BitmapFontCache(font);
@@ -94,7 +93,8 @@ public class BitmapFontFlipTest extends GdxTest {
 		cache5.setWrappedText(text, 0, 320 - 300, 480, HAlignment.CENTER);
 	}
 
-	@Override public void render () {
+	@Override
+	public void render () {
 		red.a = (red.a + Gdx.graphics.getDeltaTime() * 0.1f) % 1;
 
 		GL10 gl = Gdx.graphics.getGL10();

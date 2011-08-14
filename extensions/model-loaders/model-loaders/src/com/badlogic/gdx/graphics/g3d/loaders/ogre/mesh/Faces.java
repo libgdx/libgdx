@@ -11,49 +11,41 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "face"
-})
+@XmlType(name = "", propOrder = {"face"})
 @XmlRootElement(name = "faces")
 public class Faces {
 
-    @XmlAttribute    
-    public int count;
-    @XmlElement(required = true)
-    protected List<Face> face;    
+	@XmlAttribute
+	public int count;
+	@XmlElement(required = true)
+	protected List<Face> face;
 
-    /**
-     * Gets the value of the face property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the face property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getFace().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Face }
-     * 
-     * 
-     */
-    public List<Face> getFace() {
-        if (face == null) {
-            face = new ArrayList<Face>();
-        }
-        return this.face;
-    }
+	/** Gets the value of the face property.
+	 * 
+	 * <p>
+	 * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the
+	 * returned list will be present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the face
+	 * property.
+	 * 
+	 * <p>
+	 * For example, to add a new item, do as follows:
+	 * 
+	 * <pre>
+	 * getFace().add(newItem);
+	 * </pre>
+	 * 
+	 * 
+	 * <p>
+	 * Objects of the following type(s) are allowed in the list {@link Face } */
+	public List<Face> getFace () {
+		if (face == null) {
+			face = new ArrayList<Face>();
+		}
+		return this.face;
+	}
 
 }
