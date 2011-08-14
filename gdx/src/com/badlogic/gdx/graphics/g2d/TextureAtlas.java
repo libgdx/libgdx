@@ -475,7 +475,7 @@ public class TextureAtlas implements Disposable {
 			this.region = new AtlasRegion(region);
 			setRegion(region);
 			if (region.rotate) rotate90(true);
-			setOrigin(region.originalWidth / 2, region.originalHeight / 2);
+			setOrigin(region.originalWidth / 2f, region.originalHeight / 2f);
 			super.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
 			setColor(1, 1, 1, 1);
 		}
