@@ -39,11 +39,9 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
+/** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
  * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization.
- * @author Nathan Sweet
- */
+ * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
 	final LwjglGraphics graphics;
 	final OpenALAudio audio;
@@ -54,7 +52,7 @@ public class LwjglCanvas implements Application {
 	final List<Runnable> runnables = new ArrayList<Runnable>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
-	
+
 	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
 		LwjglNativesLoader.load();
 
@@ -98,27 +96,33 @@ public class LwjglCanvas implements Application {
 		return canvas;
 	}
 
-	@Override public Audio getAudio () {
+	@Override
+	public Audio getAudio () {
 		return audio;
 	}
 
-	@Override public Files getFiles () {
+	@Override
+	public Files getFiles () {
 		return files;
 	}
 
-	@Override public Graphics getGraphics () {
+	@Override
+	public Graphics getGraphics () {
 		return graphics;
 	}
 
-	@Override public Input getInput () {
+	@Override
+	public Input getInput () {
 		return input;
 	}
 
-	@Override public ApplicationType getType () {
+	@Override
+	public ApplicationType getType () {
 		return ApplicationType.Desktop;
 	}
 
-	@Override public int getVersion () {
+	@Override
+	public int getVersion () {
 		return 0;
 	}
 
@@ -132,7 +136,7 @@ public class LwjglCanvas implements Application {
 		listener.create();
 		listener.resize(Math.max(1, graphics.getWidth()), Math.max(1, graphics.getHeight()));
 
-		final Runnable runnable = new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			int lastWidth = Math.max(1, graphics.getWidth());
 			int lastHeight = Math.max(1, graphics.getHeight());
 
@@ -159,45 +163,37 @@ public class LwjglCanvas implements Application {
 				audio.update();
 				Display.update();
 				if (graphics.vsync) Display.sync(60);
-			}
-		};
-
-		new Thread("LWJGL Canvas") {
-			public void run () {
-				while (running && !Display.isCloseRequested()) {
-					try {
-						EventQueue.invokeAndWait(runnable);
-					} catch (Exception ex) {
-						throw new GdxRuntimeException(ex);
-					}
-				}
-			}
-		}.start();
-	}
-
-	public void stop () {
-		EventQueue.invokeLater(new Runnable() {
-			public void run () {
-				if (!running) return;
-				running = false;
-				listener.pause();
-				listener.dispose();
-				Display.destroy();
+				if (running && !Display.isCloseRequested()) EventQueue.invokeLater(this);
 			}
 		});
 	}
 
-	@Override public long getJavaHeap () {
+	public void stop () {
+		if (!running) return;
+		running = false;
+		Display.destroy();
+		EventQueue.invokeLater(new Runnable() {
+			public void run () {
+				listener.pause();
+				listener.dispose();
+			}
+		});
+	}
+
+	@Override
+	public long getJavaHeap () {
 		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
-	@Override public long getNativeHeap () {
+	@Override
+	public long getNativeHeap () {
 		return getJavaHeap();
 	}
 
 	Map<String, Preferences> preferences = new HashMap<String, Preferences>();
 
-	@Override public Preferences getPreferences (String name) {
+	@Override
+	public Preferences getPreferences (String name) {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
@@ -207,51 +203,56 @@ public class LwjglCanvas implements Application {
 		}
 	}
 
-	@Override public void postRunnable (Runnable runnable) {
+	@Override
+	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
 			runnables.add(runnable);
 		}
 	}
 
-	public void log(String tag, String message) {
-   	if(logLevel >= LOG_INFO) {
-			System.out.println(tag + ":" + message);		
+	public void log (String tag, String message) {
+		if (logLevel >= LOG_INFO) {
+			System.out.println(tag + ":" + message);
 		}
-   }
+	}
 
-	@Override public void log (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_INFO) {
+	@Override
+	public void log (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ":" + message);
 			exception.printStackTrace(System.out);
 		}
 	}
-	
-	@Override public void error (String tag, String message) {
-		if(logLevel >= LOG_ERROR) {
-			System.err.println(tag + ":" + message);			
+
+	@Override
+	public void error (String tag, String message) {
+		if (logLevel >= LOG_ERROR) {
+			System.err.println(tag + ":" + message);
 		}
 	}
 
-
-	@Override public void error (String tag, String message, Exception exception) {
-		if(logLevel >= LOG_ERROR) {
+	@Override
+	public void error (String tag, String message, Exception exception) {
+		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ":" + message);
 			exception.printStackTrace(System.err);
 		}
 	}
 
-
-	@Override public void setLogLevel (int logLevel) {		
+	@Override
+	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
 	}
-	
-	@Override public void exit () {
+
+	@Override
+	public void exit () {
 		postRunnable(new Runnable() {
-			@Override public void run () {
+			@Override
+			public void run () {
 				LwjglCanvas.this.listener.pause();
 				LwjglCanvas.this.listener.dispose();
 				System.exit(-1);
-			}			
+			}
 		});
 	}
 }

@@ -102,7 +102,7 @@ public class Gdx2DPixmap implements Disposable {
 		if(pixelPtr == null)
 			throw new IllegalArgumentException("couldn't load pixmap");
 		
-		System.arraycopy(nativeData, 0, this.nativeData, 0, 4);
+		System.arraycopy(nativeData, 0, Gdx2DPixmap.nativeData, 0, 4);
 		this.basePtr = nativeData[0];
 		this.width = (int)nativeData[1];
 		this.height = (int)nativeData[2];

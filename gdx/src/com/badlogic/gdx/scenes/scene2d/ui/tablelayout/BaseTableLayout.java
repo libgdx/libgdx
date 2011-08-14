@@ -504,14 +504,14 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #BOTTOM}. */
 	public L bottom () {
-		align = BOTTOM;
+		align |= BOTTOM;
 		align &= ~TOP;
 		return (L)this;
 	}
 
 	/** Sets the alignment of the table within the widget being laid out to {@link #RIGHT}. */
 	public L right () {
-		align = RIGHT;
+		align |= RIGHT;
 		align &= ~LEFT;
 		return (L)this;
 	}

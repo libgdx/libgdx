@@ -96,7 +96,7 @@ public class ETC1 {
 		
 		/**
 		 * Writes the ETC1Data with a PKM header to the given file.
-		 * @param handle the file.
+		 * @param file the file.
 		 */
 		public void write(FileHandle file) {
 			DataOutputStream write = null;

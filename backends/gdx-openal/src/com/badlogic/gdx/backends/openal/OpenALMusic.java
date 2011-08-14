@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.openal;
 
 import java.nio.ByteBuffer;
@@ -27,9 +28,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import static org.lwjgl.openal.AL10.*;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public abstract class OpenALMusic implements Music {
 	static private final int bufferSize = 4096 * 10;
 	static private final int bufferCount = 3;
@@ -51,10 +50,6 @@ public abstract class OpenALMusic implements Music {
 		this.audio = audio;
 		this.file = file;
 
-		buffers = BufferUtils.createIntBuffer(bufferCount);
-		alGenBuffers(buffers);
-		if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
-
 		audio.music.add(this);
 	}
 
@@ -68,6 +63,11 @@ public abstract class OpenALMusic implements Music {
 		if (sourceID == -1) {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
+			if (buffers == null) {
+				buffers = BufferUtils.createIntBuffer(bufferCount);
+				alGenBuffers(buffers);
+				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
+			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			alSourcef(sourceID, AL_GAIN, volume);
 			for (int i = 0; i < bufferCount; i++) {
@@ -121,15 +121,11 @@ public abstract class OpenALMusic implements Music {
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
 	}
 
-	/**
-	 * Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the
-	 * stream.
-	 */
+	/** Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the
+	 * stream. */
 	abstract protected int read (byte[] buffer);
 
-	/**
-	 * Resets the stream to the beginning.
-	 */
+	/** Resets the stream to the beginning. */
 	abstract protected void reset ();
 
 	public void update () {

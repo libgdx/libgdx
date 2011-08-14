@@ -137,6 +137,7 @@ public class Label extends Widget {
 	
 	public void setText(String text) {
 		this.label = text;
+		layout();
 		invalidateHierarchy();
 	}
 }
