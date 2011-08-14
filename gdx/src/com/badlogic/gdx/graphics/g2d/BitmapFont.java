@@ -126,11 +126,9 @@ public class BitmapFont implements Disposable {
 					tokens.nextToken();
 					tokens.nextToken();
 					int ch = Integer.parseInt(tokens.nextToken());
-					if (ch <= Character.MAX_VALUE) {
-						Glyph[] page = glyphs[ch / PAGE_SIZE];
-						if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
-						page[ch & PAGE_SIZE - 1] = glyph;
-					} else
+					if (ch <= Character.MAX_VALUE) 
+						setGlyph(ch, glyph);
+					 else
 						continue;
 					tokens.nextToken();
 					glyph.srcX = Integer.parseInt(tokens.nextToken());
@@ -170,29 +168,30 @@ public class BitmapFont implements Disposable {
 					glyph.setKerning(second, amount);
 				}
 
-				Glyph g = getGlyph(' ');
-				if (g == null) {
-					g = new Glyph();
-					g.xadvance = getGlyph('l').xadvance;
-					Glyph[] page = glyphs[' ' / PAGE_SIZE];
-					if (page == null) glyphs[' ' / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
-					page[' ' & PAGE_SIZE - 1] = g;
+				Glyph spaceGlyph = getGlyph(' ');
+				if (spaceGlyph == null) {
+					spaceGlyph = new Glyph();
+					Glyph xadvanceGlyph = getGlyph('l');
+					if (xadvanceGlyph == null) xadvanceGlyph = getFirstGlyph();
+					spaceGlyph.xadvance = xadvanceGlyph.xadvance;
+					setGlyph(' ', spaceGlyph);
 				}
-				spaceWidth = g != null ? g.xadvance + g.width : 1;
+				spaceWidth = spaceGlyph != null ? spaceGlyph.xadvance + spaceGlyph.width : 1;
 
+				Glyph xGlyph = null;
 				for (int i = 0; i < xChars.length; i++) {
-					g = getGlyph(xChars[i]);
-					if (g == null) continue;
-					xHeight = g.height;
-					break;
+					xGlyph = getGlyph(xChars[i]);
+					if (xGlyph != null) break;
 				}
+				if (xGlyph == null) xGlyph = getFirstGlyph();
+				xHeight = xGlyph.height;
 
+				Glyph capGlyph = null;
 				for (int i = 0; i < capChars.length; i++) {
-					g = getGlyph(capChars[i]);
-					if (g == null) continue;
-					capHeight = g.height;
-					break;
+					capGlyph = getGlyph(capChars[i]);
+					if (capGlyph != null) break;
 				}
+				capHeight = capGlyph.height;
 
 				ascent = baseLine - capHeight;
 				down = -lineHeight;
@@ -208,6 +207,23 @@ public class BitmapFont implements Disposable {
 				} catch (IOException ignored) {
 				}
 			}
+		}
+		
+		private void setGlyph (int ch, Glyph glyph) {
+			Glyph[] page = glyphs[ch / PAGE_SIZE];
+			if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
+			page[ch & PAGE_SIZE - 1] = glyph;
+		}
+		
+		private Glyph getFirstGlyph () {
+			for (Glyph[] page : this.glyphs) {
+				if (page == null) continue;
+				for (Glyph glyph : page) {
+					if (glyph == null) continue;
+					return glyph;
+				}
+			}
+			throw new GdxRuntimeException("No glyphs found!");
 		}
 		
 		public Glyph getGlyph (char ch) {
@@ -292,9 +308,9 @@ public class BitmapFont implements Disposable {
 		float u = region.u;
 		float v = region.v;
 		
-		for(Glyph[] glyphs: data.glyphs) {
-			if(glyphs == null) continue;
-			for(Glyph glyph: glyphs) {
+		for(Glyph[] page : data.glyphs) {
+			if(page == null) continue;
+			for(Glyph glyph : page) {
 				if(glyph == null) continue;
 				glyph.u = u + glyph.srcX * invTexWidth;
 				glyph.u2 = u + (glyph.srcX + glyph.width) * invTexWidth;
