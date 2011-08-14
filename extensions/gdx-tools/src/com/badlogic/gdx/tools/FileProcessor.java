@@ -147,7 +147,7 @@ public class FileProcessor {
 	protected void processDir (InputFile inputDir, ArrayList<InputFile> value) throws Exception {
 	}
 
-	protected void addOutputFile (InputFile inputFile) {
+	protected void addProcessedFile (InputFile inputFile) {
 		outputFiles.add(inputFile);
 	}
 
