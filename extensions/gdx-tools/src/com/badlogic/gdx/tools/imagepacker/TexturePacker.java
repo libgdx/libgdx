@@ -121,8 +121,8 @@ public class TexturePacker {
 		minHeight = filter.height != -1 ? filter.height : settings.minHeight;
 		maxWidth = filter.width != -1 ? filter.width : settings.maxWidth;
 		maxHeight = filter.height != -1 ? filter.height : settings.maxHeight;
-		xPadding = images.size() > 1 && !filter.direction.isX() ? settings.padding : 0;
-		yPadding = images.size() > 1 && !filter.direction.isY() ? settings.padding : 0;
+		xPadding = !filter.direction.isX() ? settings.padding : 0;
+		yPadding = !filter.direction.isY() ? settings.padding : 0;
 
 		outputDir.mkdirs();
 		writer = new FileWriter(packFile, true);
@@ -295,10 +295,16 @@ public class TexturePacker {
 			g.setColor(Color.green);
 			g.drawRect(0, 0, width - 1, height - 1);
 		}
-		// Pretend image is larger so padding on right and bottom edges is ignored.
-		if (!filter.direction.isX()) width += xPadding;
-		if (!filter.direction.isY()) height += yPadding;
-		Node root = new Node(0, 0, width, height);
+		int x = 0, y = 0;
+		if (!filter.direction.isX()) {
+			x = xPadding;
+			width -= xPadding;
+		}
+		if (!filter.direction.isY()) {
+			y = yPadding;
+			height -= yPadding;
+		}
+		Node root = new Node(x, y, width, height);
 		int usedPixels = 0;
 		for (int i = images.size() - 1; i >= 0; i--) {
 			Image image = images.get(i);
