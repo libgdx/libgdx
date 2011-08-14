@@ -102,7 +102,6 @@ public class ETC1 {
 				write.writeInt(compressedData.capacity());
 				while (writtenBytes != compressedData.capacity()) {
 					int bytesToWrite = Math.min(compressedData.remaining(), buffer.length);
-					System.out.println("writting " + bytesToWrite);
 					compressedData.get(buffer, 0, bytesToWrite);
 					write.write(buffer, 0, bytesToWrite);
 					writtenBytes += bytesToWrite;
