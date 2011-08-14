@@ -109,7 +109,7 @@ public class FileProcessor {
 		int depth) {
 		for (File file : files) {
 			if (file.isFile()) {
-				if (inputRegex != null) {
+				if (inputRegex.size > 0) {
 					boolean found = false;
 					for (Pattern pattern : inputRegex) {
 						if (pattern.matcher(file.getName()).matches()) {
