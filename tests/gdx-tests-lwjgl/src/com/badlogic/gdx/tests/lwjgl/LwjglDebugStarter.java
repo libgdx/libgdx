@@ -29,6 +29,7 @@ public class LwjglDebugStarter {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 //		config.useGL20 = true;
-		new LwjglApplication(new TextureAtlasTest(), config);
+		config.vSyncEnabled = true;
+		new LwjglApplication(new FlickScrollPaneTest(), config);
 	}
 }

@@ -40,6 +40,8 @@ cp -rf nightlies/armeabi nightlies/armeabi-v7a demos/very-angry-robots/very-angr
 
 cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/model-loaders/model-loaders-android/libs
 
+cp -rf nightlies/armeabi nightlies/armeabi-v7a extensions/gdx-remote/libs
+
 # remove temporary directory
 rm -rf nightlies
 rm libgdx-nightlies.zip
