@@ -16,8 +16,11 @@
 
 package com.badlogic.gdx.tests;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,11 +32,17 @@ public class TextureAtlasTest extends GdxTest {
 	SpriteBatch batch;
 	Sprite badlogic, badlogicSmall, star;
 	TextureAtlas atlas;
+	TextureAtlas jumpAtlas;
+	Animation jumpAnimation;
 	BitmapFont font;
+	float time = 0;
 
 	public void create () {
 		batch = new SpriteBatch();
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"));
+		jumpAtlas = new TextureAtlas(Gdx.files.internal("data/jump.txt"));
+		
+		jumpAnimation = new Animation(0.25f, jumpAtlas.findRegions("ALIEN_JUMP_"));
 
 		badlogic = atlas.createSprite("badlogicslice");
 		badlogic.setPosition(50, 50);
@@ -55,12 +64,14 @@ public class TextureAtlasTest extends GdxTest {
 	}
 
 	public void render () {
+		time += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		badlogic.draw(batch);
 		star.draw(batch);
 		font.draw(batch, "This font was packed!", 26, 65);
 		badlogicSmall.draw(batch);
+		batch.draw(jumpAnimation.getKeyFrame(time, true), 100, 100);
 		batch.end();
 	}
 

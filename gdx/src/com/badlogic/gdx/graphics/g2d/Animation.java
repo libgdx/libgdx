@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.util.List;
+
+
 /** <p>
  * An Animation stores a list of {@link TextureRegion}s representing an animated sequence, e.g. for running or jumping. Each
  * region of an Animation is called a key frame, multiple key frames make up the animation.
@@ -26,6 +29,18 @@ public class Animation {
 	final TextureRegion[] keyFrames;
 	public float frameDuration;
 
+	/** Constructor, storing the frame duration and key frames.
+	 * 
+	 * @param frameDuration the time between frames in seconds.
+	 * @param keyFrames the {@link TextureRegion}s representing the frames. */
+	public Animation (float frameDuration, List keyFrames) {
+		this.frameDuration = frameDuration;
+		this.keyFrames = new TextureRegion[keyFrames.size()];
+		for(int i = 0, n = keyFrames.size(); i < n; i++) {
+			this.keyFrames[i] = (TextureRegion)keyFrames.get(i); 
+		}
+	}
+	
 	/** Constructor, storing the frame duration and key frames.
 	 * 
 	 * @param frameDuration the time between frames in seconds.

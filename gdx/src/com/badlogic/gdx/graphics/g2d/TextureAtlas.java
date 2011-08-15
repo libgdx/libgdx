@@ -80,8 +80,6 @@ public class TextureAtlas implements Disposable {
 			public String name;
 			public float offsetX;
 			public float offsetY;
-			public int packedWidth;
-			public int packedHeight;
 			public int originalWidth;
 			public int originalHeight;
 			public boolean rotate;
@@ -247,8 +245,6 @@ public class TextureAtlas implements Disposable {
 			atlasRegion.offsetY = region.offsetY;
 			atlasRegion.originalHeight = region.originalHeight;
 			atlasRegion.originalWidth = region.originalWidth;
-			atlasRegion.packedHeight = region.packedHeight;
-			atlasRegion.packedWidth = region.packedWidth;
 			atlasRegion.rotate = region.rotate;
 			regions.add(atlasRegion);
 		}
