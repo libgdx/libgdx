@@ -161,6 +161,12 @@ public class OpenALAudio implements Audio {
 		}
 
 		AL.destroy();
+		while(AL.isCreated()) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {

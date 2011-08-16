@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -71,7 +72,11 @@ public class LwjglTestStarter {
 				public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
-					new LwjglApplication(test, testName, 480, 320, test.needsGL20());
+					LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+					config.title = testName;
+					config.useGL20 = test.needsGL20();
+					config.forceExit = false;
+					new LwjglApplication(test, config);
 					Preferences.systemNodeForPackage(GdxTests.class).put("last", testName);
 				}
 			});
