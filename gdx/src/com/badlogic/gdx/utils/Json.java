@@ -17,6 +17,8 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** Reads/writes Java objects to/from JSON, automatically.
@@ -173,13 +176,24 @@ public class Json {
 		writer.pop();
 	}
 
-	public <T> T read (String json, Class<T> type) {
-		Object object = new JsonReader() {
-			protected void number (String name, String value) {
-				string(name, value);
-			}
-		}.parse(json);
-		return (T)read(object, type);
+	public <T> T parse (Class<T> type, Reader reader) throws IOException {
+		return (T)read(new JsonReader().parse(reader), type);
+	}
+
+	public <T> T parse (Class<T> type, InputStream input) throws IOException {
+		return (T)read(new JsonReader().parse(input), type);
+	}
+
+	public <T> T parse (Class<T> type, FileHandle file) throws IOException {
+		return (T)read(new JsonReader().parse(file), type);
+	}
+
+	public <T> T parse (Class<T> type, char[] data, int offset, int length) {
+		return (T)read(new JsonReader().parse(data, offset, length), type);
+	}
+
+	public <T> T read (Class<T> type, String json) {
+		return (T)read(new JsonReader().parse(json), type);
 	}
 
 	private Object read (Object value, Class type) {

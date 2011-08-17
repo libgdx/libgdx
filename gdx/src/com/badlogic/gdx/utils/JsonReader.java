@@ -23,15 +23,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.badlogic.gdx.files.FileHandle;
 
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link ObjectMap}, {@link Array}, String, and Float objects.
- * Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will return null.
+ * The default behavior is to parse the JSON into a DOM made up of {@link ObjectMap}, {@link Array}, and String objects. Extend
+ * this class and override methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
 public class JsonReader {
 	public Object parse (String json) {
@@ -72,7 +70,7 @@ public class JsonReader {
 		boolean needsUnescape = false;
 		RuntimeException parseRuntimeEx = null;
 
-		boolean debug = true;
+		boolean debug = false;
 		if (debug) System.out.println();
 
 		try {
@@ -343,7 +341,7 @@ public class JsonReader {
 		} else if (elements.size != 0) {
 			Object element = elements.peek();
 			elements.clear();
-			if (element instanceof HashMap)
+			if (element instanceof ObjectMap)
 				throw new IllegalArgumentException("Error parsing JSON, unmatched brace.");
 			else
 				throw new IllegalArgumentException("Error parsing JSON, unmatched bracket.");
@@ -458,6 +456,42 @@ public class JsonReader {
 	private final Array elements = new Array(8);
 	private Object root, current;
 
+	private void set (String name, Object value) {
+		if (current instanceof ObjectMap)
+			((ObjectMap)current).put(name, value);
+		else if (current instanceof Array)
+			((Array)current).add(value);
+		else
+			root = value;
+	}
+
+	protected void startObject (String name) {
+		ObjectMap value = new ObjectMap();
+		if (current != null) set(name, value);
+		elements.add(value);
+		current = value;
+	}
+
+	protected void startArray (String name) {
+		Array value = new Array();
+		if (current != null) set(name, value);
+		elements.add(value);
+		current = value;
+	}
+
+	protected void pop () {
+		root = elements.pop();
+		current = elements.size > 0 ? elements.peek() : null;
+	}
+
+	protected void string (String name, String value) {
+		set(name, value);
+	}
+
+	protected void number (String name, String value) {
+		set(name, value);
+	}
+
 	private String unescape (String value) {
 		int length = value.length();
 		StringBuilder buffer = new StringBuilder(length + 16);
@@ -500,41 +534,5 @@ public class JsonReader {
 			buffer.append(c);
 		}
 		return buffer.toString();
-	}
-
-	private void set (String name, Object value) {
-		if (current instanceof HashMap)
-			((HashMap)current).put(name, value);
-		else if (current instanceof ArrayList)
-			((ArrayList)current).add(value);
-		else
-			root = value;
-	}
-
-	protected void startObject (String name) {
-		HashMap value = new HashMap();
-		if (current != null) set(name, value);
-		elements.add(value);
-		current = value;
-	}
-
-	protected void startArray (String name) {
-		ArrayList value = new ArrayList();
-		if (current != null) set(name, value);
-		elements.add(value);
-		current = value;
-	}
-
-	protected void pop () {
-		root = elements.pop();
-		current = elements.size > 0 ? elements.peek() : null;
-	}
-
-	protected void string (String name, String value) {
-		set(name, value);
-	}
-
-	protected void number (String name, String value) {
-		set(name, Float.parseFloat(value));
 	}
 }
