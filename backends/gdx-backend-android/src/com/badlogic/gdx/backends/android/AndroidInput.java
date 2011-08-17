@@ -41,6 +41,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface for Android.
@@ -91,7 +92,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	boolean[] touched = new boolean[20];
 	int[] realId = new int[10];
 	final boolean hasMultitouch;
-	private HashSet<Integer> keys = new HashSet<Integer>();
+	private IntMap<Object> keys = new IntMap<Object>();
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	private final float[] accelerometerValues = new float[3];
@@ -229,9 +230,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	public boolean isKeyPressed (int key) {
 		synchronized (this) {
 			if (key == Input.Keys.ANY_KEY)
-				return keys.size() > 0;
+				return keys.size > 0;
 			else
-				return keys.contains(key);
+				return keys.containsKey(key);
 		}
 	}
 
@@ -359,7 +360,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				}
 
 				keyEvents.add(event);
-				keys.add(event.keyCode);
+				keys.put(event.keyCode, null);
 				break;
 			case android.view.KeyEvent.ACTION_UP:
 				event = usedKeyEvents.obtain();
