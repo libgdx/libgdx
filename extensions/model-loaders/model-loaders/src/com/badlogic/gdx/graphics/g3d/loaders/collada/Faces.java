@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Xml.Element;
+import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class Faces {
 	protected static final String VERTEX = "VERTEX";

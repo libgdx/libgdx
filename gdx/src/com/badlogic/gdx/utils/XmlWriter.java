@@ -22,7 +22,7 @@ import java.util.ArrayDeque;
 
 //@off
 /**
- * Convenience class for emitting XML. <pre>
+ * Builder style API for emitting XML. <pre>
  * StringWriter writer = new StringWriter();
  * XmlBuilder xml = new XmlBuilder(writer);
  * xml.element("meow")

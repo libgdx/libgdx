@@ -21,7 +21,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Xml.Element;
+import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class Geometry {
 	public String id;

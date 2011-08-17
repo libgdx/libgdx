@@ -47,8 +47,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Xml;
-import com.badlogic.gdx.utils.Xml.Element;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.Element;
 
 /** <p>
  * A skin defines graphical resources like {@link NinePatch}, {@link TextureRegion}, {@link Color} and {@link BitmapFont}
@@ -231,7 +231,7 @@ public class Skin implements Disposable {
 	 * @param skinFile the XML skin file */
 	public void parseSkin (FileHandle skinFile) {
 		try {
-			Xml xml = new Xml();
+			XmlReader xml = new XmlReader();
 			Element skin = xml.parse(skinFile);
 			parseLibrary(skin);
 			parseWidgetStyles(skin.getChildByName("widgetStyles"));

@@ -26,8 +26,8 @@ import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
 import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Xml;
-import com.badlogic.gdx.utils.Xml.Element;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class ColladaLoader implements StillModelLoader {
 	public static StillModel loadStillModel (FileHandle handle) {
@@ -35,7 +35,7 @@ public class ColladaLoader implements StillModelLoader {
 	}
 
 	public static StillModel loadStillModel (InputStream in) {
-		Xml xml = new Xml();
+		XmlReader xml = new XmlReader();
 		Element root = null;
 		try {
 			root = xml.parse(in);

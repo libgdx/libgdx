@@ -25,7 +25,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Xml;
+import com.badlogic.gdx.utils.XmlReader;
 
 /** Loads a Tiled Map from a tmx file
  * @author David Fraska */
@@ -41,7 +41,7 @@ public class TiledLoader {
 		map.tmxFile = tmxFile;
 
 		try {
-			new Xml() {
+			new XmlReader() {
 
 				Stack<String> currBranch = new Stack<String>();
 

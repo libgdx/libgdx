@@ -16,7 +16,7 @@
 package com.badlogic.gdx.graphics.g3d.loaders.collada;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Xml.Element;
+import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class Source {
 	String id;
