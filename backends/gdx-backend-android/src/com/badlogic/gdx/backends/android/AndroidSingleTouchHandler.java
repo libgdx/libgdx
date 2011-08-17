@@ -32,31 +32,31 @@ public class AndroidSingleTouchHandler implements AndroidTouchHandler {
 		input.touchX[0] = x;
 		input.touchY[0] = y;
 
+		long timeStamp = event.getEventTime() * 1000000;
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, 0, timeStamp);
 			input.touched[0] = true;
 			input.deltaX[0] = 0;
 			input.deltaY[0] = 0;
 		} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-			postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, 0, timeStamp);
 			input.touched[0] = true;
 			input.deltaX[0] = x - oldX;
 			input.deltaY[0] = y - oldY;
 		} else if (event.getAction() == MotionEvent.ACTION_UP) {
-			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0, timeStamp);
 			input.touched[0] = false;
 			input.deltaX[0] = 0;
 			input.deltaY[0] = 0;
 		} else if (event.getAction() == MotionEvent.ACTION_CANCEL) {
-			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0);
+			postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, 0, timeStamp);
 			input.touched[0] = false;
 			input.deltaX[0] = 0;
 			input.deltaY[0] = 0;
 		}
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
-		long timeStamp = System.nanoTime();
+	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, long timeStamp) {
 		synchronized (input) {
 			TouchEvent event = input.usedTouchEvents.obtain();
 			event.timeStamp = timeStamp;

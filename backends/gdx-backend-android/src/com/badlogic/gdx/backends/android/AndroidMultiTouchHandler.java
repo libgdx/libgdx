@@ -34,8 +34,9 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int x = 0, y = 0;
 		int realPointerIndex = 0;
 
-		Gdx.app.log("AndroidMultiTouchHandler", "history size: " + event.getHistorySize());
-// logAction(action, pointerId);
+		long timeStamp = System.nanoTime();
+//		long timeStamp = event.getEventTime() * 1000000;
+		// logAction(action, pointerId);
 		synchronized (input) { // FUCK
 			switch (action) {
 			case MotionEvent.ACTION_DOWN:
@@ -44,7 +45,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex);
+				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
 				input.deltaX[realPointerIndex] = 0;
@@ -61,7 +62,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.realId[realPointerIndex] = -1;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex);
+				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
 				input.deltaX[realPointerIndex] = 0;
@@ -78,7 +79,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 					y = (int)event.getY(pointerIndex);
 					realPointerIndex = input.lookUpPointerIndex(pointerId);
 					if (realPointerIndex == -1) continue;
-					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex);
+					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, timeStamp);
 					input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
 					input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
 					input.touchX[realPointerIndex] = x;
@@ -110,8 +111,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		Gdx.app.log("AndroidMultiTouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer) {
-		long timeStamp = System.nanoTime();
+	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, long timeStamp) {
+//		long timeStamp = System.nanoTime();
 		TouchEvent event = input.usedTouchEvents.obtain();
 		event.timeStamp = timeStamp;
 		event.pointer = pointer;
