@@ -35,6 +35,7 @@ public class AngleInput implements Input {
 		static final int KEY_UP = 1;
 		static final int KEY_TYPED = 2;
 
+		long timeStamp;
 		int type;
 		int keyCode;
 		char keyChar;
@@ -47,6 +48,7 @@ public class AngleInput implements Input {
 		static final int TOUCH_MOVED = 3;
 		static final int TOUCH_SCROLL = 4;
 
+		long timeStamp;
 		int type;
 		int x;
 		int y;
@@ -570,5 +572,11 @@ public class AngleInput implements Input {
 	public void setCatchMenuKey (boolean catchMenu) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public long getCurrentEventTime () {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

@@ -434,4 +434,10 @@ public class RemoteInput implements Runnable, Input {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public long getCurrentEventTime () {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

@@ -51,6 +51,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		static final int KEY_UP = 1;
 		static final int KEY_TYPED = 2;
 
+		long timeStamp;
 		int type;
 		int keyCode;
 		char keyChar;
@@ -63,6 +64,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		static final int TOUCH_MOVED = 3;
 		static final int TOUCH_SCROLLED = 4;
 
+		long timeStamp;
 		int type;
 		int x;
 		int y;
@@ -97,6 +99,8 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	GLCanvas canvas;
 	boolean catched = false;
 	Robot robot = null;
+	long currentEventTimeStamp;
+
 
 	public JoglInput (GLCanvas canvas) {
 		setListeners(canvas);
@@ -212,6 +216,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 				int len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
+					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
@@ -228,6 +233,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 				len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
+					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer, e.button);
@@ -290,6 +296,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.x = e.getX();
 			event.y = e.getY();
 			event.type = TouchEvent.TOUCH_DRAGGED;
+			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
 
 			deltaX = event.x - touchX;
@@ -308,6 +315,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.x = e.getX();
 			event.y = e.getY();
 			event.type = TouchEvent.TOUCH_MOVED;
+			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
 
 			deltaX = event.x - touchX;
@@ -362,6 +370,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.y = e.getY();
 			event.type = TouchEvent.TOUCH_DOWN;
 			event.button = toGdxButton(e.getButton());
+			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
 
 			deltaX = event.x - touchX;
@@ -382,6 +391,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.y = e.getY();
 			event.button = toGdxButton(e.getButton());
 			event.type = TouchEvent.TOUCH_UP;
+			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
 
 			deltaX = event.x - touchX;
@@ -400,6 +410,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.pointer = 0;
 			event.type = TouchEvent.TOUCH_SCROLLED;
 			event.scrollAmount = e.getWheelRotation();
+			event.timeStamp = System.nanoTime();
 			touchEvents.add(event);
 		}
 	}
@@ -411,6 +422,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.keyChar = 0;
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_DOWN;
+			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 			keys.add(event.keyCode);
 		}
@@ -423,6 +435,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.keyChar = 0;
 			event.keyCode = translateKeyCode(e.getKeyCode());
 			event.type = KeyEvent.KEY_UP;
+			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 			keys.remove(event.keyCode);
 		}
@@ -435,6 +448,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 			event.keyChar = e.getKeyChar();
 			event.keyCode = 0;
 			event.type = KeyEvent.KEY_TYPED;
+			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
 		}
 	}
@@ -644,5 +658,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	public void setCatchMenuKey (boolean catchMenu) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public long getCurrentEventTime () {
+		return currentEventTimeStamp;
 	}
 }

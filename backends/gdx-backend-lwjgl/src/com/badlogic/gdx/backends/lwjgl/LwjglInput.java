@@ -41,6 +41,7 @@ final class LwjglInput implements Input {
 		static final int KEY_UP = 1;
 		static final int KEY_TYPED = 2;
 
+		long timeStamp;
 		int type;
 		int keyCode;
 		char keyChar;
@@ -53,6 +54,7 @@ final class LwjglInput implements Input {
 		static final int TOUCH_SCROLLED = 3;
 		static final int TOUCH_MOVED = 4;
 
+		long timeStamp;
 		int type;
 		int x;
 		int y;
@@ -84,6 +86,8 @@ final class LwjglInput implements Input {
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
+	long currentEventTimeStamp;
+
 
 	public LwjglInput () {
 		Keyboard.enableRepeatEvents(false);
@@ -180,6 +184,7 @@ final class LwjglInput implements Input {
 				int len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
+					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
@@ -196,6 +201,7 @@ final class LwjglInput implements Input {
 				len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
+					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer, e.button);
@@ -575,6 +581,7 @@ final class LwjglInput implements Input {
 				event.y = y;
 				event.button = toGdxButton(button);
 				event.pointer = 0;
+				event.timeStamp = Mouse.getEventNanoseconds();
 
 				// could be drag, scroll or move
 				if (button == -1) {
@@ -622,6 +629,7 @@ final class LwjglInput implements Input {
 				event.keyCode = 0;
 				event.keyChar = lastKeyCharPressed;
 				event.type = KeyEvent.KEY_TYPED;
+				event.timeStamp = System.nanoTime(); // FIXME this should use the repeat time plus the timestamp of the original
 				keyEvents.add(event);
 			}
 		}
@@ -636,12 +644,14 @@ final class LwjglInput implements Input {
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_DOWN;
+					event.timeStamp = Keyboard.getEventNanoseconds();
 					keyEvents.add(event);
 
 					event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
+					event.timeStamp = Keyboard.getEventNanoseconds();
 					keyEvents.add(event);
 
 					pressedKeys++;
@@ -654,6 +664,7 @@ final class LwjglInput implements Input {
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_UP;
+					event.timeStamp = Keyboard.getEventNanoseconds();
 					keyEvents.add(event);
 
 					pressedKeys--;
@@ -776,7 +787,10 @@ final class LwjglInput implements Input {
 
 	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
-		// TODO Auto-generated method stub
+	}
 
+	@Override
+	public long getCurrentEventTime () {
+		return currentEventTimeStamp;
 	}
 }

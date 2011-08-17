@@ -115,6 +115,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private InputProcessor processor;
 	private final AndroidApplicationConfiguration config;
 	private final Orientation nativeOrientation;
+	private long currentEventTimeStamp = System.nanoTime();
 
 	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
 		view.setOnKeyListener(this);
@@ -247,6 +248,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		}
 	}
 
+
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
@@ -257,6 +259,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				int len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
 					KeyEvent e = keyEvents.get(i);
+					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
@@ -273,6 +276,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				len = touchEvents.size();
 				for (int i = 0; i < len; i++) {
 					TouchEvent e = touchEvents.get(i);
+					currentEventTimeStamp = e.timeStamp;
 					switch (e.type) {
 					case TouchEvent.TOUCH_DOWN:
 						processor.touchDown(e.x, e.y, e.pointer, Buttons.LEFT);
@@ -626,5 +630,10 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override
 	public void setCursorPosition (int x, int y) {
+	}
+
+	@Override
+	public long getCurrentEventTime () {
+		return currentEventTimeStamp;
 	}
 }

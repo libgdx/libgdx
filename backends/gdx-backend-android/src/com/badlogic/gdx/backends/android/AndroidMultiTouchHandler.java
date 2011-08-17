@@ -34,6 +34,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		int x = 0, y = 0;
 		int realPointerIndex = 0;
 
+		Gdx.app.log("AndroidMultiTouchHandler", "history size: " + event.getHistorySize());
 // logAction(action, pointerId);
 		synchronized (input) { // FUCK
 			switch (action) {
