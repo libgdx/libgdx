@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.security.AccessControlException;
@@ -94,9 +95,10 @@ public class Json {
 			return;
 		}
 
-		Class c = value.getClass();
-		if (c.isPrimitive() || c == String.class || c == Integer.class || c == Boolean.class || c == Float.class || c == Long.class
-			|| c == Double.class || c == Short.class || c == Byte.class || c == Character.class) {
+		Class valueClass = value.getClass();
+		if (valueClass.isPrimitive() || valueClass == String.class || valueClass == Integer.class || valueClass == Boolean.class
+			|| valueClass == Float.class || valueClass == Long.class || valueClass == Double.class || valueClass == Short.class
+			|| valueClass == Byte.class || valueClass == Character.class) {
 			if (name == null)
 				writer.add(value);
 			else
@@ -126,7 +128,7 @@ public class Json {
 			return;
 		}
 
-		if (value.getClass().isArray()) {
+		if (valueClass.isArray()) {
 			if (name == null)
 				writer.array();
 			else
@@ -140,22 +142,25 @@ public class Json {
 			return;
 		}
 
+		if (valueClass.isEnum()) {
+			writer.set(name, value);
+			return;
+		}
+
 		if (name == null)
 			writer.object();
 		else
 			writer.object(name);
 
-		Class type = value.getClass();
-
-		if (valueType == null || valueType != type) {
-			String className = classToTag.get(type);
-			if (className == null) className = type.getName();
+		if (valueType == null || valueType != valueClass) {
+			String className = classToTag.get(valueClass);
+			if (className == null) className = valueClass.getName();
 			writer.set(typeName, className);
-			if (debug) System.out.println("Writing type: " + type.getName());
+			if (debug) System.out.println("Writing type: " + valueClass.getName());
 		}
 
-		ObjectMap<String, Field> fields = typeToFields.get(type);
-		if (fields == null) fields = cacheFields(type);
+		ObjectMap<String, Field> fields = typeToFields.get(valueClass);
+		if (fields == null) fields = cacheFields(valueClass);
 		for (Field valueField : fields.values()) {
 			try {
 				if (debug) System.out.println("Writing field: " + valueField.getName() + " (" + value.getClass().getName() + ")");
@@ -208,12 +213,28 @@ public class Json {
 					if (type == null) throw new SerializationException(ex);
 				}
 			}
-			Object object;
+
+			Object object = null;
 			try {
 				object = type.newInstance();
 			} catch (Exception ex) {
-				throw new SerializationException("Error creating instance of class: " + type.getName(), ex);
+				try {
+					// Try a private constructor.
+					Constructor constructor = type.getDeclaredConstructor();
+					constructor.setAccessible(true);
+					object = constructor.newInstance();
+				} catch (SecurityException ignored) {
+				} catch (NoSuchMethodException ignored) {
+					if (type.isMemberClass() && !Modifier.isStatic(type.getModifiers()))
+						throw new SerializationException("Class cannot be created (non-static member class): " + type.getName(), ex);
+					else
+						throw new SerializationException("Class cannot be created (missing no-arg constructor): " + type.getName(), ex);
+				} catch (Exception privateConstructorException) {
+					ex = privateConstructorException;
+				}
+				if (object == null) throw new SerializationException("Error constructing instance of class: " + type.getName(), ex);
 			}
+
 			ObjectMap<String, Field> fields = typeToFields.get(type);
 			if (fields == null) fields = cacheFields(type);
 			for (Entry<String, Object> entry : map.entries()) {

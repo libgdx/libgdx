@@ -30,7 +30,7 @@ import com.badlogic.gdx.files.FileHandle;
  * The default behavior is to parse the JSON into a DOM made up of {@link ObjectMap}, {@link Array}, String, and Float objects.
  * Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
-public class JsonParser {
+public class JsonReader {
 	public Object parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
@@ -113,6 +113,16 @@ public class JsonParser {
 				if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
 				number(name, value);
 			}
+			action trueValue {
+				String name = names.size > 0 ? names.pop() : null;
+				if (debug) System.out.println("boolean: " + name + "=true");
+				bool(name, true);
+			}
+			action falseValue {
+				String name = names.size > 0 ? names.pop() : null;
+				if (debug) System.out.println("boolean: " + name + "=false");
+				bool(name, false);
+			}
 			action null {
 				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("null: " + name);
@@ -149,7 +159,8 @@ public class JsonParser {
 			string = '"' stringChars >buffer %string '"';
 			number = ('-'? ('0' | ([1-9][0-9]*)) ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?) >buffer %number;
 			nullValue = 'null' %null;
-			value = startObject | startArray | string | number | nullValue;
+			booleanValue = 'true' %trueValue | 'false' %falseValue;
+			value = startObject | startArray | string | number | nullValue | booleanValue;
 
 			nameValue = name space* ':' space* value;
 
@@ -222,7 +233,11 @@ public class JsonParser {
 	}
 
 	protected void number (String name, String value) {
-		set(name, Float.parseFloat(value));
+		set(name, value);
+	}
+
+	protected void bool (String name, boolean value) {
+		set(name, String.valueOf(value));
 	}
 
 	private String unescape (String value) {
