@@ -39,6 +39,7 @@ public class Json {
 	private final ObjectMap<Class, ObjectMap<String, Field>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
+	private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
 	private String typeName = "type";
 
 	public void addClassTag (String tag, Class type) {
@@ -48,6 +49,10 @@ public class Json {
 
 	public void setTypeName (String typeName) {
 		this.typeName = typeName;
+	}
+
+	public void setSerializer (Class type, Serializer serializer) {
+		classToSerializer.put(type, serializer);
 	}
 
 	private ObjectMap<String, Field> cacheFields (Class type) {
@@ -83,10 +88,31 @@ public class Json {
 
 	public void write (Object object, Writer writer) throws IOException {
 		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
-		write(object.getClass(), null, object, (JsonWriter)writer);
+		writeValue(null, object, object.getClass(), (JsonWriter)writer);
 	}
 
-	private void write (Class valueType, String name, Object value, JsonWriter writer) throws IOException {
+	public void writeField (Object object, String name, JsonWriter writer) throws IOException {
+		ObjectMap<String, Field> fields = typeToFields.get(object.getClass());
+		if (fields == null) fields = cacheFields(object.getClass());
+		Field field = fields.get(name);
+		if (field == null) throw new SerializationException("Field not found: " + name + " (" + object.getClass().getName() + ")");
+		try {
+			if (debug) System.out.println("Writing field: " + field.getName() + " (" + object.getClass().getName() + ")");
+			writeValue(field.getName(), field.get(object), field.getType(), writer);
+		} catch (IllegalAccessException ex) {
+			throw new SerializationException("Error accessing field: " + field.getName() + " (" + object.getClass().getName() + ")",
+				ex);
+		} catch (SerializationException ex) {
+			ex.addTrace(field + " (" + object.getClass().getName() + ")");
+			throw ex;
+		} catch (RuntimeException runtimeEx) {
+			SerializationException ex = new SerializationException(runtimeEx);
+			ex.addTrace(field + " (" + object.getClass().getName() + ")");
+			throw ex;
+		}
+	}
+
+	private void writeValue (String name, Object value, Class valueType, JsonWriter writer) throws IOException {
 		if (value == null) {
 			if (name == null)
 				writer.add(value);
@@ -95,14 +121,30 @@ public class Json {
 			return;
 		}
 
-		Class valueClass = value.getClass();
-		if (valueClass.isPrimitive() || valueClass == String.class || valueClass == Integer.class || valueClass == Boolean.class
-			|| valueClass == Float.class || valueClass == Long.class || valueClass == Double.class || valueClass == Short.class
-			|| valueClass == Byte.class || valueClass == Character.class) {
+		Class actualType = value.getClass();
+
+		if (actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
+			|| actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
+			|| actualType == Byte.class || actualType == Character.class) {
 			if (name == null)
 				writer.add(value);
 			else
 				writer.set(name, value);
+			return;
+		}
+
+		if (value instanceof Serializable) {
+			startObject(name, valueType, actualType, writer);
+			((Serializable)value).write(this, writer);
+			writer.pop();
+			return;
+		}
+
+		Serializer serializer = classToSerializer.get(actualType);
+		if (serializer != null) {
+			startObject(name, valueType, actualType, writer);
+			serializer.write(value, this, writer);
+			writer.pop();
 			return;
 		}
 
@@ -112,7 +154,7 @@ public class Json {
 			else
 				writer.array(name);
 			for (Object item : (Collection)value)
-				write(null, null, item, writer);
+				writeValue(null, item, null, writer);
 			writer.pop();
 			return;
 		}
@@ -123,12 +165,12 @@ public class Json {
 			else
 				writer.array(name);
 			for (Object item : (Array)value)
-				write(null, null, item, writer);
+				writeValue(null, item, null, writer);
 			writer.pop();
 			return;
 		}
 
-		if (valueClass.isArray()) {
+		if (actualType.isArray()) {
 			if (name == null)
 				writer.array();
 			else
@@ -136,35 +178,25 @@ public class Json {
 
 			int length = java.lang.reflect.Array.getLength(value);
 			for (int i = 0; i < length; i++)
-				write(null, null, java.lang.reflect.Array.get(value, i), writer);
+				writeValue(null, java.lang.reflect.Array.get(value, i), null, writer);
 
 			writer.pop();
 			return;
 		}
 
-		if (valueClass.isEnum()) {
+		if (actualType.isEnum()) {
 			writer.set(name, value);
 			return;
 		}
 
-		if (name == null)
-			writer.object();
-		else
-			writer.object(name);
+		startObject(name, valueType, actualType, writer);
 
-		if (valueType == null || valueType != valueClass) {
-			String className = classToTag.get(valueClass);
-			if (className == null) className = valueClass.getName();
-			writer.set(typeName, className);
-			if (debug) System.out.println("Writing type: " + valueClass.getName());
-		}
-
-		ObjectMap<String, Field> fields = typeToFields.get(valueClass);
-		if (fields == null) fields = cacheFields(valueClass);
+		ObjectMap<String, Field> fields = typeToFields.get(actualType);
+		if (fields == null) fields = cacheFields(actualType);
 		for (Field valueField : fields.values()) {
 			try {
 				if (debug) System.out.println("Writing field: " + valueField.getName() + " (" + value.getClass().getName() + ")");
-				write(valueField.getType(), valueField.getName(), valueField.get(value), writer);
+				writeValue(valueField.getName(), valueField.get(value), valueField.getType(), writer);
 			} catch (IllegalAccessException ex) {
 				throw new SerializationException("Error accessing field: " + valueField.getName() + " (" + value.getClass().getName()
 					+ ")", ex);
@@ -181,27 +213,59 @@ public class Json {
 		writer.pop();
 	}
 
+	private void startObject (String name, Class valueType, Class actualType, JsonWriter writer) throws IOException {
+		if (name == null)
+			writer.object();
+		else
+			writer.object(name);
+
+		if (valueType == null || valueType != actualType) {
+			String className = classToTag.get(actualType);
+			if (className == null) className = actualType.getName();
+			writer.set(typeName, className);
+			if (debug) System.out.println("Writing type: " + actualType.getName());
+		}
+	}
+
 	public <T> T parse (Class<T> type, Reader reader) throws IOException {
-		return (T)read(new JsonReader().parse(reader), type);
+		return (T)readValue(type, new JsonReader().parse(reader));
 	}
 
 	public <T> T parse (Class<T> type, InputStream input) throws IOException {
-		return (T)read(new JsonReader().parse(input), type);
+		return (T)readValue(type, new JsonReader().parse(input));
 	}
 
 	public <T> T parse (Class<T> type, FileHandle file) throws IOException {
-		return (T)read(new JsonReader().parse(file), type);
+		return (T)readValue(type, new JsonReader().parse(file));
 	}
 
 	public <T> T parse (Class<T> type, char[] data, int offset, int length) {
-		return (T)read(new JsonReader().parse(data, offset, length), type);
+		return (T)readValue(type, new JsonReader().parse(data, offset, length));
 	}
 
 	public <T> T read (Class<T> type, String json) {
-		return (T)read(new JsonReader().parse(json), type);
+		return (T)readValue(type, new JsonReader().parse(json));
 	}
 
-	private Object read (Object value, Class type) {
+	public void readField (Object object, String name, ObjectMap map) {
+		ObjectMap<String, Field> fields = typeToFields.get(object.getClass());
+		if (fields == null) fields = cacheFields(object.getClass());
+		Field field = fields.get(name);
+		if (field == null)
+			throw new SerializationException("Unable to find field: " + name + " (" + object.getClass().getName() + ")");
+		try {
+			field.set(object, readValue(field.getType(), map.get(name)));
+		} catch (Exception ex) {
+			throw new SerializationException("Error setting field: " + field.getName() + " (" + object.getClass().getName() + ")",
+				ex);
+		}
+	}
+
+	public <T> T readValue (Class<T> type, String name, ObjectMap map) {
+		return (T)readValue(type, map.get(name));
+	}
+
+	private Object readValue (Class type, Object value) {
 		if (value instanceof ObjectMap) {
 			ObjectMap<String, Object> map = (ObjectMap)value;
 			String className = (String)map.remove(typeName);
@@ -212,6 +276,11 @@ public class Json {
 					type = tagToClass.get(className);
 					if (type == null) throw new SerializationException(ex);
 				}
+			}
+
+			Serializer serializer = classToSerializer.get(type);
+			if (serializer != null) {
+				return serializer.read(type, map, this);
 			}
 
 			Object object = null;
@@ -235,6 +304,11 @@ public class Json {
 				if (object == null) throw new SerializationException("Error constructing instance of class: " + type.getName(), ex);
 			}
 
+			if (object instanceof Serializable) {
+				((Serializable)object).read(map, this);
+				return object;
+			}
+
 			ObjectMap<String, Field> fields = typeToFields.get(type);
 			if (fields == null) fields = cacheFields(type);
 			for (Entry<String, Object> entry : map.entries()) {
@@ -242,7 +316,7 @@ public class Json {
 				if (field == null)
 					throw new SerializationException("Unable to find field: " + entry.key + " (" + type.getName() + ")");
 				try {
-					field.set(object, read(entry.value, field.getType()));
+					field.set(object, readValue(field.getType(), entry.value));
 				} catch (Exception ex) {
 					throw new SerializationException("Error setting field: " + field.getName() + " (" + type.getName() + ")", ex);
 				}
@@ -255,20 +329,20 @@ public class Json {
 			if (type.isAssignableFrom(Array.class)) {
 				Array newArray = new Array(array.size);
 				for (int i = 0, n = array.size; i < n; i++)
-					newArray.add(read(array.get(i), String.class));
+					newArray.add(readValue(String.class, array.get(i)));
 				return newArray;
 			}
 			if (type.isAssignableFrom(ArrayList.class)) {
 				ArrayList newArray = new ArrayList(array.size);
 				for (int i = 0, n = array.size; i < n; i++)
-					newArray.add(read(array.get(i), String.class));
+					newArray.add(readValue(String.class, array.get(i)));
 				return newArray;
 			}
 			if (type.isArray()) {
 				Class componentType = type.getComponentType();
 				Object newArray = java.lang.reflect.Array.newInstance(componentType, array.size);
 				for (int i = 0, n = array.size; i < n; i++)
-					java.lang.reflect.Array.set(newArray, i, read(array.get(i), componentType));
+					java.lang.reflect.Array.set(newArray, i, readValue(componentType, array.get(i)));
 				return newArray;
 			}
 			throw new SerializationException("Unable to convert value to required type: " + value + " (" + type.getName() + ")");
@@ -298,5 +372,17 @@ public class Json {
 		}
 
 		return null;
+	}
+
+	static public interface Serializer<T> {
+		public void write (T object, Json json, JsonWriter writer) throws IOException;
+
+		public T read (Class type, ObjectMap map, Json json);
+	}
+
+	static public interface Serializable {
+		public void write (Json json, JsonWriter writer) throws IOException;
+
+		public void read (ObjectMap map, Json json);
 	}
 }
