@@ -19,6 +19,7 @@ package com.badlogic.gdx.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -86,9 +87,40 @@ public class Json {
 		return nameToField;
 	}
 
+	public String write (Object object) {
+		StringWriter buffer = new StringWriter();
+		try {
+			write(object, buffer);
+		} catch (IOException ex) {
+			throw new SerializationException("Error writing JSON.", ex);
+		}
+		return buffer.toString();
+	}
+
 	public void write (Object object, Writer writer) throws IOException {
 		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
 		writeValue(null, object, object.getClass(), (JsonWriter)writer);
+	}
+
+	public void writeFields (Object object, JsonWriter writer) throws IOException {
+		ObjectMap<String, Field> fields = typeToFields.get(object.getClass());
+		if (fields == null) fields = cacheFields(object.getClass());
+		for (Field valueField : fields.values()) {
+			try {
+				if (debug) System.out.println("Writing field: " + valueField.getName() + " (" + object.getClass().getName() + ")");
+				writeValue(valueField.getName(), valueField.get(object), valueField.getType(), writer);
+			} catch (IllegalAccessException ex) {
+				throw new SerializationException("Error accessing field: " + valueField.getName() + " ("
+					+ object.getClass().getName() + ")", ex);
+			} catch (SerializationException ex) {
+				ex.addTrace(valueField + " (" + object.getClass().getName() + ")");
+				throw ex;
+			} catch (RuntimeException runtimeEx) {
+				SerializationException ex = new SerializationException(runtimeEx);
+				ex.addTrace(valueField + " (" + object.getClass().getName() + ")");
+				throw ex;
+			}
+		}
 	}
 
 	public void writeField (Object object, String name, JsonWriter writer) throws IOException {
@@ -176,9 +208,10 @@ public class Json {
 			else
 				writer.array(name);
 
+			Class componentType = actualType.getComponentType();
 			int length = java.lang.reflect.Array.getLength(value);
 			for (int i = 0; i < length; i++)
-				writeValue(null, java.lang.reflect.Array.get(value, i), null, writer);
+				writeValue(null, java.lang.reflect.Array.get(value, i), componentType, writer);
 
 			writer.pop();
 			return;
@@ -190,26 +223,7 @@ public class Json {
 		}
 
 		startObject(name, valueType, actualType, writer);
-
-		ObjectMap<String, Field> fields = typeToFields.get(actualType);
-		if (fields == null) fields = cacheFields(actualType);
-		for (Field valueField : fields.values()) {
-			try {
-				if (debug) System.out.println("Writing field: " + valueField.getName() + " (" + value.getClass().getName() + ")");
-				writeValue(valueField.getName(), valueField.get(value), valueField.getType(), writer);
-			} catch (IllegalAccessException ex) {
-				throw new SerializationException("Error accessing field: " + valueField.getName() + " (" + value.getClass().getName()
-					+ ")", ex);
-			} catch (SerializationException ex) {
-				ex.addTrace(valueField + " (" + value.getClass().getName() + ")");
-				throw ex;
-			} catch (RuntimeException runtimeEx) {
-				SerializationException ex = new SerializationException(runtimeEx);
-				ex.addTrace(valueField + " (" + value.getClass().getName() + ")");
-				throw ex;
-			}
-		}
-
+		writeFields(value, writer);
 		writer.pop();
 	}
 
