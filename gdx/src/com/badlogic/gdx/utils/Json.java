@@ -374,6 +374,58 @@ public class Json {
 		return null;
 	}
 
+	static public String prettyPrint (String json) {
+		return prettyPrint(new JsonReader().parse(json));
+	}
+
+	static public String prettyPrint (Object object) {
+		StringBuilder buffer = new StringBuilder(512);
+		prettyPrint(object, buffer, 0);
+		return buffer.toString();
+	}
+
+	static private void prettyPrint (Object object, StringBuilder buffer, int indent) {
+		if (object instanceof ObjectMap) {
+			ObjectMap<?, ?> map = (ObjectMap)object;
+			buffer.append("{\n");
+			int i = 0;
+			for (Entry entry : map.entries()) {
+				indent(indent + 1, buffer);
+				buffer.append('"');
+				buffer.append(entry.key);
+				buffer.append("\": ");
+				prettyPrint(entry.value, buffer, indent + 2);
+				if (i++ < map.size - 1) buffer.append(",");
+				buffer.append('\n');
+			}
+			indent(indent - 1, buffer);
+			buffer.append("}");
+		} else if (object instanceof Array) {
+			buffer.append("[\n");
+			Array array = (Array)object;
+			for (int i = 0, n = array.size; i < n; i++) {
+				indent(indent, buffer);
+				prettyPrint(array.get(i), buffer, indent + 1);
+				if (i < array.size - 1) buffer.append(",");
+				buffer.append('\n');
+			}
+			indent(indent - 1, buffer);
+			buffer.append("]");
+		} else if (object instanceof String) {
+			buffer.append('"');
+			buffer.append(object);
+			buffer.append('"');
+		} else if (object == null) {
+			buffer.append("null");
+		} else
+			throw new IllegalArgumentException("Unknown object type: " + object.getClass());
+	}
+
+	static private void indent (int count, StringBuilder buffer) {
+		for (int i = 0; i < count; i++)
+			buffer.append('\t');
+	}
+
 	static public interface Serializer<T> {
 		public void write (T object, Json json, JsonWriter writer) throws IOException;
 

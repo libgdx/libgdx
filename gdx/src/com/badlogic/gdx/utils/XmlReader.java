@@ -396,7 +396,7 @@ public class XmlReader {
 	// line 189 "XmlReader.rl"
 
 	protected void open (String name) {
-		Element child = new Element(name);
+		Element child = new Element(name, current);
 		Element parent = current;
 		if (parent != null) parent.addChild(child);
 		elements.add(child);
@@ -431,9 +431,11 @@ public class XmlReader {
 		private ObjectMap<String, String> attributes;
 		private Array<Element> children;
 		private String text;
+		private Element parent;
 
-		public Element (String name) {
+		public Element (String name, Element parent) {
 			this.name = name;
+			this.parent = parent;
 		}
 
 		public String getName () {
@@ -482,6 +484,22 @@ public class XmlReader {
 
 		public void setText (String text) {
 			this.text = text;
+		}
+
+		public void removeChild (int index) {
+			if (children != null) children.removeIndex(index);
+		}
+
+		public void removeChild (Element child) {
+			if (children != null) children.removeValue(child, true);
+		}
+
+		public void remove () {
+			parent.removeChild(this);
+		}
+
+		public Element getParent () {
+			return parent;
 		}
 
 		public String toString () {
@@ -553,13 +571,30 @@ public class XmlReader {
 		/** @param name the name of the children
 		 * @return the children with the given name or an empty {@link Array} */
 		public Array<Element> getChildrenByName (String name) {
-			Array<Element> children = new Array<Element>();
-			if (this.children == null) return children;
-			for (int i = 0; i < this.children.size; i++) {
-				Element child = this.children.get(i);
-				if (child.name.equals(name)) children.add(child);
+			Array<Element> result = new Array<Element>();
+			if (children == null) return result;
+			for (int i = 0; i < children.size; i++) {
+				Element child = children.get(i);
+				if (child.name.equals(name)) result.add(child);
 			}
-			return children;
+			return result;
+		}
+
+		/** @param name the name of the children
+		 * @return the children with the given name or an empty {@link Array} */
+		public Array<Element> getChildrenByNameRecursively (String name) {
+			Array<Element> result = new Array<Element>();
+			getChildrenByNameRecursively(name, result);
+			return result;
+		}
+
+		private void getChildrenByNameRecursively (String name, Array<Element> result) {
+			if (children == null) return;
+			for (int i = 0; i < children.size; i++) {
+				Element child = children.get(i);
+				if (child.name.equals(name)) result.add(child);
+				child.getChildrenByNameRecursively(name, result);
+			}
 		}
 
 		/** @throws GdxRuntimeException if the attribute was not found. */
