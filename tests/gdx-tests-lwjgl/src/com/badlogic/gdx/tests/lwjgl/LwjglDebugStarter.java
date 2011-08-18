@@ -22,6 +22,7 @@ import com.badlogic.gdx.tests.CullTest;
 import com.badlogic.gdx.tests.FlickScrollPaneTest;
 import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.ParallaxTest;
+import com.badlogic.gdx.tests.SimpleDecalTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 
 public class LwjglDebugStarter {
@@ -30,6 +31,6 @@ public class LwjglDebugStarter {
 
 //		config.useGL20 = true;
 		config.vSyncEnabled = true;
-		new LwjglApplication(new FlickScrollPaneTest(), config);
+		new LwjglApplication(new SimpleDecalTest(), config);
 	}
 }

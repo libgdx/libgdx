@@ -86,9 +86,12 @@ public class SimpleDecalTest extends GdxTest {
 		for (int i = 0; i < decals.size; i++) {
 			Decal decal = decals.get(i);
 			if (billboard) {
-// dir.set(camera.position).sub(decal.getPosition()).nor();
-				dir.set(-camera.direction.x, -camera.direction.y, -camera.direction.z);
-				decal.setRotation(dir, Vector3.Y);
+				// billboarding for ortho cam :)
+//				dir.set(-camera.direction.x, -camera.direction.y, -camera.direction.z);
+//				decal.setRotation(dir, Vector3.Y);
+				
+				// billboarding for perspective cam 
+				decal.lookAt(camera.position, camera.up);
 			}
 			batch.add(decal);
 		}
