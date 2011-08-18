@@ -143,7 +143,7 @@ public class Json {
 		Serializer serializer = classToSerializer.get(actualType);
 		if (serializer != null) {
 			startObject(name, valueType, actualType, writer);
-			serializer.write(value, this, writer);
+			serializer.write(this, writer, value);
 			writer.pop();
 			return;
 		}
@@ -280,7 +280,7 @@ public class Json {
 
 			Serializer serializer = classToSerializer.get(type);
 			if (serializer != null) {
-				return serializer.read(type, map, this);
+				return serializer.read(this, map, type);
 			}
 
 			Object object = null;
@@ -305,7 +305,7 @@ public class Json {
 			}
 
 			if (object instanceof Serializable) {
-				((Serializable)object).read(map, this);
+				((Serializable)object).read(this, map);
 				return object;
 			}
 
@@ -427,14 +427,14 @@ public class Json {
 	}
 
 	static public interface Serializer<T> {
-		public void write (T object, Json json, JsonWriter writer) throws IOException;
+		public void write (Json json, JsonWriter writer, T object) throws IOException;
 
-		public T read (Class type, ObjectMap map, Json json);
+		public T read (Json json, ObjectMap map, Class type);
 	}
 
 	static public interface Serializable {
 		public void write (Json json, JsonWriter writer) throws IOException;
 
-		public void read (ObjectMap map, Json json);
+		public void read (Json json, ObjectMap map);
 	}
 }
