@@ -3,13 +3,13 @@
 // Ragel.exe -G2 -J -o JsonReader.java JsonReader.rl
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +28,9 @@ import com.badlogic.gdx.files.FileHandle;
 
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link ObjectMap}, {@link Array}, String, and Float objects.
- * Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will return null.
+ * The default behavior is to parse the JSON into a DOM made up of {@link ObjectMap}, {@link Array}, String, Float, and Boolean
+ * objects. Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will
+ * return null.
  * @author Nathan Sweet */
 public class JsonReader {
 	public Object parse (String json) {
@@ -37,32 +38,40 @@ public class JsonReader {
 		return parse(data, 0, data.length);
 	}
 
-	public Object parse (Reader reader) throws IOException {
-		char[] data = new char[1024];
-		int offset = 0;
-		while (true) {
-			int length = reader.read(data, offset, data.length - offset);
-			if (length == -1) break;
-			if (length == 0) {
-				char[] newData = new char[data.length * 2];
-				System.arraycopy(data, 0, newData, 0, data.length);
-				data = newData;
-			} else
-				offset += length;
+	public Object parse (Reader reader) {
+		try {
+			char[] data = new char[1024];
+			int offset = 0;
+			while (true) {
+				int length = reader.read(data, offset, data.length - offset);
+				if (length == -1) break;
+				if (length == 0) {
+					char[] newData = new char[data.length * 2];
+					System.arraycopy(data, 0, newData, 0, data.length);
+					data = newData;
+				} else
+					offset += length;
+			}
+			return parse(data, 0, offset);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
 		}
-		return parse(data, 0, offset);
 	}
 
-	public Object parse (InputStream input) throws IOException {
-		return parse(new InputStreamReader(input, "ISO-8859-1"));
+	public Object parse (InputStream input) {
+		try {
+			return parse(new InputStreamReader(input, "ISO-8859-1"));
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 	}
 
-	public Object parse (FileHandle file) throws IOException {
+	public Object parse (FileHandle file) {
 		return parse(file.read());
 	}
 
 	public Object parse (char[] data, int offset, int length) {
-		int cs, p = 0, pe = data.length, eof = pe, top = 0;
+		int cs, p = offset, pe = length, eof = pe, top = 0;
 		int[] stack = new int[4];
 
 		int s = 0;
@@ -199,7 +208,7 @@ public class JsonReader {
 									s = p;
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
-									number(name, value);
+									number(name, Float.parseFloat(value));
 								}
 									break;
 								case 5:
@@ -319,7 +328,7 @@ public class JsonReader {
 									s = p;
 									String name = names.size > 0 ? names.pop() : null;
 									if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
-									number(name, value);
+									number(name, Float.parseFloat(value));
 								}
 									break;
 								case 5:
@@ -526,12 +535,12 @@ public class JsonReader {
 		set(name, value);
 	}
 
-	protected void number (String name, String value) {
+	protected void number (String name, float value) {
 		set(name, value);
 	}
 
 	protected void bool (String name, boolean value) {
-		set(name, String.valueOf(value));
+		set(name, value);
 	}
 
 	private String unescape (String value) {

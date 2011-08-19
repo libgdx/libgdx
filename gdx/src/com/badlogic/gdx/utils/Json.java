@@ -28,6 +28,8 @@ import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
@@ -41,7 +43,9 @@ public class Json {
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
 	private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
+	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
 	private String typeName = "type";
+	private boolean usePrototypes = true;
 
 	public void addClassTag (String tag, Class type) {
 		tagToClass.put(tag, type);
@@ -103,48 +107,91 @@ public class Json {
 	}
 
 	public void writeFields (Object object, JsonWriter writer) throws IOException {
-		ObjectMap<String, Field> fields = typeToFields.get(object.getClass());
-		if (fields == null) fields = cacheFields(object.getClass());
-		for (Field valueField : fields.values()) {
+		Class type = object.getClass();
+
+		Object[] defaultValues = getDefaultValues(type);
+
+		ObjectMap<String, Field> fields = typeToFields.get(type);
+		if (fields == null) fields = cacheFields(type);
+		int i = 0;
+		for (Field field : fields.values()) {
 			try {
-				if (debug) System.out.println("Writing field: " + valueField.getName() + " (" + object.getClass().getName() + ")");
-				writeValue(valueField.getName(), valueField.get(object), valueField.getType(), writer);
+				Object value = field.get(object);
+
+				if (defaultValues != null) {
+					Object defaultValue = defaultValues[i++];
+					if (value == null && defaultValue == null) continue;
+					if (value != null && defaultValue != null && value.equals(defaultValue)) continue;
+				}
+
+				if (debug) System.out.println("Writing field: " + field.getName() + " (" + type.getName() + ")");
+				writeValue(field.getName(), value, field.getType(), writer);
 			} catch (IllegalAccessException ex) {
-				throw new SerializationException("Error accessing field: " + valueField.getName() + " ("
-					+ object.getClass().getName() + ")", ex);
+				throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
 			} catch (SerializationException ex) {
-				ex.addTrace(valueField + " (" + object.getClass().getName() + ")");
+				ex.addTrace(field + " (" + type.getName() + ")");
 				throw ex;
 			} catch (RuntimeException runtimeEx) {
 				SerializationException ex = new SerializationException(runtimeEx);
-				ex.addTrace(valueField + " (" + object.getClass().getName() + ")");
+				ex.addTrace(field + " (" + type.getName() + ")");
 				throw ex;
 			}
 		}
 	}
 
+	private Object[] getDefaultValues (Class type) {
+		if (!usePrototypes) return null;
+		Object[] values = classToDefaultValues.get(type);
+		if (values == null) {
+			Object object = newInstance(type);
+
+			ObjectMap<String, Field> fields = typeToFields.get(type);
+			if (fields == null) fields = cacheFields(type);
+
+			values = new Object[fields.size];
+			classToDefaultValues.put(type, values);
+
+			int i = 0;
+			for (Field field : fields.values()) {
+				try {
+					values[i++] = field.get(object);
+				} catch (IllegalAccessException ex) {
+					throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
+				} catch (SerializationException ex) {
+					ex.addTrace(field + " (" + type.getName() + ")");
+					throw ex;
+				} catch (RuntimeException runtimeEx) {
+					SerializationException ex = new SerializationException(runtimeEx);
+					ex.addTrace(field + " (" + type.getName() + ")");
+					throw ex;
+				}
+			}
+		}
+		return values;
+	}
+
 	public void writeField (Object object, String name, JsonWriter writer) throws IOException {
-		ObjectMap<String, Field> fields = typeToFields.get(object.getClass());
-		if (fields == null) fields = cacheFields(object.getClass());
+		Class type = object.getClass();
+		ObjectMap<String, Field> fields = typeToFields.get(type);
+		if (fields == null) fields = cacheFields(type);
 		Field field = fields.get(name);
-		if (field == null) throw new SerializationException("Field not found: " + name + " (" + object.getClass().getName() + ")");
+		if (field == null) throw new SerializationException("Field not found: " + name + " (" + type.getName() + ")");
 		try {
-			if (debug) System.out.println("Writing field: " + field.getName() + " (" + object.getClass().getName() + ")");
+			if (debug) System.out.println("Writing field: " + field.getName() + " (" + type.getName() + ")");
 			writeValue(field.getName(), field.get(object), field.getType(), writer);
 		} catch (IllegalAccessException ex) {
-			throw new SerializationException("Error accessing field: " + field.getName() + " (" + object.getClass().getName() + ")",
-				ex);
+			throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
 		} catch (SerializationException ex) {
-			ex.addTrace(field + " (" + object.getClass().getName() + ")");
+			ex.addTrace(field + " (" + type.getName() + ")");
 			throw ex;
 		} catch (RuntimeException runtimeEx) {
 			SerializationException ex = new SerializationException(runtimeEx);
-			ex.addTrace(field + " (" + object.getClass().getName() + ")");
+			ex.addTrace(field + " (" + type.getName() + ")");
 			throw ex;
 		}
 	}
 
-	private void writeValue (String name, Object value, Class valueType, JsonWriter writer) throws IOException {
+	public void writeValue (String name, Object value, Class valueType, JsonWriter writer) throws IOException {
 		if (value == null) {
 			if (name == null)
 				writer.add(value);
@@ -217,6 +264,22 @@ public class Json {
 			return;
 		}
 
+		if (value instanceof ObjectMap) {
+			startObject(name, valueType, actualType, writer);
+			for (Entry entry : ((ObjectMap<?, ?>)value).entries())
+				writer.set((String)entry.key, entry.value);
+			writer.pop();
+			return;
+		}
+
+		if (value instanceof Map) {
+			startObject(name, valueType, actualType, writer);
+			for (Map.Entry entry : ((Map<?, ?>)value).entrySet())
+				writer.set((String)entry.getKey(), entry.getValue());
+			writer.pop();
+			return;
+		}
+
 		if (actualType.isEnum()) {
 			writer.set(name, value);
 			return;
@@ -241,19 +304,19 @@ public class Json {
 		}
 	}
 
-	public <T> T parse (Class<T> type, Reader reader) throws IOException {
+	public <T> T read (Class<T> type, Reader reader) throws IOException {
 		return (T)readValue(type, new JsonReader().parse(reader));
 	}
 
-	public <T> T parse (Class<T> type, InputStream input) throws IOException {
+	public <T> T read (Class<T> type, InputStream input) throws IOException {
 		return (T)readValue(type, new JsonReader().parse(input));
 	}
 
-	public <T> T parse (Class<T> type, FileHandle file) throws IOException {
+	public <T> T read (Class<T> type, FileHandle file) {
 		return (T)readValue(type, new JsonReader().parse(file));
 	}
 
-	public <T> T parse (Class<T> type, char[] data, int offset, int length) {
+	public <T> T read (Class<T> type, char[] data, int offset, int length) {
 		return (T)readValue(type, new JsonReader().parse(data, offset, length));
 	}
 
@@ -279,6 +342,28 @@ public class Json {
 		return (T)readValue(type, map.get(name));
 	}
 
+	private Object newInstance (Class type) {
+		try {
+			return type.newInstance();
+		} catch (Exception ex) {
+			try {
+				// Try a private constructor.
+				Constructor constructor = type.getDeclaredConstructor();
+				constructor.setAccessible(true);
+				return constructor.newInstance();
+			} catch (SecurityException ignored) {
+			} catch (NoSuchMethodException ignored) {
+				if (type.isMemberClass() && !Modifier.isStatic(type.getModifiers()))
+					throw new SerializationException("Class cannot be created (non-static member class): " + type.getName(), ex);
+				else
+					throw new SerializationException("Class cannot be created (missing no-arg constructor): " + type.getName(), ex);
+			} catch (Exception privateConstructorException) {
+				ex = privateConstructorException;
+			}
+			throw new SerializationException("Error constructing instance of class: " + type.getName(), ex);
+		}
+	}
+
 	private Object readValue (Class type, Object value) {
 		if (value instanceof ObjectMap) {
 			ObjectMap<String, Object> map = (ObjectMap)value;
@@ -293,34 +378,27 @@ public class Json {
 			}
 
 			Serializer serializer = classToSerializer.get(type);
-			if (serializer != null) {
-				return serializer.read(this, map, type);
-			}
+			if (serializer != null) return serializer.read(this, map, type);
 
-			Object object = null;
-			try {
-				object = type.newInstance();
-			} catch (Exception ex) {
-				try {
-					// Try a private constructor.
-					Constructor constructor = type.getDeclaredConstructor();
-					constructor.setAccessible(true);
-					object = constructor.newInstance();
-				} catch (SecurityException ignored) {
-				} catch (NoSuchMethodException ignored) {
-					if (type.isMemberClass() && !Modifier.isStatic(type.getModifiers()))
-						throw new SerializationException("Class cannot be created (non-static member class): " + type.getName(), ex);
-					else
-						throw new SerializationException("Class cannot be created (missing no-arg constructor): " + type.getName(), ex);
-				} catch (Exception privateConstructorException) {
-					ex = privateConstructorException;
-				}
-				if (object == null) throw new SerializationException("Error constructing instance of class: " + type.getName(), ex);
-			}
+			Object object = newInstance(type);
 
 			if (object instanceof Serializable) {
 				((Serializable)object).read(this, map);
 				return object;
+			}
+
+			if (object instanceof ObjectMap) {
+				ObjectMap result = (ObjectMap)object;
+				for (Entry entry : map.entries())
+					result.put(entry.key, readValue(String.class, entry.value));
+				return result;
+			}
+
+			if (object instanceof HashMap) {
+				HashMap result = (HashMap)object;
+				for (Entry entry : map.entries())
+					result.put(entry.key, readValue(String.class, entry.value));
+				return result;
 			}
 
 			ObjectMap<String, Field> fields = typeToFields.get(type);
@@ -362,6 +440,8 @@ public class Json {
 			throw new SerializationException("Unable to convert value to required type: " + value + " (" + type.getName() + ")");
 		}
 
+		if (value instanceof Float || value instanceof Boolean) value = String.valueOf(value);
+
 		if (value instanceof String) {
 			String string = (String)value;
 			if (type == String.class || value == null) return value;
@@ -388,47 +468,70 @@ public class Json {
 		return null;
 	}
 
-	static public String prettyPrint (String json) {
-		return prettyPrint(new JsonReader().parse(json));
+	public String prettyPrint (Object object) {
+		return prettyPrint(write(object));
 	}
 
-	static public String prettyPrint (Object object) {
+	static public String prettyPrint (String json) {
+		JsonReader reader = new JsonReader();
 		StringBuilder buffer = new StringBuilder(512);
-		prettyPrint(object, buffer, 0);
+		prettyPrint(reader.parse(json), buffer, 0);
 		return buffer.toString();
 	}
 
 	static private void prettyPrint (Object object, StringBuilder buffer, int indent) {
 		if (object instanceof ObjectMap) {
 			ObjectMap<?, ?> map = (ObjectMap)object;
-			buffer.append("{\n");
-			int i = 0;
-			for (Entry entry : map.entries()) {
-				indent(indent + 1, buffer);
+			if (map.size == 0) {
+				buffer.append("{}");
+			} else if (map.size == 1) {
+				buffer.append("{ ");
+				Entry entry = map.entries().next();
 				buffer.append('"');
 				buffer.append(entry.key);
 				buffer.append("\": ");
-				prettyPrint(entry.value, buffer, indent + 2);
-				if (i++ < map.size - 1) buffer.append(",");
-				buffer.append('\n');
+				prettyPrint(entry.value, buffer, indent + 1);
+				buffer.append(" }");
+			} else {
+				buffer.append("{\n");
+				int i = 0;
+				for (Entry entry : map.entries()) {
+					indent(indent, buffer);
+					buffer.append('"');
+					buffer.append(entry.key);
+					buffer.append("\": ");
+					prettyPrint(entry.value, buffer, indent + 1);
+					if (i++ < map.size - 1) buffer.append(",");
+					buffer.append('\n');
+				}
+				indent(indent - 1, buffer);
+				buffer.append('}');
 			}
-			indent(indent - 1, buffer);
-			buffer.append("}");
 		} else if (object instanceof Array) {
-			buffer.append("[\n");
 			Array array = (Array)object;
-			for (int i = 0, n = array.size; i < n; i++) {
-				indent(indent, buffer);
-				prettyPrint(array.get(i), buffer, indent + 1);
-				if (i < array.size - 1) buffer.append(",");
-				buffer.append('\n');
+			if (array.size == 0) {
+				buffer.append("[]");
+			} else if (array.size == 1) {
+				buffer.append("[ ");
+				prettyPrint(array.get(0), buffer, indent + 1);
+				buffer.append(" ]");
+			} else {
+				buffer.append("[\n");
+				for (int i = 0, n = array.size; i < n; i++) {
+					indent(indent, buffer);
+					prettyPrint(array.get(i), buffer, indent + 1);
+					if (i < array.size - 1) buffer.append(",");
+					buffer.append('\n');
+				}
+				indent(indent - 1, buffer);
+				buffer.append(']');
 			}
-			indent(indent - 1, buffer);
-			buffer.append("]");
 		} else if (object instanceof String) {
 			buffer.append('"');
 			buffer.append(object);
 			buffer.append('"');
+		} else if (object instanceof Float || object instanceof Boolean) {
+			buffer.append(object);
 		} else if (object == null) {
 			buffer.append("null");
 		} else

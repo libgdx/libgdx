@@ -66,6 +66,7 @@ public class FileProcessor {
 
 	/** @return the processed files added with {@link #addProcessedFile(InputFile)}. */
 	public ArrayList<InputFile> process (File inputFile, File outputRoot) throws Exception {
+		if (!inputFile.exists()) throw new IllegalArgumentException("Input file does not exist: " + inputFile.getAbsolutePath());
 		if (inputFile.isFile())
 			return process(new File[] {inputFile}, outputRoot);
 		else
@@ -87,7 +88,7 @@ public class FileProcessor {
 			File inputDir = entry.getKey();
 			File newOutputDir = flattenOutput ? outputRoot : dirInputFiles.get(0).outputDir;
 			String outputName = inputDir.getName();
-			if (outputSuffix != null) outputName += outputSuffix;
+			if (outputSuffix != null) outputName = outputName.replaceAll("(.*)\\..*", "$1") + outputSuffix;
 
 			InputFile inputFile = new InputFile();
 			inputFile.inputFile = entry.getKey();

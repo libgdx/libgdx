@@ -434,9 +434,9 @@ public class ObjectMap<K, V> {
 	}
 
 	public String toString () {
-		if (size == 0) return "[]";
+		if (size == 0) return "{}";
 		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('[');
+		buffer.append('{');
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		int i = keyTable.length;
@@ -456,7 +456,7 @@ public class ObjectMap<K, V> {
 			buffer.append('=');
 			buffer.append(valueTable[i]);
 		}
-		buffer.append(']');
+		buffer.append('}');
 		return buffer.toString();
 	}
 
