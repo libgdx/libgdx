@@ -38,7 +38,7 @@ public class LwjglApplicationConfiguration {
 	/** whether to use CPU synching or not. If this is false display vsynching is used, which might not work in windowed mode **/
 	public boolean useCPUSynch = true;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
-	public boolean vSyncEnabled = false;
+	public boolean vSyncEnabled = true;
 	/** title of application **/
 	public String title = "Lwjgl Application";
 	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/

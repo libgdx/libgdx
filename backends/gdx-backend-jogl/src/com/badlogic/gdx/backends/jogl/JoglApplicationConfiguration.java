@@ -37,7 +37,7 @@ public class JoglApplicationConfiguration {
 	/** fullscreen **/
 	public boolean fullscreen = false;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
-	public boolean vSyncEnabled = false;
+	public boolean vSyncEnabled = true;
 	/** title of application **/
 	public String title = "Jogl Application";
 
