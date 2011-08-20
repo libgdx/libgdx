@@ -233,7 +233,7 @@ public class Skin implements Disposable {
 		try {
 			XmlReader xml = new XmlReader();
 			Element skin = xml.parse(skinFile);
-			parseLibrary(skin);
+			parseLibrary(skin, skinFile);
 			parseWidgetStyles(skin.getChildByName("widgetStyles"));
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't parse skinFile", e);
@@ -488,12 +488,12 @@ public class Skin implements Disposable {
 		}
 	}
 
-	private void parseLibrary (Element skin) {
+	private void parseLibrary (Element skin, FileHandle skinFile) {
 		Element library = skin.getChildByName("library");
 		parseColors(library);
 		parseNinePatches(library);
 		parseRegions(library);
-		parseFonts(library);
+		parseFonts(library, skinFile);
 	}
 
 	private void parseColors (Element library) {
@@ -504,9 +504,12 @@ public class Skin implements Disposable {
 		}
 	}
 
-	private void parseFonts (Element library) {
+	private void parseFonts (Element library, FileHandle skinFile) {
 		for (Element font : library.getChildrenByName("font")) {
-			BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal(font.getAttribute("file")), false);
+			String path = font.getAttribute("file");
+			FileHandle file = Gdx.files.internal(path);
+			if(file.exists() == false) file = skinFile.parent().child(path);
+			BitmapFont bitmapFont = new BitmapFont(file, false);
 			fonts.put(font.getAttribute("name"), bitmapFont);
 		}
 	}
