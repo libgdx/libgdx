@@ -108,7 +108,7 @@ public class ComboBox extends Widget {
 		final NinePatch background = style.background;
 		final BitmapFont font = style.font;
 
-		prefHeight = background.getTotalHeight();
+		prefHeight = Math.max(font.getLineHeight() - font.getDescent(), background.getTotalHeight());
 		float max = 0;
 		for (int i = 0; i < entries.length; i++) {
 			max = Math.max(font.getBounds(entries[i]).width, max);
