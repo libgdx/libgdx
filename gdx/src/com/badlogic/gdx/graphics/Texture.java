@@ -126,7 +126,7 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		if (file.name().endsWith(".etc1")) {
+		if (file.name().contains(".etc1")) {
 			create(new ETC1TextureData(file, useMipMaps));
 		} else {
 			create(new FileTextureData(file, null, format, useMipMaps));
