@@ -96,6 +96,8 @@ public class AssetManager implements Disposable {
 		// if it is not loaded yet, check if it's in the queue or currently
 		// processed. Make sure it is unloaded.
 		if (type == null) {
+			// FIXME this is extremely hard to do in a generic manner...
+			
 			throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
 		}
 		Object asset = assets.get(type).get(fileName);
@@ -295,6 +297,17 @@ public class AssetManager implements Disposable {
 		AssetLoadingTask task = tasks.pop();
 		AssetDescriptor assetDesc = task.assetDesc;
 
+		// remove all dependencies
+		if(task.dependenciesLoaded) {
+			for(AssetDescriptor desc: task.dependencies) {
+				remove(desc.fileName);
+			}
+		}
+		
+		// clear the rest of the stack
+		tasks.clear();
+		
+		// inform the listener that something bad happened
 		if (listener != null) {
 			listener.error(assetDesc.fileName, assetDesc.type, t);
 		} else {
