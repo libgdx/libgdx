@@ -35,11 +35,13 @@ class AssetLoadingTask implements Callable<Void> {
 	final AssetLoader loader;
 	final ExecutorService threadPool;
 	boolean dependenciesLoaded = false;
+	Array<AssetDescriptor> dependencies;
 	Future<Void> loadFuture = null;
 	Future<Void> depsFuture = null;
 	boolean updateOnRenderThread = false;
 	Object asset = null;
 	AssetManager manager;
+	boolean cancel = false;
 
 	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {
 		this.manager = manager;
@@ -53,7 +55,7 @@ class AssetLoadingTask implements Callable<Void> {
 	public Void call () throws Exception {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
 		if (dependenciesLoaded == false) {
-			Array<AssetDescriptor> dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
+			dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if (dependencies != null) {
 				for (AssetDescriptor desc : dependencies) {
 					manager.injectDependency(assetDesc.fileName, desc);
@@ -83,7 +85,7 @@ class AssetLoadingTask implements Callable<Void> {
 		SynchronousAssetLoader syncLoader = (SynchronousAssetLoader)loader;
 		if (!dependenciesLoaded) {
 			dependenciesLoaded = true;
-			Array<AssetDescriptor> dependencies = syncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
+			dependencies = syncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if (dependencies == null) {
 				asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
 				return;

@@ -93,12 +93,29 @@ public class AssetManager implements Disposable {
 		// get the asset and its type
 		Class type = assetTypes.get(fileName);
 		
-		// if it is not loaded yet, check if it's in the queue or currently
-		// processed. Make sure it is unloaded.
+		// if it is not loaded yet
 		if (type == null) {
-			// FIXME this is extremely hard to do in a generic manner...
+			// check if it's currently processed and cancel if necessary
+			AssetLoadingTask currAsset = tasks.firstElement();
+			if(currAsset.assetDesc.fileName.equals(fileName)) {
+				currAsset.cancel = true;
+				return;
+			}
 			
-			throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
+			// check if it's in the queue
+			int foundIndex = -1;
+			for(int i = 0; i < preloadQueue.size; i++) {
+				if(preloadQueue.get(i).fileName.equals(fileName)) {
+					foundIndex = i;
+					break;
+				}
+			}
+			if(foundIndex != -1) {
+				throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
+			} else {
+				preloadQueue.removeIndex(foundIndex);
+				return;
+			}
 		}
 		Object asset = assets.get(type).get(fileName);
 
@@ -265,6 +282,10 @@ public class AssetManager implements Disposable {
 			// increase the number of loaded assets and pop the task from the stack
 			loaded++;
 			tasks.pop();
+			
+			// remove the asset if it was cancled.
+			if(task.cancel) remove(task.assetDesc.fileName);
+			
 			return true;
 		} else {
 			return false;
