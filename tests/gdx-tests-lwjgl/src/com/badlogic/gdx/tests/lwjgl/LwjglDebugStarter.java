@@ -18,19 +18,13 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.CullTest;
-import com.badlogic.gdx.tests.FlickScrollPaneTest;
-import com.badlogic.gdx.tests.IsoCamTest;
-import com.badlogic.gdx.tests.ParallaxTest;
-import com.badlogic.gdx.tests.SimpleDecalTest;
-import com.badlogic.gdx.tests.TextureAtlasTest;
+import com.badlogic.gdx.tests.AssetManagerTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-
-//		config.useGL20 = true;
+		config.useGL20 = true;
 		config.vSyncEnabled = true;
-		new LwjglApplication(new SimpleDecalTest(), config);
+		new LwjglApplication(new AssetManagerTest(), config);
 	}
 }

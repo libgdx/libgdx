@@ -92,7 +92,12 @@ public class AssetManager implements Disposable {
 	public synchronized void remove (String fileName) {
 		// get the asset and its type
 		Class type = assetTypes.get(fileName);
-		if (type == null) throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
+		
+		// if it is not loaded yet, check if it's in the queue or currently
+		// processed. Make sure it is unloaded.
+		if (type == null) {
+			throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
+		}
 		Object asset = assets.get(type).get(fileName);
 
 		// if it is disposable dispose it
@@ -204,7 +209,7 @@ public class AssetManager implements Disposable {
 			Object asset = assets.get(type).get(dependendAssetDesc.fileName);
 			if (asset instanceof ReferenceCountedAsset) ((ReferenceCountedAsset)asset).incRefCount();
 		}
-		// else add a new task for the asset. if the asset is already on the preloading queue
+		// else add a new task for the asset.
 		else {
 			addTask(dependendAssetDesc);
 		}
