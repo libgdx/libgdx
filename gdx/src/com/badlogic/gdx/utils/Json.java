@@ -325,16 +325,30 @@ public class Json {
 	}
 
 	public void readField (Object object, String name, ObjectMap map) {
-		ObjectMap<String, Field> fields = typeToFields.get(object.getClass());
-		if (fields == null) fields = cacheFields(object.getClass());
+		Class type = object.getClass();
+		ObjectMap<String, Field> fields = typeToFields.get(type);
+		if (fields == null) fields = cacheFields(type);
 		Field field = fields.get(name);
-		if (field == null)
-			throw new SerializationException("Unable to find field: " + name + " (" + object.getClass().getName() + ")");
+		if (field == null) throw new SerializationException("Unable to find field: " + name + " (" + type.getName() + ")");
 		try {
 			field.set(object, readValue(field.getType(), map.get(name)));
 		} catch (Exception ex) {
-			throw new SerializationException("Error setting field: " + field.getName() + " (" + object.getClass().getName() + ")",
-				ex);
+			throw new SerializationException("Error setting field: " + field.getName() + " (" + type.getName() + ")", ex);
+		}
+	}
+
+	public void readFields (Object object, ObjectMap<String, Object> map) {
+		Class type = object.getClass();
+		ObjectMap<String, Field> fields = typeToFields.get(type);
+		if (fields == null) fields = cacheFields(type);
+		for (Entry<String, Object> entry : map.entries()) {
+			Field field = fields.get(entry.key);
+			if (field == null) throw new SerializationException("Unable to find field: " + entry.key + " (" + type.getName() + ")");
+			try {
+				field.set(object, readValue(field.getType(), entry.value));
+			} catch (Exception ex) {
+				throw new SerializationException("Error setting field: " + field.getName() + " (" + type.getName() + ")", ex);
+			}
 		}
 	}
 
