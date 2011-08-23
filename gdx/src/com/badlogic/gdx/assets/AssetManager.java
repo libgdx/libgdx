@@ -96,10 +96,12 @@ public class AssetManager implements Disposable {
 		// if it is not loaded yet
 		if (type == null) {
 			// check if it's currently processed and cancel if necessary
-			AssetLoadingTask currAsset = tasks.firstElement();
-			if(currAsset.assetDesc.fileName.equals(fileName)) {
-				currAsset.cancel = true;
-				return;
+			if(tasks.size() > 0) {
+				AssetLoadingTask currAsset = tasks.firstElement();
+				if(currAsset.assetDesc.fileName.equals(fileName)) {
+					currAsset.cancel = true;
+					return;
+				}
 			}
 			
 			// check if it's in the queue
@@ -110,7 +112,7 @@ public class AssetManager implements Disposable {
 					break;
 				}
 			}
-			if(foundIndex != -1) {
+			if(foundIndex == -1) {
 				throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
 			} else {
 				preloadQueue.removeIndex(foundIndex);
