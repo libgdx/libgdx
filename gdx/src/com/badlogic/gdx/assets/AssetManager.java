@@ -204,7 +204,7 @@ public class AssetManager implements Disposable {
 				if (preloadQueue.size == 0) return true;
 				nextTask();
 				// second check if we tried to load an asset that's already loaded and the queue became empty.
-				if (preloadQueue.size == 0) return true;
+				if (preloadQueue.size == 0 || tasks.size() == 0) return true;
 			}
 			return updateTask() && preloadQueue.size == 0;
 		} catch (Throwable t) {
