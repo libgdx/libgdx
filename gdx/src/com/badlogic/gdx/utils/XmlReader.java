@@ -442,6 +442,10 @@ public class XmlReader {
 			return name;
 		}
 
+		public ObjectMap<String, String> getAttributes () {
+			return attributes;
+		}
+
 		/** @throws GdxRuntimeException if the attribute was not found. */
 		public String getAttribute (String name) {
 			if (attributes == null) throw new GdxRuntimeException("Element " + name + " doesn't have attribute: " + name);

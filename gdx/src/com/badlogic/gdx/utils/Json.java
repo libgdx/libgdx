@@ -330,8 +330,10 @@ public class Json {
 		if (fields == null) fields = cacheFields(type);
 		Field field = fields.get(name);
 		if (field == null) throw new SerializationException("Unable to find field: " + name + " (" + type.getName() + ")");
+		Object value = map.get(name);
+		if (value == null) return;
 		try {
-			field.set(object, readValue(field.getType(), map.get(name)));
+			field.set(object, readValue(field.getType(), value));
 		} catch (Exception ex) {
 			throw new SerializationException("Error setting field: " + field.getName() + " (" + type.getName() + ")", ex);
 		}
@@ -344,6 +346,7 @@ public class Json {
 		for (Entry<String, Object> entry : map.entries()) {
 			Field field = fields.get(entry.key);
 			if (field == null) throw new SerializationException("Unable to find field: " + entry.key + " (" + type.getName() + ")");
+			if (entry.value == null) continue;
 			try {
 				field.set(object, readValue(field.getType(), entry.value));
 			} catch (Exception ex) {
@@ -354,6 +357,12 @@ public class Json {
 
 	public <T> T readValue (Class<T> type, String name, ObjectMap map) {
 		return (T)readValue(type, map.get(name));
+	}
+
+	public <T> T readValue (Class<T> type, String name, ObjectMap map, T defaultValue) {
+		Object value = map.get(name);
+		if (value == null) return defaultValue;
+		return (T)readValue(type, value);
 	}
 
 	private Object newInstance (Class type) {
