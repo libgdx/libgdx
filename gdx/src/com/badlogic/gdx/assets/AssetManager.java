@@ -182,12 +182,7 @@ public class AssetManager implements Disposable {
 	public synchronized <T> void preload (String fileName, Class<T> type, AssetLoaderParameters<T> parameter) {
 		AssetLoader loader = loaders.get(type);
 		if (loader == null) throw new GdxRuntimeException("No loader for type '" + type.getSimpleName() + "'");
-		if (isLoaded(fileName)) throw new GdxRuntimeException("Asset '" + fileName + "' already loaded");
-		for (AssetDescriptor desc : preloadQueue) {
-			if (desc.fileName.equals(fileName)) {
-				throw new GdxRuntimeException("Asset '" + fileName + "' already in preload queue");
-			}
-		}
+		
 		if (preloadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
@@ -203,8 +198,11 @@ public class AssetManager implements Disposable {
 	public synchronized boolean update () {
 		try {
 			if (tasks.size() == 0) {
+				// first check if there's nothing left to load
 				if (preloadQueue.size == 0) return true;
 				nextTask();
+				// second check if we tried to load an asset that's already loaded and the queue became empty.
+				if (preloadQueue.size == 0) return true;
 			}
 			return updateTask() && preloadQueue.size == 0;
 		} catch (Throwable t) {
@@ -319,7 +317,7 @@ public class AssetManager implements Disposable {
 		AssetDescriptor assetDesc = task.assetDesc;
 
 		// remove all dependencies
-		if(task.dependenciesLoaded) {
+		if(task.dependenciesLoaded && task.dependencies != null) {
 			for(AssetDescriptor desc: task.dependencies) {
 				remove(desc.fileName);
 			}
