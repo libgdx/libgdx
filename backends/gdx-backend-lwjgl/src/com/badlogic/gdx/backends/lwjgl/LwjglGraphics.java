@@ -194,7 +194,7 @@ public final class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if (config.useGL20 && major >= 2) {
+		if (config.useGL20 && (major >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
 			// FIXME add check whether gl 2.0 is supported
 			gl20 = new LwjglGL20();
 			gl = gl20;
