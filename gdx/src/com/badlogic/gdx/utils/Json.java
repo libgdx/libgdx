@@ -52,6 +52,8 @@ public class Json {
 		classToTag.put(type, tag);
 	}
 
+	/** Sets the name of the JSON field to store the Java class name or class tag when required to avoid ambiguity during
+	 * deserialization. Set to null to never output this information, but be warned that deserialization may fail. */
 	public void setTypeName (String typeName) {
 		this.typeName = typeName;
 	}
@@ -296,7 +298,7 @@ public class Json {
 		else
 			writer.object(name);
 
-		if (valueType == null || valueType != actualType) {
+		if ((valueType == null || valueType != actualType) && typeName != null) {
 			String className = classToTag.get(actualType);
 			if (className == null) className = actualType.getName();
 			writer.set(typeName, className);
@@ -390,7 +392,7 @@ public class Json {
 	private Object readValue (Class type, Object value) {
 		if (value instanceof ObjectMap) {
 			ObjectMap<String, Object> map = (ObjectMap)value;
-			String className = (String)map.remove(typeName);
+			String className = typeName == null ? null : (String)map.remove(typeName);
 			if (className != null) {
 				try {
 					type = Class.forName(className);
