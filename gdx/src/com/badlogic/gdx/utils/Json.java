@@ -463,7 +463,21 @@ public class Json {
 			throw new SerializationException("Unable to convert value to required type: " + value + " (" + type.getName() + ")");
 		}
 
-		if (value instanceof Float || value instanceof Boolean) value = String.valueOf(value);
+		if (value instanceof Float) {
+			Float floatValue = (Float)value;
+			try {
+				if (type == int.class || type == Integer.class) return floatValue.intValue();
+				if (type == float.class || type == Float.class) return floatValue;
+				if (type == long.class || type == Long.class) return floatValue.longValue();
+				if (type == double.class || type == Double.class) return floatValue.doubleValue();
+				if (type == short.class || type == Short.class) return floatValue.shortValue();
+				if (type == byte.class || type == Byte.class) return floatValue.byteValue();
+			} catch (NumberFormatException ignored) {
+			}
+			value = String.valueOf(value);
+		}
+
+		if (value instanceof Boolean) value = String.valueOf(value);
 
 		if (value instanceof String) {
 			String string = (String)value;
@@ -553,7 +567,11 @@ public class Json {
 			buffer.append('"');
 			buffer.append(object);
 			buffer.append('"');
-		} else if (object instanceof Float || object instanceof Boolean) {
+		} else if (object instanceof Float) {
+			Float floatValue = (Float)object;
+			int intValue = floatValue.intValue();
+			buffer.append(floatValue - intValue == 0 ? intValue : object);
+		} else if (object instanceof Boolean) {
 			buffer.append(object);
 		} else if (object == null) {
 			buffer.append("null");
