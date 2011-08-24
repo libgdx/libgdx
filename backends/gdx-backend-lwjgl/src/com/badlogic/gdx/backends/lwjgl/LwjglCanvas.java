@@ -171,7 +171,10 @@ public class LwjglCanvas implements Application {
 	public void stop () {
 		if (!running) return;
 		running = false;
-		Display.destroy();
+		try {
+			Display.destroy();
+		} catch (Throwable ignored) {
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
 				listener.pause();

@@ -507,8 +507,8 @@ public class Skin implements Disposable {
 	private void parseFonts (Element library, FileHandle skinFile) {
 		for (Element font : library.getChildrenByName("font")) {
 			String path = font.getAttribute("file");
-			FileHandle file = Gdx.files.internal(path);
-			if(file.exists() == false) file = skinFile.parent().child(path);
+			FileHandle file = skinFile.parent().child(path);
+			if (!file.exists()) file = Gdx.files.internal(path);
 			BitmapFont bitmapFont = new BitmapFont(file, false);
 			fonts.put(font.getAttribute("name"), bitmapFont);
 		}

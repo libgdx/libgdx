@@ -108,7 +108,8 @@ public class ComboBox extends Widget {
 		final NinePatch background = style.background;
 		final BitmapFont font = style.font;
 
-		prefHeight = Math.max(font.getLineHeight() - font.getDescent(), background.getTotalHeight());
+		
+		prefHeight = Math.max(font.getLineHeight() + -font.getDescent() , background.getTotalHeight());
 		float max = 0;
 		for (int i = 0; i < entries.length; i++) {
 			max = Math.max(font.getBounds(entries[i]).width, max);
@@ -131,7 +132,6 @@ public class ComboBox extends Widget {
 			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
 			int numGlyphs = font.computeVisibleGlyphs(entries[selection], 0, entries[selection].length(), availableWidth);
 			bounds.set(font.getBounds(entries[selection]));
-			bounds.height -= font.getDescent();
 			float textY = (int)(height / 2) + (int)(bounds.height / 2);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			font.draw(batch, entries[selection], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
@@ -229,13 +229,13 @@ public class ComboBox extends Widget {
 
 			}
 
-			entryHeight = font.getLineHeight() - font.getDescent();
+			entryHeight = font.getCapHeight() + -font.getDescent() * 2;
 			entryHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
 			entryHeight *= ComboBox.this.parent.scaleY;
 			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth();
 			prefHeight = entries.length * entryHeight;
 			textOffsetX = listSelection.getLeftWidth();
-			textOffsetY = listSelection.getTopHeight() - font.getDescent();
+			textOffsetY = listSelection.getTopHeight() + -font.getDescent();
 
 			width = Math.max(prefWidth, ComboBox.this.width);
 			width *= ComboBox.this.parent.scaleX;
