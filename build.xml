@@ -33,8 +33,6 @@ gdx and backend modules and creates a distribution out of this mess.
 	<!-- init task, creates all necessary directories -->
 	<target name="init" depends="clean">
 		<mkdir dir="${target}" />
-		<mkdir dir="${dist}" />
-		<mkdir dir="${dist}/docs/api"/>
 		<mkdir dir="${target}/classes/gdx" />
 		<mkdir dir="${target}/classes/gdx-openal" />
 		<mkdir dir="${target}/classes/gdx-backend-jogl" />
@@ -42,6 +40,8 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="${target}/classes/gdx-backend-android" />
 		<mkdir dir="${target}/classes/gdx-twl"/>
 		<mkdir dir="${target}/classes/gdx-tools"/>
+		<mkdir dir="${dist}" />
+		<mkdir dir="${dist}/docs/api"/>
 	</target>
 
 	<!-- compiles the java code of all modules -->
@@ -153,8 +153,8 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>
 
 	<target name="compile-natives" depends="init">
-		<ant antfile="build.xml" target="clean" dir="gdx/jni"/>
-		<ant antfile="build.xml" target="all" dir="gdx/jni"/>
+		<ant antfile="build.xml" target="clean" dir="gdx/jni" inheritAll="false"/>
+		<ant antfile="build.xml" target="all" dir="gdx/jni" inheritAll="false"/>
 	</target>	
 	
 	<!-- creates jars and places other files in the output dir -->

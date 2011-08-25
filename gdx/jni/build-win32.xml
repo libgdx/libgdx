@@ -4,7 +4,7 @@
 	
 	<property name="prefix" value="i586-mingw32msvc-"/>	
 
-		<!-- output directory for generated files -->
+	<!-- output directory for generated files -->
 	<property name="target" value="../../target/native/windows" />
 	<!-- output directory for distribution -->
 	<property name="dist" value="../libs/windows" />
