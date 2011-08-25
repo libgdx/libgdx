@@ -1,7 +1,7 @@
 #!/usr/bin/sh 
 # Execute this in the root directory of the trunk to update all jars and natives from 
 # the CI server.
-wget http://libgdx.l33tlabs.org/libgdx-nightly-`date +%Y%m%d`.zip -O libgdx-nightlies.zip
+wget http://libgdx.l33tlabs.org/libgdx-nightly-latest.zip -O libgdx-nightlies.zip
 unzip libgdx-nightlies.zip -d nightlies
 unzip nightlies/gdx-natives.jar -d nightlies
 
