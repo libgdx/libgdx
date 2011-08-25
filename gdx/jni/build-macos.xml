@@ -3,7 +3,7 @@
 	<property environment="env"/>	
 	
 	<!-- output directory for generated files -->
-	<property name="target" value="../../target/native/mac" />
+	<property name="jni-target" value="../../target/native/mac" />
 	<!-- output directory for distribution -->
 	<property name="jni-dist" value="../libs/mac" />
 	<property name="libname" value="libgdx.dylib"/>

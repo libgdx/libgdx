@@ -3,7 +3,7 @@
 	<property environment="env"/>	
 	
 	<!-- output directory for generated files -->
-	<property name="target" value="../../target/native/linux64" />
+	<property name="jni-target" value="../../target/native/linux64" />
 	<!-- output directory for distribution -->
 	<property name="jni-dist" value="../libs/linux64" />
 	<property name="libname" value="libgdx-64.so"/>
