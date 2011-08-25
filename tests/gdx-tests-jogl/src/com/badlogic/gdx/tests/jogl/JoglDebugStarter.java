@@ -24,6 +24,6 @@ public class JoglDebugStarter {
 	public static void main (String[] argv) {
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.useGL20 = true;
-		new JoglApplication(new com.badlogic.gdx.tests.ProjectiveTextureTest(), config);
+		new JoglApplication(new com.badlogic.gdx.tests.ETC1Test(), config);
 	}
 }

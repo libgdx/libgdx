@@ -84,6 +84,9 @@ JNIEXPORT void		gdx2d_draw_pixmap (const gdx2d_pixmap* src_pixmap,
 								   const gdx2d_pixmap* dst_pixmap,
 								   int32_t src_x, int32_t src_y, uint32_t src_width, uint32_t src_height,
 								   int32_t dst_x, int32_t dst_y, uint32_t dst_width, uint32_t dst_height);
+
+JNIEXPORT uint32_t gdx2d_bytes_per_pixel(uint32_t format);
+
 #ifdef __cplusplus
 }
 #endif

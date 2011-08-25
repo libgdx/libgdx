@@ -46,6 +46,7 @@ public class GdxTests {
 		BitmapFontAlignmentTest.class,
 		BitmapFontFlipTest.class,
 		BitmapFontTest.class,
+		BlitTest.class,
 		BobTest.class,
 		Box2DInitialOverlapTest.class,
 		Box2DTest.class,

@@ -237,7 +237,7 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len, uint32_t req
 	return pixmap;
 }
 
-inline uint32_t bytes_per_pixel(uint32_t format) {
+uint32_t gdx2d_bytes_per_pixel(uint32_t format) {
 	switch(format) {
 		case GDX2D_FORMAT_ALPHA:
 			return 1;
@@ -259,7 +259,7 @@ gdx2d_pixmap* gdx2d_new(uint32_t width, uint32_t height, uint32_t format) {
 	pixmap->width = width;
 	pixmap->height = height;
 	pixmap->format = format;
-	pixmap->pixels = (unsigned char*)malloc(width * height * bytes_per_pixel(format));
+	pixmap->pixels = (unsigned char*)malloc(width * height * gdx2d_bytes_per_pixel(format));
 	return pixmap;
 }
 void gdx2d_free(const gdx2d_pixmap* pixmap) {
@@ -398,7 +398,7 @@ inline void set_pixel(unsigned char* pixels, uint32_t width, uint32_t height, ui
 uint32_t gdx2d_get_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y) {
 	if(!in_pixmap(pixmap, x, y))
 		return 0;
-	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->width * y) * bytes_per_pixel(pixmap->format);
+	unsigned char* ptr = (unsigned char*)pixmap->pixels + (x + pixmap->width * y) * gdx2d_bytes_per_pixel(pixmap->format);
 	return to_RGBA8888(pixmap->format, get_pixel_func_ptr(pixmap->format)(ptr));
 }
 
@@ -407,10 +407,10 @@ void gdx2d_set_pixel(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_t 
 		uint32_t dst = gdx2d_get_pixel(pixmap, x, y);
 		col = blend(col, dst);
 		col = to_format(pixmap->format, col);
-		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
+		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, gdx2d_bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
 	} else {
 		col = to_format(pixmap->format, col);
-		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
+		set_pixel((unsigned char*)pixmap->pixels, pixmap->width, pixmap->height, gdx2d_bytes_per_pixel(pixmap->format), set_pixel_func_ptr(pixmap->format), x, y, col);
 	}
 }
 
@@ -420,7 +420,7 @@ void gdx2d_draw_line(const gdx2d_pixmap* pixmap, int32_t x0, int32_t y0, int32_t
 	int32_t fraction = 0;
     int32_t stepx, stepy;
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
-	uint32_t bpp = bytes_per_pixel(pixmap->format);
+	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	uint32_t col_format = to_format(pixmap->format, col);
@@ -479,7 +479,7 @@ inline void hline(const gdx2d_pixmap* pixmap, int32_t x1, int32_t x2, int32_t y,
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
-	uint32_t bpp = bytes_per_pixel(pixmap->format);
+	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
 	uint32_t col_format = to_format(pixmap->format, col);
 
 	if(y < 0 || y >= (int32_t)pixmap->height) return;
@@ -514,7 +514,7 @@ inline void vline(const gdx2d_pixmap* pixmap, int32_t y1, int32_t y2, int32_t x,
 	set_pixel_func pset = set_pixel_func_ptr(pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(pixmap->format);
 	unsigned char* ptr = (unsigned char*)pixmap->pixels;
-	uint32_t bpp = bytes_per_pixel(pixmap->format);
+	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
 	uint32_t stride = bpp * pixmap->width;
 	uint32_t col_format = to_format(pixmap->format, col);
 
@@ -584,7 +584,7 @@ void gdx2d_draw_circle(const gdx2d_pixmap* pixmap, int32_t x, int32_t y, uint32_
 	unsigned char* pixels = (unsigned char*)pixmap->pixels;
 	uint32_t width = pixmap->width;
 	uint32_t height = pixmap->height;
-	uint32_t bpp = bytes_per_pixel(pixmap->format);
+	uint32_t bpp = gdx2d_bytes_per_pixel(pixmap->format);
 	set_pixel_func pixel_func = set_pixel_func_ptr(pixmap->format);
 	col = to_format(pixmap->format, col);
 
@@ -659,8 +659,8 @@ void blit_same_size(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixm
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t sbpp = bytes_per_pixel(src_pixmap->format);
-	uint32_t dbpp = bytes_per_pixel(dst_pixmap->format);
+	uint32_t sbpp = gdx2d_bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = gdx2d_bytes_per_pixel(dst_pixmap->format);
 	uint32_t spitch = sbpp * src_pixmap->width;
 	uint32_t dpitch = dbpp * dst_pixmap->width;
 
@@ -699,8 +699,8 @@ void blit_bilinear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixma
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t sbpp = bytes_per_pixel(src_pixmap->format);
-	uint32_t dbpp = bytes_per_pixel(dst_pixmap->format);
+	uint32_t sbpp = gdx2d_bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = gdx2d_bytes_per_pixel(dst_pixmap->format);
 	uint32_t spitch = sbpp * src_pixmap->width;
 	uint32_t dpitch = dbpp * dst_pixmap->width;
 
@@ -780,8 +780,8 @@ void blit_linear(const gdx2d_pixmap* src_pixmap, const gdx2d_pixmap* dst_pixmap,
 	set_pixel_func pset = set_pixel_func_ptr(dst_pixmap->format);
 	get_pixel_func pget = get_pixel_func_ptr(src_pixmap->format);
 	get_pixel_func dpget = get_pixel_func_ptr(dst_pixmap->format);
-	uint32_t sbpp = bytes_per_pixel(src_pixmap->format);
-	uint32_t dbpp = bytes_per_pixel(dst_pixmap->format);
+	uint32_t sbpp = gdx2d_bytes_per_pixel(src_pixmap->format);
+	uint32_t dbpp = gdx2d_bytes_per_pixel(dst_pixmap->format);
 	uint32_t spitch = sbpp * src_pixmap->width;
 	uint32_t dpitch = dbpp * dst_pixmap->width;
 

@@ -15,7 +15,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load
 	if(pixmap==0)
 		return 0;
 
-	jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pixmap->format);
+	jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
 	jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
 	p_native_data[0] = (jlong)pixmap;
 	p_native_data[1] = pixmap->width;
@@ -37,7 +37,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixm
 	if(pixmap==0)
 		return 0;
 
-	jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * pixmap->format);
+	jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
 	jlong* p_native_data = (jlong*)env->GetPrimitiveArrayCritical(nativeData, 0);
 	p_native_data[0] = (jlong)pixmap;
 	p_native_data[1] = pixmap->width;

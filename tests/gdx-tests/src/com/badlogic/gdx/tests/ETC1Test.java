@@ -59,9 +59,6 @@ public class ETC1Test extends GdxTest {
 		ETC1Data encodedImage = ETC1.encodeImagePKM(pixmap);
 		pixmap.dispose();
 		pixmap = ETC1.decodeImage(encodedImage, Format.RGB565);
-
-		// ETC1.encodeImagePKM(new Pixmap(Gdx.files.internal("data/environment.jpg"))).write(Gdx.files.absolute("test.pkm"));
-
 		encodedImage.dispose();
 
 		img1 = new Texture(pixmap);
@@ -78,8 +75,8 @@ public class ETC1Test extends GdxTest {
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(img1, 0, 0);
 		batch.draw(img2, -100, 0);
+		batch.draw(img1, 0, 0);
 		batch.end();
 
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
