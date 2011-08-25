@@ -34,9 +34,9 @@
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
-		<delete includeemptydirs="true">
-			<fileset dir="${target}" includes="**/*" excludes="**/.svn"/>
-			<fileset dir="${dist}"/>
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${target}"/>
+			<fileset dir="${dist}" includes="**/*" excludes="**/.svn"/>
 		</delete>
 	</target>
 
