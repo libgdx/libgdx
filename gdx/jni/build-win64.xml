@@ -4,8 +4,10 @@
 
 	<property name="prefix" value="x86_64-w64-mingw32-"/>	
 
-	<!-- defined build directory where object files and shared lib will be placed in -->
-	<property name="builddir" value="../libs/windows64"/>
+	<!-- output directory for generated files -->
+	<property name="target" value="../../target/native/windows64" />
+	<!-- output directory for distribution -->
+	<property name="dist" value="../libs/windows64" />
 	<property name="libname" value="gdx-64.dll"/>
 	<property name="jni-platform" value="win32"/>
 	
@@ -33,13 +35,14 @@
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
 		<delete includeemptydirs="true">
-			<fileset dir="${builddir}" includes="**/*" excludes="**/.svn"/>
+			<fileset dir="${target}" includes="**/*" excludes="**/.svn"/>
+			<fileset dir="${dist}"/>
 		</delete>
 	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
 	<target name="compile">
-		<apply failonerror="true" executable="${g++}" dest="${builddir}" verbose="true">
+		<apply failonerror="true" executable="${g++}" dest="${target}" verbose="true">
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jni-platform}"/>
@@ -53,7 +56,7 @@
 				<mapper type="glob" from="*.cpp" to="*.o"/>
 			</chainedmapper>
 		</apply>
-		<apply failonerror="true" executable="${gcc}" dest="${builddir}" verbose="true">
+		<apply failonerror="true" executable="${gcc}" dest="${target}" verbose="true">
 			<arg line="${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jni-platform}"/>
@@ -71,11 +74,11 @@
 
 	<!-- links the shared library based on the previously compiled object files -->	
 	<target name="link" depends="compile">
-		<apply failonerror="true" executable="${linker}" parallel="true" dir="${builddir}">
+		<apply failonerror="true" executable="${linker}" parallel="true" dir="${target}">
 			<arg line="${linker-opts}"/>
 			<arg value="-o"/>
-			<arg path="${builddir}/${libname}"/>		
-			<fileset dir="${builddir}">
+			<arg path="${dist}/${libname}"/>		
+			<fileset dir="${target}">
 				<patternset>
 					<include name="**/*.o"/>
 				</patternset>
