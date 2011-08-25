@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.obj.ObjLoader;
 import com.badlogic.gdx.math.Vector3;
 
-public class CullTest implements ApplicationListener {
+public class CullTest extends GdxTest implements ApplicationListener {
 
    public boolean needsGL20() {
       return false;
