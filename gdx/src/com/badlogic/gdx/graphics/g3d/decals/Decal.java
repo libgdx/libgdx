@@ -460,6 +460,13 @@ public class Decal {
 		this.material.textureRegion = textureRegion;
 		updateUVs();
 	}
+	
+	/**
+	 * @return the texture region this Decal uses. Do not modify it!
+	 */
+	public TextureRegion getTextureRegion() {
+		return this.material.textureRegion;
+	}
 
 	/** Sets the blending parameters for this decal
 	 * 
