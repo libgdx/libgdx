@@ -41,6 +41,7 @@
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
 	<target name="compile">
+		<mkdir dir="${target}"/>
 		<apply failonerror="true" executable="${g++}" dest="${target}" verbose="true">
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
