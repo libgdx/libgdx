@@ -153,8 +153,8 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>
 
 	<target name="compile-natives" depends="init">
-		<ant antfile="build.xml" target="clean" dir="gdx/jni" inheritAll="false"/>
-		<ant antfile="build.xml" target="all" dir="gdx/jni" inheritAll="false"/>
+		<ant antfile="build.xml" target="clean" dir="gdx/jni"/>
+		<ant antfile="build.xml" target="all" dir="gdx/jni"/>
 	</target>	
 	
 	<!-- creates jars and places other files in the output dir -->
