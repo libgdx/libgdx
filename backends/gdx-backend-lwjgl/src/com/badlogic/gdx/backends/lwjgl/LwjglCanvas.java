@@ -80,6 +80,7 @@ public class LwjglCanvas implements Application {
 		canvas.setIgnoreRepaint(true);
 
 		graphics = new LwjglGraphics(canvas, useGL2);
+		graphics.setVSync(true);
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
 		input = new LwjglInput();

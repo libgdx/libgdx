@@ -189,7 +189,7 @@ public final class LwjglGraphics implements Graphics {
 		}
 	}
 
-	private void initiateGLInstances () {
+	public void initiateGLInstances () {
 		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
@@ -384,5 +384,9 @@ public final class LwjglGraphics implements Graphics {
 	public boolean supportsExtension (String extension) {
 		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
+	}
+	
+	public LwjglApplicationConfiguration getConfig () {
+		return config;
 	}
 }

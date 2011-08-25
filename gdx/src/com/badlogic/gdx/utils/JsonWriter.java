@@ -111,7 +111,7 @@ public class JsonWriter extends Writer {
 			writer.write(String.valueOf(value));
 		} else {
 			writer.write("\":\"");
-			writer.write(value.toString());
+			writer.write(value.toString().replace("\\", "\\\\"));
 			writer.write("\"");
 		}
 		return this;

@@ -20,10 +20,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Writer;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
@@ -195,6 +197,22 @@ public class FileHandle {
 		try {
 			return new FileOutputStream(file(), append);
 		} catch (FileNotFoundException ex) {
+			if (file().isDirectory())
+				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
+			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
+		}
+	}
+	
+	/** Returns a writer for writing to this file.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *        {@link FileType#Internal} file, or if it could not be written. */
+	public Writer writer (boolean append) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
+		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
+		try {
+			return new FileWriter(file(), append);
+		} catch (IOException ex) {
 			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);

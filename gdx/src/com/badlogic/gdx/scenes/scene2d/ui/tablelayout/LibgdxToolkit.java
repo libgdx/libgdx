@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.actors.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.tablelayout.Toolkit;
 
 /** @author Nathan Sweet */
 public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {

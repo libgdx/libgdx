@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.esotericsoftware.tablelayout.Cell;
 
 /** @author Nathan Sweet */
 public class Table extends Group implements Layout {

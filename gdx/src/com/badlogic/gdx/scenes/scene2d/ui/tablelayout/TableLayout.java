@@ -43,6 +43,8 @@ import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
+import com.esotericsoftware.tablelayout.BaseTableLayout;
+import com.esotericsoftware.tablelayout.Cell;
 
 /** @author Nathan Sweet */
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
@@ -86,8 +88,8 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		if (!needsLayout) return;
 		needsLayout = false;
 
-		setLayoutSize(0, 0, (int)table.width, (int)table.height);
 		Table table = getTable();
+		setLayoutSize(0, 0, (int)table.width, (int)table.height);
 
 		super.layout();
 

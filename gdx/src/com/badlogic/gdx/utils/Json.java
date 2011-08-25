@@ -58,7 +58,7 @@ public class Json {
 		this.typeName = typeName;
 	}
 
-	public void setSerializer (Class type, Serializer serializer) {
+	public <T> void setSerializer (Class<T> type, Serializer<T> serializer) {
 		classToSerializer.put(type, serializer);
 	}
 
@@ -95,17 +95,17 @@ public class Json {
 
 	public String write (Object object) {
 		StringWriter buffer = new StringWriter();
-		try {
-			write(object, buffer);
-		} catch (IOException ex) {
-			throw new SerializationException("Error writing JSON.", ex);
-		}
+		write(object, buffer);
 		return buffer.toString();
 	}
 
-	public void write (Object object, Writer writer) throws IOException {
+	public void write (Object object, Writer writer) {
 		if (!(writer instanceof JsonWriter)) writer = new JsonWriter(writer);
-		writeValue(null, object, object.getClass(), (JsonWriter)writer);
+		try {
+			writeValue(null, object, object.getClass(), (JsonWriter)writer);
+		} catch (IOException ex) {
+			throw new SerializationException("Error writing JSON.", ex);
+		}
 	}
 
 	public void writeFields (Object object, JsonWriter writer) throws IOException {
@@ -193,6 +193,10 @@ public class Json {
 		}
 	}
 
+	public void writeValue (String name, Object value, JsonWriter writer) throws IOException {
+		writeValue(name, value, value.getClass(), writer);
+	}
+
 	public void writeValue (String name, Object value, Class valueType, JsonWriter writer) throws IOException {
 		if (value == null) {
 			if (name == null)
@@ -223,9 +227,7 @@ public class Json {
 
 		Serializer serializer = classToSerializer.get(actualType);
 		if (serializer != null) {
-			startObject(name, valueType, actualType, writer);
-			serializer.write(this, writer, value);
-			writer.pop();
+			serializer.write(this, writer, name, value);
 			return;
 		}
 
@@ -269,7 +271,7 @@ public class Json {
 		if (value instanceof ObjectMap) {
 			startObject(name, valueType, actualType, writer);
 			for (Entry entry : ((ObjectMap<?, ?>)value).entries())
-				writer.set((String)entry.key, entry.value);
+				writeValue((String)entry.key, entry.value, null, writer);
 			writer.pop();
 			return;
 		}
@@ -277,7 +279,7 @@ public class Json {
 		if (value instanceof Map) {
 			startObject(name, valueType, actualType, writer);
 			for (Map.Entry entry : ((Map<?, ?>)value).entrySet())
-				writer.set((String)entry.getKey(), entry.getValue());
+				writeValue((String)entry.getKey(), entry.getValue(), null, writer);
 			writer.pop();
 			return;
 		}
@@ -292,7 +294,14 @@ public class Json {
 		writer.pop();
 	}
 
-	private void startObject (String name, Class valueType, Class actualType, JsonWriter writer) throws IOException {
+	public void startObject (String name, JsonWriter writer) throws IOException {
+		if (name == null)
+			writer.object();
+		else
+			writer.object(name);
+	}
+
+	public void startObject (String name, Class valueType, Class actualType, JsonWriter writer) throws IOException {
 		if (name == null)
 			writer.object();
 		else
@@ -306,11 +315,11 @@ public class Json {
 		}
 	}
 
-	public <T> T read (Class<T> type, Reader reader) throws IOException {
+	public <T> T read (Class<T> type, Reader reader) {
 		return (T)readValue(type, new JsonReader().parse(reader));
 	}
 
-	public <T> T read (Class<T> type, InputStream input) throws IOException {
+	public <T> T read (Class<T> type, InputStream input) {
 		return (T)readValue(type, new JsonReader().parse(input));
 	}
 
@@ -357,11 +366,11 @@ public class Json {
 		}
 	}
 
-	public <T> T readValue (Class<T> type, String name, ObjectMap map) {
+	public <T> T readValue (String name, Class<T> type, ObjectMap map) {
 		return (T)readValue(type, map.get(name));
 	}
 
-	public <T> T readValue (Class<T> type, String name, ObjectMap map, T defaultValue) {
+	public <T> T readValue (String name, Class<T> type, ObjectMap map, T defaultValue) {
 		Object value = map.get(name);
 		if (value == null) return defaultValue;
 		return (T)readValue(type, value);
@@ -389,23 +398,27 @@ public class Json {
 		}
 	}
 
+	public Object newInstance (Class type, ObjectMap<String, Object> map) {
+		String className = typeName == null ? null : (String)map.remove(typeName);
+		if (className != null) {
+			try {
+				type = Class.forName(className);
+			} catch (ClassNotFoundException ex) {
+				type = tagToClass.get(className);
+				if (type == null) throw new SerializationException(ex);
+			}
+		}
+		return newInstance(type);
+	}
+
 	private Object readValue (Class type, Object value) {
 		if (value instanceof ObjectMap) {
 			ObjectMap<String, Object> map = (ObjectMap)value;
-			String className = typeName == null ? null : (String)map.remove(typeName);
-			if (className != null) {
-				try {
-					type = Class.forName(className);
-				} catch (ClassNotFoundException ex) {
-					type = tagToClass.get(className);
-					if (type == null) throw new SerializationException(ex);
-				}
-			}
 
 			Serializer serializer = classToSerializer.get(type);
 			if (serializer != null) return serializer.read(this, map, type);
 
-			Object object = newInstance(type);
+			Object object = newInstance(type, map);
 
 			if (object instanceof Serializable) {
 				((Serializable)object).read(this, map);
@@ -523,14 +536,6 @@ public class Json {
 			ObjectMap<?, ?> map = (ObjectMap)object;
 			if (map.size == 0) {
 				buffer.append("{}");
-			} else if (map.size == 1) {
-				buffer.append("{ ");
-				Entry entry = map.entries().next();
-				buffer.append('"');
-				buffer.append(entry.key);
-				buffer.append("\": ");
-				prettyPrint(entry.value, buffer, indent + 1);
-				buffer.append(" }");
 			} else {
 				buffer.append("{\n");
 				int i = 0;
@@ -550,10 +555,6 @@ public class Json {
 			Array array = (Array)object;
 			if (array.size == 0) {
 				buffer.append("[]");
-			} else if (array.size == 1) {
-				buffer.append("[ ");
-				prettyPrint(array.get(0), buffer, indent + 1);
-				buffer.append(" ]");
 			} else {
 				buffer.append("[\n");
 				for (int i = 0, n = array.size; i < n; i++) {
@@ -587,7 +588,7 @@ public class Json {
 	}
 
 	static public interface Serializer<T> {
-		public void write (Json json, JsonWriter writer, T object) throws IOException;
+		public void write (Json json, JsonWriter writer, String name, T object) throws IOException;
 
 		public T read (Json json, ObjectMap map, Class type);
 	}

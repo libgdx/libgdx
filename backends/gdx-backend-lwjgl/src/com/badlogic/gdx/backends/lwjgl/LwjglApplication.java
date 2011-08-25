@@ -108,7 +108,6 @@ public class LwjglApplication implements Application {
 
 	private void initialize () {
 		mainLoopThread = new Thread("LWJGL Application") {
-			@SuppressWarnings("synthetic-access")
 			public void run () {
 				graphics.setVSync(graphics.config.vSyncEnabled);
 				LwjglApplication.this.mainLoop();
@@ -117,7 +116,7 @@ public class LwjglApplication implements Application {
 		mainLoopThread.start();
 	}
 
-	private void mainLoop () {
+	void mainLoop () {
 		try {
 			graphics.setupDisplay();
 		} catch (LWJGLException e) {
@@ -187,7 +186,7 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
-	public Graphics getGraphics () {
+	public LwjglGraphics getGraphics () {
 		return graphics;
 	}
 

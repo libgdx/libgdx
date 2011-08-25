@@ -30,12 +30,12 @@ public class FloatArray {
 
 	/** Creates an ordered array with a capacity of 16. */
 	public FloatArray () {
-		this(false, 16);
+		this(true, 16);
 	}
 
 	/** Creates an ordered array with the specified capacity. */
 	public FloatArray (int capacity) {
-		this(false, capacity);
+		this(true, capacity);
 	}
 
 	/** @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a

@@ -29,6 +29,7 @@
 package com.badlogic.gdx.tests.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.tests.*;
@@ -95,6 +96,7 @@ public class GdxTests {
 		List<String> names = new ArrayList<String>();
 		for (Class clazz : tests)
 			names.add(clazz.getSimpleName());
+		Collections.sort(names);
 		return names.toArray(new String[names.size()]);
 	}
 
