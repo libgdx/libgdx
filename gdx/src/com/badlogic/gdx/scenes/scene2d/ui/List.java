@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A list of string entries.
  * 
@@ -190,6 +191,15 @@ public class List extends Widget {
 	/** @return the text of the curently selected entry */
 	public String getSelection () {
 		return entries[selected];
+	}
+	
+	/**
+	 * @param index sets the selected item
+	 */
+	public void setSelection(int index) {
+		if(index < 0 || index >= entries.length) throw new GdxRuntimeException("Index must be > 0 and < #entries");
+		selected = index;
+		invalidateHierarchy();
 	}
 
 	/** Sets the entries of this list. Invalidates all parents.
