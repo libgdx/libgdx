@@ -227,7 +227,7 @@ public class Json {
 
 		Serializer serializer = classToSerializer.get(actualType);
 		if (serializer != null) {
-			serializer.write(this, writer, name, value);
+			serializer.write(this, writer, name, value, valueType);
 			return;
 		}
 
@@ -398,27 +398,24 @@ public class Json {
 		}
 	}
 
-	public Object newInstance (Class type, ObjectMap<String, Object> map) {
-		String className = typeName == null ? null : (String)map.remove(typeName);
-		if (className != null) {
-			try {
-				type = Class.forName(className);
-			} catch (ClassNotFoundException ex) {
-				type = tagToClass.get(className);
-				if (type == null) throw new SerializationException(ex);
-			}
-		}
-		return newInstance(type);
-	}
-
 	private Object readValue (Class type, Object value) {
 		if (value instanceof ObjectMap) {
 			ObjectMap<String, Object> map = (ObjectMap)value;
 
+			String className = typeName == null ? null : (String)map.remove(typeName);
+			if (className != null) {
+				try {
+	 				type = Class.forName(className);
+				} catch (ClassNotFoundException ex) {
+					type = tagToClass.get(className);
+					if (type == null) throw new SerializationException(ex);
+				}
+			}
+
 			Serializer serializer = classToSerializer.get(type);
 			if (serializer != null) return serializer.read(this, map, type);
 
-			Object object = newInstance(type, map);
+			Object object = newInstance(type);
 
 			if (object instanceof Serializable) {
 				((Serializable)object).read(this, map);
@@ -588,7 +585,7 @@ public class Json {
 	}
 
 	static public interface Serializer<T> {
-		public void write (Json json, JsonWriter writer, String name, T object) throws IOException;
+		public void write (Json json, JsonWriter writer, String name, T object, Class valueType) throws IOException;
 
 		public T read (Json json, ObjectMap map, Class type);
 	}

@@ -47,11 +47,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	<!-- compiles the java code of all modules -->
 	<target name="compile" depends="init">
 		<!-- build gdx api -->
-		<javac debug="on" srcdir="gdx/src" destdir="${target}/classes/gdx">
-			<classpath>
-				<fileset file="gdx/libs/*.jar" excludes="gdx/libs/gdx-natives.jar" />
-			</classpath>
-		</javac>
+		<javac debug="on" srcdir="gdx/src" destdir="${target}/classes/gdx"/>
 		<copy tofile="${target}/classes/gdx/com/badlogic/gdx/utils/arial-15.png" file="gdx/src/com/badlogic/gdx/utils/arial-15.png" />
 		<copy tofile="${target}/classes/gdx/com/badlogic/gdx/utils/arial-15.fnt" file="gdx/src/com/badlogic/gdx/utils/arial-15.fnt" />
 
@@ -163,11 +159,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<delete dir="gdx/bin/ndk" />
 		
 		<!-- source jars -->
-		<jar destfile="${dist}/gdx.jar" basedir="${target}/classes/gdx">
-			<zipgroupfileset file="gdx/libs/*.jar">
-				<exclude name="gdx/libs/gdx-natives.jar"/>
-			</zipgroupfileset>
-		</jar>
+		<jar destfile="${dist}/gdx.jar" basedir="${target}/classes/gdx"/>
 
 		<jar destfile="${dist}/gdx-sources.jar" basedir="gdx/src" />
 		<jar destfile="${dist}/gdx-backend-android-sources.jar" basedir="backends/gdx-backend-android/src" />
