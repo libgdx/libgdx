@@ -326,6 +326,7 @@ inline void clear_RGBA8888(const gdx2d_pixmap* pixmap, uint32_t col) {
 inline void clear_RGB565(const gdx2d_pixmap* pixmap, uint32_t col) {
 	uint32_t pixels = pixmap->width * pixmap->height;
 	uint32_t left = pixels % 2;
+	pixels -= left;
 	pixels >>= 1;
 	uint32_t* ptr = (uint32_t*)pixmap->pixels;
 	uint32_t c = ((col & 0xffff) << 16) | (col & 0xffff);
@@ -334,13 +335,14 @@ inline void clear_RGB565(const gdx2d_pixmap* pixmap, uint32_t col) {
 		*ptr = c;		
 	}
 	if(left) {
-		*((uint16_t*)pixmap->pixels + pixmap->width * pixmap->height * 2) = (uint16_t)col;
+		*((uint16_t*)pixmap->pixels + pixmap->width * pixmap->height) = (uint16_t)col;
 	}
 }
 
 inline void clear_RGBA4444(const gdx2d_pixmap* pixmap, uint32_t col) {
 	uint32_t pixels = pixmap->width * pixmap->height;
 	uint32_t left = pixels % 2;
+	pixels -= left;
 	pixels >>= 1;
 	uint32_t* ptr = (uint32_t*)pixmap->pixels;
 	uint32_t c = ((col & 0xffff) << 16) | (col & 0xffff);
@@ -348,8 +350,9 @@ inline void clear_RGBA4444(const gdx2d_pixmap* pixmap, uint32_t col) {
 	for(; pixels > 0; pixels--, ptr++) {
 		*ptr = c;		
 	}
+
 	if(left) {
-		*((uint16_t*)pixmap->pixels + pixmap->width * pixmap->height * 2) = (uint16_t)col;
+		*((uint16_t*)pixmap->pixels + pixmap->width * pixmap->height) = (uint16_t)col;
 	}
 }
 
