@@ -19,4 +19,6 @@ public interface ReferenceCountedAsset {
 	public void incRefCount ();
 
 	public int getRefCount ();
+
+	public void setRefCount (int refCount);
 }

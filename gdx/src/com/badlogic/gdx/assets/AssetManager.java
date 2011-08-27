@@ -156,10 +156,12 @@ public class AssetManager implements Disposable {
 	/** @param asset the asset
 	 * @return whether the filename of the asset or null */
 	public synchronized <T> String getAssetFileName (T asset) {
-		ObjectMap<String, Object> typedAssets = assets.get(asset.getClass());
-		for (String fileName : typedAssets.keys()) {
-			Object otherAsset = typedAssets.get(fileName);
-			if (otherAsset == asset || asset.equals(otherAsset)) return fileName;
+		for(Class assetType: assets.keys()) {
+			ObjectMap<String, Object> typedAssets = assets.get(assetType);
+			for (String fileName : typedAssets.keys()) {
+				Object otherAsset = typedAssets.get(fileName);
+				if (otherAsset == asset || asset.equals(otherAsset)) return fileName;
+			}
 		}
 		return null;
 	}
@@ -204,9 +206,9 @@ public class AssetManager implements Disposable {
 				if (preloadQueue.size == 0) return true;
 				nextTask();
 				// second check if we tried to load an asset that's already loaded and the queue became empty.
-				if (preloadQueue.size == 0 || tasks.size() == 0) return true;
+				if (preloadQueue.size == 0 && tasks.size() == 0) return true;
 			}
-			return updateTask() && preloadQueue.size == 0;
+			return updateTask() && preloadQueue.size == 0 && tasks.size() == 0;
 		} catch (Throwable t) {
 			handleTaskError(t);
 			return preloadQueue.size == 0;
@@ -280,7 +282,7 @@ public class AssetManager implements Disposable {
 			incrementRefCountedDependencies(task.assetDesc.fileName);
 
 			// increase the number of loaded assets and pop the task from the stack
-			loaded++;
+			if(tasks.size() == 1) loaded++;
 			tasks.pop();
 			
 			// remove the asset if it was cancled.

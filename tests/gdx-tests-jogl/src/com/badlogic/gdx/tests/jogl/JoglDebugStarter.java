@@ -24,6 +24,7 @@ public class JoglDebugStarter {
 	public static void main (String[] argv) {
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.useGL20 = true;
-		new JoglApplication(new com.badlogic.gdx.tests.ETC1Test(), config);
+		config.vSyncEnabled = false;
+		new JoglApplication(new com.badlogic.gdx.tests.AssetManagerTest(), config);
 	}
 }

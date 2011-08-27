@@ -33,13 +33,14 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 
 	AssetManager manager;
 	BitmapFont font;
 	SpriteBatch batch;
 	int frame = 0;
+	int reloads = 0;
 
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_ERROR);
@@ -56,6 +57,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		manager.preload("data/pack", TextureAtlas.class);
 		manager.preload("data/verdana39.png", Texture.class);
 		manager.preload("data/verdana39.fnt", BitmapFont.class);
+		manager.preload("data/test.etc1", Texture.class);
 		Texture.setAssetManager(manager);
 		batch = new SpriteBatch();
 
@@ -66,22 +68,31 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		if (manager.update() & !diagnosed) {
+		boolean result = manager.update();
+		if (result & !diagnosed) {
 			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagonistics());
-			diagnosed = true;
-			manager.remove("data/pack");
-			manager.remove("data/verdana39.fnt");
-			Gdx.app.log("AssetManagerTest", "after disposal\n" + manager.getDiagonistics());
+			diagnosed = false;
+			Texture.invalidateAllTextures(Gdx.app);
+//			manager.remove("data/pack");
+//			manager.remove("data/verdana39.fnt");
+//			Gdx.app.log("AssetManagerTest", "after disposal\n" + manager.getDiagonistics());
+			reloads++;
 		}
 		frame++;
 
 		batch.begin();
+		if (manager.isLoaded("data/test.etc1")) batch.draw(manager.get("data/test.etc1", Texture.class), 0, 0);
 		if (manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
 		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
 		if (manager.isLoaded("data/pack")) batch.draw(manager.get("data/pack", TextureAtlas.class).findRegion("particle-star"), 164, 100);
 		if (manager.isLoaded("data/verdana39.fnt")) manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 200);
-		font.draw(batch, "loaded: " + manager.getProgress(), 0, 30);
+		font.draw(batch, "loaded: " + manager.getProgress() + ", reloads: " + reloads, 0, 30);
 		batch.end();
+		
+		if(Gdx.input.justTouched()) {
+			Texture.invalidateAllTextures(Gdx.app);
+			diagnosed = false;
+		}
 	}
 
 	@Override

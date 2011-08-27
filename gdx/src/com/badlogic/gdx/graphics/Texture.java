@@ -25,6 +25,7 @@ import java.util.Map;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.ReferenceCountedAsset;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
@@ -349,6 +350,12 @@ public class Texture implements Disposable {
 				texture.reload();
 			}
 		} else {
+			// first we have to make sure the AssetManager isn't loading anything anymore,
+			// otherwise the ref counting trick below wouldn't work (when a texture is
+			// currently on the task stack of the manager.
+			while(!assetManager.update());
+			
+			// next we go through 
 			List<Texture> textures = new ArrayList<Texture>(managedTexureList);
 			managedTexureList.clear();
 			for (Texture texture : textures) {
@@ -357,11 +364,18 @@ public class Texture implements Disposable {
 					texture.reload();
 				} else {
 					TextureParameter params = new TextureParameter();
-					params.format = texture.getTextureData().getFormat();
-					params.genMipMaps = texture.getTextureData().useMipMaps();
+					params.textureData = texture.getTextureData();
 					params.texture = texture;
-					texture.glHandle = Texture.createGLHandle();
+					int refCount = 0;
+					if(texture instanceof ReferenceCountedAsset) {
+						refCount = ((ReferenceCountedAsset)texture).getRefCount();
+						((ReferenceCountedAsset)texture).setRefCount(0);
+					}
 					assetManager.remove(fileName);
+					if(texture instanceof ReferenceCountedAsset) {
+						((ReferenceCountedAsset)texture).setRefCount(refCount);
+					}
+					texture.glHandle = Texture.createGLHandle();
 					assetManager.preload(fileName, Texture.class, params);
 				}
 				managedTexureList.add(texture);

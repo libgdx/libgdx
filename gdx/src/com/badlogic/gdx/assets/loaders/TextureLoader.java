@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
@@ -37,22 +38,27 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
 		if(parameter == null || (parameter != null && parameter.textureData == null)) {
-			FileHandle handle = resolve(fileName);
-			Pixmap pixmap = new Pixmap(handle);
+			Pixmap pixmap = null;
 			Format format = null;
 			boolean genMipMaps = false;
 			texture = null;
-	
+
 			if (parameter != null) {
 				format = parameter.format;
 				genMipMaps = parameter.genMipMaps;
 				texture = parameter.texture;
 			}
-	
-			data = new FileTextureData(handle, pixmap, format, genMipMaps);
+			
+			FileHandle handle = resolve(fileName);
+			if(!fileName.contains(".etc1")) {
+				pixmap = new Pixmap(handle);
+				data = new FileTextureData(handle, pixmap, format, genMipMaps);
+			} else {
+				data = new ETC1TextureData(handle, genMipMaps);
+			}
 		} else {
-			// FIXME use TextureData in parameter
 			data = parameter.textureData;
+			texture = parameter.texture;
 		}
 	}
 
@@ -93,6 +99,11 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 			refCount--;
 			if (refCount > 0) return;
 			super.dispose();
+		}
+		
+		@Override
+		public void setRefCount (int refCount) {
+			this.refCount = refCount;
 		}
 	}
 }
