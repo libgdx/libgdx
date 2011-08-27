@@ -28,13 +28,13 @@
 
 package com.badlogic.gdx.tests.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -85,7 +85,7 @@ public class GdxTests {
 		SplineTest.class, SimpleTest.class, SimpleAnimationTest.class, SimpleDecalTest.class, SimpleStageCullingTest.class,
 		SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class, SpriteBatchTest.class, SpritePerformanceTest.class, SpritePerformanteTest2.class,
-		StagePerformanceTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class, TextureDownloadTest.class,
+		StagePerformanceTest.class,ActorLocalTransformTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class, TextureDownloadTest.class,
 		TextureFormatTest.class, TextureAtlasTest.class, TextInputDialogTest.class, TextureRenderTest.class, TiledMapTest.class,
 		TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class, VertexBufferObjectTest.class,
 		VertexArrayClassTest.class, VertexBufferObjectClassTest.class, VertexBufferObjectShaderTest.class, VibratorTest.class,
