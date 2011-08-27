@@ -51,6 +51,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		manager = new AssetManager();
 		manager.setLoader(Texture.class, new TextureLoader(resolver));
 		manager.setErrorListener(this);
+		manager.preload("data/animation.png", Texture.class);
 		manager.preload("data/pack1.png", Texture.class);
 		manager.preload("data/pack", TextureAtlas.class);
 		manager.preload("data/verdana39.png", Texture.class);
@@ -76,7 +77,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 
 		batch.begin();
 		if (manager.isLoaded("data/animation.png")) batch.draw(manager.get("data/animation.png", Texture.class), 100, 100);
-		if (manager.isLoaded("data/badlogic.jpg")) batch.draw(manager.get("data/badlogic.jpg", Texture.class), 200, 100);
+		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
 		if (manager.isLoaded("data/pack")) batch.draw(manager.get("data/pack", TextureAtlas.class).findRegion("particle-star"), 164, 100);
 		if (manager.isLoaded("data/verdana39.fnt")) manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 200);
 		font.draw(batch, "loaded: " + manager.getProgress(), 0, 30);

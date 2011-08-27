@@ -36,19 +36,24 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
-		FileHandle handle = resolve(fileName);
-		Pixmap pixmap = new Pixmap(handle);
-		Format format = null;
-		boolean genMipMaps = false;
-		texture = null;
-
-		if (parameter != null) {
-			format = parameter.format;
-			genMipMaps = parameter.genMipMaps;
-			texture = parameter.texture;
+		if(parameter == null || (parameter != null && parameter.textureData == null)) {
+			FileHandle handle = resolve(fileName);
+			Pixmap pixmap = new Pixmap(handle);
+			Format format = null;
+			boolean genMipMaps = false;
+			texture = null;
+	
+			if (parameter != null) {
+				format = parameter.format;
+				genMipMaps = parameter.genMipMaps;
+				texture = parameter.texture;
+			}
+	
+			data = new FileTextureData(handle, pixmap, format, genMipMaps);
+		} else {
+			// FIXME use TextureData in parameter
+			data = parameter.textureData;
 		}
-
-		data = new FileTextureData(handle, pixmap, format, genMipMaps);
 	}
 
 	@Override

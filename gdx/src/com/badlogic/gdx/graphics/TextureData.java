@@ -21,84 +21,62 @@ import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 
-/** Loads image data for a texture. Used with {@link Texture}, this allows custom image loading for managed textures. If the OpenGL
- * context is lost, the TextureData will be asked to load again when the context is restored. The TextureData doesn't necessary
- * need to keep the image data in memory between loads. 
- */
-
-/**
- * Used by a {@link Texture} to load the pixel data. A TextureData can either return a {@link Pixmap} or upload the pixel
- * data itself. It signals it's type via {@link #getType()} to the Texture that's using it. The Texture will then either
- * invoke {@link #getPixmap()} or {@link #uploadCompressedData()}. These are the first methods to be called by Texture.
- * After that the Texture will invoke the other methods to find out about the size of the image data, the format, whether
- * mipmaps should be generated and whether the TextureData is able to manage the pixel data if the OpenGL ES context is 
- * lost.</p>
+/** Used by a {@link Texture} to load the pixel data. A TextureData can either return a {@link Pixmap} or upload the pixel data
+ * itself. It signals it's type via {@link #getType()} to the Texture that's using it. The Texture will then either invoke
+ * {@link #consumePixmap()} or {@link #consumeCompressedData()}. These are the first methods to be called by Texture. After that
+ * the Texture will invoke the other methods to find out about the size of the image data, the format, whether mipmaps should be
+ * generated and whether the TextureData is able to manage the pixel data if the OpenGL ES context is lost.</p>
  * 
- * In case the TextureData implementation has the type {@link TextureDataType#Compressed}, the implementatio has to
- * generate the mipmaps itself if necessary. See {@link MipMapGenerator}.</p>
+ * In case the TextureData implementation has the type {@link TextureDataType#Compressed}, the implementation has to generate the
+ * mipmaps itself if necessary. See {@link MipMapGenerator}.</p>
  * 
- * Before a call to either {@link #getPixmap()} or {@link #uploadCompressedData()}, Texture will bind the OpenGL ES texture.</p>
+ * Before a call to either {@link #consumePixmap()} or {@link #consumeCompressedData()}, Texture will bind the OpenGL ES
+ * texture.</p>
  * 
  * Look at {@link FileTextureData} and {@link ETC1TextureData} for example implementations of this interface.
- * @author mzechner
- *
- */
+ * @author mzechner */
 public interface TextureData {
-	/**
-	 * The type of this {@link TextureData}. 
-	 * @author mzechner
-	 *
-	 */
+	/** The type of this {@link TextureData}.
+	 * @author mzechner */
 	public enum TextureDataType {
-		Pixmap,
-		Compressed
+		Pixmap, Compressed,
 	}
 
-	/**
-	 * @return the {@link TextureDataType}
-	 */
+	/** @return the {@link TextureDataType} */
 	public TextureDataType getType ();
 
-	/**
-	 * Returns the {@link Pixmap} for upload by Texture. Called
-	 * before any other method.
-	 * @return the pixmap.
-	 */
-	public Pixmap getPixmap ();
+	/** @return whether the TextureData is prepared or not. */
+	public boolean isPrepared ();
 
-	/**
-	 * @return whether Texture should dispose the Pixmap returned by {@link #getPixmap()}
-	 */
+	/** Prepares the TextureData for a call to {@link #consumePixmap()} or {@link #consumeCompressedData()}. This method can be
+	 * called from a non OpenGL thread and should thus not interact with OpenGL. */
+	public void prepare ();
+
+	/** Returns the {@link Pixmap} for upload by Texture. A call to {@link #prepare()} must preceed a call to this method. Any
+	 * internal datastructures created in {@link #prepare()} should be disposed of here.
+	 * 
+	 * @return the pixmap. */
+	public Pixmap consumePixmap ();
+
+	/** @return whether the caller of {@link #consumePixmap()} should dispose the Pixmap returned by {@link #consumePixmap()} */
 	public boolean disposePixmap ();
 
-	/**
-	 * Uploads the pixel data to the OpenGL ES texture. The Texture calling
-	 * this method will bind the OpenGL ES texture. Called before any other method.
-	 */
-	public void uploadCompressedData ();
+	/** Uploads the pixel data to the OpenGL ES texture. The caller must bind an OpenGL ES texture. A call to
+	 * {@link #prepare()} must preceed a call to this method. Any internal datastructures created in {@link #prepare()}. */
+	public void consumeCompressedData ();
 
-	/**
-	 * @return the width of the pixel data
-	 */
+	/** @return the width of the pixel data */
 	public int getWidth ();
 
-	/**
-	 * @return the height of the pixel data
-	 */
+	/** @return the height of the pixel data */
 	public int getHeight ();
 
-	/**
-	 * @return the {@link Format} of the pixel data
-	 */
+	/** @return the {@link Format} of the pixel data */
 	public Format getFormat ();
 
-	/**
-	 * @return whether to generate mipmaps or not.
-	 */
+	/** @return whether to generate mipmaps or not. */
 	public boolean useMipMaps ();
 
-	/**
-	 * @return whether this implementation can cope with a EGL context loss.
-	 */
+	/** @return whether this implementation can cope with a EGL context loss. */
 	public boolean isManaged ();
 }

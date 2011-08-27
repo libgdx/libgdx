@@ -39,7 +39,7 @@ public class PixmapTextureData implements TextureData {
 	}
 
 	@Override
-	public Pixmap getPixmap () {
+	public Pixmap consumePixmap () {
 		return pixmap;
 	}
 
@@ -74,7 +74,17 @@ public class PixmapTextureData implements TextureData {
 	}
 
 	@Override
-	public void uploadCompressedData () {
+	public void consumeCompressedData () {
 		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
+	}
+
+	@Override
+	public boolean isPrepared () {
+		return true;
+	}
+
+	@Override
+	public void prepare () {		
+		throw new GdxRuntimeException("prepare() must not be called on a PixmapTextureData instance as it is already prepared.");
 	}
 }

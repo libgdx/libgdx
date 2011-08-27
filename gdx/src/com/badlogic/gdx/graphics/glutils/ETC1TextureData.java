@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -28,9 +29,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ETC1TextureData implements TextureData {
 	FileHandle file;
+	ETC1Data data;
 	boolean useMipMaps;
 	int width = 0;
 	int height = 0;
+	boolean isPrepared = false;
 
 	public ETC1TextureData (FileHandle file) {
 		this(file, false);
@@ -47,20 +50,22 @@ public class ETC1TextureData implements TextureData {
 	}
 
 	@Override
-	public Pixmap getPixmap () {
-		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
+	public boolean isPrepared () {
+		return isPrepared;
 	}
 
 	@Override
-	public boolean disposePixmap () {
-		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
-	}
-
-	@Override
-	public void uploadCompressedData () {
-		ETC1Data data = new ETC1Data(file);
+	public void prepare () {
+		if (isPrepared) throw new GdxRuntimeException("Already prepared");
+		data = new ETC1Data(file);
 		width = data.width;
 		height = data.height;
+		isPrepared = true;
+	}
+
+	@Override
+	public void consumeCompressedData () {
+		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 
 		if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.graphics.isGL20Available() == false) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
@@ -75,6 +80,18 @@ public class ETC1TextureData implements TextureData {
 			if (useMipMaps()) Gdx.gl20.glGenerateMipmap(GL20.GL_TEXTURE_2D);
 		}
 		data.dispose();
+		data = null;
+		isPrepared = false;
+	}
+	
+	@Override
+	public Pixmap consumePixmap () {
+		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
+	}
+	
+	@Override
+	public boolean disposePixmap () {
+		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
 
 	@Override

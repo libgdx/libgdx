@@ -298,7 +298,7 @@ public class Hiero4 extends JFrame {
 							}
 
 							@Override
-							public Pixmap getPixmap () {
+							public Pixmap consumePixmap () {
 								this.pixmap = new Pixmap(width, height, Format.RGBA8888);
 								pixmap.getPixels().put(buffer);
 								pixmap.getPixels().rewind();
@@ -327,14 +327,20 @@ public class Hiero4 extends JFrame {
 
 							@Override
 							public TextureDataType getType () {
-								// TODO Auto-generated method stub
-								return null;
+								return TextureDataType.Pixmap;
 							}
 
 							@Override
-							public void uploadCompressedData () {
-								// TODO Auto-generated method stub
+							public void consumeCompressedData () {
+							}
 
+							@Override
+							public boolean isPrepared () {
+								return true;
+							}
+
+							@Override
+							public void prepare () {								
 							}
 						}));
 						renderer.font = new BitmapFont(Gdx.files.absolute("out"), glyphRegion, false);

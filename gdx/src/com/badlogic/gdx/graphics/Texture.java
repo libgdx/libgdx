@@ -171,8 +171,10 @@ public class Texture implements Disposable {
 			throw new GdxRuntimeException("New data must have the same managed status as the old data");
 		this.data = data;
 
+		if(!data.isPrepared()) data.prepare();
+		
 		if (data.getType() == TextureDataType.Pixmap) {
-			Pixmap pixmap = data.getPixmap();
+			Pixmap pixmap = data.consumePixmap();
 			uploadImageData(pixmap);
 			if (data.disposePixmap()) pixmap.dispose();
 			setFilter(minFilter, magFilter);
@@ -181,7 +183,7 @@ public class Texture implements Disposable {
 
 		if (data.getType() == TextureDataType.Compressed) {
 			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
-			data.uploadCompressedData();
+			data.consumeCompressedData();
 			setFilter(minFilter, magFilter);
 			setWrap(uWrap, vWrap);
 		}

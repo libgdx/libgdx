@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -25,6 +26,8 @@ public class TextureParameter implements AssetLoaderParameters<Texture> {
 	public Format format = null;
 	/** whether to generate mipmaps **/
 	public boolean genMipMaps = false;
-	/** The texture to put the {@link TextureData} in **/
+	/** The texture to put the {@link TextureData} in, optional. **/
 	public Texture texture = null;
+	/** TextureData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
+	public TextureData textureData = null;
 }

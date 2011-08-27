@@ -199,7 +199,7 @@ public class List extends Widget {
 	public void setSelection(int index) {
 		if(index < 0 || index >= entries.length) throw new GdxRuntimeException("Index must be > 0 and < #entries");
 		selected = index;
-		invalidateHierarchy();
+		invalidateHierarchy(); 
 	}
 
 	/** Sets the entries of this list. Invalidates all parents.

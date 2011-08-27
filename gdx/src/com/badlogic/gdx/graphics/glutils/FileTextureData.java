@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -28,6 +29,7 @@ public class FileTextureData implements TextureData {
 	Format format;
 	Pixmap pixmap;
 	boolean useMipMaps;
+	boolean isPrepared = false;
 
 	public FileTextureData (FileHandle file, Pixmap preloadedPixmap, Format format, boolean useMipMaps) {
 		this.file = file;
@@ -42,18 +44,29 @@ public class FileTextureData implements TextureData {
 	}
 
 	@Override
-	public Pixmap getPixmap () {
-		if (pixmap != null) {
-			Pixmap tmp = pixmap;
-			this.pixmap = null;
-			return tmp;
-		} else {
-			Pixmap pixmap = new Pixmap(file);
+	public boolean isPrepared () {
+		return isPrepared;
+	}
+
+	@Override
+	public void prepare () {
+		if (isPrepared) throw new GdxRuntimeException("Already prepared");
+		if (pixmap == null) {
+			pixmap = new Pixmap(file);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
 			if (format == null) format = pixmap.getFormat();
-			return pixmap;
 		}
+		isPrepared = true;
+	}
+
+	@Override
+	public Pixmap consumePixmap () {
+		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling getPixmap()");
+		isPrepared = false;
+		Pixmap pixmap = this.pixmap;
+		this.pixmap = null;
+		return pixmap;
 	}
 
 	@Override
@@ -96,7 +109,7 @@ public class FileTextureData implements TextureData {
 	}
 
 	@Override
-	public void uploadCompressedData () {
+	public void consumeCompressedData () {
 		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
 	}
 }
