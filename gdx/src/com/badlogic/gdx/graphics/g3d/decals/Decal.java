@@ -266,7 +266,7 @@ public class Decal {
 	 * 
 	 * @param height Height in world units */
 	public void setHeight (float height) {
-		this.dimensions.y += height;
+		this.dimensions.y = height;
 		updated = false;
 	}
 
