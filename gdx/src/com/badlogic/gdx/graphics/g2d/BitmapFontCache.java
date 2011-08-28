@@ -74,6 +74,14 @@ public class BitmapFontCache implements Disposable {
 		}
 	}
 
+	public void setColor (float color) {
+		if (color == this.color) return;
+		this.color = color;
+		float[] vertices = this.vertices;
+		for (int i = 2, n = idx; i < n; i += 5)
+			vertices[i] = color;
+	}
+	
 	public void setColor (Color tint) {
 		final float color = tint.toFloatBits();
 		if (color == this.color) return;
