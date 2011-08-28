@@ -704,6 +704,10 @@ public class BitmapFont implements Disposable {
 		}
 		return index - start;
 	}
+	
+	public void setColor(float color) {
+		this.color = color;
+	}
 
 	public void setColor (Color tint) {
 		this.color = tint.toFloatBits();
