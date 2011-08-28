@@ -85,7 +85,7 @@ public class GdxTests {
 		SplineTest.class, SimpleTest.class, SimpleAnimationTest.class, SimpleDecalTest.class, SimpleStageCullingTest.class,
 		SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, SpriteBatchRotationTest.class,
 		SpriteBatchShaderTest.class, SpriteBatchTest.class, SpritePerformanceTest.class, SpritePerformanteTest2.class,
-		StagePerformanceTest.class,ActorLocalTransformTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class, TextureDownloadTest.class,
+		StagePerformanceTest.class, StageTest.class, TerrainTest.class, TextureDataTest.class, TextureDownloadTest.class,
 		TextureFormatTest.class, TextureAtlasTest.class, TextInputDialogTest.class, TextureRenderTest.class, TiledMapTest.class,
 		TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class, VertexBufferObjectTest.class,
 		VertexArrayClassTest.class, VertexBufferObjectClassTest.class, VertexBufferObjectShaderTest.class, VibratorTest.class,
