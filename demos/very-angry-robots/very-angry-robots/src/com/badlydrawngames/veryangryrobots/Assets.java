@@ -13,6 +13,9 @@
 
 package com.badlydrawngames.veryangryrobots;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
@@ -163,12 +166,18 @@ public class Assets {
 	private static float calculatePixelDensity () {
 		FileHandle textureDir = Gdx.files.internal("data/textures");
 		FileHandle[] availableDensities = textureDir.list();
-		FloatArray densities = new FloatArray(availableDensities.length);
+		FloatArray densities = new FloatArray();
 		for (int i = 0; i < availableDensities.length; i++) {
-			float density = Float.parseFloat(availableDensities[i].name());
-			densities.add(density);
+			try {
+				float density = Float.parseFloat(availableDensities[i].name());
+				densities.add(density);
+			}
+			catch (NumberFormatException ex) {
+				// Ignore anything non-numeric, such as ".svn" folders.
+			}
 		}
-		densities.sort();
+		densities.shrink();	// Remove empty slots to get rid of zeroes.
+		densities.sort();	// Now the lowest density comes first.
 		return CameraHelper.bestDensity(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, densities.items);
 	}
 
@@ -219,11 +228,15 @@ public class Assets {
 	private static Sound[] loadSounds (String dir) {
 		FileHandle dh = Gdx.files.internal("data/sounds/" + dir);
 		FileHandle[] fhs = dh.list();
-		Sound[] sounds = new Sound[fhs.length];
+		List<Sound> sounds = new ArrayList<Sound>();
 		for (int i = 0; i < fhs.length; i++) {
-			sounds[i] = loadSound(dir + "/" + fhs[i].name());
+			String name = fhs[i].name();
+			if (name.endsWith(".ogg")) {
+				sounds.add(loadSound(dir + "/" + name));
+			}
 		}
-		return sounds;
+		Sound[] result = new Sound[0];
+		return sounds.toArray(result);
 	}
 
 	private static Sound loadSound (String filename) {
