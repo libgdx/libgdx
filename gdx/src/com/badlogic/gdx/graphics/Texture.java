@@ -315,6 +315,11 @@ public class Texture implements Disposable {
 
 	/** Disposes all resources associated with the texture */
 	public void dispose () {
+		// this is a hack. reason: we have to set the glHandle to 0 for textures that are
+		// reloaded through the asset manager as we first remove (and thus dispose) the texture
+		// and then reload it. the glHandle is set to 0 in invalidateAllTextures prior to
+		// removal from the asset manager.
+		if(glHandle == 0) return;
 		buffer.put(0, glHandle);
 		Gdx.gl.glDeleteTextures(1, buffer);
 		if (data.isManaged()) {
@@ -364,6 +369,7 @@ public class Texture implements Disposable {
 					texture.reload();
 				} else {
 					TextureParameter params = new TextureParameter();
+					texture.glHandle = 0; // needed as assetManager.remove below will dispose the texture.
 					params.textureData = texture.getTextureData();
 					params.texture = texture;
 					int refCount = 0;

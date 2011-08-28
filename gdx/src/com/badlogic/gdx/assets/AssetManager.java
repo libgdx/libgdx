@@ -202,11 +202,12 @@ public class AssetManager implements Disposable {
 	public synchronized boolean update () {
 		try {
 			if (tasks.size() == 0) {
-				// first check if there's nothing left to load
-				if (preloadQueue.size == 0) return true;
-				nextTask();
-				// second check if we tried to load an asset that's already loaded and the queue became empty.
-				if (preloadQueue.size == 0 && tasks.size() == 0) return true;
+				// loop until we have a new task ready to be processed
+				while(preloadQueue.size != 0 && tasks.size() == 0) { 
+					nextTask();
+				}
+				// have we not found a task? We are done!
+				if(tasks.size() == 0) return true;
 			}
 			return updateTask() && preloadQueue.size == 0 && tasks.size() == 0;
 		} catch (Throwable t) {
@@ -334,6 +335,7 @@ public class AssetManager implements Disposable {
 		if (listener != null) {
 			listener.error(assetDesc.fileName, assetDesc.type, t);
 		} else {
+			t.printStackTrace();
 			throw new GdxRuntimeException(t);
 		}
 	}
