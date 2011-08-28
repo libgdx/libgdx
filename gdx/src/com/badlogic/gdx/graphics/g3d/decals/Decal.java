@@ -476,8 +476,8 @@ public class Decal {
 		material.srcBlendFactor = srcBlendFactor;
 		material.dstBlendFactor = dstBlendFactor;
 	}
-
-	protected DecalMaterial getMaterial () {
+	
+	public DecalMaterial getMaterial () {
 		return material;
 	}
 	
