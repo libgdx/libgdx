@@ -117,6 +117,10 @@ public class CheckBox extends Widget {
 		invalidated = false;
 	}
 
+	public void invalidate () {
+		super.invalidate();
+	}
+	
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;

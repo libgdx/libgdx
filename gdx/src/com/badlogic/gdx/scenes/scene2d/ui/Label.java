@@ -79,7 +79,7 @@ public class Label extends Widget {
 		TextBounds bounds = style.font.getMultiLineBounds(text);
 		cache.setMultiLineText(text, 0, bounds.height);
 		prefWidth = bounds.width;
-		prefHeight = bounds.height;
+		prefHeight = bounds.height - style.font.getDescent(); // Centers text in the label.
 		invalidateHierarchy();
 	}
 

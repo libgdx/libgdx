@@ -5,8 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
@@ -36,20 +39,24 @@ public class LabelTest extends GdxTest {
 	Stage stage;
 	SpriteBatch batch;
 	Actor root;
+	ImmediateModeRenderer10 renderer;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		renderer = new ImmediateModeRenderer10();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 
+		Gdx.gl10.glColor4f(1, 0, 0, 0);
+
 		Table table = new Table();
 		stage.addActor(table);
 		table.x = table.y = 100;
 
-		table.getTableLayout().debug();
+		table.debug();
 		table.add(skin.newLabel(null, "This is regular text."));
 		table.row();
 		table.add(skin.newLabel(null, "This is regular text,\nwith a newline."));
@@ -64,9 +71,22 @@ public class LabelTest extends GdxTest {
 		stage.draw();
 		Table.drawDebug(stage);
 
+		float x = 40, y = 40;
+
+		BitmapFont font = skin.getFont("default-font");
 		batch.begin();
-		skin.getFont("default-font").draw(batch, "The quick brown fox jumped over the lazy cow.", 40, 40);
+		font.draw(batch, "The quick brown fox jumped over the lazy cow.", x, y);
 		batch.end();
+
+		drawLine(x, y- font.getDescent(), x + 1000, y- font.getDescent());
+		drawLine(x, y - font.getCapHeight() + font.getDescent(), x + 1000, y - font.getCapHeight() + font.getDescent());
+	}
+
+	public void drawLine (float x1, float y1, float x2, float y2) {
+		renderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
+		renderer.vertex(x1, y1, 0);
+		renderer.vertex(x2, y2, 0);
+		renderer.end();
 	}
 
 	@Override

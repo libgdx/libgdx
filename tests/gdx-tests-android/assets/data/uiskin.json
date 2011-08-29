@@ -231,7 +231,7 @@ library: {
 		red: { a: 1, b: 0, g: 0, r: 1 },
 		black: { a: 1, b: 0, g: 0, r: 0 }
 	},
-	fonts: { default-font: "ui/default.fnt" },
+	fonts: { default-font: "default.fnt" },
 	regions: {
 		check-on: { width: 14, height: 14, x: 36, y: 0 },
 		check-off: { width: 14, height: 14, x: 51, y: 0 },

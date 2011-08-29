@@ -581,7 +581,7 @@ public class BitmapFont implements Disposable {
 			numLines++;
 		}
 		textBounds.width = maxWidth;
-		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
+		textBounds.height = data.capHeight - data.descent + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
 
