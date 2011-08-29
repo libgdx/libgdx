@@ -490,7 +490,7 @@ public class Decal {
 	 */
 	public void lookAt(Vector3 position, Vector3 up) {
 		dir.set(position).sub(this.position).nor();
-		setRotation(dir, Vector3.Y);
+		setRotation(dir, up);
 	}
 
 	// meaning of the floats in the vertices array
