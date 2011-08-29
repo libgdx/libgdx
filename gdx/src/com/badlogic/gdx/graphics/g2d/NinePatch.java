@@ -29,8 +29,11 @@ public class NinePatch {
 	public static final int BOTTOM_CENTER = 7;
 	public static final int BOTTOM_RIGHT = 8;
 
-	final TextureRegion[] patches;
+	TextureRegion[] patches;
 
+	private NinePatch () {
+	}
+	
 	public NinePatch (Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
 	}
@@ -125,5 +128,9 @@ public class NinePatch {
 
 	public float getTotalWidth () {
 		return getLeftWidth() + getRightWidth() + patches[MIDDLE_CENTER].getRegionWidth();
+	}
+
+	public TextureRegion[] getPatches () {
+		return patches;
 	}
 }

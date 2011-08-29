@@ -199,6 +199,7 @@ public final class LwjglGraphics implements Graphics {
 			gl20 = new LwjglGL20();
 			gl = gl20;
 		} else {
+			gl20 = null;
 			if (major == 1 && minor < 5) {
 				gl10 = new LwjglGL10();
 			} else {

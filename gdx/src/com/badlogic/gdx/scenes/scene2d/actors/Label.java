@@ -114,15 +114,11 @@ public class Label extends Actor implements Layout {
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (!touchable) return false;
-		return x > 0 && y > 0 && x < width && y < height;
+	public void touchUp (float x, float y, int pointer) {
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		if (!touchable) return false;
-		return x > 0 && y > 0 && x < width && y < height;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	@Override

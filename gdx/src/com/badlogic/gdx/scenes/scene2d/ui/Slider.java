@@ -114,33 +114,18 @@ public class Slider extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			calculateSliderPosAndValue(x);
-			parent.focus(this, pointer);
-			return true;
-		}
-		return false;
+		calculateSliderPosAndValue(x);
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		if (parent.focusedActor[0] == this) {
-			calculateSliderPosAndValue(x);
-			parent.focus(null, pointer);
-			return true;
-		}
-		return false;
+	public void touchUp (float x, float y, int pointer) {
+		calculateSliderPosAndValue(x);
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		if (parent.focusedActor[0] == this) {
-			calculateSliderPosAndValue(x);
-			return true;
-		}
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
+		calculateSliderPosAndValue(x);
 	}
 
 	private void calculateSliderPosAndValue (float x) {
@@ -163,6 +148,9 @@ public class Slider extends Widget {
 	public static class SliderStyle {
 		NinePatch slider;
 		TextureRegion knob;
+
+		public SliderStyle () {
+		}
 
 		public SliderStyle (NinePatch sliderPatch, TextureRegion knobRegion) {
 			this.slider = sliderPatch;

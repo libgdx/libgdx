@@ -26,19 +26,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
-/** A Container with a background NinePatch.
+/** A Table with a background NinePatch.
  * 
  * <h2>Functionality</h2> A Pane is a {@link Table} displaying a background {@link NinePatch}. It can house multiple {@link Actor}
- * instances in a table-layout. The difference to a pure Container is that the Pane will automatically set the padding of the
- * layout to respect the width and height of the border patches of its background NinePatch. See {@link Table} for more
- * information on how Actor instances are laid out when using this class. </p>
+ * instances in a table-layout. The difference to a pure Table is that the Pane will automatically set the padding of the layout
+ * to respect the width and height of the border patches of its background NinePatch. See {@link Table} for more information on
+ * how Actor instances are laid out when using this class. </p>
  * 
- * In addition to the basic functionality provided by the Container super class, a Pane will also employ scissoring (clipping) to
+ * In addition to the basic functionality provided by the Table super class, a Pane will also employ scissoring (clipping) to
  * ensure that no contained Actor can render outside of its bounds.
  * 
  * <h2>Layout</h2> The (preferred) width and height are determined by the values given in the constructor of this class. Please
  * consult the {@link Table} documentation on how the width and height will be manipulated if the Pane is contained in another
- * Container. Additionally you can set the (preferred) width and height via a call to {@link TableLayout#size(int, int)}.
+ * Table. Additionally you can set the (preferred) width and height via a call to {@link TableLayout#size(int, int)}.
  * 
  * <h2>Style</h2> A Pane is a {@link Table} displaying a background {@link NinePatch} and its child Actors, clipped to the Pane's
  * area, taking into account the padding as described in the functionality section. The style is defined via an instance of
@@ -79,6 +79,8 @@ public class Pane extends Table {
 		height = prefHeight;
 		this.style = style;
 
+		transform = true;
+
 		final NinePatch background = style.background;
 		TableLayout layout = getTableLayout();
 		layout.padBottom(Integer.toString((int)(background.getBottomHeight()) + 1));
@@ -103,8 +105,9 @@ public class Pane extends Table {
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);
-		setupTransform(batch);
+
 		layout();
+		applyTransform(batch);
 		calculateScissors(batch.getTransformMatrix());
 		ScissorStack.pushScissors(scissors);
 		super.drawChildren(batch, parentAlpha);
@@ -115,7 +118,10 @@ public class Pane extends Table {
 	/** Defines the style of a pane, see {@link Pane}
 	 * @author mzechner */
 	public static class PaneStyle {
-		public final NinePatch background;
+		public NinePatch background;
+
+		public PaneStyle () {
+		}
 
 		public PaneStyle (NinePatch backgroundPatch) {
 			this.background = backgroundPatch;

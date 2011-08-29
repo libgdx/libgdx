@@ -69,7 +69,8 @@ public class BitmapFont implements Disposable {
 	final BitmapFontData data;
 
 	public static class BitmapFontData {
-		String imgFile;
+		String imagePath;
+		final FileHandle fontFile;
 		final boolean flipped;
 		final float lineHeight;
 		float capHeight = 1;
@@ -83,6 +84,7 @@ public class BitmapFont implements Disposable {
 		float xHeight = 1;
 
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
+			this.fontFile = fontFile;
 			this.flipped = flip;
 			BufferedReader reader = new BufferedReader(new InputStreamReader(fontFile.read()), 512);
 			try {
@@ -109,7 +111,7 @@ public class BitmapFont implements Disposable {
 				} else {
 					imgFilename = pageLine[2].substring(5, pageLine[2].length());
 				}
-				imgFile = fontFile.parent().child(imgFilename).path().replaceAll("\\\\", "/");
+				imagePath = fontFile.parent().child(imgFilename).path().replaceAll("\\\\", "/");
 				descent = 0;
 
 				while (true) {
@@ -230,8 +232,12 @@ public class BitmapFont implements Disposable {
 			return null;
 		}
 
-		public String getImageFile () {
-			return imgFile;
+		public String getImagePath () {
+			return imagePath;
+		}
+
+		public FileHandle getFontFile () {
+			return fontFile;
 		}
 	}
 
@@ -281,7 +287,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
-		this.region = region == null ? new TextureRegion(new Texture(Gdx.files.internal(data.imgFile), false)) : region;
+		this.region = region == null ? new TextureRegion(new Texture(Gdx.files.internal(data.imagePath), false)) : region;
 		this.flipped = data.flipped;
 		this.integer = integer;
 		this.data = data;
@@ -335,20 +341,17 @@ public class BitmapFont implements Disposable {
 		float startX = x;
 		Glyph lastGlyph = null;
 		if (data.scaleX == 1 && data.scaleY == 1) {
+			if (integer) {
+				y = (int)y;
+				x = (int)x;
+			}
 			while (start < end) {
 				lastGlyph = data.getGlyph(str.charAt(start++));
 				if (lastGlyph != null) {
-					if (!integer) {
-						spriteBatch.draw(texture, //
-							x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
-							lastGlyph.width, lastGlyph.height, //
-							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
-					} else {
-						spriteBatch.draw(texture, //
-							(int)x + lastGlyph.xoffset, (int)y + lastGlyph.yoffset, //
-							lastGlyph.width, lastGlyph.height, //
-							lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
-					}
+					spriteBatch.draw(texture, //
+						x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
+						lastGlyph.width, lastGlyph.height, //
+						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 					x += lastGlyph.xadvance;
 					break;
 				}
@@ -358,18 +361,12 @@ public class BitmapFont implements Disposable {
 				Glyph g = data.getGlyph(ch);
 				if (g == null) continue;
 				x += lastGlyph.getKerning(ch);
+				if (integer) x = (int)x;
 				lastGlyph = g;
-				if (!integer) {
-					spriteBatch.draw(texture, //
-						x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
-						lastGlyph.width, lastGlyph.height, //
-						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
-				} else {
-					spriteBatch.draw(texture, //
-						(int)x + lastGlyph.xoffset, (int)y + lastGlyph.yoffset, //
-						lastGlyph.width, lastGlyph.height, //
-						lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
-				}
+				spriteBatch.draw(texture, //
+					x + lastGlyph.xoffset, y + lastGlyph.yoffset, //
+					lastGlyph.width, lastGlyph.height, //
+					lastGlyph.u, lastGlyph.v, lastGlyph.u2, lastGlyph.v2);
 				x += g.xadvance;
 			}
 		} else {
@@ -704,8 +701,8 @@ public class BitmapFont implements Disposable {
 		}
 		return index - start;
 	}
-	
-	public void setColor(float color) {
+
+	public void setColor (float color) {
 		this.color = color;
 	}
 
@@ -825,6 +822,27 @@ public class BitmapFont implements Disposable {
 		}
 	}
 
+	/** @param character
+	 * @return whether the given character is contained in this font. */
+	public boolean containsCharacter (char character) {
+		return data.getGlyph(character) != null;
+	}
+
+	/** Specifies whether to use integer positions or not. Default is to use them so filtering doesn't kick in as badly.
+	 * @param use */
+	public void setUseIntegerPositions (boolean use) {
+		this.integer = use;
+	}
+
+	/** @return whether this font uses integer positions for drawing. */
+	public boolean usesIntegerPositions () {
+		return integer;
+	}
+
+	public BitmapFontData getData () {
+		return data;
+	}
+
 	static class Glyph {
 		public int srcX;
 		public int srcY;
@@ -876,22 +894,5 @@ public class BitmapFont implements Disposable {
 
 	static public enum HAlignment {
 		LEFT, CENTER, RIGHT
-	}
-
-	/** @param character
-	 * @return whether the given character is contained in this font. */
-	public boolean containsCharacter (char character) {
-		return data.getGlyph(character) != null;
-	}
-
-	/** Specifies whether to use integer positions or not. Default is to use them so filtering doesn't kick in as badly.
-	 * @param use */
-	public void setUseIntegerPositions (boolean use) {
-		this.integer = use;
-	}
-
-	/** @return whether this font uses integer positions for drawing. */
-	public boolean usesIntegerPositions () {
-		return integer;
 	}
 }

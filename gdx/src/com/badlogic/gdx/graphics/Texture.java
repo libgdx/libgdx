@@ -192,8 +192,10 @@ public class Texture implements Disposable {
 
 	private void uploadImageData (Pixmap pixmap) {
 		if (enforcePotImages && Gdx.gl20 == null
-			&& (!MathUtils.isPowerOfTwo(data.getWidth()) || !MathUtils.isPowerOfTwo(data.getHeight())))
-			throw new GdxRuntimeException("texture width and height must be powers of two");
+			&& (!MathUtils.isPowerOfTwo(data.getWidth()) || !MathUtils.isPowerOfTwo(data.getHeight()))) {
+			throw new GdxRuntimeException("Texture width and height must be powers of two: " + data.getWidth() + "x"
+				+ data.getHeight());
+		}
 
 		boolean disposePixmap = false;
 		if (data.getFormat() != pixmap.getFormat()) {

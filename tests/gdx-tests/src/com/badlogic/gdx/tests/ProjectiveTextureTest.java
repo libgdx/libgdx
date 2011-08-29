@@ -102,7 +102,7 @@ public class ProjectiveTextureTest extends GdxTest {
 
 	public void setupUI () {
 		ui = new Stage(480, 320, false);
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.xml"), Gdx.files.internal("data/uiskin.png"));
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		Button reload = skin.newButton("reload", "Reload Shaders");
 		ComboBox camera = skin.newComboBox("camera", new String[] {"Camera", "Light"}, ui);
 		Label fps = skin.newLabel("fps", "fps: ");

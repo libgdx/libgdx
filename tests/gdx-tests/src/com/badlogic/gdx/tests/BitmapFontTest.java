@@ -36,8 +36,8 @@ public class BitmapFontTest extends GdxTest {
 	public void create () {
 		spriteBatch = new SpriteBatch();
 
-		TextureAtlas textureAtlas = new TextureAtlas("data/main");
-		font = new BitmapFont(Gdx.files.internal("data/calibri.fnt"), textureAtlas.findRegion("calibri"), false);
+		TextureAtlas textureAtlas = new TextureAtlas("data/pack");
+		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), textureAtlas.findRegion("verdana39"), false);
 
 		renderer = new ImmediateModeRenderer10();
 	}

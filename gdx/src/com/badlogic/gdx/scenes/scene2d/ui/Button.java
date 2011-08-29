@@ -115,41 +115,30 @@ public class Button extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			isPressed = true;
-			parent.focus(this, pointer);
-			return true;
-		}
-		return false;
+		isPressed = true;
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			if (listener != null) listener.click(this);
-			parent.focus(null, pointer);
-			isPressed = false;
-			return true;
-		}
+	public void touchUp (float x, float y, int pointer) {
+		if (listener != null && hit(x, y) != null) listener.click(this);
 		isPressed = false;
-		parent.focus(null, pointer);
-		return false;
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		return isPressed;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	/** Defines a button style, see {@link Button}
 	 * @author mzechner */
 	public static class ButtonStyle {
-		public final NinePatch down;
-		public final NinePatch up;
-		public final BitmapFont font;
-		public final Color fontColor;
+		public NinePatch down;
+		public NinePatch up;
+		public BitmapFont font;
+		public Color fontColor;
+
+		public ButtonStyle () {
+		}
 
 		public ButtonStyle (BitmapFont font, Color fontColor, NinePatch down, NinePatch up) {
 			this.font = font;

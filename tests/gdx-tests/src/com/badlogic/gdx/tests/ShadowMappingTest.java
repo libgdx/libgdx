@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -111,7 +112,7 @@ public class ShadowMappingTest extends GdxTest {
 
 	private void setupUI () {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.xml"), Gdx.files.internal("data/uiskin.png"));
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Label label = skin.newLabel("label", "Camera:");
 		ComboBox cameraCombo = skin.newComboBox("cameraCombo", new String[] {"Scene", "Light"}, ui);

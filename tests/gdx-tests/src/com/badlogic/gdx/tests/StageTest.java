@@ -78,7 +78,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		ui = new Stage(480, 320, false);
 		Image blend = new Image("blend button", new TextureRegion(uiTexture, 0, 0, 64, 32));
-		blend.y = ui.height() - 32;
+		blend.y = ui.height() - 64;
 		Image rotate = new Image("rotate button", new TextureRegion(uiTexture, 64, 0, 64, 32));
 		rotate.y = blend.y;
 		rotate.x = 64;
@@ -196,6 +196,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 				stage.getSpriteBatch().enableBlending();
 			if (hitActor.name.startsWith("rotate")) rotateSprites = !rotateSprites;
 			if (hitActor.name.startsWith("scale")) scaleSprites = !scaleSprites;
+			ui.touchUp(x, y, pointer, button);
 		}
 		return touched;
 	}

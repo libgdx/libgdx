@@ -24,33 +24,37 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** A group is an Actor that contains other Actors (also other Groups which are Actors).
- * 
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public class Group extends Actor {
 	public static Texture debugTexture;
 	public static boolean debug = false;
 
-	protected final Matrix4 tmp4 = new Matrix4();
-	protected final Matrix4 oldBatchTransform = new Matrix4();
-	protected final Matrix3 transform;
-	protected final Matrix3 scenetransform = new Matrix3();
-
-	protected final List<Actor> children; // TODO O(n) delete, baaad.
+	protected final List<Actor> children;
 	protected final List<Actor> immutableChildren;
-	protected final List<Group> groups; // TODO O(n) delete, baad.
+	protected final List<Group> groups;
 	protected final List<Group> immutableGroups;
 	protected final ObjectMap<String, Actor> namesToActors;
 
+	protected final Matrix3 localTransform = new Matrix3();
+	protected final Matrix3 worldTransform = new Matrix3();
+	protected final Matrix4 batchTransform = new Matrix4();
+	protected final Matrix4 oldBatchTransform = new Matrix4();
+
+	public boolean transform = true;
 	public Actor lastTouchedChild;
 	public Actor[] focusedActor = new Actor[20];
 	public Actor keyboardFocusedActor = null;
 	public Actor scrollFocusedActor = null;
+
+	private final Vector2 point = new Vector2();
 
 	public Group () {
 		this(null);
@@ -60,35 +64,15 @@ public class Group extends Actor {
 	 * @param name the name of the group */
 	public Group (String name) {
 		super(name);
-		this.transform = new Matrix3();
-		this.children = new ArrayList<Actor>();
-		this.immutableChildren = Collections.unmodifiableList(this.children);
-		this.groups = new ArrayList<Group>();
-		this.immutableGroups = Collections.unmodifiableList(this.groups);
-		this.namesToActors = new ObjectMap<String, Actor>();
-	}
-
-	protected void updateTransform () {
-		if (originX != 0 || originY != 0)
-			transform.setToTranslation(originX, originY);
-		else
-			transform.idt();
-		if (rotation != 0) transform.mul(scenetransform.setToRotation(rotation));
-		if (scaleX != 1 || scaleY != 1) transform.mul(scenetransform.setToScaling(scaleX, scaleY));
-		if (originX != 0 || originY != 0) transform.mul(scenetransform.setToTranslation(-originX, -originY));
-		transform.trn(x, y);
-
-		if (parent != null) {
-			scenetransform.set(parent.scenetransform);
-			scenetransform.mul(transform);
-		} else {
-			scenetransform.set(transform);
-		}
+		children = new ArrayList<Actor>();
+		immutableChildren = Collections.unmodifiableList(children);
+		groups = new ArrayList<Group>();
+		immutableGroups = Collections.unmodifiableList(groups);
+		namesToActors = new ObjectMap<String, Actor>();
 	}
 
 	public void act (float delta) {
 		super.act(delta);
-
 		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
 			child.act(delta);
@@ -98,144 +82,88 @@ public class Group extends Actor {
 				i--;
 			}
 		}
-
 	}
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (!visible) return;
-		setupTransform(batch);
-		drawChildren(batch, parentAlpha);
-		resetTransform(batch);
-	}
-
-	protected void setupTransform (SpriteBatch batch) {
-		updateTransform();
-		tmp4.set(scenetransform);
 
 		if (debug && debugTexture != null && parent != null)
 			batch.draw(debugTexture, x, y, originX, originY, width == 0 ? 200 : width, height == 0 ? 200 : height, scaleX, scaleY,
 				rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), false, false);
 
-		batch.end();
-		oldBatchTransform.set(batch.getTransformMatrix());
-		batch.setTransformMatrix(tmp4);
-		batch.begin();
+		if (transform) applyTransform(batch);
+		drawChildren(batch, parentAlpha);
+		if (transform) resetTransform(batch);
 	}
 
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
-		int len = children.size();
-		for (int i = 0; i < len; i++) {
-			Actor child = children.get(i);
-			if (child.visible) {
-				child.draw(batch, parentAlpha * color.a);
+		parentAlpha *= color.a;
+		if (transform) {
+			for (int i = 0; i < children.size(); i++) {
+				Actor child = children.get(i);
+				if (!child.visible) continue;
+				child.draw(batch, parentAlpha);
+			}
+		} else {
+			for (int i = 0; i < children.size(); i++) {
+				Actor child = children.get(i);
+				if (!child.visible) continue;
+				child.x += x;
+				child.y += y;
+				child.draw(batch, parentAlpha);
+				child.x -= x;
+				child.y -= y;
 			}
 		}
-		batch.flush();
+		if (transform) batch.flush();
 	}
 
 	protected void drawChild (Actor child, SpriteBatch batch, float parentAlpha) {
-		if (child.visible) {
-			child.draw(batch, parentAlpha * color.a);
+		if (child.visible) child.draw(batch, parentAlpha * color.a);
+		if (transform) batch.flush();
+	}
+
+	protected void applyTransform (SpriteBatch batch) {
+		Matrix4 newBatchTransform = updateTransform();
+		batch.end();
+		oldBatchTransform.set(batch.getTransformMatrix());
+		batch.setTransformMatrix(newBatchTransform);
+		batch.begin();
+	}
+
+	protected Matrix4 updateTransform () {
+		Matrix3 temp = worldTransform;
+		if (originX != 0 || originY != 0)
+			localTransform.setToTranslation(originX, originY);
+		else
+			localTransform.idt();
+		if (rotation != 0) localTransform.mul(temp.setToRotation(rotation));
+		if (scaleX != 1 || scaleY != 1) localTransform.mul(temp.setToScaling(scaleX, scaleY));
+		if (originX != 0 || originY != 0) localTransform.mul(temp.setToTranslation(-originX, -originY));
+		localTransform.trn(x, y);
+
+		Group parentGroup = parent;
+		while (parentGroup != null) {
+			if (parentGroup.transform) break;
+			parentGroup = parentGroup.parent;
 		}
-		batch.flush();
+
+		if (parentGroup != null) {
+			worldTransform.set(parentGroup.worldTransform);
+			worldTransform.mul(localTransform);
+		} else {
+			worldTransform.set(localTransform);
+		}
+
+		batchTransform.set(worldTransform);
+		return batchTransform;
 	}
 
 	protected void resetTransform (SpriteBatch batch) {
 		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
 		batch.begin();
-	}
-
-	final Vector2 point = new Vector2();
-
-	static final Vector2 xAxis = new Vector2();
-	static final Vector2 yAxis = new Vector2();
-	static final Vector2 p = new Vector2();
-	static final Vector2 ref = new Vector2();
-
-	/** Transforms the coordinates given in the child's parent coordinate system to the child {@link Actor}'s coordinate system.
-	 * @param child the child Actor
-	 * @param x the x-coordinate in the Group's coordinate system
-	 * @param y the y-coordinate in the Group's coordinate system
-	 * @param out the output {@link Vector2} */
-	public static void toChildCoordinates (Actor child, float x, float y, Vector2 out) {
-		if (child.rotation == 0) {
-			if (child.scaleX == 1 && child.scaleY == 1) {
-				out.x = x - child.x;
-				out.y = y - child.y;
-			} else {
-				if (child.originX == 0 && child.originY == 0) {
-					out.x = (x - child.x) / child.scaleX;
-					out.y = (y - child.y) / child.scaleY;
-				} else {
-					out.x = (x - child.x - child.originX) / child.scaleX + child.originX;
-					out.y = (y - child.y - child.originY) / child.scaleY + child.originY;
-				}
-			}
-		} else {
-			final float cos = (float)Math.cos((float)Math.toRadians(child.rotation));
-			final float sin = (float)Math.sin((float)Math.toRadians(child.rotation));
-
-			if (child.scaleX == 1 && child.scaleY == 1) {
-				if (child.originX == 0 && child.originY == 0) {
-					float tox = x - child.x;
-					float toy = y - child.y;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-				} else {
-					final float worldOriginX = child.x + child.originX;
-					final float worldOriginY = child.y + child.originY;
-					float fx = -child.originX;
-					float fy = -child.originY;
-
-					float x1 = cos * fx - sin * fy;
-					float y1 = sin * fx + cos * fy;
-					x1 += worldOriginX;
-					y1 += worldOriginY;
-
-					float tox = x - x1;
-					float toy = y - y1;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-				}
-			} else {
-				if (child.originX == 0 && child.originY == 0) {
-					float tox = x - child.x;
-					float toy = y - child.y;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-
-					out.x /= child.scaleX;
-					out.y /= child.scaleY;
-				} else {
-					float srefX = child.originX * child.scaleX;
-					float srefY = child.originY * child.scaleY;
-
-					final float worldOriginX = child.x + child.originX;
-					final float worldOriginY = child.y + child.originY;
-					float fx = -srefX;
-					float fy = -srefY;
-
-					float x1 = cos * fx - sin * fy;
-					float y1 = sin * fx + cos * fy;
-					x1 += worldOriginX;
-					y1 += worldOriginY;
-
-					float tox = x - x1;
-					float toy = y - y1;
-
-					out.x = tox * cos + toy * sin;
-					out.y = tox * -sin + toy * cos;
-
-					out.x /= child.scaleX;
-					out.y /= child.scaleY;
-				}
-			}
-		}
 	}
 
 	@Override
@@ -258,8 +186,11 @@ public class Group extends Actor {
 			if (!child.touchable) continue;
 
 			toChildCoordinates(child, x, y, point);
-
+			if (child.hit(point.x, point.y) == null) continue;
 			if (child.touchDown(point.x, point.y, pointer)) {
+				if (focusedActor[pointer] == null) {
+					focus(child, pointer);
+				}
 				if (child instanceof Group)
 					lastTouchedChild = ((Group)child).lastTouchedChild;
 				else
@@ -272,27 +203,17 @@ public class Group extends Actor {
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (!touchable) return false;
-
-		if (focusedActor[pointer] != null) {
-			point.x = x;
-			point.y = y;
-			focusedActor[pointer].toLocalCoordinates(point);
-			focusedActor[pointer].touchUp(point.x, point.y, pointer);
-			return true;
+	public void touchUp (float x, float y, int pointer) {
+		if (!touchable) return;
+		point.x = x;
+		point.y = y;
+		Actor actor = focusedActor[pointer];
+		if (actor != this) {
+			actor.toLocalCoordinates(point);
+			actor.touchUp(point.x, point.y, pointer);
 		}
-
-		int len = children.size() - 1;
-		for (int i = len; i >= 0; i--) {
-			Actor child = children.get(i);
-			if (!child.touchable) continue;
-
-			toChildCoordinates(child, x, y, point);
-
-			if (child.touchUp(point.x, point.y, pointer)) return true;
-		}
-		return false;
+		// If the focused actor hasn't changed and hasn't already lost focus, remove its focus.
+		if (focusedActor[pointer] == actor && actor != null) actor.parent.focus(null, pointer);
 	}
 
 	@Override
@@ -312,27 +233,14 @@ public class Group extends Actor {
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		if (!touchable) return false;
-
+	public void touchDragged (float x, float y, int pointer) {
 		if (focusedActor[pointer] != null) {
+			if (!touchable) return;
 			point.x = x;
 			point.y = y;
 			focusedActor[pointer].toLocalCoordinates(point);
 			focusedActor[pointer].touchDragged(point.x, point.y, pointer);
-			return true;
 		}
-
-		int len = children.size() - 1;
-		for (int i = len; i >= 0; i--) {
-			Actor child = children.get(i);
-			if (!child.touchable) continue;
-
-			toChildCoordinates(child, x, y, point);
-
-			if (child.touchDragged(point.x, point.y, pointer)) return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -500,6 +408,14 @@ public class Group extends Actor {
 	 * 
 	 * @param actor the Actor */
 	public void focus (Actor actor, int pointer) {
+		Actor existingActor = focusedActor[pointer];
+		if (existingActor != null) {
+			// An actor already has focus. Remove the focus if it is not a child of this group, because the focused actor could be
+			// further down in the hiearchy.
+			focusedActor[pointer] = null;
+			if (existingActor.parent != this) existingActor.parent.focus(null, pointer);
+		}
+		if (debug) Gdx.app.log("Group", "focus: " + (actor == null ? "null" : actor.name));
 		focusedActor[pointer] = actor;
 		if (parent != null) parent.focus(actor, pointer);
 	}
@@ -520,27 +436,17 @@ public class Group extends Actor {
 		if (parent != null) parent.scrollFocus(actor);
 	}
 
-	public static void enableDebugging (String debugTextureFile) {
-		debugTexture = new Texture(Gdx.files.internal(debugTextureFile), false);
-		debug = true;
-	}
-
-	public static void disableDebugging () {
-		if (debugTexture != null) debugTexture.dispose();
-		debug = false;
-	}
-
 	/** Clears this Group, removing all contained {@link Actor}s. */
 	public void clear () {
-		this.children.clear();
-		this.groups.clear();
-		this.namesToActors.clear();
+		children.clear();
+		groups.clear();
+		namesToActors.clear();
 	}
 
 	/** Sorts the children via the given {@link Comparator}.
 	 * @param comparator the comparator. */
 	public void sortChildren (Comparator<Actor> comparator) {
-		Collections.sort(this.children, comparator);
+		Collections.sort(children, comparator);
 	}
 
 	/** Unfocuses all {@link Actor} instance currently focused for touch and keyboard events. You should call this in case your app
@@ -570,5 +476,99 @@ public class Group extends Actor {
 
 		if (keyboardFocusedActor == actor) keyboardFocus(null);
 		if (scrollFocusedActor == actor) scrollFocus(null);
+	}
+
+	/** Transforms the coordinates given in the child's parent coordinate system to the child {@link Actor}'s coordinate system.
+	 * @param child the child Actor
+	 * @param x the x-coordinate in the Group's coordinate system
+	 * @param y the y-coordinate in the Group's coordinate system
+	 * @param out the output {@link Vector2} */
+	static public void toChildCoordinates (Actor child, float x, float y, Vector2 out) {
+		if (child.rotation == 0) {
+			if (child.scaleX == 1 && child.scaleY == 1) {
+				out.x = x - child.x;
+				out.y = y - child.y;
+			} else {
+				if (child.originX == 0 && child.originY == 0) {
+					out.x = (x - child.x) / child.scaleX;
+					out.y = (y - child.y) / child.scaleY;
+				} else {
+					out.x = (x - child.x - child.originX) / child.scaleX + child.originX;
+					out.y = (y - child.y - child.originY) / child.scaleY + child.originY;
+				}
+			}
+		} else {
+			final float cos = (float)Math.cos(child.rotation * MathUtils.degreesToRadians);
+			final float sin = (float)Math.sin(child.rotation * MathUtils.degreesToRadians);
+
+			if (child.scaleX == 1 && child.scaleY == 1) {
+				if (child.originX == 0 && child.originY == 0) {
+					float tox = x - child.x;
+					float toy = y - child.y;
+
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+				} else {
+					final float worldOriginX = child.x + child.originX;
+					final float worldOriginY = child.y + child.originY;
+					float fx = -child.originX;
+					float fy = -child.originY;
+
+					float x1 = cos * fx - sin * fy;
+					float y1 = sin * fx + cos * fy;
+					x1 += worldOriginX;
+					y1 += worldOriginY;
+
+					float tox = x - x1;
+					float toy = y - y1;
+
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+				}
+			} else {
+				if (child.originX == 0 && child.originY == 0) {
+					float tox = x - child.x;
+					float toy = y - child.y;
+
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+
+					out.x /= child.scaleX;
+					out.y /= child.scaleY;
+				} else {
+					float srefX = child.originX * child.scaleX;
+					float srefY = child.originY * child.scaleY;
+
+					final float worldOriginX = child.x + child.originX;
+					final float worldOriginY = child.y + child.originY;
+					float fx = -srefX;
+					float fy = -srefY;
+
+					float x1 = cos * fx - sin * fy;
+					float y1 = sin * fx + cos * fy;
+					x1 += worldOriginX;
+					y1 += worldOriginY;
+
+					float tox = x - x1;
+					float toy = y - y1;
+
+					out.x = tox * cos + toy * sin;
+					out.y = tox * -sin + toy * cos;
+
+					out.x /= child.scaleX;
+					out.y /= child.scaleY;
+				}
+			}
+		}
+	}
+
+	static public void enableDebugging (String debugTextureFile) {
+		debugTexture = new Texture(Gdx.files.internal(debugTextureFile), false);
+		debug = true;
+	}
+
+	static public void disableDebugging () {
+		if (debugTexture != null) debugTexture.dispose();
+		debug = false;
 	}
 }

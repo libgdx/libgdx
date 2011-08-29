@@ -159,12 +159,14 @@ public class JsonReader {
 				fret;
 			}
 
-			stringChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
-			name = '"' stringChars >buffer %name '"';
+			# parse single quote
+			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
+			unquotedChars = ^([0-9:"{}\[\],.] | space)+;
+			name = ('"' quotedChars >buffer %name '"') | unquotedChars >buffer %name;
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
-			string = '"' stringChars >buffer %string '"';
+			string = ('"' quotedChars >buffer %string '"') | unquotedChars >buffer %string;
 			number = ('-'? ('0' | ([1-9][0-9]*)) ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?) >buffer %number;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
@@ -172,9 +174,9 @@ public class JsonReader {
 
 			nameValue = name space* ':' space* value;
 
-			object := space* (nameValue space*)? ( (',' space* nameValue space*)+ )? '}' @endObject;
+			object := space* (nameValue space*)? (',' space* nameValue space*)** ','? space* '}' @endObject;
 
-			array := space* (value space*)? ( (',' space* value space*)+ )? ']' @endArray;
+			array := space* (value space*)? (',' space* value space*)** ','? space* ']' @endArray;
 
 			main := space* value space*;
 

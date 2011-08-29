@@ -227,7 +227,7 @@ public class SplitPane extends Group implements Layout {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		NinePatch handle = style.handle;
 
-		setupTransform(batch);
+		applyTransform(batch);
 		calculateBoundsAndPositions(batch.getTransformMatrix());
 		for (int i = 0; i < children.size(); i++) {
 			ScissorStack.pushScissors(scissors[i]);
@@ -250,28 +250,24 @@ public class SplitPane extends Group implements Layout {
 			touchDrag = true;
 			lastPoint.set(x, y);
 			handlePos.set(handleBounds.x, handleBounds.y);
-			focus(this, 0);
 			return true;
 		}
 		return super.touchDown(x, y, pointer);
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (pointer != 0) return false;
+	public void touchUp (float x, float y, int pointer) {
 		if (touchDrag) {
-			focus(null, 0);
 			touchDrag = false;
-			return true;
+			return;
 		}
-		return super.touchUp(x, y, pointer);
+		super.touchUp(x, y, pointer);
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
+	public void touchDragged (float x, float y, int pointer) {
 		NinePatch handle = style.handle;
 
-		if (pointer != 0) return false;
 		if (touchDrag) {
 			if (!vertical) {
 				float delta = x - lastPoint.x;
@@ -298,9 +294,8 @@ public class SplitPane extends Group implements Layout {
 				invalidate();
 				lastPoint.set(x, y);
 			}
-			return true;
 		} else
-			return super.touchDragged(x, y, pointer);
+			super.touchDragged(x, y, pointer);
 	}
 
 	@Override
@@ -311,7 +306,10 @@ public class SplitPane extends Group implements Layout {
 	/** Defines the style of a split pane, see {@link SplitPane}
 	 * @author mzechner */
 	public static class SplitPaneStyle {
-		public final NinePatch handle;
+		public NinePatch handle;
+
+		public SplitPaneStyle () {
+		}
 
 		public SplitPaneStyle (NinePatch handle) {
 			this.handle = handle;

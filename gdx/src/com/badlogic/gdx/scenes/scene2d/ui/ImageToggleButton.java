@@ -132,29 +132,27 @@ public class ImageToggleButton extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			isPressed = !isPressed;
-			if (listener != null) listener.click(this, isPressed);
-			return true;
-		}
-		return false;
+		isPressed = !isPressed;
+		if (listener != null) listener.click(this, isPressed);
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		return false;
+	public void touchUp (float x, float y, int pointer) {
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	/** Defines an image toggle button style, see {@link ImageToggleButton}
 	 * @author mzechner */
 	public static class ImageToggleButtonStyle {
-		public final NinePatch down;
-		public final NinePatch up;
+		public NinePatch down;
+		public NinePatch up;
+
+		public ImageToggleButtonStyle () {
+		}
 
 		public ImageToggleButtonStyle (NinePatch down, NinePatch up) {
 			this.down = down;

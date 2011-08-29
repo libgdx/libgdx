@@ -39,7 +39,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		data = new BitmapFontData(handle, parameter != null ? parameter.flip : false);
 
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
-		deps.add(new AssetDescriptor(data.getImageFile(), Texture.class, null));
+		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class, null));
 		return deps;
 	}
 
@@ -52,7 +52,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	@Override
 	public BitmapFont loadSync () {
 		FileHandle handle = resolve(fileName);
-		TextureRegion region = new TextureRegion(manager.get(data.getImageFile(), Texture.class));
+		TextureRegion region = new TextureRegion(manager.get(data.getImagePath(), Texture.class));
 		return new BitmapFont(data, region, true);
 	}
 

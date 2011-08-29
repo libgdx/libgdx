@@ -9,7 +9,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class BlitTest extends GdxTest {
 	@Override
 	public boolean needsGL20 () {
-		return false;
+		return true;
 	}
 	
 	Texture rgb888;

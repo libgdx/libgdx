@@ -243,30 +243,25 @@ public class TextField extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			parent.keyboardFocus(this);
-			keyboard.show(true);
-			x = x - renderOffset;
-			for (int i = 0; i < glyphPositions.size; i++) {
-				float pos = glyphPositions.items[i];
-				if (pos > x) {
-					cursor = Math.max(0, i - 1);
-					break;
-				}
+		parent.keyboardFocus(this);
+		keyboard.show(true);
+		x = x - renderOffset;
+		for (int i = 0; i < glyphPositions.size; i++) {
+			float pos = glyphPositions.items[i];
+			if (pos > x) {
+				cursor = Math.max(0, i - 1);
+				break;
 			}
-			return true;
-		} else
-			return false;
+		}
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		return false;
+	public void touchUp (float x, float y, int pointer) {
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	public boolean keyDown (int keycode) {
@@ -429,11 +424,14 @@ public class TextField extends Widget {
 	/** Defines a text field's style, see {@link TextField}
 	 * @author mzechner */
 	public static class TextFieldStyle {
-		public final NinePatch background;
-		public final BitmapFont font;
-		public final Color fontColor;
-		public final NinePatch cursor;
-		public final TextureRegion selection;
+		public NinePatch background;
+		public BitmapFont font;
+		public Color fontColor;
+		public NinePatch cursor;
+		public TextureRegion selection;
+
+		public TextFieldStyle () {
+		}
 
 		public TextFieldStyle (BitmapFont font, Color fontColor, NinePatch cursor, TextureRegion selection, NinePatch background) {
 			this.background = background;

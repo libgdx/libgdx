@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -22,11 +23,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
+import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -60,16 +63,18 @@ public class UITest extends GdxTest {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("data/uiskin.xml"), Gdx.files.internal("data/uiskin.png"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 		TextureRegion image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(ui);
 
-		Window window = skin.newWindow("window", ui, "Dialog", 320, 240);
+		Window window = skin.newWindow("window", ui, "Dialog", 420, 440);
 		window.x = window.y = 0;
 
+		//Group.debug = true;
+		
 		final Button button = skin.newButton("button-sl", "Single");
 		final ToggleButton buttonMulti = skin.newToggleButton("button-ml-tgl", "Multi\nLine\nToggle");
 		final ImageButton imgButton = skin.newImageButton("button-img", image);
@@ -78,12 +83,13 @@ public class UITest extends GdxTest {
 		final Slider slider = skin.newSlider("slider", 100, 0, 10, 1);
 		final TextField textfield = skin.newTextField("textfield", 100);
 		final ComboBox combobox = skin.newComboBox("combo", new String[] {"Android", "Windows", "Linux", "OSX"}, ui);
+		// BOZO - Need an image actor in UI package that has a pref size separate from the actor size.
 		final Image imageActor = new Image("image", image2);
-		final ScrollPane scrollPane = skin.newScrollPane("scroll", ui, imageActor, 100, 100);
+		final FlickScrollPane scrollPane = new FlickScrollPane("scroll", ui, imageActor, 0, 0);
 		final List list = skin.newList("list", listEntries);
-		final ScrollPane scrollPane2 = skin.newScrollPane("scroll2", ui, list, 100, 100);
+		final ScrollPane scrollPane2 = skin.newScrollPane("scroll2", ui, list, 0, 0);
 		final SplitPane splitPane = skin.newSplitPane("split", ui, scrollPane, scrollPane2, false, 0, 0, "default-horizontal");
-		final Label label = skin.newLabel("label", "fps:");
+		final Label fpsLabel = skin.newLabel("label", "fps:");
 
 		imgButton.setImageSize(16, 20);
 		imgToggleButton.setImageSize(10, 10);
@@ -102,9 +108,9 @@ public class UITest extends GdxTest {
 		layout.add(combobox);
 		layout.add(textfield).expandX().fillX().colspan(3);
 		layout.row();
-		layout.add(splitPane).fill().expand().colspan(4);
+		layout.add(splitPane).fill().expand().colspan(4).minHeight(200);
 		layout.row();
-		layout.add(label).fill().expand();
+		layout.add(fpsLabel).colspan(4);
 
 		textfield.setTextFieldListener(new TextFieldListener() {
 			@Override

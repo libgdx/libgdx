@@ -136,24 +136,19 @@ public class List extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			selected = (int)((height - y) / entryHeight);
-			selected = Math.max(0, selected);
-			selected = Math.min(entries.length - 1, selected);
-			if (listener != null) listener.selected(this, selected, entries[selected]);
-			return true;
-		}
-		return false;
+		selected = (int)((height - y) / entryHeight);
+		selected = Math.max(0, selected);
+		selected = Math.min(entries.length - 1, selected);
+		if (listener != null) listener.selected(this, selected, entries[selected]);
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		return false;
+	public void touchUp (float x, float y, int pointer) {
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	@Override
@@ -164,10 +159,13 @@ public class List extends Widget {
 	/** Defines a list style, see {@link List}
 	 * @author mzechner */
 	public static class ListStyle {
-		public final BitmapFont font;
-		public final Color fontColorSelected = new Color(1, 1, 1, 1);
-		public final Color fontColorUnselected = new Color(1, 1, 1, 1);
-		public final NinePatch selectedPatch;
+		public BitmapFont font;
+		public Color fontColorSelected = new Color(1, 1, 1, 1);
+		public Color fontColorUnselected = new Color(1, 1, 1, 1);
+		public NinePatch selectedPatch;
+
+		private ListStyle () {
+		}
 
 		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, NinePatch selectedPatch) {
 			this.font = font;
@@ -188,6 +186,10 @@ public class List extends Widget {
 		return selected;
 	}
 
+	public void setSelectedIndex (int index) {
+		selected = index;
+	}
+
 	/** @return the text of the curently selected entry */
 	public String getSelection () {
 		return entries[selected];
@@ -202,6 +204,17 @@ public class List extends Widget {
 		invalidateHierarchy(); 
 	}
 
+	public int setSelection (String entry) {
+		selected = -1;
+		for (int i = 0, n = entries.length; i < n; i++) {
+			if (entries[i].equals(entry)) {
+				selected = i;
+				break;
+			}
+		}
+		return selected;
+	}
+
 	/** Sets the entries of this list. Invalidates all parents.
 	 * @param entries the entries. */
 	public void setEntries (String[] entries) {
@@ -209,6 +222,10 @@ public class List extends Widget {
 		this.entries = entries;
 		selected = 0;
 		invalidateHierarchy();
+	}
+
+	public String[] getEntries () {
+		return entries;
 	}
 
 	/** Sets the {@link SelectionListener} of this list.

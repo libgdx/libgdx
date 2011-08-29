@@ -104,9 +104,9 @@ public abstract class Actor {
 
 	public abstract boolean touchDown (float x, float y, int pointer);
 
-	public abstract boolean touchUp (float x, float y, int pointer);
+	public abstract void touchUp (float x, float y, int pointer);
 
-	public abstract boolean touchDragged (float x, float y, int pointer);
+	public abstract void touchDragged (float x, float y, int pointer);
 
 	public boolean touchMoved (float x, float y) {
 		return false;

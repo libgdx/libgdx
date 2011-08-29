@@ -29,7 +29,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actors.FastImage;
+import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class StagePerformanceTest extends GdxTest {
@@ -64,7 +64,7 @@ public class StagePerformanceTest extends GdxTest {
 		Random rand = new Random();
 		for (int y = 0, i = 0; y < 12; y++) {
 			for (int x = 0; x < 24; x++) {
-				FastImage img = new FastImage("img" + i, regions[rand.nextInt(8 * 8)]);
+				Image img = new Image("img" + i, regions[rand.nextInt(8 * 8)]);
 				img.x = x;
 				img.y = y;
 				img.width = 1;

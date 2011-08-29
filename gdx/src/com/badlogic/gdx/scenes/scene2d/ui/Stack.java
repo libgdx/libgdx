@@ -37,6 +37,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit;
 public class Stack extends Group implements Layout {
 	private boolean needsLayout = true;
 
+	public Stack () {
+		this(null);
+	}
+
+	public Stack (String name) {
+		super(name);
+		transform = false;
+	}
+
 	public void layout () {
 		if (!needsLayout) return;
 		needsLayout = false;

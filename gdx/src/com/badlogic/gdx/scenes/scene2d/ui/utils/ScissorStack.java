@@ -49,12 +49,12 @@ public class ScissorStack {
 			float minX = Math.max(parent.x, scissor.x);
 			float maxX = Math.min(parent.x + parent.width, scissor.x + scissor.width);
 			scissor.x = minX;
-			scissor.width = maxX - minX;
+			scissor.width = Math.max(1, maxX - minX);
 
 			float minY = Math.max(parent.y, scissor.y);
 			float maxY = Math.min(parent.y + parent.height, scissor.y + scissor.height);
 			scissor.y = minY;
-			scissor.height = maxY - minY;
+			scissor.height = Math.max(1, maxY - minY);
 		}
 		scissors.add(scissor);
 		Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);

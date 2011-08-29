@@ -63,10 +63,6 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		super(toolkit);
 	}
 
-	public void parse (FileHandle file) {
-		super.parse(file.readString());
-	}
-
 	/** Calls {@link #register(String, Actor)} with the name of the actor. */
 	public Actor register (Actor actor) {
 		if (actor.name == null) throw new IllegalArgumentException("Actor must have a name: " + actor.getClass());
@@ -111,10 +107,13 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		}
 	}
 
+	/** Invalidates the layout, forcing the next call to {@link #layout()} to relayout. If a widget is resized or otherwise changed
+	 * in a way that affects its layout, {@link #invalidate()} should be called. */
 	public void invalidate () {
 		needsLayout = true;
 	}
 
+	/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */
 	public void invalidateHierarchy () {
 		invalidate();
 		Actor parent = getTable().parent;
@@ -135,7 +134,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 
 		Table table = getTable();
 		Actor parent = table.parent;
-		float x = 0, y = 0;
+		float x = table.x, y = 0;
 		while (parent != null) {
 			if (parent instanceof Group) {
 				x += parent.x;

@@ -208,9 +208,18 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not */
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
+		boolean foundFocusedActor = false;
+		for (int i = 0, n = root.focusedActor.length; i < n; i++) {
+			if (root.focusedActor[i] != null) {
+				foundFocusedActor = true;
+				break;
+			}
+		}
+		if (!foundFocusedActor) return false;
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
-		return root.touchUp(point.x, point.y, pointer);
+		root.touchUp(point.x, point.y, pointer);
+		return true;
 	}
 
 	/** Call this to distribute a touch dragged event to the stage.
@@ -220,9 +229,18 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not */
 	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
+		boolean foundFocusedActor = false;
+		for (int i = 0, n = root.focusedActor.length; i < n; i++) {
+			if (root.focusedActor[i] != null) {
+				foundFocusedActor = true;
+				break;
+			}
+		}
+		if (!foundFocusedActor) return false;
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
-		return root.touchDragged(point.x, point.y, pointer);
+		root.touchDragged(point.x, point.y, pointer);
+		return true;
 	}
 
 	/** Call this to distribute a touch moved event to the stage. This event will only ever appear on the desktop.

@@ -18,10 +18,12 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /** A label.
  * 
@@ -56,41 +58,59 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * @author mzechner */
 public class Label extends Widget {
 	final LabelStyle style;
-	String label;
-	final TextBounds bounds = new TextBounds();
-	final Vector2 textPos = new Vector2();
+	final BitmapFontCache cache;
+	String text;
 
-	public Label (String name, String label, LabelStyle style) {
+	public Label (String name, String text, LabelStyle style) {
 		super(name, 0, 0);
 		this.style = style;
-		this.label = label;
-		this.touchable = false;
-		layout();
-		this.width = prefWidth;
-		this.height = prefHeight;
+
+		cache = new BitmapFontCache(style.font);
+		cache.setColor(style.fontColor);
+		setText(text);
+
+		width = prefWidth;
+		height = prefHeight;
+		touchable = false;
+	}
+
+	public void setText (String text) {
+		this.text = text;
+		TextBounds bounds = style.font.getMultiLineBounds(text);
+		cache.setMultiLineText(text, 0, bounds.height);
+		prefWidth = bounds.width;
+		prefHeight = bounds.height;
+		invalidateHierarchy();
+	}
+
+	public String getText () {
+		return text;
+	}
+
+	public void setColor (float color) {
+		cache.setColor(color);
+	}
+
+	public void setColor (Color tint) {
+		cache.setColor(tint);
+	}
+
+	public void setColor (float r, float g, float b, float a) {
+		cache.setColor(r, g, b, a);
+	}
+
+	public Color getColor () {
+		return cache.getColor();
 	}
 
 	@Override
 	public void layout () {
-		final BitmapFont font = style.font;
-
-		bounds.set(font.getMultiLineBounds(label));
-		bounds.height -= font.getDescent();
-		prefWidth = bounds.width;
-		prefHeight = bounds.height;
-		textPos.x = 0;
-		textPos.y = prefHeight;
-		invalidated = false;
 	}
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final BitmapFont font = style.font;
-		final Color fontColor = style.fontColor;
-
-		if (invalidated) layout();
-		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-		font.drawMultiLine(batch, label, x + textPos.x, y + height);
+		cache.setPosition(x, y);
+		cache.draw(batch, parentAlpha);
 	}
 
 	@Override
@@ -99,13 +119,12 @@ public class Label extends Widget {
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		return false;
+	public void touchUp (float x, float y, int pointer) {
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
+
 	}
 
 	@Override
@@ -119,15 +138,12 @@ public class Label extends Widget {
 		public BitmapFont font;
 		public Color fontColor;
 
+		public LabelStyle () {
+		}
+
 		public LabelStyle (BitmapFont font, Color fontColor) {
 			this.font = font;
 			this.fontColor = fontColor;
 		}
-	}
-
-	public void setText (String text) {
-		this.label = text;
-		layout();
-		invalidateHierarchy();
 	}
 }

@@ -100,6 +100,8 @@ public class Window extends Table {
 		height = prefHeight;
 		this.style = style;
 
+		transform = true;
+
 		final NinePatch background = style.background;
 		TableLayout layout = getTableLayout();
 		layout.padBottom(Integer.toString((int)(background.getBottomHeight()) + 1));
@@ -131,8 +133,8 @@ public class Window extends Table {
 		final BitmapFont titleFont = style.titleFont;
 		final Color titleFontColor = style.titleFontColor;
 
-		setupTransform(batch);
 		layout();
+		applyTransform(batch);
 		calculateBoundsAndScissors(batch.getTransformMatrix());
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
@@ -153,9 +155,12 @@ public class Window extends Table {
 	/** Defines the style of a window, see {@link Window}
 	 * @author mzechner */
 	public static class WindowStyle {
-		public final NinePatch background;
-		public final BitmapFont titleFont;
-		public final Color titleFontColor = new Color(1, 1, 1, 1);
+		public NinePatch background;
+		public BitmapFont titleFont;
+		public Color titleFontColor = new Color(1, 1, 1, 1);
+
+		public WindowStyle () {
+		}
 
 		public WindowStyle (BitmapFont titleFont, Color titleFontColor, NinePatch backgroundPatch) {
 			this.background = backgroundPatch;
@@ -167,42 +172,29 @@ public class Window extends Table {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			if (parent.getActors().size() > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size() - 1));
-			if (titleBounds.contains(x, y)) {
-				focus(this, 0);
-				if (isMovable) {
-					move = true;
-				}
-				initial.set(x, y);
-			} else if (!super.touchDown(x, y, pointer)) {
-				focus(this, 0);
-			}
-			return true;
-		} else {
-			if (isModal && parent.getActors().size() > 1)
-				parent.swapActor(this, parent.getActors().get(parent.getActors().size() - 1));
-			return isModal;
-		}
+		if (parent.getActors().size() > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size() - 1));
+		if (titleBounds.contains(x, y)) {
+			if (isMovable) move = true;
+			initial.set(x, y);
+		} else
+			super.touchDown(x, y, pointer);
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		if (parent.focusedActor[0] == this) focus(null, 0);
+	public void touchUp (float x, float y, int pointer) {
 		move = false;
-		return super.touchUp(x, y, pointer) || isModal;
+		if (parent.focusedActor[0] != this) super.touchUp(x, y, pointer);
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
+	public void touchDragged (float x, float y, int pointer) {
 		if (move) {
 			this.x += (x - initial.x);
 			this.y += (y - initial.y);
-			return true;
+			return;
 		}
-		if (parent.focusedActor[0] == this) return true;
-		return super.touchDragged(x, y, pointer) || isModal;
+		if (parent.focusedActor[0] != this) super.touchDragged(x, y, pointer);
 	}
 
 	@Override

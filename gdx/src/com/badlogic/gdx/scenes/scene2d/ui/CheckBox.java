@@ -138,21 +138,17 @@ public class CheckBox extends Widget {
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
-		return false;
+		return pointer == 0;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (x >= 0 && x < width && y >= 0 && y < height) {
-			isChecked = !isChecked;
-			if (listener != null) listener.checked(this, isChecked);
-		}
-		return false;
+	public void touchUp (float x, float y, int pointer) {
+		isChecked = !isChecked;
+		if (listener != null) listener.checked(this, isChecked);
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	@Override
@@ -177,10 +173,13 @@ public class CheckBox extends Widget {
 	/** Defines a check box style, see {@link CheckBox}
 	 * @author mzechner */
 	public static class CheckBoxStyle {
-		public final BitmapFont font;
-		public final Color fontColor;
-		public final TextureRegion checked;
-		public final TextureRegion unchecked;
+		public BitmapFont font;
+		public Color fontColor;
+		public TextureRegion checked;
+		public TextureRegion unchecked;
+
+		public CheckBoxStyle () {
+		}
 
 		public CheckBoxStyle (BitmapFont font, Color fontColor, TextureRegion checked, TextureRegion unchecked) {
 			this.font = font;

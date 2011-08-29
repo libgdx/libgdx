@@ -132,39 +132,32 @@ public class ImageButton extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			isPressed = true;
-			parent.focus(this, pointer);
-			return true;
-		}
-		return false;
+		isPressed = true;
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		if (pointer != 0) return false;
+	public void touchUp (float x, float y, int pointer) {
 		if (hit(x, y) != null) {
 			if (listener != null) listener.click(this);
-			parent.focus(null, pointer);
 			isPressed = false;
-			return true;
+			return;
 		}
 		isPressed = false;
-		parent.focus(null, pointer);
-		return false;
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		if (pointer != 0) return false;
-		return isPressed;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	/** Defines an image button style, see {@link ImageButton}
 	 * @author mzechner */
 	public static class ImageButtonStyle {
-		public final NinePatch down;
-		public final NinePatch up;
+		public NinePatch down;
+		public NinePatch up;
+
+		public ImageButtonStyle () {
+		}
 
 		public ImageButtonStyle (NinePatch down, NinePatch up) {
 			this.down = down;

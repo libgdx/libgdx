@@ -36,7 +36,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.actors.Button;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.actors.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -47,6 +46,7 @@ import com.esotericsoftware.tablelayout.Toolkit;
 public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	static {
 		addClassPrefix("com.badlogic.gdx.scenes.scene2d.");
+		addClassPrefix("com.badlogic.gdx.scenes.scene2d.ui.");
 		addClassPrefix("com.badlogic.gdx.scenes.scene2d.actors.");
 	}
 
@@ -59,7 +59,11 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			if (defaultFont == null) throw new IllegalStateException("No default font has been set.");
 			return new Label(null, defaultFont, (String)object);
 		}
-		if (object == null) return new Group();
+		if (object == null) {
+			Group group = new Group();
+			group.transform = false;
+			return group;
+		}
 		return super.wrap(object);
 	}
 
@@ -68,7 +72,6 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			AtlasRegion region = layout.atlas.findRegion(className);
 			if (region != null) return new Image(className, region);
 		}
-		if (className.equals("button")) return new Button(null);
 		return super.newWidget(layout, className);
 	}
 

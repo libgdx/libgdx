@@ -108,8 +108,7 @@ public class ComboBox extends Widget {
 		final NinePatch background = style.background;
 		final BitmapFont font = style.font;
 
-		
-		prefHeight = Math.max(font.getLineHeight() + -font.getDescent() , background.getTotalHeight());
+		prefHeight = Math.max(font.getLineHeight() + -font.getDescent(), background.getTotalHeight());
 		float max = 0;
 		for (int i = 0; i < entries.length; i++) {
 			max = Math.max(font.getBounds(entries[i]).width, max);
@@ -146,34 +145,33 @@ public class ComboBox extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (hit(x, y) != null) {
-			if (list != null) stage.removeActor(list);
-			stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y, stageCoords);
-			list = new ComboList(this.name + "-list", stageCoords.x, stageCoords.y);
-			stage.addActor(list);
-			return true;
-		}
-		return false;
+		if (list != null) stage.removeActor(list);
+		stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y, stageCoords);
+		list = new ComboList(this.name + "-list", stageCoords.x, stageCoords.y);
+		stage.addActor(list);
+		return true;
 	}
 
 	@Override
-	public boolean touchUp (float x, float y, int pointer) {
-		return false;
+	public void touchUp (float x, float y, int pointer) {
+		stage.getRoot().focus(list, pointer);
 	}
 
 	@Override
-	public boolean touchDragged (float x, float y, int pointer) {
-		return false;
+	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	/** Defines the style of a combo box. See {@link ComboBox}
 	 * @author mzechner */
 	public static class ComboBoxStyle {
-		public final NinePatch background;
-		public final NinePatch listBackground;
-		public final NinePatch listSelection;
-		public final BitmapFont font;
-		public final Color fontColor = new Color(1, 1, 1, 1);
+		public NinePatch background;
+		public NinePatch listBackground;
+		public NinePatch listSelection;
+		public BitmapFont font;
+		public Color fontColor = new Color(1, 1, 1, 1);
+
+		public ComboBoxStyle () {
+		}
 
 		public ComboBoxStyle (BitmapFont font, Color fontColor, NinePatch background, NinePatch listBackground,
 			NinePatch listSelection) {
@@ -263,39 +261,26 @@ public class ComboBox extends Widget {
 				font.setScale(1, 1);
 				posY -= entryHeight;
 			}
-
-			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) {
-				stage.removeActor(this);
-			}
 		}
 
 		@Override
 		public boolean touchDown (float x, float y, int pointer) {
-			if (pointer != 0) return false;
-			if (hit(x, y) != null) {
-				selected = (int)((height - y) / entryHeight);
-				selected = Math.max(0, selected);
-				selected = Math.min(entries.length - 1, selected);
-				selection = selected;
-				if (entries.length > 0 && listener != null) listener.selected(ComboBox.this, selected, entries[selected]);
-			}
-			return true;
-		}
-
-		boolean firstUp = false;
-
-		@Override
-		public boolean touchUp (float x, float y, int pointer) {
-			if (firstUp) {
-				stage.removeActor(this);
-			} else
-				firstUp = true;
+			if (pointer != 0 || hit(x, y) == null) return false;
+			selected = (int)((height - y) / entryHeight);
+			selected = Math.max(0, selected);
+			selected = Math.min(entries.length - 1, selected);
+			selection = selected;
+			if (entries.length > 0 && listener != null) listener.selected(ComboBox.this, selected, entries[selected]);
 			return true;
 		}
 
 		@Override
-		public boolean touchDragged (float x, float y, int pointer) {
-			return true;
+		public void touchUp (float x, float y, int pointer) {
+			stage.removeActor(this);
+		}
+
+		@Override
+		public void touchDragged (float x, float y, int pointer) {
 		}
 
 		@Override
@@ -311,6 +296,12 @@ public class ComboBox extends Widget {
 		@Override
 		public Actor hit (float x, float y) {
 			return x > 0 && x < width && y > 0 && y < height ? this : null;
+		}
+		
+		public void act (float delta) {
+			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) {
+				stage.removeActor(this);
+			}
 		}
 	}
 

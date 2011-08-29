@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.Writer;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
@@ -44,11 +44,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ToggleButton.ToggleButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.XmlReader;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.SerializationException;
 
 /** <p>
  * A skin defines graphical resources like {@link NinePatch}, {@link TextureRegion}, {@link Color} and {@link BitmapFont}
@@ -190,33 +191,28 @@ import com.badlogic.gdx.utils.XmlReader.Element;
  * @author mzechner */
 public class Skin implements Disposable {
 	/** registered widget styles **/
-	Map<String, NinePatch> ninePatches = new HashMap<String, NinePatch>();
-	Map<String, TextureRegion> regions = new HashMap<String, TextureRegion>();
-	Map<String, Color> colors = new HashMap<String, Color>();
-	Map<String, BitmapFont> fonts = new HashMap<String, BitmapFont>();
-	Map<String, ButtonStyle> buttonStyles = new HashMap<String, ButtonStyle>();
-	Map<String, CheckBoxStyle> checkBoxStyles = new HashMap<String, CheckBoxStyle>();
-	Map<String, SliderStyle> sliderStyles = new HashMap<String, SliderStyle>();
-	Map<String, LabelStyle> labelStyles = new HashMap<String, LabelStyle>();
-	Map<String, ToggleButtonStyle> toggleButtonStyles = new HashMap<String, ToggleButtonStyle>();
-	Map<String, ListStyle> listStyles = new HashMap<String, ListStyle>();
-	Map<String, PaneStyle> paneStyles = new HashMap<String, PaneStyle>();
-	Map<String, ScrollPaneStyle> scrollPaneStyles = new HashMap<String, ScrollPaneStyle>();
-	Map<String, SplitPaneStyle> splitPaneStyles = new HashMap<String, SplitPaneStyle>();
-	Map<String, TextFieldStyle> textFieldStyles = new HashMap<String, TextFieldStyle>();
-	Map<String, ComboBoxStyle> comboBoxStyles = new HashMap<String, ComboBoxStyle>();
-	Map<String, ImageButtonStyle> imageButtonStyles = new HashMap<String, ImageButtonStyle>();
-	Map<String, ImageToggleButtonStyle> imageToggleButtonStyles = new HashMap<String, ImageToggleButtonStyle>();
-	Map<String, WindowStyle> windowStyles = new HashMap<String, WindowStyle>();
-	Texture texture;
+	ObjectMap<String, NinePatch> ninePatches = new ObjectMap<String, NinePatch>();
+	ObjectMap<String, TextureRegion> regions = new ObjectMap<String, TextureRegion>();
+	ObjectMap<String, Color> colors = new ObjectMap<String, Color>();
+	ObjectMap<String, BitmapFont> fonts = new ObjectMap<String, BitmapFont>();
+	ObjectMap<String, ButtonStyle> buttonStyles = new ObjectMap<String, ButtonStyle>();
+	ObjectMap<String, CheckBoxStyle> checkBoxStyles = new ObjectMap<String, CheckBoxStyle>();
+	ObjectMap<String, SliderStyle> sliderStyles = new ObjectMap<String, SliderStyle>();
+	ObjectMap<String, LabelStyle> labelStyles = new ObjectMap<String, LabelStyle>();
+	ObjectMap<String, ToggleButtonStyle> toggleButtonStyles = new ObjectMap<String, ToggleButtonStyle>();
+	ObjectMap<String, ListStyle> listStyles = new ObjectMap<String, ListStyle>();
+	ObjectMap<String, PaneStyle> paneStyles = new ObjectMap<String, PaneStyle>();
+	ObjectMap<String, ScrollPaneStyle> scrollPaneStyles = new ObjectMap<String, ScrollPaneStyle>();
+	ObjectMap<String, SplitPaneStyle> splitPaneStyles = new ObjectMap<String, SplitPaneStyle>();
+	ObjectMap<String, TextFieldStyle> textFieldStyles = new ObjectMap<String, TextFieldStyle>();
+	ObjectMap<String, ComboBoxStyle> comboBoxStyles = new ObjectMap<String, ComboBoxStyle>();
+	ObjectMap<String, ImageButtonStyle> imageButtonStyles = new ObjectMap<String, ImageButtonStyle>();
+	ObjectMap<String, ImageToggleButtonStyle> imageToggleButtonStyles = new ObjectMap<String, ImageToggleButtonStyle>();
+	ObjectMap<String, WindowStyle> windowStyles = new ObjectMap<String, WindowStyle>();
+	transient Texture texture;
 
-	/** Creates a new Skin from the given XML skin file and {@link Texture} image.
-	 * @param skinFile the XML skin file
-	 * @param textureFile the texture image */
-	public Skin (FileHandle skinFile, FileHandle textureFile) {
-		texture = new Texture(textureFile);
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		parseSkin(skinFile);
+	// Constructor for serialization.
+	private Skin () {
 	}
 
 	/** Creates an empty skin, using the given {@link Texture}
@@ -225,320 +221,10 @@ public class Skin implements Disposable {
 		this.texture = texture;
 	}
 
-	/** Parses the given XML skin file and adds all assets (regions, patches, colors, fonts) and widget styles to this skin. If an
-	 * asset or widget style with the same name was already in the skin it will be overwritten. Widgets already created via this
-	 * skin won't change their style!
-	 * @param skinFile the XML skin file */
-	public void parseSkin (FileHandle skinFile) {
-		try {
-			XmlReader xml = new XmlReader();
-			Element skin = xml.parse(skinFile);
-			parseLibrary(skin, skinFile);
-			parseWidgetStyles(skin.getChildByName("widgetStyles"));
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Couldn't parse skinFile", e);
-		}
-	}
-
-	protected void parseWidgetStyles (Element styles) {
-		parseButtonStyles(styles);
-		parseCheckBoxStyles(styles);
-		parseLabelStyles(styles);
-		parseSliderStyles(styles);
-		parseToggleButtonStyles(styles);
-		parseListStyles(styles);
-		parsePaneStyles(styles);
-		parseScrollPaneStyles(styles);
-		parseSplitPaneStyles(styles);
-		parseTextFieldStyles(styles);
-		parseComboBoxStyles(styles);
-		parseWindowStyles(styles);
-		parseImageButtonStyles(styles);
-		parseImageToggleButtonStyles(styles);
-	}
-
-	private void error (String msg, Element element) {
-		throw new GdxRuntimeException(msg + ", element: " + element.toString());
-	}
-
-	private void parseWindowStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("window")) {
-			String name = style.getAttribute("name");
-			NinePatch background = getNinePatch(style.getAttribute("background"));
-			BitmapFont font = getFont(style.getAttribute("titleFont"));
-			Color fontColor = getColor(style.getAttribute("titleFontColor"));
-
-			if (name == null) error("No name given for window style", style);
-			if (background == null) error("No 'background' nine-patch given for window style", style);
-			if (font == null) error("No 'font' given for window style", style);
-			if (fontColor == null) error("No 'fontColor' given for window style", style);
-
-			windowStyles.put(name, new WindowStyle(font, fontColor, background));
-		}
-	}
-
-	private void parseComboBoxStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("combobox")) {
-			String name = style.getAttribute("name");
-			NinePatch background = getNinePatch(style.getAttribute("background"));
-			NinePatch listBackground = getNinePatch(style.getAttribute("listBackground"));
-			NinePatch listSelection = getNinePatch(style.getAttribute("listSelection"));
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColor = getColor(style.getAttribute("fontColor"));
-
-			if (name == null) error("No name given for combobox style", style);
-			if (background == null) error("No 'background' nine-patch given for combobox style", style);
-			if (listBackground == null) error("No 'listBackground' nine-patch given for combobox style", style);
-			if (listSelection == null) error("No 'listSelection' nine-patch given for combobox style", style);
-			if (font == null) error("No 'font' given for combobox style", style);
-			if (fontColor == null) error("No 'fontColor' given for combobox style", style);
-
-			comboBoxStyles.put(name, new ComboBoxStyle(font, fontColor, background, listBackground, listSelection));
-		}
-	}
-
-	private void parseTextFieldStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("textfield")) {
-			String name = style.getAttribute("name");
-			NinePatch background = getNinePatch(style.getAttribute("background"));
-			NinePatch cursor = getNinePatch(style.getAttribute("cursor"));
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColor = getColor(style.getAttribute("fontColor"));
-			TextureRegion selection = getRegion(style.getAttribute("selection"));
-
-			if (name == null) error("No name given for textfield style", style);
-			if (background == null) error("No 'background' nine-patch given for textfield style", style);
-			if (cursor == null) error("No 'cursor' nine-patch given for textfield style", style);
-			if (font == null) error("No 'font' given for textfield style", style);
-			if (fontColor == null) error("No 'fontColor' given for textfield stye", style);
-			if (selection == null) error("No 'selection' region given for textfield style", style);
-
-			textFieldStyles.put(name, new TextFieldStyle(font, fontColor, cursor, selection, background));
-		}
-	}
-
-	private void parseSplitPaneStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("splitpane")) {
-			String name = style.getAttribute("name");
-			NinePatch handle = getNinePatch(style.getAttribute("handle"));
-
-			if (name == null) error("No name given for splitpane style", style);
-			if (handle == null) error("No 'handle' given for splitpane style", style);
-
-			splitPaneStyles.put(name, new SplitPaneStyle(handle));
-		}
-	}
-
-	private void parseScrollPaneStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("scrollpane")) {
-			String name = style.getAttribute("name");
-			NinePatch background = getNinePatch(style.getAttribute("background"));
-			NinePatch hScroll = getNinePatch(style.getAttribute("hScroll"));
-			NinePatch hScrollKnob = getNinePatch(style.getAttribute("hScrollKnob"));
-			NinePatch vScroll = getNinePatch(style.getAttribute("vScroll"));
-			NinePatch vScrollKnob = getNinePatch(style.getAttribute("vScrollKnob"));
-
-			if (name == null) error("No name given for scrollpane style", style);
-			if (background == null) error("No 'background' given for scrollpane style", style);
-			if (hScroll == null) error("No 'hScroll' given for scrollpane style", style);
-			if (hScrollKnob == null) error("No 'hScrollKnob' given for scrollpane style", style);
-			if (vScroll == null) error("No 'vScroll' given for scrollpane style", style);
-			if (vScrollKnob == null) error("No 'vScrollKnob' given for scrollpane style", style);
-
-			scrollPaneStyles.put(name, new ScrollPaneStyle(background, hScroll, hScrollKnob, vScroll, vScrollKnob));
-		}
-	}
-
-	private void parsePaneStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("pane")) {
-			String name = style.getAttribute("name");
-			NinePatch patch = getNinePatch(style.getAttribute("background"));
-
-			if (name == null) error("No name given for pane style", style);
-			if (patch == null) error("No 'background' given for pane style", style);
-
-			paneStyles.put(name, new PaneStyle(patch));
-		}
-	}
-
-	private void parseListStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("list")) {
-			String name = style.getAttribute("name");
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColorUnselected = getColor(style.getAttribute("fontColorUnselected"));
-			Color fontColorSelected = getColor(style.getAttribute("fontColorSelected"));
-			NinePatch selectedPatch = getNinePatch(style.getAttribute("selected"));
-
-			if (name == null) error("No name given for list style", style);
-			if (font == null) error("No font given for list style", style);
-			if (fontColorUnselected == null) error("No 'fontColorUnselected' given for list style", style);
-			if (fontColorSelected == null) error("No 'fontColorSelected' given for list style", style);
-			if (selectedPatch == null) error("No 'selected' nine-patch given for list style", style);
-
-			listStyles.put(name, new ListStyle(font, fontColorSelected, fontColorUnselected, selectedPatch));
-		}
-	}
-
-	private void parseImageToggleButtonStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("imagetogglebutton")) {
-			String name = style.getAttribute("name");
-			NinePatch down = getNinePatch(style.getAttribute("down"));
-			NinePatch up = getNinePatch(style.getAttribute("up"));
-
-			if (name == null) error("No name given for togglebutton style", style);
-			if (down == null) error("No 'down' nine-patch given for togglebutton style", style);
-			if (up == null) error("No 'up' nine-patch given for togglebutton style", style);
-
-			imageToggleButtonStyles.put(name, new ImageToggleButtonStyle(down, up));
-		}
-	}
-
-	private void parseToggleButtonStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("togglebutton")) {
-			String name = style.getAttribute("name");
-			NinePatch down = getNinePatch(style.getAttribute("down"));
-			NinePatch up = getNinePatch(style.getAttribute("up"));
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColor = getColor(style.getAttribute("fontColor"));
-
-			if (name == null) error("No name given for togglebutton style", style);
-			if (down == null) error("No 'down' nine-patch given for togglebutton style", style);
-			if (up == null) error("No 'up' nine-patch given for togglebutton style", style);
-			if (font == null) error("No 'font' given for togglebutton style", style);
-			if (fontColor == null) error("No 'fontColor' given for togglebutton style", style);
-
-			toggleButtonStyles.put(name, new ToggleButtonStyle(font, fontColor, down, up));
-		}
-	}
-
-	private void parseSliderStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("slider")) {
-			String name = style.getAttribute("name");
-			NinePatch sliderPatch = getNinePatch(style.getAttribute("slider"));
-			TextureRegion knobPatch = getRegion(style.getAttribute("knob"));
-
-			if (name == null) error("No name given for slider style", style);
-			if (sliderPatch == null) error("No 'slider' nine-patch given for slider style", style);
-			if (knobPatch == null) error("No 'knob' region given for slider style", style);
-			sliderStyles.put(name, new SliderStyle(sliderPatch, knobPatch));
-		}
-	}
-
-	private void parseCheckBoxStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("checkbox")) {
-			String name = style.getAttribute("name");
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColor = getColor(style.getAttribute("fontColor"));
-			TextureRegion checked = getRegion(style.getAttribute("checked"));
-			TextureRegion unchecked = getRegion(style.getAttribute("unchecked"));
-
-			if (name == null) error("No name given for checkbox style", style);
-			if (font == null) error("No 'font' given for checkbox style", style);
-			if (fontColor == null) error("No 'fontColor' given for checkbox style", style);
-			if (checked == null) error("No 'checked' region given for checkbox style", style);
-			if (unchecked == null) error("No 'unchecked' region given for checkbox style", style);
-
-			checkBoxStyles.put(name, new CheckBoxStyle(font, fontColor, checked, unchecked));
-		}
-	}
-
-	private void parseImageButtonStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("imagebutton")) {
-			String name = style.getAttribute("name");
-			NinePatch down = getNinePatch(style.getAttribute("down"));
-			NinePatch up = getNinePatch(style.getAttribute("up"));
-
-			if (name == null) error("No name given for button style", style);
-			if (down == null) error("No 'down' nine-patch given for button style", style);
-			if (up == null) error("No 'up' nine-patch given for button style", style);
-
-			imageButtonStyles.put(name, new ImageButtonStyle(down, up));
-		}
-	}
-
-	private void parseButtonStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("button")) {
-			String name = style.getAttribute("name");
-			NinePatch down = getNinePatch(style.getAttribute("down"));
-			NinePatch up = getNinePatch(style.getAttribute("up"));
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColor = getColor(style.getAttribute("fontColor"));
-
-			if (name == null) error("No name given for button style", style);
-			if (down == null) error("No 'down' nine-patch given for button style", style);
-			if (up == null) error("No 'up' nine-patch given for button style", style);
-			if (font == null) error("No 'font' nine-patch given for button style", style);
-			if (fontColor == null) error("No 'fontColor' given for button style", style);
-
-			buttonStyles.put(name, new ButtonStyle(font, fontColor, down, up));
-		}
-	}
-
-	private void parseLabelStyles (Element styles) {
-		for (Element style : styles.getChildrenByName("label")) {
-			String name = style.getAttribute("name");
-			BitmapFont font = getFont(style.getAttribute("font"));
-			Color fontColor = getColor(style.getAttribute("fontColor"));
-
-			if (name == null) error("No name given for label style", style);
-			if (font == null) error("No 'font' given for label style", style);
-			if (fontColor == null) error("No 'fontColor' given for label style", style);
-
-			labelStyles.put(style.getAttribute("name"), new LabelStyle(font, fontColor));
-		}
-	}
-
-	private void parseLibrary (Element skin, FileHandle skinFile) {
-		Element library = skin.getChildByName("library");
-		parseColors(library);
-		parseNinePatches(library);
-		parseRegions(library);
-		parseFonts(library, skinFile);
-	}
-
-	private void parseColors (Element library) {
-		for (Element color : library.getChildrenByName("color")) {
-			Color col = new Color(color.getFloatAttribute("r"), color.getFloatAttribute("g"), color.getFloatAttribute("b"),
-				color.getFloatAttribute("a"));
-			colors.put(color.getAttribute("name"), col);
-		}
-	}
-
-	private void parseFonts (Element library, FileHandle skinFile) {
-		for (Element font : library.getChildrenByName("font")) {
-			String path = font.getAttribute("file");
-			FileHandle file = skinFile.parent().child(path);
-			if (!file.exists()) file = Gdx.files.internal(path);
-			BitmapFont bitmapFont = new BitmapFont(file, false);
-			fonts.put(font.getAttribute("name"), bitmapFont);
-		}
-	}
-
-	private void parseRegions (Element library) {
-		for (Element region : library.getChildrenByName("region")) {
-			regions.put(region.getAttribute("name"), parseRegion(region));
-		}
-	}
-
-	private void parseNinePatches (Element library) {
-		for (Element ninePatch : library.getChildrenByName("ninepatch")) {
-			ninePatches.put(ninePatch.getAttribute("name"), parseNinePatch(ninePatch));
-		}
-	}
-
-	private NinePatch parseNinePatch (Element ninePatch) {
-		TextureRegion[] regions = new TextureRegion[9];
-		Array<Element> patches = ninePatch.getChildrenByName("region");
-		if (regions.length != 9) error("Nine-patch definition has to have 9 regions", ninePatch);
-		for (int i = 0; i < regions.length; i++) {
-			regions[i] = parseRegion(patches.get(i));
-		}
-		return new NinePatch(regions);
-	}
-
-	private TextureRegion parseRegion (Element region) {
-		return new TextureRegion(texture, region.getIntAttribute("x"), region.getIntAttribute("y"),
-			region.getIntAttribute("width"), region.getIntAttribute("height"));
+	public Skin (FileHandle skinFile, FileHandle textureFile) {
+		texture = new Texture(textureFile);
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		json(this, skinFile).fromJson(Skin.class, skinFile);
 	}
 
 	/** Returns a {@link Color} with the given name.
@@ -1085,5 +771,151 @@ public class Skin implements Disposable {
 	/** @return the {@link Texture} containing all {@link NinePatch} and {@link TextureRegion} pixels of this Skin. */
 	public Texture getTexture () {
 		return texture;
+	}
+
+	public void save (FileHandle skinFile) {
+		String text = json(this, null).prettyPrint(this, true);
+		Writer writer = skinFile.writer(false);
+		try {
+			writer.write(text);
+			writer.close();
+		} catch (IOException ex) {
+		}
+	}
+
+	static private Json json (final Skin skin, final FileHandle skinFile) {
+		Json json = new Json();
+		json.setTypeName(null);
+		json.setUsePrototypes(false);
+
+		class AliasSerializer implements Serializer {
+			private final ObjectMap<String, ?> map;
+
+			public AliasSerializer (ObjectMap<String, ?> map) {
+				this.map = map;
+			}
+
+			public void write (Json json, Object object, Class valueType) throws IOException {
+				for (Entry<String, ?> entry : map.entries()) {
+					if (entry.value.equals(object)) {
+						json.writeValue(entry.key);
+						return;
+					}
+				}
+				throw new SerializationException(object.getClass().getSimpleName() + " not found: " + object);
+			}
+
+			public Object read (Json json, Object jsonData, Class type) {
+				Object object = map.get((String)jsonData);
+				if (object == null) throw new SerializationException("Unable to find " + type.getSimpleName() + ": " + jsonData);
+				return object;
+			}
+		}
+
+		json.setSerializer(Skin.class, new Serializer<Skin>() {
+			public void write (Json json, Skin skin, Class valueType) throws IOException {
+				json.writeObjectStart();
+				json.writeObjectStart("library");
+				json.writeField(skin, "colors");
+				json.writeField(skin, "ninePatches");
+				json.writeField(skin, "regions");
+				json.writeField(skin, "fonts");
+				json.writeObjectEnd();
+				json.writeObjectStart("styles");
+				json.setSerializer(TextureRegion.class, new AliasSerializer(skin.regions));
+				json.setSerializer(NinePatch.class, new AliasSerializer(skin.ninePatches));
+				json.setSerializer(Color.class, new AliasSerializer(skin.colors));
+				json.setSerializer(BitmapFont.class, new AliasSerializer(skin.fonts));
+				json.writeField(skin, "buttonStyles", "buttons");
+				json.writeField(skin, "checkBoxStyles", "checkBoxes");
+				json.writeField(skin, "sliderStyles", "sliders");
+				json.writeField(skin, "labelStyles", "labels");
+				json.writeField(skin, "toggleButtonStyles", "toggleButtons");
+				json.writeField(skin, "listStyles", "lists");
+				json.writeField(skin, "paneStyles", "panes");
+				json.writeField(skin, "scrollPaneStyles", "scrollPanes");
+				json.writeField(skin, "splitPaneStyles", "splitPanes");
+				json.writeField(skin, "textFieldStyles", "textFields");
+				json.writeField(skin, "comboBoxStyles", "comboBoxes");
+				json.writeField(skin, "imageButtonStyles", "imageButtons");
+				json.writeField(skin, "imageToggleButtonStyles", "imageToggleButtons");
+				json.writeField(skin, "windowStyles", "windows");
+				json.writeObjectEnd();
+				json.writeObjectEnd();
+			}
+
+			public Skin read (Json json, Object jsonData, Class type) {
+				ObjectMap map = (ObjectMap)jsonData;
+				Object library = map.get("library");
+				json.readField(skin, "colors", Color.class, library);
+				json.readField(skin, "ninePatches", NinePatch.class, library);
+				json.readField(skin, "regions", TextureRegion.class, library);
+				json.readField(skin, "fonts", BitmapFont.class, library);
+				json.setSerializer(TextureRegion.class, new AliasSerializer(skin.regions));
+				json.setSerializer(NinePatch.class, new AliasSerializer(skin.ninePatches));
+				json.setSerializer(Color.class, new AliasSerializer(skin.colors));
+				json.setSerializer(BitmapFont.class, new AliasSerializer(skin.fonts));
+				Object styles = map.get("styles");
+				json.readField(skin, "buttonStyles", "buttons", ButtonStyle.class, styles);
+				json.readField(skin, "checkBoxStyles", "checkBoxes", CheckBoxStyle.class, styles);
+				json.readField(skin, "sliderStyles", "sliders", SliderStyle.class, styles);
+				json.readField(skin, "labelStyles", "labels", LabelStyle.class, styles);
+				json.readField(skin, "toggleButtonStyles", "toggleButtons", ToggleButtonStyle.class, styles);
+				json.readField(skin, "listStyles", "lists", ListStyle.class, styles);
+				json.readField(skin, "paneStyles", "panes", PaneStyle.class, styles);
+				json.readField(skin, "scrollPaneStyles", "scrollPanes", ScrollPaneStyle.class, styles);
+				json.readField(skin, "splitPaneStyles", "splitPanes", SplitPaneStyle.class, styles);
+				json.readField(skin, "textFieldStyles", "textFields", TextFieldStyle.class, styles);
+				json.readField(skin, "comboBoxStyles", "comboBoxes", ComboBoxStyle.class, styles);
+				json.readField(skin, "imageButtonStyles", "imageButtons", ImageButtonStyle.class, styles);
+				json.readField(skin, "imageToggleButtonStyles", "imageToggleButtons", ImageToggleButtonStyle.class, styles);
+				json.readField(skin, "windowStyles", "windows", WindowStyle.class, styles);
+				return skin;
+			}
+		});
+
+		json.setSerializer(TextureRegion.class, new Serializer<TextureRegion>() {
+			public void write (Json json, TextureRegion region, Class valueType) throws IOException {
+				json.writeObjectStart();
+				json.writeValue("x", region.getRegionX());
+				json.writeValue("y", region.getRegionY());
+				json.writeValue("width", region.getRegionWidth());
+				json.writeValue("height", region.getRegionHeight());
+				json.writeObjectEnd();
+			}
+
+			public TextureRegion read (Json json, Object jsonData, Class type) {
+				int x = json.readValue("x", int.class, jsonData);
+				int y = json.readValue("y", int.class, jsonData);
+				int width = json.readValue("width", int.class, jsonData);
+				int height = json.readValue("height", int.class, jsonData);
+				return new TextureRegion(skin.texture, x, y, width, height);
+			}
+		});
+
+		json.setSerializer(BitmapFont.class, new Serializer<BitmapFont>() {
+			public void write (Json json, BitmapFont font, Class valueType) throws IOException {
+				json.writeValue(font.getData().getFontFile().toString().replace('\\', '/'));
+			}
+
+			public BitmapFont read (Json json, Object jsonData, Class type) {
+				String path = json.readValue(String.class, jsonData);
+				FileHandle file = skinFile.parent().child(path);
+				if (!file.exists()) file = Gdx.files.internal(path);
+				return new BitmapFont(file, false);
+			}
+		});
+
+		json.setSerializer(NinePatch.class, new Serializer<NinePatch>() {
+			public void write (Json json, NinePatch ninePatch, Class valueType) throws IOException {
+				json.writeValue(ninePatch.getPatches());
+			}
+
+			public NinePatch read (Json json, Object jsonData, Class type) {
+				return new NinePatch(json.readValue(TextureRegion[].class, jsonData));
+			}
+		});
+
+		return json;
 	}
 }

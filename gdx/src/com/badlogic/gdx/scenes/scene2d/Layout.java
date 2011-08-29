@@ -17,8 +17,12 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 public interface Layout {
+	/** Positions and sizes each child of this actor. Subsequent calls will not have any affect unless {@link #invalidate()} is
+	 * called. */
 	public void layout ();
 
+	/** Invalidates the layout, forcing the next call to {@link #layout()} to relayout. If an actor is resized or otherwise changed
+	 * in a way that affects its layout, {@link #invalidate()} should be called. */
 	public void invalidate ();
 
 	public float getPrefWidth ();

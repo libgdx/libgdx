@@ -36,9 +36,11 @@ public class FlickScrollPaneTest extends GdxTest {
 		font = new BitmapFont();
 		Gdx.input.setInputProcessor(stage);
 
+		Gdx.graphics.setVSync(false);
+		
 		container = new Table();
 		stage.addActor(container);
-		// container.layout.debug = "all";
+		container.getTableLayout().debug();
 
 		Table table = new Table();
 
@@ -50,7 +52,7 @@ public class FlickScrollPaneTest extends GdxTest {
 			table.row();
 			table.add(new Label(null, i + "uno", new LabelStyle(font, Color.RED))).expandX().fillX();
 			table.add(new Label(null, i + "dos", new LabelStyle(font, Color.RED)));
-			table.add(new Label(null, i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9", new LabelStyle(font,
+			table.add(new Label(null, i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", new LabelStyle(font,
 				Color.RED)));
 		}
 
@@ -60,6 +62,7 @@ public class FlickScrollPaneTest extends GdxTest {
 
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Table.drawDebug(stage);
 	}
