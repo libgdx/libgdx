@@ -271,7 +271,7 @@ public class Json {
 		}
 
 		if (value instanceof Serializable) {
-			writeObjectStart(knownType, actualType);
+			writeObjectStart(actualType, knownType);
 			((Serializable)value).write(this);
 			writeObjectEnd();
 			return;
@@ -524,23 +524,23 @@ public class Json {
 				if (serializer != null) return (T)serializer.read(this, jsonMap, type);
 
 				object = newInstance(type);
+
+				if (object instanceof Serializable) {
+					((Serializable)object).read(this, jsonMap);
+					return (T)object;
+				}
+
+				if (object instanceof HashMap) {
+					HashMap result = (HashMap)object;
+					for (Entry entry : jsonMap.entries())
+						result.put(entry.key, readValue(elementType, null, entry.value));
+					return (T)result;
+				}
 			} else
 				object = new ObjectMap();
 
-			if (object instanceof Serializable) {
-				((Serializable)object).read(this, jsonMap);
-				return (T)object;
-			}
-
 			if (object instanceof ObjectMap) {
 				ObjectMap result = (ObjectMap)object;
-				for (Entry entry : jsonMap.entries())
-					result.put(entry.key, readValue(elementType, null, entry.value));
-				return (T)result;
-			}
-
-			if (object instanceof HashMap) {
-				HashMap result = (HashMap)object;
 				for (Entry entry : jsonMap.entries())
 					result.put(entry.key, readValue(elementType, null, entry.value));
 				return (T)result;
