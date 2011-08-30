@@ -153,12 +153,12 @@ public class ObjLoader implements StillModelLoader {
 		for (int g = 0; g < numGroups; g++) {
 			Group group = groups.get(g);
 			ArrayList<Integer> faces = group.faces;
-			int numElements = faces.size();
-			int numFaces = group.numFaces;
-			boolean hasNorms = group.hasNorms;
-			boolean hasUVs = group.hasUVs;
+			final int numElements = faces.size();
+			final int numFaces = group.numFaces;
+			final boolean hasNorms = group.hasNorms;
+			final boolean hasUVs = group.hasUVs;
 
-			float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
+			final float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
 
 			for (int i = 0, vi = 0; i < numElements;) {
 				int vertIndex = faces.get(i++) * 3;
@@ -178,12 +178,14 @@ public class ObjLoader implements StillModelLoader {
 				}
 			}
 			
-			int numIndices = numFaces * 3;
-			short[] finalIndices = new short[numIndices];
-			for (int i=0; i<numIndices; i++){
-				finalIndices[i] = (short) i;
+			final int numIndices = numFaces * 3 >= Short.MAX_VALUE ? 0 : numFaces * 3;
+			final short[] finalIndices = new short[numIndices];
+			// if there are too many vertices in a mesh, we can't use indices
+			if (numIndices > 0) {
+				for (int i=0; i<numIndices; i++){
+					finalIndices[i] = (short) i;
+				}
 			}
-
 			final Mesh mesh;
 
 			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
@@ -193,7 +195,7 @@ public class ObjLoader implements StillModelLoader {
 
 			mesh = new Mesh(true, numFaces * 3, numIndices, attributes.toArray(new VertexAttribute[attributes.size()]));
 			mesh.setVertices(finalVerts);
-			mesh.setIndices(finalIndices);
+			if (numIndices > 0) mesh.setIndices(finalIndices);
 
 			StillSubMesh subMesh = new StillSubMesh(group.name, mesh, GL10.GL_TRIANGLES);
 			subMesh.material = new Material("default");
