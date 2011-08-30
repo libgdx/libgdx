@@ -125,6 +125,7 @@ public class Array<T> implements Iterable<T> {
 		items[index] = value;
 	}
 
+	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
 	public boolean contains (T value, boolean identity) {
 		Object[] items = this.items;
 		int i = size - 1;

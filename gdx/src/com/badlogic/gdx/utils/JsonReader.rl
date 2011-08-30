@@ -161,7 +161,7 @@ public class JsonReader {
 
 			# parse single quote
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
-			unquotedChars = ^([0-9:"{}\[\],.] | space)+;
+			unquotedChars = [a-zA-Z_$] ^([:}\],] | space)*;
 			name = ('"' quotedChars >buffer %name '"') | unquotedChars >buffer %name;
 
 			startObject = '{' @startObject;

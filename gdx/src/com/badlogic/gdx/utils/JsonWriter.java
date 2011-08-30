@@ -152,7 +152,7 @@ public class JsonWriter extends Writer {
 		json, javascript, minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
-		static private Pattern minimalPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9\\-]*");
+		static private Pattern minimalPattern = Pattern.compile("[a-zA-Z_$][^:}\\], ]*");
 
 		public String quoteValue (String value) {
 			value = value.replace("\\", "\\\\");
@@ -177,7 +177,7 @@ public class JsonWriter extends Writer {
 
 	public static void main (String[] args) throws Exception {
 		Json json = new Json();
-		ObjectMap map = json.fromJson(ObjectMap.class, "{ moo: \"-@#$%^%^TFGD-1cow \", meow: {shit:[{wtf:\"1.0\"}]}, }");
+		ObjectMap map = json.fromJson(ObjectMap.class, "{ moo: a-@#$%^%^TFGD-1cow , a: { width: 1, height: 1, x: 110, y: 0 }, meow: {shit:[{wtf:\"1.0\"}]}, }");
 		System.out.println(map);
 	}
 }

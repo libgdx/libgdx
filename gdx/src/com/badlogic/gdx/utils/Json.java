@@ -319,7 +319,7 @@ public class Json {
 		if (value instanceof ObjectMap) {
 			writeObjectStart(actualType, knownType);
 			for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
-				writer.name((String)entry.key);
+				writer.name(convertToString(entry.key));
 				writeValue(entry.value, elementType, null);
 			}
 			writeObjectEnd();
@@ -329,7 +329,7 @@ public class Json {
 		if (value instanceof Map) {
 			writeObjectStart(actualType, knownType);
 			for (Map.Entry entry : ((Map<?, ?>)value).entrySet()) {
-				writer.name((String)entry.getKey());
+				writer.name(convertToString(entry.getKey()));
 				writeValue(entry.getValue(), elementType, null);
 			}
 			writeObjectEnd();
@@ -622,6 +622,11 @@ public class Json {
 		}
 
 		return null;
+	}
+
+	private String convertToString (Object object) {
+		if (object instanceof Class) return ((Class)object).getName();
+		return String.valueOf(object);
 	}
 
 	private Object newInstance (Class type) {
