@@ -33,6 +33,7 @@ public class FlickScrollPane extends Group implements Layout {
 	private final Stage stage;
 	private Actor widget;
 	private float prefWidth, prefHeight;
+	protected boolean needsLayout;
 
 	private final Rectangle widgetAreaBounds = new Rectangle();
 	private final Rectangle scissorBounds = new Rectangle();
@@ -42,10 +43,11 @@ public class FlickScrollPane extends Group implements Layout {
 	float amountX, amountY;
 	private float maxX, maxY;
 	float velocityX, velocityY;
-	float flingTime = 1f, flingTimer;
-	private boolean bounces = true;
-	private float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
+	float flingTimer;
 
+	public boolean bounces = true;
+	public float flingTime = 1f;
+	public float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
 	public boolean emptySpaceOnlyScroll;
 	public boolean forceScrollX, forceScrollY;
 
@@ -141,25 +143,17 @@ public class FlickScrollPane extends Group implements Layout {
 
 		if (bounces && !gestureDetector.isPanning()) {
 			if (amountX < 0) {
-				float overscrollPercent = -amountX / bounceDistance;
-				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				amountX += bouncePixels * delta;
+				amountX += (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -amountX / bounceDistance) * delta;
 				if (amountX > 0) amountX = 0;
 			} else if (amountX > maxX) {
-				float overscrollPercent = -(maxX - amountX) / bounceDistance;
-				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				amountX -= bouncePixels * delta;
+				amountX -= (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -(maxX - amountX) / bounceDistance) * delta;
 				if (amountX < maxX) amountX = maxX;
 			}
 			if (amountY < 0) {
-				float overscrollPercent = -amountY / bounceDistance;
-				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				amountY += bouncePixels * delta;
+				amountY += (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -amountY / bounceDistance) * delta;
 				if (amountY > 0) amountY = 0;
 			} else if (amountY > maxY) {
-				float overscrollPercent = -(maxY - amountY) / bounceDistance;
-				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				amountY -= bouncePixels * delta;
+				amountY -= (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -(maxY - amountY) / bounceDistance) * delta;
 				if (amountY < maxY) amountY = maxY;
 			}
 		}
@@ -187,11 +181,7 @@ public class FlickScrollPane extends Group implements Layout {
 		if (widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.width = widgetWidth;
 			widget.height = widgetHeight;
-			if (widget instanceof Layout) {
-				Layout layout = (Layout)widget;
-				layout.invalidate();
-				layout.layout();
-			}
+			needsLayout = true;
 		}
 
 		// Set the widget area bounds.
@@ -200,17 +190,8 @@ public class FlickScrollPane extends Group implements Layout {
 		// Calculate the widgets offset depending on the scroll state and available widget area.
 		maxX = widget.width - width;
 		maxY = widget.height - height;
-
-		float widgetY = widgetAreaBounds.y;
-		if (scrollY)
-			widgetY -= (int)amountY;
-		else
-			widgetY -= (int)maxY;
-		widget.y = widgetY;
-
-		float widgetX = widgetAreaBounds.x;
-		if (scrollX) widgetX -= (int)amountX;
-		widget.x = widgetX;
+		widget.y = -(int)(scrollY ? amountY : maxY);
+		widget.x = -(int)(scrollX ? amountX : 0);
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
@@ -225,7 +206,9 @@ public class FlickScrollPane extends Group implements Layout {
 		applyTransform(batch);
 
 		// Calculate the bounds for the scrollbars, the widget area and the scissor area.
-		calculateBoundsAndPositions(batch.getTransformMatrix());
+		calculateBoundsAndPositions(batch.getTransformMatrix()); // BOZO - Call every frame?
+
+		if (needsLayout) layout();
 
 		// Enable scissors for widget area and draw the widget.
 		ScissorStack.pushScissors(scissorBounds);
@@ -237,10 +220,18 @@ public class FlickScrollPane extends Group implements Layout {
 
 	@Override
 	public void layout () {
+		if (!needsLayout) return;
+		needsLayout = false;
+		if (widget instanceof Layout) {
+			Layout layout = (Layout)widget;
+			layout.invalidate();
+			layout.layout();
+		}
 	}
 
 	@Override
 	public void invalidate () {
+		needsLayout = true;
 	}
 
 	@Override
@@ -278,12 +269,20 @@ public class FlickScrollPane extends Group implements Layout {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
-	public void setScrollY (float percent) {
-		this.amountY = maxY * percent;
+	public void setScrollX (float pixels) {
+		this.amountX = pixels;
 	}
 
-	public void setScrollX (float percent) {
-		this.amountX = maxX * percent;
+	public float getScrollX () {
+		return amountX;
+	}
+
+	public void setScrollY (float pixels) {
+		amountY = pixels;
+	}
+
+	public float getScrollY () {
+		return amountY;
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
@@ -296,5 +295,20 @@ public class FlickScrollPane extends Group implements Layout {
 
 	public Actor getWidget () {
 		return widget;
+	}
+
+	public boolean isPanning () {
+		return gestureDetector.isPanning();
+	}
+
+	public float getVelocityX () {
+		if (flingTimer <= 0) return 0;
+		float alpha = flingTimer / flingTime;
+		alpha = alpha * alpha * alpha;
+		return velocityX * alpha * alpha * alpha;
+	}
+
+	public float getVelocityY () {
+		return velocityY;
 	}
 }

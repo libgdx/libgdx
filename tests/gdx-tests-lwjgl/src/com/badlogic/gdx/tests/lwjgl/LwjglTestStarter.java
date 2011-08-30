@@ -75,6 +75,8 @@ public class LwjglTestStarter {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
 					LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+					config.width = 640;
+					config.height = 480;
 					config.title = testName;
 					config.useGL20 = test.needsGL20();
 					config.forceExit = false;
