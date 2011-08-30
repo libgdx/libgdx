@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -33,9 +34,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -103,9 +107,9 @@ public class ProjectiveTextureTest extends GdxTest {
 	public void setupUI () {
 		ui = new Stage(480, 320, false);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		Button reload = skin.newButton("reload", "Reload Shaders");
-		ComboBox camera = skin.newComboBox("camera", new String[] {"Camera", "Light"}, ui);
-		Label fps = skin.newLabel("fps", "fps: ");
+		Button reload = new Button("reload", "Reload Shaders", skin.getStyle(ButtonStyle.class));
+		ComboBox camera = new ComboBox("camera", new String[] {"Camera", "Light"}, ui, skin.getStyle(ComboBoxStyle.class));
+		Label fps = new Label("fps", "fps: ", skin.getStyle(LabelStyle.class));
 
 		Table table = new Table("container", (int)ui.width(), (int)ui.height());
 		table.add(reload).spaceRight(5);

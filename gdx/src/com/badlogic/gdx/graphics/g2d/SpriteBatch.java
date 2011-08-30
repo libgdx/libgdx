@@ -730,10 +730,25 @@ public class SpriteBatch implements Disposable {
 			lastTexture = texture;
 			invTexWidth = 1.0f / texture.getWidth();
 			invTexHeight = 1.0f / texture.getHeight();
-		} else if (idx + length >= vertices.length) renderMesh();
+		}
 
-		System.arraycopy(spriteVertices, offset, vertices, idx, length);
-		idx += length;
+		int remainingVertices = vertices.length - idx;
+		if (remainingVertices == 0) {
+			renderMesh();
+			remainingVertices = vertices.length;
+		}
+		int vertexCount = Math.min(remainingVertices, length - offset);
+		System.arraycopy(spriteVertices, offset, vertices, idx, vertexCount);
+		offset += vertexCount;
+		idx += vertexCount;
+
+		while (offset < length) {
+			renderMesh();
+			vertexCount = Math.min(vertices.length, length - offset);
+			System.arraycopy(spriteVertices, offset, vertices, 0, vertexCount);
+			offset += vertexCount;
+			idx += vertexCount;
+		}
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y having the width and height of the region. */

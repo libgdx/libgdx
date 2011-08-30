@@ -67,6 +67,14 @@ public class ImageButton extends Widget {
 	boolean isPressed = false;
 	ClickListener listener = null;
 
+	public ImageButton (TextureRegion image, Skin skin) {
+		this(null, image, skin.getStyle(ImageButtonStyle.class));
+	}
+
+	public ImageButton (TextureRegion image, ImageButtonStyle style) {
+		this(null, image, style);
+	}
+
 	/** Creates a new image button. The width and height will be determined by the size of the image and the style.
 	 * @param name the name
 	 * @param image the image's {@link TextureRegion}

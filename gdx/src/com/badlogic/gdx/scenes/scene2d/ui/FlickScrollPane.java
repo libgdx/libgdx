@@ -21,52 +21,51 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
+/** @author Nathan Sweet
+ * @author mzechner */
 public class FlickScrollPane extends Group implements Layout {
-	Actor widget;
-	Stage stage;
-	float prefWidth;
-	float prefHeight;
+	private final Stage stage;
+	private Actor widget;
+	private float prefWidth, prefHeight;
 
-	Rectangle widgetAreaBounds = new Rectangle();
-	Rectangle scissorBounds = new Rectangle();
-	GestureDetector gestureDetector;
+	private final Rectangle widgetAreaBounds = new Rectangle();
+	private final Rectangle scissorBounds = new Rectangle();
+	private GestureDetector gestureDetector;
 
-	float hScrollAmount = 0;
-	float vScrollAmount = 0;
-	boolean hasHScroll = false;
-	boolean hasVScroll = false;
-	Vector2 lastPoint = new Vector2();
-
-	private boolean scrolling = false;
-	private long scrollingStarted;
-	private Vector2 scrollStartPoint = new Vector2();
+	private boolean scrollX, scrollY;
+	float amountX, amountY;
+	private float maxX, maxY;
 	float velocityX, velocityY;
 	float flingTime = 1f, flingTimer;
 	private boolean bounces = true;
-	float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
-	public boolean emptySpaceOnlyScroll;
+	private float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
 
-	public FlickScrollPane (String name, Stage stage, Actor widget, int prefWidth, int prefHeight) {
+	public boolean emptySpaceOnlyScroll;
+	public boolean forceScrollX, forceScrollY;
+
+	public FlickScrollPane (Actor widget, Stage stage) {
+		this(null, widget, stage, 0, 0);
+	}
+
+	public FlickScrollPane (String name, Actor widget, Stage stage, int prefWidth, int prefHeight) {
 		super(name);
 		this.prefWidth = this.width = prefWidth;
 		this.prefHeight = this.height = prefHeight;
 
 		this.stage = stage;
 		this.widget = widget;
-		this.addActor(widget);
-		layout();
+		if (widget != null) this.addActor(widget);
 
 		gestureDetector = new GestureDetector(new GestureListener() {
 			public boolean pan (int x, int y, int deltaX, int deltaY) {
-				hScrollAmount -= deltaX / (FlickScrollPane.this.widget.width - width);
-				vScrollAmount += deltaY / (FlickScrollPane.this.widget.height - height);
+				amountX -= deltaX;
+				amountY -= deltaY;
 				clamp();
 				return false;
 			}
@@ -74,11 +73,11 @@ public class FlickScrollPane extends Group implements Layout {
 			public boolean fling (float x, float y) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
-					velocityX = x / FlickScrollPane.this.widget.width;
+					velocityX = x;
 				}
 				if (Math.abs(y) > 150) {
 					flingTimer = flingTime;
-					velocityY = y / FlickScrollPane.this.widget.height;
+					velocityY = -y;
 				}
 				return flingTimer > 0;
 			}
@@ -111,75 +110,62 @@ public class FlickScrollPane extends Group implements Layout {
 
 	void clamp () {
 		if (bounces) {
-			float bounceX = bounceDistance / (widget.width - width);
-			float bounceY = bounceDistance / (widget.height - height);
-			hScrollAmount = Math.max(-bounceX, hScrollAmount);
-			hScrollAmount = Math.min(1 + bounceX, hScrollAmount);
-			vScrollAmount = Math.max(-bounceY, vScrollAmount);
-			vScrollAmount = Math.min(1 + bounceY, vScrollAmount);
+			amountX = Math.max(-bounceDistance, amountX);
+			amountX = Math.min(maxX + bounceDistance, amountX);
+			amountY = Math.max(-bounceDistance, amountY);
+			amountY = Math.min(maxY + bounceDistance, amountY);
 		} else {
-			hScrollAmount = Math.max(0, hScrollAmount);
-			hScrollAmount = Math.min(1, hScrollAmount);
-			vScrollAmount = Math.max(0, vScrollAmount);
-			vScrollAmount = Math.min(1, vScrollAmount);
+			amountX = Math.max(0, amountX);
+			amountX = Math.min(maxX, amountX);
+			amountY = Math.max(0, amountY);
+			amountY = Math.min(maxY, amountY);
 		}
 	}
 
 	public void act (float delta) {
-		float bounceX = bounceDistance / (widget.width - width);
-		float bounceY = bounceDistance / (widget.height - height);
-
 		if (flingTimer > 0) {
 			float alpha = flingTimer / flingTime;
 			alpha = alpha * alpha * alpha;
-			hScrollAmount -= velocityX * alpha * delta;
-			vScrollAmount += velocityY * alpha * delta;
+			amountX -= velocityX * alpha * delta;
+			amountY += velocityY * alpha * delta;
 			clamp();
 
 			// Stop fling if hit bounce distance.
-			if (hScrollAmount == -bounceX) velocityX = 0;
-			if (hScrollAmount >= 1 + bounceX) velocityX = 0;
-			if (vScrollAmount == -bounceY) velocityY = 0;
-			if (vScrollAmount >= 1 + bounceY) velocityY = 0;
+			if (amountX == -bounceDistance) velocityX = 0;
+			if (amountX >= maxX + bounceDistance) velocityX = 0;
+			if (amountY == -bounceDistance) velocityY = 0;
+			if (amountY >= maxY + bounceDistance) velocityY = 0;
 
 			flingTimer -= delta;
 		}
 
 		if (bounces && !gestureDetector.isPanning()) {
-			if (hScrollAmount < 0) {
-				float overscrollPercent = -hScrollAmount / bounceX;
+			if (amountX < 0) {
+				float overscrollPercent = -amountX / bounceDistance;
 				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				float bouncePercent = bouncePixels / (widget.width - width);
-				hScrollAmount += bouncePercent * delta;
-				if (hScrollAmount > 0) hScrollAmount = 0;
-			} else if (hScrollAmount > 1) {
-				float overscrollPercent = -(1 - hScrollAmount) / bounceX;
+				amountX += bouncePixels * delta;
+				if (amountX > 0) amountX = 0;
+			} else if (amountX > maxX) {
+				float overscrollPercent = -(maxX - amountX) / bounceDistance;
 				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				float bouncePercent = bouncePixels / (widget.width - width);
-				hScrollAmount -= bouncePercent * delta;
-				if (hScrollAmount < 1) hScrollAmount = 1;
+				amountX -= bouncePixels * delta;
+				if (amountX < maxX) amountX = maxX;
 			}
-			if (vScrollAmount < 0) {
-				float overscrollPercent = -vScrollAmount / bounceY;
+			if (amountY < 0) {
+				float overscrollPercent = -amountY / bounceDistance;
 				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				float bouncePercent = bouncePixels / (widget.height - height);
-				vScrollAmount += bouncePercent * delta;
-				if (vScrollAmount > 0) vScrollAmount = 0;
-			} else if (vScrollAmount > 1) {
-				float overscrollPercent = -(1 - vScrollAmount) / bounceY;
+				amountY += bouncePixels * delta;
+				if (amountY > 0) amountY = 0;
+			} else if (amountY > maxY) {
+				float overscrollPercent = -(maxY - amountY) / bounceDistance;
 				float bouncePixels = bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * overscrollPercent;
-				float bouncePercent = bouncePixels / (widget.height - height);
-				vScrollAmount -= bouncePercent * delta;
-				if (vScrollAmount < 1) vScrollAmount = 1;
+				amountY -= bouncePixels * delta;
+				if (amountY < maxY) amountY = maxY;
 			}
 		}
 	}
 
 	private void calculateBoundsAndPositions (Matrix4 batchTransform) {
-		// Get available space size by subtracting background's padded area.
-		float areaWidth = width;
-		float areaHeight = height;
-
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
 		if (widget instanceof Layout) {
@@ -192,14 +178,12 @@ public class FlickScrollPane extends Group implements Layout {
 		}
 
 		// Figure out if we need horizontal/vertical scrollbars,
-		hasHScroll = false;
-		hasVScroll = false;
-		if (widgetWidth > areaWidth) hasHScroll = true;
-		if (widgetHeight > areaHeight) hasVScroll = true;
+		scrollX = widgetWidth > width || forceScrollX;
+		scrollY = widgetHeight > height || forceScrollY;
 
 		// If the widget is smaller than the available space, make it take up the available space.
-		widgetWidth = Math.max(areaWidth, widgetWidth);
-		widgetHeight = Math.max(areaHeight, widgetHeight);
+		widgetWidth = Math.max(width, widgetWidth);
+		widgetHeight = Math.max(height, widgetHeight);
 		if (widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.width = widgetWidth;
 			widget.height = widgetHeight;
@@ -211,12 +195,22 @@ public class FlickScrollPane extends Group implements Layout {
 		}
 
 		// Set the widget area bounds.
-		widgetAreaBounds.set(0, 0, areaWidth, areaHeight);
+		widgetAreaBounds.set(0, 0, width, height);
 
 		// Calculate the widgets offset depending on the scroll state and available widget area.
-		widget.y = widgetAreaBounds.y - (!hasVScroll ? (int)(widget.height - areaHeight) : 0)
-			- (hasVScroll ? (int)((widget.height - areaHeight) * (1 - vScrollAmount)) : 0);
-		widget.x = widgetAreaBounds.x - (hasHScroll ? (int)((widget.width - areaWidth) * hScrollAmount) : 0);
+		maxX = widget.width - width;
+		maxY = widget.height - height;
+
+		float widgetY = widgetAreaBounds.y;
+		if (scrollY)
+			widgetY -= (int)amountY;
+		else
+			widgetY -= (int)maxY;
+		widget.y = widgetY;
+
+		float widgetX = widgetAreaBounds.x;
+		if (scrollX) widgetX -= (int)amountX;
+		widget.x = widgetX;
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
@@ -225,6 +219,8 @@ public class FlickScrollPane extends Group implements Layout {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		if (widget == null) return;
+
 		// Setup transform for this group.
 		applyTransform(batch);
 
@@ -282,21 +278,23 @@ public class FlickScrollPane extends Group implements Layout {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
-	public void setVScrollAmount (float vScrollAmount) {
-		this.vScrollAmount = vScrollAmount;
+	public void setScrollY (float percent) {
+		this.amountY = maxY * percent;
 	}
 
-	public void setHScrollAmount (float hScrollAmount) {
-		this.hScrollAmount = hScrollAmount;
+	public void setScrollX (float percent) {
+		this.amountX = maxX * percent;
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget the Actor */
 	public void setWidget (Actor widget) {
-		if (widget == null) throw new IllegalArgumentException("widget must not be null.");
-		this.removeActor(this.widget);
+		if (this.widget != null) removeActor(this.widget);
 		this.widget = widget;
-		this.addActor(widget);
-		invalidate();
+		if (widget != null) addActor(widget);
+	}
+
+	public Actor getWidget () {
+		return widget;
 	}
 }

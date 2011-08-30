@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -26,10 +27,11 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -114,11 +116,12 @@ public class ShadowMappingTest extends GdxTest {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
-		Label label = skin.newLabel("label", "Camera:");
-		ComboBox cameraCombo = skin.newComboBox("cameraCombo", new String[] {"Scene", "Light"}, ui);
-		Label label2 = skin.newLabel("label2", "Shader");
-		ComboBox shaderCombo = skin.newComboBox("shaderCombo", new String[] {"flat", "shadow-gen", "shadow-map"}, ui);
-		Label fpsLabel = skin.newLabel("fps", "fps:");
+		Label label = new Label("label", "Camera:", skin.getStyle(LabelStyle.class));
+		ComboBox cameraCombo = new ComboBox("cameraCombo", new String[] {"Scene", "Light"}, ui, skin.getStyle(ComboBoxStyle.class));
+		Label label2 = new Label("label2", "Shader", skin.getStyle(LabelStyle.class));
+		ComboBox shaderCombo = new ComboBox("shaderCombo", new String[] {"flat", "shadow-gen", "shadow-map"}, ui,
+			skin.getStyle(ComboBoxStyle.class));
+		Label fpsLabel = new Label("fps", "fps:", skin.getStyle(LabelStyle.class));
 
 		Table table = new Table("toolbar", Gdx.graphics.getWidth(), 100);
 		table.defaults().spaceRight(5);

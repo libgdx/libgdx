@@ -68,14 +68,18 @@ public class Button extends Widget {
 	boolean isPressed = false;
 	ClickListener listener = null;
 
-	/** Creates a new Button. The width and height of the Button are determined by its label test and style.
-	 * @param name the namen
-	 * @param label the label
-	 * @param style the {@link ButtonStyle} */
-	public Button (String name, String label, ButtonStyle style) {
+	public Button (String text, Skin skin) {
+		this(null, text, skin.getStyle(ButtonStyle.class));
+	}
+
+	public Button (String text, ButtonStyle style) {
+		this(null, text, style);
+	}
+
+	public Button (String name, String text, ButtonStyle style) {
 		super(name, 0, 0);
 		this.style = style;
-		this.text = label;
+		this.text = text;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
@@ -87,7 +91,7 @@ public class Button extends Widget {
 		final NinePatch downPatch = style.down;
 		bounds.set(font.getMultiLineBounds(text));
 
-		prefHeight = downPatch.getBottomHeight() + downPatch.getTopHeight() + bounds.height + -font.getDescent() * 2;
+		prefHeight = downPatch.getTopHeight() + downPatch.getBottomHeight() + bounds.height - font.getDescent() * 2;
 		prefWidth = downPatch.getLeftWidth() + downPatch.getRightWidth() + bounds.width;
 		invalidated = false;
 	}
@@ -129,31 +133,6 @@ public class Button extends Widget {
 	public void touchDragged (float x, float y, int pointer) {
 	}
 
-	/** Defines a button style, see {@link Button}
-	 * @author mzechner */
-	public static class ButtonStyle {
-		public NinePatch down;
-		public NinePatch up;
-		public BitmapFont font;
-		public Color fontColor;
-
-		public ButtonStyle () {
-		}
-
-		public ButtonStyle (BitmapFont font, Color fontColor, NinePatch down, NinePatch up) {
-			this.font = font;
-			this.fontColor = fontColor;
-			this.down = down;
-			this.up = up;
-		}
-	}
-
-	/** Interface for listening to click events of a button.
-	 * @author mzechner */
-	public interface ClickListener {
-		public void click (Button button);
-	}
-
 	/** Sets the multi-line label text of this button. Causes invalidation of all parents.
 	 * @param text */
 	public void setText (String text) {
@@ -172,5 +151,30 @@ public class Button extends Widget {
 	public Button setClickListener (ClickListener listener) {
 		this.listener = listener;
 		return this;
+	}
+
+	/** Defines a button style, see {@link Button}
+	 * @author mzechner */
+	static public class ButtonStyle {
+		public NinePatch down;
+		public NinePatch up;
+		public BitmapFont font;
+		public Color fontColor;
+
+		public ButtonStyle () {
+		}
+
+		public ButtonStyle (BitmapFont font, Color fontColor, NinePatch down, NinePatch up) {
+			this.font = font;
+			this.fontColor = fontColor;
+			this.down = down;
+			this.up = up;
+		}
+	}
+
+	/** Interface for listening to click events of a button.
+	 * @author mzechner */
+	static public interface ClickListener {
+		public void click (Button button);
 	}
 }

@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -57,9 +58,9 @@ public class LabelTest extends GdxTest {
 		table.x = table.y = 100;
 
 		table.debug();
-		table.add(skin.newLabel(null, "This is regular text."));
+		table.add(new Label(null, "This is regular text.", skin.getStyle("default", LabelStyle.class)));
 		table.row();
-		table.add(skin.newLabel(null, "This is regular text,\nwith a newline."));
+		table.add(new Label(null, "This is regular text\nwith a newline.", skin.getStyle("default", LabelStyle.class)));
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class LabelTest extends GdxTest {
 
 		float x = 40, y = 40;
 
-		BitmapFont font = skin.getFont("default-font");
+		BitmapFont font = skin.getResource("default-font", BitmapFont.class);
 		batch.begin();
 		font.draw(batch, "The quick brown fox jumped over the lazy cow.", x, y);
 		batch.end();

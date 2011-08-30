@@ -110,7 +110,7 @@ public class TextField extends Widget {
 	final FloatArray glyphAdvances = new FloatArray();
 	final FloatArray glyphPositions = new FloatArray();
 	final float initialPrefWidth;
-	float blinkTime = 0.5f;
+	float blinkTime = 0.42f;
 	long lastBlink = System.nanoTime();
 	boolean cursorOn = true;
 	boolean hasSelection = false;
@@ -119,12 +119,28 @@ public class TextField extends Widget {
 	float selectionWidth = 0;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
+	public TextField (Skin skin) {
+		this(null, "", skin.getStyle(TextFieldStyle.class), 0);
+	}
+
+	public TextField (String text, Skin skin) {
+		this(null, text, skin.getStyle(TextFieldStyle.class), 0);
+	}
+
+	public TextField (TextFieldStyle style) {
+		this(null, "", style, 0);
+	}
+
+	public TextField (String text, TextFieldStyle style) {
+		this(null, text, style, 0);
+	}
+
 	/** Creates a new Textfield. The width is determined by the prefWidth parameter, the height is determined by the font's height
 	 * as well as the top and bottom border patches of the text fields background.
 	 * @param name the name
 	 * @param prefWidth the (preferred) width
 	 * @param style the {@link TextFieldStyle} */
-	public TextField (String name, float prefWidth, TextFieldStyle style) {
+	public TextField (String name, String text, TextFieldStyle style, float prefWidth) {
 		super(name, prefWidth, 0);
 		this.style = style;
 		this.initialPrefWidth = prefWidth;
@@ -132,6 +148,7 @@ public class TextField extends Widget {
 		layout();
 		this.width = this.prefWidth;
 		this.height = this.prefHeight;
+		setText(text);
 	}
 
 	@Override

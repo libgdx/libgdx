@@ -73,6 +73,14 @@ public class List extends Widget {
 	int selected = 0;
 	SelectionListener listener;
 
+	public List (String[] entries, Skin skin) {
+		this(null, entries, skin.getStyle(ListStyle.class));
+	}
+
+	public List (String[] entries, ListStyle style) {
+		this(null, entries, style);
+	}
+
 	/** Creates a new List. The width and height is determined from the bounding box around all entries.
 	 * @param name the name
 	 * @param entries the entries
@@ -100,7 +108,7 @@ public class List extends Widget {
 
 		}
 
-		entryHeight = font.getLineHeight() - font.getDescent();
+		entryHeight = font.getCapHeight() - font.getDescent() * 2;
 		entryHeight += selectedPatch.getTopHeight() + selectedPatch.getBottomHeight();
 		prefWidth += selectedPatch.getLeftWidth() + selectedPatch.getRightWidth();
 		prefHeight = entries.length * entryHeight;
@@ -194,14 +202,12 @@ public class List extends Widget {
 	public String getSelection () {
 		return entries[selected];
 	}
-	
-	/**
-	 * @param index sets the selected item
-	 */
-	public void setSelection(int index) {
-		if(index < 0 || index >= entries.length) throw new GdxRuntimeException("Index must be > 0 and < #entries");
+
+	/** @param index sets the selected item */
+	public void setSelection (int index) {
+		if (index < 0 || index >= entries.length) throw new GdxRuntimeException("Index must be > 0 and < #entries");
 		selected = index;
-		invalidateHierarchy(); 
+		invalidateHierarchy();
 	}
 
 	public int setSelection (String entry) {

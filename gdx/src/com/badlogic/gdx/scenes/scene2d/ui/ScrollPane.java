@@ -106,7 +106,15 @@ public class ScrollPane extends Group implements Layout {
 	boolean touchScrollV = false;
 	Vector2 lastPoint = new Vector2();
 
-	public ScrollPane (String name, Stage stage, Actor widget, int prefWidth, int prefHeight, ScrollPaneStyle style) {
+	public ScrollPane (Actor widget, Stage stage, Skin skin) {
+		this(null, widget, stage, skin.getStyle(ScrollPaneStyle.class), 0, 0);
+	}
+
+	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style) {
+		this(null, widget, stage, style, 0, 0);
+	}
+
+	public ScrollPane (String name, Actor widget, Stage stage, ScrollPaneStyle style, int prefWidth, int prefHeight) {
 		super(name);
 		this.style = style;
 		this.prefWidth = this.width = prefWidth;

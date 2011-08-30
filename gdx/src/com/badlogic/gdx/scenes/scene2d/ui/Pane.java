@@ -66,13 +66,21 @@ public class Pane extends Table {
 	final Rectangle widgetBounds = new Rectangle();
 	final Rectangle scissors = new Rectangle();
 
+	public Pane (Stage stage, Skin skin) {
+		this(null, stage, skin.getStyle(PaneStyle.class), 0, 0);
+	}
+
+	public Pane (Stage stage, PaneStyle style) {
+		this(null, stage, style, 0, 0);
+	}
+
 	/** Creates a new Pane. The width and height are determined by the arguments passed to the constructor.
 	 * @param name the name
 	 * @param stage the stage used for clipping
 	 * @param prefWidth the width
 	 * @param prefHeight the height
 	 * @param style the {@link PaneStyle} */
-	public Pane (String name, Stage stage, int prefWidth, int prefHeight, PaneStyle style) {
+	public Pane (String name, Stage stage, PaneStyle style, int prefWidth, int prefHeight) {
 		super(name);
 		this.stage = stage;
 		width = prefWidth;

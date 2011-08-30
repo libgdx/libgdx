@@ -88,6 +88,14 @@ public class ComboBox extends Widget {
 	ComboList list = null;
 	SelectionListener listener;
 
+	public ComboBox (String[] entries, Stage stage, Skin skin) {
+		this(null, entries, stage, skin.getStyle(ComboBoxStyle.class));
+	}
+	
+	public ComboBox (String[] entries, Stage stage, ComboBoxStyle style) {
+		this(null, entries, stage, style);
+	}
+	
 	/** Creates a new combo box. The width and height are determined by the widets entry and the style.
 	 * @param name the name
 	 * @param entries the single-line entries
@@ -108,7 +116,8 @@ public class ComboBox extends Widget {
 		final NinePatch background = style.background;
 		final BitmapFont font = style.font;
 
-		prefHeight = Math.max(font.getLineHeight() + -font.getDescent(), background.getTotalHeight());
+		prefHeight = Math.max(background.getTopHeight() + background.getBottomHeight() + font.getCapHeight() - font.getDescent()
+			* 2, background.getTotalHeight());
 		float max = 0;
 		for (int i = 0; i < entries.length; i++) {
 			max = Math.max(font.getBounds(entries[i]).width, max);
@@ -297,7 +306,7 @@ public class ComboBox extends Widget {
 		public Actor hit (float x, float y) {
 			return x > 0 && x < width && y > 0 && y < height ? this : null;
 		}
-		
+
 		public void act (float delta) {
 			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) {
 				stage.removeActor(this);

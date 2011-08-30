@@ -23,28 +23,39 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton.ImageToggleButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.SliderStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.ValueChangedListener;
 import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ToggleButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ToggleButton.ToggleButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
@@ -70,47 +81,51 @@ public class UITest extends GdxTest {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(ui);
 
-		Window window = skin.newWindow("window", ui, "Dialog", 420, 440);
+		Window window = new Window("window", "Dialog", ui, skin.getStyle(WindowStyle.class), 420, 440);
 		window.x = window.y = 0;
 
-		//Group.debug = true;
-		
-		final Button button = skin.newButton("button-sl", "Single");
-		final ToggleButton buttonMulti = skin.newToggleButton("button-ml-tgl", "Multi\nLine\nToggle");
-		final ImageButton imgButton = skin.newImageButton("button-img", image);
-		final ImageToggleButton imgToggleButton = skin.newImageToggleButton("button-img-tgl", image);
-		final CheckBox checkBox = skin.newCheckBox("checkbox", "Check me");
-		final Slider slider = skin.newSlider("slider", 100, 0, 10, 1);
-		final TextField textfield = skin.newTextField("textfield", 100);
-		final ComboBox combobox = skin.newComboBox("combo", new String[] {"Android", "Windows", "Linux", "OSX"}, ui);
+		// Group.debug = true;
+
+		final Button button = new Button("button-sl", "Single", skin.getStyle(ButtonStyle.class));
+		final ToggleButton buttonMulti = new ToggleButton("button-ml-tgl", "Multi\nLine\nToggle",
+			skin.getStyle(ToggleButtonStyle.class));
+		final ImageButton imgButton = new ImageButton("button-img", image, skin.getStyle(ImageButtonStyle.class));
+		final ImageToggleButton imgToggleButton = new ImageToggleButton("button-img-tgl", image,
+			skin.getStyle(ImageToggleButtonStyle.class));
+		final CheckBox checkBox = new CheckBox("checkbox", "Check me", skin.getStyle(CheckBoxStyle.class));
+		final Slider slider = new Slider("slider", 0, 10, 1, skin.getStyle(SliderStyle.class), 100);
+		final TextField textfield = new TextField("textfield", "", skin.getStyle(TextFieldStyle.class), 100);
+		final ComboBox combobox = new ComboBox("combo", new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
+			skin.getStyle(ComboBoxStyle.class));
 		// BOZO - Need an image actor in UI package that has a pref size separate from the actor size.
 		final Image imageActor = new Image("image", image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane("scroll", ui, imageActor, 0, 0);
-		final List list = skin.newList("list", listEntries);
-		final ScrollPane scrollPane2 = skin.newScrollPane("scroll2", ui, list, 0, 0);
-		final SplitPane splitPane = skin.newSplitPane("split", ui, scrollPane, scrollPane2, false, 0, 0, "default-horizontal");
-		final Label fpsLabel = skin.newLabel("label", "fps:");
+		final FlickScrollPane scrollPane = new FlickScrollPane("scroll", imageActor, ui, 0, 0);
+		final List list = new List("list", listEntries, skin.getStyle(ListStyle.class));
+		final ScrollPane scrollPane2 = new ScrollPane("scroll2", list, ui, skin.getStyle(ScrollPaneStyle.class), 0, 0);
+		final SplitPane splitPane = new SplitPane("split", scrollPane, scrollPane2, false, ui, skin.getStyle("default-horizontal",
+			SplitPaneStyle.class), 0, 0);
+		final Label fpsLabel = new Label("label", "fps:", skin.getStyle(LabelStyle.class));
 
 		imgButton.setImageSize(16, 20);
 		imgToggleButton.setImageSize(10, 10);
 
-		TableLayout layout = window.getTableLayout();
-		layout.defaults().spaceBottom(10);
-		layout.row().fill().expandX();
-		layout.add(button);
-		layout.add(buttonMulti);
-		layout.add(imgButton);
-		layout.add(imgToggleButton);
-		layout.row();
-		layout.add(checkBox);
-		layout.add(slider).fillX().colspan(3);
-		layout.row();
-		layout.add(combobox);
-		layout.add(textfield).expandX().fillX().colspan(3);
-		layout.row();
-		layout.add(splitPane).fill().expand().colspan(4).minHeight(200);
-		layout.row();
-		layout.add(fpsLabel).colspan(4);
+		// window.debug();
+		window.defaults().spaceBottom(10);
+		window.row().fill().expandX();
+		window.add(button).fill(0f, 0f);
+		window.add(buttonMulti);
+		window.add(imgButton);
+		window.add(imgToggleButton);
+		window.row();
+		window.add(checkBox);
+		window.add(slider).fillX().colspan(3);
+		window.row();
+		window.add(combobox);
+		window.add(textfield).expandX().fillX().colspan(3);
+		window.row();
+		window.add(splitPane).fill().expand().colspan(4).minHeight(200);
+		window.row();
+		window.add(fpsLabel).colspan(4);
 
 		textfield.setTextFieldListener(new TextFieldListener() {
 			@Override

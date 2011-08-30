@@ -40,6 +40,11 @@ public abstract class Widget extends Actor implements Layout {
 	public float prefHeight;
 	protected boolean invalidated = false;
 
+	/** Creates a new widget without a name or preferred size. */
+	public Widget () {
+		super(null);
+	}
+
 	/** Creates a new widget with the preferred width and height
 	 * @param name the name
 	 * @param prefWidth the preferred width

@@ -61,6 +61,14 @@ public class Label extends Widget {
 	final BitmapFontCache cache;
 	String text;
 
+	public Label (String text, Skin skin) {
+		this(null, text, skin.getStyle(LabelStyle.class));
+	}
+
+	public Label (String text, LabelStyle style) {
+		this(null, text, style);
+	}
+
 	public Label (String name, String text, LabelStyle style) {
 		super(name, 0, 0);
 		this.style = style;
@@ -79,7 +87,7 @@ public class Label extends Widget {
 		TextBounds bounds = style.font.getMultiLineBounds(text);
 		cache.setMultiLineText(text, 0, bounds.height);
 		prefWidth = bounds.width;
-		prefHeight = bounds.height - style.font.getDescent(); // Centers text in the label.
+		prefHeight = bounds.height - style.font.getDescent() * 2;
 		invalidateHierarchy();
 	}
 
@@ -109,7 +117,7 @@ public class Label extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		cache.setPosition(x, y);
+		cache.setPosition(x, y - style.font.getDescent());
 		cache.draw(batch, parentAlpha);
 	}
 

@@ -67,6 +67,14 @@ public class ImageToggleButton extends Widget {
 	boolean isPressed = false;
 	ClickListener listener = null;
 
+	public ImageToggleButton (TextureRegion image, Skin skin) {
+		this(null, image, skin.getStyle(ImageToggleButtonStyle.class));
+	}
+
+	public ImageToggleButton (TextureRegion image, ImageToggleButtonStyle style) {
+		this(null, image, style);
+	}
+
 	/** Creates a new image toggle button. The size is determined by the image's size as well as the style.
 	 * @param name the name
 	 * @param image the image' {@link TextureRegion}

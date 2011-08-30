@@ -64,6 +64,14 @@ public class Slider extends Widget {
 	float sliderPos;
 	ValueChangedListener listener = null;
 
+	public Slider (float min, float max, float steps, Skin skin) {
+		this(null, min, max, steps, skin.getStyle(SliderStyle.class), 0);
+	}
+
+	public Slider (float min, float max, float steps, SliderStyle style) {
+		this(null, min, max, steps, style, 0);
+	}
+
 	/** Creates a new slider. It's width is determined by the given prefWidth parameter, its height is determined by the maximum of
 	 * the height of either the slider {@link NinePatch} or slider handle {@link TextureRegion}. The min and max values determine
 	 * the range the values of this slider can take on, the steps parameter specifies the distance between individual values. E.g.
@@ -74,7 +82,7 @@ public class Slider extends Widget {
 	 * @param max the maximum value
 	 * @param steps the step size between values
 	 * @param style the {@link SliderStyle} */
-	public Slider (String name, float prefWidth, float min, float max, float steps, SliderStyle style) {
+	public Slider (String name, float min, float max, float steps, SliderStyle style, float prefWidth) {
 		super(name, prefWidth, 0);
 		this.style = style;
 		if (min > max) throw new IllegalArgumentException("min must be > max");

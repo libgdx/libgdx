@@ -95,6 +95,14 @@ public class SplitPane extends Group implements Layout {
 	Rectangle[] scissors = new Rectangle[] {new Rectangle(), new Rectangle()};
 	boolean touchDrag = false;
 
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, Skin skin) {
+		this(null, firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), 0, 0);
+	}
+
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style) {
+		this(null, firstWidget, secondWidget, vertical, stage, style, 0, 0);
+	}
+
 	/** Creates a new SplitPane. It's width and height is determined by the prefWidth and prefHeight parameters.
 	 * @param name the name
 	 * @param stage the stage, used for clipping
@@ -104,8 +112,8 @@ public class SplitPane extends Group implements Layout {
 	 * @param prefWidth the (preferred) width
 	 * @param prefHeight the (preferred) height
 	 * @param style the {@link SplitPaneStyle} */
-	public SplitPane (String name, Stage stage, Actor firstWidget, Actor secondWidget, boolean vertical, int prefWidth,
-		int prefHeight, SplitPaneStyle style) {
+	public SplitPane (String name, Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style,
+		int prefWidth, int prefHeight) {
 		super(name);
 		this.stage = stage;
 		this.style = style;

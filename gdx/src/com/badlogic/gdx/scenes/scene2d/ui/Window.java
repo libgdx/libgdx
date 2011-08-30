@@ -85,6 +85,14 @@ public class Window extends Table {
 	final Vector2 initial = new Vector2();
 	boolean isModal = false;
 
+	public Window (String title, Stage stage, Skin skin) {
+		this(null, title, stage, skin.getStyle(WindowStyle.class), 0, 0);
+	}
+
+	public Window (String title, Stage stage, WindowStyle style) {
+		this(null, title, stage, style, 0, 0);
+	}
+
 	/** Creates a new Window. The width and height are determined by the given parameters.
 	 * @param name the name
 	 * @param stage the {@link Stage}, used for clipping
@@ -92,7 +100,7 @@ public class Window extends Table {
 	 * @param prefWidth the (preferred) width
 	 * @param prefHeight the (preferred) height
 	 * @param style the {@link WindowStyle} */
-	public Window (String name, Stage stage, String title, int prefWidth, int prefHeight, WindowStyle style) {
+	public Window (String name, String title, Stage stage, WindowStyle style, int prefWidth, int prefHeight) {
 		super(name);
 		this.stage = stage;
 		this.title = title;
@@ -127,7 +135,6 @@ public class Window extends Table {
 		textBounds.height -= titleFont.getDescent();
 	}
 
-	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final NinePatch backgroundPatch = style.background;
 		final BitmapFont titleFont = style.titleFont;

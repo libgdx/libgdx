@@ -71,6 +71,14 @@ public class ToggleButton extends Widget {
 	boolean isPressed = false;
 	ClickListener listener = null;
 
+	public ToggleButton (String label, Skin skin) {
+		this(null, label, skin.getStyle(ToggleButtonStyle.class));
+	}
+
+	public ToggleButton (String label, ToggleButtonStyle style) {
+		this(null, label, style);
+	}
+
 	/** Creates a new ToggleButton. The width and height are determined by the background {@link NinePatch} border patches as well
 	 * as the bounding box around the contained text label.
 	 * @param name the name
@@ -90,8 +98,9 @@ public class ToggleButton extends Widget {
 		final BitmapFont font = style.font;
 		final NinePatch downPatch = style.down;
 		bounds.set(font.getMultiLineBounds(text));
+		bounds.height -= font.getDescent();
 
-		prefHeight = downPatch.getBottomHeight() + downPatch.getTopHeight() + bounds.height + -font.getDescent() * 2;
+		prefHeight = downPatch.getBottomHeight() + downPatch.getTopHeight() + bounds.height + -font.getDescent();
 		prefWidth = downPatch.getLeftWidth() + downPatch.getRightWidth() + bounds.width;
 		invalidated = false;
 	}

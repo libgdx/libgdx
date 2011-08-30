@@ -66,26 +66,30 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * 
  * @author mzechner */
 public class CheckBox extends Widget {
-	final CheckBoxStyle style;
-	String label;
-	boolean isChecked = false;
-	CheckedListener listener = null;
+	private final CheckBoxStyle style;
+	private String text;
+	private boolean isChecked = false;
+	private CheckedListener listener = null;
 
-	final Vector2 boxPos = new Vector2();
-	final Vector2 textPos = new Vector2();
-	final TextBounds textBounds = new TextBounds();
-	final Rectangle bounds = new Rectangle();
-	float checkWidth = 0;
-	float checkHeight = 0;
+	private final Vector2 boxPos = new Vector2();
+	private final Vector2 textPos = new Vector2();
+	private final TextBounds textBounds = new TextBounds();
+	private final Rectangle bounds = new Rectangle();
+	private float checkWidth = 0;
+	private float checkHeight = 0;
 
-	/** Creates a new check box. The width and height of the check box are determined by its label text and style.
-	 * @param name the name
-	 * @param label the label
-	 * @param style the {@link CheckBoxStyle} */
-	public CheckBox (String name, String label, CheckBoxStyle style) {
+	public CheckBox (String text, Skin skin) {
+		this(null, text, skin.getStyle(CheckBoxStyle.class));
+	}
+
+	public CheckBox (String text, CheckBoxStyle style) {
+		this(null, text, style);
+	}
+
+	public CheckBox (String name, String text, CheckBoxStyle style) {
 		super(name, 0, 0);
 		this.style = style;
-		this.label = label;
+		this.text = text;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
@@ -93,18 +97,19 @@ public class CheckBox extends Widget {
 
 	@Override
 	public void layout () {
+		if (!invalidated) return;
+
 		final BitmapFont font = style.font;
 		final TextureRegion checkedRegion = style.checked;
 		final TextureRegion uncheckedRegion = style.unchecked;
 
-		textBounds.set(font.getBounds(label));
-		textBounds.height -= font.getDescent();
+		textBounds.set(font.getBounds(text));
 		checkWidth = Math.max(checkedRegion.getRegionWidth(), uncheckedRegion.getRegionWidth());
 		checkHeight = Math.max(checkedRegion.getRegionHeight(), uncheckedRegion.getRegionHeight());
 		if (textBounds.height > checkHeight) {
-			prefHeight = textBounds.height;
-			boxPos.y = (int)((textBounds.height - checkedRegion.getRegionHeight()) / 2);
-			textPos.y = textBounds.height;
+			prefHeight = textBounds.height - font.getDescent() * 2;
+			boxPos.y = (int)((prefHeight - checkedRegion.getRegionHeight()) / 2);
+			textPos.y = textBounds.height - font.getDescent();
 		} else {
 			prefHeight = checkHeight;
 			boxPos.y = 0;
@@ -117,10 +122,6 @@ public class CheckBox extends Widget {
 		invalidated = false;
 	}
 
-	public void invalidate () {
-		super.invalidate();
-	}
-	
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
@@ -137,7 +138,7 @@ public class CheckBox extends Widget {
 			batch.draw(uncheckedRegion, x + boxPos.x, y + boxPos.y);
 
 		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-		font.draw(batch, label, x + textPos.x, y + textPos.y);
+		font.draw(batch, text, x + textPos.x, y + textPos.y);
 	}
 
 	@Override
@@ -160,10 +161,16 @@ public class CheckBox extends Widget {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
-	/** Interface for listening to check events on this check box.
-	 * @author mzechner */
-	public interface CheckedListener {
-		public void checked (CheckBox checkBox, boolean isChecked);
+	/** Sets whether this check box is checked or not. Invalidates all parents.
+	 * @param isChecked checked or not */
+	public void setChecked (boolean isChecked) {
+		this.isChecked = isChecked;
+		invalidateHierarchy();
+	}
+
+	/** @return whether this checkbox is checked or not */
+	public boolean isChecked () {
+		return isChecked;
 	}
 
 	/** Sets the {@link CheckedListener}
@@ -193,15 +200,9 @@ public class CheckBox extends Widget {
 		}
 	}
 
-	/** Sets whether this check box is checked or not. Invalidates all parents.
-	 * @param isChecked checked or not */
-	public void setChecked (boolean isChecked) {
-		this.isChecked = isChecked;
-		invalidateHierarchy();
-	}
-
-	/** @return whether this checkbox is checked or not */
-	public boolean isChecked () {
-		return isChecked;
+	/** Interface for listening to check events on this check box.
+	 * @author mzechner */
+	public interface CheckedListener {
+		public void checked (CheckBox checkBox, boolean isChecked);
 	}
 }

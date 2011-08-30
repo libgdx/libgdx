@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -29,7 +30,11 @@ import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -94,16 +99,16 @@ public class MipMapTest extends GdxTest {
 		for (TextureFilter filter : TextureFilter.values()) {
 			filters[idx++] = filter.toString();
 		}
-		hwMipMap = skin.newCheckBox("hardware", "Hardware Mips");
-		minFilter = skin.newComboBox("minfilter", filters, ui);
-		magFilter = skin.newComboBox("magfilter", new String[] {"Nearest", "Linear"}, ui);
+		hwMipMap = new CheckBox("hardware", "Hardware Mips", skin.getStyle(CheckBoxStyle.class));
+		minFilter = new ComboBox("minfilter", filters, ui, skin.getStyle(ComboBoxStyle.class));
+		magFilter = new ComboBox("magfilter", new String[] {"Nearest", "Linear"}, ui, skin.getStyle(ComboBoxStyle.class));
 
 		Table table = new Table("container", (int)ui.width(), 30);
 		table.y = ui.height() - 30;
 		table.add(hwMipMap).spaceRight(5);
-		table.add(skin.newLabel("lbl1", "Min Filter")).spaceRight(5);
+		table.add(new Label("lbl1", "Min Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
 		table.add(minFilter).spaceRight(5);
-		table.add(skin.newLabel("lbl1", "Mag Filter")).spaceRight(5);
+		table.add(new Label("lbl1", "Mag Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
 		table.add(magFilter);
 
 		ui.addActor(table);

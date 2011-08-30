@@ -90,6 +90,11 @@ public abstract class Actor {
 	protected PooledLinkedList<Action> actions = new PooledLinkedList<Action>(10);
 	private boolean toRemove;
 
+	/** Creates an actor without a name. */
+	public Actor () {
+		this.name = null;
+	}
+
 	public Actor (String name) {
 		this.name = name;
 	}
