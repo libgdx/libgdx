@@ -177,6 +177,12 @@ public class ObjLoader implements StillModelLoader {
 					finalVerts[vi++] = uvs.get(uvIndex);
 				}
 			}
+			
+			int numIndices = numFaces * 3;
+			short[] finalIndices = new short[numIndices];
+			for (int i=0; i<numIndices; i++){
+				finalIndices[i] = (short) i;
+			}
 
 			final Mesh mesh;
 
@@ -185,8 +191,9 @@ public class ObjLoader implements StillModelLoader {
 			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
-			mesh = new Mesh(true, numFaces * 3, 0, attributes.toArray(new VertexAttribute[attributes.size()]));
+			mesh = new Mesh(true, numFaces * 3, numIndices, attributes.toArray(new VertexAttribute[attributes.size()]));
 			mesh.setVertices(finalVerts);
+			mesh.setIndices(finalIndices);
 
 			StillSubMesh subMesh = new StillSubMesh(group.name, mesh, GL10.GL_TRIANGLES);
 			subMesh.material = new Material("default");
