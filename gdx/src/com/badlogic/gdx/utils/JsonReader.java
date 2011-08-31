@@ -67,7 +67,11 @@ public class JsonReader {
 	}
 
 	public Object parse (FileHandle file) {
-		return parse(file.read());
+		try {
+			return parse(file.read());
+		} catch (Exception ex) {
+			throw new SerializationException("Error parsing file: " + file, ex);
+		}
 	}
 
 	public Object parse (char[] data, int offset, int length) {
@@ -387,15 +391,15 @@ public class JsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new IllegalArgumentException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
+			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
 				parseRuntimeEx);
 		} else if (elements.size != 0) {
 			Object element = elements.peek();
 			elements.clear();
 			if (element instanceof ObjectMap)
-				throw new IllegalArgumentException("Error parsing JSON, unmatched brace.");
+				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
-				throw new IllegalArgumentException("Error parsing JSON, unmatched bracket.");
+				throw new SerializationException("Error parsing JSON, unmatched bracket.");
 		}
 		Object root = this.root;
 		this.root = null;

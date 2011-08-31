@@ -49,6 +49,11 @@ public class Json {
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
 	private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
 	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
+	private boolean ignoreUnknownFields;
+
+	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
+		this.ignoreUnknownFields = ignoreUnknownFields;
+	}
 
 	public void setOutputType (OutputType outputType) {
 		this.outputType = outputType;
@@ -115,6 +120,21 @@ public class Json {
 		StringWriter buffer = new StringWriter();
 		toJson(object, buffer);
 		return buffer.toString();
+	}
+
+	public void toJson (Object object, FileHandle file) {
+		Writer writer = null;
+		try {
+			writer = file.writer(false);
+			toJson(object, writer);
+		} catch (Exception ex) {
+			throw new SerializationException("Error writing file: " + file, ex);
+		} finally {
+			try {
+				if (writer != null) writer.close();
+			} catch (IOException ignored) {
+			}
+		}
 	}
 
 	public void toJson (Object object, Writer writer) {
@@ -399,7 +419,11 @@ public class Json {
 	}
 
 	public <T> T fromJson (Class<T> type, FileHandle file) {
-		return (T)readValue(type, null, new JsonReader().parse(file));
+		try {
+			return (T)readValue(type, null, new JsonReader().parse(file));
+		} catch (Exception ex) {
+			throw new SerializationException("Error reading file: " + file, ex);
+		}
 	}
 
 	public <T> T fromJson (Class<T> type, char[] data, int offset, int length) {
@@ -455,7 +479,10 @@ public class Json {
 		for (Entry<String, Object> entry : jsonMap.entries()) {
 			FieldMetadata metadata = fields.get(entry.key);
 			Field field = metadata.field;
-			if (field == null) throw new SerializationException("Unable to find field: " + entry.key + " (" + type.getName() + ")");
+			if (ignoreUnknownFields) {
+				if (debug) System.out.println("Ignoring unknown field: " + entry.key + " (" + type.getName() + ")");
+			} else if (field == null)
+				throw new SerializationException("Unable to find field: " + entry.key + " (" + type.getName() + ")");
 			if (entry.value == null) continue;
 			try {
 				field.set(object, readValue(field.getType(), metadata.elementType, entry.value));
@@ -708,7 +735,7 @@ public class Json {
 		} else if (object == null) {
 			buffer.append("null");
 		} else
-			throw new IllegalArgumentException("Unknown object type: " + object.getClass());
+			throw new SerializationException("Unknown object type: " + object.getClass());
 	}
 
 	static private boolean isFlat (ObjectMap<?, ?> map) {

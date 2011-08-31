@@ -50,6 +50,7 @@ public class FlickScrollPane extends Group implements Layout {
 	public float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
 	public boolean emptySpaceOnlyScroll;
 	public boolean forceScrollX, forceScrollY;
+	public boolean clamp;
 
 	public FlickScrollPane (Actor widget, Stage stage) {
 		this(null, widget, stage, 0, 0);
@@ -111,6 +112,7 @@ public class FlickScrollPane extends Group implements Layout {
 	}
 
 	void clamp () {
+		if (!clamp) return;
 		if (bounces) {
 			amountX = Math.max(-bounceDistance, amountX);
 			amountX = Math.min(maxX + bounceDistance, amountX);

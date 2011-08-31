@@ -65,7 +65,11 @@ public class XmlReader {
 	}
 
 	public Element parse (FileHandle file) throws IOException {
-		return parse(file.read());
+		try {
+			return parse(file.read());
+		} catch (Exception ex) {
+			throw new SerializationException("Error parsing file: " + file, ex);
+		}
 	}
 
 	public Element parse (char[] data, int offset, int length) {
@@ -305,12 +309,12 @@ public class XmlReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new IllegalArgumentException("Error parsing XML on line " + lineNumber + " near: "
+			throw new SerializationException("Error parsing XML on line " + lineNumber + " near: "
 				+ new String(data, p, Math.min(32, pe - p)));
 		} else if (elements.size != 0) {
 			Element element = elements.peek();
 			elements.clear();
-			throw new IllegalArgumentException("Error parsing XML, unclosed element: " + element.getName());
+			throw new SerializationException("Error parsing XML, unclosed element: " + element.getName());
 		}
 		Element root = this.root;
 		this.root = null;
