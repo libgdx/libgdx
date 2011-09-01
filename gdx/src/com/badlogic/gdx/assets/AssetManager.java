@@ -89,36 +89,32 @@ public class AssetManager implements Disposable {
 
 	/** Removes the asset and all its dependencies if they are not used by other assets.
 	 * @param fileName the file name */
-	public synchronized void remove (String fileName) {
-		// get the asset and its type
-		Class type = assetTypes.get(fileName);
+	public synchronized void remove (String fileName) {			
+		// check if it's in the queue
+		int foundIndex = -1;
+		for(int i = 0; i < preloadQueue.size; i++) {
+			if(preloadQueue.get(i).fileName.equals(fileName)) {
+				foundIndex = i;
+				break;
+			}
+		}
+		if(foundIndex != -1) {
+			preloadQueue.removeIndex(foundIndex);
+			return;
+		}
 		
-		// if it is not loaded yet
-		if (type == null) {
-			// check if it's currently processed and cancel if necessary
-			if(tasks.size() > 0) {
-				AssetLoadingTask currAsset = tasks.firstElement();
-				if(currAsset.assetDesc.fileName.equals(fileName)) {
-					currAsset.cancel = true;
-					return;
-				}
-			}
-			
-			// check if it's in the queue
-			int foundIndex = -1;
-			for(int i = 0; i < preloadQueue.size; i++) {
-				if(preloadQueue.get(i).fileName.equals(fileName)) {
-					foundIndex = i;
-					break;
-				}
-			}
-			if(foundIndex == -1) {
-				throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
-			} else {
-				preloadQueue.removeIndex(foundIndex);
+		// check if it's currently processed and cancel if necessary
+		if(tasks.size() > 0) {
+			AssetLoadingTask currAsset = tasks.firstElement();
+			if(currAsset.assetDesc.fileName.equals(fileName)) {
+				currAsset.cancel = true;
 				return;
 			}
 		}
+		
+		// get the asset and its type
+		Class type = assetTypes.get(fileName);
+		if(type == null) throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
 		Object asset = assets.get(type).get(fileName);
 
 		// if it is disposable dispose it
