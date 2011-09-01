@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ETC1;
 import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
-import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
 

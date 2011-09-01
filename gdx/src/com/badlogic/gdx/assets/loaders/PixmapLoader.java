@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 
-public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapParameter> {
+public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapLoader.PixmapParameter> {
 	public PixmapLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -34,12 +36,15 @@ public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapParamete
 	}
 
 	@Override
-	public Pixmap loadSync () {
+	public Pixmap loadSync (AssetManager manager, String fileName, PixmapParameter parameter) {
 		return pixmap;
 	}
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, PixmapParameter parameter) {
 		return null;
+	}
+
+	static public class PixmapParameter implements AssetLoaderParameters<Pixmap> {
 	}
 }

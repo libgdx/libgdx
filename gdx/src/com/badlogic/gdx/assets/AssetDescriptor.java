@@ -19,11 +19,15 @@ package com.badlogic.gdx.assets;
  * {@link AssetLoadingTask} to load the actual asset.
  * @author mzechner */
 public class AssetDescriptor {
-	final String fileName;
-	final Class type;
-	final AssetLoaderParameters params;
+	public final String fileName;
+	public final Class type;
+	public final AssetLoaderParameters params;
 
-	public AssetDescriptor (String fileName, Class assetType, AssetLoaderParameters params) {
+	public AssetDescriptor (String fileName, Class assetType) {
+		this(fileName, assetType, null);
+	}
+
+	public <T> AssetDescriptor (String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
 		this.fileName = fileName.replaceAll("\\\\", "/");
 		this.type = assetType;
 		this.params = params;

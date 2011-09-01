@@ -28,13 +28,13 @@
 
 package com.badlogic.gdx.tests.utils;
 
-import com.badlogic.gdx.tests.*;
-import com.badlogic.gdx.tests.gles2.HelloTriangle;
-import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.badlogic.gdx.tests.*;
+import com.badlogic.gdx.tests.gles2.HelloTriangle;
+import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 

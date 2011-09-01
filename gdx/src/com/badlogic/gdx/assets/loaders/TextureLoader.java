@@ -16,6 +16,7 @@
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.ReferenceCountedAsset;
 import com.badlogic.gdx.files.FileHandle;
@@ -27,7 +28,7 @@ import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
-public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParameter> {
+public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoader.TextureParameter> {
 	TextureData data;
 	Texture texture;
 
@@ -63,7 +64,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 	}
 
 	@Override
-	public Texture loadSync () {
+	public Texture loadSync (AssetManager manager, String fileName, TextureParameter parameter) {
 		if (texture != null) {
 			texture.load(data);
 			return texture;
@@ -105,5 +106,16 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureParam
 		public void setRefCount (int refCount) {
 			this.refCount = refCount;
 		}
+	}
+
+	static public class TextureParameter implements AssetLoaderParameters<Texture> {
+		/** the format of the final Texture. Uses the source images format if null **/
+		public Format format = null;
+		/** whether to generate mipmaps **/
+		public boolean genMipMaps = false;
+		/** The texture to put the {@link TextureData} in, optional. **/
+		public Texture texture = null;
+		/** TextureData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
+		public TextureData textureData = null;
 	}
 }

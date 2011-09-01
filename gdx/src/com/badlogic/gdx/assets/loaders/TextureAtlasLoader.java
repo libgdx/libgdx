@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -24,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.utils.Array;
 
-public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, TextureAtlasParameter> {
+public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, TextureAtlasLoader.TextureAtlasParameter> {
 	public TextureAtlasLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -43,6 +46,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, TextureAtlasParameter parameter) {
+		if (parameter == null) throw new IllegalArgumentException("Missing TextureAtlasParameter: " + fileName);
 		FileHandle atlasFile = resolve(fileName);
 		FileHandle imgDir = atlasFile.parent();
 
@@ -60,5 +64,10 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 			dependencies.add(new AssetDescriptor(handle.path().replaceAll("\\\\", "/"), Texture.class, params));
 		}
 		return dependencies;
+	}
+
+	static public class TextureAtlasParameter implements AssetLoaderParameters<TextureAtlas> {
+		/** whether to flip the texture atlas vertically **/
+		public boolean flip = false;
 	}
 }

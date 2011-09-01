@@ -69,7 +69,7 @@ class AssetLoadingTask implements Callable<Void> {
 
 	/** Updates the loading of the asset. In case the asset is loaded with an {@link AsynchronousAssetLoader}, the loaders
 	 * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, Object)} method is first called on a worker thread. Once this
-	 * method returns, the rest of the asset is loaded on the rendering thread via {@link AsynchronousAssetLoader#loadSync()}.
+	 * method returns, the rest of the asset is loaded on the rendering thread via {@link AsynchronousAssetLoader#loadSync(AssetManager, String, Object)}.
 	 * @return true in case the asset was fully loaded, false otherwise
 	 * @throws GdxRuntimeException */
 	public boolean update () {
@@ -123,7 +123,7 @@ class AssetLoadingTask implements Callable<Void> {
 					} catch (Exception e) {
 						throw new GdxRuntimeException("Couldn't load asset '" + assetDesc.fileName + "'", e);
 					}
-					asset = asyncLoader.loadSync();
+					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
 				}
 			}
 		}

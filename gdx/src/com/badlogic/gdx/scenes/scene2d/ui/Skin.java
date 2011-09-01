@@ -34,27 +34,37 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
 
-/**
- * @author Nathan Sweet
- */
+/** @author Nathan Sweet */
 public class Skin implements Disposable {
-	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
+	static public class SkinData {
+		public ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
+		public Texture texture;
+	}
+
 	ObjectMap<Class, ObjectMap<String, Object>> styles = new ObjectMap();
-	transient Texture texture;
+	final SkinData data;
 
-	// Constructor for serialization.
-	private Skin () {
+	public Skin () {
+		data = new SkinData();
 	}
 
-	/** Creates an empty skin, using the given {@link Texture}
-	 * @param texture the Texture */
-	public Skin (Texture texture) {
-		this.texture = texture;
+	public Skin (FileHandle skinFile, FileHandle textureFile) {
+		this(skinFile);
+		data.texture = new Texture(textureFile);
 	}
 
-	public Skin (FileHandle skinFile, FileHandle textureFile) { // BOZO - Move texture to skin file?
-		texture = new Texture(textureFile);
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+	public Skin (FileHandle skinFile, SkinData data) {
+		this.data = data;
+		data.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		try {
+			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
+		} catch (SerializationException ex) {
+			throw new SerializationException("Error reading file: " + skinFile, ex);
+		}
+	}
+
+	public Skin (FileHandle skinFile) {
+		data = new SkinData();
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {
@@ -64,16 +74,16 @@ public class Skin implements Disposable {
 
 	public <T> void addResource (String name, T resource) {
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
-		ObjectMap<String, Object> typeResources = resources.get(resource.getClass());
+		ObjectMap<String, Object> typeResources = data.resources.get(resource.getClass());
 		if (typeResources == null) {
 			typeResources = new ObjectMap();
-			resources.put(resource.getClass(), typeResources);
+			data.resources.put(resource.getClass(), typeResources);
 		}
 		typeResources.put(name, resource);
 	}
 
 	public <T> T getResource (String name, Class<T> type) {
-		ObjectMap<String, Object> typeResources = resources.get(type);
+		ObjectMap<String, Object> typeResources = data.resources.get(type);
 		if (typeResources == null) throw new GdxRuntimeException("No resources registered with type: " + type.getName());
 		Object resource = typeResources.get(name);
 		if (resource == null) throw new GdxRuntimeException("No " + type.getName() + " resource registered with name: " + name);
@@ -105,14 +115,18 @@ public class Skin implements Disposable {
 	/** Disposes the {@link Texture} and all {@link Disposable} resources of this Skin. */
 	@Override
 	public void dispose () {
-		texture.dispose();
-		for (Object object : resources.values())
+		data.texture.dispose();
+		for (Object object : data.resources.values())
 			if (object instanceof Disposable) ((Disposable)object).dispose();
+	}
+
+	public void setTexture (Texture texture) {
+		data.texture = texture;
 	}
 
 	/** @return the {@link Texture} containing all {@link NinePatch} and {@link TextureRegion} pixels of this Skin. */
 	public Texture getTexture () {
-		return texture;
+		return data.texture;
 	}
 
 	public void save (FileHandle skinFile) {
@@ -160,7 +174,7 @@ public class Skin implements Disposable {
 			public void write (Json json, Skin skin, Class valueType) throws IOException {
 				json.writeObjectStart();
 				json.writeField(skin, "resources");
-				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
+				for (Entry<Class, ObjectMap<String, Object>> entry : data.resources.entries())
 					json.setSerializer(entry.key, new AliasSerializer(entry.value));
 				json.writeField(skin, "styles");
 				json.writeObjectEnd();
@@ -169,7 +183,7 @@ public class Skin implements Disposable {
 			public Skin read (Json json, Object jsonData, Class ignored) {
 				ObjectMap map = (ObjectMap)jsonData;
 				readTypeMap(json, (ObjectMap)map.get("resources"), true);
-				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
+				for (Entry<Class, ObjectMap<String, Object>> entry : data.resources.entries())
 					json.setSerializer(entry.key, new AliasSerializer(entry.value));
 				readTypeMap(json, (ObjectMap)map.get("styles"), false);
 				return skin;
@@ -212,7 +226,7 @@ public class Skin implements Disposable {
 				int y = json.readValue("y", int.class, jsonData);
 				int width = json.readValue("width", int.class, jsonData);
 				int height = json.readValue("height", int.class, jsonData);
-				return new TextureRegion(skin.texture, x, y, width, height);
+				return new TextureRegion(skin.data.texture, x, y, width, height);
 			}
 		});
 

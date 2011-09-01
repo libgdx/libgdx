@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 
-public abstract class AsynchronousAssetLoader<T, P> extends AssetLoader<T, P> {
+public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters<T>> extends AssetLoader<T, P> {
 	public AsynchronousAssetLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
 	public abstract void loadAsync (AssetManager manager, String fileName, P parameter);
 
-	public abstract T loadSync ();
+	public abstract T loadSync (AssetManager manager, String fileName, P parameter);
 }

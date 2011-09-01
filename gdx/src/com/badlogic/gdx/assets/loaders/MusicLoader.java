@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.utils.Array;
 
-public class MusicLoader extends SynchronousAssetLoader<Music, MusicParameter> {
+public class MusicLoader extends SynchronousAssetLoader<Music, MusicLoader.MusicParameter> {
 	public MusicLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -34,5 +36,8 @@ public class MusicLoader extends SynchronousAssetLoader<Music, MusicParameter> {
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, MusicParameter parameter) {
 		return null;
+	}
+
+	static public class MusicParameter implements AssetLoaderParameters<Music> {
 	}
 }

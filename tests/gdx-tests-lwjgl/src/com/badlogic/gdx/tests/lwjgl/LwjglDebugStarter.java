@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.BlitTest;
 import com.badlogic.gdx.tests.ETC1Test;
 
 public class LwjglDebugStarter {

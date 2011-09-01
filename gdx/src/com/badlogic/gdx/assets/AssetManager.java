@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets;
 
 import java.util.Stack;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -35,6 +37,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -66,6 +69,7 @@ public class AssetManager implements Disposable {
 		setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
 		setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
 		setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
+		setLoader(Skin.class, new SkinLoader(new InternalFileHandleResolver()));
 		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {
 			@Override
 			public Thread newThread (Runnable r) {
@@ -78,7 +82,7 @@ public class AssetManager implements Disposable {
 
 	/** @param fileName the asset file name
 	 * @param type the asset type
-	 * @return the asset or null */
+	 * @return the asset */
 	public synchronized <T> T get (String fileName, Class<T> type) {
 		ObjectMap<String, Object> assetsByType = assets.get(type);
 		if (assetsByType == null) throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
@@ -102,7 +106,7 @@ public class AssetManager implements Disposable {
 			preloadQueue.removeIndex(foundIndex);
 			return;
 		}
-		
+
 		// check if it's currently processed (and the first element in the stack, thus not a dependency)
 		// and cancel if necessary
 		if(tasks.size() > 0) {
@@ -153,7 +157,7 @@ public class AssetManager implements Disposable {
 	/** @param asset the asset
 	 * @return whether the filename of the asset or null */
 	public synchronized <T> String getAssetFileName (T asset) {
-		for(Class assetType: assets.keys()) {
+		for (Class assetType : assets.keys()) {
 			ObjectMap<String, Object> typedAssets = assets.get(assetType);
 			for (String fileName : typedAssets.keys()) {
 				Object otherAsset = typedAssets.get(fileName);
@@ -183,7 +187,7 @@ public class AssetManager implements Disposable {
 	public synchronized <T> void preload (String fileName, Class<T> type, AssetLoaderParameters<T> parameter) {
 		AssetLoader loader = loaders.get(type);
 		if (loader == null) throw new GdxRuntimeException("No loader for type '" + type.getSimpleName() + "'");
-		
+
 		if (preloadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
@@ -219,17 +223,22 @@ public class AssetManager implements Disposable {
 		try {
 			if (tasks.size() == 0) {
 				// loop until we have a new task ready to be processed
-				while(preloadQueue.size != 0 && tasks.size() == 0) { 
+				while (preloadQueue.size != 0 && tasks.size() == 0) {
 					nextTask();
 				}
 				// have we not found a task? We are done!
-				if(tasks.size() == 0) return true;
+				if (tasks.size() == 0) return true;
 			}
 			return updateTask() && preloadQueue.size == 0 && tasks.size() == 0;
 		} catch (Throwable t) {
 			handleTaskError(t);
 			return preloadQueue.size == 0;
 		}
+	}
+
+	public void finishLoading () {
+		while (!update())
+			Thread.yield();
 	}
 
 	synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {
@@ -299,12 +308,12 @@ public class AssetManager implements Disposable {
 			incrementRefCountedDependencies(task.assetDesc.fileName);
 
 			// increase the number of loaded assets and pop the task from the stack
-			if(tasks.size() == 1) loaded++;
+			if (tasks.size() == 1) loaded++;
 			tasks.pop();
-			
+
 			// remove the asset if it was cancled.
-			if(task.cancel) remove(task.assetDesc.fileName);
-			
+			if (task.cancel) remove(task.assetDesc.fileName);
+
 			return true;
 		} else {
 			return false;
@@ -338,15 +347,15 @@ public class AssetManager implements Disposable {
 		AssetDescriptor assetDesc = task.assetDesc;
 
 		// remove all dependencies
-		if(task.dependenciesLoaded && task.dependencies != null) {
-			for(AssetDescriptor desc: task.dependencies) {
+		if (task.dependenciesLoaded && task.dependencies != null) {
+			for (AssetDescriptor desc : task.dependencies) {
 				remove(desc.fileName);
 			}
 		}
-		
+
 		// clear the rest of the stack
 		tasks.clear();
-		
+
 		// inform the listener that something bad happened
 		if (listener != null) {
 			listener.error(assetDesc.fileName, assetDesc.type, t);
@@ -359,7 +368,7 @@ public class AssetManager implements Disposable {
 	/** Sets a new {@link AssetLoader} for the given type.
 	 * @param type the type of the asset
 	 * @param loader the loader */
-	public synchronized <T, P> void setLoader (Class<T> type, AssetLoader<T, P> loader) {
+	public synchronized <T, P extends AssetLoaderParameters<T>> void setLoader (Class<T> type, AssetLoader<T, P> loader) {
 		loaders.put(type, loader);
 	}
 
