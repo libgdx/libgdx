@@ -103,7 +103,8 @@ public class AssetManager implements Disposable {
 			return;
 		}
 		
-		// check if it's currently processed and cancel if necessary
+		// check if it's currently processed (and the first element in the stack, thus not a dependency)
+		// and cancel if necessary
 		if(tasks.size() > 0) {
 			AssetLoadingTask currAsset = tasks.firstElement();
 			if(currAsset.assetDesc.fileName.equals(fileName)) {
