@@ -285,7 +285,7 @@ public class Group extends Actor {
 		return null;
 	}
 
-	/** Adds an {@link Actor} to this Group. The order Actors are added is reversed for hit testing and rendering.
+	/** Adds an {@link Actor} to this Group. The order Actors are added is reversed for hit testing.
 	 * @param actor the Actor */
 	public void addActor (Actor actor) {
 		children.add(actor);
