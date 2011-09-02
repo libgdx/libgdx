@@ -38,6 +38,6 @@ public class MusicLoader extends SynchronousAssetLoader<Music, MusicLoader.Music
 		return null;
 	}
 
-	static public class MusicParameter implements AssetLoaderParameters<Music> {
+	static public class MusicParameter extends AssetLoaderParameters<Music> {
 	}
 }

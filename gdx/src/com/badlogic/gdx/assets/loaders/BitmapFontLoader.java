@@ -39,7 +39,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		data = new BitmapFontData(handle, parameter != null ? parameter.flip : false);
 
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
-		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class, null));
+		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class));
 		return deps;
 	}
 
@@ -54,7 +54,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		return new BitmapFont(data, region, true);
 	}
 
-	static public class BitmapFontParameter implements AssetLoaderParameters<BitmapFont> {
+	static public class BitmapFontParameter extends AssetLoaderParameters<BitmapFont> {
 		/** whether to flipY the font or not **/
 		public boolean flip = false;
 	}

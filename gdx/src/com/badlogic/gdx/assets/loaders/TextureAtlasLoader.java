@@ -46,7 +46,6 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, TextureAtlasParameter parameter) {
-		if (parameter == null) throw new IllegalArgumentException("Missing TextureAtlasParameter: " + fileName);
 		FileHandle atlasFile = resolve(fileName);
 		FileHandle imgDir = atlasFile.parent();
 
@@ -66,7 +65,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 		return dependencies;
 	}
 
-	static public class TextureAtlasParameter implements AssetLoaderParameters<TextureAtlas> {
+	static public class TextureAtlasParameter extends AssetLoaderParameters<TextureAtlas> {
 		/** whether to flip the texture atlas vertically **/
 		public boolean flip = false;
 	}

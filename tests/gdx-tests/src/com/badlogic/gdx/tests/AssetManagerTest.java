@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.badlogic.gdx.tests;
 
+import java.nio.IntBuffer;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetErrorListener;
@@ -29,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.BufferUtils;
 
 public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	@Override
@@ -52,12 +55,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		manager = new AssetManager();
 		manager.setLoader(Texture.class, new TextureLoader(resolver));
 		manager.setErrorListener(this);
-		manager.preload("data/animation.png", Texture.class);
-		manager.preload("data/pack1.png", Texture.class);
-		manager.preload("data/pack", TextureAtlas.class);
-		manager.preload("data/verdana39.png", Texture.class);
-		manager.preload("data/verdana39.fnt", BitmapFont.class);
-		manager.preload("data/test.etc1", Texture.class);
+		load();
 		Texture.setAssetManager(manager);
 		batch = new SpriteBatch();
 
@@ -65,16 +63,45 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	}
 
 	boolean diagnosed = false;
-
+	
+	private void load() {
+		manager.load("data/animation.png", Texture.class);
+		manager.load("data/pack1.png", Texture.class);
+		manager.load("data/pack", TextureAtlas.class);
+		manager.load("data/verdana39.png", Texture.class);
+		manager.load("data/verdana39.fnt", BitmapFont.class);
+		manager.load("data/test.etc1", Texture.class);
+	}
+	
+	private void unload() {
+		manager.unload("data/animation.png");
+		manager.unload("data/pack1.png");
+		manager.unload("data/pack");
+		manager.unload("data/verdana39.png");
+		manager.unload("data/verdana39.fnt");
+		manager.unload("data/test.etc1");
+	}
+	
+	private void invalidateTexture(Texture texture) {
+		IntBuffer buffer = BufferUtils.newIntBuffer(1);
+		buffer.put(0, texture.getTextureObjectHandle());
+		Gdx.gl.glDeleteTextures(1, buffer);
+	}
+	
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		boolean result = manager.update();
 		if (result & !diagnosed) {
-			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagonistics());
+			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagonistics() + "\n" + Texture.getManagedStatus());
 			diagnosed = false;
+			invalidateTexture(manager.get("data/animation.png", Texture.class));
+			invalidateTexture(manager.get("data/pack1.png", Texture.class));
+			invalidateTexture(manager.get("data/verdana39.png", Texture.class));
+			invalidateTexture(manager.get("data/test.etc1", Texture.class));
 			Texture.invalidateAllTextures(Gdx.app);
-//			manager.remove("data/pack");
-//			manager.remove("data/verdana39.fnt");
+//			unload();
+//			load();
+//			manager.finishLoading();
 //			Gdx.app.log("AssetManagerTest", "after disposal\n" + manager.getDiagonistics());
 			reloads++;
 		}

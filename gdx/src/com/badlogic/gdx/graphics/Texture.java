@@ -24,8 +24,8 @@ import java.util.Map;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetLoaderParameters.LoadedCallback;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.ReferenceCountedAsset;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
@@ -69,7 +69,7 @@ public class Texture implements Disposable {
 	static private boolean enforcePotImages = true;
 	static private boolean useHWMipMap = true;
 	private static AssetManager assetManager;
-	final private static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
+	final static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
 
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), Linear(GL10.GL_LINEAR), MipMap(GL10.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
@@ -327,6 +327,7 @@ public class Texture implements Disposable {
 		if (data.isManaged()) {
 			if (managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).remove(this);
 		}
+		glHandle = 0;
 	}
 
 	/** @param enforcePotImages whether to enforce power of two images in OpenGL ES 1.0 or not. */
@@ -359,35 +360,45 @@ public class Texture implements Disposable {
 		} else {
 			// first we have to make sure the AssetManager isn't loading anything anymore,
 			// otherwise the ref counting trick below wouldn't work (when a texture is
-			// currently on the task stack of the manager.
-			while(!assetManager.update());
+			// currently on the task stack of the manager.)
+			assetManager.finishLoading();
 			
-			// next we go through 
+			// next we go through each texture and reload either directly or via the 
+			// asset manager.
 			List<Texture> textures = new ArrayList<Texture>(managedTexureList);
-			managedTexureList.clear();
 			for (Texture texture : textures) {
 				String fileName = assetManager.getAssetFileName(texture);
 				if (fileName == null) {
 					texture.reload();
 				} else {
+					// get the ref count of the texture, then set it to 0 so we
+					// can actually remove it from the assetmanager. Also set the
+					// handle to zero, otherwise we might accidentially dispose
+					// already reloaded textures.
+					final int refCount = assetManager.getReferenceCount(fileName);
+					assetManager.setReferenceCount(fileName, 0);
+					texture.glHandle = 0;
+					
+					// create the parameters, passing the reference to the texture as
+					// well as a callback that sets the ref count.
 					TextureParameter params = new TextureParameter();
-					texture.glHandle = 0; // needed as assetManager.remove below will dispose the texture.
 					params.textureData = texture.getTextureData();
-					params.texture = texture;
-					int refCount = 0;
-					if(texture instanceof ReferenceCountedAsset) {
-						refCount = ((ReferenceCountedAsset)texture).getRefCount();
-						((ReferenceCountedAsset)texture).setRefCount(0);
-					}
-					assetManager.remove(fileName);
-					if(texture instanceof ReferenceCountedAsset) {
-						((ReferenceCountedAsset)texture).setRefCount(refCount);
-					}
+					params.texture = texture; // special parameter which will ensure that the references stay the same.
+					params.loadedCallback = new LoadedCallback() {
+						@Override
+						public void finishedLoading (AssetManager assetManager, String fileName, Class type) {
+							assetManager.setReferenceCount(fileName, refCount);
+						}
+					};
+					
+					// unload the texture, create a new gl handle then reload it.
+					assetManager.unload(fileName);
 					texture.glHandle = Texture.createGLHandle();
-					assetManager.preload(fileName, Texture.class, params);
+					assetManager.load(fileName, Texture.class, params);
 				}
-				managedTexureList.add(texture);
 			}
+			managedTexureList.clear();
+			managedTexureList.addAll(textures);
 		}
 	}
 

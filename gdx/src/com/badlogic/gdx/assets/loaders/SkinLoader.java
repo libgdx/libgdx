@@ -82,7 +82,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		return new Skin(skinFile, data);
 	}
 
-	static public class SkinParameter implements AssetLoaderParameters<Skin> {
+	static public class SkinParameter extends AssetLoaderParameters<Skin> {
 		public final String texturePath;
 
 		public SkinParameter (String texturePath) {

@@ -31,16 +31,18 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 class AssetLoadingTask implements Callable<Void> {
+	AssetManager manager;
 	final AssetDescriptor assetDesc;
 	final AssetLoader loader;
 	final ExecutorService threadPool;
+	
 	boolean dependenciesLoaded = false;
 	Array<AssetDescriptor> dependencies;
-	Future<Void> loadFuture = null;
 	Future<Void> depsFuture = null;
-	boolean updateOnRenderThread = false;
+	
+	Future<Void> loadFuture = null;
 	Object asset = null;
-	AssetManager manager;
+
 	boolean cancel = false;
 
 	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {

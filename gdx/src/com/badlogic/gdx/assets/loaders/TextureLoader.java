@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.ReferenceCountedAsset;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -69,7 +69,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 			texture.load(data);
 			return texture;
 		} else {
-			return new ReferenceCountedTexture(data);
+			return new Texture(data);
 		}
 	}
 
@@ -78,37 +78,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		return null;
 	}
 
-	public static class ReferenceCountedTexture extends Texture implements ReferenceCountedAsset {
-		public ReferenceCountedTexture (TextureData data) {
-			super(data);
-		}
-
-		private int refCount = 1;
-
-		@Override
-		public void incRefCount () {
-			refCount++;
-		}
-
-		@Override
-		public int getRefCount () {
-			return refCount;
-		}
-
-		@Override
-		public void dispose () {
-			refCount--;
-			if (refCount > 0) return;
-			super.dispose();
-		}
-		
-		@Override
-		public void setRefCount (int refCount) {
-			this.refCount = refCount;
-		}
-	}
-
-	static public class TextureParameter implements AssetLoaderParameters<Texture> {
+	static public class TextureParameter extends AssetLoaderParameters<Texture> {
 		/** the format of the final Texture. Uses the source images format if null **/
 		public Format format = null;
 		/** whether to generate mipmaps **/

@@ -23,10 +23,10 @@ public class AssetDescriptor {
 	public final Class type;
 	public final AssetLoaderParameters params;
 
-	public AssetDescriptor (String fileName, Class assetType) {
+	public <T> AssetDescriptor (String fileName, Class assetType) {
 		this(fileName, assetType, null);
 	}
-
+	
 	public <T> AssetDescriptor (String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
 		this.fileName = fileName.replaceAll("\\\\", "/");
 		this.type = assetType;
