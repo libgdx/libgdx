@@ -158,7 +158,7 @@ public class SpriteCache implements Disposable {
 	public void beginCache () {
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
-		currentCache = new Cache(caches.size(), mesh.getNumVertices() / verticesPerImage * 6);
+		currentCache = new Cache(caches.size(), mesh.getVerticesBuffer().limit());
 		caches.add(currentCache);
 		mesh.getVerticesBuffer().compact();
 	}
@@ -169,7 +169,8 @@ public class SpriteCache implements Disposable {
 	public void beginCache (int cacheID) {
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		if (cacheID == caches.size() - 1) {
-			caches.remove(cacheID);
+			Cache oldCache = caches.remove(cacheID);
+			mesh.getVerticesBuffer().limit(oldCache.offset);
 			beginCache();
 			return;
 		}
@@ -180,8 +181,8 @@ public class SpriteCache implements Disposable {
 	/** Ends the definition of a cache, returning the cache ID to be used with {@link #draw(int)}. */
 	public int endCache () {
 		if (currentCache == null) throw new IllegalStateException("beginCache must be called before endCache.");
-
 		Cache cache = currentCache;
+		System.out.println(cache.id + ": " +  mesh.getVerticesBuffer().position() );
 		int cacheCount = mesh.getVerticesBuffer().position() - cache.offset;
 		if (cache.textures == null) {
 			// New cache.
@@ -892,7 +893,8 @@ public class SpriteCache implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteCache.begin must be called before draw.");
 
 		Cache cache = caches.get(cacheID);
-		int offset = cache.offset;
+		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
+		int offset = cache.offset / (verticesPerImage * VERTEX_SIZE) * 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
 		if (Gdx.graphics.isGL20Available()) {
