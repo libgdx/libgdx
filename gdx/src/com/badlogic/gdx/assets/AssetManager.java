@@ -429,14 +429,8 @@ public class AssetManager implements Disposable {
 
 	/** Clears and disposes all assets and the preloading queue. */
 	public synchronized void clear () {
-		if (loadQueue.size > 0 || tasks.size() != 0) {
-			try {
-				while (!updateTask())
-					;
-			} catch (Throwable t) {
-				handleTaskError(t);
-			}
-		}
+		loadQueue.clear();
+		while (!update());
 
 		Array<String> assets = assetTypes.keys().toArray();
 		for (String asset : assets) {
