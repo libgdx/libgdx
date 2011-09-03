@@ -40,6 +40,10 @@ public class InputMultiplexer implements InputProcessor {
 		processors.remove(processor);
 	}
 
+	public void clear () {
+		processors.clear();
+	}
+
 	public boolean keyDown (int keycode) {
 		for (int i = 0, n = processors.size(); i < n; i++)
 			if (processors.get(i).keyDown(keycode)) return true;

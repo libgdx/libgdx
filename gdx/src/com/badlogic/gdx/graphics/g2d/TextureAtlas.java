@@ -180,7 +180,7 @@ public class TextureAtlas implements Disposable {
 			return pages;
 		}
 
-		public Array<Region> getRegion () {
+		public Array<Region> getRegions () {
 			return regions;
 		}
 	}

@@ -38,7 +38,7 @@ import com.badlogic.gdx.utils.SerializationException;
 public class Skin implements Disposable {
 	static public class SkinData {
 		public ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
-		public Texture texture;
+		public transient Texture texture;
 	}
 
 	ObjectMap<Class, ObjectMap<String, Object>> styles = new ObjectMap();
@@ -173,7 +173,7 @@ public class Skin implements Disposable {
 		json.setSerializer(Skin.class, new Serializer<Skin>() {
 			public void write (Json json, Skin skin, Class valueType) throws IOException {
 				json.writeObjectStart();
-				json.writeField(skin, "resources");
+				json.writeValue("resources", skin.data.resources);
 				for (Entry<Class, ObjectMap<String, Object>> entry : data.resources.entries())
 					json.setSerializer(entry.key, new AliasSerializer(entry.value));
 				json.writeField(skin, "styles");

@@ -297,9 +297,9 @@ public class AssetManager implements Disposable {
 			RefCountedContainer assetRef = assets.get(type).get(assetDesc.fileName);
 			assetRef.incRefCount();
 			incrementRefCountedDependencies(assetDesc.fileName);
-		} 
-		// else add a new task for the asset.
-		else {
+			loaded++;
+		} else {
+			// else add a new task for the asset.
 			addTask(assetDesc);
 		}
 	}
@@ -365,6 +365,8 @@ public class AssetManager implements Disposable {
 	/** Handles a runtime/loading error in {@link #update()} by optionally invoking the {@link AssetErrorListener}.
 	 * @param t */
 	private void handleTaskError (Throwable t) {
+		if (tasks.isEmpty()) throw new GdxRuntimeException(t); 
+
 		// pop the faulty task from the stack
 		AssetLoadingTask task = tasks.pop();
 		AssetDescriptor assetDesc = task.assetDesc;
@@ -407,6 +409,7 @@ public class AssetManager implements Disposable {
 
 	/** @return the progress in percent of completion. */
 	public synchronized float getProgress () {
+		if (toLoad == 0) return 1;
 		return loaded / (float)toLoad;
 	}
 
@@ -441,6 +444,7 @@ public class AssetManager implements Disposable {
 		this.assetTypes.clear();
 		this.assetDependencies.clear();
 		this.loaded = 0;
+		this.toLoad = 0;
 		this.loadQueue.clear();
 		this.tasks.clear();
 	}
@@ -453,7 +457,6 @@ public class AssetManager implements Disposable {
 	/**
 	 * Returns the reference count of an asset.
 	 * @param fileName
-	 * @return
 	 */
 	public synchronized int getReferenceCount(String fileName) {
 		Class type = assetTypes.get(fileName);
@@ -464,7 +467,6 @@ public class AssetManager implements Disposable {
 	/**
 	 * Returns the reference count of an asset.
 	 * @param fileName
-	 * @return
 	 */
 	public synchronized void setReferenceCount(String fileName, int refCount) {
 		Class type = assetTypes.get(fileName);

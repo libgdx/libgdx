@@ -30,6 +30,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+/** @author Nathan Sweet */
 public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinParameter> {
 	public SkinLoader (FileHandleResolver resolver) {
 		super(resolver);
@@ -50,8 +51,8 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		ObjectMap<String, String> bitmapFontMap = null;
 		if (resources != null) bitmapFontMap = resources.get(BitmapFont.class.getName());
 
+		fontPaths = new ObjectMap();
 		if (bitmapFontMap != null) {
-			fontPaths = new ObjectMap();
 			skinFile = resolve(fileName);
 			for (Entry<String, String> entry : bitmapFontMap.entries()) {
 				FileHandle fontFile = skinFile.parent().child(entry.value);

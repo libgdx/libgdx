@@ -233,8 +233,8 @@ public class Json {
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields == null) fields = cacheFields(type);
 		FieldMetadata metadata = fields.get(fieldName);
+		if (metadata == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		Field field = metadata.field;
-		if (field == null) throw new SerializationException("Field not found: " + fieldName + " (" + type.getName() + ")");
 		if (elementType == null) elementType = metadata.elementType;
 		try {
 			if (debug) System.out.println("Writing field: " + field.getName() + " (" + type.getName() + ")");
