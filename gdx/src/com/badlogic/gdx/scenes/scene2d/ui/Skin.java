@@ -49,13 +49,8 @@ public class Skin implements Disposable {
 	}
 
 	public Skin (FileHandle skinFile, FileHandle textureFile) {
-		this(skinFile);
+		data = new SkinData();
 		data.texture = new Texture(textureFile);
-	}
-
-	public Skin (FileHandle skinFile, SkinData data) {
-		this.data = data;
-		data.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {
@@ -63,8 +58,9 @@ public class Skin implements Disposable {
 		}
 	}
 
-	public Skin (FileHandle skinFile) {
-		data = new SkinData();
+	public Skin (FileHandle skinFile, SkinData data) {
+		this.data = data;
+		data.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {

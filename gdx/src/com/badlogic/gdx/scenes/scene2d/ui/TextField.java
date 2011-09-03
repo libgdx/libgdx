@@ -252,7 +252,7 @@ public class TextField extends Widget {
 			blink();
 			if (cursorOn) {
 				cursorPatch.draw(batch, x + background.getLeftWidth() + glyphPositions.get(cursor) + renderOffset - 1, y + textY
-					- textBounds.height - font.getDescent() / 2, cursorPatch.getTotalWidth(), textBounds.height);
+					- textBounds.height - font.getDescent(), cursorPatch.getTotalWidth(), textBounds.height + font.getDescent() / 2);
 			}
 		}
 	}
