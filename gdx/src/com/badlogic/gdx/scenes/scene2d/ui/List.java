@@ -198,11 +198,12 @@ public class List extends Widget {
 		selected = index;
 	}
 
-	/** @return the text of the curently selected entry */
+	/** @return the text of the currently selected entry or null if the list is empty*/
 	public String getSelection () {
+		if(entries.length == 0) return null;
 		return entries[selected];
 	}
-
+	
 	/** @param index sets the selected item */
 	public void setSelection (int index) {
 		if (index < 0 || index >= entries.length) throw new GdxRuntimeException("Index must be > 0 and < #entries");
