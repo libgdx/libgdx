@@ -17,9 +17,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * used. Units are given in screen pixels.</p>
  * 
  * To change the projection properties use the {@link #setProjectionMatrix(Matrix4)} 
- * method. Usually the {@link Camera#combined} matrix is via this method, so debug
- * rendering and normal rendering operate the same. If the screen orientation or 
- * resolution changes, the projection matrix might have to be adapted as well.</p>
+ * method. Usually the {@link Camera#combined} matrix is set via this method. 
+ * If the screen orientation or resolution changes, the projection matrix might 
+ * have to be adapted as well.</p>
  * 
  * Shapes are rendered in batches to increase performance. The standard use-pattern
  * looks as follows:
