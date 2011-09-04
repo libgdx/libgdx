@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A button with text on it.
  * 
@@ -62,7 +63,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * 
  * @author mzechner */
 public class Button extends Widget {
-	final ButtonStyle style;
+	ButtonStyle style;
 	String text;
 	final TextBounds bounds = new TextBounds();
 	boolean isPressed = false;
@@ -78,11 +79,20 @@ public class Button extends Widget {
 
 	public Button (String name, String text, ButtonStyle style) {
 		super(name, 0, 0);
-		this.style = style;
+		setStyle(style);
 		this.text = text;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
+	}
+
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (ButtonStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override

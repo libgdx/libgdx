@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A list of string entries.
@@ -64,7 +65,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public class List extends Widget {
-	final ListStyle style;
+	ListStyle style;
 	String[] entries;
 	boolean invalidated = false;
 	float entryHeight = 0;
@@ -87,11 +88,20 @@ public class List extends Widget {
 	 * @param style the {@link ListStyle} */
 	public List (String name, String[] entries, ListStyle style) {
 		super(name, 0, 0);
-		this.style = style;
+		setStyle(style);
 		this.entries = entries;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (ListStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override
@@ -161,7 +171,7 @@ public class List extends Widget {
 
 	@Override
 	public Actor hit (float x, float y) {
-		return x >= 0 && x < Math.max(prefWidth, width) && y >= 0 && y < prefHeight ? this : null;
+		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
 
 	/** Defines a list style, see {@link List}

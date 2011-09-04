@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
@@ -61,7 +62,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * </ul>
  * @author mzechner */
 public class Pane extends Table {
-	final PaneStyle style;
+	PaneStyle style;
 	final Stage stage;
 	final Rectangle widgetBounds = new Rectangle();
 	final Rectangle scissors = new Rectangle();
@@ -85,7 +86,7 @@ public class Pane extends Table {
 		this.stage = stage;
 		width = prefWidth;
 		height = prefHeight;
-		this.style = style;
+		setStyle(style);
 
 		transform = true;
 
@@ -95,6 +96,15 @@ public class Pane extends Table {
 		layout.padTop(Integer.toString((int)(background.getTopHeight()) + 1));
 		layout.padLeft(Integer.toString((int)(background.getLeftWidth()) + 1));
 		layout.padRight(Integer.toString((int)(background.getRightWidth()) + 1));
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (PaneStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	private void calculateScissors (Matrix4 transform) {

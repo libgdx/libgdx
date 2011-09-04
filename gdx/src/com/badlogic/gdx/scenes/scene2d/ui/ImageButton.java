@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A button with an image on it.
  * 
@@ -59,7 +61,7 @@ import com.badlogic.gdx.math.Rectangle;
  * 
  * @author mzechner */
 public class ImageButton extends Widget {
-	final ImageButtonStyle style;
+	ImageButtonStyle style;
 	TextureRegion image;
 	float imageWidth = 0;
 	float imageHeight = 0;
@@ -81,7 +83,7 @@ public class ImageButton extends Widget {
 	 * @param style the {@link ImageButtonStyle} */
 	public ImageButton (String name, TextureRegion image, ImageButtonStyle style) {
 		super(name, 0, 0);
-		this.style = style;
+		setStyle(style);
 		this.image = image;
 		this.imageWidth = image.getRegionWidth();
 		this.imageHeight = image.getRegionHeight();
@@ -98,13 +100,22 @@ public class ImageButton extends Widget {
 	 * @param style the {@link ImageButtonStyle} */
 	public ImageButton (String name, TextureRegion image, float imageWidth, float imageHeight, ImageButtonStyle style) {
 		super(name, 0, 0);
-		this.style = style;
+		setStyle(style);
 		this.image = image;
 		this.imageWidth = imageWidth;
 		this.imageHeight = imageHeight;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (ImageButtonStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override

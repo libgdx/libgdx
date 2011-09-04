@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /** A dropdown or combo box.
@@ -80,7 +82,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * @author mzechner */
 public class ComboBox extends Widget {
 	final Stage stage;
-	final ComboBoxStyle style;
+	ComboBoxStyle style;
 	String[] entries;
 	int selection = 0;
 	final TextBounds bounds = new TextBounds();
@@ -104,11 +106,20 @@ public class ComboBox extends Widget {
 	public ComboBox (String name, String[] entries, Stage stage, ComboBoxStyle style) {
 		super(name, 0, 0);
 		this.entries = entries;
-		this.style = style;
+		setStyle(style);
 		this.stage = stage;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (ComboBoxStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override

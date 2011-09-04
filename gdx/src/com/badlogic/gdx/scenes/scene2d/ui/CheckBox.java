@@ -24,6 +24,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A checkbox with a label.
  * 
@@ -66,7 +68,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * 
  * @author mzechner */
 public class CheckBox extends Widget {
-	private final CheckBoxStyle style;
+	private CheckBoxStyle style;
 	private String text;
 	private boolean isChecked = false;
 	private CheckedListener listener = null;
@@ -88,11 +90,20 @@ public class CheckBox extends Widget {
 
 	public CheckBox (String name, String text, CheckBoxStyle style) {
 		super(name, 0, 0);
-		this.style = style;
+		setStyle(style);
 		this.text = text;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (CheckBoxStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override

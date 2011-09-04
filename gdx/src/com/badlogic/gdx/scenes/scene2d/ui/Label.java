@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton.ImageToggleButtonStyle;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** A label.
@@ -57,7 +58,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * @author mzechner */
 public class Label extends Widget {
-	final LabelStyle style;
+	LabelStyle style;
 	final BitmapFontCache cache;
 	String text;
 
@@ -80,6 +81,15 @@ public class Label extends Widget {
 		width = prefWidth;
 		height = prefHeight;
 		touchable = false;
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (LabelStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	public void setText (String text) {

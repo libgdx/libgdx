@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
@@ -92,7 +93,7 @@ import com.badlogic.gdx.utils.FloatArray;
  * 
  * @author mzechner */
 public class TextField extends Widget {
-	final TextFieldStyle style;
+	TextFieldStyle style;
 
 	Clipboard clipboard;
 	final Rectangle fieldBounds = new Rectangle();
@@ -142,13 +143,22 @@ public class TextField extends Widget {
 	 * @param style the {@link TextFieldStyle} */
 	public TextField (String name, String text, TextFieldStyle style, float prefWidth) {
 		super(name, prefWidth, 0);
-		this.style = style;
+		setStyle(style);
 		this.initialPrefWidth = prefWidth;
 		this.clipboard = Clipboard.getDefaultClipboard();
 		layout();
 		this.width = this.prefWidth;
 		this.height = this.prefHeight;
 		setText(text);
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (TextFieldStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override

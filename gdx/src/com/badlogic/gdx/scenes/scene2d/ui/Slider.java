@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 /** A value slider.
  * 
@@ -56,7 +57,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * 
  * @author mzechner */
 public class Slider extends Widget {
-	final SliderStyle style;
+	SliderStyle style;
 	float min;
 	float max;
 	float steps;
@@ -84,7 +85,7 @@ public class Slider extends Widget {
 	 * @param style the {@link SliderStyle} */
 	public Slider (String name, float min, float max, float steps, SliderStyle style, float prefWidth) {
 		super(name, prefWidth, 0);
-		this.style = style;
+		setStyle(style);
 		if (min > max) throw new IllegalArgumentException("min must be > max");
 		if (steps < 0) throw new IllegalArgumentException("unit must be > 0");
 		this.min = min;
@@ -94,6 +95,15 @@ public class Slider extends Widget {
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (SliderStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override

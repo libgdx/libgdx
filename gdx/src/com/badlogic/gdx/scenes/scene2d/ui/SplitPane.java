@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -75,7 +76,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </ul>
  * @author mzechner */
 public class SplitPane extends Group implements Layout {
-	final SplitPaneStyle style;
+	SplitPaneStyle style;
 	float prefWidth;
 	float prefHeight;
 
@@ -116,7 +117,7 @@ public class SplitPane extends Group implements Layout {
 		int prefWidth, int prefHeight) {
 		super(name);
 		this.stage = stage;
-		this.style = style;
+		setStyle(style);
 		this.firstWidget = firstWidget;
 		this.secondWidget = secondWidget;
 		this.prefWidth = this.width = prefWidth;
@@ -126,6 +127,15 @@ public class SplitPane extends Group implements Layout {
 		this.addActor(firstWidget);
 		this.addActor(secondWidget);
 		layout();
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (SplitPaneStyle style) {
+		this.style = style;
+		invalidate();
 	}
 
 	@Override

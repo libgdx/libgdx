@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
@@ -73,7 +74,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * @author mzechner */
 public class Window extends Table {
-	final WindowStyle style;
+	WindowStyle style;
 	String title;
 	final Stage stage;
 	final Rectangle widgetBounds = new Rectangle();
@@ -106,7 +107,7 @@ public class Window extends Table {
 		this.title = title;
 		width = prefWidth;
 		height = prefHeight;
-		this.style = style;
+		setStyle(style);
 
 		transform = true;
 
@@ -116,6 +117,15 @@ public class Window extends Table {
 		layout.padTop(Integer.toString((int)(background.getTopHeight()) + 1));
 		layout.padLeft(Integer.toString((int)(background.getLeftWidth()) + 1));
 		layout.padRight(Integer.toString((int)(background.getRightWidth()) + 1));
+	}
+	
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (WindowStyle style) {
+		this.style = style;
+		invalidateHierarchy();
 	}
 
 	private void calculateBoundsAndScissors (Matrix4 transform) {

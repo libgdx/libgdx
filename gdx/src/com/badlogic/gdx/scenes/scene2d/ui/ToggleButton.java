@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 /** A toggle button.
  * 
@@ -65,7 +66,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * 
  * @author mzechner */
 public class ToggleButton extends Widget {
-	final ToggleButtonStyle style;
+	ToggleButtonStyle style;
 	String text;
 	final TextBounds bounds = new TextBounds();
 	boolean isPressed = false;
@@ -86,13 +87,22 @@ public class ToggleButton extends Widget {
 	 * @param style the {@link ToggleButtonStyle} */
 	public ToggleButton (String name, String label, ToggleButtonStyle style) {
 		super(name, 0, 0);
-		this.style = style;
+		setStyle(style);
 		this.text = label;
 		layout();
 		this.width = prefWidth;
 		this.height = prefHeight;
 	}
 
+	/**
+	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style
+	 */
+	public void setStyle (ToggleButtonStyle style) {
+		this.style = style;
+		invalidateHierarchy();
+	}
+	
 	@Override
 	public void layout () {
 		final BitmapFont font = style.font;
