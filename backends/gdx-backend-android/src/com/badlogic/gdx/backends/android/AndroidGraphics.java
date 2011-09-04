@@ -105,6 +105,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			view.setRenderer(this);
 			return view;
 		} else {
+			config.useGL20 = false;
+			configChooser = getEglConfigChooser();
 			if (Integer.parseInt(android.os.Build.VERSION.SDK) <= 4) {
 				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
 				if (configChooser != null)
