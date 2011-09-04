@@ -357,9 +357,13 @@ public class TextureAtlas implements Disposable {
 
 	private Sprite newSprite (AtlasRegion region) {
 		if (region.packedWidth == region.originalWidth && region.packedHeight == region.originalHeight) {
-			Sprite sprite = new Sprite(region);
-			if (region.rotate) sprite.rotate90(true);
-			return sprite;
+			if (region.rotate) {
+				Sprite sprite = new Sprite(region);
+				sprite.setBounds(0, 0, region.getRegionHeight(), region.getRegionWidth());
+				sprite.rotate90(true);
+				return sprite;
+			}
+			return new Sprite(region);
 		}
 		return new AtlasSprite(region);
 	}
@@ -472,9 +476,15 @@ public class TextureAtlas implements Disposable {
 		public AtlasSprite (AtlasRegion region) {
 			this.region = new AtlasRegion(region);
 			setRegion(region);
-			if (region.rotate) rotate90(true);
 			setOrigin(region.originalWidth / 2f, region.originalHeight / 2f);
-			super.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
+			if (region.rotate) {
+				rotate90(true);
+				super
+					.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionHeight()), Math.abs(region.getRegionWidth()));
+			} else {
+				super
+					.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
+			}
 			setColor(1, 1, 1, 1);
 		}
 
