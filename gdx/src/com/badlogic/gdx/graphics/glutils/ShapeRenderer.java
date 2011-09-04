@@ -8,23 +8,79 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Class to render points, lines, triangles and rectangles, either
- * as outlines or filled primitives. This class is not mean to be
- * used for performance sensitive applications.
+ * Class to render points, lines, rectangles, filled rectangles and
+ * boxes. This class is not mean to be used for performance sensitive applications
+ * but more oriented towards debugging.</p>
+ * 
+ * This class works with OpenGL ES 1.x and 2.0. In its base configuration a
+ * 2D orthographic projection with the origin in the lower left corner is
+ * used. Units are given in screen pixels.</p>
+ * 
+ * To change the projection properties use the {@link #setProjectionMatrix(Matrix4)} 
+ * method. Usually the {@link Camera#combined} matrix is via this method, so debug
+ * rendering and normal rendering operate the same. If the screen orientation or 
+ * resolution changes, the projection matrix might have to be adapted as well.</p>
+ * 
+ * Shapes are rendered in batches to increase performance. The standard use-pattern
+ * looks as follows:
+ * 
+ * <pre>
+ * {@code
+ * camera.update();
+ * shapeRenderer.setProjectionMatrix(camera.combined);
+ * 
+ * shapeRenderer.begin(ShapeType.Line);
+ * shapeRenderer.color(1, 1, 0, 1);
+ * shapeRenderer.line(x, y, x2, y2);
+ * shapeRenderer.line(x3, y3, x4, y4);
+ * shapeRenderer.end();
+ * 
+ * shapeRenderer.begin(ShapeType.Box);
+ * shapeRenderer.color(0, 1, 0, 1);
+ * shapeRenderer.box(x, y, z, width, height, depth);
+ * shapeRenderer.end();
+ * }
+ * </pre>
+ * 
+ * The class has a second matrix called the transformation matrix which is used
+ * to rotate, scale and translate shapes in a more flexible manner. This mechanism
+ * works much like matrix operations in OpenGL ES 1.x. The following example shows
+ * how to rotate a rectangle around its center using the z-axis as the rotation axis
+ * and placing it's center at (20, 12, 2): 
+ * 
+ * <pre>
+ * shapeRenderer.begin(ShapeType.Rectangle);
+ * shapeRenderer.identity();
+ * shapeRenderer.translate(20, 12, 2);
+ * shapeRenderer.rotate(0, 0, 1, 90);
+ * shapeRenderer.rect(-width / 2, -height / 2, width, height);
+ * shapeRenderer.end();
+ * </pre>
+ * 
+ * Matrix operations all use postmultiplication and work just like glTranslate, glScale and
+ * glRotate. The last transformation specified will be the first that is applied to a shape (rotate
+ * then translate in the above example).
+ * 
+ * The projection and transformation matrices are a state of the ShapeRenderer, just like
+ * the color and will be applied to all shapes until they are changed again.
+ * 
+ * Instances of this class don't have to be disposed.
+ * 
  * @author mzechner
  *
  */
 public class ShapeRenderer {
 	/**
-	 * shape type to be used with {@link #begin(ShapeType)}.
+	 * Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner
 	 *
 	 */
 	public enum ShapeType {
-		Point(GL10.GL_POINT),
+		Point(GL10.GL_POINTS),
 		Line(GL10.GL_LINES), 
 		Rectangle(GL10.GL_LINES),
-		FilledRectangle(GL10.GL_TRIANGLES);
+		FilledRectangle(GL10.GL_TRIANGLES),
+		Box(GL10.GL_LINES);
 		
 		private final int glType;
 
@@ -41,10 +97,10 @@ public class ShapeRenderer {
 	boolean matrixDirty = false;
 	Matrix4 projView = new Matrix4();
 	Matrix4 transform = new Matrix4();
+	Matrix4 combined = new Matrix4();
 	Matrix4 tmp = new Matrix4();
 	Color color = new Color(1, 1, 1, 1);
 	ShapeType currType = null;
-	
 	
 	
 	public ShapeRenderer() {
@@ -52,6 +108,7 @@ public class ShapeRenderer {
 			renderer = new ImmediateModeRenderer20(false, true, 0);
 		else 
 			renderer = new ImmediateModeRenderer10();
+		projView.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	/**
@@ -63,19 +120,26 @@ public class ShapeRenderer {
 	}
 	
 	/**
-	 * Sets the combined projection and view matrix of a camera for rendering (see {@link Camera#combined}).
-	 * Can only be called outside of a begin/end block.
+	 * Sets the {@link Color} to be used by shapes.
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param a
+	 */
+	public void setColor(float r, float g, float b, float a) {
+		this.color.set(r, g, b, a);
+	}
+	
+	/**
+	 * Sets the projection matrix to be used for rendering. Usually this will be set
+	 * to {@link Camera#combined}.
 	 * @param matrix
 	 */
-	public void setCameraMatrix(Matrix4 matrix) {
+	public void setProjectionMatrix(Matrix4 matrix) {
 		projView.set(matrix);
 		matrixDirty = true;
 	}
 	
-	/**
-	 * Sets the transformation matrix applied to all subsequent shapes
-	 * @param matrix
-	 */
 	public void setTransformMatrix(Matrix4 matrix) {
 		transform.set(matrix);
 		matrixDirty = true;
@@ -84,7 +148,7 @@ public class ShapeRenderer {
 	/**
 	 * Sets the transformation matrix to identity.
 	 */
-	public void indentity() {
+	public void identity() {
 		transform.idt();
 		matrixDirty = true;
 	}
@@ -108,7 +172,7 @@ public class ShapeRenderer {
 	 * @param axisZ
 	 */
 	public void rotate(float axisX, float axisY, float axisZ, float angle) {
-		transform.rotate(axisX, axisY, axisY, angle);
+		transform.rotate(axisX, axisY, axisZ, angle);
 		matrixDirty = true;
 	}
 	
@@ -137,13 +201,19 @@ public class ShapeRenderer {
 	public void begin(ShapeType type) {
 		if(currType != null) throw new GdxRuntimeException("Call end() before beginning a new shape batch");
 		currType = type;
+		if(matrixDirty) {
+			combined.set(projView);
+			Matrix4.mul(combined.val, transform.val);
+			matrixDirty = false;
+		}
 		if(renderer instanceof ImmediateModeRenderer10) {
 			Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
-			Gdx.gl10.glLoadMatrixf(projView.val, 0);
+			Gdx.gl10.glLoadMatrixf(combined.val, 0);
 			Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
 			Gdx.gl10.glLoadIdentity();
+			((ImmediateModeRenderer10)renderer).begin(currType.getGlType());
 		} else {
-			((ImmediateModeRenderer20)renderer).begin(projView, currType.getGlType());
+			((ImmediateModeRenderer20)renderer).begin(combined, currType.getGlType());
 		}
 	}
 	
@@ -155,6 +225,8 @@ public class ShapeRenderer {
 	 */
 	public void point(float x, float y, float z) {
 		if(currType != ShapeType.Point) throw new GdxRuntimeException("Must call begin(ShapeType.Point)");
+		checkDirty();
+		checkFlush(1);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, z);
 	}
@@ -170,6 +242,8 @@ public class ShapeRenderer {
 	 */
 	public void line(float x, float y, float z, float x2, float y2, float z2) {
 		if(currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		checkDirty();
+		checkFlush(2);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, z);
 		renderer.color(color.r, color.g, color.b, color.a);
@@ -184,6 +258,9 @@ public class ShapeRenderer {
 	 * @param y2
 	 */
 	public void line(float x, float y, float x2, float y2) {
+		if(currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
+		checkDirty();
+		checkFlush(2);
 		if(currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, 0);
@@ -200,6 +277,9 @@ public class ShapeRenderer {
 	 * @param height
 	 */
 	public void rect(float x, float y, float width, float height) {
+		if(currType != ShapeType.Rectangle) throw new GdxRuntimeException("Must call begin(ShapeType.Rectangle)");
+		checkDirty();
+		checkFlush(8);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, 0);
 		renderer.color(color.r, color.g, color.b, color.a);
@@ -230,6 +310,9 @@ public class ShapeRenderer {
 	 * @param height
 	 */
 	public void filledRect(float x, float y, float width, float height) {
+		if(currType != ShapeType.FilledRectangle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledRectangle)");
+		checkDirty();
+		checkFlush(8);
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x, y, 0);
 		renderer.color(color.r, color.g, color.b, color.a);
@@ -246,9 +329,99 @@ public class ShapeRenderer {
 	}
 	
 	/**
+	 * Draws a box. The x, y and z coordinate specify the bottom left front corner
+	 * of the rectangle. The {@link ShapeType} passed to begin has to be {@link ShapeType#Box}.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	public void box(float x, float y, float z, float width, float height, float depth) {
+		if(currType != ShapeType.Box) throw new GdxRuntimeException("Must call begin(ShapeType.Box)");
+		checkDirty();
+		checkFlush(16);		
+		
+		depth = -depth;
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y, z);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y, z + depth);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y, z + depth);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z + depth);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z + depth);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y + height, z);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y + height, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y + height, z);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y + height, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y + height, z + depth);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y + height, z + depth);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y + height, z + depth);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y + height, z + depth);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y + height, z);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y, z);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y + height, z);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y, z + depth);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + width, y + height, z + depth);
+		
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y, z + depth);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x, y + height, z + depth);
+	}
+	
+	private void checkDirty() {
+		if(!matrixDirty) return;
+		ShapeType type = currType;
+		end();
+		begin(type);
+	}
+	
+	private void checkFlush(int newVertices) {
+		if(renderer.getMaxVertices() - renderer.getNumVertices() >= newVertices) return;
+		ShapeType type = currType;
+		end();
+		begin(type);
+	}
+	
+	/**
 	 * Finishes the batch of shapes and ensures they get rendered.
 	 */
 	public void end() {
 		renderer.end();
+		currType = null;
 	}
 }
