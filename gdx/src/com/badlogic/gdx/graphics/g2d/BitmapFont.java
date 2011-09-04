@@ -191,6 +191,7 @@ public class BitmapFont implements Disposable {
 					capGlyph = getGlyph(capChars[i]);
 					if (capGlyph != null) break;
 				}
+				if (xGlyph == null) xGlyph = getFirstGlyph();
 				capHeight = capGlyph.height;
 
 				ascent = baseLine - capHeight;
