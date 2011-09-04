@@ -486,20 +486,24 @@ public class TextureAtlas implements Disposable {
 		}
 
 		public void setOrigin (float originX, float originY) {
-			super.setOrigin(originX + region.offsetX, originY + region.offsetY);
+			super.setOrigin(originX - region.offsetX, originY - region.offsetY);
 		}
 
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
 			super.flip(x, y);
 
+			float oldOriginX = getOriginX();
+			float oldOriginY = getOriginY();
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
-			// Update x and y offsets.
+
+			// Updates x and y offsets.
 			region.flip(x, y);
 
-			// Update position with new offsets.
+			// Update position and origin with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
+			setOrigin(oldOriginX, oldOriginY);
 		}
 
 		public float getX () {
@@ -508,6 +512,14 @@ public class TextureAtlas implements Disposable {
 
 		public float getY () {
 			return super.getY() - region.offsetY;
+		}
+
+		public float getOriginX () {
+			return super.getOriginX() + region.offsetX;
+		}
+
+		public float getOriginY () {
+			return super.getOriginY() + region.offsetY;
 		}
 
 		public AtlasRegion getAtlasRegion () {
