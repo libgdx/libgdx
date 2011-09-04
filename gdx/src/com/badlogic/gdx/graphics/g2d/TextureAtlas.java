@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -477,14 +478,13 @@ public class TextureAtlas implements Disposable {
 			this.region = new AtlasRegion(region);
 			setRegion(region);
 			setOrigin(region.originalWidth / 2f, region.originalHeight / 2f);
+			int width = Math.abs(region.getRegionWidth());
+			int height = Math.abs(region.getRegionHeight());
 			if (region.rotate) {
 				rotate90(true);
-				super
-					.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionHeight()), Math.abs(region.getRegionWidth()));
-			} else {
-				super
-					.setBounds(region.offsetX, region.offsetY, Math.abs(region.getRegionWidth()), Math.abs(region.getRegionHeight()));
-			}
+				super.setBounds(region.offsetX, region.offsetY, height, width);
+			} else
+				super.setBounds(region.offsetX, region.offsetY, width, height);
 			setColor(1, 1, 1, 1);
 		}
 
