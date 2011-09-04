@@ -67,6 +67,9 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	private boolean hasCols;
 	private boolean hasNors;
 	private boolean hasTexCoords;
+	
+	private final int maxVertices;
+	private int numVertices;
 
 	/** Constructs a new ImmediateModeRenderer */
 	public ImmediateModeRenderer10 () {
@@ -75,6 +78,7 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 
 	/** Constructs a new ImmediateModeRenderer */
 	public ImmediateModeRenderer10 (int maxVertices) {
+		this.maxVertices = maxVertices;
 		if (Gdx.graphics.isGL20Available())
 			throw new GdxRuntimeException("ImmediateModeRenderer can only be used with OpenGL ES 1.0/1.1");
 
@@ -109,6 +113,7 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	 * @param primitiveType the primitive type. */
 	public void begin (int primitiveType) {
 		this.primitiveType = primitiveType;
+		numVertices = 0;
 		idxPos = 0;
 		idxCols = 0;
 		idxNors = 0;
@@ -165,10 +170,15 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 		if (hasCols) idxCols += 4;
 		if (hasNors) idxNors += 3;
 		if (hasTexCoords) idxTexCoords += 2;
+		numVertices++;
 	}
 
 	public int getNumVertices () {
-		return idxPos / 3;
+		return numVertices;
+	}
+	
+	public int getMaxVertices() {
+		return maxVertices;
 	}
 
 	/** Renders the primitives just defined. */

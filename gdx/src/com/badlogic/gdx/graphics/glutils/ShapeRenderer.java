@@ -62,7 +62,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * then translate in the above example).
  * 
  * The projection and transformation matrices are a state of the ShapeRenderer, just like
- * the color and will be applied to all shapes until they are changed again.
+ * the color and will be applied to all shapes until they are changed againn.
  * 
  * Instances of this class don't have to be disposed.
  * 

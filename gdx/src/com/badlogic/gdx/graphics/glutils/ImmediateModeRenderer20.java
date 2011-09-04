@@ -31,7 +31,9 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	int primitiveType;
 	int vertexIdx;
 	int numSetTexCoords;
-
+	final int maxVertices;
+	int numVertices;
+	
 	final Mesh mesh;
 	final int numTexCoords;
 	final int vertexSize;
@@ -48,6 +50,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	}
 
 	public ImmediateModeRenderer20 (int maxVertices, boolean hasNormals, boolean hasColors, int numTexCoords) {
+		this.maxVertices = maxVertices;
 		VertexAttribute[] attribs = buildVertexAttributes(hasNormals, hasColors, numTexCoords);
 		mesh = new Mesh(false, maxVertices, 0, attribs);
 		String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
@@ -172,6 +175,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 		numSetTexCoords = 0;
 		vertexIdx += vertexSize;
+		numVertices++;
 	}
 
 	public void end () {
@@ -193,9 +197,15 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 		numSetTexCoords = 0;
 		vertexIdx = 0;
+		numVertices = 0;
 	}
 
 	public int getNumVertices () {
-		return vertexIdx / 3;
+		return numVertices;
+	}
+
+	@Override
+	public int getMaxVertices () {
+		return maxVertices;
 	}
 }
