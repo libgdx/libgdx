@@ -34,6 +34,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -482,7 +483,12 @@ public class TextureAtlas implements Disposable {
 		}
 
 		public void setBounds (float x, float y, float width, float height) {
-			super.setBounds(x + region.offsetX, y + region.offsetY, width, height);
+			super.setBounds(x + region.offsetX, y + region.offsetY, width * region.packedWidth / region.originalWidth, height
+				* region.packedHeight / region.originalHeight);
+		}
+
+		public void setSize (float width, float height) {
+			super.setSize(width * region.packedWidth / region.originalWidth, height * region.packedHeight / region.originalHeight);
 		}
 
 		public void setOrigin (float originX, float originY) {
@@ -520,6 +526,14 @@ public class TextureAtlas implements Disposable {
 
 		public float getOriginY () {
 			return super.getOriginY() + region.offsetY;
+		}
+
+		public float getWidth () {
+			return super.getWidth() / region.packedWidth * region.originalWidth;
+		}
+
+		public float getHeight () {
+			return super.getHeight() / region.packedHeight * region.originalHeight;
 		}
 
 		public AtlasRegion getAtlasRegion () {
