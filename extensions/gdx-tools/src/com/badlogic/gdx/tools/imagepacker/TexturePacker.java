@@ -121,8 +121,13 @@ public class TexturePacker {
 		minHeight = filter.height != -1 ? filter.height : settings.minHeight;
 		maxWidth = filter.width != -1 ? filter.width : settings.maxWidth;
 		maxHeight = filter.height != -1 ? filter.height : settings.maxHeight;
-		xPadding = !filter.direction.isX() ? settings.padding : 0;
-		yPadding = !filter.direction.isY() ? settings.padding : 0;
+		if (settings.edgePadding) {
+			xPadding = !filter.direction.isX() ? settings.padding : 0;
+			yPadding = !filter.direction.isY() ? settings.padding : 0;
+		} else {
+			xPadding = images.size() > 1 && !filter.direction.isX() ? settings.padding : 0;
+			yPadding = images.size() > 1 && !filter.direction.isY() ? settings.padding : 0;
+		}
 
 		outputDir.mkdirs();
 		writer = new FileWriter(packFile, true);
@@ -296,13 +301,19 @@ public class TexturePacker {
 			g.drawRect(0, 0, width - 1, height - 1);
 		}
 		int x = 0, y = 0;
-		if (!filter.direction.isX()) {
-			x = xPadding;
-			width -= xPadding;
-		}
-		if (!filter.direction.isY()) {
-			y = yPadding;
-			height -= yPadding;
+		if (settings.edgePadding) {
+			if (!filter.direction.isX()) {
+				x = xPadding;
+				width -= xPadding;
+			}
+			if (!filter.direction.isY()) {
+				y = yPadding;
+				height -= yPadding;
+			}
+		} else {
+			// Pretend image is larger so padding on right and bottom edges is ignored.
+			if (!filter.direction.isX()) width += xPadding;
+			if (!filter.direction.isY()) height += yPadding;
 		}
 		Node root = new Node(x, y, width, height);
 		int usedPixels = 0;
@@ -675,6 +686,7 @@ public class TexturePacker {
 		public boolean stripWhitespace = true;
 		public boolean incremental;
 		public boolean alias;
+		public boolean edgePadding = true;
 
 		HashMap<String, Long> crcs = new HashMap();
 		HashMap<String, String> packSections = new HashMap();
