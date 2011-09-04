@@ -304,7 +304,7 @@ public class Json {
 		}
 
 		if (value instanceof Array) {
-			if (actualType != knownType)
+			if (knownType != null && actualType != knownType)
 				throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
 					+ "Known type: " + knownType + "\nActual type: " + actualType);
 			writeArrayStart();
@@ -316,7 +316,7 @@ public class Json {
 		}
 
 		if (value instanceof Collection) {
-			if (actualType != knownType)
+			if (knownType != null && actualType != knownType)
 				throw new SerializationException("Serialization of a Collection other than the known type is not supported.\n"
 					+ "Known type: " + knownType + "\nActual type: " + actualType);
 			writeArrayStart();
@@ -337,6 +337,7 @@ public class Json {
 		}
 
 		if (value instanceof ObjectMap) {
+			if (knownType == null) knownType = ObjectMap.class;
 			writeObjectStart(actualType, knownType);
 			for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
 				writer.name(convertToString(entry.key));
@@ -347,6 +348,7 @@ public class Json {
 		}
 
 		if (value instanceof Map) {
+			if (knownType == null) knownType = ObjectMap.class;
 			writeObjectStart(actualType, knownType);
 			for (Map.Entry entry : ((Map<?, ?>)value).entrySet()) {
 				writer.name(convertToString(entry.getKey()));
@@ -609,16 +611,14 @@ public class Json {
 
 		if (jsonData instanceof Float) {
 			Float floatValue = (Float)jsonData;
-			if (type != null) {
-				try {
-					if (type == int.class || type == Integer.class) return (T)(Integer)floatValue.intValue();
-					if (type == float.class || type == Float.class) return (T)(Float)floatValue;
-					if (type == long.class || type == Long.class) return (T)(Long)floatValue.longValue();
-					if (type == double.class || type == Double.class) return (T)(Double)floatValue.doubleValue();
-					if (type == short.class || type == Short.class) return (T)(Short)floatValue.shortValue();
-					if (type == byte.class || type == Byte.class) return (T)(Byte)floatValue.byteValue();
-				} catch (NumberFormatException ignored) {
-				}
+			try {
+				if (type == null || type == float.class || type == Float.class) return (T)(Float)floatValue;
+				if (type == int.class || type == Integer.class) return (T)(Integer)floatValue.intValue();
+				if (type == long.class || type == Long.class) return (T)(Long)floatValue.longValue();
+				if (type == double.class || type == Double.class) return (T)(Double)floatValue.doubleValue();
+				if (type == short.class || type == Short.class) return (T)(Short)floatValue.shortValue();
+				if (type == byte.class || type == Byte.class) return (T)(Byte)floatValue.byteValue();
+			} catch (NumberFormatException ignored) {
 			}
 			jsonData = String.valueOf(jsonData);
 		}

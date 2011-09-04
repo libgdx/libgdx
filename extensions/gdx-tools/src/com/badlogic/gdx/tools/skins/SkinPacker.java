@@ -19,6 +19,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.Writer;
 
 import javax.imageio.ImageIO;
 
@@ -36,12 +39,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.tools.FileProcessor;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker.Settings;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class SkinPacker {
-	public static void main (String[] args) throws Exception {
-		final File inputDir = new File("C:/Users/Nate/Desktop/skin");
-		final File packedDir = new File("C:/Users/Nate/Desktop/skin/packed");
+	static public void process (final File inputDir, final File packedDir, final File skinFile) throws Exception {
+		Texture.setEnforcePotImages(false);
 
 		new FileHandle(packedDir).deleteDirectory();
 
@@ -53,63 +56,105 @@ public class SkinPacker {
 		settings.defaultFilterMin = TextureFilter.Linear;
 		settings.padding = 2;
 		settings.pot = false;
+		settings.duplicatePadding = false;
 		settings.stripWhitespace = false;
 		final TexturePacker texturePacker = new TexturePacker(settings);
-		FileProcessor processor = new FileProcessor() {
+
+		FileProcessor regionProcessor = new FileProcessor() {
+			protected void processFile (InputFile inputFile) throws Exception {
+				texturePacker.addImage(ImageIO.read(inputFile.inputFile), inputFile.outputFile.getName());
+			}
+		};
+		regionProcessor.setRecursive(false);
+		regionProcessor.setInputFilter(new FilenameFilter() {
+			public boolean accept (File dir, String name) {
+				return name.endsWith(".png") && !name.endsWith(".9.png");
+			}
+		});
+		regionProcessor.setOutputSuffix("");
+		regionProcessor.process(inputDir, inputDir);
+
+		FileProcessor ninePatchProcessor = new FileProcessor() {
 			protected void processFile (InputFile inputFile) throws Exception {
 				BufferedImage image = ImageIO.read(inputFile.inputFile);
-				image = getSplits(image, inputFile.outputFile.getName());
-				texturePacker.addImage(image, inputFile.outputFile.getName());
+				String name = inputFile.outputFile.getName();
+				name = name.substring(0, name.length() - 2);
+				image = getSplits(image, name);
+				texturePacker.addImage(image, name);
 			}
 
 			private BufferedImage getSplits (BufferedImage image, String name) {
-				System.out.println(name);
-				int countX = 0, countY = 0;
-				int[] splits = new int[4];
-				int[] rgba = new int[4];
 				WritableRaster raster = image.getRaster();
-				for (int x = 0; x < raster.getWidth(); x++) {
+				int[] rgba = new int[4];
+
+				int startX = -1;
+				for (int x = 1; x < raster.getWidth() - 1; x++) {
 					raster.getPixel(x, 0, rgba);
-					if (rgba[0] == 255 && rgba[1] == 0 && rgba[2] == 255 && rgba[3] != 0) {
-						countX++;
-						if (countX > 2) return image;
-						splits[countX - 1] = x - 1;
-						continue;
-					}
-					if ((rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0) && rgba[3] != 0) return image;
+					if (rgba[3] == 0) continue;
+					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
+						throw new RuntimeException("Unknown pixel:" + x + ",0: " + name);
+					startX = x;
+					break;
 				}
-				if (countX != 2) return image;
-				for (int y = 0; y < raster.getHeight(); y++) {
+				if (startX == -1) throw new RuntimeException("Missing marker pixels in first row of pixels: " + name);
+				int endX;
+				for (endX = startX; endX < raster.getWidth() - 1; endX++) {
+					raster.getPixel(endX, 0, rgba);
+					if (rgba[3] == 0) break;
+					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
+						throw new RuntimeException("Unknown pixel " + endX + ",0: " + name);
+				}
+				for (int x = endX + 1; x < raster.getWidth() - 1; x++) {
+					raster.getPixel(x, 0, rgba);
+					if (rgba[3] != 0) throw new RuntimeException("Unknown pixel " + x + ",0: " + name);
+				}
+
+				int startY = -1;
+				for (int y = 1; y < raster.getHeight() - 1; y++) {
 					raster.getPixel(0, y, rgba);
-					if (rgba[0] == 255 && rgba[1] == 0 && rgba[2] == 255 && rgba[3] != 0) {
-						countY++;
-						if (countY > 2) return image;
-						splits[countY - 1 + 2] = y - 1;
-						continue;
-					}
-					if ((rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0) && rgba[3] != 0) return image;
+					if (rgba[3] == 0) continue;
+					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
+						throw new RuntimeException("Unknown pixel: 0," + y + ": " + name);
+					startY = y;
+					break;
 				}
-				if (countY != 2) return image;
+				if (startY == -1) throw new RuntimeException("Missing marker pixels in first column of pixels: " + name);
+				int endY;
+				for (endY = startY; endY < raster.getHeight() - 1; endY++) {
+					raster.getPixel(0, endY, rgba);
+					if (rgba[3] == 0) break;
+					if (rgba[0] != 0 || rgba[1] != 0 || rgba[2] != 0)
+						throw new RuntimeException("Unknown pixel 0," + endY + ": " + name);
+				}
+				for (int y = endY + 1; y < raster.getHeight() - 1; y++) {
+					raster.getPixel(0, y, rgba);
+					if (rgba[3] != 0) throw new RuntimeException("Unknown pixel 0," + y + ": " + name);
+				}
+
+				int[] splits = new int[4];
+				splits[0] = startX - 1;
+				splits[1] = endX - 1;
+				splits[2] = startY - 1;
+				splits[3] = endY - 1;
 				nameToSplits.put(name, splits);
-				BufferedImage newImage = new BufferedImage(raster.getWidth() - 1, raster.getHeight() - 1,
+
+				BufferedImage newImage = new BufferedImage(raster.getWidth() - 2, raster.getHeight() - 2,
 					BufferedImage.TYPE_4BYTE_ABGR);
-				Graphics g = newImage.getGraphics();
-				g.drawImage(image, 0, 0, newImage.getWidth(), newImage.getHeight(), 1, 1, newImage.getWidth(), newImage.getHeight(),
-					null);
+				newImage.getGraphics().drawImage(image, 0, 0, newImage.getWidth(), newImage.getHeight(), 1, 1, raster.getWidth() - 1,
+					raster.getHeight() - 1, null);
 				return newImage;
 			}
 		};
-		processor.setRecursive(false);
-		processor.addInputSuffix(".png");
-		processor.setOutputSuffix("");
-		processor.process(inputDir, inputDir);
+		ninePatchProcessor.setRecursive(false);
+		ninePatchProcessor.addInputSuffix(".9.png");
+		ninePatchProcessor.setOutputSuffix("");
+		ninePatchProcessor.process(inputDir, inputDir);
 
 		texturePacker.process(packedDir, new File(packedDir, "pack"), "skin");
 
 		new LwjglApplication(new ApplicationListener() {
 			public void create () {
 				Skin skin = new Skin();
-
 				TextureAtlasData atlas = new TextureAtlasData(new FileHandle(new File(packedDir, "pack")), new FileHandle(packedDir),
 					true);
 				Texture texture = new Texture(1, 1, Format.Alpha);
@@ -123,7 +168,21 @@ public class SkinPacker {
 							region.height - split[3]));
 					}
 				}
-				skin.save(new FileHandle(new File(inputDir, "skin")));
+				FileHandle newSkinFile = new FileHandle(new File(inputDir, "skin"));
+				skin.save(newSkinFile);
+
+				Json json = new Json();
+				ObjectMap oldSkin = json.fromJson(ObjectMap.class, new FileHandle(skinFile));
+				ObjectMap newSkin = json.fromJson(ObjectMap.class, newSkinFile);
+				newSkin.put("styles", oldSkin.get("styles"));
+				Writer writer = newSkinFile.writer(false);
+				try {
+					writer.write(json.prettyPrint(newSkin, true));
+					writer.close();
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+
 				System.exit(0);
 			}
 
@@ -142,5 +201,13 @@ public class SkinPacker {
 			public void dispose () {
 			}
 		}, "SkinPacker", 1, 1, false);
+	}
+
+	static public void main (String[] args) throws Exception {
+		File inputDir = new File("C:/Users/Nate/Desktop/skin");
+		File packedDir = new File("C:/Users/Nate/Desktop/skin/packed");
+		File skinFile = new File("C:/Users/Nate/Desktop/skin/old-skin.json");
+		// skinFile = null;
+		process(inputDir, packedDir, skinFile);
 	}
 }

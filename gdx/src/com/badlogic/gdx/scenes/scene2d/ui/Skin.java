@@ -161,7 +161,9 @@ public class Skin implements Disposable {
 
 			public Object read (Json json, Object jsonData, Class type) {
 				Object object = map.get((String)jsonData);
-				if (object == null) throw new SerializationException("Unable to find " + type.getSimpleName() + ": " + jsonData);
+				if (object == null)
+					throw new SerializationException("Skin has a " + type.getSimpleName()
+						+ " that could not be found in the resources.");
 				return object;
 			}
 		}

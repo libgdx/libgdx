@@ -23,8 +23,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Class to render points, lines, rectangles, filled rectangles and
- * boxes. This class is not mean to be used for performance sensitive applications
+ * Renders points, lines, rectangles, filled rectangles and
+ * boxes. This class is not meant to be used for performance sensitive applications
  * but more oriented towards debugging.</p>
  * 
  * This class works with OpenGL ES 1.x and 2.0. In its base configuration a
@@ -77,9 +77,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * then translate in the above example).
  * 
  * The projection and transformation matrices are a state of the ShapeRenderer, just like
- * the color and will be applied to all shapes until they are changed againn.
- * 
- * Instances of this class don't have to be disposed.
+ * the color and will be applied to all shapes until they are changed.
  * 
  * @author mzechner
  *
