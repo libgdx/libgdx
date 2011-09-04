@@ -222,8 +222,9 @@ public class Matrix3 implements Serializable {
 	 * also used by OpenGL ES' glTranslate/glRotate/glScale
 	 * @param x
 	 * @param y
+	 * @return this matrix for chaining
 	 */
-	public void translate (float x, float y) {
+	public Matrix3 translate (float x, float y) {
 		tmp[0] = 1;
 		tmp[1] = 0;
 		tmp[2] = 0;
@@ -236,6 +237,7 @@ public class Matrix3 implements Serializable {
 		tmp[7] = y;
 		tmp[8] = 1;
 		mul(vals, tmp);
+		return this;
 	}
 	
 	
@@ -243,9 +245,10 @@ public class Matrix3 implements Serializable {
 	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is
 	 * also used by OpenGL ES' glTranslate/glRotate/glScale
 	 * @param angle the angle in degrees
+	 * @return this matrix for chaining
 	 */
-	public void rotate (float angle) {
-		if (angle == 0) return;
+	public Matrix3 rotate (float angle) {
+		if (angle == 0) return this;
 		angle = DEGREE_TO_RAD * angle;
 		float cos = (float)Math.cos(angle);
 		float sin = (float)Math.sin(angle);
@@ -262,6 +265,7 @@ public class Matrix3 implements Serializable {
 		tmp[7] = 0;
 		tmp[8] = 1;
 		mul(vals, tmp);
+		return this;
 	}
 
 	/**
@@ -269,8 +273,9 @@ public class Matrix3 implements Serializable {
 	 * also used by OpenGL ES' glTranslate/glRotate/glScale.
 	 * @param scaleX
 	 * @param scaleY
+	 * @return this matrix for chaining
 	 */
-	public void scale (float scaleX, float scaleY) {
+	public Matrix3 scale (float scaleX, float scaleY) {
 		tmp[0] = scaleX;
 		tmp[1] = 0;
 		tmp[2] = 0;
@@ -283,6 +288,7 @@ public class Matrix3 implements Serializable {
 		tmp[7] = 0;
 		tmp[8] = 1;
 		mul(vals, tmp);
+		return this;
 	}
 
 	public float[] getValues () {

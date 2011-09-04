@@ -807,8 +807,9 @@ public class Matrix4 implements Serializable {
 	 * @param x
 	 * @param y
 	 * @param z
+	 * @return this matrix for chaining
 	 */
-	public void translate (float x, float y, float z) {
+	public Matrix4 translate (float x, float y, float z) {
 		tmp[M00] = 1;
 		tmp[M01] = 0;
 		tmp[M02] = 0;
@@ -827,6 +828,7 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = 1;
 		
 		mul(val, tmp);
+		return this;
 	}
 
 	/**
@@ -836,9 +838,10 @@ public class Matrix4 implements Serializable {
 	 * @param axisY
 	 * @param axisZ
 	 * @param angle the angle in degrees
+	 * @return this matrix for chaining 
 	 */
-	public void rotate (float axisX, float axisY, float axisZ, float angle) {
-		if (angle == 0) return;
+	public Matrix4 rotate (float axisX, float axisY, float axisZ, float angle) {
+		if (angle == 0) return this;
 		quat.set(tmpV.set(axisX, axisY, axisZ), angle);
 		Quaternion quaternion = quat;
 		float l_xx = quaternion.x * quaternion.x;
@@ -869,6 +872,7 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = 1;
 		
 		mul(val, tmp);
+		return this;
 	}
 
 	/**
@@ -877,8 +881,9 @@ public class Matrix4 implements Serializable {
 	 * @param scaleX
 	 * @param scaleY
 	 * @param scaleZ
+	 * @return this matrix for chaining
 	 */
-	public void scale (float scaleX, float scaleY, float scaleZ) {
+	public Matrix4 scale (float scaleX, float scaleY, float scaleZ) {
 		tmp[M00] = scaleX;
 		tmp[M01] = 0;
 		tmp[M02] = 0;
@@ -897,5 +902,6 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = 1;
 		
 		mul(val, tmp);
+		return this;
 	}
 }
