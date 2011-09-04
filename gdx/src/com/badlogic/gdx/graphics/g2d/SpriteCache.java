@@ -182,7 +182,6 @@ public class SpriteCache implements Disposable {
 	public int endCache () {
 		if (currentCache == null) throw new IllegalStateException("beginCache must be called before endCache.");
 		Cache cache = currentCache;
-		System.out.println(cache.id + ": " +  mesh.getVerticesBuffer().position() );
 		int cacheCount = mesh.getVerticesBuffer().position() - cache.offset;
 		if (cache.textures == null) {
 			// New cache.
