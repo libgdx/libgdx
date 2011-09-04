@@ -29,7 +29,7 @@ public class HeaderFixer {
 		final String header;
 
 		public HeaderFileProcessor () {
-			header = new FileHandle("data/licence-header.txt").readString();
+			header = new FileHandle("assets/licence-header.txt").readString();
 			addInputSuffix(".java");
 			setFlattenOutput(false);
 			setRecursive(true);

@@ -1,11 +1,31 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.badlogic.gdx.tests;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 
 public class ShapeRendererTest extends GdxTest {
 
@@ -15,12 +35,99 @@ public class ShapeRendererTest extends GdxTest {
 	}
 
 	ShapeRenderer renderer;
-	
-	public void create() {
+	PerspectiveCamera cam;
+	PerspectiveCamController controller;
+	SpriteBatch batch;
+	BitmapFont font;
+
+	public void create () {
 		renderer = new ShapeRenderer();
+		cam = new PerspectiveCamera(47, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.position.set(0, 0, 2);
+		cam.near = 0.1f;
+		controller = new PerspectiveCamController(cam);
+		Gdx.input.setInputProcessor(controller);
+		batch = new SpriteBatch();
+		font = new BitmapFont();
 	}
-	
-	public void render() {
-		
+
+	public void render () {
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
+		cam.update();
+		renderer.setProjectionMatrix(cam.combined);
+		renderer.identity();
+		renderer.rotate(0, 1, 0, 20);
+		renderer.translate(-0.5f, -0.5f, 0);
+
+		MathUtils.random.setSeed(0);
+
+		renderer.begin(ShapeType.Line);
+		renderer.setColor(Color.GREEN);
+		for (int i = 0; i < 1000; i++) {
+			renderer.line(MathUtils.random(), MathUtils.random(), MathUtils.random(), MathUtils.random());
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.Point);
+		renderer.setColor(Color.BLUE);
+		for (int i = 0; i < 1000; i++) {
+			renderer.point(MathUtils.random(), MathUtils.random(), MathUtils.random());
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.Rectangle);
+		renderer.setColor(Color.RED);
+		for (int i = 0; i < 20; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float width = MathUtils.random();
+			float height = MathUtils.random();
+			renderer.identity();
+			renderer.translate(-0.5f + x, -0.5f + y, MathUtils.random());
+			renderer.translate(width / 2, height / 2, 0);
+			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
+			renderer.translate(-width / 2, -height / 2, 0);
+			renderer.rect(0, 0, width, height);
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.FilledRectangle);
+		renderer.setColor(Color.WHITE);
+		for (int i = 0; i < 20; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float width = MathUtils.random();
+			float height = MathUtils.random();
+			renderer.identity();
+			renderer.translate(-0.5f + x, -0.5f + y, -MathUtils.random());
+			renderer.translate(width / 2, height / 2, 0);
+			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
+			renderer.translate(-width / 2, -height / 2, 0);
+			renderer.filledRect(0, 0, width, height);
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.Box);
+		renderer.setColor(1, 1, 0, 1);
+		for (int i = 0; i < 20; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float width = MathUtils.random();
+			float height = MathUtils.random();
+			float depth = MathUtils.random();
+			renderer.identity();
+			renderer.translate(-1.5f + x, -0.5f + y, MathUtils.random());
+			renderer.translate(width / 2, height / 2, depth / 2);
+			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
+			renderer.translate(-width / 2, -height / 2, depth / 2);
+			renderer.box(0, 0, 0, width, height, depth);
+		}
+		renderer.end();
+
+		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
+		batch.begin();
+		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
+		batch.end();
 	}
 }

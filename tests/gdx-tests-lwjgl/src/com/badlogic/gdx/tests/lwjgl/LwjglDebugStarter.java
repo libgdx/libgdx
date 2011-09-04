@@ -23,7 +23,7 @@ import com.badlogic.gdx.tests.ShapeRendererTest;
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = false;
+		config.useGL20 = true;
 		config.vSyncEnabled = true;
 		new LwjglApplication(new ShapeRendererTest(), config);
 	}
