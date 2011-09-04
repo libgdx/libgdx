@@ -27,6 +27,7 @@ public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
 	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
 	public float[] vals = new float[9];
+	private float[] tmp = new float[9];
 
 	public Matrix3 () {
 		idt();
@@ -123,16 +124,16 @@ public class Matrix3 implements Serializable {
 
 	/** Sets this matrix to a scaling matrix
 	 * 
-	 * @param sx the scale in x
-	 * @param sy the scale in y
+	 * @param scaleX the scale in x
+	 * @param scaleY the scale in y
 	 * @return this matrix */
-	public Matrix3 setToScaling (float sx, float sy) {
-		this.vals[0] = sx;
+	public Matrix3 setToScaling (float scaleX, float scaleY) {
+		this.vals[0] = scaleX;
 		this.vals[1] = 0;
 		this.vals[2] = 0;
 
 		this.vals[3] = 0;
-		this.vals[4] = sy;
+		this.vals[4] = scaleY;
 		this.vals[5] = 0;
 
 		this.vals[6] = 0;
@@ -185,37 +186,6 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-// public static void main (String[] argv) {
-// float refX = 50, refY = -50;
-// float scaleX = 2, scaleY = 1;
-// float rotation = 45;
-// float x = -232, y = 123;
-//
-// Matrix3 transform = new Matrix3();
-// Matrix3 tmp = new Matrix3();
-//
-// tmp.vals = new float[] {-2, -1, 2, 2, 1, 0, -3, 3, -1};
-// System.out.println(tmp.det());
-//
-// transform.idt();
-// transform.setToTranslation(-refX, -refY);
-// transform.mul(tmp.setToScaling(scaleX, scaleY));
-// transform.mul(tmp.setToRotation(rotation));
-// transform.mul(tmp.setToTranslation(refX, refY));
-// transform.mul(tmp.setToTranslation(x, y));
-// System.out.println(new Vector2().mul(transform));
-//
-// Matrix4 transform4 = new Matrix4();
-// Matrix4 tmp4 = new Matrix4();
-// transform4.idt();
-// transform4.setToTranslation(-refX, -refY, 0);
-// transform4.mul(tmp4.setToScaling(scaleX, scaleY, 1));
-// transform4.mul(tmp4.setToRotation(new Vector3(0, 0, 1), rotation));
-// transform4.mul(tmp4.setToTranslation(refX, refY, 0));
-// transform4.mul(tmp4.setToTranslation(x, y, 0));
-// System.out.println(new Vector3().mul(transform4));
-// }
-
 	public Matrix3 set (Matrix3 mat) {
 		vals[0] = mat.vals[0];
 		vals[1] = mat.vals[1];
@@ -247,8 +217,99 @@ public class Matrix3 implements Serializable {
 		vals[7] += y;
 		return this;
 	}
+	/**
+	 * Postmultiplies this matrix by a translation matrix. Postmultiplication is
+	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+	 * @param x
+	 * @param y
+	 */
+	public void translate (float x, float y) {
+		tmp[0] = 1;
+		tmp[1] = 0;
+		tmp[2] = 0;
+
+		tmp[3] = 0;
+		tmp[4] = 1;
+		tmp[5] = 0;
+
+		tmp[6] = x;
+		tmp[7] = y;
+		tmp[8] = 1;
+		mul(vals, tmp);
+	}
+	
+	
+	/**
+	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is
+	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+	 * @param angle the angle in degrees
+	 */
+	public void rotate (float angle) {
+		if (angle == 0) return;
+		angle = DEGREE_TO_RAD * angle;
+		float cos = (float)Math.cos(angle);
+		float sin = (float)Math.sin(angle);
+
+		tmp[0] = cos;
+		tmp[1] = sin;
+		tmp[2] = 0;
+
+		tmp[3] = -sin;
+		tmp[4] = cos;
+		tmp[5] = 0;
+
+		tmp[6] = 0;
+		tmp[7] = 0;
+		tmp[8] = 1;
+		mul(vals, tmp);
+	}
+
+	/**
+	 * Postmultiplies this matrix with a scale matrix. Postmultiplication is
+	 * also used by OpenGL ES' glTranslate/glRotate/glScale.
+	 * @param scaleX
+	 * @param scaleY
+	 */
+	public void scale (float scaleX, float scaleY) {
+		tmp[0] = scaleX;
+		tmp[1] = 0;
+		tmp[2] = 0;
+
+		tmp[3] = 0;
+		tmp[4] = scaleY;
+		tmp[5] = 0;
+
+		tmp[6] = 0;
+		tmp[7] = 0;
+		tmp[8] = 1;
+		mul(vals, tmp);
+	}
 
 	public float[] getValues () {
 		return vals;
+	}
+	
+	private static void mul(float[] mata, float[] matb) {
+		float v00 = mata[0] * matb[0] + mata[3] * matb[1] + mata[6] * matb[2];
+		float v01 = mata[0] * matb[3] + mata[3] * matb[4] + mata[6] * matb[5];
+		float v02 = mata[0] * matb[6] + mata[3] * matb[7] + mata[6] * matb[8];
+
+		float v10 = mata[1] * matb[0] + mata[4] * matb[1] + mata[7] * matb[2];
+		float v11 = mata[1] * matb[3] + mata[4] * matb[4] + mata[7] * matb[5];
+		float v12 = mata[1] * matb[6] + mata[4] * matb[7] + mata[7] * matb[8];
+
+		float v20 = mata[2] * matb[0] + mata[5] * matb[1] + mata[8] * matb[2];
+		float v21 = mata[2] * matb[3] + mata[5] * matb[4] + mata[8] * matb[5];
+		float v22 = mata[2] * matb[6] + mata[5] * matb[7] + mata[8] * matb[8];
+
+		mata[0] = v00;
+		mata[1] = v10;
+		mata[2] = v20;
+		mata[3] = v01;
+		mata[4] = v11;
+		mata[5] = v21;
+		mata[6] = v02;
+		mata[7] = v12;
+		mata[8] = v22;
 	}
 }

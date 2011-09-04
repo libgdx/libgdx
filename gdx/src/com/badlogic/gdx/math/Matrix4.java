@@ -18,6 +18,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.GdxNativesLoader;
+
 /** Encapsulates a column major 4 by 4 matrix. You can access the linear array for use with OpenGL via the public
  * {@link Matrix4#val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
  * 
@@ -798,4 +800,102 @@ public class Matrix4 implements Serializable {
 	 * @param values the matrix values.
 	 * @return the determinante. */
 	public static native float det (float[] values) /*-{ }-*/;
+
+	/**
+	 * Postmultiplies this matrix by a translation matrix. Postmultiplication is
+	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	public void translate (float x, float y, float z) {
+		tmp[M00] = 1;
+		tmp[M01] = 0;
+		tmp[M02] = 0;
+		tmp[M03] = x;
+		tmp[M10] = 0;
+		tmp[M11] = 1;
+		tmp[M12] = 0;
+		tmp[M13] = y;
+		tmp[M20] = 0;
+		tmp[M21] = 0;
+		tmp[M22] = 1;
+		tmp[M23] = z;
+		tmp[M30] = 0;
+		tmp[M31] = 0;
+		tmp[M32] = 0;
+		tmp[M33] = 1;
+		
+		mul(val, tmp);
+	}
+
+	/**
+	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is
+	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+	 * @param axisX
+	 * @param axisY
+	 * @param axisZ
+	 * @param angle the angle in degrees
+	 */
+	public void rotate (float axisX, float axisY, float axisZ, float angle) {
+		if (angle == 0) return;
+		quat.set(tmpV.set(axisX, axisY, axisZ), angle);
+		Quaternion quaternion = quat;
+		float l_xx = quaternion.x * quaternion.x;
+		float l_xy = quaternion.x * quaternion.y;
+		float l_xz = quaternion.x * quaternion.z;
+		float l_xw = quaternion.x * quaternion.w;
+		float l_yy = quaternion.y * quaternion.y;
+		float l_yz = quaternion.y * quaternion.z;
+		float l_yw = quaternion.y * quaternion.w;
+		float l_zz = quaternion.z * quaternion.z;
+		float l_zw = quaternion.z * quaternion.w;
+		// Set matrix from quaternion
+		tmp[M00] = 1 - 2 * (l_yy + l_zz);
+		tmp[M01] = 2 * (l_xy - l_zw);
+		tmp[M02] = 2 * (l_xz + l_yw);
+		tmp[M03] = 0;
+		tmp[M10] = 2 * (l_xy + l_zw);
+		tmp[M11] = 1 - 2 * (l_xx + l_zz);
+		tmp[M12] = 2 * (l_yz - l_xw);
+		tmp[M13] = 0;
+		tmp[M20] = 2 * (l_xz - l_yw);
+		tmp[M21] = 2 * (l_yz + l_xw);
+		tmp[M22] = 1 - 2 * (l_xx + l_yy);
+		tmp[M23] = 0;
+		tmp[M30] = 0;
+		tmp[M31] = 0;
+		tmp[M32] = 0;
+		tmp[M33] = 1;
+		
+		mul(val, tmp);
+	}
+
+	/**
+	 * Postmultiplies this matrix with a scale matrix. Postmultiplication is
+	 * also used by OpenGL ES' glTranslate/glRotate/glScale.
+	 * @param scaleX
+	 * @param scaleY
+	 * @param scaleZ
+	 */
+	public void scale (float scaleX, float scaleY, float scaleZ) {
+		tmp[M00] = scaleX;
+		tmp[M01] = 0;
+		tmp[M02] = 0;
+		tmp[M03] = 0;
+		tmp[M10] = 0;
+		tmp[M11] = scaleY;
+		tmp[M12] = 0;
+		tmp[M13] = 0;
+		tmp[M20] = 0;
+		tmp[M21] = 0;
+		tmp[M22] = scaleZ;
+		tmp[M23] = 0;
+		tmp[M30] = 0;
+		tmp[M31] = 0;
+		tmp[M32] = 0;
+		tmp[M33] = 1;
+		
+		mul(val, tmp);
+	}
 }

@@ -48,7 +48,7 @@ public class MD5Test extends GdxTest implements InputProcessor {
 		skeleton = new MD5Joints();
 		skeleton.joints = new float[anim.frames[0].joints.length];
 		animInfo = new MD5AnimationInfo(anim.frames.length, anim.secondsPerFrame);
-		renderer = new MD5Renderer(model, false, true);
+		renderer = new MD5Renderer(model, true, false);
 		renderer.setSkeleton(model.baseSkeleton);
 
 		// long start = System.nanoTime();
