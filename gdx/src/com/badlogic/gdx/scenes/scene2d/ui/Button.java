@@ -116,7 +116,7 @@ public class Button extends Widget {
 		if(isPressed) 
 			font.drawMultiLine(batch, text, x + (int)(width * 0.5f) + style.pressedOffsetX, y + textY + style.pressedOffsetY, 0, HAlignment.CENTER);
 		else 
-			font.drawMultiLine(batch, text, x + (int)(width * 0.5f), y + textY, 0, HAlignment.CENTER);
+			font.drawMultiLine(batch, text, x + (int)(width * 0.5f) + style.unpressedOffsetX, y + textY + style.unpressedOffsetY, 0, HAlignment.CENTER);
 	}
 
 	@Override
@@ -165,17 +165,21 @@ public class Button extends Widget {
 		public Color fontColor;
 		public float pressedOffsetX;
 		public float pressedOffsetY;
+		public float unpressedOffsetX;
+		public float unpressedOffsetY;
 
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (BitmapFont font, Color fontColor, NinePatch down, NinePatch up, float pressedOffsetX, float pressedOffsetY) {
+		public ButtonStyle (BitmapFont font, Color fontColor, NinePatch down, NinePatch up, float pressedOffsetX, float pressedOffsetY, float unpressedOffsetX, float unpressedOffsetY) {
 			this.font = font;
 			this.fontColor = fontColor;
 			this.down = down;
 			this.up = up;
 			this.pressedOffsetX = pressedOffsetX;
 			this.pressedOffsetY = pressedOffsetY;
+			this.unpressedOffsetX = unpressedOffsetX;
+			this.unpressedOffsetY = unpressedOffsetY;
 		}
 	}
 
