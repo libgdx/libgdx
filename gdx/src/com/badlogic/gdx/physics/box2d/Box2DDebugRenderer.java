@@ -19,10 +19,12 @@ package com.badlogic.gdx.physics.box2d;
 import java.util.Iterator;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
@@ -32,22 +34,20 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 public class Box2DDebugRenderer {
 
 	/** the immediate mode renderer to output our debug drawings **/
-	protected ImmediateModeRenderer10 renderer;
+	protected ShapeRenderer renderer;
 
 	/** a spritebatch and a font for text rendering **/
 	public SpriteBatch batch;
-// public Font font;
 
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[1000];
 
 	public Box2DDebugRenderer () {
 		// next we setup the immediate mode renderer
-		renderer = new ImmediateModeRenderer10();
+		renderer = new ShapeRenderer();
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
-// font = Gdx.graphics.newFont("Arial", 12, FontStyle.Plain);
 
 		// initialize vertices array
 		for (int i = 0; i < vertices.length; i++)
@@ -55,7 +55,8 @@ public class Box2DDebugRenderer {
 	}
 
 	/** This assumes that the projection matrix has already been set. */
-	public void render (World world) {
+	public void render (World world, Matrix4 projMatrix) {
+		renderer.setProjectionMatrix(projMatrix);
 		renderBodies(world);
 	}
 
@@ -65,8 +66,9 @@ public class Box2DDebugRenderer {
 	private final Color SHAPE_NOT_AWAKE = new Color(0.6f, 0.6f, 0.6f, 1);
 	private final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
 	private final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
-
+	
 	private void renderBodies (World world) {
+		renderer.begin(ShapeType.Line);
 		for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
 			Body body = iter.next();
 			Transform transform = body.getTransform();
@@ -91,10 +93,15 @@ public class Box2DDebugRenderer {
 			Joint joint = iter.next();
 			drawJoint(joint);
 		}
+		renderer.end();
 
+		if(Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
+		renderer.begin(ShapeType.Point);
 		int len = world.getContactList().size();
 		for (int i = 0; i < len; i++)
 			drawContact(world.getContactList().get(i));
+		renderer.end();
+		if(Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
 	}
 
 	private static Vector2 t = new Vector2();
@@ -139,35 +146,41 @@ public class Box2DDebugRenderer {
 		}
 	}
 
+	private final Vector2 f = new Vector2();
 	private final Vector2 v = new Vector2();
+	private final Vector2 lv = new Vector2();
 
 	private void drawSolidCircle (Vector2 center, float radius, Vector2 axis, Color color) {
-		renderer.begin(GL10.GL_LINE_LOOP);
 		float angle = 0;
 		float angleInc = 2 * (float)Math.PI / 20;
+		renderer.setColor(color.r, color.g, color.b, color.a);
 		for (int i = 0; i < 20; i++, angle += angleInc) {
 			v.set((float)Math.cos(angle) * radius + center.x, (float)Math.sin(angle) * radius + center.y);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(v.x, v.y, 0);
+			if(i == 0) {
+				lv.set(v);
+				f.set(v);
+				continue;
+			}
+			renderer.line(lv.x, lv.y, v.x, v.y);
+			lv.set(v);
 		}
-		renderer.end();
-
-		renderer.begin(GL10.GL_LINES);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(center.x, center.y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(center.x + axis.x * radius, center.y + axis.y * radius, 0);
-		renderer.end();
+		renderer.line(f.x, f.y, lv.x, lv.y);
+		renderer.line(center.x, center.y, 0, center.x + axis.x * radius, center.y + axis.y * radius, 0);
 	}
 
 	private void drawSolidPolygon (Vector2[] vertices, int vertexCount, Color color) {
-		renderer.begin(GL10.GL_LINE_LOOP);
+		renderer.setColor(color.r, color.g, color.b, color.a);
 		for (int i = 0; i < vertexCount; i++) {
 			Vector2 v = vertices[i];
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(v.x, v.y, 0);
+			if(i == 0) {
+				lv.set(v);
+				f.set(v);
+				continue;
+			}
+			renderer.line(lv.x, lv.y, v.x, v.y);
+			lv.set(v);
 		}
-		renderer.end();
+		renderer.line(f.x, f.y, lv.x, lv.y);
 	}
 
 	private void drawJoint (Joint joint) {
@@ -200,20 +213,15 @@ public class Box2DDebugRenderer {
 	}
 
 	private void drawSegment (Vector2 x1, Vector2 x2, Color color) {
-		renderer.begin(GL10.GL_LINES);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x1.x, x1.y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x2.x, x2.y, 0);
-		renderer.end();
+		renderer.setColor(color);
+		renderer.line(x1.x, x1.y, x2.x, x2.y);
 	}
 
 	private void drawContact (Contact contact) {
-
+		
 	}
 
 	public void dispose () {
 		batch.dispose();
-// font.dispose();
 	}
 }

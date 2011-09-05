@@ -65,6 +65,6 @@ public class KinematicBodyTest extends GdxTest {
 		world.step(Math.min(0.032f, Gdx.graphics.getDeltaTime()), 3, 4);
 		cam.update();
 		cam.apply(Gdx.gl10);
-		renderer.render(world);
+		renderer.render(world, cam.combined);
 	}
 }

@@ -92,7 +92,7 @@ public abstract class Box2DTest implements ApplicationListener, InputProcessor {
 		camera.apply(gl);
 
 		// render the world using the debug renderer
-		renderer.render(world);
+		renderer.render(world, camera.combined);
 		float renderTime = (System.nanoTime() - startTime) / 1000000000.0f;
 
 		batch.begin();
