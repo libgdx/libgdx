@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,8 +16,8 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Collision/b2Collision.h"
-#include "Box2D/Collision/b2Distance.h"
+#include <Box2D/Collision/b2Collision.h>
+#include <Box2D/Collision/b2Distance.h>
 
 void b2WorldManifold::Initialize(const b2Manifold* manifold,
 						  const b2Transform& xfA, float32 radiusA,
@@ -49,7 +49,7 @@ void b2WorldManifold::Initialize(const b2Manifold* manifold,
 
 	case b2Manifold::e_faceA:
 		{
-			normal = b2Mul(xfA.R, manifold->localNormal);
+			normal = b2Mul(xfA.q, manifold->localNormal);
 			b2Vec2 planePoint = b2Mul(xfA, manifold->localPoint);
 			
 			for (int32 i = 0; i < manifold->pointCount; ++i)
@@ -64,7 +64,7 @@ void b2WorldManifold::Initialize(const b2Manifold* manifold,
 
 	case b2Manifold::e_faceB:
 		{
-			normal = b2Mul(xfB.R, manifold->localNormal);
+			normal = b2Mul(xfB.q, manifold->localNormal);
 			b2Vec2 planePoint = b2Mul(xfB, manifold->localPoint);
 
 			for (int32 i = 0; i < manifold->pointCount; ++i)
@@ -196,7 +196,7 @@ bool b2AABB::RayCast(b2RayCastOutput* output, const b2RayCastInput& input) const
 
 // Sutherland-Hodgman clipping.
 int32 b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
-						const b2Vec2& normal, float32 offset)
+						const b2Vec2& normal, float32 offset, int32 vertexIndexA)
 {
 	// Start with no output points
 	int32 numOut = 0;
@@ -215,26 +215,25 @@ int32 b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
 		// Find intersection point of edge and plane
 		float32 interp = distance0 / (distance0 - distance1);
 		vOut[numOut].v = vIn[0].v + interp * (vIn[1].v - vIn[0].v);
-		if (distance0 > 0.0f)
-		{
-			vOut[numOut].id = vIn[0].id;
-		}
-		else
-		{
-			vOut[numOut].id = vIn[1].id;
-		}
+
+		// VertexA is hitting edgeB.
+		vOut[numOut].id.cf.indexA = vertexIndexA;
+		vOut[numOut].id.cf.indexB = vIn[0].id.cf.indexB;
+		vOut[numOut].id.cf.typeA = b2ContactFeature::e_vertex;
+		vOut[numOut].id.cf.typeB = b2ContactFeature::e_face;
 		++numOut;
 	}
 
 	return numOut;
 }
 
-bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
-				   const b2Transform& xfA, const b2Transform& xfB)
+bool b2TestOverlap(	const b2Shape* shapeA, int32 indexA,
+					const b2Shape* shapeB, int32 indexB,
+					const b2Transform& xfA, const b2Transform& xfB)
 {
 	b2DistanceInput input;
-	input.proxyA.Set(shapeA);
-	input.proxyB.Set(shapeB);
+	input.proxyA.Set(shapeA, indexA);
+	input.proxyB.Set(shapeB, indexB);
 	input.transformA = xfA;
 	input.transformB = xfB;
 	input.useRadii = true;

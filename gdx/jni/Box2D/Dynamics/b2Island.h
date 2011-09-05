@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,29 +19,16 @@
 #ifndef B2_ISLAND_H
 #define B2_ISLAND_H
 
-#include "Box2D/Common/b2Math.h"
-#include "Box2D/Dynamics/b2Body.h"
-#include "Box2D/Dynamics/b2TimeStep.h"
+#include <Box2D/Common/b2Math.h>
+#include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2TimeStep.h>
 
 class b2Contact;
 class b2Joint;
 class b2StackAllocator;
 class b2ContactListener;
-struct b2ContactConstraint;
-
-/// This is an internal structure.
-struct b2Position
-{
-	b2Vec2 x;
-	float32 a;
-};
-
-/// This is an internal structure.
-struct b2Velocity
-{
-	b2Vec2 v;
-	float32 w;
-};
+struct b2ContactVelocityConstraint;
+struct b2Profile;
 
 /// This is an internal class.
 class b2Island
@@ -58,13 +45,16 @@ public:
 		m_jointCount = 0;
 	}
 
-	void Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSleep);
+	void Solve(b2Profile* profile, const b2TimeStep& step, const b2Vec2& gravity, bool allowSleep);
+
+	void SolveTOI(const b2TimeStep& subStep, int32 toiIndexA, int32 toiIndexB);
 
 	void Add(b2Body* body)
 	{
 		b2Assert(m_bodyCount < m_bodyCapacity);
 		body->m_islandIndex = m_bodyCount;
-		m_bodies[m_bodyCount++] = body;
+		m_bodies[m_bodyCount] = body;
+		++m_bodyCount;
 	}
 
 	void Add(b2Contact* contact)
@@ -79,7 +69,7 @@ public:
 		m_joints[m_jointCount++] = joint;
 	}
 
-	void Report(const b2ContactConstraint* constraints);
+	void Report(const b2ContactVelocityConstraint* constraints);
 
 	b2StackAllocator* m_allocator;
 	b2ContactListener* m_listener;
@@ -98,8 +88,6 @@ public:
 	int32 m_bodyCapacity;
 	int32 m_contactCapacity;
 	int32 m_jointCapacity;
-
-	int32 m_positionIterationCount;
 };
 
 #endif

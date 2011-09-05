@@ -33,6 +33,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -49,8 +50,8 @@ public class Cantilever extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
-			shape.setAsEdge(new Vector2(-40, 0), new Vector2(40, 0));
+			EdgeShape shape = new EdgeShape();
+			shape.set(new Vector2(-40, 0), new Vector2(40, 0));
 			ground.createFixture(shape, 0);
 			shape.dispose();
 		}
@@ -97,7 +98,7 @@ public class Cantilever extends Box2DTest {
 				BodyDef bd = new BodyDef();
 				bd.type = BodyType.DynamicBody;
 				bd.position.set(-14.5f + 1.0f * i, 15.0f);
-				bd.inertiaScale = 10.0f;
+				bd.gravityScale = 10.0f;
 				Body body = world.createBody(bd);
 				body.createFixture(fd);
 
@@ -156,7 +157,7 @@ public class Cantilever extends Box2DTest {
 				BodyDef bd = new BodyDef();
 				bd.type = BodyType.DynamicBody;
 				bd.position.set(5.5f + 1.0f * i, 10.0f);
-				bd.inertiaScale = 10.0f;
+				bd.gravityScale = 10.0f;
 				Body body = world.createBody(bd);
 				body.createFixture(fd);
 

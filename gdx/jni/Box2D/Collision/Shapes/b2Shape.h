@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,9 +19,9 @@
 #ifndef B2_SHAPE_H
 #define B2_SHAPE_H
 
-#include "Box2D/Common/b2BlockAllocator.h"
-#include "Box2D/Common/b2Math.h"
-#include "Box2D/Collision/b2Collision.h"
+#include <Box2D/Common/b2BlockAllocator.h>
+#include <Box2D/Common/b2Math.h>
+#include <Box2D/Collision/b2Collision.h>
 
 /// This holds the mass data computed for a shape.
 struct b2MassData
@@ -38,20 +38,20 @@ struct b2MassData
 
 /// A shape is used for collision detection. You can create a shape however you like.
 /// Shapes used for simulation in b2World are created automatically when a b2Fixture
-/// is created.
+/// is created. Shapes may encapsulate a one or more child shapes.
 class b2Shape
 {
 public:
 	
 	enum Type
 	{
-		e_unknown= -1,
 		e_circle = 0,
-		e_polygon = 1,
-		e_typeCount = 2,
+		e_edge = 1,
+		e_polygon = 2,
+		e_chain = 3,
+		e_typeCount = 4
 	};
 
-	b2Shape() { m_type = e_unknown; }
 	virtual ~b2Shape() {}
 
 	/// Clone the concrete shape using the provided allocator.
@@ -61,21 +61,27 @@ public:
 	/// @return the shape type.
 	Type GetType() const;
 
+	/// Get the number of child primitives.
+	virtual int32 GetChildCount() const = 0;
+
 	/// Test a point for containment in this shape. This only works for convex shapes.
 	/// @param xf the shape world transform.
 	/// @param p a point in world coordinates.
 	virtual bool TestPoint(const b2Transform& xf, const b2Vec2& p) const = 0;
 
-	/// Cast a ray against this shape.
+	/// Cast a ray against a child shape.
 	/// @param output the ray-cast results.
 	/// @param input the ray-cast input parameters.
 	/// @param transform the transform to be applied to the shape.
-	virtual bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& transform) const = 0;
+	/// @param childIndex the child shape index
+	virtual bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
+						const b2Transform& transform, int32 childIndex) const = 0;
 
-	/// Given a transform, compute the associated axis aligned bounding box for this shape.
+	/// Given a transform, compute the associated axis aligned bounding box for a child shape.
 	/// @param aabb returns the axis aligned box.
 	/// @param xf the world transform of the shape.
-	virtual void ComputeAABB(b2AABB* aabb, const b2Transform& xf) const = 0;
+	/// @param childIndex the child shape
+	virtual void ComputeAABB(b2AABB* aabb, const b2Transform& xf, int32 childIndex) const = 0;
 
 	/// Compute the mass properties of this shape using its dimensions and density.
 	/// The inertia tensor is computed about the local origin.

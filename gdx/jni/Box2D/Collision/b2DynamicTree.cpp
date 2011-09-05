@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,9 +16,11 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Collision/b2DynamicTree.h"
-#include <string.h>
-#include <float.h>
+#include <Box2D/Collision/b2DynamicTree.h>
+#include <cstring>
+#include <cfloat>
+using namespace std;
+
 
 b2DynamicTree::b2DynamicTree()
 {
@@ -26,15 +28,17 @@ b2DynamicTree::b2DynamicTree()
 
 	m_nodeCapacity = 16;
 	m_nodeCount = 0;
-	m_nodes = (b2DynamicTreeNode*)b2Alloc(m_nodeCapacity * sizeof(b2DynamicTreeNode));
-	memset(m_nodes, 0, m_nodeCapacity * sizeof(b2DynamicTreeNode));
+	m_nodes = (b2TreeNode*)b2Alloc(m_nodeCapacity * sizeof(b2TreeNode));
+	memset(m_nodes, 0, m_nodeCapacity * sizeof(b2TreeNode));
 
 	// Build a linked list for the free list.
 	for (int32 i = 0; i < m_nodeCapacity - 1; ++i)
 	{
 		m_nodes[i].next = i + 1;
+		m_nodes[i].height = -1;
 	}
 	m_nodes[m_nodeCapacity-1].next = b2_nullNode;
+	m_nodes[m_nodeCapacity-1].height = -1;
 	m_freeList = 0;
 
 	m_path = 0;
@@ -57,10 +61,10 @@ int32 b2DynamicTree::AllocateNode()
 		b2Assert(m_nodeCount == m_nodeCapacity);
 
 		// The free list is empty. Rebuild a bigger pool.
-		b2DynamicTreeNode* oldNodes = m_nodes;
+		b2TreeNode* oldNodes = m_nodes;
 		m_nodeCapacity *= 2;
-		m_nodes = (b2DynamicTreeNode*)b2Alloc(m_nodeCapacity * sizeof(b2DynamicTreeNode));
-		memcpy(m_nodes, oldNodes, m_nodeCount * sizeof(b2DynamicTreeNode));
+		m_nodes = (b2TreeNode*)b2Alloc(m_nodeCapacity * sizeof(b2TreeNode));
+		memcpy(m_nodes, oldNodes, m_nodeCount * sizeof(b2TreeNode));
 		b2Free(oldNodes);
 
 		// Build a linked list for the free list. The parent
@@ -68,8 +72,10 @@ int32 b2DynamicTree::AllocateNode()
 		for (int32 i = m_nodeCount; i < m_nodeCapacity - 1; ++i)
 		{
 			m_nodes[i].next = i + 1;
+			m_nodes[i].height = -1;
 		}
 		m_nodes[m_nodeCapacity-1].next = b2_nullNode;
+		m_nodes[m_nodeCapacity-1].height = -1;
 		m_freeList = m_nodeCount;
 	}
 
@@ -79,6 +85,8 @@ int32 b2DynamicTree::AllocateNode()
 	m_nodes[nodeId].parent = b2_nullNode;
 	m_nodes[nodeId].child1 = b2_nullNode;
 	m_nodes[nodeId].child2 = b2_nullNode;
+	m_nodes[nodeId].height = 0;
+	m_nodes[nodeId].userData = NULL;
 	++m_nodeCount;
 	return nodeId;
 }
@@ -89,6 +97,7 @@ void b2DynamicTree::FreeNode(int32 nodeId)
 	b2Assert(0 <= nodeId && nodeId < m_nodeCapacity);
 	b2Assert(0 < m_nodeCount);
 	m_nodes[nodeId].next = m_freeList;
+	m_nodes[nodeId].height = -1;
 	m_freeList = nodeId;
 	--m_nodeCount;
 }
@@ -105,19 +114,9 @@ int32 b2DynamicTree::CreateProxy(const b2AABB& aabb, void* userData)
 	m_nodes[proxyId].aabb.lowerBound = aabb.lowerBound - r;
 	m_nodes[proxyId].aabb.upperBound = aabb.upperBound + r;
 	m_nodes[proxyId].userData = userData;
+	m_nodes[proxyId].height = 0;
 
 	InsertLeaf(proxyId);
-
-	// Rebalance if necessary.
-	int32 iterationCount = m_nodeCount >> 4;
-	int32 tryCount = 0;
-	int32 height = ComputeHeight();
-	while (height > 64 && tryCount < 10)
-	{
-		Rebalance(iterationCount);
-		height = ComputeHeight();
-		++tryCount;
-	}
 
 	return proxyId;
 }
@@ -188,79 +187,133 @@ void b2DynamicTree::InsertLeaf(int32 leaf)
 		return;
 	}
 
-	// Find the best sibling for this node.
-	b2Vec2 center = m_nodes[leaf].aabb.GetCenter();
-	int32 sibling = m_root;
-	if (m_nodes[sibling].IsLeaf() == false)
+	// Find the best sibling for this node
+	b2AABB leafAABB = m_nodes[leaf].aabb;
+	int32 index = m_root;
+	while (m_nodes[index].IsLeaf() == false)
 	{
-		do 
+		int32 child1 = m_nodes[index].child1;
+		int32 child2 = m_nodes[index].child2;
+
+		float32 area = m_nodes[index].aabb.GetPerimeter();
+
+		b2AABB combinedAABB;
+		combinedAABB.Combine(m_nodes[index].aabb, leafAABB);
+		float32 combinedArea = combinedAABB.GetPerimeter();
+
+		// Cost of creating a new parent for this node and the new leaf
+		float32 cost = 2.0f * combinedArea;
+
+		// Minimum cost of pushing the leaf further down the tree
+		float32 inheritanceCost = 2.0f * (combinedArea - area);
+
+		// Cost of descending into child1
+		float32 cost1;
+		if (m_nodes[child1].IsLeaf())
 		{
-			int32 child1 = m_nodes[sibling].child1;
-			int32 child2 = m_nodes[sibling].child2;
-
-			b2Vec2 delta1 = b2Abs(m_nodes[child1].aabb.GetCenter() - center);
-			b2Vec2 delta2 = b2Abs(m_nodes[child2].aabb.GetCenter() - center);
-
-			float32 norm1 = delta1.x + delta1.y;
-			float32 norm2 = delta2.x + delta2.y;
-
-			if (norm1 < norm2)
-			{
-				sibling = child1;
-			}
-			else
-			{
-				sibling = child2;
-			}
-
-		}
-		while(m_nodes[sibling].IsLeaf() == false);
-	}
-
-	// Create a parent for the siblings.
-	int32 node1 = m_nodes[sibling].parent;
-	int32 node2 = AllocateNode();
-	m_nodes[node2].parent = node1;
-	m_nodes[node2].userData = NULL;
-	m_nodes[node2].aabb.Combine(m_nodes[leaf].aabb, m_nodes[sibling].aabb);
-
-	if (node1 != b2_nullNode)
-	{
-		if (m_nodes[m_nodes[sibling].parent].child1 == sibling)
-		{
-			m_nodes[node1].child1 = node2;
+			b2AABB aabb;
+			aabb.Combine(leafAABB, m_nodes[child1].aabb);
+			cost1 = aabb.GetPerimeter() + inheritanceCost;
 		}
 		else
 		{
-			m_nodes[node1].child2 = node2;
+			b2AABB aabb;
+			aabb.Combine(leafAABB, m_nodes[child1].aabb);
+			float32 oldArea = m_nodes[child1].aabb.GetPerimeter();
+			float32 newArea = aabb.GetPerimeter();
+			cost1 = (newArea - oldArea) + inheritanceCost;
 		}
 
-		m_nodes[node2].child1 = sibling;
-		m_nodes[node2].child2 = leaf;
-		m_nodes[sibling].parent = node2;
-		m_nodes[leaf].parent = node2;
-
-		do 
+		// Cost of descending into child2
+		float32 cost2;
+		if (m_nodes[child2].IsLeaf())
 		{
-			if (m_nodes[node1].aabb.Contains(m_nodes[node2].aabb))
-			{
-				break;
-			}
-
-			m_nodes[node1].aabb.Combine(m_nodes[m_nodes[node1].child1].aabb, m_nodes[m_nodes[node1].child2].aabb);
-			node2 = node1;
-			node1 = m_nodes[node1].parent;
+			b2AABB aabb;
+			aabb.Combine(leafAABB, m_nodes[child2].aabb);
+			cost2 = aabb.GetPerimeter() + inheritanceCost;
 		}
-		while(node1 != b2_nullNode);
+		else
+		{
+			b2AABB aabb;
+			aabb.Combine(leafAABB, m_nodes[child2].aabb);
+			float32 oldArea = m_nodes[child2].aabb.GetPerimeter();
+			float32 newArea = aabb.GetPerimeter();
+			cost2 = newArea - oldArea + inheritanceCost;
+		}
+
+		// Descend according to the minimum cost.
+		if (cost < cost1 && cost < cost2)
+		{
+			break;
+		}
+
+		// Descend
+		if (cost1 < cost2)
+		{
+			index = child1;
+		}
+		else
+		{
+			index = child2;
+		}
+	}
+
+	int32 sibling = index;
+
+	// Create a new parent.
+	int32 oldParent = m_nodes[sibling].parent;
+	int32 newParent = AllocateNode();
+	m_nodes[newParent].parent = oldParent;
+	m_nodes[newParent].userData = NULL;
+	m_nodes[newParent].aabb.Combine(leafAABB, m_nodes[sibling].aabb);
+	m_nodes[newParent].height = m_nodes[sibling].height + 1;
+
+	if (oldParent != b2_nullNode)
+	{
+		// The sibling was not the root.
+		if (m_nodes[oldParent].child1 == sibling)
+		{
+			m_nodes[oldParent].child1 = newParent;
+		}
+		else
+		{
+			m_nodes[oldParent].child2 = newParent;
+		}
+
+		m_nodes[newParent].child1 = sibling;
+		m_nodes[newParent].child2 = leaf;
+		m_nodes[sibling].parent = newParent;
+		m_nodes[leaf].parent = newParent;
 	}
 	else
 	{
-		m_nodes[node2].child1 = sibling;
-		m_nodes[node2].child2 = leaf;
-		m_nodes[sibling].parent = node2;
-		m_nodes[leaf].parent = node2;
-		m_root = node2;
+		// The sibling was the root.
+		m_nodes[newParent].child1 = sibling;
+		m_nodes[newParent].child2 = leaf;
+		m_nodes[sibling].parent = newParent;
+		m_nodes[leaf].parent = newParent;
+		m_root = newParent;
 	}
+
+	// Walk back up the tree fixing heights and AABBs
+	index = m_nodes[leaf].parent;
+	while (index != b2_nullNode)
+	{
+		index = Balance(index);
+
+		int32 child1 = m_nodes[index].child1;
+		int32 child2 = m_nodes[index].child2;
+
+		b2Assert(child1 != b2_nullNode);
+		b2Assert(child2 != b2_nullNode);
+
+		m_nodes[index].height = 1 + b2Max(m_nodes[child1].height, m_nodes[child2].height);
+		m_nodes[index].aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
+
+		index = m_nodes[index].parent;
+	}
+
+	//Validate();
 }
 
 void b2DynamicTree::RemoveLeaf(int32 leaf)
@@ -271,89 +324,250 @@ void b2DynamicTree::RemoveLeaf(int32 leaf)
 		return;
 	}
 
-	int32 node2 = m_nodes[leaf].parent;
-	int32 node1 = m_nodes[node2].parent;
+	int32 parent = m_nodes[leaf].parent;
+	int32 grandParent = m_nodes[parent].parent;
 	int32 sibling;
-	if (m_nodes[node2].child1 == leaf)
+	if (m_nodes[parent].child1 == leaf)
 	{
-		sibling = m_nodes[node2].child2;
+		sibling = m_nodes[parent].child2;
 	}
 	else
 	{
-		sibling = m_nodes[node2].child1;
+		sibling = m_nodes[parent].child1;
 	}
 
-	if (node1 != b2_nullNode)
+	if (grandParent != b2_nullNode)
 	{
-		// Destroy node2 and connect node1 to sibling.
-		if (m_nodes[node1].child1 == node2)
+		// Destroy parent and connect sibling to grandParent.
+		if (m_nodes[grandParent].child1 == parent)
 		{
-			m_nodes[node1].child1 = sibling;
+			m_nodes[grandParent].child1 = sibling;
 		}
 		else
 		{
-			m_nodes[node1].child2 = sibling;
+			m_nodes[grandParent].child2 = sibling;
 		}
-		m_nodes[sibling].parent = node1;
-		FreeNode(node2);
+		m_nodes[sibling].parent = grandParent;
+		FreeNode(parent);
 
 		// Adjust ancestor bounds.
-		while (node1 != b2_nullNode)
+		int32 index = grandParent;
+		while (index != b2_nullNode)
 		{
-			b2AABB oldAABB = m_nodes[node1].aabb;
-			m_nodes[node1].aabb.Combine(m_nodes[m_nodes[node1].child1].aabb, m_nodes[m_nodes[node1].child2].aabb);
+			index = Balance(index);
 
-			if (oldAABB.Contains(m_nodes[node1].aabb))
-			{
-				break;
-			}
+			int32 child1 = m_nodes[index].child1;
+			int32 child2 = m_nodes[index].child2;
 
-			node1 = m_nodes[node1].parent;
+			m_nodes[index].aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
+			m_nodes[index].height = 1 + b2Max(m_nodes[child1].height, m_nodes[child2].height);
+
+			index = m_nodes[index].parent;
 		}
 	}
 	else
 	{
 		m_root = sibling;
 		m_nodes[sibling].parent = b2_nullNode;
-		FreeNode(node2);
+		FreeNode(parent);
 	}
+
+	//Validate();
 }
 
-void b2DynamicTree::Rebalance(int32 iterations)
+// Perform a left or right rotation if node A is imbalanced.
+// Returns the new root index.
+int32 b2DynamicTree::Balance(int32 iA)
+{
+	b2Assert(iA != b2_nullNode);
+
+	b2TreeNode* A = m_nodes + iA;
+	if (A->IsLeaf() || A->height < 2)
+	{
+		return iA;
+	}
+
+	int32 iB = A->child1;
+	int32 iC = A->child2;
+	b2Assert(0 <= iB && iB < m_nodeCapacity);
+	b2Assert(0 <= iC && iC < m_nodeCapacity);
+
+	b2TreeNode* B = m_nodes + iB;
+	b2TreeNode* C = m_nodes + iC;
+
+	int32 balance = C->height - B->height;
+
+	// Rotate C up
+	if (balance > 1)
+	{
+		int32 iF = C->child1;
+		int32 iG = C->child2;
+		b2TreeNode* F = m_nodes + iF;
+		b2TreeNode* G = m_nodes + iG;
+		b2Assert(0 <= iF && iF < m_nodeCapacity);
+		b2Assert(0 <= iG && iG < m_nodeCapacity);
+
+		// Swap A and C
+		C->child1 = iA;
+		C->parent = A->parent;
+		A->parent = iC;
+
+		// A's old parent should point to C
+		if (C->parent != b2_nullNode)
+		{
+			if (m_nodes[C->parent].child1 == iA)
+			{
+				m_nodes[C->parent].child1 = iC;
+			}
+			else
+			{
+				b2Assert(m_nodes[C->parent].child2 == iA);
+				m_nodes[C->parent].child2 = iC;
+			}
+		}
+		else
+		{
+			m_root = iC;
+		}
+
+		// Rotate
+		if (F->height > G->height)
+		{
+			C->child2 = iF;
+			A->child2 = iG;
+			G->parent = iA;
+			A->aabb.Combine(B->aabb, G->aabb);
+			C->aabb.Combine(A->aabb, F->aabb);
+
+			A->height = 1 + b2Max(B->height, G->height);
+			C->height = 1 + b2Max(A->height, F->height);
+		}
+		else
+		{
+			C->child2 = iG;
+			A->child2 = iF;
+			F->parent = iA;
+			A->aabb.Combine(B->aabb, F->aabb);
+			C->aabb.Combine(A->aabb, G->aabb);
+
+			A->height = 1 + b2Max(B->height, F->height);
+			C->height = 1 + b2Max(A->height, G->height);
+		}
+
+		return iC;
+	}
+	
+	// Rotate B up
+	if (balance < -1)
+	{
+		int32 iD = B->child1;
+		int32 iE = B->child2;
+		b2TreeNode* D = m_nodes + iD;
+		b2TreeNode* E = m_nodes + iE;
+		b2Assert(0 <= iD && iD < m_nodeCapacity);
+		b2Assert(0 <= iE && iE < m_nodeCapacity);
+
+		// Swap A and B
+		B->child1 = iA;
+		B->parent = A->parent;
+		A->parent = iB;
+
+		// A's old parent should point to B
+		if (B->parent != b2_nullNode)
+		{
+			if (m_nodes[B->parent].child1 == iA)
+			{
+				m_nodes[B->parent].child1 = iB;
+			}
+			else
+			{
+				b2Assert(m_nodes[B->parent].child2 == iA);
+				m_nodes[B->parent].child2 = iB;
+			}
+		}
+		else
+		{
+			m_root = iB;
+		}
+
+		// Rotate
+		if (D->height > E->height)
+		{
+			B->child2 = iD;
+			A->child1 = iE;
+			E->parent = iA;
+			A->aabb.Combine(C->aabb, E->aabb);
+			B->aabb.Combine(A->aabb, D->aabb);
+
+			A->height = 1 + b2Max(C->height, E->height);
+			B->height = 1 + b2Max(A->height, D->height);
+		}
+		else
+		{
+			B->child2 = iE;
+			A->child1 = iD;
+			D->parent = iA;
+			A->aabb.Combine(C->aabb, D->aabb);
+			B->aabb.Combine(A->aabb, E->aabb);
+
+			A->height = 1 + b2Max(C->height, D->height);
+			B->height = 1 + b2Max(A->height, E->height);
+		}
+
+		return iB;
+	}
+
+	return iA;
+}
+
+int32 b2DynamicTree::GetHeight() const
 {
 	if (m_root == b2_nullNode)
 	{
-		return;
+		return 0;
 	}
 
-	for (int32 i = 0; i < iterations; ++i)
+	return m_nodes[m_root].height;
+}
+
+//
+float32 b2DynamicTree::GetAreaRatio() const
+{
+	if (m_root == b2_nullNode)
 	{
-		int32 node = m_root;
-
-		uint32 bit = 0;
-		while (m_nodes[node].IsLeaf() == false)
-		{
-			int32* children = &m_nodes[node].child1;
-			node = children[(m_path >> bit) & 1];
-			bit = (bit + 1) & (8* sizeof(uint32) - 1);
-		}
-		++m_path;
-
-		RemoveLeaf(node);
-		InsertLeaf(node);
+		return 0.0f;
 	}
+
+	const b2TreeNode* root = m_nodes + m_root;
+	float32 rootArea = root->aabb.GetPerimeter();
+
+	float32 totalArea = 0.0f;
+	for (int32 i = 0; i < m_nodeCapacity; ++i)
+	{
+		const b2TreeNode* node = m_nodes + i;
+		if (node->height < 0)
+		{
+			// Free node in pool
+			continue;
+		}
+
+		totalArea += node->aabb.GetPerimeter();
+	}
+
+	return totalArea / rootArea;
 }
 
 // Compute the height of a sub-tree.
 int32 b2DynamicTree::ComputeHeight(int32 nodeId) const
 {
-	if (nodeId == b2_nullNode)
+	b2Assert(0 <= nodeId && nodeId < m_nodeCapacity);
+	b2TreeNode* node = m_nodes + nodeId;
+
+	if (node->IsLeaf())
 	{
 		return 0;
 	}
 
-	b2Assert(0 <= nodeId && nodeId < m_nodeCapacity);
-	b2DynamicTreeNode* node = m_nodes + nodeId;
 	int32 height1 = ComputeHeight(node->child1);
 	int32 height2 = ComputeHeight(node->child2);
 	return 1 + b2Max(height1, height2);
@@ -361,5 +575,197 @@ int32 b2DynamicTree::ComputeHeight(int32 nodeId) const
 
 int32 b2DynamicTree::ComputeHeight() const
 {
-	return ComputeHeight(m_root);
+	int32 height = ComputeHeight(m_root);
+	return height;
+}
+
+void b2DynamicTree::ValidateStructure(int32 index) const
+{
+	if (index == b2_nullNode)
+	{
+		return;
+	}
+
+	if (index == m_root)
+	{
+		b2Assert(m_nodes[index].parent == b2_nullNode);
+	}
+
+	const b2TreeNode* node = m_nodes + index;
+
+	int32 child1 = node->child1;
+	int32 child2 = node->child2;
+
+	if (node->IsLeaf())
+	{
+		b2Assert(child1 == b2_nullNode);
+		b2Assert(child2 == b2_nullNode);
+		b2Assert(node->height == 0);
+		return;
+	}
+
+	b2Assert(0 <= child1 && child1 < m_nodeCapacity);
+	b2Assert(0 <= child2 && child2 < m_nodeCapacity);
+
+	b2Assert(m_nodes[child1].parent == index);
+	b2Assert(m_nodes[child2].parent == index);
+
+	ValidateStructure(child1);
+	ValidateStructure(child2);
+}
+
+void b2DynamicTree::ValidateMetrics(int32 index) const
+{
+	if (index == b2_nullNode)
+	{
+		return;
+	}
+
+	const b2TreeNode* node = m_nodes + index;
+
+	int32 child1 = node->child1;
+	int32 child2 = node->child2;
+
+	if (node->IsLeaf())
+	{
+		b2Assert(child1 == b2_nullNode);
+		b2Assert(child2 == b2_nullNode);
+		b2Assert(node->height == 0);
+		return;
+	}
+
+	b2Assert(0 <= child1 && child1 < m_nodeCapacity);
+	b2Assert(0 <= child2 && child2 < m_nodeCapacity);
+
+	int32 height1 = m_nodes[child1].height;
+	int32 height2 = m_nodes[child2].height;
+	int32 height;
+	height = 1 + b2Max(height1, height2);
+	b2Assert(node->height == height);
+
+	b2AABB aabb;
+	aabb.Combine(m_nodes[child1].aabb, m_nodes[child2].aabb);
+
+	b2Assert(aabb.lowerBound == node->aabb.lowerBound);
+	b2Assert(aabb.upperBound == node->aabb.upperBound);
+
+	ValidateMetrics(child1);
+	ValidateMetrics(child2);
+}
+
+void b2DynamicTree::Validate() const
+{
+	ValidateStructure(m_root);
+	ValidateMetrics(m_root);
+
+	int32 freeCount = 0;
+	int32 freeIndex = m_freeList;
+	while (freeIndex != b2_nullNode)
+	{
+		b2Assert(0 <= freeIndex && freeIndex < m_nodeCapacity);
+		freeIndex = m_nodes[freeIndex].next;
+		++freeCount;
+	}
+
+	b2Assert(GetHeight() == ComputeHeight());
+
+	b2Assert(m_nodeCount + freeCount == m_nodeCapacity);
+}
+
+int32 b2DynamicTree::GetMaxBalance() const
+{
+	int32 maxBalance = 0;
+	for (int32 i = 0; i < m_nodeCapacity; ++i)
+	{
+		const b2TreeNode* node = m_nodes + i;
+		if (node->height <= 1)
+		{
+			continue;
+		}
+
+		b2Assert(node->IsLeaf() == false);
+
+		int32 child1 = node->child1;
+		int32 child2 = node->child2;
+		int32 balance = b2Abs(m_nodes[child2].height - m_nodes[child1].height);
+		maxBalance = b2Max(maxBalance, balance);
+	}
+
+	return maxBalance;
+}
+
+void b2DynamicTree::RebuildBottomUp()
+{
+	int32* nodes = (int32*)b2Alloc(m_nodeCount * sizeof(int32));
+	int32 count = 0;
+
+	// Build array of leaves. Free the rest.
+	for (int32 i = 0; i < m_nodeCapacity; ++i)
+	{
+		if (m_nodes[i].height < 0)
+		{
+			// free node in pool
+			continue;
+		}
+
+		if (m_nodes[i].IsLeaf())
+		{
+			m_nodes[i].parent = b2_nullNode;
+			nodes[count] = i;
+			++count;
+		}
+		else
+		{
+			FreeNode(i);
+		}
+	}
+
+	while (count > 1)
+	{
+		float32 minCost = b2_maxFloat;
+		int32 iMin = -1, jMin = -1;
+		for (int32 i = 0; i < count; ++i)
+		{
+			b2AABB aabbi = m_nodes[nodes[i]].aabb;
+
+			for (int32 j = i + 1; j < count; ++j)
+			{
+				b2AABB aabbj = m_nodes[nodes[j]].aabb;
+				b2AABB b;
+				b.Combine(aabbi, aabbj);
+				float32 cost = b.GetPerimeter();
+				if (cost < minCost)
+				{
+					iMin = i;
+					jMin = j;
+					minCost = cost;
+				}
+			}
+		}
+
+		int32 index1 = nodes[iMin];
+		int32 index2 = nodes[jMin];
+		b2TreeNode* child1 = m_nodes + index1;
+		b2TreeNode* child2 = m_nodes + index2;
+
+		int32 parentIndex = AllocateNode();
+		b2TreeNode* parent = m_nodes + parentIndex;
+		parent->child1 = index1;
+		parent->child2 = index2;
+		parent->height = 1 + b2Max(child1->height, child2->height);
+		parent->aabb.Combine(child1->aabb, child2->aabb);
+		parent->parent = b2_nullNode;
+
+		child1->parent = parentIndex;
+		child2->parent = parentIndex;
+
+		nodes[jMin] = nodes[count-1];
+		nodes[iMin] = parentIndex;
+		--count;
+	}
+
+	m_root = nodes[0];
+	b2Free(nodes);
+
+	Validate();
 }

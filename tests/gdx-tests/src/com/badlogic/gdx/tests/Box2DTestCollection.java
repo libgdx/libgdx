@@ -18,8 +18,11 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.tests.box2d.ApplyForce;
 import com.badlogic.gdx.tests.box2d.BodyTypes;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
@@ -39,7 +42,7 @@ import com.badlogic.gdx.tests.box2d.VaryingRestitution;
 import com.badlogic.gdx.tests.box2d.VerticalStack;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class Box2DTestCollection extends GdxTest implements InputProcessor {
+public class Box2DTestCollection extends GdxTest implements InputProcessor, GestureListener {
 	private final Box2DTest[] tests = {new DebugRendererTest(), new CollisionFiltering(), new Chain(), new Bridge(),
 		new SphereStack(), new Cantilever(), new ApplyForce(), new ContinuousTest(), new Prismatic(), new CharacterCollision(),
 		new BodyTypes(), new SimpleTest(), new Pyramid(), new OneSidedPlatform(), new VerticalStack(), new VaryingRestitution()};
@@ -61,22 +64,15 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 			test.create();
 		}
 
-		Gdx.input.setInputProcessor(this);
+		InputMultiplexer multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(this);
+		multiplexer.addProcessor(new GestureDetector(this));
+		Gdx.input.setInputProcessor(multiplexer);
 	}
 
 	@Override
 	public boolean keyDown (int keycode) {
-		if (keycode == Keys.SPACE) {
-			app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
-			tests[testIndex].dispose();
-			testIndex++;
-			if (testIndex >= tests.length) testIndex = 0;
-			Box2DTest test = tests[testIndex];
-			test.create();
-			app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName());
-		} else {
-			tests[testIndex].keyDown(keycode);
-		}
+		tests[testIndex].keyDown(keycode);
 
 		return false;
 	}
@@ -123,6 +119,47 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor {
 
 	@Override
 	public boolean scrolled (int amount) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown (int x, int y, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean tap (int x, int y, int count) {
+		app.log("TestCollection", "disposing test '" + tests[testIndex].getClass().getName());
+		tests[testIndex].dispose();
+		testIndex++;
+		if (testIndex >= tests.length) testIndex = 0;
+		Box2DTest test = tests[testIndex];
+		test.create();
+		app.log("TestCollection", "created test '" + tests[testIndex].getClass().getName());
+		return false;
+	}
+
+	@Override
+	public boolean longPress (int x, int y) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean fling (float velocityX, float velocityY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean pan (int x, int y, int deltaX, int deltaY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean zoom (float originalDistance, float currentDistance) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

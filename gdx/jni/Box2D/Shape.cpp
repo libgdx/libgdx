@@ -53,8 +53,17 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetType
   (JNIEnv *, jclass, jlong addr)
 {
 	b2Shape* shape = (b2Shape*)addr;
-	if( shape->m_type == b2Shape::e_circle )
-		return 0;
-	else
-		return 1;
+	switch(shape->m_type) {
+	case b2Shape::e_circle: return 0;
+	case b2Shape::e_edge: return 1;
+	case b2Shape::e_polygon: return 2;
+	case b2Shape::e_chain: return 3;
+	default: return -1;
+	}
+}
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetChildCount
+  (JNIEnv *, jobject, jlong addr) {
+	b2Shape* shape = (b2Shape*)addr;
+	return shape->GetChildCount();
 }

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,7 +19,7 @@
 #ifndef B2_DISTANCE_JOINT_H
 #define B2_DISTANCE_JOINT_H
 
-#include "Box2D/Dynamics/Joints/b2Joint.h"
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
 /// Distance joint definition. This requires defining an
 /// anchor point on both bodies and the non-zero length of the
@@ -70,7 +70,12 @@ public:
 	b2Vec2 GetAnchorA() const;
 	b2Vec2 GetAnchorB() const;
 
+	/// Get the reaction force given the inverse time step.
+	/// Unit is N.
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
+
+	/// Get the reaction torque given the inverse time step.
+	/// Unit is N*m. This is always zero for a distance joint.
 	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// Set/get the natural length.
@@ -91,20 +96,34 @@ protected:
 	friend class b2Joint;
 	b2DistanceJoint(const b2DistanceJointDef* data);
 
-	void InitVelocityConstraints(const b2TimeStep& step);
-	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints(float32 baumgarte);
+	void InitVelocityConstraints(const b2SolverData& data);
+	void SolveVelocityConstraints(const b2SolverData& data);
+	bool SolvePositionConstraints(const b2SolverData& data);
 
-	b2Vec2 m_localAnchor1;
-	b2Vec2 m_localAnchor2;
-	b2Vec2 m_u;
 	float32 m_frequencyHz;
 	float32 m_dampingRatio;
-	float32 m_gamma;
 	float32 m_bias;
+
+	// Solver shared
+	b2Vec2 m_localAnchorA;
+	b2Vec2 m_localAnchorB;
+	float32 m_gamma;
 	float32 m_impulse;
-	float32 m_mass;
 	float32 m_length;
+
+	// Solver temp
+	int32 m_indexA;
+	int32 m_indexB;
+	b2Vec2 m_u;
+	b2Vec2 m_rA;
+	b2Vec2 m_rB;
+	b2Vec2 m_localCenterA;
+	b2Vec2 m_localCenterB;
+	float32 m_invMassA;
+	float32 m_invMassB;
+	float32 m_invIA;
+	float32 m_invIB;
+	float32 m_mass;
 };
 
 inline void b2DistanceJoint::SetLength(float32 length)

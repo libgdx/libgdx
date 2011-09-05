@@ -16,7 +16,6 @@
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m32"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
-		<exclude name="Mpg123Decoder.cpp"/>
 		<exclude name="mpg123/**"/>
 	</fileset>
 	
@@ -76,6 +75,9 @@
 	<!-- links the shared library based on the previously compiled object files -->
 	<target name="link" depends="compile">
 		<mkdir dir="${jni-dist}"/>
+		<copy todir="${jni-target}">
+			<fileset dir="mpg123/win32" includes="**/*.o"/>
+		</copy>
 		<apply failonerror="true" executable="${linker}" parallel="true" dir="${jni-target}">
 			<arg line="${linker-opts}"/>
 			<arg value="-o"/>

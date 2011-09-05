@@ -33,6 +33,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -48,8 +49,8 @@ public class Bridge extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
-			shape.setAsEdge(new Vector2(-40, 0), new Vector2(40.0f, 0));
+			EdgeShape shape = new EdgeShape();
+			shape.set(new Vector2(-40, 0), new Vector2(40.0f, 0));
 
 			ground.createFixture(shape, 0);
 			shape.dispose();

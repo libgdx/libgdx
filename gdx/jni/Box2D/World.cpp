@@ -167,7 +167,7 @@ inline b2BodyType getBodyType( int type )
  * Signature: (JIFFFFFFFFZZZZZF)J
  */
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateBody
-(JNIEnv *, jobject, jlong addr, jint type, jfloat positionX, jfloat positionY, jfloat angle, jfloat linearVelocityX, jfloat linearVelocityY, jfloat angularVelocity, jfloat linearDamping, jfloat angularDamping, jboolean allowSleep, jboolean awake, jboolean fixedRotation, jboolean bullet, jboolean active, jfloat inertiaScale)
+(JNIEnv *, jobject, jlong addr, jint type, jfloat positionX, jfloat positionY, jfloat angle, jfloat linearVelocityX, jfloat linearVelocityY, jfloat angularVelocity, jfloat linearDamping, jfloat angularDamping, jboolean allowSleep, jboolean awake, jboolean fixedRotation, jboolean bullet, jboolean active, jfloat gravityScale)
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = getBodyType(type);
@@ -182,7 +182,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateBody
 	bodyDef.fixedRotation = fixedRotation;
 	bodyDef.bullet = bullet;
 	bodyDef.active = active;
-	bodyDef.inertiaScale = inertiaScale;
+	bodyDef.gravityScale = gravityScale;
 
 	b2World* world = (b2World*)addr;
 	b2Body* body = world->CreateBody( &bodyDef );
@@ -203,24 +203,6 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody
 	b2World* world = (b2World*)addr;
 	b2Body* body = (b2Body*)bodyAddr;
 	world->DestroyBody(body);
-}
-
-inline b2JointType getJointType( int type )
-{
-	switch( type )
-	{
-	case 0: return e_revoluteJoint;
-	case 1: return e_prismaticJoint;
-	case 2: return e_distanceJoint;
-	case 3: return e_pulleyJoint;
-	case 4: return e_mouseJoint;
-	case 5: return e_gearJoint;
-	case 6: return e_lineJoint;
-	case 7: return e_weldJoint;
-	case 8: return e_frictionJoint;
-	default:
-		return e_unknownJoint;
-	}
 }
 
 /*
@@ -268,6 +250,46 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateDista
 	return (jlong)world->CreateJoint(&def);
 }
 
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRopeJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat maxLength)
+{
+	b2World* world = (b2World*)addr;
+	b2RopeJointDef def;
+	def.bodyA = (b2Body*)bodyA;
+	def.bodyB = (b2Body*)bodyB;
+	def.collideConnected = collideConnected;
+	def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+	def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+	def.maxLength = maxLength;
+
+	return (jlong)world->CreateJoint(&def);
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateWheelJoint
+ * Signature: (JJJZFFFFFFZFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWheelJoint
+  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat localAxisAX, jfloat localAxisAY, jboolean enableMotor, jfloat maxMotorTorque, jfloat motorSpeed, jfloat frequencyHz, jfloat dampingRatio) {
+	
+	b2World* world = (b2World*)addr;
+	b2WheelJointDef def;
+	def.bodyA = (b2Body*)bodyA;
+	def.bodyB = (b2Body*)bodyB;
+	def.collideConnected = collideConnected;
+	def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
+	def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
+	def.localAxisA = b2Vec2(localAxisAX, localAxisAY);
+	def.enableMotor = enableMotor;
+	def.maxMotorTorque = maxMotorTorque;
+	def.motorSpeed = motorSpeed;
+	def.frequencyHz = frequencyHz;
+	def.dampingRatio = dampingRatio;
+	
+	return (jlong)world->CreateJoint(&def);
+}
+
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateFrictionJoint
@@ -311,34 +333,6 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateGearJ
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
- * Method:    jniCreateLineJoint
- * Signature: (JJJZFFFFFFZFFZFF)J
- */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateLineJoint
-  (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY,
-					  jfloat localAxisAX, jfloat localAxisAY, jboolean enableLimit, jfloat lowerTranslation, jfloat upperTranslation,
-					  jboolean enableMotor, jfloat maxMotorForce, jfloat motorSpeed)
-{
-	b2World* world = (b2World*)addr;
-	b2LineJointDef def;
-	def.bodyA = (b2Body*)bodyA;
-	def.bodyB = (b2Body*)bodyB;
-	def.collideConnected = collideConnected;
-	def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
-	def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
-	def.localAxisA = b2Vec2(localAxisAX, localAxisAY);
-	def.enableLimit = enableLimit;
-	def.lowerTranslation = lowerTranslation;
-	def.upperTranslation = upperTranslation;
-	def.enableMotor = enableMotor;
-	def.maxMotorForce = maxMotorForce;
-	def.motorSpeed = motorSpeed;
-
-	return (jlong)world->CreateJoint(&def);
-}
-
-/*
- * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateMouseJoint
  * Signature: (JJJZFFFFF)J
  */
@@ -375,7 +369,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePrism
 	def.collideConnected = collideConnected;
 	def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
 	def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
-	def.localAxis1 = b2Vec2( localAxisAX, localAxisAY );
+	def.localAxisA = b2Vec2( localAxisAX, localAxisAY );
 	def.referenceAngle = referenceAngle;
 	def.enableLimit = enableLimit;
 	def.lowerTranslation = lowerTranslation;
@@ -394,8 +388,8 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePrism
  */
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePulleyJoint
   (JNIEnv *, jobject, jlong addr, jlong bodyA, jlong bodyB, jboolean collideConnected, jfloat groundAnchorAX, jfloat groundAnchorAY, jfloat groundAnchorBX, jfloat groundAnchorBY,
-					  jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat lengthA, jfloat maxLengthA,
-					  jfloat lengthB, jfloat maxLengthB, jfloat ratio)
+					  jfloat localAnchorAX, jfloat localAnchorAY, jfloat localAnchorBX, jfloat localAnchorBY, jfloat lengthA,
+					  jfloat lengthB, jfloat ratio)
 {
 	b2World* world = (b2World*)addr;
 	b2PulleyJointDef def;
@@ -407,9 +401,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePulle
 	def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
 	def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
 	def.lengthA = lengthA;
-	def.maxLengthA = maxLengthA;
 	def.lengthB = lengthB;
-	def.maxLengthB = maxLengthB;
 	def.ratio = ratio;
 
 	return (jlong)world->CreateJoint(&def);

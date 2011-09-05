@@ -41,6 +41,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniDestroyBody
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateWheelJoint
+ * Signature: (JJJZFFFFFFZFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateWheelJoint
+  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jboolean, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateRopeJoint
+ * Signature: (JJJZFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateRopeJoint
+  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateDistanceJoint
  * Signature: (JJJZFFFFFFF)J
  */
@@ -65,14 +81,6 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateGearJ
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
- * Method:    jniCreateLineJoint
- * Signature: (JJJZFFFFFFZFFZFF)J
- */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateLineJoint
-  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jboolean, jfloat, jfloat, jboolean, jfloat, jfloat);
-
-/*
- * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateMouseJoint
  * Signature: (JJJZFFFFF)J
  */
@@ -90,10 +98,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePrism
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreatePulleyJoint
- * Signature: (JJJZFFFFFFFFFFFFF)J
+ * Signature: (JJJZFFFFFFFFFFF)J
  */
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePulleyJoint
-  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World

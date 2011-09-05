@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,13 +19,12 @@
 #ifndef B2_PULLEY_JOINT_H
 #define B2_PULLEY_JOINT_H
 
-#include "Box2D/Dynamics/Joints/b2Joint.h"
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
 const float32 b2_minPulleyLength = 2.0f;
 
 /// Pulley joint definition. This requires two ground anchors,
-/// two dynamic body anchor points, max lengths for each side,
-/// and a pulley ratio.
+/// two dynamic body anchor points, and a pulley ratio.
 struct b2PulleyJointDef : public b2JointDef
 {
 	b2PulleyJointDef()
@@ -36,9 +35,7 @@ struct b2PulleyJointDef : public b2JointDef
 		localAnchorA.Set(-1.0f, 0.0f);
 		localAnchorB.Set(1.0f, 0.0f);
 		lengthA = 0.0f;
-		maxLengthA = 0.0f;
 		lengthB = 0.0f;
-		maxLengthB = 0.0f;
 		ratio = 1.0f;
 		collideConnected = true;
 	}
@@ -64,14 +61,8 @@ struct b2PulleyJointDef : public b2JointDef
 	/// The a reference length for the segment attached to bodyA.
 	float32 lengthA;
 
-	/// The maximum length of the segment attached to bodyA.
-	float32 maxLengthA;
-
 	/// The a reference length for the segment attached to bodyB.
 	float32 lengthB;
-
-	/// The maximum length of the segment attached to bodyB.
-	float32 maxLengthB;
 
 	/// The pulley ratio, used to simulate a block-and-tackle.
 	float32 ratio;
@@ -81,8 +72,10 @@ struct b2PulleyJointDef : public b2JointDef
 /// The pulley supports a ratio such that:
 /// length1 + ratio * length2 <= constant
 /// Yes, the force transmitted is scaled by the ratio.
-/// The pulley also enforces a maximum length limit on both sides. This is
-/// useful to prevent one side of the pulley hitting the top.
+/// Warning: the pulley joint can get a bit squirrelly by itself. They often
+/// work better when combined with prismatic joints. You should also cover the
+/// the anchor points with static shapes to prevent one side from going to
+/// zero length.
 class b2PulleyJoint : public b2Joint
 {
 public:
@@ -98,11 +91,11 @@ public:
 	/// Get the second ground anchor.
 	b2Vec2 GetGroundAnchorB() const;
 
-	/// Get the current length of the segment attached to body1.
-	float32 GetLength1() const;
+	/// Get the current length of the segment attached to bodyA.
+	float32 GetLengthA() const;
 
-	/// Get the current length of the segment attached to body2.
-	float32 GetLength2() const;
+	/// Get the current length of the segment attached to bodyB.
+	float32 GetLengthB() const;
 
 	/// Get the pulley ratio.
 	float32 GetRatio() const;
@@ -112,37 +105,34 @@ protected:
 	friend class b2Joint;
 	b2PulleyJoint(const b2PulleyJointDef* data);
 
-	void InitVelocityConstraints(const b2TimeStep& step);
-	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints(float32 baumgarte);
+	void InitVelocityConstraints(const b2SolverData& data);
+	void SolveVelocityConstraints(const b2SolverData& data);
+	bool SolvePositionConstraints(const b2SolverData& data);
 
-	b2Vec2 m_groundAnchor1;
-	b2Vec2 m_groundAnchor2;
-	b2Vec2 m_localAnchor1;
-	b2Vec2 m_localAnchor2;
-
-	b2Vec2 m_u1;
-	b2Vec2 m_u2;
+	b2Vec2 m_groundAnchorA;
+	b2Vec2 m_groundAnchorB;
 	
+	// Solver shared
+	b2Vec2 m_localAnchorA;
+	b2Vec2 m_localAnchorB;
 	float32 m_constant;
 	float32 m_ratio;
-	
-	float32 m_maxLength1;
-	float32 m_maxLength2;
-
-	// Effective masses
-	float32 m_pulleyMass;
-	float32 m_limitMass1;
-	float32 m_limitMass2;
-
-	// Impulses for accumulation/warm starting.
 	float32 m_impulse;
-	float32 m_limitImpulse1;
-	float32 m_limitImpulse2;
 
-	b2LimitState m_state;
-	b2LimitState m_limitState1;
-	b2LimitState m_limitState2;
+	// Solver temp
+	int32 m_indexA;
+	int32 m_indexB;
+	b2Vec2 m_uA;
+	b2Vec2 m_uB;
+	b2Vec2 m_rA;
+	b2Vec2 m_rB;
+	b2Vec2 m_localCenterA;
+	b2Vec2 m_localCenterB;
+	float32 m_invMassA;
+	float32 m_invMassB;
+	float32 m_invIA;
+	float32 m_invIB;
+	float32 m_mass;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,8 +19,8 @@
 #ifndef B2_COLLISION_H
 #define B2_COLLISION_H
 
-#include "Box2D/Common/b2Math.h"
-#include <limits.h>
+#include <Box2D/Common/b2Math.h>
+#include <climits>
 
 /// @file
 /// Structures and functions used for computing contact points, distance
@@ -28,21 +28,31 @@
 
 class b2Shape;
 class b2CircleShape;
+class b2EdgeShape;
 class b2PolygonShape;
 
 const uint8 b2_nullFeature = UCHAR_MAX;
 
+/// The features that intersect to form the contact point
+/// This must be 4 bytes or less.
+struct b2ContactFeature
+{
+	enum Type
+	{
+		e_vertex = 0,
+		e_face = 1
+	};
+
+	uint8 indexA;		///< Feature index on shapeA
+	uint8 indexB;		///< Feature index on shapeB
+	uint8 typeA;		///< The feature type on shapeA
+	uint8 typeB;		///< The feature type on shapeB
+};
+
 /// Contact ids to facilitate warm starting.
 union b2ContactID
 {
-	/// The features that intersect to form the contact point
-	struct Features
-	{
-		uint8 referenceEdge;	///< The edge that defines the outward contact normal.
-		uint8 incidentEdge;		///< The edge most anti-parallel to the reference edge.
-		uint8 incidentVertex;	///< The vertex (0 or 1) on the incident edge that was clipped.
-		uint8 flip;				///< A value of 1 indicates that the reference edge is on shape2.
-	} features;
+	b2ContactFeature cf;
 	uint32 key;					///< Used to quickly compare contact ids.
 };
 
@@ -107,7 +117,7 @@ struct b2WorldManifold
 					const b2Transform& xfA, float32 radiusA,
 					const b2Transform& xfB, float32 radiusB);
 
-	b2Vec2 normal;						///< world vector pointing from A to B
+	b2Vec2 normal;							///< world vector pointing from A to B
 	b2Vec2 points[b2_maxManifoldPoints];	///< world contact point (point of intersection)
 };
 
@@ -165,6 +175,21 @@ struct b2AABB
 		return 0.5f * (upperBound - lowerBound);
 	}
 
+	/// Get the perimeter length
+	float32 GetPerimeter() const
+	{
+		float32 wx = upperBound.x - lowerBound.x;
+		float32 wy = upperBound.y - lowerBound.y;
+		return 2.0f * (wx + wy);
+	}
+
+	/// Combine an AABB into this one.
+	void Combine(const b2AABB& aabb)
+	{
+		lowerBound = b2Min(lowerBound, aabb.lowerBound);
+		upperBound = b2Max(upperBound, aabb.upperBound);
+	}
+
 	/// Combine two AABBs into this one.
 	void Combine(const b2AABB& aabb1, const b2AABB& aabb2)
 	{
@@ -191,26 +216,37 @@ struct b2AABB
 
 /// Compute the collision manifold between two circles.
 void b2CollideCircles(b2Manifold* manifold,
-					  const b2CircleShape* circle1, const b2Transform& xf1,
-					  const b2CircleShape* circle2, const b2Transform& xf2);
+					  const b2CircleShape* circleA, const b2Transform& xfA,
+					  const b2CircleShape* circleB, const b2Transform& xfB);
 
 /// Compute the collision manifold between a polygon and a circle.
 void b2CollidePolygonAndCircle(b2Manifold* manifold,
-							   const b2PolygonShape* polygon, const b2Transform& xf1,
-							   const b2CircleShape* circle, const b2Transform& xf2);
+							   const b2PolygonShape* polygonA, const b2Transform& xfA,
+							   const b2CircleShape* circleB, const b2Transform& xfB);
 
 /// Compute the collision manifold between two polygons.
 void b2CollidePolygons(b2Manifold* manifold,
-					   const b2PolygonShape* polygon1, const b2Transform& xf1,
-					   const b2PolygonShape* polygon2, const b2Transform& xf2);
+					   const b2PolygonShape* polygonA, const b2Transform& xfA,
+					   const b2PolygonShape* polygonB, const b2Transform& xfB);
+
+/// Compute the collision manifold between an edge and a circle.
+void b2CollideEdgeAndCircle(b2Manifold* manifold,
+							   const b2EdgeShape* polygonA, const b2Transform& xfA,
+							   const b2CircleShape* circleB, const b2Transform& xfB);
+
+/// Compute the collision manifold between an edge and a circle.
+void b2CollideEdgeAndPolygon(b2Manifold* manifold,
+							   const b2EdgeShape* edgeA, const b2Transform& xfA,
+							   const b2PolygonShape* circleB, const b2Transform& xfB);
 
 /// Clipping for contact manifolds.
 int32 b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
-							const b2Vec2& normal, float32 offset);
+							const b2Vec2& normal, float32 offset, int32 vertexIndexA);
 
 /// Determine if two generic shapes overlap.
-bool b2TestOverlap(const b2Shape* shapeA, const b2Shape* shapeB,
-				   const b2Transform& xfA, const b2Transform& xfB);
+bool b2TestOverlap(	const b2Shape* shapeA, int32 indexA,
+					const b2Shape* shapeB, int32 indexB,
+					const b2Transform& xfA, const b2Transform& xfB);
 
 // ---------------- Inline Functions ------------------------------------------
 

@@ -36,7 +36,7 @@ public class PrismaticJointDef extends JointDef {
 		this.bodyB = bodyB;
 		localAnchorA.set(bodyA.getLocalPoint(anchor));
 		localAnchorB.set(bodyB.getLocalPoint(anchor));
-		localAxis1.set(bodyA.getLocalVector(axis));
+		localAxisA.set(bodyA.getLocalVector(axis));
 		referenceAngle = bodyB.getAngle() - bodyA.getAngle();
 
 	}
@@ -48,7 +48,7 @@ public class PrismaticJointDef extends JointDef {
 	public final Vector2 localAnchorB = new Vector2();
 
 	/** The local translation axis in body1. */
-	public final Vector2 localAxis1 = new Vector2(1, 0);
+	public final Vector2 localAxisA = new Vector2(1, 0);
 
 	/** The constrained angle between the bodies: body2_angle - body1_angle. */
 	public float referenceAngle = 0;

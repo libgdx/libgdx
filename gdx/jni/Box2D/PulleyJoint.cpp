@@ -52,7 +52,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_
   (JNIEnv *, jobject, jlong addr)
 {
 	b2PulleyJoint* joint = (b2PulleyJoint*)addr;
-	return joint->GetLength1();
+	return joint->GetLengthA();
 }
 
 /*
@@ -64,7 +64,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PulleyJoint_
   (JNIEnv *, jobject, jlong addr)
 {
 	b2PulleyJoint* joint = (b2PulleyJoint*)addr;
-	return joint->GetLength2();
+	return joint->GetLengthB();
 }
 
 /*

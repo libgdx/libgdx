@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,14 +16,16 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Collision/b2Distance.h"
-#include "Box2D/Collision/Shapes/b2CircleShape.h"
-#include "Box2D/Collision/Shapes/b2PolygonShape.h"
+#include <Box2D/Collision/b2Distance.h>
+#include <Box2D/Collision/Shapes/b2CircleShape.h>
+#include <Box2D/Collision/Shapes/b2EdgeShape.h>
+#include <Box2D/Collision/Shapes/b2ChainShape.h>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
 // GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
 int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
 
-void b2DistanceProxy::Set(const b2Shape* shape)
+void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 {
 	switch (shape->GetType())
 	{
@@ -42,6 +44,36 @@ void b2DistanceProxy::Set(const b2Shape* shape)
 			m_vertices = polygon->m_vertices;
 			m_count = polygon->m_vertexCount;
 			m_radius = polygon->m_radius;
+		}
+		break;
+
+	case b2Shape::e_chain:
+		{
+			const b2ChainShape* chain = (b2ChainShape*)shape;
+			b2Assert(0 <= index && index < chain->GetVertexCount());
+
+			m_buffer[0] = chain->GetVertex(index);
+			if (index + 1 < chain->GetVertexCount())
+			{
+				m_buffer[1] = chain->GetVertex(index + 1);
+			}
+			else
+			{
+				m_buffer[1] = chain->GetVertex(0);
+			}
+
+			m_vertices = m_buffer;
+			m_count = 2;
+			m_radius = chain->m_radius;
+		}
+		break;
+
+	case b2Shape::e_edge:
+		{
+			const b2EdgeShape* edge = (b2EdgeShape*)shape;
+			m_vertices = &edge->m_vertex1;
+			m_count = 2;
+			m_radius = edge->m_radius;
 		}
 		break;
 
@@ -500,10 +532,10 @@ void b2Distance(b2DistanceOutput* output,
 
 		// Compute a tentative new simplex vertex using support points.
 		b2SimplexVertex* vertex = vertices + simplex.m_count;
-		vertex->indexA = proxyA->GetSupport(b2MulT(transformA.R, -d));
+		vertex->indexA = proxyA->GetSupport(b2MulT(transformA.q, -d));
 		vertex->wA = b2Mul(transformA, proxyA->GetVertex(vertex->indexA));
 		b2Vec2 wBLocal;
-		vertex->indexB = proxyB->GetSupport(b2MulT(transformB.R, d));
+		vertex->indexB = proxyB->GetSupport(b2MulT(transformB.q, d));
 		vertex->wB = b2Mul(transformB, proxyB->GetVertex(vertex->indexB));
 		vertex->w = vertex->wB - vertex->wA;
 

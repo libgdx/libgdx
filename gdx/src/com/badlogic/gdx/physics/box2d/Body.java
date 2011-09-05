@@ -241,6 +241,28 @@ public class Body {
 
 	private native void jniApplyForce (long addr, float forceX, float forceY, float pointX, float pointY);
 
+	/**
+	 * Apply a force to the center of mass. This wakes up the body.
+	 * @param force the world force vector, usually in Newtons (N).
+	 * @param forceX
+	 * @param forceY
+	 */
+	public void applyForceToCenter(Vector2 force) {
+		jniApplyForceToCenter(addr, force.x, force.y);
+	}
+	
+	/**
+	 * Apply a force to the center of mass. This wakes up the body.
+	 * @param force the world force vector, usually in Newtons (N).
+	 * @param forceX
+	 * @param forceY
+	 */
+	public void applyForceToCenter(float forceX, float forceY) {
+		jniApplyForceToCenter(addr, forceX, forceY);
+	}
+	
+	private native void jniApplyForceToCenter(long addr, float forceX, float forceY);
+
 	/** Apply a torque. This affects the angular velocity without affecting the linear velocity of the center of mass. This wakes up
 	 * the body.
 	 * @param torque about the z-axis (out of the screen), usually in N-m. */
@@ -550,6 +572,24 @@ public class Body {
 // {
 // return contacts;
 // }
+	
+	/**
+	 * @return Get the gravity scale of the body.
+	 */
+	public float getGravityScale() {
+		return jniGetGravityScale(addr);
+	}
+	
+	private native float jniGetGravityScale(long addr);
+	
+	/** 
+	 * Sets the gravity scale of the body
+	 */
+	public void setGravityScale(float scale) {
+		jniSetGravityScale(addr, scale);
+	}
+	
+	private native void jniSetGravityScale(long addr, float scale);
 
 	/** Get the parent world of this body. */
 	public World getWorld () {

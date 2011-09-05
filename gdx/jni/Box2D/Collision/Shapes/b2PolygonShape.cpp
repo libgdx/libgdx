@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Collision/Shapes/b2PolygonShape.h"
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include <new>
 
 b2Shape* b2PolygonShape::Clone(b2BlockAllocator* allocator) const
@@ -55,40 +55,28 @@ void b2PolygonShape::SetAsBox(float32 hx, float32 hy, const b2Vec2& center, floa
 	m_centroid = center;
 
 	b2Transform xf;
-	xf.position = center;
-	xf.R.Set(angle);
+	xf.p = center;
+	xf.q.Set(angle);
 
 	// Transform vertices and normals.
 	for (int32 i = 0; i < m_vertexCount; ++i)
 	{
 		m_vertices[i] = b2Mul(xf, m_vertices[i]);
-		m_normals[i] = b2Mul(xf.R, m_normals[i]);
+		m_normals[i] = b2Mul(xf.q, m_normals[i]);
 	}
 }
 
-void b2PolygonShape::SetAsEdge(const b2Vec2& v1, const b2Vec2& v2)
+int32 b2PolygonShape::GetChildCount() const
 {
-	m_vertexCount = 2;
-	m_vertices[0] = v1;
-	m_vertices[1] = v2;
-	m_centroid = 0.5f * (v1 + v2);
-	m_normals[0] = b2Cross(v2 - v1, 1.0f);
-	m_normals[0].Normalize();
-	m_normals[1] = -m_normals[0];
+	return 1;
 }
 
 static b2Vec2 ComputeCentroid(const b2Vec2* vs, int32 count)
 {
-	b2Assert(count >= 2);
+	b2Assert(count >= 3);
 
 	b2Vec2 c; c.Set(0.0f, 0.0f);
 	float32 area = 0.0f;
-
-	if (count == 2)
-	{
-		c = 0.5f * (vs[0] + vs[1]);
-		return c;
-	}
 
 	// pRef is the reference point for forming triangles.
 	// It's location doesn't change the result (except for rounding error).
@@ -131,7 +119,7 @@ static b2Vec2 ComputeCentroid(const b2Vec2* vs, int32 count)
 
 void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 {
-	b2Assert(2 <= count && count <= b2_maxPolygonVertices);
+	b2Assert(3 <= count && count <= b2_maxPolygonVertices);
 	m_vertexCount = count;
 
 	// Copy vertices.
@@ -170,10 +158,10 @@ void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 			
 			b2Vec2 r = m_vertices[j] - m_vertices[i1];
 
-			// Your polygon is non-convex (it has an indentation) or
-			// has colinear edges.
+			// If this crashes, your polygon is non-convex, has colinear edges,
+			// or the winding order is wrong.
 			float32 s = b2Cross(edge, r);
-			b2Assert(s > 0.0f);
+			b2Assert(s > 0.0f && "ERROR: Please ensure your polygon is convex and has a CCW winding order");
 		}
 	}
 #endif
@@ -184,7 +172,7 @@ void b2PolygonShape::Set(const b2Vec2* vertices, int32 count)
 
 bool b2PolygonShape::TestPoint(const b2Transform& xf, const b2Vec2& p) const
 {
-	b2Vec2 pLocal = b2MulT(xf.R, p - xf.position);
+	b2Vec2 pLocal = b2MulT(xf.q, p - xf.p);
 
 	for (int32 i = 0; i < m_vertexCount; ++i)
 	{
@@ -198,131 +186,82 @@ bool b2PolygonShape::TestPoint(const b2Transform& xf, const b2Vec2& p) const
 	return true;
 }
 
-bool b2PolygonShape::RayCast(b2RayCastOutput* output, const b2RayCastInput& input, const b2Transform& xf) const
+bool b2PolygonShape::RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
+								const b2Transform& xf, int32 childIndex) const
 {
+	B2_NOT_USED(childIndex);
+
 	// Put the ray into the polygon's frame of reference.
-	b2Vec2 p1 = b2MulT(xf.R, input.p1 - xf.position);
-	b2Vec2 p2 = b2MulT(xf.R, input.p2 - xf.position);
+	b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
+	b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
 	b2Vec2 d = p2 - p1;
 
-	if (m_vertexCount == 2)
-	{
-		b2Vec2 v1 = m_vertices[0];
-		b2Vec2 v2 = m_vertices[1];
-		b2Vec2 normal = m_normals[0];
+	float32 lower = 0.0f, upper = input.maxFraction;
 
-		// q = p1 + t * d
-		// dot(normal, q - v1) = 0
-		// dot(normal, p1 - v1) + t * dot(normal, d) = 0
-		float32 numerator = b2Dot(normal, v1 - p1);
-		float32 denominator = b2Dot(normal, d);
+	int32 index = -1;
+
+	for (int32 i = 0; i < m_vertexCount; ++i)
+	{
+		// p = p1 + a * d
+		// dot(normal, p - v) = 0
+		// dot(normal, p1 - v) + a * dot(normal, d) = 0
+		float32 numerator = b2Dot(m_normals[i], m_vertices[i] - p1);
+		float32 denominator = b2Dot(m_normals[i], d);
 
 		if (denominator == 0.0f)
-		{
-			return false;
-		}
-	
-		float32 t = numerator / denominator;
-		if (t < 0.0f || 1.0f < t)
-		{
-			return false;
-		}
-
-		b2Vec2 q = p1 + t * d;
-
-		// q = v1 + s * r
-		// s = dot(q - v1, r) / dot(r, r)
-		b2Vec2 r = v2 - v1;
-		float32 rr = b2Dot(r, r);
-		if (rr == 0.0f)
-		{
-			return false;
-		}
-
-		float32 s = b2Dot(q - v1, r) / rr;
-		if (s < 0.0f || 1.0f < s)
-		{
-			return false;
-		}
-
-		output->fraction = t;
-		if (numerator > 0.0f)
-		{
-			output->normal = -normal;
-		}
-		else
-		{
-			output->normal = normal;
-		}
-		return true;
-	}
-	else
-	{
-		float32 lower = 0.0f, upper = input.maxFraction;
-
-		int32 index = -1;
-
-		for (int32 i = 0; i < m_vertexCount; ++i)
-		{
-			// p = p1 + a * d
-			// dot(normal, p - v) = 0
-			// dot(normal, p1 - v) + a * dot(normal, d) = 0
-			float32 numerator = b2Dot(m_normals[i], m_vertices[i] - p1);
-			float32 denominator = b2Dot(m_normals[i], d);
-
-			if (denominator == 0.0f)
-			{	
-				if (numerator < 0.0f)
-				{
-					return false;
-				}
-			}
-			else
-			{
-				// Note: we want this predicate without division:
-				// lower < numerator / denominator, where denominator < 0
-				// Since denominator < 0, we have to flip the inequality:
-				// lower < numerator / denominator <==> denominator * lower > numerator.
-				if (denominator < 0.0f && numerator < lower * denominator)
-				{
-					// Increase lower.
-					// The segment enters this half-space.
-					lower = numerator / denominator;
-					index = i;
-				}
-				else if (denominator > 0.0f && numerator < upper * denominator)
-				{
-					// Decrease upper.
-					// The segment exits this half-space.
-					upper = numerator / denominator;
-				}
-			}
-
-			// The use of epsilon here causes the assert on lower to trip
-			// in some cases. Apparently the use of epsilon was to make edge
-			// shapes work, but now those are handled separately.
-			//if (upper < lower - b2_epsilon)
-			if (upper < lower)
+		{	
+			if (numerator < 0.0f)
 			{
 				return false;
 			}
 		}
-
-		b2Assert(0.0f <= lower && lower <= input.maxFraction);
-
-		if (index >= 0)
+		else
 		{
-			output->fraction = lower;
-			output->normal = b2Mul(xf.R, m_normals[index]);
-			return true;
+			// Note: we want this predicate without division:
+			// lower < numerator / denominator, where denominator < 0
+			// Since denominator < 0, we have to flip the inequality:
+			// lower < numerator / denominator <==> denominator * lower > numerator.
+			if (denominator < 0.0f && numerator < lower * denominator)
+			{
+				// Increase lower.
+				// The segment enters this half-space.
+				lower = numerator / denominator;
+				index = i;
+			}
+			else if (denominator > 0.0f && numerator < upper * denominator)
+			{
+				// Decrease upper.
+				// The segment exits this half-space.
+				upper = numerator / denominator;
+			}
 		}
+
+		// The use of epsilon here causes the assert on lower to trip
+		// in some cases. Apparently the use of epsilon was to make edge
+		// shapes work, but now those are handled separately.
+		//if (upper < lower - b2_epsilon)
+		if (upper < lower)
+		{
+			return false;
+		}
+	}
+
+	b2Assert(0.0f <= lower && lower <= input.maxFraction);
+
+	if (index >= 0)
+	{
+		output->fraction = lower;
+		output->normal = b2Mul(xf.q, m_normals[index]);
+		return true;
 	}
 
 	return false;
 }
 
-void b2PolygonShape::ComputeAABB(b2AABB* aabb, const b2Transform& xf) const
+void b2PolygonShape::ComputeAABB(b2AABB* aabb, const b2Transform& xf, int32 childIndex) const
 {
+	B2_NOT_USED(childIndex);
+
 	b2Vec2 lower = b2Mul(xf, m_vertices[0]);
 	b2Vec2 upper = lower;
 
@@ -364,44 +303,30 @@ void b2PolygonShape::ComputeMass(b2MassData* massData, float32 density) const
 	//
 	// The rest of the derivation is handled by computer algebra.
 
-	b2Assert(m_vertexCount >= 2);
-
-	// A line segment has zero mass.
-	if (m_vertexCount == 2)
-	{
-		massData->center = 0.5f * (m_vertices[0] + m_vertices[1]);
-		massData->mass = 0.0f;
-		massData->I = 0.0f;
-		return;
-	}
+	b2Assert(m_vertexCount >= 3);
 
 	b2Vec2 center; center.Set(0.0f, 0.0f);
 	float32 area = 0.0f;
 	float32 I = 0.0f;
 
-	// pRef is the reference point for forming triangles.
+	// s is the reference point for forming triangles.
 	// It's location doesn't change the result (except for rounding error).
-	b2Vec2 pRef(0.0f, 0.0f);
-#if 0
+	b2Vec2 s(0.0f, 0.0f);
+
 	// This code would put the reference point inside the polygon.
 	for (int32 i = 0; i < m_vertexCount; ++i)
 	{
-		pRef += m_vertices[i];
+		s += m_vertices[i];
 	}
-	pRef *= 1.0f / count;
-#endif
+	s *= 1.0f / m_vertexCount;
 
 	const float32 k_inv3 = 1.0f / 3.0f;
 
 	for (int32 i = 0; i < m_vertexCount; ++i)
 	{
 		// Triangle vertices.
-		b2Vec2 p1 = pRef;
-		b2Vec2 p2 = m_vertices[i];
-		b2Vec2 p3 = i + 1 < m_vertexCount ? m_vertices[i+1] : m_vertices[0];
-
-		b2Vec2 e1 = p2 - p1;
-		b2Vec2 e2 = p3 - p1;
+		b2Vec2 e1 = m_vertices[i] - s;
+		b2Vec2 e2 = i + 1 < m_vertexCount ? m_vertices[i+1] - s : m_vertices[0] - s;
 
 		float32 D = b2Cross(e1, e2);
 
@@ -409,16 +334,15 @@ void b2PolygonShape::ComputeMass(b2MassData* massData, float32 density) const
 		area += triangleArea;
 
 		// Area weighted centroid
-		center += triangleArea * k_inv3 * (p1 + p2 + p3);
+		center += triangleArea * k_inv3 * (e1 + e2);
 
-		float32 px = p1.x, py = p1.y;
 		float32 ex1 = e1.x, ey1 = e1.y;
 		float32 ex2 = e2.x, ey2 = e2.y;
 
-		float32 intx2 = k_inv3 * (0.25f * (ex1*ex1 + ex2*ex1 + ex2*ex2) + (px*ex1 + px*ex2)) + 0.5f*px*px;
-		float32 inty2 = k_inv3 * (0.25f * (ey1*ey1 + ey2*ey1 + ey2*ey2) + (py*ey1 + py*ey2)) + 0.5f*py*py;
+		float32 intx2 = ex1*ex1 + ex2*ex1 + ex2*ex2;
+		float32 inty2 = ey1*ey1 + ey2*ey1 + ey2*ey2;
 
-		I += D * (intx2 + inty2);
+		I += (0.25f * k_inv3 * D) * (intx2 + inty2);
 	}
 
 	// Total mass
@@ -427,8 +351,11 @@ void b2PolygonShape::ComputeMass(b2MassData* massData, float32 density) const
 	// Center of mass
 	b2Assert(area > b2_epsilon);
 	center *= 1.0f / area;
-	massData->center = center;
+	massData->center = center + s;
 
-	// Inertia tensor relative to the local origin.
+	// Inertia tensor relative to the local origin (point s).
 	massData->I = density * I;
+	
+	// Shift to center of mass then to original body origin.
+	massData->I += massData->mass * (b2Dot(massData->center, massData->center) - b2Dot(center, center));
 }

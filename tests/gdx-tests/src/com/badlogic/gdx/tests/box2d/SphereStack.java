@@ -33,7 +33,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class SphereStack extends Box2DTest {
@@ -45,8 +45,8 @@ public class SphereStack extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
-			shape.setAsEdge(new Vector2(-40, 0), new Vector2(40, 0));
+			EdgeShape shape = new EdgeShape();
+			shape.set(new Vector2(-40, 0), new Vector2(40, 0));
 			ground.createFixture(shape, 0);
 			shape.dispose();
 		}

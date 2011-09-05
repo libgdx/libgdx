@@ -100,3 +100,90 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtur
 	b2Contact* contact = (b2Contact*)addr;
 	return (jlong)contact->GetFixtureB();
 }
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniGetChildIndexA
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIndexA
+  (JNIEnv *, jobject, jlong addr) {
+	b2Contact* contact = (b2Contact*)addr;
+	return contact->GetChildIndexA();
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniGetChildIndexB
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIndexB
+  (JNIEnv *, jobject, jlong addr){
+	b2Contact* contact = (b2Contact*)addr;
+	return contact->GetChildIndexB();
+}
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniSetFriction
+ * Signature: (JF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetFriction
+  (JNIEnv *, jobject, jlong addr, jfloat friction) {
+	b2Contact* contact = (b2Contact*)addr;
+	contact->SetFriction(friction);
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniGetFriction
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFriction
+  (JNIEnv *, jobject, jlong addr) {
+	b2Contact* contact = (b2Contact*)addr;
+	return contact->GetFriction();
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniResetFriction
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetFriction
+  (JNIEnv *, jobject, jlong addr) {
+  	b2Contact* contact = (b2Contact*)addr;
+	contact->ResetFriction();
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniSetRestitution
+ * Signature: (JF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetRestitution
+  (JNIEnv *, jobject, jlong addr, jfloat restitution) {
+  	b2Contact* contact = (b2Contact*)addr;
+	contact->SetRestitution(restitution);
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniGetRestitution
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetRestitution
+  (JNIEnv *, jobject, jlong addr) {
+  	b2Contact* contact = (b2Contact*)addr;
+	return contact->GetRestitution();
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Contact
+ * Method:    jniResetRestitution
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetRestitution
+  (JNIEnv *, jobject, jlong addr) {
+  	b2Contact* contact = (b2Contact*)addr;
+	contact->ResetRestitution();
+}

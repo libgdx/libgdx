@@ -11,7 +11,9 @@
  * governing permissions and limitations under the License.
  */
 #include "Mpg123Decoder.h"
+extern "C" {
 #include "mpg123/mpg123.h"
+}
 #include <stdio.h>
 #include <string.h>
 

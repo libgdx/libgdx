@@ -34,3 +34,9 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGet
 	
 	env->ReleasePrimitiveArrayCritical( values, tmp, 0 );
 }
+
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGetCount
+  (JNIEnv *, jobject, jlong addr) {
+	b2ContactImpulse* contactImpulse = (b2ContactImpulse*)addr;
+	return contactImpulse->count;
+}

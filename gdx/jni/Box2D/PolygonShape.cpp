@@ -70,18 +70,6 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAs
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_PolygonShape
- * Method:    jniSetAsEdge
- * Signature: (JFFFF)V
- */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAsEdge
-(JNIEnv *, jobject, jlong addr, jfloat v1x, jfloat v1y, jfloat v2x, jfloat v2y)
-{
-	b2PolygonShape* poly = (b2PolygonShape*)addr;
-	poly->SetAsEdge(b2Vec2(v1x, v1y), b2Vec2(v2x,v2y));
-}
-
-/*
- * Class:     com_badlogic_gdx_physics_box2d_PolygonShape
  * Method:    jniGetVertexCount
  * Signature: (J)I
  */

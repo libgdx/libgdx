@@ -111,6 +111,14 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetResti
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniSetRestitution
   (JNIEnv *, jobject, jlong, jfloat);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Fixture
+ * Method:    jniRefilter
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniRefilter
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

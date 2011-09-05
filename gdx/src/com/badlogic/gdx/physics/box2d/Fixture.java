@@ -18,6 +18,7 @@ package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Fixture {
 	/** body **/
@@ -50,10 +51,18 @@ public class Fixture {
 	 * @return the shape type. */
 	public Type getType () {
 		int type = jniGetType(addr);
-		if (type == 0)
+		switch(type) {
+		case 0:
 			return Type.Circle;
-		else
+		case 1:
+			return Type.Edge;
+		case 2:
 			return Type.Polygon;
+		case 3:
+			return Type.Chain;
+			default:
+				throw new GdxRuntimeException("Unknown shape type!");
+		}
 	}
 
 	private native int jniGetType (long addr);
@@ -64,10 +73,22 @@ public class Fixture {
 			long shapeAddr = jniGetShape(addr);
 			int type = Shape.jniGetType(shapeAddr);
 
-			if (type == 0)
+			switch(type) {
+			case 0:
 				shape = new CircleShape(shapeAddr);
-			else
+				break;
+			case 1:
+				shape = new EdgeShape(shapeAddr);
+				break;
+			case 2:
 				shape = new PolygonShape(shapeAddr);
+				break;
+			case 3:
+				shape = new ChainShape(shapeAddr);
+				break;
+				default:
+					throw new GdxRuntimeException("Unknown shape type!");
+			}
 		}
 
 		return shape;
@@ -91,7 +112,7 @@ public class Fixture {
 	private native boolean jniIsSensor (long addr);
 
 	/** Set the contact filtering data. This will not update contacts until the next time step when either parent body is active and
-	 * awake. */
+	 * awake. This automatically calls Refilter. */
 	public void setFilterData (Filter filter) {
 		jniSetFilterData(addr, filter.categoryBits, filter.maskBits, filter.groupIndex);
 	}
@@ -112,6 +133,15 @@ public class Fixture {
 
 	private native void jniGetFilterData (long addr, short[] filter);
 
+	/**
+	 * Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
+	 */
+	public void refilter() {
+		jniRefilter(addr);
+	}
+	
+	private native void jniRefilter(long addr);
+	
 	/** Get the parent body of this fixture. This is NULL if the fixture is not attached. */
 	public Body getBody () {
 		return body;

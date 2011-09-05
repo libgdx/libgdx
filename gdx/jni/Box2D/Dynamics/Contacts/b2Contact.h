@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,11 +19,10 @@
 #ifndef B2_CONTACT_H
 #define B2_CONTACT_H
 
-#include "Box2D/Common/b2Math.h"
-#include "Box2D/Collision/b2Collision.h"
-#include "Box2D/Collision/Shapes/b2Shape.h"
-#include "Box2D/Dynamics/Contacts/b2Contact.h"
-#include "Box2D/Dynamics/b2Fixture.h"
+#include <Box2D/Common/b2Math.h>
+#include <Box2D/Collision/b2Collision.h>
+#include <Box2D/Collision/Shapes/b2Shape.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 
 class b2Body;
 class b2Contact;
@@ -33,7 +32,23 @@ class b2BlockAllocator;
 class b2StackAllocator;
 class b2ContactListener;
 
-typedef b2Contact* b2ContactCreateFcn(b2Fixture* fixtureA, b2Fixture* fixtureB, b2BlockAllocator* allocator);
+/// Friction mixing law. The idea is to allow either fixture to drive the restitution to zero.
+/// For example, anything slides on ice.
+inline float32 b2MixFriction(float32 friction1, float32 friction2)
+{
+	return std::sqrt(friction1 * friction2);
+}
+
+/// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface.
+/// For example, a superball bounces on anything.
+inline float32 b2MixRestitution(float32 restitution1, float32 restitution2)
+{
+	return restitution1 > restitution2 ? restitution1 : restitution2;
+}
+
+typedef b2Contact* b2ContactCreateFcn(	b2Fixture* fixtureA, int32 indexA,
+										b2Fixture* fixtureB, int32 indexB,
+										b2BlockAllocator* allocator);
 typedef void b2ContactDestroyFcn(b2Contact* contact, b2BlockAllocator* allocator);
 
 struct b2ContactRegister
@@ -86,13 +101,39 @@ public:
 	b2Contact* GetNext();
 	const b2Contact* GetNext() const;
 
-	/// Get the first fixture in this contact.
+	/// Get fixture A in this contact.
 	b2Fixture* GetFixtureA();
 	const b2Fixture* GetFixtureA() const;
 
-	/// Get the second fixture in this contact.
+	/// Get the child primitive index for fixture A.
+	int32 GetChildIndexA() const;
+
+	/// Get fixture B in this contact.
 	b2Fixture* GetFixtureB();
 	const b2Fixture* GetFixtureB() const;
+
+	/// Get the child primitive index for fixture B.
+	int32 GetChildIndexB() const;
+
+	/// Override the default friction mixture. You can call this in b2ContactListener::PreSolve.
+	/// This value persists until set or reset.
+	void SetFriction(float32 friction);
+
+	/// Get the friction.
+	float32 GetFriction() const;
+
+	/// Reset the friction mixture to the default value.
+	void ResetFriction();
+
+	/// Override the default restitution mixture. You can call this in b2ContactListener::PreSolve.
+	/// The value persists until you set or reset.
+	void SetRestitution(float32 restitution);
+
+	/// Get the restitution.
+	float32 GetRestitution() const;
+
+	/// Reset the restitution to the default value.
+	void ResetRestitution();
 
 	/// Evaluate this contact with your own manifold and transforms.
 	virtual void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB) = 0;
@@ -122,6 +163,8 @@ protected:
 		// This bullet contact had a TOI event
 		e_bulletHitFlag		= 0x0010,
 
+		// This contact has a valid TOI in m_toi
+		e_toiFlag			= 0x0020
 	};
 
 	/// Flag this contact for filtering. Filtering will occur the next time step.
@@ -130,12 +173,12 @@ protected:
 	static void AddType(b2ContactCreateFcn* createFcn, b2ContactDestroyFcn* destroyFcn,
 						b2Shape::Type typeA, b2Shape::Type typeB);
 	static void InitializeRegisters();
-	static b2Contact* Create(b2Fixture* fixtureA, b2Fixture* fixtureB, b2BlockAllocator* allocator);
+	static b2Contact* Create(b2Fixture* fixtureA, int32 indexA, b2Fixture* fixtureB, int32 indexB, b2BlockAllocator* allocator);
 	static void Destroy(b2Contact* contact, b2Shape::Type typeA, b2Shape::Type typeB, b2BlockAllocator* allocator);
 	static void Destroy(b2Contact* contact, b2BlockAllocator* allocator);
 
 	b2Contact() : m_fixtureA(NULL), m_fixtureB(NULL) {}
-	b2Contact(b2Fixture* fixtureA, b2Fixture* fixtureB);
+	b2Contact(b2Fixture* fixtureA, int32 indexA, b2Fixture* fixtureB, int32 indexB);
 	virtual ~b2Contact() {}
 
 	void Update(b2ContactListener* listener);
@@ -156,10 +199,16 @@ protected:
 	b2Fixture* m_fixtureA;
 	b2Fixture* m_fixtureB;
 
+	int32 m_indexA;
+	int32 m_indexB;
+
 	b2Manifold m_manifold;
 
 	int32 m_toiCount;
-//	float32 m_toi;
+	float32 m_toi;
+
+	float32 m_friction;
+	float32 m_restitution;
 };
 
 inline b2Manifold* b2Contact::GetManifold()
@@ -229,14 +278,54 @@ inline b2Fixture* b2Contact::GetFixtureB()
 	return m_fixtureB;
 }
 
+inline int32 b2Contact::GetChildIndexA() const
+{
+	return m_indexA;
+}
+
 inline const b2Fixture* b2Contact::GetFixtureB() const
 {
 	return m_fixtureB;
 }
 
+inline int32 b2Contact::GetChildIndexB() const
+{
+	return m_indexB;
+}
+
 inline void b2Contact::FlagForFiltering()
 {
 	m_flags |= e_filterFlag;
+}
+
+inline void b2Contact::SetFriction(float32 friction)
+{
+	m_friction = friction;
+}
+
+inline float32 b2Contact::GetFriction() const
+{
+	return m_friction;
+}
+
+inline void b2Contact::ResetFriction()
+{
+	m_friction = b2MixFriction(m_fixtureA->m_friction, m_fixtureB->m_friction);
+}
+
+inline void b2Contact::SetRestitution(float32 restitution)
+{
+	m_restitution = restitution;
+}
+
+inline float32 b2Contact::GetRestitution() const
+{
+	return m_restitution;
+}
+
+inline void b2Contact::ResetRestitution()
+{
+	m_restitution = b2MixRestitution(m_fixtureA->m_restitution, m_fixtureB->m_restitution);
 }
 
 #endif

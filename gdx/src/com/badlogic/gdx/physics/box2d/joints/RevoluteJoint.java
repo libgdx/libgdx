@@ -114,9 +114,9 @@ public class RevoluteJoint extends Joint {
 	private native void jniSetMaxMotorTorque (long addr, float torque);
 
 	/** Get the current motor torque, usually in N-m. */
-	public float getMotorTorque () {
-		return jniGetMotorTorque(addr);
+	public float getMotorTorque (float invDt) {
+		return jniGetMotorTorque(addr, invDt);
 	}
 
-	private native float jniGetMotorTorque (long addr);
+	private native float jniGetMotorTorque (long addr, float invDt);
 }

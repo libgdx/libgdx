@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Transform;
@@ -54,23 +55,23 @@ public class ApplyForce extends Box2DTest {
 			bd.position.set(0, 20);
 			ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
+			EdgeShape shape = new EdgeShape();
 
 			FixtureDef sd = new FixtureDef();
 			sd.shape = shape;
 			sd.density = 0;
 			sd.restitution = k_restitution;
 
-			shape.setAsEdge(new Vector2(-20, -20), new Vector2(-20, 20));
+			shape.set(new Vector2(-20, -20), new Vector2(-20, 20));
 			ground.createFixture(sd);
 
-			shape.setAsEdge(new Vector2(20, -20), new Vector2(20, 20));
+			shape.set(new Vector2(20, -20), new Vector2(20, 20));
 			ground.createFixture(sd);
 
-			shape.setAsEdge(new Vector2(-20, 20), new Vector2(20, 20));
+			shape.set(new Vector2(-20, 20), new Vector2(20, 20));
 			ground.createFixture(sd);
 
-			shape.setAsEdge(new Vector2(-20, -20), new Vector2(20, -20));
+			shape.set(new Vector2(-20, -20), new Vector2(20, -20));
 			ground.createFixture(sd);
 
 			shape.dispose();

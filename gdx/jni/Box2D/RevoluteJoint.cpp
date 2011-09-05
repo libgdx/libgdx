@@ -163,8 +163,8 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
  * Signature: (J)F
  */
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetMotorTorque
-  (JNIEnv *, jobject, jlong addr)
+  (JNIEnv *, jobject, jlong addr, jfloat inv_dt)
 {
 	b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
-	return joint->GetMotorTorque();
+	return joint->GetMotorTorque(inv_dt);
 }

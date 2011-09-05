@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,7 +19,7 @@
 #ifndef B2_FRICTION_JOINT_H
 #define B2_FRICTION_JOINT_H
 
-#include "Box2D/Dynamics/Joints/b2Joint.h"
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
 /// Friction joint definition.
 struct b2FrictionJointDef : public b2JointDef
@@ -79,21 +79,32 @@ protected:
 
 	b2FrictionJoint(const b2FrictionJointDef* def);
 
-	void InitVelocityConstraints(const b2TimeStep& step);
-	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints(float32 baumgarte);
+	void InitVelocityConstraints(const b2SolverData& data);
+	void SolveVelocityConstraints(const b2SolverData& data);
+	bool SolvePositionConstraints(const b2SolverData& data);
 
 	b2Vec2 m_localAnchorA;
 	b2Vec2 m_localAnchorB;
 
-	b2Mat22 m_linearMass;
-	float32 m_angularMass;
-
+	// Solver shared
 	b2Vec2 m_linearImpulse;
 	float32 m_angularImpulse;
-
 	float32 m_maxForce;
 	float32 m_maxTorque;
+
+	// Solver temp
+	int32 m_indexA;
+	int32 m_indexB;
+	b2Vec2 m_rA;
+	b2Vec2 m_rB;
+	b2Vec2 m_localCenterA;
+	b2Vec2 m_localCenterB;
+	float32 m_invMassA;
+	float32 m_invMassB;
+	float32 m_invIA;
+	float32 m_invIB;
+	b2Mat22 m_linearMass;
+	float32 m_angularMass;
 };
 
 #endif

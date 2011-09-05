@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2007-2011 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,17 +16,16 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Dynamics/Joints/b2GearJoint.h"
-#include "Box2D/Dynamics/Joints/b2RevoluteJoint.h"
-#include "Box2D/Dynamics/Joints/b2PrismaticJoint.h"
-#include "Box2D/Dynamics/b2Body.h"
-#include "Box2D/Dynamics/b2TimeStep.h"
+#include <Box2D/Dynamics/Joints/b2GearJoint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
+#include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2TimeStep.h>
 
 // Gear Joint:
 // C0 = (coordinate1 + ratio * coordinate2)_initial
-// C = C0 - (cordinate1 + ratio * coordinate2) = 0
-// Cdot = -(Cdot1 + ratio * Cdot2)
-// J = -[J1 ratio * J2]
+// C = (coordinate1 + ratio * coordinate2) - C0 = 0
+// J = [J1 ratio * J2]
 // K = J * invM * JT
 //   = J1 * invM1 * J1T + ratio * ratio * J2 * invM2 * J2T
 //
@@ -45,177 +44,323 @@
 b2GearJoint::b2GearJoint(const b2GearJointDef* def)
 : b2Joint(def)
 {
-	b2JointType type1 = def->joint1->GetType();
-	b2JointType type2 = def->joint2->GetType();
+	m_typeA = def->joint1->GetType();
+	m_typeB = def->joint2->GetType();
 
-	b2Assert(type1 == e_revoluteJoint || type1 == e_prismaticJoint);
-	b2Assert(type2 == e_revoluteJoint || type2 == e_prismaticJoint);
-	b2Assert(def->joint1->GetBodyA()->GetType() == b2_staticBody);
-	b2Assert(def->joint2->GetBodyA()->GetType() == b2_staticBody);
+	b2Assert(m_typeA == e_revoluteJoint || m_typeA == e_prismaticJoint);
+	b2Assert(m_typeB == e_revoluteJoint || m_typeB == e_prismaticJoint);
 
-	m_revolute1 = NULL;
-	m_prismatic1 = NULL;
-	m_revolute2 = NULL;
-	m_prismatic2 = NULL;
+	float32 coordinateA, coordinateB;
 
-	float32 coordinate1, coordinate2;
-
-	m_ground1 = def->joint1->GetBodyA();
+	m_bodyC = def->joint1->GetBodyA();
 	m_bodyA = def->joint1->GetBodyB();
-	if (type1 == e_revoluteJoint)
+
+	// Get geometry of joint1
+	b2Transform xfA = m_bodyA->m_xf;
+	float32 aA = m_bodyA->m_sweep.a;
+	b2Transform xfC = m_bodyC->m_xf;
+	float32 aC = m_bodyC->m_sweep.a;
+
+	if (m_typeA == e_revoluteJoint)
 	{
-		m_revolute1 = (b2RevoluteJoint*)def->joint1;
-		m_groundAnchor1 = m_revolute1->m_localAnchor1;
-		m_localAnchor1 = m_revolute1->m_localAnchor2;
-		coordinate1 = m_revolute1->GetJointAngle();
+		b2RevoluteJoint* revolute = (b2RevoluteJoint*)def->joint1;
+		m_localAnchorC = revolute->m_localAnchorA;
+		m_localAnchorA = revolute->m_localAnchorB;
+		m_referenceAngleA = revolute->m_referenceAngle;
+		m_localAxisC.SetZero();
+
+		coordinateA = aA - aC - m_referenceAngleA;
 	}
 	else
 	{
-		m_prismatic1 = (b2PrismaticJoint*)def->joint1;
-		m_groundAnchor1 = m_prismatic1->m_localAnchor1;
-		m_localAnchor1 = m_prismatic1->m_localAnchor2;
-		coordinate1 = m_prismatic1->GetJointTranslation();
+		b2PrismaticJoint* prismatic = (b2PrismaticJoint*)def->joint1;
+		m_localAnchorC = prismatic->m_localAnchorA;
+		m_localAnchorA = prismatic->m_localAnchorB;
+		m_referenceAngleA = prismatic->m_refAngle;
+		m_localAxisC = prismatic->m_localXAxisA;
+
+		b2Vec2 pC = m_localAnchorC;
+		b2Vec2 pA = b2MulT(xfC.q, b2Mul(xfA.q, m_localAnchorA) + (xfA.p - xfC.p));
+		coordinateA = b2Dot(pA - pC, m_localAxisC);
 	}
 
-	m_ground2 = def->joint2->GetBodyA();
+	m_bodyD = def->joint2->GetBodyA();
 	m_bodyB = def->joint2->GetBodyB();
-	if (type2 == e_revoluteJoint)
+
+	// Get geometry of joint2
+	b2Transform xfB = m_bodyB->m_xf;
+	float32 aB = m_bodyB->m_sweep.a;
+	b2Transform xfD = m_bodyD->m_xf;
+	float32 aD = m_bodyD->m_sweep.a;
+
+	if (m_typeB == e_revoluteJoint)
 	{
-		m_revolute2 = (b2RevoluteJoint*)def->joint2;
-		m_groundAnchor2 = m_revolute2->m_localAnchor1;
-		m_localAnchor2 = m_revolute2->m_localAnchor2;
-		coordinate2 = m_revolute2->GetJointAngle();
+		b2RevoluteJoint* revolute = (b2RevoluteJoint*)def->joint2;
+		m_localAnchorD = revolute->m_localAnchorA;
+		m_localAnchorB = revolute->m_localAnchorB;
+		m_referenceAngleB = revolute->m_referenceAngle;
+		m_localAxisD.SetZero();
+
+		coordinateB = aB - aD - m_referenceAngleB;
 	}
 	else
 	{
-		m_prismatic2 = (b2PrismaticJoint*)def->joint2;
-		m_groundAnchor2 = m_prismatic2->m_localAnchor1;
-		m_localAnchor2 = m_prismatic2->m_localAnchor2;
-		coordinate2 = m_prismatic2->GetJointTranslation();
+		b2PrismaticJoint* prismatic = (b2PrismaticJoint*)def->joint2;
+		m_localAnchorD = prismatic->m_localAnchorA;
+		m_localAnchorB = prismatic->m_localAnchorB;
+		m_referenceAngleB = prismatic->m_refAngle;
+		m_localAxisD = prismatic->m_localXAxisA;
+
+		b2Vec2 pD = m_localAnchorD;
+		b2Vec2 pB = b2MulT(xfD.q, b2Mul(xfB.q, m_localAnchorB) + (xfB.p - xfD.p));
+		coordinateB = b2Dot(pB - pD, m_localAxisD);
 	}
 
 	m_ratio = def->ratio;
 
-	m_constant = coordinate1 + m_ratio * coordinate2;
+	m_constant = coordinateA + m_ratio * coordinateB;
 
 	m_impulse = 0.0f;
 }
 
-void b2GearJoint::InitVelocityConstraints(const b2TimeStep& step)
+void b2GearJoint::InitVelocityConstraints(const b2SolverData& data)
 {
-	b2Body* g1 = m_ground1;
-	b2Body* g2 = m_ground2;
-	b2Body* b1 = m_bodyA;
-	b2Body* b2 = m_bodyB;
+	m_indexA = m_bodyA->m_islandIndex;
+	m_indexB = m_bodyB->m_islandIndex;
+	m_indexC = m_bodyC->m_islandIndex;
+	m_indexD = m_bodyD->m_islandIndex;
+	m_lcA = m_bodyA->m_sweep.localCenter;
+	m_lcB = m_bodyB->m_sweep.localCenter;
+	m_lcC = m_bodyC->m_sweep.localCenter;
+	m_lcD = m_bodyD->m_sweep.localCenter;
+	m_mA = m_bodyA->m_invMass;
+	m_mB = m_bodyB->m_invMass;
+	m_mC = m_bodyC->m_invMass;
+	m_mD = m_bodyD->m_invMass;
+	m_iA = m_bodyA->m_invI;
+	m_iB = m_bodyB->m_invI;
+	m_iC = m_bodyC->m_invI;
+	m_iD = m_bodyD->m_invI;
 
-	float32 K = 0.0f;
-	m_J.SetZero();
+	b2Vec2 cA = data.positions[m_indexA].c;
+	float32 aA = data.positions[m_indexA].a;
+	b2Vec2 vA = data.velocities[m_indexA].v;
+	float32 wA = data.velocities[m_indexA].w;
 
-	if (m_revolute1)
+	b2Vec2 cB = data.positions[m_indexB].c;
+	float32 aB = data.positions[m_indexB].a;
+	b2Vec2 vB = data.velocities[m_indexB].v;
+	float32 wB = data.velocities[m_indexB].w;
+
+	b2Vec2 cC = data.positions[m_indexC].c;
+	float32 aC = data.positions[m_indexC].a;
+	b2Vec2 vC = data.velocities[m_indexC].v;
+	float32 wC = data.velocities[m_indexC].w;
+
+	b2Vec2 cD = data.positions[m_indexD].c;
+	float32 aD = data.positions[m_indexD].a;
+	b2Vec2 vD = data.velocities[m_indexD].v;
+	float32 wD = data.velocities[m_indexD].w;
+
+	b2Rot qA(aA), qB(aB), qC(aC), qD(aD);
+
+	m_mass = 0.0f;
+
+	if (m_typeA == e_revoluteJoint)
 	{
-		m_J.angularA = -1.0f;
-		K += b1->m_invI;
+		m_JvAC.SetZero();
+		m_JwA = 1.0f;
+		m_JwC = 1.0f;
+		m_mass += m_iA + m_iC;
 	}
 	else
 	{
-		b2Vec2 ug = b2Mul(g1->GetTransform().R, m_prismatic1->m_localXAxis1);
-		b2Vec2 r = b2Mul(b1->GetTransform().R, m_localAnchor1 - b1->GetLocalCenter());
-		float32 crug = b2Cross(r, ug);
-		m_J.linearA = -ug;
-		m_J.angularA = -crug;
-		K += b1->m_invMass + b1->m_invI * crug * crug;
+		b2Vec2 u = b2Mul(qC, m_localAxisC);
+		b2Vec2 rC = b2Mul(qC, m_localAnchorC - m_lcC);
+		b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_lcA);
+		m_JvAC = u;
+		m_JwC = b2Cross(rC, u);
+		m_JwA = b2Cross(rA, u);
+		m_mass += m_mC + m_mA + m_iC * m_JwC * m_JwC + m_iA * m_JwA * m_JwA;
 	}
 
-	if (m_revolute2)
+	if (m_typeB == e_revoluteJoint)
 	{
-		m_J.angularB = -m_ratio;
-		K += m_ratio * m_ratio * b2->m_invI;
+		m_JvBD.SetZero();
+		m_JwB = m_ratio;
+		m_JwD = m_ratio;
+		m_mass += m_ratio * m_ratio * (m_iB + m_iD);
 	}
 	else
 	{
-		b2Vec2 ug = b2Mul(g2->GetTransform().R, m_prismatic2->m_localXAxis1);
-		b2Vec2 r = b2Mul(b2->GetTransform().R, m_localAnchor2 - b2->GetLocalCenter());
-		float32 crug = b2Cross(r, ug);
-		m_J.linearB = -m_ratio * ug;
-		m_J.angularB = -m_ratio * crug;
-		K += m_ratio * m_ratio * (b2->m_invMass + b2->m_invI * crug * crug);
+		b2Vec2 u = b2Mul(qD, m_localAxisD);
+		b2Vec2 rD = b2Mul(qD, m_localAnchorD - m_lcD);
+		b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_lcB);
+		m_JvBD = m_ratio * u;
+		m_JwD = m_ratio * b2Cross(rD, u);
+		m_JwB = m_ratio * b2Cross(rB, u);
+		m_mass += m_ratio * m_ratio * (m_mD + m_mB) + m_iD * m_JwD * m_JwD + m_iB * m_JwB * m_JwB;
 	}
 
 	// Compute effective mass.
-	m_mass = K > 0.0f ? 1.0f / K : 0.0f;
+	m_mass = m_mass > 0.0f ? 1.0f / m_mass : 0.0f;
 
-	if (step.warmStarting)
+	if (data.step.warmStarting)
 	{
-		// Warm starting.
-		b1->m_linearVelocity += b1->m_invMass * m_impulse * m_J.linearA;
-		b1->m_angularVelocity += b1->m_invI * m_impulse * m_J.angularA;
-		b2->m_linearVelocity += b2->m_invMass * m_impulse * m_J.linearB;
-		b2->m_angularVelocity += b2->m_invI * m_impulse * m_J.angularB;
+		vA += (m_mA * m_impulse) * m_JvAC;
+		wA += m_iA * m_impulse * m_JwA;
+		vB += (m_mB * m_impulse) * m_JvBD;
+		wB += m_iB * m_impulse * m_JwB;
+		vC -= (m_mC * m_impulse) * m_JvAC;
+		wC -= m_iC * m_impulse * m_JwC;
+		vD -= (m_mD * m_impulse) * m_JvBD;
+		wD -= m_iD * m_impulse * m_JwD;
 	}
 	else
 	{
 		m_impulse = 0.0f;
 	}
+
+	data.velocities[m_indexA].v = vA;
+	data.velocities[m_indexA].w = wA;
+	data.velocities[m_indexB].v = vB;
+	data.velocities[m_indexB].w = wB;
+	data.velocities[m_indexC].v = vC;
+	data.velocities[m_indexC].w = wC;
+	data.velocities[m_indexD].v = vD;
+	data.velocities[m_indexD].w = wD;
 }
 
-void b2GearJoint::SolveVelocityConstraints(const b2TimeStep& step)
+void b2GearJoint::SolveVelocityConstraints(const b2SolverData& data)
 {
-	B2_NOT_USED(step);
+	b2Vec2 vA = data.velocities[m_indexA].v;
+	float32 wA = data.velocities[m_indexA].w;
+	b2Vec2 vB = data.velocities[m_indexB].v;
+	float32 wB = data.velocities[m_indexB].w;
+	b2Vec2 vC = data.velocities[m_indexC].v;
+	float32 wC = data.velocities[m_indexC].w;
+	b2Vec2 vD = data.velocities[m_indexD].v;
+	float32 wD = data.velocities[m_indexD].w;
 
-	b2Body* b1 = m_bodyA;
-	b2Body* b2 = m_bodyB;
+	float32 Cdot = b2Dot(m_JvAC, vA - vC) + b2Dot(m_JvBD, vB - vD);
+	Cdot += (m_JwA * wA - m_JwC * wC) + (m_JwB * wB - m_JwD * wD);
 
-	float32 Cdot = m_J.Compute(	b1->m_linearVelocity, b1->m_angularVelocity,
-								b2->m_linearVelocity, b2->m_angularVelocity);
-
-	float32 impulse = m_mass * (-Cdot);
+	float32 impulse = -m_mass * Cdot;
 	m_impulse += impulse;
 
-	b1->m_linearVelocity += b1->m_invMass * impulse * m_J.linearA;
-	b1->m_angularVelocity += b1->m_invI * impulse * m_J.angularA;
-	b2->m_linearVelocity += b2->m_invMass * impulse * m_J.linearB;
-	b2->m_angularVelocity += b2->m_invI * impulse * m_J.angularB;
+	vA += (m_mA * impulse) * m_JvAC;
+	wA += m_iA * impulse * m_JwA;
+	vB += (m_mB * impulse) * m_JvBD;
+	wB += m_iB * impulse * m_JwB;
+	vC -= (m_mC * impulse) * m_JvAC;
+	wC -= m_iC * impulse * m_JwC;
+	vD -= (m_mD * impulse) * m_JvBD;
+	wD -= m_iD * impulse * m_JwD;
+
+	data.velocities[m_indexA].v = vA;
+	data.velocities[m_indexA].w = wA;
+	data.velocities[m_indexB].v = vB;
+	data.velocities[m_indexB].w = wB;
+	data.velocities[m_indexC].v = vC;
+	data.velocities[m_indexC].w = wC;
+	data.velocities[m_indexD].v = vD;
+	data.velocities[m_indexD].w = wD;
 }
 
-bool b2GearJoint::SolvePositionConstraints(float32 baumgarte)
+bool b2GearJoint::SolvePositionConstraints(const b2SolverData& data)
 {
-	B2_NOT_USED(baumgarte);
-	
+	b2Vec2 cA = data.positions[m_indexA].c;
+	float32 aA = data.positions[m_indexA].a;
+	b2Vec2 cB = data.positions[m_indexB].c;
+	float32 aB = data.positions[m_indexB].a;
+	b2Vec2 cC = data.positions[m_indexC].c;
+	float32 aC = data.positions[m_indexC].a;
+	b2Vec2 cD = data.positions[m_indexD].c;
+	float32 aD = data.positions[m_indexD].a;
+
+	b2Rot qA(aA), qB(aB), qC(aC), qD(aD);
+
 	float32 linearError = 0.0f;
 
-	b2Body* b1 = m_bodyA;
-	b2Body* b2 = m_bodyB;
+	float32 coordinateA, coordinateB;
 
-	float32 coordinate1, coordinate2;
-	if (m_revolute1)
+	b2Vec2 JvAC, JvBD;
+	float32 JwA, JwB, JwC, JwD;
+	float32 mass = 0.0f;
+
+	if (m_typeA == e_revoluteJoint)
 	{
-		coordinate1 = m_revolute1->GetJointAngle();
+		JvAC.SetZero();
+		JwA = 1.0f;
+		JwC = 1.0f;
+		mass += m_iA + m_iC;
+
+		coordinateA = aA - aC - m_referenceAngleA;
 	}
 	else
 	{
-		coordinate1 = m_prismatic1->GetJointTranslation();
+		b2Vec2 u = b2Mul(qC, m_localAxisC);
+		b2Vec2 rC = b2Mul(qC, m_localAnchorC - m_lcC);
+		b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_lcA);
+		JvAC = u;
+		JwC = b2Cross(rC, u);
+		JwA = b2Cross(rA, u);
+		mass += m_mC + m_mA + m_iC * JwC * JwC + m_iA * JwA * JwA;
+
+		b2Vec2 pC = m_localAnchorC - m_lcC;
+		b2Vec2 pA = b2MulT(qC, rA + (cA - cC));
+		coordinateA = b2Dot(pA - pC, m_localAxisC);
 	}
 
-	if (m_revolute2)
+	if (m_typeB == e_revoluteJoint)
 	{
-		coordinate2 = m_revolute2->GetJointAngle();
+		JvBD.SetZero();
+		JwB = 1.0f;
+		JwD = 1.0f;
+		mass += m_iB + m_iD;
+
+		coordinateB = aB - aD - m_referenceAngleB;
 	}
 	else
 	{
-		coordinate2 = m_prismatic2->GetJointTranslation();
+		b2Vec2 u = b2Mul(qD, m_localAxisD);
+		b2Vec2 rD = b2Mul(qD, m_localAnchorD - m_lcD);
+		b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_lcB);
+		JvBD = m_ratio * u;
+		JwD = m_ratio * b2Cross(rD, u);
+		JwB = m_ratio * b2Cross(rB, u);
+		mass += m_ratio * m_ratio * (m_mD + m_mB) + m_iD * JwD * JwD + m_iB * JwB * JwB;
+
+		b2Vec2 pD = m_localAnchorD - m_lcD;
+		b2Vec2 pB = b2MulT(qD, rB + (cB - cD));
+		coordinateB = b2Dot(pB - pD, m_localAxisD);
 	}
 
-	float32 C = m_constant - (coordinate1 + m_ratio * coordinate2);
+	float32 C = (coordinateA + m_ratio * coordinateB) - m_constant;
 
-	float32 impulse = m_mass * (-C);
+	float32 impulse = 0.0f;
+	if (mass > 0.0f)
+	{
+		impulse = -C / mass;
+	}
 
-	b1->m_sweep.c += b1->m_invMass * impulse * m_J.linearA;
-	b1->m_sweep.a += b1->m_invI * impulse * m_J.angularA;
-	b2->m_sweep.c += b2->m_invMass * impulse * m_J.linearB;
-	b2->m_sweep.a += b2->m_invI * impulse * m_J.angularB;
+	cA += m_mA * impulse * JvAC;
+	aA += m_iA * impulse * JwA;
+	cB += m_mB * impulse * JvBD;
+	aB += m_iB * impulse * JwB;
+	cC -= m_mC * impulse * JvAC;
+	aC -= m_iC * impulse * JwC;
+	cD -= m_mD * impulse * JvBD;
+	aD -= m_iD * impulse * JwD;
 
-	b1->SynchronizeTransform();
-	b2->SynchronizeTransform();
+	data.positions[m_indexA].c = cA;
+	data.positions[m_indexA].a = aA;
+	data.positions[m_indexB].c = cB;
+	data.positions[m_indexB].a = aB;
+	data.positions[m_indexC].c = cC;
+	data.positions[m_indexC].a = aC;
+	data.positions[m_indexD].c = cD;
+	data.positions[m_indexD].a = aD;
 
 	// TODO_ERIN not implemented
 	return linearError < b2_linearSlop;
@@ -223,27 +368,23 @@ bool b2GearJoint::SolvePositionConstraints(float32 baumgarte)
 
 b2Vec2 b2GearJoint::GetAnchorA() const
 {
-	return m_bodyA->GetWorldPoint(m_localAnchor1);
+	return m_bodyA->GetWorldPoint(m_localAnchorA);
 }
 
 b2Vec2 b2GearJoint::GetAnchorB() const
 {
-	return m_bodyB->GetWorldPoint(m_localAnchor2);
+	return m_bodyB->GetWorldPoint(m_localAnchorB);
 }
 
 b2Vec2 b2GearJoint::GetReactionForce(float32 inv_dt) const
 {
-	// TODO_ERIN not tested
-	b2Vec2 P = m_impulse * m_J.linearB;
+	b2Vec2 P = m_impulse * m_JvAC;
 	return inv_dt * P;
 }
 
 float32 b2GearJoint::GetReactionTorque(float32 inv_dt) const
 {
-	// TODO_ERIN not tested
-	b2Vec2 r = b2Mul(m_bodyB->GetTransform().R, m_localAnchor2 - m_bodyB->GetLocalCenter());
-	b2Vec2 P = m_impulse * m_J.linearB;
-	float32 L = m_impulse * m_J.angularB - b2Cross(r, P);
+	float32 L = m_impulse * m_JwA;
 	return inv_dt * L;
 }
 

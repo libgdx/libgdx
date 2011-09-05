@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -19,14 +19,10 @@
 #ifndef B2_GEAR_JOINT_H
 #define B2_GEAR_JOINT_H
 
-#include "Box2D/Dynamics/Joints/b2Joint.h"
-
-class b2RevoluteJoint;
-class b2PrismaticJoint;
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
 /// Gear joint definition. This definition requires two existing
 /// revolute or prismatic joints (any combination will work).
-/// The provided joints must attach a dynamic body to a static body.
 struct b2GearJointDef : public b2JointDef
 {
 	b2GearJointDef()
@@ -55,8 +51,8 @@ struct b2GearJointDef : public b2JointDef
 /// The ratio can be negative or positive. If one joint is a revolute joint
 /// and the other joint is a prismatic joint, then the ratio will have units
 /// of length or units of 1/length.
-/// @warning The revolute and prismatic joints must be attached to
-/// fixed bodies (which must be body1 on those joints).
+/// @warning You have to manually destroy the gear joint if joint1 or joint2
+/// is destroyed.
 class b2GearJoint : public b2Joint
 {
 public:
@@ -75,37 +71,43 @@ protected:
 	friend class b2Joint;
 	b2GearJoint(const b2GearJointDef* data);
 
-	void InitVelocityConstraints(const b2TimeStep& step);
-	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints(float32 baumgarte);
+	void InitVelocityConstraints(const b2SolverData& data);
+	void SolveVelocityConstraints(const b2SolverData& data);
+	bool SolvePositionConstraints(const b2SolverData& data);
 
-	b2Body* m_ground1;
-	b2Body* m_ground2;
+	b2JointType m_typeA;
+	b2JointType m_typeB;
 
-	// One of these is NULL.
-	b2RevoluteJoint* m_revolute1;
-	b2PrismaticJoint* m_prismatic1;
+	// Body A is connected to body C
+	// Body B is connected to body D
+	b2Body* m_bodyC;
+	b2Body* m_bodyD;
 
-	// One of these is NULL.
-	b2RevoluteJoint* m_revolute2;
-	b2PrismaticJoint* m_prismatic2;
+	// Solver shared
+	b2Vec2 m_localAnchorA;
+	b2Vec2 m_localAnchorB;
+	b2Vec2 m_localAnchorC;
+	b2Vec2 m_localAnchorD;
 
-	b2Vec2 m_groundAnchor1;
-	b2Vec2 m_groundAnchor2;
+	b2Vec2 m_localAxisC;
+	b2Vec2 m_localAxisD;
 
-	b2Vec2 m_localAnchor1;
-	b2Vec2 m_localAnchor2;
-
-	b2Jacobian m_J;
+	float32 m_referenceAngleA;
+	float32 m_referenceAngleB;
 
 	float32 m_constant;
 	float32 m_ratio;
 
-	// Effective mass
-	float32 m_mass;
-
-	// Impulse for accumulation/warm starting.
 	float32 m_impulse;
+
+	// Solver temp
+	int32 m_indexA, m_indexB, m_indexC, m_indexD;
+	b2Vec2 m_lcA, m_lcB, m_lcC, m_lcD;
+	float32 m_mA, m_mB, m_mC, m_mD;
+	float32 m_iA, m_iB, m_iC, m_iD;
+	b2Vec2 m_JvAC, m_JvBD;
+	float32 m_JwA, m_JwB, m_JwC, m_JwD;
+	float32 m_mass;
 };
 
 #endif

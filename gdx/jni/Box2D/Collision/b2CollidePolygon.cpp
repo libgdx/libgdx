@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,25 +16,24 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Collision/b2Collision.h"
-#include "Box2D/Collision/Shapes/b2PolygonShape.h"
+#include <Box2D/Collision/b2Collision.h>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
 // Find the separation between poly1 and poly2 for a give edge normal on poly1.
 static float32 b2EdgeSeparation(const b2PolygonShape* poly1, const b2Transform& xf1, int32 edge1,
 							  const b2PolygonShape* poly2, const b2Transform& xf2)
 {
-	int32 count1 = poly1->m_vertexCount;
 	const b2Vec2* vertices1 = poly1->m_vertices;
 	const b2Vec2* normals1 = poly1->m_normals;
 
 	int32 count2 = poly2->m_vertexCount;
 	const b2Vec2* vertices2 = poly2->m_vertices;
 
-	b2Assert(0 <= edge1 && edge1 < count1);
+	b2Assert(0 <= edge1 && edge1 < poly1->m_vertexCount);
 
 	// Convert normal from poly1's frame into poly2's frame.
-	b2Vec2 normal1World = b2Mul(xf1.R, normals1[edge1]);
-	b2Vec2 normal1 = b2MulT(xf2.R, normal1World);
+	b2Vec2 normal1World = b2Mul(xf1.q, normals1[edge1]);
+	b2Vec2 normal1 = b2MulT(xf2.q, normal1World);
 
 	// Find support vertex on poly2 for -normal.
 	int32 index = 0;
@@ -66,7 +65,7 @@ static float32 b2FindMaxSeparation(int32* edgeIndex,
 
 	// Vector pointing from the centroid of poly1 to the centroid of poly2.
 	b2Vec2 d = b2Mul(xf2, poly2->m_centroid) - b2Mul(xf1, poly1->m_centroid);
-	b2Vec2 dLocal1 = b2MulT(xf1.R, d);
+	b2Vec2 dLocal1 = b2MulT(xf1.q, d);
 
 	// Find edge normal on poly1 that has the largest projection onto d.
 	int32 edge = 0;
@@ -143,17 +142,16 @@ static void b2FindIncidentEdge(b2ClipVertex c[2],
 							 const b2PolygonShape* poly1, const b2Transform& xf1, int32 edge1,
 							 const b2PolygonShape* poly2, const b2Transform& xf2)
 {
-	int32 count1 = poly1->m_vertexCount;
 	const b2Vec2* normals1 = poly1->m_normals;
 
 	int32 count2 = poly2->m_vertexCount;
 	const b2Vec2* vertices2 = poly2->m_vertices;
 	const b2Vec2* normals2 = poly2->m_normals;
 
-	b2Assert(0 <= edge1 && edge1 < count1);
+	b2Assert(0 <= edge1 && edge1 < poly1->m_vertexCount);
 
 	// Get the normal of the reference edge in poly2's frame.
-	b2Vec2 normal1 = b2MulT(xf2.R, b2Mul(xf1.R, normals1[edge1]));
+	b2Vec2 normal1 = b2MulT(xf2.q, b2Mul(xf1.q, normals1[edge1]));
 
 	// Find the incident edge on poly2.
 	int32 index = 0;
@@ -173,14 +171,16 @@ static void b2FindIncidentEdge(b2ClipVertex c[2],
 	int32 i2 = i1 + 1 < count2 ? i1 + 1 : 0;
 
 	c[0].v = b2Mul(xf2, vertices2[i1]);
-	c[0].id.features.referenceEdge = (uint8)edge1;
-	c[0].id.features.incidentEdge = (uint8)i1;
-	c[0].id.features.incidentVertex = 0;
+	c[0].id.cf.indexA = (uint8)edge1;
+	c[0].id.cf.indexB = (uint8)i1;
+	c[0].id.cf.typeA = b2ContactFeature::e_face;
+	c[0].id.cf.typeB = b2ContactFeature::e_vertex;
 
 	c[1].v = b2Mul(xf2, vertices2[i2]);
-	c[1].id.features.referenceEdge = (uint8)edge1;
-	c[1].id.features.incidentEdge = (uint8)i2;
-	c[1].id.features.incidentVertex = 1;
+	c[1].id.cf.indexA = (uint8)edge1;
+	c[1].id.cf.indexB = (uint8)i2;
+	c[1].id.cf.typeA = b2ContactFeature::e_face;
+	c[1].id.cf.typeB = b2ContactFeature::e_vertex;
 }
 
 // Find edge normal of max separation on A - return if separating axis is found
@@ -242,8 +242,11 @@ void b2CollidePolygons(b2Manifold* manifold,
 	int32 count1 = poly1->m_vertexCount;
 	const b2Vec2* vertices1 = poly1->m_vertices;
 
-	b2Vec2 v11 = vertices1[edge1];
-	b2Vec2 v12 = edge1 + 1 < count1 ? vertices1[edge1+1] : vertices1[0];
+	int32 iv1 = edge1;
+	int32 iv2 = edge1 + 1 < count1 ? edge1 + 1 : 0;
+
+	b2Vec2 v11 = vertices1[iv1];
+	b2Vec2 v12 = vertices1[iv2];
 
 	b2Vec2 localTangent = v12 - v11;
 	localTangent.Normalize();
@@ -251,7 +254,7 @@ void b2CollidePolygons(b2Manifold* manifold,
 	b2Vec2 localNormal = b2Cross(localTangent, 1.0f);
 	b2Vec2 planePoint = 0.5f * (v11 + v12);
 
-	b2Vec2 tangent = b2Mul(xf1.R, localTangent);
+	b2Vec2 tangent = b2Mul(xf1.q, localTangent);
 	b2Vec2 normal = b2Cross(tangent, 1.0f);
 	
 	v11 = b2Mul(xf1, v11);
@@ -270,13 +273,13 @@ void b2CollidePolygons(b2Manifold* manifold,
 	int np;
 
 	// Clip to box side 1
-	np = b2ClipSegmentToLine(clipPoints1, incidentEdge, -tangent, sideOffset1);
+	np = b2ClipSegmentToLine(clipPoints1, incidentEdge, -tangent, sideOffset1, iv1);
 
 	if (np < 2)
 		return;
 
 	// Clip to negative box side 1
-	np = b2ClipSegmentToLine(clipPoints2, clipPoints1,  tangent, sideOffset2);
+	np = b2ClipSegmentToLine(clipPoints2, clipPoints1,  tangent, sideOffset2, iv2);
 
 	if (np < 2)
 	{
@@ -297,7 +300,15 @@ void b2CollidePolygons(b2Manifold* manifold,
 			b2ManifoldPoint* cp = manifold->points + pointCount;
 			cp->localPoint = b2MulT(xf2, clipPoints2[i].v);
 			cp->id = clipPoints2[i].id;
-			cp->id.features.flip = flip;
+			if (flip)
+			{
+				// Swap features
+				b2ContactFeature cf = cp->id.cf;
+				cp->id.cf.indexA = cf.indexB;
+				cp->id.cf.indexB = cf.indexA;
+				cp->id.cf.typeA = cf.typeB;
+				cp->id.cf.typeB = cf.typeA;
+			}
 			++pointCount;
 		}
 	}

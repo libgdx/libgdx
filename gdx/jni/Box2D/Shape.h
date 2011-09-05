@@ -39,6 +39,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniDispose
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetType
   (JNIEnv *, jclass, jlong);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Shape
+ * Method:    jniGetChildCount
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Shape_jniGetChildCount
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

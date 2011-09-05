@@ -79,6 +79,6 @@ public class BodyDef {
 	/** Does this body start out active? **/
 	public boolean active = true;
 
-	/** Experimental: scales the inertia tensor. **/
-	public float inertiaScale = 1;
+	/** Scale the gravity applied to this body. **/
+	public float gravityScale = 1;
 }

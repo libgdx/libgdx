@@ -91,12 +91,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetTransform
 	float* valOut = (float*)env->GetPrimitiveArrayCritical(vals, 0);
 	b2Transform t = body->GetTransform();
 
-	valOut[0] = t.position.x;
-	valOut[1] = t.position.y;
-	valOut[2] = t.R.col1.x;
-	valOut[3] = t.R.col1.y;
-	valOut[4] = t.R.col2.x;
-	valOut[5] = t.R.col2.y;
+	valOut[0] = t.p.x;
+	valOut[1] = t.p.y;
+	valOut[2] = t.q.c;
+	valOut[3] = t.q.s;
 	env->ReleasePrimitiveArrayCritical(vals, valOut, 0);
 }
 
@@ -631,4 +629,27 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsFixedRo
 {
 	b2Body* body = (b2Body*)addr;
 	return body->IsFixedRotation();
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForceToCenter
+  (JNIEnv *, jobject, jlong addr, jfloat forceX, jfloat forceY) {
+	b2Body* body = (b2Body*)addr;
+	body->ApplyForceToCenter(b2Vec2(forceX, forceY));
+}
+
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetGravityScale
+  (JNIEnv *, jobject, jlong addr) {
+	b2Body* body = (b2Body*)addr;
+	return body->GetGravityScale();
+}
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Body
+ * Method:    jniSetGravityScale
+ * Signature: (JF)F
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetGravityScale
+  (JNIEnv *, jobject, jlong addr, jfloat gravityScale) {
+	b2Body* body = (b2Body*)addr;
+	body->SetGravityScale(gravityScale);
 }

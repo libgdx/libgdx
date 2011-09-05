@@ -26,9 +26,11 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetType
 	switch( type )
 	{
 	case b2Shape::e_circle: return 0;
-	case b2Shape::e_polygon: return 1;
+	case b2Shape::e_edge: return 1;
+	case b2Shape::e_polygon: return 2;
+	case b2Shape::e_chain: return 3;
 	default:
-		return b2Shape::e_unknown;
+		return -1;
 	}
 }
 
@@ -178,4 +180,10 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniGetShape
 {
 	b2Fixture* fixture = (b2Fixture*)addr;
 	return (jlong)fixture->GetShape();
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Fixture_jniRefilter
+  (JNIEnv *, jobject, jlong addr) {
+	b2Fixture* fixture = (b2Fixture*)addr;
+	fixture->Refilter();
 }

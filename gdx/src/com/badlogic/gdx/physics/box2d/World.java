@@ -28,8 +28,6 @@ import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
 import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 import com.badlogic.gdx.physics.box2d.joints.GearJoint;
 import com.badlogic.gdx.physics.box2d.joints.GearJointDef;
-import com.badlogic.gdx.physics.box2d.joints.LineJoint;
-import com.badlogic.gdx.physics.box2d.joints.LineJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
@@ -38,8 +36,12 @@ import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.RopeJoint;
+import com.badlogic.gdx.physics.box2d.joints.RopeJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
+import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.Pool;
@@ -141,7 +143,7 @@ public final class World implements Disposable {
 	public Body createBody (BodyDef def) {
 		long bodyAddr = jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle, def.linearVelocity.x,
 			def.linearVelocity.y, def.angularVelocity, def.linearDamping, def.angularDamping, def.allowSleep, def.awake,
-			def.fixedRotation, def.bullet, def.active, def.inertiaScale);
+			def.fixedRotation, def.bullet, def.active, def.gravityScale);
 		Body body = freeBodies.obtain();
 		body.reset(bodyAddr);
 		this.bodies.put(body.addr, body);
@@ -177,12 +179,13 @@ public final class World implements Disposable {
 		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, jointAddr);
 		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, jointAddr);
 		if (def.type == JointType.GearJoint) joint = new GearJoint(this, jointAddr);
-		if (def.type == JointType.LineJoint) joint = new LineJoint(this, jointAddr);
 		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, jointAddr);
 		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, jointAddr);
 		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, jointAddr);
 		if (def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, jointAddr);
 		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, jointAddr);
+		if (def.type == JointType.RopeJoint) joint = new RopeJoint(this, jointAddr);
+		if (def.type == JointType.WheelJoint) joint = new WheelJoint(this, jointAddr);
 		if (joint != null) joints.put(joint.addr, joint);
 		JointEdge jointEdgeA = new JointEdge(def.bodyB, joint);
 		JointEdge jointEdgeB = new JointEdge(def.bodyA, joint);
@@ -208,13 +211,6 @@ public final class World implements Disposable {
 			GearJointDef d = (GearJointDef)def;
 			return jniCreateGearJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.joint1.addr, d.joint2.addr, d.ratio);
 		}
-		if (def.type == JointType.LineJoint) {
-			LineJointDef d = (LineJointDef)def;
-			return jniCreateLineJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.enableLimit, d.lowerTranslation,
-				d.upperTranslation, d.enableMotor, d.maxMotorForce, d.motorSpeed);
-
-		}
 		if (def.type == JointType.MouseJoint) {
 			MouseJointDef d = (MouseJointDef)def;
 			return jniCreateMouseJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.target.x, d.target.y, d.maxForce,
@@ -223,14 +219,14 @@ public final class World implements Disposable {
 		if (def.type == JointType.PrismaticJoint) {
 			PrismaticJointDef d = (PrismaticJointDef)def;
 			return jniCreatePrismaticJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.localAxis1.x, d.localAxis1.y, d.referenceAngle, d.enableLimit,
+				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.referenceAngle, d.enableLimit,
 				d.lowerTranslation, d.upperTranslation, d.enableMotor, d.maxMotorForce, d.motorSpeed);
 		}
 		if (def.type == JointType.PulleyJoint) {
 			PulleyJointDef d = (PulleyJointDef)def;
 			return jniCreatePulleyJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.groundAnchorA.x, d.groundAnchorA.y,
 				d.groundAnchorB.x, d.groundAnchorB.y, d.localAnchorA.x, d.localAnchorA.y, d.localAnchorB.x, d.localAnchorB.y,
-				d.lengthA, d.maxLengthA, d.lengthB, d.maxLengthB, d.ratio);
+				d.lengthA, d.lengthB, d.ratio);
 
 		}
 		if (def.type == JointType.RevoluteJoint) {
@@ -244,9 +240,27 @@ public final class World implements Disposable {
 			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
 				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle);
 		}
+		if(def.type == JointType.RopeJoint) {
+			RopeJointDef d = (RopeJointDef)def;
+			return jniCreateRopeJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
+				d.localAnchorB.x, d.localAnchorB.y, d.maxLength);
+		}
+		if(def.type == JointType.WheelJoint) {
+			WheelJointDef d = (WheelJointDef)def;
+			return jniCreateWheelJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
+				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.enableMotor, d.maxMotorTorque, d.motorSpeed, 
+				d.frequencyHz, d.dampingRatio);
+		}
 
 		return 0;
 	}
+
+	private native long jniCreateWheelJoint (long addr, long bodyA, long Bodyb, boolean collideConnected, float localAnchorAX, float localAnchorAY,
+		float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableMotor, float maxMotorTorque, float motorSpeed, float frequencyHz,
+		float dampingRatio);
+
+	private native long jniCreateRopeJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxLength);
 
 	private native long jniCreateDistanceJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float length, float frequencyHz, float dampingRatio);
@@ -256,10 +270,6 @@ public final class World implements Disposable {
 
 	private native long jniCreateGearJoint (long addr, long bodyA, long bodyB, boolean collideConnected, long joint1, long joint2,
 		float ratio);
-
-	private native long jniCreateLineJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableLimit,
-		float lowerTranslation, float upperTranslation, boolean enableMotor, float maxMotorForce, float motorSpeed);
 
 	private native long jniCreateMouseJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float targetX,
 		float targetY, float maxForce, float frequencyHz, float dampingRatio);
@@ -271,7 +281,7 @@ public final class World implements Disposable {
 
 	private native long jniCreatePulleyJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float groundAnchorAX,
 		float groundAnchorAY, float groundAnchorBX, float groundAnchorBY, float localAnchorAX, float localAnchorAY,
-		float localAnchorBX, float localAnchorBY, float lengthA, float maxLengthA, float lengthB, float maxLengthB, float ratio);
+		float localAnchorBX, float localAnchorBY, float lengthA, float lengthB, float ratio);
 
 	private native long jniCreateRevoluteJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle, boolean enableLimit, float lowerAngle,
@@ -301,8 +311,13 @@ public final class World implements Disposable {
 
 	private native void jniStep (long addr, float timeStep, int velocityIterations, int positionIterations);
 
-	/** Call this after you are done with time steps to clear the forces. You normally call this after each call to Step, unless you
-	 * are performing sub-steps. By default, forces will be automatically cleared, so you don't need to call this function. See
+	/**
+	 *  Manually clear the force buffer on all bodies. By default, forces are cleared automatically
+	 * after each call to Step. The default behavior is modified by calling SetAutoClearForces.
+	 * The purpose of this function is to support sub-stepping. Sub-stepping is often used to maintain
+	 * a fixed sized time step under a variable frame-rate.
+	 * When you perform sub-stepping you will disable auto clearing of forces and instead call
+	 * ClearForces after all sub-steps are complete in one pass of your game loop.
 	 * {@link #setAutoClearForces(boolean)} */
 	public void clearForces () {
 		jniClearForces(addr);
@@ -429,6 +444,8 @@ public final class World implements Disposable {
 
 	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
 	 * returned list will have O(1) access times when using indexing.
+	 * contacts are created and destroyed in the middle of a time step.
+	 * Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
 	public List<Contact> getContactList () {
 		int numContacts = getContactCount();

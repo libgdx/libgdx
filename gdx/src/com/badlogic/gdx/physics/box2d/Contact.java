@@ -89,4 +89,79 @@ public class Contact {
 	}
 
 	private native long jniGetFixtureB (long addr);
+	
+	/**
+	 *  Get the child primitive index for fixture A.
+	 * @return
+	 */
+	public int getChildIndexA() {
+		return jniGetChildIndexA(addr);
+	}
+
+	private native int jniGetChildIndexA (long addr);
+
+	/**
+	 *  Get the child primitive index for fixture B.
+	 * @return
+	 */
+	public int getChildIndexB() {
+		return jniGetChildIndexB(addr);
+	}
+
+	private native int jniGetChildIndexB (long addr);
+
+	/**
+	 *  Override the default friction mixture. You can call this in b2ContactListener::PreSolve.
+	 * This value persists until set or reset.
+	 */
+	public void setFriction(float friction) {
+		jniSetFriction(addr, friction);
+	}
+
+	private native void jniSetFriction(long addr, float friction);
+	
+	/**
+	 *  Get the friction.
+	 */
+	public float getFriction() {
+		return jniGetFriction(addr);
+	}
+	
+	private native float jniGetFriction(long addr);
+
+	/**
+	 *  Reset the friction mixture to the default value.
+	 */
+	public void resetFriction() {
+		jniResetFriction(addr);
+	}
+	
+	private native void jniResetFriction(long addr);
+
+	/**
+	 *  Override the default restitution mixture. You can call this in b2ContactListener::PreSolve.
+	 * The value persists until you set or reset. */
+	public void setRestitution(float restitution) {
+		jniSetRestitution(addr, restitution);
+	}
+	
+	private native void jniSetRestitution(long addr, float restitution);
+
+	/**
+	 *  Get the restitution.
+	 */
+	public float getRestitution() {
+		return jniGetRestitution(addr);
+	}
+	
+	private native float jniGetRestitution(long addr);
+
+	/**
+	 * Reset the restitution to the default value.
+	 */
+	public void ResetRestitution() {
+		jniResetRestitution(addr);
+	}
+	
+	private native void jniResetRestitution(long addr);
 }

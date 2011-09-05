@@ -213,7 +213,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// instance. Normally you'll want to fix the time
 		// step.
 		long start = System.nanoTime();
-		world.step(Gdx.graphics.getDeltaTime(), 3, 3);
+		world.step(Gdx.graphics.getDeltaTime(), 8, 3);
 		float updateTime = (System.nanoTime() - start) / 1000000000.0f;
 
 		// next we clear the color buffer and set the camera

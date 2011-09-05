@@ -34,6 +34,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.ContactFilter;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -56,8 +57,8 @@ public class OneSidedPlatform extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
-			shape.setAsEdge(new Vector2(-20.0f, 0), new Vector2(20.0f, 0f));
+			EdgeShape shape = new EdgeShape();
+			shape.set(new Vector2(-20.0f, 0), new Vector2(20.0f, 0f));
 			ground.createFixture(shape, 0);
 			shape.dispose();
 		}

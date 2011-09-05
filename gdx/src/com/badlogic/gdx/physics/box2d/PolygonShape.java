@@ -69,13 +69,6 @@ public class PolygonShape extends Shape {
 
 	private native void jniSetAsBox (long addr, float hx, float hy, float centerX, float centerY, float angle);
 
-	/** Set this as a single edge. */
-	public void setAsEdge (Vector2 v1, Vector2 v2) {
-		jniSetAsEdge(addr, v1.x, v1.y, v2.x, v2.y);
-	}
-
-	private native void jniSetAsEdge (long addr, float v1x, float v1y, float v2x, float v2y);
-
 	/** @return the number of vertices */
 	public int getVertexCount () {
 		return jniGetVertexCount(addr);

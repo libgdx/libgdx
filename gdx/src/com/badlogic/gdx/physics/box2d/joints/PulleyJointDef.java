@@ -43,9 +43,6 @@ public class PulleyJointDef extends JointDef {
 		lengthB = anchorB.dst(groundAnchorB);
 		this.ratio = ratio;
 		float C = lengthA + ratio * lengthB;
-		maxLengthA = C - ratio * minPulleyLength;
-		maxLengthB = (C - minPulleyLength) / ratio;
-
 	}
 
 	/** The first ground anchor in world coordinates. This point never moves. */
@@ -63,14 +60,8 @@ public class PulleyJointDef extends JointDef {
 	/** The a reference length for the segment attached to bodyA. */
 	public float lengthA = 0;
 
-	/** The maximum length of the segment attached to bodyA. */
-	public float maxLengthA = 0;
-
 	/** The a reference length for the segment attached to bodyB. */
 	public float lengthB = 0;
-
-	/** The maximum length of the segment attached to bodyB. */
-	public float maxLengthB = 0;
 
 	/** The pulley ratio, used to simulate a block-and-tackle. */
 	public float ratio = 1;

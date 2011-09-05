@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,11 +16,11 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Dynamics/b2Body.h"
-#include "Box2D/Dynamics/b2Fixture.h"
-#include "Box2D/Dynamics/b2World.h"
-#include "Box2D/Dynamics/Contacts/b2Contact.h"
-#include "Box2D/Dynamics/Joints/b2Joint.h"
+#include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Fixture.h>
+#include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Dynamics/Contacts/b2Contact.h>
+#include <Box2D/Dynamics/Joints/b2Joint.h>
 
 b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 {
@@ -28,7 +28,6 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 	b2Assert(bd->linearVelocity.IsValid());
 	b2Assert(b2IsValid(bd->angle));
 	b2Assert(b2IsValid(bd->angularVelocity));
-	b2Assert(b2IsValid(bd->inertiaScale) && bd->inertiaScale >= 0.0f);
 	b2Assert(b2IsValid(bd->angularDamping) && bd->angularDamping >= 0.0f);
 	b2Assert(b2IsValid(bd->linearDamping) && bd->linearDamping >= 0.0f);
 
@@ -57,12 +56,15 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 
 	m_world = world;
 
-	m_xf.position = bd->position;
-	m_xf.R.Set(bd->angle);
+	m_xf.p = bd->position;
+	m_xf.q.Set(bd->angle);
 
 	m_sweep.localCenter.SetZero();
-	m_sweep.a0 = m_sweep.a = bd->angle;
-	m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
+	m_sweep.c0 = m_xf.p;
+	m_sweep.c = m_xf.p;
+	m_sweep.a0 = bd->angle;
+	m_sweep.a = bd->angle;
+	m_sweep.alpha0 = 0.0f;
 
 	m_jointList = NULL;
 	m_contactList = NULL;
@@ -74,6 +76,7 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 
 	m_linearDamping = bd->linearDamping;
 	m_angularDamping = bd->angularDamping;
+	m_gravityScale = bd->gravityScale;
 
 	m_force.SetZero();
 	m_torque = 0.0f;
@@ -109,6 +112,12 @@ b2Body::~b2Body()
 
 void b2Body::SetType(b2BodyType type)
 {
+	b2Assert(m_world->IsLocked() == false);
+	if (m_world->IsLocked() == true)
+	{
+		return;
+	}
+
 	if (m_type == type)
 	{
 		return;
@@ -122,6 +131,9 @@ void b2Body::SetType(b2BodyType type)
 	{
 		m_linearVelocity.SetZero();
 		m_angularVelocity = 0.0f;
+		m_sweep.a0 = m_sweep.a;
+		m_sweep.c0 = m_sweep.c;
+		SynchronizeFixtures();
 	}
 
 	SetAwake(true);
@@ -130,9 +142,9 @@ void b2Body::SetType(b2BodyType type)
 	m_torque = 0.0f;
 
 	// Since the body type changed, we need to flag contacts for filtering.
-	for (b2ContactEdge* ce = m_contactList; ce; ce = ce->next)
+	for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
 	{
-		ce->contact->FlagForFiltering();
+		f->Refilter();
 	}
 }
 
@@ -153,7 +165,7 @@ b2Fixture* b2Body::CreateFixture(const b2FixtureDef* def)
 	if (m_flags & e_activeFlag)
 	{
 		b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
-		fixture->CreateProxy(broadPhase, m_xf);
+		fixture->CreateProxies(broadPhase, m_xf);
 	}
 
 	fixture->m_next = m_fixtureList;
@@ -235,13 +247,8 @@ void b2Body::DestroyFixture(b2Fixture* fixture)
 
 	if (m_flags & e_activeFlag)
 	{
-		b2Assert(fixture->m_proxyId != b2BroadPhase::e_nullProxy);
 		b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
-		fixture->DestroyProxy(broadPhase);
-	}
-	else
-	{
-		b2Assert(fixture->m_proxyId == b2BroadPhase::e_nullProxy);
+		fixture->DestroyProxies(broadPhase);
 	}
 
 	fixture->Destroy(allocator);
@@ -268,14 +275,16 @@ void b2Body::ResetMassData()
 	// Static and kinematic bodies have zero mass.
 	if (m_type == b2_staticBody || m_type == b2_kinematicBody)
 	{
-		m_sweep.c0 = m_sweep.c = m_xf.position;
+		m_sweep.c0 = m_xf.p;
+		m_sweep.c = m_xf.p;
+		m_sweep.a0 = m_sweep.a;
 		return;
 	}
 
 	b2Assert(m_type == b2_dynamicBody);
 
 	// Accumulate mass over all fixtures.
-	b2Vec2 center = b2Vec2_zero;
+	b2Vec2 localCenter = b2Vec2_zero;
 	for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
 	{
 		if (f->m_density == 0.0f)
@@ -286,7 +295,7 @@ void b2Body::ResetMassData()
 		b2MassData massData;
 		f->GetMassData(&massData);
 		m_mass += massData.mass;
-		center += massData.mass * massData.center;
+		localCenter += massData.mass * massData.center;
 		m_I += massData.I;
 	}
 
@@ -294,7 +303,7 @@ void b2Body::ResetMassData()
 	if (m_mass > 0.0f)
 	{
 		m_invMass = 1.0f / m_mass;
-		center *= m_invMass;
+		localCenter *= m_invMass;
 	}
 	else
 	{
@@ -306,7 +315,7 @@ void b2Body::ResetMassData()
 	if (m_I > 0.0f && (m_flags & e_fixedRotationFlag) == 0)
 	{
 		// Center the inertia about the center of mass.
-		m_I -= m_mass * b2Dot(center, center);
+		m_I -= m_mass * b2Dot(localCenter, localCenter);
 		b2Assert(m_I > 0.0f);
 		m_invI = 1.0f / m_I;
 
@@ -319,7 +328,7 @@ void b2Body::ResetMassData()
 
 	// Move center of mass.
 	b2Vec2 oldCenter = m_sweep.c;
-	m_sweep.localCenter = center;
+	m_sweep.localCenter = localCenter;
 	m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 
 	// Update center of mass velocity.
@@ -360,7 +369,7 @@ void b2Body::SetMassData(const b2MassData* massData)
 
 	// Move center of mass.
 	b2Vec2 oldCenter = m_sweep.c;
-	m_sweep.localCenter = massData->center;
+	m_sweep.localCenter =  massData->center;
 	m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 
 	// Update center of mass velocity.
@@ -398,11 +407,14 @@ void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 		return;
 	}
 
-	m_xf.R.Set(angle);
-	m_xf.position = position;
+	m_xf.q.Set(angle);
+	m_xf.p = position;
 
-	m_sweep.c0 = m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
-	m_sweep.a0 = m_sweep.a = angle;
+	m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
+	m_sweep.a = angle;
+
+	m_sweep.c0 = m_sweep.c;
+	m_sweep.a0 = angle;
 
 	b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
 	for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
@@ -416,8 +428,8 @@ void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 void b2Body::SynchronizeFixtures()
 {
 	b2Transform xf1;
-	xf1.R.Set(m_sweep.a0);
-	xf1.position = m_sweep.c0 - b2Mul(xf1.R, m_sweep.localCenter);
+	xf1.q.Set(m_sweep.a0);
+	xf1.p = m_sweep.c0 - b2Mul(xf1.q, m_sweep.localCenter);
 
 	b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
 	for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
@@ -428,6 +440,8 @@ void b2Body::SynchronizeFixtures()
 
 void b2Body::SetActive(bool flag)
 {
+	b2Assert(m_world->IsLocked() == false);
+
 	if (flag == IsActive())
 	{
 		return;
@@ -441,7 +455,7 @@ void b2Body::SetActive(bool flag)
 		b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
 		for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
 		{
-			f->CreateProxy(broadPhase, m_xf);
+			f->CreateProxies(broadPhase, m_xf);
 		}
 
 		// Contacts are created the next time step.
@@ -454,7 +468,7 @@ void b2Body::SetActive(bool flag)
 		b2BroadPhase* broadPhase = &m_world->m_contactManager.m_broadPhase;
 		for (b2Fixture* f = m_fixtureList; f; f = f->m_next)
 		{
-			f->DestroyProxy(broadPhase);
+			f->DestroyProxies(broadPhase);
 		}
 
 		// Destroy the attached contacts.

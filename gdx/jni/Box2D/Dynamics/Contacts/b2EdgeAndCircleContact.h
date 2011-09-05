@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2010 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,36 +16,24 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef B2_TOI_SOLVER_H
-#define B2_TOI_SOLVER_H
+#ifndef B2_EDGE_AND_CIRCLE_CONTACT_H
+#define B2_EDGE_AND_CIRCLE_CONTACT_H
 
-#include "Box2D/Common/b2Math.h"
+#include <Box2D/Dynamics/Contacts/b2Contact.h>
 
-class b2Contact;
-class b2Body;
-struct b2TOIConstraint;
-class b2StackAllocator;
+class b2BlockAllocator;
 
-/// This is a pure position solver for a single movable body in contact with
-/// multiple non-moving bodies.
-class b2TOISolver
+class b2EdgeAndCircleContact : public b2Contact
 {
 public:
-	b2TOISolver(b2StackAllocator* allocator);
-	~b2TOISolver();
+	static b2Contact* Create(	b2Fixture* fixtureA, int32 indexA,
+								b2Fixture* fixtureB, int32 indexB, b2BlockAllocator* allocator);
+	static void Destroy(b2Contact* contact, b2BlockAllocator* allocator);
 
-	void Initialize(b2Contact** contacts, int32 contactCount, b2Body* toiBody);
-	void Clear();
+	b2EdgeAndCircleContact(b2Fixture* fixtureA, b2Fixture* fixtureB);
+	~b2EdgeAndCircleContact() {}
 
-	// Perform one solver iteration. Returns true if converged.
-	bool Solve(float32 baumgarte);
-
-private:
-
-	b2TOIConstraint* m_constraints;
-	int32 m_count;
-	b2Body* m_toiBody;
-	b2StackAllocator* m_allocator;
+	void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB);
 };
 
 #endif

@@ -30,10 +30,6 @@ public class Mpg123Test extends GdxTest {
 
 	@Override
 	public void create () {
-// Thread thread = new Thread( new Runnable() {
-//
-// public void run( )
-// {
 		String file = null;
 		if (Gdx.app.getType() == ApplicationType.Android)
 			file = "/sdcard/audio/schism.mp3";
@@ -51,16 +47,10 @@ public class Mpg123Test extends GdxTest {
 
 		long start = System.nanoTime();
 		while (decoder.readSamples(stereoSamples) > 0) {
-			AudioTools.convertToMono(stereoSamples, monoSamples, stereoSamples.capacity());
-			fft.spectrum(monoSamples, spectrum);
 		}
 
 		Gdx.app.log("Mpg123", "took " + (System.nanoTime() - start) / 1000000000.0);
 		decoder.dispose();
-// }
-// });
-// thread.setPriority(Thread.MAX_PRIORITY);
-// thread.start();
 	}
 
 	@Override

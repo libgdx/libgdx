@@ -121,6 +121,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForce
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
+ * Method:    jniApplyForceToCenter
+ * Signature: (JFF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForceToCenter
+  (JNIEnv *, jobject, jlong, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniApplyTorque
  * Signature: (JF)V
  */
@@ -358,6 +366,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetFixedRotat
  */
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniIsFixedRotation
   (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Body
+ * Method:    jniGetGravityScale
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetGravityScale
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Body
+ * Method:    jniSetGravityScale
+ * Signature: (JF)F
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetGravityScale
+  (JNIEnv *, jobject, jlong, jfloat);
 
 #ifdef __cplusplus
 }

@@ -29,8 +29,7 @@ public class Mpg123Decoder implements Decoder {
 	 * @param filename the filename */
 	public Mpg123Decoder (String filename) {
 		handle = openFile(filename);
-
-		if (handle == -1) throw new IllegalArgumentException("couldn't open file");
+		if (handle <= 0) throw new IllegalArgumentException("couldn't open file");
 	}
 
 	/** {@inheritDoc} */

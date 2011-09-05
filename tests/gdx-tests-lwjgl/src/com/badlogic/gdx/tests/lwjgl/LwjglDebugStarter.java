@@ -18,13 +18,16 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.ShapeRendererTest;
+import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
+import com.badlogic.gdx.tests.Box2DTest;
+import com.badlogic.gdx.tests.Box2DTestCollection;
+import com.badlogic.gdx.tests.VorbisTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = true;
+		config.useGL20 = false;
 		config.vSyncEnabled = true;
-		new LwjglApplication(new ShapeRendererTest(), config);
+		new LwjglApplication(new Box2DTestCollection(), config);
 	}
 }

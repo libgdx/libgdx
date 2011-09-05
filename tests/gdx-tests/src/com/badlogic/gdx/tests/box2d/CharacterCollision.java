@@ -33,6 +33,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -45,8 +46,8 @@ public class CharacterCollision extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
-			shape.setAsEdge(new Vector2(-20, 0), new Vector2(20, 0));
+			EdgeShape shape = new EdgeShape();
+			shape.set(new Vector2(-20, 0), new Vector2(20, 0));
 			ground.createFixture(shape, 0);
 			shape.dispose();
 		}
@@ -55,13 +56,13 @@ public class CharacterCollision extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
+			EdgeShape shape = new EdgeShape();
 			shape.setRadius(0);
-			shape.setAsEdge(new Vector2(-8, 1), new Vector2(-6, 1));
+			shape.set(new Vector2(-8, 1), new Vector2(-6, 1));
 			ground.createFixture(shape, 0);
-			shape.setAsEdge(new Vector2(-6, 1), new Vector2(-4, 1));
+			shape.set(new Vector2(-6, 1), new Vector2(-4, 1));
 			ground.createFixture(shape, 0);
-			shape.setAsEdge(new Vector2(-4, 1), new Vector2(-2, 1));
+			shape.set(new Vector2(-4, 1), new Vector2(-2, 1));
 			ground.createFixture(shape, 0);
 			shape.dispose();
 		}
@@ -84,16 +85,16 @@ public class CharacterCollision extends Box2DTest {
 			BodyDef bd = new BodyDef();
 			Body ground = world.createBody(bd);
 
-			PolygonShape shape = new PolygonShape();
+			EdgeShape shape = new EdgeShape();
 			float d = 2 * 2 * 0.005f;
 			shape.setRadius(0);
-			shape.setAsEdge(new Vector2(-1 + d, 3), new Vector2(1 - d, 3));
+			shape.set(new Vector2(-1 + d, 3), new Vector2(1 - d, 3));
 			ground.createFixture(shape, 0);
-			shape.setAsEdge(new Vector2(1, 3 + d), new Vector2(1, 5 - d));
+			shape.set(new Vector2(1, 3 + d), new Vector2(1, 5 - d));
 			ground.createFixture(shape, 0);
-			shape.setAsEdge(new Vector2(1 - d, 5), new Vector2(-1 + d, 5));
+			shape.set(new Vector2(1 - d, 5), new Vector2(-1 + d, 5));
 			ground.createFixture(shape, 0);
-			shape.setAsEdge(new Vector2(-1, 5 - d), new Vector2(-1, 3 + d));
+			shape.set(new Vector2(-1, 5 - d), new Vector2(-1, 3 + d));
 			ground.createFixture(shape, 0);
 			shape.dispose();
 		}

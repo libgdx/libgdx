@@ -23,6 +23,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGet
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGetTangentImpulses
   (JNIEnv *, jobject, jlong, jfloatArray);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_ContactImpulse
+ * Method:    jniGetCount
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_ContactImpulse_jniGetCount
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

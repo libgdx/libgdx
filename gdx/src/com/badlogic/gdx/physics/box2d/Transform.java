@@ -25,12 +25,10 @@ import com.badlogic.gdx.math.Vector2;
 public class Transform {
 	public static final int POS_X = 0;
 	public static final int POS_Y = 1;
-	public static final int COL1_X = 2;
-	public static final int COL1_Y = 3;
-	public static final int COL2_X = 4;
-	public static final int COL2_Y = 5;
+	public static final int COS = 2;
+	public static final int SIN = 3;
 
-	public float[] vals = new float[6];
+	public float[] vals = new float[4];
 
 	private Vector2 position = new Vector2();
 
@@ -49,8 +47,8 @@ public class Transform {
 	/** Transforms the given vector by this transform
 	 * @param v the vector */
 	public Vector2 mul (Vector2 v) {
-		float x = vals[POS_X] + vals[COL1_X] * v.x + vals[COL2_X] * v.y;
-		float y = vals[POS_Y] + vals[COL1_Y] * v.x + vals[COL2_Y] * v.y;
+		float x = vals[POS_X] + vals[COS] * v.x + -vals[SIN] * v.y;
+		float y = vals[POS_Y] + vals[SIN] * v.x + vals[COS] * v.y;
 
 		v.x = x;
 		v.y = y;
@@ -66,10 +64,12 @@ public class Transform {
 	 * @param angle angle in radians */
 	public void setRotation (float angle) {
 		float c = (float)Math.cos(angle), s = (float)Math.sin(angle);
-		vals[COL1_X] = c;
-		vals[COL2_X] = -s;
-		vals[COL1_Y] = s;
-		vals[COL2_Y] = c;
+		vals[COS] = c;
+		vals[SIN] = s;
+	}
+	
+	public float getRotation() {
+		return (float)Math.atan2(vals[SIN], vals[COS]);
 	}
 
 	/** Sets the position of this transform

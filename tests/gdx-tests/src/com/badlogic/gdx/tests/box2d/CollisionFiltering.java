@@ -33,6 +33,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -54,8 +55,8 @@ public class CollisionFiltering extends Box2DTest {
 	@Override
 	protected void createWorld (World world) {
 		{
-			PolygonShape shape = new PolygonShape();
-			shape.setAsEdge(new Vector2(-40.0f, 0), new Vector2(40, 0));
+			EdgeShape shape = new EdgeShape();
+			shape.set(new Vector2(-40.0f, 0), new Vector2(40, 0));
 
 			FixtureDef fd = new FixtureDef();
 			fd.shape = shape;
@@ -117,7 +118,7 @@ public class CollisionFiltering extends Box2DTest {
 			jd.enableLimit = true;
 			jd.localAnchorA.set(0, 4);
 			jd.localAnchorB.set(0, 0);
-			jd.localAxis1.set(0, 1);
+			jd.localAxisA.set(0, 1);
 			jd.lowerTranslation = -1;
 			jd.upperTranslation = 1;
 

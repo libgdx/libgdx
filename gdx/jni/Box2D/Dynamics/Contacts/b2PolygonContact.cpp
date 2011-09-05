@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.gphysics.com
+* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -16,16 +16,17 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-#include "Box2D/Dynamics/Contacts/b2PolygonContact.h"
-#include "Box2D/Common/b2BlockAllocator.h"
-#include "Box2D/Collision/b2TimeOfImpact.h"
-#include "Box2D/Dynamics/b2Body.h"
-#include "Box2D/Dynamics/b2Fixture.h"
-#include "Box2D/Dynamics/b2WorldCallbacks.h"
+#include <Box2D/Dynamics/Contacts/b2PolygonContact.h>
+#include <Box2D/Common/b2BlockAllocator.h>
+#include <Box2D/Collision/b2TimeOfImpact.h>
+#include <Box2D/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Fixture.h>
+#include <Box2D/Dynamics/b2WorldCallbacks.h>
 
 #include <new>
+using namespace std;
 
-b2Contact* b2PolygonContact::Create(b2Fixture* fixtureA, b2Fixture* fixtureB, b2BlockAllocator* allocator)
+b2Contact* b2PolygonContact::Create(b2Fixture* fixtureA, int32, b2Fixture* fixtureB, int32, b2BlockAllocator* allocator)
 {
 	void* mem = allocator->Allocate(sizeof(b2PolygonContact));
 	return new (mem) b2PolygonContact(fixtureA, fixtureB);
@@ -38,7 +39,7 @@ void b2PolygonContact::Destroy(b2Contact* contact, b2BlockAllocator* allocator)
 }
 
 b2PolygonContact::b2PolygonContact(b2Fixture* fixtureA, b2Fixture* fixtureB)
-	: b2Contact(fixtureA, fixtureB)
+	: b2Contact(fixtureA, 0, fixtureB, 0)
 {
 	b2Assert(m_fixtureA->GetType() == b2Shape::e_polygon);
 	b2Assert(m_fixtureB->GetType() == b2Shape::e_polygon);

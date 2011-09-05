@@ -124,7 +124,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
  * Signature: (J)F
  */
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetMotorForce
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jobject, jlong, jfloat);
 
 #ifdef __cplusplus
 }
