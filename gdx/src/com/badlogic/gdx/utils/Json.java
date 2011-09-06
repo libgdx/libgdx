@@ -416,8 +416,16 @@ public class Json {
 		return (T)readValue(type, null, new JsonReader().parse(reader));
 	}
 
+	public <T> T fromJson (Class<T> type, Class elementType, Reader reader) {
+		return (T)readValue(type, elementType, new JsonReader().parse(reader));
+	}
+
 	public <T> T fromJson (Class<T> type, InputStream input) {
 		return (T)readValue(type, null, new JsonReader().parse(input));
+	}
+
+	public <T> T fromJson (Class<T> type, Class elementType, InputStream input) {
+		return (T)readValue(type, elementType, new JsonReader().parse(input));
 	}
 
 	public <T> T fromJson (Class<T> type, FileHandle file) {
@@ -428,12 +436,28 @@ public class Json {
 		}
 	}
 
+	public <T> T fromJson (Class<T> type, Class elementType, FileHandle file) {
+		try {
+			return (T)readValue(type, elementType, new JsonReader().parse(file));
+		} catch (Exception ex) {
+			throw new SerializationException("Error reading file: " + file, ex);
+		}
+	}
+
 	public <T> T fromJson (Class<T> type, char[] data, int offset, int length) {
 		return (T)readValue(type, null, new JsonReader().parse(data, offset, length));
 	}
 
+	public <T> T fromJson (Class<T> type, Class elementType, char[] data, int offset, int length) {
+		return (T)readValue(type, elementType, new JsonReader().parse(data, offset, length));
+	}
+
 	public <T> T fromJson (Class<T> type, String json) {
 		return (T)readValue(type, null, new JsonReader().parse(json));
+	}
+
+	public <T> T fromJson (Class<T> type, Class elementType, String json) {
+		return (T)readValue(type, elementType, new JsonReader().parse(json));
 	}
 
 	public void readField (Object object, String name, Object jsonData) {

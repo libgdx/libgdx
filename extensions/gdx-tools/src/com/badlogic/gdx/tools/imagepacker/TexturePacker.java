@@ -685,7 +685,7 @@ public class TexturePacker {
 		public int maxHeight = 512;
 		public boolean stripWhitespace = true;
 		public boolean incremental;
-		public boolean alias;
+		public boolean alias = true;
 		public boolean edgePadding = true;
 
 		HashMap<String, Long> crcs = new HashMap();
