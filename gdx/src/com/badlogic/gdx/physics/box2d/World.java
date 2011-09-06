@@ -159,9 +159,11 @@ public final class World implements Disposable {
 	 * @warning This automatically deletes all associated shapes and joints.
 	 * @warning This function is locked during callbacks. */
 	public void destroyBody (Body body) {
+		body.setUserData(null);
 		this.bodies.remove(body.addr);
-		for (int i = 0; i < body.getFixtureList().size(); i++)
-			this.fixtures.remove(body.getFixtureList().get(i).addr);
+		for (int i = 0; i < body.getFixtureList().size(); i++) {
+			this.fixtures.remove(body.getFixtureList().get(i).addr).setUserData(null);
+		}
 		for (int i = 0; i < body.getJointList().size(); i++)
 			this.joints.remove(body.getJointList().get(i).joint.addr);
 		jniDestroyBody(addr, body.addr);
