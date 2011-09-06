@@ -42,6 +42,8 @@ import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout.*;
 /** @author Nathan Sweet */
 public class Table extends Group implements Layout {
 	private final TableLayout layout;
+	boolean prefSizeInvalid = true;
+	private int prefWidth, prefHeight;
 
 	public Table () {
 		this(null, new TableLayout());
@@ -80,18 +82,25 @@ public class Table extends Group implements Layout {
 		super.draw(batch, parentAlpha);
 	}
 
-	public float getPrefWidth () {
-		// BOZO - Expensive? Cache?
+	private void computePrefSize () {
+		if (!prefSizeInvalid) return;
+		prefSizeInvalid = false;
 		layout.setLayoutSize(0, 0, 0, 0);
+		layout.invalidate();
 		layout.layout();
-		return layout.getMinWidth();
+		prefWidth = layout.getMinWidth();
+		prefHeight = layout.getMinHeight();
+		layout.invalidate();
+	}
+
+	public float getPrefWidth () {
+		if (prefSizeInvalid) computePrefSize();
+		return prefWidth;
 	}
 
 	public float getPrefHeight () {
-		// BOZO - Expensive? Cache?
-		layout.setLayoutSize(0, 0, 0, 0);
-		layout.layout();
-		return layout.getMinHeight();
+		if (prefSizeInvalid) computePrefSize();
+		return prefHeight;
 	}
 
 	public TableLayout getTableLayout () {
