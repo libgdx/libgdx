@@ -52,6 +52,7 @@ public class GdxTests {
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		BufferUtilsTest.class,
+		ImageTest.class,
 		CompassTest.class,
 		ComplexActionTest.class,
 		CullTest.class,

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests.lwjgl;
 
 import java.awt.BorderLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -39,8 +40,18 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
-public class LwjglTestStarter {
-	static class TestList extends JPanel {
+public class LwjglTestStarter extends JFrame {
+	public LwjglTestStarter () throws HeadlessException {
+		super("libgdx Tests");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setContentPane(new TestList());
+		pack();
+		setSize(getWidth(), 600);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+
+	class TestList extends JPanel {
 		public TestList () {
 			setLayout(new BorderLayout());
 
@@ -73,6 +84,7 @@ public class LwjglTestStarter {
 				public void actionPerformed (ActionEvent e) {
 					String testName = (String)list.getSelectedValue();
 					GdxTest test = GdxTests.newTest(testName);
+					dispose();
 					LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 					config.width = 640;
 					config.height = 480;
@@ -94,12 +106,6 @@ public class LwjglTestStarter {
 
 	public static void main (String[] argv) throws Exception {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		JFrame frame = new JFrame("GDX - LWJGL Test Launcher");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setContentPane(new TestList());
-		frame.pack();
-		frame.setSize(frame.getWidth(), 600);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		new LwjglTestStarter();
 	}
 }

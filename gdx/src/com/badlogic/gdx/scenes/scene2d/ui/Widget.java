@@ -38,7 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 public abstract class Widget extends Actor implements Layout {
 	public float prefWidth;
 	public float prefHeight;
-	protected boolean invalidated = false;
+	protected boolean invalidated = true;
 
 	/** Creates a new widget without a name or preferred size. */
 	public Widget () {
