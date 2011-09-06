@@ -455,9 +455,6 @@ public class TextureAtlas implements Disposable {
 			originalWidth = region.originalWidth;
 			originalHeight = region.originalHeight;
 			rotate = region.rotate;
-
-			setRegionWidth(packedWidth);
-			setRegionHeight(packedHeight);
 		}
 
 		/** Flips the region, adjusting the offset so the image appears to be flipped as if no whitespace has been removed for
