@@ -231,35 +231,13 @@ public class SpriteBatch implements Disposable {
 		if (drawing) throw new IllegalStateException("you have to call SpriteBatch.end() first");
 		renderCalls = 0;
 
-		if (Gdx.graphics.isGL20Available() == false) {
-			GL10 gl = Gdx.gl10;
-
-			gl.glDepthMask(false);
-			gl.glEnable(GL10.GL_TEXTURE_2D);
-
-			gl.glMatrixMode(GL10.GL_PROJECTION);
-			gl.glLoadMatrixf(projectionMatrix.val, 0);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-			gl.glLoadMatrixf(transformMatrix.val, 0);
-		} else {
-			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-
-			GL20 gl = Gdx.gl20;
-			gl.glDepthMask(false);
-			gl.glEnable(GL20.GL_TEXTURE_2D);
-
-			if (customShader != null) {
-				customShader.begin();
-				customShader.setUniformMatrix("u_proj", projectionMatrix);
-				customShader.setUniformMatrix("u_trans", transformMatrix);
-				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-				customShader.setUniformi("u_texture", 0);
-			} else {
-				shader.begin();
-				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
-				shader.setUniformi("u_texture", 0);
-			}
+		Gdx.gl.glDepthMask(false);
+		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+		if (Gdx.graphics.isGL20Available()) {
+			if(customShader != null) customShader.begin();
+			else shader.begin();
 		}
+		setupMatrices();
 
 		idx = 0;
 		lastTexture = null;
@@ -1147,22 +1125,45 @@ public class SpriteBatch implements Disposable {
 		return transformMatrix;
 	}
 
-	/** Sets the projection matrix to be used by this SpriteBatch. Can only be set outside a {@link #begin()}/{@link #end()} block.
+	/** Sets the projection matrix to be used by this SpriteBatch. If this is called inside a {@link #begin()}/{@link #end()} block.
+	 * the current batch is flushed to the gpu.
 	 * 
 	 * @param projection the projection matrix */
 	public void setProjectionMatrix (Matrix4 projection) {
-		if (drawing) throw new GdxRuntimeException("Can't set the matrix within begin()/end() block");
-
+		if (drawing) flush();
 		projectionMatrix.set(projection);
+		if (drawing) setupMatrices();
 	}
 
-	/** Sets the transform matrix to be used by this SpriteBatch. Can only be set outside a {@link #begin()}/{@link #end()} block.
+	/** Sets the transform matrix to be used by this SpriteBatch. If this is called inside a {@link #begin()}/{@link #end()} block.
+	 * the current batch is flushed to the gpu.
 	 * 
 	 * @param transform the transform matrix */
 	public void setTransformMatrix (Matrix4 transform) {
-		if (drawing) throw new GdxRuntimeException("Can't set the matrix within begin()/end() block");
-
+		if (drawing) flush();
 		transformMatrix.set(transform);
+		if (drawing) setupMatrices();
+	}
+
+	private void setupMatrices () {
+		if(!Gdx.graphics.isGL20Available()) {
+			GL10 gl = Gdx.gl10;
+			gl.glMatrixMode(GL10.GL_PROJECTION);
+			gl.glLoadMatrixf(projectionMatrix.val, 0);
+			gl.glMatrixMode(GL10.GL_MODELVIEW);
+			gl.glLoadMatrixf(transformMatrix.val, 0);
+		} else {
+			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
+			if (customShader != null) {
+				customShader.setUniformMatrix("u_proj", projectionMatrix);
+				customShader.setUniformMatrix("u_trans", transformMatrix);
+				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+				customShader.setUniformi("u_texture", 0);
+			} else {
+				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+				shader.setUniformi("u_texture", 0);
+			}
+		}
 	}
 
 	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
