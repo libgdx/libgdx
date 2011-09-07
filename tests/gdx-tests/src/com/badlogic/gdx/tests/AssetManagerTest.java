@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TileMapRendererLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
@@ -58,7 +60,6 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		load();
 		Texture.setAssetManager(manager);
 		batch = new SpriteBatch();
-
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), false);
 	}
 
@@ -71,6 +72,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		manager.load("data/verdana39.png", Texture.class);
 		manager.load("data/verdana39.fnt", BitmapFont.class);
 		manager.load("data/test.etc1", Texture.class);
+		manager.load("data/tiledmap/tilemap csv.tmx", TileMapRenderer.class, new TileMapRendererLoader.TileMapParameter("data/tiledmap/", 8, 8));
 	}
 	
 	private void unload() {
@@ -80,6 +82,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		manager.unload("data/verdana39.png");
 		manager.unload("data/verdana39.fnt");
 		manager.unload("data/test.etc1");
+		manager.unload("data/tiledmap/tilemap csv.tmx");
 	}
 	
 	private void invalidateTexture(Texture texture) {
@@ -94,11 +97,11 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		if (result & !diagnosed) {
 			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagonistics() + "\n" + Texture.getManagedStatus());
 			diagnosed = false;
-			invalidateTexture(manager.get("data/animation.png", Texture.class));
-			invalidateTexture(manager.get("data/pack1.png", Texture.class));
-			invalidateTexture(manager.get("data/verdana39.png", Texture.class));
-			invalidateTexture(manager.get("data/test.etc1", Texture.class));
-			Texture.invalidateAllTextures(Gdx.app);
+//			invalidateTexture(manager.get("data/animation.png", Texture.class));
+//			invalidateTexture(manager.get("data/pack1.png", Texture.class));
+//			invalidateTexture(manager.get("data/verdana39.png", Texture.class));
+//			invalidateTexture(manager.get("data/test.etc1", Texture.class));
+//			Texture.invalidateAllTextures(Gdx.app);
 //			unload();
 //			load();
 //			manager.finishLoading();
@@ -113,6 +116,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		if (manager.isLoaded("data/verdana39.png")) batch.draw(manager.get("data/verdana39.png", Texture.class), 300, 100);
 		if (manager.isLoaded("data/pack")) batch.draw(manager.get("data/pack", TextureAtlas.class).findRegion("particle-star"), 164, 100);
 		if (manager.isLoaded("data/verdana39.fnt")) manager.get("data/verdana39.fnt", BitmapFont.class).draw(batch, "This is a test", 100, 200);
+		if (manager.isLoaded("data/tiledmap/tilemap csv.tmx")) manager.get("data/tiledmap/tilemap csv.tmx", TileMapRenderer.class).render();
 		font.draw(batch, "loaded: " + manager.getProgress() + ", reloads: " + reloads, 0, 30);
 		batch.end();
 		

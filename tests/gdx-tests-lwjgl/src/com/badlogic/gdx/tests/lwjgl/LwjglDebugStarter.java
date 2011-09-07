@@ -18,16 +18,20 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.AssetManagerTest;
 import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
+import com.badlogic.gdx.tests.TiledMapTest;
 import com.badlogic.gdx.tests.VorbisTest;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
+		GdxTest test = new AssetManagerTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = false;
+		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
-		new LwjglApplication(new Box2DTestCollection(), config);
+		new LwjglApplication(test, config);
 	}
 }
