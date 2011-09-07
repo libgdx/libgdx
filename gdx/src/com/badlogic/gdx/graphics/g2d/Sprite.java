@@ -502,24 +502,20 @@ public class Sprite extends TextureRegion {
 		super.flip(x, y);
 		float[] vertices = Sprite.this.vertices;
 		if (x) {
-			float u = vertices[U1];
-			float u2 = vertices[U3];
-			this.u = u;
-			this.u2 = u2;
-			vertices[U1] = u2;
-			vertices[U2] = u2;
-			vertices[U3] = u;
-			vertices[U4] = u;
+			float temp = vertices[U1];
+			vertices[U1] = vertices[U3];
+			vertices[U3] = temp;
+			temp = vertices[U2];
+			vertices[U2] = vertices[U4];
+			vertices[U4] = temp;
 		}
 		if (y) {
-			float v = vertices[V2];
-			float v2 = vertices[V1];
-			this.v = v;
-			this.v2 = v2;
-			vertices[V1] = v;
-			vertices[V2] = v2;
-			vertices[V3] = v2;
-			vertices[V4] = v;
+			float temp = vertices[V1];
+			vertices[V1] = vertices[V3];
+			vertices[V3] = temp;
+			temp = vertices[V2];
+			vertices[V2] = vertices[V4];
+			vertices[V4] = temp;
 		}
 	}
 
