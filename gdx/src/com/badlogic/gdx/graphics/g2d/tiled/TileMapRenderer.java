@@ -36,7 +36,8 @@ public class TileMapRenderer implements Disposable {
 	private int normalCacheId[][][], blendedCacheId[][][];
 
 	private TileAtlas atlas;
-
+	private TiledMap map;
+	
 	private int mapHeightUnits, mapWidthUnits;
 	private int tileWidth, tileHeight;
 	private float unitsPerTileX, unitsPerTileY;
@@ -128,6 +129,7 @@ public class TileMapRenderer implements Disposable {
 
 		init(tileMap, atlas, map.tileWidth, map.tileHeight, unitsPerTileX, unitsPerTileY, blendedTilesArray, tilesPerBlockX,
 			tilesPerBlockY, shader);
+		this.map = map;
 	}
 
 	/** A renderer for static tile maps backed with a Sprite Cache.
@@ -461,6 +463,14 @@ public class TileMapRenderer implements Disposable {
 	@Override
 	public void dispose () {
 		cache.dispose();
+	}
+	
+	public TiledMap getMap() {
+		return map;
+	}
+	
+	public TileAtlas getAtlas() {
+		return atlas;
 	}
 
 	private static IntArray createFromCSV (String values) {
