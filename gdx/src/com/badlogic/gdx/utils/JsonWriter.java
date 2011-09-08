@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  * @author Nathan Sweet */
 public class JsonWriter extends Writer {
 	Writer writer;
-	private final ArrayDeque<JsonObject> stack = new ArrayDeque();
+	private final Array<JsonObject> stack = new Array();
 	private JsonObject current;
 	private boolean named;
 	private OutputType outputType = OutputType.json;
@@ -62,7 +62,7 @@ public class JsonWriter extends Writer {
 				named = false;
 			}
 		}
-		stack.push(current = new JsonObject(false));
+		stack.add(current = new JsonObject(false));
 		return this;
 	}
 
@@ -78,7 +78,7 @@ public class JsonWriter extends Writer {
 				named = false;
 			}
 		}
-		stack.push(current = new JsonObject(true));
+		stack.add(current = new JsonObject(true));
 		return this;
 	}
 
@@ -129,7 +129,7 @@ public class JsonWriter extends Writer {
 	}
 
 	public void close () throws IOException {
-		while (!stack.isEmpty())
+		while (stack.size > 0)
 			pop();
 		writer.close();
 	}
