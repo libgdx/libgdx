@@ -156,7 +156,8 @@ public class JsonWriter extends Writer {
 
 		public String quoteValue (String value) {
 			value = value.replace("\\", "\\\\");
-			if (this == OutputType.minimal && minimalPattern.matcher(value).matches()) return value;
+			if (this == OutputType.minimal && !value.equals("true") && !value.equals("false") && !value.equals("null")
+				&& minimalPattern.matcher(value).matches()) return value;
 			return '"' + value + '"';
 		}
 
@@ -177,7 +178,8 @@ public class JsonWriter extends Writer {
 
 	public static void main (String[] args) throws Exception {
 		Json json = new Json();
-		ObjectMap map = json.fromJson(ObjectMap.class, "{ moo: a-@#$%^%^TFGD-1cow , a: { width: 1, height: 1, x: 110, y: 0 }, meow: {shit:[{wtf:\"1.0\"}]}, }");
+		ObjectMap map = json.fromJson(ObjectMap.class,
+			"{ moo: a-@#$%^%^TFGD-1cow , a: { width: 1, height: 1, x: 110, y: 0 }, meow: {shit:[{wtf:\"1.0\"}]}, }");
 		System.out.println(map);
 	}
 }
