@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.assets;
 
+import java.util.HashMap;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -436,9 +437,31 @@ public class AssetManager implements Disposable {
 		loadQueue.clear();
 		while (!update());
 
-		Array<String> assets = assetTypes.keys().toArray();
-		for (String asset : assets) {
-			unload(asset);
+		HashMap<String, Integer> dependencyCount = new HashMap<String, Integer>();
+		while(assetTypes.size > 0) {
+			// for each asset, figure out how often it was referenced
+			dependencyCount.clear();
+			Array<String> assets = assetTypes.keys().toArray();
+			for (String asset : assets) {
+				dependencyCount.put(asset, 0);
+			}
+			
+			for (String asset : assets) {
+				Array<String> dependencies = assetDependencies.get(asset);
+				if(dependencies == null) continue;
+				for(String dependency: dependencies) {
+					int count = dependencyCount.get(dependency);
+					count++;
+					dependencyCount.put(dependency, count);
+				}
+			}
+			
+			// only dispose of assets that are root assets (not referenced)
+			for(String asset: assets) {
+				if(dependencyCount.get(asset) == 0) {
+					unload(asset);
+				}
+			}
 		}
 
 		this.assets.clear();
