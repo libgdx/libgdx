@@ -62,7 +62,8 @@ public class ResolutionFileResolver implements FileHandleResolver {
 			}
 		}
 		
-		FileHandle handle = baseResolver.resolve(fileName + bestDesc.suffix);
+		FileHandle originalHandle = new FileHandle(fileName);
+		FileHandle handle = baseResolver.resolve(originalHandle.parent() + "/" + bestDesc.suffix + "/" + originalHandle.name());
 		if(!handle.exists()) handle = baseResolver.resolve(fileName);
 		return handle;
 	}
