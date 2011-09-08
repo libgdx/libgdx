@@ -437,7 +437,7 @@ public class AssetManager implements Disposable {
 		loadQueue.clear();
 		while (!update());
 
-		HashMap<String, Integer> dependencyCount = new HashMap<String, Integer>();
+		HashMap<String, Integer> dependencyCount = new HashMap<String, Integer>(); // FIXME use ObjectIntMap once its ready.
 		while(assetTypes.size > 0) {
 			// for each asset, figure out how often it was referenced
 			dependencyCount.clear();
