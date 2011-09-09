@@ -115,6 +115,9 @@ public class TiledLoader {
 						if (currLayerWidth != 0 && currLayerHeight != 0) {
 							currLayer.tiles = new int[currLayerHeight][currLayerWidth];
 						}
+						if ("name".equals(name)) {
+							currLayer.name = value;
+						}
 						return;
 					}
 
