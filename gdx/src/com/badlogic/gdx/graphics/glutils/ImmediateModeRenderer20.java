@@ -208,4 +208,9 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	public int getMaxVertices () {
 		return maxVertices;
 	}
+	
+	public void dispose() {
+		if(defaultShader != null) defaultShader.dispose();
+		mesh.dispose();
+	}
 }

@@ -437,4 +437,8 @@ public class ShapeRenderer {
 		renderer.end();
 		currType = null;
 	}
+
+	public void dispose () {
+		renderer.dispose();
+	}
 }

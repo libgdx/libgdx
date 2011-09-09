@@ -223,4 +223,8 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	public void vertex (Vector3 point) {
 		vertex(point.x, point.y, point.z);
 	}
+
+	@Override
+	public void dispose () {		
+	}
 }

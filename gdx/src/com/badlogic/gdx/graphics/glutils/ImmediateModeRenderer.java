@@ -34,4 +34,6 @@ public interface ImmediateModeRenderer {
 	public int getNumVertices ();
 
 	public int getMaxVertices ();
+	
+	public void dispose();
 }
