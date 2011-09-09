@@ -17,8 +17,8 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
-import java.util.ArrayDeque;
 import java.util.regex.Pattern;
 
 /** Builder style API for emitting JSON.
@@ -116,7 +116,7 @@ public class JsonWriter extends Writer {
 	public JsonWriter pop () throws IOException {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
 		stack.pop().close();
-		current = stack.peek();
+		current = stack.size == 0 ? null : stack.peek();
 		return this;
 	}
 
@@ -174,12 +174,5 @@ public class JsonWriter extends Writer {
 				return '"' + value + '"';
 			}
 		}
-	}
-
-	public static void main (String[] args) throws Exception {
-		Json json = new Json();
-		ObjectMap map = json.fromJson(ObjectMap.class,
-			"{ moo: a-@#$%^%^TFGD-1cow , a: { width: 1, height: 1, x: 110, y: 0 }, meow: {shit:[{wtf:\"1.0\"}]}, }");
-		System.out.println(map);
 	}
 }

@@ -55,6 +55,18 @@ public class Image extends Widget {
 			imageWidth = width;
 			imageHeight = height;
 			break;
+		case stretchX:
+			imageWidth = width;
+			imageHeight = regionHeight;
+			imageX = 0;
+			imageY = height / 2 - imageHeight / 2;
+			break;
+		case stretchY:
+			imageWidth = regionWidth;
+			imageHeight = height;
+			imageX = width / 2 - imageWidth / 2;
+			imageY = 0;
+			break;
 		case none:
 			imageWidth = regionWidth;
 			imageHeight = regionHeight;
@@ -81,6 +93,6 @@ public class Image extends Widget {
 	}
 
 	static public enum Scaling {
-		fill, fit, stretch, none
+		fill, fit, stretch, stretchX, stretchY, none
 	}
 }

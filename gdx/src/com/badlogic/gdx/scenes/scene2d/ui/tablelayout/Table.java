@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.esotericsoftware.tablelayout.Cell;
 
 import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout.*;
@@ -118,6 +119,13 @@ public class Table extends Group implements Layout {
 	 * @param actor May be null to add a cell without an actor. */
 	public Cell add (Actor actor) {
 		return layout.add(actor);
+	}
+	
+	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
+	 * @see TableLayout#stack(Actor...)
+	 * @param actor May be null to add a cell without an actor. */
+	public Cell stack (Actor... actor) {
+		return layout.stack(actor);
 	}
 
 	/** Indicates that subsequent cells should be added to a new row and returns the cell values that will be used as the defaults
