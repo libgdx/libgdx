@@ -170,11 +170,12 @@ public class JsonReader {
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
-			string = ('"' quotedChars >buffer %string '"') | unquotedChars >buffer %string;
+			string = '"' quotedChars >buffer %string '"';
+			unquotedString = unquotedChars >buffer %string;
 			number = ('-'? ('0' | ([1-9][0-9]*)) ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?) >buffer %number;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
-			value = startObject | startArray | string | number | nullValue | booleanValue;
+			value = startObject | startArray | number | string @2 | nullValue @2 | booleanValue @2 | unquotedString @-1;
 
 			nameValue = name space* ':' space* value;
 
