@@ -27,16 +27,21 @@ import java.util.Properties;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.files.FileHandle;
 
 public class LwjglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
-
+	
 	LwjglPreferences (String name) {
-		this.name = name;
+		this(Gdx.files.external(name));
+	}
+
+	public LwjglPreferences (FileHandle file) {
+		this.name = file.name();
 		InputStream in = null;
 		try {
-			in = new BufferedInputStream(Gdx.files.external(name).read());
+			in = new BufferedInputStream(file.read());
 			properties.loadFromXML(in);
 		} catch (Throwable t) {
 		} finally {

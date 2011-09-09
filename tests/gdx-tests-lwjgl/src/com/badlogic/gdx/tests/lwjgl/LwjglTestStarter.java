@@ -24,7 +24,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.prefs.Preferences;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
@@ -35,8 +34,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
+import com.badlogic.gdx.backends.lwjgl.LwjglPreferences;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -77,7 +80,9 @@ public class LwjglTestStarter extends JFrame {
 				}
 			});
 
-			list.setSelectedValue(Preferences.systemNodeForPackage(GdxTests.class).get("last", null), true);
+			final Preferences prefs = new LwjglPreferences(new FileHandle(new LwjglFiles().getExternalStoragePath()
+				+ "pennypop-tests"));
+			list.setSelectedValue(prefs.getString("last", null), true);
 
 			button.addActionListener(new ActionListener() {
 				@Override
@@ -92,7 +97,8 @@ public class LwjglTestStarter extends JFrame {
 					config.useGL20 = test.needsGL20();
 					config.forceExit = false;
 					new LwjglApplication(test, config);
-					Preferences.systemNodeForPackage(GdxTests.class).put("last", testName);
+					prefs.putString("last", testName);
+					prefs.flush();
 				}
 			});
 
