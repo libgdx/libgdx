@@ -34,8 +34,6 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -56,7 +54,7 @@ public class TextureAtlas implements Disposable {
 	public static class TextureAtlasData {
 		public static class Page {
 			public final FileHandle textureFile;
-			public Texture texture; // FIXME THIS IS FUCKING UGLY AS IT IS OPTIONAL FOR TEXTUREATLASLOADER UGH.e
+			public Texture texture;
 			public final boolean useMipMaps;
 			public final Format format;
 			public final TextureFilter minFilter;
@@ -470,9 +468,12 @@ public class TextureAtlas implements Disposable {
 	 * had not been stripped. */
 	static public class AtlasSprite extends Sprite {
 		final AtlasRegion region;
+		float originalOffsetX, originalOffsetY;
 
 		public AtlasSprite (AtlasRegion region) {
 			this.region = new AtlasRegion(region);
+			originalOffsetX = region.offsetX;
+			originalOffsetY = region.offsetY;
 			setRegion(region);
 			setOrigin(region.originalWidth / 2f, region.originalHeight / 2f);
 			int width = Math.abs(region.getRegionWidth());
@@ -490,12 +491,16 @@ public class TextureAtlas implements Disposable {
 		}
 
 		public void setBounds (float x, float y, float width, float height) {
-			super.setBounds(x + region.offsetX, y + region.offsetY, width * region.packedWidth / region.originalWidth, height
-				* region.packedHeight / region.originalHeight);
+			float widthRatio = width / region.originalWidth;
+			float heightRatio = height / region.originalHeight;
+			region.offsetX = originalOffsetX * widthRatio;
+			region.offsetY = originalOffsetY * heightRatio;
+			super.setBounds(x + region.offsetX, y + region.offsetY, region.packedWidth * widthRatio, region.packedHeight
+				* heightRatio);
 		}
 
 		public void setSize (float width, float height) {
-			super.setSize(width * region.packedWidth / region.originalWidth, height * region.packedHeight / region.originalHeight);
+			setBounds(getX(), getY(), width, height);
 		}
 
 		public void setOrigin (float originX, float originY) {
