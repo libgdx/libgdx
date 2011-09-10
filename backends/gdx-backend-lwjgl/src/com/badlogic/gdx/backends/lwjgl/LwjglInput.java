@@ -361,8 +361,6 @@ final class LwjglInput implements Input {
 			return Input.Keys.END;
 		case Keyboard.KEY_INSERT:
 			return Input.Keys.INSERT;
-		case Keyboard.KEY_NUMPAD5:
-			return Input.Keys.DPAD_CENTER;
 		case Keyboard.KEY_BACK:
 			return Input.Keys.DEL;
 		case Keyboard.KEY_SUBTRACT:
@@ -395,6 +393,26 @@ final class LwjglInput implements Input {
 			return Input.Keys.F12;
 		case Keyboard.KEY_COLON:
 			return Input.Keys.COLON;
+		case Keyboard.KEY_NUMPAD0:
+			return Input.Keys.NUM_0;
+		case Keyboard.KEY_NUMPAD1:
+			return Input.Keys.NUM_1;
+		case Keyboard.KEY_NUMPAD2:
+			return Input.Keys.NUM_2;
+		case Keyboard.KEY_NUMPAD3:
+			return Input.Keys.NUM_3;
+		case Keyboard.KEY_NUMPAD4:
+			return Input.Keys.NUM_4;
+		case Keyboard.KEY_NUMPAD5:
+			return Input.Keys.NUM_5;
+		case Keyboard.KEY_NUMPAD6:
+			return Input.Keys.NUM_6;
+		case Keyboard.KEY_NUMPAD7:
+			return Input.Keys.NUM_7;
+		case Keyboard.KEY_NUMPAD8:
+			return Input.Keys.NUM_8;
+		case Keyboard.KEY_NUMPAD9:
+			return Input.Keys.NUM_9;
 		default:
 			return Input.Keys.UNKNOWN;
 		}
