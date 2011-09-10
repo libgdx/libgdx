@@ -1,16 +1,16 @@
+
 package com.badlogic.gdx.math;
 
 public enum Interpolation {
-	bounce, other;
+	linear, fade;
 
 	public float apply (float alpha) {
 		switch (this) {
-		case bounce:
-			return alpha * alpha;
-		case other:
-			return alpha * alpha * alpha;
-		default:
-			return 0; // Can't happen.
+		case linear:
+			return alpha;
+		case fade:
+			return alpha * alpha * alpha * (alpha * (alpha * 6 - 15) + 10);
 		}
+		return 0; // Can't happen.
 	}
 }
