@@ -21,6 +21,7 @@ import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -51,11 +52,16 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	public BitmapFont loadSync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
 		FileHandle handle = resolve(fileName);
 		TextureRegion region = new TextureRegion(manager.get(data.getImagePath(), Texture.class));
+		if(parameter != null) region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
 		return new BitmapFont(data, region, true);
 	}
 
 	static public class BitmapFontParameter extends AssetLoaderParameters<BitmapFont> {
 		/** whether to flipY the font or not **/
 		public boolean flip = false;
+		/** the minimum filter to be used for the backing texture */
+		public TextureFilter minFitler = TextureFilter.Nearest;
+		/** the maximum filter to be used for the backing texture */
+		public TextureFilter  maxFilter = TextureFilter.Nearest;
 	}
 }
