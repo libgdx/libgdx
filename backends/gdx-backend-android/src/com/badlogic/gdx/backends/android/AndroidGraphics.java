@@ -540,7 +540,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	@Override
-	public void setIcon (Pixmap pixmap) {
+	public void setIcon (Pixmap[] pixmap) {
 
 	}
 

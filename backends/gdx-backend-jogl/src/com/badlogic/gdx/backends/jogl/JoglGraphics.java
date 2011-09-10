@@ -188,7 +188,7 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 	}
 
 	@Override
-	public void setIcon (Pixmap pixmap) {
+	public void setIcon (Pixmap[] pixmap) {
 
 	}
 

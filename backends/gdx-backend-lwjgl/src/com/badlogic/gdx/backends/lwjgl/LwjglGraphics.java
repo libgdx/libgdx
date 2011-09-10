@@ -365,8 +365,10 @@ public final class LwjglGraphics implements Graphics {
 	}
 
 	@Override
-	public void setIcon (Pixmap pixmap) {
-		Display.setIcon(new ByteBuffer[] {pixmap.getPixels().duplicate()});
+	public void setIcon (Pixmap[] pixmap) {
+		ByteBuffer[] buffers = new ByteBuffer[pixmap.length];
+		for(int i = 0; i < buffers.length; i++) buffers[i] = pixmap[i].getPixels().duplicate();
+		Display.setIcon(buffers);
 	}
 
 	@Override
