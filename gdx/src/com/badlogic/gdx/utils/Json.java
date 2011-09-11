@@ -702,6 +702,14 @@ public class Json {
 		}
 	}
 
+	public String prettyPrint (Object object) {
+		return prettyPrint(object, false);
+	}
+
+	public String prettyPrint (String json) {
+		return prettyPrint(json, false);
+	}
+
 	public String prettyPrint (Object object, boolean fieldsOnSameLine) {
 		return prettyPrint(toJson(object), fieldsOnSameLine);
 	}
