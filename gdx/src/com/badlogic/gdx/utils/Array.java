@@ -89,6 +89,7 @@ public class Array<T> implements Iterable<T> {
 	 *           memory copy. */
 	public Array (boolean ordered, T[] array) {
 		this(ordered, array.length, (Class)array.getClass().getComponentType());
+		size = array.length;
 		System.arraycopy(array, 0, items, 0, size);
 	}
 

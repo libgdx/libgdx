@@ -83,15 +83,16 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
-		if (current == null) throw new IllegalStateException("Current item must be an object or value.");
-		if (current.array) {
-			if (!current.needsComma)
-				current.needsComma = true;
-			else
-				writer.write(',');
-		} else {
-			if (!named) throw new IllegalStateException("Name must be set.");
-			named = false;
+		if (current != null) {
+			if (current.array) {
+				if (!current.needsComma)
+					current.needsComma = true;
+				else
+					writer.write(',');
+			} else {
+				if (!named) throw new IllegalStateException("Name must be set.");
+				named = false;
+			}
 		}
 		if (value == null || value instanceof Number || value instanceof Boolean) {
 			writer.write(String.valueOf(value));

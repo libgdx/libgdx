@@ -117,16 +117,32 @@ public class Json {
 	}
 
 	public String toJson (Object object) {
+		return toJson(object, object == null ? null : object.getClass(), (Class)null);
+	}
+
+	public String toJson (Object object, Class knownType) {
+		return toJson(object, knownType, (Class)null);
+	}
+
+	public String toJson (Object object, Class knownType, Class elementType) {
 		StringWriter buffer = new StringWriter();
-		toJson(object, buffer);
+		toJson(object, knownType, elementType, buffer);
 		return buffer.toString();
 	}
 
 	public void toJson (Object object, FileHandle file) {
+		toJson(object, object == null ? null : object.getClass(), null, file);
+	}
+
+	public void toJson (Object object, Class knownType, FileHandle file) {
+		toJson(object, knownType, null, file);
+	}
+
+	public void toJson (Object object, Class knownType, Class elementType, FileHandle file) {
 		Writer writer = null;
 		try {
 			writer = file.writer(false);
-			toJson(object, writer);
+			toJson(object, knownType, elementType, writer);
 		} catch (Exception ex) {
 			throw new SerializationException("Error writing file: " + file, ex);
 		} finally {
@@ -138,12 +154,20 @@ public class Json {
 	}
 
 	public void toJson (Object object, Writer writer) {
+		toJson(object, object == null ? null : object.getClass(), null, writer);
+	}
+
+	public void toJson (Object object, Class knownType, Writer writer) {
+		toJson(object, knownType, null, writer);
+	}
+
+	public void toJson (Object object, Class knownType, Class elementType, Writer writer) {
 		if (!(writer instanceof JsonWriter)) {
 			this.writer = new JsonWriter(writer);
 			((JsonWriter)this.writer).setOutputType(outputType);
 		}
 		try {
-			writeValue(object, object.getClass(), null);
+			writeValue(object, knownType, elementType);
 		} catch (IOException ex) {
 			throw new SerializationException("Error writing JSON.", ex);
 		}
