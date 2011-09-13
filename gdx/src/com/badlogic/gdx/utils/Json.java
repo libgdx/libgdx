@@ -43,7 +43,7 @@ public class Json {
 	private JsonWriter writer;
 	private String typeName = "type";
 	private boolean usePrototypes = true;
-	private OutputType outputType = OutputType.minimal;
+	private OutputType outputType;
 	private final ObjectMap<Class, ObjectMap<String, FieldMetadata>> typeToFields = new ObjectMap();
 	private final ObjectMap<String, Class> tagToClass = new ObjectMap();
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
@@ -51,10 +51,14 @@ public class Json {
 	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
 	private boolean ignoreUnknownFields;
 
-	public Json() {
-		
+	public Json () {
+		outputType = OutputType.minimal;
 	}
-	
+
+	public Json (OutputType outputType) {
+		this.outputType = outputType;
+	}
+
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
 	}

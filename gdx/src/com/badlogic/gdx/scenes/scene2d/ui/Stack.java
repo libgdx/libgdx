@@ -51,8 +51,8 @@ public class Stack extends Group implements Layout {
 		needsLayout = false;
 		for (int i = 0, n = children.size(); i < n; i++) {
 			Actor actor = children.get(i);
-			actor.x = x;
-			actor.y = y;
+			actor.x = 0;
+			actor.y = 0;
 			actor.width = width;
 			actor.height = height;
 			if (actor instanceof Layout) {

@@ -18,16 +18,16 @@ package com.badlogic.gdx.assets;
 /** Describes an asset to be loaded by it's filename, type and {@link AssetLoaderParameters}. Instances of this are used in
  * {@link AssetLoadingTask} to load the actual asset.
  * @author mzechner */
-public class AssetDescriptor {
+public class AssetDescriptor<T> {
 	public final String fileName;
-	public final Class type;
+	public final Class<T> type;
 	public final AssetLoaderParameters params;
 
-	public <T> AssetDescriptor (String fileName, Class assetType) {
+	public AssetDescriptor (String fileName, Class<T> assetType) {
 		this(fileName, assetType, null);
 	}
 	
-	public <T> AssetDescriptor (String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
+	public AssetDescriptor (String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
 		this.fileName = fileName.replaceAll("\\\\", "/");
 		this.type = assetType;
 		this.params = params;

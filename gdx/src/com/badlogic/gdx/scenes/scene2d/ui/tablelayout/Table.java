@@ -114,13 +114,17 @@ public class Table extends Group implements Layout {
 		layout.clear();
 	}
 
+	public Actor register (String name, Actor widget) {
+		return layout.register(name, widget);
+	}
+
 	/** Adds a new cell to the table with the specified actor.
 	 * @see TableLayout#add(Actor)
 	 * @param actor May be null to add a cell without an actor. */
 	public Cell add (Actor actor) {
 		return layout.add(actor);
 	}
-	
+
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
 	 * @see TableLayout#stack(Actor...)
 	 * @param actor May be null to add a cell without an actor. */
@@ -135,6 +139,10 @@ public class Table extends Group implements Layout {
 		return layout.row();
 	}
 
+	public void parse (FileHandle tableDescriptionFile) {
+		layout.parse(tableDescriptionFile.readString());
+	}
+	
 	/** Parses a table description and adds the actors and cells to the table.
 	 * @see TableLayout#parse(String) */
 	public void parse (String tableDescription) {

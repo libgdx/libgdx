@@ -142,7 +142,6 @@ public class Label extends Widget {
 
 	@Override
 	public void touchDragged (float x, float y, int pointer) {
-
 	}
 
 	@Override

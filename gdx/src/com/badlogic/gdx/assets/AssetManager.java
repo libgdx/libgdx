@@ -84,6 +84,10 @@ public class AssetManager implements Disposable {
 		});
 	}
 
+	public <T> T get (AssetDescriptor<T> assetDesc) {
+		return get(assetDesc.fileName, assetDesc.type);
+	}
+
 	/** @param fileName the asset file name
 	 * @param type the asset type
 	 * @return the asset */

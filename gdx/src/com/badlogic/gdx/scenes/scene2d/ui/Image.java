@@ -7,20 +7,30 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Image extends Widget {
 	private final TextureRegion region;
 	private final Scaling scaling;
+	private int align = Align.CENTER;
 	private float imageX, imageY, imageWidth, imageHeight;
 
 	public Image (TextureRegion region) {
-		this(null, region, Scaling.fit);
+		this(null, region, Scaling.none);
 	}
 
 	public Image (TextureRegion region, Scaling scaling) {
 		this(null, region, scaling);
 	}
 
+	public Image (TextureRegion region, Scaling scaling, int align) {
+		this(null, region, scaling, align);
+	}
+
 	public Image (String name, TextureRegion region, Scaling scaling) {
+		this(null, region, scaling, Align.CENTER);
+	}
+
+	public Image (String name, TextureRegion region, Scaling scaling, int align) {
 		super(name, region.getRegionWidth(), region.getRegionHeight());
 		this.region = region;
 		this.scaling = scaling;
+		this.align = align;
 	}
 
 	public void layout () {
@@ -35,8 +45,6 @@ public class Image extends Widget {
 			float scale = regionRatio > widgetRatio ? width / regionWidth : height / regionHeight;
 			imageWidth = regionWidth * scale;
 			imageHeight = regionHeight * scale;
-			imageX = width / 2 - imageWidth / 2;
-			imageY = height / 2 - imageHeight / 2;
 			break;
 		}
 		case fit: {
@@ -45,35 +53,39 @@ public class Image extends Widget {
 			float scale = regionRatio < widgetRatio ? width / regionWidth : height / regionHeight;
 			imageWidth = regionWidth * scale;
 			imageHeight = regionHeight * scale;
-			imageX = width / 2 - imageWidth / 2;
-			imageY = height / 2 - imageHeight / 2;
 			break;
 		}
 		case stretch:
-			imageX = 0;
-			imageY = 0;
 			imageWidth = width;
 			imageHeight = height;
 			break;
 		case stretchX:
 			imageWidth = width;
 			imageHeight = regionHeight;
-			imageX = 0;
-			imageY = height / 2 - imageHeight / 2;
 			break;
 		case stretchY:
 			imageWidth = regionWidth;
 			imageHeight = height;
-			imageX = width / 2 - imageWidth / 2;
-			imageY = 0;
 			break;
 		case none:
 			imageWidth = regionWidth;
 			imageHeight = regionHeight;
-			imageX = width / 2 - imageWidth / 2;
-			imageY = height / 2 - imageHeight / 2;
 			break;
 		}
+
+		if ((align & Align.LEFT) != 0)
+			imageX = 0;
+		else if ((align & Align.RIGHT) != 0)
+			imageX = (int)(width - imageWidth);
+		else
+			imageX = (int)(width / 2 - imageWidth / 2);
+
+		if ((align & Align.TOP) != 0)
+			imageY = (int)(height - imageHeight);
+		else if ((align & Align.BOTTOM) != 0)
+			imageY = 0;
+		else
+			imageY = (int)(height / 2 - imageHeight / 2);		
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
