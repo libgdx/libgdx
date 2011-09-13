@@ -51,6 +51,10 @@ public class Json {
 	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
 	private boolean ignoreUnknownFields;
 
+	public Json() {
+		
+	}
+	
 	public void setIgnoreUnknownFields (boolean ignoreUnknownFields) {
 		this.ignoreUnknownFields = ignoreUnknownFields;
 	}
