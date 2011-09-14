@@ -124,8 +124,8 @@ public class OrthographicCamera extends Camera {
 	 * at (Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), with the y-axis pointing up or down.
 	 * @param yDown whether y should be pointing down
 	 */
-	public void setupOrtho(boolean yDown) {
-		setupOrtho(yDown, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	public void setToOrtho(boolean yDown) {
+		setToOrtho(yDown, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	/**
@@ -135,12 +135,14 @@ public class OrthographicCamera extends Camera {
 	 * @param viewportWidth
 	 * @param viewportHeight
 	 */
-	public void setupOrtho(boolean yDown, float viewportWidth, float viewportHeight) {
+	public void setToOrtho(boolean yDown, float viewportWidth, float viewportHeight) {
 		if(yDown) {
 			up.set(0, -1, 0);
 			direction.set(0, 0, 1);
 		}
 		position.set(viewportWidth / 2.0f, viewportHeight / 2.0f, 0);
+		this.viewportWidth = viewportWidth;
+		this.viewportHeight = viewportHeight;
 		update();
 	}
 }
