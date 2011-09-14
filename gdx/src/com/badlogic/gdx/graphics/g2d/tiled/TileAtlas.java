@@ -121,4 +121,15 @@ public class TileAtlas implements Disposable {
 
 		return child;
 	}
+
+	/**
+	 * Flips all regions in the atlas on the specified axis.
+	 * @param x - if <code>true</code> region is flipped on the <b>x</b> axis 
+	 * @param y - if <code>true</code> region is flipped on the <b>y</b> axis 
+	 */
+	public void flipRegions(boolean x, boolean y) {
+		for (TextureRegion region : regionsMap.values()) {
+			region.flip(x, y);
+		}
+	}
 }
