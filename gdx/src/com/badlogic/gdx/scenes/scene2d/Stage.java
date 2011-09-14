@@ -113,8 +113,8 @@ public class Stage extends InputAdapter implements Disposable {
 		}
 
 		this.stretch = stretch;
-		centerX = width / 2;
-		centerY = height / 2;
+		centerX = this.width / 2;
+		centerY = this.height / 2;
 
 		camera.position.set(centerX, centerY, 0);
 		camera.viewportWidth = this.width;
