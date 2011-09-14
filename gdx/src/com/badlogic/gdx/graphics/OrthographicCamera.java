@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -116,5 +117,30 @@ public class OrthographicCamera extends Camera {
 		invProjectionView.set(combined);
 		Matrix4.inv(invProjectionView.val);
 		frustum.update(invProjectionView);
+	}
+	
+	/**
+	 * Sets this camera to an orthographic projection using a viewport fitting the screen resolution, centered
+	 * at (Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), with the y-axis pointing up or down.
+	 * @param yDown whether y should be pointing down
+	 */
+	public void setupOrtho(boolean yDown) {
+		setupOrtho(yDown, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+	
+	/**
+	 * Sets this camera to an orthographic projection, centered
+	 * at (viewportWidth/2, viewportHeight/2), with the y-axis pointing up or down.
+	 * @param yDown whether y should be pointing down.
+	 * @param viewportWidth
+	 * @param viewportHeight
+	 */
+	public void setupOrtho(boolean yDown, float viewportWidth, float viewportHeight) {
+		if(yDown) {
+			up.set(0, -1, 0);
+			direction.set(0, 0, 1);
+		}
+		position.set(viewportWidth / 2.0f, viewportHeight / 2.0f, 0);
+		update();
 	}
 }
