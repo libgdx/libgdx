@@ -44,6 +44,11 @@ public class ETC1TextureData implements TextureData {
 		this.useMipMaps = useMipMaps;
 	}
 
+	public ETC1TextureData (ETC1Data encodedImage, boolean useMipMaps) {
+		this.data = encodedImage;
+		this.useMipMaps = useMipMaps;
+	}
+
 	@Override
 	public TextureDataType getType () {
 		return TextureDataType.Compressed;
@@ -57,9 +62,12 @@ public class ETC1TextureData implements TextureData {
 	@Override
 	public void prepare () {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
-		data = new ETC1Data(file);
-		width = data.width;
-		height = data.height;
+		if (file == null && data == null) throw new GdxRuntimeException("Can only load once from ETC1Data");
+		if(file != null) {
+			data = new ETC1Data(file);
+			width = data.width;
+			height = data.height;
+		}
 		isPrepared = true;
 	}
 
