@@ -42,16 +42,35 @@ public class Box2DDebugRenderer {
 	/** vertices for polygon rendering **/
 	private static Vector2[] vertices = new Vector2[1000];
 
+	private static Vector2 mLower;
+	private static Vector2 mUpper;
+
+	private boolean mDrawBodies;
+	private boolean mDrawJoints;
+	private boolean mDrawAABBs;
+
 	public Box2DDebugRenderer () {
+
+		this(true, true, false);
+	}
+
+	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
 
 		// next we create a SpriteBatch and a font
 		batch = new SpriteBatch();
 
+		mLower = new Vector2();
+		mUpper = new Vector2();
+
 		// initialize vertices array
 		for (int i = 0; i < vertices.length; i++)
 			vertices[i] = new Vector2();
+
+		mDrawBodies = drawBodies;
+		mDrawJoints = drawJoints;
+		mDrawAABBs = drawAABBs;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -66,42 +85,98 @@ public class Box2DDebugRenderer {
 	private final Color SHAPE_NOT_AWAKE = new Color(0.6f, 0.6f, 0.6f, 1);
 	private final Color SHAPE_AWAKE = new Color(0.9f, 0.7f, 0.7f, 1);
 	private final Color JOINT_COLOR = new Color(0.5f, 0.8f, 0.8f, 1);
-	
+	private final Color AABB_COLOR = new Color(1.0f, 0, 1.0f, 1f);
+
 	private void renderBodies (World world) {
 		renderer.begin(ShapeType.Line);
-		for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
-			Body body = iter.next();
-			Transform transform = body.getTransform();
-			int len = body.getFixtureList().size();
-			List<Fixture> fixtures = body.getFixtureList();
-			for (int i = 0; i < len; i++) {
-				Fixture fixture = fixtures.get(i);
-				if (body.isActive() == false)
-					drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
-				else if (body.getType() == BodyType.StaticBody)
-					drawShape(fixture, transform, SHAPE_STATIC);
-				else if (body.getType() == BodyType.KinematicBody)
-					drawShape(fixture, transform, SHAPE_KINEMATIC);
-				else if (body.isAwake() == false)
-					drawShape(fixture, transform, SHAPE_NOT_AWAKE);
-				else
-					drawShape(fixture, transform, SHAPE_AWAKE);
+
+		if (mDrawBodies || mDrawAABBs) {
+			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
+				Body body = iter.next();
+				Transform transform = body.getTransform();
+				int len = body.getFixtureList().size();
+				List<Fixture> fixtures = body.getFixtureList();
+				for (int i = 0; i < len; i++) {
+					Fixture fixture = fixtures.get(i);
+
+					if (mDrawBodies) {
+						if (body.isActive() == false)
+							drawShape(fixture, transform, SHAPE_NOT_ACTIVE);
+						else if (body.getType() == BodyType.StaticBody)
+							drawShape(fixture, transform, SHAPE_STATIC);
+						else if (body.getType() == BodyType.KinematicBody)
+							drawShape(fixture, transform, SHAPE_KINEMATIC);
+						else if (body.isAwake() == false)
+							drawShape(fixture, transform, SHAPE_NOT_AWAKE);
+						else
+							drawShape(fixture, transform, SHAPE_AWAKE);
+					}
+
+					if (mDrawAABBs) {
+						drawAABB(fixture, transform);
+					}
+				}
 			}
 		}
 
-		for (Iterator<Joint> iter = world.getJoints(); iter.hasNext();) {
-			Joint joint = iter.next();
-			drawJoint(joint);
+		if (mDrawJoints) {
+			for (Iterator<Joint> iter = world.getJoints(); iter.hasNext();) {
+				Joint joint = iter.next();
+				drawJoint(joint);
+			}
 		}
 		renderer.end();
 
-		if(Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
+		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
 		renderer.begin(ShapeType.Point);
 		int len = world.getContactList().size();
 		for (int i = 0; i < len; i++)
 			drawContact(world.getContactList().get(i));
 		renderer.end();
-		if(Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
+	}
+
+	private void drawAABB (Fixture fixture, Transform transform) {
+		if (fixture.getType() == Type.Circle) {
+
+			CircleShape shape = (CircleShape)fixture.getShape();
+			float radius = shape.getRadius();
+			vertices[0].set(shape.getPosition());
+			vertices[0].rotate(transform.getRotation()).add(transform.getPosition());
+			mLower.set(vertices[0].x - radius, vertices[0].y - radius);
+			mUpper.set(vertices[0].x + radius, vertices[0].y + radius);
+
+			// define vertices in ccw fashion...
+			vertices[0].set(mLower.x, mLower.y);
+			vertices[1].set(mUpper.x, mLower.y);
+			vertices[2].set(mUpper.x, mUpper.y);
+			vertices[3].set(mLower.x, mUpper.y);
+
+			drawSolidPolygon(vertices, 4, AABB_COLOR);
+		} else if (fixture.getType() == Type.Polygon) {
+			PolygonShape shape = (PolygonShape)fixture.getShape();
+			int vertexCount = shape.getVertexCount();
+
+			shape.getVertex(0, vertices[0]);
+			mLower.set(transform.mul(vertices[0]));
+			mUpper.set(mLower);
+			for (int i = 1; i < vertexCount; i++) {
+				shape.getVertex(i, vertices[i]);
+				transform.mul(vertices[i]);
+				mLower.x = Math.min(mLower.x, vertices[i].x);
+				mLower.y = Math.min(mLower.y, vertices[i].y);
+				mUpper.x = Math.max(mUpper.x, vertices[i].x);
+				mUpper.y = Math.max(mUpper.y, vertices[i].y);
+			}
+
+			// define vertices in ccw fashion...
+			vertices[0].set(mLower.x, mLower.y);
+			vertices[1].set(mUpper.x, mLower.y);
+			vertices[2].set(mUpper.x, mUpper.y);
+			vertices[3].set(mLower.x, mUpper.y);
+
+			drawSolidPolygon(vertices, 4, AABB_COLOR);
+		}
 	}
 
 	private static Vector2 t = new Vector2();
@@ -112,11 +187,10 @@ public class Box2DDebugRenderer {
 			CircleShape circle = (CircleShape)fixture.getShape();
 			t.set(circle.getPosition());
 			transform.mul(t);
-			drawSolidCircle(t, circle.getRadius(), axis.set(transform.vals[Transform.COS], transform.vals[Transform.SIN]),
-				color);
-		} 
+			drawSolidCircle(t, circle.getRadius(), axis.set(transform.vals[Transform.COS], transform.vals[Transform.SIN]), color);
+		}
 
-		if(fixture.getType() == Type.Edge) {
+		if (fixture.getType() == Type.Edge) {
 			EdgeShape edge = (EdgeShape)fixture.getShape();
 			edge.getVertex1(vertices[0]);
 			edge.getVertex2(vertices[1]);
@@ -124,8 +198,8 @@ public class Box2DDebugRenderer {
 			transform.mul(vertices[1]);
 			drawSolidPolygon(vertices, 2, color);
 		}
-		
-		if(fixture.getType() == Type.Polygon) {
+
+		if (fixture.getType() == Type.Polygon) {
 			PolygonShape chain = (PolygonShape)fixture.getShape();
 			int vertexCount = chain.getVertexCount();
 			for (int i = 0; i < vertexCount; i++) {
@@ -134,8 +208,8 @@ public class Box2DDebugRenderer {
 			}
 			drawSolidPolygon(vertices, vertexCount, color);
 		}
-		
-		if(fixture.getType() == Type.Chain) {
+
+		if (fixture.getType() == Type.Chain) {
 			ChainShape chain = (ChainShape)fixture.getShape();
 			int vertexCount = chain.getVertexCount();
 			for (int i = 0; i < vertexCount; i++) {
@@ -156,7 +230,7 @@ public class Box2DDebugRenderer {
 		renderer.setColor(color.r, color.g, color.b, color.a);
 		for (int i = 0; i < 20; i++, angle += angleInc) {
 			v.set((float)Math.cos(angle) * radius + center.x, (float)Math.sin(angle) * radius + center.y);
-			if(i == 0) {
+			if (i == 0) {
 				lv.set(v);
 				f.set(v);
 				continue;
@@ -172,7 +246,7 @@ public class Box2DDebugRenderer {
 		renderer.setColor(color.r, color.g, color.b, color.a);
 		for (int i = 0; i < vertexCount; i++) {
 			Vector2 v = vertices[i];
-			if(i == 0) {
+			if (i == 0) {
 				lv.set(v);
 				f.set(v);
 				continue;
@@ -219,7 +293,7 @@ public class Box2DDebugRenderer {
 
 	private void drawContact (Contact contact) {
 		WorldManifold worldManifold = contact.getWorldManifold();
-		if(worldManifold.getNumberOfContactPoints() == 0) return;
+		if (worldManifold.getNumberOfContactPoints() == 0) return;
 		Vector2 point = worldManifold.getPoints()[0];
 		renderer.point(point.x, point.y, 0);
 	}
