@@ -159,13 +159,20 @@ public class GestureDetector extends InputAdapter {
 
 		if (pointer == 0) {
 			firstPointer.set(x, y);
-			inTapSquare = true;
-			pinching = false;
-			longPressFired = false;
-			tapSquareCenterX = x;
-			tapSquareCenterY = y;
 			gestureStartTime = Gdx.input.getCurrentEventTime();
 			tracker.start(x, y, gestureStartTime);
+			// we are still touching with the second finger -> pinch mode
+			if(Gdx.input.isTouched(1)) {
+				inTapSquare = false;
+				pinching = true;
+				initialDistance = firstPointer.dst(secondPointer);
+			} else {
+				inTapSquare = true;
+				pinching = false;
+				longPressFired = false;
+				tapSquareCenterX = x;
+				tapSquareCenterY = y;
+			}
 		} else {
 			secondPointer.set(x, y);
 			inTapSquare = false;
@@ -227,6 +234,7 @@ public class GestureDetector extends InputAdapter {
 		} else if (pinching) {
 			// handle pinch end
 			pinching = false;
+			panning = true;
 			// we are basically in pan/scroll mode again, reset velocity tracker
 			if (pointer == 0)	{
 			   // first pointer has lifted off, set up panning to use the second pointer...
