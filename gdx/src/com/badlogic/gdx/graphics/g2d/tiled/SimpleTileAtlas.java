@@ -48,6 +48,7 @@ public class SimpleTileAtlas extends TileAtlas {
 			}
 			Texture texture = new Texture(pixmap);
 			pixmap.dispose();
+			textures.add(texture);
 
 			int idx = 0;
 			TextureRegion[][] regions = split(texture, originalWidth, originalHeight, map.tileWidth, map.tileHeight, set.spacing,
