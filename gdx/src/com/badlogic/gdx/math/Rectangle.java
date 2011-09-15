@@ -101,8 +101,8 @@ public class Rectangle implements Serializable {
 		float ymin = rectangle.y;
 		float ymax = ymin + rectangle.height;
 
-		return ((xmin > x && xmin < x + width) || (xmax > x && xmax < x + width))
-			&& ((ymin > y && ymin < y + height) || (ymax > y && ymax < y + height));
+		return ((xmin > x && xmin < x + width) && (xmax > x && xmax < x + width))
+			&& ((ymin > y && ymin < y + height) && (ymax > y && ymax < y + height));
 	}
 
 	/** @param rectangle the other {@link Rectangle}
