@@ -357,6 +357,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				// Xperia hack for circle key. gah...
 				if (keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
 					keyCode = Keys.BUTTON_CIRCLE;
+					event.keyCode = keyCode;
 				}
 
 				keyEvents.add(event);
@@ -370,6 +371,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				// Xperia hack for circle key. gah...
 				if (keyCode == android.view.KeyEvent.KEYCODE_BACK && e.isAltPressed()) {
 					keyCode = Keys.BUTTON_CIRCLE;
+					event.keyCode = keyCode;
 				}
 				keyEvents.add(event);
 
@@ -379,10 +381,15 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				event.type = KeyEvent.KEY_TYPED;
 				keyEvents.add(event);
 
-				keys.remove(e.getKeyCode());
+				if (keyCode == Keys.BUTTON_CIRCLE)
+					keys.remove(Keys.BUTTON_CIRCLE);
+				else
+					keys.remove(e.getKeyCode());
 			}
 		}
 
+		//circle button on Xperia Play shouldn't need catchBack == true
+		if (keyCode == Keys.BUTTON_CIRCLE) return true; 
 		if (catchBack && keyCode == android.view.KeyEvent.KEYCODE_BACK) return true;
 		if (catchMenu && keyCode == android.view.KeyEvent.KEYCODE_MENU) return true;
 		return false;
