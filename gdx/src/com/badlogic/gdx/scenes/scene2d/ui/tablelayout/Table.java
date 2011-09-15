@@ -277,6 +277,21 @@ public class Table extends Group implements Layout {
 		layout.reset();
 	}
 
+	/** Returns the widget with the specified name, anywhere in the table hierarchy. */
+	public Actor getWidget (String name) {
+		return layout.getWidget(name);
+	}
+
+	/** Returns all named widgets, anywhere in the table hierarchy. */
+	public List<Actor> getWidgets () {
+		return layout.getWidgets();
+	}
+
+	/** Returns all widgets with the specified name prefix, anywhere in the table hierarchy. */
+	public List<Actor> getWidgets (String namePrefix) {
+		return layout.getWidgets(namePrefix);
+	}
+
 	/** Returns the cell for the specified actor, anywhere in the table hierarchy.
 	 * @see TableLayout#getCell(Actor) */
 	public Cell getCell (Actor actor) {
