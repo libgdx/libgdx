@@ -37,15 +37,17 @@ public class SimpleTileAtlas extends TileAtlas {
 			int originalWidth = pixmap.getWidth();
 			int originalHeight = pixmap.getHeight();
 
-			Pixmap result = pixmap;
 			if (!MathUtils.isPowerOfTwo(originalWidth) || !MathUtils.isPowerOfTwo(originalHeight)) {
 				final int width = MathUtils.nextPowerOfTwo(originalWidth);
 				final int height = MathUtils.nextPowerOfTwo(originalHeight);
 
-				result = new Pixmap(width, height, pixmap.getFormat());
-				result.drawPixmap(pixmap, 0, 0, 0, 0, width, height);
+				Pixmap potPixmap = new Pixmap(width, height, pixmap.getFormat());
+				potPixmap.drawPixmap(pixmap, 0, 0, 0, 0, width, height);
+				pixmap.dispose();
+				pixmap = potPixmap;
 			}
-			Texture texture = new Texture(result);
+			Texture texture = new Texture(pixmap);
+			pixmap.dispose();
 
 			int idx = 0;
 			TextureRegion[][] regions = split(texture, originalWidth, originalHeight, map.tileWidth, map.tileHeight, set.spacing,
