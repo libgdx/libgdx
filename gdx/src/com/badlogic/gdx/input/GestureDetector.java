@@ -228,8 +228,13 @@ public class GestureDetector extends InputAdapter {
 			// handle pinch end
 			pinching = false;
 			// we are basically in pan/scroll mode again, reset velocity tracker
-			int otherPointer = pointer == 1 ? 0 : 1;
-			tracker.start(Gdx.input.getX(otherPointer), Gdx.input.getY(otherPointer), Gdx.input.getCurrentEventTime());
+			if (pointer == 0)	{
+			   // first pointer has lifted off, set up panning to use the second pointer...
+			   tracker.start((int)secondPointer.x, (int)secondPointer.y, Gdx.input.getCurrentEventTime());
+			} else {
+			   // second pointer has lifted off, set up panning to use the first pointer...
+			   tracker.start((int)firstPointer.x, (int)firstPointer.y, Gdx.input.getCurrentEventTime());
+			}
 		} else {
 			// handle fling
 			long time = Gdx.input.getCurrentEventTime();
