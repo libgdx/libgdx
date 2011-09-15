@@ -123,7 +123,7 @@ public class NinePatch {
 	}
 
 	public float getTotalHeight () {
-		return getTopHeight() + getBottomHeight() + patches[MIDDLE_LEFT].getRegionHeight();
+		return getTopHeight() + getBottomHeight() + patches[MIDDLE_CENTER].getRegionHeight();
 	}
 
 	public float getTotalWidth () {

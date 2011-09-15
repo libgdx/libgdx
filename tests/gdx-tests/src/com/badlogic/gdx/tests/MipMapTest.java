@@ -99,16 +99,16 @@ public class MipMapTest extends GdxTest {
 		for (TextureFilter filter : TextureFilter.values()) {
 			filters[idx++] = filter.toString();
 		}
-		hwMipMap = new CheckBox("hardware", "Hardware Mips", skin.getStyle(CheckBoxStyle.class));
-		minFilter = new ComboBox("minfilter", filters, ui, skin.getStyle(ComboBoxStyle.class));
-		magFilter = new ComboBox("magfilter", new String[] {"Nearest", "Linear"}, ui, skin.getStyle(ComboBoxStyle.class));
+		hwMipMap = new CheckBox("Hardware Mips", skin.getStyle(CheckBoxStyle.class), "hardware");
+		minFilter = new ComboBox(filters, ui, skin.getStyle(ComboBoxStyle.class), "minfilter");
+		magFilter = new ComboBox(new String[] {"Nearest", "Linear"}, ui, skin.getStyle(ComboBoxStyle.class), "magfilter");
 
-		Table table = new Table("container", (int)ui.width(), 30);
+		Table table = new Table((int)ui.width(), 30, "container");
 		table.y = ui.height() - 30;
 		table.add(hwMipMap).spaceRight(5);
-		table.add(new Label("lbl1", "Min Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
+		table.add(new Label("Min Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
 		table.add(minFilter).spaceRight(5);
-		table.add(new Label("lbl1", "Mag Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
+		table.add(new Label("Mag Filter", skin.getStyle(LabelStyle.class))).spaceRight(5);
 		table.add(magFilter);
 
 		ui.addActor(table);
@@ -121,7 +121,7 @@ public class MipMapTest extends GdxTest {
 
 		camera.update();
 
-		currTexture = hwMipMap.isChecked() ? textureHW : textureSW;
+		currTexture = hwMipMap.isChecked ? textureHW : textureSW;
 		currTexture.bind();
 		currTexture.setFilter(TextureFilter.valueOf(minFilter.getSelection()), TextureFilter.valueOf(magFilter.getSelection()));
 

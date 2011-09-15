@@ -121,28 +121,28 @@ public class TextField extends Widget {
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	public TextField (Skin skin) {
-		this(null, "", skin.getStyle(TextFieldStyle.class), 0);
+		this("", skin.getStyle(TextFieldStyle.class), 0, null);
 	}
 
 	public TextField (String text, Skin skin) {
-		this(null, text, skin.getStyle(TextFieldStyle.class), 0);
+		this(text, skin.getStyle(TextFieldStyle.class), 0, null);
 	}
 
 	public TextField (TextFieldStyle style) {
-		this(null, "", style, 0);
+		this("", style, 0, null);
 	}
 
 	public TextField (String text, TextFieldStyle style) {
-		this(null, text, style, 0);
+		this(text, style, 0, null);
 	}
 
 	/** Creates a new Textfield. The width is determined by the prefWidth parameter, the height is determined by the font's height
 	 * as well as the top and bottom border patches of the text fields background.
-	 * @param name the name
+	 * @param style the {@link TextFieldStyle} 
 	 * @param prefWidth the (preferred) width
-	 * @param style the {@link TextFieldStyle} */
-	public TextField (String name, String text, TextFieldStyle style, float prefWidth) {
-		super(name, prefWidth, 0);
+	 * @param name the name*/
+	public TextField (String text, TextFieldStyle style, float prefWidth, String name) {
+		super(prefWidth, 0, name);
 		setStyle(style);
 		this.initialPrefWidth = prefWidth;
 		this.clipboard = Clipboard.getDefaultClipboard();
@@ -277,9 +277,10 @@ public class TextField extends Widget {
 			float pos = glyphPositions.items[i];
 			if (pos > x) {
 				cursor = Math.max(0, i - 1);
-				break;
+				return true;
 			}
 		}
+		cursor = Math.max(0, glyphPositions.size - 1);
 		return true;
 	}
 

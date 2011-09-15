@@ -30,15 +30,20 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 import java.util.List;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.esotericsoftware.tablelayout.Cell;
-
-import static com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout.*;
 
 /** @author Nathan Sweet */
 public class Table extends Group implements Layout {
@@ -46,31 +51,41 @@ public class Table extends Group implements Layout {
 	boolean prefSizeInvalid = true;
 	private int prefWidth, prefHeight;
 
+	private ClickListener listener;
+	public boolean isPressed;
+
+	private NinePatch backgroundPatch;
+	private TextureRegion backgroundRegion;
+
+	private Stage stage;
+	private final Rectangle tableBounds = new Rectangle();
+	private final Rectangle scissors = new Rectangle();
+
 	public Table () {
-		this(null, new TableLayout());
+		this(new TableLayout(), null);
 	}
 
 	public Table (float width, float height) {
-		this(null, new TableLayout());
+		this(new TableLayout(), null);
 		this.width = width;
 		this.height = height;
 	}
 
 	public Table (TableLayout layout) {
-		this(null, layout);
+		this(layout, null);
 	}
 
 	public Table (String name) {
-		this(name, new TableLayout());
+		this(new TableLayout(), name);
 	}
 
-	public Table (String name, float width, float height) {
-		this(name, new TableLayout());
+	public Table (float width, float height, String name) {
+		this(new TableLayout(), name);
 		this.width = width;
 		this.height = height;
 	}
 
-	public Table (String name, TableLayout layout) {
+	public Table (TableLayout layout, String name) {
 		super(name);
 		transform = false;
 		this.layout = layout;
@@ -80,18 +95,47 @@ public class Table extends Group implements Layout {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (!visible) return;
 		if (layout.needsLayout) layout.layout();
-		super.draw(batch, parentAlpha);
+
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		if (backgroundPatch != null)
+			backgroundPatch.draw(batch, x, y, width, height);
+		else if (backgroundRegion != null) //
+			batch.draw(backgroundRegion, x, y, width, height);
+
+		if (stage != null) {
+			applyTransform(batch);
+			calculateScissors(batch.getTransformMatrix());
+			ScissorStack.pushScissors(scissors);
+			super.drawChildren(batch, parentAlpha);
+			resetTransform(batch);
+			ScissorStack.popScissors();
+		} else
+			super.draw(batch, parentAlpha);
+	}
+
+	private void calculateScissors (Matrix4 transform) {
+		tableBounds.x = 0;
+		tableBounds.y = 0;
+		tableBounds.width = width;
+		tableBounds.height = height;
+		if (backgroundPatch != null) {
+			tableBounds.x += backgroundPatch.getLeftWidth();
+			tableBounds.y += backgroundPatch.getBottomHeight();
+			tableBounds.width -= backgroundPatch.getLeftWidth() + backgroundPatch.getRightWidth();
+			tableBounds.height -= backgroundPatch.getTopHeight() + backgroundPatch.getBottomHeight();
+		}
+		ScissorStack.calculateScissors(stage.getCamera(), transform, tableBounds, scissors);
 	}
 
 	private void computePrefSize () {
 		if (!prefSizeInvalid) return;
-		prefSizeInvalid = false;
 		layout.setLayoutSize(0, 0, 0, 0);
 		layout.invalidate();
 		layout.layout();
+		layout.invalidate();
+		prefSizeInvalid = false;
 		prefWidth = layout.getMinWidth();
 		prefHeight = layout.getMinHeight();
-		layout.invalidate();
 	}
 
 	public float getPrefWidth () {
@@ -102,6 +146,55 @@ public class Table extends Group implements Layout {
 	public float getPrefHeight () {
 		if (prefSizeInvalid) computePrefSize();
 		return prefHeight;
+	}
+
+	/** @param background May be null. */
+	public void setBackground (NinePatch background) {
+		this.backgroundPatch = background;
+		if (background != null) {
+			padBottom((int)background.getBottomHeight() + 1);
+			padTop((int)background.getTopHeight() + 1);
+			padLeft((int)background.getLeftWidth() + 1);
+			padRight((int)background.getRightWidth() + 1);
+		}
+	}
+
+	/** @param background May be null. */
+	public void setBackground (TextureRegion background) {
+		this.backgroundRegion = background;
+	}
+
+	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */
+	public void enableClipping (Stage stage) {
+		this.stage = stage;
+		transform = true;
+		invalidate();
+	}
+
+	public void setClickListener (ClickListener listener) {
+		this.listener = listener;
+	}
+
+	public boolean touchDown (float x, float y, int pointer) {
+		if (super.touchDown(x, y, pointer)) return true;
+		if (pointer != 0) return false;
+		isPressed = true;
+		return true;
+	}
+
+	public void touchUp (float x, float y, int pointer) {
+		if (hit(x, y) != null) click();
+		isPressed = false;
+	}
+
+	public void click () {
+		if (listener != null) listener.click(this);
+	}
+
+	public Actor hit (float x, float y) {
+		Actor child = super.hit(x, y);
+		if (child != null) return child;
+		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
 	public TableLayout getTableLayout () {
@@ -142,7 +235,7 @@ public class Table extends Group implements Layout {
 	public void parse (FileHandle tableDescriptionFile) {
 		layout.parse(tableDescriptionFile.readString());
 	}
-	
+
 	/** Parses a table description and adds the actors and cells to the table.
 	 * @see TableLayout#parse(String) */
 	public void parse (String tableDescription) {
@@ -223,13 +316,17 @@ public class Table extends Group implements Layout {
 	/** The minimum width of the table. Available after laying out.
 	 * @see TableLayout#getMinWidth() */
 	public int getMinWidth () {
-		return layout.getMinWidth();
+		int minWidth = layout.getMinWidth();
+		if (backgroundPatch != null) minWidth += backgroundPatch.getLeftWidth() + backgroundPatch.getRightWidth();
+		return minWidth;
 	}
 
 	/** The minimum size of the table. Available after laying out.
 	 * @see TableLayout#getMinHeight() */
 	public int getMinHeight () {
-		return layout.getMinHeight();
+		int minHeight = layout.getMinHeight();
+		if (backgroundPatch != null) minHeight += backgroundPatch.getTopHeight() + backgroundPatch.getBottomHeight();
+		return minHeight;
 	}
 
 	/** The fixed size of the table.
@@ -358,8 +455,8 @@ public class Table extends Group implements Layout {
 		return this;
 	}
 
-	/** Alignment of the table within the actor being laid out. Set to {@link #CENTER}, {@link #TOP}, {@link #BOTTOM}, {@link #LEFT}
-	 * , {@link #RIGHT}, or any combination of those.
+	/** Alignment of the table within the actor being laid out. Set to {@link Align#CENTER}, {@link Align#TOP}, {@link Align#BOTTOM}
+	 * , {@link Align#LEFT} , {@link Align#RIGHT}, or any combination of those.
 	 * @see TableLayout#align(int) */
 	public Table align (int align) {
 		layout.align(align);
@@ -374,35 +471,35 @@ public class Table extends Group implements Layout {
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link #CENTER}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#CENTER}.
 	 * @see TableLayout#center() */
 	public Table center () {
 		layout.center();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link #TOP}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#TOP}.
 	 * @see TableLayout#top() */
 	public Table top () {
 		layout.top();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link #LEFT}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#LEFT}.
 	 * @see TableLayout#left() */
 	public Table left () {
 		layout.left();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link #BOTTOM}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#BOTTOM}.
 	 * @see TableLayout#bottom() */
 	public Table bottom () {
 		layout.bottom();
 		return this;
 	}
 
-	/** Sets the alignment of the table within the actor being laid out to {@link #RIGHT}.
+	/** Sets the alignment of the table within the actor being laid out to {@link Align#RIGHT}.
 	 * @see TableLayout#right() */
 	public Table right () {
 		layout.right();
@@ -416,8 +513,9 @@ public class Table extends Group implements Layout {
 		return this;
 	}
 
-	/** Turns on debug lines. Set to {@value #DEBUG_ALL}, {@value #DEBUG_TABLE}, {@value #DEBUG_CELL}, {@value #DEBUG_WIDGET}, or
-	 * any combination of those. Set to {@value #DEBUG_NONE} to disable.
+	/** Turns on debug lines. Set to {@value TableLayout#DEBUG_ALL}, {@value TableLayout#DEBUG_TABLE},
+	 * {@value TableLayout#DEBUG_CELL}, {@value TableLayout#DEBUG_WIDGET}, or any combination of those. Set to
+	 * {@value TableLayout#DEBUG_NONE} to disable.
 	 * @see TableLayout#debug() */
 	public Table debug (int debug) {
 		layout.debug(debug);

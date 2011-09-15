@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -37,7 +38,7 @@ public class FlickScrollPaneTest extends GdxTest {
 		Gdx.input.setInputProcessor(stage);
 
 		Gdx.graphics.setVSync(false);
-		
+
 		container = new Table();
 		stage.addActor(container);
 		container.getTableLayout().debug();
@@ -50,14 +51,14 @@ public class FlickScrollPaneTest extends GdxTest {
 		table.parse("pad:10 * expand:x space:4");
 		for (int i = 0; i < 100; i++) {
 			table.row();
-			table.add(new Label(null, i + "uno", new LabelStyle(font, Color.RED))).expandX().fillX();
-			table.add(new Label(null, i + "dos", new LabelStyle(font, Color.RED)));
-			table.add(new Label(null, i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12", new LabelStyle(font,
-				Color.RED)));
+			table.add(new Label(i + "uno", new LabelStyle(font, Color.RED))).expandX().fillX();
+			table.add(new Label(i + "dos", new LabelStyle(font, Color.RED)));
+			table.add(new Label(i + "tres long0 long1 long2 long3 long4 long5 long6 long7 long8 long9 long10 long11 long12",
+				new LabelStyle(font, Color.RED)));
 		}
 
 		container.getTableLayout().row();
-		container.getTableLayout().add(new Label(null, "stuff at bottom!", new LabelStyle(font, Color.WHITE))).pad(20, 20, 20, 20);
+		container.getTableLayout().add(new Label("stuff at bottom!", new LabelStyle(font, Color.WHITE))).pad(20, 20, 20, 20);
 	}
 
 	public void render () {

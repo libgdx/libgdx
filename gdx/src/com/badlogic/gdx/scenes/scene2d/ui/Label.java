@@ -18,13 +18,10 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton.ImageToggleButtonStyle;
-import com.badlogic.gdx.utils.NumberUtils;
 
 /** A label.
  * 
@@ -59,37 +56,32 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author mzechner */
 public class Label extends Widget {
 	LabelStyle style;
-	final BitmapFontCache cache;
+	BitmapFontCache cache;
 	String text;
 
 	public Label (String text, Skin skin) {
-		this(null, text, skin.getStyle(LabelStyle.class));
+		this(text, skin.getStyle(LabelStyle.class), null);
 	}
 
 	public Label (String text, LabelStyle style) {
-		this(null, text, style);
+		this( text, style, null);
 	}
 
-	public Label (String name, String text, LabelStyle style) {
-		super(name, 0, 0);
-		this.style = style;
-
-		cache = new BitmapFontCache(style.font);
-		cache.setColor(style.fontColor);
-		setText(text);
+	public Label (String text, LabelStyle style, String name) {
+		super(0, 0, name);
+		this.text = text;
+		setStyle(style);
 
 		width = prefWidth;
 		height = prefHeight;
 		touchable = false;
 	}
-	
-	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
-	 * @param style
-	 */
+
 	public void setStyle (LabelStyle style) {
 		this.style = style;
-		invalidateHierarchy();
+		cache = new BitmapFontCache(style.font);
+		cache.setColor(style.fontColor);
+		setText(text);
 	}
 
 	public void setText (String text) {

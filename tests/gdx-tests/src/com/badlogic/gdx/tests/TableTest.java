@@ -18,44 +18,62 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class LabelTest extends GdxTest {
+public class TableTest extends GdxTest {
 	Skin skin;
 	Stage stage;
-	SpriteBatch batch;
-	Actor root;
-	ImmediateModeRenderer10 renderer;
+	Table root;
 
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		renderer = new ImmediateModeRenderer10();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 
-		Gdx.gl10.glColor4f(1, 0, 0, 0);
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+
+		TextureRegion region = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
+
+		NinePatch patch = skin.getResource("default-round", NinePatch.class);
+
+		Label label = new Label("This is some text.", skin);
+
+		root = new Table();
+		stage.addActor(root);
 
 		Table table = new Table();
-		stage.addActor(table);
-		table.x = table.y = 100;
+		// root.add(table);
 
-		table.debug();
-		table.add(new Label("This is regular text.", skin.getStyle("default", LabelStyle.class)));
-		table.row();
-		table.add(new Label("This is regular text\nwith a newline.", skin.getStyle("default", LabelStyle.class)));
+		// table.setBackground(region);
+		table.setBackground(patch);
+		table.enableClipping(stage);
+		table.size(75, 75);
+		table.add(label);
+
+		table.setClickListener(new ClickListener() {
+			public void click (Actor actor) {
+				System.out.println("click!");
+			}
+		});
+
+		root.add(new Button("Text Button", skin));
+		root.add(new Button("Toggle Button", skin.getStyle("toggle", ButtonStyle.class)));
+		root.add(new CheckBox("meow", skin));
+		root.add(new Button(new Image(region), skin));
+//		root.add(new LabelButton("Toggley", skin.getStyle("toggle", LabelButtonStyle.class)));
 	}
 
 	@Override
@@ -66,28 +84,14 @@ public class LabelTest extends GdxTest {
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
 		Table.drawDebug(stage);
-
-		float x = 40, y = 40;
-
-		BitmapFont font = skin.getResource("default-font", BitmapFont.class);
-		batch.begin();
-		font.draw(batch, "The quick brown fox jumped over the lazy cow.", x, y);
-		batch.end();
-
-		drawLine(x, y - font.getDescent(), x + 1000, y - font.getDescent());
-		drawLine(x, y - font.getCapHeight() + font.getDescent(), x + 1000, y - font.getCapHeight() + font.getDescent());
-	}
-
-	public void drawLine (float x1, float y1, float x2, float y2) {
-		renderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
-		renderer.vertex(x1, y1, 0);
-		renderer.vertex(x2, y2, 0);
-		renderer.end();
 	}
 
 	@Override
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, false);
+		root.width = width;
+		root.height = height;
+		root.invalidate();
 	}
 
 	@Override

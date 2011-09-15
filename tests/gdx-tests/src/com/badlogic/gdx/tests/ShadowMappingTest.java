@@ -116,14 +116,15 @@ public class ShadowMappingTest extends GdxTest {
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
-		Label label = new Label("label", "Camera:", skin.getStyle(LabelStyle.class));
-		ComboBox cameraCombo = new ComboBox("cameraCombo", new String[] {"Scene", "Light"}, ui, skin.getStyle(ComboBoxStyle.class));
-		Label label2 = new Label("label2", "Shader", skin.getStyle(LabelStyle.class));
-		ComboBox shaderCombo = new ComboBox("shaderCombo", new String[] {"flat", "shadow-gen", "shadow-map"}, ui,
-			skin.getStyle(ComboBoxStyle.class));
-		Label fpsLabel = new Label("fps", "fps:", skin.getStyle(LabelStyle.class));
+		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
+		ComboBox cameraCombo = new ComboBox(new String[] {"Scene", "Light"}, ui, skin.getStyle(ComboBoxStyle.class));
+		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class), "cameraCombo");
+		ComboBox shaderCombo = new ComboBox(new String[] {"flat", "shadow-gen", "shadow-map"}, ui,
+			skin.getStyle(ComboBoxStyle.class), "shaderCombo");
+		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
 
-		Table table = new Table("toolbar", Gdx.graphics.getWidth(), 100);
+		Table table = new Table(Gdx.graphics.getWidth(), 100, "toolbar");
+		table.top().padTop(12);
 		table.defaults().spaceRight(5);
 		table.add(label);
 		table.add(cameraCombo);
@@ -214,5 +215,6 @@ public class ShadowMappingTest extends GdxTest {
 		Label fps = (Label)ui.findActor("fps");
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.draw();
+		Table.drawDebug(ui);
 	}
 }

@@ -5,29 +5,29 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Image extends Widget {
-	private final TextureRegion region;
+	private TextureRegion region;
 	private final Scaling scaling;
 	private int align = Align.CENTER;
 	private float imageX, imageY, imageWidth, imageHeight;
 
 	public Image (TextureRegion region) {
-		this(null, region, Scaling.none);
+		this(region, Scaling.none, null);
 	}
 
 	public Image (TextureRegion region, Scaling scaling) {
-		this(null, region, scaling);
+		this(region, scaling, null);
 	}
 
 	public Image (TextureRegion region, Scaling scaling, int align) {
-		this(null, region, scaling, align);
+		this(region, scaling, align, null);
 	}
 
-	public Image (String name, TextureRegion region, Scaling scaling) {
-		this(null, region, scaling, Align.CENTER);
+	public Image (TextureRegion region, Scaling scaling, String name) {
+		this(region, scaling, Align.CENTER, null);
 	}
 
-	public Image (String name, TextureRegion region, Scaling scaling, int align) {
-		super(name, region.getRegionWidth(), region.getRegionHeight());
+	public Image (TextureRegion region, Scaling scaling, int align, String name) {
+		super(region.getRegionWidth(), region.getRegionHeight(), name);
 		this.region = region;
 		this.scaling = scaling;
 		this.align = align;
@@ -85,13 +85,18 @@ public class Image extends Widget {
 		else if ((align & Align.BOTTOM) != 0)
 			imageY = 0;
 		else
-			imageY = (int)(height / 2 - imageHeight / 2);		
+			imageY = (int)(height / 2 - imageHeight / 2);
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (invalidated) layout();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+	}
+
+	public void setRegion (TextureRegion region) {
+		this.region = region;
+		invalidate();
 	}
 
 	public boolean touchDown (float x, float y, int pointer) {

@@ -163,7 +163,7 @@ public class Skin implements Disposable {
 				Object object = map.get((String)jsonData);
 				if (object == null)
 					throw new SerializationException("Skin has a " + type.getSimpleName()
-						+ " that could not be found in the resources.");
+						+ " that could not be found in the resources: " + jsonData);
 				return object;
 			}
 		}
@@ -200,10 +200,14 @@ public class Skin implements Disposable {
 					}
 					ObjectMap<String, ObjectMap> valueMap = (ObjectMap)typeEntry.value;
 					for (Entry<String, ObjectMap> valueEntry : valueMap.entries()) {
-						if (isResource)
-							addResource(valueEntry.key, json.readValue(type, valueEntry.value));
-						else
-							addStyle(valueEntry.key, json.readValue(type, valueEntry.value));
+						try {
+							if (isResource)
+								addResource(valueEntry.key, json.readValue(type, valueEntry.value));
+							else
+								addStyle(valueEntry.key, json.readValue(type, valueEntry.value));
+						} catch (Exception ex) {
+							throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.key, ex);
+						}
 					}
 				}
 			}

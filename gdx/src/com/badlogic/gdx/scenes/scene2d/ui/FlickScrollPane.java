@@ -53,10 +53,10 @@ public class FlickScrollPane extends Group implements Layout {
 	public boolean clamp;
 
 	public FlickScrollPane (Actor widget, Stage stage) {
-		this(null, widget, stage, 0, 0);
+		this(widget, stage, 0, 0, null);
 	}
 
-	public FlickScrollPane (String name, Actor widget, Stage stage, int prefWidth, int prefHeight) {
+	public FlickScrollPane (Actor widget, Stage stage, int prefWidth, int prefHeight, String name) {
 		super(name);
 		this.prefWidth = this.width = prefWidth;
 		this.prefHeight = this.height = prefHeight;

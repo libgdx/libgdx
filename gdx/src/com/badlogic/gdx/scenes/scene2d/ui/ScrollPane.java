@@ -107,14 +107,14 @@ public class ScrollPane extends Group implements Layout {
 	Vector2 lastPoint = new Vector2();
 
 	public ScrollPane (Actor widget, Stage stage, Skin skin) {
-		this(null, widget, stage, skin.getStyle(ScrollPaneStyle.class), 0, 0);
+		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), 0, 0, null);
 	}
 
 	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style) {
-		this(null, widget, stage, style, 0, 0);
+		this(widget, stage, style, 0, 0, null);
 	}
 
-	public ScrollPane (String name, Actor widget, Stage stage, ScrollPaneStyle style, int prefWidth, int prefHeight) {
+	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style, int prefWidth, int prefHeight, String name) {
 		super(name);
 		this.style = style;
 		this.prefWidth = this.width = prefWidth;

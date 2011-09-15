@@ -19,12 +19,10 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -32,10 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton.ImageToggleButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -51,8 +46,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.SplitPane.SplitPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ToggleButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ToggleButton.ToggleButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
@@ -75,7 +68,6 @@ public class UITest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		skin.getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 		TextureRegion image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
@@ -86,28 +78,22 @@ public class UITest extends GdxTest {
 
 		// Group.debug = true;
 
-		final Button button = new Button("button-sl", "Single", skin.getStyle(ButtonStyle.class));
-		final ToggleButton buttonMulti = new ToggleButton("button-ml-tgl", "Multi\nLine\nToggle",
-			skin.getStyle(ToggleButtonStyle.class));
-		final ImageButton imgButton = new ImageButton("button-img", image, skin.getStyle(ImageButtonStyle.class));
-		final ImageToggleButton imgToggleButton = new ImageToggleButton("button-img-tgl", image,
-			skin.getStyle(ImageToggleButtonStyle.class));
-		final CheckBox checkBox = new CheckBox("checkbox", "Check me", skin.getStyle(CheckBoxStyle.class));
-		final Slider slider = new Slider("slider", 0, 10, 1, skin.getStyle(SliderStyle.class), 100);
-		final TextField textfield = new TextField("textfield", "", skin.getStyle(TextFieldStyle.class), 100);
-		final ComboBox combobox = new ComboBox("combo", new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
-			skin.getStyle(ComboBoxStyle.class));
-		// BOZO - Need an image actor in UI package that has a pref size separate from the actor size.
-		final Image imageActor = new Image("image", image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane("scroll", imageActor, ui, 0, 0);
-		final List list = new List("list", listEntries, skin.getStyle(ListStyle.class));
-		final ScrollPane scrollPane2 = new ScrollPane("scroll2", list, ui, skin.getStyle(ScrollPaneStyle.class), 0, 0);
-		final SplitPane splitPane = new SplitPane("split", scrollPane, scrollPane2, false, ui, skin.getStyle("default-horizontal",
-			SplitPaneStyle.class), 0, 0);
-		final Label fpsLabel = new Label("label", "fps:", skin.getStyle(LabelStyle.class));
-
-		imgButton.setImageSize(16, 20);
-		imgToggleButton.setImageSize(10, 10);
+		final Button button = new Button("Single", skin.getStyle(ButtonStyle.class), "button-sl");
+		final Button buttonMulti = new Button("Multi\nLine\nToggle", skin.getStyle("toggle", ButtonStyle.class), "button-ml-tgl");
+		final Button imgButton = new Button(new Image(image), skin.getStyle(ButtonStyle.class));
+		final Button imgToggleButton = new Button(new Image(image), skin.getStyle("toggle", ButtonStyle.class));
+		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
+		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), 100, "slider");
+		final TextField textfield = new TextField("", skin.getStyle(TextFieldStyle.class), 100, "textfield");
+		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
+			skin.getStyle(ComboBoxStyle.class), "combo");
+		final Image imageActor = new Image(image2);
+		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, ui, 0, 0, "scroll");
+		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
+		final ScrollPane scrollPane2 = new ScrollPane(list, ui, skin.getStyle(ScrollPaneStyle.class), 0, 0, "scroll2");
+		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, ui, skin.getStyle("default-horizontal",
+			SplitPaneStyle.class), 0, 0, "split");
+		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
 
 		// window.debug();
 		window.defaults().spaceBottom(10);

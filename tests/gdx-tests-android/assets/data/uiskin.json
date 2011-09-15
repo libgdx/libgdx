@@ -195,10 +195,6 @@ resources: {
 	}
 },
 styles: {
-	com.badlogic.gdx.scenes.scene2d.ui.ImageToggleButton$ImageToggleButtonStyle: {
-		default: { down: default-round-down, up: default-round }
-	},
-
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		default: { titleFont: default-font, background: default-window, titleFontColor: white }
 	},
@@ -211,23 +207,9 @@ styles: {
 		default-vertical: { handle: default-splitpane-vertical },
 		default-horizontal: { handle: default-splitpane }
 	},
-	
-	com.badlogic.gdx.scenes.scene2d.ui.Pane$PaneStyle: { 
-		default: { background: default-round },
-		noborder: { background: default-pane-noborder },
-		default-rect: { background: default-rect }
-	},
-	
-	com.badlogic.gdx.scenes.scene2d.ui.ToggleButton$ToggleButtonStyle: {
-		default: { down: default-round-down, font: default-font, fontColor: white, up: default-round }
-	},
-	
+
 	com.badlogic.gdx.scenes.scene2d.ui.ComboBox$ComboBoxStyle: {
 		default: { listBackground: default-rect, listSelection: default-combo-selection, font: default-font, fontColor: white, background: default-combo }
-	},
-
-	com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
-		default: { down: default-round-down, up: default-round }
 	},
 
 	com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
@@ -238,10 +220,6 @@ styles: {
 		default: { fontColorUnselected: white, selectedPatch: default-rect-pad, fontColorSelected: white, font: default-font }
 	},
 
-	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-		default: { checked: check-on, unchecked: check-off, font: default-font, fontColor: white }
-	},
-
 	com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		default: { vScroll: default-slider, hScrollKnob: default-round, background: default-rect, hScroll: default-slider, vScrollKnob: default-round }
 	},
@@ -250,8 +228,13 @@ styles: {
 		default: { font: default-font, fontColor: white  }
 	},
 
+	com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+		default: { checkboxOff: check-off, checkboxOn: check-on, font: default-font, fontColor: white },
+	},
+	
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-		default: { down: default-round-down, font: default-font, fontColor: white, up: default-round }
-	}
+		default: { up: default-round, down: default-round-down, font: default-font, fontColor: white },
+		toggle: { up: default-round, down: default-round-down, checked: default-round-down, font: default-font, fontColor: white },
+	},
 }
 }

@@ -46,10 +46,10 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	/** Creates a new widget with the preferred width and height
-	 * @param name the name
 	 * @param prefWidth the preferred width
-	 * @param prefHeight the preferred height */
-	public Widget (String name, float prefWidth, float prefHeight) {
+	 * @param prefHeight the preferred height 
+	 * @param name the name*/
+	public Widget (float prefWidth, float prefHeight, String name) {
 		super(name);
 		this.prefWidth = prefWidth;
 		this.prefHeight = prefHeight;

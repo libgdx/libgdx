@@ -47,6 +47,7 @@ public class GdxTests {
 		GestureDetectorTest.class, LabelTest.class,
 		BitmapFontTest.class,
 		BlitTest.class,
+		TableTest.class,
 		BobTest.class,
 		Box2DInitialOverlapTest.class,
 		Box2DTest.class,

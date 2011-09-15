@@ -91,20 +91,20 @@ public class ComboBox extends Widget {
 	SelectionListener listener;
 
 	public ComboBox (String[] entries, Stage stage, Skin skin) {
-		this(null, entries, stage, skin.getStyle(ComboBoxStyle.class));
+		this(entries, stage, skin.getStyle(ComboBoxStyle.class), null);
 	}
-	
+
 	public ComboBox (String[] entries, Stage stage, ComboBoxStyle style) {
-		this(null, entries, stage, style);
+		this(entries, stage, style, null);
 	}
-	
+
 	/** Creates a new combo box. The width and height are determined by the widets entry and the style.
 	 * @param name the name
 	 * @param entries the single-line entries
 	 * @param stage the stage, used for the popup
 	 * @param style the {@link ComboBoxStyle} */
-	public ComboBox (String name, String[] entries, Stage stage, ComboBoxStyle style) {
-		super(name, 0, 0);
+	public ComboBox (String[] entries, Stage stage, ComboBoxStyle style, String name) {
+		super(0, 0, name);
 		this.entries = entries;
 		setStyle(style);
 		this.stage = stage;
@@ -112,11 +112,9 @@ public class ComboBox extends Widget {
 		this.width = prefWidth;
 		this.height = prefHeight;
 	}
-	
-	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
-	 * @param style
-	 */
+
+	/** Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * @param style */
 	public void setStyle (ComboBoxStyle style) {
 		this.style = style;
 		invalidateHierarchy();

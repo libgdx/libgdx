@@ -32,10 +32,11 @@ import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -105,13 +106,14 @@ public class ProjectiveTextureTest extends GdxTest {
 	}
 
 	public void setupUI () {
-		ui = new Stage(480, 320, false);
+		ui = new Stage(480, 320, true);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		Button reload = new Button("reload", "Reload Shaders", skin.getStyle(ButtonStyle.class));
-		ComboBox camera = new ComboBox("camera", new String[] {"Camera", "Light"}, ui, skin.getStyle(ComboBoxStyle.class));
-		Label fps = new Label("fps", "fps: ", skin.getStyle(LabelStyle.class));
+		Button reload = new Button("Reload Shaders", skin.getStyle(ButtonStyle.class), "reload");
+		ComboBox camera = new ComboBox(new String[] {"Camera", "Light"}, ui, skin.getStyle(ComboBoxStyle.class), "camera");
+		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
 
-		Table table = new Table("container", (int)ui.width(), (int)ui.height());
+		Table table = new Table((int)ui.width(), (int)ui.height(), "container");
+		table.top().padTop(15);
 		table.add(reload).spaceRight(5);
 		table.add(camera).spaceRight(5);
 		table.add(fps);
@@ -119,7 +121,7 @@ public class ProjectiveTextureTest extends GdxTest {
 
 		reload.setClickListener(new ClickListener() {
 			@Override
-			public void click (Button button) {
+			public void click (Actor button) {
 				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files
 					.internal("data/shaders/projtex-frag.glsl").readString());
 				if (prog.isCompiled() == false) {
@@ -166,6 +168,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		Label label = (Label)ui.findActor("fps");
 		label.setText("fps: " + Gdx.graphics.getFramesPerSecond());
 		ui.draw();
+		Table.drawDebug(ui);
 	}
 
 	Vector3 position = new Vector3();

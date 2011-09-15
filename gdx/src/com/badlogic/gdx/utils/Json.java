@@ -536,11 +536,11 @@ public class Json {
 		if (fields == null) fields = cacheFields(type);
 		for (Entry<String, Object> entry : jsonMap.entries()) {
 			FieldMetadata metadata = fields.get(entry.key);
-			Field field = metadata.field;
 			if (ignoreUnknownFields) {
 				if (debug) System.out.println("Ignoring unknown field: " + entry.key + " (" + type.getName() + ")");
-			} else if (field == null)
+			} else if (metadata == null)
 				throw new SerializationException("Unable to find field: " + entry.key + " (" + type.getName() + ")");
+			Field field = metadata.field;
 			if (entry.value == null) continue;
 			try {
 				field.set(object, readValue(field.getType(), metadata.elementType, entry.value));

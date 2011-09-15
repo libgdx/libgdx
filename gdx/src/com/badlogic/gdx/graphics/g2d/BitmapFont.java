@@ -683,7 +683,7 @@ public class BitmapFont implements Disposable {
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
 					lastGlyph = g;
-					if (width + g.width + g.xoffset > availableWidth) break;
+					if (width + g.xadvance > availableWidth) break;
 					width += g.xadvance;
 				}
 			}
@@ -695,7 +695,7 @@ public class BitmapFont implements Disposable {
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
 					lastGlyph = g;
-					if (width + (g.width + g.xoffset) * scaleX > availableWidth) break;
+					if (width + g.xadvance * scaleX > availableWidth) break;
 					width += g.xadvance * scaleX;
 				}
 			}

@@ -97,24 +97,24 @@ public class SplitPane extends Group implements Layout {
 	boolean touchDrag = false;
 
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, Skin skin) {
-		this(null, firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), 0, 0);
+		this(firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), 0, 0, null);
 	}
 
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style) {
-		this(null, firstWidget, secondWidget, vertical, stage, style, 0, 0);
+		this(firstWidget, secondWidget, vertical, stage, style, 0, 0, null);
 	}
 
 	/** Creates a new SplitPane. It's width and height is determined by the prefWidth and prefHeight parameters.
-	 * @param name the name
-	 * @param stage the stage, used for clipping
 	 * @param firstWidget the first {@link Actor}
 	 * @param secondWidget the second Actor
 	 * @param vertical whether this is a vertical SplitPane or not (horizontal)
+	 * @param stage the stage, used for clipping
+	 * @param style the {@link SplitPaneStyle} 
 	 * @param prefWidth the (preferred) width
 	 * @param prefHeight the (preferred) height
-	 * @param style the {@link SplitPaneStyle} */
-	public SplitPane (String name, Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style,
-		int prefWidth, int prefHeight) {
+	 * @param name the name*/
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style, int prefWidth,
+		int prefHeight, String name) {
 		super(name);
 		this.stage = stage;
 		setStyle(style);

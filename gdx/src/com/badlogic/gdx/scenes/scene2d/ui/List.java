@@ -75,19 +75,19 @@ public class List extends Widget {
 	SelectionListener listener;
 
 	public List (String[] entries, Skin skin) {
-		this(null, entries, skin.getStyle(ListStyle.class));
+		this(entries, skin.getStyle(ListStyle.class), null);
 	}
 
 	public List (String[] entries, ListStyle style) {
-		this(null, entries, style);
+		this(entries, style, null);
 	}
 
 	/** Creates a new List. The width and height is determined from the bounding box around all entries.
-	 * @param name the name
 	 * @param entries the entries
-	 * @param style the {@link ListStyle} */
-	public List (String name, String[] entries, ListStyle style) {
-		super(name, 0, 0);
+	 * @param style the {@link ListStyle} 
+	 * @param name the name*/
+	public List (String[] entries, ListStyle style, String name) {
+		super(0, 0, name);
 		setStyle(style);
 		this.entries = entries;
 		layout();
