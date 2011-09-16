@@ -30,7 +30,7 @@ public class ImageTest extends GdxTest {
 		root.debug();
 
 		Image image = new Image(image2, Scaling.stretch);
-		root.add(image).minWidth(600).minHeight(400);
+		root.add(image).minWidth(16).minHeight(14);
 	}
 
 	@Override

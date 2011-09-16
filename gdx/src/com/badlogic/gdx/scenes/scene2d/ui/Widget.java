@@ -23,9 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** Base class for all UI widgets. A widget implements the {@link Layout} interface which has a couple of features.</p>
  * 
- * A widget has a preferred width and height which it will use if possible, e.g. if it is not in a {@link Table} ({@link Pane},
- * {@link Window}) or a {@link SplitPane} or a {@link ScrollPane}. In case it is contained in one of the aforementioned
- * containers, the preferred width and height will be used to guide the layouting mechanism employed by those containers.</p>
+ * A widget has a preferred width and height which it will use if possible, e.g. if it is not in a {@link Table} or a
+ * {@link SplitPane} or a {@link ScrollPane}. In case it is contained in one of the aforementioned containers, the preferred width
+ * and height will be used to guide the layouting mechanism employed by those containers.</p>
  * 
  * A widget can be invalidated, e.g. by a Container changing its available space in the layout, in which case it will layout
  * itself at the next oportunity to do so.</p>
@@ -36,8 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
  * well.
  * @author mzechner */
 public abstract class Widget extends Actor implements Layout {
-	public float prefWidth;
-	public float prefHeight;
 	protected boolean invalidated = true;
 
 	/** Creates a new widget without a name or preferred size. */
@@ -46,23 +44,25 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	/** Creates a new widget with the preferred width and height
-	 * @param prefWidth the preferred width
-	 * @param prefHeight the preferred height 
-	 * @param name the name*/
-	public Widget (float prefWidth, float prefHeight, String name) {
+	 * @param name the name */
+	public Widget (String name) {
 		super(name);
-		this.prefWidth = prefWidth;
-		this.prefHeight = prefHeight;
 	}
 
-	@Override
-	public float getPrefWidth () {
-		return prefWidth;
+	public float getMinWidth () {
+		return getPrefWidth();
 	}
 
-	@Override
-	public float getPrefHeight () {
-		return prefHeight;
+	public float getMinHeight () {
+		return getPrefHeight();
+	}
+
+	public float getMaxWidth () {
+		return 0;
+	}
+
+	public float getMaxHeight () {
+		return 0;
 	}
 
 	/** Invalidates this widget, causing it to relayout itself at the next oportunity. */
@@ -83,14 +83,5 @@ public abstract class Widget extends Actor implements Layout {
 	@Override
 	public Actor hit (float x, float y) {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
-	}
-
-	/** Sets the preferred width and height of this widget. Invalidates all parents.
-	 * @param prefWidth the preferred width
-	 * @param prefHeight the preferred height */
-	public void setPrefSize (int prefWidth, int prefHeight) {
-		this.prefWidth = width = prefWidth;
-		this.prefHeight = height = prefHeight;
-		invalidateHierarchy();
 	}
 }

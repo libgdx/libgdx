@@ -112,7 +112,9 @@ public class ProjectiveTextureTest extends GdxTest {
 		ComboBox camera = new ComboBox(new String[] {"Camera", "Light"}, ui, skin.getStyle(ComboBoxStyle.class), "camera");
 		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
 
-		Table table = new Table((int)ui.width(), (int)ui.height(), "container");
+		Table table = new Table("container");
+		table.width = ui.width();
+		table.height = ui.height();
 		table.top().padTop(15);
 		table.add(reload).spaceRight(5);
 		table.add(camera).spaceRight(5);

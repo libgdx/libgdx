@@ -48,13 +48,12 @@ import com.esotericsoftware.tablelayout.Cell;
 /** @author Nathan Sweet */
 public class Table extends Group implements Layout {
 	private final TableLayout layout;
-	boolean prefSizeInvalid = true;
-	private int prefWidth, prefHeight;
+	boolean sizeInvalid = true;
 
 	private ClickListener listener;
 	public boolean isPressed;
 
-	private NinePatch backgroundPatch;
+	NinePatch backgroundPatch;
 	private TextureRegion backgroundRegion;
 
 	private Stage stage;
@@ -65,24 +64,12 @@ public class Table extends Group implements Layout {
 		this(new TableLayout(), null);
 	}
 
-	public Table (float width, float height) {
-		this(new TableLayout(), null);
-		this.width = width;
-		this.height = height;
-	}
-
 	public Table (TableLayout layout) {
 		this(layout, null);
 	}
 
 	public Table (String name) {
 		this(new TableLayout(), name);
-	}
-
-	public Table (float width, float height, String name) {
-		this(new TableLayout(), name);
-		this.width = width;
-		this.height = height;
 	}
 
 	public Table (TableLayout layout, String name) {
@@ -127,25 +114,41 @@ public class Table extends Group implements Layout {
 		ScissorStack.calculateScissors(stage.getCamera(), transform, tableBounds, scissors);
 	}
 
-	private void computePrefSize () {
-		if (!prefSizeInvalid) return;
+	private void computeSize () {
+		if (!sizeInvalid) return;
 		layout.setLayoutSize(0, 0, 0, 0);
 		layout.invalidate();
 		layout.layout();
 		layout.invalidate();
-		prefSizeInvalid = false;
-		prefWidth = layout.getMinWidth();
-		prefHeight = layout.getMinHeight();
+		sizeInvalid = false;
 	}
 
 	public float getPrefWidth () {
-		if (prefSizeInvalid) computePrefSize();
-		return prefWidth;
+		if (sizeInvalid) computeSize();
+		return layout.getPrefWidth();
 	}
 
 	public float getPrefHeight () {
-		if (prefSizeInvalid) computePrefSize();
-		return prefHeight;
+		if (sizeInvalid) computeSize();
+		return layout.getPrefHeight();
+	}
+
+	public float getMinWidth () {
+		if (sizeInvalid) computeSize();
+		return layout.getMinWidth();
+	}
+
+	public float getMinHeight () {
+		if (sizeInvalid) computeSize();
+		return layout.getMinHeight();
+	}
+
+	public float getMaxWidth () {
+		return 0;
+	}
+
+	public float getMaxHeight () {
+		return 0;
 	}
 
 	/** @param background May be null. */
@@ -326,22 +329,6 @@ public class Table extends Group implements Layout {
 	 * @see TableLayout#setWidget(String, Actor) */
 	public void setActor (String name, Actor actor) {
 		layout.setWidget(name, actor);
-	}
-
-	/** The minimum width of the table. Available after laying out.
-	 * @see TableLayout#getMinWidth() */
-	public int getMinWidth () {
-		int minWidth = layout.getMinWidth();
-		if (backgroundPatch != null) minWidth += backgroundPatch.getLeftWidth() + backgroundPatch.getRightWidth();
-		return minWidth;
-	}
-
-	/** The minimum size of the table. Available after laying out.
-	 * @see TableLayout#getMinHeight() */
-	public int getMinHeight () {
-		int minHeight = layout.getMinHeight();
-		if (backgroundPatch != null) minHeight += backgroundPatch.getTopHeight() + backgroundPatch.getBottomHeight();
-		return minHeight;
 	}
 
 	/** The fixed size of the table.

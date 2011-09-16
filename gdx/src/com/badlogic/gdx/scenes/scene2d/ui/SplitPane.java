@@ -25,7 +25,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -77,8 +76,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class SplitPane extends Group implements Layout {
 	SplitPaneStyle style;
-	float prefWidth;
-	float prefHeight;
 
 	boolean invalidated = false;
 
@@ -97,11 +94,11 @@ public class SplitPane extends Group implements Layout {
 	boolean touchDrag = false;
 
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, Skin skin) {
-		this(firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), 0, 0, null);
+		this(firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), null);
 	}
 
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style) {
-		this(firstWidget, secondWidget, vertical, stage, style, 0, 0, null);
+		this(firstWidget, secondWidget, vertical, stage, style, null);
 	}
 
 	/** Creates a new SplitPane. It's width and height is determined by the prefWidth and prefHeight parameters.
@@ -109,52 +106,43 @@ public class SplitPane extends Group implements Layout {
 	 * @param secondWidget the second Actor
 	 * @param vertical whether this is a vertical SplitPane or not (horizontal)
 	 * @param stage the stage, used for clipping
-	 * @param style the {@link SplitPaneStyle} 
-	 * @param prefWidth the (preferred) width
-	 * @param prefHeight the (preferred) height
-	 * @param name the name*/
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style, int prefWidth,
-		int prefHeight, String name) {
+	 * @param style the {@link SplitPaneStyle}
+	 * @param name the name */
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style, String name) {
 		super(name);
 		this.stage = stage;
 		setStyle(style);
 		this.firstWidget = firstWidget;
 		this.secondWidget = secondWidget;
-		this.prefWidth = this.width = prefWidth;
-		this.prefHeight = this.height = prefHeight;
 		this.vertical = vertical;
 
 		this.addActor(firstWidget);
 		this.addActor(secondWidget);
-		layout();
 	}
-	
-	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
-	 * @param style
-	 */
+
+	/** Sets the style of this widget.
+	 * @param style */
 	public void setStyle (SplitPaneStyle style) {
 		this.style = style;
-		invalidate();
 	}
 
 	@Override
 	public void layout () {
+		if (!invalidated) return;
+		invalidated = false;
+
 		if (firstWidget instanceof Layout) {
 			Layout layout = (Layout)firstWidget;
 			layout.layout();
 			firstWidget.width = layout.getPrefWidth();
 			firstWidget.height = layout.getPrefHeight();
 		}
-
 		if (secondWidget instanceof Layout) {
 			Layout layout = (Layout)secondWidget;
 			layout.layout();
 			secondWidget.width = layout.getPrefWidth();
 			secondWidget.height = layout.getPrefHeight();
 		}
-
-		invalidated = false;
 	}
 
 	@Override
@@ -166,12 +154,28 @@ public class SplitPane extends Group implements Layout {
 
 	@Override
 	public float getPrefWidth () {
-		return prefHeight;
+		return 150;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		return prefWidth;
+		return 150;
+	}
+
+	public float getMinWidth () {
+		return 0;
+	}
+
+	public float getMinHeight () {
+		return 0;
+	}
+
+	public float getMaxWidth () {
+		return 0;
+	}
+
+	public float getMaxHeight () {
+		return 0;
 	}
 
 	private void calculateBoundsAndPositions (Matrix4 transform) {

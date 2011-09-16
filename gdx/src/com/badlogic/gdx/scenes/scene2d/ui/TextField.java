@@ -110,7 +110,6 @@ public class TextField extends Widget {
 	final StringBuilder builder = new StringBuilder();
 	final FloatArray glyphAdvances = new FloatArray();
 	final FloatArray glyphPositions = new FloatArray();
-	final float initialPrefWidth;
 	float blinkTime = 0.42f;
 	long lastBlink = System.nanoTime();
 	boolean cursorOn = true;
@@ -121,58 +120,41 @@ public class TextField extends Widget {
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	public TextField (Skin skin) {
-		this("", skin.getStyle(TextFieldStyle.class), 0, null);
+		this("", skin.getStyle(TextFieldStyle.class), null);
 	}
 
 	public TextField (String text, Skin skin) {
-		this(text, skin.getStyle(TextFieldStyle.class), 0, null);
+		this(text, skin.getStyle(TextFieldStyle.class), null);
 	}
 
 	public TextField (TextFieldStyle style) {
-		this("", style, 0, null);
+		this("", style, null);
 	}
 
 	public TextField (String text, TextFieldStyle style) {
-		this(text, style, 0, null);
+		this(text, style, null);
 	}
 
 	/** Creates a new Textfield. The width is determined by the prefWidth parameter, the height is determined by the font's height
 	 * as well as the top and bottom border patches of the text fields background.
-	 * @param style the {@link TextFieldStyle} 
+	 * @param style the {@link TextFieldStyle}
 	 * @param prefWidth the (preferred) width
-	 * @param name the name*/
-	public TextField (String text, TextFieldStyle style, float prefWidth, String name) {
-		super(prefWidth, 0, name);
+	 * @param name the name */
+	public TextField (String text, TextFieldStyle style, String name) {
+		super(name);
 		setStyle(style);
-		this.initialPrefWidth = prefWidth;
 		this.clipboard = Clipboard.getDefaultClipboard();
-		layout();
-		this.width = this.prefWidth;
-		this.height = this.prefHeight;
 		setText(text);
 	}
-	
-	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
-	 * @param style
-	 */
+
+	/** Sets the style of this widget.
+	 * @param style */
 	public void setStyle (TextFieldStyle style) {
 		this.style = style;
-		invalidateHierarchy();
 	}
 
 	@Override
 	public void layout () {
-		final BitmapFont font = style.font;
-		final NinePatch background = style.background;
-
-		textBounds.set(font.getBounds(text));
-		textBounds.height -= font.getDescent() * 2;
-		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
-
-		prefHeight = background.getBottomHeight() + background.getTopHeight() + textBounds.height;
-		prefWidth = background.getLeftWidth() + background.getRightWidth() + initialPrefWidth;
-		invalidated = false;
 	}
 
 	private void blink () {
@@ -243,8 +225,6 @@ public class TextField extends Widget {
 		final NinePatch background = style.background;
 		final TextureRegion selection = style.selection;
 		final NinePatch cursorPatch = style.cursor;
-
-		if (invalidated) layout();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);
@@ -485,19 +465,32 @@ public class TextField extends Widget {
 	/** Sets the text of this text field.
 	 * @param text the text */
 	public void setText (String text) {
-		final BitmapFont font = style.font;
-
 		if (text == null) throw new IllegalArgumentException("text must not be null");
+
+		BitmapFont font = style.font;
+
 		this.text = text;
 		this.cursor = 0;
 		this.hasSelection = false;
 		font.computeGlyphAdvancesAndPositions(text, this.glyphAdvances, this.glyphPositions);
-		invalidateHierarchy();
+
+		textBounds.set(font.getBounds(text));
+		textBounds.height -= font.getDescent() * 2;
+		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
 	}
 
 	/** @return the text of this text field. Never null, might be an empty string. */
 	public String getText () {
 		return text;
+	}
+
+	public float getPrefWidth () {
+		return 150;
+	}
+
+	public float getPrefHeight () {
+		NinePatch background = style.background;
+		return background.getBottomHeight() + background.getTopHeight() + textBounds.height;
 	}
 
 	/** Returns the currently used {@link OnscreenKeyboard}. {@link TextField} instances use the {@link DefaultOnscreenKeyboard} by

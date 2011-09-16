@@ -58,22 +58,21 @@ public class Label extends Widget {
 	LabelStyle style;
 	BitmapFontCache cache;
 	String text;
+	private float prefWidth, prefHeight;
 
 	public Label (String text, Skin skin) {
 		this(text, skin.getStyle(LabelStyle.class), null);
 	}
 
 	public Label (String text, LabelStyle style) {
-		this( text, style, null);
+		this(text, style, null);
 	}
 
 	public Label (String text, LabelStyle style, String name) {
-		super(0, 0, name);
+		super(name);
 		this.text = text;
 		setStyle(style);
 
-		width = prefWidth;
-		height = prefHeight;
 		touchable = false;
 	}
 
@@ -90,7 +89,6 @@ public class Label extends Widget {
 		cache.setMultiLineText(text, 0, bounds.height);
 		prefWidth = bounds.width;
 		prefHeight = bounds.height - style.font.getDescent() * 2;
-		invalidateHierarchy();
 	}
 
 	public String getText () {
@@ -139,6 +137,14 @@ public class Label extends Widget {
 	@Override
 	public Actor hit (float x, float y) {
 		return null;
+	}
+
+	public float getPrefWidth () {
+		return prefWidth;
+	}
+
+	public float getPrefHeight () {
+		return prefHeight;
 	}
 
 	/** Defines a label's style, see {@link Label}

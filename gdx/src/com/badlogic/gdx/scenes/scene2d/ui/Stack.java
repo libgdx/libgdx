@@ -85,4 +85,32 @@ public class Stack extends Group implements Layout {
 			height = Math.max(height, LibgdxToolkit.instance.getPrefHeight(children.get(i)));
 		return height * scaleY;
 	}
+
+	public float getMaxWidth () {
+		float width = 0;
+		for (int i = 0, n = children.size(); i < n; i++)
+			width = Math.max(width, LibgdxToolkit.instance.getMaxWidth(children.get(i)));
+		return width * scaleX;
+	}
+
+	public float getMaxHeight () {
+		float height = 0;
+		for (int i = 0, n = children.size(); i < n; i++)
+			height = Math.max(height, LibgdxToolkit.instance.getMaxHeight(children.get(i)));
+		return height * scaleY;
+	}
+
+	public float getMinWidth () {
+		float width = 0;
+		for (int i = 0, n = children.size(); i < n; i++)
+			width = Math.max(width, LibgdxToolkit.instance.getMinWidth(children.get(i)));
+		return width * scaleX;
+	}
+
+	public float getMinHeight () {
+		float height = 0;
+		for (int i = 0, n = children.size(); i < n; i++)
+			height = Math.max(height, LibgdxToolkit.instance.getMinHeight(children.get(i)));
+		return height * scaleY;
+	}
 }

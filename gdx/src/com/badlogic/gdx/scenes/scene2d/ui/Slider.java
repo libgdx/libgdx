@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 
 /** A value slider.
  * 
@@ -66,11 +65,11 @@ public class Slider extends Widget {
 	ValueChangedListener listener = null;
 
 	public Slider (float min, float max, float steps, Skin skin) {
-		this(min, max, steps, skin.getStyle(SliderStyle.class), 0, null);
+		this(min, max, steps, skin.getStyle(SliderStyle.class), null);
 	}
 
 	public Slider (float min, float max, float steps, SliderStyle style) {
-		this(min, max, steps, style, 0, null);
+		this(min, max, steps, style, null);
 	}
 
 	/** Creates a new slider. It's width is determined by the given prefWidth parameter, its height is determined by the maximum of
@@ -80,11 +79,11 @@ public class Slider extends Widget {
 	 * @param min the minimum value
 	 * @param max the maximum value
 	 * @param steps the step size between values
-	 * @param style the {@link SliderStyle} 
+	 * @param style the {@link SliderStyle}
 	 * @param prefWidth the (preferred) width
-	 * @param name the name*/
-	public Slider (float min, float max, float steps, SliderStyle style, float prefWidth, String name) {
-		super(prefWidth, 0, name);
+	 * @param name the name */
+	public Slider (float min, float max, float steps, SliderStyle style, String name) {
+		super(name);
 		setStyle(style);
 		if (min > max) throw new IllegalArgumentException("min must be > max");
 		if (steps < 0) throw new IllegalArgumentException("unit must be > 0");
@@ -92,32 +91,22 @@ public class Slider extends Widget {
 		this.max = max;
 		this.steps = steps;
 		this.value = min;
-		layout();
-		this.width = prefWidth;
-		this.height = prefHeight;
 	}
-	
-	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
-	 * @param style
-	 */
+
+	/** Sets the style of this widget.
+	 * @param style */
 	public void setStyle (SliderStyle style) {
 		this.style = style;
-		invalidateHierarchy();
 	}
 
 	@Override
 	public void layout () {
-		prefHeight = Math.max(style.knob.getRegionHeight(), style.slider.getTotalHeight());
-		invalidated = false;
 	}
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final TextureRegion knob = style.knob;
 		final NinePatch slider = style.slider;
-
-		if (invalidated) layout();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		sliderPos = (value - min) / (max - min) * (width - knob.getRegionWidth());
@@ -212,5 +201,13 @@ public class Slider extends Widget {
 		this.max = max;
 		this.value = min;
 		if (listener != null) listener.changed(this, getValue());
+	}
+
+	public float getPrefWidth () {
+		return 140;
+	}
+
+	public float getPrefHeight () {
+		return Math.max(style.knob.getRegionHeight(), style.slider.getTotalHeight());
 	}
 }

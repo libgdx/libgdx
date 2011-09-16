@@ -88,8 +88,6 @@ public class ScrollPane extends Group implements Layout {
 	final ScrollPaneStyle style;
 	Actor widget;
 	Stage stage;
-	float prefWidth;
-	float prefHeight;
 
 	Rectangle hScrollBounds = new Rectangle();
 	Rectangle vScrollBounds = new Rectangle();
@@ -107,22 +105,19 @@ public class ScrollPane extends Group implements Layout {
 	Vector2 lastPoint = new Vector2();
 
 	public ScrollPane (Actor widget, Stage stage, Skin skin) {
-		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), 0, 0, null);
+		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), null);
 	}
 
 	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style) {
-		this(widget, stage, style, 0, 0, null);
+		this(widget, stage, style, null);
 	}
 
-	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style, int prefWidth, int prefHeight, String name) {
+	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style, String name) {
 		super(name);
-		this.style = style;
-		this.prefWidth = this.width = prefWidth;
-		this.prefHeight = this.height = prefHeight;
-
-		this.stage = stage;
 		this.widget = widget;
-		this.addActor(widget);
+		this.stage = stage;
+		this.style = style;
+		addActor(widget);
 		layout();
 	}
 
@@ -281,12 +276,28 @@ public class ScrollPane extends Group implements Layout {
 
 	@Override
 	public float getPrefWidth () {
-		return prefWidth;
+		return 150;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		return prefHeight;
+		return 150;
+	}
+
+	public float getMinWidth () {
+		return 0;
+	}
+
+	public float getMinHeight () {
+		return 0;
+	}
+
+	public float getMaxWidth () {
+		return 0;
+	}
+
+	public float getMaxHeight () {
+		return 0;
 	}
 
 	float handlePos = 0;

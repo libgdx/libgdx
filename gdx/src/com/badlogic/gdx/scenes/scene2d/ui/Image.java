@@ -27,8 +27,7 @@ public class Image extends Widget {
 	}
 
 	public Image (TextureRegion region, Scaling scaling, int align, String name) {
-		super(region.getRegionWidth(), region.getRegionHeight(), name);
-		this.region = region;
+		setRegion(region);
 		this.scaling = scaling;
 		this.align = align;
 	}
@@ -36,6 +35,7 @@ public class Image extends Widget {
 	public void layout () {
 		if (!invalidated) return;
 		invalidated = false;
+
 		float regionWidth = region.getRegionWidth();
 		float regionHeight = region.getRegionHeight();
 		switch (scaling) {
@@ -97,6 +97,14 @@ public class Image extends Widget {
 	public void setRegion (TextureRegion region) {
 		this.region = region;
 		invalidate();
+	}
+
+	public float getPrefWidth () {
+		return region.getRegionWidth();
+	}
+
+	public float getPrefHeight () {
+		return region.getRegionHeight();
 	}
 
 	public boolean touchDown (float x, float y, int pointer) {

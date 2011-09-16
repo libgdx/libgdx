@@ -83,16 +83,16 @@ public class UITest extends GdxTest {
 		final Button imgButton = new Button(new Image(image), skin.getStyle(ButtonStyle.class));
 		final Button imgToggleButton = new Button(new Image(image), skin.getStyle("toggle", ButtonStyle.class));
 		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
-		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), 100, "slider");
-		final TextField textfield = new TextField("", skin.getStyle(TextFieldStyle.class), 100, "textfield");
+		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
+		final TextField textfield = new TextField("", skin.getStyle(TextFieldStyle.class), "textfield");
 		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
 			skin.getStyle(ComboBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, ui, 0, 0, "scroll");
+		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, ui, "scroll");
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane2 = new ScrollPane(list, ui, skin.getStyle(ScrollPaneStyle.class), 0, 0, "scroll2");
+		final ScrollPane scrollPane2 = new ScrollPane(list, ui, skin.getStyle(ScrollPaneStyle.class), "scroll2");
 		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, ui, skin.getStyle("default-horizontal",
-			SplitPaneStyle.class), 0, 0, "split");
+			SplitPaneStyle.class), "split");
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
 
 		// window.debug();
@@ -104,10 +104,10 @@ public class UITest extends GdxTest {
 		window.add(imgToggleButton);
 		window.row();
 		window.add(checkBox);
-		window.add(slider).fillX().colspan(3);
+		window.add(slider).minWidth(100).fillX().colspan(3);
 		window.row();
 		window.add(combobox);
-		window.add(textfield).expandX().fillX().colspan(3);
+		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
 		window.row();
 		window.add(splitPane).fill().expand().colspan(4).minHeight(200);
 		window.row();

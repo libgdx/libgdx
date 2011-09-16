@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 /** A dropdown or combo box.
  * 
  * <h2>Functionality</h2> A ComboBox contains a list of Strings, with one of the strings being selected and displayed in the main
- * area of the ComboBox. Clicking the ComboBox brings up a popup list showing all the entries. This popup list will grab the touch
+ * area of the ComboBox. Clicking the ComboBox brings up a popup list showing all the items. This popup list will grab the touch
  * focus while it is displayed. This is achieved by temporarily adding a new Actor to the root of the Stage the ComboBox is
  * contained in. As soon as an item is selected or a mouse click outside the area of the popup list is registered, the popup will
  * disappear again and the focus is given back. </p>
@@ -39,17 +39,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * A {@link SelectionListener} can be registered with the ComboBox to receive notification of selection changes.</p>
  * 
  * <h2>Layout</h2> A ComboBox's (preferred) width and height are determined by the border patches in the background
- * {@link NinePatch} as well as the bounding box of the widest entry in the list of strings. Use
+ * {@link NinePatch} as well as the bounding box of the widest item in the list of strings. Use
  * {@link ComboBox#setPrefSize(int, int)} to change this size programmatically. In case the set size is to small to contain the
- * widest entry, artifacts may appear.</p>
+ * widest item, artifacts may appear.</p>
  * 
- * The additional popup list will be positioned at the bottom edge of the ComboBox, displaying all entries. The width and size is
- * governed by the background {@link NinePatch} of the popup list as well as the bounding box around the list entries.
+ * The additional popup list will be positioned at the bottom edge of the ComboBox, displaying all items. The width and size is
+ * governed by the background {@link NinePatch} of the popup list as well as the bounding box around the list items.
  * 
- * <h2>Style</h2> A ComboBox is a {@link Widget} displaying a background {@link NinePatch} as well as the selected list entry as a
+ * <h2>Style</h2> A ComboBox is a {@link Widget} displaying a background {@link NinePatch} as well as the selected list item as a
  * label via a {@link BitmapFont} and a corresponding {@link Color}. Additionally a popup menu might be displayed, using a
  * {@link NinePatch} for the background, another {@link NinePatch} for highlighting the current selection and the same
- * {@link BitmapFont} and Color used to display the selected entry in the actual ComboBox.</p>
+ * {@link BitmapFont} and Color used to display the selected item in the actual ComboBox.</p>
  * 
  * The style is defined via an instance of the {@link ComboBoxStyle} class, which can be either done programmatically or via a
  * {@link Skin}.</p>
@@ -75,64 +75,71 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * popup list</li>
  * <li>The <code>listSelection</code> attribute references a {@link NinePatch} by name, to be used for highlighting a selection in
  * the popup list</li>
- * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the list entries</li>
- * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the list entries</li>
+ * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the list items</li>
+ * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the list items</li>
  * </ul>
  * 
  * @author mzechner */
 public class ComboBox extends Widget {
 	final Stage stage;
 	ComboBoxStyle style;
-	String[] entries;
+	String[] items;
 	int selection = 0;
 	final TextBounds bounds = new TextBounds();
 	final Vector2 screenCoords = new Vector2();
 	ComboList list = null;
 	SelectionListener listener;
+	private float prefWidth, prefHeight;
 
-	public ComboBox (String[] entries, Stage stage, Skin skin) {
-		this(entries, stage, skin.getStyle(ComboBoxStyle.class), null);
+	public ComboBox (String[] items, Stage stage, Skin skin) {
+		this(items, stage, skin.getStyle(ComboBoxStyle.class), null);
 	}
 
-	public ComboBox (String[] entries, Stage stage, ComboBoxStyle style) {
-		this(entries, stage, style, null);
+	public ComboBox (String[] items, Stage stage, ComboBoxStyle style) {
+		this(items, stage, style, null);
 	}
 
-	/** Creates a new combo box. The width and height are determined by the widets entry and the style.
+	/** Creates a new combo box. The width and height are determined by the widets item and the style.
 	 * @param name the name
-	 * @param entries the single-line entries
+	 * @param items the single-line items
 	 * @param stage the stage, used for the popup
 	 * @param style the {@link ComboBoxStyle} */
-	public ComboBox (String[] entries, Stage stage, ComboBoxStyle style, String name) {
-		super(0, 0, name);
-		this.entries = entries;
+	public ComboBox (String[] items, Stage stage, ComboBoxStyle style, String name) {
+		super(name);
 		setStyle(style);
+		setItems(items);
 		this.stage = stage;
 		layout();
-		this.width = prefWidth;
-		this.height = prefHeight;
 	}
 
-	/** Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	/** Sets the style of this widget.
 	 * @param style */
 	public void setStyle (ComboBoxStyle style) {
 		this.style = style;
-		invalidateHierarchy();
+		if (items != null) setItems(items);
+	}
+
+	public void setItems (String[] items) {
+		if (items == null) throw new IllegalArgumentException("items cannot be null.");
+		this.items = items;
+
+		NinePatch background = style.background;
+		BitmapFont font = style.font;
+
+		prefHeight = Math.max(background.getTopHeight() + background.getBottomHeight() + font.getCapHeight() - font.getDescent()
+			* 2, background.getTotalHeight());
+
+		float max = 0;
+		for (int i = 0; i < items.length; i++)
+			max = Math.max(font.getBounds(items[i]).width, max);
+		prefWidth = background.getLeftWidth() + background.getRightWidth() + max;
+
+		width = prefWidth;
+		height = prefHeight;
 	}
 
 	@Override
 	public void layout () {
-		final NinePatch background = style.background;
-		final BitmapFont font = style.font;
-
-		prefHeight = Math.max(background.getTopHeight() + background.getBottomHeight() + font.getCapHeight() - font.getDescent()
-			* 2, background.getTotalHeight());
-		float max = 0;
-		for (int i = 0; i < entries.length; i++) {
-			max = Math.max(font.getBounds(entries[i]).width, max);
-		}
-		prefWidth = background.getLeftWidth() + background.getRightWidth() + max;
-		invalidated = false;
 	}
 
 	@Override
@@ -141,17 +148,15 @@ public class ComboBox extends Widget {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
 
-		if (invalidated) layout();
-
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);
-		if (entries.length > 0) {
+		if (items.length > 0) {
 			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
-			int numGlyphs = font.computeVisibleGlyphs(entries[selection], 0, entries[selection].length(), availableWidth);
-			bounds.set(font.getBounds(entries[selection]));
+			int numGlyphs = font.computeVisibleGlyphs(items[selection], 0, items[selection].length(), availableWidth);
+			bounds.set(font.getBounds(items[selection]));
 			float textY = (int)(height / 2) + (int)(bounds.height / 2);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, entries[selection], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
+			font.draw(batch, items[selection], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
 		}
 
 		// calculate screen coords where list should be displayed
@@ -215,7 +220,7 @@ public class ComboBox extends Widget {
 
 	protected class ComboList extends Actor {
 		Vector2 oldScreenCoords = new Vector2();
-		float entryHeight = 0;
+		float itemHeight = 0;
 		float textOffsetX = 0;
 		float textOffsetY = 0;
 		int selected = ComboBox.this.selection;
@@ -238,18 +243,18 @@ public class ComboBox extends Widget {
 			float prefWidth = 0;
 			float prefHeight = 0;
 
-			for (int i = 0; i < entries.length; i++) {
-				String entry = entries[i];
-				TextBounds bounds = font.getBounds(entry);
+			for (int i = 0; i < items.length; i++) {
+				String item = items[i];
+				TextBounds bounds = font.getBounds(item);
 				prefWidth = Math.max(bounds.width, prefWidth);
 
 			}
 
-			entryHeight = font.getCapHeight() + -font.getDescent() * 2;
-			entryHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
-			entryHeight *= ComboBox.this.parent.scaleY;
+			itemHeight = font.getCapHeight() + -font.getDescent() * 2;
+			itemHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
+			itemHeight *= ComboBox.this.parent.scaleY;
 			prefWidth += listSelection.getLeftWidth() + listSelection.getRightWidth();
-			prefHeight = entries.length * entryHeight;
+			prefHeight = items.length * itemHeight;
 			textOffsetX = listSelection.getLeftWidth();
 			textOffsetY = listSelection.getTopHeight() + -font.getDescent();
 
@@ -269,26 +274,26 @@ public class ComboBox extends Widget {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			listBackground.draw(batch, x, y, width, height);
 			float posY = height;
-			for (int i = 0; i < entries.length; i++) {
+			for (int i = 0; i < items.length; i++) {
 				if (selected == i) {
-					listSelection.draw(batch, x, y + posY - entryHeight, width, entryHeight);
+					listSelection.draw(batch, x, y + posY - itemHeight, width, itemHeight);
 				}
 				font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 				font.setScale(ComboBox.this.parent.scaleX, ComboBox.this.parent.scaleY);
-				font.draw(batch, entries[i], x + textOffsetX, y + posY - textOffsetY);
+				font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
 				font.setScale(1, 1);
-				posY -= entryHeight;
+				posY -= itemHeight;
 			}
 		}
 
 		@Override
 		public boolean touchDown (float x, float y, int pointer) {
 			if (pointer != 0 || hit(x, y) == null) return false;
-			selected = (int)((height - y) / entryHeight);
+			selected = (int)((height - y) / itemHeight);
 			selected = Math.max(0, selected);
-			selected = Math.min(entries.length - 1, selected);
+			selected = Math.min(items.length - 1, selected);
 			selection = selected;
-			if (entries.length > 0 && listener != null) listener.selected(ComboBox.this, selected, entries[selected]);
+			if (items.length > 0 && listener != null) listener.selected(ComboBox.this, selected, items[selected]);
 			return true;
 		}
 
@@ -304,9 +309,9 @@ public class ComboBox extends Widget {
 		@Override
 		public boolean touchMoved (float x, float y) {
 			if (hit(x, y) != null) {
-				selected = (int)((height - y) / entryHeight);
+				selected = (int)((height - y) / itemHeight);
 				selected = Math.max(0, selected);
-				selected = Math.min(entries.length - 1, selected);
+				selected = Math.min(items.length - 1, selected);
 			}
 			return true;
 		}
@@ -329,20 +334,21 @@ public class ComboBox extends Widget {
 		this.selection = selection;
 	}
 
-	/** @return the index of the current selection. The top entry has an index of 0 */
+	/** @return the index of the current selection. The top item has an index of 0 */
 	public int getSelectionIndex () {
 		return selection;
 	}
 
-	/** @return the string of the currently selected entry */
+	/** @return the string of the currently selected item */
 	public String getSelection () {
-		return entries[selection];
+		return items[selection];
 	}
 
-	/** Sets the entries of this combo box. Invalidates all parents.
-	 * @param entries the entries */
-	public void setEntries (String[] entries) {
-		this.entries = entries;
-		invalidateHierarchy();
+	public float getPrefWidth () {
+		return prefWidth;
+	}
+
+	public float getPrefHeight () {
+		return prefHeight;
 	}
 }

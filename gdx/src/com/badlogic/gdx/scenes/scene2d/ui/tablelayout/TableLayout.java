@@ -111,7 +111,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 	 * in a way that affects its layout, {@link #invalidate()} should be called. */
 	public void invalidate () {
 		needsLayout = true;
-		getTable().prefSizeInvalid = true;
+		getTable().sizeInvalid = true;
 	}
 
 	/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */

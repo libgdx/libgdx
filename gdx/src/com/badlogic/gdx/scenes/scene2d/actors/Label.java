@@ -157,6 +157,22 @@ public class Label extends Actor implements Layout {
 		return 0;
 	}
 
+	public float getMinWidth () {
+		return 0;
+	}
+
+	public float getMinHeight () {
+		return 0;
+	}
+
+	public float getMaxWidth () {
+		return 0;
+	}
+
+	public float getMaxHeight () {
+		return 0;
+	}
+
 	static public enum VAlignment {
 		TOP, CENTER, BOTTOM
 	}

@@ -25,20 +25,20 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A list of string entries.
+/** A list of string items.
  * 
- * <h2>Functionality</h2> A list displays textual entries and highlights the current selection. A {@link SelectionListener} can be
- * registered with the list to listen to selection changes. Entries have an index in the list, the top entry having the index 0.
+ * <h2>Functionality</h2> A list displays textual items and highlights the current selection. A {@link SelectionListener} can be
+ * registered with the list to listen to selection changes. Items have an index in the list, the top item having the index 0.
  * 
- * <h2>Layout</h2> The (preferred) width and height of a List are derrived from the bounding box around all list entries. Use
+ * <h2>Layout</h2> The (preferred) width and height of a List are derrived from the bounding box around all list items. Use
  * {@link #setPrefSize(int, int)} to programmatically change the size to your liking. In case the width and height you set are to
  * small for the contained text you will see artifacts. The patch highlighting the current selection will have the width of the
  * List, either determined as explained above or set programmatically.
  * 
- * <h2>Style</h2> A List is a {@link Widget} a text rendered for each list entry via a {@link BitmapFont} and {@link Color} as
- * well as a {@link NinePatch} highlighting the current selection and a second Color used for the text of the currently selected
- * entry. The highlighting NinePatch is rendered beneath the selected entry. The style is defined via an instance of
- * {@link ListStyle}, which can be done either programmatically or via a {@link Skin}.</p>
+ * <h2>Style</h2> A List is a {@link Widget} a text rendered for each list item via a {@link BitmapFont} and {@link Color} as well
+ * as a {@link NinePatch} highlighting the current selection and a second Color used for the text of the currently selected item.
+ * The highlighting NinePatch is rendered beneath the selected item. The style is defined via an instance of {@link ListStyle},
+ * which can be done either programmatically or via a {@link Skin}.</p>
  * 
  * A List's style definition in an XML skin file should look like this:
  * 
@@ -55,76 +55,52 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
  * {@link Skin#newList(String, String[], String)}.</li>
- * <li>The <code>fontName</code> attribute references a {@link BitmapFont} by name, to be used for render the entries</li>
- * <li>The <code>fontColorUnselected</code> attribute references a {@link Color} by name, to be used for render unselected entries
- * </li>
- * <li>The <code>fontColorSelected</code> attribute references a {@link Color} by name, to be used to render the selected entry</li>
+ * <li>The <code>fontName</code> attribute references a {@link BitmapFont} by name, to be used for render the items</li>
+ * <li>The <code>fontColorUnselected</code> attribute references a {@link Color} by name, to be used for render unselected items</li>
+ * <li>The <code>fontColorSelected</code> attribute references a {@link Color} by name, to be used to render the selected item</li>
  * <li>The <code>selected</code> attribute references a {@link NinePatch} by name, to be used to render the highlight behind the
- * selected entry</li>
+ * selected item</li>
  * </ul>
  * 
  * @author mzechner */
 public class List extends Widget {
 	ListStyle style;
-	String[] entries;
-	boolean invalidated = false;
-	float entryHeight = 0;
+	String[] items;
+	float itemHeight = 0;
 	float textOffsetX = 0;
 	float textOffsetY = 0;
 	int selected = 0;
 	SelectionListener listener;
+	private float prefWidth, prefHeight;
 
-	public List (String[] entries, Skin skin) {
-		this(entries, skin.getStyle(ListStyle.class), null);
+	public List (String[] items, Skin skin) {
+		this(items, skin.getStyle(ListStyle.class), null);
 	}
 
-	public List (String[] entries, ListStyle style) {
-		this(entries, style, null);
+	public List (String[] items, ListStyle style) {
+		this(items, style, null);
 	}
 
-	/** Creates a new List. The width and height is determined from the bounding box around all entries.
-	 * @param entries the entries
-	 * @param style the {@link ListStyle} 
-	 * @param name the name*/
-	public List (String[] entries, ListStyle style, String name) {
-		super(0, 0, name);
+	/** Creates a new List. The width and height is determined from the bounding box around all items.
+	 * @param items the items
+	 * @param style the {@link ListStyle}
+	 * @param name the name */
+	public List (String[] items, ListStyle style, String name) {
+		super(name);
 		setStyle(style);
-		this.entries = entries;
+		setItems(items);
 		layout();
-		this.width = prefWidth;
-		this.height = prefHeight;
 	}
-	
-	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
-	 * @param style
-	 */
+
+	/** Sets the style of this widget.
+	 * @param style */
 	public void setStyle (ListStyle style) {
 		this.style = style;
-		invalidateHierarchy();
+		if (items != null) setItems(items);
 	}
 
 	@Override
 	public void layout () {
-		final BitmapFont font = style.font;
-		final NinePatch selectedPatch = style.selectedPatch;
-		prefWidth = 0;
-		prefHeight = 0;
-
-		for (int i = 0; i < entries.length; i++) {
-			String entry = entries[i];
-			TextBounds bounds = font.getBounds(entry);
-			prefWidth = Math.max(bounds.width, prefWidth);
-
-		}
-
-		entryHeight = font.getCapHeight() - font.getDescent() * 2;
-		entryHeight += selectedPatch.getTopHeight() + selectedPatch.getBottomHeight();
-		prefWidth += selectedPatch.getLeftWidth() + selectedPatch.getRightWidth();
-		prefHeight = entries.length * entryHeight;
-		textOffsetX = selectedPatch.getLeftWidth();
-		textOffsetY = selectedPatch.getTopHeight() - font.getDescent();
-		invalidated = false;
 	}
 
 	@Override
@@ -134,30 +110,29 @@ public class List extends Widget {
 		final Color fontColorSelected = style.fontColorSelected;
 		final Color fontColorUnselected = style.fontColorUnselected;
 
-		if (invalidated) layout();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
 		float posY = height;
-		for (int i = 0; i < entries.length; i++) {
+		for (int i = 0; i < items.length; i++) {
 			if (selected == i) {
-				selectedPatch.draw(batch, x, y + posY - entryHeight, Math.max(prefWidth, width), entryHeight);
+				selectedPatch.draw(batch, x, y + posY - itemHeight, Math.max(prefWidth, width), itemHeight);
 				font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 			} else {
 				font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
 					* parentAlpha);
 			}
-			font.draw(batch, entries[i], x + textOffsetX, y + posY - textOffsetY);
-			posY -= entryHeight;
+			font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
+			posY -= itemHeight;
 		}
 	}
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		selected = (int)((height - y) / entryHeight);
+		selected = (int)((height - y) / itemHeight);
 		selected = Math.max(0, selected);
-		selected = Math.min(entries.length - 1, selected);
-		if (listener != null) listener.selected(this, selected, entries[selected]);
+		selected = Math.min(items.length - 1, selected);
+		if (listener != null) listener.selected(this, selected, items[selected]);
 		return true;
 	}
 
@@ -199,7 +174,7 @@ public class List extends Widget {
 		public void selected (List list, int selectedIndex, String selection);
 	}
 
-	/** @return the index of the currently selected entry. The top entry has an index of 0. */
+	/** @return the index of the currently selected item. The top item has an index of 0. */
 	public int getSelectedIndex () {
 		return selected;
 	}
@@ -208,23 +183,22 @@ public class List extends Widget {
 		selected = index;
 	}
 
-	/** @return the text of the currently selected entry or null if the list is empty*/
+	/** @return the text of the currently selected item or null if the list is empty */
 	public String getSelection () {
-		if(entries.length == 0) return null;
-		return entries[selected];
-	}
-	
-	/** @param index sets the selected item */
-	public void setSelection (int index) {
-		if (index < 0 || index >= entries.length) throw new GdxRuntimeException("Index must be > 0 and < #entries");
-		selected = index;
-		invalidateHierarchy();
+		if (items.length == 0) return null;
+		return items[selected];
 	}
 
-	public int setSelection (String entry) {
+	/** @param index sets the selected item */
+	public void setSelection (int index) {
+		if (index < 0 || index >= items.length) throw new GdxRuntimeException("Index must be > 0 and < #items");
+		selected = index;
+	}
+
+	public int setSelection (String item) {
 		selected = -1;
-		for (int i = 0, n = entries.length; i < n; i++) {
-			if (entries[i].equals(entry)) {
+		for (int i = 0, n = items.length; i < n; i++) {
+			if (items[i].equals(item)) {
 				selected = i;
 				break;
 			}
@@ -232,17 +206,42 @@ public class List extends Widget {
 		return selected;
 	}
 
-	/** Sets the entries of this list. Invalidates all parents.
-	 * @param entries the entries. */
-	public void setEntries (String[] entries) {
-		if (entries == null) throw new IllegalArgumentException("entries must not be null");
-		this.entries = entries;
+	/** Sets the items of this list.
+	 * @param items the items. */
+	public void setItems (String[] items) {
+		if (items == null) throw new IllegalArgumentException("items cannot be null.");
+		this.items = items;
 		selected = 0;
-		invalidateHierarchy();
+
+		final BitmapFont font = style.font;
+		final NinePatch selectedPatch = style.selectedPatch;
+		prefWidth = 0;
+		prefHeight = 0;
+
+		for (int i = 0; i < items.length; i++) {
+			String item = items[i];
+			TextBounds bounds = font.getBounds(item);
+			prefWidth = Math.max(bounds.width, prefWidth);
+		}
+
+		itemHeight = font.getCapHeight() - font.getDescent() * 2;
+		itemHeight += selectedPatch.getTopHeight() + selectedPatch.getBottomHeight();
+		prefWidth += selectedPatch.getLeftWidth() + selectedPatch.getRightWidth();
+		prefHeight = items.length * itemHeight;
+		textOffsetX = selectedPatch.getLeftWidth();
+		textOffsetY = selectedPatch.getTopHeight() - font.getDescent();
 	}
 
-	public String[] getEntries () {
-		return entries;
+	public String[] getItems () {
+		return items;
+	}
+
+	public float getPrefWidth () {
+		return prefWidth;
+	}
+
+	public float getPrefHeight () {
+		return prefHeight;
 	}
 
 	/** Sets the {@link SelectionListener} of this list.

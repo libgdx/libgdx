@@ -25,7 +25,15 @@ public interface Layout {
 	 * in a way that affects its layout, {@link #invalidate()} should be called. */
 	public void invalidate ();
 
+	public float getMinWidth ();
+	
+	public float getMinHeight ();
+	
 	public float getPrefWidth ();
 
 	public float getPrefHeight ();
+	
+	public float getMaxWidth ();
+	
+	public float getMaxHeight ();
 }

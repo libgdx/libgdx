@@ -32,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 public class FlickScrollPane extends Group implements Layout {
 	private final Stage stage;
 	private Actor widget;
-	private float prefWidth, prefHeight;
 	protected boolean needsLayout;
 
 	private final Rectangle widgetAreaBounds = new Rectangle();
@@ -53,13 +52,11 @@ public class FlickScrollPane extends Group implements Layout {
 	public boolean clamp;
 
 	public FlickScrollPane (Actor widget, Stage stage) {
-		this(widget, stage, 0, 0, null);
+		this(widget, stage, null);
 	}
 
-	public FlickScrollPane (Actor widget, Stage stage, int prefWidth, int prefHeight, String name) {
+	public FlickScrollPane (Actor widget, Stage stage, String name) {
 		super(name);
-		this.prefWidth = this.width = prefWidth;
-		this.prefHeight = this.height = prefHeight;
 
 		this.stage = stage;
 		this.widget = widget;
@@ -237,16 +234,6 @@ public class FlickScrollPane extends Group implements Layout {
 	}
 
 	@Override
-	public float getPrefWidth () {
-		return prefWidth;
-	}
-
-	@Override
-	public float getPrefHeight () {
-		return prefHeight;
-	}
-
-	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
 		if (emptySpaceOnlyScroll && super.touchDown(x, y, pointer)) return true;
@@ -312,5 +299,29 @@ public class FlickScrollPane extends Group implements Layout {
 
 	public float getVelocityY () {
 		return velocityY;
+	}
+
+	public float getPrefWidth () {
+		return 150;
+	}
+
+	public float getPrefHeight () {
+		return 150;
+	}
+
+	public float getMinWidth () {
+		return 0;
+	}
+
+	public float getMinHeight () {
+		return 0;
+	}
+
+	public float getMaxWidth () {
+		return 0;
+	}
+
+	public float getMaxHeight () {
+		return 0;
 	}
 }

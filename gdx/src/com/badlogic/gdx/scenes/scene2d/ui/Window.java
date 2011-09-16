@@ -120,12 +120,11 @@ public class Window extends Table {
 	}
 	
 	/**
-	 * Sets the style of this widget. Calls {@link #invalidateHierarchy()} internally.
+	 * Sets the style of this widget.
 	 * @param style
 	 */
 	public void setStyle (WindowStyle style) {
 		this.style = style;
-		invalidateHierarchy();
 	}
 
 	private void calculateBoundsAndScissors (Matrix4 transform) {
