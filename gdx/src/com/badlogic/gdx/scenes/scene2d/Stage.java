@@ -208,14 +208,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not */
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		boolean foundFocusedActor = false;
-		for (int i = 0, n = root.focusedActor.length; i < n; i++) {
-			if (root.focusedActor[i] != null) {
-				foundFocusedActor = true;
-				break;
-			}
-		}
-		if (!foundFocusedActor) return false;
+		Actor actor = root.focusedActor[pointer];
+		if (actor == null) return false;
 		toStageCoordinates(x, y, coords);
 		Group.toChildCoordinates(root, coords.x, coords.y, point);
 		root.touchUp(point.x, point.y, pointer);

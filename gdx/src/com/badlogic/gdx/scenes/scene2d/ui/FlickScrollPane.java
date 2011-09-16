@@ -21,6 +21,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
@@ -49,7 +50,7 @@ public class FlickScrollPane extends Group implements Layout {
 	public float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
 	public boolean emptySpaceOnlyScroll;
 	public boolean forceScrollX, forceScrollY;
-	public boolean clamp;
+	public boolean clamp = true;
 
 	public FlickScrollPane (Actor widget, Stage stage) {
 		this(widget, stage, null);
@@ -65,7 +66,7 @@ public class FlickScrollPane extends Group implements Layout {
 		gestureDetector = new GestureDetector(new GestureListener() {
 			public boolean pan (int x, int y, int deltaX, int deltaY) {
 				amountX -= deltaX;
-				amountY -= deltaY;
+				amountY += deltaY;
 				clamp();
 				return false;
 			}
@@ -104,8 +105,16 @@ public class FlickScrollPane extends Group implements Layout {
 	boolean tap (int x, int y) {
 		focus(null, 0);
 		if (!super.touchDown(x, y, 0)) return false;
-		super.touchUp(x, y, 0);
+		Actor actor = focusedActor[0];
+		toLocalCoordinates(actor, point);
+		actor.touchUp(point.x, point.y, 0);
 		return true;
+	}
+
+	public void toLocalCoordinates (Actor actor, Vector2 point) {
+		if (actor.parent == this) return;
+		toLocalCoordinates(actor.parent, point);
+		Group.toChildCoordinates(actor, point.x, point.y, point);
 	}
 
 	void clamp () {
@@ -128,7 +137,7 @@ public class FlickScrollPane extends Group implements Layout {
 			float alpha = flingTimer / flingTime;
 			alpha = alpha * alpha * alpha;
 			amountX -= velocityX * alpha * delta;
-			amountY += velocityY * alpha * delta;
+			amountY -= velocityY * alpha * delta;
 			clamp();
 
 			// Stop fling if hit bounce distance.
@@ -189,7 +198,7 @@ public class FlickScrollPane extends Group implements Layout {
 		// Calculate the widgets offset depending on the scroll state and available widget area.
 		maxX = widget.width - width;
 		maxY = widget.height - height;
-		widget.y = -(int)(scrollY ? amountY : maxY);
+		widget.y = (int)(scrollY ? amountY : maxY) - widget.height + height;
 		widget.x = -(int)(scrollX ? amountX : 0);
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to

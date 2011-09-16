@@ -117,6 +117,7 @@ public class Label extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		cache.setColor(color);
 		cache.setPosition(x, y - style.font.getDescent());
 		cache.draw(batch, parentAlpha);
 	}

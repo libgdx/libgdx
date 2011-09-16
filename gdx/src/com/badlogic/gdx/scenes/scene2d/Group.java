@@ -54,7 +54,7 @@ public class Group extends Actor {
 	public Actor keyboardFocusedActor = null;
 	public Actor scrollFocusedActor = null;
 
-	private final Vector2 point = new Vector2();
+	protected final Vector2 point = new Vector2();
 
 	public Group () {
 		this(null);

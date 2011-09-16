@@ -53,7 +53,6 @@ public class Table extends Group implements Layout {
 	private ClickListener listener;
 
 	NinePatch backgroundPatch;
-	private TextureRegion backgroundRegion;
 
 	private Stage stage;
 	private final Rectangle tableBounds = new Rectangle();
@@ -85,10 +84,7 @@ public class Table extends Group implements Layout {
 		if (layout.needsLayout) layout.layout();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (backgroundPatch != null)
-			backgroundPatch.draw(batch, x, y, width, height);
-		else if (backgroundRegion != null) //
-			batch.draw(backgroundRegion, x, y, width, height);
+		if (backgroundPatch != null) backgroundPatch.draw(batch, x, y, width, height);
 
 		if (stage != null) {
 			applyTransform(batch);
@@ -161,11 +157,6 @@ public class Table extends Group implements Layout {
 			padLeft((int)background.getLeftWidth() + 1);
 			padRight((int)background.getRightWidth() + 1);
 		}
-	}
-
-	/** @param background May be null. */
-	public void setBackground (TextureRegion background) {
-		this.backgroundRegion = background;
 	}
 
 	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */

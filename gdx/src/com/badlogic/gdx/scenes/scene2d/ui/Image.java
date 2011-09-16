@@ -1,11 +1,13 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Image extends Widget {
 	private TextureRegion region;
+	private NinePatch patch;
 	private final Scaling scaling;
 	private int align = Align.CENTER;
 	private float imageX, imageY, imageWidth, imageHeight;
@@ -32,12 +34,42 @@ public class Image extends Widget {
 		this.align = align;
 	}
 
+	public Image (NinePatch patch) {
+		this(patch, Scaling.none, null);
+	}
+
+	public Image (NinePatch patch, Scaling scaling) {
+		this(patch, scaling, null);
+	}
+
+	public Image (NinePatch patch, Scaling scaling, int align) {
+		this(patch, scaling, align, null);
+	}
+
+	public Image (NinePatch patch, Scaling scaling, String name) {
+		this(patch, scaling, Align.CENTER, null);
+	}
+
+	public Image (NinePatch patch, Scaling scaling, int align, String name) {
+		setPatch(patch);
+		this.scaling = scaling;
+		this.align = align;
+	}
+
 	public void layout () {
 		if (!invalidated) return;
 		invalidated = false;
 
-		float regionWidth = region.getRegionWidth();
-		float regionHeight = region.getRegionHeight();
+		float regionWidth, regionHeight;
+		if (patch != null) {
+			regionWidth = patch.getTotalWidth();
+			regionHeight = patch.getTotalHeight();
+		} else if (region != null) {
+			regionWidth = region.getRegionWidth();
+			regionHeight = region.getRegionHeight();
+		} else
+			return;
+
 		switch (scaling) {
 		case fill: {
 			float widgetRatio = height / width;
@@ -91,11 +123,21 @@ public class Image extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (invalidated) layout();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+		if (patch != null)
+			patch.draw(batch, x + imageX, y + imageY, imageWidth, imageHeight);
+		else if (region != null) //
+			batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
 	}
 
 	public void setRegion (TextureRegion region) {
 		this.region = region;
+		patch = null;
+		invalidate();
+	}
+
+	public void setPatch (NinePatch patch) {
+		this.patch = patch;
+		region = null;
 		invalidate();
 	}
 

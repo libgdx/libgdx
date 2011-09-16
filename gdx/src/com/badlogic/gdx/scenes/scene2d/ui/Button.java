@@ -44,8 +44,7 @@ public class Button extends Table {
 	}
 
 	public Button (String text, ButtonStyle style, String name) {
-		super(name);
-		setStyle(style);
+		this(style, name);
 		setText(text);
 	}
 
@@ -95,7 +94,7 @@ public class Button extends Table {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		float offsetX = 0, offsetY = 0;
 		if (isPressed) {
-			setBackground(style.down);
+			setBackground(style.down == null ? style.up : style.down);
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
 		} else {

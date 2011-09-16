@@ -143,7 +143,7 @@ public class Skin implements Disposable {
 		json.setUsePrototypes(false);
 
 		class AliasSerializer implements Serializer {
-			private final ObjectMap<String, ?> map;
+			final ObjectMap<String, ?> map;
 
 			public AliasSerializer (ObjectMap<String, ?> map) {
 				this.map = map;
@@ -160,10 +160,18 @@ public class Skin implements Disposable {
 			}
 
 			public Object read (Json json, Object jsonData, Class type) {
-				Object object = map.get((String)jsonData);
-				if (object == null)
-					throw new SerializationException("Skin has a " + type.getSimpleName()
-						+ " that could not be found in the resources: " + jsonData);
+				String name = (String)jsonData;
+				Object object = map.get(name);
+				if (object == null) {
+					ObjectMap<String, Object> regions = data.resources.get(TextureRegion.class);
+					if (regions != null) {
+						object = regions.get(name);
+						if (object != null) object = new NinePatch((TextureRegion)object);	
+					}
+					if (object == null)
+						throw new SerializationException("Skin has a " + type.getSimpleName()
+							+ " that could not be found in the resources: " + jsonData);
+				}
 				return object;
 			}
 		}
