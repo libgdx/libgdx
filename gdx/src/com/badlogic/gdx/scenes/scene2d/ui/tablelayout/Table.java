@@ -51,7 +51,6 @@ public class Table extends Group implements Layout {
 	boolean sizeInvalid = true;
 
 	private ClickListener listener;
-	public boolean isPressed;
 
 	NinePatch backgroundPatch;
 	private TextureRegion backgroundRegion;
@@ -59,6 +58,8 @@ public class Table extends Group implements Layout {
 	private Stage stage;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
+
+	public boolean isPressed;
 
 	public Table () {
 		this(new TableLayout(), null);
@@ -181,6 +182,7 @@ public class Table extends Group implements Layout {
 	public boolean touchDown (float x, float y, int pointer) {
 		if (super.touchDown(x, y, pointer)) return true;
 		if (pointer != 0) return false;
+		if (listener == null) return false;
 		isPressed = true;
 		return true;
 	}

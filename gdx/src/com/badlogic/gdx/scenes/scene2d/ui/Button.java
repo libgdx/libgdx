@@ -14,6 +14,8 @@ public class Button extends Table {
 	public ButtonStyle style;
 	public boolean isChecked;
 
+	ClickListener listener;
+
 	public Button (Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
 	}
@@ -50,11 +52,21 @@ public class Button extends Table {
 	public Button (ButtonStyle style, String name) {
 		super(name);
 		setStyle(style);
+		super.setClickListener(new ClickListener() {
+			public void click (Actor actor) {
+				isChecked = !isChecked;
+				if (listener != null) listener.click(actor);
+			}
+		});
 	}
 
 	public void setStyle (ButtonStyle style) {
 		this.style = style;
 		setBackground(isPressed ? style.down : style.up);
+	}
+
+	public void setClickListener (ClickListener listener) {
+		this.listener = listener;
 	}
 
 	public void setText (String text) {
@@ -78,11 +90,6 @@ public class Button extends Table {
 			if (child instanceof Label) return ((Label)child).getText();
 		}
 		throw new GdxRuntimeException("No child label was found.");
-	}
-
-	public void click () {
-		isChecked = !isChecked;
-		super.click();
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {

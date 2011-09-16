@@ -106,12 +106,12 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public int getMinWidth (Actor actor) {
-		if (actor instanceof Layout) return (int)((Layout)actor).getPrefWidth();
+		if (actor instanceof Layout) return (int)((Layout)actor).getMinWidth();
 		return (int)actor.width;
 	}
 
 	public int getMinHeight (Actor actor) {
-		if (actor instanceof Layout) return (int)((Layout)actor).getPrefHeight();
+		if (actor instanceof Layout) return (int)((Layout)actor).getMinHeight();
 		return (int)actor.height;
 	}
 
@@ -126,10 +126,12 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public int getMaxWidth (Actor actor) {
+		if (actor instanceof Layout) return (int)((Layout)actor).getMaxWidth();
 		return 0;
 	}
 
 	public int getMaxHeight (Actor actor) {
+		if (actor instanceof Layout) return (int)((Layout)actor).getMaxHeight();
 		return 0;
 	}
 

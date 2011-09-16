@@ -99,6 +99,14 @@ public class Image extends Widget {
 		invalidate();
 	}
 
+	public float getMinWidth () {
+		return 0;
+	}
+
+	public float getMinHeight () {
+		return 0;
+	}
+
 	public float getPrefWidth () {
 		return region.getRegionWidth();
 	}
