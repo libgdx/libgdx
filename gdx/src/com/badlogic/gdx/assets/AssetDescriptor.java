@@ -35,6 +35,10 @@ public class AssetDescriptor<T> {
 
 	@Override
 	public String toString () {
-		return fileName;
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(fileName);
+		buffer.append(", ");
+		buffer.append(type.getSimpleName());
+		return buffer.toString();
 	}
 }
