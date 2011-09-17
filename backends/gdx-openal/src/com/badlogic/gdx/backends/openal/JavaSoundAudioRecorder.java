@@ -50,7 +50,7 @@ public class JavaSoundAudioRecorder implements AudioRecorder {
 			read += line.read(buffer, read, toRead - read);
 
 		for (int i = 0, j = 0; i < numSamples * 2; i += 2, j++)
-			samples[offset + j] = (short)((buffer[i] << 8) | (buffer[i + 1] & 0xff));
+			samples[offset + j] = (short)((buffer[i + 1] << 8) | (buffer[i] & 0xff));
 	}
 
 	public void dispose () {
