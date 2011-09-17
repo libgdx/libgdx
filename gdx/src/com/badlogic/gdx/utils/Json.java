@@ -41,7 +41,7 @@ public class Json {
 	private static final boolean debug = false;
 
 	private JsonWriter writer;
-	private String typeName = "type";
+	private String typeName = "class";
 	private boolean usePrototypes = true;
 	private OutputType outputType;
 	private final ObjectMap<Class, ObjectMap<String, FieldMetadata>> typeToFields = new ObjectMap();
