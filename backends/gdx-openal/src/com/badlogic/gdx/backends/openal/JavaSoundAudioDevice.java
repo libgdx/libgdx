@@ -35,7 +35,7 @@ public class JavaSoundAudioDevice implements AudioDevice {
 		try {
 			AudioFormat format = new AudioFormat(samplingRate, 16, isMono ? 1 : 2, true, false);
 			line = AudioSystem.getSourceDataLine(format);
-			line.open(format, Math.min(1024, samplingRate / 10) * 2);
+			line.open(format, Math.min(2048, samplingRate / 5) * 2);
 			line.start();
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error creating JavaSoundAudioDevice.", ex);
