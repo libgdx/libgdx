@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.tests.*;
+import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 
@@ -91,7 +92,8 @@ public class GdxTests {
 		TileTest.class, UITest.class, VBOVATest.class, VertexArrayTest.class, VertexBufferObjectTest.class,
 		VertexArrayClassTest.class, VertexBufferObjectClassTest.class, VertexBufferObjectShaderTest.class, VibratorTest.class,
 		VorbisTest.class,
-		WaterRipples.class, HelloTriangle.class, SimpleVertexShader.class, ShapeRendererTest.class};
+		WaterRipples.class, HelloTriangle.class, SimpleVertexShader.class, ShapeRendererTest.class,
+		MoveSpriteExample.class};
 
 	public static String[] getNames () {
 		List<String> names = new ArrayList<String>();
@@ -105,13 +107,18 @@ public class GdxTests {
 		try {
 			Class clazz = Class.forName("com.badlogic.gdx.tests." + testName);
 			return (GdxTest)clazz.newInstance();
-		} catch (Exception ex) {
+		} catch (Exception e1) {
 			try {
 				Class clazz = Class.forName("com.badlogic.gdx.tests.gles2." + testName);
 				return (GdxTest)clazz.newInstance();
-			} catch (Exception e) {
-				ex.printStackTrace();
-				return null;
+			} catch (Exception e2) {
+				try {
+					Class clazz = Class.forName("com.badlogic.gdx.tests.examples." + testName);
+					return (GdxTest)clazz.newInstance();
+				} catch(Exception e3) {
+					e3.printStackTrace();
+					return null;
+				}
 			}
 		}
 	}

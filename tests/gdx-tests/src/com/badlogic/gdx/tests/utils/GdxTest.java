@@ -31,7 +31,9 @@ package com.badlogic.gdx.tests.utils;
 import com.badlogic.gdx.ApplicationListener;
 
 public abstract class GdxTest implements ApplicationListener {
-	public abstract boolean needsGL20 ();
+	public boolean needsGL20 () {
+		return false;
+	}
 
 	public void create () {
 	};
