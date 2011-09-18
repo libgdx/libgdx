@@ -35,6 +35,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -140,6 +141,23 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		groundBody.createFixture(fixtureDef);
 		groundPoly.dispose();
 
+		// We also create a simple ChainShape we put above our
+		// ground polygon for extra funkyness.
+		ChainShape chainShape = new ChainShape();
+		chainShape.createLoop(new Vector2[] {
+			new Vector2(-10, 10),
+			new Vector2(-5, 12),
+			new Vector2(-3, 9),
+			new Vector2(-4, 8),
+			new Vector2(-7, 6),
+			new Vector2(-8, 9)
+		});
+		BodyDef chainBodyDef = new BodyDef();
+		chainBodyDef.type = BodyType.StaticBody;
+		Body chainBody = world.createBody(chainBodyDef);
+		chainBody.createFixture(chainShape, 0);
+		chainShape.dispose();
+		
 		createBoxes();
 
 		// You can savely ignore the rest of this method :)
