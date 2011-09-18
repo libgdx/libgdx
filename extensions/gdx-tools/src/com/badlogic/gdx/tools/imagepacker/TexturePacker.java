@@ -681,8 +681,8 @@ public class TexturePacker {
 		public boolean rotate = false;
 		public int minWidth = 16;
 		public int minHeight = 16;
-		public int maxWidth = 512;
-		public int maxHeight = 512;
+		public int maxWidth = 1024;
+		public int maxHeight = 1024;
 		public boolean stripWhitespace = false;
 		public boolean incremental;
 		public boolean alias = true;
