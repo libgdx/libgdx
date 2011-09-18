@@ -683,7 +683,7 @@ public class TexturePacker {
 		public int minHeight = 16;
 		public int maxWidth = 512;
 		public int maxHeight = 512;
-		public boolean stripWhitespace = true;
+		public boolean stripWhitespace = false;
 		public boolean incremental;
 		public boolean alias = true;
 		public boolean edgePadding = true;

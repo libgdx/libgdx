@@ -175,14 +175,10 @@ public class Json {
 			this.writer = new JsonWriter(writer);
 			((JsonWriter)this.writer).setOutputType(outputType);
 		}
-		try {
-			writeValue(object, knownType, elementType);
-		} catch (IOException ex) {
-			throw new SerializationException("Error writing JSON.", ex);
-		}
+		writeValue(object, knownType, elementType);
 	}
 
-	public void writeFields (Object object) throws IOException {
+	public void writeFields (Object object) {
 		Class type = object.getClass();
 
 		Object[] defaultValues = getDefaultValues(type);
@@ -209,7 +205,7 @@ public class Json {
 			} catch (SerializationException ex) {
 				ex.addTrace(field + " (" + type.getName() + ")");
 				throw ex;
-			} catch (RuntimeException runtimeEx) {
+			} catch (Exception runtimeEx) {
 				SerializationException ex = new SerializationException(runtimeEx);
 				ex.addTrace(field + " (" + type.getName() + ")");
 				throw ex;
@@ -249,19 +245,19 @@ public class Json {
 		return values;
 	}
 
-	public void writeField (Object object, String name) throws IOException {
+	public void writeField (Object object, String name) {
 		writeField(object, name, name, null);
 	}
 
-	public void writeField (Object object, String name, Class elementType) throws IOException {
+	public void writeField (Object object, String name, Class elementType) {
 		writeField(object, name, name, elementType);
 	}
 
-	public void writeField (Object object, String fieldName, String jsonName) throws IOException {
+	public void writeField (Object object, String fieldName, String jsonName) {
 		writeField(object, fieldName, jsonName, null);
 	}
 
-	public void writeField (Object object, String fieldName, String jsonName, Class elementType) throws IOException {
+	public void writeField (Object object, String fieldName, String jsonName, Class elementType) {
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields == null) fields = cacheFields(type);
@@ -278,170 +274,222 @@ public class Json {
 		} catch (SerializationException ex) {
 			ex.addTrace(field + " (" + type.getName() + ")");
 			throw ex;
-		} catch (RuntimeException runtimeEx) {
+		} catch (Exception runtimeEx) {
 			SerializationException ex = new SerializationException(runtimeEx);
 			ex.addTrace(field + " (" + type.getName() + ")");
 			throw ex;
 		}
 	}
 
-	public void writeValue (String name, Object value) throws IOException {
-		writer.name(name);
+	public void writeValue (String name, Object value) {
+		try {
+			writer.name(name);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		writeValue(value, value.getClass(), null);
 	}
 
-	public void writeValue (String name, Object value, Class knownType) throws IOException {
-		writer.name(name);
+	public void writeValue (String name, Object value, Class knownType) {
+		try {
+			writer.name(name);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		writeValue(value, knownType, null);
 	}
 
-	public void writeValue (String name, Object value, Class knownType, Class elementType) throws IOException {
-		writer.name(name);
+	public void writeValue (String name, Object value, Class knownType, Class elementType) {
+		try {
+			writer.name(name);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		writeValue(value, knownType, elementType);
 	}
 
-	public void writeValue (Object value) throws IOException {
+	public void writeValue (Object value) {
 		writeValue(value, value.getClass(), null);
 	}
 
-	public void writeValue (Object value, Class knownType) throws IOException {
+	public void writeValue (Object value, Class knownType) {
 		writeValue(value, knownType, null);
 	}
 
-	public void writeValue (Object value, Class knownType, Class elementType) throws IOException {
-		if (value == null) {
-			writer.value(null);
-			return;
-		}
-
-		Class actualType = value.getClass();
-
-		if (actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
-			|| actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
-			|| actualType == Byte.class || actualType == Character.class) {
-			writer.value(value);
-			return;
-		}
-
-		if (value instanceof Serializable) {
-			writeObjectStart(actualType, knownType);
-			((Serializable)value).write(this);
-			writeObjectEnd();
-			return;
-		}
-
-		Serializer serializer = classToSerializer.get(actualType);
-		if (serializer != null) {
-			serializer.write(this, value, knownType);
-			return;
-		}
-
-		if (value instanceof Array) {
-			if (knownType != null && actualType != knownType)
-				throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
-					+ "Known type: " + knownType + "\nActual type: " + actualType);
-			writeArrayStart();
-			Array array = (Array)value;
-			for (int i = 0, n = array.size; i < n; i++)
-				writeValue(array.get(i), elementType, null);
-			writeArrayEnd();
-			return;
-		}
-
-		if (value instanceof Collection) {
-			if (knownType != null && actualType != knownType)
-				throw new SerializationException("Serialization of a Collection other than the known type is not supported.\n"
-					+ "Known type: " + knownType + "\nActual type: " + actualType);
-			writeArrayStart();
-			for (Object item : (Collection)value)
-				writeValue(item, elementType, null);
-			writeArrayEnd();
-			return;
-		}
-
-		if (actualType.isArray()) {
-			if (elementType == null) elementType = actualType.getComponentType();
-			int length = java.lang.reflect.Array.getLength(value);
-			writeArrayStart();
-			for (int i = 0; i < length; i++)
-				writeValue(java.lang.reflect.Array.get(value, i), elementType, null);
-			writeArrayEnd();
-			return;
-		}
-
-		if (value instanceof ObjectMap) {
-			if (knownType == null) knownType = ObjectMap.class;
-			writeObjectStart(actualType, knownType);
-			for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
-				writer.name(convertToString(entry.key));
-				writeValue(entry.value, elementType, null);
+	public void writeValue (Object value, Class knownType, Class elementType) {
+		try {
+			if (value == null) {
+				writer.value(null);
+				return;
 			}
-			writeObjectEnd();
-			return;
-		}
 
-		if (value instanceof Map) {
-			if (knownType == null) knownType = ObjectMap.class;
-			writeObjectStart(actualType, knownType);
-			for (Map.Entry entry : ((Map<?, ?>)value).entrySet()) {
-				writer.name(convertToString(entry.getKey()));
-				writeValue(entry.getValue(), elementType, null);
+			Class actualType = value.getClass();
+
+			if (actualType.isPrimitive() || actualType == String.class || actualType == Integer.class || actualType == Boolean.class
+				|| actualType == Float.class || actualType == Long.class || actualType == Double.class || actualType == Short.class
+				|| actualType == Byte.class || actualType == Character.class) {
+				writer.value(value);
+				return;
 			}
+
+			if (value instanceof Serializable) {
+				writeObjectStart(actualType, knownType);
+				((Serializable)value).write(this);
+				writeObjectEnd();
+				return;
+			}
+
+			Serializer serializer = classToSerializer.get(actualType);
+			if (serializer != null) {
+				serializer.write(this, value, knownType);
+				return;
+			}
+
+			if (value instanceof Array) {
+				if (knownType != null && actualType != knownType)
+					throw new SerializationException("Serialization of an Array other than the known type is not supported.\n"
+						+ "Known type: " + knownType + "\nActual type: " + actualType);
+				writeArrayStart();
+				Array array = (Array)value;
+				for (int i = 0, n = array.size; i < n; i++)
+					writeValue(array.get(i), elementType, null);
+				writeArrayEnd();
+				return;
+			}
+
+			if (value instanceof Collection) {
+				if (knownType != null && actualType != knownType)
+					throw new SerializationException("Serialization of a Collection other than the known type is not supported.\n"
+						+ "Known type: " + knownType + "\nActual type: " + actualType);
+				writeArrayStart();
+				for (Object item : (Collection)value)
+					writeValue(item, elementType, null);
+				writeArrayEnd();
+				return;
+			}
+
+			if (actualType.isArray()) {
+				if (elementType == null) elementType = actualType.getComponentType();
+				int length = java.lang.reflect.Array.getLength(value);
+				writeArrayStart();
+				for (int i = 0; i < length; i++)
+					writeValue(java.lang.reflect.Array.get(value, i), elementType, null);
+				writeArrayEnd();
+				return;
+			}
+
+			if (value instanceof ObjectMap) {
+				if (knownType == null) knownType = ObjectMap.class;
+				writeObjectStart(actualType, knownType);
+				for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
+					writer.name(convertToString(entry.key));
+					writeValue(entry.value, elementType, null);
+				}
+				writeObjectEnd();
+				return;
+			}
+
+			if (value instanceof Map) {
+				if (knownType == null) knownType = ObjectMap.class;
+				writeObjectStart(actualType, knownType);
+				for (Map.Entry entry : ((Map<?, ?>)value).entrySet()) {
+					writer.name(convertToString(entry.getKey()));
+					writeValue(entry.getValue(), elementType, null);
+				}
+				writeObjectEnd();
+				return;
+			}
+
+			if (actualType.isEnum()) {
+				writer.value(value);
+				return;
+			}
+
+			writeObjectStart(actualType, knownType);
+			writeFields(value);
 			writeObjectEnd();
-			return;
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
 		}
-
-		if (actualType.isEnum()) {
-			writer.value(value);
-			return;
-		}
-
-		writeObjectStart(actualType, knownType);
-		writeFields(value);
-		writeObjectEnd();
 	}
 
-	public void writeObjectStart (String name) throws IOException {
-		writer.name(name);
+	public void writeObjectStart (String name) {
+		try {
+			writer.name(name);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		writeObjectStart();
 	}
 
-	public void writeObjectStart (String name, Class actualType, Class knownType) throws IOException {
-		writer.name(name);
+	public void writeObjectStart (String name, Class actualType, Class knownType) {
+		try {
+			writer.name(name);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		writeObjectStart(actualType, knownType);
 	}
 
-	public void writeObjectStart () throws IOException {
-		writer.object();
+	public void writeObjectStart () {
+		try {
+			writer.object();
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 	}
 
-	public void writeObjectStart (Class actualType, Class knownType) throws IOException {
-		writer.object();
+	public void writeObjectStart (Class actualType, Class knownType) {
+		try {
+			writer.object();
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		if (knownType == null || knownType != actualType) writeType(actualType);
 	}
 
-	public void writeObjectEnd () throws IOException {
-		writer.pop();
+	public void writeObjectEnd () {
+		try {
+			writer.pop();
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 	}
 
-	public void writeArrayStart (String name) throws IOException {
-		writer.name(name);
-		writer.array();
+	public void writeArrayStart (String name) {
+		try {
+			writer.name(name);
+			writer.array();
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 	}
 
-	public void writeArrayStart () throws IOException {
-		writer.array();
+	public void writeArrayStart () {
+		try {
+			writer.array();
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 	}
 
-	public void writeArrayEnd () throws IOException {
-		writer.pop();
+	public void writeArrayEnd () {
+		try {
+			writer.pop();
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 	}
 
-	public void writeType (Class type) throws IOException {
+	public void writeType (Class type) {
 		if (typeName == null) return;
 		String className = classToTag.get(type);
 		if (className == null) className = type.getName();
-		writer.set(typeName, className);
+		try {
+			writer.set(typeName, className);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		}
 		if (debug) System.out.println("Writing type: " + type.getName());
 	}
 
@@ -835,14 +883,14 @@ public class Json {
 	}
 
 	static public interface Serializer<T> {
-		public void write (Json json, T object, Class knownType) throws IOException;
+		public void write (Json json, T object, Class knownType);
 
 		public T read (Json json, Object jsonData, Class type);
 	}
 
 	static public interface Serializable {
-		public void write (Json json) throws IOException;
+		public void write (Json json);
 
-		public void read (Json json, Object jsonData);
+		public void read (Json json, ObjectMap<String, Object> jsonData);
 	}
 }

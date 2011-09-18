@@ -149,7 +149,7 @@ public class Skin implements Disposable {
 				this.map = map;
 			}
 
-			public void write (Json json, Object object, Class valueType) throws IOException {
+			public void write (Json json, Object object, Class valueType) {
 				for (Entry<String, ?> entry : map.entries()) {
 					if (entry.value.equals(object)) {
 						json.writeValue(entry.key);
@@ -177,7 +177,7 @@ public class Skin implements Disposable {
 		}
 
 		json.setSerializer(Skin.class, new Serializer<Skin>() {
-			public void write (Json json, Skin skin, Class valueType) throws IOException {
+			public void write (Json json, Skin skin, Class valueType) {
 				json.writeObjectStart();
 				json.writeValue("resources", skin.data.resources);
 				for (Entry<Class, ObjectMap<String, Object>> entry : data.resources.entries())
@@ -222,7 +222,7 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(TextureRegion.class, new Serializer<TextureRegion>() {
-			public void write (Json json, TextureRegion region, Class valueType) throws IOException {
+			public void write (Json json, TextureRegion region, Class valueType) {
 				json.writeObjectStart();
 				json.writeValue("x", region.getRegionX());
 				json.writeValue("y", region.getRegionY());
@@ -241,7 +241,7 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(BitmapFont.class, new Serializer<BitmapFont>() {
-			public void write (Json json, BitmapFont font, Class valueType) throws IOException {
+			public void write (Json json, BitmapFont font, Class valueType) {
 				json.writeValue(font.getData().getFontFile().toString().replace('\\', '/'));
 			}
 
@@ -254,7 +254,7 @@ public class Skin implements Disposable {
 		});
 
 		json.setSerializer(NinePatch.class, new Serializer<NinePatch>() {
-			public void write (Json json, NinePatch ninePatch, Class valueType) throws IOException {
+			public void write (Json json, NinePatch ninePatch, Class valueType) {
 				json.writeValue(ninePatch.getPatches());
 			}
 
