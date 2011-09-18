@@ -63,6 +63,10 @@ inline b2EdgeShape::b2EdgeShape()
 {
 	m_type = e_edge;
 	m_radius = b2_polygonRadius;
+	m_vertex0.x = 0.0f;
+	m_vertex0.y = 0.0f;
+	m_vertex3.x = 0.0f;
+	m_vertex3.y = 0.0f;
 	m_hasVertex0 = false;
 	m_hasVertex3 = false;
 }

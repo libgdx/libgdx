@@ -142,14 +142,21 @@ public:
 	b2Contact* GetContactList();
 	const b2Contact* GetContactList() const;
 
+	/// Enable/disable sleep.
+	void SetAllowSleeping(bool flag);
+	bool GetAllowSleeping() const { return m_allowSleep; }
+
 	/// Enable/disable warm starting. For testing.
 	void SetWarmStarting(bool flag) { m_warmStarting = flag; }
+	bool GetWarmStarting() const { return m_warmStarting; }
 
 	/// Enable/disable continuous physics. For testing.
 	void SetContinuousPhysics(bool flag) { m_continuousPhysics = flag; }
+	bool GetContinuousPhysics() const { return m_continuousPhysics; }
 
 	/// Enable/disable single stepped continuous physics. For testing.
 	void SetSubStepping(bool flag) { m_subStepping = flag; }
+	bool GetSubStepping() const { return m_subStepping; }
 
 	/// Get the number of broad-phase proxies.
 	int32 GetProxyCount() const;
@@ -193,6 +200,10 @@ public:
 
 	/// Get the current profile.
 	const b2Profile& GetProfile() const;
+
+	/// Dump the world into the log file.
+	/// @warning this should be called outside of a time step.
+	void Dump();
 
 private:
 

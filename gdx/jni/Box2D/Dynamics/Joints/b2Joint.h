@@ -118,10 +118,10 @@ public:
 	/// Get the anchor point on bodyB in world coordinates.
 	virtual b2Vec2 GetAnchorB() const = 0;
 
-	/// Get the reaction force on body2 at the joint anchor in Newtons.
+	/// Get the reaction force on bodyB at the joint anchor in Newtons.
 	virtual b2Vec2 GetReactionForce(float32 inv_dt) const = 0;
 
-	/// Get the reaction torque on body2 in N*m.
+	/// Get the reaction torque on bodyB in N*m.
 	virtual float32 GetReactionTorque(float32 inv_dt) const = 0;
 
 	/// Get the next joint the world joint list.
@@ -142,10 +142,14 @@ public:
 	/// the flag is only checked when fixture AABBs begin to overlap.
 	bool GetCollideConnected() const;
 
+	/// Dump this joint to the log file.
+	virtual void Dump() { b2Log("// Dump is not supported for this joint type.\n"); }
+
 protected:
 	friend class b2World;
 	friend class b2Body;
 	friend class b2Island;
+	friend class b2GearJoint;
 
 	static b2Joint* Create(const b2JointDef* def, b2BlockAllocator* allocator);
 	static void Destroy(b2Joint* joint, b2BlockAllocator* allocator);
@@ -166,6 +170,8 @@ protected:
 	b2JointEdge m_edgeB;
 	b2Body* m_bodyA;
 	b2Body* m_bodyB;
+
+	int32 m_index;
 
 	bool m_islandFlag;
 	bool m_collideConnected;

@@ -100,6 +100,9 @@ public:
 	/// Get the pulley ratio.
 	float32 GetRatio() const;
 
+	/// Dump joint to dmLog
+	void Dump();
+
 protected:
 
 	friend class b2Joint;
@@ -111,6 +114,8 @@ protected:
 
 	b2Vec2 m_groundAnchorA;
 	b2Vec2 m_groundAnchorB;
+	float32 m_lengthA;
+	float32 m_lengthB;
 	
 	// Solver shared
 	b2Vec2 m_localAnchorA;

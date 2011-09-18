@@ -61,6 +61,12 @@ public:
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
 
+	/// The local anchor point relative to bodyA's origin.
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+
+	/// The local anchor point relative to bodyB's origin.
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+
 	/// Set the maximum friction force in N.
 	void SetMaxForce(float32 force);
 
@@ -72,6 +78,9 @@ public:
 
 	/// Get the maximum friction torque in N*m.
 	float32 GetMaxTorque() const;
+
+	/// Dump joint to dmLog
+	void Dump();
 
 protected:
 

@@ -133,6 +133,9 @@ void* b2Alloc(int32 size);
 /// If you implement b2Alloc, you should also implement this function.
 void b2Free(void* mem);
 
+/// Logging function.
+void b2Log(const char* string, ...);
+
 /// Version numbering scheme.
 /// See http://en.wikipedia.org/wiki/Software_versioning
 struct b2Version

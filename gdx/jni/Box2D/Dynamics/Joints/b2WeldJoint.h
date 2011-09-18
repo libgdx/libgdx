@@ -32,20 +32,29 @@ struct b2WeldJointDef : public b2JointDef
 		localAnchorA.Set(0.0f, 0.0f);
 		localAnchorB.Set(0.0f, 0.0f);
 		referenceAngle = 0.0f;
+		frequencyHz = 0.0f;
+		dampingRatio = 0.0f;
 	}
 
 	/// Initialize the bodies, anchors, and reference angle using a world
 	/// anchor point.
-	void Initialize(b2Body* body1, b2Body* body2, const b2Vec2& anchor);
+	void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor);
 
-	/// The local anchor point relative to body1's origin.
+	/// The local anchor point relative to bodyA's origin.
 	b2Vec2 localAnchorA;
 
-	/// The local anchor point relative to body2's origin.
+	/// The local anchor point relative to bodyB's origin.
 	b2Vec2 localAnchorB;
 
-	/// The body2 angle minus body1 angle in the reference state (radians).
+	/// The bodyB angle minus bodyA angle in the reference state (radians).
 	float32 referenceAngle;
+	
+	/// The mass-spring-damper frequency in Hertz. Rotation only.
+	/// Disable softness with a value of 0.
+	float32 frequencyHz;
+
+	/// The damping ratio. 0 = no damping, 1 = critical damping.
+	float32 dampingRatio;
 };
 
 /// A weld joint essentially glues two bodies together. A weld joint may
@@ -59,6 +68,26 @@ public:
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
 
+	/// The local anchor point relative to bodyA's origin.
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+
+	/// The local anchor point relative to bodyB's origin.
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+
+	/// Get the reference angle.
+	float32 GetReferenceAngle() const { return m_referenceAngle; }
+
+	/// Set/get frequency in Hz.
+	void SetFrequency(float32 hz) { m_frequencyHz = hz; }
+	float32 GetFrequency() const { return m_frequencyHz; }
+
+	/// Set/get damping ratio.
+	void SetDampingRatio(float32 ratio) { m_dampingRatio = ratio; }
+	float32 GetDampingRatio() const { return m_dampingRatio; }
+
+	/// Dump to b2Log
+	void Dump();
+
 protected:
 
 	friend class b2Joint;
@@ -69,10 +98,15 @@ protected:
 	void SolveVelocityConstraints(const b2SolverData& data);
 	bool SolvePositionConstraints(const b2SolverData& data);
 
+	float32 m_frequencyHz;
+	float32 m_dampingRatio;
+	float32 m_bias;
+
 	// Solver shared
 	b2Vec2 m_localAnchorA;
 	b2Vec2 m_localAnchorB;
 	float32 m_referenceAngle;
+	float32 m_gamma;
 	b2Vec3 m_impulse;
 
 	// Solver temp

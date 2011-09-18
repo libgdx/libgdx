@@ -92,8 +92,6 @@ public:
 	/// Get the vertices (read-only).
 	const b2Vec2* GetVertices() const { return m_vertices; }
 
-protected:
-
 	/// The vertices. Owned by this class.
 	b2Vec2* m_vertices;
 

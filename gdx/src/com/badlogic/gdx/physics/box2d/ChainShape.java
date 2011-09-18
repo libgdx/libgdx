@@ -22,7 +22,7 @@ public class ChainShape extends Shape {
 	 * Create a loop. This automatically adjusts connectivity.
 	 * @param vertices an array of vertices, these are copied
 	 */
-	void createLoop(Vector2[] vertices) {
+	public void createLoop(Vector2[] vertices) {
 		float[] verts = new float[vertices.length * 2];
 		for (int i = 0, j = 0; i < vertices.length * 2; i += 2, j++) {
 			verts[i] = vertices[j].x;
@@ -37,7 +37,7 @@ public class ChainShape extends Shape {
 	 *  Create a chain with isolated end vertices.
 	 *  @param vertices an array of vertices, these are copied
 	 */
-	void createChain(Vector2[] vertices) {
+	public void createChain(Vector2[] vertices) {
 		float[] verts = new float[vertices.length * 2];
 		for (int i = 0, j = 0; i < vertices.length * 2; i += 2, j++) {
 			verts[i] = vertices[j].x;

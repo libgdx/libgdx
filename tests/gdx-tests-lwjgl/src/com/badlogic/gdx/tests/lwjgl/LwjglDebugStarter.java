@@ -29,7 +29,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		GdxTest test = new MD5Test();
+		GdxTest test = new Box2DTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;

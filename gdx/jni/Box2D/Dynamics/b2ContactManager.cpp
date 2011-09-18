@@ -115,16 +115,6 @@ void b2ContactManager::Collide()
 		b2Body* bodyA = fixtureA->GetBody();
 		b2Body* bodyB = fixtureB->GetBody();
 		 
-		bool activeA = bodyA->IsAwake() && bodyA->m_type != b2_staticBody;
-		bool activeB = bodyB->IsAwake() && bodyB->m_type != b2_staticBody;
-
-		// At least one body must be awake and it must be dynamic or kinematic.
-		if (activeA == false && activeB == false)
-		{
-			c = c->GetNext();
-			continue;
-		}
-
 		// Is this contact flagged for filtering?
 		if (c->m_flags & b2Contact::e_filterFlag)
 		{
@@ -148,6 +138,16 @@ void b2ContactManager::Collide()
 
 			// Clear the filtering flag.
 			c->m_flags &= ~b2Contact::e_filterFlag;
+		}
+
+		bool activeA = bodyA->IsAwake() && bodyA->m_type != b2_staticBody;
+		bool activeB = bodyB->IsAwake() && bodyB->m_type != b2_staticBody;
+
+		// At least one body must be awake and it must be dynamic or kinematic.
+		if (activeA == false && activeB == false)
+		{
+			c = c->GetNext();
+			continue;
 		}
 
 		int32 proxyIdA = fixtureA->m_proxies[indexA].proxyId;

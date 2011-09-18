@@ -50,16 +50,16 @@ void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 	case b2Shape::e_chain:
 		{
 			const b2ChainShape* chain = (b2ChainShape*)shape;
-			b2Assert(0 <= index && index < chain->GetVertexCount());
+			b2Assert(0 <= index && index < chain->m_count);
 
-			m_buffer[0] = chain->GetVertex(index);
-			if (index + 1 < chain->GetVertexCount())
+			m_buffer[0] = chain->m_vertices[index];
+			if (index + 1 < chain->m_count)
 			{
-				m_buffer[1] = chain->GetVertex(index + 1);
+				m_buffer[1] = chain->m_vertices[index + 1];
 			}
 			else
 			{
-				m_buffer[1] = chain->GetVertex(0);
+				m_buffer[1] = chain->m_vertices[0];
 			}
 
 			m_vertices = m_buffer;

@@ -64,6 +64,4 @@ For discussion please visit http://box2d.org/forum
 #include <Box2D/Dynamics/Joints/b2RopeJoint.h>
 #include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 
-#include <Box2D/Rope/b2Rope.h>
-
 #endif

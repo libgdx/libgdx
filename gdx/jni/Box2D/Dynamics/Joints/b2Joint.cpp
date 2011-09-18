@@ -177,6 +177,7 @@ b2Joint::b2Joint(const b2JointDef* def)
 	m_next = NULL;
 	m_bodyA = def->bodyA;
 	m_bodyB = def->bodyB;
+	m_index = 0;
 	m_collideConnected = def->collideConnected;
 	m_islandFlag = false;
 	m_userData = def->userData;

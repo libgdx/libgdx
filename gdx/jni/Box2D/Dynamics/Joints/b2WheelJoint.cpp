@@ -398,7 +398,22 @@ float32 b2WheelJoint::GetMotorTorque(float32 inv_dt) const
 	return inv_dt * m_motorImpulse;
 }
 
+void b2WheelJoint::Dump()
+{
+	int32 indexA = m_bodyA->m_islandIndex;
+	int32 indexB = m_bodyB->m_islandIndex;
 
-
-
-
+	b2Log("  b2WheelJointDef jd;\n");
+	b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+	b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+	b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+	b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+	b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+	b2Log("  jd.localAxisA.Set(%.15lef, %.15lef);\n", m_localXAxisA.x, m_localXAxisA.y);
+	b2Log("  jd.enableMotor = bool(%d);\n", m_enableMotor);
+	b2Log("  jd.motorSpeed = %.15lef;\n", m_motorSpeed);
+	b2Log("  jd.maxMotorTorque = %.15lef;\n", m_maxMotorTorque);
+	b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
+	b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
+	b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
+}

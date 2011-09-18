@@ -52,13 +52,13 @@ struct b2RevoluteJointDef : public b2JointDef
 	/// anchor point.
 	void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor);
 
-	/// The local anchor point relative to body1's origin.
+	/// The local anchor point relative to bodyA's origin.
 	b2Vec2 localAnchorA;
 
-	/// The local anchor point relative to body2's origin.
+	/// The local anchor point relative to bodyB's origin.
 	b2Vec2 localAnchorB;
 
-	/// The body2 angle minus body1 angle in the reference state (radians).
+	/// The bodyB angle minus bodyA angle in the reference state (radians).
 	float32 referenceAngle;
 
 	/// A flag to enable joint limits.
@@ -92,6 +92,15 @@ class b2RevoluteJoint : public b2Joint
 public:
 	b2Vec2 GetAnchorA() const;
 	b2Vec2 GetAnchorB() const;
+
+	/// The local anchor point relative to bodyA's origin.
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+
+	/// The local anchor point relative to bodyB's origin.
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+
+	/// Get the reference angle.
+	float32 GetReferenceAngle() const { return m_referenceAngle; }
 
 	/// Get the current joint angle in radians.
 	float32 GetJointAngle() const;
@@ -128,6 +137,7 @@ public:
 
 	/// Set the maximum motor torque, usually in N-m.
 	void SetMaxMotorTorque(float32 torque);
+	float32 GetMaxMotorTorque() const { return m_maxMotorTorque; }
 
 	/// Get the reaction force given the inverse time step.
 	/// Unit is N.
@@ -140,6 +150,9 @@ public:
 	/// Get the current motor torque given the inverse time step.
 	/// Unit is N*m.
 	float32 GetMotorTorque(float32 inv_dt) const;
+
+	/// Dump to b2Log.
+	void Dump();
 
 protected:
 	

@@ -64,10 +64,20 @@ public:
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
 
-	/// Get the maximum length of the rope.
+	/// The local anchor point relative to bodyA's origin.
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+
+	/// The local anchor point relative to bodyB's origin.
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+
+	/// Set/Get the maximum length of the rope.
+	void SetMaxLength(float32 length) { m_maxLength = length; }
 	float32 GetMaxLength() const;
 
 	b2LimitState GetLimitState() const;
+
+	/// Dump joint to dmLog
+	void Dump();
 
 protected:
 

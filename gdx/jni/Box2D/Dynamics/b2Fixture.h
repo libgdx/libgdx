@@ -31,6 +31,13 @@ class b2Fixture;
 /// This holds contact filtering data.
 struct b2Filter
 {
+	b2Filter()
+	{
+		categoryBits = 0x0001;
+		maskBits = 0xFFFF;
+		groupIndex = 0;
+	}
+
 	/// The collision category bits. Normally you would just set one bit.
 	uint16 categoryBits;
 
@@ -56,9 +63,6 @@ struct b2FixtureDef
 		friction = 0.2f;
 		restitution = 0.0f;
 		density = 0.0f;
-		filter.categoryBits = 0x0001;
-		filter.maskBits = 0xFFFF;
-		filter.groupIndex = 0;
 		isSensor = false;
 	}
 
@@ -187,6 +191,9 @@ public:
 	/// If you need a more accurate AABB, compute it using the shape and
 	/// the body transform.
 	const b2AABB& GetAABB(int32 childIndex) const;
+
+	/// Dump this fixture to the log file.
+	void Dump(int32 bodyIndex);
 
 protected:
 

@@ -45,16 +45,16 @@ struct b2PrismaticJointDef : public b2JointDef
 	}
 
 	/// Initialize the bodies, anchors, axis, and reference angle using the world
-	/// anchor and world axis.
+	/// anchor and unit world axis.
 	void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor, const b2Vec2& axis);
 
-	/// The local anchor point relative to body1's origin.
+	/// The local anchor point relative to bodyA's origin.
 	b2Vec2 localAnchorA;
 
-	/// The local anchor point relative to body2's origin.
+	/// The local anchor point relative to bodyB's origin.
 	b2Vec2 localAnchorB;
 
-	/// The local translation axis in body1.
+	/// The local translation unit axis in bodyA.
 	b2Vec2 localAxisA;
 
 	/// The constrained angle between the bodies: bodyB_angle - bodyA_angle.
@@ -92,6 +92,18 @@ public:
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
 
+	/// The local anchor point relative to bodyA's origin.
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+
+	/// The local anchor point relative to bodyB's origin.
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+
+	/// The local joint axis relative to bodyA.
+	const b2Vec2& GetLocalAxisA() const { return m_localXAxisA; }
+
+	/// Get the reference angle.
+	float32 GetReferenceAngle() const { return m_referenceAngle; }
+
 	/// Get the current joint translation, usually in meters.
 	float32 GetJointTranslation() const;
 
@@ -127,9 +139,13 @@ public:
 
 	/// Set the maximum motor force, usually in N.
 	void SetMaxMotorForce(float32 force);
+	float32 GetMaxMotorForce() const { return m_maxMotorForce; }
 
 	/// Get the current motor force given the inverse time step, usually in N.
 	float32 GetMotorForce(float32 inv_dt) const;
+
+	/// Dump to b2Log
+	void Dump();
 
 protected:
 	friend class b2Joint;
@@ -145,7 +161,7 @@ protected:
 	b2Vec2 m_localAnchorB;
 	b2Vec2 m_localXAxisA;
 	b2Vec2 m_localYAxisA;
-	float32 m_refAngle;
+	float32 m_referenceAngle;
 	b2Vec3 m_impulse;
 	float32 m_motorImpulse;
 	float32 m_lowerTranslation;

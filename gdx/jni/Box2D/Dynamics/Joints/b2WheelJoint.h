@@ -46,13 +46,13 @@ struct b2WheelJointDef : public b2JointDef
 	/// anchor and world axis.
 	void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor, const b2Vec2& axis);
 
-	/// The local anchor point relative to body1's origin.
+	/// The local anchor point relative to bodyA's origin.
 	b2Vec2 localAnchorA;
 
-	/// The local anchor point relative to body2's origin.
+	/// The local anchor point relative to bodyB's origin.
 	b2Vec2 localAnchorB;
 
-	/// The local translation axis in body1.
+	/// The local translation axis in bodyA.
 	b2Vec2 localAxisA;
 
 	/// Enable/disable the joint motor.
@@ -72,18 +72,29 @@ struct b2WheelJointDef : public b2JointDef
 };
 
 /// A wheel joint. This joint provides two degrees of freedom: translation
-/// along an axis fixed in body1 and rotation in the plane. You can use a
+/// along an axis fixed in bodyA and rotation in the plane. You can use a
 /// joint limit to restrict the range of motion and a joint motor to drive
 /// the rotation or to model rotational friction.
 /// This joint is designed for vehicle suspensions.
 class b2WheelJoint : public b2Joint
 {
 public:
+	void GetDefinition(b2WheelJointDef* def) const;
+
 	b2Vec2 GetAnchorA() const;
 	b2Vec2 GetAnchorB() const;
 
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
+
+	/// The local anchor point relative to bodyA's origin.
+	const b2Vec2& GetLocalAnchorA() const { return m_localAnchorA; }
+
+	/// The local anchor point relative to bodyB's origin.
+	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
+
+	/// The local joint axis relative to bodyA.
+	const b2Vec2& GetLocalAxisA() const { return m_localXAxisA; }
 
 	/// Get the current joint translation, usually in meters.
 	float32 GetJointTranslation() const;
@@ -117,6 +128,9 @@ public:
 	/// Set/Get the spring damping ratio
 	void SetSpringDampingRatio(float32 ratio);
 	float32 GetSpringDampingRatio() const;
+
+	/// Dump to b2Log
+	void Dump();
 
 protected:
 

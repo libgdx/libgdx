@@ -25,7 +25,6 @@
 #include <cfloat>
 #include <cstddef>
 #include <float.h>
-//#include <limits>
 
 /// This function is used to ensure that a floating point number is
 /// not a NaN or infinity.
@@ -296,6 +295,14 @@ struct b2Mat33
 	/// 2-by-2 matrix equation.
 	b2Vec2 Solve22(const b2Vec2& b) const;
 
+	/// Get the inverse of this matrix as a 2-by-2.
+	/// Returns the zero matrix if singular.
+	void GetInverse22(b2Mat33* M) const;
+
+	/// Get the symmetric inverse of this matrix as a 3-by-3.
+	/// Returns the zero matrix if singular.
+	void GetSymInverse33(b2Mat33* M) const;
+
 	b2Vec3 ex, ey, ez;
 };
 
@@ -532,6 +539,12 @@ inline b2Mat22 b2MulT(const b2Mat22& A, const b2Mat22& B)
 inline b2Vec3 b2Mul(const b2Mat33& A, const b2Vec3& v)
 {
 	return v.x * A.ex + v.y * A.ey + v.z * A.ez;
+}
+
+/// Multiply a matrix times a vector.
+inline b2Vec2 b2Mul22(const b2Mat33& A, const b2Vec2& v)
+{
+	return b2Vec2(A.ex.x * v.x + A.ey.x * v.y, A.ex.y * v.x + A.ey.y * v.y);
 }
 
 /// Multiply two rotations: q * r

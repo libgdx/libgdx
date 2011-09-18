@@ -1,3 +1,16 @@
+18.9.2011
+- Merged latest Box2D trunk
+- World.cpp
+	- kept constructor with allowSleep boolean, FIXME!
+	- missing setAllowSleep()
+	- missing getWarmStarting()
+	- missing getContinuousPhysics()
+	- missing getSubStepping()
+- WeldJoint(Def)
+	- missing frequencyHz FIXME!
+	- missing Damping FIXME!
+
+-------------------------------------------------------------------------------------------------
 Box2D modifications
 - b2Settings.h: extern float b2_velocityThreshold;
 - b2BroadPhase.h: replace std sort with qsort

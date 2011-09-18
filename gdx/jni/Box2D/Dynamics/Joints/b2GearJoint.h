@@ -62,9 +62,18 @@ public:
 	b2Vec2 GetReactionForce(float32 inv_dt) const;
 	float32 GetReactionTorque(float32 inv_dt) const;
 
+	/// Get the first joint.
+	b2Joint* GetJoint1() { return m_joint1; }
+
+	/// Get the second joint.
+	b2Joint* GetJoint2() { return m_joint2; }
+
 	/// Set/Get the gear ratio.
 	void SetRatio(float32 ratio);
 	float32 GetRatio() const;
+
+	/// Dump joint to dmLog
+	void Dump();
 
 protected:
 
@@ -74,6 +83,9 @@ protected:
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);
 	bool SolvePositionConstraints(const b2SolverData& data);
+
+	b2Joint* m_joint1;
+	b2Joint* m_joint2;
 
 	b2JointType m_typeA;
 	b2JointType m_typeB;

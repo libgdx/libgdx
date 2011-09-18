@@ -89,6 +89,9 @@ public:
 	void SetDampingRatio(float32 ratio);
 	float32 GetDampingRatio() const;
 
+	/// The mouse joint does not support dumping.
+	void Dump() { b2Log("Mouse joint dumping is not supported.\n"); }
+
 protected:
 	friend class b2Joint;
 

@@ -375,6 +375,9 @@ public:
 	b2World* GetWorld();
 	const b2World* GetWorld() const;
 
+	/// Dump this body to a log file
+	void Dump();
+
 private:
 
 	friend class b2World;
@@ -474,7 +477,7 @@ inline const b2Vec2& b2Body::GetPosition() const
 
 inline float32 b2Body::GetAngle() const
 {
-	return m_xf.q.GetAngle();
+	return m_sweep.a;
 }
 
 inline const b2Vec2& b2Body::GetWorldCenter() const

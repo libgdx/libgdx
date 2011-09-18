@@ -226,3 +226,78 @@ void b2Fixture::SetSensor(bool sensor)
 	}
 }
 
+void b2Fixture::Dump(int32 bodyIndex)
+{
+	b2Log("    b2FixtureDef fd;\n");
+	b2Log("    fd.friction = %.15lef;\n", m_friction);
+	b2Log("    fd.restitution = %.15lef;\n", m_restitution);
+	b2Log("    fd.density = %.15lef;\n", m_density);
+	b2Log("    fd.isSensor = bool(%d);\n", m_isSensor);
+	b2Log("    fd.filter.categoryBits = uint16(%d);\n", m_filter.categoryBits);
+	b2Log("    fd.filter.maskBits = uint16(%d);\n", m_filter.maskBits);
+	b2Log("    fd.filter.groupIndex = int16(%d);\n", m_filter.groupIndex);
+
+	switch (m_shape->m_type)
+	{
+	case b2Shape::e_circle:
+		{
+			b2CircleShape* s = (b2CircleShape*)m_shape;
+			b2Log("    b2CircleShape shape;\n");
+			b2Log("    shape.m_radius = %.15lef;\n", s->m_radius);
+			b2Log("    shape.m_p.Set(%.15lef, %.15lef);\n", s->m_p.x, s->m_p.y);
+		}
+		break;
+
+	case b2Shape::e_edge:
+		{
+			b2EdgeShape* s = (b2EdgeShape*)m_shape;
+			b2Log("    b2EdgeShape shape;\n");
+			b2Log("    shape.m_radius = %.15lef;\n", s->m_radius);
+			b2Log("    shape.m_vertex0.Set(%.15lef, %.15lef);\n", s->m_vertex0.x, s->m_vertex0.y);
+			b2Log("    shape.m_vertex1.Set(%.15lef, %.15lef);\n", s->m_vertex1.x, s->m_vertex1.y);
+			b2Log("    shape.m_vertex2.Set(%.15lef, %.15lef);\n", s->m_vertex2.x, s->m_vertex2.y);
+			b2Log("    shape.m_vertex3.Set(%.15lef, %.15lef);\n", s->m_vertex3.x, s->m_vertex3.y);
+			b2Log("    shape.m_hasVertex0 = bool(%d);\n", s->m_hasVertex0);
+			b2Log("    shape.m_hasVertex3 = bool(%d);\n", s->m_hasVertex3);
+		}
+		break;
+
+	case b2Shape::e_polygon:
+		{
+			b2PolygonShape* s = (b2PolygonShape*)m_shape;
+			b2Log("    b2PolygonShape shape;\n");
+			b2Log("    b2Vec2 vs[%d];\n", b2_maxPolygonVertices);
+			for (int32 i = 0; i < s->m_vertexCount; ++i)
+			{
+				b2Log("    vs[%d].Set(%.15lef, %.15lef);\n", i, s->m_vertices[i].x, s->m_vertices[i].y);
+			}
+			b2Log("    shape.Set(vs, %d);\n", s->m_vertexCount);
+		}
+		break;
+
+	case b2Shape::e_chain:
+		{
+			b2ChainShape* s = (b2ChainShape*)m_shape;
+			b2Log("    b2ChainShape shape;\n");
+			b2Log("    b2Vec2 vs[%d];\n", s->m_count);
+			for (int32 i = 0; i < s->m_count; ++i)
+			{
+				b2Log("    vs[%d].Set(%.15lef, %.15lef);\n", i, s->m_vertices[i].x, s->m_vertices[i].y);
+			}
+			b2Log("    shape.CreateChain(vs, %d);\n", s->m_count);
+			b2Log("    shape.m_prevVertex.Set(%.15lef, %.15lef);\n", s->m_prevVertex.x, s->m_prevVertex.y);
+			b2Log("    shape.m_nextVertex.Set(%.15lef, %.15lef);\n", s->m_nextVertex.x, s->m_nextVertex.y);
+			b2Log("    shape.m_hasPrevVertex = bool(%d);\n", s->m_hasPrevVertex);
+			b2Log("    shape.m_hasNextVertex = bool(%d);\n", s->m_hasNextVertex);
+		}
+		break;
+
+	default:
+		return;
+	}
+
+	b2Log("\n");
+	b2Log("    fd.shape = &shape;\n");
+	b2Log("\n");
+	b2Log("    bodies[%d]->CreateFixture(&fd);\n", bodyIndex);
+}

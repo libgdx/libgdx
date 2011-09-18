@@ -364,6 +364,24 @@ void b2World::DestroyJoint(b2Joint* j)
 	}
 }
 
+//
+void b2World::SetAllowSleeping(bool flag)
+{
+	if (flag == m_allowSleep)
+	{
+		return;
+	}
+
+	m_allowSleep = flag;
+	if (m_allowSleep == false)
+	{
+		for (b2Body* b = m_bodyList; b; b = b->m_next)
+		{
+			b->SetAwake(true);
+		}
+	}
+}
+
 // Find islands, integrate and solve constraints, solve position constraints
 void b2World::Solve(const b2TimeStep& step)
 {
@@ -1038,8 +1056,8 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 	case b2Shape::e_chain:
 		{
 			b2ChainShape* chain = (b2ChainShape*)fixture->GetShape();
-			int32 count = chain->GetVertexCount();
-			const b2Vec2* vertices = chain->GetVertices();
+			int32 count = chain->m_count;
+			const b2Vec2* vertices = chain->m_vertices;
 
 			b2Vec2 v1 = b2Mul(xf, vertices[0]);
 			for (int32 i = 1; i < count; ++i)
@@ -1236,4 +1254,63 @@ int32 b2World::GetTreeBalance() const
 float32 b2World::GetTreeQuality() const
 {
 	return m_contactManager.m_broadPhase.GetTreeQuality();
+}
+
+void b2World::Dump()
+{
+	if ((m_flags & e_locked) == e_locked)
+	{
+		return;
+	}
+
+	b2Log("b2Vec2 g(%.15lef, %.15lef);\n", m_gravity.x, m_gravity.y);
+	b2Log("m_world->SetGravity(g);\n");
+
+	b2Log("b2Body** bodies = (b2Body**)b2Alloc(%d * sizeof(b2Body*));\n", m_bodyCount);
+	b2Log("b2Joint** joints = (b2Joint**)b2Alloc(%d * sizeof(b2Joint*));\n", m_jointCount);
+	int32 i = 0;
+	for (b2Body* b = m_bodyList; b; b = b->m_next)
+	{
+		b->m_islandIndex = i;
+		b->Dump();
+		++i;
+	}
+
+	i = 0;
+	for (b2Joint* j = m_jointList; j; j = j->m_next)
+	{
+		j->m_index = i;
+		++i;
+	}
+
+	// First pass on joints, skip gear joints.
+	for (b2Joint* j = m_jointList; j; j = j->m_next)
+	{
+		if (j->m_type == e_gearJoint)
+		{
+			continue;
+		}
+
+		b2Log("{\n");
+		j->Dump();
+		b2Log("}\n");
+	}
+
+	// Second pass on joints, only gear joints.
+	for (b2Joint* j = m_jointList; j; j = j->m_next)
+	{
+		if (j->m_type != e_gearJoint)
+		{
+			continue;
+		}
+
+		b2Log("{\n");
+		j->Dump();
+		b2Log("}\n");
+	}
+
+	b2Log("b2Free(joints);\n");
+	b2Log("b2Free(bodies);\n");
+	b2Log("joints = NULL;\n");
+	b2Log("bodies = NULL;\n");
 }

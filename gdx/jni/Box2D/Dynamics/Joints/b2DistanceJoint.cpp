@@ -123,8 +123,13 @@ void b2DistanceJoint::InitVelocityConstraints(const b2SolverData& data)
 		m_gamma = m_gamma != 0.0f ? 1.0f / m_gamma : 0.0f;
 		m_bias = C * h * k * m_gamma;
 
-		m_mass = invMass + m_gamma;
-		m_mass = m_mass != 0.0f ? 1.0f / m_mass : 0.0f;
+		invMass += m_gamma;
+		m_mass = invMass != 0.0f ? 1.0f / invMass : 0.0f;
+	}
+	else
+	{
+		m_gamma = 0.0f;
+		m_bias = 0.0f;
 	}
 
 	if (data.step.warmStarting)
@@ -235,4 +240,21 @@ float32 b2DistanceJoint::GetReactionTorque(float32 inv_dt) const
 {
 	B2_NOT_USED(inv_dt);
 	return 0.0f;
+}
+
+void b2DistanceJoint::Dump()
+{
+	int32 indexA = m_bodyA->m_islandIndex;
+	int32 indexB = m_bodyB->m_islandIndex;
+
+	b2Log("  b2DistanceJointDef jd;\n");
+	b2Log("  jd.bodyA = bodies[%d];\n", indexA);
+	b2Log("  jd.bodyB = bodies[%d];\n", indexB);
+	b2Log("  jd.collideConnected = bool(%d);\n", m_collideConnected);
+	b2Log("  jd.localAnchorA.Set(%.15lef, %.15lef);\n", m_localAnchorA.x, m_localAnchorA.y);
+	b2Log("  jd.localAnchorB.Set(%.15lef, %.15lef);\n", m_localAnchorB.x, m_localAnchorB.y);
+	b2Log("  jd.length = %.15lef;\n", m_length);
+	b2Log("  jd.frequencyHz = %.15lef;\n", m_frequencyHz);
+	b2Log("  jd.dampingRatio = %.15lef;\n", m_dampingRatio);
+	b2Log("  joints[%d] = m_world->CreateJoint(&jd);\n", m_index);
 }
