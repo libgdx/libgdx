@@ -19,6 +19,11 @@ public class StbTrueTypeFont implements Disposable {
 			this.descent = descent;
 			this.lineGap = lineGap;
 		}
+
+		@Override
+		public String toString () {
+			return "FontVMetrics [ascent=" + ascent + ", descent=" + descent + ", lineGap=" + lineGap + "]";
+		}
 	}
 	
 	public static class HMetrics {
@@ -28,6 +33,11 @@ public class StbTrueTypeFont implements Disposable {
 		public HMetrics (int advance, int leftSideBearing) {
 			this.advance = advance;
 			this.leftSideBearing = leftSideBearing;
+		}
+
+		@Override
+		public String toString () {
+			return "HMetrics [advance=" + advance + ", leftSideBearing=" + leftSideBearing + "]";
 		}
 	}
 	
@@ -40,11 +50,16 @@ public class StbTrueTypeFont implements Disposable {
 			this.x1 = x1;
 			this.y1 = y1;
 		}
+
+		@Override
+		public String toString () {
+			return "Box [x0=" + x0 + ", y0=" + y0 + ", x1=" + x1 + ", y1=" + y1 + "]";
+		}
 	}
 	
 	public static class Bitmap implements Disposable {
-		final Pixmap pixmap;
-		final Box box;
+		public final Pixmap pixmap;
+		public final Box box;
 		
 		public Bitmap (Pixmap pixmap, Box box) {
 			this.pixmap = pixmap;
@@ -54,6 +69,11 @@ public class StbTrueTypeFont implements Disposable {
 		@Override
 		public void dispose () {
 			pixmap.dispose();
+		}
+
+		@Override
+		public String toString () {
+			return "Bitmap [box=" + box + "]";
 		}
 	}
 	
@@ -151,8 +171,11 @@ public class StbTrueTypeFont implements Disposable {
 		if(box.x0 == 0 && box.y0 == 0 && box.x1 == 0 && box.y1 == 0) return null;
 		
 		Pixmap pixmap = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.Alpha);
-		StbTrueType.makeCodepointBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), 0, scaleX, scaleY, codePoint);
-		return new Bitmap(pixmap, box);
+		StbTrueType.makeCodepointBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), pixmap.getWidth(), scaleX, scaleY, codePoint);
+		Pixmap pixmapRGBA = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.RGBA8888);
+		pixmapRGBA.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+		pixmap.dispose();
+		return new Bitmap(pixmapRGBA, box);
 	}
 
 	public Bitmap makeGlyphBitmap (float scaleX,	float scaleY, float shiftX, float shiftY, int glyph) {
@@ -161,7 +184,10 @@ public class StbTrueTypeFont implements Disposable {
 		if(box.x0 == 0 && box.y0 == 0 && box.x1 == 0 && box.y1 == 0) return null;
 		
 		Pixmap pixmap = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.Alpha);
-		StbTrueType.makeGlyphBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), 0, scaleX, scaleY, shiftX, shiftY, glyph);
-		return new Bitmap(pixmap, box);
+		StbTrueType.makeGlyphBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), pixmap.getWidth(), scaleX, scaleY, shiftX, shiftY, glyph);
+		Pixmap pixmapRGBA = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.RGBA8888);
+		pixmapRGBA.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+		pixmap.dispose();
+		return new Bitmap(pixmapRGBA, box);
 	}
 }

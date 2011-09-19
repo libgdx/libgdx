@@ -23,13 +23,14 @@ import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.MD5Test;
+import com.badlogic.gdx.tests.StbTrueTypeTest;
 import com.badlogic.gdx.tests.TiledMapTest;
 import com.badlogic.gdx.tests.VorbisTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		GdxTest test = new Box2DTest();
+		GdxTest test = new StbTrueTypeTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
