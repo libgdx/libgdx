@@ -232,7 +232,10 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_stbtt_StbTrueType_free
  * Signature: (JLjava/nio/ByteBuffer;IIIFFI)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_stbtt_StbTrueType_makeCodepointBitmap
-  (JNIEnv *env, jclass, jlong addr, jobject, jint, jint, jint, jfloat, jfloat, jint) {
+  (JNIEnv *env, jclass, jlong addr, jobject, jint bitmapWidth, jint bitmapHeight, jint bitmapStride, jfloat scaleX, jfloat scaleY, jint codePoint) {
+	unsigned char * output = (unsigned char *)out;
+	stbtt_MakeCodepointBitmap((stbtt_fontinfo*)addr, output, bitmapWidth, bitmapHeight, bitmapStride, scaleX, scaleY, codePoint);
+	env->ReleasePrimitive
 
 }
 
