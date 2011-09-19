@@ -248,9 +248,7 @@ int main(int arg, char **argv)
 
    // #define your own functions "STBTT_malloc" / "STBTT_free" to avoid malloc.h
    #ifndef STBTT_malloc
-   #if !defined(__APPLE__)
    #include <malloc.h>
-   #endif
    #define STBTT_malloc(x,u)  malloc(x)
    #define STBTT_free(x,u)    free(x)
    #endif
@@ -350,7 +348,7 @@ typedef struct
 
    int numGlyphs;                // number of glyphs, needed for range checking
 
-   int loca,head,glyf,hhea,hmtx; // table locations as offset from start of .ttf
+   int loca,head,glyf,hhea,hmtx, kern; // table locations as offset from start of .ttf
    int index_map;                // a cmap mapping for our chosen character encoding
    int indexToLocFormat;         // format needed to map from glyph index to glyph
 } stbtt_fontinfo;
@@ -474,9 +472,9 @@ extern void stbtt_GetCodepointBitmapBox(const stbtt_fontinfo *font, int codepoin
 // (Note that the bitmap uses y-increases-down, but the shape uses
 // y-increases-up, so CodepointBitmapBox and CodepointBox are inverted.)
 
-extern unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, int glyph, int *width, int *height, int *xoff, int *yoff);
-extern void stbtt_GetGlyphBitmapBox(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1);
-extern void stbtt_MakeGlyphBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int glyph);
+extern unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, float shift_x, float shift_y, int glyph, int *width, int *height, int *xoff, int *yoff);
+extern void stbtt_GetGlyphBitmapBox(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y, float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1);
+extern void stbtt_MakeGlyphBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph);
 
 //extern void stbtt_get_true_bbox(stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1);
 
@@ -487,7 +485,7 @@ typedef struct
    unsigned char *pixels;
 } stbtt__bitmap;
 
-extern void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, int x_off, int y_off, int invert, void *userdata);
+extern void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, void *userdata);
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -687,6 +685,7 @@ int stbtt_InitFont(stbtt_fontinfo *info, const unsigned char *data2, int fontsta
    info->glyf = stbtt__find_table(data, fontstart, "glyf");
    info->hhea = stbtt__find_table(data, fontstart, "hhea");
    info->hmtx = stbtt__find_table(data, fontstart, "hmtx");
+   info->kern = stbtt__find_table(data, fontstart, "kern");
    if (!cmap || !info->loca || !info->head || !info->glyf || !info->hhea || !info->hmtx)
       return 0;
 
@@ -1096,12 +1095,39 @@ void stbtt_GetGlyphHMetrics(const stbtt_fontinfo *info, int glyph_index, int *ad
 
 int  stbtt_GetGlyphKernAdvance(const stbtt_fontinfo *info, int glyph1, int glyph2)
 {
+   stbtt_uint8 *data = info->data + info->kern;
+   stbtt_uint32 needle, straw;
+   int l, r, m;
+
+   // we only look at the first table. it must be 'horizontal' and format 0.
+   if (!info->kern)
+      return 0;
+   if (ttUSHORT(data+2) < 1) // number of tables
+      return 0;
+   if (ttUSHORT(data+8) != 1) // horizontal flag, format
+      return 0;
+
+   l = 0;
+   r = ttUSHORT(data+10) - 1;
+   needle = glyph1 << 16 | glyph2;
+   while (l <= r) {
+      m = (l + r) >> 1;
+      straw = ttULONG(data+18+(m*6)); // note: unaligned read
+      if (needle < straw)
+         r = m - 1;
+      else if (needle > straw)
+         l = m + 1;
+      else
+         return ttSHORT(data+22+(m*6));
+   }
    return 0;
 }
 
 int  stbtt_GetCodepointKernAdvance(const stbtt_fontinfo *info, int ch1, int ch2)
 {
-   return 0;
+   if (!info->kern)
+      return 0;
+   return stbtt_GetGlyphKernAdvance(info, stbtt_FindGlyphIndex(info, ch1), stbtt_FindGlyphIndex(info, ch2));
 }
 
 void stbtt_GetCodepointHMetrics(const stbtt_fontinfo *info, int codepoint, int *advanceWidth, int *leftSideBearing)
@@ -1132,21 +1158,21 @@ void stbtt_FreeShape(const stbtt_fontinfo *info, stbtt_vertex *v)
 // antialiasing software rasterizer
 //
 
-void stbtt_GetGlyphBitmapBox(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1)
+void stbtt_GetGlyphBitmapBox(const stbtt_fontinfo *font, int glyph, float scale_x, float scale_y, float shift_x, float shift_y, int *ix0, int *iy0, int *ix1, int *iy1)
 {
    int x0,y0,x1,y1;
    if (!stbtt_GetGlyphBox(font, glyph, &x0,&y0,&x1,&y1))
       x0=y0=x1=y1=0; // e.g. space character
    // now move to integral bboxes (treating pixels as little squares, what pixels get touched)?
-   if (ix0) *ix0 =  STBTT_ifloor(x0 * scale_x);
-   if (iy0) *iy0 = -STBTT_iceil (y1 * scale_y);
-   if (ix1) *ix1 =  STBTT_iceil (x1 * scale_x);
-   if (iy1) *iy1 = -STBTT_ifloor(y0 * scale_y);
+   if (ix0) *ix0 =  STBTT_ifloor(x0 * scale_x + shift_x);
+   if (iy0) *iy0 = -STBTT_iceil (y1 * scale_y + shift_y);
+   if (ix1) *ix1 =  STBTT_iceil (x1 * scale_x + shift_x);
+   if (iy1) *iy1 = -STBTT_ifloor(y0 * scale_y + shift_y);
 }
 
 void stbtt_GetCodepointBitmapBox(const stbtt_fontinfo *font, int codepoint, float scale_x, float scale_y, int *ix0, int *iy0, int *ix1, int *iy1)
 {
-   stbtt_GetGlyphBitmapBox(font, stbtt_FindGlyphIndex(font,codepoint), scale_x, scale_y, ix0,iy0,ix1,iy1);
+   stbtt_GetGlyphBitmapBox(font, stbtt_FindGlyphIndex(font,codepoint), scale_x, scale_y, 0,0, ix0,iy0,ix1,iy1);
 }
 
 typedef struct stbtt__edge {
@@ -1346,7 +1372,7 @@ typedef struct
    float x,y;
 } stbtt__point;
 
-static void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcount, int windings, float scale_x, float scale_y, int off_x, int off_y, int invert, void *userdata)
+static void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcount, int windings, float scale_x, float scale_y, float shift_x, float shift_y, int off_x, int off_y, int invert, void *userdata)
 {
    float y_scale_inv = invert ? -scale_y : scale_y;
    stbtt__edge *e;
@@ -1379,10 +1405,10 @@ static void stbtt__rasterize(stbtt__bitmap *result, stbtt__point *pts, int *wcou
             e[n].invert = 1;
             a=j,b=k;
          }
-         e[n].x0 = p[a].x * scale_x;
-         e[n].y0 = p[a].y * y_scale_inv * vsubsample;
-         e[n].x1 = p[b].x * scale_x;
-         e[n].y1 = p[b].y * y_scale_inv * vsubsample;
+         e[n].x0 = p[a].x * scale_x + shift_x;
+         e[n].y0 = p[a].y * y_scale_inv * vsubsample + shift_y * vsubsample;
+         e[n].x1 = p[b].x * scale_x + shift_x;
+         e[n].y1 = p[b].y * y_scale_inv * vsubsample + shift_y * vsubsample;
          ++n;
       }
    }
@@ -1494,13 +1520,13 @@ error:
    return NULL;
 }
 
-void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, int x_off, int y_off, int invert, void *userdata)
+void stbtt_Rasterize(stbtt__bitmap *result, float flatness_in_pixels, stbtt_vertex *vertices, int num_verts, float scale_x, float scale_y, float shift_x, float shift_y, int x_off, int y_off, int invert, void *userdata)
 {
    float scale = scale_x > scale_y ? scale_y : scale_x;
    int winding_count, *winding_lengths;
    stbtt__point *windings = stbtt_FlattenCurves(vertices, num_verts, flatness_in_pixels / scale, &winding_lengths, &winding_count, userdata);
    if (windings) {
-      stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, x_off, y_off, invert, userdata);
+      stbtt__rasterize(result, windings, winding_lengths, winding_count, scale_x, scale_y, shift_x, shift_y, x_off, y_off, invert, userdata);
       STBTT_free(winding_lengths, userdata);
       STBTT_free(windings, userdata);
    }
@@ -1511,7 +1537,7 @@ void stbtt_FreeBitmap(unsigned char *bitmap, void *userdata)
    STBTT_free(bitmap, userdata);
 }
 
-unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, int glyph, int *width, int *height, int *xoff, int *yoff)
+unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, float shift_x, float shift_y, int glyph, int *width, int *height, int *xoff, int *yoff)
 {
    int ix0,iy0,ix1,iy1;
    stbtt__bitmap gbm;
@@ -1524,7 +1550,7 @@ unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, f
       scale_y = scale_x;
    }
 
-   stbtt_GetGlyphBitmapBox(info, glyph, scale_x, scale_y, &ix0,&iy0,&ix1,&iy1);
+   stbtt_GetGlyphBitmapBox(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,&ix1,&iy1);
 
    // now we get the size
    gbm.w = (ix1 - ix0);
@@ -1541,40 +1567,40 @@ unsigned char *stbtt_GetGlyphBitmap(const stbtt_fontinfo *info, float scale_x, f
       if (gbm.pixels) {
          gbm.stride = gbm.w;
 
-         stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, ix0, iy0, 1, info->userdata);
+         stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0, iy0, 1, info->userdata);
       }
    }
    STBTT_free(vertices, info->userdata);
    return gbm.pixels;
 }   
 
-void stbtt_MakeGlyphBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int glyph)
+void stbtt_MakeGlyphBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, float shift_x, float shift_y, int glyph)
 {
    int ix0,iy0;
    stbtt_vertex *vertices;   
    int num_verts = stbtt_GetGlyphShape(info, glyph, &vertices);
    stbtt__bitmap gbm;   
 
-   stbtt_GetGlyphBitmapBox(info, glyph, scale_x, scale_y, &ix0,&iy0,0,0);
+   stbtt_GetGlyphBitmapBox(info, glyph, scale_x, scale_y, shift_x, shift_y, &ix0,&iy0,0,0);
    gbm.pixels = output;
    gbm.w = out_w;
    gbm.h = out_h;
    gbm.stride = out_stride;
 
    if (gbm.w && gbm.h)
-      stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, ix0,iy0, 1, info->userdata);
+      stbtt_Rasterize(&gbm, 0.35f, vertices, num_verts, scale_x, scale_y, shift_x, shift_y, ix0,iy0, 1, info->userdata);
 
    STBTT_free(vertices, info->userdata);
 }
 
 unsigned char *stbtt_GetCodepointBitmap(const stbtt_fontinfo *info, float scale_x, float scale_y, int codepoint, int *width, int *height, int *xoff, int *yoff)
 {
-   return stbtt_GetGlyphBitmap(info, scale_x, scale_y, stbtt_FindGlyphIndex(info,codepoint), width,height,xoff,yoff);
+   return stbtt_GetGlyphBitmap(info, scale_x, scale_y, 0, 0, stbtt_FindGlyphIndex(info,codepoint), width,height,xoff,yoff);
 }   
 
 void stbtt_MakeCodepointBitmap(const stbtt_fontinfo *info, unsigned char *output, int out_w, int out_h, int out_stride, float scale_x, float scale_y, int codepoint)
 {
-   stbtt_MakeGlyphBitmap(info, output, out_w, out_h, out_stride, scale_x, scale_y, stbtt_FindGlyphIndex(info,codepoint));
+   stbtt_MakeGlyphBitmap(info, output, out_w, out_h, out_stride, scale_x, scale_y, 0, 0, stbtt_FindGlyphIndex(info,codepoint));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1603,7 +1629,7 @@ extern int stbtt_BakeFontBitmap(const unsigned char *data, int offset,  // font 
       int advance, lsb, x0,y0,x1,y1,gw,gh;
       int g = stbtt_FindGlyphIndex(&f, first_char + i);
       stbtt_GetGlyphHMetrics(&f, g, &advance, &lsb);
-      stbtt_GetGlyphBitmapBox(&f, g, scale,scale, &x0,&y0,&x1,&y1);
+      stbtt_GetGlyphBitmapBox(&f, g, scale,scale, 0,0, &x0,&y0,&x1,&y1);
       gw = x1-x0;
       gh = y1-y0;
       if (x + gw + 1 >= pw)
@@ -1612,7 +1638,7 @@ extern int stbtt_BakeFontBitmap(const unsigned char *data, int offset,  // font 
          return -i;
       STBTT_assert(x+gw < pw);
       STBTT_assert(y+gh < ph);
-      stbtt_MakeGlyphBitmap(&f, pixels+x+y*pw, gw,gh,pw, scale,scale, g);
+      stbtt_MakeGlyphBitmap(&f, pixels+x+y*pw, gw,gh,pw, scale,scale, 0,0, g);
       chardata[i].x0 = (stbtt_int16) x;
       chardata[i].y0 = (stbtt_int16) y;
       chardata[i].x1 = (stbtt_int16) (x + gw);

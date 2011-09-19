@@ -11,11 +11,9 @@
  * governing permissions and limitations under the License.
  */
 #include "gdx2d.h"
-#define STB_TRUETYPE_IMPLEMENTATION
 #define STBI_HEADER_FILE_ONLY
 #define STBI_NO_FAILURE_STRINGS
 #include "stb_image.c"
-#include "stb_truetype.h"
 
 static uint32_t gdx2d_blend = GDX2D_BLEND_NONE;
 static uint32_t gdx2d_scale = GDX2D_SCALE_NEAREST;
