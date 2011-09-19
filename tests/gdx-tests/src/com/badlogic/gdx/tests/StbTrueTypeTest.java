@@ -17,7 +17,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 public class StbTrueTypeTest extends GdxTest {
 	SpriteBatch batch;
 	Texture texture;
-	BitmapFont font;
 	
 	@Override
 	public boolean needsGL20 () {
@@ -27,8 +26,8 @@ public class StbTrueTypeTest extends GdxTest {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		StbTrueTypeFont font = new StbTrueTypeFont(Gdx.files.internal("data/arial.ttf"));
-		float scale = font.scaleForPixelHeight(17);
+		StbTrueTypeFont font = new StbTrueTypeFont(Gdx.files.internal("data/DroidSerif-Regular.ttf"));
+		float scale = font.scaleForPixelHeight(32);
 		System.out.println(font.getCodePointBox('e'));
 		Bitmap glyphBitmap = font.makeCodepointBitmap(scale, scale, 'e');
 		glyphBitmap.dispose();
@@ -37,9 +36,7 @@ public class StbTrueTypeTest extends GdxTest {
 		texture = new Texture(glyphBitmap.pixmap);
 		texture.bind();
 		glyphBitmap.dispose();
-		font.dispose();
-		
-		this.font = new BitmapFont();
+		font.dispose();		
 	}
 
 	@Override
@@ -51,8 +48,6 @@ public class StbTrueTypeTest extends GdxTest {
 		batch.setColor(1, 0, 0, 1);
 		batch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
 		batch.draw(texture, 100, 100);
-		font.setColor(1, 0, 0, 1);
-		font.draw(batch, "e", 130, 100);
 		batch.end();
 	}	
 }
