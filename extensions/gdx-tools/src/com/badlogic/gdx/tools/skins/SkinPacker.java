@@ -43,21 +43,22 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class SkinPacker {
-	static public void process (final File inputDir, final File packedDir, final File skinFile) throws Exception {
+	static public void process (Settings settings, final File inputDir, final File packedDir, final File skinFile) throws Exception {
 		Texture.setEnforcePotImages(false);
 
 		new FileHandle(packedDir).deleteDirectory();
 
 		final ObjectMap<String, int[]> nameToSplits = new ObjectMap();
 
-		Settings settings = new Settings();
-		settings.alias = true;
-		settings.defaultFilterMag = TextureFilter.Linear;
-		settings.defaultFilterMin = TextureFilter.Linear;
-		settings.padding = 2;
-		settings.pot = false;
-		settings.duplicatePadding = false;
-		settings.stripWhitespace = false;
+		// FIXME commented by mzechner, wtf
+//		Settings settings = new Settings();
+//		settings.alias = true;
+//		settings.defaultFilterMag = TextureFilter.Linear;
+//		settings.defaultFilterMin = TextureFilter.Linear;
+//		settings.padding = 2;
+//		settings.pot = false;
+//		settings.duplicatePadding = false;
+//		settings.stripWhitespace = false;
 		final TexturePacker texturePacker = new TexturePacker(settings);
 
 		FileProcessor regionProcessor = new FileProcessor() {
@@ -208,6 +209,11 @@ public class SkinPacker {
 		File packedDir = new File("C:/Users/Nate/Desktop/skin/packed");
 		File skinFile = new File("C:/Users/Nate/Desktop/skin/old-skin.json");
 		// skinFile = null;
-		process(inputDir, packedDir, skinFile);
+		Settings settings = new Settings();
+		settings.defaultFilterMag = TextureFilter.Linear;
+		settings.defaultFilterMin = TextureFilter.Linear;
+		settings.duplicatePadding = false;
+		settings.pot = false;
+		process(settings, inputDir, packedDir, skinFile);
 	}
 }
