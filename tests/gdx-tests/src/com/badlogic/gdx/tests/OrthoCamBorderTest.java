@@ -52,15 +52,15 @@ public class OrthoCamBorderTest extends GdxTest {
 	private Rectangle calculateGLViewport (int desiredWidth, int desiredHeight) {
 		Rectangle viewport = new Rectangle();
 		if (Gdx.graphics.getWidth() > Gdx.graphics.getHeight()) {
-			float aspect = (float)Gdx.graphics.getHeight() / HEIGHT;
-			viewport.width = WIDTH * aspect;
+			float aspect = (float)Gdx.graphics.getHeight() / desiredHeight;
+			viewport.width = desiredWidth * aspect;
 			viewport.height = Gdx.graphics.getHeight();
 			viewport.x = Gdx.graphics.getWidth() / 2 - viewport.width / 2;
 			viewport.y = 0;
 		} else {
-			float aspect = (float)Gdx.graphics.getWidth() / WIDTH;
+			float aspect = (float)Gdx.graphics.getWidth() / desiredWidth;
 			viewport.width = Gdx.graphics.getWidth();
-			viewport.height = HEIGHT * aspect;
+			viewport.height = desiredHeight * aspect;
 			viewport.x = 0;
 			viewport.y = Gdx.graphics.getHeight() / 2 - viewport.height / 2;
 		}
