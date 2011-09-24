@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Image extends Widget {
-	private TextureRegion region;
+	protected TextureRegion region;
 	private NinePatch patch;
 	private final Scaling scaling;
 	private int align = Align.CENTER;
-	private float imageX, imageY, imageWidth, imageHeight;
+	protected float imageX, imageY, imageWidth, imageHeight;
 
 	public Image (TextureRegion region) {
 		this(region, Scaling.none, null);
