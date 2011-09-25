@@ -63,7 +63,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * <p>
  * A SpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw all
- * provided sprites. Specifying your own shader does not work (yet).
+ * provided sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
  * </p>
  * 
  * <p>
