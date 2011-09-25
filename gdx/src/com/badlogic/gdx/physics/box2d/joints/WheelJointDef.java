@@ -18,7 +18,7 @@ public class WheelJointDef extends JointDef {
 		type = JointType.WheelJoint;
 	}
 	
-	void initialize(Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis) {
+	public void initialize(Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis) {
 		this.bodyA = bodyA;
 		this.bodyB = bodyB;
 		localAnchorA.set(bodyA.getLocalPoint(anchor));
