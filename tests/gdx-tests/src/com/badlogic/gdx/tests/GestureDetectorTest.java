@@ -45,11 +45,13 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 
 		@Override
 		public boolean tap (int x, int y, int count) {
+			Gdx.app.log("GestureDetectorTest", "tap at " + x + ", " + y + ", count: " + count);
 			return false;
 		}
 
 		@Override
 		public boolean longPress (int x, int y) {
+			Gdx.app.log("GestureDetectorTest", "long press at " + x + ", " + y);
 			return false;
 		}
 
