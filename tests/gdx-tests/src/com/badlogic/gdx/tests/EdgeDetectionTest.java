@@ -56,13 +56,13 @@ public class EdgeDetectionTest extends GdxTest {
 
 	public void create () {
 		ShaderProgram.pedantic = false;
-		shader = new ShaderProgram(Gdx.files.internal("data/default.vert").readString(), Gdx.files.internal(
-			"data/depthtocolor.frag").readString());
+		shader = new ShaderProgram(Gdx.files.internal("data/shaders/default.vert").readString(), Gdx.files.internal(
+			"data/shaders/depthtocolor.frag").readString());
 		if (!shader.isCompiled()) {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile scene shader: " + shader.getLog());
 		}
-		batchShader = new ShaderProgram(Gdx.files.internal("data/batch.vert").readString(), Gdx.files.internal(
-			"data/convolution.frag").readString());
+		batchShader = new ShaderProgram(Gdx.files.internal("data/shaders/batch.vert").readString(), Gdx.files.internal(
+			"data/shaders/convolution.frag").readString());
 		if (!batchShader.isCompiled()) {
 			Gdx.app.log("EdgeDetectionTest", "couldn't compile post-processing shader: " + batchShader.getLog());
 		}

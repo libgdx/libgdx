@@ -3,8 +3,6 @@ precision mediump float;
 #endif
 
 uniform float u_far;
-
-varying vec2 v_texCoords;
 varying vec4 v_color;
 
 void main() {	
