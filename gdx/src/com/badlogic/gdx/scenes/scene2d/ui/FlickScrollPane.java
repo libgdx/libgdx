@@ -31,19 +31,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 /** @author Nathan Sweet
  * @author mzechner */
 public class FlickScrollPane extends Group implements Layout {
-	private final Stage stage;
-	private Actor widget;
+	protected final Stage stage;
+	protected Actor widget;
 	protected boolean needsLayout;
 
-	private final Rectangle widgetAreaBounds = new Rectangle();
-	private final Rectangle scissorBounds = new Rectangle();
-	private GestureDetector gestureDetector;
+	protected final Rectangle widgetAreaBounds = new Rectangle();
+	protected final Rectangle scissorBounds = new Rectangle();
+	protected GestureDetector gestureDetector;
 
-	private boolean scrollX, scrollY;
-	float amountX, amountY;
-	private float maxX, maxY;
-	float velocityX, velocityY;
-	float flingTimer;
+	protected boolean scrollX, scrollY;
+	protected float amountX, amountY;
+	protected float maxX, maxY;
+	protected float velocityX, velocityY;
+	protected float flingTimer;
 
 	public boolean bounces = true;
 	public float flingTime = 1f;

@@ -81,15 +81,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * @author mzechner */
 public class ComboBox extends Widget {
-	final Stage stage;
-	ComboBoxStyle style;
-	String[] items;
-	int selection = 0;
-	final TextBounds bounds = new TextBounds();
-	final Vector2 screenCoords = new Vector2();
-	ComboList list = null;
-	SelectionListener listener;
-	private float prefWidth, prefHeight;
+	protected final Stage stage;
+	protected ComboBoxStyle style;
+	protected String[] items;
+	protected int selection = 0;
+	protected final TextBounds bounds = new TextBounds();
+	protected final Vector2 screenCoords = new Vector2();
+	protected ComboList list = null;
+	protected SelectionListener listener;
+	protected float prefWidth, prefHeight;
 
 	public ComboBox (String[] items, Stage stage, Skin skin) {
 		this(items, stage, skin.getStyle(ComboBoxStyle.class), null);

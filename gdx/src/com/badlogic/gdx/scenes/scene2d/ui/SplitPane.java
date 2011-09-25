@@ -75,23 +75,23 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </ul>
  * @author mzechner */
 public class SplitPane extends Group implements Layout {
-	SplitPaneStyle style;
+	protected SplitPaneStyle style;
 
-	boolean invalidated = false;
+	protected boolean invalidated = false;
 
-	boolean vertical;
-	float splitAmount = 0.5f;
-	float minAmount = 0;
-	float maxAmount = 1;
-	float oldSplitAmount = 0;
-	Stage stage;
-	Actor firstWidget;
-	Actor secondWidget;
-	Rectangle firstWidgetBounds = new Rectangle();
-	Rectangle secondWidgetBounds = new Rectangle();
-	Rectangle handleBounds = new Rectangle();
-	Rectangle[] scissors = new Rectangle[] {new Rectangle(), new Rectangle()};
-	boolean touchDrag = false;
+	protected boolean vertical;
+	protected float splitAmount = 0.5f;
+	protected float minAmount = 0;
+	protected float maxAmount = 1;
+	protected float oldSplitAmount = 0;
+	protected Stage stage;
+	protected Actor firstWidget;
+	protected Actor secondWidget;
+	protected Rectangle firstWidgetBounds = new Rectangle();
+	protected Rectangle secondWidgetBounds = new Rectangle();
+	protected Rectangle handleBounds = new Rectangle();
+	protected Rectangle[] scissors = new Rectangle[] {new Rectangle(), new Rectangle()};
+	protected boolean touchDrag = false;
 
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, Skin skin) {
 		this(firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), null);

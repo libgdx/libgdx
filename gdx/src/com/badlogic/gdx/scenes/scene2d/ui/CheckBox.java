@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class CheckBox extends Button {
-	private Image image;
+	protected Image image;
 
 	public CheckBox (String text, CheckBoxStyle style) {
 		this(text, style, null);

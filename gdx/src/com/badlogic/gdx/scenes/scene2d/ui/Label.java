@@ -55,10 +55,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * 
  * @author mzechner */
 public class Label extends Widget {
-	LabelStyle style;
-	BitmapFontCache cache;
-	String text;
-	private float prefWidth, prefHeight;
+	protected LabelStyle style;
+	protected BitmapFontCache cache;
+	protected String text;
+	protected float prefWidth, prefHeight;
 
 	public Label (String text, Skin skin) {
 		this(text, skin.getStyle(LabelStyle.class), null);

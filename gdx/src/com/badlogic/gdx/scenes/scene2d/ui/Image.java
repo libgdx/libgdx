@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Image extends Widget {
 	protected TextureRegion region;
-	private NinePatch patch;
-	private final Scaling scaling;
-	private int align = Align.CENTER;
+	protected NinePatch patch;
+	protected final Scaling scaling;
+	protected int align = Align.CENTER;
 	protected float imageX, imageY, imageWidth, imageHeight;
 
 	public Image (TextureRegion region) {

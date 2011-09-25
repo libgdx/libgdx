@@ -14,7 +14,7 @@ public class Button extends Table {
 	public ButtonStyle style;
 	public boolean isChecked;
 
-	ClickListener listener;
+	protected ClickListener listener;
 
 	public Button (Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);

@@ -74,17 +74,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * @author mzechner */
 public class Window extends Table {
-	WindowStyle style;
-	String title;
-	final Stage stage;
-	final Rectangle widgetBounds = new Rectangle();
-	final Rectangle titleBounds = new Rectangle();
-	final TextBounds textBounds = new TextBounds();
-	final Rectangle scissors = new Rectangle();
-	boolean move = false;
-	boolean isMovable = true;
-	final Vector2 initial = new Vector2();
-	boolean isModal = false;
+	protected WindowStyle style;
+	protected String title;
+	protected final Stage stage;
+	protected final Rectangle widgetBounds = new Rectangle();
+	protected final Rectangle titleBounds = new Rectangle();
+	protected final TextBounds textBounds = new TextBounds();
+	protected final Rectangle scissors = new Rectangle();
+	protected boolean move = false;
+	protected boolean isMovable = true;
+	protected final Vector2 initial = new Vector2();
+	protected boolean isModal = false;
 
 	public Window (String title, Stage stage, Skin skin) {
 		this(null, title, stage, skin.getStyle(WindowStyle.class), 0, 0);

@@ -85,24 +85,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * @author mzechner */
 public class ScrollPane extends Group implements Layout {
-	final ScrollPaneStyle style;
-	Actor widget;
-	Stage stage;
+	protected final ScrollPaneStyle style;
+	protected Actor widget;
+	protected Stage stage;
 
-	Rectangle hScrollBounds = new Rectangle();
-	Rectangle vScrollBounds = new Rectangle();
-	Rectangle hScrollKnobBounds = new Rectangle();
-	Rectangle vScrollKnobBounds = new Rectangle();
-	Rectangle widgetAreaBounds = new Rectangle();
-	Rectangle scissorBounds = new Rectangle();
+	protected Rectangle hScrollBounds = new Rectangle();
+	protected Rectangle vScrollBounds = new Rectangle();
+	protected Rectangle hScrollKnobBounds = new Rectangle();
+	protected Rectangle vScrollKnobBounds = new Rectangle();
+	protected Rectangle widgetAreaBounds = new Rectangle();
+	protected Rectangle scissorBounds = new Rectangle();
 
-	float hScrollAmount = 0;
-	float vScrollAmount = 0;
-	boolean hasHScroll = false;
-	boolean hasVScroll = false;
-	boolean touchScrollH = false;
-	boolean touchScrollV = false;
-	Vector2 lastPoint = new Vector2();
+	protected float hScrollAmount = 0;
+	protected float vScrollAmount = 0;
+	protected boolean hasHScroll = false;
+	protected boolean hasVScroll = false;
+	protected boolean touchScrollH = false;
+	protected boolean touchScrollV = false;
+	protected Vector2 lastPoint = new Vector2();
 
 	public ScrollPane (Actor widget, Stage stage, Skin skin) {
 		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), null);

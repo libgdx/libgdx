@@ -56,13 +56,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * 
  * @author mzechner */
 public class Slider extends Widget {
-	SliderStyle style;
-	float min;
-	float max;
-	float steps;
-	float value;
-	float sliderPos;
-	ValueChangedListener listener = null;
+	protected SliderStyle style;
+	protected float min;
+	protected float max;
+	protected float steps;
+	protected float value;
+	protected float sliderPos;
+	protected ValueChangedListener listener = null;
 
 	public Slider (float min, float max, float steps, Skin skin) {
 		this(min, max, steps, skin.getStyle(SliderStyle.class), null);

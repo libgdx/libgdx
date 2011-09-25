@@ -64,14 +64,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public class List extends Widget {
-	ListStyle style;
-	String[] items;
-	float itemHeight = 0;
-	float textOffsetX = 0;
-	float textOffsetY = 0;
-	int selected = 0;
-	SelectionListener listener;
-	private float prefWidth, prefHeight;
+	protected ListStyle style;
+	protected String[] items;
+	protected float itemHeight = 0;
+	protected float textOffsetX = 0;
+	protected float textOffsetY = 0;
+	protected int selected = 0;
+	protected SelectionListener listener;
+	protected float prefWidth, prefHeight;
 
 	public List (String[] items, Skin skin) {
 		this(items, skin.getStyle(ListStyle.class), null);

@@ -93,31 +93,31 @@ import com.badlogic.gdx.utils.FloatArray;
  * 
  * @author mzechner */
 public class TextField extends Widget {
-	TextFieldStyle style;
+	protected TextFieldStyle style;
 
-	Clipboard clipboard;
-	final Rectangle fieldBounds = new Rectangle();
-	final TextBounds textBounds = new TextBounds();
-	final Rectangle scissor = new Rectangle();
+	protected Clipboard clipboard;
+	protected final Rectangle fieldBounds = new Rectangle();
+	protected final TextBounds textBounds = new TextBounds();
+	protected final Rectangle scissor = new Rectangle();
 
-	TextFieldListener listener;
-	String text = "";
-	int cursor = 0;
-	float renderOffset = 0;
-	float textOffset = 0;
-	int visibleTextStart = 0;
-	int visibleTextEnd = 0;
-	final StringBuilder builder = new StringBuilder();
-	final FloatArray glyphAdvances = new FloatArray();
-	final FloatArray glyphPositions = new FloatArray();
-	float blinkTime = 0.42f;
-	long lastBlink = System.nanoTime();
-	boolean cursorOn = true;
-	boolean hasSelection = false;
-	int selectionStart = 0;
-	float selectionX = 0;
-	float selectionWidth = 0;
-	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	protected TextFieldListener listener;
+	protected String text = "";
+	protected int cursor = 0;
+	protected float renderOffset = 0;
+	protected float textOffset = 0;
+	protected int visibleTextStart = 0;
+	protected int visibleTextEnd = 0;
+	protected final StringBuilder builder = new StringBuilder();
+	protected final FloatArray glyphAdvances = new FloatArray();
+	protected final FloatArray glyphPositions = new FloatArray();
+	protected float blinkTime = 0.42f;
+	protected long lastBlink = System.nanoTime();
+	protected boolean cursorOn = true;
+	protected boolean hasSelection = false;
+	protected int selectionStart = 0;
+	protected float selectionX = 0;
+	protected float selectionWidth = 0;
+	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 
 	public TextField (Skin skin) {
 		this("", skin.getStyle(TextFieldStyle.class), null);
