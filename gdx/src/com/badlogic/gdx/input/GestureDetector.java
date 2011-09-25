@@ -230,6 +230,7 @@ public class GestureDetector extends InputAdapter {
 			if (System.nanoTime() - lastTapTime > tapCountInterval) tapCount = 0;
 			tapCount++;
 			lastTapTime = System.nanoTime();
+			gestureStartTime = 0;
 			return listener.tap(tapSquareCenterX, tapSquareCenterY, tapCount);
 		} else if (pinching) {
 			// handle pinch end
@@ -244,6 +245,7 @@ public class GestureDetector extends InputAdapter {
 			   tracker.start((int)firstPointer.x, (int)firstPointer.y, Gdx.input.getCurrentEventTime());
 			}
 		} else {
+			gestureStartTime = 0;
 			// handle fling
 			long time = Gdx.input.getCurrentEventTime();
 			if (time - tracker.lastTime < maxFlingDelay) {
@@ -252,6 +254,22 @@ public class GestureDetector extends InputAdapter {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @return whether the user touched the screen long enough to trigger a long press event.
+	 */
+	public boolean isLongPressed() {
+		return isLongPressed(longPressDuration);
+	}
+
+	/**
+	 * @param duration
+	 * @return whether the user touched the screen for as much or more than the given duration.
+	 */
+	public boolean isLongPressed(float duration) {
+		if(gestureStartTime == 0) return false;
+		return System.nanoTime() - gestureStartTime > (long)(duration * 1000000000l);
 	}
 	
 	public boolean isPanning () {
