@@ -163,7 +163,7 @@ public class List extends Widget {
 		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, NinePatch selectedPatch) {
 			this.font = font;
 			this.fontColorSelected.set(fontColorSelected);
-			this.fontColorUnselected.set(this.fontColorUnselected);
+			this.fontColorUnselected.set(fontColorUnselected);
 			this.selectedPatch = selectedPatch;
 		}
 	}
