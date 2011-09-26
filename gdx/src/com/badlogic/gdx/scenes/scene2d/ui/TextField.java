@@ -118,6 +118,8 @@ public class TextField extends Widget {
 	protected float selectionX = 0;
 	protected float selectionWidth = 0;
 	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+	protected float prefWidth = 50;
+
 
 	public TextField (Skin skin) {
 		this("", skin.getStyle(TextFieldStyle.class), null);
@@ -484,10 +486,6 @@ public class TextField extends Widget {
 		return text;
 	}
 
-	public float getPrefWidth () {
-		return 150;
-	}
-
 	public float getPrefHeight () {
 		NinePatch background = style.background;
 		return background.getBottomHeight() + background.getTopHeight() + textBounds.height;
@@ -526,5 +524,15 @@ public class TextField extends Widget {
 	 * @param clipboard the Clipboard */
 	public void setClipboard (Clipboard clipboard) {
 		this.clipboard = clipboard;
+	}
+
+	@Override
+	public float getPrefWidth () {
+		return prefWidth;
+	}
+	
+	public TextField setPrefWidth(float prefWidth) {
+		this.prefWidth = prefWidth;
+		return this;
 	}
 }
