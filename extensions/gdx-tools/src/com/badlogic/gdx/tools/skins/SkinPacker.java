@@ -43,6 +43,11 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class SkinPacker {
+	
+	public void myThreadedMethod() {
+		
+	}
+	
 	static public void process (Settings settings, final File inputDir, final File packedDir, final File skinFile) throws Exception {
 		Texture.setEnforcePotImages(false);
 
@@ -51,14 +56,14 @@ public class SkinPacker {
 		final ObjectMap<String, int[]> nameToSplits = new ObjectMap();
 
 		// FIXME commented by mzechner, wtf
-//		Settings settings = new Settings();
-//		settings.alias = true;
-//		settings.defaultFilterMag = TextureFilter.Linear;
-//		settings.defaultFilterMin = TextureFilter.Linear;
-//		settings.padding = 2;
-//		settings.pot = false;
-//		settings.duplicatePadding = false;
-//		settings.stripWhitespace = false;
+		settings = new Settings();
+		settings.alias = true;
+		settings.defaultFilterMag = TextureFilter.Linear;
+		settings.defaultFilterMin = TextureFilter.Linear;
+		settings.padding = 2;
+		settings.pot = false;
+		settings.duplicatePadding = false;
+		settings.stripWhitespace = false;
 		final TexturePacker texturePacker = new TexturePacker(settings);
 
 		FileProcessor regionProcessor = new FileProcessor() {

@@ -30,18 +30,35 @@ import com.badlogic.gdx.utils.XmlReader;
 /** Loads a Tiled Map from a tmx file
  * @author David Fraska */
 public class TiledLoader {
+	
+	/**
+	 * Loads a <code>TiledMap</code> from a <code>String</code>.
+	 * @param tmxData The tmx file's content.
+	 */
+	public static TiledMap createMap(String tmxData) {
+		return createMap(null, tmxData);
+	}
+
 
 	/** Loads a Tiled Map from a tmx file
 	 * @param tmxFile the map's tmx file */
 	public static TiledMap createMap (FileHandle tmxFile) {
+		return createMap(tmxFile, null);
+	}
 
+	/**
+	 * Loads a TiledMap from a tmx file.
+	 * @param tmxFile The tmx file. NULL to force load from <code>tmxData</code>.
+	 * @param tmxData The tmx file's content. NULL to force load from <code>tmxFile</code>.
+	 */
+	private static TiledMap createMap(FileHandle tmxFile, String tmxData) {
 		final TiledMap map;
 
 		map = new TiledMap();
 		map.tmxFile = tmxFile;
 
 		try {
-			new XmlReader() {
+			XmlReader xmlReader = new XmlReader() {
 
 				Stack<String> currBranch = new Stack<String>();
 
@@ -439,7 +456,13 @@ public class TiledLoader {
 						}
 					}
 				}
-			}.parse(tmxFile);
+			};
+			// Is it a file?
+			if(tmxFile != null) {
+				xmlReader.parse(tmxFile);
+			} else {
+				xmlReader.parse(tmxData);
+			}
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Error Parsing TMX file", e);
 		}
