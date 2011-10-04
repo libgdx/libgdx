@@ -18,103 +18,103 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider.ValueChangedListener;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class SoundTest extends GdxTest implements InputProcessor {
+public class SoundTest extends GdxTest {
 	Sound sound;
-	Music music;
 	float volume = 0.5f;
+	long soundId = 0;
+	Stage ui;
 
 	BitmapFont font;
 	SpriteBatch batch;
 
 	@Override
+	public void create () {
+		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
+		
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		Button play = new Button("Play", skin);
+		Button stop = new Button("Stop", skin);
+		final Slider pitch = new Slider(0.1f, 4, 0.1f, skin);
+		pitch.setValue(1);
+		final Label pitchValue = new Label("1.0", skin);
+		final Slider volume = new Slider(0.1f, 1, 0.1f, skin);
+		volume.setValue(1);
+		final Label volumeValue = new Label("1.0", skin);
+		Table table = new Table("ui");
+		table.width = Gdx.graphics.getWidth(); table.height = Gdx.graphics.getHeight();
+		
+		table.align(Align.CENTER | Align.TOP);
+		table.add(play);
+		table.add(stop);
+		table.row();
+		table.add(new Label("Pitch", skin));
+		table.add(pitch);
+		table.add(pitchValue);
+		table.row();
+		table.add(new Label("Volume", skin));
+		table.add(volume);
+		table.add(volumeValue);
+		ui.addActor(table);
+		
+		play.setClickListener(new ClickListener() {
+			@Override
+			public void click (Actor actor) {
+				soundId = sound.play(volume.getValue());
+				sound.setPitch(soundId, pitch.getValue());
+			}
+		});
+		
+		stop.setClickListener(new ClickListener() {
+			@Override
+			public void click (Actor actor) {
+				sound.stop(soundId);
+			}
+		});
+		pitch.setValueChangedListener(new ValueChangedListener() {
+			@Override
+			public void changed (Slider slider, float value) {
+				sound.setPitch(soundId, value);
+				pitchValue.setText("" + value);
+			}
+		});
+		volume.setValueChangedListener(new ValueChangedListener() {
+			@Override
+			public void changed (Slider slider, float value) {
+				sound.setVolume(soundId, value);
+				volumeValue.setText("" + value);
+			}
+		});
+		Gdx.input.setInputProcessor(ui);
+	}
+	
+	
+	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		font.draw(batch, "Position: " + music.getPosition(), 30, 146);
-		batch.end();
+		ui.act(Gdx.graphics.getDeltaTime());
+		ui.draw();
 	}
 
-	@Override
-	public void create () {
-		// sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
-		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/sell_buy_item.wav", FileType.Internal));
-
-		// music = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-		music = Gdx.audio.newMusic(Gdx.files.getFileHandle("data/threeofaperfectpair.mp3", FileType.Internal));
-		music.setVolume(volume);
-		music.play();
-		music.setLooping(true);
-		Gdx.input.setInputProcessor(this);
-
-		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), Gdx.files.internal("data/verdana39.png"), false);
-	}
-
-	@Override
-	public boolean keyDown (int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped (char character) {
-		if (character == '+') volume += 0.1f;
-		if (character == '-') volume -= 0.1f;
-		music.setVolume(volume);
-
-		return false;
-	}
-
-	@Override
-	public boolean keyUp (int keycode) {
-		if (keycode != Input.Keys.SPACE) return false;
-		if (music.isPlaying())
-			music.pause();
-		else
-			music.play();
-		return false;
-	}
-
-	@Override
-	public boolean touchDown (int x, int y, int pointer, int newParam) {
-		sound.play(1f);
-		if (music.isPlaying())
-			music.stop();
-		else
-			music.play();
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged (int x, int y, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp (int x, int y, int pointer, int button) {
-		return false;
-	}
 
 	@Override
 	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
-	public boolean touchMoved (int x, int y) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
 		return false;
 	}
 }

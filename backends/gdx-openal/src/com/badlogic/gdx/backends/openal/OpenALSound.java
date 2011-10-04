@@ -45,25 +45,35 @@ public class OpenALSound implements Sound {
 		}
 	}
 
-	public void play () {
-		play(1);
+	public long play () {
+		return play(1);
 	}
 
-	public void play (float volume) {
+	public long play (float volume) {
 		int sourceID = audio.obtainSource(false);
-		if (sourceID == -1) return;
+		if (sourceID == -1) return -1;
+		long soundId = audio.getSoundId(sourceID);
 		alSourcei(sourceID, AL_BUFFER, bufferID);
 		alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 		alSourcef(sourceID, AL_GAIN, volume);
 		alSourcePlay(sourceID);
+		return soundId;
 	}
 
-	public void loop () {
+	public long loop () {
+		return loop(1);
+	}
+
+	@Override
+	public long loop (float volume) {
 		int sourceID = audio.obtainSource(false);
-		if (sourceID == -1) return;
+		if (sourceID == -1) return -1;
+		long soundId = audio.getSoundId(sourceID);
 		alSourcei(sourceID, AL_BUFFER, bufferID);
 		alSourcei(sourceID, AL_LOOPING, AL_TRUE);
+		alSourcef(sourceID, AL_GAIN, volume);
 		alSourcePlay(sourceID);
+		return soundId;
 	}
 
 	public void stop () {
@@ -75,5 +85,26 @@ public class OpenALSound implements Sound {
 		audio.freeBuffer(bufferID);
 		alDeleteBuffers(bufferID);
 		bufferID = -1;
+	}
+
+	@Override
+	public void stop (long soundId) {
+		audio.stopSound(soundId);
+	}
+
+	@Override
+	public void setPitch (long soundId, float pitch) {
+		audio.setSoundPitch(soundId, pitch);
+	}
+
+	@Override
+	public void setVolume (long soundId, float volume) {
+		audio.setSoundGain(soundId, volume);
+	}
+
+
+	@Override
+	public void setLooping (long soundId, boolean looping) {
+		audio.setSoundLooping(soundId, looping);
 	}
 }

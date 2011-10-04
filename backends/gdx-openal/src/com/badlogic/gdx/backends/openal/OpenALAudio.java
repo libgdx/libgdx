@@ -16,11 +16,29 @@
 
 package com.badlogic.gdx.backends.openal;
 
+import static org.lwjgl.openal.AL10.AL_BUFFER;
+import static org.lwjgl.openal.AL10.AL_NO_ERROR;
+import static org.lwjgl.openal.AL10.AL_ORIENTATION;
+import static org.lwjgl.openal.AL10.AL_PAUSED;
+import static org.lwjgl.openal.AL10.AL_PLAYING;
+import static org.lwjgl.openal.AL10.AL_POSITION;
+import static org.lwjgl.openal.AL10.AL_SOURCE_STATE;
+import static org.lwjgl.openal.AL10.AL_STOPPED;
+import static org.lwjgl.openal.AL10.AL_VELOCITY;
+import static org.lwjgl.openal.AL10.alDeleteSources;
+import static org.lwjgl.openal.AL10.alGenSources;
+import static org.lwjgl.openal.AL10.alGetError;
+import static org.lwjgl.openal.AL10.alGetSourcei;
+import static org.lwjgl.openal.AL10.alListener;
+import static org.lwjgl.openal.AL10.alSourceStop;
+import static org.lwjgl.openal.AL10.alSourcei;
+
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
+import org.lwjgl.openal.AL10;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -29,13 +47,17 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.ObjectMap;
-
-import static org.lwjgl.openal.AL10.*;
 
 /** @author Nathan Sweet */
 public class OpenALAudio implements Audio {
 	private IntArray idleSources, allSources;
+	/** sound id to source **/
+	private LongMap<Integer> soundIdToSource;
+	private IntMap<Long> sourceToSoundId;
+	private long nextSoundId = 0;
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
 
@@ -66,6 +88,8 @@ public class OpenALAudio implements Audio {
 			allSources.add(sourceID);
 		}
 		idleSources = new IntArray(allSources);
+		soundIdToSource = new LongMap<Integer>();
+		sourceToSoundId = new IntMap<Long>();
 
 		FloatBuffer orientation = (FloatBuffer)BufferUtils.createFloatBuffer(6)
 			.put(new float[] {0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f}).flip();
@@ -112,13 +136,27 @@ public class OpenALAudio implements Audio {
 
 	int obtainSource (boolean isMusic) {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
-			int sourceID = idleSources.get(i);
-			int state = alGetSourcei(sourceID, AL_SOURCE_STATE);
+			int sourceId = idleSources.get(i);
+			int state = alGetSourcei(sourceId, AL_SOURCE_STATE);
 			if (state != AL_PLAYING && state != AL_PAUSED) {
-				if (isMusic) idleSources.removeIndex(i);
-				alSourceStop(sourceID);
-				alSourcei(sourceID, AL_BUFFER, 0);
-				return sourceID;
+				if (isMusic) {
+					idleSources.removeIndex(i);
+				} else {
+					if(sourceToSoundId.containsKey(sourceId)) {
+						long soundId = sourceToSoundId.get(sourceId);
+						sourceToSoundId.remove(sourceId);
+						soundIdToSource.remove(soundId);
+					}
+					
+					long soundId = nextSoundId++;
+					sourceToSoundId.put(sourceId, soundId);
+					soundIdToSource.put(soundId, sourceId);
+				}
+				alSourceStop(sourceId);
+				alSourcei(sourceId, AL_BUFFER, 0);
+				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
+				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
+				return sourceId;
 			}
 		}
 		return -1;
@@ -127,6 +165,10 @@ public class OpenALAudio implements Audio {
 	void freeSource (int sourceID) {
 		alSourceStop(sourceID);
 		alSourcei(sourceID, AL_BUFFER, 0);
+		if(sourceToSoundId.containsKey(sourceID)) {
+			long soundId = sourceToSoundId.remove(sourceID);
+			soundIdToSource.remove(soundId);
+		}
 		idleSources.add(sourceID);
 	}
 
@@ -134,6 +176,9 @@ public class OpenALAudio implements Audio {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+				long soundId = sourceToSoundId.remove(sourceID);
+				soundIdToSource.remove(soundId);
+				
 				alSourceStop(sourceID);
 				alSourcei(sourceID, AL_BUFFER, 0);
 			}
@@ -143,7 +188,12 @@ public class OpenALAudio implements Audio {
 	void stopSourcesWithBuffer (int bufferID) {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
-			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) alSourceStop(sourceID);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+				long soundId = sourceToSoundId.remove(sourceID);
+				soundIdToSource.remove(soundId);
+				
+				alSourceStop(sourceID);
+			}
 		}
 	}
 
@@ -152,6 +202,35 @@ public class OpenALAudio implements Audio {
 			music.items[i].update();
 	}
 
+	public long getSoundId(int sourceId) {
+		if(!sourceToSoundId.containsKey(sourceId)) return -1;
+		return sourceToSoundId.get(sourceId);
+	}
+	
+	public void stopSound(long soundId) {
+		if(!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		alSourceStop(sourceId);
+	}
+	
+	public void setSoundGain(long soundId, float volume) {
+		if(!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
+	}
+
+	public void setSoundLooping (long soundId, boolean looping) {
+		if(!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		alSourcei(sourceId, AL10.AL_LOOPING, looping?AL10.AL_TRUE:AL10.AL_FALSE);
+	}
+	
+	public void setSoundPitch(long soundId, float pitch) {
+		if(!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		AL10.alSourcef(sourceId, AL10.AL_PITCH, pitch);
+	}
+	
 	public void dispose () {
 		for (int i = 0, n = allSources.size; i < n; i++) {
 			int sourceID = allSources.get(i);
@@ -160,6 +239,9 @@ public class OpenALAudio implements Audio {
 			alDeleteSources(sourceID);
 		}
 
+		sourceToSoundId.clear();
+		soundIdToSource.clear();
+		
 		AL.destroy();
 		while(AL.isCreated()) {
 			try {
@@ -177,4 +259,5 @@ public class OpenALAudio implements Audio {
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
 	}
+
 }

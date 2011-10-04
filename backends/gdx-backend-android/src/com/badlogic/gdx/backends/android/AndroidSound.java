@@ -40,18 +40,52 @@ final class AndroidSound implements Sound {
 	}
 
 	@Override
-	public void play () {
-		play(1);
+	public long play () {
+		return play(1);
 	}
 
 	@Override
-	public void play (float volume) {
+	public long play (float volume) {
 		if (streamIds.size == 8) streamIds.pop();
-		streamIds.add(soundPool.play(soundId, volume, volume, 1, 0, 1));
+		int streamId = soundPool.play(soundId, volume, volume, 1, 0, 1);
+		streamIds.add(streamId);
+		return streamId;
 	}
 
 	public void stop () {
 		for (int i = 0, n = streamIds.size; i < n; i++)
 			soundPool.stop(streamIds.get(i));
+	}
+
+	@Override
+	public void stop (long soundId) {
+		soundPool.stop((int)soundId);
+	}
+
+	@Override
+	public void setPitch (long soundId, float pitch) {
+		soundPool.setRate((int)soundId, pitch);
+	}
+
+	@Override
+	public void setVolume (long soundId, float volume) {
+		soundPool.setVolume((int)soundId, volume, volume);
+	}
+
+	@Override
+	public long loop () {
+		return loop(1);
+	}
+
+	@Override
+	public long loop (float volume) {
+		long streamId = play(volume);
+		soundPool.setLoop((int)streamId, -1);
+		return streamId;
+	}
+
+	@Override
+	public void setLooping (long soundId, boolean looping) {
+		soundPool.setLoop((int)soundId, looping?-1:0);
 	}
 }
