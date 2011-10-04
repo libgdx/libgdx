@@ -95,7 +95,7 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		boolean result = manager.update();
 		if (result & !diagnosed) {
-			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagonistics() + "\n" + Texture.getManagedStatus());
+			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagnostics() + "\n" + Texture.getManagedStatus());
 			diagnosed = false;
 //			invalidateTexture(manager.get("data/animation.png", Texture.class));
 //			invalidateTexture(manager.get("data/pack1.png", Texture.class));
