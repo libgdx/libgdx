@@ -58,6 +58,9 @@ public class SoundTest extends GdxTest {
 		volume.setValue(1);
 		final Label volumeValue = new Label("1.0", skin);
 		Table table = new Table("ui");
+		final Slider pan = new Slider(-1f, 1f, 0.1f, skin);
+		pan.setValue(0);
+		final Label panValue = new Label("0.0", skin);
 		table.width = Gdx.graphics.getWidth(); table.height = Gdx.graphics.getHeight();
 		
 		table.align(Align.CENTER | Align.TOP);
@@ -71,13 +74,18 @@ public class SoundTest extends GdxTest {
 		table.add(new Label("Volume", skin));
 		table.add(volume);
 		table.add(volumeValue);
+		table.row();
+		table.add(new Label("Pan", skin));
+		table.add(pan);
+		table.add(panValue);
 		ui.addActor(table);
 		
 		play.setClickListener(new ClickListener() {
 			@Override
 			public void click (Actor actor) {
-				soundId = sound.play(volume.getValue());
+				soundId = sound.play();
 				sound.setPitch(soundId, pitch.getValue());
+				sound.setPan(soundId, pan.getValue(), volume.getValue());
 			}
 		});
 		
@@ -99,6 +107,12 @@ public class SoundTest extends GdxTest {
 			public void changed (Slider slider, float value) {
 				sound.setVolume(soundId, value);
 				volumeValue.setText("" + value);
+			}
+		});
+		pan.setValueChangedListener(new ValueChangedListener() {
+			@Override
+			public void changed (Slider slider, float value) {
+				sound.setPan(soundId, value, volume.getValue());
 			}
 		});
 		Gdx.input.setInputProcessor(ui);

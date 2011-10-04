@@ -39,6 +39,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.AL11;
 
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.AudioDevice;
@@ -156,6 +157,7 @@ public class OpenALAudio implements Audio {
 				alSourcei(sourceId, AL_BUFFER, 0);
 				AL10.alSourcef(sourceId, AL10.AL_GAIN, 1);
 				AL10.alSourcef(sourceId, AL10.AL_PITCH, 1);
+				AL10.alSource3f(sourceId, AL10.AL_POSITION, 0, 0, 0);
 				return sourceId;
 			}
 		}
@@ -229,6 +231,13 @@ public class OpenALAudio implements Audio {
 		if(!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		AL10.alSourcef(sourceId, AL10.AL_PITCH, pitch);
+	}
+	
+	public void setSoundPan(long soundId, float pan, float volume) {
+		if(!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		
+		AL10.alSource3f(sourceId, AL10.AL_POSITION, -pan, 0, 0); 
 	}
 	
 	public void dispose () {

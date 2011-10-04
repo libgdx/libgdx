@@ -107,4 +107,9 @@ public class OpenALSound implements Sound {
 	public void setLooping (long soundId, boolean looping) {
 		audio.setSoundLooping(soundId, looping);
 	}
+
+	@Override
+	public void setPan (long soundId, float pan, float volume) {
+		audio.setSoundPan(soundId, pan, volume);
+	}
 }

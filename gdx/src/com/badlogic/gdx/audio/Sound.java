@@ -94,4 +94,13 @@ public interface Sound extends Disposable {
 	 * @param volume the volume in the range 0 (silent) to 1 (max volume).
 	 */
 	public void setVolume(long soundId, float volume);
+	
+	/**
+	 * Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the 
+	 * sound is no longer playing, this has no effect.
+	 * @param soundId the sound id
+	 * @param pan panning in the range -1 (full right) to 1 (full left). 0 is center position.
+	 * @param volume the volume in the range [0,1].
+	 */
+	public void setPan(long soundId, float pan, float volume);
 }
