@@ -142,11 +142,15 @@ public class AssetManager implements Disposable {
 		}
 
 		// remove any dependencies (or just decrement their ref count).
-		Array<String> dependencies = assetDependencies.remove(fileName);
+		Array<String> dependencies = assetDependencies.get(fileName);
 		if (dependencies != null) {
 			for (String dependency : dependencies) {
 				unload(dependency);
 			}
+		}
+		// remove dependencies if ref count < 0
+		if(assetRef.getRefCount() <= 0) {
+			assetDependencies.remove(fileName);
 		}
 	}
 
