@@ -54,8 +54,8 @@ public class NinePatch {
 	public NinePatch (TextureRegion region) {
 		this.patches = new TextureRegion[] {
 			//
+			region, null, null, //
 			null, null, null, //
-			null, region, null, //
 			null, null, null //
 		};
 	}
@@ -89,37 +89,10 @@ public class NinePatch {
 	}
 
 	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
-		float centerColumnX = x;
-		if (patches[BOTTOM_LEFT] != null)
-			centerColumnX += patches[BOTTOM_LEFT].getRegionWidth();
-		else if (patches[MIDDLE_LEFT] != null)
-			centerColumnX += patches[MIDDLE_LEFT].getRegionWidth();
-		else if (patches[TOP_LEFT] != null) //
-			centerColumnX += patches[TOP_LEFT].getRegionWidth();
-
-		float rightColumnX = x + width;
-		if (patches[BOTTOM_RIGHT] != null)
-			rightColumnX -= patches[BOTTOM_RIGHT].getRegionWidth();
-		else if (patches[MIDDLE_RIGHT] != null)
-			rightColumnX += patches[MIDDLE_RIGHT].getRegionWidth();
-		else if (patches[TOP_RIGHT] != null) //
-			rightColumnX += patches[TOP_RIGHT].getRegionWidth();
-
-		float middleRowY = y;
-		if (patches[TOP_LEFT] != null)
-			middleRowY += patches[TOP_LEFT].getRegionHeight();
-		else if (patches[TOP_CENTER] != null)
-			middleRowY += patches[TOP_CENTER].getRegionHeight();
-		else if (patches[TOP_RIGHT] != null) //
-			middleRowY += patches[TOP_RIGHT].getRegionHeight();
-
-		float topRowY = y + height;
-		if (patches[TOP_LEFT] != null)
-			topRowY -= patches[TOP_LEFT].getRegionHeight();
-		else if (patches[TOP_CENTER] != null)
-			topRowY -= patches[TOP_CENTER].getRegionHeight();
-		else if (patches[TOP_RIGHT] != null) //
-			topRowY -= patches[TOP_RIGHT].getRegionHeight();
+		float centerColumnX = x + getLeftWidth();
+		float rightColumnX = x + width - getRightWidth();
+		float middleRowY = y + getBottomHeight();
+		float topRowY = y + height - getTopHeight();
 
 		// Bottom row
 		if (patches[BOTTOM_LEFT] != null) batch.draw(patches[BOTTOM_LEFT], x, y, centerColumnX - x, middleRowY - y);
@@ -144,19 +117,43 @@ public class NinePatch {
 	}
 
 	public float getLeftWidth () {
-		return patches[TOP_LEFT] == null ? 0 : patches[TOP_LEFT].getRegionWidth();
+		if (patches[BOTTOM_LEFT] != null)
+			return patches[BOTTOM_LEFT].getRegionWidth();
+		else if (patches[MIDDLE_LEFT] != null)
+			return patches[MIDDLE_LEFT].getRegionWidth();
+		else if (patches[TOP_LEFT] != null) //
+			return patches[TOP_LEFT].getRegionWidth();
+		return 0;
 	}
 
 	public float getRightWidth () {
-		return patches[TOP_RIGHT] == null ? 0 : patches[TOP_RIGHT].getRegionWidth();
+		if (patches[BOTTOM_RIGHT] != null)
+			return patches[BOTTOM_RIGHT].getRegionWidth();
+		else if (patches[MIDDLE_RIGHT] != null)
+			return patches[MIDDLE_RIGHT].getRegionWidth();
+		else if (patches[TOP_RIGHT] != null) //
+			return patches[TOP_RIGHT].getRegionWidth();
+		return 0;
 	}
 
 	public float getTopHeight () {
-		return patches[TOP_RIGHT] == null ? 0 : patches[TOP_RIGHT].getRegionHeight();
+		if (patches[TOP_LEFT] != null)
+			return patches[TOP_LEFT].getRegionHeight();
+		else if (patches[TOP_CENTER] != null)
+			return patches[TOP_CENTER].getRegionHeight();
+		else if (patches[TOP_RIGHT] != null) //
+			return patches[TOP_RIGHT].getRegionHeight();
+		return 0;
 	}
 
 	public float getBottomHeight () {
-		return patches[BOTTOM_RIGHT] == null ? 0 : patches[BOTTOM_RIGHT].getRegionHeight();
+		if (patches[BOTTOM_LEFT] != null)
+			return patches[BOTTOM_LEFT].getRegionHeight();
+		else if (patches[BOTTOM_CENTER] != null)
+			return patches[BOTTOM_CENTER].getRegionHeight();
+		else if (patches[BOTTOM_RIGHT] != null) //
+			return patches[BOTTOM_RIGHT].getRegionHeight();
+		return 0;
 	}
 
 	public float getTotalHeight () {

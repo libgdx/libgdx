@@ -55,6 +55,11 @@ public class JsonReader {
 			return parse(data, 0, offset);
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException ignored) {
+			}
 		}
 	}
 

@@ -132,6 +132,7 @@ public class Skin implements Disposable {
 			writer.write(text);
 			writer.close();
 		} catch (IOException ex) {
+			throw new GdxRuntimeException(ex);
 		}
 	}
 

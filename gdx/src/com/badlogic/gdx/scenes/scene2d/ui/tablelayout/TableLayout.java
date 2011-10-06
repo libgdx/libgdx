@@ -139,7 +139,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		while (parent != null) {
 			if (parent instanceof Group) {
 				x += parent.x;
-				y += parent.y;
+				y = parent.y + parent.height - y;
 			}
 			parent = parent.parent;
 		}
