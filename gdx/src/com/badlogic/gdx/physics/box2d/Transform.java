@@ -18,9 +18,8 @@ package com.badlogic.gdx.physics.box2d;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** Encodes a Box2D transform. We are lazy so we only store a 6 float wide array. First two floats are the position of the
- * b2Transform struct. Next two floats are the b2Transform.R.col1 x and y coordinates. Final 2 floats are the b2Transform.R.col2 x
- * and y coordinates;
+/** Encodes a Box2D transform. We are lazy so we only store a 4 float wide array. First two floats are the position of the
+ * b2Transform struct. Next two floats are the cosine and sine of the rotation angle.
  * @author mzechner */
 public class Transform {
 	public static final int POS_X = 0;

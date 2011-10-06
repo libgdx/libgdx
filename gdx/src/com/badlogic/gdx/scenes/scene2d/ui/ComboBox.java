@@ -351,4 +351,12 @@ public class ComboBox extends Widget {
 	public float getPrefHeight () {
 		return prefHeight;
 	}
+
+	public void setSelection (String item) {
+		for(int i = 0; i < items.length; i++) {
+			if(items[i].equals(item)) {
+				selection = i;
+			}
+		}
+	}
 }
