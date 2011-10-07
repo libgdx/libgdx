@@ -48,8 +48,14 @@ public class FlickScrollPane extends Group implements Layout {
 	public boolean bounces = true;
 	public float flingTime = 1f;
 	public float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
+	/** When true, touch down on widgets works as normal and the FlickScrollPane can only be screen by touching down where there is
+	 * no widget. */
 	public boolean emptySpaceOnlyScroll;
+	/** Forces the enabling of scrolling in a direction, even if the contents do not exceed the bounds in that direction. */
 	public boolean forceScrollX, forceScrollY;
+	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
+	public boolean disableX, disableY;
+	/** Prevents scrolling out of the widget's bounds. */
 	public boolean clamp = true;
 
 	public FlickScrollPane (Actor widget, Stage stage) {
@@ -180,14 +186,17 @@ public class FlickScrollPane extends Group implements Layout {
 		}
 
 		// Figure out if we need horizontal/vertical scrollbars,
-		scrollX = widgetWidth > width || forceScrollX;
-		scrollY = widgetHeight > height || forceScrollY;
+		scrollX = !disableX && (widgetWidth > width || forceScrollX);
+		scrollY = !disableY && (widgetHeight > height || forceScrollY);
 
 		// If the widget is smaller than the available space, make it take up the available space.
 		widgetWidth = Math.max(width, widgetWidth);
-		widgetHeight = Math.max(height, widgetHeight);
-		if (widget.width != widgetWidth || widget.height != widgetHeight) {
+		if (disableX || widget.width != widgetWidth) {
 			widget.width = widgetWidth;
+			needsLayout = true;
+		}
+		widgetHeight = Math.max(height, widgetHeight);
+		if (disableY || widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.height = widgetHeight;
 			needsLayout = true;
 		}
