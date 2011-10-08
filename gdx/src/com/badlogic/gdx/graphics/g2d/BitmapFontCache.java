@@ -106,6 +106,10 @@ public class BitmapFontCache implements Disposable {
 	}
 
 	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
+		if (alphaModulation == 1) {
+			draw(spriteBatch);
+			return;
+		}
 		Color color = getColor();
 		float oldAlpha = color.a;
 		color.a *= alphaModulation;

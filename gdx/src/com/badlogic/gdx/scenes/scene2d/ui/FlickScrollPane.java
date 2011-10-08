@@ -228,9 +228,10 @@ public class FlickScrollPane extends Group implements Layout {
 		if (needsLayout) layout();
 
 		// Enable scissors for widget area and draw the widget.
-		ScissorStack.pushScissors(scissorBounds);
-		drawChildren(batch, parentAlpha);
-		ScissorStack.popScissors();
+		if (ScissorStack.pushScissors(scissorBounds)) {
+			drawChildren(batch, parentAlpha);
+			ScissorStack.popScissors();
+		}
 
 		resetTransform(batch);
 	}

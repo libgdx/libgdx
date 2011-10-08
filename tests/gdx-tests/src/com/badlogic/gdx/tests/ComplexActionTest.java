@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeTo;
@@ -28,7 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Parallel;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateBy;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleTo;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ComplexActionTest extends GdxTest {
@@ -50,14 +51,14 @@ public class ComplexActionTest extends GdxTest {
 		Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		final Image img1 = new Image("SampleActor1", texture);
+		final Image img1 = new Image(new TextureRegion(texture));
 
 		img1.width = img1.height = 100;
 		img1.originX = 50;
 		img1.originY = 50;
 		img1.x = img1.y = 50;
 
-		final Image img2 = new Image("SampleActor1", texture);
+		final Image img2 = new Image(new TextureRegion(texture));
 
 		img2.width = img1.height = 50;
 		img2.originX = 50;

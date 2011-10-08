@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -31,8 +32,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
-import com.badlogic.gdx.scenes.scene2d.actors.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Image.Scaling;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class StageTest extends GdxTest implements InputProcessor {
@@ -77,12 +79,39 @@ public class StageTest extends GdxTest implements InputProcessor {
 		uiTexture = new Texture(Gdx.files.internal("data/ui.png"));
 		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		ui = new Stage(480, 320, false);
-		Image blend = new Image("blend button", new TextureRegion(uiTexture, 0, 0, 64, 32));
+
+		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32), Scaling.none, "blend") {
+			public boolean touchDown (float x, float y, int pointer) {
+				if (stage.getSpriteBatch().isBlendingEnabled())
+					stage.getSpriteBatch().disableBlending();
+				else
+					stage.getSpriteBatch().enableBlending();
+				return false;
+			}
+		};
+		blend.width = blend.getPrefWidth();
+		blend.height = blend.getPrefHeight();
 		blend.y = ui.height() - 64;
-		Image rotate = new Image("rotate button", new TextureRegion(uiTexture, 64, 0, 64, 32));
+		
+		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32), Scaling.none, "rotate") {
+			public boolean touchDown (float x, float y, int pointer) {
+				rotateSprites = !rotateSprites;
+				return false;
+			}
+		};
+		rotate.width = rotate.getPrefWidth();
+		rotate.height = rotate.getPrefHeight();
 		rotate.y = blend.y;
 		rotate.x = 64;
-		Image scale = new Image("scale button", new TextureRegion(uiTexture, 64, 32, 64, 32));
+		
+		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32), Scaling.none, "scale") {
+			public boolean touchDown (float x, float y, int pointer) {
+				scaleSprites = !scaleSprites;
+				return false;
+			}
+		};
+		scale.width = scale.getPrefWidth();
+		scale.height = scale.getPrefHeight();
 		scale.y = blend.y;
 		scale.x = 128;
 
@@ -90,7 +119,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		ui.addActor(rotate);
 		ui.addActor(scale);
 
-		Label fps = new Label("fps", font, "fps: 0");
+		Label fps = new Label("fps: 0", new Label.LabelStyle(font, Color.WHITE), "fps");
 		fps.x = 10;
 		fps.y = 30;
 		fps.color.set(0, 1, 0, 1);
@@ -105,7 +134,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		float advance = 32 + SPACING;
 		for (int y = 0; y < NUM_SPRITES * advance; y += advance)
 			for (int x = 0; x < NUM_SPRITES * advance; x += advance) {
-				Image img = new Image(group.name + "-sprite" + x * y, texture);
+				Image img = new Image(new TextureRegion(texture), Scaling.none, group.name + "-sprite" + x * y);
 				img.x = x;
 				img.y = y;
 				img.width = 32;
@@ -164,6 +193,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 				img.scaleX = 1;
 				img.scaleY = 1;
 			}
+			img.invalidate();
 		}
 
 		stage.draw();
@@ -186,19 +216,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		boolean touched = ui.touchDown(x, y, pointer, button);
-		if (touched) {
-			Actor hitActor = ui.getLastTouchedChild();
-			if (hitActor == null) return touched;
-			if (hitActor.name.startsWith("blend")) if (stage.getSpriteBatch().isBlendingEnabled())
-				stage.getSpriteBatch().disableBlending();
-			else
-				stage.getSpriteBatch().enableBlending();
-			if (hitActor.name.startsWith("rotate")) rotateSprites = !rotateSprites;
-			if (hitActor.name.startsWith("scale")) scaleSprites = !scaleSprites;
-			ui.touchUp(x, y, pointer, button);
-		}
-		return touched;
+		return ui.touchDown(x, y, pointer, button);
 	}
 
 	@Override

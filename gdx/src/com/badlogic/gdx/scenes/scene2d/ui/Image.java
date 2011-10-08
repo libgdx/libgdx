@@ -70,6 +70,9 @@ public class Image extends Widget {
 		} else
 			return;
 
+		float width = this.width * scaleX;
+		float height = this.width * scaleY;
+
 		switch (scaling) {
 		case fill: {
 			float widgetRatio = height / width;
@@ -124,9 +127,13 @@ public class Image extends Widget {
 		if (invalidated) layout();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (patch != null)
-			patch.draw(batch, x + imageX, y + imageY, imageWidth, imageHeight);
-		else if (region != null) //
-			batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
+		else if (region != null) {
+			if (scaleX == 1 && scaleY == 1 && rotation == 0)
+				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+			else
+				batch.draw(region, x + imageX, y + imageY, originX, originY, imageWidth, imageHeight, scaleX, scaleY, rotation);
+		}
 	}
 
 	public void setRegion (TextureRegion region) {

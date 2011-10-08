@@ -28,16 +28,16 @@
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.util.HashMap;
-import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
-import com.badlogic.gdx.scenes.scene2d.actors.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Toolkit;
@@ -57,7 +57,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	public Actor wrap (Object object) {
 		if (object instanceof String) {
 			if (defaultFont == null) throw new IllegalStateException("No default font has been set.");
-			return new Label(null, defaultFont, (String)object);
+			return new Label((String)object, new Label.LabelStyle(defaultFont, Color.WHITE));
 		}
 		if (object == null) {
 			Group group = new Group();
@@ -70,7 +70,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	public Actor newWidget (TableLayout layout, String className) {
 		if (layout.atlas != null) {
 			AtlasRegion region = layout.atlas.findRegion(className);
-			if (region != null) return new Image(className, region);
+			if (region != null) return new Image(region);
 		}
 		return super.newWidget(layout, className);
 	}
@@ -81,19 +81,6 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 
 	public Actor newStack () {
 		return new Stack();
-	}
-
-	public void setProperty (TableLayout layout, Actor object, String name, List<String> values) {
-		if (object instanceof Label) {
-			Label label = ((Label)object);
-			String value = values.get(0);
-			if (name.equals("font")) {
-				label.setFont(getFont(value));
-				return;
-			}
-		}
-
-		super.setProperty(layout, object, name, values);
 	}
 
 	public void addChild (Actor parent, Actor child, String layoutString) {

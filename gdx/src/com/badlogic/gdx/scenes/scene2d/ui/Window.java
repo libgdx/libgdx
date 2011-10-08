@@ -160,9 +160,10 @@ public class Window extends Table {
 		titleFont.drawMultiLine(batch, title, (int)(width / 2), textY, 0, HAlignment.CENTER);
 		batch.flush();
 
-		ScissorStack.pushScissors(scissors);
-		super.drawChildren(batch, parentAlpha);
-		ScissorStack.popScissors();
+		if (ScissorStack.pushScissors(scissors)) {
+			super.drawChildren(batch, parentAlpha);
+			ScissorStack.popScissors();
+		}
 
 		resetTransform(batch);
 

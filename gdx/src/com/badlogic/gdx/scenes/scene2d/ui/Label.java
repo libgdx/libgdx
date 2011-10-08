@@ -18,47 +18,22 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/** A label.
- * 
- * <h2>Functionality</h2> A Label displays multi-line text.
- * 
- * <h2>Layout</h2> The (preferred) width and height of a Label are derrived from the bounding box of the text contained in it. Use
- * {@link #setPrefSize(int, int)} to change this programmatically. If the text doesn't fit into the specified area artifacts will
- * be visible.
- * 
- * <h3>Style</h3> A label is a {@link Widget} displaying text via a {@link BitmapFont} and a {@link Color}. The style is defined
- * via an instance of {@link LabelStyle}, which can be either done programmatically or via a {@link Skin}. A label's text will
- * always be rendered starting from the top edge of it's bouding box, define by its width and height, not the text's bounding box.
- * 
- * A Label's style definition in a skin XML file should look like this:
- * 
- * <pre>
- * {@code 
- * <label name="styleName" 
- *        font="fontName" 
- *        color="colorName"
- *                    />
- * }
- * </pre>
- * 
- * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newLabel(String, String, String)}.</li>
- * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the label's text.</li>
- * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the label's text.</li>
- * </ul>
- * 
- * @author mzechner */
+/** @author Nathan Sweet */
 public class Label extends Widget {
-	protected LabelStyle style;
-	protected BitmapFontCache cache;
-	protected String text;
-	protected float prefWidth, prefHeight;
+	public LabelStyle style;
+	public final TextBounds bounds = new TextBounds();
+
+	private String text;
+	private BitmapFontCache cache;
+	private float prefWidth, prefHeight;
+	private boolean wrap;
+	private int align = Align.LEFT;
 
 	public Label (String text, Skin skin) {
 		this(text, skin.getStyle(LabelStyle.class), null);
@@ -80,19 +55,26 @@ public class Label extends Widget {
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
 		cache.setColor(style.fontColor);
-		setText(text);
+		invalidate();
 	}
 
 	public void setText (String text) {
 		this.text = text;
-		TextBounds bounds = style.font.getMultiLineBounds(text);
-		cache.setMultiLineText(text, 0, bounds.height);
-		prefWidth = bounds.width;
-		prefHeight = bounds.height - style.font.getDescent() * 2;
+		invalidate();
 	}
 
 	public String getText () {
 		return text;
+	}
+
+	public void setWrap (boolean wrap) {
+		this.wrap = wrap;
+		invalidate();
+	}
+
+	public void setAlignment (int align) {
+		this.align = align;
+		invalidate();
 	}
 
 	public void setColor (float color) {
@@ -113,11 +95,43 @@ public class Label extends Widget {
 
 	@Override
 	public void layout () {
+		if (!invalidated) return;
+		invalidated = false;
+
+		if (wrap)
+			bounds.set(cache.getFont().getWrappedBounds(text, width));
+		else
+			bounds.set(cache.getFont().getMultiLineBounds(text));
+
+		float y;
+		if ((align & Align.TOP) != 0) {
+			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
+			y += style.font.getDescent();
+		} else if ((align & Align.BOTTOM) != 0) {
+			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
+			y -= style.font.getDescent();
+		} else
+			y = (height - bounds.height) / 2;
+		if (!cache.getFont().isFlipped()) y += bounds.height;
+
+		HAlignment halign;
+		if ((align & Align.LEFT) != 0)
+			halign = HAlignment.LEFT;
+		else if ((align & Align.RIGHT) != 0)
+			halign = HAlignment.RIGHT;
+		else
+			halign = HAlignment.CENTER;
+
+		if (wrap)
+			cache.setWrappedText(text, 0, y, width, halign);
+		else
+			cache.setMultiLineText(text, 0, y, width, halign);
 	}
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		cache.setPosition(x, y - style.font.getDescent());
+		if (invalidated) layout();
+		cache.setPosition(x, y);
 		cache.draw(batch, parentAlpha);
 	}
 
@@ -134,22 +148,19 @@ public class Label extends Widget {
 	public void touchDragged (float x, float y, int pointer) {
 	}
 
-	@Override
-	public Actor hit (float x, float y) {
-		return null;
-	}
-
 	public float getPrefWidth () {
-		return prefWidth;
+		if (wrap) return 100;
+		if (invalidated) layout();
+		return bounds.width;
 	}
 
 	public float getPrefHeight () {
-		return prefHeight;
+		if (wrap) return 100;
+		if (invalidated) layout();
+		return bounds.height - style.font.getDescent() * 2;
 	}
 
-	/** Defines a label's style, see {@link Label}
-	 * @author mzechner */
-	public static class LabelStyle {
+	static public class LabelStyle {
 		public BitmapFont font;
 		public Color fontColor;
 

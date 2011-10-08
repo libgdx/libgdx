@@ -89,10 +89,11 @@ public class Table extends Group implements Layout {
 		if (stage != null) {
 			applyTransform(batch);
 			calculateScissors(batch.getTransformMatrix());
-			ScissorStack.pushScissors(scissors);
-			super.drawChildren(batch, parentAlpha);
+			if (ScissorStack.pushScissors(scissors)) {
+				super.drawChildren(batch, parentAlpha);
+				ScissorStack.popScissors();
+			}
 			resetTransform(batch);
-			ScissorStack.popScissors();
 		} else
 			super.draw(batch, parentAlpha);
 	}
@@ -171,6 +172,7 @@ public class Table extends Group implements Layout {
 	}
 
 	public boolean touchDown (float x, float y, int pointer) {
+		if (!touchable) return false;
 		if (super.touchDown(x, y, pointer)) return true;
 		if (pointer != 0) return false;
 		if (listener == null) return false;

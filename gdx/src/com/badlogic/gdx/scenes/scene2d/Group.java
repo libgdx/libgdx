@@ -212,8 +212,8 @@ public class Group extends Actor {
 			actor.toLocalCoordinates(point);
 			actor.touchUp(point.x, point.y, pointer);
 		}
-		// If the focused actor hasn't changed and hasn't already lost focus, remove its focus.
-		if (focusedActor[pointer] == actor && actor != null) actor.parent.focus(null, pointer);
+		// If the focused actor hasn't changed, remove its focus.
+		if (focusedActor[pointer] == actor) actor.parent.focus(null, pointer);
 	}
 
 	@Override

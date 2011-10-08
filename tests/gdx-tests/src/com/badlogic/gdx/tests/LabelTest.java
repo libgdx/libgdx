@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -50,12 +51,21 @@ public class LabelTest extends GdxTest {
 
 		Table table = new Table();
 		stage.addActor(table);
-		table.x = table.y = 100;
+		table.x = table.y = 300;
 
 		table.debug();
-		table.add(new Label("This is regular text.", skin.getStyle("default", LabelStyle.class)));
+		table.add(new Label("This is regular text.", skin));
 		table.row();
-		table.add(new Label("This is regular text\nwith a newline.", skin.getStyle("default", LabelStyle.class)));
+		table.add(new Label("This is regular text\nwith a newline.", skin));
+		table.row();
+		Label label3 = new Label("This is regular text\nwith a newline,\naligned bottom, right.", skin);
+		label3.setAlignment(Align.BOTTOM | Align.RIGHT);
+		table.add(label3).minWidth(200).minHeight(100).fill();
+		table.row();
+		Label label4 = new Label("This is regular text with NO newlines, wrap enabled and aligned bottom, right.", skin);
+		label4.setWrap(true);
+		label4.setAlignment(Align.BOTTOM | Align.RIGHT);
+		table.add(label4).minWidth(200).minHeight(100).fill();
 	}
 
 	@Override

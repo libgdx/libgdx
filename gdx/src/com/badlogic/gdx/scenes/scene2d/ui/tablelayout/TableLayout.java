@@ -30,7 +30,6 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -40,7 +39,8 @@ import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Image.Scaling;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.BaseTableLayout;
@@ -71,7 +71,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 
 	/** Finds the texture region in the {@link #atlas}, creates an {@link Image} and registers it with the specified name. */
 	public Actor registerImage (String name) {
-		return register(new Image(name, atlas.findRegion(name)));
+		return register(new Image(atlas.findRegion(name), Scaling.none, name));
 	}
 
 	public Actor getWidget (String name) {

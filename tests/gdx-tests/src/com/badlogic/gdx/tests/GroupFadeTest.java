@@ -19,12 +19,13 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeIn;
 import com.badlogic.gdx.scenes.scene2d.actions.FadeOut;
 import com.badlogic.gdx.scenes.scene2d.actions.Forever;
 import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
-import com.badlogic.gdx.scenes.scene2d.actors.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class GroupFadeTest extends GdxTest {
@@ -42,7 +43,7 @@ public class GroupFadeTest extends GdxTest {
 		stage = new Stage(480, 320, true);
 
 		for (int i = 0; i < 100; i++) {
-			Image img = new Image("img" + i, texture);
+			Image img = new Image(new TextureRegion(texture));
 			img.x = (float)Math.random() * 480;
 			img.y = (float)Math.random() * 320;
 			img.color.a = (float)Math.random() * 0.5f + 0.5f;

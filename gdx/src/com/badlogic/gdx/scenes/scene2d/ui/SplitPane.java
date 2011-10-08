@@ -252,9 +252,10 @@ public class SplitPane extends Group implements Layout {
 		applyTransform(batch);
 		calculateBoundsAndPositions(batch.getTransformMatrix());
 		for (int i = 0; i < children.size(); i++) {
-			ScissorStack.pushScissors(scissors[i]);
-			drawChild(children.get(i), batch, parentAlpha);
-			ScissorStack.popScissors();
+			if (ScissorStack.pushScissors(scissors[i])) {
+				drawChild(children.get(i), batch, parentAlpha);
+				ScissorStack.popScissors();
+			}
 		}
 		batch.setColor(color.r, color.g, color.b, color.a);
 		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
@@ -279,11 +280,10 @@ public class SplitPane extends Group implements Layout {
 
 	@Override
 	public void touchUp (float x, float y, int pointer) {
-		if (touchDrag) {
+		if (touchDrag)
 			touchDrag = false;
-			return;
-		}
-		super.touchUp(x, y, pointer);
+		else
+			super.touchUp(x, y, pointer);
 	}
 
 	@Override

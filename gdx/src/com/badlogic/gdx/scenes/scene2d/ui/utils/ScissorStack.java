@@ -37,27 +37,34 @@ public class ScissorStack {
 	 * overlap between the TOS rectangle and the provided rectangle is pushed onto the stack. This will invoke
 	 * {@link GLCommon#glScissor(int, int, int, int)} with the final TOS rectangle. In case no scissor is yet on the stack this
 	 * will also enable {@link GL10#GL_SCISSOR_TEST} automatically.
-	 * @param scissor the scissor Rectangle */
-	public static void pushScissors (Rectangle scissor) {
+	 * @param scissor the scissor Rectangle
+	 * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
+	 *         no drawing should occur. */
+	public static boolean pushScissors (Rectangle scissor) {
 		fix(scissor);
 
 		if (scissors.size == 0) {
+			if (scissor.width < 1 || scissor.height < 1) return false;
 			Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 		} else {
 			// merge scissors
 			Rectangle parent = scissors.get(scissors.size - 1);
 			float minX = Math.max(parent.x, scissor.x);
 			float maxX = Math.min(parent.x + parent.width, scissor.x + scissor.width);
-			scissor.x = minX;
-			scissor.width = Math.max(1, maxX - minX);
+			if (maxX - minX < 1) return false;
 
 			float minY = Math.max(parent.y, scissor.y);
 			float maxY = Math.min(parent.y + parent.height, scissor.y + scissor.height);
+			if (maxY - minY < 1) return false;
+
+			scissor.x = minX;
 			scissor.y = minY;
+			scissor.width = maxX - minX;
 			scissor.height = Math.max(1, maxY - minY);
 		}
 		scissors.add(scissor);
 		Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
+		return true;
 	}
 
 	/** Pops the current scissor rectangle from the stack and sets the new scissor area to the new TOS rectangle. In case no more

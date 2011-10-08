@@ -226,9 +226,10 @@ public class ScrollPane extends Group implements Layout {
 		batch.flush();
 
 		// Enable scissors for widget area and draw the widget.
-		ScissorStack.pushScissors(scissorBounds);
-		drawChildren(batch, parentAlpha);
-		ScissorStack.popScissors();
+		if (ScissorStack.pushScissors(scissorBounds)) {
+			drawChildren(batch, parentAlpha);
+			ScissorStack.popScissors();
+		}
 
 		// Render scrollbars and knobs on top.
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
