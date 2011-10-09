@@ -84,4 +84,11 @@ public abstract class Widget extends Actor implements Layout {
 	public Actor hit (float x, float y) {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
+
+	/** Sizes this widget to its preferred width and height. */
+	public void pack () {
+		width = getPrefWidth();
+		height = getPrefHeight();
+		invalidate();
+	}
 }
