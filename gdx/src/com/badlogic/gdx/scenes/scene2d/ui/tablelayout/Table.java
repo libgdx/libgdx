@@ -555,6 +555,13 @@ public class Table extends Group implements Layout {
 		return layout.getAlign();
 	}
 
+	/** Sizes this table to its preferred width and height. */
+	public void pack () {
+		width = getPrefWidth();
+		height = getPrefHeight();
+		invalidate();
+	}
+
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be
 	 * drawn. */
 	static public void drawDebug (Stage stage) {

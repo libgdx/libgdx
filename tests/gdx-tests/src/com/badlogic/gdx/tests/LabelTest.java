@@ -51,21 +51,29 @@ public class LabelTest extends GdxTest {
 
 		Table table = new Table();
 		stage.addActor(table);
-		table.x = table.y = 300;
+		table.x = 200;
+		table.y = 65;
 
 		table.debug();
 		table.add(new Label("This is regular text.", skin));
 		table.row();
 		table.add(new Label("This is regular text\nwith a newline.", skin));
 		table.row();
-		Label label3 = new Label("This is regular text\nwith a newline,\naligned bottom, right.", skin);
+		Label label3 = new Label("This is regular text\n\nwith newlines,\naligned bottom, right.", skin);
 		label3.setAlignment(Align.BOTTOM | Align.RIGHT);
-		table.add(label3).minWidth(200).minHeight(100).fill();
+		table.add(label3).minWidth(200).minHeight(110).fill();
 		table.row();
 		Label label4 = new Label("This is regular text with NO newlines, wrap enabled and aligned bottom, right.", skin);
 		label4.setWrap(true);
 		label4.setAlignment(Align.BOTTOM | Align.RIGHT);
-		table.add(label4).minWidth(200).minHeight(100).fill();
+		table.add(label4).minWidth(200).minHeight(110).fill();
+		table.row();
+		Label label5 = new Label("This is regular text with\n\nnewlines, wrap\nenabled and aligned bottom, right.", skin);
+		label5.setWrap(true);
+		label5.setAlignment(Align.BOTTOM | Align.RIGHT);
+		table.add(label5).minWidth(200).minHeight(110).fill();
+
+		table.pack();
 	}
 
 	@Override

@@ -338,15 +338,16 @@ public class BitmapFontCache implements Disposable {
 					lineEnd--;
 				}
 			}
-			if (lineEnd == start) lineEnd++;
-			float xOffset = 0;
-			if (alignment != HAlignment.LEFT) {
-				float lineWidth = font.getBounds(str, start, lineEnd).width;
-				xOffset = wrapWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset /= 2;
+			if (lineEnd > start) {
+				float xOffset = 0;
+				if (alignment != HAlignment.LEFT) {
+					float lineWidth = font.getBounds(str, start, lineEnd).width;
+					xOffset = wrapWidth - lineWidth;
+					if (alignment == HAlignment.CENTER) xOffset /= 2;
+				}
+				float lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
+				maxWidth = Math.max(maxWidth, lineWidth);
 			}
-			float lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
-			maxWidth = Math.max(maxWidth, lineWidth);
 			start = lineEnd + 1;
 			y += down;
 			numLines++;
