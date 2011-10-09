@@ -46,7 +46,7 @@ public class SoundTest extends GdxTest {
 	@Override
 	public void create () {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.wav", FileType.Internal));
-		
+
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		Button play = new Button("Play", skin);
@@ -61,8 +61,9 @@ public class SoundTest extends GdxTest {
 		final Slider pan = new Slider(-1f, 1f, 0.1f, skin);
 		pan.setValue(0);
 		final Label panValue = new Label("0.0", skin);
-		table.width = Gdx.graphics.getWidth(); table.height = Gdx.graphics.getHeight();
-		
+		table.width = Gdx.graphics.getWidth();
+		table.height = Gdx.graphics.getHeight();
+
 		table.align(Align.CENTER | Align.TOP);
 		table.add(play);
 		table.add(stop);
@@ -79,7 +80,7 @@ public class SoundTest extends GdxTest {
 		table.add(pan);
 		table.add(panValue);
 		ui.addActor(table);
-		
+
 		play.setClickListener(new ClickListener() {
 			@Override
 			public void click (Actor actor) {
@@ -88,7 +89,7 @@ public class SoundTest extends GdxTest {
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
 			}
 		});
-		
+
 		stop.setClickListener(new ClickListener() {
 			@Override
 			public void click (Actor actor) {
@@ -113,19 +114,18 @@ public class SoundTest extends GdxTest {
 			@Override
 			public void changed (Slider slider, float value) {
 				sound.setPan(soundId, value, volume.getValue());
+				panValue.setText("" + value);
 			}
 		});
 		Gdx.input.setInputProcessor(ui);
 	}
-	
-	
+
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		ui.act(Gdx.graphics.getDeltaTime());
 		ui.draw();
 	}
-
 
 	@Override
 	public boolean needsGL20 () {

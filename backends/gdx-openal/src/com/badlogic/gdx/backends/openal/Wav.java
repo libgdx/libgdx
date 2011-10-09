@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.openal;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
 
@@ -84,15 +85,12 @@ public class Wav {
 				if (read() != 'R' || read() != 'I' || read() != 'F' || read() != 'F')
 					throw new GdxRuntimeException("RIFF header not found: " + file);
 
-				skip(4);
+				skipFully(4);
 
 				if (read() != 'W' || read() != 'A' || read() != 'V' || read() != 'E')
 					throw new GdxRuntimeException("Invalid wave file header: " + file);
 
-				if (read() != 'f' || read() != 'm' || read() != 't' || read() != ' ')
-					throw new GdxRuntimeException("fmt header not found: " + file);
-
-				int waveChunkLength = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
+				int fmtChunkLength = seekToChunk('f', 'm', 't', ' ');
 
 				int type = read() & 0xff | (read() & 0xff) << 8;
 				if (type != 1) throw new GdxRuntimeException("WAV files must be PCM: " + type);
@@ -103,23 +101,41 @@ public class Wav {
 
 				sampleRate = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
 
-				skip(6);
+				skipFully(6);
 
 				int bitsPerSample = read() & 0xff | (read() & 0xff) << 8;
 				if (bitsPerSample != 16) throw new GdxRuntimeException("WAV files must have 16 bits per sample: " + bitsPerSample);
 
-				skip(waveChunkLength - 16);
+				skipFully(fmtChunkLength - 16);
 
-				if (read() != 'd' || read() != 'a' || read() != 't' || read() != 'a')
-					throw new GdxRuntimeException("data header not found: " + file);
-
-				dataRemaining = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
+				dataRemaining = seekToChunk('d', 'a', 't', 'a');
 			} catch (Throwable ex) {
 				try {
 					close();
 				} catch (IOException ignored) {
 				}
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
+			}
+		}
+
+		private int seekToChunk (char c1, char c2, char c3, char c4) throws IOException {
+			while (true) {
+				boolean found = read() == c1;
+				found &= read() == c2;
+				found &= read() == c3;
+				found &= read() == c4;
+				int chunkLength = read() & 0xff | (read() & 0xff) << 8 | (read() & 0xff) << 16 | (read() & 0xff) << 24;
+				if (chunkLength == -1) throw new IOException("Chunk not found: " + c1 + c2 + c3 + c4);
+				if (found) return chunkLength;
+				skipFully(chunkLength);
+			}
+		}
+
+		private void skipFully (int count) throws IOException {
+			while (count > 0) {
+				long skipped = in.skip(count);
+				if (skipped <= 0) throw new EOFException("Unable to skip.");
+				count -= skipped;
 			}
 		}
 
