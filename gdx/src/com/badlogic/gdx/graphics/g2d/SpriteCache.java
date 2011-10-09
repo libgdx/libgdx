@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g2d;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -186,8 +187,9 @@ public class SpriteCache implements Disposable {
 		if (cache.textures == null) {
 			// New cache.
 			cache.maxCount = cacheCount;
-			cache.textures = textures.toArray(new Texture[textures.size()]);
-			cache.counts = new int[counts.size()];
+			cache.textureCount = textures.size();
+			cache.textures = textures.toArray(new Texture[cache.textureCount]);
+			cache.counts = new int[cache.textureCount];
 			for (int i = 0, n = counts.size(); i < n; i++)
 				cache.counts[i] = counts.get(i);
 
@@ -200,12 +202,14 @@ public class SpriteCache implements Disposable {
 						+ cacheCount + " (" + cache.maxCount + " max)");
 			}
 
-			if (cache.textures.length < textures.size()) cache.textures = new Texture[textures.size()];
-			for (int i = 0, n = textures.size(); i < n; i++)
+			cache.textureCount = textures.size();
+
+			if (cache.textures.length < cache.textureCount) cache.textures = new Texture[cache.textureCount];
+			for (int i = 0, n = cache.textureCount; i < n; i++)
 				cache.textures[i] = textures.get(i);
 
-			if (cache.counts.length < counts.size()) cache.counts = new int[counts.size()];
-			for (int i = 0, n = counts.size(); i < n; i++)
+			if (cache.counts.length < cache.textureCount) cache.counts = new int[cache.textureCount];
+			for (int i = 0, n = cache.textureCount; i < n; i++)
 				cache.counts[i] = counts.get(i);
 
 			FloatBuffer vertices = mesh.getVerticesBuffer();
@@ -897,7 +901,7 @@ public class SpriteCache implements Disposable {
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
 		if (Gdx.graphics.isGL20Available()) {
-			for (int i = 0, n = textures.length; i < n; i++) {
+			for (int i = 0, n = cache.textureCount; i < n; i++) {
 				int count = counts[i];
 				textures[i].bind();
 				if (customShader != null)
@@ -907,7 +911,7 @@ public class SpriteCache implements Disposable {
 				offset += count;
 			}
 		} else {
-			for (int i = 0, n = textures.length; i < n; i++) {
+			for (int i = 0, n = cache.textureCount; i < n; i++) {
 				int count = counts[i];
 				textures[i].bind();
 				mesh.render(GL10.GL_TRIANGLES, offset, count);
@@ -928,7 +932,7 @@ public class SpriteCache implements Disposable {
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
 		if (Gdx.graphics.isGL20Available()) {
-			for (int i = 0, n = textures.length; i < n; i++) {
+			for (int i = 0, n = cache.textureCount; i < n; i++) {
 				textures[i].bind();
 				int count = counts[i];
 				if (count > length) {
@@ -943,7 +947,7 @@ public class SpriteCache implements Disposable {
 				offset += count;
 			}
 		} else {
-			for (int i = 0, n = textures.length; i < n; i++) {
+			for (int i = 0, n = cache.textureCount; i < n; i++) {
 				textures[i].bind();
 				int count = counts[i];
 				if (count > length) {
@@ -985,6 +989,7 @@ public class SpriteCache implements Disposable {
 		final int id;
 		final int offset;
 		int maxCount;
+		int textureCount;
 		Texture[] textures;
 		int[] counts;
 
