@@ -44,7 +44,7 @@ public class GdxTests {
 	public static final Class[] tests = {AnimationTest.class, AccelerometerTest.class, ActionTest.class, ActionSequenceTest.class,
 		GroupTest.class, AlphaTest.class, AtlasIssueTest.class, AssetManagerTest.class, FilterPerformanceTest.class,
 		AudioDeviceTest.class, AudioRecorderTest.class, BitmapFontAlignmentTest.class,
-		BitmapFontFlipTest.class,
+		BitmapFontFlipTest.class, GroupCullingTest.class,
 		GestureDetectorTest.class, LabelTest.class,
 		BitmapFontTest.class,
 		BlitTest.class,

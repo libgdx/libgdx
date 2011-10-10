@@ -89,12 +89,13 @@ public class ScrollPane extends Group implements Layout {
 	protected Actor widget;
 	protected Stage stage;
 
-	protected Rectangle hScrollBounds = new Rectangle();
-	protected Rectangle vScrollBounds = new Rectangle();
-	protected Rectangle hScrollKnobBounds = new Rectangle();
-	protected Rectangle vScrollKnobBounds = new Rectangle();
-	protected Rectangle widgetAreaBounds = new Rectangle();
-	protected Rectangle scissorBounds = new Rectangle();
+	protected final Rectangle hScrollBounds = new Rectangle();
+	protected final Rectangle vScrollBounds = new Rectangle();
+	protected final Rectangle hScrollKnobBounds = new Rectangle();
+	protected final Rectangle vScrollKnobBounds = new Rectangle();
+	protected final Rectangle widgetAreaBounds = new Rectangle();
+	protected final Rectangle widgetCullingArea = new Rectangle();
+	protected final Rectangle scissorBounds = new Rectangle();
 
 	protected float hScrollAmount = 0;
 	protected float vScrollAmount = 0;
@@ -204,6 +205,14 @@ public class ScrollPane extends Group implements Layout {
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
 		ScissorStack.calculateScissors(stage.getCamera(), batchTransform, widgetAreaBounds, scissorBounds);
+
+		if (widget instanceof Cullable) {
+			widgetCullingArea.x = -widget.x;
+			widgetCullingArea.y = -widget.y;
+			widgetCullingArea.width = areaWidth;
+			widgetCullingArea.height = areaHeight;
+			((Cullable)widget).setCullingArea(widgetCullingArea);
+		}
 	}
 
 	@Override

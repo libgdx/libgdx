@@ -27,13 +27,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Cullable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** A group is an Actor that contains other Actors (also other Groups which are Actors).
  * @author mzechner
  * @author Nathan Sweet */
-public class Group extends Actor {
+public class Group extends Actor implements Cullable {
 	public static Texture debugTexture;
 	public static boolean debug = false;
 
@@ -54,6 +56,7 @@ public class Group extends Actor {
 	public Actor keyboardFocusedActor = null;
 	public Actor scrollFocusedActor = null;
 
+	protected Rectangle cullingArea;
 	protected final Vector2 point = new Vector2();
 
 	public Group () {
@@ -99,24 +102,48 @@ public class Group extends Actor {
 
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
 		parentAlpha *= color.a;
-		if (transform) {
-			for (int i = 0; i < children.size(); i++) {
-				Actor child = children.get(i);
-				if (!child.visible) continue;
-				child.draw(batch, parentAlpha);
+		if (cullingArea != null) {
+			if (transform) {
+				for (int i = 0; i < children.size(); i++) {
+					Actor child = children.get(i);
+					if (!child.visible) continue;
+					if (cullingArea.contains(child.x, child.y) || cullingArea.contains(child.x + child.width, child.y + child.height))
+						child.draw(batch, parentAlpha);
+				}
+				batch.flush();
+			} else {
+				for (int i = 0; i < children.size(); i++) {
+					Actor child = children.get(i);
+					if (!child.visible) continue;
+					if (cullingArea.contains(child.x, child.y) || cullingArea.contains(child.x + child.width, child.y + child.height)) {
+						child.x += x;
+						child.y += y;
+						child.draw(batch, parentAlpha);
+						child.x -= x;
+						child.y -= y;
+					}
+				}
 			}
 		} else {
-			for (int i = 0; i < children.size(); i++) {
-				Actor child = children.get(i);
-				if (!child.visible) continue;
-				child.x += x;
-				child.y += y;
-				child.draw(batch, parentAlpha);
-				child.x -= x;
-				child.y -= y;
+			if (transform) {
+				for (int i = 0; i < children.size(); i++) {
+					Actor child = children.get(i);
+					if (!child.visible) continue;
+					child.draw(batch, parentAlpha);
+				}
+				batch.flush();
+			} else {
+				for (int i = 0; i < children.size(); i++) {
+					Actor child = children.get(i);
+					if (!child.visible) continue;
+					child.x += x;
+					child.y += y;
+					child.draw(batch, parentAlpha);
+					child.x -= x;
+					child.y -= y;
+				}
 			}
 		}
-		if (transform) batch.flush();
 	}
 
 	protected void drawChild (Actor child, SpriteBatch batch, float parentAlpha) {
@@ -164,6 +191,10 @@ public class Group extends Actor {
 		batch.end();
 		batch.setTransformMatrix(oldBatchTransform);
 		batch.begin();
+	}
+
+	public void setCullingArea (Rectangle cullingArea) {
+		this.cullingArea = cullingArea;
 	}
 
 	@Override

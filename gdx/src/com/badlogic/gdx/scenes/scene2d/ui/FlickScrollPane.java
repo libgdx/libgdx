@@ -36,6 +36,7 @@ public class FlickScrollPane extends Group implements Layout {
 	protected boolean needsLayout;
 
 	protected final Rectangle widgetAreaBounds = new Rectangle();
+	protected final Rectangle widgetCullingArea = new Rectangle();
 	protected final Rectangle scissorBounds = new Rectangle();
 	protected GestureDetector gestureDetector;
 
@@ -201,9 +202,6 @@ public class FlickScrollPane extends Group implements Layout {
 			needsLayout = true;
 		}
 
-		// Set the widget area bounds.
-		widgetAreaBounds.set(0, 0, width, height);
-
 		// Calculate the widgets offset depending on the scroll state and available widget area.
 		maxX = widget.width - width;
 		maxY = widget.height - height;
@@ -212,7 +210,16 @@ public class FlickScrollPane extends Group implements Layout {
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
+		widgetAreaBounds.set(0, 0, width, height);
 		ScissorStack.calculateScissors(stage.getCamera(), batchTransform, widgetAreaBounds, scissorBounds);
+
+		if (widget instanceof Cullable) {
+			widgetCullingArea.x = -widget.x;
+			widgetCullingArea.y = -widget.y;
+			widgetCullingArea.width = width;
+			widgetCullingArea.height = height;
+			((Cullable)widget).setCullingArea(widgetCullingArea);
+		}
 	}
 
 	@Override
@@ -223,7 +230,7 @@ public class FlickScrollPane extends Group implements Layout {
 		applyTransform(batch);
 
 		// Calculate the bounds for the scrollbars, the widget area and the scissor area.
-		calculateBoundsAndPositions(batch.getTransformMatrix()); // BOZO - Call every frame?
+		calculateBoundsAndPositions(batch.getTransformMatrix());
 
 		if (needsLayout) layout();
 
