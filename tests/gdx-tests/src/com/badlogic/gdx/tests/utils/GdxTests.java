@@ -51,7 +51,7 @@ public class GdxTests {
 		TableTest.class,
 		BobTest.class,
 		Box2DInitialOverlapTest.class,
-		Box2DTest.class,
+		Box2DTest.class, InterpolationTest.class,
 		Box2DTestCollection.class,
 		BufferUtilsTest.class,
 		ImageTest.class,

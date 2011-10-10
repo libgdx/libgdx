@@ -73,11 +73,11 @@ public class List extends Widget {
 	protected SelectionListener listener;
 	protected float prefWidth, prefHeight;
 
-	public List (String[] items, Skin skin) {
+	public List (Object[] items, Skin skin) {
 		this(items, skin.getStyle(ListStyle.class), null);
 	}
 
-	public List (String[] items, ListStyle style) {
+	public List (Object[] items, ListStyle style) {
 		this(items, style, null);
 	}
 
@@ -85,7 +85,7 @@ public class List extends Widget {
 	 * @param items the items
 	 * @param style the {@link ListStyle}
 	 * @param name the name */
-	public List (String[] items, ListStyle style, String name) {
+	public List (Object[] items, ListStyle style, String name) {
 		super(name);
 		setStyle(style);
 		setItems(items);
@@ -206,11 +206,18 @@ public class List extends Widget {
 		return selected;
 	}
 
-	/** Sets the items of this list.
-	 * @param items the items. */
-	public void setItems (String[] items) {
-		if (items == null) throw new IllegalArgumentException("items cannot be null.");
-		this.items = items;
+	/** Sets the items of this list. */
+	public void setItems (Object[] objects) {
+		if (objects == null) throw new IllegalArgumentException("items cannot be null.");
+
+		if (!(objects instanceof String[])) {
+			String[] strings = new String[objects.length];
+			for (int i = 0, n = objects.length; i < n; i++)
+				strings[i] = String.valueOf(objects[i]);
+			objects = strings;
+		}
+
+		this.items = (String[])objects;
 		selected = 0;
 
 		final BitmapFont font = style.font;

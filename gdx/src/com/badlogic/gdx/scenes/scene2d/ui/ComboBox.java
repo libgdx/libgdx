@@ -91,11 +91,11 @@ public class ComboBox extends Widget {
 	protected SelectionListener listener;
 	protected float prefWidth, prefHeight;
 
-	public ComboBox (String[] items, Stage stage, Skin skin) {
+	public ComboBox (Object[] items, Stage stage, Skin skin) {
 		this(items, stage, skin.getStyle(ComboBoxStyle.class), null);
 	}
 
-	public ComboBox (String[] items, Stage stage, ComboBoxStyle style) {
+	public ComboBox (Object[] items, Stage stage, ComboBoxStyle style) {
 		this(items, stage, style, null);
 	}
 
@@ -104,7 +104,7 @@ public class ComboBox extends Widget {
 	 * @param items the single-line items
 	 * @param stage the stage, used for the popup
 	 * @param style the {@link ComboBoxStyle} */
-	public ComboBox (String[] items, Stage stage, ComboBoxStyle style, String name) {
+	public ComboBox (Object[] items, Stage stage, ComboBoxStyle style, String name) {
 		super(name);
 		setStyle(style);
 		setItems(items);
@@ -119,9 +119,17 @@ public class ComboBox extends Widget {
 		if (items != null) setItems(items);
 	}
 
-	public void setItems (String[] items) {
-		if (items == null) throw new IllegalArgumentException("items cannot be null.");
-		this.items = items;
+	public void setItems (Object[] objects) {
+		if (objects == null) throw new IllegalArgumentException("items cannot be null.");
+
+		if (!(objects instanceof String[])) {
+			String[] strings = new String[objects.length];
+			for (int i = 0, n = objects.length; i < n; i++)
+				strings[i] = String.valueOf(objects[i]);
+			objects = strings;
+		}
+
+		this.items = (String[])objects;
 
 		NinePatch background = style.background;
 		BitmapFont font = style.font;
@@ -353,8 +361,8 @@ public class ComboBox extends Widget {
 	}
 
 	public void setSelection (String item) {
-		for(int i = 0; i < items.length; i++) {
-			if(items[i].equals(item)) {
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].equals(item)) {
 				selection = i;
 			}
 		}
