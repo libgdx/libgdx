@@ -316,6 +316,10 @@ public class Group extends Actor implements Cullable {
 		return null;
 	}
 
+	/** Called when actors are added to or removed from the group. */
+	protected void childrenChanged () {
+	}
+
 	/** Adds an {@link Actor} to this Group. The order Actors are added is reversed for hit testing.
 	 * @param actor the Actor */
 	public void addActor (Actor actor) {
@@ -323,6 +327,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		childrenChanged();
 	}
 
 	/** Adds an {@link Actor} at the given index in the group. The first Actor added will be at index 0 and so on. Throws an
@@ -333,6 +338,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		childrenChanged();
 	}
 
 	/** Adds an {@link Actor} before the given Actor.
@@ -344,6 +350,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		childrenChanged();
 	}
 
 	/** Adds an {@link Actor} after the given Actor.
@@ -358,6 +365,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		childrenChanged();
 	}
 
 	/** Removes an {@link Actor} from this Group.
@@ -367,6 +375,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.remove((Group)actor);
 		if (actor.name != null) namesToActors.remove(actor.name);
 		unfocusAll(actor);
+		childrenChanged();
 	}
 
 	/** Removes an {@link Actor} from this Group recursively by checking if the Actor is in this group or one of its child-groups.
@@ -382,6 +391,7 @@ public class Group extends Actor implements Cullable {
 		for (int i = 0; i < groups.size(); i++) {
 			groups.get(i).removeActorRecursive(actor);
 		}
+		childrenChanged();
 	}
 
 	/** Finds the {@link Actor} with the given name in this Group and its children.
@@ -472,6 +482,7 @@ public class Group extends Actor implements Cullable {
 		children.clear();
 		groups.clear();
 		namesToActors.clear();
+		childrenChanged();
 	}
 
 	/** Sorts the children via the given {@link Comparator}.

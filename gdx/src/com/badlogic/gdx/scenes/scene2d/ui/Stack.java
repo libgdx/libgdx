@@ -74,6 +74,10 @@ public class Stack extends Group implements Layout {
 		needsLayout = true;
 	}
 
+	protected void childrenChanged () {
+		Widget.invalidateHierarchy(this);
+	}
+
 	public float getPrefWidth () {
 		float width = 0;
 		for (int i = 0, n = children.size(); i < n; i++)

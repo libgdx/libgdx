@@ -79,7 +79,8 @@ public abstract class Widget extends Actor implements Layout {
 		pack();
 		Group parent = this.parent;
 		while (parent != null) {
-			if (parent instanceof Layout) ((Layout)parent).invalidate();
+			if (!(parent instanceof Layout)) break;
+			((Layout)parent).invalidate();
 			parent = parent.parent;
 		}
 	}
@@ -100,7 +101,8 @@ public abstract class Widget extends Actor implements Layout {
 		if (actor instanceof Layout) ((Layout)actor).invalidate();
 		Group parent = actor.parent;
 		while (parent != null) {
-			if (parent instanceof Layout) ((Layout)parent).invalidate();
+			if (!(parent instanceof Layout)) break;
+			((Layout)parent).invalidate();
 			parent = parent.parent;
 		}
 	}
