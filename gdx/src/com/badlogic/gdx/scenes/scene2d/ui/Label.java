@@ -47,8 +47,8 @@ public class Label extends Widget {
 		super(name);
 		this.text = text;
 		setStyle(style);
-
 		touchable = false;
+		pack();
 	}
 
 	public void setStyle (LabelStyle style) {

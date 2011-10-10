@@ -20,6 +20,7 @@ public class CheckBox extends Button {
 		super(style, name);
 		add(image = new Image(style.checkboxOff));
 		add(new Label(text, style));
+		pack();
 	}
 
 	public void click () {

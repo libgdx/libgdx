@@ -91,6 +91,7 @@ public class Slider extends Widget {
 		this.max = max;
 		this.steps = steps;
 		this.value = min;
+		pack();
 	}
 
 	/** Sets the style of this widget.

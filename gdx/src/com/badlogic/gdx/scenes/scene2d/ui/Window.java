@@ -87,11 +87,11 @@ public class Window extends Table {
 	protected boolean isModal = false;
 
 	public Window (String title, Stage stage, Skin skin) {
-		this(null, title, stage, skin.getStyle(WindowStyle.class), 0, 0);
+		this(null, title, stage, skin.getStyle(WindowStyle.class), 150, 150);
 	}
 
 	public Window (String title, Stage stage, WindowStyle style) {
-		this(null, title, stage, style, 0, 0);
+		this(null, title, stage, style, 150, 150);
 	}
 
 	/** Creates a new Window. The width and height are determined by the given parameters.

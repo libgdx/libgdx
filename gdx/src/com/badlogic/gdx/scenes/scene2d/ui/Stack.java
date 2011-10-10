@@ -44,6 +44,8 @@ public class Stack extends Group implements Layout {
 	public Stack (String name) {
 		super(name);
 		transform = false;
+		width = 150;
+		height = 150;
 	}
 
 	public void layout () {

@@ -89,7 +89,7 @@ public class List extends Widget {
 		super(name);
 		setStyle(style);
 		setItems(items);
-		layout();
+		pack();
 	}
 
 	/** Sets the style of this widget.

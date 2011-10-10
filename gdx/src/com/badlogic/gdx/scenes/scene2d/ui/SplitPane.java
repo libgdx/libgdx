@@ -116,8 +116,10 @@ public class SplitPane extends Group implements Layout {
 		this.secondWidget = secondWidget;
 		this.vertical = vertical;
 
-		this.addActor(firstWidget);
-		this.addActor(secondWidget);
+		addActor(firstWidget);
+		addActor(secondWidget);
+		width = 150;
+		height = 150;
 	}
 
 	/** Sets the style of this widget.

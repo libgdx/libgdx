@@ -109,7 +109,7 @@ public class ComboBox extends Widget {
 		setStyle(style);
 		setItems(items);
 		this.stage = stage;
-		layout();
+		pack();
 	}
 
 	/** Sets the style of this widget.

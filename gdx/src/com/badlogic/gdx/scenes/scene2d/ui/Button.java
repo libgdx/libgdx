@@ -36,16 +36,19 @@ public class Button extends Table {
 	public Button (String text, Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
 		setText(text);
+		pack();
 	}
 
 	public Button (String text, ButtonStyle style) {
 		this(style, null);
 		setText(text);
+		pack();
 	}
 
 	public Button (String text, ButtonStyle style, String name) {
 		this(style, name);
 		setText(text);
+		pack();
 	}
 
 	public Button (ButtonStyle style, String name) {
@@ -57,6 +60,8 @@ public class Button extends Table {
 				if (listener != null) listener.click(actor);
 			}
 		});
+		width = 90;
+		height = 30;
 	}
 
 	public void setStyle (ButtonStyle style) {

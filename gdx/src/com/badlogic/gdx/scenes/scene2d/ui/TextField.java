@@ -147,6 +147,7 @@ public class TextField extends Widget {
 		setStyle(style);
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
+		pack();
 	}
 
 	/** Sets the style of this widget.

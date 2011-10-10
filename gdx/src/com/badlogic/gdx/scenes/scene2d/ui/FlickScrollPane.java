@@ -107,6 +107,9 @@ public class FlickScrollPane extends Group implements Layout {
 				return false;
 			}
 		});
+		
+		width = 150;
+		height = 150;
 	}
 
 	boolean tap (int x, int y) {

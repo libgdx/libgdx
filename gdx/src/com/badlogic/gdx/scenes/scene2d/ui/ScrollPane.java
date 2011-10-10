@@ -119,7 +119,8 @@ public class ScrollPane extends Group implements Layout {
 		this.stage = stage;
 		this.style = style;
 		addActor(widget);
-		layout();
+		width = 150;
+		height = 150;
 	}
 
 	Vector3 tmp = new Vector3();
