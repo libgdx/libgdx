@@ -32,7 +32,6 @@ import java.util.List;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -123,12 +122,18 @@ public class Table extends Group implements Layout {
 
 	public float getPrefWidth () {
 		if (sizeInvalid) computeSize();
-		return layout.getPrefWidth();
+		if (backgroundPatch != null)
+			return Math.max(layout.getPrefWidth(), backgroundPatch.getTotalWidth());
+		else
+			return layout.getPrefWidth();
 	}
 
 	public float getPrefHeight () {
 		if (sizeInvalid) computeSize();
-		return layout.getPrefHeight();
+		if (backgroundPatch != null)
+			return Math.max(layout.getPrefHeight(), backgroundPatch.getTotalHeight());
+		else
+			return layout.getPrefHeight();
 	}
 
 	public float getMinWidth () {
@@ -193,6 +198,10 @@ public class Table extends Group implements Layout {
 		Actor child = super.hit(x, y);
 		if (child != null) return child;
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
+	}
+
+	protected void childrenChanged () {
+		invalidateHierarchy();
 	}
 
 	public TableLayout getTableLayout () {

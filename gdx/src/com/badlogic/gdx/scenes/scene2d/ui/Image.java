@@ -73,7 +73,7 @@ public class Image extends Widget {
 			return;
 
 		float width = this.width * scaleX;
-		float height = this.width * scaleY;
+		float height = this.height * scaleY;
 
 		switch (scaling) {
 		case fill: {

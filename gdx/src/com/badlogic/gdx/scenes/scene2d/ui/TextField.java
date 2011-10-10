@@ -119,31 +119,42 @@ public class TextField extends Widget {
 	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	protected float prefWidth = 50;
 
+	private final String messageText;
+
 	public TextField (Skin skin) {
-		this("", skin.getStyle(TextFieldStyle.class), null);
+		this("", "", skin.getStyle(TextFieldStyle.class), null);
 	}
 
 	public TextField (String text, Skin skin) {
-		this(text, skin.getStyle(TextFieldStyle.class), null);
+		this(text, "", skin.getStyle(TextFieldStyle.class), null);
+	}
+
+	public TextField (String text, String messageText, Skin skin) {
+		this(text, messageText, skin.getStyle(TextFieldStyle.class), null);
 	}
 
 	public TextField (TextFieldStyle style) {
-		this("", style, null);
+		this("", "", style, null);
 	}
 
 	public TextField (String text, TextFieldStyle style) {
-		this(text, style, null);
+		this(text, "", style, null);
+	}
+
+	public TextField (String text, String messageText, TextFieldStyle style) {
+		this(text, messageText, style, null);
 	}
 
 	/** Creates a new Textfield. The width is determined by the prefWidth parameter, the height is determined by the font's height
 	 * as well as the top and bottom border patches of the text fields background.
 	 * @param style the {@link TextFieldStyle}
 	 * @param name the name */
-	public TextField (String text, TextFieldStyle style, String name) {
+	public TextField (String text, String messageText, TextFieldStyle style, String name) {
 		super(name);
 		setStyle(style);
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
+		this.messageText = messageText;
 	}
 
 	/** Sets the style of this widget.
@@ -228,8 +239,7 @@ public class TextField extends Widget {
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		background.draw(batch, x, y, width, height);
-		float textY = (int)(height / 2) + (int)(textBounds.height / 2) + font.getDescent() / 2;
-		font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
 		if (hasSelection) {
@@ -237,8 +247,17 @@ public class TextField extends Widget {
 				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
 		}
 
-		font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);
-		if (parent.keyboardFocusedActor == this) {
+		boolean focused = parent.keyboardFocusedActor == this;
+		if (text.length() == 0) {
+			if (!focused) {
+				font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
+				font.draw(batch, messageText, x + background.getLeftWidth(), y + textY);
+			}
+		} else {
+			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
+			font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+		}
+		if (focused) {
 			blink();
 			if (cursorOn) {
 				cursorPatch.draw(batch, x + background.getLeftWidth() + glyphPositions.get(cursor) + renderOffset - 1, y + textY

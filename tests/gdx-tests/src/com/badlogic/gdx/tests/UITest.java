@@ -84,7 +84,7 @@ public class UITest extends GdxTest {
 		final Button imgToggleButton = new Button(new Image(image), skin.getStyle("toggle", ButtonStyle.class));
 		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
 		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
-		final TextField textfield = new TextField("", skin.getStyle(TextFieldStyle.class), "textfield");
+		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class), "textfield");
 		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
 			skin.getStyle(ComboBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);

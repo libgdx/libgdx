@@ -54,8 +54,8 @@ public class NinePatch {
 	public NinePatch (TextureRegion region) {
 		this.patches = new TextureRegion[] {
 			//
-			region, null, null, //
 			null, null, null, //
+			null, region, null, //
 			null, null, null //
 		};
 	}
