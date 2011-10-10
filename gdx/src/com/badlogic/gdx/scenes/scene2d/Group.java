@@ -107,15 +107,18 @@ public class Group extends Actor implements Cullable {
 				for (int i = 0; i < children.size(); i++) {
 					Actor child = children.get(i);
 					if (!child.visible) continue;
-					if (cullingArea.contains(child.x, child.y) || cullingArea.contains(child.x + child.width, child.y + child.height))
+					if (child.x <= cullingArea.x + cullingArea.width && child.x + child.width >= cullingArea.x
+						&& child.y <= cullingArea.y + cullingArea.height && child.y + child.height >= cullingArea.y) {
 						child.draw(batch, parentAlpha);
+					}
 				}
 				batch.flush();
 			} else {
 				for (int i = 0; i < children.size(); i++) {
 					Actor child = children.get(i);
 					if (!child.visible) continue;
-					if (cullingArea.contains(child.x, child.y) || cullingArea.contains(child.x + child.width, child.y + child.height)) {
+					if (child.x <= cullingArea.x + cullingArea.width && child.x + child.width >= cullingArea.x
+						&& child.y <= cullingArea.y + cullingArea.height && child.y + child.height >= cullingArea.y) {
 						child.x += x;
 						child.y += y;
 						child.draw(batch, parentAlpha);
