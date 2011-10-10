@@ -208,8 +208,8 @@ public class ScrollPane extends Group implements Layout {
 		ScissorStack.calculateScissors(stage.getCamera(), batchTransform, widgetAreaBounds, scissorBounds);
 
 		if (widget instanceof Cullable) {
-			widgetCullingArea.x = -widget.x;
-			widgetCullingArea.y = -widget.y;
+			widgetCullingArea.x = -widget.x + widgetAreaBounds.x;
+			widgetCullingArea.y = -widget.y + widgetAreaBounds.y;
 			widgetCullingArea.width = areaWidth;
 			widgetCullingArea.height = areaHeight;
 			((Cullable)widget).setCullingArea(widgetCullingArea);

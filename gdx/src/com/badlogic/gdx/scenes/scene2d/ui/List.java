@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -63,7 +64,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </ul>
  * 
  * @author mzechner */
-public class List extends Widget {
+public class List extends Widget implements Cullable {
 	protected ListStyle style;
 	protected String[] items;
 	protected float itemHeight = 0;
@@ -72,6 +73,7 @@ public class List extends Widget {
 	protected int selected = 0;
 	protected SelectionListener listener;
 	protected float prefWidth, prefHeight;
+	private Rectangle cullingArea;
 
 	public List (Object[] items, Skin skin) {
 		this(items, skin.getStyle(ListStyle.class), null);
@@ -115,15 +117,19 @@ public class List extends Widget {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
 		float posY = height;
+		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
 		for (int i = 0; i < items.length; i++) {
-			if (selected == i) {
-				selectedPatch.draw(batch, x, y + posY - itemHeight, Math.max(prefWidth, width), itemHeight);
-				font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
-			} else {
-				font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
-					* parentAlpha);
-			}
-			font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
+			if (cullingArea == null || posY - itemHeight <= cullingArea.y + cullingArea.height) {
+				if (selected == i) {
+					selectedPatch.draw(batch, x, y + posY - itemHeight, Math.max(prefWidth, width), itemHeight);
+					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
+				}
+				font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
+				if (selected == i) {
+					font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a
+						* parentAlpha);
+				}
+			} else if (posY < cullingArea.y) break;
 			posY -= itemHeight;
 		}
 	}
@@ -230,7 +236,11 @@ public class List extends Widget {
 	public void setSelectionListener (SelectionListener listener) {
 		this.listener = listener;
 	}
-	
+
+	public void setCullingArea (Rectangle cullingArea) {
+		this.cullingArea = cullingArea;
+	}
+
 	/** Defines a list style, see {@link List}
 	 * @author mzechner */
 	static public class ListStyle {
