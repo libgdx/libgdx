@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
@@ -110,21 +109,14 @@ public class Window extends Table {
 		setStyle(style);
 
 		transform = true;
-
-		final NinePatch background = style.background;
-		TableLayout layout = getTableLayout();
-		layout.padBottom(Integer.toString((int)(background.getBottomHeight()) + 1));
-		layout.padTop(Integer.toString((int)(background.getTopHeight()) + 1));
-		layout.padLeft(Integer.toString((int)(background.getLeftWidth()) + 1));
-		layout.padRight(Integer.toString((int)(background.getRightWidth()) + 1));
 	}
-	
-	/**
-	 * Sets the style of this widget.
-	 * @param style
-	 */
+
+	/** Sets the style of this widget.
+	 * @param style */
 	public void setStyle (WindowStyle style) {
 		this.style = style;
+		setBackground(style.background);
+		invalidateHierarchy();
 	}
 
 	private void calculateBoundsAndScissors (Matrix4 transform) {
@@ -136,10 +128,12 @@ public class Window extends Table {
 		widgetBounds.width = width - background.getLeftWidth() - background.getRightWidth();
 		widgetBounds.height = height - background.getTopHeight() - background.getBottomHeight();
 		ScissorStack.calculateScissors(stage.getCamera(), transform, widgetBounds, scissors);
+
 		titleBounds.x = 0;
 		titleBounds.y = height - background.getTopHeight();
 		titleBounds.width = width;
 		titleBounds.height = background.getTopHeight();
+
 		textBounds.set(titleFont.getBounds(title));
 		textBounds.height -= titleFont.getDescent();
 	}
@@ -167,23 +161,6 @@ public class Window extends Table {
 
 		resetTransform(batch);
 
-	}
-
-	/** Defines the style of a window, see {@link Window}
-	 * @author mzechner */
-	public static class WindowStyle {
-		public NinePatch background;
-		public BitmapFont titleFont;
-		public Color titleFontColor = new Color(1, 1, 1, 1);
-
-		public WindowStyle () {
-		}
-
-		public WindowStyle (BitmapFont titleFont, Color titleFontColor, NinePatch backgroundPatch) {
-			this.background = backgroundPatch;
-			this.titleFont = titleFont;
-			this.titleFontColor.set(titleFontColor);
-		}
 	}
 
 	@Override
@@ -216,7 +193,7 @@ public class Window extends Table {
 
 	@Override
 	public Actor hit (float x, float y) {
-		return (x > 0 && x < width && y > 0 && y < height) || isModal ? this : null;
+		return isModal || (x > 0 && x < width && y > 0 && y < height) ? this : null;
 	}
 
 	/** Sets the title of the Window
@@ -252,5 +229,22 @@ public class Window extends Table {
 	/** @return whether the window is modal */
 	public boolean isModal () {
 		return isModal;
+	}
+
+	/** Defines the style of a window, see {@link Window}
+	 * @author mzechner */
+	static public class WindowStyle {
+		public NinePatch background;
+		public BitmapFont titleFont;
+		public Color titleFontColor = new Color(1, 1, 1, 1);
+
+		public WindowStyle () {
+		}
+
+		public WindowStyle (BitmapFont titleFont, Color titleFontColor, NinePatch backgroundPatch) {
+			this.background = backgroundPatch;
+			this.titleFont = titleFont;
+			this.titleFontColor.set(titleFontColor);
+		}
 	}
 }

@@ -19,7 +19,9 @@ public class CheckBox extends Button {
 	public CheckBox (String text, CheckBoxStyle style, String name) {
 		super(style, name);
 		add(image = new Image(style.checkboxOff));
-		add(new Label(text, style));
+		Label label = new Label(text, style);
+		label.setAlignment(Align.CENTER);
+		add(label);
 		pack();
 	}
 

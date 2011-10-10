@@ -255,28 +255,6 @@ public class ScrollPane extends Group implements Layout {
 		resetTransform(batch);
 	}
 
-	/** Defines a scroll pane's style, see {@link ScrollPane}.
-	 * @author mzechner */
-	public static class ScrollPaneStyle {
-		public NinePatch background;
-		public NinePatch hScroll;
-		public NinePatch hScrollKnob;
-		public NinePatch vScroll;
-		public NinePatch vScrollKnob;
-
-		public ScrollPaneStyle () {
-		}
-
-		public ScrollPaneStyle (NinePatch backgroundPatch, NinePatch hScroll, NinePatch hScrollKnob, NinePatch vScroll,
-			NinePatch vScrollKnob) {
-			this.background = backgroundPatch;
-			this.hScroll = hScroll;
-			this.hScrollKnob = hScrollKnob;
-			this.vScroll = vScroll;
-			this.vScrollKnob = vScrollKnob;
-		}
-	}
-
 	@Override
 	public void layout () {
 	}
@@ -402,5 +380,27 @@ public class ScrollPane extends Group implements Layout {
 		this.widget = widget;
 		this.addActor(widget);
 		invalidate();
+	}
+
+	/** Defines a scroll pane's style, see {@link ScrollPane}.
+	 * @author mzechner */
+	static public class ScrollPaneStyle {
+		public NinePatch background;
+		public NinePatch hScroll;
+		public NinePatch hScrollKnob;
+		public NinePatch vScroll;
+		public NinePatch vScrollKnob;
+
+		public ScrollPaneStyle () {
+		}
+
+		public ScrollPaneStyle (NinePatch backgroundPatch, NinePatch hScroll, NinePatch hScrollKnob, NinePatch vScroll,
+			NinePatch vScrollKnob) {
+			this.background = backgroundPatch;
+			this.hScroll = hScroll;
+			this.hScrollKnob = hScrollKnob;
+			this.vScroll = vScroll;
+			this.vScrollKnob = vScrollKnob;
+		}
 	}
 }

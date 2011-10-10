@@ -89,14 +89,16 @@ public class List extends Widget {
 		super(name);
 		setStyle(style);
 		setItems(items);
-		pack();
 	}
 
 	/** Sets the style of this widget.
 	 * @param style */
 	public void setStyle (ListStyle style) {
 		this.style = style;
-		if (items != null) setItems(items);
+		if (items != null)
+			setItems(items);
+		else
+			invalidateHierarchy();
 	}
 
 	@Override
@@ -142,36 +144,6 @@ public class List extends Widget {
 
 	@Override
 	public void touchDragged (float x, float y, int pointer) {
-	}
-
-	@Override
-	public Actor hit (float x, float y) {
-		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
-	}
-
-	/** Defines a list style, see {@link List}
-	 * @author mzechner */
-	public static class ListStyle {
-		public BitmapFont font;
-		public Color fontColorSelected = new Color(1, 1, 1, 1);
-		public Color fontColorUnselected = new Color(1, 1, 1, 1);
-		public NinePatch selectedPatch;
-
-		private ListStyle () {
-		}
-
-		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, NinePatch selectedPatch) {
-			this.font = font;
-			this.fontColorSelected.set(fontColorSelected);
-			this.fontColorUnselected.set(fontColorUnselected);
-			this.selectedPatch = selectedPatch;
-		}
-	}
-
-	/** Interface for listening to selection changes.
-	 * @author mzechner */
-	public interface SelectionListener {
-		public void selected (List list, int selectedIndex, String selection);
 	}
 
 	/** @return the index of the currently selected item. The top item has an index of 0. */
@@ -237,6 +209,8 @@ public class List extends Widget {
 		prefHeight = items.length * itemHeight;
 		textOffsetX = selectedPatch.getLeftWidth();
 		textOffsetY = selectedPatch.getTopHeight() - font.getDescent();
+
+		invalidateHierarchy();
 	}
 
 	public String[] getItems () {
@@ -255,5 +229,30 @@ public class List extends Widget {
 	 * @param listener the listener or null */
 	public void setSelectionListener (SelectionListener listener) {
 		this.listener = listener;
+	}
+	
+	/** Defines a list style, see {@link List}
+	 * @author mzechner */
+	static public class ListStyle {
+		public BitmapFont font;
+		public Color fontColorSelected = new Color(1, 1, 1, 1);
+		public Color fontColorUnselected = new Color(1, 1, 1, 1);
+		public NinePatch selectedPatch;
+
+		private ListStyle () {
+		}
+
+		public ListStyle (BitmapFont font, Color fontColorSelected, Color fontColorUnselected, NinePatch selectedPatch) {
+			this.font = font;
+			this.fontColorSelected.set(fontColorSelected);
+			this.fontColorUnselected.set(fontColorUnselected);
+			this.selectedPatch = selectedPatch;
+		}
+	}
+
+	/** Interface for listening to selection changes.
+	 * @author mzechner */
+	static public interface SelectionListener {
+		public void selected (List list, int selectedIndex, String selection);
 	}
 }

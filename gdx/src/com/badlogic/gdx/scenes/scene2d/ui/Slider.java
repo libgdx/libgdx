@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /** A value slider.
  * 
@@ -80,7 +79,6 @@ public class Slider extends Widget {
 	 * @param max the maximum value
 	 * @param steps the step size between values
 	 * @param style the {@link SliderStyle}
-	 * @param prefWidth the (preferred) width
 	 * @param name the name */
 	public Slider (float min, float max, float steps, SliderStyle style, String name) {
 		super(name);
@@ -98,6 +96,7 @@ public class Slider extends Widget {
 	 * @param style */
 	public void setStyle (SliderStyle style) {
 		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override
@@ -146,32 +145,6 @@ public class Slider extends Widget {
 		if (listener != null) listener.changed(this, getValue());
 	}
 
-	@Override
-	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
-	}
-
-	/** Defines the style of a slider, see {@link Slider}.
-	 * @author mzechner */
-	public static class SliderStyle {
-		NinePatch slider;
-		TextureRegion knob;
-
-		public SliderStyle () {
-		}
-
-		public SliderStyle (NinePatch sliderPatch, TextureRegion knobRegion) {
-			this.slider = sliderPatch;
-			this.knob = knobRegion;
-		}
-	}
-
-	/** Interface to listen for changes of the value of the slider.
-	 * @author mzechner */
-	public interface ValueChangedListener {
-		public void changed (Slider slider, float value);
-	}
-
 	/** Sets the {@link ValueChangedListener} of this slider.
 	 * @param listener the listener or null
 	 * @return this Slider for chaining */
@@ -210,5 +183,26 @@ public class Slider extends Widget {
 
 	public float getPrefHeight () {
 		return Math.max(style.knob.getRegionHeight(), style.slider.getTotalHeight());
+	}
+
+	/** Defines the style of a slider, see {@link Slider}.
+	 * @author mzechner */
+	static public class SliderStyle {
+		NinePatch slider;
+		TextureRegion knob;
+
+		public SliderStyle () {
+		}
+
+		public SliderStyle (NinePatch sliderPatch, TextureRegion knobRegion) {
+			this.slider = sliderPatch;
+			this.knob = knobRegion;
+		}
+	}
+
+	/** Interface to listen for changes of the value of the slider.
+	 * @author mzechner */
+	static public interface ValueChangedListener {
+		public void changed (Slider slider, float value);
 	}
 }

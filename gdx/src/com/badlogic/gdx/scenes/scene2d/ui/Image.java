@@ -138,16 +138,26 @@ public class Image extends Widget {
 		}
 	}
 
+	/** @param region May be null. */
 	public void setRegion (TextureRegion region) {
+		if (region != null) {
+			if (getPrefWidth() != region.getRegionWidth() || getPrefHeight() != region.getRegionHeight()) invalidateHierarchy();
+		} else {
+			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
+		}
 		this.region = region;
 		patch = null;
-		invalidate();
 	}
 
+	/** @param patch May be null. */
 	public void setPatch (NinePatch patch) {
+		if (patch != null) {
+			if (getPrefWidth() != patch.getTotalWidth() || getPrefHeight() != patch.getTotalHeight()) invalidateHierarchy();
+		} else {
+			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
+		}
 		this.patch = patch;
 		region = null;
-		invalidate();
 	}
 
 	public float getMinWidth () {
@@ -159,11 +169,15 @@ public class Image extends Widget {
 	}
 
 	public float getPrefWidth () {
-		return region.getRegionWidth();
+		if (region != null) return region.getRegionWidth();
+		if (patch != null) return patch.getTotalWidth();
+		return 0;
 	}
 
 	public float getPrefHeight () {
-		return region.getRegionHeight();
+		if (region != null) return region.getRegionHeight();
+		if (patch != null) return patch.getTotalHeight();
+		return 0;
 	}
 
 	public boolean touchDown (float x, float y, int pointer) {

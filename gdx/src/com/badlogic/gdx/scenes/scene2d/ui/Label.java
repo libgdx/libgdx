@@ -48,19 +48,20 @@ public class Label extends Widget {
 		this.text = text;
 		setStyle(style);
 		touchable = false;
-		pack();
 	}
 
 	public void setStyle (LabelStyle style) {
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
 		cache.setColor(style.fontColor);
-		invalidate();
+		invalidateHierarchy();
 	}
 
 	public void setText (String text) {
+		if (text == null) throw new IllegalArgumentException("text cannot be null.");
+		if (text.equals(this.text)) return;
 		this.text = text;
-		invalidate();
+		invalidateHierarchy();
 	}
 
 	public String getText () {

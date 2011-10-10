@@ -107,7 +107,6 @@ public class TextField extends Widget {
 	protected float textOffset = 0;
 	protected int visibleTextStart = 0;
 	protected int visibleTextEnd = 0;
-	protected final StringBuilder builder = new StringBuilder();
 	protected final FloatArray glyphAdvances = new FloatArray();
 	protected final FloatArray glyphPositions = new FloatArray();
 	protected float blinkTime = 0.42f;
@@ -119,7 +118,6 @@ public class TextField extends Widget {
 	protected float selectionWidth = 0;
 	protected OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
 	protected float prefWidth = 50;
-
 
 	public TextField (Skin skin) {
 		this("", skin.getStyle(TextFieldStyle.class), null);
@@ -140,20 +138,19 @@ public class TextField extends Widget {
 	/** Creates a new Textfield. The width is determined by the prefWidth parameter, the height is determined by the font's height
 	 * as well as the top and bottom border patches of the text fields background.
 	 * @param style the {@link TextFieldStyle}
-	 * @param prefWidth the (preferred) width
 	 * @param name the name */
 	public TextField (String text, TextFieldStyle style, String name) {
 		super(name);
 		setStyle(style);
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
-		pack();
 	}
 
 	/** Sets the style of this widget.
 	 * @param style */
 	public void setStyle (TextFieldStyle style) {
 		this.style = style;
+		invalidateHierarchy();
 	}
 
 	@Override
@@ -427,38 +424,6 @@ public class TextField extends Widget {
 			return false;
 	}
 
-	@Override
-	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
-	}
-
-	/** Defines a text field's style, see {@link TextField}
-	 * @author mzechner */
-	public static class TextFieldStyle {
-		public NinePatch background;
-		public BitmapFont font;
-		public Color fontColor;
-		public NinePatch cursor;
-		public TextureRegion selection;
-
-		public TextFieldStyle () {
-		}
-
-		public TextFieldStyle (BitmapFont font, Color fontColor, NinePatch cursor, TextureRegion selection, NinePatch background) {
-			this.background = background;
-			this.cursor = cursor;
-			this.font = font;
-			this.fontColor = fontColor;
-			this.selection = selection;
-		}
-	}
-
-	/** Interface for listening to typed characters.
-	 * @author mzechner */
-	public interface TextFieldListener {
-		public void keyTyped (TextField textField, char key);
-	}
-
 	/** Sets the {@link TextFieldListener}
 	 * @param listener the listener or null */
 	public void setTextFieldListener (TextFieldListener listener) {
@@ -505,22 +470,6 @@ public class TextField extends Widget {
 		this.keyboard = keyboard;
 	}
 
-	/** An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
-	 * @author mzechner */
-	public interface OnscreenKeyboard {
-		public void show (boolean visible);
-	}
-
-	/** The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
-	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
-	 * @author mzechner */
-	public static class DefaultOnscreenKeyboard implements OnscreenKeyboard {
-		@Override
-		public void show (boolean visible) {
-			Gdx.input.setOnscreenKeyboardVisible(visible);
-		}
-	}
-
 	/** Sets the {@link Clipboard} implementation this TextField uses.
 	 * @param clipboard the Clipboard */
 	public void setClipboard (Clipboard clipboard) {
@@ -531,9 +480,52 @@ public class TextField extends Widget {
 	public float getPrefWidth () {
 		return prefWidth;
 	}
-	
-	public TextField setPrefWidth(float prefWidth) {
+
+	public TextField setPrefWidth (float prefWidth) {
 		this.prefWidth = prefWidth;
 		return this;
+	}
+
+	/** Interface for listening to typed characters.
+	 * @author mzechner */
+	static public interface TextFieldListener {
+		public void keyTyped (TextField textField, char key);
+	}
+
+	/** An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
+	 * @author mzechner */
+	static public interface OnscreenKeyboard {
+		public void show (boolean visible);
+	}
+
+	/** The default {@link OnscreenKeyboard} used by all {@link TextField} instances. Just uses
+	 * {@link Input#setOnscreenKeyboardVisible(boolean)} as appropriate. Might overlap your actual rendering, so use with care!
+	 * @author mzechner */
+	static public class DefaultOnscreenKeyboard implements OnscreenKeyboard {
+		@Override
+		public void show (boolean visible) {
+			Gdx.input.setOnscreenKeyboardVisible(visible);
+		}
+	}
+
+	/** Defines a text field's style, see {@link TextField}
+	 * @author mzechner */
+	static public class TextFieldStyle {
+		public NinePatch background;
+		public BitmapFont font;
+		public Color fontColor;
+		public NinePatch cursor;
+		public TextureRegion selection;
+
+		public TextFieldStyle () {
+		}
+
+		public TextFieldStyle (BitmapFont font, Color fontColor, NinePatch cursor, TextureRegion selection, NinePatch background) {
+			this.background = background;
+			this.cursor = cursor;
+			this.font = font;
+			this.fontColor = fontColor;
+			this.selection = selection;
+		}
 	}
 }

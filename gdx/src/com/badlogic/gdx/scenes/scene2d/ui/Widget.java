@@ -65,14 +65,18 @@ public abstract class Widget extends Actor implements Layout {
 		return 0;
 	}
 
-	/** Invalidates this widget, causing it to relayout itself at the next oportunity. */
+	/** Invalidates this widget, causing it to relayout itself at the next oportunity. This should be called when something changes
+	 * in the widget that requires a layout but does not change the min, pref, or max size of the widget. */
 	public void invalidate () {
 		this.invalidated = true;
 	}
 
-	/** Invalidates this widget and all its parents, causing all involved widgets to relayout themselves at the next oportunity. */
+	/** Invalidates this widget and all its parents, causing all involved widgets to relayout themselves at the next oportunity.
+	 * Also sets the width and height of the widget to the pref size, in case none of the parent actors are performaing layout.
+	 * This should be called when something changes in the widgets that changes the min, pref, or max size of the widget. */
 	public void invalidateHierarchy () {
 		invalidate();
+		pack();
 		Group parent = this.parent;
 		while (parent != null) {
 			if (parent instanceof Layout) ((Layout)parent).invalidate();
@@ -90,5 +94,14 @@ public abstract class Widget extends Actor implements Layout {
 		width = getPrefWidth();
 		height = getPrefHeight();
 		invalidate();
+	}
+
+	static public void invalidateHierarchy (Actor actor) {
+		if (actor instanceof Layout) ((Layout)actor).invalidate();
+		Group parent = actor.parent;
+		while (parent != null) {
+			if (parent instanceof Layout) ((Layout)parent).invalidate();
+			parent = parent.parent;
+		}
 	}
 }

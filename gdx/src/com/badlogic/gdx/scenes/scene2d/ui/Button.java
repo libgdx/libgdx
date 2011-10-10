@@ -31,24 +31,22 @@ public class Button extends Table {
 	public Button (Actor child, ButtonStyle style) {
 		this(style, null);
 		add(child);
+		pack();
 	}
 
 	public Button (String text, Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
 		setText(text);
-		pack();
 	}
 
 	public Button (String text, ButtonStyle style) {
 		this(style, null);
 		setText(text);
-		pack();
 	}
 
 	public Button (String text, ButtonStyle style, String name) {
 		this(style, name);
 		setText(text);
-		pack();
 	}
 
 	public Button (ButtonStyle style, String name) {
@@ -60,13 +58,12 @@ public class Button extends Table {
 				if (listener != null) listener.click(actor);
 			}
 		});
-		width = 90;
-		height = 30;
 	}
 
 	public void setStyle (ButtonStyle style) {
 		this.style = style;
 		setBackground(isPressed ? style.down : style.up);
+		invalidateHierarchy();
 	}
 
 	public void setClickListener (ClickListener listener) {
@@ -75,7 +72,10 @@ public class Button extends Table {
 
 	public void setText (String text) {
 		if (children.isEmpty()) {
-			add(new Label(text, style));
+			Label label = new Label(text, style);
+			label.setAlignment(Align.CENTER);
+			add(label);
+			invalidateHierarchy();
 			return;
 		}
 		for (int i = 0; i < children.size(); i++) {

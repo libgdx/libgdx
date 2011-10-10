@@ -126,6 +126,7 @@ public class SplitPane extends Group implements Layout {
 	 * @param style */
 	public void setStyle (SplitPaneStyle style) {
 		this.style = style;
+		Widget.invalidateHierarchy(this);
 	}
 
 	@Override
@@ -327,19 +328,6 @@ public class SplitPane extends Group implements Layout {
 		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
-	/** Defines the style of a split pane, see {@link SplitPane}
-	 * @author mzechner */
-	public static class SplitPaneStyle {
-		public NinePatch handle;
-
-		public SplitPaneStyle () {
-		}
-
-		public SplitPaneStyle (NinePatch handle) {
-			this.handle = handle;
-		}
-	}
-
 	/** Sets the split amount
 	 * @param split the split amount between 0 and 1 */
 	public void setSplitAmount (float split) {
@@ -382,5 +370,18 @@ public class SplitPane extends Group implements Layout {
 		this.addActor(firstWidget);
 		this.addActor(secondWidget);
 		invalidate();
+	}
+
+	/** Defines the style of a split pane, see {@link SplitPane}
+	 * @author mzechner */
+	static public class SplitPaneStyle {
+		public NinePatch handle;
+
+		public SplitPaneStyle () {
+		}
+
+		public SplitPaneStyle (NinePatch handle) {
+			this.handle = handle;
+		}
 	}
 }

@@ -116,7 +116,10 @@ public class ComboBox extends Widget {
 	 * @param style */
 	public void setStyle (ComboBoxStyle style) {
 		this.style = style;
-		if (items != null) setItems(items);
+		if (items != null)
+			setItems(items);
+		else
+			invalidateHierarchy();
 	}
 
 	public void setItems (Object[] objects) {
@@ -142,8 +145,7 @@ public class ComboBox extends Widget {
 			max = Math.max(font.getBounds(items[i]).width, max);
 		prefWidth = background.getLeftWidth() + background.getRightWidth() + max;
 
-		width = prefWidth;
-		height = prefHeight;
+		invalidateHierarchy();
 	}
 
 	@Override
@@ -192,38 +194,42 @@ public class ComboBox extends Widget {
 	public void touchDragged (float x, float y, int pointer) {
 	}
 
-	/** Defines the style of a combo box. See {@link ComboBox}
-	 * @author mzechner */
-	public static class ComboBoxStyle {
-		public NinePatch background;
-		public NinePatch listBackground;
-		public NinePatch listSelection;
-		public BitmapFont font;
-		public Color fontColor = new Color(1, 1, 1, 1);
-
-		public ComboBoxStyle () {
-		}
-
-		public ComboBoxStyle (BitmapFont font, Color fontColor, NinePatch background, NinePatch listBackground,
-			NinePatch listSelection) {
-			this.background = background;
-			this.listBackground = listBackground;
-			this.listSelection = listSelection;
-			this.font = font;
-			this.fontColor.set(fontColor);
-		}
-	}
-
-	/** Interface for listening to selection events.
-	 * @author mzechner */
-	public interface SelectionListener {
-		public void selected (ComboBox comboBox, int selectionIndex, String selection);
-	}
-
 	/** Sets the {@link SelectionListener}.
 	 * @param listener the listener or null */
 	public void setSelectionListener (SelectionListener listener) {
 		this.listener = listener;
+	}
+
+	/** Sets the selected item via it's index
+	 * @param selection the selection index */
+	public void setSelection (int selection) {
+		this.selection = selection;
+	}
+
+	public void setSelection (String item) {
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].equals(item)) {
+				selection = i;
+			}
+		}
+	}
+
+	/** @return the index of the current selection. The top item has an index of 0 */
+	public int getSelectionIndex () {
+		return selection;
+	}
+
+	/** @return the string of the currently selected item */
+	public String getSelection () {
+		return items[selection];
+	}
+
+	public float getPrefWidth () {
+		return prefWidth;
+	}
+
+	public float getPrefHeight () {
+		return prefHeight;
 	}
 
 	protected class ComboList extends Actor {
@@ -336,35 +342,31 @@ public class ComboBox extends Widget {
 		}
 	}
 
-	/** Sets the selected item via it's index
-	 * @param selection the selection index */
-	public void setSelection (int selection) {
-		this.selection = selection;
+	/** Interface for listening to selection events.
+	 * @author mzechner */
+	static public interface SelectionListener {
+		public void selected (ComboBox comboBox, int selectionIndex, String selection);
 	}
 
-	/** @return the index of the current selection. The top item has an index of 0 */
-	public int getSelectionIndex () {
-		return selection;
-	}
+	/** Defines the style of a combo box. See {@link ComboBox}
+	 * @author mzechner */
+	static public class ComboBoxStyle {
+		public NinePatch background;
+		public NinePatch listBackground;
+		public NinePatch listSelection;
+		public BitmapFont font;
+		public Color fontColor = new Color(1, 1, 1, 1);
 
-	/** @return the string of the currently selected item */
-	public String getSelection () {
-		return items[selection];
-	}
+		public ComboBoxStyle () {
+		}
 
-	public float getPrefWidth () {
-		return prefWidth;
-	}
-
-	public float getPrefHeight () {
-		return prefHeight;
-	}
-
-	public void setSelection (String item) {
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].equals(item)) {
-				selection = i;
-			}
+		public ComboBoxStyle (BitmapFont font, Color fontColor, NinePatch background, NinePatch listBackground,
+			NinePatch listSelection) {
+			this.background = background;
+			this.listBackground = listBackground;
+			this.listSelection = listSelection;
+			this.font = font;
+			this.fontColor.set(fontColor);
 		}
 	}
 }

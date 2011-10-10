@@ -40,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.Image.Scaling;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
@@ -116,12 +117,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 
 	/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */
 	public void invalidateHierarchy () {
-		invalidate();
-		Actor parent = getTable().parent;
-		while (parent != null) {
-			if (parent instanceof Layout) ((Layout)parent).invalidate();
-			parent = parent.parent;
-		}
+		Widget.invalidateHierarchy(getTable());
 	}
 
 	public void drawDebug (SpriteBatch batch) {
