@@ -115,6 +115,10 @@ public class FlickScrollPane extends Group implements Layout {
 	boolean tap (int x, int y) {
 		focus(null, 0);
 		if (!super.touchDown(x, y, 0)) return false;
+		Actor actor = focusedActor[0];
+		toLocalCoordinates(actor, point);
+		actor.touchUp(point.x, point.y, 0);
+		focus(null, 0);
 		return true;
 	}
 
