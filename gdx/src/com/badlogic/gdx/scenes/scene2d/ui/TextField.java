@@ -101,6 +101,7 @@ public class TextField extends Widget {
 	protected final Rectangle scissor = new Rectangle();
 
 	protected TextFieldListener listener;
+	protected TextFieldFilter filter;
 	protected String text = "";
 	protected int cursor = 0;
 	protected float renderOffset = 0;
@@ -386,8 +387,10 @@ public class TextField extends Widget {
 
 	public boolean keyTyped (char character) {
 		final BitmapFont font = style.font;
+		
 
 		if (parent.keyboardFocusedActor == this) {
+			if(filter != null && !filter.acceptChar(this, character)) return true; 
 			if (character == 8 && (cursor > 0 || hasSelection)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor - 1) + text.substring(cursor);
@@ -447,6 +450,14 @@ public class TextField extends Widget {
 	 * @param listener the listener or null */
 	public void setTextFieldListener (TextFieldListener listener) {
 		this.listener = listener;
+	}
+	
+	/**
+	 * Sets the {@link TextFieldFilter}
+	 * @param filter
+	 */
+	public void setTextFieldFilter(TextFieldFilter filter) {
+		this.filter = filter;
 	}
 
 	/** Sets the text of this text field.
@@ -509,6 +520,28 @@ public class TextField extends Widget {
 	 * @author mzechner */
 	static public interface TextFieldListener {
 		public void keyTyped (TextField textField, char key);
+	}
+	
+	/**
+	 * Interface for filtering characters entered into the text field.
+	 * @author mzechner
+	 *
+	 */
+	static public interface TextFieldFilter {
+		/**
+		 * @param textField
+		 * @param key
+		 * @return whether to accept the character
+		 */
+		public boolean acceptChar(TextField textField, char key);
+		
+		static public class DigitsOnlyFilter implements TextFieldFilter {
+			@Override
+			public boolean acceptChar (TextField textField, char key) {
+				return Character.isDigit(key) || key == 8;
+			}
+			
+		}
 	}
 
 	/** An interface for onscreen keyboards. Can invoke the default keyboard or render your own keyboard!
