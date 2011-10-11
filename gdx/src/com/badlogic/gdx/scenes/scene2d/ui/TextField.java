@@ -243,12 +243,12 @@ public class TextField extends Widget {
 		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
-		if (hasSelection) {
+		boolean focused = parent.keyboardFocusedActor == this;
+		if (focused && hasSelection) {
 			batch.draw(selection, x + selectionX + background.getLeftWidth() + renderOffset,
 				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
 		}
 
-		boolean focused = parent.keyboardFocusedActor == this;
 		if (text.length() == 0) {
 			if (!focused) {
 				font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
@@ -272,6 +272,7 @@ public class TextField extends Widget {
 		if (pointer != 0) return false;
 		parent.keyboardFocus(this);
 		keyboard.show(true);
+		hasSelection = false;
 		x = x - renderOffset;
 		for (int i = 0; i < glyphPositions.size; i++) {
 			float pos = glyphPositions.items[i];

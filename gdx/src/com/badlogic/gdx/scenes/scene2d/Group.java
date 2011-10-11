@@ -452,13 +452,14 @@ public class Group extends Actor implements Cullable {
 	 * 
 	 * @param actor the Actor */
 	public void focus (Actor actor, int pointer) {
+		// An actor already has focus. Remove the focus if it is not a child of this group, because the focused actor could be
+		// further down in the hiearchy.
 		Actor existingActor = focusedActor[pointer];
-		if (existingActor != null) {
-			// An actor already has focus. Remove the focus if it is not a child of this group, because the focused actor could be
-			// further down in the hiearchy.
+		if (existingActor != null && existingActor.parent != this) {
 			focusedActor[pointer] = null;
-			if (existingActor.parent != this) existingActor.parent.focus(null, pointer);
+			existingActor.parent.focus(null, pointer);
 		}
+
 		if (debug) Gdx.app.log("Group", "focus: " + (actor == null ? "null" : actor.name));
 		focusedActor[pointer] = actor;
 		if (parent != null) parent.focus(actor, pointer);
@@ -468,6 +469,11 @@ public class Group extends Actor implements Cullable {
 	 * unfocus an actor simply pass null.
 	 * @param actor the Actor */
 	public void keyboardFocus (Actor actor) {
+		Actor existingActor = keyboardFocusedActor;
+		if (existingActor != null && existingActor.parent != this) {
+			keyboardFocusedActor = null;
+			existingActor.parent.keyboardFocus(null);
+		}
 		keyboardFocusedActor = actor;
 		if (parent != null) parent.keyboardFocus(actor);
 	}
