@@ -165,7 +165,7 @@ public final class World implements Disposable {
 			this.fixtures.remove(body.getFixtureList().get(i).addr).setUserData(null);
 		}
 		for (int i = 0; i < body.getJointList().size(); i++)
-			this.joints.remove(body.getJointList().get(i).joint.addr);
+			destroyJoint(body.getJointList().get(i).joint);
 		jniDestroyBody(addr, body.addr);
 		freeBodies.free(body);
 	}
