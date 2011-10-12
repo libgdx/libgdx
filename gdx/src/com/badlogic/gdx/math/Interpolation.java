@@ -120,28 +120,28 @@ public abstract class Interpolation {
 		}
 	};
 
-	static public final Interpolation back = new Interpolation() {
+	static public final Interpolation swing = new Interpolation() {
 		public float apply (float a) {
 			if (a <= 0.5f) {
 				a *= 2;
-				return ((1.70158f + 1) * a * a * a - 1.70158f * a * a) / 2;
+				return a * a * ((2.5949095f + 1) * a - 2.5949095f) / 2;
 			}
-			a = 1 - a;
+			a--;
 			a *= 2;
-			return 1 - ((1.70158f + 1) * a * a * a - 1.70158f * a * a) / 2;
+			return a * a * ((2.5949095f + 1) * a + 2.5949095f) / 2 + 1;
 		}
 	};
 
-	static public final Interpolation backIn = new Interpolation() {
+	static public final Interpolation swingIn = new Interpolation() {
 		public float apply (float a) {
-			return (1.70158f + 1) * a * a * a - 1.70158f * a * a;
+			return a * a * ((1.70158f + 1) * a - 1.70158f);
 		}
 	};
 
-	static public final Interpolation backOut = new Interpolation() {
+	static public final Interpolation swingOut = new Interpolation() {
 		public float apply (float a) {
-			a = 1 - a;
-			return 1 - ((1.70158f + 1) * a * a * a - 1.70158f * a * a);
+			a--;
+			return a * a * ((1.70158f + 1) * a + 1.70158f) + 1;
 		}
 	};
 

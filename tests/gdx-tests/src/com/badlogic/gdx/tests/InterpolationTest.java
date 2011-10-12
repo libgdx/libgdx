@@ -17,10 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class InterpolationTest extends GdxTest {
-	static private final String[] interpolators = new String[] {"back", "backIn", "backOut", "bounce", "bounceIn", "bounceOut",
-		"circle", "circleIn", "circleOut", "elastic", "elasticIn", "elasticOut", "exp", "expIn", "expOut", "fade", "linear",
-		"pow2", "pow2In", "pow2Out", "pow3", "pow3In", "pow3Out", "pow4", "pow4In", "pow4Out", "pow5", "pow5In", "pow5Out", "sine",
-		"sineIn", "sineOut"};
+	static private final String[] interpolators = new String[] {"bounce", "bounceIn", "bounceOut", "circle", "circleIn",
+		"circleOut", "elastic", "elasticIn", "elasticOut", "exp", "expIn", "expOut", "fade", "linear", "pow2", "pow2In", "pow2Out",
+		"pow3", "pow3In", "pow3Out", "pow4", "pow4In", "pow4Out", "pow5", "pow5In", "pow5Out", "sine", "sineIn", "sineOut",
+		"swing", "swingIn", "swingOut"};
 
 	private Stage stage;
 	private Table root;

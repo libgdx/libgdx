@@ -133,7 +133,7 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		Actor parent = table.parent;
 		float x = table.x, y = 0;
 		while (parent != null) {
-			if (parent instanceof Group) {
+			if (parent instanceof Group && ((Group)parent).transform) {
 				x += parent.x;
 				y = parent.y + parent.height - y;
 			}
