@@ -129,6 +129,9 @@ public class SkinPacker {
 					if (rgba[3] != 0) throw new RuntimeException("Unknown pixel 0," + y + ": " + name);
 				}
 
+				// No splits, or all splits.
+				if (startY == 1 && endY == raster.getHeight()) return image;
+
 				int[] splits = new int[4];
 				splits[0] = startX - 1;
 				splits[1] = endX - 1;
