@@ -84,7 +84,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		return array;
 	}
 
-	public String createVertexShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
+	private String createVertexShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String shader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
 			+ (hasNormals ? "attribute vec3 " + ShaderProgram.NORMAL_ATTRIBUTE + ";\n" : "")
 			+ (hasColors ? "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" : "");
