@@ -163,17 +163,9 @@ public class Skin implements Disposable {
 			public Object read (Json json, Object jsonData, Class type) {
 				String name = (String)jsonData;
 				Object object = map.get(name);
-				if (object == null) {
-					ObjectMap<String, Object> regions = data.resources.get(TextureRegion.class);
-					if (regions != null) {
-						object = regions.get(name);
-						if (object != null) object = new NinePatch((TextureRegion)object);	
-					}
-					if (object == null)
-						throw new SerializationException("Skin has a " + type.getSimpleName()
-							+ " that could not be found in the resources: " + jsonData);
-				}
-				return object;
+				if (object != null) return object;
+				throw new SerializationException("Skin has a " + type.getSimpleName() + " that could not be found in the resources: "
+					+ jsonData);
 			}
 		}
 
@@ -260,7 +252,9 @@ public class Skin implements Disposable {
 			}
 
 			public NinePatch read (Json json, Object jsonData, Class type) {
-				return new NinePatch(json.readValue(TextureRegion[].class, jsonData));
+				TextureRegion[] regions = json.readValue(TextureRegion[].class, jsonData);
+				if (regions.length == 1) return new NinePatch(regions[0]);
+				return new NinePatch(regions);
 			}
 		});
 
