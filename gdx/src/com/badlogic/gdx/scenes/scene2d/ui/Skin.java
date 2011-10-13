@@ -248,7 +248,12 @@ public class Skin implements Disposable {
 
 		json.setSerializer(NinePatch.class, new Serializer<NinePatch>() {
 			public void write (Json json, NinePatch ninePatch, Class valueType) {
-				json.writeValue(ninePatch.getPatches());
+				TextureRegion[] patches = ninePatch.getPatches();
+				if (patches[0] == null && patches[1] == null && patches[2] == null && patches[3] == null && patches[4] != null
+					&& patches[5] == null && patches[6] == null && patches[7] == null && patches[8] == null)
+					json.writeValue(patches[4]);
+				else
+					json.writeValue(ninePatch.getPatches());
 			}
 
 			public NinePatch read (Json json, Object jsonData, Class type) {
