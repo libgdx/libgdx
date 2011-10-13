@@ -78,7 +78,7 @@ public class SkinPacker {
 			protected void processFile (InputFile inputFile) throws Exception {
 				BufferedImage image = ImageIO.read(inputFile.inputFile);
 				String name = inputFile.outputFile.getName();
-				name = name.substring(0, name.length() - 2);
+				name = name.substring(0, name.length());
 				image = getSplits(image, name);
 				texturePacker.addImage(image, name);
 			}
@@ -130,7 +130,7 @@ public class SkinPacker {
 				}
 
 				// No splits, or all splits.
-				if (startY == 1 && endY == raster.getHeight()) return image;
+				if (startX == 1 && endX == 1 && startY == 1 && endY == 1) return image;
 
 				int[] splits = new int[4];
 				splits[0] = startX - 1;
@@ -170,8 +170,13 @@ public class SkinPacker {
 				for (Region region : atlas.getRegions()) {
 					int[] split = nameToSplits.get(region.name);
 					TextureRegion textureRegion = new TextureRegion(texture, region.left, region.top, region.width, region.height);
+					boolean isNinePatch = region.name.endsWith(".9");
+					if (isNinePatch) region.name = region.name.substring(0, region.name.length() - 2);
 					if (split == null) {
-						skin.addResource(region.name, textureRegion);
+						if (isNinePatch)
+							skin.addResource(region.name, new NinePatch(textureRegion));
+						else
+							skin.addResource(region.name, textureRegion);
 					} else {
 						skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
 							region.height - split[3]));
@@ -185,20 +190,23 @@ public class SkinPacker {
 				new FileHandle(packedDir).deleteDirectory();
 
 				Json json = new Json();
-				FileHandle oldSkinFile = new FileHandle(skinFile);
-				ObjectMap oldSkin = json.fromJson(ObjectMap.class, new FileHandle(skinFile));
-				ObjectMap newSkin = json.fromJson(ObjectMap.class, newSkinFile);
-				ObjectMap oldResources = (ObjectMap)oldSkin.get("resources");
-				ObjectMap newResources = (ObjectMap)newSkin.get("resources");
-				oldResources.put(NinePatch.class.getName(), newResources.get(NinePatch.class.getName()));
-				oldResources.put(TextureRegion.class.getName(), newResources.get(TextureRegion.class.getName()));
-
-				Writer writer = oldSkinFile.writer(false);
-				try {
-					writer.write(json.prettyPrint(oldSkin, true));
-					writer.close();
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
+				if (skinFile != null) {
+					FileHandle oldSkinFile = new FileHandle(skinFile);
+					ObjectMap oldSkin = json.fromJson(ObjectMap.class, new FileHandle(skinFile));
+					ObjectMap newSkin = json.fromJson(ObjectMap.class, newSkinFile);
+					ObjectMap oldResources = (ObjectMap)oldSkin.get("resources");
+					ObjectMap newResources = (ObjectMap)newSkin.get("resources");
+					oldResources.put(NinePatch.class.getName(), newResources.get(NinePatch.class.getName()));
+					oldResources.put(TextureRegion.class.getName(), newResources.get(TextureRegion.class.getName()));
+					Writer writer = oldSkinFile.writer(false);
+					try {
+						writer.write(json.prettyPrint(oldSkin, true));
+						writer.close();
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
+					}
+				} else {
+					newSkinFile.moveTo(new FileHandle(inputDir).child("skin.json"));
 				}
 
 				newSkinFile.delete();
