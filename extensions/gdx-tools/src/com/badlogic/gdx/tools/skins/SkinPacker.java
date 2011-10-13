@@ -78,7 +78,7 @@ public class SkinPacker {
 			protected void processFile (InputFile inputFile) throws Exception {
 				BufferedImage image = ImageIO.read(inputFile.inputFile);
 				String name = inputFile.outputFile.getName();
-				name = name.substring(0, name.length());
+				name = name.substring(0, name.length() - 2);
 				image = getSplits(image, name);
 				texturePacker.addImage(image, name);
 			}
@@ -130,13 +130,18 @@ public class SkinPacker {
 				}
 
 				// No splits, or all splits.
-				if (startX == 1 && endX == 1 && startY == 1 && endY == 1) return image;
+				boolean singleRegion = startX == 1 && endX == 1 && startY == 1 && endY == 1;
+				if (singleRegion) {
+					endX = raster.getWidth();
+					endY = raster.getHeight();
+				}
 
-				int[] splits = new int[4];
+				int[] splits = new int[5];
 				splits[0] = startX - 1;
 				splits[1] = endX - 1;
 				splits[2] = startY - 1;
 				splits[3] = endY - 1;
+				splits[4] = singleRegion ? 1 : 0;
 				nameToSplits.put(name, splits);
 
 				BufferedImage newImage = new BufferedImage(raster.getWidth() - 2, raster.getHeight() - 2,
@@ -170,16 +175,14 @@ public class SkinPacker {
 				for (Region region : atlas.getRegions()) {
 					int[] split = nameToSplits.get(region.name);
 					TextureRegion textureRegion = new TextureRegion(texture, region.left, region.top, region.width, region.height);
-					boolean isNinePatch = region.name.endsWith(".9");
-					if (isNinePatch) region.name = region.name.substring(0, region.name.length() - 2);
 					if (split == null) {
-						if (isNinePatch)
+						skin.addResource(region.name, textureRegion);
+					} else {
+						if (split[4] == 1) // Is single region for ninepatch.
 							skin.addResource(region.name, new NinePatch(textureRegion));
 						else
-							skin.addResource(region.name, textureRegion);
-					} else {
-						skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
-							region.height - split[3]));
+							skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
+								region.height - split[3]));
 					}
 				}
 				FileHandle newSkinFile = new FileHandle(new File(inputDir, "temp-skin"));
@@ -232,9 +235,9 @@ public class SkinPacker {
 	}
 
 	static public void main (String[] args) throws Exception {
-		File inputDir = new File("C:/Users/Nate/Desktop/skin");
-		File skinFile = new File("C:/Users/Nate/Desktop/skin/uiskin.json");
-		File imageFile = new File("C:/Users/Nate/Desktop/skin/uiskin.png");
+		File inputDir = new File("C:/Users/Nate/Desktop/shit");
+		File skinFile = new File("C:/Users/Nate/Desktop/shit/skin.json");
+		File imageFile = new File("C:/Users/Nate/Desktop/shit/uiskin.png");
 		Settings settings = new Settings();
 		settings.defaultFilterMag = TextureFilter.Linear;
 		settings.defaultFilterMin = TextureFilter.Linear;
