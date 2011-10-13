@@ -251,7 +251,7 @@ public class Skin implements Disposable {
 				TextureRegion[] patches = ninePatch.getPatches();
 				if (patches[0] == null && patches[1] == null && patches[2] == null && patches[3] == null && patches[4] != null
 					&& patches[5] == null && patches[6] == null && patches[7] == null && patches[8] == null)
-					json.writeValue(patches[4]);
+					json.writeValue(new TextureRegion[] {patches[4]});
 				else
 					json.writeValue(ninePatch.getPatches());
 			}
