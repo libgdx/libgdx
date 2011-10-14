@@ -3,10 +3,13 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class CheckBox extends Button {
 	protected Image image;
+
+	private boolean isCheckedRegion;
 
 	public CheckBox (String text, CheckBoxStyle style) {
 		this(text, style, null);
@@ -25,9 +28,12 @@ public class CheckBox extends Button {
 		pack();
 	}
 
-	public void click () {
-		super.click();
-		image.setRegion(isChecked ? ((CheckBoxStyle)style).checkboxOn : ((CheckBoxStyle)style).checkboxOff);
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		if (isCheckedRegion != isChecked) {
+			isCheckedRegion = isChecked;
+			image.setRegion(isChecked ? ((CheckBoxStyle)style).checkboxOn : ((CheckBoxStyle)style).checkboxOff);
+		}
+		super.draw(batch, parentAlpha);
 	}
 
 	static public class CheckBoxStyle extends ButtonStyle {
