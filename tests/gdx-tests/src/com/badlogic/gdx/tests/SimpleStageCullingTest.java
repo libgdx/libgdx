@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
+import com.badlogic.gdx.utils.Scaling;
 
 /** This is a simple demonstration of how to perform VERY basic culling on hierarchies of stage actors that do not scale or rotate.
  * It is not a general solution as it assumes that actors and groups are only translated (moved, change their x/y coordinates).
