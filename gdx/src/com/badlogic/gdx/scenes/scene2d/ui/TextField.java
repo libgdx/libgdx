@@ -468,7 +468,15 @@ public class TextField extends Widget {
 
 		BitmapFont font = style.font;
 
-		this.text = text;
+		StringBuffer buffer = new StringBuffer();
+		for(int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if(font.containsCharacter(c)) {
+				buffer.append(c);
+			}
+		}
+		
+		this.text = buffer.toString();
 		this.cursor = 0;
 		this.hasSelection = false;
 		font.computeGlyphAdvancesAndPositions(text, this.glyphAdvances, this.glyphPositions);
@@ -476,6 +484,31 @@ public class TextField extends Widget {
 		textBounds.set(font.getBounds(text));
 		textBounds.height -= font.getDescent() * 2;
 		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
+	}
+	
+	/**
+	 * Sets the selected text in the text field. 
+	 * @param selectionStart start position in the range 0 to text.length -1
+	 * @param selectionEnd end position in the range selectionStart + 1 to text.length
+	 */
+	public void setSelection (int selectionStart, int selectionEnd) {
+		if(selectionStart < 0) throw new IllegalArgumentException("selectionStart must be >= 0");
+		if(selectionStart >= selectionEnd) throw new IllegalArgumentException("selectionStart must be < selectionEnd");
+		selectionEnd = Math.min(text.length(), selectionEnd);
+		
+		this.hasSelection = true;
+		this.selectionStart = selectionStart;
+		this.cursor = selectionEnd;
+	}
+	
+	/**
+	 * Sets the cursor position and disables the selection.
+	 * @param cursorPosition cursor position in the range 0 to text.length
+	 */
+	public void setCursorPosition (int cursorPosition) {
+		if(cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
+		this.hasSelection = false;
+		this.cursor = Math.min(cursorPosition, text.length());
 	}
 
 	/** @return the text of this text field. Never null, might be an empty string. */

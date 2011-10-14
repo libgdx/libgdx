@@ -355,6 +355,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				try {
 					synch.wait();
 				} catch (InterruptedException ignored) {
+					Gdx.app.log("AndroidGraphics", "waiting for pause synchronization failed!");
 				}
 			}
 		}
@@ -369,6 +370,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				try {
 					synch.wait();
 				} catch (InterruptedException ex) {
+					Gdx.app.log("AndroidGraphics", "waiting for destroy synchronization failed!");
 				}
 			}
 		}
