@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -33,7 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 public class FlickScrollPane extends Group implements Layout {
 	protected final Stage stage;
 	protected Actor widget;
-	protected boolean needsLayout;
 
 	protected final Rectangle widgetAreaBounds = new Rectangle();
 	protected final Rectangle widgetCullingArea = new Rectangle();
@@ -107,7 +107,7 @@ public class FlickScrollPane extends Group implements Layout {
 				return false;
 			}
 		});
-		
+
 		width = 150;
 		height = 150;
 	}
@@ -131,15 +131,11 @@ public class FlickScrollPane extends Group implements Layout {
 	void clamp () {
 		if (!clamp) return;
 		if (bounces) {
-			amountX = Math.max(-bounceDistance, amountX);
-			amountX = Math.min(maxX + bounceDistance, amountX);
-			amountY = Math.max(-bounceDistance, amountY);
-			amountY = Math.min(maxY + bounceDistance, amountY);
+			amountX = MathUtils.clamp(amountX, -bounceDistance, maxX + bounceDistance);
+			amountY = MathUtils.clamp(amountY, -bounceDistance, maxY + bounceDistance);
 		} else {
-			amountX = Math.max(0, amountX);
-			amountX = Math.min(maxX, amountX);
-			amountY = Math.max(0, amountY);
-			amountY = Math.min(maxY, amountY);
+			amountX = MathUtils.clamp(amountX, 0, maxX);
+			amountY = MathUtils.clamp(amountY, 0, maxY);
 		}
 	}
 
@@ -183,6 +179,7 @@ public class FlickScrollPane extends Group implements Layout {
 		float widgetWidth, widgetHeight;
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
+			layout.layout();
 			widgetWidth = layout.getPrefWidth();
 			widgetHeight = layout.getPrefHeight();
 		} else {
@@ -198,12 +195,12 @@ public class FlickScrollPane extends Group implements Layout {
 		widgetWidth = Math.max(width, widgetWidth);
 		if (disableX || widget.width != widgetWidth) {
 			widget.width = widgetWidth;
-			needsLayout = true;
+			if (widget instanceof Layout) ((Layout)widget).invalidate();
 		}
 		widgetHeight = Math.max(height, widgetHeight);
 		if (disableY || widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.height = widgetHeight;
-			needsLayout = true;
+			if (widget instanceof Layout) ((Layout)widget).invalidate();
 		}
 
 		// Calculate the widgets offset depending on the scroll state and available widget area.
@@ -236,8 +233,6 @@ public class FlickScrollPane extends Group implements Layout {
 		// Calculate the bounds for the scrollbars, the widget area and the scissor area.
 		calculateBoundsAndPositions(batch.getTransformMatrix());
 
-		if (needsLayout) layout();
-
 		// Enable scissors for widget area and draw the widget.
 		if (ScissorStack.pushScissors(scissorBounds)) {
 			drawChildren(batch, parentAlpha);
@@ -249,18 +244,10 @@ public class FlickScrollPane extends Group implements Layout {
 
 	@Override
 	public void layout () {
-		if (!needsLayout) return;
-		needsLayout = false;
-		if (widget instanceof Layout) {
-			Layout layout = (Layout)widget;
-			layout.invalidate();
-			layout.layout();
-		}
 	}
 
 	@Override
 	public void invalidate () {
-		needsLayout = true;
 	}
 
 	@Override

@@ -36,14 +36,16 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
-import com.badlogic.gdx.scenes.scene2d.ui.Image.Scaling;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.esotericsoftware.tablelayout.BaseTableLayout;
 import com.esotericsoftware.tablelayout.Cell;
 
@@ -120,6 +122,12 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 		Widget.invalidateHierarchy(getTable());
 	}
 
+	private void toStageCoordinates (Actor actor, Vector2 point) {
+		point.x += actor.x;
+		point.y += actor.y;
+		toStageCoordinates(actor.parent, point);
+	}
+
 	public void drawDebug (SpriteBatch batch) {
 		if (getDebug() == DEBUG_NONE || debugRects == null) return;
 		if (debugRenderer == null) {
@@ -129,25 +137,21 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 				debugRenderer = new ImmediateModeRenderer10(64);
 		}
 
-		Table table = getTable();
-		Actor parent = table.parent;
-		float x = table.x, y = 0;
+		float x = 0, y = 0;
+		Actor parent = getTable();
 		while (parent != null) {
-			if (parent instanceof Group && ((Group)parent).transform) {
+			if (parent instanceof Group) {
 				x += parent.x;
-				y = parent.y + parent.height - y;
+				y += parent.y;
 			}
 			parent = parent.parent;
 		}
-		y = table.y + table.height - y;
-
-		int viewHeight = Gdx.graphics.getHeight();
 
 		debugRenderer.begin(batch.getProjectionMatrix(), GL10.GL_LINES);
 		for (int i = 0, n = debugRects.size; i < n; i++) {
 			DebugRect rect = debugRects.get(i);
 			float x1 = x + rect.x;
-			float y1 = y - rect.y - rect.height;
+			float y1 = y + rect.y - rect.height;
 			float x2 = x1 + rect.width;
 			float y2 = y1 + rect.height;
 			float r = (rect.type & DEBUG_CELL) != 0 ? 1 : 0;

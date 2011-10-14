@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
@@ -15,6 +16,13 @@ public class Button extends Table {
 	public boolean isChecked;
 
 	protected ClickListener listener;
+
+	public Button (TextureRegion region) {
+		ButtonStyle style = new ButtonStyle();
+		style.up = new NinePatch(region);
+		setStyle(style);
+		initialize();
+	}
 
 	public Button (Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
@@ -52,6 +60,10 @@ public class Button extends Table {
 	public Button (ButtonStyle style, String name) {
 		super(name);
 		setStyle(style);
+		initialize();
+	}
+
+	private void initialize () {
 		super.setClickListener(new ClickListener() {
 			public void click (Actor actor) {
 				isChecked = !isChecked;
@@ -62,6 +74,13 @@ public class Button extends Table {
 
 	public void setStyle (ButtonStyle style) {
 		this.style = style;
+		for (int i = 0; i < children.size(); i++) {
+			Actor child = children.get(i);
+			if (child instanceof Label) {
+				((Label)child).setStyle(style);
+				break;
+			}
+		}
 		setBackground(isPressed ? style.down : style.up);
 		invalidateHierarchy();
 	}
@@ -78,22 +97,19 @@ public class Button extends Table {
 			invalidateHierarchy();
 			return;
 		}
+		getLabel().setText(text);
+	}
+
+	public Label getLabel () {
 		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
-			if (child instanceof Label) {
-				((Label)child).setText(text);
-				return;
-			}
+			if (child instanceof Label) return (Label)child;
 		}
 		throw new GdxRuntimeException("No child label was found.");
 	}
 
 	public String getText () {
-		for (int i = 0; i < children.size(); i++) {
-			Actor child = children.get(i);
-			if (child instanceof Label) return ((Label)child).getText();
-		}
-		throw new GdxRuntimeException("No child label was found.");
+		return getLabel().getText();
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
@@ -121,6 +137,14 @@ public class Button extends Table {
 			child.x -= offsetX;
 			child.y -= offsetY;
 		}
+	}
+
+	public float getMinWidth () {
+		return getPrefWidth();
+	}
+
+	public float getMinHeight () {
+		return getPrefHeight();
 	}
 
 	/** Defines a button style, see {@link Button}

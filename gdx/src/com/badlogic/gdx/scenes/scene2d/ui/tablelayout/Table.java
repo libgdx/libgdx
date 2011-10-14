@@ -47,15 +47,17 @@ import com.esotericsoftware.tablelayout.Cell;
 /** @author Nathan Sweet */
 public class Table extends Group implements Layout {
 	private final TableLayout layout;
+
 	boolean sizeInvalid = true;
-
-	private ClickListener listener;
-
-	NinePatch backgroundPatch;
+	private int prefWidth, prefHeight, minWidth, minHeight;
 
 	private Stage stage;
+	private NinePatch backgroundPatch;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
+	private ClickListener listener;
+
+	protected boolean needsLayout = true;
 
 	public boolean isPressed;
 
@@ -118,32 +120,36 @@ public class Table extends Group implements Layout {
 		layout.layout();
 		layout.invalidate();
 		sizeInvalid = false;
+
+		if (backgroundPatch != null) {
+			prefWidth = Math.max(layout.getPrefWidth(), (int)backgroundPatch.getTotalWidth());
+			prefHeight = Math.max(layout.getPrefHeight(), (int)backgroundPatch.getTotalHeight());
+		} else {
+			prefWidth = layout.getPrefWidth();
+			prefHeight = layout.getPrefHeight();
+		}
+		minWidth = layout.getMinWidth();
+		minHeight = layout.getMinHeight();
 	}
 
 	public float getPrefWidth () {
 		if (sizeInvalid) computeSize();
-		if (backgroundPatch != null)
-			return Math.max(layout.getPrefWidth(), backgroundPatch.getTotalWidth());
-		else
-			return layout.getPrefWidth();
+		return prefWidth;
 	}
 
 	public float getPrefHeight () {
 		if (sizeInvalid) computeSize();
-		if (backgroundPatch != null)
-			return Math.max(layout.getPrefHeight(), backgroundPatch.getTotalHeight());
-		else
-			return layout.getPrefHeight();
+		return prefHeight;
 	}
 
 	public float getMinWidth () {
 		if (sizeInvalid) computeSize();
-		return layout.getMinWidth();
+		return minWidth;
 	}
 
 	public float getMinHeight () {
 		if (sizeInvalid) computeSize();
-		return layout.getMinHeight();
+		return minHeight;
 	}
 
 	public float getMaxWidth () {
@@ -264,10 +270,13 @@ public class Table extends Group implements Layout {
 	/** Positions and sizes children of the actor being laid out using the cell associated with each child.
 	 * @see TableLayout#layout() */
 	public void layout () {
+		if (!needsLayout) return;
+		needsLayout = false;
 		layout.layout();
 	}
 
 	public void invalidate () {
+		needsLayout = true;
 		layout.invalidate();
 	}
 

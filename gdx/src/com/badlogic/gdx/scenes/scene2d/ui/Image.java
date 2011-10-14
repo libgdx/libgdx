@@ -4,6 +4,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Scaling;
 
 public class Image extends Widget {
 	protected TextureRegion region;
@@ -72,43 +74,9 @@ public class Image extends Widget {
 		} else
 			return;
 
-		float width = this.width * scaleX;
-		float height = this.height * scaleY;
-
-		switch (scaling) {
-		case fill: {
-			float widgetRatio = height / width;
-			float regionRatio = regionHeight / regionWidth;
-			float scale = regionRatio > widgetRatio ? width / regionWidth : height / regionHeight;
-			imageWidth = regionWidth * scale;
-			imageHeight = regionHeight * scale;
-			break;
-		}
-		case fit: {
-			float widgetRatio = height / width;
-			float regionRatio = regionHeight / regionWidth;
-			float scale = regionRatio < widgetRatio ? width / regionWidth : height / regionHeight;
-			imageWidth = regionWidth * scale;
-			imageHeight = regionHeight * scale;
-			break;
-		}
-		case stretch:
-			imageWidth = width;
-			imageHeight = height;
-			break;
-		case stretchX:
-			imageWidth = width;
-			imageHeight = regionHeight;
-			break;
-		case stretchY:
-			imageWidth = regionWidth;
-			imageHeight = height;
-			break;
-		case none:
-			imageWidth = regionWidth;
-			imageHeight = regionHeight;
-			break;
-		}
+		Vector2 size = scaling.apply(regionWidth, regionHeight, width * scaleX, height * scaleY);
+		imageWidth = size.x;
+		imageHeight = size.y;
 
 		if ((align & Align.LEFT) != 0)
 			imageX = 0;
@@ -188,9 +156,5 @@ public class Image extends Widget {
 	}
 
 	public void touchDragged (float x, float y, int pointer) {
-	}
-
-	static public enum Scaling {
-		fill, fit, stretch, stretchX, stretchY, none
 	}
 }

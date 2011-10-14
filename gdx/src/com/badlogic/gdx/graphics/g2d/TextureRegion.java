@@ -152,7 +152,7 @@ public class TextureRegion {
 
 	/** Returns the region's width. May be negative if the texture region is flipped horizontally. */
 	public int getRegionWidth () {
-		return (int)((u2 - u) * texture.getWidth());
+		return (int)(u2 * texture.getWidth() - u * texture.getWidth());
 	}
 
 	public void setRegionWidth (int width) {
@@ -161,7 +161,7 @@ public class TextureRegion {
 
 	/** Returns the region's height. May be negative if the texture region is flipped horizontally. */
 	public int getRegionHeight () {
-		return (int)((v2 - v) * texture.getHeight());
+		return (int)(v2 * texture.getHeight() - v * texture.getHeight());
 	}
 
 	public void setRegionHeight (int height) {

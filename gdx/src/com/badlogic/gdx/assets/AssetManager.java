@@ -399,7 +399,6 @@ public class AssetManager implements Disposable {
 		if (listener != null) {
 			listener.error(assetDesc.fileName, assetDesc.type, t);
 		} else {
-			t.printStackTrace();
 			throw new GdxRuntimeException(t);
 		}
 	}

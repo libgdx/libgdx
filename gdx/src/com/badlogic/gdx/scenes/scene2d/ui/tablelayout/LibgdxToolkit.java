@@ -128,7 +128,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 
 	public void addDebugRectangle (TableLayout layout, int type, int x, int y, int w, int h) {
 		if (layout.debugRects == null) layout.debugRects = new Array();
-		layout.debugRects.add(new DebugRect(type, x, y, w, h));
+		layout.debugRects.add(new DebugRect(type, x, (int)(layout.getTable().height - y), w, h));
 	}
 
 	/** Sets the name of a font. */

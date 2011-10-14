@@ -97,6 +97,19 @@ public abstract class Widget extends Actor implements Layout {
 		invalidate();
 	}
 
+	public void layout () {
+	}
+
+	public boolean touchDown (float x, float y, int pointer) {
+		return false;
+	}
+
+	public void touchUp (float x, float y, int pointer) {
+	}
+
+	public void touchDragged (float x, float y, int pointer) {
+	}
+
 	static public void invalidateHierarchy (Actor actor) {
 		if (actor instanceof Layout) ((Layout)actor).invalidate();
 		Group parent = actor.parent;
