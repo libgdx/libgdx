@@ -394,4 +394,20 @@ public class FileHandle {
 		}
 		return file.delete();
 	}
+
+	/**
+	 * Writes the given string to the file as UTF8. Throws a GdxRuntimeException if the file is not
+	 * an absolute file. 
+	 * @param string
+	 */
+	public void writeString (String string) {
+		OutputStream writeStream = write(false);
+		try {
+			writeStream.write(string.getBytes("UTF8"));
+		} catch(Exception e) {
+			throw new GdxRuntimeException("Couldn't write string to file '" + path() + "'", e);
+		} finally {
+			if(writeStream != null) try { writeStream.close(); } catch(Exception e) { }
+		}
+	}
 }
