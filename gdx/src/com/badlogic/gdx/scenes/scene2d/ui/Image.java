@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
+/** @author Nathan Sweet */
 public class Image extends Widget {
 	protected TextureRegion region;
 	protected NinePatch patch;

@@ -123,7 +123,7 @@ public class MipMapTest extends GdxTest {
 
 		camera.update();
 
-		currTexture = hwMipMap.isChecked ? textureHW : textureSW;
+		currTexture = hwMipMap.isChecked() ? textureHW : textureSW;
 		currTexture.bind();
 		currTexture.setFilter(TextureFilter.valueOf(minFilter.getSelection()), TextureFilter.valueOf(magFilter.getSelection()));
 

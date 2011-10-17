@@ -5,24 +5,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** @author Nathan Sweet */
 public class Button extends Table {
 	public ButtonStyle style;
-	public boolean isChecked;
 
 	protected ClickListener listener;
 
-	public Button (TextureRegion region) {
-		ButtonStyle style = new ButtonStyle();
-		style.up = new NinePatch(region);
-		setStyle(style);
-		initialize();
-	}
+	boolean isChecked;
+	ButtonGroup buttonGroup;
 
 	public Button (Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
@@ -66,10 +61,21 @@ public class Button extends Table {
 	private void initialize () {
 		super.setClickListener(new ClickListener() {
 			public void click (Actor actor) {
-				isChecked = !isChecked;
-				if (listener != null) listener.click(actor);
+				boolean newChecked = !isChecked;
+				setChecked(newChecked);
+				// Don't fire listener if the button group reverted the change to isChecked.
+				if (newChecked == isChecked && listener != null) listener.click(actor);
 			}
 		});
+	}
+
+	public void setChecked (boolean isChecked) {
+		this.isChecked = isChecked;
+		if (buttonGroup != null) buttonGroup.setChecked(this, isChecked);
+	}
+
+	public boolean isChecked () {
+		return isChecked;
 	}
 
 	public void setStyle (ButtonStyle style) {
@@ -89,12 +95,13 @@ public class Button extends Table {
 		this.listener = listener;
 	}
 
+	/** Returns the first label found in the button, or null. */
 	public Label getLabel () {
 		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
 			if (child instanceof Label) return (Label)child;
 		}
-		throw new GdxRuntimeException("No child label was found.");
+		return null;
 	}
 
 	public void setText (String text) {
@@ -105,11 +112,16 @@ public class Button extends Table {
 			invalidateHierarchy();
 			return;
 		}
-		getLabel().setText(text);
+		Label label = getLabel();
+		if (label == null) throw new GdxRuntimeException("No child label was found.");
+		label.setText(text);
 	}
 
+	/** Returns the text of the first label in the button, or null if no label was found. */
 	public String getText () {
-		return getLabel().getText();
+		Label label = getLabel();
+		if (label == null) return null;
+		return label.getText();
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
