@@ -84,7 +84,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * </ul>
  * 
  * @author mzechner */
-public class ScrollPane extends Group implements Layout {
+public class ScrollPane extends WidgetGroup {
 	protected final ScrollPaneStyle style;
 	protected Actor widget;
 	protected Stage stage;
@@ -104,6 +104,7 @@ public class ScrollPane extends Group implements Layout {
 	protected boolean touchScrollH = false;
 	protected boolean touchScrollV = false;
 	protected Vector2 lastPoint = new Vector2();
+	float handlePos = 0;
 
 	public ScrollPane (Actor widget, Stage stage, Skin skin) {
 		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), null);
@@ -122,8 +123,6 @@ public class ScrollPane extends Group implements Layout {
 		width = 150;
 		height = 150;
 	}
-
-	Vector3 tmp = new Vector3();
 
 	private void calculateBoundsAndPositions (Matrix4 batchTransform) {
 		final NinePatch background = style.background;
@@ -167,11 +166,7 @@ public class ScrollPane extends Group implements Layout {
 		if (widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.width = widgetWidth;
 			widget.height = widgetHeight;
-			if (widget instanceof Layout) {
-				Layout layout = (Layout)widget;
-				layout.invalidate();
-				layout.layout();
-			}
+			if (widget instanceof Layout) ((Layout)widget).invalidate();
 		}
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
@@ -218,6 +213,10 @@ public class ScrollPane extends Group implements Layout {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
+		if (widget == null) return;
+
+		validate();
+
 		final NinePatch background = style.background;
 		final NinePatch hScrollKnob = style.hScrollKnob;
 		final NinePatch hScroll = style.hScroll;
@@ -256,14 +255,6 @@ public class ScrollPane extends Group implements Layout {
 	}
 
 	@Override
-	public void layout () {
-	}
-
-	@Override
-	public void invalidate () {
-	}
-
-	@Override
 	public float getPrefWidth () {
 		return 150;
 	}
@@ -280,16 +271,6 @@ public class ScrollPane extends Group implements Layout {
 	public float getMinHeight () {
 		return 0;
 	}
-
-	public float getMaxWidth () {
-		return 0;
-	}
-
-	public float getMaxHeight () {
-		return 0;
-	}
-
-	float handlePos = 0;
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
@@ -359,11 +340,6 @@ public class ScrollPane extends Group implements Layout {
 			super.touchDragged(x, y, pointer);
 	}
 
-	@Override
-	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
-	}
-
 	public void setVScrollAmount (float vScrollAmount) {
 		this.vScrollAmount = vScrollAmount;
 	}
@@ -375,11 +351,15 @@ public class ScrollPane extends Group implements Layout {
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget the Actor */
 	public void setWidget (Actor widget) {
-		if (widget == null) throw new IllegalArgumentException("widget must not be null");
-		this.removeActor(this.widget);
+		if (widget == null) throw new IllegalArgumentException("widget cannot be null.");
+		if (this.widget != null) removeActor(this.widget);
 		this.widget = widget;
-		this.addActor(widget);
-		invalidate();
+		if (widget != null) addActor(widget);
+	}
+
+	public Actor hit (float x, float y) {
+		if (x > 0 && x < width && y > 0 && y < height) return super.hit(x, y);
+		return null;
 	}
 
 	/** Defines a scroll pane's style, see {@link ScrollPane}.

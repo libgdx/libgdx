@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
 /** @author Nathan Sweet
  * @author mzechner */
-public class FlickScrollPane extends Group implements Layout {
+public class FlickScrollPane extends WidgetGroup {
 	protected final Stage stage;
 	protected Actor widget;
 
@@ -68,7 +68,7 @@ public class FlickScrollPane extends Group implements Layout {
 
 		this.stage = stage;
 		this.widget = widget;
-		if (widget != null) this.addActor(widget);
+		if (widget != null) addActor(widget);
 
 		gestureDetector = new GestureDetector(new GestureListener() {
 			public boolean pan (int x, int y, int deltaX, int deltaY) {
@@ -179,7 +179,6 @@ public class FlickScrollPane extends Group implements Layout {
 		float widgetWidth, widgetHeight;
 		if (widget instanceof Layout) {
 			Layout layout = (Layout)widget;
-			layout.layout();
 			widgetWidth = layout.getPrefWidth();
 			widgetHeight = layout.getPrefHeight();
 		} else {
@@ -193,15 +192,17 @@ public class FlickScrollPane extends Group implements Layout {
 
 		// If the widget is smaller than the available space, make it take up the available space.
 		widgetWidth = Math.max(width, widgetWidth);
+		boolean invalidate = false;
 		if (disableX || widget.width != widgetWidth) {
 			widget.width = widgetWidth;
-			if (widget instanceof Layout) ((Layout)widget).invalidate();
+			invalidate = true;
 		}
 		widgetHeight = Math.max(height, widgetHeight);
 		if (disableY || widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.height = widgetHeight;
-			if (widget instanceof Layout) ((Layout)widget).invalidate();
+			invalidate = true;
 		}
+		if (invalidate && widget instanceof Layout) ((Layout)widget).invalidate();
 
 		// Calculate the widgets offset depending on the scroll state and available widget area.
 		maxX = widget.width - width;
@@ -243,14 +244,6 @@ public class FlickScrollPane extends Group implements Layout {
 	}
 
 	@Override
-	public void layout () {
-	}
-
-	@Override
-	public void invalidate () {
-	}
-
-	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
 		if (emptySpaceOnlyScroll && super.touchDown(x, y, pointer)) return true;
@@ -268,11 +261,6 @@ public class FlickScrollPane extends Group implements Layout {
 	public void touchDragged (float x, float y, int pointer) {
 		gestureDetector.touchDragged((int)x, (int)y, pointer);
 		super.touchDragged(x, y, pointer);
-	}
-
-	@Override
-	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
 	public void setScrollX (float pixels) {
@@ -294,6 +282,7 @@ public class FlickScrollPane extends Group implements Layout {
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget the Actor */
 	public void setWidget (Actor widget) {
+		if (widget == null) throw new IllegalArgumentException("widget cannot be null.");
 		if (this.widget != null) removeActor(this.widget);
 		this.widget = widget;
 		if (widget != null) addActor(widget);
@@ -334,11 +323,8 @@ public class FlickScrollPane extends Group implements Layout {
 		return 0;
 	}
 
-	public float getMaxWidth () {
-		return 0;
-	}
-
-	public float getMaxHeight () {
-		return 0;
+	public Actor hit (float x, float y) {
+		if (x > 0 && x < width && y > 0 && y < height) return super.hit(x, y);
+		return null;
 	}
 }

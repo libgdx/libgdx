@@ -29,14 +29,11 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit;
 
 /** @author Nathan Sweet */
-public class Stack extends Group implements Layout {
-	private boolean needsLayout = true;
-
+public class Stack extends WidgetGroup {
 	public Stack () {
 		this(null);
 	}
@@ -49,33 +46,14 @@ public class Stack extends Group implements Layout {
 	}
 
 	public void layout () {
-		if (!needsLayout) return;
-		needsLayout = false;
 		for (int i = 0, n = children.size(); i < n; i++) {
 			Actor actor = children.get(i);
 			actor.x = 0;
 			actor.y = 0;
 			actor.width = width;
 			actor.height = height;
-			if (actor instanceof Layout) {
-				Layout layout = (Layout)actor;
-				layout.invalidate();
-				layout.layout();
-			}
+			if (actor instanceof Layout) ((Layout)actor).invalidate();
 		}
-	}
-
-	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (needsLayout) layout();
-		super.draw(batch, parentAlpha);
-	}
-
-	public void invalidate () {
-		needsLayout = true;
-	}
-
-	protected void childrenChanged () {
-		Widget.invalidateHierarchy(this);
 	}
 
 	public float getPrefWidth () {

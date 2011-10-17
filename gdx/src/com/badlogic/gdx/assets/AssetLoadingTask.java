@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets;
 
 import java.util.concurrent.Callable;
@@ -26,8 +27,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}. Implements
- * {@link Callable} and is used with an {@link ExecutorService threadpool} to load parts of an asset asynchronously if the asset
- * is loaded with an {@link AsynchronousAssetLoader}.
+ * {@link Callable} and is used with an {@link ExecutorService threadpool} to load parts of an asset asynchronously if the asset is
+ * loaded with an {@link AsynchronousAssetLoader}.
  * 
  * @author mzechner */
 class AssetLoadingTask implements Callable<Void> {
@@ -35,11 +36,11 @@ class AssetLoadingTask implements Callable<Void> {
 	final AssetDescriptor assetDesc;
 	final AssetLoader loader;
 	final ExecutorService threadPool;
-	
+
 	boolean dependenciesLoaded = false;
 	Array<AssetDescriptor> dependencies;
 	Future<Void> depsFuture = null;
-	
+
 	Future<Void> loadFuture = null;
 	Object asset = null;
 
@@ -70,8 +71,9 @@ class AssetLoadingTask implements Callable<Void> {
 	}
 
 	/** Updates the loading of the asset. In case the asset is loaded with an {@link AsynchronousAssetLoader}, the loaders
-	 * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, Object)} method is first called on a worker thread. Once this
-	 * method returns, the rest of the asset is loaded on the rendering thread via {@link AsynchronousAssetLoader#loadSync(AssetManager, String, Object)}.
+	 * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, AssetLoaderParameters)} method is first called on a worker
+	 * thread. Once this method returns, the rest of the asset is loaded on the rendering thread via
+	 * {@link AsynchronousAssetLoader#loadSync(AssetManager, String, AssetLoaderParameters)}.
 	 * @return true in case the asset was fully loaded, false otherwise
 	 * @throws GdxRuntimeException */
 	public boolean update () {

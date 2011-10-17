@@ -273,6 +273,8 @@ public class TextField extends Widget {
 		parent.keyboardFocus(this);
 		keyboard.show(true);
 		hasSelection = false;
+		lastBlink = 0;
+		cursorOn = false;
 		x = x - renderOffset;
 		for (int i = 0; i < glyphPositions.size; i++) {
 			float pos = glyphPositions.items[i];
@@ -388,10 +390,9 @@ public class TextField extends Widget {
 
 	public boolean keyTyped (char character) {
 		final BitmapFont font = style.font;
-		
 
 		if (parent.keyboardFocusedActor == this) {
-			if(filter != null && !filter.acceptChar(this, character)) return true; 
+			if (filter != null && !filter.acceptChar(this, character)) return true;
 			if (character == 8 && (cursor > 0 || hasSelection)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor - 1) + text.substring(cursor);
@@ -452,12 +453,10 @@ public class TextField extends Widget {
 	public void setTextFieldListener (TextFieldListener listener) {
 		this.listener = listener;
 	}
-	
-	/**
-	 * Sets the {@link TextFieldFilter}
-	 * @param filter
-	 */
-	public void setTextFieldFilter(TextFieldFilter filter) {
+
+	/** Sets the {@link TextFieldFilter}
+	 * @param filter */
+	public void setTextFieldFilter (TextFieldFilter filter) {
 		this.filter = filter;
 	}
 
@@ -469,13 +468,13 @@ public class TextField extends Widget {
 		BitmapFont font = style.font;
 
 		StringBuffer buffer = new StringBuffer();
-		for(int i = 0; i < text.length(); i++) {
+		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
-			if(font.containsCharacter(c)) {
+			if (font.containsCharacter(c)) {
 				buffer.append(c);
 			}
 		}
-		
+
 		this.text = buffer.toString();
 		this.cursor = 0;
 		this.hasSelection = false;
@@ -485,28 +484,24 @@ public class TextField extends Widget {
 		textBounds.height -= font.getDescent() * 2;
 		font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
 	}
-	
-	/**
-	 * Sets the selected text in the text field. 
+
+	/** Sets the selected text in the text field.
 	 * @param selectionStart start position in the range 0 to text.length -1
-	 * @param selectionEnd end position in the range selectionStart + 1 to text.length
-	 */
+	 * @param selectionEnd end position in the range selectionStart + 1 to text.length */
 	public void setSelection (int selectionStart, int selectionEnd) {
-		if(selectionStart < 0) throw new IllegalArgumentException("selectionStart must be >= 0");
-		if(selectionStart >= selectionEnd) throw new IllegalArgumentException("selectionStart must be < selectionEnd");
+		if (selectionStart < 0) throw new IllegalArgumentException("selectionStart must be >= 0");
+		if (selectionStart >= selectionEnd) throw new IllegalArgumentException("selectionStart must be < selectionEnd");
 		selectionEnd = Math.min(text.length(), selectionEnd);
-		
+
 		this.hasSelection = true;
 		this.selectionStart = selectionStart;
 		this.cursor = selectionEnd;
 	}
-	
-	/**
-	 * Sets the cursor position and disables the selection.
-	 * @param cursorPosition cursor position in the range 0 to text.length
-	 */
+
+	/** Sets the cursor position and disables the selection.
+	 * @param cursorPosition cursor position in the range 0 to text.length */
 	public void setCursorPosition (int cursorPosition) {
-		if(cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
+		if (cursorPosition < 0) throw new IllegalArgumentException("cursorPosition must be >= 0");
 		this.hasSelection = false;
 		this.cursor = Math.min(cursorPosition, text.length());
 	}
@@ -555,26 +550,21 @@ public class TextField extends Widget {
 	static public interface TextFieldListener {
 		public void keyTyped (TextField textField, char key);
 	}
-	
-	/**
-	 * Interface for filtering characters entered into the text field.
-	 * @author mzechner
-	 *
-	 */
+
+	/** Interface for filtering characters entered into the text field.
+	 * @author mzechner */
 	static public interface TextFieldFilter {
-		/**
-		 * @param textField
+		/** @param textField
 		 * @param key
-		 * @return whether to accept the character
-		 */
-		public boolean acceptChar(TextField textField, char key);
-		
+		 * @return whether to accept the character */
+		public boolean acceptChar (TextField textField, char key);
+
 		static public class DigitsOnlyFilter implements TextFieldFilter {
 			@Override
 			public boolean acceptChar (TextField textField, char key) {
 				return Character.isDigit(key) || key == 8;
 			}
-			
+
 		}
 	}
 

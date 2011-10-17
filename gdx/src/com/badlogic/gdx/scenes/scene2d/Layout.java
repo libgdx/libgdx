@@ -17,23 +17,35 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 public interface Layout {
-	/** Positions and sizes each child of this actor. Subsequent calls will not have any affect unless {@link #invalidate()} is
-	 * called. */
+	/** Positions and sizes each child of this actor. Usually should not be called directly, instead {@link #invalidate()} or
+	 * {@link #validate()} should be used. */
 	public void layout ();
 
-	/** Invalidates the layout, forcing the next call to {@link #layout()} to relayout. If an actor is resized or otherwise changed
-	 * in a way that affects its layout, {@link #invalidate()} should be called. */
+	/** Invalidates the layout, causing {@link #layout()} to be called by {@link #validate()}. This should be called when something
+	 * changes in the actor that requires a layout but does not change the min, pref, or max size of the actor. */
 	public void invalidate ();
 
+	/** Invalidates this actor and all its parents, calling {@link #invalidate()} on all involved actors. This method should be
+	 * called when something changes in the actor that affects the min, pref, or max size of this actor. */
+	public void invalidateHierarchy ();
+
+	/** Ensures the actor has been laid out. Calls {@link #layout()} if {@link #invalidate()} has called since the last time
+	 * {@link #validate()} was called. This method is usually called in
+	 * {@link Actor#draw(com.badlogic.gdx.graphics.g2d.SpriteBatch, float)} before drawing is performed. */
+	public void validate ();
+
+	/** Sizes this actor to its preferred width and height and calls {@link #invalidate()}. */
+	public void pack ();
+
 	public float getMinWidth ();
-	
+
 	public float getMinHeight ();
-	
+
 	public float getPrefWidth ();
 
 	public float getPrefHeight ();
-	
+
 	public float getMaxWidth ();
-	
+
 	public float getMaxHeight ();
 }

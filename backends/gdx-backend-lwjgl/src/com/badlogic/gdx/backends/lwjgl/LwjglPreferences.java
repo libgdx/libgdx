@@ -32,7 +32,7 @@ import com.badlogic.gdx.files.FileHandle;
 public class LwjglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
-	
+
 	LwjglPreferences (String name) {
 		this(Gdx.files.external(name));
 	}
@@ -172,6 +172,7 @@ public class LwjglPreferences implements Preferences {
 
 	@Override
 	public void flush () {
+		if (Gdx.files == null) return;
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(Gdx.files.external(LwjglPreferences.this.name).write(false));

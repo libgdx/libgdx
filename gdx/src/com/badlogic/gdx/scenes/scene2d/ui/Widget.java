@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
@@ -34,9 +34,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
  * will tell the Widget to only invalidate itself. The later will also invalidate all the widget's parents. The later mechanism is
  * used in case the widget was modified and the container it is contained in must relayout itself due to this modification as
  * well.
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public abstract class Widget extends Actor implements Layout {
-	protected boolean invalidated = true;
+	private boolean needsLayout = true;
 
 	/** Creates a new widget without a name or preferred size. */
 	public Widget () {
@@ -65,36 +66,34 @@ public abstract class Widget extends Actor implements Layout {
 		return 0;
 	}
 
-	/** Invalidates this widget, causing it to relayout itself at the next oportunity. This should be called when something changes
-	 * in the widget that requires a layout but does not change the min, pref, or max size of the widget. */
 	public void invalidate () {
-		this.invalidated = true;
+		needsLayout = true;
 	}
 
-	/** Invalidates this widget and all its parents, causing all involved widgets to relayout themselves at the next oportunity.
-	 * Also sets the width and height of the widget to the pref size, in case none of the parent actors are performaing layout.
-	 * This should be called when something changes in the widgets that changes the min, pref, or max size of the widget. */
+	public void validate () {
+		if (!needsLayout) return;
+		needsLayout = false;
+		layout();
+	}
+
 	public void invalidateHierarchy () {
 		invalidate();
-		pack();
-		Group parent = this.parent;
-		while (parent != null) {
-			if (!(parent instanceof Layout)) break;
-			((Layout)parent).invalidate();
-			parent = parent.parent;
-		}
+		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();
 	}
 
-	@Override
-	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
-	}
-
-	/** Sizes this widget to its preferred width and height. */
 	public void pack () {
 		width = getPrefWidth();
 		height = getPrefHeight();
 		invalidate();
+	}
+
+	/** If this method is overridden, the super method or {@link #validate()} should be called. */
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		validate();
+	}
+
+	public Actor hit (float x, float y) {
+		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
 	public void layout () {
@@ -108,15 +107,5 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void touchDragged (float x, float y, int pointer) {
-	}
-
-	static public void invalidateHierarchy (Actor actor) {
-		if (actor instanceof Layout) ((Layout)actor).invalidate();
-		Group parent = actor.parent;
-		while (parent != null) {
-			if (!(parent instanceof Layout)) break;
-			((Layout)parent).invalidate();
-			parent = parent.parent;
-		}
 	}
 }

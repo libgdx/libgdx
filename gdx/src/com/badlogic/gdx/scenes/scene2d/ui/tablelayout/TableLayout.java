@@ -40,9 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
@@ -54,7 +52,6 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 	/** The atlas to use to find texture regions. */
 	public TextureAtlas atlas;
 
-	boolean needsLayout = true;
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;
 
@@ -84,12 +81,8 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 	}
 
 	public void layout () {
-		if (!needsLayout) return;
-		needsLayout = false;
-
 		Table table = getTable();
 		setLayoutSize(0, 0, (int)table.width, (int)table.height);
-
 		super.layout();
 
 		List<Cell> cells = getCells();
@@ -102,24 +95,14 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 			actor.y = table.height - c.getWidgetY() - widgetHeight;
 			actor.width = c.getWidgetWidth();
 			actor.height = widgetHeight;
-			if (actor instanceof Layout) {
-				Layout layout = (Layout)actor;
-				layout.invalidate();
-				layout.layout();
-			}
+			if (actor instanceof Layout) ((Layout)actor).invalidate();
 		}
-	}
-
-	/** Invalidates the layout, forcing the next call to {@link #layout()} to relayout. If a widget is resized or otherwise changed
-	 * in a way that affects its layout, {@link #invalidate()} should be called. */
-	public void invalidate () {
-		needsLayout = true;
-		getTable().sizeInvalid = true;
 	}
 
 	/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */
 	public void invalidateHierarchy () {
-		Widget.invalidateHierarchy(getTable());
+		super.invalidate();
+		getTable().invalidateHierarchy();
 	}
 
 	private void toStageCoordinates (Actor actor, Vector2 point) {

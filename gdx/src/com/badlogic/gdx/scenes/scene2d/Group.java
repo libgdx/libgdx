@@ -89,8 +89,6 @@ public class Group extends Actor implements Cullable {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (!visible) return;
-
 		if (debug && debugTexture != null && parent != null)
 			batch.draw(debugTexture, x, y, originX, originY, width == 0 ? 200 : width, height == 0 ? 200 : height, scaleX, scaleY,
 				rotation, 0, 0, debugTexture.getWidth(), debugTexture.getHeight(), false, false);
@@ -221,18 +219,21 @@ public class Group extends Actor implements Cullable {
 
 			toChildCoordinates(child, x, y, point);
 			if (child.hit(point.x, point.y) == null) continue;
+
+			if (child instanceof Group) ((Group)child).lastTouchedChild = null; // Allows lastTouchedChild to be the group itself.
+
 			if (child.touchDown(point.x, point.y, pointer)) {
-				if (focusedActor[pointer] == null) {
-					focus(child, pointer);
-				}
-				if (child instanceof Group)
+				if (focusedActor[pointer] == null) focus(child, pointer); // The first actor that accepts touchDown is focused.
+				if (child instanceof Group) {
 					lastTouchedChild = ((Group)child).lastTouchedChild;
-				else
+					if (lastTouchedChild == null) lastTouchedChild = child; // If still null, the group itself was touched.
+				} else
 					lastTouchedChild = child;
 				return true;
 			}
 		}
 
+		lastTouchedChild = null;
 		return false;
 	}
 
@@ -316,7 +317,7 @@ public class Group extends Actor implements Cullable {
 				return hit;
 			}
 		}
-		return null;
+		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
 	/** Called when actors are added to or removed from the group. */

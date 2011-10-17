@@ -41,6 +41,8 @@ public class LwjglFrame extends JFrame {
 				lwjglCanvas.stop();
 			}
 		});
+
+		setVisible(true);
 	}
 
 	public LwjglCanvas getLwjglCanvas () {

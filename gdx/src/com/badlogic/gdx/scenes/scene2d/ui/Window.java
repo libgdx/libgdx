@@ -143,7 +143,7 @@ public class Window extends Table {
 		final BitmapFont titleFont = style.titleFont;
 		final Color titleFontColor = style.titleFontColor;
 
-		layout();
+		validate();
 		applyTransform(batch);
 		calculateBoundsAndScissors(batch.getTransformMatrix());
 

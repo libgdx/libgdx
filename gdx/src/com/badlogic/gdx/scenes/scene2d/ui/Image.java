@@ -61,9 +61,6 @@ public class Image extends Widget {
 	}
 
 	public void layout () {
-		if (!invalidated) return;
-		invalidated = false;
-
 		float regionWidth, regionHeight;
 		if (patch != null) {
 			regionWidth = patch.getTotalWidth();
@@ -94,7 +91,7 @@ public class Image extends Widget {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (invalidated) layout();
+		validate();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (patch != null)
 			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);

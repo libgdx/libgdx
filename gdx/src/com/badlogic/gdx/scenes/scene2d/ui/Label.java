@@ -96,9 +96,6 @@ public class Label extends Widget {
 
 	@Override
 	public void layout () {
-		if (!invalidated) return;
-		invalidated = false;
-
 		if (wrap)
 			bounds.set(cache.getFont().getWrappedBounds(text, width));
 		else
@@ -131,7 +128,7 @@ public class Label extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (invalidated) layout();
+		validate();
 		cache.setPosition(x, y);
 		cache.draw(batch, parentAlpha);
 	}
@@ -151,13 +148,13 @@ public class Label extends Widget {
 
 	public float getPrefWidth () {
 		if (wrap) return 100;
-		if (invalidated) layout();
+		validate();
 		return bounds.width;
 	}
 
 	public float getPrefHeight () {
 		if (wrap) return 100;
-		if (invalidated) layout();
+		validate();
 		return bounds.height - style.font.getDescent() * 2;
 	}
 

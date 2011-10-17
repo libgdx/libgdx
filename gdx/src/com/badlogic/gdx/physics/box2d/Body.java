@@ -244,8 +244,6 @@ public class Body {
 	/**
 	 * Apply a force to the center of mass. This wakes up the body.
 	 * @param force the world force vector, usually in Newtons (N).
-	 * @param forceX
-	 * @param forceY
 	 */
 	public void applyForceToCenter(Vector2 force) {
 		jniApplyForceToCenter(addr, force.x, force.y);
@@ -253,9 +251,8 @@ public class Body {
 	
 	/**
 	 * Apply a force to the center of mass. This wakes up the body.
-	 * @param force the world force vector, usually in Newtons (N).
-	 * @param forceX
-	 * @param forceY
+	 * @param forceX the world force vector, usually in Newtons (N).
+	 * @param forceY the world force vector, usually in Newtons (N).
 	 */
 	public void applyForceToCenter(float forceX, float forceY) {
 		jniApplyForceToCenter(addr, forceX, forceY);

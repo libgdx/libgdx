@@ -89,6 +89,14 @@ public class Button extends Table {
 		this.listener = listener;
 	}
 
+	public Label getLabel () {
+		for (int i = 0; i < children.size(); i++) {
+			Actor child = children.get(i);
+			if (child instanceof Label) return (Label)child;
+		}
+		throw new GdxRuntimeException("No child label was found.");
+	}
+
 	public void setText (String text) {
 		if (children.isEmpty()) {
 			Label label = new Label(text, style);
@@ -98,14 +106,6 @@ public class Button extends Table {
 			return;
 		}
 		getLabel().setText(text);
-	}
-
-	public Label getLabel () {
-		for (int i = 0; i < children.size(); i++) {
-			Actor child = children.get(i);
-			if (child instanceof Label) return (Label)child;
-		}
-		throw new GdxRuntimeException("No child label was found.");
 	}
 
 	public String getText () {

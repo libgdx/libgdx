@@ -52,7 +52,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
-
 	String[] listEntries = {"This is a list entry", "And another one", "The meaning of life", "Is hard to come by",
 		"This is a list entry", "And another one", "The meaning of life", "Is hard to come by", "This is a list entry",
 		"And another one", "The meaning of life", "Is hard to come by", "This is a list entry", "And another one",
@@ -88,9 +87,9 @@ public class UITest extends GdxTest {
 		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
 			skin.getStyle(ComboBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, ui, "scroll");
+		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, ui, "flickscroll");
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane2 = new ScrollPane(list, ui, skin.getStyle(ScrollPaneStyle.class), "scroll2");
+		final ScrollPane scrollPane2 = new ScrollPane(list, ui, skin.getStyle(ScrollPaneStyle.class), "scroll");
 		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, ui, skin.getStyle("default-horizontal",
 			SplitPaneStyle.class), "split");
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
@@ -114,15 +113,12 @@ public class UITest extends GdxTest {
 		window.add(fpsLabel).colspan(4);
 
 		textfield.setTextFieldListener(new TextFieldListener() {
-			@Override
 			public void keyTyped (TextField textField, char key) {
 				if (key == '\n') textField.getOnscreenKeyboard().show(false);
 			}
 		});
 
 		slider.setValueChangedListener(new ValueChangedListener() {
-
-			@Override
 			public void changed (Slider slider, float value) {
 				Gdx.app.log("UITest", "slider: " + value);
 			}

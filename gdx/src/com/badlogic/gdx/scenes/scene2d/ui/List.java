@@ -22,8 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** A list of string items.
@@ -104,10 +102,6 @@ public class List extends Widget implements Cullable {
 	}
 
 	@Override
-	public void layout () {
-	}
-
-	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final NinePatch selectedPatch = style.selectedPatch;
@@ -142,14 +136,6 @@ public class List extends Widget implements Cullable {
 		selected = Math.min(items.length - 1, selected);
 		if (listener != null) listener.selected(this, selected, items[selected]);
 		return true;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
 	}
 
 	/** @return the index of the currently selected item. The top item has an index of 0. */
@@ -241,6 +227,12 @@ public class List extends Widget implements Cullable {
 		this.cullingArea = cullingArea;
 	}
 
+	/** Interface for listening to selection changes.
+	 * @author mzechner */
+	static public interface SelectionListener {
+		public void selected (List list, int selectedIndex, String selection);
+	}
+
 	/** Defines a list style, see {@link List}
 	 * @author mzechner */
 	static public class ListStyle {
@@ -258,11 +250,5 @@ public class List extends Widget implements Cullable {
 			this.fontColorUnselected.set(fontColorUnselected);
 			this.selectedPatch = selectedPatch;
 		}
-	}
-
-	/** Interface for listening to selection changes.
-	 * @author mzechner */
-	static public interface SelectionListener {
-		public void selected (List list, int selectedIndex, String selection);
 	}
 }

@@ -143,6 +143,7 @@ public class LwjglCanvas implements Application {
 
 			public void run () {
 				if (!running) return;
+				canvas.setCursor(null);
 				graphics.updateTime();
 				synchronized (runnables) {
 					for (int i = 0; i < runnables.size(); i++) {

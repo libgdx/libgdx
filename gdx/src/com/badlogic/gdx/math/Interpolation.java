@@ -132,6 +132,7 @@ public abstract class Interpolation {
 		}
 	};
 
+	// BOZO - Scale.
 	static public final Interpolation swingIn = new Interpolation() {
 		public float apply (float a) {
 			return a * a * ((1.70158f + 1) * a - 1.70158f);

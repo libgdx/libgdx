@@ -74,10 +74,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * <li>The <code>handle</code> attribute references a {@link NinePatch} by name, to be used as the split pane's handle</li>
  * </ul>
  * @author mzechner */
-public class SplitPane extends Group implements Layout {
+public class SplitPane extends WidgetGroup {
 	protected SplitPaneStyle style;
-
-	protected boolean invalidated = false;
 
 	protected boolean vertical;
 	protected float splitAmount = 0.5f;
@@ -126,33 +124,13 @@ public class SplitPane extends Group implements Layout {
 	 * @param style */
 	public void setStyle (SplitPaneStyle style) {
 		this.style = style;
-		Widget.invalidateHierarchy(this);
+		invalidateHierarchy();
 	}
 
 	@Override
 	public void layout () {
-		if (!invalidated) return;
-		invalidated = false;
-
-		if (firstWidget instanceof Layout) {
-			Layout layout = (Layout)firstWidget;
-			layout.layout();
-			firstWidget.width = layout.getPrefWidth();
-			firstWidget.height = layout.getPrefHeight();
-		}
-		if (secondWidget instanceof Layout) {
-			Layout layout = (Layout)secondWidget;
-			layout.layout();
-			secondWidget.width = layout.getPrefWidth();
-			secondWidget.height = layout.getPrefHeight();
-		}
-	}
-
-	@Override
-	public void invalidate () {
-		if (firstWidget instanceof Layout) ((Layout)firstWidget).invalidate();
-		if (secondWidget instanceof Layout) ((Layout)secondWidget).invalidate();
-		invalidated = true;
+		if (firstWidget instanceof Layout) ((Layout)firstWidget).pack();
+		if (secondWidget instanceof Layout) ((Layout)secondWidget).pack();
 	}
 
 	@Override
@@ -173,14 +151,7 @@ public class SplitPane extends Group implements Layout {
 		return 0;
 	}
 
-	public float getMaxWidth () {
-		return 0;
-	}
-
-	public float getMaxHeight () {
-		return 0;
-	}
-
+	// BOZO - Use layout.
 	private void calculateBoundsAndPositions (Matrix4 transform) {
 		if (oldSplitAmount != splitAmount) {
 			oldSplitAmount = splitAmount;
@@ -205,19 +176,14 @@ public class SplitPane extends Group implements Layout {
 		firstWidget.y = firstWidgetBounds.y;
 		firstWidget.width = firstWidgetBounds.width;
 		firstWidget.height = firstWidgetBounds.height;
+		if (layoutFirst && firstWidget instanceof Layout) ((Layout)firstWidget).invalidate();
 
 		secondWidget.x = secondWidgetBounds.x;
 		secondWidget.y = secondWidgetBounds.y;
 		secondWidget.width = secondWidgetBounds.width;
 		secondWidget.height = secondWidgetBounds.height;
+		if (layoutSecond && secondWidget instanceof Layout) ((Layout)secondWidget).invalidate();
 
-		if (layoutFirst && firstWidget instanceof Layout) {
-			((Layout)firstWidget).invalidate();
-		}
-
-		if (layoutSecond && secondWidget instanceof Layout) {
-			((Layout)secondWidget).invalidate();
-		}
 		ScissorStack.calculateScissors(stage.getCamera(), transform, firstWidgetBounds, scissors[0]);
 		ScissorStack.calculateScissors(stage.getCamera(), transform, secondWidgetBounds, scissors[1]);
 	}
@@ -250,8 +216,9 @@ public class SplitPane extends Group implements Layout {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		NinePatch handle = style.handle;
+		validate();
 
+		NinePatch handle = style.handle;
 		applyTransform(batch);
 		calculateBoundsAndPositions(batch.getTransformMatrix());
 		for (int i = 0; i < children.size(); i++) {
@@ -262,7 +229,6 @@ public class SplitPane extends Group implements Layout {
 		}
 		batch.setColor(color.r, color.g, color.b, color.a);
 		handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
-		if (invalidated) layout();
 		resetTransform(batch);
 	}
 
@@ -304,7 +270,6 @@ public class SplitPane extends Group implements Layout {
 				splitAmount = dragX / availWidth;
 				if (splitAmount < minAmount) splitAmount = minAmount;
 				if (splitAmount > maxAmount) splitAmount = maxAmount;
-				invalidate();
 				lastPoint.set(x, y);
 			} else {
 				float delta = y - lastPoint.y;
@@ -316,16 +281,11 @@ public class SplitPane extends Group implements Layout {
 				splitAmount = 1 - (dragY / availHeight);
 				if (splitAmount < minAmount) splitAmount = minAmount;
 				if (splitAmount > maxAmount) splitAmount = maxAmount;
-				invalidate();
 				lastPoint.set(x, y);
 			}
+			invalidate();
 		} else
 			super.touchDragged(x, y, pointer);
-	}
-
-	@Override
-	public Actor hit (float x, float y) {
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
 	}
 
 	/** Sets the split amount

@@ -29,6 +29,8 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.util.List;
 
+import javax.xml.bind.Marshaller.Listener;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,28 +38,23 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.esotericsoftware.tablelayout.Cell;
 
 /** @author Nathan Sweet */
-public class Table extends Group implements Layout {
+public class Table extends WidgetGroup {
 	private final TableLayout layout;
-
-	boolean sizeInvalid = true;
-	private int prefWidth, prefHeight, minWidth, minHeight;
 
 	private Stage stage;
 	private NinePatch backgroundPatch;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
 	private ClickListener listener;
-
-	protected boolean needsLayout = true;
 
 	public boolean isPressed;
 
@@ -81,12 +78,10 @@ public class Table extends Group implements Layout {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		if (!visible) return;
-		if (layout.needsLayout) layout.layout();
-
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (backgroundPatch != null) backgroundPatch.draw(batch, x, y, width, height);
 
+		validate();
 		if (stage != null) {
 			applyTransform(batch);
 			calculateScissors(batch.getTransformMatrix());
@@ -113,61 +108,39 @@ public class Table extends Group implements Layout {
 		ScissorStack.calculateScissors(stage.getCamera(), transform, tableBounds, scissors);
 	}
 
-	private void computeSize () {
-		if (!sizeInvalid) return;
-		layout.setLayoutSize(0, 0, 0, 0);
+	public void invalidate () {
 		layout.invalidate();
-		layout.layout();
-		layout.invalidate();
-		sizeInvalid = false;
-
-		if (backgroundPatch != null) {
-			prefWidth = Math.max(layout.getPrefWidth(), (int)backgroundPatch.getTotalWidth());
-			prefHeight = Math.max(layout.getPrefHeight(), (int)backgroundPatch.getTotalHeight());
-		} else {
-			prefWidth = layout.getPrefWidth();
-			prefHeight = layout.getPrefHeight();
-		}
-		minWidth = layout.getMinWidth();
-		minHeight = layout.getMinHeight();
+		super.invalidate();
 	}
 
 	public float getPrefWidth () {
-		if (sizeInvalid) computeSize();
-		return prefWidth;
+		if (backgroundPatch != null) return Math.max(layout.getPrefWidth(), (int)backgroundPatch.getTotalWidth());
+		return layout.getPrefWidth();
 	}
 
 	public float getPrefHeight () {
-		if (sizeInvalid) computeSize();
-		return prefHeight;
+		if (backgroundPatch != null) return Math.max(layout.getPrefHeight(), (int)backgroundPatch.getTotalHeight());
+		return layout.getPrefHeight();
 	}
 
 	public float getMinWidth () {
-		if (sizeInvalid) computeSize();
-		return minWidth;
+		return layout.getMinWidth();
 	}
 
 	public float getMinHeight () {
-		if (sizeInvalid) computeSize();
-		return minHeight;
-	}
-
-	public float getMaxWidth () {
-		return 0;
-	}
-
-	public float getMaxHeight () {
-		return 0;
+		return layout.getMinHeight();
 	}
 
 	/** @param background May be null. */
 	public void setBackground (NinePatch background) {
+		if (this.backgroundPatch == background) return;
 		this.backgroundPatch = background;
 		if (background != null) {
 			padBottom((int)background.getBottomHeight() + 1);
 			padTop((int)background.getTopHeight() + 1);
 			padLeft((int)background.getLeftWidth() + 1);
 			padRight((int)background.getRightWidth() + 1);
+			invalidate();
 		}
 	}
 
@@ -182,8 +155,11 @@ public class Table extends Group implements Layout {
 		this.listener = listener;
 	}
 
+	public ClickListener getClickListener () {
+		return listener;
+	}
+
 	public boolean touchDown (float x, float y, int pointer) {
-		if (!touchable) return false;
 		if (super.touchDown(x, y, pointer)) return true;
 		if (pointer != 0) return false;
 		if (listener == null) return false;
@@ -198,16 +174,6 @@ public class Table extends Group implements Layout {
 
 	public void click () {
 		if (listener != null) listener.click(this);
-	}
-
-	public Actor hit (float x, float y) {
-		Actor child = super.hit(x, y);
-		if (child != null) return child;
-		return x > 0 && x < width && y > 0 && y < height ? this : null;
-	}
-
-	protected void childrenChanged () {
-		invalidateHierarchy();
 	}
 
 	public TableLayout getTableLayout () {
@@ -270,20 +236,7 @@ public class Table extends Group implements Layout {
 	/** Positions and sizes children of the actor being laid out using the cell associated with each child.
 	 * @see TableLayout#layout() */
 	public void layout () {
-		if (!needsLayout) return;
-		needsLayout = false;
 		layout.layout();
-	}
-
-	public void invalidate () {
-		needsLayout = true;
-		layout.invalidate();
-	}
-
-	/** Invalides the layout of this actor and every parent actor to the root of the hierarchy.
-	 * @see TableLayout#invalidateHierarchy() */
-	public void invalidateHierarchy () {
-		layout.invalidateHierarchy();
 	}
 
 	/** Removes all actors and cells from the table (same as {@link #clear()}) and additionally resets all table properties and
@@ -571,13 +524,6 @@ public class Table extends Group implements Layout {
 
 	public int getAlign () {
 		return layout.getAlign();
-	}
-
-	/** Sizes this table to its preferred width and height. */
-	public void pack () {
-		width = getPrefWidth();
-		height = getPrefHeight();
-		invalidate();
 	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be

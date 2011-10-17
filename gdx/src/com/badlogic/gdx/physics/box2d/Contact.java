@@ -92,7 +92,6 @@ public class Contact {
 	
 	/**
 	 *  Get the child primitive index for fixture A.
-	 * @return
 	 */
 	public int getChildIndexA() {
 		return jniGetChildIndexA(addr);
@@ -102,7 +101,6 @@ public class Contact {
 
 	/**
 	 *  Get the child primitive index for fixture B.
-	 * @return
 	 */
 	public int getChildIndexB() {
 		return jniGetChildIndexB(addr);
