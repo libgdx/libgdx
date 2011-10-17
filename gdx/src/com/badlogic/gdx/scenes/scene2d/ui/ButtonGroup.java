@@ -55,6 +55,14 @@ public class ButtonGroup {
 		}
 	}
 
+	/** Sets all buttons' {@link Button#isChecked()} to false, regardless of {@link #setAllowNoneChecked(boolean)}. */
+	public void uncheckAll () {
+		boolean old = allowNoneChecked;
+		allowNoneChecked = true;
+		uncheckAllExcept(null);
+		allowNoneChecked = old;
+	}
+
 	/** @return the checked button, or null. */
 	public Button getChecked () {
 		return checkedButton;

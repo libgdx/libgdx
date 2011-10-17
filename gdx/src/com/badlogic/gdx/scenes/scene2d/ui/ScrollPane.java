@@ -254,13 +254,13 @@ public class ScrollPane extends WidgetGroup {
 		resetTransform(batch);
 	}
 
-	@Override
 	public float getPrefWidth () {
+		if (widget instanceof Layout) return ((Layout)widget).getPrefWidth();
 		return 150;
 	}
 
-	@Override
 	public float getPrefHeight () {
+		if (widget instanceof Layout) return ((Layout)widget).getPrefHeight();
 		return 150;
 	}
 

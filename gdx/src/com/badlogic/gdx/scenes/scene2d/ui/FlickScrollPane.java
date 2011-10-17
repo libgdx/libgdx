@@ -308,10 +308,12 @@ public class FlickScrollPane extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
+		if (widget instanceof Layout) return ((Layout)widget).getPrefWidth();
 		return 150;
 	}
 
 	public float getPrefHeight () {
+		if (widget instanceof Layout) return ((Layout)widget).getPrefHeight();
 		return 150;
 	}
 
