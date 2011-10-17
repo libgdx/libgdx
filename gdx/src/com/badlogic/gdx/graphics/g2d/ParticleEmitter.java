@@ -27,6 +27,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 // BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.
+// BOZO - Use BooleanArray rather than BitSet.
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -175,7 +176,7 @@ public class ParticleEmitter {
 		while (true) {
 			index = active.nextSetBit(index);
 			if (index == -1) break;
-			if (!updateParticle(index, delta, deltaMillis)) {
+			if (!updateParticle(particles[index], delta, deltaMillis)) {
 				active.clear(index);
 				activeCount--;
 			}
@@ -253,8 +254,9 @@ public class ParticleEmitter {
 		while (true) {
 			index = active.nextSetBit(index);
 			if (index == -1) break;
-			if (updateParticle(index, delta, deltaMillis))
-				particles[index].draw(spriteBatch);
+			Particle particle = particles[index];
+			if (updateParticle(particle, delta, deltaMillis))
+				particle.draw(spriteBatch);
 			else {
 				active.clear(index);
 				activeCount--;
@@ -346,10 +348,14 @@ public class ParticleEmitter {
 		if (tintValue.timeline.length > 1) updateFlags |= UPDATE_TINT;
 	}
 
+	protected Particle newParticle (Sprite sprite) {
+		return new Particle(sprite);
+	}
+
 	private void activateParticle (int index) {
 		Particle particle = particles[index];
 		if (particle == null) {
-			particles[index] = particle = new Particle(sprite);
+			particles[index] = particle = newParticle(sprite);
 			particle.flip(flipX, flipY);
 		}
 
@@ -483,8 +489,7 @@ public class ParticleEmitter {
 		particle.setBounds(x - spriteWidth / 2, y - spriteHeight / 2, spriteWidth, spriteHeight);
 	}
 
-	private boolean updateParticle (int index, float delta, int deltaMillis) {
-		Particle particle = particles[index];
+	private boolean updateParticle (Particle particle, float delta, int deltaMillis) {
 		int life = particle.currentLife - deltaMillis;
 		if (life <= 0) return false;
 		particle.currentLife = life;
@@ -881,7 +886,7 @@ public class ParticleEmitter {
 		return Float.parseFloat(readString(reader, name));
 	}
 
-	static class Particle extends Sprite {
+	static protected class Particle extends Sprite {
 		int life, currentLife;
 		float scale, scaleDiff;
 		float rotation, rotationDiff;
