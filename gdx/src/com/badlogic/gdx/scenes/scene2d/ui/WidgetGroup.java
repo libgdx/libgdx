@@ -43,11 +43,15 @@ public abstract class WidgetGroup extends Group implements Layout {
 		needsLayout = false;
 	}
 
+	public boolean needsLayout () {
+		return needsLayout;
+	}
+
 	public void invalidateHierarchy () {
 		invalidate();
 		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();
 	}
-	
+
 	protected void childrenChanged () {
 		invalidateHierarchy();
 	}

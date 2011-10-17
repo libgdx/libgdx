@@ -76,6 +76,10 @@ public abstract class Widget extends Actor implements Layout {
 		layout();
 	}
 
+	public boolean needsLayout () {
+		return needsLayout;
+	}
+
 	public void invalidateHierarchy () {
 		invalidate();
 		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();
