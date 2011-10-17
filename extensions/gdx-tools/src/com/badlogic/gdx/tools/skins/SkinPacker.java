@@ -169,7 +169,7 @@ public class SkinPacker {
 				Skin skin = new Skin();
 				TextureAtlasData atlas = new TextureAtlasData(new FileHandle(new File(packedDir, "pack")), new FileHandle(packedDir),
 					true);
-				if (atlas.getPages().size != 1)
+				if (atlas.getPages().size > 1)
 					throw new GdxRuntimeException("Skin images could not be packed on to a single image!");
 				Texture texture = new Texture(1, 1, Format.Alpha);
 				for (Region region : atlas.getRegions()) {
