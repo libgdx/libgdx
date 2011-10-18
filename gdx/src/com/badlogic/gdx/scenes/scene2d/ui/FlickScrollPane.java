@@ -53,7 +53,7 @@ public class FlickScrollPane extends WidgetGroup {
 	 * no widget. */
 	public boolean emptySpaceOnlyScroll;
 	/** Forces the enabling of scrolling in a direction, even if the contents do not exceed the bounds in that direction. */
-	public boolean forceScrollX, forceScrollY;
+	public boolean forceBounceX, forceBounceY;
 	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
 	public boolean disableX, disableY;
 	/** Prevents scrolling out of the widget's bounds. */
@@ -187,8 +187,8 @@ public class FlickScrollPane extends WidgetGroup {
 		}
 
 		// Figure out if we need horizontal/vertical scrollbars,
-		scrollX = !disableX && (widgetWidth > width || forceScrollX);
-		scrollY = !disableY && (widgetHeight > height || forceScrollY);
+		scrollX = !disableX && (widgetWidth > width || forceBounceX);
+		scrollY = !disableY && (widgetHeight > height || forceBounceY);
 
 		// If the widget is smaller than the available space, make it take up the available space.
 		widgetWidth = Math.max(width, widgetWidth);
