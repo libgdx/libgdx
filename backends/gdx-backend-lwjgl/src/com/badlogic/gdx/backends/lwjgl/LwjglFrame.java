@@ -33,7 +33,11 @@ public class LwjglFrame extends JFrame {
 		setSize(width, height);
 		setLocationRelativeTo(null);
 
-		lwjglCanvas = new LwjglCanvas(listener, useGL2);
+		lwjglCanvas = new LwjglCanvas(listener, useGL2) {
+			protected void stopped () {
+				LwjglFrame.this.dispose();
+			}
+		};
 		getContentPane().add(lwjglCanvas.getCanvas());
 
 		addWindowListener(new WindowAdapter() {

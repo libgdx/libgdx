@@ -130,12 +130,13 @@ public class LwjglCanvas implements Application {
 	void start () {
 		try {
 			graphics.setupDisplay();
-		} catch (LWJGLException e) {
-			throw new GdxRuntimeException(e);
-		}
 
-		listener.create();
-		listener.resize(Math.max(1, graphics.getWidth()), Math.max(1, graphics.getHeight()));
+			listener.create();
+			listener.resize(Math.max(1, graphics.getWidth()), Math.max(1, graphics.getHeight()));
+		} catch (Exception ex) {
+			stopped();
+			throw new GdxRuntimeException(ex);
+		}
 
 		EventQueue.invokeLater(new Runnable() {
 			int lastWidth = Math.max(1, graphics.getWidth());
@@ -165,9 +166,15 @@ public class LwjglCanvas implements Application {
 				audio.update();
 				Display.update();
 				if (graphics.vsync) Display.sync(60);
-				if (running && !Display.isCloseRequested()) EventQueue.invokeLater(this);
+				if (running && !Display.isCloseRequested())
+					EventQueue.invokeLater(this);
+				else
+					stopped();
 			}
 		});
+	}
+
+	protected void stopped () {
 	}
 
 	public void stop () {

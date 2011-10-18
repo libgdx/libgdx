@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.concurrent.CountDownLatch;
 
 import javax.imageio.ImageIO;
 
@@ -164,6 +165,7 @@ public class SkinPacker {
 		config.height = 1;
 		config.title = "SkinPacker";
 
+		final CountDownLatch latch = new CountDownLatch(2);
 		new LwjglApplication(new ApplicationListener() {
 			public void create () {
 				Skin skin = new Skin();
@@ -188,7 +190,7 @@ public class SkinPacker {
 				FileHandle newSkinFile = new FileHandle(new File(inputDir, "temp-skin"));
 				skin.save(newSkinFile);
 
-				atlas.getPages().get(0).textureFile.copyTo(new FileHandle(imageFile));
+				atlas.getPages().get(0).textureFile.moveTo(new FileHandle(imageFile));
 
 				new FileHandle(packedDir).deleteDirectory();
 
@@ -215,6 +217,7 @@ public class SkinPacker {
 				newSkinFile.delete();
 
 				Gdx.app.exit();
+				latch.countDown();
 			}
 
 			public void resume () {
@@ -232,6 +235,8 @@ public class SkinPacker {
 			public void dispose () {
 			}
 		}, config);
+		latch.countDown();
+		latch.await();
 	}
 
 	static public void main (String[] args) throws Exception {

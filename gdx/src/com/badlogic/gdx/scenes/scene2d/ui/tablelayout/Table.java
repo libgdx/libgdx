@@ -136,10 +136,10 @@ public class Table extends WidgetGroup {
 		if (this.backgroundPatch == background) return;
 		this.backgroundPatch = background;
 		if (background != null) {
-			padBottom((int)background.getBottomHeight() + 1);
-			padTop((int)background.getTopHeight() + 1);
-			padLeft((int)background.getLeftWidth() + 1);
-			padRight((int)background.getRightWidth() + 1);
+			padBottom((int)background.getBottomHeight());
+			padTop((int)background.getTopHeight());
+			padLeft((int)background.getLeftWidth());
+			padRight((int)background.getRightWidth());
 			invalidate();
 		}
 	}
