@@ -20,11 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import com.badlogic.gdx.Files;
@@ -194,6 +194,7 @@ public class FileHandle {
 	public OutputStream write (boolean append) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
+		parent().mkdirs();
 		try {
 			return new FileOutputStream(file(), append);
 		} catch (FileNotFoundException ex) {
@@ -202,20 +203,61 @@ public class FileHandle {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		}
 	}
-	
-	/** Returns a writer for writing to this file.
+
+	/** Returns a writer for writing to this file using the default charset.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *        {@link FileType#Internal} file, or if it could not be written. */
 	public Writer writer (boolean append) {
+		return writer(append, null);
+	}
+
+	/** Returns a writer for writing to this file.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @param charset May be null to use the default charset.
+	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *        {@link FileType#Internal} file, or if it could not be written. */
+	public Writer writer (boolean append, String charset) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
 		try {
-			return new FileWriter(file(), append);
+			FileOutputStream output = new FileOutputStream(file(), append);
+			if (charset == null)
+				return new OutputStreamWriter(output);
+			else
+				return new OutputStreamWriter(output, charset);
 		} catch (IOException ex) {
 			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
+		}
+	}
+
+	/** Writes the specified string to the file using the default charset.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *        {@link FileType#Internal} file, or if it could not be written. */
+	public void writeString (String string, boolean append) {
+		writeString(string, append, null);
+	}
+
+	/** Writes the specified string to the file as UTF-8.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @param charset May be null to use the default charset.
+	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *        {@link FileType#Internal} file, or if it could not be written. */
+	public void writeString (String string, boolean append, String charset) {
+		Writer writer = null;
+		try {
+			writer = writer(append, charset);
+			writer.write(string);
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
+		} finally {
+			try {
+				if (writer != null) writer.close();
+			} catch (Exception ignored) {
+			}
 		}
 	}
 
@@ -318,33 +360,28 @@ public class FileHandle {
 		return deleteDirectory(file());
 	}
 
-	/** Copies this file to the specified file, overwriting the file if it already exists.
-	 * @throw GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
+	/** Copies this file or directory to the specified file or directory. If this handle is a file, then 1) if the destination is a
+	 * file, it is overwritten, or 2) if the destination is a directory, this file is copied into it, or 3) if the destination
+	 * doesn't exist, necessary parent directories are created and this file is copied to the destination. If this handle is a
+	 * directory, then 1) if the destination is a file, GdxRuntimeException is thrown, or 2) if the destination is a directory,
+	 * this directory is copied recursively into it as a subdirectory, overwriting existing files, or 3) if the destination doesn't
+	 * exist, {@link #mkdirs()} is called on the destination and this directory is copied recursively into it as a subdirectory.
+	 * @throw GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file,
+	 *        or copying failed. */
 	public void copyTo (FileHandle dest) {
-		InputStream input = null;
-		OutputStream output = null;
-		try {
-			input = read();
-			output = dest.write(false);
-			byte[] buffer = new byte[4096];
-			while (true) {
-				int length = input.read(buffer);
-				if (length == -1) break;
-				output.write(buffer, 0, length);
-			}
-		} catch (Exception ex) {
-			throw new GdxRuntimeException("Error copying source file: " + file + " (" + type + ")\n" //
-				+ "To destination: " + dest.file + " (" + dest.type + ")", ex);
-		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (Exception ignored) {
-			}
-			try {
-				if (output != null) output.close();
-			} catch (Exception ignored) {
-			}
+		if (!isDirectory()) {
+			if (dest.isDirectory()) dest = dest.child(name());
+			copyFile(this, dest);
+			return;
 		}
+		if (dest.exists()) {
+			if (!dest.isDirectory()) throw new GdxRuntimeException("Destination exists but is not a directory: " + dest);
+		} else {
+			dest.mkdirs();
+			if (!dest.isDirectory()) throw new GdxRuntimeException("Destination directory cannot be created: " + dest);
+		}
+		dest = dest.child(name());
+		copyDirectory(this, dest);
 	}
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
@@ -380,6 +417,25 @@ public class FileHandle {
 		return file.getPath();
 	}
 
+	static public FileHandle tempFile (String prefix) {
+		try {
+			return new FileHandle(File.createTempFile(prefix, null));
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Unable to create temp file.", ex);
+		}
+	}
+
+	static public FileHandle tempDirectory (String prefix) {
+		try {
+			File file = File.createTempFile(prefix, null);
+			if (!file.delete()) throw new IOException("Unable to delete temp file: " + file);
+			if (!file.mkdir()) throw new IOException("Unable to create temp directory: " + file);
+			return new FileHandle(file);
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Unable to create temp file.", ex);
+		}
+	}
+
 	static private boolean deleteDirectory (File file) {
 		if (file.exists()) {
 			File[] files = file.listFiles();
@@ -395,19 +451,43 @@ public class FileHandle {
 		return file.delete();
 	}
 
-	/**
-	 * Writes the given string to the file as UTF8. Throws a GdxRuntimeException if the file is not
-	 * an absolute file. 
-	 * @param string
-	 */
-	public void writeString (String string) {
-		OutputStream writeStream = write(false);
+	static private void copyFile (FileHandle source, FileHandle dest) {
+		InputStream input = null;
+		OutputStream output = null;
 		try {
-			writeStream.write(string.getBytes("UTF8"));
-		} catch(Exception e) {
-			throw new GdxRuntimeException("Couldn't write string to file '" + path() + "'", e);
+			input = source.read();
+			output = dest.write(false);
+			byte[] buffer = new byte[4096];
+			while (true) {
+				int length = input.read(buffer);
+				if (length == -1) break;
+				output.write(buffer, 0, length);
+			}
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error copying source file: " + source.file + " (" + source.type + ")\n" //
+				+ "To destination: " + dest.file + " (" + dest.type + ")", ex);
 		} finally {
-			if(writeStream != null) try { writeStream.close(); } catch(Exception e) { }
+			try {
+				if (input != null) input.close();
+			} catch (Exception ignored) {
+			}
+			try {
+				if (output != null) output.close();
+			} catch (Exception ignored) {
+			}
+		}
+	}
+
+	static private void copyDirectory (FileHandle sourceDir, FileHandle destDir) {
+		destDir.mkdirs();
+		FileHandle[] files = sourceDir.list();
+		for (int i = 0, n = files.length; i < n; i++) {
+			FileHandle srcFile = files[i];
+			FileHandle destFile = destDir.child(srcFile.name());
+			if (srcFile.isDirectory())
+				copyDirectory(srcFile, destFile);
+			else
+				copyFile(srcFile, destFile);
 		}
 	}
 }

@@ -100,10 +100,6 @@ public class Slider extends Widget {
 	}
 
 	@Override
-	public void layout () {
-	}
-
-	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final TextureRegion knob = style.knob;
 		final NinePatch slider = style.slider;
