@@ -810,7 +810,7 @@ public class Json {
 			if (map.size == 0) {
 				buffer.append("{}");
 			} else {
-				boolean newLines = !fieldsOnSameLine || !isFlat(map);
+				boolean newLines = !fieldsOnSameLine || !isFlat(map) || map.size > 4;
 				buffer.append(newLines ? "{\n" : "{ ");
 				int i = 0;
 				for (Entry entry : map.entries()) {
@@ -829,7 +829,7 @@ public class Json {
 			if (array.size == 0) {
 				buffer.append("[]");
 			} else {
-				boolean newLines = !fieldsOnSameLine || !isFlat(array);
+				boolean newLines = !fieldsOnSameLine || !isFlat(array) || array.size > 4;
 				buffer.append(newLines ? "[\n" : "[ ");
 				for (int i = 0, n = array.size; i < n; i++) {
 					if (newLines) indent(indent, buffer);
