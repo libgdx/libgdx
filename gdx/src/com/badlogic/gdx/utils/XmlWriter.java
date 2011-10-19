@@ -18,7 +18,6 @@ package com.badlogic.gdx.utils;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayDeque;
 
 //@off
 /**
@@ -42,7 +41,7 @@ import java.util.ArrayDeque;
 //@on
 public class XmlWriter extends Writer {
 	private final Writer writer;
-	private final ArrayDeque<String> stack = new ArrayDeque();
+	private final Array<String> stack = new Array();
 	private String currentElement;
 	private boolean indentNextClose;
 
@@ -75,7 +74,7 @@ public class XmlWriter extends Writer {
 	private boolean startElementContent () throws IOException {
 		if (currentElement == null) return false;
 		indent++;
-		stack.push(currentElement);
+		stack.add(currentElement);
 		currentElement = null;
 		writer.write(">");
 		return true;
@@ -121,7 +120,7 @@ public class XmlWriter extends Writer {
 
 	/** Calls {@link #pop()} for each remaining open element, if any, and closes the stream. */
 	public void close () throws IOException {
-		while (!stack.isEmpty())
+		while (stack.size != 0)
 			pop();
 		writer.close();
 	}
