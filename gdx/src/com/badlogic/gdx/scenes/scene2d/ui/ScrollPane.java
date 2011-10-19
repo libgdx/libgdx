@@ -71,7 +71,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newScrollPane(String, Stage, Actor, int, int, String)}.</li>
+ * .</li>
  * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's background</li>
  * <li>The <code>hScroll</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's horizontal
  * scroll bar.</li>

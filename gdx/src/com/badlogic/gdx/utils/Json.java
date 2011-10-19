@@ -585,10 +585,13 @@ public class Json {
 		if (fields == null) fields = cacheFields(type);
 		for (Entry<String, Object> entry : jsonMap.entries()) {
 			FieldMetadata metadata = fields.get(entry.key);
-			if (ignoreUnknownFields) {
-				if (debug) System.out.println("Ignoring unknown field: " + entry.key + " (" + type.getName() + ")");
-			} else if (metadata == null)
-				throw new SerializationException("Field not found: " + entry.key + " (" + type.getName() + ")");
+			if (metadata == null) {
+				if (ignoreUnknownFields) {
+					if (debug) System.out.println("Ignoring unknown field: " + entry.key + " (" + type.getName() + ")");
+					continue;
+				} else
+					throw new SerializationException("Field not found: " + entry.key + " (" + type.getName() + ")");
+			}
 			Field field = metadata.field;
 			if (entry.value == null) continue;
 			try {

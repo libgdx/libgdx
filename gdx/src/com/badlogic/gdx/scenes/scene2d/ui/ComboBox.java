@@ -40,7 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * <h2>Layout</h2> A ComboBox's (preferred) width and height are determined by the border patches in the background
  * {@link NinePatch} as well as the bounding box of the widest item in the list of strings. Use
- * {@link ComboBox#setPrefSize(int, int)} to change this size programmatically. In case the set size is to small to contain the
+ *  to change this size programmatically. In case the set size is to small to contain the
  * widest item, artifacts may appear.</p>
  * 
  * The additional popup list will be positioned at the bottom edge of the ComboBox, displaying all items. The width and size is
@@ -69,7 +69,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * 
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newComboBox(String, String[], Stage, String)}.</li>
+ * .</li>
  * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the ComboBox's background</li>
  * <li>The <code>listBackground</code> attribute references a {@link NinePatch} by name, to be used as the background for the
  * popup list</li>

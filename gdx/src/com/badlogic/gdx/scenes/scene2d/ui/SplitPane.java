@@ -70,7 +70,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newSplitPane(String, Stage, Actor, Actor, boolean, int, int, String)}.</li>
+ * .</li>
  * <li>The <code>handle</code> attribute references a {@link NinePatch} by name, to be used as the split pane's handle</li>
  * </ul>
  * @author mzechner */

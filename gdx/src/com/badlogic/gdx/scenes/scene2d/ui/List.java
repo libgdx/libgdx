@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * registered with the list to listen to selection changes. Items have an index in the list, the top item having the index 0.
  * 
  * <h2>Layout</h2> The (preferred) width and height of a List are derrived from the bounding box around all list items. Use
- * {@link #setPrefSize(int, int)} to programmatically change the size to your liking. In case the width and height you set are to
+ *  to programmatically change the size to your liking. In case the width and height you set are to
  * small for the contained text you will see artifacts. The patch highlighting the current selection will have the width of the
  * List, either determined as explained above or set programmatically.
  * 
@@ -53,7 +53,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newList(String, String[], String)}.</li>
+ * .</li>
  * <li>The <code>fontName</code> attribute references a {@link BitmapFont} by name, to be used for render the items</li>
  * <li>The <code>fontColorUnselected</code> attribute references a {@link Color} by name, to be used for render unselected items</li>
  * <li>The <code>fontColorSelected</code> attribute references a {@link Color} by name, to be used to render the selected item</li>

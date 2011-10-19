@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -23,6 +23,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
@@ -38,7 +39,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
-		if(parameter == null || (parameter != null && parameter.textureData == null)) {
+		if (parameter == null || (parameter != null && parameter.textureData == null)) {
 			Pixmap pixmap = null;
 			Format format = null;
 			boolean genMipMaps = false;
@@ -49,9 +50,9 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 				genMipMaps = parameter.genMipMaps;
 				texture = parameter.texture;
 			}
-			
+
 			FileHandle handle = resolve(fileName);
-			if(!fileName.contains(".etc1")) {
+			if (!fileName.contains(".etc1")) {
 				pixmap = new Pixmap(handle);
 				data = new FileTextureData(handle, pixmap, format, genMipMaps);
 			} else {
@@ -65,12 +66,14 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
 	@Override
 	public Texture loadSync (AssetManager manager, String fileName, TextureParameter parameter) {
+		Texture texture = this.texture;
 		if (texture != null) {
 			texture.load(data);
-			return texture;
 		} else {
-			return new Texture(data);
+			texture = new Texture(data);
 		}
+		if (parameter != null) texture.setFilter(parameter.minFilter, parameter.magFilter);
+		return texture;
 	}
 
 	@Override
@@ -87,5 +90,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		public Texture texture = null;
 		/** TextureData for textures created on the fly, optional. When set, all format and genMipMaps are ignored */
 		public TextureData textureData = null;
+		public TextureFilter minFilter = TextureFilter.Nearest;
+		public TextureFilter magFilter = TextureFilter.Nearest;
 	}
 }

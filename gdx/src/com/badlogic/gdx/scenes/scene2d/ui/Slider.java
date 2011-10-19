@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * 
  * <h2>Layout</h2> A slider's (preferred) width and height are determined by the parameter past to its constructor as well as the
  * maximum height of the {@link NinePatch} and {@link TextureRegion} involved in the display of the slider. Use
- * {@link #setPrefSize(int, int)} to programmatically change the size to your liking. In case the width and height you set are to
+ *  to programmatically change the size to your liking. In case the width and height you set are to
  * small you will see artifacts.</p>
  * 
  * The slider background will only be stretched in the x-axis. The slider handle will be centered on the background vertically.
@@ -48,7 +48,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * 
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newSlider(String, float, float, float, float, String)}.</li>
+ * .</li>
  * <li>The <code>slider</code> attribute references a {@link NinePatch} by name, to be used as the slider's background</li>
  * <li>The <code>knob</code> attribute references a {@link TextureRegion} by name, to be used as the slider's handle</li> *
  * </ul>

@@ -55,7 +55,7 @@ import com.badlogic.gdx.utils.FloatArray;
  * 
  * <h2>Layout</h2>
  * The (preferred) width and height of a TextField are derrived from the width given at construction time as well as the
- * combination of the used font's height and the top and bottom border patches. Use {@link Button#setPrefSize(int, int)} to
+ * combination of the used font's height and the top and bottom border patches. Use to
  * programmatically change the size to your liking. In case the width and height you set are to small for the contained text, the
  * TextField will clip the characters based on the current cursor position.
  * 
@@ -80,7 +80,7 @@ import com.badlogic.gdx.utils.FloatArray;
  * 
  * <ul>
  * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * {@link Skin#newTextField(String, float, String)}.</li>
+ * .</li>
  * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the text in the text field</li>
  * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the text on the text field</li>
  * <li>The <code>cursorPatch</code> attribute references a {@link NinePatch} by name, to be used to render the text field's cursor

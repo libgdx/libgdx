@@ -339,6 +339,15 @@ public class TexturePacker {
 					int amount = settings.padding / 2;
 					int imageWidth = image.getWidth();
 					int imageHeight = image.getHeight();
+					// Copy corner pixels to fill corners of the padding.
+					g.drawImage(image, node.left - amount, node.top - amount, node.left, node.top, 0, 0, 1, 1, null);
+					g.drawImage(image, node.left + imageWidth, node.top - amount, node.left + imageWidth + amount, node.top, 0, 0, 1,
+						1, null);
+					g.drawImage(image, node.left - amount, node.top + imageHeight, node.left, node.top + imageHeight + amount, 0, 0,
+						1, 1, null);
+					g.drawImage(image, node.left + imageWidth, node.top + imageHeight, node.left + imageWidth + amount, node.top
+						+ imageHeight + amount, 0, 0, 1, 1, null);
+					// Copy edge picels into padding.
 					g.drawImage(image, node.left, node.top - amount, node.left + imageWidth, node.top, 0, 0, imageWidth, 1, null);
 					g.drawImage(image, node.left, node.top + imageHeight, node.left + imageWidth, node.top + imageHeight + amount, 0,
 						imageHeight - 1, imageWidth, imageHeight, null);
