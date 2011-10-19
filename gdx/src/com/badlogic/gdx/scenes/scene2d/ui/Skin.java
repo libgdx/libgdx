@@ -36,21 +36,15 @@ import com.badlogic.gdx.utils.SerializationException;
 
 /** @author Nathan Sweet */
 public class Skin implements Disposable {
-	static public class SkinData {
-		public ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
-		public transient Texture texture;
-	}
-
+	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	ObjectMap<Class, ObjectMap<String, Object>> styles = new ObjectMap();
-	final SkinData data;
+	Texture texture;
 
 	public Skin () {
-		data = new SkinData();
 	}
 
 	public Skin (FileHandle skinFile, FileHandle textureFile) {
-		data = new SkinData();
-		data.texture = new Texture(textureFile);
+		texture = new Texture(textureFile);
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {
@@ -58,9 +52,9 @@ public class Skin implements Disposable {
 		}
 	}
 
-	public Skin (FileHandle skinFile, SkinData data) {
-		this.data = data;
-		data.texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+	public Skin (FileHandle skinFile, Texture texture) {
+		this.texture = texture;
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {
@@ -68,25 +62,33 @@ public class Skin implements Disposable {
 		}
 	}
 
-	public <T> void addResource (String name, T resource) {
+	public void addResource (String name, Object resource) {
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
-		ObjectMap<String, Object> typeResources = data.resources.get(resource.getClass());
+		ObjectMap<String, Object> typeResources = resources.get(resource.getClass());
 		if (typeResources == null) {
 			typeResources = new ObjectMap();
-			data.resources.put(resource.getClass(), typeResources);
+			resources.put(resource.getClass(), typeResources);
 		}
 		typeResources.put(name, resource);
 	}
 
 	public <T> T getResource (String name, Class<T> type) {
-		ObjectMap<String, Object> typeResources = data.resources.get(type);
+		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null) throw new GdxRuntimeException("No resources registered with type: " + type.getName());
 		Object resource = typeResources.get(name);
 		if (resource == null) throw new GdxRuntimeException("No " + type.getName() + " resource registered with name: " + name);
 		return (T)resource;
 	}
 
-	public <T> void addStyle (String name, T style) {
+	public boolean hasResource (String name, Class type) {
+		ObjectMap<String, Object> typeResources = resources.get(type);
+		if (typeResources == null) return false;
+		Object resource = typeResources.get(name);
+		if (resource == null) return false;
+		return true;
+	}
+
+	public void addStyle (String name, Object style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		ObjectMap<String, Object> typeStyles = styles.get(style.getClass());
 		if (typeStyles == null) {
@@ -111,18 +113,18 @@ public class Skin implements Disposable {
 	/** Disposes the {@link Texture} and all {@link Disposable} resources of this Skin. */
 	@Override
 	public void dispose () {
-		data.texture.dispose();
-		for (Object object : data.resources.values())
+		texture.dispose();
+		for (Object object : resources.values())
 			if (object instanceof Disposable) ((Disposable)object).dispose();
 	}
 
 	public void setTexture (Texture texture) {
-		data.texture = texture;
+		this.texture = texture;
 	}
 
 	/** @return the {@link Texture} containing all {@link NinePatch} and {@link TextureRegion} pixels of this Skin. */
 	public Texture getTexture () {
-		return data.texture;
+		return texture;
 	}
 
 	public void save (FileHandle skinFile) {
@@ -172,8 +174,8 @@ public class Skin implements Disposable {
 		json.setSerializer(Skin.class, new Serializer<Skin>() {
 			public void write (Json json, Skin skin, Class valueType) {
 				json.writeObjectStart();
-				json.writeValue("resources", skin.data.resources);
-				for (Entry<Class, ObjectMap<String, Object>> entry : data.resources.entries())
+				json.writeValue("resources", skin.resources);
+				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
 					json.setSerializer(entry.key, new AliasSerializer(entry.value));
 				json.writeField(skin, "styles");
 				json.writeObjectEnd();
@@ -182,7 +184,7 @@ public class Skin implements Disposable {
 			public Skin read (Json json, Object jsonData, Class ignored) {
 				ObjectMap map = (ObjectMap)jsonData;
 				readTypeMap(json, (ObjectMap)map.get("resources"), true);
-				for (Entry<Class, ObjectMap<String, Object>> entry : data.resources.entries())
+				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
 					json.setSerializer(entry.key, new AliasSerializer(entry.value));
 				readTypeMap(json, (ObjectMap)map.get("styles"), false);
 				return skin;
@@ -192,23 +194,36 @@ public class Skin implements Disposable {
 				if (typeToValueMap == null)
 					throw new SerializationException("Skin file is missing a \"" + (isResource ? "resources" : "styles")
 						+ "\" section.");
-				for (Entry<String, ObjectMap> typeEntry : typeToValueMap.entries()) {
-					Class type;
-					try {
-						type = Class.forName(typeEntry.key);
-					} catch (ClassNotFoundException ex) {
-						throw new SerializationException(ex);
+				if (isResource) {
+					// Read NinePatches and TextureRegions before other resources, so resources like BitmapFont can reference them.
+					{
+						ObjectMap valueMap = typeToValueMap.remove(NinePatch.class.getName());
+						if (valueMap != null) readType(json, NinePatch.class.getName(), valueMap, isResource);
 					}
-					ObjectMap<String, ObjectMap> valueMap = (ObjectMap)typeEntry.value;
-					for (Entry<String, ObjectMap> valueEntry : valueMap.entries()) {
-						try {
-							if (isResource)
-								addResource(valueEntry.key, json.readValue(type, valueEntry.value));
-							else
-								addStyle(valueEntry.key, json.readValue(type, valueEntry.value));
-						} catch (Exception ex) {
-							throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.key, ex);
-						}
+					{
+						ObjectMap valueMap = typeToValueMap.remove(TextureRegion.class.getName());
+						if (valueMap != null) readType(json, TextureRegion.class.getName(), valueMap, isResource);
+					}
+				}
+				for (Entry<String, ObjectMap> typeEntry : typeToValueMap.entries())
+					readType(json, typeEntry.key, (ObjectMap)typeEntry.value, isResource);
+			}
+
+			private void readType (Json json, String className, ObjectMap<String, ObjectMap> valueMap, boolean isResource) {
+				Class type;
+				try {
+					type = Class.forName(className);
+				} catch (ClassNotFoundException ex) {
+					throw new SerializationException(ex);
+				}
+				for (Entry<String, ObjectMap> valueEntry : valueMap.entries()) {
+					try {
+						if (isResource)
+							addResource(valueEntry.key, json.readValue(type, valueEntry.value));
+						else
+							addStyle(valueEntry.key, json.readValue(type, valueEntry.value));
+					} catch (Exception ex) {
+						throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.key, ex);
 					}
 				}
 			}
@@ -229,7 +244,7 @@ public class Skin implements Disposable {
 				int y = json.readValue("y", int.class, jsonData);
 				int width = json.readValue("width", int.class, jsonData);
 				int height = json.readValue("height", int.class, jsonData);
-				return new TextureRegion(skin.data.texture, x, y, width, height);
+				return new TextureRegion(skin.texture, x, y, width, height);
 			}
 		});
 
@@ -242,7 +257,11 @@ public class Skin implements Disposable {
 				String path = json.readValue(String.class, jsonData);
 				FileHandle file = skinFile.parent().child(path);
 				if (!file.exists()) file = Gdx.files.internal(path);
-				return new BitmapFont(file, false);
+				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
+				TextureRegion region = null;
+				if (skin.hasResource(file.nameWithoutExtension(), TextureRegion.class))
+					region = skin.getResource(file.nameWithoutExtension(), TextureRegion.class);
+				return new BitmapFont(file, region, false);
 			}
 		});
 
