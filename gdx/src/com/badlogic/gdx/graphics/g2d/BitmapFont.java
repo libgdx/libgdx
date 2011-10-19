@@ -220,7 +220,7 @@ public class BitmapFont implements Disposable {
 			for (Glyph[] page : this.glyphs) {
 				if (page == null) continue;
 				for (Glyph glyph : page) {
-					if (glyph == null) continue;
+					if (glyph == null || glyph.height == 0 || glyph.width == 0) continue;
 					return glyph;
 				}
 			}
