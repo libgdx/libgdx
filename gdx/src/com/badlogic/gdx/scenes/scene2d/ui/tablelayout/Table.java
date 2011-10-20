@@ -29,8 +29,7 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.util.List;
 
-import javax.xml.bind.Marshaller.Listener;
-
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,10 +40,12 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.ParseException;
 
 /** @author Nathan Sweet */
 public class Table extends WidgetGroup {
@@ -68,6 +69,16 @@ public class Table extends WidgetGroup {
 
 	public Table (String name) {
 		this(new TableLayout(), name);
+	}
+
+	public Table (Skin skin) {
+		this(new TableLayout(), null);
+		layout.skin = skin;
+	}
+
+	public Table (Skin skin, String name) {
+		this(new TableLayout(), name);
+		layout.skin = skin;
 	}
 
 	public Table (TableLayout layout, String name) {
@@ -212,7 +223,11 @@ public class Table extends WidgetGroup {
 	}
 
 	public void parse (FileHandle tableDescriptionFile) {
-		layout.parse(tableDescriptionFile.readString());
+		try {
+			layout.parse(tableDescriptionFile.readString());
+		} catch (ParseException ex) {
+			throw new ParseException("Error parsing layout file: " + tableDescriptionFile, ex);
+		}
 	}
 
 	/** Parses a table description and adds the actors and cells to the table.
@@ -524,6 +539,14 @@ public class Table extends WidgetGroup {
 
 	public int getAlign () {
 		return layout.getAlign();
+	}
+
+	public void setSkin (Skin skin) {
+		layout.skin = skin;
+	}
+
+	public void setAssetManager (AssetManager assetManager) {
+		layout.assetManager = assetManager;
 	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be

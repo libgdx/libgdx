@@ -110,6 +110,14 @@ public class Skin implements Disposable {
 		return (T)style;
 	}
 
+	public boolean hasStyle (String name, Class type) {
+		ObjectMap<String, Object> typeStyles = styles.get(type);
+		if (typeStyles == null) return false;
+		Object style = typeStyles.get(name);
+		if (style == null) return false;
+		return true;
+	}
+
 	/** Disposes the {@link Texture} and all {@link Disposable} resources of this Skin. */
 	@Override
 	public void dispose () {
@@ -166,8 +174,8 @@ public class Skin implements Disposable {
 				String name = (String)jsonData;
 				Object object = map.get(name);
 				if (object != null) return object;
-				throw new SerializationException("Skin has a " + type.getSimpleName() + " that could not be found in the resources: "
-					+ jsonData);
+				throw new SerializationException("Skin references a " + type.getSimpleName()
+					+ " that could not be found in the resources: " + jsonData);
 			}
 		}
 

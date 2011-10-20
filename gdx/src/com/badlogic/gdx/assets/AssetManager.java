@@ -99,16 +99,16 @@ public class AssetManager implements Disposable {
 
 	/** Removes the asset and all its dependencies if they are not used by other assets.
 	 * @param fileName the file name */
-	public synchronized void unload (String fileName) {			
+	public synchronized void unload (String fileName) {
 		// check if it's in the queue
 		int foundIndex = -1;
-		for(int i = 0; i < loadQueue.size; i++) {
-			if(loadQueue.get(i).fileName.equals(fileName)) {
+		for (int i = 0; i < loadQueue.size; i++) {
+			if (loadQueue.get(i).fileName.equals(fileName)) {
 				foundIndex = i;
 				break;
 			}
 		}
-		if(foundIndex != -1) {
+		if (foundIndex != -1) {
 			// FIXME reload request? OH GOD WHAT SHOULD I DO?
 			loadQueue.removeIndex(foundIndex);
 			return;
@@ -116,23 +116,23 @@ public class AssetManager implements Disposable {
 
 		// check if it's currently processed (and the first element in the stack, thus not a dependency)
 		// and cancel if necessary
-		if(tasks.size() > 0) {
+		if (tasks.size() > 0) {
 			// FIXME reload request? OH GOD WHAT SHOULD I DO?
 			AssetLoadingTask currAsset = tasks.firstElement();
-			if(currAsset.assetDesc.fileName.equals(fileName)) {
+			if (currAsset.assetDesc.fileName.equals(fileName)) {
 				currAsset.cancel = true;
 				return;
 			}
 		}
-		
+
 		// get the asset and its type
 		Class type = assetTypes.get(fileName);
-		if(type == null) throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
+		if (type == null) throw new GdxRuntimeException("Asset '" + fileName + "' not loaded");
 		RefCountedContainer assetRef = assets.get(type).get(fileName);
 
 		// if it is reference counted, decrement ref count and check if we can really get rid of it.
 		assetRef.decRefCount();
-		if(assetRef.getRefCount() <= 0) {
+		if (assetRef.getRefCount() <= 0) {
 			// if it is disposable dispose it
 			if (assetRef.getObject(Object.class) instanceof Disposable) ((Disposable)assetRef.getObject(Object.class)).dispose();
 
@@ -149,7 +149,7 @@ public class AssetManager implements Disposable {
 			}
 		}
 		// remove dependencies if ref count < 0
-		if(assetRef.getRefCount() <= 0) {
+		if (assetRef.getRefCount() <= 0) {
 			assetDependencies.remove(fileName);
 		}
 	}
@@ -184,6 +184,16 @@ public class AssetManager implements Disposable {
 		return assetTypes.containsKey(fileName);
 	}
 
+	/** @param fileName the file name of the asset
+	 * @return whether the asset is loaded */
+	public synchronized boolean isLoaded (String fileName, Class type) {
+		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+		if (assetsByType == null) return false;
+		RefCountedContainer assetContainer = assetsByType.get(fileName);
+		if (assetContainer == null) return false;
+		return assetContainer.getObject(type) != null;
+	}
+
 	/** Adds the given asset to the loading queue of the AssetManager.
 	 * @param fileName the file name (interpretation depends on {@link AssetLoader})
 	 * @param type the type of the asset. */
@@ -203,53 +213,58 @@ public class AssetManager implements Disposable {
 			loaded = 0;
 			toLoad = 0;
 		}
-		
+
 		// check if an asset with the same name but a different type has already been added.
-		
+
 		// check preload queue
-		for(int i = 0; i < loadQueue.size; i++) {
+		for (int i = 0; i < loadQueue.size; i++) {
 			AssetDescriptor desc = loadQueue.get(i);
-			if(desc.fileName.equals(fileName) && !desc.type.equals(type)) throw new GdxRuntimeException("Asset with name '" + fileName + "' already in preload queue, but has different type (expected: " + type.getSimpleName() + ", found: " + desc.type.getSimpleName());
+			if (desc.fileName.equals(fileName) && !desc.type.equals(type))
+				throw new GdxRuntimeException("Asset with name '" + fileName
+					+ "' already in preload queue, but has different type (expected: " + type.getSimpleName() + ", found: "
+					+ desc.type.getSimpleName());
 		}
-		
+
 		// check task list
-		for(int i = 0; i < tasks.size(); i++) {
+		for (int i = 0; i < tasks.size(); i++) {
 			AssetDescriptor desc = tasks.get(i).assetDesc;
-			if(desc.fileName.equals(fileName) && !desc.type.equals(type)) throw new GdxRuntimeException("Asset with name '" + fileName + "' already in task list, but has different type (expected: " + type.getSimpleName() + ", found: " + desc.type.getSimpleName());
+			if (desc.fileName.equals(fileName) && !desc.type.equals(type))
+				throw new GdxRuntimeException("Asset with name '" + fileName
+					+ "' already in task list, but has different type (expected: " + type.getSimpleName() + ", found: "
+					+ desc.type.getSimpleName());
 		}
-		
+
 		// check loaded assets
 		Class otherType = assetTypes.get(fileName);
-		if(otherType != null && !otherType.equals(type)) throw new GdxRuntimeException("Asset with name '" + fileName + "' already loaded, but has different type (expected: " + type.getSimpleName() + ", found: " + otherType.getSimpleName());
-		
+		if (otherType != null && !otherType.equals(type))
+			throw new GdxRuntimeException("Asset with name '" + fileName + "' already loaded, but has different type (expected: "
+				+ type.getSimpleName() + ", found: " + otherType.getSimpleName());
+
 		toLoad++;
 		AssetDescriptor assetDesc = new AssetDescriptor(fileName, type, parameter);
 		loadQueue.add(assetDesc);
 		log.log("Added asset '" + assetDesc + "' to preload queue");
 	}
-	
+
 	/** Adds the given asset to the loading queue of the AssetManager.
-	 * @param desc the {@link AssetDescriptor} 
-	 */
+	 * @param desc the {@link AssetDescriptor} */
 	public synchronized void load (AssetDescriptor desc) {
 		load(desc.fileName, desc.type, desc.params);
 	}
-	
-	/**
-	 * Disposes the given asset and all its dependencies recursively, depth first.
-	 * @param fileName
-	 */
-	private void disposeDependencies(String fileName) {
+
+	/** Disposes the given asset and all its dependencies recursively, depth first.
+	 * @param fileName */
+	private void disposeDependencies (String fileName) {
 		Array<String> dependencies = assetDependencies.get(fileName);
 		if (dependencies != null) {
 			for (String dependency : dependencies) {
 				disposeDependencies(dependency);
 			}
 		}
-		
+
 		Class type = assetTypes.get(fileName);
 		Object asset = assets.get(type).get(fileName).getObject(Object.class);
-		if(asset instanceof Disposable) ((Disposable)asset).dispose();
+		if (asset instanceof Disposable) ((Disposable)asset).dispose();
 	}
 
 	/** Updates the AssetManager, keeping it loading any assets in the preload queue.
@@ -300,8 +315,8 @@ public class AssetManager implements Disposable {
 		log.log("Injected dependency '" + dependendAssetDesc + "' for asset '" + parentAssetFilename + "'");
 	}
 
-	/** Removes a task from the loadQueue and adds it to the task stack. If the asset is already loaded (which can happen if it
-	 * was a dependency of a previously loaded asset) its reference count will be increased. */
+	/** Removes a task from the loadQueue and adds it to the task stack. If the asset is already loaded (which can happen if it was
+	 * a dependency of a previously loaded asset) its reference count will be increased. */
 	private void nextTask () {
 		AssetDescriptor assetDesc = loadQueue.removeIndex(0);
 
@@ -352,8 +367,8 @@ public class AssetManager implements Disposable {
 				unload(task.assetDesc.fileName);
 			}
 			// otherwise, if a listener was found in the parameter invoke it
-			else { 
-				if(task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
+			else {
+				if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
 					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 				}
 			}
@@ -379,7 +394,7 @@ public class AssetManager implements Disposable {
 	/** Handles a runtime/loading error in {@link #update()} by optionally invoking the {@link AssetErrorListener}.
 	 * @param t */
 	private void handleTaskError (Throwable t) {
-		if (tasks.isEmpty()) throw new GdxRuntimeException(t); 
+		if (tasks.isEmpty()) throw new GdxRuntimeException(t);
 
 		// pop the faulty task from the stack
 		AssetLoadingTask task = tasks.pop();
@@ -446,30 +461,31 @@ public class AssetManager implements Disposable {
 	/** Clears and disposes all assets and the preloading queue. */
 	public synchronized void clear () {
 		loadQueue.clear();
-		while (!update());
+		while (!update())
+			;
 
 		ObjectIntMap<String> dependencyCount = new ObjectIntMap<String>();
-		while(assetTypes.size > 0) {
+		while (assetTypes.size > 0) {
 			// for each asset, figure out how often it was referenced
 			dependencyCount.clear();
 			Array<String> assets = assetTypes.keys().toArray();
 			for (String asset : assets) {
 				dependencyCount.put(asset, 0);
 			}
-			
+
 			for (String asset : assets) {
 				Array<String> dependencies = assetDependencies.get(asset);
-				if(dependencies == null) continue;
-				for(String dependency: dependencies) {
+				if (dependencies == null) continue;
+				for (String dependency : dependencies) {
 					int count = dependencyCount.get(dependency, 0);
 					count++;
 					dependencyCount.put(dependency, count);
 				}
 			}
-			
+
 			// only dispose of assets that are root assets (not referenced)
-			for(String asset: assets) {
-				if(dependencyCount.get(asset, 0) == 0) {
+			for (String asset : assets) {
+				if (dependencyCount.get(asset, 0) == 0) {
 					unload(asset);
 				}
 			}
@@ -489,26 +505,22 @@ public class AssetManager implements Disposable {
 		return log;
 	}
 
-	/**
-	 * Returns the reference count of an asset.
-	 * @param fileName
-	 */
-	public synchronized int getReferenceCount(String fileName) {
+	/** Returns the reference count of an asset.
+	 * @param fileName */
+	public synchronized int getReferenceCount (String fileName) {
 		Class type = assetTypes.get(fileName);
-		if(type == null) throw new GdxRuntimeException("Asset not loaded");
+		if (type == null) throw new GdxRuntimeException("Asset not loaded");
 		return assets.get(type).get(fileName).getRefCount();
 	}
-	
-	/**
-	 * Returns the reference count of an asset.
-	 * @param fileName
-	 */
-	public synchronized void setReferenceCount(String fileName, int refCount) {
+
+	/** Returns the reference count of an asset.
+	 * @param fileName */
+	public synchronized void setReferenceCount (String fileName, int refCount) {
 		Class type = assetTypes.get(fileName);
-		if(type == null) throw new GdxRuntimeException("Asset not loaded");
+		if (type == null) throw new GdxRuntimeException("Asset not loaded");
 		assets.get(type).get(fileName).setRefCount(refCount);
 	}
-	
+
 	/** @return a string containg ref count and dependency information for all assets. */
 	public synchronized String getDiagnostics () {
 		StringBuffer buffer = new StringBuffer();

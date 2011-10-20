@@ -22,7 +22,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /** @author Nathan Sweet */
 public class Label extends Widget {
@@ -34,6 +33,7 @@ public class Label extends Widget {
 	private float prefWidth, prefHeight;
 	private boolean wrap;
 	private int align = Align.LEFT;
+	private float wrapWidth;
 
 	public Label (String text, Skin skin) {
 		this(text, skin.getStyle(LabelStyle.class), null);
@@ -73,6 +73,11 @@ public class Label extends Widget {
 		invalidate();
 	}
 
+	public void setWrapWidth (float wrapWidth) {
+		setWrap(true);
+		this.wrapWidth = wrapWidth;
+	}
+
 	public void setAlignment (int align) {
 		this.align = align;
 		invalidate();
@@ -96,6 +101,7 @@ public class Label extends Widget {
 
 	@Override
 	public void layout () {
+		float wrapWidth = this.wrapWidth != 0 ? this.wrapWidth : width;
 		if (wrap)
 			bounds.set(cache.getFont().getWrappedBounds(text, width));
 		else
@@ -121,7 +127,7 @@ public class Label extends Widget {
 			halign = HAlignment.CENTER;
 
 		if (wrap)
-			cache.setWrappedText(text, 0, y, width, halign);
+			cache.setWrappedText(text, 0, y, wrapWidth, halign);
 		else
 			cache.setMultiLineText(text, 0, y, width, halign);
 	}
@@ -147,7 +153,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (wrap) return 100;
+		if (wrap) return wrapWidth != 0 ? wrapWidth : 100;
 		validate();
 		return bounds.width;
 	}

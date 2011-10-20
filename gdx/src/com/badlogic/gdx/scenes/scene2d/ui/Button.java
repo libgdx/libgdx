@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author Nathan Sweet */
 public class Button extends Table {
@@ -105,16 +104,12 @@ public class Button extends Table {
 	}
 
 	public void setText (String text) {
-		if (children.isEmpty()) {
-			Label label = new Label(text, style);
-			label.setAlignment(Align.CENTER);
-			add(label);
-			invalidateHierarchy();
-			return;
-		}
 		Label label = getLabel();
-		if (label == null) throw new GdxRuntimeException("No child label was found.");
-		label.setText(text);
+		if (label != null) label.setText(text);
+		label = new Label(text, style);
+		label.setAlignment(Align.CENTER);
+		add(label);
+		invalidateHierarchy();
 	}
 
 	/** Returns the text of the first label in the button, or null if no label was found. */

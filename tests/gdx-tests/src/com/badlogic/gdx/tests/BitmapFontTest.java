@@ -53,15 +53,15 @@ public class BitmapFontTest extends GdxTest {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 
-		String text = "Sphinx of black quartz,\njudge my vow.";
+		String text = "Sphinx of black quartz, judge my vow.";
 		font.setColor(Color.RED);
 
-		float x = 20, y = 20;
+		float x = 100, y = 20;
 		float alignmentWidth;
 
-		if (true) {
+		if (false) {
 			alignmentWidth = 0;
-			font.drawMultiLine(spriteBatch, text, 200, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
+			font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
 		}
 
 		if (false) {
@@ -72,12 +72,13 @@ public class BitmapFontTest extends GdxTest {
 
 		if (true) {
 			alignmentWidth = 280;
-			font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
+			// font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
+			font.drawWrapped(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
 		}
 
 		spriteBatch.end();
 
-		drawRect(x, y, x + alignmentWidth, 300);
+		drawRect(x, viewHeight - y, x + alignmentWidth, 300);
 	}
 
 	public void drawRect (float x1, float y1, float x2, float y2) {

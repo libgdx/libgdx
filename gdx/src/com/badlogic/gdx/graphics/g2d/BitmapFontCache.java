@@ -330,14 +330,27 @@ public class BitmapFontCache implements Disposable {
 		int start = 0;
 		int numLines = 0;
 		while (start < length) {
-			int lineEnd = start + font.computeVisibleGlyphs(str, start, BitmapFont.indexOf(str, '\n', start), wrapWidth);
-			if (lineEnd < length) {
+			int newLine = BitmapFont.indexOf(str, '\n', start);
+			int lineEnd = start + font.computeVisibleGlyphs(str, start, newLine, wrapWidth);
+			int nextStart = lineEnd;
+			if (lineEnd < newLine) {
+				// Find char to break on.
 				while (lineEnd > start) {
-					char ch = str.charAt(lineEnd);
-					if (ch == ' ' || ch == '\n') break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
-			}
+				if (lineEnd == start)
+					lineEnd = nextStart; // If no characters to break, show all.
+				else {
+					nextStart = lineEnd;
+					// Eat whitespace at end of line.
+					while (lineEnd > start) {
+						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+						lineEnd--;
+					}
+				}
+			} else
+				nextStart = lineEnd + 1;
 			if (lineEnd > start) {
 				float xOffset = 0;
 				if (alignment != HAlignment.LEFT) {
@@ -348,7 +361,7 @@ public class BitmapFontCache implements Disposable {
 				float lineWidth = addToCache(str, x + xOffset, y, start, lineEnd);
 				maxWidth = Math.max(maxWidth, lineWidth);
 			}
-			start = lineEnd + 1;
+			start = nextStart;
 			y += down;
 			numLines++;
 		}

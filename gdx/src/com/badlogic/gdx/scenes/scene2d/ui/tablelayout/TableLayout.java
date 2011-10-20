@@ -30,9 +30,9 @@ package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
@@ -41,6 +41,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
@@ -49,8 +50,8 @@ import com.esotericsoftware.tablelayout.Cell;
 
 /** @author Nathan Sweet */
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
-	/** The atlas to use to find texture regions. */
-	public TextureAtlas atlas;
+	public Skin skin;
+	public AssetManager assetManager;
 
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;
@@ -67,11 +68,6 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 	public Actor register (Actor actor) {
 		if (actor.name == null) throw new IllegalArgumentException("Actor must have a name: " + actor.getClass());
 		return register(actor.name, actor);
-	}
-
-	/** Finds the texture region in the {@link #atlas}, creates an {@link Image} and registers it with the specified name. */
-	public Actor registerImage (String name) {
-		return register(new Image(atlas.findRegion(name), Scaling.none, name));
 	}
 
 	public Actor getWidget (String name) {

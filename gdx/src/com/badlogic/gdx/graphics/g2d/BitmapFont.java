@@ -493,34 +493,38 @@ public class BitmapFont implements Disposable {
 		int length = str.length();
 		float maxWidth = 0;
 		while (start < length) {
-			int lineEnd = start + computeVisibleGlyphs(str, start, indexOf(str, '\n', start), wrapWidth);
-			int nextLineStart;
-			if (lineEnd < length) {
-				int originalLineEnd = lineEnd;
+			int newLine = BitmapFont.indexOf(str, '\n', start);
+			int lineEnd = start + computeVisibleGlyphs(str, start, newLine, wrapWidth);
+			int nextStart = lineEnd;
+			if (lineEnd < newLine) {
+				// Find char to break on.
 				while (lineEnd > start) {
-					char ch = str.charAt(lineEnd);
-					if (ch == ' ' || ch == '\n') break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
-				if (lineEnd == start) {
-					lineEnd = originalLineEnd;
-					if (lineEnd == start) lineEnd++;
-					nextLineStart = lineEnd;
-				} else
-					nextLineStart = lineEnd + 1; // Eat space or newline.
-			} else {
-				if (lineEnd == start) lineEnd++;
-				nextLineStart = length;
+				if (lineEnd == start)
+					lineEnd = nextStart; // If no characters to break, show all.
+				else {
+					nextStart = lineEnd;
+					// Eat whitespace at end of line.
+					while (lineEnd > start) {
+						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+						lineEnd--;
+					}
+				}
+			} else
+				nextStart = lineEnd + 1;
+			if (lineEnd > start) {
+				float xOffset = 0;
+				if (alignment != HAlignment.LEFT) {
+					float lineWidth = getBounds(str, start, lineEnd).width;
+					xOffset = wrapWidth - lineWidth;
+					if (alignment == HAlignment.CENTER) xOffset /= 2;
+				}
+				float lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
+				maxWidth = Math.max(maxWidth, lineWidth);
 			}
-			float xOffset = 0;
-			if (alignment != HAlignment.LEFT) {
-				float lineWidth = getBounds(str, start, lineEnd).width;
-				xOffset = wrapWidth - lineWidth;
-				if (alignment == HAlignment.CENTER) xOffset /= 2;
-			}
-			float lineWidth = draw(spriteBatch, str, x + xOffset, y, start, lineEnd).width;
-			maxWidth = Math.max(maxWidth, lineWidth);
-			start = nextLineStart;
+			start = nextStart;
 			y += down;
 			numLines++;
 		}
@@ -874,6 +878,18 @@ public class BitmapFont implements Disposable {
 		for (; start < n; start++)
 			if (text.charAt(start) == ch) return start;
 		return n;
+	}
+
+	static boolean isWhitespace (char c) {
+		switch (c) {
+		case '\n':
+		case '\r':
+		case '\t':
+		case ' ':
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	static public class TextBounds {

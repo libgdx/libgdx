@@ -27,17 +27,20 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
-import java.util.HashMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.tablelayout.Toolkit;
@@ -47,32 +50,108 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	static {
 		addClassPrefix("com.badlogic.gdx.scenes.scene2d.");
 		addClassPrefix("com.badlogic.gdx.scenes.scene2d.ui.");
-		addClassPrefix("com.badlogic.gdx.scenes.scene2d.actors.");
 	}
 
 	static public LibgdxToolkit instance = new LibgdxToolkit();
-	static public BitmapFont defaultFont;
-	static private HashMap<String, BitmapFont> fonts = new HashMap();
 
-	public Actor wrap (Object object) {
+	public Actor wrap (TableLayout layout, Object object) {
 		if (object instanceof String) {
-			if (defaultFont == null) throw new IllegalStateException("No default font has been set.");
-			return new Label((String)object, new Label.LabelStyle(defaultFont, Color.WHITE));
+			if (layout.skin == null) throw new IllegalStateException("Label cannot be created, no skin has been set.");
+			return new Label((String)object, layout.skin);
 		}
 		if (object == null) {
 			Group group = new Group();
 			group.transform = false;
 			return group;
 		}
-		return super.wrap(object);
+		return super.wrap(layout, object);
 	}
 
 	public Actor newWidget (TableLayout layout, String className) {
-		if (layout.atlas != null) {
-			AtlasRegion region = layout.atlas.findRegion(className);
-			if (region != null) return new Image(region);
+		try {
+			return super.newWidget(layout, className);
+		} catch (RuntimeException ex) {
+			Skin skin = layout.skin;
+			if (skin != null) {
+				if (skin.hasResource(className, TextureRegion.class))
+					return new Image(skin.getResource(className, TextureRegion.class));
+				if (skin.hasResource(className, NinePatch.class)) return new Image(skin.getResource(className, NinePatch.class));
+			}
+			if (layout.assetManager != null && layout.assetManager.isLoaded(className, Texture.class))
+				return new Image(new TextureRegion(layout.assetManager.get(className, Texture.class)));
+			throw ex;
 		}
-		return super.newWidget(layout, className);
+	}
+
+	protected Actor newInstance (TableLayout layout, String className) throws Exception {
+		try {
+			return super.newInstance(layout, className);
+		} catch (Exception ex) {
+			// Try to create a widget with a Skin constructor.
+			if (layout.skin != null) {
+				try {
+					return (Actor)Class.forName(className).getConstructor(Skin.class).newInstance(layout.skin);
+				} catch (Exception ignored) {
+				}
+			}
+			throw ex;
+		}
+	}
+
+	public void setProperty (TableLayout layout, Actor object, String name, List<String> values) {
+		try {
+			super.setProperty(layout, object, name, values);
+		} catch (RuntimeException ex) {
+			// style:stylename, set widget style from skin.
+			if (layout.skin != null && values.size() == 1 && name.equalsIgnoreCase("style")) {
+				Field field = getField(object.getClass(), "style");
+				if (field != null) {
+					String styleName = values.get(0);
+					Class styleClass = field.getType();
+					if (layout.skin.hasStyle(styleName, styleClass)) {
+						try {
+							Method setStyleMethod = object.getClass().getMethod("setStyle", styleClass);
+							setStyleMethod.invoke(object, layout.skin.getStyle(styleName, styleClass));
+							return;
+						} catch (Exception ignored) {
+						}
+					}
+				}
+			}
+			throw ex;
+		}
+	}
+
+	protected Object convertType (TableLayout layout, Object parentObject, Class memberType, String memberName, String value) {
+		// Find TextureRegion and NinePatch in skin.
+		if (layout.skin != null) {
+			if (memberType == NinePatch.class) {
+				if (layout.skin.hasResource(value, NinePatch.class)) return layout.skin.getResource(value, NinePatch.class);
+			} else if (memberType == TextureRegion.class) {
+				if (layout.skin.hasResource(value, TextureRegion.class)) return layout.skin.getResource(value, TextureRegion.class);
+			}
+		}
+		// Find Texture, TextureRegion and NinePatch in asset manager.
+		if (layout.assetManager != null) {
+			if (memberType == NinePatch.class) {
+				if (layout.assetManager.isLoaded(value, Texture.class))
+					return new NinePatch(new TextureRegion(layout.assetManager.get(value, Texture.class)));
+			} else if (memberType == Texture.class) {
+				if (layout.assetManager.isLoaded(value, Texture.class)) return layout.assetManager.get(value, Texture.class);
+			} else if (memberType == TextureRegion.class) {
+				if (layout.assetManager.isLoaded(value, Texture.class))
+					return new TextureRegion(layout.assetManager.get(value, Texture.class));
+			}
+		}
+		return super.convertType(layout, parentObject, memberType, memberName, value);
+	}
+
+	public Table newTable (Table parent) {
+		Table table = super.newTable(parent);
+		TableLayout layout = parent.getTableLayout();
+		table.setSkin(layout.skin);
+		table.setAssetManager(layout.assetManager);
+		return table;
 	}
 
 	public TableLayout getLayout (Table table) {
@@ -129,18 +208,6 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	public void addDebugRectangle (TableLayout layout, int type, int x, int y, int w, int h) {
 		if (layout.debugRects == null) layout.debugRects = new Array();
 		layout.debugRects.add(new DebugRect(type, x, (int)(layout.getTable().height - y), w, h));
-	}
-
-	/** Sets the name of a font. */
-	static public void registerFont (String name, BitmapFont font) {
-		fonts.put(name, font);
-		if (defaultFont == null) defaultFont = font;
-	}
-
-	static public BitmapFont getFont (String name) {
-		BitmapFont font = fonts.get(name);
-		if (font == null) throw new IllegalArgumentException("Font not found: " + name);
-		return font;
 	}
 
 	static class DebugRect extends Rectangle {
