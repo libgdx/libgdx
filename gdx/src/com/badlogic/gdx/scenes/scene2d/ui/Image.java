@@ -11,12 +11,12 @@ import com.badlogic.gdx.utils.Scaling;
 public class Image extends Widget {
 	protected TextureRegion region;
 	protected NinePatch patch;
-	protected final Scaling scaling;
+	protected Scaling scaling;
 	protected int align = Align.CENTER;
 	protected float imageX, imageY, imageWidth, imageHeight;
 
 	public Image (TextureRegion region) {
-		this(region, Scaling.none, null);
+		this(region, Scaling.stretch, null);
 	}
 
 	public Image (TextureRegion region, Scaling scaling) {
@@ -39,7 +39,7 @@ public class Image extends Widget {
 	}
 
 	public Image (NinePatch patch) {
-		this(patch, Scaling.none, null);
+		this(patch, Scaling.stretch, null);
 	}
 
 	public Image (NinePatch patch, Scaling scaling) {
@@ -95,12 +95,12 @@ public class Image extends Widget {
 		validate();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (patch != null)
-			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
+			patch.draw(batch, x, y, imageWidth * scaleX, imageHeight * scaleY);
 		else if (region != null) {
 			if (scaleX == 1 && scaleY == 1 && rotation == 0)
-				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
+				batch.draw(region, x, y + imageY, imageWidth, imageHeight);
 			else
-				batch.draw(region, x + imageX, y + imageY, originX, originY, imageWidth, imageHeight, scaleX, scaleY, rotation);
+				batch.draw(region, x, y + imageY, originX, originY, imageWidth, imageHeight, scaleX, scaleY, rotation);
 		}
 	}
 
@@ -124,6 +124,10 @@ public class Image extends Widget {
 		}
 		this.patch = patch;
 		region = null;
+	}
+
+	public void setScaling (Scaling scaling) {
+		this.scaling = scaling;
 	}
 
 	public float getMinWidth () {

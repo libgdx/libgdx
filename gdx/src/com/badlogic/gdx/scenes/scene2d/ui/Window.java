@@ -63,8 +63,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * .</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
  * <li>The <code>titleFont</code> attribute references a {@link BitmapFont} by name, to be used to render the title string.</li>
  * *
  * <li>The <code>titleFontColor</code> attribute references a {@link Color} by name, to be used to render the title string.</li>

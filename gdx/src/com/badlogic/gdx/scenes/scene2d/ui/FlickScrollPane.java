@@ -142,7 +142,6 @@ public class FlickScrollPane extends WidgetGroup {
 	public void act (float delta) {
 		if (flingTimer > 0) {
 			float alpha = flingTimer / flingTime;
-			alpha = alpha * alpha * alpha;
 			amountX -= velocityX * alpha * delta;
 			amountY -= velocityY * alpha * delta;
 			clamp();

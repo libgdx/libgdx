@@ -159,6 +159,10 @@ public class Table extends WidgetGroup {
 		}
 	}
 
+	public NinePatch getBackgroundPatch () {
+		return backgroundPatch;
+	}
+
 	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */
 	public void enableClipping (Stage stage) {
 		this.stage = stage;
@@ -553,7 +557,7 @@ public class Table extends WidgetGroup {
 	public void setAssetManager (AssetManager assetManager) {
 		layout.assetManager = assetManager;
 	}
-	
+
 	public void setStage (Stage stage) {
 		layout.stage = stage;
 	}

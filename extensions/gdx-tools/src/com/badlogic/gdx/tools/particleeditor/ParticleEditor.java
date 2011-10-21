@@ -50,12 +50,15 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter.NumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
@@ -63,6 +66,13 @@ public class ParticleEditor extends JFrame {
 	JPanel rowsPanel;
 	EffectPanel effectPanel;
 	private JSplitPane splitPane;
+	OrthographicCamera worldCamera;
+	OrthographicCamera textCamera;
+	NumericValue pixelsPerMeter;
+	NumericValue zoomLevel;
+
+	float pixelsPerMeterPrev;
+	float zoomLevelPrev;
 
 	ParticleEffect effect = new ParticleEffect();
 	final HashMap<ParticleEmitter, ParticleData> particleData = new HashMap();
@@ -88,10 +98,13 @@ public class ParticleEditor extends JFrame {
 
 	void reloadRows () {
 		EventQueue.invokeLater(new Runnable() {
+
 			public void run () {
 				rowsPanel.removeAll();
 				ParticleEmitter emitter = getEmitter();
 				addRow(new ImagePanel(ParticleEditor.this));
+				addRow(new NumericPanel("Pixels per meter", pixelsPerMeter));
+				addRow(new NumericPanel("Zoom level", zoomLevel));
 				addRow(new RangedNumericPanel("Delay", emitter.getDelay()));
 				addRow(new RangedNumericPanel("Duration", emitter.getDuration()));
 				addRow(new CountPanel(ParticleEditor.this));
@@ -253,6 +266,17 @@ public class ParticleEditor extends JFrame {
 
 			spriteBatch = new SpriteBatch();
 
+			worldCamera = new OrthographicCamera();
+			textCamera = new OrthographicCamera();
+
+			pixelsPerMeter = new NumericValue();
+			pixelsPerMeter.setValue(1.0f);
+			pixelsPerMeter.setAlwaysActive(true);
+
+			zoomLevel = new NumericValue();
+			zoomLevel.setValue(1.0f);
+			zoomLevel.setAlwaysActive(true);
+
 			font = new BitmapFont(Gdx.files.getFileHandle("default.fnt", FileType.Internal), Gdx.files.getFileHandle("default.png",
 				FileType.Internal), true);
 			effectPanel.newEmitter("Untitled", true);
@@ -263,9 +287,17 @@ public class ParticleEditor extends JFrame {
 		@Override
 		public void resize (int width, int height) {
 			Gdx.gl.glViewport(0, 0, width, height);
-			spriteBatch.getProjectionMatrix().setToOrtho(0, width, height, 0, 0, 1);
 
-			effect.setPosition(width / 2, height / 2);
+			if (pixelsPerMeter.getValue() <= 0) {
+				pixelsPerMeter.setValue(1);
+			}
+			worldCamera.setToOrtho(false, width / pixelsPerMeter.getValue(), height / pixelsPerMeter.getValue());
+			worldCamera.update();
+
+			textCamera.setToOrtho(true, width, height);
+			textCamera.update();
+
+			effect.setPosition(worldCamera.viewportWidth / 2, worldCamera.viewportHeight / 2);
 		}
 
 		public void render () {
@@ -275,6 +307,21 @@ public class ParticleEditor extends JFrame {
 			float delta = Gdx.graphics.getDeltaTime();
 
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+			if ((pixelsPerMeter.getValue() != pixelsPerMeterPrev) || (zoomLevel.getValue() != zoomLevelPrev)) {
+				if (pixelsPerMeter.getValue() <= 0) {
+					pixelsPerMeter.setValue(1);
+				}
+
+				worldCamera.setToOrtho(false, viewWidth / pixelsPerMeter.getValue(), viewHeight / pixelsPerMeter.getValue());
+				worldCamera.zoom = zoomLevel.getValue();
+				worldCamera.update();
+				effect.setPosition(worldCamera.viewportWidth / 2, worldCamera.viewportHeight / 2);
+				zoomLevelPrev = zoomLevel.getValue();
+				pixelsPerMeterPrev = pixelsPerMeter.getValue();
+			}
+
+			spriteBatch.setProjectionMatrix(worldCamera.combined);
 
 			spriteBatch.begin();
 			spriteBatch.enableBlending();
@@ -311,6 +358,8 @@ public class ParticleEditor extends JFrame {
 				// gl.drawLine(mouseX - 6, mouseY, mouseX + 5, mouseY);
 				// gl.drawLine(mouseX, mouseY - 5, mouseX, mouseY + 6);
 			}
+
+			spriteBatch.setProjectionMatrix(textCamera.combined);
 
 			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, 15);
 			font.draw(spriteBatch, "Count: " + activeCount, 5, 35);
@@ -357,7 +406,9 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean touchDown (int x, int y, int pointer, int newParam) {
-			effect.setPosition(x, y);
+			Vector3 touchPoint = new Vector3(x, y, 0);
+			worldCamera.unproject(touchPoint);
+			effect.setPosition(touchPoint.x, touchPoint.y);
 			return false;
 		}
 
@@ -366,7 +417,9 @@ public class ParticleEditor extends JFrame {
 		}
 
 		public boolean touchDragged (int x, int y, int pointer) {
-			effect.setPosition(x, y);
+			Vector3 touchPoint = new Vector3(x, y, 0);
+			worldCamera.unproject(touchPoint);
+			effect.setPosition(touchPoint.x, touchPoint.y);
 			return false;
 		}
 
