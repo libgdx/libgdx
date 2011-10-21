@@ -553,6 +553,10 @@ public class Table extends WidgetGroup {
 	public void setAssetManager (AssetManager assetManager) {
 		layout.assetManager = assetManager;
 	}
+	
+	public void setStage (Stage stage) {
+		layout.stage = stage;
+	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be
 	 * drawn. If debug is never turned on for any table in the application, calling this method will have no effect. If a table has

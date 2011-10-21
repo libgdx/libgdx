@@ -40,6 +40,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.LibgdxToolkit.DebugRect;
@@ -52,6 +53,7 @@ import com.esotericsoftware.tablelayout.Cell;
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
 	public Skin skin;
 	public AssetManager assetManager;
+	public Stage stage;
 
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;

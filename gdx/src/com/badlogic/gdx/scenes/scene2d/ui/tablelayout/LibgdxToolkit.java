@@ -38,6 +38,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -90,10 +91,17 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		try {
 			return super.newInstance(layout, className);
 		} catch (Exception ex) {
-			// Try to create a widget with a Skin constructor.
+			// Try a Skin constructor.
 			if (layout.skin != null) {
 				try {
 					return (Actor)Class.forName(className).getConstructor(Skin.class).newInstance(layout.skin);
+				} catch (Exception ignored) {
+				}
+			}
+			// Try a Stage constructor.
+			if (layout.stage != null) {
+				try {
+					return (Actor)Class.forName(className).getConstructor(Stage.class).newInstance(layout.stage);
 				} catch (Exception ignored) {
 				}
 			}
@@ -155,6 +163,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		TableLayout layout = parent.getTableLayout();
 		table.setSkin(layout.skin);
 		table.setAssetManager(layout.assetManager);
+		table.setStage(layout.stage);
 		return table;
 	}
 
