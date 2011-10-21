@@ -142,11 +142,15 @@ public class Table extends WidgetGroup {
 		return layout.getMinHeight();
 	}
 
-	/** @param background May be null. */
+	/** Sets the background ninepatch and sets the table's padding to {@link NinePatch#getTopHeight()} ,
+	 * {@link NinePatch#getBottomHeight()}, {@link NinePatch#getLeftWidth()}, and {@link NinePatch#getRightWidth()}.
+	 * @param background If null, no background will be set and all padding is removed. */
 	public void setBackground (NinePatch background) {
 		if (this.backgroundPatch == background) return;
 		this.backgroundPatch = background;
-		if (background != null) {
+		if (background == null)
+			pad(null);
+		else {
 			padBottom((int)background.getBottomHeight());
 			padTop((int)background.getTopHeight());
 			padLeft((int)background.getLeftWidth());
@@ -195,6 +199,7 @@ public class Table extends WidgetGroup {
 	public void clear () {
 		super.clear();
 		layout.clear();
+		invalidate();
 	}
 
 	public Actor register (String name, Actor widget) {
@@ -308,7 +313,7 @@ public class Table extends WidgetGroup {
 
 	/** Sets the actor in the cell with the specified name.
 	 * @see TableLayout#setWidget(String, Actor) */
-	public void setActor (String name, Actor actor) {
+	public void setWidget (String name, Actor actor) {
 		layout.setWidget(name, actor);
 	}
 
@@ -550,8 +555,10 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be
-	 * drawn. */
+	 * drawn. If debug is never turned on for any table in the application, calling this method will have no effect. If a table has
+	 * ever had debug set, calling this method causes an expensive traversal of all actors in the stage. */
 	static public void drawDebug (Stage stage) {
+		if (!LibgdxToolkit.drawDebug) return;
 		drawDebug(stage.getActors(), stage.getSpriteBatch());
 	}
 

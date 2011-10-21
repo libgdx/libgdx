@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
-public final class LwjglGraphics implements Graphics {
+public class LwjglGraphics implements Graphics {
 	static int major, minor;
 
 	GLCommon gl;

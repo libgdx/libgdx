@@ -642,6 +642,8 @@ public class Json {
 	}
 
 	public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
+		if (jsonData == null) return null;
+
 		if (jsonData instanceof ObjectMap) {
 			ObjectMap<String, Object> jsonMap = (ObjectMap)jsonData;
 

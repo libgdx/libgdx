@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author Nathan Sweet */
 public class Label extends Widget {
@@ -51,9 +52,10 @@ public class Label extends Widget {
 	}
 
 	public void setStyle (LabelStyle style) {
+		if (style.font == null) throw new GdxRuntimeException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
-		cache.setColor(style.fontColor);
+		if (style.fontColor != null) cache.setColor(style.fontColor);
 		invalidateHierarchy();
 	}
 

@@ -42,13 +42,42 @@ public class NinePatch {
 	public NinePatch (TextureRegion region, int left, int right, int top, int bottom) {
 		int middleWidth = region.getRegionWidth() - left - right;
 		int middleHeight = region.getRegionHeight() - top - bottom;
-		this.patches = new TextureRegion[] {new TextureRegion(region, 0, 0, left, top),
-			new TextureRegion(region, left, 0, middleWidth, top), new TextureRegion(region, left + middleWidth, 0, right, top),
-			new TextureRegion(region, 0, top, left, middleHeight), new TextureRegion(region, left, top, middleWidth, middleHeight),
-			new TextureRegion(region, left + middleWidth, top, right, middleHeight),
-			new TextureRegion(region, 0, top + middleHeight, left, bottom),
-			new TextureRegion(region, left, top + middleHeight, middleWidth, bottom),
-			new TextureRegion(region, left + middleWidth, top + middleHeight, right, bottom)};
+
+		patches = new TextureRegion[9];
+		if (top > 0) {
+			if (left > 0) patches[0] = new TextureRegion(region, 0, 0, left, top);
+			if (middleWidth > 0) patches[1] = new TextureRegion(region, left, 0, middleWidth, top);
+			if (right > 0) patches[2] = new TextureRegion(region, left + middleWidth, 0, right, top);
+		}
+		if (middleHeight > 0) {
+			if (left > 0) patches[3] = new TextureRegion(region, 0, top, left, middleHeight);
+			if (middleWidth > 0) patches[4] = new TextureRegion(region, left, top, middleWidth, middleHeight);
+			if (right > 0) patches[5] = new TextureRegion(region, left + middleWidth, top, right, middleHeight);
+		}
+		if (bottom > 0) {
+			if (left > 0) patches[6] = new TextureRegion(region, 0, top + middleHeight, left, bottom);
+			if (middleWidth > 0) patches[7] = new TextureRegion(region, left, top + middleHeight, middleWidth, bottom);
+			if (right > 0) patches[8] = new TextureRegion(region, left + middleWidth, top + middleHeight, right, bottom);
+		}
+
+		// If split only vertical, move splits from right to center.
+		if (left == 0 && middleWidth == 0) {
+			patches[TOP_CENTER] = patches[TOP_RIGHT];
+			patches[MIDDLE_CENTER] = patches[MIDDLE_RIGHT];
+			patches[BOTTOM_CENTER] = patches[BOTTOM_RIGHT];
+			patches[TOP_RIGHT] = null;
+			patches[MIDDLE_RIGHT] = null;
+			patches[BOTTOM_RIGHT] = null;
+		}
+		// If split only horizontal, move splits from bottom to center.
+		if (top == 0 && middleHeight == 0) {
+			patches[MIDDLE_LEFT] = patches[BOTTOM_LEFT];
+			patches[MIDDLE_CENTER] = patches[BOTTOM_CENTER];
+			patches[MIDDLE_RIGHT] = patches[BOTTOM_RIGHT];
+			patches[BOTTOM_LEFT] = null;
+			patches[BOTTOM_CENTER] = null;
+			patches[BOTTOM_RIGHT] = null;
+		}
 	}
 
 	public NinePatch (TextureRegion region) {
@@ -67,24 +96,32 @@ public class NinePatch {
 	}
 
 	private void checkValidity () {
-		if (patches[BOTTOM_LEFT].getRegionWidth() != patches[TOP_LEFT].getRegionWidth()
-			|| patches[BOTTOM_LEFT].getRegionWidth() != patches[MIDDLE_LEFT].getRegionWidth()) {
+		float leftWidth = getLeftWidth();
+		if ((patches[TOP_LEFT] != null && patches[TOP_LEFT].getRegionWidth() != leftWidth)
+			|| (patches[MIDDLE_LEFT] != null && patches[MIDDLE_LEFT].getRegionWidth() != leftWidth)
+			|| (patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getRegionWidth() != leftWidth)) {
 			throw new GdxRuntimeException("Left side patches must have the same width");
 		}
 
-		if (patches[BOTTOM_RIGHT].getRegionWidth() != patches[TOP_RIGHT].getRegionWidth()
-			|| patches[BOTTOM_RIGHT].getRegionWidth() != patches[MIDDLE_RIGHT].getRegionWidth()) {
+		float rightWidth = getRightWidth();
+		if ((patches[TOP_RIGHT] != null && patches[TOP_RIGHT].getRegionWidth() != rightWidth)
+			|| (patches[MIDDLE_RIGHT] != null && patches[MIDDLE_RIGHT].getRegionWidth() != rightWidth)
+			|| (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getRegionWidth() != rightWidth)) {
 			throw new GdxRuntimeException("Right side patches must have the same width");
 		}
 
-		if (patches[BOTTOM_LEFT].getRegionHeight() != patches[BOTTOM_CENTER].getRegionHeight()
-			|| patches[BOTTOM_LEFT].getRegionHeight() != patches[BOTTOM_RIGHT].getRegionHeight()) {
-			throw new GdxRuntimeException("Bottom patches must have the same height");
+		float bottomHeight = getBottomHeight();
+		if ((patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getRegionHeight() != bottomHeight)
+			|| (patches[BOTTOM_CENTER] != null && patches[BOTTOM_CENTER].getRegionHeight() != bottomHeight)
+			|| (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getRegionHeight() != bottomHeight)) {
+			throw new GdxRuntimeException("Right side patches must have the same width");
 		}
 
-		if (patches[TOP_LEFT].getRegionHeight() != patches[TOP_CENTER].getRegionHeight()
-			|| patches[TOP_LEFT].getRegionHeight() != patches[TOP_RIGHT].getRegionHeight()) {
-			throw new GdxRuntimeException("Top patches must have the same height");
+		float topHeight = getTopHeight();
+		if ((patches[TOP_LEFT] != null && patches[TOP_LEFT].getRegionHeight() != topHeight)
+			|| (patches[TOP_CENTER] != null && patches[TOP_CENTER].getRegionHeight() != topHeight)
+			|| (patches[TOP_RIGHT] != null && patches[TOP_RIGHT].getRegionHeight() != topHeight)) {
+			throw new GdxRuntimeException("Right side patches must have the same width");
 		}
 	}
 

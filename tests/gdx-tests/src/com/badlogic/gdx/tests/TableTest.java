@@ -69,10 +69,14 @@ public class TableTest extends GdxTest {
 			}
 		});
 
+		root.debug();
+		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow meow ", skin)).colspan(3);
+		root.row();
 		root.add(new Button("Text Button", skin));
 		root.add(new Button("Toggle Button", skin.getStyle("toggle", ButtonStyle.class)));
 		root.add(new CheckBox("meow", skin));
-		root.add(new Button(new Image(region), skin));
+		root.pack();
+		//root.add(new Button(new Image(region), skin));
 //		root.add(new LabelButton("Toggley", skin.getStyle("toggle", LabelButtonStyle.class)));
 	}
 
@@ -89,9 +93,9 @@ public class TableTest extends GdxTest {
 	@Override
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, false);
-		root.width = width;
-		root.height = height;
-		root.invalidate();
+//		root.width = width;
+//		root.height = height;
+//		root.invalidate();
 	}
 
 	@Override

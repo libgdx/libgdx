@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.Application;
@@ -33,6 +32,7 @@ import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.openal.OpenALAudio;
@@ -79,7 +79,24 @@ public class LwjglCanvas implements Application {
 		};
 		canvas.setIgnoreRepaint(true);
 
-		graphics = new LwjglGraphics(canvas, useGL2);
+		graphics = new LwjglGraphics(canvas, useGL2) {
+			public void setTitle (String title) {
+				super.setTitle(title);
+				LwjglCanvas.this.setTitle(title);
+			}
+
+			public boolean setDisplayMode (int width, int height, boolean fullscreen) {
+				if (!super.setDisplayMode(width, height, fullscreen)) return false;
+				if (!fullscreen) LwjglCanvas.this.setDisplayMode(width, height);
+				return true;
+			}
+
+			public boolean setDisplayMode (DisplayMode displayMode) {
+				if (!super.setDisplayMode(displayMode)) return false;
+				LwjglCanvas.this.setDisplayMode(displayMode.width, displayMode.height);
+				return true;
+			}
+		};
 		graphics.setVSync(true);
 		audio = new OpenALAudio();
 		files = new LwjglFiles();
@@ -91,6 +108,12 @@ public class LwjglCanvas implements Application {
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.input = input;
+	}
+
+	protected void setDisplayMode (int width, int height) {
+	}
+
+	protected void setTitle (String title) {
 	}
 
 	public Canvas getCanvas () {

@@ -182,9 +182,10 @@ public class SkinPacker {
 					} else {
 						if (split[4] == 1) // Is single region for ninepatch.
 							skin.addResource(region.name, new NinePatch(textureRegion));
-						else
+						else {
 							skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
 								region.height - split[3]));
+						}
 					}
 				}
 				FileHandle newSkinFile = new FileHandle(new File(inputDir, "temp-skin"));

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -36,6 +37,15 @@ public class LwjglFrame extends JFrame {
 		lwjglCanvas = new LwjglCanvas(listener, useGL2) {
 			protected void stopped () {
 				LwjglFrame.this.dispose();
+			}
+
+			protected void setTitle (String title) {
+				LwjglFrame.this.setTitle(title);
+			}
+
+			protected void setDisplayMode (int width, int height) {
+				LwjglFrame.this.getContentPane().setPreferredSize(new Dimension(width, height));
+				LwjglFrame.this.pack();
 			}
 		};
 		getContentPane().add(lwjglCanvas.getCanvas());

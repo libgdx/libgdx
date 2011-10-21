@@ -43,6 +43,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.esotericsoftware.tablelayout.Toolkit;
 
 /** @author Nathan Sweet */
@@ -53,6 +54,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	static public LibgdxToolkit instance = new LibgdxToolkit();
+
+	static boolean drawDebug;
 
 	public Actor wrap (TableLayout layout, Object object) {
 		if (object instanceof String) {
@@ -113,7 +116,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 							Method setStyleMethod = object.getClass().getMethod("setStyle", styleClass);
 							setStyleMethod.invoke(object, layout.skin.getStyle(styleName, styleClass));
 							return;
-						} catch (Exception ignored) {
+						} catch (Exception ex2) {
+							throw new GdxRuntimeException("Unable to set style: " + styleName, ex2);
 						}
 					}
 				}
@@ -206,6 +210,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public void addDebugRectangle (TableLayout layout, int type, int x, int y, int w, int h) {
+		drawDebug = true;
 		if (layout.debugRects == null) layout.debugRects = new Array();
 		layout.debugRects.add(new DebugRect(type, x, (int)(layout.getTable().height - y), w, h));
 	}
