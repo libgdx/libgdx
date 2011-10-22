@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
@@ -106,11 +105,14 @@ public class Button extends Table {
 
 	public Cell setText (String text) {
 		Label label = getLabel();
-		if (label != null) label.setText(text);
-		label = new Label(text, style);
-		label.setAlignment(Align.CENTER);
-		add(label);
-		invalidateHierarchy();
+		if (label != null) {
+      label.setText(text);
+    } else {
+		  label = new Label(text, style);
+		  label.setAlignment(Align.CENTER);
+		  add(label);
+		  invalidateHierarchy();
+    }
 		return getCell(label);
 	}
 
