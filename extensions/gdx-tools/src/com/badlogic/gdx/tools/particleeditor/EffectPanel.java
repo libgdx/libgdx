@@ -87,7 +87,7 @@ class EffectPanel extends JPanel {
 
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
 		if (emitters.size == 0)
-			emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
 		else {
 			ParticleEmitter p = emitters.get(0);
 			emitter.setPosition(p.getX(), p.getY());
@@ -135,7 +135,7 @@ class EffectPanel extends JPanel {
 			return;
 		}
 		for (ParticleEmitter emitter : effect.getEmitters()) {
-			emitter.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
 			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 		}
 		editIndex = 0;

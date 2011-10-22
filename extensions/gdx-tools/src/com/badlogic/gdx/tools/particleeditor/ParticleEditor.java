@@ -64,6 +64,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class ParticleEditor extends JFrame {
 	LwjglCanvas lwjglCanvas;
 	JPanel rowsPanel;
+	JPanel editRowsPanel;
 	EffectPanel effectPanel;
 	private JSplitPane splitPane;
 	OrthographicCamera worldCamera;
@@ -100,11 +101,13 @@ public class ParticleEditor extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run () {
+				editRowsPanel.removeAll();
+				addEditorRow(new NumericPanel("Pixels per meter", pixelsPerMeter));
+				addEditorRow(new NumericPanel("Zoom level", zoomLevel));
+
 				rowsPanel.removeAll();
 				ParticleEmitter emitter = getEmitter();
 				addRow(new ImagePanel(ParticleEditor.this));
-				addRow(new NumericPanel("Pixels per meter", pixelsPerMeter));
-				addRow(new NumericPanel("Zoom level", zoomLevel));
 				addRow(new RangedNumericPanel("Delay", emitter.getDelay()));
 				addRow(new RangedNumericPanel("Duration", emitter.getDuration()));
 				addRow(new CountPanel(ParticleEditor.this));
@@ -130,6 +133,12 @@ public class ParticleEditor extends JFrame {
 				rowsPanel.repaint();
 			}
 		});
+	}
+
+	void addEditorRow (JPanel row) {
+		row.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
+		editRowsPanel.add(row, new GridBagConstraints(0, -1, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+			new Insets(0, 0, 0, 0), 0, 0));
 	}
 
 	void addRow (JPanel row) {
@@ -204,21 +213,51 @@ public class ParticleEditor extends JFrame {
 		splitPane.setDividerSize(4);
 		getContentPane().add(splitPane, BorderLayout.CENTER);
 		{
-			JPanel propertiesPanel = new JPanel(new GridBagLayout());
-			splitPane.add(propertiesPanel, JSplitPane.RIGHT);
-			propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
-				.createTitledBorder("Emitter Properties")));
+			JSplitPane rightSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+			rightSplit.setUI(new BasicSplitPaneUI() {
+				public void paint (Graphics g, JComponent jc) {
+				}
+			});
+			rightSplit.setDividerSize(4);
+			splitPane.add(rightSplit, JSplitPane.RIGHT);
+
 			{
-				JScrollPane scroll = new JScrollPane();
-				propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
-					GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-				scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				JPanel propertiesPanel = new JPanel(new GridBagLayout());
+				rightSplit.add(propertiesPanel, JSplitPane.TOP);
+				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
+					.createTitledBorder("Editor Properties")));
 				{
-					rowsPanel = new JPanel(new GridBagLayout());
-					scroll.setViewportView(rowsPanel);
-					scroll.getVerticalScrollBar().setUnitIncrement(70);
+					JScrollPane scroll = new JScrollPane();
+					propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
+						GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+					scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+					{
+						editRowsPanel = new JPanel(new GridBagLayout());
+						scroll.setViewportView(editRowsPanel);
+						scroll.getVerticalScrollBar().setUnitIncrement(70);
+					}
 				}
 			}
+
+			{
+				JPanel propertiesPanel = new JPanel(new GridBagLayout());
+				rightSplit.add(propertiesPanel, JSplitPane.BOTTOM);
+				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
+					.createTitledBorder("Emitter Properties")));
+				{
+					JScrollPane scroll = new JScrollPane();
+					propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
+						GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+					scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+					{
+						rowsPanel = new JPanel(new GridBagLayout());
+						scroll.setViewportView(rowsPanel);
+						scroll.getVerticalScrollBar().setUnitIncrement(70);
+					}
+				}
+			}
+			rightSplit.setDividerLocation(200);
+
 		}
 		{
 			JSplitPane leftSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);

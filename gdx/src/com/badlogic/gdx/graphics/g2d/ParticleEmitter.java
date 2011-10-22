@@ -27,7 +27,6 @@ import com.badlogic.gdx.math.MathUtils;
 
 // BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.
-// BOZO - Use BooleanArray rather than BitSet.
 
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
@@ -74,8 +73,8 @@ public class ParticleEmitter {
 	private int emission, emissionDiff, emissionDelta;
 	private int lifeOffset, lifeOffsetDiff;
 	private int life, lifeDiff;
-	private int spawnWidth, spawnWidthDiff;
-	private int spawnHeight, spawnHeightDiff;
+	private float spawnWidth, spawnWidthDiff;
+	private float spawnHeight, spawnHeightDiff;
 	public float duration = 1, durationTimer;
 	private float delay, delayTimer;
 
@@ -330,12 +329,12 @@ public class ParticleEmitter {
 		lifeOffsetDiff = (int)lifeOffsetValue.newHighValue();
 		if (!lifeOffsetValue.isRelative()) lifeOffsetDiff -= lifeOffset;
 
-		spawnWidth = (int)spawnWidthValue.newLowValue();
-		spawnWidthDiff = (int)spawnWidthValue.newHighValue();
+		spawnWidth = spawnWidthValue.newLowValue();
+		spawnWidthDiff = spawnWidthValue.newHighValue();
 		if (!spawnWidthValue.isRelative()) spawnWidthDiff -= spawnWidth;
 
-		spawnHeight = (int)spawnHeightValue.newLowValue();
-		spawnHeightDiff = (int)spawnHeightValue.newHighValue();
+		spawnHeight = spawnHeightValue.newLowValue();
+		spawnHeightDiff = spawnHeightValue.newHighValue();
 		if (!spawnHeightValue.isRelative()) spawnHeightDiff -= spawnHeight;
 
 		updateFlags = 0;
@@ -425,22 +424,22 @@ public class ParticleEmitter {
 
 		// Spawn.
 		float x = this.x;
-		if (xOffsetValue.active) x += (int)xOffsetValue.newLowValue();
+		if (xOffsetValue.active) x += xOffsetValue.newLowValue();
 		float y = this.y;
-		if (yOffsetValue.active) y += (int)yOffsetValue.newLowValue();
+		if (yOffsetValue.active) y += yOffsetValue.newLowValue();
 		switch (spawnShapeValue.shape) {
 		case square: {
-			int width = spawnWidth + (int)(spawnWidthDiff * spawnWidthValue.getScale(percent));
-			int height = spawnHeight + (int)(spawnHeightDiff * spawnHeightValue.getScale(percent));
+			float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
+			float height = spawnHeight + (spawnHeightDiff * spawnHeightValue.getScale(percent));
 			x += MathUtils.random(width) - width / 2;
 			y += MathUtils.random(height) - height / 2;
 			break;
 		}
 		case ellipse: {
-			int width = spawnWidth + (int)(spawnWidthDiff * spawnWidthValue.getScale(percent));
-			int height = spawnHeight + (int)(spawnHeightDiff * spawnHeightValue.getScale(percent));
-			int radiusX = width / 2;
-			int radiusY = height / 2;
+			float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
+			float height = spawnHeight + (spawnHeightDiff * spawnHeightValue.getScale(percent));
+			float radiusX = width / 2;
+			float radiusY = height / 2;
 			if (radiusX == 0 || radiusY == 0) break;
 			float scaleY = radiusX / (float)radiusY;
 			if (spawnShapeValue.edges) {
@@ -459,10 +458,10 @@ public class ParticleEmitter {
 				x += MathUtils.cosDeg(spawnAngle) * radiusX;
 				y += MathUtils.sinDeg(spawnAngle) * radiusX / scaleY;
 			} else {
-				int radius2 = radiusX * radiusX;
+				float radius2 = radiusX * radiusX;
 				while (true) {
-					int px = MathUtils.random(width) - radiusX;
-					int py = MathUtils.random(width) - radiusX;
+					float px = MathUtils.random(width) - radiusX;
+					float py = MathUtils.random(width) - radiusX;
 					if (px * px + py * py <= radius2) {
 						x += px;
 						y += py / scaleY;
@@ -473,8 +472,8 @@ public class ParticleEmitter {
 			break;
 		}
 		case line: {
-			int width = spawnWidth + (int)(spawnWidthDiff * spawnWidthValue.getScale(percent));
-			int height = spawnHeight + (int)(spawnHeightDiff * spawnHeightValue.getScale(percent));
+			float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
+			float height = spawnHeight + (spawnHeightDiff * spawnHeightValue.getScale(percent));
 			if (width != 0) {
 				float lineX = width * MathUtils.random();
 				x += lineX;
