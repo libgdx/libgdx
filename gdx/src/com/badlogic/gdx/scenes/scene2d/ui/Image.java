@@ -115,6 +115,10 @@ public class Image extends Widget {
 		patch = null;
 	}
 
+	public TextureRegion getRegion () {
+		return region;
+	}
+
 	/** @param patch May be null. */
 	public void setPatch (NinePatch patch) {
 		if (patch != null) {
@@ -124,6 +128,10 @@ public class Image extends Widget {
 		}
 		this.patch = patch;
 		region = null;
+	}
+
+	public NinePatch getPatch () {
+		return patch;
 	}
 
 	public void setScaling (Scaling scaling) {
