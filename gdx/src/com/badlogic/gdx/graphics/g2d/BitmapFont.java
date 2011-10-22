@@ -717,13 +717,13 @@ public class BitmapFont implements Disposable {
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
-		color = NumberUtils.intBitsToFloat((intBits & 0xfeffffff));
+		color = NumberUtils.intToFloatColor(intBits);
 	}
 
 	/** Returns the color of this font. Changing the returned color will have no affect, {@link #setColor(Color)} or
 	 * {@link #setColor(float, float, float, float)} must be used. */
 	public Color getColor () {
-		int intBits = NumberUtils.floatToRawIntBits(color);
+		int intBits = NumberUtils.floatToIntColor(color);
 		Color color = this.tempColor;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

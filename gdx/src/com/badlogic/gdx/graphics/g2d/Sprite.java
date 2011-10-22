@@ -211,7 +211,7 @@ public class Sprite extends TextureRegion {
 
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = NumberUtils.intBitsToFloat(intBits & 0xfeffffff);
+		float color = NumberUtils.intToFloatColor(intBits);
 		float[] vertices = this.vertices;
 		vertices[C1] = color;
 		vertices[C2] = color;
@@ -447,7 +447,7 @@ public class Sprite extends TextureRegion {
 	 * {@link #setColor(float, float, float, float)} must be used. */
 	public Color getColor () {
 		float floatBits = vertices[C1];
-		int intBits = NumberUtils.floatToRawIntBits(vertices[C1]);
+		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
 		Color color = this.color;
 		color.r = (intBits & 0xff) / 255f;
 		color.g = ((intBits >>> 8) & 0xff) / 255f;

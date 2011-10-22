@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 public class NumberUtils {
@@ -22,6 +23,14 @@ public class NumberUtils {
 
 	public static int floatToRawIntBits (float value) {
 		return Float.floatToRawIntBits(value);
+	}
+	
+	public static int floatToIntColor (float value) {
+		return Float.floatToRawIntBits(value);
+	}
+	
+	public static float intToFloatColor(int value) {
+		return Float.intBitsToFloat(value);
 	}
 
 	public static float intBitsToFloat (int value) {
@@ -34,5 +43,16 @@ public class NumberUtils {
 
 	public static double longBitsToDouble (long value) {
 		return Double.longBitsToDouble(value);
+	}
+
+	public static void main (String[] args) throws Exception {
+		int i = 0;
+		while (true) {
+			float asFloat = Float.intBitsToFloat(i);
+			int backToInt = Float.floatToRawIntBits(asFloat);
+			if (i != backToInt) System.out.println("fail! " + Integer.toHexString(i));
+			if (i == 0xffffffff) break;
+			i++;
+		}
 	}
 }

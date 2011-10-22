@@ -185,7 +185,7 @@ public class Color {
 	 * @return the packed color as a float */
 	public static float toFloatBits (int r, int g, int b, int a) {
 		int color = (a << 24) | (b << 16) | (g << 8) | r;
-		float floatColor = NumberUtils.intBitsToFloat(color & 0xfeffffff);
+		float floatColor = NumberUtils.intToFloatColor(color);
 		return floatColor;
 	}
 
@@ -206,7 +206,7 @@ public class Color {
 	 * @return the packed color as a 32-bit float */
 	public float toFloatBits () {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return NumberUtils.intBitsToFloat(color & 0xfeffffff);
+		return NumberUtils.intToFloatColor(color);
 	}
 
 	/** Packs the 4 components of this color into a 32-bit int.
@@ -222,7 +222,7 @@ public class Color {
 	 * @return the packed color as a 32-bit float */
 	public static float toFloatBits (float r, float g, float b, float a) {
 		int color = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		return NumberUtils.intBitsToFloat(color & 0xfeffffff);
+		return NumberUtils.intToFloatColor(color);
 	}
 
 	public static int alpha (float alpha) {

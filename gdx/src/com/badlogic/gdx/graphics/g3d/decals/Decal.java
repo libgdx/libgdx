@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /** <p/>
  * Represents a sprite in 3d space. Typical 3d transformations such as translation, rotation and scaling are supported. The
@@ -65,7 +66,7 @@ public class Decal {
 	 * @param a Alpha component */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = Float.intBitsToFloat(intBits & 0xfeffffff);
+		float color = NumberUtils.intToFloatColor(intBits);
 		vertices[C1] = color;
 		vertices[C2] = color;
 		vertices[C3] = color;
