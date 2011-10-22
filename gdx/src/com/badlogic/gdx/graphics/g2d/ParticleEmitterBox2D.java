@@ -40,6 +40,7 @@ public class ParticleEmitterBox2D extends ParticleEmitter {
 		this.world = world;
 	}
 
+	@Override
 	protected Particle newParticle (Sprite sprite) {
 		return new ParticleBox2D(sprite);
 	}

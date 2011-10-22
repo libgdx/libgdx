@@ -72,6 +72,22 @@ public class Json {
 		classToTag.put(type, tag);
 	}
 
+	public Class getClass (String tag) {
+		Class type = tagToClass.get(tag);
+		if (type != null) return type;
+		try {
+			return Class.forName(tag);
+		} catch (ClassNotFoundException ex) {
+			throw new SerializationException(ex);
+		}
+	}
+
+	public String getTag (Class type) {
+		String tag = classToTag.get(type);
+		if (tag != null) return tag;
+		return type.getName();
+	}
+
 	/** Sets the name of the JSON field to store the Java class name or class tag when required to avoid ambiguity during
 	 * deserialization. Set to null to never output this information, but be warned that deserialization may fail. */
 	public void setTypeName (String typeName) {
@@ -215,31 +231,35 @@ public class Json {
 
 	private Object[] getDefaultValues (Class type) {
 		if (!usePrototypes) return null;
-		Object[] values = classToDefaultValues.get(type);
-		if (values == null) {
-			Object object = newInstance(type);
+		if (classToDefaultValues.containsKey(type)) return classToDefaultValues.get(type);
+		Object object;
+		try {
+			object = newInstance(type);
+		} catch (Exception ex) {
+			classToDefaultValues.put(type, null);
+			return null;
+		}
 
-			ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
-			if (fields == null) fields = cacheFields(type);
+		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
+		if (fields == null) fields = cacheFields(type);
 
-			values = new Object[fields.size];
-			classToDefaultValues.put(type, values);
+		Object[] values = new Object[fields.size];
+		classToDefaultValues.put(type, values);
 
-			int i = 0;
-			for (FieldMetadata metadata : fields.values()) {
-				Field field = metadata.field;
-				try {
-					values[i++] = field.get(object);
-				} catch (IllegalAccessException ex) {
-					throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
-				} catch (SerializationException ex) {
-					ex.addTrace(field + " (" + type.getName() + ")");
-					throw ex;
-				} catch (RuntimeException runtimeEx) {
-					SerializationException ex = new SerializationException(runtimeEx);
-					ex.addTrace(field + " (" + type.getName() + ")");
-					throw ex;
-				}
+		int i = 0;
+		for (FieldMetadata metadata : fields.values()) {
+			Field field = metadata.field;
+			try {
+				values[i++] = field.get(object);
+			} catch (IllegalAccessException ex) {
+				throw new SerializationException("Error accessing field: " + field.getName() + " (" + type.getName() + ")", ex);
+			} catch (SerializationException ex) {
+				ex.addTrace(field + " (" + type.getName() + ")");
+				throw ex;
+			} catch (RuntimeException runtimeEx) {
+				SerializationException ex = new SerializationException(runtimeEx);
+				ex.addTrace(field + " (" + type.getName() + ")");
+				throw ex;
 			}
 		}
 		return values;
