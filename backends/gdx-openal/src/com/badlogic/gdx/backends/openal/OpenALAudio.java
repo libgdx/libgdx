@@ -143,12 +143,12 @@ public class OpenALAudio implements Audio {
 				if (isMusic) {
 					idleSources.removeIndex(i);
 				} else {
-					if(sourceToSoundId.containsKey(sourceId)) {
+					if (sourceToSoundId.containsKey(sourceId)) {
 						long soundId = sourceToSoundId.get(sourceId);
 						sourceToSoundId.remove(sourceId);
 						soundIdToSource.remove(soundId);
 					}
-					
+
 					long soundId = nextSoundId++;
 					sourceToSoundId.put(sourceId, soundId);
 					soundIdToSource.put(soundId, sourceId);
@@ -167,7 +167,7 @@ public class OpenALAudio implements Audio {
 	void freeSource (int sourceID) {
 		alSourceStop(sourceID);
 		alSourcei(sourceID, AL_BUFFER, 0);
-		if(sourceToSoundId.containsKey(sourceID)) {
+		if (sourceToSoundId.containsKey(sourceID)) {
 			long soundId = sourceToSoundId.remove(sourceID);
 			soundIdToSource.remove(soundId);
 		}
@@ -180,7 +180,7 @@ public class OpenALAudio implements Audio {
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
 				long soundId = sourceToSoundId.remove(sourceID);
 				soundIdToSource.remove(soundId);
-				
+
 				alSourceStop(sourceID);
 				alSourcei(sourceID, AL_BUFFER, 0);
 			}
@@ -193,7 +193,7 @@ public class OpenALAudio implements Audio {
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
 				long soundId = sourceToSoundId.remove(sourceID);
 				soundIdToSource.remove(soundId);
-				
+
 				alSourceStop(sourceID);
 			}
 		}
@@ -204,42 +204,42 @@ public class OpenALAudio implements Audio {
 			music.items[i].update();
 	}
 
-	public long getSoundId(int sourceId) {
-		if(!sourceToSoundId.containsKey(sourceId)) return -1;
+	public long getSoundId (int sourceId) {
+		if (!sourceToSoundId.containsKey(sourceId)) return -1;
 		return sourceToSoundId.get(sourceId);
 	}
-	
-	public void stopSound(long soundId) {
-		if(!soundIdToSource.containsKey(soundId)) return;
+
+	public void stopSound (long soundId) {
+		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		alSourceStop(sourceId);
 	}
-	
-	public void setSoundGain(long soundId, float volume) {
-		if(!soundIdToSource.containsKey(soundId)) return;
+
+	public void setSoundGain (long soundId, float volume) {
+		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		AL10.alSourcef(sourceId, AL10.AL_GAIN, volume);
 	}
 
 	public void setSoundLooping (long soundId, boolean looping) {
-		if(!soundIdToSource.containsKey(soundId)) return;
+		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
-		alSourcei(sourceId, AL10.AL_LOOPING, looping?AL10.AL_TRUE:AL10.AL_FALSE);
+		alSourcei(sourceId, AL10.AL_LOOPING, looping ? AL10.AL_TRUE : AL10.AL_FALSE);
 	}
-	
-	public void setSoundPitch(long soundId, float pitch) {
-		if(!soundIdToSource.containsKey(soundId)) return;
+
+	public void setSoundPitch (long soundId, float pitch) {
+		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		AL10.alSourcef(sourceId, AL10.AL_PITCH, pitch);
 	}
-	
-	public void setSoundPan(long soundId, float pan, float volume) {
-		if(!soundIdToSource.containsKey(soundId)) return;
+
+	public void setSoundPan (long soundId, float pan, float volume) {
+		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
-		
-		AL10.alSource3f(sourceId, AL10.AL_POSITION, -pan, 0, 0); 
+
+		AL10.alSource3f(sourceId, AL10.AL_POSITION, -pan, 0, 0);
 	}
-	
+
 	public void dispose () {
 		for (int i = 0, n = allSources.size; i < n; i++) {
 			int sourceID = allSources.get(i);
@@ -250,9 +250,9 @@ public class OpenALAudio implements Audio {
 
 		sourceToSoundId.clear();
 		soundIdToSource.clear();
-		
+
 		AL.destroy();
-		while(AL.isCreated()) {
+		while (AL.isCreated()) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
@@ -260,12 +260,12 @@ public class OpenALAudio implements Audio {
 		}
 	}
 
-	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		// BOZO - Write OpenAL device.
-		return new JavaSoundAudioDevice(samplingRate, isMono);
+	public AudioDevice newAudioDevice (int sampleRate, boolean isMono) {
+		return new OpenALAudioDevice(this, sampleRate, isMono);
 	}
 
 	public AudioRecorder newAudioRecoder (int samplingRate, boolean isMono) {
+		// BOZO - Write OpenAL recorder.
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
 	}
 

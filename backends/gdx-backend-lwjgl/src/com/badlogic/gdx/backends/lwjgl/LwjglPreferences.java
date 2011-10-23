@@ -28,6 +28,7 @@ import java.util.Properties;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class LwjglPreferences implements Preferences {
 	private final String name;
@@ -173,11 +174,13 @@ public class LwjglPreferences implements Preferences {
 	@Override
 	public void flush () {
 		if (Gdx.files == null) return;
+		FileHandle file = Gdx.files.external(LwjglPreferences.this.name);
 		OutputStream out = null;
 		try {
-			out = new BufferedOutputStream(Gdx.files.external(LwjglPreferences.this.name).write(false));
+			out = new BufferedOutputStream(file.write(false));
 			properties.storeToXML(out, null);
-		} catch (Throwable t) {
+		} catch (Exception ex) {
+			throw new GdxRuntimeException("Error writing preferences: " + file, ex);
 		} finally {
 			if (out != null) try {
 				out.close();
