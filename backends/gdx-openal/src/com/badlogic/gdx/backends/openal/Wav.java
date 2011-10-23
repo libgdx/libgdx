@@ -34,7 +34,7 @@ public class Wav {
 			setup(input.channels, input.sampleRate);
 		}
 
-		protected int read (byte[] buffer) {
+		public int read (byte[] buffer) {
 			if (input == null) {
 				input = new WavInputStream(file);
 				setup(input.channels, input.sampleRate);
@@ -46,7 +46,7 @@ public class Wav {
 			}
 		}
 
-		protected void reset () {
+		public void reset () {
 			if (input == null) return;
 			try {
 				input.close();

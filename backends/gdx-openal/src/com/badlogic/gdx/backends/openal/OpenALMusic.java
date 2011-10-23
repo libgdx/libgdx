@@ -50,7 +50,7 @@ public abstract class OpenALMusic implements Music {
 		this.audio = audio;
 		this.file = file;
 
-		audio.music.add(this);
+		if(audio != null) audio.music.add(this);
 	}
 
 	protected void setup (int channels, int sampleRate) {
@@ -123,10 +123,18 @@ public abstract class OpenALMusic implements Music {
 
 	/** Fills as much of the buffer as possible and returns the number of bytes filled. Returns <= 0 to indicate the end of the
 	 * stream. */
-	abstract protected int read (byte[] buffer);
+	abstract public int read (byte[] buffer);
 
 	/** Resets the stream to the beginning. */
-	abstract protected void reset ();
+	abstract public void reset ();
+	
+	public int getChannels() {
+		return format == AL_FORMAT_STEREO16?2:1;
+	}
+	
+	public int getRate() {
+		return sampleRate;
+	}
 
 	public void update () {
 		if (sourceID == -1) return;

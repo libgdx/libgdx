@@ -31,7 +31,7 @@ public class Ogg {
 			setup(input.getChannels(), input.getSampleRate());
 		}
 
-		protected int read (byte[] buffer) {
+		public int read (byte[] buffer) {
 			if (input == null) {
 				input = new OggInputStream(file.read());
 				setup(input.getChannels(), input.getSampleRate());
@@ -39,7 +39,7 @@ public class Ogg {
 			return input.read(buffer);
 		}
 
-		protected void reset () {
+		public void reset () {
 			if (input == null) return;
 			input.close();
 			input = null;

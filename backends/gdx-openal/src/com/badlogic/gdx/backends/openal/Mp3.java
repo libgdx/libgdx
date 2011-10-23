@@ -52,7 +52,7 @@ public class Mp3 {
 			}
 		}
 
-		protected int read (byte[] buffer) {
+		public int read (byte[] buffer) {
 			try {
 				boolean setup = bitstream == null;
 				if (setup) {
@@ -90,7 +90,7 @@ public class Mp3 {
 			}
 		}
 
-		protected void reset () {
+		public void reset () {
 			if (bitstream == null) return;
 			try {
 				bitstream.close();
