@@ -128,6 +128,10 @@ public class Button extends Table {
 			setBackground(style.down == null ? style.up : style.down);
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
+			if (style.downFontColor != null) {
+				Label label = getLabel();
+				if (label != null) label.setColor(style.downFontColor);
+			}
 		} else {
 			if (style.checked == null)
 				setBackground(style.up);
@@ -135,6 +139,11 @@ public class Button extends Table {
 				setBackground(isChecked ? style.checked : style.up);
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
+			if (style.fontColor != null) {
+				Label label = getLabel();
+				if (label != null)
+					label.setColor((isChecked && style.downFontColor != null) ? style.downFontColor : style.fontColor);
+			}
 		}
 		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
@@ -165,12 +174,13 @@ public class Button extends Table {
 		public NinePatch checked;
 		public float pressedOffsetX, pressedOffsetY;
 		public float unpressedOffsetX, unpressedOffsetY;
+		public Color downFontColor;
 
 		public ButtonStyle () {
 		}
 
 		public ButtonStyle (NinePatch down, NinePatch up, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY, BitmapFont font, Color fontColor) {
+			float unpressedOffsetX, float unpressedOffsetY, BitmapFont font, Color fontColor, Color downFontColor) {
 			super(font, fontColor);
 			this.down = down;
 			this.up = up;
@@ -179,6 +189,7 @@ public class Button extends Table {
 			this.pressedOffsetY = pressedOffsetY;
 			this.unpressedOffsetX = unpressedOffsetX;
 			this.unpressedOffsetY = unpressedOffsetY;
+			this.downFontColor = downFontColor;
 		}
 	}
 }
