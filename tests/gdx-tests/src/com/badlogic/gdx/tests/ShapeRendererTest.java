@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -122,6 +123,35 @@ public class ShapeRendererTest extends GdxTest {
 			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
 			renderer.translate(-width / 2, -height / 2, depth / 2);
 			renderer.box(0, 0, 0, width, height, depth);
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.Circle);
+		renderer.setColor(1, 0, 1, 1);
+		renderer.identity();
+		for (int i = 0; i < 20; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float radius = MathUtils.random();
+			renderer.circle(x, y, radius, 40);
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.FilledCircle);
+		renderer.setColor(0, 1, 1, 1);
+		renderer.identity();
+		renderer.rotate(0, 1, 0, 45);
+		for (int i = 0; i < 5; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float width = MathUtils.random();
+			float height = MathUtils.random();
+			renderer.identity();
+			renderer.translate(0.5f + x, -0.5f + y, -MathUtils.random());
+			renderer.translate(width / 2, height / 2, 0);
+			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
+			renderer.translate(-width / 2, -height / 2, 0);
+			renderer.filledCircle(0, 0, width, 40);
 		}
 		renderer.end();
 
