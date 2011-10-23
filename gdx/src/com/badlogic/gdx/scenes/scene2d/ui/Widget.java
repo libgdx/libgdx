@@ -58,6 +58,14 @@ public abstract class Widget extends Actor implements Layout {
 		return getPrefHeight();
 	}
 
+	public float getPrefWidth () {
+		return 0;
+	}
+
+	public float getPrefHeight () {
+		return 0;
+	}
+
 	public float getMaxWidth () {
 		return 0;
 	}

@@ -120,7 +120,6 @@ public class OpenALAudioDevice implements AudioDevice {
 
 		// A buffer underflow will cause the source to stop.
 		if (!isPlaying || alGetSourcei(sourceID, AL_SOURCE_STATE) != AL_PLAYING) {
-			System.out.println("underflow!");
 			alSourcePlay(sourceID);
 			isPlaying = true;
 		}
