@@ -103,7 +103,7 @@ public class MipMapTest extends GdxTest {
 		minFilter = new ComboBox(filters, ui, skin.getStyle(ComboBoxStyle.class), "minfilter");
 		magFilter = new ComboBox(new String[] {"Nearest", "Linear"}, ui, skin.getStyle(ComboBoxStyle.class), "magfilter");
 
-		Table table = new Table("container");
+		Table table = new Table();
 		table.width = ui.width();
 		table.height = 30;
 		table.y = ui.height() - 30;

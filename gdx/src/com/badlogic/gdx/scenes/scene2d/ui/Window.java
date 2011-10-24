@@ -100,7 +100,7 @@ public class Window extends Table {
 	 * @param prefHeight the (preferred) height
 	 * @param style the {@link WindowStyle} */
 	public Window (String name, String title, Stage stage, WindowStyle style, int prefWidth, int prefHeight) {
-		super(name);
+		super(null, null, null, name);
 		this.stage = stage;
 		this.title = title;
 		width = prefWidth;

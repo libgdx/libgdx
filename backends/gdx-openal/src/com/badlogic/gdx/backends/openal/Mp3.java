@@ -61,8 +61,8 @@ public class Mp3 {
 				}
 
 				int totalLength = 0;
-				int minRequiredLength = buffer.length - OutputBuffer.BUFFERSIZE * 2 - 1;
-				while (totalLength < minRequiredLength) {
+				int minRequiredLength = buffer.length - OutputBuffer.BUFFERSIZE * 2;
+				while (totalLength <= minRequiredLength) {
 					Header header = bitstream.readFrame();
 					if (header == null) break;
 					if (setup) {

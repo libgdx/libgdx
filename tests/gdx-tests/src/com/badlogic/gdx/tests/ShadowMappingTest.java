@@ -123,7 +123,7 @@ public class ShadowMappingTest extends GdxTest {
 			skin.getStyle(ComboBoxStyle.class), "shaderCombo");
 		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
 
-		Table table = new Table("toolbar");
+		Table table = new Table();
 		table.width = Gdx.graphics.getWidth();
 		table.height = 100;
 		table.top().padTop(12);

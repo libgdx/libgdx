@@ -57,7 +57,7 @@ public class SoundTest extends GdxTest {
 		final Slider volume = new Slider(0.1f, 1, 0.1f, skin);
 		volume.setValue(1);
 		final Label volumeValue = new Label("1.0", skin);
-		Table table = new Table("ui");
+		Table table = new Table();
 		final Slider pan = new Slider(-1f, 1f, 0.1f, skin);
 		pan.setValue(0);
 		final Label panValue = new Label("0.0", skin);

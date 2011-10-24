@@ -177,6 +177,10 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 
 	public void addChild (Actor parent, Actor child, String layoutString) {
 		if (child.parent != null) child.remove();
+		try {
+			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
+		} catch (Exception ignored) {
+		}
 		((Group)parent).addActor(child);
 	}
 

@@ -59,6 +59,10 @@ public class FlickScrollPane extends WidgetGroup {
 	/** Prevents scrolling out of the widget's bounds. */
 	public boolean clamp = true;
 
+	public FlickScrollPane (Stage stage) {
+		this(null, stage, null);
+	}
+
 	public FlickScrollPane (Actor widget, Stage stage) {
 		this(widget, stage, null);
 	}

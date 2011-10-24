@@ -60,32 +60,21 @@ public class Table extends WidgetGroup {
 	public boolean isPressed;
 
 	public Table () {
-		this(new TableLayout(), null);
+		this(null, null, null, null);
 	}
 
-	public Table (TableLayout layout) {
-		this(layout, null);
+	public Table (Stage stage, Skin skin) {
+		this(stage, skin, null, null);
 	}
 
-	public Table (String name) {
-		this(new TableLayout(), name);
-	}
-
-	public Table (Skin skin) {
-		this(new TableLayout(), null);
-		layout.skin = skin;
-	}
-
-	public Table (Skin skin, String name) {
-		this(new TableLayout(), name);
-		layout.skin = skin;
-	}
-
-	public Table (TableLayout layout, String name) {
+	public Table (Stage stage, Skin skin, TableLayout layout, String name) {
 		super(name);
 		transform = false;
+		if (layout == null) layout = new TableLayout();
 		this.layout = layout;
 		layout.setTable(this);
+		layout.stage = stage;
+		layout.skin = skin;
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {

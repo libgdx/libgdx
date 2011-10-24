@@ -28,6 +28,14 @@ public class Color {
 	public static final Color RED = new Color(1, 0, 0, 1);
 	public static final Color GREEN = new Color(0, 1, 0, 1);
 	public static final Color BLUE = new Color(0, 0, 1, 1);
+	public static final Color LIGHT_GRAY = new Color(0.75f, 0.75f, 0.75f, 1);
+	public static final Color GRAY = new Color(0.5f, 0.5f, 0.5f, 1);
+	public static final Color DARK_GRAY = new Color(0.25f, 0.25f, 0.25f, 1);
+	public static final Color PINK = new Color(1, 0.68f, 0.68f, 1);
+	public static final Color ORANGE = new Color(1, 0.78f, 0, 1);
+	public static final Color YELLOW = new Color(1, 1, 0, 1);
+	public static final Color MAGENTA = new Color(1, 0, 1, 1);
+	public static final Color CYAN = new Color(0, 1, 1, 1);
 
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;

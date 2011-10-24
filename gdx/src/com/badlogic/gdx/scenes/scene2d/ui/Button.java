@@ -53,7 +53,7 @@ public class Button extends Table {
 	}
 
 	public Button (ButtonStyle style, String name) {
-		super(name);
+		super(null, null, null, name);
 		setStyle(style);
 		initialize();
 	}
