@@ -67,10 +67,12 @@ public class GdxRenderer implements Renderer, LineRenderer {
 	final SpriteBatch batch;
 
 	private final ClipStack clipStack;
+	protected final Rect clipRectTemp;
 
 	public GdxRenderer (SpriteBatch batch) {
 		this.batch = batch;
 		clipStack = new ClipStack();
+		clipRectTemp = new Rect();
 		Widget root = new Widget() {
 			protected void layout () {
 				layoutChildrenFullInnerArea();
@@ -119,17 +121,18 @@ public class GdxRenderer implements Renderer, LineRenderer {
 		}
 	}
 
-	public void setClipRect (Rect rect) {
+	public void setClipRect () {
 		if (rendering) batch.flush();
-		if (rect == null) {
-			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
-			hasScissor = false;
-		} else {
+		final Rect rect = clipRectTemp;
+		if (clipStack.getClipRect(rect)) {
 			Gdx.gl.glScissor(rect.getX(), Gdx.graphics.getHeight() - rect.getBottom(), rect.getWidth(), rect.getHeight());
 			if (!hasScissor) {
 				Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
 				hasScissor = true;
 			}
+		} else if (hasScissor) {
+			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+			hasScissor = false;
 		}
 	}
 
@@ -234,20 +237,19 @@ public class GdxRenderer implements Renderer, LineRenderer {
 	@Override
 	public void clipEnter (Rect rect) {
 		clipStack.push(rect);
-		// using null might not be correct here.
-		setClipRect(null);
+		setClipRect();
 	}
 
 	@Override
 	public void clipEnter (int x, int y, int w, int h) {
 		clipStack.push(x, y, w, h);
-		setClipRect(null);
+		setClipRect();
 	}
 
 	@Override
 	public void clipLeave () {
 		clipStack.pop();
-		setClipRect(null);
+		setClipRect();
 	}
 
 	@Override
