@@ -21,6 +21,8 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 /** Class holding various static native methods for processing audio data.
  * 
  * @author mzechner */
@@ -92,5 +94,30 @@ public class AudioTools {
 		ByteBuffer b = ByteBuffer.allocateDirect(numSamples * numChannels * 2);
 		b.order(ByteOrder.nativeOrder());
 		return b.asShortBuffer();
+	}
+
+	static public void toShort (byte[] src, int offsetSrc, short[] dst, int offsetDst, int numBytes) {
+		if (numBytes % 2 != 0) throw new GdxRuntimeException("bytes must be even (2 bytes 16-bit PCM expected)");
+		for (int i = offsetSrc, ii = offsetDst; i < numBytes;) {
+			int b1 = src[i++] & 0xff;
+			int b2 = src[i++] & 0xff;
+			dst[ii++] = (short)(b1 | (b2 << 8));
+		}
+	}
+
+	static public void toFloat (byte[] src, int offsetSrc, float[] dst, int offsetDst, int numBytes) {
+		if (numBytes % 2 != 0) throw new GdxRuntimeException("bytes must be even (2 bytes 16-bit PCM expected)");
+		float scale = 1.0f / Short.MAX_VALUE;
+		for (int i = offsetSrc, ii = offsetDst; i < numBytes;) {
+			int b1 = src[i++] & 0xff;
+			int b2 = src[i++] & 0xff;
+			dst[ii++] = (short)(b1 | (b2 << 8)) * scale;
+		}
+	}
+
+	static public void toFloat (short[] src, int offsetSrc, float[] dst, int offsetDst, int numBytes) {
+		float scale = 1.0f / Short.MAX_VALUE;
+		for (int i = offsetSrc, ii = offsetDst; i < numBytes; i++, ii++)
+			dst[i] = src[ii] * scale;
 	}
 }
