@@ -162,8 +162,8 @@ public class OpenALAudioDevice implements AudioDevice {
 		return renderedSeconds + alGetSourcef(sourceID, AL11.AL_SEC_OFFSET);
 	}
 
-	public void resetPosition () {
-		renderedSeconds = 0;
+	public void setPosition (float position) {
+		renderedSeconds = position;
 	}
 
 	public int getChannels () {

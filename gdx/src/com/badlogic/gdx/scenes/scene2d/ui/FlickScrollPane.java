@@ -42,7 +42,7 @@ public class FlickScrollPane extends WidgetGroup {
 
 	protected boolean scrollX, scrollY;
 	protected float amountX, amountY;
-	public float maxX, maxY;
+	protected float maxX, maxY;
 	protected float velocityX, velocityY;
 	protected float flingTimer;
 
@@ -288,6 +288,14 @@ public class FlickScrollPane extends WidgetGroup {
 
 	public float getScrollPercentY () {
 		return amountY / maxY;
+	}
+
+	public float getMaxX () {
+		return maxX;
+	}
+	
+	public float getMaxY () {
+		return maxX;
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
