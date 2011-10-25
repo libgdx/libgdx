@@ -144,6 +144,8 @@ public class FlickScrollPane extends WidgetGroup {
 	}
 
 	public void act (float delta) {
+		super.act(delta);
+
 		if (flingTimer > 0) {
 			float alpha = flingTimer / flingTime;
 			amountX -= velocityX * alpha * delta;
@@ -293,7 +295,7 @@ public class FlickScrollPane extends WidgetGroup {
 	public float getMaxX () {
 		return maxX;
 	}
-	
+
 	public float getMaxY () {
 		return maxX;
 	}
