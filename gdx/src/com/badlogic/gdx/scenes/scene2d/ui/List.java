@@ -29,10 +29,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * <h2>Functionality</h2> A list displays textual items and highlights the current selection. A {@link SelectionListener} can be
  * registered with the list to listen to selection changes. Items have an index in the list, the top item having the index 0.
  * 
- * <h2>Layout</h2> The (preferred) width and height of a List are derrived from the bounding box around all list items. Use
- *  to programmatically change the size to your liking. In case the width and height you set are to
- * small for the contained text you will see artifacts. The patch highlighting the current selection will have the width of the
- * List, either determined as explained above or set programmatically.
+ * <h2>Layout</h2> The (preferred) width and height of a List are derrived from the bounding box around all list items. Use to
+ * programmatically change the size to your liking. In case the width and height you set are to small for the contained text you
+ * will see artifacts. The patch highlighting the current selection will have the width of the List, either determined as
+ * explained above or set programmatically.
  * 
  * <h2>Style</h2> A List is a {@link Widget} a text rendered for each list item via a {@link BitmapFont} and {@link Color} as well
  * as a {@link NinePatch} highlighting the current selection and a second Color used for the text of the currently selected item.
@@ -52,8 +52,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * .</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
  * <li>The <code>fontName</code> attribute references a {@link BitmapFont} by name, to be used for render the items</li>
  * <li>The <code>fontColorUnselected</code> attribute references a {@link Color} by name, to be used for render unselected items</li>
  * <li>The <code>fontColorSelected</code> attribute references a {@link Color} by name, to be used to render the selected item</li>
@@ -72,6 +71,10 @@ public class List extends Widget implements Cullable {
 	protected SelectionListener listener;
 	protected float prefWidth, prefHeight;
 	private Rectangle cullingArea;
+
+	public List (Skin skin) {
+		this(new String[0], skin);
+	}
 
 	public List (Object[] items, Skin skin) {
 		this(items, skin.getStyle(ListStyle.class), null);

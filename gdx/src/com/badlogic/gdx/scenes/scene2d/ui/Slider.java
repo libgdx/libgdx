@@ -26,9 +26,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * represents. To listen for changes of the slider value one can register a {@link ValueChangedListener} with the slider.
  * 
  * <h2>Layout</h2> A slider's (preferred) width and height are determined by the parameter past to its constructor as well as the
- * maximum height of the {@link NinePatch} and {@link TextureRegion} involved in the display of the slider. Use
- *  to programmatically change the size to your liking. In case the width and height you set are to
- * small you will see artifacts.</p>
+ * maximum height of the {@link NinePatch} and {@link TextureRegion} involved in the display of the slider. Use to
+ * programmatically change the size to your liking. In case the width and height you set are to small you will see artifacts.</p>
  * 
  * The slider background will only be stretched in the x-axis. The slider handle will be centered on the background vertically.
  * 
@@ -47,8 +46,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * .</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
  * <li>The <code>slider</code> attribute references a {@link NinePatch} by name, to be used as the slider's background</li>
  * <li>The <code>knob</code> attribute references a {@link TextureRegion} by name, to be used as the slider's handle</li> *
  * </ul>
@@ -62,6 +60,10 @@ public class Slider extends Widget {
 	protected float value;
 	protected float sliderPos;
 	protected ValueChangedListener listener = null;
+
+	public Slider (Skin skin) {
+		this(0, 100, 100, skin);
+	}
 
 	public Slider (float min, float max, float steps, Skin skin) {
 		this(min, max, steps, skin.getStyle(SliderStyle.class), null);

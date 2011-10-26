@@ -69,8 +69,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * .</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
  * <li>The <code>handle</code> attribute references a {@link NinePatch} by name, to be used as the split pane's handle</li>
  * </ul>
  * @author mzechner */
@@ -91,8 +90,12 @@ public class SplitPane extends WidgetGroup {
 	protected Rectangle[] scissors = new Rectangle[] {new Rectangle(), new Rectangle()};
 	protected boolean touchDrag = false;
 
+	public SplitPane (Stage stage, Skin skin) {
+		this(null, null, false, stage, skin);
+	}
+
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, Skin skin) {
-		this(firstWidget, secondWidget, vertical, stage, skin.getStyle(SplitPaneStyle.class), null);
+		this(firstWidget, secondWidget, vertical, stage, skin.getStyle("default-horizontal", SplitPaneStyle.class), null);
 	}
 
 	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style) {
@@ -114,8 +117,8 @@ public class SplitPane extends WidgetGroup {
 		this.secondWidget = secondWidget;
 		this.vertical = vertical;
 
-		addActor(firstWidget);
-		addActor(secondWidget);
+		if (firstWidget != null) addActor(firstWidget);
+		if (secondWidget != null) addActor(secondWidget);
 		width = 150;
 		height = 150;
 	}
@@ -163,26 +166,22 @@ public class SplitPane extends WidgetGroup {
 		else
 			calculateVertBoundsAndPositions();
 
-		boolean layoutFirst = false;
-		boolean layoutSecond = false;
-		if (firstWidget.width != firstWidgetBounds.width || firstWidget.height != firstWidgetBounds.height) {
-			layoutFirst = true;
+		if (firstWidget != null) {
+			boolean layout = firstWidget.width != firstWidgetBounds.width || firstWidget.height != firstWidgetBounds.height;
+			firstWidget.x = firstWidgetBounds.x;
+			firstWidget.y = firstWidgetBounds.y;
+			firstWidget.width = firstWidgetBounds.width;
+			firstWidget.height = firstWidgetBounds.height;
+			if (layout && firstWidget instanceof Layout) ((Layout)firstWidget).invalidate();
 		}
-		if (secondWidget.width != secondWidgetBounds.width || secondWidget.height != secondWidgetBounds.height) {
-			layoutSecond = true;
+		if (secondWidget != null) {
+			boolean layout = secondWidget.width != secondWidgetBounds.width || secondWidget.height != secondWidgetBounds.height;
+			secondWidget.x = secondWidgetBounds.x;
+			secondWidget.y = secondWidgetBounds.y;
+			secondWidget.width = secondWidgetBounds.width;
+			secondWidget.height = secondWidgetBounds.height;
+			if (layout && secondWidget instanceof Layout) ((Layout)secondWidget).invalidate();
 		}
-
-		firstWidget.x = firstWidgetBounds.x;
-		firstWidget.y = firstWidgetBounds.y;
-		firstWidget.width = firstWidgetBounds.width;
-		firstWidget.height = firstWidgetBounds.height;
-		if (layoutFirst && firstWidget instanceof Layout) ((Layout)firstWidget).invalidate();
-
-		secondWidget.x = secondWidgetBounds.x;
-		secondWidget.y = secondWidgetBounds.y;
-		secondWidget.width = secondWidgetBounds.width;
-		secondWidget.height = secondWidgetBounds.height;
-		if (layoutSecond && secondWidget instanceof Layout) ((Layout)secondWidget).invalidate();
 
 		ScissorStack.calculateScissors(stage.getCamera(), transform, firstWidgetBounds, scissors[0]);
 		ScissorStack.calculateScissors(stage.getCamera(), transform, secondWidgetBounds, scissors[1]);

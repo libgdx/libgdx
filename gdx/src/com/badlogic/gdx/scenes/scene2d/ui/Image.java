@@ -15,6 +15,10 @@ public class Image extends Widget {
 	protected int align = Align.CENTER;
 	protected float imageX, imageY, imageWidth, imageHeight;
 
+	public Image () {
+		this((TextureRegion)null);
+	}
+
 	public Image (TextureRegion region) {
 		this(region, Scaling.stretch, null);
 	}

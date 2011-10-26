@@ -63,6 +63,10 @@ public class Table extends WidgetGroup {
 		this(null, null, null, null);
 	}
 
+	public Table (String name) {
+		this(null, null, null, name);
+	}
+
 	public Table (Stage stage, Skin skin) {
 		this(stage, skin, null, null);
 	}

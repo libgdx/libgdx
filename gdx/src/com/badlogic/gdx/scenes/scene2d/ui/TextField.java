@@ -55,9 +55,9 @@ import com.badlogic.gdx.utils.FloatArray;
  * 
  * <h2>Layout</h2>
  * The (preferred) width and height of a TextField are derrived from the width given at construction time as well as the
- * combination of the used font's height and the top and bottom border patches. Use to
- * programmatically change the size to your liking. In case the width and height you set are to small for the contained text, the
- * TextField will clip the characters based on the current cursor position.
+ * combination of the used font's height and the top and bottom border patches. Use to programmatically change the size to your
+ * liking. In case the width and height you set are to small for the contained text, the TextField will clip the characters based
+ * on the current cursor position.
  * 
  * <h2>Style</h2>
  * A TextField is a {@link Widget} displaying a background {@link NinePatch}, the current text via a {@link BitmapFont} and
@@ -79,8 +79,7 @@ import com.badlogic.gdx.utils.FloatArray;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * .</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
  * <li>The <code>font</code> attribute references a {@link BitmapFont} by name, to be used to render the text in the text field</li>
  * <li>The <code>fontColor</code> attribute references a {@link Color} by name, to be used to render the text on the text field</li>
  * <li>The <code>cursorPatch</code> attribute references a {@link NinePatch} by name, to be used to render the text field's cursor
@@ -392,7 +391,6 @@ public class TextField extends Widget {
 		final BitmapFont font = style.font;
 
 		if (parent.keyboardFocusedActor == this) {
-			if (filter != null && !filter.acceptChar(this, character)) return true;
 			if (character == 8 && (cursor > 0 || hasSelection)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor - 1) + text.substring(cursor);
@@ -423,6 +421,9 @@ public class TextField extends Widget {
 					font.computeGlyphAdvancesAndPositions(text, glyphAdvances, glyphPositions);
 					hasSelection = false;
 				}
+			}
+			if (character != '\r') {
+				if (filter != null && !filter.acceptChar(this, character)) return true;
 			}
 			if (font.containsCharacter(character)) {
 				if (!hasSelection) {
@@ -562,7 +563,7 @@ public class TextField extends Widget {
 		static public class DigitsOnlyFilter implements TextFieldFilter {
 			@Override
 			public boolean acceptChar (TextField textField, char key) {
-				return Character.isDigit(key) || key == 8;
+				return Character.isDigit(key);
 			}
 
 		}

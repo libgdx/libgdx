@@ -219,6 +219,18 @@ public class LongArray {
 		}
 	}
 
+	/** Reduces the size of the array to the specified size. If the array is already smaller than the specified size, no action is
+	 * taken. */
+	public void truncate (int newSize) {
+		if (size > newSize) size = newSize;
+	}
+
+	public long[] toArray () {
+		long[] array = new long[size];
+		System.arraycopy(items, 0, array, 0, size);
+		return array;
+	}
+
 	public String toString () {
 		if (size == 0) return "[]";
 		long[] items = this.items;

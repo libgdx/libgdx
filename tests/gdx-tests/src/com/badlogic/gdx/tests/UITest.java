@@ -59,7 +59,7 @@ public class UITest extends GdxTest {
 		"Is hard to come by"};
 
 	Skin skin;
-	Stage ui;
+	Stage stage;
 	SpriteBatch batch;
 	Actor root;
 
@@ -69,10 +69,10 @@ public class UITest extends GdxTest {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		TextureRegion image = new TextureRegion(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
 		TextureRegion image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
-		Gdx.input.setInputProcessor(ui);
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		Gdx.input.setInputProcessor(stage);
 
-		Window window = new Window("window", "Dialog", ui, skin.getStyle(WindowStyle.class), 420, 440);
+		Window window = new Window("window", "Dialog", stage, skin.getStyle(WindowStyle.class), 420, 440);
 		window.x = window.y = 0;
 
 		// Group.debug = true;
@@ -84,13 +84,13 @@ public class UITest extends GdxTest {
 		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
 		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
 		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class), "textfield");
-		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, ui,
+		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, stage,
 			skin.getStyle(ComboBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, ui, "flickscroll");
+		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, stage, "flickscroll");
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane2 = new ScrollPane(list, ui, skin.getStyle(ScrollPaneStyle.class), "scroll");
-		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, ui, skin.getStyle("default-horizontal",
+		final ScrollPane scrollPane2 = new ScrollPane(list, stage, skin.getStyle(ScrollPaneStyle.class), "scroll");
+		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, stage, skin.getStyle("default-horizontal",
 			SplitPaneStyle.class), "split");
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
 
@@ -124,7 +124,7 @@ public class UITest extends GdxTest {
 			}
 		});
 
-		ui.addActor(window);
+		stage.addActor(window);
 	}
 
 	@Override
@@ -132,16 +132,16 @@ public class UITest extends GdxTest {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		((Label)ui.findActor("label")).setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		((Label)stage.findActor("label")).setText("fps: " + Gdx.graphics.getFramesPerSecond());
 
-		ui.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-		ui.draw();
-		Table.drawDebug(ui);
+		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+		stage.draw();
+		Table.drawDebug(stage);
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		ui.setViewport(width, height, false);
+		stage.setViewport(width, height, false);
 	}
 
 	@Override

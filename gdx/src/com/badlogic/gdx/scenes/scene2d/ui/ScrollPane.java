@@ -70,8 +70,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * </pre>
  * 
  * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with
- * .</li>
+ * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
  * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's background</li>
  * <li>The <code>hScroll</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's horizontal
  * scroll bar.</li>
@@ -105,6 +104,10 @@ public class ScrollPane extends WidgetGroup {
 	protected boolean touchScrollV = false;
 	protected Vector2 lastPoint = new Vector2();
 	float handlePos = 0;
+
+	public ScrollPane (Stage stage, Skin skin) {
+		this(null, stage, skin);
+	}
 
 	public ScrollPane (Actor widget, Stage stage, Skin skin) {
 		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), null);

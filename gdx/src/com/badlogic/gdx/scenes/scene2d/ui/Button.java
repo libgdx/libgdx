@@ -70,8 +70,8 @@ public class Button extends Table {
 	}
 
 	public void setChecked (boolean isChecked) {
+		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
 		this.isChecked = isChecked;
-		if (buttonGroup != null) buttonGroup.setChecked(this, isChecked);
 	}
 
 	public boolean isChecked () {

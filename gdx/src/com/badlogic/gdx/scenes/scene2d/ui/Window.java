@@ -84,6 +84,10 @@ public class Window extends Table {
 	protected final Vector2 initial = new Vector2();
 	protected boolean isModal = false;
 
+	public Window (Stage stage, Skin skin) {
+		this(null, "", stage, skin.getStyle(WindowStyle.class), 150, 150);
+	}
+
 	public Window (String title, Stage stage, Skin skin) {
 		this(null, title, stage, skin.getStyle(WindowStyle.class), 150, 150);
 	}

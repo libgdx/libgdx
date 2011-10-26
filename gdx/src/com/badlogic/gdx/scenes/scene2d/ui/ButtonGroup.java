@@ -6,8 +6,10 @@ import com.badlogic.gdx.utils.Array;
 /** @author Nathan Sweet */
 public class ButtonGroup {
 	private final Array<Button> buttons = new Array();
-	private Button checkedButton;
-	private boolean allowNoneChecked;
+	private Array<Button> checkedButtons = new Array(1);
+	private int minCheckCount = 1, maxCheckCount = 1;
+	private boolean uncheckLast = true;
+	private Button lastChecked;
 	private ClickListener listener;
 
 	public void add (Button button) {
@@ -34,17 +36,31 @@ public class ButtonGroup {
 	}
 
 	/** Called when a button is checked or unchecked. */
-	protected void setChecked (Button button, boolean isChecked) {
-		Button oldCheckedButton = checkedButton;
-		if (isChecked) {
-			this.checkedButton = button;
-			if (button != oldCheckedButton) {
-				uncheckAllExcept(button);
-				if (listener != null) listener.click(button);
-			}
+	protected boolean canCheck (Button button, boolean newState) {
+		if (button.isChecked == newState) return false;
+
+		if (!newState) {
+			// Keep button checked to enforce minCheckCount.
+			if (checkedButtons.size <= minCheckCount) return false;
+			checkedButtons.removeValue(button, true);
 		} else {
-			if (button == oldCheckedButton && !allowNoneChecked) button.setChecked(true);
+			// Keep button unchecked to enforce maxCheckCount.
+			if (checkedButtons.size >= maxCheckCount) {
+				if (uncheckLast) {
+					int old = minCheckCount;
+					minCheckCount = 0;
+					lastChecked.setChecked(false);
+					minCheckCount = old;
+				} else
+					return false;
+			}
+			checkedButtons.add(button);
+			lastChecked = button;
 		}
+
+		if (listener != null) listener.click(button);
+
+		return true;
 	}
 
 	protected void uncheckAllExcept (Button except) {
@@ -55,25 +71,37 @@ public class ButtonGroup {
 		}
 	}
 
-	/** Sets all buttons' {@link Button#isChecked()} to false, regardless of {@link #setAllowNoneChecked(boolean)}. */
+	/** Sets all buttons' {@link Button#isChecked()} to false, regardless of {@link #setMinCheckCount(int)}. */
 	public void uncheckAll () {
-		boolean old = allowNoneChecked;
-		allowNoneChecked = true;
+		int old = minCheckCount;
+		minCheckCount = 0;
 		uncheckAllExcept(null);
-		allowNoneChecked = old;
+		minCheckCount = old;
 	}
 
-	/** @return the checked button, or null. */
+	/** @return the first checked button, or null. */
 	public Button getChecked () {
-		return checkedButton;
+		if (checkedButtons.size > 0) checkedButtons.get(0);
+		return null;
 	}
 
-	/** Default is false; */
-	public void setAllowNoneChecked (boolean allowNoneChecked) {
-		this.allowNoneChecked = allowNoneChecked;
+	public Array<Button> getAllChecked () {
+		return checkedButtons;
+	}
+
+	public void setMinCheckCount (int minCheckCount) {
+		this.minCheckCount = minCheckCount;
+	}
+
+	public void setMaxCheckCount (int maxCheckCount) {
+		this.maxCheckCount = maxCheckCount;
 	}
 
 	public void setClickListener (ClickListener listener) {
 		this.listener = listener;
+	}
+
+	public void setUncheckLast (boolean uncheckLast) {
+		this.uncheckLast = uncheckLast;
 	}
 }

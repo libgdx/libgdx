@@ -105,6 +105,14 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 				} catch (Exception ignored) {
 				}
 			}
+			// Try a Stage and Skin constructor.
+			if (layout.skin != null && layout.stage != null) {
+				try {
+					return (Actor)Class.forName(className).getConstructor(Stage.class, Skin.class)
+						.newInstance(layout.stage, layout.skin);
+				} catch (Exception ignored) {
+				}
+			}
 			throw ex;
 		}
 	}

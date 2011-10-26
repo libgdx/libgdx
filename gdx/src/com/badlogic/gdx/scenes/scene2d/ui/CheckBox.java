@@ -12,6 +12,10 @@ public class CheckBox extends Button {
 
 	private boolean isCheckedRegion;
 
+	public CheckBox (Skin skin) {
+		this("", skin);
+	}
+
 	public CheckBox (String text, CheckBoxStyle style) {
 		this(text, style, null);
 	}

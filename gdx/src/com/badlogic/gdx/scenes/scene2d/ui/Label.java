@@ -36,6 +36,10 @@ public class Label extends Widget {
 	private int align = Align.LEFT;
 	private float wrapWidth;
 
+	public Label (Skin skin) {
+		this("", skin);
+	}
+
 	public Label (String text, Skin skin) {
 		this(text, skin.getStyle(LabelStyle.class), null);
 	}
