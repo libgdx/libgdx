@@ -247,14 +247,14 @@ public class LwjglCanvas implements Application {
 
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ":" + message);
+			System.out.println(tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Exception exception) {
 		if (logLevel >= LOG_INFO) {
-			System.out.println(tag + ":" + message);
+			System.out.println(tag + ": " + message);
 			exception.printStackTrace(System.out);
 		}
 	}
@@ -262,14 +262,14 @@ public class LwjglCanvas implements Application {
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ":" + message);
+			System.err.println(tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Exception exception) {
 		if (logLevel >= LOG_ERROR) {
-			System.err.println(tag + ":" + message);
+			System.err.println(tag + ": " + message);
 			exception.printStackTrace(System.err);
 		}
 	}

@@ -44,15 +44,4 @@ public class NumberUtils {
 	public static double longBitsToDouble (long value) {
 		return Double.longBitsToDouble(value);
 	}
-
-	public static void main (String[] args) throws Exception {
-		int i = 0;
-		while (true) {
-			float asFloat = Float.intBitsToFloat(i);
-			int backToInt = Float.floatToRawIntBits(asFloat);
-			if (i != backToInt) System.out.println("fail! " + Integer.toHexString(i));
-			if (i == 0xffffffff) break;
-			i++;
-		}
-	}
 }

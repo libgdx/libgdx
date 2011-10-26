@@ -146,4 +146,8 @@ public class AndroidFileHandle extends FileHandle {
 		}
 		return super.length();
 	}
+	
+	public long lastModified () {
+		return super.lastModified();
+	}
 }

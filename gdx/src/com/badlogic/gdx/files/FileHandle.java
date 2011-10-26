@@ -187,7 +187,7 @@ public class FileHandle {
 		return buffer;
 	}
 
-	/** Returns a stream for writing to this file.
+	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *        {@link FileType#Internal} file, or if it could not be written. */
@@ -204,7 +204,8 @@ public class FileHandle {
 		}
 	}
 
-	/** Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed.
+	/** Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed. Parent directories
+	 * will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *        {@link FileType#Internal} file, or if it could not be written. */
@@ -233,7 +234,7 @@ public class FileHandle {
 
 	}
 
-	/** Returns a writer for writing to this file using the default charset.
+	/** Returns a writer for writing to this file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *        {@link FileType#Internal} file, or if it could not be written. */
@@ -241,7 +242,7 @@ public class FileHandle {
 		return writer(append, null);
 	}
 
-	/** Returns a writer for writing to this file.
+	/** Returns a writer for writing to this file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
@@ -249,6 +250,7 @@ public class FileHandle {
 	public Writer writer (boolean append, String charset) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
+		parent().mkdirs();
 		try {
 			FileOutputStream output = new FileOutputStream(file(), append);
 			if (charset == null)
@@ -262,7 +264,7 @@ public class FileHandle {
 		}
 	}
 
-	/** Writes the specified string to the file using the default charset.
+	/** Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
 	 *        {@link FileType#Internal} file, or if it could not be written. */
@@ -270,7 +272,7 @@ public class FileHandle {
 		writeString(string, append, null);
 	}
 
-	/** Writes the specified string to the file as UTF-8.
+	/** Writes the specified string to the file as UTF-8. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throw GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
@@ -291,7 +293,8 @@ public class FileHandle {
 	}
 
 	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
-	 * directory. On the desktop, an internal handle to a directory on the classpath will return a zero length array.
+	 * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
+	 * array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
@@ -304,8 +307,8 @@ public class FileHandle {
 	}
 
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
-	 * represents a file and not a directory. On the desktop, an internal handle to a directory on the classpath will return a zero
-	 * length array.
+	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
+	 * will return a zero length array.
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (String suffix) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
@@ -327,8 +330,9 @@ public class FileHandle {
 		return handles;
 	}
 
-	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an internal handle to an
-	 * empty directory will return false. On the desktop, an internal handle to a directory on the classpath will return false. */
+	/** Returns true if this file is a directory. Always returns false for classpath files. On Android, an {@link FileType#Internal}
+	 * handle to an empty directory will return false. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return false. */
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
 		return file().isDirectory();
@@ -361,7 +365,7 @@ public class FileHandle {
 		file().mkdirs();
 	}
 
-	/** Returns true if the file exists. On Android, a classpath handle to a directory will always return false. */
+	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} handle to a directory will always return false. */
 	public boolean exists () {
 		switch (type) {
 		case Internal:
@@ -391,7 +395,7 @@ public class FileHandle {
 
 	/** Copies this file or directory to the specified file or directory. If this handle is a file, then 1) if the destination is a
 	 * file, it is overwritten, or 2) if the destination is a directory, this file is copied into it, or 3) if the destination
-	 * doesn't exist, necessary parent directories are created and this file is copied to the destination. If this handle is a
+	 * doesn't exist, {@link #mkdirs()} is called on the destination and this file is copied into it. If this handle is a
 	 * directory, then 1) if the destination is a file, GdxRuntimeException is thrown, or 2) if the destination is a directory,
 	 * this directory is copied recursively into it as a subdirectory, overwriting existing files, or 3) if the destination doesn't
 	 * exist, {@link #mkdirs()} is called on the destination and this directory is copied recursively into it as a subdirectory.
@@ -440,6 +444,13 @@ public class FileHandle {
 			return 0;
 		}
 		return file().length();
+	}
+
+	/** Returns the last modified time in milliseconds for this file. Zero is returned if the file doesn't exist. Zero is returned
+	 * for {@link FileType#Classpath} files. On Android, zero is returned for {@link FileType#Internal} files. On the desktop, zero
+	 * is returned for {@link FileType#Internal} files on the classpath. */
+	public long lastModified () {
+		return file().lastModified();
 	}
 
 	public String toString () {

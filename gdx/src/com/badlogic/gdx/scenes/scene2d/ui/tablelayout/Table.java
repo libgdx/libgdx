@@ -217,6 +217,11 @@ public class Table extends WidgetGroup {
 		return layout.stack(actor);
 	}
 
+	/** Creates a new table with the same Skin, Stage, and AssetManager as this table. */
+	public Table table () {
+		return layout.getToolkit().newTable(this);
+	}
+
 	/** Indicates that subsequent cells should be added to a new row and returns the cell values that will be used as the defaults
 	 * for all cells in the new row.
 	 * @see TableLayout#row() */
