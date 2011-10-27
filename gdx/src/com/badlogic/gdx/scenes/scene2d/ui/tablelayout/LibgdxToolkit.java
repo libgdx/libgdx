@@ -28,6 +28,7 @@
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -95,6 +96,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			if (layout.skin != null) {
 				try {
 					return (Actor)Class.forName(className).getConstructor(Skin.class).newInstance(layout.skin);
+				} catch (InvocationTargetException ex2) {
+					throw new InvocationTargetException(ex2, "Error constructing instance of class: " + className);
 				} catch (Exception ignored) {
 				}
 			}
@@ -102,6 +105,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			if (layout.stage != null) {
 				try {
 					return (Actor)Class.forName(className).getConstructor(Stage.class).newInstance(layout.stage);
+				} catch (InvocationTargetException ex2) {
+					throw new InvocationTargetException(ex2, "Error constructing instance of class: " + className);
 				} catch (Exception ignored) {
 				}
 			}
@@ -110,6 +115,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 				try {
 					return (Actor)Class.forName(className).getConstructor(Stage.class, Skin.class)
 						.newInstance(layout.stage, layout.skin);
+				} catch (InvocationTargetException ex2) {
+					throw new InvocationTargetException(ex2, "Error constructing instance of class: " + className);
 				} catch (Exception ignored) {
 				}
 			}
@@ -187,6 +194,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		if (child.parent != null) child.remove();
 		try {
 			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
+		} catch (InvocationTargetException ex) {
+			throw new RuntimeException("Error calling setWidget.", ex);
 		} catch (Exception ignored) {
 		}
 		((Group)parent).addActor(child);

@@ -286,7 +286,7 @@ public class Array<T> implements Iterable<T> {
 	 * taken. */
 	public void truncate (int newSize) {
 		if (size <= newSize) return;
-		for (int i = size; i < newSize; i++)
+		for (int i = newSize; i < size; i++)
 			items[i] = null;
 		size = newSize;
 	}
