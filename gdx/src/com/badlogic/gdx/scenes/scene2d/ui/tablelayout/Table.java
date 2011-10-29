@@ -218,7 +218,7 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Creates a new table with the same Skin, Stage, and AssetManager as this table. */
-	public Table table () {
+	public Table newTable () {
 		return layout.getToolkit().newTable(this);
 	}
 

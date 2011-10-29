@@ -109,7 +109,7 @@ public class Label extends Widget {
 	public void layout () {
 		float wrapWidth = this.wrapWidth != 0 ? this.wrapWidth : width;
 		if (wrap)
-			bounds.set(cache.getFont().getWrappedBounds(text, width));
+			bounds.set(cache.getFont().getWrappedBounds(text, wrapWidth));
 		else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
 
@@ -165,7 +165,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefHeight () {
-		if (wrap) return 100;
+		if (wrap && wrapWidth == 0) return 100;
 		validate();
 		return bounds.height - style.font.getDescent() * 2;
 	}
