@@ -153,6 +153,8 @@ public class Window extends Table {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		backgroundPatch.draw(batch, 0, 0, width, height);
 		float textY = height - (int)(backgroundPatch.getTopHeight() / 2) + (int)(textBounds.height / 2);
+		titleFont.setColor(color.r * titleFontColor.r, color.g * titleFontColor.g, color.b * titleFontColor.b, color.a
+			* parentAlpha * titleFontColor.a);
 		titleFont.setColor(titleFontColor.r, titleFontColor.g, titleFontColor.b, titleFontColor.a * parentAlpha);
 		titleFont.drawMultiLine(batch, title, (int)(width / 2), textY, 0, HAlignment.CENTER);
 		batch.flush();
