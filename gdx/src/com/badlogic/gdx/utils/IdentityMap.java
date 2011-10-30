@@ -269,17 +269,30 @@ public class IdentityMap<K, V> {
 			index = hash2(hashCode);
 			if (!key.equals(keyTable[index])) {
 				index = hash3(hashCode);
-				if (!key.equals(keyTable[index])) return getStash(key);
+				if (!key.equals(keyTable[index])) return getStash(key, null);
 			}
 		}
 		return valueTable[index];
 	}
 
-	private V getStash (K key) {
+	public V get (K key, V defaultValue) {
+		int hashCode = System.identityHashCode(key);
+		int index = hashCode & mask;
+		if (!key.equals(keyTable[index])) {
+			index = hash2(hashCode);
+			if (!key.equals(keyTable[index])) {
+				index = hash3(hashCode);
+				if (!key.equals(keyTable[index])) return getStash(key, defaultValue);
+			}
+		}
+		return valueTable[index];
+	}
+
+	private V getStash (K key, V defaultValue) {
 		K[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
 			if (keyTable[i] == key) return valueTable[i];
-		return null;
+		return defaultValue;
 	}
 
 	public V remove (K key) {

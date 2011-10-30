@@ -285,17 +285,30 @@ public class LongMap<V> {
 			index = hash2(key);
 			if (keyTable[index] != key) {
 				index = hash3(key);
-				if (keyTable[index] != key) return getStash(key);
+				if (keyTable[index] != key) return getStash(key, null);
+			}
+		}
+		return valueTable[index];
+	}
+	
+	public V get (long key, V defaultValue) {
+		if (key == 0) return zeroValue;
+		int index = (int)(key & mask);
+		if (keyTable[index] != key) {
+			index = hash2(key);
+			if (keyTable[index] != key) {
+				index = hash3(key);
+				if (keyTable[index] != key) return getStash(key, defaultValue);
 			}
 		}
 		return valueTable[index];
 	}
 
-	private V getStash (long key) {
+	private V getStash (long key, V defaultValue) {
 		long[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
 			if (keyTable[i] == key) return valueTable[i];
-		return null;
+		return defaultValue;
 	}
 
 	public V remove (long key) {

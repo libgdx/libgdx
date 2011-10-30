@@ -84,7 +84,7 @@ public class SoundTest extends GdxTest {
 		play.setClickListener(new ClickListener() {
 			@Override
 			public void click (Actor actor) {
-				soundId = sound.play();
+				soundId = sound.play(volume.getValue());
 				sound.setPitch(soundId, pitch.getValue());
 				sound.setPan(soundId, pan.getValue(), volume.getValue());
 			}

@@ -178,9 +178,10 @@ public class OpenALAudio implements Audio {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				long soundId = sourceToSoundId.remove(sourceID);
-				soundIdToSource.remove(soundId);
-
+				if (sourceToSoundId.containsKey(sourceID)) {
+					long soundId = sourceToSoundId.remove(sourceID);
+					soundIdToSource.remove(soundId);
+				}
 				alSourceStop(sourceID);
 				alSourcei(sourceID, AL_BUFFER, 0);
 			}
@@ -191,9 +192,10 @@ public class OpenALAudio implements Audio {
 		for (int i = 0, n = idleSources.size; i < n; i++) {
 			int sourceID = idleSources.get(i);
 			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
-				long soundId = sourceToSoundId.remove(sourceID);
-				soundIdToSource.remove(soundId);
-
+				if (sourceToSoundId.containsKey(sourceID)) {
+					long soundId = sourceToSoundId.remove(sourceID);
+					soundIdToSource.remove(soundId);
+				}
 				alSourceStop(sourceID);
 			}
 		}
@@ -237,7 +239,7 @@ public class OpenALAudio implements Audio {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 
-		AL10.alSource3f(sourceId, AL10.AL_POSITION, -pan, 0, 0);
+		AL10.alSource3f(sourceId, AL10.AL_POSITION, pan, 0, 0);
 	}
 
 	public void dispose () {

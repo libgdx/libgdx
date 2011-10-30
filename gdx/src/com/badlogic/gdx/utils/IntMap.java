@@ -285,17 +285,30 @@ public class IntMap<V> {
 			index = hash2(key);
 			if (keyTable[index] != key) {
 				index = hash3(key);
-				if (keyTable[index] != key) return getStash(key);
+				if (keyTable[index] != key) return getStash(key, null);
 			}
 		}
 		return valueTable[index];
 	}
 
-	private V getStash (int key) {
+	public V get (int key, V defaultValue) {
+		if (key == 0) return zeroValue;
+		int index = key & mask;
+		if (keyTable[index] != key) {
+			index = hash2(key);
+			if (keyTable[index] != key) {
+				index = hash3(key);
+				if (keyTable[index] != key) return getStash(key, defaultValue);
+			}
+		}
+		return valueTable[index];
+	}
+
+	private V getStash (int key, V defaultValue) {
 		int[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
 			if (keyTable[i] == key) return valueTable[i];
-		return null;
+		return defaultValue;
 	}
 
 	public V remove (int key) {

@@ -88,13 +88,9 @@ public abstract class Interpolation {
 	static public final Elastic elasticIn = new ElasticIn(2, 10);
 	static public final Elastic elasticOut = new ElasticOut(2, 10);
 
-	//
-
 	static public final Interpolation swing = new Swing(1.5f);
 	static public final Interpolation swingIn = new SwingIn(2f);
 	static public final Interpolation swingOut = new SwingOut(2f);
-
-	//
 
 	static public final Interpolation bounce = new Bounce(4);
 	static public final Interpolation bounceIn = new BounceIn(4);
@@ -186,11 +182,11 @@ public abstract class Interpolation {
 		public float apply (float a) {
 			if (a <= 0.5f) {
 				a *= 2;
-				return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * 3.14f / 0.157f) * 1.0955f / 2;
+				return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * 20) * 1.0955f / 2;
 			}
 			a = 1 - a;
 			a *= 2;
-			return 1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin((a) * 3.14f / 0.157f) * 1.0955f / 2;
+			return 1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin((a) * 20) * 1.0955f / 2;
 		}
 	}
 
@@ -200,7 +196,7 @@ public abstract class Interpolation {
 		}
 
 		public float apply (float a) {
-			return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * 3.14f / 0.157f) * 1.0955f;
+			return (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * 20) * 1.0955f;
 		}
 	}
 
@@ -211,13 +207,17 @@ public abstract class Interpolation {
 
 		public float apply (float a) {
 			a = 1 - a;
-			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin((a) * 3.14f / 0.157f) * 1.0955f);
+			return (1 - (float)Math.pow(value, power * (a - 1)) * MathUtils.sin(a * 20) * 1.0955f);
 		}
 	}
 
 	//
 
 	static public class Bounce extends BounceOut {
+		public Bounce (float[] widths, float[] heights) {
+			super(widths, heights);
+		}
+
 		public Bounce (int bounces) {
 			super(bounces);
 		}
@@ -236,6 +236,13 @@ public abstract class Interpolation {
 
 	static public class BounceOut extends Interpolation {
 		final float[] widths, heights;
+
+		public BounceOut (float[] widths, float[] heights) {
+			if (widths.length != heights.length)
+				throw new IllegalArgumentException("Must be the same number of widths and heights.");
+			this.widths = widths;
+			this.heights = heights;
+		}
 
 		public BounceOut (int bounces) {
 			if (bounces < 2 || bounces > 5) throw new IllegalArgumentException("bounces cannot be < 2 or > 5: " + bounces);
@@ -297,6 +304,10 @@ public abstract class Interpolation {
 	}
 
 	static public class BounceIn extends BounceOut {
+		public BounceIn (float[] widths, float[] heights) {
+			super(widths, heights);
+		}
+
 		public BounceIn (int bounces) {
 			super(bounces);
 		}
