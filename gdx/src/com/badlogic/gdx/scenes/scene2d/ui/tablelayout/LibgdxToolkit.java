@@ -131,7 +131,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			if (layout.skin != null && values.size() == 1 && name.equalsIgnoreCase("style")) {
 				try {
 					String styleName = values.get(0);
-					Class styleClass = Class.forName(object.getClass().getName() + "Style");
+					Class styleClass = Class.forName(object.getClass().getName() + "$" + object.getClass().getSimpleName() + "Style");
 					if (layout.skin.hasStyle(styleName, styleClass)) {
 						try {
 							Method setStyleMethod = object.getClass().getMethod("setStyle", styleClass);
@@ -193,6 +193,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		if (child.parent != null) child.remove();
 		try {
 			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
+			return;
 		} catch (InvocationTargetException ex) {
 			throw new RuntimeException("Error calling setWidget.", ex);
 		} catch (Exception ignored) {
