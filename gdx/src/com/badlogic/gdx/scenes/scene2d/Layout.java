@@ -34,7 +34,7 @@ public interface Layout {
 	 * {@link Actor#draw(com.badlogic.gdx.graphics.g2d.SpriteBatch, float)} before drawing is performed. */
 	public void validate ();
 
-	/** Sizes this actor to its preferred width and height and calls {@link #invalidate()}. */
+	/** Sizes this actor to its preferred width and height and, if its size was changed, calls {@link #invalidate()}. */
 	public void pack ();
 
 	public float getMinWidth ();

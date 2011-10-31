@@ -19,60 +19,68 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Cullable;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
-/** @author Nathan Sweet
+/** A group that scrolls a child widget by pressing and dragging.
+ * <p>
+ * The widget is sized to its preferred size. If the widget's preferred width or height is less than the size of this scroll pane,
+ * it is set to the size of this scroll pane.
+ * <p>
+ * The scroll pane's preferred size is that of the child widget. At this size, the child widget will not need to scroll, so the
+ * scroll pane is typically sized by ignoring the preferred size in one or both directions.
+ * @author Nathan Sweet
  * @author mzechner */
 public class FlickScrollPane extends WidgetGroup {
-	protected final Stage stage;
-	protected Actor widget;
+	private final Stage stage;
+	private Actor widget;
 
-	protected final Rectangle widgetAreaBounds = new Rectangle();
-	protected final Rectangle widgetCullingArea = new Rectangle();
-	protected final Rectangle scissorBounds = new Rectangle();
-	protected GestureDetector gestureDetector;
+	private final Rectangle widgetAreaBounds = new Rectangle();
+	private final Rectangle widgetCullingArea = new Rectangle();
+	private final Rectangle scissorBounds = new Rectangle();
+	private final GestureDetector gestureDetector;
 
-	protected boolean scrollX, scrollY;
-	protected float amountX, amountY;
-	protected float maxX, maxY;
-	protected float velocityX, velocityY;
-	protected float flingTimer;
+	private boolean scrollX, scrollY;
+	float amountX, amountY;
+	private float maxX, maxY;
+	float velocityX, velocityY;
+	float flingTimer;
 
-	public boolean bounces = true;
-	public float flingTime = 1f;
-	public float bounceDistance = 50, bounceSpeedMin = 30, bounceSpeedMax = 200;
-	/** When true, touch down on widgets works as normal and the FlickScrollPane can only be screen by touching down where there is
-	 * no widget. */
-	public boolean emptySpaceOnlyScroll;
-	/** Forces the enabling of scrolling in a direction, even if the contents do not exceed the bounds in that direction. */
-	public boolean forceBounceX, forceBounceY;
-	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
-	public boolean disableX, disableY;
-	/** Prevents scrolling out of the widget's bounds. */
-	public boolean clamp = true;
+	private boolean overscroll = true;
+	float flingTime = 1f;
+	private float overscrollDistance = 50, overscrollSpeedMin = 30, overscrollSpeedMax = 200;
+	private Interpolation overscrollInterpolation = Interpolation.elasticOut;
+	private boolean emptySpaceOnlyScroll;
+	private boolean forceOverscrollX, forceOverscrollY;
+	private boolean disableX, disableY;
+	private boolean clamp = true;
 
 	public FlickScrollPane (Stage stage) {
 		this(null, stage, null);
 	}
 
+	/** @param widget May be null. */
 	public FlickScrollPane (Actor widget, Stage stage) {
 		this(widget, stage, null);
 	}
 
+	/** @param widget May be null. */
 	public FlickScrollPane (Actor widget, Stage stage, String name) {
 		super(name);
+		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
 
 		this.stage = stage;
 		this.widget = widget;
-		if (widget != null) addActor(widget);
+		if (widget != null) setWidget(widget);
 
 		gestureDetector = new GestureDetector(new GestureListener() {
 			public boolean pan (int x, int y, int deltaX, int deltaY) {
@@ -126,7 +134,7 @@ public class FlickScrollPane extends WidgetGroup {
 		return true;
 	}
 
-	public void toLocalCoordinates (Actor actor, Vector2 point) {
+	private void toLocalCoordinates (Actor actor, Vector2 point) {
 		if (actor.parent == this) return;
 		toLocalCoordinates(actor.parent, point);
 		Group.toChildCoordinates(actor, point.x, point.y, point);
@@ -134,9 +142,9 @@ public class FlickScrollPane extends WidgetGroup {
 
 	void clamp () {
 		if (!clamp) return;
-		if (bounces) {
-			amountX = MathUtils.clamp(amountX, -bounceDistance, maxX + bounceDistance);
-			amountY = MathUtils.clamp(amountY, -bounceDistance, maxY + bounceDistance);
+		if (overscroll) {
+			amountX = MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance);
+			amountY = MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance);
 		} else {
 			amountX = MathUtils.clamp(amountX, 0, maxX);
 			amountY = MathUtils.clamp(amountY, 0, maxY);
@@ -152,28 +160,30 @@ public class FlickScrollPane extends WidgetGroup {
 			amountY -= velocityY * alpha * delta;
 			clamp();
 
-			// Stop fling if hit bounce distance.
-			if (amountX == -bounceDistance) velocityX = 0;
-			if (amountX >= maxX + bounceDistance) velocityX = 0;
-			if (amountY == -bounceDistance) velocityY = 0;
-			if (amountY >= maxY + bounceDistance) velocityY = 0;
+			// Stop fling if hit overscroll distance.
+			if (amountX == -overscrollDistance) velocityX = 0;
+			if (amountX >= maxX + overscrollDistance) velocityX = 0;
+			if (amountY == -overscrollDistance) velocityY = 0;
+			if (amountY >= maxY + overscrollDistance) velocityY = 0;
 
 			flingTimer -= delta;
 		}
 
-		if (bounces && !gestureDetector.isPanning()) {
+		if (overscroll && !gestureDetector.isPanning()) {
 			if (amountX < 0) {
-				amountX += (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -amountX / bounceDistance) * delta;
+				amountX += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountX / overscrollDistance) * delta;
 				if (amountX > 0) amountX = 0;
 			} else if (amountX > maxX) {
-				amountX -= (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -(maxX - amountX) / bounceDistance) * delta;
+				amountX -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxX - amountX) / overscrollDistance)
+					* delta;
 				if (amountX < maxX) amountX = maxX;
 			}
 			if (amountY < 0) {
-				amountY += (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -amountY / bounceDistance) * delta;
+				amountY += (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -amountY / overscrollDistance) * delta;
 				if (amountY > 0) amountY = 0;
 			} else if (amountY > maxY) {
-				amountY -= (bounceSpeedMin + (bounceSpeedMax - bounceSpeedMin) * -(maxY - amountY) / bounceDistance) * delta;
+				amountY -= (overscrollSpeedMin + (overscrollSpeedMax - overscrollSpeedMin) * -(maxY - amountY) / overscrollDistance)
+					* delta;
 				if (amountY < maxY) amountY = maxY;
 			}
 		}
@@ -192,22 +202,17 @@ public class FlickScrollPane extends WidgetGroup {
 		}
 
 		// Figure out if we need horizontal/vertical scrollbars,
-		scrollX = !disableX && (widgetWidth > width || forceBounceX);
-		scrollY = !disableY && (widgetHeight > height || forceBounceY);
+		scrollX = !disableX && (widgetWidth > width || forceOverscrollX);
+		scrollY = !disableY && (widgetHeight > height || forceOverscrollY);
 
 		// If the widget is smaller than the available space, make it take up the available space.
-		widgetWidth = Math.max(width, widgetWidth);
-		boolean invalidate = false;
-		if (disableX || widget.width != widgetWidth) {
+		widgetWidth = disableX ? width : Math.max(width, widgetWidth);
+		widgetHeight = disableY ? height : Math.max(height, widgetHeight);
+		if (widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.width = widgetWidth;
-			invalidate = true;
-		}
-		widgetHeight = Math.max(height, widgetHeight);
-		if (disableY || widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.height = widgetHeight;
-			invalidate = true;
+			if (widget instanceof Layout) ((Layout)widget).invalidate();
 		}
-		if (invalidate && widget instanceof Layout) ((Layout)widget).invalidate();
 
 		// Calculate the widgets offset depending on the scroll state and available widget area.
 		maxX = widget.width - width;
@@ -272,6 +277,7 @@ public class FlickScrollPane extends WidgetGroup {
 		this.amountX = pixels;
 	}
 
+	/** Returns the x scroll position in pixels. */
 	public float getScrollX () {
 		return amountX;
 	}
@@ -280,6 +286,7 @@ public class FlickScrollPane extends WidgetGroup {
 		amountY = pixels;
 	}
 
+	/** Returns the y scroll position in pixels. */
 	public float getScrollY () {
 		return amountY;
 	}
@@ -288,29 +295,62 @@ public class FlickScrollPane extends WidgetGroup {
 		return amountX / maxX;
 	}
 
+	public void setScrollPercentX (float percentX) {
+		amountX = maxX * percentX;
+	}
+
 	public float getScrollPercentY () {
 		return amountY / maxY;
 	}
 
+	public void setScrollPercentY (float percentY) {
+		amountY = maxY * percentY;
+	}
+
+	/** Returns the maximum scroll value in the x direction. */
 	public float getMaxX () {
 		return maxX;
 	}
 
+	/** Returns the maximum scroll value in the y direction. */
 	public float getMaxY () {
-		return maxX;
+		return maxY;
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
-	 * @param widget the Actor */
+	 * @param widget May be null. */
 	public void setWidget (Actor widget) {
 		if (widget == null) throw new IllegalArgumentException("widget cannot be null.");
-		if (this.widget != null) removeActor(this.widget);
+		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
-		if (widget != null) addActor(widget);
+		if (widget != null) super.addActor(widget);
 	}
 
 	public Actor getWidget () {
 		return widget;
+	}
+
+	public void addActor (Actor actor) {
+		throw new UnsupportedOperationException("Use FlickScrollPane#setWidget.");
+	}
+
+	public void addActorAt (int index, Actor actor) {
+		throw new UnsupportedOperationException("Use FlickScrollPane#setWidget.");
+	}
+
+	public void addActorBefore (Actor actorBefore, Actor actor) {
+		throw new UnsupportedOperationException("Use FlickScrollPane#setWidget.");
+	}
+
+	public void removeActor (Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+	}
+
+	public void removeActorRecursive (Actor actor) {
+		if (actor == widget)
+			setWidget(null);
+		else if (widget instanceof Group) //
+			((Group)widget).removeActorRecursive(actor);
 	}
 
 	public boolean isPanning () {
@@ -349,5 +389,47 @@ public class FlickScrollPane extends WidgetGroup {
 	public Actor hit (float x, float y) {
 		if (x > 0 && x < width && y > 0 && y < height) return super.hit(x, y);
 		return null;
+	}
+
+	/** If true, the widget can be scrolled slightly past its bounds and will animate back to its bounds when scrolling is stopped.
+	 * Default is true. */
+	public void setOverscroll (boolean overscroll) {
+		this.overscroll = overscroll;
+	}
+
+	/** Sets the overscroll distance in pixels and the speed it returns to the widgets bounds in seconds. Default is 50, 30, 200. */
+	public void setupOverscroll (float distance, float speedMin, float speedMax) {
+		overscrollDistance = distance;
+		overscrollSpeedMin = speedMin;
+		overscrollSpeedMax = speedMax;
+	}
+
+	/** Forces the enabling of overscrolling in a direction, even if the contents do not exceed the bounds in that direction. */
+	public void setForceOverscroll (boolean x, boolean y) {
+		forceOverscrollX = x;
+		forceOverscrollY = y;
+	}
+
+	/** Sets the amount of time in seconds that a fling will continue to scroll. Default is 1. */
+	public void setFlingTime (float flingTime) {
+		this.flingTime = flingTime;
+	}
+
+	/** If true, only pressing and dragging on empty space in the FlickScrollPane will cause a scroll and widgets receive touch down
+	 * events as normal. If false, pressing and dragging anywhere will trigger a scroll and widgets will only receive touch down
+	 * events if pressed and released without dragging. Default is false. */
+	public void setEmptySpaceOnlyScroll (boolean emptySpaceOnlyScroll) {
+		this.emptySpaceOnlyScroll = emptySpaceOnlyScroll;
+	}
+
+	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
+	public void setScrollingDisabled (boolean x, boolean y) {
+		disableX = x;
+		disableY = y;
+	}
+
+	/** Prevents scrolling out of the widget's bounds. Default is true. */
+	public void setClamp (boolean clamp) {
+		this.clamp = clamp;
 	}
 }

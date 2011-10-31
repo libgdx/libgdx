@@ -27,8 +27,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -72,7 +72,7 @@ public class UITest extends GdxTest {
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
-		Window window = new Window("window", "Dialog", stage, skin.getStyle(WindowStyle.class), 420, 440);
+		Window window = new Window("Dialog", stage, skin.getStyle(WindowStyle.class), 420, 440, "window");
 		window.x = window.y = 0;
 
 		// Group.debug = true;
@@ -84,8 +84,8 @@ public class UITest extends GdxTest {
 		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
 		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
 		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class), "textfield");
-		final ComboBox combobox = new ComboBox(new String[] {"Android", "Windows", "Linux", "OSX"}, stage,
-			skin.getStyle(ComboBoxStyle.class), "combo");
+		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, stage,
+			skin.getStyle(SelectBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);
 		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, stage, "flickscroll");
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
@@ -105,12 +105,13 @@ public class UITest extends GdxTest {
 		window.add(checkBox);
 		window.add(slider).minWidth(100).fillX().colspan(3);
 		window.row();
-		window.add(combobox);
+		window.add(dropdown);
 		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
 		window.row();
-		window.add(splitPane).fill().expand().colspan(4).minHeight(200);
+		window.add(splitPane).fill().expand().colspan(4).maxHeight(200);
 		window.row();
 		window.add(fpsLabel).colspan(4);
+		window.pack();
 
 		textfield.setTextFieldListener(new TextFieldListener() {
 			public void keyTyped (TextField textField, char key) {

@@ -31,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.TableLayout;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
+// BOZO - Better implemented as a group that has a single actor, like the scroll panes?
+
 /** A container acting as a dialog or window.
  * 
  * <h2>Functionality</h2> A Window is a {@link Table} that can be moved around by touching and dragging its titlebar.It can house
@@ -85,41 +87,46 @@ public class Window extends Table {
 	protected boolean isModal = false;
 
 	public Window (Stage stage, Skin skin) {
-		this(null, "", stage, skin.getStyle(WindowStyle.class), 150, 150);
+		this("", stage, skin.getStyle(WindowStyle.class), 150, 150, null);
 	}
 
 	public Window (String title, Stage stage, Skin skin) {
-		this(null, title, stage, skin.getStyle(WindowStyle.class), 150, 150);
+		this(title, stage, skin.getStyle(WindowStyle.class), 150, 150, null);
 	}
 
 	public Window (String title, Stage stage, WindowStyle style) {
-		this(null, title, stage, style, 150, 150);
+		this(title, stage, style, 150, 150, null);
 	}
 
 	/** Creates a new Window. The width and height are determined by the given parameters.
-	 * @param name the name
-	 * @param stage the {@link Stage}, used for clipping
 	 * @param title the title
-	 * @param prefWidth the (preferred) width
-	 * @param prefHeight the (preferred) height
-	 * @param style the {@link WindowStyle} */
-	public Window (String name, String title, Stage stage, WindowStyle style, int prefWidth, int prefHeight) {
+	 * @param stage the {@link Stage}, used for clipping
+	 * @param style the {@link WindowStyle}
+	 * @param width the (preferred) width
+	 * @param height the (preferred) height
+	 * @param name the name */
+	public Window (String title, Stage stage, WindowStyle style, int width, int height, String name) {
 		super(null, null, null, name);
+		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
+		if (title == null) throw new IllegalArgumentException("title cannot be null.");
 		this.stage = stage;
 		this.title = title;
-		width = prefWidth;
-		height = prefHeight;
+		this.width = width;
+		this.height = height;
 		setStyle(style);
 
 		transform = true;
 	}
 
-	/** Sets the style of this widget.
-	 * @param style */
 	public void setStyle (WindowStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		setBackground(style.background);
 		invalidateHierarchy();
+	}
+
+	public WindowStyle getStyle () {
+		return style;
 	}
 
 	private void calculateBoundsAndScissors (Matrix4 transform) {
@@ -171,7 +178,10 @@ public class Window extends Table {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
+
+		// Make this window on top.
 		if (parent.getActors().size() > 1) parent.swapActor(this, parent.getActors().get(parent.getActors().size() - 1));
+
 		if (titleBounds.contains(x, y)) {
 			if (isMovable) move = true;
 			initial.set(x, y);
@@ -231,12 +241,11 @@ public class Window extends Table {
 		this.isModal = isModal;
 	}
 
-	/** @return whether the window is modal */
 	public boolean isModal () {
 		return isModal;
 	}
 
-	/** Defines the style of a window, see {@link Window}
+	/** The style for a window, see {@link Window}.
 	 * @author mzechner */
 	static public class WindowStyle {
 		public NinePatch background;

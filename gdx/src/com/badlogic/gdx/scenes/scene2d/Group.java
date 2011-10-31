@@ -29,7 +29,6 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Cullable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** A group is an Actor that contains other Actors (also other Groups which are Actors).

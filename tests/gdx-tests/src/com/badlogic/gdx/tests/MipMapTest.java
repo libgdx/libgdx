@@ -31,8 +31,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -56,8 +56,8 @@ public class MipMapTest extends GdxTest {
 	ShaderProgram shader;
 	Stage ui;
 	InputMultiplexer multiplexer;
-	ComboBox minFilter;
-	ComboBox magFilter;
+	SelectBox minFilter;
+	SelectBox magFilter;
 	CheckBox hwMipMap;
 
 	@Override
@@ -100,8 +100,8 @@ public class MipMapTest extends GdxTest {
 			filters[idx++] = filter.toString();
 		}
 		hwMipMap = new CheckBox("Hardware Mips", skin.getStyle(CheckBoxStyle.class), "hardware");
-		minFilter = new ComboBox(filters, ui, skin.getStyle(ComboBoxStyle.class), "minfilter");
-		magFilter = new ComboBox(new String[] {"Nearest", "Linear"}, ui, skin.getStyle(ComboBoxStyle.class), "magfilter");
+		minFilter = new SelectBox(filters, ui, skin.getStyle(SelectBoxStyle.class), "minfilter");
+		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, ui, skin.getStyle(SelectBoxStyle.class), "magfilter");
 
 		Table table = new Table();
 		table.width = ui.width();

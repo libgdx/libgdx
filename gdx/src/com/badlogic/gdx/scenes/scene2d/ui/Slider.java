@@ -20,46 +20,20 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-/** A value slider.
- * 
- * <h2>Functionality</h2> A slider lets you select a value within a range (min, max), with stepping between each value the slider
- * represents. To listen for changes of the slider value one can register a {@link ValueChangedListener} with the slider.
- * 
- * <h2>Layout</h2> A slider's (preferred) width and height are determined by the parameter past to its constructor as well as the
- * maximum height of the {@link NinePatch} and {@link TextureRegion} involved in the display of the slider. Use to
- * programmatically change the size to your liking. In case the width and height you set are to small you will see artifacts.</p>
- * 
- * The slider background will only be stretched in the x-axis. The slider handle will be centered on the background vertically.
- * 
- * <h2>Style</h2> A slider is a {@link Widget} displaying a horizontal background {@link NinePatch}, stretched on the x-axis and
- * using the total height of the NinePatch on the y-axis, as well as a TextureRegion for the slider handle. The style is defined
- * via an instance of {@link SliderStyle}, which can be either done programmatically or via a {@link Skin}.</p>
- * 
- * A Slider's style definition in a skin XML file should look like this:
- * 
- * <pre>
- * {@code 
- * <slider name="styleName" 
- *         slider="sliderPatch" 
- *         knob="knobRegion"/>
- * }
- * </pre>
- * 
- * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
- * <li>The <code>slider</code> attribute references a {@link NinePatch} by name, to be used as the slider's background</li>
- * <li>The <code>knob</code> attribute references a {@link TextureRegion} by name, to be used as the slider's handle</li> *
- * </ul>
- * 
+// BOZO - Add snapping to the knob.
+
+/** A slider is a horizontal indicator that allows a user to set a value. The slider his a range (min, max) and a stepping between
+ * each value the slider represents.
+ * <p>
+ * The preferred height of a slider is determined by the larger of the knob and background. The preferred width of a slider is
+ * 140, a relatively arbitrary size.
  * @author mzechner */
 public class Slider extends Widget {
-	protected SliderStyle style;
-	protected float min;
-	protected float max;
-	protected float steps;
-	protected float value;
-	protected float sliderPos;
-	protected ValueChangedListener listener = null;
+	private SliderStyle style;
+	private float min, max, steps;
+	private float value;
+	private float sliderPos;
+	private ValueChangedListener listener = null;
 
 	public Slider (Skin skin) {
 		this(0, 100, 100, skin);
@@ -84,9 +58,9 @@ public class Slider extends Widget {
 	 * @param name the name */
 	public Slider (float min, float max, float steps, SliderStyle style, String name) {
 		super(name);
+		if (min > max) throw new IllegalArgumentException("min must be > max: " + min + " > " + max);
+		if (steps < 0) throw new IllegalArgumentException("steps must be > 0: " + steps);
 		setStyle(style);
-		if (min > max) throw new IllegalArgumentException("min must be > max");
-		if (steps < 0) throw new IllegalArgumentException("unit must be > 0");
 		this.min = min;
 		this.max = max;
 		this.steps = steps;
@@ -94,11 +68,14 @@ public class Slider extends Widget {
 		pack();
 	}
 
-	/** Sets the style of this widget.
-	 * @param style */
 	public void setStyle (SliderStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
+	}
+
+	public SliderStyle getStyle () {
+		return style;
 	}
 
 	@Override
@@ -119,21 +96,21 @@ public class Slider extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		calculateSliderPosAndValue(x);
+		calculatePositionAndValue(x);
 		return true;
 	}
 
 	@Override
 	public void touchUp (float x, float y, int pointer) {
-		calculateSliderPosAndValue(x);
+		calculatePositionAndValue(x);
 	}
 
 	@Override
 	public void touchDragged (float x, float y, int pointer) {
-		calculateSliderPosAndValue(x);
+		calculatePositionAndValue(x);
 	}
 
-	private void calculateSliderPosAndValue (float x) {
+	private void calculatePositionAndValue (float x) {
 		final TextureRegion knob = style.knob;
 
 		sliderPos = x - knob.getRegionWidth() / 2;
@@ -143,30 +120,22 @@ public class Slider extends Widget {
 		if (listener != null) listener.changed(this, getValue());
 	}
 
-	/** Sets the {@link ValueChangedListener} of this slider.
-	 * @param listener the listener or null
-	 * @return this Slider for chaining */
-	public Slider setValueChangedListener (ValueChangedListener listener) {
+	/** @param listener May be null. */
+	public void setValueChangedListener (ValueChangedListener listener) {
 		this.listener = listener;
-		return this;
 	}
 
-	/** @return the current value of the slider */
 	public float getValue () {
 		return (float)Math.floor(value / steps) * steps;
 	}
 
-	/** Sets the value of this slider
-	 * @param value the value */
 	public void setValue (float value) {
-		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min && <= max");
+		if (value < min || value > max) throw new IllegalArgumentException("value must be >= min and <= max: " + value);
 		this.value = value;
 		if (listener != null) listener.changed(this, getValue());
 	}
 
-	/** Sets the range of this slider. The slider's current value is reset to min.
-	 * @param min the minimum value
-	 * @param max the maximum value */
+	/** Sets the range of this slider. The slider's current value is reset to min. */
 	public void setRange (float min, float max) {
 		if (min >= max) throw new IllegalArgumentException("min must be < max");
 		this.min = min;
@@ -183,10 +152,18 @@ public class Slider extends Widget {
 		return Math.max(style.knob.getRegionHeight(), style.slider.getTotalHeight());
 	}
 
-	/** Defines the style of a slider, see {@link Slider}.
+	/** Interface to listen for changes to the value of the slider.
+	 * @author mzechner */
+	static public interface ValueChangedListener {
+		public void changed (Slider slider, float value);
+	}
+
+	/** The style for a slider, see {@link Slider}.
 	 * @author mzechner */
 	static public class SliderStyle {
+		/** The slider background, stretched only in the x direction. */
 		NinePatch slider;
+		/** Centered vertically on the background. */
 		TextureRegion knob;
 
 		public SliderStyle () {
@@ -196,11 +173,5 @@ public class Slider extends Widget {
 			this.slider = sliderPatch;
 			this.knob = knobRegion;
 		}
-	}
-
-	/** Interface to listen for changes of the value of the slider.
-	 * @author mzechner */
-	static public interface ValueChangedListener {
-		public void changed (Slider slider, float value);
 	}
 }

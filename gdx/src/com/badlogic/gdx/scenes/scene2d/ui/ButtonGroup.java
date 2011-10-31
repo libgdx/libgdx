@@ -3,7 +3,9 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.utils.Array;
 
-/** @author Nathan Sweet */
+/** Manages a group of buttons to enforce a minimum and maximum number of checked buttons. This enables "radio button"
+ * functionality and more.
+ * @author Nathan Sweet */
 public class ButtonGroup {
 	private final Array<Button> buttons = new Array();
 	private Array<Button> checkedButtons = new Array(1);
@@ -25,7 +27,9 @@ public class ButtonGroup {
 			add(buttons[i]);
 	}
 
+	/** Sets the first button with the specified {@link Button#getText() text} to checked. */
 	public void setChecked (String text) {
+		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		for (int i = 0, n = buttons.size; i < n; i++) {
 			Button button = buttons.get(i);
 			if (text.equals(button.getText())) {
@@ -35,7 +39,8 @@ public class ButtonGroup {
 		}
 	}
 
-	/** Called when a button is checked or unchecked. */
+	/** Called when a button is checked or unchecked.
+	 * @return true if the new state should be allowed. */
 	protected boolean canCheck (Button button, boolean newState) {
 		if (button.isChecked == newState) return false;
 
@@ -63,19 +68,14 @@ public class ButtonGroup {
 		return true;
 	}
 
-	protected void uncheckAllExcept (Button except) {
-		for (int i = 0, n = buttons.size; i < n; i++) {
-			Button button = buttons.get(i);
-			if (button == except) continue;
-			button.setChecked(false);
-		}
-	}
-
 	/** Sets all buttons' {@link Button#isChecked()} to false, regardless of {@link #setMinCheckCount(int)}. */
 	public void uncheckAll () {
 		int old = minCheckCount;
 		minCheckCount = 0;
-		uncheckAllExcept(null);
+		for (int i = 0, n = buttons.size; i < n; i++) {
+			Button button = buttons.get(i);
+			button.setChecked(false);
+		}
 		minCheckCount = old;
 	}
 
@@ -89,18 +89,25 @@ public class ButtonGroup {
 		return checkedButtons;
 	}
 
+	/** Sets the minimum number of buttons that must be checked. Default is 1. */
 	public void setMinCheckCount (int minCheckCount) {
 		this.minCheckCount = minCheckCount;
 	}
 
+	/** Sets the maximum number of buttons that can be checked. Default is 1. */
 	public void setMaxCheckCount (int maxCheckCount) {
 		this.maxCheckCount = maxCheckCount;
 	}
 
+	/** Sets a listener that is invoked whenever a button is checked or unchecked.
+	 * @param listener May be null. */
 	public void setClickListener (ClickListener listener) {
 		this.listener = listener;
 	}
 
+	/** If true, when the maximum number of buttons are checked and an additional button is checked, the last button to be checked
+	 * is unchecked so that the maximum is not exceeded. If false, additional buttons beyond the maximum are not allowed to be
+	 * checked. Default is true. */
 	public void setUncheckLast (boolean uncheckLast) {
 		this.uncheckLast = uncheckLast;
 	}

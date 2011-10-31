@@ -28,8 +28,8 @@ public class ImageTest extends GdxTest {
 		ui.addActor(root);
 		root.debug();
 
-		Image image = new Image(image2, Scaling.stretch);
-		root.add(image).minWidth(16).minHeight(14);
+		Image image = new Image(image2, Scaling.fill);
+		root.add(image).width(160).height(100);
 	}
 
 	@Override

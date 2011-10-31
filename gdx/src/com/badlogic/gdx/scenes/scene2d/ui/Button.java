@@ -7,15 +7,22 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.esotericsoftware.tablelayout.Cell;
 
-/** @author Nathan Sweet */
+/** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
+ * checked. Being a table, a button can contain any other actors.
+ * <p>
+ * The preferred size of the button is determined by the background ninepatch and the button contents.
+ * <p>
+ * A button made up solely of images is defined by the {@link ButtonStyle}. A button with text on it is achieved by adding a
+ * {@link Label} to the button. The constructors that take a text string and the {@link #setText(String)} method are provided for
+ * convenience and will add a label to the button.
+ * @author Nathan Sweet */
 public class Button extends Table {
-	public ButtonStyle style;
-
-	protected ClickListener listener;
-
+	private ButtonStyle style;
+	ClickListener listener;
 	boolean isChecked;
 	ButtonGroup buttonGroup;
 
@@ -54,6 +61,7 @@ public class Button extends Table {
 
 	public Button (ButtonStyle style, String name) {
 		super(null, null, null, name);
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		setStyle(style);
 		initialize();
 	}
@@ -79,6 +87,7 @@ public class Button extends Table {
 	}
 
 	public void setStyle (ButtonStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
@@ -91,6 +100,11 @@ public class Button extends Table {
 		invalidateHierarchy();
 	}
 
+	public ButtonStyle getStyle () {
+		return style;
+	}
+
+	/** @param listener May be null. */
 	public void setClickListener (ClickListener listener) {
 		this.listener = listener;
 	}
@@ -104,6 +118,9 @@ public class Button extends Table {
 		return null;
 	}
 
+	/** Sets the text of the first {@link Label} found in the button, or if no label is found, a new label with the specified text
+	 * is created and added to the button. The label will use the {@link ButtonStyle} of this button, which extends
+	 * {@link LabelStyle}. */
 	public Cell setText (String text) {
 		Label label = getLabel();
 		if (label != null) {
@@ -166,14 +183,14 @@ public class Button extends Table {
 		return getPrefHeight();
 	}
 
-	/** Defines a button style, see {@link Button}
+	/** The style for a button, see {@link Button}.
 	 * @author mzechner */
 	static public class ButtonStyle extends LabelStyle {
-		public NinePatch down;
-		public NinePatch up;
-		public NinePatch checked;
+		/** Optional. */
+		public NinePatch down, up, checked;
 		public float pressedOffsetX, pressedOffsetY;
 		public float unpressedOffsetX, unpressedOffsetY;
+		/** Optional. */
 		public Color downFontColor;
 
 		public ButtonStyle () {

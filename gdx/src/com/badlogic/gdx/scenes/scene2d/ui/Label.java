@@ -22,18 +22,20 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** @author Nathan Sweet */
+/** A text label, with optional word wrapping.
+ * <p>
+ * The preferred size of the label is determined by the actual text bounds, unless word wrap is enabled (see
+ * {@link #setWrap(boolean)} and {@link #setWrapWidth(float)}).
+ * @author Nathan Sweet */
 public class Label extends Widget {
-	public LabelStyle style;
-	public final TextBounds bounds = new TextBounds();
-
+	private LabelStyle style;
+	private final TextBounds bounds = new TextBounds();
 	private String text;
 	private BitmapFontCache cache;
 	private float prefWidth, prefHeight;
-	private boolean wrap;
 	private int align = Align.LEFT;
+	private boolean wrap;
 	private float wrapWidth;
 
 	public Label (Skin skin) {
@@ -56,11 +58,16 @@ public class Label extends Widget {
 	}
 
 	public void setStyle (LabelStyle style) {
-		if (style.font == null) throw new GdxRuntimeException("Missing LabelStyle font.");
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
+		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
 		if (style.fontColor != null) cache.setColor(style.fontColor);
 		invalidateHierarchy();
+	}
+
+	public LabelStyle getStyle () {
+		return style;
 	}
 
 	public void setText (String text) {
@@ -74,16 +81,30 @@ public class Label extends Widget {
 		return text;
 	}
 
+	public TextBounds getTextBounds () {
+		return bounds;
+	}
+
+	/** If false, the text will only wrap where it contains newlines (\n). The preferred size of the label will be the text bounds.
+	 * If true, the text will word wrap using the width of the label. The preferred size of the label will be 100x100, so usually
+	 * the size of the label should be set explicitly without relying on the preferred size. Default is false.
+	 * @see #setWrapWidth(float) */
 	public void setWrap (boolean wrap) {
 		this.wrap = wrap;
-		invalidate();
+		invalidateHierarchy();
 	}
 
+	/** Enables word wrap and sets the width that is used to word wrap. The preferred width of the label will be the wrap width and
+	 * the preferred height will be the actual height of the wrapped text.
+	 * @param wrapWidth Set to zero to disable wrap. */
 	public void setWrapWidth (float wrapWidth) {
-		setWrap(true);
+		setWrap(wrapWidth != 0);
 		this.wrapWidth = wrapWidth;
+		invalidateHierarchy();
 	}
 
+	/** Aligns the text with the label widget.
+	 * @see Align */
 	public void setAlignment (int align) {
 		this.align = align;
 		invalidate();
@@ -145,19 +166,6 @@ public class Label extends Widget {
 		cache.draw(batch, parentAlpha);
 	}
 
-	@Override
-	public boolean touchDown (float x, float y, int pointer) {
-		return false;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-	}
-
 	public float getPrefWidth () {
 		if (wrap) return wrapWidth != 0 ? wrapWidth : 100;
 		validate();
@@ -170,8 +178,11 @@ public class Label extends Widget {
 		return bounds.height - style.font.getDescent() * 2;
 	}
 
+	/** The style for a label, see {@link Label}.
+	 * @author Nathan Sweet */
 	static public class LabelStyle {
 		public BitmapFont font;
+		/** Optional. */
 		public Color fontColor;
 
 		public LabelStyle () {

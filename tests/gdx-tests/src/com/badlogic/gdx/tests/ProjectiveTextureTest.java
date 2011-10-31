@@ -37,8 +37,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -109,7 +109,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		ui = new Stage(480, 320, true);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		Button reload = new Button("Reload Shaders", skin.getStyle(ButtonStyle.class), "reload");
-		ComboBox camera = new ComboBox(new String[] {"Camera", "Light"}, ui, skin.getStyle(ComboBoxStyle.class), "camera");
+		SelectBox camera = new SelectBox(new String[] {"Camera", "Light"}, ui, skin.getStyle(SelectBoxStyle.class), "camera");
 		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
 
 		Table table = new Table();
@@ -157,7 +157,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		texture.bind();
 		projTexShader.begin();
 
-		if (((ComboBox)ui.findActor("camera")).getSelectionIndex() == 0) {
+		if (((SelectBox)ui.findActor("camera")).getSelectionIndex() == 0) {
 			renderMesh(projTexShader, cam.combined, projector.combined, planeTrans, plane, Color.WHITE);
 			renderMesh(projTexShader, cam.combined, projector.combined, cubeTrans, cube, Color.WHITE);
 		} else {

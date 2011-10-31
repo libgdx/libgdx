@@ -19,22 +19,157 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
 
-/** @author Nathan Sweet */
+/** A skin holds styles for widgets and the resources (texture regions, ninepatches, bitmap fonts, etc) for those styles. A skin
+ * has a single texture that the resources may reference. This reduces the number of texture binds necessary for rendering many
+ * different widgets.
+ * <p>
+ * The resources and styles for a skin are usually defined using JSON (or a format that is {@link OutputType#minimal JSON-like}),
+ * which is formatted in this way:
+ * 
+ * <pre>
+ * {
+ * 	resources: {
+ * 		className: {
+ * 			name: value,
+ * 			...
+ * 		},
+ * 		...
+ * 	},
+ * 	styles: {
+ * 		className: {
+ * 			name: value,
+ * 			...
+ * 		},
+ * 		...
+ * 	}
+ * }
+ * </pre>
+ * 
+ * There are two sections, one named "resources" and the other "styles". Each section has a class name, which has a number of
+ * names and values. The name is the name of the resource or style for that class, and the value is the serialized resource or
+ * style. Here is a real example:
+ * 
+ * <pre>
+ * {
+ * 	resources: {
+ * 		com.badlogic.gdx.graphics.g2d.TextureRegion: {
+ * 			check-on: { x: 13, y: 77, width: 14, height: 14 },
+ * 			check-off: { x: 2, y: 97, width: 14, height: 14 }
+ * 		},
+ * 		com.badlogic.gdx.graphics.Color: {
+ * 			white: { r: 1, g: 1, b: 1, a: 1 }
+ * 		},
+ * 		com.badlogic.gdx.graphics.g2d.BitmapFont: {
+ * 			default-font: default.fnt
+ * 		}
+ * 	},
+ * 	styles: {
+ * 		com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+ * 			default: {
+ * 				checkboxOn: check-on, checkboxOff: check-off,
+ * 				font: default-font, fontColor: white
+ * 			}
+ * 		}
+ * 	}
+ * }
+ * </pre>
+ * 
+ * Here some named resource are defined: texture regions, a color, and a bitmap font. Also, a {@link CheckBoxStyle} is defined
+ * named "default" and it references the resources by name.
+ * <p>
+ * Styles and resources are retrieved from the skin using the type and name:
+ * 
+ * <pre>
+ * Color highlight = skin.getResource(&quot;highlight&quot;, Color.class);
+ * TextureRegion someRegion = skin.getResource(&quot;logo&quot;, TextureRegion.class);
+ * CheckBoxStyle checkBoxStyle = skin.getStyle(&quot;bigCheckbox&quot;, CheckBoxStyle.class);
+ * CheckBox checkBox = new CheckBox(&quot;Check me!&quot;, checkBoxStyle);
+ * </pre>
+ * 
+ * For convenience, most widget constructors will accept a skin and look up the necessary style using the name "default".
+ * <p>
+ * The JSON required for a style is simply a JSON object with the field names and values. If the type of a style object's field
+ * has a section defined under "resources", the resource is looked up by name. Eg, in the example above, the
+ * {@link CheckBoxStyle#checkboxOn} field is of type TextureRegion, so the "check-on" texture region defined in the "resources"
+ * section is used.
+ * <p>
+ * The following gives examples for the types of resources that are supported by default:
+ * <p>
+ * {@link Color}:
+ * 
+ * <pre>
+ * { r: 1, g: 1, b: 1, a: 1 }
+ * </pre>
+ * 
+ * {@link TextureRegion}:
+ * 
+ * <pre>
+ * { x: 13, y: 77, width: 14, height: 14 }
+ * </pre>
+ * 
+ * {@link NinePatch}:
+ * 
+ * <pre>
+ * [
+ * 	{ x: 2, y: 55, width: 5, height: 5 },
+ * 	{ x: 7, y: 55, width: 2, height: 5 },
+ * 	{ x: 9, y: 55, width: 5, height: 5 },
+ * 	{ x: 2, y: 60, width: 5, height: 11 },
+ * 	{ x: 7, y: 60, width: 2, height: 11 },
+ * 	{ x: 9, y: 60, width: 5, height: 11 },
+ * 	{ x: 2, y: 71, width: 5, height: 4 },
+ * 	{ x: 7, y: 71, width: 2, height: 4 },
+ * 	{ x: 9, y: 71, width: 5, height: 4 }
+ * ]
+ * </pre>
+ * 
+ * {@link NinePatch} can also be specified as a single region, which is set as the center of the ninepatch:
+ * 
+ * <pre>
+ * [ { width: 20, height: 20, x: 6, y: 2 } ]
+ * </pre>
+ * 
+ * This notation is useful to use a single region as a ninepatch. Eg, when creating a button made up of a single image for the
+ * {@link ButtonStyle#up} field, which is a ninepatch.
+ * <p>
+ * {@link BitmapFont} is just the path to the bitmap font file:
+ * 
+ * <pre>
+ * default.fnt
+ * </pre>
+ * 
+ * It first looks for the font file in the directory containing the skin file. If not found there, it uses the specified path as
+ * an {@link FileType#Internal} path. The bitmap font will use a texture region with the same name as the font file. If no texture
+ * region with that name is defined in the skin, it will look in the same directory as the font file for a PNG with the same name
+ * as the font file.
+ * <p>
+ * The skin JSON is extensible. Styles and resources for your own widgets may be included in the skin, usually without writing any
+ * code. Deserialization is handled by the {@link Json} class, which automatically serializes and deserializes most objects. While
+ * nearly any style object can be automatically deserialized, often resource objects require custom deserialization. Eg,
+ * TextureRegion, BitmapFont, and NinePatch need to reference the skin's single texture. If needed,
+ * {@link #getJsonLoader(FileHandle)} may be overridden to register additional custom {@link Serializer serializers}.
+ * 
+ * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	ObjectMap<Class, ObjectMap<String, Object>> styles = new ObjectMap();
@@ -130,7 +265,7 @@ public class Skin implements Disposable {
 		this.texture = texture;
 	}
 
-	/** @return the {@link Texture} containing all {@link NinePatch} and {@link TextureRegion} pixels of this Skin. */
+	/** Returns the single {@link Texture} that all resources in this skin reference. */
 	public Texture getTexture () {
 		return texture;
 	}

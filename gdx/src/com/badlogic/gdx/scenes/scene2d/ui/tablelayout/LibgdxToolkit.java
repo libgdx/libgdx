@@ -27,7 +27,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui.tablelayout;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -130,10 +129,9 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		} catch (RuntimeException ex) {
 			// style:stylename, set widget style from skin.
 			if (layout.skin != null && values.size() == 1 && name.equalsIgnoreCase("style")) {
-				Field field = getField(object.getClass(), "style");
-				if (field != null) {
+				try {
 					String styleName = values.get(0);
-					Class styleClass = field.getType();
+					Class styleClass = Class.forName(object.getClass().getName() + "Style");
 					if (layout.skin.hasStyle(styleName, styleClass)) {
 						try {
 							Method setStyleMethod = object.getClass().getMethod("setStyle", styleClass);
@@ -143,6 +141,7 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 							throw new GdxRuntimeException("Unable to set style: " + styleName, ex2);
 						}
 					}
+				} catch (ClassNotFoundException ignored) {
 				}
 			}
 			throw ex;

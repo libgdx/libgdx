@@ -93,6 +93,8 @@ public class FrameBuffer implements Disposable {
 	}
 
 	private void build () {
+		if (!Gdx.graphics.isGL20Available()) throw new GdxRuntimeException("GL2 is required.");
+
 		colorTexture = new Texture(width, height, format);
 		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);

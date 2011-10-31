@@ -164,6 +164,10 @@ public class TextField extends Widget {
 		invalidateHierarchy();
 	}
 
+	public TextFieldStyle getStyle () {
+		return style;
+	}
+
 	@Override
 	public void layout () {
 	}
@@ -585,7 +589,7 @@ public class TextField extends Widget {
 		}
 	}
 
-	/** Defines a text field's style, see {@link TextField}
+	/** The style for a text field, see {@link TextField}.
 	 * @author mzechner */
 	static public class TextFieldStyle {
 		public NinePatch background;

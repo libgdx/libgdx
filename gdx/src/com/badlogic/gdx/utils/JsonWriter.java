@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.regex.Pattern;
 
@@ -150,7 +149,12 @@ public class JsonWriter extends Writer {
 	}
 
 	static public enum OutputType {
-		json, javascript, minimal;
+		/** Normal JSON, with all its quotes. */
+		json,
+		/** Like JSON, but names are only quoted if necessary. */
+		javascript,
+		/** Like JSON, but names and values are only quoted if necessary. */
+		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
 		static private Pattern minimalPattern = Pattern.compile("[a-zA-Z_$][^:}\\], ]*");

@@ -28,29 +28,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
-/** <p>
- * A Stage is a container for {@link Actor}s and handles distributing touch events, animating Actors and asking them to render
- * themselves. A Stage is basically a 2D scenegraph with hierarchies of Actors.
- * </p>
- * 
+/** A stage is a container for {@link Actor}s and handles distributing touch events, animating actors and asking them to render
+ * themselves. A stage is 2D scenegraph with hierarchies of Actors.
  * <p>
- * A Stage object fills the whole screen. It has a width and height given in device independent pixels. It will create a
- * {@link Camera} that maps this viewport to the given real screen resolution. If the stretched attribute is set to true then the
- * viewport is enforced no matter the difference in aspect ratio between the stage object and the screen dimensions. In case
- * stretch is disabled then the viewport is extended in the bigger screen dimensions.
- * </p>
- * 
+ * A stage fills the whole screen. It has a width and height given in device independent pixels. It has a {@link Camera} that maps
+ * this viewport to the given real screen resolution. If the stretched attribute is set to true then the viewport is enforced no
+ * matter the difference in aspect ratio between the stage object and the screen dimensions. In case stretch is disabled then the
+ * viewport is extended in the bigger screen dimensions.
  * <p>
- * Actors have a z-order which is equal to the order they were inserted into this Stage. Actors inserted later will be drawn on
- * top of Actors added earlier. Touch events that will get distributed to later Actors first.
- * </p>
- * 
+ * Actors have a z-order which is equal to the order they were inserted into the stage. Actors inserted later will be drawn on top
+ * of actors added earlier. Touch events that will get distributed to later actors first.
  * <p>
- * Actors can get focused. When your game pauses and resumes make sure to call the {@link Stage#unfocusAll()} method so that the
- * focus states get reset for each pointer id. You also have to make sure that the Actors that were focused reset their state if
- * the depend on being focused, e.g. wait for a touch up event. An easier way to tackle this is to recreate the Stage if possible.
- * </p>
- * 
+ * Actors can be focused. When your game pauses and resumes be sure to call the {@link Stage#unfocusAll()} method so that the
+ * focus states get reset for each pointer id. You also have to make sure that the actors that were focused reset their state if
+ * the depend on being focused, e.g. wait for a touch up event. An easier way to tackle this is to recreate the stage if possible.
  * @author mzechner */
 public class Stage extends InputAdapter implements Disposable {
 	protected float width;

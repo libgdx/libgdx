@@ -32,6 +32,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -80,7 +81,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		ui = new Stage(480, 320, false);
 
-		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32), Scaling.none, "blend") {
+		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32), Scaling.none, Align.CENTER, "blend") {
 			public boolean touchDown (float x, float y, int pointer) {
 				if (stage.getSpriteBatch().isBlendingEnabled())
 					stage.getSpriteBatch().disableBlending();
@@ -93,7 +94,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		blend.height = blend.getPrefHeight();
 		blend.y = ui.height() - 64;
 		
-		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32), Scaling.none, "rotate") {
+		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32), Scaling.none, Align.CENTER, "rotate") {
 			public boolean touchDown (float x, float y, int pointer) {
 				rotateSprites = !rotateSprites;
 				return false;
@@ -104,7 +105,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		rotate.y = blend.y;
 		rotate.x = 64;
 		
-		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32), Scaling.none, "scale") {
+		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32), Scaling.none, Align.CENTER, "scale") {
 			public boolean touchDown (float x, float y, int pointer) {
 				scaleSprites = !scaleSprites;
 				return false;
@@ -134,7 +135,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		float advance = 32 + SPACING;
 		for (int y = 0; y < NUM_SPRITES * advance; y += advance)
 			for (int x = 0; x < NUM_SPRITES * advance; x += advance) {
-				Image img = new Image(new TextureRegion(texture), Scaling.none, group.name + "-sprite" + x * y);
+				Image img = new Image(new TextureRegion(texture), Scaling.none, Align.CENTER, group.name + "-sprite" + x * y);
 				img.x = x;
 				img.y = y;
 				img.width = 32;

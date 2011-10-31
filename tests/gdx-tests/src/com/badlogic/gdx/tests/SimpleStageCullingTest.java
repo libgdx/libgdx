@@ -27,7 +27,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Cullable;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.OrthoCamController;
@@ -35,6 +37,7 @@ import com.badlogic.gdx.utils.Scaling;
 
 /** This is a simple demonstration of how to perform VERY basic culling on hierarchies of stage actors that do not scale or rotate.
  * It is not a general solution as it assumes that actors and groups are only translated (moved, change their x/y coordinates).
+ * NOTE: This has been obsoleted by {@link Cullable}.
  * 
  * @author mzechner */
 public class SimpleStageCullingTest extends GdxTest {
@@ -50,7 +53,7 @@ public class SimpleStageCullingTest extends GdxTest {
 		boolean visible = false;
 
 		public CullableActor (String name, Texture texture, OrthographicCamera camera) {
-			super(new TextureRegion(texture), Scaling.none, name);
+			super(new TextureRegion(texture), Scaling.none, Align.CENTER, name);
 			this.camera = camera;
 		}
 

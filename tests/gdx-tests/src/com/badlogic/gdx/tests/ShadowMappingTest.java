@@ -27,11 +27,13 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox;
-import com.badlogic.gdx.scenes.scene2d.ui.ComboBox.ComboBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectionListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -117,10 +119,10 @@ public class ShadowMappingTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
-		ComboBox cameraCombo = new ComboBox(new String[] {"Scene", "Light"}, ui, skin.getStyle(ComboBoxStyle.class));
+		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, ui, skin.getStyle(SelectBoxStyle.class));
 		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class), "cameraCombo");
-		ComboBox shaderCombo = new ComboBox(new String[] {"flat", "shadow-gen", "shadow-map"}, ui,
-			skin.getStyle(ComboBoxStyle.class), "shaderCombo");
+		SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"}, ui,
+			skin.getStyle(SelectBoxStyle.class), "shaderCombo");
 		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
 
 		Table table = new Table();
@@ -136,9 +138,9 @@ public class ShadowMappingTest extends GdxTest {
 		table.y = ui.top() - 100;
 		ui.addActor(table);
 
-		cameraCombo.setSelectionListener(new ComboBox.SelectionListener() {
+		cameraCombo.setSelectionListener(new SelectionListener() {
 			@Override
-			public void selected (ComboBox comboBox, int selectionIndex, String selection) {
+			public void selected (Actor comboBox, int selectionIndex, String selection) {
 				if (selectionIndex == 0)
 					currCam = cam;
 				else
@@ -147,9 +149,9 @@ public class ShadowMappingTest extends GdxTest {
 			}
 		});
 
-		shaderCombo.setSelectionListener(new ComboBox.SelectionListener() {
+		shaderCombo.setSelectionListener(new SelectionListener() {
 			@Override
-			public void selected (ComboBox comboBox, int selectionIndex, String selection) {
+			public void selected (Actor comboBox, int selectionIndex, String selection) {
 				if (selectionIndex == 0)
 					currShader = flatShader;
 				else if (selectionIndex == 1)

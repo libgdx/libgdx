@@ -4,8 +4,8 @@ styles: {
 		default: { down: default-round-down, font: default-font, fontColor: white, up: default-round },
 		toggle: { down: default-round-down, checked: default-round-down, font: default-font, fontColor: white, up: default-round, downFontColor: red }
 	},
-	com.badlogic.gdx.scenes.scene2d.ui.ComboBox$ComboBoxStyle: {
-		default: { listBackground: default-rect, listSelection: default-combo-selection, font: default-font, fontColor: white, background: default-combo }
+	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+		default: { listBackground: default-rect, listSelection: default-select-selection, font: default-font, fontColor: white, background: default-select }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 		default-vertical: { handle: default-splitpane-vertical },
@@ -42,7 +42,7 @@ resources: {
 		default-slider-knob: { width: 9, height: 18, x: 2, y: 77 }
 	},
 	com.badlogic.gdx.graphics.g2d.NinePatch: {
-		default-combo-selection: [
+		default-select-selection: [
 			{ width: 1, height: 1, x: 7, y: 118 },
 			{ width: 1, height: 1, x: 8, y: 118 },
 			{ width: 1, height: 1, x: 9, y: 118 },
@@ -119,7 +119,7 @@ resources: {
 			{ width: 3, height: 5, x: 2, y: 113 },
 			{ width: 0, height: 5, x: 5, y: 113 }
 		],
-		default-combo: [
+		default-select: [
 			{ width: 4, height: 4, x: 2, y: 33 },
 			{ width: 9, height: 4, x: 6, y: 33 },
 			{ width: 14, height: 4, x: 15, y: 33 },

@@ -94,9 +94,13 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void pack () {
-		width = getPrefWidth();
-		height = getPrefHeight();
-		invalidate();
+		float newWidth = getPrefWidth();
+		float newHeight = getPrefHeight();
+		if (newWidth != width || newHeight != height) {
+			width = newWidth;
+			height = newHeight;
+			invalidate();
+		}
 	}
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called. */

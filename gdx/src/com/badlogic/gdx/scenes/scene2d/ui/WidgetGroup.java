@@ -57,9 +57,13 @@ public abstract class WidgetGroup extends Group implements Layout {
 	}
 
 	public void pack () {
-		width = getPrefWidth();
-		height = getPrefHeight();
-		invalidate();
+		float newWidth = getPrefWidth();
+		float newHeight = getPrefHeight();
+		if (newWidth != width || newHeight != height) {
+			width = newWidth;
+			height = newHeight;
+			invalidate();
+		}
 	}
 
 	public void layout () {

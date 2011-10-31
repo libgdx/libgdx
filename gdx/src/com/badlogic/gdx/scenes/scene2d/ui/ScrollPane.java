@@ -18,123 +18,91 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Cullable;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
-/** A special container that allows scrolling over its children.
- * 
- * <h2>Functionality</h2> A ScrollPane can embed any {@link Actor} (and {@link Widget} or {@link Table} for that matter) and
- * provide scrolling functionality in case the embedded Actor is bigger than the scroll pane itself. The scroll pane will
- * automatically decide whether it needs a vertical and/or horizontal scroll handle based on the contained Actor's size with
- * respect to the scroll pane's own size.</p>
- * 
- * <b>Note: do not use any of the {@link #addActor(Actor)} or {@link #removeActor(Actor)} methods with this class! The embedded
- * widget is specified at construction time or via {@link #setWidget(Actor)}.</b> * <h2>Layout</h2> The (preferred) width and
- * height of a scroll pane is determined by the size passed to its constructor. The contained Actor will be positioned in such a
- * way that it's top left corner will coincide with the scroll pane's corner when the vertical and horizontal scroll handles are
- * at their minimum position.</p>
- * 
- * 
- * <h2>Style</h2> A ScrollPane is a {@link Group} (note the comment in the functionality section!) that conditionally displays
- * horizontal and vertical scroll bars and handles as well as the embedded Actor, clipped to the available area inside of the
- * scroll pane. The scroll bars are {@link NinePatch} instances, the scroll handles are {@link NinePatch} instances as well. In
- * addition a background {@link NinePatch} is displayed behind the embedded Actor. The style is defined via a
- * {@link ScrollPaneStyle} instance, which can be either done programmatically or via a {@link Skin}.</p>
- * 
- * The height of the horizontal scroll bar and handle is constant and takes on the maximum {@link NinePatch#getTotalHeight()}
- * value of the involed NinePatch instances. The width is determined automatically based on the size of the scroll pane.</p>
- * 
- * The width of the vertical scroll bar and handle is constant and takes on the maximum {@link NinePatch#getTotalWidth()} value of
- * the involed NinePatch instances. The height is determined automatically based on the size of the scroll pane.</p>
- * 
- * 
- * A ScrollPane's style definition in a skin XML file should look like this:
- * 
- * <pre>
- * {@code 
- * <scrollpane name="default" 
- *             background="backgroundPatch" 
- *             hScroll="horizontalScrollBarPatch" 
- *             hScrollKnob="horizontalScrollHandlePatch" 
- *             vScroll="verticalScrollBarPatch" 
- *             vScrollKnob="verticalScrollBarHandle"/>
- * }
- * </pre>
- * 
- * <ul>
- * <li>The <code>name</code> attribute defines the name of the style which you can later use with .</li>
- * <li>The <code>background</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's background</li>
- * <li>The <code>hScroll</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's horizontal
- * scroll bar.</li>
- * <li>The <code>hScrollKnow</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's horizontal
- * scroll handle.</li>
- * <li>The <code>vScroll</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's vertical scroll
- * bar.</li>
- * <li>The <code>vScrollKnow</code> attribute references a {@link NinePatch} by name, to be used as the scroll pane's vertical
- * scroll handle..</li>
- * </ul>
- * 
- * @author mzechner */
+/** A group that scrolls a child widget using scroll bars.
+ * <p>
+ * The widget is sized to its preferred size. If the widget's preferred width or height is less than the size of this scroll pane,
+ * it is set to the size of this scroll pane. Scrollbars appear when the widget is larger than the scroll pane.
+ * <p>
+ * The scroll pane's preferred size is that of the child widget. At this size, the child widget will not need to scroll, so the
+ * scroll pane is typically sized by ignoring the preferred size in one or both directions.
+ * @author mzechner
+ * @author Nathan Sweet */
 public class ScrollPane extends WidgetGroup {
-	protected final ScrollPaneStyle style;
-	protected Actor widget;
-	protected Stage stage;
+	private final Stage stage;
+	private ScrollPaneStyle style;
+	private Actor widget;
 
-	protected final Rectangle hScrollBounds = new Rectangle();
-	protected final Rectangle vScrollBounds = new Rectangle();
-	protected final Rectangle hScrollKnobBounds = new Rectangle();
-	protected final Rectangle vScrollKnobBounds = new Rectangle();
-	protected final Rectangle widgetAreaBounds = new Rectangle();
-	protected final Rectangle widgetCullingArea = new Rectangle();
-	protected final Rectangle scissorBounds = new Rectangle();
+	private final Rectangle hScrollBounds = new Rectangle();
+	private final Rectangle vScrollBounds = new Rectangle();
+	private final Rectangle hKnobBounds = new Rectangle();
+	private final Rectangle vKnobBounds = new Rectangle();
+	private final Rectangle widgetAreaBounds = new Rectangle();
+	private final Rectangle widgetCullingArea = new Rectangle();
+	private final Rectangle scissorBounds = new Rectangle();
 
-	protected float hScrollAmount = 0;
-	protected float vScrollAmount = 0;
-	protected boolean hasHScroll = false;
-	protected boolean hasVScroll = false;
-	protected boolean touchScrollH = false;
-	protected boolean touchScrollV = false;
-	protected Vector2 lastPoint = new Vector2();
-	float handlePos = 0;
+	private boolean scrollX, scrollY;
+	private float amountX, amountY;
+	private boolean touchScrollH, touchScrollV;
+	private final Vector2 lastPoint = new Vector2();
+	private float handlePosition;
+	private boolean disableX, disableY;
 
 	public ScrollPane (Stage stage, Skin skin) {
 		this(null, stage, skin);
 	}
 
+	/** @param widget May be null. */
 	public ScrollPane (Actor widget, Stage stage, Skin skin) {
 		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), null);
 	}
 
+	/** @param widget May be null. */
 	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style) {
 		this(widget, stage, style, null);
 	}
 
+	/** @param widget May be null. */
 	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style, String name) {
 		super(name);
+		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.widget = widget;
 		this.stage = stage;
 		this.style = style;
-		addActor(widget);
+		setWidget(widget);
 		width = 150;
 		height = 150;
 	}
 
+	public void setStyle (ScrollPaneStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
+		this.style = style;
+		invalidateHierarchy();
+	}
+
+	public ScrollPaneStyle getStyle () {
+		return style;
+	}
+
 	private void calculateBoundsAndPositions (Matrix4 batchTransform) {
-		final NinePatch background = style.background;
+		final NinePatch bg = style.background;
 		final NinePatch hScrollKnob = style.hScrollKnob;
 		final NinePatch vScrollKnob = style.vScrollKnob;
 
 		// Get available space size by subtracting background's padded area.
-		float areaWidth = width - background.getLeftWidth() - background.getRightWidth();
-		float areaHeight = height - background.getTopHeight() - background.getBottomHeight();
+		float areaWidth = width - bg.getLeftWidth() - bg.getRightWidth();
+		float areaHeight = height - bg.getTopHeight() - bg.getBottomHeight();
 
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
@@ -147,25 +115,31 @@ public class ScrollPane extends WidgetGroup {
 			widgetHeight = widget.height;
 		}
 
-		// Figure out if we need horizontal/vertical scrollbars,
-		hasHScroll = false;
-		hasVScroll = false;
-		if (widgetWidth > areaWidth) hasHScroll = true;
-		if (widgetHeight > areaHeight) hasVScroll = true;
+		// Figure out if we need horizontal/vertical scrollbars.
+		scrollX = false;
+		scrollY = false;
+		if (!disableX && widgetWidth > areaWidth) scrollX = true;
+		if (!disableY && widgetHeight > areaHeight) scrollY = true;
 
 		// Check again, now taking into account the area that's taken up by any enabled scrollbars.
-		if (hasVScroll && (widgetWidth > areaWidth - vScrollKnob.getTotalWidth())) {
-			hasHScroll = true;
+		if (!disableX && scrollY && widgetWidth > areaWidth - vScrollKnob.getTotalWidth()) {
+			scrollX = true;
 			areaWidth -= vScrollKnob.getTotalWidth();
 		}
-		if (hasHScroll && (widgetHeight > areaHeight - hScrollKnob.getTotalHeight())) {
-			hasVScroll = true;
+		if (!disableY && scrollX && widgetHeight > areaHeight - hScrollKnob.getTotalHeight()) {
+			scrollY = true;
 			areaHeight -= hScrollKnob.getTotalHeight();
 		}
 
+		// Set the widget area bounds.
+		widgetAreaBounds.set(bg.getLeftWidth(), bg.getBottomHeight() + (scrollX ? hScrollKnob.getTotalHeight() : 0), areaWidth,
+			areaHeight);
+		amountX = MathUtils.clamp(amountX, 0, widgetAreaBounds.x);
+		amountY = MathUtils.clamp(amountY, 0, widgetAreaBounds.y);
+
 		// If the widget is smaller than the available space, make it take up the available space.
-		widgetWidth = Math.max(areaWidth, widgetWidth);
-		widgetHeight = Math.max(areaHeight, widgetHeight);
+		widgetWidth = disableX ? width : Math.max(areaWidth, widgetWidth);
+		widgetHeight = disableY ? height : Math.max(areaHeight, widgetHeight);
 		if (widget.width != widgetWidth || widget.height != widgetHeight) {
 			widget.width = widgetWidth;
 			widget.height = widgetHeight;
@@ -173,33 +147,26 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
-		if (hasHScroll) {
-			hScrollBounds.set(background.getLeftWidth(), background.getBottomHeight(), areaWidth, hScrollKnob.getTotalHeight());
-			hScrollKnobBounds.width = Math.max(hScrollKnob.getTotalWidth(), (int)(hScrollBounds.width * areaWidth / widget.width));
-			hScrollKnobBounds.height = hScrollKnob.getTotalHeight();
-
-			hScrollKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hScrollKnobBounds.width) * hScrollAmount);
-			hScrollKnobBounds.y = hScrollBounds.y;
+		if (scrollX) {
+			hScrollBounds.set(bg.getLeftWidth(), bg.getBottomHeight(), areaWidth, hScrollKnob.getTotalHeight());
+			hKnobBounds.width = Math.max(hScrollKnob.getTotalWidth(), (int)(hScrollBounds.width * areaWidth / widget.width));
+			hKnobBounds.height = hScrollKnob.getTotalHeight();
+			hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
+			hKnobBounds.y = hScrollBounds.y;
 		}
-
-		if (hasVScroll) {
-			vScrollBounds.set(width - background.getRightWidth() - vScrollKnob.getTotalWidth(), height - background.getTopHeight()
-				- areaHeight, vScrollKnob.getTotalWidth(), areaHeight);
-			vScrollKnobBounds.width = vScrollKnob.getTotalWidth();
-			vScrollKnobBounds.height = Math.max(vScrollKnob.getTotalHeight(),
-				(int)(vScrollBounds.height * areaHeight / widget.height));
-			vScrollKnobBounds.x = vScrollBounds.x;
-			vScrollKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vScrollKnobBounds.height) * (1 - vScrollAmount));
+		if (scrollY) {
+			vScrollBounds.set(width - bg.getRightWidth() - vScrollKnob.getTotalWidth(), height - bg.getTopHeight() - areaHeight,
+				vScrollKnob.getTotalWidth(), areaHeight);
+			vKnobBounds.width = vScrollKnob.getTotalWidth();
+			vKnobBounds.height = Math.max(vScrollKnob.getTotalHeight(), (int)(vScrollBounds.height * areaHeight / widget.height));
+			vKnobBounds.x = vScrollBounds.x;
+			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 		}
-
-		// Set the widget area bounds.
-		widgetAreaBounds.set(background.getLeftWidth(), background.getBottomHeight()
-			+ (hasHScroll ? hScrollKnob.getTotalHeight() : 0), areaWidth, areaHeight);
 
 		// Calculate the widgets offset depending on the scroll state and available widget area.
-		widget.y = widgetAreaBounds.y - (!hasVScroll ? (int)(widget.height - areaHeight) : 0)
-			- (hasVScroll ? (int)((widget.height - areaHeight) * (1 - vScrollAmount)) : 0);
-		widget.x = widgetAreaBounds.x - (hasHScroll ? (int)((widget.width - areaWidth) * hScrollAmount) : 0);
+		widget.y = widgetAreaBounds.y - (!scrollY ? (int)(widget.height - areaHeight) : 0)
+			- (scrollY ? (int)((widget.height - areaHeight) * (1 - getScrollPercentY())) : 0);
+		widget.x = widgetAreaBounds.x - (scrollX ? (int)((widget.width - areaWidth) * getScrollPercentX()) : 0);
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
@@ -220,12 +187,6 @@ public class ScrollPane extends WidgetGroup {
 
 		validate();
 
-		final NinePatch background = style.background;
-		final NinePatch hScrollKnob = style.hScrollKnob;
-		final NinePatch hScroll = style.hScroll;
-		final NinePatch vScrollKnob = style.vScrollKnob;
-		final NinePatch vScroll = style.vScroll;
-
 		// Setup transform for this group.
 		applyTransform(batch);
 
@@ -234,7 +195,7 @@ public class ScrollPane extends WidgetGroup {
 
 		// Draw the background ninepatch.
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		background.draw(batch, 0, 0, width, height);
+		style.background.draw(batch, 0, 0, width, height);
 		batch.flush();
 
 		// Enable scissors for widget area and draw the widget.
@@ -245,13 +206,13 @@ public class ScrollPane extends WidgetGroup {
 
 		// Render scrollbars and knobs on top.
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (hasHScroll) {
-			hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
-			hScrollKnob.draw(batch, hScrollKnobBounds.x, hScrollKnobBounds.y, hScrollKnobBounds.width, hScrollKnobBounds.height);
+		if (scrollX) {
+			style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
+			style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
 		}
-		if (hasVScroll) {
-			vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
-			vScrollKnob.draw(batch, vScrollKnobBounds.x, vScrollKnobBounds.y, vScrollKnobBounds.width, vScrollKnobBounds.height);
+		if (scrollY) {
+			style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
+			style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
 		}
 
 		resetTransform(batch);
@@ -279,29 +240,29 @@ public class ScrollPane extends WidgetGroup {
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
 
-		if (hasHScroll && hScrollBounds.contains(x, y)) {
-			if (hScrollKnobBounds.contains(x, y)) {
+		if (scrollX && hScrollBounds.contains(x, y)) {
+			if (hKnobBounds.contains(x, y)) {
 				lastPoint.set(x, y);
-				handlePos = hScrollKnobBounds.x;
+				handlePosition = hKnobBounds.x;
 				touchScrollH = true;
 			} else {
-				if (x < hScrollKnobBounds.x) {
-					hScrollAmount = Math.max(0, hScrollAmount - 0.1f);
+				if (x < hKnobBounds.x) {
+					setScrollPercentX(Math.max(0, getScrollPercentX() - 0.1f));
 				} else {
-					hScrollAmount = Math.min(1, hScrollAmount + 0.1f);
+					setScrollPercentX(Math.min(1, getScrollPercentX() + 0.1f));
 				}
 			}
 			return true;
-		} else if (hasVScroll && vScrollBounds.contains(x, y)) {
-			if (vScrollKnobBounds.contains(x, y)) {
+		} else if (scrollY && vScrollBounds.contains(x, y)) {
+			if (vKnobBounds.contains(x, y)) {
 				lastPoint.set(x, y);
-				handlePos = vScrollKnobBounds.y;
+				handlePosition = vKnobBounds.y;
 				touchScrollV = true;
 			} else {
-				if (y < vScrollKnobBounds.y) {
-					vScrollAmount = Math.min(1, vScrollAmount + 0.1f);
+				if (y < vKnobBounds.y) {
+					setScrollPercentY(Math.max(0, getScrollPercentY() + 0.1f));
 				} else {
-					vScrollAmount = Math.max(0, vScrollAmount - 0.1f);
+					setScrollPercentY(Math.min(1, getScrollPercentY() - 0.1f));
 				}
 			}
 			return true;
@@ -325,39 +286,54 @@ public class ScrollPane extends WidgetGroup {
 	public void touchDragged (float x, float y, int pointer) {
 		if (touchScrollH) {
 			float delta = x - lastPoint.x;
-			float scrollH = handlePos + delta;
-			handlePos = scrollH;
+			float scrollH = handlePosition + delta;
+			handlePosition = scrollH;
 			scrollH = Math.max(hScrollBounds.x, scrollH);
-			scrollH = Math.min(hScrollBounds.x + hScrollBounds.width - hScrollKnobBounds.width, scrollH);
-			hScrollAmount = (scrollH - hScrollBounds.x) / (hScrollBounds.width - hScrollKnobBounds.width);
+			scrollH = Math.min(hScrollBounds.x + hScrollBounds.width - hKnobBounds.width, scrollH);
+			setScrollPercentX((scrollH - hScrollBounds.x) / (hScrollBounds.width - hKnobBounds.width));
 			lastPoint.set(x, y);
 		} else if (touchScrollV) {
 			float delta = y - lastPoint.y;
-			float scrollV = handlePos + delta;
-			handlePos = scrollV;
+			float scrollV = handlePosition + delta;
+			handlePosition = scrollV;
 			scrollV = Math.max(vScrollBounds.y, scrollV);
-			scrollV = Math.min(vScrollBounds.y + vScrollBounds.height - vScrollKnobBounds.height, scrollV);
-			vScrollAmount = 1 - ((scrollV - vScrollBounds.y) / (vScrollBounds.height - vScrollKnobBounds.height));
+			scrollV = Math.min(vScrollBounds.y + vScrollBounds.height - vKnobBounds.height, scrollV);
+			setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / (vScrollBounds.height - vKnobBounds.height)));
 			lastPoint.set(x, y);
 		} else
 			super.touchDragged(x, y, pointer);
-	}
-
-	public void setVScrollAmount (float vScrollAmount) {
-		this.vScrollAmount = vScrollAmount;
-	}
-
-	public void setHScrollAmount (float hScrollAmount) {
-		this.hScrollAmount = hScrollAmount;
 	}
 
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget the Actor */
 	public void setWidget (Actor widget) {
 		if (widget == null) throw new IllegalArgumentException("widget cannot be null.");
-		if (this.widget != null) removeActor(this.widget);
+		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
-		if (widget != null) addActor(widget);
+		if (widget != null) super.addActor(widget);
+	}
+
+	public void addActor (Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+	}
+
+	public void addActorAt (int index, Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+	}
+
+	public void addActorBefore (Actor actorBefore, Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+	}
+
+	public void removeActor (Actor actor) {
+		throw new UnsupportedOperationException("Use ScrollPane#setWidget(null).");
+	}
+
+	public void removeActorRecursive (Actor actor) {
+		if (actor == widget)
+			setWidget(null);
+		else if (widget instanceof Group) //
+			((Group)widget).removeActorRecursive(actor);
 	}
 
 	public Actor hit (float x, float y) {
@@ -365,7 +341,57 @@ public class ScrollPane extends WidgetGroup {
 		return null;
 	}
 
-	/** Defines a scroll pane's style, see {@link ScrollPane}.
+	public void setScrollX (float pixels) {
+		this.amountX = pixels;
+	}
+
+	/** Returns the x scroll position in pixels. */
+	public float getScrollX () {
+		return amountX;
+	}
+
+	public void setScrollY (float pixels) {
+		amountY = pixels;
+	}
+
+	/** Returns the y scroll position in pixels. */
+	public float getScrollY () {
+		return amountY;
+	}
+
+	public float getScrollPercentX () {
+		return amountX / widgetAreaBounds.x;
+	}
+
+	public void setScrollPercentX (float percentX) {
+		amountX = widgetAreaBounds.x * percentX;
+	}
+
+	public float getScrollPercentY () {
+		return amountY / widgetAreaBounds.y;
+	}
+
+	public void setScrollPercentY (float percentY) {
+		amountY = widgetAreaBounds.y * percentY;
+	}
+
+	/** Returns the maximum scroll value in the x direction. */
+	public float getMaxX () {
+		return widgetAreaBounds.x;
+	}
+
+	/** Returns the maximum scroll value in the y direction. */
+	public float getMaxY () {
+		return widgetAreaBounds.y;
+	}
+
+	/** Disables scrolling in a direction. The widget will be sized to the FlickScrollPane in the disabled direction. */
+	public void setScrollingDisabled (boolean x, boolean y) {
+		disableX = x;
+		disableY = y;
+	}
+
+	/** The style for a scroll pane, see {@link ScrollPane}.
 	 * @author mzechner */
 	static public class ScrollPaneStyle {
 		public NinePatch background;

@@ -7,34 +7,39 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
-/** @author Nathan Sweet */
+/** Displays a {@link TextureRegion} or {@link NinePatch}, scaled various way within the widgets bounds. The preferred size is the
+ * actual size of the region or ninepatch.
+ * @author Nathan Sweet */
 public class Image extends Widget {
-	protected TextureRegion region;
-	protected NinePatch patch;
-	protected Scaling scaling;
-	protected int align = Align.CENTER;
-	protected float imageX, imageY, imageWidth, imageHeight;
+	private TextureRegion region;
+	private NinePatch patch;
+	private Scaling scaling;
+	private int align = Align.CENTER;
+	private float imageX, imageY, imageWidth, imageHeight;
 
+	/** Creates an image with no region or patch, stretched, and aligned center. */
 	public Image () {
 		this((TextureRegion)null);
 	}
 
+	/** Creates an image stretched, and aligned center.
+	 * @param region May be null. */
 	public Image (TextureRegion region) {
-		this(region, Scaling.stretch, null);
+		this(region, Scaling.stretch, Align.CENTER, null);
 	}
 
+	/** Creates an image aligned center.
+	 * @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling) {
-		this(region, scaling, null);
+		this(region, scaling, Align.CENTER, null);
 	}
 
+	/** @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling, int align) {
 		this(region, scaling, align, null);
 	}
 
-	public Image (TextureRegion region, Scaling scaling, String name) {
-		this(region, scaling, Align.CENTER, null);
-	}
-
+	/** @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling, int align, String name) {
 		setRegion(region);
 		this.scaling = scaling;
@@ -42,22 +47,24 @@ public class Image extends Widget {
 		pack();
 	}
 
+	/** Creates an image stretched, and aligned center.
+	 * @param patch May be null. */
 	public Image (NinePatch patch) {
-		this(patch, Scaling.stretch, null);
+		this(patch, Scaling.stretch, Align.CENTER, null);
 	}
 
+	/** Creates an image aligned center.
+	 * @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling) {
-		this(patch, scaling, null);
+		this(patch, scaling, Align.CENTER, null);
 	}
 
+	/** @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling, int align) {
 		this(patch, scaling, align, null);
 	}
 
-	public Image (NinePatch patch, Scaling scaling, String name) {
-		this(patch, scaling, Align.CENTER, null);
-	}
-
+	/** @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling, int align, String name) {
 		setPatch(patch);
 		this.scaling = scaling;
@@ -111,6 +118,7 @@ public class Image extends Widget {
 	/** @param region May be null. */
 	public void setRegion (TextureRegion region) {
 		if (region != null) {
+			if (this.region == region) return;
 			if (getPrefWidth() != region.getRegionWidth() || getPrefHeight() != region.getRegionHeight()) invalidateHierarchy();
 		} else {
 			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
@@ -126,6 +134,7 @@ public class Image extends Widget {
 	/** @param patch May be null. */
 	public void setPatch (NinePatch patch) {
 		if (patch != null) {
+			if (this.patch == patch) return;
 			if (getPrefWidth() != patch.getTotalWidth() || getPrefHeight() != patch.getTotalHeight()) invalidateHierarchy();
 		} else {
 			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
@@ -139,7 +148,12 @@ public class Image extends Widget {
 	}
 
 	public void setScaling (Scaling scaling) {
+		if (scaling == null) throw new IllegalArgumentException("scaling cannot be null.");
 		this.scaling = scaling;
+	}
+
+	public void setAlign (int align) {
+		this.align = align;
 	}
 
 	public float getMinWidth () {
