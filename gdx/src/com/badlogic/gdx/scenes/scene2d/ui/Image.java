@@ -104,14 +104,15 @@ public class Image extends Widget {
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
+
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (patch != null)
-			patch.draw(batch, x, y, imageWidth * scaleX, imageHeight * scaleY);
+			patch.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 		else if (region != null) {
 			if (scaleX == 1 && scaleY == 1 && rotation == 0)
-				batch.draw(region, x, y + imageY, imageWidth, imageHeight);
+				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
 			else
-				batch.draw(region, x, y + imageY, originX, originY, imageWidth, imageHeight, scaleX, scaleY, rotation);
+				batch.draw(region, x + imageX, y + imageY, originX, originY, imageWidth, imageHeight, scaleX, scaleY, rotation);
 		}
 	}
 
