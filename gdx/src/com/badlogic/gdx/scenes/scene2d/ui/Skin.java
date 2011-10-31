@@ -168,7 +168,10 @@ import com.badlogic.gdx.utils.SerializationException;
  * nearly any style object can be automatically deserialized, often resource objects require custom deserialization. Eg,
  * TextureRegion, BitmapFont, and NinePatch need to reference the skin's single texture. If needed,
  * {@link #getJsonLoader(FileHandle)} may be overridden to register additional custom {@link Serializer serializers}.
- * 
+ * <p>
+ * Note that there is a SkinPacker class in the gdx-tools project that can take a directory of individual images, pack them into a
+ * single texture, and write the proper texture region and ninepatch entries to a skin JSON file. The styles and other resources
+ * sections still need to be written by hand, but SkinPacker makes the otherwise tedious entry of pixel coordinates unnecessary.
  * @author Nathan Sweet */
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
