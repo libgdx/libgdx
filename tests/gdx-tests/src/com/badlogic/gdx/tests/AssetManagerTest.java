@@ -31,7 +31,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
@@ -64,8 +67,27 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	}
 
 	boolean diagnosed = false;
+	private long start;
+	private TileMapRenderer renderer;
+	private TileAtlas atlas;
+	private TiledMap map;
+	private Texture tex3;
+	private BitmapFont font2;
+	private TextureAtlas tex2;
+	private Texture tex1;
 	
 	private void load() {
+		start = System.nanoTime();
+		tex1 = new Texture("data/animation.png");
+		tex2 = new TextureAtlas(Gdx.files.internal("data/pack"));
+		font2 = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
+		tex3 = new Texture("data/test.etc1");
+		map = TiledLoader.createMap(Gdx.files.internal("data/tiledmap/tilemap csv.tmx"));
+		atlas = new TileAtlas(map, Gdx.files.internal("data/tiledmap/"));
+		renderer = new TileMapRenderer(map, atlas, 8, 8);
+		System.out.println("plain took: " + (System.nanoTime() - start) / 1000000000.0f);
+		
+		start = System.nanoTime();
 		manager.load("data/animation.png", Texture.class);
 		manager.load("data/pack1.png", Texture.class);
 		manager.load("data/pack", TextureAtlas.class);
@@ -76,6 +98,13 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	}
 	
 	private void unload() {
+		tex1.dispose();
+		tex2.dispose();
+		font2.dispose();
+		tex3.dispose();
+		atlas.dispose();
+		renderer.dispose();
+		
 		manager.unload("data/animation.png");
 		manager.unload("data/pack1.png");
 		manager.unload("data/pack");
@@ -95,17 +124,12 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		boolean result = manager.update();
 		if (result & !diagnosed) {
-			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagnostics() + "\n" + Texture.getManagedStatus());
+//			Gdx.app.log("AssetManagerTest", "\n" + manager.getDiagnostics() + "\n" + Texture.getManagedStatus());
+			diagnosed = true;
+			System.out.println("took: " + (System.nanoTime() - start) / 1000000000.0f);
+			unload();
+			load();
 			diagnosed = false;
-//			invalidateTexture(manager.get("data/animation.png", Texture.class));
-//			invalidateTexture(manager.get("data/pack1.png", Texture.class));
-//			invalidateTexture(manager.get("data/verdana39.png", Texture.class));
-//			invalidateTexture(manager.get("data/test.etc1", Texture.class));
-//			Texture.invalidateAllTextures(Gdx.app);
-//			unload();
-//			load();
-//			manager.finishLoading();
-//			Gdx.app.log("AssetManagerTest", "after disposal\n" + manager.getDiagonistics());
 			reloads++;
 		}
 		frame++;
@@ -120,10 +144,12 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 		font.draw(batch, "loaded: " + manager.getProgress() + ", reloads: " + reloads, 0, 30);
 		batch.end();
 		
-		if(Gdx.input.justTouched()) {
-			Texture.invalidateAllTextures(Gdx.app);
-			diagnosed = false;
-		}
+//		if(Gdx.input.justTouched()) {
+//			Texture.invalidateAllTextures(Gdx.app);
+//			diagnosed = false;
+//			unload();
+//			load();
+//		}
 	}
 
 	@Override
