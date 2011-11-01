@@ -75,17 +75,21 @@ public class Stack extends WidgetGroup {
 
 	public float getMaxWidth () {
 		if (children.isEmpty()) return 0;
-		float width = Float.MAX_VALUE;
-		for (int i = 0, n = children.size(); i < n; i++)
-			width = Math.min(width, LibgdxToolkit.instance.getMaxWidth(children.get(i)));
+		float width = 0;
+		for (int i = 0, n = children.size(); i < n; i++) {
+			int maxWidth = LibgdxToolkit.instance.getMaxHeight(children.get(i));
+			if (maxWidth > 0) width = width == 0 ? maxWidth : Math.min(width, maxWidth);
+		}
 		return width * scaleX;
 	}
 
 	public float getMaxHeight () {
 		if (children.isEmpty()) return 0;
-		float height = Float.MAX_VALUE;
-		for (int i = 0, n = children.size(); i < n; i++)
-			height = Math.min(height, LibgdxToolkit.instance.getMaxHeight(children.get(i)));
+		float height = 0;
+		for (int i = 0, n = children.size(); i < n; i++) {
+			int maxHeight = LibgdxToolkit.instance.getMaxHeight(children.get(i));
+			if (maxHeight > 0) height = height == 0 ? maxHeight : Math.min(height, maxHeight);
+		}
 		return height * scaleY;
 	}
 

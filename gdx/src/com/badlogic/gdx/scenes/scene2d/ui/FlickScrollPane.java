@@ -189,6 +189,7 @@ public class FlickScrollPane extends WidgetGroup {
 		}
 	}
 
+	// BOZO - Use layout.
 	private void calculateBoundsAndPositions (Matrix4 batchTransform) {
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
