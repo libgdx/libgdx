@@ -177,7 +177,10 @@ public class Vector2 implements Serializable {
 		return this;
 	}
 
-	/** @return a temporary copy of this vector. Use with care as this is backed by a single static Vector2 instance. v1.tmp().add(
+	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g.
+	 * other methods might call this as well.
+	 * 
+	 * @return a temporary copy of this vector. Use with care as this is backed by a single static Vector2 instance. v1.tmp().add(
 	 *         v2.tmp() ) will not work! */
 	public Vector2 tmp () {
 		return tmp.set(this);
