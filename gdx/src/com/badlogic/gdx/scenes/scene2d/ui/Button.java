@@ -63,10 +63,8 @@ public class Button extends Table {
 		super(null, null, null, name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		setStyle(style);
-		initialize();
-	}
+		pack();
 
-	private void initialize () {
 		super.setClickListener(new ClickListener() {
 			public void click (Actor actor) {
 				boolean newChecked = !isChecked;

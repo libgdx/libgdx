@@ -828,18 +828,20 @@ public class Json {
 
 	private void prettyPrint (Object object, StringBuilder buffer, int indent, boolean fieldsOnSameLine) {
 		if (object instanceof ObjectMap) {
-			ObjectMap<?, ?> map = (ObjectMap)object;
+			ObjectMap map = (ObjectMap)object;
 			if (map.size == 0) {
 				buffer.append("{}");
 			} else {
 				boolean newLines = !fieldsOnSameLine || !isFlat(map) || map.size > 4;
 				buffer.append(newLines ? "{\n" : "{ ");
+				Array<String> keys = (Array)map.keys().toArray();
+				keys.sort();
 				int i = 0;
-				for (Entry entry : map.entries()) {
+				for (String key : keys) {
 					if (newLines) indent(indent, buffer);
-					buffer.append(outputType.quoteName((String)entry.key));
+					buffer.append(outputType.quoteName(key));
 					buffer.append(": ");
-					prettyPrint(entry.value, buffer, indent + 1, fieldsOnSameLine);
+					prettyPrint(map.get(key), buffer, indent + 1, fieldsOnSameLine);
 					if (i++ < map.size - 1) buffer.append(",");
 					buffer.append(newLines ? '\n' : ' ');
 				}

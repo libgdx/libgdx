@@ -80,6 +80,10 @@ public class NinePatch {
 		}
 	}
 
+	public NinePatch (Texture texture) {
+		this(new TextureRegion(texture));
+	}
+
 	public NinePatch (TextureRegion region) {
 		this.patches = new TextureRegion[] {
 			//

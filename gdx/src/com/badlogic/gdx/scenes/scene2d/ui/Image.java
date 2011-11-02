@@ -41,6 +41,7 @@ public class Image extends Widget {
 
 	/** @param region May be null. */
 	public Image (TextureRegion region, Scaling scaling, int align, String name) {
+		super(name);
 		setRegion(region);
 		this.scaling = scaling;
 		this.align = align;
@@ -66,6 +67,7 @@ public class Image extends Widget {
 
 	/** @param patch May be null. */
 	public Image (NinePatch patch, Scaling scaling, int align, String name) {
+		super(name);
 		setPatch(patch);
 		this.scaling = scaling;
 		this.align = align;

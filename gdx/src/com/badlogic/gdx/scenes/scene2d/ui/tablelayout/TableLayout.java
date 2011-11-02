@@ -93,7 +93,15 @@ public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, Libg
 			actor.y = table.height - c.getWidgetY() - widgetHeight;
 			actor.width = c.getWidgetWidth();
 			actor.height = widgetHeight;
-			if (actor instanceof Layout) ((Layout)actor).invalidate();
+		}
+		List<Actor> children = table.getActors();
+		for (int i = 0, n = children.size(); i < n; i++) {
+			Actor child = children.get(i);
+			if (child instanceof Layout) {
+				Layout layout = (Layout)child;
+				layout.invalidate();
+				layout.validate();
+			}
 		}
 	}
 

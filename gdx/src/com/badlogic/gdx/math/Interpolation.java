@@ -5,6 +5,10 @@ package com.badlogic.gdx.math;
 public abstract class Interpolation {
 	abstract public float apply (float a);
 
+	public float apply (float start, float end, float a) {
+		return start + (end - start) * apply(a);
+	}
+
 	static public final Interpolation linear = new Interpolation() {
 		public float apply (float a) {
 			return a;
@@ -253,7 +257,7 @@ public abstract class Interpolation {
 			case 2:
 				widths[0] = 0.6f;
 				widths[1] = 0.4f;
-				heights[1] = 0.1f;
+				heights[1] = 0.33f;
 				break;
 			case 3:
 				widths[0] = 0.4f;

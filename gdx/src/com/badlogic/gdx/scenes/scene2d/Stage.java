@@ -28,6 +28,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
+// BOZO - Set culling area on root group?
+
 /** A stage is a container for {@link Actor}s and handles distributing touch events, animating actors and asking them to render
  * themselves. A stage is 2D scenegraph with hierarchies of Actors.
  * <p>

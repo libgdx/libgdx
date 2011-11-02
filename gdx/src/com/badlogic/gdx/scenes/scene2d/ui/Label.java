@@ -46,6 +46,11 @@ public class Label extends Widget {
 		this(text, skin.getStyle(LabelStyle.class), null);
 	}
 
+	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color. */
+	public Label (String text, String fontName, Color color, Skin skin) {
+		this(text, new LabelStyle(skin.getResource(fontName, BitmapFont.class), color), null);
+	}
+
 	public Label (String text, LabelStyle style) {
 		this(text, style, null);
 	}
@@ -63,7 +68,11 @@ public class Label extends Widget {
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
-		if (style.fontColor != null) cache.setColor(style.fontColor);
+		if (style.fontColor != null) {
+			if (style.fontColor.r == 0.51f)
+				System.out.println();
+			cache.setColor(style.fontColor);
+		}
 		invalidateHierarchy();
 	}
 

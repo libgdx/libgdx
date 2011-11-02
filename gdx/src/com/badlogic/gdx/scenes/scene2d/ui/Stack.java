@@ -50,12 +50,16 @@ public class Stack extends WidgetGroup {
 
 	public void layout () {
 		for (int i = 0, n = children.size(); i < n; i++) {
-			Actor actor = children.get(i);
-			actor.x = 0;
-			actor.y = 0;
-			actor.width = width;
-			actor.height = height;
-			if (actor instanceof Layout) ((Layout)actor).invalidate();
+			Actor child = children.get(i);
+			child.x = 0;
+			child.y = 0;
+			child.width = width;
+			child.height = height;
+			if (child instanceof Layout) {
+				Layout layout = (Layout)child;
+				layout.invalidate();
+				layout.validate();
+			}
 		}
 	}
 
