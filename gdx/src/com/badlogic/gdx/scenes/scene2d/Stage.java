@@ -52,6 +52,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	protected final Group root;
 
+	protected final boolean ownsBatch;
 	protected final SpriteBatch batch;
 	protected Camera camera;
 
@@ -70,6 +71,28 @@ public class Stage extends InputAdapter implements Disposable {
 		this.stretch = stretch;
 		this.root = new Group("root");
 		this.batch = new SpriteBatch();
+		this.ownsBatch = true;
+		this.camera = new OrthographicCamera();
+		setViewport(width, height, stretch);
+	}
+	
+	/** <p>
+	 * Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
+	 * dimensions the stage object will setup a projection matrix to guarantee a fixed coordinate system. If stretch is disabled
+	 * then the bigger dimension of the Stage will be increased to accomodate the actual device resolution.
+	 * </p>
+	 * 
+	 * @param width the width of the viewport
+	 * @param height the height of the viewport
+	 * @param stretch whether to stretch the viewport to the real device resolution 
+	 * @param batch the {@link SpriteBatch} this Stage should use. Will not be disposed if {@link #dispose()} is called. */
+	public Stage (float width, float height, boolean stretch, SpriteBatch batch) {
+		this.width = width;
+		this.height = height;
+		this.stretch = stretch;
+		this.root = new Group("root");
+		this.batch = batch;
+		this.ownsBatch = false;
 		this.camera = new OrthographicCamera();
 		setViewport(width, height, stretch);
 	}
@@ -294,7 +317,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Disposes the stage */
 	public void dispose () {
-		batch.dispose();
+		if(ownsBatch ) batch.dispose();
 	}
 
 	/** Adds an {@link Actor} to this stage
