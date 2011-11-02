@@ -119,6 +119,21 @@ public class OrthographicCamera extends Camera {
 		frustum.update(invProjectionView);
 	}
 	
+	@Override
+	public void update (boolean updateFrustum) {
+		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom
+			* viewportHeight / 2, Math.abs(near), Math.abs(far));
+		view.setToLookAt(position, tmp.set(position).add(direction), up);
+		combined.set(projection);
+		Matrix4.mul(combined.val, view.val);
+		
+		if(updateFrustum) {
+			invProjectionView.set(combined);
+			Matrix4.inv(invProjectionView.val);
+			frustum.update(invProjectionView);
+		}
+	}
+	
 	/**
 	 * Sets this camera to an orthographic projection using a viewport fitting the screen resolution, centered
 	 * at (Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), with the y-axis pointing up or down.

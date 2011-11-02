@@ -63,6 +63,10 @@ public abstract class Camera {
 	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes. Use this after you've manipulated
 	 * any of the attributes of the camera. */
 	public abstract void update ();
+	
+	/** Recalculates the projection and view matrix of this camera and the {@link Frustum} planes if <code>updateFrustum</code> is true. Use this after you've manipulated
+	 * any of the attributes of the camera. */
+	public abstract void update (boolean updateFrustum);
 
 	/** Sets the current projection and model-view matrix of this camera. Only works with {@link GL10} and {@link GL11} of course.
 	 * The parameter is there to remind you that it does not work with GL20. Make sure to call {@link #update()} before calling
