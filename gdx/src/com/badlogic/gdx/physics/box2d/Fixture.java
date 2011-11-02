@@ -71,6 +71,7 @@ public class Fixture {
 	public Shape getShape () {
 		if (shape == null) {
 			long shapeAddr = jniGetShape(addr);
+			if (shapeAddr == 0) throw new GdxRuntimeException("Null shape address!");
 			int type = Shape.jniGetType(shapeAddr);
 
 			switch(type) {
