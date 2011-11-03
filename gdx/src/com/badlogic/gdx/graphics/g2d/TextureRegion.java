@@ -33,6 +33,7 @@ public class TextureRegion {
 
 	/** Constructs a region the size of the specified texture. */
 	public TextureRegion (Texture texture) {
+		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
 		this.texture = texture;
 		setRegion(0, 0, texture.getWidth(), texture.getHeight());
 	}

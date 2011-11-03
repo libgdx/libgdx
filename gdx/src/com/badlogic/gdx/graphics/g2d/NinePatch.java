@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -31,6 +32,7 @@ public class NinePatch {
 	public static final int BOTTOM_RIGHT = 8;
 
 	private TextureRegion[] patches;
+	private Color color;
 
 	private NinePatch () {
 	}
@@ -40,6 +42,7 @@ public class NinePatch {
 	}
 
 	public NinePatch (TextureRegion region, int left, int right, int top, int bottom) {
+		if (region == null) throw new IllegalArgumentException("region cannot be null.");
 		int middleWidth = region.getRegionWidth() - left - right;
 		int middleHeight = region.getRegionHeight() - top - bottom;
 
@@ -94,9 +97,19 @@ public class NinePatch {
 	}
 
 	public NinePatch (TextureRegion... patches) {
-		if (patches.length != 9) throw new IllegalArgumentException("NinePatch needs nine TextureRegions");
+		if (patches == null || patches.length != 9) throw new IllegalArgumentException("NinePatch needs nine TextureRegions");
 		this.patches = patches;
 		checkValidity();
+	}
+
+	public NinePatch (NinePatch ninePatch) {
+		this(ninePatch, new Color(ninePatch.color));
+	}
+
+	public NinePatch (NinePatch ninePatch, Color color) {
+		this.patches = new TextureRegion[9];
+		System.arraycopy(ninePatch.patches, 0, patches, 0, 9);
+		this.color = color;
 	}
 
 	private void checkValidity () {
@@ -134,6 +147,8 @@ public class NinePatch {
 		float rightColumnX = x + width - getRightWidth();
 		float middleRowY = y + getBottomHeight();
 		float topRowY = y + height - getTopHeight();
+
+		if (color != null) batch.setColor(color);
 
 		// Bottom row
 		if (patches[BOTTOM_LEFT] != null) batch.draw(patches[BOTTOM_LEFT], x, y, centerColumnX - x, middleRowY - y);
@@ -211,5 +226,13 @@ public class NinePatch {
 
 	public TextureRegion[] getPatches () {
 		return patches;
+	}
+
+	public void setColor (Color color) {
+		this.color = color;
+	}
+
+	public Color getColor () {
+		return color;
 	}
 }

@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
@@ -309,6 +310,14 @@ public class Skin implements Disposable {
 			}
 
 			public Object read (Json json, Object jsonData, Class type) {
+				if (jsonData instanceof ObjectMap) {
+					json.setSerializer(type, null);
+					try {
+						return json.readValue(type, jsonData);
+					} finally {
+						json.setSerializer(type, this);
+					}
+				}
 				String name = (String)jsonData;
 				Object object = map.get(name);
 				if (object != null) return object;
@@ -414,20 +423,52 @@ public class Skin implements Disposable {
 		json.setSerializer(NinePatch.class, new Serializer<NinePatch>() {
 			public void write (Json json, NinePatch ninePatch, Class valueType) {
 				TextureRegion[] patches = ninePatch.getPatches();
+				json.writeObjectStart();
+				if (ninePatch.getColor() != null) json.writeValue("color", ninePatch.getColor());
 				if (patches[0] == null && patches[1] == null && patches[2] == null && patches[3] == null && patches[4] != null
 					&& patches[5] == null && patches[6] == null && patches[7] == null && patches[8] == null)
-					json.writeValue(new TextureRegion[] {patches[4]});
+					json.writeValue("region", patches[4]);
 				else
-					json.writeValue(ninePatch.getPatches());
+					json.writeValue("regions", ninePatch.getPatches());
+				json.writeObjectEnd();
 			}
 
 			public NinePatch read (Json json, Object jsonData, Class type) {
-				TextureRegion[] regions = json.readValue(TextureRegion[].class, jsonData);
-				if (regions.length == 1) return new NinePatch(regions[0]);
-				return new NinePatch(regions);
+				if (jsonData instanceof Array) {
+					TextureRegion[] regions = json.readValue(TextureRegion[].class, jsonData);
+					if (regions.length == 1) return new NinePatch(regions[0]);
+					return new NinePatch(regions);
+				} else {
+					ObjectMap map = (ObjectMap)jsonData;
+					NinePatch ninePatch;
+					if (map.containsKey("regions"))
+						ninePatch = new NinePatch(json.readValue("regions", TextureRegion[].class, jsonData));
+					else if (map.containsKey("region"))
+						ninePatch = new NinePatch(json.readValue("region", TextureRegion.class, jsonData));
+					else
+						throw new SerializationException("Missing ninepatch regions: " + map);
+					if (map.containsKey("color")) ninePatch.setColor(json.readValue("color", Color.class, jsonData));
+					return ninePatch;
+				}
 			}
 		});
 
+		json.setSerializer(Color.class, new Serializer<Color>() {
+			public void write (Json json, Color color, Class valueType) {
+				json.writeObjectStart();
+				json.writeFields(color);
+				json.writeObjectEnd();
+			}
+
+			public Color read (Json json, Object jsonData, Class type) {
+				ObjectMap map = (ObjectMap)jsonData;
+				float r = json.readValue("r", float.class, 0f, jsonData);
+				float g = json.readValue("g", float.class, 0f, jsonData);
+				float b = json.readValue("b", float.class, 0f, jsonData);
+				float a = json.readValue("a", float.class, 1f, jsonData);
+				return new Color(r, g, b, a);
+			}
+		});
 		return json;
 	}
 }
