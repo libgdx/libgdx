@@ -83,7 +83,10 @@ public class ObjectMap<K, V> {
 	/** Returns the old value associated with the specified key, or null. */
 	public V put (K key, V value) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
+		return put_internal(key, value);
+	}
 
+	public V put_internal (K key, V value) {
 		// Check for existing keys.
 		int hashCode = key.hashCode();
 		int index1 = hashCode & mask;
@@ -249,7 +252,7 @@ public class ObjectMap<K, V> {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
 			resize(capacity << 1);
-			put(key, value);
+			put_internal(key, value);
 			return;
 		}
 		// Update key in the stash.
@@ -514,10 +517,10 @@ public class ObjectMap<K, V> {
 		public void reset () {
 			currentIndex = -1;
 			nextIndex = -1;
-			findNextIndex();
+			advance();
 		}
 
-		void findNextIndex () {
+		void advance () {
 			hasNext = false;
 			K[] keyTable = map.keyTable;
 			for (int n = map.capacity + map.stashSize; ++nextIndex < n;) {
@@ -542,7 +545,7 @@ public class ObjectMap<K, V> {
 	}
 
 	static public class Entries<K, V> extends MapIterator<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
-		private Entry<K, V> entry = new Entry();
+		Entry<K, V> entry = new Entry();
 
 		public Entries (ObjectMap<K, V> map) {
 			super(map);
@@ -555,7 +558,7 @@ public class ObjectMap<K, V> {
 			entry.key = keyTable[nextIndex];
 			entry.value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
-			findNextIndex();
+			advance();
 			return entry;
 		}
 
@@ -580,7 +583,7 @@ public class ObjectMap<K, V> {
 		public V next () {
 			V value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
-			findNextIndex();
+			advance();
 			return value;
 		}
 
@@ -609,7 +612,7 @@ public class ObjectMap<K, V> {
 		public K next () {
 			K key = map.keyTable[nextIndex];
 			currentIndex = nextIndex;
-			findNextIndex();
+			advance();
 			return key;
 		}
 

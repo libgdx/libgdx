@@ -66,11 +66,11 @@ public class Button extends Table {
 		pack();
 
 		super.setClickListener(new ClickListener() {
-			public void click (Actor actor) {
+			public void click (Actor actor, float x, float y) {
 				boolean newChecked = !isChecked;
 				setChecked(newChecked);
 				// Don't fire listener if the button group reverted the change to isChecked.
-				if (newChecked == isChecked && listener != null) listener.click(actor);
+				if (newChecked == isChecked && listener != null) listener.click(actor, x, y);
 			}
 		});
 	}

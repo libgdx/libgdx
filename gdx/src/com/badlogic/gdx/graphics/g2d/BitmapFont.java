@@ -191,8 +191,16 @@ public class BitmapFont implements Disposable {
 					capGlyph = getGlyph(capChars[i]);
 					if (capGlyph != null) break;
 				}
-				if (capGlyph == null) capGlyph = getFirstGlyph();
-				capHeight = capGlyph.height;
+				if (capGlyph == null) {
+					for (Glyph[] page : this.glyphs) {
+						if (page == null) continue;
+						for (Glyph glyph : page) {
+							if (glyph == null || glyph.height == 0 || glyph.width == 0) continue;
+							capHeight = Math.max(capHeight, glyph.height);
+						}
+					}
+				} else
+					capHeight = capGlyph.height;
 
 				ascent = baseLine - capHeight;
 				down = -lineHeight;
@@ -595,33 +603,38 @@ public class BitmapFont implements Disposable {
 	 * height}) to the baseline of the last line of text. Note the same TextBounds instance is used for all methods that return
 	 * TextBounds. */
 	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth) {
+		float down = this.data.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
 		float maxWidth = 0;
 		while (start < length) {
-			int lineEnd = start + computeVisibleGlyphs(str, start, indexOf(str, '\n', start), wrapWidth);
-			int nextLineStart;
-			if (lineEnd < length) {
-				int originalLineEnd = lineEnd;
+			int newLine = BitmapFont.indexOf(str, '\n', start);
+			int lineEnd = start + computeVisibleGlyphs(str, start, newLine, wrapWidth);
+			int nextStart = lineEnd;
+			if (lineEnd < newLine) {
+				// Find char to break on.
 				while (lineEnd > start) {
-					char ch = str.charAt(lineEnd);
-					if (ch == ' ' || ch == '\n') break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
-				if (lineEnd == start) {
-					lineEnd = originalLineEnd;
-					if (lineEnd == start) lineEnd++;
-					nextLineStart = lineEnd;
-				} else
-					nextLineStart = lineEnd + 1; // Eat space or newline.
-			} else {
-				if (lineEnd == start) lineEnd++;
-				nextLineStart = length;
+				if (lineEnd == start)
+					lineEnd = nextStart; // If no characters to break, show all.
+				else {
+					nextStart = lineEnd;
+					// Eat whitespace at end of line.
+					while (lineEnd > start) {
+						if (!BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+						lineEnd--;
+					}
+				}
+			} else
+				nextStart = lineEnd + 1;
+			if (lineEnd > start) {
+				float lineWidth = getBounds(str, start, lineEnd).width;
+				maxWidth = Math.max(maxWidth, lineWidth);
 			}
-			float lineWidth = getBounds(str, start, lineEnd).width;
-			maxWidth = Math.max(maxWidth, lineWidth);
-			start = nextLineStart;
+			start = nextStart;
 			numLines++;
 		}
 		textBounds.width = maxWidth;

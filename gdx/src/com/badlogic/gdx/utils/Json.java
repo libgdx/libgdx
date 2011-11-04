@@ -98,6 +98,10 @@ public class Json {
 		classToSerializer.put(type, serializer);
 	}
 
+	public <T> Serializer<T> getSerializer (Class<T> type) {
+		return classToSerializer.get(type);
+	}
+
 	public void setUsePrototypes (boolean usePrototypes) {
 		this.usePrototypes = usePrototypes;
 	}
@@ -398,8 +402,20 @@ public class Json {
 				return;
 			}
 
+			if (value instanceof OrderedMap) {
+				if (knownType == null) knownType = OrderedMap.class;
+				writeObjectStart(actualType, knownType);
+				OrderedMap map = (OrderedMap)value;
+				for (Object key : map.orderedKeys()) {
+					writer.name(convertToString(key));
+					writeValue(map.get(key), elementType, null);
+				}
+				writeObjectEnd();
+				return;
+			}
+
 			if (value instanceof ObjectMap) {
-				if (knownType == null) knownType = ObjectMap.class;
+				if (knownType == null) knownType = OrderedMap.class;
 				writeObjectStart(actualType, knownType);
 				for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
 					writer.name(convertToString(entry.key));
@@ -410,7 +426,7 @@ public class Json {
 			}
 
 			if (value instanceof Map) {
-				if (knownType == null) knownType = ObjectMap.class;
+				if (knownType == null) knownType = OrderedMap.class;
 				writeObjectStart(actualType, knownType);
 				for (Map.Entry entry : ((Map<?, ?>)value).entrySet()) {
 					writer.name(convertToString(entry.getKey()));
@@ -574,7 +590,7 @@ public class Json {
 	}
 
 	public void readField (Object object, String fieldName, String jsonName, Class elementType, Object jsonData) {
-		ObjectMap jsonMap = (ObjectMap)jsonData;
+		OrderedMap jsonMap = (OrderedMap)jsonData;
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields == null) fields = cacheFields(type);
@@ -599,7 +615,7 @@ public class Json {
 	}
 
 	public void readFields (Object object, Object jsonData) {
-		ObjectMap<String, Object> jsonMap = (ObjectMap)jsonData;
+		OrderedMap<String, Object> jsonMap = (OrderedMap)jsonData;
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
 		if (fields == null) fields = cacheFields(type);
@@ -630,24 +646,24 @@ public class Json {
 	}
 
 	public <T> T readValue (String name, Class<T> type, Object jsonData) {
-		ObjectMap jsonMap = (ObjectMap)jsonData;
+		OrderedMap jsonMap = (OrderedMap)jsonData;
 		return (T)readValue(type, null, jsonMap.get(name));
 	}
 
 	public <T> T readValue (String name, Class<T> type, T defaultValue, Object jsonData) {
-		ObjectMap jsonMap = (ObjectMap)jsonData;
+		OrderedMap jsonMap = (OrderedMap)jsonData;
 		Object jsonValue = jsonMap.get(name);
 		if (jsonValue == null) return defaultValue;
 		return (T)readValue(type, null, jsonValue);
 	}
 
 	public <T> T readValue (String name, Class<T> type, Class elementType, Object jsonData) {
-		ObjectMap jsonMap = (ObjectMap)jsonData;
+		OrderedMap jsonMap = (OrderedMap)jsonData;
 		return (T)readValue(type, elementType, jsonMap.get(name));
 	}
 
 	public <T> T readValue (String name, Class<T> type, Class elementType, T defaultValue, Object jsonData) {
-		ObjectMap jsonMap = (ObjectMap)jsonData;
+		OrderedMap jsonMap = (OrderedMap)jsonData;
 		Object jsonValue = jsonMap.get(name);
 		if (jsonValue == null) return defaultValue;
 		return (T)readValue(type, elementType, jsonValue);
@@ -664,8 +680,8 @@ public class Json {
 	public <T> T readValue (Class<T> type, Class elementType, Object jsonData) {
 		if (jsonData == null) return null;
 
-		if (jsonData instanceof ObjectMap) {
-			ObjectMap<String, Object> jsonMap = (ObjectMap)jsonData;
+		if (jsonData instanceof OrderedMap) {
+			OrderedMap<String, Object> jsonMap = (OrderedMap)jsonData;
 
 			String className = typeName == null ? null : (String)jsonMap.remove(typeName);
 			if (className != null) {
@@ -696,12 +712,12 @@ public class Json {
 					return (T)result;
 				}
 			} else
-				object = new ObjectMap();
+				object = new OrderedMap();
 
 			if (object instanceof ObjectMap) {
 				ObjectMap result = (ObjectMap)object;
-				for (Entry entry : jsonMap.entries())
-					result.put(entry.key, readValue(elementType, null, entry.value));
+				for (String key : jsonMap.orderedKeys())
+					result.put(key, readValue(elementType, null, jsonMap.get(key)));
 				return (T)result;
 			}
 
@@ -809,41 +825,49 @@ public class Json {
 	}
 
 	public String prettyPrint (Object object) {
-		return prettyPrint(object, false);
+		return prettyPrint(object, 0);
 	}
 
 	public String prettyPrint (String json) {
-		return prettyPrint(json, false);
+		return prettyPrint(json, 0);
 	}
 
-	public String prettyPrint (Object object, boolean fieldsOnSameLine) {
-		return prettyPrint(toJson(object), fieldsOnSameLine);
+	public String prettyPrint (Object object, int singleLineColumns) {
+		return prettyPrint(toJson(object), singleLineColumns);
 	}
 
-	public String prettyPrint (String json, boolean fieldsOnSameLine) {
+	public String prettyPrint (String json, int singleLineColumns) {
 		StringBuilder buffer = new StringBuilder(512);
-		prettyPrint(new JsonReader().parse(json), buffer, 0, fieldsOnSameLine);
+		prettyPrint(new JsonReader().parse(json), buffer, 0, singleLineColumns);
 		return buffer.toString();
 	}
 
-	private void prettyPrint (Object object, StringBuilder buffer, int indent, boolean fieldsOnSameLine) {
-		if (object instanceof ObjectMap) {
-			ObjectMap map = (ObjectMap)object;
+	private void prettyPrint (Object object, StringBuilder buffer, int indent, int singleLineColumns) {
+		if (object instanceof OrderedMap) {
+			OrderedMap<String, ?> map = (OrderedMap)object;
 			if (map.size == 0) {
 				buffer.append("{}");
 			} else {
-				boolean newLines = !fieldsOnSameLine || !isFlat(map) || map.size > 4;
-				buffer.append(newLines ? "{\n" : "{ ");
-				Array<String> keys = (Array)map.keys().toArray();
-				keys.sort();
-				int i = 0;
-				for (String key : keys) {
-					if (newLines) indent(indent, buffer);
-					buffer.append(outputType.quoteName(key));
-					buffer.append(": ");
-					prettyPrint(map.get(key), buffer, indent + 1, fieldsOnSameLine);
-					if (i++ < map.size - 1) buffer.append(",");
-					buffer.append(newLines ? '\n' : ' ');
+				boolean newLines = !isFlat(map);
+				int start = buffer.length();
+				outer:
+				while (true) {
+					buffer.append(newLines ? "{\n" : "{ ");
+					int i = 0;
+					for (String key : map.orderedKeys()) {
+						if (newLines) indent(indent, buffer);
+						buffer.append(outputType.quoteName(key));
+						buffer.append(": ");
+						prettyPrint(map.get(key), buffer, indent + 1, singleLineColumns);
+						if (i++ < map.size - 1) buffer.append(",");
+						buffer.append(newLines ? '\n' : ' ');
+						if (!newLines && buffer.length() - start > singleLineColumns) {
+							buffer.setLength(start);
+							newLines = true;
+							continue outer;
+						}
+					}
+					break;
 				}
 				if (newLines) indent(indent - 1, buffer);
 				buffer.append('}');
@@ -853,13 +877,23 @@ public class Json {
 			if (array.size == 0) {
 				buffer.append("[]");
 			} else {
-				boolean newLines = !fieldsOnSameLine || !isFlat(array) || array.size > 4;
-				buffer.append(newLines ? "[\n" : "[ ");
-				for (int i = 0, n = array.size; i < n; i++) {
-					if (newLines) indent(indent, buffer);
-					prettyPrint(array.get(i), buffer, indent + 1, fieldsOnSameLine);
-					if (i < array.size - 1) buffer.append(",");
-					buffer.append(newLines ? '\n' : ' ');
+				boolean newLines = !isFlat(array);
+				int start = buffer.length();
+				outer:
+				while (true) {
+					buffer.append(newLines ? "[\n" : "[ ");
+					for (int i = 0, n = array.size; i < n; i++) {
+						if (newLines) indent(indent, buffer);
+						prettyPrint(array.get(i), buffer, indent + 1, singleLineColumns);
+						if (i < array.size - 1) buffer.append(",");
+						buffer.append(newLines ? '\n' : ' ');
+						if (!newLines && buffer.length() - start > singleLineColumns) {
+							buffer.setLength(start);
+							newLines = true;
+							continue outer;
+						}
+					}
+					break;
 				}
 				if (newLines) indent(indent - 1, buffer);
 				buffer.append(']');
@@ -918,6 +952,10 @@ public class Json {
 	static public interface Serializable {
 		public void write (Json json);
 
-		public void read (Json json, ObjectMap<String, Object> jsonData);
+		public void read (Json json, OrderedMap<String, Object> jsonData);
+	}
+
+	static public class Moo {
+		public String a, b, c;
 	}
 }

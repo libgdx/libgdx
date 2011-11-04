@@ -242,6 +242,10 @@ public class Group extends Actor implements Cullable {
 		point.x = x;
 		point.y = y;
 		Actor actor = focusedActor[pointer];
+		if (actor == null) { // This group is what had focus.
+			parent.focus(null, pointer);
+			return;
+		}
 		if (actor != this) {
 			actor.toLocalCoordinates(point);
 			actor.touchUp(point.x, point.y, pointer);

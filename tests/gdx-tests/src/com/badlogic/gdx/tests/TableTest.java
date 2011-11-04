@@ -64,7 +64,7 @@ public class TableTest extends GdxTest {
 		table.add(label);
 
 		table.setClickListener(new ClickListener() {
-			public void click (Actor actor) {
+			public void click (Actor actor, float x, float y) {
 				System.out.println("click!");
 			}
 		});

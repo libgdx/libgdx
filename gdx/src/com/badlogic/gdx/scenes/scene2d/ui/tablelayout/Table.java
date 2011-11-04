@@ -180,12 +180,17 @@ public class Table extends WidgetGroup {
 	}
 
 	public void touchUp (float x, float y, int pointer) {
-		if (hit(x, y) != null) click();
+		if (hit(x, y) != null) click(x, y);
 		isPressed = false;
 	}
 
-	public void click () {
-		if (listener != null) listener.click(this);
+	public void click (float x, float y) {
+		if (listener != null) listener.click(this, x, y);
+	}
+
+	/** Returns the row index for the y coordinate. */
+	public int getRow (float y) {
+		return layout.getRow(y);
 	}
 
 	public TableLayout getTableLayout () {

@@ -173,11 +173,16 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 	}
 
 	public Table newTable (Table parent) {
-		Table table = super.newTable(parent);
+		Table table;
+		try {
+			table = super.newTable(parent);
+		} catch (Exception ex) {
+			table = new Table();
+		}
 		TableLayout layout = parent.getTableLayout();
+		table.setStage(layout.stage);
 		table.setSkin(layout.skin);
 		table.setAssetManager(layout.assetManager);
-		table.setStage(layout.stage);
 		return table;
 	}
 

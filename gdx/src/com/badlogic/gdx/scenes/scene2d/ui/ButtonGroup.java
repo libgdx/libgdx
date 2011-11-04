@@ -14,6 +14,13 @@ public class ButtonGroup {
 	private Button lastChecked;
 	private ClickListener listener;
 
+	public ButtonGroup () {
+	}
+
+	public ButtonGroup (Button... buttons) {
+		add(buttons);
+	}
+
 	public void add (Button button) {
 		if (button == null) throw new IllegalArgumentException("button cannot be null.");
 		button.buttonGroup = this;
@@ -63,7 +70,7 @@ public class ButtonGroup {
 			lastChecked = button;
 		}
 
-		if (listener != null) listener.click(button);
+		if (listener != null) listener.click(button, 0, 0);
 
 		return true;
 	}

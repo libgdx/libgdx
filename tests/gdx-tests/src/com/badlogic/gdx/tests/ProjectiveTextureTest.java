@@ -123,7 +123,7 @@ public class ProjectiveTextureTest extends GdxTest {
 
 		reload.setClickListener(new ClickListener() {
 			@Override
-			public void click (Actor button) {
+			public void click (Actor button, float x, float y) {
 				ShaderProgram prog = new ShaderProgram(Gdx.files.internal("data/shaders/projtex-vert.glsl").readString(), Gdx.files
 					.internal("data/shaders/projtex-frag.glsl").readString());
 				if (prog.isCompiled() == false) {

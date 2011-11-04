@@ -28,7 +28,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link ObjectMap}, {@link Array}, String, Float, and Boolean
+ * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, and Boolean
  * objects. Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will
  * return null.
  * @author Nathan Sweet */
@@ -401,7 +401,7 @@ public class JsonReader {
 		} else if (elements.size != 0) {
 			Object element = elements.peek();
 			elements.clear();
-			if (element instanceof ObjectMap)
+			if (element instanceof OrderedMap)
 				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
 				throw new SerializationException("Error parsing JSON, unmatched bracket.");
@@ -546,8 +546,8 @@ public class JsonReader {
 	private Object root, current;
 
 	private void set (String name, Object value) {
-		if (current instanceof ObjectMap)
-			((ObjectMap)current).put(name, value);
+		if (current instanceof OrderedMap)
+			((OrderedMap)current).put(name, value);
 		else if (current instanceof Array)
 			((Array)current).add(value);
 		else
@@ -555,7 +555,7 @@ public class JsonReader {
 	}
 
 	protected void startObject (String name) {
-		ObjectMap value = new ObjectMap();
+		OrderedMap value = new OrderedMap();
 		if (current != null) set(name, value);
 		elements.add(value);
 		current = value;

@@ -34,7 +34,8 @@ public class Label extends Widget {
 	private String text;
 	private BitmapFontCache cache;
 	private float prefWidth, prefHeight;
-	private int align = Align.LEFT;
+	private int labelAlign = Align.LEFT;
+	private HAlignment wrapAlign = HAlignment.LEFT;
 	private boolean wrap;
 	private float wrapWidth;
 
@@ -46,9 +47,16 @@ public class Label extends Widget {
 		this(text, skin.getStyle(LabelStyle.class), null);
 	}
 
-	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color. */
+	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name from the skin and the specified
+	 * color. */
 	public Label (String text, String fontName, Color color, Skin skin) {
 		this(text, new LabelStyle(skin.getResource(fontName, BitmapFont.class), color), null);
+	}
+
+	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color from the
+	 * skin. */
+	public Label (String text, String fontName, String colorName, Skin skin) {
+		this(text, new LabelStyle(skin.getResource(fontName, BitmapFont.class), skin.getResource(colorName, Color.class)), null);
 	}
 
 	public Label (String text, LabelStyle style) {
@@ -68,11 +76,7 @@ public class Label extends Widget {
 		if (style.font == null) throw new IllegalArgumentException("Missing LabelStyle font.");
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
-		if (style.fontColor != null) {
-			if (style.fontColor.r == 0.51f)
-				System.out.println();
-			cache.setColor(style.fontColor);
-		}
+		if (style.fontColor != null) cache.setColor(style.fontColor);
 		invalidateHierarchy();
 	}
 
@@ -113,10 +117,25 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** Aligns the text with the label widget.
+	/** @param wrapAlign Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
-	public void setAlignment (int align) {
-		this.align = align;
+	public void setAlignment (int wrapAlign) {
+		setAlignment(wrapAlign, wrapAlign);
+	}
+
+	/** @param labelAlign Aligns all the text with the label widget.
+	 * @param wrapAlign Aligns each line of text (left, right, or center).
+	 * @see Align */
+	public void setAlignment (int labelAlign, int wrapAlign) {
+		this.labelAlign = labelAlign;
+
+		if ((wrapAlign & Align.LEFT) != 0)
+			this.wrapAlign = HAlignment.LEFT;
+		else if ((wrapAlign & Align.RIGHT) != 0)
+			this.wrapAlign = HAlignment.RIGHT;
+		else
+			this.wrapAlign = HAlignment.CENTER;
+
 		invalidate();
 	}
 
@@ -145,28 +164,28 @@ public class Label extends Widget {
 			bounds.set(cache.getFont().getMultiLineBounds(text));
 
 		float y;
-		if ((align & Align.TOP) != 0) {
+		if ((labelAlign & Align.TOP) != 0) {
 			y = cache.getFont().isFlipped() ? 0 : height - bounds.height;
 			y += style.font.getDescent();
-		} else if ((align & Align.BOTTOM) != 0) {
+		} else if ((labelAlign & Align.BOTTOM) != 0) {
 			y = cache.getFont().isFlipped() ? height - bounds.height : 0;
 			y -= style.font.getDescent();
 		} else
 			y = (height - bounds.height) / 2;
 		if (!cache.getFont().isFlipped()) y += bounds.height;
 
-		HAlignment halign;
-		if ((align & Align.LEFT) != 0)
-			halign = HAlignment.LEFT;
-		else if ((align & Align.RIGHT) != 0)
-			halign = HAlignment.RIGHT;
-		else
-			halign = HAlignment.CENTER;
+		float x;
+		if ((labelAlign & Align.LEFT) != 0)
+			x = 0;
+		else if ((labelAlign & Align.RIGHT) != 0) {
+			x = width - bounds.width;
+		} else
+			x = (width - bounds.width) / 2;
 
 		if (wrap)
-			cache.setWrappedText(text, 0, y, wrapWidth, halign);
+			cache.setWrappedText(text, x, y, wrapWidth, wrapAlign);
 		else
-			cache.setMultiLineText(text, 0, y, width, halign);
+			cache.setMultiLineText(text, x, y, width, wrapAlign);
 	}
 
 	@Override

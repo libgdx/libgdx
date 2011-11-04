@@ -46,6 +46,7 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 
 public class SkinPacker {
 	static public void process (Settings settings, final File inputDir, final File skinFile, final File imageFile)
@@ -157,7 +158,10 @@ public class SkinPacker {
 		ninePatchProcessor.setOutputSuffix("");
 		ninePatchProcessor.process(inputDir, inputDir);
 
-		texturePacker.process(packedDir, new File(packedDir, "pack"), "skin");
+		final File packFile = new File(packedDir, "pack");
+		texturePacker.process(packedDir, packFile, "skin");
+		if (!packFile.exists())
+			throw new RuntimeException("No images were packed from input directory: " + inputDir.getAbsolutePath());
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.forceExit = false;
@@ -168,57 +172,65 @@ public class SkinPacker {
 		final CountDownLatch latch = new CountDownLatch(2);
 		new LwjglApplication(new ApplicationListener() {
 			public void create () {
-				Skin skin = new Skin();
-				TextureAtlasData atlas = new TextureAtlasData(new FileHandle(new File(packedDir, "pack")), new FileHandle(packedDir),
-					true);
-				if (atlas.getPages().size > 1)
-					throw new GdxRuntimeException("Skin images could not be packed on to a single image!");
-				Texture texture = new Texture(1, 1, Format.Alpha);
-				for (Region region : atlas.getRegions()) {
-					int[] split = nameToSplits.get(region.name);
-					TextureRegion textureRegion = new TextureRegion(texture, region.left, region.top, region.width, region.height);
-					if (split == null) {
-						skin.addResource(region.name, textureRegion);
-					} else {
-						if (split[4] == 1) // Is single region for ninepatch.
-							skin.addResource(region.name, new NinePatch(textureRegion));
-						else {
-							skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
-								region.height - split[3]));
+				try {
+					Skin skin = new Skin();
+					TextureAtlasData atlas = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packedDir), true);
+					if (atlas.getPages().size > 1)
+						throw new GdxRuntimeException("Skin images could not be packed on to a single image!");
+					Texture texture = new Texture(1, 1, Format.Alpha);
+					for (Region region : atlas.getRegions()) {
+						int[] split = nameToSplits.get(region.name);
+						TextureRegion textureRegion = new TextureRegion(texture, region.left, region.top, region.width, region.height);
+						if (split == null) {
+							skin.addResource(region.name, textureRegion);
+						} else {
+							if (split[4] == 1) // Is single region for ninepatch.
+								skin.addResource(region.name, new NinePatch(textureRegion));
+							else {
+								skin.addResource(region.name, new NinePatch(textureRegion, split[0], region.width - split[1], split[2],
+									region.height - split[3]));
+							}
 						}
 					}
-				}
-				FileHandle newSkinFile = new FileHandle(new File(inputDir, "temp-skin"));
-				skin.save(newSkinFile);
+					FileHandle newSkinFile = new FileHandle(new File(inputDir, "temp-skin"));
+					skin.save(newSkinFile);
 
-				atlas.getPages().get(0).textureFile.moveTo(new FileHandle(imageFile));
+					atlas.getPages().get(0).textureFile.moveTo(new FileHandle(imageFile));
 
-				new FileHandle(packedDir).deleteDirectory();
+					new FileHandle(packedDir).deleteDirectory();
 
-				Json json = new Json();
-				if (skinFile != null) {
-					FileHandle oldSkinFile = new FileHandle(skinFile);
-					ObjectMap oldSkin = json.fromJson(ObjectMap.class, new FileHandle(skinFile));
-					ObjectMap newSkin = json.fromJson(ObjectMap.class, newSkinFile);
-					ObjectMap oldResources = (ObjectMap)oldSkin.get("resources");
-					ObjectMap newResources = (ObjectMap)newSkin.get("resources");
-					oldResources.put(NinePatch.class.getName(), newResources.get(NinePatch.class.getName()));
-					oldResources.put(TextureRegion.class.getName(), newResources.get(TextureRegion.class.getName()));
-					Writer writer = oldSkinFile.writer(false);
-					try {
-						writer.write(json.prettyPrint(oldSkin, true));
-						writer.close();
-					} catch (IOException ex) {
-						throw new RuntimeException(ex);
+					Json json = new Json();
+					if (skinFile != null) {
+						FileHandle oldSkinFile = new FileHandle(skinFile);
+						OrderedMap oldSkin = json.fromJson(OrderedMap.class, new FileHandle(skinFile));
+						OrderedMap newSkin = json.fromJson(OrderedMap.class, newSkinFile);
+						OrderedMap oldResources = (OrderedMap)oldSkin.get("resources");
+						OrderedMap newResources = (OrderedMap)newSkin.get("resources");
+
+						OrderedMap newPatches = (OrderedMap)newResources.get(NinePatch.class.getName());
+						newPatches.orderedKeys().sort();
+						oldResources.put(NinePatch.class.getName(), newPatches);
+
+						OrderedMap newRegions = (OrderedMap)newResources.get(TextureRegion.class.getName());
+						newRegions.orderedKeys().sort();
+						oldResources.put(TextureRegion.class.getName(), newRegions);
+
+						Writer writer = oldSkinFile.writer(false);
+						try {
+							writer.write(json.prettyPrint(oldSkin, 130));
+							writer.close();
+						} catch (IOException ex) {
+							throw new RuntimeException(ex);
+						}
+					} else {
+						newSkinFile.moveTo(new FileHandle(inputDir).child("skin.json"));
 					}
-				} else {
-					newSkinFile.moveTo(new FileHandle(inputDir).child("skin.json"));
+
+					newSkinFile.delete();
+				} finally {
+					Gdx.app.exit();
+					latch.countDown();
 				}
-
-				newSkinFile.delete();
-
-				Gdx.app.exit();
-				latch.countDown();
 			}
 
 			public void resume () {

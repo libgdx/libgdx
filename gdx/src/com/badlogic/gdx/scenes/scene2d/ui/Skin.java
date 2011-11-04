@@ -213,7 +213,8 @@ public class Skin implements Disposable {
 
 	public <T> T getResource (String name, Class<T> type) {
 		ObjectMap<String, Object> typeResources = resources.get(type);
-		if (typeResources == null) throw new GdxRuntimeException("No resources registered with type: " + type.getName());
+		if (typeResources == null)
+			throw new GdxRuntimeException("No " + type.getName() + " resource registered with name: " + name);
 		Object resource = typeResources.get(name);
 		if (resource == null) throw new GdxRuntimeException("No " + type.getName() + " resource registered with name: " + name);
 		return (T)resource;
@@ -275,7 +276,7 @@ public class Skin implements Disposable {
 	}
 
 	public void save (FileHandle skinFile) {
-		String text = getJsonLoader(null).prettyPrint(this, true);
+		String text = getJsonLoader(null).prettyPrint(this, 130);
 		Writer writer = skinFile.writer(false);
 		try {
 			writer.write(text);
@@ -288,15 +289,15 @@ public class Skin implements Disposable {
 	protected Json getJsonLoader (final FileHandle skinFile) {
 		final Skin skin = this;
 
-		Json json = new Json();
+		final Json json = new Json();
 		json.setTypeName(null);
 		json.setUsePrototypes(false);
 
 		class AliasSerializer implements Serializer {
 			final ObjectMap<String, ?> map;
 
-			public AliasSerializer (ObjectMap<String, ?> map) {
-				this.map = map;
+			public AliasSerializer (Class type) {
+				map = resources.get(type);
 			}
 
 			public void write (Json json, Object object, Class valueType) {
@@ -310,19 +311,7 @@ public class Skin implements Disposable {
 			}
 
 			public Object read (Json json, Object jsonData, Class type) {
-				if (jsonData instanceof ObjectMap) {
-					json.setSerializer(type, null);
-					try {
-						return json.readValue(type, jsonData);
-					} finally {
-						json.setSerializer(type, this);
-					}
-				}
-				String name = (String)jsonData;
-				Object object = map.get(name);
-				if (object != null) return object;
-				throw new SerializationException("Skin references a " + type.getSimpleName()
-					+ " that could not be found in the resources: " + jsonData);
+				throw new UnsupportedOperationException();
 			}
 		}
 
@@ -331,7 +320,7 @@ public class Skin implements Disposable {
 				json.writeObjectStart();
 				json.writeValue("resources", skin.resources);
 				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
-					json.setSerializer(entry.key, new AliasSerializer(entry.value));
+					json.setSerializer(entry.key, new AliasSerializer(entry.key));
 				json.writeField(skin, "styles");
 				json.writeObjectEnd();
 			}
@@ -339,8 +328,6 @@ public class Skin implements Disposable {
 			public Skin read (Json json, Object jsonData, Class ignored) {
 				ObjectMap map = (ObjectMap)jsonData;
 				readTypeMap(json, (ObjectMap)map.get("resources"), true);
-				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
-					json.setSerializer(entry.key, new AliasSerializer(entry.value));
 				readTypeMap(json, (ObjectMap)map.get("styles"), false);
 				return skin;
 			}
@@ -349,34 +336,27 @@ public class Skin implements Disposable {
 				if (typeToValueMap == null)
 					throw new SerializationException("Skin file is missing a \"" + (isResource ? "resources" : "styles")
 						+ "\" section.");
-				if (isResource) {
-					// Read NinePatches and TextureRegions before other resources, so resources like BitmapFont can reference them.
-					{
-						ObjectMap valueMap = typeToValueMap.remove(NinePatch.class.getName());
-						if (valueMap != null) readType(json, NinePatch.class.getName(), valueMap, isResource);
-					}
-					{
-						ObjectMap valueMap = typeToValueMap.remove(TextureRegion.class.getName());
-						if (valueMap != null) readType(json, TextureRegion.class.getName(), valueMap, isResource);
+				for (Entry<String, ObjectMap> typeEntry : typeToValueMap.entries()) {
+					String className = typeEntry.key;
+					ObjectMap<String, ObjectMap> valueMap = (ObjectMap)typeEntry.value;
+					try {
+						readNamedObjects(json, Class.forName(className), valueMap, isResource);
+					} catch (ClassNotFoundException ex) {
+						throw new SerializationException(ex);
 					}
 				}
-				for (Entry<String, ObjectMap> typeEntry : typeToValueMap.entries())
-					readType(json, typeEntry.key, (ObjectMap)typeEntry.value, isResource);
 			}
 
-			private void readType (Json json, String className, ObjectMap<String, ObjectMap> valueMap, boolean isResource) {
-				Class type;
-				try {
-					type = Class.forName(className);
-				} catch (ClassNotFoundException ex) {
-					throw new SerializationException(ex);
-				}
+			private void readNamedObjects (Json json, Class type, ObjectMap<String, ObjectMap> valueMap, boolean isResource) {
 				for (Entry<String, ObjectMap> valueEntry : valueMap.entries()) {
+					String name = valueEntry.key;
+					Object object = json.readValue(type, valueEntry.value);
+					if (object == null) continue;
 					try {
 						if (isResource)
-							addResource(valueEntry.key, json.readValue(type, valueEntry.value));
+							addResource(name, object);
 						else
-							addStyle(valueEntry.key, json.readValue(type, valueEntry.value));
+							addStyle(name, object);
 					} catch (Exception ex) {
 						throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.key, ex);
 					}
@@ -395,6 +375,7 @@ public class Skin implements Disposable {
 			}
 
 			public TextureRegion read (Json json, Object jsonData, Class type) {
+				if (jsonData instanceof String) return getResource((String)jsonData, TextureRegion.class);
 				int x = json.readValue("x", int.class, jsonData);
 				int y = json.readValue("y", int.class, jsonData);
 				int width = json.readValue("width", int.class, jsonData);
@@ -409,31 +390,45 @@ public class Skin implements Disposable {
 			}
 
 			public BitmapFont read (Json json, Object jsonData, Class type) {
-				String path = json.readValue(String.class, jsonData);
+				if (jsonData instanceof String) return getResource((String)jsonData, BitmapFont.class);
+				String path = json.readValue("file", String.class, jsonData);
 				FileHandle file = skinFile.parent().child(path);
 				if (!file.exists()) file = Gdx.files.internal(path);
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
 				TextureRegion region = null;
 				if (skin.hasResource(file.nameWithoutExtension(), TextureRegion.class))
 					region = skin.getResource(file.nameWithoutExtension(), TextureRegion.class);
-				return new BitmapFont(file, region, false);
+				try {
+					return new BitmapFont(file, region, false);
+				} catch (RuntimeException ex) {
+					throw new SerializationException("Error loading bitmap font: " + file, ex);
+				}
 			}
 		});
 
 		json.setSerializer(NinePatch.class, new Serializer<NinePatch>() {
 			public void write (Json json, NinePatch ninePatch, Class valueType) {
 				TextureRegion[] patches = ninePatch.getPatches();
-				json.writeObjectStart();
-				if (ninePatch.getColor() != null) json.writeValue("color", ninePatch.getColor());
-				if (patches[0] == null && patches[1] == null && patches[2] == null && patches[3] == null && patches[4] != null
-					&& patches[5] == null && patches[6] == null && patches[7] == null && patches[8] == null)
-					json.writeValue("region", patches[4]);
-				else
-					json.writeValue("regions", ninePatch.getPatches());
-				json.writeObjectEnd();
+				boolean singlePatch = patches[0] == null && patches[1] == null && patches[2] == null && patches[3] == null
+					&& patches[4] != null && patches[5] == null && patches[6] == null && patches[7] == null && patches[8] == null;
+				if (ninePatch.getColor() != null) {
+					json.writeObjectStart();
+					json.writeValue("color", ninePatch.getColor());
+					if (singlePatch)
+						json.writeValue("region", patches[4]);
+					else
+						json.writeValue("regions", patches);
+					json.writeObjectEnd();
+				} else {
+					if (singlePatch)
+						json.writeValue(patches[4]);
+					else
+						json.writeValue(patches);
+				}
 			}
 
 			public NinePatch read (Json json, Object jsonData, Class type) {
+				if (jsonData instanceof String) return getResource((String)jsonData, NinePatch.class);
 				if (jsonData instanceof Array) {
 					TextureRegion[] regions = json.readValue(TextureRegion[].class, jsonData);
 					if (regions.length == 1) return new NinePatch(regions[0]);
@@ -446,7 +441,8 @@ public class Skin implements Disposable {
 					else if (map.containsKey("region"))
 						ninePatch = new NinePatch(json.readValue("region", TextureRegion.class, jsonData));
 					else
-						throw new SerializationException("Missing ninepatch regions: " + map);
+						ninePatch = new NinePatch(json.readValue(TextureRegion.class, jsonData));
+					// throw new SerializationException("Missing ninepatch regions: " + map);
 					if (map.containsKey("color")) ninePatch.setColor(json.readValue("color", Color.class, jsonData));
 					return ninePatch;
 				}
@@ -461,6 +457,7 @@ public class Skin implements Disposable {
 			}
 
 			public Color read (Json json, Object jsonData, Class type) {
+				if (jsonData instanceof String) return getResource((String)jsonData, Color.class);
 				ObjectMap map = (ObjectMap)jsonData;
 				float r = json.readValue("r", float.class, 0f, jsonData);
 				float g = json.readValue("g", float.class, 0f, jsonData);
@@ -469,6 +466,31 @@ public class Skin implements Disposable {
 				return new Color(r, g, b, a);
 			}
 		});
+
+		json.setSerializer(TintedNinePatch.class, new Serializer() {
+			public void write (Json json, Object tintedPatch, Class valueType) {
+				json.writeObjectStart();
+				json.writeField(tintedPatch, "name");
+				json.writeField(tintedPatch, "color");
+				json.writeObjectEnd();
+			}
+
+			public Object read (Json json, Object jsonData, Class type) {
+				String name = json.readValue("name", String.class, jsonData);
+				Color color = json.readValue("color", Color.class, jsonData);
+				return new NinePatch(getResource(name, NinePatch.class), color);
+			}
+		});
+
 		return json;
+	}
+
+	static public class TintedNinePatch extends NinePatch {
+		public String name;
+		public Color color;
+
+		public TintedNinePatch (NinePatch ninePatch, Color color) {
+			super(ninePatch, color);
+		}
 	}
 }
