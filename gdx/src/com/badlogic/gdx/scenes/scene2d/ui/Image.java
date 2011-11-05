@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -20,6 +21,24 @@ public class Image extends Widget {
 	/** Creates an image with no region or patch, stretched, and aligned center. */
 	public Image () {
 		this((TextureRegion)null);
+	}
+
+	/** Creates an image stretched, and aligned center. */
+	public Image (Texture texture) {
+		this(new TextureRegion(texture));
+	}
+
+	/** Creates an image aligned center. */
+	public Image (Texture texture, Scaling scaling) {
+		this(new TextureRegion(texture), scaling);
+	}
+
+	public Image (Texture texture, Scaling scaling, int align) {
+		this(new TextureRegion(texture), scaling, align);
+	}
+
+	public Image (Texture texture, Scaling scaling, int align, String name) {
+		this(new TextureRegion(texture), scaling, align, name);
 	}
 
 	/** Creates an image stretched, and aligned center.

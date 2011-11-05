@@ -57,7 +57,7 @@ public class ButtonGroup {
 			checkedButtons.removeValue(button, true);
 		} else {
 			// Keep button unchecked to enforce maxCheckCount.
-			if (checkedButtons.size >= maxCheckCount) {
+			if (maxCheckCount != -1 && checkedButtons.size >= maxCheckCount) {
 				if (uncheckLast) {
 					int old = minCheckCount;
 					minCheckCount = 0;
@@ -101,7 +101,7 @@ public class ButtonGroup {
 		this.minCheckCount = minCheckCount;
 	}
 
-	/** Sets the maximum number of buttons that can be checked. Default is 1. */
+	/** Sets the maximum number of buttons that can be checked. Set to -1 for no maximum. Default is 1. */
 	public void setMaxCheckCount (int maxCheckCount) {
 		this.maxCheckCount = maxCheckCount;
 	}
