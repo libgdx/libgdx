@@ -86,11 +86,8 @@ public class Window extends Table {
 
 		if (super.touchDown(x, y, pointer)) return true;
 
-		if (isMovable && height - y <= getTitleBarHeight()) {
-			dragOffset.set(x, y);
-			dragging = true;
-		} else
-			dragging = false;
+		dragging = isMovable && height - y <= getTitleBarHeight();
+		dragOffset.set(x, y);
 		return true;
 	}
 
