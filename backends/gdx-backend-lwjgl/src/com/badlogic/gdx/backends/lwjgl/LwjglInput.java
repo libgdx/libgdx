@@ -88,7 +88,6 @@ final class LwjglInput implements Input {
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
 
-
 	public LwjglInput () {
 		Keyboard.enableRepeatEvents(false);
 		Mouse.setClipMouseCoordinatesToWindow(false);
@@ -657,19 +656,26 @@ final class LwjglInput implements Input {
 				if (Keyboard.getEventKeyState()) {
 					int keyCode = getGdxKeyCode(Keyboard.getEventKey());
 					char keyChar = Keyboard.getEventCharacter();
+					long timeStamp = Keyboard.getEventNanoseconds();
+
+					switch (keyCode) {
+					case Keys.FORWARD_DEL:
+						keyChar = 127;
+						break;
+					}
 
 					KeyEvent event = usedKeyEvents.obtain();
 					event.keyCode = keyCode;
 					event.keyChar = 0;
 					event.type = KeyEvent.KEY_DOWN;
-					event.timeStamp = Keyboard.getEventNanoseconds();
+					event.timeStamp = timeStamp;
 					keyEvents.add(event);
 
 					event = usedKeyEvents.obtain();
 					event.keyCode = 0;
 					event.keyChar = keyChar;
 					event.type = KeyEvent.KEY_TYPED;
-					event.timeStamp = Keyboard.getEventNanoseconds();
+					event.timeStamp = timeStamp;
 					keyEvents.add(event);
 
 					pressedKeys++;
