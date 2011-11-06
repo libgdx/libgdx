@@ -26,8 +26,6 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
@@ -160,6 +158,7 @@ public class TextField extends Widget {
 	/** Sets the style of this widget.
 	 * @param style */
 	public void setStyle (TextFieldStyle style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
 	}
@@ -181,11 +180,10 @@ public class TextField extends Widget {
 	}
 
 	private void calculateOffsets () {
-		final NinePatch background = style.background;
-
 		float position = glyphPositions.get(cursor);
 		float distance = position - Math.abs(renderOffset);
-		float visibleWidth = width - background.getLeftWidth() - background.getRightWidth();
+		float visibleWidth = width;
+		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
 		// check whether the cursor left the left or right side of
 		// the visible area and adjust renderoffset.
@@ -237,34 +235,38 @@ public class TextField extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		final BitmapFont font = style.font;
 		final Color fontColor = style.fontColor;
-		final NinePatch background = style.background;
 		final TextureRegion selection = style.selection;
 		final NinePatch cursorPatch = style.cursor;
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		background.draw(batch, x, y, width, height);
+		float bgLeftWidth = 0;
+		if (style.background != null) {
+			style.background.draw(batch, x, y, width, height);
+			bgLeftWidth = style.background.getLeftWidth();
+		}
+
 		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
 		boolean focused = parent.keyboardFocusedActor == this;
-		if (focused && hasSelection) {
-			batch.draw(selection, x + selectionX + background.getLeftWidth() + renderOffset,
+		if (focused && hasSelection && selection != null) {
+			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset,
 				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
 		}
 
 		if (text.length() == 0) {
 			if (!focused) {
 				font.setColor(0.7f, 0.7f, 0.7f, parentAlpha);
-				font.draw(batch, messageText, x + background.getLeftWidth(), y + textY);
+				font.draw(batch, messageText, x + bgLeftWidth, y + textY);
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, text, x + background.getLeftWidth() + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			font.draw(batch, text, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 		}
 		if (focused) {
 			blink();
-			if (cursorOn) {
-				cursorPatch.draw(batch, x + background.getLeftWidth() + glyphPositions.get(cursor) + renderOffset - 1, y + textY
+			if (cursorOn && cursorPatch != null) {
+				cursorPatch.draw(batch, x + bgLeftWidth + glyphPositions.get(cursor) + renderOffset - 1, y + textY
 					- textBounds.height - font.getDescent(), cursorPatch.getTotalWidth(), textBounds.height + font.getDescent() / 2);
 			}
 		}
@@ -517,8 +519,9 @@ public class TextField extends Widget {
 	}
 
 	public float getPrefHeight () {
-		NinePatch background = style.background;
-		return background.getBottomHeight() + background.getTopHeight() + textBounds.height;
+		float prefHeight = textBounds.height;
+		if (style.background != null) prefHeight += style.background.getBottomHeight() + style.background.getTopHeight();
+		return prefHeight;
 	}
 
 	/** Returns the currently used {@link OnscreenKeyboard}. {@link TextField} instances use the {@link DefaultOnscreenKeyboard} by
@@ -592,10 +595,11 @@ public class TextField extends Widget {
 	/** The style for a text field, see {@link TextField}.
 	 * @author mzechner */
 	static public class TextFieldStyle {
-		public NinePatch background;
+		/** Optional. */
+		public NinePatch background, cursor;
 		public BitmapFont font;
 		public Color fontColor;
-		public NinePatch cursor;
+		/** Optional. */
 		public TextureRegion selection;
 
 		public TextFieldStyle () {
