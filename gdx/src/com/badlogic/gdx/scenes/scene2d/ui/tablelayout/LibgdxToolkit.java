@@ -66,6 +66,11 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		}
 		if (object == null) {
 			return new Actor() {
+				{
+					visible = false;
+					touchable = false;
+				}
+
 				public void draw (SpriteBatch batch, float parentAlpha) {
 				}
 
