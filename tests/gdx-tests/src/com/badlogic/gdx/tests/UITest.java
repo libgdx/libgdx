@@ -72,9 +72,6 @@ public class UITest extends GdxTest {
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
-		Window window = new Window("Dialog", stage, skin.getStyle(WindowStyle.class), 420, 440, "window");
-		window.x = window.y = 0;
-
 		// Group.debug = true;
 
 		final Button button = new Button("Single", skin.getStyle(ButtonStyle.class), "button-sl");
@@ -95,6 +92,8 @@ public class UITest extends GdxTest {
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
 
 		// window.debug();
+		Window window = new Window("Dialog", stage, skin.getStyle(WindowStyle.class), "window");
+		window.x = window.y = 0;
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
 		window.add(button).fill(0f, 0f);
@@ -112,6 +111,9 @@ public class UITest extends GdxTest {
 		window.row();
 		window.add(fpsLabel).colspan(4);
 		window.pack();
+		
+		// stage.addActor(new Button("Behind Window", skin));
+		stage.addActor(window);
 
 		textfield.setTextFieldListener(new TextFieldListener() {
 			public void keyTyped (TextField textField, char key) {
@@ -124,8 +126,6 @@ public class UITest extends GdxTest {
 				Gdx.app.log("UITest", "slider: " + value);
 			}
 		});
-
-		stage.addActor(window);
 	}
 
 	@Override

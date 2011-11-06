@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.esotericsoftware.tablelayout.Cell;
 
@@ -47,23 +46,25 @@ public class Button extends Table {
 	public Button (String text, Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
 		setText(text);
+		pack();
 	}
 
 	public Button (String text, ButtonStyle style) {
 		this(style, null);
 		setText(text);
+		pack();
 	}
 
 	public Button (String text, ButtonStyle style, String name) {
 		this(style, name);
 		setText(text);
+		pack();
 	}
 
 	public Button (ButtonStyle style, String name) {
 		super(null, null, null, name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		setStyle(style);
-		pack();
 
 		super.setClickListener(new ClickListener() {
 			public void click (Actor actor, float x, float y) {
@@ -98,6 +99,8 @@ public class Button extends Table {
 		invalidateHierarchy();
 	}
 
+	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
+	 * called. */
 	public ButtonStyle getStyle () {
 		return style;
 	}

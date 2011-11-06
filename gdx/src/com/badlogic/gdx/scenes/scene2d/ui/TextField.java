@@ -114,6 +114,8 @@ public class TextField extends Widget {
 		invalidateHierarchy();
 	}
 
+	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
+	 * is called. */
 	public TextFieldStyle getStyle () {
 		return style;
 	}
@@ -433,7 +435,7 @@ public class TextField extends Widget {
 	}
 
 	public void setText (String text) {
-		if (text == null) throw new IllegalArgumentException("text must not be null");
+		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
 		BitmapFont font = style.font;
 

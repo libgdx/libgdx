@@ -33,6 +33,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -64,9 +65,24 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			return new Label((String)object, layout.skin);
 		}
 		if (object == null) {
-			Group group = new Group();
-			group.transform = false;
-			return group;
+			return new Actor() {
+				public void draw (SpriteBatch batch, float parentAlpha) {
+				}
+
+				public boolean touchDown (float x, float y, int pointer) {
+					return false;
+				}
+
+				public void touchUp (float x, float y, int pointer) {
+				}
+
+				public void touchDragged (float x, float y, int pointer) {
+				}
+
+				public Actor hit (float x, float y) {
+					return null;
+				}
+			};
 		}
 		return super.wrap(layout, object);
 	}

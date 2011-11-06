@@ -19,33 +19,25 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Layout;
-import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
-/** Base class for all UI widgets. A widget implements the {@link Layout} interface which has a couple of features.</p>
- * 
- * A widget has a preferred width and height which it will use if possible, e.g. if it is not in a {@link Table} or a
- * {@link SplitPane} or a {@link ScrollPane}. In case it is contained in one of the aforementioned containers, the preferred width
- * and height will be used to guide the layouting mechanism employed by those containers.</p>
- * 
- * A widget can be invalidated, e.g. by a Container changing its available space in the layout, in which case it will layout
- * itself at the next oportunity to do so.</p>
- * 
- * Invalidation can also be triggered manually via a call to {@link #invalidate()} or {@link #invalidateHierarchy()}. The former
- * will tell the Widget to only invalidate itself. The later will also invalidate all the widget's parents. The later mechanism is
- * used in case the widget was modified and the container it is contained in must relayout itself due to this modification as
- * well.
+/** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
+ * <p>
+ * The default preferred size of a widget is 0 and this is almost always overridden by a subclass. The default minimum size
+ * returns the preferred size, so a subclass may choose to return 0 if it wants to allow itself to be sized smaller. The default
+ * maximum size is 0, which means no maximum size.
+ * <p>
+ * See {@link Layout} for details on how a widget should participate in layout. A widget's mutator methods should call
+ * {@link #invalidate()} or {@link #invalidateHierarchy()} as needed.
  * @author mzechner
  * @author Nathan Sweet */
 public abstract class Widget extends Actor implements Layout {
 	private boolean needsLayout = true;
 
-	/** Creates a new widget without a name or preferred size. */
+	/** Creates a new widget without a name. */
 	public Widget () {
 		super(null);
 	}
 
-	/** Creates a new widget with the preferred width and height
-	 * @param name the name */
 	public Widget (String name) {
 		super(name);
 	}
@@ -84,6 +76,7 @@ public abstract class Widget extends Actor implements Layout {
 		layout();
 	}
 
+	/** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */
 	public boolean needsLayout () {
 		return needsLayout;
 	}
@@ -103,7 +96,7 @@ public abstract class Widget extends Actor implements Layout {
 		}
 	}
 
-	/** If this method is overridden, the super method or {@link #validate()} should be called. */
+	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget is laid out. */
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 	}

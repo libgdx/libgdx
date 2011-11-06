@@ -82,20 +82,26 @@ public class Table extends WidgetGroup {
 	}
 
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (backgroundPatch != null) backgroundPatch.draw(batch, x, y, width, height);
-
 		validate();
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		drawBackground(batch, parentAlpha);
+
 		if (stage != null) {
 			applyTransform(batch);
 			calculateScissors(batch.getTransformMatrix());
 			if (ScissorStack.pushScissors(scissors)) {
-				super.drawChildren(batch, parentAlpha);
+				drawChildren(batch, parentAlpha);
 				ScissorStack.popScissors();
 			}
 			resetTransform(batch);
 		} else
 			super.draw(batch, parentAlpha);
+	}
+
+	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background nine
+	 * patch. */
+	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+		if (backgroundPatch != null) backgroundPatch.draw(batch, x, y, width, height);
 	}
 
 	private void calculateScissors (Matrix4 transform) {
@@ -158,6 +164,7 @@ public class Table extends WidgetGroup {
 
 	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */
 	public void enableClipping (Stage stage) {
+		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
 		this.stage = stage;
 		transform = true;
 		invalidate();
