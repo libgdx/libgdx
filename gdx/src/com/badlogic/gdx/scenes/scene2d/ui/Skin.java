@@ -184,16 +184,16 @@ public class Skin implements Disposable {
 
 	public Skin (FileHandle skinFile, FileHandle textureFile) {
 		texture = new Texture(textureFile);
-		try {
-			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
-		} catch (SerializationException ex) {
-			throw new SerializationException("Error reading file: " + skinFile, ex);
-		}
+		load(skinFile);
 	}
 
 	public Skin (FileHandle skinFile, Texture texture) {
 		this.texture = texture;
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		load(skinFile);
+	}
+
+	public void load (FileHandle skinFile) {
 		try {
 			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
 		} catch (SerializationException ex) {

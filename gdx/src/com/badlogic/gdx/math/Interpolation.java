@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.math;
 
-/** Function that takes a linear value in the range of 0-1 and outputs a (usually) non-linear interpolated value. */
+/** Takes a linear value in the range of 0-1 and outputs a (usually) non-linear, interpolated value. */
 public abstract class Interpolation {
 	abstract public float apply (float a);
 
