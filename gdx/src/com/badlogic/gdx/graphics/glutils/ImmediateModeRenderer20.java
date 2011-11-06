@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.graphics.Color;
@@ -33,7 +34,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	int numSetTexCoords;
 	final int maxVertices;
 	int numVertices;
-	
+
 	final Mesh mesh;
 	final int numTexCoords;
 	final int vertexSize;
@@ -208,9 +209,9 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	public int getMaxVertices () {
 		return maxVertices;
 	}
-	
-	public void dispose() {
-		if(defaultShader != null) defaultShader.dispose();
+
+	public void dispose () {
+		if (defaultShader != null) defaultShader.dispose();
 		mesh.dispose();
 	}
 }

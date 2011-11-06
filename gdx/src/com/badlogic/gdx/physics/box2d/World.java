@@ -242,24 +242,24 @@ public final class World implements Disposable {
 			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
 				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle);
 		}
-		if(def.type == JointType.RopeJoint) {
+		if (def.type == JointType.RopeJoint) {
 			RopeJointDef d = (RopeJointDef)def;
 			return jniCreateRopeJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
 				d.localAnchorB.x, d.localAnchorB.y, d.maxLength);
 		}
-		if(def.type == JointType.WheelJoint) {
+		if (def.type == JointType.WheelJoint) {
 			WheelJointDef d = (WheelJointDef)def;
 			return jniCreateWheelJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.enableMotor, d.maxMotorTorque, d.motorSpeed, 
+				d.localAnchorB.x, d.localAnchorB.y, d.localAxisA.x, d.localAxisA.y, d.enableMotor, d.maxMotorTorque, d.motorSpeed,
 				d.frequencyHz, d.dampingRatio);
 		}
 
 		return 0;
 	}
 
-	private native long jniCreateWheelJoint (long addr, long bodyA, long Bodyb, boolean collideConnected, float localAnchorAX, float localAnchorAY,
-		float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableMotor, float maxMotorTorque, float motorSpeed, float frequencyHz,
-		float dampingRatio);
+	private native long jniCreateWheelJoint (long addr, long bodyA, long Bodyb, boolean collideConnected, float localAnchorAX,
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float localAxisAX, float localAxisAY, boolean enableMotor,
+		float maxMotorTorque, float motorSpeed, float frequencyHz, float dampingRatio);
 
 	private native long jniCreateRopeJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
 		float localAnchorAY, float localAnchorBX, float localAnchorBY, float maxLength);
@@ -313,14 +313,11 @@ public final class World implements Disposable {
 
 	private native void jniStep (long addr, float timeStep, int velocityIterations, int positionIterations);
 
-	/**
-	 *  Manually clear the force buffer on all bodies. By default, forces are cleared automatically
-	 * after each call to Step. The default behavior is modified by calling SetAutoClearForces.
-	 * The purpose of this function is to support sub-stepping. Sub-stepping is often used to maintain
-	 * a fixed sized time step under a variable frame-rate.
-	 * When you perform sub-stepping you will disable auto clearing of forces and instead call
-	 * ClearForces after all sub-steps are complete in one pass of your game loop.
-	 * {@link #setAutoClearForces(boolean)} */
+	/** Manually clear the force buffer on all bodies. By default, forces are cleared automatically after each call to Step. The
+	 * default behavior is modified by calling SetAutoClearForces. The purpose of this function is to support sub-stepping.
+	 * Sub-stepping is often used to maintain a fixed sized time step under a variable frame-rate. When you perform sub-stepping
+	 * you will disable auto clearing of forces and instead call ClearForces after all sub-steps are complete in one pass of your
+	 * game loop. {@link #setAutoClearForces(boolean)} */
 	public void clearForces () {
 		jniClearForces(addr);
 	}
@@ -445,9 +442,8 @@ public final class World implements Disposable {
 	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>();
 
 	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
-	 * returned list will have O(1) access times when using indexing.
-	 * contacts are created and destroyed in the middle of a time step.
-	 * Use {@link ContactListener} to avoid missing contacts
+	 * returned list will have O(1) access times when using indexing. contacts are created and destroyed in the middle of a time
+	 * step. Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
 	public List<Contact> getContactList () {
 		int numContacts = getContactCount();

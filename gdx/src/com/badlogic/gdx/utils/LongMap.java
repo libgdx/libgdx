@@ -290,7 +290,7 @@ public class LongMap<V> {
 		}
 		return valueTable[index];
 	}
-	
+
 	public V get (long key, V defaultValue) {
 		if (key == 0) return zeroValue;
 		int index = (int)(key & mask);

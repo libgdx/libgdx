@@ -5,20 +5,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
 
-/**
- * Wheel joint definition. This requires defining a line of
- * motion using an axis and an anchor point. The definition uses local
- * anchor points and a local axis so that the initial configuration
- * can violate the constraint slightly. The joint translation is zero
- * when the local anchor points coincide in world space. Using local
- * anchors and a local axis helps when saving and loading a game.
- */
+/** Wheel joint definition. This requires defining a line of motion using an axis and an anchor point. The definition uses local
+ * anchor points and a local axis so that the initial configuration can violate the constraint slightly. The joint translation is
+ * zero when the local anchor points coincide in world space. Using local anchors and a local axis helps when saving and loading a
+ * game. */
 public class WheelJointDef extends JointDef {
 	public WheelJointDef () {
 		type = JointType.WheelJoint;
 	}
-	
-	public void initialize(Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis) {
+
+	public void initialize (Body bodyA, Body bodyB, Vector2 anchor, Vector2 axis) {
 		this.bodyA = bodyA;
 		this.bodyB = bodyB;
 		localAnchorA.set(bodyA.getLocalPoint(anchor));

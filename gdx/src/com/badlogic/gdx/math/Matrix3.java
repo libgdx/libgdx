@@ -217,13 +217,12 @@ public class Matrix3 implements Serializable {
 		vals[7] += y;
 		return this;
 	}
-	/**
-	 * Postmultiplies this matrix by a translation matrix. Postmultiplication is
-	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+
+	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
 	 * @param x
 	 * @param y
-	 * @return this matrix for chaining
-	 */
+	 * @return this matrix for chaining */
 	public Matrix3 translate (float x, float y) {
 		tmp[0] = 1;
 		tmp[1] = 0;
@@ -239,14 +238,11 @@ public class Matrix3 implements Serializable {
 		mul(vals, tmp);
 		return this;
 	}
-	
-	
-	/**
-	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is
-	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
 	 * @param angle the angle in degrees
-	 * @return this matrix for chaining
-	 */
+	 * @return this matrix for chaining */
 	public Matrix3 rotate (float angle) {
 		if (angle == 0) return this;
 		angle = DEGREE_TO_RAD * angle;
@@ -268,13 +264,10 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Postmultiplies this matrix with a scale matrix. Postmultiplication is
-	 * also used by OpenGL ES' glTranslate/glRotate/glScale.
+	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' glTranslate/glRotate/glScale.
 	 * @param scaleX
 	 * @param scaleY
-	 * @return this matrix for chaining
-	 */
+	 * @return this matrix for chaining */
 	public Matrix3 scale (float scaleX, float scaleY) {
 		tmp[0] = scaleX;
 		tmp[1] = 0;
@@ -294,8 +287,8 @@ public class Matrix3 implements Serializable {
 	public float[] getValues () {
 		return vals;
 	}
-	
-	private static void mul(float[] mata, float[] matb) {
+
+	private static void mul (float[] mata, float[] matb) {
 		float v00 = mata[0] * matb[0] + mata[3] * matb[1] + mata[6] * matb[2];
 		float v01 = mata[0] * matb[3] + mata[3] * matb[4] + mata[6] * matb[5];
 		float v02 = mata[0] * matb[6] + mata[3] * matb[7] + mata[6] * matb[8];

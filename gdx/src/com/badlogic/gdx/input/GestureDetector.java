@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Gdx;
@@ -162,7 +163,7 @@ public class GestureDetector extends InputAdapter {
 			gestureStartTime = Gdx.input.getCurrentEventTime();
 			tracker.start(x, y, gestureStartTime);
 			// we are still touching with the second finger -> pinch mode
-			if(Gdx.input.isTouched(1)) {
+			if (Gdx.input.isTouched(1)) {
 				inTapSquare = false;
 				pinching = true;
 				initialDistance = firstPointer.dst(secondPointer);
@@ -237,12 +238,12 @@ public class GestureDetector extends InputAdapter {
 			pinching = false;
 			panning = true;
 			// we are basically in pan/scroll mode again, reset velocity tracker
-			if (pointer == 0)	{
-			   // first pointer has lifted off, set up panning to use the second pointer...
-			   tracker.start((int)secondPointer.x, (int)secondPointer.y, Gdx.input.getCurrentEventTime());
+			if (pointer == 0) {
+				// first pointer has lifted off, set up panning to use the second pointer...
+				tracker.start((int)secondPointer.x, (int)secondPointer.y, Gdx.input.getCurrentEventTime());
 			} else {
-			   // second pointer has lifted off, set up panning to use the first pointer...
-			   tracker.start((int)firstPointer.x, (int)firstPointer.y, Gdx.input.getCurrentEventTime());
+				// second pointer has lifted off, set up panning to use the first pointer...
+				tracker.start((int)firstPointer.x, (int)firstPointer.y, Gdx.input.getCurrentEventTime());
 			}
 		} else {
 			gestureStartTime = 0;
@@ -256,22 +257,18 @@ public class GestureDetector extends InputAdapter {
 		return false;
 	}
 
-	/**
-	 * @return whether the user touched the screen long enough to trigger a long press event.
-	 */
-	public boolean isLongPressed() {
+	/** @return whether the user touched the screen long enough to trigger a long press event. */
+	public boolean isLongPressed () {
 		return isLongPressed(longPressDuration);
 	}
 
-	/**
-	 * @param duration
-	 * @return whether the user touched the screen for as much or more than the given duration.
-	 */
-	public boolean isLongPressed(float duration) {
-		if(gestureStartTime == 0) return false;
+	/** @param duration
+	 * @return whether the user touched the screen for as much or more than the given duration. */
+	public boolean isLongPressed (float duration) {
+		if (gestureStartTime == 0) return false;
 		return System.nanoTime() - gestureStartTime > (long)(duration * 1000000000l);
 	}
-	
+
 	public boolean isPanning () {
 		return panning;
 	}

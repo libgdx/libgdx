@@ -31,7 +31,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** <p>
@@ -234,8 +233,10 @@ public class SpriteBatch implements Disposable {
 		Gdx.gl.glDepthMask(false);
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		if (Gdx.graphics.isGL20Available()) {
-			if(customShader != null) customShader.begin();
-			else shader.begin();
+			if (customShader != null)
+				customShader.begin();
+			else
+				shader.begin();
 		}
 		setupMatrices();
 
@@ -1146,7 +1147,7 @@ public class SpriteBatch implements Disposable {
 	}
 
 	private void setupMatrices () {
-		if(!Gdx.graphics.isGL20Available()) {
+		if (!Gdx.graphics.isGL20Available()) {
 			GL10 gl = Gdx.gl10;
 			gl.glMatrixMode(GL10.GL_PROJECTION);
 			gl.glLoadMatrixf(projectionMatrix.val, 0);

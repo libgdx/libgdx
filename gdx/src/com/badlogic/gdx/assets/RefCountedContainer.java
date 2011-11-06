@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.assets;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
+package com.badlogic.gdx.assets;
 
 public class RefCountedContainer {
 	Object object;
 	int refCount = 1;
-	
-	public RefCountedContainer(Object object) {
-		if(object == null) throw new IllegalArgumentException("Object must not be null");
+
+	public RefCountedContainer (Object object) {
+		if (object == null) throw new IllegalArgumentException("Object must not be null");
 		this.object = object;
 	}
-	
+
 	public void incRefCount () {
 		refCount++;
 	}
-	
-	public void decRefCount() {
+
+	public void decRefCount () {
 		refCount--;
 	}
 
@@ -41,8 +40,8 @@ public class RefCountedContainer {
 	public void setRefCount (int refCount) {
 		this.refCount = refCount;
 	}
-	
-	public <T> T getObject(Class<T> type) {
+
+	public <T> T getObject (Class<T> type) {
 		return (T)object;
 	}
 

@@ -52,7 +52,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	public BitmapFont loadSync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
 		FileHandle handle = resolve(fileName);
 		TextureRegion region = new TextureRegion(manager.get(data.getImagePath(), Texture.class));
-		if(parameter != null) region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
+		if (parameter != null) region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
 		return new BitmapFont(data, region, true);
 	}
 
@@ -62,6 +62,6 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		/** the minimum filter to be used for the backing texture */
 		public TextureFilter minFitler = TextureFilter.Nearest;
 		/** the maximum filter to be used for the backing texture */
-		public TextureFilter  maxFilter = TextureFilter.Nearest;
+		public TextureFilter maxFilter = TextureFilter.Nearest;
 	}
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.assets;
 
 /** Describes an asset to be loaded by it's filename, type and {@link AssetLoaderParameters}. Instances of this are used in
@@ -26,7 +27,7 @@ public class AssetDescriptor<T> {
 	public AssetDescriptor (String fileName, Class<T> assetType) {
 		this(fileName, assetType, null);
 	}
-	
+
 	public AssetDescriptor (String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
 		this.fileName = fileName.replaceAll("\\\\", "/");
 		this.type = assetType;

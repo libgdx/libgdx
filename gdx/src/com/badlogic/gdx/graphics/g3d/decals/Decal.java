@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.decals;
 
 import com.badlogic.gdx.graphics.GL10;
@@ -461,11 +462,9 @@ public class Decal {
 		this.material.textureRegion = textureRegion;
 		updateUVs();
 	}
-	
-	/**
-	 * @return the texture region this Decal uses. Do not modify it!
-	 */
-	public TextureRegion getTextureRegion() {
+
+	/** @return the texture region this Decal uses. Do not modify it! */
+	public TextureRegion getTextureRegion () {
 		return this.material.textureRegion;
 	}
 
@@ -477,19 +476,17 @@ public class Decal {
 		material.srcBlendFactor = srcBlendFactor;
 		material.dstBlendFactor = dstBlendFactor;
 	}
-	
+
 	public DecalMaterial getMaterial () {
 		return material;
 	}
-	
+
 	final static Vector3 dir = new Vector3();
-	/**
-	 * Sets the rotation of the Decal to face the given point. Useful
-	 * for billboarding.
+
+	/** Sets the rotation of the Decal to face the given point. Useful for billboarding.
 	 * @param position
-	 * @param up
-	 */
-	public void lookAt(Vector3 position, Vector3 up) {
+	 * @param up */
+	public void lookAt (Vector3 position, Vector3 up) {
 		dir.set(position).sub(this.position).nor();
 		setRotation(dir, up);
 	}

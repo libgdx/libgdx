@@ -30,15 +30,12 @@ import com.badlogic.gdx.utils.XmlReader;
 /** Loads a Tiled Map from a tmx file
  * @author David Fraska */
 public class TiledLoader {
-	
-	/**
-	 * Loads a <code>TiledMap</code> from a <code>String</code>.
-	 * @param tmxData The tmx file's content.
-	 */
-	public static TiledMap createMap(String tmxData) {
+
+	/** Loads a <code>TiledMap</code> from a <code>String</code>.
+	 * @param tmxData The tmx file's content. */
+	public static TiledMap createMap (String tmxData) {
 		return createMap(null, tmxData);
 	}
-
 
 	/** Loads a Tiled Map from a tmx file
 	 * @param tmxFile the map's tmx file */
@@ -46,12 +43,10 @@ public class TiledLoader {
 		return createMap(tmxFile, null);
 	}
 
-	/**
-	 * Loads a TiledMap from a tmx file.
+	/** Loads a TiledMap from a tmx file.
 	 * @param tmxFile The tmx file. NULL to force load from <code>tmxData</code>.
-	 * @param tmxData The tmx file's content. NULL to force load from <code>tmxFile</code>.
-	 */
-	private static TiledMap createMap(FileHandle tmxFile, String tmxData) {
+	 * @param tmxData The tmx file's content. NULL to force load from <code>tmxFile</code>. */
+	private static TiledMap createMap (FileHandle tmxFile, String tmxData) {
 		final TiledMap map;
 
 		map = new TiledMap();
@@ -458,7 +453,7 @@ public class TiledLoader {
 				}
 			};
 			// Is it a file?
-			if(tmxFile != null) {
+			if (tmxFile != null) {
 				xmlReader.parse(tmxFile);
 			} else {
 				xmlReader.parse(tmxData);

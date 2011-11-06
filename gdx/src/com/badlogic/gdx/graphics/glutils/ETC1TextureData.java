@@ -63,7 +63,7 @@ public class ETC1TextureData implements TextureData {
 	public void prepare () {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
 		if (file == null && data == null) throw new GdxRuntimeException("Can only load once from ETC1Data");
-		if(file != null) {
+		if (file != null) {
 			data = new ETC1Data(file);
 		}
 		width = data.width;
@@ -91,12 +91,12 @@ public class ETC1TextureData implements TextureData {
 		data = null;
 		isPrepared = false;
 	}
-	
+
 	@Override
 	public Pixmap consumePixmap () {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-	
+
 	@Override
 	public boolean disposePixmap () {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");

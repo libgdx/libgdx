@@ -37,7 +37,7 @@ public class TileMapRenderer implements Disposable {
 
 	private TileAtlas atlas;
 	private TiledMap map;
-	
+
 	private int mapHeightUnits, mapWidthUnits;
 	private int tileWidth, tileHeight;
 	private float unitsPerTileX, unitsPerTileY;
@@ -464,12 +464,12 @@ public class TileMapRenderer implements Disposable {
 	public void dispose () {
 		cache.dispose();
 	}
-	
-	public TiledMap getMap() {
+
+	public TiledMap getMap () {
 		return map;
 	}
-	
-	public TileAtlas getAtlas() {
+
+	public TileAtlas getAtlas () {
 		return atlas;
 	}
 

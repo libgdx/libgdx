@@ -208,11 +208,9 @@ public interface Graphics {
 	 * @param title the title. */
 	public void setTitle (String title);
 
-	/** Sets one or more icons for the Desktop. This only works for Lwjgl.
-		 On Windows you should supply at least one 16x16 icon and one 32x32.
-		 Linux (and similar platforms) expect one 32x32 icon.
-		 Mac OS X should be supplied one 128x128 icon
-	 * @param pixmaps 1 or more Pixmaps using {@link Format#RGBA8888}*/
+	/** Sets one or more icons for the Desktop. This only works for Lwjgl. On Windows you should supply at least one 16x16 icon and
+	 * one 32x32. Linux (and similar platforms) expect one 32x32 icon. Mac OS X should be supplied one 128x128 icon
+	 * @param pixmaps 1 or more Pixmaps using {@link Format#RGBA8888} */
 	public void setIcon (Pixmap[] pixmaps);
 
 	/** Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.

@@ -172,8 +172,8 @@ public class Texture implements Disposable {
 			throw new GdxRuntimeException("New data must have the same managed status as the old data");
 		this.data = data;
 
-		if(!data.isPrepared()) data.prepare();
-		
+		if (!data.isPrepared()) data.prepare();
+
 		if (data.getType() == TextureDataType.Pixmap) {
 			Pixmap pixmap = data.consumePixmap();
 			uploadImageData(pixmap);
@@ -321,7 +321,7 @@ public class Texture implements Disposable {
 		// reloaded through the asset manager as we first remove (and thus dispose) the texture
 		// and then reload it. the glHandle is set to 0 in invalidateAllTextures prior to
 		// removal from the asset manager.
-		if(glHandle == 0) return;
+		if (glHandle == 0) return;
 		buffer.put(0, glHandle);
 		Gdx.gl.glDeleteTextures(1, buffer);
 		if (data.isManaged()) {
@@ -362,8 +362,8 @@ public class Texture implements Disposable {
 			// otherwise the ref counting trick below wouldn't work (when a texture is
 			// currently on the task stack of the manager.)
 			assetManager.finishLoading();
-			
-			// next we go through each texture and reload either directly or via the 
+
+			// next we go through each texture and reload either directly or via the
 			// asset manager.
 			List<Texture> textures = new ArrayList<Texture>(managedTexureList);
 			for (Texture texture : textures) {
@@ -378,7 +378,7 @@ public class Texture implements Disposable {
 					final int refCount = assetManager.getReferenceCount(fileName);
 					assetManager.setReferenceCount(fileName, 0);
 					texture.glHandle = 0;
-					
+
 					// create the parameters, passing the reference to the texture as
 					// well as a callback that sets the ref count.
 					TextureParameter params = new TextureParameter();
@@ -390,7 +390,7 @@ public class Texture implements Disposable {
 							assetManager.setReferenceCount(fileName, refCount);
 						}
 					};
-					
+
 					// unload the texture, create a new gl handle then reload it.
 					assetManager.unload(fileName);
 					texture.glHandle = Texture.createGLHandle();

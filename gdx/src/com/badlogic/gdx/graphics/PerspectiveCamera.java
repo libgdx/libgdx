@@ -55,7 +55,7 @@ public class PerspectiveCamera extends Camera {
 		Matrix4.inv(invProjectionView.val);
 		frustum.update(invProjectionView);
 	}
-	
+
 	@Override
 	public void update (boolean updateFrustum) {
 		float aspect = viewportWidth / viewportHeight;
@@ -63,8 +63,8 @@ public class PerspectiveCamera extends Camera {
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
-		
-		if(updateFrustum) {
+
+		if (updateFrustum) {
 			invProjectionView.set(combined);
 			Matrix4.inv(invProjectionView.val);
 			frustum.update(invProjectionView);

@@ -293,10 +293,11 @@ public class Skin implements Disposable {
 		json.setTypeName(null);
 		json.setUsePrototypes(false);
 
-		class AliasSerializer implements Serializer {
+		// Writes names of resources instead of objects.
+		class AliasWriter implements Serializer {
 			final ObjectMap<String, ?> map;
 
-			public AliasSerializer (Class type) {
+			public AliasWriter (Class type) {
 				map = resources.get(type);
 			}
 
@@ -320,7 +321,7 @@ public class Skin implements Disposable {
 				json.writeObjectStart();
 				json.writeValue("resources", skin.resources);
 				for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries())
-					json.setSerializer(entry.key, new AliasSerializer(entry.key));
+					json.setSerializer(entry.key, new AliasWriter(entry.key));
 				json.writeField(skin, "styles");
 				json.writeObjectEnd();
 			}
@@ -386,14 +387,19 @@ public class Skin implements Disposable {
 
 		json.setSerializer(BitmapFont.class, new Serializer<BitmapFont>() {
 			public void write (Json json, BitmapFont font, Class valueType) {
-				json.writeValue(font.getData().getFontFile().toString().replace('\\', '/'));
+				json.writeObjectStart();
+				json.writeValue("file", font.getData().getFontFile().toString().replace('\\', '/'));
+				json.writeObjectEnd();
 			}
 
 			public BitmapFont read (Json json, Object jsonData, Class type) {
 				if (jsonData instanceof String) return getResource((String)jsonData, BitmapFont.class);
 				String path = json.readValue("file", String.class, jsonData);
+
 				FileHandle file = skinFile.parent().child(path);
 				if (!file.exists()) file = Gdx.files.internal(path);
+				if (!file.exists()) throw new SerializationException("Font file not found: " + file);
+
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
 				TextureRegion region = null;
 				if (skin.hasResource(file.nameWithoutExtension(), TextureRegion.class))

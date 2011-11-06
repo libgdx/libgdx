@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.decals;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -23,8 +24,8 @@ import com.badlogic.gdx.utils.Array;
  * adjust settings before and after rendering a group.
  * </p>
  * <p>
- * A group is identified by an integer. The {@link #beforeGroup(int, Array) beforeGroup()} method provides the strategy with a
- * list of all the decals, which are contained in the group itself, and will be rendered before the associated call to
+ * A group is identified by an integer. The {@link #beforeGroup(int, Array) beforeGroup()} method provides the strategy with a list
+ * of all the decals, which are contained in the group itself, and will be rendered before the associated call to
  * {@link #afterGroup(int)}.<br/>
  * A call to {@code beforeGroup()} is always fallowed by a call to {@code afterGroup()}.<br/>
  * <b>Groups are always invoked based on their ascending int values</b>. Group -10 will be rendered before group -5, group -5

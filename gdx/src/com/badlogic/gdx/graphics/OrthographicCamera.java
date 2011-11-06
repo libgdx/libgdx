@@ -118,7 +118,7 @@ public class OrthographicCamera extends Camera {
 		Matrix4.inv(invProjectionView.val);
 		frustum.update(invProjectionView);
 	}
-	
+
 	@Override
 	public void update (boolean updateFrustum) {
 		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom
@@ -126,32 +126,28 @@ public class OrthographicCamera extends Camera {
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
-		
-		if(updateFrustum) {
+
+		if (updateFrustum) {
 			invProjectionView.set(combined);
 			Matrix4.inv(invProjectionView.val);
 			frustum.update(invProjectionView);
 		}
 	}
-	
-	/**
-	 * Sets this camera to an orthographic projection using a viewport fitting the screen resolution, centered
-	 * at (Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), with the y-axis pointing up or down.
-	 * @param yDown whether y should be pointing down
-	 */
-	public void setToOrtho(boolean yDown) {
+
+	/** Sets this camera to an orthographic projection using a viewport fitting the screen resolution, centered at
+	 * (Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2), with the y-axis pointing up or down.
+	 * @param yDown whether y should be pointing down */
+	public void setToOrtho (boolean yDown) {
 		setToOrtho(yDown, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
-	
-	/**
-	 * Sets this camera to an orthographic projection, centered
-	 * at (viewportWidth/2, viewportHeight/2), with the y-axis pointing up or down.
+
+	/** Sets this camera to an orthographic projection, centered at (viewportWidth/2, viewportHeight/2), with the y-axis pointing up
+	 * or down.
 	 * @param yDown whether y should be pointing down.
 	 * @param viewportWidth
-	 * @param viewportHeight
-	 */
-	public void setToOrtho(boolean yDown, float viewportWidth, float viewportHeight) {
-		if(yDown) {
+	 * @param viewportHeight */
+	public void setToOrtho (boolean yDown, float viewportWidth, float viewportHeight) {
+		if (yDown) {
 			up.set(0, -1, 0);
 			direction.set(0, 0, 1);
 		}

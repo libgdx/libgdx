@@ -111,7 +111,7 @@ public class PrismaticJoint extends Joint {
 
 	private native void jniSetMaxMotorForce (long addr, float force);
 
-	/** Get the current motor force  given the inverse time step, usually in N. */
+	/** Get the current motor force given the inverse time step, usually in N. */
 	public float getMotorForce (float invDt) {
 		return jniGetMotorForce(addr, invDt);
 	}

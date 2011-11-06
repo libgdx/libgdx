@@ -16,10 +16,8 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-/** 
- *  A shape is used for collision detection. You can create a shape however you like.
- * Shapes used for simulation in b2World are created automatically when a b2Fixture
- * is created. Shapes may encapsulate a one or more child shapes.
+/** A shape is used for collision detection. You can create a shape however you like. Shapes used for simulation in b2World are
+ * created automatically when a b2Fixture is created. Shapes may encapsulate a one or more child shapes.
  * 
  * NOTE: YOU NEED TO DISPOSE SHAPES YOU CREATED YOURSELF AFTER YOU NO LONGER USE THEM! E.g. after calling body.createFixture();
  * @author mzechner */
@@ -59,15 +57,13 @@ public abstract class Shape {
 	private native void jniDispose (long addr);
 
 	protected static native int jniGetType (long addr);
-	
-	/**
-	 *  Get the number of child primitives.
-	 */
-	public int getChildCount() {
+
+	/** Get the number of child primitives. */
+	public int getChildCount () {
 		return jniGetChildCount(addr);
 	}
-	
-	private native int jniGetChildCount(long addr);
+
+	private native int jniGetChildCount (long addr);
 
 // /// Test a point for containment in this shape. This only works for convex shapes.
 // /// @param xf the shape world transform.

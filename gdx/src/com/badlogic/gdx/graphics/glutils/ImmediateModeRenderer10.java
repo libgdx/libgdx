@@ -67,7 +67,7 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	private boolean hasCols;
 	private boolean hasNors;
 	private boolean hasTexCoords;
-	
+
 	private final int maxVertices;
 	private int numVertices;
 
@@ -176,8 +176,8 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	public int getNumVertices () {
 		return numVertices;
 	}
-	
-	public int getMaxVertices() {
+
+	public int getMaxVertices () {
 		return maxVertices;
 	}
 
@@ -225,6 +225,6 @@ public class ImmediateModeRenderer10 implements ImmediateModeRenderer {
 	}
 
 	@Override
-	public void dispose () {		
+	public void dispose () {
 	}
 }

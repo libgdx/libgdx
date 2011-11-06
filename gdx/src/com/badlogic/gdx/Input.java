@@ -355,11 +355,9 @@ public interface Input {
 	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
 	 * @return the roll in degrees */
 	public float getRoll ();
-	
-	/**
-	 * @return the time of the event currently reported to the {@link InputProcessor}.
-	 */
-	public long getCurrentEventTime();
+
+	/** @return the time of the event currently reported to the {@link InputProcessor}. */
+	public long getCurrentEventTime ();
 
 	/** Sets whether the BACK button on Android should be caught. This will prevent the app from being paused. Will have no effect
 	 * on the desktop.

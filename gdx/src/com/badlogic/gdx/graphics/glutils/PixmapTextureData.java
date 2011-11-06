@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.graphics.Pixmap;
@@ -84,7 +85,7 @@ public class PixmapTextureData implements TextureData {
 	}
 
 	@Override
-	public void prepare () {		
+	public void prepare () {
 		throw new GdxRuntimeException("prepare() must not be called on a PixmapTextureData instance as it is already prepared.");
 	}
 }

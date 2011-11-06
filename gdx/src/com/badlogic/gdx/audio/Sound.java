@@ -30,77 +30,62 @@ import com.badlogic.gdx.utils.Disposable;
  * </p>
  * 
  * <p>
- * Calling the {@link #play()} or {@link #play(float)} method will return a long which is an id
- * to that instance of the sound. You can use this id to modify the playback of that sound instance.
+ * Calling the {@link #play()} or {@link #play(float)} method will return a long which is an id to that instance of the sound. You
+ * can use this id to modify the playback of that sound instance.
  * </p>
  * 
  * @author badlogicgames@gmail.com */
 public interface Sound extends Disposable {
-	/** Plays the sound. If the sound is already playing, it will be played again, concurrently. 
+	/** Plays the sound. If the sound is already playing, it will be played again, concurrently.
 	 * @return the id of the sound instance. */
 	public long play ();
 
 	/** Plays the sound. If the sound is already playing, it will be played again, concurrently.
-	 * @param volume the volume in the range [0,1] 
-	 * @return the id of the sound instance 
-	 */
+	 * @param volume the volume in the range [0,1]
+	 * @return the id of the sound instance */
 	public long play (float volume);
-	
-	/**
-	 * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
-	 * @return the id of the sound instance
-	 */
-	public long loop();
-	
-	/**
-	 * Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
+
+	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
+	 * @return the id of the sound instance */
+	public long loop ();
+
+	/** Plays the sound, looping. If the sound is already playing, it will be played again, concurrently.
 	 * @param volume the volume in the range [0, 1]
-	 * @return the id of the sound instance
-	 */
-	public long loop(float volume);
+	 * @return the id of the sound instance */
+	public long loop (float volume);
 
 	/** Stops playing all instances of this sound. */
 	public void stop ();
 
 	/** Releases all the resources. */
 	public void dispose ();
-	
-	/**
-	 * Stops the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If
-	 * the sound is no longer playing, this has no effect.
-	 * @param soundId the sound id
-	 */
-	public void stop(long soundId);
-	
-	/**
-	 * Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
-	 * @param soundId the sound id
-	 * @param looping whether to loop or not.
-	 */
-	public void setLooping(long soundId, boolean looping);
 
-	/**
-	 * Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If
-	 * the sound is no longer playing, this has no effect.
+	/** Stops the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no longer
+	 * playing, this has no effect.
+	 * @param soundId the sound id */
+	public void stop (long soundId);
+
+	/** Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
 	 * @param soundId the sound id
-	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower
-	 */
-	public void setPitch(long soundId, float pitch);
-	
-	/**
-	 * Changes the volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If
-	 * the sound is no longer playing, this has no effect.
+	 * @param looping whether to loop or not. */
+	public void setLooping (long soundId, boolean looping);
+
+	/** Changes the pitch multiplier of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
+	 * If the sound is no longer playing, this has no effect.
 	 * @param soundId the sound id
-	 * @param volume the volume in the range 0 (silent) to 1 (max volume).
-	 */
-	public void setVolume(long soundId, float volume);
-	
-	/**
-	 * Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the 
+	 * @param pitch the pitch multiplier, 1 == default, >1 == faster, <1 == slower */
+	public void setPitch (long soundId, float pitch);
+
+	/** Changes the volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the
 	 * sound is no longer playing, this has no effect.
 	 * @param soundId the sound id
+	 * @param volume the volume in the range 0 (silent) to 1 (max volume). */
+	public void setVolume (long soundId, float volume);
+
+	/** Sets the panning and volume of the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}.
+	 * If the sound is no longer playing, this has no effect.
+	 * @param soundId the sound id
 	 * @param pan panning in the range -1 (full right) to 1 (full left). 0 is center position.
-	 * @param volume the volume in the range [0,1].
-	 */
-	public void setPan(long soundId, float pan, float volume);
+	 * @param volume the volume in the range [0,1]. */
+	public void setPan (long soundId, float pan, float volume);
 }

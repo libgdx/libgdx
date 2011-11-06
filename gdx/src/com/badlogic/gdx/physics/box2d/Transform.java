@@ -66,8 +66,8 @@ public class Transform {
 		vals[COS] = c;
 		vals[SIN] = s;
 	}
-	
-	public float getRotation() {
+
+	public float getRotation () {
 		return (float)Math.atan2(vals[SIN], vals[COS]);
 	}
 

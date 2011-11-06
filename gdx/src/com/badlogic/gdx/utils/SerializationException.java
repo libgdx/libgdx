@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.utils;
 
 /** Indicates an error during serialization due to misconfiguration or during deserialization due to invalid input data.

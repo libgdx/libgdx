@@ -13,8 +13,8 @@ public class StbTrueTypeFont implements Disposable {
 		public final int ascent;
 		public final int descent;
 		public final int lineGap;
-		
-		public FontVMetrics(int ascent, int descent, int lineGap) {
+
+		public FontVMetrics (int ascent, int descent, int lineGap) {
 			this.ascent = ascent;
 			this.descent = descent;
 			this.lineGap = lineGap;
@@ -25,11 +25,11 @@ public class StbTrueTypeFont implements Disposable {
 			return "FontVMetrics [ascent=" + ascent + ", descent=" + descent + ", lineGap=" + lineGap + "]";
 		}
 	}
-	
+
 	public static class HMetrics {
 		public final int advance;
 		public final int leftSideBearing;
-		
+
 		public HMetrics (int advance, int leftSideBearing) {
 			this.advance = advance;
 			this.leftSideBearing = leftSideBearing;
@@ -40,7 +40,7 @@ public class StbTrueTypeFont implements Disposable {
 			return "HMetrics [advance=" + advance + ", leftSideBearing=" + leftSideBearing + "]";
 		}
 	}
-	
+
 	public static class Box {
 		public int x0, y0, x1, y1;
 
@@ -56,11 +56,11 @@ public class StbTrueTypeFont implements Disposable {
 			return "Box [x0=" + x0 + ", y0=" + y0 + ", x1=" + x1 + ", y1=" + y1 + "]";
 		}
 	}
-	
+
 	public static class Bitmap implements Disposable {
 		public final Pixmap pixmap;
 		public final Box box;
-		
+
 		public Bitmap (Pixmap pixmap, Box box) {
 			this.pixmap = pixmap;
 			this.box = box;
@@ -76,7 +76,7 @@ public class StbTrueTypeFont implements Disposable {
 			return "Bitmap [box=" + box + "]";
 		}
 	}
-	
+
 	final long addr;
 	final int[] intArray = new int[8];
 	final long[] longArray = new long[1];
@@ -118,7 +118,7 @@ public class StbTrueTypeFont implements Disposable {
 
 	public Box getCodePointBox (int codePoint) {
 		int glyphFound = StbTrueType.getCodePointBox(addr, codePoint, intArray);
-		if(glyphFound == 0) return new Box(0, 0, 0, 0);
+		if (glyphFound == 0) return new Box(0, 0, 0, 0);
 		return new Box(intArray[0], intArray[1], intArray[2], intArray[3]);
 	}
 
@@ -133,17 +133,17 @@ public class StbTrueTypeFont implements Disposable {
 
 	public Box getGlyphBox (int glyphIndex) {
 		int glyphFound = StbTrueType.getGlyphBox(addr, glyphIndex, intArray);
-		if(glyphFound == 0) return new Box(0, 0, 0, 0);
+		if (glyphFound == 0) return new Box(0, 0, 0, 0);
 		return new Box(intArray[0], intArray[1], intArray[2], intArray[3]);
 	}
 
 	public Vertex[] getCodePointShape (int codePoint) {
 		int numVertices = StbTrueType.getCodePointShape(addr, codePoint, longArray);
 		long verticesAddr = longArray[0];
-		if(numVertices == 0) return new Vertex[0];
-		
+		if (numVertices == 0) return new Vertex[0];
+
 		Vertex[] vertices = new Vertex[numVertices];
-		for(int i = 0; i < numVertices; i++) {
+		for (int i = 0; i < numVertices; i++) {
 			StbTrueType.getShapeVertex(verticesAddr, i, intArray);
 			vertices[i] = new Vertex(intArray[0], intArray[1], intArray[2], intArray[3], intArray[4], intArray[5]);
 		}
@@ -154,10 +154,10 @@ public class StbTrueTypeFont implements Disposable {
 	public Vertex[] getGlyphShape (int glyphIndex) {
 		int numVertices = StbTrueType.getGlyphShape(addr, glyphIndex, longArray);
 		long verticesAddr = longArray[0];
-		if(numVertices == 0) return new Vertex[0];
-		
+		if (numVertices == 0) return new Vertex[0];
+
 		Vertex[] vertices = new Vertex[numVertices];
-		for(int i = 0; i < numVertices; i++) {
+		for (int i = 0; i < numVertices; i++) {
 			StbTrueType.getShapeVertex(verticesAddr, i, intArray);
 			vertices[i] = new Vertex(intArray[0], intArray[1], intArray[2], intArray[3], intArray[4], intArray[5]);
 		}
@@ -168,23 +168,25 @@ public class StbTrueTypeFont implements Disposable {
 	public Bitmap makeCodepointBitmap (float scaleX, float scaleY, int codePoint) {
 		StbTrueType.getCodepointBitmapBox(addr, codePoint, scaleX, scaleY, intArray);
 		Box box = new Box(intArray[0], intArray[1], intArray[2], intArray[3]);
-		if(box.x0 == 0 && box.y0 == 0 && box.x1 == 0 && box.y1 == 0) return null;
-		
+		if (box.x0 == 0 && box.y0 == 0 && box.x1 == 0 && box.y1 == 0) return null;
+
 		Pixmap pixmap = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.Alpha);
-		StbTrueType.makeCodepointBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), pixmap.getWidth(), scaleX, scaleY, codePoint);
+		StbTrueType.makeCodepointBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), pixmap.getWidth(), scaleX,
+			scaleY, codePoint);
 		Pixmap pixmapRGBA = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.RGBA4444);
 		pixmapRGBA.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 		pixmap.dispose();
 		return new Bitmap(pixmapRGBA, box);
 	}
 
-	public Bitmap makeGlyphBitmap (float scaleX,	float scaleY, float shiftX, float shiftY, int glyph) {
+	public Bitmap makeGlyphBitmap (float scaleX, float scaleY, float shiftX, float shiftY, int glyph) {
 		StbTrueType.getGlyphBitmapBox(addr, glyph, scaleX, scaleY, shiftX, shiftY, intArray);
 		Box box = new Box(intArray[0], intArray[1], intArray[2], intArray[3]);
-		if(box.x0 == 0 && box.y0 == 0 && box.x1 == 0 && box.y1 == 0) return null;
-		
+		if (box.x0 == 0 && box.y0 == 0 && box.x1 == 0 && box.y1 == 0) return null;
+
 		Pixmap pixmap = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.Alpha);
-		StbTrueType.makeGlyphBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), pixmap.getWidth(), scaleX, scaleY, shiftX, shiftY, glyph);
+		StbTrueType.makeGlyphBitmap(addr, pixmap.getPixels(), pixmap.getWidth(), pixmap.getHeight(), pixmap.getWidth(), scaleX,
+			scaleY, shiftX, shiftY, glyph);
 		Pixmap pixmapRGBA = new Pixmap(box.x1 - box.x0, box.y1 - box.y0, Format.RGBA4444);
 		pixmapRGBA.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 		pixmap.dispose();

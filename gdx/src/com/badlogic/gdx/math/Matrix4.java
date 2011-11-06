@@ -18,8 +18,6 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-import com.badlogic.gdx.utils.GdxNativesLoader;
-
 /** Encapsulates a column major 4 by 4 matrix. You can access the linear array for use with OpenGL via the public
  * {@link Matrix4#val} member. Like the {@link Vector3} class it allows to chain methods by returning a reference to itself.
  * 
@@ -801,14 +799,12 @@ public class Matrix4 implements Serializable {
 	 * @return the determinante. */
 	public static native float det (float[] values) /*-{ }-*/;
 
-	/**
-	 * Postmultiplies this matrix by a translation matrix. Postmultiplication is
-	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+	/** Postmultiplies this matrix by a translation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
 	 * @param x
 	 * @param y
 	 * @param z
-	 * @return this matrix for chaining
-	 */
+	 * @return this matrix for chaining */
 	public Matrix4 translate (float x, float y, float z) {
 		tmp[M00] = 1;
 		tmp[M01] = 0;
@@ -826,20 +822,18 @@ public class Matrix4 implements Serializable {
 		tmp[M31] = 0;
 		tmp[M32] = 0;
 		tmp[M33] = 1;
-		
+
 		mul(val, tmp);
 		return this;
 	}
 
-	/**
-	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is
-	 * also used by OpenGL ES' glTranslate/glRotate/glScale
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES'
+	 * glTranslate/glRotate/glScale
 	 * @param axisX
 	 * @param axisY
 	 * @param axisZ
 	 * @param angle the angle in degrees
-	 * @return this matrix for chaining 
-	 */
+	 * @return this matrix for chaining */
 	public Matrix4 rotate (float axisX, float axisY, float axisZ, float angle) {
 		if (angle == 0) return this;
 		quat.set(tmpV.set(axisX, axisY, axisZ), angle);
@@ -870,19 +864,16 @@ public class Matrix4 implements Serializable {
 		tmp[M31] = 0;
 		tmp[M32] = 0;
 		tmp[M33] = 1;
-		
+
 		mul(val, tmp);
 		return this;
 	}
 
-	/**
-	 * Postmultiplies this matrix with a scale matrix. Postmultiplication is
-	 * also used by OpenGL ES' glTranslate/glRotate/glScale.
+	/** Postmultiplies this matrix with a scale matrix. Postmultiplication is also used by OpenGL ES' glTranslate/glRotate/glScale.
 	 * @param scaleX
 	 * @param scaleY
 	 * @param scaleZ
-	 * @return this matrix for chaining
-	 */
+	 * @return this matrix for chaining */
 	public Matrix4 scale (float scaleX, float scaleY, float scaleZ) {
 		tmp[M00] = scaleX;
 		tmp[M01] = 0;
@@ -900,7 +891,7 @@ public class Matrix4 implements Serializable {
 		tmp[M31] = 0;
 		tmp[M32] = 0;
 		tmp[M33] = 1;
-		
+
 		mul(val, tmp);
 		return this;
 	}

@@ -2,9 +2,7 @@
 package com.badlogic.gdx.physics.box2d.joints;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.JointDef;
-import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 
 /** Rope joint definition. This requires two body anchor points and a maximum lengths. Note: by default the connected objects will
  * not collide. see collideConnected in b2JointDef.

@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Disposable;
@@ -145,12 +144,10 @@ public class Pixmap implements Disposable {
 	public Pixmap (Gdx2DPixmap pixmap) {
 		this.pixmap = pixmap;
 	}
-	
-	/**
-	 * Sets the color for the following drawing operations
-	 * @param color the color, encoded as RGBA8888
-	 */
-	public void setColor(int color) {
+
+	/** Sets the color for the following drawing operations
+	 * @param color the color, encoded as RGBA8888 */
+	public void setColor (int color) {
 		this.color = color;
 	}
 
@@ -294,13 +291,12 @@ public class Pixmap implements Disposable {
 	public void drawPixel (int x, int y) {
 		pixmap.setPixel(x, y, color);
 	}
-	
+
 	/** Draws a pixel at the given location with the given color.
 	 * 
 	 * @param x the x-coordinate
 	 * @param y the y-coordinate
-	 * @param color the color in RGBA8888 format. 
-	 */
+	 * @param color the color in RGBA8888 format. */
 	public void drawPixel (int x, int y, int color) {
 		pixmap.setPixel(x, y, color);
 	}

@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g2d;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.EnumSet;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;

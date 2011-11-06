@@ -51,7 +51,7 @@ public class Fixture {
 	 * @return the shape type. */
 	public Type getType () {
 		int type = jniGetType(addr);
-		switch(type) {
+		switch (type) {
 		case 0:
 			return Type.Circle;
 		case 1:
@@ -60,8 +60,8 @@ public class Fixture {
 			return Type.Polygon;
 		case 3:
 			return Type.Chain;
-			default:
-				throw new GdxRuntimeException("Unknown shape type!");
+		default:
+			throw new GdxRuntimeException("Unknown shape type!");
 		}
 	}
 
@@ -74,7 +74,7 @@ public class Fixture {
 			if (shapeAddr == 0) throw new GdxRuntimeException("Null shape address!");
 			int type = Shape.jniGetType(shapeAddr);
 
-			switch(type) {
+			switch (type) {
 			case 0:
 				shape = new CircleShape(shapeAddr);
 				break;
@@ -87,8 +87,8 @@ public class Fixture {
 			case 3:
 				shape = new ChainShape(shapeAddr);
 				break;
-				default:
-					throw new GdxRuntimeException("Unknown shape type!");
+			default:
+				throw new GdxRuntimeException("Unknown shape type!");
 			}
 		}
 
@@ -134,15 +134,13 @@ public class Fixture {
 
 	private native void jniGetFilterData (long addr, short[] filter);
 
-	/**
-	 * Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
-	 */
-	public void refilter() {
+	/** Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide. */
+	public void refilter () {
 		jniRefilter(addr);
 	}
-	
-	private native void jniRefilter(long addr);
-	
+
+	private native void jniRefilter (long addr);
+
 	/** Get the parent body of this fixture. This is NULL if the fixture is not attached. */
 	public Body getBody () {
 		return body;

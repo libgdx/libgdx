@@ -44,8 +44,8 @@ public class Circle implements Serializable {
 		float y = this.y - point.y;
 		return x * x + y * y <= radius * radius;
 	}
-	
-	public void set(float x, float y, float radius) {
+
+	public void set (float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;

@@ -100,24 +100,24 @@ public class Vector3 implements Serializable {
 		return new Vector3(this);
 	}
 
-	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g.
-	 * other methods might call this as well.
+	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods might call this
+	 * as well.
 	 * 
 	 * @return a temporary copy of this vector */
 	public Vector3 tmp () {
 		return tmp.set(this);
 	}
 
-	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g.
-	 * other methods might call this as well.
+	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods might call this
+	 * as well.
 	 * 
 	 * @return a temporary copy of this vector */
 	public Vector3 tmp2 () {
 		return tmp2.set(this);
 	}
 
-	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g.
-	 * other methods might call this as well.
+	/** NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods might call this
+	 * as well.
 	 * 
 	 * @return a temporary copy of this vector */
 	Vector3 tmp3 () {

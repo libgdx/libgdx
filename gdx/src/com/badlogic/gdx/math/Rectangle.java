@@ -133,12 +133,10 @@ public class Rectangle implements Serializable {
 		this.width = rect.width;
 		this.height = rect.height;
 	}
-	
-	/**
-	 * Merges this rectangle with the other rectangle.
-	 * @param rect the other rectangle
-	 */
-	public void merge(Rectangle rect) {
+
+	/** Merges this rectangle with the other rectangle.
+	 * @param rect the other rectangle */
+	public void merge (Rectangle rect) {
 		float minX = Math.min(x, rect.x);
 		float maxX = Math.max(x + width, rect.x + rect.width);
 		x = minX;
