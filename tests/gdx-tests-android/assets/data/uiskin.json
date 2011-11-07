@@ -183,8 +183,12 @@ resources: {
 },
 styles: {
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-		default: { down: default-round-down, font: default-font, fontColor: white, up: default-round },
-		toggle: { down: default-round-down, checked: default-round-down, font: default-font, fontColor: white, up: default-round, downFontColor: red }
+		default: { down: default-round-down, up: default-round },
+		toggle: { down: default-round-down, checked: default-round-down, up: default-round }
+	},
+	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+		default: { down: default-round-down, up: default-round, font: default-font, fontColor: white },
+		toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: default-font, fontColor: white, downFontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 		default: { listBackground: default-rect, listSelection: default-select-selection, font: default-font, fontColor: white, background: default-select }

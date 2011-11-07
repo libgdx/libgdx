@@ -228,6 +228,22 @@ public class Skin implements Disposable {
 		return true;
 	}
 
+	public NinePatch getPatch (String name) {
+		return getResource(name, NinePatch.class);
+	}
+
+	public Color getColor (String name) {
+		return getResource(name, Color.class);
+	}
+
+	public BitmapFont getFont (String name) {
+		return getResource(name, BitmapFont.class);
+	}
+
+	public TextureRegion getRegion (String name) {
+		return getResource(name, TextureRegion.class);
+	}
+
 	public void addStyle (String name, Object style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		ObjectMap<String, Object> typeStyles = styles.get(style.getClass());

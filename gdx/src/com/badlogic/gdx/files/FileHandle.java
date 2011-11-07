@@ -336,7 +336,6 @@ public class FileHandle {
 	public boolean isDirectory () {
 		if (type == FileType.Classpath) return false;
 		return file().isDirectory();
-
 	}
 
 	/** Returns a handle to the child with the specified name.

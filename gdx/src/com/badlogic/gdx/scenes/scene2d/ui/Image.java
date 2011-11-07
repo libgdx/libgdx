@@ -133,7 +133,8 @@ public class Image extends Widget {
 			if (scaleX == 1 && scaleY == 1 && rotation == 0)
 				batch.draw(region, x + imageX, y + imageY, imageWidth, imageHeight);
 			else
-				batch.draw(region, x + imageX, y + imageY, originX, originY, imageWidth, imageHeight, scaleX, scaleY, rotation);
+				batch.draw(region, x + imageX, y + imageY, originX - imageX, originY - imageY, imageWidth, imageHeight, scaleX,
+					scaleY, rotation);
 		}
 	}
 

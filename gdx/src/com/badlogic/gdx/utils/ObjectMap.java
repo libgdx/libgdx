@@ -86,7 +86,7 @@ public class ObjectMap<K, V> {
 		return put_internal(key, value);
 	}
 
-	public V put_internal (K key, V value) {
+	private V put_internal (K key, V value) {
 		// Check for existing keys.
 		int hashCode = key.hashCode();
 		int index1 = hashCode & mask;
@@ -268,6 +268,7 @@ public class ObjectMap<K, V> {
 		keyTable[index] = key;
 		valueTable[index] = value;
 		stashSize++;
+		size++;
 	}
 
 	public V get (K key) {

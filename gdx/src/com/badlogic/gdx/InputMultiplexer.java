@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx;
 
-import java.util.ArrayList;
+import com.badlogic.gdx.utils.Array;
 
 /** An {@link InputProcessor} that delegates to an ordered list of other InputProcessors. Delegation for an event stops if a
  * processor returns true, which indicates that the event was handled.
  * @author Nathan Sweet */
 public class InputMultiplexer implements InputProcessor {
-	private ArrayList<InputProcessor> processors = new ArrayList<InputProcessor>(4);
+	private Array<InputProcessor> processors = new Array(4);
 
 	public InputMultiplexer () {
 	}
@@ -37,67 +37,67 @@ public class InputMultiplexer implements InputProcessor {
 	}
 
 	public void removeProcessor (InputProcessor processor) {
-		processors.remove(processor);
+		processors.removeValue(processor, true);
 	}
 
 	public void clear () {
 		processors.clear();
 	}
 
-	public void setProcessors (ArrayList<InputProcessor> processors) {
+	public void setProcessors (Array<InputProcessor> processors) {
 		this.processors = processors;
 	}
 
-	public ArrayList<InputProcessor> getProcessors () {
+	public Array<InputProcessor> getProcessors () {
 		return processors;
 	}
 
 	public boolean keyDown (int keycode) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).keyDown(keycode)) return true;
 		return false;
 	}
 
 	public boolean keyUp (int keycode) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).keyUp(keycode)) return true;
 		return false;
 	}
 
 	public boolean keyTyped (char character) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).keyTyped(character)) return true;
 		return false;
 	}
 
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchDown(x, y, pointer, button)) return true;
 		return false;
 	}
 
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchUp(x, y, pointer, button)) return true;
 		return false;
 	}
 
 	public boolean touchDragged (int x, int y, int pointer) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchDragged(x, y, pointer)) return true;
 		return false;
 	}
 
 	@Override
 	public boolean touchMoved (int x, int y) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).touchMoved(x, y)) return true;
 		return false;
 	}
 
 	@Override
 	public boolean scrolled (int amount) {
-		for (int i = 0, n = processors.size(); i < n; i++)
+		for (int i = 0, n = processors.size; i < n; i++)
 			if (processors.get(i).scrolled(amount)) return true;
 		return false;
 	}

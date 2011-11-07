@@ -34,14 +34,15 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.PerspectiveCamController;
@@ -108,7 +109,7 @@ public class ProjectiveTextureTest extends GdxTest {
 	public void setupUI () {
 		ui = new Stage(480, 320, true);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
-		Button reload = new Button("Reload Shaders", skin.getStyle(ButtonStyle.class), "reload");
+		TextButton reload = new TextButton("Reload Shaders", skin.getStyle(TextButtonStyle.class), "reload");
 		SelectBox camera = new SelectBox(new String[] {"Camera", "Light"}, ui, skin.getStyle(SelectBoxStyle.class), "camera");
 		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
 

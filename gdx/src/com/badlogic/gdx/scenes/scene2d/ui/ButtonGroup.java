@@ -34,12 +34,12 @@ public class ButtonGroup {
 			add(buttons[i]);
 	}
 
-	/** Sets the first button with the specified {@link Button#getText() text} to checked. */
+	/** Sets the first {@link TextButton} with the specified text to checked. */
 	public void setChecked (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		for (int i = 0, n = buttons.size; i < n; i++) {
 			Button button = buttons.get(i);
-			if (text.equals(button.getText())) {
+			if (button instanceof TextButton && text.equals(((TextButton)button).getText())) {
 				button.setChecked(true);
 				return;
 			}

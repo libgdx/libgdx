@@ -25,12 +25,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Align;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider.ValueChangedListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -49,8 +49,8 @@ public class SoundTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		Button play = new Button("Play", skin);
-		Button stop = new Button("Stop", skin);
+		TextButton play = new TextButton("Play", skin);
+		TextButton stop = new TextButton("Stop", skin);
 		final Slider pitch = new Slider(0.1f, 4, 0.1f, skin);
 		pitch.setValue(1);
 		final Label pitchValue = new Label("1.0", skin);

@@ -23,13 +23,12 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -72,8 +71,8 @@ public class TableTest extends GdxTest {
 		root.debug();
 		root.add(new Label("meow meow meow meow meow meow meow meow meow meow meow meow meow ", skin)).colspan(3);
 		root.row();
-		root.add(new Button("Text Button", skin));
-		root.add(new Button("Toggle Button", skin.getStyle("toggle", ButtonStyle.class)));
+		root.add(new TextButton("Text Button", skin));
+		root.add(new TextButton("Toggle Button", skin.getStyle("toggle", TextButtonStyle.class)));
 		root.add(new CheckBox("meow", skin));
 		root.pack();
 		//root.add(new Button(new Image(region), skin));
