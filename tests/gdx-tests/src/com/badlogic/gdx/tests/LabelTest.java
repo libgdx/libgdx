@@ -87,7 +87,7 @@ public class LabelTest extends GdxTest {
 
 		float x = 40, y = 40;
 
-		BitmapFont font = skin.getResource("default-font", BitmapFont.class);
+		BitmapFont font = skin.getFont("default-font");
 		batch.begin();
 		font.draw(batch, "The quick brown fox jumped over the lazy cow.", x, y);
 		batch.end();

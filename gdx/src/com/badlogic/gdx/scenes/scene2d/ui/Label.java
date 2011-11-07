@@ -50,13 +50,13 @@ public class Label extends Widget {
 	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name from the skin and the specified
 	 * color. */
 	public Label (String text, String fontName, Color color, Skin skin) {
-		this(text, new LabelStyle(skin.getResource(fontName, BitmapFont.class), color), null);
+		this(text, new LabelStyle(skin.getFont(fontName), color), null);
 	}
 
 	/** Creates a label, using a {@link LabelStyle} that has a BitmapFont with the specified name and the specified color from the
 	 * skin. */
 	public Label (String text, String fontName, String colorName, Skin skin) {
-		this(text, new LabelStyle(skin.getResource(fontName, BitmapFont.class), skin.getResource(colorName, Color.class)), null);
+		this(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName)), null);
 	}
 
 	public Label (String text, LabelStyle style) {

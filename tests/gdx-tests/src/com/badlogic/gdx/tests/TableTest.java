@@ -46,7 +46,7 @@ public class TableTest extends GdxTest {
 
 		TextureRegion region = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 
-		NinePatch patch = skin.getResource("default-round", NinePatch.class);
+		NinePatch patch = skin.getPatch("default-round");
 
 		Label label = new Label("This is some text.", skin);
 

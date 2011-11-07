@@ -99,8 +99,8 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			Skin skin = layout.skin;
 			if (skin != null) {
 				if (skin.hasResource(className, TextureRegion.class))
-					return new Image(skin.getResource(className, TextureRegion.class));
-				if (skin.hasResource(className, NinePatch.class)) return new Image(skin.getResource(className, NinePatch.class));
+					return new Image(skin.getRegion(className));
+				if (skin.hasResource(className, NinePatch.class)) return new Image(skin.getPatch(className));
 			}
 			if (layout.assetManager != null && layout.assetManager.isLoaded(className, Texture.class))
 				return new Image(new TextureRegion(layout.assetManager.get(className, Texture.class)));
@@ -173,9 +173,9 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 		// Find TextureRegion and NinePatch in skin.
 		if (layout.skin != null) {
 			if (memberType == NinePatch.class) {
-				if (layout.skin.hasResource(value, NinePatch.class)) return layout.skin.getResource(value, NinePatch.class);
+				if (layout.skin.hasResource(value, NinePatch.class)) return layout.skin.getPatch(value);
 			} else if (memberType == TextureRegion.class) {
-				if (layout.skin.hasResource(value, TextureRegion.class)) return layout.skin.getResource(value, TextureRegion.class);
+				if (layout.skin.hasResource(value, TextureRegion.class)) return layout.skin.getRegion(value);
 			}
 		}
 		// Find Texture, TextureRegion and NinePatch in asset manager.
