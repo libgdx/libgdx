@@ -32,6 +32,14 @@ public class InputMultiplexer implements InputProcessor {
 			this.processors.add(processors[i]);
 	}
 
+	public void addProcessor(int index, InputProcessor processor) {
+		processors.insert(index, processor);
+	}
+	
+	public void removeProcessor(int index) {
+		processors.removeIndex(index);
+	}
+	
 	public void addProcessor (InputProcessor processor) {
 		processors.add(processor);
 	}
@@ -40,6 +48,13 @@ public class InputMultiplexer implements InputProcessor {
 		processors.removeValue(processor, true);
 	}
 
+	/**
+	 * @return the number of processors in this multiplexer
+	 */
+	public int size() {
+		return processors.size;
+	}
+	
 	public void clear () {
 		processors.clear();
 	}

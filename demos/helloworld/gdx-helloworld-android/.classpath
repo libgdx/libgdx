@@ -6,5 +6,5 @@
 	<classpathentry excluding="**/.svn/*" kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-android.jar"/>
 	<classpathentry kind="lib" path="libs/gdx.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

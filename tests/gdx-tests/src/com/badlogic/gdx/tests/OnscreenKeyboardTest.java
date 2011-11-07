@@ -23,7 +23,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
-
 	@Override
 	public boolean needsGL20 () {
 		return false;
@@ -38,7 +37,7 @@ public class OnscreenKeyboardTest extends GdxTest implements InputProcessor {
 		font = new BitmapFont();
 		text = "";
 		Gdx.input.setInputProcessor(this);
-		Gdx.input.setOnscreenKeyboardVisible(true);
+//		Gdx.input.setOnscreenKeyboardVisible(true);
 	}
 
 	public void render () {

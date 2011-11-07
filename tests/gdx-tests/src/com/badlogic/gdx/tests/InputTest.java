@@ -27,7 +27,7 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public void create () {
-		Gdx.input = new RemoteInput();
+//		Gdx.input = new RemoteInput();
 		Gdx.input.setInputProcessor(this);
 	}
 
