@@ -36,10 +36,13 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, BitmapFontParameter parameter) {
+		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
+		if(parameter != null && parameter.bitmapFontData != null) {
+			data = parameter.bitmapFontData;
+			return deps;
+		}
 		FileHandle handle = resolve(fileName);
 		data = new BitmapFontData(handle, parameter != null ? parameter.flip : false);
-
-		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
 		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class));
 		return deps;
 	}
@@ -63,5 +66,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		public TextureFilter minFitler = TextureFilter.Nearest;
 		/** the maximum filter to be used for the backing texture */
 		public TextureFilter maxFilter = TextureFilter.Nearest;
+		/** optional BitmapFontData to be used instead of loading the texture directly. Use this if your font is embedded in a skin. **/
+		public BitmapFontData bitmapFontData = null;
 	}
 }
