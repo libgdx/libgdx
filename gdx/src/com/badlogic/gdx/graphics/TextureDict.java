@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * stores {@link TextureRef}s by their path. If you need to load the same texture in different parts of your application it will
  * only be loaded into memory once by the dictionary.
  * </p>
- * 
+ * @deprecated 
  * @author Dave Clayton <contact@redskyforge.com> */
 public class TextureDict {
 

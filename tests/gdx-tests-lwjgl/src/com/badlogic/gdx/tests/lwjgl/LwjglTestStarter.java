@@ -81,7 +81,7 @@ public class LwjglTestStarter extends JFrame {
 			});
 
 			final Preferences prefs = new LwjglPreferences(new FileHandle(new LwjglFiles().getExternalStoragePath()
-				+ "pennypop-tests"));
+				+ ".prefs/lwjgl-tests"));
 			list.setSelectedValue(prefs.getString("last", null), true);
 
 			button.addActionListener(new ActionListener() {

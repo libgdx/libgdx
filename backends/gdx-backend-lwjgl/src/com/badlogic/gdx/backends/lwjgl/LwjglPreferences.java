@@ -35,7 +35,7 @@ public class LwjglPreferences implements Preferences {
 	private final Properties properties = new Properties();
 
 	LwjglPreferences (String name) {
-		this(Gdx.files.external(name));
+		this(Gdx.files.external(".prefs/" + name));
 	}
 
 	public LwjglPreferences (FileHandle file) {
@@ -174,7 +174,7 @@ public class LwjglPreferences implements Preferences {
 	@Override
 	public void flush () {
 		if (Gdx.files == null) return;
-		FileHandle file = Gdx.files.external(LwjglPreferences.this.name);
+		FileHandle file = Gdx.files.external(".prefs/" + name);
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(file.write(false));

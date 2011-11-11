@@ -315,6 +315,18 @@ public class Array<T> implements Iterable<T> {
 		return buffer.toString();
 	}
 
+	public String toString (String separator) {
+		if (size == 0) return "";
+		Object[] items = this.items;
+		StringBuilder buffer = new StringBuilder(32);
+		buffer.append(items[0]);
+		for (int i = 1; i < size; i++) {
+			buffer.append(separator);
+			buffer.append(items[i]);
+		}
+		return buffer.toString();
+	}
+
 	static public class ArrayIterator<T> implements Iterator<T> {
 		private final Array<T> array;
 		int index;
