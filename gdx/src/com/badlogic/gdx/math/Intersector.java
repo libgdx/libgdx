@@ -23,7 +23,9 @@ import com.badlogic.gdx.math.collision.Ray;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
- * @author badlogicgames@gmail.com */
+ * @author badlogicgames@gmail.com 
+ * @author jan.stria 
+ */
 public final class Intersector {
 	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
 	 * Float.Nan is returned.
@@ -575,5 +577,91 @@ public final class Intersector {
 		closestY *= closestY;
 
 		return closestX + closestY < c.radius * c.radius;
+	}
+	
+	/**
+	* Check whether specified convex polygons overlap.
+	* 
+	* @param p1 The first polygon.
+	* @param p2 The second polygon.
+	* @return Whether polygons overlap.
+	*/
+	public static boolean overlapConvexPolygons(Polygon p1, Polygon p2)
+	{
+	   return overlapConvexPolygons(p1, p2, null);
+	}
+
+	/**
+	* Check whether specified convex polygons overlap. If they don't optionally obtain a normalized
+	* direction of the separation axis.
+	* 
+	* @param p1 The first polygon.
+	* @param p2 The second polygon.
+	* @param separation Normalized vector defining a direction of the separation axis (optional).
+	* @return Whether polygons overlap.
+	*/
+	public static boolean overlapConvexPolygons(Polygon p1, Polygon p2, Vector2 separation)
+	{
+	   final float[] verts1 = p1.getVertices();
+	   final float[] verts2 = p2.getVertices();
+	   return !separateConvexPolygons(verts1, verts2, separation) &&
+	      !separateConvexPolygons(verts2, verts1, separation);
+	}
+
+	/**
+	* Check whether some of the first polygon's edges defined forms a separation axis of two polygons
+	* defined by the lists of vertices. Optionally obtain a normalized direction of the separation axis.
+	* 
+	* @param verts1 Vertices of the first polygon whose edges will be examined as separation axes.
+	* @param verts2 Vertices of the second polygon.
+	* @param separation Normalized vector defining a direction of the separation axis (optional).
+	* @return Whether some of the first polygon's edges forms a separation axis.
+	*/
+	static boolean separateConvexPolygons(float[] verts1, float[] verts2, Vector2 separation)
+	{
+	   final int length1 = verts1.length;
+	   final int length2 = verts2.length;
+	   
+	   for (int i = 0; i < length1; i += 2)
+	   {
+	      // index of the next vertex
+	      final int j = (i + 1) % length1;
+	      
+	      // projection axis is perpendicular to potential separation axis edge i->j 
+	      float projX = verts1[j + 1] - verts1[i + 1];
+	      float projY = verts1[i] - verts1[j];
+	      
+	      // normalize projection axis
+	      final float length = (float)Math.sqrt(projX * projX + projY * projY);
+	      projX /= length;
+	      projY /= length;
+	      
+	      // project the first vertices to the projection axis
+	      float min1 = Float.POSITIVE_INFINITY, max1 = Float.NEGATIVE_INFINITY;
+	      for (int k = 0; k < length1; k += 2)
+	      {
+	         final float dot = projX * verts1[k] + projY * verts1[k + 1];
+	         if (dot < min1) min1 = dot;
+	         if (dot > max1) max1 = dot;
+	      }
+	      
+	      // project the second vertices to the projection axis
+	      float min2 = Float.POSITIVE_INFINITY, max2 = Float.NEGATIVE_INFINITY;
+	      for (int k = 0; k < length2; k += 2)
+	      {
+	         final float dot = projX * verts2[k] + projY * verts2[k + 1];
+	         if (dot < min2) min2 = dot;
+	         if (dot > max2) max2 = dot;
+	      }
+	      
+	      // if projections do not overlap we have found the separation axis
+	      if ((max1 < min2) || (max2 < min1))
+	      {
+	         if (null != separation) separation.set(projY, -projX);
+	         return true;
+	      }
+	   }
+	   
+	   return false;
 	}
 }
