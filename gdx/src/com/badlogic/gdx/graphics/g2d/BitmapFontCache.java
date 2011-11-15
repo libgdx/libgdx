@@ -333,11 +333,11 @@ public class BitmapFontCache implements Disposable {
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
 			int lineEnd = start + font.computeVisibleGlyphs(str, start, newLine, wrapWidth);
-			int nextStart = lineEnd;
+			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start)
