@@ -41,6 +41,7 @@ public class Window extends Table {
 		super(null, null, name);
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
 		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
+		this.stage = stage;
 		setClip(true);
 		this.title = title;
 		setStyle(style);
