@@ -25,23 +25,21 @@ public class Window extends Table {
 	private final Vector2 dragOffset = new Vector2();
 	private boolean dragging;
 
-	public Window (Stage stage, Skin skin) {
-		this("", stage, skin.getStyle(WindowStyle.class), null);
+	public Window (Skin skin) {
+		this("", skin.getStyle(WindowStyle.class), null);
 	}
 
-	public Window (String title, Stage stage, Skin skin) {
-		this(title, stage, skin.getStyle(WindowStyle.class), null);
+	public Window (String title, Skin skin) {
+		this(title, skin.getStyle(WindowStyle.class), null);
 	}
 
-	public Window (String title, Stage stage, WindowStyle style) {
-		this(title, stage, style, null);
+	public Window (String title, WindowStyle style) {
+		this(title, style, null);
 	}
 
-	public Window (String title, Stage stage, WindowStyle style, String name) {
+	public Window (String title, WindowStyle style, String name) {
 		super(null, null, name);
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
-		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
-		this.stage = stage;
 		setClip(true);
 		this.title = title;
 		setStyle(style);

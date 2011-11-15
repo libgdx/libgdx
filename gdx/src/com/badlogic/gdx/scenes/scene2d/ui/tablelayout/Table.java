@@ -166,7 +166,6 @@ public class Table extends WidgetGroup {
 
 	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */
 	public void setClip (boolean enabled) {
-		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
 		clip = enabled;
 		transform = enabled;
 		invalidate();

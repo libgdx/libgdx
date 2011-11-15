@@ -33,7 +33,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * {@link SelectBoxStyle#background}.
  * @author mzechner */
 public class SelectBox extends Widget {
-	final Stage stage;
 	SelectBoxStyle style;
 	String[] items;
 	int selection = 0;
@@ -44,22 +43,20 @@ public class SelectBox extends Widget {
 	private float prefWidth, prefHeight;
 	final Vector2 stageCoords = new Vector2();
 
-	public SelectBox (Stage stage, Skin skin) {
-		this(new String[0], stage, skin);
+	public SelectBox (Skin skin) {
+		this(new String[0], skin);
 	}
 
-	public SelectBox (Object[] items, Stage stage, Skin skin) {
-		this(items, stage, skin.getStyle(SelectBoxStyle.class), null);
+	public SelectBox (Object[] items, Skin skin) {
+		this(items, skin.getStyle(SelectBoxStyle.class), null);
 	}
 
-	public SelectBox (Object[] items, Stage stage, SelectBoxStyle style) {
-		this(items, stage, style, null);
+	public SelectBox (Object[] items, SelectBoxStyle style) {
+		this(items, style, null);
 	}
 
-	public SelectBox (Object[] items, Stage stage, SelectBoxStyle style, String name) {
+	public SelectBox (Object[] items, SelectBoxStyle style, String name) {
 		super(name);
-		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
-		this.stage = stage;
 		setStyle(style);
 		setItems(items);
 		pack();

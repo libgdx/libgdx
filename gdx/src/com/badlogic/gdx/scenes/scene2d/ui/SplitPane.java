@@ -36,7 +36,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * @author Nathan Sweet */
 public class SplitPane extends WidgetGroup {
-	private final Stage stage;
 	private SplitPaneStyle style;
 	private Actor firstWidget, secondWidget;
 	private boolean vertical;
@@ -54,27 +53,26 @@ public class SplitPane extends WidgetGroup {
 	private Vector2 handlePosition = new Vector2();
 
 	/** Creates a horizontal splitpane with no children. */
-	public SplitPane (Stage stage, Skin skin) {
-		this(null, null, false, stage, skin);
+	public SplitPane (Skin skin) {
+		this(null, null, false, skin);
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, Skin skin) {
-		this(firstWidget, secondWidget, vertical, stage, skin.getStyle("default-horizontal", SplitPaneStyle.class), null);
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
+		this(firstWidget, secondWidget, vertical, skin.getStyle("default-horizontal", SplitPaneStyle.class), null);
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style) {
-		this(firstWidget, secondWidget, vertical, stage, style, null);
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, SplitPaneStyle style) {
+		this(firstWidget, secondWidget, vertical, style, null);
 	}
 
 	/** @param firstWidget May be null.
 	 * @param secondWidget May be null. */
-	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, Stage stage, SplitPaneStyle style, String name) {
+	public SplitPane (Actor firstWidget, Actor secondWidget, boolean vertical, SplitPaneStyle style, String name) {
 		super(name);
-		this.stage = stage;
 		this.firstWidget = firstWidget;
 		this.secondWidget = secondWidget;
 		this.vertical = vertical;

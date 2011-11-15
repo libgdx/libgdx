@@ -84,18 +84,18 @@ public class UITest extends GdxTest {
 		final CheckBox checkBox = new CheckBox("Check me", skin.getStyle(CheckBoxStyle.class), "checkbox");
 		final Slider slider = new Slider(0, 10, 1, skin.getStyle(SliderStyle.class), "slider");
 		final TextField textfield = new TextField("", "Click here!", skin.getStyle(TextFieldStyle.class), "textfield");
-		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, stage,
+		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"},
 			skin.getStyle(SelectBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);
 		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, "flickscroll");
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
 		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class), "scroll");
-		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, stage, skin.getStyle("default-horizontal",
+		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin.getStyle("default-horizontal",
 			SplitPaneStyle.class), "split");
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");
 
 		// window.debug();
-		Window window = new Window("Dialog", stage, skin.getStyle(WindowStyle.class), "window");
+		Window window = new Window("Dialog", skin.getStyle(WindowStyle.class), "window");
 		window.x = window.y = 0;
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
