@@ -326,6 +326,7 @@ public class BitmapFontCache implements Disposable {
 		y += font.data.ascent;
 		float down = font.data.down;
 
+		if (wrapWidth <= 0) wrapWidth = Integer.MAX_VALUE;
 		float maxWidth = 0;
 		int start = 0;
 		int numLines = 0;
@@ -336,7 +337,7 @@ public class BitmapFontCache implements Disposable {
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start)
@@ -349,8 +350,7 @@ public class BitmapFontCache implements Disposable {
 						lineEnd--;
 					}
 				}
-			} else
-				nextStart = lineEnd + 1;
+			}
 			if (lineEnd > start) {
 				float xOffset = 0;
 				if (alignment != HAlignment.LEFT) {

@@ -93,7 +93,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		blend.width = blend.getPrefWidth();
 		blend.height = blend.getPrefHeight();
 		blend.y = ui.height() - 64;
-		
+
 		Image rotate = new Image(new TextureRegion(uiTexture, 64, 0, 64, 32), Scaling.none, Align.CENTER, "rotate") {
 			public boolean touchDown (float x, float y, int pointer) {
 				rotateSprites = !rotateSprites;
@@ -104,7 +104,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		rotate.height = rotate.getPrefHeight();
 		rotate.y = blend.y;
 		rotate.x = 64;
-		
+
 		Image scale = new Image(new TextureRegion(uiTexture, 64, 32, 64, 32), Scaling.none, Align.CENTER, "scale") {
 			public boolean touchDown (float x, float y, int pointer) {
 				scaleSprites = !scaleSprites;

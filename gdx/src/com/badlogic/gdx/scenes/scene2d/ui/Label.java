@@ -35,7 +35,7 @@ public class Label extends Widget {
 	private BitmapFontCache cache;
 	private float prefWidth, prefHeight;
 	private int labelAlign = Align.LEFT;
-	private HAlignment wrapAlign = HAlignment.LEFT;
+	private HAlignment lineAlign = HAlignment.LEFT;
 	private boolean wrap;
 	private float wrapWidth;
 
@@ -77,6 +77,7 @@ public class Label extends Widget {
 		this.style = style;
 		cache = new BitmapFontCache(style.font);
 		if (style.fontColor != null) cache.setColor(style.fontColor);
+		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -90,6 +91,7 @@ public class Label extends Widget {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		if (text.equals(this.text)) return;
 		this.text = text;
+		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -107,6 +109,7 @@ public class Label extends Widget {
 	 * @see #setWrapWidth(float) */
 	public void setWrap (boolean wrap) {
 		this.wrap = wrap;
+		computeBounds();
 		invalidateHierarchy();
 	}
 
@@ -114,8 +117,8 @@ public class Label extends Widget {
 	 * the preferred height will be the actual height of the wrapped text.
 	 * @param wrapWidth Set to zero to disable wrap. */
 	public void setWrapWidth (float wrapWidth) {
-		setWrap(wrapWidth != 0);
 		this.wrapWidth = wrapWidth;
+		setWrap(wrapWidth != 0);
 		invalidateHierarchy();
 	}
 
@@ -126,17 +129,17 @@ public class Label extends Widget {
 	}
 
 	/** @param labelAlign Aligns all the text with the label widget.
-	 * @param wrapAlign Aligns each line of text (left, right, or center).
+	 * @param lineAlign Aligns each line of text (left, right, or center).
 	 * @see Align */
-	public void setAlignment (int labelAlign, int wrapAlign) {
+	public void setAlignment (int labelAlign, int lineAlign) {
 		this.labelAlign = labelAlign;
 
-		if ((wrapAlign & Align.LEFT) != 0)
-			this.wrapAlign = HAlignment.LEFT;
-		else if ((wrapAlign & Align.RIGHT) != 0)
-			this.wrapAlign = HAlignment.RIGHT;
+		if ((lineAlign & Align.LEFT) != 0)
+			this.lineAlign = HAlignment.LEFT;
+		else if ((lineAlign & Align.RIGHT) != 0)
+			this.lineAlign = HAlignment.RIGHT;
 		else
-			this.wrapAlign = HAlignment.CENTER;
+			this.lineAlign = HAlignment.CENTER;
 
 		invalidate();
 	}
@@ -157,13 +160,17 @@ public class Label extends Widget {
 		return cache.getColor();
 	}
 
-	@Override
-	public void layout () {
+	private void computeBounds () {
 		float wrapWidth = this.wrapWidth != 0 ? this.wrapWidth : width;
 		if (wrap)
 			bounds.set(cache.getFont().getWrappedBounds(text, wrapWidth));
 		else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
+	}
+
+	@Override
+	public void layout () {
+		computeBounds();
 
 		float y;
 		if ((labelAlign & Align.TOP) != 0) {
@@ -185,9 +192,9 @@ public class Label extends Widget {
 			x = (width - bounds.width) / 2;
 
 		if (wrap)
-			cache.setWrappedText(text, x, y, wrapWidth, wrapAlign);
+			cache.setWrappedText(text, x, y, bounds.width, lineAlign);
 		else
-			cache.setMultiLineText(text, x, y, width, wrapAlign);
+			cache.setMultiLineText(text, x, y, bounds.width, lineAlign);
 	}
 
 	@Override
@@ -199,13 +206,11 @@ public class Label extends Widget {
 
 	public float getPrefWidth () {
 		if (wrap) return wrapWidth != 0 ? wrapWidth : 100;
-		validate();
 		return bounds.width;
 	}
 
 	public float getPrefHeight () {
 		if (wrap && wrapWidth == 0) return 100;
-		validate();
 		return bounds.height - style.font.getDescent() * 2;
 	}
 

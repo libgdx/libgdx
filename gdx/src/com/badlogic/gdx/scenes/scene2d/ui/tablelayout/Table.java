@@ -51,33 +51,32 @@ import com.esotericsoftware.tablelayout.ParseException;
 public class Table extends WidgetGroup {
 	private final TableLayout layout;
 
-	private Stage stage;
 	private NinePatch backgroundPatch;
 	private final Rectangle tableBounds = new Rectangle();
 	private final Rectangle scissors = new Rectangle();
 	private ClickListener listener;
 
+	public boolean clip;
 	public boolean isPressed;
 
 	public Table () {
-		this(null, null, null, null);
+		this(null, null, null);
 	}
 
 	public Table (String name) {
-		this(null, null, null, name);
+		this(null, null, name);
 	}
 
-	public Table (Stage stage, Skin skin) {
-		this(stage, skin, null, null);
+	public Table (Skin skin) {
+		this(skin, null, null);
 	}
 
-	public Table (Stage stage, Skin skin, TableLayout layout, String name) {
+	public Table (Skin skin, TableLayout layout, String name) {
 		super(name);
 		transform = false;
 		if (layout == null) layout = new TableLayout();
 		this.layout = layout;
 		layout.setTable(this);
-		layout.stage = stage;
 		layout.skin = skin;
 	}
 
@@ -86,13 +85,16 @@ public class Table extends WidgetGroup {
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		drawBackground(batch, parentAlpha);
 
-		if (stage != null) {
+		if (transform) {
 			applyTransform(batch);
-			calculateScissors(batch.getTransformMatrix());
-			if (ScissorStack.pushScissors(scissors)) {
+			if (clip) {
+				calculateScissors(batch.getTransformMatrix());
+				if (ScissorStack.pushScissors(scissors)) {
+					drawChildren(batch, parentAlpha);
+					ScissorStack.popScissors();
+				}
+			} else
 				drawChildren(batch, parentAlpha);
-				ScissorStack.popScissors();
-			}
 			resetTransform(batch);
 		} else
 			super.draw(batch, parentAlpha);
@@ -163,10 +165,10 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Causes the contents to be clipped if they exceed the table bounds. Enabling clipping will set {@link #transform} to true. */
-	public void enableClipping (Stage stage) {
+	public void setClip (boolean enabled) {
 		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
-		this.stage = stage;
-		transform = true;
+		clip = enabled;
+		transform = enabled;
 		invalidate();
 	}
 
@@ -566,10 +568,6 @@ public class Table extends WidgetGroup {
 
 	public void setAssetManager (AssetManager assetManager) {
 		layout.assetManager = assetManager;
-	}
-
-	public void setStage (Stage stage) {
-		layout.stage = stage;
 	}
 
 	/** Draws the debug lines for all TableLayouts in the stage. If this method is not called each frame, no debug lines will be

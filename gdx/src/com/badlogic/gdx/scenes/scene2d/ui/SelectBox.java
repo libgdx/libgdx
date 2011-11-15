@@ -143,7 +143,7 @@ public class SelectBox extends Widget {
 
 	@Override
 	public void touchUp (float x, float y, int pointer) {
-		stage.getRoot().focus(list, pointer);
+		stage.setTouchFocus(list, pointer);
 	}
 
 	/** Sets the {@link SelectionListener}.
@@ -197,7 +197,7 @@ public class SelectBox extends Widget {
 			this.width = SelectBox.this.width;
 			this.height = 100;
 			this.oldScreenCoords.set(screenCoords);
-			stage.getRoot().focus(this, 0);
+			if (stage != null) stage.setTouchFocus(this, 0);
 			layout();
 		}
 
@@ -264,7 +264,7 @@ public class SelectBox extends Widget {
 
 		@Override
 		public void touchUp (float x, float y, int pointer) {
-			stage.removeActor(this);
+			if (stage != null) stage.removeActor(this);
 		}
 
 		@Override
@@ -288,7 +288,7 @@ public class SelectBox extends Widget {
 
 		public void act (float delta) {
 			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) {
-				stage.removeActor(this);
+				if (stage != null) stage.removeActor(this);
 			}
 		}
 	}

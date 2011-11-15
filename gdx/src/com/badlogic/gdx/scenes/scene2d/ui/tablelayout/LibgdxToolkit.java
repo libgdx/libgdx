@@ -121,25 +121,6 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 				} catch (Exception ignored) {
 				}
 			}
-			// Try a Stage constructor.
-			if (layout.stage != null) {
-				try {
-					return (Actor)Class.forName(className).getConstructor(Stage.class).newInstance(layout.stage);
-				} catch (InvocationTargetException ex2) {
-					throw new InvocationTargetException(ex2, "Error constructing instance of class: " + className);
-				} catch (Exception ignored) {
-				}
-			}
-			// Try a Stage and Skin constructor.
-			if (layout.skin != null && layout.stage != null) {
-				try {
-					return (Actor)Class.forName(className).getConstructor(Stage.class, Skin.class)
-						.newInstance(layout.stage, layout.skin);
-				} catch (InvocationTargetException ex2) {
-					throw new InvocationTargetException(ex2, "Error constructing instance of class: " + className);
-				} catch (Exception ignored) {
-				}
-			}
 			throw ex;
 		}
 	}
@@ -201,7 +182,6 @@ public class LibgdxToolkit extends Toolkit<Actor, Table, TableLayout> {
 			table = new Table();
 		}
 		TableLayout layout = parent.getTableLayout();
-		table.setStage(layout.stage);
 		table.setSkin(layout.skin);
 		table.setAssetManager(layout.assetManager);
 		return table;

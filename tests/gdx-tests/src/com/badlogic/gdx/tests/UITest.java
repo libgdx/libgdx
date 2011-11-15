@@ -87,9 +87,9 @@ public class UITest extends GdxTest {
 		final SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX"}, stage,
 			skin.getStyle(SelectBoxStyle.class), "combo");
 		final Image imageActor = new Image(image2);
-		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, stage, "flickscroll");
+		final FlickScrollPane scrollPane = new FlickScrollPane(imageActor, "flickscroll");
 		final List list = new List(listEntries, skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane2 = new ScrollPane(list, stage, skin.getStyle(ScrollPaneStyle.class), "scroll");
+		final ScrollPane scrollPane2 = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class), "scroll");
 		final SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, stage, skin.getStyle("default-horizontal",
 			SplitPaneStyle.class), "split");
 		final Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "label");

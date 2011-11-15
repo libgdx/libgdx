@@ -90,6 +90,8 @@ public abstract class Actor {
 	protected PooledLinkedList<Action> actions = new PooledLinkedList<Action>(10);
 	private boolean toRemove;
 
+	protected Stage stage;
+
 	/** Creates an actor without a name. */
 	public Actor () {
 		this.name = null;
@@ -107,11 +109,15 @@ public abstract class Actor {
 	 * @param parentAlpha the parent's alpha value. */
 	public abstract void draw (SpriteBatch batch, float parentAlpha);
 
-	public abstract boolean touchDown (float x, float y, int pointer);
+	public boolean touchDown (float x, float y, int pointer) {
+		return false;
+	}
 
-	public abstract void touchUp (float x, float y, int pointer);
+	public void touchUp (float x, float y, int pointer) {
+	}
 
-	public abstract void touchDragged (float x, float y, int pointer);
+	public void touchDragged (float x, float y, int pointer) {
+	}
 
 	public boolean touchMoved (float x, float y) {
 		return false;
@@ -199,5 +205,9 @@ public abstract class Actor {
 	 * @return <code>true</code> when the actor is to be removed or <code>false</code> otherwise */
 	public boolean isMarkedToRemove () {
 		return toRemove;
+	}
+	
+	public Stage getStage () {
+		return stage;
 	}
 }

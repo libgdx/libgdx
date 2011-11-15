@@ -494,6 +494,7 @@ public class BitmapFont implements Disposable {
 	 *         same TextBounds instance is used for all methods that return TextBounds. */
 	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
 		HAlignment alignment) {
+		if (wrapWidth <= 0) wrapWidth = Integer.MAX_VALUE;
 		float batchColor = spriteBatch.color;
 		float down = this.data.down;
 		int start = 0;
@@ -507,7 +508,7 @@ public class BitmapFont implements Disposable {
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start)
@@ -603,6 +604,7 @@ public class BitmapFont implements Disposable {
 	 * height}) to the baseline of the last line of text. Note the same TextBounds instance is used for all methods that return
 	 * TextBounds. */
 	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth) {
+		if (wrapWidth <= 0) wrapWidth = Integer.MAX_VALUE;
 		float down = this.data.down;
 		int start = 0;
 		int numLines = 0;
@@ -615,7 +617,7 @@ public class BitmapFont implements Disposable {
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start)
@@ -628,8 +630,7 @@ public class BitmapFont implements Disposable {
 						lineEnd--;
 					}
 				}
-			} else
-				nextStart = lineEnd + 1;
+			}
 			if (lineEnd > start) {
 				float lineWidth = getBounds(str, start, lineEnd).width;
 				maxWidth = Math.max(maxWidth, lineWidth);
@@ -699,9 +700,9 @@ public class BitmapFont implements Disposable {
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
-					lastGlyph = g;
 					if (width + g.xadvance > availableWidth) break;
 					width += g.xadvance;
+					lastGlyph = g;
 				}
 			}
 		} else {
@@ -711,9 +712,9 @@ public class BitmapFont implements Disposable {
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
-					lastGlyph = g;
 					if (width + g.xadvance * scaleX > availableWidth) break;
 					width += g.xadvance * scaleX;
+					lastGlyph = g;
 				}
 			}
 		}

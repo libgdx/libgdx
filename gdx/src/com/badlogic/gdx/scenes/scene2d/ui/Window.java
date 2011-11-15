@@ -38,10 +38,10 @@ public class Window extends Table {
 	}
 
 	public Window (String title, Stage stage, WindowStyle style, String name) {
-		super(null, null, null, name);
+		super(null, null, name);
 		if (title == null) throw new IllegalArgumentException("title cannot be null.");
 		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
-		enableClipping(stage);
+		setClip(true);
 		this.title = title;
 		setStyle(style);
 	}

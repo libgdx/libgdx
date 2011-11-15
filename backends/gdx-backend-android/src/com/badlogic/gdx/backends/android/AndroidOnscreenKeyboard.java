@@ -53,7 +53,7 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 		this.input = input;
 	}
 	
-	private Dialog createDialog() {
+	Dialog createDialog() {
 		textView = createView(context);
 		textView.setOnKeyListener(this);
 		FrameLayout.LayoutParams textBoxLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.FILL_PARENT,
@@ -136,7 +136,6 @@ class AndroidOnscreenKeyboard implements OnKeyListener, OnTouchListener {
 						private int keyboardHeight;
 						private boolean keyboardShowing;
 
-						@SuppressWarnings("synthetic-access")
 						@Override
 						public boolean onPreDraw () {
 							content.getLocationOnScreen(screenloc);

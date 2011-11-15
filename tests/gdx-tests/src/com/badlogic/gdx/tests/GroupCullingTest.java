@@ -29,7 +29,7 @@ public class GroupCullingTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Table labels = new Table();
-		root.add(new ScrollPane(labels, stage, skin)).expand().fill();
+		root.add(new ScrollPane(labels, skin)).expand().fill();
 		root.row();
 		root.add(drawnLabel = new Label("", skin));
 

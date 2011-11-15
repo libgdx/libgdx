@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics;
 /** <p>
  * A reference counted wrapper for a {@link Texture}. TextureRefs are managed by the {@link TextureDict}.
  * </p>
- * 
+ * @deprecated
  * @author Dave Clayton <contact@redskyforge.com> */
 public class TextureRef {
 	public String Name;

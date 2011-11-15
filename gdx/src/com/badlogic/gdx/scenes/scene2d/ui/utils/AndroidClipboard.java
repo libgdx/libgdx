@@ -17,15 +17,15 @@
 package com.badlogic.gdx.scenes.scene2d.ui.utils;
 
 public class AndroidClipboard extends Clipboard {
-
+	private String contents;
+	
 	@Override
 	public String getContents () {
-		return "";
+		return contents;
 	}
 
 	@Override
-	public void setContents (String content) {
-
+	public void setContents (String contents) {
+		this.contents = contents;
 	}
-
 }

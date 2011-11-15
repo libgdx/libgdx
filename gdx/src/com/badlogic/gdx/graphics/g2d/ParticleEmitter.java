@@ -24,6 +24,7 @@ import java.util.BitSet;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.BooleanArray;
 
 // BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.
@@ -64,7 +65,7 @@ public class ParticleEmitter {
 	private String name;
 	private String imagePath;
 	private int activeCount;
-	private BitSet active;
+	private boolean[] active;
 	private boolean firstUpdate;
 	private boolean flipX, flipY;
 	private int updateFlags;
@@ -136,7 +137,7 @@ public class ParticleEmitter {
 
 	public void setMaxParticleCount (int maxParticleCount) {
 		this.maxParticleCount = maxParticleCount;
-		active = new BitSet(maxParticleCount);
+		active = new boolean[maxParticleCount];
 		activeCount = 0;
 		particles = new Particle[maxParticleCount];
 	}
@@ -144,21 +145,32 @@ public class ParticleEmitter {
 	public void addParticle () {
 		int activeCount = this.activeCount;
 		if (activeCount == maxParticleCount) return;
-		BitSet active = this.active;
-		int index = active.nextClearBit(0);
-		activateParticle(index);
-		active.set(index);
-		this.activeCount = activeCount + 1;
+		boolean[] active = this.active;
+		for (int i = 0, n = active.length; i < n; i++) {
+			if (!active[i]) {
+				activateParticle(i);
+				active[i] = true;
+				this.activeCount = activeCount + 1;
+				break;
+			}
+		}
 	}
 
 	public void addParticles (int count) {
 		count = Math.min(count, maxParticleCount - activeCount);
 		if (count == 0) return;
-		BitSet active = this.active;
+		boolean[] active = this.active;
+		int index = 0, n = active.length;
+		outer:
 		for (int i = 0; i < count; i++) {
-			int index = active.nextClearBit(0);
-			activateParticle(index);
-			active.set(index);
+			for (; index < n; index++) {
+				if (!active[index]) {
+					activateParticle(index);
+					active[index++] = true;
+					continue outer;
+				}
+			}
+			break;
 		}
 		this.activeCount += count;
 	}
@@ -169,17 +181,13 @@ public class ParticleEmitter {
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
-		BitSet active = this.active;
+		boolean[] active = this.active;
 		int activeCount = this.activeCount;
-		int index = 0;
-		while (true) {
-			index = active.nextSetBit(index);
-			if (index == -1) break;
-			if (!updateParticle(particles[index], delta, deltaMillis)) {
-				active.clear(index);
+		for (int i = 0, n = active.length; i < n; i++) {
+			if (active[i] && !updateParticle(particles[i], delta, deltaMillis)) {
+				active[i] = false;
 				activeCount--;
 			}
-			index++;
 		}
 		this.activeCount = activeCount;
 
@@ -219,15 +227,11 @@ public class ParticleEmitter {
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
 		Particle[] particles = this.particles;
-		BitSet active = this.active;
+		boolean[] active = this.active;
 		int activeCount = this.activeCount;
-		int index = 0;
-		while (true) {
-			index = active.nextSetBit(index);
-			if (index == -1) break;
-			particles[index].draw(spriteBatch);
-			index++;
-		}
+
+		for (int i = 0, n = active.length; i < n; i++)
+			if (active[i]) particles[i].draw(spriteBatch);
 		this.activeCount = activeCount;
 
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
@@ -247,20 +251,18 @@ public class ParticleEmitter {
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
 		Particle[] particles = this.particles;
-		BitSet active = this.active;
+		boolean[] active = this.active;
 		int activeCount = this.activeCount;
-		int index = 0;
-		while (true) {
-			index = active.nextSetBit(index);
-			if (index == -1) break;
-			Particle particle = particles[index];
-			if (updateParticle(particle, delta, deltaMillis))
-				particle.draw(spriteBatch);
-			else {
-				active.clear(index);
-				activeCount--;
+		for (int i = 0, n = active.length; i < n; i++) {
+			if (active[i]) {
+				Particle particle = particles[i];
+				if (updateParticle(particle, delta, deltaMillis))
+					particle.draw(spriteBatch);
+				else {
+					active[i] = false;
+					activeCount--;
+				}
 			}
-			index++;
 		}
 		this.activeCount = activeCount;
 
@@ -549,15 +551,9 @@ public class ParticleEmitter {
 		if (attached) {
 			float xAmount = x - this.x;
 			float yAmount = y - this.y;
-			BitSet active = this.active;
-			int index = 0;
-			while (true) {
-				index = active.nextSetBit(index);
-				if (index == -1) break;
-				Particle particle = particles[index];
-				particle.translate(xAmount, yAmount);
-				index++;
-			}
+			boolean[] active = this.active;
+			for (int i = 0, n = active.length; i < n; i++)
+				if (active[i]) particles[i].translate(xAmount, yAmount);
 		}
 		this.x = x;
 		this.y = y;
@@ -740,10 +736,6 @@ public class ParticleEmitter {
 
 	public int getActiveCount () {
 		return activeCount;
-	}
-
-	public int getDrawCount () {
-		return active.length();
 	}
 
 	public String getImagePath () {

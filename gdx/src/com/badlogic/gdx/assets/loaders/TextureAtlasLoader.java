@@ -69,5 +69,12 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 	static public class TextureAtlasParameter extends AssetLoaderParameters<TextureAtlas> {
 		/** whether to flip the texture atlas vertically **/
 		public boolean flip = false;
+
+		public TextureAtlasParameter () {
+		}
+
+		public TextureAtlasParameter (boolean flip) {
+			this.flip = flip;
+		}
 	}
 }

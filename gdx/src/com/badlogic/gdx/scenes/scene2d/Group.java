@@ -51,9 +51,6 @@ public class Group extends Actor implements Cullable {
 
 	public boolean transform = true;
 	public Actor lastTouchedChild;
-	public Actor[] focusedActor = new Actor[20];
-	public Actor keyboardFocusedActor = null;
-	public Actor scrollFocusedActor = null;
 
 	protected Rectangle cullingArea;
 	protected final Vector2 point = new Vector2();
@@ -203,14 +200,6 @@ public class Group extends Actor implements Cullable {
 
 		if (debug) Gdx.app.log("Group", name + ": " + x + ", " + y);
 
-		if (focusedActor[pointer] != null) {
-			point.x = x;
-			point.y = y;
-			focusedActor[pointer].toLocalCoordinates(point);
-			focusedActor[pointer].touchDown(point.x, point.y, pointer);
-			return true;
-		}
-
 		int len = children.size() - 1;
 		for (int i = len; i >= 0; i--) {
 			Actor child = children.get(i);
@@ -219,13 +208,16 @@ public class Group extends Actor implements Cullable {
 			toChildCoordinates(child, x, y, point);
 			if (child.hit(point.x, point.y) == null) continue;
 
-			if (child instanceof Group) ((Group)child).lastTouchedChild = null; // Allows lastTouchedChild to be the group itself.
+			// Allows lastTouchedChild to be the group itself, but means lastTouchedChild is cleared if the group isn't hit.
+			if (child instanceof Group) ((Group)child).lastTouchedChild = null;
 
 			if (child.touchDown(point.x, point.y, pointer)) {
-				if (focusedActor[pointer] == null) focus(child, pointer); // The first actor that accepts touchDown is focused.
+				// The first actor that accepts touchDown is focused.
+				if (stage != null && stage.getTouchFocus(pointer) == null) stage.setTouchFocus(child, pointer);
+
 				if (child instanceof Group) {
 					lastTouchedChild = ((Group)child).lastTouchedChild;
-					if (lastTouchedChild == null) lastTouchedChild = child; // If still null, the group itself was touched.
+					if (lastTouchedChild == null) lastTouchedChild = child; // If still null, the child group itself was touched.
 				} else
 					lastTouchedChild = child;
 				return true;
@@ -234,24 +226,6 @@ public class Group extends Actor implements Cullable {
 
 		lastTouchedChild = null;
 		return false;
-	}
-
-	@Override
-	public void touchUp (float x, float y, int pointer) {
-		if (!touchable) return;
-		point.x = x;
-		point.y = y;
-		Actor actor = focusedActor[pointer];
-		if (actor == null) { // This group is what had focus.
-			parent.focus(null, pointer);
-			return;
-		}
-		if (actor != this) {
-			actor.toLocalCoordinates(point);
-			actor.touchUp(point.x, point.y, pointer);
-		}
-		// If the focused actor hasn't changed, remove its focus.
-		if (focusedActor[pointer] == actor) actor.parent.focus(null, pointer);
 	}
 
 	@Override
@@ -268,44 +242,6 @@ public class Group extends Actor implements Cullable {
 			if (child.touchMoved(point.x, point.y)) return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void touchDragged (float x, float y, int pointer) {
-		if (focusedActor[pointer] != null) {
-			if (!touchable) return;
-			point.x = x;
-			point.y = y;
-			focusedActor[pointer].toLocalCoordinates(point);
-			focusedActor[pointer].touchDragged(point.x, point.y, pointer);
-		}
-	}
-
-	@Override
-	public boolean scrolled (int amount) {
-		if (scrollFocusedActor != null) scrollFocusedActor.scrolled(amount);
-		return false;
-	}
-
-	public boolean keyDown (int keycode) {
-		if (keyboardFocusedActor != null)
-			return keyboardFocusedActor.keyDown(keycode);
-		else
-			return false;
-	}
-
-	public boolean keyUp (int keycode) {
-		if (keyboardFocusedActor != null)
-			return keyboardFocusedActor.keyUp(keycode);
-		else
-			return false;
-	}
-
-	public boolean keyTyped (char character) {
-		if (keyboardFocusedActor != null)
-			return keyboardFocusedActor.keyTyped(character);
-		else
-			return false;
 	}
 
 	public Actor hit (float x, float y) {
@@ -334,6 +270,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		setStage(actor, stage);
 		childrenChanged();
 	}
 
@@ -345,6 +282,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		setStage(actor, stage);
 		childrenChanged();
 	}
 
@@ -357,6 +295,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		setStage(actor, stage);
 		childrenChanged();
 	}
 
@@ -372,6 +311,7 @@ public class Group extends Actor implements Cullable {
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
 		actor.parent = this;
+		setStage(actor, stage);
 		childrenChanged();
 	}
 
@@ -381,7 +321,9 @@ public class Group extends Actor implements Cullable {
 		children.remove(actor);
 		if (actor instanceof Group) groups.remove((Group)actor);
 		if (actor.name != null) namesToActors.remove(actor.name);
-		unfocusAll(actor);
+		if (stage != null) stage.unfocus(actor);
+		actor.parent = null;
+		setStage(actor, null);
 		childrenChanged();
 	}
 
@@ -391,14 +333,24 @@ public class Group extends Actor implements Cullable {
 		if (children.remove(actor)) {
 			if (actor instanceof Group) groups.remove((Group)actor);
 			if (actor.name != null) namesToActors.remove(actor.name);
-			unfocusAll(actor);
+			if (stage != null) stage.unfocus(actor);
+			actor.parent = null;
+			setStage(actor, null);
 			return;
 		}
-
 		for (int i = 0; i < groups.size(); i++) {
 			groups.get(i).removeActorRecursive(actor);
 		}
 		childrenChanged();
+	}
+
+	private void setStage (Actor actor, Stage stage) {
+		actor.stage = stage;
+		if (actor instanceof Group) {
+			List<Actor> children = ((Group)actor).getActors();
+			for (int i = 0; i < children.size(); i++)
+				setStage(children.get(i), stage);
+		}
 	}
 
 	/** Finds the {@link Actor} with the given name in this Group and its children.
@@ -451,45 +403,6 @@ public class Group extends Actor implements Cullable {
 		return immutableGroups;
 	}
 
-	/** Sets the focus to the given child {@link Actor}. All subsequent touch events with the given pointer id will be passed to
-	 * this child Actor. To unset the focus simply pass null.
-	 * 
-	 * @param actor the Actor */
-	public void focus (Actor actor, int pointer) {
-		// An actor already has focus. Remove the focus if it is not a child of this group, because the focused actor could be
-		// further down in the hiearchy.
-		Actor existingActor = focusedActor[pointer];
-		if (existingActor != null && existingActor.parent != this) {
-			focusedActor[pointer] = null;
-			existingActor.parent.focus(null, pointer);
-		}
-
-		if (debug) Gdx.app.log("Group", "focus: " + (actor == null ? "null" : actor.name));
-		focusedActor[pointer] = actor;
-		if (parent != null) parent.focus(actor, pointer);
-	}
-
-	/** Sets the keyboard focus to the given child {@link Actor}. All subsequent keyboard events will be passed to that actor. To
-	 * unfocus an actor simply pass null.
-	 * @param actor the Actor */
-	public void keyboardFocus (Actor actor) {
-		Actor existingActor = keyboardFocusedActor;
-		if (existingActor != null && existingActor.parent != this) {
-			keyboardFocusedActor = null;
-			existingActor.parent.keyboardFocus(null);
-		}
-		keyboardFocusedActor = actor;
-		if (parent != null) parent.keyboardFocus(actor);
-	}
-
-	/** Sets the scroll focus to the given child {@link Actor}. All subsequent scroll events will be passed to that actor. To
-	 * unfocus an actor simply pass null.
-	 * @param actor the Actor. */
-	public void scrollFocus (Actor actor) {
-		scrollFocusedActor = actor;
-		if (parent != null) parent.scrollFocus(actor);
-	}
-
 	/** Clears this Group, removing all contained {@link Actor}s. */
 	public void clear () {
 		children.clear();
@@ -504,33 +417,13 @@ public class Group extends Actor implements Cullable {
 		Collections.sort(children, comparator);
 	}
 
-	/** Unfocuses all {@link Actor} instance currently focused for touch and keyboard events. You should call this in case your app
-	 * resumes to clear up any pressed states. Make sure the Actors forget their states as well! This will be applied to all child
-	 * groups recursively. */
-	public void unfocusAll () {
-		for (int i = 0; i < focusedActor.length; i++) {
-			focusedActor[i] = null;
-		}
-
-		for (int i = 0; i < groups.size(); i++) {
-			groups.get(i).unfocusAll();
-		}
-
-		keyboardFocusedActor = null;
-		scrollFocusedActor = null;
-	}
-
-	/** Unfocuses this {@link Actor} from the touch, keyboard and scroll focus from this group and all groups above it.
-	 * @param actor the Actor */
-	public void unfocusAll (Actor actor) {
-		for (int i = 0; i < focusedActor.length; i++) {
-			if (focusedActor[i] == actor) {
-				focus(null, i);
-			}
-		}
-
-		if (keyboardFocusedActor == actor) keyboardFocus(null);
-		if (scrollFocusedActor == actor) scrollFocus(null);
+	/** Converts coordinates for this group to those of a descendant actor.
+	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
+	public void toLocalCoordinates (Actor descendant, Vector2 point) {
+		if (descendant.parent == null) throw new IllegalArgumentException("Child was not a descendant.");
+		// First convert to the actor's parent coordinates.
+		if (descendant.parent != this) toLocalCoordinates(descendant.parent, point);
+		Group.toChildCoordinates(descendant, point.x, point.y, point);
 	}
 
 	/** Transforms the coordinates given in the child's parent coordinate system to the child {@link Actor}'s coordinate system.

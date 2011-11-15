@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -31,11 +32,11 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, SkinParameter parameter) {
-		if (parameter == null) throw new IllegalArgumentException("Missing SkinParameter: " + fileName);
-
 		Array<AssetDescriptor> deps = new Array();
-		deps.add(new AssetDescriptor(parameter.texturePath, Texture.class));
-
+		if (parameter == null)
+			deps.add(new AssetDescriptor(Gdx.files.internal(fileName).nameWithoutExtension() + ".png", Texture.class));
+		else
+			deps.add(new AssetDescriptor(parameter.texturePath, Texture.class));
 		return deps;
 	}
 
@@ -45,7 +46,12 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 
 	@Override
 	public Skin loadSync (AssetManager manager, String fileName, SkinParameter parameter) {
-		Texture texture = manager.get(parameter.texturePath, Texture.class);
+		String texturePath;
+		if (parameter == null)
+			texturePath = Gdx.files.internal(fileName).nameWithoutExtension() + ".png";
+		else
+			texturePath = parameter.texturePath;
+		Texture texture = manager.get(texturePath, Texture.class);
 		return new Skin(resolve(fileName), texture);
 	}
 

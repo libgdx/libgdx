@@ -19,14 +19,17 @@ public class Button extends Table {
 
 	public Button (Skin skin) {
 		this(skin.getStyle(ButtonStyle.class), null);
+		pack();
 	}
 
 	public Button (ButtonStyle style) {
 		this(style, null);
+		pack();
 	}
 
 	public Button (Actor child, Skin skin) {
 		this(child, skin.getStyle(ButtonStyle.class));
+		pack();
 	}
 
 	public Button (Actor child, ButtonStyle style) {
@@ -36,7 +39,7 @@ public class Button extends Table {
 	}
 
 	public Button (ButtonStyle style, String name) {
-		super(null, null, null, name);
+		super(null, null, name);
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		setStyle(style);
 
@@ -91,6 +94,7 @@ public class Button extends Table {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
+		validate();
 		for (int i = 0; i < children.size(); i++) {
 			Actor child = children.get(i);
 			child.x += offsetX;
@@ -102,6 +106,22 @@ public class Button extends Table {
 			child.x -= offsetX;
 			child.y -= offsetY;
 		}
+	}
+
+	public float getPrefWidth () {
+		float width = getTableLayout().getPrefWidth();
+		if (style.up != null) width = Math.max(width, style.up.getTotalWidth());
+		if (style.down != null) width = Math.max(width, style.down.getTotalWidth());
+		if (style.checked != null) width = Math.max(width, style.checked.getTotalWidth());
+		return width;
+	}
+
+	public float getPrefHeight () {
+		float height = getTableLayout().getPrefHeight();
+		if (style.up != null) height = Math.max(height, style.up.getTotalHeight());
+		if (style.down != null) height = Math.max(height, style.down.getTotalHeight());
+		if (style.checked != null) height = Math.max(height, style.checked.getTotalHeight());
+		return height;
 	}
 
 	public float getMinWidth () {

@@ -51,7 +51,6 @@ import com.esotericsoftware.tablelayout.Cell;
 public class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, LibgdxToolkit> {
 	public Skin skin;
 	public AssetManager assetManager;
-	public Stage stage;
 
 	Array<DebugRect> debugRects;
 	private ImmediateModeRenderer debugRenderer;

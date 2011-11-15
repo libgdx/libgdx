@@ -99,7 +99,7 @@ public class TexturePacker {
 	}
 
 	public void addImage (BufferedImage image, String name) {
-		Image squeezed = squeeze(image, name);
+		Image squeezed = squeeze(image, name, false);
 		if (squeezed != null) {
 			if (settings.alias) {
 				String crc = hash(squeezed);
@@ -203,28 +203,31 @@ public class TexturePacker {
 				}
 			} else {
 				// 64-127,64 -> 64,64-127 -> 128-255,128 -> 128,128-255 etc.
+				int incr = 2;
 				if (i % 3 == 0) {
-					width++;
-					grownPixels++;
-					if (width == MathUtils.nextPowerOfTwo(width)) {
+					if (width + incr >= MathUtils.nextPowerOfTwo(width)) {
 						width -= grownPixels;
 						grownPixels = 0;
 						i++;
+					} else {
+						width += incr;
+						grownPixels += incr;
 					}
 				} else if (i % 3 == 1) {
-					height++;
-					grownPixels++;
-					if (height == MathUtils.nextPowerOfTwo(height)) {
+					if (height + incr >= MathUtils.nextPowerOfTwo(height)) {
 						height -= grownPixels;
 						grownPixels = 0;
 						i++;
+					} else {
+						height += incr;
+						grownPixels += incr;
 					}
 				} else {
 					if (width == MathUtils.nextPowerOfTwo(width) && height == MathUtils.nextPowerOfTwo(height)) ii++;
 					if (ii % 2 == 1)
-						width++;
+						width += incr;
 					else
-						height++;
+						height += incr;
 					i++;
 				}
 			}
@@ -290,6 +293,7 @@ public class TexturePacker {
 		insert(canvas, images, bestWidth, bestHeight);
 		System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 		ImageIO.write(canvas, "png", outputFile);
+		if (!settings.pot) ImageIO.write(squeeze(ImageIO.read(outputFile), "", true), "png", outputFile);
 		compressedSize += canvas.getWidth() * canvas.getHeight();
 		return true;
 	}
@@ -376,7 +380,7 @@ public class TexturePacker {
 		return images.isEmpty() ? -1 : usedPixels;
 	}
 
-	private Image squeeze (BufferedImage source, String name) {
+	private Image squeeze (BufferedImage source, String name, boolean skipTopLeft) {
 		if (source == null) return null;
 		if (!filter.accept(source)) return null;
 		uncompressedSize += source.getWidth() * source.getHeight();
@@ -387,15 +391,17 @@ public class TexturePacker {
 		int top = 0;
 		int bottom = source.getHeight();
 		if (!filter.direction.isY()) {
-			outer:
-			for (int y = 0; y < source.getHeight(); y++) {
-				for (int x = 0; x < source.getWidth(); x++) {
-					alphaRaster.getDataElements(x, y, a);
-					int alpha = a[0];
-					if (alpha < 0) alpha += 256;
-					if (alpha > settings.alphaThreshold) break outer;
+			if (!skipTopLeft) {
+				outer:
+				for (int y = 0; y < source.getHeight(); y++) {
+					for (int x = 0; x < source.getWidth(); x++) {
+						alphaRaster.getDataElements(x, y, a);
+						int alpha = a[0];
+						if (alpha < 0) alpha += 256;
+						if (alpha > settings.alphaThreshold) break outer;
+					}
+					top++;
 				}
-				top++;
 			}
 			outer:
 			for (int y = source.getHeight(); --y >= top;) {
@@ -411,15 +417,17 @@ public class TexturePacker {
 		int left = 0;
 		int right = source.getWidth();
 		if (!filter.direction.isX()) {
-			outer:
-			for (int x = 0; x < source.getWidth(); x++) {
-				for (int y = top; y < bottom; y++) {
-					alphaRaster.getDataElements(x, y, a);
-					int alpha = a[0];
-					if (alpha < 0) alpha += 256;
-					if (alpha > settings.alphaThreshold) break outer;
+			if (!skipTopLeft) {
+				outer:
+				for (int x = 0; x < source.getWidth(); x++) {
+					for (int y = top; y < bottom; y++) {
+						alphaRaster.getDataElements(x, y, a);
+						int alpha = a[0];
+						if (alpha < 0) alpha += 256;
+						if (alpha > settings.alphaThreshold) break outer;
+					}
+					left++;
 				}
-				left++;
 			}
 			outer:
 			for (int x = source.getWidth(); --x >= left;) {
@@ -506,16 +514,16 @@ public class TexturePacker {
 		}
 
 		void writePackEntry () throws IOException {
-			writePackEntry(image);
+			writePackEntry(image, false);
 			for (Image alias : image.aliases)
-				writePackEntry(alias);
+				writePackEntry(alias, true);
 		}
 
-		private void writePackEntry (Image image) throws IOException {
+		private void writePackEntry (Image image, boolean alias) throws IOException {
 			String imageName = image.name;
 			imageName = imageName.replace("\\", "/");
 
-			System.out.println("Packing... " + imageName);
+			System.out.println("Packing... " + imageName + (alias ? " (alias)" : ""));
 
 			Matcher matcher = indexPattern.matcher(imageName);
 			int index = -1;
@@ -688,8 +696,8 @@ public class TexturePacker {
 		public boolean duplicatePadding = true;
 		public boolean debug = false;
 		public boolean rotate = false;
-		public int minWidth = 16;
-		public int minHeight = 16;
+		public int minWidth = 128;
+		public int minHeight = 128;
 		public int maxWidth = 1024;
 		public int maxHeight = 1024;
 		public boolean stripWhitespace = false;
@@ -806,6 +814,10 @@ public class TexturePacker {
 	}
 
 	static public void process (Settings settings, String input, String output) {
+		process(settings, input, output, "pack");
+	}
+
+	static public void process (Settings settings, String input, String output, String packFileName) {
 		try {
 			File inputDir = new File(input);
 			File outputDir = new File(output);
@@ -815,7 +827,7 @@ public class TexturePacker {
 				return;
 			}
 
-			File packFile = new File(outputDir, "pack");
+			File packFile = new File(outputDir, packFileName);
 
 			// Load incremental file.
 			File incrmentalFile = null;

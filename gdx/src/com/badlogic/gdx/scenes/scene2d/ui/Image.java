@@ -9,8 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
 /** Displays a {@link TextureRegion} or {@link NinePatch}, scaled various way within the widgets bounds. The preferred size is the
- * actual size of the region or ninepatch.
+ * actual size of the region or ninepatch. Only when using a TextureRegion will the actor's scale, rotation, and origin be used
+ * when drawing.
  * @author Nathan Sweet */
+/**
+ *
+ */
+/**
+ *
+ */
 public class Image extends Widget {
 	private TextureRegion region;
 	private NinePatch patch;
@@ -207,5 +214,21 @@ public class Image extends Widget {
 	}
 
 	public void touchDragged (float x, float y, int pointer) {
+	}
+
+	public float getImageX () {
+		return imageX;
+	}
+
+	public float getImageY () {
+		return imageY;
+	}
+
+	public float getImageWidth () {
+		return imageWidth;
+	}
+
+	public float getImageHeight () {
+		return imageHeight;
 	}
 }

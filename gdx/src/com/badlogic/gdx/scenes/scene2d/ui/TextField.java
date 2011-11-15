@@ -193,7 +193,7 @@ public class TextField extends Widget {
 		float textY = (int)(height / 2 + textBounds.height / 2 + font.getDescent());
 		calculateOffsets();
 
-		boolean focused = parent.keyboardFocusedActor == this;
+		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 		if (focused && hasSelection && selection != null) {
 			batch.draw(selection, x + selectionX + bgLeftWidth + renderOffset,
 				y + textY - textBounds.height - font.getDescent() / 2, selectionWidth, textBounds.height);
@@ -233,7 +233,7 @@ public class TextField extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		parent.keyboardFocus(this);
+		if (stage != null) stage.setKeyboardFocus(this);
 		keyboard.show(true);
 		clearSelection();
 		lastBlink = 0;
@@ -253,7 +253,7 @@ public class TextField extends Widget {
 	public boolean keyDown (int keycode) {
 		final BitmapFont font = style.font;
 
-		if (parent.keyboardFocusedActor == this) {
+		if (stage != null && stage.getKeyboardFocus() == this) {
 			if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) {
 				// paste
 				if (keycode == Keys.V) paste();
@@ -365,7 +365,7 @@ public class TextField extends Widget {
 	public boolean keyTyped (char character) {
 		final BitmapFont font = style.font;
 
-		if (parent.keyboardFocusedActor == this) {
+		if (stage != null && stage.getKeyboardFocus() == this) {
 			if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor - 1) + text.substring(cursor);

@@ -39,7 +39,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
  * @author mzechner
  * @author Nathan Sweet */
 public class ScrollPane extends WidgetGroup {
-	private final Stage stage;
 	private ScrollPaneStyle style;
 	private Actor widget;
 
@@ -58,27 +57,25 @@ public class ScrollPane extends WidgetGroup {
 	private float handlePosition;
 	private boolean disableX, disableY;
 
-	public ScrollPane (Stage stage, Skin skin) {
-		this(null, stage, skin);
+	public ScrollPane (Skin skin) {
+		this(null, skin);
 	}
 
 	/** @param widget May be null. */
-	public ScrollPane (Actor widget, Stage stage, Skin skin) {
-		this(widget, stage, skin.getStyle(ScrollPaneStyle.class), null);
+	public ScrollPane (Actor widget, Skin skin) {
+		this(widget, skin.getStyle(ScrollPaneStyle.class), null);
 	}
 
 	/** @param widget May be null. */
-	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style) {
-		this(widget, stage, style, null);
+	public ScrollPane (Actor widget, ScrollPaneStyle style) {
+		this(widget, style, null);
 	}
 
 	/** @param widget May be null. */
-	public ScrollPane (Actor widget, Stage stage, ScrollPaneStyle style, String name) {
+	public ScrollPane (Actor widget, ScrollPaneStyle style, String name) {
 		super(name);
-		if (stage == null) throw new IllegalArgumentException("stage cannot be null.");
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.widget = widget;
-		this.stage = stage;
 		this.style = style;
 		setWidget(widget);
 		width = 150;
@@ -247,27 +244,25 @@ public class ScrollPane extends WidgetGroup {
 				lastPoint.set(x, y);
 				handlePosition = hKnobBounds.x;
 				touchScrollH = true;
-			} else {
-				if (x < hKnobBounds.x) {
-					setScrollPercentX(Math.max(0, getScrollPercentX() - 0.1f));
-				} else {
-					setScrollPercentX(Math.min(1, getScrollPercentX() + 0.1f));
-				}
+				return true;
 			}
-			return true;
+			if (x < hKnobBounds.x)
+				setScrollPercentX(Math.max(0, getScrollPercentX() - 0.1f));
+			else
+				setScrollPercentX(Math.min(1, getScrollPercentX() + 0.1f));
+			return false;
 		} else if (scrollY && vScrollBounds.contains(x, y)) {
 			if (vKnobBounds.contains(x, y)) {
 				lastPoint.set(x, y);
 				handlePosition = vKnobBounds.y;
 				touchScrollV = true;
-			} else {
-				if (y < vKnobBounds.y) {
-					setScrollPercentY(Math.max(0, getScrollPercentY() + 0.1f));
-				} else {
-					setScrollPercentY(Math.min(1, getScrollPercentY() - 0.1f));
-				}
+				return true;
 			}
-			return true;
+			if (y < vKnobBounds.y)
+				setScrollPercentY(Math.max(0, getScrollPercentY() + 0.1f));
+			else
+				setScrollPercentY(Math.min(1, getScrollPercentY() - 0.1f));
+			return false;
 		} else if (widgetAreaBounds.contains(x, y)) {
 			return super.touchDown(x, y, pointer);
 		} else
@@ -276,12 +271,8 @@ public class ScrollPane extends WidgetGroup {
 
 	@Override
 	public void touchUp (float x, float y, int pointer) {
-		if (touchScrollH || touchScrollV) {
-			touchScrollH = false;
-			touchScrollV = false;
-			return;
-		}
-		if (focusedActor[pointer] != null) super.touchUp(x, y, pointer);
+		touchScrollH = false;
+		touchScrollV = false;
 	}
 
 	@Override

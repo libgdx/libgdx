@@ -58,7 +58,15 @@ public class ParticleEmitterTest extends GdxTest {
 			}
 
 			public boolean touchDown (int x, int y, int pointer, int newParam) {
-				effect.setPosition(x, Gdx.graphics.getHeight() - y);
+				// effect.setPosition(x, Gdx.graphics.getHeight() - y);
+				ParticleEmitter emitter = emitters.get(emitterIndex);
+				particleCount += 100;
+				System.out.println(particleCount);
+				particleCount = Math.max(0, particleCount);
+				if (particleCount > emitter.getMaxParticleCount()) emitter.setMaxParticleCount(particleCount * 2);
+				emitter.getEmission().setHigh(particleCount / emitter.getLife().getHighMax() * 1000);
+				effect.getEmitters().clear();
+				effect.getEmitters().add(emitter);
 				return false;
 			}
 
@@ -116,7 +124,7 @@ public class ParticleEmitterTest extends GdxTest {
 		if (fpsCounter > 3) {
 			fpsCounter = 0;
 			int activeCount = emitters.get(emitterIndex).getActiveCount();
-			System.out.println(activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
+			Gdx.app.log("libgdx", activeCount + "/" + particleCount + " particles, FPS: " + Gdx.graphics.getFramesPerSecond());
 		}
 	}
 

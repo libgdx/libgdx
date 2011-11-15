@@ -58,6 +58,9 @@ public class Stage extends InputAdapter implements Disposable {
 	protected final SpriteBatch batch;
 	protected Camera camera;
 
+	private Actor[] touchFocus = new Actor[20];
+	private Actor keyboardFocus, scrollFocus;
+
 	/** <p>
 	 * Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
 	 * dimensions the stage object will setup a projection matrix to guarantee a fixed coordinate system. If stretch is disabled
@@ -72,6 +75,7 @@ public class Stage extends InputAdapter implements Disposable {
 		this.height = height;
 		this.stretch = stretch;
 		this.root = new Group("root");
+		root.stage = this;
 		this.batch = new SpriteBatch();
 		this.ownsBatch = true;
 		this.camera = new OrthographicCamera();
@@ -211,10 +215,12 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not */
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
-		root.keyboardFocus(null);
+		setKeyboardFocus(null);
+		Actor actor = touchFocus[pointer];
+		if (actor == null) actor = root;
 		toStageCoordinates(x, y, coords);
-		Group.toChildCoordinates(root, coords.x, coords.y, point);
-		return root.touchDown(point.x, point.y, pointer);
+		Group.toChildCoordinates(actor, coords.x, coords.y, point);
+		return actor.touchDown(point.x, point.y, pointer);
 	}
 
 	/** Call this to distribute a touch Up event to the stage.
@@ -225,11 +231,13 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not */
 	@Override
 	public boolean touchUp (int x, int y, int pointer, int button) {
-		Actor actor = root.focusedActor[pointer];
+		Actor actor = touchFocus[pointer];
 		if (actor == null) return false;
 		toStageCoordinates(x, y, coords);
-		Group.toChildCoordinates(root, coords.x, coords.y, point);
-		root.touchUp(point.x, point.y, pointer);
+		actor.toLocalCoordinates(coords);
+		actor.touchUp(coords.x, coords.y, pointer);
+		// Clear touch focus if it hasn't changed.
+		if (touchFocus[pointer] == actor) touchFocus[pointer] = null;
 		return true;
 	}
 
@@ -240,18 +248,18 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not */
 	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
-		boolean foundFocusedActor = false;
-		for (int i = 0, n = root.focusedActor.length; i < n; i++) {
-			if (root.focusedActor[i] != null) {
-				foundFocusedActor = true;
-				break;
+		toStageCoordinates(x, y, coords);
+		boolean handled = false;
+		for (int i = 0, n = touchFocus.length; i < n; i++) {
+			Actor actor = touchFocus[i];
+			if (actor != null) {
+				point.set(coords);
+				actor.toLocalCoordinates(point);
+				actor.touchDragged(point.x, point.y, pointer);
+				handled = true;
 			}
 		}
-		if (!foundFocusedActor) return false;
-		toStageCoordinates(x, y, coords);
-		Group.toChildCoordinates(root, coords.x, coords.y, point);
-		root.touchDragged(point.x, point.y, pointer);
-		return true;
+		return handled;
 	}
 
 	/** Call this to distribute a touch moved event to the stage. This event will only ever appear on the desktop.
@@ -270,7 +278,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether an {@link Actor} in the scene processed the event or not. */
 	@Override
 	public boolean scrolled (int amount) {
-		return root.scrolled(amount);
+		if (scrollFocus == null) return false;
+		return scrollFocus.scrolled(amount);
 	}
 
 	/** Called when a key was pressed
@@ -279,7 +288,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether the input was processed */
 	@Override
 	public boolean keyDown (int keycode) {
-		return root.keyDown(keycode);
+		if (keyboardFocus == null) return false;
+		return keyboardFocus.keyDown(keycode);
 	}
 
 	/** Called when a key was released
@@ -288,7 +298,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether the input was processed */
 	@Override
 	public boolean keyUp (int keycode) {
-		return root.keyUp(keycode);
+		if (keyboardFocus == null) return false;
+		return keyboardFocus.keyUp(keycode);
 	}
 
 	/** Called when a key was typed
@@ -297,7 +308,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @return whether the input was processed */
 	@Override
 	public boolean keyTyped (char character) {
-		return root.keyTyped(character);
+		if (keyboardFocus == null) return false;
+		return keyboardFocus.keyTyped(character);
 	}
 
 	/** Calls the {@link Actor#act(float)} method of all contained Actors. This will advance any {@link Action}s active for an
@@ -411,9 +423,47 @@ public class Stage extends InputAdapter implements Disposable {
 		root.removeActorRecursive(actor);
 	}
 
-	/** Unfocues all {@link Actor} instance currently focused. You should call this in case your app resumes to clear up any pressed
-	 * states. Make sure the Actors forget their states as well! */
 	public void unfocusAll () {
-		root.unfocusAll();
+		for (int i = 0, n = touchFocus.length; i < n; i++)
+			touchFocus[i] = null;
+		scrollFocus = null;
+		keyboardFocus = null;
+	}
+
+	public void unfocus (Actor actor) {
+		for (int i = 0, n = touchFocus.length; i < n; i++)
+			if (touchFocus[i] == actor) touchFocus[i] = null;
+		if (scrollFocus == actor) scrollFocus = null;
+		if (keyboardFocus == actor) keyboardFocus = null;
+	}
+
+	public void unfocus (Actor actor, int pointer) {
+		if (touchFocus[pointer] == actor) touchFocus[pointer] = null;
+		if (scrollFocus == actor) scrollFocus = null;
+		if (keyboardFocus == actor) keyboardFocus = null;
+	}
+
+	public void setKeyboardFocus (Actor actor) {
+		this.keyboardFocus = actor;
+	}
+
+	public Actor getKeyboardFocus () {
+		return keyboardFocus;
+	}
+
+	public void setScrollFocus (Actor actor) {
+		this.scrollFocus = actor;
+	}
+
+	public Actor getScrollFocus () {
+		return scrollFocus;
+	}
+
+	public void setTouchFocus (Actor actor, int pointer) {
+		touchFocus[pointer] = actor;
+	}
+
+	public Actor getTouchFocus (int pointer) {
+		return touchFocus[pointer];
 	}
 }

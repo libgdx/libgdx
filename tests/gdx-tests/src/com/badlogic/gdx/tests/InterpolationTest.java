@@ -52,7 +52,7 @@ public class InterpolationTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		list = new List(interpolators, skin);
-		root.add(new FlickScrollPane(list, stage)).expandY().fillY().prefWidth((int)list.getPrefWidth());
+		root.add(new FlickScrollPane(list)).expandY().fillY().prefWidth((int)list.getPrefWidth());
 	}
 
 	public void resize (int width, int height) {

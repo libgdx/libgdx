@@ -161,7 +161,7 @@ public class FileProcessor {
 	protected void processFile (InputFile inputFile) throws Exception {
 	}
 
-	protected void processDir (InputFile inputDir, ArrayList<InputFile> value) throws Exception {
+	protected void processDir (InputFile inputDir, ArrayList<InputFile> files) throws Exception {
 	}
 
 	protected void addProcessedFile (InputFile inputFile) {

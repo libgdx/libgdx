@@ -45,7 +45,7 @@ public class FlickScrollPaneTest extends GdxTest {
 
 		Table table = new Table();
 
-		FlickScrollPane scroll = new FlickScrollPane(table, stage);
+		FlickScrollPane scroll = new FlickScrollPane(table);
 		container.add(scroll).expand().fill();
 
 		table.parse("pad:10 * expand:x space:4");

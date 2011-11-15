@@ -58,7 +58,7 @@ public class TableTest extends GdxTest {
 
 		// table.setBackground(region);
 		table.setBackground(patch);
-		table.enableClipping(stage);
+		table.setClip(true);
 		table.size(75, 75);
 		table.add(label);
 
