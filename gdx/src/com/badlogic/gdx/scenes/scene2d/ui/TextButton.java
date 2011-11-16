@@ -31,7 +31,7 @@ public class TextButton extends Button {
 		this.style = style;
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.CENTER);
-		add(label);
+		add(label).expand().fill();
 	}
 
 	public void setStyle (ButtonStyle style) {

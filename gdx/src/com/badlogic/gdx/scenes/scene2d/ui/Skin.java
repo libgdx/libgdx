@@ -202,6 +202,7 @@ public class Skin implements Disposable {
 	}
 
 	public void addResource (String name, Object resource) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(resource.getClass());
 		if (typeResources == null) {
@@ -212,6 +213,7 @@ public class Skin implements Disposable {
 	}
 
 	public <T> T getResource (String name, Class<T> type) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		if (typeResources == null)
 			throw new GdxRuntimeException("No " + type.getName() + " resource registered with name: " + name);
@@ -245,6 +247,7 @@ public class Skin implements Disposable {
 	}
 
 	public void addStyle (String name, Object style) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		ObjectMap<String, Object> typeStyles = styles.get(style.getClass());
 		if (typeStyles == null) {
@@ -259,6 +262,7 @@ public class Skin implements Disposable {
 	}
 
 	public <T> T getStyle (String name, Class<T> type) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		ObjectMap<String, Object> typeStyles = styles.get(type);
 		if (typeStyles == null) throw new GdxRuntimeException("No styles registered with type: " + type.getName());
 		Object style = typeStyles.get(name);
