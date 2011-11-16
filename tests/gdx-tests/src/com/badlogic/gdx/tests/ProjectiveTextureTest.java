@@ -110,7 +110,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		ui = new Stage(480, 320, true);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 		TextButton reload = new TextButton("Reload Shaders", skin.getStyle(TextButtonStyle.class), "reload");
-		SelectBox camera = new SelectBox(new String[] {"Camera", "Light"}, ui, skin.getStyle(SelectBoxStyle.class), "camera");
+		SelectBox camera = new SelectBox(new String[] {"Camera", "Light"}, skin.getStyle(SelectBoxStyle.class), "camera");
 		Label fps = new Label("fps: ", skin.getStyle(LabelStyle.class), "fps");
 
 		Table table = new Table();

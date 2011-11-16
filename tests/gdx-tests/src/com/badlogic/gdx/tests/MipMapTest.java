@@ -100,8 +100,8 @@ public class MipMapTest extends GdxTest {
 			filters[idx++] = filter.toString();
 		}
 		hwMipMap = new CheckBox("Hardware Mips", skin.getStyle(CheckBoxStyle.class), "hardware");
-		minFilter = new SelectBox(filters, ui, skin.getStyle(SelectBoxStyle.class), "minfilter");
-		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, ui, skin.getStyle(SelectBoxStyle.class), "magfilter");
+		minFilter = new SelectBox(filters, skin.getStyle(SelectBoxStyle.class), "minfilter");
+		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.getStyle(SelectBoxStyle.class), "magfilter");
 
 		Table table = new Table();
 		table.width = ui.width();

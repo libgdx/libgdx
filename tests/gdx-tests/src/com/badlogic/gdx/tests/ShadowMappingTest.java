@@ -119,9 +119,9 @@ public class ShadowMappingTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
 
 		Label label = new Label("Camera:", skin.getStyle(LabelStyle.class));
-		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, ui, skin.getStyle(SelectBoxStyle.class));
+		SelectBox cameraCombo = new SelectBox(new String[] {"Scene", "Light"}, skin.getStyle(SelectBoxStyle.class));
 		Label label2 = new Label("Shader", skin.getStyle(LabelStyle.class), "cameraCombo");
-		SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"}, ui,
+		SelectBox shaderCombo = new SelectBox(new String[] {"flat", "shadow-gen", "shadow-map"},
 			skin.getStyle(SelectBoxStyle.class), "shaderCombo");
 		Label fpsLabel = new Label("fps:", skin.getStyle(LabelStyle.class), "fps");
 
