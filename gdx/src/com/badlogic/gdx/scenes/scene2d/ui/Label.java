@@ -201,7 +201,7 @@ public class Label extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		cache.setPosition(x, y);
-		cache.draw(batch, parentAlpha);
+		cache.draw(batch, color.a * parentAlpha);
 	}
 
 	public float getPrefWidth () {
