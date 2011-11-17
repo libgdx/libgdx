@@ -141,7 +141,7 @@ public class IndexBufferObject implements IndexData {
 			if (Gdx.gl11 != null) {
 				GL11 gl = Gdx.gl11;
 				gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
-			} else if (Gdx.gl11 != null) {
+			} else if (Gdx.gl20 != null) {
 				GL20 gl = Gdx.gl20;
 				gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			}
