@@ -51,13 +51,14 @@ public class LwjglFrame extends JFrame {
 		};
 		getContentPane().add(lwjglCanvas.getCanvas());
 
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing (WindowEvent e) {
-				lwjglCanvas.stop();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run () {
+				Runtime.getRuntime().halt(0); // Because fuck you, Swing shutdown hooks.
 			}
 		});
 
 		setVisible(true);
+		lwjglCanvas.getCanvas().requestFocus();
 	}
 
 	public LwjglCanvas getLwjglCanvas () {

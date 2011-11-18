@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -26,6 +28,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
 
@@ -46,8 +50,11 @@ import com.badlogic.gdx.utils.FloatArray;
  * @author mzechner */
 public class TextField extends Widget {
 	static private final char BACKSPACE = 8;
-	static private final char ENTER = '\r';
+	static private final char ENTER_DESKTOP = '\r';
+	static private final char ENTER_ANDROID = '\n';
+	static private final char TAB = '\t';
 	static private final char DELETE = 127;
+	static private final char BULLET = 149;
 
 	private TextFieldStyle style;
 	private String text, messageText;
@@ -56,6 +63,9 @@ public class TextField extends Widget {
 	private TextFieldListener listener;
 	private TextFieldFilter filter;
 	private OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
+
+	private boolean passwordMode;
+	private StringBuilder passwordBuffer;
 
 	private final Rectangle fieldBounds = new Rectangle();
 	private final TextBounds textBounds = new TextBounds();
@@ -211,7 +221,17 @@ public class TextField extends Widget {
 			}
 		} else {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, text, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			if (passwordMode && font.containsCharacter(BULLET)) {
+				if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
+				if (passwordBuffer.length() > text.length()) //
+					passwordBuffer.setLength(text.length());
+				else {
+					for (int i = passwordBuffer.length(), n = text.length(); i < n; i++)
+						passwordBuffer.append(BULLET);
+				}
+				font.draw(batch, passwordBuffer, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
+			} else
+				font.draw(batch, text, x + bgLeftWidth + textOffset, y + textY, visibleTextStart, visibleTextEnd);
 		}
 		if (focused) {
 			blink();
@@ -386,9 +406,11 @@ public class TextField extends Widget {
 				}
 				return true;
 			}
-			if (character != ENTER) {
+			if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
 				if (filter != null && !filter.acceptChar(this, character)) return true;
 			}
+			if (character == TAB || character == ENTER_ANDROID)
+				next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
 			if (font.containsCharacter(character)) {
 				if (!hasSelection) {
 					text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
@@ -411,6 +433,32 @@ public class TextField extends Widget {
 			return true;
 		} else
 			return false;
+	}
+
+	/** Focuses the next TextField. If none is found, the keyboard is hidden.
+	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
+	public void next (boolean up) {
+		TextField textField = findNextTextField(stage.getActors(), null, up);
+		if (textField != null)
+			stage.setKeyboardFocus(textField);
+		else
+			Gdx.input.setOnscreenKeyboardVisible(false);
+	}
+
+	private TextField findNextTextField (List<Actor> actors, TextField best, boolean up) {
+		for (int i = 0, n = actors.size(); i < n; i++) {
+			Actor actor = actors.get(i);
+			if (actor instanceof TextField) {
+				if (actor == this) continue;
+				if (actor.y == y) {
+					if (best == null && actor.x >= x ^ up) best = (TextField)actor;
+				} else if (actor.y < y ^ up && (best == null || actor.y - y > best.y - y ^ up)) {
+					best = (TextField)actor;
+				}
+			}
+			if (actor instanceof Group) best = findNextTextField(((Group)actor).getActors(), best, up);
+		}
+		return best;
 	}
 
 	/** @param listener May be null. */
@@ -513,6 +561,12 @@ public class TextField extends Widget {
 		float prefHeight = textBounds.height;
 		if (style.background != null) prefHeight += style.background.getBottomHeight() + style.background.getTopHeight();
 		return prefHeight;
+	}
+
+	/** If true, the text in this text field will be shown as bullet characters. The font must have character 149 or this will have
+	 * no affect. */
+	public void setPasswordMode (boolean passwordMode) {
+		this.passwordMode = passwordMode;
 	}
 
 	/** Interface for listening to typed characters.

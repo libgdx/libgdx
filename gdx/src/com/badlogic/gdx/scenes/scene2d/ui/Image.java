@@ -12,12 +12,6 @@ import com.badlogic.gdx.utils.Scaling;
  * actual size of the region or ninepatch. Only when using a TextureRegion will the actor's scale, rotation, and origin be used
  * when drawing.
  * @author Nathan Sweet */
-/**
- *
- */
-/**
- *
- */
 public class Image extends Widget {
 	private TextureRegion region;
 	private NinePatch patch;
