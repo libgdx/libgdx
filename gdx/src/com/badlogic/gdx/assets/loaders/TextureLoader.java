@@ -60,6 +60,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 			}
 		} else {
 			data = parameter.textureData;
+			if(!data.isPrepared()) data.prepare();
 			texture = parameter.texture;
 		}
 	}
