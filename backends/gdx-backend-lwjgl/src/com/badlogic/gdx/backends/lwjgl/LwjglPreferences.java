@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class LwjglPreferences implements Preferences {
 	private final String name;
 	private final Properties properties = new Properties();
+	private final FileHandle file;
 
 	LwjglPreferences (String name) {
 		this(Gdx.files.external(".prefs/" + name));
@@ -40,11 +41,13 @@ public class LwjglPreferences implements Preferences {
 
 	public LwjglPreferences (FileHandle file) {
 		this.name = file.name();
+		this.file = file;
 		InputStream in = null;
 		try {
 			in = new BufferedInputStream(file.read());
 			properties.loadFromXML(in);
 		} catch (Throwable t) {
+			System.out.println(t.getMessage());
 		} finally {
 			if (in != null) try {
 				in.close();
@@ -173,8 +176,6 @@ public class LwjglPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		if (Gdx.files == null) return;
-		FileHandle file = Gdx.files.external(".prefs/" + name);
 		OutputStream out = null;
 		try {
 			out = new BufferedOutputStream(file.write(false));

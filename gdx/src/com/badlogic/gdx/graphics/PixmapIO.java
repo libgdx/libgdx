@@ -38,7 +38,8 @@ public class PixmapIO {
 		
 		try {
 //			long start = System.nanoTime();
-			out = new DataOutputStream(new DeflaterOutputStream(new BufferedOutputStream(file.write(false))));
+			DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(file.write(false));
+			out = new DataOutputStream(deflaterOutputStream);
 			out.writeInt(pixmap.getWidth());
 			out.writeInt(pixmap.getHeight());
 			out.writeInt(Format.toGdx2DPixmapFormat(pixmap.getFormat()));

@@ -32,7 +32,6 @@ import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TileMapRendererLoader;
-import com.badlogic.gdx.assets.loaders.resolvers.ExternalInternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -67,7 +66,7 @@ public class AssetManager implements Disposable {
 
 	/** Creates a new AssetManager with all default loaders. */
 	public AssetManager () {
-		this(false);
+		this(new InternalFileHandleResolver());
 	}
 	
 	/**
@@ -76,12 +75,7 @@ public class AssetManager implements Disposable {
 	 * instead of the default {@link InternalFileHandleResolver}.
 	 * @param useExternaInternalResolver
 	 */
-	public AssetManager(boolean useExternaInternalResolver) {
-		FileHandleResolver resolver = null;
-		if(useExternaInternalResolver) resolver = new ExternalInternalFileHandleResolver();
-		else resolver = new InternalFileHandleResolver();
-		
-		log.setEnabled(false);
+	public AssetManager(FileHandleResolver resolver) {		log.setEnabled(false);
 		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
 		setLoader(Music.class, new MusicLoader(resolver));
 		setLoader(Pixmap.class, new PixmapLoader(resolver));
