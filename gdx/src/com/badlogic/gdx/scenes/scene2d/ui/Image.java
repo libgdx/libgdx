@@ -18,6 +18,7 @@ public class Image extends Widget {
 	private Scaling scaling;
 	private int align = Align.CENTER;
 	private float imageX, imageY, imageWidth, imageHeight;
+	private ClickListener clickListener;
 
 	/** Creates an image with no region or patch, stretched, and aligned center. */
 	public Image () {
@@ -201,13 +202,19 @@ public class Image extends Widget {
 	}
 
 	public boolean touchDown (float x, float y, int pointer) {
-		return false;
+		return clickListener != null;
 	}
 
 	public void touchUp (float x, float y, int pointer) {
+		if (hit(x, y) == null) return;
+		if (clickListener != null) clickListener.click(this, x, y);
 	}
 
 	public void touchDragged (float x, float y, int pointer) {
+	}
+
+	public void setClickListener (ClickListener clickListener) {
+		this.clickListener = clickListener;
 	}
 
 	public float getImageX () {

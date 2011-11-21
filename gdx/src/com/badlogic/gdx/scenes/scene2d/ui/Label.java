@@ -22,6 +22,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Layout;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A text label, with optional word wrapping.
  * <p>
@@ -37,7 +41,7 @@ public class Label extends Widget {
 	private int labelAlign = Align.LEFT;
 	private HAlignment lineAlign = HAlignment.LEFT;
 	private boolean wrap;
-	private float wrapWidth;
+	private float lastPrefHeight;
 
 	public Label (Skin skin) {
 		this("", skin);
@@ -113,15 +117,6 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** Enables word wrap and sets the width that is used to word wrap. The preferred width of the label will be the wrap width and
-	 * the preferred height will be the actual height of the wrapped text.
-	 * @param wrapWidth Set to zero to disable wrap. */
-	public void setWrapWidth (float wrapWidth) {
-		this.wrapWidth = wrapWidth;
-		setWrap(wrapWidth != 0);
-		invalidateHierarchy();
-	}
-
 	/** @param wrapAlign Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
 	public void setAlignment (int wrapAlign) {
@@ -161,9 +156,8 @@ public class Label extends Widget {
 	}
 
 	private void computeBounds () {
-		float wrapWidth = this.wrapWidth != 0 ? this.wrapWidth : width;
 		if (wrap)
-			bounds.set(cache.getFont().getWrappedBounds(text, wrapWidth));
+			bounds.set(cache.getFont().getWrappedBounds(text, width));
 		else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
 	}
@@ -171,6 +165,14 @@ public class Label extends Widget {
 	@Override
 	public void layout () {
 		computeBounds();
+
+		if (wrap) {
+			float prefHeight = getPrefHeight();
+			if (prefHeight != lastPrefHeight) {
+				lastPrefHeight = prefHeight;
+				invalidateHierarchy();
+			}
+		}
 
 		float y;
 		if ((labelAlign & Align.TOP) != 0) {
@@ -205,12 +207,11 @@ public class Label extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (wrap) return wrapWidth != 0 ? wrapWidth : 100;
+		if (wrap) return 150;
 		return bounds.width;
 	}
 
 	public float getPrefHeight () {
-		if (wrap && wrapWidth == 0) return 100;
 		return bounds.height - style.font.getDescent() * 2;
 	}
 

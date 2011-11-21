@@ -14,10 +14,10 @@ public class TextButton extends Button {
 	private final Label label;
 	private TextButtonStyle style;
 
-	public TextButton(Skin skin) {
+	public TextButton (Skin skin) {
 		this("", skin);
 	}
-	
+
 	public TextButton (String text, Skin skin) {
 		this(text, skin.getStyle("default", TextButtonStyle.class));
 	}

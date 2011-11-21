@@ -503,12 +503,17 @@ public class BitmapFont implements Disposable {
 		float maxWidth = 0;
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
+			// Eat whitespace at start of line.
+			while (start < newLine) {
+				if (!BitmapFont.isWhitespace(str.charAt(start))) break;
+				start++;
+			}
 			int lineEnd = start + computeVisibleGlyphs(str, start, newLine, wrapWidth);
 			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start)
@@ -612,12 +617,17 @@ public class BitmapFont implements Disposable {
 		float maxWidth = 0;
 		while (start < length) {
 			int newLine = BitmapFont.indexOf(str, '\n', start);
+			// Eat whitespace at start of line.
+			while (start < newLine) {
+				if (!BitmapFont.isWhitespace(str.charAt(start))) break;
+				start++;
+			}
 			int lineEnd = start + computeVisibleGlyphs(str, start, newLine, wrapWidth);
 			int nextStart = lineEnd + 1;
 			if (lineEnd < newLine) {
 				// Find char to break on.
 				while (lineEnd > start) {
-					if (BitmapFont.isWhitespace(str.charAt(lineEnd - 1))) break;
+					if (BitmapFont.isWhitespace(str.charAt(lineEnd))) break;
 					lineEnd--;
 				}
 				if (lineEnd == start)

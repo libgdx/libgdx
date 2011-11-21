@@ -48,8 +48,8 @@ public abstract class WidgetGroup extends Group implements Layout {
 
 	public void validate () {
 		if (!needsLayout) return;
-		layout();
 		needsLayout = false;
+		layout();
 	}
 
 	/** Returns true if the widget's layout has been {@link #invalidate() invalidated}. */

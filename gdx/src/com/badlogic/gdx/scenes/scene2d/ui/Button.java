@@ -3,7 +3,9 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A button is a {@link Table} with a checked state and additional {@link ButtonStyle style} fields for pressed, unpressed, and
@@ -27,6 +29,30 @@ public class Button extends Table {
 		pack();
 	}
 
+	public Button (TextureRegion region) {
+		this(new ButtonStyle(new NinePatch(region), null, null, 0f, 0f, 0f, 0f));
+	}
+
+	public Button (TextureRegion regionUp, TextureRegion regionDown) {
+		this(new ButtonStyle(new NinePatch(regionUp), new NinePatch(regionDown), null, 0f, 0f, 0f, 0f));
+	}
+
+	public Button (TextureRegion regionUp, TextureRegion regionDown, TextureRegion regionChecked) {
+		this(new ButtonStyle(new NinePatch(regionUp), new NinePatch(regionDown), new NinePatch(regionChecked), 0f, 0f, 0f, 0f));
+	}
+
+	public Button (NinePatch patch) {
+		this(new ButtonStyle(patch, null, null, 0f, 0f, 0f, 0f));
+	}
+
+	public Button (NinePatch patchUp, NinePatch patchDown) {
+		this(new ButtonStyle(patchUp, patchDown, null, 0f, 0f, 0f, 0f));
+	}
+
+	public Button (NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
+		this(new ButtonStyle(patchUp, patchDown, patchChecked, 0f, 0f, 0f, 0f));
+	}
+
 	public Button (Actor child, Skin skin) {
 		this(child, skin.getStyle(ButtonStyle.class));
 		pack();
@@ -47,7 +73,7 @@ public class Button extends Table {
 			public void click (Actor actor, float x, float y) {
 				boolean newChecked = !isChecked;
 				setChecked(newChecked);
-				// Don't fire listener if the button group reverted the change to isChecked.
+				// Don't fire listener if isChecked wasn't changed.
 				if (newChecked == isChecked && listener != null) listener.click(actor, x, y);
 			}
 		});
@@ -145,7 +171,7 @@ public class Button extends Table {
 		public ButtonStyle () {
 		}
 
-		public ButtonStyle (NinePatch down, NinePatch up, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
+		public ButtonStyle (NinePatch up, NinePatch down, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
 			float unpressedOffsetX, float unpressedOffsetY) {
 			this.down = down;
 			this.up = up;
