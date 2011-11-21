@@ -23,6 +23,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class PixmapIO {
 	private static final int BUFFER_SIZE = 32000;
+	private static final byte[] writeBuffer = new byte[BUFFER_SIZE];
+	private static final byte[] readBuffer = new byte[BUFFER_SIZE];
 
 	/**
 	 * Writes the {@link Pixmap} to the given file using a custom compression scheme.
@@ -42,24 +44,25 @@ public class PixmapIO {
 			out.writeInt(Format.toGdx2DPixmapFormat(pixmap.getFormat()));
 			
 			ByteBuffer pixelBuf = pixmap.getPixels();
-			byte[] buffer = new byte[BUFFER_SIZE];
 			pixelBuf.position(0);
 			pixelBuf.limit(pixelBuf.capacity());
 			
 			int remainingBytes = pixelBuf.capacity() % BUFFER_SIZE;
 			int iterations = pixelBuf.capacity() / BUFFER_SIZE;
 			
-			for(int i = 0; i < iterations; i++) {
-				pixelBuf.get(buffer);
-				out.write(buffer);
+			synchronized(writeBuffer) {
+				for(int i = 0; i < iterations; i++) {
+					pixelBuf.get(writeBuffer);
+					out.write(writeBuffer);
+				}
+				
+				pixelBuf.get(writeBuffer, 0, remainingBytes);
+				out.write(writeBuffer, 0, remainingBytes);
 			}
-			
-			pixelBuf.get(buffer, 0, remainingBytes);
-			out.write(buffer, 0, remainingBytes);
 			
 			pixelBuf.position(0);
 			pixelBuf.limit(pixelBuf.capacity());
-			Gdx.app.log("PixmapIO", "write:" + (System.nanoTime() - start) / 1000000000.0f + ", " + Thread.currentThread().getName());
+			Gdx.app.log("PixmapIO", "write (" + file.name() + "):" + (System.nanoTime() - start) / 1000000000.0f + ", " + Thread.currentThread().getName());
 		} catch(Exception e) {
 			throw new GdxRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
 		} finally {
@@ -69,7 +72,7 @@ public class PixmapIO {
 	
 	/**
 	 * Reads the {@link Pixmap} from the given file, assuming the Pixmap was written with the {@link PixmapIO#write(FileHandle, Pixmap)}
-	 * method. Throws a GdxRuntimeException in case the file couldn't be read.
+	 * method. Throws a GdxRuntimeException in case the file couldn't be read. 
 	 * @param file the file to read the Pixmap from
 	 * @return the Pixmap
 	 */
@@ -84,14 +87,15 @@ public class PixmapIO {
 			Format format = Format.fromGdx2DPixmapFormat(in.readInt());
 			Pixmap pixmap = new Pixmap(width, height, format);
 			
-			byte[] buffer = new byte[BUFFER_SIZE];
 			ByteBuffer pixelBuf = pixmap.getPixels();
 			pixelBuf.position(0);
 			pixelBuf.limit(pixelBuf.capacity());
 			
-			int readBytes = 0;
-			while((readBytes = in.read(buffer)) > 0) {
-				pixelBuf.put(buffer, 0, readBytes);
+			synchronized(readBuffer) {
+				int readBytes = 0;
+				while((readBytes = in.read(readBuffer)) > 0) {
+					pixelBuf.put(readBuffer, 0, readBytes);
+				}	
 			}
 			
 			pixelBuf.position(0);

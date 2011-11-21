@@ -37,6 +37,7 @@ class AssetLoadingTask implements Callable<Void> {
 	final AssetLoader loader;
 	final ExecutorService threadPool;
 
+	volatile boolean asyncDone = false;
 	boolean dependenciesLoaded = false;
 	Array<AssetDescriptor> dependencies;
 	Future<Void> depsFuture = null;
@@ -44,6 +45,7 @@ class AssetLoadingTask implements Callable<Void> {
 	Future<Void> loadFuture = null;
 	Object asset = null;
 
+	int ticks = 0;
 	boolean cancel = false;
 
 	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {
@@ -63,6 +65,10 @@ class AssetLoadingTask implements Callable<Void> {
 				for (AssetDescriptor desc : dependencies) {
 					manager.injectDependency(assetDesc.fileName, desc);
 				}
+			} else {
+				// if we have no dependencies, we load the async part of the task immediately.
+				asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
+				asyncDone = true;
 			}
 		} else {
 			asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
@@ -77,6 +83,7 @@ class AssetLoadingTask implements Callable<Void> {
 	 * @return true in case the asset was fully loaded, false otherwise
 	 * @throws GdxRuntimeException */
 	public boolean update () {
+		ticks++;
 		if (loader instanceof SynchronousAssetLoader) {
 			handleSyncLoader();
 		} else {
@@ -115,13 +122,18 @@ class AssetLoadingTask implements Callable<Void> {
 						throw new GdxRuntimeException("Couldn't load dependencies of asset '" + assetDesc.fileName + "'", e);
 					}
 					dependenciesLoaded = true;
+					if(asyncDone) {
+						asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
+					}
 				}
 			}
 		} else {
-			if (loadFuture == null) {
+			if (loadFuture == null && !asyncDone) {
 				loadFuture = threadPool.submit(this);
 			} else {
-				if (loadFuture.isDone()) {
+				if(asyncDone) {
+					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
+				} else if (loadFuture.isDone()) {
 					try {
 						loadFuture.get();
 					} catch (Exception e) {

@@ -389,6 +389,8 @@ public class AssetManager implements Disposable {
 				}
 			}
 
+			log.log("tick: " + task.ticks);
+			
 			return true;
 		} else {
 			return false;
