@@ -388,8 +388,6 @@ public class AssetManager implements Disposable {
 					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 				}
 			}
-
-			log.log("tick: " + task.ticks);
 			
 			return true;
 		} else {

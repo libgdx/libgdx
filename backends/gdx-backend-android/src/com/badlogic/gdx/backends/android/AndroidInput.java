@@ -117,6 +117,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private final AndroidApplicationConfiguration config;
 	private final Orientation nativeOrientation;
 	private long currentEventTimeStamp = System.nanoTime();
+	private final AndroidOnscreenKeyboard onscreenKeyboard;
 
 	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
 		view.setOnKeyListener(this);
@@ -126,6 +127,7 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 		view.requestFocus();
 		view.requestFocusFromTouch();
 		this.config = config;
+		this.onscreenKeyboard = new AndroidOnscreenKeyboard(activity, new Handler(), this);
 
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
@@ -418,19 +420,20 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
-		handle.post(new Runnable() {
-			public void run () {
-				InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
-				if (visible) {
-					View view = ((AndroidGraphics)app.getGraphics()).getView();
-					view.setFocusable(true);
-					view.setFocusableInTouchMode(true);
-					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);
-				} else {
-					manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
-				}
-			}
-		});
+		onscreenKeyboard.setVisible(visible);
+//		handle.post(new Runnable() {
+//			public void run () {
+//				InputMethodManager manager = (InputMethodManager)app.getSystemService(Context.INPUT_METHOD_SERVICE);
+//				if (visible) {
+//					View view = ((AndroidGraphics)app.getGraphics()).getView();
+//					view.setFocusable(true);
+//					view.setFocusableInTouchMode(true);
+//					manager.showSoftInput(((AndroidGraphics)app.getGraphics()).getView(), 0);
+//				} else {
+//					manager.hideSoftInputFromWindow(((AndroidGraphics)app.getGraphics()).getView().getWindowToken(), 0);
+//				}
+//			}
+//		});
 	}
 
 	@Override
