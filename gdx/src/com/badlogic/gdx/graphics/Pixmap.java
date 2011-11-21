@@ -49,7 +49,7 @@ public class Pixmap implements Disposable {
 	public enum Format {
 		Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
 
-		static int toGdx2DPixmapFormat (Format format) {
+		public static int toGdx2DPixmapFormat (Format format) {
 			if (format == Alpha) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
 			if (format == Intensity) return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
 			if (format == LuminanceAlpha) return Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA;
@@ -60,7 +60,7 @@ public class Pixmap implements Disposable {
 			throw new GdxRuntimeException("Unknown Format: " + format);
 		}
 
-		static Format fromGdx2DPixmapFormat (int format) {
+		public static Format fromGdx2DPixmapFormat (int format) {
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_ALPHA) return Alpha;
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_LUMINANCE_ALPHA) return LuminanceAlpha;
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_RGB565) return RGB565;

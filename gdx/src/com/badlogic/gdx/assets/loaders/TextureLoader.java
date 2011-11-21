@@ -22,6 +22,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.TextureData;
@@ -53,7 +54,8 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
 			FileHandle handle = resolve(fileName);
 			if (!fileName.contains(".etc1")) {
-				pixmap = new Pixmap(handle);
+				if(fileName.contains(".cim")) pixmap = PixmapIO.read(handle);
+				else pixmap = new Pixmap(handle);
 				data = new FileTextureData(handle, pixmap, format, genMipMaps);
 			} else {
 				data = new ETC1TextureData(handle, genMipMaps);

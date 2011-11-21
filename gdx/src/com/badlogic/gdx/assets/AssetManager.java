@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
@@ -31,6 +32,7 @@ import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TileMapRendererLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalInternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -63,17 +65,31 @@ public class AssetManager implements Disposable {
 
 	Logger log = new Logger(AssetManager.class.getSimpleName());
 
-	/** Creates a new AssetManager. */
+	/** Creates a new AssetManager with all default loaders. */
 	public AssetManager () {
+		this(false);
+	}
+	
+	/**
+	 * Creates a new AssetManager with all default loaders. If useExternalInternalResolver
+	 * is set to true, all loaders will use an {@link ExternalInternalFileHandleResolver} 
+	 * instead of the default {@link InternalFileHandleResolver}.
+	 * @param useExternaInternalResolver
+	 */
+	public AssetManager(boolean useExternaInternalResolver) {
+		FileHandleResolver resolver = null;
+		if(useExternaInternalResolver) resolver = new ExternalInternalFileHandleResolver();
+		else resolver = new InternalFileHandleResolver();
+		
 		log.setEnabled(false);
-		setLoader(BitmapFont.class, new BitmapFontLoader(new InternalFileHandleResolver()));
-		setLoader(Music.class, new MusicLoader(new InternalFileHandleResolver()));
-		setLoader(Pixmap.class, new PixmapLoader(new InternalFileHandleResolver()));
-		setLoader(Sound.class, new SoundLoader(new InternalFileHandleResolver()));
-		setLoader(TextureAtlas.class, new TextureAtlasLoader(new InternalFileHandleResolver()));
-		setLoader(Texture.class, new TextureLoader(new InternalFileHandleResolver()));
-		setLoader(Skin.class, new SkinLoader(new InternalFileHandleResolver()));
-		setLoader(TileMapRenderer.class, new TileMapRendererLoader(new InternalFileHandleResolver()));
+		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
+		setLoader(Music.class, new MusicLoader(resolver));
+		setLoader(Pixmap.class, new PixmapLoader(resolver));
+		setLoader(Sound.class, new SoundLoader(resolver));
+		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
+		setLoader(Texture.class, new TextureLoader(resolver));
+		setLoader(Skin.class, new SkinLoader(resolver));
+		setLoader(TileMapRenderer.class, new TileMapRendererLoader(resolver));
 		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {
 			@Override
 			public Thread newThread (Runnable r) {

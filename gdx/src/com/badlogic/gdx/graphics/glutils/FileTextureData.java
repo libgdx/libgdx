@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.glutils;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -52,7 +53,8 @@ public class FileTextureData implements TextureData {
 	public void prepare () {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
 		if (pixmap == null) {
-			pixmap = new Pixmap(file);
+			if(file.extension().equals("cim")) pixmap = PixmapIO.read(file);
+			else pixmap = new Pixmap(file);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
 			if (format == null) format = pixmap.getFormat();
