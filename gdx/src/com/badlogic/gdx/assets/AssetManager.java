@@ -191,6 +191,7 @@ public class AssetManager implements Disposable {
 	/** @param fileName the file name of the asset
 	 * @return whether the asset is loaded */
 	public synchronized boolean isLoaded (String fileName) {
+		if(fileName == null) return false;
 		return assetTypes.containsKey(fileName);
 	}
 
