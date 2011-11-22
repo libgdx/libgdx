@@ -207,7 +207,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (wrap) return 150;
+		if (wrap) return 0;
 		return bounds.width;
 	}
 

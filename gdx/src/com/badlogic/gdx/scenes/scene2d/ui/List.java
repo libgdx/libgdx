@@ -105,7 +105,7 @@ public class List extends Widget implements Cullable {
 		selected = (int)((height - y) / itemHeight);
 		selected = Math.max(0, selected);
 		selected = Math.min(items.length - 1, selected);
-		if (listener != null) listener.selected(this, selected, items[selected]);
+		if (listener != null && items.length > 0) listener.selected(this, selected, items[selected]);
 		return true;
 	}
 

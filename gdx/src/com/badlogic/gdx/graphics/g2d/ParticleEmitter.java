@@ -457,8 +457,15 @@ public class ParticleEmitter {
 					spawnAngle = MathUtils.random(360f);
 					break;
 				}
-				x += MathUtils.cosDeg(spawnAngle) * radiusX;
-				y += MathUtils.sinDeg(spawnAngle) * radiusX / scaleY;
+				float cosDeg = MathUtils.cosDeg(spawnAngle);
+				float sinDeg = MathUtils.sinDeg(spawnAngle);
+				x += cosDeg * radiusX;
+				y += sinDeg * radiusX / scaleY;
+				if ((updateFlags & UPDATE_ANGLE) == 0) {
+					particle.angle = spawnAngle;
+					particle.angleCos = cosDeg;
+					particle.angleSin = sinDeg;
+				}
 			} else {
 				float radius2 = radiusX * radiusX;
 				while (true) {

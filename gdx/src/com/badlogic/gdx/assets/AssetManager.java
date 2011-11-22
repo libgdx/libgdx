@@ -68,14 +68,10 @@ public class AssetManager implements Disposable {
 	public AssetManager () {
 		this(new InternalFileHandleResolver());
 	}
-	
-	/**
-	 * Creates a new AssetManager with all default loaders. If useExternalInternalResolver
-	 * is set to true, all loaders will use an {@link ExternalInternalFileHandleResolver} 
-	 * instead of the default {@link InternalFileHandleResolver}.
-	 * @param useExternaInternalResolver
-	 */
-	public AssetManager(FileHandleResolver resolver) {		log.setEnabled(false);
+
+	/** Creates a new AssetManager with all default loaders. */
+	public AssetManager (FileHandleResolver resolver) {
+		log.setEnabled(false);
 		setLoader(BitmapFont.class, new BitmapFontLoader(resolver));
 		setLoader(Music.class, new MusicLoader(resolver));
 		setLoader(Pixmap.class, new PixmapLoader(resolver));
@@ -191,7 +187,7 @@ public class AssetManager implements Disposable {
 	/** @param fileName the file name of the asset
 	 * @return whether the asset is loaded */
 	public synchronized boolean isLoaded (String fileName) {
-		if(fileName == null) return false;
+		if (fileName == null) return false;
 		return assetTypes.containsKey(fileName);
 	}
 
@@ -383,7 +379,7 @@ public class AssetManager implements Disposable {
 					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 				}
 			}
-			
+
 			return true;
 		} else {
 			return false;

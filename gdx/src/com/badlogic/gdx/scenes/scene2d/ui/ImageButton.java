@@ -30,6 +30,7 @@ public class ImageButton extends Button {
 		image = new Image();
 		image.setScaling(Scaling.fit);
 		add(image);
+		pack();
 	}
 
 	public ImageButton (TextureRegion region) {
