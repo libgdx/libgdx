@@ -77,7 +77,9 @@ public class ScrollPane extends WidgetGroup {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.widget = widget;
 		this.style = style;
-		setWidget(widget);
+		if (widget != null) {
+			setWidget(widget);
+		}
 		width = 150;
 		height = 150;
 	}
@@ -99,9 +101,15 @@ public class ScrollPane extends WidgetGroup {
 		final NinePatch hScrollKnob = style.hScrollKnob;
 		final NinePatch vScrollKnob = style.vScrollKnob;
 
+		// For no background, ex. background is drawn a parent who has two scroll area
+		float bgLeftWidth = bg == null ? 0 : bg.getLeftWidth();
+		float bgRightWidth = bg == null ? 0 : bg.getRightWidth();
+		float bgTopHeight = bg == null ? 0 : bg.getTopHeight();
+		float bgBottomHeight = bg == null ? 0 : bg.getTopHeight();
+
 		// Get available space size by subtracting background's padded area.
-		float areaWidth = width - bg.getLeftWidth() - bg.getRightWidth();
-		float areaHeight = height - bg.getTopHeight() - bg.getBottomHeight();
+		float areaWidth = width - bgLeftWidth - bgRightWidth;
+		float areaHeight = height - bgTopHeight - bgBottomHeight;
 
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
@@ -131,8 +139,7 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		// Set the widget area bounds.
-		widgetAreaBounds.set(bg.getLeftWidth(), bg.getBottomHeight() + (scrollX ? hScrollKnob.getTotalHeight() : 0), areaWidth,
-			areaHeight);
+		widgetAreaBounds.set(bgLeftWidth, bgBottomHeight + (scrollX ? hScrollKnob.getTotalHeight() : 0), areaWidth, areaHeight);
 		amountX = MathUtils.clamp(amountX, 0, widgetAreaBounds.x);
 		amountY = MathUtils.clamp(amountY, 0, widgetAreaBounds.y);
 
@@ -147,14 +154,14 @@ public class ScrollPane extends WidgetGroup {
 
 		// Set the bounds and scroll knob sizes if scrollbars are needed.
 		if (scrollX) {
-			hScrollBounds.set(bg.getLeftWidth(), bg.getBottomHeight(), areaWidth, hScrollKnob.getTotalHeight());
+			hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollKnob.getTotalHeight());
 			hKnobBounds.width = Math.max(hScrollKnob.getTotalWidth(), (int)(hScrollBounds.width * areaWidth / widget.width));
 			hKnobBounds.height = hScrollKnob.getTotalHeight();
 			hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
 			hKnobBounds.y = hScrollBounds.y;
 		}
 		if (scrollY) {
-			vScrollBounds.set(width - bg.getRightWidth() - vScrollKnob.getTotalWidth(), height - bg.getTopHeight() - areaHeight,
+			vScrollBounds.set(width - bgRightWidth - vScrollKnob.getTotalWidth(), height - bgTopHeight - areaHeight,
 				vScrollKnob.getTotalWidth(), areaHeight);
 			vKnobBounds.width = vScrollKnob.getTotalWidth();
 			vKnobBounds.height = Math.max(vScrollKnob.getTotalHeight(), (int)(vScrollBounds.height * areaHeight / widget.height));
@@ -194,7 +201,9 @@ public class ScrollPane extends WidgetGroup {
 
 		// Draw the background ninepatch.
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		style.background.draw(batch, 0, 0, width, height);
+		if (style.background != null) {
+			style.background.draw(batch, 0, 0, width, height);
+		}
 		batch.flush();
 
 		// Enable scissors for widget area and draw the widget.
@@ -387,6 +396,7 @@ public class ScrollPane extends WidgetGroup {
 	/** The style for a scroll pane, see {@link ScrollPane}.
 	 * @author mzechner */
 	static public class ScrollPaneStyle {
+		/** Optional. */
 		public NinePatch background;
 		public NinePatch hScroll;
 		public NinePatch hScrollKnob;

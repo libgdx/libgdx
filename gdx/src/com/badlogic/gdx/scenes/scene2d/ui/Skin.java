@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -81,7 +82,7 @@ import com.badlogic.gdx.utils.SerializationException;
  * 			white: { r: 1, g: 1, b: 1, a: 1 }
  * 		},
  * 		com.badlogic.gdx.graphics.g2d.BitmapFont: {
- * 			default-font: default.fnt
+ * 			default-font: { file: default.fnt }
  * 		}
  * 	},
  * 	styles: {
@@ -109,10 +110,20 @@ import com.badlogic.gdx.utils.SerializationException;
  * 
  * For convenience, most widget constructors will accept a skin and look up the necessary style using the name "default".
  * <p>
- * The JSON required for a style is simply a JSON object with the field names and values. If the type of a style object's field
- * has a section defined under "resources", the resource is looked up by name. Eg, in the example above, the
- * {@link CheckBoxStyle#checkboxOn} field is of type TextureRegion, so the "check-on" texture region defined in the "resources"
- * section is used.
+ * The JSON required for a style is simply a JSON object with field names that match the Java field names. The JSON object's field
+ * values can be an object to define a new Java object, or a string to reference a named resource of the expected type. Eg,
+ * {@link LabelStyle} has two fields, font and fontColor, so the JSON could look like:
+ * 
+ * <pre>
+ * someLabel: { font: small, fontColor: { r: 1, g: 0, b: 0, a: 1 } }
+ * </pre>
+ * 
+ * When this is parsed, the "font" field is a BitmapFont and the string "small" is found, so a BitmapFont resource named "small"
+ * is used. The "fontColor" field is a Color and a JSON object is found, so a new Color is created and the JSON object is used to
+ * populate its fields.
+ * <p>
+ * The order resources are defined is important. Resources may reference previously defined resources. This is how a BitmapFont
+ * can find a TextureRegion resource (see BitmapFont section below).
  * <p>
  * The following gives examples for the types of resources that are supported by default:
  * <p>
@@ -153,22 +164,32 @@ import com.badlogic.gdx.utils.SerializationException;
  * This notation is useful to use a single region as a ninepatch. Eg, when creating a button made up of a single image for the
  * {@link ButtonStyle#up} field, which is a ninepatch.
  * <p>
- * {@link BitmapFont} is just the path to the bitmap font file:
+ * {@link BitmapFont}:
  * 
  * <pre>
- * default.fnt
+ * { file: default.fnt }
  * </pre>
  * 
- * It first looks for the font file in the directory containing the skin file. If not found there, it uses the specified path as
- * an {@link FileType#Internal} path. The bitmap font will use a texture region with the same name as the font file. If no texture
- * region with that name is defined in the skin, it will look in the same directory as the font file for a PNG with the same name
- * as the font file.
+ * First the skin tries to find the font file in the directory containing the skin file. If not found there, it uses the specified
+ * path as an {@link FileType#Internal} path. The bitmap font will use a texture region with the same name as the font file
+ * without the file extension. If no texture region with that name is defined in the skin (note the order resources are defined is
+ * important), it will look in the same directory as the font file for a PNG with the same name as the font file but with a "png"
+ * file extension.
+ * <p>
+ * TintedNinePatch provides a mechanism for tinting an existing NinePatch:
+ * 
+ * <pre>
+ * { name: whiteButton, color: blue }
+ * </pre>
+ * 
+ * This would create a new NinePatch identical to the NinePatch named "whiteButton" and tint it with the color named "blue".
  * <p>
  * The skin JSON is extensible. Styles and resources for your own widgets may be included in the skin, usually without writing any
  * code. Deserialization is handled by the {@link Json} class, which automatically serializes and deserializes most objects. While
  * nearly any style object can be automatically deserialized, often resource objects require custom deserialization. Eg,
  * TextureRegion, BitmapFont, and NinePatch need to reference the skin's single texture. If needed,
- * {@link #getJsonLoader(FileHandle)} may be overridden to register additional custom {@link Serializer serializers}.
+ * {@link #getJsonLoader(FileHandle)} may be overridden to register additional custom {@link Serializer serializers}. See the
+ * source for {@link Skin#getJsonLoader(FileHandle)} for examples on how to write serializers.
  * <p>
  * Note that there is a SkinPacker class in the gdx-tools project that can take a directory of individual images, pack them into a
  * single texture, and write the proper texture region and ninepatch entries to a skin JSON file. The styles and other resources
@@ -282,8 +303,11 @@ public class Skin implements Disposable {
 	@Override
 	public void dispose () {
 		texture.dispose();
-		for (Object object : resources.values())
-			if (object instanceof Disposable) ((Disposable)object).dispose();
+		for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries()) {
+			if (!Disposable.class.isAssignableFrom(entry.key)) continue;
+			for (Object resource : entry.value.values())
+				((Disposable)resource).dispose();
+		}
 	}
 
 	public void setTexture (Texture texture) {
