@@ -13,7 +13,7 @@
 	<property name="g++" value="g++"/>
 	<!-- should probably contain -fPic but we use gcc 4.4.1 to compile those binaries -->
 	<!-- no more PPC support by XCode :( <property name="g++-opts" value="-c -Wall -O2 -arch ppc -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC"/>-->
-	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
 	<fileset id="g++-files" dir="./">
 		<include name="**/*.cpp"/>
 		<exclude name="Mpg123Decoder.cpp"/>
@@ -31,7 +31,7 @@
 	<!-- define linker and options -->
 	<property name="linker" value="g++"/>
 	<!-- no more ppc :( <property name="linker-opts" value="-shared -arch ppc -arch i386 -arch x86_64"/> -->
-	<property name="linker-opts" value="-shared -arch i386 -arch x86_64"/>
+	<property name="linker-opts" value="-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
