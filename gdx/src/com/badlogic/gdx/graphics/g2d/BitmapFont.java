@@ -67,6 +67,7 @@ public class BitmapFont implements Disposable {
 	private boolean flipped;
 	private boolean integer = true;
 	final BitmapFontData data;
+	private boolean ownsTexture;
 
 	public static class BitmapFontData {
 		String imagePath;
@@ -293,6 +294,7 @@ public class BitmapFont implements Disposable {
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts.s */
 	public BitmapFont (FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer) {
 		this(new BitmapFontData(fontFile, flip), new TextureRegion(new Texture(imageFile, false)), integer);
+		ownsTexture = true;
 	}
 
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
@@ -301,6 +303,7 @@ public class BitmapFont implements Disposable {
 		this.integer = integer;
 		this.data = data;
 		load(data);
+		ownsTexture = true;
 	}
 
 	private void load (BitmapFontData data) {
@@ -829,9 +832,9 @@ public class BitmapFont implements Disposable {
 		return flipped;
 	}
 
-	/** Disposes the texture used by this BitmapFont's region. */
+	/** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
 	public void dispose () {
-		region.getTexture().dispose();
+		if (ownsTexture) region.getTexture().dispose();
 	}
 
 	/** Makes the specified glyphs fixed width. This can be useful to make the numbers in a font fixed width. Eg, when horizontally
