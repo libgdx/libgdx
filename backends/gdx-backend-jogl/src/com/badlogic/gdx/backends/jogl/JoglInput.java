@@ -124,6 +124,7 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		canvas.addMouseMotionListener(this);
 		canvas.addMouseWheelListener(this);
 		canvas.addKeyListener(this);
+		canvas.setFocusTraversalKeysEnabled(false);
 		this.canvas = canvas;
 	}
 
