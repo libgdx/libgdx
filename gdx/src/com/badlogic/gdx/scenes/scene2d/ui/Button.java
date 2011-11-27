@@ -91,7 +91,7 @@ public class Button extends Table {
 	public void setStyle (ButtonStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-		setBackground(isPressed ? style.down : style.up);
+		setBackground((isPressed && style.down != null) ? style.down : style.up);
 		invalidateHierarchy();
 	}
 
