@@ -378,6 +378,15 @@ public class ObjectIntMap<K> {
 		return false;
 	}
 
+	/** Returns the key for the specified value, or null if it is not in the map. Note this traverses the entire map and compares
+	 * every value, which may be an expensive operation. */
+	public K findKey (int value) {
+		int[] valueTable = this.valueTable;
+		for (int i = capacity + stashSize; i-- > 0;)
+			if (valueTable[i] == value) return keyTable[i];
+		return null;
+	}
+
 	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {

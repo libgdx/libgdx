@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
@@ -28,6 +30,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox.CheckBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -299,15 +302,47 @@ public class Skin implements Disposable {
 		return true;
 	}
 
-	/** Disposes the {@link Texture} and all {@link Disposable} resources of this Skin. */
-	@Override
-	public void dispose () {
-		texture.dispose();
-		for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries()) {
-			if (!Disposable.class.isAssignableFrom(entry.key)) continue;
-			for (Object resource : entry.value.values())
-				((Disposable)resource).dispose();
+	/** Returns the name of the specified style object, or null if it is not in the skin. This compares potentially every style
+	 * object in the skin of the same type as the specified style, which may be a somewhat expensive operation. */
+	public String findStyleName (Object style) {
+		if (style == null) throw new IllegalArgumentException("style cannot be null.");
+		ObjectMap<String, Object> typeStyles = styles.get(style.getClass());
+		if (typeStyles == null) return null;
+		return typeStyles.findKey(style, true);
+	}
+
+	public void setEnabled (Actor actor, boolean enabled) {
+		actor.touchable = enabled;
+		// Get current style.
+		Method method = findMethod(actor.getClass(), "getStyle");
+		if (method == null) return;
+		Object style;
+		try {
+			style = method.invoke(actor);
+		} catch (Exception ignored) {
+			return;
 		}
+		// Determine new style.
+		String name = findStyleName(style);
+		if (name == null) return;
+		name = name.replace("-disabled", "") + (enabled ? "" : "-disabled");
+		style = getStyle(name, style.getClass());
+		// Set new style.
+		method = findMethod(actor.getClass(), "setStyle");
+		if (method == null) return;
+		try {
+			method.invoke(actor, style);
+		} catch (Exception ignored) {
+		}
+	}
+
+	static private Method findMethod (Class type, String name) {
+		Method[] methods = type.getMethods();
+		for (int i = 0, n = methods.length; i < n; i++) {
+			Method method = methods[i];
+			if (method.getName().equals(name)) return method;
+		}
+		return null;
 	}
 
 	public void setTexture (Texture texture) {
@@ -317,6 +352,17 @@ public class Skin implements Disposable {
 	/** Returns the single {@link Texture} that all resources in this skin reference. */
 	public Texture getTexture () {
 		return texture;
+	}
+
+	/** Disposes the {@link Texture} and all {@link Disposable} resources of this Skin. */
+	@Override
+	public void dispose () {
+		texture.dispose();
+		for (Entry<Class, ObjectMap<String, Object>> entry : resources.entries()) {
+			if (!Disposable.class.isAssignableFrom(entry.key)) continue;
+			for (Object resource : entry.value.values())
+				((Disposable)resource).dispose();
+		}
 	}
 
 	public void save (FileHandle skinFile) {

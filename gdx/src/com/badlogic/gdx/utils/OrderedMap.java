@@ -119,7 +119,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		if (size == 0) return "{}";
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('{');
-		Array<K> keys = orderedKeys();
+		Array<K> keys = this.keys;
 		for (int i = 0, n = keys.size; i < n; i++) {
 			K key = keys.get(i);
 			if (i > 0) buffer.append(", ");
