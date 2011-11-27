@@ -47,13 +47,6 @@ public class JoglPreferences implements Preferences {
 			} catch (Exception e) {
 			}
 		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run () {
-				flush();
-			}
-		});
 	}
 
 	@Override

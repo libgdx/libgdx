@@ -40,6 +40,13 @@ public class TextureRegion {
 
 	/** @param width The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param height The height of the texture region. May be negative to flip the sprite when drawn. */
+	public TextureRegion (Texture texture, int width, int height) {
+		this.texture = texture;
+		setRegion(0, 0, width, height);
+	}
+
+	/** @param width The width of the texture region. May be negative to flip the sprite when drawn.
+	 * @param height The height of the texture region. May be negative to flip the sprite when drawn. */
 	public TextureRegion (Texture texture, int x, int y, int width, int height) {
 		this.texture = texture;
 		setRegion(x, y, width, height);

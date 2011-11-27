@@ -42,25 +42,19 @@ public class LwjglPreferences implements Preferences {
 	public LwjglPreferences (FileHandle file) {
 		this.name = file.name();
 		this.file = file;
+		if (!file.exists()) return;
 		InputStream in = null;
 		try {
 			in = new BufferedInputStream(file.read());
 			properties.loadFromXML(in);
 		} catch (Throwable t) {
-			System.out.println(t.getMessage());
+			t.printStackTrace();
 		} finally {
 			if (in != null) try {
 				in.close();
 			} catch (Exception e) {
 			}
 		}
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run () {
-				flush();
-			}
-		});
 	}
 
 	@Override

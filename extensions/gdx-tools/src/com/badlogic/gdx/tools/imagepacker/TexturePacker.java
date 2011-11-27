@@ -764,7 +764,7 @@ public class TexturePacker {
 			if (outputDir.exists()) {
 				String prefix = inputDir.getName();
 				for (File file : outputDir.listFiles())
-					if (file.getName().startsWith(prefix)) file.delete();
+					if (file.getName().startsWith(prefix) && file.getName().endsWith(".png")) file.delete();
 			}
 
 			// Just check all combinations, because we are extremely lazy.
