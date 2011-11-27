@@ -28,8 +28,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
-// BOZO - Set culling area on root group?
-
 /** A stage is a container for {@link Actor}s and handles distributing touch events, animating actors and asking them to render
  * themselves. A stage is 2D scenegraph with hierarchies of Actors.
  * <p>
@@ -61,12 +59,9 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor[] touchFocus = new Actor[20];
 	private Actor keyboardFocus, scrollFocus;
 
-	/** <p>
-	 * Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
+	/** Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
 	 * dimensions the stage object will setup a projection matrix to guarantee a fixed coordinate system. If stretch is disabled
 	 * then the bigger dimension of the Stage will be increased to accomodate the actual device resolution.
-	 * </p>
-	 * 
 	 * @param width the width of the viewport
 	 * @param height the height of the viewport
 	 * @param stretch whether to stretch the viewport to the real device resolution */
@@ -82,12 +77,9 @@ public class Stage extends InputAdapter implements Disposable {
 		setViewport(width, height, stretch);
 	}
 
-	/** <p>
-	 * Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
+	/** Constructs a new Stage object with the given dimensions. If the device resolution does not equal the Stage objects
 	 * dimensions the stage object will setup a projection matrix to guarantee a fixed coordinate system. If stretch is disabled
 	 * then the bigger dimension of the Stage will be increased to accomodate the actual device resolution.
-	 * </p>
-	 * 
 	 * @param width the width of the viewport
 	 * @param height the height of the viewport
 	 * @param stretch whether to stretch the viewport to the real device resolution
@@ -97,6 +89,7 @@ public class Stage extends InputAdapter implements Disposable {
 		this.height = height;
 		this.stretch = stretch;
 		this.root = new Group("root");
+		root.stage = this;
 		this.batch = batch;
 		this.ownsBatch = false;
 		this.camera = new OrthographicCamera();
