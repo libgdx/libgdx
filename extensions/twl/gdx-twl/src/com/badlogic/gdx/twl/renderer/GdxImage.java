@@ -62,7 +62,7 @@ public class GdxImage implements Image, SupportsDrawRepeat {
 	}
 
 	public void draw (AnimationState as, int x, int y) {
-		sprite.setColor(tintColor.getRedFloat(), tintColor.getGreenFloat(), tintColor.getBlueFloat(), tintColor.getAlphaFloat());
+		sprite.setColor(renderer.getColor(tintColor));
 		if (tile) {
 			drawTiled(x, y, width, height);
 		} else {
@@ -72,7 +72,7 @@ public class GdxImage implements Image, SupportsDrawRepeat {
 	}
 
 	public void draw (AnimationState as, int x, int y, int width, int height) {
-		sprite.setColor(tintColor.getRedFloat(), tintColor.getGreenFloat(), tintColor.getBlueFloat(), tintColor.getAlphaFloat());
+		sprite.setColor(renderer.getColor(tintColor));
 		if (tile) {
 			drawTiled(x, y, width, height);
 		} else {
@@ -82,7 +82,7 @@ public class GdxImage implements Image, SupportsDrawRepeat {
 	}
 
 	public void draw (AnimationState as, int x, int y, int width, int height, int repeatCountX, int repeatCountY) {
-		sprite.setColor(tintColor.getRedFloat(), tintColor.getGreenFloat(), tintColor.getBlueFloat(), tintColor.getAlphaFloat());
+		sprite.setColor(renderer.getColor(tintColor));
 		if (repeatCountX * this.width != width || repeatCountY * this.height != height)
 			drawRepeatSlow(x, y, width, height, repeatCountX, repeatCountY);
 		else
