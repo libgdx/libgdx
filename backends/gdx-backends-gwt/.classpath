@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src/com/badlogic/gdx/backends/gwt/emu"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/gwt-g3d-v007.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
+	<classpathentry kind="lib" path="libs/gwt-g3d-devbuild.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

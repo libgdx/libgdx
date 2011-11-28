@@ -27,6 +27,16 @@ public class NumberUtils {
 	public static int floatToRawIntBits (float value) {
 		return impl.floatToIntBits(value);
 	}
+	
+	public static int floatToIntColor (float value) {
+		return impl.floatToIntBits(value);
+	}
+
+	public static float intToFloatColor (int value) {
+		// This mask avoids using bits in the NaN range. See Float.intBitsToFloat javadocs.
+		// This unfortunately means we don't get the full range of alpha.
+		return impl.intBitsToFloat(value & 0xfeffffff);
+	}
 
 	public static float intBitsToFloat (int value) {
 		return impl.intBitsToFloat(value);

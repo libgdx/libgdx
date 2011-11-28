@@ -177,4 +177,9 @@ public class JoglPreferences implements Preferences {
 			}
 		}
 	}
+
+	@Override
+	public void remove (String key) {
+		properties.remove(key);
+	}
 }

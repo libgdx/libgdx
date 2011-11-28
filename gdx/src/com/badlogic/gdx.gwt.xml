@@ -7,6 +7,7 @@
 		<include name="**/ApplicationListener.java"/>
 		<include name="**/Audio.java"/>
 		<include name="**/Files.java"/>
+		<include name="**/Game.java"/>
 		<include name="**/Gdx.java"/>
 		<include name="**/Graphics.java"/>
 		<include name="**/Input.java"/>
@@ -14,6 +15,8 @@
 		<include name="**/InputMultiplexer.java"/>
 		<include name="**/InputProcessor.java"/>
 		<include name="**/Preferences.java"/>
+		<include name="**/Screen.java"/>
+		<include name="**/Version.java"/>
 		
 		<!-- audio interfaces/classes -->
 		<include name="**/audio/AudioDevice.java"/>
@@ -26,13 +29,28 @@
 <!-- 		<include name="**/FileHandleStream.java"/> -->
 		
 		<!-- graphics interfaces/classes -->
+		<include name="**/graphics/Camera.java"/>
 		<include name="**/graphics/Color.java"/>
 		<include name="**/graphics/GL10.java"/>
 		<include name="**/graphics/GL11.java"/>
 		<include name="**/graphics/GL20.java"/>
 		<include name="**/graphics/GLCommon.java"/>
 		<include name="**/graphics/GLU.java"/>
+		<include name="**/graphics/Mesh.java"/>
+		<include name="**/graphics/OrthographicCamera.java"/>
+		<include name="**/graphics/PerspectiveCamera.java"/>
 		<include name="**/graphics/Pixmap.java"/>
+		<include name="**/graphics/VertexAttribute.java"/>
+		<include name="**/graphics/VertexAttributes.java"/>
+		<include name="**/graphics/glutils/IndexBufferObject.java"/>
+		<include name="**/graphics/glutils/IndexBufferObjectSubData.java"/>
+		<include name="**/graphics/glutils/IndexData.java"/>
+		<!-- <include name="**/graphics/glutils/ShaderProgram.java"/>-->
+		<include name="**/graphics/glutils/VertexArray.java"/>
+		<include name="**/graphics/glutils/VertexBufferObject.java"/>
+		<include name="**/graphics/glutils/VertexBufferObjectSubData.java"/>
+		<include name="**/graphics/glutils/VertexData.java"/>
+		
 
 		<!-- math package -->
 		<include name="**/math/**"/>
@@ -40,6 +58,12 @@
 		<!-- utils interfaces/classes -->
 		<include name="**/utils/Disposable.java"/>
 		<include name="**/utils/GdxRuntimeException.java"/>
+		<include name="**/utils/Sort.java"/>
+		<include name="**/utils/ComparableTimSort.java"/>
+		<include name="**/utils/TimSort.java"/>
+		<!-- <include name="**/utils/ObjectMap.java"/>
+		<include name="**/utils/IntMap.java"/>
+		<include name="**/utils/IntArray.java"/>-->
 	</source>
 
 <!-- 	<source path='gdx'> -->

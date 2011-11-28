@@ -67,6 +67,8 @@ public interface Preferences {
 	public boolean contains (String key);
 
 	public void clear ();
+	
+	public void remove(String key);
 
 	/** Makes sure the preferences are persisted. */
 	public void flush ();

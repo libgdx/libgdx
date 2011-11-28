@@ -149,4 +149,11 @@ public class AndroidPreferences implements Preferences {
 	@Override
 	public void flush () {
 	}
+
+	@Override
+	public void remove (String key) {
+		Editor edit = sharedPrefs.edit();
+		edit.remove(key);
+		edit.commit();
+	}
 }

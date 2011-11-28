@@ -173,11 +173,6 @@ public class GwtGraphics implements Graphics {
 	}
 
 	@Override
-	public void setIcon (Pixmap pixmap) {
-
-	}
-
-	@Override
 	public void setVSync (boolean vsync) {
 
 	}
@@ -203,5 +198,9 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public float getDensity () {
 		throw new GdxRuntimeException("No supported");
+	}
+
+	@Override
+	public void setIcon (Pixmap[] pixmaps) {
 	}
 }

@@ -18,8 +18,13 @@ package com.badlogic.gdx.backends.gwt;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class GdxGwtTest extends GwtApplication implements ApplicationListener {
+	ShaderProgram shader;
+	Mesh mesh;
+	
 	@Override
 	public GwtApplicationConfiguration getConfig () {
 		return new GwtApplicationConfiguration(500, 500);
@@ -32,6 +37,25 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 
 	@Override
 	public void create () {
+		String vertexShader = "attribute vec4 a_position;\n" +
+			"attribute vec4 a_normal;\n" + 
+			"uniform mat4 u_projView;\n" +
+			"varying vec4 v_color;\n" +
+			"void main() {\n" +
+			"v_color = vec4(1, 0, 0, 1);\n"+
+			"gl_Position = u_projView * a_position;\n" +
+			"}\n";
+		String fragmentShader = "#ifdef GL_ES\n" +
+									 	"precision mediump float;\n" +
+									 	"#endif\n" +
+									 	"varying vec4 v_color;\n" +
+									 	"void main() {\n" +
+									 	"gl_FragColor = v_color;\n" +
+									 	"}\n";
+		shader = new ShaderProgram(vertexShader, fragmentShader);
+		if(!shader.isCompiled()) {
+			Gdx.app.log("GdxGwtTest", "Couldn't compile shader: " + shader.getLog());
+		}
 	}
 
 	@Override
@@ -42,8 +66,6 @@ public class GdxGwtTest extends GwtApplication implements ApplicationListener {
 	public void render () {
 		Gdx.gl.glClearColor(1, (float)Math.random(), 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		Gdx.app.log("GdxGwtTest", "fps:" + Gdx.graphics.getFramesPerSecond() + ", " + Gdx.graphics.getDeltaTime());
 	}
 
 	@Override
