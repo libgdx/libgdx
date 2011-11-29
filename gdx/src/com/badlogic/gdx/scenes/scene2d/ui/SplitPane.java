@@ -105,7 +105,11 @@ public class SplitPane extends WidgetGroup {
 			firstWidget.y = firstWidgetBounds.y;
 			firstWidget.width = firstWidgetBounds.width;
 			firstWidget.height = firstWidgetBounds.height;
-			if (firstWidget instanceof Layout) ((Layout)firstWidget).invalidate();
+			if (firstWidget instanceof Layout) {
+				Layout layout = (Layout)firstWidget;
+				layout.invalidate();
+				layout.validate();
+			}
 		}
 		if (secondWidget != null && secondWidget.width != secondWidgetBounds.width
 			|| secondWidget.height != secondWidgetBounds.height) {
@@ -113,7 +117,11 @@ public class SplitPane extends WidgetGroup {
 			secondWidget.y = secondWidgetBounds.y;
 			secondWidget.width = secondWidgetBounds.width;
 			secondWidget.height = secondWidgetBounds.height;
-			if (secondWidget instanceof Layout) ((Layout)secondWidget).invalidate();
+			if (secondWidget instanceof Layout) {
+				Layout layout = (Layout)secondWidget;
+				layout.invalidate();
+				layout.validate();
+			}
 		}
 	}
 

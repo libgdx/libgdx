@@ -21,8 +21,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 /** Provides methods for an actor to participate in layout and to provide a minimum, preferred, and maximum size.
  * @author Nathan Sweet */
 public interface Layout {
-	/** Computes and caches any information needed for drawing and, if this actor has children, positions and sizes each child.
-	 * Usually this should not be called directly, instead {@link #validate()} should be used. */
+	/** Computes and caches any information needed for drawing and, if this actor has children, positions and sizes each child and
+	 * calls {@link #invalidate()} and then {@link #validate()} on each one. Usually this should not be called directly, instead
+	 * {@link #validate()} should be used. */
 	public void layout ();
 
 	/** Invalidates this actor's layout, causing {@link #layout()} to be called the next time {@link #validate()} is called. This

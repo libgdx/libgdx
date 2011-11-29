@@ -225,6 +225,12 @@ public class LongArray {
 		if (size > newSize) size = newSize;
 	}
 
+	/** Returns a random item from the array, or zero if the array is empty. */
+	public long random () {
+		if (size == 0) return 0;
+		return items[MathUtils.random(0, size - 1)];
+	}
+
 	public long[] toArray () {
 		long[] array = new long[size];
 		System.arraycopy(items, 0, array, 0, size);

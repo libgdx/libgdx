@@ -83,8 +83,18 @@ public class NinePatch {
 		}
 	}
 
+	public NinePatch (Texture texture, Color color) {
+		this(texture);
+		setColor(color);
+	}
+
 	public NinePatch (Texture texture) {
 		this(new TextureRegion(texture));
+	}
+
+	public NinePatch (TextureRegion region, Color color) {
+		this(region);
+		setColor(color);
 	}
 
 	public NinePatch (TextureRegion region) {

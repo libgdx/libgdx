@@ -187,6 +187,14 @@ public class ScrollPane extends WidgetGroup {
 		}
 	}
 
+	public void layout () {
+		if (widget instanceof Layout) {
+			Layout layout = (Layout)widget;
+			layout.invalidate();
+			layout.validate();
+		}
+	}
+
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (widget == null) return;

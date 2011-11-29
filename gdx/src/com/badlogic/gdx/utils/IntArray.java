@@ -225,6 +225,12 @@ public class IntArray {
 		if (size > newSize) size = newSize;
 	}
 
+	/** Returns a random item from the array, or zero if the array is empty. */
+	public int random () {
+		if (size == 0) return 0;
+		return items[MathUtils.random(0, size - 1)];
+	}
+
 	public int[] toArray () {
 		int[] array = new int[size];
 		System.arraycopy(items, 0, array, 0, size);
