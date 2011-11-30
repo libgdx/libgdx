@@ -41,8 +41,7 @@ public interface Layout {
 	 * performed. */
 	public void validate ();
 
-	/** Sizes this actor to its preferred width and height and, if its size was changed, calls {@link #invalidate()} and then
-	 * {@link #validate()}. */
+	/** Sizes this actor to its preferred width and height and, if its size was changed, calls {@link #invalidate()}. */
 	public void pack ();
 
 	public float getMinWidth ();
