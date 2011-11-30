@@ -186,8 +186,9 @@ public abstract class Actor {
 
 	@Override
 	public String toString () {
-		return name + ": [x=" + x + ", y=" + y + ", refX=" + originX + ", refY=" + originY + ", width=" + width + ", height="
-			+ height + "]";
+		String name = this.name != null ? this.name : getClass().getSimpleName();
+		if (name.equals("")) name = getClass().getName();
+		return name + " pos=" + x + "," + y + " origin=" + originX + "," + originY + " size=" + width + "," + height;
 	}
 
 	/** Marks the {@link Actor} to be removed by its parent.
@@ -206,7 +207,7 @@ public abstract class Actor {
 	public boolean isMarkedToRemove () {
 		return toRemove;
 	}
-	
+
 	public Stage getStage () {
 		return stage;
 	}

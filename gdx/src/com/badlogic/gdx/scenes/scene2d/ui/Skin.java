@@ -206,6 +206,11 @@ public class Skin implements Disposable {
 	public Skin () {
 	}
 
+	public Skin (FileHandle skinFile) {
+		texture = new Texture(skinFile.parent().child(skinFile.nameWithoutExtension() + ".png"));
+		load(skinFile);
+	}
+
 	public Skin (FileHandle skinFile, FileHandle textureFile) {
 		texture = new Texture(textureFile);
 		load(skinFile);
@@ -486,18 +491,19 @@ public class Skin implements Disposable {
 				if (jsonData instanceof String) return getResource((String)jsonData, BitmapFont.class);
 				String path = json.readValue("file", String.class, jsonData);
 
-				FileHandle file = skinFile.parent().child(path);
-				if (!file.exists()) file = Gdx.files.internal(path);
-				if (!file.exists()) throw new SerializationException("Font file not found: " + file);
+				FileHandle fontFile = skinFile.parent().child(path);
+				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
+				if (!fontFile.exists()) throw new SerializationException("Font file not found: " + fontFile);
 
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
-				TextureRegion region = null;
-				if (skin.hasResource(file.nameWithoutExtension(), TextureRegion.class))
-					region = skin.getResource(file.nameWithoutExtension(), TextureRegion.class);
+				String regionName = fontFile.nameWithoutExtension();
 				try {
-					return new BitmapFont(file, region, false);
+					if (skin.hasResource(regionName, TextureRegion.class))
+						return new BitmapFont(fontFile, skin.getResource(regionName, TextureRegion.class), false);
+					else
+						return new BitmapFont(fontFile, fontFile.parent().child(regionName + ".png"), false);
 				} catch (RuntimeException ex) {
-					throw new SerializationException("Error loading bitmap font: " + file, ex);
+					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);
 				}
 			}
 		});

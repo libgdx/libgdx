@@ -196,14 +196,14 @@ public class Group extends Actor implements Cullable {
 
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
-		if (!touchable) return false;
+		if (!touchable || !visible) return false;
 
 		if (debug) Gdx.app.log("Group", name + ": " + x + ", " + y);
 
 		int len = children.size() - 1;
 		for (int i = len; i >= 0; i--) {
 			Actor child = children.get(i);
-			if (!child.touchable) continue;
+			if (!child.touchable || !child.visible) continue;
 
 			toChildCoordinates(child, x, y, point);
 			if (child.hit(point.x, point.y) == null) continue;
@@ -230,12 +230,12 @@ public class Group extends Actor implements Cullable {
 
 	@Override
 	public boolean touchMoved (float x, float y) {
-		if (!touchable) return false;
+		if (!touchable || !visible) return false;
 
 		int len = children.size() - 1;
 		for (int i = len; i >= 0; i--) {
 			Actor child = children.get(i);
-			if (!child.touchable) continue;
+			if (!child.touchable || !child.touchable) continue;
 
 			toChildCoordinates(child, x, y, point);
 

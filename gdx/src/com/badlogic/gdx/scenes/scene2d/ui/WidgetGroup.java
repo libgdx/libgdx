@@ -73,6 +73,7 @@ public abstract class WidgetGroup extends Group implements Layout {
 			width = newWidth;
 			height = newHeight;
 			invalidate();
+			validate();
 		}
 	}
 

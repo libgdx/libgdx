@@ -226,7 +226,7 @@ public class FlickScrollPane extends WidgetGroup {
 			layout.validate();
 		}
 	}
-	
+
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		if (widget == null) return;
@@ -367,11 +367,19 @@ public class FlickScrollPane extends WidgetGroup {
 		return gestureDetector.isPanning();
 	}
 
+	public void setVelocityX (float velocityX) {
+		this.velocityX = velocityX;
+	}
+
 	public float getVelocityX () {
 		if (flingTimer <= 0) return 0;
 		float alpha = flingTimer / flingTime;
 		alpha = alpha * alpha * alpha;
 		return velocityX * alpha * alpha * alpha;
+	}
+
+	public void setVelocityY (float velocityY) {
+		this.velocityY = velocityY;
 	}
 
 	public float getVelocityY () {
