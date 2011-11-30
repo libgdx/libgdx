@@ -47,7 +47,11 @@ import com.badlogic.gdx.utils.Pool;
 /** An implementation of the {@link Input} interface for Android.
  * 
  * @author mzechner */
-public final class AndroidInput implements Input, OnKeyListener, OnTouchListener, SensorEventListener {
+/**
+ * @author jshapcot
+ *
+ */
+public final class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -119,6 +123,9 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	private long currentEventTimeStamp = System.nanoTime();
 	private final AndroidOnscreenKeyboard onscreenKeyboard;
 
+	private SensorEventListener accelerometerListener;
+	private SensorEventListener compassListener;
+	
 	public AndroidInput (AndroidApplication activity, View view, AndroidApplicationConfiguration config) {
 		view.setOnKeyListener(this);
 		view.setOnTouchListener(this);
@@ -398,27 +405,6 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	}
 
 	@Override
-	public void onAccuracyChanged (Sensor arg0, int arg1) {
-
-	}
-
-	@Override
-	public void onSensorChanged (SensorEvent event) {
-		if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			if (nativeOrientation == Orientation.Portrait) {
-				System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
-			} else {
-				accelerometerValues[0] = event.values[1];
-				accelerometerValues[1] = -event.values[0];
-				accelerometerValues[2] = event.values[2];
-			}
-		}
-		if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-			System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
-		}
-	}
-
-	@Override
 	public void setOnscreenKeyboardVisible (final boolean visible) {
 //		onscreenKeyboard.setVisible(visible);
 		handle.post(new Runnable() {
@@ -517,7 +503,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 				accelerometerAvailable = false;
 			} else {
 				Sensor accelerometer = manager.getSensorList(Sensor.TYPE_ACCELEROMETER).get(0);
-				accelerometerAvailable = manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+				accelerometerListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
+				accelerometerAvailable = manager.registerListener(accelerometerListener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
 			}
 		} else
 			accelerometerAvailable = false;
@@ -528,7 +515,8 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 			if (sensor != null) {
 				compassAvailable = accelerometerAvailable;
 				if (compassAvailable) {
-					compassAvailable = manager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME);
+					compassListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
+					compassAvailable = manager.registerListener(compassListener, sensor, SensorManager.SENSOR_DELAY_GAME);
 				}
 			} else {
 				compassAvailable = false;
@@ -540,7 +528,14 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 
 	void unregisterSensorListeners () {
 		if (manager != null) {
-			manager.unregisterListener(this);
+			if (accelerometerListener != null) {
+				manager.unregisterListener(accelerometerListener);
+				accelerometerListener = null;
+			}
+			if (compassListener != null) {
+				manager.unregisterListener(compassListener);
+				compassListener = null;
+			}
 			manager = null;
 		}
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
@@ -646,5 +641,46 @@ public final class AndroidInput implements Input, OnKeyListener, OnTouchListener
 	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
+	}
+
+	/** Our implementation of SensorEventListener. Because Android doesn't like it
+	 *  when we register more than one Sensor to a single SensorEventListener,
+	 *  we add one of these for each Sensor. Could use an anonymous class,
+	 *  but I don't see any harm in explicitly defining it here.
+	 *  Correct me if I am wrong.
+	 */	
+	private class SensorListener implements SensorEventListener
+	{
+		final float[] accelerometerValues;
+		final float[] magneticFieldValues;
+		final Orientation nativeOrientation;
+		
+		SensorListener(Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues)
+		{
+			this.accelerometerValues = accelerometerValues;
+			this.magneticFieldValues = magneticFieldValues;
+			this.nativeOrientation = nativeOrientation;
+		}
+		
+		@Override
+		public void onAccuracyChanged (Sensor arg0, int arg1) {
+
+		}
+
+		@Override
+		public void onSensorChanged (SensorEvent event) {
+			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				if (nativeOrientation == Orientation.Portrait) {
+					System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
+				} else {
+					accelerometerValues[0] = event.values[1];
+					accelerometerValues[1] = -event.values[0];
+					accelerometerValues[2] = event.values[2];
+				}
+			}
+			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
+			}
+		}	
 	}
 }
