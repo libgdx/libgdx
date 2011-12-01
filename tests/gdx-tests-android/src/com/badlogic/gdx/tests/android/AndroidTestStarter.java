@@ -19,7 +19,10 @@ package com.badlogic.gdx.tests.android;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -28,6 +31,7 @@ import android.widget.ListView;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
 public class AndroidTestStarter extends ListActivity {
+	SharedPreferences prefs;
 
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
@@ -38,10 +42,18 @@ public class AndroidTestStarter extends ListActivity {
 		}
 		testNames.add(MatrixTest.class.getSimpleName());
 		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testNames.toArray(new String[0])));
+
+		prefs = getSharedPreferences("libgdx-tests", Context.MODE_PRIVATE);
+		getListView().setSelectionFromTop(prefs.getInt("index", 0), prefs.getInt("top", 0));
 	}
 
-	protected void onListItemClick (ListView l, View v, int position, long id) {
-		super.onListItemClick(l, v, position, id);
+	protected void onListItemClick (ListView listView, View view, int position, long id) {
+		super.onListItemClick(listView, view, position, id);
+
+		Editor editor = prefs.edit();
+		editor.putInt("index", listView.getFirstVisiblePosition());
+		editor.putInt("top", listView.getChildAt(0) == null ? 0 : listView.getChildAt(0).getTop());
+		editor.commit();
 
 		Object o = this.getListAdapter().getItem(position);
 		String testName = o.toString();

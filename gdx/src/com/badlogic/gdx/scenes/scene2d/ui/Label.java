@@ -29,8 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** A text label, with optional word wrapping.
  * <p>
- * The preferred size of the label is determined by the actual text bounds, unless word wrap is enabled (see
- * {@link #setWrap(boolean)} and {@link #setWrapWidth(float)}).
+ * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
 public class Label extends Widget {
 	private LabelStyle style;
@@ -108,9 +107,8 @@ public class Label extends Widget {
 	}
 
 	/** If false, the text will only wrap where it contains newlines (\n). The preferred size of the label will be the text bounds.
-	 * If true, the text will word wrap using the width of the label. The preferred size of the label will be 100x100, so usually
-	 * the size of the label should be set explicitly without relying on the preferred size. Default is false.
-	 * @see #setWrapWidth(float) */
+	 * If true, the text will word wrap using the width of the label. The preferred width of the label will be 0, it is expected
+	 * that the something external will set the width of the label. Default is false. */
 	public void setWrap (boolean wrap) {
 		this.wrap = wrap;
 		computeBounds();

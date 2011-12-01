@@ -146,10 +146,8 @@ public class FilesTest extends GdxTest {
 		if (!child.name().equals("arial-15.fnt")) fail();
 		if (!child.nameWithoutExtension().equals("arial-15")) fail();
 		if (!child.extension().equals("fnt")) fail();
-		InputStream input = handle.read();
-		byte[] bytes = new byte[70000];
-		if (input.read(bytes) != handle.length()) fail();
-		input.close();
+		handle.read().close();
+		if (handle.readBytes().length != handle.length()) fail();
 	}
 
 	private void testInternal () throws IOException {
@@ -189,10 +187,8 @@ public class FilesTest extends GdxTest {
 		if (copy.length() != 68465) fail();
 		copy.delete();
 		if (copy.exists()) fail();
-		InputStream input = handle.read();
-		byte[] bytes = new byte[70000];
-		if (input.read(bytes) != 68465) fail();
-		input.close();
+		handle.read().close();
+		if (handle.readBytes().length != handle.length()) fail();
 	}
 
 	private void testExternal () throws IOException {
