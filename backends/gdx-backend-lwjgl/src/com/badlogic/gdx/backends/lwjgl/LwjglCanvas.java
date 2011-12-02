@@ -171,7 +171,12 @@ public class LwjglCanvas implements Application {
 				graphics.updateTime();
 				synchronized (runnables) {
 					for (int i = 0; i < runnables.size(); i++) {
-						runnables.get(i).run();
+						try {
+							runnables.get(i).run();
+						}
+						catch(Throwable t) {
+							t.printStackTrace();
+						}
 					}
 					runnables.clear();
 				}

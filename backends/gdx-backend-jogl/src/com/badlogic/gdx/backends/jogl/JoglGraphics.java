@@ -105,7 +105,12 @@ public class JoglGraphics extends JoglGraphicsBase implements GLEventListener {
 				synchronized (((JoglApplication)Gdx.app).runnables) {
 					List<Runnable> runnables = ((JoglApplication)Gdx.app).runnables;
 					for (int i = 0; i < runnables.size(); i++) {
-						runnables.get(i).run();
+						try {
+							runnables.get(i).run();
+						}
+						catch(Throwable t) {
+							t.printStackTrace();
+						}
 					}
 					runnables.clear();
 				}

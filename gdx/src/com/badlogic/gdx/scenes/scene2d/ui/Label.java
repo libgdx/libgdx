@@ -68,7 +68,7 @@ public class Label extends Widget {
 
 	public Label (String text, LabelStyle style, String name) {
 		super(name);
-		if (text == null) throw new IllegalArgumentException("text cannot be null.");
+		if (text == null) text = "";
 		this.text = text;
 		setStyle(style);
 		touchable = false;
