@@ -67,6 +67,11 @@ public class LwjglGraphics implements Graphics {
 		config.useGL20 = useGL2IfAvailable;
 		this.canvas = canvas;
 	}
+	
+	LwjglGraphics (Canvas canvas, LwjglApplicationConfiguration config) {
+		this.config = new LwjglApplicationConfiguration();
+		this.canvas = canvas;
+	}
 
 	public GL10 getGL10 () {
 		return gl10;

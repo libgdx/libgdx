@@ -105,6 +105,23 @@ public class LwjglApplication implements Application {
 		Gdx.input = input;
 		initialize();
 	}
+	
+	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
+		LwjglNativesLoader.load();
+
+		graphics = new LwjglGraphics(canvas, config);
+		audio = new OpenALAudio();
+		files = new LwjglFiles();
+		input = new LwjglInput();
+		this.listener = listener;
+
+		Gdx.app = this;
+		Gdx.graphics = graphics;
+		Gdx.audio = audio;
+		Gdx.files = files;
+		Gdx.input = input;
+		initialize();
+	}
 
 	private void initialize () {
 		mainLoopThread = new Thread("LWJGL Application") {
