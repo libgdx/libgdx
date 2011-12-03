@@ -385,7 +385,7 @@ public final class Intersector {
 				tmp3.set(triangles[i + 6], triangles[i + 7], triangles[i + 8]), tmp);
 
 			if (result == true) {
-				float dist = ray.origin.tmp().sub(tmp).len();
+				float dist = ray.origin.tmp().sub(tmp).len2();
 				if (dist < min_dist) {
 					min_dist = dist;
 					best.set(tmp);
@@ -426,7 +426,7 @@ public final class Intersector {
 				tmp3.set(vertices[i3], vertices[i3 + 1], vertices[i3 + 2]), tmp);
 
 			if (result == true) {
-				float dist = ray.origin.tmp().sub(tmp).len();
+				float dist = ray.origin.tmp().sub(tmp).len2();
 				if (dist < min_dist) {
 					min_dist = dist;
 					best.set(tmp);
@@ -451,22 +451,24 @@ public final class Intersector {
 	 * @return Whether the ray and the triangles intersect. */
 	public static boolean intersectRayTriangles (Ray ray, List<Vector3> triangles, Vector3 intersection) {
 		float min_dist = Float.MAX_VALUE;
-
+		boolean hit = false;
+		
 		if (triangles.size() % 3 != 0) throw new RuntimeException("triangle list size is not a multiple of 3");
 
 		for (int i = 0; i < triangles.size() - 2; i += 3) {
 			boolean result = intersectRayTriangle(ray, triangles.get(i), triangles.get(i + 1), triangles.get(i + 2), tmp);
 
 			if (result == true) {
-				float dist = ray.origin.tmp().sub(tmp).len();
+				float dist = ray.origin.tmp().sub(tmp).len2();
 				if (dist < min_dist) {
 					min_dist = dist;
 					best.set(tmp);
+					hit = true;
 				}
 			}
 		}
 
-		if (best == null)
+		if (!hit)
 			return false;
 		else {
 			if (intersection != null) intersection.set(best);
