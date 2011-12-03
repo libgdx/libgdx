@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -87,6 +88,8 @@ public class MipMapGenerator {
 		int width = pixmap.getWidth() / 2;
 		int height = pixmap.getHeight() / 2;
 		int level = 1;
+		Blending blending = Pixmap.getBlending();
+		Pixmap.setBlending(Blending.None);
 		while (width > 0 && height > 0) {
 			Pixmap tmp = new Pixmap(width, height, pixmap.getFormat());
 			tmp.drawPixmap(pixmap, 0, 0, pixmap.getWidth(), pixmap.getHeight(), 0, 0, width, height);
@@ -100,6 +103,7 @@ public class MipMapGenerator {
 			height = pixmap.getHeight() / 2;
 			level++;
 		}
+		Pixmap.setBlending(blending);
 		pixmap.dispose();
 	}
 }
