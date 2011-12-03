@@ -149,6 +149,39 @@ public class MD2Loader implements KeyframedModelLoader {
 			blendedVertices[idx++] = uvs[idxT++];
 			blendedVertices[idx++] = uvs[idxT++];
 		}
+		
+		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
+		
+		String lastName = frames[0].name;
+		int beginFrame = 0;
+		
+		for(int frameNum = 1; frameNum < frames.length; frameNum++) {
+			if(!frames[frameNum].name.equals(lastName) || frameNum == frames.length - 1) {
+				int subAnimLen = frameNum - beginFrame;
+				KeyframedAnimation subAnim = new KeyframedAnimation(lastName, frameDuration, new Keyframe[subAnimLen]);
+				
+				for(int subFrame = beginFrame; subFrame < frameNum; subFrame++) {
+					int absFrameNum = subFrame - beginFrame;
+					
+					frame = frames[subFrame];
+					float[] vertices = new float[header.numVertices * 3];
+					idx = 0;
+					idxV = 0;
+					for (int i = 0; i < header.numVertices; i++) {
+						vertices[idx++] = frame.vertices[idxV++];
+						vertices[idx++] = frame.vertices[idxV++];
+						vertices[idx++] = frame.vertices[idxV++];
+					}
+
+					Keyframe keyFrame = new Keyframe(absFrameNum * frameDuration, vertices);
+					subAnim.keyframes[absFrameNum] = keyFrame;
+					animations.put(subAnim.name, subAnim);
+				}
+				
+				lastName = frames[frameNum].name;
+				beginFrame = frameNum;
+			}
+		}
 
 		KeyframedAnimation animation = new KeyframedAnimation("all", frameDuration, new Keyframe[frames.length]);
 		float timeStamp = 0;
@@ -174,7 +207,6 @@ public class MD2Loader implements KeyframedModelLoader {
 			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
 			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setIndices(indices);
-		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);
 		
 		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 6, GL10.GL_TRIANGLES);

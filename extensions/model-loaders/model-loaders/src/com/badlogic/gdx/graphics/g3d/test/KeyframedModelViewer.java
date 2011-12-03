@@ -121,7 +121,7 @@ public class KeyframedModelViewer implements ApplicationListener {
 		angle += 45 * Gdx.graphics.getDeltaTime();
 // Gdx.gl10.glRotatef(angle, 0, 1, 0);
 		animTime += Gdx.graphics.getDeltaTime();
-		if (animTime > anim.totalDuration - anim.frameDuration) {
+		if (animTime >= anim.totalDuration) {
 			animTime = 0;
 		}
 
