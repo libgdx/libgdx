@@ -58,8 +58,9 @@ public class Polygon {
 
 			// rotate if needed
 			if (rotation != 0) {
+				float oldX = x;
 				x = cos * x - sin * y;
-				y = sin * x + cos * y;
+				y = sin * oldX + cos * y;
 			}
 
 			// move vertices back to world coordinates
