@@ -56,7 +56,7 @@ public class TextButton extends Button {
 			if (style.downFontColor != null) label.setColor(style.downFontColor);
 		} else {
 			if (style.fontColor != null)
-				label.setColor((isChecked && style.downFontColor != null) ? style.downFontColor : style.fontColor);
+				label.setColor((isChecked && style.checkedFontColor != null) ? style.checkedFontColor : style.fontColor);
 		}
 		super.draw(batch, parentAlpha);
 	}
@@ -82,17 +82,19 @@ public class TextButton extends Button {
 	static public class TextButtonStyle extends ButtonStyle {
 		public BitmapFont font;
 		/** Optional. */
-		public Color fontColor, downFontColor;
+		public Color fontColor, downFontColor, checkedFontColor;
 
 		public TextButtonStyle () {
 		}
 
 		public TextButtonStyle (NinePatch down, NinePatch up, NinePatch checked, float pressedOffsetX, float pressedOffsetY,
-			float unpressedOffsetX, float unpressedOffsetY, BitmapFont font, Color fontColor, Color downFontColor) {
+			float unpressedOffsetX, float unpressedOffsetY, BitmapFont font, Color fontColor, Color downFontColor,
+			Color checkedFontColor) {
 			super(down, up, checked, pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY);
 			this.font = font;
 			this.fontColor = fontColor;
 			this.downFontColor = downFontColor;
+			this.checkedFontColor = checkedFontColor;
 		}
 	}
 }

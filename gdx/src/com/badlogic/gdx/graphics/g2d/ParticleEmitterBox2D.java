@@ -51,11 +51,11 @@ public class ParticleEmitterBox2D extends ParticleEmitter {
 		}
 
 		public void translate (float velocityX, float velocityY) {
-			if (velocityX + velocityY == 0) return;
+			if (velocityX == 0 && velocityY == 0) return;
 
 			// Position offset is half of sprite texture size. Currently this does not work right with textureAtlas.
-			float x = getX() + (getTexture().getWidth() >> 1);
-			float y = getY() + (getTexture().getHeight() >> 1);
+			final float x = getX() + getWidth() / 2f;
+			final float y = getY() + getHeight() / 2f;
 
 			fraction = 1f;
 			start.set(x, y);
