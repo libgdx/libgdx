@@ -187,7 +187,7 @@ public class BoundingBox implements Serializable {
 	 * 
 	 * @return True in case the bounding box is valid, false otherwise */
 	public boolean isValid () {
-		return !(min.x == max.x && min.y == max.y && min.z == max.z);
+		return (min.x < max.x && min.y < max.y && min.z < max.z);
 	}
 
 	/** Extends this bounding box by the given bounding box.
