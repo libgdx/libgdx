@@ -675,4 +675,10 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}
+
+	@Override
+	public void getRotationMatrix (float[] matrix) {
+		// TODO Auto-generated method stub
+		
+	}
 }

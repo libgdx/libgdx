@@ -439,4 +439,10 @@ public class RemoteInput implements Runnable, Input {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public void getRotationMatrix (float[] matrix) {
+		// TODO Auto-generated method stub
+		
+	}
 }

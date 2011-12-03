@@ -817,4 +817,10 @@ final class LwjglInput implements Input {
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}
+
+	@Override
+	public void getRotationMatrix (float[] matrix) {
+		// TODO Auto-generated method stub
+		
+	}
 }
