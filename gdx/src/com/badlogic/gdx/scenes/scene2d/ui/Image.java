@@ -106,7 +106,7 @@ public class Image extends Widget {
 		} else
 			return;
 
-		Vector2 size = scaling.apply(regionWidth, regionHeight, width * scaleX, height * scaleY);
+		Vector2 size = scaling.apply(regionWidth, regionHeight, width, height);
 		imageWidth = size.x;
 		imageHeight = size.y;
 

@@ -435,9 +435,10 @@ public class TextField extends Widget {
 			return false;
 	}
 
-	/** Focuses the next TextField. If none is found, the keyboard is hidden.
+	/** Focuses the next TextField. If none is found, the keyboard is hidden. Does nothing if the text field is not in a stage.
 	 * @param up If true, the TextField with the same or next smallest y coordinate is found, else the next highest. */
 	public void next (boolean up) {
+		if (stage == null) return;
 		TextField textField = findNextTextField(stage.getActors(), null, up);
 		if (textField != null)
 			stage.setKeyboardFocus(textField);
