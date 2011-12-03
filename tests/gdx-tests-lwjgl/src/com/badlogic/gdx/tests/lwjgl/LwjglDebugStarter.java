@@ -25,6 +25,7 @@ import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
+import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.SoundTest;
 import com.badlogic.gdx.tests.UITest;
@@ -36,7 +37,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		GdxTest test = new AssetManagerTest();
+		GdxTest test = new InputTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;

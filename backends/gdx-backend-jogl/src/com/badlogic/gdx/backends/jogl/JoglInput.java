@@ -347,10 +347,8 @@ public class JoglInput implements Input, MouseMotionListener, MouseListener, Mou
 		if (catched && robot != null && canvas.isShowing()) {
 			int x = Math.max(0, Math.min(e.getX(), canvas.getWidth()) - 1) + canvas.getLocationOnScreen().x;
 			int y = Math.max(0, Math.min(e.getY(), canvas.getHeight()) - 1) + canvas.getLocationOnScreen().y;
-			deltaX = e.getLocationOnScreen().x - x;
-			deltaY = e.getLocationOnScreen().y - y;
 			if (e.getX() < 0 || e.getX() >= canvas.getWidth() || e.getY() < 0 || e.getY() >= canvas.getHeight()) {
-				robot.mouseMove(x - deltaX, y - deltaY);
+				robot.mouseMove(x, y);
 			}
 		}
 	}

@@ -793,13 +793,13 @@ final class LwjglInput implements Input {
 
 	@Override
 	public int getDeltaY () {
-		return deltaY;
+		return -deltaY;
 	}
 
 	@Override
 	public int getDeltaY (int pointer) {
 		if (pointer == 0)
-			return deltaY;
+			return -deltaY;
 		else
 			return 0;
 	}

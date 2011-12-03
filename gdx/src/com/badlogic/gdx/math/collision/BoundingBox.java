@@ -222,12 +222,12 @@ public class BoundingBox implements Serializable {
 	 * @return Wheter the given bounding box is contained */
 	public boolean contains (BoundingBox bounds) {
 		if (!isValid()) return true;
-		if (min.x > bounds.max.x) return false;
-		if (min.y > bounds.max.y) return false;
-		if (min.z > bounds.max.z) return false;
-		if (max.x < bounds.min.x) return false;
-		if (max.y < bounds.min.y) return false;
-		if (max.z < bounds.min.z) return false;
+		if (min.x > bounds.min.x) return false;
+		if (min.y > bounds.min.y) return false;
+		if (min.z > bounds.min.z) return false;
+		if (max.x < bounds.max.x) return false;
+		if (max.y < bounds.max.y) return false;
+		if (max.z < bounds.max.z) return false;
 		return true;
 	}
 
