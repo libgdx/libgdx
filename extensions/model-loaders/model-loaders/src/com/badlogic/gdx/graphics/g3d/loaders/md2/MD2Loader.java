@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedSubMesh;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.LittleEndianInputStream;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -114,25 +115,34 @@ public class MD2Loader implements KeyframedModelLoader {
 		for (int i = 0; i < frames.length; i++) {
 			MD2Frame frame = frames[i];
 			idx = 0;
-			float[] newVerts = new float[vertCombos.size() * 3];
+			float[] newVerts = new float[vertCombos.size() * 6];
 
 			for (int j = 0; j < vertCombos.size(); j++) {
 				VertexIndices vIdx = vertCombos.get(j);
 				newVerts[idx++] = frame.vertices[vIdx.vIdx * 3];
 				newVerts[idx++] = frame.vertices[vIdx.vIdx * 3 + 1];
 				newVerts[idx++] = frame.vertices[vIdx.vIdx * 3 + 2];
+				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][1] * 70;
+				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][2] * 70;
+				newVerts[idx++] = MD2Normals.normals[frame.normalIndices[vIdx.vIdx]][0] * 70;
 			}
 			frame.vertices = newVerts;
 		}
 
 		header.numVertices = vertCombos.size();
 
-		float[] blendedVertices = new float[header.numVertices * 5];
+		float[] blendedVertices = new float[header.numVertices * 8];
 		MD2Frame frame = frames[0];
+		
 		idx = 0;
 		int idxV = 0;
 		int idxT = 0;
 		for (int i = 0; i < header.numVertices; i++) {
+			VertexIndices vIdx = vertCombos.get(i);
+			
+			blendedVertices[idx++] = frame.vertices[idxV++];
+			blendedVertices[idx++] = frame.vertices[idxV++];
+			blendedVertices[idx++] = frame.vertices[idxV++];
 			blendedVertices[idx++] = frame.vertices[idxV++];
 			blendedVertices[idx++] = frame.vertices[idxV++];
 			blendedVertices[idx++] = frame.vertices[idxV++];
@@ -144,10 +154,13 @@ public class MD2Loader implements KeyframedModelLoader {
 		float timeStamp = 0;
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
 			frame = frames[frameNum];
-			float[] vertices = new float[header.numVertices * 3];
+			float[] vertices = new float[header.numVertices * 6];
 			idx = 0;
 			idxV = 0;
 			for (int i = 0; i < header.numVertices; i++) {
+				vertices[idx++] = frame.vertices[idxV++];
+				vertices[idx++] = frame.vertices[idxV++];
+				vertices[idx++] = frame.vertices[idxV++];
 				vertices[idx++] = frame.vertices[idxV++];
 				vertices[idx++] = frame.vertices[idxV++];
 				vertices[idx++] = frame.vertices[idxV++];
@@ -158,13 +171,13 @@ public class MD2Loader implements KeyframedModelLoader {
 		}
 
 		Mesh mesh = new Mesh(false, header.numVertices, indices.length, new VertexAttribute(Usage.Position, 3,
-			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE
-			+ "0"));
+			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		mesh.setIndices(indices);
 		ObjectMap<String, KeyframedAnimation> animations = new ObjectMap<String, KeyframedAnimation>();
 		animations.put("all", animation);
-
-		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 3, GL10.GL_TRIANGLES);
+		
+		KeyframedSubMesh subMesh = new KeyframedSubMesh("md2-mesh", mesh, blendedVertices, animations, 6, GL10.GL_TRIANGLES);
 		KeyframedModel model = new KeyframedModel(new KeyframedSubMesh[] {subMesh});
 		model.setAnimation("all", 0, false);
 		return model;
@@ -218,6 +231,7 @@ public class MD2Loader implements KeyframedModelLoader {
 	private MD2Frame loadFrame (MD2Header header, LittleEndianInputStream in) throws IOException {
 		MD2Frame frame = new MD2Frame();
 		frame.vertices = new float[header.numVertices * 3];
+		frame.normalIndices = new int[header.numVertices];
 
 		float scaleX = in.readFloat(), scaleY = in.readFloat(), scaleZ = in.readFloat();
 		float transX = in.readFloat(), transY = in.readFloat(), transZ = in.readFloat();
@@ -243,7 +257,7 @@ public class MD2Loader implements KeyframedModelLoader {
 			frame.vertices[vertIdx++] = z;
 			frame.vertices[vertIdx++] = x;
 
-			in.read(); // normal index
+			frame.normalIndices[i] = in.read(); // normal index
 		}
 
 		return frame;
@@ -264,6 +278,7 @@ public class MD2Loader implements KeyframedModelLoader {
 			triangle.texCoords[2] = in.readShort();
 			triangles[i] = triangle;
 		}
+		
 		in.close();
 
 		return triangles;
