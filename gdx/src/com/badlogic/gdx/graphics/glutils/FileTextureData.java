@@ -42,9 +42,9 @@ public class FileTextureData implements TextureData {
 		this.format = format;
 		this.useMipMaps = useMipMaps;
 		if (pixmap != null) {
-			pixmap = ensurePot(pixmap);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
+			pixmap = ensurePot(pixmap);
 			if (format == null) this.format = pixmap.getFormat();
 		}
 	}
@@ -59,9 +59,10 @@ public class FileTextureData implements TextureData {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
 		if (pixmap == null) {
 			if(file.extension().equals("cim")) pixmap = PixmapIO.read(file);
-			else pixmap = ensurePot(new Pixmap(file));
+			else pixmap = new Pixmap(file);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
+			pixmap = ensurePot(pixmap);
 			if (format == null) format = pixmap.getFormat();
 		}
 		isPrepared = true;
