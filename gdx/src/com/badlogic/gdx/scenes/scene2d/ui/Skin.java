@@ -500,8 +500,13 @@ public class Skin implements Disposable {
 				try {
 					if (skin.hasResource(regionName, TextureRegion.class))
 						return new BitmapFont(fontFile, skin.getResource(regionName, TextureRegion.class), false);
-					else
-						return new BitmapFont(fontFile, fontFile.parent().child(regionName + ".png"), false);
+					else {
+						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
+						if (imageFile.exists())
+							return new BitmapFont(fontFile, imageFile, false);
+						else
+							return new BitmapFont(fontFile, false);
+					}
 				} catch (RuntimeException ex) {
 					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);
 				}

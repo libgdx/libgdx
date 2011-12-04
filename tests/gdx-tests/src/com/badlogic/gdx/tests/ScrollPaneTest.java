@@ -20,8 +20,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.FlickScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -32,6 +33,8 @@ public class ScrollPaneTest extends GdxTest {
 		stage = new Stage(0, 0, false);
 		Gdx.input.setInputProcessor(stage);
 
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"), Gdx.files.internal("data/uiskin.png"));
+		
 		Table mytable = new Table();
 		mytable.debug();
 		mytable.add(new Image(new Texture("data/group-debug.png")));
@@ -42,7 +45,7 @@ public class ScrollPaneTest extends GdxTest {
 		mytable.row();
 		mytable.add(new Image(new Texture("data/group-debug.png")));
 
-		FlickScrollPane pane = new FlickScrollPane(mytable);
+		ScrollPane pane = new ScrollPane(mytable, skin);
 		pane.setScrollingDisabled(true, false);
 		if (false) {
 			// This sizes the pane to the size of it's contents.

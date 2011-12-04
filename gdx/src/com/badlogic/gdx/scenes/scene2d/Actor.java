@@ -147,7 +147,6 @@ public abstract class Actor {
 		if (parent == null) {
 			return;
 		}
-
 		parent.toLocalCoordinates(point);
 		Group.toChildCoordinates(this, point.x, point.y, point);
 	}

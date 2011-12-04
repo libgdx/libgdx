@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
@@ -54,7 +55,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 
 			FileHandle handle = resolve(fileName);
 			if (!fileName.contains(".etc1")) {
-				if(fileName.contains(".cim")) pixmap = PixmapIO.read(handle);
+				if(fileName.contains(".cim")) pixmap = PixmapIO.readCIM(handle);
 				else pixmap = new Pixmap(handle);
 				data = new FileTextureData(handle, pixmap, format, genMipMaps);
 			} else {
@@ -75,7 +76,10 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		} else {
 			texture = new Texture(data);
 		}
-		if (parameter != null) texture.setFilter(parameter.minFilter, parameter.magFilter);
+		if (parameter != null) {
+			texture.setFilter(parameter.minFilter, parameter.magFilter);
+			texture.setWrap(parameter.wrapU, parameter.wrapV);
+		}
 		return texture;
 	}
 
@@ -95,5 +99,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		public TextureData textureData = null;
 		public TextureFilter minFilter = TextureFilter.Nearest;
 		public TextureFilter magFilter = TextureFilter.Nearest;
+		public TextureWrap wrapU = TextureWrap.ClampToEdge;
+		public TextureWrap wrapV = TextureWrap.ClampToEdge;
 	}
 }

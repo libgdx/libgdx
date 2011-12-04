@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * @author mzechner */
 public class Color {
+	public static final Color CLEAR = new Color(0, 0, 0, 0);
 	public static final Color WHITE = new Color(1, 1, 1, 1);
 	public static final Color BLACK = new Color(0, 0, 0, 1);
 	public static final Color RED = new Color(1, 0, 0, 1);
@@ -255,6 +256,22 @@ public class Color {
 
 	public static int rgba8888 (float r, float g, float b, float a) {
 		return ((int)(r * 255) << 24) | ((int)(g * 255) << 16) | ((int)(b * 255) << 8) | (int)(a * 255);
+	}
+
+	public static int rgb565 (Color color) {
+		return ((int)(color.r * 31) << 11) | ((int)(color.g * 63) << 5) | (int)(color.b * 31);
+	}
+
+	public static int rgba4444 (Color color) {
+		return ((int)(color.r * 15) << 12) | ((int)(color.g * 15) << 8) | ((int)(color.b * 15) << 4) | (int)(color.a * 15);
+	}
+
+	public static int rgb888 (Color color) {
+		return ((int)(color.r * 255) << 16) | ((int)(color.g * 255) << 8) | (int)(color.b * 255);
+	}
+
+	public static int rgba8888 (Color color) {
+		return ((int)(color.r * 255) << 24) | ((int)(color.g * 255) << 16) | ((int)(color.b * 255) << 8) | (int)(color.a * 255);
 	}
 
 	/** Sets the Color components using the specified integer value in the format RGB565. This is inverse to the rgb565(r, g, b)

@@ -19,8 +19,8 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -42,9 +42,9 @@ public class FileTextureData implements TextureData {
 		this.format = format;
 		this.useMipMaps = useMipMaps;
 		if (pixmap != null) {
+			pixmap = ensurePot(pixmap);
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
-			pixmap = ensurePot(pixmap);
 			if (format == null) this.format = pixmap.getFormat();
 		}
 	}
@@ -58,11 +58,12 @@ public class FileTextureData implements TextureData {
 	public void prepare () {
 		if (isPrepared) throw new GdxRuntimeException("Already prepared");
 		if (pixmap == null) {
-			if(file.extension().equals("cim")) pixmap = PixmapIO.read(file);
-			else pixmap = new Pixmap(file);
+			if (file.extension().equals("cim"))
+				pixmap = PixmapIO.readCIM(file);
+			else
+				pixmap = ensurePot(new Pixmap(file));
 			width = pixmap.getWidth();
 			height = pixmap.getHeight();
-			pixmap = ensurePot(pixmap);
 			if (format == null) format = pixmap.getFormat();
 		}
 		isPrepared = true;
@@ -83,7 +84,7 @@ public class FileTextureData implements TextureData {
 		}
 		return pixmap;
 	}
-	
+
 	@Override
 	public Pixmap consumePixmap () {
 		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling getPixmap()");

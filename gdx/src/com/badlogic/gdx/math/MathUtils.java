@@ -97,7 +97,7 @@ public class MathUtils {
 			} else
 				mul = -1;
 			x = -x;
-			add = -3.141592653f;
+			add = -PI;
 		} else {
 			if (y < 0) {
 				y = -y;
