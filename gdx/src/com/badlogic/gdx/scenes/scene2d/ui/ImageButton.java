@@ -34,11 +34,7 @@ public class ImageButton extends Button {
 	}
 
 	public ImageButton (TextureRegion region) {
-		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, region, region, null));
-	}
-
-	public ImageButton (NinePatch patch) {
-		this(new ImageButtonStyle(patch, patch, null, 0f, 0f, 0f, 0f, patch, patch, null));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, region, null, null));
 	}
 
 	public ImageButton (TextureRegion regionUp, TextureRegion regionDown) {
@@ -49,12 +45,16 @@ public class ImageButton extends Button {
 		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, regionUp, regionDown, regionChecked));
 	}
 
+	public ImageButton (NinePatch patch) {
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, patch, null, null));
+	}
+
 	public ImageButton (NinePatch patchUp, NinePatch patchDown) {
-		this(new ImageButtonStyle(patchUp, patchDown, null, 0f, 0f, 0f, 0f, patchUp, patchDown, null));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, patchUp, patchDown, null));
 	}
 
 	public ImageButton (NinePatch patchUp, NinePatch patchDown, NinePatch patchChecked) {
-		this(new ImageButtonStyle(patchUp, patchDown, patchChecked, 0f, 0f, 0f, 0f, patchUp, patchDown, patchChecked));
+		this(new ImageButtonStyle(null, null, null, 0f, 0f, 0f, 0f, patchUp, patchDown, patchChecked));
 	}
 
 	public void setStyle (ButtonStyle style) {

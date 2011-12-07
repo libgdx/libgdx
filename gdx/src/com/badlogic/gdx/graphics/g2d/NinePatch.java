@@ -158,7 +158,10 @@ public class NinePatch {
 		float middleRowY = y + getBottomHeight();
 		float topRowY = y + height - getTopHeight();
 
-		if (color != null) batch.setColor(color);
+		if (color != null) {
+			Color batchColor = batch.getColor();
+			batch.setColor(batchColor.r * color.r, batchColor.g * color.g, batchColor.b * color.b, batchColor.a * color.a);
+		}
 
 		// Bottom row
 		if (patches[BOTTOM_LEFT] != null) batch.draw(patches[BOTTOM_LEFT], x, y, centerColumnX - x, middleRowY - y);

@@ -23,9 +23,12 @@ public class ButtonGroup {
 
 	public void add (Button button) {
 		if (button == null) throw new IllegalArgumentException("button cannot be null.");
+		button.buttonGroup = null;
+		boolean shouldCheck = button.isChecked() || buttons.size < minCheckCount;
+		button.setChecked(false);
 		button.buttonGroup = this;
 		buttons.add(button);
-		if (button.isChecked() || buttons.size == 0) button.setChecked(true);
+		if (shouldCheck) button.setChecked(true);
 	}
 
 	public void add (Button... buttons) {
@@ -88,7 +91,7 @@ public class ButtonGroup {
 
 	/** @return the first checked button, or null. */
 	public Button getChecked () {
-		if (checkedButtons.size > 0) checkedButtons.get(0);
+		if (checkedButtons.size > 0) return checkedButtons.get(0);
 		return null;
 	}
 

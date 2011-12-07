@@ -103,7 +103,10 @@ public class Table extends WidgetGroup {
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background nine
 	 * patch. */
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
-		if (backgroundPatch != null) backgroundPatch.draw(batch, x, y, width, height);
+		if (backgroundPatch != null) {
+			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			backgroundPatch.draw(batch, x, y, width, height);
+		}
 	}
 
 	private void calculateScissors (Matrix4 transform) {

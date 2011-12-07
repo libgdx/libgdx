@@ -153,7 +153,7 @@ public abstract class Actor {
 
 	/** Removes this actor from the Stage */
 	public void remove () {
-		parent.removeActor(this);
+		if (parent != null) parent.removeActor(this);
 	}
 
 	public void act (float delta) {

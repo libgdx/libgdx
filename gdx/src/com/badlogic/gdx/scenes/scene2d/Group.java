@@ -266,6 +266,7 @@ public class Group extends Actor implements Cullable {
 	/** Adds an {@link Actor} to this Group. The order Actors are added is reversed for hit testing.
 	 * @param actor the Actor */
 	public void addActor (Actor actor) {
+		actor.remove();
 		children.add(actor);
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
@@ -278,6 +279,7 @@ public class Group extends Actor implements Cullable {
 	 * IndexOutOfBoundsException in case the index is invalid.
 	 * @param index the index to add the actor at. */
 	public void addActorAt (int index, Actor actor) {
+		actor.remove();
 		children.add(index, actor);
 		if (actor instanceof Group) groups.add((Group)actor);
 		if (actor.name != null) namesToActors.put(actor.name, actor);
@@ -290,6 +292,7 @@ public class Group extends Actor implements Cullable {
 	 * @param actorBefore the Actor to add the other actor in front of
 	 * @param actor the Actor to add */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
+		actor.remove();
 		int index = children.indexOf(actorBefore);
 		children.add(index, actor);
 		if (actor instanceof Group) groups.add((Group)actor);
@@ -303,6 +306,7 @@ public class Group extends Actor implements Cullable {
 	 * @param actorAfter the Actor to add the other Actor behind
 	 * @param actor the Actor to add */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
+		actor.remove();
 		int index = children.indexOf(actorAfter);
 		if (index == children.size())
 			children.add(actor);
