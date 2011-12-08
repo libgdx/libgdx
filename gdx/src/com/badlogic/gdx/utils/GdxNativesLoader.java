@@ -57,10 +57,7 @@ public class GdxNativesLoader {
 
 	static public boolean loadLibrary (String nativeFile32, String nativeFile64) {
 		path = extractLibrary(nativeFile32, nativeFile64);
-		if (path != null) {
-			System.load(path);
-		}
-
+		if (path != null) System.load(path);
 		return path != null;
 	}
 
@@ -101,6 +98,14 @@ public class GdxNativesLoader {
 				nativesLoaded = loadLibrary("gdx.dll", "gdx-64.dll");
 			} else if (isMac) {
 				nativesLoaded = loadLibrary("libgdx.dylib", "libgdx.dylib");
+				if (!nativesLoaded) {
+					// Find the lib for applets, since System.loadLibrary looks for jnilib, not dylib.
+					File file = new File(System.getProperty("java.library.path"), "libgdx.dylib");
+					if (file.exists()) {
+						System.load(file.getAbsolutePath());
+						nativesLoaded = true;
+					}
+				}
 			} else if (isLinux) {
 				nativesLoaded = loadLibrary("libgdx.so", "libgdx-64.so");
 			}

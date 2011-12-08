@@ -23,7 +23,7 @@ public class Button extends Table {
 		this(skin.getStyle(ButtonStyle.class), null);
 		pack();
 	}
-
+	
 	public Button (ButtonStyle style) {
 		this(style, null);
 		pack();
