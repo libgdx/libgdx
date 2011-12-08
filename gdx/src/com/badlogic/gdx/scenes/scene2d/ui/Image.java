@@ -66,7 +66,8 @@ public class Image extends Widget {
 		setRegion(region);
 		this.scaling = scaling;
 		this.align = align;
-		pack();
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	/** Creates an image stretched, and aligned center.
@@ -92,7 +93,8 @@ public class Image extends Widget {
 		setPatch(patch);
 		this.scaling = scaling;
 		this.align = align;
-		pack();
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void layout () {

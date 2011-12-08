@@ -93,6 +93,7 @@ public abstract class Widget extends Actor implements Layout {
 			width = newWidth;
 			height = newHeight;
 			invalidate();
+			validate();
 		}
 	}
 

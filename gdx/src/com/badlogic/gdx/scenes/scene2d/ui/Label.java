@@ -71,7 +71,8 @@ public class Label extends Widget {
 		if (text == null) text = "";
 		this.text = text;
 		setStyle(style);
-		touchable = false;
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void setStyle (LabelStyle style) {

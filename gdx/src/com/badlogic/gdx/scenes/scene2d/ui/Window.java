@@ -43,6 +43,8 @@ public class Window extends Table {
 		setClip(true);
 		this.title = title;
 		setStyle(style);
+		width = 150;
+		height = 150;
 	}
 
 	public void setStyle (WindowStyle style) {

@@ -79,7 +79,8 @@ public class SplitPane extends WidgetGroup {
 		setStyle(style);
 		setFirstWidget(firstWidget);
 		setSecondWidget(secondWidget);
-		pack();
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void setStyle (SplitPaneStyle style) {

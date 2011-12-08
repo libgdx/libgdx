@@ -65,7 +65,8 @@ public class Slider extends Widget {
 		this.max = max;
 		this.steps = steps;
 		this.value = min;
-		pack();
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void setStyle (SliderStyle style) {

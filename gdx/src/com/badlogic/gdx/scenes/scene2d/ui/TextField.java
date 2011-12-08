@@ -116,6 +116,8 @@ public class TextField extends Widget {
 		this.clipboard = Clipboard.getDefaultClipboard();
 		setText(text);
 		this.messageText = messageText;
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void setStyle (TextFieldStyle style) {

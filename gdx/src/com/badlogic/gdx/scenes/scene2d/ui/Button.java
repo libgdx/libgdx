@@ -20,13 +20,45 @@ public class Button extends Table {
 	ButtonGroup buttonGroup;
 
 	public Button (Skin skin) {
-		this(skin.getStyle(ButtonStyle.class), null);
-		pack();
+		super(skin);
+		initialize();
+		setStyle(skin.getStyle(ButtonStyle.class));
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
-	
+
 	public Button (ButtonStyle style) {
-		this(style, null);
-		pack();
+		initialize();
+		setStyle(style);
+		width = getPrefWidth();
+		height = getPrefHeight();
+	}
+
+	public Button (Actor child, ButtonStyle style) {
+		initialize();
+		add(child);
+		setStyle(style);
+		width = getPrefWidth();
+		height = getPrefHeight();
+	}
+
+	public Button (ButtonStyle style, String name) {
+		super(null, null, name);
+		initialize();
+		setStyle(style);
+		width = getPrefWidth();
+		height = getPrefHeight();
+	}
+
+	private void initialize () {
+		super.setClickListener(new ClickListener() {
+			public void click (Actor actor, float x, float y) {
+				boolean newChecked = !isChecked;
+				setChecked(newChecked);
+				// Don't fire listener if isChecked wasn't changed.
+				if (newChecked == isChecked && listener != null) listener.click(actor, x, y);
+			}
+		});
 	}
 
 	public Button (TextureRegion region) {
@@ -55,28 +87,6 @@ public class Button extends Table {
 
 	public Button (Actor child, Skin skin) {
 		this(child, skin.getStyle(ButtonStyle.class));
-		pack();
-	}
-
-	public Button (Actor child, ButtonStyle style) {
-		this(style, null);
-		add(child);
-		pack();
-	}
-
-	public Button (ButtonStyle style, String name) {
-		super(null, null, name);
-		if (style == null) throw new IllegalArgumentException("style cannot be null.");
-		setStyle(style);
-
-		super.setClickListener(new ClickListener() {
-			public void click (Actor actor, float x, float y) {
-				boolean newChecked = !isChecked;
-				setChecked(newChecked);
-				// Don't fire listener if isChecked wasn't changed.
-				if (newChecked == isChecked && listener != null) listener.click(actor, x, y);
-			}
-		});
 	}
 
 	public void setChecked (boolean isChecked) {

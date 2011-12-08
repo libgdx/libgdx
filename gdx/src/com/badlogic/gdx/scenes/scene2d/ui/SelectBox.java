@@ -59,7 +59,8 @@ public class SelectBox extends Widget {
 		super(name);
 		setStyle(style);
 		setItems(items);
-		pack();
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void setStyle (SelectBoxStyle style) {

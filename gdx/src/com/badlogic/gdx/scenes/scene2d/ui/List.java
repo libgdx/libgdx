@@ -56,6 +56,8 @@ public class List extends Widget implements Cullable {
 		super(name);
 		setStyle(style);
 		setItems(items);
+		width = getPrefWidth();
+		height = getPrefHeight();
 	}
 
 	public void setStyle (ListStyle style) {

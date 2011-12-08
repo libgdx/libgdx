@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.tablelayout.Table;
 
 /** Provides methods for an actor to participate in layout and to provide a minimum, preferred, and maximum size.
  * @author Nathan Sweet */
@@ -41,7 +42,13 @@ public interface Layout {
 	 * performed. */
 	public void validate ();
 
-	/** Sizes this actor to its preferred width and height and, if its size was changed, calls {@link #invalidate()}. */
+	/** Sizes this actor to its preferred width and height and, if its size was changed, causes the actor to be laid out by calling
+	 * {@link #invalidate()} and then {@link #validate()}.
+	 * <p>
+	 * Generally this method should not be called in a constructor because it calls {@link #layout()}, which means a subclass would
+	 * have layout() called before the subclass' constructor. Instead, in a constructor simply set the actors width and height to
+	 * {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction time for more
+	 * convenient use outside of a {@link Table}. */
 	public void pack ();
 
 	public float getMinWidth ();
