@@ -430,6 +430,14 @@ public class Group extends Actor implements Cullable {
 		Group.toChildCoordinates(descendant, point.x, point.y, point);
 	}
 
+	public boolean isDescendant (Actor actor) {
+		while (true) {
+			if (actor == null) return false;
+			if (actor == this) return true;
+			actor = actor.parent;
+		}
+	}
+
 	/** Transforms the coordinates given in the child's parent coordinate system to the child {@link Actor}'s coordinate system.
 	 * @param child the child Actor
 	 * @param x the x-coordinate in the Group's coordinate system

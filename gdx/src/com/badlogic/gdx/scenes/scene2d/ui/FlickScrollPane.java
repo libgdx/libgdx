@@ -264,11 +264,13 @@ public class FlickScrollPane extends WidgetGroup {
 		if (gestureDetector.touchUp((int)x, (int)y, pointer, 0)) {
 			x = Integer.MIN_VALUE;
 			y = Integer.MIN_VALUE;
-		} else if (touchFocusedChild != null) {
+		}
+		if (touchFocusedChild != null && isDescendant(touchFocusedChild)) {
 			point.x = x;
 			point.y = y;
 			toLocalCoordinates(touchFocusedChild, point);
 			touchFocusedChild.touchUp(point.x, point.y, 0);
+			touchFocusedChild = null;
 		}
 	}
 

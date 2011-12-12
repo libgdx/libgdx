@@ -132,16 +132,19 @@ public class SelectBox extends Widget {
 	@Override
 	public boolean touchDown (float x, float y, int pointer) {
 		if (pointer != 0) return false;
-		if (list != null) stage.removeActor(list);
+		if (list != null && list.parent != null) {
+			stage.removeActor(list);
+			return true;
+		}
 		stage.toStageCoordinates((int)screenCoords.x, (int)screenCoords.y, stageCoords);
 		list = new SelectList(this.name + "-list", stageCoords.x, stageCoords.y);
 		stage.addActor(list);
+		stage.setTouchFocus(list, 0);
 		return true;
 	}
 
 	@Override
 	public void touchUp (float x, float y, int pointer) {
-		stage.setTouchFocus(list, pointer);
 	}
 
 	/** Sets the {@link SelectionListener}.
@@ -191,12 +194,15 @@ public class SelectBox extends Widget {
 		public SelectList (String name, float x, float y) {
 			super(name);
 			this.x = x;
-			this.y = y;
-			this.width = SelectBox.this.width;
-			this.height = 100;
+			width = SelectBox.this.width;
+			height = 100;
 			this.oldScreenCoords.set(screenCoords);
-			if (stage != null) stage.setTouchFocus(this, 0);
 			layout();
+			Stage stage = SelectBox.this.getStage();
+			if (y - height < 0 && y + SelectBox.this.height + height < SelectBox.this.getStage().getCamera().viewportHeight)
+				this.y = y + SelectBox.this.height;
+			else
+				this.y = y - height;
 		}
 
 		private void layout () {
@@ -210,7 +216,6 @@ public class SelectBox extends Widget {
 				String item = items[i];
 				TextBounds bounds = font.getBounds(item);
 				prefWidth = Math.max(bounds.width, prefWidth);
-
 			}
 
 			itemHeight = font.getCapHeight() + -font.getDescent() * 2;
@@ -224,7 +229,6 @@ public class SelectBox extends Widget {
 			width = Math.max(prefWidth, SelectBox.this.width);
 			width *= SelectBox.this.parent.scaleX;
 			height = prefHeight;
-			y -= height;
 		}
 
 		@Override
