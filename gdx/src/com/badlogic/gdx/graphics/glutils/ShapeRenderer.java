@@ -107,10 +107,14 @@ public class ShapeRenderer {
 	ShapeType currType = null;
 
 	public ShapeRenderer () {
+		this(5000);
+	}
+
+	public ShapeRenderer (int maxVertices) {
 		if (Gdx.graphics.isGL20Available())
-			renderer = new ImmediateModeRenderer20(false, true, 0);
+			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
 		else
-			renderer = new ImmediateModeRenderer10();
+			renderer = new ImmediateModeRenderer10(maxVertices);
 		projView.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
