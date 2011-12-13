@@ -17,7 +17,9 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Layout;
 
 /** An {@link Actor} that participates in layout and provides a minimum, preferred, and maximum size.
@@ -117,5 +119,18 @@ public abstract class Widget extends Actor implements Layout {
 	}
 
 	public void touchDragged (float x, float y, int pointer) {
+	}
+
+	static public void toScreenCoordinates (Actor actor, Vector2 point) {
+		point.x = actor.x; 
+		point.y = actor.y; 
+		Actor parent = actor.parent;
+		while (parent != null) {
+			if (parent instanceof Group) {
+				point.x += parent.x;
+				point.y += parent.y;
+			}
+			parent = parent.parent;
+		}
 	}
 }

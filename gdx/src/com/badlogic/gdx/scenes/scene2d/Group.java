@@ -108,18 +108,24 @@ public class Group extends Actor implements Cullable {
 				}
 				batch.flush();
 			} else {
+				float offsetX = x;
+				float offsetY = y;
+				x = 0;
+				y = 0;
 				for (int i = 0; i < children.size(); i++) {
 					Actor child = children.get(i);
 					if (!child.visible) continue;
 					if (child.x <= cullingArea.x + cullingArea.width && child.x + child.width >= cullingArea.x
 						&& child.y <= cullingArea.y + cullingArea.height && child.y + child.height >= cullingArea.y) {
-						child.x += x;
-						child.y += y;
+						child.x += offsetX;
+						child.y += offsetY;
 						child.draw(batch, parentAlpha);
-						child.x -= x;
-						child.y -= y;
+						child.x -= offsetX;
+						child.y -= offsetY;
 					}
 				}
+				x = offsetX;
+				y = offsetY;
 			}
 		} else {
 			if (transform) {
@@ -130,15 +136,21 @@ public class Group extends Actor implements Cullable {
 				}
 				batch.flush();
 			} else {
+				float offsetX = x;
+				float offsetY = y;
+				x = 0;
+				y = 0;
 				for (int i = 0; i < children.size(); i++) {
 					Actor child = children.get(i);
 					if (!child.visible) continue;
-					child.x += x;
-					child.y += y;
+					child.x += offsetX;
+					child.y += offsetY;
 					child.draw(batch, parentAlpha);
-					child.x -= x;
-					child.y -= y;
+					child.x -= offsetX;
+					child.y -= offsetY;
 				}
+				x = offsetX;
+				y = offsetY;
 			}
 		}
 	}
