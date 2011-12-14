@@ -264,6 +264,21 @@ public class LwjglApplication implements Application {
 			runnables.add(runnable);
 		}
 	}
+	
+	@Override
+	public void debug (String tag, String message) {
+		if (logLevel >= LOG_DEBUG) {
+			System.out.println(tag + ": " + message);
+		}
+	}
+	
+	@Override
+	public void debug (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_DEBUG) {
+			System.out.println(tag + ": " + message);
+			exception.printStackTrace(System.out);
+		}
+	}
 
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
@@ -287,7 +302,7 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
-	public void error (String tag, String message, Exception exception) {
+	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
 			System.err.println(tag + ": " + message);
 			exception.printStackTrace(System.err);

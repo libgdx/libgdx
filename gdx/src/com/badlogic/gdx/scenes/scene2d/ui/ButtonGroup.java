@@ -9,16 +9,19 @@ import com.badlogic.gdx.utils.Array;
 public class ButtonGroup {
 	private final Array<Button> buttons = new Array();
 	private Array<Button> checkedButtons = new Array(1);
-	private int minCheckCount = 1, maxCheckCount = 1;
+	private int minCheckCount, maxCheckCount = 1;
 	private boolean uncheckLast = true;
 	private Button lastChecked;
 	private ClickListener listener;
 
 	public ButtonGroup () {
+		minCheckCount = 1;
 	}
 
 	public ButtonGroup (Button... buttons) {
+		minCheckCount = 0;
 		add(buttons);
+		minCheckCount = 1;
 	}
 
 	public void add (Button button) {

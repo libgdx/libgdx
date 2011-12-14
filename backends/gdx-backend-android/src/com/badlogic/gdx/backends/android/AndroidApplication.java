@@ -310,6 +310,21 @@ public class AndroidApplication extends Activity implements Application {
 			}
 		});
 	}
+	
+	@Override
+	public void debug (String tag, String message) {
+		if (logLevel >= LOG_DEBUG) {
+			System.out.println(tag + ": " + message);
+		}
+	}
+	
+	@Override
+	public void debug (String tag, String message, Throwable exception) {
+		if (logLevel >= LOG_DEBUG) {
+			System.out.println(tag + ": " + message);
+			exception.printStackTrace(System.out);
+		}
+	}
 
 	@Override
 	public void log (String tag, String message) {
@@ -327,7 +342,7 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	@Override
-	public void error (String tag, String message, Exception exception) {
+	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
 	}
 

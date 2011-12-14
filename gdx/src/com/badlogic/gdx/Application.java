@@ -90,8 +90,9 @@ public interface Application {
 	}
 
 	public static final int LOG_NONE = 0;
-	public static final int LOG_INFO = 1;
-	public static final int LOG_ERROR = 2;
+	public static final int LOG_DEBUG = 3;
+	public static final int LOG_INFO = 2;
+	public static final int LOG_ERROR = 1;
 
 	/** @return the {@link Graphics} instance */
 	public Graphics getGraphics ();
@@ -115,12 +116,17 @@ public interface Application {
 	public void error (String tag, String message);
 
 	/** Logs an error message to the console or logcat */
-	public void error (String tag, String message, Exception exception);
+	public void error (String tag, String message, Throwable exception);
 
-	/** Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let messages issued with
-	 * {@link #error(String, String)} through. {@link #LOG_INFO} will let all messages though, either logged via
-	 * {@link #error(String, String)} or {@link #log(String, String)}.
-	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}. */
+	/** Logs an error message to the console or logcat */
+	public void debug (String tag, String message);
+
+	/** Logs an error message to the console or logcat */
+	public void debug (String tag, String message, Throwable exception);
+
+	/** Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let error messages through.
+	 * {@link #LOG_INFO} will let all non-debug messages through, and {@link #LOG_DEBUG} will let all messages through.
+	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}. */
 	public void setLogLevel (int logLevel);
 
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
