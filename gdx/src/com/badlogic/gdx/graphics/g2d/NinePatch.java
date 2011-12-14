@@ -113,7 +113,7 @@ public class NinePatch {
 	}
 
 	public NinePatch (NinePatch ninePatch) {
-		this(ninePatch, new Color(ninePatch.color));
+		this(ninePatch, ninePatch.color == null ? null : new Color(ninePatch.color));
 	}
 
 	public NinePatch (NinePatch ninePatch, Color color) {
@@ -160,7 +160,7 @@ public class NinePatch {
 
 		if (color != null) {
 			Color batchColor = batch.getColor();
-			batch.setColor(batchColor.r * color.r, batchColor.g * color.g, batchColor.b * color.b, batchColor.a * color.a);
+			batch.setColor(color.r, color.g, color.b, batchColor.a * color.a);
 		}
 
 		// Bottom row
