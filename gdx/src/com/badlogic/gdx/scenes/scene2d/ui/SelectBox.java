@@ -190,6 +190,7 @@ public class SelectBox extends Widget {
 		float itemHeight;
 		float textOffsetX, textOffsetY;
 		int selected = SelectBox.this.selection;
+		boolean ownsTouch = false;
 
 		public SelectList (String name, float x, float y) {
 			super(name);
@@ -255,6 +256,7 @@ public class SelectBox extends Widget {
 
 		@Override
 		public boolean touchDown (float x, float y, int pointer) {
+			ownsTouch = true;
 			if (pointer != 0 || hit(x, y) == null) return false;
 			selected = (int)((height - y) / itemHeight);
 			selected = Math.max(0, selected);
@@ -266,7 +268,8 @@ public class SelectBox extends Widget {
 
 		@Override
 		public void touchUp (float x, float y, int pointer) {
-			if (stage != null) stage.removeActor(this);
+			if (stage != null && ownsTouch) stage.removeActor(this);
+			ownsTouch = false;
 		}
 
 		@Override
