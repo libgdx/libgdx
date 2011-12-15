@@ -256,8 +256,8 @@ public class SelectBox extends Widget {
 
 		@Override
 		public boolean touchDown (float x, float y, int pointer) {
-			ownsTouch = true;
 			if (pointer != 0 || hit(x, y) == null) return false;
+			ownsTouch = true;
 			selected = (int)((height - y) / itemHeight);
 			selected = Math.max(0, selected);
 			selected = Math.min(items.length - 1, selected);
