@@ -83,7 +83,7 @@ public class ImageButton extends Button {
 		else if (style.patchUp != null) //
 			image.setPatch(style.patchUp);
 	}
-	
+
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		updateImage();
 		super.draw(batch, parentAlpha);
