@@ -26,10 +26,10 @@ public class ImageButton extends Button {
 
 	public ImageButton (ImageButtonStyle style, String name) {
 		super(style, name);
-		this.style = style;
 		image = new Image();
 		image.setScaling(Scaling.fit);
 		add(image);
+		setStyle(style);
 		width = getPrefWidth();
 		height = getPrefHeight();
 	}
@@ -62,16 +62,14 @@ public class ImageButton extends Button {
 		if (!(style instanceof ImageButtonStyle)) throw new IllegalArgumentException("style must be an ImageButtonStyle.");
 		super.setStyle(style);
 		this.style = (ImageButtonStyle)style;
-		if (image != null) {
-			ImageButtonStyle imageButtonStyle = (ImageButtonStyle)style;
-		}
+		if (image != null) updateImage();
 	}
 
 	public ImageButtonStyle getStyle () {
 		return style;
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	private void updateImage () {
 		if (isPressed && style.regionDown != null)
 			image.setRegion(style.regionDown);
 		else if (isPressed && style.patchDown != null)
@@ -84,6 +82,10 @@ public class ImageButton extends Button {
 			image.setRegion(style.regionUp);
 		else if (style.patchUp != null) //
 			image.setPatch(style.patchUp);
+	}
+	
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		updateImage();
 		super.draw(batch, parentAlpha);
 	}
 
