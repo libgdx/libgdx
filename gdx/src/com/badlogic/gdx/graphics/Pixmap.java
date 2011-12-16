@@ -90,7 +90,7 @@ public class Pixmap implements Disposable {
 	final Gdx2DPixmap pixmap;
 	int color = 0;
 
-	/** Sets the type of {@link Blending} to be used for all operations.
+	/** Sets the type of {@link Blending} to be used for all operations. Default is {@link Blending#SourceOver}.
 	 * @param blending the blending type */
 	public static void setBlending (Blending blending) {
 		Pixmap.blending = blending;

@@ -121,6 +121,7 @@ public class MathUtils {
 		return random.nextInt(range + 1);
 	}
 
+	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public final int random (int start, int end) {
 		return start + random.nextInt(end - start + 1);
 	}
@@ -133,10 +134,12 @@ public class MathUtils {
 		return random.nextFloat();
 	}
 
+	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public final float random (float range) {
 		return random.nextFloat() * range;
 	}
 
+	/** Returns a random number between start (inclusive) and end (inclusive). */
 	static public final float random (float start, float end) {
 		return start + random.nextFloat() * (end - start);
 	}
