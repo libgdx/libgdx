@@ -84,7 +84,10 @@ public class ShapeRenderer {
 		FilledRectangle(GL10.GL_TRIANGLES), //
 		Box(GL10.GL_LINES), //
 		Circle(GL10.GL_LINES), //
-		FilledCircle(GL10.GL_TRIANGLES); //
+		FilledCircle(GL10.GL_TRIANGLES), //
+		Triangle(GL10.GL_LINES), //
+		FilledTriangle(GL10.GL_TRIANGLES), //
+		;
 
 		private final int glType;
 
@@ -422,7 +425,7 @@ public class ShapeRenderer {
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
-		for (int i = 0; i <= segments; i++) {
+		for (int i = 0; i < segments; i++) {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x, y, 0);
 			renderer.color(color.r, color.g, color.b, color.a);
@@ -433,6 +436,38 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x + cx, y + cy, 0);
 		}
+	}
+
+	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3) {
+		if (currType != ShapeType.Triangle) throw new GdxRuntimeException("Must call begin(ShapeType.Triangle)");
+		checkDirty();
+		checkFlush(6);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x1, y1, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x2, y2, 0);
+
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x2, y2, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x3, y3, 0);
+
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x3, y3, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x1, y1, 0);
+	}
+
+	public void filledTriangle (float x1, float y1, float x2, float y2, float x3, float y3) {
+		if (currType != ShapeType.FilledTriangle) throw new GdxRuntimeException("Must call begin(ShapeType.FilledTriangle)");
+		checkDirty();
+		checkFlush(3);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x1, y1, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x2, y2, 0);
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x3, y3, 0);
 	}
 
 	private void checkDirty () {

@@ -155,6 +155,42 @@ public class ShapeRendererTest extends GdxTest {
 		}
 		renderer.end();
 
+		renderer.begin(ShapeType.Triangle);
+		renderer.setColor(0, 0, 1, 1);
+		renderer.identity();
+		renderer.rotate(0, 1, 0, 45);
+		for (int i = 0; i < 15; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float width = MathUtils.random();
+			float height = MathUtils.random();
+			renderer.identity();
+			renderer.translate(-0.5f + x, -0.5f + y, -MathUtils.random());
+			renderer.translate(width / 2, height / 2, 0);
+			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
+			renderer.translate(-width / 2, -height / 2, 0);
+			renderer.triangle(0, 0, width, 0, 0, height);
+		}
+		renderer.end();
+
+		renderer.begin(ShapeType.FilledTriangle);
+		renderer.setColor(0, 0, 1, 1);
+		renderer.identity();
+		renderer.rotate(0, 1, 0, 45);
+		for (int i = 0; i < 15; i++) {
+			float x = MathUtils.random();
+			float y = MathUtils.random();
+			float width = MathUtils.random();
+			float height = MathUtils.random();
+			renderer.identity();
+			renderer.translate(0.5f + x, -0.5f + y, -MathUtils.random());
+			renderer.translate(width / 2, height / 2, 0);
+			renderer.rotate(0, 1, 0, MathUtils.random() * 360);
+			renderer.translate(-width / 2, -height / 2, 0);
+			renderer.filledTriangle(0, 0, width, 0, 0, height);
+		}
+		renderer.end();
+
 		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
 		batch.begin();
 		font.draw(batch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
