@@ -198,15 +198,7 @@ public class ShapeRenderer {
 			Matrix4.mul(combined.val, transform.val);
 			matrixDirty = false;
 		}
-		if (renderer instanceof ImmediateModeRenderer10) {
-			Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
-			Gdx.gl10.glLoadMatrixf(combined.val, 0);
-			Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);
-			Gdx.gl10.glLoadIdentity();
-			((ImmediateModeRenderer10)renderer).begin(currType.getGlType());
-		} else {
-			((ImmediateModeRenderer20)renderer).begin(combined, currType.getGlType());
-		}
+		renderer.begin(combined, currType.getGlType());
 	}
 
 	/** Draws a point. The {@link ShapeType} passed to begin has to be {@link ShapeType#Point}.

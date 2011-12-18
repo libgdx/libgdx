@@ -144,9 +144,7 @@ public abstract class Actor {
 	/** Transforms the given point in stage coordinates to the Actor's local coordinate system.
 	 * @param point the point */
 	public void toLocalCoordinates (Vector2 point) {
-		if (parent == null) {
-			return;
-		}
+		if (parent == null) return;
 		parent.toLocalCoordinates(point);
 		Group.toChildCoordinates(this, point.x, point.y, point);
 	}

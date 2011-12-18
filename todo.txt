@@ -1,0 +1,65 @@
+
+particles
+	persitence should use json so additions won't break saved files
+	javadoc
+json
+	disable reflection to parse into map/array
+tablelayout
+	add cell to existing row
+		http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=2784
+	simplify DSL by removing widget properties?
+	use {name:xxx} instead of [xxx:{}]
+sound
+	ogg problem
+		http://www.badlogicgames.com/forum/viewtopic.php?f=11&t=869&p=14117
+NinePatch
+	add scale, eg for a button pressed state
+TextureAtlas
+	use json?
+	add support for NinePatchs
+Skin
+	use a TextureAtlas instead of custom atlas
+		this separates the regions and patches from styles and resources
+scene2d
+	refactor to not use public fields
+	new input system, similar to inputprocessor
+	refactor action system
+		put action classes in action package
+		use Interpolation
+	Slider
+		add snapping to the knob
+	TextButton
+		add region/patch constructors
+	FlickScrollPane
+		use layout to determine clipping
+	javadoc
+	wiki docs
+3D
+	fbx/collada/etc -> unity -> json -> libgdx model & scene binary
+	skeletal animation
+	model batching/instancing
+	scene graph
+	materials
+	particles
+docs
+	wiki
+	documented examples
+replace TileD
+remove junk
+	current 3D stuff
+	TextureRef, TextureDict
+AssetManager
+	document
+audio
+	fix KissFFT
+		output should match FFT class
+	libmpg123
+		separate native for LGPL
+DecalBatch
+	slow
+	remove?
+SpriteBatch
+	origin fubar
+LWJGL
+	update to latest
+	replace LwjglFrame with Display.setResizable
