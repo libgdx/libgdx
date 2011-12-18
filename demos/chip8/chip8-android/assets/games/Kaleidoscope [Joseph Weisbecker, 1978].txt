@@ -1,0 +1,7 @@
+VIP Kaleidoscope, by: Joseph Weisbecker
+
+Four spots appear in a group at the center of the screen. Press keys 2, 4,  6, or 8 to create a pattern. Keep your pattern smaller than 138 key depressions.
+
+Push key 0 to terminate pattern entry. Pushing key 0 causes your pattern to be continuously repeated forming a fascinating, changing kaleidoscope display on the screen. A "44444442220" key sequence provides a very nice effect Experiment to
+find other nice patterns. 
+

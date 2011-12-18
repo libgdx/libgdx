@@ -1,0 +1,12 @@
+Car, by: Klaus von Sengbusch
+
+And here is another game.
+Is is quite simple. You just have to drive a car through a scrolling road and
+prevent being hit by other cars. 
+One big advantage for those HP48G Users with 32K memory: IT IS VERY SMALL!!!!!
+
+The Keys:
+    1: left
+    2: right
+
+

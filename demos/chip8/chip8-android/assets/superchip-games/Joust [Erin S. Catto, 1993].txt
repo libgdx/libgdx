@@ -1,0 +1,17 @@
+Joust 2.3 Documentation
+-----------------------
+
+By Erin S Catto
+
+Here is Joust v2.3.  No exciting changes.
+Just mitigation of the bonus round bug.
+
+The Game:             0    =    start, replay, up
+                      /    =    right
+                      9    =    left
+
+Points:               1 point per egg touched
+                      8 points for clearing bonus round
+                      1 player for clearing bonus round
+
+NOTE:  Only use SCHIP v1.1 to run this game.  

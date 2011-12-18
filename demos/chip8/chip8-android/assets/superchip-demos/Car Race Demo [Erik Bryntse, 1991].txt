@@ -1,0 +1,5 @@
+Car Race Demo, by: Erik Bryntse
+
+When I added the extra scroll functions to v1.1, I couldn't resist writing
+a car race. It lets you drive your car on a small forest road in high speed.
+Use 1 and 2 to steer it. 

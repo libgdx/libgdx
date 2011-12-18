@@ -1,0 +1,76 @@
+							Aarhus, DK
+							16/9-92
+
+
+SpaceFight2091  - The doc
+
+Ok, here's a little Super-Chip game for all you mad S-Chip-freaks out there!
+
+
+
+
+PURPOSE:
+
+The purpose of the game is.... TO WIN (say what?)
+  In order to complete this quite difficult task your body (yes only your body
+and not your mind (this remark shows that I believe that the body merely serves
+as a tool for the brain)) have been warped through 87 different time-warps
+due to some foolish scientists who didn't know what they were doing. This
+resulted in a rather big waste of resources but that's of course another story.
+When you finally arrive you can't recognize anything and two weird-looking
+dudes tell you that this is the year 2091!!! Frightening eh?
+  You are of course not very happy about your situation partly because you only
+have 25 dollars in your wallet and the prizes have gone up about 30000% but
+mainly because IBM and the fucking PC clones have completely taken over all of
+the computer-market resulting in the Amiga's death!
+  In a Holo-BiDirectional-FullDuplex-TV-store you see a newsflash concerning
+some evil aliens about to invade the good ol' EARTH. Scientists think that they
+are being drawn towards the Earth due to the massive pollution the PC's cause.
+However if people had bought Amiga's instead (which don't pollute) they would
+have been no aliens now!
+  This is your call! You sneak into a Warp-Transporter without a ticket and you
+end up at NASA where you get to talk to the boss and you tell him : "OK you
+listen to me you scumbag! I wanna get into a spacecraft, get up there and KICK
+SOME ALIEN BUTT!". "But why?" the boss says. "Personal motives" you answer. If
+you can save the Amigas existence you're ready to do anything!
+  You get the newest spacecraft (ZX-81) and you take off!!! TO SAVE THE AMIGA!
+  Battle you way through the 6 (increasingly harder) levels!!!
+
+
+
+
+CONTROLLING THE ZX-81
+
+  Though being very advanced the ZX-81 is extremely easy to control:
+
+  HexPad    Amiga    HP    Function
+
+    3         /      9      LEFT
+    C         *      /      RIGHT
+    A         1      0      FIRE
+
+
+
+
+ABOUT THE GAME
+
+  It was written because I wanted to test my newly written S-Chip assembler for
+the Amiga. It only took me 2 days to make this game (I'm so proud of myself!).
+I know that some of the code could have been programmed smarter (or smaller!)
+but then again it was my first attempt so get off my back!
+
+  SourceSize: about 30 k
+  AsmSize:    2840 bytes
+  783 bytes of graphics and 200 bytes of buffers, reducing the codesize to
+  1857 bytes
+
+Contact me for anything concerning CHIP like ideas for more games...
+
+Slammer
+Carsten Soerensen
+Kronhjortevej 4
+DK-8270  Hoejbjerg
+Denmark
+
+E-Mail: u920659@daimi.aau.dk
+

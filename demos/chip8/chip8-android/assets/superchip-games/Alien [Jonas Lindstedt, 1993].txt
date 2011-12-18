@@ -1,0 +1,65 @@
+
+Welcome to my second CHIP48 game ever. This time it uses the new features 
+(i.e. scrolling and full-screen graphics) that were added in SUPER-CHIP V1.1.
+
+The game
+--------
+Due to lack of imagination, I did a very wellknown game. Alien, one of the 
+first games I played in the beginning of the C=64 era. It is a rather simple
+shoot'em up game and the story behind the game is as follows: Unfriendly
+(most aliens are) aliens have invaded the earth and the only one who can stop 
+them are you. To assist you in your battle, the russian experts have 
+developed a new powerful (and leathal) weapon, the blaster. But, as you
+known, the Rubel isn't what it used to be and therefore, the scientists could 
+only afford the version with limited firecapacity. You can only have one shot 
+in the air at the same time. And what's even worse: the aliens have gotten 
+hold of the very same weapon. And they're continually making their shields 
+stronger and stronger. Stop them before they reach mother earth!
+
+How to start the game
+---------------------
+Upload the game to your HP48-series calulcator via the serial cable. Make 
+sure the you also have got S-CHIP V1.1 somewhere in your machine (otherwise 
+you'll have to upload that too). Press the Alien menu-key and a string will 
+appear in the first level of the stack (the only thing readable is my name). 
+Then press the S-Chip menu-key and the game will begin. See next section for 
+further description.
+
+The controls
+------------
+KEY             DESCRIPTION
+
+Enter           Restart the game
+Backspace       Quit game (return to calculating, who needs that?!)
++/-             Toggle sound on/off (useful when teacher is near you)
+9               Stear your blaster left
+/               Stear your blaster right
+0               Fire (you also use this key to begin playing)
+
+Copyrights
+----------
+CHIP48 V2.25 (C) Andreas Gustafsson, Finland
+S-CHIP V1.1 (C) Erik Bryntse, Sweden
+ALIEN V1.0 (C) Jonas Lindstedt, Sweden
+
+This game is released as Public Domain via Internet and various Bulletin
+Board Systems. You may copy this program for non-profit purposes. I don't 
+take any responsibility for any damage caused by this program, but please 
+write me a letter if you find any bugs or have suggestions how to make this a 
+better game. (I know it's a bit slow, but so am I.)
+                                                
+Enjoy!!
+
+Jonas Lindstedt
+Department of Real Time Computer Systems
+Malardalens University, Vasteras, Sweden
+-------------------------------------------
+E-mail:         ltd92jlt@martin.mdh.se 
+                 or              
+                akcs.jonasl@hpcvbbs.cv.hp.com
+
+Address:        Jonas Lindstedt
+                Bergmastarv. 15
+                S-724 78  VASTERAS
+                Sweden
+

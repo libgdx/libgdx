@@ -1,0 +1,4 @@
+Submarine, by: Carmelo Cortez
+
+The Sub Game is my favorlte. Press "5" key to fire depth charges at the subs below. 
+You score 15 points for a small sub and 5 points for the larger. You get 25 depth charges to start.

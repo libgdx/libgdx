@@ -1,0 +1,53 @@
+7. VIP Bowling
+
+Bowling is a great game for recreation and competion requiring skill and a little
+bit of luck.  This program simulates bowling closely with regular scoring and the
+option of using three different spins on the ball.
+
+How to play VIP Bowling
+
+1. Load the CHIP-8 interpretor at 0000-01FF
+   and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Up to 6 persons can compete.  Make the choice by pressing Key 1,2,3,4,5 or 6.
+   The players will be referred to as A,B,C,D,E and F.
+
+4. It is possible to play up to 10 frames in one game.  Make your choice of the
+   number of frames by pressing Key 1,2,3,4,5,6,7,8,9 or 0 (for 10 frames).
+
+5. It is possible to choose 3 ball speeds (Key 1,2 or 3).  The speed option only
+   affects the ball after it is released.
+
+6. At the start of a player's turn, the video will display whose turn it is and
+   whether he is working on a spare, strike, 2 strikes or nothing.
+   Release the ball by pressing on of the following keys: Key 1,2,3,5,7,8 or 9.
+   -Key 5 will cause a straight ball.
+   -Key 1,2 and 3 will cause the ball to spin up.
+     -Key 1 before the first pin
+     -Key 2 after  the first pin
+     -Key 3 after  the second pin
+   -Key 7,8 and 9 will cause the ball to spin up.
+     -Key 7 before the first pin
+     -Key 8 after  the first pin
+     -Key 9 after  the second pin
+
+7. After the player's turn ends, the video will display whose turn it was, the
+   frame, and the score.  The next players follows the instructions at 6 above.
+
+8. After all players have had their turn in a frame, the video will display the
+   total of each player and whether he is working on a spare, 1 strike, 2 strikes
+   or nothing.  It will display the frame number and the total number of frames
+   to go (unless the last frame was played).
+   After pressing Any key, player A can start in the next frame.  Continue with
+   instruction 6 above.
+
+9. If all frames in the game have been finished, press any key again.  The player's
+   who are still working on a spare will recieve 1 more ball, and those working
+   on 1 or 2 strikes will receive 2 balls.
+
+10. After all players have finished the game, the final score will be displayed.
+
+
+    

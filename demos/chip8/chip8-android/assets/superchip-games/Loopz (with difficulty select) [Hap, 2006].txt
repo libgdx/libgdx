@@ -1,0 +1,17 @@
+difficulty select for Loopz, by hap, feb 17th 2006
+
+Andreas Daumann's Loopz was originally only for HP48
+this change adds difficulty select within the SCHIP program, so it'll work
+on SCHIP emulators, no changes were made in the main program
+
+to select difficulty:
+same keys as in loopz: c=up, d=down, 5=ok
+
+v0,v1,v2 are set before running loopz
+v1 and v2 should be $AA, dunno why
+v0 is the difficulty (0 to 9)
+saved into flags and the game runs as normal
+
+original loopz program: $200-$f9d
+difficulty select: $f9e-$fff (full ;p )
+

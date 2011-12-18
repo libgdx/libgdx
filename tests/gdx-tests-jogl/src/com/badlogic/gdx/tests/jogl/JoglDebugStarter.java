@@ -25,6 +25,6 @@ public class JoglDebugStarter {
 		JoglApplicationConfiguration config = new JoglApplicationConfiguration();
 		config.useGL20 = true;
 		config.vSyncEnabled = false;
-		new JoglApplication(new com.badlogic.gdx.tests.InputTest(), config);
+		new JoglApplication(new com.badlogic.gdx.tests.UITest(), config);
 	}
 }

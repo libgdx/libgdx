@@ -1,0 +1,3 @@
+Jumping X and O, by: Harry Kleinberg
+
+Here is what the program is written to do. First, a solid 6×6spot block appears in the upper right quadrant of the tv display. A 5×5 "X" pattern appears in the center and jumps randomly to a new location every 1/5 second. When the X overlaps the 6×6 block, the X disappears, an "0" pattern appears in the center of the screen, and repeats the process, being replaced by the X when an overlap with the block occurs. The program continues until the machine IS stopped

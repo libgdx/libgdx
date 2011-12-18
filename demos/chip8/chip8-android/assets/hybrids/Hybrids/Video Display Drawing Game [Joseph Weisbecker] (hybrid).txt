@@ -1,0 +1,7 @@
+Video Display Drawing game, by: Joseph Weisbecker
+
+A flashing spot appears in the upper left corner of the screen. 
+You can move the spot by holding key 2, 4, 6, or 8. 
+Press key 5 and you can draw a picture with the spot. 
+Press key 0 and the spot can be moved without drawing or used to erase a previously drawn
+line. 

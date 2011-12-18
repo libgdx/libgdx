@@ -1,0 +1,36 @@
+3.  VIP BINGO
+
+VIP BINGO automatically calls and verifies BINGO numbers.  The computer selects
+numbers randomly and displays the last three numbers drawn.  After a player calls
+"BINGO", the computer will check the player's numbers against a list stored in its
+memory.  The computer adds the numbers checked to give the player a score for that
+round of play.
+
+There are two modes for drawing numbers.  Using the manual mode, the operator must
+press a key to obtain a new number.  Using the automatic mode, the computer draws
+numbers every twelve seconds until halted by the operator.  Using a third mode, verify,
+the operator enters numbers on the keyboard for the computer to check against the
+list of numbers called.
+
+How to play VIP Bingo
+
+1. Load the CHIP-8 interpreter at 0000-01FF and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Key "A" starts calling numbers in the manual mode.  Press key "A" for every new
+   number.  New numbers appear at the bottom of the display and are rolled upward.
+
+4. Key "B" starts calling the numbers in the automatic mode.  New numbers appear every
+   twelves seconds until all numbers are called.  You can press key "A" to enter manual
+   mode, or key "C" to stop calling numbers.
+
+5. Key "C" starts the verify mode.  Enter two digits for each number making up a winning
+   BINGO card.  (Note: press 01 for B-1, 02 for B2, 75 for O-75, etc.)  If the number
+   was called, "OK" will show; if it was not called, "NO" will show.  If all five numbers
+   are OK, press key "F" to display the score for the numbers entered.  The score will
+   be displayed followed by "PT" (point total).  You do not have to enter any number for
+   "FREE".  If one of the numbers verified was not called, you can resume calling numbers
+   as in Step 3 or 4.  You may also press key "C" to restart verify if you make a mistake
+   entering a number.
+

@@ -1,0 +1,222 @@
+
+Version 2.1 of H. Piper! for SUPER-CHIP follows below.
+
+DISCLAIMER: Since CHIP makes use of undocumented features
+of the HP48SX, anything can happen: loss of data, meltdown,
+etc. Therefore, I take no responsibility for any damage
+whatsoever that occurs.
+
+****************  H. Piper!  **********************
+
+OBJECT:
+-------
+You are presented with a 6 row, 10 column grid and
+a preview panel of 5 pipes. A starting pipe will be
+placed on the grid and will in a few seconds start
+leaking.  The object is to lay pipes on the grid to
+contain the leak as long as you can.  If the water
+flows onto an empty grid site, onto the side of another
+pipe or border, that plumbing job is finished.  If you
+did well enough, you may get another job.  Otherwise
+the game is over.
+
+STARTING THE GAME:
+-----------------
+Make sure you have the SCHIP program on the calculator.
+Press HPIPER to recall the program string to the stack.
+Then press SCHIP to start the game.
+
+HOW TO PLAY:
+------------
+On the bottom and right borders of the grid are grid
+pointers.  The bottom pointer can be moved left with
+the (1) key and right with the (2) key.  The side
+pointer can be moved up with the (9) key and down with
+the (6) key. (Note: this is identical to the movement
+keys for Syzygy by Roy Trevino)  A crosshair is present
+on the grid sites the two paddles point to.
+
+Using the pointers, chose a grid site to place a pipe.
+The pipe to be placed is the one at the bottom of
+the preview column. Once a site is chosen, press the
+(7) or (4) key to place the pipe there.  You can replace
+a pipe already at the grid site with a penalty of one
+point.  You cannot replace a pipe that the water has
+already flown through.  Trying to do this will make
+you lose the pipe you were trying to place and also
+penalize you one point.
+
+The two buttons used to place pipe differ in the way
+that the next pipe added at the top of the queue.
+Pressing (7) will choose a random new pipe to place
+at the top of the preview column and push the others
+down the queue.  Pressing (4) will use the pipe
+currently displayed to the right of the grid as the
+new pipe to be placed at the top of the preview
+column.  The pipes on the right cycle through all
+types in a set manner.
+
+When you have placed all the pipe you wish to for
+a particular job, you can press the (+) key to make
+the water flow *FAST*.  You can still lay pipe if
+you realize you made a mistake, but hurry!
+
+   KEY SUMMARY:     Left     (1)
+                    Right    (2)
+                    Up       (9)
+                    Down     (6)
+                    Place    (7)  random
+                    Place    (4)  non-random
+                    Fast     (+)
+
+Once a job is over, press (SPACE) to continue.
+
+There are twenty levels with increasing water flow speed.
+Level 20's speed is the same as that for *FAST*. If
+you manage to get through level 20, it repeats at
+that level till you fail.  The starting speed with
+which the flow comes out of the initial pipe is slower
+than the usual flow, however this speed increases in
+level also. 
+
+SCORING:
+--------
+You receive 3 points for every pipe the water flows
+through.  For the crossed pipes, flowing through
+them in both directions gives you 6 points.
+You are penalized 1 point for replacing or
+trying to replace a pipe already on the grid.
+
+The current job score is shown in upper right corner.
+The score can not go negative, so if the score is
+zero, you can replace pipes without penalty.
+
+Once a job is over, the program checks to see if
+every grid site was flown through. If so you
+earn a 100 point bonus. The score earned is added to
+the grand total and displayed on the screen shown
+after (SPACE) is pressed. 
+
+If the game is over, the word OVER will be displayed
+above the score and the (SPACE) key can be pressed
+to exit. The total score will be written to user 
+flags so that the user lang program SCORE can
+put the score on the stack. If over does not appear,
+press (SPACE) to go on to the next job.
+The points needed to go to the next job are
+obtained by the following formula:
+
+    Points needed = 100 - (41 - 2 * level)
+
+therefore, you need 63 points to go to job 2
+                    65 points to go to job 3
+                    ...
+                    99 points to go to job 20,21,....
+
+The points needed for a level are shown below the
+bottom right corner of a grid.  Note that this
+does not mean that play ends once that score
+is achieved.  That score is only a minimum needed
+to have the opportunity to continue on another job.
+
+RESUME:
+-------
+Between jobs (i.e. while at the dripping faucet wait
+screen) you can press the decimal (.) key to leave
+the game and go to the regular calculator mode.  The
+total score and level you achieved will be stored in
+the user flags so that next time you start the game,
+you will resume the game as you left it.  Do not
+run the SCORE program or you will lose the resumable
+state.
+
+If somehow the user flags get messed up by other
+programs you run after pausing, you can set them
+using the HPSET program.  Put the desired score
+on level 2 and the game level you just completed
+on level 1. Once you get really good at the game,
+you can use this to bypass the first few really
+slow screens. For example, to start off on level 9,
+enter 0 then 8 and run HPSET. When you start the
+game, you will begin at level 10.
+
+RANDOMNESS:
+----------
+The starting pipe for the first level is still 
+placed randomly.  For subsequent levels, however,
+the starting pipe is located on the grid site
+you "leaked" on with the starting direction opposite
+of that you entered.  If you leaked onto the border,
+then the starting pipe is placed on the site you
+leaked from.
+
+The first five pipes in the queue are selected randomly.
+
+OTHER REMARKS:
+-------------
+-- The [ENTER] key will now work to restart
+   the game as if it was just run for the first time.
+-- The movement keys can now be held down to
+   move the crosshair long distances.
+-- Corner pieces are guaranteed for the first four
+   pipes to get out of sticky situations with
+   the starting pipe placement.
+
+TROUBLE SHOOTING:
+----------------
+Some people have reported assorted problems with
+getting the program to work.  For those who can't get
+SCHIP to work with H. Piper, try turning off all alarms
+and date/clock displays.  If you have Chipper,
+you might try compiling the source code yourself and
+see if you can get it to run from there.  
+
+
+DEVELOPMENT NOTES:
+-----------------
+Pipe Graphics --
+   As you will probably notice, a lack of
+   color is a big problem in trying to sort
+   out what you have laid out.  Having 8x8
+   pipe bitmaps was a cornerstone of my
+   design so enlarging them for better
+   resolution would be difficult and probably
+   restrict the grid size unduly.
+
+Randomness    --
+   Just how random is S-CHIP's random generator?
+   You will probably notice that the cross pipe
+   comes up more often than the others. True. It
+   is twice as likely to be chosen than any of
+   the others.  Another design fluke. However,
+   being the one true symmetrical piece, it
+   will be the most useful to get often.
+
+Program Size  --
+   I've put a semi-rigid limit of 2K on the size
+   of the program.  Any improvement that will put it over
+   that barrier just won't be worth it. (I will of course
+   probably eat these words later.)
+
+ACKNOWLEDGEMENTS:
+----------------
+H. Piper! was written using the excellent compiler Chipper.
+I will make the source available if there is any interest.
+Be forewarned.  I am a pretty sloppy coder.  There is
+much room for improvement in efficiency.
+
+   CHIP-48 is (C) Copyright 1990 Andreas Gustafsson.
+            - Many, many thanks to the one who started it all.
+
+   Chipper is (C) Copyright 1990 Christian Egeberg.
+            - It is amazing that with such a great compiler
+              as this, there are so few CHIP games out there.
+
+   SUPER-CHIP is (C) Copyright 1991 Erik Bryntse
+            - Never be satisfied with limitation.
+
+Happy plumbing!
+
+
+
+

@@ -1,0 +1,15 @@
+Blinky V2.00: Pac Man game for SCHIP V1.0 or newer.
+From: egeberg@solan.unit.no (Hans Christian Egeberg)
+
+This program is for use with Super Chip-48 V1.0 or newer.
+In order to run, put downloaded binary string on stack, and start SCHIP.
+
+Blinky has two lives. Finishing a screen increases the intelligence
+of Packlett and Heward, the two ghosts. The game is at its most difficult
+on the fourth screen. The maze contains one gateway from left to right,
+and four energy pills, near the corners. Points are awarded for each pill,
+each energy pill, catching Packlett, catching Heward, and finishing a maze.
+
+My personal highscore is 1575 so far, but I am just a programmer.
+My not so little sister helped me debug, and reached 2005 in two days.
+

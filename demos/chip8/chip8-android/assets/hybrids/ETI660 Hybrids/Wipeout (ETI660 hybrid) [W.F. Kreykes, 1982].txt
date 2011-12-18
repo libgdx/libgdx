@@ -1,0 +1,25 @@
+WIPEOUT ’660 STYLE
+W.F. Kreykes
+St. Albans, Vic.
+
+This is not a remake of ‘One handed Pong' as published in the April ’82 ETI. Firstly, this program is in colour and will absorb the player for much longer. Sound effects are included. You'll need to have installed the colour components and have 3K of memory on your ’660. 
+You start the game with 200 dots and a large bat. A ball moves around the screen and the object is to position your bat so that the ball bounces from it, and in doing so, wipes out as many dots as possible. For this, you score points. If the ball moves toward you and you don’t get the bat under it, the ball goes off screen. Your progressive score is then displayed and you get another ball. You start the game with 15 balls. You get a bonus of one extra ball if 10 dots are wiped out with one ball. If you wipe out at least 20 dots with one ball you get a bonus of three extra balls. When you have wiped out a total ol 100 dots, the bat size automatically decreases 25% — making the game from that point on a little harder! The game ends when you either run out of balls or run out of dots. The game restarts automatically after ending and the highest score to beat is dlsplayed on—screen.
+
+Use the following keys to control the bat
+KEY A - LEFT
+KEY D - RIGHT
+
+The bat does not go off-screen at extreme left or right travel.
+It you want a monochrome game (or white on blue background), change 2822 at 0600 to 00FF then type in the program from 0600 to 07AC and disregard the rest (and for this you only need 1 K of memory). Here are the colour setups:
+0600	2822: calls colour routines. Set to 00FF for mono.
+0822	O7F7: sets background to black, For blue set to OOFF
+0824	07BB: initiates colour operation
+0828	6007: white — number of hits
+082C	6006: pale blue — flrst divider
+0830	6003: violet— highest score to beat
+0836	6004. green — progressive score
+083C	6005: yelIow—third divider
+0840	6001: red— number of balls left
+0844-085C colours the dots butjumps oolour black
+085A	6001: red — bat
+

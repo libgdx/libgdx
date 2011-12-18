@@ -1,0 +1,3 @@
+Hi-Lo, by: Jef Winsor
+
+You have 10 chances to guess the value of a random number between 00 and 99 selected by the program. The number at the right of the screen shows the number of the guess you are using. Enter a two digit number and the computer tells you if you are high or low. Press any key to erase this number and then, try again. If you have failed after ten guesses, press any key and the number will be shown. If you are good you will never need more than seven guesses. 

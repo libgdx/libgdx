@@ -1,0 +1,1 @@
+Same than PUZZLE2. Wait for randomization... Instead of moving the item by pressing his associated key, move it UP DOWN LEFT RIGHT with respectively 2 8 4 6. Up and Down are inverted as the game uses the original CHIP8 keyboard.

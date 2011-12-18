@@ -1,0 +1,4 @@
+Space Intercept, by Joseph Weisbecker
+
+At startup, Press 1 to select the large UFO whichh counts 5 points when hit or 2 to select the small UFO which counts 15 points when hit.
+Launch your rocket by pressing key 4,5 or 6. You get 15 rockets as shown in the lower right corner of the screen. Your score is shown in the lower left corner of the screen.

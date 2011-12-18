@@ -1,0 +1,62 @@
+4. VIP BLACKJACK
+
+VIP Blackjack (also known as Twenty-One) follows standard Blackjack rules.  The VIP
+computer is the dealer.  Both the dealer and player try to get cards that add up to
+"21".  Each number card counts its face value; Ten, Jack, Queen and King count 10;
+and Aces count as either one or eleven.  A hand containing an Ace that counts as
+eleven and does not cause the total to exceed 21, is a "soft" hand.  All other hands
+are "hard".
+
+The VIP Blackjack dealer draws on soft 17, hard 16 or less.  The dealer deals from
+two standard decks.  Before dealing a new hand, if the number of cards in the
+combined decks is less than 22, the dealer automatically shuffles the cards.  Pair
+splitting and insurance are not allowed.  All winning hands pay 1 to 1, except
+blackjack, which pays 2 to 1.
+
+The game ends either when the player has lost his stake, or when he breaks 999.
+
+How to play VIP Blackjack (One-Player)
+
+1. Load the CHIP-8 interpretor at 0000-01FF
+   and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Your stakes will appear at the bottom right corner of your TV screen.
+
+4. Whenever "CUT" appears on the screen, the dealer will shuffle the cards and
+   wait for you to cut.  Press key 0 to continue play.
+
+5. Whenever "BET" appears on the screen, you enter you single-digit bet by pressing
+   key 1 through 9,  press key 0 to enter a bet of 10.  Your bet will be displayed
+   slightly above and to the left of your stakes.
+
+6. After all bets are entered, two cards will be dealt to you and the dealer.  The
+   dealer's cards are on the top of the screen.  One of the dealer's cards will be
+   face down (hole card).
+
+7. If the dealer has a natural (21) and you do not, you lose your bet.  If you also
+   have a natural, you get your bet back and a "T" for tie appears in the bet position.
+
+8. If the dealer does not have a natural and you do, you get three times your bet back,
+   a "W" for win appears in the bet position.
+
+9. When neither you nor the dealer has a natural, the word "HIT" will appear on your
+   screen.  You must either stand, hit or double down.
+     It is your turn when your bet flashes.
+     -You Stand (indicating you have enough cards) by pressing key 0
+     -You Hit (indicating you want another card) by pressing key 1
+     You can draw up to 5 additional cards for a maximum of 7 cards in your hand.
+     -You Double Down (indicating you want one more card and double your bet) by
+      pressing key 2.  Your bet will change on the screen.
+   You keep your turn after Hitting if the card count is 21 or less.  You give up
+   your turn after Standing, Doubling Down or Busting (going over 21).
+
+10. After you have finished your turn, the dealer turns up his hole (down) card.
+    If you are still in the game, the dealer draws cards to his hand whenever it
+    adds up to soft 17 or hard 16, or less.
+
+11. If the dealer goes over 21, you win unless you already busted.  If you win, a "W"
+    appears in the bet positions and you receive twice your bet.  IF you tie, the dealer
+    (push),  a "T" appears and you get your bet back.  If your hand is less than the
+    dealer's, you lose your bet.

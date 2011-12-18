@@ -1,0 +1,73 @@
+ Subject:  U-BOAT v1.0  (c)1994 Michael D. Kemper
+Released:  v1.0 - 8/8/94
+Requires:  S-CHIP interpreter which can be found on Joseph Horn's
+           goodies disk 3.
+
+This game is based on a game that I used to play back in the early 80's
+on an Apple ][.  I believe the name of the program was "Depth Charge."
+Unfortunately I don't know who was responsible for programming it.
+
+The premise of the game is fairly simple.  You are the Captain of a sub
+hunting destroyer, and your objective is to sink as many enemy U-Boats as
+you can.  Your only weapon against the U-Boats is your ship's supply of
+depth charges.  You have an unlimited supply of charges but, due to the
+amount of time it takes your second rate crew to reload, you may only have
+four charges in the water at any given time.
+
+The subs that you are hunting appear at random depths and have one of
+three random velocities (stopped, ahead half, or ahead full).
+There are six enemy subs visible at any one time.  When one of these
+subs is destroyed, another will appear at a different location.
+
+The keys used are as follows:
+
+     [1]     ship's speed full stop
+     [2]     ship's speed ahead half
+     [3]     ship's speed ahead full
+     [-]     drop depth charge
+     [/]     abort game
+     [+/-]   toggle sound
+     [<-]    exit program
+     [Enter] restart program
+
+Scoring for the game is based on the depth of the sub, multiplied by one
+plus it's velocity.  For example:
+If a sub is at a depth of 50, and he is stopped then he is worth 50 points.
+A sub at the same depth of 50, but moving at 1/2 speed is worth 100 points.
+A sub at a depth of 50, but moving at full speed is worth 150 points.
+
+The time limit for the game is about 2.5 minutes.  At about 1:45 into the
+game a warning buzzer goes off and an almost empty hourglass is displayed
+by your score to let you know that the game is about over.
+
+Once the game is over your score, the high score, the number of charges
+dropped, the number of subs hit, and your hit percentage are displayed.
+
+A good game is about 2800 or so, and a really good game is around 3500.  I
+haven't had a whole lot of time to play it, but my high is 3551.
+
+----------------------------------------------------------------------------
+
+Thanks to Erik Bryntse for his S-CHIP interpreter, which was an extension
+to Andreas Gustafsson's CHIP-48 interpreter.  Thanks also to Christian
+Egeberg for his CHIPPER v2.11 assembler.  A big thanks to Joseph Horn for
+collecting various HP48 programs and utilities.  His goodies files are just
+about my only source of information on this fascinating calculator.
+
+If there are any questions, comments or criticism's they can be emailed
+to mikek@access.mountain.net
+
+This game is freeware, and may be distributed freely as long as this doc
+file remains with it, and both the doc and program remain unchanged.  If
+you find that you become wildly addicted to U-BOAT and can't sleep at
+night knowing that I didn't receive any compensation for writing it then
+by all means send me enough to allow you to get your z's.
+
+============================================================================
+Disclaimer:
+     This program uses "Super-Chip" which makes use of undocumented
+     low-level features of the HP48 calculator, and may or may not
+     cause loss of data, excessive battery drainage, and/or damage to
+     the calculator hardware.  The author takes no responsibility
+     whatsoever for any damage caused by the use of this program.
+============================================================================

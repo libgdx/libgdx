@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, Chip8Activity!</string>
+    <string name="app_name">Chip8-android</string>
+
+</resources>

@@ -1,0 +1,75 @@
+2. VIP Message Center
+The VIP MESSAGE CENTER program permits you to record in the computer memory and display
+letters, numbers and special characters on teh TV.  The characters saved in the computer
+memory are recalled for continuous repetitive display of a message on the TV screen.
+You can choose two types of display formats.  The typewriter format lets you fill the
+entire screen; the ticker tape format shows a line of characters in motion across the
+screen. This latter format is useful for words longer than ten characters.
+
+The typewriter display is arranged into five lines of ten characters per line.  The ticker
+tape display shows a line of ten characters.  Up to 256 different characters and display
+commands can be saved in the computer memory.  This corresponds to about three completely filled TV screens.  There are 56 characters you can select: 0-9, A-Z, space, comma, box, period, colon, ellipsis, exclamation point, question mark, hyphen, dollar sign, cent sign, percent sign, single quote, double quote, plus sign, minus sign, times sign, division sign, slash, and equal sign.
+
+The keyboard controls the selection of a character and starting or stopping the message display.  The keyboard also provides the following display commands:  the time to delay before displaying more parts of a message, clearing the screen, spacing between characters, and begining a new line.
+
+Should you make a mistake entering a character, you can correct it.  Yo go through the message stopping where you made your error.  You then overwrite the message with the intended character(s).
+
+How to use VIP Message Center
+
+1. Load the CHIP-8 interpreter at 0000-01FF and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Select type of display:
+   Key 1 selects the typewriter format and
+   saves the message characters in the computer memory
+   Key 2 selects the ticker tapeformat and
+   saves the message characters in the computer memory
+
+4. A flashing character indicates teh display position where a character
+   will go when selected.  The flashing character will not appear in the message
+   unless it is saved.
+
+5. Key 1 selects the next character in the character sequence (see instruction 11)
+   to the left of the flashing character.
+
+   Key 3 selects the next character in the character sequence to the right of the
+   flashing character.  Holding down either 1 or 3 changes the character continuously.
+
+   Key 2 saves the flashing character in memory.
+
+   Key 6 stores a time delay corresponding to how long you hold this key down.  The
+   time may be as brief as a quarter of a second.
+
+   Key 7 clears the screen and stores a "clear screen" command.
+
+   Key 8 stores a space character and positions for the next character.
+
+   Key 9 starts a new line (typewriter format only) and stores this command.
+
+   Key 4 is used to step through the message to allow editing.
+
+   Key 5 stops the display at a character.
+
+6. When you reach the end of the line (10 characters) in typewriter format no characer
+   will flash.  You must press key 9 to start a new line.
+
+7. You can select the space character using keys 1 or 3.  See character sequence in
+   instruction 11.
+
+8  Key 2 is useful for skipping over characters when you are correcting a message.
+   Care must be exercised so that you do not overwrite a stored command (such as a
+   new line) unintentionally.
+
+10 You can change the time for the ticker tape movement by altering location 04B7.
+   Increase this value to increase delay (units of 60th of a second).
+
+11 The character sequence is:
+   @0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ .,;:~!-$c%?"
+
+   Note: @=SQUARE,
+         There is one <space> between Z and .
+         ~=Ellipsis
+         c=Cents
+
+

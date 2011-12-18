@@ -1,0 +1,27 @@
+11. VIP Sum Fun
+
+The object of this game is to add up the three digits
+which appear in the middle of the screen and then hit
+the key representing the total as fast as you can.
+
+How to Play VIP Sum FUn
+
+1. Load the CHIP-8 interpreter at 0000-01FF and
+   the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. You get twenty sets of three digits per game and
+   between zero and ten points per set.  The faster you
+   enter the correct total, the more points you win.
+
+4. If you wait more that 3 seconds, you get zero points.
+   The correct sum is shown above the three digits after
+   you enter it,  and there is a pause before the next
+   set appears.
+
+5. The score is shown in the upper right-hand corner of
+   the screen.  The maximum number of points you can score
+   is 200.  Between 120 and 159 points is above average.
+   A score of 160 or higher is outstanding.
+

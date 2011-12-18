@@ -1,0 +1,31 @@
+                               TETRIS
+                          by Fran Dachille
+
+This is my first release of the famous Tetris game on the HP48S. I was
+inspired by the lack enjoyable games for our favorite handheld.  [Not since the
+Goodies Disks have been available!  -jkh-]  This game, though it lacks some of
+the whistles and bangs of fancy versions, performs on par with quality arcade
+versions (nota bene -> SPEED).  At my college, every person who picks up my
+calculator is immediately hooked for hours.
+
+This version is written for the CHIP48 game interpreter (c)
+copyright 1990 Andreas Gustafsson.  
+
+The 4 key is left rotate, 5 - left move, 6 - right move, 1
+- drop, ENTER - restart, DROP - end.  After every 5 lines, the speed
+increases slightly and peaks at 45 lines.
+
+There is room for improvement in this version.  Notably, background
+pictures, a pause key (for now, hold ON), two rotate keys, various
+starting skill levels, a B version which starts with randomn blocks,
+finishing graphics, and high scores, just to name a few.
+
+In order for improvements, I need to know if there is reasonable
+demand.  If this game is worth playing for hours upon hours, please let
+me know.  If you wish to support the improvements, want future versions,
+and want to see other games ported to the HP48S, send $5.00 to:
+
+          FRAN DACHILLE
+          WEBB INSTITUTE
+          GLEN COVE, NY 11542
+

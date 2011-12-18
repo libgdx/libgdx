@@ -1,0 +1,4 @@
+Breakout, by: Carmelo Cortez
+
+The game, Breakout, is a variation of the Wipe-Off game.
+You have six walls and 20 balls to start. To win you must get through all walls to the top of the screen. At the end of the game the program will show the number of times you hit the walls and will show "FREE!" if you get through.

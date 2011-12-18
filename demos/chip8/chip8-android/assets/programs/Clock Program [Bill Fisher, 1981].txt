@@ -1,0 +1,8 @@
+This neat little clock program is the perfect program to run when someone asks: 
+"That's nice, but what can your computer DO?"
+The program features "reverse" video numerals on the screen, which is a nice change from the
+usual white numbers on a black background.
+
+Instructions:
+- Type six digits on the hex keypad for the desired clock starting time, using 23 hour format (ex.173055)
+- Hit any hex key to start clock running at the above time setting.

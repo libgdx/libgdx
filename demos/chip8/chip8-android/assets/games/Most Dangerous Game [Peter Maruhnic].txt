@@ -1,0 +1,48 @@
+10. VIP Most Dangerous Game
+
+VIP Most Dangerous Game pits a hunter against a hunted in a maze.  The hunter must
+shoot the hunted before either time runs out or the hunted escapes the maze.
+However, neither the hunted nor the hunter can see a wall in the maze until he runs
+into it.  There is always at least one path through the maze.
+
+How To Play VIP Most Dangerous Game
+
+1. Load the CHIP-8 interpretor at 0000-01FF
+   and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Hunted's turn:
+   When the arrow appears in the lower left, it is the hunted's turn.  Keys 2-4-6-8
+   control direction (up-left-right-down, respectively).  The hunted continues to
+   move until a) he makes 5 moves, b) he hits a wall or c) key 0 is pressed.
+
+4. Hunter's turn
+   When the arrow appears in the lower right, it is the hunter's turn.  The hunter's
+   turn consists of two modes, the move and the shoot.  Keys 2-4-6-8 and 0 control both
+   modes.  Like the hunted, the hunter continues to move until a) he makes 3 moves,
+   b) he hits a wall or c) key 0 is pressed.  If he hits the wall, case b), he cannot
+   fire a bullet.  The hunter may fire one of his bullets using the direction keys
+   2-4-6-8.  The bullet will travel four squares in the corresponding direction, unless
+   a wall is encountered.  If the hunter prefers not to use a bullet, he must press key 0.
+
+5. Repeat steps 3 and 4 until:
+   a) The number of turns (upper left on the display) expire.  The hunted wins.
+   b) The hunter lands on or shoots the hunted.  The hunter wins.
+   c) The hunted lands on hunter, thereby giving up.  The hunter wins.
+   d) The hunted reaches the lower right corner of the maze with at least 1 move
+      remaining in his turn.  The hunted wins, by escaping the maze.
+
+6. Variations of VIP Most Dangerous Game may be played by changing certain bytes in
+   the program.
+
+Location Default Meaning
+0215	 0F	 Number of turns in the game.
+0217	 06	 Number of bullets hunter has at start.
+0219	 03	 Number of moves per turn for the hunter.
+0221	 01	 Number of squares per move (hunted and hunter).
+022B	 05	 Number of moves per turn for the hunted.
+024B	 01	 If zero, walls are invisible.
+0355	 04	 Number of squares a bullet will go.
+04E3	 70	 Probability (out of 100Hex) of a wall appearing.
+04EB	 FE	 If FF, a wall may appear at previously tested boundaries.

@@ -1,0 +1,11 @@
+Life, by: G.V. Samways
+
+This is a display of cell growth, in accordance with the following rules:
+ 1. A cell is born if 3 cells are adjecent to an empty space.
+ 2. A cell lives if 2 or 3 cells are adjacent, and dies otherwise.
+ 3. All events take place simultaneously.
+ 
+To start the game, you make a pattern by entering the cell coordinates, first
+the "Y"from 0-7 downwards, then the "X" from 0-F across. 
+F initialises the program, and the number of scans is entered plus one, so that 1 gives 0 scans
+to F giving 14, and 0 giving 255. The sit back and watch the colony live, or die.

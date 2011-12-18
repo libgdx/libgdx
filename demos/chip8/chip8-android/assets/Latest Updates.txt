@@ -1,0 +1,61 @@
+[16/4/2011]:
+- HIRES CHIP-8: Added Hires AstroDodge [Revival Studios, 2008]
+- HIRES CHIP-8: Added Hires Worm V4 [Revival Studios/RB, 2007]
+- HIRES CHIP-8: Added Trip8 Hires demo [Revival Studios, 2008]
+- HIRES CHIP-8: Added Hires Particle Demo [ZeroZshadow, 2008]
+- HIRES CHIP-8: Added Hires Stars [Sergey Naydenov, 2010]
+- HIRES CHIP-8: Added Hires Sierpinski [Sergey Naydenov, 2010]
+- HIRES CHIP-8: Added Hires Maze [David Winter, 19xx]
+- HIRES CHIP-8: Added Hires test [-, 1978]
+- CHIP-8 Programs: Life [GV Samways, 1980]
+- CHIP-8 Programs: Framed MK1 [GV Samways, 1980]
+- CHIP-8 Programs: Framed MK2 [GV Samways, 1980]
+- CHIP-8 Programs: Clock Program [Bill Fisher, 1981]
+- CHIP-8 Games: Russian Roulette [David Ruth, 1982]
+- CHIP-8 Games: FlipAround [unknown, 1980]
+
+[2/1/2011]:
+- CHIP-8 DEMOS: Added Particle Demo [ZeroZshadow, 2008]
+- SUPERCHIP-8 DEMOS: Added Super Particle Demo [ZeroZshadow, 2008]
+- MEGACHIP-8 DEMOS: Added Mega Particle Demo [ZeroZshadow, 2008]
+
+[19/9/2010]:
+- CHIP-8 DEMOS: Added Trip-8 Demo [Revival Studios,2008]
+- SUPERCHIP-8 DEMOS: Added SuperTrip-8 Demo [Revival Studios,2008]
+- CHIP-8 DEMOS: Added Stars [Sergey Naydenov, 2010]
+- CHIP-8 DEMOS: Added Sierpinski [Sergey Naydenov, 2010]
+- SUPERCHIP-8 DEMOS: Added SCStars [Sergey Naydenov, 2010]
+- SUPERCHIP-8 DEMOS: Added SCSierpinksi [Sergey Naydenov, 2010]
+- MEGACHIP-8 DEMOS: Added MegaSierpinski [Sergey Naydenov, 2010]
+- CHIP-8 TESTS: Added Division Test [Sergey Naydenov, 2010]
+- CHIP-8 TESTS: Added SQRT Test [Sergey Naydenov, 2010]
+- CHIP8x and HYBRIDS: Added various ETI660 Hybrids.
+
+[12/9/2010]:
+- CHIP-8 GAMES: Added Worm V4 [RB-Revival Studios, 2007]
+- CHIP-8 GAMES: Added ZeroPong [ZeroZshadow, 2007]
+- CHIP-8 GAMES: Added Rush Hour [Hap, 2006] (alt)
+- CHIP-8 GAMES: Added Pong (alt)
+
+[11/9/2010]:
+- CHIP-8 GAMES: Added a few converted roms from old Viper magazines & manuals.
+- Many new roms/programs added.
+
+[20/8/2010]:
+- CHIP-8 GAMES: Added AstroDodge [Revival Studios, 2008]
+- SUPERCHIP-8 GAMES: Added Super AstroDodge [Revival Studios, 2008]
+- SUPERCHIP-8 DEMOS: Added Climax Slideshow [Revival Studios, 2008]
+- Added Author and release-year information for each rom.
+- Added Text file by original author for each rom.
+
+[4/6/2008]:
+- Added Zero Demo [ZeroZshadow, 2007]
+- Added a number of other new roms.
+
+[2/10/2007]:
+- Initial release of the rom pack
+
+[Still Wanted]:
+- Snafu (Chip-8 Game)
+- Life (Chip-8 Demo)
+

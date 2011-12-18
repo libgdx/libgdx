@@ -1,0 +1,28 @@
+                ----------------------------------------
+                                 HIDDEN!
+                    Copyright (1996) by David WINTER
+                ----------------------------------------
+
+
+HIDDEN is a "memory" game. It is very simple to play.
+
+The rules are as follow: your goal is to find all the identical cards
+in a minimum time.
+
+You are playing in a 4*4 card grid. You can see only two cards at the
+same time. Once this time passed, these two cards will remain shown
+if they are identical, otherwise they will be hidden again.
+
+When the game is finished, two scores are shown:
+        SC is your score, corresponding to the number of tries
+        HI is the best score (smallest number of tries made to finish)
+
+The keys are:
+
+        [2] : More DOWN
+        [4] : Move LEFT
+        [5] : Show card
+        [6] : Move RIGHT
+        [8] : Move UP
+
+Enjoy !!!

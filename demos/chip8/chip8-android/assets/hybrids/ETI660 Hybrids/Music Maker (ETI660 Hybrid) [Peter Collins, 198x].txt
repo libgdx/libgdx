@@ -1,0 +1,15 @@
+﻿Music Maker
+Peter Collins, Springvale South, Vic.
+ 
+While exploring new uses for the ’660 I decided to write a 'song’ using notes from the 'Song In the Key of Yale' program published with the Programming in CHIP 8 article, November 1981. This was fine, but how could I develop songs in different keys? I then decided to develop the following program to
+assist. Keys on the keyboard are used to control the program and step through the tones, displaying the hex value of each note on the screen. Here’s what each key does:
+
+KEY O: Tone generator starts at the highest tone and steps down in pitch.
+KEY 5: Stops the tone at the step it is on.
+KEY 1: Repeats the tone of a value displayed on the screen.
+KEY 4: Manually increases the tone one step for each key press.
+KEY 6: Manually decreases the tone one step for each key press.
+KEY 2: Causes program to jump to song routine.
+
+You can write a song by setting the duration of the tone required using Variable 1 (V1) and setting the tone using Variable O (VO). Then follow with a 'do tone’ instruction - 27BO if no space between tones is required, or 'do tone with space’ using 278C. If the tone duration and pitch are not changed a further `do tone' instruction will repeat the tone. If a change in either pitch or duration is required, or both, these are changed before the next 'do tone` instruction by settng the values of VO and V1 as required. Spaces are located in routines which can be called as required. A short space is located at 078E and 'special’ spaces are located at 0776, 077A, 077E and 0782 by setting V4 then jumping to a timer loop which controls the duration ofthe space.
+

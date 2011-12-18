@@ -1,0 +1,13 @@
+		MASTERMIND
+		   by
+	      Robert Lindley
+
+I have progranmed two versLons of the game Mastermind. This game is distributed by Invicta Plastics, Suite 940, 200 - 5th Ave., New York, NY 10010, and is available most pLaces where toys and games are sold.
+For complete details of the game, please refer to their instructions. The information given here refers to this particular VIP iurplementation.
+The two versions are essentially the same except that the first has a four number code and the second has a five  nr:mber hidden code selected at random..  In the four number version, the digits one through six are used and in the five  number version the diglts zero through seven are used.
+While the game is running, the other hex keys, except key F, have no effect. Key F is used when you change your mind and want to change your input. This key erases the current partial entry.
+The game starts by displaying a series of dashes arranged in rows. As the game progresses, the player attempts to  deduce the hidden code by replacing the dashes with digits entered via the hex keyboard. Each tlme a hex key is used, the selected digit replaces a dash in  one vertical column. This vertical column is one guess of the ten allowed to deduce
+the hidden number. When the bottom dash in any column is replaced by a digit,  that try is imidiately scored. This score appears below the current column. If any digit in the column exactly matches the hidden number digit in the same row, a broken bar will appear. then four or five (one for each row in the game) appear, the hidden number has been deduced
+and it will be revealed at the right end of  the screen. If any digit in the column matches a hidden digit, but in an incorrect erorr, a white bar will appear. Note that the scoring is across all rows. For example, if there are two fives in a column and one of then is in the correct row and there is only one five in the hidden numbers, one broken bar will appear.
+When all allowed ten tries  have been used, the hidden number will be revealed. 
+

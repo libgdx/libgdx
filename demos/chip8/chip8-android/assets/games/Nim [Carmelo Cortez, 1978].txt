@@ -1,0 +1,4 @@
+Nim, by: Carmelo Cortez
+
+The Nim Game is a little less graphic than most games. The player may go first by pressing. "F" key, any other let the computer go first.
+You subtract 1, 2 or 3 fron the score. The one who ends up with the  last number loses!

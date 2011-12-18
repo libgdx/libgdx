@@ -1,0 +1,37 @@
+1. VIP PinBall
+
+The VIP PINBALL game simulates the action of real pinball machines.
+The object of the game is to keep your ball in play and score as many
+ponits as you can by ball contact with point bumbers.  The point value
+of bumpers changes randomly when hit.  Points range from 2 to 9.
+A score greater than 999 stops the game.
+
+VIP PINBALL can be played by one or two persons.  Players take turns
+scoring points and control flippers on their onw keyboard throughout
+the game.  A player can change the ball direction with a special key.
+However, overuse of this feature will result in a "TILT".
+
+How To Play VIP Pinball
+
+1. Load the CHIP-8 interpretor at 0000-01FF
+   and the game starting at 0200.
+2. Turn RUN switch on.
+3. Select the one-player game with key 1.
+   Select the two-player game with key 2.
+4. In the two-player game, players alternate turns.  PLayers get
+   five balls.  The number of balls remaining is shown at the right or
+   left of the players score.  Your turn to put a ball in play is shown
+   by a flashing digit (balls remaining) on your side of the TV screen.
+5. To put ball in play, press key 1.
+6. Press key 4 to control the left flipper and key 6 to control the right flipper.
+7. You can press key 0 to reverse the direction of the ball.  This feature
+   is handy for saving a ball (outside the fipper range) that will go out of
+   bounds.  This feature simulates physically pushing on a PINBALL game
+   cabinet. Pressing key 0 causes the ball to move at high speed.  While the
+   ball travesl high speed, key 0 has no effect.
+8. If you overuse key 0, you will cause a "TILT" and the game will stop.
+   If the two-player option was selected and the other player has balls left,
+   press key 1 to put a new ball in play.
+9. The game is over when either player scores more than 999 points, when
+   both players have "TILT", or when both use all their balls.
+

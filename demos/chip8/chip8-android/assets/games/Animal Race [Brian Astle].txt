@@ -1,0 +1,32 @@
+9. VIP Animal Race
+
+Animal Race is a fun game for one person, with an element of luck - sure to
+put a smile on your face.  Five different animals race against one another
+and you have the chance to test your expertise at picking the winner.
+
+
+How To Play Animal Race
+
+1. Load the CHIP-8 interpretor at 0000-01FF
+   and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Wait until the animals are lined up and read to start, then select an animal
+   by pressing a letter A through E.  A mark will appear to the left of the
+   animal to remind you of the one you have selected.
+
+4. Decide how much you want to bet (up to a limit of $9), then press that key.
+
+5. After the race is over, press zero (or any key) to start the next race.
+   Your winnings or losses will be computed and the new total displayed at
+   the begining of the next race.
+
+Hints for expert players
+All animals move at approximately the same speed, but they start from different
+positions.  The odds for each animal are related to the starting position but
+include a random element.  Some races favor the player and you should bet up to
+the limit on these.  Some races are unfavorable and you should bet carefully
+on these.
+
+You can win the game by accumulating $256 or more.

@@ -1,0 +1,3 @@
+Color Kaleidoscope:
+
+This program uses the CHIP-aX Interpreter at 0000-02FF. Keys 2, 4, 6 and a are used to program patterns of up to 125 entries until the Kaleidoscope automatically starts. However, you may begin execution of the Kaleidoscope any time during the programming sequence by pressing key 0. The colors are randomly selected by the prog

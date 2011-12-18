@@ -1,0 +1,135 @@
+14. VIP Programmable Spacefighters
+
+Programmable Spacefighters is a combat game involving 2 to 8 spaceships competing
+for the domination of a contained field in space.  The field of play is a 
+two-dimensional representation of an oblong spheroid.
+
+The movement and fire of each spacefighter is controlled by programming a series of
+commands into each fighter's instruction storage table.  Once all the spacefighters
+are programmed, they carry out their commands by sequentially executing a single step
+at a time.  The play of the game ins divided into rounds.  Each spacefighter may
+execute between 1 and 15 commands per round.
+
+The fighters all have the same appearance and capabilities.  Players distinguish
+between fighters by examining the defense strength and position of their fighters
+at the begining of every round.
+
+Each fighter may face in any of 8 directions.  All firing and forward movement
+occurs in the direction the fighter is currently facing.  As a spacefighter crosses
+outside the two-dimensional field of play, it wraps around and re-enters on the
+opposite side of the field.  Laser bursts terminate when they travel outside the
+field or hit a target.
+
+Each round consists of a selected number of steps.  Each step is executed in 2 parts.
+During the first part, every spacefighter wishing to fire may execute a fire operation.
+The defense strength of any fighter which is hit by a laser burst is reduced by 1
+and a small flash appears.
+
+After all fighters have had an opportunity to execute fire instructions, the movement
+part of the step begins.  Any fighter which has had its defense strength reduced to 0
+is destroyed and a longer flash appears.  The defense strength is changed to a special
+code so that the fighter will no longer be programmable or take part in the execution
+phase.  The destroyed fighter will still be open to examination during the Defense/
+Position Check phase.  Fighers having a defense strength greater than 0 may execute
+a movement command if there is one.  Breaking each step into 2 such parts removes any
+strategic advantage to moving first.
+
+The nature of the game, in that there are variable parameters and no fixed victory
+conditions, allows the players a lot of freedom.  Two to eight players can command
+single fighters.  Four or less players can each command multiple fighters.  Two
+fleets could complete to destroy their opponents' flagship first.  Handicaps can
+be implemented through an imbalance of fighters in different fleets.  An odd number
+of players can play in a free for all or team game.  In a non-combat approach, a full
+complement of space fighters could be programmed to preform in kaleidoscope or other
+type formations.
+
+
+How to Play VIP Programmable Spacefighters
+
+1. Load the CHIP-8 interpreter at 0000-01FF and
+   the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Initalization of Game.
+   Various parameters are entered at the start of the game to determine the number
+   of spacefighters and other aspects of play.
+
+   S: Enter number of spacefighters.  1 to 8 spacefighters may be used.  The program
+      will adjust invalid enteries to the nearest valid number.
+
+   D: Enter defense strength.  A spacefighter may be hit from 1 to F times by laser
+      before being destroyed.
+
+   E: Enter number of command entries.  A spacefighter may be programmed with 1 to F
+      commands during the programming phase of each round.
+
+   C: Enter clock duration/no clock.  A timer clock 1 to F phorseks in duration may
+      be selected.  Each phorsek equals 4 seconds.  The clock is not enabled if a 0
+      is entered.  The clock time is the time allowed for each fighter to be set up.
+
+   F: Enter fire power available.  A spacefighter may be allowed to fire 1 to F
+      laser bursts per round.
+
+   A: Enter accumulation/no accumulation.  A spacefighter may be allowed to accumulate
+      all unused laser bursts by entering 1 to F.  Accumulation is not allowed if a
+      0 is entered.
+
+4. Presentation of Field and Spacefighters.
+   The two-dimensional representation of the palying fields consists of 10 vertical
+   by 15 horizontal positons indicated by grid markings around the perimeter.  The
+   spacefighters will be in their initial positions.
+
+5. Defense/Position Check.
+     Enter number of spacefighter to be examined.
+     S: Current spacefighter being examined.
+     D: Defense strength of current spacefighter.
+     Enter 0 to end defense/position check phase.
+
+6. Program Spacefighters.
+   Surviving spacefighters are programmed in ascending order.  Enter 0 to begin
+   programming first spacefighter.  Defense strength and position are shown during
+   programming.
+     E: indicates number of enteries left after current command.
+     C: indicates time remaining to program current fighter if clock was entered.
+
+    COMMAND   FUNCTION
+      1        Rotate 45 ccw, Move fwd
+      2        Move fwd
+      3        Rotate 45 cw, Move fwd
+      4        Rotate 45 ccw
+      5        Fire
+      6        Rotate 45 cw
+      B        Erase all commands and reprogram current spacefighter
+      E        End programming of current spacefighter
+      7-A,C,D,F  Rest, No operation
+      0        Rest, Begin programming next spacefighter
+
+   Enter 0 to begin programming each successive spacefighter.
+
+7. Execute Commands.
+   Enter 0 after all spacefighters are programmed to start execution of commands.
+
+8. The recommended starting point when tryint the game out is with 1 or 2 spacefighters,
+   any defense, F (15) entries per round, no clock, F (15) fire power and any accumulation
+      S: 1 or 2
+      D: 1
+      E: F
+      C: 0
+      F: F
+      A: 0
+
+   Use the above to try out the movement and fire execution of the fighters.  Try
+   performing loops, figure 8's, tight turns, maximum fire coverage techniques, etc.
+   Start out simple when first playing the game against an opponent.  
+   Eight spacefighters can get very complicated.
+
+9. Changing different parameters creates very different effects on the play of the game.
+   The main effect of a large number of fighters is a more complicated game.  A large
+   number of enteries per round results in a more lively game involving farsighted
+   planning.  Fewer enteries involves more thinking and reacting to immediate developments
+   but is not without strategy when there are multiple fighters opposing each other.
+   The clock provides pressure which can be greatly increased by the moves-to-time ratio.
+   More fire power increases the importance of movement and positioning.  Accumulation
+   of fire power can have long range effects if there is low fire power and a large
+   number of moves per round.

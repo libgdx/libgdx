@@ -1,0 +1,36 @@
+Sokoban, a port of Sokoban to SCHIP, by hap, April 11th, 2006.
+Original by Thinking Rabbit, 1982.
+
+I won't explain the concept of this game, you probably already know. The game
+contains the original floors, all 50 of them, that have been verified against
+the 1984 PC version.
+
+It has been tested, and works fine on my CHIP8 emulator, Fish 'n' Chips,
+comfortable gameplay is at about 1.2Khz. It has also been successfully tested
+on HP48 SCHIP, using EMU48.
+
+
+HOW TO PLAY
+===========
+
+[x]=CHIP8 hexpad key
+{x}=key in a PC emulator that emulates it on 1234/qwer/asdf/zxcv
+
+Titlescreen:
+Select a floor with [7]{a} and [9]{d}, and enter it with [a]{z}. The floor will
+now be drawn onto the screen.
+
+Game:
+Move with [5]{w}, [8]{s}, [7]{a}, [9]{d}. You can undo moves up to 57 times
+with [a]{z}. To restart, hold [0]{x}, and to exit to the titlescreen, restart
+before making a move.
+
+
+CREDITS
+=======
+
+Floors were converted to textfiles, these are available all over the internet.
+Thanks to whoever converted them in the first place, as I used them to, erm,
+reconvert them. Note that I found some floors containing errors while comparing
+against screenshots made from the original Sokoban, though maybe they were
+intentionally changed(?)

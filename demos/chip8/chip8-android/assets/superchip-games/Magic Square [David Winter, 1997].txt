@@ -1,0 +1,44 @@
+****************************************************************************
+                     ‹ﬂﬂﬂ  ‹ﬂﬂﬂ‹ €   € ‹ﬂﬂﬂ‹ ‹ﬂﬂﬂ‹ €ﬂﬂﬂﬂ
+                      ﬂﬂﬂ‹ €  ‹ﬂ €   € €ﬂﬂﬂ€ €ﬂ€ﬂ  €ﬂﬂ
+                      ﬂﬂﬂ   ﬂﬂ ﬂ  ﬂﬂﬂ  ﬂ   ﬂ ﬂ  ﬂ  ﬂﬂﬂﬂﬂ
+                        A magic square in Super CHIP-8
+                      (C)Copyright 1997 by David WINTER
+****************************************************************************
+
+
+       This game, as well as the others for this scene, are FREE
+       and freely ditributable. If you paid to have it, you have
+       been stolen. If you got money to give it, you're a thief.
+
+
+
+       The rules of this game are very simple: the game is played
+       in a variable size grid made of 3*3 to 8*8 squares, so the
+       level of the game is designated by the width of the grid.
+       Initially, all the squares of the grid are WHITE. The goal
+       is to turn then BLACK by inverting their color, knowing
+       that inverting the colour of a square will also invert these
+       of the squares placed just on the left, right, up and down
+       of it...
+       Some levels are very simple: level 3 can be finished with
+       only 5 inversions, and level 4 needs only 4 inversions to
+       be completed...
+       Once a level is completed, the game is finished. To play
+       again, just reset the emulator.
+
+       I know I could have implemented some sort of inversions
+       counter, and next-level playing after a level is finished,
+       but I missed some time to do this... Anyway, have fun !
+
+       I could also have given the source of this program, but it
+       is not documented, so it would not be interesting to those
+       who are looking for help in programming.
+
+
+       The keys are:
+                   [8] :   UP
+                   [4] :   LEFT (lower level under level selection)
+                   [5] :   INVERT SQUARE (start game under level selection)
+                   [6] :   RIGHT (upper level under level selection)
+                   [2] :   DOWN

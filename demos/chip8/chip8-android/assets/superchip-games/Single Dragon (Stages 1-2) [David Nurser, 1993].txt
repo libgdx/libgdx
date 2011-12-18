@@ -1,0 +1,93 @@
+Greetings All...
+
+I have written the first part of a game called "Single Dragon"
+which is, if you didn't already guess, a spin off of "Double Dragon".
+
+The only problem is that I didn't think that doing two degrees could be so
+much work, and lately it has ground to a halt (exam time ;[).
+
+I have included the ASCed directory of everything I have done so far,
+and am asking you to help me finish this great game off.
+
+HERE IS THE GAME STRATEGY
+
+Stages 1-4   ::  Fight Scenes.
+                 Max of 3 enemys on screen @ once
+                 Enemys do not home in on your position in level #1
+                 A big guy to kill @ the end of stage 4
+                 after killing the big guy you jump into a helicopter and
+                      onto stage #5
+
+Stage 5      ::  Helicopter Scene - landscape scrolls in from the right
+                 you can bomb ground lauched missiles etc (u get the pic)
+
+Stage 6      ::  Car Scene, screen scrolls in from the top
+
+Stage 7-10   ::  Fight Scenes of major proportions to finish off.
+
+
+So, what have I already done?
+-> Stages 1-4 (no big guy @ end yet)
+-> 1/2 of stage 5
+
+As you can see, I'm about half way through the game and will probably get more
+time to finish it in about a month, but would really like some moral support
+and perhaps a helping hand.
+
+HOW WAS IT ALL WRITTEN ?
+The bomber stage (a bit flickery at the moment) and all of the fight
+sequences were written in Super-Chip (Which of course you will need to have
+to run these stages).  All stages are linked by User-Rpl (Flags determine
+movement between levels.  The introduction is in User-Rpl.  The Fading
+is courtesy of Mr.Meuller (I think...I hope - please correct me if I am wrong)
+which was written in System-Rpl.
+
+Eventually, all this stuff will be contained in a library, and will be self
+uncompressing as you reach each stage (for those without RAM cards), using
+of course RFU (System-RPL).
+
+
+Please take the time to have a brief look and tell me what yu think, what I
+can do with it .... and most importantly ... WHO CAN GIVE ME A BIT OF A HAND
+(I will finish it, but I will surely finish it much faster with your aide)
+
+Here is what is in the directory:
+[INTRO] - speaks for itself - Introduction (1st half - haven't done the second
+                                        yet)
+[BOMB] - Schip Hex String for Bomber Section (what I have done so far)
+[ST1]  - Schip Hex String for Stages 1-2 (that all I'm going to post for the
+         moment ;])
+[DIE]  - The death sequence
+
+MANY THANKS go to my graphic designer Stuart Fisher, and to [Zoom] for
+his patience...don't worry Zoom, I will finish it ;].
+
+Enjoy.
+David Nurser
+itb675nurser@redgum.qut.edu.au
+
+
+Perhaps the lack of response to Single Dragon is because you couldn't
+figure out the keys...So far, only one person has expressed interest
+...and to tell the truth, it's rather depressing.
+I will gladly send anyone parts of it personally if they are still
+having problems downloading etc.
+
+Keys Are:
+[3] - Up
+[SPC] - Down
+[.] - Left
+[+] - Right
+[7] - Punch
+[8] - Kick
+
+Helicopter Scene:
+[8] - Up
+[2] = Down
+[4] = Left
+[6] = Right
+[5] = Bomb
+
+Caio
+Dave. [Fish]
+

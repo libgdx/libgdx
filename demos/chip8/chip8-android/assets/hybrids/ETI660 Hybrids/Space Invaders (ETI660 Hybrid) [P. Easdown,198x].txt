@@ -1,0 +1,16 @@
+TRADITIONAL
+SPACE INVADERS
+Master P. Easdown 
+Kew, Vic.
+
+Every computer must have a version of the traditional arcade game of ‘Space lnvaders' This one has the familiar row of invading characters marching across and down the screen dropping missiles on you and which you fire at from behind shields at the bottom ol the screen. This is a monochrome program and requires only 1K of memory Sound effects are included. 
+Four invaders march across and down the screen, firing at you at random intervals. Your cannon is located at the bottom of the screen, just above which are four shields which help protect you from the invaders' bombs. The bombs dropped by the invaders and your cannon shots are single pixels on the screen, Cannon control is as follows:
+
+KEY 4 LEFT
+KEY 5 FIRE
+KEY 6 RIGHT
+
+The game can end in two ways: one is, if you get shot, the other is if the invaders get so low that it is impossible for you to shoot them - i.e: you`ve been invaded!
+When the game ends, your score is shown on the screen.
+Save this program on tape and save yourself a fortune!
+

@@ -1,0 +1,44 @@
+16. VIP Blockout
+
+VIP Blockout is a fast action two-player game of skill, strategy, coordination and
+excitement!
+
+Two players each using their own keypad control the movement of their respective
+lines (one solid and one checkered).
+
+The object is for each player to maneuver his/her line in such a manner as to avoid
+collision with another line while at the same time trying to cause the opponent to
+collide with one.  As the play continues, the speed of the movement increases
+demanding faster thought and response.
+
+
+How to Play VIP Blockout
+
+1. DO NOT Load the CHIP-8 interpreter!  The entire game listing startsing at location
+   0000 is provided.  Load game in location 0000 through 048F.
+
+2. Turn RUN switch on.
+
+3. Movement of each player's line is controlled by pressing 2 to move line up, 8 down,
+   4 left and 6 right.
+
+4. If the program is executed in a normal manner, by flipping the toggle switch to run,
+   the playing field is defined by a boarder around it's perimeter.  However, if key 0
+   is pressed while the run switch is flipped, the boarder is not generated and then
+   the lines can wrap around the screen.
+
+5. A match consists of nine games, the winner geting the most points.
+
+Notes:  
+1. This game is programmed in color and has sound effects.  It can be used with the
+   VP590 Color Board and VP595 Simple Sound Board, or it will run on a standard VIP
+   without color and sound enhancement.
+2. This game requires a minimum of one VIP expansion keyboard (VP580) or two expansion
+   keyboards for exciting "Dual action".  Expansion keyboards plug directly into the
+   VP590 Color graphics board or into the VP585 expansion keyboard interface.  For
+   these and other VIP accessories, contact your local computer store or:
+
+                                 RCA VIP Marketing
+                                 New Holland Avenue
+                                 Lancaster, PA 17604
+

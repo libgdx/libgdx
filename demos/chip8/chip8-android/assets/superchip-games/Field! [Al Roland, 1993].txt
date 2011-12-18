@@ -1,0 +1,32 @@
+			FIELD! V1.1
+Here is a quick update to the original FIELD! Super-Chip Game.
+This version has a few new requested features(variable speed).
+And some more details (like explosions and stuff.)
+
+New Keys:
+The following keys set the speed of the ship.
+7 - Slowest speed
+8 - A little faster than 7
+4 - Good bit faster than 8
+5 - Very Fast(Good Luck!)
+
+In case you don't have the original docs:
+1 - moves you right by applying thrust to the left.
+2 - moves you left by applying thrust to the right.
+/ - moves you up
+* - moves you down
+
+And as with all CHIP games <- (DROP/CLR/BS) exits to the stack.
+
+You should have guessed by now that "7" no longer stops the current
+game and returns to the title screen, you can crash quick enough that 
+this is not needed.
+
+There is a small problem, in that the explosion may be drawn in 
+the wrong spot if you are too close to the edge of the screen, but
+it doesn't last long enough to worry about, and the code needed to
+avoid it would make this game needlessly bigger. I think 865 bytes is 
+big enough.
+
+- Al Roland
+  droland@eng.auburn.edu

@@ -1,0 +1,25 @@
+12. VIP Sequence Shoot
+
+You score points by having the sharp-shooter hit the targets in the proper sequence.
+
+How to Play VIP Sequence Shoot
+
+1. Load the CHIP-8 interpreter at 0000-01FF and
+   the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. Pressing the Key C causes the little man to shoot the top target, Key D shoots the
+   one below it, Key E the next lower and Key F the bottom target.
+
+4. One of the four targets flashes and the computer waits for you to shoot it.  When
+   you press teh correct key, you get one point.  Then two flash, on after the other.
+   Shoot the one that flashed first, then shoot the other.  This gives you two more
+   points.  Three targets (when hit in the same order as they flashed) add three
+   points to your score.
+
+5. Each time you shoot such a series of targets in proper sequence, your score
+   increases by the number of targets you hit.  An the next series you see is longer
+   by one target.  The maximum length of sequence is 22 targets, that is a score of 254.
+
+6. Improper sequencing of shots in any series ends the game.

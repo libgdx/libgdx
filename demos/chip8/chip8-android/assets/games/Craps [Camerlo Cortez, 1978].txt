@@ -1,0 +1,4 @@
+Craps, by: Camerlo Cortez
+
+To use the Craps program, press any key to roll dice.
+7 or 11 wins, 12, 2 or 3 loses on first roll. The second roll must match the first to win, but if you roll a seven you lose. This program could be expanded to include on-the-screen scoring of bets.

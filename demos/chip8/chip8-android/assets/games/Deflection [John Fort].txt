@@ -1,0 +1,54 @@
+8.  VIP DEFLECTION
+
+In the VIP Deflection game you position mirrors anywhere on the display screen.
+The object of the game is to deflect a ball of the mirrors a maximum number of
+times before hitting the target.
+
+The number of deflections times the target number gives you deflection points.
+These are added to your previous point total.  If you fail to hit the target you
+get no points.  The winner of the game is the player who accumulates 257 or
+more deflected points.
+
+How to Play VIP Deflection
+
+1. Load the CHIP-8 interpretor at 0000-01FF
+   and the game starting at 0200.
+
+2. Turn RUN switch on.
+
+3. After the scores appear a letter, the target with a number and a ball.  The
+   letter signifies the player who will program the mirrors.  This sequence will
+   be repeated until there is a winner.
+
+4. To program the mirrors, select the proper mirror type by using Table 1 (VIP1-8.jpg)
+   as a guide.  Key 1 will place a horizontal mirror on the board.  Key 2 selects a
+   vertical mirror, Key 3 a slant-left mirror, Key 4 a slant-right mirror.
+
+5. After a mirror has been selected, you may position the mirror by using keys 1
+   through 4 and 6 through 9 (see Table 2 for movement of a mirror).  Once a
+   mirror has been selected and positioned, it may be fixed into position by pressing
+   Key 5.
+
+   Table 2 - Mirror Positioning and Ball Direction
+   Key Selection     |  Positioning and Direction
+   ------------------+---------------------------
+         1           |  up and to the left
+         2           |  up
+         3           |  up and to the right
+         4           |  left
+         5           |  right
+         7           |  down and to the left
+         8           |  down
+         9           |  down and to the right
+
+6. You may position up to 10 mirrors on the game board.  After you have the maximum
+   amount on the board you must press Key 0 to progress to the fire mode.  If you
+   wish to progress to the fire mode with less than 10 mirrors programmed, you may
+   do so by pressing Key 0.  You fire the ball in the direction you want by using
+   Keys 1 through 4 and Keys 6 through 9 (see Table 2).
+
+7. After the ball has reached the target or leaves the game board, the player's
+   score is computed and displayed and a new ball and target appear.
+
+
+

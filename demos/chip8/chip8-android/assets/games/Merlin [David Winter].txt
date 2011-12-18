@@ -1,0 +1,4 @@
+Merlin, by: David Winter
+
+This is the SIMON game. The goal is to remember in which order the squares are lighted. The game begins by lighting 4 random squares, and then asks you to light the squares in the correct order.
+You win a level when you give the exact order, and each increasing level shows a additionnal square. The game ends when you light an incorrect square. Keys are 4 and 5 for the two upper squares, then 1 and 2 for the two other ones.

@@ -1,0 +1,124 @@
+Emutest, 27-01-05, by hap
+
+- the rom should boot and not run random data: it is not word-aligned
+- it should show a sprite (2 short lines) at the bottom left of the screen
+- it should show an 8*16 sprite that looks like a vertical "HAP", and not something
+  garbled: 16*16 in chip8 mode=8*16
+- it should wait exactly 3 seconds before the next action, if not, your timer's messed up
+- it should scroll 1/2 line down. the result should be that the bottom 2 lines
+  are still visible, but the 2nd one has a smaller height than the 1st one: half pixel scroll
+
+
+
+gotta type it in by hand :(
+
+200: 12 jump to 248
+201: 48
+202: 45 E .. header, rom not word aligned now
+203: 6d m
+204: 75 u
+205: 54 T
+206: 61 a
+207: 6c l
+208: 6b k
+209: 60 v0=0: x
+20a: 00
+20b: 61 v1=1d(29) y
+20c: 1d
+20d: a2 i to 2 lines sprite
+20e: 45
+20f: d0 draw it
+
+210: 13
+211: 60 x=10
+212: 0a
+213: 61 y=3
+214: 03
+215: a2 i to hap
+216: 35
+217: d0 draw
+218: 10
+219: 60 v0=3
+21a: 03
+21b: 61 v1=delaycheck
+21c: 00
+21d: 62 v2=count to 3
+21e: 00
+21f: 63 v3=3c(60)
+
+220: 3c
+221: 92 skip next if 2!=0
+222: 00
+223: 12 jump out loop
+224: 31
+225: 72 add 1 to v2
+226: 01
+227: f3 delay=v3
+228: 15
+229: f4 v4=delay
+22a: 07
+22b: 54 skip next if v4=v1
+22c: 10
+22d: 12 loop again
+22e: 29
+22f: 12 big loop again
+
+230: 21
+231: 00 scroll 1 down
+232: c1
+233: 12 infinite loop
+234: 33
+235: 88 hap
+236: 88
+237: f8
+238: 88
+239: 88
+23a: 20
+23b: 50
+23c: 88
+23d: f8
+23e: 88
+23f: 00
+
+240: f0
+241: 88
+242: f0
+243: 80
+244: 80
+245: f0 2 lines
+246: 00
+247: f0
+248: 00 cls
+249: e0
+24a: 00 draw=8
+24b: fe
+24c: 12 jp 209
+24d: 09
+24e: 00
+24f: 00
+
+250: 00
+251: 00
+252: 45 E
+253: 4f O
+254: 46 F
+
+
+
+
+1...1...
+1...1...
+11111...
+1...1...
+1...1...
+..1.....
+.1.1....
+1...1...
+11111...
+1...1...
+........
+1111....
+1...1...
+1111....
+1.......
+1.......

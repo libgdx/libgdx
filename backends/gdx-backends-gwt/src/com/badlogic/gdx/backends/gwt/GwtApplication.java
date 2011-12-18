@@ -154,7 +154,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
-	public void error (String tag, String message, Exception exception) {
+	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
@@ -200,5 +200,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void exit () {
+	}
+
+	@Override
+	public void debug (String tag, String message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void debug (String tag, String message, Throwable exception) {
+		// TODO Auto-generated method stub
+		
 	}
 }

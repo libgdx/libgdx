@@ -1,0 +1,61 @@
+SCTEST
+
+Small programm for test (S)CHIP-8 emulators. If all test passed, you see
+"OK" on upper left corner, else programm print ERROR and error number.
+Written by Sergey Naydenov, e-mail: tronix286@rambler.ru (c) 2010
+
+Errors:
+
+ERROR INI
+        Emulator initialization failed. When program start, all registers
+        must be set to null.
+
+ERROR BCD
+        BCD instruction problems.
+
+ERROR 0
+        Problems with Fx65 instruction. Can't load zeroes from memory to 
+        registers.
+
+ERROR 1
+        System font 8x5 not found. In memory at offset 000h - zeroes.
+
+ERROR 2
+        Addiction without overflow (254+1). VF register need to be set 0, 
+        but after operation he still 1
+
+ERROR 3
+        After operation 254+1, register v0 need set to 255, but he does't.
+
+ERROR 4
+        Addiction with overflow (255+1). VF register must be set to 1, but 
+        after operation he still 0
+
+ERROR 5
+        Wrong result after addiction operation (255+1). Must be 0.
+
+ERROR 6
+        After substraction 1-1 register VF must be 1, but he still 0.
+
+ERROR 7
+        Wrong result after 1-1 operation. Result must be 0.
+
+ERROR 8
+        Substract 0-1. VF register must be 0, but he still 1
+
+ERROR 9
+	Wrong result after 0-1 operation. Register v0 must be 255.
+
+ERROR 10
+                                 ... skip ...
+	..sorry, i don't have time for writing all descriptions. Please see
+        source code SCTEST.C8..
+
+ERROR 23
+       Can not restore HP48 flags (FX75/FX85 instructions).
+
+ERROR 24
+       Check FX1E (I = I + VX) buffer overflow. If buffer overflow, register 
+       VF must be set to 1, otherwise 0. As a result, register VF not set to 1.
+       This undocumented feature of the Chip-8 and used by Spacefight 2019! 
+       game.

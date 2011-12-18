@@ -1,0 +1,12 @@
+Keypad Test, by hap, 15-02-06
+
+press a chip8 key and the pressed char will light up
+if you want to do something funny, soft-reset the chip8/emulator over and over,
+and the sprite layout will become messed up ;p
+
+chip8 keypad:
+1 2 3 c
+4 5 6 d
+7 8 9 e
+a 0 b f
+

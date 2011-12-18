@@ -1,0 +1,28 @@
+Rush Hour (v1.1) for CHIP-8 by hap 08-02-08, http://hap.samor.nl/
+Originally released on 17-12-06. Version 1.1 improves a few things.
+Based on a boardgame by Nobuyuki Yoshigahara "Nob" and ThinkFun,
+http://www.thinkfun.com/
+
+This game contains 170 puzzles. Most were taken from the original cardsets,
+some were made by me, and some were generated with Michel's PyTraffic,
+http://alpha.uhasselt.be/Research/Algebra/Members/pytraffic . Refer to
+the source code for detailed information on this.
+
+HOW TO PLAY
+===========
+
+The goal of the game is to slide the arrow block(s) out of the 6*6 grid.
+Completing 10 boards will be awarded with the inclusion of the next boardset(s)
+as seen from the connections on the boardset select screen, a password will be
+given so you don't have to complete the game in a single session.
+
+ HEX key   PC key*   Use
+---------------------------
+ 5         W         up
+ 8         S         down
+ 7         A         left
+ 9         D         right
+ A         Z         ok/hold to slide
+ 1         1         option(in-game)/back
+
+* = for interpreters that have the 4*4 keypad at 1234/QWER/ASDF/ZXCV.

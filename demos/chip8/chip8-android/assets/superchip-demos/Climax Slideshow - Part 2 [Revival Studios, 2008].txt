@@ -1,0 +1,52 @@
+-----------------------------------------------------------------------------
+			      /////////////////
+	                      //////////////////
+        	              ////          ////
+	               	      ////   ///////////
+	                      ////  ///////////
+                              ////  ////
+                              ////  ///////////
+                              ////   //////////
+  	     	   	
+  			   www.revival-studios.com
+-----------------------------------------------------------------------------
+Title		:	Climax Slideshow
+Author		:	Martijn Wenting / Revival Studios
+			Graphics by: Menno Seegers
+Genre		:	Demo/Slideshow
+System		:	SuperChip8
+Date		:	14/05/2008
+Product ID	:	RS-C8002
+-----------------------------------------------------------------------------
+
+All the contents of this package are (c)Copyright 2008 Revival Studios.
+
+The contents of the package may only be spread in its original form, and may not be
+published or distributed otherwise without the written permission of the authors.
+
+Description:
+------------
+The Climax Slideshow is a slideshow for the SuperChip8 system. 
+It includes 6 different images drawn by a good friend of mine: Menno Seegers.
+I've adapted the images to work on a monochrome display and added the titlescreen.
+Due to the romsize limitation of 3.5kb, the slideshow is split into two parts.
+
+Running the slideshow:
+----------------------
+Use the Megachip emulator or any other SuperChip compatible emulator to run the slideshow.
+
+Credits:
+--------
+Programming and Logo by: Martijn Wenting
+Graphics by: Menno Seegers
+
+Distribution:
+-------------
+This package can be freely distributed in its original form.
+If you would like to include this slideshow in your rom package, please let me know.
+
+Watch out for more releases soon!
+
+
+	Martijn Wenting / Revival Studios
+

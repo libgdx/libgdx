@@ -1,0 +1,24 @@
+Here's how to play UFO:
+
+You have a stationary missle launcher at the bottom of the screen. You
+can shoot in three directions; left diagonal, straight up, and right
+diagonal.. using the keys 4, 5, and 6 respectively.. You try to hit
+one of two objects flying by.. at apparently varying speeds..  Your
+score is displayed on your left, the number of missles you have left
+is displayed on your right. (You get 15)..
+
+This game ("UFO") is not new.  I have a copy of it from 1977 (!).  It
+was one of the original CHIP-8 games on the audio cassette that was
+included when I bought my first computer, the Finnish-made Telmac
+1800.
+
+It was also the first real program to run under CHIP-48 (it was used
+as a test case during the development of the CHIP-48 interpreter). The
+reason I have not posted it to the net myself is that I have no idea
+about its copyright status.  I don't even know where it originated
+(RCA, perhaps?).
+
+The cassette that was bundled with the Telmac 1800 contains more than
+a dozen CHIP-8 programs.  If someone could convince me that these
+programs are indeed freely redistributable, the other programs could
+also be posted.  Otherwise, perhaps this one shouldn't have been.

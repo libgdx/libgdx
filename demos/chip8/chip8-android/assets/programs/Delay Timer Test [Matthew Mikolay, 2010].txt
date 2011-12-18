@@ -1,0 +1,9 @@
+Hey guys!
+
+Here's another little program I wrote to test out a feature in my game. This
+program allows the user to change the value of the V3 register using the 2 and 8
+keys. When the 5 key is pressed, the delay timer starts counting down from the
+value the user placed into the V3 register, and the screen is updated as the
+value changes.
+
+-Matt
