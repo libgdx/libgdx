@@ -1,1 +1,0 @@
-rule java.beans.* com.esotericsoftware.android.beans.@1
