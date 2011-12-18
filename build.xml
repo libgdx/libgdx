@@ -38,7 +38,6 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="${target}/classes/gdx-backend-jogl" />
 		<mkdir dir="${target}/classes/gdx-backend-lwjgl" />
 		<mkdir dir="${target}/classes/gdx-backend-android" />
-		<mkdir dir="${target}/classes/gdx-twl"/>
 		<mkdir dir="${target}/classes/gdx-tools"/>
 		<mkdir dir="${dist}" />
 		<mkdir dir="${dist}/docs/api"/>
@@ -83,14 +82,6 @@ gdx and backend modules and creates a distribution out of this mess.
 			<classpath>
 				<pathelement location="${target}/classes/gdx" />
 				<fileset file="backends/gdx-backend-android/libs/*.jar" />
-			</classpath>
-		</javac>
-		
-		<!-- build twl extensions -->
-		<javac debug="on" srcdir="extensions/twl/gdx-twl/src" destdir="${target}/classes/gdx-twl">
-			<classpath>
-				<pathelement location="${target}/classes/gdx" />
-				<fileset file="extensions/twl/gdx-twl/libs/*.jar" />
 			</classpath>
 		</javac>
 		
@@ -144,7 +135,6 @@ gdx and backend modules and creates a distribution out of this mess.
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java"/>
-			<fileset dir="extensions/twl/" includes="gdx-twl/src/com/badlogic/gdx/twl/TWL.java"/>
 		</javadoc>
 	</target>
 
@@ -192,12 +182,6 @@ gdx and backend modules and creates a distribution out of this mess.
 		</jar>
 		<!-- android backend jar -->
 		<jar destfile="${dist}/gdx-backend-android.jar" basedir="${target}/classes/gdx-backend-android" />
-		
-		<!-- twl jar -->
-		<jar destfile="${dist}/gdx-twl.jar">
-			<fileset dir="${target}/classes/gdx-twl" />
-			<zipgroupfileset file="extensions/twl/gdx-twl/libs/*.jar" />
-		</jar>
 		
 		<!-- texture packer jar -->
 		<jar destfile="${dist}/gdx-tools.jar">

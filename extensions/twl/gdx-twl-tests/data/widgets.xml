@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE themes PUBLIC "-//www.matthiasmann.de//TWL-Theme//EN" "http://hg.l33tlabs.org/twl/raw-file/tip/src/de/matthiasmann/twl/theme/theme.dtd">
+<themes>
+
+    <inputMapDef name="-defaultInputMap">
+        <action name="selectAll">ctrl A</action>
+        <action name="selectAll">cmd A</action>
+        <action name="cut">ctrl X</action>
+        <action name="cut">cmd X</action>
+        <action name="copy">ctrl C</action>
+        <action name="copy">cmd C</action>
+        <action name="paste">ctrl V</action>
+        <action name="paste">cmd V</action>
+    </inputMapDef>
+    <images file="badlogic.png">
+        <area name="badlogic" xywh="*"/></images>
+    <images file="twllogo.png">
+        <area name="twllogo" xywh="*"/></images>
+    <images file="widgets.png">
+        <area name="white" xywh="1,36,1,1"/>
+        <area name="box" xywh="1,1,42,34" splitx="L13,B13" splity="L5,B5" nocenter="true"/>
+        <area name="box bg" xywh="44,3,38,30" splitx="L9,B9" splity="L9,B9" inset="2"/>
+        <composed name="panel-blue">
+            <alias ref="box bg" tint="#5590D2"/>
+            <alias ref="box" tint="#88C853"/></composed>
+        <composed name="panel-red">
+            <alias ref="box bg" tint="#E44242"/>
+            <alias ref="box" tint="#88C853"/></composed>
+        <select name="button.background">
+            <alias ref="panel-red" if="pressed|selected" inset="2,2,-2,-2"/>
+            <alias ref="panel-blue"/></select>
+        <select name="hscrollbar.button" sizeOverwriteH="26">
+            <alias ref="panel-red" if="pressed"/>
+            <alias ref="panel-blue"/></select>
+        <select name="vscrollbar.button" sizeOverwriteH="34" sizeOverwriteV="26">
+            <alias ref="panel-red" if="pressed"/>
+            <alias ref="panel-blue"/></select>
+        <grid name="checkbox.background" weightsX="1,1" weightsY="1,1">
+            <area xywh="1,1,12,12"/>
+            <area xywh="31,1,12,12"/>
+            <area xywh="1,23,12,12"/>
+            <area xywh="31,23,12,12"/></grid>
+        <area name="checkbox.overlay" xywh="127,1,30,31" inset="-12,0,0,-7" if="selected" center="true"/>
+        <alias name="radiobutton.background" ref="checkbox.background"/>
+        <area name="radiobutton.overlay" xywh="22,36,8,8" center="true" if="selected"/>
+        <alias name="editfield.background" ref="box"/>
+        <alias name="editfield.cursor" ref="white" tint="#0007EE"/>
+        <alias name="editfield.selection" ref="white" tint="#800007EE"/>
+        <area name="vscrollbar.thumb.overlay" xywh="158,15,16,5" center="true"/>
+        <area name="hscrollbar.thumb.overlay" xywh="158,21,5,16" center="true"/>
+        <alias name="listbox.display.background" ref="white" if="selected" tint="#39E657"/>
+        <area name="combobox.button.overlay" xywh="158,1,16,13" center="true"/>
+		<grid name="dotted box" weightsX="0,1,0" weightsY="0,1,0" inset="6">
+            <area xywh="3,36,8,9"/>
+            <area xywh="11,36,2,9" repeatX="true"/>
+            <area xywh="13,36,7,9"/>
+            <area xywh="3,45,8,2" repeatY="true"/>
+            <alias ref="none"/>
+            <area xywh="13,45,7,2" repeatY="true"/>
+            <area xywh="3,45,8,8"/>
+            <area xywh="11,45,2,8" repeatX="true"/>
+            <area xywh="13,45,7,8"/></grid>
+				<select name="focus-rectangle">
+            <alias ref="dotted box" if="keyboardFocus+pressed" inset="2,2,-2,-2"/>
+            <alias ref="dotted box" if="keyboardFocus"/>
+            <alias ref="none"/>
+				</select>
+				</images>
+    <fontDef name="normal" filename="fonts/font.fnt" color="#FFFFFF" default="true">
+        <fontParam if="error" color="red"/>
+        <fontParam if="warning" color="orange"/>
+        <fontParam if="disabled" color="gray"/>
+        <fontParam if="textSelection" color="blue"/>
+    </fontDef>
+    <fontDef name="heading" filename="fonts/font-heading.fnt" color="#FFFFFF">
+        <fontParam if="error" color="red"/>
+        <fontParam if="warning" color="orange"/>
+        <fontParam if="disabled" color="gray"/>
+        <fontParam if="textSelection" color="blue"/>
+    </fontDef>
+    <fontDef name="button.font" filename="fonts/font.fnt" color="#FFFFFF">
+        <fontParam if="error" color="red"/>
+        <fontParam if="warning" color="orange"/>
+        <fontParam if="disabled" color="gray"/>
+        <fontParam if="textSelection" color="blue"/>
+        <fontParam if="pressed|selected" offsetX="2" offsetY="2"/>
+    </fontDef>
+
+    <theme name="-defaults">
+        <param name="background"><image>none</image></param>
+        <param name="overlay"><image>none</image></param>
+        <param name="font"><font>normal</font></param>
+        <param name="textAlignment"><enum type="alignment">left</enum></param>
+        <param name="minWidth"><int>0</int></param>
+        <param name="minHeight"><int>0</int></param>
+        <param name="maxWidth"><int>0</int></param>
+        <param name="maxHeight"><int>0</int></param>
+        <param name="inputMap"><inputMap>-defaultInputMap</inputMap></param>
+    </theme>
+    <theme name="panel" ref="-defaults" allowWildcard="true">
+        <param name="background"><image>box</image></param></theme>
+
+    <theme name="label" ref="-defaults" allowWildcard="true">
+    </theme>
+    <theme name="button" ref="-defaults" allowWildcard="true">
+        <param name="background"><image>button.background</image></param>
+        <param name="border"><border>10,0</border></param>
+        <param name="font"><font>button.font</font></param>
+        <param name="overlay"><image>focus-rectangle</image></param></theme>
+    <theme name="togglebutton" ref="button"/>
+    <theme name="checkbox" ref="-defaults">
+        <param name="background"><image>checkbox.background</image></param>
+        <param name="overlay"><image>checkbox.overlay</image></param></theme>
+    <theme name="radiobutton" ref="-defaults">
+        <param name="background"><image>checkbox.background</image></param>
+        <param name="overlay"><image>radiobutton.overlay</image></param></theme>
+    <theme name="editfield" ref="-defaults">
+        <param name=""><image>editfield.*</image></param>
+        <param name="border"><border>0,10,0,10</border></param>
+        <theme name="renderer" ref="-defaults"/></theme>
+    <theme name="hscrollbar" ref="-defaults">
+        <theme name="leftbutton" ref="-defaults">
+            <param name="background"><image>hscrollbar.button</image></param></theme>
+        <theme name="rightbutton" ref="-defaults">
+            <param name="background"><image>hscrollbar.button</image></param></theme>
+        <theme name="thumb" ref="-defaults">
+            <param name="background"><image>hscrollbar.button</image></param>
+            <param name="overlay"><image>hscrollbar.thumb.overlay</image></param></theme>
+        <param name="background"><image>box</image></param>
+        <param name="scaleThumb"><bool>true</bool></param></theme>
+    <theme name="vscrollbar" ref="-defaults" allowWildcard="true">
+        <theme name="upbutton" ref="-defaults">
+            <param name="background"><image>vscrollbar.button</image></param></theme>
+        <theme name="downbutton" ref="-defaults">
+            <param name="background"><image>vscrollbar.button</image></param></theme>
+        <theme name="thumb" ref="-defaults">
+            <param name="background"><image>vscrollbar.button</image></param>
+            <param name="overlay"><image>vscrollbar.thumb.overlay</image></param></theme>
+        <param name="background"><image>box</image></param>
+        <param name="scaleThumb"><bool>false</bool></param></theme>
+    <theme name="scrollpane" ref="-defaults">
+        <theme name="hscrollbar" ref="hscrollbar"/>
+        <theme name="vscrollbar" ref="vscrollbar"/>
+        <param name="hasDragButton"><bool>true</bool></param>
+        <theme name="dragButton" ref="button"/>
+        <theme name="" ref="*"/></theme>
+    <theme name="textarea" ref="-defaults" allowWildcard="true">
+        <param name="fonts">
+            <map>
+                <param name="default"><font>button.font</font></param>
+                <param name="heading"><font>heading</font></param>
+            </map>
+        </param>
+        <param name="images">
+            <map>
+                <param name="badlogic"><image>badlogic</image></param>
+                <param name="twllogo"><image>twllogo</image></param>
+            </map>
+        </param></theme>
+    <theme name="listbox" ref="-defaults">
+        <theme name="display" ref="label">
+            <param name="background"><image>listbox.display.background</image></param>
+            <param name="border"><border>3,6,0,0</border></param></theme>
+        <param name="background"><image>panel-blue</image></param>
+        <param name="border"><border>10,5</border></param>
+        <param name="maxHeight"><int>150</int></param>
+        <theme name="vscrollbar" ref="vscrollbar"/></theme>
+    <theme name="combobox" ref="panel">
+        <theme name="button" ref="button">
+            <param name="overlay"><image>combobox.button.overlay</image></param></theme>
+        <theme name="display" ref="label">
+            <param name="border"><border>0,10,0,0</border></param></theme></theme>
+    <theme name="comboboxPopup" ref="-defaults">
+        <theme name="listbox" ref="listbox"/></theme>
+    <theme name="tooltipwindow" ref="-defaults">
+        <param name="fadeInTime"><int>200</int></param></theme>
+    <theme name="fpscounter" ref="label"/>
+</themes>
