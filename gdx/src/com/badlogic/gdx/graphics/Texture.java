@@ -188,6 +188,7 @@ public class Texture implements Disposable {
 			setFilter(minFilter, magFilter);
 			setWrap(uWrap, vWrap);
 		}
+		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 	}
 
 	private void uploadImageData (Pixmap pixmap) {
