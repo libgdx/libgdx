@@ -414,6 +414,18 @@ public class Json {
 				return;
 			}
 
+			if (value instanceof ArrayMap) {
+				if (knownType == null) knownType = ArrayMap.class;
+				writeObjectStart(actualType, knownType);
+				ArrayMap map = (ArrayMap)value;
+				for (int i = 0, n = map.size; i < n; i++) {
+					writer.name(convertToString(map.keys[i]));
+					writeValue(map.values[i], elementType, null);
+				}
+				writeObjectEnd();
+				return;
+			}
+
 			if (value instanceof ObjectMap) {
 				if (knownType == null) knownType = OrderedMap.class;
 				writeObjectStart(actualType, knownType);
@@ -953,9 +965,5 @@ public class Json {
 		public void write (Json json);
 
 		public void read (Json json, OrderedMap<String, Object> jsonData);
-	}
-
-	static public class Moo {
-		public String a, b, c;
 	}
 }

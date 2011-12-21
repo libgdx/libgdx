@@ -31,6 +31,8 @@ import com.badlogic.gdx.scenes.scene2d.Layout;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.utils.ScissorStack;
 
+// BOZO - Add feature that so first actor will never be cut off (eg for a file browser).
+
 /** A group that scrolls a child widget by pressing and dragging.
  * <p>
  * The widget is sized to its preferred size. If the widget's preferred width or height is less than the size of this scroll pane,

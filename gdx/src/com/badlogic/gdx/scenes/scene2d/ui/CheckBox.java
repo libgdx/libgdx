@@ -28,7 +28,9 @@ public class CheckBox extends TextButton {
 		super(text, style, name);
 		clear();
 		add(image = new Image(style.checkboxOff));
-		add(getLabel());
+		Label label = getLabel();
+		add(label);
+		label.setAlignment(Align.LEFT);
 		width = getPrefWidth();
 		height = getPrefHeight();
 	}

@@ -144,7 +144,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
 	public boolean contains (T value, boolean identity) {
-		Object[] items = this.items;
+		T[] items = this.items;
 		int i = size - 1;
 		if (identity || value == null) {
 			while (i >= 0)
@@ -157,7 +157,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public int indexOf (T value, boolean identity) {
-		Object[] items = this.items;
+		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++)
 				if (items[i] == value) return i;
@@ -169,7 +169,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public boolean removeValue (T value, boolean identity) {
-		Object[] items = this.items;
+		T[] items = this.items;
 		if (identity || value == null) {
 			for (int i = 0, n = size; i < n; i++) {
 				if (items[i] == value) {
@@ -191,7 +191,7 @@ public class Array<T> implements Iterable<T> {
 	/** Removes and returns the item at the specified index. */
 	public T removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		Object[] items = this.items;
+		T[] items = this.items;
 		T value = (T)items[index];
 		size--;
 		if (ordered)
@@ -216,7 +216,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void clear () {
-		Object[] items = this.items;
+		T[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
 			items[i] = null;
 		size = 0;
@@ -309,7 +309,7 @@ public class Array<T> implements Iterable<T> {
 
 	public String toString () {
 		if (size == 0) return "[]";
-		Object[] items = this.items;
+		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
 		buffer.append(items[0]);
@@ -323,7 +323,7 @@ public class Array<T> implements Iterable<T> {
 
 	public String toString (String separator) {
 		if (size == 0) return "";
-		Object[] items = this.items;
+		T[] items = this.items;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append(items[0]);
 		for (int i = 1; i < size; i++) {

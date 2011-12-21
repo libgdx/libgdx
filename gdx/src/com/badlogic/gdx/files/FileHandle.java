@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.files;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,6 +26,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import com.badlogic.gdx.Files;
@@ -102,7 +105,7 @@ public class FileHandle {
 		return file;
 	}
 
-	/** Returns a stream for reading this file.
+	/** Returns a stream for reading this file as bytes.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
 		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())) {
@@ -116,6 +119,37 @@ public class FileHandle {
 			if (file().isDirectory())
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
+		}
+	}
+
+	/** Returns a reader for reading this file as characters.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	public Reader reader () {
+		return new InputStreamReader(read());
+	}
+
+	/** Returns a reader for reading this file as characters.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	public Reader reader (String charset) {
+		try{return new InputStreamReader(read(), charset);
+		} catch (UnsupportedEncodingException ex) {
+			throw new GdxRuntimeException("Error reading file: " + this,ex);
+		}
+	}
+
+	/** Returns a buffered reader for reading this file as characters.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	public BufferedReader reader (int bufferSize) {
+		return new BufferedReader(new InputStreamReader(read()), bufferSize);
+	}
+
+	/** Returns a buffered reader for reading this file as characters.
+	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
+	public BufferedReader reader (int bufferSize, String charset) {
+		try {
+			return new BufferedReader(new InputStreamReader(read(), charset), bufferSize);
+		} catch (UnsupportedEncodingException ex) {
+			throw new GdxRuntimeException("Error reading file: " + this,ex);
 		}
 	}
 

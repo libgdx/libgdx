@@ -233,7 +233,7 @@ public class Table extends WidgetGroup {
 		return layout.stack(actor);
 	}
 
-	/** Creates a new table with the same Skin, Stage, and AssetManager as this table. */
+	/** Creates a new table with the same Skin and AssetManager as this table. */
 	public Table newTable () {
 		return layout.getToolkit().newTable(this);
 	}
