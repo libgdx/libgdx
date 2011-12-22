@@ -256,7 +256,7 @@ public class GestureDetector extends InputAdapter {
 		}
 		return false;
 	}
-
+	
 	/** @return whether the user touched the screen long enough to trigger a long press event. */
 	public boolean isLongPressed () {
 		return isLongPressed(longPressDuration);
