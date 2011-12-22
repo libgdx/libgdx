@@ -412,6 +412,14 @@ public class Vector3 implements Serializable {
 		return true;
 	}
 
+	public boolean epsilonEquals(Vector3 obj, float epsilon) {
+		if(obj == null) return false;
+		if(Math.abs(obj.x - x) > epsilon) return false;
+		if(Math.abs(obj.y - y) > epsilon) return false;
+		if(Math.abs(obj.z - z) > epsilon) return false;
+		return true;
+	}
+	
 	/** Scales the vector components by the given scalars.
 	 * 
 	 * @param scalarX
