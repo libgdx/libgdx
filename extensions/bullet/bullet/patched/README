@@ -1,0 +1,4 @@
+hackish quick fix for mingw64 uint64_t and unsigned long issues. 
+Have to copy these directories over to src/ recursively, 
+build win64, then revert src. bullet revision is 2476. If any of the files 
+in here change in later revision, revisit "patch".
