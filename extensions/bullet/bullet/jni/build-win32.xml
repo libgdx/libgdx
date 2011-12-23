@@ -1,0 +1,88 @@
+<project name="bullet-natives" basedir="." default="link">
+	<!-- include the environment -->
+	<property environment="env"/>	
+	
+	<property name="prefix" value="i586-mingw32msvc-"/>	
+
+	<!-- output directory for generated files -->
+	<property name="jni-target" value="../../target/native/windows" />
+	<!-- output directory for distribution -->
+	<property name="jni-dist" value="../libs/windows" />
+	<property name="libname" value="bullet.dll"/>
+	<property name="jni-platform" value="win32"/>
+	
+	<!-- define g++ compiler, options and files to compile -->
+	<property name="g++" value="${prefix}g++"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -DFIXED_POINT -fmessage-length=0 -m32 -Isrc"/>
+	<fileset id="g++-files" dir="./">
+		<include name="**/*.cpp"/>
+		<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+	</fileset>
+	
+	<!-- define gcc compiler, options and files to compile -->
+	<property name="gcc" value="${prefix}gcc"/>	
+	<property name="gcc-opts" value="${g++-opts}"/>
+	<fileset id="gcc-files" dir="./">		
+		<include name="**/*.c"/>				
+	</fileset>
+
+	<!-- define linker and options -->
+	<property name="linker" value="${prefix}g++"/>
+	<property name="linker-opts" value="-Wl,--kill-at -shared"/>
+	
+	<!-- cleans the build directory, removes all object files and shared libs -->
+	<target name="clean">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${jni-target}"/>
+			<fileset dir="${jni-dist}" includes="**/*" excludes="**/.svn"/>
+		</delete>
+	</target>
+
+	<!-- compiles all C and C++ files to object files in the build directory -->
+	<target name="compile">
+		<mkdir dir="${jni-target}"/>
+		<apply failonerror="true" executable="${g++}" dest="${jni-target}" verbose="true">
+			<arg line="${g++-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
+			<arg value="-I."/>
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="g++-files"/>
+			<chainedmapper>
+				<flattenmapper/>
+				<mapper type="glob" from="*.cpp" to="*.o"/>
+			</chainedmapper>
+		</apply>
+		<apply failonerror="true" executable="${gcc}" dest="${jni-target}" verbose="true">
+			<arg line="${gcc-opts}"/>
+			<arg value="-Ijni-headers"/>
+			<arg value="-Ijni-headers/${jni-platform}"/>
+			<arg value="-I."/>
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset refid="gcc-files"/>
+			<chainedmapper>
+				<flattenmapper/>
+				<mapper type="glob" from="*.c" to="*.o"/>
+			</chainedmapper>
+		</apply>
+	</target>	
+
+	<!-- links the shared library based on the previously compiled object files -->
+	<target name="link" depends="compile">
+		<mkdir dir="${jni-dist}"/>
+		<apply failonerror="true" executable="${linker}" parallel="true" dir="${jni-target}">
+			<arg line="${linker-opts}"/>
+			<arg value="-o"/>
+			<arg path="${jni-dist}/${libname}"/>		
+			<fileset dir="${jni-target}">
+				<patternset>
+					<include name="**/*.o"/>
+				</patternset>
+			</fileset>
+		</apply>
+	</target>
+</project>

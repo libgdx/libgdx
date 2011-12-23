@@ -1,5 +1,5 @@
 LOCAL_PATH:= $(call my-dir)
-BULLET_PATH:= ../../bullet/src
+BULLET_PATH:= src
  
 include $(CLEAR_VARS)
  
@@ -178,8 +178,6 @@ LOCAL_SRC_FILES := $(BULLET_PATH)/BulletCollision/BroadphaseCollision/btAxisSwee
     $(BULLET_PATH)/BulletMultiThreaded/SpuLibspe2Support.cpp\
     $(BULLET_PATH)/BulletMultiThreaded/SpuSampleTaskProcess.cpp\
     $(BULLET_PATH)/BulletMultiThreaded/Win32ThreadSupport.cpp\
-    $(BULLET_PATH)/BulletMultiThreaded/GpuSoftBodySolvers/CPU/btSoftBodySolver_CPU.cpp\
-    $(BULLET_PATH)/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/MiniCL/MiniCLTaskWrap.cpp\
     $(BULLET_PATH)/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/boxBoxDistance.cpp\
     $(BULLET_PATH)/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuCollisionShapes.cpp\
     $(BULLET_PATH)/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuContactResult.cpp\

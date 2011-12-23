@@ -1,0 +1,46 @@
+<project name="bullet-natives" basedir="." default="all">
+	<target name="clean">
+		<ant antfile="build-win32.xml" target="clean"/>
+		<ant antfile="build-win64.xml" target="clean"/>
+		<ant antfile="build-lin32.xml" target="clean"/>
+		<ant antfile="build-lin64.xml" target="clean"/>
+		<ant antfile="build-android.xml" target="clean"/>
+	</target>
+	
+	<target name="compile-natives">
+		<ant antfile="build-win32.xml"/>
+		<ant antfile="build-win64.xml"/>
+		<ant antfile="build-lin32.xml"/>
+		<ant antfile="build-lin64.xml"/>
+		<ant antfile="build-android.xml"/>
+
+		<jar destfile="../libs/bullet-natives.jar">
+			<fileset dir="../libs/windows" includes="bullet.dll"/>
+			<fileset dir="../libs/windows64" includes="bullet-64.dll"/>
+			<fileset dir="../libs/linux" includes="libbullet.so"/>
+			<fileset dir="../libs/linux64" includes="libbullet-64.so"/>
+			<fileset dir="../libs/mac" includes="libbullet.dylib"/>
+		</jar>
+	</target>
+	
+	<target name="pack-natives">
+			<jar destfile="../libs/bullet-natives.jar">
+			<fileset dir="../libs/windows" includes="bullet.dll"/>
+			<fileset dir="../libs/windows64" includes="bullet-64.dll"/>
+			<fileset dir="../libs/linux" includes="libbullet.so"/>
+			<fileset dir="../libs/linux64" includes="libbullet-64.so"/>
+			<fileset dir="../libs/mac" includes="libbullet.dylib"/>
+		</jar>
+	</target>
+	
+	<target name="update-natives" depends="pack-natives">		
+		<!-- <copy tofile="../../tests/gdx-tests-android/libs/armeabi/libgdx.so" file="../libs/armeabi/libgdx.so" />
+		<copy tofile="tests/gdx-tests-android/libs/armeabi/libmpg123.so" file="../libs/armeabi/libmpg123.so" />
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libgdx.so" file="../libs/armeabi-v7a/libgdx.so" />
+		<copy tofile="tests/gdx-tests-android/libs/armeabi-v7a/libmpg123.so" file="../libs/armeabi-v7a/libmpg123.so" />
+		<copy tofile="../../tests/gdx-tests-android/libs/armeabi-v7a/libandroidgl20.so" file="../dist/armeabi/libandroidgl20.so" />	-->
+	</target>
+
+	<target name="all" depends="compile-natives,update-natives"/>
+</project>
