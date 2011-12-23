@@ -143,6 +143,11 @@ gdx and backend modules and creates a distribution out of this mess.
 		<ant antfile="build.xml" target="all" dir="gdx/jni"/>
 	</target>	
 	
+	<target name="compile-bullet" depends="init">
+		<ant antfile="build.xml" target="clean" dir="../extensions/bullet/jni"/>
+		<ant antfile="build.xml" target="all" dir="../extensions/bullet/jni"/>
+	</target>
+	
 	<!-- creates jars and places other files in the output dir -->
 	<target name="package" depends="compile">
 		<!-- for some reason excludes don't work so we have to delete the ndk directory first... -->
