@@ -153,8 +153,8 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>	
 	
 	<target name="compile-bullet-natives" depends="init">
-		<ant antfile="build.xml" target="clean" dir="../extensions/bullet/bullet/jni"/>
-		<ant antfile="build.xml" target="all" dir="../extensions/bullet/bullet/jni"/>
+		<ant antfile="build.xml" target="clean" dir="extensions/bullet/bullet/jni"/>
+		<ant antfile="build.xml" target="all" dir="extensions/bullet/bullet/jni"/>
 	</target>
 	
 	<!-- creates jars and places other files in the output dir -->
