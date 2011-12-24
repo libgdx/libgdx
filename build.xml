@@ -12,7 +12,7 @@ gdx and backend modules and creates a distribution out of this mess.
 	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
 
 	<!-- libgdx version -->
-	<property name="version" value="0.9.2" />
+	<property name="version" value="0.9.3" />
 
 	<!-- output directory for generated files -->
 	<property name="target" value="target" />
@@ -212,6 +212,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<copy tofile="${dist}/gdx-natives.jar" file="gdx/libs/gdx-natives.jar" />
 		<copy tofile="${dist}/gdx-backend-jogl-natives.jar" file="backends/gdx-backend-jogl/libs/gdx-backend-jogl-natives.jar" />
 		<copy tofile="${dist}/gdx-backend-lwjgl-natives.jar" file="backends/gdx-backend-lwjgl/libs/gdx-backend-lwjgl-natives.jar" />
+		<copy tofile="${dist}/bullet-natives.jar" file="extensions/bullet/bullet/libs/bullet-natives.jar"/>
 		<copy tofile="${dist}/armeabi/libgdx.so" file="gdx/libs/armeabi/libgdx.so" />
 		<!--<copy tofile="${dist}/armeabi/libmpg123.so" file="gdx/libs/armeabi/libmpg123.so" />-->
 		<copy tofile="${dist}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so" />
