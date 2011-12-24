@@ -1,8 +1,14 @@
 <project name="bullet-natives" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
-
 	<property name="prefix" value="x86_64-w64-mingw32-"/>	
+
+	<!-- need to path a few files, should do this with a diff really :p, see README in patched/ -->
+	<target name="patch">
+		<copy todir="src" verbose="true" overwrite="true">
+			<fileset dir="../patched"/>
+		</copy>
+	</target>
 
 	<!-- output directory for generated files -->
 	<property name="jni-target" value="../../target/native/windows64" />
@@ -39,7 +45,7 @@
 	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile">
+	<target name="compile" depends="patch">
 		<mkdir dir="${jni-target}"/>
 		<apply failonerror="true" executable="${g++}" dest="${jni-target}" verbose="true">
 			<arg line="${g++-opts}"/>
@@ -71,8 +77,15 @@
 		</apply>
 	</target>	
 
+	<!-- revert the nasty "patch" -->
+	<target name="revert" depends="compile">
+		<exec executable="svn" dir=".">
+			<arg line="revert -R src"/>
+		</exec>
+	</target>
+
 	<!-- links the shared library based on the previously compiled object files -->	
-	<target name="link" depends="compile">
+	<target name="link" depends="revert">
 		<mkdir dir="${jni-dist}"/>
 		<apply failonerror="true" executable="${linker}" parallel="true" dir="${jni-target}">
 			<arg line="${linker-opts}"/>

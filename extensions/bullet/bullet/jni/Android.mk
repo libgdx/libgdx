@@ -51,8 +51,9 @@ LOCAL_C_INCLUDES := $(BULLET_PATH)/\
     $(BULLET_PATH)/vectormath/scalar\
     $(BULLET_PATH)/vectormath/sse
  
-LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%)
+LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
 LOCAL_LDLIBS := -ldl -lm -llog
+LOCAL_ARM_MODE  := arm
  
 LOCAL_SRC_FILES := $(BULLET_PATH)/BulletCollision/BroadphaseCollision/btAxisSweep3.cpp\
     $(BULLET_PATH)/BulletCollision/BroadphaseCollision/btBroadphaseProxy.cpp\
