@@ -10,7 +10,7 @@ public class BulletObject {
 	 */
 	
 	public static native void testJni (long addr, ByteBuffer buffer, float[] floats, byte[] bytes, String ohgod); /*
-		printf("%f %d %s\n", floats[0], bytes[0], ohgod); asdhasdkjhash
+		printf("%f %d %s\n", floats[0], bytes[0], ohgod);
 	*/
 	
 	public static native int testJni2(float muh); /*

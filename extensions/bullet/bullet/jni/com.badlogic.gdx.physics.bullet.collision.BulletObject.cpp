@@ -6,7 +6,7 @@
 	float* floats = (float*)env->GetPrimitiveArrayCritical(obj_floats, 0);
 	char* bytes = (char*)env->GetPrimitiveArrayCritical(obj_bytes, 0);
 
-	printf("%f %d %s\n", floats[0], bytes[0], ohgod); asdhasdkjhash
+	printf("%f %d %s\n", floats[0], bytes[0], ohgod);
 	
 	env->ReleasePrimitiveArrayCritical(obj_floats, floats, 0);
 	env->ReleasePrimitiveArrayCritical(obj_bytes, bytes, 0);

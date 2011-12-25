@@ -50,6 +50,8 @@ public class AntScriptGenerator {
 		public String cFlags;
 		public String cppFlags;
 		public String linkerFlags;
+		public String buildFileName;
+		public boolean excludeFromMasterBuildFile = false;
 		
 		public BuildTarget(TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes, String[] cppIncludes, String[] cppExcludes, String[] headerDirs, String compilerPrefix, String cFlags, String cppFlags, String linkerFlags) {
 			if(targetType == null) throw new IllegalArgumentException("targetType must not be null");
@@ -163,11 +165,14 @@ public class AntScriptGenerator {
 			System.out.println(buildFile);
 			
 			String buildFileName = "build-" + target.os.toString().toLowerCase() + (target.is64Bit?"64":"32") + ".xml";
+			if(target.buildFileName != null) buildFileName = target.buildFileName;
 			config.jniDir.child(buildFileName).writeString(buildFile, false);
 
-			buildFiles.add(buildFileName);
-			sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
-			libsDirs.add("../" + libsDir.path().replace('\\', '/'));
+			if(!target.excludeFromMasterBuildFile) {
+				buildFiles.add(buildFileName);
+				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
+				libsDirs.add("../" + libsDir.path().replace('\\', '/'));
+			}
 		}
 		
 		// generate the master build script
