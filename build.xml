@@ -40,6 +40,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="${target}/classes/gdx-backend-android" />
 		<mkdir dir="${target}/classes/gdx-tools"/>
 		<mkdir dir="${target}/classes/bullet"/>
+		<mkdir dir="${target}/classes/jnigen"/>
 		<mkdir dir="${dist}" />
 		<mkdir dir="${dist}/docs/api"/>
 	</target>
@@ -96,12 +97,17 @@ gdx and backend modules and creates a distribution out of this mess.
 				<fileset file="backends/gdx-openal/libs/*.jar" />
 			</classpath>
 		</javac>
+		
+		<!-- build jnigen -->
+		<javac debug="on" srcdir="extensions/jnigen/src/" destdir="${target}/classes/jnigen">
+		</javac>
 
 		<!-- build bullet extension -->
 		<javac debug="on" srcdir="extensions/bullet/bullet/src/" destdir="${target}/classes/bullet">
 			<classpath>
 				<pathelement location="${target}/classes/gdx" />	
 				<pathelement location="${target}/classes/gdx-backend-lwjgl"/>
+				<pathelement location="${target}/classes/jnigen"/>
 			</classpath>
 		</javac>
 	</target>
@@ -202,6 +208,11 @@ gdx and backend modules and creates a distribution out of this mess.
 			<fileset dir="${target}/classes/gdx-tools" />
 			<fileset dir="extensions/gdx-tools/assets" />
 		</jar>
+		
+		<!-- jnigen jar -->
+		<jar destfile="${dist}/jnigen.jar">
+			<fileset dir="${target}/classes/jnigen"/>
+		<jar>
 		
 		<!-- bullet jar -->
 		<jar destfile="${dist}/bullet.jar">
