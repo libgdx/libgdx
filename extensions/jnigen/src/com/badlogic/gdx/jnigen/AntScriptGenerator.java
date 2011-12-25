@@ -109,7 +109,7 @@ public class AntScriptGenerator {
 			
 			if(type == TargetOs.Linux && is64Bit) {
 				// Linux 64-Bit
-				return new BuildTarget(TargetOs.Linux, false, 
+				return new BuildTarget(TargetOs.Linux, true, 
 								new String[] { "**/*.c" }, new String[0], new String[] { "**/*.cpp" }, new String[0], new String[0], 
 								"", 
 								"-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m64 -fPIC", 

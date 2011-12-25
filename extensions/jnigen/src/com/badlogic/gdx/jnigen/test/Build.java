@@ -14,8 +14,10 @@ public class Build {
 		
 		// generate build scripts, for win32 only
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-		win32.compilerPrefix = "";
-		new AntScriptGenerator().generate(new BuildConfig("test"), win32);
+		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
+		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
+		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
+		new AntScriptGenerator().generate(new BuildConfig("test"), win32, win64, lin32, lin64);
 		
 		// build natives
 		AntScriptExecutor.execute("jni/build.xml", "-v");

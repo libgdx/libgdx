@@ -1,20 +1,20 @@
-<project name="test-Windows-32" basedir="." default="link">
+<project name="test-Linux-32" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
-	<property name="buildDir" value="target/windows32" />
+	<property name="buildDir" value="target/linux32" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs/windows32" />
+	<property name="libsDir" value="../libs/linux32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="test.dll"/>
+	<property name="libName" value="libtest.so"/>
 	<!-- the jni header jniPlatform to use -->
-	<property name="jniPlatform" value="win32"/>
+	<property name="jniPlatform" value="linux"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
-	<property name="compilerPrefix" value="i586-mingw32msvc-"/>	
+	<property name="compilerPrefix" value=""/>	
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m32 -fPIC"/>
 	<fileset id="gcc-files" dir="./">
 				<include name="**/*.c"/>
 
@@ -23,7 +23,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse -fmessage-length=0 -m32 -fPIC"/>
 	<fileset id="g++-files" dir="./">
 				<include name="**/*.cpp"/>
 
@@ -32,7 +32,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++"/>
-	<property name="linker-opts" value="-Wl,--kill-at -shared -m32"/>
+	<property name="linker-opts" value="-shared -m32"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
