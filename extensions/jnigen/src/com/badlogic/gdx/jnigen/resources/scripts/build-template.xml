@@ -1,0 +1,17 @@
+<project name="%projectName%" basedir="." default="all">
+	<target name="clean">
+<clean/>
+	</target>
+	
+	<target name="compile-natives">
+<compile/>
+	</target>
+	
+	<target name="pack-natives">
+		<jar destfile="%packFile%">
+<pack/>
+		</jar>
+	</target>
+
+	<target name="all" depends="compile-natives,pack-natives"/>
+</project>
