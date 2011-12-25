@@ -212,7 +212,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<!-- jnigen jar -->
 		<jar destfile="${dist}/jnigen.jar">
 			<fileset dir="${target}/classes/jnigen"/>
-		<jar>
+		</jar>
 		
 		<!-- bullet jar -->
 		<jar destfile="${dist}/bullet.jar">
