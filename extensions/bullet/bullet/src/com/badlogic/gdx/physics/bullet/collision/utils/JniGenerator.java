@@ -1,8 +1,10 @@
 package com.badlogic.gdx.physics.bullet.collision.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import com.badlogic.gdx.files.FileHandle;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class JniGenerator {
 	private static final String JAVA_METHOD_MARKER = "static native ";
+	private static final String JAVA_JNI_MARKER = "/*JNI";
 	private static final String C_METHOD_MARKER = "JNIEXPORT";
 	private static final String NON_POD_PREFIX = "obj_";
 	FileHandle srcDir;
@@ -26,8 +29,9 @@ public class JniGenerator {
 					String javaContent = file.readString();
 					if (javaContent.contains(JAVA_METHOD_MARKER)) {
 						generateHFile(file);
-						FileHandle hFile = new FileHandle(jniDir.path() + "/" + file.nameWithoutExtension() + ".h");
-						FileHandle cppFile = new FileHandle(jniDir + "/" + file.nameWithoutExtension() + ".cpp");
+						String className = getFullyQualifiedClassName(file);
+						FileHandle hFile = new FileHandle(jniDir.path() + "/" + className + ".h");
+						FileHandle cppFile = new FileHandle(jniDir + "/" + className + ".cpp");
 						generateCppFile(javaContent, hFile, cppFile);
 					}
 				}
@@ -35,13 +39,18 @@ public class JniGenerator {
 		}
 	}
 
-	private void generateHFile(FileHandle file) throws Exception {
+	private String getFullyQualifiedClassName(FileHandle file) {
 		String className = file.path().replace(srcDir.path(), "")
 				.replace('\\', '.').replace('/', '.').replace(".java", "");
 		if (className.startsWith("."))
 			className = className.substring(1);
+		return className;
+	}
+	
+	private void generateHFile(FileHandle file) throws Exception {
+		String className = getFullyQualifiedClassName(file);
 		String command = "javah -classpath " + classDir.path() + " -o "
-				+ jniDir.path() + "/" + file.nameWithoutExtension() + ".h "
+				+ jniDir.path() + "/" + className + ".h "
 				+ className;
 		System.out.println(command);
 		Process process = Runtime.getRuntime().exec(command);
@@ -63,6 +72,16 @@ public class JniGenerator {
 		
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("#include <" + hFile.name() + ">\n\n");
+		
+		// parse JNI section
+		int index = javaFileContent.indexOf(JAVA_JNI_MARKER, 0);
+		while(index != -1) {
+			int endIndex = javaFileContent.indexOf("*/", index);
+			if(endIndex == -1) break;
+			String jniSection = javaFileContent.substring(index + JAVA_JNI_MARKER.length(), endIndex);
+			buffer.append(jniSection);
+			index = javaFileContent.indexOf(JAVA_JNI_MARKER, endIndex);
+		}
 		
 		for(int i = 0; i < javaMethods.size; i++) {
 			mergeJavaAndCMethod(buffer, javaMethods.get(i), cMethods.get(i));
@@ -182,7 +201,7 @@ public class JniGenerator {
 		return new CMethod(head, args, start, argsEnd + 1);
 	}
 
-	private Array<JavaMethod> parseJavaMethods(String classFile) {
+	public static Array<JavaMethod> parseJavaMethods(String classFile) {
 		Array<JavaMethod> methods = new Array<JavaMethod>();
 
 		String methodMarker = JAVA_METHOD_MARKER;
@@ -201,7 +220,7 @@ public class JniGenerator {
 		return methods;
 	}
 
-	private JavaMethod parseJavaMethod(String classFile, int start) {		
+	public static JavaMethod parseJavaMethod(String classFile, int start) {		
 		// parse name
 		int nameStart = 0;
 		int nameEnd = classFile.indexOf('(', start);
@@ -270,7 +289,7 @@ public class JniGenerator {
 		DirectBuffer, Array, String, PlainOldDatatype
 	}
 
-	class Argument {
+	static class Argument {
 		final ArgumentType type;
 		final String name;
 
@@ -340,20 +359,34 @@ public class JniGenerator {
 					+ Arrays.toString(arguments) + "]";
 		}
 	}
+	
+	private static String findMatchingLine(FileHandle srcDir, String message) {
+		String file = message.substring(0, message.indexOf(".cpp"));
+		String className = file.substring(file.lastIndexOf('.') + 1).replace('.', '/');
+		FileHandle child = srcDir.child(className + ".java");
+		String content = child.readString();
+		
+		return "";
+	}
 
 	public static void main(String[] args) throws Exception {
 		new JniGenerator().generate(new FileHandle(args[0]), new FileHandle(
 				args[1]), new FileHandle(args[2]));
 		
 		Process process = Runtime.getRuntime().exec("ant.bat -f build-win32home.xml -v", null, new File("jni"));
-		final InputStream errorStream = process.getInputStream();
+		final InputStream stream = process.getInputStream();
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				int c = 0;
 				try {
-					while ((c = errorStream.read()) != -1) {
-						System.out.print((char) c);
+					BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+					String line = reader.readLine();
+					while(line != null) {
+						System.out.println(line);
+						if(line.contains("error:")) {
+						}
+						line = reader.readLine();
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
