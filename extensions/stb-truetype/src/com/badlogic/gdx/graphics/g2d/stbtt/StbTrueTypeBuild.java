@@ -1,6 +1,6 @@
 package com.badlogic.gdx.graphics.g2d.stbtt;
 
-import com.badlogic.gdx.jnigen.AntScriptExecutor;
+import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildTarget;
@@ -26,6 +26,6 @@ public class StbTrueTypeBuild {
 		new AntScriptGenerator().generate(new BuildConfig("stbtruetype"), win32home, win32, win64, lin32, lin64, mac);
 		
 		// build natives
-		AntScriptExecutor.execute("jni/build-windows32home.xml", "-v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 	}
 }

@@ -22,7 +22,7 @@
 	<property name="gcc" value="gcc"/>	
 	<property name="gcc-opts" value="${g++-opts}"/>
 	<fileset id="gcc-files" dir="./">		
-		<include name="**/*.c"/>				
+		<include name="**/*.c"/>
 	</fileset>
 
 	<!-- define linker and options -->

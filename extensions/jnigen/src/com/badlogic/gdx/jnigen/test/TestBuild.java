@@ -1,6 +1,6 @@
 package com.badlogic.gdx.jnigen.test;
 
-import com.badlogic.gdx.jnigen.AntScriptExecutor;
+import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildTarget;
@@ -20,6 +20,6 @@ public class TestBuild {
 		new AntScriptGenerator().generate(new BuildConfig("test"), win32, win64, lin32, lin64);
 		
 		// build natives
-		AntScriptExecutor.execute("jni/build.xml", "-v");
+		BuildExecutor.executeAnt("jni/build.xml", "-v");
 	}
 }
