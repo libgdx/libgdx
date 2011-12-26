@@ -40,7 +40,7 @@ gdx and backend modules and creates a distribution out of this mess.
 		<mkdir dir="${target}/classes/gdx-backend-android" />
 		<mkdir dir="${target}/classes/gdx-tools"/>
 		<mkdir dir="${target}/classes/bullet"/>
-		<mkdir dir="${target}/classes/jnigen"/>
+		<mkdir dir="${target}/classes/gdx-jnigen"/>
 		<mkdir dir="${dist}" />
 		<mkdir dir="${dist}/docs/api"/>
 	</target>
@@ -99,15 +99,15 @@ gdx and backend modules and creates a distribution out of this mess.
 		</javac>
 		
 		<!-- build jnigen -->
-		<javac debug="on" srcdir="extensions/jnigen/src/" destdir="${target}/classes/jnigen">
+		<javac debug="on" srcdir="extensions/gdx-jnigen/src/" destdir="${target}/classes/gdx-jnigen">
 		</javac>
 
 		<!-- build bullet extension -->
-		<javac debug="on" srcdir="extensions/bullet/bullet/src/" destdir="${target}/classes/bullet">
+		<javac debug="on" srcdir="extensions/gdx-bullet/bullet/src/" destdir="${target}/classes/gdx-bullet">
 			<classpath>
 				<pathelement location="${target}/classes/gdx" />	
 				<pathelement location="${target}/classes/gdx-backend-lwjgl"/>
-				<pathelement location="${target}/classes/jnigen"/>
+				<pathelement location="${target}/classes/gdx-jnigen"/>
 			</classpath>
 		</javac>
 	</target>
@@ -159,8 +159,8 @@ gdx and backend modules and creates a distribution out of this mess.
 	</target>	
 	
 	<target name="compile-bullet-natives" depends="init">
-		<ant antfile="build.xml" target="clean" dir="extensions/bullet/bullet/jni"/>
-		<ant antfile="build.xml" target="all" dir="extensions/bullet/bullet/jni"/>
+		<ant antfile="build.xml" target="clean" dir="extensions/gdx-bullet/bullet/jni"/>
+		<ant antfile="build.xml" target="all" dir="extensions/gdx-bullet/bullet/jni"/>
 	</target>
 	
 	<!-- creates jars and places other files in the output dir -->
@@ -210,8 +210,8 @@ gdx and backend modules and creates a distribution out of this mess.
 		</jar>
 		
 		<!-- jnigen jar -->
-		<jar destfile="${dist}/jnigen.jar">
-			<fileset dir="${target}/classes/jnigen"/>
+		<jar destfile="${dist}/gdx-jnigen.jar">
+			<fileset dir="${target}/classes/gdx-jnigen"/>
 		</jar>
 		
 		<!-- bullet jar -->
