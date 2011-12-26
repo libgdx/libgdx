@@ -41,7 +41,7 @@ public class AntScriptGenerator {
 		}
 		
 		// generate the master build script
-		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-template.xml", FileType.Classpath).readString();
+		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build.xml.template", FileType.Classpath).readString();
 		StringBuffer clean = new StringBuffer();
 		StringBuffer compile = new StringBuffer();
 		StringBuffer pack = new StringBuffer();
@@ -93,7 +93,7 @@ public class AntScriptGenerator {
 	
 	private String generateBuildTargetTemplate(BuildConfig config, BuildTarget target) {
 		// read template file from resources
-		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target-template.xml", FileType.Classpath).readString();
+		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target.xml.template", FileType.Classpath).readString();
 		
 		// generate shared lib filename and jni platform headers directory name
 		String libName = getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName);
