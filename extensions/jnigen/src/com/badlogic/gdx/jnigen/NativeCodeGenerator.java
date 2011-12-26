@@ -393,43 +393,4 @@ public class NativeCodeGenerator {
 					+ Arrays.toString(arguments) + "]";
 		}
 	}
-	
-	private static String findMatchingLine(FileDescriptor srcDir, String message) {
-		String file = message.substring(0, message.indexOf(".cpp"));
-		String className = file.substring(file.lastIndexOf('.') + 1).replace('.', '/');
-		FileDescriptor child = srcDir.child(className + ".java");
-		String javaContent = child.readString();
-		
-		
-		
-		return "";
-	}
-
-	public static void main(String[] args) throws Exception {
-		new NativeCodeGenerator().generate(args[0], args[1], args[2]);
-		
-//		Process process = Runtime.getRuntime().exec("ant.bat -f build-win32home.xml -v", null, new File("jni"));
-//		final InputStream stream = process.getInputStream();
-//		Thread t = new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				int c = 0;
-//				try {
-//					BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-//					String line = reader.readLine();
-//					while(line != null) {
-//						System.out.println(line);
-//						if(line.contains("error:")) {
-//						}
-//						line = reader.readLine();
-//					}
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//		t.setDaemon(true);
-//		t.start();
-//		process.waitFor();
-	}
 }
