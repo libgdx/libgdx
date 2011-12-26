@@ -1,5 +1,5 @@
 #include <com.badlogic.gdx.physics.bullet.collision.BulletObject.h>
-	#include <Bullet-C-Api.h>	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_BulletObject_testJni
+	#include <Bullet-C-Api.h>	#include <stdio.h>	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_BulletObject_testJni
 (JNIEnv* env, jclass clazz, jlong addr, jobject obj_buffer, jfloatArray obj_floats, jbyteArray obj_bytes, jstring obj_ohgod) {
 	char* buffer = (char*)env->GetDirectBufferAddress(obj_buffer);
 	char* ohgod = (char*)env->GetStringUTFChars(obj_ohgod, 0);
