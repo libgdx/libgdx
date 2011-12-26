@@ -39,9 +39,13 @@
 			<fileset dir="${libsDir}" includes="**/*" excludes="**/.svn"/>
 		</delete>
 	</target>
+	
+	<target name="precompile">
+		%precompile%
+	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile">
+	<target name="compile" depends="precompile">
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
@@ -89,4 +93,8 @@
 			</fileset>
 		</apply>
 	</target>	
+	
+	<target name="postcompile">
+		%postcompile%
+	</target>
 </project>

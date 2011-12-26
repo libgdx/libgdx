@@ -43,9 +43,13 @@
 			<fileset dir="${libsDir}" includes="**/*" excludes="**/.svn"/>
 		</delete>
 	</target>
+	
+	<target name="precompile">
+		<copy todir="src" verbose="true" overwrite="true"><fileset dir="../patched"/></copy>
+	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile">
+	<target name="compile" depends="precompile">
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
@@ -95,4 +99,8 @@
 			</fileset>
 		</apply>
 	</target>	
+	
+	<target name="postcompile">
+		<exec executable="svn" dir="."><arg line="revert -R src"/></exec>
+	</target>
 </project>

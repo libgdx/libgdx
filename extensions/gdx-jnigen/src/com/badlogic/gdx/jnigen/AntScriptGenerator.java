@@ -144,6 +144,8 @@ public class AntScriptGenerator {
 		template = template.replace("%cppIncludes%", cppIncludes);
 		template = template.replace("%cppExcludes%", cppExcludes);
 		template = template.replace("%headerDirs%", headerDirs);
+		template = template.replace("%precompile%", target.preCompileTask == null? "": target.preCompileTask);
+		template = template.replace("%postcompile%", target.postCompileTask == null? "": target.postCompileTask);
 		
 		return template;
 	}

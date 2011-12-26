@@ -31,6 +31,13 @@ public class BulletBuild {
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		win64.cExcludes = win64.cppExcludes = excludes;
 		win64.headerDirs = headers;
+		// special pre and post compile tasks to patch the source and revert the changes
+		win64.preCompileTask = "<copy todir=\"src\" verbose=\"true\" overwrite=\"true\">" +
+							   		"<fileset dir=\"../patched\"/>" +
+							   	"</copy>";
+		win64.postCompileTask = "<exec executable=\"svn\" dir=\".\">" +
+									"<arg line=\"revert -R src\"/>" +
+								"</exec>";
 		
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cExcludes = lin32.cppExcludes = excludes;

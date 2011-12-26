@@ -21,6 +21,8 @@ public class BuildTarget {
 	public String linkerFlags;
 	public String buildFileName;
 	public boolean excludeFromMasterBuildFile = false;
+	public String preCompileTask;
+	public String postCompileTask;
 	
 	public BuildTarget(BuildTarget.TargetOs targetType, boolean is64Bit, String[] cIncludes, String[] cExcludes, String[] cppIncludes, String[] cppExcludes, String[] headerDirs, String compilerPrefix, String cFlags, String cppFlags, String linkerFlags) {
 		if(targetType == null) throw new IllegalArgumentException("targetType must not be null");
