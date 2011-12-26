@@ -92,6 +92,12 @@ public class AntScriptGenerator {
 	}
 	
 	private String generateBuildTargetTemplate(BuildConfig config, BuildTarget target) {
+		// special case for android
+		if(target.os == TargetOs.Android) {
+			new AndroidNdkScriptGenerator().generate(config, target);
+			return new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-android.xml.template", FileType.Classpath).readString();
+		}
+		
 		// read template file from resources
 		String template = new FileDescriptor("com/badlogic/gdx/jnigen/resources/scripts/build-target.xml.template", FileType.Classpath).readString();
 		
