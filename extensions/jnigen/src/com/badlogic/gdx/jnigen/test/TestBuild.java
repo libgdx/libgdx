@@ -2,9 +2,9 @@ package com.badlogic.gdx.jnigen.test;
 
 import com.badlogic.gdx.jnigen.AntScriptExecutor;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
-import com.badlogic.gdx.jnigen.AntScriptGenerator.BuildConfig;
-import com.badlogic.gdx.jnigen.AntScriptGenerator.BuildTarget;
-import com.badlogic.gdx.jnigen.AntScriptGenerator.BuildTarget.TargetOs;
+import com.badlogic.gdx.jnigen.BuildConfig;
+import com.badlogic.gdx.jnigen.BuildTarget;
+import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
 
 public class TestBuild {
