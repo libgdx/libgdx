@@ -25,11 +25,13 @@ public class NativeCodeGenerator {
 				if (file.extension().equals("java") && !file.name().contains("NativeCodeGenerator")) {
 					String javaContent = file.readString();
 					if (javaContent.contains(JAVA_METHOD_MARKER)) {
+						System.out.print("Generating C/C++ for '" + file + "'...");
 						generateHFile(file);
 						String className = getFullyQualifiedClassName(file);
 						FileDescriptor hFile = new FileDescriptor(jniDir.path() + "/" + className + ".h");
 						FileDescriptor cppFile = new FileDescriptor(jniDir + "/" + className + ".cpp");
 						generateCppFile(javaContent, hFile, cppFile);
+						System.out.println("done");
 					}
 				}
 			}
@@ -49,7 +51,6 @@ public class NativeCodeGenerator {
 		String command = "javah -classpath " + classpath + " -o "
 				+ jniDir.path() + "/" + className + ".h "
 				+ className;
-		System.out.println(command);
 		Process process = Runtime.getRuntime().exec(command);
 		process.waitFor();
 		if (process.exitValue() != 0) {
@@ -88,7 +89,6 @@ public class NativeCodeGenerator {
 			mergeJavaAndCMethod(buffer, javaMethods.get(i), cMethods.get(i));
 			buffer.append("\n");
 		}
-		System.out.println(buffer.toString());
 		cppFile.writeString(buffer.toString(), false);
 	}
 	
@@ -194,7 +194,6 @@ public class NativeCodeGenerator {
 			CMethod method = parseCMethod(headerFile, index);
 			if (method == null)
 				throw new RuntimeException("Couldn't parse method");
-			System.out.println(method);
 			methods.add(method);
 			index = headerFile.indexOf(methodMarker, method.endIndex);
 		}
@@ -223,7 +222,6 @@ public class NativeCodeGenerator {
 			JavaMethod method = parseJavaMethod(classFile, index);
 			if (method == null)
 				throw new RuntimeException("Couldn't parse method");
-			System.out.println(method);
 			methods.add(method);
 			index = classFile.indexOf(methodMarker, method.endIndex);
 		}

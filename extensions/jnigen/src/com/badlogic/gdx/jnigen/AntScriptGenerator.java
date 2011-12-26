@@ -137,9 +137,6 @@ public class AntScriptGenerator {
 	
 	public void generate(BuildConfig config, BuildTarget ... targets) {
 		// create all the directories for outputing object files, shared libs and natives jar as well as build scripts.
-		if(!config.buildDir.exists()) {
-			if(!config.buildDir.mkdirs()) throw new RuntimeException("Couldn't create temporary directory for object files in '" + config.buildDir + "'");
-		}
 		if(!config.libsDir.exists()) {
 			if(!config.libsDir.mkdirs()) throw new RuntimeException("Couldn't create directory for shared library files in '" + config.libsDir + "'");
 		}
@@ -159,17 +156,12 @@ public class AntScriptGenerator {
 			if(!libsDir.exists()) {
 				if(!libsDir.mkdirs()) throw new RuntimeException("Couldn't create libs directory '" + libsDir + "'");
 			}
-			FileDescriptor buildDir = config.buildDir.child(target.os.toString().toLowerCase() + (target.is64Bit?"64":"32"));
-			if(!buildDir.exists()) {
-				if(!buildDir.mkdirs()) throw new RuntimeException("Couldn't create build directory '" + buildDir + "'");
-			}
-			
-			System.out.println(buildFile);
 			
 			String buildFileName = "build-" + target.os.toString().toLowerCase() + (target.is64Bit?"64":"32") + ".xml";
 			if(target.buildFileName != null) buildFileName = target.buildFileName;
 			config.jniDir.child(buildFileName).writeString(buildFile, false);
-
+			System.out.println("Wrote target '" + target.os + "-" + (target.is64Bit?"64":"") + " build script '" + config.jniDir.child("build.xml") + "'");
+			
 			if(!target.excludeFromMasterBuildFile) {
 				buildFiles.add(buildFileName);
 				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
@@ -195,8 +187,8 @@ public class AntScriptGenerator {
 		template = template.replace("%packFile%", "../" + config.libsDir.path().replace('\\', '/') + "/" + config.sharedLibName + "-natives.jar");
 		template = template.replace("<pack/>", pack);
 		
-		System.out.println(template);
 		config.jniDir.child("build.xml").writeString(template, false);
+		System.out.println("Wrote master build script '" + config.jniDir.child("build.xml") + "'");
 	}
 	
 	private String getSharedLibFilename(TargetOs os, boolean is64Bit, String sharedLibName) {
