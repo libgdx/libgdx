@@ -23,7 +23,7 @@ public class StbTrueTypeBuild {
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
-		new AntScriptGenerator().generate(new BuildConfig("test"), win32home, win32, win64, lin32, lin64, mac);
+		new AntScriptGenerator().generate(new BuildConfig("stbtruetype"), win32home, win32, win64, lin32, lin64, mac);
 		
 		// build natives
 		AntScriptExecutor.execute("jni/build-windows32home.xml", "-v");
