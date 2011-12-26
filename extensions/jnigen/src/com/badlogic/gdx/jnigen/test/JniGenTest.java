@@ -6,6 +6,10 @@ import java.nio.ByteBuffer;
 import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public class JniGenTest {
+	/*JNI
+	#include <stdio.h>
+	 */
+	
 	public static native void test(boolean boolArg, 
 								  byte byteArg, 
 								  char charArg, 

@@ -2,9 +2,10 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
 LOCAL_MODULE    := %sharedLibName%
-LOCAL_C_INCLUDES := $headerDirs%
+LOCAL_C_INCLUDES := %headerDirs%
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) %cFlags%
+LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) %cppFlags%
 LOCAL_LDLIBS := %linkerFlags%
 LOCAL_ARM_MODE  := arm
  

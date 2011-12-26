@@ -100,6 +100,16 @@ public class BuildTarget {
 			return mac;
 		}
 		
+		if(type == TargetOs.Android) {
+			BuildTarget android = new BuildTarget(TargetOs.Android, false,
+												  new String[] { "**/*.c" }, new String[0], new String[] { "**/*.cpp" }, new String[0], new String[0],
+												  "",
+												  "-O2 -Wall -D__ANDROID__",
+												  "-O2 -Wall -D__ANDROID__",
+												  "-lm");
+			return android;
+		}
+		
 		throw new RuntimeException("Unknown target type");
 	}
 }

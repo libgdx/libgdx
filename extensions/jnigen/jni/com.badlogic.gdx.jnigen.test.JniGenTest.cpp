@@ -1,5 +1,5 @@
 #include <com.badlogic.gdx.jnigen.test.JniGenTest.h>
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_jnigen_test_JniGenTest_test
+	#include <stdio.h>	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_jnigen_test_JniGenTest_test
 (JNIEnv* env, jclass clazz, jboolean boolArg, jbyte byteArg, jchar charArg, jshort shortArg, jint intArg, jlong longArg, jfloat floatArg, jdouble doubleArg, jobject obj_byteBuffer, jbooleanArray obj_boolArray, jcharArray obj_charArray, jshortArray obj_shortArray, jintArray obj_intArray, jlongArray obj_longArray, jfloatArray obj_floatArray, jdoubleArray obj_doubleArray, jstring obj_string) {
 	char* byteBuffer = (char*)env->GetDirectBufferAddress(obj_byteBuffer);
 	char* string = (char*)env->GetStringUTFChars(obj_string, 0);
