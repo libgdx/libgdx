@@ -5,5 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jnigen"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-lwjgl"/>
+	<classpathentry kind="lib" path="libs/stbtruetype-natives.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

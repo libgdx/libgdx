@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.stbtt.StbTrueType.Vertex;
+import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -86,6 +87,7 @@ public class StbTrueTypeFont implements Disposable {
 	}
 
 	public StbTrueTypeFont (byte[] data, int offset) {
+		new SharedLibraryLoader().load("stbtruetype");
 		this.addr = StbTrueType.initFont(data, offset);
 		if (this.addr == 0) throw new GdxRuntimeException("Couldn't load truetype font");
 	}
@@ -191,5 +193,9 @@ public class StbTrueTypeFont implements Disposable {
 		pixmapRGBA.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 		pixmap.dispose();
 		return new Bitmap(pixmapRGBA, box);
+	}
+	
+	public static void main(String[] args) {
+		new StbTrueTypeFont(new byte[10], 0);
 	}
 }
