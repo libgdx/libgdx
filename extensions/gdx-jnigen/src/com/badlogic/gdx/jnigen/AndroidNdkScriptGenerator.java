@@ -26,8 +26,8 @@ public class AndroidNdkScriptGenerator {
 		
 		idx = 0;
 		String[] excludes = new String[target.cExcludes.length + target.cppExcludes.length];
-		for(String exclude: target.cExcludes) excludes[idx++] = exclude;
-		for(String exclude: target.cppExcludes) excludes[idx++] = exclude;
+		for(String exclude: target.cExcludes) excludes[idx++] = config.jniDir + "/" + exclude;
+		for(String exclude: target.cppExcludes) excludes[idx++] = config.jniDir + "/" + exclude;
 		gatherSourceFiles(config.jniDir, includes, excludes, files);
 		
 		// create androidManifest.xml if it doesn't exist.
@@ -78,7 +78,7 @@ public class AndroidNdkScriptGenerator {
 				gatherSourceFiles(child, includes, excludes, files);
 			}
 		} else {
-			if(match(fileName, includes)) files.add(file);
+			if(match(fileName, includes) && !match(fileName, excludes)) files.add(file);
 		}
 	}
 	

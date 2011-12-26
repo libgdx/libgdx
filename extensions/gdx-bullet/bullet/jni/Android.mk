@@ -124,12 +124,6 @@ LOCAL_SRC_FILES := com.badlogic.gdx.physics.bullet.collision.BulletObject.cpp\
 	src/BulletMultiThreaded/btGpu3DGridBroadphase.cpp\
 	src/BulletMultiThreaded/btParallelConstraintSolver.cpp\
 	src/BulletMultiThreaded/btThreadSupportInterface.cpp\
-	src/BulletMultiThreaded/GpuSoftBodySolvers/DX11/btSoftBodySolver_DX11.cpp\
-	src/BulletMultiThreaded/GpuSoftBodySolvers/DX11/btSoftBodySolver_DX11SIMDAware.cpp\
-	src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/btSoftBodySolverOutputCLtoGL.cpp\
-	src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/btSoftBodySolver_OpenCL.cpp\
-	src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/btSoftBodySolver_OpenCLSIMDAware.cpp\
-	src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/MiniCL/MiniCLTaskWrap.cpp\
 	src/BulletMultiThreaded/PosixThreadSupport.cpp\
 	src/BulletMultiThreaded/SequentialThreadSupport.cpp\
 	src/BulletMultiThreaded/SpuCollisionObjectWrapper.cpp\
