@@ -1,4 +1,4 @@
-<project name="test-natives" basedir="." default="all">
+<project name="stbtruetype-natives" basedir="." default="all">
 	<target name="clean">
 		<ant antfile="build-windows32.xml" target="clean"/>
 		<ant antfile="build-windows64.xml" target="clean"/>
@@ -16,8 +16,8 @@
 	</target>
 	
 	<target name="pack-natives">
-		<jar destfile="../libs/test-natives.jar">
-			<fileset dir="../libs/windows32" includes="test.dll"/>			<fileset dir="../libs/windows64" includes="test64.dll"/>			<fileset dir="../libs/linux32" includes="libtest.so"/>			<fileset dir="../libs/linux64" includes="libtest64.so"/>
+		<jar destfile="../libs/stbtruetype-natives.jar">
+			<fileset dir="../libs/windows32" includes="stbtruetype.dll"/>			<fileset dir="../libs/windows64" includes="stbtruetype64.dll"/>			<fileset dir="../libs/linux32" includes="libstbtruetype.so"/>			<fileset dir="../libs/linux64" includes="libstbtruetype64.so"/>
 		</jar>
 	</target>
 

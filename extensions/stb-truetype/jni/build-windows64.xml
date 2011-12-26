@@ -1,4 +1,4 @@
-<project name="test-Windows-64" basedir="." default="link">
+<project name="stbtruetype-Windows-64" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/windows64" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="test64.dll"/>
+	<property name="libName" value="stbtruetype64.dll"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->

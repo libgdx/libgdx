@@ -1,4 +1,4 @@
-<project name="test-Linux-64" basedir="." default="link">
+<project name="stbtruetype-Linux-64" basedir="." default="link">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/linux64" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="libtest64.so"/>
+	<property name="libName" value="libstbtruetype64.so"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="linux"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
