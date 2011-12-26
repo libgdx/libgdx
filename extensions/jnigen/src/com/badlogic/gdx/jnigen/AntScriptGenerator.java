@@ -121,12 +121,14 @@ public class AntScriptGenerator {
 			
 			if(type == TargetOs.MacOsX) {
 				// Mac OS X x86 & x86_64
-				return new BuildTarget(TargetOs.MacOsX, false, 
+				BuildTarget mac = new BuildTarget(TargetOs.MacOsX, false, 
 								new String[] { "**/*.c" }, new String[0], new String[] { "**/*.cpp" }, new String[0], new String[0],
 								"",
 								"-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
 								"-c -Wall -O2 -arch i386 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5",
 								"-shared -arch i386 -arch x86_64 -mmacosx-version-min=10.5");
+				mac.excludeFromMasterBuildFile = true;
+				return mac;
 			}
 			
 			throw new RuntimeException("Unknown target type");
