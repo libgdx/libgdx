@@ -11,6 +11,7 @@ public class NativeCodeGenerator {
 	private static final String JAVA_JNI_MARKER = "/*JNI";
 	private static final String C_METHOD_MARKER = "JNIEXPORT";
 	private static final String NON_POD_PREFIX = "obj_";
+	private static final String CLEANUP_MARKER = "%jnigen-cleanup%";
 	FileDescriptor sourceDir;
 	String classpath;
 	FileDescriptor jniDir;
@@ -132,29 +133,39 @@ public class NativeCodeGenerator {
 			}
 		}
 		
-		// output native code specified in java file, clean up leading tabs
-		String[] lines = javaMethod.nativeCode.split("\n");
-		for(String line: lines) {
-			if(line.length() > 0) {
-				if(line.charAt(0) == '\t' && line.length() > 1) line = line.substring(1);
-				buffer.append(line);
-			}
-			buffer.append("\n");
-		}
-		
 		// generate clean up code for ArrayLists
+		StringBuffer cleanup = new StringBuffer();
 		if(javaMethod.hasArrayListOrBuffer) {
 			for(Argument arg: javaMethod.arguments) {
 				if(arg.type == ArgumentType.ArrayList) {
-					buffer.append("\tenv->ReleasePrimitiveArrayCritical(" + NON_POD_PREFIX + arg.name + ", " + arg.name + ", 0);\n");
+					cleanup.append("\tenv->ReleasePrimitiveArrayCritical(" + NON_POD_PREFIX + arg.name + ", " + arg.name + ", 0);\n");
 				}
 			}
 			
 			for(Argument arg: javaMethod.arguments) {
 				if(arg.type == ArgumentType.String) {
-					buffer.append("\tenv->ReleaseStringUTFChars(" + NON_POD_PREFIX + arg.name + ", " + arg.name + ");\n");
+					cleanup.append("\tenv->ReleaseStringUTFChars(" + NON_POD_PREFIX + arg.name + ", " + arg.name + ");\n");
 				}
 			}
+		}
+		
+		// output native code specified in java file, clean up leading tabs
+		String[] lines = javaMethod.nativeCode.split("\n");
+		for(String line: lines) {
+			if(line.length() > 0) {
+				if(line.charAt(0) == '\t' && line.length() > 1) line = line.substring(1);
+				// replace any CLEANUP_MARKER sections with the cleanup code
+				line = line.replace(CLEANUP_MARKER, cleanup);
+				
+				buffer.append(line);
+			}
+			buffer.append("\n");
+		}
+		
+		// output cleanup code if there was no return statement in the C-code.
+		// FIXME, this can go terribly wrong :D
+		if(!javaMethod.nativeCode.contains("return")) {
+			buffer.append(cleanup);
 		}
 		
 		buffer.append("}");
