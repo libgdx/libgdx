@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 public class BulletObject {
 	/*JNI
 	#include <Bullet-C-Api.h>
+	#include <stdio.h>
 	 */
 	
 	public static native void testJni (long addr, ByteBuffer buffer, float[] floats, byte[] bytes, String ohgod); /*
