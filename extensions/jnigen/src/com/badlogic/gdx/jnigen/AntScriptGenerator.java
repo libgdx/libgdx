@@ -126,7 +126,7 @@ public class AntScriptGenerator {
 		// generate C/C++ header directories
 		StringBuffer headerDirs = new StringBuffer();
 		for(String headerDir: target.headerDirs) {
-			headerDirs.append("\t\t\t<arg value=\"" + headerDir + "\"/>\n");
+			headerDirs.append("\t\t\t<arg value=\"-I" + headerDir + "\"/>\n");
 		}
 		
 		// replace template vars with proper values

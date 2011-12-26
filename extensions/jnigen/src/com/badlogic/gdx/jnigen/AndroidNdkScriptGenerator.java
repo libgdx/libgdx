@@ -18,10 +18,13 @@ public class AndroidNdkScriptGenerator {
 		}
 		
 		ArrayList<FileDescriptor> files = new ArrayList<FileDescriptor>();
-		String[] includes = new String[target.cIncludes.length + target.cppIncludes.length];
+
 		int idx = 0;
+		String[] includes = new String[target.cIncludes.length + target.cppIncludes.length];
 		for(String include: target.cIncludes) includes[idx++] = include;
 		for(String include: target.cppIncludes) includes[idx++] = include;
+		
+		idx = 0;
 		String[] excludes = new String[target.cExcludes.length + target.cppExcludes.length];
 		for(String exclude: target.cExcludes) excludes[idx++] = exclude;
 		for(String exclude: target.cppExcludes) excludes[idx++] = exclude;
