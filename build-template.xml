@@ -48,7 +48,12 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 
 	<!-- compile native code if available -->
 	<target name="check-natives">
-		<available file="${jni}/build.xml" property="natives-present"/>
+		<condition property="natives-present">
+			<and>
+				<available file="${jni}/build.xml"/>
+				<not><os family="windows"/></not>
+			</and>
+		</condition>
 	</target>
 	<target name="compile-natives" depends="init, check-natives" if="natives-present">
 		<ant antfile="build.xml" target="clean" dir="${jni}"/>

@@ -108,7 +108,7 @@ public class NativeCodeGenerator {
 		buffer.append(") {\n");
 		
 		// generate ArrayList and direct buffer to pointer statements,
-		if(javaMethod.hasArrayListOrBuffer) {
+		if(javaMethod.hasDisposableArgument) {
 			// direct buffer pointers
 			for(Argument arg: javaMethod.arguments) {
 				if(arg.type == ArgumentType.DirectBuffer) {
@@ -135,7 +135,7 @@ public class NativeCodeGenerator {
 		
 		// generate clean up code for ArrayLists
 		StringBuffer cleanup = new StringBuffer();
-		if(javaMethod.hasArrayListOrBuffer) {
+		if(javaMethod.hasDisposableArgument) {
 			for(Argument arg: javaMethod.arguments) {
 				if(arg.type == ArgumentType.ArrayList) {
 					cleanup.append("\tenv->ReleasePrimitiveArrayCritical(" + NON_POD_PREFIX + arg.name + ", " + arg.name + ", 0);\n");
@@ -344,7 +344,7 @@ public class NativeCodeGenerator {
 		final ArrayList<Argument> arguments;
 		final int startIndex;
 		final int endIndex;
-		final boolean hasArrayListOrBuffer;
+		final boolean hasDisposableArgument;
 
 		public JavaMethod(String name, String nativeCode,
 				ArrayList<Argument> arguments, int startIndex, int endIndex) {
@@ -354,12 +354,12 @@ public class NativeCodeGenerator {
 			this.startIndex = startIndex;
 			this.endIndex = endIndex;
 			for(Argument arg: arguments) {
-				if(arg.type == ArgumentType.ArrayList || arg.type == ArgumentType.DirectBuffer) {
-					hasArrayListOrBuffer = true;
+				if(arg.type == ArgumentType.ArrayList || arg.type == ArgumentType.DirectBuffer || arg.type == ArgumentType.String) {
+					hasDisposableArgument = true;
 					return;
 				}
 			}
-			hasArrayListOrBuffer = false;
+			hasDisposableArgument = false;
 		}
 
 		@Override

@@ -10,8 +10,18 @@
 		<delete dir="${distDir}"/>
 	</target>
 	
+	<!-- gdx jnigen -->
+	<target name="gdx-jnigen">
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
+			<property name="jar" value="gdx-jnigen"/>
+		</ant>
+	</target>
+	
 	<!-- gdx core -->
-	<target name="gdx-core">
+	<target name="gdx-core" depends="gdx-jnigen">
+		<path id="classpath">
+			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
+		</path>
 		<ant antfile="../build-template.xml" dir="gdx">
 			<property name="jar" value="gdx"/>
 		</ant>
