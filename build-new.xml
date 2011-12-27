@@ -1,0 +1,71 @@
+<project name="gdx" default="all" basedir=".">
+	<description>libgdx distribution build file</description>
+	<property environment="env" />
+	
+	<!-- define distribution/output directory -->
+	<property name="distDir" value="${basedir}/dist"/>
+	
+	<!-- clean distribution/output directory -->
+	<target name="clean">
+		<delete dir="${distDir}"/>
+	</target>
+	
+	<!-- gdx core -->
+	<target name="gdx-core">
+		<ant antfile="../build-template.xml" dir="gdx">
+			<property name="jar" value="gdx"/>
+		</ant>
+	</target>
+	
+	<!-- gdx openal, for all desktop backends -->
+	<target name="gdx-openal" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-openal">
+			<property name="jar" value="gdx-openal"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	<!-- gdx jogl backend -->
+	<target name="gdx-backend-jogl" depends="gdx-core,gdx-openal">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-openal.jar"/>
+		</path>
+		<zipfileset id="jarfiles" src="${distDir}/gdx-openal.jar"/>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-jogl">
+			<property name="jar" value="gdx-backend-jogl"/>
+			<reference refid="classpath"/>
+			<reference refid="jarfiles"/>
+		</ant>
+	</target>
+	
+	<!-- gdx lwjgl backend -->
+	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-openal.jar"/>
+		</path>
+		<zipfileset id="jarfiles" src="${distDir}/gdx-openal.jar"/>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl">
+			<property name="jar" value="gdx-backend-lwjgl"/>
+			<reference refid="classpath"/>
+			<reference refid="jarfiles"/>
+		</ant>
+	</target>
+	
+	<!-- gdx android backend -->
+	<target name="gdx-backend-android" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-android">
+			<property name="jar" value="gdx-backend-android"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android"/>
+</project>

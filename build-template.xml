@@ -1,0 +1,91 @@
+<!-- 
+template Ant build file for all projects that should go into the distribution. 
+Fill out the properties at the beginning of the project definition.
+
+The following things have to be set from the outside:
+
+property name="jar" value="jar-name-without-suffix" -> the name of the resulting jar file
+property name="distDir" value="dist-directory" -> the output directory for the resulting jar
+path id="classpath" -> the filesets defining the classpath needed to compile the project
+zipfileset id="jarfiles" -> the jar files to be merged with the project's classes
+-->
+<project name="template" default="all" basedir=".">
+	<property environment="env" />
+
+	<!-- default values -->
+	<property name="src" value="src"/>
+	<property name="jni" value="jni"/>
+	<property name="target" value="target" />
+	<property name="libs" value="libs" />
+	<path id="classpath"/>
+	<zipfileset id="jarfiles" dir="." excludes="**"/>
+	
+	<!-- clean output directories -->	
+	<target name="clean">		
+		<delete dir="${target}" />
+	</target>
+
+	<!-- init task, creates all necessary directories -->
+	<target name="init" depends="clean">
+		<mkdir dir="${target}" />
+		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
+		<copy failonerror="false" tofile="${target}/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
+		<copy failonerror="false" tofile="${target}/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
+	</target>
+
+	<!-- compiles the java code -->
+	<target name="compile" depends="init">
+		<javac debug="on" srcdir="${src}" destdir="${target}">
+			<classpath>
+				<path refid="classpath"/>
+				<fileset file="${libs}/*.jar">
+					<exclude name="*-natives.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+
+	<!-- compile native code if available -->
+	<target name="check-natives">
+		<available file="${jni}/build.xml" property="natives-present"/>
+	</target>
+	<target name="compile-natives" depends="init, check-natives" if="natives-present">
+		<ant antfile="build.xml" target="clean" dir="${jni}"/>
+		<ant antfile="build.xml" target="all" dir="${jni}"/>
+	</target>	
+	
+	<!-- create source and class jar -->
+	<target name="all" depends="compile,compile-natives">
+		<!-- source jar -->
+		<jar destfile="${distDir}/sources/${jar}-sources.jar" basedir="${src}" />
+		
+		<!-- class jar -->
+		<jar destfile="${distDir}/${jar}.jar">
+			<fileset dir="${target}" />
+			<!-- merge dependencies found in libs/ folder, exclude native, debug and android jars -->
+			<zipgroupfileset file="${libs}/*.jar">
+				<exclude name="*-natives.jar"/>
+				<exclude name="*-debug.jar"/>
+				<exclude name="android-*.jar"/>
+			</zipgroupfileset>
+			<!-- merge dependencies specified in parent build.xml -->
+			<zipfileset refid="jarfiles"/>
+		</jar>
+		
+		<!-- optional natives jar for desktop -->
+		<copy failonerror="false" file="${libs}/${jar}-natives.jar" tofile="${distDir}/${jar}-natives.jar"/>
+		
+		<!-- optional shared libraries for android -->
+		<copy failonerror="false" todir="${distDir}/armeabi">
+			<fileset dir="${libs}/armeabi">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+		<copy failonerror="false" todir="${distDir}/armeabi-v7a">
+			<fileset dir="${libs}/armeabi-v7a">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+	</target>
+</project>
