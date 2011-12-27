@@ -5,7 +5,7 @@
 	<property name="prefix" value=""/>	
 
 	<!-- output directory for generated files -->
-	<property name="jni-target" value="../../target/native/windows" />
+	<property name="jni-target" value="../target/native/windows" />
 	<!-- output directory for distribution -->
 	<property name="jni-dist" value="../libs/windows" />
 	<property name="libname" value="gdx.dll"/>
