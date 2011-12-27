@@ -316,6 +316,10 @@ public class Skin implements Disposable {
 		return typeStyles.findKey(style, true);
 	}
 
+	/** Sets the style on the actor to disabled or enabled. This is done by appending "-disabled" to the style name when enabled is
+	 * false, and removing "-disabled" from the style name when enabled is true. A method named "getStyle" is called the actor via
+	 * reflection and the name of that style is found in the skin. If the actor doesn't have a "getStyle" method or the style was
+	 * not found in the skin, no exception is thrown and the actor is left unchanged. */
 	public void setEnabled (Actor actor, boolean enabled) {
 		actor.touchable = enabled;
 		// Get current style.

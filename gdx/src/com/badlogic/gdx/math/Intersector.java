@@ -95,11 +95,7 @@ public final class Intersector {
 
 	/** Determines on which side of the given line the point is. Returns -1 if the point is on the left side of the line, 0 if the
 	 * point is on the line and 1 if the point is on the right side of the line. Left and right are relative to the lines direction
-	 * which is linePoint1 to linePoint2.
-	 * @param linePoint1
-	 * @param linePoint2
-	 * @param point
-	 * @return */
+	 * which is linePoint1 to linePoint2. */
 	public static int pointLineSide (Vector2 linePoint1, Vector2 linePoint2, Vector2 point) {
 		return (int)Math.signum((linePoint2.x - linePoint1.x) * (point.y - linePoint1.y) - (linePoint2.y - linePoint1.y)
 			* (point.x - linePoint1.x));

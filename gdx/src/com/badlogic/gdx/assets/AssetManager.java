@@ -384,6 +384,9 @@ public class AssetManager implements Disposable {
 				if (task.assetDesc.params != null && task.assetDesc.params.loadedCallback != null) {
 					task.assetDesc.params.loadedCallback.finishedLoading(this, task.assetDesc.fileName, task.assetDesc.type);
 				}
+
+				long endTime = System.nanoTime();
+				log.debug("Loaded: " + (endTime - task.startTime) / 1000000f + "ms " + task.assetDesc);
 			}
 
 			return true;

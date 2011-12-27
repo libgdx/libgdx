@@ -25,6 +25,7 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Logger;
 
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}. Implements
  * {@link Callable} and is used with an {@link ExecutorService threadpool} to load parts of an asset asynchronously if the asset is
@@ -36,6 +37,7 @@ class AssetLoadingTask implements Callable<Void> {
 	final AssetDescriptor assetDesc;
 	final AssetLoader loader;
 	final ExecutorService threadPool;
+	final long startTime;
 
 	volatile boolean asyncDone = false;
 	boolean dependenciesLoaded = false;
@@ -53,6 +55,7 @@ class AssetLoadingTask implements Callable<Void> {
 		this.assetDesc = assetDesc;
 		this.loader = loader;
 		this.threadPool = threadPool;
+		startTime = manager.log.getLevel() == Logger.DEBUG ? System.nanoTime() : 0;
 	}
 
 	/** Loads parts of the asset asynchronously if the loader is an {@link AsynchronousAssetLoader}. */
