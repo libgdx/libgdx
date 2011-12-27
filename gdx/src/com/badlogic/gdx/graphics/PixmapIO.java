@@ -129,11 +129,11 @@ public class PixmapIO {
 	}
 
 	/** Minimal PNG encoder to create PNG streams (and MIDP images) from RGBA arrays.<br>
-	 * Copyright 2006-2009 Christian Fröschlin www.chrfr.de<br>
+	 * Copyright 2006-2009 Christian Frï¿½schlin www.chrfr.de<br>
 	 * Terms of Use: You may use the PNG encoder free of charge for any purpose you desire, as long as you do not claim credit for
 	 * the original sources and agree not to hold me responsible for any damage arising out of its use.<br>
 	 * If you have a suitable location in GUI or documentation for giving credit, I'd appreciate a non-mandatory mention of:<br>
-	 * PNG encoder (C) 2006-2009 by Christian Fröschlin, www.chrfr.de */
+	 * PNG encoder (C) 2006-2009 by Christian Frï¿½schlin, www.chrfr.de */
 	static private class PNG {
 		static int[] crcTable;
 		static final int ZLIB_BLOCK_SIZE = 32000;
