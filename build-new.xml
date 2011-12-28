@@ -191,7 +191,7 @@
 		</javadoc>
 	</target>
 	
-	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio,gdx-bullet,docs">
+	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio,docs">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>
