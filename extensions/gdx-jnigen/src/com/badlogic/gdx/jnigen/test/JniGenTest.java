@@ -34,7 +34,6 @@ public class JniGenTest {
 								  float[] floatArray,
 								  double[] doubleArray,
 								  String string); /*
-		asm("int $3");
 		printf("boolean: %s\n", boolArg?"true":"false");
 		printf("byte: %d\n", byteArg);
 		printf("char: %c\n", charArg);
