@@ -7,10 +7,20 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class SharedLibraryLoader {
 	private static Set<String> loadedLibraries = new HashSet<String>();
-
+	private String nativesJar;
+	
+	public SharedLibraryLoader() {
+	}
+	
+	public SharedLibraryLoader(String nativesJar) {
+		this.nativesJar = nativesJar;
+	}
+	
 	private String crc (String nativeFile) {
 		InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + nativeFile);
 		if (input == null) return "" + System.nanoTime(); // fallback
@@ -42,7 +52,9 @@ public class SharedLibraryLoader {
 		File nativeFile = new File(nativesDir, sharedLibName);
 		try {
 			// Extract native from classpath to temp dir.
-			InputStream input = SharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
+			InputStream input = null;
+			if(nativesJar == null) input = SharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName);
+			else input = getFromJar(nativesJar, sharedLibName);
 			if (input == null) return null;
 			nativesDir.mkdirs();
 			FileOutputStream output = new FileOutputStream(nativeFile);
@@ -55,8 +67,16 @@ public class SharedLibraryLoader {
 			input.close();
 			output.close();
 		} catch (IOException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
 		}
 		return nativeFile.exists() ? nativeFile.getAbsolutePath() : null;
+	}
+
+	private InputStream getFromJar(String jarFile, String sharedLibrary) throws IOException {
+		ZipFile file = new ZipFile(nativesJar);
+		ZipEntry entry = file.getEntry(sharedLibrary);
+		return file.getInputStream(entry);
 	}
 
 	public synchronized void load (String sharedLibName) {
