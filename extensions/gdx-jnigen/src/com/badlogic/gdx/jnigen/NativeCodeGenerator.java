@@ -89,7 +89,7 @@ public class NativeCodeGenerator {
 			mergeJavaAndCMethod(buffer, javaMethods.get(i), cMethods.get(i));
 			buffer.append("\n");
 		}
-		cppFile.writeString(buffer.toString(), false);
+		cppFile.writeString(buffer.toString(), false, "UTF-8");
 	}
 	
 	private void mergeJavaAndCMethod(StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod) {
