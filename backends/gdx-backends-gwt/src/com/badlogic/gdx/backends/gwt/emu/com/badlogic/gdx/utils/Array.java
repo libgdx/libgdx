@@ -33,6 +33,7 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
+	@SuppressWarnings("rawtypes")
 	private ArrayIterator iterator;
 
 	/** Creates an ordered array with a capacity of 16. */
@@ -48,6 +49,7 @@ public class Array<T> implements Iterable<T> {
 	/** @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
+	@SuppressWarnings("unchecked")
 	public Array (boolean ordered, int capacity) {
 		this.ordered = ordered;
 		items = (T[])new Object[capacity];
@@ -59,10 +61,12 @@ public class Array<T> implements Iterable<T> {
 		items[size++] = value;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void addAll (Array array) {
 		addAll(array, 0, array.size);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addAll (Array array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
@@ -149,6 +153,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Removes and returns the item at the specified index. */
+	@SuppressWarnings("unchecked")
 	public T removeIndex (int index) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		Object[] items = this.items;
@@ -197,6 +202,7 @@ public class Array<T> implements Iterable<T> {
 		return items;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
 		T[] newItems = (T[])java.lang.reflect.Array.newInstance(items.getClass().getComponentType(), newSize);
@@ -236,6 +242,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Iterator<T> iterator () {
 		if (iterator == null) iterator = new ArrayIterator(this);
 		iterator.index = 0;
@@ -251,10 +258,12 @@ public class Array<T> implements Iterable<T> {
 		size = newSize;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T[] toArray () {
 		return (T[])toArray(items.getClass().getComponentType());
 	}
 
+	@SuppressWarnings("unchecked")
 	public <V> V[] toArray (Class<V> type) {
 		V[] result = (V[])java.lang.reflect.Array.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);

@@ -130,10 +130,6 @@ public class ShaderProgram implements Disposable {
 	/** direct buffer for passing float and int uniform arrays **/
 	private ByteBuffer buffer = null;
 	private FloatBuffer floatBuffer = null;
-	private IntBuffer intBuffer = null;
-
-	/** reference count **/
-	private int refCount = 0;
 
 	/** Construcs a new JOglShaderProgram and immediatly compiles it.
 	 * 
@@ -581,7 +577,6 @@ public class ShaderProgram implements Disposable {
 
 	public static String getManagedStatus () {
 		StringBuilder builder = new StringBuilder();
-		int i = 0;
 		builder.append("Managed shaders/app: { ");
 		for (Application app : shaders.keySet()) {
 			builder.append(shaders.get(app).size());
@@ -608,7 +603,6 @@ public class ShaderProgram implements Disposable {
 		if (buffer == null || buffer.capacity() != numBytes) {
 			buffer = BufferUtils.newByteBuffer(numBytes);
 			floatBuffer = buffer.asFloatBuffer();
-			intBuffer = buffer.asIntBuffer();
 		}
 	}
 

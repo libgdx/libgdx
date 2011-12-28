@@ -127,7 +127,7 @@ public class NativeCodeGenerator {
 			for(int i = 0; i < javaMethod.arguments.size(); i++) {
 				Argument arg = javaMethod.arguments.get(i);
 				if(arg.type == ArgumentType.ArrayList) {
-					String pointerType = getCArrayListPointerType(cMethod.arguments[i+2]); 
+					String pointerType = getCArrayPointerType(cMethod.arguments[i+2]); 
 					buffer.append("\t" + pointerType + "* " + arg.name + " = (" + pointerType + "*)env->GetPrimitiveArrayCritical(" + NON_POD_PREFIX + arg.name + ", 0);\n");
 				}
 			}
@@ -171,7 +171,7 @@ public class NativeCodeGenerator {
 		buffer.append("}");
 	}
 	
-	private String getCArrayListPointerType(String type) {
+	private String getCArrayPointerType(String type) {
 		if(type.contains("boolean")) return "unsigned char";
 		if(type.contains("char")) return "unsigned short";
 		if(type.contains("byte")) return "char";

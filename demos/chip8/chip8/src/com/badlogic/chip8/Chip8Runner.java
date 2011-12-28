@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  */
 public class Chip8Runner extends ApplicationAdapter {
-	private static final int CYCLES = 1000;
 
 	@Override
 	public void create () {

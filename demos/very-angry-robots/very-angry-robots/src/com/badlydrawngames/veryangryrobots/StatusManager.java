@@ -85,23 +85,9 @@ public class StatusManager implements WorldListener {
 	/** The number of times the player has been hit in this room. */
 	private int playerHits;
 
-	/** The number of rooms entered in this game. */
-	private int gameRoomsEntered;
-
-	/** The number of rooms exited in this game. */
-	private int gameRoomsExited;
-
-	/** The number of robots that have been shot during this game. */
-	private int gameRobotsShot;
 
 	/** The number of robots that have been destroyed in this game (including those that have been shot). */
 	private int gameRobotsDestroyed;
-
-	/** The number of times the player has been hit in this game. */
-	private int gamePlayerHits;
-
-	/** The number of times the player has cleared a room during this game. */
-	private int gameCleanRooms;
 
 	/** The number of times the player has cleared a room in a row. */
 	private int cleanRooms;
@@ -114,9 +100,6 @@ public class StatusManager implements WorldListener {
 
 	/** The number of times the player has fled from a room in a row. */
 	private int chickenRooms;
-
-	/** The number of times the player has fled from a room during this game. */
-	private int gameChickenRooms;
 
 	/** The time at which the daredevil achievement is fired. */
 	private float daredevilTime;
@@ -184,13 +167,7 @@ public class StatusManager implements WorldListener {
 		if (numGames == ADDICT_GAMES) {
 			achievement(Achievements.ADDICT);
 		}
-		gameRobotsShot = 0;
 		gameRobotsDestroyed = 0;
-		gameRoomsEntered = 0;
-		gameRoomsExited = 0;
-		gamePlayerHits = 0;
-		gameCleanRooms = 0;
-		gameChickenRooms = 0;
 		gameRoomsWithoutDying = 0;
 		cleanRooms = 0;
 		chickenRooms = 0;
@@ -206,17 +183,14 @@ public class StatusManager implements WorldListener {
 		robotsDestroyed = 0;
 		playerHits = 0;
 		daredevilTime = 0.0f;
-		gameRoomsEntered++;
 		numRobots = robots;
 	}
 
 	@Override
 	public void onExitedRoom (float time, int robots) {
-		gameRoomsExited++;
 		if (robots == 0) {
 			chickenRooms = 0;
 			cleanRooms++;
-			gameCleanRooms++;
 			if (cleanRooms == CLEAN_ROOMS) {
 				achievement(Achievements.PERFECTIONIST);
 			} else if (robotsShot == 0) {
@@ -225,7 +199,6 @@ public class StatusManager implements WorldListener {
 		} else {
 			cleanRooms = 0;
 			chickenRooms++;
-			gameChickenRooms++;
 			if (chickenRooms == CHICKEN_ROOMS) {
 				achievement(Achievements.COWARD);
 			}
@@ -244,7 +217,6 @@ public class StatusManager implements WorldListener {
 	@Override
 	public void onRobotHit (Robot robot) {
 		robotsShot++;
-		gameRobotsShot++;
 		if (robotsShot == numRobots) {
 			achievement(Achievements.PERFECT_SHOT);
 		}
@@ -269,7 +241,6 @@ public class StatusManager implements WorldListener {
 	public void onPlayerHit () {
 		daredevilTime = 0.0f;
 		playerHits++;
-		gamePlayerHits++;
 		isPlayerHit = true;
 	}
 

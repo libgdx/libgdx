@@ -107,6 +107,7 @@ public class JSONObject {
 	/** It is sometimes more convenient and less ambiguous to have a <code>NULL</code> object than to use Java's <code>null</code>
 	 * value. <code>JSONObject.NULL.equals(null)</code> returns <code>true</code>. <code>JSONObject.NULL.toString()</code> returns
 	 * <code>"null"</code>. */
+	@SuppressWarnings("synthetic-access")
 	public static final Object NULL = new Null();
 
 	/** Construct an empty JSONObject. */
@@ -120,6 +121,7 @@ public class JSONObject {
 	 * @param names An array of strings.
 	 * @throws JSONException
 	 * @exception JSONException If a value is a non-finite number or if a name is duplicated. */
+	@SuppressWarnings("javadoc")
 	public JSONObject (JSONObject jo, String[] names) {
 		this();
 		for (int i = 0; i < names.length; i += 1) {
@@ -187,6 +189,7 @@ public class JSONObject {
 	 * 
 	 * @param map A map object that can be used to initialize the contents of the JSONObject.
 	 * @throws JSONException */
+	@SuppressWarnings("javadoc")
 	public JSONObject (Map map) {
 		this.map = new HashMap();
 		if (map != null) {

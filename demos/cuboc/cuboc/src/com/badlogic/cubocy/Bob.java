@@ -78,7 +78,6 @@ public class Bob {
 		float x0 = (Gdx.input.getX(0) / (float)Gdx.graphics.getWidth()) * 480;
 		float x1 = (Gdx.input.getX(1) / (float)Gdx.graphics.getWidth()) * 480;
 		float y0 = 320 - (Gdx.input.getY(0) / (float)Gdx.graphics.getHeight()) * 320;
-		float y1 = 320 - (Gdx.input.getY(1) / (float)Gdx.graphics.getHeight()) * 320;
 
 		boolean leftButton = (Gdx.input.isTouched(0) && x0 < 70) || (Gdx.input.isTouched(1) && x1 < 70);
 		boolean rightButton = (Gdx.input.isTouched(0) && x0 > 70 && x0 < 134) || (Gdx.input.isTouched(1) && x1 > 70 && x1 < 134);

@@ -84,7 +84,6 @@ public class Field implements ContactListener {
 
 	/** Creates Box2D world, reads layout definitions for the given level (currently only one), and initializes the game to the
 	 * starting state.
-	 * @param context
 	 * @param level */
 	public void resetForLevel (int level) {
 		Vector2 gravity = new Vector2(0.0f, -1.0f);

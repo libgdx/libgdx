@@ -31,7 +31,6 @@ public class SimpleButton {
 	private boolean activated;
 	private boolean down;
 	private BitmapFont font;
-	private float textWidth;
 	private float textHeight;
 
 	public SimpleButton (String text, BitmapFont font) {
@@ -41,7 +40,6 @@ public class SimpleButton {
 		this.down = false;
 		this.font = font;
 		TextBounds bounds = Assets.textFont.getBounds(text);
-		textWidth = bounds.width;
 		textHeight = bounds.height;
 		w = bounds.width * 2;
 		h = bounds.height * 2;

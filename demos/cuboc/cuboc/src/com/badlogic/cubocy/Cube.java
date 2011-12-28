@@ -111,7 +111,6 @@ public class Cube {
 
 		boolean touch0 = Gdx.input.isTouched(0);
 		boolean touch1 = Gdx.input.isTouched(1);
-		boolean left = (touch0 && x0 < 60) || (touch1 && x1 < 60);
 		boolean right = (touch0 && (x0 > 80 && x0 < 128)) || (touch1 && (x1 > 80 && x1 < 128));
 		boolean down = (touch0 && (y0 < 60)) || (touch1 && (y1 < 60));
 		boolean up = (touch0 && (y0 > 80 && x0 < 128)) || (touch1 && (y1 > 80 && y1 < 128));
