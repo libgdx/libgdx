@@ -132,6 +132,19 @@
 		</ant>
 	</target>
 	
+	<!-- gdx bullet -->
+	<target name="gdx-bullet" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-jnigen.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
+			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
+			<property name="jar" value="gdx-bullet"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
 	
 	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio"/>
 </project>
