@@ -191,12 +191,15 @@
 		</javadoc>
 	</target>
 	
-	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio,docs">
+	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio,doc">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
 		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>
 		<copy tofile="${distDir}/CC-LICENSE" file="gdx/dist/CC-LICENSE"/>
 		<copy tofile="${distDir}/AUTHORS" file="gdx/dist/AUTHORS"/>
 		<copy tofile="${distDir}/CONTRIBUTORS" file="gdx/dist/CONTRIBUTORS"/>
+		
+		<!-- zip dist dir -->
+		<zip destfile="libgdx-${version}.zip" basedir="${dist}"/>
 	</target>
 </project>
