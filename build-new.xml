@@ -146,5 +146,12 @@
 	</target>
 	
 	
-	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio"/>
+	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio">
+		<!-- copy distribution files (licences etc.) -->
+		<copy tofile="${dist}/README" file="gdx/dist/README"/>
+		<copy tofile="${dist}/LICENSE" file="gdx/dist/LICENSE"/>
+		<copy tofile="${dist}/CC-LICENSE" file="gdx/dist/CC-LICENSE"/>
+		<copy tofile="${dist}/AUTHORS" file="gdx/dist/AUTHORS"/>
+		<copy tofile="${dist}/CONTRIBUTORS" file="gdx/dist/CONTRIBUTORS"/>
+	</target>
 </project>
