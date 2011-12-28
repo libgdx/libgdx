@@ -54,6 +54,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</condition>
 	</target>
 	<target name="compile-natives" depends="init, check-natives" if="natives-present">
+		<echo message="compiling natives code"/>
 		<ant antfile="build.xml" target="clean" dir="${jni}"/>
 		<ant antfile="build.xml" target="all" dir="${jni}"/>
 		<!-- copy shared libs for desktop -->
