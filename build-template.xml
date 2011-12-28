@@ -29,6 +29,12 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
 		<copy failonerror="false" tofile="${target}/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
 		<copy failonerror="false" tofile="${target}/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
+		<!-- need to copy jni headers for gdx-jnigen -->
+		<copy failonerror="false" todir="${target}">
+			<fileset dir="src">
+				<include name="**/*.h"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<!-- compiles the java code -->
