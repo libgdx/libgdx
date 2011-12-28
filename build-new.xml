@@ -1,6 +1,10 @@
 <project name="gdx" default="all" basedir=".">
 	<description>libgdx distribution build file</description>
 	<property environment="env" />
+	
+	<!-- ndk directory -->
+	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
+	
 	<!-- library version -->
 	<property name="version" value="0.9.3"/>
 	
