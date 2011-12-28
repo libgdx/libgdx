@@ -33,6 +33,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<copy failonerror="false" todir="${target}">
 			<fileset dir="src">
 				<include name="**/*.h"/>
+				<include name="**/*.template"/>
 			</fileset>
 		</copy>
 	</target>
