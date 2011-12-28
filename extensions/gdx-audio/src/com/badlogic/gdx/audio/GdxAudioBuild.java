@@ -22,6 +22,7 @@ public class GdxAudioBuild {
 		win32home.headerDirs = headerDirs;
 		win32home.cIncludes = cIncludes;
 		win32home.cppIncludes = cppIncludes;
+		win32home.excludeFromMasterBuildFile = true;
 		
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.cFlags += "-DFIXED_POINT";
