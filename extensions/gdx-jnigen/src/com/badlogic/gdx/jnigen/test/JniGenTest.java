@@ -34,6 +34,7 @@ public class JniGenTest {
 								  float[] floatArray,
 								  double[] doubleArray,
 								  String string); /*
+		asm("int $3");
 		printf("boolean: %s\n", boolArg?"true":"false");
 		printf("byte: %d\n", byteArg);
 		printf("char: %c\n", charArg);
@@ -50,17 +51,18 @@ public class JniGenTest {
 		printf("long[0]: %ll\n", longArray[0]);
 		printf("float[0]: %f\n", floatArray[0]);
 		printf("double[0]: %f\n", doubleArray[0]);
-		printf("string: %s\n", string);
+		printf("string: %s fuck this tits\n", string);
 	*/						  
 	
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new NativeCodeGenerator().generate("src", "bin", "jni");
+		new NativeCodeGenerator().generate();
 		
 		// generate build scripts, for win32 only
 		BuildConfig buildConfig = new BuildConfig("test");
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32.compilerPrefix = "";
+		win32.cppFlags += " -g";
 		new AntScriptGenerator().generate(buildConfig, win32);
 		
 		// build natives
@@ -74,7 +76,7 @@ public class JniGenTest {
 		JniGenTest.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, "Hurray");
 
 		// cleanup
-		new FileDescriptor("jni").deleteDirectory();
-		new FileDescriptor("libs").deleteDirectory();
+//		new FileDescriptor("jni").deleteDirectory();
+//		new FileDescriptor("libs").deleteDirectory();
 	}
 }

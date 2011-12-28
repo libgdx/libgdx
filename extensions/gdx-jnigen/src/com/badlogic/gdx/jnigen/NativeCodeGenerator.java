@@ -286,6 +286,10 @@ public class NativeCodeGenerator {
 		return new JavaMethod(name, nativeCode, arguments, start, end);
 	}
 
+	public void generate() throws Exception {
+		generate("src", "bin", "jni");
+	}
+	
 	public void generate(String sourceDir, String classpath, String jniDir) throws Exception {
 		this.sourceDir = new FileDescriptor(sourceDir);
 		this.jniDir = new FileDescriptor(jniDir);
