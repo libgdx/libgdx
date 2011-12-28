@@ -51,7 +51,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<condition property="natives-present">
 			<and>
 				<available file="${jni}/build.xml"/>
-				<not><os family="windows"/></not>
+				<istrue value="${build-natives}"/>
 			</and>
 		</condition>
 	</target>

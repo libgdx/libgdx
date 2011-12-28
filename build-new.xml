@@ -4,12 +4,14 @@
 	
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
+	<property name="build-natives" value="false"/>
 	
 	<!-- clean distribution/output directory -->
 	<target name="clean">
 		<delete dir="${distDir}"/>
 	</target>
 	
+	<!-- build the core of the library plus all backends -->
 	<!-- gdx jnigen -->
 	<target name="gdx-jnigen">
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
@@ -77,5 +79,59 @@
 		</ant>
 	</target>
 	
-	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android"/>
+	<!-- build the extensions -->
+	<!-- gdx tools -->
+	<target name="gdx-tools" depends="gdx-core,gdx-backend-lwjgl">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-tools">
+			<property name="distDir" value="${distDir}/extensions"/>
+			<property name="jar" value="gdx-tools"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	<!-- gdx tiled processor -->
+	<target name="gdx-tiled-preprocessor" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-tiled-preprocessor">
+			<property name="distDir" value="${distDir}/extensions"/>
+			<property name="jar" value="gdx-tiled-preprocessor"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	<!-- gdx stb truetype -->
+	<target name="gdx-stb-truetype" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-jnigen.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-stb-truetype">
+			<property name="distDir" value="${distDir}/extensions"/>
+			<property name="jar" value="gdx-stb-truetype"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	<!-- gdx audio -->
+	<target name="gdx-audio" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-jnigen.jar"/>
+		</path>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-audio">
+			<property name="distDir" value="${distDir}/extensions"/>
+			<property name="jar" value="gdx-audio"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	
+	<target name="all" depends="clean,gdx-core,gdx-openal,gdx-backend-jogl,gdx-backend-lwjgl,gdx-backend-android,gdx-tools,gdx-tiled-preprocessor,gdx-stb-truetype,gdx-audio"/>
 </project>
