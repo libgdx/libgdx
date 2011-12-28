@@ -200,6 +200,6 @@
 		<copy tofile="${distDir}/CONTRIBUTORS" file="gdx/dist/CONTRIBUTORS"/>
 		
 		<!-- zip dist dir -->
-		<zip destfile="libgdx-${version}.zip" basedir="${dist}"/>
+		<zip destfile="libgdx-${version}.zip" basedir="${distDir}"/>
 	</target>
 </project>
