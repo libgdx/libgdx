@@ -24,6 +24,8 @@
 	<target name="gdx-jnigen">
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-jnigen">
 			<property name="jar" value="gdx-jnigen"/>
+			<!-- we shouldn't build any natives -->
+			<property name="build-natives" value="false"/>
 		</ant>
 	</target>
 	
