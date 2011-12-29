@@ -64,8 +64,6 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<echo message="compiling natives code"/>
 		<ant antfile="build.xml" target="clean" dir="${jni}"/>
 		<ant antfile="build.xml" target="all" dir="${jni}"/>
-		<!-- copy shared libs for desktop -->
-		<copy failonerror="false" file="${libs}/${jar}-natives.jar" tofile="${distDir}/${jar}-natives.jar"/>
 		<!-- copy shared libs for android -->
 		<copy failonerror="false" todir="${distDir}/armeabi">
 			<fileset dir="${libs}/armeabi">
@@ -83,6 +81,9 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<target name="all" depends="compile,compile-natives">
 		<!-- source jar -->
 		<jar destfile="${distDir}/sources/${jar}-sources.jar" basedir="${src}" />
+		
+		<!-- copy shared libs for desktop -->
+		<copy failonerror="false" file="${libs}/${jar}-natives.jar" tofile="${distDir}/${jar}-natives.jar"/>
 		
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">

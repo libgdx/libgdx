@@ -54,6 +54,11 @@ public class JniGenTest {
 		printf("string: %s fuck this tits\n", string);
 	*/						  
 	
+	public static class TestInner {
+		public native void testInner(int arg); /*
+		*/
+	}
+	
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
 		new RobustNativeCodeGenerator().generate();
