@@ -44,10 +44,12 @@ public class MD5AnimationInfo {
 	public void update (float delta) {
 		lastTime += delta;
 
-		if (lastTime >= maxTime) {
+		lastTime %= maxTime * maxFrame;
+
+		while (lastTime >= maxTime) {
 			currFrame++;
 			nextFrame++;
-			lastTime = 0;
+			lastTime -= maxTime;
 
 			if (currFrame >= maxFrame) currFrame = 0;
 			if (nextFrame >= maxFrame) nextFrame = 0;
