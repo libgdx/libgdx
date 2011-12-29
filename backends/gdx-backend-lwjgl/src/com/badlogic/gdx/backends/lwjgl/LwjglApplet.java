@@ -33,11 +33,35 @@ public class LwjglApplet extends Applet {
 		public LwjglAppletApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
 			super(listener, useGL2, canvas);
 		}
+		
+		public LwjglAppletApplication(ApplicationListener listener, Canvas canvas, LwjglApplicationConfiguration config) {
+			super(listener, config, canvas);
+		}
 
 		@Override
 		public ApplicationType getType () {
 			return ApplicationType.Applet;
 		}
+	}
+	
+	public LwjglApplet(final ApplicationListener listener, final LwjglApplicationConfiguration config) {
+		LwjglNativesLoader.load = false;
+		canvas = new Canvas() {
+			public final void addNotify () {
+				super.addNotify();
+				app = new LwjglAppletApplication(listener, canvas, config);
+			}
+
+			public final void removeNotify () {
+				app.stop();
+				super.removeNotify();
+			}
+		};
+		setLayout(new BorderLayout());
+		canvas.setIgnoreRepaint(true);
+		add(canvas);
+		canvas.setFocusable(true);
+		canvas.requestFocus();
 	}
 
 	public LwjglApplet (final ApplicationListener listener, final boolean useGL2) {
