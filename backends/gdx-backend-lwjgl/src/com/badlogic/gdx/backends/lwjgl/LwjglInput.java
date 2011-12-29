@@ -122,7 +122,7 @@ final class LwjglInput implements Input {
 	}
 
 	public int getY () {
-		return Gdx.graphics.getHeight() - Mouse.getY();
+		return Gdx.graphics.getHeight() - 1 - Mouse.getY();
 	}
 
 	public boolean isAccelerometerAvailable () {
@@ -806,7 +806,7 @@ final class LwjglInput implements Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-		Mouse.setCursorPosition(x, y);
+		Mouse.setCursorPosition(x, y - 1);
 	}
 
 	@Override
