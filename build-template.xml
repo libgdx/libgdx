@@ -26,11 +26,12 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<!-- init task, creates all necessary directories -->
 	<target name="init" depends="clean">
 		<mkdir dir="${target}" />
+		<mkdir dir="${target}/java" />
 		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
-		<copy failonerror="false" tofile="${target}/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
-		<copy failonerror="false" tofile="${target}/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
+		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
+		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
 		<!-- need to copy jni headers for gdx-jnigen -->
-		<copy failonerror="false" todir="${target}">
+		<copy failonerror="false" todir="${target}/java">
 			<fileset dir="src">
 				<include name="**/*.h"/>
 				<include name="**/*.template"/>
@@ -40,7 +41,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 
 	<!-- compiles the java code -->
 	<target name="compile" depends="init">
-		<javac debug="on" srcdir="${src}" destdir="${target}">
+		<javac debug="on" srcdir="${src}" destdir="${target}/java">
 			<classpath>
 				<path refid="classpath"/>
 				<fileset file="${libs}/*.jar">
@@ -87,9 +88,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
-			<fileset dir="${target}">
-				<exclude name="**/native/**"/>
-			</fileset>
+			<fileset dir="${target}/java">
 			<!-- merge dependencies found in libs/ folder, exclude native, debug and android jars -->
 			<zipgroupfileset file="${libs}/*.jar">
 				<exclude name="*-natives.jar"/>
