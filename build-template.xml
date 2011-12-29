@@ -87,7 +87,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
 			<fileset dir="${target}">
-				<exclude name="**/native"/>
-			</filset>
+				<exclude name="**/native/*"/>
+			</fileset>
 	</target>
 </project>
