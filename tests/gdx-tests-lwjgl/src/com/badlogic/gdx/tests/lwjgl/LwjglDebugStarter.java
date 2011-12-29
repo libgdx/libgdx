@@ -24,6 +24,7 @@ import com.badlogic.gdx.tests.Box2DInitialOverlapTest;
 import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.EdgeDetectionTest;
+import com.badlogic.gdx.tests.FramebufferToTextureTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.PixmapTest;
@@ -38,7 +39,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		GdxTest test = new SpriteBatchTest();
+		GdxTest test = new FramebufferToTextureTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;

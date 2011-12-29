@@ -136,7 +136,11 @@ public final class World implements Disposable {
 	 * (b2_defaultFilter). The listener is owned by you and must remain in scope. */
 	public void setContactFilter (ContactFilter filter) {
 		this.contactFilter = filter;
+		setUseDefaultContactFilter(filter == null);
 	}
+	
+	/** tells the native code not to call the Java world class if use is false **/
+	private native void setUseDefaultContactFilter(boolean use);
 
 	/** Register a contact event listener. The listener is owned by you and must remain in scope. */
 	public void setContactListener (ContactListener listener) {

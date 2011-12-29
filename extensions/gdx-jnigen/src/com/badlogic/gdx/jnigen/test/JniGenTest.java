@@ -10,6 +10,7 @@ import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.FileDescriptor;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
+import com.badlogic.gdx.jnigen.RobustNativeCodeGenerator;
 import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public class JniGenTest {
@@ -55,24 +56,24 @@ public class JniGenTest {
 	
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new NativeCodeGenerator().generate();
+		new RobustNativeCodeGenerator().generate();
 		
 		// generate build scripts, for win32 only
-		BuildConfig buildConfig = new BuildConfig("test");
-		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-		win32.compilerPrefix = "";
-		win32.cppFlags += " -g";
-		new AntScriptGenerator().generate(buildConfig, win32);
-		
-		// build natives
-		BuildExecutor.executeAnt("jni/build.xml", "-v");
-		
-			
-		// load the test-natives.jar and from it the shared library, then execute the test. 
-		new SharedLibraryLoader("libs/test-natives.jar").load("test");
-		ByteBuffer buffer = ByteBuffer.allocateDirect(1);
-		buffer.put(0, (byte)8);
-		JniGenTest.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, "Hurray");
+//		BuildConfig buildConfig = new BuildConfig("test");
+//		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+//		win32.compilerPrefix = "";
+//		win32.cppFlags += " -g";
+//		new AntScriptGenerator().generate(buildConfig, win32);
+//		
+//		// build natives
+//		BuildExecutor.executeAnt("jni/build.xml", "-v");
+//		
+//			
+//		// load the test-natives.jar and from it the shared library, then execute the test. 
+//		new SharedLibraryLoader("libs/test-natives.jar").load("test");
+//		ByteBuffer buffer = ByteBuffer.allocateDirect(1);
+//		buffer.put(0, (byte)8);
+//		JniGenTest.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, "Hurray");
 
 		// cleanup
 //		new FileDescriptor("jni").deleteDirectory();

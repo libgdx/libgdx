@@ -149,6 +149,16 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_newWorld
 	return (jlong)world;
 }
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    setUseDefaultContactFilter
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setUseDefaultContactFilter
+  (JNIEnv *env, jobject obj, jboolean use) {
+
+}
+
 inline b2BodyType getBodyType( int type )
 {
 	switch( type )

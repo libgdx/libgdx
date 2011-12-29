@@ -25,6 +25,14 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_newWorld
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    setUseDefaultContactFilter
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_setUseDefaultContactFilter
+  (JNIEnv *, jobject, jboolean);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateBody
  * Signature: (JIFFFFFFFFZZZZZF)J
  */

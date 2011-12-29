@@ -53,6 +53,7 @@ public class ScreenUtils {
 	 * @param w the width of the framebuffer contents to capture
 	 * @param h the height of the framebuffer contents to capture */
 	public static TextureRegion getFrameBufferTexture (int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
 		final int potW = MathUtils.nextPowerOfTwo(w);
 		final int potH = MathUtils.nextPowerOfTwo(h);
 
@@ -88,6 +89,7 @@ public class ScreenUtils {
 	 * 
 	 * @param flipY whether to flip pixels along Y axis */
 	public static byte[] getFrameBufferPixels (int x, int y, int w, int h, boolean flipY) {
+		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
 		final ByteBuffer pixels = BufferUtils.newByteBuffer(w * h * 4);
 		Gdx.gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
 		final int numBytes = w * h * 4;
