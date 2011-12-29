@@ -25,8 +25,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderOld;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FramebufferToTextureTest extends GdxTest {
 
@@ -35,7 +37,7 @@ public class FramebufferToTextureTest extends GdxTest {
 		return false;
 	}
 
-	Texture fbTexture;
+	TextureRegion fbTexture;
 	Texture texture;
 	Mesh mesh;
 	PerspectiveCamera cam;
@@ -78,15 +80,13 @@ public class FramebufferToTextureTest extends GdxTest {
 		gl.glPopMatrix();
 
 		if (Gdx.input.justTouched() || fbTexture == null) {
-// if(fbTexture != null) fbTexture.dispose();
-// fbTexture = Texture.getFrameBufferTexture();
-// clearColor.set(MathUtils.random(), MathUtils.random(), MathUtils.random(), 1);
+			if(fbTexture != null) fbTexture.getTexture().dispose();
+ 			fbTexture = ScreenUtils.getFrameBufferTexture();
 		}
 
 		batch.begin();
 		if (fbTexture != null) {
-			batch.draw(fbTexture, 0, Gdx.graphics.getHeight() - 100, 100, 100, 0, 0, fbTexture.getWidth(), fbTexture.getHeight(),
-				false, true);
+			batch.draw(fbTexture, 0, 0, 100, 100);
 		}
 		font.draw(batch, "Touch screen to take a snapshot", 10, 40);
 		batch.end();
