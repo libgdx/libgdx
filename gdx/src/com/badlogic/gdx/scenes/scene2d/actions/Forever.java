@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.OnActionCompleted;
 import com.badlogic.gdx.scenes.scene2d.TemporalAction;
 
 public class Forever extends TemporalAction {
@@ -46,6 +47,7 @@ public class Forever extends TemporalAction {
 		if (action.isDone()) {
 			Action oldAction = action;
 			action = action.copy();
+			action.setCompletionListener(oldAction.getCompletionListener());
 			oldAction.finish();
 			action.setTarget(target);
 		}
