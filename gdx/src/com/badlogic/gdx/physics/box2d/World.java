@@ -101,10 +101,15 @@ public final class World implements Disposable {
 	private Vector2 rayNormal = new Vector2();
 
 	private float reportRayFixture (long addr, float pX, float pY, float nX, float nY, float fraction) {
-		if (rayCastCallback != null)
-			return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint.set(pX, pY), rayNormal.set(nX, nY), fraction);
-		else
+		if (rayCastCallback != null) {
+			rayPoint.x = pX;
+			rayPoint.y = pY;
+			rayNormal.x = nX;
+			rayNormal.y = nY;
+			return rayCastCallback.reportRayFixture(fixtures.get(addr), rayPoint, rayNormal, fraction);
+		} else {
 			return 0.0f;
+		}
 	}
 
 	/** Construct a world object.
