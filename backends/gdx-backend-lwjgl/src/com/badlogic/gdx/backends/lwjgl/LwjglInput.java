@@ -122,7 +122,7 @@ final class LwjglInput implements Input {
 	}
 
 	public int getY () {
-		return Gdx.graphics.getHeight() - 1 - Mouse.getY();
+		return Gdx.graphics.getHeight() - Mouse.getY();
 	}
 
 	public boolean isAccelerometerAvailable () {
