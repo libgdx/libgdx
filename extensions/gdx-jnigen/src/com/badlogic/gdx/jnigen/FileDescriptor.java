@@ -81,7 +81,7 @@ public class FileDescriptor {
 	}
 
 	public String path () {
-		return file.getPath();
+		return file.getPath().replace('\\', '/');
 	}
 
 	public String name () {

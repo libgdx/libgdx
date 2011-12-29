@@ -10,7 +10,7 @@ import com.badlogic.gdx.jnigen.NativeCodeGenerator;
 public class StbTrueTypeBuild {
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new NativeCodeGenerator().generate("src", "bin", "jni");
+		new NativeCodeGenerator().generate();
 		
 		// generate build scripts, for win32 only
 		// custom target for testing purposes

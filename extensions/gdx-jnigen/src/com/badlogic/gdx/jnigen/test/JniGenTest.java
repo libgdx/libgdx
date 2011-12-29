@@ -8,16 +8,10 @@ import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
-import com.badlogic.gdx.jnigen.FileDescriptor;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
-import com.badlogic.gdx.jnigen.RobustNativeCodeGenerator;
 import com.badlogic.gdx.jnigen.SharedLibraryLoader;
 
 public class JniGenTest {
-	/*JNI
-	#include <stdio.h>
-	 */
-	
 	public static native void test(boolean boolArg, 
 								  byte byteArg, 
 								  char charArg, 
@@ -40,7 +34,7 @@ public class JniGenTest {
 		printf("char: %c\n", charArg);
 		printf("short: %d\n", shortArg);
 		printf("int: %d\n", intArg);
-		printf("long: %ll\n", longArg);
+		printf("long: %l\n", longArg);
 		printf("float: %f\n", floatArg);
 		printf("double: %d\n", doubleArg);
 		printf("byteBuffer: %d\n", byteBuffer[0]);
@@ -51,37 +45,39 @@ public class JniGenTest {
 		printf("long[0]: %ll\n", longArray[0]);
 		printf("float[0]: %f\n", floatArray[0]);
 		printf("double[0]: %f\n", doubleArray[0]);
-		printf("string: %s fuck this tits\n", string);
-	*/						  
+		printf("string: %s fuck this nuts\n", string);
+		idgh gid u exokidess
+	*/					
+	
+	/*JNI
+	#include <stdio.h>
+	 */
 	
 	public static class TestInner {
 		public native void testInner(int arg); /*
+			printf("%d\n", arg);
 		*/
 	}
 	
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new RobustNativeCodeGenerator().generate();
+		new NativeCodeGenerator().generate("src", "bin", "jni", new String[] { "**/JniGenTest.java" }, null);
 		
 		// generate build scripts, for win32 only
-//		BuildConfig buildConfig = new BuildConfig("test");
-//		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-//		win32.compilerPrefix = "";
-//		win32.cppFlags += " -g";
-//		new AntScriptGenerator().generate(buildConfig, win32);
-//		
-//		// build natives
-//		BuildExecutor.executeAnt("jni/build.xml", "-v");
-//		
-//			
-//		// load the test-natives.jar and from it the shared library, then execute the test. 
-//		new SharedLibraryLoader("libs/test-natives.jar").load("test");
-//		ByteBuffer buffer = ByteBuffer.allocateDirect(1);
-//		buffer.put(0, (byte)8);
-//		JniGenTest.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, "Hurray");
-
-		// cleanup
-//		new FileDescriptor("jni").deleteDirectory();
-//		new FileDescriptor("libs").deleteDirectory();
+		BuildConfig buildConfig = new BuildConfig("test");
+		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
+		win32.compilerPrefix = "";
+		win32.cppFlags += " -g";
+		new AntScriptGenerator().generate(buildConfig, win32);
+		
+		// build natives
+		BuildExecutor.executeAnt("jni/build.xml", "-v");
+		
+			
+		// load the test-natives.jar and from it the shared library, then execute the test. 
+		new SharedLibraryLoader("libs/test-natives.jar").load("test");
+		ByteBuffer buffer = ByteBuffer.allocateDirect(1);
+		buffer.put(0, (byte)8);
+		JniGenTest.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, "Hurray");
 	}
 }

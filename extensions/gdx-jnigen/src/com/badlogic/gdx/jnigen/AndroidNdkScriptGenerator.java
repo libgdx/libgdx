@@ -83,12 +83,6 @@ public class AndroidNdkScriptGenerator {
 	}
 	
 	private boolean match(String file, String[] patterns) {
-		AntPathMatcher matcher = new AntPathMatcher();
-		for(String pattern: patterns) {
-			if(matcher.match(pattern, file)) {
-				return true;
-			}
-		}
-		return false;
+		return new AntPathMatcher().match(file, patterns);
 	}
 }

@@ -77,6 +77,16 @@ public class AntPathMatcher {
 		}
 		return tokens.toArray(new String[tokens.size()]);
 	}
+	
+	public boolean match(String file, String[] patterns) {
+		if(patterns == null || patterns.length == 0) return true;
+		for(String pattern: patterns) {
+			if(match(pattern, file)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean match(String pattern, String str) {
 		if (str.startsWith("/") != pattern.startsWith("/")) {
