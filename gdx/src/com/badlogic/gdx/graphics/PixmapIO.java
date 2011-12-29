@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * height and format, remaining bytes are zlib compressed pixels.
  * @author mzechner
  * @author Nathan Sweet */
-public class PixmapIO {
+public class PixmapIO { 
 	/** Writes the {@link Pixmap} to the given file using a custom compression scheme. To be able to load the Pixmap to a Texture,
 	 * use ".cim" as the file suffix! Throws a GdxRuntimeException in case the Pixmap couldn't be written to the file.
 	 * @param file the file to write the Pixmap to */
@@ -129,11 +129,11 @@ public class PixmapIO {
 	}
 
 	/** Minimal PNG encoder to create PNG streams (and MIDP images) from RGBA arrays.<br>
-	 * Copyright 2006-2009 Christian Fr�schlin www.chrfr.de<br>
+	 * Copyright 2006-2009 Christian Fröschlin www.chrfr.de<br>
 	 * Terms of Use: You may use the PNG encoder free of charge for any purpose you desire, as long as you do not claim credit for
 	 * the original sources and agree not to hold me responsible for any damage arising out of its use.<br>
 	 * If you have a suitable location in GUI or documentation for giving credit, I'd appreciate a non-mandatory mention of:<br>
-	 * PNG encoder (C) 2006-2009 by Christian Fr�schlin, www.chrfr.de */
+	 * PNG encoder (C) 2006-2009 by Christian Fröschlin, www.chrfr.de */
 	static private class PNG {
 		static int[] crcTable;
 		static final int ZLIB_BLOCK_SIZE = 32000;
