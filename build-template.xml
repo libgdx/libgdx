@@ -84,9 +84,10 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<jar destfile="${distDir}/sources/${jar}-sources.jar" basedir="${src}" />
 		
 		<!-- copy shared libs for desktop -->
-		<copy failonerror="false" todir="${libs}">
+		<copy failonerror="false" todir="${distDir}">
 			<fileset dir="${libs}">
-				<include name="*-natives.jar"/>
+				<include name="**/*-natives.jar"/>
+				<exclude name="**/test-natives.jar"/>
 			</fileset>
 		</copy>
 		
