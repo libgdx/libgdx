@@ -65,4 +65,15 @@ public class Animation {
 		}
 		return keyFrames[frameNumber];
 	}
+	
+	/**
+	 * Whether the animation would be finished if played without looping
+	 * given the state time.
+	 * @param stateTime
+	 * @return whether the animation is finished.
+	 */
+	public boolean isAnimationFinished (float stateTime) {
+	    int frameNumber = (int)(stateTime / frameDuration);
+	    return keyFrames.length - 1 < frameNumber;
+	}
 }
