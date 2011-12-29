@@ -28,6 +28,7 @@ import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.InputTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.SoundTest;
+import com.badlogic.gdx.tests.SpriteBatchTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.MD5Test;
 import com.badlogic.gdx.tests.StbTrueTypeTest;
@@ -37,10 +38,11 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
-		GdxTest test = new InputTest();
+		GdxTest test = new SpriteBatchTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.vSyncEnabled = true;
+		config.resizable = true;
 		new LwjglApplication(test, config);
 	}
 }

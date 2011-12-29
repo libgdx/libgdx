@@ -43,6 +43,8 @@ public class LwjglApplicationConfiguration {
 	public String title = "Lwjgl Application";
 	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
 	public boolean forceExit = true;
+	/** whether the window is resizable **/
+	public boolean resizable = true;
 
 	/** Sets the r, g, b and a bits per channel based on the given {@link DisplayMode} and sets the fullscreen flag to true.
 	 * @param mode */

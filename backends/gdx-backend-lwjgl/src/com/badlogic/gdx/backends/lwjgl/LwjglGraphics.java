@@ -152,6 +152,7 @@ public class LwjglGraphics implements Graphics {
 					+ config.fullscreen);
 		}
 		Display.setTitle(config.title);
+		Display.setResizable(config.resizable);
 		createDisplayPixelFormat();
 		initiateGLInstances();
 	}

@@ -185,6 +185,9 @@ public class LwjglApplication implements Application {
 			listener.render();
 			audio.update();
 			Display.update();
+			if(Display.wasResized()) {
+				if(listener != null) listener.resize(Display.getWidth(), Display.getHeight());
+			}
 			if (graphics.vsync && graphics.config.useCPUSynch) {
 				Display.sync(60);
 			}

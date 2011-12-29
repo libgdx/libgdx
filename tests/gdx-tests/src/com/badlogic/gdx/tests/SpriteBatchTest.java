@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class SpriteBatchTest extends GdxTest implements InputProcessor {
-	int SPRITES = 50000 / 2;
+	int SPRITES = 100 / 2;
 
 	long startTime = System.nanoTime();
 	int frames = 0;
@@ -219,6 +219,13 @@ public class SpriteBatchTest extends GdxTest implements InputProcessor {
 		}
 
 		Gdx.input.setInputProcessor(this);
+	}
+
+	
+	
+	@Override
+	public void resize(int width, int height) {
+		Gdx.app.log("SpriteBatchTest", "resized: " + width + ", " + height);
 	}
 
 	@Override
