@@ -192,10 +192,12 @@ public class Json {
 
 	public void toJson (Object object, Class knownType, Class elementType, Writer writer) {
 		if (!(writer instanceof JsonWriter)) {
-			this.writer = new JsonWriter(writer);
-			((JsonWriter)this.writer).setOutputType(outputType);
+			writer = new JsonWriter(writer);
 		}
+		((JsonWriter)writer).setOutputType(outputType);
+		this.writer = (JsonWriter)writer;
 		writeValue(object, knownType, elementType);
+		this.writer = null;
 	}
 
 	public void writeFields (Object object) {
