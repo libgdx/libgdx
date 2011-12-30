@@ -123,7 +123,7 @@
 	<target name="gdx-stb-truetype" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-jnigen.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-stb-truetype">
 			<property name="distDir" value="${distDir}/extensions"/>
@@ -136,7 +136,7 @@
 	<target name="gdx-audio" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-jnigen.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-audio">
 			<property name="distDir" value="${distDir}/extensions"/>
@@ -149,7 +149,7 @@
 	<target name="gdx-bullet" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-jnigen.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen.jar"/>
 		</path>
 		<ant antfile="../../build-template.xml" dir="extensions/gdx-bullet">
 			<property name="distDir" value="${distDir}/extensions/gdx-bullet"/>
