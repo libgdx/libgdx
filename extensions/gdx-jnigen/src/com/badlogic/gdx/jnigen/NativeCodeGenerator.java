@@ -185,13 +185,17 @@ public class NativeCodeGenerator {
 					if(file.name().contains("NativeCodeGenerator")) continue;
 					if(includes != null && !matcher.match(file.path(), includes)) continue;
 					if(excludes != null && matcher.match(file.path(), excludes)) continue;
+					String className = getFullyQualifiedClassName(file);
+					FileDescriptor hFile = new FileDescriptor(jniDir.path() + "/" + className + ".h");
+					FileDescriptor cppFile = new FileDescriptor(jniDir + "/" + className + ".cpp");
+					if(file.lastModified() < cppFile.lastModified()) {
+						System.out.println("C/C++ for '" + file.path() + "' up to date");
+						continue;
+					}
 					String javaContent = file.readString();
 					if (javaContent.contains(JNI_METHOD_MARKER)) {
 						System.out.print("Generating C/C++ for '" + file + "'...");
 						generateHFile(file);
-						String className = getFullyQualifiedClassName(file);
-						FileDescriptor hFile = new FileDescriptor(jniDir.path() + "/" + className + ".h");
-						FileDescriptor cppFile = new FileDescriptor(jniDir + "/" + className + ".cpp");
 						generateCppFile(javaContent, hFile, cppFile);
 						System.out.println("done");
 					}
