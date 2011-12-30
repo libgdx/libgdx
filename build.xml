@@ -37,6 +37,7 @@
 		</path>
 		<ant antfile="../build-template.xml" dir="gdx">
 			<property name="jar" value="gdx"/>
+			<reference refid="classpath"/>
 		</ant>
 	</target>
 	

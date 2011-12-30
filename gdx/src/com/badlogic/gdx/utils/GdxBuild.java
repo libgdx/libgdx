@@ -43,6 +43,6 @@ public class GdxBuild {
 		target.headerDirs = headerDirs;
 		
 		new AntScriptGenerator().generate(config, target);
-		BuildExecutor.executeAnt(JNI_DIR + "/build-windows32.xml", "clean link -v");
+		BuildExecutor.executeAnt(JNI_DIR + "/build-windows32.xml", "");
 	}
 }
