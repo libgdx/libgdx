@@ -39,6 +39,10 @@
 			<property name="jar" value="gdx"/>
 			<reference refid="classpath"/>
 		</ant>
+		<!-- the ndk clean process deletes all shared libs in libs/armeabi(-v7a), need to copy
+		the GLES 2.0 bindings manually... -->
+		<copy tofile="${distDir}/armeabi/libandroidgl20.so" file="gdx/dist/armeabi/libandroidgl20.so"/>
+		<copy tofile="${distDir}/armeabi-v7a/libandroidgl20.so" file="gdx/dist/armeabi-v7a/libandroidgl20.so"/>
 	</target>
 	
 	<!-- gdx openal, for all desktop backends -->
