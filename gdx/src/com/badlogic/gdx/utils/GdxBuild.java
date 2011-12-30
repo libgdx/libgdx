@@ -36,7 +36,7 @@ public class GdxBuild {
 
 		// build
 		String[] headerDirs = { "./", "etc1/", "gdx2d/" };
-		BuildConfig config = new BuildConfig("gdx", "native", LIBS_DIR, JNI_DIR);
+		BuildConfig config = new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR);
 		BuildTarget target = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		target.compilerPrefix = "";
 		target.excludeFromMasterBuildFile = true;
