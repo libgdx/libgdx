@@ -30,12 +30,6 @@ import java.nio.ShortBuffer;
  * 
  * @author mzechner */
 public class BufferUtils {
-	/** Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS ALLOCATEd VIA METHODS IN THIS CLASS OR
-	 * ByteBuffer.allocateDirect()! IT WILL EXPLODE! */
-	public static native void freeMemory (ByteBuffer buffer) /*-{ }-*/;
-
-	public static native ByteBuffer newDisposableByteBuffer (int numBytes);
-
 	/** Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
 	 * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
 	 * buffer. After the copying process the position of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a
@@ -224,25 +218,7 @@ public class BufferUtils {
 		else
 			throw new GdxRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
 	}
-
-	private native static void copyJni (float[] src, Buffer dst, int numFloats, int offset) /*-{ }-*/;
-
-	private native static void copyJni (byte[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (char[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (short[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (int[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (long[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (float[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (double[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
-	private native static void copyJni (Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes) /*-{ }-*/;
-
+	
 	public static FloatBuffer newFloatBuffer (int numFloats) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
 		buffer.order(ByteOrder.nativeOrder());
@@ -284,7 +260,65 @@ public class BufferUtils {
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asLongBuffer();
 	}
+	
+	/*JNI 
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	*/
+	
+	/** Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS ALLOCATEd VIA METHODS IN THIS CLASS OR
+	 * ByteBuffer.allocateDirect()! IT WILL EXPLODE! */
+	public static native void freeMemory (ByteBuffer buffer); /*
+		free(buffer);
+	*/
 
+	/** Allocates a new direct ByteBuffer from native heap memory. Needs to be disposed with {@link #freeMemory(ByteBuffer)}. 
+	 * @param numBytes
+	 */
+	public static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
+		char* ptr = (char*)malloc(numBytes);
+		return env->NewDirectByteBuffer(ptr, numBytes);
+	*/
+	
 	/** Writes the specified number of zeros to the buffer. This is generally faster than reallocating a new buffer. */
-	public static native void clear (ByteBuffer buffer, int numBytes);
+	public static native void clear (ByteBuffer buffer, int numBytes); /*
+		memset(buffer, 0, numBytes);
+	*/
+	
+	private native static void copyJni (float[] src, Buffer dst, int numFloats, int offset); /*
+		memcpy(dst, src + offset, numFloats << 2 );
+	*/
+
+	private native static void copyJni (byte[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+
+	private native static void copyJni (char[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+
+	private native static void copyJni (short[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	 */
+
+	private native static void copyJni (int[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+	
+	private native static void copyJni (long[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+
+	private native static void copyJni (float[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+	
+	private native static void copyJni (double[] src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+
+	private native static void copyJni (Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
+		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
 }

@@ -163,35 +163,6 @@ public class Gdx2DPixmap implements Disposable {
 		}
 	}
 
-	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat);
-
-	private static native ByteBuffer newPixmap (long[] nativeData, int width, int height, int format);
-
-	private static native void free (long basePtr);
-
-	private static native void clear (long pixmap, int color);
-
-	private static native void setPixel (long pixmap, int x, int y, int color);
-
-	private static native int getPixel (long pixmap, int x, int y);
-
-	private static native void drawLine (long pixmap, int x, int y, int x2, int y2, int color);
-
-	private static native void drawRect (long pixmap, int x, int y, int width, int height, int color);
-
-	private static native void drawCircle (long pixmap, int x, int y, int radius, int color);
-
-	private static native void fillRect (long pixmap, int x, int y, int width, int height, int color);
-
-	private static native void fillCircle (long pixmap, int x, int y, int radius, int color);
-
-	private static native void drawPixmap (long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
-		int dstY, int dstWidth, int dstHeight);
-
-	public static native void setBlend (int blend);
-
-	public static native void setScale (int scale);
-
 	public ByteBuffer getPixels () {
 		return pixelPtr;
 	}
@@ -263,4 +234,87 @@ public class Gdx2DPixmap implements Disposable {
 			return "unknown";
 		}
 	}
+	
+	/*JNI
+	#include <gdx2d.h>
+	#include <stdlib.h>
+	 */
+	
+	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*
+		gdx2d_pixmap* pixmap = gdx2d_load((const unsigned char*)buffer + offset, len, requestedFormat);
+	
+		if(pixmap==0)
+			return 0;
+	
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+		nativeData[0] = (jlong)pixmap;
+		nativeData[1] = pixmap->width;
+		nativeData[2] = pixmap->height;
+		nativeData[3] = pixmap->format;
+	
+		return pixel_buffer;
+	*/
+
+	private static native ByteBuffer newPixmap (long[] nativeData, int width, int height, int format); /*
+		gdx2d_pixmap* pixmap = gdx2d_new(width, height, format);
+		if(pixmap==0)
+			return 0;
+	
+		jobject pixel_buffer = env->NewDirectByteBuffer((void*)pixmap->pixels, pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format));
+		nativeData[0] = (jlong)pixmap;
+		nativeData[1] = pixmap->width;
+		nativeData[2] = pixmap->height;
+		nativeData[3] = pixmap->format;
+	
+		return pixel_buffer;
+	*/
+
+	private static native void free (long pixmap); /*
+		gdx2d_free((gdx2d_pixmap*)pixmap);
+	*/
+
+	private static native void clear (long pixmap, int color); /*
+		gdx2d_clear((gdx2d_pixmap*)pixmap, color);
+	*/
+
+	private static native void setPixel (long pixmap, int x, int y, int color); /*
+		gdx2d_set_pixel((gdx2d_pixmap*)pixmap, x, y, color);
+	*/
+
+	private static native int getPixel (long pixmap, int x, int y); /*
+		return gdx2d_get_pixel((gdx2d_pixmap*)pixmap, x, y);
+	*/
+
+	private static native void drawLine (long pixmap, int x, int y, int x2, int y2, int color); /*
+		gdx2d_draw_line((gdx2d_pixmap*)pixmap, x, y, x2, y2, color);
+	*/
+
+	private static native void drawRect (long pixmap, int x, int y, int width, int height, int color); /*
+		gdx2d_draw_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
+	*/
+
+	private static native void drawCircle (long pixmap, int x, int y, int radius, int color); /*
+		gdx2d_draw_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);	
+	*/
+
+	private static native void fillRect (long pixmap, int x, int y, int width, int height, int color); /*
+		gdx2d_fill_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
+	*/
+
+	private static native void fillCircle (long pixmap, int x, int y, int radius, int color); /*
+		gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
+	*/
+
+	private static native void drawPixmap (long src, long dst, int srcX, int srcY, int srcWidth, int srcHeight, int dstX,
+		int dstY, int dstWidth, int dstHeight); /*
+		gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
+	*/
+
+	public static native void setBlend (int blend); /*
+		gdx2d_set_blend(blend);
+	*/
+
+	public static native void setScale (int scale); /*
+		gdx2d_set_scale(scale);
+	*/
 }
