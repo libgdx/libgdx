@@ -1,4 +1,4 @@
-<project name="gdx-stbtruetype-Linux-32" basedir="." default="postcompile">
+<project name="gdx-stb-truetype-Linux-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/linux32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="libgdx-stbtruetype.so"/>
+	<property name="libName" value="libgdx-stb-truetype.so"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="linux"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->

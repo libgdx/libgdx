@@ -1,4 +1,4 @@
-<project name="gdx-stbtruetype-Windows-32" basedir="." default="postcompile">
+<project name="gdx-stb-truetype-Windows-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/windows32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="gdx-stbtruetype.dll"/>
+	<property name="libName" value="gdx-stb-truetype.dll"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
