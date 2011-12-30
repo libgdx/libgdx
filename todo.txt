@@ -60,6 +60,3 @@ DecalBatch
 	remove?
 SpriteBatch
 	origin fubar
-LWJGL
-	update to latest
-	replace LwjglFrame with Display.setResizable

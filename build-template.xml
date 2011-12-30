@@ -91,6 +91,18 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			</fileset>
 		</copy>
 		
+		<!-- copy shared libs for android -->
+		<copy failonerror="false" todir="${distDir}/armeabi">
+			<fileset dir="${libs}/armeabi">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+		<copy failonerror="false" todir="${distDir}/armeabi-v7a">
+			<fileset dir="${libs}/armeabi-v7a">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+		
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
 			<fileset dir="${target}/java"/>
