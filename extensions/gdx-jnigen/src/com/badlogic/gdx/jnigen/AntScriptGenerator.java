@@ -38,6 +38,9 @@ import com.badlogic.gdx.jnigen.FileDescriptor.FileType;
  * platform, provided that the compilers are available on the system. Mac OS X might have to be
  * treated separately as there are no cross-compilers for it.</p>
  * 
+ * The generator will also copy the necessary JNI headers to the jni/jni-headers folder for Windows, Linux and
+ * Mac OS X.</p>
+ * 
  * @author mzechner
  *
  */
@@ -56,6 +59,9 @@ public class AntScriptGenerator {
 		if(!config.jniDir.exists()) {
 			if(!config.jniDir.mkdirs()) throw new RuntimeException("Couldn't create native code directory '" + config.jniDir + "'");
 		}
+		
+		// copy jni headers
+		copyJniHeaders(config.jniDir.path());
 		
 		ArrayList<String> buildFiles = new ArrayList<String>();
 		ArrayList<String> libsDirs = new ArrayList<String>();
@@ -102,6 +108,25 @@ public class AntScriptGenerator {
 		
 		config.jniDir.child("build.xml").writeString(template, false);
 		System.out.println("Wrote master build script '" + config.jniDir.child("build.xml") + "'");
+	}
+	
+	private void copyJniHeaders(String jniDir) {
+		final String pack = "com/badlogic/gdx/jnigen/resources/headers";
+		String files[] = {
+			"classfile_constants.h",
+			"jawt.h",
+			"jdwpTransport.h",
+			"jni.h",
+			"linux/jawt_md.h",
+			"linux/jni_md.h",
+			"mac/jni_md.h",
+			"win32/jawt_md.h",
+			"win32/jni_md.h"
+		};
+		
+		for(String file: files) {
+			new FileDescriptor(pack, FileType.Classpath).child(file).copyTo(new FileDescriptor(jniDir).child("jni-headers").child(file));
+		}
 	}
 	
 	private String getSharedLibFilename(TargetOs os, boolean is64Bit, String sharedLibName) {

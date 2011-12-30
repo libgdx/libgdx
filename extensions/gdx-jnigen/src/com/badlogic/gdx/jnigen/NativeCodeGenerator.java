@@ -86,9 +86,6 @@ import com.badlogic.gdx.jnigen.parsing.RobustJavaMethodParser;
  * <li>JNI output directory, where the resulting .h and .cpp files will be stored, e.g. jni/</li>
  * </ul>
  * 
- * The generator will also copy the necessary JNI headers to the jni/jni-headers folder for Windows, Linux and
- * Mac OS X.</p>
- * 
  * A default invocation of the generator looks like this:
  * 
  * <pre>
@@ -172,30 +169,8 @@ public class NativeCodeGenerator {
 			}
 		}
 		
-		// copy over the jni headers from the resources package
-		copyJniHeaders(jniDir);
-		
 		// process the source directory, emitting c/c++ files to jniDir
 		processDirectory(this.sourceDir);
-	}
-	
-	private void copyJniHeaders(String jniDir) {
-		final String pack = "com/badlogic/gdx/jnigen/resources/headers";
-		String files[] = {
-			"classfile_constants.h",
-			"jawt.h",
-			"jdwpTransport.h",
-			"jni.h",
-			"linux/jawt_md.h",
-			"linux/jni_md.h",
-			"mac/jni_md.h",
-			"win32/jawt_md.h",
-			"win32/jni_md.h"
-		};
-		
-		for(String file: files) {
-			new FileDescriptor(pack, FileType.Classpath).child(file).copyTo(new FileDescriptor(jniDir).child("jni-headers").child(file));
-		}
 	}
 
 	private void processDirectory(FileDescriptor dir) throws Exception {
