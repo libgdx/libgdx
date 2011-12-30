@@ -1,4 +1,4 @@
-<project name="stbtruetype-Windows-32" basedir="." default="link">
+<project name="gdx-stbtruetype-Windows-32" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -6,7 +6,7 @@
 	<!-- output directory for the shared library -->
 	<property name="libsDir" value="../libs/windows32" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="stbtruetype.dll"/>
+	<property name="libName" value="gdx-stbtruetype.dll"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="win32"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
@@ -45,9 +45,26 @@
 	<target name="precompile">
 		
 	</target>
+	
+	<target name="create-build-dir" depends="precompile">
+		<touch mkdirs="true" verbose="false">
+			<fileset refid="g++-files"/>
+			<mapper type="glob" from="*" to="${buildDir}/*" />
+		</touch>
+		<delete>
+			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+		</delete>
+		<touch mkdirs="true" verbose="false">
+			<fileset refid="gcc-files"/>
+			<mapper type="glob" from="*" to="${buildDir}/*" />
+		</touch>
+		<delete>
+			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+		</delete>
+	</target>
 
 	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="precompile">
+	<target name="compile" depends="create-build-dir" >
 		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
@@ -60,7 +77,6 @@
 			<targetfile/>
 			<fileset refid="g++-files"/>
 			<chainedmapper>
-				<flattenmapper/>
 				<mapper type="glob" from="*.cpp" to="*.o"/>
 			</chainedmapper>
 		</apply>
@@ -75,7 +91,6 @@
 			<targetfile/>
 			<fileset refid="gcc-files"/>
 			<chainedmapper>
-				<flattenmapper/>
 				<mapper type="glob" from="*.c" to="*.o"/>
 			</chainedmapper>
 		</apply>
@@ -96,7 +111,7 @@
 		</apply>
 	</target>	
 	
-	<target name="postcompile">
+	<target name="postcompile" depends="link">
 		
 	</target>
 </project>

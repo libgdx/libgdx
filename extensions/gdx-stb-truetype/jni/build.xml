@@ -1,4 +1,4 @@
-<project name="stbtruetype-natives" basedir="." default="all">
+<project name="gdx-stbtruetype-natives" basedir="." default="all">
 	<target name="clean">
 		<ant antfile="build-windows32.xml" target="clean"/>
 		<ant antfile="build-windows64.xml" target="clean"/>
@@ -18,8 +18,8 @@
 	</target>
 	
 	<target name="pack-natives">
-		<jar destfile="../libs/stbtruetype-natives.jar">
-			<fileset dir="../libs/windows32" includes="stbtruetype.dll"/>			<fileset dir="../libs/windows64" includes="stbtruetype64.dll"/>			<fileset dir="../libs/linux32" includes="libstbtruetype.so"/>			<fileset dir="../libs/linux64" includes="libstbtruetype64.so"/>			<fileset dir="../libs/android32" includes="libstbtruetype.so"/>
+		<jar destfile="../libs/gdx-stbtruetype-natives.jar">
+			<fileset dir="../libs/windows32" includes="gdx-stbtruetype.dll"/>			<fileset dir="../libs/windows64" includes="gdx-stbtruetype64.dll"/>			<fileset dir="../libs/linux32" includes="libgdx-stbtruetype.so"/>			<fileset dir="../libs/linux64" includes="libgdx-stbtruetype64.so"/>			<fileset dir="../libs/android32" includes="libgdx-stbtruetype.so"/>
 		</jar>
 	</target>
 

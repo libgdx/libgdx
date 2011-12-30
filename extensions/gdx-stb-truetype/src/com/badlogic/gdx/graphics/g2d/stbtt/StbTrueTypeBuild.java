@@ -24,7 +24,7 @@ public class StbTrueTypeBuild {
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		new AntScriptGenerator().generate(new BuildConfig("stbtruetype"), win32home, win32, win64, lin32, lin64, mac, android);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-stbtruetype"), win32home, win32, win64, lin32, lin64, mac, android);
 		
 		// build natives
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");

@@ -10,7 +10,7 @@ import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 public class BulletBuild {
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new NativeCodeGenerator().generate("src", "bin", "jni");
+		new NativeCodeGenerator().generate("src", "bin", "jni", null, new String[] { "**/BulletBuild.java" });
 
 		// generate build scripts, for win32 only
 		// custom target for testing purposes
@@ -55,7 +55,7 @@ public class BulletBuild {
 		android.cExcludes = android.cppExcludes = excludes;
 		android.headerDirs = headers;
 		
-		new AntScriptGenerator().generate(new BuildConfig("bullet"), win32home, win32, win64, lin32, lin64, mac, android);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, android);
 
 		// build natives
 		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
