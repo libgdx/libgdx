@@ -73,7 +73,7 @@ public interface JavaMethodParser {
 		
 		public String getBufferCType() {
 			if(!this.isBuffer()) throw new RuntimeException("ArgumentType " + this + " is not a Buffer!");
-			if(this == Buffer) return "char*";
+			if(this == Buffer) return "unsigned char*";
 			if(this == ByteBuffer) return "char*";
 			if(this == CharBuffer) return "unsigned short*";
 			if(this == ShortBuffer) return "short*";

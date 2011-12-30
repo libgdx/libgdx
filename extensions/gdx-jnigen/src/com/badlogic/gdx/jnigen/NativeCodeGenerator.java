@@ -1,6 +1,7 @@
 package com.badlogic.gdx.jnigen;
 
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.jnigen.FileDescriptor.FileType;
@@ -15,6 +16,92 @@ import com.badlogic.gdx.jnigen.parsing.JavaMethodParser.JniSection;
 import com.badlogic.gdx.jnigen.parsing.JniHeaderCMethodParser;
 import com.badlogic.gdx.jnigen.parsing.RobustJavaMethodParser;
 
+/**
+ * Goes through a Java source directory, checks each .java file for native methods and emits
+ * C/C++ code accordingly, both .h and .cpp files.
+ * 
+ * <h2>Augmenting Java Files with C/C++</h2>
+ * C/C++ code can be directly added to native methods in the Java file as block comments starting at the
+ * same line as the method signature. Custom JNI code that is not associated with a native method can be
+ * added via a special block comment as shown below.</p>
+ * 
+ * All arguments can be accessed by the name specified in the Java native method signature (unless you use $ in your identifier which is allowed in Java).
+ * 
+ * <pre>
+ * package com.badlogic.jnigen;
+ * 
+ * public class MyJniClass {
+ *   /*JNI
+ *   #include &lt;math.h&gt;
+ *   *<i>/</i>
+ * 
+ *   public native void addToArray(float[] array, int len, float value); /*
+ *     for(int i = 0; i < len; i++) {
+ *       array[i] = value;
+ *     }
+ *   *<i>/</i>
+ * }
+ * </pre>
+ * 
+ * The generated header file is automatically included in the .cpp file. Methods and custom JNI code
+ * can be mixed throughout the Java file, their order is preserved in the generated .cpp file. Method
+ * overloading is supported but not recommended as the overloading detection is very basic.</p>
+ * 
+ * If a native method has strings, one dimensional primitive arrays or direct {@link Buffer} instances as arguments,
+ * JNI setup and cleanup code is automatically generated.</p>
+ * 
+ * The following list gives the mapping from Java
+ * to C/C++ types for arguments:
+ * 
+ * <table border="1">
+ * <tr><td>Java</td><td>C/C++</td></tr>
+ * <tr><td>String</td><td>unsigned char* (UTF-8)</td></tr>
+ * <tr><td>boolean[]</td><td>bool*</td></tr>
+ * <tr><td>byte[]</td><td>char*</td></tr>
+ * <tr><td>char[]</td><td>unsigned short*</td></tr>
+ * <tr><td>short[]</td><td>short*</td></tr>
+ * <tr><td>int[]</td><td>int*</td></tr>
+ * <tr><td>long[]</td><td>long long*</td></tr>
+ * <tr><td>float[]</td><td>float*</td></tr>
+ * <tr><td>double[]</td><td>double*</td></tr>
+ * <tr><td>Buffer</td><td>unsigned char*</td></tr>
+ * <tr><td>ByteBuffer</td><td>char*</td></tr>
+ * <tr><td>CharBuffer</td><td>unsigned short*</td></tr>
+ * <tr><td>ShortBuffer</td><td>short*</td></tr>
+ * <tr><td>IntBuffer</td><td>int*</td></tr>
+ * <tr><td>LongBuffer</td><td>long long*</td></tr>
+ * <tr><td>FloatBuffer</td><td>float*</td></tr>
+ * <tr><td>DoubleBuffer</td><td>double*</td></tr>
+ * <tr><td>Anything else</td><td>jobject</td></tr>
+ * </table>
+ * 
+ * <h2>.h/.cpp File Generation</h2>
+ * The .h files are created via javah, which has to be on your path. The Java classes have to be compiled and
+ * accessible to the javah tool. The name of the generated .h/.cpp files is the fully qualified name of the
+ *  class, e.g. com.badlogic.jnigen.MyJniClass.h/.cpp. The generator takes the following parameters as input:
+ *  
+ * <ul>
+ * <li>Java source directory, containing the .java files, e.g. src/ in an Eclipse project</li>
+ * <li>Java class directory, containing the compiled .class files, e.g. bin/ in an Eclipse project</li>
+ * <li>JNI output directory, where the resulting .h and .cpp files will be stored, e.g. jni/</li>
+ * </ul>
+ * 
+ * The generator will also copy the necessary JNI headers to the jni/jni-headers folder for Windows, Linux and
+ * Mac OS X.</p>
+ * 
+ * A default invocation of the generator looks like this:
+ * 
+ * <pre>
+ * new NativeCodeGenerator().generate("src", "bin", "jni");
+ * </pre>
+ * 
+ * To automatically compile and load the native code, see the classes {@link AntScriptGenerator}, {@link BuildExecutor}
+ * and {@link SharedLibraryLoader} classes.
+ * </p>
+ * 
+ * @author mzechner
+ *
+ */
 public class NativeCodeGenerator {
 	private static final String JNI_METHOD_MARKER = "native";
 	private static final String JNI_ARG_PREFIX = "obj_";
@@ -30,14 +117,42 @@ public class NativeCodeGenerator {
 	CMethodParser cMethodParser = new JniHeaderCMethodParser();
 	CMethodParserResult cResult;
 	
+	/**
+	 * Generates .h/.cpp files from the Java files found in "src/", with their .class files
+	 * being in "bin/". The generated files will be stored in "jni/". All paths are relative
+	 * to the applications working directory. 
+	 * @throws Exception
+	 */
 	public void generate() throws Exception {
 		generate("src", "bin", "jni", new String[0], new String[0]);
 	}
 	
+	/**
+	 * Generates .h/.cpp fiels from the Java files found in <code>sourceDir</code>, with
+	 * their .class files being in <code>classpath</code>. The generated files will be stored
+	 * in <code>jniDir</code>. All paths are relative to the applications working directory.
+	 * @param sourceDir the directory containing the Java files
+	 * @param classpath the directory containing the .class files
+	 * @param jniDir the output directory
+	 * @throws Exception
+	 */
 	public void generate(String sourceDir, String classpath, String jniDir) throws Exception {
 		generate(sourceDir, classpath, jniDir, null, null);
 	}
 	
+	/**
+	 * Generates .h/.cpp fiels from the Java files found in <code>sourceDir</code>, with
+	 * their .class files being in <code>classpath</code>. The generated files will be stored
+	 * in <code>jniDir</code>. The <code>includes</code> and <code>excludes</code> parameters
+	 * allow to specify directories and files that should be included/excluded from the generation.
+	 * These can be given in the Ant path format. All paths are relative to the applications working directory.
+	 * @param sourceDir the directory containing the Java files
+	 * @param classpath the directory containing the .class files
+	 * @param jniDir the output directory
+	 * @param includes files/directories to include, can be null (all files are used)
+	 * @param excludes files/directories to exclude, can be null (no files are excluded)
+	 * @throws Exception
+	 */
 	public void generate(String sourceDir, String classpath, String jniDir, String[] includes, String[] excludes) throws Exception {
 		this.sourceDir = new FileDescriptor(sourceDir);
 		this.jniDir = new FileDescriptor(jniDir);
@@ -313,7 +428,7 @@ public class NativeCodeGenerator {
 		// string pointers
 		for(Argument arg: javaMethod.getArguments()) {
 			if(arg.getType().isString()) {
-				String type = "char*";
+				String type = "unsigned char*";
 				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);
