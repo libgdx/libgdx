@@ -138,9 +138,11 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		type = type.replace("[", "").replace("]", "");
 		
 		if(arrayDim >= 1) {
-			if(arrayDim > 1) return ArgumentType.Object;
+			if(arrayDim > 1) return ArgumentType.ObjectArray;
 			ArgumentType arrayType = arrayTypes.get(type);
-			if(arrayType == null) return ArgumentType.Object;
+			if(arrayType == null) {
+				throw new RuntimeException("Unknown array type " + type);
+			}
 			return arrayType;
 		}
 		

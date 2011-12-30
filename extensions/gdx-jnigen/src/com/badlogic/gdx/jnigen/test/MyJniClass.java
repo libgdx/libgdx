@@ -28,6 +28,7 @@ public class MyJniClass {
 								  long[] longArray,
 								  float[] floatArray,
 								  double[] doubleArray,
+								  double[][] multidim,
 								  String string); /*
 		printf("boolean: %s\n", boolArg?"true":"false");
 		printf("byte: %d\n", byteArg);
@@ -52,11 +53,11 @@ public class MyJniClass {
 	#include <stdio.h>
 	 */
 	
-	public static class TestInner {
-		public native void testInner(int arg); /*
-			printf("%d\n", arg);
-		*/
-	}
+//	public static class TestInner {
+//		public native void testInner(int arg); /*
+//			printf("%d\n", arg);
+//		*/
+//	}
 	
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
@@ -76,6 +77,6 @@ public class MyJniClass {
 		new SharedLibraryLoader("libs/test-natives.jar").load("test");
 		ByteBuffer buffer = ByteBuffer.allocateDirect(1);
 		buffer.put(0, (byte)8);
-		MyJniClass.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, "Hurray");
+		MyJniClass.test(true, (byte)1, (char)2, (short)3, 4, 5, 6, 7, buffer, new boolean[] { false }, new char[] { 9 }, new short[] { 10 }, new int[] { 11 }, new long[] { 12 }, new float[] { 13 }, new double[] { 14 }, null, "Hurray");
 	}
 }

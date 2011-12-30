@@ -72,7 +72,7 @@ import com.badlogic.gdx.jnigen.parsing.RobustJavaMethodParser;
  * <tr><td>LongBuffer</td><td>long long*</td></tr>
  * <tr><td>FloatBuffer</td><td>float*</td></tr>
  * <tr><td>DoubleBuffer</td><td>double*</td></tr>
- * <tr><td>Anything else</td><td>jobject</td></tr>
+ * <tr><td>Anything else</td><td>jobject/jobjectArray</td></tr>
  * </table>
  * 
  * <h2>.h/.cpp File Generation</h2>
@@ -251,7 +251,19 @@ public class NativeCodeGenerator {
 			if(cMethod.getHead().contains(javaMethod.getClassName() + "_" + javaMethod.getName())) {
 				// FIXME poor man's overloaded method check...
 				if(cMethod.getArgumentTypes().length - 2 == javaMethod.getArguments().size()) {
-					return cMethod;
+					boolean match = true;
+					for(int i = 2; i < cMethod.getArgumentTypes().length; i++) {
+						String cType = cMethod.getArgumentTypes()[i];
+						String javaType = javaMethod.getArguments().get(i-2).getType().getJniType();
+						if(!cType.equals(javaType)) {
+							match = false;
+							break;
+						}
+					}
+					
+					if(match) {
+						return cMethod;
+					}
 				}
 			}
 		}
@@ -426,7 +438,7 @@ public class NativeCodeGenerator {
 		// Array pointers, we have to collect those last as GetPrimitiveArrayCritical 
 		// will explode into our face if we call another JNI method after that.
 		for(Argument arg: javaMethod.getArguments()) {
-			if(arg.getType().isArray()) {
+			if(arg.getType().isPrimitiveArray()) {
 				String type = arg.getType().getArrayCType(); 
 				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetPrimitiveArrayCritical(" + JNI_ARG_PREFIX + arg.getName() + ", 0);\n");
 				additionalArgs.append(", ");
@@ -445,7 +457,7 @@ public class NativeCodeGenerator {
 	private void emitJniCleanupCode(StringBuffer buffer, JavaMethod javaMethod, CMethod cMethod) {
 		// emit cleanup code for arrays, must come first
 		for(Argument arg: javaMethod.getArguments()) {
-			if(arg.getType().isArray()) {
+			if(arg.getType().isPrimitiveArray()) {
 				buffer.append("\tenv->ReleasePrimitiveArrayCritical(" + JNI_ARG_PREFIX + arg.getName() + ", " + arg.getName() + ", 0);\n");
 			}
 		}

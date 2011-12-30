@@ -46,13 +46,42 @@ public interface JavaMethodParser {
 	}
 	
 	public enum ArgumentType {
-		Boolean, Byte, Char, Short, Integer, Long, Float, Double, 
-		Buffer, ByteBuffer, CharBuffer, ShortBuffer, IntBuffer, LongBuffer, FloatBuffer, DoubleBuffer, 
-		BooleanArray, ByteArray, CharArray, ShortArray, IntegerArray, LongArray, FloatArray, DoubleArray,
-		String, Object;
+		Boolean("jboolean"), 
+		Byte("jbyte"), 
+		Char("jchar"), 
+		Short("jshort"), 
+		Integer("jint"), 
+		Long("jlong"), 
+		Float("jfloat"), 
+		Double("jdouble"), 
+		Buffer("jobject"), 
+		ByteBuffer("jobject"), 
+		CharBuffer("jobject"), 
+		ShortBuffer("jobject"), 
+		IntBuffer("jobject"), 
+		LongBuffer("jobject"), 
+		FloatBuffer("jobject"), 
+		DoubleBuffer("jobject"), 
+		BooleanArray("jbooleanArray"),
+		ByteArray("jbyteArray"),
+		CharArray("jcharArray"), 
+		ShortArray("jshortArray"), 
+		IntegerArray("jintArray"), 
+		LongArray("jlongArray"), 
+		FloatArray("jfloatArray"), 
+		DoubleArray("jdoubleArray"),
+		String("jstring"), 
+		Object("jobject"), 
+		ObjectArray("jobjectArray");
 		
-		public boolean isArray() {
-			return toString().endsWith("Array");
+		private final String jniType;
+		
+		ArgumentType(String jniType) {
+			this.jniType = jniType;
+		}
+		
+		public boolean isPrimitiveArray() {
+			return toString().endsWith("Array") && this != ObjectArray;
 		}
 		
 		public boolean isBuffer() {
@@ -60,7 +89,7 @@ public interface JavaMethodParser {
 		}
 		
 		public boolean isObject() {
-			return toString().equals("Object");
+			return toString().equals("Object") || this == ObjectArray;
 		}
 		
 		public boolean isString() {
@@ -68,7 +97,7 @@ public interface JavaMethodParser {
 		}
 		
 		public boolean isPlainOldDataType() {
-			return !isString() && !isArray() && !isBuffer() && !isObject();
+			return !isString() && !isPrimitiveArray() && !isBuffer() && !isObject();
 		}
 		
 		public String getBufferCType() {
@@ -85,7 +114,7 @@ public interface JavaMethodParser {
 		}
 		
 		public String getArrayCType() {
-			if(!this.isArray()) throw new RuntimeException("ArgumentType " + this + " is not an Array!");
+			if(!this.isPrimitiveArray()) throw new RuntimeException("ArgumentType " + this + " is not an Array!");
 			if(this == BooleanArray) return "bool*";
 			if(this == ByteArray) return "char*";
 			if(this == CharArray) return "unsigned short*";
@@ -95,6 +124,10 @@ public interface JavaMethodParser {
 			if(this == FloatArray) return "float*";
 			if(this == DoubleArray) return "double*";
 			throw new RuntimeException("Unknown Array type " + this);
+		}
+		
+		public String getJniType() {
+			return jniType;
 		}
 	}
 
@@ -146,7 +179,7 @@ public interface JavaMethodParser {
 			this.startIndex = startIndex;
 			this.endIndex = endIndex;
 			for(Argument arg: arguments) {
-				if(arg.type.isArray() || arg.type.isBuffer() || arg.type.isString()) {
+				if(arg.type.isPrimitiveArray() || arg.type.isBuffer() || arg.type.isString()) {
 					hasDisposableArgument = true;
 					return;
 				}
