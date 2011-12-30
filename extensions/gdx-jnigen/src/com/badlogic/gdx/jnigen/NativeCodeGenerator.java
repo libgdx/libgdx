@@ -290,7 +290,7 @@ public class NativeCodeGenerator {
 			// emit the wrapper method, the one with the declaration in the header file
 			emitMethodSignature(buffer, javaMethod, cMethod, null);
 			buffer.append(jniSetupCode);
-			buffer.append("\t" + cMethod.getReturnType() + JNI_RETURN_VALUE + " = " + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
+			buffer.append("\t" + cMethod.getReturnType() + " " + JNI_RETURN_VALUE + " = " + wrappedMethodName + "(" + wrapperArgs.toString() + ");\n\n");
 			buffer.append(jniCleanupCode);
 			buffer.append("\treturn " + JNI_RETURN_VALUE + ";\n");
 			buffer.append("}\n\n");
@@ -375,14 +375,23 @@ public class NativeCodeGenerator {
 	}
 	
 	private void emitJniSetupCode(StringBuffer buffer, JavaMethod javaMethod, StringBuffer additionalArgs, StringBuffer wrapperArgs) {
+		// add environment and class/object as the two first arguments for 
+		// wrapped method.
+		if(javaMethod.isStatic()) {
+			wrapperArgs.append("env, clazz, ");
+		} else {
+			wrapperArgs.append("env, object, ");
+		}
+		
 		// arguments for wrapper method
-		for(Argument arg: javaMethod.getArguments()) {
+		for(int i = 0; i < javaMethod.getArguments().size(); i++) {
+			Argument arg = javaMethod.getArguments().get(i);
 			if(!arg.getType().isPlainOldDataType() && !arg.getType().isObject()) {
 				wrapperArgs.append(JNI_ARG_PREFIX);
 			}
 			// output the name of the argument
 			wrapperArgs.append(arg.getName());
-			wrapperArgs.append(", ");
+			if(i < javaMethod.getArguments().size() - 1) wrapperArgs.append(", ");
 		}
 		
 		
