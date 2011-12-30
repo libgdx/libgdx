@@ -1,4 +1,4 @@
-<project name="%projectName%" basedir="." default="link">
+<project name="%projectName%" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
@@ -43,17 +43,27 @@
 	<target name="precompile">
 		%precompile%
 	</target>
-
-	<!-- compiles all C and C++ files to object files in the build directory -->
-	<target name="compile" depends="precompile">
-		<mkdir dir="${buildDir}"/>
-		<touch mkdirs="true">
+	
+	<target name="create-build-dir" depends="precompile">
+		<touch mkdirs="true" verbose="true">
 			<fileset refid="g++-files"/>
-			<mapper type="glob" from="*.file" to="the_dir/*/.tmp" />
+			<mapper type="glob" from="*" to="${buildDir}/*" />
 		</touch>
 		<delete>
-			<fileset dir="${buildDir}" includes="**/.tmp"/>
+			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
 		</delete>
+		<touch mkdirs="true" verbose="true">
+			<fileset refid="gcc-files"/>
+			<mapper type="glob" from="*" to="${buildDir}/*" />
+		</touch>
+		<delete>
+			<fileset dir="${buildDir}" includes="**/*" excludes="**/*.o"/>
+		</delete>
+	</target>
+
+	<!-- compiles all C and C++ files to object files in the build directory -->
+	<target name="compile" depends="create-build-dir" >
+		<mkdir dir="${buildDir}"/>
 		<apply failonerror="true" executable="${g++}" dest="${buildDir}" verbose="true">
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
@@ -68,13 +78,6 @@
 				<mapper type="glob" from="*.cpp" to="*.o"/>
 			</chainedmapper>
 		</apply>
-		<touch mkdirs="true">
-			<fileset refid="gcc-files"/>
-			<mapper type="glob" from="*.file" to="the_dir/*/.tmp" />
-		</touch>
-		<delete>
-			<fileset dir="${buildDir}" includes="**/.tmp"/>
-		</delete>
 		<apply failonerror="true" executable="${gcc}" dest="${buildDir}" verbose="true">
 			<arg line="${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
@@ -106,7 +109,7 @@
 		</apply>
 	</target>	
 	
-	<target name="postcompile">
+	<target name="postcompile" depends="link">
 		%postcompile%
 	</target>
 </project>
