@@ -10,7 +10,7 @@ import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 public class BulletBuild {
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new NativeCodeGenerator().generate("src", "bin", "jni", null, new String[] { "**/BulletBuild.java" });
+		new NativeCodeGenerator().generate("src", "bin", "jni");
 
 		// generate build scripts, for win32 only
 		// custom target for testing purposes

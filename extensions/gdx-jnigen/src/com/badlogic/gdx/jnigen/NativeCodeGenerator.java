@@ -194,9 +194,14 @@ public class NativeCodeGenerator {
 					}
 					String javaContent = file.readString();
 					if (javaContent.contains(JNI_METHOD_MARKER)) {
+						ArrayList<JavaSegment> javaSegments = javaMethodParser.parse(javaContent);
+						if(javaSegments.size() == 0) {
+							System.out.println("Skipping '" + file + "', no JNI code found.");
+							continue;
+						}
 						System.out.print("Generating C/C++ for '" + file + "'...");
 						generateHFile(file);
-						generateCppFile(javaContent, hFile, cppFile);
+						generateCppFile(javaSegments, hFile, cppFile);
 						System.out.println("done");
 					}
 				}
@@ -227,9 +232,8 @@ public class NativeCodeGenerator {
 		}
 	}
 
-	private void generateCppFile(String javaFileContent, FileDescriptor hFile, FileDescriptor cppFile) throws Exception {
+	private void generateCppFile(ArrayList<JavaSegment> javaSegments, FileDescriptor hFile, FileDescriptor cppFile) throws Exception {
 		String headerFileContent = hFile.readString();
-		ArrayList<JavaSegment> javaSegments = javaMethodParser.parse(javaFileContent);
 		ArrayList<CMethod> cMethods = cMethodParser.parse(headerFileContent).getMethods();
 		
 		StringBuffer buffer = new StringBuffer();
