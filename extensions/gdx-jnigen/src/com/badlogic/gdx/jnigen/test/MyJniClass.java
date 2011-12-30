@@ -46,7 +46,6 @@ public class MyJniClass {
 		printf("float[0]: %f\n", floatArray[0]);
 		printf("double[0]: %f\n", doubleArray[0]);
 		printf("string: %s fuck this nuts\n", string);
-		idgh gid u exokidess
 	*/					
 	
 	/*JNI
@@ -61,7 +60,7 @@ public class MyJniClass {
 	
 	public static void main(String[] args) throws Exception {
 		// generate C/C++ code
-		new NativeCodeGenerator().generate("src", "bin", "jni", new String[] { "**/JniGenTest.java" }, null);
+		new NativeCodeGenerator().generate("src", "bin", "jni", new String[] { "**/MyJniClass.java" }, null);
 		
 		// generate build scripts, for win32 only
 		BuildConfig buildConfig = new BuildConfig("test");
@@ -71,8 +70,7 @@ public class MyJniClass {
 		new AntScriptGenerator().generate(buildConfig, win32);
 		
 		// build natives
-		BuildExecutor.executeAnt("jni/build.xml", "-v");
-		
+		BuildExecutor.executeAnt("jni/build.xml", "clean all -v");
 			
 		// load the test-natives.jar and from it the shared library, then execute the test. 
 		new SharedLibraryLoader("libs/test-natives.jar").load("test");

@@ -10,6 +10,18 @@ import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.badlogic.gdx.jnigen.test.MyJniClass;
+
+/**
+ * Loads shared libraries from a natives jar file (desktop) or arm folders (Android). For desktop projects,
+ * have the natives jar in the classpath, for Android projects put the shared libraries in the libs/armeabi
+ * and libs/armeabi-v7a folders.
+ *
+ * See {@link AntScriptGenerator}.
+ * 
+ * @author mzechner
+ *
+ */
 public class SharedLibraryLoader {
 	private static Set<String> loadedLibraries = new HashSet<String>();
 	private String nativesJar;
@@ -17,6 +29,11 @@ public class SharedLibraryLoader {
 	public SharedLibraryLoader() {
 	}
 	
+	/**
+	 * Fetches the natives from the given natives jar file. Used
+	 * for testing a shared lib on the fly, see {@link MyJniClass}.
+	 * @param nativesJar
+	 */
 	public SharedLibraryLoader(String nativesJar) {
 		this.nativesJar = nativesJar;
 	}
@@ -79,6 +96,11 @@ public class SharedLibraryLoader {
 		return file.getInputStream(entry);
 	}
 
+	/**
+	 * Loads a shared library with the given name for the platform the application
+	 * is running on. The name should not contain a prefix (e.g. 'lib') or suffix (e.g. '.dll).
+	 * @param sharedLibName
+	 */
 	public synchronized void load (String sharedLibName) {
 		if (loadedLibraries.contains(sharedLibName)) return;
 		

@@ -55,7 +55,7 @@ import com.badlogic.gdx.jnigen.parsing.RobustJavaMethodParser;
  * 
  * <table border="1">
  * <tr><td>Java</td><td>C/C++</td></tr>
- * <tr><td>String</td><td>unsigned char* (UTF-8)</td></tr>
+ * <tr><td>String</td><td>char* (UTF-8)</td></tr>
  * <tr><td>boolean[]</td><td>bool*</td></tr>
  * <tr><td>byte[]</td><td>char*</td></tr>
  * <tr><td>char[]</td><td>unsigned short*</td></tr>
@@ -428,7 +428,7 @@ public class NativeCodeGenerator {
 		// string pointers
 		for(Argument arg: javaMethod.getArguments()) {
 			if(arg.getType().isString()) {
-				String type = "unsigned char*";
+				String type = "char*";
 				buffer.append("\t" + type + " " + arg.getName() + " = (" + type + ")env->GetStringUTFChars(" + JNI_ARG_PREFIX + arg.getName() + ", 0);\n");
 				additionalArgs.append(", ");
 				additionalArgs.append(type);

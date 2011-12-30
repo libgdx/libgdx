@@ -7,7 +7,17 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Executes an ant script and its targets or an Android NDK build. See {@link AntScriptGenerator}.
+ * @author mzechner
+ *
+ */
 public class BuildExecutor {
+	/** 
+	 * Execute the Ant script file with the given parameters.
+	 * @param buildFile
+	 * @param params
+	 */
 	public static void executeAnt(String buildFile, String params) {
 			FileDescriptor build = new FileDescriptor(buildFile);
 			String ant = System.getProperty("os.name").contains("Windows")?"ant.bat":"ant";
@@ -16,6 +26,10 @@ public class BuildExecutor {
 			startProcess(command, build.parent().file());
 	}
 	
+	/**
+	 * Execute ndk-build in the given directory
+	 * @param directory
+	 */
 	public static void executeNdk(String directory) {
 		FileDescriptor build = new FileDescriptor(directory);
 		String command = "ndk-build";
@@ -26,9 +40,6 @@ public class BuildExecutor {
 		try {
 			final Process process = Runtime.getRuntime().exec(command, null, directory);
 			Thread t = new Thread(new Runnable() {
-				Pattern pattern = null;
-				Matcher matcher = null;
-				
 				@Override
 				public void run() {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -108,6 +119,7 @@ public class BuildExecutor {
 			});
 			t.setDaemon(true);
 			t.start();
+			// FIXME this will hang if Ant detects an error while executing GCC in a process. Why?
 			process.waitFor();
 		} catch(Exception e) {
 			e.printStackTrace();

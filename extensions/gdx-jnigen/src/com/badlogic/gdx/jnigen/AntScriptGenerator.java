@@ -5,7 +5,49 @@ import java.util.ArrayList;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.FileDescriptor.FileType;
 
+/**
+ * Generates Ant scripts for multiple native build targets based on the given {@link BuildConfig}.</p>
+ * 
+ * For each build target, an Ant build script is created that will compile C/C++ files to a shared library
+ * for a specific platform. A master build script is generated that will execute the build scripts for
+ * each platform and bundles their shared libraries into a Jar file containing all shared libraries for
+ * all desktop platform targets, and armeabi/ and armeabi-v7a/ folders containing the shard libraries for
+ * Android. The scripts can be executed from the command line or via the {@link BuildExecutor}. The resulting
+ * shared libraries can be loaded with the {@link SharedLibraryLoader} which will load the correct
+ * shared library from the natives jar/arm folders based on the platform the application is running on</p>
+ * 
+ * A common use case looks like this:
+ * 
+ * <pre>
+ * BuildTarget win32 = BuildTarget.newDefaultBuildTarget(TargetOs.Windows, false);
+ * BuildTarget win64 = BuildTarget.newDefaultBuildTarget(TargetOs.Windows, true);
+ * BuildTarget linux32 = BuildTarget.newDefaultBuildTarget(TargetOs.Linux, false);
+ * BuildTarget linux64 = BuildTarget.newDefaultBuildTarget(TargetOs.Linux, true);
+ * BuildTarget mac = BuildTarget.newDefaultBuildTarget(TargetOs.MacOsX, false);
+ * BuildTarget android = BuildTarget.newDefaultBuildTarget(TargetOs.Android, false);
+ * BuildConfig config = new BuildConfig("mysharedlibrary");
+ * 
+ * new AntScriptGenerator().generate(config, win32, win64, linux32, linux64, mac, android);
+ * BuildExecutor.executeAnt("jni/build.xml", "clean all -v");
+ * 
+ * // assuming the natives jar is on the classpath of the application 
+ * new SharedLibraryLoader().load("mysharedlibrary)
+ * </pre>
+ * 
+ * This will create the build scripts and execute the build of the shared libraries for each 
+ * platform, provided that the compilers are available on the system. Mac OS X might have to be
+ * treated separately as there are no cross-compilers for it.</p>
+ * 
+ * @author mzechner
+ *
+ */
 public class AntScriptGenerator {
+	/**
+	 * Creates a master build script and one build script for each target to generated
+	 * native shared libraries. 
+	 * @param config the {@link BuildConfig}
+	 * @param targets list of {@link BuildTarget} instances
+	 */
 	public void generate(BuildConfig config, BuildTarget ... targets) {
 		// create all the directories for outputing object files, shared libs and natives jar as well as build scripts.
 		if(!config.libsDir.exists()) {
