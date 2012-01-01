@@ -14,7 +14,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32-DFIXED_POINT"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -DFIXED_POINT"/>
 	<fileset id="gcc-files" dir="./">
 				<include name="kissfft/*.c"/>
 		<include name="vorbis/*.c"/>
@@ -24,7 +24,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32-DFIXED_POINT"/>
+	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m32 -DFIXED_POINT"/>
 	<fileset id="g++-files" dir="./">
 				<include name="**/*AudioTools.cpp"/>
 		<include name="**/*KissFFT.cpp"/>

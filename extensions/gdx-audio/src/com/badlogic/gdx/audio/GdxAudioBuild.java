@@ -38,8 +38,8 @@ public class GdxAudioBuild {
 		win32home.preCompileTask = precompileTask;
 		
 		BuildTarget win32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
-		win32.cFlags += "-DFIXED_POINT";
-		win32.cppFlags += "-DFIXED_POINT";
+		win32.cFlags += " -DFIXED_POINT";
+		win32.cppFlags += " -DFIXED_POINT";
 		win32.headerDirs = headerDirs;
 		win32.cIncludes = cIncludes;
 		win32.cppIncludes = cppIncludes;
@@ -47,8 +47,8 @@ public class GdxAudioBuild {
 		win32.preCompileTask = precompileTask;
 		
 		BuildTarget win64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
-		win64.cFlags += "-DFIXED_POINT";
-		win64.cppFlags += "-DFIXED_POINT";
+		win64.cFlags += " -DFIXED_POINT";
+		win64.cppFlags += " -DFIXED_POINT";
 		win64.headerDirs = headerDirs;
 		win64.cIncludes = cIncludes;
 		win64.cppIncludes = cppIncludes;
@@ -56,8 +56,8 @@ public class GdxAudioBuild {
 		win64.preCompileTask = precompileTask;
 		
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
-		lin32.cFlags += "-DFIXED_POINT";
-		lin32.cppFlags += "-DFIXED_POINT";
+		lin32.cFlags += " -DFIXED_POINT";
+		lin32.cppFlags += " -DFIXED_POINT";
 		lin32.headerDirs = headerDirs;
 		lin32.cIncludes = cIncludes;
 		lin32.cppIncludes = cppIncludes;
@@ -65,8 +65,8 @@ public class GdxAudioBuild {
 		lin32.preCompileTask = precompileTask;
 		
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
-		lin64.cFlags += "-DFIXED_POINT";
-		lin64.cppFlags += "-DFIXED_POINT";
+		lin64.cFlags += " -DFIXED_POINT";
+		lin64.cppFlags += " -DFIXED_POINT";
 		lin64.headerDirs = headerDirs;
 		lin64.cIncludes = cIncludes;
 		lin64.cppIncludes = cppIncludes;
@@ -74,8 +74,8 @@ public class GdxAudioBuild {
 		lin64.preCompileTask = precompileTask;
 		
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		android.cFlags += "-DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
-		android.cppFlags += "-DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
+		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
+		android.cppFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__";
 		android.headerDirs = headerDirs;
 		android.cIncludes = cIncludes;
 		android.cppIncludes = cppIncludes;
