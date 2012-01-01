@@ -25,8 +25,7 @@ public class AudioBuild {
 											  "soundtouch/source/SoundTouch/*.cpp"
 		};
 		String[] cppExcludes = new String[] { "**/cpu_detect_x86_win.cpp" };
-		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch/include/STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>\n" +
-								"<copy failonerror=\"true\" tofile=\"soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp\" verbose=\"true\" overwrite=\"true\" file=\"FIFOSampleBuffer.cpp.patched\"/>";		
+		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch/include/STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>";
 		BuildConfig buildConfig = new BuildConfig("gdx-audio");
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";
