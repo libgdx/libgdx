@@ -12,6 +12,7 @@ LOCAL_ARM_MODE  := arm
 LOCAL_SRC_FILES := com.badlogic.gdx.audio.analysis.AudioTools.cpp\
 	com.badlogic.gdx.audio.analysis.KissFFT.cpp\
 	com.badlogic.gdx.audio.io.VorbisDecoder.cpp\
+	com.badlogic.gdx.audio.transform.SoundTouch.cpp\
 	kissfft/kiss_fft.c\
 	kissfft/kiss_fftr.c\
 	soundtouch/source/SoundTouch/AAFilter.cpp\
@@ -25,6 +26,7 @@ LOCAL_SRC_FILES := com.badlogic.gdx.audio.analysis.AudioTools.cpp\
 	soundtouch/source/SoundTouch/SoundTouch.cpp\
 	soundtouch/source/SoundTouch/sse_optimized.cpp\
 	soundtouch/source/SoundTouch/TDStretch.cpp\
+	target/windows32/soundtouch/source/SoundTouch/SoundTouch.cpp\
 	vorbis/bitwise.c\
 	vorbis/block.c\
 	vorbis/codebook.c\

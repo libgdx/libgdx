@@ -121,8 +121,10 @@ public class RobustJavaMethodParser implements JavaMethodParser {
 		String returnType = method.getType().toString();
 		ArrayList<Argument> arguments = new ArrayList<Argument>();
 		
-		for(Parameter parameter: method.getParameters()) {
-			arguments.add(new Argument(getArgumentType(parameter), parameter.getId().getName()));
+		if(method.getParameters() != null) {
+			for(Parameter parameter: method.getParameters()) {
+				arguments.add(new Argument(getArgumentType(parameter), parameter.getId().getName()));
+			}
 		}
 		
 		return new JavaMethod(className, name, isStatic, returnType, null, arguments, method.getBeginLine(), method.getEndLine());

@@ -360,10 +360,11 @@ public class NativeCodeGenerator {
 		// construct argument list
 		// Differentiate between static and instance method, then output each argument
 		if(javaMethod.isStatic()) {
-			buffer.append("(JNIEnv* env, jclass clazz, ");
+			buffer.append("(JNIEnv* env, jclass clazz");
 		} else {
-			buffer.append("(JNIEnv* env, jobject object, ");
+			buffer.append("(JNIEnv* env, jobject object");
 		}
+		if(javaMethod.getArguments().size() > 0) buffer.append(", ");
 		for(int i = 0; i < javaMethod.getArguments().size(); i++) {
 			// output the argument type as defined in the header
 			buffer.append(cMethod.getArgumentTypes()[i+2]);

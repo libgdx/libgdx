@@ -16,14 +16,16 @@
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
 	<property name="gcc-opts" value="%cFlags%"/>
 	<fileset id="gcc-files" dir="./">
+		<exclude name="target/"/>		
 		%cIncludes%
-		%cExcludes%		
+		%cExcludes%
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
 	<property name="g++-opts" value="%cppFlags%"/>
 	<fileset id="g++-files" dir="./">
+		<exclude name="target/"/>
 		%cppIncludes%
 		%cppExcludes%
 	</fileset>
@@ -45,6 +47,8 @@
 	</target>
 	
 	<target name="create-build-dir" depends="precompile">
+		<pathconvert pathsep="${line.separator}" property="files" refid="g++-files"/>
+		<echo>${files}</echo>
 		<!-- FIXME this is pretty nasty :/ -->
 		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>

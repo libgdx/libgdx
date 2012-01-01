@@ -16,19 +16,22 @@
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
 	<property name="gcc-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64 -DFIXED_POINT"/>
 	<fileset id="gcc-files" dir="./">
+		<exclude name="target/"/>		
 				<include name="kissfft/*.c"/>
 		<include name="vorbis/*.c"/>
 
-				
+		
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
 	<property name="g++-opts" value="-c -Wall -O2 -mfpmath=sse -msse2 -fmessage-length=0 -m64 -DFIXED_POINT"/>
 	<fileset id="g++-files" dir="./">
+		<exclude name="target/"/>
 				<include name="**/*AudioTools.cpp"/>
 		<include name="**/*KissFFT.cpp"/>
 		<include name="**/*VorbisDecoder.cpp"/>
+		<include name="**/*SoundTouch.cpp"/>
 		<include name="soundtouch/source/SoundTouch/*.cpp"/>
 
 				<exclude name="**/cpu_detect_x86_win.cpp"/>
@@ -52,6 +55,8 @@
 	</target>
 	
 	<target name="create-build-dir" depends="precompile">
+		<pathconvert pathsep="${line.separator}" property="files" refid="g++-files"/>
+		<echo>${files}</echo>
 		<!-- FIXME this is pretty nasty :/ -->
 		<copy todir="${buildDir}">
 			<fileset refid="g++-files"/>

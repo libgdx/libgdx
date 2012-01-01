@@ -10,7 +10,7 @@ import com.badlogic.gdx.jnigen.NativeCodeGenerator;
 public class AudioBuild {
 	public static void main(String[] args) throws Exception {
 		new NativeCodeGenerator().generate("src", "bin", "jni", 
-										   new String[] { "**/AudioTools.java", "**/KissFFT.java", "**/VorbisDecoder.java" }, 
+										   new String[] { "**/AudioTools.java", "**/KissFFT.java", "**/VorbisDecoder.java", "**/SoundTouch.java" }, 
 										   new String[] { "**/Mpg123Decoder.java" });
 		
 		String[] headerDirs = new String[] { "kissfft", "vorbis", "soundtouch/include", "soundtouch/source/SoundTouch/" };
@@ -21,7 +21,8 @@ public class AudioBuild {
 		String[] cppIncludes = new String[] { 
 											  "**/*AudioTools.cpp", 
 											  "**/*KissFFT.cpp", 
-											  "**/*VorbisDecoder.cpp", 
+											  "**/*VorbisDecoder.cpp",
+											  "**/*SoundTouch.cpp",
 											  "soundtouch/source/SoundTouch/*.cpp"
 		};
 		String[] cppExcludes = new String[] { "**/cpu_detect_x86_win.cpp" };
@@ -84,6 +85,6 @@ public class AudioBuild {
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
 		
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", "clean postcompile -v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", " -v");
 	}
 }
