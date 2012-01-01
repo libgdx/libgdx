@@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
 LOCAL_MODULE    := gdx-audio
-LOCAL_C_INCLUDES := kissfft vorbis soundtouch/include 
+LOCAL_C_INCLUDES := kissfft vorbis soundtouch/include soundtouch/source/SoundTouch/ 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__
 LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__

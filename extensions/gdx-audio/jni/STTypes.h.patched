@@ -65,7 +65,7 @@ namespace soundtouch
     // If defined, allows the SIMD-optimized routines to take minor shortcuts 
     // for improved performance. Undefine to require faithfully similar SIMD 
     // calculations as in normal C implementation.
-    #undef SOUNDTOUCH_ALLOW_NONEXACT_SIMD_OPTIMIZATION    1
+    #undef SOUNDTOUCH_ALLOW_NONEXACT_SIMD_OPTIMIZATION
 
     #ifdef SOUNDTOUCH_INTEGER_SAMPLES
         // 16bit integer sample type

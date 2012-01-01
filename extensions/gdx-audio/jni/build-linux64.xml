@@ -29,7 +29,7 @@
 				<include name="**/*AudioTools.cpp"/>
 		<include name="**/*KissFFT.cpp"/>
 		<include name="**/*VorbisDecoder.cpp"/>
-		<include name="soundtouch/source/SoundTouch/**.cpp"/>
+		<include name="soundtouch/source/SoundTouch/*.cpp"/>
 
 				<exclude name="**/cpu_detect_x86_win.cpp"/>
 
@@ -76,6 +76,7 @@
 						<arg value="-Ikissfft"/>
 			<arg value="-Ivorbis"/>
 			<arg value="-Isoundtouch/include"/>
+			<arg value="-Isoundtouch/source/SoundTouch/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -93,6 +94,7 @@
 						<arg value="-Ikissfft"/>
 			<arg value="-Ivorbis"/>
 			<arg value="-Isoundtouch/include"/>
+			<arg value="-Isoundtouch/source/SoundTouch/"/>
 
 			<srcfile/>
 			<arg value="-o"/>

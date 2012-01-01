@@ -13,7 +13,7 @@ public class GdxAudioBuild {
 										   new String[] { "**/AudioTools.java", "**/KissFFT.java", "**/VorbisDecoder.java" }, 
 										   new String[] { "**/Mpg123Decoder.java" });
 		
-		String[] headerDirs = new String[] { "kissfft", "vorbis", "soundtouch/include" };
+		String[] headerDirs = new String[] { "kissfft", "vorbis", "soundtouch/include", "soundtouch/source/SoundTouch/" };
 		String[] cIncludes = new String[] { 
 											"kissfft/*.c", 
 											"vorbis/*.c", 
@@ -22,7 +22,7 @@ public class GdxAudioBuild {
 											  "**/*AudioTools.cpp", 
 											  "**/*KissFFT.cpp", 
 											  "**/*VorbisDecoder.cpp", 
-											  "soundtouch/source/SoundTouch/**.cpp"
+											  "soundtouch/source/SoundTouch/*.cpp"
 		};
 		String[] cppExcludes = new String[] { "**/cpu_detect_x86_win.cpp" };
 		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch\\include\\STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>";		
@@ -84,6 +84,6 @@ public class GdxAudioBuild {
 		
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, android);
 		
-		BuildExecutor.executeAnt("jni/build-windows32home.xml", " -v");
+		BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 	}
 }
