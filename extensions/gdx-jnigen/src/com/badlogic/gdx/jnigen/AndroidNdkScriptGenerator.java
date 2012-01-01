@@ -21,8 +21,8 @@ public class AndroidNdkScriptGenerator {
 
 		int idx = 0;
 		String[] includes = new String[target.cIncludes.length + target.cppIncludes.length];
-		for(String include: target.cIncludes) includes[idx++] = include;
-		for(String include: target.cppIncludes) includes[idx++] = include;
+		for(String include: target.cIncludes) includes[idx++] = config.jniDir + "/" + include;
+		for(String include: target.cppIncludes) includes[idx++] = config.jniDir + "/" + include;
 		
 		idx = 0;
 		String[] excludes = new String[target.cExcludes.length + target.cppExcludes.length];
