@@ -8,7 +8,8 @@
 	</target>
 
 	<target name="precompile">
-		<copy failonerror="true" tofile="soundtouch\include\STTypes.h" verbose="true" overwrite="true" file="STTypes.h.patched"/>
+		<copy failonerror="true" tofile="soundtouch/include/STTypes.h" verbose="true" overwrite="true" file="STTypes.h.patched"/>
+<copy failonerror="true" tofile="soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp" verbose="true" overwrite="true" file="FIFOSampleBuffer.cpp.patched"/>
 	</target>
 
 	<target name="compile-natives" depends="precompile">

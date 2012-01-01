@@ -7,7 +7,7 @@ import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
 
-public class GdxAudioBuild {
+public class AudioBuild {
 	public static void main(String[] args) throws Exception {
 		new NativeCodeGenerator().generate("src", "bin", "jni", 
 										   new String[] { "**/AudioTools.java", "**/KissFFT.java", "**/VorbisDecoder.java" }, 
@@ -25,7 +25,8 @@ public class GdxAudioBuild {
 											  "soundtouch/source/SoundTouch/*.cpp"
 		};
 		String[] cppExcludes = new String[] { "**/cpu_detect_x86_win.cpp" };
-		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch\\include\\STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>";		
+		String precompileTask = "<copy failonerror=\"true\" tofile=\"soundtouch/include/STTypes.h\" verbose=\"true\" overwrite=\"true\" file=\"STTypes.h.patched\"/>\n" +
+								"<copy failonerror=\"true\" tofile=\"soundtouch/source/SoundTouch/FIFOSampleBuffer.cpp\" verbose=\"true\" overwrite=\"true\" file=\"FIFOSampleBuffer.cpp.patched\"/>";		
 		BuildConfig buildConfig = new BuildConfig("gdx-audio");
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";
